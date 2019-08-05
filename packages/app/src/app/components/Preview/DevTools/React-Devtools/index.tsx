@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { initialize } from 'react-devtools-inline/frontend';
+import { ThemeContext } from 'styled-components';
 
 import { Container } from './elements';
 import { DevToolProps } from '..';
 
 const DevTools = (props: DevToolProps) => {
-  const [devToolsReady, setDtReady] = useState(false);
   const [ReactDevTools, setDevTools] = useState(null);
+  const theme = useContext(ThemeContext);
 
   useEffect(() => {
     const iframe = document.getElementById(
@@ -23,21 +24,24 @@ const DevTools = (props: DevToolProps) => {
         '*'
       );
     };
-    setDtReady(true);
   }, []);
 
   if (props.hidden) {
     return null;
   }
 
+  const browserTheme = theme.light ? 'light' : 'dark';
+
   return (
-    <Container>{devToolsReady && ReactDevTools && <ReactDevTools />}</Container>
+    <Container>
+      {ReactDevTools && <ReactDevTools browserTheme={browserTheme} />}
+    </Container>
   );
 };
 
 export default {
   id: 'codesandbox.react-devtools',
-  title: '⚛️ Components',
+  title: '⚛ Components',
   Content: DevTools,
   actions: [],
 };
