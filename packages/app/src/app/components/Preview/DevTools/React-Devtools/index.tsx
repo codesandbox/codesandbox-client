@@ -17,6 +17,14 @@ const DevTools = ({ hidden }: Props) => {
     ) as any) as HTMLIFrameElement;
     const contentWindow = iframe.contentWindow;
     ReactDevTools.current = initialize(contentWindow);
+    iframe.onload = () => {
+      contentWindow.postMessage(
+        {
+          type: 'activate',
+        },
+        '*'
+      );
+    };
     setDtReady(true);
   }, []);
 

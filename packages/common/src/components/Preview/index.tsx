@@ -554,6 +554,7 @@ class BasePreview extends React.Component<Props, State> {
           {(style: { opacity: number }) => (
             <React.Fragment>
               <StyledFrame
+                sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
                 allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media"
                 src={this.currentUrl()}
                 ref={this.setIframeElement}

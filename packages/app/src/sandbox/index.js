@@ -68,8 +68,15 @@ requirePolyfills().then(() => {
       // Means we're in the editor
       setupHistoryListeners();
       setupConsole();
-      // Call this only once the frontend has been initialized.
-      activate(window);
+      window.addEventListener('message', ({ data }) => {
+        switch (data.type) {
+          case 'activate':
+            activate(window);
+            break;
+          default:
+            break;
+        }
+      });
     }
   }
 
