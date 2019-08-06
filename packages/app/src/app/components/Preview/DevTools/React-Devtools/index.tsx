@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { initialize } from 'react-devtools-inline/frontend';
+import { dispatch, actions } from 'codesandbox-api';
 import { ThemeContext } from 'styled-components';
 
 import { Container } from './elements';
@@ -14,7 +15,7 @@ const DevTools = (props: DevToolProps) => {
       'sandbox-preview'
     ) as HTMLIFrameElement;
     const contentWindow = iframe.contentWindow;
-    // in the effect
+
     setDevTools(initialize(contentWindow));
     iframe.onload = () => {
       contentWindow.postMessage(
@@ -32,9 +33,20 @@ const DevTools = (props: DevToolProps) => {
 
   const browserTheme = theme.light ? 'light' : 'dark';
 
+  function viewElementSourceFunction(id, data) {
+    const { source } = data;
+
+    dispatch(actions.editor.openModule(source.fileName, source.lineNumber));
+  }
+
   return (
     <Container>
-      {ReactDevTools && <ReactDevTools browserTheme={browserTheme} />}
+      {ReactDevTools && (
+        <ReactDevTools
+          viewElementSourceFunction={viewElementSourceFunction}
+          browserTheme={browserTheme}
+        />
+      )}
     </Container>
   );
 };
