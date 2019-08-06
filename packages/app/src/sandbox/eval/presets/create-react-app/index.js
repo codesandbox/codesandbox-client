@@ -59,6 +59,7 @@ export default function initialize() {
             compileNodeModulesWithEnv: true,
             config: {
               plugins: [
+                '@babel/plugin-transform-react-jsx-source',
                 'transform-flow-strip-types',
                 'transform-destructuring',
                 'babel-plugin-macros',
@@ -98,6 +99,8 @@ export default function initialize() {
               ],
             },
           };
+
+          console.log(babelOptions);
           preset.registerTranspiler(
             module =>
               /\.(t|j)sx?$/.test(module.path) && !module.path.endsWith('.d.ts'),

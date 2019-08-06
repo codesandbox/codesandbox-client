@@ -33,10 +33,12 @@ const DevTools = (props: DevToolProps) => {
 
   const browserTheme = theme.light ? 'light' : 'dark';
 
-  function viewElementSourceFunction(id, data) {
+  function viewElementSourceFunction(id: string, data: any) {
     const { source } = data;
 
-    dispatch(actions.editor.openModule(source.fileName, source.lineNumber));
+    if (source) {
+      dispatch(actions.editor.openModule(source.fileName, source.lineNumber));
+    }
   }
 
   return (

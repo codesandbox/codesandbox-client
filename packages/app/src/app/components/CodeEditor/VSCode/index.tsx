@@ -236,9 +236,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       },
     ]);
 
-  setupCodeSandboxAPIListener() {
-    // @ts-ignore
-    return listen(({ action, type, code, path, lineNumber, column }) => {
+  setupCodeSandboxAPIListener = () =>
+    listen(({ action, type, code, path, lineNumber, column }: any) => {
       if (type === 'add-extra-lib') {
         // TODO: bring this func back
         // const dtsPath = `${path}.d.ts`;
@@ -254,17 +253,18 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         if (lineNumber || column) {
           options.selection = {
             startLineNumber: lineNumber,
-            startColumn: column,
+            startColumn: column || 0,
           };
         }
 
-        this.editor.codeEditorService.openCodeEditor({
-          resource: this.monaco.Uri.file('/sandbox' + path),
-          options,
-        });
+        if (this.editor) {
+          this.editor.codeEditorService.openCodeEditor({
+            resource: this.monaco.Uri.file('/sandbox' + path),
+            options,
+          });
+        }
       }
     });
-  }
 
   modelListeners: {
     [path: string]: {
