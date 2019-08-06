@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { unstable_createSyncRoot as createSyncRoot } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
@@ -130,9 +130,11 @@ function boot() {
         );
       },
     });
+
     try {
       const { signals, store } = controller.provide();
-      render(
+      const root = createSyncRoot(rootEl);
+      root.render(
         <Signals.Provider value={signals}>
           <Store.Provider value={store}>
             <Provider {...{ signals, store }}>
@@ -147,8 +149,7 @@ function boot() {
               </ApolloProvider>
             </Provider>
           </Store.Provider>
-        </Signals.Provider>,
-        rootEl
+        </Signals.Provider>
       );
     } catch (e) {
       logError(e);
