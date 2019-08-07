@@ -70,17 +70,21 @@ function EditorSettings({ store, signals }) {
             </VSCodePlaceholder>
           </PreferenceContainer>
         </VSCodePlaceholder>
-        <PreferenceContainer>
-          <PaddedPreference
-            title="VIM Mode"
-            type="boolean"
-            {...bindValue('vimMode')}
-          />
-          <SubDescription>
-            This will enable the VSCodeVim extension, you need to reload the
-            page to see the effects
-          </SubDescription>
-        </PreferenceContainer>
+        {/* {Vim mode does not work on FF} */}
+        {console.log(navigator.userAgent.toLowerCase().indexOf('firefox'))}
+        {navigator.userAgent.toLowerCase().indexOf('firefox') === -1 && (
+          <PreferenceContainer>
+            <PaddedPreference
+              title="VIM Mode"
+              type="boolean"
+              {...bindValue('vimMode')}
+            />
+            <SubDescription>
+              This will enable the VSCodeVim extension, you need to reload the
+              page to see the effects
+            </SubDescription>
+          </PreferenceContainer>
+        )}
       </SubContainer>
     </div>
   );
