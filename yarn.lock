@@ -24041,7 +24041,7 @@ react-dev-utils@^9.0.0:
 react-devtools-inline@^4.0.0-alpha.8:
   version "4.0.0-alpha.8"
   resolved "https://registry.yarnpkg.com/react-devtools-inline/-/react-devtools-inline-4.0.0-alpha.8.tgz#aa2a318073a4f5377cd37ded0f0c2971d6c87616"
-  integrity sha512-YGmyNQsE6Zu0sWmTJZlE+0yu/jD0nYxQtSE1HNhIvhogVbc0/eZboesBbqP70yn9wujUbh1GsOU0hyDu1oIwog==
+  integrity sha512-AT6zCXCxAY7grRGgXetnbVjd4ldfZ6ABloxEJLhT6s05uWkb2sMc9Tny7aCzc7UCo5htjLaqxxI2XF91zomBdQ==
 
 react-dnd-html5-backend@^2.4.1:
   version "2.6.0"
