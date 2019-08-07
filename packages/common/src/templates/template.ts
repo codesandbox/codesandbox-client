@@ -62,11 +62,7 @@ const CLIENT_VIEWS: ViewConfig[] = [
     views: [{ id: 'codesandbox.browser' }, { id: 'codesandbox.tests' }],
   },
   {
-    views: [
-      { id: 'codesandbox.console' },
-      { id: 'codesandbox.problems' },
-      { id: 'codesandbox.react-devtools' },
-    ],
+    views: [{ id: 'codesandbox.console' }, { id: 'codesandbox.problems' }],
   },
 ];
 
@@ -140,6 +136,7 @@ export default class Template {
     this.showCube = options.showCube != null ? options.showCube : true;
   }
 
+  // eslint-disable-next-line
   private getMainFromPackage(pkg: {
     main?: string[] | string;
   }): string | undefined {
@@ -155,7 +152,10 @@ export default class Template {
       if (typeof pkg.main === 'string') {
         return absolute(pkg.main);
       }
-    } catch (e) {}
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log(e);
+    }
   }
 
   /**
@@ -196,6 +196,10 @@ export default class Template {
   getViews(): ViewConfig[] {
     if (this.isServer) {
       return SERVER_VIEWS;
+    }
+
+    if (this.name === 'create-react-app') {
+      CLIENT_VIEWS[1].views.push({ id: 'codesandbox.react-devtools' });
     }
 
     return CLIENT_VIEWS;
