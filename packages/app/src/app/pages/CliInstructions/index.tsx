@@ -7,13 +7,13 @@ import SubTitle from 'app/components/SubTitle';
 import Title from 'app/components/Title';
 
 import { Container, Content, Code } from './elements';
-import { inject } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 const CLIInstructions = inject('signals')(
-  ({ signals: { cliInstructionsMounted } }) => {
+  hooksObserver(({ signals: { cliInstructionsMounted } }) => {
     useEffect(() => {
       cliInstructionsMounted();
-    }, [cliInstructionsMounted]);
+    }, []);
 
     return (
       <MaxWidth>
@@ -41,7 +41,7 @@ const CLIInstructions = inject('signals')(
         </Margin>
       </MaxWidth>
     );
-  }
+  })
 );
 
 export default CLIInstructions;

@@ -15,7 +15,7 @@ import {
 } from 'react-instantsearch/dom';
 
 import Navigation from 'app/pages/common/Navigation';
-import { inject } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 import 'instantsearch.css/themes/reset.css';
 
@@ -32,7 +32,7 @@ const searchStateToUrl = (location, searchState) =>
   searchState ? `${location.pathname}${createURL(searchState)}` : '';
 
 const Search = inject('signals')(
-  ({ history, location, signals: { searchMounted } }) => {
+  hooksObserver(({ history, location, signals: { searchMounted } }) => {
     const [searchState, setSearchState] = useState(
       qs.parse(location.search.slice(1))
     );
@@ -113,7 +113,7 @@ const Search = inject('signals')(
         </MaxWidth>
       </Container>
     );
-  }
+  })
 );
 
 export default Search;

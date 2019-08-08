@@ -5,10 +5,10 @@ import { Heading, Explanation } from '../elements';
 import { Container } from '../LiveSessionEnded/elements';
 
 import { Close, Buttons } from './elements';
-import { inject } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 export const SignInForTemplates = inject('signals')(
-  ({ signals: { modalClosed } }) => (
+  hooksObserver(({ signals: { modalClosed } }) => (
     <Container>
       <Close onClick={() => modalClosed()} />
 
@@ -22,5 +22,5 @@ export const SignInForTemplates = inject('signals')(
         <SignInButton />
       </Buttons>
     </Container>
-  )
+  ))
 );

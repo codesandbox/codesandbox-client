@@ -11,7 +11,7 @@ import {
   REJECT_TEAM_INVITATION,
   ACCEPT_TEAM_INVITATION,
 } from '../../../../Dashboard/queries';
-import { inject } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 interface Props {
   read: boolean;
@@ -22,64 +22,66 @@ interface Props {
 }
 
 const TeamInvite = inject('signals')(
-  ({
-    read,
-    teamId,
-    teamName,
-    inviterName,
-    inviterAvatar,
-    signals: { notificationAdded },
-  }: Props & { signals: any }) => (
-    <div>
-      <Container read={read}>
-        <Image src={inviterAvatar} />
-        <div>
-          <W>{inviterName}</W> invites you to join team <W>{teamName}</W>
-        </div>
-      </Container>
-      {!read && (
-        <Buttons>
-          <Mutation
-            variables={{ teamId }}
-            mutation={REJECT_TEAM_INVITATION}
-            refetchQueries={['RecentNotifications']}
-            onCompleted={() => {
-              track('Team - Invitation Rejected');
-              notificationAdded({
-                message: `Rejected invitation to ${teamName}`,
-                type: 'success',
-              });
-            }}
-          >
-            {(mutate, { loading }) => (
-              <Button onClick={() => mutate()} disabled={loading} decline>
-                Decline
-              </Button>
-            )}
-          </Mutation>
-          <Mutation
-            variables={{ teamId }}
-            mutation={ACCEPT_TEAM_INVITATION}
-            refetchQueries={['RecentNotifications', 'TeamsSidebar']}
-            onCompleted={() => {
-              track('Team - Invitation Accepted');
-              notificationAdded({
-                message: `Accepted invitation to ${teamName}`,
-                type: 'success',
-              });
+  hooksObserver(
+    ({
+      read,
+      teamId,
+      teamName,
+      inviterName,
+      inviterAvatar,
+      signals: { notificationAdded },
+    }: Props & { signals: any }) => (
+      <div>
+        <Container read={read}>
+          <Image src={inviterAvatar} />
+          <div>
+            <W>{inviterName}</W> invites you to join team <W>{teamName}</W>
+          </div>
+        </Container>
+        {!read && (
+          <Buttons>
+            <Mutation
+              variables={{ teamId }}
+              mutation={REJECT_TEAM_INVITATION}
+              refetchQueries={['RecentNotifications']}
+              onCompleted={() => {
+                track('Team - Invitation Rejected');
+                notificationAdded({
+                  message: `Rejected invitation to ${teamName}`,
+                  type: 'success',
+                });
+              }}
+            >
+              {(mutate, { loading }) => (
+                <Button onClick={() => mutate()} disabled={loading} decline>
+                  Decline
+                </Button>
+              )}
+            </Mutation>
+            <Mutation
+              variables={{ teamId }}
+              mutation={ACCEPT_TEAM_INVITATION}
+              refetchQueries={['RecentNotifications', 'TeamsSidebar']}
+              onCompleted={() => {
+                track('Team - Invitation Accepted');
+                notificationAdded({
+                  message: `Accepted invitation to ${teamName}`,
+                  type: 'success',
+                });
 
-              history.push(teamOverviewUrl(teamId));
-            }}
-          >
-            {(mutate, { loading }) => (
-              <Button onClick={() => mutate()} disabled={loading}>
-                Accept
-              </Button>
-            )}
-          </Mutation>
-        </Buttons>
-      )}
-    </div>
+                history.push(teamOverviewUrl(teamId));
+              }}
+            >
+              {(mutate, { loading }) => (
+                <Button onClick={() => mutate()} disabled={loading}>
+                  Accept
+                </Button>
+              )}
+            </Mutation>
+          </Buttons>
+        )}
+      </div>
+    )
   )
 );
 export default TeamInvite;

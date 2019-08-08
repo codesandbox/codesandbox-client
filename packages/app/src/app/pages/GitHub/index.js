@@ -1,7 +1,7 @@
 import { Button } from '@codesandbox/common/lib/components/Button';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { inject } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import {
   gitHubToSandboxUrl,
   protocolAndHost,
@@ -112,4 +112,4 @@ const GitHub = ({ signals: { githubPageMounted } }) => {
   );
 };
 
-export default inject('signals')(GitHub);
+export default inject('signals')(hooksObserver(GitHub));

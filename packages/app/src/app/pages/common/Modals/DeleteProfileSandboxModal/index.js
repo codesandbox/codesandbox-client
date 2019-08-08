@@ -1,6 +1,6 @@
 import React from 'react';
 import Alert from 'app/components/Alert';
-import { inject } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 function DeleteProfileSandboxModal({ signals }) {
   return (
@@ -13,4 +13,4 @@ function DeleteProfileSandboxModal({ signals }) {
   );
 }
 
-export default inject('signals')(DeleteProfileSandboxModal);
+export default inject('signals')(hooksObserver(DeleteProfileSandboxModal));
