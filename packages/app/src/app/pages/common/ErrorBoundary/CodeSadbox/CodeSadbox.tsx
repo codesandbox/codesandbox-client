@@ -1,8 +1,7 @@
 import React from 'react';
 import GoHome from 'react-icons/lib/go/home';
 import GoIssueOpened from 'react-icons/lib/go/issue-opened';
-import { observer } from 'mobx-react-lite';
-import { useStore } from 'app/store';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 // @ts-ignore
@@ -22,11 +21,9 @@ import {
   ButtonIcon,
 } from './elements';
 
-export const CodeSadbox: React.FC<IFallbackComponentProps> = observer(
-  ({ error, trace }) => {
-    const store = useStore();
-
-    return (
+export const CodeSadbox = inject('store')(
+  hooksObserver(
+    ({ error, trace, store }: IFallbackComponentProps & { store: any }) => (
       <Container>
         <Header>
           <Nav>
@@ -69,8 +66,8 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = observer(
           </Actions>
         </Content>
       </Container>
-    );
-  }
+    )
+  )
 );
 
 CodeSadbox.displayName = `CodeSadbox`;

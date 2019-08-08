@@ -1,18 +1,14 @@
 import React from 'react';
-
-import { useSignals } from 'app/store';
-
 import SignInButton from '../../SignInButton';
 
 import { Heading, Explanation } from '../elements';
 import { Container } from '../LiveSessionEnded/elements';
 
 import { Close, Buttons } from './elements';
+import { inject } from 'app/componentConnectors';
 
-export const SignInForTemplates = () => {
-  const { modalClosed } = useSignals();
-
-  return (
+export const SignInForTemplates = inject('signals')(
+  ({ signals: { modalClosed } }) => (
     <Container>
       <Close onClick={() => modalClosed()} />
 
@@ -26,5 +22,5 @@ export const SignInForTemplates = () => {
         <SignInButton />
       </Buttons>
     </Container>
-  );
-};
+  )
+);

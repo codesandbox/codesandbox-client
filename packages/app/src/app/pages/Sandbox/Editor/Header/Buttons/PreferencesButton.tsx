@@ -1,16 +1,14 @@
 import React from 'react';
 import SettingsIcon from 'react-icons/lib/md/settings';
-import { useSignals } from 'app/store';
 import { Action } from './Action';
+import { inject } from 'app/componentConnectors';
 
-export const PreferencesButton = () => {
-  const { modalOpened } = useSignals();
-
-  return (
+export const PreferencesButton = inject('signals')(
+  ({ signals: { modalOpened } }) => (
     <Action
       onClick={() => modalOpened({ modal: 'preferences' })}
       tooltip="Preferences"
       Icon={SettingsIcon}
     />
-  );
-};
+  )
+);

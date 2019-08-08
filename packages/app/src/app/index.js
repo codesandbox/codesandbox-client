@@ -277,7 +277,7 @@ async function initialize() {
             import(
               'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host'
             ).then(ExtHostWorkerLoader => {
-              child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
+              childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
               // child_process.preloadWorker('/vs/bootstrap-fork');
             });
 

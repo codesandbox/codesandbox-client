@@ -8,7 +8,7 @@ import {
   patronUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { toJS } from 'mobx';
-import { inject, observer } from 'mobx-react';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import * as React from 'react';
 import PlusIcon from 'react-icons/lib/go/plus';
 import Fork from 'react-icons/lib/go/repo-forked';
@@ -45,11 +45,13 @@ type ForkButtonProps = ButtonProps & {
   isForking: boolean;
 };
 
-const LikeButton = observer(
-  ({ style, likeCount }: ButtonProps & { likeCount: string }) => {
-    const { editor } = useStore();
-
-    return (
+const LikeButton = inject('store')(
+  hooksObserver(
+    ({
+      style,
+      likeCount,
+      store: { editor },
+    }: ButtonProps & { likeCount: string; store: any }) => (
       <LikeHeart
         colorless
         style={style}
@@ -58,71 +60,87 @@ const LikeButton = observer(
         disableTooltip
         highlightHover
       />
-    );
-  }
+    )
+  )
 );
 
-const ForkButton = ({ secondary, isForking, style }: ForkButtonProps) => {
-  const { editor } = useSignals();
+const ForkButton = inject('signals')(
+  hooksObserver(
+    ({
+      secondary,
+      isForking,
+      style,
+      signals: { editor },
+    }: ForkButtonProps & { signals: any }) => (
+      <ProgressButton
+        onClick={editor.forkSandboxClicked}
+        style={style}
+        secondary={secondary}
+        loading={isForking}
+        small
+      >
+        <>
+          <Fork style={{ marginRight: '.5rem' }} />
+          {isForking ? 'Forking...' : 'Fork'}
+        </>
+      </ProgressButton>
+    )
+  )
+);
 
-  return (
-    <ProgressButton
-      onClick={editor.forkSandboxClicked}
-      style={style}
-      secondary={secondary}
-      loading={isForking}
-      small
-    >
-      <>
-        <Fork style={{ marginRight: '.5rem' }} />
-        {isForking ? 'Forking...' : 'Fork'}
-      </>
-    </ProgressButton>
-  );
-};
+const PickButton = inject('store', 'signals')(
+  hooksObserver(
+    ({
+      secondary,
+      style,
+      store: { editor },
+      signals: { explore },
+    }: ButtonProps & { store: any; signals: any }) => {
+      const { id, title, description } = editor.currentSandbox;
 
-const PickButton = observer(({ secondary, style }: ButtonProps) => {
-  const { editor } = useStore();
-  const { id, title, description } = editor.currentSandbox;
-  const { explore } = useSignals();
+      return (
+        <Button
+          onClick={() =>
+            explore.pickSandboxModal({
+              details: {
+                id,
+                title,
+                description,
+              },
+            })
+          }
+          style={style}
+          secondary={secondary}
+          small
+        >
+          Pick
+        </Button>
+      );
+    }
+  )
+);
 
-  return (
-    <Button
-      onClick={() =>
-        explore.pickSandboxModal({
-          details: {
-            id,
-            title,
-            description,
-          },
-        })
-      }
-      style={style}
-      secondary={secondary}
-      small
-    >
-      Pick
-    </Button>
-  );
-});
-
-const ShareButton = ({ secondary, style }: ButtonProps) => {
-  const { modalOpened } = useSignals();
-
-  return (
-    <Button
-      onClick={() => modalOpened({ modal: 'share' })}
-      secondary={secondary}
-      style={style}
-      small
-    >
-      <>
-        <ShareIcon style={{ marginRight: '.5rem' }} />
-        Share
-      </>
-    </Button>
-  );
-};
+const ShareButton = inject('signals')(
+  hooksObserver(
+    ({
+      secondary,
+      style,
+      signals: { modalOpened },
+    }: ButtonProps & { signals: any }) => (
+      <Button
+        onClick={() => modalOpened({ modal: 'share' })}
+        secondary={secondary}
+        style={style}
+        small
+      >
+        <>
+          <ShareIcon style={{ marginRight: '.5rem' }} />
+          Share
+        </>
+      </Button>
+    )
+  )
+);
 
 interface Props {
   store: any;
@@ -280,4 +298,4 @@ const Header = ({ store, signals, zenMode }: Props) => {
   );
 };
 
-export default inject('signals', 'store')(observer(Header));
+export default inject('signals', 'store')(hooksObserver(Header));

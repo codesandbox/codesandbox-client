@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer } from 'app/componentConnectors';
 
 import { Transition, animated, config } from 'react-spring/renderprops';
 import track from '@codesandbox/common/lib/utils/analytics';
