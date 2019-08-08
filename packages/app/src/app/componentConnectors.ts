@@ -1,3 +1,4 @@
+import { json } from 'overmind';
 import { inject as mobxInject, observer as mobxObserver } from 'mobx-react';
 import { observer as mobxHooksObserver } from 'mobx-react-lite';
 import { connect } from './overmind';
@@ -13,13 +14,13 @@ export const observer: any = isOvermind ? connect : mobxObserver;
 export const hooksObserver: any = isOvermind ? connect : mobxHooksObserver;
 
 export const Observer = isOvermind
-  ? inject('store', 'signals')(
-      connect(({ store, signals, children }: any) =>
-        children({ store, signals })
-      )
+  ? connect(({ store, signals, reaction, children }: any) =>
+      children({ store, signals, reaction })
     )
-  : inject('store', 'signals')(
-      observer(({ store, signals, children }: any) =>
-        children({ store, signals })
+  : inject('store', 'signals', 'reaction')(
+      observer(({ store, signals, reaction, children }: any) =>
+        children({ store, signals, reaction })
       )
     );
+
+export const clone = isOvermind ? json : obj => obj.toJS();
