@@ -4,6 +4,7 @@ import hash from '@codesandbox/common/lib/utils/hash';
 import { inject, hooksObserver } from 'app/componentConnectors';
 
 import { Container } from './elements';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 export const SurveyModal = inject('store', 'signals')(
   hooksObserver(({ store, signals }) => {
