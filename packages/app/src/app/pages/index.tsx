@@ -14,6 +14,7 @@ import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
 import Dashboard from './Dashboard';
 import { Container, Content } from './elements';
+import { inject } from 'app/componentConnectors';
 
 const routeDebugger = _debug('cs:app:router');
 
