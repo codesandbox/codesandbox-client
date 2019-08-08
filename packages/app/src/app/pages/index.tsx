@@ -105,5 +105,5 @@ const Routes = ({ signals: { appUnmounted } }) => {
 };
 
 export default inject('signals')(
-  hooksObserver(DragDropContext(HTML5Backend)(withRouter(Routes)))
+  DragDropContext(HTML5Backend)(withRouter(hooksObserver(Routes)))
 );
