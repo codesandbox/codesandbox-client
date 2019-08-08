@@ -27,7 +27,6 @@ const Background = styled.div`
 
 const Content = styled.div`
   background-color: ${() => color('content', 'green', 'colors')};
-  position: absolute;
   height: 100px;
   width: 100px;
 `;
