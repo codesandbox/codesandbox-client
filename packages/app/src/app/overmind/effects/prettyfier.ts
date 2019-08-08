@@ -14,8 +14,8 @@ export default {
   },
   prettify(moduleId: string, title: string, code: string): Promise<string> {
     return prettify(
-      fileName,
-      code,
+      title,
+      () => code,
       _options.getPrettierConfig(),
       () => _options.getCurrentModule().id === moduleId
     );

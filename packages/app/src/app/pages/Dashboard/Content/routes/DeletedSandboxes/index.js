@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, Observer } from 'mobx-react';
+import { inject, Observer } from 'app/componentConnectors';
 import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
 import RemoveIcon from 'react-icons/lib/md/highlight-remove';

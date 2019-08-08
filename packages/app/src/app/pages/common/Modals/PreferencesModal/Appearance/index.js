@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import themes from '@codesandbox/common/lib/themes';
 
 import PreferenceText from '@codesandbox/common/lib/components/Preference/PreferenceText';

@@ -4,7 +4,7 @@ import { DropTarget } from 'react-dnd';
 import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
 
 import { withRouter } from 'react-router-dom';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import Item from '../Item';
 import { MAKE_TEMPLATE_DROP_KEY } from '../../Content/SandboxCard';

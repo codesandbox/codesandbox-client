@@ -17,16 +17,6 @@ import { defaultOpenedModule, mainModule } from './utils/main-module';
 import getItems from './utils/items';
 import { createOptimisticModule } from './utils/common';
 
-export const setKeybindings: Action = ({ state, effects }) => {
-  effects.keybindingManager.set(
-    json(state.preferences.settings.keybindings || [])
-  );
-};
-
-export const setJwtFromStorage: Action = ({ effects, state }) => {
-  state.jwt = effects.jwt.get() || null;
-};
-
 export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
   { state, effects, actions },
   options
@@ -36,7 +26,7 @@ export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
   try {
     const jwt = await actions.internal.signInGithub(options);
     actions.internal.setJwt(jwt);
-    state.user = await actions.internal.getUser();
+    state.user = await effects.api.getCurrentUser();
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
     actions.internal.setStoredSettings();
@@ -49,10 +39,6 @@ export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
       type: 'error',
     });
   }
-};
-
-export const listenToConnectionChange: Action = ({ effects, actions }) => {
-  effects.connection.addListener(actions.connectionChanged);
 };
 
 export const setStoredSettings: Action = ({ state, effects }) => {
@@ -70,15 +56,6 @@ export const setStoredSettings: Action = ({ state, effects }) => {
   }
 
   Object.assign(state.preferences.settings, settings);
-  // state.merge('preferences.settings', settings);
-};
-
-export const startKeybindings: Action = ({ effects }) => {
-  effects.keybindingManager.start();
-};
-
-export const getUser: Action<void, Promise<CurrentUser>> = ({ effects }) => {
-  return effects.api.getCurrentUser();
 };
 
 export const setPatronPrice: Action = ({ state }) => {
@@ -91,10 +68,6 @@ export const setSignedInCookie: Action = ({ state }) => {
   document.cookie = 'signedIn=true; Path=/;';
   identify('signed_in', 'true');
   setUserId(state.user.id);
-};
-
-export const connectWebsocket: Action = ({ effects }) => {
-  effects.live.connect();
 };
 
 export const addNotification: Action<{
@@ -113,22 +86,6 @@ export const addNotification: Action<{
     buttons,
     endTime: now + (timeAlive ? timeAlive : timeAliveDefault) * 1000,
   });
-};
-
-export const removeJwtFromStorage: Action = ({ effects }) => {
-  effects.jwt.reset();
-};
-
-export const getContributors: AsyncAction = async ({ state, effects }) => {
-  try {
-    const response = await effects.http.get<{ contributors: Contributor[] }>(
-      'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
-    );
-
-    state.contributors = response.data.contributors.map(
-      contributor => contributor.login
-    );
-  } catch (error) {}
 };
 
 export const authorize: AsyncAction = async ({ state, effects }) => {
@@ -168,7 +125,7 @@ export const setJwt: Action<string> = ({ state, effects }, jwt) => {
   state.jwt = jwt;
 };
 
-export const closeModals: Action<boolean> = ({ state, actions }, isKeyDown) => {
+export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   if (
     state.currentModal === 'preferences' &&
     state.preferences.itemId === 'keybindings' &&
@@ -178,11 +135,11 @@ export const closeModals: Action<boolean> = ({ state, actions }, isKeyDown) => {
   }
 
   state.currentModal = null;
-  actions.internal.startKeybindings();
+  effects.keybindingManager.start();
 };
 
 export const setCurrentSandbox: Action<Sandbox> = (
-  { state, actions, effects },
+  { state, effects },
   sandbox
 ) => {
   state.editor.sandboxes[sandbox.id] = sandbox;
@@ -196,7 +153,9 @@ export const setCurrentSandbox: Action<Sandbox> = (
 
   // Only change the module shortid if it doesn't exist in the new sandbox
   // What is the scenario here?
-  if (sandbox.modules.find(module => module.shortid === currentModuleShortid)) {
+  if (
+    !sandbox.modules.find(module => module.shortid === currentModuleShortid)
+  ) {
     const defaultModule = defaultOpenedModule(sandbox, parsedConfigs);
 
     currentModuleShortid = defaultModule.shortid;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'mobx-react';
+import { inject } from 'app/componentConnectors';
 import { Link } from 'react-router-dom';
 import theme from '@codesandbox/common/lib/theme';
 

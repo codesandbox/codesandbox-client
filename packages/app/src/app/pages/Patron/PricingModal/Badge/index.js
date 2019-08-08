@@ -22,4 +22,4 @@ function Badge({ badge, subscribed }) {
   );
 }
 
-export default Badge;
+export default React.memo(Badge);

@@ -34,55 +34,72 @@ export const addNpmDependency: AsyncAction<{
   });
 };
 
-export const sandboxChanged: AsyncAction<string> = withLoadApp(
-  async ({ state, actions, effects }, id) => {
-    state.editor.error = null;
+export const npmDependencyRemoved: AsyncAction<{ name: string }> = async (
+  { state, effects, actions },
+  { name }
+) => {
+  effects.analytics.track('Remove NPM Dependency');
+  await actions.editor.internal.ensureSandboxIsOwned();
+  const { parsed } = state.editor.parsedConfigurations.package;
 
-    id = actions.editor.internal.ensureSandboxId(id);
+  delete parsed.dependencies[name];
+  parsed.dependencies = sortObjectByKeys(parsed.dependencies);
 
-    if (state.live.isLive) {
-      actions.live.internal.disconnect();
-    }
+  await actions.editor.internal.saveCode({
+    code: JSON.stringify(parsed, null, 2),
+    moduleShortid: state.editor.currentPackageJSON.shortid,
+  });
+};
 
-    state.editor.isLoading = true;
-    state.editor.notFound = false;
+export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
+  id: string;
+}>(async ({ state, actions, effects }, { id }) => {
+  state.editor.error = null;
 
-    try {
-      const sandbox = await effects.api.getSandbox(id);
+  id = actions.editor.internal.ensureSandboxId(id);
 
-      if (state.editor.sandboxes[id]) {
-        actions.internal.updateCurrentSandbox(sandbox);
-      } else {
-        actions.internal.setCurrentSandbox(sandbox);
-
-        // Only reset changed modules if sandbox wasn't in memory, otherwise a fork
-        // can mark real changed modules as unchanged
-        state.editor.changedModuleShortids = [];
-      }
-    } catch (error) {
-      state.editor.notFound = true;
-      state.editor.error = error.message;
-    }
-
-    const sandbox = state.editor.currentSandbox;
-
-    actions.internal.ensurePackageJSON();
-
-    if (sandbox.owned && sandbox.roomId) {
-      if (sandbox.team) {
-        state.live.isTeam = true;
-      }
-
-      state.live.isLoading = true;
-      await actions.live.internal.initialize();
-      state.live.isLoading = false;
-    } else if (sandbox.owned) {
-      actions.files.internal.recoverFiles();
-    }
-
-    state.editor.isLoading = false;
+  if (state.live.isLive) {
+    actions.live.internal.disconnect();
   }
-);
+
+  state.editor.isLoading = true;
+  state.editor.notFound = false;
+
+  // Only reset changed modules if sandbox wasn't in memory, otherwise a fork
+  // can mark real changed modules as unchanged
+  state.editor.changedModuleShortids = [];
+
+  try {
+    const sandbox = await effects.api.getSandbox(id);
+
+    if (state.editor.sandboxes[id]) {
+      actions.internal.updateCurrentSandbox(sandbox);
+    } else {
+      actions.internal.setCurrentSandbox(sandbox);
+    }
+  } catch (error) {
+    state.editor.notFound = true;
+    state.editor.error = error.message;
+  }
+
+  const sandbox = state.editor.currentSandbox;
+
+  actions.internal.ensurePackageJSON();
+
+  if (sandbox.owned && sandbox.roomId) {
+    if (sandbox.team) {
+      state.live.isTeam = true;
+    }
+
+    state.live.isLoading = true;
+    await actions.live.internal.initialize();
+    state.live.isLoading = false;
+  } else if (sandbox.owned) {
+    actions.files.internal.recoverFiles();
+  }
+
+  state.editor.isLoading = false;
+});
 
 export const contentMounted: Action = ({ state, effects }) => {
   effects.browser.onUnload(event => {
@@ -114,23 +131,6 @@ export const codeSaved: AsyncAction<{
   actions.editor.internal.saveCode({
     code,
     moduleShortid,
-  });
-};
-
-export const npmDependencyRemoved: AsyncAction<string> = async (
-  { state, effects, actions },
-  name
-) => {
-  effects.analytics.track('Remove NPM Dependency');
-  await actions.editor.internal.ensureSandboxIsOwned();
-  const { parsed } = state.editor.parsedConfigurations.package;
-
-  delete parsed.dependencies[name];
-  parsed.dependencies = sortObjectByKeys(parsed.dependencies);
-
-  await actions.editor.internal.saveCode({
-    code: JSON.stringify(parsed, null, 2),
-    moduleShortid: state.editor.currentPackageJSON.shortid,
   });
 };
 

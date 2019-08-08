@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query, Mutation } from 'react-apollo';
-import { inject, Observer } from 'mobx-react';
+import { inject, Observer } from 'app/componentConnectors';
 import { sortBy } from 'lodash-es';
 
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';

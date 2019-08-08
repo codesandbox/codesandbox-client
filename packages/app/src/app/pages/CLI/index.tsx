@@ -1,33 +1,31 @@
+import React from 'react';
 import { observer } from 'mobx-react-lite';
-import React, { useEffect } from 'react';
 
-import Navigation from 'app/pages/common/Navigation';
-import { useSignals, useStore } from 'app/store';
+import ZeitLogo from 'app/components/ZeitLogo';
+import Integration from 'app/components/Integration';
+import { useStore, useSignals } from 'app/store';
 
-import { Container } from './elements';
-import Prompt from './Prompt';
+interface Props {
+  small: boolean;
+}
 
-const CLI = observer(() => {
-  const { cliMounted, signInCliClicked } = useSignals();
-  const { user, authToken, isLoadingCLI, error } = useStore();
-
-  useEffect(() => {
-    cliMounted();
-  }, [cliMounted]);
+const ZeitIntegration = observer<Props>(({ small }) => {
+  const { signInZeitClicked, signOutZeitClicked } = useSignals();
+  const { user, isLoadingZeit } = useStore();
 
   return (
-    <Container>
-      <Navigation title="CLI Authorization" />
-
-      <Prompt
-        error={error}
-        loading={isLoadingCLI}
-        signIn={signInCliClicked}
-        token={authToken}
-        username={user && user.username}
-      />
-    </Container>
+    <Integration
+      name="ZEIT"
+      small={small}
+      color="black"
+      description="Deployments"
+      Icon={ZeitLogo}
+      userInfo={user.integrations.zeit}
+      signIn={signInZeitClicked}
+      signOut={signOutZeitClicked}
+      loading={isLoadingZeit}
+    />
   );
 });
 
-export default CLI;
+export default ZeitIntegration;

@@ -24,7 +24,7 @@ export const More = observer<Props>(({ id, message }) => {
   } = useStore();
 
   useEffect(() => {
-    track('Workspace - More Opened', { id })
+    track('Workspace - More Opened', { id });
   }, [id]);
 
   return (

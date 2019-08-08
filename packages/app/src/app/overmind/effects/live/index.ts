@@ -8,8 +8,8 @@ import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import clientsFactory from './clients';
 
 type Options = {
-  onApplyOperation: ({ moduleShortid: string, operation: any }) => void;
-  provideJwtToken: () => string;
+  onApplyOperation(args: { moduleShortid: string; operation: any }): void;
+  provideJwtToken(): string;
 };
 
 declare global {

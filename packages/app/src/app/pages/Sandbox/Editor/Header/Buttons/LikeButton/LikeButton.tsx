@@ -1,21 +1,18 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { useStore } from 'app/store';
 import { LikeHeart } from './elements';
 
-export const LikeButton = observer(() => {
-  const store = useStore();
-  const {
-    editor: { currentSandbox },
-  } = store;
-
-  return (
-    <LikeHeart
-      colorless
-      text={currentSandbox.likeCount}
-      sandbox={currentSandbox}
-      disableTooltip
-      highlightHover
-    />
-  );
-});
+export const LikeButton = inject('store')(
+  hooksObserver(({ store: { editor: { currentSandbox } } }) => {
+    return (
+      <LikeHeart
+        colorless
+        text={currentSandbox.likeCount}
+        sandbox={currentSandbox}
+        disableTooltip
+        highlightHover
+      />
+    );
+  })
+);

@@ -42,7 +42,12 @@ export const modalOpened: Action<{ modal: string; message: string }> = (
   state.currentModal = modal;
 };
 
-export const modalClosed: Action = ({ state }) => {
+export const modalClosed: Action = ({ state, effects }) => {
+  // We just start it whenever it closes, if already started nothing happens
+  if (state.currentModal === 'preferences') {
+    effects.keybindingManager.start();
+  }
+
   state.currentModal = null;
 };
 
@@ -145,7 +150,7 @@ export const signOutClicked: AsyncAction = async ({
     actions.live.internal.disconnect();
   }
   await effects.api.signout();
-  actions.internal.removeJwtFromStorage();
+  effects.jwt.reset();
   state.user = null;
   await actions.refetchSandboxInfo();
 };
@@ -158,7 +163,10 @@ export const signOutGithubIntegration: AsyncAction = async ({
   state.user.integrations.github = null;
 };
 
-export const setUpdateStatus: Action<string> = ({ state }, status) => {
+export const setUpdateStatus: Action<{ status: string }> = (
+  { state },
+  { status }
+) => {
   state.updateStatus = status;
 };
 
@@ -187,13 +195,13 @@ export const refetchSandboxInfo: AsyncAction = async ({
 
     if (state.live.isLive) {
       await actions.live.internal.disconnect();
-    }
 
-    if (sandbox.owned && sandbox.roomId) {
-      state.live.isTeam = Boolean(sandbox.team);
-    }
+      if (sandbox.owned && sandbox.roomId) {
+        state.live.isTeam = Boolean(sandbox.team);
+      }
 
-    await actions.live.internal.initialize();
+      await actions.live.internal.initialize();
+    }
   } else {
     actions.files.internal.recoverFiles();
   }

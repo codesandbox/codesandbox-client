@@ -57,8 +57,8 @@ export const state: State = {
     // Menlo. So a temporary fix is to only enable this for Windows.
     enableLigatures: navigator.platform.indexOf('Win') > -1,
 
-    customVSCodeTheme: undefined,
-    manualCustomVSCodeTheme: undefined,
+    customVSCodeTheme: null,
+    manualCustomVSCodeTheme: null,
     experimentVSCode: !isIOS,
   },
   showModal: false,

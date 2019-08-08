@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import Files from 'embed/components/Files';
 import QRCode from 'qrcode.react';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';

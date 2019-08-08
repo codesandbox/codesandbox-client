@@ -1,6 +1,6 @@
 // @ts-check
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import RightIcon from 'react-icons/lib/md/keyboard-arrow-right';
 import LeftIcon from 'react-icons/lib/md/keyboard-arrow-left';
 import { withRouter } from 'react-router-dom';

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { observer } from 'mobx-react-lite';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import moment from 'moment';
-import { useStore, useSignals } from 'app/store';
 import { LinkButton } from 'app/components/LinkButton';
 
 import { SmallText, Buttons, StyledButton, StripeInput } from './elements';
@@ -18,9 +17,9 @@ function ChangeSubscription({
   markedAsCancelled,
   cancelSubscription,
   updateSubscription,
+  store,
+  signals,
 }: Props) {
-  const store = useStore();
-  const signals = useSignals();
   const isLoading = store.patron.isUpdatingSubscription;
   const error = store.patron.error;
 
@@ -100,4 +99,4 @@ function ChangeSubscription({
   );
 }
 
-export default observer(ChangeSubscription);
+export default inject('signals', 'store')(hooksObserver(ChangeSubscription));

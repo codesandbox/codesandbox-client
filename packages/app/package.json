@@ -273,7 +273,7 @@
     "shortid": "^2.2.8",
     "store": "^2.0.12",
     "string-replace-loader": "^2.1.1",
-    "styled-components": "^4.2.0",
+    "styled-components": "^4.3.2",
     "subworkers": "^1.0.1",
     "svg-react-loader": "^0.4.4",
     "tern": "^0.21.0",

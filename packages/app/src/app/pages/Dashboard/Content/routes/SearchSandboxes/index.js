@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, Observer } from 'mobx-react';
+import { inject, Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import Fuse from 'fuse.js';
 

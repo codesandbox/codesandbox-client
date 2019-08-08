@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer, Observer } from 'mobx-react';
+import { inject, observer, Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import { basename } from 'path';
 import Sandboxes from '../../Sandboxes';

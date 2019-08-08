@@ -1,6 +1,6 @@
 import React from 'react';
 import { basename } from 'path';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import Media from 'react-media';
 
 import { Spring } from 'react-spring/renderprops';

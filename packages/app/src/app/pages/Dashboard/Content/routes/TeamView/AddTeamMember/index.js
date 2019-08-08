@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'mobx-react';
+import { inject } from 'app/componentConnectors';
 import styled from 'styled-components';
 
 import { Mutation } from 'react-apollo';

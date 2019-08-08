@@ -82,6 +82,9 @@ export const saveCode: AsyncAction<{
     // that it needs saving as normal?
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
+    module.savedCode = null;
+
+    effects.moduleRecover.remove(sandbox.id, module);
 
     state.editor.changedModuleShortids.splice(
       state.editor.changedModuleShortids.indexOf(module.shortid),
@@ -105,11 +108,10 @@ export const saveCode: AsyncAction<{
     if (state.live.isLive && state.live.isCurrentEditor) {
       effects.live.sendModuleUpdate(module.shortid);
     }
+
+    await actions.editor.internal.updateCurrentTemplate();
   } catch (error) {
-    effects.notificationToast.add({
-      message: error.message,
-      status: NotificationStatus.WARNING,
-    });
+    effects.notificationToast.warning(error.message);
     // Where does the ID come from?
     // effects.vscode.callCallbackError()
   }

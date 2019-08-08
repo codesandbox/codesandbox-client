@@ -4,7 +4,10 @@ import { CurrentUser } from '@codesandbox/common/lib/types';
 
 export const patronMounted: AsyncAction = withLoadApp();
 
-export const priceChanged: Action<number> = ({ state }, price) => {
+export const priceChanged: Action<{ price: number }> = (
+  { state },
+  { price }
+) => {
   state.patron.price = price;
 };
 

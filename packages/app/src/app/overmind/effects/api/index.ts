@@ -20,6 +20,8 @@ import {
   UserSandbox,
 } from '@codesandbox/common/lib/types';
 import { TemplateType } from '@codesandbox/common/lib/templates';
+import { client } from 'app/graphql/client';
+import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
 
 let api: Api;
 
@@ -369,5 +371,8 @@ export default {
   },
   signoutGithubIntegration(): Promise<void> {
     return api.delete(`/users/current_user/integrations/github`);
+  },
+  preloadTemplates() {
+    client.query({ query: LIST_TEMPLATES, variables: { showAll: true } });
   },
 };
