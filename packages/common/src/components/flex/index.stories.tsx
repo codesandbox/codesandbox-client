@@ -145,19 +145,6 @@ const withMaxWidthBordered = (fn: RenderFunction) => (
   </MaxWidthBordered>
 );
 
-const stories = storiesOf('components/flex', module)
-  .addDecorator(withKnobs)
-  .addDecorator(withBackground);
-
-stories.add('Centered', () => withCenteredBordered(makeContent));
-
-stories.add('Fullscreen', () => withFullscreenBordered(makeContent));
-stories.add('MaxWidth', () => withMaxWidthBordered(makeContent));
-
-stories.add('Column', () => withColumnBordered(makeContent));
-
-stories.add('Row', () => withRowBordered(makeContent));
-
 const repeat = (name: string, fn: RenderFunction) => () => {
   const times = number(`Repeat ${name}`, 1, {}, 'other');
   const content: JSX.Element[] = [];
@@ -169,32 +156,37 @@ const repeat = (name: string, fn: RenderFunction) => () => {
   return <>{content}</>;
 };
 
-stories.add('Fullscreen > Centered', () =>
-  withFullscreenBordered(
-    repeat('Centered', () => withCenteredBordered(makeContent))
+storiesOf('components/flex', module)
+  .addDecorator(withKnobs)
+  .addDecorator(withBackground)
+  .add('Centered', () => withCenteredBordered(makeContent))
+  .add('Fullscreen', () => withFullscreenBordered(makeContent))
+  .add('MaxWidth', () => withMaxWidthBordered(makeContent))
+  .add('Column', () => withColumnBordered(makeContent))
+  .add('Row', () => withRowBordered(makeContent))
+  .add('Fullscreen > Centered', () =>
+    withFullscreenBordered(
+      repeat('Centered', () => withCenteredBordered(makeContent))
+    )
   )
-);
-
-stories.add('Fullscreen > Column', () =>
-  withFullscreenBordered(
-    repeat('Column', () => withColumnBordered(makeContent))
+  .add('Fullscreen > Column', () =>
+    withFullscreenBordered(
+      repeat('Column', () => withColumnBordered(makeContent))
+    )
   )
-);
-
-stories.add('Fullscreen > Row', () =>
-  withFullscreenBordered(repeat('Row', () => withRowBordered(makeContent)))
-);
-
-stories.add('MaxWidth > Centered', () =>
-  withMaxWidthBordered(
-    repeat('Centered', () => withCenteredBordered(makeContent))
+  .add('Fullscreen > Row', () =>
+    withFullscreenBordered(repeat('Row', () => withRowBordered(makeContent)))
   )
-);
-
-stories.add('MaxWidth > Column', () =>
-  withMaxWidthBordered(repeat('Column', () => withColumnBordered(makeContent)))
-);
-
-stories.add('MaxWidth > Row', () =>
-  withMaxWidthBordered(repeat('Row', () => withRowBordered(makeContent)))
-);
+  .add('MaxWidth > Centered', () =>
+    withMaxWidthBordered(
+      repeat('Centered', () => withCenteredBordered(makeContent))
+    )
+  )
+  .add('MaxWidth > Column', () =>
+    withMaxWidthBordered(
+      repeat('Column', () => withColumnBordered(makeContent))
+    )
+  )
+  .add('MaxWidth > Row', () =>
+    withMaxWidthBordered(repeat('Row', () => withRowBordered(makeContent)))
+  );

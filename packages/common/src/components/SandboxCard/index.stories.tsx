@@ -13,10 +13,6 @@ import SandboxCard, { Props, Sandbox } from './';
 import * as fixtures from './fixtures';
 import { ThemeDecorator } from '../../stories/decorators';
 
-const stories = storiesOf('components/SandboxCard', module)
-  .addDecorator(ThemeDecorator)
-  .addDecorator(withKnobs);
-
 const authorWithKnobs = (
   group: string,
   author: Sandbox['author'] = null
@@ -69,62 +65,50 @@ const createSandboxStory = ({
   />
 );
 
-stories.add('basic', createSandboxStory({}));
-
-stories.add('small', createSandboxStory({ small: true }));
-
-stories.add('no height', createSandboxStory({ noHeight: true }));
-
-stories.add('default height', createSandboxStory({ defaultHeight: 500 }));
-
-stories.add('no margin', createSandboxStory({ noMargin: true }));
-
-stories.add(
-  'popular',
-  createSandboxStory({ sandbox: fixtures.popularSandbox() })
-);
-
-stories.add(
-  'many tags',
-  createSandboxStory({ sandbox: fixtures.sandboxWithManyTags() })
-);
-
-stories.add(
-  'long title',
-  createSandboxStory({ sandbox: fixtures.sandboxWithLongTitle() })
-);
-
-stories.add(
-  'long description',
-  createSandboxStory({
-    sandbox: fixtures.sandboxWithLongDescription(),
-  })
-);
-
-stories.add(
-  'null author',
-  createSandboxStory({
-    sandbox: fixtures.sandboxWithNullAuthor(),
-  })
-);
-
-stories.add(
-  'undefined author',
-  createSandboxStory({
-    sandbox: fixtures.sandboxWithUndefinedAuthor(),
-  })
-);
-
-stories.add(
-  'null screenshot url',
-  createSandboxStory({
-    sandbox: fixtures.sandboxWithNullScreenshotUrl(),
-  })
-);
-
-stories.add(
-  'undefined screenshot url',
-  createSandboxStory({
-    sandbox: fixtures.sandboxWithUndefinedScreenshotUrl(),
-  })
-);
+storiesOf('components/SandboxCard', module)
+  .addDecorator(ThemeDecorator)
+  .addDecorator(withKnobs)
+  .add('basic', createSandboxStory({}))
+  .add('small', createSandboxStory({ small: true }))
+  .add('no height', createSandboxStory({ noHeight: true }))
+  .add('default height', createSandboxStory({ defaultHeight: 500 }))
+  .add('no margin', createSandboxStory({ noMargin: true }))
+  .add('popular', createSandboxStory({ sandbox: fixtures.popularSandbox() }))
+  .add(
+    'many tags',
+    createSandboxStory({ sandbox: fixtures.sandboxWithManyTags() })
+  )
+  .add(
+    'long title',
+    createSandboxStory({ sandbox: fixtures.sandboxWithLongTitle() })
+  )
+  .add(
+    'long description',
+    createSandboxStory({
+      sandbox: fixtures.sandboxWithLongDescription(),
+    })
+  )
+  .add(
+    'null author',
+    createSandboxStory({
+      sandbox: fixtures.sandboxWithNullAuthor(),
+    })
+  )
+  .add(
+    'undefined author',
+    createSandboxStory({
+      sandbox: fixtures.sandboxWithUndefinedAuthor(),
+    })
+  )
+  .add(
+    'null screenshot url',
+    createSandboxStory({
+      sandbox: fixtures.sandboxWithNullScreenshotUrl(),
+    })
+  )
+  .add(
+    'undefined screenshot url',
+    createSandboxStory({
+      sandbox: fixtures.sandboxWithUndefinedScreenshotUrl(),
+    })
+  );
