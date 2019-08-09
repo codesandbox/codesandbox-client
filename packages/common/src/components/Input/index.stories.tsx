@@ -8,6 +8,6 @@ const stories = storiesOf('components/Input', module).addDecorator(
 );
 
 stories.add('Basic Input', () => <Input />);
-stories.add('Block Input', () => <Input input />);
+stories.add('Block Input', () => <Input />);
 stories.add('Error Input', () => <Input error />);
 stories.add('Placeholder Input', () => <Input placeholder="Hello" />);
