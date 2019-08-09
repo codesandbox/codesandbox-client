@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import { BorderRadius, Text, Icon, StyledA } from './elements';
 
@@ -14,14 +14,14 @@ type DivOrAProps = {
   children: React.ReactNode;
 };
 
-const DivOrA = ({ href, ...props }: DivOrAProps) =>
+const DivOrA: FunctionComponent<DivOrAProps> = ({ href, ...props }) =>
   href ? (
     <StyledA target="_blank" rel="noopener noreferrer" href={href} {...props} />
   ) : (
     <div {...props} />
   );
 
-function GithubBadge({ username, repo, url, branch, ...props }: BadgeProps) {
+const GithubBadge: FunctionComponent<BadgeProps> = ({ username, repo, url, branch, ...props }) => {
   return (
     <DivOrA {...props} href={url}>
       <BorderRadius hasUrl={Boolean(url)}>
