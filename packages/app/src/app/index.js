@@ -3,7 +3,6 @@ import { unstable_createSyncRoot as createSyncRoot } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
-import { Provider as OvermindProvider } from './overmind/Provider';
 import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
 import { Provider } from 'mobx-react';
 import _debug from '@codesandbox/common/lib/utils/debug';

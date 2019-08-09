@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import { Action } from '../../../../elements';
 import { Deploy } from '../types';
-import { inject, hooksObserver } from 'app/componentConnectors';
 
 type Props = {
   deploy: Deploy;
