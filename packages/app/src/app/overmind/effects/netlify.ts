@@ -36,8 +36,12 @@ export default (() => {
       const userId = _options.getUserId;
       const template = getTemplate(sandbox.template);
       const buildCommand = (name: string) => {
-        if (name === 'styleguidist') return 'styleguide:build';
-        if (name === 'nuxt') return 'generate';
+        if (name === 'styleguidist') {
+          return 'styleguide:build';
+        }
+        if (name === 'nuxt') {
+          return 'generate';
+        }
 
         return 'build';
       };
