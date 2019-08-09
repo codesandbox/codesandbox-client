@@ -37,14 +37,14 @@ const makeBorderedContainer = (
 
 const Content = makeBorderedContainer(
   'content',
-  styled.div`
+  styled.div<{ minWidth: number; minHeight: number }>`
     display: flex;
     overflow: hidden;
     white-space: pre-wrap;
     justify-content: center;
     align-items: center;
-    min-height: 100px;
-    min-width: 100px;
+    min-height: ${props => props.minHeight}px;
+    min-width: ${props => props.minWidth}px;
   `,
   'green'
 );
@@ -63,7 +63,14 @@ const makeContent = () => {
       label += ` ${letter}`;
     }
 
-    contents.push(<Content>{label}</Content>);
+    const width = number(`"${label}".minWidth`, 100, {}, 'content sizes');
+    const height = number(`"${label}".minHeight`, 100, {}, 'content sizes');
+
+    contents.push(
+      <Content minWidth={width} minHeight={height}>
+        {label}
+      </Content>
+    );
   }
 
   return <>{contents}</>;
