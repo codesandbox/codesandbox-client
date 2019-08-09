@@ -13,7 +13,13 @@ export const observer: any = isOvermind ? connect : mobxObserver;
 export const hooksObserver: any = isOvermind ? connect : mobxHooksObserver;
 
 export const Observer = isOvermind
-  ? connect(({ store, signals, children }) => children({ store, signals }))
+  ? inject('store', 'signals')(
+      connect(({ store, signals, children }: any) =>
+        children({ store, signals })
+      )
+    )
   : inject('store', 'signals')(
-      observer(({ store, signals, children }) => children({ store, signals }))
+      observer(({ store, signals, children }: any) =>
+        children({ store, signals })
+      )
     );
