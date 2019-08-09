@@ -9,6 +9,5 @@ const stories = storiesOf('components/Input', module).addDecorator(
 
 stories
   .add('Basic Input', () => <Input />)
-  .add('Block Input', () => <Input />)
   .add('Error Input', () => <Input error />)
   .add('Placeholder Input', () => <Input placeholder="Hello" />);
