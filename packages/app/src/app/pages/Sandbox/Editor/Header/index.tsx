@@ -19,7 +19,6 @@ import ShareIcon from 'react-icons/lib/md/share';
 import LikeHeart from 'app/pages/common/LikeHeart';
 import SignInButton from 'app/pages/common/SignInButton';
 import UserMenu from 'app/pages/common/UserMenu';
-import { useStore, useSignals } from 'app/store';
 import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import { Action } from './Buttons/Action';

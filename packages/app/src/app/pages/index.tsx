@@ -6,6 +6,7 @@ import { Toasts } from '@codesandbox/notifications';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
 import Loadable from 'app/utils/Loadable';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 import Modals from './common/Modals';
@@ -13,7 +14,6 @@ import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
 import Dashboard from './Dashboard';
 import { Container, Content } from './elements';
-import { inject, hooksObserver } from 'app/componentConnectors';
 
 const routeDebugger = _debug('cs:app:router');
 

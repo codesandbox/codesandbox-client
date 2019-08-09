@@ -1,9 +1,7 @@
 import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
-
 import { DeploymentIntegration } from 'app/components/DeploymentIntegration';
 import NowLogo from 'app/components/NowLogo';
-
 import { DeployButtonContainer } from '../../elements';
 
 type Props = {

@@ -2,7 +2,6 @@ import { inject, hooksObserver } from 'app/componentConnectors';
 import React, { useState } from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import Template from '@codesandbox/common/lib/components/Template';
-import { useStore } from 'app/store';
 import { ImportTab } from './ImportTab';
 import { MyTemplates } from './MyTemplates';
 import { MyTemplatesTab } from './MyTemplatesTab';

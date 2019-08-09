@@ -11,19 +11,17 @@ export const ShareButton = inject('store', 'signals')(
           currentSandbox: { owned },
         },
       },
-    }) => {
-      return (
-        <Button
-          onClick={() => {
-            modalOpened({ modal: 'share' });
-          }}
-          secondary={!owned}
-          small
-        >
-          <ShareIcon />
-          Share
-        </Button>
-      );
-    }
+    }) => (
+      <Button
+        onClick={() => {
+          modalOpened({ modal: 'share' });
+        }}
+        secondary={!owned}
+        small
+      >
+        <ShareIcon />
+        Share
+      </Button>
+    )
   )
 );

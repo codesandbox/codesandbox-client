@@ -1,19 +1,18 @@
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import React, { useEffect } from 'react';
-
+import { inject, hooksObserver } from 'app/componentConnectors';
 import Navigation from 'app/pages/common/Navigation';
 import SubTitle from 'app/components/SubTitle';
 import Title from 'app/components/Title';
 
 import { Container, Content, Code } from './elements';
-import { inject, hooksObserver } from 'app/componentConnectors';
 
 const CLIInstructions = inject('signals')(
   hooksObserver(({ signals: { cliInstructionsMounted } }) => {
     useEffect(() => {
       cliInstructionsMounted();
-    }, []);
+    }, [cliInstructionsMounted]);
 
     return (
       <MaxWidth>

@@ -14,18 +14,16 @@ export const ForkButton = inject('store', 'signals')(
           currentSandbox: { owned },
         },
       },
-    }) => {
-      return (
-        <ProgressButton
-          onClick={forkSandboxClicked}
-          secondary={owned}
-          loading={isForkingSandbox}
-          small
-        >
-          <ForkIcon />
-          {isForkingSandbox ? 'Forking...' : 'Fork'}
-        </ProgressButton>
-      );
-    }
+    }) => (
+      <ProgressButton
+        onClick={forkSandboxClicked}
+        secondary={owned}
+        loading={isForkingSandbox}
+        small
+      >
+        <ForkIcon />
+        {isForkingSandbox ? 'Forking...' : 'Fork'}
+      </ProgressButton>
+    )
   )
 );

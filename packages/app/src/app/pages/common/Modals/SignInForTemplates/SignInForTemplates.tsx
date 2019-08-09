@@ -1,11 +1,10 @@
 import React from 'react';
-import SignInButton from '../../SignInButton';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
+import SignInButton from '../../SignInButton';
 import { Heading, Explanation } from '../elements';
 import { Container } from '../LiveSessionEnded/elements';
-
 import { Close, Buttons } from './elements';
-import { inject, hooksObserver } from 'app/componentConnectors';
 
 export const SignInForTemplates = inject('signals')(
   hooksObserver(({ signals: { modalClosed } }) => (

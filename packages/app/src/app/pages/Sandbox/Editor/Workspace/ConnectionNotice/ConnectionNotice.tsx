@@ -4,8 +4,8 @@ import React from 'react';
 import { Container } from './elements';
 
 export const ConnectionNotice = inject('store')(
-  hooksObserver(({ store: { connected } }) => {
-    return (
+  hooksObserver(
+    ({ store: { connected } }) =>
       !connected && (
         <Container>
           You{"'"}re not connected to the internet. You can still edit, but you
@@ -13,6 +13,5 @@ export const ConnectionNotice = inject('store')(
           keep your changes.
         </Container>
       )
-    );
-  })
+  )
 );

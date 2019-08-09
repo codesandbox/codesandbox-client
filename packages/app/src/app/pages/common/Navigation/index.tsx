@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { observer, inject, hooksObserver } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { Link } from 'react-router-dom';
 import Media from 'react-media';
 import {
@@ -16,7 +16,6 @@ import Row from '@codesandbox/common/lib/components/flex/Row';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 // @ts-ignore
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
-import { useStore, useSignals } from 'app/store';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import OverlayComponent from 'app/components/Overlay';
 import Notifications from './Notifications';

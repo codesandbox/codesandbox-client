@@ -4,6 +4,7 @@ import { Mutation } from 'react-apollo';
 import history from 'app/utils/history';
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 import { NotificationImage as Image } from '../elements';
 import { Container, Buttons, Button, W } from './elements';
@@ -11,7 +12,6 @@ import {
   REJECT_TEAM_INVITATION,
   ACCEPT_TEAM_INVITATION,
 } from '../../../../Dashboard/queries';
-import { inject, hooksObserver } from 'app/componentConnectors';
 
 interface Props {
   read: boolean;

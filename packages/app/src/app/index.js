@@ -3,7 +3,6 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
-import { Provider as OvermindProvider } from './overmind/Provider';
 import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
 import { Provider } from 'mobx-react';
 import _debug from '@codesandbox/common/lib/utils/debug';
@@ -31,6 +30,7 @@ import { isSafari } from '@codesandbox/common/lib/utils/platform';
 import * as childProcess from 'node-services/lib/child_process';
 import { Controller } from '@cerebral/mobx-state-tree';
 import App from './pages/index';
+import { Provider as OvermindProvider } from './overmind/Provider';
 import './split-pane.css';
 import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
 

@@ -43,37 +43,35 @@ const LikeHeart = inject('store', 'signals')(
       highlightHover,
       store: { isLoggedIn },
       signals: { editor },
-    }: Props) => {
-      return (
-        <Container
-          style={style}
-          hasText={text !== undefined}
+    }: Props) => (
+      <Container
+        style={style}
+        hasText={text !== undefined}
+        loggedIn={isLoggedIn}
+        liked={sandbox.userLiked}
+        className={className}
+        highlightHover={highlightHover}
+        onClick={
+          isLoggedIn
+            ? () => editor.likeSandboxToggled({ id: sandbox.id })
+            : noop
+        }
+      >
+        <MaybeTooltip
           loggedIn={isLoggedIn}
-          liked={sandbox.userLiked}
-          className={className}
-          highlightHover={highlightHover}
-          onClick={
-            isLoggedIn
-              ? () => editor.likeSandboxToggled({ id: sandbox.id })
-              : noop
-          }
+          disableTooltip={disableTooltip}
+          title={sandbox.userLiked ? 'Undo like' : 'Like'}
         >
-          <MaybeTooltip
-            loggedIn={isLoggedIn}
-            disableTooltip={disableTooltip}
-            title={sandbox.userLiked ? 'Undo like' : 'Like'}
-          >
-            {sandbox.userLiked ? (
-              <FullHeartIcon style={colorless ? null : { color: '#E01F4E' }} />
-            ) : (
-              <HeartIcon />
-            )}
+          {sandbox.userLiked ? (
+            <FullHeartIcon style={colorless ? null : { color: '#E01F4E' }} />
+          ) : (
+            <HeartIcon />
+          )}
 
-            {text && <span>{text}</span>}
-          </MaybeTooltip>
-        </Container>
-      );
-    }
+          {text && <span>{text}</span>}
+        </MaybeTooltip>
+      </Container>
+    )
   )
 );
 

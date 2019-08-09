@@ -1,7 +1,6 @@
 import React from 'react';
-import { observer, hooksObserver, inject } from 'app/componentConnectors';
+import { hooksObserver, inject } from 'app/componentConnectors';
 import SaveIcon from 'react-icons/lib/md/save';
-import { useSignals, useStore } from 'app/store';
 import { saveAllModules } from 'app/store/modules/editor/utils';
 import { Action } from './Action';
 
