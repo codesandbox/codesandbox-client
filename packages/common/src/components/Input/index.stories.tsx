@@ -7,7 +7,8 @@ const stories = storiesOf('components/Input', module).addDecorator(
   ThemeDecorator
 );
 
-stories.add('Basic Input', () => <Input />);
-stories.add('Block Input', () => <Input />);
-stories.add('Error Input', () => <Input error />);
-stories.add('Placeholder Input', () => <Input placeholder="Hello" />);
+stories
+  .add('Basic Input', () => <Input />)
+  .add('Block Input', () => <Input />)
+  .add('Error Input', () => <Input error />)
+  .add('Placeholder Input', () => <Input placeholder="Hello" />);
