@@ -11,6 +11,8 @@ import {
   sandboxUrl,
   editorUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
@@ -174,6 +176,33 @@ export function setCurrentModuleShortid({ props, state }) {
     const module = defaultOpenedModule(sandbox, parsedConfigs);
 
     state.set('editor.currentModuleShortid', module.shortid);
+  }
+}
+
+export function showUserSurveyIfNeeded({ state, controller, api }) {
+  if (state.get('user.sendSurvey')) {
+    // Let the server know that we've seen the survey
+    api.post('/users/survey-seen', {});
+
+    notificationState.addNotification({
+      title: 'Help improve CodeSandbox',
+      message:
+        "We'd love to hear your thoughts, it's 7 questions and will only take 2 minutes.",
+      status: NotificationStatus.NOTICE,
+      sticky: true,
+      actions: {
+        primary: [
+          {
+            label: 'Open Survey',
+            run: () => {
+              controller.getSignal('modalOpened')({
+                modal: 'userSurvey',
+              });
+            },
+          },
+        ],
+      },
+    });
   }
 }
 

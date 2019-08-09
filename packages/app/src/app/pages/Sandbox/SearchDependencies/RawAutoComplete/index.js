@@ -35,6 +35,8 @@ function getVersion(value: string, hit) {
 function getIsValid(value: string, hit, version: string) {
   return Boolean(
     hit &&
+      hit.tags &&
+      hit.versions &&
       hit.name.startsWith(getName(value)) &&
       (version in hit.tags || version in hit.versions)
   );

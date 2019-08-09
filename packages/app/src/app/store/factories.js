@@ -122,6 +122,7 @@ export function withLoadApp(continueSequence) {
                     actions.setPatronPrice,
                     actions.setSignedInCookie,
                     actions.connectWebsocket,
+                    actions.showUserSurveyIfNeeded,
                     initializeNotifications,
                     actions.loadTemplatesForStartModal,
                   ],

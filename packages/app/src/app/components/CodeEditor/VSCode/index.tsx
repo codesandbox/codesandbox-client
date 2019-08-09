@@ -93,8 +93,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   tsconfig: Props['tsconfig'] | undefined;
   disposeInitializer?: Function;
   lintWorker: Worker | undefined;
-  editor: any;
-  monaco: any;
+  editor?: any;
+  monaco?: any;
   receivingCode: boolean = false;
   codeSandboxAPIListener: () => void;
   sizeProbeInterval: number | null;
@@ -511,8 +511,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     errors?: ModuleError[],
     corrections?: ModuleCorrection[]
   ) => {
-    const oldModule = this.currentModule;
-    this.swapDocuments(oldModule, newModule);
+    this.swapDocuments(newModule);
 
     this.currentModule = newModule;
     this.currentTitle = newModule.title;
@@ -594,8 +593,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   ): Promise<null> =>
     new Promise(resolve => {
       this.sandbox = newSandbox;
-      this.currentModule = newCurrentModule;
       this.dependencies = dependencies;
+      this.changeModule(newCurrentModule, [], []);
 
       // Do in setTimeout, since disposeModules is async
       setTimeout(() => {
@@ -713,9 +712,11 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         '/sandbox' +
         getModulePath(this.sandbox.modules, this.sandbox.directories, moduleId);
 
-      const modelEditor = this.editor.editorService.editors.find(
-        editor => editor.resource && editor.resource.path === modulePath
-      );
+      const modelEditor =
+        this.editor &&
+        this.editor.editorService.editors.find(
+          editor => editor.resource && editor.resource.path === modulePath
+        );
 
       // Apply the code to the current module code itself
       const module = this.sandbox.modules.find(
@@ -983,13 +984,13 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         module.id
       );
 
-      if (this.getCurrentModelPath() !== path) {
+      if (path && this.getCurrentModelPath() !== path) {
         this.editor.openFile(path);
       }
     }
   };
 
-  swapDocuments = (currentModule: Module, nextModule: Module) => {
+  swapDocuments = (nextModule: Module) => {
     this.openModule(nextModule);
   };
 

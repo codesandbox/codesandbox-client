@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Preference from '@codesandbox/common/lib/components/Preference';
 
 export const SubContainer = styled.div`
@@ -22,6 +22,14 @@ export const Subheading = styled.div`
 
 export const PreferenceContainer = styled.div`
   padding-top: 0.5rem;
+
+  ${props =>
+    props.disabled &&
+    css`
+      opacity: 0.5;
+      pointer-events: none;
+      cursor: disabled;
+    `}
 `;
 
 export const PaddedPreference = styled(Preference)`

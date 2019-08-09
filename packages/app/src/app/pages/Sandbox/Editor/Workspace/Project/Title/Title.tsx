@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { useSignals, useStore } from 'app/store';
 import { WorkspaceInputContainer } from '../../elements';
 import { EditPen } from '../elements';
@@ -32,7 +33,7 @@ export const Title = observer<ITitleProps>(({ editable }) => {
             el.focus();
           }
         }}
-        value={title || getSandboxName(currentSandbox)}
+        value={title}
         onChange={event => {
           valueChanged({
             field: 'title',
@@ -44,8 +45,10 @@ export const Title = observer<ITitleProps>(({ editable }) => {
           setEditing(false);
         }}
         onKeyUp={event => {
-          if (event.keyCode === 13) {
+          if (event.keyCode === ENTER) {
             sandboxInfoUpdated();
+            setEditing(false);
+          } else if (event.keyCode === ESC) {
             setEditing(false);
           }
         }}
@@ -54,7 +57,17 @@ export const Title = observer<ITitleProps>(({ editable }) => {
   ) : (
     <SandboxTitle>
       {getSandboxName(currentSandbox)}
-      {editable && <EditPen onClick={() => setEditing(true)} />}
+      {editable && (
+        <EditPen
+          onClick={() => {
+            valueChanged({
+              field: 'title',
+              value: getSandboxName(currentSandbox),
+            });
+            setEditing(true);
+          }}
+        />
+      )}
     </SandboxTitle>
   );
 });

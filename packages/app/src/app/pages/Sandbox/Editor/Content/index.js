@@ -295,6 +295,7 @@ class EditorPreview extends React.Component<Props, State> {
         }
 
         const editorModule = editor.currentModule;
+        const currentSandbox = editor.sandbox;
         const changeModule = editor.changeModule;
         if (
           (!editorModule || newModule.id !== editorModule.id) &&
@@ -302,6 +303,17 @@ class EditorPreview extends React.Component<Props, State> {
         ) {
           const errors = store.editor.errors.map(e => e);
           const corrections = store.editor.corrections.map(e => e);
+
+          if (
+            currentSandbox.id !== store.editor.currentSandbox.id &&
+            editor.changeSandbox
+          ) {
+            // This means that the sandbox will be updated soon in the editor itself, which will
+            // cause the module to change anyway. We don't want to continue here because the new sandbox
+            // has not yet been initialized in the editor, but it's trying already to update the module.
+            return;
+          }
+
           changeModule(newModule, errors, corrections);
         } else if (editor.changeCode) {
           // Only code changed from outside the editor
