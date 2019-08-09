@@ -34,18 +34,18 @@ export default {
 
     return response.token;
   },
-  createPatronSubscription(token: string, amount: string) {
+  createPatronSubscription(token: string, amount: number) {
     return api.post<CurrentUser>('/users/current_user/subscription', {
       subscription: {
-        amount,
+        amount: String(amount),
         token,
       },
     });
   },
-  updatePatronSubscription(amount: string) {
+  updatePatronSubscription(amount: number) {
     return api.patch<CurrentUser>('/users/current_user/subscription', {
       subscription: {
-        amount,
+        amount: String(amount),
       },
     });
   },
@@ -116,7 +116,7 @@ export default {
   savePrivacy(sandboxId: string, privacy: 0 | 1 | 2) {
     return api.patch(`/sandboxes/${sandboxId}/privacy`, {
       sandbox: {
-        privacy: privacy,
+        privacy,
       },
     });
   },
@@ -182,7 +182,7 @@ export default {
   createDirectory(sandboxId: string, title: string): Promise<Directory> {
     return api.post(`/sandboxes/${sandboxId}/directories`, {
       directory: {
-        title: title,
+        title,
       },
     });
   },
@@ -357,7 +357,7 @@ export default {
   updatePrivacy(sandboxId: string, privacy: 0 | 1 | 2): Promise<void> {
     return api.patch(`/sandboxes/${sandboxId}/privacy`, {
       sandbox: {
-        privacy: privacy,
+        privacy,
       },
     });
   },

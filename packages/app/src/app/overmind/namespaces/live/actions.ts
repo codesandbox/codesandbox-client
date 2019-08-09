@@ -26,9 +26,7 @@ export const createLiveClicked: AsyncAction<string> = async (
 ) => {
   effects.analytics.track('Create Live Session');
 
-  const { id: roomId } = await effects.api.createLiveRoom(id);
-
-  // Hm, need to run this to understand how data is passed
+  await effects.api.createLiveRoom(id);
   await actions.live.internal.initialize();
 
   state.live.isLoading = false;
@@ -73,8 +71,9 @@ export const liveMessageReceived: AsyncAction<{
 
       const users = camelizeKeys(data.users);
 
-      // What happening here? Is it not an array of users?
-      state.live.roomInfo.users = users;
+      // TODO: What happening here? Is it not an array of users?
+      // Check the running code and fix the type
+      state.live.roomInfo.users = users as any;
       state.live.roomInfo.editorIds = data.editor_ids;
       state.live.roomInfo.ownerIds = data.owner_ids;
 
@@ -107,8 +106,9 @@ export const liveMessageReceived: AsyncAction<{
 
       const users = camelizeKeys(data.users);
 
-      // Same here, not an array?
-      state.live.roomInfo.users = users;
+      // TODO: Same here, not an array?
+      // Check running code
+      state.live.roomInfo.users = users as any;
       state.live.roomInfo.ownerIds = data.owner_ids;
       state.live.roomInfo.editorIds = data.editor_ids;
       break;
@@ -204,11 +204,11 @@ export const liveMessageReceived: AsyncAction<{
         return;
       }
 
-      const liveUserId = data.liveUserId;
+      const userSelectionLiveUserId = data.liveUserId;
       const moduleShortid = data.moduleShortid;
       const selection = data.selection;
       const userIndex = state.live.roomInfo.users.findIndex(
-        u => u.id === liveUserId
+        u => u.id === userSelectionLiveUserId
       );
 
       if (userIndex > -1) {
@@ -220,12 +220,14 @@ export const liveMessageReceived: AsyncAction<{
 
       if (
         moduleShortid === state.editor.currentModuleShortid &&
-        state.live.isEditor(liveUserId)
+        state.live.isEditor(userSelectionLiveUserId)
       ) {
-        const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
+        const user = state.live.roomInfo.users.find(
+          u => u.id === userSelectionLiveUserId
+        );
 
         state.editor.pendingUserSelections.push({
-          userId: liveUserId,
+          userId: userSelectionLiveUserId,
           name: user.username,
           selection,
           color: user.color.toJS(),

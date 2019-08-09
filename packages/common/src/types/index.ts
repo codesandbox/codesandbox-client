@@ -319,6 +319,11 @@ export type PrettierConfig = {
 };
 
 export type Settings = {
+  autoResize: boolean;
+  enableEslint: boolean;
+  forceRefresh: boolean;
+  codeMirror: boolean;
+  lineHeight: number;
   autoCompleteEnabled: boolean | undefined;
   vimMode: boolean | undefined;
   livePreviewEnabled: boolean | undefined;
@@ -333,6 +338,17 @@ export type Settings = {
   newPackagerExperiment: boolean | undefined;
   zenMode: boolean | undefined;
   keybindings: any[];
+  jsxBracketSameLine: boolean;
+  printWidth: number;
+  semi: boolean;
+  singleQuote: boolean;
+  tabWidth: number;
+  trailingComma: string;
+  useTabs: boolean;
+  enableLigatures: boolean;
+  customVSCodeTheme: string;
+  manualCustomVSCodeTheme: string;
+  experimentVSCode: boolean;
 };
 
 export type NotificationButton = {

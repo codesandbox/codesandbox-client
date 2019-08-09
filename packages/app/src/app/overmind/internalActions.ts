@@ -30,7 +30,7 @@ export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
     actions.internal.setStoredSettings();
-    actions.internal.connectWebsocket();
+    effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
     actions.refetchSandboxInfo();
   } catch (error) {
@@ -84,7 +84,7 @@ export const addNotification: Action<{
     title,
     type,
     buttons,
-    endTime: now + (timeAlive ? timeAlive : timeAliveDefault) * 1000,
+    endTime: now + (timeAlive || timeAliveDefault) * 1000,
   });
 };
 
@@ -164,14 +164,13 @@ export const setCurrentSandbox: Action<Sandbox> = (
   const sandboxOptions = effects.router.getSandboxOptions();
 
   if (sandboxOptions.currentModule) {
-    const sandbox = state.editor.currentSandbox;
-
     try {
       const resolvedModule = effects.utils.resolveModule(
         sandboxOptions.currentModule,
         sandbox.modules,
         sandbox.directories,
         // currentModule is a string... something wrong here?
+        // @ts-ignore
         sandboxOptions.currentModule.directoryShortid
       );
       currentModuleShortid = resolvedModule

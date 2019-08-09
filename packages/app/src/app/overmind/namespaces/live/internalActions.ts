@@ -72,8 +72,8 @@ export const initialize: AsyncAction = withLoadApp(
       },
     */
       state.live.receivingCode = true; // Not necessary as next step is synchronous
-      // Where is the module state?
-      actions.live.internal.initializeModuleState();
+      // TODO: Where is the module state?
+      // actions.live.internal.initializeModuleState();
       state.live.receivingCode = false;
       state.live.isLive = true;
       state.live.error = null;

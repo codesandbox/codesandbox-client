@@ -6,6 +6,7 @@ import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 type State = {
   settings: Settings;
   isLoadingPaymentDetails: boolean;
+  hideNavigation: boolean;
   itemId: string;
   showEditor: boolean;
   showModal: boolean;
@@ -19,6 +20,9 @@ type State = {
 
 export const state: State = {
   settings: {
+    autoResize: true,
+    enableEslint: true,
+    forceRefresh: false,
     prettifyOnSaveEnabled: true,
     zenMode: false,
     autoCompleteEnabled: true,
@@ -45,6 +49,7 @@ export const state: State = {
       jsxBracketSameLine: false,
     },
     jsxBracketSameLine: false,
+    // TODO: Should these be her?
     printWidth: 80,
     semi: true,
     singleQuote: false,
@@ -61,6 +66,7 @@ export const state: State = {
     manualCustomVSCodeTheme: null,
     experimentVSCode: !isIOS,
   },
+  hideNavigation: false,
   showModal: false,
   isLoadingPaymentDetails: true,
   paymentDetailError: null,

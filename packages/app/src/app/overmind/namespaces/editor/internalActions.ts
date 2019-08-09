@@ -136,7 +136,10 @@ export const updateCurrentTemplate: Action = ({ state, effects }) => {
         isBinary: module.isBinary,
       }));
 
-      const newTemplate = computeTemplate(parsed, modulesByPath) || 'node';
+      // TODO: What is a templat really? Two different kinds of templates here, need to fix the types
+      // Talk to Ives and Bogdan
+      const newTemplate =
+        computeTemplate(parsed, modulesByPath) || ('node' as any);
 
       if (
         newTemplate !== currentTemplate &&

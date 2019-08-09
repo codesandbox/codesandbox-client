@@ -4,7 +4,8 @@ import {
   ModuleError,
   ModuleCorrection,
   Settings,
-  Tab,
+  ModuleTab,
+  DiffTab,
 } from '@codesandbox/common/lib/types';
 
 export interface Editor {
@@ -36,7 +37,7 @@ export interface Editor {
 
 export type Props = {
   currentModule: Module;
-  currentTab?: Tab;
+  currentTab?: ModuleTab | DiffTab;
   sandbox: Sandbox;
   isModuleSynced: (shortid: string) => boolean;
   customEditorAPI?: {

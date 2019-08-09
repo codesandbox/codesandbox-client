@@ -1,9 +1,7 @@
 import { OnInitialize } from '.';
 
 export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
-  const provideJwtToken = () => {
-    return state.jwt || effects.jwt.get();
-  };
+  const provideJwtToken = () => state.jwt || effects.jwt.get();
 
   effects.live.initialize({
     provideJwtToken,
@@ -29,7 +27,7 @@ export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
       return state.editor.parsedConfigurations;
     },
     getModulesByPath() {
-      // hm, need something here :)
+      return state.editor.modulesByPath;
     },
   });
 

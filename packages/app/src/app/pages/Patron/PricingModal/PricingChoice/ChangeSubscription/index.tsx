@@ -10,6 +10,8 @@ interface Props {
   markedAsCancelled: boolean;
   cancelSubscription: () => void;
   updateSubscription: (params: { coupon: string }) => void;
+  store: any;
+  signals: any;
 }
 
 function ChangeSubscription({
