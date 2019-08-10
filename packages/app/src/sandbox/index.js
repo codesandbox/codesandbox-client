@@ -110,6 +110,7 @@ requirePolyfills().then(() => {
           hasActions: false,
           template: x.data.template,
           version: 3,
+          disableDependencyPreprocessing: true,
         };
 
         compile(data);

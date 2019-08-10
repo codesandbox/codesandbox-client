@@ -106,9 +106,13 @@ function getUnpkgUrl(name: string, version: string, forceJsDelivr?: boolean) {
     : `https://unpkg.com/${nameWithoutAlias}@${version}`;
 }
 
-function getMeta(name: string, packageJSONPath: string, version: string) {
+function getMeta(
+  name: string,
+  packageJSONPath: string | null,
+  version: string
+) {
   const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
-  const id = `${packageJSONPath}@${version}`;
+  const id = `${packageJSONPath || name}@${version}`;
   if (metas[id]) {
     return metas[id];
   }
@@ -262,12 +266,22 @@ function resolvePath(
   });
 }
 
+type DependencyVersionResult =
+  | {
+      version: string;
+      packageJSONPath: string;
+    }
+  | {
+      version: string;
+      packageJSONPath: null;
+    };
+
 async function findDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
   defaultExtensions: Array<string> = ['js', 'jsx', 'json'],
   dependencyName: string
-) {
+): Promise<DependencyVersionResult | null> {
   const manifest = manager.manifest;
 
   try {
@@ -330,7 +344,7 @@ export default async function fetchModule(
     dependencyName
   );
 
-  if (!versionInfo) {
+  if (versionInfo === null) {
     throw new DependencyNotFoundError(path);
   }
 

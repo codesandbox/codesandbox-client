@@ -26,10 +26,10 @@ function getLatestVersionForSemver(dep: string, version: string) {
 
 interface IPeerDependencyResult {
   [dep: string]: {
-    semver: string,
-    resolved: string,
-    parents: string[],
-    entries: string[],
+    semver: string;
+    resolved: string;
+    parents: string[];
+    entries: string[];
   };
 }
 
@@ -76,8 +76,8 @@ async function getDependencyDependencies(
 interface IResponse {
   contents: {};
   dependency: {
-    name: string,
-    version: string,
+    name: string;
+    version: string;
   };
   peerDependencies: { [name: string]: string };
   dependencyDependencies: IPeerDependencyResult;
