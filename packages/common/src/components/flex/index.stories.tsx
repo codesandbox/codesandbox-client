@@ -97,7 +97,7 @@ const withFullscreenBordered = (fn: RenderFunction) => (
   <FullscreenBordered>{fn()}</FullscreenBordered>
 );
 
-const ColumnBordered = makeBorderedContainer('Column', Column, 'yellow');
+const ColumnBordered = makeBorderedContainer('Column', Column, 'purple');
 
 const withColumnBordered = (fn: RenderFunction) => (
   <ColumnBordered
@@ -189,4 +189,40 @@ storiesOf('components/flex', module)
   )
   .add('MaxWidth > Row', () =>
     withMaxWidthBordered(repeat('Row', () => withRowBordered(makeContent)))
-  );
+  )
+  .add('Playground \uD83D\uDE80', () => {
+    let decorators = [];
+    let current = null;
+
+    do {
+      current = select(
+        `Component ${decorators.length}`,
+        ['Fullscreen', 'MaxWidth', 'Centered', 'Row', 'Column', null],
+        null,
+        'structure'
+      );
+
+      switch (current) {
+        case 'Fullscreen':
+          decorators.push(withFullscreenBordered);
+          break;
+        case 'MaxWidth':
+          decorators.push(withMaxWidthBordered);
+          break;
+        case 'Centered':
+          decorators.push(withCenteredBordered);
+          break;
+        case 'Row':
+          decorators.push(withRowBordered);
+          break;
+        case 'Column':
+          decorators.push(withColumnBordered);
+          break;
+      }
+    } while (current);
+
+    return decorators.reduceRight(
+      (last, decorator, i) => repeat(`Component ${i}`, () => decorator(last)),
+      makeContent
+    )();
+  });
