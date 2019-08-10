@@ -110,7 +110,9 @@ requirePolyfills().then(() => {
           hasActions: false,
           template: x.data.template,
           version: 3,
-          disableDependencyPreprocessing: true,
+          disableDependencyPreprocessing: document.location.search.includes(
+            'csb-dynamic-download'
+          ),
         };
 
         compile(data);
