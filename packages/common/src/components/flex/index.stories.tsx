@@ -204,25 +204,25 @@ storiesOf('components/flex', module)
 
       switch (current) {
         case 'Fullscreen':
-          decorators.unshift(withFullscreenBordered);
+          decorators.push(withFullscreenBordered);
           break;
         case 'MaxWidth':
-          decorators.unshift(withMaxWidthBordered);
+          decorators.push(withMaxWidthBordered);
           break;
         case 'Center':
-          decorators.unshift(withCenteredBordered);
+          decorators.push(withCenteredBordered);
           break;
         case 'Row':
-          decorators.unshift(withRowBordered);
+          decorators.push(withRowBordered);
           break;
         case 'Column':
-          decorators.unshift(withColumnBordered);
+          decorators.push(withColumnBordered);
           break;
       }
     } while (current);
 
-    return decorators.reduce(
-      (last, decorator) => () => decorator(last),
+    return decorators.reduceRight(
+      (last, decorator, i) => repeat(`Component ${i}`, () => decorator(last)),
       makeContent
     )();
   });
