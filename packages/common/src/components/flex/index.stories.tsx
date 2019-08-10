@@ -197,7 +197,7 @@ storiesOf('components/flex', module)
     do {
       current = select(
         `Component ${decorators.length}`,
-        ['Fullscreen', 'MaxWidth', 'Center', 'Row', 'Column', null],
+        ['Fullscreen', 'MaxWidth', 'Centered', 'Row', 'Column', null],
         null,
         'structure'
       );
@@ -209,7 +209,7 @@ storiesOf('components/flex', module)
         case 'MaxWidth':
           decorators.push(withMaxWidthBordered);
           break;
-        case 'Center':
+        case 'Centered':
           decorators.push(withCenteredBordered);
           break;
         case 'Row':
