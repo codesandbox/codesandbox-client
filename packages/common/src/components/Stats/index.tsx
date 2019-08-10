@@ -13,6 +13,7 @@ type StatsComponentProps = {
   forkCount: number;
   vertical?: boolean;
   text?: boolean;
+  style?: React.CSSProperties;
 };
 
 function StatsComponent({
@@ -21,6 +22,7 @@ function StatsComponent({
   forkCount,
   vertical = false,
   text = false,
+  style,
   ...props
 }: StatsComponentProps) {
   return (
