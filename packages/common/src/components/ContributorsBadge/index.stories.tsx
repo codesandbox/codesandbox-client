@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { storiesOf } from '@storybook/react';
+import { text } from '@storybook/addon-knobs';
 import ContributorsBadge from './';
-import { ThemeDecorator } from '../../stories/decorators';
 
-const stories = storiesOf('components/ContributorsBadge', module).addDecorator(
-  ThemeDecorator
-);
-stories.add('Default', () => <ContributorsBadge username={'SaraVieira'} />);
+const stories = storiesOf('components/ContributorsBadge', module);
+stories.add('Default', () => (
+  <ContributorsBadge username={text('name', 'SaraVieira')} />
+));

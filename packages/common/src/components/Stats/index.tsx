@@ -7,14 +7,22 @@ import Stat from './Stat';
 
 import { Stats } from './elements';
 
+type StatsComponentProps = {
+  viewCount: number;
+  likeCount: number;
+  forkCount: number;
+  vertical?: boolean;
+  text?: boolean;
+};
+
 function StatsComponent({
   viewCount,
   likeCount,
   forkCount,
-  vertical,
-  text,
+  vertical = false,
+  text = false,
   ...props
-}) {
+}: StatsComponentProps) {
   return (
     <Stats vertical={vertical} {...props}>
       <Stat

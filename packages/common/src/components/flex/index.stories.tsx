@@ -1,13 +1,7 @@
 import * as React from 'react';
 import styled, { AnyStyledComponent } from 'styled-components';
 import { storiesOf, RenderFunction } from '@storybook/react';
-import {
-  withKnobs,
-  color,
-  boolean,
-  number,
-  select,
-} from '@storybook/addon-knobs';
+import { color, boolean, number, select } from '@storybook/addon-knobs';
 import Centered from './Centered';
 import Fullscreen from './Fullscreen';
 import Row from './Row';
@@ -157,7 +151,6 @@ const repeat = (name: string, fn: RenderFunction) => () => {
 };
 
 storiesOf('components/flex', module)
-  .addDecorator(withKnobs)
   .addDecorator(withBackground)
   .add('Centered', () => withCenteredBordered(makeContent))
   .add('Fullscreen', () => withFullscreenBordered(makeContent))
