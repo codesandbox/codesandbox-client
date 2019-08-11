@@ -1,17 +1,9 @@
 import * as React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import {
-  withKnobs,
-  text,
-  select,
-  number,
-  array,
-  boolean,
-} from '@storybook/addon-knobs';
+import { text, select, number, array, boolean } from '@storybook/addon-knobs';
 import SandboxCard, { Props, Sandbox } from './';
 import * as fixtures from './fixtures';
-import { ThemeDecorator } from '../../stories/decorators';
 
 const authorWithKnobs = (
   group: string,
@@ -24,9 +16,8 @@ const authorWithKnobs = (
 
   if (knobs.username !== null || knobs.avatar_url !== null) {
     return knobs;
-  } else {
-    return author;
   }
+  return author;
 };
 
 const sandboxWithKnobs = (group: string, sandbox: Sandbox): Sandbox => ({
@@ -66,8 +57,6 @@ const createSandboxStory = ({
 );
 
 storiesOf('components/SandboxCard', module)
-  .addDecorator(ThemeDecorator)
-  .addDecorator(withKnobs)
   .add('basic', createSandboxStory({}))
   .add('small', createSandboxStory({ small: true }))
   .add('no height', createSandboxStory({ noHeight: true }))

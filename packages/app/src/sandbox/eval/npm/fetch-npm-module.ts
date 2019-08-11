@@ -274,6 +274,11 @@ type DependencyVersionResult =
   | {
       version: string;
       packageJSONPath: null;
+    }
+  | {
+      version: string;
+      name: string | null;
+      packageJSONPath: null;
     };
 
 async function findDependencyVersion(

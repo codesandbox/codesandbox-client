@@ -5,6 +5,8 @@ import { themes } from '@storybook/theming';
 
 import global from '../src/global.css';
 import { createGlobalStyle } from 'styled-components';
+import { ThemeDecorator } from '../src/stories/decorators';
+import { withKnobs } from '@storybook/addon-knobs';
 
 const GlobalStyle = createGlobalStyle`
   ${global}
@@ -33,3 +35,5 @@ function loadStories() {
 
 configure(loadStories, module);
 addDecorator(withGlobal);
+addDecorator(ThemeDecorator);
+addDecorator(withKnobs);
