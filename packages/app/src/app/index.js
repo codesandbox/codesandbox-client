@@ -272,6 +272,7 @@ async function initialize() {
           if (isVSCode) {
             vscode.acquireController({
               getSignal,
+              getState,
             });
 
             import(
