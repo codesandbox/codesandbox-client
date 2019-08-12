@@ -2,7 +2,7 @@ import React from 'react';
 // @ts-ignore
 import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/explore.svg';
 
-import Item from '../Item';
+import Item from '../../Item';
 
 interface Props {
   currentPath: string;

@@ -16,7 +16,6 @@ import { SandboxesItem } from './SandboxesItem';
 import { TrashItem } from './TrashItem';
 import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
 import { TEAMS_QUERY } from '../queries';
-import { FollowedTemplatesItem } from './FollowedTemplatesItem';
 import { TemplateItem } from './TemplateItem';
 
 class Sidebar extends React.Component {
@@ -135,6 +134,7 @@ class Sidebar extends React.Component {
                   </>
                 )}
               </Observer>
+
 
             );
           }}

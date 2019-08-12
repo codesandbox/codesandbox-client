@@ -1,1 +1,0 @@
-export { FollowedTemplatesItem } from './FollowedTemplatesItem';
