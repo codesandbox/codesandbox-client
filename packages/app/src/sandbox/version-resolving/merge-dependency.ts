@@ -1,9 +1,9 @@
 import { uniq } from 'lodash-es';
 import * as semver from 'semver';
 
-interface ILambdaResponse {
+export interface ILambdaResponse {
   contents: {
-    [path: string]: string;
+    [path: string]: { content: string };
   };
   dependency: {
     name: string;
@@ -35,7 +35,7 @@ interface IDepDepInfo {
 }
 
 interface IResponse {
-  contents: { [path: string]: string };
+  contents: { [path: string]: { content: string } };
   dependencies: Array<{ name: string; version: string }>;
   dependencyAliases: { [dep: string]: { [dep: string]: string } };
   dependencyDependencies: {

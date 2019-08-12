@@ -1,4 +1,5 @@
 import Cache from 'lru-cache';
+import { ILambdaResponse } from './merge-dependency';
 
 const packageJSONCache: Cache.Cache<string, Promise<any>> = new Cache({
   max: 100,
@@ -73,34 +74,30 @@ async function getDependencyDependencies(
   return peerDependencyResult;
 }
 
-interface IResponse {
-  contents: {};
-  dependency: {
-    name: string;
-    version: string;
-  };
-  peerDependencies: { [name: string]: string };
-  dependencyDependencies: IPeerDependencyResult;
-}
-
 export async function resolveDependencyInfo(dep: string, version: string) {
-  const response: IResponse = {
+  const packageJSON = await getPackageJSON(dep, version);
+  const response: ILambdaResponse = {
     contents: {},
     dependency: {
       name: dep,
-      version,
+      version: packageJSON.version,
     },
     peerDependencies: {},
     dependencyDependencies: {},
+    dependencyAliases: {},
   };
 
-  const packageJSON = await getPackageJSON(dep, version);
   response.peerDependencies = packageJSON.peerDependencies;
-
   response.dependencyDependencies = await getDependencyDependencies(
     dep,
     version
   );
+
+  response.contents = {
+    [`/node_modules/${dep}/package.json`]: {
+      content: JSON.stringify(packageJSON, null, 2),
+    },
+  };
 
   return response;
 }

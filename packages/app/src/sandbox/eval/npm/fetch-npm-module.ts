@@ -300,10 +300,10 @@ async function findDependencyVersion(
     const packageJSON =
       manager.transpiledModules[foundPackageJSONPath] &&
       manager.transpiledModules[foundPackageJSONPath].module.code;
-    const { version, name } = JSON.parse(packageJSON);
+    const { version } = JSON.parse(packageJSON);
 
     if (packageJSON !== '//empty.js') {
-      return { packageJSONPath: foundPackageJSONPath, version, name };
+      return { packageJSONPath: foundPackageJSONPath, version };
     }
   } catch (e) {
     /* do nothing */
