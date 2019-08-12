@@ -6,16 +6,13 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { DelayedAnimation } from 'app/components/DelayedAnimation';
-import history from 'app/utils/history';
-import { ContextMenu } from 'app/components/ContextMenu';
-import { LIST_TEMPLATES, unmakeTemplates } from '../../../queries';
-import { Container, Grid, EmptyTitle } from './elements';
-import { Navigation } from './Navigation';
 
-export const Templates = ({ match }) => {
-  const { teamId } = match.params;
+import { LIST_TEMPLATES, unmakeTemplates } from '../../../../queries';
+import { Container, Grid, EmptyTitle } from '../elements';
+import { Navigation } from '../Navigation';
 
+export const Templates = props => {
+  const teamId = props.match.params.teamId;
   const { loading, error, data } = useQuery(LIST_TEMPLATES, {
     variables: { teamId },
   });
