@@ -1,8 +1,26 @@
+import React, { Fragment } from 'react';
+
 import { withKnobs } from '@storybook/addon-knobs';
 import { addDecorator, addParameters, configure } from '@storybook/react';
 import { themes } from '@storybook/theming';
 
-import { ThemeDecorator, withGlobal } from '../src/stories/decorators';
+import { ThemeDecorator } from '../src/stories/decorators';
+
+import { createGlobalStyle } from 'styled-components';
+
+import global from '../src/global.css';
+
+const GlobalStyle = createGlobalStyle`
+  ${global}
+`;
+
+export const withGlobal = cb => (
+  <Fragment>
+    <GlobalStyle />
+
+    {cb()}
+  </Fragment>
+);
 
 addDecorator(withKnobs);
 addDecorator(withGlobal);
