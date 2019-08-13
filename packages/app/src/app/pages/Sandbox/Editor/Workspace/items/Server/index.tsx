@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
 import BrowserIcon from 'react-icons/lib/go/browser';

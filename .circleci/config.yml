@@ -5,22 +5,32 @@ version: 2.1
 ################################
 
 aliases:
-  - &restore_repo_cache
-    key: v21-repo-{{ .Environment.CIRCLE_SHA1 }}
+  - &attach_deps_workspace
+    at: ~/codesandbox-client
 
-  - &save_repo_cache
-    key: v21-repo-{{ .Environment.CIRCLE_SHA1 }}
+  - &build_deps_paths
+    root: ~/codesandbox-client
     paths:
-      - ~/codesandbox-client
+      - packages/codesandbox-api/dist
+      - packages/common/lib
+      - packages/deps/dist
+      - packages/executors/dist
+      - packages/node-services/lib
+      - packages/notifications/lib
+      - packages/sse-hooks/dist
+      - standalone-packages/codesandbox-browserfs/dist
+      - standalone-packages/codesandbox-browserfs/build
+      - standalone-packages/vscode-textmate/out
+      - standalone-packages/vscode-textmate/node_modules
 
   - &restore_deps_cache
     keys:
-      - v21-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v21-dependency-cache-{{ .Branch }}
-      - v21-dependency-cache
+      - v24-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v24-dependency-cache-{{ .Branch }}
+      - v24-dependency-cache
 
   - &save_deps_cache
-    key: v21-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v24-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
@@ -39,29 +49,38 @@ aliases:
 
   - &restore_standalone_deps_cache
     keys:
-      - v21-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v21-standalone-dependency-cache-{{ .Branch }}
-      - v21-standalone-dependency-cache
+      - v24-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+        "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+      - v24-standalone-dependency-cache-{{ .Branch }}
+      - v24-standalone-dependency-cache
 
   - &save_standalone_deps_cache
-    key: v21-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+    key:
+      v24-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
-  - &restore_prod_build_cache
-    key: v21-prod-app-build-cache-master
+  - &restore_prod_homepage_cache
+    key: v24-prod-homepage-build-cache-master
 
   - &restore_prod_cache
-    key: v21-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key:
+      v24-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      .Environment.CIRCLE_SHA1 }}
 
-  - &save_prod_app_cache
-    key: v21-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+  # To persist the images built by sharp
+  - &save_prod_homepage_cache
+    key:
+      v24-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      .Environment.CIRCLE_SHA1 }}
     paths:
-      - ./packages/app/www
-      - ./packages/homepage/.cache
+      - ./packages/homepage/public
 
   - &save_prod_cache
-    key: v21-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key:
+      v24-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
 
@@ -107,28 +126,48 @@ commands:
       - run:
           name: Build
           command: yarn build:deps
-      - save_cache: *save_repo_cache
+      - persist_to_workspace: *build_deps_paths
   build_prod:
     description: 'Build the Application with `yarn build:prod`'
     steps:
-      - restore_cache: *restore_repo_cache
-      # - restore_cache: *restore_prod_build_cache
+      - checkout
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
+      - restore_cache: *restore_prod_homepage_cache
       - run:
           name: Build Application
           command: yarn build:prod
-      - save_cache: *save_prod_app_cache
+      - run:
+          name: Mark Sentry release
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              node packages/app/scripts/sentry-create-release.js
+            fi
       - save_cache: *save_prod_cache
+      - run:
+          name: Remove non-images from public
+          command: |
+            find packages/homepage/public -name "*.js" -type f -delete
+            find packages/homepage/public -name "*.json" -type f -delete
+            find packages/homepage/public -name "*.js.map" -type f -delete
+      - save_cache: *save_prod_homepage_cache
   test_integrations:
-    description: "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
+    description:
+      "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
       - run:
           name: Start Test Server
           command: yarn start:test
           background: true
       - run:
           name: Setup BrowserStack local environment
-          command: '[ -n "$BROWSER_STACK_KEY" ] && ./packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY || true'
+          command:
+            '[ -n "$BROWSER_STACK_KEY" ] &&
+            ./packages/app/integration-tests/BrowserStackLocal --key
+            $BROWSER_STACK_KEY || true'
           background: true
       - run:
           name: Test Integrations
@@ -142,7 +181,9 @@ commands:
   test_jest:
     description: 'Test with `yarn test`'
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
       - run:
           name: Test
           command: yarn test --ci --testResultsProcessor="jest-junit"
@@ -151,16 +192,20 @@ commands:
   yarn_lint:
     description: 'Lint with `yarn lint`'
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
       - run:
           name: Lint
           command: yarn lint
   yarn_typecheck:
     description: 'Lint with `yarn typecheck`'
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
       - run:
-          name: Lint
+          name: Typecheck
           command: yarn typecheck
   docker_cache:
     description: 'Cache, Sign In, Create, and Push Docker Image'
@@ -175,13 +220,19 @@ commands:
       - restore_cache: *restore_prod_cache
       - run:
           name: Docker Sign In
-          command: '[ -n "<< parameters.user >>" ] && echo << parameters.password >> | docker login -u << parameters.user >> --password-stdin || true'
+          command:
+            '[ -n "<< parameters.user >>" ] && echo << parameters.password >> |
+            docker login -u << parameters.user >> --password-stdin || true'
       - run:
           name: Create Image
-          command: '[ -n "<< parameters.user >>" ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true'
+          command:
+            '[ -n "<< parameters.user >>" ] && docker build -t
+            codesandbox/client:${CIRCLE_SHA1:0:7} . || true'
       - run:
           name: Push Image
-          command: '[ -n "<< parameters.user >>" ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true'
+          command:
+            '[ -n "<< parameters.user >>" ] && docker push
+            codesandbox/client:${CIRCLE_SHA1:0:7} || true'
 
 ################################
 # Jobs

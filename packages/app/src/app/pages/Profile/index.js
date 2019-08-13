@@ -1,6 +1,6 @@
 /* @flow */
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import { Route, Switch } from 'react-router-dom';
 
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';

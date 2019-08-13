@@ -1,6 +1,6 @@
 import React from 'react';
 import Alert from 'app/components/Alert';
-import { inject } from 'mobx-react';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 function DeleteSandboxModal({ signals }) {
   return (
@@ -13,4 +13,4 @@ function DeleteSandboxModal({ signals }) {
   );
 }
 
-export default inject('signals')(DeleteSandboxModal);
+export default inject('signals')(hooksObserver(DeleteSandboxModal));

@@ -27,7 +27,7 @@ import Tags from '../Tags';
 const getScreenshot = (id: string) =>
   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
 
-interface Sandbox {
+export interface Sandbox {
   title: string;
   description: string;
   tags: string[];

@@ -4,7 +4,7 @@ import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Navigation from 'app/pages/common/Navigation';
-import { useSignals } from 'app/store';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import history from 'app/utils/history';
 import { NewSandboxModal } from '../Dashboard/Content/CreateNewSandbox/NewSandboxModal';
 
@@ -12,9 +12,7 @@ const createSandbox = template => {
   history.push(sandboxUrl({ id: template.shortid }));
 };
 
-const NewSandbox = () => {
-  const { sandboxPageMounted } = useSignals();
-
+const NewSandbox = ({ signals: { sandboxPageMounted } }) => {
   useEffect(() => {
     sandboxPageMounted();
   }, [sandboxPageMounted]);
@@ -40,4 +38,4 @@ const NewSandbox = () => {
   );
 };
 
-export default NewSandbox;
+export default inject('signals')(hooksObserver(NewSandbox));

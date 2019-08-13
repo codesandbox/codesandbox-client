@@ -1,10 +1,8 @@
-import * as internalActions from './internalActions';
 import { Action, AsyncAction } from 'app/overmind';
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import getTemplate from '@codesandbox/common/lib/templates';
-
-export const internal = internalActions;
+import slugify from '@codesandbox/common/lib/utils/slugify';
 
 export const valueChanged: Action<{
   field: string;
@@ -18,7 +16,7 @@ export const tagChanged: Action<string> = ({ state }, name) => {
 };
 
 export const tagAdded: AsyncAction = async ({ state, effects, actions }) => {
-  await actions.editor.internal.ensureOwnedEditable();
+  await actions.editor.internal.ensureSandboxIsOwned();
 
   const tagName = state.workspace.tags.tagName;
   const sandbox = state.editor.currentSandbox;
@@ -26,9 +24,7 @@ export const tagAdded: AsyncAction = async ({ state, effects, actions }) => {
   sandbox.tags.push(tagName);
 
   try {
-    sandbox.tags = await effects.api.post(`/sandboxes/${sandbox.id}/tags`, {
-      tag: tagName,
-    });
+    sandbox.tags = await effects.api.createTag(sandbox.id, tagName);
 
     await actions.editor.internal.updateSandboxPackageJson();
   } catch (error) {
@@ -41,7 +37,7 @@ export const tagRemoved: AsyncAction<string> = async (
   { state, effects, actions },
   tagName
 ) => {
-  await actions.editor.internal.ensureOwnedEditable();
+  await actions.editor.internal.ensureSandboxIsOwned();
 
   const sandbox = state.editor.currentSandbox;
   const tagIndex = sandbox.tags.indexOf(tagName);
@@ -49,9 +45,7 @@ export const tagRemoved: AsyncAction<string> = async (
   sandbox.tags.splice(tagIndex, 1);
 
   try {
-    sandbox.tags = await effects.api.delete(
-      `/sandboxes/${sandbox.id}/tags/${tagName}`
-    );
+    sandbox.tags = await effects.api.deleteTag(sandbox.id, tagName);
 
     // Create a "joint action" on this
     const { parsed } = state.editor.parsedConfigurations.package;
@@ -77,7 +71,7 @@ export const sandboxInfoUpdated: AsyncAction = async ({
   effects,
   actions,
 }) => {
-  await actions.editor.internal.ensureOwnedEditable();
+  await actions.editor.internal.ensureSandboxIsOwned();
 
   const sandbox = state.editor.currentSandbox;
   const project = state.workspace.project;
@@ -104,16 +98,11 @@ export const sandboxInfoUpdated: AsyncAction = async ({
     sandbox.description = project.description;
     sandbox.alias = project.alias;
 
-    const updatedSandbox = await effects.api.put<Sandbox>(
-      `/sandboxes/${sandbox.id}`,
-      {
-        sandbox: {
-          title: project.title,
-          description: project.description,
-          alias: project.alias,
-        },
-      }
-    );
+    const updatedSandbox = await effects.api.updateSandbox(sandbox.id, {
+      title: project.title,
+      description: project.description,
+      alias: project.alias,
+    });
 
     effects.router.updateSandboxUrl(updatedSandbox);
 
@@ -125,22 +114,17 @@ export const externalResourceAdded: AsyncAction<string> = async (
   { state, effects, actions },
   resource
 ) => {
-  await actions.editor.internal.ensureOwnedEditable();
+  await actions.editor.internal.ensureSandboxIsOwned();
 
   const externalResources = state.editor.currentSandbox.externalResources;
 
   externalResources.push(resource);
 
   try {
-    await effects.api.post(`/sandboxes/${state.editor.currentId}/resources`, {
-      externalResource: resource,
-    });
+    await effects.api.createResource(state.editor.currentId, resource);
   } catch (error) {
     externalResources.splice(externalResources.indexOf(resource), 1);
-    effects.notificationToast.add({
-      message: 'Could not save external resource',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error('Could not save external resource');
   }
 };
 
@@ -148,7 +132,7 @@ export const externalResourceRemoved: AsyncAction<string> = async (
   { state, effects, actions },
   resource
 ) => {
-  await actions.editor.internal.ensureOwnedEditable();
+  await actions.editor.internal.ensureSandboxIsOwned();
 
   const externalResources = state.editor.currentSandbox.externalResources;
   const resourceIndex = externalResources.indexOf(resource);
@@ -156,19 +140,12 @@ export const externalResourceRemoved: AsyncAction<string> = async (
   externalResources.splice(resourceIndex, 1);
 
   try {
-    await effects.api.request({
-      method: 'DELETE',
-      url: `/sandboxes/${state.editor.currentId}/resources/`,
-      body: {
-        id: resource,
-      },
-    });
+    await effects.api.deleteResource(state.editor.currentId, resource);
   } catch (error) {
     externalResources.splice(resourceIndex, 0, resource);
-    effects.notificationToast.add({
-      message: 'Could not save removal of external resource',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error(
+      'Could not save removal of external resource'
+    );
   }
 };
 
@@ -185,20 +162,11 @@ export const sandboxDeleted: AsyncAction = async ({
 }) => {
   actions.modalClosed();
 
-  await effects.api.request({
-    method: 'DELETE',
-    url: `/sandboxes/${state.editor.currentId}`,
-    body: {
-      id: state.editor.currentId,
-    },
-  });
+  await effects.api.deleteSandbox(state.editor.currentId);
 
   // Not sure if this is in use?
   state.workspace.showDeleteSandboxModal = false;
-  effects.notificationToast.add({
-    message: 'Sandbox deleted!',
-    status: NotificationStatus.SUCCESS,
-  });
+  effects.notificationToast.success('Sandbox deleted!');
 
   effects.router.redirectToSandboxWizard();
 };
@@ -217,11 +185,7 @@ export const sandboxPrivacyChanged: AsyncAction<0 | 1 | 2> = async (
     });
   }
 
-  await effects.api.patch(`/sandboxes/${state.editor.currentId}/privacy`, {
-    sandbox: {
-      privacy: privacy,
-    },
-  });
+  await effects.api.updatePrivacy(state.editor.currentId, privacy);
 
   state.editor.currentSandbox.privacy = privacy;
 };

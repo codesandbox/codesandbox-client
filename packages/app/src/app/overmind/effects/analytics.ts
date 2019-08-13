@@ -8,7 +8,7 @@ export default (() => {
 
   return {
     track,
-    trackOnce(event: string, data: any) {
+    trackOnce(event: string, data: any = {}) {
       if (trackedEvents[event]) {
         return;
       }

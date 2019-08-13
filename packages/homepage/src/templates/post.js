@@ -1,22 +1,22 @@
+import { format } from 'date-fns';
+import { graphql } from 'gatsby';
 import React from 'react';
 
-import { graphql } from 'gatsby';
-import { format } from 'date-fns';
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
-import { mainStyle, Image } from './_post.elements';
-
 import {
-  Container,
-  Title,
-  PostDate,
-  AuthorImage,
   Author,
+  AuthorImage,
+  Container,
+  PostDate,
+  Title,
 } from '../components/PostElements';
+import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import { makePost } from '../utils/makePosts';
 
-export default ({ data: { feedMediumBlog, markdownRemark } }) => {
+import { mainStyle, Image } from './_post.elements';
+
+export default ({ data: { markdownRemark } }) => {
   const {
     creator,
     title,
@@ -25,7 +25,7 @@ export default ({ data: { feedMediumBlog, markdownRemark } }) => {
     photo,
     featuredImage,
     description,
-  } = makePost(markdownRemark, feedMediumBlog);
+  } = makePost(markdownRemark);
 
   const featuredImageUrl = (featuredImage || '').includes('http')
     ? featuredImage
@@ -34,31 +34,37 @@ export default ({ data: { feedMediumBlog, markdownRemark } }) => {
     <Layout>
       <Container style={{ overflowX: 'auto' }}>
         <TitleAndMetaTags
-          title={`${title} - CodeSandbox Blog`}
-          image={featuredImageUrl}
           description={description}
+          image={featuredImageUrl}
+          title={`${title} - CodeSandbox Blog`}
         />
+
         <PageContainer width={800}>
           <Title>{title}</Title>
+
           <aside
             css={`
-              display: flex;
               align-items: center;
+              display: flex;
             `}
           >
             <div
               css={`
-                display: flex;
                 align-items: center;
+                display: flex;
                 flex: 1;
               `}
             >
               <AuthorImage src={photo} alt={creator} />
+
               <Author>{creator}</Author>
             </div>
+
             <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
           </aside>
-          {featuredImage ? <Image src={featuredImage} alt={title} /> : null}
+
+          {featuredImage ? <Image alt={title} src={featuredImage} /> : null}
+
           <div
             css={mainStyle}
             dangerouslySetInnerHTML={{
@@ -73,18 +79,6 @@ export default ({ data: { feedMediumBlog, markdownRemark } }) => {
 
 export const pageQuery = graphql`
   query Post($id: String) {
-    feedMediumBlog(id: { eq: $id }) {
-      id
-      categories
-      creator
-      link
-      title
-      pubDate
-      isoDate
-      content {
-        encoded
-      }
-    }
     markdownRemark(id: { eq: $id }) {
       html
       frontmatter {

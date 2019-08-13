@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
@@ -18,6 +18,7 @@ class Patron extends React.Component {
   }
   render() {
     document.title = 'Patron - CodeSandbox';
+
     return (
       <MaxWidth>
         <Margin vertical={1.5} horizontal={1.5}>
@@ -42,4 +43,4 @@ class Patron extends React.Component {
   }
 }
 
-export default inject('signals')(Patron);
+export default inject('signals')(observer(Patron));

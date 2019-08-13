@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import { memoize } from 'lodash-es';
 
 import AnimatedSandboxItem from './AnimatedSandboxItem';

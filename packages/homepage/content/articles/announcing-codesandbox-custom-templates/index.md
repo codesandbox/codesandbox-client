@@ -2,7 +2,7 @@
 featuredImage: ./images/banner.png
 slug: Templates
 authors: ['Drake Costa']
-photo: 'https://avatars0.githubusercontent.com/u/3144549?s=460&v=4'
+photo: https://avatars0.githubusercontent.com/u/3144549?s=460&v=4
 title: Announcing CodeSandbox Custom Templates
 description:
   Today we're excited to launch a new feature that we believe will speed up your
@@ -11,13 +11,16 @@ date: 2019-07-02
 ---
 
 Today we're excited to launch a new feature that we believe will speed up your
-prototyping workflow here in CodeSandbox! Say hello to templates!
+prototyping workflow here in [CodeSandbox](https://codesandbox.io)! Say hello to
+templates!
 
 ## What are Templates?
 
 We've found that for many of our users, after having used one of our built-in
-sandbox starters such as React, Vue, or Gatsby for the first time to prototype
-an application, they often want to create new projects using the same framework
+sandbox starters such as [React](https://github.com/facebook/react),
+[Vue](https://github.com/vuejs/vue) or
+[Gatsby](https://github.com/gatsbyjs/gatsby) for the first time to prototype an
+application, they often want to create new projects using the same framework
 with a specific set of dependencies, folder structure, and configuration set up
 just the way they like it.
 
@@ -33,23 +36,23 @@ started with templates!
 ## How to make your first Template
 
 Creating a template from an existing sandbox is really easy! From an existing
-sandbox, pull up the editor and open up the "Project Info" workspace in the
+sandbox, pull up the editor and open up the _Project Info_ workspace in the
 upper left corner. If you've just opened one of our official templates, first
 fork it and make some changes.
 
 ![Make Template from Sandbox](./images/1.gif)
 
-You'll notice there's a new "Make Template" button. Click that and you'll see
+You'll notice there's a new _Make Template_ button. Click that and you'll see
 that your newly created template has been frozen. This is to help prevent making
-accidental changes to the template whenever you open it from the Dashboard or
-Create New Sandbox modal. You can toggle this on and off in the Project Info
+accidental changes to the template whenever you open it from the _Dashboard_ or
+_Create New Sandbox_ modal. You can toggle this on and off in the _Project Info_
 workspace of the template to make edits to the template itself.
 
 ![Unfreeze](./images/2.gif)
 
 You can also click on the color in the sidebar to change the color you assign to
-your template. This is to help distinguish it in your Dashboard and in the
-Create New Sandbox modal.
+your template. This is to help distinguish it in your _Dashboard_ and in the
+_Create New Sandbox_ modal.
 
 ![Change Template Color](./images/3.gif)
 
@@ -63,12 +66,12 @@ it for editing or to fork it to create a new sandbox.
 
 So now that you've created your first template, how can you use it? Just like
 the official templates, you can create a new sandbox from one of your templates
-via the Create New Sandbox modal.
+via the _Create New Sandbox_ modal.
 
 ![Use Template](./images/5.gif)
 
-In the Overview tab, you'll see your most recently used templates up at the top.
-Switching over to the My Templates tab, you can browse through all of your
+In the _Overview_ tab, you'll see your most recently used templates up at the
+top. Switching over to the My Templates tab, you can browse through all of your
 custom templates. You'll also find all of your custom templates within the
 Dashboard under the My Templates tab.
 
@@ -77,9 +80,9 @@ Dashboard under the My Templates tab.
 ## Teams
 
 As a team you can have your own templates as well! When you convert a sandbox
-owned by your team to a template you will be able to see them under "Team
-Templates". Team templates are very useful for teams that want to have a common
-starting point for their team.
+owned by your team to a template you will be able to see them under _Team
+Templates_. _Team Templates_ are very useful for teams that want to have a
+common starting point for their team.
 
 ## Templates Roadmap
 
@@ -90,16 +93,17 @@ the future?
 Templates are designed to save you time and effort making new sandboxes. But
 wouldn't it be great if you could share a boilerplate app featuring your newly
 developed React library pre-configured and good to go? Have you ever visited the
-Search page and tried to find the perfect sandbox to start a new project with?
+_Search_ page and tried to find the perfect sandbox to start a new project with?
 Well we want to make that process a whole lot easier using templates!
 
 In the future you'll be able to make your templates public, which will list them
-on a new Community Templates page where you'll be able to quickly search and
+on a new _Community Templates_ page where you'll be able to quickly search and
 filter by keywords and dependencies. From there you'll be able to quickly view
-the details of a template, including a live preview and a README, as well as
-links to a template's GitHub repository and Issues page. You'll be able to watch
-other user's public templates, which will add them to your Create New Sandbox
-modal, allowing you to take advantage of what the community creates.
+the details of a template, including a live preview and a `README`, as well as
+links to a template's [GitHub](https://github.com) repository and issues page.
+You'll be able to watch other user's public templates, which will add them to
+your Create New Sandbox modal, allowing you to take advantage of what the
+community creates.
 
 As we make the sandbox execution environment more configurable, we hope that
 it'll be easy for framework maintainers to easily add and manage their own

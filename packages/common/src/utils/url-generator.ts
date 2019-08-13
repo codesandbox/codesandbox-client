@@ -1,4 +1,4 @@
-import { Sandbox } from '../types';
+import { Sandbox, GitInfo, SandboxUrlSourceData } from '../types';
 
 export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
@@ -56,17 +56,17 @@ const sandboxGitUrl = (git: {
 
 export const editorUrl = () => `/s/`;
 
-export const sandboxUrl = (sandbox: Sandbox) => {
-  if (sandbox.git) {
-    const { git } = sandbox;
+export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
+  if (sandboxDetails.git) {
+    const { git } = sandboxDetails;
     return `${editorUrl()}${sandboxGitUrl(git)}`;
   }
 
-  if (sandbox.alias) {
-    return `${editorUrl()}${sandbox.alias}`;
+  if (sandboxDetails.alias) {
+    return `${editorUrl()}${sandboxDetails.alias}`;
   }
 
-  return `${editorUrl()}${sandbox.id}`;
+  return `${editorUrl()}${sandboxDetails.id}`;
 };
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
@@ -93,7 +93,11 @@ const stagingFrameUrl = (shortid: string, path: string) => {
   )}/${path}`;
 };
 
-export const frameUrl = (sandbox: Sandbox, append: string = '') => {
+export const frameUrl = (
+  sandbox: Sandbox,
+  append: string = '',
+  useFallbackDomain = false
+) => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   if (process.env.LOCAL_SERVER) {
@@ -105,10 +109,9 @@ export const frameUrl = (sandbox: Sandbox, append: string = '') => {
   }
 
   let sHost = host();
-  // disable sandbox host for now because of .dev issues
-  // if (`https://${sHost}` in sandboxHost) {
-  //   sHost = sandboxHost[`https://${sHost}`].split('//')[1];
-  // }
+  if (`https://${sHost}` in sandboxHost && !useFallbackDomain) {
+    sHost = sandboxHost[`https://${sHost}`].split('//')[1];
+  }
   return `${location.protocol}//${sandbox.id}.${sHost}/${path}`;
 };
 

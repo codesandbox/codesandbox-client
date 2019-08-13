@@ -12,7 +12,7 @@ import {
 } from '@codesandbox/common/lib/utils/analytics';
 import '@codesandbox/common/lib/global.css';
 
-import { Signals, Store } from 'app/store';
+import store, { Signals, Store } from 'app/store';
 import history from 'app/utils/history';
 import { client } from 'app/graphql/client';
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
@@ -28,9 +28,9 @@ import { isSafari } from '@codesandbox/common/lib/utils/platform';
 
 // eslint-disable-next-line
 import * as childProcess from 'node-services/lib/child_process';
-
-import controller from './controller';
+import { Controller } from '@cerebral/mobx-state-tree';
 import App from './pages/index';
+import { Provider as OvermindProvider } from './overmind/Provider';
 import './split-pane.css';
 import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
 
@@ -55,17 +55,6 @@ window.addEventListener('unhandledrejection', e => {
     e.preventDefault();
   }
 });
-/*
-  OVERMIND REFACTOR
-*/
-// if (process.env.NODE_ENV === 'development') {
-//   Promise.all([import('overmind'), import('./overmind')]).then(modules => {
-//     const createOvermind = modules[0].createOvermind;
-//     const config = modules[1].config;
-
-//     createOvermind(config);
-//   });
-// }
 
 if (process.env.NODE_ENV === 'production') {
   try {
@@ -79,12 +68,11 @@ if (process.env.NODE_ENV === 'production') {
 
 window.__isTouch = !matchMedia('(pointer:fine)').matches;
 
-function boot() {
-  requirePolyfills().then(() => {
-    if (process.env.NODE_ENV === 'development') {
-      window.controller = controller;
-    }
+let getState;
+let getSignal;
 
+async function boot(state, signals, overmind) {
+  requirePolyfills().then(() => {
     if (isSafari) {
       import('subworkers');
     }
@@ -103,7 +91,7 @@ function boot() {
     registerServiceWorker('/service-worker.js', {
       onUpdated: () => {
         debug('Updated SW');
-        controller.getSignal('setUpdateStatus')({ status: 'available' });
+        getSignal('setUpdateStatus')({ status: 'available' });
 
         notificationState.addNotification({
           title: 'CodeSandbox Update Available',
@@ -132,19 +120,20 @@ function boot() {
     });
 
     try {
-      const { signals, store } = controller.provide();
       render(
         <Signals.Provider value={signals}>
-          <Store.Provider value={store}>
-            <Provider {...{ signals, store }}>
+          <Store.Provider value={state}>
+            <Provider store={state} signals={signals}>
               <ApolloProvider client={client}>
-                <HooksProvider client={client}>
-                  <ThemeProvider theme={theme}>
-                    <Router history={history}>
-                      <App />
-                    </Router>
-                  </ThemeProvider>
-                </HooksProvider>
+                <OvermindProvider value={overmind}>
+                  <HooksProvider client={client}>
+                    <ThemeProvider theme={theme}>
+                      <Router history={history}>
+                        <App />
+                      </Router>
+                    </ThemeProvider>
+                  </HooksProvider>
+                </OvermindProvider>
               </ApolloProvider>
             </Provider>
           </Store.Provider>
@@ -157,102 +146,156 @@ function boot() {
   });
 }
 
-// Configures BrowserFS to use the LocalStorage file system.
-window.BrowserFS.configure(
-  {
-    fs: 'MountableFileSystem',
-    options: {
-      '/': { fs: 'InMemory', options: {} },
-      '/sandbox': {
-        fs: 'CodeSandboxEditorFS',
-        options: {
-          api: {
-            getState: () => ({
-              modulesByPath: controller.getState().editor.currentSandbox
-                ? controller.getState().editor.modulesByPath
-                : {},
-            }),
-          },
-        },
-      },
-      '/sandbox/node_modules': {
-        fs: 'CodeSandboxFS',
-        options: getTypeFetcher().options,
-      },
-      '/vscode': {
-        fs: 'LocalStorage',
-      },
-      '/home': {
-        fs: 'LocalStorage',
-      },
-      '/extensions': {
-        fs: 'BundledHTTPRequest',
-        options: {
-          index: EXTENSIONS_LOCATION + '/extensions/index.json',
-          baseUrl: EXTENSIONS_LOCATION + '/extensions',
-          bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
-          logReads: process.env.NODE_ENV === 'development',
-        },
-      },
-      '/extensions/custom-theme': {
-        fs: 'InMemory',
-      },
-    },
-  },
-  async e => {
-    if (e) {
-      console.error('Problems initializing FS', e);
-      // An error happened!
-      throw e;
-    }
+async function initialize() {
+  /*
+    Configure Cerebral and Overmind
+  */
+  let signals = null;
+  let state = null;
+  let overmind = null;
 
-    const isVSCode = controller.getState().preferences.settings
-      .experimentVSCode;
+  if (location.search.includes('overmind=true')) {
+    await Promise.all([import('overmind'), import('./overmind')]).then(
+      modules => {
+        const createOvermind = modules[0].createOvermind;
+        const config = modules[1].config;
 
-    if (isVSCode) {
-      // For first-timers initialize a theme in the cache so it doesn't jump colors
-      initializeExtensionsFolder();
-      initializeCustomTheme();
-      initializeThemeCache();
-      initializeSettings();
-      setVimExtensionEnabled(
-        localStorage.getItem('settings.vimmode') === 'true'
-      );
-    }
+        overmind = createOvermind(config, {
+          devtools: 'localhost:3032',
+          logProxies: true,
+        });
 
-    // eslint-disable-next-line global-require
-    vscode.loadScript(
-      [
-        isVSCode
-          ? 'vs/editor/codesandbox.editor.main'
-          : 'vs/editor/editor.main',
-      ],
-      isVSCode,
-      () => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Loaded Monaco'); // eslint-disable-line
-        }
-        if (isVSCode) {
-          vscode.acquireController(controller);
-
-          import(
-            'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host'
-          ).then(ExtHostWorkerLoader => {
-            childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
-            // childProcess.preloadWorker('/vs/bootstrap-fork');
-          });
-
-          // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
-          //   SearchServiceWorker => {
-          //     childProcess.addForkHandler(
-          //       'csb:search-service',
-          //       SearchServiceWorker.default
-          //     );
-          //   }
-          // );
-        }
-        boot();
+        getState = () => overmind.state;
+        getSignal = path =>
+          path.split('.').reduce((aggr, key) => aggr[key], overmind.actions);
       }
     );
+  } else {
+    let Devtools = null;
+
+    if (process.env.NODE_ENV !== 'production') {
+      Devtools = require('cerebral/devtools').default; // eslint-disable-line
+    }
+
+    const controller = Controller(store, {
+      devtools:
+        Devtools &&
+        Devtools({
+          host: 'localhost:8383',
+          reconnect: false,
+        }),
+    });
+
+    const controllerProvided = controller.provide();
+
+    state = controllerProvided.store;
+    signals = controllerProvided.signals;
+
+    getState = controller.getState.bind(controller);
+    getSignal = controller.getSignal.bind(controller);
   }
-);
+
+  // Configures BrowserFS to use the LocalStorage file system.
+  window.BrowserFS.configure(
+    {
+      fs: 'MountableFileSystem',
+      options: {
+        '/': { fs: 'InMemory', options: {} },
+        '/sandbox': {
+          fs: 'CodeSandboxEditorFS',
+          options: {
+            api: {
+              getState: () => ({
+                modulesByPath: getState().editor.currentSandbox
+                  ? getState().editor.modulesByPath
+                  : {},
+              }),
+            },
+          },
+        },
+        '/sandbox/node_modules': {
+          fs: 'CodeSandboxFS',
+          options: getTypeFetcher().options,
+        },
+        '/vscode': {
+          fs: 'LocalStorage',
+        },
+        '/home': {
+          fs: 'LocalStorage',
+        },
+        '/extensions': {
+          fs: 'BundledHTTPRequest',
+          options: {
+            index: EXTENSIONS_LOCATION + '/extensions/index.json',
+            baseUrl: EXTENSIONS_LOCATION + '/extensions',
+            bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+            logReads: process.env.NODE_ENV === 'development',
+          },
+        },
+        '/extensions/custom-theme': {
+          fs: 'InMemory',
+        },
+      },
+    },
+    async e => {
+      if (e) {
+        console.error('Problems initializing FS', e);
+        // An error happened!
+        throw e;
+      }
+
+      const isVSCode = getState().preferences.settings.experimentVSCode;
+
+      if (isVSCode) {
+        // For first-timers initialize a theme in the cache so it doesn't jump colors
+        initializeExtensionsFolder();
+        initializeCustomTheme();
+        initializeThemeCache();
+        initializeSettings();
+        setVimExtensionEnabled(
+          localStorage.getItem('settings.vimmode') === 'true'
+        );
+      }
+
+      // eslint-disable-next-line global-require
+      vscode.loadScript(
+        [
+          isVSCode
+            ? 'vs/editor/codesandbox.editor.main'
+            : 'vs/editor/editor.main',
+        ],
+        isVSCode,
+        () => {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Loaded Monaco'); // eslint-disable-line
+          }
+          if (isVSCode) {
+            vscode.acquireController({
+              getSignal,
+              getState,
+            });
+
+            import(
+              'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host'
+            ).then(ExtHostWorkerLoader => {
+              childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
+              // child_process.preloadWorker('/vs/bootstrap-fork');
+            });
+
+            // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
+            //   SearchServiceWorker => {
+            //     child_process.addForkHandler(
+            //       'csb:search-service',
+            //       SearchServiceWorker.default
+            //     );
+            //   }
+            // );
+          }
+          boot(state, signals, overmind);
+        }
+      );
+    }
+  );
+}
+
+initialize();

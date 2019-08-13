@@ -28,6 +28,11 @@ export async function initializeSentry(dsn: string) {
     return Sentry.init({
       dsn,
       release: VERSION,
+      ignoreErrors: [
+        'Custom Object', // Called for errors coming from sandbox (https://sentry.io/organizations/codesandbox/issues/965255074/?project=155188&query=is%3Aunresolved&statsPeriod=14d)
+        'TypeScript Server Error', // Called from the TSC server
+        /^Canceled$/, // Used by VSCode to stop currently running actions
+      ],
     });
   }
 }

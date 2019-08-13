@@ -5,12 +5,13 @@ import {
   EditorCorrection,
   WindowOrientation,
   Module,
+  Tabs,
+  DiffTab,
+  ModuleTab,
 } from '@codesandbox/common/lib/types';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-import themes from '@codesandbox/common/lib/themes';
 import { dirname } from 'path';
 import { parseConfigurations } from '../../utils/parse-configurations';
-import { Tab } from 'app/components/CodeEditor/types';
 import {
   getModulePath,
   getDirectoryPath,
@@ -37,7 +38,7 @@ type State = {
   };
   pendingUserSelections: EditorSelection[];
   currentTabId: string;
-  tabs: Tab[];
+  tabs: Tabs;
   errors: EditorError[];
   corrections: EditorCorrection[];
   isInProjectView: boolean;
@@ -48,7 +49,6 @@ type State = {
   quickActionsOpen: boolean;
   previewWindowVisible: boolean;
   previewWindowOrientation: WindowOrientation;
-  themes: typeof themes;
   isAllModulesSynced: boolean;
   currentSandbox: Sandbox;
   currentModule: Module;
@@ -56,7 +56,7 @@ type State = {
   currentPackageJSON: Module;
   currentPackageJSONCode: string;
   parsedConfigurations: any;
-  currentTab: Tab;
+  currentTab: ModuleTab | DiffTab;
   modulesByPath: {
     [path: string]: Module;
   };
@@ -93,28 +93,40 @@ export const state: State = {
     window.innerHeight / window.innerWidth > 0.9
       ? WindowOrientation.HORIZONTAL
       : WindowOrientation.VERTICAL,
-  themes,
-  get currentSandbox(this: State) {
-    return this.sandboxes[this.currentId];
+  get currentSandbox() {
+    const state: State = this;
+
+    return state.sandboxes[state.currentId];
   },
-  get isAllModulesSynced(this: State) {
-    return !this.changedModuleShortids.length;
+  get isAllModulesSynced() {
+    const state: State = this;
+
+    return !state.changedModuleShortids.length;
   },
-  get currentModule(this: State) {
+  get currentModule() {
+    const state: State = this;
+
     return (
-      this.currentSandbox.modules.find(
-        module => module.shortid === this.currentModuleShortid
-      ) || null
+      (state.currentSandbox &&
+        state.currentSandbox.modules.find(
+          module => module.shortid === state.currentModuleShortid
+        )) ||
+      null
     );
   },
   // This would benefit being a derived
-  get modulesByPath(this: State) {
+  get modulesByPath() {
+    const state: State = this;
     const modulesObject = {};
 
-    this.currentSandbox.modules.forEach(m => {
+    if (!state.currentSandbox) {
+      return modulesObject;
+    }
+
+    state.currentSandbox.modules.forEach(m => {
       const path = getModulePath(
-        this.currentSandbox.modules,
-        this.currentSandbox.directories,
+        state.currentSandbox.modules,
+        state.currentSandbox.directories,
         m.id
       );
       if (path) {
@@ -122,10 +134,10 @@ export const state: State = {
       }
     });
 
-    this.currentSandbox.directories.forEach(d => {
+    state.currentSandbox.directories.forEach(d => {
       const path = getDirectoryPath(
-        this.currentSandbox.modules,
-        this.currentSandbox.directories,
+        state.currentSandbox.modules,
+        state.currentSandbox.directories,
         d.id
       );
 
@@ -137,13 +149,14 @@ export const state: State = {
 
     return modulesObject;
   },
-  get currentTab(this: State) {
-    const currentTabId = this.currentTabId;
-    const tabs = this.tabs;
-    const currentModuleShortid = this.currentModuleShortid;
+  get currentTab() {
+    const state: State = this;
+    const currentTabId = state.currentTabId;
+    const tabs = state.tabs;
+    const currentModuleShortid = state.currentModuleShortid;
 
     if (currentTabId) {
-      const foundTab = this.tabs.find(
+      const foundTab = state.tabs.find(
         tab => 'id' in tab && tab.id === currentTabId
       );
 
@@ -162,32 +175,54 @@ export const state: State = {
    * an editor that works with bigger projects that run on a container. The advanced editor
    * only has added features, so it's a subset on top of the existing editor.
    */
-  get isAdvancedEditor(this: State) {
-    if (!this.currentSandbox) {
+  get isAdvancedEditor() {
+    const state: State = this;
+
+    if (!state.currentSandbox) {
       return false;
     }
 
-    const isServer = getTemplate(this.currentSandbox.template).isServer;
+    const isServer = getTemplate(state.currentSandbox.template).isServer;
 
-    return isServer && this.currentSandbox.owned;
+    return isServer && state.currentSandbox.owned;
   },
-  get parsedConfigurations(this: State) {
-    return parseConfigurations(this.currentSandbox);
+  get parsedConfigurations() {
+    const state: State = this;
+
+    return state.currentSandbox
+      ? parseConfigurations(state.currentSandbox)
+      : null;
   },
-  get mainModule(this: State) {
-    return getMainModule(this.currentSandbox, this.parsedConfigurations);
+  get mainModule() {
+    const state: State = this;
+
+    return state.currentSandbox
+      ? getMainModule(state.currentSandbox, state.parsedConfigurations)
+      : null;
   },
-  get currentPackageJSON(this: State) {
-    const module = this.currentSandbox.modules.find(
+  get currentPackageJSON() {
+    const state: State = this;
+
+    if (!state.currentSandbox) {
+      return null;
+    }
+
+    const module = state.currentSandbox.modules.find(
       m => m.directoryShortid == null && m.title === 'package.json'
     );
 
     return module;
   },
-  get currentPackageJSONCode(this: State) {
-    return this.currentPackageJSON
-      ? this.currentPackageJSON.code
-      : generateFileFromSandbox(this.currentSandbox);
+  get currentPackageJSONCode() {
+    const state: State = this;
+
+    if (!state.currentPackageJSON) {
+      return null;
+    }
+
+    return state.currentPackageJSON
+      ? state.currentPackageJSON.code
+      : generateFileFromSandbox(state.currentSandbox);
   },
   isModuleSynced: state => moduleShortid => {
     return state.changedModuleShortids.indexOf(moduleShortid) === -1;

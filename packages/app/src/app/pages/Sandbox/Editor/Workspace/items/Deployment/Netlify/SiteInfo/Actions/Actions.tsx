@@ -1,7 +1,5 @@
-import { observer } from 'mobx-react-lite';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
-
-import { useStore } from 'app/store';
 
 import { ButtonContainer } from '../../../elements';
 
@@ -10,12 +8,8 @@ import { SubTitle } from '../elements';
 import { ClaimSiteButton } from './ClaimSiteButton';
 import { VisitSiteButton } from './VisitSiteButton';
 
-export const Actions = observer(() => {
-  const {
-    deployment: { netlifyClaimUrl },
-  } = useStore();
-
-  return (
+export const Actions = inject('store')(
+  hooksObserver(({ store: { deployment: { netlifyClaimUrl } } }) => (
     <>
       <SubTitle>Actions</SubTitle>
 
@@ -25,5 +19,5 @@ export const Actions = observer(() => {
         {netlifyClaimUrl ? <ClaimSiteButton /> : null}
       </ButtonContainer>
     </>
-  );
-});
+  ))
+);

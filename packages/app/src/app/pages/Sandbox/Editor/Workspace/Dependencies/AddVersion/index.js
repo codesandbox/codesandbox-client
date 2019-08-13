@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'mobx-react';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 import { Button } from '@codesandbox/common/lib/components/Button';
 
@@ -25,4 +25,4 @@ function AddVersion({ signals, children }) {
   );
 }
 
-export default inject('signals')(AddVersion);
+export default inject('signals')(hooksObserver(AddVersion));

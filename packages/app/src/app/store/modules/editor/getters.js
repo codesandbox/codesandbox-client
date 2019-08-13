@@ -30,6 +30,10 @@ export function currentModule() {
 export function modulesByPath() {
   const modulesObject = {};
 
+  if (!this.currentSandbox) {
+    return modulesObject;
+  }
+
   this.currentSandbox.modules.forEach(m => {
     const path = getModulePath(
       this.currentSandbox.modules,

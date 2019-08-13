@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
+import { observer } from 'app/componentConnectors';
 
 import ContextMenu from 'app/components/ContextMenu';
 import { Container, TabTitle, StyledCloseIcon } from './elements';

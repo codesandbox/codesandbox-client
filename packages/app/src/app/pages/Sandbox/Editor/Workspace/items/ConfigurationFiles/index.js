@@ -4,7 +4,7 @@ import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import { Module, Configuration } from '@codesandbox/common/lib/types';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import BookIcon from 'react-icons/lib/md/library-books';
 import UIIcon from 'react-icons/lib/md/dvr';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'mobx-react';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import SearchDependencies from 'app/pages/Sandbox/SearchDependencies';
 
 function SearchDependenciesModal({ signals }) {
@@ -12,4 +12,4 @@ function SearchDependenciesModal({ signals }) {
   );
 }
 
-export default inject('signals')(SearchDependenciesModal);
+export default inject('signals')(hooksObserver(SearchDependenciesModal));

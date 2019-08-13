@@ -130,11 +130,15 @@ export const setSandbox = [
   when(
     state`editor.currentId`,
     props`sandbox.id`,
-    (currentId, newId) => currentId === newId
+    state`live.isLoading`,
+    // If we don't add the live check we will never initialize this state, since the roomJoined sequence also initializes
+    // editor.currentId to sandbox.id, which causes this check to always resolve to true
+    (currentId, newId, isLoadingLive) => currentId === newId && !isLoadingLive
   ),
   {
     true: [],
     false: [
+      set(props`oldId`, state`editor.currentId`),
       set(state`editor.currentId`, props`sandbox.id`),
       actions.setCurrentModuleShortid,
       actions.setMainModuleShortid,
@@ -146,6 +150,20 @@ export const setSandbox = [
       resetServerState,
       setupExecutor,
       syncFilesToFS,
+
+      // Check because in live oldId === currentId
+      when(
+        props`oldId`,
+        state`editor.currentId`,
+        (oldId, currentId) => oldId === currentId
+      ),
+      {
+        true: [],
+        // Remove the old sandbox because it's stale with the changes the user did on it (for example,
+        // the user might have changed code of a file and then forked. We didn't revert the code back
+        // to its old state so if the user opens this sandbox again it shows wrong code)
+        false: [unset(state`editor.sandboxes.${props`oldId`}`)],
+      },
     ],
   },
 ];

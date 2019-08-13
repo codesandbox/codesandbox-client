@@ -18,6 +18,7 @@ import { Spring } from 'react-spring/renderprops.cjs';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 
 import { getSandboxName } from '../../utils/get-sandbox-name';
+import track from '../../utils/analytics';
 
 import Navigator from './Navigator';
 import { Container, StyledFrame, Loading } from './elements';
@@ -56,6 +57,7 @@ type State = {
   urlInAddressBar: string;
   url: string | undefined;
   showScreenshot: boolean;
+  useFallbackDomain: boolean;
 };
 
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
@@ -86,6 +88,7 @@ class BasePreview extends React.Component<Props, State> {
       urlInAddressBar: this.currentUrl(),
       url: null,
       showScreenshot: true,
+      useFallbackDomain: false,
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -107,6 +110,8 @@ class BasePreview extends React.Component<Props, State> {
 
     (window as any).openNewWindow = this.openNewWindow;
 
+    this.testFallbackDomainIfNeeded();
+
     setTimeout(() => {
       if (this.state.showScreenshot) {
         this.setState({ showScreenshot: false });
@@ -123,11 +128,68 @@ class BasePreview extends React.Component<Props, State> {
     }
   }
 
+  /**
+   * We have a different domain for the preview (currently :id.csb.app), some corporate
+   * firewalls block calls to these domains. Which is why we ping the domain here, if it
+   * returns a bad response we fall back to using our main domain (:id.codesandbox.io).
+   *
+   * We use a different domain for the preview, since Chrome runs iframes from a different root
+   * domain in a different process, which means for us that we have a snappier editor
+   */
+  testFallbackDomainIfNeeded = () => {
+    const TRACKING_NAME = 'Preview - Fallback URL';
+    const normalUrl = frameUrl(
+      this.props.sandbox,
+      this.props.initialPath || ''
+    );
+    const fallbackUrl = frameUrl(
+      this.props.sandbox,
+      this.props.initialPath || '',
+      true
+    );
+
+    const setFallbackDomain = () => {
+      this.setState(
+        {
+          useFallbackDomain: true,
+          urlInAddressBar: frameUrl(
+            this.props.sandbox,
+            this.props.initialPath || '',
+            true
+          ),
+        },
+        () => {
+          requestAnimationFrame(() => {
+            this.sendUrl();
+          });
+        }
+      );
+    };
+
+    if (!this.props.url && normalUrl !== fallbackUrl) {
+      fetch(normalUrl, { mode: 'no-cors' })
+        .then(() => {
+          // Succeeded
+          track(TRACKING_NAME, { needed: false });
+        })
+        .catch(() => {
+          // Failed, use fallback
+          track(TRACKING_NAME, { needed: true });
+
+          setFallbackDomain();
+        });
+    }
+  };
+
   currentUrl = () =>
     this.props.url ||
     (this.serverPreview
       ? getSSEUrl(this.props.sandbox, this.props.initialPath)
-      : frameUrl(this.props.sandbox, this.props.initialPath || ''));
+      : frameUrl(
+          this.props.sandbox,
+          this.props.initialPath || '',
+          this.state && this.state.useFallbackDomain
+        ));
 
   static defaultProps = {
     showNavigation: true,

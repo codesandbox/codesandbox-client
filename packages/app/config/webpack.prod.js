@@ -1,3 +1,4 @@
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
@@ -8,19 +9,16 @@ const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
   .normalizeName;
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const VERSION = require('@codesandbox/common/lib/version').default;
 const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
 
 const publicPath = '/';
-
-const COMMIT_COUNT = childProcess
-  .execSync('git rev-list --count HEAD')
-  .toString();
-
-const COMMIT_HASH = childProcess
-  .execSync('git rev-parse --short HEAD')
-  .toString();
-const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
+const isMaster =
+  childProcess
+    .execSync(`git branch | grep \\* | cut -d ' ' -f2`)
+    .toString()
+    .trim() === 'master';
 
 const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
 
@@ -308,5 +306,11 @@ module.exports = merge(commonConfig, {
         to: 'public/sse-hooks',
       },
     ]),
+    isMaster &&
+      new SentryWebpackPlugin({
+        include: 'src',
+        ignore: ['node_modules', 'webpack.config.js'],
+        release: VERSION,
+      }),
   ].filter(Boolean),
 });

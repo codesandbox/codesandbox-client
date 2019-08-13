@@ -1,16 +1,13 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { newSandboxWizard } from '@codesandbox/common/lib/utils/url-generator';
-import { useStore } from 'app/store';
 
 import { Container, Title, SubTitle, Buttons } from './elements';
 
-const NotFound = observer(() => {
-  const { hasLogIn } = useStore();
-
-  return (
+const NotFound = inject('store')(
+  hooksObserver(({ store: { hasLogIn } }) => (
     <Container>
       <Title>404</Title>
       <SubTitle>
@@ -27,7 +24,7 @@ const NotFound = observer(() => {
         </Button>
       </Buttons>
     </Container>
-  );
-});
+  ))
+);
 
 export default NotFound;

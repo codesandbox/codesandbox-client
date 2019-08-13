@@ -1,7 +1,9 @@
+import { Derive } from 'app/overmind';
+
 type State = {
   price: number;
   isUpdatingSubscription: boolean;
-  tier: number;
+  tier: Derive<State, number>;
   error: string;
 };
 
@@ -9,8 +11,8 @@ export const state: State = {
   price: 10,
   error: null,
   isUpdatingSubscription: false,
-  get tier(this: State) {
-    const price = this.price;
+  tier: state => {
+    const price = state.price;
 
     if (price >= 20) return 4;
     if (price >= 15) return 3;

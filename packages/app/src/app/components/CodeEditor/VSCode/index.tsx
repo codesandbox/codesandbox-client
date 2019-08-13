@@ -66,6 +66,18 @@ function getSelection(lines, selection) {
   };
 }
 
+type UserSelection =
+  | {
+      userId: string;
+      selection: null;
+    }
+  | {
+      userId: string;
+      name: string;
+      selection: any;
+      color: number[];
+    };
+
 class MonacoEditor extends React.Component<Props> implements Editor {
   static defaultProps = {
     width: '100%',
@@ -81,8 +93,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   tsconfig: Props['tsconfig'] | undefined;
   disposeInitializer?: Function;
   lintWorker: Worker | undefined;
-  editor: any;
-  monaco: any;
+  editor?: any;
+  monaco?: any;
   receivingCode: boolean = false;
   codeSandboxAPIListener: () => void;
   sizeProbeInterval: number | null;
@@ -406,6 +418,12 @@ class MonacoEditor extends React.Component<Props> implements Editor {
             this.currentModule.code !== undefined &&
             activeEditor.getValue(1) !== this.currentModule.code
           ) {
+            // Don't send these changes over live, since these changes can also be made by someone else and
+            // we don't want to keep singing these changes
+            // TODO: a better long term solution would be to store the changes of someone else in a model, even if the
+            // model is not opened in an editor.
+
+            this.receivingCode = true;
             // This means that the file in Cerebral is dirty and has changed,
             // VSCode only gets saved contents. In this case we manually set the value correctly.
             const model = activeEditor.getModel();
@@ -415,6 +433,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
                 range: model.getFullModelRange(),
               },
             ]);
+            this.receivingCode = false;
           }
 
           this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
@@ -492,8 +511,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     errors?: ModuleError[],
     corrections?: ModuleCorrection[]
   ) => {
-    const oldModule = this.currentModule;
-    this.swapDocuments(oldModule, newModule);
+    this.swapDocuments(newModule);
 
     this.currentModule = newModule;
     this.currentTitle = newModule.title;
@@ -557,20 +575,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
   userClassesGenerated = {};
   userSelectionDecorations = {};
-  updateUserSelections = (
-    userSelections: Array<
-      | {
-          userId: string;
-          selection: null;
-        }
-      | {
-          userId: string;
-          name: string;
-          selection: any;
-          color: number[];
-        }
-    >
-  ) => {
+  updateUserSelections = (userSelections: UserSelection[]) => {
     if (this.editor.getActiveCodeEditor()) {
       updateUserSelections(
         this.monaco,
@@ -588,8 +593,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   ): Promise<null> =>
     new Promise(resolve => {
       this.sandbox = newSandbox;
-      this.currentModule = newCurrentModule;
       this.dependencies = dependencies;
+      this.changeModule(newCurrentModule, [], []);
 
       // Do in setTimeout, since disposeModules is async
       setTimeout(() => {
@@ -707,9 +712,11 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         '/sandbox' +
         getModulePath(this.sandbox.modules, this.sandbox.directories, moduleId);
 
-      const modelEditor = this.editor.editorService.editors.find(
-        editor => editor.resource && editor.resource.path === modulePath
-      );
+      const modelEditor =
+        this.editor &&
+        this.editor.editorService.editors.find(
+          editor => editor.resource && editor.resource.path === modulePath
+        );
 
       // Apply the code to the current module code itself
       const module = this.sandbox.modules.find(
@@ -730,23 +737,24 @@ class MonacoEditor extends React.Component<Props> implements Editor {
           // Something went wrong while applying
           this.props.onModuleStateMismatch();
         }
-        return;
+      } else {
+        this.liveOperationCode = '';
+
+        modelEditor.textModelReference.then(model => {
+          this.applyOperationToModel(
+            operation,
+            false,
+            model.object.textEditorModel
+          );
+
+          if (this.props.onChange) {
+            this.props.onChange(
+              model.object.textEditorModel.getValue(1),
+              module.shortid
+            );
+          }
+        });
       }
-
-      this.liveOperationCode = '';
-
-      modelEditor.textModelReference.then(model => {
-        this.applyOperationToModel(
-          operation,
-          false,
-          model.object.textEditorModel
-        );
-
-        this.props.onChange(
-          model.object.textEditorModel.getValue(1),
-          module.shortid
-        );
-      });
     });
   };
 
@@ -976,13 +984,13 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         module.id
       );
 
-      if (this.getCurrentModelPath() !== path) {
+      if (path && this.getCurrentModelPath() !== path) {
         this.editor.openFile(path);
       }
     }
   };
 
-  swapDocuments = (currentModule: Module, nextModule: Module) => {
+  swapDocuments = (nextModule: Module) => {
     this.openModule(nextModule);
   };
 

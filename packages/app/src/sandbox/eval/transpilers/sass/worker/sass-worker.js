@@ -4,9 +4,7 @@ import { extname } from 'path';
 import delay from '@codesandbox/common/lib/utils/delay';
 
 self.importScripts([
-  process.env.NODE_ENV === 'production'
-    ? 'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.10.13/sass.sync.min.js'
-    : 'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.10.13/sass.sync.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.11.0/sass.sync.js',
 ]);
 
 self.postMessage('ready');

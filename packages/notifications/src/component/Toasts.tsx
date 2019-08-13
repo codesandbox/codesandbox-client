@@ -71,9 +71,14 @@ export function Toasts({ state }: { state: NotificationState }) {
   const removeNotification = React.useCallback((id: string) => {
     setNotificationsToShow(notifs => {
       const newNotifs = notifs.filter(notif => notif.id !== id);
+      const notifToHide = notifs.find(notif => notif.id === id);
 
       if (newNotifs.length !== notifs.length) {
         return newNotifs;
+      }
+
+      if (notifToHide.notification.onHide) {
+        notifToHide.notification.onHide();
       }
 
       return notifs;
