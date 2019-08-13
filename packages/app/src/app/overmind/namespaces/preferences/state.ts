@@ -1,11 +1,12 @@
-import { Preferences, PaymentDetails } from '@codesandbox/common/lib/types';
+import { Settings, PaymentDetails } from '@codesandbox/common/lib/types';
 import { isIOS } from '@codesandbox/common/lib/utils/platform';
 import { Derive } from 'app/overmind';
 import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 
 type State = {
-  settings: Preferences;
+  settings: Settings;
   isLoadingPaymentDetails: boolean;
+  hideNavigation: boolean;
   itemId: string;
   showEditor: boolean;
   showModal: boolean;
@@ -19,6 +20,9 @@ type State = {
 
 export const state: State = {
   settings: {
+    autoResize: true,
+    enableEslint: true,
+    forceRefresh: false,
     prettifyOnSaveEnabled: true,
     zenMode: false,
     autoCompleteEnabled: true,
@@ -45,6 +49,7 @@ export const state: State = {
       jsxBracketSameLine: false,
     },
     jsxBracketSameLine: false,
+    // TODO: Should these be her?
     printWidth: 80,
     semi: true,
     singleQuote: false,
@@ -57,10 +62,11 @@ export const state: State = {
     // Menlo. So a temporary fix is to only enable this for Windows.
     enableLigatures: navigator.platform.indexOf('Win') > -1,
 
-    customVSCodeTheme: undefined,
-    manualCustomVSCodeTheme: undefined,
+    customVSCodeTheme: null,
+    manualCustomVSCodeTheme: null,
     experimentVSCode: !isIOS,
   },
+  hideNavigation: false,
   showModal: false,
   isLoadingPaymentDetails: true,
   paymentDetailError: null,

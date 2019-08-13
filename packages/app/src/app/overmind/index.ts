@@ -7,6 +7,7 @@ import {
   IState,
 } from 'overmind';
 import { merge, namespaced } from 'overmind/config';
+import { createConnect } from './createConnect';
 import * as effects from './effects';
 import { state } from './state';
 import { onInitialize } from './onInitialize';
@@ -64,3 +65,5 @@ export interface Operator<Input = void, Output = Input>
 
 export interface Derive<Parent extends IState, Output>
   extends IDerive<Config, Parent, Output> {}
+
+export const connect = createConnect<typeof config>();

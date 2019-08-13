@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import { createZip, BLOB_ID } from '../utils/create-zip';
+import { createZip, BLOB_ID } from '../zip/create-zip';
 import { Sandbox } from '@codesandbox/common/lib/types';
 
 export default async function deploy(sandbox: Sandbox) {

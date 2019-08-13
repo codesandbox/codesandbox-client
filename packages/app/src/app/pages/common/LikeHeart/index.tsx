@@ -5,10 +5,8 @@ import FullHeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/hear
 import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import { Sandbox } from '@codesandbox/common/lib/types';
 import noop from 'lodash/noop';
-import { observer } from 'mobx-react-lite';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
-
-import { useStore, useSignals } from 'app/store';
 
 import { Container } from './elements';
 
@@ -29,22 +27,23 @@ interface Props {
   style?: React.CSSProperties;
   disableTooltip?: boolean;
   highlightHover?: boolean;
+  store: any;
+  signals: any;
 }
 
-const LikeHeart = observer<Props>(
-  ({
-    sandbox,
-    className,
-    colorless,
-    text,
-    style,
-    disableTooltip,
-    highlightHover,
-  }) => {
-    const { isLoggedIn } = useStore();
-    const { editor } = useSignals();
-
-    return (
+const LikeHeart = inject('store', 'signals')(
+  hooksObserver(
+    ({
+      sandbox,
+      className,
+      colorless,
+      text,
+      style,
+      disableTooltip,
+      highlightHover,
+      store: { isLoggedIn },
+      signals: { editor },
+    }: Props) => (
       <Container
         style={style}
         hasText={text !== undefined}
@@ -72,8 +71,8 @@ const LikeHeart = observer<Props>(
           {text && <span>{text}</span>}
         </MaybeTooltip>
       </Container>
-    );
-  }
+    )
+  )
 );
 
 export default LikeHeart;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import LiveInfo from './LiveInfo';
 import LiveButton from './LiveButton';

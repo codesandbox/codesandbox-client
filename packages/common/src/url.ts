@@ -1,4 +1,4 @@
-export interface Result {
+export interface SandboxOptions {
   editorSize: number;
   tabs?: string[];
   currentModule?: string;
@@ -23,7 +23,7 @@ export interface Result {
 }
 
 export const getSandboxOptions = (url: string) => {
-  const result: Result = {
+  const result: SandboxOptions = {
     editorSize: 50,
   };
   const moduleMatch = url.match(/(\?|&)(module)=([^&]+)/);

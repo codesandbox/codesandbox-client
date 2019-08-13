@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { ModuleError } from '@codesandbox/common/lib/types';

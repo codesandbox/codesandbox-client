@@ -1,64 +1,64 @@
 import { Action, AsyncAction } from 'app/overmind';
 import * as internalActions from './internalActions';
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-import { NetlifyBaseURL } from 'app/overmind/constants';
-import { NetlifySite } from './state';
 
 export const internal = internalActions;
 
-export const deployWithNetlify: AsyncAction = async ({
-  effects,
-  state,
-  actions,
-}) => {
+export const deployWithNetlify: AsyncAction = async ({ effects, state }) => {
   state.deployment.deploying = true;
-  const zip = await actions.deployment.internal.createZip();
+  state.deployment.netlifyLogs = null;
+
+  const zip = await effects.zip.create(state.editor.currentSandbox);
+
   try {
-    const id = await actions.deployment.internal.deployToNetlify(zip.file);
+    const id = await effects.netlify.deploy(
+      zip.file,
+      state.editor.currentSandbox
+    );
     state.deployment.deploying = false;
     // Does not seem that we use this thing? Not in other code either
     // const deploys = await actions.deployment.internal.getNetlifyDeploys();
     state.deployment.building = true;
-    await actions.deployment.internal.getStatus(id);
-    effects.notificationToast.add({
-      message: 'Sandbox Deployed',
-      status: NotificationStatus.SUCCESS,
+    await effects.netlify.waitForDeploy(id, logUrl => {
+      if (!state.deployment.netlifyLogs) {
+        state.deployment.netlifyLogs = logUrl;
+      }
     });
-    state.deployment.building = false;
+    effects.notificationToast.success('Sandbox Deployed');
   } catch (error) {
-    state.deployment.deploying = false;
-    state.deployment.building = false;
-    effects.notificationToast.add({
-      message: 'An unknown error occurred when deploying your site',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error(
+      'An unknown error occurred when deploying your site'
+    );
   }
+  state.deployment.deploying = false;
+  state.deployment.building = false;
 };
 
-export const getNetlifyDeploys: AsyncAction = async ({ state, actions }) => {
+export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
   // We are not using the claim for anything?
   // const claim = await actions.deployment.internal.claimNetlifyWebsite();
   try {
-    state.deployment.netlifySite = await actions.deployment.internal.getNetlifyDeploys();
+    state.deployment.netlifySite = await effects.netlify.getDeployments(
+      state.editor.currentId
+    );
   } catch (error) {
     state.deployment.netlifySite = null;
   }
 };
 
-export const getDeploys: AsyncAction = async ({ state, effects, actions }) => {
+export const getDeploys: AsyncAction = async ({ state, effects }) => {
   state.deployment.gettingDeploys = true;
 
-  const deploymentData = await actions.deployment.internal.getDeploymentData();
-
   try {
-    state.deployment.sandboxDeploys = await actions.deployment.internal.getDeploys(
-      deploymentData
+    const zeitConfig = effects.zeit.getConfig(state.editor.currentSandbox);
+
+    state.deployment.hasAlias = !!zeitConfig.alias;
+    state.deployment.sandboxDeploys = await effects.zeit.getDeployments(
+      zeitConfig.name
     );
   } catch (error) {
-    effects.notificationToast.add({
-      message: 'An unknown error occurred when connecting to Zite',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error(
+      'An unknown error occurred when connecting to Zite'
+    );
   }
 
   state.deployment.gettingDeploys = false;
@@ -70,19 +70,18 @@ export const deployClicked: AsyncAction = async ({
   actions,
 }) => {
   state.deployment.deploying = true;
-  const file = await actions.deployment.internal.createZip();
-  const contents = await effects.jsZip.loadAsync(file);
-  const apiData = await actions.deployment.internal.createApiData(contents);
+  const zip = await effects.zip.create(state.editor.currentSandbox);
+  const contents = await effects.jsZip.loadAsync(zip.file);
 
   try {
-    state.deployment.url = await actions.deployment.internal.postToZeit(
-      apiData
+    state.deployment.url = await effects.zeit.deploy(
+      contents,
+      state.editor.currentSandbox
     );
   } catch (error) {
-    effects.notificationToast.add({
-      message: 'An unknown error occurred when connecting to Zite',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error(
+      'An unknown error occurred when connecting to Zite'
+    );
   }
 
   state.deployment.deploying = false;
@@ -90,9 +89,19 @@ export const deployClicked: AsyncAction = async ({
   actions.deployment.getDeploys();
 };
 
-export const deploySandboxClicked: AsyncAction = async ({ state, actions }) => {
+export const deploySandboxClicked: AsyncAction = async ({ state, effects }) => {
   state.currentModal = 'deployment';
-  await actions.internal.getZeitUserDetails();
+
+  if (!state.user.integrations.zeit.email) {
+    try {
+      const user = await effects.zeit.getUser();
+
+      state.user.integrations.zeit.email = user.email;
+    } catch (error) {
+      effects.notificationToast.error('Could not authorize with ZEIT');
+    }
+  }
+
   state.deployment.url = null;
 };
 
@@ -111,44 +120,33 @@ export const deleteDeployment: AsyncAction = async ({
   state.deployment.isDeletingDeployment = true;
 
   try {
-    await actions.deployment.internal.deleteDeployment(id);
+    await effects.zeit.deleteDeployment(id);
 
-    effects.notificationToast.add({
-      message: 'Deployment deleted',
-      status: NotificationStatus.SUCCESS,
-    });
+    effects.notificationToast.success('Deployment deleted');
 
     actions.deployment.getDeploys();
   } catch (error) {
-    effects.notificationToast.add({
-      message: 'An unknown error occurred when deleting your deployment',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error(
+      'An unknown error occurred when deleting your deployment'
+    );
   }
 
   state.deployment.isDeletingDeployment = false;
 };
 
 export const aliasDeployment: AsyncAction<string> = async (
-  { effects, actions },
+  { state, effects },
   id
 ) => {
-  const deploymentData = await actions.deployment.internal.getDeploymentData();
+  const zeitConfig = effects.zeit.getConfig(state.editor.currentSandbox);
 
   try {
-    const url = await actions.deployment.internal.aliasDeployment({
-      id,
-      nowData: deploymentData,
-    });
+    const url = await effects.zeit.aliasDeployment(id, zeitConfig);
 
-    effects.notificationToast.add({
-      message: `Deployed to ${url}`,
-      status: NotificationStatus.SUCCESS,
-    });
+    effects.notificationToast.success(`Deployed to ${url}`);
   } catch (error) {
-    effects.notificationToast.add({
-      message: 'An unknown error occurred when aliasing your deployment',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error(
+      'An unknown error occurred when aliasing your deployment'
+    );
   }
 };

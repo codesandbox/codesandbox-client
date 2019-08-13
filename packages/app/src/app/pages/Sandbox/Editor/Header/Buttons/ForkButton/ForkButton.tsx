@@ -1,28 +1,29 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
-import { useSignals, useStore } from 'app/store';
+import { hooksObserver, inject } from 'app/componentConnectors';
 import { ProgressButton, ForkIcon } from './elements';
 
-export const ForkButton = observer(() => {
-  const {
-    editor: { forkSandboxClicked },
-  } = useSignals();
-  const {
-    editor: {
-      isForkingSandbox,
-      currentSandbox: { owned },
-    },
-  } = useStore();
-
-  return (
-    <ProgressButton
-      onClick={forkSandboxClicked}
-      secondary={owned}
-      loading={isForkingSandbox}
-      small
-    >
-      <ForkIcon />
-      {isForkingSandbox ? 'Forking...' : 'Fork'}
-    </ProgressButton>
-  );
-});
+export const ForkButton = inject('store', 'signals')(
+  hooksObserver(
+    ({
+      signals: {
+        editor: { forkSandboxClicked },
+      },
+      store: {
+        editor: {
+          isForkingSandbox,
+          currentSandbox: { owned },
+        },
+      },
+    }) => (
+      <ProgressButton
+        onClick={forkSandboxClicked}
+        secondary={owned}
+        loading={isForkingSandbox}
+        small
+      >
+        <ForkIcon />
+        {isForkingSandbox ? 'Forking...' : 'Fork'}
+      </ProgressButton>
+    )
+  )
+);

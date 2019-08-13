@@ -7,7 +7,7 @@ import RenameIcon from 'react-icons/lib/md/mode-edit';
 import TrashIcon from 'react-icons/lib/md/delete';
 import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { client } from 'app/graphql/client';
 

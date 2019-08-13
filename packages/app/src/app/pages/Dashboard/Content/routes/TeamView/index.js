@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query, Mutation } from 'react-apollo';
-import { inject, Observer } from 'mobx-react';
+import { Observer } from 'app/componentConnectors';
 import { sortBy } from 'lodash-es';
 
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
@@ -63,8 +63,8 @@ class TeamView extends React.PureComponent {
         <Query query={TEAM_QUERY} variables={{ id: teamId }}>
           {({ data, loading, error }) => (
             <Observer>
-              {() => {
-                const currentUser = this.props.store.user;
+              {({ store }) => {
+                const currentUser = store.user;
                 if (loading || error) {
                   return null;
                 }
@@ -263,4 +263,4 @@ class TeamView extends React.PureComponent {
   }
 }
 
-export default inject('store', 'signals')(TeamView);
+export default TeamView;

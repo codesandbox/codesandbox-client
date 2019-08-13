@@ -15,7 +15,7 @@ import {
 } from 'react-instantsearch/dom';
 
 import Navigation from 'app/pages/common/Navigation';
-import { useSignals } from 'app/store';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 import 'instantsearch.css/themes/reset.css';
 
@@ -31,89 +31,89 @@ const createURL = state => `?${qs.stringify(state)}`;
 const searchStateToUrl = (location, searchState) =>
   searchState ? `${location.pathname}${createURL(searchState)}` : '';
 
-const Search = ({ history, location }) => {
-  const { searchMounted } = useSignals();
+const Search = inject('signals')(
+  hooksObserver(({ history, location, signals: { searchMounted } }) => {
+    const [searchState, setSearchState] = useState(
+      qs.parse(location.search.slice(1))
+    );
+    const debouncedSetState = useRef(null);
 
-  const [searchState, setSearchState] = useState(
-    qs.parse(location.search.slice(1))
-  );
-  const debouncedSetState = useRef(null);
+    useEffect(() => {
+      document.title = 'Search - CodeSandbox';
+    }, []);
 
-  useEffect(() => {
-    document.title = 'Search - CodeSandbox';
-  }, []);
+    useEffect(() => {
+      searchMounted();
+    }, [searchMounted]);
 
-  useEffect(() => {
-    searchMounted();
-  }, [searchMounted]);
+    useEffect(() => {
+      const unlisten = history.listen((loc, action) => {
+        if (['POP', 'PUSH'].includes(action)) {
+          setSearchState(qs.parse(loc.search.slice(1)));
+        }
 
-  useEffect(() => {
-    const unlisten = history.listen((loc, action) => {
-      if (['POP', 'PUSH'].includes(action)) {
-        setSearchState(qs.parse(loc.search.slice(1)));
-      }
+        return unlisten;
+      });
+    }, [history]);
 
-      return unlisten;
-    });
-  }, [history]);
+    const onSearchStateChange = useCallback(
+      newSearchState => {
+        clearTimeout(debouncedSetState.current);
 
-  const onSearchStateChange = useCallback(
-    newSearchState => {
-      clearTimeout(debouncedSetState.current);
+        debouncedSetState.current = setTimeout(() => {
+          history.push(
+            searchStateToUrl(location, newSearchState),
+            newSearchState
+          );
+        }, updateAfter);
 
-      debouncedSetState.current = setTimeout(() => {
-        history.push(
-          searchStateToUrl(location, newSearchState),
-          newSearchState
-        );
-      }, updateAfter);
+        setSearchState(newSearchState);
+      },
+      [history, location]
+    );
 
-      setSearchState(newSearchState);
-    },
-    [history, location]
-  );
+    return (
+      <Container>
+        <Styles />
 
-  return (
-    <Container>
-      <Styles />
+        <MaxWidth>
+          <Margin vertical={1.5}>
+            <Navigation title="Search" searchNoInput />
 
-      <MaxWidth>
-        <Margin vertical={1.5}>
-          <Navigation title="Search" searchNoInput />
+            <Content>
+              <InstantSearch
+                appId={ALGOLIA_APPLICATION_ID}
+                apiKey={ALGOLIA_API_KEY}
+                createURL={createURL}
+                indexName={ALGOLIA_DEFAULT_INDEX}
+                onSearchStateChange={onSearchStateChange}
+                searchState={searchState}
+              >
+                <Configure hitsPerPage={12} />
 
-          <Content>
-            <InstantSearch
-              appId={ALGOLIA_APPLICATION_ID}
-              apiKey={ALGOLIA_API_KEY}
-              createURL={createURL}
-              indexName={ALGOLIA_DEFAULT_INDEX}
-              onSearchStateChange={onSearchStateChange}
-              searchState={searchState}
-            >
-              <Configure hitsPerPage={12} />
+                <Main alignItems="flex-start">
+                  <div>
+                    <StyledTitle>Search</StyledTitle>
 
-              <Main alignItems="flex-start">
-                <div>
-                  <StyledTitle>Search</StyledTitle>
+                    <PoweredBy />
 
-                  <PoweredBy />
+                    <SearchBox
+                      autoFocus
+                      translations={{ placeholder: 'Search Sandboxes...' }}
+                    />
 
-                  <SearchBox
-                    autoFocus
-                    translations={{ placeholder: 'Search Sandboxes...' }}
-                  />
+                    <Results />
+                  </div>
 
-                  <Results />
-                </div>
-
-                <Filters />
-              </Main>
-            </InstantSearch>
-          </Content>
-        </Margin>
-      </MaxWidth>
-    </Container>
-  );
-};
+                  <Filters />
+                </Main>
+              </InstantSearch>
+            </Content>
+          </Margin>
+        </MaxWidth>
+      </Container>
+    );
+  })
+);
 
 export default Search;

@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
+import { inject, observer } from 'app/componentConnectors';
 
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
-import { useSignals } from 'app/store';
 
 const SignInButton = (props: any) => {
-  const { signInClicked } = useSignals();
+  const { signInClicked } = props.signals;
 
   return (
     <Button small onClick={signInClicked} {...props}>
@@ -18,4 +17,4 @@ const SignInButton = (props: any) => {
   );
 };
 
-export default observer(SignInButton);
+export default inject('signals')(observer(SignInButton));

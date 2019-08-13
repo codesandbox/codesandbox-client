@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, Observer } from 'mobx-react';
+import { Observer } from 'app/componentConnectors';
 import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
 import RemoveIcon from 'react-icons/lib/md/highlight-remove';
@@ -8,7 +8,7 @@ import Sandboxes from '../../Sandboxes';
 
 import { DELETED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
-const DeletedSandboxes = ({ store, signals }) => {
+const DeletedSandboxes = () => {
   document.title = 'Deleted Sandboxes - CodeSandbox';
 
   return (
@@ -18,7 +18,7 @@ const DeletedSandboxes = ({ store, signals }) => {
     >
       {({ loading, error, data }) => (
         <Observer>
-          {() => {
+          {({ store, signals }) => {
             if (error) {
               return <div>Error!</div>;
             }
@@ -68,4 +68,4 @@ const DeletedSandboxes = ({ store, signals }) => {
   );
 };
 
-export default inject('signals', 'store')(DeletedSandboxes);
+export default DeletedSandboxes;

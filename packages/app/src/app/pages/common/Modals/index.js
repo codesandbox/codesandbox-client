@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import { ThemeProvider } from 'styled-components';
 import Modal from 'app/components/Modal';
 import Loadable from 'app/utils/Loadable';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, Observer } from 'mobx-react';
+import { Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import Fuse from 'fuse.js';
 
@@ -11,11 +11,11 @@ import { getPossibleTemplates } from '../../Sandboxes/utils';
 let lastSandboxes = null;
 let searchIndex = null;
 
-const SearchSandboxes = ({ store }) => (
+const SearchSandboxes = () => (
   <Query query={SEARCH_SANDBOXES_QUERY}>
     {({ loading, error, data }) => (
       <Observer>
-        {() => {
+        {({ store }) => {
           if (error) {
             return <div>Error!</div>;
           }
@@ -81,4 +81,4 @@ const SearchSandboxes = ({ store }) => (
   </Query>
 );
 
-export default inject('signals', 'store')(SearchSandboxes);
+export default SearchSandboxes;

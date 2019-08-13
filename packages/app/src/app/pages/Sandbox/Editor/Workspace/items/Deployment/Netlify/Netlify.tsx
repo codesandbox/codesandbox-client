@@ -1,41 +1,43 @@
 import getTemplate from '@codesandbox/common/lib/templates';
-import { observer } from 'mobx-react-lite';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import React, { useEffect, useState } from 'react';
-
-import { useSignals, useStore } from 'app/store';
 
 import { Wrapper } from '../elements';
 
 import { DeployButton } from './DeployButton';
 import { SiteInfo } from './SiteInfo';
 
-export const Netlify = observer(() => {
-  const {
-    deployment: { getNetlifyDeploys },
-  } = useSignals();
-  const {
-    deployment: { deploying, netlifySite },
-    editor: { currentSandbox },
-  } = useStore();
+export const Netlify = inject('store', 'signals')(
+  hooksObserver(
+    ({
+      signals: {
+        deployment: { getNetlifyDeploys },
+      },
+      store: {
+        deployment: { deploying, netlifySite },
+        editor: { currentSandbox },
+      },
+    }) => {
+      const [isVisible, setVisible] = useState(false);
 
-  const [isVisible, setVisible] = useState(false);
+      useEffect(() => {
+        getNetlifyDeploys();
+      }, [getNetlifyDeploys]);
 
-  useEffect(() => {
-    getNetlifyDeploys();
-  }, [getNetlifyDeploys]);
+      const template = getTemplate(currentSandbox.template);
 
-  const template = getTemplate(currentSandbox.template);
+      return (
+        template.netlify !== false && (
+          <Wrapper loading={deploying}>
+            <DeployButton
+              isOpen={isVisible}
+              toggle={() => setVisible(show => !show)}
+            />
 
-  return (
-    template.netlify !== false && (
-      <Wrapper loading={deploying}>
-        <DeployButton
-          isOpen={isVisible}
-          toggle={() => setVisible(show => !show)}
-        />
-
-        {netlifySite && isVisible ? <SiteInfo /> : null}
-      </Wrapper>
-    )
-  );
-});
+            {netlifySite && isVisible ? <SiteInfo /> : null}
+          </Wrapper>
+        )
+      );
+    }
+  )
+);

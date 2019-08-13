@@ -1,5 +1,5 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'app/componentConnectors';
 import React from 'react';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';

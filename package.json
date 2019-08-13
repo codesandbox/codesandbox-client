@@ -82,11 +82,11 @@
     "lerna": "^2.5.1",
     "prettier": "1.17.0",
     "pretty-quick": "^1.10.0",
-    "typescript": "3.5.2"
+    "typescript": "3.5.3"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.9.0",
-    "@typescript-eslint/parser": "^1.9.0",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
     "opencollective": "^1.0.3"
   },
   "collective": {

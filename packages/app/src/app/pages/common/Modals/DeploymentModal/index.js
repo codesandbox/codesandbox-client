@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import ZeitIntegration from 'app/pages/common/ZeitIntegration';
 import { Button } from '@codesandbox/common/lib/components/Button';
