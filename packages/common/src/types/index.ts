@@ -431,8 +431,8 @@ export type EditorCorrection = {
 };
 
 export enum WindowOrientation {
-  VERTICAL = 'VERTICAL',
-  HORIZONTAL = 'HORIZONTAL',
+  VERTICAL = 'vertical',
+  HORIZONTAL = 'horizontal',
 }
 
 export type Profile = {

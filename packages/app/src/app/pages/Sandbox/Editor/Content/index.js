@@ -3,6 +3,7 @@ import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
+import { clone } from 'app/componentConnectors';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'app/componentConnectors';
 
@@ -223,7 +224,7 @@ class EditorPreview extends React.Component<Props, State> {
     );
 
     const disposePendingOperationHandler = reaction(
-      () => store.editor.pendingOperations.toJSON(),
+      () => clone(store.editor.pendingOperations),
       () => {
         if (store.live.isLive) {
           if (store.editor.pendingOperations) {

@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
+import { reaction as mobxReaction } from 'mobx';
 import { Provider } from 'mobx-react';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import {
@@ -124,7 +125,13 @@ async function boot(state, signals, overmind) {
       root.render(
         <Signals.Provider value={signals}>
           <Store.Provider value={state}>
-            <Provider store={state} signals={signals}>
+            <Provider
+              store={state}
+              signals={signals}
+              reaction={(stateCb, updateCb) => {
+                mobxReaction(() => stateCb(state), updateCb);
+              }}
+            >
               <ApolloProvider client={client}>
                 <OvermindProvider value={overmind}>
                   <HooksProvider client={client}>

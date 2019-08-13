@@ -1,7 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
 import { DropTarget } from 'react-dnd';
-import { reaction } from 'mobx';
 import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
 import { NativeTypes } from 'react-dnd-html5-backend';
@@ -61,8 +60,8 @@ class DirectoryEntry extends React.Component {
       });
     }
 
-    this.openListener = reaction(
-      () => this.props.store.editor.currentModuleShortid,
+    this.openListener = this.props.reaction(
+      ({ editor }) => editor.currentModuleShortid,
       () => {
         if (!this.state.open) {
           const { id, store } = this.props;
@@ -409,7 +408,7 @@ function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export default inject('signals', 'store')(
+export default inject('signals', 'store', 'reaction')(
   DropTarget(['ENTRY', NativeTypes.FILE], entryTarget, collectTarget)(
     observer(DirectoryEntry)
   )
