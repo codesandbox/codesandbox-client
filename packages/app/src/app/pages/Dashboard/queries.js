@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import { client } from 'app/graphql/client';
 import immer from 'immer';
+import { clone } from 'app/componentConnectors';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { NotificationStatus } from '@codesandbox/notifications';
@@ -356,7 +357,7 @@ export function makeTemplates(selectedSandboxes, teamId, collections) {
       .mutate({
         mutation: MAKE_SANDBOXES_TEMPLATE_MUTATION,
         variables: {
-          sandboxIds: selectedSandboxes.toJS(),
+          sandboxIds: clone(selectedSandboxes),
         },
         refetchQueries: [
           'DeletedSandboxes',
@@ -412,7 +413,7 @@ export function makeTemplates(selectedSandboxes, teamId, collections) {
                   track('Template - Removed', {
                     source: 'Undo',
                   });
-                  unmakeTemplates(selectedSandboxes.toJS());
+                  unmakeTemplates(clone(selectedSandboxes));
                 },
               },
             ],
@@ -426,7 +427,7 @@ export function undeleteSandboxes(selectedSandboxes) {
   client.mutate({
     mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: clone(selectedSandboxes),
       collectionPath: '/',
     },
     optimisticResponse: {
@@ -447,7 +448,7 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
   client.mutate({
     mutation: PERMANENTLY_DELETE_SANDBOXES_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: clone(selectedSandboxes),
     },
     update: cache => {
       try {
@@ -480,7 +481,7 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
   client.mutate({
     mutation: DELETE_SANDBOXES_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: clone(selectedSandboxes),
     },
     refetchQueries: [
       'DeletedSandboxes',
@@ -527,7 +528,7 @@ export function setSandboxesPrivacy(selectedSandboxes, privacy) {
   client.mutate({
     mutation: SET_SANDBOXES_PRIVACY_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: clone(selectedSandboxes),
       privacy,
     },
   });
