@@ -28,6 +28,7 @@ export async function initializeSentry(dsn: string) {
     return Sentry.init({
       dsn,
       release: VERSION,
+      ignoreErrors: ['TypeScript Server Error', /^Canceled$/],
     });
   }
 }
