@@ -10,9 +10,15 @@ const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VERSION = require('@codesandbox/common/lib/version').default;
+const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
 
 const publicPath = '/';
+const isMaster =
+  childProcess
+    .execSync('git branch')
+    .toString()
+    .trim() === '* master';
 
 const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
 
@@ -300,10 +306,11 @@ module.exports = merge(commonConfig, {
         to: 'public/sse-hooks',
       },
     ]),
-    new SentryWebpackPlugin({
-      include: '.',
-      ignore: ['node_modules', 'webpack.config.js'],
-      release: VERSION,
-    }),
+    isMaster &&
+      new SentryWebpackPlugin({
+        include: '.',
+        ignore: ['node_modules', 'webpack.config.js'],
+        release: VERSION,
+      }),
   ].filter(Boolean),
 });
