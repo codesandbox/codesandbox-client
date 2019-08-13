@@ -41,6 +41,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
+    "@sentry/cli": "^1.47.1",
     "@types/codemirror": "^0.0.72",
     "@types/debug": "^4.1.1",
     "@types/gsap": "^1.20.1",

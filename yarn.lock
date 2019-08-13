@@ -3286,7 +3286,7 @@
     "@sentry/utils" "5.6.1"
     tslib "^1.9.3"
 
-"@sentry/cli@^1.44.4":
+"@sentry/cli@^1.44.4", "@sentry/cli@^1.47.1":
   version "1.47.1"
   resolved "https://registry.yarnpkg.com/@sentry/cli/-/cli-1.47.1.tgz#6a3238e5bfa4f618867bc0bc145b8e2ba191ff46"
   integrity sha512-WijaRu1lb99OL6rHee6uOSb1wDyNCbrWcTJoRCuZD83K2fw3U58p68nli/y8CoMwQ55Mrg6CgtY8pmBiuseG0A==

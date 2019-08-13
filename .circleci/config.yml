@@ -137,6 +137,12 @@ commands:
       - run:
           name: Build Application
           command: yarn build:prod
+      - run:
+          name: Mark Sentry release
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              node packages/app/scripts/sentry-create-release.js
+            fi
       - save_cache: *save_prod_cache
       - run:
           name: Remove non-images from public

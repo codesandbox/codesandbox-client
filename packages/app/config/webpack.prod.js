@@ -9,19 +9,10 @@ const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
   .normalizeName;
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const childProcess = require('child_process');
+const VERSION = require('@codesandbox/common/lib/version').default;
 const commonConfig = require('./webpack.common');
 
 const publicPath = '/';
-
-const COMMIT_COUNT = childProcess
-  .execSync('git rev-list --count HEAD')
-  .toString();
-
-const COMMIT_HASH = childProcess
-  .execSync('git rev-parse --short HEAD')
-  .toString();
-const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
 const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
 
