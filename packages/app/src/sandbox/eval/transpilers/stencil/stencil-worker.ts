@@ -25,8 +25,13 @@ ctx.addEventListener('message', event => {
   };
 
   ctx.stencil.compile(code, opts).then(results => {
-    console.log(results.diagnostics);
-    console.log(results.code);
+    results.imports.forEach(dependency => {
+      ctx.postMessage({
+        type: 'add-dependency',
+        path: dependency.path,
+        isGlob: false,
+      });
+    });
 
     ctx.postMessage({
       type: 'result',
