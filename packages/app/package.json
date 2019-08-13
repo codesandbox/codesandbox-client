@@ -139,6 +139,7 @@
     "@codesandbox/executors": "^0.1.0",
     "@codesandbox/template-icons": "^0.7.0",
     "@emmetio/codemirror-plugin": "^0.3.5",
+    "@sentry/webpack-plugin": "^1.8.0",
     "@svgr/core": "^2.4.1",
     "@typeform/embed": "^0.12.0",
     "@vue/babel-preset-app": "^3.2.0",

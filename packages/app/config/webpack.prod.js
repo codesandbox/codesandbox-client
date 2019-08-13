@@ -1,3 +1,4 @@
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
@@ -308,5 +309,10 @@ module.exports = merge(commonConfig, {
         to: 'public/sse-hooks',
       },
     ]),
+    new SentryWebpackPlugin({
+      include: '.',
+      ignore: ['node_modules', 'webpack.config.js'],
+      release: VERSION,
+    }),
   ].filter(Boolean),
 });
