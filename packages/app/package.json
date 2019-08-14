@@ -56,7 +56,7 @@
     "@types/socket.io-client": "^1.4.32",
     "@types/styled-components": "^4.1.13",
     "acorn-dynamic-import": "^4.0.0",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^24.8.0",
     "babel-loader": "8.0.2",
     "babel-plugin-codegen": "^1.2.0",
     "babel-plugin-graphql-tag": "^2.1.0",
@@ -85,7 +85,7 @@
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^4.0.0-beta.1",
     "http-proxy-middleware": "^0.17.3",
-    "jest": "^21.2.1",
+    "jest": "^24.8.0",
     "jest-image-snapshot": "^1.0.1",
     "jest-junit": "^3.4.1",
     "jest-styled-components": "4.11.0-1",
@@ -304,6 +304,9 @@
     },
     "transform": {
       "^.+\\.(t|j)s$": "babel-jest"
+    },
+    "testEnvironmentOptions": {
+      "resources": "usable"
     }
   }
 }
