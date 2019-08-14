@@ -74,7 +74,6 @@
     "lodash.isequal": "^4.5.0"
   },
   "devDependencies": {
-    "@types/jest": "^22.0.0",
     "@types/lodash.isequal": "^4.5.2",
     "@types/node": "^9.3.0",
     "colors": "^1.1.2",
@@ -83,7 +82,7 @@
     "cross-env": "^5.0.1",
     "cz-conventional-changelog": "^2.0.0",
     "gulp": "^3.9.1",
-    "jest": "^22.0.2",
+    "jest": "^24.8.0",
     "lodash.camelcase": "^4.3.0",
     "prompt": "^1.0.0",
     "replace-in-file": "^3.0.0-beta.2",
