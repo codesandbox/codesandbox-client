@@ -45,9 +45,7 @@
     }
   },
   "jest": {
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
+    "preset": "ts-jest",
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/",
       "<rootDir>/compiled/"
