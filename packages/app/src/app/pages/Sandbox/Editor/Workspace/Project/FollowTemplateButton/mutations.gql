@@ -19,7 +19,7 @@ mutation followTemplate($template: ID!, $team: ID) {
 }
 
 mutation unfollowTemplate($template: ID!, $team: ID) {
-  unfollowTemplate(templateId: $template, teamId: $team) {
+  followTemplate(templateId: $template, teamId: $team) {
     id
     following {
       isFollowing

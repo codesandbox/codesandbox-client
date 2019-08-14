@@ -1,0 +1,1 @@
+export { FollowTemplateButton } from './FollowTemplateButton';
