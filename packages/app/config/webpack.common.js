@@ -3,11 +3,13 @@ const path = require('path');
 const fs = require('fs');
 const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const threadLoader = require('thread-loader');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('@codesandbox/common/lib/config/env');
 const getHost = require('@codesandbox/common/lib/utils/host');
+const postcssNormalize = require('postcss-normalize');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
@@ -20,6 +22,63 @@ const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore
 const babelConfig = __DEV__ && !SANDBOX_ONLY ? babelDev : babelProd;
 const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
 const isLint = 'LINT' in process.env;
+
+// common function to get style loaders
+const getStyleLoaders = (cssOptions, preProcessor) => {
+  const loaders = [
+    __DEV__ && require.resolve('style-loader'),
+    __PROD__ && {
+      loader: MiniCssExtractPlugin.loader,
+      options: {},
+    },
+    {
+      loader: require.resolve('css-loader'),
+      options: cssOptions,
+    },
+    {
+      // Options for PostCSS as we reference these options twice
+      // Adds vendor prefixing based on your specified browser support in
+      // package.json
+      loader: require.resolve('postcss-loader'),
+      options: {
+        // Necessary for external CSS imports to work
+        // https://github.com/facebook/create-react-app/issues/2677
+        ident: 'postcss',
+        plugins: () => [
+          require('postcss-flexbugs-fixes'),
+          require('postcss-preset-env')({
+            autoprefixer: {
+              flexbox: 'no-2009',
+            },
+            stage: 3,
+          }),
+          // Adds PostCSS Normalize as the reset css with default options,
+          // so that it honors browserslist config in package.json
+          // which in turn let's users customize the target behavior as per their needs.
+          postcssNormalize(),
+        ],
+        sourceMap: __PROD__,
+      },
+    },
+  ].filter(Boolean);
+  if (preProcessor) {
+    loaders.push(
+      {
+        loader: require.resolve('resolve-url-loader'),
+        options: {
+          sourceMap: __PROD__,
+        },
+      },
+      {
+        loader: require.resolve(preProcessor),
+        options: {
+          sourceMap: true,
+        },
+      }
+    );
+  }
+  return loaders;
+};
 
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
@@ -97,6 +156,7 @@ module.exports = {
     globalObject: 'this',
     jsonpFunction: 'csbJsonP', // So we don't conflict with webpack generated libraries in the sandbox
     pathinfo: false,
+    futureEmitAssets: true,
   },
 
   module: {
@@ -108,11 +168,18 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: [
-          'style-loader', // creates style nodes from JS strings
-          'css-loader', // translates CSS into CommonJS
-          'sass-loader', // compiles Sass to CSS, using Node Sass by default
-        ],
+        use: getStyleLoaders(
+          {
+            importLoaders: 2,
+            sourceMap: true,
+          },
+          'sass-loader'
+        ),
+        // Don't consider CSS imports dead code even if the
+        // containing package claims to have no side effects.
+        // Remove this when webpack adds a warning or an error for this.
+        // See https://github.com/webpack/webpack/issues/6571
+        sideEffects: true,
       },
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
@@ -250,7 +317,15 @@ module.exports = {
       // in development "style" loader enables hot editing of CSS.
       {
         test: /\.css$/,
-        loaders: ['style-loader', 'css-loader'],
+        loaders: getStyleLoaders({
+          importLoaders: 1,
+          sourceMap: true,
+        }),
+        // Don't consider CSS imports dead code even if the
+        // containing package claims to have no side effects.
+        // Remove this when webpack adds a warning or an error for this.
+        // See https://github.com/webpack/webpack/issues/6571
+        sideEffects: true,
       },
       // For importing README.md
       {
@@ -454,5 +529,13 @@ module.exports = {
     // makes the discovery automatic so you don't have to restart.
     // See https://github.com/facebookincubator/create-react-app/issues/186
     new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+
+    __PROD__ &&
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: 'static/css/[name].[contenthash:8].css',
+        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+      }),
   ].filter(Boolean),
 };

@@ -1,8 +1,10 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import React, { useEffect } from 'react';
 
-import ZeitLogo from 'app/components/ZeitLogo';
-import Integration from 'app/components/Integration';
+import { inject, hooksObserver } from 'app/componentConnectors';
+import Navigation from 'app/pages/common/Navigation';
+
+import { Container } from './elements';
+import Prompt from './Prompt';
 
 interface Props {
   small: boolean;
@@ -10,26 +12,31 @@ interface Props {
   signals: any;
 }
 
-const ZeitIntegration = inject('store', 'signals')(
+const CLI = inject('store', 'signals')(
   hooksObserver(
     ({
-      small,
-      signals: { signInZeitClicked, signOutZeitClicked },
-      store: { user, isLoadingZeit },
-    }: Props) => (
-      <Integration
-        name="ZEIT"
-        small={small}
-        color="black"
-        description="Deployments"
-        Icon={ZeitLogo}
-        userInfo={user.integrations.zeit}
-        signIn={signInZeitClicked}
-        signOut={signOutZeitClicked}
-        loading={isLoadingZeit}
-      />
-    )
+      signals: { cliMounted, signInCliClicked },
+      store: { user, authToken, isLoadingCLI, error },
+    }: Props) => {
+      useEffect(() => {
+        cliMounted();
+      }, [cliMounted]);
+
+      return (
+        <Container>
+          <Navigation title="CLI Authorization" />
+
+          <Prompt
+            error={error}
+            loading={isLoadingCLI}
+            signIn={signInCliClicked}
+            token={authToken}
+            username={user && user.username}
+          />
+        </Container>
+      );
+    }
   )
 );
 
-export default ZeitIntegration;
+export default CLI;
