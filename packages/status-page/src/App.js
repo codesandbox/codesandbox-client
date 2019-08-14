@@ -32,7 +32,7 @@ const Footer = styled.span`
   color: rgba(255, 255, 255, 0.6);
 `;
 
-function App() {
+const App = () => {
   const [downtimes, up, loading] = useDowntime();
 
   return (
@@ -48,6 +48,6 @@ function App() {
       </Footer>
     </Wrapper>
   );
-}
+};
 
 export default App;

@@ -49,8 +49,8 @@
     }
   ],
   "description": "An online editor tailored for web applications",
-  "start_url": "/s/?utm_source=homescreen",
-  "scope": "/s/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#1C2022",
   "theme_color": "#1C2022"
