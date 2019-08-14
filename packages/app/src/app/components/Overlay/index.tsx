@@ -81,13 +81,15 @@ const Overlay: React.FC<IOverlayProps> = ({
   return (
     <Container onMouseDown={e => e.preventDefault()}>
       {children(handleOpen)}
-      {transitions.map(({ item, props }) =>
+      {transitions.map(({ item, props }, i) =>
         item ? (
-          <animated.div style={props}>
+          // eslint-disable-next-line
+          <animated.div key={i} style={props}>
             <Content />
           </animated.div>
         ) : (
-          <animated.span style={props} />
+          // eslint-disable-next-line
+          <animated.span key={i} style={props} />
         )
       )}
     </Container>
