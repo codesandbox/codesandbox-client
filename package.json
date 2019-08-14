@@ -23,6 +23,7 @@
     "start:common": "lerna run start --scope @codesandbox/common --stream",
     "start:home": "yarn build:deps && yarn start:home:fast",
     "start:home:fast": "cd packages/homepage && yarn start",
+    "start:status": "cd packages/status && yarn start",
     "start:test": "lerna run start:test --scope app --stream",
     "start:storybook": "lerna run start:storybook --scope=@codesandbox/common --stream",
     "start:dev_api": "lerna run start:dev_api --scope app --stream",
