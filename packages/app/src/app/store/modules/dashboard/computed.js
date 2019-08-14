@@ -17,7 +17,7 @@ export function getFilteredSandboxes(sandboxes) {
     }
 
     if (orderField === 'title') {
-      return s.title || s.id;
+      return s.title || s.alias || s.id;
     }
 
     return s[orderField];

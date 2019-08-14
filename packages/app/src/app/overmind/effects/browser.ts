@@ -45,7 +45,7 @@ export default {
       close: () => popup.close(),
     };
   },
-  waitForMessage(type) {
+  waitForMessage<T>(type): Promise<T> {
     return new Promise(resolve => {
       window.addEventListener('message', function onMessage(event) {
         if (event.data.type === type) {

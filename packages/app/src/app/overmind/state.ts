@@ -9,9 +9,9 @@ import {
 } from '@codesandbox/common/lib/types';
 
 type State = {
-  isPatron: boolean;
-  isLoggedIn: boolean;
-  hasLogIn: boolean;
+  isPatron: Derive<State, boolean>;
+  isLoggedIn: Derive<State, boolean>;
+  hasLogIn: Derive<State, boolean>;
   popularSandboxes: Sandbox[];
   hasLoadedApp: boolean;
   jwt: string;
@@ -42,22 +42,18 @@ type State = {
 };
 
 export const state: State = {
-  get isPatron() {
-    const state: State = this;
+  isPatron: state => {
     return Boolean(
       state.user && state.user.subscription && state.user.subscription.since
     );
   },
-  get isLoggedIn() {
-    const state: State = this;
+  isLoggedIn: state => {
     return Boolean(state.jwt) && Boolean(state.user);
   },
   // TODO: Should not reference store directly here, rather initialize
   // the state with "onInitialize" setting the jwt
-  get hasLogIn() {
-    const state: State = this;
-
-    return !!this.jwt || !!store.get('jwt');
+  hasLogIn: state => {
+    return !!state.jwt || !!store.get('jwt');
   },
   isContributor: state => username => {
     return (
@@ -87,8 +83,8 @@ export const state: State = {
     x: 0,
     y: 0,
   },
-  currentModal: undefined,
-  currentModalMessage: undefined,
+  currentModal: null,
+  currentModalMessage: null,
   uploadedFiles: null,
   maxStorage: 0,
   usedStorage: 0,

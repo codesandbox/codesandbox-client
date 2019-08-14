@@ -8,6 +8,7 @@ import {
 } from '@codesandbox/common/lib/utils/notifications';
 import * as actions from './actions';
 import { initializeNotifications } from './modules/user-notifications/sequences';
+import { setupCodeSandboxAPIListener } from './modules/server/actions';
 
 export function addTabById(id) {
   // eslint-disable-next-line
@@ -107,6 +108,7 @@ export function withLoadApp(continueSequence) {
         actions.setStoredSettings,
         actions.setKeybindings,
         actions.startKeybindings,
+        setupCodeSandboxAPIListener,
 
         when(state`jwt`),
         {
@@ -120,7 +122,9 @@ export function withLoadApp(continueSequence) {
                     actions.setPatronPrice,
                     actions.setSignedInCookie,
                     actions.connectWebsocket,
+                    actions.showUserSurveyIfNeeded,
                     initializeNotifications,
+                    actions.loadTemplatesForStartModal,
                   ],
                   error: [
                     addNotification(

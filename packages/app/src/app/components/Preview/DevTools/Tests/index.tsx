@@ -1,18 +1,17 @@
-/* eslint-disable no-param-reassign */
-import * as React from 'react';
+import { messages } from '@codesandbox/common/lib/utils/jest-lite';
 import { actions, dispatch, listen } from 'codesandbox-api';
+import immer from 'immer';
+import { debounce } from 'lodash-es';
+import React from 'react';
 import SplitPane from 'react-split-pane';
 
-import immer from 'immer';
+import { DevToolProps } from '../';
 
 import { Container, TestDetails, TestContainer } from './elements';
-
 import TestElement from './TestElement';
 import TestDetailsContent from './TestDetails';
 import TestSummary from './TestSummary';
 import TestOverview from './TestOverview';
-import { DevToolProps } from '..';
-import { messages } from '@codesandbox/common/lib/utils/jest-lite';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -38,10 +37,10 @@ export type TestError = Error & {
 };
 
 export type Test = {
-  testName: Array<string>;
+  testName: string[];
   duration: number | undefined;
   status: Status;
-  errors: Array<TestError>;
+  errors: TestError[];
   running: boolean;
   path: string;
 };
@@ -66,22 +65,30 @@ type State = {
   watching: boolean;
 };
 
-type SandboxMessage = { type: 'test' | 'done' } & (
-  | InitializedTestsMessage
-  | TestCountMessage
-  | TotalTestStartMessage
-  | TotalTestEndMessage
-  | AddFileMessage
-  | RemoveFileMessage
-  | FileErrorMessage
-  | DescribeStartMessage
-  | DescribeEndMessage
-  | AddTestMessage
-  | TestStartMessage
-  | TestEndMessage);
+type SandboxMessage =
+  | CompilationDoneMessage
+  | ({ type: 'test' } & (
+      | InitializedTestsMessage
+      | TestCountMessage
+      | TotalTestStartMessage
+      | TotalTestEndMessage
+      | AddFileMessage
+      | RemoveFileMessage
+      | FileErrorMessage
+      | DescribeStartMessage
+      | DescribeEndMessage
+      | AddTestMessage
+      | TestStartMessage
+      | TestEndMessage
+    ));
 
 interface InitializedTestsMessage {
   event: messages.INITIALIZE;
+}
+
+interface CompilationDoneMessage {
+  type: 'done';
+  compilatonError: boolean;
 }
 
 interface TestCountMessage {
@@ -90,40 +97,40 @@ interface TestCountMessage {
 }
 
 interface TotalTestStartMessage {
-  event: 'total_test_start';
+  event: messages.TOTAL_TEST_START;
 }
 
 interface TotalTestEndMessage {
-  event: 'total_test_end';
+  event: messages.TOTAL_TEST_END;
 }
 
 interface AddFileMessage {
-  event: 'add_file';
+  event: messages.ADD_FILE;
   path: string;
 }
 
 interface RemoveFileMessage {
-  event: 'remove_file';
+  event: messages.REMOVE_FILE;
   path: string;
 }
 
 interface FileErrorMessage {
-  event: 'file_error';
+  event: messages.FILE_ERROR;
   path: string;
   error: TestError;
 }
 
 interface DescribeStartMessage {
-  event: 'describe_start';
+  event: messages.DESCRIBE_START;
   blockName: string;
 }
 
 interface DescribeEndMessage {
-  event: 'describe_end';
+  event: messages.DESCRIBE_END;
 }
 
 interface AddTestMessage {
-  event: 'add_test';
+  event: messages.ADD_TEST;
   testName: string;
   path: string;
 }
@@ -135,12 +142,12 @@ type TestMessage = Test & {
 };
 
 interface TestStartMessage {
-  event: 'test_start';
+  event: messages.TEST_START;
   test: TestMessage;
 }
 
 interface TestEndMessage {
-  event: 'test_end';
+  event: messages.TEST_END;
   test: TestMessage;
 }
 
@@ -155,8 +162,8 @@ const INITIAL_STATE = {
 class Tests extends React.Component<DevToolProps, State> {
   state = INITIAL_STATE;
 
-  listener: Function;
-  currentDescribeBlocks: Array<string> = [];
+  listener: () => void;
+  currentDescribeBlocks: string[] = [];
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
@@ -168,7 +175,7 @@ class Tests extends React.Component<DevToolProps, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: DevToolProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: DevToolProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.setState({
         files: {},
@@ -201,7 +208,21 @@ class Tests extends React.Component<DevToolProps, State> {
 
   handleMessage = (data: SandboxMessage) => {
     if (data.type === 'done' && this.state.watching && !this.props.hidden) {
-      this.runAllTests();
+      let delay = 1000;
+
+      if (data.compilatonError) {
+        delay *= 2;
+      }
+
+      // avoid to often test run in file watching mode,
+      // very frequent test runs cause screen freezing
+      debounce(
+        () => {
+          this.runAllTests();
+        },
+        delay,
+        { maxWait: 4 * delay }
+      )();
     } else if (data.type === 'test') {
       switch (data.event) {
         case messages.INITIALIZE: {
@@ -220,7 +241,7 @@ class Tests extends React.Component<DevToolProps, State> {
           }
           break;
         }
-        case 'total_test_start': {
+        case messages.TOTAL_TEST_START: {
           this.currentDescribeBlocks = [];
           if (this.props.updateStatus) {
             this.props.updateStatus('clear');
@@ -231,7 +252,7 @@ class Tests extends React.Component<DevToolProps, State> {
           });
           break;
         }
-        case 'total_test_end': {
+        case messages.TOTAL_TEST_END: {
           this.setState({
             ...this.state,
             running: false,
@@ -259,7 +280,7 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
 
-        case 'add_file': {
+        case messages.ADD_FILE: {
           this.setState(
             immer(this.state, state => {
               state.files[data.path] = {
@@ -284,7 +305,7 @@ class Tests extends React.Component<DevToolProps, State> {
           );
           break;
         }
-        case 'file_error': {
+        case messages.FILE_ERROR: {
           this.setState(
             immer(this.state, state => {
               if (state.files[data.path]) {
@@ -294,15 +315,15 @@ class Tests extends React.Component<DevToolProps, State> {
           );
           break;
         }
-        case 'describe_start': {
+        case messages.DESCRIBE_START: {
           this.currentDescribeBlocks.push(data.blockName);
           break;
         }
-        case 'describe_end': {
+        case messages.DESCRIBE_END: {
           this.currentDescribeBlocks.pop();
           break;
         }
-        case 'add_test': {
+        case messages.ADD_TEST: {
           const testName = [...this.currentDescribeBlocks, data.testName];
 
           this.setState(
@@ -326,7 +347,7 @@ class Tests extends React.Component<DevToolProps, State> {
           );
           break;
         }
-        case 'test_start': {
+        case messages.TEST_START: {
           const test = data.test;
           const testName = [...test.blocks, test.name];
 
@@ -356,7 +377,7 @@ class Tests extends React.Component<DevToolProps, State> {
           );
           break;
         }
-        case 'test_end': {
+        case messages.TEST_END: {
           const test = data.test;
           const testName = [...test.blocks, test.name];
 

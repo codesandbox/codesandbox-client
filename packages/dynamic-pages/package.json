@@ -2,6 +2,11 @@
   "name": "dynamic-pages",
   "version": "1.0.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/dynamic-pages"
+  },
   "source": true,
   "scripts": {
     "dev": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 node server.js",
@@ -25,7 +30,7 @@
     "react": "16.8.6",
     "react-dom": "16.8.6",
     "react-helmet": "^5.2.0",
-    "react-spring": "^8.0.19",
+    "react-spring": "^8.0.25",
     "react-visibility-sensor": "^5.0.2",
     "styled-components": "^4.2.0"
   },

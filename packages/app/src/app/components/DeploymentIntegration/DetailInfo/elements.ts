@@ -15,14 +15,14 @@ export const Details = styled.div<{ bgColor: string }>`
 export const Heading = styled.div<{ light: boolean }>`
   ${({ light }) => css`
     margin-bottom: 0.25rem;
-    color: ${light ? css`rgba(0, 0, 0)` : css`rgba(255, 255, 255)`};
+    color: ${light ? '#000000' : '#ffffff'};
     font-size: 0.75rem;
   `}
 `;
 
 export const Info = styled.div<{ light: boolean }>`
   ${({ light }) => css`
-    color: ${light ? css`rgba(0, 0, 0)` : css`rgba(255, 255, 255)`};
+    color: ${light ? '#000000' : '#ffffff'};
     font-weight: 400;
   `}
 `;

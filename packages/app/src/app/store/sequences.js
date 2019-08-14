@@ -19,8 +19,9 @@ import {
 } from './modules/files/actions';
 
 import { disconnect, clearUserSelections } from './modules/live/actions';
-import { alertForkingFrozenSandbox } from './modules/editor/actions';
+import { setupExecutor } from './modules/editor/actions';
 import { initializeLive } from './modules/live/common-sequences';
+import { resetServerState } from './modules/server/actions';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
 
@@ -33,10 +34,6 @@ export const openModal = [actions.setModal];
 const whenPackageJSONExists = when(props`sandbox.modules`, modules =>
   modules.find(m => m.directoryShortid == null && m.title === 'package.json')
 );
-
-function stopFrozenSandboxFromEdit() {
-  throw new CancelError("You can't save a frozen sandbox", {});
-}
 
 export const ensurePackageJSON = [
   when(props`sandbox.owned`),
@@ -106,6 +103,71 @@ export const signOutGithubIntegration = [
   set(state`user.integrations.github`, null),
 ];
 
+export const resetLive = [
+  clearUserSelections,
+  set(state`live.isLive`, false),
+  set(state`live.error`, null),
+  set(state`live.isLoading`, false),
+  set(state`live.roomInfo`, undefined),
+
+  ({ ot }) => {
+    ot.reset();
+  },
+];
+
+export const setSandbox = [
+  when(state`live.isLoading`),
+  {
+    true: [],
+    false: [
+      when(state`live.isLive`),
+      {
+        true: resetLive,
+        false: [],
+      },
+    ],
+  },
+  when(
+    state`editor.currentId`,
+    props`sandbox.id`,
+    state`live.isLoading`,
+    // If we don't add the live check we will never initialize this state, since the roomJoined sequence also initializes
+    // editor.currentId to sandbox.id, which causes this check to always resolve to true
+    (currentId, newId, isLoadingLive) => currentId === newId && !isLoadingLive
+  ),
+  {
+    true: [],
+    false: [
+      set(props`oldId`, state`editor.currentId`),
+      set(state`editor.currentId`, props`sandbox.id`),
+      actions.setCurrentModuleShortid,
+      actions.setMainModuleShortid,
+      actions.setInitialTab,
+      actions.setUrlOptions,
+      actions.setWorkspace,
+      set(state`editor.workspaceConfigCode`, ''),
+
+      resetServerState,
+      setupExecutor,
+      syncFilesToFS,
+
+      // Check because in live oldId === currentId
+      when(
+        props`oldId`,
+        state`editor.currentId`,
+        (oldId, currentId) => oldId === currentId
+      ),
+      {
+        true: [],
+        // Remove the old sandbox because it's stale with the changes the user did on it (for example,
+        // the user might have changed code of a file and then forked. We didn't revert the code back
+        // to its old state so if the user opens this sandbox again it shows wrong code)
+        false: [unset(state`editor.sandboxes.${props`oldId`}`)],
+      },
+    ],
+  },
+];
+
 export const getAuthToken = actions.getAuthToken;
 
 export const openUserMenu = set(state`userMenuOpen`, true);
@@ -170,7 +232,7 @@ export const forkSandbox = sequence('forkSandbox', [
         success: [
           actions.moveModuleContent,
           setSandboxData,
-          set(state`editor.currentId`, props`sandbox.id`),
+          setSandbox,
           factories.addNotification('Forked sandbox!', 'success'),
           factories.updateSandboxUrl(props`sandbox`),
           ensurePackageJSON,
@@ -187,19 +249,19 @@ export const forkSandbox = sequence('forkSandbox', [
   },
 ]);
 
+function stopFrozenSandboxFromEdit() {
+  throw new CancelError("You can't save a frozen sandbox", {});
+}
+
 export const forkFrozenSandbox = sequence('forkFrozenSandbox', [
-  when(state`editor.currentSandbox.isFrozen`),
+  when(state`editor.currentSandbox.isFrozen`) &&
+    when(state`editor.sessionFrozen`),
   {
     true: [
-      alertForkingFrozenSandbox,
-      {
-        confirmed: forkSandbox,
-        cancelled: [
-          set(props`message`, "Can't save a frozen sandbox"),
-          actions.callVSCodeCallbackError,
-          stopFrozenSandboxFromEdit,
-        ],
-      },
+      set(state`currentModal`, 'forkFrozenModal'),
+      set(props`message`, "Can't save a frozen sandbox"),
+      actions.callVSCodeCallbackError,
+      stopFrozenSandboxFromEdit,
     ],
     false: [],
   },
@@ -295,39 +357,6 @@ export const loadSandboxPage = factories.withLoadApp([]);
 
 export const loadGitHubPage = factories.withLoadApp([]);
 
-export const resetLive = [
-  clearUserSelections,
-  set(state`live.isLive`, false),
-  set(state`live.error`, null),
-  set(state`live.isLoading`, false),
-  set(state`live.roomInfo`, undefined),
-
-  ({ ot }) => {
-    ot.reset();
-  },
-];
-
-export const setSandbox = [
-  when(state`live.isLoading`),
-  {
-    true: [],
-    false: [
-      when(state`live.isLive`),
-      {
-        true: resetLive,
-        false: [],
-      },
-    ],
-  },
-  set(state`editor.currentId`, props`sandbox.id`),
-  actions.setCurrentModuleShortid,
-  actions.setMainModuleShortid,
-  actions.setInitialTab,
-  actions.setUrlOptions,
-  actions.setWorkspace,
-  syncFilesToFS,
-];
-
 export const joinLiveSessionIfAvailable = [
   when(
     props`sandbox.owned`,
@@ -420,6 +449,7 @@ export const signIn = [
           actions.setSignedInCookie,
           actions.setStoredSettings,
           actions.connectWebsocket,
+          actions.loadTemplatesForStartModal,
           setupNotifications,
           refetchSandboxInfo,
         ],

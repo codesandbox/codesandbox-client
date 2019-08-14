@@ -3,6 +3,11 @@
   "version": "0.0.14",
   "license": "MIT",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/react-embed"
+  },
   "sideEffects": false,
   "main": "dist/index",
   "module": "dist-es/index",
@@ -16,7 +21,7 @@
   "devDependencies": {
     "@types/react": "^16.8.12",
     "rimraf": "^2.6.2",
-    "typescript": "3.3.4000"
+    "typescript": "3.5.2"
   },
   "scripts": {
     "watch": "tsc --watch",

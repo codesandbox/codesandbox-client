@@ -1,12 +1,12 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import SignInButton from 'app/pages/common/SignInButton';
 
 import { Container, Heading, Explanation } from '../elements';
 
 class ForkServerModal extends React.Component {
-  componentWillUpdate() {
+  UNSAFE_componentWillUpdate() {
     // Which means that the user signed in in the meantime with the intention to
     // fork
     if (this.props.store.loggedIn) {

@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import { Query } from 'react-apollo';
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
@@ -58,7 +58,7 @@ class SandboxesItem extends React.Component {
           openByDefault={openByDefault}
           path={basePath}
           Icon={InfoIcon}
-          name={teamId ? `${teamName || 'Our'} Sandboxes` : 'My Sandboxes'}
+          name={teamId ? `${teamName || 'Team'} Sandboxes` : 'My Sandboxes'}
           style={
             isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}
           }
@@ -103,12 +103,14 @@ class SandboxesItem extends React.Component {
                     .sort()
                     .map(name => {
                       const path = '/' + name;
+                      const url = basePath + '/' + encodeURIComponent(name);
                       return (
                         <FolderEntry
                           key={path}
                           basePath={basePath}
                           teamId={teamId}
                           path={path}
+                          url={url}
                           folders={folders}
                           foldersByPath={foldersByPath}
                           name={name}

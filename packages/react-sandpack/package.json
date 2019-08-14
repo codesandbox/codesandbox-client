@@ -16,7 +16,8 @@
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/react-sandpack"
   },
   "engines": {
     "node": ">=6.0.0"
@@ -133,7 +134,7 @@
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",
     "typedoc": "^0.10.0",
-    "typescript": "3.3.4000",
+    "typescript": "3.5.2",
     "validate-commit-msg": "^2.12.2"
   }
 }

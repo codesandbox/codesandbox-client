@@ -8,11 +8,13 @@ export type Props = {
   style?: React.CSSProperties;
   block?: boolean;
   onClick?: (event: React.MouseEvent) => void;
-  children?: React.ReactElement | string;
+  children?: React.ReactNode;
   disabled?: boolean;
   type?: 'button' | 'reset' | 'submit';
   danger?: boolean;
   secondary?: boolean;
+  red?: boolean;
+  danger?: boolean;
 };
 
 function ButtonComponent({ style = {}, ...props }: Props) {

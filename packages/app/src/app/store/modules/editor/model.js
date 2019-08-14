@@ -59,6 +59,15 @@ const Git = types.model({
   username: types.string,
 });
 
+const Template = types.model({
+  id: types.maybeNull(types.string),
+  title: types.maybeNull(types.string),
+  url: types.maybeNull(types.string),
+  iconUrl: types.maybeNull(types.string),
+  color: types.string,
+  published: types.maybeNull(types.boolean),
+});
+
 export const Sandbox = types.model({
   author: types.maybeNull(Author),
   description: types.maybeNull(types.string),
@@ -66,6 +75,8 @@ export const Sandbox = types.model({
   entry: types.string,
   externalResources: types.array(types.string),
   forkCount: types.number,
+  customTemplate: types.maybeNull(Template),
+  forkedTemplate: types.maybeNull(Template),
   forkedFromSandbox: types.maybeNull(
     types.model({
       viewCount: types.number,
@@ -76,6 +87,7 @@ export const Sandbox = types.model({
       likeCount: types.number,
       insertedAt: types.string,
       id: types.string,
+      alias: types.maybeNull(types.string),
       git: types.maybeNull(Git),
       forkCount: types.number,
     })
@@ -114,6 +126,7 @@ export const Sandbox = types.model({
 
 export default {
   currentId: types.maybeNull(types.string),
+  sessionFrozen: types.boolean,
   currentModuleShortid: types.maybeNull(types.string),
   isForkingSandbox: types.boolean,
   mainModuleShortid: types.maybeNull(types.string),
@@ -196,4 +209,9 @@ export default {
       type: types.maybeNull(types.string),
     })
   ),
+  currentDevToolsPosition: types.model({
+    devToolIndex: types.number,
+    tabPosition: types.number,
+  }),
+  workspaceConfigCode: types.string,
 };

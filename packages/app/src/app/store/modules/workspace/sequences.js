@@ -8,6 +8,12 @@ import { updateSandboxPackage } from './../editor/sequences';
 import { addNotification } from '../../factories';
 
 export const changeSandboxPrivacy = [
+  ({ props: givenProps }) => {
+    track('Sandbox - Update Privacy', {
+      source: 'editor',
+      privacy: givenProps.privacy,
+    });
+  },
   when(
     state`editor.currentSandbox.template`,
     props`privacy`,
@@ -30,12 +36,74 @@ export const changeSandboxPrivacy = [
   ),
 ];
 
+export const deleteTemplate = [
+  () => {
+    track('Template - Removed', { source: 'editor' });
+  },
+  actions.deleteTemplate,
+  {
+    success: [
+      set(state`editor.sandboxes.${state`editor.currentId`}.isFrozen`, false),
+      set(state`editor.currentSandbox.customTemplate`, null),
+      closeModal,
+      addNotification('Template Deleted', 'success'),
+    ],
+    error: [addNotification('Could not delete custom template', 'error')],
+  },
+];
+
+export const editTemplate = [
+  () => {
+    track('Template - Edited', { source: 'editor' });
+  },
+  actions.editTemplate,
+  {
+    success: [
+      closeModal,
+      set(
+        state`editor.sandboxes.${state`editor.currentId`}.customTemplate`,
+        props`template`
+      ),
+      addNotification('Template Edited', 'success'),
+    ],
+    error: [addNotification('Could not edit custom template', 'error')],
+  },
+];
+
+export const addTemplate = [
+  () => {
+    track('Template - Created', { source: 'editor' });
+  },
+  actions.addTemplate,
+  {
+    success: [
+      set(state`editor.sandboxes.${state`editor.currentId`}.isFrozen`, true),
+      set(
+        state`editor.sandboxes.${state`editor.currentId`}.customTemplate`,
+        props`template`
+      ),
+      closeModal,
+      addNotification('Template Created', 'success'),
+    ],
+    error: [
+      addNotification(
+        'Could not create template, please try again later',
+        'error'
+      ),
+    ],
+  },
+];
+
 export const deleteSandbox = [
   closeModal,
   actions.deleteSandbox,
   set(state`workspace.showDeleteSandboxModal`, false),
   addNotification('Sandbox deleted!', 'success'),
-  actions.redirectToSandboxWizard,
+  when(state`user`),
+  {
+    true: [actions.redirectToDashboard],
+    false: [actions.redirectToSandboxWizard],
+  },
 ];
 
 export const openIntegrations = [

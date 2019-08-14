@@ -80,6 +80,7 @@ const theme = {
     dangerBackground: '#DC3545',
     sidebar: '#191d1f',
     placeholder: '#B8B9BA',
+    link: '#40a9f3',
   }),
   vscodeTheme: codesandbox,
 

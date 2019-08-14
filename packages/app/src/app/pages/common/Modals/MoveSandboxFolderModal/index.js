@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import { basename } from 'path';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Button } from '@codesandbox/common/lib/components/Button';

@@ -28,7 +28,6 @@ export interface NavigatorProps {
   onForward?: () => void;
   openNewWindow?: () => void;
   zenMode?: boolean;
-  isServer?: boolean;
 }
 
 function Navigator({
@@ -42,7 +41,6 @@ function Navigator({
   toggleProjectView,
   openNewWindow,
   zenMode,
-  isServer,
 }: NavigatorProps) {
   return (
     <Container className="flying-container-handler" style={{ cursor: 'move' }}>
@@ -74,7 +72,7 @@ function Navigator({
           </Tooltip>
         </Icon>
       )}
-      {!zenMode && !isServer && toggleProjectView && (
+      {!zenMode && toggleProjectView && (
         <SwitchContainer>
           <Tooltip
             delay={0}

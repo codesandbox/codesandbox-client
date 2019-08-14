@@ -3,16 +3,15 @@ import { StripeProvider, Elements } from 'react-stripe-elements';
 import { STRIPE_API_KEY } from '@codesandbox/common/lib/utils/config';
 import CheckoutForm from './CheckoutForm';
 import { Container } from './elements';
-
 interface ISubscribeFormProps {
   name: string;
-  subscribe: (id: string) => void;
-  loadingText: string;
-  buttonName: string;
-  isLoading: boolean;
-  error: Error;
+  subscribe: (params: { token: string; coupon: string }) => void;
+  loadingText?: string;
+  buttonName?: string;
+  isLoading?: boolean;
+  error?: string;
+  hasCoupon?: boolean;
 }
-
 const SubscribeForm: React.FC<ISubscribeFormProps> = ({
   name,
   subscribe,
@@ -20,6 +19,7 @@ const SubscribeForm: React.FC<ISubscribeFormProps> = ({
   buttonName = 'Subscribe',
   isLoading = false,
   error,
+  hasCoupon,
 }) => (
   <Container>
     <StripeProvider apiKey={STRIPE_API_KEY}>
@@ -29,8 +29,9 @@ const SubscribeForm: React.FC<ISubscribeFormProps> = ({
           loadingText={loadingText}
           subscribe={subscribe}
           name={name}
-          loading={isLoading}
+          isLoading={isLoading}
           error={error}
+          hasCoupon={hasCoupon}
         />
       </Elements>
     </StripeProvider>

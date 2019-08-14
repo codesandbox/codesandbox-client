@@ -8,5 +8,6 @@ export default sandbox => {
         module.title === 'netlify.toml' && module.directoryShortid == null
     )
     .map(m => toml(m.code))[0] || { build: {} };
+
   return mapKeys(netlifyConfig.build, (v, k) => k.toLowerCase());
 };

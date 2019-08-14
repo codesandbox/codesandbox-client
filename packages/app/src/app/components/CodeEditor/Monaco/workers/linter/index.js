@@ -2,6 +2,10 @@ import Linter from 'eslint/lib/linter';
 
 import monkeypatch from './monkeypatch-babel-eslint';
 
+self.importScripts(
+  `${process.env.CODESANDBOX_HOST}/static/browserfs3/browserfs.min.js`
+);
+
 /* eslint-disable global-require */
 const allRules = {
   'import/first': require('eslint-plugin-import/lib/rules/first'),

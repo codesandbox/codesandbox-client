@@ -6,6 +6,8 @@ module.exports = {
     siteUrl: 'https://codesandbox.io',
   },
   plugins: [
+    'gatsby-transformer-sharp',
+    'gatsby-plugin-sharp',
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -24,7 +26,9 @@ module.exports = {
     {
       resolve: `gatsby-transformer-remark`,
       options: {
+        pedantic: false,
         plugins: [
+          `gatsby-remark-copy-linked-files`,
           {
             resolve: `gatsby-remark-images`,
             options: {
@@ -33,18 +37,10 @@ module.exports = {
               sizeByPixelDensity: true,
             },
           },
-          {
-            resolve: require.resolve(`./plugins/remark-sections`),
-          },
+          { resolve: require.resolve(`./plugins/remark-sections`) },
           'gatsby-remark-autolink-headers',
           `gatsby-remark-prismjs`,
-          {
-            resolve: 'gatsby-remark-embed-youtube',
-            options: {
-              width: 740,
-              height: 370,
-            },
-          },
+          `gatsby-remark-embedder`,
         ],
       },
     },
@@ -54,6 +50,7 @@ module.exports = {
         color: '#40A9F3',
       },
     },
+    `gatsby-plugin-twitter`,
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-remove-trailing-slashes`,
@@ -62,20 +59,6 @@ module.exports = {
       resolve: `gatsby-plugin-google-tagmanager`,
       options: {
         id: 'GTM-T3L6RFK',
-      },
-    },
-    {
-      resolve: `gatsby-source-medium`,
-      options: {
-        username: `@compuives`,
-        limit: 200,
-      },
-    },
-    {
-      resolve: `gatsby-source-rss-feed`,
-      options: {
-        url: `https://medium.com/feed/@compuives`,
-        name: `MediumBlog`,
       },
     },
     {

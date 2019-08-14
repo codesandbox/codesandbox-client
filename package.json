@@ -3,27 +3,33 @@
   "version": "0.1.0",
   "license": "GPL-3.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client"
+  },
   "scripts": {
-    "build": "NODE_OPTIONS=\"--max-old-space-size=4096\" yarn build:deps && yarn build:prod",
-    "build:prod": "NODE_OPTIONS=\"--max-old-space-size=4096\" lerna run build  --scope homepage --stream && lerna run build --scope app --stream && gulp",
+    "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" yarn build:deps && yarn build:prod",
+    "build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" lerna run build  --scope homepage --stream && lerna run build --scope app --stream && lerna run copy-assets --scope app --stream",
     "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:clean": "lerna run build:clean --scope app --scope homepage && rimraf www",
-    "build:deps": "lerna run build:dev --scope codesandbox-api --scope @codesandbox/notifications && lerna run build:dev --scope @codesandbox/common && lerna run build:dev --scope vscode-textmate --scope codesandbox-browserfs --scope node-services && lerna run build:dev --scope sse-hooks",
+    "build:deps": "lerna run build:dev --scope codesandbox-api --scope @codesandbox/notifications --scope @codesandbox/executors && lerna run build:dev --scope @codesandbox/common && lerna run build:dev --scope vscode-textmate --scope codesandbox-browserfs --scope node-services && lerna run build:dev --scope sse-hooks && lerna run build --scope codesandbox-deps",
     "build:common": "lerna run build:dev --scope @codesandbox/common --stream",
     "build:dynamic": "lerna run build --scope dynamic-pages --stream",
-    "start": "yarn build:deps && lerna run start --scope app --stream",
+    "start": "yarn build:deps && yarn start:fast",
     "start:overmind": "yarn build:deps && concurrently \"lerna run start --scope app --stream\" \"overmind-devtools\"",
-    "start:fast": "lerna run start --scope app --stream",
-    "start:vscode": "VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
+    "start:fast": "cd packages/app && yarn start",
+    "start:vscode": "cross-env VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
-    "start:common": "lerna run start --scope common --stream",
-    "start:home": "lerna run start --scope homepage --stream",
+    "start:common": "lerna run start --scope @codesandbox/common --stream",
+    "start:home": "yarn build:deps && yarn start:home:fast",
+    "start:home:fast": "cd packages/homepage && yarn start",
     "start:test": "lerna run start:test --scope app --stream",
+    "start:storybook": "lerna run start:storybook --scope=@codesandbox/common --stream",
     "start:dev_api": "lerna run start:dev_api --scope app --stream",
     "test": "lerna run test --ignore codesandbox-browserfs",
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
-    "lint": "lerna run lint",
+    "lint": "lerna run lint --stream",
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "postinstall": "rimraf node_modules/@types/react-native && rimraf packages/app/node_modules/styled-components node_modules/react-split-pane/node_modules/react* && yarn lerna run install-dependencies --scope vscode-textmate --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
@@ -42,11 +48,14 @@
       "packages/sse-hooks",
       "packages/react-embed",
       "packages/dynamic-pages",
-      "packages/notifications"
+      "packages/notifications",
+      "packages/deps",
+      "packages/executors"
     ],
     "nohoist": [
       "**/react-codemirror2",
-      "**/react-codemirror2/**"
+      "**/react-codemirror2/**",
+      "codesandbox-deps/tern"
     ]
   },
   "resolutions": {
@@ -55,7 +64,7 @@
   "devDependencies": {
     "@types/react": "^16.8.12",
     "all-contributors-cli": "^5.4.0",
-    "babel-eslint": "codesandbox/babel-eslint#v10.0.2",
+    "babel-eslint": "^10.0.2",
     "concurrently": "^4.1.0",
     "eslint": "5.16.0",
     "eslint-config-airbnb": "^15.0.1",
@@ -64,7 +73,7 @@
     "eslint-loader": "^1.7.1",
     "eslint-plugin-flowtype": "^2.34.0",
     "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-jsx-a11y": "^6.1.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "~7.4.0",
     "eslint-plugin-react-hooks": "^1.6.0",
     "flow-bin": "^0.72.0",
@@ -73,11 +82,11 @@
     "lerna": "^2.5.1",
     "prettier": "1.17.0",
     "pretty-quick": "^1.10.0",
-    "typescript": "3.4.5"
+    "typescript": "3.5.3"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.9.0",
-    "@typescript-eslint/parser": "^1.9.0",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
     "opencollective": "^1.0.3"
   },
   "collective": {

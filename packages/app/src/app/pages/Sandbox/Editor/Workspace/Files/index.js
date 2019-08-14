@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 
 import DirectoryEntry from './DirectoryEntry/index';

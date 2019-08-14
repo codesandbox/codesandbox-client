@@ -1,10 +1,5 @@
 import * as React from 'react';
-import {
-  Sandbox,
-  Module,
-  SSEManagerStatus,
-  SSEContainerStatus,
-} from '../../types';
+import { Sandbox, Module } from '../../types';
 import {
   listen,
   dispatch,
@@ -13,7 +8,6 @@ import {
   resetState,
 } from 'codesandbox-api';
 import debounce from 'lodash/debounce';
-import io from 'socket.io-client';
 
 import { frameUrl, host } from '../../utils/url-generator';
 import { getModulePath } from '../../sandbox/modules';
@@ -23,13 +17,12 @@ import { Spring } from 'react-spring/renderprops.cjs';
 
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 
-import { notificationState } from '../../utils/notifications';
 import { getSandboxName } from '../../utils/get-sandbox-name';
+import track from '../../utils/analytics';
 
 import Navigator from './Navigator';
 import { Container, StyledFrame, Loading } from './elements';
 import { Settings } from './types';
-import { NotificationStatus } from '@codesandbox/notifications';
 
 export type Props = {
   sandbox: Sandbox;
@@ -38,6 +31,7 @@ export type Props = {
   extraModules?: { [path: string]: { code: string; path: string } };
   currentModule?: Module;
   initialPath?: string;
+  url?: string;
   isInProjectView?: boolean;
   onClearErrors?: () => void;
   onAction?: (action: Object) => void;
@@ -52,12 +46,8 @@ export type Props = {
   noPreview?: boolean;
   alignDirection?: 'right' | 'bottom';
   delay?: number;
-  setSSEManagerStatus?: (status: SSEManagerStatus) => void;
-  setSSEContainerStatus?: (status: SSEContainerStatus) => void;
-  managerStatus?: SSEManagerStatus;
-  containerStatus?: SSEContainerStatus;
-  syncSandbox?: (updates: any) => void;
   className?: string;
+  overlayMessage?: string;
 };
 
 type State = {
@@ -66,10 +56,8 @@ type State = {
   historyPosition: number;
   urlInAddressBar: string;
   url: string | undefined;
-  overlayMessage: string | undefined;
-  hibernated: boolean;
-  sseError: boolean;
   showScreenshot: boolean;
+  useFallbackDomain: boolean;
 };
 
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
@@ -83,101 +71,9 @@ interface IModulesByPath {
   [path: string]: { path: string; code: null | string; isBinary?: boolean };
 }
 
-const getDiff = (a: IModulesByPath, b: IModulesByPath) => {
-  const diff: IModulesByPath = {};
-
-  Object.keys(b)
-    .filter(p => {
-      if (a[p]) {
-        if (a[p].code !== b[p].code) {
-          return true;
-        }
-      } else {
-        return true;
-      }
-
-      return false;
-    })
-    .forEach(p => {
-      diff[p] = {
-        code: b[p].code,
-        path: p,
-        isBinary: b[p].isBinary,
-      };
-    });
-
-  Object.keys(a).forEach(p => {
-    if (!b[p]) {
-      diff[p] = {
-        path: p,
-        code: null,
-      };
-    }
-  });
-
-  return diff;
-};
-
-const MAX_SSE_AGE = 24 * 60 * 60 * 1000; // 1 day
-async function retrieveSSEToken() {
-  const jwt = localStorage.getItem('jwt');
-
-  if (jwt) {
-    const parsedJWT = JSON.parse(jwt);
-    const existingKey = localStorage.getItem('sse');
-    const currentTime = new Date().getTime();
-
-    if (existingKey) {
-      const parsedKey = JSON.parse(existingKey);
-      if (parsedKey.key && currentTime - parsedKey.timestamp < MAX_SSE_AGE) {
-        return parsedKey.key;
-      }
-    }
-
-    return fetch('/api/v1/users/current_user/sse', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${parsedJWT}`,
-      },
-    })
-      .then(x => x.json())
-      .then(result => result.jwt)
-      .then(token => {
-        localStorage.setItem(
-          'sse',
-          JSON.stringify({
-            key: token,
-            timestamp: currentTime,
-          })
-        );
-
-        return token;
-      })
-      .catch(() => null);
-  }
-
-  return null;
-}
-
-function sseTerminalMessage(msg) {
-  dispatch({
-    type: 'terminal:message',
-    data: `> Sandbox Container: ${msg}\n\r`,
-  });
-}
-
 class BasePreview extends React.Component<Props, State> {
   serverPreview: boolean;
-  lastSent: {
-    sandboxId: string;
-    modules: IModulesByPath;
-  };
-
-  $socket: SocketIOClient.Socket;
-  connectTimeout: number | undefined;
-  // indicates if the socket closing is initiated by us
-  localClose: boolean;
+  element: HTMLIFrameElement;
 
   constructor(props: Props) {
     super(props);
@@ -189,14 +85,10 @@ class BasePreview extends React.Component<Props, State> {
       frameInitialized: false,
       history: [],
       historyPosition: 0,
-      urlInAddressBar: this.serverPreview
-        ? getSSEUrl(props.sandbox, props.initialPath)
-        : frameUrl(props.sandbox, props.initialPath || ''),
+      urlInAddressBar: this.currentUrl(),
       url: null,
-      overlayMessage: null,
-      hibernated: false,
-      sseError: false,
       showScreenshot: true,
+      useFallbackDomain: false,
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -204,13 +96,7 @@ class BasePreview extends React.Component<Props, State> {
     // when the user navigates the iframe app, which shows the loading screen
     this.initialPath = props.initialPath;
 
-    this.initializeLastSent();
-
     if (this.serverPreview) {
-      this.connectTimeout = null;
-      this.localClose = false;
-      this.setupSSESockets();
-
       setTimeout(() => {
         // Remove screenshot after specific time, so the loading container spinner can still show
         this.setState({ showScreenshot: false });
@@ -223,16 +109,17 @@ class BasePreview extends React.Component<Props, State> {
     }
 
     (window as any).openNewWindow = this.openNewWindow;
+
+    this.testFallbackDomainIfNeeded();
+
+    setTimeout(() => {
+      if (this.state.showScreenshot) {
+        this.setState({ showScreenshot: false });
+      }
+    }, 800);
   }
 
-  initializeLastSent = () => {
-    this.lastSent = {
-      sandboxId: this.props.sandbox.id,
-      modules: this.getModulesToSend(),
-    };
-  };
-
-  componentWillUpdate(nextProps: Props, nextState: State) {
+  UNSAFE_componentWillUpdate(nextProps: Props, nextState: State) {
     if (
       nextState.frameInitialized !== this.state.frameInitialized &&
       nextState.frameInitialized
@@ -241,194 +128,68 @@ class BasePreview extends React.Component<Props, State> {
     }
   }
 
-  setupSSESockets = async () => {
-    const hasInitialized = Boolean(this.$socket);
+  /**
+   * We have a different domain for the preview (currently :id.csb.app), some corporate
+   * firewalls block calls to these domains. Which is why we ping the domain here, if it
+   * returns a bad response we fall back to using our main domain (:id.codesandbox.io).
+   *
+   * We use a different domain for the preview, since Chrome runs iframes from a different root
+   * domain in a different process, which means for us that we have a snappier editor
+   */
+  testFallbackDomainIfNeeded = () => {
+    const TRACKING_NAME = 'Preview - Fallback URL';
+    const normalUrl = frameUrl(
+      this.props.sandbox,
+      this.props.initialPath || ''
+    );
+    const fallbackUrl = frameUrl(
+      this.props.sandbox,
+      this.props.initialPath || '',
+      true
+    );
 
-    function onTimeout(comp: BasePreview) {
-      comp.connectTimeout = null;
-      if (comp.props.setSSEManagerStatus) {
-        comp.props.setSSEManagerStatus('disconnected');
-      }
-    }
-
-    if (hasInitialized) {
-      this.setState({
-        frameInitialized: false,
-      });
-      if (this.$socket) {
-        this.localClose = true;
-        this.$socket.close();
-        // we need this setTimeout() for socket open() to work immediately after close()
-        setTimeout(() => {
-          this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
-          this.$socket.open();
-        }, 0);
-      }
-    } else {
-      const socket = io(getSSEUrl(), {
-        autoConnect: false,
-        transports: ['websocket', 'polling'],
-      });
-      this.$socket = socket;
-      if (process.env.NODE_ENV === 'development') {
-        (window as any).$socket = socket;
-      }
-
-      socket.on('disconnect', () => {
-        if (this.localClose) {
-          this.localClose = false;
-          return;
-        }
-
-        if (
-          this.props.setSSEManagerStatus &&
-          this.props.managerStatus === 'connected' &&
-          this.props.containerStatus !== 'hibernated'
-        ) {
-          this.props.setSSEManagerStatus('disconnected');
-          dispatch({ type: 'codesandbox:sse:disconnect' });
-        }
-      });
-
-      socket.on('connect', async () => {
-        if (this.connectTimeout) {
-          clearTimeout(this.connectTimeout);
-          this.connectTimeout = null;
-        }
-
-        if (this.props.setSSEManagerStatus) {
-          this.props.setSSEManagerStatus('connected');
-        }
-
-        const { id } = this.props.sandbox;
-        const token = await retrieveSSEToken();
-
-        socket.emit('sandbox', { id, token });
-
-        sseTerminalMessage(`connected, starting sandbox ${id}...`);
-
-        socket.emit('sandbox:start');
-      });
-
-      socket.on('shell:out', ({ data, id }) => {
-        dispatch({
-          type: 'shell:out',
-          data,
-          id,
-        });
-      });
-
-      socket.on('shell:exit', ({ id, code, signal }) => {
-        dispatch({
-          type: 'shell:exit',
-          code,
-          signal,
-          id,
-        });
-      });
-
-      socket.on('sandbox:update', message => {
-        if (this.props.syncSandbox) {
-          this.props.syncSandbox({ updates: message.updates });
-        }
-      });
-
-      socket.on('sandbox:status', message => {
-        if (this.props.setSSEContainerStatus) {
-          if (message.status === 'starting-container') {
-            this.props.setSSEContainerStatus('initializing');
-          } else if (message.status === 'installing-packages') {
-            this.props.setSSEContainerStatus('container-started');
-          }
-        }
-      });
-
-      socket.on('sandbox:start', () => {
-        sseTerminalMessage(`sandbox ${this.props.sandbox.id} started.`);
-
-        if (!this.state.frameInitialized && this.props.onInitialized) {
-          this.disposeInitializer = this.props.onInitialized(this);
-        }
-
-        this.setState({
-          frameInitialized: true,
-          overlayMessage: null,
-        });
-        if (this.props.setSSEContainerStatus) {
-          this.props.setSSEContainerStatus('sandbox-started');
-        }
-
-        setTimeout(() => {
-          this.executeCodeImmediately(true);
-          this.handleRefresh();
-        });
-      });
-
-      socket.on('sandbox:hibernate', () => {
-        sseTerminalMessage(`sandbox ${this.props.sandbox.id} hibernated.`);
-
-        if (this.props.setSSEContainerStatus) {
-          this.props.setSSEContainerStatus('hibernated');
-        }
-
-        this.setState(
-          {
-            frameInitialized: false,
-            overlayMessage:
-              'The sandbox was hibernated because of inactivity. Refresh the page to restart it.',
-          },
-          () => this.$socket.close()
-        );
-      });
-
-      socket.on('sandbox:stop', () => {
-        sseTerminalMessage(`sandbox ${this.props.sandbox.id} restarting...`);
-
-        if (this.props.setSSEContainerStatus) {
-          this.props.setSSEContainerStatus('stopped');
-        }
-
-        this.setState({
-          frameInitialized: false,
-          overlayMessage: 'Restarting the sandbox...',
-        });
-      });
-
-      socket.on('sandbox:log', ({ data }) => {
-        dispatch({
-          type: 'terminal:message',
-          data,
-        });
-      });
-
-      socket.on('sandbox:error', ({ message, unrecoverable }) => {
-        sseTerminalMessage(
-          `sandbox ${this.props.sandbox.id} ${
-            unrecoverable ? 'unrecoverable ' : ''
-          }error "${message}"`
-        );
-        if (unrecoverable) {
-          this.setState(
-            {
-              frameInitialized: false,
-              overlayMessage:
-                'An unrecoverable sandbox error occurred. :-( Try refreshing the page.',
-              sseError: true,
-            },
-            () => this.$socket.close()
-          );
-        } else {
-          notificationState.addNotification({
-            message: `Sandbox Container: ${message}`,
-            status: NotificationStatus.ERROR,
+    const setFallbackDomain = () => {
+      this.setState(
+        {
+          useFallbackDomain: true,
+          urlInAddressBar: frameUrl(
+            this.props.sandbox,
+            this.props.initialPath || '',
+            true
+          ),
+        },
+        () => {
+          requestAnimationFrame(() => {
+            this.sendUrl();
           });
         }
-      });
+      );
+    };
 
-      this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
-      socket.open();
+    if (!this.props.url && normalUrl !== fallbackUrl) {
+      fetch(normalUrl, { mode: 'no-cors' })
+        .then(() => {
+          // Succeeded
+          track(TRACKING_NAME, { needed: false });
+        })
+        .catch(() => {
+          // Failed, use fallback
+          track(TRACKING_NAME, { needed: true });
+
+          setFallbackDomain();
+        });
     }
   };
+
+  currentUrl = () =>
+    this.props.url ||
+    (this.serverPreview
+      ? getSSEUrl(this.props.sandbox, this.props.initialPath)
+      : frameUrl(
+          this.props.sandbox,
+          this.props.initialPath || '',
+          this.state && this.state.useFallbackDomain
+        ));
 
   static defaultProps = {
     showNavigation: true,
@@ -445,11 +206,6 @@ class BasePreview extends React.Component<Props, State> {
     }
     if (this.disposeInitializer) {
       this.disposeInitializer();
-    }
-
-    if (this.$socket) {
-      this.localClose = true;
-      this.$socket.close();
     }
   }
 
@@ -472,34 +228,25 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleSandboxChange = (sandbox: Sandbox) => {
-    this.serverPreview = getTemplate(this.props.sandbox.template).isServer;
+    this.serverPreview = getTemplate(sandbox.template).isServer;
 
     resetState();
 
-    const url = this.serverPreview
-      ? getSSEUrl(sandbox, this.props.initialPath)
-      : frameUrl(sandbox, this.props.initialPath || '');
+    const url = this.currentUrl();
 
     if (this.serverPreview) {
-      this.initializeLastSent();
-      this.setupSSESockets();
-
       setTimeout(() => {
         // Remove screenshot after specific time, so the loading container spinner can still show
         this.setState({ showScreenshot: false });
       }, 800);
     }
 
-    this.setState(
-      {
-        history: [url],
-        historyPosition: 0,
-        urlInAddressBar: url,
-        showScreenshot: true,
-        overlayMessage: null,
-      },
-      () => this.handleRefresh()
-    );
+    this.setState({
+      history: [url],
+      historyPosition: 0,
+      urlInAddressBar: url,
+      showScreenshot: true,
+    });
   };
 
   handleDependenciesChange = () => {
@@ -509,12 +256,7 @@ class BasePreview extends React.Component<Props, State> {
   handleMessage = (data: any, source: any) => {
     if (data && data.codesandbox) {
       if (data.type === 'initialized' && source) {
-        registerFrame(
-          source,
-          this.serverPreview
-            ? getSSEUrl(this.props.sandbox)
-            : frameUrl(this.props.sandbox)
-        );
+        registerFrame(source, this.currentUrl());
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
@@ -554,14 +296,6 @@ class BasePreview extends React.Component<Props, State> {
                 ...data,
                 sandboxId: this.props.sandbox.id,
               });
-            }
-
-            break;
-          }
-          case 'socket:message': {
-            if (this.$socket) {
-              const { channel, type: _t, codesandbox: _c, ...message } = data;
-              this.$socket.emit(channel, message);
             }
 
             break;
@@ -644,18 +378,7 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       const modulesToSend = this.getModulesToSend();
-      if (this.serverPreview) {
-        const diff = getDiff(this.lastSent.modules, modulesToSend);
-        if (this.props.containerStatus === 'sandbox-started') {
-          // Only mark the last modules if we're sure that the container has been able
-          // to process the last diff
-          this.lastSent.modules = modulesToSend;
-        }
-
-        if (Object.keys(diff).length > 0 && this.$socket) {
-          this.$socket.emit('sandbox:update', diff);
-        }
-      } else {
+      if (!this.serverPreview) {
         dispatch({
           type: 'compile',
           version: 3,
@@ -668,6 +391,12 @@ class BasePreview extends React.Component<Props, State> {
           hasActions: Boolean(this.props.onAction),
         });
       }
+    }
+  };
+
+  setIframeElement = (el: HTMLIFrameElement) => {
+    if (el) {
+      this.element = el;
     }
   };
 
@@ -685,9 +414,8 @@ class BasePreview extends React.Component<Props, State> {
   sendUrl = () => {
     const { urlInAddressBar } = this.state;
 
-    const el = document.getElementById('sandbox');
-    if (el) {
-      (el as HTMLIFrameElement).src = urlInAddressBar;
+    if (this.element) {
+      this.element.src = urlInAddressBar;
 
       this.setState({
         history: [urlInAddressBar],
@@ -701,13 +429,8 @@ class BasePreview extends React.Component<Props, State> {
     const { history, historyPosition, urlInAddressBar } = this.state;
     const url = history[historyPosition] || urlInAddressBar;
 
-    const el = document.getElementById('sandbox');
-    if (el) {
-      (el as HTMLIFrameElement).src =
-        url ||
-        (this.serverPreview
-          ? getSSEUrl(this.props.sandbox)
-          : frameUrl(this.props.sandbox));
+    if (this.element) {
+      this.element.src = url || this.currentUrl();
     }
 
     this.setState({
@@ -778,18 +501,12 @@ class BasePreview extends React.Component<Props, State> {
       hide,
       noPreview,
       className,
+      overlayMessage,
     } = this.props;
 
-    const {
-      historyPosition,
-      history,
-      urlInAddressBar,
-      overlayMessage,
-    } = this.state;
+    const { historyPosition, history, urlInAddressBar } = this.state;
 
-    const url =
-      urlInAddressBar ||
-      (this.serverPreview ? getSSEUrl(sandbox) : frameUrl(sandbox));
+    const url = urlInAddressBar || this.currentUrl();
 
     if (noPreview) {
       // Means that preview is open in another tab definitely
@@ -824,7 +541,6 @@ class BasePreview extends React.Component<Props, State> {
             }
             openNewWindow={this.openNewWindow}
             zenMode={settings.zenMode}
-            isServer={this.serverPreview}
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
@@ -840,12 +556,8 @@ class BasePreview extends React.Component<Props, State> {
               <StyledFrame
                 sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
                 allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media"
-                src={
-                  this.serverPreview
-                    ? getSSEUrl(sandbox, this.initialPath)
-                    : frameUrl(sandbox, this.initialPath)
-                }
-                id="sandbox"
+                src={this.currentUrl()}
+                ref={this.setIframeElement}
                 title={getSandboxName(sandbox)}
                 style={{
                   ...style,

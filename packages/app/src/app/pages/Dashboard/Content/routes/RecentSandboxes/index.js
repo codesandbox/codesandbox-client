@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer, inject } from 'mobx-react';
+import { observer, inject } from 'app/componentConnectors';
 
 import { Query } from 'react-apollo';
 
@@ -34,6 +34,12 @@ const RecentSandboxes = ({ store }) => {
           }
         }
 
+        // We want to hide all templates
+        // TODO: make this a query variable for graphql and move the logic to the server
+        const noTemplateSandboxes = (loading ? [] : data.me.sandboxes).filter(
+          s => !s.customTemplate
+        );
+
         return (
           <Sandboxes
             isLoading={loading}
@@ -45,7 +51,7 @@ const RecentSandboxes = ({ store }) => {
               />
             )}
             hideFilters
-            sandboxes={loading ? [] : data.me.sandboxes}
+            sandboxes={noTemplateSandboxes}
             page="recent"
           />
         );

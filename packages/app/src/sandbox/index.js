@@ -7,6 +7,7 @@ import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
 import setupConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 
@@ -19,23 +20,6 @@ export const SCRIPT_VERSION =
   document.currentScript && document.currentScript.src;
 
 debug('Booting sandbox');
-
-function getId() {
-  if (process.env.LOCAL_SERVER) {
-    return document.location.hash.replace('#', '');
-  }
-
-  if (process.env.STAGING) {
-    const segments = host.split('//')[1].split('.');
-    const first = segments.shift();
-    const re = RegExp(`${first}-(.*)\\.${segments.join('\\.')}`);
-    return document.location.host.match(re)[1];
-  }
-
-  const hostRegex = host.replace(/https?:\/\//, '').replace(/\./g, '\\.');
-  const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
-  return document.location.host.match(sandboxRegex)[1];
-}
 
 requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js', {});
@@ -86,7 +70,7 @@ requirePolyfills().then(() => {
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
-    const id = getId();
+    const id = getSandboxId();
     window
       .fetch(host + `/api/v1/sandboxes/${id}`, {
         credentials: 'include',
@@ -126,6 +110,9 @@ requirePolyfills().then(() => {
           hasActions: false,
           template: x.data.template,
           version: 3,
+          disableDependencyPreprocessing: document.location.search.includes(
+            'csb-dynamic-download'
+          ),
         };
 
         compile(data);

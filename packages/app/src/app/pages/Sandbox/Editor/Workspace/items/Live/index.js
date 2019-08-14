@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import LiveInfo from './LiveInfo';
 import LiveButton from './LiveButton';
@@ -10,9 +10,28 @@ import {
   WorkspaceSubtitle,
   ErrorDescription,
 } from '../../elements';
+import { More } from '../More';
 
 const Live = ({ signals, store }) => {
   const hasUnsyncedModules = !store.editor.isAllModulesSynced;
+
+  const showPlaceHolder =
+    (!store.live.isLive && !store.editor.currentSandbox.owned) ||
+    !store.isLoggedIn;
+
+  if (showPlaceHolder) {
+    const message = store.isLoggedIn ? (
+      <>
+        You need to own this sandbox to open a live session to collaborate with
+        others in real time.{' '}
+        <p>Fork this sandbox to live share it with others!</p>
+      </>
+    ) : (
+      `You need to be signed in to open a live session to collaborate with others in real time. Sign in to live share this sandbox!`
+    );
+
+    return <More message={message} id="live" />;
+  }
 
   return (
     <div>

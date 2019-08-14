@@ -6,7 +6,7 @@ import {
   callVSCodeCallback,
   callVSCodeCallbackError,
 } from '../../actions';
-import { renameModule } from '../files/sequences';
+import { renameModule, createModulesByPath } from '../files/sequences';
 import {
   sendModuleSaved,
   getSelectionsForCurrentModule,
@@ -122,6 +122,11 @@ export const updatePrivacy = [
 
 export const updateFrozen = actions.updateFrozen;
 
+export const sessionFreezeOverride = set(
+  state`editor.sessionFrozen`,
+  props`frozen`
+);
+
 export const toggleLikeSandbox = [
   when(state`editor.sandboxes.${props`id`}.userLiked`),
   {
@@ -137,8 +142,15 @@ export const toggleLikeSandbox = [
   toggle(state`editor.sandboxes.${props`id`}.userLiked`),
 ];
 
+export const forkSandboxOnDemand = [forkSandbox];
+
 export const forceForkSandbox = [
-  when(state`editor.currentSandbox.owned`),
+  when(
+    state`editor.currentSandbox.owned`,
+    state`editor.currentSandbox.customTemplate`,
+    // Only show modal if you own the sandbox and it isn't a custom template
+    (owned, customTemplate) => owned && !customTemplate
+  ),
   {
     true: [
       actions.confirmForkingOwnSandbox,
@@ -172,6 +184,8 @@ export const changeCode = [
 
   actions.addChangedModule,
   actions.unsetDirtyTab,
+
+  actions.sendChangesToExecutor,
 ];
 
 export const saveChangedModules = [
@@ -241,13 +255,11 @@ export const saveCode = [
       sendModuleSaved,
 
       actions.updateTemplateIfSSE,
+      actions.sendChangesToExecutor,
     ],
 
     error: [callVSCodeCallbackError],
-    codeOutdated: [
-      addNotification(props`message`, 'warning'),
-      callVSCodeCallbackError,
-    ],
+    codeOutdated: [callVSCodeCallback],
   },
 ];
 
@@ -323,3 +335,60 @@ export const toggleEditorPreviewLayout = [
 ];
 
 export const onNavigateAway = [];
+
+export const updateDevTools = [
+  when(state`editor.currentSandbox.owned`),
+  {
+    true: [
+      actions.getDevToolsTabs,
+      when(props`devToolsModule`, x => !!x),
+      {
+        true: [
+          set(props`moduleShortid`, props`devToolsModule.shortid`),
+          saveCode,
+        ],
+        false: [
+          ({ props: actionProps }) => ({
+            files: {
+              '/.codesandbox/workspace.json': {
+                content: actionProps.code,
+                isBinary: false,
+              },
+            },
+          }),
+
+          createModulesByPath,
+        ],
+      },
+    ],
+    false: [set(state`editor.workspaceConfigCode`, props`code`)],
+  },
+];
+
+export const setDevToolPosition = [
+  set(state`editor.currentDevToolsPosition`, props`position`),
+];
+
+export const addDevToolsTab = [
+  actions.addDevToolsTab,
+  updateDevTools,
+  actions.setCurrentTabToChangedTab,
+];
+export const moveDevToolsTab = [
+  actions.moveDevToolsTab,
+  updateDevTools,
+  actions.setCurrentTabToChangedTab,
+];
+export const closeDevToolsTab = [actions.closeDevToolsTab, updateDevTools];
+
+/**
+ * Open existing tab if exists, otherwise create new tab
+ */
+export const openDevToolsTab = [
+  actions.getDevToolsTab,
+  when(props`nextPos`, n => !!n),
+  {
+    true: [actions.setCurrentTabToChangedTab],
+    false: [addDevToolsTab],
+  },
+];

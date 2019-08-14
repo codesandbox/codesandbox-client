@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { sortBy, takeRight } from 'lodash-es';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';

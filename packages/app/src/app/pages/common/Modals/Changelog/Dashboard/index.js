@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'mobx-react';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { Link } from 'react-router-dom';
 import theme from '@codesandbox/common/lib/theme';
 
@@ -52,7 +52,11 @@ function DashboardChangelog({ signals }) {
       }}
     >
       <div
-        style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center' }}
+        style={{
+          marginBottom: '1rem',
+          display: 'flex',
+          alignItems: 'center',
+        }}
       >
         <h1 style={titleStyles}>
           What
@@ -133,7 +137,7 @@ function DashboardChangelog({ signals }) {
           Close
         </Button>
         <Button
-          href="https://medium.com/@compuives/announcing-codesandbox-dashboard-teams-876f5933160b"
+          href="/post/announcing-codesandbox-dashboard-teams"
           style={{ marginTop: '1rem', marginLeft: '.25rem' }}
           block
           small
@@ -147,4 +151,4 @@ function DashboardChangelog({ signals }) {
   );
 }
 
-export default inject('signals')(DashboardChangelog);
+export default inject('signals')(hooksObserver(DashboardChangelog));

@@ -17,6 +17,7 @@ export const Tab = styled.div<{ active: boolean; isOver: boolean }>`
   display: flex;
   align-items: center;
   padding: 0 1.25rem;
+  width: max-content;
 
   padding-right: 1.75rem;
   height: 100%;
@@ -24,31 +25,24 @@ export const Tab = styled.div<{ active: boolean; isOver: boolean }>`
 
   cursor: pointer;
 
-  color: ${props =>
-    props.theme['tab.inactiveForeground'] ||
-    props.theme['panelTitle.inactiveForeground'] ||
-    (props.theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)')};
+  color: ${({ theme }) =>
+    theme['tab.inactiveForeground'] ||
+    theme['panelTitle.inactiveForeground'] ||
+    (theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)')};
 
   ${props =>
     props.active
       ? css`
-          background-color: ${props =>
-            props.theme['tab.activeBackground'] ||
+          background-color: ${props.theme['tab.activeBackground'] ||
             props.theme['editor.background'] ||
             'transparent'};
-          color: ${() =>
-            props.theme['tab.activeForeground'] ||
-            (props.theme.light
-              ? 'rgba(0, 0, 0, 1)'
-              : 'rgba(255, 255, 255, 1)')};
+          color: ${props.theme['tab.activeForeground'] ||
+            (props.theme.light ? '#000000' : '#FFFFFF')};
         `
       : css`
           &:hover {
-            color: ${() =>
-              props.theme['tab.activeForeground'] ||
-              (props.theme.light
-                ? 'rgba(0, 0, 0, 1)'
-                : 'rgba(255, 255, 255, 1)')};
+            color: ${props.theme['tab.activeForeground'] ||
+              (props.theme.light ? '#000000' : '#FFFFFF')};
           }
         `};
 

@@ -1,41 +1,60 @@
-import { Action } from '.';
+import { Action, AsyncAction } from '.';
+import { Contributor } from '@codesandbox/common/lib/types';
+import { json } from 'overmind';
 
-export function withLoadApp<T>(continueAction: Action<T>): Action<T> {
+export function withLoadApp<T>(
+  continueAction?: AsyncAction<T>
+): AsyncAction<T> {
   return async (context, value) => {
-    const { state, actions, effects } = context;
+    const { effects, state, actions } = context;
 
     if (state.hasLoadedApp) {
-      return continueAction(context, value);
+      continueAction(context, value);
+      return;
     }
 
     state.isAuthenticating = true;
-    actions.internal.setJwtFromStorage();
-    actions.internal.listenToConnectionChange();
+    state.jwt = effects.jwt.get() || null;
+    effects.connection.addListener(actions.connectionChanged);
     actions.internal.setStoredSettings();
-    actions.internal.setKeybindings();
-    actions.internal.startKeybindings();
+    effects.keybindingManager.set(
+      json(state.preferences.settings.keybindings || [])
+    );
+    effects.keybindingManager.start();
 
     if (state.jwt) {
       try {
-        state.user = await actions.internal.getUser();
+        state.user = await effects.api.getCurrentUser();
         actions.internal.setPatronPrice();
         actions.internal.setSignedInCookie();
-        actions.internal.connectWebsocket();
+        effects.live.connect();
         actions.userNotifications.internal.initialize();
+        effects.api.preloadTemplates();
       } catch (error) {
-        actions.internal.addNotification({
-          title: 'Your session seems to be expired, please log in again...',
-          type: 'error',
-        });
-        actions.internal.removeJwtFromStorage();
+        effects.notificationToast.error(
+          'Your session seems to be expired, please log in again...'
+        );
+        effects.jwt.reset();
       }
-      await continueAction(context, value);
     } else {
-      actions.internal.removeJwtFromStorage();
-      await continueAction(context, value);
+      effects.jwt.reset();
     }
+
+    continueAction && (await continueAction(context, value));
+
     state.hasLoadedApp = true;
     state.isAuthenticating = false;
-    await actions.internal.getContributors();
+
+    try {
+      const response = await effects.http.get<{ contributors: Contributor[] }>(
+        'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
+      );
+
+      state.contributors = response.data.contributors.map(
+        contributor => contributor.login
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 }

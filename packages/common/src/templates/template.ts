@@ -46,9 +46,15 @@ const defaultConfigurations = {
   '/netlify.toml': configurations.netlifyConfig,
 };
 
+export interface ViewTab {
+  id: string;
+  closeable?: boolean;
+  options?: any;
+}
+
 export type ViewConfig = {
   open?: boolean;
-  views: Array<{ id: string; options?: any }>;
+  views: ViewTab[];
 };
 
 const CLIENT_VIEWS: ViewConfig[] = [
@@ -66,7 +72,11 @@ const SERVER_VIEWS: ViewConfig[] = [
   },
   {
     open: true,
-    views: [{ id: 'codesandbox.terminal' }, { id: 'codesandbox.console' }],
+    views: [
+      { id: 'codesandbox.terminal' },
+      { id: 'codesandbox.console' },
+      { id: 'codesandbox.problems' },
+    ],
   },
 ];
 

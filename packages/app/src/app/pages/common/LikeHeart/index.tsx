@@ -1,75 +1,78 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
-
-// @ts-ignore
-import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 // @ts-ignore
 import FullHeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart.svg'; // eslint-disable-line import/no-webpack-loader-syntax
-
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+// @ts-ignore
+import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import { Sandbox } from '@codesandbox/common/lib/types';
+import noop from 'lodash/noop';
+import { inject, hooksObserver } from 'app/componentConnectors';
+import React from 'react';
 
 import { Container } from './elements';
-import { Sandbox } from '@codesandbox/common/lib/types';
 
 const MaybeTooltip = ({ loggedIn, disableTooltip, title, children }) =>
   loggedIn && !disableTooltip ? (
-    <Tooltip content={title} children={children} style={{ display: 'flex' }} />
+    <Tooltip content={title} style={{ display: 'flex' }}>
+      {children}
+    </Tooltip>
   ) : (
     children
   );
 
 interface Props {
   sandbox: Sandbox;
-  store: any;
-  signals: any;
   className?: string;
   colorless?: boolean;
   text?: string;
   style?: React.CSSProperties;
   disableTooltip?: boolean;
   highlightHover?: boolean;
+  store: any;
+  signals: any;
 }
 
-function LikeHeart({
-  sandbox,
-  store,
-  signals,
-  className,
-  colorless,
-  text,
-  style,
-  disableTooltip,
-  highlightHover,
-}: Props) {
-  return (
-    <Container
-      style={style}
-      hasText={text !== undefined}
-      loggedIn={store.isLoggedIn}
-      liked={sandbox.userLiked}
-      className={className}
-      highlightHover={highlightHover}
-      onClick={
-        store.isLoggedIn
-          ? () => signals.editor.likeSandboxToggled({ id: sandbox.id })
-          : null
-      }
-    >
-      <MaybeTooltip
-        loggedIn={store.isLoggedIn}
-        disableTooltip={disableTooltip}
-        title={sandbox.userLiked ? 'Undo like' : 'Like'}
+const LikeHeart = inject('store', 'signals')(
+  hooksObserver(
+    ({
+      sandbox,
+      className,
+      colorless,
+      text,
+      style,
+      disableTooltip,
+      highlightHover,
+      store: { isLoggedIn },
+      signals: { editor },
+    }: Props) => (
+      <Container
+        style={style}
+        hasText={text !== undefined}
+        loggedIn={isLoggedIn}
+        liked={sandbox.userLiked}
+        className={className}
+        highlightHover={highlightHover}
+        onClick={
+          isLoggedIn
+            ? () => editor.likeSandboxToggled({ id: sandbox.id })
+            : noop
+        }
       >
-        {sandbox.userLiked ? (
-          <FullHeartIcon style={colorless ? null : { color: '#E01F4E' }} />
-        ) : (
-          <HeartIcon />
-        )}
+        <MaybeTooltip
+          loggedIn={isLoggedIn}
+          disableTooltip={disableTooltip}
+          title={sandbox.userLiked ? 'Undo like' : 'Like'}
+        >
+          {sandbox.userLiked ? (
+            <FullHeartIcon style={colorless ? null : { color: '#E01F4E' }} />
+          ) : (
+            <HeartIcon />
+          )}
 
-        {text && <span>{text}</span>}
-      </MaybeTooltip>
-    </Container>
-  );
-}
+          {text && <span>{text}</span>}
+        </MaybeTooltip>
+      </Container>
+    )
+  )
+);
 
-export default inject('signals', 'store')(observer(LikeHeart));
+export default LikeHeart;

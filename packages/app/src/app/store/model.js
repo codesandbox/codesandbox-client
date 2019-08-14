@@ -39,9 +39,11 @@ export default {
         types.model({
           amount: types.number,
           since: types.string,
+          cancelAtPeriodEnd: types.maybeNull(types.boolean),
         })
       ),
       username: types.maybeNull(types.string),
+      sendSurvey: types.maybeNull(types.boolean),
     })
   ),
   connected: types.boolean,

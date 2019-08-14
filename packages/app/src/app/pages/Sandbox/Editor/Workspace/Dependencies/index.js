@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import getDefinition from '@codesandbox/common/lib/templates';
@@ -13,49 +13,53 @@ import ExternalResource from './ExternalResource';
 
 import { ErrorMessage } from './elements';
 
-function Dependencies({ signals, store }) {
-  const sandbox = store.editor.currentSandbox;
+const Dependencies = inject('store', 'signals')(
+  hooksObserver(
+    ({ store: { editor }, signals: { workspace, editor: editorSignals } }) => {
+      const sandbox = editor.currentSandbox;
 
-  if (!store.editor.parsedConfigurations.package) {
-    return <ErrorMessage>Unable to find package.json</ErrorMessage>;
-  }
+      if (!editor.parsedConfigurations.package) {
+        return <ErrorMessage>Unable to find package.json</ErrorMessage>;
+      }
 
-  const { parsed, error } = store.editor.parsedConfigurations.package;
+      const { parsed, error } = editor.parsedConfigurations.package;
 
-  if (error) {
-    return (
-      <ErrorMessage>
-        We weren
-        {"'"}t able to parse the package.json
-      </ErrorMessage>
-    );
-  }
+      if (error) {
+        return (
+          <ErrorMessage>
+            We weren
+            {"'"}t able to parse the package.json
+          </ErrorMessage>
+        );
+      }
 
-  const dependencies = parsed.dependencies || {};
-  // const devDependencies = parsed.devDependencies || {};
+      const dependencies = parsed.dependencies || {};
+      // const devDependencies = parsed.devDependencies || {};
 
-  const templateDefinition = getDefinition(sandbox.template);
+      const templateDefinition = getDefinition(sandbox.template);
 
-  return (
-    <div>
-      <Margin bottom={0}>
-        {Object.keys(dependencies)
-          .sort()
-          .map(dep => (
-            <VersionEntry
-              key={dep}
-              dependencies={dependencies}
-              dependency={dep}
-              onRemove={name => signals.editor.npmDependencyRemoved({ name })}
-              onRefresh={(name, version) =>
-                signals.editor.addNpmDependency({
-                  name,
-                  version,
-                })
-              }
-            />
-          ))}
-        {/* {Object.keys(devDependencies).length > 0 && (
+      return (
+        <div>
+          <Margin bottom={0}>
+            {Object.keys(dependencies)
+              .sort()
+              .map(dep => (
+                <VersionEntry
+                  key={dep}
+                  dependencies={dependencies}
+                  dependency={dep}
+                  onRemove={name =>
+                    editorSignals.npmDependencyRemoved({ name })
+                  }
+                  onRefresh={(name, version) =>
+                    editorSignals.addNpmDependency({
+                      name,
+                      version,
+                    })
+                  }
+                />
+              ))}
+            {/* {Object.keys(devDependencies).length > 0 && (
           <WorkspaceSubtitle>Development Dependencies</WorkspaceSubtitle>
         )}
         {Object.keys(devDependencies)
@@ -74,33 +78,35 @@ function Dependencies({ signals, store }) {
               }
             />
           ))} */}
-        <AddVersion>Add Dependency</AddVersion>
-      </Margin>
-      {templateDefinition.externalResourcesEnabled && (
-        <div>
-          <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
-          {(sandbox.externalResources || []).map(resource => (
-            <ExternalResource
-              key={resource}
-              resource={resource}
-              removeResource={() =>
-                this.props.signals.workspace.externalResourceRemoved({
-                  resource,
-                })
-              }
-            />
-          ))}
-          <AddResource
-            addResource={resource =>
-              signals.workspace.externalResourceAdded({
-                resource,
-              })
-            }
-          />
+            <AddVersion>Add Dependency</AddVersion>
+          </Margin>
+          {templateDefinition.externalResourcesEnabled && (
+            <div>
+              <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
+              {(sandbox.externalResources || []).map(resource => (
+                <ExternalResource
+                  key={resource}
+                  resource={resource}
+                  removeResource={() =>
+                    workspace.externalResourceRemoved({
+                      resource,
+                    })
+                  }
+                />
+              ))}
+              <AddResource
+                addResource={resource =>
+                  workspace.externalResourceAdded({
+                    resource,
+                  })
+                }
+              />
+            </div>
+          )}
         </div>
-      )}
-    </div>
-  );
-}
+      );
+    }
+  )
+);
 
-export default inject('signals', 'store')(observer(Dependencies));
+export default Dependencies;

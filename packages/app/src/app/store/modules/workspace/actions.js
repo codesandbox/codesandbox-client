@@ -33,6 +33,45 @@ export function redirectToSandboxWizard({ router }) {
   router.redirectToSandboxWizard();
 }
 
+export function redirectToDashboard({ router }) {
+  router.redirectToDashboard();
+}
+
+export function addTemplate({ api, state, props, path }) {
+  const sandboxId = state.get('editor.currentId');
+  const body = {
+    template: props.template,
+  };
+
+  return api
+    .post(`/sandboxes/${sandboxId}/templates`, body)
+    .then(data => path.success({ data }))
+    .catch(e => path.error({ error: e }));
+}
+
+export function editTemplate({ api, state, props, path }) {
+  const sandboxId = state.get('editor.currentId');
+  const templateID = state.get('editor.currentSandbox.customTemplate.id');
+  const body = {
+    template: props.template,
+  };
+
+  return api
+    .put(`/sandboxes/${sandboxId}/templates/${templateID}`, body)
+    .then(data => path.success({ data }))
+    .catch(e => path.error({ error: e }));
+}
+
+export function deleteTemplate({ api, state, path }) {
+  const sandboxId = state.get('editor.currentId');
+  const templateID = state.get('editor.currentSandbox.customTemplate.id');
+
+  return api
+    .delete(`/sandboxes/${sandboxId}/templates/${templateID}`)
+    .then(data => path.success({ data: data.template }))
+    .catch(e => path.error({ error: e }));
+}
+
 export function updateSandbox({ api, state }) {
   const sandboxId = state.get('editor.currentId');
   const body = {
@@ -46,7 +85,7 @@ export function updateSandbox({ api, state }) {
   return api
     .put(`/sandboxes/${sandboxId}`, body)
     .then(data => {
-      window.history.pushState({}, null, sandboxUrl(data));
+      window.history.replaceState({}, null, sandboxUrl(data));
       return { data };
     })
     .catch(error => ({ error }));
@@ -60,7 +99,11 @@ export function addTag({ api, path, state }) {
   };
   return api
     .post(`/sandboxes/${sandboxId}/tags`, body)
-    .then(data => path.success({ data }))
+    .then(data =>
+      path.success({
+        data,
+      })
+    )
     .catch(e => path.error({ error: e }));
 }
 

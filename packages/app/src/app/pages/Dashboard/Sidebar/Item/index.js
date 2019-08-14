@@ -31,7 +31,7 @@ export default class Item extends React.Component {
     this.setState(state => ({ open: !state.open }));
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.openByDefault === true && !this.props.openByDefault) {
       this.setState({ open: true });
     }

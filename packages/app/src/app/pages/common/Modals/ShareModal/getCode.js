@@ -6,6 +6,7 @@ import {
   sandboxUrl,
   embedUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { escapeHtml } from 'app/utils/escape';
 
 export const BUTTON_URL = `${
   process.env.CODESANDBOX_HOST
@@ -65,12 +66,8 @@ export const getEmbedUrl = (sandbox, mainModule, state) =>
   getOptionsUrl(sandbox, mainModule, state);
 
 export const getIframeScript = (sandbox, mainModule, state) =>
-  `<iframe src="${getEmbedUrl(
-    sandbox,
-    mainModule,
-    state
-  )}" title="${getSandboxName(
-    sandbox
+  `<iframe src="${getEmbedUrl(sandbox, mainModule, state)}" title="${escapeHtml(
+    getSandboxName(sandbox)
   )}" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
 
 // eslint-disable-next-line

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import { Link } from 'react-router-dom';
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 
@@ -17,7 +17,7 @@ import GithubIntegration from 'app/src/app/pages/common/GithubIntegration';
 import Editor from './Editor';
 
 class SandboxPage extends React.Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (window.screen.availWidth < 800) {
       if (!document.location.search.includes('from-embed')) {
         const addedSign = document.location.search ? '&' : '?';

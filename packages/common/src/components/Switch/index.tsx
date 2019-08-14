@@ -5,9 +5,9 @@ import { Container, Dot } from './elements';
 export type Props = {
   right: boolean;
   onClick: () => void;
-  secondary: boolean;
-  offMode: boolean;
-  small: boolean;
+  secondary?: boolean;
+  offMode?: boolean;
+  small?: boolean;
   className?: string;
   style?: React.CSSProperties;
 };

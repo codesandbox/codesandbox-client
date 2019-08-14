@@ -1,6 +1,5 @@
 import React from 'react';
-import { uniq } from 'lodash-es';
-import { inject, observer, Observer } from 'mobx-react';
+import { Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import { basename } from 'path';
 import Sandboxes from '../../Sandboxes';
@@ -10,9 +9,10 @@ import CreateNewSandbox from '../../CreateNewSandbox';
 import getMostUsedTemplate from '../../../utils/get-most-used-template';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
+import { getPossibleTemplates } from '../../Sandboxes/utils';
 
 const PathedSandboxes = props => {
-  const path = '/' + (props.match.params.path || '');
+  const path = '/' + decodeURIComponent(props.match.params.path || '');
   const teamId = props.match.params.teamId;
 
   document.title = `${basename(path) || 'Dashboard'} - CodeSandbox`;
@@ -20,7 +20,7 @@ const PathedSandboxes = props => {
     <Query query={PATHED_SANDBOXES_CONTENT_QUERY} variables={{ path, teamId }}>
       {({ loading, error, data }) => (
         <Observer>
-          {() => {
+          {({ store }) => {
             if (error) {
               console.error(error);
               return <div>Error!</div>;
@@ -31,12 +31,15 @@ const PathedSandboxes = props => {
                 ? []
                 : data.me.collection.sandboxes;
 
-            const possibleTemplates = uniq(
-              sandboxes.map(x => x.source.template)
-            );
+            const possibleTemplates = getPossibleTemplates(sandboxes);
 
-            const orderedSandboxes = props.store.dashboard.getFilteredSandboxes(
-              sandboxes
+            // We want to hide all templates
+            // TODO: make this a query variable for graphql and move the logic to the server
+            const noTemplateSandboxes = sandboxes.filter(
+              s => !s.customTemplate
+            );
+            const orderedSandboxes = store.dashboard.getFilteredSandboxes(
+              noTemplateSandboxes
             );
 
             let mostUsedTemplate = null;
@@ -79,4 +82,4 @@ const PathedSandboxes = props => {
   );
 };
 
-export default inject('store', 'signals')(observer(PathedSandboxes));
+export default PathedSandboxes;

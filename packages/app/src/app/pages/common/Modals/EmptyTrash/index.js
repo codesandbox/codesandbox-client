@@ -1,6 +1,6 @@
 import React from 'react';
 import Alert from 'app/components/Alert';
-import { inject } from 'mobx-react';
+import { inject } from 'app/componentConnectors';
 import { permanentlyDeleteSandboxes } from '../../../Dashboard/queries';
 
 function EmptyTrash({ signals, store }) {

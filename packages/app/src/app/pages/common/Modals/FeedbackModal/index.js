@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { inject } from 'mobx-react';
+import { inject } from 'app/componentConnectors';
 import Loadable from 'app/utils/Loadable';
 
 import { Heading, Container } from '../elements';

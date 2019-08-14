@@ -1183,6 +1183,7 @@
       "avatar_url": "https://avatars3.githubusercontent.com/u/6643991?v=4",
       "profile": "https://michaeldeboey.be",
       "contributions": [
+        "blog",
         "bug",
         "code",
         "doc",
@@ -1279,6 +1280,16 @@
       "profile": "http://benjaminschachter.com",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "RafaelKr",
+      "name": "Rafael",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/14234815?v=4",
+      "profile": "https://github.com/RafaelKr",
+      "contributions": [
+        "bug",
+        "code"
       ]
     }
   ],

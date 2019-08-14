@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
 

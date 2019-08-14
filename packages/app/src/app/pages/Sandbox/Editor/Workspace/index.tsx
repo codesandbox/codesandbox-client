@@ -1,27 +1,29 @@
 import VERSION from '@codesandbox/common/lib/version';
-import { observer } from 'mobx-react-lite';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
+//  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
+import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 
 import SocialInfo from 'app/components/SocialInfo';
-import { useStore } from 'app/store';
-import getWorkspaceItems from 'app/store/modules/workspace/items';
+import getWorkspaceItems, {
+  getDisabledItems,
+} from 'app/store/modules/workspace/items';
 
+import ConfigurationFiles from './items/ConfigurationFiles';
+import { Deployment } from './items/Deployment';
 import Files from './items/Files';
-import ProjectInfo from './items/ProjectInfo';
 import { GitHub } from './items/GitHub';
-import Server from './items/Server';
 import Live from './items/Live';
 import { More } from './items/More';
-import Deployment from './items/Deployment';
-import ConfigurationFiles from './items/ConfigurationFiles';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
+import { ProjectInfo } from './items/ProjectInfo';
+import Server from './items/Server';
 
 import { Advertisement } from './Advertisement';
 import Chat from './Chat';
 import { ConnectionNotice } from './ConnectionNotice';
 import { SSEDownNotice } from './SSEDownNotice';
 import WorkspaceItem from './WorkspaceItem';
-
 import {
   Container,
   ContactContainer,
@@ -41,8 +43,7 @@ const workspaceTabs = {
   more: More,
 };
 
-const Workspace = () => {
-  const store = useStore();
+const Workspace = ({ store }) => {
   const {
     editor: {
       currentSandbox: { owned },
@@ -60,7 +61,9 @@ const Workspace = () => {
   }
 
   const Component = workspaceTabs[activeTab];
-  const item = getWorkspaceItems(store).find(({ id }) => id === activeTab);
+  const item =
+    getWorkspaceItems(store).find(({ id }) => id === activeTab) ||
+    getDisabledItems(store).find(({ id }) => id === activeTab);
 
   return (
     <Container>
@@ -96,4 +99,4 @@ const Workspace = () => {
   );
 };
 
-export default observer(Workspace);
+export default inject('store')(hooksObserver(Workspace));

@@ -44,8 +44,7 @@ const TabDropZone = ({
   connectDropTarget(
     <div
       style={{
-        height: '100%',
-        width: '100%',
+        flex: 'auto',
       }}
     >
       <DropZone isOver={isOver} />
@@ -88,17 +87,15 @@ const entryTarget = {
 const collectTarget = (
   connectMonitor: DropTargetConnector,
   monitor: DropTargetMonitor
-) => {
-  return {
-    // Call this function inside render()
-    // to let React DnD handle the drag events:
-    connectDropTarget: connectMonitor.dropTarget(),
-    // You can ask the monitor about the current drag state:
-    isOver: monitor.isOver({ shallow: true }),
-    canDrop: monitor.canDrop(),
-    itemType: monitor.getItemType(),
-  };
-};
+) => ({
+  // Call this function inside render()
+  // to let React DnD handle the drag events:
+  connectDropTarget: connectMonitor.dropTarget(),
+  // You can ask the monitor about the current drag state:
+  isOver: monitor.isOver({ shallow: true }),
+  canDrop: monitor.canDrop(),
+  itemType: monitor.getItemType(),
+});
 
 export default DropTarget(PREVIEW_TAB_ID, entryTarget, collectTarget)(
   TabDropZone
