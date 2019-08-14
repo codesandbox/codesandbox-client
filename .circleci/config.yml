@@ -62,9 +62,9 @@ aliases:
   - &restore_prod_homepage_cache
     key: v25-prod-homepage-build-cache-master
 
-  - &restore_prod_cache
+  - &restore_prod_result
     key:
-      v25-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      v25-prod-build-result-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
 
   - &save_prod_build_cache
@@ -89,9 +89,9 @@ aliases:
     paths:
       - ./packages/homepage/public
 
-  - &save_prod_cache
+  - &save_prod_result
     key:
-      v25-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v25-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
@@ -157,7 +157,7 @@ commands:
               node packages/app/scripts/sentry-create-release.js
             fi
       - save_cache: *save_prod_build_cache
-      - save_cache: *save_prod_cache
+      - save_cache: *save_prod_result
       - run:
           name: Remove non-images from public
           command: |
@@ -231,7 +231,7 @@ commands:
         type: string
         default: '$DOCKER_PWD'
     steps:
-      - restore_cache: *restore_prod_cache
+      - restore_cache: *restore_prod_result
       - run:
           name: Docker Sign In
           command:
