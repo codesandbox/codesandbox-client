@@ -14,7 +14,7 @@ interface IGitProgressProps {
   message: string;
 }
 
-const GitProgress = ({ message, result }: IGitProgressProps) => (
+const GitProgress: React.FC<IGitProgressProps> = ({ message, result }) => (
   <Container>
     {result ? (
       <Result>{result}</Result>

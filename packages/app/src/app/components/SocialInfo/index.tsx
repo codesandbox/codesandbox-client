@@ -4,7 +4,7 @@ import GithubIcon from 'react-icons/lib/fa/github';
 import { Icon } from './elements';
 import SpectrumIcon from './SpectrumLogo';
 
-const SocialInfo = (props: any) => (
+const SocialInfo: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => (
   <div {...props}>
     <Icon href="https://twitter.com/codesandbox">
       <TwitterIcon />

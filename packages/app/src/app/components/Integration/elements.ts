@@ -1,15 +1,10 @@
 import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
-  ${({
-    small,
-    loading,
-    theme,
-  }: {
-    small: boolean;
-    loading: boolean;
-    theme: any;
-  }) => css`
+export const Container = styled.div<{
+  small: boolean;
+  loading: boolean;
+}>`
+  ${({ small, loading, theme }) => css`
     display: inline-flex;
     width: 100%;
     border-radius: 4px;
@@ -29,8 +24,8 @@ export const Container = styled.div`
   `}
 `;
 
-export const IntegrationBlock = styled.div`
-  ${({ bgColor, small }: { bgColor: string; small: boolean }) => css`
+export const IntegrationBlock = styled.div<{ bgColor: string; small: boolean }>`
+  ${({ bgColor, small }) => css`
     display: inline-flex;
     flex: 1;
     align-items: center;

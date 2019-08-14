@@ -25,7 +25,7 @@ interface IErrorsState {
   stripe?: Error;
 }
 
-const CheckoutForm = ({
+const CheckoutForm: React.FC<ICheckoutFormProps> = ({
   name = ``,
   loading,
   buttonName,
@@ -33,7 +33,7 @@ const CheckoutForm = ({
   error,
   stripe,
   subscribe,
-}: ICheckoutFormProps) => {
+}) => {
   const [cardholderName, setCardholderName] = useState(name);
   const [isLoading, setLoading] = useState(false);
   const [errors, setErrors] = useState<IErrorsState>({});

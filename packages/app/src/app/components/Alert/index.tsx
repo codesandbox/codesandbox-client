@@ -10,14 +10,14 @@ interface IAlertProps {
   onConfirm: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Alert = ({
+const Alert: React.FC<IAlertProps> = ({
   title,
   body,
   confirmMessage = 'Confirm',
   onCancel,
   onConfirm,
   ...props
-}: IAlertProps) => (
+}) => (
   <Container {...props}>
     <Title>{title}</Title>
     <Text>{body}</Text>

@@ -1,8 +1,8 @@
 import React from 'react';
 import IconBase from 'react-icons/lib/IconBase';
 
-const ZeitLogo = ({ className }: React.SVGAttributes<SVGElement>) => (
-  <IconBase className={className} viewBox="0 0 226 200">
+const ZeitLogo: React.FC<React.SVGAttributes<SVGElement>> = props => (
+  <IconBase viewBox="0 0 226 200" {...props}>
     <defs>
       <linearGradient
         x1="196.572434%"

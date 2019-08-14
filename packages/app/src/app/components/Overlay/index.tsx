@@ -13,7 +13,7 @@ interface IOverlayProps {
   noHeightAnimation: boolean;
 }
 
-const Overlay = ({
+const Overlay: React.FC<IOverlayProps> = ({
   event,
   isOpen,
   onOpen = () => {},
@@ -21,7 +21,7 @@ const Overlay = ({
   children,
   content: Content,
   noHeightAnimation,
-}: IOverlayProps) => {
+}) => {
   const [open, setOpen] = useState(isOpen === undefined ? false : isOpen);
   const isControlled = isOpen !== undefined;
   const openState = isControlled ? isOpen : open;

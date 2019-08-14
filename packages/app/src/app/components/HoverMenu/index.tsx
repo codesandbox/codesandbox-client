@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 
 interface IHoverMenuProps {
   onClose: () => void;
-  children: React.ReactNode;
 }
 
-const HoverMenu = ({ onClose, children }: IHoverMenuProps) => {
+// TODO: Rewrite this using Reakit for proper accessibility handling
+const HoverMenu: React.FC<IHoverMenuProps> = ({ onClose, children }) => {
   useEffect(() => {
     const handleDocumentClick = () => {
       onClose();
@@ -21,7 +21,11 @@ const HoverMenu = ({ onClose, children }: IHoverMenuProps) => {
     onClose();
   };
 
-  return <div onClick={handleViewClick}>{children}</div>;
+  return (
+    <div role="menu" tabIndex={0} onClick={handleViewClick}>
+      {children}
+    </div>
+  );
 };
 
 export default HoverMenu;

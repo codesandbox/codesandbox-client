@@ -7,7 +7,7 @@ interface IPrivacyStatusProps {
   asIcon: boolean;
 }
 
-const PrivacyStatus = ({ privacy, asIcon }: IPrivacyStatusProps) => {
+const PrivacyStatus: React.FC<IPrivacyStatusProps> = ({ privacy, asIcon }) => {
   const PRIVACY_MESSAGES = [
     {
       title: 'Public',

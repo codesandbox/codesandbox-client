@@ -12,12 +12,12 @@ interface IDetailInfoProps {
   onSignIn?: () => void;
 }
 
-const DetailInfo = ({
+const DetailInfo: React.FC<IDetailInfoProps> = ({
   heading,
   info,
   onSignOut,
   onSignIn,
-}: IDetailInfoProps) => (
+}) => (
   <Details>
     <Margin right={2}>
       <Heading>{heading}</Heading>

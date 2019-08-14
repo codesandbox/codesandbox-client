@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components';
 import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 
-const Title = styled.h1`
-  ${({ delay = 0 }: { delay: number | null }) => css`
+const Title = styled.h1<{ delay: number | null }>`
+  ${({ delay = 0 }) => css`
     margin-top: 0;
     border: none;
     background-color: transparent;

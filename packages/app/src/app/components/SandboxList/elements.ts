@@ -55,8 +55,8 @@ export const Body = styled.tbody`
   `}
 `;
 
-export const SandboxRow = styled.tr`
-  ${({ delay, theme }: { delay: number; theme: any }) => css`
+export const SandboxRow = styled.tr<{ delay: number }>`
+  ${({ delay, theme }) => css`
     margin: 0;
     border: none;
     transition: 0.3s ease all;

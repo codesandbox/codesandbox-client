@@ -9,8 +9,8 @@ const rotateAnimation = keyframes`
   }
 `;
 
-export const Container = styled.div`
-  ${({ size }: { size: number }) => css`
+export const Container = styled.div<{ size: number }>`
+  ${({ size }) => css`
     position: absolute;
     width: ${size + 1}px;
     height: ${size + 1}px;
@@ -23,8 +23,8 @@ export const Container = styled.div`
   `}
 `;
 
-export const Sides = styled.div`
-  ${({ size }: { size: number }) => css`
+export const Sides = styled.div<{ size: number }>`
+  ${({ size }) => css`
     animation: ${rotateAnimation} 1s linear infinite;
     transform-style: preserve-3d;
     transform: rotateX(-37.5deg) rotateY(45deg);
@@ -37,8 +37,8 @@ export const Sides = styled.div`
   `}
 `;
 
-export const Side = styled.div`
-  ${({ rotate, size }: { rotate: string; size: number }) => css`
+export const Side = styled.div<{ rotate: string; size: number }>`
+  ${({ rotate, size }) => css`
     transform-origin: 50% 50%;
     transform: ${rotate} translateZ(${size / 2}px);
   `}

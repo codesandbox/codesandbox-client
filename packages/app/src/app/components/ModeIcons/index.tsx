@@ -17,14 +17,14 @@ interface IModeIconsProps {
   onSetPreviewView: () => void;
 }
 
-const ModeIcons = ({
+const ModeIcons: React.FC<IModeIconsProps> = ({
   dropdown,
   showEditor,
   showPreview,
   onSetMixedView,
   onSetEditorView,
   onSetPreviewView,
-}: IModeIconsProps) => {
+}) => {
   const [isHovering, setHovering] = useState(false);
   const [showSubmodes, setShowSubmode] = useState(false);
 

@@ -7,11 +7,11 @@ interface IDeleteSandboxButtonProps {
   onDelete: (id: string) => void;
 }
 
-const DeleteSandboxButton = ({
+const DeleteSandboxButton: React.FC<IDeleteSandboxButtonProps> = ({
   id,
   onDelete,
   ...props
-}: IDeleteSandboxButtonProps) => (
+}) => (
   <Container content="Delete Sandbox" onClick={() => onDelete(id)}>
     <button type="button" {...props}>
       <DeleteIcon />

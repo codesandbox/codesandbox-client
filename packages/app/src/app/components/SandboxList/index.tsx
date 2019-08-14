@@ -26,11 +26,11 @@ interface ISandboxListProps {
   onDelete: () => void;
 }
 
-const SandboxList = ({
+const SandboxList: React.FC<ISandboxListProps> = ({
   sandboxes,
   isCurrentUser,
   onDelete,
-}: ISandboxListProps) => (
+}) => (
   <Table>
     <thead>
       <HeaderRow>

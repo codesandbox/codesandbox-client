@@ -13,14 +13,14 @@ interface ISubscribeFormProps {
   error: Error;
 }
 
-const SubscribeForm = ({
+const SubscribeForm: React.FC<ISubscribeFormProps> = ({
   name,
   subscribe,
   loadingText = 'Creating Subscription...',
   buttonName = 'Subscribe',
   isLoading = false,
   error,
-}: ISubscribeFormProps) => (
+}) => (
   <Container>
     <StripeProvider apiKey={STRIPE_API_KEY}>
       <Elements>

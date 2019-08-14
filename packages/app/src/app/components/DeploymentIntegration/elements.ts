@@ -3,16 +3,11 @@ import BaseNotice from '@codesandbox/common/lib/components/Notice';
 import UpIcon from 'react-icons/lib/fa/angle-up';
 import DownIcon from 'react-icons/lib/fa/angle-down';
 
-export const Container = styled.div`
-  ${({
-    light,
-    loading,
-    theme,
-  }: {
-    light: boolean;
-    loading: boolean;
-    theme: any;
-  }) => css`
+export const Container = styled.div<{
+  light: boolean;
+  loading: boolean;
+}>`
+  ${({ light, loading, theme }) => css`
     display: inline-flex;
     flex-direction: column;
     width: 100%;
@@ -30,8 +25,8 @@ export const Container = styled.div`
   `}
 `;
 
-export const IntegrationBlock = styled.div`
-  ${({ bgColor }: { bgColor: string }) => css`
+export const IntegrationBlock = styled.div<{ bgColor: string }>`
+  ${({ bgColor }) => css`
     flex: 1;
     display: inline-flex;
     justify-content: space-between;
@@ -51,8 +46,8 @@ export const IntegrationBlock = styled.div`
   `}
 `;
 
-export const Name = styled.span`
-  ${({ light }: { light: boolean }) => css`
+export const Name = styled.span<{ light: boolean }>`
+  ${({ light }) => css`
     margin-left: 0.75em;
     color: ${light ? css`rgba(0, 0, 0)` : css`rgba(255, 255, 255)`};
     font-size: 1.375em;

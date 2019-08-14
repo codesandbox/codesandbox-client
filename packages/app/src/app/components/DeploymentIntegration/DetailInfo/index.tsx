@@ -11,13 +11,13 @@ interface IDetailInfoProps {
   onDeploy: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const DetailInfo = ({
+const DetailInfo: React.FC<IDetailInfoProps> = ({
   bgColor,
   light = false,
   children,
   loading = false,
   onDeploy,
-}: IDetailInfoProps) => (
+}) => (
   <Details bgColor={bgColor}>
     <Margin right={2}>
       <Info light={light}>{children}</Info>

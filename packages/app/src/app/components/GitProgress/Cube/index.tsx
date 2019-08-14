@@ -5,7 +5,10 @@ interface ICubeComponentProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: number;
 }
 
-const CubeComponent = ({ size = 150, className }: ICubeComponentProps) => (
+const CubeComponent: React.FC<ICubeComponentProps> = ({
+  size = 150,
+  className,
+}) => (
   <Cube className={className} size={size}>
     <Sides size={size}>
       <Side rotate="rotateX(90deg)" size={size} />

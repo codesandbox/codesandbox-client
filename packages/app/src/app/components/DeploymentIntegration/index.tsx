@@ -19,10 +19,9 @@ interface IDeploymentIntegrationProps {
   open: boolean;
   onToggle: (event: React.MouseEvent<HTMLDivElement>) => void;
   onDeploy: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  children: React.ReactChildren;
 }
 
-const DeploymentIntegration = ({
+const DeploymentIntegration: React.FC<IDeploymentIntegrationProps> = ({
   light,
   loading,
   bgColor,
@@ -33,7 +32,7 @@ const DeploymentIntegration = ({
   onToggle,
   onDeploy,
   children,
-}: IDeploymentIntegrationProps) => (
+}) => (
   <Container light={light} loading={loading}>
     <IntegrationBlock bgColor={bgColor} onClick={onToggle}>
       <div>

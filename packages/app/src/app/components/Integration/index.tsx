@@ -14,7 +14,7 @@ interface IIntegrationProps {
   description: string;
 }
 
-const Integration = ({
+const Integration: React.FC<IIntegrationProps> = ({
   small = false,
   loading,
   bgColor,
@@ -24,7 +24,7 @@ const Integration = ({
   userInfo,
   onSignIn,
   description,
-}: IIntegrationProps) => (
+}) => (
   <Container small={small} loading={loading}>
     <IntegrationBlock small={small} bgColor={bgColor}>
       <Icon />

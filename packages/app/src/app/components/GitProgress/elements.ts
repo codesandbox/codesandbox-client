@@ -16,8 +16,8 @@ export const Container = styled.div`
   `}
 `;
 
-export const DeployAnimationContainer = styled.div`
-  ${({ deploying }: { deploying: boolean }) => css`
+export const DeployAnimationContainer = styled.div<{ deploying: boolean }>`
+  ${({ deploying }) => css`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,8 +51,8 @@ const cubeAnimation = keyframes`
   }
 `;
 
-export const Cube = styled(BaseCube)`
-  ${({ delay }: { delay: number }) => css`
+export const Cube = styled(BaseCube)<{ delay: number }>`
+  ${({ delay }) => css`
     position: absolute;
     animation: ${cubeAnimation} 2s ease-in infinite;
     animation-delay: ${delay * 0.5}s;

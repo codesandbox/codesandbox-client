@@ -17,17 +17,16 @@ interface IIntegrationModalProps {
   signedIn: boolean;
   Integration: React.ComponentType;
   name: string;
-  children: React.ReactNode;
 }
 
-const IntegrationModal = ({
+const IntegrationModal: React.FC<IIntegrationModalProps> = ({
   title,
   subtitle,
   Integration,
   signedIn,
   name,
   children,
-}: IIntegrationModalProps) => (
+}) => (
   <Container>
     <Header>
       <Title>{title}</Title>

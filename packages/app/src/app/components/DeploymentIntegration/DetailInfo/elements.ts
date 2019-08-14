@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
-export const Details = styled.div`
-  ${({ bgColor }: { bgColor: string }) => css`
+export const Details = styled.div<{ bgColor: string }>`
+  ${({ bgColor }) => css`
     flex: 3;
     display: inline-flex;
     justify-content: space-between;
@@ -12,16 +12,16 @@ export const Details = styled.div`
   `}
 `;
 
-export const Heading = styled.div`
-  ${({ light }: { light: boolean }) => css`
+export const Heading = styled.div<{ light: boolean }>`
+  ${({ light }) => css`
     margin-bottom: 0.25rem;
     color: ${light ? css`rgba(0, 0, 0)` : css`rgba(255, 255, 255)`};
     font-size: 0.75rem;
   `}
 `;
 
-export const Info = styled.div`
-  ${({ light }: { light: boolean }) => css`
+export const Info = styled.div<{ light: boolean }>`
+  ${({ light }) => css`
     color: ${light ? css`rgba(0, 0, 0)` : css`rgba(255, 255, 255)`};
     font-weight: 400;
   `}

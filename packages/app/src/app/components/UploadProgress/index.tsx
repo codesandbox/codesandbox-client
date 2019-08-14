@@ -14,7 +14,10 @@ interface IUploadProgressProps {
   message: string;
 }
 
-const UploadProgress = ({ message, result }: IUploadProgressProps) => (
+const UploadProgress: React.FC<IUploadProgressProps> = ({
+  message,
+  result,
+}) => (
   <Container>
     {result ? (
       <Result>{result}</Result>

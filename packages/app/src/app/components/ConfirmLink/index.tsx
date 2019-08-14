@@ -6,10 +6,15 @@ interface IConfirmLinkProps {
   message: string;
 }
 
-const ConfirmLink = ({ enabled, message, ...props }: IConfirmLinkProps) => (
+const ConfirmLink: React.FC<IConfirmLinkProps> = ({
+  enabled,
+  message,
+  ...props
+}) => (
   <Link
     onClick={(e: React.MouseEvent) => {
       if (enabled && !confirm(message)) {
+        // eslint-disable-line
         e.preventDefault();
         e.stopPropagation();
       }

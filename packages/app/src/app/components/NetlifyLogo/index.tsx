@@ -1,8 +1,8 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-const NetlifyLogo = ({ className }) => (
-  <IconBase className={className} viewBox="0 0 14 14">
+const NetlifyLogo: React.FC<React.SVGAttributes<SVGElement>> = props => (
+  <IconBase viewBox="0 0 14 14" {...props}>
     <defs>
       <path
         id="a"

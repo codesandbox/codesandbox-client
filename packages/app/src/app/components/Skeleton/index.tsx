@@ -11,11 +11,12 @@ interface ISkeletonProps {
   }[];
 }
 
-const Skeleton = ({ titles }: ISkeletonProps) => (
+const Skeleton: React.FC<ISkeletonProps> = ({ titles }) => (
   <Fullscreen style={{ height: '100vh' }}>
     <Centered horizontal vertical>
       <Title delay={titles[0].delay}>{titles[0].content}</Title>
       {titles.slice(1).map((title, index) => (
+        // eslint-disable-next-line
         <SubTitle key={index} delay={title.delay}>
           {title.content}
         </SubTitle>

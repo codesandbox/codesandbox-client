@@ -53,8 +53,8 @@ export const Tooltips = styled.div`
   align-items: center;
 `;
 
-export const ViewIcon = styled.div`
-  ${({ active }: { active: boolean }) => css`
+export const ViewIcon = styled.div<{ active: boolean }>`
+  ${({ active }) => css`
     position: relative;
     height: 1.75rem;
     margin: 0 0.5rem;
@@ -91,16 +91,16 @@ export const Hover = styled.div`
   align-items: center;
 `;
 
-export const SubMode = styled.div`
-  ${({ i, hovering }: { i: number; hovering: boolean }) => css`
+export const SubMode = styled.div<{ i: number; hovering: boolean }>`
+  ${({ i, hovering }) => css`
     ${hovering
       ? showAnimation(i * 0.05, i === 1)
       : hideAnimation(i * 0.05, i === 1)};
   `}
 `;
 
-const Icon = styled.div`
-  ${({ half }: { half?: boolean }) => css`
+const Icon = styled.div<{ half?: boolean }>`
+  ${({ half = false }) => css`
     display: inline-block;
     width: ${half
       ? css`calc(1.5rem - 1px)` /* 1px is for the middle border */

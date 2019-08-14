@@ -5,8 +5,8 @@ interface INowLogoProps extends React.SVGAttributes<SVGElement> {
   backgroundColor: string;
 }
 
-const NowLogo = ({ className, backgroundColor }: INowLogoProps) => (
-  <IconBase className={className} viewBox="0 0 128 116">
+const NowLogo: React.FC<INowLogoProps> = ({ backgroundColor, ...props }) => (
+  <IconBase viewBox="0 0 128 116" {...props}>
     <g id="Page-1" stroke="none" strokeWidth={1} fill="none" fillRule="evenodd">
       <g
         id="Artboard"

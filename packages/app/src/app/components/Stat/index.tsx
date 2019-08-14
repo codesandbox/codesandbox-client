@@ -14,7 +14,7 @@ export const formatNumber = (count: number): string => {
   return `${count}`;
 };
 
-const Stat = ({ name, count }: IStatProps) => (
+const Stat: React.FC<IStatProps> = ({ name, count }) => (
   <Container>
     <Property>{name}</Property>
     <Number>{formatNumber(count)}</Number>
