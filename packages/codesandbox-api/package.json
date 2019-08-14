@@ -45,9 +45,7 @@
     }
   },
   "jest": {
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
+    "preset": "ts-jest",
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/",
       "<rootDir>/compiled/"
@@ -74,14 +72,13 @@
   "devDependencies": {
     "@types/debug": "^0.0.30",
     "@types/glob": "^7.1.1",
-    "@types/jest": "^20.0.0",
     "@types/uuid": "^3.4.3",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
     "coveralls": "^2.13.1",
     "cross-env": "^5.0.1",
     "cz-conventional-changelog": "^2.0.0",
-    "jest": "^20.0.4",
+    "jest": "^24.8.0",
     "lodash.camelcase": "^4.3.0",
     "nodemon": "^1.11.0",
     "prompt": "^1.0.0",
@@ -92,7 +89,7 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "semantic-release": "^6.3.6",
-    "ts-jest": "^20.0.6",
+    "ts-jest": "^24.0.1",
     "ts-node": "^3.0.6",
     "tsc-watch": "^1.0.5",
     "tslint": "^5.4.3",

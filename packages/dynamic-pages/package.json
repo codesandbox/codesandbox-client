@@ -39,7 +39,7 @@
     "babel-plugin-styled-components": "^1.10.0",
     "cross-env": "^5.2.0",
     "file-loader": "^3.0.1",
-    "jest": "^24.1.0"
+    "jest": "^24.8.0"
   },
   "jest": {
     "moduleDirectories": [

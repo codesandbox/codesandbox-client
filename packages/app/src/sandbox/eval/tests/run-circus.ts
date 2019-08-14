@@ -49,11 +49,13 @@ const _setGlobalState = (test: TestEntry) => {
 
   const currentTestName = describeName + testName;
   const update: {
+    // @ts-ignore
     snapshotState?: SnapshotState;
     testPath?: string;
     currentTestName: string;
   } = { currentTestName };
   if (testPath == null || currentTestPath !== testPath) {
+    // @ts-ignore
     update.snapshotState = new SnapshotState(testPath, {
       expand: true,
       updateSnapshot: 'none',
