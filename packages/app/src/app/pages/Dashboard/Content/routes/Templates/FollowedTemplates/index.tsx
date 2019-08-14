@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { sortBy } from 'lodash-es';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -10,7 +10,7 @@ import ContextMenu from 'app/components/ContextMenu';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 // @ts-ignore
-import { followTemplate } from 'app/src/app/pages/Sandbox/Editor/Workspace/items/NotOwnedSandboxInfo/mutations.gql';
+import { unfollowTemplate } from 'app/src/app/pages/Sandbox/Editor/Workspace/items/NotOwnedSandboxInfo/mutations.gql';
 
 import { LIST_FOLLOWED_TEMPLATES } from '../../../../queries';
 import { ButtonContainer } from './elements';
@@ -23,8 +23,23 @@ export const FollowedTemplates = props => {
   const [sortedTemplates, setSortedTemplates] = useState();
 
   const { loading, error, data } = useQuery(LIST_FOLLOWED_TEMPLATES);
-
-  const [toggleFollow] = useMutation<any, any>(followTemplate);
+  const client = useApolloClient();
+  const [unfollow] = useMutation<any, any>(unfollowTemplate, {
+    onCompleted({ unfollowTemplate: unfollowMutation }) {
+      const newTemplates = data.me.followedTemplates.filter(
+        template => template.id !== unfollowMutation.id
+      );
+      client.writeData({
+        data: {
+          ...data,
+          me: {
+            ...data.me,
+            followedTemplates: newTemplates,
+          },
+        },
+      });
+    },
+  });
 
   useEffect(() => {
     document.title = `${
@@ -97,11 +112,11 @@ export const FollowedTemplates = props => {
                 action: () => {
                   track('Template - Unfollowed', { source: 'Context Menu' });
                   if (teamId) {
-                    toggleFollow({
+                    unfollow({
                       variables: { team: teamId, template: template.id },
                     });
                   } else {
-                    toggleFollow({
+                    unfollow({
                       variables: {
                         template: template.id,
                       },

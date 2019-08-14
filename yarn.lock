@@ -13497,27 +13497,27 @@ gatsby-source-filesystem@^2.1.7:
     xstate "^3.1.0"
 
 gatsby-telemetry@^1.1.7:
-  version "1.1.24"
-  resolved "https://registry.yarnpkg.com/gatsby-telemetry/-/gatsby-telemetry-1.1.24.tgz#868a04ec2a1710831370b41dcc8fdbab7a4228cf"
-  integrity sha512-GXe8QiUx9ZbgwmAhcSSIbe494oK/fLQSqzUlguQeXYrTNwOHEmFryJ/3GlP4JYFdnd3aHlVS6d2GaPl58M4T7Q==
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/gatsby-telemetry/-/gatsby-telemetry-1.1.11.tgz#7c98881759fa8f61a6bf4f2ee2fb9ac74c6eb592"
+  integrity sha512-pEsDQCHSID0HWj9gzDjkA0Y07j9ItpQ9vYdHsyYeNvwan+L6dI6r2AfSM/gfGL0FHyj14JGixxNChAG1N36Utw==
   dependencies:
-    "@babel/code-frame" "^7.5.5"
-    "@babel/runtime" "^7.6.0"
-    bluebird "^3.5.5"
-    boxen "^3.2.0"
+    "@babel/code-frame" "^7.0.0"
+    "@babel/runtime" "^7.0.0"
+    bluebird "^3.5.0"
+    boxen "^3.1.0"
     ci-info "2.0.0"
-    configstore "^5.0.0"
-    envinfo "^5.12.1"
-    fs-extra "^8.1.0"
+    configstore "^4.0.0"
+    envinfo "^5.8.1"
+    fs-extra "^7.0.1"
     git-up "4.0.1"
-    is-docker "2.0.0"
-    lodash "^4.17.15"
-    node-fetch "2.6.0"
+    is-docker "1.1.0"
+    lodash "^4.17.14"
+    node-fetch "2.3.0"
     resolve-cwd "^2.0.0"
-    source-map "^0.7.3"
+    source-map "^0.5.7"
     stack-trace "^0.0.10"
     stack-utils "1.0.2"
-    uuid "3.3.3"
+    uuid "3.3.2"
 
 gatsby-transformer-json@^2.2.2:
   version "2.2.8"

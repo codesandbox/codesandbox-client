@@ -17,3 +17,23 @@ mutation followTemplate($template: ID!, $team: ID) {
     }
   }
 }
+
+mutation unfollowTemplate($template: ID!, $team: ID) {
+  unfollowTemplate(templateId: $template, teamId: $team) {
+    id
+    following {
+      isFollowing
+      entity {
+        __typename
+        ... on User {
+          id
+          name: username
+        }
+        ... on Team {
+          id
+          name
+        }
+      }
+    }
+  }
+}
