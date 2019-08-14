@@ -77,6 +77,7 @@ module.exports = merge(commonConfig, {
         // Disabled on WSL (Windows Subsystem for Linux) due to an issue with Terser
         // https://github.com/webpack-contrib/terser-webpack-plugin/issues/21
         parallel: 2,
+        cache: true,
         sourceMap: true,
       }),
     ],
