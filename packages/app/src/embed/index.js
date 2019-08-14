@@ -5,7 +5,6 @@ import { ThemeProvider } from 'styled-components';
 
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import 'normalize.css';
-import 'app/split-pane.css';
 import theme from '@codesandbox/common/lib/theme';
 import '@codesandbox/common/lib/global.css';
 
