@@ -50,7 +50,7 @@
     "react-router-dom": "^4.2.2",
     "react-slick": "^0.23.2",
     "react-spring": "^8.0.25",
-    "react-text-loop": "^2.0.1",
+    "react-text-loop": "^2.0.2",
     "react-transition-group": "^2.2.1",
     "react-typography": "^0.16.13",
     "styled-components": "^4.2.0",

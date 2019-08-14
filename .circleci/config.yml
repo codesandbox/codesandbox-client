@@ -42,9 +42,7 @@ aliases:
       - packages/node-services/node_modules
       - packages/notifications/node_modules
       - packages/react-embed/node_modules
-      - packages/react-sandpack/node_modules
       - packages/sandbox-hooks/node_modules
-      - packages/sandpack/node_modules
       - packages/sse-hooks/node_modules
 
   - &restore_standalone_deps_cache
