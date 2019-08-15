@@ -41,6 +41,8 @@ To install the project you need to have `yarn` and `node`
     ```
 
 2.  Your environment needs to be running Node v. 10
+    - `.nvmrc` config exists in the repo root, specifying a v.10.x.x version
+    - you can use [fnm](https://github.com/Schniz/fnm) (`fnm use`) to change your current node version to the one specified in `.nvmrc`
 3.  from the root of the project: `yarn` to install all dependencies
 4.  from the root of the project: `yarn start`
     - this builds the dependencies (`codesandbox-api` and `codesandbox-browserfs`) and runs the `app` development environment, available on [http://localhost:3000/s/new](http://localhost:3000/s/new)
