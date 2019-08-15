@@ -146,6 +146,23 @@ const isAllowedEvent = (eventName, secondArg) => {
   }
 };
 
+// After 30min no event we mark a session
+const NEW_SESSION_TIME = 1000 * 60 * 60 * 30;
+
+const getLastTimeEventSent = () => {
+  const lastTime = localStorage.getItem('csb-last-event-sent');
+
+  if (lastTime === null) {
+    return 0;
+  }
+
+  return +lastTime;
+};
+
+const markLastTimeEventSent = () => {
+  localStorage.setItem('csb-last-event-sent', Date.now().toString());
+};
+
 export default function track(eventName, secondArg: Object = {}) {
   try {
     if (!DNT && isAllowedEvent(eventName, secondArg)) {
@@ -163,6 +180,13 @@ export default function track(eventName, secondArg: Object = {}) {
       }
       try {
         if (typeof global.amplitude !== 'undefined') {
+          const currentTime = Date.now();
+          if (currentTime - getLastTimeEventSent() > NEW_SESSION_TIME) {
+            // We send a separate New Session event if people have been inactive for a while
+            global.amplitude.logEvent('New Session');
+          }
+          markLastTimeEventSent();
+
           debug('[Amplitude] Tracking', eventName, data);
           global.amplitude.logEvent(eventName, data);
         }
