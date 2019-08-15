@@ -147,7 +147,7 @@ const isAllowedEvent = (eventName, secondArg) => {
 };
 
 // After 30min no event we mark a session
-const NEW_SESSION_TIME = 1000 * 60 * 60 * 30;
+const NEW_SESSION_TIME = 1000 * 60 * 30;
 
 const getLastTimeEventSent = () => {
   const lastTime = localStorage.getItem('csb-last-event-sent');
