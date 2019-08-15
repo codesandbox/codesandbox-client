@@ -5,6 +5,6 @@ import Input from './';
 const stories = storiesOf('components/Input', module);
 
 stories
-  .add('Basic Input', () => <Input />)
-  .add('Error Input', () => <Input error />)
+  .add('Basic Input', () => <Input value="I am a fancy input" />)
+  .add('Error Input', () => <Input value="I am a fancy input" error />)
   .add('Placeholder Input', () => <Input placeholder="Hello" />);

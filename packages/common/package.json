@@ -15,7 +15,7 @@
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react-native",
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
     "start:storybook": "start-storybook",
-    "build-storybook": "build-storybook -c .storybook -o public",
+    "build:storybook": "build-storybook -c .storybook -o public",
     "build": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib",
     "build:dev": "yarn build",
     "prepublish": "yarn build"
@@ -50,8 +50,11 @@
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.5.5",
+    "@storybook/addon-a11y": "^5.1.11",
     "@storybook/addon-actions": "^5.1.9",
     "@storybook/addon-knobs": "^5.1.9",
+    "@storybook/addon-storysource": "^5.1.11",
+    "@storybook/addon-viewport": "^5.1.11",
     "@storybook/react": "^5.1.9",
     "@types/color": "0.12.1",
     "@types/humps": "^1.1.2",

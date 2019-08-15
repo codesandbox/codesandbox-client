@@ -4,4 +4,6 @@ import AutosizeInput from './';
 
 const stories = storiesOf('components/Input', module);
 
-stories.add('Basic AutosizeInput', () => <AutosizeInput />);
+stories.add('Basic AutosizeInput', () => (
+  <AutosizeInput value="I am a fancy input" />
+));
