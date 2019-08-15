@@ -58,7 +58,7 @@ function normalizeJSDelivr(files: any, fileObject: Meta = {}, rootPath) {
 const urlProtocols = {
   csbGH: {
     file: async (name: string, version: string, path: string) =>
-      console.log(version) || `${version.replace(/\/_pkg.tgz$/, '')}${path}`,
+      `${version.replace(/\/_pkg.tgz$/, '')}${path}`,
     meta: async (name: string, version: string) =>
       `${version.replace(/\/\.pkg.tgz$/, '')}/_csb-meta.json`,
     normalizeMeta: normalize,
@@ -168,8 +168,9 @@ export async function downloadDependency(
   depVersion: string,
   path: string
 ): Promise<Module> {
-  if (packages[path]) {
-    return packages[path];
+  const id = depName + depVersion + path;
+  if (packages[id]) {
+    return packages[id];
   }
 
   const relativePath = path
@@ -185,7 +186,7 @@ export async function downloadDependency(
   const protocol = getFetchProtocol(depVersion);
   const url = await protocol.file(nameWithoutAlias, depVersion, relativePath);
 
-  packages[path] = fetchWithRetries(url)
+  packages[id] = fetchWithRetries(url)
     .catch(async () => {
       const fallbackProtocol = getFetchProtocol(depVersion, true);
       const fallbackUrl = await fallbackProtocol.file(
@@ -202,7 +203,7 @@ export async function downloadDependency(
       downloaded: true,
     }));
 
-  return packages[path];
+  return packages[id];
 }
 
 function resolvePath(

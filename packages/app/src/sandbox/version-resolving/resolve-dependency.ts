@@ -85,5 +85,7 @@ export async function resolveDependencyInfo(dep: string, version: string) {
     },
   };
 
+  console.log(response);
+
   return response;
 }
