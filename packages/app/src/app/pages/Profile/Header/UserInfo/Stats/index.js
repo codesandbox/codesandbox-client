@@ -1,7 +1,5 @@
 import React from 'react';
-
-import Stat from 'app/components/Stat';
-
+import { Stat } from 'app/components/Stat';
 import Badges from './Badges';
 import { Container, Stats } from './elements';
 

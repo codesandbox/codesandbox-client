@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
-import GitProgress from 'app/components/GitProgress';
+import { GitProgress } from 'app/components/GitProgress';
 
 function PRModal({ store }) {
   let result = null;

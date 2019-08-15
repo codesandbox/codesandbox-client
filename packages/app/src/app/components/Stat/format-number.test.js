@@ -1,4 +1,4 @@
-import { formatNumber } from './';
+import { formatNumber } from './formatNumber';
 
 describe('formatNumber', () => {
   it('handles all numbers under 1000', () => {

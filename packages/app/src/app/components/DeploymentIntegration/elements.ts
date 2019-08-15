@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 import BaseNotice from '@codesandbox/common/lib/components/Notice';
 import BaseUp from 'react-icons/lib/fa/angle-up';
 import BaseDown from 'react-icons/lib/fa/angle-down';
+
 export const Container = styled.div`
   ${({ theme }) => css`
     display: inline-flex;
@@ -54,7 +55,7 @@ const iconStyles = ({ light }: { light: boolean }) => css`
   cursor: pointer;
 `;
 
-export const Up = styled(BaseUo)`
+export const Up = styled(BaseUp)`
   ${iconStyles}
 `;
 

@@ -1,0 +1,1 @@
+export { CubeComponent } from './CubeComponent';

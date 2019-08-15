@@ -3,13 +3,10 @@ import { withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import { inject, observer } from 'app/componentConnectors';
-
 import { Query } from 'react-apollo';
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
-import DelayedAnimation from 'app/components/DelayedAnimation';
-
+import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import Item from '../Item';
-
 import { Container } from './elements';
 import FolderEntry from './FolderEntry';
 import CreateFolderEntry from './FolderEntry/CreateFolderEntry';

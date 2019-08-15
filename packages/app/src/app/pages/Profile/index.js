@@ -1,22 +1,18 @@
 /* @flow */
-import * as React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import {
   profileSandboxesUrl,
   profileLikesUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-
+import { inject, observer } from 'app/componentConnectors';
 import NotFound from 'app/pages/common/NotFound';
-
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
 import Sandboxes from './Sandboxes';
-
 import { Container, Content } from './elements';
 
 type Props = {

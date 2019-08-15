@@ -1,8 +1,8 @@
 import styled, { css, keyframes } from 'styled-components';
 import delayInEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
-import BaseOpaqueLogo from 'app/components/OpaqueLogo';
-import BaseGitHubLogo from 'app/components/GitHubLogo';
-import BaseCube from './Cube';
+import { OpaqueLogo as BaseOpaqueLogo } from 'app/components/OpaqueLogo';
+import { GitHubLogo as BaseGitHubLogo } from 'app/components/GitHubLogo';
+import { CubeComponent } from './CubeComponent';
 
 export const Container = styled.div`
   ${({ theme }) => css`
@@ -51,7 +51,7 @@ const cubeAnimation = keyframes`
   }
 `;
 
-export const Cube = styled(BaseCube)<{ delay: number }>`
+export const Cube = styled(CubeComponent)<{ delay: number }>`
   ${({ delay }) => css`
     position: absolute;
     animation: ${cubeAnimation} 2s ease-in infinite;
