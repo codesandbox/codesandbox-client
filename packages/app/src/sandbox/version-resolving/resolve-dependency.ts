@@ -73,7 +73,7 @@ export async function resolveDependencyInfo(dep: string, version: string) {
     dependencyAliases: {},
   };
 
-  response.peerDependencies = packageJSON.peerDependencies;
+  response.peerDependencies = packageJSON.peerDependencies || {};
   response.dependencyDependencies = await getDependencyDependencies(
     dep,
     version
@@ -84,8 +84,6 @@ export async function resolveDependencyInfo(dep: string, version: string) {
       content: packageJSONCode,
     },
   };
-
-  console.log(response);
 
   return response;
 }
