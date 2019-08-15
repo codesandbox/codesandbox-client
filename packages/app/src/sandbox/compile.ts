@@ -483,7 +483,7 @@ async function compile({
     );
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
-      disableDependencyPreprocessing
+      true
     );
 
     if (isNewCombination && !firstLoad) {
