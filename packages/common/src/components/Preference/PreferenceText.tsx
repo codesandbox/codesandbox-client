@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Input, { TextArea } from '../Input';
 
 export type Props = {

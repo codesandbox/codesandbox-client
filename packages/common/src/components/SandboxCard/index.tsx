@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 import EyeIcon from 'react-icons/lib/go/eye';
 import LikeIcon from 'react-icons/lib/go/heart';

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Input from '../../Input';
 import { normalizeKey, formatKey } from '../../../utils/keybindings';
 

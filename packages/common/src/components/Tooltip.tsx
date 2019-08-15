@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 import Tippy from '@tippy.js/react';
 import theme from '../theme';

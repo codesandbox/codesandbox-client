@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { TemplateType } from '../templates';
 
 export type SSEContainerStatus =

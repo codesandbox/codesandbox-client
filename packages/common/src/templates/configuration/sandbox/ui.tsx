@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import sortBy from 'lodash/sortBy';
 
-import * as templates from '../../../templates';
+import templates from '../../../templates';
 import Template from '../../../templates/template';
 
 import {
