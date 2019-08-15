@@ -1,7 +1,7 @@
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 import Tippy from '@tippy.js/react';
-import theme from '../theme';
+import theme from '../../theme';
 
 const GlobalStyle = createGlobalStyle`
   .tippy-backdrop {
