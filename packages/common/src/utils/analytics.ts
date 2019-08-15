@@ -21,9 +21,9 @@ function getSentry() {
   return import(/* webpackChunkName: 'sentry' */ '@sentry/browser');
 }
 export async function initializeSentry(dsn: string) {
-  const Sentry = await getSentry();
   if (!DNT) {
     sentryInitialized = true;
+    const Sentry = await getSentry();
 
     return Sentry.init({
       dsn,
@@ -33,8 +33,15 @@ export async function initializeSentry(dsn: string) {
         'TypeScript Server Error', // Called from the TSC server
         /^Canceled$/, // Used by VSCode to stop currently running actions
       ],
+      /**
+       * Don't send messages from the sandbox, so don't send from eg.
+       * new.codesandbox.io or new.csb.app
+       */
+      blacklistUrls: [/.*\.codesandbox\.io/, /.*\.csb\.app/],
     });
   }
+
+  return Promise.resolve();
 }
 
 export async function logError(err: Error) {
