@@ -6,9 +6,7 @@ import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
 import { Container, Item, ItemContainer } from './elements';
 
-type OnContextMenu = (
-  event: React.MouseEvent<HTMLDivElement, MouseEvent>
-) => void;
+type OnContextMenu = (event: React.MouseEvent) => void;
 
 interface ItemType {
   color?: string;
@@ -19,15 +17,24 @@ interface ItemType {
 
 type Item = ItemType | ItemType[];
 
-interface Props {
-  onContextMenu?: OnContextMenu;
+type ChildrenProps =
+  | {
+      childFunction: true;
+      children: (onContextMenu: OnContextMenu) => JSX.Element;
+    }
+  | {
+      childFunction?: false | null;
+      children: JSX.Element;
+    };
+
+type Props = {
   items: Item[];
-  isDraggingItem: boolean;
-  childFunction: true;
-  children:
-    | ((onContextMenu: OnContextMenu) => React.ReactChildren)
-    | React.ReactChildren;
-}
+  onContextMenu?: OnContextMenu;
+  style?: React.CSSProperties;
+  className?: string;
+  id?: string;
+  isDraggingItem?: boolean;
+} & ChildrenProps;
 
 interface State {
   show: boolean;
