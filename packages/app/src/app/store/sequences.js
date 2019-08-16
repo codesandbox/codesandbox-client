@@ -453,6 +453,9 @@ export const signIn = [
           setupNotifications,
           refetchSandboxInfo,
         ],
+        unauthorized: [
+          factories.addNotification('Github Authentication Error', 'error'),
+        ],
         error: [
           factories.addNotification('Github Authentication Error', 'error'),
         ],
@@ -473,7 +476,6 @@ export const signOut = [
     false: [],
   },
   actions.signOut,
-  set(state`jwt`, null),
   actions.removeJwtFromStorage,
   set(state`user.id`, null),
   set(state`user.email`, null),

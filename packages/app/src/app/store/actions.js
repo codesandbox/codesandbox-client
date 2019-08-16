@@ -364,7 +364,13 @@ export function getUser({ api, path }) {
   return api
     .get('/users/current')
     .then(data => path.success({ user: data }))
-    .catch(() => path.error());
+    .catch(e => {
+      if (e.response.status === 401) {
+        return path.unauthorized();
+      }
+
+      return path.error();
+    });
 }
 
 export function connectWebsocket({ socket }) {
@@ -380,8 +386,9 @@ export function setJwtFromStorage({ jwt, state }) {
   state.set('jwt', jwt.get() || null);
 }
 
-export function removeJwtFromStorage({ jwt }) {
+export function removeJwtFromStorage({ jwt, state }) {
   jwt.reset();
+  state.set('jwt', null);
 }
 
 export function setSignedInCookie({ props }) {

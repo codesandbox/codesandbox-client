@@ -128,7 +128,13 @@ export function withLoadApp(continueSequence) {
                   ],
                   error: [
                     addNotification(
-                      'Your session seems to be expired, please log in again...',
+                      "We weren't able to sign you in, this could be due to a flaky connection or something on our server. Please try again in a minute.",
+                      'error'
+                    ),
+                  ],
+                  unauthorized: [
+                    addNotification(
+                      'Your session seems to be expired, please try to log in again...',
                       'error'
                     ),
                     actions.removeJwtFromStorage,
