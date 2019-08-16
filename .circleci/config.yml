@@ -97,6 +97,8 @@ aliases:
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
+      - ./.git
+      - ./Dockerfile
 
   - &store_test_results
     path: /tmp/test-results
@@ -288,7 +290,6 @@ jobs:
   create-docker-image:
     executor: docker_machine
     steps:
-      - checkout
       - docker_cache
 
 ################################
