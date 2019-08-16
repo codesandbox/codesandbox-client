@@ -12,7 +12,7 @@ import {
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-import { parseConfigurations } from './utils/parse-configurations';
+import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import getItems from './utils/items';
 import { createOptimisticModule } from './utils/common';
@@ -146,7 +146,7 @@ export const setCurrentSandbox: Action<Sandbox> = (
   state.editor.currentId = sandbox.id;
 
   let currentModuleShortid = state.editor.currentModuleShortid;
-  const parsedConfigs = parseConfigurations(sandbox);
+  const parsedConfigs = parseSandboxConfigurations(sandbox);
   const main = mainModule(sandbox, parsedConfigs);
 
   state.editor.mainModuleShortid = main.shortid;
