@@ -208,7 +208,7 @@ export function showUserSurveyIfNeeded({ state, controller, api }) {
 
 export function setMainModuleShortid({ props, state }) {
   const sandbox = props.sandbox;
-  const parsedConfigs = parseConfigurations(sandbox);
+  const parsedConfigs = parseSandboxConfigurations(sandbox);
   const module = mainModule(sandbox, parsedConfigs);
 
   state.set('editor.mainModuleShortid', module.shortid);
