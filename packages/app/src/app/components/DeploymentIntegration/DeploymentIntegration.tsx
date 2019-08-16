@@ -49,11 +49,12 @@ export const DeploymentIntegration: React.FC<IDeploymentIntegrationProps> = ({
     {open ? (
       <DetailInfo
         bgColor={bgColor}
-        deploy={onDeploy}
-        info={children}
+        onDeploy={onDeploy}
         light={light}
         loading={loading}
-      />
+      >
+        {children}
+      </DetailInfo>
     ) : null}
   </Container>
 );
