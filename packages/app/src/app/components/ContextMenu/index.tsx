@@ -20,11 +20,11 @@ type Item = ItemType | ItemType[];
 type ChildrenProps =
   | {
       childFunction: true;
-      children: (onContextMenu: OnContextMenu) => JSX.Element;
+      children: (onContextMenu: OnContextMenu) => React.ReactNode;
     }
   | {
       childFunction?: false | null;
-      children: JSX.Element;
+      children: React.ReactNode;
     };
 
 type Props = {
