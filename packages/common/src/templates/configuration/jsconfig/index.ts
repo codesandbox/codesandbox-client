@@ -2,7 +2,7 @@ import { ConfigurationFile } from '../types';
 
 const config: ConfigurationFile = {
   title: 'jsconfig.json',
-  type: 'javascript',
+  type: 'jsconfig',
   description:
     'Configuration for how the editor (and sometimes the bundler) reads and parses JavaScript.',
   moreInfoUrl: 'https://code.visualstudio.com/docs/languages/jsconfig',

@@ -558,8 +558,11 @@ export default class Manager {
   }
 
   getModuleDirectories() {
-    const baseTSCompilerConfig =
-      this.configurations.tsconfig || this.configurations.jsconfig;
+    const baseTSCompilerConfig = [
+      this.configurations.typescript,
+      this.configurations.jsconfig,
+    ].find(config => config && config.generated !== true);
+
     const baseUrl =
       baseTSCompilerConfig &&
       baseTSCompilerConfig.parsed &&
