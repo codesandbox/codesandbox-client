@@ -294,6 +294,7 @@ function run(port) {
   runDevServer(port, protocol, '/app.html');
 
   if (process.env.LOCAL_SERVER) {
+    // Sandbox server
     const proxy = httpProxy.createProxyServer({});
     http
       .createServer(function(req, res) {
