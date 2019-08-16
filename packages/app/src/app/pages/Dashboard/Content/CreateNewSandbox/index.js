@@ -1,6 +1,6 @@
 import React from 'react';
 import { Spring } from 'react-spring/renderprops';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import { ThemeProvider } from 'styled-components';
 import history from 'app/utils/history';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
@@ -226,4 +226,4 @@ class CreateNewSandbox extends React.PureComponent {
   }
 }
 
-export default inject('signals')(CreateNewSandbox);
+export default inject('signals')(observer(CreateNewSandbox));

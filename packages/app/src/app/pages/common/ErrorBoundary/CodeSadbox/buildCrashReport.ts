@@ -35,6 +35,7 @@ export const buildCrashReport = ({
 
 ${'```'}bash
 ${error}
+${error.stack}
 ${trace}
 ${'```'}
 

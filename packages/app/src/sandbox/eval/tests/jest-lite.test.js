@@ -166,11 +166,11 @@ describe('TestRunner class', () => {
   });
 
   describe('transpileTests', () => {
-    it('todo');
+    // it('todo');
   });
 
   describe('runTests', () => {
-    it('todo');
+    // it('todo');
   });
 
   // deprecated

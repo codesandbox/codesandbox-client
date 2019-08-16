@@ -93,8 +93,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   tsconfig: Props['tsconfig'] | undefined;
   disposeInitializer?: Function;
   lintWorker: Worker | undefined;
-  editor: any;
-  monaco: any;
+  editor?: any;
+  monaco?: any;
   receivingCode: boolean = false;
   codeSandboxAPIListener: () => void;
   sizeProbeInterval: number | null;
@@ -712,9 +712,11 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         '/sandbox' +
         getModulePath(this.sandbox.modules, this.sandbox.directories, moduleId);
 
-      const modelEditor = this.editor.editorService.editors.find(
-        editor => editor.resource && editor.resource.path === modulePath
-      );
+      const modelEditor =
+        this.editor &&
+        this.editor.editorService.editors.find(
+          editor => editor.resource && editor.resource.path === modulePath
+        );
 
       // Apply the code to the current module code itself
       const module = this.sandbox.modules.find(
@@ -931,7 +933,9 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       ),
       options: {
         inlineClassName: classification.type
-          ? `${classification.kind} ${classification.type}-of-${classification.parentKind}`
+          ? `${classification.kind} ${classification.type}-of-${
+              classification.parentKind
+            }`
           : classification.kind,
       },
     }));

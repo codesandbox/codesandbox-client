@@ -1,4 +1,4 @@
-import { GitCommit, GitPr } from '@codesandbox/common/lib/types';
+import { GitCommit, GitPr, GitChanges } from '@codesandbox/common/lib/types';
 
 type State = {
   repoTitle: string;
@@ -8,12 +8,7 @@ type State = {
   isFetching: boolean;
   subject: string;
   description: string;
-  originalGitChanges: {
-    added: string[];
-    deleted: string[];
-    modified: string[];
-    rights: string;
-  };
+  originalGitChanges: GitChanges;
   commit: GitCommit;
   pr: GitPr;
   isCommitting: boolean;

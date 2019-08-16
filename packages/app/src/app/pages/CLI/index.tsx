@@ -1,33 +1,42 @@
-import { observer } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
 
+import { inject, hooksObserver } from 'app/componentConnectors';
 import Navigation from 'app/pages/common/Navigation';
-import { useSignals, useStore } from 'app/store';
 
 import { Container } from './elements';
 import Prompt from './Prompt';
 
-const CLI = observer(() => {
-  const { cliMounted, signInCliClicked } = useSignals();
-  const { user, authToken, isLoadingCLI, error } = useStore();
+interface Props {
+  small: boolean;
+  store: any;
+  signals: any;
+}
 
-  useEffect(() => {
-    cliMounted();
-  }, [cliMounted]);
+const CLI = inject('store', 'signals')(
+  hooksObserver(
+    ({
+      signals: { cliMounted, signInCliClicked },
+      store: { user, authToken, isLoadingCLI, error },
+    }: Props) => {
+      useEffect(() => {
+        cliMounted();
+      }, [cliMounted]);
 
-  return (
-    <Container>
-      <Navigation title="CLI Authorization" />
+      return (
+        <Container>
+          <Navigation title="CLI Authorization" />
 
-      <Prompt
-        error={error}
-        loading={isLoadingCLI}
-        signIn={signInCliClicked}
-        token={authToken}
-        username={user && user.username}
-      />
-    </Container>
-  );
-});
+          <Prompt
+            error={error}
+            loading={isLoadingCLI}
+            signIn={signInCliClicked}
+            token={authToken}
+            username={user && user.username}
+          />
+        </Container>
+      );
+    }
+  )
+);
 
 export default CLI;

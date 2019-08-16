@@ -1,7 +1,5 @@
-import { observer } from 'mobx-react-lite';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
-
-import { useStore } from 'app/store';
 
 import { ButtonContainer } from '../../../elements';
 
@@ -12,13 +10,10 @@ import { Deploy } from './types';
 
 type Props = {
   deploy: Deploy;
+  store: any;
 };
-export const Actions = observer<Props>(({ deploy }) => {
-  const {
-    deployment: { hasAlias },
-  } = useStore();
-
-  return (
+export const Actions = inject('store')(
+  hooksObserver(({ deploy, store: { deployment: { hasAlias } } }: Props) => (
     <ButtonContainer>
       <VisitDeploymentButton url={deploy.url} />
 
@@ -28,5 +23,5 @@ export const Actions = observer<Props>(({ deploy }) => {
         <AliasDeploymentButton deploy={deploy} />
       ) : null}
     </ButtonContainer>
-  );
-});
+  ))
+);

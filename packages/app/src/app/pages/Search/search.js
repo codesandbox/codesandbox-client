@@ -116,7 +116,7 @@ const styles = css`
 
   .ais-RefinementList-item input[type='checkbox']:checked {
     background-color: ${props => props.theme.secondary};
-    background-image: url("data:image/svg+xml,%0A%3Csvg width='11px' height='8px' viewBox='0 0 11 8' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' fill-opacity='0.200000003' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg id='SVG-Layer' transform='translate(1.500000, 0.500000)' fill='%23FFFFFF' stroke='%231C2022' stroke-width='1.6'%3E%3Cpolyline id='Path' points='0 3.88 2.378 6.315 8.046 0.6'%3E%3C/polyline%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    /* background-image: url("data:image/svg+xml,%0A%3Csvg width='11px' height='8px' viewBox='0 0 11 8' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' fill-opacity='0.200000003' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg id='SVG-Layer' transform='translate(1.500000, 0.500000)' fill='%23FFFFFF' stroke='%231C2022' stroke-width='1.6'%3E%3Cpolyline id='Path' points='0 3.88 2.378 6.315 8.046 0.6'%3E%3C/polyline%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); */
     background-position: 50% 4px;
     background-repeat: no-repeat;
     border-color: ${props => props.theme.secondary};

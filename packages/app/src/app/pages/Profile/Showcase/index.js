@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import Column from '@codesandbox/common/lib/components/flex/Column';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';

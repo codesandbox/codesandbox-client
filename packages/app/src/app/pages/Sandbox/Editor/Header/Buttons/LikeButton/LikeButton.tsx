@@ -1,15 +1,9 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
-import { useStore } from 'app/store';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { LikeHeart } from './elements';
 
-export const LikeButton = observer(() => {
-  const store = useStore();
-  const {
-    editor: { currentSandbox },
-  } = store;
-
-  return (
+export const LikeButton = inject('store')(
+  hooksObserver(({ store: { editor: { currentSandbox } } }) => (
     <LikeHeart
       colorless
       text={currentSandbox.likeCount}
@@ -17,5 +11,5 @@ export const LikeButton = observer(() => {
       disableTooltip
       highlightHover
     />
-  );
-});
+  ))
+);

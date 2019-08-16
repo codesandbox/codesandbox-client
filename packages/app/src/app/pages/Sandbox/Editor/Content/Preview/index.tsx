@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { reaction } from 'mobx';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';

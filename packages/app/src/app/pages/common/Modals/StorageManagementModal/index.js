@@ -1,6 +1,6 @@
 import React from 'react';
 import filesize from 'filesize';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import {
   Container,
   Title,

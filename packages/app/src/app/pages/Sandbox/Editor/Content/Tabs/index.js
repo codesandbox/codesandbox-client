@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import { canPrettify } from 'app/utils/prettify';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';

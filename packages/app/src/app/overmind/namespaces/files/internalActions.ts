@@ -1,16 +1,10 @@
 import { AsyncAction, Action } from 'app/overmind';
-import { Module, Directory, Sandbox } from '@codesandbox/common/lib/types';
-import { json } from 'overmind';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import getDefinition from '@codesandbox/common/lib/templates';
+
 import { chunk } from 'lodash-es';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
-import {
-  resolveModuleWrapped,
-  resolveDirectoryWrapped,
-} from '../../utils/resolve-module-wrapped';
+import { DiffTab, TabType } from '@codesandbox/common/lib/types';
 
 export const recoverFiles: Action = ({ effects, actions, state }) => {
   const sandbox = state.editor.currentSandbox;
@@ -26,15 +20,16 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
       if (module.code === recoverData.savedCode) {
         const titleA = `saved '${module.title}'`;
         const titleB = `recovered '${module.title}'`;
-        state.editor.tabs.push({
-          type: 'DIFF',
+        const tab: DiffTab = {
+          type: TabType.DIFF,
           codeA: module.code || '',
           codeB: recoverData.code || '',
           titleA,
           titleB,
           fileTitle: module.title,
           id: `${titleA} - ${titleB}`,
-        });
+        };
+        state.editor.tabs.push(tab);
 
         actions.editor.codeChanged({
           code: recoverData.code,
@@ -54,239 +49,12 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
     });
 
     effects.notificationToast.add({
-      message: `We recovered ${recoveredList.length} unsaved files from a previous session`,
+      message: `We recovered ${
+        recoveredList.length
+      } unsaved files from a previous session`,
       status: NotificationStatus.NOTICE,
     });
   }
-
-  return {};
-};
-
-export const saveNewModule: AsyncAction<
-  {
-    module: Module;
-    newCode?: string;
-  },
-  Module
-> = async ({ state, effects }, { module, newCode }) => {
-  const sandboxId = state.editor.currentId;
-
-  return effects.api.post<Module>(`/sandboxes/${sandboxId}/modules`, {
-    module: {
-      title: module.title,
-      directoryShortid: module.directoryShortid,
-      code: newCode || '',
-      isBinary: module.isBinary === undefined ? false : module.isBinary,
-    },
-  });
-};
-
-export const updateOptimisticDirectory: Action<{
-  optimisticDirectory: Directory;
-  newDirectory: Directory;
-}> = ({ state }, { optimisticDirectory, newDirectory }) => {
-  const sandbox = state.editor.currentSandbox;
-  const optimisticDirectoryIndex = sandbox.directories.findIndex(
-    directory => directory.shortid === optimisticDirectory.shortid
-  );
-
-  Object.assign(
-    state.editor.sandboxes[sandbox.id].directories[optimisticDirectoryIndex],
-    {
-      id: newDirectory.id,
-      shortid: newDirectory.shortid,
-    }
-  );
-};
-
-export const createOptimisticDirectory: Action<
-  {
-    title: string;
-    directoryShortid?: string;
-  },
-  Directory
-> = ({ state, effects }, { title, directoryShortid }) => {
-  const optimisticDirectory = {
-    id: effects.utils.createOptimisticId(),
-    title,
-    directoryShortid: directoryShortid || null,
-    shortid: effects.utils.createOptimisticId(),
-    sourceId: state.editor.currentSandbox.sourceId,
-    insertedAt: new Date().toString(),
-    updatedAt: new Date().toString(),
-  };
-
-  return optimisticDirectory;
-};
-
-export const createOptimisticModule: Action<
-  {
-    title: string;
-    newCode?: string;
-    directoryShortid?: string;
-    isBinary?: boolean;
-  },
-  Module
-> = ({ state, effects }, { title, directoryShortid, isBinary, newCode }) => {
-  return {
-    id: effects.utils.createOptimisticId(),
-    title: title,
-    directoryShortid: directoryShortid || null,
-    code: newCode || '',
-    shortid: effects.utils.createOptimisticId(),
-    isBinary: isBinary === undefined ? false : isBinary,
-    sourceId: state.editor.currentSandbox.sourceId,
-    insertedAt: new Date().toString(),
-    updatedAt: new Date().toString(),
-    isNotSynced: true,
-  };
-};
-
-export const updateOptimisticModule: Action<{
-  optimisticModule: Module;
-  updatedModule: Module;
-}> = ({ state }, { optimisticModule, updatedModule }) => {
-  const sandbox = state.editor.currentSandbox;
-  let optimisticModuleIndex = sandbox.modules.findIndex(
-    module => module.shortid === optimisticModule.shortid
-  );
-
-  const existingModule =
-    state.editor.sandboxes[sandbox.id].modules[optimisticModuleIndex];
-
-  const newModule = {
-    ...existingModule,
-    id: updatedModule.id,
-    shortid: updatedModule.shortid,
-  };
-
-  state.editor.sandboxes[sandbox.id].modules.push(newModule);
-
-  if (state.editor.currentModuleShortid === optimisticModule.shortid) {
-    state.editor.currentModuleShortid = updatedModule.shortid;
-  }
-
-  optimisticModuleIndex = sandbox.modules.findIndex(
-    module => module.shortid === optimisticModule.shortid
-  );
-
-  state.editor.sandboxes[sandbox.id].modules.splice(optimisticModuleIndex, 1);
-};
-
-export const removeModule: Action<string, Module> = (
-  { state },
-  moduleShortid
-) => {
-  const sandboxId = state.editor.currentId;
-  const sandbox = state.editor.currentSandbox;
-  const moduleIndex = sandbox.modules.findIndex(
-    moduleEntry => moduleEntry.shortid === moduleShortid
-  );
-  const moduleCopy = json(sandbox.modules[moduleIndex]);
-
-  state.editor.sandboxes[sandboxId].modules.splice(moduleIndex, 1);
-
-  return moduleCopy;
-};
-
-export const renameDirectory: Action<
-  {
-    title: string;
-    directoryShortid: string;
-  },
-  string
-> = ({ state }, { title, directoryShortid }) => {
-  const sandbox = state.editor.currentSandbox;
-  const directoryIndex = sandbox.directories.findIndex(
-    directoryEntry => directoryEntry.shortid === directoryShortid
-  );
-  const oldTitle =
-    state.editor.sandboxes[sandbox.id].directories[directoryIndex].title;
-
-  state.editor.sandboxes[sandbox.id].directories[directoryIndex].title = title;
-
-  return oldTitle;
-};
-
-export const renameModule: Action<
-  {
-    title: string;
-    moduleShortid: string;
-  },
-  string
-> = ({ state }, { title, moduleShortid }) => {
-  const sandbox = state.editor.currentSandbox;
-  const moduleIndex = sandbox.modules.findIndex(
-    moduleEntry => moduleEntry.shortid === moduleShortid
-  );
-  const oldTitle =
-    state.editor.sandboxes[sandbox.id].modules[moduleIndex].title;
-
-  state.editor.sandboxes[sandbox.id].modules[moduleIndex].title = title;
-
-  return oldTitle;
-};
-
-export const saveNewModuleName: AsyncAction<{
-  title: string;
-  moduleShortid: string;
-}> = async ({ effects, state }, { title, moduleShortid }) => {
-  const sandboxId = state.editor.currentId;
-  const sandbox = state.editor.currentSandbox;
-  const module = sandbox.modules.find(
-    moduleEntry => moduleEntry.shortid === moduleShortid
-  );
-
-  return effects.api.put(`/sandboxes/${sandboxId}/modules/${module.shortid}`, {
-    module: { title: title },
-  });
-};
-
-export const revertModuleName: Action<{
-  title: string;
-  moduleShortid: string;
-}> = ({ state }, { title, moduleShortid }) => {
-  const sandbox = state.editor.currentSandbox;
-  const moduleIndex = sandbox.modules.findIndex(
-    moduleEntry => moduleEntry.shortid === moduleShortid
-  );
-
-  state.editor.sandboxes[sandbox.id].modules[moduleIndex].title = title;
-};
-
-export const setDefaultNewCode: Action<Module, string> = (
-  { state },
-  optimisticModule
-) => {
-  const sandbox = state.editor.currentSandbox;
-
-  const path = getModulePath(
-    sandbox.modules,
-    sandbox.directories,
-    optimisticModule.id
-  );
-
-  const template = getDefinition(sandbox.template);
-  const config = template.configurationFiles[path];
-
-  if (
-    config &&
-    (config.generateFileFromSandbox ||
-      config.getDefaultCode ||
-      config.generateFileFromState)
-  ) {
-    if (config.generateFileFromState) {
-      return config.generateFileFromState(state);
-    } else if (config.generateFileFromSandbox) {
-      return config.generateFileFromSandbox(sandbox);
-    } else {
-      const resolveModule = resolveModuleWrapped(sandbox);
-
-      return config.getDefaultCode(sandbox.template, resolveModule);
-    }
-  }
-
-  return optimisticModule.code;
 };
 
 export const uploadFiles: AsyncAction<
@@ -335,22 +103,17 @@ export const uploadFiles: AsyncAction<
             isBinary: false,
           };
         } else {
-          await effects.api
-            .post<any>('/users/current_user/uploads', {
-              content: dataURI,
-              name: filePath,
-            })
-            .then(data => {
-              parsedFiles[filePath] = {
-                content: data.url,
-                isBinary: true,
-              };
-            })
-            .catch(e => {
-              e.message = `Error uploading ${filePath}: ${e.message}`;
+          try {
+            const data = await effects.api.createUpload(filePath, dataURI);
+            parsedFiles[filePath] = {
+              content: data.url,
+              isBinary: true,
+            };
+          } catch (error) {
+            error.message = `Error uploading ${filePath}: ${error.message}`;
 
-              throw e;
-            });
+            throw error;
+          }
         }
       })
     );
@@ -389,63 +152,4 @@ export const uploadFiles: AsyncAction<
     modules: relativeModules,
     directories: relativeDirectories,
   };
-};
-
-export const processSSEUpdates: Action<{
-  updates: any[];
-  newSandbox: Sandbox;
-}> = ({ state, actions }, { updates, newSandbox }) => {
-  const oldSandbox = state.editor.currentSandbox;
-
-  updates.forEach(update => {
-    const { op, path, type } = update;
-    if (type === 'file') {
-      const resolveModuleOld = resolveModuleWrapped(oldSandbox);
-      const resolveModuleNew = resolveModuleWrapped(newSandbox);
-      const oldModule = resolveModuleOld(path);
-      if (op === 'update') {
-        const newModule = resolveModuleNew(path);
-
-        if (oldModule) {
-          const modulePos = oldSandbox.modules.indexOf(oldModule);
-          Object.assign(
-            state.editor.sandboxes[oldSandbox.id].modules[modulePos],
-            newModule
-          );
-        } else {
-          state.editor.sandboxes[oldSandbox.id].modules.push(newModule);
-        }
-      } else if (op === 'delete') {
-        actions.files.internal.removeModule(oldModule.shortid);
-      }
-    } else {
-      const resolveDirectoryOld = resolveDirectoryWrapped(oldSandbox);
-      const resolveDirectoryNew = resolveDirectoryWrapped(newSandbox);
-
-      if (op === 'update') {
-        // Create
-        const newDirectory = resolveDirectoryNew(path);
-        state.editor.sandboxes[oldSandbox.id].directories.push(newDirectory);
-      } else {
-        const oldDirectory = resolveDirectoryOld(path);
-
-        actions.files.internal.removeDirectory(oldDirectory.shortid);
-      }
-    }
-  });
-};
-
-export const removeDirectory: Action<string, Directory> = (
-  { state },
-  directoryShortid
-) => {
-  const sandbox = state.editor.currentSandbox;
-  const directoryIndex = sandbox.directories.findIndex(
-    directoryEntry => directoryEntry.shortid === directoryShortid
-  );
-  const removedDirectory = json(sandbox.directories[directoryIndex]);
-
-  state.editor.sandboxes[sandbox.id].directories.splice(directoryIndex, 1);
-
-  return removedDirectory;
 };

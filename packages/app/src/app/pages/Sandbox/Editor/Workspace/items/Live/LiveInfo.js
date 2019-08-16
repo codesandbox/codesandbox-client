@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import { sortBy } from 'lodash-es';
 
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';

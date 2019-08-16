@@ -4,6 +4,8 @@ module.exports = {
   // This is a feature of `babel-loader` for webpack (not Babel itself).
   // It enables caching results in OS temporary directory for faster rebuilds.
   cacheDirectory: true,
+  cacheCompression: false,
+  compact: false,
   presets: [
     // Latest stable ECMAScript features
     require.resolve('@babel/preset-flow'),
@@ -22,9 +24,8 @@ module.exports = {
       },
     ],
     // JSX, Flow
-    require.resolve('@babel/preset-react'),
-
     require.resolve('@babel/preset-typescript'),
+    require.resolve('@babel/preset-react'),
   ].filter(Boolean),
   plugins: [
     require.resolve('@babel/plugin-transform-template-literals'),

@@ -25,12 +25,12 @@ aliases:
 
   - &restore_deps_cache
     keys:
-      - v24-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v24-dependency-cache-{{ .Branch }}
-      - v24-dependency-cache
+      - v26-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v26-dependency-cache-{{ .Branch }}
+      - v26-dependency-cache
 
   - &save_deps_cache
-    key: v24-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v26-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
@@ -38,51 +38,67 @@ aliases:
       - packages/codesandbox-api/node_modules
       - packages/common/node_modules
       - packages/dynamic-pages/node_modules
+      - packages/deps/node_modules
+      - packages/executors/node_modules
       - packages/homepage/node_modules
       - packages/node-services/node_modules
       - packages/notifications/node_modules
       - packages/react-embed/node_modules
-      - packages/react-sandpack/node_modules
       - packages/sandbox-hooks/node_modules
-      - packages/sandpack/node_modules
       - packages/sse-hooks/node_modules
 
   - &restore_standalone_deps_cache
     keys:
-      - v24-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      - v26-standalone-dependency-cache-{{ .Branch }}-{{ checksum
         "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v24-standalone-dependency-cache-{{ .Branch }}
-      - v24-standalone-dependency-cache
+      - v26-standalone-dependency-cache-{{ .Branch }}
+      - v26-standalone-dependency-cache
 
   - &save_standalone_deps_cache
     key:
-      v24-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      v26-standalone-dependency-cache-{{ .Branch }}-{{ checksum
       "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
   - &restore_prod_homepage_cache
-    key: v24-prod-homepage-build-cache-master
+    key: v26-prod-homepage-build-cache-master
 
-  - &restore_prod_cache
+  - &restore_prod_result
     key:
-      v24-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
-      .Environment.CIRCLE_SHA1 }}
+      v26-prod-build-result-{{ .Environment.CIRCLE_BRANCH
+      }}-{{.Environment.CIRCLE_SHA1 }}
+
+  - &save_prod_build_cache
+    key:
+      v26-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      }}-{{.Environment.CIRCLE_SHA1 }}
+    paths:
+      - packages/app/node_modules/.cache
+
+  - &restore_prod_build_cache
+    keys:
+      - v26-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+        }}-{{.Environment.CIRCLE_SHA1 }}
+      - v26-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
+      - v26-prod-build-cache-master-
 
   # To persist the images built by sharp
   - &save_prod_homepage_cache
     key:
-      v24-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v26-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/homepage/public
 
-  - &save_prod_cache
+  - &save_prod_result
     key:
-      v24-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v26-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
+      - ./.git
+      - ./Dockerfile
 
   - &store_test_results
     path: /tmp/test-results
@@ -134,10 +150,18 @@ commands:
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - restore_cache: *restore_prod_homepage_cache
+      - restore_cache: *restore_prod_build_cache
       - run:
           name: Build Application
           command: yarn build:prod
-      - save_cache: *save_prod_cache
+      - run:
+          name: Mark Sentry release
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              node packages/app/scripts/sentry-create-release.js
+            fi
+      - save_cache: *save_prod_build_cache
+      - save_cache: *save_prod_result
       - run:
           name: Remove non-images from public
           command: |
@@ -211,7 +235,7 @@ commands:
         type: string
         default: '$DOCKER_PWD'
     steps:
-      - restore_cache: *restore_prod_cache
+      - restore_cache: *restore_prod_result
       - run:
           name: Docker Sign In
           command:
@@ -266,7 +290,6 @@ jobs:
   create-docker-image:
     executor: docker_machine
     steps:
-      - checkout
       - docker_cache
 
 ################################

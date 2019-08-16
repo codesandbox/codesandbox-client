@@ -1,3 +1,5 @@
+import immer from 'immer';
+
 import { absolute } from '../utils/path';
 import {
   ConfigurationFile,
@@ -193,13 +195,19 @@ export default class Template {
   /**
    * Get the views that are tied to the template
    */
-  getViews(): ViewConfig[] {
+  getViews(configurationFiles: ParsedConfigurationFiles): ViewConfig[] {
     if (this.isServer) {
       return SERVER_VIEWS;
     }
 
-    if (this.name === 'create-react-app') {
-      CLIENT_VIEWS[1].views.push({ id: 'codesandbox.react-devtools' });
+    const dependencies =
+      configurationFiles.package &&
+      configurationFiles.package.parsed &&
+      configurationFiles.package.parsed.dependencies;
+    if (dependencies && dependencies.react) {
+      return immer(CLIENT_VIEWS, draft => {
+        draft[1].views.push({ id: 'codesandbox.react-devtools' });
+      });
     }
 
     return CLIENT_VIEWS;

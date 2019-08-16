@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import AppearanceIcon from 'react-icons/lib/md/color-lens';
 import CodeIcon from 'react-icons/lib/fa/code';

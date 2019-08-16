@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'mobx-react';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
@@ -31,4 +31,4 @@ function ZenModeIntroduction({ signals }) {
   );
 }
 
-export default inject('signals')(ZenModeIntroduction);
+export default inject('signals')(hooksObserver(ZenModeIntroduction));

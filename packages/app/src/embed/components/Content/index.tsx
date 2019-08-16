@@ -5,11 +5,12 @@ import {
   Module,
   ModuleError,
   ModuleCorrection,
+  Settings,
 } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
 import CodeEditor from 'app/components/CodeEditor';
-import { Editor, Settings } from 'app/components/CodeEditor/types';
+import { Editor } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 // eslint-disable-next-line import/extensions
@@ -312,24 +313,27 @@ export default class Content extends React.PureComponent<Props, State> {
     livePreviewEnabled: true,
   };
 
-  getPreferences = (): Settings => ({
-    ...this.preferences,
-    forceRefresh: this.props.forceRefresh,
-    instantPreviewEnabled: !this.props.forceRefresh,
-    fontSize: this.props.fontSize,
-    autoDownloadTypes: true,
-    lintEnabled: this.props.enableEslint,
-    codeMirror: this.props.useCodeMirror,
-    lineHeight: 1.6,
-    autoCompleteEnabled: true,
-    vimMode: false,
-    tabWidth: 2,
-    enableLigatures: false,
-    clearConsoleEnabled: false,
-    experimentVSCode: false,
-    prettierConfig: false,
-    zenMode: false,
-  });
+  // TODO: We should probably create a "default settings factory",
+  // cause now forcing invalid settings
+  getPreferences = (): Settings =>
+    ({
+      ...this.preferences,
+      forceRefresh: this.props.forceRefresh,
+      instantPreviewEnabled: !this.props.forceRefresh,
+      fontSize: this.props.fontSize,
+      autoDownloadTypes: true,
+      lintEnabled: this.props.enableEslint,
+      codeMirror: this.props.useCodeMirror,
+      lineHeight: 1.6,
+      autoCompleteEnabled: true,
+      vimMode: false,
+      tabWidth: 2,
+      enableLigatures: false,
+      clearConsoleEnabled: false,
+      experimentVSCode: false,
+      prettierConfig: null,
+      zenMode: false,
+    } as Settings);
 
   setCurrentModule = (moduleId: string) => {
     this.props.setCurrentModule(moduleId);

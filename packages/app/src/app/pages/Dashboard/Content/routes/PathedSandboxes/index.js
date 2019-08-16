@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer, Observer } from 'mobx-react';
+import { Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import { basename } from 'path';
 import Sandboxes from '../../Sandboxes';
@@ -20,7 +20,7 @@ const PathedSandboxes = props => {
     <Query query={PATHED_SANDBOXES_CONTENT_QUERY} variables={{ path, teamId }}>
       {({ loading, error, data }) => (
         <Observer>
-          {() => {
+          {({ store }) => {
             if (error) {
               console.error(error);
               return <div>Error!</div>;
@@ -38,7 +38,7 @@ const PathedSandboxes = props => {
             const noTemplateSandboxes = sandboxes.filter(
               s => !s.customTemplate
             );
-            const orderedSandboxes = props.store.dashboard.getFilteredSandboxes(
+            const orderedSandboxes = store.dashboard.getFilteredSandboxes(
               noTemplateSandboxes
             );
 
@@ -82,4 +82,4 @@ const PathedSandboxes = props => {
   );
 };
 
-export default inject('store', 'signals')(observer(PathedSandboxes));
+export default PathedSandboxes;

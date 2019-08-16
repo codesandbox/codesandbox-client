@@ -30,6 +30,10 @@ export function currentModule() {
 export function modulesByPath() {
   const modulesObject = {};
 
+  if (!this.currentSandbox) {
+    return modulesObject;
+  }
+
   this.currentSandbox.modules.forEach(m => {
     const path = getModulePath(
       this.currentSandbox.modules,
@@ -113,7 +117,12 @@ export function currentPackageJSONCode() {
 export function devToolTabs() {
   const sandbox = this.currentSandbox;
   const intermediatePreviewCode = this.workspaceConfigCode;
-  const views = getPreviewTabs(sandbox, intermediatePreviewCode);
+  const configurations = this.parsedConfigurations;
+  const views = getPreviewTabs(
+    sandbox,
+    configurations,
+    intermediatePreviewCode
+  );
 
   // Do it in an immutable manner, prevents changing the original object
   return immer(views, draft => {

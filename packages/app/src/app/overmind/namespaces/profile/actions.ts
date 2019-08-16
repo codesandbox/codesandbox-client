@@ -7,7 +7,7 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
     state.profile.isLoadingProfile = true;
     state.profile.notFound = false;
 
-    const profile = await effects.api.get<Profile>(`/users/${username}`);
+    const profile = await effects.api.getProfile(username);
 
     state.profile.profiles[profile.id] = profile;
     state.profile.currentProfileId = profile.id;
@@ -18,9 +18,7 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
     ) {
       state.editor.sandboxes[
         profile.showcasedSandboxShortid
-      ] = await effects.api.get<Sandbox>(
-        `/sandboxes/${profile.showcasedSandboxShortid}`
-      );
+      ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
     }
 
     state.profile.isLoadingProfile = false;
@@ -36,9 +34,7 @@ export const sandboxesPageChanged: AsyncAction<{
 
   const username = state.profile.current.username;
   if (!state.profile.sandboxes[username][page] || force) {
-    const data = await effects.api.get(`/users/${username}/sandboxes`, {
-      page,
-    });
+    const data = await effects.api.getUserSandboxes(username, page);
     state.profile.sandboxes[username][page] = data[page];
   }
 
@@ -55,9 +51,7 @@ export const likedSandboxesPageChanged: AsyncAction<number> = async (
   const username = state.profile.current.username;
 
   if (!state.profile.likedSandboxes[username][page]) {
-    const data = await effects.api.get(`/users/${username}/sandboxes/liked`, {
-      page,
-    });
+    const data = await effects.api.getUserLikedSandboxes(username, page);
     const sandboxes = data[page];
 
     state.profile.likedSandboxes[username][page] = sandboxes;
@@ -71,9 +65,7 @@ export const selectSandboxClicked: AsyncAction = async ({ state, effects }) => {
 
   if (!state.profile.userSandboxes.length) {
     state.profile.isLoadingSandboxes = true;
-    state.profile.userSandboxes = await effects.api.get<UserSandbox[]>(
-      '/sandboxes'
-    );
+    state.profile.userSandboxes = await effects.api.getSandboxes();
     state.profile.isLoadingSandboxes = false;
   }
 };
@@ -89,12 +81,8 @@ export const newSandboxShowcaseSelected: AsyncAction<string> = async (
   state.profile.isLoadingProfile = true;
 
   const [sandbox] = await Promise.all([
-    state.editor.sandboxes[id] ? null : effects.api.get(`/sandboxes/${id}`),
-    effects.api.patch(`/users/${state.user.username}`, {
-      user: {
-        showcasedSandboxShortid: id,
-      },
-    }),
+    state.editor.sandboxes[id] ? null : effects.api.getSandbox(id),
+    effects.api.updateShowcasedSandbox(state.user.username, id),
   ]);
 
   if (sandbox) {
@@ -115,22 +103,14 @@ export const sandboxDeleted: AsyncAction = async ({ state, effects }) => {
 
   const sandboxId = state.profile.sandboxToDeleteId;
 
-  await effects.api.request({
-    method: 'DELETE',
-    url: `/sandboxes/${sandboxId}`,
-    body: {
-      id: sandboxId,
-    },
-  });
+  await effects.api.deleteSandbox(sandboxId);
 
   state.profile.current.sandboxCount--;
 
   const page = state.profile.currentSandboxesPage;
   const username = state.user.username;
+  const data = await effects.api.getUserSandboxes(username, page);
 
-  const data = await effects.api.get(`/users/${username}/sandboxes`, {
-    page,
-  });
   state.profile.sandboxes[username][page] = data[page];
 
   state.profile.isLoadingSandboxes = false;

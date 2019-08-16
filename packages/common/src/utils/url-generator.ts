@@ -1,4 +1,4 @@
-import { Sandbox } from '../types';
+import { Sandbox, GitInfo, SandboxUrlSourceData } from '../types';
 
 export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
@@ -56,17 +56,17 @@ const sandboxGitUrl = (git: {
 
 export const editorUrl = () => `/s/`;
 
-export const sandboxUrl = (sandbox: Sandbox) => {
-  if (sandbox.git) {
-    const { git } = sandbox;
+export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
+  if (sandboxDetails.git) {
+    const { git } = sandboxDetails;
     return `${editorUrl()}${sandboxGitUrl(git)}`;
   }
 
-  if (sandbox.alias) {
-    return `${editorUrl()}${sandbox.alias}`;
+  if (sandboxDetails.alias) {
+    return `${editorUrl()}${sandboxDetails.alias}`;
   }
 
-  return `${editorUrl()}${sandbox.id}`;
+  return `${editorUrl()}${sandboxDetails.id}`;
 };
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {

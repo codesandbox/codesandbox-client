@@ -7,19 +7,15 @@ import {
   NotificationButton,
   Contributor,
   Module,
+  TabType,
+  ModuleTab,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-
-export const setKeybindings: Action = ({ state, effects }) => {
-  effects.keybindingManager.set(
-    json(state.preferences.settings.keybindings || [])
-  );
-};
-
-export const setJwtFromStorage: Action = ({ effects, state }) => {
-  state.jwt = effects.jwt.get() || null;
-};
+import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { parseConfigurations } from './utils/parse-configurations';
+import { defaultOpenedModule, mainModule } from './utils/main-module';
+import getItems from './utils/items';
+import { createOptimisticModule } from './utils/common';
 
 export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
   { state, effects, actions },
@@ -30,23 +26,19 @@ export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
   try {
     const jwt = await actions.internal.signInGithub(options);
     actions.internal.setJwt(jwt);
-    state.user = await actions.internal.getUser();
+    state.user = await effects.api.getCurrentUser();
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
     actions.internal.setStoredSettings();
-    actions.internal.connectWebsocket();
+    effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
-    actions.editor.internal.refetchSandboxInfo();
+    actions.refetchSandboxInfo();
   } catch (error) {
     actions.internal.addNotification({
       title: 'Github Authentication Error',
       type: 'error',
     });
   }
-};
-
-export const listenToConnectionChange: Action = ({ effects, actions }) => {
-  effects.connection.addListener(actions.connectionChanged);
 };
 
 export const setStoredSettings: Action = ({ state, effects }) => {
@@ -64,24 +56,6 @@ export const setStoredSettings: Action = ({ state, effects }) => {
   }
 
   Object.assign(state.preferences.settings, settings);
-  // state.merge('preferences.settings', settings);
-};
-
-export const startKeybindings: Action = ({ effects }) => {
-  effects.keybindingManager.start(() => {
-    // Copy code from keybindingmanager
-  });
-};
-
-export const getUser: Action<void, Promise<CurrentUser>> = ({ effects }) => {
-  return effects.api.get('/users/current');
-};
-
-export const getSandbox: Action<string, Promise<Sandbox>> = (
-  { effects },
-  id
-) => {
-  return effects.api.get(`/sandboxes/${id}`);
 };
 
 export const setPatronPrice: Action = ({ state }) => {
@@ -94,10 +68,6 @@ export const setSignedInCookie: Action = ({ state }) => {
   document.cookie = 'signedIn=true; Path=/;';
   identify('signed_in', 'true');
   setUserId(state.user.id);
-};
-
-export const connectWebsocket: Action = ({ effects }) => {
-  effects.socket.connect();
 };
 
 export const addNotification: Action<{
@@ -114,30 +84,13 @@ export const addNotification: Action<{
     title,
     type,
     buttons,
-    endTime: now + (timeAlive ? timeAlive : timeAliveDefault) * 1000,
+    endTime: now + (timeAlive || timeAliveDefault) * 1000,
   });
-};
-
-export const removeJwtFromStorage: Action = ({ effects }) => {
-  effects.jwt.reset();
-};
-
-export const getContributors: AsyncAction = async ({ state, effects }) => {
-  try {
-    const response = await effects.http.get<{ contributors: Contributor[] }>(
-      'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
-    );
-
-    state.contributors = response.data.contributors.map(
-      contributor => contributor.login
-    );
-  } catch (error) {}
 };
 
 export const authorize: AsyncAction = async ({ state, effects }) => {
   try {
-    const data = await effects.api.get<{ token: string }>('/auth/auth-token');
-    state.authToken = data.token;
+    state.authToken = await effects.api.getAuthToken();
   } catch (error) {
     state.editor.error = error.message;
   }
@@ -172,32 +125,7 @@ export const setJwt: Action<string> = ({ state, effects }, jwt) => {
   state.jwt = jwt;
 };
 
-export const getZeitUserDetails: AsyncAction = async ({ state, effects }) => {
-  if (
-    state.user.integrations.zeit &&
-    state.user.integrations.zeit.token &&
-    !state.user.integrations.zeit.email
-  ) {
-    const token = state.user.integrations.zeit.token;
-
-    try {
-      const response = await effects.http.get('https://api.zeit.co/www/user', {
-        headers: {
-          Authorization: `bearer ${token}`,
-        },
-      });
-
-      state.user.integrations.zeit.email = response.data.user.email;
-    } catch (error) {
-      effects.notificationToast.add({
-        message: 'Could not authorize with ZEIT',
-        status: effects.notificationToast.convertTypeToStatus('error'),
-      });
-    }
-  }
-};
-
-export const closeModals: Action<boolean> = ({ state, actions }, isKeyDown) => {
+export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   if (
     state.currentModal === 'preferences' &&
     state.preferences.itemId === 'keybindings' &&
@@ -207,229 +135,159 @@ export const closeModals: Action<boolean> = ({ state, actions }, isKeyDown) => {
   }
 
   state.currentModal = null;
-  actions.internal.startKeybindings();
+  effects.keybindingManager.start();
 };
 
-export const forkFrozenSandbox: AsyncAction = async ({
-  state,
-  actions,
-  effects,
-}) => {
-  if (
-    effects.browser.confirm(
-      'This sandbox is frozen, and will be forked. Do you want to continue?'
-    )
-  ) {
-    return actions.internal.forkSandbox({
-      id: state.editor.currentId,
-    });
-  } else {
-    // Where is the callback ID?
-    // effects.vscode.callCallbackError(?, "Can't save a frozen sandbox")
-  }
-};
-
-export const forkSandbox: AsyncAction<{
-  id: string;
-  body?: Partial<Sandbox>;
-}> = async ({ state, effects, actions }, { id, body }) => {
-  effects.analytics.track('Fork Sandbox');
-  state.editor.isForkingSandbox = true;
-
-  const url = id.includes('/')
-    ? `/sandboxes/fork/${id}`
-    : `/sandboxes/${id}/fork`;
-
-  try {
-    const forkedSandbox = await effects.api.post<Sandbox>(url, body || {});
-
-    if (state.editor.currentSandbox) {
-      Object.assign(forkedSandbox, {
-        modules: forkedSandbox.modules.map(module => ({
-          ...module,
-          code: state.editor.currentSandbox.modules.find(
-            currentSandboxModule =>
-              currentSandboxModule.shortid === module.shortid
-          ).code,
-        })),
-      });
-    }
-
-    actions.internal.setSandboxData({
-      sandbox: forkedSandbox,
-      overwriteFiles: true,
-    });
-
-    state.editor.currentId = forkedSandbox.id;
-
-    effects.notificationToast.add({
-      message: 'Forked sandbox!',
-      status: NotificationStatus.SUCCESS,
-    });
-
-    effects.router.updateSandboxUrl(forkedSandbox);
-  } catch (error) {}
-
-  state.editor.isForkingSandbox = false;
-};
-
-export const setSandbox: Action<Sandbox> = (
-  { state, actions, effects },
+export const setCurrentSandbox: Action<Sandbox> = (
+  { state, effects },
   sandbox
 ) => {
-  if (state.live.isLive && !state.live.isLoading) {
-    actions.live.internal.reset();
-  }
-
+  state.editor.sandboxes[sandbox.id] = sandbox;
   state.editor.currentId = sandbox.id;
-  actions.editor.internal.setCurrentModuleShortid(sandbox);
-  actions.editor.internal.setMainModuleShortid(sandbox);
-  actions.editor.internal.setInitialTab();
-  actions.editor.internal.setUrlOptions();
-  actions.workspace.internal.setWorkspace(sandbox);
 
-  effects.fsSync.syncCurrentSandbox(sandbox.id);
-};
+  let currentModuleShortid = state.editor.currentModuleShortid;
+  const parsedConfigs = parseConfigurations(sandbox);
+  const main = mainModule(sandbox, parsedConfigs);
 
-export const refetchSandboxInfo: AsyncAction = async ({ state, actions }) => {
-  if (state.editor.currentId) {
-    const sandbox = await actions.internal.getSandbox(state.editor.currentId);
-    actions.internal.setSandboxData({ sandbox, overwriteFiles: false });
+  state.editor.mainModuleShortid = main.shortid;
 
-    if (state.live.isLive) {
-      actions.live.internal.disconnect();
-    }
+  // Only change the module shortid if it doesn't exist in the new sandbox
+  // What is the scenario here?
+  if (
+    !sandbox.modules.find(module => module.shortid === currentModuleShortid)
+  ) {
+    const defaultModule = defaultOpenedModule(sandbox, parsedConfigs);
 
-    if (
-      sandbox.team &&
-      state.editor.currentSandbox.team &&
-      sandbox.team.id !== state.editor.currentSandbox.team.id
-    ) {
-      state.editor.currentSandbox.team = sandbox.team;
-    }
-
-    await actions.internal.joinLiveSessionIfAvailable(sandbox);
+    currentModuleShortid = defaultModule.shortid;
   }
+
+  const sandboxOptions = effects.router.getSandboxOptions();
+
+  if (sandboxOptions.currentModule) {
+    try {
+      const resolvedModule = effects.utils.resolveModule(
+        sandboxOptions.currentModule,
+        sandbox.modules,
+        sandbox.directories,
+        // currentModule is a string... something wrong here?
+        // @ts-ignore
+        sandboxOptions.currentModule.directoryShortid
+      );
+      currentModuleShortid = resolvedModule
+        ? resolvedModule.shortid
+        : currentModuleShortid;
+    } catch (err) {
+      effects.notificationToast.warning(
+        `Could not find the module ${sandboxOptions.currentModule}`
+      );
+    }
+  }
+
+  state.editor.currentModuleShortid = currentModuleShortid;
+
+  const newTab: ModuleTab = {
+    type: TabType.MODULE,
+    moduleShortid: currentModuleShortid,
+    dirty: true,
+  };
+
+  state.editor.tabs = [newTab];
+
+  state.preferences.showPreview =
+    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen;
+
+  state.preferences.showEditor =
+    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen;
+
+  if (sandboxOptions.initialPath)
+    state.editor.initialPath = sandboxOptions.initialPath;
+  if (sandboxOptions.fontSize)
+    state.preferences.settings.fontSize = sandboxOptions.fontSize;
+  if (sandboxOptions.highlightedLines)
+    state.editor.highlightedLines = sandboxOptions.highlightedLines;
+  if (sandboxOptions.hideNavigation)
+    state.preferences.hideNavigation = sandboxOptions.hideNavigation;
+  if (sandboxOptions.isInProjectView)
+    state.editor.isInProjectView = sandboxOptions.isInProjectView;
+  if (sandboxOptions.autoResize)
+    state.preferences.settings.autoResize = sandboxOptions.autoResize;
+  if (sandboxOptions.enableEslint)
+    state.preferences.settings.enableEslint = sandboxOptions.enableEslint;
+  if (sandboxOptions.forceRefresh)
+    state.preferences.settings.forceRefresh = sandboxOptions.forceRefresh;
+  if (sandboxOptions.expandDevTools)
+    state.preferences.showDevtools = sandboxOptions.expandDevTools;
+  if (sandboxOptions.runOnClick)
+    state.preferences.runOnClick = sandboxOptions.runOnClick;
+
+  state.workspace.project.title = sandbox.title || '';
+  state.workspace.project.description = sandbox.description || '';
+  state.workspace.project.alias = sandbox.alias || '';
+
+  const items = getItems(state);
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+
+  state.workspace.openedWorkspaceItem = defaultItem.id;
+
+  effects.fsSync.syncCurrentSandbox();
+  effects.router.updateSandboxUrl(sandbox);
 };
 
-export const joinLiveSessionIfAvailable: AsyncAction<Sandbox> = async (
-  { state, actions },
+export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
+  { state },
   sandbox
 ) => {
-  if (sandbox.owned && sandbox.roomId) {
-    if (sandbox.team) {
-      state.live.isTeam = true;
-    }
-    actions.internal.setSandboxData({
-      sandbox,
-      overwriteFiles: true,
-    });
-    state.live.isLoading = true;
-    actions.internal.setSandbox(sandbox);
-    await actions.live.internal.initialize();
-    state.live.isLoading = false;
-  } else {
-    actions.internal.setSandboxData({
-      sandbox,
-      overwriteFiles: true,
-    });
-    actions.internal.setSandbox(sandbox);
-    if (sandbox.owned) {
-      actions.files.internal.recoverFiles();
-    }
-  }
+  state.editor.currentSandbox.team = sandbox.team || null;
+  state.editor.currentSandbox.collection = sandbox.collection;
+  state.editor.currentSandbox.owned = sandbox.owned;
+  state.editor.currentSandbox.userLiked = sandbox.userLiked;
+  state.editor.currentSandbox.title = sandbox.title;
 };
 
-export const setSandboxData: Action<{
-  sandbox: Sandbox;
-  overwriteFiles: boolean;
-}> = ({ state }, { sandbox, overwriteFiles }) => {
-  if (overwriteFiles) {
-    state.editor.sandboxes[sandbox.id] = sandbox;
-  } else {
-    state.editor.sandboxes[sandbox.id].collection = sandbox.collection;
-    state.editor.sandboxes[sandbox.id].owned = sandbox.owned;
-    state.editor.sandboxes[sandbox.id].userLiked = sandbox.userLiked;
-    state.editor.sandboxes[sandbox.id].title = sandbox.title;
-  }
-};
-
-export const ensurePackageJSON: AsyncAction<{
-  sandbox: Sandbox;
-  newCode: string;
-}> = async ({ state, actions }, { sandbox, newCode }) => {
+export const ensurePackageJSON: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  const sandbox = state.editor.currentSandbox;
   const existingPackageJson = sandbox.modules.find(
-    m => m.directoryShortid == null && m.title === 'package.json'
+    module => module.directoryShortid == null && module.title === 'package.json'
   );
 
   if (sandbox.owned && !existingPackageJson) {
-    const packageJson = {
+    const optimisticModule = createOptimisticModule({
       title: 'package.json',
-      newCode: generateFileFromSandbox(sandbox),
-    };
-    const optimisticModule = actions.files.internal.createOptimisticModule(
-      packageJson
-    );
+      code: generatePackageJsonFromSandbox(sandbox),
+    });
 
-    state.editor.sandboxes[state.editor.currentId].modules.push(
-      optimisticModule
-    );
+    state.editor.currentSandbox.modules.push(optimisticModule);
 
     try {
-      const updatedModule = await actions.files.internal.saveNewModule({
-        module: optimisticModule,
-        newCode,
-      });
+      const updatedModule = await effects.api.createModule(
+        sandbox.id,
+        optimisticModule
+      );
 
-      actions.files.internal.updateOptimisticModule({
-        optimisticModule,
-        updatedModule,
-      });
+      optimisticModule.id = updatedModule.id;
+      optimisticModule.shortid = updatedModule.shortid;
     } catch (error) {
-      actions.files.internal.removeModule(optimisticModule.shortid);
+      sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1);
     }
   }
 };
 
 export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
-  const sandbox = state.editor.currentSandbox;
   const currentModule = state.editor.currentModule;
-  const tabs = state.editor.tabs;
-  const tabModuleId = tabs[tabIndex].moduleId;
-  const isActiveTab = currentModule.id === tabModuleId;
+  const tabs = state.editor.tabs as ModuleTab[];
+  const isActiveTab = currentModule.shortid === tabs[tabIndex].moduleShortid;
 
   if (isActiveTab) {
     const newTab = tabIndex > 0 ? tabs[tabIndex - 1] : tabs[tabIndex + 1];
 
     if (newTab) {
-      const newModule = sandbox.modules.find(
-        module => module.id === newTab.moduleId
-      );
-
-      state.editor.currentModuleShortid = newModule.shortid;
+      state.editor.currentModuleShortid = newTab.moduleShortid;
     }
   }
 
   state.editor.tabs.splice(tabIndex, 1);
-};
-
-export const setCurrentModuleByTab: Action<number> = ({ state }, tabIndex) => {
-  const tabs = state.editor.tabs;
-  const currentModuleShortid = state.editor.currentModuleShortid;
-  const closedCurrentTab = !tabs.find(
-    t => t.moduleShortid === currentModuleShortid
-  );
-
-  if (closedCurrentTab) {
-    const index =
-      state.editor.tabs.length - 1 >= tabIndex ? tabIndex : tabIndex - 1;
-
-    const currentTab = state.editor.tabs[index];
-
-    if (currentTab.moduleShortid) {
-      const moduleShortid = currentTab.moduleShortid;
-
-      state.editor.currentModuleShortid = moduleShortid;
-    }
-  }
 };

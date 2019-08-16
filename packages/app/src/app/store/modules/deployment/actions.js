@@ -173,8 +173,17 @@ export async function createApiData({ props, state }) {
   apiData.deploymentType = nowJSON.type || nowDefaults.type;
   apiData.public = nowJSON.public || nowDefaults.public;
 
-  // if now v2 we need to tell now the version, builds and routes
-  if (nowJSON.version === 2) {
+  // if now v 1we need to tell now the version, builds and routes
+  if (nowJSON.version === 1) {
+    apiData.config = omit(nowJSON, [
+      'public',
+      'type',
+      'name',
+      'files',
+      'version',
+    ]);
+    apiData.forceNew = true;
+  } else {
     apiData.version = 2;
     apiData.builds = nowJSON.builds;
     apiData.routes = nowJSON.routes;
@@ -182,9 +191,6 @@ export async function createApiData({ props, state }) {
     apiData.scope = nowJSON.scope;
     apiData['build.env'] = nowJSON['build.env'];
     apiData.regions = nowJSON.regions;
-  } else {
-    apiData.config = omit(nowJSON, ['public', 'type', 'name', 'files']);
-    apiData.forceNew = true;
   }
 
   if (!nowJSON.files) {
@@ -233,7 +239,9 @@ export async function aliasDeployment({ http, path, props, state }) {
       url: `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
       body: { alias: nowData.alias },
       method: 'POST',
-      headers: { Authorization: `bearer ${token}` },
+      headers: {
+        Authorization: `bearer ${token}`,
+      },
     });
     const url = `https://${alias.result.alias}`;
 
@@ -247,7 +255,7 @@ export async function aliasDeployment({ http, path, props, state }) {
 export async function postToZeit({ http, path, props, state }) {
   const { apiData } = props;
   const token = state.get('user.integrations.zeit.token');
-  const deploymentVersion = apiData.version === 2 ? 'v6' : 'v3';
+  const deploymentVersion = apiData.version === 2 ? 'v9' : 'v3';
 
   try {
     const deployment = await http.request({
@@ -287,7 +295,7 @@ export function getDeploymentData({ state }) {
 async function deploysByID(id, token, http) {
   try {
     const data = await http.request({
-      url: `https://api.zeit.co/v3/now/deployments/${id}/aliases`,
+      url: `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
       method: 'GET',
       headers: { Authorization: `bearer ${token}` },
     });
@@ -305,7 +313,7 @@ export async function getDeploys({ http, path, state, props }) {
 
   try {
     const data = await http.request({
-      url: 'https://api.zeit.co/v3/now/deployments',
+      url: 'https://api.zeit.co/v4/now/deployments',
       method: 'GET',
       headers: { Authorization: `bearer ${token}` },
     });
@@ -343,7 +351,7 @@ export async function deleteDeployment({ http, path, state }) {
 
   try {
     await http.request({
-      url: `https://api.zeit.co/v2/now/deployments/${id}`,
+      url: `https://api.zeit.co/v9/now/deployments/${id}`,
       method: 'DELETE',
       headers: { Authorization: `bearer ${token}` },
     });

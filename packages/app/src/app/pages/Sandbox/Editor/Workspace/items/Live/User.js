@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { observer } from 'mobx-react';
+import { observer } from 'app/componentConnectors';
 
 import delay from '@codesandbox/common/lib/utils/animation/delay-effect';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer, inject } from 'mobx-react';
+import { observer, inject } from 'app/componentConnectors';
 import { Route } from 'react-router-dom';
 
 import vscode from 'app/vscode';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import PlusIcon from 'react-icons/lib/go/plus';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 // @ts-ignore
@@ -18,7 +18,6 @@ import getWorkspaceItems, {
   getDisabledItems,
   INavigationItem,
 } from 'app/store/modules/workspace/items';
-import { useSignals, useStore } from 'app/store';
 import { Container, IconContainer, Separator } from './elements';
 import ServerIcon from './ServerIcon';
 
@@ -37,64 +36,75 @@ const IDS_TO_ICONS = {
 interface IconProps {
   item: INavigationItem;
   isDisabled?: boolean;
+  store: any;
+  signals: any;
 }
 
-const IconComponent = observer(({ item, isDisabled }: IconProps) => {
-  const { id, name } = item;
-  const store = useStore();
-  const {
-    workspace: { setWorkspaceHidden, setWorkspaceItem },
-  } = useSignals();
+const IconComponent = inject('store', 'signals')(
+  hooksObserver(
+    ({
+      item,
+      isDisabled,
+      store,
+      signals: {
+        workspace: { setWorkspaceHidden, setWorkspaceItem },
+      },
+    }: IconProps) => {
+      const { id, name } = item;
 
-  const Icon = IDS_TO_ICONS[id];
-  const selected =
-    !store.workspace.workspaceHidden &&
-    id === store.workspace.openedWorkspaceItem;
-  return (
-    <Tooltip key={id} placement="right" content={name}>
-      <IconContainer
-        isDisabled={isDisabled}
-        selected={selected}
-        onClick={() => {
-          if (selected) {
-            setWorkspaceHidden({ hidden: true });
-          } else {
-            setWorkspaceHidden({ hidden: false });
-            setWorkspaceItem({ item: id });
-          }
-        }}
-      >
-        <Icon />
-      </IconContainer>
-    </Tooltip>
-  );
-});
+      const Icon = IDS_TO_ICONS[id];
+      const selected =
+        !store.workspace.workspaceHidden &&
+        id === store.workspace.openedWorkspaceItem;
+      return (
+        <Tooltip key={id} placement="right" content={name}>
+          <IconContainer
+            isDisabled={isDisabled}
+            selected={selected}
+            onClick={() => {
+              if (selected) {
+                setWorkspaceHidden({ hidden: true });
+              } else {
+                setWorkspaceHidden({ hidden: false });
+                setWorkspaceItem({ item: id });
+              }
+            }}
+          >
+            <Icon />
+          </IconContainer>
+        </Tooltip>
+      );
+    }
+  )
+);
 
-export const Navigation = observer(
-  ({
-    topOffset,
-    bottomOffset,
-  }: {
-    topOffset: number;
-    bottomOffset: number;
-  }) => {
-    const store = useStore();
+export const Navigation = inject('store')(
+  hooksObserver(
+    ({
+      topOffset,
+      bottomOffset,
+      store,
+    }: {
+      topOffset: number;
+      bottomOffset: number;
+      store: any;
+    }) => {
+      const shownItems = getWorkspaceItems(store);
+      const disabledItems = getDisabledItems(store);
 
-    const shownItems = getWorkspaceItems(store);
-    const disabledItems = getDisabledItems(store);
+      return (
+        <Container topOffset={topOffset} bottomOffset={bottomOffset}>
+          {shownItems.map(item => (
+            <IconComponent key={item.id} item={item} />
+          ))}
 
-    return (
-      <Container topOffset={topOffset} bottomOffset={bottomOffset}>
-        {shownItems.map(item => (
-          <IconComponent key={item.id} item={item} />
-        ))}
+          {disabledItems.length > 0 && <Separator />}
 
-        {disabledItems.length > 0 && <Separator />}
-
-        {disabledItems.map(item => (
-          <IconComponent key={item.id} item={item} isDisabled />
-        ))}
-      </Container>
-    );
-  }
+          {disabledItems.map(item => (
+            <IconComponent key={item.id} item={item} isDisabled />
+          ))}
+        </Container>
+      );
+    }
+  )
 );

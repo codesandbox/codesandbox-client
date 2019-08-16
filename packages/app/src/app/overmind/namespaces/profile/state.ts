@@ -27,8 +27,8 @@ type State = {
   current: Derive<State, Profile>;
   isProfileCurrentUser: Derive<State, boolean>;
   showcasedSandbox: Derive<State, Sandbox>;
-  currentSandboxes: Derive<State, Sandbox[]>;
-  currentLikedSandboxes: Derive<State, Sandbox[]>;
+  currentSandboxes: Derive<State, { [page: string]: Sandbox[] }>;
+  currentLikedSandboxes: Derive<State, { [page: string]: Sandbox[] }>;
 };
 
 export const state: State = {
@@ -52,14 +52,15 @@ export const state: State = {
   },
   showcasedSandbox: (state, rootState) => {
     return (
+      state.current &&
       state.current.showcasedSandboxShortid &&
       rootState.editor.sandboxes[state.current.showcasedSandboxShortid]
     );
   },
   currentLikedSandboxes: state => {
-    return state.likedSandboxes[state.current.username];
+    return state.current && state.likedSandboxes[state.current.username];
   },
   currentSandboxes: state => {
-    return state.sandboxes[state.current.username];
+    return state.current && state.sandboxes[state.current.username];
   },
 };

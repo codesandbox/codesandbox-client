@@ -1,6 +1,5 @@
 import * as internalActions from './internalActions';
 import { AsyncAction, Action } from 'app/overmind';
-import { RoomInfo } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { camelizeKeys } from 'humps';
 import { TextOperation } from 'ot';
@@ -27,11 +26,7 @@ export const createLiveClicked: AsyncAction<string> = async (
 ) => {
   effects.analytics.track('Create Live Session');
 
-  const { id: roomId } = await effects.api.post<any>(`/sandboxes/${id}/live`, {
-    id,
-  });
-
-  // Hm, need to run this to understand how data is passed
+  await effects.api.createLiveRoom(id);
   await actions.live.internal.initialize();
 
   state.live.isLoading = false;
@@ -48,15 +43,14 @@ export const liveMessageReceived: AsyncAction<{
 ) => {
   switch (event) {
     case 'join': {
-      effects.notificationToast.add({
-        message: state.live.isTeam
-          ? 'Connected to Live Team!'
-          : 'Connected to Live!',
-        status: NotificationStatus.SUCCESS,
-      });
+      effects.notificationToast.success(
+        state.live.isTeam ? 'Connected to Live Team!' : 'Connected to Live!'
+      );
 
       if (state.live.reconnecting) {
-        effects.ot.serverReconnect();
+        effects.live.getAllClients().forEach(client => {
+          client.serverReconnect();
+        });
       }
 
       state.live.reconnecting = false;
@@ -77,8 +71,9 @@ export const liveMessageReceived: AsyncAction<{
 
       const users = camelizeKeys(data.users);
 
-      // What happening here? Is it not an array of users?
-      state.live.roomInfo.users = users;
+      // TODO: What happening here? Is it not an array of users?
+      // Check the running code and fix the type
+      state.live.roomInfo.users = users as any;
       state.live.roomInfo.editorIds = data.editor_ids;
       state.live.roomInfo.ownerIds = data.owner_ids;
 
@@ -111,7 +106,9 @@ export const liveMessageReceived: AsyncAction<{
 
       const users = camelizeKeys(data.users);
 
-      state.live.roomInfo.users = users;
+      // TODO: Same here, not an array?
+      // Check running code
+      state.live.roomInfo.users = users as any;
       state.live.roomInfo.ownerIds = data.owner_ids;
       state.live.roomInfo.editorIds = data.editor_ids;
       break;
@@ -120,7 +117,10 @@ export const liveMessageReceived: AsyncAction<{
       if (_isOwnMessage) {
         return;
       }
-      actions.editor.internal.setModuleSaved(data.moduleShortid);
+      const module = state.editor.currentSandbox.modules.find(
+        module => module.shortid === data.moduleShortid
+      );
+      module.isNotSynced = false;
       actions.editor.internal.setModuleSavedCode({
         moduleShortid: data.moduleShortid,
         savedCode: data.savedCode,
@@ -203,8 +203,36 @@ export const liveMessageReceived: AsyncAction<{
       if (_isOwnMessage) {
         return;
       }
-      actions.live.internal.updateSelection(data);
-      actions.live.internal.sendSelectionToEditor(data);
+
+      const userSelectionLiveUserId = data.liveUserId;
+      const moduleShortid = data.moduleShortid;
+      const selection = data.selection;
+      const userIndex = state.live.roomInfo.users.findIndex(
+        u => u.id === userSelectionLiveUserId
+      );
+
+      if (userIndex > -1) {
+        state.live.roomInfo.users[
+          userIndex
+        ].currentModuleShortid = moduleShortid;
+        state.live.roomInfo.users[userIndex].selection = selection;
+      }
+
+      if (
+        moduleShortid === state.editor.currentModuleShortid &&
+        state.live.isEditor(userSelectionLiveUserId)
+      ) {
+        const user = state.live.roomInfo.users.find(
+          u => u.id === userSelectionLiveUserId
+        );
+
+        state.editor.pendingUserSelections.push({
+          userId: userSelectionLiveUserId,
+          name: user.username,
+          selection,
+          color: user.color.toJS(),
+        });
+      }
       break;
     }
     case 'user:current-module': {
@@ -228,7 +256,6 @@ export const liveMessageReceived: AsyncAction<{
       ) {
         const moduleShortid = data.moduleShortid;
         const modules = state.editor.currentSandbox.modules;
-
         const module = modules.find(m => m.shortid === moduleShortid);
 
         if (!module) {
@@ -246,7 +273,7 @@ export const liveMessageReceived: AsyncAction<{
       }
       actions.live.internal.clearUserSelections(data);
       state.editor.pendingUserSelections = state.editor.pendingUserSelections.concat(
-        actions.live.internal.getSelectionsForCurrentModule()
+        actions.live.internal.getSelectionsForModule(state.editor.currentModule)
       );
       break;
     }
@@ -279,14 +306,16 @@ export const liveMessageReceived: AsyncAction<{
         return;
       }
       if (_isOwnMessage) {
-        effects.ot.serverAck(data.module_shortid);
+        effects.live.getClient(data.module_shortid).serverAck();
       } else {
         try {
-          effects.ot.applyServer(data.module_shortid, data.operation);
+          effects.live
+            .getClient(data.module_shortid)
+            .applyServer(data.operation);
         } catch (e) {
           // Something went wrong, probably a sync mismatch. Request new version
           console.error('Something went wrong with applying OT operation');
-          effects.live.send('live:module_state', {});
+          effects.live.sendModuleUpdateRequest();
         }
       }
       break;
@@ -360,12 +389,26 @@ export const liveMessageReceived: AsyncAction<{
 export const onTransformMade: Action<{
   operation: any;
   moduleShortid: string;
-}> = ({ actions, state }, { operation, moduleShortid }) => {
+}> = ({ effects, state }, { operation, moduleShortid }) => {
   if (!state.live.isCurrentEditor) {
     return;
   }
 
-  actions.live.internal.sendTransform({ operation, moduleShortid });
+  if (!operation) {
+    return;
+  }
+
+  try {
+    effects.live.getClient(moduleShortid).applyClient(operation);
+  } catch (e) {
+    // Something went wrong, probably a sync mismatch. Request new version
+    console.error(
+      'Something went wrong with applying OT operation',
+      moduleShortid,
+      operation
+    );
+    effects.live.send('live:module_state', {});
+  }
 };
 
 export const applyTransformation: Action<{
@@ -400,12 +443,24 @@ export const onOperationApplied: Action = ({ state }) => {
 export const onSelectionChanged: Action<{
   selection: any;
   moduleShortid: string;
-}> = ({ state, actions }, { selection, moduleShortid }) => {
+}> = ({ state, effects }, { selection, moduleShortid }) => {
   if (state.live.isCurrentEditor) {
-    actions.live.internal.sendSelection({
-      selection,
-      moduleShortid,
-    });
+    const liveUserId = state.live.liveUserId;
+    const userIndex = state.live.roomInfo.users.findIndex(
+      u => u.id === liveUserId
+    );
+
+    if (userIndex > -1) {
+      if (state.live.roomInfo.users[userIndex]) {
+        state.live.roomInfo.users[
+          userIndex
+        ].currentModuleShortid = moduleShortid;
+
+        state.live.roomInfo.users[userIndex].selection = selection;
+
+        effects.live.sendUserSelection(moduleShortid, liveUserId, selection);
+      }
+    }
   }
 };
 
@@ -416,9 +471,7 @@ export const onSelectionDecorationsApplied: Action = ({ state }) => {
 export const onModeChanged: Action<string> = ({ state, effects }, mode) => {
   if (state.live.isOwner) {
     state.live.roomInfo.mode = mode;
-    effects.live.send('live:mode', {
-      mode,
-    });
+    effects.live.sendLiveMode(mode);
   }
 };
 
@@ -428,9 +481,7 @@ export const onAddEditorClicked: Action<string> = (
 ) => {
   state.live.roomInfo.editorIds.push(liveUserId);
 
-  effects.live.send('live:add-editor', {
-    editor_user_id: liveUserId,
-  });
+  effects.live.sendEditorAdded(liveUserId);
 };
 
 export const onRemoveEditorClicked: Action<any> = (
@@ -444,13 +495,11 @@ export const onRemoveEditorClicked: Action<any> = (
 
   state.live.roomInfo.editorIds = newEditors;
 
-  effects.live.send('live:remove-editor', {
-    editor_user_id: liveUserId,
-  });
+  effects.live.sendEditorRemoved(liveUserId);
 };
 
 export const onSessionCloseClicked: Action = ({ actions, effects }) => {
-  effects.live.send('live:close', {});
+  effects.live.sendClosed();
   actions.live.internal.disconnect();
   actions.live.internal.reset();
 };
@@ -465,9 +514,7 @@ export const onToggleNotificationsHidden: Action = ({ state }) => {
 };
 
 export const onSendChat: Action<string> = ({ effects }, message) => {
-  effects.live.send('chat', {
-    message,
-  });
+  effects.live.sendChat(message);
 };
 
 export const onChatEnabledChange: Action<boolean> = (
@@ -478,7 +525,7 @@ export const onChatEnabledChange: Action<boolean> = (
 
   if (state.live.isOwner) {
     state.live.roomInfo.chatEnabled = isEnabled;
-    effects.live.send('live:chat_enabled', { enabled: isEnabled });
+    effects.live.sendChatEnabled(isEnabled);
   }
 };
 
@@ -489,25 +536,26 @@ export const onFollow: Action<{
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
 
-  const userIndex = state
-    .get('live.roomInfo.users')
-    .findIndex(u => u.id === liveUserId);
+  const userIndex = state.live.roomInfo.users.findIndex(
+    u => u.id === liveUserId
+  );
 
   if (userIndex > -1) {
     const user = state.live.roomInfo.users[userIndex];
 
     if (user) {
-      moduleShortid: user.currentModuleShortid;
+      moduleShortid = user.currentModuleShortid;
     }
   }
 
   if (moduleShortid) {
-    actions.editor.moduleSelected(
-      actions.live.internal.getModuleIdFromShortid(moduleShortid)
-    );
+    const modules = state.editor.currentSandbox.modules;
+    const module = modules.find(m => m.shortid === moduleShortid);
+
+    actions.editor.moduleSelected(module.id);
   }
 };
 
 export const onModuleStateMismatch: Action = ({ effects }) => {
-  effects.live.send('live:module_state', {});
+  effects.live.sendModuleUpdateRequest();
 };

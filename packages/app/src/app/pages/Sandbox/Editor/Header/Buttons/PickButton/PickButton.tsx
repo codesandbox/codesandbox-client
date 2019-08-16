@@ -1,33 +1,36 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
-import { useSignals, useStore } from 'app/store';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { Button } from './elements';
 
-export const PickButton = observer(() => {
-  const {
-    explore: { pickSandboxModal },
-  } = useSignals();
-  const {
-    editor: {
-      currentSandbox: { id, title, description, owned },
-    },
-  } = useStore();
+export const PickButton = inject('store', 'signals')(
+  hooksObserver(
+    ({
+      signals: {
+        explore: { pickSandboxModal },
+      },
+      store: {
+        editor: {
+          currentSandbox: { id, title, description, owned },
+        },
+      },
+    }) => {
+      const details = {
+        id,
+        title,
+        description,
+      };
 
-  const details = {
-    id,
-    title,
-    description,
-  };
-
-  return (
-    <Button
-      onClick={() => {
-        pickSandboxModal({ details });
-      }}
-      secondary={owned}
-      small
-    >
-      Pick
-    </Button>
-  );
-});
+      return (
+        <Button
+          onClick={() => {
+            pickSandboxModal({ details });
+          }}
+          secondary={owned}
+          small
+        >
+          Pick
+        </Button>
+      );
+    }
+  )
+);

@@ -1,6 +1,5 @@
 import { Action, AsyncAction } from 'app/overmind';
 import { setVimExtensionEnabled } from 'app/vscode/initializers';
-import { PaymentDetails } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
 
 export const viewModeChanged: Action<{
@@ -31,7 +30,7 @@ export const itemIdChanged: AsyncAction<string> = async (
   }
 
   if (itemId === 'integrations') {
-    await actions.internal.getZeitUserDetails();
+    await actions.deployment.internal.getZeitUserDetails();
   }
 };
 
@@ -71,11 +70,7 @@ export const setBadgeVisibility: AsyncAction<{
     }
   });
 
-  await effects.api.patch(`/users/current_user/badges/${id}`, {
-    badge: {
-      visible,
-    },
-  });
+  await effects.api.updateBadge(id, visible);
 };
 
 export const paymentDetailsRequested: AsyncAction = async ({
@@ -84,10 +79,7 @@ export const paymentDetailsRequested: AsyncAction = async ({
 }) => {
   state.preferences.isLoadingPaymentDetails = true;
   try {
-    state.preferences.paymentDetails = await effects.api.get<PaymentDetails>(
-      `/users/current_user/payment_details`,
-      {}
-    );
+    state.preferences.paymentDetails = await effects.api.getPaymentDetails();
   } catch (error) {
     state.preferences.paymentDetailError = error.message;
   }
@@ -99,13 +91,8 @@ export const paymentDetailsUpdated: AsyncAction<string> = async (
   token
 ) => {
   state.preferences.isLoadingPaymentDetails = true;
-  state.preferences.paymentDetails = await effects.api.patch<PaymentDetails>(
-    '/users/current_user/payment_details',
-    {
-      paymentDetails: {
-        token,
-      },
-    }
+  state.preferences.paymentDetails = await effects.api.updatePaymentDetails(
+    token
   );
   state.preferences.isLoadingPaymentDetails = false;
 };
@@ -142,8 +129,4 @@ export const keybindingChanged: Action<{
 
 export const zenModeToggled: Action = ({ state }) => {
   state.preferences.settings.zenMode = !state.preferences.settings.zenMode;
-};
-
-export const codeMirrorForced: Action = ({ state }) => {
-  state.preferences.settings.codeMirror = true;
 };

@@ -133,20 +133,22 @@ export default class DependencyHit extends React.PureComponent {
                 <SearchIcon />
               </IconLink>
             </Tooltip>
-            <StyledSelect
-              onClick={this.stopPropagation}
-              onChange={this.handleVersionChange}
-              value={this.state.selectedVersion}
-            >
-              {versions.map(v => {
-                const tagName = getTagName(hit.tags, v);
-                return (
-                  <option value={v} key={v}>
-                    {v} {tagName && `- ${tagName}`}
-                  </option>
-                );
-              })}
-            </StyledSelect>
+            {hit.tags && (
+              <StyledSelect
+                onClick={this.stopPropagation}
+                onChange={this.handleVersionChange}
+                value={this.state.selectedVersion}
+              >
+                {versions.map(v => {
+                  const tagName = getTagName(hit.tags, v);
+                  return (
+                    <option value={v} key={v}>
+                      {v} {tagName && `- ${tagName}`}
+                    </option>
+                  );
+                })}
+              </StyledSelect>
+            )}
           </Row>
         </Right>
       </Container>

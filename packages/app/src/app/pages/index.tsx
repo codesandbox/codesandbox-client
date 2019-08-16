@@ -6,7 +6,7 @@ import { Toasts } from '@codesandbox/notifications';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
 import Loadable from 'app/utils/Loadable';
-import { useSignals } from 'app/store';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 import Modals from './common/Modals';
@@ -51,9 +51,7 @@ const Curator = Loadable(() =>
 
 const Boundary = withRouter(ErrorBoundary);
 
-const Routes = () => {
-  const { appUnmounted } = useSignals();
-
+const Routes = ({ signals: { appUnmounted } }) => {
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
   return (
@@ -106,4 +104,6 @@ const Routes = () => {
   );
 };
 
-export default DragDropContext(HTML5Backend)(withRouter(Routes));
+export default inject('signals')(
+  DragDropContext(HTML5Backend)(withRouter(hooksObserver(Routes)))
+);

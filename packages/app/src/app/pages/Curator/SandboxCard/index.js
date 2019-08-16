@@ -3,7 +3,7 @@ import {
   sandboxUrl,
   profileUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'app/componentConnectors';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import GithubIcon from 'react-icons/lib/fa/github';

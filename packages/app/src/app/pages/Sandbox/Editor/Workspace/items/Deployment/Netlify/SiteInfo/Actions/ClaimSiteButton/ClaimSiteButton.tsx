@@ -1,18 +1,12 @@
-import { observer } from 'mobx-react-lite';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
-
-import { useStore } from 'app/store';
 
 import { Link } from '../../../../elements';
 
-export const ClaimSiteButton = observer(() => {
-  const {
-    deployment: { building, netlifyClaimUrl },
-  } = useStore();
-
-  return (
+export const ClaimSiteButton = inject('store')(
+  hooksObserver(({ store: { deployment: { building, netlifyClaimUrl } } }) => (
     <Link disabled={building} href={netlifyClaimUrl}>
       Claim Site
     </Link>
-  );
-});
+  ))
+);

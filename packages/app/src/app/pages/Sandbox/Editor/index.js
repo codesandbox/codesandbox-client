@@ -1,6 +1,6 @@
 import * as React from 'react';
 import SplitPane from 'react-split-pane';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import styled, { ThemeProvider } from 'styled-components';
 import { templateColor } from 'app/utils/template-color';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
