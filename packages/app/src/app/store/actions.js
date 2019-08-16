@@ -368,6 +368,11 @@ export function getUser({ api, path }) {
 }
 
 export function connectWebsocket({ socket }) {
+  if (process.env.LOCAL_SERVER) {
+    // TODO: Make the ws proxy work in start.js
+    return {};
+  }
+
   return socket.connect();
 }
 
