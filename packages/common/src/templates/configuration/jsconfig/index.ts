@@ -10,7 +10,7 @@ const config: ConfigurationFile = {
   getDefaultCode: (
     template: string,
     resolveModule: (path: string) => { code: string } | undefined
-  ) => JSON.stringify({ compilerOptions: { baseUrl: '.' } }),
+  ) => JSON.stringify({ compilerOptions: { baseUrl: '.' } }, null, 2),
 
   schema:
     'https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/jsconfig.json',
