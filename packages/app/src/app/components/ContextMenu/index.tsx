@@ -6,37 +6,71 @@ import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
 import { Container, Item, ItemContainer } from './elements';
 
-class ContextMenu extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      x: 0,
-      y: 0,
-      show: false,
-      down: true,
-      right: true,
-    };
+type OnContextMenu = (
+  event: React.MouseEvent<HTMLDivElement, MouseEvent>
+) => void;
 
-    this.mousedownHandler = mousedownEvent => {
-      const { show } = this.state;
+interface ItemType {
+  color?: string;
+  title: string;
+  icon?: React.ElementType;
+  action: () => boolean | void;
+}
 
-      if (show && this.el) {
-        if (!this.el.contains(mousedownEvent.target)) {
-          this.close();
-        }
-      }
-    };
+type Item = ItemType | ItemType[];
 
-    this.keydownHandler = keydownEvent => {
-      const { show } = this.state;
-      if (keydownEvent.keyCode === 27 && show) {
-        // Escape
+interface Props {
+  onContextMenu?: OnContextMenu;
+  items: Item[];
+  isDraggingItem: boolean;
+  childFunction: true;
+  children:
+    | ((onContextMenu: OnContextMenu) => React.ReactChildren)
+    | React.ReactChildren;
+}
+
+interface State {
+  show: boolean;
+  x: number;
+  y: number;
+  down: boolean;
+  right: boolean;
+  left: boolean;
+}
+
+class ContextMenu extends React.PureComponent<Props, State> {
+  unmounted: boolean;
+  el?: HTMLDivElement;
+
+  state: State = {
+    x: 0,
+    y: 0,
+    show: false,
+    down: true,
+    right: true,
+    left: false,
+  };
+
+  keydownHandler = (keydownEvent: KeyboardEvent) => {
+    const { show } = this.state;
+    if (keydownEvent.keyCode === 27 && show) {
+      // Escape
+      this.close();
+    }
+  };
+
+  mousedownHandler = (mousedownEvent: MouseEvent) => {
+    const { show } = this.state;
+
+    if (show && this.el) {
+      // @ts-ignore
+      if (!this.el.contains(mousedownEvent.target)) {
         this.close();
       }
-    };
-  }
+    }
+  };
 
-  onContextMenu = event => {
+  onContextMenu: OnContextMenu = event => {
     if (!this.unmounted) {
       const body = document.body;
       const html = document.documentElement;
@@ -58,11 +92,8 @@ class ContextMenu extends React.PureComponent {
       );
 
       event.preventDefault();
-      this.mousedown = window.addEventListener(
-        'mousedown',
-        this.mousedownHandler
-      );
-      this.keydown = window.addEventListener('keydown', this.keydownHandler);
+      window.addEventListener('mousedown', this.mousedownHandler);
+      window.addEventListener('keydown', this.keydownHandler);
 
       const isDown = height - event.clientY > 150;
       const isLeft = width - event.clientX > 200;
@@ -112,9 +143,10 @@ class ContextMenu extends React.PureComponent {
       isDraggingItem,
       ...props
     } = this.props;
+
     const { show, x, y, down, left } = this.state;
 
-    const mapFunction = (item, i) => {
+    const mapFunction = (item: ItemType, i: number) => {
       if (Array.isArray(item)) {
         if (item.length === 0) {
           return null;
@@ -122,7 +154,11 @@ class ContextMenu extends React.PureComponent {
         return <ItemContainer key={i}>{item.map(mapFunction)}</ItemContainer>;
       }
 
-      const handlePress = e => {
+      const handlePress = (
+        e:
+          | React.MouseEvent<HTMLButtonElement>
+          | React.KeyboardEvent<HTMLButtonElement>
+      ) => {
         if (item.action()) {
           e.preventDefault();
           this.close();
@@ -153,12 +189,17 @@ class ContextMenu extends React.PureComponent {
       );
     };
 
+    const innerChildren =
+      childFunction === true && typeof children === 'function'
+        ? children(this.onContextMenu)
+        : children;
+
     return (
       <div
         {...props}
         onContextMenu={childFunction ? undefined : this.onContextMenu}
       >
-        {childFunction ? children(this.onContextMenu) : children}
+        {innerChildren}
         {show && (
           <Portal>
             <div
@@ -169,17 +210,22 @@ class ContextMenu extends React.PureComponent {
                 }
                 this.el = el;
               }}
-              tabIndex="-1"
+              tabIndex={-1}
             >
               <Spring
+                // @ts-ignore
                 from={{ opacity: 0.6, height: 0, width: 'auto' }}
                 to={{ opacity: 1, height: 'auto', width: 'auto' }}
               >
                 {({ opacity, height, width }) => (
                   <Container
                     style={{
-                      left: left ? x : x - width,
-                      top: down ? y : y - height,
+                      left: left
+                        ? x
+                        : x - (typeof width === 'string' ? 0 : width),
+                      top: down
+                        ? y
+                        : y - (typeof height === 'string' ? 0 : height),
                       opacity,
                       height,
                     }}
