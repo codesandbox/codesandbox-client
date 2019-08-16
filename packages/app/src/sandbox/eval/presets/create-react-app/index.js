@@ -99,8 +99,6 @@ export default function initialize() {
               ],
             },
           };
-
-          console.log(babelOptions);
           preset.registerTranspiler(
             module =>
               /\.(t|j)sx?$/.test(module.path) && !module.path.endsWith('.d.ts'),
