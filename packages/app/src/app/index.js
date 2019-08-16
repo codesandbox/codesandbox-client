@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { unstable_createSyncRoot as createSyncRoot } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
@@ -120,7 +120,8 @@ async function boot(state, signals, overmind) {
     });
 
     try {
-      render(
+      const root = createSyncRoot(rootEl);
+      root.render(
         <Signals.Provider value={signals}>
           <Store.Provider value={state}>
             <Provider store={state} signals={signals}>
@@ -137,8 +138,7 @@ async function boot(state, signals, overmind) {
               </ApolloProvider>
             </Provider>
           </Store.Provider>
-        </Signals.Provider>,
-        rootEl
+        </Signals.Provider>
       );
     } catch (e) {
       logError(e);

@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@codesandbox/common": "^1.0.5",
-    "react": "^16.8.6",
+    "react": "^16.9.0",
     "react-spring": "^8.0.25",
     "styled-components": "^4.2.0",
     "uuid": "^3.3.2"

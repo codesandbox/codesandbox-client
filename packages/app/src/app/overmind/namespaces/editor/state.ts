@@ -11,7 +11,7 @@ import {
 } from '@codesandbox/common/lib/types';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { dirname } from 'path';
-import { parseConfigurations } from '../../utils/parse-configurations';
+import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
 import {
   getModulePath,
   getDirectoryPath,
@@ -190,7 +190,7 @@ export const state: State = {
     const state: State = this;
 
     return state.currentSandbox
-      ? parseConfigurations(state.currentSandbox)
+      ? parseSandboxConfigurations(state.currentSandbox)
       : null;
   },
   get mainModule() {

@@ -17,6 +17,7 @@ import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/
 import getType from 'app/utils/get-type.ts';
 
 import getTemplate from '@codesandbox/common/lib/templates';
+import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
 
 import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
 import {
@@ -391,7 +392,8 @@ export default class Content extends React.PureComponent<Props, State> {
     if (!mainModule) throw new Error('Cannot find main module');
 
     const templateDefinition = getTemplate(sandbox.template);
-    const views = getPreviewTabs(sandbox);
+    const parsedConfigurations = parseSandboxConfigurations(sandbox);
+    const views = getPreviewTabs(sandbox, parsedConfigurations);
 
     const sandboxConfig = sandbox.modules.find(
       x => x.directoryShortid == null && x.title === 'sandbox.config.json'

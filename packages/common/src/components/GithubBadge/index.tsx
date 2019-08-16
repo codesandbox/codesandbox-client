@@ -21,7 +21,13 @@ const DivOrA: FunctionComponent<DivOrAProps> = ({ href, ...props }) =>
     <div {...props} />
   );
 
-const GithubBadge: FunctionComponent<BadgeProps> = ({ username, repo, url, branch, ...props }) => {
+const GithubBadge: FunctionComponent<BadgeProps> = ({
+  username,
+  repo,
+  url,
+  branch,
+  ...props
+}) => {
   return (
     <DivOrA {...props} href={url}>
       <BorderRadius hasUrl={Boolean(url)}>
@@ -35,6 +41,6 @@ const GithubBadge: FunctionComponent<BadgeProps> = ({ username, repo, url, branc
       </BorderRadius>
     </DivOrA>
   );
-}
+};
 
 export default GithubBadge;

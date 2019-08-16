@@ -1,6 +1,7 @@
 import { dirname } from 'path';
 import immer from 'immer';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
@@ -8,7 +9,6 @@ import {
   getModulePath,
   getDirectoryPath,
 } from '@codesandbox/common/lib/sandbox/modules';
-import { parseConfigurations } from '../../utils/parse-configurations';
 import { mainModule as getMainModule } from '../../utils/main-module';
 
 export function currentSandbox() {
@@ -93,7 +93,7 @@ export function isAdvancedEditor() {
 }
 
 export function parsedConfigurations() {
-  return parseConfigurations(this.currentSandbox);
+  return parseSandboxConfigurations(this.currentSandbox);
 }
 
 export function mainModule() {
@@ -117,7 +117,12 @@ export function currentPackageJSONCode() {
 export function devToolTabs() {
   const sandbox = this.currentSandbox;
   const intermediatePreviewCode = this.workspaceConfigCode;
-  const views = getPreviewTabs(sandbox, intermediatePreviewCode);
+  const configurations = this.parsedConfigurations;
+  const views = getPreviewTabs(
+    sandbox,
+    configurations,
+    intermediatePreviewCode
+  );
 
   // Do it in an immutable manner, prevents changing the original object
   return immer(views, draft => {

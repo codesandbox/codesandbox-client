@@ -559,6 +559,7 @@ class BasePreview extends React.Component<Props, State> {
                 src={this.currentUrl()}
                 ref={this.setIframeElement}
                 title={getSandboxName(sandbox)}
+                id="sandbox-preview"
                 style={{
                   ...style,
                   zIndex: 1,
@@ -591,7 +592,9 @@ class BasePreview extends React.Component<Props, State> {
                       height: '100%',
                       filter: `blur(2px)`,
                       transform: 'scale(1.025, 1.025)',
-                      backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
+                      backgroundImage: `url("${
+                        this.props.sandbox.screenshotUrl
+                      }")`,
                       backgroundRepeat: 'no-repeat',
                       backgroundPositionX: 'center',
                     }}

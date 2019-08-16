@@ -3,6 +3,7 @@ import { client } from 'app/graphql/client';
 import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
 
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
 import track, {
   identify,
   setUserId,
@@ -14,7 +15,6 @@ import {
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 
-import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
 import getItems from './modules/workspace/items';
 
@@ -172,7 +172,7 @@ export function setCurrentModuleShortid({ props, state }) {
   if (
     sandbox.modules.map(m => m.shortid).indexOf(currentModuleShortid) === -1
   ) {
-    const parsedConfigs = parseConfigurations(sandbox);
+    const parsedConfigs = parseSandboxConfigurations(sandbox);
     const module = defaultOpenedModule(sandbox, parsedConfigs);
 
     state.set('editor.currentModuleShortid', module.shortid);
@@ -208,7 +208,7 @@ export function showUserSurveyIfNeeded({ state, controller, api }) {
 
 export function setMainModuleShortid({ props, state }) {
   const sandbox = props.sandbox;
-  const parsedConfigs = parseConfigurations(sandbox);
+  const parsedConfigs = parseSandboxConfigurations(sandbox);
   const module = mainModule(sandbox, parsedConfigs);
 
   state.set('editor.mainModuleShortid', module.shortid);

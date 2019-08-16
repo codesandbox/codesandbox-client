@@ -101,7 +101,9 @@ export const createPrClicked: AsyncAction = async ({ state, effects }) => {
 
   const user = state.user;
   const git = state.editor.currentSandbox.originalGit;
-  const url = `https://github.com/${git.username}/${git.repo}/compare/${git.branch}...${user.username}:${pr.newBranch}?expand=1`;
+  const url = `https://github.com/${git.username}/${git.repo}/compare/${
+    git.branch
+  }...${user.username}:${pr.newBranch}?expand=1`;
 
   state.git.pr.prURL = url;
 
