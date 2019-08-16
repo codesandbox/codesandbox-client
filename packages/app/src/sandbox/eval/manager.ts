@@ -557,6 +557,23 @@ export default class Manager {
       .replace(/.*\{\{sandboxRoot\}\}/, '');
   }
 
+  getModuleDirectories() {
+    const baseTSCompilerConfig = [
+      this.configurations.typescript,
+      this.configurations.jsconfig,
+    ].find(config => config && config.generated !== true);
+
+    const baseUrl =
+      baseTSCompilerConfig &&
+      baseTSCompilerConfig.parsed &&
+      baseTSCompilerConfig.parsed.compilerOptions &&
+      baseTSCompilerConfig.parsed.compilerOptions.baseUrl;
+
+    return ['node_modules', baseUrl, this.envVariables.NODE_PATH].filter(
+      Boolean
+    );
+  }
+
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
   async resolveModuleAsync(
     path: string,
@@ -598,10 +615,7 @@ export default class Manager {
               isFile: this.isFile,
               readFileSync: this.readFileSync,
               packageFilter,
-              moduleDirectory: [
-                'node_modules',
-                this.envVariables.NODE_PATH,
-              ].filter(Boolean),
+              moduleDirectory: this.getModuleDirectories(),
             },
             (err, foundPath) => {
               if (err) {
@@ -702,9 +716,7 @@ export default class Manager {
           isFile: this.isFile,
           readFileSync: this.readFileSync,
           packageFilter,
-          moduleDirectory: ['node_modules', this.envVariables.NODE_PATH].filter(
-            Boolean
-          ),
+          moduleDirectory: this.getModuleDirectories(),
         });
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
