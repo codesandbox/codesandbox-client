@@ -154,6 +154,10 @@ export default class Module {
       return require('assert');
     }
 
+    if (request === 'string_decoder') {
+      return require('string_decoder');
+    }
+
     if (request === 'diagnostics') {
       return require('debug');
     }

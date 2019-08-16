@@ -93,5 +93,8 @@
     "type": "opencollective",
     "url": "https://opencollective.com/codesandbox",
     "logo": "https://opencollective.com/codesandbox/logo.txt"
+  },
+  "engines": {
+    "node": "^10.0.0"
   }
 }
