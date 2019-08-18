@@ -1,6 +1,6 @@
 import { dispatch, isStandalone, listen } from 'codesandbox-api';
 
-function sendUrlChange(url: string) {
+function sendUrlChange(url) {
   dispatch({
     type: 'urlchange',
     url,
