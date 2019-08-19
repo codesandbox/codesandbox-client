@@ -154,7 +154,7 @@ async function initialize() {
   let state = null;
   let overmind = null;
 
-  if (location.search.includes('overmind=true')) {
+  if (localStorage.getItem('overmind') === 'true') {
     await Promise.all([import('overmind'), import('./overmind')]).then(
       modules => {
         const createOvermind = modules[0].createOvermind;
