@@ -1,6 +1,6 @@
-import { Action, AsyncAction } from '.';
 import { Contributor } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
+import { AsyncAction } from '.';
 
 export function withLoadApp<T>(
   continueAction?: AsyncAction<T>
@@ -21,6 +21,7 @@ export function withLoadApp<T>(
       json(state.preferences.settings.keybindings || [])
     );
     effects.keybindingManager.start();
+    effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
 
     if (state.jwt) {
       try {
@@ -40,7 +41,9 @@ export function withLoadApp<T>(
       effects.jwt.reset();
     }
 
-    continueAction && (await continueAction(context, value));
+    if (continueAction) {
+      await continueAction(context, value);
+    }
 
     state.hasLoadedApp = true;
     state.isAuthenticating = false;
