@@ -1918,12 +1918,12 @@
     conventional-changelog "0.0.17"
     github-url-from-git "^1.4.0"
 
-"@sentry/browser@^5.6.1":
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-5.6.1.tgz#9bb64d2b8371c70e3725b3f6a95835f3ca6ff8ee"
-  integrity sha512-EtuI3YUIXfSzbF2Z7c5UXcdkcjZj83Y0vj73kMXBxxYsmDkyU+KtJFFvonSUrLILMqYBNZXTgCrfglLfFkl7kA==
+"@sentry/browser@^5.6.2":
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-5.6.2.tgz#f39e95c3aff2d4b4fd5d0d4aa7192af73f20d24e"
+  integrity sha512-Nm/W/5ra6+OQCWQkdd86vHjcYUjHCVqCzQyPasd6HE7SNlWe5euGVfFfDuUFsiDrMAG5uKfGYw5u/AqoweiQkQ==
   dependencies:
-    "@sentry/core" "5.6.1"
+    "@sentry/core" "5.6.2"
     "@sentry/types" "5.6.1"
     "@sentry/utils" "5.6.1"
     tslib "^1.9.3"
@@ -1940,10 +1940,10 @@
     progress "2.0.0"
     proxy-from-env "^1.0.0"
 
-"@sentry/core@5.6.1":
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-5.6.1.tgz#946f064cc500bf4cd2a1bac580192fe440b614c7"
-  integrity sha512-gK8XfkJIZLsBEQehkr2q2fdHI50B3yo4RXiixSZiNBVIzQ+1z3JcMssDzGwhbY81NHUzHZ7of3oQ4Ab4OGRI/g==
+"@sentry/core@5.6.2":
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-5.6.2.tgz#8c5477654a83ebe41a72e86a79215deb5025e418"
+  integrity sha512-grbjvNmyxP5WSPR6UobN2q+Nss7Hvz+BClBT8QTr7VTEG5q89TwNddn6Ej3bGkaUVbct/GpVlI3XflWYDsnU6Q==
   dependencies:
     "@sentry/hub" "5.6.1"
     "@sentry/minimal" "5.6.1"

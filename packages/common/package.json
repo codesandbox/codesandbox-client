@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
-    "@sentry/browser": "^5.6.1",
+    "@sentry/browser": "^5.6.2",
     "@tippy.js/react": "^2.1.1",
     "babel-plugin-preval": "^3.0.1",
     "codesandbox-api": "^0.0.22",
