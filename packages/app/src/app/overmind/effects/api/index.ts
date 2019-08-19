@@ -34,18 +34,20 @@ export default {
 
     return response.token;
   },
-  createPatronSubscription(token: string, amount: number) {
+  createPatronSubscription(token: string, amount: number, coupon: string) {
     return api.post<CurrentUser>('/users/current_user/subscription', {
       subscription: {
-        amount: String(amount),
+        amount,
+        coupon,
         token,
       },
     });
   },
-  updatePatronSubscription(amount: number) {
+  updatePatronSubscription(amount: number, coupon: string) {
     return api.patch<CurrentUser>('/users/current_user/subscription', {
       subscription: {
-        amount: String(amount),
+        amount,
+        coupon,
       },
     });
   },
