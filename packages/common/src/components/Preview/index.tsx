@@ -52,10 +52,10 @@ export type Props = {
 
 type State = {
   frameInitialized: boolean;
-  history: string[];
-  historyPosition: number;
+  url: string;
   urlInAddressBar: string;
-  url: string | undefined;
+  back: boolean;
+  forward: boolean;
   showScreenshot: boolean;
   useFallbackDomain: boolean;
 };
@@ -81,12 +81,14 @@ class BasePreview extends React.Component<Props, State> {
     // templates that are executed in a docker container.
     this.serverPreview = getTemplate(props.sandbox.template).isServer;
 
+    const initialUrl = this.currentUrl();
+
     this.state = {
       frameInitialized: false,
-      history: [],
-      historyPosition: 0,
-      urlInAddressBar: this.currentUrl(),
-      url: null,
+      urlInAddressBar: initialUrl,
+      url: initialUrl,
+      forward: false,
+      back: false,
       showScreenshot: true,
       useFallbackDomain: false,
     };
@@ -241,12 +243,13 @@ class BasePreview extends React.Component<Props, State> {
       }, 800);
     }
 
-    this.setState({
-      history: [url],
-      historyPosition: 0,
-      urlInAddressBar: url,
-      showScreenshot: true,
-    });
+    this.setState(
+      {
+        urlInAddressBar: url,
+        showScreenshot: true,
+      },
+      () => this.handleRefresh()
+    );
   };
 
   handleDependenciesChange = () => {
@@ -281,7 +284,7 @@ class BasePreview extends React.Component<Props, State> {
             break;
           }
           case 'urlchange': {
-            this.commitUrl(data.url, data.action, data.diff);
+            this.commitUrl(data.url, data.back, data.forward);
             break;
           }
           case 'resize': {
@@ -418,25 +421,25 @@ class BasePreview extends React.Component<Props, State> {
       this.element.src = urlInAddressBar;
 
       this.setState({
-        history: [urlInAddressBar],
-        historyPosition: 0,
-        urlInAddressBar,
+        url: urlInAddressBar,
+        back: false,
+        forward: false,
       });
     }
   };
 
   handleRefresh = () => {
-    const { history, historyPosition, urlInAddressBar } = this.state;
-    const url = history[historyPosition] || urlInAddressBar;
+    const { urlInAddressBar, url } = this.state;
+    const urlToSet = url || urlInAddressBar;
 
     if (this.element) {
-      this.element.src = url || this.currentUrl();
+      this.element.src = urlToSet || this.currentUrl();
     }
 
     this.setState({
-      history: [url],
-      historyPosition: 0,
-      urlInAddressBar: url,
+      urlInAddressBar: urlToSet,
+      back: false,
+      forward: false,
     });
   };
 
@@ -452,36 +455,13 @@ class BasePreview extends React.Component<Props, State> {
     });
   };
 
-  commitUrl = (url: string, action: string, diff: number) => {
-    const { history, historyPosition } = this.state;
-
-    switch (action) {
-      case 'POP':
-        this.setState(prevState => {
-          const newPosition = prevState.historyPosition + diff;
-          return {
-            historyPosition: newPosition,
-            urlInAddressBar: url,
-          };
-        });
-        break;
-      case 'REPLACE':
-        this.setState(prevState => ({
-          history: [
-            ...prevState.history.slice(0, historyPosition),
-            url,
-            ...prevState.history.slice(historyPosition + 1),
-          ],
-          urlInAddressBar: url,
-        }));
-        break;
-      default:
-        this.setState({
-          history: [...history.slice(0, historyPosition + 1), url],
-          historyPosition: historyPosition + 1,
-          urlInAddressBar: url,
-        });
-    }
+  commitUrl = (url: string, back: boolean, forward: boolean) => {
+    this.setState({
+      urlInAddressBar: url,
+      url,
+      back,
+      forward,
+    });
   };
 
   toggleProjectView = () => {
@@ -504,7 +484,7 @@ class BasePreview extends React.Component<Props, State> {
       overlayMessage,
     } = this.props;
 
-    const { historyPosition, history, urlInAddressBar } = this.state;
+    const { urlInAddressBar, back, forward } = this.state;
 
     const url = urlInAddressBar || this.currentUrl();
 
@@ -527,13 +507,11 @@ class BasePreview extends React.Component<Props, State> {
       >
         {showNavigation && (
           <Navigator
-            url={decodeURIComponent(url)}
+            url={url}
             onChange={this.updateUrl}
             onConfirm={this.sendUrl}
-            onBack={historyPosition > 0 ? this.handleBack : null}
-            onForward={
-              historyPosition < history.length - 1 ? this.handleForward : null
-            }
+            onBack={back ? this.handleBack : null}
+            onForward={forward ? this.handleForward : null}
             onRefresh={this.handleRefresh}
             isProjectView={isInProjectView}
             toggleProjectView={
