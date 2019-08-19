@@ -7,4 +7,9 @@ export const Container = styled.div`
   height: 100%;
   color: ${props =>
     props.theme['editor.foreground'] || 'rgba(255, 255, 255, 0.8)'};
+
+  * {
+    box-sizing: border-box;
+    -webkit-font-smoothing: var(--font-smoothing);
+  }
 `;
