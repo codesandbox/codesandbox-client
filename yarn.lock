@@ -4592,6 +4592,7 @@ babel-plugin-jsx-pragmatic@^1.0.2:
 babel-plugin-lodash@^3.3.4:
   version "3.3.4"
   resolved "https://registry.yarnpkg.com/babel-plugin-lodash/-/babel-plugin-lodash-3.3.4.tgz#4f6844358a1340baed182adbeffa8df9967bc196"
+  integrity sha512-yDZLjK7TCkWl1gpBeBGmuaDIFhZKmkoL+Cu2MUUjv5VxUZx/z7tBGBCBcQs5RI1Bkz5LLmNdjx7paOyQtMovyg==
   dependencies:
     "@babel/helper-module-imports" "^7.0.0-beta.49"
     "@babel/types" "^7.0.0-beta.49"
@@ -4608,7 +4609,7 @@ babel-plugin-macros@2.5.1:
     cosmiconfig "^5.2.0"
     resolve "^1.10.0"
 
-babel-plugin-macros@^2.0.0, babel-plugin-macros@^2.2.2, babel-plugin-macros@^2.4.2, babel-plugin-macros@^2.4.5:
+babel-plugin-macros@^2.0.0, babel-plugin-macros@^2.2.2, babel-plugin-macros@^2.4.2, babel-plugin-macros@^2.4.5, babel-plugin-macros@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-macros/-/babel-plugin-macros-2.6.1.tgz#41f7ead616fc36f6a93180e89697f69f51671181"
   integrity sha512-6W2nwiXme6j1n2erPOnmRiWfObUhWH7Qw1LMi9XZy8cj+KtESu3T6asZvtk5bMQQjX8te35o7CFueiSdL/2NmQ==
@@ -4764,6 +4765,15 @@ babel-plugin-system-import-transformer@3.1.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-system-import-transformer/-/babel-plugin-system-import-transformer-3.1.0.tgz#d37f0cae8e61ef39060208331d931b5e630d7c5f"
   dependencies:
     babel-plugin-syntax-dynamic-import "^6.18.0"
+
+babel-plugin-system-import-transformer@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-system-import-transformer/-/babel-plugin-system-import-transformer-4.0.0.tgz#20cca5b04d299f29aff02a27b9a4207efab5fecc"
+  integrity sha512-l+xJk+z1U8tWX1FZfBCd/ebKOZa7JLAQ91YBmtNO0e/e5v/RwIM+8IGBkliXcSoP7xd+CF7L6Yu4O3wmQrya8g==
+  dependencies:
+    "@babel/core" "^7.0.0"
+    "@babel/helper-plugin-utils" "^7.0.0"
+    "@babel/plugin-syntax-dynamic-import" "^7.0.0"
 
 babel-plugin-system-import@^1.1.5:
   version "1.1.5"
