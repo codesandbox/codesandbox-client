@@ -7,7 +7,7 @@ const isOvermind = localStorage.getItem('overmind') === 'true';
 
 export const inject: any = isOvermind
   ? () => component => component
-  : mobxInject;
+  : (...injects) => mobxInject('reaction', ...injects);
 
 export const observer: any = isOvermind ? connect : mobxObserver;
 
@@ -17,7 +17,7 @@ export const Observer = isOvermind
   ? connect(({ store, signals, reaction, children }: any) =>
       children({ store, signals, reaction })
     )
-  : inject('store', 'signals', 'reaction')(
+  : inject('store', 'signals')(
       observer(({ store, signals, reaction, children }: any) =>
         children({ store, signals, reaction })
       )

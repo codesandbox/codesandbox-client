@@ -139,6 +139,9 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   { state, effects, actions },
   sandbox
 ) => {
+  const oldSandboxId =
+    state.editor.currentId === sandbox.id ? null : state.editor.currentId;
+
   state.editor.sandboxes[sandbox.id] = sandbox;
   state.editor.currentId = sandbox.id;
 
@@ -256,6 +259,10 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
 
   effects.fsSync.syncCurrentSandbox();
   effects.router.updateSandboxUrl(sandbox);
+
+  if (oldSandboxId) {
+    delete state.editor.sandboxes[oldSandboxId];
+  }
 };
 
 export const updateCurrentSandbox: AsyncAction<Sandbox> = async (

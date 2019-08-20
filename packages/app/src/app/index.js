@@ -3,6 +3,7 @@ import { unstable_createSyncRoot as createSyncRoot } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
+import { reaction } from 'mobx';
 import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
 import { Provider } from 'mobx-react';
 import _debug from '@codesandbox/common/lib/utils/debug';
@@ -124,7 +125,11 @@ async function boot(state, signals, overmind) {
       root.render(
         <Signals.Provider value={signals}>
           <Store.Provider value={state}>
-            <Provider store={state} signals={signals}>
+            <Provider
+              store={state}
+              signals={signals}
+              reaction={(cbA, cbB) => reaction(() => cbA(state), cbB)}
+            >
               <ApolloProvider client={client}>
                 <OvermindProvider value={overmind}>
                   <HooksProvider client={client}>

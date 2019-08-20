@@ -9,7 +9,7 @@ export function withLoadApp<T>(
     const { effects, state, actions } = context;
 
     if (state.hasLoadedApp) {
-      continueAction(context, value);
+      await continueAction(context, value);
       return;
     }
 

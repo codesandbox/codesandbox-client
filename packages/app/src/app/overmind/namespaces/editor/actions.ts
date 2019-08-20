@@ -212,10 +212,11 @@ export const createZipClicked: Action = ({ state, effects }) => {
   effects.zip.download(state.editor.currentSandbox);
 };
 
-export const forkSandboxClicked: AsyncAction<string> = async (
-  { state, effects, actions },
-  id
-) => {
+export const forkSandboxClicked: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
   if (
     state.editor.currentSandbox.owned &&
     !effects.browser.confirm('Do you want to fork your own sandbox?')
@@ -223,7 +224,7 @@ export const forkSandboxClicked: AsyncAction<string> = async (
     return;
   }
 
-  await actions.editor.internal.forkSandbox(id);
+  await actions.editor.internal.forkSandbox(state.editor.currentId);
 };
 
 export const likeSandboxToggled: AsyncAction<string> = async (
