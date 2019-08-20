@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import { format } from 'date-fns';
 import StarIcon from 'react-icons/lib/go/star';
 import Tooltip from '../Tooltip';
 
@@ -12,9 +12,7 @@ interface PatronStarProps {
 
 export function PatronStar({ subscriptionSince, ...props }: PatronStarProps) {
   return (
-    <Tooltip
-      content={`Patron since ${moment(subscriptionSince).format('MMM Y')}`}
-    >
+    <Tooltip content={`Patron since ${format(subscriptionSince, 'MMM Y')}`}>
       <Container>
         <StarIcon {...props} />
       </Container>
