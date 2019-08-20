@@ -3,7 +3,6 @@
   "include": ["./src/**/*.*"],
   "compilerOptions": {
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "paths": {
       "app/*": ["./src/app/*"],
