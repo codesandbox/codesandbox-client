@@ -111,15 +111,6 @@ export const saveCode: AsyncAction<{
     }
 
     await actions.editor.internal.updateCurrentTemplate();
-
-    // If the executor is a server we only should send updates if the sandbox has been
-    // started already
-    if (
-      !effects.executor.isServer() ||
-      state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
-    ) {
-      effects.executor.updateFiles(sandbox);
-    }
   } catch (error) {
     effects.notificationToast.warning(error.message);
     // Where does the ID come from?
@@ -220,6 +211,32 @@ export const setModuleCode: Action<{
     module.savedCode = module.code;
   }
 
+  const moduleIndex = state.editor.changedModuleShortids.indexOf(
+    module.shortid
+  );
+
+  if (moduleIndex === -1) {
+    if (module.savedCode !== module.code) {
+      state.editor.changedModuleShortids.push(module.shortid);
+    }
+  } else if (module.savedCode === module.code) {
+    state.editor.changedModuleShortids.splice(
+      state.editor.changedModuleShortids.indexOf(module.shortid),
+      1
+    );
+  }
+
+  if (state.preferences.settings.experimentVSCode) {
+    effects.vscode.runCommand('workbench.action.keepEditor');
+  }
+
+  const tabs = state.editor.tabs as ModuleTab[];
+  const tab = tabs.find(tabItem => tabItem.moduleShortid === module.shortid);
+
+  if (tab) {
+    tab.dirty = false;
+  }
+
   // Save the code to localStorage so we can recover in case of a crash
   effects.moduleRecover.save(
     currentId,
@@ -230,6 +247,15 @@ export const setModuleCode: Action<{
   );
 
   module.code = code;
+
+  // If the executor is a server we only should send updates if the sandbox has been
+  // started already
+  if (
+    !effects.executor.isServer() ||
+    state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
+  ) {
+    effects.executor.updateFiles(currentSandbox);
+  }
 };
 
 export const forkSandbox: AsyncAction<string> = async (
