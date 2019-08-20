@@ -246,6 +246,7 @@ class BasePreview extends React.Component<Props, State> {
     this.setState(
       {
         urlInAddressBar: url,
+        url,
         showScreenshot: true,
       },
       () => this.handleRefresh()
