@@ -1,4 +1,5 @@
 import styled, { css, keyframes } from 'styled-components';
+import { Button } from '../Button';
 import theme from '../../theme';
 
 const loaderAnimation = keyframes`
@@ -6,7 +7,7 @@ const loaderAnimation = keyframes`
   50%, 100% { background-color: ${theme.secondary.lighten(0.5)()}; }
 `;
 
-export const Wrapper = styled.div`
+export const RelativeButton = styled(Button)`
   position: relative;
 `;
 

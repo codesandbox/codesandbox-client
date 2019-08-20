@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Sandbox, Module } from '../../types';
 import {
   listen,
@@ -405,6 +405,7 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   clearErrors = () => {
+    // @ts-ignore
     dispatch(actions.error.clear('*', 'browser'));
     if (this.props.onClearErrors) {
       this.props.onClearErrors();

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import styled, { AnyStyledComponent } from 'styled-components';
 import { storiesOf, RenderFunction } from '@storybook/react';
 import { color, boolean, number, select } from '@storybook/addon-knobs';
