@@ -34,7 +34,6 @@ module.exports = {
             options: {
               maxWidth: 740,
               linkImagesToOriginal: true,
-              sizeByPixelDensity: true,
             },
           },
           { resolve: require.resolve(`./plugins/remark-sections`) },
