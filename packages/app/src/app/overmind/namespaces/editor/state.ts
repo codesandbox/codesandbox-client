@@ -238,6 +238,8 @@ export const state: State = {
       return [];
     }
 
+    // TODO: Should this be code or files?
+    // @ts-ignore
     const views = getPreviewTabs(sandbox, intermediatePreviewCode);
 
     // Do it in an immutable manner, prevents changing the original object

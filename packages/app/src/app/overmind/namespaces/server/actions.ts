@@ -165,7 +165,7 @@ export const onCodeSandboxAPIMessage: Action<{
 export const onBrowserFromPortOpened: Action<{
   port: any;
 }> = ({ actions }, { port }) => {
-  actions.editor.openDevToolsTab({
+  actions.editor.onDevToolsTabAdded({
     tab: port.main
       ? { id: 'codesandbox.browser' }
       : {

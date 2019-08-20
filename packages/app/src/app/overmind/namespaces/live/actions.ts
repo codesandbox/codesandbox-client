@@ -263,7 +263,9 @@ export const liveMessageReceived: AsyncAction<{
         }
 
         // This will also cause forking?
-        actions.editor.moduleSelected(module.id);
+        actions.editor.moduleSelected({
+          path: module.id,
+        });
       }
       break;
     }
@@ -552,7 +554,9 @@ export const onFollow: Action<{
     const modules = state.editor.currentSandbox.modules;
     const module = modules.find(m => m.shortid === moduleShortid);
 
-    actions.editor.moduleSelected(module.id);
+    actions.editor.moduleSelected({
+      path: module.id,
+    });
   }
 };
 
