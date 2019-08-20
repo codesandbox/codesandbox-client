@@ -5,6 +5,7 @@ import {
   Module,
   ModuleTab,
   TabType,
+  ServerContainerStatus,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import getTemplate from '@codesandbox/common/lib/templates';
@@ -110,6 +111,15 @@ export const saveCode: AsyncAction<{
     }
 
     await actions.editor.internal.updateCurrentTemplate();
+
+    // If the executor is a server we only should send updates if the sandbox has been
+    // started already
+    if (
+      !effects.executor.isServer() ||
+      state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
+    ) {
+      effects.executor.updateFiles(sandbox);
+    }
   } catch (error) {
     effects.notificationToast.warning(error.message);
     // Where does the ID come from?

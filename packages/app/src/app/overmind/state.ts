@@ -38,7 +38,6 @@ type State = {
   maxStorage: number;
   usedStorage: number;
   updateStatus: string;
-  server: {};
   isContributor: Derive<State, (username: String) => boolean>;
 };
 

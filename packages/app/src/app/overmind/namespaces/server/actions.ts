@@ -173,7 +173,7 @@ export const onBrowserFromPortOpened: Action<{
           closeable: true,
           options: {
             port: port.port,
-            url: `https://${props.port.hostname}`,
+            url: `https://${port.hostname}`,
           },
         },
   });
