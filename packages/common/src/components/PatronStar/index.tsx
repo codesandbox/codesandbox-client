@@ -6,7 +6,8 @@ import Tooltip from '../Tooltip';
 import { Container } from './elements';
 
 interface PatronStarProps {
-  subscriptionSince: string;
+  // there is a problem with format that requires it to be number or date and our thing fails
+  subscriptionSince: any;
   style?: React.CSSProperties;
 }
 
