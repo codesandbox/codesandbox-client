@@ -31,6 +31,7 @@
     "babel-plugin-preval": "^3.0.1",
     "codesandbox-api": "^0.0.22",
     "color": "0.11.4",
+    "date-fns": "^2.0.0",
     "error-polyfill": "^0.1.1",
     "humps": "CompuIves/humps",
     "image-extensions": "^1.1.0",

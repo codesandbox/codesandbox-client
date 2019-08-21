@@ -7963,6 +7963,11 @@ date-fns@1.30.1, date-fns@^1.23.0, date-fns@^1.30.1:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
 
+date-fns@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.0.0.tgz#52f05c6ae1fe0e395670082c72b690ab781682d0"
+  integrity sha512-nGZDA64Ktq5uTWV4LEH3qX+foV4AguT5qxwRlJDzJtf57d4xLNwtwrfb7SzKCoikoae8Bvxf0zdaEG/xWssp/w==
+
 date-format@^0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/date-format/-/date-format-0.0.0.tgz#09206863ab070eb459acea5542cbd856b11966b3"
@@ -19383,7 +19388,7 @@ react-dom@16.8.1:
     prop-types "^15.6.2"
     scheduler "^0.13.1"
 
-react-dom@16.9.0, react-dom@^16.2.0, react-dom@^16.8.3, react-dom@^16.8.6, react-dom@^16.9.0:
+react-dom@16.9.0, react-dom@^16.2.0, react-dom@^16.8.3, react-dom@^16.9.0:
   version "16.9.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.9.0.tgz#5e65527a5e26f22ae3701131bcccaee9fb0d3962"
   integrity sha512-YFT2rxO9hM70ewk9jq0y6sQk8cL02xm4+IzYBz75CQGlClQQ1Bxq0nhHF6OtSbit+AIahujJgb/CPRibFkMNJQ==
