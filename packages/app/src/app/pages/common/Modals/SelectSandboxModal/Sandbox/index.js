@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 
 import { Date, Button } from './elements';
@@ -17,7 +17,7 @@ export default class Sandbox extends React.PureComponent {
           {getSandboxName(sandbox)}
           {active && ' (Selected)'}
         </div>
-        <Date>{moment(sandbox.insertedAt).format('ll')}</Date>
+        <Date>{format(sandbox.insertedAt, 'MMM DD, YYYY')}</Date>
       </Button>
     );
   }
