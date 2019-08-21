@@ -170,7 +170,10 @@ async function initialize() {
           logProxies: true,
         });
 
-        getState = () => overmind.state;
+        getState = path =>
+          path
+            ? path.split('.').reduce((aggr, key) => aggr[key], overmind.state)
+            : overmind.state;
         getSignal = path =>
           path.split('.').reduce((aggr, key) => aggr[key], overmind.actions);
       }
