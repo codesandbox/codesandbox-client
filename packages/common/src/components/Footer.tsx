@@ -84,6 +84,15 @@ export default () => (
                   Patron
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://status.codesandbox.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Status
+                </a>
+              </li>
             </List>
           </Column>
 
