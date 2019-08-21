@@ -38,6 +38,21 @@ export async function initializeSentry(dsn: string) {
        * new.codesandbox.io or new.csb.app
        */
       blacklistUrls: [/.*\.codesandbox\.io/, /.*\.csb\.app/],
+      beforeSend: event => {
+        if (
+          event.stacktrace.frames[0] &&
+          event.stacktrace.frames[0].filename.endsWith(
+            'codesandbox.editor.main.js'
+          )
+        ) {
+          // This is the spammy event that doesn't do anything: https://sentry.io/organizations/codesandbox/issues/1054971728/?project=155188&query=is%3Aunresolved
+          // Don't do anything with it right now, I can't seem to reproduce it for some reason.
+          // We need to add sourcemaps
+          return undefined;
+        }
+
+        return event;
+      },
     });
   }
 

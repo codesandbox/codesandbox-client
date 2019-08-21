@@ -20,7 +20,7 @@ export const getContainerStyles = props => {
         theme.templateColor ||
         theme.secondary);
   let styles = `
-    ${styleProps => styleProps.noTransition || 'transition: 0.3s ease all;'}
+    ${props.noTransition ? '' : 'transition: 0.3s ease all;'}
     position: relative;
     display: flex;
     font-size: 14px;

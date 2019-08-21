@@ -2,8 +2,8 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { text, select, number, array, boolean } from '@storybook/addon-knobs';
-import SandboxCard, { Props, Sandbox } from './';
-import * as fixtures from './fixtures';
+import WideSandbox, { Props, Sandbox } from './';
+import * as fixtures from '../SandboxCard/fixtures';
 
 const authorWithKnobs = (
   group: string,
@@ -46,7 +46,7 @@ const createSandboxStory = ({
   defaultHeight,
   noMargin,
 }: Partial<Props>) => () => (
-  <SandboxCard
+  <WideSandbox
     sandbox={sandboxWithKnobs('sandbox', sandbox)}
     selectSandbox={selectSandbox}
     small={boolean('small', small)}
@@ -56,7 +56,7 @@ const createSandboxStory = ({
   />
 );
 
-storiesOf('components/SandboxCard', module)
+storiesOf('components/WideSandbox', module)
   .add('basic', createSandboxStory({}))
   .add('small', createSandboxStory({ small: true }))
   .add('no height', createSandboxStory({ noHeight: true }))

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import Fullscreen from '../flex/Fullscreen';
 import Centered from '../flex/Centered';
