@@ -132,10 +132,12 @@ export const resizingStopped: Action = ({ state }) => {
 export const codeSaved: AsyncAction<{
   code: string;
   moduleShortid: string;
-}> = async ({ actions }, { code, moduleShortid }) => {
+  cbId: string;
+}> = async ({ actions }, { code, moduleShortid, cbId }) => {
   actions.editor.internal.saveCode({
     code,
     moduleShortid,
+    cbId,
   });
 };
 
@@ -164,12 +166,6 @@ export const codeChanged: Action<{
   if (!state.editor.changedModuleShortids.includes(moduleShortid)) {
     state.editor.changedModuleShortids.push(moduleShortid);
   }
-
-  state.editor.tabs.forEach(tab => {
-    if (tab.type === TabType.MODULE && tab.moduleShortid === moduleShortid) {
-      tab.dirty = false;
-    }
-  });
 };
 
 export const saveClicked: AsyncAction = async ({ state, effects, actions }) => {

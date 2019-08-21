@@ -26,7 +26,10 @@ function createReaction(overmind: any) {
   return (reactionCb: any, updateCb: any) => {
     const tree = overmind.proxyStateTree.getTrackStateTree();
 
-    tree.trackScope(() => reactionCb(tree.state), updateCb);
+    tree.trackScope(
+      () => reactionCb(tree.state),
+      () => updateCb(reactionCb(tree.state))
+    );
 
     return () => {
       overmind.proxyStateTree.disposeTree(tree);

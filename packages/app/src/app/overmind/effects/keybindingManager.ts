@@ -1,3 +1,7 @@
+/*
+  THIS EFFECT IS TO BE DEPRECATED AS SOON AS POSSIBLE
+*/
+
 import {
   KEYBINDINGS,
   normalizeKey,
@@ -21,6 +25,11 @@ function reset() {
   state.pendingSecondaryBindings = [];
 }
 
+function getAction(path, actions) {
+  const actionPath = path.split('.');
+  return actionPath.reduce((aggr, key) => aggr[key], actions);
+}
+
 function handleKeyUp() {
   state.keydownIndex = 0;
 }
@@ -38,7 +47,7 @@ function hasKeyModifier(event: KeyboardEvent, modifier: string) {
   }[modifier];
 }
 
-function handleIosKeyDown(controller, event, _pressedKey) {
+function handleIosKeyDown(overmindInstance, event, _pressedKey) {
   // the linter doesn't allow to change parameters' values.
   let pressedKey = _pressedKey;
   // iOS shortcuts only work if there's at least one modifier key at work (shift or alt).
@@ -138,16 +147,17 @@ function handleIosKeyDown(controller, event, _pressedKey) {
 
       const payload =
         typeof keybinding.payload === 'function'
-          ? keybinding.payload(controller.getState())
+          ? keybinding.payload(overmindInstance.state)
           : keybinding.payload || {};
-      controller.getSignal(keybinding.signal)(payload);
+
+      getAction(keybinding.signal, overmindInstance.actions)(payload);
       // When we find a completed binding and call its payload, we're done.
       break;
     }
   }
 }
 
-function handleKeyDown(controller, e) {
+function handleKeyDown(overmindInstance, e) {
   if (state.timeout) {
     clearTimeout(state.timeout);
   }
@@ -164,7 +174,7 @@ function handleKeyDown(controller, e) {
   }
 
   if (isIOS) {
-    handleIosKeyDown(controller, e, key);
+    handleIosKeyDown(overmindInstance, e, key);
     return;
   }
   // First we check if we have any pending secondary bindings to identify
@@ -194,10 +204,10 @@ function handleKeyDown(controller, e) {
 
       const payload =
         typeof keybinding.payload === 'function'
-          ? keybinding.payload(controller.getState())
+          ? keybinding.payload(overmindInstance.state)
           : keybinding.payload || {};
 
-      controller.getSignal(keybinding.signal)(payload);
+      getAction(keybinding.signal, overmindInstance.actions)(payload);
 
       return;
     }
@@ -246,10 +256,10 @@ function handleKeyDown(controller, e) {
 
       const payload =
         typeof keybinding.payload === 'function'
-          ? keybinding.payload(controller.getState())
+          ? keybinding.payload(overmindInstance.state)
           : keybinding.payload || {};
 
-      controller.getSignal(keybinding.signal)(payload);
+      getAction(keybinding.signal, overmindInstance.actions)(payload);
 
       return;
     }
@@ -270,10 +280,12 @@ function handleKeyDown(controller, e) {
 let onKeyUp = null;
 let onKeyDown = null;
 let isStarted = false;
+let _overmindInstance;
 
 export default {
-  initialize(onKeyDownListener: (event: KeyboardEvent) => void) {
-    onKeyDown = handleKeyDown.bind(null, onKeyDownListener);
+  initialize(overmindInstance) {
+    _overmindInstance = overmindInstance;
+    onKeyDown = handleKeyDown.bind(null, overmindInstance);
     onKeyUp = handleKeyUp.bind(null);
   },
   set(userKeybindings = []) {
@@ -295,7 +307,10 @@ export default {
     );
   },
   start() {
-    if (isStarted) {
+    if (
+      isStarted ||
+      _overmindInstance.state.preferences.settings.experimentVSCode
+    ) {
       return;
     }
 

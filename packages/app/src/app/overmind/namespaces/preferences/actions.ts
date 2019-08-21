@@ -23,6 +23,7 @@ export const itemIdChanged: AsyncAction<string> = async (
   itemId
 ) => {
   state.preferences.itemId = itemId;
+
   if (itemId === 'keybindings') {
     effects.keybindingManager.pause();
   } else {

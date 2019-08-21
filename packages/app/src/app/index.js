@@ -200,6 +200,9 @@ async function initialize() {
     getSignal = controller.getSignal.bind(controller);
   }
 
+  window.getState = getState;
+  window.getSignal = getSignal;
+
   // Configures BrowserFS to use the LocalStorage file system.
   window.BrowserFS.configure(
     {

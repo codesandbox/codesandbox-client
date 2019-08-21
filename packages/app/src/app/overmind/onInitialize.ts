@@ -1,6 +1,9 @@
 import { OnInitialize } from '.';
 
-export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
+export const onInitialize: OnInitialize = (
+  { state, effects, actions },
+  overmindInstance
+) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
 
   effects.fsSync.initialize({
@@ -17,9 +20,7 @@ export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
     onApplyOperation: actions.live.onOperationApplied,
   });
 
-  effects.keybindingManager.initialize(() => {
-    // Copy code from keybindingmanager
-  });
+  effects.keybindingManager.initialize(overmindInstance);
 
   effects.api.initialize({
     provideJwtToken,

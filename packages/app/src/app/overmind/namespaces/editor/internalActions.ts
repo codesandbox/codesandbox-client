@@ -51,7 +51,8 @@ export const setModuleSavedCode: Action<{
 export const saveCode: AsyncAction<{
   code: string;
   moduleShortid: string;
-}> = async ({ state, effects, actions }, { code, moduleShortid }) => {
+  cbId: string;
+}> = async ({ state, effects, actions }, { code, moduleShortid, cbId }) => {
   effects.analytics.track('Save Code');
 
   const sandbox = state.editor.currentSandbox;
@@ -59,7 +60,12 @@ export const saveCode: AsyncAction<{
     module => module.shortid === moduleShortid
   );
 
-  if (state.preferences.settings.prettifyOnSaveEnabled) {
+  if (state.preferences.settings.experimentVSCode) {
+    await actions.editor.codeChanged({
+      code,
+      moduleShortid,
+    });
+  } else if (state.preferences.settings.prettifyOnSaveEnabled) {
     try {
       effects.analytics.track('Prettify Code');
       code = await effects.prettyfier.prettify(module.id, module.title, code);
@@ -78,12 +84,10 @@ export const saveCode: AsyncAction<{
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
 
-    // There was some code here related to checking if module has changed
-    // code during saving... but is that an issue? It should just indicate
-    // that it needs saving as normal?
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
-    module.savedCode = null;
+    module.savedCode =
+      updatedModule.code === module.code ? null : updatedModule.code;
 
     effects.moduleRecover.remove(sandbox.id, module);
 
@@ -92,8 +96,7 @@ export const saveCode: AsyncAction<{
       1
     );
 
-    // Where does the ID come from?
-    // effects.vscode.callCallback()
+    effects.vscode.callCallback(cbId);
 
     if (
       state.editor.currentSandbox.originalGit &&
@@ -111,10 +114,22 @@ export const saveCode: AsyncAction<{
     }
 
     await actions.editor.internal.updateCurrentTemplate();
+
+    if (state.preferences.settings.experimentVSCode) {
+      effects.vscode.runCommand('workbench.action.keepEditor');
+    }
+
+    const tabs = state.editor.tabs as ModuleTab[];
+    const tab = tabs.find(
+      tabItem => tabItem.moduleShortid === updatedModule.shortid
+    );
+
+    if (tab) {
+      tab.dirty = false;
+    }
   } catch (error) {
     effects.notificationToast.warning(error.message);
-    // Where does the ID come from?
-    // effects.vscode.callCallbackError()
+    effects.vscode.callCallbackError(cbId);
   }
 };
 
@@ -190,7 +205,7 @@ export const ensureSandboxIsOwned: AsyncAction = async ({
         'This sandbox is frozen, and will be forked. Do you want to continue?'
       ))
   ) {
-    return actions.editor.internal.forkSandbox(state.editor.currentId);
+    await actions.editor.internal.forkSandbox(state.editor.currentId);
   } else if (
     state.editor.currentSandbox.owned &&
     state.editor.currentSandbox.isFrozen
@@ -360,7 +375,7 @@ export const updateDevtools: AsyncAction<{
         moduleShortid: devtoolsModule.shortid,
       });
     } else {
-      actions.files.createModulesByPath({
+      await actions.files.createModulesByPath({
         '/.codesandbox/workspace.json': {
           content: code,
           isBinary: false,
