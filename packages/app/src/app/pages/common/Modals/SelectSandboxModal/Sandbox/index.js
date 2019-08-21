@@ -17,7 +17,7 @@ export default class Sandbox extends React.PureComponent {
           {getSandboxName(sandbox)}
           {active && ' (Selected)'}
         </div>
-        <Date>{format(sandbox.insertedAt, 'DD/MM/YYYY')}</Date>
+        <Date>{format(sandbox.insertedAt, 'MMM DD, YYYY')}</Date>
       </Button>
     );
   }
