@@ -1,8 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
-
-import SubscribeForm from 'app/components/SubscribeForm';
-
+import { SubscribeForm } from 'app/components/SubscribeForm';
 import Card from './Card';
 import { Title, Subheading } from '../elements';
 import { Container } from './elements';

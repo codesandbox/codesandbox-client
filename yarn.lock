@@ -735,7 +735,7 @@
     "@babel/helper-annotate-as-pure" "^7.0.0"
     "@babel/helper-plugin-utils" "^7.0.0"
 
-"@babel/plugin-transform-react-display-name@7.2.0", "@babel/plugin-transform-react-display-name@^7.0.0":
+"@babel/plugin-transform-react-display-name@7.2.0", "@babel/plugin-transform-react-display-name@^7.0.0", "@babel/plugin-transform-react-display-name@^7.2.0":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-display-name/-/plugin-transform-react-display-name-7.2.0.tgz#ebfaed87834ce8dc4279609a4f0c324c156e3eb0"
   integrity sha512-Htf/tPa5haZvRMiNSQSFifK12gtr/8vwfr+A9y69uF0QcU77AVu4K7MiHEkTxF7lQoHOL0F9ErqgfNEAKgXj7A==
@@ -19761,9 +19761,10 @@ react-spring@^8.0.25:
     "@babel/runtime" "^7.3.1"
     prop-types "^15.5.8"
 
-react-stripe-elements@^1.2.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/react-stripe-elements/-/react-stripe-elements-1.7.0.tgz#340eab1ed57c39cd2ad90798bf8b06a0b61e82c0"
+react-stripe-elements@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-stripe-elements/-/react-stripe-elements-3.0.0.tgz#8b5e354e6e421b85f909329c9818a719b132410a"
+  integrity sha512-ouGHPmPhdg7KUTOFVuYIr0UWVgBjG5CqmOn9/y0vaJICryPB6llkiOGeUXKrac7fu1/vtPdn8t/4JKnbi8PT8g==
   dependencies:
     prop-types "^15.5.10"
 

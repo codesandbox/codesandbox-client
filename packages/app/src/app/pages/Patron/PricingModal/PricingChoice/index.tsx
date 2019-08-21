@@ -1,10 +1,10 @@
 import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
 import moment from 'moment';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Relative from '@codesandbox/common/lib/components/Relative';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
-import SubscribeForm from 'app/components/SubscribeForm';
+import { inject, hooksObserver } from 'app/componentConnectors';
+import { SubscribeForm } from 'app/components/SubscribeForm';
 import Range from './Range';
 import ChangeSubscription from './ChangeSubscription';
 import { ThankYou } from './ThankYou';

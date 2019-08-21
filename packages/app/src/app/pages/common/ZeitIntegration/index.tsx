@@ -1,8 +1,7 @@
 import React from 'react';
 import { inject, hooksObserver } from 'app/componentConnectors';
-
-import ZeitLogo from 'app/components/ZeitLogo';
-import Integration from 'app/components/Integration';
+import { Integration } from 'app/components/Integration';
+import { ZeitLogo } from 'app/components/ZeitLogo';
 
 interface Props {
   small: boolean;
@@ -20,12 +19,12 @@ const ZeitIntegration = inject('store', 'signals')(
       <Integration
         name="ZEIT"
         small={small}
-        color="black"
+        bgColor="black"
         description="Deployments"
         Icon={ZeitLogo}
         userInfo={user.integrations.zeit}
-        signIn={signInZeitClicked}
-        signOut={signOutZeitClicked}
+        onSignIn={signInZeitClicked}
+        onSignOut={signOutZeitClicked}
         loading={isLoadingZeit}
       />
     )

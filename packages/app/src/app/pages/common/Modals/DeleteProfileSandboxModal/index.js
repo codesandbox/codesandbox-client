@@ -1,5 +1,5 @@
 import React from 'react';
-import Alert from 'app/components/Alert';
+import { Alert } from 'app/components/Alert';
 import { inject, hooksObserver } from 'app/componentConnectors';
 
 function DeleteProfileSandboxModal({ signals }) {

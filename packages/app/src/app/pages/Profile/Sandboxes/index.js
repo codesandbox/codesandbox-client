@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { inject, observer } from 'app/componentConnectors';
-
-import { Button } from '@codesandbox/common/lib/components/Button';
-import SandboxList from 'app/components/SandboxList';
-import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Link } from 'react-router-dom';
-
+import { Button } from '@codesandbox/common/lib/components/Button';
+import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { inject, observer } from 'app/componentConnectors';
+import { SandboxList } from 'app/components/SandboxList';
 import { Navigation, Notice, NoSandboxes } from './elements';
 
 const PER_PAGE_COUNT = 15;

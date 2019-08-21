@@ -167,7 +167,9 @@ export function showPortOpenedNotifications({ state, props, controller }) {
     if (!port.main && openedPorts.indexOf(port.port) === -1) {
       notificationState.addNotification({
         title: `Port ${port.port} Opened`,
-        message: `The server is listening on port ${port.port}, do you want to open it?`,
+        message: `The server is listening on port ${
+          port.port
+        }, do you want to open it?`,
         status: NotificationStatus.NOTICE,
         actions: {
           primary: [

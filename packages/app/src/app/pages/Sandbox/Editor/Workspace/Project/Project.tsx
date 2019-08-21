@@ -10,10 +10,8 @@ import {
 import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
 import TeamIcon from 'react-icons/lib/md/people';
-
 import Stats from 'app/pages/common/Stats';
-import PrivacyStatus from 'app/components/PrivacyStatus';
-
+import { PrivacyStatus } from 'app/components/PrivacyStatus';
 // import AliasComponent from './Alias';
 import { Author } from './Author';
 import { Description } from './Description';
