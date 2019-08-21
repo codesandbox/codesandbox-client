@@ -1,6 +1,4 @@
 import { Action, AsyncAction } from 'app/overmind';
-import { Sandbox } from '@codesandbox/common/lib/types';
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import getTemplate from '@codesandbox/common/lib/templates';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 
@@ -60,6 +58,7 @@ export const tagRemoved: AsyncAction<string> = async (
     await actions.editor.internal.saveCode({
       code,
       moduleShortid,
+      cbID: null,
     });
   } catch (error) {
     sandbox.tags.splice(tagIndex, 0, tagName);
@@ -171,10 +170,9 @@ export const sandboxDeleted: AsyncAction = async ({
   effects.router.redirectToSandboxWizard();
 };
 
-export const sandboxPrivacyChanged: AsyncAction<0 | 1 | 2> = async (
-  { state, effects, actions },
-  privacy
-) => {
+export const sandboxPrivacyChanged: AsyncAction<{
+  privacy: 0 | 1 | 2;
+}> = async ({ state, effects, actions }, { privacy }) => {
   if (
     getTemplate(state.editor.currentSandbox.template).isServer &&
     privacy === 2
@@ -190,7 +188,9 @@ export const sandboxPrivacyChanged: AsyncAction<0 | 1 | 2> = async (
   state.editor.currentSandbox.privacy = privacy;
 };
 
-export const setWorkspaceItem: Action<string> = ({ state }, item) => {
+export const setWorkspaceItem: Action<{
+  item: string;
+}> = ({ state }, { item }) => {
   state.workspace.openedWorkspaceItem = item;
 };
 
@@ -198,6 +198,9 @@ export const toggleCurrentWorkspaceItem: Action = ({ state }) => {
   state.workspace.workspaceHidden = !state.workspace.workspaceHidden;
 };
 
-export const setWorkspaceHidden: Action<boolean> = ({ state }, isHidden) => {
+export const setWorkspaceHidden: Action<{ isHidden: boolean }> = (
+  { state },
+  { isHidden }
+) => {
   state.workspace.workspaceHidden = isHidden;
 };

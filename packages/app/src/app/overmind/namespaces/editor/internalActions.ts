@@ -51,8 +51,8 @@ export const setModuleSavedCode: Action<{
 export const saveCode: AsyncAction<{
   code: string;
   moduleShortid: string;
-  cbId: string;
-}> = async ({ state, effects, actions }, { code, moduleShortid, cbId }) => {
+  cbID: string;
+}> = async ({ state, effects, actions }, { code, moduleShortid, cbID }) => {
   effects.analytics.track('Save Code');
 
   const sandbox = state.editor.currentSandbox;
@@ -76,11 +76,6 @@ export const saveCode: AsyncAction<{
     }
   }
 
-  actions.editor.internal.setModuleCode({
-    module,
-    code,
-  });
-
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
 
@@ -96,7 +91,7 @@ export const saveCode: AsyncAction<{
       1
     );
 
-    effects.vscode.callCallback(cbId);
+    effects.vscode.callCallback(cbID);
 
     if (
       state.editor.currentSandbox.originalGit &&
@@ -129,7 +124,7 @@ export const saveCode: AsyncAction<{
     }
   } catch (error) {
     effects.notificationToast.warning(error.message);
-    effects.vscode.callCallbackError(cbId);
+    effects.vscode.callCallbackError(cbID);
   }
 };
 
@@ -189,6 +184,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   await actions.editor.internal.saveCode({
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
+    cbID: null,
   });
 };
 
@@ -359,6 +355,7 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   await actions.editor.internal.saveCode({
     code,
     moduleShortid,
+    cbID: null,
   });
 };
 
@@ -373,6 +370,7 @@ export const updateDevtools: AsyncAction<{
       await actions.editor.internal.saveCode({
         code: devtoolsModule.code,
         moduleShortid: devtoolsModule.shortid,
+        cbID: null,
       });
     } else {
       await actions.files.createModulesByPath({

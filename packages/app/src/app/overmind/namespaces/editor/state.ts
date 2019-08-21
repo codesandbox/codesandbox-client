@@ -127,7 +127,7 @@ export const state: State = {
       currentSandbox.modules.find(
         module => module.shortid === currentModuleShortid
       )) ||
-    {},
+    ({} as Module),
   modulesByPath: ({ currentSandbox }) => {
     const modulesObject = {};
 

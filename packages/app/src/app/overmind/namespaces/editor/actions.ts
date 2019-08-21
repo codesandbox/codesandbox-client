@@ -7,6 +7,7 @@ import {
   WindowOrientation,
   TabType,
   EnvironmentVariable,
+  ModuleTab,
 } from '@codesandbox/common/lib/types';
 import {
   addDevToolsTab as addDevToolsTabUtil,
@@ -53,6 +54,7 @@ export const npmDependencyRemoved: AsyncAction<{ name: string }> = async (
   await actions.editor.internal.saveCode({
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
+    cbID: null,
   });
 };
 
@@ -132,12 +134,14 @@ export const resizingStopped: Action = ({ state }) => {
 export const codeSaved: AsyncAction<{
   code: string;
   moduleShortid: string;
-  cbId: string;
-}> = async ({ actions }, { code, moduleShortid, cbId }) => {
+  cbID: string;
+}> = async ({ actions }, { code, moduleShortid, cbID }) => {
+  await actions.editor.internal.ensureSandboxIsOwned();
+
   actions.editor.internal.saveCode({
     code,
     moduleShortid,
-    cbId,
+    cbID,
   });
 };
 
@@ -163,7 +167,10 @@ export const codeChanged: Action<{
     code,
   });
 
-  if (!state.editor.changedModuleShortids.includes(moduleShortid)) {
+  if (
+    !state.editor.changedModuleShortids.includes(moduleShortid) &&
+    module.code !== module.savedCode
+  ) {
     state.editor.changedModuleShortids.push(moduleShortid);
   }
 };
@@ -223,34 +230,42 @@ export const forkSandboxClicked: AsyncAction = async ({
   await actions.editor.internal.forkSandbox(state.editor.currentId);
 };
 
-export const likeSandboxToggled: AsyncAction<string> = async (
-  { state, effects },
-  id
-) => {
+export const likeSandboxToggled: AsyncAction<{
+  id: string;
+}> = async ({ state, effects }, { id }) => {
   if (state.editor.sandboxes[id].userLiked) {
     state.editor.sandboxes[id].likeCount--;
     await effects.api.unlikeSandbox(id);
   } else {
     state.editor.sandboxes[id].likeCount++;
-    await effects.api.unlikeSandbox(id);
+    await effects.api.likeSandbox(id);
   }
 
   state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
 export const moduleSelected: Action<{
-  path: string;
-}> = ({ state, effects, actions }, { path }) => {
+  path?: string;
+  id?: string;
+}> = ({ state, effects, actions }, { path, id }) => {
   effects.analytics.track('Open File');
 
   const sandbox = state.editor.currentSandbox;
 
   try {
-    const module = effects.utils.resolveModule(
-      path.replace(/^\//, ''),
-      sandbox.modules,
-      sandbox.directories
-    );
+    let module;
+
+    if (path) {
+      module = effects.utils.resolveModule(
+        path.replace(/^\//, ''),
+        sandbox.modules,
+        sandbox.directories
+      );
+    } else {
+      module = state.editor.currentSandbox.modules.find(
+        moduleItem => moduleItem.id === id
+      );
+    }
 
     actions.editor.internal.setCurrentModule(module);
 
@@ -285,15 +300,20 @@ export const clearModuleSelected: Action = ({ state }) => {
   state.editor.currentModuleShortid = null;
 };
 
-export const moduleDoubleClicked: Action<string> = (
-  { state },
-  moduleShortid
-) => {
-  state.editor.tabs.forEach(tab => {
-    if (tab.type === TabType.MODULE && tab.moduleShortid === moduleShortid) {
-      tab.dirty = false;
-    }
-  });
+export const moduleDoubleClicked: Action = ({ state, effects }) => {
+  if (state.preferences.settings.experimentVSCode) {
+    effects.vscode.runCommand('workbench.action.keepEditor');
+  }
+
+  const currentModule = state.editor.currentModule;
+  const tabs = state.editor.tabs as ModuleTab[];
+  const tab = tabs.find(
+    tabItem => tabItem.moduleShortid === currentModule.shortid
+  );
+
+  if (tab) {
+    tab.dirty = false;
+  }
 };
 
 export const tabClosed: Action<number> = ({ state, actions }, tabIndex) => {
@@ -340,24 +360,13 @@ export const projectViewToggled: Action = ({ state }) => {
   state.editor.isInProjectView = !state.editor.isInProjectView;
 };
 
-export const privacyUpdated: AsyncAction<0 | 1 | 2> = async (
+export const frozenUpdated: AsyncAction<{ frozen: boolean }> = async (
   { state, effects },
-  privacy
+  { frozen }
 ) => {
-  state.editor.isUpdatingPrivacy = true;
+  state.editor.currentSandbox.isFrozen = frozen;
 
-  await effects.api.savePrivacy(state.editor.currentId, privacy);
-
-  state.editor.isUpdatingPrivacy = false;
-};
-
-export const frozenUpdated: AsyncAction<boolean> = async (
-  { state, effects },
-  isFrozen
-) => {
-  state.editor.currentSandbox.isFrozen = isFrozen;
-
-  await effects.api.saveFrozen(state.editor.currentId, isFrozen);
+  await effects.api.saveFrozen(state.editor.currentId, frozen);
 };
 
 export const quickActionsOpened: Action = ({ state }) => {
@@ -378,15 +387,14 @@ export const currentTabChanged: Action<string> = ({ state }, tabId) => {
   state.editor.currentTabId = tabId;
 };
 
-export const discardModuleChanges: Action<string> = (
-  { state, effects, actions },
-  moduleShortid
-) => {
+export const discardModuleChanges: Action<{
+  moduleShortid: string;
+}> = ({ state, effects, actions }, { moduleShortid }) => {
   effects.analytics.track('Code Discarded');
 
   const sandbox = state.editor.currentSandbox;
   const module = sandbox.modules.find(
-    module => module.shortid === moduleShortid
+    moduleItem => moduleItem.shortid === moduleShortid
   );
 
   actions.editor.codeChanged({
@@ -395,6 +403,11 @@ export const discardModuleChanges: Action<string> = (
   });
 
   module.updatedAt = new Date().toString();
+
+  state.editor.changedModuleShortids.splice(
+    state.editor.changedModuleShortids.indexOf(moduleShortid),
+    1
+  );
 };
 
 export const fetchEnvironmentVariables: AsyncAction = async ({
@@ -439,10 +452,9 @@ export const toggleEditorPreviewLayout: Action = ({ state }) => {
       : WindowOrientation.VERTICAL;
 };
 
-export const previewActionReceived: Action<any> = (
-  { state, effects, actions },
-  action
-) => {
+export const previewActionReceived: Action<{
+  action: any;
+}> = ({ state, effects, actions }, { action }) => {
   switch (action.action) {
     case 'notification':
       effects.notificationToast.add({
