@@ -2,23 +2,19 @@
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
-
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { Module, Sandbox } from '@codesandbox/common/lib/types';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Title from 'app/components/Title';
-import SubTitle from 'app/components/SubTitle';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
-
 import {
   findCurrentModule,
   findMainModule,
 } from '@codesandbox/common/lib/sandbox/modules';
-
+import { Title } from 'app/components/Title';
+import { SubTitle } from 'app/components/SubTitle';
 import Header from '../Header';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
-
 import { Container, Fullscreen, Moving } from './elements';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently

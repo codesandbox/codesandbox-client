@@ -1,7 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
-import OverlayComponent from 'app/components/Overlay';
-
+import { Overlay as OverlayComponent } from 'app/components/Overlay';
 import Option from './Option';
 import { Container, Arrow, OrderName, OverlayContainer } from './elements';
 
@@ -63,7 +62,7 @@ class SortOptions extends React.Component {
     );
 
     return (
-      <OverlayComponent event="Dashboard - Order By" Overlay={Overlay}>
+      <OverlayComponent event="Dashboard - Order By" content={Overlay}>
         {open => (
           <Container hideOrder={hideOrder}>
             Sort by{' '}

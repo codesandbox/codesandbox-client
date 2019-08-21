@@ -1,10 +1,8 @@
 import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
 import { orderBy } from 'lodash-es';
-import OverlayComponent from 'app/components/Overlay';
-
+import { inject, observer } from 'app/componentConnectors';
+import { Overlay as OverlayComponent } from 'app/components/Overlay';
 import { Container, TemplatesName, OverlayContainer } from './elements';
-
 import Option from './Option';
 import { ITemplate } from '../../types';
 
@@ -86,7 +84,7 @@ const FilterOptions = ({
         }`;
 
   return (
-    <OverlayComponent event="Dashboard - Order By" Overlay={Overlay}>
+    <OverlayComponent event="Dashboard - Order By" content={Overlay}>
       {open => (
         <Container hideFilters={hideFilters}>
           Showing{' '}

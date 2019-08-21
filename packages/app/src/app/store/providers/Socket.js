@@ -11,13 +11,11 @@ export default Provider({
     const token = state.get('jwt') || jwt.get();
 
     if (!socket) {
-      socket =
-        socket ||
-        new Socket(`wss://${location.host}/socket`, {
-          params: {
-            guardian_token: token,
-          },
-        });
+      socket = new Socket(`wss://${location.host}/socket`, {
+        params: {
+          guardian_token: token,
+        },
+      });
 
       socket.connect();
       window.socket = socket;

@@ -8,7 +8,9 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { escapeHtml } from 'app/utils/escape';
 
-export const BUTTON_URL = `${process.env.CODESANDBOX_HOST}/static/img/play-codesandbox.svg`;
+export const BUTTON_URL = `${
+  process.env.CODESANDBOX_HOST
+}/static/img/play-codesandbox.svg`;
 
 export const VIEW_OPTIONS = ['Editor + Preview', 'Preview', 'Editor'];
 

@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
-
-import HoverMenu from 'app/components/HoverMenu';
 import Relative from '@codesandbox/common/lib/components/Relative';
-
+import { inject, hooksObserver } from 'app/componentConnectors';
+import { HoverMenu } from 'app/components/HoverMenu';
 import Menu from './Menu';
 import { ClickableContainer, ProfileImage } from './elements';
 

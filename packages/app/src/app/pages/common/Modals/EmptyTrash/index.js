@@ -1,5 +1,5 @@
 import React from 'react';
-import Alert from 'app/components/Alert';
+import { Alert } from 'app/components/Alert';
 import { inject } from 'app/componentConnectors';
 import { permanentlyDeleteSandboxes } from '../../../Dashboard/queries';
 

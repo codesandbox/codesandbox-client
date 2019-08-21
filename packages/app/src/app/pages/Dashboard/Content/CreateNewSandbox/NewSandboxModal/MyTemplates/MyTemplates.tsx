@@ -35,6 +35,7 @@ export const MyTemplates = ({ selectTemplate }: Props) => {
           ? data.me.templates.map((template, i) => (
               <CustomTemplate
                 template={template}
+                key={template.id}
                 i={i}
                 onClick={() => {
                   if (selectTemplate) {

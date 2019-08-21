@@ -1,20 +1,17 @@
 import * as React from 'react';
-import { inject, observer } from 'app/componentConnectors';
 import { Link } from 'react-router-dom';
-
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import Navigation from 'app/pages/common/Navigation';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-
-import QuickActions from 'app/pages/Sandbox/QuickActions';
-import Title from 'app/components/Title';
-import SubTitle from 'app/components/SubTitle';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Skeleton from 'app/components/Skeleton';
 import Padding from '@codesandbox/common/lib/components/spacing/Padding';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import { inject, observer } from 'app/componentConnectors';
+import { Title } from 'app/components/Title';
+import { SubTitle } from 'app/components/SubTitle';
+import { Skeleton } from 'app/components/Skeleton';
+import Navigation from 'app/pages/common/Navigation';
 import SignInButton from 'app/pages/common/SignInButton';
+import QuickActions from 'app/pages/Sandbox/QuickActions';
 import { hasAuthToken } from 'app/utils/user';
-
 import Editor from '../Sandbox/Editor';
 import BlinkingDot from './BlinkingDot';
 
