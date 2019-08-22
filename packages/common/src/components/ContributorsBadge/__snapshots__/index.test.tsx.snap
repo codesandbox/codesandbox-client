@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ContributorsBadge /> rendering contrib 1`] = `
+<ContributorsBadge
+  username="Sara Vieira"
+/>
+`;
+
+exports[`<ContributorsBadge /> rendering not contrib 1`] = `
+<ContributorsBadge
+  username="sjhdk"
+/>
+`;

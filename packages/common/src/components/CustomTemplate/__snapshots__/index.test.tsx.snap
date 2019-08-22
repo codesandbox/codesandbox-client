@@ -1,0 +1,2648 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ContributorsBadge /> rendering Default 1`] = `
+.c5 {
+  margin: 0.5rem 0.2rem 0.5rem 0.2rem;
+  box-sizing: border-box;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
+}
+
+.c6 {
+  position: relative;
+  color: white;
+  background-color: #40A9F3;
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.c2 {
+  position: absolute;
+  background: rgba(28,32,34,0.9);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3px);
+  padding: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  -webkit-transition: opacity 200ms ease;
+  transition: opacity 200ms ease;
+}
+
+.c3 {
+  font-size: 0.8rem;
+  color: #F2F2F2;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+
+.c7 {
+  position: relative;
+  top: -4px;
+  width: 100%;
+  height: 4px;
+  background: #fff;
+}
+
+.c8 {
+  display: block;
+  width: 100%;
+  margin: 6px 12px;
+  font-family: Poppins,Roboto,sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.c9 {
+  display: block;
+  width: 100%;
+  height: 16px;
+  padding: 0 12px;
+  margin-bottom: 6px;
+  color: #B8B9BA;
+  font-size: 12px;
+  text-align: left;
+  line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+.c0 {
+  position: relative;
+  width: 203.5px;
+  min-width: 203.5px;
+  padding: 0;
+  border: 2px solid #111518;
+  border-radius: 4px;
+  background: #1C2022;
+  color: #F2F2F2;
+  cursor: pointer;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.c0:focus {
+  border: 2px solid #40A9F3;
+  outline: none;
+}
+
+.c0 img {
+  display: block;
+  max-width: 100%;
+}
+
+.c0 .c1 {
+  height: 109px;
+  text-align: left;
+}
+
+.c0:hover .c1 {
+  opacity: 1;
+}
+
+<CustomTemplate
+  template={
+    Object {
+      "color": "#fff",
+      "id": "2321",
+      "sandbox": Object {
+        "author": Object {
+          "avatar_url": "https://placekitten.com/g/200/200",
+          "username": "Test User",
+        },
+        "description": "A test sandbox",
+        "fork_count": 100,
+        "id": "1234",
+        "like_count": 100,
+        "screenshot_url": "https://placekitten.com/g/1200/300",
+        "tags": Array [
+          "Tag 1",
+          "Tag 2",
+          "Tag 3",
+        ],
+        "template": "create-react-app-typescript",
+        "title": "Test Sandbox",
+        "view_count": 100,
+      },
+    }
+  }
+>
+  <styled.button
+    overlayHeight={109}
+  >
+    <StyledComponent
+      forwardedComponent={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "attrs": Array [],
+          "componentStyle": ComponentStyle {
+            "componentId": "sc-jKJlTe",
+            "isStatic": false,
+            "lastClassName": "c0",
+            "rules": Array [
+              "
+  ",
+              [Function],
+              "
+",
+            ],
+          },
+          "displayName": "styled.button",
+          "foldedComponentIds": Array [],
+          "render": [Function],
+          "styledComponentId": "sc-jKJlTe",
+          "target": "button",
+          "toString": [Function],
+          "warnTooManyClasses": [Function],
+          "withComponent": [Function],
+        }
+      }
+      forwardedRef={null}
+      overlayHeight={109}
+    >
+      <button
+        className="c0"
+      >
+        <img
+          alt="Test Sandbox"
+          height="109px"
+          src="https://codesandbox.io/api/v1/sandboxes/1234/screenshot.png"
+        />
+        <styled.div>
+          <StyledComponent
+            forwardedComponent={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": ComponentStyle {
+                  "componentId": "c1",
+                  "isStatic": true,
+                  "lastClassName": "c2",
+                  "rules": Array [
+                    "
+  position: absolute;
+  background: rgba(28, 32, 34, 0.9);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3px);
+  padding: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 200ms ease;
+",
+                  ],
+                },
+                "displayName": "styled.div",
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "styledComponentId": "c1",
+                "target": "div",
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+            forwardedRef={null}
+          >
+            <div
+              className="c1 c2"
+            >
+              <styled.p>
+                <StyledComponent
+                  forwardedComponent={
+                    Object {
+                      "$$typeof": Symbol(react.forward_ref),
+                      "attrs": Array [],
+                      "componentStyle": ComponentStyle {
+                        "componentId": "sc-VigVT",
+                        "isStatic": false,
+                        "lastClassName": "c3",
+                        "rules": Array [
+                          "
+  font-size: 0.8rem;
+  color: ",
+                          [Function],
+                          ";
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 16px;
+  font-size: 12px;
+",
+                        ],
+                      },
+                      "displayName": "styled.p",
+                      "foldedComponentIds": Array [],
+                      "render": [Function],
+                      "styledComponentId": "sc-VigVT",
+                      "target": "p",
+                      "toString": [Function],
+                      "warnTooManyClasses": [Function],
+                      "withComponent": [Function],
+                    }
+                  }
+                  forwardedRef={null}
+                >
+                  <p
+                    className="c3"
+                  >
+                    A test sandbox
+                  </p>
+                </StyledComponent>
+              </styled.p>
+              <Tags
+                tags={
+                  Array [
+                    "Tag 1",
+                    "Tag 2",
+                    "Tag 3",
+                  ]
+                }
+              >
+                <styled.div
+                  align="left"
+                >
+                  <StyledComponent
+                    align="left"
+                    forwardedComponent={
+                      Object {
+                        "$$typeof": Symbol(react.forward_ref),
+                        "attrs": Array [],
+                        "componentStyle": ComponentStyle {
+                          "componentId": "sc-bwzfXH",
+                          "isStatic": false,
+                          "lastClassName": "c4",
+                          "rules": Array [
+                            "
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
+  ",
+                            [Function],
+                            ";
+",
+                          ],
+                        },
+                        "displayName": "styled.div",
+                        "foldedComponentIds": Array [],
+                        "render": [Function],
+                        "styledComponentId": "sc-bwzfXH",
+                        "target": "div",
+                        "toString": [Function],
+                        "warnTooManyClasses": [Function],
+                        "withComponent": [Function],
+                      }
+                    }
+                    forwardedRef={null}
+                  >
+                    <div
+                      className="c4"
+                    >
+                      <styled.div
+                        horizontal={0.2}
+                        key="Tag 1"
+                        vertical={0.5}
+                      >
+                        <StyledComponent
+                          forwardedComponent={
+                            Object {
+                              "$$typeof": Symbol(react.forward_ref),
+                              "attrs": Array [],
+                              "componentStyle": ComponentStyle {
+                                "componentId": "sc-bdVaJa",
+                                "isStatic": false,
+                                "lastClassName": "c5",
+                                "rules": Array [
+                                  "
+  margin: ",
+                                  [Function],
+                                  ";
+  box-sizing: border-box;
+",
+                                ],
+                              },
+                              "displayName": "styled.div",
+                              "foldedComponentIds": Array [],
+                              "render": [Function],
+                              "styledComponentId": "sc-bdVaJa",
+                              "target": "div",
+                              "toString": [Function],
+                              "warnTooManyClasses": [Function],
+                              "withComponent": [Function],
+                            }
+                          }
+                          forwardedRef={null}
+                          horizontal={0.2}
+                          vertical={0.5}
+                        >
+                          <div
+                            className="c5"
+                          >
+                            <Tag
+                              tag="Tag 1"
+                            >
+                              <styled.span
+                                canRemove={false}
+                              >
+                                <StyledComponent
+                                  canRemove={false}
+                                  forwardedComponent={
+                                    Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "attrs": Array [],
+                                      "componentStyle": ComponentStyle {
+                                        "componentId": "sc-htpNat",
+                                        "isStatic": false,
+                                        "lastClassName": "c6",
+                                        "rules": Array [
+                                          "
+  position: relative;
+  color: white;
+  background-color: ",
+                                          [Function],
+                                          ";
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+
+  ",
+                                          [Function],
+                                          ";
+",
+                                        ],
+                                      },
+                                      "displayName": "styled.span",
+                                      "foldedComponentIds": Array [],
+                                      "render": [Function],
+                                      "styledComponentId": "sc-htpNat",
+                                      "target": "span",
+                                      "toString": [Function],
+                                      "warnTooManyClasses": [Function],
+                                      "withComponent": [Function],
+                                    }
+                                  }
+                                  forwardedRef={null}
+                                >
+                                  <span
+                                    className="c6"
+                                  >
+                                    Tag 1
+                                  </span>
+                                </StyledComponent>
+                              </styled.span>
+                            </Tag>
+                          </div>
+                        </StyledComponent>
+                      </styled.div>
+                      <styled.div
+                        horizontal={0.2}
+                        key="Tag 2"
+                        vertical={0.5}
+                      >
+                        <StyledComponent
+                          forwardedComponent={
+                            Object {
+                              "$$typeof": Symbol(react.forward_ref),
+                              "attrs": Array [],
+                              "componentStyle": ComponentStyle {
+                                "componentId": "sc-bdVaJa",
+                                "isStatic": false,
+                                "lastClassName": "c5",
+                                "rules": Array [
+                                  "
+  margin: ",
+                                  [Function],
+                                  ";
+  box-sizing: border-box;
+",
+                                ],
+                              },
+                              "displayName": "styled.div",
+                              "foldedComponentIds": Array [],
+                              "render": [Function],
+                              "styledComponentId": "sc-bdVaJa",
+                              "target": "div",
+                              "toString": [Function],
+                              "warnTooManyClasses": [Function],
+                              "withComponent": [Function],
+                            }
+                          }
+                          forwardedRef={null}
+                          horizontal={0.2}
+                          vertical={0.5}
+                        >
+                          <div
+                            className="c5"
+                          >
+                            <Tag
+                              tag="Tag 2"
+                            >
+                              <styled.span
+                                canRemove={false}
+                              >
+                                <StyledComponent
+                                  canRemove={false}
+                                  forwardedComponent={
+                                    Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "attrs": Array [],
+                                      "componentStyle": ComponentStyle {
+                                        "componentId": "sc-htpNat",
+                                        "isStatic": false,
+                                        "lastClassName": "c6",
+                                        "rules": Array [
+                                          "
+  position: relative;
+  color: white;
+  background-color: ",
+                                          [Function],
+                                          ";
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+
+  ",
+                                          [Function],
+                                          ";
+",
+                                        ],
+                                      },
+                                      "displayName": "styled.span",
+                                      "foldedComponentIds": Array [],
+                                      "render": [Function],
+                                      "styledComponentId": "sc-htpNat",
+                                      "target": "span",
+                                      "toString": [Function],
+                                      "warnTooManyClasses": [Function],
+                                      "withComponent": [Function],
+                                    }
+                                  }
+                                  forwardedRef={null}
+                                >
+                                  <span
+                                    className="c6"
+                                  >
+                                    Tag 2
+                                  </span>
+                                </StyledComponent>
+                              </styled.span>
+                            </Tag>
+                          </div>
+                        </StyledComponent>
+                      </styled.div>
+                      <styled.div
+                        horizontal={0.2}
+                        key="Tag 3"
+                        vertical={0.5}
+                      >
+                        <StyledComponent
+                          forwardedComponent={
+                            Object {
+                              "$$typeof": Symbol(react.forward_ref),
+                              "attrs": Array [],
+                              "componentStyle": ComponentStyle {
+                                "componentId": "sc-bdVaJa",
+                                "isStatic": false,
+                                "lastClassName": "c5",
+                                "rules": Array [
+                                  "
+  margin: ",
+                                  [Function],
+                                  ";
+  box-sizing: border-box;
+",
+                                ],
+                              },
+                              "displayName": "styled.div",
+                              "foldedComponentIds": Array [],
+                              "render": [Function],
+                              "styledComponentId": "sc-bdVaJa",
+                              "target": "div",
+                              "toString": [Function],
+                              "warnTooManyClasses": [Function],
+                              "withComponent": [Function],
+                            }
+                          }
+                          forwardedRef={null}
+                          horizontal={0.2}
+                          vertical={0.5}
+                        >
+                          <div
+                            className="c5"
+                          >
+                            <Tag
+                              tag="Tag 3"
+                            >
+                              <styled.span
+                                canRemove={false}
+                              >
+                                <StyledComponent
+                                  canRemove={false}
+                                  forwardedComponent={
+                                    Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "attrs": Array [],
+                                      "componentStyle": ComponentStyle {
+                                        "componentId": "sc-htpNat",
+                                        "isStatic": false,
+                                        "lastClassName": "c6",
+                                        "rules": Array [
+                                          "
+  position: relative;
+  color: white;
+  background-color: ",
+                                          [Function],
+                                          ";
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+
+  ",
+                                          [Function],
+                                          ";
+",
+                                        ],
+                                      },
+                                      "displayName": "styled.span",
+                                      "foldedComponentIds": Array [],
+                                      "render": [Function],
+                                      "styledComponentId": "sc-htpNat",
+                                      "target": "span",
+                                      "toString": [Function],
+                                      "warnTooManyClasses": [Function],
+                                      "withComponent": [Function],
+                                    }
+                                  }
+                                  forwardedRef={null}
+                                >
+                                  <span
+                                    className="c6"
+                                  >
+                                    Tag 3
+                                  </span>
+                                </StyledComponent>
+                              </styled.span>
+                            </Tag>
+                          </div>
+                        </StyledComponent>
+                      </styled.div>
+                    </div>
+                  </StyledComponent>
+                </styled.div>
+              </Tags>
+            </div>
+          </StyledComponent>
+        </styled.div>
+        <styled.div
+          color="#fff"
+        >
+          <StyledComponent
+            color="#fff"
+            forwardedComponent={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": ComponentStyle {
+                  "componentId": "sc-kpOJdX",
+                  "isStatic": false,
+                  "lastClassName": "c7",
+                  "rules": Array [
+                    "
+  ",
+                    [Function],
+                    "
+",
+                  ],
+                },
+                "displayName": "styled.div",
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "styledComponentId": "sc-kpOJdX",
+                "target": "div",
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+            forwardedRef={null}
+          >
+            <div
+              className="c7"
+              color="#fff"
+            />
+          </StyledComponent>
+        </styled.div>
+        <div>
+          <styled.span>
+            <StyledComponent
+              forwardedComponent={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "attrs": Array [],
+                  "componentStyle": ComponentStyle {
+                    "componentId": "sc-dxgOiQ",
+                    "isStatic": true,
+                    "lastClassName": "c8",
+                    "rules": Array [
+                      "
+  display: block;
+  width: 100%;
+  margin: 6px 12px;
+  font-family: Poppins, Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+",
+                    ],
+                  },
+                  "displayName": "styled.span",
+                  "foldedComponentIds": Array [],
+                  "render": [Function],
+                  "styledComponentId": "sc-dxgOiQ",
+                  "target": "span",
+                  "toString": [Function],
+                  "warnTooManyClasses": [Function],
+                  "withComponent": [Function],
+                }
+              }
+              forwardedRef={null}
+            >
+              <span
+                className="c8"
+              >
+                Test Sandbox
+              </span>
+            </StyledComponent>
+          </styled.span>
+          <styled.span>
+            <StyledComponent
+              forwardedComponent={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "attrs": Array [],
+                  "componentStyle": ComponentStyle {
+                    "componentId": "sc-ckVGcZ",
+                    "isStatic": false,
+                    "lastClassName": "c9",
+                    "rules": Array [
+                      "
+  ",
+                      [Function],
+                      "
+",
+                    ],
+                  },
+                  "displayName": "styled.span",
+                  "foldedComponentIds": Array [],
+                  "render": [Function],
+                  "styledComponentId": "sc-ckVGcZ",
+                  "target": "span",
+                  "toString": [Function],
+                  "warnTooManyClasses": [Function],
+                  "withComponent": [Function],
+                }
+              }
+              forwardedRef={null}
+            >
+              <span
+                className="c9"
+              >
+                A test sandbox
+              </span>
+            </StyledComponent>
+          </styled.span>
+        </div>
+      </button>
+    </StyledComponent>
+  </styled.button>
+</CustomTemplate>
+`;
+
+exports[`<ContributorsBadge /> rendering No Description 1`] = `
+.c5 {
+  margin: 0.5rem 0.2rem 0.5rem 0.2rem;
+  box-sizing: border-box;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
+}
+
+.c6 {
+  position: relative;
+  color: white;
+  background-color: #40A9F3;
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.c2 {
+  position: absolute;
+  background: rgba(28,32,34,0.9);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3px);
+  padding: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  -webkit-transition: opacity 200ms ease;
+  transition: opacity 200ms ease;
+}
+
+.c3 {
+  font-size: 0.8rem;
+  color: #F2F2F2;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+
+.c7 {
+  position: relative;
+  top: -4px;
+  width: 100%;
+  height: 4px;
+  background: #fff;
+}
+
+.c8 {
+  display: block;
+  width: 100%;
+  margin: 6px 12px;
+  font-family: Poppins,Roboto,sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.c9 {
+  display: block;
+  width: 100%;
+  height: 16px;
+  padding: 0 12px;
+  margin-bottom: 6px;
+  color: #B8B9BA;
+  font-size: 12px;
+  text-align: left;
+  line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+.c0 {
+  position: relative;
+  width: 203.5px;
+  min-width: 203.5px;
+  padding: 0;
+  border: 2px solid #111518;
+  border-radius: 4px;
+  background: #1C2022;
+  color: #F2F2F2;
+  cursor: pointer;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.c0:focus {
+  border: 2px solid #40A9F3;
+  outline: none;
+}
+
+.c0 img {
+  display: block;
+  max-width: 100%;
+}
+
+.c0 .c1 {
+  height: 109px;
+  text-align: left;
+}
+
+.c0:hover .c1 {
+  opacity: 1;
+}
+
+<CustomTemplate
+  template={
+    Object {
+      "color": "#fff",
+      "id": "2321",
+      "sandbox": Object {
+        "author": Object {
+          "avatar_url": "https://placekitten.com/g/200/200",
+          "username": "Test User",
+        },
+        "description": null,
+        "fork_count": 100,
+        "id": "1234",
+        "like_count": 100,
+        "screenshot_url": "https://placekitten.com/g/1200/300",
+        "tags": Array [
+          "Tag 1",
+          "Tag 2",
+          "Tag 3",
+        ],
+        "template": "create-react-app-typescript",
+        "title": "Test Sandbox",
+        "view_count": 100,
+      },
+    }
+  }
+>
+  <styled.button
+    overlayHeight={109}
+  >
+    <StyledComponent
+      forwardedComponent={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "attrs": Array [],
+          "componentStyle": ComponentStyle {
+            "componentId": "sc-jKJlTe",
+            "isStatic": false,
+            "lastClassName": "c0",
+            "rules": Array [
+              "
+  ",
+              [Function],
+              "
+",
+            ],
+          },
+          "displayName": "styled.button",
+          "foldedComponentIds": Array [],
+          "render": [Function],
+          "styledComponentId": "sc-jKJlTe",
+          "target": "button",
+          "toString": [Function],
+          "warnTooManyClasses": [Function],
+          "withComponent": [Function],
+        }
+      }
+      forwardedRef={null}
+      overlayHeight={109}
+    >
+      <button
+        className="c0"
+      >
+        <img
+          alt="Test Sandbox"
+          height="109px"
+          src="https://codesandbox.io/api/v1/sandboxes/1234/screenshot.png"
+        />
+        <styled.div>
+          <StyledComponent
+            forwardedComponent={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": ComponentStyle {
+                  "componentId": "c1",
+                  "isStatic": true,
+                  "lastClassName": "c2",
+                  "rules": Array [
+                    "
+  position: absolute;
+  background: rgba(28, 32, 34, 0.9);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3px);
+  padding: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 200ms ease;
+",
+                  ],
+                },
+                "displayName": "styled.div",
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "styledComponentId": "c1",
+                "target": "div",
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+            forwardedRef={null}
+          >
+            <div
+              className="c1 c2"
+            >
+              <styled.p>
+                <StyledComponent
+                  forwardedComponent={
+                    Object {
+                      "$$typeof": Symbol(react.forward_ref),
+                      "attrs": Array [],
+                      "componentStyle": ComponentStyle {
+                        "componentId": "sc-VigVT",
+                        "isStatic": false,
+                        "lastClassName": "c3",
+                        "rules": Array [
+                          "
+  font-size: 0.8rem;
+  color: ",
+                          [Function],
+                          ";
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 16px;
+  font-size: 12px;
+",
+                        ],
+                      },
+                      "displayName": "styled.p",
+                      "foldedComponentIds": Array [],
+                      "render": [Function],
+                      "styledComponentId": "sc-VigVT",
+                      "target": "p",
+                      "toString": [Function],
+                      "warnTooManyClasses": [Function],
+                      "withComponent": [Function],
+                    }
+                  }
+                  forwardedRef={null}
+                >
+                  <p
+                    className="c3"
+                  />
+                </StyledComponent>
+              </styled.p>
+              <Tags
+                tags={
+                  Array [
+                    "Tag 1",
+                    "Tag 2",
+                    "Tag 3",
+                  ]
+                }
+              >
+                <styled.div
+                  align="left"
+                >
+                  <StyledComponent
+                    align="left"
+                    forwardedComponent={
+                      Object {
+                        "$$typeof": Symbol(react.forward_ref),
+                        "attrs": Array [],
+                        "componentStyle": ComponentStyle {
+                          "componentId": "sc-bwzfXH",
+                          "isStatic": false,
+                          "lastClassName": "c4",
+                          "rules": Array [
+                            "
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
+  ",
+                            [Function],
+                            ";
+",
+                          ],
+                        },
+                        "displayName": "styled.div",
+                        "foldedComponentIds": Array [],
+                        "render": [Function],
+                        "styledComponentId": "sc-bwzfXH",
+                        "target": "div",
+                        "toString": [Function],
+                        "warnTooManyClasses": [Function],
+                        "withComponent": [Function],
+                      }
+                    }
+                    forwardedRef={null}
+                  >
+                    <div
+                      className="c4"
+                    >
+                      <styled.div
+                        horizontal={0.2}
+                        key="Tag 1"
+                        vertical={0.5}
+                      >
+                        <StyledComponent
+                          forwardedComponent={
+                            Object {
+                              "$$typeof": Symbol(react.forward_ref),
+                              "attrs": Array [],
+                              "componentStyle": ComponentStyle {
+                                "componentId": "sc-bdVaJa",
+                                "isStatic": false,
+                                "lastClassName": "c5",
+                                "rules": Array [
+                                  "
+  margin: ",
+                                  [Function],
+                                  ";
+  box-sizing: border-box;
+",
+                                ],
+                              },
+                              "displayName": "styled.div",
+                              "foldedComponentIds": Array [],
+                              "render": [Function],
+                              "styledComponentId": "sc-bdVaJa",
+                              "target": "div",
+                              "toString": [Function],
+                              "warnTooManyClasses": [Function],
+                              "withComponent": [Function],
+                            }
+                          }
+                          forwardedRef={null}
+                          horizontal={0.2}
+                          vertical={0.5}
+                        >
+                          <div
+                            className="c5"
+                          >
+                            <Tag
+                              tag="Tag 1"
+                            >
+                              <styled.span
+                                canRemove={false}
+                              >
+                                <StyledComponent
+                                  canRemove={false}
+                                  forwardedComponent={
+                                    Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "attrs": Array [],
+                                      "componentStyle": ComponentStyle {
+                                        "componentId": "sc-htpNat",
+                                        "isStatic": false,
+                                        "lastClassName": "c6",
+                                        "rules": Array [
+                                          "
+  position: relative;
+  color: white;
+  background-color: ",
+                                          [Function],
+                                          ";
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+
+  ",
+                                          [Function],
+                                          ";
+",
+                                        ],
+                                      },
+                                      "displayName": "styled.span",
+                                      "foldedComponentIds": Array [],
+                                      "render": [Function],
+                                      "styledComponentId": "sc-htpNat",
+                                      "target": "span",
+                                      "toString": [Function],
+                                      "warnTooManyClasses": [Function],
+                                      "withComponent": [Function],
+                                    }
+                                  }
+                                  forwardedRef={null}
+                                >
+                                  <span
+                                    className="c6"
+                                  >
+                                    Tag 1
+                                  </span>
+                                </StyledComponent>
+                              </styled.span>
+                            </Tag>
+                          </div>
+                        </StyledComponent>
+                      </styled.div>
+                      <styled.div
+                        horizontal={0.2}
+                        key="Tag 2"
+                        vertical={0.5}
+                      >
+                        <StyledComponent
+                          forwardedComponent={
+                            Object {
+                              "$$typeof": Symbol(react.forward_ref),
+                              "attrs": Array [],
+                              "componentStyle": ComponentStyle {
+                                "componentId": "sc-bdVaJa",
+                                "isStatic": false,
+                                "lastClassName": "c5",
+                                "rules": Array [
+                                  "
+  margin: ",
+                                  [Function],
+                                  ";
+  box-sizing: border-box;
+",
+                                ],
+                              },
+                              "displayName": "styled.div",
+                              "foldedComponentIds": Array [],
+                              "render": [Function],
+                              "styledComponentId": "sc-bdVaJa",
+                              "target": "div",
+                              "toString": [Function],
+                              "warnTooManyClasses": [Function],
+                              "withComponent": [Function],
+                            }
+                          }
+                          forwardedRef={null}
+                          horizontal={0.2}
+                          vertical={0.5}
+                        >
+                          <div
+                            className="c5"
+                          >
+                            <Tag
+                              tag="Tag 2"
+                            >
+                              <styled.span
+                                canRemove={false}
+                              >
+                                <StyledComponent
+                                  canRemove={false}
+                                  forwardedComponent={
+                                    Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "attrs": Array [],
+                                      "componentStyle": ComponentStyle {
+                                        "componentId": "sc-htpNat",
+                                        "isStatic": false,
+                                        "lastClassName": "c6",
+                                        "rules": Array [
+                                          "
+  position: relative;
+  color: white;
+  background-color: ",
+                                          [Function],
+                                          ";
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+
+  ",
+                                          [Function],
+                                          ";
+",
+                                        ],
+                                      },
+                                      "displayName": "styled.span",
+                                      "foldedComponentIds": Array [],
+                                      "render": [Function],
+                                      "styledComponentId": "sc-htpNat",
+                                      "target": "span",
+                                      "toString": [Function],
+                                      "warnTooManyClasses": [Function],
+                                      "withComponent": [Function],
+                                    }
+                                  }
+                                  forwardedRef={null}
+                                >
+                                  <span
+                                    className="c6"
+                                  >
+                                    Tag 2
+                                  </span>
+                                </StyledComponent>
+                              </styled.span>
+                            </Tag>
+                          </div>
+                        </StyledComponent>
+                      </styled.div>
+                      <styled.div
+                        horizontal={0.2}
+                        key="Tag 3"
+                        vertical={0.5}
+                      >
+                        <StyledComponent
+                          forwardedComponent={
+                            Object {
+                              "$$typeof": Symbol(react.forward_ref),
+                              "attrs": Array [],
+                              "componentStyle": ComponentStyle {
+                                "componentId": "sc-bdVaJa",
+                                "isStatic": false,
+                                "lastClassName": "c5",
+                                "rules": Array [
+                                  "
+  margin: ",
+                                  [Function],
+                                  ";
+  box-sizing: border-box;
+",
+                                ],
+                              },
+                              "displayName": "styled.div",
+                              "foldedComponentIds": Array [],
+                              "render": [Function],
+                              "styledComponentId": "sc-bdVaJa",
+                              "target": "div",
+                              "toString": [Function],
+                              "warnTooManyClasses": [Function],
+                              "withComponent": [Function],
+                            }
+                          }
+                          forwardedRef={null}
+                          horizontal={0.2}
+                          vertical={0.5}
+                        >
+                          <div
+                            className="c5"
+                          >
+                            <Tag
+                              tag="Tag 3"
+                            >
+                              <styled.span
+                                canRemove={false}
+                              >
+                                <StyledComponent
+                                  canRemove={false}
+                                  forwardedComponent={
+                                    Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "attrs": Array [],
+                                      "componentStyle": ComponentStyle {
+                                        "componentId": "sc-htpNat",
+                                        "isStatic": false,
+                                        "lastClassName": "c6",
+                                        "rules": Array [
+                                          "
+  position: relative;
+  color: white;
+  background-color: ",
+                                          [Function],
+                                          ";
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+
+  ",
+                                          [Function],
+                                          ";
+",
+                                        ],
+                                      },
+                                      "displayName": "styled.span",
+                                      "foldedComponentIds": Array [],
+                                      "render": [Function],
+                                      "styledComponentId": "sc-htpNat",
+                                      "target": "span",
+                                      "toString": [Function],
+                                      "warnTooManyClasses": [Function],
+                                      "withComponent": [Function],
+                                    }
+                                  }
+                                  forwardedRef={null}
+                                >
+                                  <span
+                                    className="c6"
+                                  >
+                                    Tag 3
+                                  </span>
+                                </StyledComponent>
+                              </styled.span>
+                            </Tag>
+                          </div>
+                        </StyledComponent>
+                      </styled.div>
+                    </div>
+                  </StyledComponent>
+                </styled.div>
+              </Tags>
+            </div>
+          </StyledComponent>
+        </styled.div>
+        <styled.div
+          color="#fff"
+        >
+          <StyledComponent
+            color="#fff"
+            forwardedComponent={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": ComponentStyle {
+                  "componentId": "sc-kpOJdX",
+                  "isStatic": false,
+                  "lastClassName": "c7",
+                  "rules": Array [
+                    "
+  ",
+                    [Function],
+                    "
+",
+                  ],
+                },
+                "displayName": "styled.div",
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "styledComponentId": "sc-kpOJdX",
+                "target": "div",
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+            forwardedRef={null}
+          >
+            <div
+              className="c7"
+              color="#fff"
+            />
+          </StyledComponent>
+        </styled.div>
+        <div>
+          <styled.span>
+            <StyledComponent
+              forwardedComponent={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "attrs": Array [],
+                  "componentStyle": ComponentStyle {
+                    "componentId": "sc-dxgOiQ",
+                    "isStatic": true,
+                    "lastClassName": "c8",
+                    "rules": Array [
+                      "
+  display: block;
+  width: 100%;
+  margin: 6px 12px;
+  font-family: Poppins, Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+",
+                    ],
+                  },
+                  "displayName": "styled.span",
+                  "foldedComponentIds": Array [],
+                  "render": [Function],
+                  "styledComponentId": "sc-dxgOiQ",
+                  "target": "span",
+                  "toString": [Function],
+                  "warnTooManyClasses": [Function],
+                  "withComponent": [Function],
+                }
+              }
+              forwardedRef={null}
+            >
+              <span
+                className="c8"
+              >
+                Test Sandbox
+              </span>
+            </StyledComponent>
+          </styled.span>
+          <styled.span>
+            <StyledComponent
+              forwardedComponent={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "attrs": Array [],
+                  "componentStyle": ComponentStyle {
+                    "componentId": "sc-ckVGcZ",
+                    "isStatic": false,
+                    "lastClassName": "c9",
+                    "rules": Array [
+                      "
+  ",
+                      [Function],
+                      "
+",
+                    ],
+                  },
+                  "displayName": "styled.span",
+                  "foldedComponentIds": Array [],
+                  "render": [Function],
+                  "styledComponentId": "sc-ckVGcZ",
+                  "target": "span",
+                  "toString": [Function],
+                  "warnTooManyClasses": [Function],
+                  "withComponent": [Function],
+                }
+              }
+              forwardedRef={null}
+            >
+              <span
+                className="c9"
+              />
+            </StyledComponent>
+          </styled.span>
+        </div>
+      </button>
+    </StyledComponent>
+  </styled.button>
+</CustomTemplate>
+`;
+
+exports[`<ContributorsBadge /> rendering No Tags 1`] = `
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
+}
+
+.c2 {
+  position: absolute;
+  background: rgba(28,32,34,0.9);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3px);
+  padding: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  -webkit-transition: opacity 200ms ease;
+  transition: opacity 200ms ease;
+}
+
+.c3 {
+  font-size: 0.8rem;
+  color: #F2F2F2;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+
+.c5 {
+  position: relative;
+  top: -4px;
+  width: 100%;
+  height: 4px;
+  background: #fff;
+}
+
+.c6 {
+  display: block;
+  width: 100%;
+  margin: 6px 12px;
+  font-family: Poppins,Roboto,sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.c7 {
+  display: block;
+  width: 100%;
+  height: 16px;
+  padding: 0 12px;
+  margin-bottom: 6px;
+  color: #B8B9BA;
+  font-size: 12px;
+  text-align: left;
+  line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+.c0 {
+  position: relative;
+  width: 203.5px;
+  min-width: 203.5px;
+  padding: 0;
+  border: 2px solid #111518;
+  border-radius: 4px;
+  background: #1C2022;
+  color: #F2F2F2;
+  cursor: pointer;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.c0:focus {
+  border: 2px solid #40A9F3;
+  outline: none;
+}
+
+.c0 img {
+  display: block;
+  max-width: 100%;
+}
+
+.c0 .c1 {
+  height: 109px;
+  text-align: left;
+}
+
+.c0:hover .c1 {
+  opacity: 1;
+}
+
+<CustomTemplate
+  template={
+    Object {
+      "color": "#fff",
+      "id": "2321",
+      "sandbox": Object {
+        "author": Object {
+          "avatar_url": "https://placekitten.com/g/200/200",
+          "username": "Test User",
+        },
+        "description": "A test sandbox",
+        "fork_count": 100,
+        "id": "1234",
+        "like_count": 100,
+        "screenshot_url": "https://placekitten.com/g/1200/300",
+        "tags": Array [],
+        "template": "create-react-app-typescript",
+        "title": "Test Sandbox",
+        "view_count": 100,
+      },
+    }
+  }
+>
+  <styled.button
+    overlayHeight={109}
+  >
+    <StyledComponent
+      forwardedComponent={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "attrs": Array [],
+          "componentStyle": ComponentStyle {
+            "componentId": "sc-jKJlTe",
+            "isStatic": false,
+            "lastClassName": "c0",
+            "rules": Array [
+              "
+  ",
+              [Function],
+              "
+",
+            ],
+          },
+          "displayName": "styled.button",
+          "foldedComponentIds": Array [],
+          "render": [Function],
+          "styledComponentId": "sc-jKJlTe",
+          "target": "button",
+          "toString": [Function],
+          "warnTooManyClasses": [Function],
+          "withComponent": [Function],
+        }
+      }
+      forwardedRef={null}
+      overlayHeight={109}
+    >
+      <button
+        className="c0"
+      >
+        <img
+          alt="Test Sandbox"
+          height="109px"
+          src="https://codesandbox.io/api/v1/sandboxes/1234/screenshot.png"
+        />
+        <styled.div>
+          <StyledComponent
+            forwardedComponent={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": ComponentStyle {
+                  "componentId": "c1",
+                  "isStatic": true,
+                  "lastClassName": "c2",
+                  "rules": Array [
+                    "
+  position: absolute;
+  background: rgba(28, 32, 34, 0.9);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3px);
+  padding: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 200ms ease;
+",
+                  ],
+                },
+                "displayName": "styled.div",
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "styledComponentId": "c1",
+                "target": "div",
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+            forwardedRef={null}
+          >
+            <div
+              className="c1 c2"
+            >
+              <styled.p>
+                <StyledComponent
+                  forwardedComponent={
+                    Object {
+                      "$$typeof": Symbol(react.forward_ref),
+                      "attrs": Array [],
+                      "componentStyle": ComponentStyle {
+                        "componentId": "sc-VigVT",
+                        "isStatic": false,
+                        "lastClassName": "c3",
+                        "rules": Array [
+                          "
+  font-size: 0.8rem;
+  color: ",
+                          [Function],
+                          ";
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 16px;
+  font-size: 12px;
+",
+                        ],
+                      },
+                      "displayName": "styled.p",
+                      "foldedComponentIds": Array [],
+                      "render": [Function],
+                      "styledComponentId": "sc-VigVT",
+                      "target": "p",
+                      "toString": [Function],
+                      "warnTooManyClasses": [Function],
+                      "withComponent": [Function],
+                    }
+                  }
+                  forwardedRef={null}
+                >
+                  <p
+                    className="c3"
+                  >
+                    A test sandbox
+                  </p>
+                </StyledComponent>
+              </styled.p>
+              <Tags
+                tags={Array []}
+              >
+                <styled.div
+                  align="left"
+                >
+                  <StyledComponent
+                    align="left"
+                    forwardedComponent={
+                      Object {
+                        "$$typeof": Symbol(react.forward_ref),
+                        "attrs": Array [],
+                        "componentStyle": ComponentStyle {
+                          "componentId": "sc-bwzfXH",
+                          "isStatic": false,
+                          "lastClassName": "c4",
+                          "rules": Array [
+                            "
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
+  ",
+                            [Function],
+                            ";
+",
+                          ],
+                        },
+                        "displayName": "styled.div",
+                        "foldedComponentIds": Array [],
+                        "render": [Function],
+                        "styledComponentId": "sc-bwzfXH",
+                        "target": "div",
+                        "toString": [Function],
+                        "warnTooManyClasses": [Function],
+                        "withComponent": [Function],
+                      }
+                    }
+                    forwardedRef={null}
+                  >
+                    <div
+                      className="c4"
+                    />
+                  </StyledComponent>
+                </styled.div>
+              </Tags>
+            </div>
+          </StyledComponent>
+        </styled.div>
+        <styled.div
+          color="#fff"
+        >
+          <StyledComponent
+            color="#fff"
+            forwardedComponent={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": ComponentStyle {
+                  "componentId": "sc-kpOJdX",
+                  "isStatic": false,
+                  "lastClassName": "c5",
+                  "rules": Array [
+                    "
+  ",
+                    [Function],
+                    "
+",
+                  ],
+                },
+                "displayName": "styled.div",
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "styledComponentId": "sc-kpOJdX",
+                "target": "div",
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+            forwardedRef={null}
+          >
+            <div
+              className="c5"
+              color="#fff"
+            />
+          </StyledComponent>
+        </styled.div>
+        <div>
+          <styled.span>
+            <StyledComponent
+              forwardedComponent={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "attrs": Array [],
+                  "componentStyle": ComponentStyle {
+                    "componentId": "sc-dxgOiQ",
+                    "isStatic": true,
+                    "lastClassName": "c6",
+                    "rules": Array [
+                      "
+  display: block;
+  width: 100%;
+  margin: 6px 12px;
+  font-family: Poppins, Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+",
+                    ],
+                  },
+                  "displayName": "styled.span",
+                  "foldedComponentIds": Array [],
+                  "render": [Function],
+                  "styledComponentId": "sc-dxgOiQ",
+                  "target": "span",
+                  "toString": [Function],
+                  "warnTooManyClasses": [Function],
+                  "withComponent": [Function],
+                }
+              }
+              forwardedRef={null}
+            >
+              <span
+                className="c6"
+              >
+                Test Sandbox
+              </span>
+            </StyledComponent>
+          </styled.span>
+          <styled.span>
+            <StyledComponent
+              forwardedComponent={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "attrs": Array [],
+                  "componentStyle": ComponentStyle {
+                    "componentId": "sc-ckVGcZ",
+                    "isStatic": false,
+                    "lastClassName": "c7",
+                    "rules": Array [
+                      "
+  ",
+                      [Function],
+                      "
+",
+                    ],
+                  },
+                  "displayName": "styled.span",
+                  "foldedComponentIds": Array [],
+                  "render": [Function],
+                  "styledComponentId": "sc-ckVGcZ",
+                  "target": "span",
+                  "toString": [Function],
+                  "warnTooManyClasses": [Function],
+                  "withComponent": [Function],
+                }
+              }
+              forwardedRef={null}
+            >
+              <span
+                className="c7"
+              >
+                A test sandbox
+              </span>
+            </StyledComponent>
+          </styled.span>
+        </div>
+      </button>
+    </StyledComponent>
+  </styled.button>
+</CustomTemplate>
+`;
+
+exports[`<ContributorsBadge /> rendering No Title 1`] = `
+.c5 {
+  margin: 0.5rem 0.2rem 0.5rem 0.2rem;
+  box-sizing: border-box;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
+}
+
+.c6 {
+  position: relative;
+  color: white;
+  background-color: #40A9F3;
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.c2 {
+  position: absolute;
+  background: rgba(28,32,34,0.9);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3px);
+  padding: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  -webkit-transition: opacity 200ms ease;
+  transition: opacity 200ms ease;
+}
+
+.c3 {
+  font-size: 0.8rem;
+  color: #F2F2F2;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+
+.c7 {
+  position: relative;
+  top: -4px;
+  width: 100%;
+  height: 4px;
+  background: #fff;
+}
+
+.c8 {
+  display: block;
+  width: 100%;
+  margin: 6px 12px;
+  font-family: Poppins,Roboto,sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.c9 {
+  display: block;
+  width: 100%;
+  height: 16px;
+  padding: 0 12px;
+  margin-bottom: 6px;
+  color: #B8B9BA;
+  font-size: 12px;
+  text-align: left;
+  line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+.c0 {
+  position: relative;
+  width: 203.5px;
+  min-width: 203.5px;
+  padding: 0;
+  border: 2px solid #111518;
+  border-radius: 4px;
+  background: #1C2022;
+  color: #F2F2F2;
+  cursor: pointer;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.c0:focus {
+  border: 2px solid #40A9F3;
+  outline: none;
+}
+
+.c0 img {
+  display: block;
+  max-width: 100%;
+}
+
+.c0 .c1 {
+  height: 109px;
+  text-align: left;
+}
+
+.c0:hover .c1 {
+  opacity: 1;
+}
+
+<CustomTemplate
+  template={
+    Object {
+      "color": "#fff",
+      "id": "2321",
+      "sandbox": Object {
+        "author": Object {
+          "avatar_url": "https://placekitten.com/g/200/200",
+          "username": "Test User",
+        },
+        "description": "A test sandbox",
+        "fork_count": 100,
+        "id": "1234",
+        "like_count": 100,
+        "screenshot_url": "https://placekitten.com/g/1200/300",
+        "tags": Array [
+          "Tag 1",
+          "Tag 2",
+          "Tag 3",
+        ],
+        "template": "create-react-app-typescript",
+        "title": null,
+        "view_count": 100,
+      },
+    }
+  }
+>
+  <styled.button
+    overlayHeight={109}
+  >
+    <StyledComponent
+      forwardedComponent={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "attrs": Array [],
+          "componentStyle": ComponentStyle {
+            "componentId": "sc-jKJlTe",
+            "isStatic": false,
+            "lastClassName": "c0",
+            "rules": Array [
+              "
+  ",
+              [Function],
+              "
+",
+            ],
+          },
+          "displayName": "styled.button",
+          "foldedComponentIds": Array [],
+          "render": [Function],
+          "styledComponentId": "sc-jKJlTe",
+          "target": "button",
+          "toString": [Function],
+          "warnTooManyClasses": [Function],
+          "withComponent": [Function],
+        }
+      }
+      forwardedRef={null}
+      overlayHeight={109}
+    >
+      <button
+        className="c0"
+      >
+        <img
+          alt="1234"
+          height="109px"
+          src="https://codesandbox.io/api/v1/sandboxes/1234/screenshot.png"
+        />
+        <styled.div>
+          <StyledComponent
+            forwardedComponent={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": ComponentStyle {
+                  "componentId": "c1",
+                  "isStatic": true,
+                  "lastClassName": "c2",
+                  "rules": Array [
+                    "
+  position: absolute;
+  background: rgba(28, 32, 34, 0.9);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3px);
+  padding: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 200ms ease;
+",
+                  ],
+                },
+                "displayName": "styled.div",
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "styledComponentId": "c1",
+                "target": "div",
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+            forwardedRef={null}
+          >
+            <div
+              className="c1 c2"
+            >
+              <styled.p>
+                <StyledComponent
+                  forwardedComponent={
+                    Object {
+                      "$$typeof": Symbol(react.forward_ref),
+                      "attrs": Array [],
+                      "componentStyle": ComponentStyle {
+                        "componentId": "sc-VigVT",
+                        "isStatic": false,
+                        "lastClassName": "c3",
+                        "rules": Array [
+                          "
+  font-size: 0.8rem;
+  color: ",
+                          [Function],
+                          ";
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 16px;
+  font-size: 12px;
+",
+                        ],
+                      },
+                      "displayName": "styled.p",
+                      "foldedComponentIds": Array [],
+                      "render": [Function],
+                      "styledComponentId": "sc-VigVT",
+                      "target": "p",
+                      "toString": [Function],
+                      "warnTooManyClasses": [Function],
+                      "withComponent": [Function],
+                    }
+                  }
+                  forwardedRef={null}
+                >
+                  <p
+                    className="c3"
+                  >
+                    A test sandbox
+                  </p>
+                </StyledComponent>
+              </styled.p>
+              <Tags
+                tags={
+                  Array [
+                    "Tag 1",
+                    "Tag 2",
+                    "Tag 3",
+                  ]
+                }
+              >
+                <styled.div
+                  align="left"
+                >
+                  <StyledComponent
+                    align="left"
+                    forwardedComponent={
+                      Object {
+                        "$$typeof": Symbol(react.forward_ref),
+                        "attrs": Array [],
+                        "componentStyle": ComponentStyle {
+                          "componentId": "sc-bwzfXH",
+                          "isStatic": false,
+                          "lastClassName": "c4",
+                          "rules": Array [
+                            "
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
+  ",
+                            [Function],
+                            ";
+",
+                          ],
+                        },
+                        "displayName": "styled.div",
+                        "foldedComponentIds": Array [],
+                        "render": [Function],
+                        "styledComponentId": "sc-bwzfXH",
+                        "target": "div",
+                        "toString": [Function],
+                        "warnTooManyClasses": [Function],
+                        "withComponent": [Function],
+                      }
+                    }
+                    forwardedRef={null}
+                  >
+                    <div
+                      className="c4"
+                    >
+                      <styled.div
+                        horizontal={0.2}
+                        key="Tag 1"
+                        vertical={0.5}
+                      >
+                        <StyledComponent
+                          forwardedComponent={
+                            Object {
+                              "$$typeof": Symbol(react.forward_ref),
+                              "attrs": Array [],
+                              "componentStyle": ComponentStyle {
+                                "componentId": "sc-bdVaJa",
+                                "isStatic": false,
+                                "lastClassName": "c5",
+                                "rules": Array [
+                                  "
+  margin: ",
+                                  [Function],
+                                  ";
+  box-sizing: border-box;
+",
+                                ],
+                              },
+                              "displayName": "styled.div",
+                              "foldedComponentIds": Array [],
+                              "render": [Function],
+                              "styledComponentId": "sc-bdVaJa",
+                              "target": "div",
+                              "toString": [Function],
+                              "warnTooManyClasses": [Function],
+                              "withComponent": [Function],
+                            }
+                          }
+                          forwardedRef={null}
+                          horizontal={0.2}
+                          vertical={0.5}
+                        >
+                          <div
+                            className="c5"
+                          >
+                            <Tag
+                              tag="Tag 1"
+                            >
+                              <styled.span
+                                canRemove={false}
+                              >
+                                <StyledComponent
+                                  canRemove={false}
+                                  forwardedComponent={
+                                    Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "attrs": Array [],
+                                      "componentStyle": ComponentStyle {
+                                        "componentId": "sc-htpNat",
+                                        "isStatic": false,
+                                        "lastClassName": "c6",
+                                        "rules": Array [
+                                          "
+  position: relative;
+  color: white;
+  background-color: ",
+                                          [Function],
+                                          ";
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+
+  ",
+                                          [Function],
+                                          ";
+",
+                                        ],
+                                      },
+                                      "displayName": "styled.span",
+                                      "foldedComponentIds": Array [],
+                                      "render": [Function],
+                                      "styledComponentId": "sc-htpNat",
+                                      "target": "span",
+                                      "toString": [Function],
+                                      "warnTooManyClasses": [Function],
+                                      "withComponent": [Function],
+                                    }
+                                  }
+                                  forwardedRef={null}
+                                >
+                                  <span
+                                    className="c6"
+                                  >
+                                    Tag 1
+                                  </span>
+                                </StyledComponent>
+                              </styled.span>
+                            </Tag>
+                          </div>
+                        </StyledComponent>
+                      </styled.div>
+                      <styled.div
+                        horizontal={0.2}
+                        key="Tag 2"
+                        vertical={0.5}
+                      >
+                        <StyledComponent
+                          forwardedComponent={
+                            Object {
+                              "$$typeof": Symbol(react.forward_ref),
+                              "attrs": Array [],
+                              "componentStyle": ComponentStyle {
+                                "componentId": "sc-bdVaJa",
+                                "isStatic": false,
+                                "lastClassName": "c5",
+                                "rules": Array [
+                                  "
+  margin: ",
+                                  [Function],
+                                  ";
+  box-sizing: border-box;
+",
+                                ],
+                              },
+                              "displayName": "styled.div",
+                              "foldedComponentIds": Array [],
+                              "render": [Function],
+                              "styledComponentId": "sc-bdVaJa",
+                              "target": "div",
+                              "toString": [Function],
+                              "warnTooManyClasses": [Function],
+                              "withComponent": [Function],
+                            }
+                          }
+                          forwardedRef={null}
+                          horizontal={0.2}
+                          vertical={0.5}
+                        >
+                          <div
+                            className="c5"
+                          >
+                            <Tag
+                              tag="Tag 2"
+                            >
+                              <styled.span
+                                canRemove={false}
+                              >
+                                <StyledComponent
+                                  canRemove={false}
+                                  forwardedComponent={
+                                    Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "attrs": Array [],
+                                      "componentStyle": ComponentStyle {
+                                        "componentId": "sc-htpNat",
+                                        "isStatic": false,
+                                        "lastClassName": "c6",
+                                        "rules": Array [
+                                          "
+  position: relative;
+  color: white;
+  background-color: ",
+                                          [Function],
+                                          ";
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+
+  ",
+                                          [Function],
+                                          ";
+",
+                                        ],
+                                      },
+                                      "displayName": "styled.span",
+                                      "foldedComponentIds": Array [],
+                                      "render": [Function],
+                                      "styledComponentId": "sc-htpNat",
+                                      "target": "span",
+                                      "toString": [Function],
+                                      "warnTooManyClasses": [Function],
+                                      "withComponent": [Function],
+                                    }
+                                  }
+                                  forwardedRef={null}
+                                >
+                                  <span
+                                    className="c6"
+                                  >
+                                    Tag 2
+                                  </span>
+                                </StyledComponent>
+                              </styled.span>
+                            </Tag>
+                          </div>
+                        </StyledComponent>
+                      </styled.div>
+                      <styled.div
+                        horizontal={0.2}
+                        key="Tag 3"
+                        vertical={0.5}
+                      >
+                        <StyledComponent
+                          forwardedComponent={
+                            Object {
+                              "$$typeof": Symbol(react.forward_ref),
+                              "attrs": Array [],
+                              "componentStyle": ComponentStyle {
+                                "componentId": "sc-bdVaJa",
+                                "isStatic": false,
+                                "lastClassName": "c5",
+                                "rules": Array [
+                                  "
+  margin: ",
+                                  [Function],
+                                  ";
+  box-sizing: border-box;
+",
+                                ],
+                              },
+                              "displayName": "styled.div",
+                              "foldedComponentIds": Array [],
+                              "render": [Function],
+                              "styledComponentId": "sc-bdVaJa",
+                              "target": "div",
+                              "toString": [Function],
+                              "warnTooManyClasses": [Function],
+                              "withComponent": [Function],
+                            }
+                          }
+                          forwardedRef={null}
+                          horizontal={0.2}
+                          vertical={0.5}
+                        >
+                          <div
+                            className="c5"
+                          >
+                            <Tag
+                              tag="Tag 3"
+                            >
+                              <styled.span
+                                canRemove={false}
+                              >
+                                <StyledComponent
+                                  canRemove={false}
+                                  forwardedComponent={
+                                    Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "attrs": Array [],
+                                      "componentStyle": ComponentStyle {
+                                        "componentId": "sc-htpNat",
+                                        "isStatic": false,
+                                        "lastClassName": "c6",
+                                        "rules": Array [
+                                          "
+  position: relative;
+  color: white;
+  background-color: ",
+                                          [Function],
+                                          ";
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+
+  ",
+                                          [Function],
+                                          ";
+",
+                                        ],
+                                      },
+                                      "displayName": "styled.span",
+                                      "foldedComponentIds": Array [],
+                                      "render": [Function],
+                                      "styledComponentId": "sc-htpNat",
+                                      "target": "span",
+                                      "toString": [Function],
+                                      "warnTooManyClasses": [Function],
+                                      "withComponent": [Function],
+                                    }
+                                  }
+                                  forwardedRef={null}
+                                >
+                                  <span
+                                    className="c6"
+                                  >
+                                    Tag 3
+                                  </span>
+                                </StyledComponent>
+                              </styled.span>
+                            </Tag>
+                          </div>
+                        </StyledComponent>
+                      </styled.div>
+                    </div>
+                  </StyledComponent>
+                </styled.div>
+              </Tags>
+            </div>
+          </StyledComponent>
+        </styled.div>
+        <styled.div
+          color="#fff"
+        >
+          <StyledComponent
+            color="#fff"
+            forwardedComponent={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": ComponentStyle {
+                  "componentId": "sc-kpOJdX",
+                  "isStatic": false,
+                  "lastClassName": "c7",
+                  "rules": Array [
+                    "
+  ",
+                    [Function],
+                    "
+",
+                  ],
+                },
+                "displayName": "styled.div",
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "styledComponentId": "sc-kpOJdX",
+                "target": "div",
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+            forwardedRef={null}
+          >
+            <div
+              className="c7"
+              color="#fff"
+            />
+          </StyledComponent>
+        </styled.div>
+        <div>
+          <styled.span>
+            <StyledComponent
+              forwardedComponent={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "attrs": Array [],
+                  "componentStyle": ComponentStyle {
+                    "componentId": "sc-dxgOiQ",
+                    "isStatic": true,
+                    "lastClassName": "c8",
+                    "rules": Array [
+                      "
+  display: block;
+  width: 100%;
+  margin: 6px 12px;
+  font-family: Poppins, Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+",
+                    ],
+                  },
+                  "displayName": "styled.span",
+                  "foldedComponentIds": Array [],
+                  "render": [Function],
+                  "styledComponentId": "sc-dxgOiQ",
+                  "target": "span",
+                  "toString": [Function],
+                  "warnTooManyClasses": [Function],
+                  "withComponent": [Function],
+                }
+              }
+              forwardedRef={null}
+            >
+              <span
+                className="c8"
+              >
+                1234
+              </span>
+            </StyledComponent>
+          </styled.span>
+          <styled.span>
+            <StyledComponent
+              forwardedComponent={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "attrs": Array [],
+                  "componentStyle": ComponentStyle {
+                    "componentId": "sc-ckVGcZ",
+                    "isStatic": false,
+                    "lastClassName": "c9",
+                    "rules": Array [
+                      "
+  ",
+                      [Function],
+                      "
+",
+                    ],
+                  },
+                  "displayName": "styled.span",
+                  "foldedComponentIds": Array [],
+                  "render": [Function],
+                  "styledComponentId": "sc-ckVGcZ",
+                  "target": "span",
+                  "toString": [Function],
+                  "warnTooManyClasses": [Function],
+                  "withComponent": [Function],
+                }
+              }
+              forwardedRef={null}
+            >
+              <span
+                className="c9"
+              >
+                A test sandbox
+              </span>
+            </StyledComponent>
+          </styled.span>
+        </div>
+      </button>
+    </StyledComponent>
+  </styled.button>
+</CustomTemplate>
+`;

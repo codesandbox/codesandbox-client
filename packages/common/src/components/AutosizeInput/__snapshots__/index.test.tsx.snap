@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AutosizeInput /> rendering renders correctly 1`] = `
+.c0 input {
+  -webkit-transition: 0.3s ease border-color;
+  transition: 0.3s ease border-color;
+  background-color: rgba(0,0,0,0.3);
+  color: white;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  padding: 0.25em;
+  width: inherit;
+  box-sizing: border-box;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.c0 input:focus {
+  border-color: rgba(64,169,243,0.4);
+}
+
+<Styled(AutosizeInput)>
+  <StyledComponent
+    forwardedComponent={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "attrs": Array [],
+        "componentStyle": ComponentStyle {
+          "componentId": "sc-htpNat",
+          "isStatic": false,
+          "lastClassName": "c0",
+          "rules": Array [
+            "
+  input {
+    ",
+            "
+  transition: 0.3s ease border-color;
+  background-color: ",
+            [Function],
+            ";
+  color: ",
+            [Function],
+            ";
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  padding: 0.25em;
+  width: ",
+            [Function],
+            ";
+  box-sizing: border-box;
+
+  border: 1px solid
+    ",
+            [Function],
+            ";
+
+  &:focus {
+    border-color: ",
+            [Function],
+            ";
+  }
+",
+            ";
+  }
+",
+          ],
+        },
+        "displayName": "Styled(AutosizeInput)",
+        "foldedComponentIds": Array [],
+        "render": [Function],
+        "styledComponentId": "sc-htpNat",
+        "target": [Function],
+        "toString": [Function],
+        "warnTooManyClasses": [Function],
+        "withComponent": [Function],
+      }
+    }
+    forwardedRef={null}
+  >
+    <AutosizeInput
+      className="c0"
+      injectStyles={true}
+      minWidth={1}
+    >
+      <div
+        className="c0"
+        style={
+          Object {
+            "display": "inline-block",
+          }
+        }
+      >
+        <input
+          style={
+            Object {
+              "boxSizing": "content-box",
+              "width": "2px",
+            }
+          }
+        />
+        <div
+          style={
+            Object {
+              "height": 0,
+              "left": 0,
+              "overflow": "scroll",
+              "position": "absolute",
+              "top": 0,
+              "visibility": "hidden",
+              "whiteSpace": "pre",
+            }
+          }
+        />
+      </div>
+    </AutosizeInput>
+  </StyledComponent>
+</Styled(AutosizeInput)>
+`;

@@ -1,0 +1,216 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Checkbox /> rendering checkbox checked 1`] = `
+.c0 {
+  background-image: none;
+  border: 2px solid transparent;
+  background: rgba(255,255,255,0.3) url('') no-repeat 50%/10px;
+  box-shadow: none;
+  display: inline-block;
+  border-radius: 3.5px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 0.75rem;
+  -webkit-transition: 0.15s ease all;
+  transition: 0.15s ease all;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.c0:focus,
+.c0:active {
+  border-color: #66b9f4;
+}
+
+.c0:checked {
+  background: #66b9f4 url('') no-repeat 50%/10px;
+  border-color: #66b9f4;
+  background-image: url("data%3Aimage%2Fsvg%2Bxml%3Butf8%2C%3Csvg%20viewBox%3D'0%200%2010%209'%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%3E%3Cpath%20d%3D'M1%204.88l2.378%202.435L9.046%201.6'%20stroke-width%3D'1.6'%20stroke%3D'%2523FFF'%20fill%3D'none'%20fill-rule%3D'evenodd'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E");
+}
+
+<Checkbox
+  checked={true}
+>
+  <styled.input
+    checked={true}
+    type="checkbox"
+  >
+    <StyledComponent
+      checked={true}
+      forwardedComponent={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "attrs": Array [],
+          "componentStyle": ComponentStyle {
+            "componentId": "sc-bdVaJa",
+            "isStatic": false,
+            "lastClassName": "c0",
+            "rules": Array [
+              "
+  background-image: none;
+  border: 2px solid transparent;
+  background: ",
+              [Function],
+              "
+    url('') no-repeat 50%/10px;
+
+  box-shadow: none;
+  display: inline-block;
+  border-radius: 3.5px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 0.75rem;
+  transition: 0.15s ease all;
+  appearance: none;
+
+  &:focus,
+  &:active {
+    border-color: ",
+              [Function],
+              ";
+  }
+
+  &:checked {
+    background: ",
+              [Function],
+              " url('') no-repeat 50%/10px;
+    border-color: ",
+              [Function],
+              ";
+    background-image: url(\\"",
+              "data%3Aimage%2Fsvg%2Bxml%3Butf8%2C%3Csvg%20viewBox%3D'0%200%2010%209'%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%3E%3Cpath%20d%3D'M1%204.88l2.378%202.435L9.046%201.6'%20stroke-width%3D'1.6'%20stroke%3D'%2523FFF'%20fill%3D'none'%20fill-rule%3D'evenodd'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E",
+              "\\");
+  }
+",
+            ],
+          },
+          "displayName": "styled.input",
+          "foldedComponentIds": Array [],
+          "render": [Function],
+          "styledComponentId": "sc-bdVaJa",
+          "target": "input",
+          "toString": [Function],
+          "warnTooManyClasses": [Function],
+          "withComponent": [Function],
+        }
+      }
+      forwardedRef={null}
+      type="checkbox"
+    >
+      <input
+        checked={true}
+        className="c0"
+        type="checkbox"
+      />
+    </StyledComponent>
+  </styled.input>
+</Checkbox>
+`;
+
+exports[`<Checkbox /> rendering no props 1`] = `
+.c0 {
+  background-image: none;
+  border: 2px solid transparent;
+  background: rgba(255,255,255,0.3) url('') no-repeat 50%/10px;
+  box-shadow: none;
+  display: inline-block;
+  border-radius: 3.5px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 0.75rem;
+  -webkit-transition: 0.15s ease all;
+  transition: 0.15s ease all;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.c0:focus,
+.c0:active {
+  border-color: #66b9f4;
+}
+
+.c0:checked {
+  background: #66b9f4 url('') no-repeat 50%/10px;
+  border-color: #66b9f4;
+  background-image: url("data%3Aimage%2Fsvg%2Bxml%3Butf8%2C%3Csvg%20viewBox%3D'0%200%2010%209'%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%3E%3Cpath%20d%3D'M1%204.88l2.378%202.435L9.046%201.6'%20stroke-width%3D'1.6'%20stroke%3D'%2523FFF'%20fill%3D'none'%20fill-rule%3D'evenodd'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E");
+}
+
+<Checkbox>
+  <styled.input
+    type="checkbox"
+  >
+    <StyledComponent
+      forwardedComponent={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "attrs": Array [],
+          "componentStyle": ComponentStyle {
+            "componentId": "sc-bdVaJa",
+            "isStatic": false,
+            "lastClassName": "c0",
+            "rules": Array [
+              "
+  background-image: none;
+  border: 2px solid transparent;
+  background: ",
+              [Function],
+              "
+    url('') no-repeat 50%/10px;
+
+  box-shadow: none;
+  display: inline-block;
+  border-radius: 3.5px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 0.75rem;
+  transition: 0.15s ease all;
+  appearance: none;
+
+  &:focus,
+  &:active {
+    border-color: ",
+              [Function],
+              ";
+  }
+
+  &:checked {
+    background: ",
+              [Function],
+              " url('') no-repeat 50%/10px;
+    border-color: ",
+              [Function],
+              ";
+    background-image: url(\\"",
+              "data%3Aimage%2Fsvg%2Bxml%3Butf8%2C%3Csvg%20viewBox%3D'0%200%2010%209'%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%3E%3Cpath%20d%3D'M1%204.88l2.378%202.435L9.046%201.6'%20stroke-width%3D'1.6'%20stroke%3D'%2523FFF'%20fill%3D'none'%20fill-rule%3D'evenodd'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E",
+              "\\");
+  }
+",
+            ],
+          },
+          "displayName": "styled.input",
+          "foldedComponentIds": Array [],
+          "render": [Function],
+          "styledComponentId": "sc-bdVaJa",
+          "target": "input",
+          "toString": [Function],
+          "warnTooManyClasses": [Function],
+          "withComponent": [Function],
+        }
+      }
+      forwardedRef={null}
+      type="checkbox"
+    >
+      <input
+        className="c0"
+        type="checkbox"
+      />
+    </StyledComponent>
+  </styled.input>
+</Checkbox>
+`;
