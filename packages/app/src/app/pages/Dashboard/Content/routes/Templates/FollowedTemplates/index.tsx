@@ -10,7 +10,7 @@ import ContextMenu from 'app/components/ContextMenu';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 // @ts-ignore
-import { unfollowTemplate } from 'app/src/app/pages/Sandbox/Editor/Workspace/items/NotOwnedSandboxInfo/mutations.gql';
+import { unfollowTemplate } from './mutations.gql';
 
 import { LIST_FOLLOWED_TEMPLATES } from '../../../../queries';
 import { ButtonContainer } from './elements';

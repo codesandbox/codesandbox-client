@@ -1,39 +1,29 @@
-mutation followTemplate($template: ID!, $team: ID) {
-  followTemplate(templateId: $template, teamId: $team) {
-    id
-    following {
-      isFollowing
-      entity {
-        __typename
-        ... on User {
-          id
-          name: username
-        }
-        ... on Team {
-          id
-          name
-        }
+fragment templateFields on Template {
+  id
+  following {
+    isFollowing
+    entity {
+      __typename
+      ... on User {
+        id
+        name: username
+      }
+      ... on Team {
+        id
+        name
       }
     }
   }
 }
 
+mutation followTemplate($template: ID!, $team: ID) {
+  template: followTemplate(templateId: $template, teamId: $team) {
+    ...templateFields
+  }
+}
+
 mutation unfollowTemplate($template: ID!, $team: ID) {
-  followTemplate(templateId: $template, teamId: $team) {
-    id
-    following {
-      isFollowing
-      entity {
-        __typename
-        ... on User {
-          id
-          name: username
-        }
-        ... on Team {
-          id
-          name
-        }
-      }
-    }
+  template: unfollowTemplate(templateId: $template, teamId: $team) {
+    ...templateFields
   }
 }
