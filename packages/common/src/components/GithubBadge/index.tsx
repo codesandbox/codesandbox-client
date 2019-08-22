@@ -27,20 +27,18 @@ const GithubBadge: FunctionComponent<BadgeProps> = ({
   url,
   branch,
   ...props
-}) => {
-  return (
-    <DivOrA {...props} href={url}>
-      <BorderRadius hasUrl={Boolean(url)}>
-        <Icon>
-          <GithubIcon />
-        </Icon>
-        <Text>
-          {username}/{repo}
-          {branch && branch !== 'master' ? `@${branch}` : ''}
-        </Text>
-      </BorderRadius>
-    </DivOrA>
-  );
-};
+}) => (
+  <DivOrA {...props} href={url}>
+    <BorderRadius hasUrl={Boolean(url)}>
+      <Icon>
+        <GithubIcon />
+      </Icon>
+      <Text>
+        {username}/{repo}
+        {branch && branch !== 'master' ? `@${branch}` : ''}
+      </Text>
+    </BorderRadius>
+  </DivOrA>
+);
 
 export default GithubBadge;

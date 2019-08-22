@@ -90,6 +90,7 @@
     "jest-environment-enzyme": "^7.1.0",
     "jest-enzyme": "^7.1.0",
     "jest-styled-components": "^6.3.3",
+    "jest-svg-transformer": "^1.0.0",
     "rimraf": "^2.6.3",
     "typescript": "3.5.2",
     "yarn": "^1.17.3"
@@ -103,7 +104,8 @@
       "node_modules"
     ],
     "transform": {
-      "^.+\\.[t|j]sx?$": "babel-jest"
+      "^.+\\.[t|j]sx?$": "babel-jest",
+      "^.+\\.svg$": "jest-svg-transformer"
     },
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

@@ -13,7 +13,7 @@ interface PatronStarProps {
 
 export function PatronStar({ subscriptionSince, ...props }: PatronStarProps) {
   return (
-    <Tooltip content={`Patron since ${format(subscriptionSince, 'MMM Y')}`}>
+    <Tooltip content={`Patron since ${format(subscriptionSince, 'MMM YY')}`}>
       <Container>
         <StarIcon {...props} />
       </Container>
