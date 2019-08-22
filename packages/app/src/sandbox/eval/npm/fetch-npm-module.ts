@@ -123,7 +123,7 @@ export function setCombinedMetas(givenCombinedMetas: Meta) {
   combinedMetas = givenCombinedMetas;
 }
 
-const CSB_DRAFT_PROTOCOL = /https:\/\/gh\.(staging\.)?csb.dev/;
+const CSB_DRAFT_PROTOCOL = /https:\/\/pkg(-staging)?\.csb.dev/;
 
 const getFetchProtocol = (depVersion: string, useFallback = false) => {
   const isDraftProtocol = CSB_DRAFT_PROTOCOL.test(depVersion);
