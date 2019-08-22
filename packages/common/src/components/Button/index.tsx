@@ -11,9 +11,9 @@ export type Props = {
   children?: React.ReactNode;
   disabled?: boolean;
   type?: 'button' | 'reset' | 'submit';
+  danger?: boolean;
   secondary?: boolean;
   red?: boolean;
-  danger?: boolean;
 };
 
 function ButtonComponent({ style = {}, ...props }: Props) {

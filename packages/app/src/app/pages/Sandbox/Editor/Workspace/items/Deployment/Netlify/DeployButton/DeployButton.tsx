@@ -1,9 +1,7 @@
-import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
-
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { DeploymentIntegration } from 'app/components/DeploymentIntegration';
-import NetlifyLogo from 'app/components/NetlifyLogo';
-
+import { NetlifyLogo } from 'app/components/NetlifyLogo';
 import { DeployButtonContainer } from '../../elements';
 
 type Props = {
@@ -28,14 +26,14 @@ export const DeployButton = inject('store', 'signals')(
       <DeployButtonContainer>
         <DeploymentIntegration
           beta
-          color="#FFFFFF"
-          deploy={deployWithNetlify}
+          bgColor="#FFFFFF"
+          onDeploy={deployWithNetlify}
           Icon={NetlifyLogo}
           light
           loading={deploying || building}
           name="netlify"
           open={isOpen}
-          toggle={toggle}
+          onToggle={toggle}
         >
           Deploy your sandbox site on{' '}
           <a

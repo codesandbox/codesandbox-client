@@ -1,14 +1,11 @@
 import React from 'react';
-
 import { inject, observer } from 'app/componentConnectors';
-
 import PricingInfo from './PricingInfo';
 import PricingChoice from './PricingChoice';
 import Badge from './Badge';
-
 import { Container, Details } from './elements';
 
-function PricingModal({ store }) {
+const PricingModal = ({ store }) => {
   const badge = `patron-${store.patron.tier}`;
 
   return (
@@ -20,6 +17,6 @@ function PricingModal({ store }) {
       </Details>
     </Container>
   );
-}
+};
 
 export default inject('store')(observer(PricingModal));

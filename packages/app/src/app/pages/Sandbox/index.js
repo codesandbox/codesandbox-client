@@ -1,19 +1,17 @@
-import * as React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import QuickActions from 'app/pages/Sandbox/QuickActions';
-
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import NotFound from 'app/pages/common/NotFound';
-import Navigation from 'app/pages/common/Navigation';
-import Title from 'app/components/Title';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import Padding from '@codesandbox/common/lib/components/spacing/Padding';
-import Skeleton from 'app/components/Skeleton';
-import GithubIntegration from 'app/src/app/pages/common/GithubIntegration';
-
+import { inject, observer } from 'app/componentConnectors';
+import { Title } from 'app/components/Title';
+import { Skeleton } from 'app/components/Skeleton';
+import QuickActions from 'app/pages/Sandbox/QuickActions';
+import NotFound from 'app/pages/common/NotFound';
+import Navigation from 'app/pages/common/Navigation';
+import GithubIntegration from 'app/pages/common/GithubIntegration';
 import Editor from './Editor';
 
 class SandboxPage extends React.Component {

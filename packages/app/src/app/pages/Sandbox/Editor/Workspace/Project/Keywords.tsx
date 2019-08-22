@@ -1,8 +1,8 @@
 import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
 import Tags from '@codesandbox/common/lib/components/Tags';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import EditableTags from 'app/components/EditableTags';
+import { inject, hooksObserver } from 'app/componentConnectors';
+import { EditableTags } from 'app/components/EditableTags';
 import { Item } from './elements';
 
 interface IKeywordsProps {

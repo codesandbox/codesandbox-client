@@ -139,6 +139,8 @@ export async function uploadFiles({ api, props, path }) {
               /\.haml$/.test(filePath) ||
               /\.pug$/.test(filePath) ||
               /\.svg$/.test(filePath) ||
+              /\.md$/.test(filePath) ||
+              /\.svelte$/.test(filePath) ||
               file.type.startsWith('text/') ||
               file.type === 'application/json') &&
             dataURI.length < MAX_FILE_SIZE

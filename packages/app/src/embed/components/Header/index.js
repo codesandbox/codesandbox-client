@@ -2,7 +2,7 @@
 import * as React from 'react';
 import type { Sandbox } from '@codesandbox/common/lib/types';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import ModeIcons from 'app/components/ModeIcons';
+import { ModeIcons } from 'app/components/ModeIcons';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import Logo from '@codesandbox/common/lib/components/Logo';

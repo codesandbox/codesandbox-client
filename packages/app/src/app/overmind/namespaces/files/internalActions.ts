@@ -49,7 +49,9 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
     });
 
     effects.notificationToast.add({
-      message: `We recovered ${recoveredList.length} unsaved files from a previous session`,
+      message: `We recovered ${
+        recoveredList.length
+      } unsaved files from a previous session`,
       status: NotificationStatus.NOTICE,
     });
   }
@@ -91,6 +93,8 @@ export const uploadFiles: AsyncAction<
             /\.haml$/.test(filePath) ||
             /\.pug$/.test(filePath) ||
             /\.svg$/.test(filePath) ||
+            /\.md$/.test(filePath) ||
+            /\.svelte$/.test(filePath) ||
             file.type.startsWith('text/') ||
             file.type === 'application/json') &&
           dataURI.length < MAX_FILE_SIZE

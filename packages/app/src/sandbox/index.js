@@ -1,6 +1,6 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
-
+import { activate, initialize } from 'react-devtools-inline/backend';
 import _debug from '@codesandbox/common/lib/utils/debug';
 
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
@@ -12,6 +12,9 @@ import setupConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 
 import compile, { getCurrentManager } from './compile';
+
+// Call this before importing React (or any other packages that might import React).
+initialize(window);
 
 const host = process.env.CODESANDBOX_HOST;
 const debug = _debug('cs:sandbox');
@@ -65,6 +68,15 @@ requirePolyfills().then(() => {
       // Means we're in the editor
       setupHistoryListeners();
       setupConsole();
+      window.addEventListener('message', ({ data }) => {
+        switch (data.type) {
+          case 'activate':
+            activate(window);
+            break;
+          default:
+            break;
+        }
+      });
     }
   }
 

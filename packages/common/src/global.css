@@ -67,3 +67,20 @@ a {
 .react-console::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.4);
 }
+
+/**
+* The React DevTools has a file called root.css with the rule
+*
+*  * {
+*   box-sizing: content-box;
+*   -webkit-font-smoothing: antialiased;
+*  }
+*
+* which changes the styles in all CodeSandbox elements. This is our current
+* hack to fix it, we have a bit more specificity so we get our stylings back until
+* the issue has been fixed.
+**/
+body * {
+  box-sizing: initial;
+  -webkit-font-smoothing: antialiased;
+}

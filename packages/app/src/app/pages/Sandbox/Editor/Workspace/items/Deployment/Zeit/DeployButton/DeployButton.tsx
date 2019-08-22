@@ -1,7 +1,7 @@
 import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
 import { DeploymentIntegration } from 'app/components/DeploymentIntegration';
-import NowLogo from 'app/components/NowLogo';
+import { NowLogo } from 'app/components/NowLogo';
 import { DeployButtonContainer } from '../../elements';
 
 type Props = {
@@ -22,12 +22,12 @@ export const DeployButton = inject('store', 'signals')(
     }: Props) => (
       <DeployButtonContainer>
         <DeploymentIntegration
-          color="#000000"
-          deploy={deploySandboxClicked}
+          bgColor="#000000"
+          onDeploy={deploySandboxClicked}
           Icon={NowLogo}
           name="Now"
           open={isOpen}
-          toggle={toggle}
+          onToggle={toggle}
         >
           Deploy your sandbox on{' '}
           <a

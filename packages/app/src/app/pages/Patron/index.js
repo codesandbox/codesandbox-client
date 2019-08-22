@@ -1,14 +1,11 @@
 import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
-
-import Title from 'app/components/Title';
-import SubTitle from 'app/components/SubTitle';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-
+import { inject, observer } from 'app/componentConnectors';
+import { Title } from 'app/components/Title';
+import { SubTitle } from 'app/components/SubTitle';
 import Navigation from 'app/pages/common/Navigation';
-
 import PricingModal from './PricingModal';
 import { Content } from './elements';
 

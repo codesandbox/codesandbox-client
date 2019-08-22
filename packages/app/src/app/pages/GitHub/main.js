@@ -1,14 +1,12 @@
 import React from 'react';
-
-import Title from 'app/components/Title';
-import SubTitle from 'app/components/SubTitle';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import {
   gitHubToSandboxUrl,
   protocolAndHost,
   gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
-
+import { Title } from 'app/components/Title';
+import { SubTitle } from 'app/components/SubTitle';
 import {
   Content,
   Label,

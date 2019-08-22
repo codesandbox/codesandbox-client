@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Props as ButtonProps } from '../Button';
-import { Wrapper, Loader } from './elements';
+import { Props as ButtonProps } from '../Button';
+import { Loader, RelativeButton } from './elements';
 
 type Props = ButtonProps & {
   loading?: boolean;
@@ -12,10 +12,10 @@ function ProgressButton({
   ...props
 }: Props) {
   return (
-    <Wrapper>
-      <Button disabled={disabled || loading} {...props} />
+    <RelativeButton disabled={disabled || loading} {...props}>
+      {props.children}
       {loading && <Loader />}
-    </Wrapper>
+    </RelativeButton>
   );
 }
 

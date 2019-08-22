@@ -59,6 +59,7 @@ export default function initialize() {
             compileNodeModulesWithEnv: true,
             config: {
               plugins: [
+                '@babel/plugin-transform-react-jsx-source',
                 'transform-flow-strip-types',
                 'transform-destructuring',
                 'babel-plugin-macros',

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Title from 'app/components/Title';
+import { Title } from 'app/components/Title';
 
 export const Heading = styled(Title)`
   margin-top: 3rem;

@@ -1,18 +1,16 @@
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { inject, hooksObserver } from 'app/componentConnectors';
 import {
   gitHubToSandboxUrl,
   protocolAndHost,
   gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
-import React, { useCallback, useEffect, useState } from 'react';
-
+import { inject, hooksObserver } from 'app/componentConnectors';
+import { Title } from 'app/components/Title';
+import { SubTitle } from 'app/components/SubTitle';
 import Navigation from 'app/pages/common/Navigation';
-import Title from 'app/components/Title';
-import SubTitle from 'app/components/SubTitle';
-
 import {
   Container,
   Content,

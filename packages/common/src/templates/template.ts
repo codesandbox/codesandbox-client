@@ -1,3 +1,5 @@
+import immer from 'immer';
+
 import { absolute } from '../utils/path';
 import {
   ConfigurationFile,
@@ -136,6 +138,7 @@ export default class Template {
     this.showCube = options.showCube != null ? options.showCube : true;
   }
 
+  // eslint-disable-next-line
   private getMainFromPackage(pkg: {
     main?: string[] | string;
   }): string | undefined {
@@ -151,7 +154,10 @@ export default class Template {
       if (typeof pkg.main === 'string') {
         return absolute(pkg.main);
       }
-    } catch (e) {}
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log(e);
+    }
   }
 
   /**
@@ -189,9 +195,19 @@ export default class Template {
   /**
    * Get the views that are tied to the template
    */
-  getViews(): ViewConfig[] {
+  getViews(configurationFiles: ParsedConfigurationFiles): ViewConfig[] {
     if (this.isServer) {
       return SERVER_VIEWS;
+    }
+
+    const dependencies =
+      configurationFiles.package &&
+      configurationFiles.package.parsed &&
+      configurationFiles.package.parsed.dependencies;
+    if (dependencies && dependencies.react) {
+      return immer(CLIENT_VIEWS, draft => {
+        draft[1].views.push({ id: 'codesandbox.react-devtools' });
+      });
     }
 
     return CLIENT_VIEWS;

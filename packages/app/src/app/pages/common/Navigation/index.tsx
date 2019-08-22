@@ -16,8 +16,8 @@ import Row from '@codesandbox/common/lib/components/flex/Row';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 // @ts-ignore
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
-import HeaderSearchBar from 'app/components/HeaderSearchBar';
-import OverlayComponent from 'app/components/Overlay';
+import { HeaderSearchBar } from 'app/components/HeaderSearchBar';
+import { Overlay } from 'app/components/Overlay';
 import Notifications from './Notifications';
 
 import SignInButton from '../SignInButton';
@@ -93,9 +93,9 @@ const Navigation = inject('store', 'signals')(
             )}
 
             {user && (
-              <OverlayComponent
+              <Overlay
                 isOpen={userNotifications.notificationsOpened}
-                Overlay={Notifications}
+                content={Notifications}
                 onOpen={userNotificationsSignals.notificationsOpened}
                 onClose={userNotificationsSignals.notificationsClosed}
                 event="Notifications"
@@ -119,7 +119,7 @@ const Navigation = inject('store', 'signals')(
                     </Tooltip>
                   </Action>
                 )}
-              </OverlayComponent>
+              </Overlay>
             )}
 
             <Action

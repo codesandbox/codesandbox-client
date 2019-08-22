@@ -1,10 +1,8 @@
 import React from 'react';
-import DelayedAnimation from 'app/components/DelayedAnimation';
-
+import { DelayedAnimation } from 'app/components/DelayedAnimation';
+import { Container, HeaderContainer, HeaderTitle } from '../elements';
 import SandboxGrid from '../SandboxGrid';
 import Filters from './Filters';
-
-import { Container, HeaderContainer, HeaderTitle } from '../elements';
 import { DashboardActions } from './Actions';
 import { ITemplate } from './types';
 

@@ -38,5 +38,6 @@ module.exports = {
     require.resolve('babel-plugin-styled-components'),
     require.resolve('babel-plugin-macros'),
     require.resolve('babel-plugin-graphql-tag'),
+    require.resolve('@babel/plugin-transform-react-display-name'),
   ],
 };

@@ -1,8 +1,6 @@
 import React from 'react';
-
 import Relative from '@codesandbox/common/lib/components/Relative';
-import SocialInfo from 'app/components/SocialInfo';
-
+import { SocialInfo } from 'app/components/SocialInfo';
 import {
   Container,
   SocialContainer,
@@ -12,7 +10,7 @@ import {
   Selector,
 } from './elements';
 
-function SideNavigation({ menuItems, itemId, setItem }) {
+const SideNavigation = ({ menuItems, itemId, setItem }) => {
   const itemIndex = menuItems.findIndex(item => item.id === itemId);
 
   return (
@@ -39,6 +37,6 @@ function SideNavigation({ menuItems, itemId, setItem }) {
       </SocialContainer>
     </Container>
   );
-}
+};
 
 export default SideNavigation;

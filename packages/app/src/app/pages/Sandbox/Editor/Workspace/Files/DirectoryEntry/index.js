@@ -3,7 +3,7 @@ import { inject, observer } from 'app/componentConnectors';
 import { DropTarget } from 'react-dnd';
 import { reaction } from 'mobx';
 import Modal from 'app/components/Modal';
-import Alert from 'app/components/Alert';
+import { Alert } from 'app/components/Alert';
 import { NativeTypes } from 'react-dnd-html5-backend';
 
 import validateTitle from './validateTitle';

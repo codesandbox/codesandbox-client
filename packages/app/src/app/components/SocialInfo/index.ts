@@ -1,0 +1,1 @@
+export { SocialInfo } from './SocialInfo';

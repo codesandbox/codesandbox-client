@@ -1,20 +1,17 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import React, { useCallback, useEffect, useState } from 'react';
 import getTime from 'date-fns/get_time';
 import subMonths from 'date-fns/sub_months';
 import subWeeks from 'date-fns/sub_weeks';
 import format from 'date-fns/format';
-import { inject, hooksObserver } from 'app/componentConnectors';
-import React, { useCallback, useEffect, useState } from 'react';
 import DayPicker from 'react-day-picker';
-
-import 'react-day-picker/lib/style.css';
-
-import SubTitle from 'app/components/SubTitle';
-import DelayedAnimation from 'app/components/DelayedAnimation';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import { inject, hooksObserver } from 'app/componentConnectors';
+import { SubTitle } from 'app/components/SubTitle';
+import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import Navigation from 'app/pages/common/Navigation';
-
+import 'react-day-picker/lib/style.css';
 import { Container, Buttons, Heading, PickerWrapper } from './elements';
 import SandboxCard from './SandboxCard';
 

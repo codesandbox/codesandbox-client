@@ -1,15 +1,16 @@
 import getTemplateDefinition from '../';
 import { resolveModule } from '../../sandbox/modules';
-import { ViewConfig } from '../template';
+import { ViewConfig, ParsedConfigurationFiles } from '../template';
 import { Sandbox } from '../../types';
 
 export const getPreviewTabs = (
   sandbox: Sandbox,
+  configurations: ParsedConfigurationFiles,
   intermediatePreviewCode = ''
 ) => {
   const template = getTemplateDefinition(sandbox.template);
 
-  let views = template.getViews();
+  let views = template.getViews(configurations);
 
   try {
     const workspaceConfig = intermediatePreviewCode

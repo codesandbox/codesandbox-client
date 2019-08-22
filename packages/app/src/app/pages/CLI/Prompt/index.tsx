@@ -1,12 +1,10 @@
 import React from 'react';
-
-import Title from 'app/components/Title';
-import SubTitle from 'app/components/SubTitle';
 import { Button } from '@codesandbox/common/lib/components/Button';
-
+import { Title } from 'app/components/Title';
+import { SubTitle } from 'app/components/SubTitle';
 import { Container, Buttons, TokenContainer } from './elements';
 
-interface Props {
+interface IPromptProps {
   error: string;
   token: string;
   loading: boolean;
@@ -16,7 +14,13 @@ interface Props {
 
 const select = ({ target }: { target: any }) => target.select();
 
-const Prompt = ({ error, token, loading, username, signIn }: Props) => {
+const Prompt: React.FC<IPromptProps> = ({
+  error,
+  token,
+  loading,
+  username,
+  signIn,
+}) => {
   if (error) {
     return (
       <Container>
