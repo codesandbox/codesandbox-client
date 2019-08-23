@@ -170,6 +170,7 @@
     "react": "^16.9.0",
     "react-addons-css-transition-group": "^15.6.0",
     "react-apollo": "^2.5.6",
+    "react-autosuggest": "^9.4.3",
     "react-color": "^2.17.3",
     "react-day-picker": "^7.2.4",
     "react-devtools-inline": "^4.0.0",
