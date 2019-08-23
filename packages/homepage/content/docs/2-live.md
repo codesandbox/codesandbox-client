@@ -32,7 +32,7 @@ Others will be able to simultaneously edit, create, rename and update files. The
 
 With Classroom Mode you can define who can edit the sandbox. This is especially useful when working with large groups. You will only see the cursors of the users that are 'editor'.
 
-You can make give someone editor rights by pressing the '+' icon next to their name.
+You can give someone editor rights by pressing the '+' icon next to their name.
 
 ![Going Live](./images/live-make-editor.png)
 
