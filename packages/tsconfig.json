@@ -12,9 +12,6 @@
     ],
     "resolveJsonModule": true,
     "jsx": "react",
-    "allowJs": true,
-    "paths": {
-      "loader!*": ["*"]
-    }
+    "allowJs": true
   }
 }
