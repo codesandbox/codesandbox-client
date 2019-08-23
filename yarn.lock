@@ -3019,6 +3019,13 @@
     react-lifecycles-compat "^3.0.4"
     warning "^3.0.0"
 
+"@samuelmeuli/font-manager@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@samuelmeuli/font-manager/-/font-manager-1.2.0.tgz#ec9ec3dab4cbbd56ce2f579f332bbd7e3aa26894"
+  integrity sha512-ChNcTdVDL0OjXAMQYi8R9ScXvVZ3p32/4MupKbGksGtF1xPKKTM6vEo74XCBo7LEPQ+Eb+BiS9yD4B0Oo4/LQw==
+  dependencies:
+    "@babel/runtime" "^7.5.5"
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"
@@ -11462,6 +11469,13 @@ follow-redirects@^1.0.0:
   integrity sha512-m/pZQy4Gj287eNy94nivy5wchN3Kp+Q5WgUPNy5lJSZ3sgkVKSYV/ZChMAQVIgx1SqfZ2zBZtPA2YlXIWxxJOQ==
   dependencies:
     debug "^3.2.6"
+
+font-picker-react@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/font-picker-react/-/font-picker-react-3.4.0.tgz#29796ad849b23ce07924d78e3ae4f5586bfc13ce"
+  integrity sha512-9pi4LW5N56z+9Lh7RdCF89rTU97HJygFd90BEEd9xw2cGHauhtlcOeG79xeijXGKDcuttWRFO4w4P29cn+HfqQ==
+  dependencies:
+    "@samuelmeuli/font-manager" "^1.2.0"
 
 fontfaceobserver@^2.0.13:
   version "2.0.13"

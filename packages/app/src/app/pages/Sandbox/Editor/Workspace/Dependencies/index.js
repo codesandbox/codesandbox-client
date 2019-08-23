@@ -40,10 +40,10 @@ const Dependencies = inject('store', 'signals')(
 
       const templateDefinition = getDefinition(sandbox.template);
       const fonts = sandbox.externalResources.filter(resource =>
-        resource.includes('fonts.googleapis')
+        resource.includes('fonts.googleapis.com/css')
       );
       const otherResources = sandbox.externalResources.filter(
-        resource => !resource.includes('fonts.googleapis')
+        resource => !resource.includes('fonts.googleapis.com/css')
       );
 
       return (
