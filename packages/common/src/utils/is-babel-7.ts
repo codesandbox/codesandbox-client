@@ -30,8 +30,8 @@ export function isBabel7(
     return true;
   }
 
-  if (dependencies['svelte'] || devDependencies['svelte']) {
-    const ver = dependencies['svelte'] || devDependencies['svelte'];
+  if (dependencies.svelte || devDependencies.svelte) {
+    const ver = dependencies.svelte || devDependencies.svelte;
     const [maj] = ver.split('.');
 
     if (maj) {

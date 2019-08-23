@@ -20,13 +20,13 @@ import {
   SandboxImage,
   SandboxInfo,
   TemplateIcon,
-  Author,
 } from './elements';
 import Tags from '../Tags';
 
 const getScreenshot = (id: string) =>
   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
 
+/* eslint-disable camelcase */
 export interface Sandbox {
   title: string;
   description: string;
@@ -42,7 +42,7 @@ export interface Sandbox {
     avatar_url: string;
   };
 }
-
+/* eslint-enable */
 export interface Props {
   sandbox: Sandbox;
   small?: boolean;

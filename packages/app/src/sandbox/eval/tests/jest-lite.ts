@@ -1,7 +1,6 @@
 import { dispatch, actions, listen } from 'codesandbox-api';
 import { react, reactTs } from '@codesandbox/common/lib/templates';
 import { messages } from '@codesandbox/common/lib/utils/jest-lite';
-export { messages };
 
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
@@ -31,6 +30,8 @@ import run from './run-circus';
 import Manager from '../manager';
 import { Module } from '../entities/module';
 import { Event, TestEntry, DescribeBlock, TestName, TestFn } from './types';
+
+export { messages };
 
 expect.extend({
   toMatchSnapshot,
@@ -162,7 +163,7 @@ export default class TestRunner {
     };
   }
 
-  static isTest(path: string) {
+  static isTest(testPath: string) {
     const endsWith = [
       '.test.js',
       '.test.ts',
@@ -173,13 +174,15 @@ export default class TestRunner {
     ];
 
     if (
-      path.includes('__tests__') &&
-      (path.endsWith('.js') || path.endsWith('.ts') || path.endsWith('.tsx'))
+      testPath.includes('__tests__') &&
+      (testPath.endsWith('.js') ||
+        testPath.endsWith('.ts') ||
+        testPath.endsWith('.tsx'))
     ) {
       return true;
     }
 
-    return endsWith.filter(ext => path.endsWith(ext)).length > 0;
+    return endsWith.filter(ext => testPath.endsWith(ext)).length > 0;
   }
 
   findTests(modules: { [path: string]: Module }) {
@@ -286,8 +289,8 @@ export default class TestRunner {
         const { parsed } = this.manager.configurations.package;
 
         if (parsed && parsed.jest && parsed.jest.setupFilesAfterEnv) {
-          testModules = parsed.jest.setupFilesAfterEnv.map((path: string) =>
-            this.manager.resolveModule(path, '/')
+          testModules = parsed.jest.setupFilesAfterEnv.map(
+            (setupPath: string) => this.manager.resolveModule(setupPath, '/')
           );
         }
       }
@@ -297,9 +300,9 @@ export default class TestRunner {
 
     if (testModules.length) {
       await Promise.all(
-        testModules.map(testSetup => {
-          return this.manager.transpileModules(testSetup, true);
-        })
+        testModules.map(testSetup =>
+          this.manager.transpileModules(testSetup, true)
+        )
       );
     }
 
@@ -380,13 +383,13 @@ export default class TestRunner {
   }
 
   async testToCodeSandbox(test: TestEntry) {
-    const [path, name] = test.name.split(':#:');
+    const [testPath, name] = test.name.split(':#:');
 
     const errors = await Promise.all(test.errors.map(this.errorToCodeSandbox));
 
     return {
       name,
-      path,
+      path: testPath,
       duration: test.duration,
       status: test.status || 'running',
       errors,
@@ -455,10 +458,10 @@ export default class TestRunner {
         return this.sendMessage(messages.DESCRIBE_END);
       }
       case 'add_test': {
-        const [path, testName] = message.testName.split(':#:');
+        const [testPath, testName] = message.testName.split(':#:');
         return this.sendMessage(messages.ADD_TEST, {
           testName,
-          path,
+          path: testPath,
         });
       }
       default: {
@@ -481,9 +484,9 @@ export default class TestRunner {
         this.runTests(true);
         break;
       case 'run-tests': {
-        const path = message.path;
+        const testPath = message.path;
 
-        this.ranTests.delete(path);
+        this.ranTests.delete(testPath);
         this.runTests();
         break;
       }

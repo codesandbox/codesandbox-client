@@ -1,7 +1,5 @@
 import { getGlobal } from './global';
 
-declare var __DEV__: boolean | undefined;
-
 const shouldShowDebugger = () => {
   if (typeof __DEV__ !== 'undefined' && __DEV__) {
     return true;

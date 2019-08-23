@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default function({ template, types: t }) {
   const buildImport = template(`
     Promise.resolve().then(() => require(SOURCE))

@@ -66,13 +66,12 @@ function registerValidSW(
               if (onUpdated) {
                 onUpdated();
               }
-            } else {
+            } else if (onInstalled) {
               // At this point, everything has been precached.
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
-              if (onInstalled) {
-                onInstalled();
-              }
+
+              onInstalled();
             }
           } else if (installingWorker.state === 'redundant') {
             if ('storage' in navigator && 'estimate' in navigator.storage) {
@@ -133,6 +132,7 @@ function checkValidServiceWorker(swUrl, { onUpdated, onInstalled }) {
       }
     })
     .catch(e => {
+      // eslint-disable-next-line no-console
       console.log(
         'No internet connection found. App is running in offline mode.',
         e

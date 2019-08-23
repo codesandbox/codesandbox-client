@@ -84,7 +84,7 @@ export default abstract class WorkerTranspiler extends Transpiler {
       if (this.hasFS) {
         // Register file system that syncs with filesystem in manager
         // @ts-ignore
-        BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
+        BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker); // eslint-disable-line
         worker.postMessage({ type: 'initialize-fs', codesandbox: true });
       }
 

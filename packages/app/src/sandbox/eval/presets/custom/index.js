@@ -95,6 +95,7 @@ export default function initialize() {
       }
 
       if (!initialized) {
+        // eslint-disable-next-line no-console
         console.log('Initializing custom template');
         customPreset.resetTranspilers();
         // Our JS/JSON transpiler to transpile the transpilers

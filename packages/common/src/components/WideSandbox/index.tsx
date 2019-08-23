@@ -18,6 +18,7 @@ import {
 const getScreenshot = id =>
   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
 
+/* eslint-disable camelcase */
 export type Props = {
   sandbox: {
     picks?: Array<{ title: string; description: string }>;
@@ -42,6 +43,7 @@ export type Props = {
     screenshotUrl: string;
   }) => void;
 };
+/* eslint-enable camelcase */
 
 export default class WideSandbox extends React.PureComponent<Props> {
   state = {

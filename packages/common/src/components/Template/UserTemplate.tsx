@@ -1,9 +1,9 @@
 import React from 'react';
 import Icons from '@codesandbox/template-icons';
+import color from 'color';
 import { Template } from '../../types/index';
 import getIcon from '../../templates/icons';
 import { ENTER } from '../../utils/keycodes';
-import color from 'color';
 import { Button, IconContainer, Title } from './elements';
 import { TemplateType } from '../../templates';
 import { getSandboxName } from '../../utils/get-sandbox-name';

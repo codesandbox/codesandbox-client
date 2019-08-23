@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import RunOnClick from './';
 import { action } from '@storybook/addon-actions';
+import RunOnClick from './';
 
 const stories = storiesOf('components/RunOnClick', module);
 

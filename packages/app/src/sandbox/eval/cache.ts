@@ -51,7 +51,7 @@ export async function saveCache(
   firstRun: boolean
 ) {
   if (!sandboxId) {
-    return;
+    return Promise.resolve(false);
   }
 
   const managerState = {

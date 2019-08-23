@@ -19,7 +19,8 @@
     "build:lib": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib",
     "build": "yarn build:lib && yarn build:storybook",
     "build:dev": "yarn build",
-    "prepublish": "yarn build"
+    "prepublish": "yarn build",
+    "lint": "eslint --ext .js,.ts,.tsx src"
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",

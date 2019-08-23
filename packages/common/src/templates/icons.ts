@@ -55,9 +55,8 @@ import {
   mdxDeck,
   quasar,
   unibit,
+  TemplateType,
 } from './';
-
-import { TemplateType } from './';
 
 export type ReturnedIcon = React.SFC<{
   width?: number;
