@@ -5,7 +5,7 @@ import CrossIcon from 'react-icons/lib/md/clear';
 import { EntryContainer, IconArea, Icon } from '../../elements';
 import { Link } from '../elements';
 
-function getFamily(search) {
+const getFamily = search => {
   const hashes = search.slice(search.indexOf('?') + 1).split('&');
   const params = {};
   hashes.map(hash => {
@@ -14,8 +14,8 @@ function getFamily(search) {
     return null;
   });
 
-  return params.family.replace('+', ' ');
-}
+  return params.family.split('+').join(' ');
+};
 
 const ExternalResource = ({ removeResource, resource }) => (
   <EntryContainer>

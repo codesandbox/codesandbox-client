@@ -1,4 +1,8 @@
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+
+export const ButtonContainer = styled.div`
+  margin: 0.5rem 1rem;
+`;
 
 export const FontPickerStyles = createGlobalStyle`
     #font-picker {
@@ -12,6 +16,7 @@ export const FontPickerStyles = createGlobalStyle`
       .dropdown-icon.finished::before {
         border-top: 6px solid
           ${props => props.theme['sideBar.foreground'] || 'inherit'};
+          margin-right: 6px;
       }
 
       .expanded ul {
