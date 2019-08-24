@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import FontPicker from 'font-picker-react';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import { WorkspaceInputContainer } from '../../elements';
-import { ButtonContainer, FontPickerStyles } from './elements';
+import { Container, FontPickerStyles } from './elements';
 
 const AddVersion = ({ addResource }) => {
   const [activeFontFamily, setActiveFontFamily] = useState('Roboto');
@@ -18,7 +17,7 @@ const AddVersion = ({ addResource }) => {
   return (
     <>
       <FontPickerStyles />
-      <WorkspaceInputContainer>
+      <Container>
         <FontPicker
           apiKey="AIzaSyDQ9HOzvLFchvhfDG9MR0UeLpF8ScJshxU"
           activeFontFamily={activeFontFamily}
@@ -26,12 +25,12 @@ const AddVersion = ({ addResource }) => {
           onChange={nextFont => setActiveFontFamily(nextFont.family)}
           limit={300}
         />
-      </WorkspaceInputContainer>
-      <ButtonContainer>
+      </Container>
+      <Container>
         <Button disabled={!activeFontFamily} block small onClick={addFont}>
           Add Font
         </Button>
-      </ButtonContainer>
+      </Container>
     </>
   );
 };

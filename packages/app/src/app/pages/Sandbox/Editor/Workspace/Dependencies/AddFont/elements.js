@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
 
-export const ButtonContainer = styled.div`
+export const Container = styled.div`
   margin: 0.5rem 1rem;
 `;
 
