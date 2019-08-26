@@ -7,12 +7,14 @@ import { Link } from '../elements';
 
 const getFamily = search => {
   const hashes = search.slice(search.indexOf('?') + 1).split('&');
-  const params = {};
-  hashes.map(hash => {
+  const params = hashes.reduce((paramsObj, hash) => {
     const [key, val] = hash.split('=');
-    params[key] = decodeURIComponent(val);
-    return null;
-  });
+
+    return {
+      ...paramsObj,
+      [key]: decodeURIComponent(val),
+    };
+  }, {});
 
   return params.family.split('+').join(' ');
 };

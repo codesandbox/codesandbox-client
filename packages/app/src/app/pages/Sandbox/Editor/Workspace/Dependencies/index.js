@@ -91,7 +91,7 @@ const Dependencies = inject('store', 'signals')(
           {templateDefinition.externalResourcesEnabled && (
             <div>
               <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
-              {(otherResources || []).map(resource => (
+              {otherResources.map(resource => (
                 <ExternalResource
                   key={resource}
                   resource={resource}
@@ -110,7 +110,7 @@ const Dependencies = inject('store', 'signals')(
                 }
               />
               <WorkspaceSubtitle>Google Fonts</WorkspaceSubtitle>
-              {(fonts || []).map(resource => (
+              {fonts.map(resource => (
                 <ExternalFonts
                   key={resource}
                   resource={resource}
