@@ -12,13 +12,12 @@ sandbox you don’t own.
 ## Zeit
 
 To deploy to [Now](https://zeit.co/now), access the Preferences menu and select
-the Integrations tab. Log into your ZEIT account and it’s all set.. Log into
-your ZEIT account and it's all set.
+the Integrations tab. Log into your ZEIT account and it’s all set.
 
 ### Deploying
 
-Go to any of your sandboxes, click in the Deployment menu (the rocket icon in
-the sidebar) and click in "Now". You'll need to sign in to
+Go to any of your sandboxes, click on the Deployment menu (the rocket icon in
+the sidebar) and click on "Now". You'll need to sign in to
 [Now](https://zeit.co/now) when you're deploying for the first time. After
 you've signed in, you will be able to click "Deploy Now". It will deploy the
 sandbox and give you a URL.
@@ -53,8 +52,8 @@ We will work on making more and more templates available in the future.
 
 ### Deploying
 
-Go to any of your sandboxes that are supported, click in the Deployment menu
-(the rocket icon in the sidebar) and click in "[Netlify](https://netlify.com)".
+Go to any of your sandboxes that are supported, click on the Deployment menu
+(the rocket icon in the sidebar) and click on "[Netlify](https://netlify.com)".
 Click the "Deploy" button to start a new deploy. As the sandbox builds, you can
 view the logs of the build to see if something went wrong. When the build
 finishes, you'll get a link to the deployed site. You can also claim the site to
