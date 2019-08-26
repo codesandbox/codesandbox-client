@@ -34,6 +34,26 @@ export const NewSandboxModal = inject('store', 'signals')(
     }: INewSandboxModalProps) => {
       const [selectedTab, setSelectedTab] = useState(0);
 
+      const tabs = [
+        'Overview',
+        user && 'My Templates',
+        'Client Templates',
+        'Container Templates',
+        'Import',
+      ]
+        .map((buttonName, index) => ({
+          name: buttonName,
+          tabIndex: index,
+        }))
+        .filter(({ name }) => Boolean(name));
+
+      const selectTab = (tabIndex: number) => {
+        const tab = tabs[tabIndex];
+        setSelectedTab(tabIndex);
+
+        track('New Sandbox Modal - Open Tab', { tabName: tab.name });
+      };
+
       const selectTemplate = template => {
         track('New Sandbox Modal - Select Template', { template });
         createSandbox(template);
@@ -42,27 +62,17 @@ export const NewSandboxModal = inject('store', 'signals')(
       return (
         <Container closing={closing} forking={forking}>
           <TabContainer forking={forking} closing={closing}>
-            {[
-              'Overview',
-              user && 'My Templates',
-              'Client Templates',
-              'Container Templates',
-              'Import',
-            ]
-              .map((buttonName, index) => ({
-                name: buttonName,
-                tabIndex: index,
-              }))
-              .filter(({ name }) => Boolean(name))
-              .map(({ name, tabIndex }) => (
-                <Button
-                  key={name}
-                  onClick={() => setSelectedTab(tabIndex)}
-                  selected={selectedTab === tabIndex}
-                >
-                  {name}
-                </Button>
-              ))}
+            {tabs.map(({ name, tabIndex }) => (
+              <Button
+                key={name}
+                onClick={() => {
+                  selectTab(tabIndex);
+                }}
+                selected={selectedTab === tabIndex}
+              >
+                {name}
+              </Button>
+            ))}
           </TabContainer>
 
           <InnerContainer forking={forking} closing={closing}>
