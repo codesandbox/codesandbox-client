@@ -213,6 +213,9 @@ export const gotUploadedFiles: AsyncAction<{
   }
 };
 
+/*
+Does not seem to be used?
+
 export const addedFileToSandbox: Action<{
   url: string;
   name: string;
@@ -220,8 +223,10 @@ export const addedFileToSandbox: Action<{
   actions.internal.closeModals(false);
   actions.files.moduleCreated({
     title: name,
+
   });
 };
+*/
 
 export const deletedUploadedFile: AsyncAction<string> = async (
   { state, effects },

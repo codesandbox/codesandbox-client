@@ -1,7 +1,7 @@
 import * as React from 'react';
 import DeleteIcon from 'react-icons/lib/md/delete';
-import { Button } from './elements';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { Button } from './elements';
 
 interface IDeleteSandboxButtonProps {
   id: string;
