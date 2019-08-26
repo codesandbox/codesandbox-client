@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import FontPicker from 'font-picker-react';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import FontPicker from './FontPicker/index';
 import { Container, FontPickerStyles } from './elements';
 
 const AddVersion = ({ addResource }) => {
@@ -21,9 +21,7 @@ const AddVersion = ({ addResource }) => {
         <FontPicker
           apiKey="AIzaSyDQ9HOzvLFchvhfDG9MR0UeLpF8ScJshxU"
           activeFontFamily={activeFontFamily}
-          sort={'popularity'}
           onChange={nextFont => setActiveFontFamily(nextFont.family)}
-          limit={300}
         />
       </Container>
       <Container>

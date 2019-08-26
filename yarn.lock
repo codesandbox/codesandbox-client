@@ -11470,13 +11470,6 @@ follow-redirects@^1.0.0:
   dependencies:
     debug "^3.2.6"
 
-font-picker-react@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/font-picker-react/-/font-picker-react-3.4.0.tgz#29796ad849b23ce07924d78e3ae4f5586bfc13ce"
-  integrity sha512-9pi4LW5N56z+9Lh7RdCF89rTU97HJygFd90BEEd9xw2cGHauhtlcOeG79xeijXGKDcuttWRFO4w4P29cn+HfqQ==
-  dependencies:
-    "@samuelmeuli/font-manager" "^1.2.0"
-
 fontfaceobserver@^2.0.13:
   version "2.0.13"
   resolved "https://registry.yarnpkg.com/fontfaceobserver/-/fontfaceobserver-2.0.13.tgz#47adbb343261eda98cb44db2152196ff124d3221"
