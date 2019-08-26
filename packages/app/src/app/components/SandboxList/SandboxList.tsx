@@ -73,11 +73,11 @@ export const SandboxList: React.FC<ISandboxListProps> = ({
             <StatBody>{s.likeCount}</StatBody>
             <StatBody>{s.viewCount}</StatBody>
             <StatBody>{s.forkCount}</StatBody>
-            {isCurrentUser && (
+            {isCurrentUser && onDelete ? (
               <DeleteBody>
                 <DeleteSandboxButton id={s.id} onDelete={onDelete} />
               </DeleteBody>
-            )}
+            ) : null}
           </SandboxRow>
         );
       })}
