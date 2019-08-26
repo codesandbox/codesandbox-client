@@ -1,13 +1,11 @@
 import { mapValues } from 'lodash-es';
 import { Action, AsyncAction } from 'app/overmind';
 import {
-  Sandbox,
   Module,
   ModuleTab,
   TabType,
   ServerContainerStatus,
 } from '@codesandbox/common/lib/types';
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
@@ -24,11 +22,11 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   }
 
   const sandboxes = state.editor.sandboxes;
-  const matchingSandbox = Object.keys(sandboxes).find(
-    id => sandboxUrl(sandboxes[id]) === `${editorUrl()}${id}`
+  const matchingSandboxId = Object.keys(sandboxes).find(
+    idItem => sandboxUrl(sandboxes[idItem]) === `${editorUrl()}${id}`
   );
 
-  return matchingSandbox || id;
+  return matchingSandboxId || id;
 };
 
 export const setModuleSavedCode: Action<{
@@ -217,24 +215,21 @@ export const setModuleCode: Action<{
 }> = ({ state, effects }, { module, code }) => {
   const currentId = state.editor.currentId;
   const currentSandbox = state.editor.currentSandbox;
+  const hasChangedModuleId = state.editor.changedModuleShortids.includes(
+    module.shortid
+  );
 
   if (!module.savedCode) {
     module.savedCode = module.code;
   }
 
-  const moduleIndex = state.editor.changedModuleShortids.indexOf(
-    module.shortid
-  );
-
-  if (moduleIndex === -1) {
-    if (module.savedCode !== module.code) {
-      state.editor.changedModuleShortids.push(module.shortid);
-    }
-  } else if (module.savedCode === module.code) {
+  if (hasChangedModuleId && module.savedCode === code) {
     state.editor.changedModuleShortids.splice(
       state.editor.changedModuleShortids.indexOf(module.shortid),
       1
     );
+  } else if (!hasChangedModuleId && module.savedCode !== code) {
+    state.editor.changedModuleShortids.push(module.shortid);
   }
 
   if (state.preferences.settings.experimentVSCode) {

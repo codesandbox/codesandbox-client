@@ -166,7 +166,6 @@ async function initialize() {
         const config = modules[1].config;
 
         overmind = createOvermind(config, {
-          devtools: 'localhost:3032',
           logProxies: true,
         });
 

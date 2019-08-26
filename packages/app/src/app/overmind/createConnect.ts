@@ -91,11 +91,13 @@ export const createConnect = <ThisConfig extends IConfiguration>(
       };
       wrappedComponent: any;
       reaction: any;
+      isUnmounting: boolean;
       static contextType = context;
       constructor(props, context) {
         super(props);
         this.overmind = overmindInstance || context;
         this.tree = this.overmind.proxyStateTree.getTrackStateTree();
+        this.isUnmounting = false;
         this.state = {
           overmind: {
             state: this.tree.state,
@@ -114,9 +116,13 @@ export const createConnect = <ThisConfig extends IConfiguration>(
         this.reaction = createReaction(this.overmind);
       }
       componentWillUnmount() {
+        this.isUnmounting = true;
         this.overmind.proxyStateTree.disposeTree(this.tree);
       }
       onUpdate = () => {
+        if (this.isUnmounting) {
+          return;
+        }
         this.setState({
           overmind: {
             state: this.tree.state,
@@ -162,12 +168,14 @@ export const createConnect = <ThisConfig extends IConfiguration>(
     };
     isUpdating: boolean;
     wrappedComponent: any;
+    isUnmounting: boolean;
     reaction: any;
     static contextType = context;
     constructor(props, context) {
       super(props);
       this.overmind = overmindInstance || context;
       this.tree = this.overmind.proxyStateTree.getTrackStateTree();
+      this.isUnmounting = false;
       this.state = {
         overmind: {
           state: this.tree.state,
@@ -203,6 +211,7 @@ export const createConnect = <ThisConfig extends IConfiguration>(
       }
     }
     componentWillUnmount() {
+      this.isUnmounting = true;
       this.overmind.proxyStateTree.disposeTree(this.tree);
       this.overmind.eventHub.emitAsync(EventType.COMPONENT_REMOVE, {
         componentId: populatedComponent.__componentId,
@@ -211,6 +220,9 @@ export const createConnect = <ThisConfig extends IConfiguration>(
       });
     }
     onUpdate = (mutatons, paths, flushId) => {
+      if (this.isUnmounting) {
+        return;
+      }
       this.currentFlushId = flushId;
       this.isUpdating = true;
       this.setState({

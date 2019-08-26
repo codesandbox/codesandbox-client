@@ -5,7 +5,6 @@ import { json } from 'overmind';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import {
   WindowOrientation,
-  TabType,
   EnvironmentVariable,
   ModuleTab,
 } from '@codesandbox/common/lib/types';
@@ -166,13 +165,6 @@ export const codeChanged: Action<{
     module,
     code,
   });
-
-  if (
-    !state.editor.changedModuleShortids.includes(moduleShortid) &&
-    module.code !== module.savedCode
-  ) {
-    state.editor.changedModuleShortids.push(moduleShortid);
-  }
 };
 
 export const saveClicked: AsyncAction = async ({ state, effects, actions }) => {
