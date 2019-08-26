@@ -51,11 +51,8 @@ export const FontPicker = ({
   const fonts: Font[] =
     fontManager && Array.from(fontManager.getFonts().values());
 
-  console.log(fontManager.selectorSuffix);
-
   return (
     // id={`font-picker${fontManager && fontManager.selectorSuffix}`}
-
     <>
       <SelectedFont
         type="button"
@@ -73,7 +70,6 @@ export const FontPicker = ({
             onSelection={onSelection}
             activeFontFamily={activeFontFamily}
             expanded={expanded}
-            suffix={fontManager.selectorSuffix}
           />
         </OutsideClickHandler>
       )}

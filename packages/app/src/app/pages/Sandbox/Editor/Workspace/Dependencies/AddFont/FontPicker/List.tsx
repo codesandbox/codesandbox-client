@@ -7,7 +7,6 @@ type Props = {
   onSelection: (e: any) => void;
   activeFontFamily: string;
   expanded: boolean;
-  suffix: string;
 };
 
 const FontList = ({
@@ -15,7 +14,6 @@ const FontList = ({
   onSelection,
   activeFontFamily,
   expanded,
-  suffix,
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -43,7 +41,7 @@ const FontList = ({
         <FontLI key={font.family}>
           <FontFamily
             type="button"
-            id={`font-button-${getFontId(font.family)}${suffix}`}
+            id={`font-button-${getFontId(font.family)}`}
             active={font.family === activeFontFamily}
             onClick={onSelection}
             onKeyPress={onSelection}
