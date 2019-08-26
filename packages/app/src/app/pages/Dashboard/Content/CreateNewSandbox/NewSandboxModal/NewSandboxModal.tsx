@@ -24,6 +24,11 @@ interface INewSandboxModalProps {
   signals: any;
 }
 
+interface ITab {
+  name: string;
+  tabIndex: number;
+}
+
 export const NewSandboxModal = inject('store', 'signals')(
   hooksObserver(
     ({
@@ -34,7 +39,7 @@ export const NewSandboxModal = inject('store', 'signals')(
     }: INewSandboxModalProps) => {
       const [selectedTab, setSelectedTab] = useState(0);
 
-      const tabs = [
+      const tabs: ITab[] = [
         'Overview',
         user && 'My Templates',
         'Client Templates',
@@ -47,9 +52,8 @@ export const NewSandboxModal = inject('store', 'signals')(
         }))
         .filter(({ name }) => Boolean(name));
 
-      const selectTab = (tabIndex: number) => {
-        const tab = tabs[tabIndex];
-        setSelectedTab(tabIndex);
+      const selectTab = (tab: ITab) => {
+        setSelectedTab(tab.tabIndex);
 
         track('New Sandbox Modal - Open Tab', { tabName: tab.name });
       };
@@ -62,13 +66,13 @@ export const NewSandboxModal = inject('store', 'signals')(
       return (
         <Container closing={closing} forking={forking}>
           <TabContainer forking={forking} closing={closing}>
-            {tabs.map(({ name, tabIndex }) => (
+            {tabs.map(tab => (
               <Button
                 key={name}
                 onClick={() => {
-                  selectTab(tabIndex);
+                  selectTab(tab);
                 }}
-                selected={selectedTab === tabIndex}
+                selected={selectedTab === tab.tabIndex}
               >
                 {name}
               </Button>
