@@ -7,16 +7,13 @@ import { Link } from '../elements';
 
 const getFamily = search => {
   const hashes = search.slice(search.indexOf('?') + 1).split('&');
-  const params = hashes.reduce((paramsObj, hash) => {
-    const [key, val] = hash.split('=');
+  const family = hashes
+    .find(hash => hash.split('=')[0] === 'family')
+    .split('=')[1]
+    .split('+')
+    .join(' ');
 
-    return {
-      ...paramsObj,
-      [key]: decodeURIComponent(val),
-    };
-  }, {});
-
-  return params.family.split('+').join(' ');
+  return family;
 };
 
 const ExternalResource = ({ removeResource, resource }) => (

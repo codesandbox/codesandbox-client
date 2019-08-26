@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import FontPicker from './FontPicker/index';
-import { Container, FontPickerStyles } from './elements';
+import { Container } from './elements';
 
-const AddVersion = ({ addResource }) => {
+const AddTypeface = ({ addResource }) => {
   const [activeFontFamily, setActiveFontFamily] = useState('Roboto');
 
   const addFont = async () => {
@@ -16,7 +16,6 @@ const AddVersion = ({ addResource }) => {
 
   return (
     <>
-      <FontPickerStyles />
       <Container>
         <FontPicker
           apiKey="AIzaSyDQ9HOzvLFchvhfDG9MR0UeLpF8ScJshxU"
@@ -26,11 +25,11 @@ const AddVersion = ({ addResource }) => {
       </Container>
       <Container>
         <Button disabled={!activeFontFamily} block small onClick={addFont}>
-          Add Font
+          Add Typeface
         </Button>
       </Container>
     </>
   );
 };
 
-export default AddVersion;
+export default AddTypeface;

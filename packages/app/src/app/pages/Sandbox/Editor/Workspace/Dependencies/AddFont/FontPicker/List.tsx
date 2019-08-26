@@ -1,10 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Font } from '@samuelmeuli/font-manager';
 import { List, SearchFonts, FontLI, FontFamily } from './elements';
-
-function getFontId(fontFamily: string): string {
-  return fontFamily.replace(/\s+/g, '-').toLowerCase();
-}
 
 type Props = {
   fonts: Font[];
@@ -23,7 +19,18 @@ const FontList = ({
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const updateSearch = e => setSearchTerm(e.target.value);
+  const updateSearch = (e: any) => setSearchTerm(e.target.value);
+
+  const getFontId = (fontFamily: string): string =>
+    fontFamily.replace(/\s+/g, '-').toLowerCase();
+
+  const getFonts: Font[] = useMemo(
+    () =>
+      fonts.filter(f =>
+        f.family.toLowerCase().includes(searchTerm.trim().toLowerCase())
+      ),
+    [fonts, searchTerm]
+  );
   return (
     <List expanded={expanded}>
       <SearchFonts
@@ -32,27 +39,19 @@ const FontList = ({
         onChange={updateSearch}
         placeholder="Search Typefaces"
       />
-      {fonts
-        .filter(f =>
-          f.family.toLowerCase().includes(searchTerm.trim().toLowerCase())
-        )
-        .map(font => {
-          const isActive = font.family === activeFontFamily;
-          const fontId = getFontId(font.family);
-          return (
-            <FontLI key={fontId}>
-              <FontFamily
-                type="button"
-                id={`font-button-${fontId}${suffix}`}
-                className={`font-button ${isActive ? 'active-font' : ''}`}
-                onClick={onSelection}
-                onKeyPress={onSelection}
-              >
-                {font.family}
-              </FontFamily>
-            </FontLI>
-          );
-        })}
+      {getFonts.map((font: Font) => (
+        <FontLI key={font.family}>
+          <FontFamily
+            type="button"
+            id={`font-button-${getFontId(font.family)}${suffix}`}
+            active={font.family === activeFontFamily}
+            onClick={onSelection}
+            onKeyPress={onSelection}
+          >
+            {font.family}
+          </FontFamily>
+        </FontLI>
+      ))}
     </List>
   );
 };

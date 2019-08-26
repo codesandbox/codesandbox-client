@@ -6,7 +6,7 @@ import {
 } from '@samuelmeuli/font-manager';
 import React, { useState, useEffect } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
-import { FontFamily, SearchFonts, FontLI, List } from './elements';
+import { SelectedFont } from './elements';
 import FontList from './List';
 
 export const FontPicker = ({
@@ -37,48 +37,35 @@ export const FontPicker = ({
     // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    if (fontManager) fontManager.setOnChange(onChange);
-    // eslint-disable-next-line
-  }, [onChange]);
-
-  useEffect(() => {
-    if (fontManager) setActiveFontFamily(activeFontFamily);
-    // eslint-disable-next-line
-  }, [activeFontFamily]);
-
-  const setActiveFontFamily = (active: string): void => {
-    fontManager.setActiveFont(active);
-  };
-
-  const onSelection = (e): void => {
+  const onSelection = (e: any): void => {
     const active = e.target.textContent;
     if (!active) {
       throw Error(`Missing font family in clicked font button`);
     }
-    setActiveFontFamily(active);
+    fontManager.setActiveFont(active);
     toggleExpanded();
   };
 
-  const toggleExpanded = () => setExpanded(!expanded);
+  const toggleExpanded = () => setExpanded(exp => !exp);
 
   const fonts: Font[] =
     fontManager && Array.from(fontManager.getFonts().values());
 
+  console.log(fontManager.selectorSuffix);
+
   return (
-    <div
-      className={expanded ? 'expanded' : ''}
-      id={`font-picker${fontManager && fontManager.selectorSuffix}`}
-    >
-      <button
+    // id={`font-picker${fontManager && fontManager.selectorSuffix}`}
+
+    <>
+      <SelectedFont
         type="button"
-        className="dropdown-button"
+        done={loadingStatus === 'finished'}
         onClick={toggleExpanded}
         onKeyPress={toggleExpanded}
+        disabled={loadingStatus === 'loading'}
       >
-        <p className="dropdown-font-family">{activeFontFamily}</p>
-        <p className={`dropdown-icon ${loadingStatus}`} />
-      </button>
+        {loadingStatus === 'loading' ? 'Loading Typefaces' : activeFontFamily}
+      </SelectedFont>
       {loadingStatus === 'finished' && (
         <OutsideClickHandler onOutsideClick={() => setExpanded(false)}>
           <FontList
@@ -90,7 +77,7 @@ export const FontPicker = ({
           />
         </OutsideClickHandler>
       )}
-    </div>
+    </>
   );
 };
 
