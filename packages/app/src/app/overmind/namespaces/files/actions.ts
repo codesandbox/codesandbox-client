@@ -11,184 +11,188 @@ import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 import { INormalizedModules } from 'codesandbox-import-util-types';
 import { ModuleTab } from '@codesandbox/common/lib/types';
 import { createOptimisticModule } from 'app/overmind/utils/common';
+import { withOwnedSandbox } from 'app/overmind/factories';
 
 export const internal = internalActions;
 
 export const moduleRenamed: AsyncAction<{
   title: string;
-  shortid: string;
-}> = async ({ state, effects, actions }, { title, shortid }) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
+  moduleShortid: string;
+}> = withOwnedSandbox(
+  async ({ state, effects, actions }, { title, moduleShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    const module = sandbox.modules.find(
+      moduleItem => moduleItem.shortid === moduleShortid
+    );
+    const oldTitle = module.title;
 
-  const sandbox = state.editor.currentSandbox;
-  const module = sandbox.modules.find(module => module.shortid === shortid);
-  const oldTitle = module.title;
+    module.title = title;
 
-  module.title = title;
+    try {
+      await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
 
-  try {
-    await effects.api.saveModuleTitle(sandbox.id, shortid, title);
-
-    if (state.live.isCurrentEditor) {
-      effects.live.sendModuleUpdate(shortid, module);
+      if (state.live.isCurrentEditor) {
+        effects.live.sendModuleUpdate(moduleShortid, module);
+      }
+    } catch (error) {
+      module.title = oldTitle;
+      effects.notificationToast.error('Could not rename file');
     }
-  } catch (error) {
-    module.title = oldTitle;
-    effects.notificationToast.error('Could not rename file');
   }
-};
+);
 
 export const directoryCreated: AsyncAction<{
   title: string;
-}> = async ({ state, effects, actions }, { title }) => {
-  actions.editor.internal.ensureSandboxIsOwned();
+  directoryShortid: string;
+}> = withOwnedSandbox(
+  async ({ state, effects, actions }, { title, directoryShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    const optimisticDirectory = {
+      id: effects.utils.createOptimisticId(),
+      title,
+      directoryShortid,
+      shortid: effects.utils.createOptimisticId(),
+      sourceId: state.editor.currentSandbox.sourceId,
+      insertedAt: new Date().toString(),
+      updatedAt: new Date().toString(),
+    };
 
-  const sandbox = state.editor.currentSandbox;
-  const optimisticDirectory = {
-    id: effects.utils.createOptimisticId(),
-    title,
-    directoryShortid: null,
-    shortid: effects.utils.createOptimisticId(),
-    sourceId: state.editor.currentSandbox.sourceId,
-    insertedAt: new Date().toString(),
-    updatedAt: new Date().toString(),
-  };
+    sandbox.directories.push(optimisticDirectory);
 
-  sandbox.directories.push(optimisticDirectory);
+    try {
+      const newDirectory = await effects.api.createDirectory(
+        sandbox.id,
+        directoryShortid,
+        title
+      );
+      const directory = state.editor.currentSandbox.directories.find(
+        directoryItem => directoryItem.shortid === optimisticDirectory.shortid
+      );
 
-  try {
-    const newDirectory = await effects.api.createDirectory(sandbox.id, title);
-    const directory = state.editor.currentSandbox.directories.find(
-      directory => directory.shortid === optimisticDirectory.shortid
-    );
+      Object.assign(directory, {
+        id: newDirectory.id,
+        shortid: newDirectory.shortid,
+      });
 
-    Object.assign(directory, {
-      id: newDirectory.id,
-      shortid: newDirectory.shortid,
-    });
+      effects.live.sendDirectoryCreated(newDirectory.directoryShortid);
+    } catch (error) {
+      const directoryIndex = state.editor.currentSandbox.directories.findIndex(
+        directoryItem => directoryItem.shortid === optimisticDirectory.shortid
+      );
 
-    effects.live.sendDirectoryCreated(newDirectory.directoryShortid);
-  } catch (error) {
-    const directoryIndex = state.editor.currentSandbox.directories.findIndex(
-      directory => directory.shortid === optimisticDirectory.shortid
-    );
-
-    sandbox.directories.splice(directoryIndex, 1);
-    effects.notificationToast.error('Unable to save new directory');
+      sandbox.directories.splice(directoryIndex, 1);
+      effects.notificationToast.error('Unable to save new directory');
+    }
   }
-};
+);
 
 export const moduleMovedToDirectory: AsyncAction<{
   moduleShortid: string;
   directoryShortid: string;
-}> = async (
-  { state, effects, actions },
-  { moduleShortid, directoryShortid }
-) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
-
-  const sandbox = state.editor.currentSandbox;
-  const module = sandbox.modules.find(
-    module => module.shortid === moduleShortid
-  );
-  const currentDirectoryShortid = module.directoryShortid;
-
-  module.directoryShortid = directoryShortid;
-
-  try {
-    await effects.api.saveModuleDirectory(
-      sandbox.id,
-      moduleShortid,
-      directoryShortid
+}> = withOwnedSandbox(
+  async ({ state, effects, actions }, { moduleShortid, directoryShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    const module = sandbox.modules.find(
+      moduleItem => moduleItem.shortid === moduleShortid
     );
-    effects.live.sendModuleUpdate(moduleShortid);
-  } catch (error) {
-    module.directoryShortid = currentDirectoryShortid;
+    const currentDirectoryShortid = module.directoryShortid;
 
-    effects.notificationToast.error('Could not save new module location');
+    module.directoryShortid = directoryShortid;
+
+    try {
+      await effects.api.saveModuleDirectory(
+        sandbox.id,
+        moduleShortid,
+        directoryShortid
+      );
+      effects.live.sendModuleUpdate(moduleShortid);
+    } catch (error) {
+      module.directoryShortid = currentDirectoryShortid;
+
+      effects.notificationToast.error('Could not save new module location');
+    }
   }
-};
+);
 
 export const directoryMovedToDirectory: AsyncAction<{
-  fromDirectoryShortid: string;
-  toDirectoryShortid: string;
-}> = async (
-  { state, effects, actions },
-  { fromDirectoryShortid, toDirectoryShortid }
-) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
-
-  const sandbox = state.editor.currentSandbox;
-  const fromDirectory = sandbox.directories.find(
-    directory => directory.shortid === fromDirectoryShortid
-  );
-
-  fromDirectory.directoryShortid = toDirectoryShortid;
-
-  try {
-    await effects.api.saveDirectoryDirectory(
-      sandbox.id,
-      fromDirectoryShortid,
-      toDirectoryShortid
+  shortid: string;
+  directoryShortid: string;
+}> = withOwnedSandbox(
+  async ({ state, effects, actions }, { shortid, directoryShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    const directoryToMove = sandbox.directories.find(
+      directoryItem => directoryItem.shortid === shortid
     );
-    effects.live.sendDirectoryUpdate(toDirectoryShortid);
-  } catch (error) {
-    fromDirectory.directoryShortid = fromDirectoryShortid;
-    effects.notificationToast.error('Could not save new directory location');
+
+    directoryToMove.directoryShortid = directoryShortid;
+
+    try {
+      await effects.api.saveDirectoryDirectory(
+        sandbox.id,
+        shortid,
+        directoryShortid
+      );
+      effects.live.sendDirectoryUpdate(directoryShortid);
+    } catch (error) {
+      directoryToMove.directoryShortid = shortid;
+      effects.notificationToast.error('Could not save new directory location');
+    }
   }
-};
+);
 
-export const directoryDeleted: AsyncAction<string> = async (
-  { state, effects, actions },
-  directoryShortid
-) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
+export const directoryDeleted: AsyncAction<{
+  directoryShortid;
+}> = withOwnedSandbox(
+  async ({ state, effects, actions }, { directoryShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    const directory = sandbox.directories.find(
+      directoryItem => directoryItem.shortid === directoryShortid
+    );
+    const removedDirectory = sandbox.directories.splice(
+      sandbox.directories.indexOf(directory),
+      1
+    )[0];
 
-  const sandbox = state.editor.currentSandbox;
-  const directory = sandbox.directories.find(
-    directory => directory.shortid === directoryShortid
-  );
-  const removedDirectory = sandbox.directories.splice(
-    sandbox.directories.indexOf(directory),
-    1
-  )[0];
+    state.editor.currentModuleShortid = state.editor.mainModule.shortid;
 
-  state.editor.currentModuleShortid = state.editor.mainModule.shortid;
-
-  try {
-    await effects.api.deleteDirectory(state.editor.currentId, directoryShortid);
-    effects.live.sendDirectoryDeleted(directoryShortid);
-  } catch (error) {
-    sandbox.directories.push(removedDirectory);
-    effects.notificationToast.error('Could not delete directory');
+    try {
+      await effects.api.deleteDirectory(
+        state.editor.currentId,
+        directoryShortid
+      );
+      effects.live.sendDirectoryDeleted(directoryShortid);
+    } catch (error) {
+      sandbox.directories.push(removedDirectory);
+      effects.notificationToast.error('Could not delete directory');
+    }
   }
-};
+);
 
 export const directoryRenamed: AsyncAction<{
   title: string;
   directoryShortid: string;
-}> = async ({ actions, effects, state }, { title, directoryShortid }) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
+}> = withOwnedSandbox(
+  async ({ actions, effects, state }, { title, directoryShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    const directory = sandbox.directories.find(
+      directoryEntry => directoryEntry.shortid === directoryShortid
+    );
+    const oldTitle = directory.title;
 
-  const sandbox = state.editor.currentSandbox;
-  const directory = sandbox.directories.find(
-    directoryEntry => directoryEntry.shortid === directoryShortid
-  );
-  const oldTitle = directory.title;
+    directory.title = title;
 
-  directory.title = title;
+    try {
+      await effects.api.saveDirectoryTitle(sandbox.id, directoryShortid, title);
 
-  try {
-    await effects.api.saveDirectoryTitle(sandbox.id, directoryShortid, title);
-
-    if (state.live.isCurrentEditor) {
-      effects.live.sendDirectoryUpdate(directoryShortid);
+      if (state.live.isCurrentEditor) {
+        effects.live.sendDirectoryUpdate(directoryShortid);
+      }
+    } catch (error) {
+      directory.title = oldTitle;
+      effects.notificationToast.error('Could not rename directory');
     }
-  } catch (error) {
-    directory.title = oldTitle;
-    effects.notificationToast.error('Could not rename directory');
   }
-};
+);
 
 export const gotUploadedFiles: AsyncAction<{
   message: string;
@@ -270,110 +274,114 @@ export const massCreateModules: AsyncAction<{
   modules: any;
   directories: any;
   directoryShortid: string;
-}> = async (
-  { state, effects, actions },
-  { modules, directories, directoryShortid }
-) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
-  const sandboxId = state.editor.currentId;
+}> = withOwnedSandbox(
+  async (
+    { state, effects, actions },
+    { modules, directories, directoryShortid }
+  ) => {
+    const sandboxId = state.editor.currentId;
 
-  try {
-    const data = await effects.api.massCreateModules(
-      sandboxId,
-      directoryShortid,
-      modules,
-      directories
-    );
+    try {
+      const data = await effects.api.massCreateModules(
+        sandboxId,
+        directoryShortid,
+        modules,
+        directories
+      );
 
-    state.editor.currentSandbox.modules = state.editor.currentSandbox.modules.concat(
-      data.modules
-    );
-    state.editor.currentSandbox.directories = state.editor.currentSandbox.directories.concat(
-      data.directories
-    );
+      state.editor.currentSandbox.modules = state.editor.currentSandbox.modules.concat(
+        data.modules
+      );
+      state.editor.currentSandbox.directories = state.editor.currentSandbox.directories.concat(
+        data.directories
+      );
 
-    if (state.live.isCurrentEditor) {
-      effects.live.sendMassCreatedModules(data.modules, data.directories);
+      if (state.live.isCurrentEditor) {
+        effects.live.sendMassCreatedModules(data.modules, data.directories);
+      }
+      // Where is the id?
+      // effects.vscode.callCallback()
+    } catch (error) {
+      // Where is the id and message?
+      // effects.vscode.callCallbackError()
+      effects.notificationToast.error('Unable to create new files');
     }
-    // Where is the id?
-    // effects.vscode.callCallback()
-  } catch (error) {
-    // Where is the id and message?
-    // effects.vscode.callCallbackError()
-    effects.notificationToast.error('Unable to create new files');
   }
-};
+);
 
 export const moduleCreated: AsyncAction<{
   title: string;
-}> = async ({ state, actions, effects }, { title }) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
+  directoryShortid: string;
+}> = withOwnedSandbox(
+  async ({ state, actions, effects }, { title, directoryShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    const optimisticModule = createOptimisticModule({
+      id: effects.utils.createOptimisticId(),
+      title,
+      directoryShortid,
+      shortid: effects.utils.createOptimisticId(),
+      sourceId: sandbox.sourceId,
+      isNotSynced: true,
+    });
+    const path = getModulePath(
+      sandbox.modules,
+      sandbox.directories,
+      optimisticModule.id
+    );
+    const template = getDefinition(sandbox.template);
+    const config = template.configurationFiles[path];
 
-  const sandbox = state.editor.currentSandbox;
-  const optimisticModule = createOptimisticModule({
-    id: effects.utils.createOptimisticId(),
-    title,
-    shortid: effects.utils.createOptimisticId(),
-    sourceId: sandbox.sourceId,
-    isNotSynced: true,
-  });
-  const path = getModulePath(
-    sandbox.modules,
-    sandbox.directories,
-    optimisticModule.id
-  );
-  const template = getDefinition(sandbox.template);
-  const config = template.configurationFiles[path];
+    if (
+      config &&
+      (config.generateFileFromSandbox ||
+        config.getDefaultCode ||
+        config.generateFileFromState)
+    ) {
+      if (config.generateFileFromState) {
+        optimisticModule.code = config.generateFileFromState(state);
+      } else if (config.generateFileFromSandbox) {
+        optimisticModule.code = config.generateFileFromSandbox(sandbox);
+      } else {
+        const resolveModule = resolveModuleWrapped(sandbox);
 
-  if (
-    config &&
-    (config.generateFileFromSandbox ||
-      config.getDefaultCode ||
-      config.generateFileFromState)
-  ) {
-    if (config.generateFileFromState) {
-      optimisticModule.code = config.generateFileFromState(state);
-    } else if (config.generateFileFromSandbox) {
-      optimisticModule.code = config.generateFileFromSandbox(sandbox);
-    } else {
-      const resolveModule = resolveModuleWrapped(sandbox);
-
-      optimisticModule.code = config.getDefaultCode(
-        sandbox.template,
-        resolveModule
-      );
+        optimisticModule.code = config.getDefaultCode(
+          sandbox.template,
+          resolveModule
+        );
+      }
     }
-  }
 
-  state.editor.sandboxes[state.editor.currentId].modules.push(optimisticModule);
-
-  try {
-    const updatedModule = await effects.api.createModule(
-      sandbox.id,
+    state.editor.sandboxes[state.editor.currentId].modules.push(
       optimisticModule
     );
 
-    if (state.editor.currentModuleShortid === optimisticModule.shortid) {
-      state.editor.currentModuleShortid = optimisticModule.shortid;
-    }
+    try {
+      const updatedModule = await effects.api.createModule(
+        sandbox.id,
+        optimisticModule
+      );
 
-    optimisticModule.id = updatedModule.id;
-    optimisticModule.shortid = updatedModule.shortid;
+      if (state.editor.currentModuleShortid === optimisticModule.shortid) {
+        state.editor.currentModuleShortid = optimisticModule.shortid;
+      }
 
-    if (state.live.isCurrentEditor) {
-      effects.live.sendModuleCreated(optimisticModule.shortid);
+      optimisticModule.id = updatedModule.id;
+      optimisticModule.shortid = updatedModule.shortid;
+
+      if (state.live.isCurrentEditor) {
+        effects.live.sendModuleCreated(optimisticModule.shortid);
+      }
+    } catch (error) {
+      sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1);
+      actions.editor.internal.setCurrentModule(state.editor.mainModule);
+      effects.notificationToast.error('Unable to save new file');
     }
-  } catch (error) {
-    sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1);
-    actions.editor.internal.setCurrentModule(state.editor.mainModule);
-    effects.notificationToast.error('Unable to save new file');
   }
-};
+);
 
-export const moduleDeleted: AsyncAction<string> = async (
-  { state, effects },
-  moduleShortid
-) => {
+export const moduleDeleted: AsyncAction<{
+  moduleShortid: string;
+}> = async ({ state, effects }, { moduleShortid }) => {
   const sandbox = state.editor.currentSandbox;
   const moduleToDeleteIndex = sandbox.modules.findIndex(
     module => module.shortid === moduleShortid
@@ -453,7 +461,7 @@ export const syncSandbox: AsyncAction<any[]> = async (
         } else {
           const oldDirectory = resolveDirectoryOld(path);
           const directory = oldSandbox.directories.find(
-            directory => directory.shortid === oldDirectory.shortid
+            directoryItem => directoryItem.shortid === oldDirectory.shortid
           );
           oldSandbox.directories.splice(
             oldSandbox.directories.indexOf(directory),
@@ -472,31 +480,28 @@ export const syncSandbox: AsyncAction<any[]> = async (
   }
 };
 
-export const removeModule: AsyncAction<string> = async (
-  { state, effects, actions },
-  moduleShortid
-) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
+export const removeModule: AsyncAction<string> = withOwnedSandbox(
+  async ({ state, effects, actions }, moduleShortid) => {
+    if (state.editor.currentModule.shortid === moduleShortid) {
+      actions.editor.internal.setCurrentModule(state.editor.mainModule);
+    }
 
-  if (state.editor.currentModule.shortid === moduleShortid) {
-    actions.editor.internal.setCurrentModule(state.editor.mainModule);
+    const sandbox = state.editor.currentSandbox;
+    const module = sandbox.modules.find(
+      moduleEntry => moduleEntry.shortid === moduleShortid
+    );
+    const tabs = state.editor.tabs as ModuleTab[];
+    const tabIndex = module
+      ? tabs.findIndex(tab => tab.moduleShortid === module.shortid)
+      : -1;
+
+    if (tabIndex >= 0) {
+      actions.internal.closeTabByIndex(tabIndex);
+    }
+
+    sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
   }
-
-  const sandbox = state.editor.currentSandbox;
-  const module = sandbox.modules.find(
-    moduleEntry => moduleEntry.shortid === moduleShortid
-  );
-  const tabs = state.editor.tabs as ModuleTab[];
-  const tabIndex = module
-    ? tabs.findIndex(tab => tab.moduleShortid === module.shortid)
-    : -1;
-
-  if (tabIndex >= 0) {
-    actions.internal.closeTabByIndex(tabIndex);
-  }
-
-  sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
-};
+);
 
 export const removeDirectory: AsyncAction<string> = async (
   { state },
@@ -505,7 +510,7 @@ export const removeDirectory: AsyncAction<string> = async (
   const sandbox = state.editor.currentSandbox;
   state.editor.currentModuleShortid = state.editor.mainModule.shortid;
   const directory = sandbox.directories.find(
-    directory => directory.shortid === directoryShortid
+    directoryItem => directoryItem.shortid === directoryShortid
   );
   sandbox.directories.splice(sandbox.directories.indexOf(directory), 1);
 };

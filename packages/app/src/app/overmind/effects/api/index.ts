@@ -181,10 +181,15 @@ export default {
   getPickedSandboxes(): Promise<PickedSandboxes> {
     return api.get(`/sandboxes/picked`);
   },
-  createDirectory(sandboxId: string, title: string): Promise<Directory> {
+  createDirectory(
+    sandboxId: string,
+    directoryShortid: string,
+    title: string
+  ): Promise<Directory> {
     return api.post(`/sandboxes/${sandboxId}/directories`, {
       directory: {
         title,
+        directoryShortid,
       },
     });
   },

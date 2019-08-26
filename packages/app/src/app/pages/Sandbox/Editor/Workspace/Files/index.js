@@ -43,6 +43,7 @@ class Files extends React.Component {
         root
         getModulePath={this.getModulePath}
         title={sandbox.title || 'Project'}
+        signals={this.props.signals}
         initializeProperties={({
           onCreateModuleClick,
           onCreateDirectoryClick,

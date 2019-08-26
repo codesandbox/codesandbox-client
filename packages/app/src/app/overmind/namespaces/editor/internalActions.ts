@@ -186,29 +186,6 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   });
 };
 
-export const ensureSandboxIsOwned: AsyncAction = async ({
-  state,
-  actions,
-  effects,
-}) => {
-  if (
-    !state.editor.currentSandbox.owned ||
-    (state.editor.currentSandbox.owned &&
-      state.editor.currentSandbox.isFrozen &&
-      effects.browser.confirm(
-        'This sandbox is frozen, and will be forked. Do you want to continue?'
-      ))
-  ) {
-    await actions.editor.internal.forkSandbox(state.editor.currentId);
-  } else if (
-    state.editor.currentSandbox.owned &&
-    state.editor.currentSandbox.isFrozen
-  ) {
-    // Where is the callback ID?
-    // effects.vscode.callCallbackError(?, "Can't save a frozen sandbox")
-  }
-};
-
 export const setModuleCode: Action<{
   module: Module;
   code: string;

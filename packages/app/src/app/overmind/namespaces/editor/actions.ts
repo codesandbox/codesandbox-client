@@ -1,6 +1,6 @@
 import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
-import { withLoadApp } from 'app/overmind/factories';
+import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
 import { json } from 'overmind';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import {
@@ -17,34 +17,35 @@ import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
+export const onNavigateAway: Action = () => {};
+
 export const addNpmDependency: AsyncAction<{
   name: string;
   version?: string;
   isDev?: boolean;
-}> = async ({ effects, actions, state }, { name, version, isDev }) => {
-  effects.analytics.track('Add NPM Dependency');
-  state.currentModal = null;
+}> = withOwnedSandbox(
+  async ({ effects, actions, state }, { name, version, isDev }) => {
+    effects.analytics.track('Add NPM Dependency');
+    state.currentModal = null;
 
-  await actions.editor.internal.ensureSandboxIsOwned();
+    if (!version) {
+      const dependency = await effects.api.getDependency(name);
+      version = dependency.version;
+    }
 
-  if (!version) {
-    const dependency = await effects.api.getDependency(name);
-    version = dependency.version;
+    await actions.editor.internal.addNpmDependencyToPackageJson({
+      name,
+      version,
+      isDev,
+    });
   }
+);
 
-  await actions.editor.internal.addNpmDependencyToPackageJson({
-    name,
-    version,
-    isDev,
-  });
-};
-
-export const npmDependencyRemoved: AsyncAction<{ name: string }> = async (
-  { state, effects, actions },
-  { name }
-) => {
+export const npmDependencyRemoved: AsyncAction<{
+  name: string;
+}> = withOwnedSandbox(async ({ state, effects, actions }, { name }) => {
   effects.analytics.track('Remove NPM Dependency');
-  await actions.editor.internal.ensureSandboxIsOwned();
+
   const { parsed } = state.editor.parsedConfigurations.package;
 
   delete parsed.dependencies[name];
@@ -55,7 +56,7 @@ export const npmDependencyRemoved: AsyncAction<{ name: string }> = async (
     moduleShortid: state.editor.currentPackageJSON.shortid,
     cbID: null,
   });
-};
+});
 
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;
@@ -134,15 +135,13 @@ export const codeSaved: AsyncAction<{
   code: string;
   moduleShortid: string;
   cbID: string;
-}> = async ({ actions }, { code, moduleShortid, cbID }) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
-
+}> = withOwnedSandbox(async ({ actions }, { code, moduleShortid, cbID }) => {
   actions.editor.internal.saveCode({
     code,
     moduleShortid,
     cbID,
   });
-};
+});
 
 export const codeChanged: Action<{
   code: string;
@@ -167,41 +166,41 @@ export const codeChanged: Action<{
   });
 };
 
-export const saveClicked: AsyncAction = async ({ state, effects, actions }) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
+export const saveClicked: AsyncAction = withOwnedSandbox(
+  async ({ state, effects, actions }) => {
+    const sandbox = state.editor.currentSandbox;
+    const currentlyChangedModuleShortids = state.editor.changedModuleShortids.slice();
 
-  const sandbox = state.editor.currentSandbox;
-  const currentlyChangedModuleShortids = state.editor.changedModuleShortids.slice();
+    try {
+      const changedModules = sandbox.modules.filter(module =>
+        state.editor.changedModuleShortids.includes(module.shortid)
+      );
 
-  try {
-    const changedModules = sandbox.modules.filter(module =>
-      state.editor.changedModuleShortids.includes(module.shortid)
-    );
+      state.editor.changedModuleShortids = [];
 
-    state.editor.changedModuleShortids = [];
+      await effects.api.saveModules(sandbox.id, changedModules);
+      effects.moduleRecover.clearSandbox(sandbox.id);
 
-    await effects.api.saveModules(sandbox.id, changedModules);
-    effects.moduleRecover.clearSandbox(sandbox.id);
-
-    if (
-      state.editor.currentSandbox.originalGit &&
-      state.workspace.openedWorkspaceItem === 'github'
-    ) {
-      actions.git.fetchGitChanges();
-    }
-  } catch (error) {
-    // Put back any unsaved modules taking into account that you
-    // might have changed some modules waiting for saving
-    currentlyChangedModuleShortids.forEach(moduleShortid => {
-      if (!state.editor.changedModuleShortids.includes(moduleShortid)) {
-        state.editor.changedModuleShortids.push(moduleShortid);
+      if (
+        state.editor.currentSandbox.originalGit &&
+        state.workspace.openedWorkspaceItem === 'github'
+      ) {
+        actions.git.fetchGitChanges();
       }
-    });
-    effects.notificationToast.error(
-      'Sorry, was not able to save, please try again'
-    );
+    } catch (error) {
+      // Put back any unsaved modules taking into account that you
+      // might have changed some modules waiting for saving
+      currentlyChangedModuleShortids.forEach(moduleShortid => {
+        if (!state.editor.changedModuleShortids.includes(moduleShortid)) {
+          state.editor.changedModuleShortids.push(moduleShortid);
+        }
+      });
+      effects.notificationToast.error(
+        'Sorry, was not able to save, please try again'
+      );
+    }
   }
-};
+);
 
 export const createZipClicked: Action = ({ state, effects }) => {
   effects.zip.download(state.editor.currentSandbox);
@@ -540,32 +539,32 @@ export const previewActionReceived: Action<{
 export const renameModule: AsyncAction<{
   title: string;
   moduleShortid: string;
-}> = async ({ state, effects, actions }, { title, moduleShortid }) => {
-  await actions.editor.internal.ensureSandboxIsOwned();
-
-  const sandbox = state.editor.currentSandbox;
-  const module = sandbox.modules.find(
-    module => module.shortid === moduleShortid
-  );
-  const oldTitle = module.title;
-
-  module.title = title;
-
-  try {
-    await effects.api.saveModuleTitle(
-      state.editor.currentId,
-      moduleShortid,
-      title
+}> = withOwnedSandbox(
+  async ({ state, effects, actions }, { title, moduleShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    const module = sandbox.modules.find(
+      moduleItem => moduleItem.shortid === moduleShortid
     );
+    const oldTitle = module.title;
 
-    if (state.live.isCurrentEditor) {
-      effects.live.sendModuleUpdate(moduleShortid);
+    module.title = title;
+
+    try {
+      await effects.api.saveModuleTitle(
+        state.editor.currentId,
+        moduleShortid,
+        title
+      );
+
+      if (state.live.isCurrentEditor) {
+        effects.live.sendModuleUpdate(moduleShortid);
+      }
+    } catch (error) {
+      module.title = oldTitle;
+      effects.notificationToast.error('Could not rename file');
     }
-  } catch (error) {
-    module.title = oldTitle;
-    effects.notificationToast.error('Could not rename file');
   }
-};
+);
 
 export const onDevToolsTabAdded: Action<{
   tab: any;

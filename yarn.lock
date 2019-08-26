@@ -5539,10 +5539,10 @@ betsy@1.0.2-1566237041476:
   resolved "https://registry.yarnpkg.com/betsy/-/betsy-1.0.2-1566237041476.tgz#796fc6e44a87e870823e4a118ae1e858961d4ce5"
   integrity sha512-obrQ3s9+HzesY+D8Jtl6kUVpJch487ycgrCeiC+Zgy+KJrFdgf120W4VzrUUaphzTxpXnlOkOTBUM+gD1zf+gg==
 
-betsy@1.0.2-1566284577417:
-  version "1.0.2-1566284577417"
-  resolved "https://registry.yarnpkg.com/betsy/-/betsy-1.0.2-1566284577417.tgz#6e7344e080ca291fc43c6a41504005b72d7a78b4"
-  integrity sha512-06dHfxvxwl/tF3erToB1RbVYXG7fq5Bt3OBYqgna6R2ybtG1xKFiSZXhkz2Am/JORqPUSMm8oRdoP37NUrhsgQ==
+betsy@next:
+  version "1.0.2-1566495846190"
+  resolved "https://registry.yarnpkg.com/betsy/-/betsy-1.0.2-1566495846190.tgz#549e27942b12eee5173b07f94ee219266b4500e0"
+  integrity sha512-gjXLpmx6UAfsAb6MjiNVjLEiN2nqKVky87ixnVC8T9YjJZXPEN2GVNjIHnM8h+gHiH0eJsQ2GYv4UKS3Z84LcQ==
 
 better-assert@~1.0.0:
   version "1.0.2"
@@ -17051,14 +17051,14 @@ overmind@19.1.0-1566237041476:
     is-plain-obj "^1.1.0"
     proxy-state-tree "4.4.2-1566237041476"
 
-overmind@^19.1.0-1566284577417:
-  version "19.1.0-1566284577417"
-  resolved "https://registry.yarnpkg.com/overmind/-/overmind-19.1.0-1566284577417.tgz#33f88f5f22673599630b21c9f09ce86df911dd6d"
-  integrity sha512-bxPg6duaytxEnUH3G47o+kTzzVN+4XaWOX9cEsnRiQkRT+zOJB5XfA+mr/8OX6Pme8KwGwlKN2VG8bPYMysLqQ==
+overmind@^19.1.1-1566822995841:
+  version "19.1.1-1566822995841"
+  resolved "https://registry.yarnpkg.com/overmind/-/overmind-19.1.1-1566822995841.tgz#34ef6b94fa31dff089179b75fed2342cfc1c8031"
+  integrity sha512-y4+zwzPDgi11yv60ota0EccIvKJpJmrvGtYW4bSfw18eCVwNMmfNcMI5PUjlXgjx2Pp8sRCRboxYRYZh7NXYfw==
   dependencies:
-    betsy "1.0.2-1566284577417"
+    betsy next
     is-plain-obj "^1.1.0"
-    proxy-state-tree "4.4.2-1566284577417"
+    proxy-state-tree "4.4.3-1566822995841"
 
 p-cancelable@^0.3.0:
   version "0.3.0"
@@ -18934,10 +18934,10 @@ proxy-state-tree@4.4.2-1566237041476:
   dependencies:
     is-plain-obj "^1.1.0"
 
-proxy-state-tree@4.4.2-1566284577417:
-  version "4.4.2-1566284577417"
-  resolved "https://registry.yarnpkg.com/proxy-state-tree/-/proxy-state-tree-4.4.2-1566284577417.tgz#cca16bfbd2eba0eba9f49b82f58586c06fbdd22a"
-  integrity sha512-Ta5dEr3oNmYoEco3OcAZQvyKdaTk+mCqwCto9/Ff9tB48Xm1mv5KG6DK9TQKkudSfm3K31oxz2VnQj3OrSNuog==
+proxy-state-tree@4.4.3-1566822995841:
+  version "4.4.3-1566822995841"
+  resolved "https://registry.yarnpkg.com/proxy-state-tree/-/proxy-state-tree-4.4.3-1566822995841.tgz#61d74b3686c19d962c674db6af4b6f006723982a"
+  integrity sha512-RGPnuGyR8rc7JtmEhCd1ozlCGYY7WMFTFIyhMKzonYPDEjrvlA0pgREeXQqMytzIeLpAJuj/NZGFguo5DdgiOQ==
   dependencies:
     is-plain-obj "^1.1.0"
 

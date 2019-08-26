@@ -61,3 +61,26 @@ export function withLoadApp<T>(
     }
   };
 }
+
+export function withOwnedSandbox<T>(
+  continueAction: AsyncAction<T>
+): AsyncAction<T> {
+  return async (context, payload) => {
+    const { state, actions, effects } = context;
+
+    if (
+      !state.editor.currentSandbox.owned ||
+      (state.editor.currentSandbox.owned &&
+        state.editor.currentSandbox.isFrozen &&
+        effects.browser.confirm(
+          'This sandbox is frozen, and will be forked. Do you want to continue?'
+        ))
+    ) {
+      await actions.editor.internal.forkSandbox(state.editor.currentId);
+
+      return continueAction(context, payload);
+    }
+
+    return continueAction(context, payload);
+  };
+}

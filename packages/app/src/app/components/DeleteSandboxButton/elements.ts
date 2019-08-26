@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
-export const Container = styled(Tooltip)`
+export const Button = styled.button`
   padding: 5px 6px 9px 6px;
   border: none;
   background-color: inherit;
