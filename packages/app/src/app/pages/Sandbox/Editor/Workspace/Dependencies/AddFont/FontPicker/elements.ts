@@ -70,20 +70,9 @@ export const List = styled.ul<{ expanded?: boolean }>`
   text-align: left;
   display: none;
   margin-top: 0.5rem;
-  position: relative;
-
-  &:before {
-    content: '';
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 3px 6px 3px;
-    border-color: transparent transparent #007bff transparent;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100%);
-  }
+  background-color: ${props => props.theme['sideBar.background']};
+  position: absolute;
+  z-index: 10;
 
   ${props =>
     props.expanded &&
@@ -99,10 +88,7 @@ export const SelectedFont = styled.button<{ done?: boolean }>`
   color: ${props =>
     props.theme['input.foreground'] ||
     (props.theme.light ? '#636363' : 'white')};
-  border-color: ${props =>
-    Color(props.theme['input.background'])
-      .darken(props.theme.light ? 0.1 : 0.3)
-      .rgbString()};
+  border-color: ${props => makeDarker(props)};
 
   box-shadow: none;
   text-align: left;
@@ -126,4 +112,17 @@ export const SelectedFont = styled.button<{ done?: boolean }>`
         transform: translateY(-50%);
       }
     `}
+`;
+
+export const Arrow = styled.div`
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 6px 6px 6px;
+  border-color: transparent transparent
+    ${props => props.theme['sideBar.background']} transparent;
+  position: absolute;
+  margin-top: 2px;
+  left: 50%;
+  margin-left: -6px;
 `;

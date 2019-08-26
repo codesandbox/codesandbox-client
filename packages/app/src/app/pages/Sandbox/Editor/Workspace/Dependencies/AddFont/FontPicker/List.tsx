@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Font } from '@samuelmeuli/font-manager';
-import { List, SearchFonts, FontLI, FontFamily } from './elements';
+import { List, SearchFonts, FontLI, FontFamily, Arrow } from './elements';
 
 type Props = {
   fonts: Font[];
@@ -30,27 +30,30 @@ const FontList = ({
     [fonts, searchTerm]
   );
   return (
-    <List expanded={expanded}>
-      <SearchFonts
-        type="text"
-        value={searchTerm}
-        onChange={updateSearch}
-        placeholder="Search Typefaces"
-      />
-      {getFonts.map((font: Font) => (
-        <FontLI key={font.family}>
-          <FontFamily
-            type="button"
-            id={`font-button-${getFontId(font.family)}`}
-            active={font.family === activeFontFamily}
-            onClick={onSelection}
-            onKeyPress={onSelection}
-          >
-            {font.family}
-          </FontFamily>
-        </FontLI>
-      ))}
-    </List>
+    <>
+      <Arrow />
+      <List expanded={expanded}>
+        <SearchFonts
+          type="text"
+          value={searchTerm}
+          onChange={updateSearch}
+          placeholder="Search Typefaces"
+        />
+        {getFonts.map((font: Font) => (
+          <FontLI key={font.family}>
+            <FontFamily
+              type="button"
+              id={`font-button-${getFontId(font.family)}`}
+              active={font.family === activeFontFamily}
+              onClick={onSelection}
+              onKeyPress={onSelection}
+            >
+              {font.family}
+            </FontFamily>
+          </FontLI>
+        ))}
+      </List>
+    </>
   );
 };
 
