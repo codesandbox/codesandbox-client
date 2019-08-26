@@ -22,7 +22,7 @@ export const FontPicker = ({
     const manager = new FontManager(
       apiKey,
       activeFontFamily,
-      { ...OPTIONS_DEFAULTS, limit: 800 },
+      { ...OPTIONS_DEFAULTS, limit: 200 },
       onChange
     );
     setFontManager(manager);
