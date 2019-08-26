@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 import { sortBy, isEmpty } from 'lodash-es';
 import filesize from 'filesize';
 import { Button } from '@codesandbox/common/lib/components/Button';
@@ -71,8 +70,8 @@ class FilesList extends Component {
                 `}
               />
               <HeaderTitle>File</HeaderTitle>
-              <HeaderTitle>Created</HeaderTitle>
               <HeaderTitle>Size</HeaderTitle>
+              <HeaderTitle />
               <HeaderTitle />
               <HeaderTitle />
             </tr>
@@ -100,8 +99,6 @@ class FilesList extends Component {
                     {f.name}
                   </a>
                 </td>
-
-                <td>{moment(f.insertedAt).format('ll')}</td>
                 <td>{filesize(f.objectSize)}</td>
                 <StatBody
                   css={`
