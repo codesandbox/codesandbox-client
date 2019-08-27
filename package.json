@@ -29,7 +29,7 @@
     "test": "lerna run test --ignore codesandbox-browserfs",
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
-    "now-build": "yarn build:deps && lerna run build --scope build:storybook",
+    "now-build": "yarn build:deps && lerna run build:storybook --scope common",
     "lint": "lerna run lint --stream",
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
