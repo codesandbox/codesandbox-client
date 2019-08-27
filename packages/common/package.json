@@ -13,7 +13,6 @@
   "scripts": {
     "test": "jest",
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react-native",
-    "install": "cd ../../ && yarn && yarn build:deps",
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
     "start:storybook": "start-storybook",
     "build:storybook": "build-storybook -c .storybook -o public",
