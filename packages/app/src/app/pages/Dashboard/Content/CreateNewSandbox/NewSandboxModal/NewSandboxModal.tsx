@@ -68,13 +68,13 @@ export const NewSandboxModal = inject('store', 'signals')(
           <TabContainer forking={forking} closing={closing}>
             {tabs.map(tab => (
               <Button
-                key={name}
+                key={tab.name}
                 onClick={() => {
                   selectTab(tab);
                 }}
                 selected={selectedTab === tab.tabIndex}
               >
-                {name}
+                {tab.name}
               </Button>
             ))}
           </TabContainer>
