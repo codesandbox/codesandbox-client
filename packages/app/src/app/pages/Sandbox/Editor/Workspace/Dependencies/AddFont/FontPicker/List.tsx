@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { FunctionComponent, useState, useMemo } from 'react';
 import { Font } from '@samuelmeuli/font-manager';
 import { List, SearchFonts, FontLI, FontFamily, Arrow } from './elements';
 
