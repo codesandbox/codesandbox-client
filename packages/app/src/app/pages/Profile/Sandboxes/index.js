@@ -87,8 +87,9 @@ class Sandboxes extends React.Component {
       isLoadingSandboxes ||
       !sandboxes ||
       !this.getSandboxesByPage(sandboxes, page)
-    )
+    ) {
       return <div />;
+    }
 
     const sandboxesPage = this.getSandboxesByPage(sandboxes, page);
 

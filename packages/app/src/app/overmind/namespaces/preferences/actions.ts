@@ -18,10 +18,9 @@ export const setDevtoolsOpen: Action<boolean> = ({ state }, isOpen) => {
   state.preferences.showDevtools = isOpen;
 };
 
-export const itemIdChanged: AsyncAction<string> = async (
-  { state, actions, effects },
-  itemId
-) => {
+export const itemIdChanged: AsyncAction<{
+  itemId: string;
+}> = async ({ state, actions, effects }, { itemId }) => {
   state.preferences.itemId = itemId;
 
   if (itemId === 'keybindings') {
@@ -39,19 +38,20 @@ export const settingChanged: Action<{
   value: any;
   name: string;
 }> = ({ state, effects }, { name, value }) => {
-  state.preferences.settings[name] = value;
+  const path = name.split('.');
+  const lastKey = path.pop();
+  const firstKey = path[0];
+  const settingsTarget = path.reduce(
+    (aggr, pathKey) => aggr[pathKey],
+    state.preferences.settings
+  );
+  settingsTarget[lastKey] = value;
+
   if (name === 'vimMode') {
     setVimExtensionEnabled(value);
   }
 
-  if (name.split('.').length > 1) {
-    const prop = name.split('.')[0];
-    const value = state.preferences.settings[prop];
-
-    effects.settingsStore.set(prop, value);
-  } else {
-    effects.settingsStore.set(name, value);
-  }
+  effects.settingsStore.set(firstKey, state.preferences.settings[firstKey]);
 
   effects.analytics.track('Change Settings', {
     name,
