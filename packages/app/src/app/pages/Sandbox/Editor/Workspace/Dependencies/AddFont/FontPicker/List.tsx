@@ -9,12 +9,12 @@ type Props = {
   expanded: boolean;
 };
 
-const FontList = ({
+const FontList: FunctionComponent<Props> = ({
   fonts,
   onSelection,
   activeFontFamily,
   expanded,
-}: Props) => {
+}) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const updateSearch = (e: any) => setSearchTerm(e.target.value);
