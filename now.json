@@ -4,9 +4,9 @@
   "alias": "storybook-codesandbox",
   "builds": [
     {
-      "src": "packages/common/package.json",
+      "src": "package.json",
       "use": "@now/static-build",
-      "config": { "distDir": ".storybook" }
+      "config": { "distDir": "packages/common/public" }
     }
   ]
 }
