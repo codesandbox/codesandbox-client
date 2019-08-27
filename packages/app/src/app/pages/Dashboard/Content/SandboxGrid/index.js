@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
 
-import { distanceInWordsToNow } from 'date-fns';
+import moment from 'moment';
 import { uniq } from 'lodash-es';
 import { basename } from 'path';
 import { camelizeKeys } from 'humps';
@@ -270,15 +270,15 @@ class SandboxGrid extends React.Component<*, State> {
 
     const getOrder = () => {
       if (item.removedAt) {
-        return `Deleted ${distanceInWordsToNow(item.removedAt)} ago`;
+        return `Deleted ${moment.utc(item.removedAt).fromNow()}`;
       }
 
       const orderField = this.props.store.dashboard.orderBy.field;
       if (orderField === 'insertedAt') {
-        return `Created ${distanceInWordsToNow(item.insertedAt)} ago`;
+        return `Created ${moment.utc(item.insertedAt).fromNow()}`;
       }
 
-      return `Edited ${distanceInWordsToNow(item.updatedAt)} ago`;
+      return `Edited ${moment.utc(item.updatedAt).fromNow()}`;
     };
 
     let editedSince = getOrder();
@@ -409,7 +409,7 @@ class SandboxGrid extends React.Component<*, State> {
                     label="Last Updated"
                     dataKey="updatedAt"
                     cellDataGetter={({ rowData }) =>
-                      distanceInWordsToNow(rowData.updatedAt) + ' ago'
+                      moment.utc(rowData.updatedAt).fromNow()
                     }
                     width={150}
                   />
@@ -417,7 +417,7 @@ class SandboxGrid extends React.Component<*, State> {
                     label="Created"
                     dataKey="insertedAt"
                     cellDataGetter={({ rowData }) =>
-                      distanceInWordsToNow(rowData.insertedAt) + ' ago'
+                      moment.utc(rowData.insertedAt).fromNow()
                     }
                     width={150}
                   />

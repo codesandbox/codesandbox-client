@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { inject, hooksObserver } from 'app/componentConnectors';
-import { format } from 'date-fns';
+import moment from 'moment';
 import { LinkButton } from 'app/components/LinkButton';
 
 import { SmallText, Buttons, StyledButton, StripeInput } from './elements';
@@ -84,9 +84,9 @@ function ChangeSubscription({
     <div>
       {buttons}
       <SmallText>
-        You will be billed every <strong>{format(date, 'Do')}</strong> of the
-        month, you can change or cancel your subscription at any time. You can
-        change your payment method in{' '}
+        You will be billed every <strong>{moment(date).format('Do')}</strong> of
+        the month, you can change or cancel your subscription at any time. You
+        can change your payment method in{' '}
         <LinkButton
           onClick={e => {
             e.preventDefault();

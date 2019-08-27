@@ -1,5 +1,5 @@
 import React from 'react';
-import { format } from 'date-fns';
+import moment from 'moment';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Relative from '@codesandbox/common/lib/components/Relative';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
@@ -91,7 +91,7 @@ const PricingChoice = inject('store', 'signals')(
                 <Notice>
                   You will be billed now and on the{' '}
                   <strong style={{ color: 'white' }}>
-                    {format(new Date(), 'Do')}
+                    {moment().format('Do')}
                   </strong>{' '}
                   of each month thereafter. You can cancel or change your
                   subscription at any time.
