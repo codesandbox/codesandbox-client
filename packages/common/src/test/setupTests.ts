@@ -3,12 +3,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 configure({ adapter: new Adapter() });
 
-type LocalStorageMockProps = {
-  store: any;
-};
-
 class LocalStorageMock {
-  store: any;
+  store: { [key: string]: string };
   constructor() {
     this.store = {};
   }
@@ -22,7 +18,7 @@ class LocalStorageMock {
   }
 
   setItem(key: string, value: string) {
-    this.store[key] = value.toString();
+    this.store[key] = value;
   }
 
   removeItem(key: string) {

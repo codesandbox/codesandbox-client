@@ -1,5 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { noop } from '../../test/mocks';
 import Preference from './';
 import { KEYBINDINGS } from '../../utils/keybindings';
 
@@ -9,7 +10,7 @@ const keyBindingKeys = Object.keys(KEYBINDINGS);
 stories
   .add('Boolean Preference', () => (
     <Preference
-      setValue={() => {}}
+      setValue={noop}
       value={false}
       title="Vim Mode?"
       type="boolean"
@@ -17,7 +18,7 @@ stories
   ))
   .add('String Preference', () => (
     <Preference
-      setValue={() => {}}
+      setValue={noop}
       title="Whats your name?"
       type="string"
       value="Test"
@@ -26,7 +27,7 @@ stories
   .add('Keybinding Preference', () =>
     keyBindingKeys.map((id, i) => (
       <Preference
-        setValue={() => {}}
+        setValue={noop}
         key={id}
         title={KEYBINDINGS[id].title}
         value={KEYBINDINGS[id].bindings}
@@ -37,7 +38,7 @@ stories
   .add('Dropdown Preference', () => (
     <Preference
       title="Select your editor"
-      setValue={() => {}}
+      setValue={noop}
       type="dropdown"
       value="one"
       options={['one', 'two']}

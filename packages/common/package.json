@@ -108,9 +108,6 @@
       "^.+\\.[t|j]sx?$": "babel-jest",
       "^.+\\.svg$": "jest-svg-transformer"
     },
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
     "modulePathIgnorePatterns": [
       "lib"
     ]
