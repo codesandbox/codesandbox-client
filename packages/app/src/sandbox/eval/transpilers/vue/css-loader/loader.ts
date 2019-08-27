@@ -1,7 +1,6 @@
-// @flow
-
-import { type LoaderContext } from '../../../transpiled-module';
+// @ts-ignore
 import CSSBaseRaw from '!raw-loader!./client/css-base';
+import { LoaderContext } from '../../../transpiled-module';
 
 import getModules from './get-modules';
 

@@ -26,7 +26,7 @@
     "arrow-parens": 0,
     "import/prefer-default-export": 0,
     "class-methods-use-this": 0,
-    "no-console": ["error", { "allow": ["error"] }],
+    "no-console": ["error", { "allow": ["error", "warn"] }],
     "prefer-template": "off",
     "no-plusplus": 0,
     "no-underscore-dangle": "off",

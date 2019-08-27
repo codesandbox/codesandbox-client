@@ -4,12 +4,16 @@ import resolve from 'browser-resolve';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
 import { Module } from './entities/module';
-import TranspiledModule, { ChildModule } from './transpiled-module';
-import { SerializedTranspiledModule } from './transpiled-module';
+import TranspiledModule, {
+  ChildModule,
+  SerializedTranspiledModule,
+} from './transpiled-module';
 import Preset from './presets';
 import { SCRIPT_VERSION } from '../';
 import fetchModule, {
@@ -24,11 +28,9 @@ import { packageFilter } from './utils/resolve-utils';
 
 import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
 import { shouldTranspile } from './transpilers/babel/check';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import { splitQueryFromPath } from './utils/query-path';
 
-declare var BrowserFS: any;
+declare const BrowserFS: any;
 
 type Externals = {
   [name: string]: string;
@@ -158,6 +160,7 @@ export default class Manager {
 
     getGlobal().manager = this;
     if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
       console.log(this);
     }
 
@@ -603,7 +606,8 @@ export default class Manager {
 
         if (NODE_LIBS.indexOf(shimmedPath) > -1) {
           this.cachedPaths[dirredPath][path] = shimmedPath;
-          return getShimmedModuleFromPath(currentPath, path);
+          promiseResolve(getShimmedModuleFromPath(currentPath, path));
+          return;
         }
 
         try {
@@ -1124,13 +1128,13 @@ export default class Manager {
           version === SCRIPT_VERSION &&
           dependenciesQuery === this.getDependencyQuery()
         ) {
-          const combinedMetas = {};
+          const newCombinedMetas = {};
           Object.keys(meta).forEach(dir => {
             meta[dir].forEach(file => {
-              combinedMetas[`/node_modules` + dir + '/' + file] = true;
+              newCombinedMetas[`/node_modules` + dir + '/' + file] = true;
             });
           });
-          setCombinedMetas(combinedMetas);
+          setCombinedMetas(newCombinedMetas);
 
           this.cachedPaths = cachedPaths;
           this.configurations = configurations;

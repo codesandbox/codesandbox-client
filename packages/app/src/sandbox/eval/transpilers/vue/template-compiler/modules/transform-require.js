@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { type LoaderContext } from '../../../../transpiled-module';
 // vue compiler module for transforming `<tag>:<attribute>` to `require`
 

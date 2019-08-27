@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import transpile from 'vue-template-es2015-compiler';
 import * as compiler from 'vue-template-compiler';
 import vueHotReloadAPIRaw from '!raw-loader!vue-hot-reload-api';

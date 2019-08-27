@@ -21,7 +21,7 @@ import Manager, { HMRStatus } from './manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 
-declare var BrowserFS: any;
+declare const BrowserFS: any;
 
 const debug = _debug('cs:compiler:transpiled-module');
 
@@ -1046,7 +1046,7 @@ export default class TranspiledModule {
       isEntry: this.isEntry,
       isTestFile: this.isTestFile,
 
-      sourceEqualsCompiled: sourceEqualsCompiled,
+      sourceEqualsCompiled,
       childModules: this.childModules.map(m => m.getId()),
       dependencies: Array.from(this.dependencies).map(m => m.getId()),
       initiators: Array.from(this.initiators).map(m => m.getId()),
@@ -1117,12 +1117,10 @@ export default class TranspiledModule {
         } else {
           tModule.dependencies.add(this);
         }
+      } else if (transpilation) {
+        tModule.transpilationInitiators.add(this);
       } else {
-        if (transpilation) {
-          tModule.transpilationInitiators.add(this);
-        } else {
-          tModule.initiators.add(this);
-        }
+        tModule.initiators.add(this);
       }
 
       return tModule;

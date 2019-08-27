@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { extname } from 'path';
 import detectiveListener from './wrap-listener';
 

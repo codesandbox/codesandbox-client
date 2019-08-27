@@ -1,4 +1,4 @@
-import { Sandbox, GitInfo, SandboxUrlSourceData } from '../types';
+import { Sandbox, SandboxUrlSourceData } from '../types';
 
 export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
@@ -168,21 +168,21 @@ export const tosUrl = () => `/legal/terms`;
 export const privacyUrl = () => `/legal/privacy`;
 
 export function getSandboxId() {
-  const host = process.env.CODESANDBOX_HOST;
+  const csbHost = process.env.CODESANDBOX_HOST;
 
   if (process.env.LOCAL_SERVER) {
     return document.location.hash.replace('#', '');
   }
 
   if (process.env.STAGING) {
-    const segments = host.split('//')[1].split('.');
+    const segments = csbHost.split('//')[1].split('.');
     const first = segments.shift();
     const re = RegExp(`${first}-(.*)\\.${segments.join('\\.')}`);
     return document.location.host.match(re)[1];
   }
 
   let result: string;
-  [host, sandboxHost[host]].filter(Boolean).forEach(tryHost => {
+  [csbHost, sandboxHost[csbHost]].filter(Boolean).forEach(tryHost => {
     const hostRegex = tryHost.replace(/https?:\/\//, '').replace(/\./g, '\\.');
     const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
     const matches = document.location.host.match(sandboxRegex);

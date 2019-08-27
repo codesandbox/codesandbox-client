@@ -9,7 +9,7 @@ export interface UserWithAvatarProps {
   username: string;
   name?: string;
   hideBadge?: boolean;
-  subscriptionSince?: string;
+  subscriptionSince?: number | Date;
   useBigName?: boolean;
 }
 

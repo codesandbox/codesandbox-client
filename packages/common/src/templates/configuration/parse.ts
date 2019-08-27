@@ -1,8 +1,8 @@
-import { ConfigurationFile } from '../../templates/configuration/types';
 import toml from 'markty-toml';
 import { parse } from 'jsonlint';
+import { ConfigurationFile } from '../../templates/configuration/types';
 import { ParsedConfigurationFiles } from '../template';
-import { Sandbox, Module } from '../../types';
+import { Sandbox } from '../../types';
 import { TemplateType } from '..';
 
 type ConfigurationFiles = {

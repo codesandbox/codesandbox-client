@@ -24,6 +24,11 @@ interface INewSandboxModalProps {
   signals: any;
 }
 
+interface ITab {
+  name: string;
+  tabIndex: number;
+}
+
 export const NewSandboxModal = inject('store', 'signals')(
   hooksObserver(
     ({
@@ -34,6 +39,25 @@ export const NewSandboxModal = inject('store', 'signals')(
     }: INewSandboxModalProps) => {
       const [selectedTab, setSelectedTab] = useState(0);
 
+      const tabs: ITab[] = [
+        'Overview',
+        user && 'My Templates',
+        'Client Templates',
+        'Container Templates',
+        'Import',
+      ]
+        .map((buttonName, index) => ({
+          name: buttonName,
+          tabIndex: index,
+        }))
+        .filter(({ name }) => Boolean(name));
+
+      const selectTab = (tab: ITab) => {
+        setSelectedTab(tab.tabIndex);
+
+        track('New Sandbox Modal - Open Tab', { tabName: tab.name });
+      };
+
       const selectTemplate = template => {
         track('New Sandbox Modal - Select Template', { template });
         createSandbox(template);
@@ -42,27 +66,17 @@ export const NewSandboxModal = inject('store', 'signals')(
       return (
         <Container closing={closing} forking={forking}>
           <TabContainer forking={forking} closing={closing}>
-            {[
-              'Overview',
-              user && 'My Templates',
-              'Client Templates',
-              'Container Templates',
-              'Import',
-            ]
-              .map((buttonName, index) => ({
-                name: buttonName,
-                tabIndex: index,
-              }))
-              .filter(({ name }) => Boolean(name))
-              .map(({ name, tabIndex }) => (
-                <Button
-                  key={name}
-                  onClick={() => setSelectedTab(tabIndex)}
-                  selected={selectedTab === tabIndex}
-                >
-                  {name}
-                </Button>
-              ))}
+            {tabs.map(tab => (
+              <Button
+                key={tab.name}
+                onClick={() => {
+                  selectTab(tab);
+                }}
+                selected={selectedTab === tab.tabIndex}
+              >
+                {tab.name}
+              </Button>
+            ))}
           </TabContainer>
 
           <InnerContainer forking={forking} closing={closing}>

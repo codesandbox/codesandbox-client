@@ -1,10 +1,10 @@
 import resolve from 'browser-resolve';
 import getRequireStatements from './simple-get-require-statements';
 
-const path = BrowserFS.BFSRequire('path');
+const path = self.BrowserFS.BFSRequire('path');
 
 function mkDirByPathSync(targetDir, { isRelativeToScript = false } = {}) {
-  const fs = BrowserFS.BFSRequire('fs');
+  const fs = self.BrowserFS.BFSRequire('fs');
 
   const sep = path.sep;
   const initDir = path.isAbsolute(targetDir) ? sep : '';
@@ -37,14 +37,14 @@ function mkDirByPathSync(targetDir, { isRelativeToScript = false } = {}) {
 }
 
 export const resolveAsyncModule = (
-  path: string,
+  modulePath: string,
   { ignoredExtensions }?: { ignoredExtensions?: Array<string> }
 ) =>
   new Promise((r, reject) => {
     const sendId = Math.floor(Math.random() * 10000);
     self.postMessage({
       type: 'resolve-async-transpiled-module',
-      path,
+      path: modulePath,
       id: sendId,
       options: { isAbsolute: true, ignoredExtensions },
     });
@@ -59,7 +59,7 @@ export const resolveAsyncModule = (
         if (found) {
           r(message.data);
         } else {
-          reject(new Error("Could not find path: '" + path + "'."));
+          reject(new Error("Could not find path: '" + modulePath + "'."));
         }
         self.removeEventListener('message', resolveFunc);
       }
@@ -81,13 +81,15 @@ export async function downloadPath(absolutePath) {
     path: r.path,
   });
 
-  const fs = BrowserFS.BFSRequire('fs');
+  const fs = self.BrowserFS.BFSRequire('fs');
 
   let existingFile;
 
   try {
     existingFile = fs.readFileSync(r.path);
-  } catch (e) {}
+  } catch (e) {
+    /* ignore */
+  }
 
   if (existingFile) {
     try {
@@ -102,7 +104,9 @@ export async function downloadPath(absolutePath) {
 
         fs.writeFileSync(r2.path, r2.code);
       }
-    } catch (e) {}
+    } catch (e) {
+      /* ignore */
+    }
 
     return Promise.resolve({
       code: existingFile,
@@ -135,6 +139,7 @@ export async function downloadPath(absolutePath) {
           });
           return '';
         } catch (e) {
+          // eslint-disable-next-line no-use-before-define
           downloads[foundR.path] = downloadFromError(e)
             .then(() => {
               delete downloads[foundR.path];
@@ -154,12 +159,12 @@ export async function downloadPath(absolutePath) {
 
 export async function downloadFromError(e) {
   if (e.message.indexOf('Cannot find module') > -1) {
-    return new Promise(resolve => {
+    return new Promise(res => {
       const dep = e.message.match(/Cannot find module '(.*?)'/)[1];
       const from = e.message.match(/from '(.*?)'/)[1];
       const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
 
-      resolve(downloadPath(absolutePath));
+      res(downloadPath(absolutePath));
     });
   }
 
