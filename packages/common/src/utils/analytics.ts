@@ -37,7 +37,11 @@ export async function initializeSentry(dsn: string) {
        * Don't send messages from the sandbox, so don't send from eg.
        * new.codesandbox.io or new.csb.app
        */
-      blacklistUrls: [/.*\.codesandbox\.io/, /.*\.csb\.app/],
+      blacklistUrls: [
+        'codesandbox.editor.main.js',
+        /.*\.codesandbox\.io/,
+        /.*\.csb\.app/,
+      ],
       beforeSend: event => {
         if (
           event.stacktrace.frames[0] &&
