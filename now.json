@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "name": "storybook",
+  "alias": "storybook-codesandbox",
+  "builds": [
+    {
+      "src": "packages/common/package.json",
+      "use": "@now/static-build",
+      "config": { "distDir": ".storybook" }
+    }
+  ]
+}
