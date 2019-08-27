@@ -10,8 +10,10 @@ export const valueChanged: Action<{
   state.workspace.project[field] = value;
 };
 
-export const tagChanged: Action<string> = ({ state }, name) => {
-  state.workspace.tags.tagName = name;
+export const tagChanged: Action<{
+  tagName: string;
+}> = ({ state }, { tagName }) => {
+  state.workspace.tags.tagName = tagName;
 };
 
 export const tagAdded: AsyncAction = withOwnedSandbox(
@@ -32,36 +34,36 @@ export const tagAdded: AsyncAction = withOwnedSandbox(
   }
 );
 
-export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
-  async ({ state, effects, actions }, tagName) => {
-    const sandbox = state.editor.currentSandbox;
-    const tagIndex = sandbox.tags.indexOf(tagName);
+export const tagRemoved: AsyncAction<{
+  tag: string;
+}> = withOwnedSandbox(async ({ state, effects, actions }, { tag }) => {
+  const sandbox = state.editor.currentSandbox;
+  const tagIndex = sandbox.tags.indexOf(tag);
 
-    sandbox.tags.splice(tagIndex, 1);
+  sandbox.tags.splice(tagIndex, 1);
 
-    try {
-      sandbox.tags = await effects.api.deleteTag(sandbox.id, tagName);
+  try {
+    sandbox.tags = await effects.api.deleteTag(sandbox.id, tag);
 
-      // Create a "joint action" on this
-      const { parsed } = state.editor.parsedConfigurations.package;
+    // Create a "joint action" on this
+    const { parsed } = state.editor.parsedConfigurations.package;
 
-      parsed.keywords = sandbox.tags;
-      parsed.name = slugify(sandbox.title || sandbox.id);
-      parsed.description = sandbox.description;
+    parsed.keywords = sandbox.tags;
+    parsed.name = slugify(sandbox.title || sandbox.id);
+    parsed.description = sandbox.description;
 
-      const code = JSON.stringify(parsed, null, 2);
-      const moduleShortid = state.editor.currentPackageJSON.shortid;
+    const code = JSON.stringify(parsed, null, 2);
+    const moduleShortid = state.editor.currentPackageJSON.shortid;
 
-      await actions.editor.internal.saveCode({
-        code,
-        moduleShortid,
-        cbID: null,
-      });
-    } catch (error) {
-      sandbox.tags.splice(tagIndex, 0, tagName);
-    }
+    await actions.editor.internal.saveCode({
+      code,
+      moduleShortid,
+      cbID: null,
+    });
+  } catch (error) {
+    sandbox.tags.splice(tagIndex, 0, tag);
   }
-);
+});
 
 export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {
@@ -103,38 +105,38 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
   }
 );
 
-export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
-  async ({ state, effects, actions }, resource) => {
-    const externalResources = state.editor.currentSandbox.externalResources;
+export const externalResourceAdded: AsyncAction<{
+  resource: string;
+}> = withOwnedSandbox(async ({ state, effects, actions }, { resource }) => {
+  const externalResources = state.editor.currentSandbox.externalResources;
 
-    externalResources.push(resource);
+  externalResources.push(resource);
 
-    try {
-      await effects.api.createResource(state.editor.currentId, resource);
-    } catch (error) {
-      externalResources.splice(externalResources.indexOf(resource), 1);
-      effects.notificationToast.error('Could not save external resource');
-    }
+  try {
+    await effects.api.createResource(state.editor.currentId, resource);
+  } catch (error) {
+    externalResources.splice(externalResources.indexOf(resource), 1);
+    effects.notificationToast.error('Could not save external resource');
   }
-);
+});
 
-export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
-  async ({ state, effects, actions }, resource) => {
-    const externalResources = state.editor.currentSandbox.externalResources;
-    const resourceIndex = externalResources.indexOf(resource);
+export const externalResourceRemoved: AsyncAction<{
+  resource: string;
+}> = withOwnedSandbox(async ({ state, effects, actions }, { resource }) => {
+  const externalResources = state.editor.currentSandbox.externalResources;
+  const resourceIndex = externalResources.indexOf(resource);
 
-    externalResources.splice(resourceIndex, 1);
+  externalResources.splice(resourceIndex, 1);
 
-    try {
-      await effects.api.deleteResource(state.editor.currentId, resource);
-    } catch (error) {
-      externalResources.splice(resourceIndex, 0, resource);
-      effects.notificationToast.error(
-        'Could not save removal of external resource'
-      );
-    }
+  try {
+    await effects.api.deleteResource(state.editor.currentId, resource);
+  } catch (error) {
+    externalResources.splice(resourceIndex, 0, resource);
+    effects.notificationToast.error(
+      'Could not save removal of external resource'
+    );
   }
-);
+});
 
 export const integrationsOpened: Action = ({ state }) => {
   state.preferences.itemId = 'integrations';
@@ -186,9 +188,9 @@ export const toggleCurrentWorkspaceItem: Action = ({ state }) => {
   state.workspace.workspaceHidden = !state.workspace.workspaceHidden;
 };
 
-export const setWorkspaceHidden: Action<{ isHidden: boolean }> = (
+export const setWorkspaceHidden: Action<{ hidden: boolean }> = (
   { state },
-  { isHidden }
+  { hidden }
 ) => {
-  state.workspace.workspaceHidden = isHidden;
+  state.workspace.workspaceHidden = hidden;
 };

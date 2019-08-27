@@ -8,8 +8,10 @@ export function withLoadApp<T>(
   return async (context, value) => {
     const { effects, state, actions } = context;
 
-    if (state.hasLoadedApp) {
+    if (state.hasLoadedApp && continueAction) {
       await continueAction(context, value);
+      return;
+    } else if (state.hasLoadedApp) {
       return;
     }
 
