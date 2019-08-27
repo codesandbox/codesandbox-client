@@ -103,7 +103,9 @@ export const SelectedFont = styled.button<{ done?: boolean }>`
     css`
       :after {
         content: '';
-        background-image: url("data:image/svg+xml,%3Csvg width='7' height='4' viewBox='0 0 7 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.50007 4L1.27146e-07 1.35122e-07L7 -4.76837e-07L3.50007 4Z' fill='white'/%3E%3C/svg%3E%0A");
+        background-image: url("${`data:image/svg+xml,%3Csvg width='7' height='4' viewBox='0 0 7 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.50007 4L1.27146e-07 1.35122e-07L7 -4.76837e-07L3.50007 4Z' fill='${
+          props.theme.light ? 'black' : 'white'
+        }'/%3E%3C/svg%3E%0A`}");
         width: 7px;
         height: 4px;
         position: absolute;

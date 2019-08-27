@@ -9,7 +9,7 @@ type Props = {
   expanded: boolean;
 };
 
-const FontList: FunctionComponent<Props> = ({
+export const FontList: FunctionComponent<Props> = ({
   fonts,
   onSelection,
   activeFontFamily,
@@ -56,5 +56,3 @@ const FontList: FunctionComponent<Props> = ({
     </>
   );
 };
-
-export default FontList;

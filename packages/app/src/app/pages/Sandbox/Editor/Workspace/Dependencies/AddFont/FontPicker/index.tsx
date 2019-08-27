@@ -7,7 +7,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { SelectedFont } from './elements';
-import FontList from './List';
+import { FontList } from './List';
 
 export const FontPicker = ({
   activeFontFamily = FONT_FAMILY_DEFAULT,
