@@ -15,9 +15,6 @@
     "object": true,
     "__DEV__": true
   },
-  "settings": {
-    "import/extensions": [".js", ".jsx", ".ts", ".tsx"]
-  },
   "rules": {
     "react/jsx-filename-extension": 0,
     "react/sort-comp": 0,
