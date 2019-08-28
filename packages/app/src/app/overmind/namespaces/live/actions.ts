@@ -6,8 +6,10 @@ import { TextOperation } from 'ot';
 
 export const internal = internalActions;
 
-export const roomJoined: AsyncAction = async ({ state, effects, actions }) => {
-  await actions.live.internal.initialize();
+export const roomJoined: AsyncAction<{
+  id;
+}> = async ({ state, effects, actions }, { id }) => {
+  await actions.live.internal.initialize(id);
 
   if (state.updateStatus === 'available') {
     const modal = 'liveVersionMismatch';
@@ -20,14 +22,13 @@ export const roomJoined: AsyncAction = async ({ state, effects, actions }) => {
   state.live.isLoading = false;
 };
 
-export const createLiveClicked: AsyncAction<string> = async (
-  { state, effects, actions },
-  id
-) => {
+export const createLiveClicked: AsyncAction<{
+  sandboxId: string;
+}> = async ({ state, effects, actions }, { sandboxId }) => {
   effects.analytics.track('Create Live Session');
 
-  await effects.api.createLiveRoom(id);
-  await actions.live.internal.initialize();
+  const roomId = await effects.api.createLiveRoom(sandboxId);
+  await actions.live.internal.initialize(roomId);
 
   state.live.isLoading = false;
 };
@@ -401,8 +402,11 @@ export const onTransformMade: Action<{
   }
 
   try {
-    effects.live.getClient(moduleShortid).applyClient(operation);
+    const client = effects.live.getClient(moduleShortid);
+    console.log(client);
+    client.applyClient(operation);
   } catch (e) {
+    console.log(e);
     // Something went wrong, probably a sync mismatch. Request new version
     console.error(
       'Something went wrong with applying OT operation',

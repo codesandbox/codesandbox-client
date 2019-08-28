@@ -50,30 +50,32 @@ export const sendModuleSaved: Action<string> = ({ effects }, moduleShortid) => {
   effects.live.sendModuleSaved(moduleShortid);
 };
 
-export const initialize: AsyncAction = withLoadApp(
-  async ({ state, effects, actions }) => {
+export const initialize: AsyncAction<string> = withLoadApp<string>(
+  async ({ state, effects, actions }, id) => {
     state.live.isLoading = true;
 
     try {
-      state.live.roomInfo = await effects.live.joinChannel<RoomInfo>(
-        state.editor.currentSandbox.roomId
-      );
+      const {
+        roomInfo,
+        liveUserId,
+        sandbox,
+        moduleState,
+      } = await effects.live.joinChannel(id);
+
+      state.live.roomInfo = roomInfo;
+      state.live.liveUserId = liveUserId;
+
+      if (!state.editor.sandboxes[sandbox.id]) {
+        state.editor.sandboxes[sandbox.id] = sandbox;
+      }
+
+      state.editor.currentId = sandbox.id;
+
       effects.analytics.track('Live Session Joined', {});
       effects.live.listen(actions.live.liveMessageReceived);
-      /* 
-      set(state`live.liveUserId`, props`liveUserId`),
-      set(state`editor.currentId`, props`sandbox.id`),
-      when(state`editor.currentSandbox`),
-      {
-        true: [],
-        false: [
-          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-        ],
-      },
-    */
-      state.live.receivingCode = true; // Not necessary as next step is synchronous
-      // TODO: Where is the module state?
-      // actions.live.internal.initializeModuleState();
+
+      state.live.receivingCode = true;
+      actions.live.internal.initializeModuleState(moduleState);
       state.live.receivingCode = false;
       state.live.isLive = true;
       state.live.error = null;

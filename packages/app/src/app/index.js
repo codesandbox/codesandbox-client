@@ -159,7 +159,15 @@ async function initialize() {
   let state = null;
   let overmind = null;
 
+  window.useOvermind = useIt => {
+    localStorage.setItem('overmind', JSON.stringify(useIt));
+    location.reload(true);
+  };
+
   if (localStorage.getItem('overmind') === 'true') {
+    console.log('########');
+    console.log('USING OVERMIND');
+    console.log('########');
     await Promise.all([import('overmind'), import('./overmind')]).then(
       modules => {
         const createOvermind = modules[0].createOvermind;

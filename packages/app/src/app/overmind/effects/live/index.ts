@@ -3,7 +3,12 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import uuid from 'uuid';
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
-import { Module, Directory } from '@codesandbox/common/lib/types';
+import {
+  Module,
+  Directory,
+  RoomInfo,
+  Sandbox,
+} from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import clientsFactory from './clients';
 
@@ -80,21 +85,32 @@ export default {
         .receive('error', resp => reject(resp));
     });
   },
-  joinChannel<T>(roomId: string): Promise<T> {
-    const { socket } = this.context;
-
-    channel = socket.getSocket().channel(`live:${roomId}`, {});
+  joinChannel(
+    roomId: string
+  ): Promise<{
+    sandboxId: string;
+    sandbox: Sandbox;
+    moduleState: object;
+    liveUserId: string;
+    roomInfo: RoomInfo;
+  }> {
+    channel = _socket.channel(`live:${roomId}`, {});
 
     return new Promise((resolve, reject) => {
       channel
         .join()
-        .receive('ok', resp => resolve(camelizeKeys(resp) as T))
+        .receive('ok', resp => resolve(camelizeKeys(resp) as any))
         .receive('error', resp => reject(camelizeKeys(resp)));
     });
   },
   // TODO: Need to take an action here
-  listen(signalPath) {
-    const signal = this.context.controller.getSignal(signalPath);
+  listen(
+    action: (payload: {
+      event: string;
+      _isOwnMessage: boolean;
+      data: object;
+    }) => {}
+  ) {
     channel.onMessage = (event: any, data: any) => {
       const disconnected = data == null && event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
@@ -103,7 +119,7 @@ export default {
         data && data._messageId && sentMessages.delete(data._messageId)
       );
 
-      signal({
+      action({
         event: alteredEvent,
         _isOwnMessage,
         data: data == null ? {} : data,

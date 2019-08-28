@@ -274,10 +274,14 @@ export default {
       message,
     });
   },
-  createLiveRoom(sandboxId: string): Promise<RoomInfo> {
-    return api.post(`/sandboxes/${sandboxId}/live`, {
+  async createLiveRoom(sandboxId: string): Promise<string> {
+    const data = await api.post<{
+      id: string;
+    }>(`/sandboxes/${sandboxId}/live`, {
       id: sandboxId,
     });
+
+    return data.id;
   },
   updateBadge(badgeId: string, visible: boolean): Promise<void> {
     return api.patch(`/users/current_user/badges/${badgeId}`, {
