@@ -8,7 +8,7 @@ function DeleteProfileSandboxModal({ signals }) {
       title="Delete Sandbox"
       body={<span>Are you sure you want to delete this sandbox?</span>}
       onCancel={() => signals.modalClosed()}
-      onDelete={() => signals.profile.sandboxDeleted()}
+      onConfirm={() => signals.profile.sandboxDeleted()}
     />
   );
 }

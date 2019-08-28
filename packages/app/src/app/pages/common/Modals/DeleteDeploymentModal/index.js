@@ -8,7 +8,7 @@ function DeleteDeploymentModal({ signals }) {
       title="Delete Deployment"
       body={<span>Are you sure you want to delete this Deployment?</span>}
       onCancel={() => signals.modalClosed()}
-      onDelete={() => signals.deployment.deleteDeployment()}
+      onConfirm={() => signals.deployment.deleteDeployment()}
     />
   );
 }
