@@ -135,7 +135,7 @@ export const requestAuthorisation: AsyncAction = async ({ actions }) => {
 
 export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = true;
-  await actions.internal.signIn({ useExtraScopes: false });
+  await actions.internal.signIn({ useExtraScopes: true });
   state.isLoadingGithub = false;
 };
 
@@ -202,7 +202,5 @@ export const refetchSandboxInfo: AsyncAction = async ({
 
       await actions.live.internal.initialize();
     }
-  } else {
-    actions.files.internal.recoverFiles();
   }
 };
