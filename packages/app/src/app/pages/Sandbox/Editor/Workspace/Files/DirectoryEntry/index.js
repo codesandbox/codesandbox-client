@@ -268,7 +268,7 @@ class DirectoryEntry extends React.Component {
                     </span>
                   }
                   onCancel={this.closeModals}
-                  onDelete={() => {
+                  onConfirm={() => {
                     this.setState({
                       showDeleteDirectoryModal: false,
                     });
@@ -329,7 +329,7 @@ class DirectoryEntry extends React.Component {
                   </span>
                 }
                 onCancel={this.closeModals}
-                onDelete={() => {
+                onConfirm={() => {
                   this.setState({
                     showDeleteModuleModal: false,
                   });

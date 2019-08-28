@@ -14,7 +14,7 @@ function EmptyTrash({ signals, store }) {
         </span>
       }
       onCancel={() => signals.modalClosed()}
-      onDelete={async () => {
+      onConfirm={async () => {
         await permanentlyDeleteSandboxes(store.dashboard.trashSandboxIds);
         signals.modalClosed();
       }}
