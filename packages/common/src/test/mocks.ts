@@ -1,5 +1,9 @@
 import { Module, Directory, Sandbox, User } from '../types';
 
+export function noop(): void {
+  // No operation performed.
+}
+
 export function createModule(index: number = 0, params?: Module & any): Module {
   return {
     title: `test-module${index}`,
