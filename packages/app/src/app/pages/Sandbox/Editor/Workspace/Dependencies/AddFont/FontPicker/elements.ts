@@ -88,7 +88,7 @@ export const SelectedFont = styled.button<{ done?: boolean }>`
   color: ${props =>
     props.theme['input.foreground'] ||
     (props.theme.light ? '#636363' : 'white')};
-  border-color: ${props => makeDarker(props)};
+  border: 1px solid ${props => makeDarker(props)};
 
   box-shadow: none;
   text-align: left;
@@ -97,6 +97,7 @@ export const SelectedFont = styled.button<{ done?: boolean }>`
   padding: 0.5rem 0.75rem;
   position: relative;
   box-sizing: border-box;
+  outline: none;
 
   ${props =>
     props.done &&
