@@ -210,7 +210,7 @@ export async function resetUserId() {
 const isAllowedEvent = (eventName, secondArg) => {
   try {
     if (eventName === 'VSCode - workbenchActionExecuted') {
-      return WHITELISTED_VSCODE_EVENTS.indexOf(secondArg.id) > -1;
+      return WHITELISTED_VSCODE_EVENTS.includes(secondArg.id);
     }
     return true;
   } catch (e) {

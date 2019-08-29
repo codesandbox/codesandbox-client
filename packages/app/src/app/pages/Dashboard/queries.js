@@ -333,7 +333,7 @@ export function unmakeTemplates(selectedSandboxes, teamId) {
 
         const data = immer(oldTemplatesCache, draft => {
           draft.me.templates = draft.me.templates.filter(
-            x => selectedSandboxes.indexOf(x.sandbox.id) === -1
+            x => !selectedSandboxes.includes(x.sandbox.id)
           );
         });
 
@@ -382,7 +382,7 @@ export function makeTemplates(selectedSandboxes, teamId, collections) {
 
                 const data = immer(oldFolderCacheData, draft => {
                   draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-                    x => selectedSandboxes.indexOf(x.id) === -1
+                    x => !selectedSandboxes.includes(x.id)
                   );
                 });
 
@@ -460,7 +460,7 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
           me: {
             ...oldDeleteCache.me,
             sandboxes: oldDeleteCache.me.sandboxes.filter(
-              x => selectedSandboxes.indexOf(x.id) === -1
+              x => !selectedSandboxes.includes(x.id)
             ),
           },
         };
@@ -505,7 +505,7 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
 
             const data = immer(oldFolderCacheData, draft => {
               draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-                x => selectedSandboxes.indexOf(x.id) === -1
+                x => !selectedSandboxes.includes(x.id)
               );
             });
 

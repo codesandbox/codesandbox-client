@@ -45,8 +45,8 @@ export const state: State = {
     return (
       state.isLive &&
       (state.roomInfo.mode === 'open' ||
-        state.roomInfo.ownerIds.indexOf(liveUserId) > -1 ||
-        state.roomInfo.editorIds.indexOf(liveUserId) > -1)
+        state.roomInfo.ownerIds.includes(liveUserId) ||
+        state.roomInfo.editorIds.includes(liveUserId))
     );
   },
   isCurrentEditor: state => {
@@ -54,9 +54,7 @@ export const state: State = {
   },
 
   isOwner: state => {
-    return (
-      state.isLive && state.roomInfo.ownerIds.indexOf(state.liveUserId) > -1
-    );
+    return state.isLive && state.roomInfo.ownerIds.includes(state.liveUserId);
   },
   liveUsersByModule: state => {
     const usersByModule = {};

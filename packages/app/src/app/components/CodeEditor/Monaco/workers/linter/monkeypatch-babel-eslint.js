@@ -55,7 +55,7 @@ export default function monkeypatch(modules, eslintOptions) {
   ]);
   var visitorKeysMap = Object.keys(t.VISITOR_KEYS).reduce(function(acc, key) {
     var value = t.VISITOR_KEYS[key];
-    if (flowFlippedAliasKeys.indexOf(value) === -1) {
+    if (!flowFlippedAliasKeys.includes(value)) {
       acc[key] = value;
     }
     return acc;

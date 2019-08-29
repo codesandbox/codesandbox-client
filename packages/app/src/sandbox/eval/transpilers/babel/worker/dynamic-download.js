@@ -26,7 +26,7 @@ function mkDirByPathSync(targetDir, { isRelativeToScript = false } = {}) {
         throw new Error(`EACCES: permission denied, mkdir '${parentDir}'`);
       }
 
-      const caughtErr = ['EACCES', 'EPERM', 'EISDIR'].indexOf(err.code) > -1;
+      const caughtErr = ['EACCES', 'EPERM', 'EISDIR'].includes(err.code);
       if (!caughtErr || (caughtErr && curDir === path.resolve(targetDir))) {
         throw err; // Throw if it's just the last created dir.
       }
@@ -158,7 +158,7 @@ export async function downloadPath(absolutePath) {
 }
 
 export async function downloadFromError(e) {
-  if (e.message.indexOf('Cannot find module') > -1) {
+  if (e.message.includes('Cannot find module')) {
     return new Promise(res => {
       const dep = e.message.match(/Cannot find module '(.*?)'/)[1];
       const from = e.message.match(/from '(.*?)'/)[1];

@@ -164,7 +164,7 @@ export function showPortOpenedNotifications({ state, props, controller }) {
   const openedPorts = getOpenedBrowserPorts(state.get('editor.devToolTabs'));
 
   addedPorts.forEach(port => {
-    if (!port.main && openedPorts.indexOf(port.port) === -1) {
+    if (!(port.main || openedPorts.includes(port.port))) {
       notificationState.addNotification({
         title: `Port ${port.port} Opened`,
         message: `The server is listening on port ${

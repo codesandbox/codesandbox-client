@@ -50,7 +50,7 @@ function getDependencyList(
   const deps =
     cache ||
     listFunction(module.code)
-      .filter(x => IGNORED_DEPENDENCIES.indexOf(x) === -1)
+      .filter(x => !IGNORED_DEPENDENCIES.includes(x))
       .filter(x => !list.has(x));
 
   if (!cache) {

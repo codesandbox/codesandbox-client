@@ -3,7 +3,7 @@ export function isCurrentEditor() {
 }
 
 export function isOwner() {
-  return this.isLive && this.roomInfo.ownerIds.indexOf(this.liveUserId) > -1;
+  return this.isLive && this.roomInfo.ownerIds.includes(this.liveUserId);
 }
 
 export function liveUsersByModule() {

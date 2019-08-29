@@ -67,7 +67,7 @@ const existsPromise = (fs, file) =>
 
           const ext = extname(path).substr(1);
 
-          if (SUPPORTED_EXTS.indexOf(ext) === -1) {
+          if (!SUPPORTED_EXTS.includes(ext)) {
             r(false);
             return;
           }
