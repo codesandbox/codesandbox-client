@@ -1,6 +1,7 @@
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Input from '@codesandbox/common/lib/components/Input';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
 
@@ -31,7 +32,10 @@ export const CreateRepo = inject('store', 'signals')(
       const updateRepoTitle = ({
         target: { value: title },
       }: React.ChangeEvent<HTMLInputElement>) => repoTitleChanged({ title });
-      const createRepo = () => createRepoClicked();
+      const createRepo = () => {
+        track('Export to GitHub Clicked');
+        createRepoClicked();
+      };
 
       return (
         <div style={style}>
