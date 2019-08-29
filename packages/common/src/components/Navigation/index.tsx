@@ -5,6 +5,7 @@ import Logo from '../Logo';
 import MaxWidth from '../flex/MaxWidth';
 
 import media from '../../utils/media';
+import track from '../../utils/analytics';
 
 const Container = styled.div`
   display: flex;
@@ -167,7 +168,15 @@ export default class Navigation extends React.PureComponent {
               </Item>
             )}
 
-            <Item hidePhone href="/s" rel="noopener noreferrer" button={!user}>
+            <Item
+              onClick={() => {
+                track('Navigation - Create Sandbox Clicked');
+              }}
+              hidePhone
+              href="/s"
+              rel="noopener noreferrer"
+              button={!user}
+            >
               Create Sandbox
             </Item>
 

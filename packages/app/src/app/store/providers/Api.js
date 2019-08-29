@@ -83,7 +83,36 @@ function showNotification(controller, errorMessage: string) {
         ],
       },
     });
+  } else if (
+    errorMessage.startsWith(
+      'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
+    )
+  ) {
+    track('Non-Patron Server Sandbox Limit Reached', { errorMessage });
+
+    notificationState.addNotification({
+      title: errorMessage,
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Open Patron Page',
+            run: () => {
+              window.open(patronUrl(), '_blank');
+            },
+          },
+        ],
+      },
+    });
   } else {
+    if (
+      errorMessage.startsWith(
+        'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
+      )
+    ) {
+      track('Patron Server Sandbox Limit Reached', { errorMessage });
+    }
+
     controller.runSignal(
       'notificationAdded',
       addNotification(errorMessage, 'error')
