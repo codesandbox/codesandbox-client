@@ -100,6 +100,8 @@ export async function initializeSentry(dsn: string) {
       ],
       beforeSend: event => {
         if (
+          event.stacktrace &&
+          event.stacktrace.frames &&
           event.stacktrace.frames[0] &&
           event.stacktrace.frames[0].filename.endsWith(
             'codesandbox.editor.main.js'
