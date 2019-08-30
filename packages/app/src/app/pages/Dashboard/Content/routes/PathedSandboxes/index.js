@@ -2,7 +2,7 @@ import React from 'react';
 import { Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import { basename } from 'path';
-import Sandboxes from '../../Sandboxes';
+import { Content as Sandboxes } from '../../Sandboxes';
 import { Navigation } from './Navigation';
 // import Folders from './Folders';
 import CreateNewSandbox from '../../CreateNewSandbox';

@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { Query } from 'react-apollo';
-import DirectoryComponent from 'app/pages/Dashboard/Sidebar/SandboxesItem';
+import { SandboxesItem } from 'app/pages/Dashboard/Sidebar/SandboxesItem';
 
 import { TEAMS_QUERY } from '../../../Dashboard/queries';
 import { TeamContainer, TeamName } from './elements';
 
 export default ({ onSelect, currentPath, currentTeamId }) => (
   <div css={{ margin: '0 -1rem' }}>
-    <DirectoryComponent
+    <SandboxesItem
       openByDefault
       onSelect={onSelect}
       currentPath={currentPath}

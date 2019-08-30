@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ZeitIntegration } from 'app/pages/common/ZeitIntegration';
-import GitHubIntegration from 'app/pages/common/GithubIntegration';
+import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 
 import { Container } from './elements';
 import { Title } from '../elements';
@@ -13,7 +13,7 @@ export function Integrations() {
 
       <Container>
         <ZeitIntegration />
-        <GitHubIntegration />
+        <GithubIntegration />
       </Container>
     </div>
   );

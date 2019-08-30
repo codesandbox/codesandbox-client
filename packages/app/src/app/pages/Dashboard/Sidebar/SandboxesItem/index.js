@@ -6,7 +6,7 @@ import { inject, observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
-import Item from '../Item';
+import { Item } from '../Item';
 import { Container } from './elements';
 import { DropFolderEntry } from './FolderEntry';
 import { CreateFolderEntry } from './FolderEntry/CreateFolderEntry';

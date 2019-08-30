@@ -5,7 +5,7 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'app/componentConnectors';
 
-import Item from '../Item';
+import { Item } from '../Item';
 import { DELETE_SANDBOX_DROP_KEY } from '../../Content/SandboxCard';
 
 const TrashItemComponent = ({

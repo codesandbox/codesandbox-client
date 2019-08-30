@@ -3,7 +3,7 @@ import slugify from '@codesandbox/common/lib/utils/slugify';
 import { clone } from 'mobx-state-tree';
 import { dispatch } from 'codesandbox-api';
 
-import vscode from 'app/vscode';
+import { vscode } from 'app/vscode';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
 import getTemplate from '@codesandbox/common/lib/templates';

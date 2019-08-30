@@ -6,7 +6,7 @@ import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/templ
 import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'app/componentConnectors';
 
-import Item from '../Item';
+import { Item } from '../Item';
 import { MAKE_TEMPLATE_DROP_KEY } from '../../Content/SandboxCard';
 
 interface Props {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import vscode from 'app/vscode';
+import { vscode } from 'app/vscode';
 import './titlebar.css';
 
 export const MenuBar = () => {

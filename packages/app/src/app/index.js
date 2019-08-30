@@ -29,12 +29,12 @@ import { isSafari } from '@codesandbox/common/lib/utils/platform';
 // eslint-disable-next-line
 import * as childProcess from 'node-services/lib/child_process';
 import { Controller } from '@cerebral/mobx-state-tree';
-import { App } from './pages';
+import { Routes as App } from './pages';
 import { Provider as OvermindProvider } from './overmind/Provider';
 import './split-pane.css';
 import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
 
-import { VSCode as vscode } from './vscode';
+import { vscode } from './vscode';
 import {
   initializeThemeCache,
   initializeSettings,

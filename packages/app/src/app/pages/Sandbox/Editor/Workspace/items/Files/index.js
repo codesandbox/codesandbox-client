@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Files from '../../Files';
 import Dependencies from '../../Dependencies';
-import WorkspaceItem from '../../WorkspaceItem';
+import { WorkspaceItem } from '../../WorkspaceItem';
 import { ItemTitle } from '../../elements';
 
 export default () => {
