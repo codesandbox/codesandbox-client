@@ -5,7 +5,7 @@ import { Container, Title, SubTitle, Image, MaxWidth } from './elements';
 
 import { Props } from '../types';
 
-export default class ImageViewer extends React.Component<Props> {
+export class ImageViewer extends React.Component<Props> {
   onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

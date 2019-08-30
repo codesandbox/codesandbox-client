@@ -73,7 +73,7 @@ const DevTools = (props: DevToolProps) => {
   );
 };
 
-export default {
+export const reactDevTools = {
   id: 'codesandbox.react-devtools',
   title: 'React DevTools',
   Content: DevTools,

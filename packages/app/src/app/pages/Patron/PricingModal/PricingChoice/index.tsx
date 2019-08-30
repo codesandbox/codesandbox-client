@@ -5,8 +5,8 @@ import Relative from '@codesandbox/common/lib/components/Relative';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import { SubscribeForm } from 'app/components/SubscribeForm';
-import Range from './Range';
-import ChangeSubscription from './ChangeSubscription';
+import { Range } from './Range';
+import { ChangeSubscription } from './ChangeSubscription';
 import { ThankYou } from './ThankYou';
 import { Title } from '../elements';
 import {
@@ -25,7 +25,7 @@ interface Props {
   signals: any;
 }
 
-const PricingChoice = inject('store', 'signals')(
+export const PricingChoice = inject('store', 'signals')(
   hooksObserver(
     ({
       badge,
@@ -106,5 +106,3 @@ const PricingChoice = inject('store', 'signals')(
     )
   )
 );
-
-export default PricingChoice;

@@ -51,7 +51,7 @@ const Curator = Loadable(() =>
 
 const Boundary = withRouter(ErrorBoundary);
 
-const Routes = ({ signals: { appUnmounted } }) => {
+const RoutesComponent = ({ signals: { appUnmounted } }) => {
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
   return (
@@ -104,6 +104,6 @@ const Routes = ({ signals: { appUnmounted } }) => {
   );
 };
 
-export default inject('signals')(
-  DragDropContext(HTML5Backend)(withRouter(hooksObserver(Routes)))
+export const Routes = inject('signals')(
+  DragDropContext(HTML5Backend)(withRouter(hooksObserver(RoutesComponent)))
 );

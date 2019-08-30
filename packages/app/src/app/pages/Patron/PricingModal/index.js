@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
 import PricingInfo from './PricingInfo';
-import PricingChoice from './PricingChoice';
+import { PricingChoice } from './PricingChoice';
 import Badge from './Badge';
 import { Container, Details } from './elements';
 

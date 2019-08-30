@@ -1,4 +1,3 @@
-// @ts-check
 import React from 'react';
 
 import FolderIcon from 'react-icons/lib/md/folder';
@@ -16,7 +15,7 @@ import { join, dirname } from 'path';
 
 import theme from '@codesandbox/common/lib/theme';
 
-import ContextMenu from 'app/components/ContextMenu';
+import { ContextMenu } from 'app/components/ContextMenu';
 
 import Input from '@codesandbox/common/lib/components/Input';
 import {
@@ -184,6 +183,7 @@ class FolderEntry extends React.Component<Props, State> {
                 data: {
                   ...cacheData,
                   me: {
+                    // @ts-ignore
                     ...cacheData.me,
                     collections: deleteCollection,
                   },
@@ -396,4 +396,4 @@ DropFolderEntry = inject('store', 'signals')(
   )
 ) as any;
 
-export default DropFolderEntry;
+export { DropFolderEntry };

@@ -14,7 +14,7 @@ import {
   Icon as QuestionIcon,
 } from '../elements';
 import { PickColor, PickerContainer, PublicValue } from './elements';
-import WorkspaceItem from '../../WorkspaceItem';
+import { WorkspaceItem } from '../../WorkspaceItem';
 import { Icon } from './Icon';
 
 export const TemplateConfig = inject('store', 'signals')(

@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import ContextMenu from 'app/components/ContextMenu';
+import { ContextMenu } from 'app/components/ContextMenu';
 import MoreInfoIcon from './KebabIcon';
 
 export const PADDING = 32;

@@ -165,7 +165,7 @@ class DevToolTerminal extends React.Component<
   }
 }
 
-export default {
+export const terminal = {
   id: 'codesandbox.terminal',
   title: 'Terminal',
   Content: withTheme(DevToolTerminal),

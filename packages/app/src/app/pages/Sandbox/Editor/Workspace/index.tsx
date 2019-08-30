@@ -2,11 +2,12 @@ import React from 'react';
 //  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
 import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 import VERSION from '@codesandbox/common/lib/version';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { hooksObserver } from 'app/componentConnectors';
 import { SocialInfo } from 'app/components/SocialInfo';
 import getWorkspaceItems, {
   getDisabledItems,
 } from 'app/store/modules/workspace/items';
+import { useStore } from 'app/store';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import { Deployment } from './items/Deployment';
 import Files from './items/Files';
@@ -15,12 +16,12 @@ import Live from './items/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
-import Server from './items/Server';
+import { Server } from './items/Server';
 import { Advertisement } from './Advertisement';
-import Chat from './Chat';
+import { Chat } from './Chat';
 import { ConnectionNotice } from './ConnectionNotice';
 import { SSEDownNotice } from './SSEDownNotice';
-import WorkspaceItem from './WorkspaceItem';
+import { WorkspaceItem } from './WorkspaceItem';
 import {
   Container,
   ContactContainer,
@@ -40,7 +41,8 @@ const workspaceTabs = {
   more: More,
 };
 
-const Workspace = ({ store }) => {
+const WorkspaceComponent = () => {
+  const store = useStore();
   const {
     editor: {
       currentSandbox: { owned },
@@ -96,4 +98,4 @@ const Workspace = ({ store }) => {
   );
 };
 
-export default inject('store')(hooksObserver(Workspace));
+export const Workspace = hooksObserver(WorkspaceComponent);

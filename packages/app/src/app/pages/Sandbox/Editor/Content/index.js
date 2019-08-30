@@ -10,7 +10,7 @@ import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { ModuleError } from '@codesandbox/common/lib/types';
 import SplitPane from 'react-split-pane';
 
-import CodeEditor from 'app/components/CodeEditor';
+import { CodeEditor } from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import { DevTools } from 'app/components/Preview/DevTools';
 

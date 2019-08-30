@@ -27,7 +27,7 @@ const StyledClearIcon = styled(ClearIcon)`
   font-size: 0.8em;
 `;
 
-class Console extends React.Component<StyledProps> {
+class ConsoleComponent extends React.Component<StyledProps> {
   state = {
     messages: [],
     scrollToBottom: true,
@@ -284,11 +284,11 @@ const ConsoleFilterSelect = props => {
   );
 };
 
-export default {
+export const console = {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
-  Content: withTheme<StyledProps>(Console),
+  Content: withTheme<StyledProps>(ConsoleComponent),
   actions: [
     {
       title: 'Clear Console',

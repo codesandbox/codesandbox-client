@@ -4,7 +4,7 @@ import React from 'react';
 import GithubIntegration from 'app/pages/common/GithubIntegration';
 
 import { Description } from '../../elements';
-import WorkspaceItem from '../../WorkspaceItem';
+import { WorkspaceItem } from '../../WorkspaceItem';
 
 import { CreateRepo } from './CreateRepo';
 import { Git } from './Git';

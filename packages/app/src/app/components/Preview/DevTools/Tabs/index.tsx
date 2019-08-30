@@ -27,7 +27,7 @@ export interface Props {
   views: IViews;
 }
 
-const DevToolTabs = ({
+export const DevToolTabs = ({
   panes,
   views,
   hidden,
@@ -126,5 +126,3 @@ const DevToolTabs = ({
     </Container>
   );
 };
-
-export default DevToolTabs;

@@ -571,7 +571,7 @@ class Tests extends React.Component<DevToolProps, State> {
   }
 }
 
-export default {
+export const tests = {
   id: 'codesandbox.tests',
   title: 'Tests',
   Content: Tests,

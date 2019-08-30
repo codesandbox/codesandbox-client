@@ -19,7 +19,7 @@ type State = {
   running: boolean;
 };
 
-class Preview extends Component<Props, State> {
+class PreviewComponent extends Component<Props, State> {
   state: State = {
     running: !this.props.runOnClick,
   };
@@ -204,4 +204,4 @@ class Preview extends Component<Props, State> {
   }
 }
 
-export default inject('signals', 'store')(observer(Preview));
+export const Preview = inject('signals', 'store')(observer(PreviewComponent));
