@@ -31,7 +31,7 @@ export default ({ onSelect, currentPath, currentTeamId }) => (
         return teams.map(team => (
           <TeamContainer key={team.id}>
             <TeamName>{team.name}</TeamName>
-            <DirectoryComponent
+            <SandboxesItem
               currentPath={currentPath}
               currentTeamId={currentTeamId}
               openByDefault
