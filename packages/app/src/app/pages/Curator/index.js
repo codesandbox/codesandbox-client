@@ -10,7 +10,7 @@ import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import { SubTitle } from 'app/components/SubTitle';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
-import Navigation from 'app/pages/common/Navigation';
+import { Navigation } from 'app/pages/common/Navigation';
 import 'react-day-picker/lib/style.css';
 import { Container, Buttons, Heading, PickerWrapper } from './elements';
 import SandboxCard from './SandboxCard';

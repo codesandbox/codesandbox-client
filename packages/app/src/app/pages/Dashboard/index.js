@@ -4,9 +4,8 @@ import { inject, observer } from 'app/componentConnectors';
 import RightIcon from 'react-icons/lib/md/keyboard-arrow-right';
 import LeftIcon from 'react-icons/lib/md/keyboard-arrow-left';
 import { withRouter } from 'react-router-dom';
-
-import Navigation from 'app/pages/common/Navigation';
-import SignInButton from 'app/pages/common/SignInButton';
+import { Navigation } from 'app/pages/common/Navigation';
+import { SignInButton } from 'app/pages/common/SignInButton';
 import { client } from 'app/graphql/client';
 
 import SidebarContents from './Sidebar';

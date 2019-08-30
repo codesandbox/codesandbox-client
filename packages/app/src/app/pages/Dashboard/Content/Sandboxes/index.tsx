@@ -1,8 +1,8 @@
 import React from 'react';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import { Container, HeaderContainer, HeaderTitle } from '../elements';
-import SandboxGrid from '../SandboxGrid';
-import Filters from './Filters';
+import { SandboxGrid } from '../SandboxGrid';
+import { Filters } from './Filters';
 import { DashboardActions } from './Actions';
 import { ITemplate } from './types';
 
@@ -21,7 +21,7 @@ interface Props {
 }
 
 // eslint-disable-next-line react/prefer-stateless-function
-class Content extends React.Component<Props> {
+export class Content extends React.Component<Props> {
   render() {
     const {
       sandboxes,
@@ -85,5 +85,3 @@ class Content extends React.Component<Props> {
     );
   }
 }
-
-export default Content;

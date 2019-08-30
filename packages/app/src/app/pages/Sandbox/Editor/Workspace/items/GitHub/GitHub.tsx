@@ -1,7 +1,7 @@
 import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
 
-import GithubIntegration from 'app/pages/common/GithubIntegration';
+import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 
 import { Description } from '../../elements';
 import { WorkspaceItem } from '../../WorkspaceItem';

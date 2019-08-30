@@ -31,7 +31,7 @@ interface Props {
   signals: any;
 }
 
-const LikeHeart = inject('store', 'signals')(
+export const LikeHeart = inject('store', 'signals')(
   hooksObserver(
     ({
       sandbox,
@@ -74,5 +74,3 @@ const LikeHeart = inject('store', 'signals')(
     )
   )
 );
-
-export default LikeHeart;

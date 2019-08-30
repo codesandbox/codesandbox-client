@@ -8,7 +8,7 @@ type Props = {
   store: any;
   signals: any;
 };
-const GithubIntegration = inject('store', 'signals')(
+export const GithubIntegration = inject('store', 'signals')(
   hooksObserver(
     ({
       small = false,
@@ -34,5 +34,3 @@ const GithubIntegration = inject('store', 'signals')(
     )
   )
 );
-
-export default GithubIntegration;

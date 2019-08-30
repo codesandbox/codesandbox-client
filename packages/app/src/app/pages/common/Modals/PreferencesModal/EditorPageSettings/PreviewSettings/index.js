@@ -10,7 +10,7 @@ import {
   Rule,
 } from '../../elements';
 
-function PreviewSettings({ store, signals }) {
+function PreviewSettingsComponent({ store, signals }) {
   const bindValue = name => ({
     value: store.preferences.settings[name],
     setValue: value =>
@@ -58,4 +58,6 @@ function PreviewSettings({ store, signals }) {
   );
 }
 
-export default inject('store', 'signals')(observer(PreviewSettings));
+export const PreviewSettings = inject('store', 'signals')(
+  observer(PreviewSettingsComponent)
+);

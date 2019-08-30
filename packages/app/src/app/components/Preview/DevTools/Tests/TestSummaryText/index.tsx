@@ -14,7 +14,7 @@ type Props = {
   totalDuration?: number;
 };
 
-export default ({
+export const TestSummaryText = ({
   failedCount,
   passedCount,
   totalCount,

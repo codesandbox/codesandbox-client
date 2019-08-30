@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import SignInButton from 'app/pages/common/SignInButton';
+import { SignInButton } from 'app/pages/common/SignInButton';
 
 import { Container, Heading, Explanation } from '../elements';
 

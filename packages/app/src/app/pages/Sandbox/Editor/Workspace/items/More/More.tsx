@@ -1,10 +1,10 @@
+import React, { useEffect } from 'react';
 import ProgressButton from '@codesandbox/common/lib/components/ProgressButton';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { inject, hooksObserver } from 'app/componentConnectors';
-import React, { useEffect } from 'react';
 
-import SignInButton from 'app/pages/common/SignInButton';
+import { SignInButton } from 'app/pages/common/SignInButton';
 
 import { Description } from '../../elements';
 

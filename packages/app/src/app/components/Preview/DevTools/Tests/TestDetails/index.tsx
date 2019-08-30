@@ -8,10 +8,10 @@ import { File, Status } from '../';
 import { Action, TestName, TestTitle, Blocks, ErrorNotice } from './elements';
 import { StatusElements, Tests } from '../elements';
 
-import TestBlock from './TestBlock';
-import ErrorDetails from './ErrorDetails';
-import TestSummaryText from '../TestSummaryText';
-import TestProgressBar from '../TestProgressBar';
+import { TestBlock } from './TestBlock';
+import { ErrorDetails } from './ErrorDetails';
+import { TestSummaryText } from '../TestSummaryText';
+import { TestProgressBar } from '../TestProgressBar';
 
 type Props = {
   file: File;

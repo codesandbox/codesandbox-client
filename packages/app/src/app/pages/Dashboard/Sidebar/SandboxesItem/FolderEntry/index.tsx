@@ -29,7 +29,7 @@ import { Container, AnimatedChevron, IconContainer } from './elements';
 import getDirectChildren from '../../../utils/get-direct-children';
 import { entryTarget, collectTarget } from '../folder-drop-target';
 
-import CreateFolderEntry from './CreateFolderEntry';
+import { CreateFolderEntry } from './CreateFolderEntry';
 
 import {
   PATHED_SANDBOXES_FOLDER_QUERY,

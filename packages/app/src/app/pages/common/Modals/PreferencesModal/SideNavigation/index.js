@@ -10,7 +10,7 @@ import {
   Selector,
 } from './elements';
 
-const SideNavigation = ({ menuItems, itemId, setItem }) => {
+export const SideNavigation = ({ menuItems, itemId, setItem }) => {
   const itemIndex = menuItems.findIndex(item => item.id === itemId);
 
   return (
@@ -38,5 +38,3 @@ const SideNavigation = ({ menuItems, itemId, setItem }) => {
     </Container>
   );
 };
-
-export default SideNavigation;

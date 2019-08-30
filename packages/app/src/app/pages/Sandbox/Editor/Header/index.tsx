@@ -16,9 +16,9 @@ import SaveIcon from 'react-icons/lib/md/save';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 
-import LikeHeart from 'app/pages/common/LikeHeart';
-import SignInButton from 'app/pages/common/SignInButton';
-import UserMenu from 'app/pages/common/UserMenu';
+import { LikeHeart } from 'app/pages/common/LikeHeart';
+import { SignInButton } from 'app/pages/common/SignInButton';
+import { UserMenu } from 'app/pages/common/UserMenu';
 import { saveAllModules } from 'app/store/modules/editor/utils';
 import { useStore, useSignals } from 'app/store';
 

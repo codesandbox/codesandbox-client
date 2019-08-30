@@ -9,6 +9,7 @@ import { Title } from 'app/components/Title';
 
 // This route is supposed to be opened in a new window, after signing in with
 // Github. It should return a postMessage to the parent
+// eslint-disable-line-import/no-default-export
 export default class SignIn extends React.PureComponent {
   constructor(props) {
     super(props);

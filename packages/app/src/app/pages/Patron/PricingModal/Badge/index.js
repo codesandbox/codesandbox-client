@@ -4,11 +4,11 @@ import Relative from '@codesandbox/common/lib/components/Relative';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
 
 import './animations.css';
-import Particles from './Particles';
+import { Particles } from './Particles';
 
 import { BadgeContainer } from './elements';
 
-function Badge({ badge, subscribed }) {
+export const Badge = React.memo(({ badge, subscribed }) => {
   const BadgeComponent = badges[badge].Badge;
 
   return (
@@ -20,6 +20,4 @@ function Badge({ badge, subscribed }) {
       </BadgeContainer>
     </Relative>
   );
-}
-
-export default React.memo(Badge);
+});

@@ -24,7 +24,7 @@ export function getBounds(startX, startY, endX, endY) {
   };
 }
 
-const Selection = ({ startX, startY, endX, endY }) => {
+export const Selection = ({ startX, startY, endX, endY }) => {
   const { top, height, left, width } = getBounds(startX, startY, endX, endY);
 
   return (
@@ -33,5 +33,3 @@ const Selection = ({ startX, startY, endX, endY }) => {
     </Spring>
   );
 };
-
-export default Selection;

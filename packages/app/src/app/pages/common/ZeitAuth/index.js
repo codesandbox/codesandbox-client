@@ -7,6 +7,7 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Title } from 'app/components/Title';
 
+// eslint-disable-next-line import/no-default-export
 export default class ZeitSignIn extends React.PureComponent {
   constructor(props) {
     super(props);

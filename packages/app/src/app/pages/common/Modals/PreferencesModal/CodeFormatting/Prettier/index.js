@@ -9,7 +9,7 @@ import {
   Rule,
 } from '../../elements';
 
-function Prettier({ store, signals }) {
+function PrettierComponent({ store, signals }) {
   const bindValue = name => ({
     value: store.preferences.settings.prettierConfig[name],
     setValue: value =>
@@ -145,4 +145,4 @@ function Prettier({ store, signals }) {
   );
 }
 
-export default inject('store', 'signals')(observer(Prettier));
+export const Prettier = inject('store', 'signals')(observer(PrettierComponent));

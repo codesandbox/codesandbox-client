@@ -36,6 +36,7 @@ const Search = Loadable(() =>
   import(/* webpackChunkName: 'page-search' */ './Search')
 );
 const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
+
 const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub')
 );

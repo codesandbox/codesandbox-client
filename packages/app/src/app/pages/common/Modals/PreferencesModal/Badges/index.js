@@ -5,7 +5,7 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Badge from '@codesandbox/common/lib/utils/badges/Badge';
 import { Title } from '../elements';
 
-function Badges({ store, signals }) {
+function BadgesComponent({ store, signals }) {
   const badgesCount = store.user.badges.length;
 
   return (
@@ -37,4 +37,4 @@ function Badges({ store, signals }) {
   );
 }
 
-export default inject('store', 'signals')(observer(Badges));
+export const Badges = inject('store', 'signals')(observer(BadgesComponent));

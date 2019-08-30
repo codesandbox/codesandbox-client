@@ -21,7 +21,7 @@ const getContainer = contextItems => {
   return Container;
 };
 
-export default class Item extends React.Component {
+export class Item extends React.Component {
   state = {
     open: this.props.openByDefault,
   };

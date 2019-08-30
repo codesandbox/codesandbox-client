@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 
 import { inject, hooksObserver } from 'app/componentConnectors';
-import Navigation from 'app/pages/common/Navigation';
+import { Navigation } from 'app/pages/common/Navigation';
 
 import { Container } from './elements';
-import Prompt from './Prompt';
+import { Prompt } from './Prompt';
 
 interface Props {
   small: boolean;
@@ -39,4 +39,5 @@ const CLI = inject('store', 'signals')(
   )
 );
 
+// eslint-disable-next-line import/no-default-export
 export default CLI;

@@ -3,7 +3,7 @@ import * as React from 'react';
 import Row from '@codesandbox/common/lib/components/flex/Row';
 
 import ProfileInfo from './ProfileInfo';
-import Stats from './Stats';
+import { Stats } from './Stats';
 
 function UserInfo({ user }) {
   return (

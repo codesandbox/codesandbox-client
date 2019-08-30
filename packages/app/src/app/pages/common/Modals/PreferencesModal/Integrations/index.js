@@ -1,12 +1,12 @@
 import React from 'react';
 
-import ZeitIntegration from 'app/pages/common/ZeitIntegration';
+import { ZeitIntegration } from 'app/pages/common/ZeitIntegration';
 import GitHubIntegration from 'app/pages/common/GithubIntegration';
 
 import { Container } from './elements';
 import { Title } from '../elements';
 
-function Integrations() {
+export function Integrations() {
   return (
     <div>
       <Title>Integrations</Title>
@@ -18,5 +18,3 @@ function Integrations() {
     </div>
   );
 }
-
-export default Integrations;
