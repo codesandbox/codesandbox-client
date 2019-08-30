@@ -73,7 +73,7 @@ function addSandboxesToCollection(props, item) {
         });
 
         oldFolderCacheData.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-          x => selectedSandboxes.indexOf(x.id) === -1
+          x => !selectedSandboxes.includes(x.id)
         );
 
         cache.writeQuery({

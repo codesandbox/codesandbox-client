@@ -1,5 +1,5 @@
 export function isModuleSynced(moduleShortid) {
-  return this.changedModuleShortids.indexOf(moduleShortid) === -1;
+  return !this.changedModuleShortids.includes(moduleShortid);
 }
 
 function getModuleParents(modules, directories, id) {

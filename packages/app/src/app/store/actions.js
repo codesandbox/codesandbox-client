@@ -169,9 +169,7 @@ export function setCurrentModuleShortid({ props, state }) {
   const sandbox = props.sandbox;
 
   // Only change the module shortid if it doesn't exist in the new sandbox
-  if (
-    sandbox.modules.map(m => m.shortid).indexOf(currentModuleShortid) === -1
-  ) {
+  if (!sandbox.modules.map(m => m.shortid).includes(currentModuleShortid)) {
     const parsedConfigs = parseSandboxConfigurations(sandbox);
     const module = defaultOpenedModule(sandbox, parsedConfigs);
 

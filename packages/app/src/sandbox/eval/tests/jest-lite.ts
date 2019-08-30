@@ -60,7 +60,7 @@ let jsdomPromise = null;
 const getJSDOM = () => {
   let jsdomPath = '/static/js/jsdom-4.0.0.min.js';
   if (
-    navigator.userAgent.indexOf('jsdom') !== -1 &&
+    navigator.userAgent.includes('jsdom') &&
     process.env.NODE_ENV === 'test'
   ) {
     jsdomPath = 'file://' + path.resolve('./static/js/jsdom-4.0.0.min.js');

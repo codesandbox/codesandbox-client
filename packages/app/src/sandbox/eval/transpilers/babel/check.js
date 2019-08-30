@@ -9,11 +9,11 @@ function checkComment(match) {
   // If it's in a comment or string, we're extremely aggressive here because
   // transpiling is absolutely our last resort.
   if (
-    startOfLine.indexOf('//') > -1 ||
-    startOfLine.indexOf('*') > -1 ||
-    startOfLine.indexOf("'") > -1 ||
-    startOfLine.indexOf('"') > -1 ||
-    startOfLine.indexOf('`') > -1
+    startOfLine.includes('//') ||
+    startOfLine.includes('*') ||
+    startOfLine.includes("'") ||
+    startOfLine.includes('"') ||
+    startOfLine.includes('`')
   ) {
     return false;
   }

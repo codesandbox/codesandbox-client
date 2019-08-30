@@ -65,7 +65,7 @@ class SandboxPage extends React.Component {
     }
 
     if (store.editor.error) {
-      const isGithub = this.props.match.params.id.indexOf('github') > -1;
+      const isGithub = this.props.match.params.id.includes('github');
       const hasPrivateAccess = store.user && store.user.integrations.github;
       return (
         <React.Fragment>

@@ -44,7 +44,7 @@ export default {
     );
 
     return modules
-      .filter(m => localKeys.indexOf(getKey(currentId, m.shortid)) > -1)
+      .filter(m => localKeys.includes(getKey(currentId, m.shortid)))
       .map(module => {
         const key = getKey(currentId, module.shortid);
 
