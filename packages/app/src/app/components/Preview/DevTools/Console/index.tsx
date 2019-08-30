@@ -11,7 +11,7 @@ import styled, { withTheme } from 'styled-components';
 import { DevToolProps } from '../';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
-import Input from './Input';
+import { ConsoleInput } from './Input';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -238,7 +238,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
             searchKeywords={searchKeywordsHasError ? '' : searchKeywords}
           />
         </Messages>
-        <Input evaluateConsole={this.evaluateConsole} />
+        <ConsoleInput evaluateConsole={this.evaluateConsole} />
       </Container>
     );
   }

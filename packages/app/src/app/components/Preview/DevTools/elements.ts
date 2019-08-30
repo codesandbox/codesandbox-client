@@ -1,5 +1,12 @@
 import styled, { css } from 'styled-components';
 
+const getCursor = ({ primary, open }) => {
+  if (primary) return 'default';
+  if (open) return 'row-resize';
+
+  return 'n-resize';
+};
+
 export const Container = styled.div`
   position: relative;
   display: flex;
@@ -25,8 +32,7 @@ export const Header = styled.div<{ primary: boolean; open: boolean }>`
     `};
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 
-  cursor: ${props =>
-    props.primary ? 'default' : props.open ? 'row-resize' : 'n-resize'};
+  cursor: ${props => getCursor(props)};
   padding-right: 1rem;
 `;
 

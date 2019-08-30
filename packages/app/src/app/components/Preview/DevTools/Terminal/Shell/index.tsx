@@ -18,7 +18,7 @@ type Props = {
   updateStatus?: (type: string, count?: number) => void;
 };
 
-class Shell extends React.PureComponent<Props> {
+class ShellComponent extends React.PureComponent<Props> {
   listener: Function;
   term: TerminalWithFit;
   node?: HTMLDivElement;
@@ -118,4 +118,4 @@ class Shell extends React.PureComponent<Props> {
   }
 }
 
-export default withTheme(Shell);
+export const Shell = withTheme(ShellComponent);

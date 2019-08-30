@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import Check from 'react-icons/lib/go/check';
 import Cross from 'react-icons/lib/go/x';
 import DotIcon from 'react-icons/lib/go/primitive-dot';
-import LoadingBubbles from './LoadingBubbles';
+import { LoadingBubbles } from './LoadingBubbles';
 
 export const Container = styled.div`
   display: flex;

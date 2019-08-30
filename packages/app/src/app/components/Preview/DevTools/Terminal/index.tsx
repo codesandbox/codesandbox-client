@@ -7,9 +7,9 @@ import PlusIcon from 'react-icons/lib/md/add';
 
 import './styles.css';
 
-import Shell from './Shell';
+import { Shell } from './Shell';
 import { TerminalComponent } from './Shell/Term';
-import ShellTabs from './ShellTabs';
+import { ShellTabs } from './ShellTabs';
 
 import { ShellT, TerminalWithFit } from './types';
 import { DevToolProps } from '..';

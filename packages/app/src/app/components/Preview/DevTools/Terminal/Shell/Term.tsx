@@ -15,7 +15,7 @@ type Props = {
 };
 
 Terminal.applyAddon(fit);
-export class TerminalComponent extends React.PureComponent<Props> {
+export class TerminalComponentNoTheme extends React.PureComponent<Props> {
   term: TerminalWithFit;
   node?: HTMLDivElement;
   timeout?: number;
@@ -114,4 +114,4 @@ export class TerminalComponent extends React.PureComponent<Props> {
   }
 }
 
-export default withTheme(TerminalComponent);
+export const TerminalComponent = withTheme(TerminalComponentNoTheme);

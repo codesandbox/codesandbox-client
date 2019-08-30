@@ -33,7 +33,7 @@ type Props = {
   onFileExpandToggle: (file: File) => void;
 };
 
-class TestElement extends React.Component<Props> {
+export class TestElement extends React.Component<Props> {
   selectFile = () => {
     this.props.selectFile(this.props.file);
   };
@@ -120,5 +120,3 @@ class TestElement extends React.Component<Props> {
     );
   }
 }
-
-export default TestElement;

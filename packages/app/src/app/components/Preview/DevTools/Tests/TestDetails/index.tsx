@@ -20,7 +20,7 @@ type Props = {
   runTests: (file: File) => void;
 };
 
-export default ({ file, status, openFile, runTests }: Props) => {
+export const TestDetails = ({ file, status, openFile, runTests }: Props) => {
   if (file == null) {
     return <div>No file has been selected</div>;
   }

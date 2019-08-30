@@ -28,7 +28,7 @@ type Props = {
   tests: Array<Test>;
 };
 
-export default ({
+export const TestSummary = ({
   files,
   running,
   fileStatuses,

@@ -8,10 +8,10 @@ import SplitPane from 'react-split-pane';
 import { DevToolProps } from '../';
 
 import { Container, TestDetails, TestContainer } from './elements';
-import TestElement from './TestElement';
-import TestDetailsContent from './TestDetails';
-import TestSummary from './TestSummary';
-import TestOverview from './TestOverview';
+import { TestElement } from './TestElement';
+import { TestDetails as TestDetailsContent } from './TestDetails';
+import { TestSummary } from './TestSummary';
+import { TestOverview } from './TestOverview';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';

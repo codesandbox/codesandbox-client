@@ -14,7 +14,7 @@ type Props = {
   openFile: (path: string) => void;
 };
 
-export default ({ tests, openFile }: Props) => {
+export const TestOverview = ({ tests, openFile }: Props) => {
   const failedTests = tests.filter(t => t.status === 'fail');
 
   const testPassCount = tests.filter(t => t.status === 'pass').length;
