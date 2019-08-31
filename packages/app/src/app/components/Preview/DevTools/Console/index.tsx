@@ -12,12 +12,7 @@ import { inject, observer } from 'app/componentConnectors';
 import { DevToolProps } from '..';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
-<<<<<<< HEAD
 import { ConsoleInput } from './Input';
-=======
-import Input from './Input';
-import { Settings } from '@codesandbox/common/lib/types';
->>>>>>> Implemented 'Toggle console output'
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -27,6 +22,9 @@ export type IMessage = {
 
 export type StyledProps = DevToolProps & {
   theme: typeof theme & { light: boolean };
+} & {
+  store: any;
+  signals: any;
 };
 
 const StyledClearIcon = styled(ClearIcon)`
@@ -148,16 +146,19 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
-    if (
-      this.props.store &&
-      this.props.store.preferences &&
-      this.props.store.preferences.settings &&
-      !this.props.store.preferences.settings.toggleConsoleEnabled
-    )
-      return;
+    const {
+      updateStatus,
+      store: {
+        preferences: { settings },
+      },
+    } = this.props;
 
-    if (this.props.updateStatus) {
-      this.props.updateStatus(this.getType(method));
+    if (settings && !settings.toggleConsoleEnabled) {
+      return;
+    }
+
+    if (updateStatus) {
+      updateStatus(this.getType(method));
     }
 
     this.setState(state =>
