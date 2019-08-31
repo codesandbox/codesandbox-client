@@ -7,6 +7,7 @@ import { debounce } from 'lodash-es';
 import React from 'react';
 import ClearIcon from 'react-icons/lib/md/block';
 import styled, { withTheme } from 'styled-components';
+import { inject, observer } from 'app/componentConnectors';
 
 import { DevToolProps } from '..';
 
@@ -176,14 +177,14 @@ class ConsoleComponent extends React.Component<StyledProps> {
     const messages = nothing
       ? []
       : [
-          {
-            method: 'log',
-            data: [
-              '%cConsole was cleared',
-              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
-            ],
-          },
-        ];
+        {
+          method: 'log',
+          data: [
+            '%cConsole was cleared',
+            'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+          ],
+        },
+      ];
 
     this.setState({
       messages,
@@ -286,11 +287,13 @@ const ConsoleFilterSelect = props => {
   );
 };
 
-export const console = {
+const ObservedConsole = inject('store', 'signals')(observer(Console));
+
+export default {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
-  Content: withTheme<StyledProps>(ConsoleComponent),
+  Content: withTheme<StyledProps>(ObservedConsole),
   actions: [
     {
       title: 'Clear Console',
@@ -309,7 +312,7 @@ export const console = {
     },
     {
       title: 'Log Filter',
-      onClick: () => {},
+      onClick: () => { },
       Icon: withTheme(ConsoleFilterSelect),
     },
   ],
