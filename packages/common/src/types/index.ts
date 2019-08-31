@@ -334,6 +334,7 @@ export type Settings = {
   fontSize: number | undefined;
   fontFamily: string | undefined;
   clearConsoleEnabled: boolean | undefined;
+  toggleConsoleEnabled: boolean | undefined;
   prettierConfig: PrettierConfig;
   autoDownloadTypes: boolean | undefined;
   newPackagerExperiment: boolean | undefined;

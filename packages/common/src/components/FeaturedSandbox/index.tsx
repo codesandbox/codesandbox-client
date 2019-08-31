@@ -238,6 +238,7 @@ export default class FeaturedSandbox extends React.PureComponent<
                           autoDownloadTypes: false,
                           codeMirror: false,
                           clearConsoleEnabled: true,
+                          toggleConsoleEnabled: true,
                           fontSize: 15,
                           lineHeight: 1.4,
                           lintEnabled: false,

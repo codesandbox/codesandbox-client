@@ -332,6 +332,7 @@ export default class Content extends React.PureComponent<Props, State> {
       tabWidth: 2,
       enableLigatures: false,
       clearConsoleEnabled: false,
+      toggleConsoleEnabled: false,
       experimentVSCode: false,
       prettierConfig: null,
       zenMode: false,
