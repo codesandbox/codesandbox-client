@@ -329,10 +329,6 @@ export default {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
-<<<<<<< HEAD
-=======
-  // Content: inject('store', 'signals')(observer(withTheme<StyledProps>(Console))),
->>>>>>> Implemented 'Toggle console output'
   Content: withTheme<StyledProps>(ObservedConsole),
   actions: [
     {
