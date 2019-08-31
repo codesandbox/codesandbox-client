@@ -7,11 +7,17 @@ import { debounce } from 'lodash-es';
 import React from 'react';
 import ClearIcon from 'react-icons/lib/md/block';
 import styled, { withTheme } from 'styled-components';
+import { inject, observer } from 'app/componentConnectors';
 
 import { DevToolProps } from '..';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
+<<<<<<< HEAD
 import { ConsoleInput } from './Input';
+=======
+import Input from './Input';
+import { Settings } from '@codesandbox/common/lib/types';
+>>>>>>> Implemented 'Toggle console output'
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -142,6 +148,14 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
+    if (
+      this.props.store &&
+      this.props.store.preferences &&
+      this.props.store.preferences.settings &&
+      !this.props.store.preferences.settings.toggleConsoleEnabled
+    )
+      return;
+
     if (this.props.updateStatus) {
       this.props.updateStatus(this.getType(method));
     }
@@ -176,14 +190,14 @@ class ConsoleComponent extends React.Component<StyledProps> {
     const messages = nothing
       ? []
       : [
-          {
-            method: 'log',
-            data: [
-              '%cConsole was cleared',
-              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
-            ],
-          },
-        ];
+        {
+          method: 'log',
+          data: [
+            '%cConsole was cleared',
+            'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+          ],
+        },
+      ];
 
     this.setState({
       messages,
@@ -283,11 +297,13 @@ const ConsoleFilterSelect = props => {
   );
 };
 
-export const console = {
+const ObservedConsole = inject('store', 'signals')(observer(Console));
+
+export default {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
-  Content: withTheme<StyledProps>(ConsoleComponent),
+  Content: withTheme<StyledProps>(ObservedConsole),
   actions: [
     {
       title: 'Clear Console',
@@ -306,7 +322,7 @@ export const console = {
     },
     {
       title: 'Log Filter',
-      onClick: () => {},
+      onClick: () => { },
       Icon: withTheme(ConsoleFilterSelect),
     },
   ],
