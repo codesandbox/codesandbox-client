@@ -234,12 +234,13 @@ Thanks goes to these wonderful people
     <td align="center"><a href="https://github.com/vanya829"><img src="https://avatars0.githubusercontent.com/u/1397979?v=4" width="100px;" alt="vanya829"/><br /><sub><b>vanya829</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=vanya829" title="Code">💻</a></td>
   </tr>
   <tr>
-    <td align="center"><a href="http://hetpatel33.github.io"><img src="https://avatars0.githubusercontent.com/u/13877514?v=4" width="100px;" alt="Het Patel"/><br /><sub><b>Het Patel</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=hetpatel33" title="Code">💻</a></td>
+    <td align="center"><a href="https://twitter.com/dance2die"><img src="https://avatars1.githubusercontent.com/u/8465237?v=4" width="100px;" alt="Sung M. Kim"/><br /><sub><b>Sung M. Kim</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=dance2die" title="Code">💻</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Backers
