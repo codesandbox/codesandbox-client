@@ -12,7 +12,12 @@ import { inject, observer } from 'app/componentConnectors';
 import { DevToolProps } from '..';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
+<<<<<<< HEAD
 import { ConsoleInput } from './Input';
+=======
+import Input from './Input';
+import { Settings } from '@codesandbox/common/lib/types';
+>>>>>>> Implemented 'Toggle console output'
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -157,9 +162,19 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
+<<<<<<< HEAD
     if (!this.state.isConsoleEnabled) {
       return;
     }
+=======
+    if (
+      this.props.store &&
+      this.props.store.preferences &&
+      this.props.store.preferences.settings &&
+      !this.props.store.preferences.settings.toggleConsoleEnabled
+    )
+      return;
+>>>>>>> Implemented 'Toggle console output'
 
     if (this.props.updateStatus) {
       this.props.updateStatus(this.getType(method));
@@ -200,15 +215,26 @@ class ConsoleComponent extends React.Component<StyledProps> {
         {
           method: 'log',
           data: [
+<<<<<<< HEAD
             isConsoleEnabled
               ? '%cConsole was cleared'
               : '%cConsole is disabled',
             consoleLogFontStyle,
+=======
+            '%cConsole was cleared',
+            'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+>>>>>>> Implemented 'Toggle console output'
           ],
         },
       ];
 
+<<<<<<< HEAD
     this.setState({ messages });
+=======
+    this.setState({
+      messages,
+    });
+>>>>>>> Implemented 'Toggle console output'
   };
 
   // Add "Console is enabled/disabled" message when user changes preference
