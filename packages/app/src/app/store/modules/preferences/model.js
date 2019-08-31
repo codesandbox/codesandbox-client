@@ -11,6 +11,7 @@ export default {
     fontFamily: types.string,
     lineHeight: types.number,
     clearConsoleEnabled: types.boolean,
+    toggleConsoleEnabled: types.boolean,
     autoDownloadTypes: types.boolean,
     codeMirror: types.boolean,
     keybindings: types.array(

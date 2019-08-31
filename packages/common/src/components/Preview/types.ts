@@ -5,6 +5,7 @@ export type Settings = {
   autoDownloadTypes: boolean;
   codeMirror: boolean;
   clearConsoleEnabled: boolean;
+  toggleConsoleEnabled: boolean;
   fontFamily?: string;
   fontSize: number;
   lineHeight: number;
