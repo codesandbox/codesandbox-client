@@ -305,7 +305,6 @@ export default {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
-  // Content: inject('store', 'signals')(observer(withTheme<StyledProps>(Console))),
   Content: withTheme<StyledProps>(ObservedConsole),
   actions: [
     {
