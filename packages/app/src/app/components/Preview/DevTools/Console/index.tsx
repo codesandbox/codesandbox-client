@@ -27,9 +27,9 @@ export type StyledProps = DevToolProps & {
     preferences: {
       settings: {
         toggleConsoleEnabled: boolean;
-      };
-    };
-  };
+      }
+    }
+  }
 };
 
 const StyledClearIcon = styled(ClearIcon)`
