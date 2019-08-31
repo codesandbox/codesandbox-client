@@ -161,8 +161,8 @@ class ConsoleComponent extends React.Component<StyledProps> {
       return;
     }
 
-    if (updateStatus) {
-      updateStatus(this.getType(method));
+    if (this.props.updateStatus) {
+      this.props.updateStatus(this.getType(method));
     }
 
     this.setState(state =>
