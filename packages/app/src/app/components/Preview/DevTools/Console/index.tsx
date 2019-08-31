@@ -147,6 +147,9 @@ class ConsoleComponent extends React.Component<StyledProps> {
 
   addMessage(method, data) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Refactored 'addMessage' by using prop destructuring syntax for a simpler 'if' check for the toggleConsoleEnabled settings option
     const {
       updateStatus,
       store: {
@@ -155,6 +158,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
     } = this.props;
 
     if (settings && !settings.toggleConsoleEnabled) {
+<<<<<<< HEAD
       return;
     }
 
@@ -167,11 +171,19 @@ class ConsoleComponent extends React.Component<StyledProps> {
       this.props.store.preferences.settings &&
       !this.props.store.preferences.settings.toggleConsoleEnabled
     )
+=======
+>>>>>>> Refactored 'addMessage' by using prop destructuring syntax for a simpler 'if' check for the toggleConsoleEnabled settings option
       return;
+    }
 
+<<<<<<< HEAD
     if (this.props.updateStatus) {
       this.props.updateStatus(this.getType(method));
 >>>>>>> Implemented 'Toggle console output'
+=======
+    if (updateStatus) {
+      updateStatus(this.getType(method));
+>>>>>>> Refactored 'addMessage' by using prop destructuring syntax for a simpler 'if' check for the toggleConsoleEnabled settings option
     }
 
     this.setState(state =>
