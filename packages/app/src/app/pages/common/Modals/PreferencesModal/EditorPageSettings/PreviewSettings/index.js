@@ -47,6 +47,14 @@ function PreviewSettings({ store, signals }) {
           </SubDescription>
           <Rule />
           <PaddedPreference
+            title="Toggle console output"
+            type="boolean"
+            {...bindValue('toggleConsoleEnabled')}
+            tooltip="Toggle console output"
+          />
+          <SubDescription>Toggle your developer console output.</SubDescription>
+          <Rule />
+          <PaddedPreference
             title="Instant preview"
             type="boolean"
             {...bindValue('instantPreviewEnabled')}
