@@ -158,6 +158,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
 
   addMessage(method, data) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (!this.state.isConsoleEnabled) {
 =======
 <<<<<<< HEAD
@@ -169,6 +170,29 @@ class ConsoleComponent extends React.Component<StyledProps> {
         updateStatus,
         store: {
           preferences: { settings },
+=======
+    if (
+      this.props.store &&
+      this.props.store.preferences &&
+      this.props.store.preferences.settings &&
+      !this.props.store.preferences.settings.toggleConsoleEnabled
+    )
+      return;
+
+    if (this.props.updateStatus) {
+      this.props.updateStatus(this.getType(method));
+    }
+
+    this.setState(state =>
+      update(state, {
+        messages: {
+          $push: [
+            {
+              method,
+              data,
+            },
+          ],
+>>>>>>> Implemented 'Toggle console output'
         },
       } = this.props;
 
@@ -226,6 +250,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
       );
     }
 
+<<<<<<< HEAD
     list;
 
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -279,6 +304,19 @@ class ConsoleComponent extends React.Component<StyledProps> {
       state.isConsoleEnabled === isConsoleEnabled
     )
       return null;
+=======
+    const messages = nothing
+      ? []
+      : [
+        {
+          method: 'log',
+          data: [
+            '%cConsole was cleared',
+            'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+          ],
+        },
+      ];
+>>>>>>> Implemented 'Toggle console output'
 
     const messages = isConsoleEnabled
       ? [
@@ -412,9 +450,15 @@ const ConsoleFilterSelect = props => {
   );
 };
 
+<<<<<<< HEAD
 const ObservedConsole = inject('store')(observer(ConsoleComponent));
 
 export const console = {
+=======
+const ObservedConsole = inject('store', 'signals')(observer(Console));
+
+export default {
+>>>>>>> Implemented 'Toggle console output'
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
