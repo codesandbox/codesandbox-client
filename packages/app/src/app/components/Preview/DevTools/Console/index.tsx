@@ -157,9 +157,19 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
+<<<<<<< HEAD
     if (!this.state.isConsoleEnabled) {
       return;
     }
+=======
+    if (
+      this.props.store &&
+      this.props.store.preferences &&
+      this.props.store.preferences.settings &&
+      !this.props.store.preferences.settings.toggleConsoleEnabled
+    )
+      return;
+>>>>>>> Implemented 'Toggle console output'
 
     if (this.props.updateStatus) {
       this.props.updateStatus(this.getType(method));
@@ -197,16 +207,27 @@ class ConsoleComponent extends React.Component<StyledProps> {
     const messages = nothing
       ? []
       : [
-          {
-            method: 'log',
-            data: [
-              isConsoleEnabled
-                ? '%cConsole was cleared'
-                : '%cConsole is disabled',
-              consoleLogFontStyle,
-            ],
-          },
-        ];
+<<<<<<< HEAD
+        {
+          method: 'log',
+          data: [
+            isConsoleEnabled
+              ? '%cConsole was cleared'
+              : '%cConsole is disabled',
+            consoleLogFontStyle,
+          ],
+        },
+      ];
+=======
+        {
+          method: 'log',
+          data: [
+            '%cConsole was cleared',
+            'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+          ],
+        },
+      ];
+>>>>>>> Implemented 'Toggle console output'
 
     this.setState({ messages });
   };
@@ -223,19 +244,19 @@ class ConsoleComponent extends React.Component<StyledProps> {
 
     const messages = isConsoleEnabled
       ? [
-          ...state.messages,
-          {
-            method: 'log',
-            data: ['%cConsole is enabled', consoleLogFontStyle],
-          },
-        ]
+        ...state.messages,
+        {
+          method: 'log',
+          data: ['%cConsole is enabled', consoleLogFontStyle],
+        },
+      ]
       : [
-          ...state.messages,
-          {
-            method: 'log',
-            data: ['%cConsole is disabled', consoleLogFontStyle],
-          },
-        ];
+        ...state.messages,
+        {
+          method: 'log',
+          data: ['%cConsole is disabled', consoleLogFontStyle],
+        },
+      ];
 
     return { messages, isConsoleEnabled };
   }
@@ -337,9 +358,15 @@ const ConsoleFilterSelect = props => {
   );
 };
 
+<<<<<<< HEAD
 const ObservedConsole = inject('store')(observer(ConsoleComponent));
 
 export const console = {
+=======
+const ObservedConsole = inject('store', 'signals')(observer(Console));
+
+export default {
+>>>>>>> Implemented 'Toggle console output'
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
@@ -362,7 +389,7 @@ export const console = {
     },
     {
       title: 'Log Filter',
-      onClick: () => {},
+      onClick: () => { },
       Icon: withTheme(ConsoleFilterSelect),
     },
   ],
