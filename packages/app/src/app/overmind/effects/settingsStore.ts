@@ -12,6 +12,7 @@ const allowedKeys = {
   fontFamily: 'settings.fontfamily',
   lineHeight: 'settings.lineheight',
   clearConsoleEnabled: 'settings.clearconsole',
+  toggleConsoleEnabled: 'settings.toggleconsole',
   codeMirror: 'settings.codemirror',
   autoDownloadTypes: 'settings.autoDownloadTypes',
   newPackagerExperiment: 'settings.newPackagerExperiment',
