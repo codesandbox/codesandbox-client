@@ -3,42 +3,39 @@
   "version": "0.0.56",
   "description": "",
   "keywords": [],
-  "license": "SEE LICENSE.MD IN ROOT",
-  "main": "dist/react-sandpack.js",
-  "module": "es/react-sandpack.js",
-  "jsnext:main": "es/react-sandpack.js",
-  "typings": "dist/types/react-sandpack.d.ts",
-  "files": [
-    "dist",
-    "es"
-  ],
-  "sideEffects": "*.css",
-  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/react-sandpack"
   },
-  "engines": {
-    "node": ">=6.0.0"
-  },
+  "license": "SEE LICENSE.MD IN ROOT",
+  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
+  "files": [
+    "dist",
+    "es"
+  ],
+  "sideEffects": "*.css",
+  "main": "dist/react-sandpack.js",
+  "module": "es/react-sandpack.js",
+  "jsnext:main": "es/react-sandpack.js",
+  "typings": "dist/types/react-sandpack.d.ts",
   "scripts": {
-    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist && rimraf es",
     "build": "tsc && rollup -c rollup.config.ts && yarn build:min && gulp build",
     "build:min": "cross-env BUILD_MINIFY=1 rollup -c rollup.config.ts",
-    "start": "npm-run-all --parallel watch:**",
-    "watch:rollup": "rollup -c rollup.config.ts -w",
-    "watch:gulp": "gulp sass:watch",
-    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "docs": "typedoc --out docs --target es6 --theme minimal --mode file src",
+    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prepublish": "yarn build",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
+    "start": "npm-run-all --parallel watch:**",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "prepublish": "yarn build",
-    "docs": "typedoc --out docs --target es6 --theme minimal --mode file src"
+    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+    "watch:gulp": "gulp sass:watch",
+    "watch:rollup": "rollup -c rollup.config.ts -w"
   },
   "config": {
     "commitizen": {
@@ -50,13 +47,7 @@
     }
   },
   "jest": {
-    "preset": "ts-jest",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
+    "collectCoverage": true,
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/test/"
@@ -69,8 +60,14 @@
         "statements": 95
       }
     },
-    "collectCoverage": true,
-    "mapCoverage": true
+    "mapCoverage": true,
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "preset": "ts-jest",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
   "dependencies": {
     "@types/fs-extra": "^5.0.4",
@@ -84,9 +81,6 @@
     "react-codemirror2": "^4.0.1",
     "rollup-plugin-scss": "^0.4.0",
     "smooshpack": "^0.0.54"
-  },
-  "peerDependencies": {
-    "react": "^16.5.2"
   },
   "devDependencies": {
     "@storybook/addon-knobs": "^3.3.14",
@@ -134,5 +128,11 @@
     "typedoc": "^0.10.0",
     "typescript": "3.5.2",
     "validate-commit-msg": "^2.12.2"
+  },
+  "peerDependencies": {
+    "react": "^16.5.2"
+  },
+  "engines": {
+    "node": ">=6.0.0"
   }
 }

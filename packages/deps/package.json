@@ -1,13 +1,13 @@
 {
   "name": "codesandbox-deps",
   "version": "0.1.1",
-  "license": "MIT",
   "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/deps"
   },
+  "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
     "build": "yarn build:clean && yarn build:rollup",

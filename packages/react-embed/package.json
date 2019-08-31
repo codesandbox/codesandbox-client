@@ -1,19 +1,24 @@
 {
   "name": "@codesandbox/react-embed",
   "version": "0.0.14",
-  "license": "MIT",
-  "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/react-embed"
   },
+  "license": "MIT",
+  "files": [
+    "dist",
+    "dist-es"
+  ],
   "sideEffects": false,
   "main": "dist/index",
   "module": "dist-es/index",
   "typings": "dist/index.d.ts",
-  "peerDependencies": {
-    "react": "^15.0.0 | ^16.0.0"
+  "scripts": {
+    "build": "yarn clean && tsc || tsc -m es6 --outDir dist-es",
+    "clean": "rimraf dist dist-es",
+    "watch": "tsc --watch"
   },
   "dependencies": {
     "react-codesandboxer": "^3.0.1"
@@ -23,13 +28,7 @@
     "rimraf": "^2.6.2",
     "typescript": "3.5.2"
   },
-  "scripts": {
-    "watch": "tsc --watch",
-    "clean": "rimraf dist dist-es",
-    "build": "yarn clean && tsc || tsc -m es6 --outDir dist-es"
-  },
-  "files": [
-    "dist",
-    "dist-es"
-  ]
+  "peerDependencies": {
+    "react": "^15.0.0 | ^16.0.0"
+  }
 }

@@ -3,36 +3,33 @@
   "version": "0.0.54",
   "description": "",
   "keywords": [],
-  "main": "dist/sandpack.umd.js",
-  "module": "dist/sandpack.es5.js",
-  "typings": "dist/types/sandpack.d.ts",
-  "license": "SEE LICENSE.MD IN ROOT",
-  "sideEffects": false,
-  "files": [
-    "dist",
-    "sandpack"
-  ],
-  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/sandpack"
   },
-  "engines": {
-    "node": ">=6.0.0"
-  },
+  "license": "SEE LICENSE.MD IN ROOT",
+  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
+  "files": [
+    "dist",
+    "sandpack"
+  ],
+  "sideEffects": false,
+  "main": "dist/sandpack.umd.js",
+  "module": "dist/sandpack.es5.js",
+  "typings": "dist/types/sandpack.d.ts",
   "scripts": {
-    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --ignoreCompilerErrors --mode file src",
-    "start": "rollup -c rollup.config.ts -w",
-    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prepublishOnly": "yarn build && lerna run build:sandbox --scope app --stream && rimraf sandpack && gulp copy-sandbox",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "prepublishOnly": "yarn build && lerna run build:sandbox --scope app --stream && rimraf sandpack && gulp copy-sandbox"
+    "start": "rollup -c rollup.config.ts -w",
+    "test:prod": "npm run lint && npm run test -- --coverage --no-cache"
   },
   "config": {
     "commitizen": {
@@ -44,13 +41,7 @@
     }
   },
   "jest": {
-    "preset": "ts-jest",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
+    "collectCoverage": true,
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/test/"
@@ -63,8 +54,14 @@
         "statements": 95
       }
     },
-    "collectCoverage": true,
-    "mapCoverage": true
+    "mapCoverage": true,
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "preset": "ts-jest",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
   "dependencies": {
     "codesandbox-api": "^0.0.20",
@@ -100,5 +97,8 @@
     "typedoc": "^0.11.1",
     "typescript": "3.5.2",
     "validate-commit-msg": "^2.12.2"
+  },
+  "engines": {
+    "node": ">=6.0.0"
   }
 }
