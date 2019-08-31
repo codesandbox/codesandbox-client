@@ -12,12 +12,7 @@ import { inject, observer } from 'app/componentConnectors';
 import { DevToolProps } from '..';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
-<<<<<<< HEAD
 import { ConsoleInput } from './Input';
-=======
-import Input from './Input';
-import { Settings } from '@codesandbox/common/lib/types';
->>>>>>> Implemented 'Toggle console output'
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -168,10 +163,6 @@ class ConsoleComponent extends React.Component<StyledProps> {
         preferences: { settings },
       },
     } = this.props;
-
-    if (settings && !settings.toggleConsoleEnabled) {
-      return;
-    }
 
     if (updateStatus) {
       updateStatus(this.getType(method));
@@ -352,20 +343,12 @@ const ConsoleFilterSelect = props => {
   );
 };
 
-<<<<<<< HEAD
 const ObservedConsole = inject('store')(observer(ConsoleComponent));
-=======
-const ObservedConsole = inject('store', 'signals')(observer(Console));
->>>>>>> Implemented 'Toggle console output'
 
 export default {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
-<<<<<<< HEAD
-=======
-  // Content: inject('store', 'signals')(observer(withTheme<StyledProps>(Console))),
->>>>>>> Implemented 'Toggle console output'
   Content: withTheme<StyledProps>(ObservedConsole),
   actions: [
     {
