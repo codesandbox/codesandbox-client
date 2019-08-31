@@ -157,32 +157,9 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
-<<<<<<< HEAD
-<<<<<<< HEAD
     if (!this.state.isConsoleEnabled) {
       return;
     }
-=======
-    if (
-      this.props.store &&
-      this.props.store.preferences &&
-      this.props.store.preferences.settings &&
-      !this.props.store.preferences.settings.toggleConsoleEnabled
-    )
-      return;
->>>>>>> Implemented 'Toggle console output'
-=======
-    const {
-      updateStatus,
-      store: {
-        preferences: { settings },
-      },
-    } = this.props;
-
-    if (settings && !settings.toggleConsoleEnabled) {
-      return;
-    }
->>>>>>> Refactored 'addMessage' by using prop destructuring syntax for a simpler 'if' check for the toggleConsoleEnabled settings option
 
     if (updateStatus) {
       updateStatus(this.getType(method));
@@ -220,7 +197,6 @@ class ConsoleComponent extends React.Component<StyledProps> {
     const messages = nothing
       ? []
       : [
-<<<<<<< HEAD
         {
           method: 'log',
           data: [
@@ -231,16 +207,6 @@ class ConsoleComponent extends React.Component<StyledProps> {
           ],
         },
       ];
-=======
-        {
-          method: 'log',
-          data: [
-            '%cConsole was cleared',
-            'font-style: italic; color: rgba(255, 255, 255, 0.3)',
-          ],
-        },
-      ];
->>>>>>> Implemented 'Toggle console output'
 
     this.setState({ messages });
   };
@@ -371,15 +337,9 @@ const ConsoleFilterSelect = props => {
   );
 };
 
-<<<<<<< HEAD
 const ObservedConsole = inject('store')(observer(ConsoleComponent));
 
 export const console = {
-=======
-const ObservedConsole = inject('store', 'signals')(observer(Console));
-
-export default {
->>>>>>> Implemented 'Toggle console output'
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
