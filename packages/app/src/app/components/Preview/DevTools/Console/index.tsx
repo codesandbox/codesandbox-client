@@ -7,11 +7,13 @@ import { debounce } from 'lodash-es';
 import React from 'react';
 import ClearIcon from 'react-icons/lib/md/block';
 import styled, { withTheme } from 'styled-components';
+import { inject, observer } from 'app/componentConnectors';
 
 import { DevToolProps } from '../';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
 import Input from './Input';
+import { Settings } from '@codesandbox/common/lib/types';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -143,6 +145,14 @@ class Console extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
+    if (
+      this.props.store &&
+      this.props.store.preferences &&
+      this.props.store.preferences.settings &&
+      !this.props.store.preferences.settings.toggleConsoleEnabled
+    )
+      return;
+
     if (this.props.updateStatus) {
       this.props.updateStatus(this.getType(method));
     }
@@ -284,11 +294,14 @@ const ConsoleFilterSelect = props => {
   );
 };
 
+const ObservedConsole = inject('store', 'signals')(observer(Console));
+
 export default {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
-  Content: withTheme<StyledProps>(Console),
+  // Content: inject('store', 'signals')(observer(withTheme<StyledProps>(Console))),
+  Content: withTheme<StyledProps>(ObservedConsole),
   actions: [
     {
       title: 'Clear Console',
