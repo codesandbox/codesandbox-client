@@ -146,6 +146,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
+<<<<<<< HEAD
     const {
       updateStatus,
       store: {
@@ -159,6 +160,18 @@ class ConsoleComponent extends React.Component<StyledProps> {
 
     if (updateStatus) {
       updateStatus(this.getType(method));
+=======
+    if (
+      this.props.store &&
+      this.props.store.preferences &&
+      this.props.store.preferences.settings &&
+      !this.props.store.preferences.settings.toggleConsoleEnabled
+    )
+      return;
+
+    if (this.props.updateStatus) {
+      this.props.updateStatus(this.getType(method));
+>>>>>>> Implemented 'Toggle console output'
     }
 
     this.setState(state =>
@@ -304,6 +317,10 @@ export default {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
+<<<<<<< HEAD
+=======
+  // Content: inject('store', 'signals')(observer(withTheme<StyledProps>(Console))),
+>>>>>>> Implemented 'Toggle console output'
   Content: withTheme<StyledProps>(ObservedConsole),
   actions: [
     {
