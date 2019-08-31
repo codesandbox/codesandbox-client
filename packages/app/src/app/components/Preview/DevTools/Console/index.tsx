@@ -208,7 +208,9 @@ class ConsoleComponent extends React.Component<StyledProps> {
         },
       ];
 
-    this.setState({ messages });
+    this.setState({
+      messages,
+    });
   };
 
   // Add "Console is enabled/disabled" message when user changes preference
