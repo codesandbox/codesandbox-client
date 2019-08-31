@@ -22,6 +22,9 @@ export type IMessage = {
 
 export type StyledProps = DevToolProps & {
   theme: typeof theme & { light: boolean };
+} & {
+  store: any;
+  signals: any;
 };
 
 const StyledClearIcon = styled(ClearIcon)`
@@ -143,8 +146,19 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
-    if (this.props.updateStatus && this.props.hidden) {
-      this.props.updateStatus(this.getType(method));
+    const {
+      updateStatus,
+      store: {
+        preferences: { settings },
+      },
+    } = this.props;
+
+    if (settings && !settings.toggleConsoleEnabled) {
+      return;
+    }
+
+    if (updateStatus) {
+      updateStatus(this.getType(method));
     }
 
     this.setState(state =>
