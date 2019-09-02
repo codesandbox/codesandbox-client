@@ -124,12 +124,12 @@ class Preview extends Component<Props, State> {
   handleModuleSyncedChange = (preview, change) => {
     const settings = this.props.store.preferences.settings;
 
-    if (settings.livePreviewEnabled && change) {
-      if (this.props.store.editor.currentSandbox.template === 'static') {
-        preview.handleRefresh();
-      } else {
-        preview.executeCodeImmediately();
-      }
+    if (
+      settings.livePreviewEnabled &&
+      change &&
+      this.props.store.editor.currentSandbox.template === 'static'
+    ) {
+      preview.handleRefresh();
     }
   };
 

@@ -359,6 +359,11 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   executeCodeImmediately = (initialRender: boolean = false) => {
+    // We cancel the existing calls with executeCode to prevent concurrent calls,
+    // the only reason we do this is because executeCodeImmediately can be called
+    // directly as well
+    // @ts-ignore
+    this.executeCode.cancel();
     const settings = this.props.settings;
     const sandbox = this.props.sandbox;
 
