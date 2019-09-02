@@ -7,6 +7,62 @@ const debug = _debug('cs:analytics');
 
 const global = (typeof window !== 'undefined' ? window : {}) as any;
 
+const WHITELISTED_VSCODE_EVENTS = [
+  'codesandbox.preview.toggle',
+  'workbench.action.splitEditor',
+  'workbench.action.toggleSidebarVisibility',
+  'codesandbox.sandbox.new',
+  'workbench.action.files.saveAs',
+  'editor.action.addCommentLine',
+  'codesandbox.sandbox.exportZip',
+  'codesandbox.preferences',
+  'codesandbox.sandbox.fork',
+  'codesandbox.help.documentation',
+  'codesandbox.help.github',
+  'view.preview.flip',
+  'codesandbox.search',
+  'workbench.action.splitEditorLeft',
+  'codesandbox.dashboard',
+  'workbench.action.toggleCenteredLayout',
+  'workbench.action.toggleMenuBar',
+  'codesandbox.explore',
+  'editor.action.toggleTabFocusMode',
+  'workbench.action.splitEditorUp',
+  'workbench.action.toggleSidebarPosition',
+  'workbench.action.toggleActivityBarVisibility',
+  'workbench.action.toggleStatusbarVisibility',
+  'codesandbox.dependencies.add',
+  'codesandbox.help.open-issue',
+  'codesandbox.action.search',
+  'workbench.action.editorLayoutThreeColumns',
+  'breadcrumbs.toggleToOn',
+  'workbench.action.openSettings2',
+  'workbench.action.globalSettings',
+  'workbench.action.editorLayoutTwoRows',
+  'workbench.action.editorLayoutTwoByTwoGrid',
+  'editor.action.showContextMenu',
+  'toggleVim',
+  'codesandbox.help.spectrum',
+  'codesandbox.help.feedback',
+  'workbench.action.webview.openDeveloperTools',
+  'workbench.action.editorLayoutThreeRows',
+  'codesandbox.help.twitter',
+  'workbench.action.editorLayoutTwo',
+  'codesandbox.preview.external',
+  'notifications.showList',
+  'workbench.action.editor.changeEncoding',
+  'editor.action.indentationToTabs',
+  'workbench.action.maximizeEditor',
+  'editor.action.indentationToSpaces',
+  'revealFilesInOS',
+  'keybindings.editor.searchKeyBindings',
+  'notifications.hideList',
+  'workbench.action.terminal.focus',
+  'workbench.action.console.focus',
+  'workbench.action.openRecent',
+  'code-runner.run',
+];
+
 export const DNT =
   typeof window !== 'undefined' &&
   Boolean(
@@ -37,9 +93,15 @@ export async function initializeSentry(dsn: string) {
        * Don't send messages from the sandbox, so don't send from eg.
        * new.codesandbox.io or new.csb.app
        */
-      blacklistUrls: [/.*\.codesandbox\.io/, /.*\.csb\.app/],
+      blacklistUrls: [
+        'codesandbox.editor.main.js',
+        /.*\.codesandbox\.io/,
+        /.*\.csb\.app/,
+      ],
       beforeSend: event => {
         if (
+          event.stacktrace &&
+          event.stacktrace.frames &&
           event.stacktrace.frames[0] &&
           event.stacktrace.frames[0].filename.endsWith(
             'codesandbox.editor.main.js'
@@ -148,12 +210,7 @@ export async function resetUserId() {
 const isAllowedEvent = (eventName, secondArg) => {
   try {
     if (eventName === 'VSCode - workbenchActionExecuted') {
-      if (secondArg.id.startsWith('cursor')) {
-        return false;
-      }
-      if (secondArg.id === 'deleteLeft') {
-        return false;
-      }
+      return WHITELISTED_VSCODE_EVENTS.includes(secondArg.id);
     }
     return true;
   } catch (e) {

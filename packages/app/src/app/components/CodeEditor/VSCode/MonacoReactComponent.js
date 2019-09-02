@@ -185,7 +185,7 @@ class MonacoEditor extends React.PureComponent {
     document.getElementById('root').className = document
       .getElementById('root')
       .className.split(' ')
-      .filter(x => ['monaco-shell', 'vs-dark'].indexOf(x) === -1)
+      .filter(x => !['monaco-shell', 'vs-dark'].includes(x))
       .join(' ');
 
     Promise.all(groupsToClose.map(g => g.closeAllEditors()))
@@ -212,9 +212,9 @@ class MonacoEditor extends React.PureComponent {
   render() {
     const { width, height } = this.props;
     const fixedWidth =
-      width && width.toString().indexOf('%') !== -1 ? width : `${width}px`;
+      width && width.toString().includes('%') ? width : `${width}px`;
     const fixedHeight =
-      height && height.toString().indexOf('%') !== -1 ? height : `${height}px`;
+      height && height.toString().includes('%') ? height : `${height}px`;
     const style = {
       width: fixedWidth,
       height: fixedHeight,

@@ -26,7 +26,7 @@ const AddTeamMember = ({ teamId, signals }) => (
         e.preventDefault();
         e.stopPropagation();
 
-        let isEmail = input.value.indexOf('@') > -1;
+        let isEmail = input.value.includes('@');
 
         track('Team - Add Member', { email: isEmail });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import Slider from 'rc-slider/lib/Slider';
-import 'rc-slider/assets/index.css';
+import 'rc-slider/dist/rc-slider.css';
 
 function Range(props) {
   return (

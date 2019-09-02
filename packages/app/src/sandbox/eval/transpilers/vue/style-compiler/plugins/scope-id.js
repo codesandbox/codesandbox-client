@@ -1,3 +1,4 @@
+/* eslint-disable */
 var postcss = require('postcss');
 var selectorParser = require('postcss-selector-parser');
 

@@ -9,8 +9,13 @@ import theme from '@codesandbox/common/lib/theme';
 import '@codesandbox/common/lib/global.css';
 
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import App from './components/App';
+
+document.addEventListener('click', () => {
+  track('Embed Interaction');
+});
 
 requirePolyfills().then(() => {
   function renderApp(Component) {

@@ -46,7 +46,7 @@ const Content = makeBorderedContainer(
 const makeContent = () => {
   const count = number('Repeat content', 1, {}, 'other');
   const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-  let contents: JSX.Element[] = [];
+  const contents: JSX.Element[] = [];
 
   for (let i = 0; i < count; i++) {
     const letter = letters[i % letters.length];
@@ -184,7 +184,7 @@ storiesOf('components/flex', module)
     withMaxWidthBordered(repeat('Row', () => withRowBordered(makeContent)))
   )
   .add('Playground \uD83D\uDE80', () => {
-    let decorators = [];
+    const decorators = [];
     let current = null;
 
     do {

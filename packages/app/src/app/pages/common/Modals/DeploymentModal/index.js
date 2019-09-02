@@ -5,6 +5,7 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { inject, observer } from 'app/componentConnectors';
 import ZeitIntegration from 'app/pages/common/ZeitIntegration';
 import { IntegrationModal } from 'app/components/IntegrationModal';
+import track from '@codesandbox/common/lib/utils/analytics';
 import {
   ButtonContainer,
   DeployAnimationContainer,
@@ -84,7 +85,10 @@ function DeploymentModal({ store, signals }) {
         ) : (
           <ButtonContainer deploying={store.deployment.deploying}>
             <Button
-              onClick={() => signals.deployment.deployClicked()}
+              onClick={() => {
+                track('Deploy Clicked', { provider: 'zeit' });
+                signals.deployment.deployClicked();
+              }}
               disabled={!zeitSignedIn || store.deployment.deploying}
             >
               Deploy Now

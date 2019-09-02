@@ -1,7 +1,7 @@
 function getExternalResourcesConcatenation(resources: Array<string>) {
   return resources.join('');
 }
-
+/* eslint-disable no-cond-assign */
 function clearExternalResources() {
   let el = null;
   while ((el = document.getElementById('external-css'))) {
@@ -12,6 +12,7 @@ function clearExternalResources() {
     el.remove();
   }
 }
+/* eslint-enable */
 
 function addCSS(resource: string) {
   const head = document.getElementsByTagName('head')[0];

@@ -27,7 +27,7 @@ type MetaFiles = Array<{
 }>;
 
 const metas: Metas = {};
-export let combinedMetas: Meta = {};
+export let combinedMetas: Meta = {}; // eslint-disable-line
 const normalizedMetas: { [key: string]: Meta } = {};
 const packages: Packages = {};
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Sandbox, Module } from '../../types';
 import {
   listen,
   dispatch,
@@ -8,12 +7,12 @@ import {
   resetState,
 } from 'codesandbox-api';
 import debounce from 'lodash/debounce';
+import { Spring } from 'react-spring/renderprops.cjs';
+import { Sandbox, Module } from '../../types';
 
 import { frameUrl, host } from '../../utils/url-generator';
 import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
-
-import { Spring } from 'react-spring/renderprops.cjs';
 
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 

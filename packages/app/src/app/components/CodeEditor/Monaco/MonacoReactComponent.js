@@ -106,10 +106,10 @@ class MonacoEditor extends React.PureComponent {
 
   render() {
     const { width, height } = this.props;
-    const fixedWidth =
-      width.toString().indexOf('%') !== -1 ? width : `${width}px`;
-    const fixedHeight =
-      height.toString().indexOf('%') !== -1 ? height : `${height}px`;
+    const fixedWidth = width.toString().includes('%') ? width : `${width}px`;
+    const fixedHeight = height.toString().includes('%')
+      ? height
+      : `${height}px`;
     const style = {
       width: fixedWidth,
       height: fixedHeight,

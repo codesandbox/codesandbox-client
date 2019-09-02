@@ -60,8 +60,8 @@ class SandboxGrid extends React.Component<*, State> {
       const indexedSandboxes = sandboxes.map((sandbox, i) => ({ sandbox, i }));
 
       // We need to select a range
-      const firstIndexInfo = indexedSandboxes.find(
-        ({ sandbox }) => selectedSandboxes.indexOf(sandbox.id) > -1
+      const firstIndexInfo = indexedSandboxes.find(({ sandbox }) =>
+        selectedSandboxes.includes(sandbox.id)
       );
 
       const [id] = ids;
@@ -88,10 +88,10 @@ class SandboxGrid extends React.Component<*, State> {
     if (additive) {
       track('Dashboard - Sandbox Additive Selection');
       sandboxIds = store.dashboard.selectedSandboxes.filter(
-        id => ids.indexOf(id) === -1
+        id => !ids.includes(id)
       );
       const additiveIds = ids.filter(
-        id => store.dashboard.selectedSandboxes.indexOf(id) === -1
+        id => !store.dashboard.selectedSandboxes.includes(id)
       );
 
       sandboxIds = uniq([...sandboxIds, ...additiveIds]);

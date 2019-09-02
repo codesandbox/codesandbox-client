@@ -7,7 +7,7 @@ import { inject, observer, clone } from 'app/componentConnectors';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import SplitPane from 'react-split-pane';
 import CodeEditor from 'app/components/CodeEditor';
-import DevTools from 'app/components/Preview/DevTools';
+import { DevTools } from 'app/components/Preview/DevTools';
 
 import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';

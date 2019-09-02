@@ -78,7 +78,7 @@ export default class Tasks extends React.PureComponent<Props> {
     }
 
     const commands = Object.keys(this.props.package.scripts).filter(
-      x => blacklistedScripts.indexOf(x) === -1
+      x => !blacklistedScripts.includes(x)
     );
 
     return (

@@ -48,7 +48,7 @@ class DirectoryChildren extends React.Component {
             x =>
               !(
                 x.directoryShortid == null &&
-                HIDDEN_DIRECTORIES.indexOf(x.title) > -1
+                HIDDEN_DIRECTORIES.includes(x.title)
               )
           )
           .map(dir => (

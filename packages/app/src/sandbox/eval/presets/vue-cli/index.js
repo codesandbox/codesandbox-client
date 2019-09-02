@@ -35,6 +35,7 @@ const getFileNameFromVm = vm => {
 
     return options.__file;
   }
+  return undefined;
 };
 
 export default function initialize() {

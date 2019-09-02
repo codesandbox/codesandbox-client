@@ -26,7 +26,8 @@ import {
   StyledCloseIcon,
 } from 'app/pages/Sandbox/Editor/Content/Tabs/Tab/elements';
 
-import DevTools, {
+import {
+  DevTools,
   IViewType,
   DevToolProps,
 } from 'app/components/Preview/DevTools';
