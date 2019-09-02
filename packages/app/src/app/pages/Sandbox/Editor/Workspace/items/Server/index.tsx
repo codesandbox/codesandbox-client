@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
-import { inject, observer } from 'app/componentConnectors';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
 import BrowserIcon from 'react-icons/lib/go/browser';
 
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
-
 import {
   Description,
   WorkspaceInputContainer,
@@ -29,161 +28,184 @@ const SubTitle = styled.div`
   font-size: 0.875rem;
 `;
 
-function ServerComponent({ store, signals }) {
-  const disconnected = store.server.status !== 'connected';
+type Port = {
+  main: boolean;
+  port: number;
+  hostname: string;
+  name?: string;
+};
 
-  const openPort = (port: {
-    main: boolean;
-    port: number;
-    hostname: string;
-  }) => {
-    signals.server.onBrowserFromPortOpened({ port });
-  };
+export const Server = inject('store', 'signals')(
+  hooksObserver(({ store: { server, editor }, signals }) => {
+    const [ports, setPorts] = useState(server.ports);
+    const disconnected = server.status !== 'connected';
+    const sandbox = editor.currentSandbox;
 
-  return (
-    <div>
-      <Description>
-        This sandbox is executed on a server. You can control the server from
-        this panel.
-      </Description>
+    const openPort = (port: Port) => {
+      signals.server.onBrowserFromPortOpened({ port });
+    };
 
-      <Margin top={1}>
-        <SubTitle>Status</SubTitle>
-        <WorkspaceInputContainer>
-          <Status
-            managerStatus={store.server.status}
-            containerStatus={store.server.containerStatus}
-          />
-        </WorkspaceInputContainer>
-      </Margin>
+    useEffect(() => {
+      if (sandbox.template === 'gatsby') {
+        const mainPort = server.ports.find((port: Port) => port.main);
+        setPorts((p: Port[]) =>
+          p.concat({
+            ...mainPort,
+            main: false,
+            hostname: mainPort.hostname + '/___graphql',
+            name: 'GraphiQL',
+          })
+        );
+      }
+    }, [sandbox.template, server.ports]);
 
-      <Margin top={1.5}>
-        <SubTitle>Run Scripts</SubTitle>
-        <Margin top={0.5}>
-          <WorkspaceInputContainer
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              pointerEvents: disconnected ? 'none' : 'initial',
-              opacity: disconnected ? 0.5 : 1,
-            }}
-          >
-            <Tasks
-              package={
-                store.editor.parsedConfigurations.package &&
-                store.editor.parsedConfigurations.package.parsed
-              }
+    return (
+      <div>
+        <Description>
+          This sandbox is executed on a server. You can control the server from
+          this panel.
+        </Description>
+
+        <Margin top={1}>
+          <SubTitle>Status</SubTitle>
+          <WorkspaceInputContainer>
+            <Status
+              managerStatus={server.status}
+              containerStatus={server.containerStatus}
             />
           </WorkspaceInputContainer>
         </Margin>
-      </Margin>
 
-      <Margin top={1} bottom={0.5}>
-        <SubTitle>Open Ports</SubTitle>
-        <Margin top={0.5}>
-          {store.server.ports.length ? (
-            store.server.ports.map(port => (
-              <EntryContainer
-                style={{ position: 'relative' }}
-                onClick={() => openPort(port)}
-              >
-                <div
-                  style={{
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginLeft: '0.5rem',
-                  }}
+        <Margin top={1.5}>
+          <SubTitle>Run Scripts</SubTitle>
+          <Margin top={0.5}>
+            <WorkspaceInputContainer
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                pointerEvents: disconnected ? 'none' : 'initial',
+                opacity: disconnected ? 0.5 : 1,
+              }}
+            >
+              <Tasks
+                package={
+                  editor.parsedConfigurations.package &&
+                  editor.parsedConfigurations.package.parsed
+                }
+              />
+            </WorkspaceInputContainer>
+          </Margin>
+        </Margin>
+
+        <Margin top={1} bottom={0.5}>
+          <SubTitle>Open Ports</SubTitle>
+          <Margin top={0.5}>
+            {ports.length ? (
+              ports.map(port => (
+                <EntryContainer
+                  style={{ position: 'relative' }}
+                  onClick={() => openPort(port)}
                 >
-                  <BrowserIcon />
-                  <div style={{ marginLeft: '0.75rem' }}>{port.port}</div>
-                </div>
-                {port.main && (
                   <div
                     style={{
-                      fontWeight: 600,
-                      position: 'absolute',
-                      right: '2rem',
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginLeft: '0.5rem',
                     }}
                   >
-                    main
+                    <BrowserIcon />
+                    <div style={{ marginLeft: '0.75rem' }}>
+                      {port.name || port.port}
+                    </div>
                   </div>
-                )}
-              </EntryContainer>
-            ))
-          ) : (
-            <Description>
-              No ports are opened. Maybe the server is still starting or it
-              doesn't open any ports.
-            </Description>
-          )}
+                  {port.main && (
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        position: 'absolute',
+                        right: '2rem',
+                      }}
+                    >
+                      main
+                    </div>
+                  )}
+                </EntryContainer>
+              ))
+            ) : (
+              <Description>
+                No ports are opened. Maybe the server is still starting or it
+                doesn't open any ports.
+              </Description>
+            )}
+          </Margin>
         </Margin>
-      </Margin>
 
-      <Margin top={1} bottom={0.5}>
-        <SubTitle style={{ marginBottom: '.5rem' }}>Control Container</SubTitle>
-        <WorkspaceInputContainer>
-          <Button
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            small
-            block
-            disabled={
-              disconnected || store.server.containerStatus !== 'sandbox-started'
-            }
-            onClick={() => {
-              signals.server.restartSandbox({});
-            }}
-          >
-            <React.Fragment>
-              <PowerIcon
-                style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
-              />{' '}
-              Restart Sandbox
-            </React.Fragment>
-          </Button>
-        </WorkspaceInputContainer>
-        <WorkspaceInputContainer>
-          <Button
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            small
-            block
-            disabled={
-              disconnected || store.server.containerStatus === 'initializing'
-            }
-            onClick={() => {
-              signals.server.restartContainer({});
-            }}
-          >
-            <React.Fragment>
-              <PowerIcon
-                style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
-              />{' '}
-              Restart Server
-            </React.Fragment>
-          </Button>
-        </WorkspaceInputContainer>
-      </Margin>
-
-      <Margin top={1}>
-        <SubTitle>Secret Keys</SubTitle>
-        <Description>
-          Secrets are available as environment variables. They are kept private
-          and will not be transferred between forks.
-        </Description>
-        <Margin top={0.5}>
-          <EnvironmentVariables />
+        <Margin top={1} bottom={0.5}>
+          <SubTitle style={{ marginBottom: '.5rem' }}>
+            Control Container
+          </SubTitle>
+          <WorkspaceInputContainer>
+            <Button
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              small
+              block
+              disabled={
+                disconnected || server.containerStatus !== 'sandbox-started'
+              }
+              onClick={() => {
+                signals.server.restartSandbox({});
+              }}
+            >
+              <React.Fragment>
+                <PowerIcon
+                  style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
+                />{' '}
+                Restart Sandbox
+              </React.Fragment>
+            </Button>
+          </WorkspaceInputContainer>
+          <WorkspaceInputContainer>
+            <Button
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              small
+              block
+              disabled={
+                disconnected || server.containerStatus === 'initializing'
+              }
+              onClick={() => {
+                signals.server.restartContainer({});
+              }}
+            >
+              <React.Fragment>
+                <PowerIcon
+                  style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
+                />{' '}
+                Restart Server
+              </React.Fragment>
+            </Button>
+          </WorkspaceInputContainer>
         </Margin>
-      </Margin>
-    </div>
-  );
-}
 
-export const Server = inject('store', 'signals')(observer(ServerComponent));
+        <Margin top={1}>
+          <SubTitle>Secret Keys</SubTitle>
+          <Description>
+            Secrets are available as environment variables. They are kept
+            private and will not be transferred between forks.
+          </Description>
+          <Margin top={0.5}>
+            <EnvironmentVariables />
+          </Margin>
+        </Margin>
+      </div>
+    );
+  })
+);
