@@ -123,10 +123,8 @@ class Preview extends Component<Props, State> {
 
   handleModuleSyncedChange = (preview, change) => {
     const settings = this.props.store.preferences.settings;
-    const isServer = getTemplate(
-      this.props.store.editor.currentSandbox.template
-    ).isServer;
-    if ((isServer || !settings.livePreviewEnabled) && change) {
+
+    if (settings.livePreviewEnabled && change) {
       if (this.props.store.editor.currentSandbox.template === 'static') {
         preview.handleRefresh();
       } else {
