@@ -317,7 +317,6 @@ export const liveMessageReceived: AsyncAction<{
             .getClient(data.module_shortid)
             .applyServer(data.operation);
         } catch (e) {
-          console.log(e.message);
           // Something went wrong, probably a sync mismatch. Request new version
           console.error('Something went wrong with applying OT operation');
           effects.live.sendModuleUpdateRequest();
@@ -404,11 +403,8 @@ export const onTransformMade: Action<{
   }
 
   try {
-    const client = effects.live.getClient(moduleShortid);
-    console.log(client);
-    client.applyClient(operation);
+    effects.live.getClient(moduleShortid).applyClient(operation);
   } catch (e) {
-    console.log(e);
     // Something went wrong, probably a sync mismatch. Request new version
     console.error(
       'Something went wrong with applying OT operation',

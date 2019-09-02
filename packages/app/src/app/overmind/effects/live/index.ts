@@ -17,6 +17,14 @@ type Options = {
   provideJwtToken(): string;
 };
 
+type JoinChannelResponse = {
+  sandboxId: string;
+  sandbox: Sandbox;
+  moduleState: object;
+  liveUserId: string;
+  roomInfo: RoomInfo;
+};
+
 declare global {
   interface Window {
     socket: any;
@@ -85,21 +93,15 @@ export default {
         .receive('error', resp => reject(resp));
     });
   },
-  joinChannel(
-    roomId: string
-  ): Promise<{
-    sandboxId: string;
-    sandbox: Sandbox;
-    moduleState: object;
-    liveUserId: string;
-    roomInfo: RoomInfo;
-  }> {
+  joinChannel(roomId: string): Promise<JoinChannelResponse> {
     channel = _socket.channel(`live:${roomId}`, {});
 
     return new Promise((resolve, reject) => {
       channel
         .join()
-        .receive('ok', resp => resolve(camelizeKeys(resp) as any))
+        .receive('ok', resp =>
+          resolve(camelizeKeys(resp) as JoinChannelResponse)
+        )
         .receive('error', resp => reject(camelizeKeys(resp)));
     });
   },

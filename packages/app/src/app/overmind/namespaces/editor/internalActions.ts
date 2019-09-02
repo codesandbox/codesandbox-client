@@ -246,7 +246,7 @@ export const forkSandbox: AsyncAction<string> = async (
   id
 ) => {
   const templateDefinition = getTemplateDefinition(
-    state.editor.currentSandbox && state.editor.currentSandbox.template
+    state.editor.currentSandbox ? state.editor.currentSandbox.template : null
   );
 
   if (templateDefinition.isServer) {
