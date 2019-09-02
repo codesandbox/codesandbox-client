@@ -70,9 +70,9 @@ function Header({
         <ModeIcons
           showEditor={showEditor}
           showPreview={showPreview}
-          setEditorView={setEditorView}
-          setPreviewView={setPreviewView}
-          setMixedView={setMixedView}
+          onSetEditorView={setEditorView}
+          onSetPreviewView={setPreviewView}
+          onSetMixedView={setMixedView}
         />
       </CenterAligned>
       <RightAligned>
