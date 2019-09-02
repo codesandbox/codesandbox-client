@@ -5,6 +5,7 @@ import store from 'store/dist/store.modern';
 
 import { TemplateType } from '@codesandbox/common/lib/templates';
 import { ViewConfig } from '@codesandbox/common/lib/templates/template';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import console from './Console';
 import Tabs, { ITabPosition } from './Tabs';
@@ -112,7 +113,7 @@ type State = {
   currentTabIndex: number;
 };
 
-export default class DevTools extends React.PureComponent<Props, State> {
+export class DevTools extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -383,6 +384,11 @@ export default class DevTools extends React.PureComponent<Props, State> {
     if (this.state.hidden && !this.props.primary) {
       this.openDevTools();
     }
+    const pane = this.props.viewConfig.views[index];
+    if (pane) {
+      track('DevTools - Open Pane', { pane: pane.id });
+    }
+
     this.props.setPane({
       devToolIndex: this.props.devToolIndex,
       tabPosition: index,
@@ -473,6 +479,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
               moveTab={
                 this.props.moveTab
                   ? (prevPos, nextPos) => {
+                      track('DevTools - Move Pane', {
+                        pane: this.props.viewConfig.views[prevPos.tabPosition]
+                          .id,
+                      });
                       this.props.moveTab(prevPos, nextPos);
                     }
                   : undefined

@@ -1,4 +1,5 @@
 import React from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import { DeploymentIntegration } from 'app/components/DeploymentIntegration';
 import { NetlifyLogo } from 'app/components/NetlifyLogo';
@@ -27,7 +28,10 @@ export const DeployButton = inject('store', 'signals')(
         <DeploymentIntegration
           beta
           bgColor="#FFFFFF"
-          onDeploy={deployWithNetlify}
+          onDeploy={() => {
+            track('Deploy Clicked', { provider: 'netlify' });
+            deployWithNetlify({});
+          }}
           Icon={NetlifyLogo}
           light
           loading={deploying || building}

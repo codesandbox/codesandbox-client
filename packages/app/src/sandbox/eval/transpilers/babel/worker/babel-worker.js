@@ -1,4 +1,4 @@
-// @flow
+/* eslint-disable global-require, no-console, no-use-before-define */
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
 import macrosPlugin from 'babel-plugin-macros';
@@ -25,6 +25,7 @@ let fsLoading = false;
 let lastConfig = null;
 
 const IGNORED_MODULES = ['util', 'os'];
+const BrowserFS = self.BrowserFS;
 
 // Default in memory
 BrowserFS.configure({ fs: 'InMemory' }, () => {});

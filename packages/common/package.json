@@ -11,7 +11,7 @@
     "lib"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "NODE_ENV=test jest",
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react-native",
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
     "start:storybook": "start-storybook",
@@ -19,18 +19,21 @@
     "build:lib": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib",
     "build": "yarn build:lib && yarn build:storybook",
     "build:dev": "yarn build",
-    "prepublish": "yarn build"
+    "prepublish": "yarn build",
+    "lint": "eslint --ext .js,.ts,.tsx src"
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
-    "@sentry/browser": "^5.6.2",
     "@babel/polyfill": "^7.4.4",
     "@codesandbox/notifications": "^1.0.3",
     "@codesandbox/template-icons": "^0.7.0",
+    "@sentry/browser": "^5.6.2",
     "@tippy.js/react": "^2.1.1",
     "babel-plugin-preval": "^3.0.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "codesandbox-api": "^0.0.22",
     "color": "0.11.4",
+    "date-fns": "^2.0.0",
     "error-polyfill": "^0.1.1",
     "humps": "CompuIves/humps",
     "image-extensions": "^1.1.0",
@@ -39,7 +42,6 @@
     "lodash": "^4.17.11",
     "markty-toml": "^0.0.9",
     "memoize-one": "^3.1.1",
-    "moment": "^2.18.1",
     "ot": "^0.0.15",
     "react": "^16.8.6",
     "react-icons": "^2.2.7",
@@ -59,6 +61,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-async-to-generator": "^7.5.0",
     "@babel/plugin-transform-runtime": "^7.5.5",
+    "@codesandbox/template-icons": "^0.7.0",
     "@storybook/addon-a11y": "^5.1.11",
     "@storybook/addon-actions": "^5.1.9",
     "@storybook/addon-knobs": "^5.1.9",
@@ -80,16 +83,29 @@
     "babel-plugin-macros": "^2.6.1",
     "babel-plugin-system-import-transformer": "^4.0.0",
     "cpx": "^1.5.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.4.0",
     "jest": "^24.8.0",
+    "jest-environment-enzyme": "^7.1.0",
+    "jest-enzyme": "^7.1.0",
+    "jest-styled-components": "^6.3.3",
+    "jest-svg-transformer": "^1.0.0",
     "rimraf": "^2.6.3",
-    "typescript": "3.5.2"
+    "typescript": "3.5.2",
+    "yarn": "^1.17.3"
   },
   "jest": {
+    "testEnvironment": "enzyme",
+    "setupFilesAfterEnv": [
+      "<rootDir>src/test/setupTests.ts"
+    ],
     "moduleDirectories": [
       "node_modules"
     ],
     "transform": {
-      "^.+\\.(t|j)s$": "babel-jest"
+      "^.+\\.[t|j]sx?$": "babel-jest",
+      "^.+\\.svg$": "jest-svg-transformer"
     },
     "modulePathIgnorePatterns": [
       "lib"

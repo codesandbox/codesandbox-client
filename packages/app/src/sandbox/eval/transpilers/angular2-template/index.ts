@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Transpiler from '../';
 import { LoaderContext } from '../../transpiled-module';
 
@@ -9,6 +10,7 @@ const stringRegex = /(['`"])((?:[^\\]\\\1|.)*?)\1/g;
 function replaceStringsWithRequires(string, extensionConfig, addDependency) {
   return string.replace(stringRegex, (match, quote, url) => {
     if (url.charAt(0) !== '.') {
+      // eslint-disable-next-line
       url = './' + url;
     }
 

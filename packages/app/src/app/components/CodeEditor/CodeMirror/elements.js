@@ -10,9 +10,7 @@ const fontFamilies = (...families) =>
   families
     .filter(Boolean)
     .map(family => (family === 'Dank Mono' ? 'dm' : family))
-    .map(family =>
-      family.indexOf(' ') !== -1 ? JSON.stringify(family) : family
-    )
+    .map(family => (family.includes(' ') ? JSON.stringify(family) : family))
     .join(', ');
 
 export const Container = styled.div`

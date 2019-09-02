@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'gatsby';
 
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import media from '../../../utils/media';
 import { fadeIn } from '../../../utils/animation';
@@ -130,6 +131,9 @@ export default ({ template }) => (
     <ResponsiveRollingText updateCheck={template.name}>
       <Buttons>
         <Button
+          onClick={() => {
+            track('Homepage - Open X Clicked', { template: template.niceName });
+          }}
           href={sandboxUrl({ id: template.shortid })}
           color={template.color}
           style={{ width: 220 }}

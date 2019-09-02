@@ -125,7 +125,7 @@ export default function evaluate(
   finalCode += `\n//# sourceURL=${location.origin}${path}`;
 
   if (transpileBeforeExec) {
-    const { code: transpiledCode } = Babel.transform(finalCode, {
+    const { code: transpiledCode } = self.Babel.transform(finalCode, {
       presets: ['es2015', 'react', 'stage-0'],
       plugins: [
         'transform-async-to-generator',

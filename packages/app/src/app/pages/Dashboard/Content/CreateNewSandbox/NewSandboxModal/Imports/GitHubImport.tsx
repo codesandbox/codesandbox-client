@@ -5,6 +5,7 @@ import {
   gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import {
   ImportHeader,
@@ -102,7 +103,14 @@ export const GitHubImport = () => {
         >
           Copy Link
         </Button>
-        <Button disabled={!transformedUrl} to={gitHubToSandboxUrl(url)} small>
+        <Button
+          onClick={() => {
+            track('GitHub Import Wizard - Open Sandbox Clicked');
+          }}
+          disabled={!transformedUrl}
+          to={gitHubToSandboxUrl(url)}
+          small
+        >
           Open Sandbox
         </Button>
       </Buttons>

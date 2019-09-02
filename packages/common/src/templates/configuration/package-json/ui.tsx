@@ -9,10 +9,9 @@ import {
 } from '../elements';
 
 export const ConfigWizard = ({ file }) => {
-  let parsedFile;
   let error;
   try {
-    parsedFile = JSON.parse(file);
+    JSON.parse(file);
   } catch (e) {
     error = e;
   }

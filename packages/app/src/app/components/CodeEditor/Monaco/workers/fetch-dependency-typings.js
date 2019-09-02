@@ -236,7 +236,7 @@ async function fetchAndAddDependencies(dependencies) {
   await Promise.all(
     depNames.map(async dep => {
       try {
-        if (loadedTypings.indexOf(dep) === -1) {
+        if (!loadedTypings.includes(dep)) {
           loadedTypings.push(dep);
 
           const depVersion = await doFetch(

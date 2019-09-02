@@ -174,20 +174,17 @@ class LiveInfo extends React.Component {
       followingUserId,
     } = this.props;
 
-    const owners = roomInfo.users.filter(u => ownerIds.indexOf(u.id) > -1);
+    const owners = roomInfo.users.filter(u => ownerIds.includes(u.id));
 
     const editors = sortBy(
       roomInfo.users.filter(
-        u =>
-          roomInfo.editorIds.indexOf(u.id) > -1 && ownerIds.indexOf(u.id) === -1
+        u => roomInfo.editorIds.includes(u.id) && !ownerIds.includes(u.id)
       ),
       'username'
     );
     const otherUsers = sortBy(
       roomInfo.users.filter(
-        u =>
-          ownerIds.indexOf(u.id) === -1 &&
-          roomInfo.editorIds.indexOf(u.id) === -1
+        u => !ownerIds.includes(u.id) && !roomInfo.editorIds.includes(u.id)
       ),
       'username'
     );

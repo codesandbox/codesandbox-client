@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Translates the list format produced by css-loader into something
  * easier to manipulate.

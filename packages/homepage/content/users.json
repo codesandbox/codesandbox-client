@@ -87,5 +87,15 @@
     "name": "SitePoint",
     "link": "https://www.sitepoint.com/",
     "logoURL": "https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2019/04/1554944896sitepoint-logo.svg"
+  },
+  {
+    "name": "CollectiveRay",
+    "link": "https://www.collectiveray.com/",
+    "logoURL": "https://cdn.collectiveray.com/images/collectiveray-dark-300.jpg"
+  },
+  {
+    "name": "Appbaseio",
+    "link": "https://www.appbase.io/",
+    "logoURL": "https://appbase.io/static/svg/appbase-white.svg"
   }
 ]

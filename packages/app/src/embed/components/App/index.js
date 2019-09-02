@@ -49,8 +49,8 @@ type State = {
 
 const isSafari = () => {
   const ua = navigator.userAgent.toLowerCase();
-  if (ua.indexOf('safari') !== -1) {
-    return ua.indexOf('chrome') === -1;
+  if (ua.includes('safari')) {
+    return !ua.includes('chrome');
   }
 
   return false;
@@ -112,8 +112,8 @@ export default class App extends React.PureComponent<
         runOnClick === false
           ? false
           : runOnClick ||
-            navigator.appVersion.indexOf('X11') !== -1 ||
-            navigator.appVersion.indexOf('Linux') !== -1 ||
+            navigator.appVersion.includes('X11') ||
+            navigator.appVersion.includes('Linux') ||
             isSafari(),
       verticalMode,
       highlightedLines: highlightedLines || [],

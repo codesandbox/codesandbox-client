@@ -1,5 +1,5 @@
 import * as React from 'react';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import EyeIcon from 'react-icons/lib/fa/eye';
@@ -65,8 +65,8 @@ export const SandboxList: React.FC<ISandboxListProps> = ({
               <Link to={sandboxUrl(s)}>{s.title || s.id}</Link>
               <PrivacyStatus privacy={s.privacy} asIcon />
             </td>
-            <td>{moment(s.insertedAt).format('ll')}</td>
-            <td>{moment(s.updatedAt).format('ll')}</td>
+            <td>{format(s.insertedAt, 'MMM DD, YYYY')}</td>
+            <td>{format(s.updatedAt, 'MMM DD, YYYY')}</td>
             <StatBody>
               <Icon width={30} height={30} />
             </StatBody>

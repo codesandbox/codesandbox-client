@@ -1,5 +1,4 @@
 import React from 'react';
-import { Sandbox, Module } from '../../types';
 import {
   listen,
   dispatch,
@@ -8,12 +7,12 @@ import {
   resetState,
 } from 'codesandbox-api';
 import debounce from 'lodash/debounce';
+import { Spring } from 'react-spring/renderprops.cjs';
+import { Sandbox, Module } from '../../types';
 
 import { frameUrl, host } from '../../utils/url-generator';
 import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
-
-import { Spring } from 'react-spring/renderprops.cjs';
 
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 
@@ -360,6 +359,11 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   executeCodeImmediately = (initialRender: boolean = false) => {
+    // We cancel the existing calls with executeCode to prevent concurrent calls,
+    // the only reason we do this is because executeCodeImmediately can be called
+    // directly as well
+    // @ts-ignore
+    this.executeCode.cancel();
     const settings = this.props.settings;
     const sandbox = this.props.sandbox;
 

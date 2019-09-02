@@ -1,3 +1,4 @@
+/* eslint-disable */
 // from https://unpkg.com/process@0.11.10/browser.js
 
 const process = {};

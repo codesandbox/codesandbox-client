@@ -6,6 +6,7 @@ import parseConfigurations from '@codesandbox/common/lib/templates/configuration
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
+import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import getDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates/index';
@@ -31,7 +32,6 @@ import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 
 import { showRunOnClick } from './status-screen/run-on-click';
 import { Module } from './eval/entities/module';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import TranspiledModule from './eval/transpiled-module';
 
 let initializedResizeListener = false;
@@ -64,8 +64,11 @@ export function getHTMLParts(html: string) {
   return { head: '', body: html };
 }
 
-function sendTestCount(manager: Manager, modules: { [path: string]: Module }) {
-  const testRunner = manager.testRunner;
+function sendTestCount(
+  givenManager: Manager,
+  modules: { [path: string]: Module }
+) {
+  const testRunner = givenManager.testRunner;
   const tests = testRunner.findTests(modules);
 
   dispatch({
@@ -623,6 +626,7 @@ async function compile({
             try {
               await evalBoilerplates(defaultBoilerplates);
             } catch (e) {
+              // eslint-disable-next-line no-console
               console.log("Couldn't load all boilerplates: " + e.message);
             }
           }
@@ -674,6 +678,7 @@ async function compile({
       }
     }, 600);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log('Error in sandbox:');
     console.error(e);
 
