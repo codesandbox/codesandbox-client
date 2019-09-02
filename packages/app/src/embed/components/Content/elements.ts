@@ -15,6 +15,9 @@ export const Tabs = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
   overflow-x: auto;
   font-size: 0.875rem;
+  box-shadow: inset 0px -2px 0px rgba(255, 249, 249, 0.1);
+  font-family: system-ui, sans-serif;
+  font-weight: 500;
 
   -ms-overflow-style: none; // IE 10+
   overflow: -moz-scrollbars-none; // Firefox

@@ -15,11 +15,10 @@ export const Container = styled.div<{
   font-size: 0.875rem;
   cursor: pointer;
 
-  border-bottom: 1px solid transparent;
+  /* padding: 0 1rem; */
+  margin-left: 0.75rem;
+  margin-right: 0.125rem;
 
-  padding: 0 1rem;
-  padding-left: 0.75rem;
-  padding-right: 0.125rem;
   color: ${props =>
     props.theme['tab.inactiveForeground'] ||
     (props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)')};
@@ -27,10 +26,13 @@ export const Container = styled.div<{
   svg {
     font-size: 1rem;
     margin-right: 0.5rem;
+    display: none; /* only for experimentation, don't worry, it will be back */
   }
 
   background-color: ${props =>
     props.theme['tab.inactiveBackground'] || 'transparent'};
+
+  border-bottom: 2px solid transparent;
 
   ${props =>
     props.isOver &&
@@ -40,8 +42,8 @@ export const Container = styled.div<{
   ${props =>
     props.active &&
     css`
-      background-color: ${props.theme['tab.activeBackground'] ||
-        props.theme.background2};
+      /* background-color: ${props.theme['tab.activeBackground'] ||
+        props.theme.background2}; */
       border-color: ${props.theme.secondary};
       color: ${props.theme['tab.activeForeground'] ||
         props.theme['editor.foreground'] ||
@@ -55,8 +57,8 @@ export const Container = styled.div<{
 `;
 
 export const TabTitle = styled.div`
-  padding-right: 0.5rem;
-  padding-left: 6px;
+  /* padding-right: 0.5rem;
+  padding-left: 0.5rem; */
   white-space: nowrap;
 `;
 

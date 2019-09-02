@@ -492,8 +492,10 @@ export default class Content extends React.PureComponent<Props, State> {
                     {({ hovering, closeTab }) => (
                       // TODO deduplicate this
                       <React.Fragment>
-                        <EntryIcons type={getType(module.title)} />
-                        <TabTitle>{module.title}</TabTitle>
+                        {/*<EntryIcons type={getType(module.title)} />*/}
+                        <TabTitle active={module.id === currentModule.id}>
+                          {module.title}
+                        </TabTitle>
                         {dirName && (
                           <TabDir>
                             ../
