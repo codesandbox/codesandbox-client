@@ -101,7 +101,8 @@ export default class App extends React.PureComponent<
       initialPath,
       sidebarOpen: false,
       autoResize,
-      hideNavigation,
+      hideNavigation: true, // override
+      hideHeader: true,
       enableEslint,
       useCodeMirror,
       editorSize,
@@ -356,17 +357,19 @@ export default class App extends React.PureComponent<
         }}
       >
         <Container>
-          <Header
-            showEditor={showEditor}
-            showPreview={showPreview}
-            setEditorView={this.setEditorView}
-            setPreviewView={this.setPreviewView}
-            setMixedView={this.setMixedView}
-            sandbox={sandbox}
-            toggleSidebar={this.toggleSidebar}
-            toggleLike={this.jwt() && this.toggleLike}
-            liked={sandbox.userLiked}
-          />
+          {this.state.hideHeader ? null : (
+            <Header
+              showEditor={showEditor}
+              showPreview={showPreview}
+              setEditorView={this.setEditorView}
+              setPreviewView={this.setPreviewView}
+              setMixedView={this.setMixedView}
+              sandbox={sandbox}
+              toggleSidebar={this.toggleSidebar}
+              toggleLike={this.jwt() && this.toggleLike}
+              liked={sandbox.userLiked}
+            />
+          )}
           <Content
             showEditor={showEditor}
             showPreview={showPreview}

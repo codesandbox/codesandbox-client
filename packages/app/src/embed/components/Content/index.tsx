@@ -394,7 +394,10 @@ export default class Content extends React.PureComponent<Props, State> {
 
     const templateDefinition = getTemplate(sandbox.template);
     const parsedConfigurations = parseSandboxConfigurations(sandbox);
-    const views = getPreviewTabs(sandbox, parsedConfigurations);
+    let views = getPreviewTabs(sandbox, parsedConfigurations);
+
+    // only show preview (remove console tabs)
+    views = [views[0]];
 
     const sandboxConfig = sandbox.modules.find(
       x => x.directoryShortid == null && x.title === 'sandbox.config.json'

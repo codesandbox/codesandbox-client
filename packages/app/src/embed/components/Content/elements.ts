@@ -4,7 +4,8 @@ export const Container = styled.div`
   display: flex;
   position: relative;
   background-color: ${props => props.theme.background2};
-  height: calc(100% - 2.5rem);
+  /* height: calc(100% - 2.5rem); */
+  height: 100%;
 `;
 
 export const Tabs = styled.div`
