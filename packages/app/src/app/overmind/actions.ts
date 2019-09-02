@@ -200,7 +200,7 @@ export const refetchSandboxInfo: AsyncAction = async ({
         state.live.isTeam = Boolean(sandbox.team);
       }
 
-      await actions.live.internal.initialize();
+      await actions.live.internal.initialize(sandbox.roomId);
     }
   }
 };
