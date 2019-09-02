@@ -604,7 +604,7 @@ export default class Manager {
         );
         const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
-        if (NODE_LIBS.includes(shimmedPath)) {
+        if (NODE_LIBS.indexOf(shimmedPath) > -1) {
           this.cachedPaths[dirredPath][path] = shimmedPath;
           promiseResolve(getShimmedModuleFromPath(currentPath, path));
           return;
@@ -708,7 +708,7 @@ export default class Manager {
       );
       const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
-      if (NODE_LIBS.includes(shimmedPath)) {
+      if (NODE_LIBS.indexOf(shimmedPath) > -1) {
         this.cachedPaths[dirredPath][path] = shimmedPath;
         return getShimmedModuleFromPath(currentPath, path);
       }

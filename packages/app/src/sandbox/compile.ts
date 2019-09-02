@@ -254,7 +254,7 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
   Object.keys(devDependencies).forEach(dep => {
     const usedDep = DEPENDENCY_ALIASES[dep] || dep;
 
-    if (foundWhitelistedDevDependencies.includes(usedDep)) {
+    if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
       if (
         usedDep === '@vue/babel-preset-app' &&
         devDependencies[dep].startsWith('^3')
