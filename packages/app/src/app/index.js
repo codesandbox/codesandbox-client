@@ -181,7 +181,7 @@ async function initialize() {
             window.opener && window.opener !== window
               ? false
               : 'localhost:3031',
-          name: 'Codesandbox',
+          name: 'CodeSandbox',
           logProxies: true,
         });
 
