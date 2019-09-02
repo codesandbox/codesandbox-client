@@ -99,7 +99,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     }
 
     state.live.isLoading = true;
-    await actions.live.internal.initialize();
+    await actions.live.internal.initialize(sandbox.roomId);
     state.live.isLoading = false;
   } else if (sandbox.owned) {
     actions.files.internal.recoverFiles();
@@ -185,7 +185,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
         state.editor.currentSandbox.originalGit &&
         state.workspace.openedWorkspaceItem === 'github'
       ) {
-        actions.git.fetchGitChanges();
+        actions.git.internal.fetchGitChanges();
       }
     } catch (error) {
       // Put back any unsaved modules taking into account that you

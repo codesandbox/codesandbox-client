@@ -699,7 +699,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   };
 
   applyOperations = (operations: { [moduleShortid: string]: any }) => {
-    const operationsJSON = operations.toJSON();
+    const operationsJSON = operations.toJSON ? operations.toJSON() : operations;
 
     Object.keys(operationsJSON).forEach(moduleShortid => {
       const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);

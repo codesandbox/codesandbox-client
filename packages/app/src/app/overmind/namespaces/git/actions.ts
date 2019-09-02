@@ -1,4 +1,7 @@
 import { Action, AsyncAction } from 'app/overmind';
+import * as internalActions from './internalActions';
+
+export const internal = internalActions;
 
 export const repoTitleChanged: Action<{
   title: string;
@@ -42,14 +45,8 @@ export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
   effects.router.updateSandboxUrl({ git });
 };
 
-// gitMounted
-export const fetchGitChanges: AsyncAction = async ({ state, effects }) => {
-  const id = state.editor.currentId;
-
-  state.git.isFetching = true;
-  state.git.originalGitChanges = await effects.api.getGitChanges(id);
-  state.git.isFetching = false;
-};
+export const gitMounted: AsyncAction = ({ actions }) =>
+  actions.git.internal.fetchGitChanges();
 
 export const createCommitClicked: AsyncAction = async ({ state, effects }) => {
   const git = state.git;

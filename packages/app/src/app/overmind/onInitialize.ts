@@ -17,7 +17,7 @@ export const onInitialize: OnInitialize = (
 
   effects.live.initialize({
     provideJwtToken,
-    onApplyOperation: actions.live.onOperationApplied,
+    onApplyOperation: actions.live.applyTransformation,
   });
 
   effects.keybindingManager.initialize(overmindInstance);

@@ -3,6 +3,7 @@ import { AsyncAction, Action } from 'app/overmind';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { camelizeKeys } from 'humps';
 import { TextOperation } from 'ot';
+import { json } from 'overmind';
 
 export const internal = internalActions;
 
@@ -231,7 +232,7 @@ export const liveMessageReceived: AsyncAction<{
           userId: userSelectionLiveUserId,
           name: user.username,
           selection,
-          color: user.color.toJS(),
+          color: json(user.color),
         });
       }
       break;
@@ -316,6 +317,7 @@ export const liveMessageReceived: AsyncAction<{
             .getClient(data.module_shortid)
             .applyServer(data.operation);
         } catch (e) {
+          console.log(e.message);
           // Something went wrong, probably a sync mismatch. Request new version
           console.error('Something went wrong with applying OT operation');
           effects.live.sendModuleUpdateRequest();
@@ -443,7 +445,9 @@ export const onCodeReceived: Action = ({ state }) => {
 };
 
 export const onOperationApplied: Action = ({ state }) => {
-  state.editor.pendingOperations = {};
+  if (Object.keys(state.editor.pendingOperations).length) {
+    state.editor.pendingOperations = {};
+  }
 };
 
 export const onSelectionChanged: Action<{
@@ -523,19 +527,22 @@ export const onToggleNotificationsHidden: Action = ({ state }) => {
   state.live.notificationsHidden = !state.live.notificationsHidden;
 };
 
-export const onSendChat: Action<string> = ({ effects }, message) => {
+export const onSendChat: Action<{ message: string }> = (
+  { effects },
+  { message }
+) => {
   effects.live.sendChat(message);
 };
 
-export const onChatEnabledChange: Action<boolean> = (
+export const onChatEnabledChange: Action<{ enabled: boolean }> = (
   { effects, state },
-  isEnabled
+  { enabled }
 ) => {
   effects.analytics.track('Enable Live Chat');
 
   if (state.live.isOwner) {
-    state.live.roomInfo.chatEnabled = isEnabled;
-    effects.live.sendChatEnabled(isEnabled);
+    state.live.roomInfo.chatEnabled = enabled;
+    effects.live.sendChatEnabled(enabled);
   }
 };
 

@@ -127,6 +127,7 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
       return;
     }
 
+    console.log(user.color);
     if (user.selection) {
       selections.push({
         userId,

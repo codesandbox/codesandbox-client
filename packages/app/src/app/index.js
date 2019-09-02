@@ -193,7 +193,11 @@ async function initialize() {
   } else {
     let Devtools = null;
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      /Chrome/.test(navigator.userAgent) &&
+      /Google Inc/.test(navigator.vendor)
+    ) {
       Devtools = require('cerebral/devtools').default; // eslint-disable-line
     }
 
