@@ -246,7 +246,7 @@ export const forkSandbox: AsyncAction<string> = async (
   id
 ) => {
   const templateDefinition = getTemplateDefinition(
-    state.editor.currentSandbox.template
+    state.editor.currentSandbox && state.editor.currentSandbox.template
   );
 
   if (templateDefinition.isServer) {
@@ -276,9 +276,9 @@ export const forkSandbox: AsyncAction<string> = async (
       });
     }
 
-    actions.internal.setCurrentSandbox(forkedSandbox);
-
+    await actions.internal.setCurrentSandbox(forkedSandbox);
     effects.notificationToast.success('Forked sandbox!');
+    effects.router.updateSandboxUrl(forkedSandbox);
   } catch (error) {
     effects.notificationToast.error('Sorry, unable to fork this sandbox');
   }

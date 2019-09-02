@@ -259,10 +259,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
 
   effects.fsSync.syncCurrentSandbox();
 
-  if (oldSandboxId && oldSandboxId !== state.editor.currentId) {
-    effects.router.updateSandboxUrl(sandbox);
-  }
-
   if (oldSandboxId) {
     delete state.editor.sandboxes[oldSandboxId];
   }
