@@ -29,13 +29,16 @@ export default class File extends React.PureComponent<Props> {
   };
 
   render() {
-    const { title, depth, type, active, alternative } = this.props;
+    const { title, depth, type, active, alternative, onClick } = this.props;
     return (
       <div>
         <Entry
           alternative={alternative}
           active={active}
-          onClick={this.setCurrentModule}
+          onClick={() => {
+            onClick && onClick();
+            this.setCurrentModule();
+          }}
           type={type}
         >
           <LeftOffset depth={depth}>
