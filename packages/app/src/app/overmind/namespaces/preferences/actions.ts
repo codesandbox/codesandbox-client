@@ -87,9 +87,9 @@ export const paymentDetailsRequested: AsyncAction = async ({
   state.preferences.isLoadingPaymentDetails = false;
 };
 
-export const paymentDetailsUpdated: AsyncAction<string> = async (
+export const paymentDetailsUpdated: AsyncAction<{ token: string }> = async (
   { state, effects },
-  token
+  { token }
 ) => {
   state.preferences.isLoadingPaymentDetails = true;
   state.preferences.paymentDetails = await effects.api.updatePaymentDetails(
