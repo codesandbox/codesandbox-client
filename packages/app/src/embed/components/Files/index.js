@@ -91,33 +91,11 @@ function Directory({
 }) {
   /** directory should be open by default if currentModule is inside it */
 
-  // TODO:
-  // 1. Create the current module tree
-  // 2. Check if directory is in that array
-
-  const getParentDirectory = (directories, child) => {
-    return directories.find(directory => {
-      return directory.shortid === child.directoryShortid;
-    });
-  };
-
-  const getCurrentModuleTree = (modules, currentModuleId) => {
-    const currentModule = modules.find(module => module.id === currentModuleId);
-
-    const currentModuleTree = [currentModule];
-
-    let parentDirectory = getParentDirectory(directories, currentModule);
-
-    while (parentDirectory) {
-      currentModuleTree.push(parentDirectory);
-      // get parent directory of the parent directory
-      parentDirectory = getParentDirectory(directories, parentDirectory);
-    }
-
-    return currentModuleTree;
-  };
-
-  const currentModuleTree = getCurrentModuleTree(modules, currentModuleId);
+  const currentModuleTree = getCurrentModuleTree(
+    modules,
+    directories,
+    currentModuleId
+  );
 
   let openByDefault = false;
   if (currentModuleTree.find(module => module.id === directory.id)) {
@@ -154,3 +132,27 @@ function Directory({
 }
 
 export default Files;
+
+/** Utils to help identify module tree */
+
+const getParentDirectory = (directories, child) => {
+  return directories.find(directory => {
+    return directory.shortid === child.directoryShortid;
+  });
+};
+
+const getCurrentModuleTree = (modules, directories, currentModuleId) => {
+  const currentModule = modules.find(module => module.id === currentModuleId);
+
+  const currentModuleTree = [currentModule];
+
+  let parentDirectory = getParentDirectory(directories, currentModule);
+
+  while (parentDirectory) {
+    currentModuleTree.push(parentDirectory);
+    // get parent directory of the parent directory
+    parentDirectory = getParentDirectory(directories, parentDirectory);
+  }
+
+  return currentModuleTree;
+};
