@@ -23,17 +23,13 @@ type Props = {
   selectedDep: string;
 };
 
-export const BundleSizes = ({ dependency, selectedDep }: Props) => {
+export const BundleSizes = ({ dependency, selectedDep = '' }: Props) => {
   const [size, setSize] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    try {
-      const cleanVersion = selectedDep.split('^');
-      getSizeForPKG(`${dependency}@${cleanVersion[cleanVersion.length - 1]}`);
-    } catch (e) {
-      console.error(e);
-    }
+    const cleanVersion = selectedDep.split('^');
+    getSizeForPKG(`${dependency}@${cleanVersion[cleanVersion.length - 1]}`);
   }, [dependency, selectedDep]);
 
   const getSizeForPKG = (pkg: string) => {
