@@ -81,6 +81,12 @@ export default class DependencyHit extends React.PureComponent {
     const getTagName = (tags, version) =>
       Object.keys(tags).find(key => tags[key] === version);
 
+    const validDescription = description =>
+      description &&
+      !description.includes('&lt') &&
+      !description.includes('&gt') &&
+      !description.includes('[![');
+
     return (
       <Container highlighted={highlighted} onClick={onClick}>
         <Left>
@@ -89,7 +95,9 @@ export default class DependencyHit extends React.PureComponent {
             <Downloads>{formatDownloads(hit.downloadsLast30Days)}</Downloads>
             {hit.license && <License>{hit.license}</License>}
           </Row>
-          <Description>{hit.description}</Description>
+          {validDescription(hit.description) && (
+            <Description>{hit.description}</Description>
+          )}
           <Row>
             <StyledUserWithAvatar
               username={hit.owner.name}
