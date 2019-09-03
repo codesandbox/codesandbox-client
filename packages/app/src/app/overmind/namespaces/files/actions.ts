@@ -213,20 +213,18 @@ export const gotUploadedFiles: AsyncAction<{
   }
 };
 
-/*
-Does not seem to be used?
-
-export const addedFileToSandbox: Action<{
+export const addedFileToSandbox: AsyncAction<{
   url: string;
   name: string;
-}> = ({ actions }, { name }) => {
+}> = async ({ actions }, { name, url }) => {
   actions.internal.closeModals(false);
-  actions.files.moduleCreated({
+  await actions.files.moduleCreated({
     title: name,
-
+    directoryShortid: null,
+    code: url,
+    isBinary: true,
   });
 };
-*/
 
 export const deletedUploadedFile: AsyncAction<string> = async (
   { state, effects },
@@ -317,8 +315,13 @@ export const massCreateModules: AsyncAction<{
 export const moduleCreated: AsyncAction<{
   title: string;
   directoryShortid: string;
+  code?: string;
+  isBinary?: boolean;
 }> = withOwnedSandbox(
-  async ({ state, actions, effects }, { title, directoryShortid }) => {
+  async (
+    { state, actions, effects },
+    { title, directoryShortid, code, isBinary }
+  ) => {
     const sandbox = state.editor.currentSandbox;
     const optimisticModule = createOptimisticModule({
       id: effects.utils.createOptimisticId(),
@@ -327,6 +330,8 @@ export const moduleCreated: AsyncAction<{
       shortid: effects.utils.createOptimisticId(),
       sourceId: sandbox.sourceId,
       isNotSynced: true,
+      ...(code ? { code } : {}),
+      ...(typeof isBinary === 'boolean' ? { isBinary } : {}),
     });
     const path = getModulePath(
       sandbox.modules,
