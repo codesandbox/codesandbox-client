@@ -20,17 +20,17 @@ const formatSize = (value: number) => {
 
 type Props = {
   dependency: string;
-  selectedDep: string;
+  version: string;
 };
 
-export const BundleSizes = ({ dependency, selectedDep = '' }: Props) => {
+export const BundleSizes = ({ dependency, version = '' }: Props) => {
   const [size, setSize] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const cleanVersion = selectedDep.split('^');
+    const cleanVersion = version.split('^');
     getSizeForPKG(`${dependency}@${cleanVersion[cleanVersion.length - 1]}`);
-  }, [dependency, selectedDep]);
+  }, [dependency, version]);
 
   const getSizeForPKG = (pkg: string) => {
     fetch(`https://bundlephobia.com/api/size?package=${pkg}`)

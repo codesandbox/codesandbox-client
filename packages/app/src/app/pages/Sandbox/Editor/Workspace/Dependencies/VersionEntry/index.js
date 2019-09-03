@@ -143,7 +143,7 @@ export default class VersionEntry extends React.PureComponent {
         {open ? (
           <BundleSizes
             dependency={dependency}
-            selectedDep={dependencies[dependency]}
+            version={dependencies[dependency]}
           />
         ) : null}
       </Fragment>
