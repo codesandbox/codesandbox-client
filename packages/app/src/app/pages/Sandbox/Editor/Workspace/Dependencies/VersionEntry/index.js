@@ -9,24 +9,8 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { EntryContainer, IconArea, Icon } from '../../elements';
 import { Link } from '../elements';
-import { Version, MoreData, VersionSelect } from './elements';
-
-const formatSize = value => {
-  let unit;
-  let size;
-  if (Math.log10(value) < 3) {
-    unit = 'B';
-    size = value;
-  } else if (Math.log10(value) < 6) {
-    unit = 'kB';
-    size = value / 1024;
-  } else {
-    unit = 'mB';
-    size = value / 1024 / 1024;
-  }
-
-  return { unit, size: parseFloat(size).toFixed(1) };
-};
+import { Version, VersionSelect } from './elements';
+import { BundleSizes } from './BundleSizes';
 
 export default class VersionEntry extends React.PureComponent {
   state = {
@@ -42,27 +26,6 @@ export default class VersionEntry extends React.PureComponent {
     fetch(`/api/v1/dependencies/${pkg}`)
       .then(response => response.json())
       .then(data => that.setState({ version: data.data.version }))
-      .catch(err => {
-        if (process.env.NODE_ENV === 'development') {
-          console.error(err); // eslint-disable-line no-console
-        }
-      });
-  }
-
-  getSizeForPKG(pkg) {
-    fetch(`https://bundlephobia.com/api/size?package=${pkg}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Bad request');
-        }
-
-        return response.json();
-      })
-      .then(size =>
-        this.setState({
-          size,
-        })
-      )
       .catch(err => {
         if (process.env.NODE_ENV === 'development') {
           console.error(err); // eslint-disable-line no-console
@@ -93,10 +56,6 @@ export default class VersionEntry extends React.PureComponent {
     try {
       const versionRegex = /^\d{1,3}\.\d{1,3}.\d{1,3}$/;
       const version = dependencies[dependency];
-      const cleanVersion = version.split('^');
-      this.getSizeForPKG(
-        `${dependency}@${cleanVersion[cleanVersion.length - 1]}`
-      );
       if (!versionRegex.test(version)) {
         this.setVersionsForLatestPkg(`${dependency}@${version}`);
       }
@@ -160,16 +119,14 @@ export default class VersionEntry extends React.PureComponent {
 
           {hovering && (
             <IconArea>
-              {size.size ? (
-                <Tooltip
-                  content={open ? 'Hide sizes' : 'Show sizes'}
-                  style={{ outline: 'none' }}
-                >
-                  <Icon onClick={this.handleOpen}>
-                    {open ? <ArrowDropUp /> : <ArrowDropDown />}
-                  </Icon>
-                </Tooltip>
-              ) : null}
+              <Tooltip
+                content={open ? 'Hide sizes' : 'Show sizes'}
+                style={{ outline: 'none' }}
+              >
+                <Icon onClick={this.handleOpen}>
+                  {open ? <ArrowDropUp /> : <ArrowDropDown />}
+                </Icon>
+              </Tooltip>
               <Tooltip content="Update to latest" style={{ outline: 'none' }}>
                 <Icon onClick={this.handleRefresh}>
                   <RefreshIcon />
@@ -184,16 +141,10 @@ export default class VersionEntry extends React.PureComponent {
           )}
         </EntryContainer>
         {open ? (
-          <MoreData>
-            <li>
-              <span>Gzip:</span> {formatSize(size.gzip).size}
-              {formatSize(size.gzip).unit}
-            </li>
-            <li>
-              <span>Size:</span> {formatSize(size.size).size}
-              {formatSize(size.size).unit}
-            </li>
-          </MoreData>
+          <BundleSizes
+            dependency={dependency}
+            selectedDep={dependencies[dependency]}
+          />
         ) : null}
       </Fragment>
     );
