@@ -131,3 +131,7 @@ export const keybindingChanged: Action<{
 export const zenModeToggled: Action = ({ state }) => {
   state.preferences.settings.zenMode = !state.preferences.settings.zenMode;
 };
+
+export const codeMirrorForced: Action = ({ state }) => {
+  state.preferences.settings.codeMirror = true;
+};

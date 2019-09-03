@@ -21,7 +21,7 @@ export default {
       action({ event, data: data || {} });
     });
   },
-  emit(message: string, data: any) {
+  emit(message: string, data?: any) {
     const executor = executorsManager.getExecutor();
 
     if (executor) {

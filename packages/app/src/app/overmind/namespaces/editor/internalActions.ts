@@ -249,7 +249,7 @@ export const forkSandbox: AsyncAction<string> = async (
     state.editor.currentSandbox ? state.editor.currentSandbox.template : null
   );
 
-  if (templateDefinition.isServer) {
+  if (!state.isLoggedIn && templateDefinition.isServer) {
     effects.analytics.track('Show Server Fork Sign In Modal');
     actions.modalOpened({ modal: 'forkServerModal', message: null });
 

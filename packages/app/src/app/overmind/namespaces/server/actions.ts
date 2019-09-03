@@ -5,6 +5,15 @@ import {
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 
+export const restartSandbox: Action = ({ effects }) => {
+  effects.executor.emit('sandbox:restart');
+};
+
+export const restartContainer: Action = ({ state, effects }) => {
+  state.server.containerStatus = ServerContainerStatus.INITIALIZING;
+  effects.executor.emit('sandbox:restart-container');
+};
+
 export const statusChanged: Action<ServerStatus> = ({ state }, status) => {
   state.server.status = status;
 };

@@ -374,7 +374,9 @@ export const togglePreviewContent: Action = ({ state }) => {
   state.editor.previewWindowVisible = !state.editor.previewWindowVisible;
 };
 
-export const currentTabChanged: Action<string> = ({ state }, tabId) => {
+export const currentTabChanged: Action<{
+  tabId: string;
+}> = ({ state }, { tabId }) => {
   state.editor.currentTabId = tabId;
 };
 
