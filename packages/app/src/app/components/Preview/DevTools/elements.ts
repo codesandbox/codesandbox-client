@@ -1,8 +1,12 @@
 import styled, { css } from 'styled-components';
 
 const getCursor = ({ primary, open }) => {
-  if (primary) return 'default';
-  if (open) return 'row-resize';
+  if (primary) {
+    return 'default';
+  }
+  if (open) {
+    return 'row-resize';
+  }
 
   return 'n-resize';
 };
