@@ -1,4 +1,4 @@
-import dependenciesToQuery from './dependencies-to-query';
+import dependenciesToQuery from './dependencies-to-query.ts';
 
 it('creates a right query', () => {
   const packages = {

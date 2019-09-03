@@ -1,23 +1,23 @@
 import { pickBy } from 'lodash-es';
 
-import fetchDependencies from './fetch-dependencies';
+import { fetchDependencies } from './fetch-dependencies';
 import { getDependencyVersions } from '../version-resolving';
 import dependenciesToQuery from './dependencies-to-query';
 
 import setScreen from '../status-screen';
 
-let loadedDependencyCombination: ?string = null;
+let loadedDependencyCombination: string | null = null;
 let manifest = null;
 
 type NPMDependencies = {
-  [dependency: string]: string,
+  [dependency: string]: string;
 };
 
 /**
  * This fetches the manifest and dependencies from the
  * @param {*} dependencies
  */
-export default async function loadDependencies(
+export async function loadDependencies(
   dependencies: NPMDependencies,
   disableExternalConnection = false
 ) {
@@ -33,6 +33,8 @@ export default async function loadDependencies(
 
     if (loadedDependencyCombination !== depQuery) {
       isNewCombination = true;
+
+      console.log(dependenciesWithoutTypings);
 
       const data = await (disableExternalConnection
         ? getDependencyVersions
