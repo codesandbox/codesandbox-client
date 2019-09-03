@@ -69,6 +69,14 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.live.internal.disconnect();
   }
 
+  if (state.editor.sandboxes[id] && !state.editor.sandboxes[id].team) {
+    const sandbox = await effects.api.getSandbox(id);
+
+    actions.internal.updateCurrentSandbox(sandbox);
+
+    return;
+  }
+
   state.editor.isLoading = true;
   state.editor.notFound = false;
 
@@ -423,10 +431,9 @@ export const updateEnvironmentVariables: AsyncAction<
   effects.codesandboxApi.restartSandbox();
 };
 
-export const deleteEnvironmentVariable: AsyncAction<string> = async (
-  { state, effects },
-  name
-) => {
+export const deleteEnvironmentVariable: AsyncAction<{
+  name: string;
+}> = async ({ state, effects }, { name }) => {
   const id = state.editor.currentId;
 
   state.editor.currentSandbox.environmentVariables = await effects.api.deleteEnvironmentVariable(

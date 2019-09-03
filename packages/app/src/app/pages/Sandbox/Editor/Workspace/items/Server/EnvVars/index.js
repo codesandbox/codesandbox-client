@@ -32,15 +32,21 @@ class EnvironmentVariables extends React.Component {
 
     return (
       <div>
-        {Object.keys(envVars.toJSON()).map(keyName => (
-          <EnvEntry
-            onSubmit={this.createEnv}
-            onDelete={this.deleteEnv}
-            key={keyName}
-            name={keyName}
-            value={envVars.get(keyName)}
-          />
-        ))}
+        {Object.keys(envVars.toJSON ? envVars.toJSON() : envVars).map(
+          keyName => (
+            <EnvEntry
+              onSubmit={this.createEnv}
+              onDelete={this.deleteEnv}
+              key={keyName}
+              name={keyName}
+              value={
+                typeof envVars.get === 'function'
+                  ? envVars.get(keyName)
+                  : envVars[keyName]
+              }
+            />
+          )
+        )}
 
         <WorkspaceInputContainer style={{ flexDirection: 'column' }}>
           <EnvModal onSubmit={this.createEnv} />
