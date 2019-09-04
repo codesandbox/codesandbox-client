@@ -1121,7 +1121,9 @@ class MonacoEditor extends React.Component<Props> implements Editor {
               onChange={this.props.onChange}
               // Copy the object, we don't want mutations in the component
               // @ts-ignore
-              currentModule={currentModule.toJSON()}
+              currentModule={
+                currentModule.toJSON ? currentModule.toJSON() : currentModule
+              }
               config={config}
               sandbox={this.sandbox}
               {...extraProps}

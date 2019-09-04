@@ -1,6 +1,5 @@
 import * as internalActions from './internalActions';
-import { Action, AsyncAction } from 'app/overmind';
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { AsyncAction } from 'app/overmind';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
 import {
@@ -326,18 +325,20 @@ export const moduleCreated: AsyncAction<{
     const optimisticModule = createOptimisticModule({
       id: effects.utils.createOptimisticId(),
       title,
-      directoryShortid,
+      directoryShortid: directoryShortid || null,
       shortid: effects.utils.createOptimisticId(),
       sourceId: sandbox.sourceId,
       isNotSynced: true,
       ...(code ? { code } : {}),
       ...(typeof isBinary === 'boolean' ? { isBinary } : {}),
     });
-    const path = getModulePath(
-      sandbox.modules,
-      sandbox.directories,
-      optimisticModule.id
-    );
+
+    sandbox.modules.push(optimisticModule);
+
+    // We grab the module from the state to continue working with it (proxy)
+    const module = sandbox.modules[sandbox.modules.length - 1];
+
+    const path = getModulePath(sandbox.modules, sandbox.directories, module.id);
     const template = getDefinition(sandbox.template);
     const config = template.configurationFiles[path];
 
@@ -348,41 +349,31 @@ export const moduleCreated: AsyncAction<{
         config.generateFileFromState)
     ) {
       if (config.generateFileFromState) {
-        optimisticModule.code = config.generateFileFromState(state);
+        module.code = config.generateFileFromState(
+          state.preferences.settings.prettierConfig
+        );
       } else if (config.generateFileFromSandbox) {
-        optimisticModule.code = config.generateFileFromSandbox(sandbox);
+        module.code = config.generateFileFromSandbox(sandbox);
       } else {
         const resolveModule = resolveModuleWrapped(sandbox);
 
-        optimisticModule.code = config.getDefaultCode(
-          sandbox.template,
-          resolveModule
-        );
+        module.code = config.getDefaultCode(sandbox.template, resolveModule);
       }
     }
 
-    state.editor.sandboxes[state.editor.currentId].modules.push(
-      optimisticModule
-    );
-
     try {
-      const updatedModule = await effects.api.createModule(
-        sandbox.id,
-        optimisticModule
-      );
+      const updatedModule = await effects.api.createModule(sandbox.id, module);
 
-      if (state.editor.currentModuleShortid === optimisticModule.shortid) {
-        state.editor.currentModuleShortid = optimisticModule.shortid;
-      }
+      module.id = updatedModule.id;
+      module.shortid = updatedModule.shortid;
 
-      optimisticModule.id = updatedModule.id;
-      optimisticModule.shortid = updatedModule.shortid;
+      actions.editor.internal.setCurrentModule(module);
 
       if (state.live.isCurrentEditor) {
-        effects.live.sendModuleCreated(optimisticModule.shortid);
+        effects.live.sendModuleCreated(module.shortid);
       }
     } catch (error) {
-      sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1);
+      sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
       actions.editor.internal.setCurrentModule(state.editor.mainModule);
       effects.notificationToast.error('Unable to save new file');
     }

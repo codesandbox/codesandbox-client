@@ -25,13 +25,7 @@ export const onInitialize: OnInitialize = (
   effects.api.initialize({
     provideJwtToken,
     onError(error) {
-      /*
-      TODO: This needs to be handled differently!
-    controller.runSignal(
-      'showNotification',
-      addNotification(errorMessage, 'error')
-    );
-    */
+      effects.notificationToast.error(error);
     },
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;

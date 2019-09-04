@@ -98,7 +98,7 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
         alias: project.alias,
       });
 
-      effects.router.updateSandboxUrl(updatedSandbox);
+      effects.router.replaceSandboxUrl(updatedSandbox);
 
       await actions.editor.internal.updateSandboxPackageJson();
     }

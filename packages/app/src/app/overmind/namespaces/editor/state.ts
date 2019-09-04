@@ -142,7 +142,6 @@ export const state: State = {
         m.id
       );
       if (path) {
-        console.log(path, m);
         modulesObject[path] = { ...m, type: 'file' };
       }
     });
@@ -156,12 +155,9 @@ export const state: State = {
 
       // If this is a single directory with no children
       if (!Object.keys(modulesObject).some(p => dirname(p) === path)) {
-        console.log(path, d);
         modulesObject[path] = { ...d, type: 'directory' };
       }
     });
-
-    console.log(modulesObject);
 
     return modulesObject;
   },
