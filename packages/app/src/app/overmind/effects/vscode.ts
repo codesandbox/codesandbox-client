@@ -1,4 +1,4 @@
-import vscode from 'app/vscode';
+import { vscode } from 'app/vscode';
 
 export default {
   callCallbackError(id: string, message?: string) {
