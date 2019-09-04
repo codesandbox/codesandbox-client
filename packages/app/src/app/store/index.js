@@ -26,7 +26,7 @@ import ExecutorProvider from './providers/Executor';
 import * as sequences from './sequences';
 import * as errors from './errors';
 import { isContributor } from './computed';
-import { isPatron, isLoggedIn, hasLogIn } from './getters';
+import { isPatron, isLoggedIn, hasLogIn } from './utils/getters';
 
 import patron from './modules/patron';
 import editor from './modules/editor';
