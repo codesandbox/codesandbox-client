@@ -42,6 +42,7 @@ import {
 import { updateUserSelections } from '../Monaco/live-decorations';
 
 import Configuration from './Configuration';
+import { clone } from 'app/componentConnectors';
 
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(
@@ -1120,10 +1121,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
             <Configuration
               onChange={this.props.onChange}
               // Copy the object, we don't want mutations in the component
-              // @ts-ignore
-              currentModule={
-                currentModule.toJSON ? currentModule.toJSON() : currentModule
-              }
+              currentModule={clone(currentModule)}
               config={config}
               sandbox={this.sandbox}
               {...extraProps}

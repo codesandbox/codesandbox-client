@@ -23,4 +23,16 @@ export const Observer = isOvermind
       )
     );
 
-export const clone = isOvermind ? json : obj => (obj.toJS ? obj.toJS() : obj);
+export const clone = isOvermind
+  ? json
+  : obj => {
+      if (obj.toJSON) {
+        return obj.toJSON();
+      }
+
+      if (obj.toJS) {
+        return obj.toJS();
+      }
+
+      return obj;
+    };
