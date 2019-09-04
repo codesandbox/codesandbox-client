@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: announcing-codesandbox-v3
 authors: ['Ives van Hoorne']

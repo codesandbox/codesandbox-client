@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: introducing-codesandbox-live-real-time-code-collaboration-in-the-browser
 authors: ['Ives van Hoorne']

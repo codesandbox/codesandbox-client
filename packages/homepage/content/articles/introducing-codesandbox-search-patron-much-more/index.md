@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: introducing-codesandbox-search-patron-much-more
 authors: ['Ives van Hoorne']

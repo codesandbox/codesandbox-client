@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: whats-unique-about-codesandbox
 authors: ['Ives van Hoorne']

@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: introducing-the-vanilla-template-to-codesandbox
 authors: ['Ives van Hoorne']

@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: how-codesandbox-uses-puppeteer-jest-to-test-sandbox-functionality
 authors: ['Ives van Hoorne']

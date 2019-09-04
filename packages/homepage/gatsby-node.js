@@ -9,6 +9,16 @@ const getRelativePath = absolutePath => absolutePath.replace(__dirname, '');
 const getNodeType = ({ fileAbsolutePath }) =>
   getRelativePath(fileAbsolutePath).split('/')[2];
 
+const getBlogNodeInfo = ({
+  node: {
+    frontmatter: { authors, date, description, photo },
+  },
+}) => ({
+  author: authors[0],
+  date,
+  description,
+  photo,
+});
 const getDocsSlug = ({ node: { fileAbsolutePath } }) => {
   const fileName = getRelativePath(fileAbsolutePath)
     .split('/')
@@ -34,6 +44,7 @@ const getJobsNodeInfo = ({
 });
 const getSpecificNodeInfo = ({ node, nodeType }) => {
   const nodeInfoMap = {
+    articles: getBlogNodeInfo,
     docs: getDocsNodeInfo,
     jobs: getJobsNodeInfo,
   };
@@ -58,6 +69,18 @@ const getNodeInfo = ({ node, nodeType }) => ({
   ...getSpecificNodeInfo({ node, nodeType }),
 });
 
+const createBlogNodeFields = ({
+  createNodeField,
+  nodeInfo: { author, date, description, photo },
+}) => {
+  createNodeField({ name: 'author', value: author });
+
+  createNodeField({ name: 'date', value: date });
+
+  createNodeField({ name: 'description', value: description });
+
+  createNodeField({ name: 'photo', value: photo });
+};
 const createDocsNodeFields = ({
   createNodeField,
   nodeInfo: { description },
@@ -69,6 +92,7 @@ const createJobsNodeFields = ({ createNodeField, nodeInfo: { applyLink } }) => {
 };
 const createSpecificNodeFields = ({ createNodeField, nodeInfo, nodeType }) => {
   const createNodeFieldsMap = {
+    articles: createBlogNodeFields,
     docs: createDocsNodeFields,
     jobs: createJobsNodeFields,
   };

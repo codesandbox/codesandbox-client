@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: improving-the-codesandbox-community
 authors: ['Ives van Hoorne']

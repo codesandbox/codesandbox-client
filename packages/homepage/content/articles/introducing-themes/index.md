@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: introducing-themes
 authors: ['Ives van Hoorne']

@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: codesandbox-an-online-react-editor
 authors: ['Ives van Hoorne']

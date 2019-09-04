@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: codesandbox-containers-out-of-beta-improvements
 authors: ['Ives van Hoorne']

@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: announcing-codesandbox-dashboard-teams
 authors: ['Ives van Hoorne']

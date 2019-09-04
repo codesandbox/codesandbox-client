@@ -1,4 +1,5 @@
 ---
+banner: ./images/banner.png
 featuredImage: ./images/banner.png
 slug: creating-a-parallel-offline-extensible-browser-based-bundler-for-codesandbox
 authors: ['Ives van Hoorne']
