@@ -45,9 +45,6 @@ import userNotifications from './modules/user-notifications';
 export const Signals = createContext();
 export const Store = createContext();
 
-export const useSignals = () => useContext(Signals);
-export const useStore = () => useContext(Store);
-
 export default Module({
   model,
   state: {
