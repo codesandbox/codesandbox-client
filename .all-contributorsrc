@@ -1320,6 +1320,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "djD-REK",
+      "name": "Dr. Derek Austin [aka dj D-REK from Richmond, VA]",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/53202242?v=4",
+      "profile": "https://medium.com/@derek_develops",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "repoType": "github",
