@@ -1,10 +1,5 @@
 import * as React from 'react';
 
-// @ts-ignore: will be available, but common is built after this...
-import { Button } from '@codesandbox/common/lib/components/Button';
-// @ts-ignore: will be available, but common is built after this...
-import theme from '@codesandbox/common/lib/theme';
-
 import { NotificationToast } from './Toasts';
 import { NotificationStatus } from '../state';
 
@@ -14,18 +9,8 @@ import { WarningIcon } from './icons/WarningIcon';
 import { InfoIcon } from './icons/InfoIcon';
 import { StyledCrossIcon } from './elements';
 
-const getColor = (status: NotificationStatus) => {
-  switch (status) {
-    case NotificationStatus.ERROR:
-      return theme.dangerBackground();
-    case NotificationStatus.WARNING:
-      return theme.primary();
-    case NotificationStatus.SUCCESS:
-      return theme.green();
-    case NotificationStatus.NOTICE:
-      return theme.secondary();
-  }
-};
+const getColor = (colors: IColors, status: NotificationStatus) =>
+  colors[status];
 
 const getIcon = (status: NotificationStatus) => {
   switch (status) {
@@ -37,16 +22,34 @@ const getIcon = (status: NotificationStatus) => {
       return SuccessIcon;
     case NotificationStatus.NOTICE:
       return InfoIcon;
+    default:
+      return InfoIcon;
   }
 };
+
+export interface IColors {
+  [NotificationStatus.ERROR]: string;
+  [NotificationStatus.WARNING]: string;
+  [NotificationStatus.SUCCESS]: string;
+  [NotificationStatus.NOTICE]: string;
+}
+
+export type IButtonType = React.ComponentType<{
+  small?: boolean;
+  secondary?: boolean;
+  style?: React.CSSProperties;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}>;
 
 export type Props = {
   toast: NotificationToast;
   removeToast: (id: string) => void;
   getRef?: React.LegacyRef<HTMLDivElement>;
+  colors: IColors;
+  Button: IButtonType;
 };
 
-export function Toast({ toast, removeToast, getRef }: Props) {
+export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
   const Icon = getIcon(toast.notification.status);
   return (
     <div
@@ -69,14 +72,14 @@ export function Toast({ toast, removeToast, getRef }: Props) {
           left: 0,
           top: 0,
           bottom: 0,
-          backgroundColor: getColor(toast.notification.status),
+          backgroundColor: getColor(colors, toast.notification.status),
           width: 4,
         }}
       />
       <div style={{ display: 'flex', padding: '.75rem 1rem', width: '100%' }}>
         <div
           style={{
-            color: getColor(toast.notification.status),
+            color: getColor(colors, toast.notification.status),
             width: 32,
             fontSize: '1.25rem',
             lineHeight:
