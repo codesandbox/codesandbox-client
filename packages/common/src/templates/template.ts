@@ -1,5 +1,3 @@
-import immer from 'immer';
-
 import { absolute } from '../utils/path';
 import {
   ConfigurationFile,
@@ -67,6 +65,10 @@ const CLIENT_VIEWS: ViewConfig[] = [
     views: [{ id: 'codesandbox.console' }, { id: 'codesandbox.problems' }],
   },
 ];
+
+// React sandboxes have an additional devtool on top of CLIENT_VIEWS
+const REACT_CLIENT_VIEWS: ViewConfig[] = [...CLIENT_VIEWS];
+REACT_CLIENT_VIEWS[1].views.push({ id: 'codesandbox.react-devtools' });
 
 const SERVER_VIEWS: ViewConfig[] = [
   {
@@ -204,10 +206,9 @@ export default class Template {
       configurationFiles.package &&
       configurationFiles.package.parsed &&
       configurationFiles.package.parsed.dependencies;
+
     if (dependencies && dependencies.react) {
-      return immer(CLIENT_VIEWS, draft => {
-        draft[1].views.push({ id: 'codesandbox.react-devtools' });
-      });
+      return REACT_CLIENT_VIEWS;
     }
 
     return CLIENT_VIEWS;
