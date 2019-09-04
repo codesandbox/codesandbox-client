@@ -112,17 +112,16 @@ function Directory({
   depth,
 }) {
   /** directory should be open by default if currentModule is inside it */
+  const [open, setOpen] = React.useState(function() {
+    const currentModule = getCurrentModule(modules, currentModuleId);
+    const currentModuleTree = getCurrentModuleTree(directories, currentModule);
 
-  const currentModule = getCurrentModule(modules, currentModuleId);
-
-  const currentModuleTree = getCurrentModuleTree(directories, currentModule);
-
-  let openByDefault = false;
-  if (currentModuleTree.find(module => module.id === directory.id)) {
-    openByDefault = true;
-  }
-
-  const [open, setOpen] = React.useState(openByDefault);
+    let openByDefault = false;
+    if (currentModuleTree.find(module => module.id === directory.id)) {
+      openByDefault = true;
+    }
+    return openByDefault;
+  });
 
   return (
     <div>
