@@ -31,6 +31,69 @@ export let combinedMetas: Meta = {}; // eslint-disable-line
 const normalizedMetas: { [key: string]: Meta } = {};
 const packages: Packages = {};
 
+function normalize(files: MetaFiles, fileObject: Meta = {}, rootPath: string) {
+  for (let i = 0; i < files.length; i += 1) {
+    if (files[i].type === 'file') {
+      const absolutePath = rootPath + files[i].path;
+      fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
+    }
+
+    if (files[i].files) {
+      normalize(files[i].files, fileObject, rootPath);
+    }
+  }
+
+  return fileObject;
+}
+
+function normalizeJSDelivr(files: any, fileObject: Meta = {}, rootPath) {
+  for (let i = 0; i < files.length; i += 1) {
+    const absolutePath = pathUtils.join(rootPath, files[i].name);
+    fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
+  }
+
+  return fileObject;
+}
+
+const urlProtocols = {
+  csbGH: {
+    file: async (name: string, version: string, path: string) =>
+      `${version.replace(/\/_pkg.tgz$/, '')}${path}`,
+    meta: async (name: string, version: string) =>
+      `${version.replace(/\/\.pkg.tgz$/, '')}/_csb-meta.json`,
+    normalizeMeta: normalize,
+  },
+  unpkg: {
+    file: async (name: string, version: string, path: string) =>
+      `https://unpkg.com/${name}@${version}/${path}`,
+    meta: async (name: string, version: string) =>
+      `https://unpkg.com/${name}@${version}/?meta`,
+    normalizeMeta: normalize,
+  },
+  jsDelivrNPM: {
+    file: async (name: string, version: string, path: string) =>
+      `https://cdn.jsdelivr.net/npm/${name}@${version}${path}`,
+    meta: async (name: string, version: string) =>
+      `https://data.jsdelivr.com/v1/package/npm/${name}@${version}/flat`,
+    normalizeMeta: normalizeJSDelivr,
+  },
+  jsDelivrGH: {
+    file: async (name: string, version: string, path: string) =>
+      `https://cdn.jsdelivr.net/gh/${version}${path}`,
+    meta: async (name: string, version: string) => {
+      // First get latest sha from GitHub API
+      const sha = await fetch(
+        `https://api.github.com/repos/${version}/commits/master`
+      )
+        .then(x => x.json())
+        .then(x => x.sha);
+
+      return `https://data.jsdelivr.com/v1/package/gh/${version}@${sha}/flat`;
+    },
+    normalizeMeta: normalizeJSDelivr,
+  },
+};
+
 async function fetchWithRetries(url: string, retries = 3): Promise<string> {
   const doFetch = () =>
     window.fetch(url).then(x => {
@@ -60,53 +123,28 @@ export function setCombinedMetas(givenCombinedMetas: Meta) {
   combinedMetas = givenCombinedMetas;
 }
 
-function normalize(
-  depName: string,
-  files: MetaFiles,
-  fileObject: Meta = {},
-  rootPath: string
-) {
-  for (let i = 0; i < files.length; i += 1) {
-    if (files[i].type === 'file') {
-      const absolutePath = rootPath + files[i].path;
-      fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
-    }
+const CSB_DRAFT_PROTOCOL = /https:\/\/pkg(-staging)?\.csb.dev/;
 
-    if (files[i].files) {
-      normalize(depName, files[i].files, fileObject, rootPath);
-    }
+const getFetchProtocol = (depVersion: string, useFallback = false) => {
+  const isDraftProtocol = CSB_DRAFT_PROTOCOL.test(depVersion);
+
+  if (isDraftProtocol) {
+    return urlProtocols.csbGH;
   }
 
-  return fileObject;
-}
+  const isGitHub = /\//.test(depVersion);
 
-function normalizeJSDelivr(
-  depName: string,
-  files: any,
-  fileObject: Meta = {},
-  rootPath
-) {
-  for (let i = 0; i < files.length; i += 1) {
-    const absolutePath = pathUtils.join(rootPath, files[i].name);
-    fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
+  if (isGitHub) {
+    return urlProtocols.jsDelivrGH;
   }
 
-  return fileObject;
-}
+  return useFallback ? urlProtocols.jsDelivrNPM : urlProtocols.unpkg;
+};
 
-const TEMP_USE_JSDELIVR = false;
 // Strips the version of a path, eg. test/1.3.0 -> test
 const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 
-function getUnpkgUrl(name: string, version: string, forceJsDelivr?: boolean) {
-  const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
-
-  return TEMP_USE_JSDELIVR || forceJsDelivr
-    ? `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`
-    : `https://unpkg.com/${nameWithoutAlias}@${version}`;
-}
-
-function getMeta(
+async function getMeta(
   name: string,
   packageJSONPath: string | null,
   version: string
@@ -117,24 +155,22 @@ function getMeta(
     return metas[id];
   }
 
-  metas[id] = window
-    .fetch(
-      TEMP_USE_JSDELIVR
-        ? `https://data.jsdelivr.com/v1/package/npm/${nameWithoutAlias}@${version}/flat`
-        : `https://unpkg.com/${nameWithoutAlias}@${version}/?meta`
-    )
-    .then(x => x.json());
+  const protocol = getFetchProtocol(version);
+  const metaUrl = await protocol.meta(nameWithoutAlias, version);
+
+  metas[id] = window.fetch(metaUrl).then(x => x.json());
 
   return metas[id];
 }
 
-function downloadDependency(
+export async function downloadDependency(
   depName: string,
   depVersion: string,
   path: string
 ): Promise<Module> {
-  if (packages[path]) {
-    return packages[path];
+  const id = depName + depVersion + path;
+  if (packages[id]) {
+    return packages[id];
   }
 
   const relativePath = path
@@ -145,22 +181,21 @@ function downloadDependency(
       ''
     )
     .replace(/#/g, '%23');
-  const isGitHub = /\//.test(depVersion);
 
-  const url = isGitHub
-    ? `https://cdn.jsdelivr.net/gh/${depVersion}${relativePath}`
-    : `${getUnpkgUrl(depName, depVersion)}${relativePath}`;
+  const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
+  const protocol = getFetchProtocol(depVersion);
+  const url = await protocol.file(nameWithoutAlias, depVersion, relativePath);
 
-  packages[path] = fetchWithRetries(url)
-    .catch(err => {
-      if (!isGitHub) {
-        // Fallback to jsdelivr
-        return fetchWithRetries(
-          `${getUnpkgUrl(depName, depVersion, true)}${relativePath}`
-        );
-      }
+  packages[id] = fetchWithRetries(url)
+    .catch(async () => {
+      const fallbackProtocol = getFetchProtocol(depVersion, true);
+      const fallbackUrl = await fallbackProtocol.file(
+        nameWithoutAlias,
+        depVersion,
+        relativePath
+      );
 
-      throw err;
+      return fetchWithRetries(fallbackUrl);
     })
     .then(x => ({
       path,
@@ -168,7 +203,7 @@ function downloadDependency(
       downloaded: true,
     }));
 
-  return packages[path];
+  return packages[id];
 }
 
 function resolvePath(
@@ -357,14 +392,14 @@ export default async function fetchModule(
 
   const meta = await getMeta(dependencyName, packageJSONPath, version);
 
-  const normalizeFunction = TEMP_USE_JSDELIVR ? normalizeJSDelivr : normalize;
+  const normalizeFunction = getFetchProtocol(version).normalizeMeta;
   const rootPath = packageJSONPath
     ? pathUtils.dirname(packageJSONPath)
     : pathUtils.join('/node_modules', dependencyName);
   const normalizedCacheKey = dependencyName + rootPath;
   const normalizedMeta =
     normalizedMetas[normalizedCacheKey] ||
-    normalizeFunction(dependencyName, meta.files, {}, rootPath);
+    normalizeFunction(meta.files, {}, rootPath);
   normalizedMetas[normalizedCacheKey] = normalizedMeta;
   combinedMetas = { ...combinedMetas, ...normalizedMeta };
 
