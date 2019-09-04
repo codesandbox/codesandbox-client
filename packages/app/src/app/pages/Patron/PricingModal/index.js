@@ -1,11 +1,13 @@
 import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import { observer } from 'app/componentConnectors';
+import { useStore } from 'app/store';
 import PricingInfo from './PricingInfo';
-import PricingChoice from './PricingChoice';
-import Badge from './Badge';
+import { PricingChoice } from './PricingChoice';
+import { Badge } from './Badge';
 import { Container, Details } from './elements';
 
-const PricingModal = ({ store }) => {
+const PricingModalComponent = () => {
+  const store = useStore();
   const badge = `patron-${store.patron.tier}`;
 
   return (
@@ -19,4 +21,4 @@ const PricingModal = ({ store }) => {
   );
 };
 
-export default inject('store')(observer(PricingModal));
+export const PricingModal = observer(PricingModalComponent);

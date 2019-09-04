@@ -14,7 +14,7 @@ interface Props {
   signals: any;
 }
 
-function ChangeSubscription({
+function ChangeSubscriptionComponent({
   date,
   markedAsCancelled,
   cancelSubscription,
@@ -101,4 +101,6 @@ function ChangeSubscription({
   );
 }
 
-export default inject('signals', 'store')(hooksObserver(ChangeSubscription));
+export const ChangeSubscription = inject('signals', 'store')(
+  hooksObserver(ChangeSubscriptionComponent)
+);

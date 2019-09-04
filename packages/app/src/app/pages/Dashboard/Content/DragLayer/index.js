@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DragLayer } from 'react-dnd';
+import { DragLayer as DNDDragLayer } from 'react-dnd';
 
 import SelectedSandboxItems from './SelectedSandboxItems';
 
@@ -83,4 +83,4 @@ function collect(monitor) {
   };
 }
 
-export default DragLayer(collect)(CustomDragLayer);
+export const DragLayer = DNDDragLayer(collect)(CustomDragLayer);

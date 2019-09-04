@@ -3,7 +3,7 @@ import { Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import Fuse from 'fuse.js';
 
-import Sandboxes from '../../Sandboxes';
+import { Content as Sandboxes } from '../../Sandboxes';
 
 import { SEARCH_SANDBOXES_QUERY } from '../../../queries';
 import { getPossibleTemplates } from '../../Sandboxes/utils';

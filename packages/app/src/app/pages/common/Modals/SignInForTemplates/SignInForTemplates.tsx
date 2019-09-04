@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, hooksObserver } from 'app/componentConnectors';
 
-import SignInButton from '../../SignInButton';
+import { SignInButton } from '../../SignInButton';
 import { Heading, Explanation } from '../elements';
 import { Container } from '../LiveSessionEnded/elements';
 import { Close, Buttons } from './elements';

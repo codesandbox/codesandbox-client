@@ -9,7 +9,7 @@ interface Props {
   signals: any;
 }
 
-const ZeitIntegration = inject('store', 'signals')(
+export const ZeitIntegration = inject('store', 'signals')(
   hooksObserver(
     ({
       small,
@@ -30,5 +30,3 @@ const ZeitIntegration = inject('store', 'signals')(
     )
   )
 );
-
-export default ZeitIntegration;

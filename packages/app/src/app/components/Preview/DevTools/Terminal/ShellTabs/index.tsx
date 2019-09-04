@@ -12,7 +12,7 @@ type Props = {
   closeShell: (id: string) => void;
 };
 
-export default class ShellTabs extends React.PureComponent<Props> {
+export class ShellTabs extends React.PureComponent<Props> {
   render() {
     const { selectedShell, createShell, shells } = this.props;
     return (

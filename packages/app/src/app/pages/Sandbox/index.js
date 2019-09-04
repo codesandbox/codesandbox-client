@@ -8,10 +8,10 @@ import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 import { inject, observer } from 'app/componentConnectors';
 import { Title } from 'app/components/Title';
 import { Skeleton } from 'app/components/Skeleton';
-import QuickActions from 'app/pages/Sandbox/QuickActions';
-import NotFound from 'app/pages/common/NotFound';
-import Navigation from 'app/pages/common/Navigation';
-import GithubIntegration from 'app/pages/common/GithubIntegration';
+import { QuickActions } from 'app/pages/Sandbox/QuickActions';
+import { NotFound } from 'app/pages/common/NotFound';
+import { Navigation } from 'app/pages/common/Navigation';
+import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import Editor from './Editor';
 
 class SandboxPage extends React.Component {

@@ -6,10 +6,10 @@ import { inject, observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
-import Item from '../Item';
+import { Item } from '../Item';
 import { Container } from './elements';
-import FolderEntry from './FolderEntry';
-import CreateFolderEntry from './FolderEntry/CreateFolderEntry';
+import { DropFolderEntry } from './FolderEntry';
+import { CreateFolderEntry } from './FolderEntry/CreateFolderEntry';
 
 import { entryTarget, collectTarget } from './folder-drop-target';
 
@@ -17,7 +17,7 @@ import getChildCollections from '../../utils/get-child-collections';
 
 import { PATHED_SANDBOXES_FOLDER_QUERY } from '../../queries';
 
-class SandboxesItem extends React.Component {
+class SandboxesItemComponent extends React.Component {
   state = {
     creatingDirectory: false,
   };
@@ -102,7 +102,7 @@ class SandboxesItem extends React.Component {
                       const path = '/' + name;
                       const url = basePath + '/' + encodeURIComponent(name);
                       return (
-                        <FolderEntry
+                        <DropFolderEntry
                           key={path}
                           basePath={basePath}
                           teamId={teamId}
@@ -141,8 +141,8 @@ class SandboxesItem extends React.Component {
   }
 }
 
-export default inject('store', 'signals')(
+export const SandboxesItem = inject('store', 'signals')(
   DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
-    withRouter(observer(SandboxesItem))
+    withRouter(observer(SandboxesItemComponent))
   )
 );

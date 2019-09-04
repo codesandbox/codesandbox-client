@@ -1,13 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { inject, observer } from 'app/componentConnectors';
+import { observer } from 'app/componentConnectors';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
 import BrowserIcon from 'react-icons/lib/go/browser';
 
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import { useStore, useSignals } from 'app/store';
 
 import {
   Description,
@@ -15,9 +16,9 @@ import {
   EntryContainer,
 } from '../../elements';
 
-import Status from './Status';
-import Tasks from './Tasks';
-import EnvironmentVariables from './EnvVars';
+import { Status } from './Status';
+import { Tasks } from './Tasks';
+import { EnvironmentVariables } from './EnvVars';
 
 const SubTitle = styled.div`
   text-transform: uppercase;
@@ -29,7 +30,9 @@ const SubTitle = styled.div`
   font-size: 0.875rem;
 `;
 
-function Server({ store, signals }: { store: any; signals: any }) {
+function ServerComponent() {
+  const store = useStore();
+  const signals = useSignals();
   const disconnected = store.server.status !== 'connected';
 
   const openPort = (port: {
@@ -186,4 +189,4 @@ function Server({ store, signals }: { store: any; signals: any }) {
   );
 }
 
-export default inject('store', 'signals')(observer(Server));
+export const Server = observer(ServerComponent);

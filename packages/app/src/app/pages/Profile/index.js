@@ -8,7 +8,7 @@ import {
   profileLikesUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { inject, observer } from 'app/componentConnectors';
-import NotFound from 'app/pages/common/NotFound';
+import { NotFound } from 'app/pages/common/NotFound';
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
@@ -98,4 +98,5 @@ class Profile extends React.Component<Props> {
   }
 }
 
+// eslint-disable-next-line import/no-default-export
 export default inject('signals', 'store')(observer(Profile));

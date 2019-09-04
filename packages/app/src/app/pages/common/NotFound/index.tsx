@@ -6,7 +6,7 @@ import { newSandboxWizard } from '@codesandbox/common/lib/utils/url-generator';
 
 import { Container, Title, SubTitle, Buttons } from './elements';
 
-const NotFound = inject('store')(
+export const NotFound = inject('store')(
   hooksObserver(({ store: { hasLogIn } }) => (
     <Container>
       <Title>404</Title>
@@ -27,4 +27,5 @@ const NotFound = inject('store')(
   ))
 );
 
+// eslint-disable-next-line import/no-default-export
 export default NotFound;

@@ -6,7 +6,7 @@ import { WorkspaceInputContainer } from '../../../elements';
 import EnvEntry from './EnvEntry';
 import EnvModal from './EnvModal';
 
-class EnvironmentVariables extends React.Component {
+class EnvironmentVariablesComponent extends React.Component {
   componentDidMount() {
     this.props.signals.editor.fetchEnvironmentVariables();
   }
@@ -50,4 +50,6 @@ class EnvironmentVariables extends React.Component {
   }
 }
 
-export default inject('store', 'signals')(observer(EnvironmentVariables));
+export const EnvironmentVariables = inject('store', 'signals')(
+  observer(EnvironmentVariablesComponent)
+);

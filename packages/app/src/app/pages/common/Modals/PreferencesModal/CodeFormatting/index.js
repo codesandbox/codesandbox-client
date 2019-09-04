@@ -2,10 +2,10 @@ import React from 'react';
 
 import Question from 'react-icons/lib/go/question';
 
-import Prettier from './Prettier';
+import { Prettier } from './Prettier';
 import { Title } from '../elements';
 
-function CodeFormatting() {
+export function CodeFormatting() {
   return (
     <div>
       <Title>
@@ -23,5 +23,3 @@ function CodeFormatting() {
     </div>
   );
 }
-
-export default CodeFormatting;

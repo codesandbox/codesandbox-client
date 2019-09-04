@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Dependencies from '../../Dependencies';
 import Files from '../../Files';
 import { Project } from '../../Project';
-import WorkspaceItem from '../../WorkspaceItem';
+import { WorkspaceItem } from '../../WorkspaceItem';
 
 export const NotOwnedSandboxInfo = () => {
   const [editActions, setEditActions] = useState(null);

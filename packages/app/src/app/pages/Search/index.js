@@ -14,7 +14,7 @@ import {
   Configure,
 } from 'react-instantsearch/dom';
 
-import Navigation from 'app/pages/common/Navigation';
+import { Navigation } from 'app/pages/common/Navigation';
 import { inject, hooksObserver } from 'app/componentConnectors';
 
 import 'instantsearch.css/themes/reset.css';
@@ -116,4 +116,5 @@ const Search = inject('signals')(
   })
 );
 
+// eslint-disable-next-line import/no-default-export
 export default Search;

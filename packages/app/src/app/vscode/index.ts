@@ -506,6 +506,4 @@ class VSCodeManager {
   }
 }
 
-const vscode = new VSCodeManager();
-
-export default vscode;
+export const vscode = new VSCodeManager();

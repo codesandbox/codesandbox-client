@@ -10,7 +10,7 @@ const FIELD_TO_NAME = {
   title: 'Name',
 };
 
-class SortOptions extends React.Component {
+class SortOptionsComponent extends React.Component {
   toggleSort = e => {
     e.preventDefault();
     const orderBy = this.props.store.dashboard.orderBy;
@@ -82,4 +82,6 @@ class SortOptions extends React.Component {
   }
 }
 
-export default inject('store', 'signals')(observer(SortOptions));
+export const SortOptions = inject('store', 'signals')(
+  observer(SortOptionsComponent)
+);

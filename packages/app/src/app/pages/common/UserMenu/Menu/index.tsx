@@ -19,7 +19,7 @@ import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.s
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Container, Item, Icon, Separator } from './elements';
-import FeedbackIcon from './FeedbackIcon';
+import { FeedbackIcon } from './FeedbackIcon';
 
 interface Props {
   username: string;
@@ -34,7 +34,7 @@ interface Props {
   signOut: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-const Menu = ({
+export const Menu = ({
   username,
   curator,
   openPreferences,
@@ -125,5 +125,3 @@ const Menu = ({
     </Container>
   );
 };
-
-export default Menu;

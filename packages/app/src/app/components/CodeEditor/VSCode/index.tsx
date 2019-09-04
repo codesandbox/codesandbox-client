@@ -40,8 +40,7 @@ import {
   indexToLineAndColumn,
 } from '../Monaco/monaco-index-converter';
 import { updateUserSelections } from '../Monaco/live-decorations';
-
-import Configuration from './Configuration';
+import { Configuration } from './Configuration';
 
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(
@@ -78,7 +77,7 @@ type UserSelection =
       color: number[];
     };
 
-class MonacoEditor extends React.Component<Props> implements Editor {
+export class VSCode extends React.Component<Props> implements Editor {
   static defaultProps = {
     width: '100%',
     height: '100%',
@@ -1156,5 +1155,3 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     );
   }
 }
-
-export default MonacoEditor;

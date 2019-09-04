@@ -4,8 +4,8 @@ import { ViewTab } from '@codesandbox/common/lib/templates/template';
 
 import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';
-import DraggableTab, { PaneTab, TabProps } from './Tab';
-import TabDropZone, { TabDropZoneProps } from './TabDropZone';
+import { DraggableTab, PaneTab, TabProps } from './Tab';
+import { TabDropZone, TabDropZoneProps } from './TabDropZone';
 // import { AddTab } from './AddTab';
 
 export interface ITabPosition {
@@ -27,7 +27,7 @@ export interface Props {
   views: IViews;
 }
 
-const DevToolTabs = ({
+export const DevToolTabs = ({
   panes,
   views,
   hidden,
@@ -114,6 +114,7 @@ const DevToolTabs = ({
           >
             <Icon
               style={{
+                // eslint-disable-next-line  no-nested-ternary
                 opacity: hidden ? 0 : disabled ? 0.5 : 1,
                 pointerEvents: disabled ? 'none' : 'initial',
               }}
@@ -126,5 +127,3 @@ const DevToolTabs = ({
     </Container>
   );
 };
-
-export default DevToolTabs;

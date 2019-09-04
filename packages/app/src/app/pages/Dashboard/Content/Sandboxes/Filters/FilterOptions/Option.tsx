@@ -11,7 +11,7 @@ interface Props {
   toggleTemplate: (name: string, selected: boolean) => void;
 }
 
-export default ({
+export const Option = ({
   color,
   id,
   style,

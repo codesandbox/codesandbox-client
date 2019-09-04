@@ -12,9 +12,9 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import Loadable from 'app/utils/Loadable';
-import ImageViewer from './ImageViewer';
-import Configuration from './Configuration';
-import VSCode from './VSCode';
+import { ImageViewer } from './ImageViewer';
+import { Configuration } from './Configuration';
+import { VSCode } from './VSCode';
 import MonacoDiff from './MonacoDiff';
 import { Props } from './types';
 import { Icons, Icon } from './elements';
@@ -61,7 +61,7 @@ type State = {
   showConfigUI: boolean;
 };
 
-export default class CodeEditor extends React.PureComponent<
+export class CodeEditor extends React.PureComponent<
   Props & {
     editor?: 'vscode' | 'monaco' | 'codemirror';
     style?: React.CSSProperties;

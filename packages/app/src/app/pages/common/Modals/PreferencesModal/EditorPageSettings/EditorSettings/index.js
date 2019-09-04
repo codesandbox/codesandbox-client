@@ -14,7 +14,7 @@ import VSCodePlaceholder from '../../VSCodePlaceholder';
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const isFF = navigator.userAgent.toLowerCase().includes('firefox');
 
-function EditorSettings({ store, signals }) {
+function EditorSettingsComponent({ store, signals }) {
   const bindValue = name => ({
     value: store.preferences.settings[name],
     setValue: value =>
@@ -99,4 +99,6 @@ function EditorSettings({ store, signals }) {
   );
 }
 
-export default inject('store', 'signals')(observer(EditorSettings));
+export const EditorSettings = inject('store', 'signals')(
+  observer(EditorSettingsComponent)
+);

@@ -35,7 +35,7 @@ interface State {
   loading: boolean;
 }
 
-class CheckoutForm extends React.PureComponent<Props, State> {
+class CheckoutFormComponent extends React.PureComponent<Props, State> {
   state: State = {
     errors: {},
     name: this.props.name || '',
@@ -164,4 +164,4 @@ class CheckoutForm extends React.PureComponent<Props, State> {
   }
 }
 
-export default injectStripe(CheckoutForm);
+export const CheckoutForm = injectStripe(CheckoutFormComponent);

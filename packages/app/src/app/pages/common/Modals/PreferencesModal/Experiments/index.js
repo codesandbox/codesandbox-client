@@ -1,9 +1,9 @@
 import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+// import { inject, observer } from 'app/componentConnectors';
 
 import { Title, SubContainer, SubDescription } from '../elements';
 
-function Experiments() {
+export function Experiments() {
   // const bindValue = name => ({
   //   value: store.preferences.settings[name],
   //   setValue: value =>
@@ -27,4 +27,4 @@ function Experiments() {
   );
 }
 
-export default inject('store', 'signals')(observer(Experiments));
+// export default inject('store', 'signals')(observer(Experiments));
