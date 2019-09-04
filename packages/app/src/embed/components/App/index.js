@@ -225,13 +225,16 @@ export default class App extends React.PureComponent<
   getCurrentModuleFromPath = (sandbox: Sandbox): Module => {
     const { currentModule: currentModulePath } = this.state;
 
-    return (
-      findCurrentModule(
+    return findCurrentModule(
+      sandbox.modules,
+      sandbox.directories,
+      currentModulePath,
+      findMainModule(
         sandbox.modules,
         sandbox.directories,
-        currentModulePath,
-        findMainModule(sandbox.modules, sandbox.directories, sandbox.entry)
-      ) || sandbox.modules[0]
+        sandbox.entry,
+        sandbox.template
+      )
     );
   };
 

@@ -1,17 +1,10 @@
-import { resolveModule, resolveDirectory } from '../../sandbox/modules';
+import {
+  resolveModuleWrapped,
+  resolveDirectoryWrapped,
+} from '../../sandbox/modules';
 
-export const resolveModuleWrapped = sandbox => (path: string) => {
-  try {
-    return resolveModule(path, sandbox.modules, sandbox.directories);
-  } catch (e) {
-    return undefined;
-  }
-};
+// keeping this file around to reduce merge conflicts
+// with other open branches
+// TODO @sid: Replace the usage of this file after overmind refactor is complete.
 
-export const resolveDirectoryWrapped = sandbox => (path: string) => {
-  try {
-    return resolveDirectory(path, sandbox.modules, sandbox.directories);
-  } catch (e) {
-    return undefined;
-  }
-};
+export { resolveModuleWrapped, resolveDirectoryWrapped };

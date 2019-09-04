@@ -1,5 +1,6 @@
 import memoize from 'lodash/memoize';
 import { Module, Directory } from '../types';
+import getTemplateDefinition, { TemplateType } from '../templates';
 
 const compareTitle = (
   original: string,
@@ -251,14 +252,30 @@ export const isMainModule = (
 export const findMainModule = (
   modules: Module[],
   directories: Directory[],
-  entry: string = 'index.js'
+  entry: string = 'index.js',
+  template?: TemplateType
 ) => {
   try {
+    // first attempt: try loading the entry file if it exists
     const module = resolveModule(entry, modules, directories);
-
     return module;
   } catch (e) {
-    return modules[0];
+    try {
+      // second attempt: try loading the first file that exists from
+      // the list of possible defaults in the template defination
+      const templateDefinition = getTemplateDefinition(template);
+
+      const defaultOpenedFiles = templateDefinition.getDefaultOpenedFiles({});
+
+      const defaultOpenModule = defaultOpenedFiles
+        .map(path => resolveModuleWrapped({ modules, directories })(path))
+        .find(module => module);
+
+      return defaultOpenModule;
+    } catch (nestedError) {
+      // third attempt: give up and load the first file in the list
+      return modules[0];
+    }
   }
 };
 
@@ -283,4 +300,20 @@ export const findCurrentModule = (
     modules.find(m => m.shortid === modulePath) || // deep-links requires this
     mainModule
   );
+};
+
+export const resolveModuleWrapped = sandbox => (path: string) => {
+  try {
+    return resolveModule(path, sandbox.modules, sandbox.directories);
+  } catch (e) {
+    return undefined;
+  }
+};
+
+export const resolveDirectoryWrapped = sandbox => (path: string) => {
+  try {
+    return resolveDirectory(path, sandbox.modules, sandbox.directories);
+  } catch (e) {
+    return undefined;
+  }
 };
