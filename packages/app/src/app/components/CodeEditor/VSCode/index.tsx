@@ -224,7 +224,7 @@ export class VSCode extends React.Component<Props> implements Editor {
   provideDocumentFormattingEdits = (model, options, token) =>
     prettify(
       model.uri.fsPath,
-      () => model.getValue(1),
+      () => model.getValue(),
       this.getPrettierConfig(),
       () => false,
       token
@@ -297,7 +297,7 @@ export class VSCode extends React.Component<Props> implements Editor {
           this.sendChangeOperations(e);
         }
 
-        this.handleChange(module.shortid, module.title, model.getValue(1));
+        this.handleChange(module.shortid, module.title, model.getValue());
       } catch (err) {
         if (process.env.NODE_ENV === 'development') {
           console.error('caught', err);
@@ -415,7 +415,7 @@ export class VSCode extends React.Component<Props> implements Editor {
           if (
             modulePath === this.getCurrentModuleVSCodePath() &&
             this.currentModule.code !== undefined &&
-            activeEditor.getValue(1) !== this.currentModule.code
+            activeEditor.getValue() !== this.currentModule.code
           ) {
             // Don't send these changes over live, since these changes can also be made by someone else and
             // we don't want to keep singing these changes
@@ -651,13 +651,15 @@ export class VSCode extends React.Component<Props> implements Editor {
   ) => {
     const results = [];
     let index = 0;
+    const currentEOLLength = model.getEOL().length;
+    let eolChanged = false;
     for (let i = 0; i < operation.ops.length; i++) {
       const op = operation.ops[i];
       if (TextOperation.isRetain(op)) {
         index += op;
       } else if (TextOperation.isInsert(op)) {
         const { lineNumber, column } = indexToLineAndColumn(
-          model.getLinesContent() || [],
+          model.getValue().split(/\n/) || [],
           index
         );
         const range = new this.monaco.Range(
@@ -666,13 +668,24 @@ export class VSCode extends React.Component<Props> implements Editor {
           lineNumber,
           column
         );
+
+        // if there's a new line
+        if (/\n/.test(op)) {
+          const eol = /\r\n/.test(op) ? 2 : 1;
+          if (eol !== currentEOLLength) {
+            // With this insert the EOL of the document changed on the other side. We need
+            // to accomodate our EOL to it.
+            eolChanged = true;
+          }
+        }
+
         results.push({
           range,
           text: op,
           forceMoveMarkers: true,
         });
       } else if (TextOperation.isDelete(op)) {
-        const lines = model.getLinesContent() || [];
+        const lines = model.getValue().split(/\n/) || [];
         const from = indexToLineAndColumn(lines, index);
         const to = indexToLineAndColumn(lines, index - op);
         results.push({
@@ -689,6 +702,12 @@ export class VSCode extends React.Component<Props> implements Editor {
     }
 
     this.receivingCode = true;
+
+    if (eolChanged) {
+      const newEolMode = currentEOLLength === 2 ? 0 : 1;
+      model.setEOL(newEolMode);
+    }
+
     if (pushStack) {
       model.pushEditOperations([], results);
     } else {
@@ -748,7 +767,7 @@ export class VSCode extends React.Component<Props> implements Editor {
 
           if (this.props.onChange) {
             this.props.onChange(
-              model.object.textEditorModel.getValue(1),
+              model.object.textEditorModel.getValue(),
               module.shortid
             );
           }
@@ -1086,7 +1105,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     const activeEditor = this.editor.getActiveCodeEditor();
     if (!activeEditor) return '';
 
-    return activeEditor.getValue(1);
+    return activeEditor.getValue();
   };
 
   getEditorOptions = () => {
