@@ -7,6 +7,7 @@
     "directory": "packages/node-services"
   },
   "dependencies": {
+    "@codesandbox/common": "^1.0.8",
     "constants-browserify": "^1.0.0",
     "events": "^3.0.0",
     "resolve": "^1.10.0",

@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { DragDropContext } from 'react-dnd';
 import _debug from '@codesandbox/common/lib/utils/debug';
-import { Toasts } from '@codesandbox/notifications';
+import { Toasts, NotificationStatus } from '@codesandbox/notifications';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
+import theme from '@codesandbox/common/lib/theme';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import Loadable from 'app/utils/Loadable';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import { ErrorBoundary } from './common/ErrorBoundary';
@@ -78,7 +80,16 @@ const RoutesComponent = ({ signals: { appUnmounted } }) => {
           return null;
         }}
       />
-      <Toasts state={notificationState} />
+      <Toasts
+        colors={{
+          [NotificationStatus.ERROR]: theme.dangerBackground(),
+          [NotificationStatus.SUCCESS]: theme.green(),
+          [NotificationStatus.NOTICE]: theme.secondary(),
+          [NotificationStatus.WARNING]: theme.primary(),
+        }}
+        state={notificationState}
+        Button={Button}
+      />
       <Boundary>
         <Content>
           <Switch>

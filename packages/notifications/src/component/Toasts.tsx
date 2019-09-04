@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useTransition, animated, useSpring } from 'react-spring';
+import { useTransition, animated } from 'react-spring';
 
 import Portal from './Portal';
 import { NotificationContainer } from './elements';
@@ -10,7 +10,7 @@ import {
   NotificationChange,
   NotificationStatus,
 } from '../state';
-import { Toast } from './Toast';
+import { Toast, IColors, IButtonType } from './Toast';
 
 export interface NotificationToast {
   id: string;
@@ -57,7 +57,27 @@ const TIME_ALIVE = {
   [NotificationStatus.ERROR]: 20000,
 };
 
-export function Toasts({ state }: { state: NotificationState }) {
+interface Props {
+  state: NotificationState;
+  Button?: IButtonType;
+  colors?: IColors;
+}
+
+const DEFAULT_COLORS = {
+  [NotificationStatus.ERROR]: '#DC3545',
+  [NotificationStatus.WARNING]: '#FFD399',
+  [NotificationStatus.SUCCESS]: '#5da700',
+  [NotificationStatus.NOTICE]: '#40A9F3',
+};
+
+const DEFAULT_BUTTON: IButtonType = props =>
+  React.createElement('button', props);
+
+export function Toasts({
+  state,
+  colors = DEFAULT_COLORS,
+  Button = DEFAULT_BUTTON,
+}: Props) {
   const [refMap] = React.useState(
     () => new WeakMap<NotificationToast, HTMLDivElement>()
   );
@@ -158,6 +178,8 @@ export function Toasts({ state }: { state: NotificationState }) {
         {transitions.map(({ item, props, key }) => (
           <animated.div key={key} style={props}>
             <Toast
+              colors={colors}
+              Button={Button}
               getRef={ref => ref && refMap.set(item, ref)}
               toast={item}
               removeToast={(id: string) => {
