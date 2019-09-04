@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/notifications",
-  "version": "1.0.3",
+  "version": "1.0.6",
   "main": "lib/index.js",
   "license": "MIT",
   "repository": {
@@ -10,17 +10,19 @@
   },
   "scripts": {
     "start": "tsc --watch",
+    "prepublish": "yarn build",
     "build": "rimraf lib && tsc",
     "build:dev": "yarn build"
   },
   "dependencies": {
-    "@codesandbox/common": "^1.0.5",
-    "react": "^16.9.0",
     "react-spring": "^8.0.25",
     "styled-components": "^4.2.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
     "rimraf": "^2.6.3"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0"
   }
 }
