@@ -34,7 +34,7 @@ import App from './pages/index';
 import { Provider as OvermindProvider } from './overmind/Provider';
 import './split-pane.css';
 import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
-
+import overmindLogo from './overmind.png';
 import vscode from './vscode';
 import {
   initializeThemeCache,
@@ -191,6 +191,19 @@ async function initialize() {
             : overmind.state;
         getSignal = path =>
           path.split('.').reduce((aggr, key) => aggr[key], overmind.actions);
+
+        const logoContainer = document.createElement('div');
+        logoContainer.style.position = 'fixed';
+        logoContainer.style.bottom = '30px';
+        logoContainer.style.left = '10px';
+        logoContainer.style.zIndex = '999999';
+        logoContainer.style.width = '40px';
+        logoContainer.style.height = '40px';
+        logoContainer.style.borderRadius = '3px';
+        logoContainer.style.backgroundImage = `url(${overmindLogo})`;
+        logoContainer.style.backgroundSize = 'cover';
+        logoContainer.style.backgroundSize = 'cover';
+        document.body.appendChild(logoContainer);
       }
     );
   } else {
