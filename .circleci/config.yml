@@ -161,7 +161,6 @@ commands:
   build_prod:
     description: 'Build the Application with `yarn build:prod`'
     steps:
-      - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - restore_cache: *restore_prod_homepage_cache
@@ -188,7 +187,6 @@ commands:
     description:
       "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
-      - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
@@ -214,7 +212,6 @@ commands:
   test_jest:
     description: 'Test with `yarn test`'
     steps:
-      - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
@@ -225,7 +222,6 @@ commands:
   yarn_lint:
     description: 'Lint with `yarn lint`'
     steps:
-      - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
@@ -234,7 +230,6 @@ commands:
   yarn_typecheck:
     description: 'Lint with `yarn typecheck`'
     steps:
-      - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
@@ -275,32 +270,32 @@ jobs:
   build-deps:
     executor: node
     steps:
-      - checkout
+      - checkout_with_cache
       - build_deps
   build-prod:
     executor: node
     steps:
-      - checkout
+      - checkout_with_cache
       - build_prod
   test-integrations:
     executor: node-with-puppeteer
     steps:
-      - checkout
+      - checkout_with_cache
       - test_integrations
   test-jest:
     executor: node
     steps:
-      - checkout
+      - checkout_with_cache
       - test_jest
   lint:
     executor: node
     steps:
-      - checkout
+      - checkout_with_cache
       - yarn_lint
   typecheck:
     executor: node
     steps:
-      - checkout
+      - checkout_with_cache
       - yarn_typecheck
   create-docker-image:
     executor: docker_machine
