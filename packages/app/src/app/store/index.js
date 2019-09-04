@@ -1,6 +1,6 @@
 import HttpProvider from '@cerebral/http';
 import { Module } from 'cerebral';
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
 
 import model from './model';
 import ApiProvider from './providers/Api';
