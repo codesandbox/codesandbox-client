@@ -129,6 +129,21 @@ executors:
 ################################
 
 commands:
+  checkout_with_cache:
+    description: 'Checkout git with a cache'
+    steps:
+      - restore_cache:
+          keys:
+            - v27-source-cache-{{ .Branch }}-{{ .Revision }}
+            - v27-source-cache-{{ .Branch }}-
+            - v27-source-cache-
+
+      - checkout
+
+      - save_cache:
+          key: v27-source-cache-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - '.git'
   build_deps:
     description: 'Install Dependencies with `yarn install`'
     steps:
@@ -146,7 +161,7 @@ commands:
   build_prod:
     description: 'Build the Application with `yarn build:prod`'
     steps:
-      - checkout
+      - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - restore_cache: *restore_prod_homepage_cache
@@ -173,7 +188,7 @@ commands:
     description:
       "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
-      - checkout
+      - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
@@ -199,18 +214,18 @@ commands:
   test_jest:
     description: 'Test with `yarn test`'
     steps:
-      - checkout
+      - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
           name: Test
-          command: yarn test -- --ci --testResultsProcessor="jest-junit"
+          command: yarn test:ci
           environment:
             JEST_JUNIT_OUTPUT: 'reports/junit/js-tests-results.xml'
   yarn_lint:
     description: 'Lint with `yarn lint`'
     steps:
-      - checkout
+      - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
@@ -219,7 +234,7 @@ commands:
   yarn_typecheck:
     description: 'Lint with `yarn typecheck`'
     steps:
-      - checkout
+      - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
