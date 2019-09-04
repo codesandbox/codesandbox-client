@@ -204,7 +204,7 @@ commands:
       - attach_workspace: *attach_deps_workspace
       - run:
           name: Test
-          command: yarn test --ci --testResultsProcessor="jest-junit"
+          command: yarn test -- --ci --testResultsProcessor="jest-junit"
           environment:
             JEST_JUNIT_OUTPUT: 'reports/junit/js-tests-results.xml'
   yarn_lint:
