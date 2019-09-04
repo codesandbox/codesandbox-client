@@ -17,8 +17,8 @@ import File from '../File';
 import { Container } from './elements';
 
 type Props = {
-  modules: Array<Module>,
-  directories: Array<DirectoryType>,
+  modules: Module[],
+  directories: DirectoryType[],
   directoryId: ?string,
   depth?: number,
   currentModule: string,
@@ -70,14 +70,36 @@ function Files({
           key={m.shortid}
           type={getType(m.title)}
           depth={depth}
-          setCurrentModule={setCurrentModule}
           active={m.id === currentModule}
           alternative={isMainModule(m, modules, directories, entry)}
+          onClick={() => setCurrentModule(m.id)}
         />
       ))}
     </Container>
   );
 }
+
+/** Utils to help identify module tree */
+
+const getCurrentModule = (modules, currentModuleId) =>
+  modules.find(module => module.id === currentModuleId);
+
+const getParentDirectory = (directories, child) =>
+  directories.find(directory => directory.shortid === child.directoryShortid);
+
+const getCurrentModuleTree = (directories, currentModule) => {
+  const currentModuleTree = [currentModule];
+
+  let parentDirectory = getParentDirectory(directories, currentModule);
+
+  while (parentDirectory) {
+    currentModuleTree.push(parentDirectory);
+    // get parent directory of the parent directory
+    parentDirectory = getParentDirectory(directories, parentDirectory);
+  }
+
+  return currentModuleTree;
+};
 
 function Directory({
   directory,
@@ -91,11 +113,9 @@ function Directory({
 }) {
   /** directory should be open by default if currentModule is inside it */
 
-  const currentModuleTree = getCurrentModuleTree(
-    modules,
-    directories,
-    currentModuleId
-  );
+  const currentModule = getCurrentModule(modules, currentModuleId);
+
+  const currentModuleTree = getCurrentModuleTree(directories, currentModule);
 
   let openByDefault = false;
   if (currentModuleTree.find(module => module.id === directory.id)) {
@@ -112,8 +132,9 @@ function Directory({
         title={directory.title}
         type={open ? 'directory-open' : 'directory'}
         depth={depth}
-        setCurrentModule={setCurrentModule}
-        onClick={_ => setOpen(!open)}
+        onClick={() => {
+          setOpen(!open);
+        }}
       />
       {open ? (
         <Files
@@ -121,8 +142,8 @@ function Directory({
           directories={directories}
           directoryId={directory.shortid}
           depth={depth + 1}
-          setCurrentModule={setCurrentModule}
           currentModule={currentModuleId}
+          setCurrentModule={setCurrentModule}
           template={template}
           entry={entry}
         />
@@ -132,27 +153,3 @@ function Directory({
 }
 
 export default Files;
-
-/** Utils to help identify module tree */
-
-const getParentDirectory = (directories, child) => {
-  return directories.find(directory => {
-    return directory.shortid === child.directoryShortid;
-  });
-};
-
-const getCurrentModuleTree = (modules, directories, currentModuleId) => {
-  const currentModule = modules.find(module => module.id === currentModuleId);
-
-  const currentModuleTree = [currentModule];
-
-  let parentDirectory = getParentDirectory(directories, currentModule);
-
-  while (parentDirectory) {
-    currentModuleTree.push(parentDirectory);
-    // get parent directory of the parent directory
-    parentDirectory = getParentDirectory(directories, parentDirectory);
-  }
-
-  return currentModuleTree;
-};
