@@ -8,7 +8,7 @@ import delay from '../utils/delay';
 import setScreen from '../status-screen';
 
 type Dependencies = {
-  [dependency: string]: string,
+  [dependency: string]: string;
 };
 
 const RETRY_COUNT = 60;
@@ -43,11 +43,13 @@ function callApi(url: string, method = 'GET') {
   })
     .then(async response => {
       if (!response.ok) {
-        const error = new Error(response.statusText || response.status);
+        const error = new Error(response.statusText || '' + response.status);
 
         const message = await response.json();
 
+        // @ts-ignore
         error.response = message;
+        // @ts-ignore
         error.statusCode = response.status;
         return Promise.reject(error);
       }
@@ -143,7 +145,7 @@ async function getDependencies(dependencies: Object) {
   }
 }
 
-export default async function fetchDependencies(npmDependencies: Dependencies) {
+export async function fetchDependencies(npmDependencies: Dependencies) {
   if (Object.keys(npmDependencies).length !== 0) {
     // New Packager flow
 

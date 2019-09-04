@@ -35,7 +35,7 @@ const createParticles = (amount: number, badge) =>
       />
     ));
 
-export default class Particles extends React.Component {
+export class Particles extends React.Component {
   makeItRain = () => {
     const particleSelector = document.getElementsByClassName('particle');
     forEach(particleSelector, hideElement);

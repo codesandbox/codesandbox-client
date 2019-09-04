@@ -36,6 +36,7 @@ const Search = Loadable(() =>
   import(/* webpackChunkName: 'page-search' */ './Search')
 );
 const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
+
 const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub')
 );
@@ -48,10 +49,11 @@ const Patron = Loadable(() =>
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator')
 );
+const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
 
-const Routes = ({ signals: { appUnmounted } }) => {
+const RoutesComponent = ({ signals: { appUnmounted } }) => {
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
   return (
@@ -95,6 +97,9 @@ const Routes = ({ signals: { appUnmounted } }) => {
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
+            {process.env.NODE_ENV === `development` && (
+              <Route path="/codesadbox" component={CodeSadbox} />
+            )}
             <Route component={NotFound} />
           </Switch>
         </Content>
@@ -104,6 +109,6 @@ const Routes = ({ signals: { appUnmounted } }) => {
   );
 };
 
-export default inject('signals')(
-  DragDropContext(HTML5Backend)(withRouter(hooksObserver(Routes)))
+export const Routes = inject('signals')(
+  DragDropContext(HTML5Backend)(withRouter(hooksObserver(RoutesComponent)))
 );

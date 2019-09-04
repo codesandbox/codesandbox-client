@@ -1,6 +1,6 @@
 import React from 'react';
 import FontFaceObserver from 'fontfaceobserver';
-import vscode from 'app/vscode';
+import { vscode } from 'app/vscode';
 
 import './icon-theme.css';
 import './workbench-theme.css';

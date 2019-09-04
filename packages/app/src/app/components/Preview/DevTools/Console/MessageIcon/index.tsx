@@ -5,7 +5,7 @@ import ChevronLeft from 'react-icons/lib/fa/angle-double-left';
 import WarningIcon from 'react-icons/lib/md/warning';
 import ErrorIcon from 'react-icons/lib/md/error';
 
-function MessageIcon({ type, logType }) {
+export function MessageIcon({ type, logType }) {
   if (type === 'command') {
     return <ChevronRight />;
   }
@@ -24,5 +24,3 @@ function MessageIcon({ type, logType }) {
       return false;
   }
 }
-
-export default MessageIcon;

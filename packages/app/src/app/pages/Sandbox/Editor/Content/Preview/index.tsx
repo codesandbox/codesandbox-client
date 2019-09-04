@@ -19,7 +19,7 @@ type State = {
   running: boolean;
 };
 
-class Preview extends Component<Props, State> {
+class PreviewComponent extends Component<Props, State> {
   state: State = {
     running: !this.props.runOnClick,
   };
@@ -124,15 +124,13 @@ class Preview extends Component<Props, State> {
 
   handleModuleSyncedChange = (preview, change) => {
     const settings = this.props.store.preferences.settings;
-    const isServer = getTemplate(
-      this.props.store.editor.currentSandbox.template
-    ).isServer;
-    if ((isServer || !settings.livePreviewEnabled) && change) {
-      if (this.props.store.editor.currentSandbox.template === 'static') {
-        preview.handleRefresh();
-      } else {
-        preview.executeCodeImmediately();
-      }
+
+    if (
+      settings.livePreviewEnabled &&
+      change &&
+      this.props.store.editor.currentSandbox.template === 'static'
+    ) {
+      preview.handleRefresh();
     }
   };
 
@@ -205,4 +203,4 @@ class Preview extends Component<Props, State> {
   }
 }
 
-export default inject('signals', 'store')(observer(Preview));
+export const Preview = inject('signals', 'store')(observer(PreviewComponent));

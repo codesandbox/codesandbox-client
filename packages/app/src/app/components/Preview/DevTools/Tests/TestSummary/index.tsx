@@ -16,7 +16,7 @@ import {
   SyncIconStyled,
 } from './elements';
 
-import TestSummaryText from '../TestSummaryText';
+import { TestSummaryText } from '../TestSummaryText';
 
 type Props = {
   files: { [path: string]: File };
@@ -28,7 +28,7 @@ type Props = {
   tests: Array<Test>;
 };
 
-export default ({
+export const TestSummary = ({
   files,
   running,
   fileStatuses,

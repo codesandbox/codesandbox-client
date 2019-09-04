@@ -11,11 +11,13 @@ export const buildCrashReport = ({
 }: IbuildCrashReport): string => {
   const { name, version, os } = browser();
 
-  const title = `💥 Crash Report: <Short Description of Crash Circumstances>`;
+  const title = `💥 Crash Report: <Please Add a Short Description of Crash Circumstances>`;
 
   const body = `<h1>💥 Crash Report</h1>
 
 <h2>What were you trying to accomplish when the crash occurred?</h2>
+
+> Please use this issue template to describe what you were doing when you encountered this crash. While we are able to fill in some details automatically, it's not always enough to reproduce!
 
 <h3>Link to sandbox: [link]() (optional)</h3>
 
@@ -27,6 +29,9 @@ export const buildCrashReport = ({
 | Browser |  Version  | Operating System |
 | ------- | --------- | ---------------- |
 | ${name} | ${version} | ${os}           |
+
+**Route:**
+${window.location.href}
 
 </details>
 

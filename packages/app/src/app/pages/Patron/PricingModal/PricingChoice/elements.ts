@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Input from '@codesandbox/common/lib/components/Input';
-import SignInButton from 'app/pages/common/SignInButton';
+import { SignInButton } from 'app/pages/common/SignInButton';
 
 export const Container = styled.div`
   padding: 1rem 0;

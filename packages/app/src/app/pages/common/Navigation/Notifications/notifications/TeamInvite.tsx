@@ -21,7 +21,7 @@ interface Props {
   inviterAvatar: string;
 }
 
-const TeamInvite = inject('signals')(
+export const TeamInvite = inject('signals')(
   hooksObserver(
     ({
       read,
@@ -84,4 +84,3 @@ const TeamInvite = inject('signals')(
     )
   )
 );
-export default TeamInvite;

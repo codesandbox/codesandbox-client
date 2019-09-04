@@ -11,17 +11,17 @@ import CodeFormatIcon from 'react-icons/lib/fa/dedent';
 import IntegrationIcon from 'react-icons/lib/md/device-hub';
 import KeyboardIcon from 'react-icons/lib/go/keyboard';
 
-import SideNavigation from './SideNavigation';
+import { SideNavigation } from './SideNavigation';
 
-import Appearance from './Appearance';
-import EditorSettings from './EditorPageSettings/EditorSettings';
-import PreviewSettings from './EditorPageSettings/PreviewSettings';
-import CodeFormatting from './CodeFormatting';
-import PaymentInfo from './PaymentInfo';
-import Integrations from './Integrations';
-import Badges from './Badges';
-import Experiments from './Experiments';
-import KeyMapping from './KeyMapping';
+import { Appearance } from './Appearance';
+import { EditorSettings } from './EditorPageSettings/EditorSettings';
+import { PreviewSettings } from './EditorPageSettings/PreviewSettings';
+import { CodeFormatting } from './CodeFormatting';
+import { PaymentInfo } from './PaymentInfo';
+import { Integrations } from './Integrations';
+import { Badges } from './Badges';
+import { Experiments } from './Experiments';
+import { KeyMapping } from './KeyMapping';
 
 import { Container, ContentContainer } from './elements';
 

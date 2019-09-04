@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 // @ts-ignore
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 import { Link } from 'react-router-dom';
-import BaseSignInButton from 'app/pages/common/SignInButton';
+import { SignInButton as BaseSignInButton } from 'app/pages/common/SignInButton';
 
 export const Container = styled.div<{ zenMode: boolean }>`
   ${({ theme, zenMode }) => css`

@@ -2,7 +2,7 @@ import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
 
-import UserMenu from 'app/pages/common/UserMenu';
+import { UserMenu } from 'app/pages/common/UserMenu';
 
 import {
   SaveAllButton,

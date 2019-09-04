@@ -178,4 +178,4 @@ function EditorSettings({ store, signals }) {
   );
 }
 
-export default inject('store', 'signals')(observer(EditorSettings));
+export const Appearance = inject('store', 'signals')(observer(EditorSettings));

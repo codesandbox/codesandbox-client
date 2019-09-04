@@ -2,7 +2,7 @@ import React from 'react';
 import { observer, inject } from 'app/componentConnectors';
 import { Route } from 'react-router-dom';
 
-import vscode from 'app/vscode';
+import { vscode } from 'app/vscode';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { editorUrl } from '@codesandbox/common/lib/utils/url-generator';
 

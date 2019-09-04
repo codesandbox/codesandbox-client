@@ -12,9 +12,9 @@ import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dash
 
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import Item from './Item';
-import SandboxesItem from './SandboxesItem';
-import TrashItem from './TrashItem';
+import { Item } from './Item';
+import { SandboxesItem } from './SandboxesItem';
+import { TrashItem } from './TrashItem';
 import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
 import { TEAMS_QUERY } from '../queries';
 import { TemplateItem } from './TemplateItem';

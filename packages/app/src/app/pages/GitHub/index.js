@@ -10,7 +10,7 @@ import {
 import { inject, hooksObserver } from 'app/componentConnectors';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
-import Navigation from 'app/pages/common/Navigation';
+import { Navigation } from 'app/pages/common/Navigation';
 import {
   Container,
   Content,
@@ -110,4 +110,5 @@ const GitHub = ({ signals: { githubPageMounted } }) => {
   );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default inject('signals')(hooksObserver(GitHub));

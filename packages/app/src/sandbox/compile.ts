@@ -27,7 +27,7 @@ import {
   findBoilerplate,
 } from './boilerplates';
 
-import loadDependencies from './npm';
+import { loadDependencies } from './npm';
 import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 
 import { showRunOnClick } from './status-screen/run-on-click';
@@ -484,6 +484,7 @@ async function compile({
       templateDefinition,
       configurations
     );
+
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       disableDependencyPreprocessing

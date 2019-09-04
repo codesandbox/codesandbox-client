@@ -1,28 +1,12 @@
-import Cache from 'lru-cache';
 import { ILambdaResponse } from './merge-dependency';
-
-const packageJSONCache: Cache.Cache<string, Promise<any>> = new Cache({
-  max: 100,
-});
-
-const ROOT_DOMAIN = 'https://unpkg.com';
+import { downloadDependency } from '../eval/npm/fetch-npm-module';
 
 function getPackageJSON(dep: string, version: string) {
-  const cachedPromise = packageJSONCache.get(dep + version);
-  if (cachedPromise) {
-    return cachedPromise;
-  }
-
-  const promise = fetch(`${ROOT_DOMAIN}/${dep}@${version}/package.json`).then(
-    res => res.json()
-  );
-  packageJSONCache.set(dep + version, promise);
-
-  return promise;
+  return downloadDependency(dep, version, '/package.json').then(m => m.code);
 }
 
 function getLatestVersionForSemver(dep: string, version: string) {
-  return getPackageJSON(dep, version).then(p => p.version);
+  return getPackageJSON(dep, version).then(p => JSON.parse(p).version);
 }
 
 interface IPeerDependencyResult {
@@ -39,7 +23,8 @@ async function getDependencyDependencies(
   version: string,
   peerDependencyResult: IPeerDependencyResult = {}
 ): Promise<IPeerDependencyResult> {
-  const packageJSON = await getPackageJSON(dep, version);
+  const packageJSONCode = await getPackageJSON(dep, version);
+  const packageJSON = JSON.parse(packageJSONCode);
 
   await Promise.all(
     Object.keys(packageJSON.dependencies || {}).map(async (depName: string) => {
@@ -75,7 +60,8 @@ async function getDependencyDependencies(
 }
 
 export async function resolveDependencyInfo(dep: string, version: string) {
-  const packageJSON = await getPackageJSON(dep, version);
+  const packageJSONCode = await getPackageJSON(dep, version);
+  const packageJSON = JSON.parse(packageJSONCode);
   const response: ILambdaResponse = {
     contents: {},
     dependency: {
@@ -87,7 +73,7 @@ export async function resolveDependencyInfo(dep: string, version: string) {
     dependencyAliases: {},
   };
 
-  response.peerDependencies = packageJSON.peerDependencies;
+  response.peerDependencies = packageJSON.peerDependencies || {};
   response.dependencyDependencies = await getDependencyDependencies(
     dep,
     version
@@ -95,7 +81,7 @@ export async function resolveDependencyInfo(dep: string, version: string) {
 
   response.contents = {
     [`/node_modules/${dep}/package.json`]: {
-      content: JSON.stringify(packageJSON, null, 2),
+      content: packageJSONCode,
     },
   };
 

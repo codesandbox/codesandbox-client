@@ -16,11 +16,11 @@ import downloadZip from 'app/store/providers/Utils/create-zip';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import 'react-virtualized/styles.css';
 
-import SandboxItem from '../SandboxCard';
+import { SandboxItem } from '../SandboxCard';
 import { PADDING } from '../SandboxCard/elements';
-import Selection, { getBounds } from '../Selection';
+import { getBounds, Selection } from '../Selection';
 import { Content, StyledRow } from './elements';
-import DragLayer from '../DragLayer';
+import { DragLayer } from '../DragLayer';
 
 import {
   deleteSandboxes,
@@ -45,7 +45,7 @@ const IS_TABLE = false;
 
 const diff = (a, b) => (a > b ? a - b : b - a);
 
-class SandboxGrid extends React.Component<*, State> {
+class SandboxGridComponent extends React.Component<*, State> {
   state = {
     selection: undefined,
   };
@@ -453,4 +453,6 @@ class SandboxGrid extends React.Component<*, State> {
   }
 }
 
-export default inject('store', 'signals')(observer(SandboxGrid));
+export const SandboxGrid = inject('store', 'signals')(
+  observer(SandboxGridComponent)
+);

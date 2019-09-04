@@ -6,7 +6,7 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 // @ts-ignore
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
-import Navigation from '../../Navigation';
+import { Navigation } from 'app/pages/common/Navigation';
 import { Sadbox } from './Sadbox';
 import { IFallbackComponentProps } from '../types';
 import { buildCrashReport } from './buildCrashReport';
@@ -69,5 +69,3 @@ export const CodeSadbox = inject('store')(
     )
   )
 );
-
-CodeSadbox.displayName = `CodeSadbox`;

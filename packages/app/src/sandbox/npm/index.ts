@@ -1,23 +1,35 @@
 import { pickBy } from 'lodash-es';
 
-import fetchDependencies from './fetch-dependencies';
+import { fetchDependencies } from './fetch-dependencies';
 import { getDependencyVersions } from '../version-resolving';
 import dependenciesToQuery from './dependencies-to-query';
 
 import setScreen from '../status-screen';
 
-let loadedDependencyCombination: ?string = null;
+let loadedDependencyCombination: string | null = null;
 let manifest = null;
 
 type NPMDependencies = {
-  [dependency: string]: string,
+  [dependency: string]: string;
 };
+
+/**
+ * If there is a URL to a file we need to fetch the dependenices dynamically, at least
+ * for the first version. In the future we might want to consider a hybrid version where
+ * we only fetch the dynamic files for dependencies with a url as version. But this is a good
+ * start.
+ */
+function shouldFetchDynamically(dependencies: NPMDependencies) {
+  return Object.keys(dependencies).some(depName =>
+    dependencies[depName].includes('http')
+  );
+}
 
 /**
  * This fetches the manifest and dependencies from the
  * @param {*} dependencies
  */
-export default async function loadDependencies(
+export async function loadDependencies(
   dependencies: NPMDependencies,
   disableExternalConnection = false
 ) {
@@ -34,9 +46,15 @@ export default async function loadDependencies(
     if (loadedDependencyCombination !== depQuery) {
       isNewCombination = true;
 
-      const data = await (disableExternalConnection
+      const fetchDynamically =
+        disableExternalConnection ||
+        shouldFetchDynamically(dependenciesWithoutTypings);
+
+      const fetchFunction = fetchDynamically
         ? getDependencyVersions
-        : fetchDependencies)(dependenciesWithoutTypings);
+        : fetchDependencies;
+
+      const data = await fetchFunction(dependenciesWithoutTypings);
 
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;

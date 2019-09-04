@@ -14,7 +14,7 @@ interface IPromptProps {
 
 const select = ({ target }: { target: any }) => target.select();
 
-const Prompt: React.FC<IPromptProps> = ({
+export const Prompt: React.FC<IPromptProps> = ({
   error,
   token,
   loading,
@@ -73,5 +73,3 @@ const Prompt: React.FC<IPromptProps> = ({
     </Container>
   );
 };
-
-export default Prompt;

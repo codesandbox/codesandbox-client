@@ -37,7 +37,7 @@ interface DragProps {
   itemType: string;
 }
 
-const TabDropZone = ({
+const TabDropZoneComponent = ({
   connectDropTarget,
   isOver,
 }: TabDropZoneProps & DragProps) =>
@@ -97,6 +97,8 @@ const collectTarget = (
   itemType: monitor.getItemType(),
 });
 
-export default DropTarget(PREVIEW_TAB_ID, entryTarget, collectTarget)(
-  TabDropZone
-);
+export const TabDropZone = DropTarget(
+  PREVIEW_TAB_ID,
+  entryTarget,
+  collectTarget
+)(TabDropZoneComponent);

@@ -3,7 +3,7 @@ import { orderBy } from 'lodash-es';
 import { inject, observer } from 'app/componentConnectors';
 import { Overlay as OverlayComponent } from 'app/components/Overlay';
 import { Container, TemplatesName, OverlayContainer } from './elements';
-import Option from './Option';
+import { Option } from './Option';
 import { ITemplate } from '../../types';
 
 interface Props {
@@ -13,13 +13,13 @@ interface Props {
   signals?: any;
 }
 
-const FilterOptions = ({
+const FilterOptionsComponent = ({
   possibleTemplates,
   hideFilters,
   store,
   signals,
 }: Props) => {
-  const toggleTemplate = (name, select) =>
+  const toggleTemplate = (name: string, select: boolean) =>
     select
       ? signals.dashboard.blacklistedTemplateRemoved({
           template: name,
@@ -95,4 +95,6 @@ const FilterOptions = ({
   );
 };
 
-export default inject('store', 'signals')(observer(FilterOptions));
+export const FilterOptions = inject('store', 'signals')(
+  observer(FilterOptionsComponent)
+);

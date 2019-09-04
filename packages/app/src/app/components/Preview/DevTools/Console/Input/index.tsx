@@ -49,7 +49,7 @@ const InputWrapper = styled.div`
   width: 100%;
 `;
 
-class ConsoleInput extends React.PureComponent<Props, State> {
+export class ConsoleInput extends React.PureComponent<Props, State> {
   sizeProbeInterval: number;
 
   state = {
@@ -140,5 +140,3 @@ class ConsoleInput extends React.PureComponent<Props, State> {
     );
   }
 }
-
-export default ConsoleInput;

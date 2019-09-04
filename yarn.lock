@@ -1144,10 +1144,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/template-icons@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.7.0.tgz#816a4dd5573e39f51c6d3fd6dc2f709e01e03459"
-  integrity sha512-4u6iNNLwcBhflxltag1tHcXcymT1O4Mc9HZBxpqNqd8Eghz1pTBjAyaBunKIYkl8tBNpI3LFdFrO14u1b+xFHg==
+"@codesandbox/template-icons@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.7.1.tgz#18090393b4ff2c614d5fe5b2fdf9f8c6b024de32"
+  integrity sha512-EcFDVIyQY7aaahy63Cpt8seK0I34EsL5GcLRd0YktaIVeIoxMC5/GjG6foI5RLg4zw9XwbTHQaRNM+UG0KlHdQ==
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
@@ -19820,7 +19820,7 @@ react-dom@16.8.1:
     prop-types "^15.6.2"
     scheduler "^0.13.1"
 
-react-dom@16.9.0, react-dom@^16.2.0, react-dom@^16.8.3, react-dom@^16.8.6, react-dom@^16.9.0:
+react-dom@16.9.0, react-dom@^16.2.0, react-dom@^16.8.3, react-dom@^16.9.0:
   version "16.9.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.9.0.tgz#5e65527a5e26f22ae3701131bcccaee9fb0d3962"
   integrity sha512-YFT2rxO9hM70ewk9jq0y6sQk8cL02xm4+IzYBz75CQGlClQQ1Bxq0nhHF6OtSbit+AIahujJgb/CPRibFkMNJQ==

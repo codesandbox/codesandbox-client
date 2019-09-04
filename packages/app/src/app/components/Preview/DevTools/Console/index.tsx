@@ -11,7 +11,7 @@ import styled, { withTheme } from 'styled-components';
 import { DevToolProps } from '../';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
-import Input from './Input';
+import { ConsoleInput } from './Input';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -27,7 +27,7 @@ const StyledClearIcon = styled(ClearIcon)`
   font-size: 0.8em;
 `;
 
-class Console extends React.Component<StyledProps> {
+class ConsoleComponent extends React.Component<StyledProps> {
   state = {
     messages: [],
     scrollToBottom: true,
@@ -238,7 +238,7 @@ class Console extends React.Component<StyledProps> {
             searchKeywords={searchKeywordsHasError ? '' : searchKeywords}
           />
         </Messages>
-        <Input evaluateConsole={this.evaluateConsole} />
+        <ConsoleInput evaluateConsole={this.evaluateConsole} />
       </Container>
     );
   }
@@ -284,11 +284,11 @@ const ConsoleFilterSelect = props => {
   );
 };
 
-export default {
+export const console = {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
-  Content: withTheme<StyledProps>(Console),
+  Content: withTheme<StyledProps>(ConsoleComponent),
   actions: [
     {
       title: 'Clear Console',

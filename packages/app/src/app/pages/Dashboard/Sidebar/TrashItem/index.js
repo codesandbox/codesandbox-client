@@ -5,10 +5,15 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'app/componentConnectors';
 
-import Item from '../Item';
+import { Item } from '../Item';
 import { DELETE_SANDBOX_DROP_KEY } from '../../Content/SandboxCard';
 
-const TrashItem = ({ currentPath, isOver, canDrop, connectDropTarget }) =>
+const TrashItemComponent = ({
+  currentPath,
+  isOver,
+  canDrop,
+  connectDropTarget,
+}) =>
   connectDropTarget(
     <div>
       <Item
@@ -24,7 +29,7 @@ const TrashItem = ({ currentPath, isOver, canDrop, connectDropTarget }) =>
   );
 
 export const entryTarget = {
-  drop: (props, monitor) => {
+  drop: (_, monitor) => {
     if (monitor == null) return {};
 
     // Check if only child is selected:
@@ -55,8 +60,8 @@ export function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export default inject('store', 'signals')(
+export const TrashItem = inject('store', 'signals')(
   DropTarget(['SANDBOX'], entryTarget, collectTarget)(
-    withRouter(observer(TrashItem))
+    withRouter(observer(TrashItemComponent))
   )
 );

@@ -8,7 +8,7 @@ interface Props {
   name: string;
 }
 
-function Card({ brand, last4, name }: Props) {
+export function Card({ brand, last4, name }: Props) {
   return (
     <Container>
       <div>
@@ -21,5 +21,3 @@ function Card({ brand, last4, name }: Props) {
     </Container>
   );
 }
-
-export default Card;

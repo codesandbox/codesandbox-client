@@ -17,7 +17,7 @@ type Props = EditorProps & {
   toggleConfigUI: () => void;
 };
 
-export default class Configuration extends React.PureComponent<Props>
+export class Configuration extends React.PureComponent<Props>
   implements Editor {
   disposeInitializer?: Function;
 

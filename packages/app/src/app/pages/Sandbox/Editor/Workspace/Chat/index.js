@@ -22,7 +22,7 @@ const Messages = styled.div`
   flex: 1;
 `;
 
-class Chat extends React.Component {
+class ChatComponent extends React.Component {
   state = {
     value: '',
   };
@@ -144,4 +144,4 @@ class Chat extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(observer(Chat));
+export const Chat = inject('signals', 'store')(observer(ChatComponent));

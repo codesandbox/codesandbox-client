@@ -1,7 +1,7 @@
 import * as React from 'react';
 import IconBase from 'react-icons/lib/IconBase';
 
-export default props => (
+export const LoadingBubbles = props => (
   <IconBase
     width="1em"
     height="1em"

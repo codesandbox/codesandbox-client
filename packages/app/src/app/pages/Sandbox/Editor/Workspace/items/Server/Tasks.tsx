@@ -64,7 +64,7 @@ const getIcon = (scriptName: string) => {
   }
 };
 
-export default class Tasks extends React.PureComponent<Props> {
+export class Tasks extends React.PureComponent<Props> {
   runTask = (task: string) => {
     dispatch({
       type: 'codesandbox:create-shell',

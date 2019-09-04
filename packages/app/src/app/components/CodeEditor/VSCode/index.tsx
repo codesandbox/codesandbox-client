@@ -27,7 +27,7 @@ import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 // @ts-ignore
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
 /* eslint-enable import/no-webpack-loader-syntax */
-
+import { clone } from 'app/componentConnectors';
 import eventToTransform from '../Monaco/event-to-transform';
 import MonacoEditorComponent, { EditorAPI } from './MonacoReactComponent';
 import { Container, GlobalStyles } from './elements';
@@ -35,14 +35,13 @@ import getSettings from '../Monaco/settings';
 
 import { Props, Editor } from '../types';
 import getMode from '../Monaco/mode';
+
 import {
   lineAndColumnToIndex,
   indexToLineAndColumn,
 } from '../Monaco/monaco-index-converter';
 import { updateUserSelections } from '../Monaco/live-decorations';
-
-import Configuration from './Configuration';
-import { clone } from 'app/componentConnectors';
+import { Configuration } from './Configuration';
 
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(
@@ -79,7 +78,7 @@ type UserSelection =
       color: number[];
     };
 
-class MonacoEditor extends React.Component<Props> implements Editor {
+export class VSCode extends React.Component<Props> implements Editor {
   static defaultProps = {
     width: '100%',
     height: '100%',
@@ -1156,5 +1155,3 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     );
   }
 }
-
-export default MonacoEditor;

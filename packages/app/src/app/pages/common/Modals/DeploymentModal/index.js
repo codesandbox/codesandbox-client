@@ -3,7 +3,7 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { inject, observer } from 'app/componentConnectors';
-import ZeitIntegration from 'app/pages/common/ZeitIntegration';
+import { ZeitIntegration } from 'app/pages/common/ZeitIntegration';
 import { IntegrationModal } from 'app/components/IntegrationModal';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {

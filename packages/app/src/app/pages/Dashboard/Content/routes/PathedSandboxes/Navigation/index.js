@@ -5,7 +5,7 @@ import { join } from 'path';
 import { Container } from './elements';
 import NavigationLink from './NavigationLink';
 
-export default ({ path, teamId }) => {
+export const Navigation = ({ path, teamId }) => {
   const splittedPath = path === '/' ? [''] : path.split('/');
 
   const paths = splittedPath.reduce((bases, next) => {

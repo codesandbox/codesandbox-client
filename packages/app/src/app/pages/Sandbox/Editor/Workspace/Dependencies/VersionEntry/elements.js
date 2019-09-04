@@ -2,11 +2,22 @@ import styled, { css } from 'styled-components';
 import Select from '@codesandbox/common/lib/components/Select';
 import { EntryContainer } from '../../elements';
 
+const getRight = (hovering, withSize) => {
+  if (hovering) {
+    if (withSize) {
+      return 5;
+    }
+    return 3.5;
+  }
+
+  return 1;
+};
+
 export const Version = styled.div`
   ${({ hovering, theme, withSize }) => css`
     transition: 0.3s ease all;
     position: absolute;
-    right: ${hovering ? (withSize ? 5 : 3.5) : 1}rem;
+    right: ${getRight(hovering, withSize)}rem;
     color: ${theme.background.lighten(2).clearer(0.5)};
     display: ${hovering ? 'none' : 'block'};
   `};

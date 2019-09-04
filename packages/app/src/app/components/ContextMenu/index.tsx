@@ -45,7 +45,7 @@ interface State {
   left: boolean;
 }
 
-class ContextMenu extends React.PureComponent<Props, State> {
+export class ContextMenu extends React.PureComponent<Props, State> {
   unmounted: boolean;
   el?: HTMLDivElement;
 
@@ -248,5 +248,3 @@ class ContextMenu extends React.PureComponent<Props, State> {
     );
   }
 }
-
-export default ContextMenu;

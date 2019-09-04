@@ -154,7 +154,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
   }
 }
 
-export default {
+export const problems = {
   id: 'codesandbox.problems',
   title: 'Problems',
   Content: Problems,
