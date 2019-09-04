@@ -15,7 +15,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@codesandbox/common": "^1.0.5",
+    "@codesandbox/common": "^1.0.6",
     "@zeit/next-css": "^1.0.1",
     "airtable": "^0.5.9",
     "date-fns": "^1.30.1",
