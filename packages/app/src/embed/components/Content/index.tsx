@@ -420,8 +420,17 @@ export default class Content extends React.PureComponent<Props, State> {
       }
     }
 
-    if (expandDevTools) {
-      views[1].open = true;
+    /**
+      We can't make assumptions about the default value
+      of open because it's loaded from common/templates.
+
+      Example: server templates have devTools open by default
+
+      If the user wants to override the default, they can
+      do that by using the explicit flag.
+    */
+    if (typeof expandDevTools !== 'undefined') {
+      views[1].open = expandDevTools;
     }
 
     const browserConfig: IViewType = {
