@@ -15,7 +15,7 @@
     "build:deps": "lerna run build:dev --scope codesandbox-api --scope @codesandbox/notifications --scope @codesandbox/executors && lerna run build:dev --scope @codesandbox/common && lerna run build:dev --scope vscode-textmate --scope codesandbox-browserfs --scope node-services && lerna run build:dev --scope sse-hooks && lerna run build --scope codesandbox-deps",
     "build:common": "lerna run build:dev --scope @codesandbox/common --stream",
     "build:dynamic": "lerna run build --scope dynamic-pages --stream",
-    "start": "yarn build:deps && lerna run start --scope @codesandbox/common --scope app",
+    "start": "yarn build:deps && lerna run start --scope @codesandbox/common --scope app --parallel",
     "start:overmind": "yarn build:deps && concurrently \"lerna run start --scope app --stream\" \"overmind-devtools\"",
     "start:fast": "cd packages/app && yarn start",
     "start:vscode": "cross-env VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
