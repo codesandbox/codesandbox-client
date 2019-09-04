@@ -69,5 +69,3 @@ export const CodeSadbox = inject('store')(
     )
   )
 );
-
-CodeSadbox.displayName = `CodeSadbox`;

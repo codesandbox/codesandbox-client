@@ -49,6 +49,7 @@ const Patron = Loadable(() =>
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator')
 );
+const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
 
@@ -96,6 +97,9 @@ const RoutesComponent = ({ signals: { appUnmounted } }) => {
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
+            {process.env.NODE_ENV === `development` && (
+              <Route path="/codesadbox" component={CodeSadbox} />
+            )}
             <Route component={NotFound} />
           </Switch>
         </Content>
