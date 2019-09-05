@@ -11,17 +11,18 @@ export const priceChanged: Action<{ price: number }> = (
   state.patron.price = price;
 };
 
-export const createSubscriptionClicked: AsyncAction<string> = async (
-  { state, effects },
-  token
-) => {
+export const createSubscriptionClicked: AsyncAction<{
+  token: string;
+  coupon: string;
+}> = async ({ state, effects }, { token, coupon }) => {
   effects.analytics.track('Create Patron Subscription');
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
   try {
     state.user = await effects.api.createPatronSubscription(
       token,
-      state.patron.price
+      state.patron.price,
+      coupon
     );
     effects.notificationToast.error('Thank you very much for your support!');
   } catch (error) {
@@ -30,15 +31,17 @@ export const createSubscriptionClicked: AsyncAction<string> = async (
   state.patron.isUpdatingSubscription = false;
 };
 
-export const updateSubscriptionClicked: AsyncAction<CurrentUser> = async ({
-  state,
-  effects,
-}) => {
+export const updateSubscriptionClicked: AsyncAction<{
+  coupon: string;
+}> = async ({ state, effects }, { coupon }) => {
   effects.analytics.track('Update Patron Subscription');
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
   try {
-    state.user = await effects.api.updatePatronSubscription(state.patron.price);
+    state.user = await effects.api.updatePatronSubscription(
+      state.patron.price,
+      coupon
+    );
     effects.notificationToast.success(
       'Subscription updated, thanks for helping out!'
     );

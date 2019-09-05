@@ -3,7 +3,11 @@ import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
-export const deployWithNetlify: AsyncAction = async ({ effects, state }) => {
+export const deployWithNetlify: AsyncAction = async ({
+  effects,
+  actions,
+  state,
+}) => {
   state.deployment.deploying = true;
   state.deployment.netlifyLogs = null;
 
@@ -15,6 +19,8 @@ export const deployWithNetlify: AsyncAction = async ({ effects, state }) => {
       state.editor.currentSandbox
     );
     state.deployment.deploying = false;
+
+    await actions.deployment.getNetlifyDeploys();
     // Does not seem that we use this thing? Not in other code either
     // const deploys = await actions.deployment.internal.getNetlifyDeploys();
     state.deployment.building = true;
@@ -34,9 +40,10 @@ export const deployWithNetlify: AsyncAction = async ({ effects, state }) => {
 };
 
 export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
-  // We are not using the claim for anything?
-  // const claim = await actions.deployment.internal.claimNetlifyWebsite();
   try {
+    state.deployment.netlifyClaimUrl = await effects.netlify.claimSite(
+      state.editor.currentId
+    );
     state.deployment.netlifySite = await effects.netlify.getDeployments(
       state.editor.currentId
     );
@@ -46,6 +53,10 @@ export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
 };
 
 export const getDeploys: AsyncAction = async ({ state, effects }) => {
+  if (!state.user.integrations.zeit) {
+    return;
+  }
+
   state.deployment.gettingDeploys = true;
 
   try {

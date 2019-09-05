@@ -1,6 +1,6 @@
 import HttpProvider from '@cerebral/http';
 import { Module } from 'cerebral';
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
 
 import model from './model';
 import ApiProvider from './providers/Api';
@@ -26,7 +26,7 @@ import ExecutorProvider from './providers/Executor';
 import * as sequences from './sequences';
 import * as errors from './errors';
 import { isContributor } from './computed';
-import { isPatron, isLoggedIn, hasLogIn } from './getters';
+import { isPatron, isLoggedIn, hasLogIn } from './utils/getters';
 
 import patron from './modules/patron';
 import editor from './modules/editor';
@@ -44,9 +44,6 @@ import userNotifications from './modules/user-notifications';
 
 export const Signals = createContext();
 export const Store = createContext();
-
-export const useSignals = () => useContext(Signals);
-export const useStore = () => useContext(Store);
 
 export default Module({
   model,

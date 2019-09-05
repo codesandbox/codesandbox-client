@@ -1,3 +1,5 @@
+import { vscode } from 'app/vscode';
+
 export default {
   callCallbackError(id: string, message?: string) {
     // @ts-ignore
@@ -21,6 +23,6 @@ export default {
   },
   runCommand(command: string) {
     // @ts-ignore
-    window.vscode.runCommand(command);
+    vscode.runCommand(command);
   },
 };

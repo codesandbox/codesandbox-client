@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { observer } from 'app/componentConnectors';
+import { inject, observer } from 'app/componentConnectors';
 
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
-import { useSignals } from 'app/store';
 
 const SignInButtonComponent = (props: any) => {
-  const { signInClicked } = useSignals();
+  const { signInClicked } = props.signals;
 
   return (
     <Button small onClick={signInClicked} {...props}>
@@ -18,4 +17,4 @@ const SignInButtonComponent = (props: any) => {
   );
 };
 
-export const SignInButton = observer(SignInButtonComponent);
+export const SignInButton = inject('signals')(observer(SignInButtonComponent));

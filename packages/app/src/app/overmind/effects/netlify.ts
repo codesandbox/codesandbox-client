@@ -25,6 +25,16 @@ export default (() => {
         await pollUntilDone(axios, url, 10000, 60 * 2000, onLogUrlUpdate);
       }
     },
+    async claimSite(sandboxId: string) {
+      const userId = _options.getUserId();
+      const sessionId = `${userId}-${sandboxId}`;
+
+      const { data } = await axios.get(
+        `${NetlifyBaseURL}-claim?sessionId=${sessionId}`
+      );
+
+      return data.claim;
+    },
     async getDeployments(sandboxId: string): Promise<NetlifySite> {
       const response = await axios.request({
         url: `${NetlifyBaseURL}/${sandboxId}`,
@@ -95,17 +105,17 @@ function pollUntilDone(http, url, interval, timeout, onLogUrlUpdate) {
   function run() {
     return http
       .request({ url })
-      .then(({ result }) => {
-        if (result.status.status !== 'IN_PROGRESS') {
+      .then(({ data }) => {
+        if (data.status.status !== 'IN_PROGRESS') {
           // DOOOONE
-          return result;
+          return data;
         }
         if (timeout !== 0 && Date.now() - start > timeout) {
-          return result;
+          return data;
         }
 
-        if (result.status.logUrl) {
-          onLogUrlUpdate(result.status.logUrl);
+        if (data.status.logUrl) {
+          onLogUrlUpdate(data.status.logUrl);
         }
         // run again with a short delay
         return delay(interval).then(run);

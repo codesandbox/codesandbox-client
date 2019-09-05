@@ -1,13 +1,20 @@
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import history from '../../utils/history';
-import {
-  Sandbox,
-  SandboxUrlSourceData,
-  GitInfo,
-} from '@codesandbox/common/lib/types';
+import { GitInfo } from '@codesandbox/common/lib/types';
 
 export default {
+  replaceSandboxUrl({
+    id,
+    alias,
+    git,
+  }: {
+    id?: string;
+    alias?: string;
+    git?: GitInfo;
+  }) {
+    window.history.replaceState({}, null, sandboxUrl({ id, alias, git }));
+  },
   updateSandboxUrl({
     id,
     alias,

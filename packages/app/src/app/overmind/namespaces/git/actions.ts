@@ -1,6 +1,11 @@
 import { Action, AsyncAction } from 'app/overmind';
+import * as internalActions from './internalActions';
 
-export const repoTitleChanged: Action<string> = ({ state }, title) => {
+export const internal = internalActions;
+
+export const repoTitleChanged: Action<{
+  title: string;
+}> = ({ state }, { title }) => {
   state.git.repoTitle = title;
   state.git.error = null;
 };
@@ -40,14 +45,8 @@ export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
   effects.router.updateSandboxUrl({ git });
 };
 
-// gitMounted
-export const fetchGitChanges: AsyncAction = async ({ state, effects }) => {
-  const id = state.editor.currentId;
-
-  state.git.isFetching = true;
-  state.git.originalGitChanges = await effects.api.getGitChanges(id);
-  state.git.isFetching = false;
-};
+export const gitMounted: AsyncAction = ({ actions }) =>
+  actions.git.internal.fetchGitChanges();
 
 export const createCommitClicked: AsyncAction = async ({ state, effects }) => {
   const git = state.git;
@@ -75,11 +74,15 @@ export const createCommitClicked: AsyncAction = async ({ state, effects }) => {
   state.git.originalGitChanges = null;
 };
 
-export const subjectChanged: Action<string> = ({ state }, subject) => {
+export const subjectChanged: Action<{
+  subject: string;
+}> = ({ state }, { subject }) => {
   state.git.subject = subject;
 };
 
-export const descriptionChanged: Action<string> = ({ state }, description) => {
+export const descriptionChanged: Action<{
+  description: string;
+}> = ({ state }, { description }) => {
   state.git.description = description;
 };
 

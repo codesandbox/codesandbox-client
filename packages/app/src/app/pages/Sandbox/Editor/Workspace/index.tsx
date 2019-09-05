@@ -2,12 +2,11 @@ import React from 'react';
 //  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
 import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 import VERSION from '@codesandbox/common/lib/version';
-import { hooksObserver } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { SocialInfo } from 'app/components/SocialInfo';
 import getWorkspaceItems, {
   getDisabledItems,
 } from 'app/store/modules/workspace/items';
-import { useStore } from 'app/store';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import { Deployment } from './items/Deployment';
 import Files from './items/Files';
@@ -41,8 +40,7 @@ const workspaceTabs = {
   more: More,
 };
 
-const WorkspaceComponent = () => {
-  const store = useStore();
+const WorkspaceComponent = ({ store }) => {
   const {
     editor: {
       currentSandbox: { owned },
@@ -98,4 +96,4 @@ const WorkspaceComponent = () => {
   );
 };
 
-export const Workspace = hooksObserver(WorkspaceComponent);
+export const Workspace = inject('store')(hooksObserver(WorkspaceComponent));

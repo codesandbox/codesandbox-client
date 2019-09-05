@@ -1,18 +1,15 @@
-import { json } from 'overmind';
-import { Action, AsyncAction } from '.';
 import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
 import {
   Sandbox,
-  CurrentUser,
   NotificationButton,
-  Contributor,
-  Module,
   TabType,
   ModuleTab,
+  ServerStatus,
+  ServerContainerStatus,
 } from '@codesandbox/common/lib/types';
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
+import { Action, AsyncAction } from '.';
+import { parseConfigurations } from './utils/parse-configurations';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import getItems from './utils/items';
 import { createOptimisticModule } from './utils/common';
@@ -138,15 +135,18 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   effects.keybindingManager.start();
 };
 
-export const setCurrentSandbox: Action<Sandbox> = (
-  { state, effects },
+export const setCurrentSandbox: AsyncAction<Sandbox> = async (
+  { state, effects, actions },
   sandbox
 ) => {
+  const oldSandboxId =
+    state.editor.currentId === sandbox.id ? null : state.editor.currentId;
+
   state.editor.sandboxes[sandbox.id] = sandbox;
   state.editor.currentId = sandbox.id;
 
   let currentModuleShortid = state.editor.currentModuleShortid;
-  const parsedConfigs = parseSandboxConfigurations(sandbox);
+  const parsedConfigs = parseConfigurations(sandbox);
   const main = mainModule(sandbox, parsedConfigs);
 
   state.editor.mainModuleShortid = main.shortid;
@@ -184,6 +184,13 @@ export const setCurrentSandbox: Action<Sandbox> = (
   }
 
   state.editor.currentModuleShortid = currentModuleShortid;
+  state.editor.workspaceConfigCode = '';
+
+  state.server.status = ServerStatus.INITIALIZING;
+  state.server.containerStatus = ServerContainerStatus.INITIALIZING;
+  state.server.error = null;
+  state.server.hasUnrecoverableError = false;
+  state.server.ports = [];
 
   const newTab: ModuleTab = {
     type: TabType.MODULE,
@@ -229,8 +236,35 @@ export const setCurrentSandbox: Action<Sandbox> = (
 
   state.workspace.openedWorkspaceItem = defaultItem.id;
 
+  await effects.executor.initializeExecutor(sandbox);
+
+  [
+    'connect',
+    'disconnect',
+    'sandbox:status',
+    'sandbox:start',
+    'sandbox:stop',
+    'sandbox:error',
+    'sandbox:log',
+    'sandbox:hibernate',
+    'sandbox:update',
+    'sandbox:port',
+    'shell:out',
+    'shell:exit',
+  ].forEach(message => {
+    effects.executor.listen(message, actions.server.onSSEMessage);
+  });
+
+  effects.executor.setupExecutor();
+
   effects.fsSync.syncCurrentSandbox();
-  effects.router.updateSandboxUrl(sandbox);
+
+  /*
+    There seems to be a race condition here? Verify if this still happens with Overmind
+  */
+  if (oldSandboxId !== state.editor.currentId) {
+    delete state.editor.sandboxes[oldSandboxId];
+  }
 };
 
 export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
