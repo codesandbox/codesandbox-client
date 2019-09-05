@@ -8,9 +8,11 @@ description: 'CodeSandbox has a native integration with Jest Tests for running t
 
 Jest is a zero configuration test runner that allows you easily write JavaScript tests without setting anything up. For more info on Jest you can look [here](https://facebook.github.io/jest/).
 
-## How to use Jest in CodeSandbox
+## How to use Jest in CodeSandbox Client Sandboxes
 
-You can run Jest tests by creating files that end with `.test.js`, `.spec.js`, `.test.ts(x)` and `.spec.js(x)`. We will automatically detect these test files and show the results in the bottom bar.
+In Client Sandboxes you can run Jest tests by creating files that end with `.test.js`, `.spec.js`, `.test.ts(x)` and `.spec.js(x)`. We will automatically detect these test files and show the results in the bottom bar.
+
+In Container Sandboxes you can still use Jest (or whichever test framework you want), but we don't auto-detect these and you'd need to set it up yourself as you normally would.
 
 ![Test Bottom](./images/jest-tests.png)
 
