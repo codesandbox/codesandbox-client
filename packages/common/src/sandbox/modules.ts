@@ -255,28 +255,27 @@ export const findMainModule = (
   entry: string = 'index.js',
   template?: TemplateType
 ) => {
-  try {
-    // first attempt: try loading the entry file if it exists
-    const module = resolveModule(entry, modules, directories);
-    return module;
-  } catch (e) {
-    try {
-      // second attempt: try loading the first file that exists from
-      // the list of possible defaults in the template defination
-      const templateDefinition = getTemplateDefinition(template);
+  const resolve = resolveModuleWrapped({ modules, directories });
 
-      const defaultOpenedFiles = templateDefinition.getDefaultOpenedFiles({});
+  // first attempt: try loading the entry file if it exists
 
-      const defaultOpenModule = defaultOpenedFiles
-        .map(path => resolveModuleWrapped({ modules, directories })(path))
-        .find(module => module);
+  const entryModule = resolve(entry);
+  if (entryModule) return entryModule;
 
-      return defaultOpenModule;
-    } catch (nestedError) {
-      // third attempt: give up and load the first file in the list
-      return modules[0];
-    }
-  }
+  // second attempt: try loading the first file that exists from
+  // the list of possible defaults in the template defination
+  const templateDefinition = getTemplateDefinition(template);
+
+  const defaultOpenedFiles = templateDefinition.getDefaultOpenedFiles({});
+
+  const defaultOpenModule = defaultOpenedFiles
+    .map(path => resolve(path))
+    .find(module => module);
+
+  if (defaultOpenModule) return defaultOpenModule;
+
+  // third attempt: give up and load the first file in the list
+  return modules[0];
 };
 
 export const findCurrentModule = (
