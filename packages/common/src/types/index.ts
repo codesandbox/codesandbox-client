@@ -405,7 +405,7 @@ export type UserSelection = {
 export type EditorSelection = {
   userId: string;
   name: string;
-  selection: UserSelection;
+  selection: Selection;
   color: number[];
 };
 
@@ -608,6 +608,13 @@ export type SandboxUrlSourceData = {
   id?: string;
   alias?: string;
   git?: GitInfo;
+};
+
+export type LiveMessage<data = undefined> = {
+  event: LiveMessageEvent;
+  data: data;
+  _isOwnMessage: boolean;
+  liveUserId: string;
 };
 
 export enum LiveMessageEvent {
