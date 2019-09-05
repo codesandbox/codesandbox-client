@@ -370,7 +370,7 @@ export const moduleCreated: AsyncAction<{
       actions.editor.internal.setCurrentModule(module);
 
       if (state.live.isCurrentEditor) {
-        effects.live.sendModuleCreated(module.shortid);
+        effects.live.sendModuleCreated(module);
       }
     } catch (error) {
       sandbox.modules.splice(sandbox.modules.indexOf(module), 1);

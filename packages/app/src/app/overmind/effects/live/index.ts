@@ -203,10 +203,11 @@ export default {
       // { sendModule: false }
     );
   },
-  sendModuleCreated(moduleShortid: string) {
+  sendModuleCreated(module: Module) {
     this.send('module:created', {
       type: 'module',
-      moduleShortid,
+      moduleShortid: module.shortid,
+      module,
     });
   },
   sendModuleDeleted(moduleShortid: string) {

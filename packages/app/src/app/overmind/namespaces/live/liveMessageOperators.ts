@@ -120,14 +120,16 @@ export const onModuleSaved: Operator<
   });
 });
 
-export const onModuleCreated: Operator<LiveMessage<Module>> = mutate(
-  ({ state }, { _isOwnMessage, data }) => {
-    if (_isOwnMessage) {
-      return;
-    }
-    state.editor.currentSandbox.modules.push(data);
+export const onModuleCreated: Operator<
+  LiveMessage<{
+    module: Module;
+  }>
+> = mutate(({ state }, { _isOwnMessage, data }) => {
+  if (_isOwnMessage) {
+    return;
   }
-);
+  state.editor.currentSandbox.modules.push(data.module);
+});
 
 export const onModuleMassCreated: Operator<
   LiveMessage<{
