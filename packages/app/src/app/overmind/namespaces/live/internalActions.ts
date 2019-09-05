@@ -1,10 +1,9 @@
 import { Action, AsyncAction } from 'app/overmind';
 import {
-  RoomInfo,
   Module,
   EditorSelection,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
-import { withLoadApp } from 'app/overmind/factories';
 import { json } from 'overmind';
 
 export const clearUserSelections: Action<any> = ({ state }, data) => {
@@ -50,41 +49,45 @@ export const sendModuleSaved: Action<string> = ({ effects }, moduleShortid) => {
   effects.live.sendModuleSaved(moduleShortid);
 };
 
-export const initialize: AsyncAction<string> = withLoadApp<string>(
-  async ({ state, effects, actions }, id) => {
-    state.live.isLoading = true;
+export const initialize: AsyncAction<string, Sandbox> = async (
+  { state, effects, actions },
+  id
+) => {
+  state.live.isLoading = true;
 
-    try {
-      const {
-        roomInfo,
-        liveUserId,
-        sandbox,
-        moduleState,
-      } = await effects.live.joinChannel(id);
+  try {
+    const {
+      roomInfo,
+      liveUserId,
+      sandbox,
+      moduleState,
+    } = await effects.live.joinChannel(id);
 
-      state.live.roomInfo = roomInfo;
-      state.live.liveUserId = liveUserId;
+    state.live.roomInfo = roomInfo;
+    state.live.liveUserId = liveUserId;
 
-      if (!state.editor.sandboxes[sandbox.id]) {
-        state.editor.sandboxes[sandbox.id] = sandbox;
-      }
-
-      state.editor.currentId = sandbox.id;
-
-      effects.analytics.track('Live Session Joined', {});
-      effects.live.listen(actions.live.liveMessageReceived);
-
-      state.live.receivingCode = true;
-      actions.live.internal.initializeModuleState(moduleState);
-      state.live.receivingCode = false;
-      state.live.isLive = true;
-      state.live.error = null;
-      effects.live.send('live:module_state', {});
-    } catch (error) {
-      state.live.error = error.reason;
+    if (!state.editor.sandboxes[sandbox.id]) {
+      state.editor.sandboxes[sandbox.id] = sandbox;
     }
+    state.editor.currentId = sandbox.id;
+
+    effects.analytics.track('Live Session Joined', {});
+    effects.live.listen(actions.live.liveMessageReceived);
+
+    state.live.receivingCode = true;
+    actions.live.internal.initializeModuleState(moduleState);
+    state.live.receivingCode = false;
+    state.live.isLive = true;
+    state.live.error = null;
+    effects.live.send('live:module_state', {});
+
+    return sandbox;
+  } catch (error) {
+    state.live.error = error.reason;
   }
-);
+
+  return null;
+};
 
 export const initializeModuleState: Action<any> = (
   { state, effects },
@@ -127,7 +130,6 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
       return;
     }
 
-    console.log(user.color);
     if (user.selection) {
       selections.push({
         userId,

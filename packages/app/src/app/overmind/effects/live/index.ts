@@ -63,7 +63,7 @@ export default {
     provideJwtToken = options.provideJwtToken;
   },
   getSocket() {
-    return _socket;
+    return _socket || this.connect();
   },
   connect() {
     if (!_socket) {
@@ -77,6 +77,8 @@ export default {
       window.socket = _socket;
       debug('Connecting to socket', _socket);
     }
+
+    return _socket;
   },
   disconnect() {
     return new Promise((resolve, reject) => {
@@ -94,7 +96,7 @@ export default {
     });
   },
   joinChannel(roomId: string): Promise<JoinChannelResponse> {
-    channel = _socket.channel(`live:${roomId}`, {});
+    channel = this.getSocket().channel(`live:${roomId}`, {});
 
     return new Promise((resolve, reject) => {
       channel

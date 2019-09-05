@@ -178,7 +178,7 @@ async function initialize() {
 
         overmind = createOvermind(config, {
           devtools:
-            window.opener && window.opener !== window
+            window.opener && window.opener !== window && !window.chrome
               ? false
               : 'localhost:3031',
           name: 'CodeSandbox',

@@ -1,16 +1,16 @@
-import * as internalActions from './internalActions';
 import { AsyncAction, Action } from 'app/overmind';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { camelizeKeys } from 'humps';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
+import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
 export const roomJoined: AsyncAction<{
-  id;
-}> = async ({ state, effects, actions }, { id }) => {
-  await actions.live.internal.initialize(id);
+  roomId: string;
+}> = async ({ state, effects, actions }, { roomId }) => {
+  const sandbox = await actions.live.internal.initialize(roomId);
 
   if (state.updateStatus === 'available') {
     const modal = 'liveVersionMismatch';
@@ -18,8 +18,7 @@ export const roomJoined: AsyncAction<{
     state.currentModal = modal;
   }
 
-  // Where do we get the sandbox from?
-  // actions.internal.setSandbox()
+  actions.internal.setCurrentSandbox(sandbox);
   state.live.isLoading = false;
 };
 
@@ -120,7 +119,7 @@ export const liveMessageReceived: AsyncAction<{
         return;
       }
       const module = state.editor.currentSandbox.modules.find(
-        module => module.shortid === data.moduleShortid
+        moduleItem => moduleItem.shortid === data.moduleShortid
       );
       module.isNotSynced = false;
       actions.editor.internal.setModuleSavedCode({
@@ -545,9 +544,14 @@ export const onChatEnabledChange: Action<{ enabled: boolean }> = (
 export const onFollow: Action<{
   liveUserId: string;
   moduleShortid: string;
-}> = ({ state, effects, actions }, { liveUserId, moduleShortid }) => {
+}> = (
+  { state, effects, actions },
+  { liveUserId, moduleShortid: moduleShortidPayload }
+) => {
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
+
+  let moduleShortid = moduleShortidPayload;
 
   const userIndex = state.live.roomInfo.users.findIndex(
     u => u.id === liveUserId
