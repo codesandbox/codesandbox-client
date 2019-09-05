@@ -186,10 +186,10 @@ export default {
       moduleShortid,
     });
   },
-  sendDirectoryCreated(directoryShortid: string) {
+  sendDirectoryCreated(directory: Directory) {
     this.send('directory:created', {
       type: 'directory',
-      directoryShortid,
+      module: directory,
     });
   },
   sendDirectoryDeleted(directoryShortid: string) {

@@ -73,7 +73,7 @@ export const directoryCreated: AsyncAction<{
         shortid: newDirectory.shortid,
       });
 
-      effects.live.sendDirectoryCreated(newDirectory.directoryShortid);
+      effects.live.sendDirectoryCreated(newDirectory);
     } catch (error) {
       const directoryIndex = state.editor.currentSandbox.directories.findIndex(
         directoryItem => directoryItem.shortid === optimisticDirectory.shortid
