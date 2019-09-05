@@ -125,9 +125,9 @@ class PreviewComponent extends Component<Props, State> {
     const settings = this.props.store.preferences.settings;
 
     if (
-      settings.livePreviewEnabled &&
       change &&
-      this.props.store.editor.currentSandbox.template === 'static'
+      (this.props.store.editor.currentSandbox.template === 'static' ||
+        !settings.livePreviewEnabled)
     ) {
       preview.handleRefresh();
     }
