@@ -1,6 +1,7 @@
 import memoize from 'lodash/memoize';
 import { Module, Directory, Sandbox } from '../types';
 import getTemplateDefinition from '../templates';
+import parse from '../templates/configuration/parse';
 
 const compareTitle = (
   original: string,
@@ -253,7 +254,6 @@ export const findMainModule = (sandbox?: Sandbox) => {
   const resolve = resolveModuleWrapped(sandbox);
 
   // first attempt: try loading the entry file if it exists
-
   const entryModule = resolve(sandbox.entry);
   if (entryModule) return entryModule;
 
@@ -261,7 +261,16 @@ export const findMainModule = (sandbox?: Sandbox) => {
   // the list of possible defaults in the template defination
   const templateDefinition = getTemplateDefinition(sandbox.template);
 
-  const defaultOpenedFiles = templateDefinition.getDefaultOpenedFiles({});
+  const parsedConfigs = parse(
+    sandbox.template,
+    templateDefinition.configurationFiles,
+    resolve,
+    sandbox
+  );
+
+  const defaultOpenedFiles = templateDefinition.getDefaultOpenedFiles(
+    parsedConfigs
+  );
 
   const defaultOpenModule = defaultOpenedFiles
     .map(path => resolve(path))
