@@ -229,12 +229,7 @@ export default class App extends React.PureComponent<
       sandbox.modules,
       sandbox.directories,
       currentModulePath,
-      findMainModule(
-        sandbox.modules,
-        sandbox.directories,
-        sandbox.entry,
-        sandbox.template
-      )
+      findMainModule(sandbox)
     );
   };
 

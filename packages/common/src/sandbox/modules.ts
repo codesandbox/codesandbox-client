@@ -1,6 +1,6 @@
 import memoize from 'lodash/memoize';
-import { Module, Directory } from '../types';
-import getTemplateDefinition, { TemplateType } from '../templates';
+import { Module, Directory, Sandbox } from '../types';
+import getTemplateDefinition from '../templates';
 
 const compareTitle = (
   original: string,
@@ -249,22 +249,17 @@ export const isMainModule = (
   return path.replace('/', '') === entry;
 };
 
-export const findMainModule = (
-  modules: Module[],
-  directories: Directory[],
-  entry: string = 'index.js',
-  template?: TemplateType
-) => {
-  const resolve = resolveModuleWrapped({ modules, directories });
+export const findMainModule = (sandbox?: Sandbox) => {
+  const resolve = resolveModuleWrapped(sandbox);
 
   // first attempt: try loading the entry file if it exists
 
-  const entryModule = resolve(entry);
+  const entryModule = resolve(sandbox.entry);
   if (entryModule) return entryModule;
 
   // second attempt: try loading the first file that exists from
   // the list of possible defaults in the template defination
-  const templateDefinition = getTemplateDefinition(template);
+  const templateDefinition = getTemplateDefinition(sandbox.template);
 
   const defaultOpenedFiles = templateDefinition.getDefaultOpenedFiles({});
 
@@ -275,7 +270,7 @@ export const findMainModule = (
   if (defaultOpenModule) return defaultOpenModule;
 
   // third attempt: give up and load the first file in the list
-  return modules[0];
+  return sandbox.modules[0];
 };
 
 export const findCurrentModule = (
