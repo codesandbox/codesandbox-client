@@ -255,7 +255,9 @@ export const findMainModule = (sandbox?: Sandbox) => {
 
   // first attempt: try loading the entry file if it exists
   const entryModule = resolve(sandbox.entry);
-  if (entryModule) return entryModule;
+  if (entryModule) {
+    return entryModule;
+  }
 
   // second attempt: try loading the first file that exists from
   // the list of possible defaults in the template defination
@@ -276,7 +278,9 @@ export const findMainModule = (sandbox?: Sandbox) => {
     .map(path => resolve(path))
     .find(module => module);
 
-  if (defaultOpenModule) return defaultOpenModule;
+  if (defaultOpenModule) {
+    return defaultOpenModule;
+  }
 
   // third attempt: give up and load the first file in the list
   return sandbox.modules[0];
