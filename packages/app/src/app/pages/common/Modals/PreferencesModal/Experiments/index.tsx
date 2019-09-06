@@ -8,6 +8,7 @@ import {
   PreferenceContainer,
   PaddedPreference,
 } from '../elements';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 const windowWithOvermind: {
   useOvermind?: (val?: boolean) => 'true' | null;
@@ -41,6 +42,9 @@ export function Experiments() {
             setValue={val => {
               windowWithOvermind.useOvermind(val);
               setUsingOvermind(val);
+              track('Overmind Enabled', {
+                enabled: val,
+              });
             }}
           />
           <SubDescription>
