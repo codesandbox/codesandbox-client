@@ -716,4 +716,6 @@ var jsonlint = (function() {
 })();
 
 exports.parser = jsonlint;
-exports.parse = () => jsonlint.parse.apply(jsonlint, arguments);
+exports.parse = function() {
+  return jsonlint.parse.apply(jsonlint, arguments);
+};
