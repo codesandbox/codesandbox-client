@@ -111,7 +111,7 @@ export default ({ template }) => (
   <Container>
     <Title title="CodeSandbox">
       <Secondary style={{ color: template.color() }}>Code</Secondary>
-      <Primary>Sandbox</Primary>
+      <Primary>Sadbox</Primary>
     </Title>
     <SubTitle title="The online code editor tailored for web applications">
       {typeof window === 'undefined' || isBot() ? (
