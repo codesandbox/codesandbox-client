@@ -1,4 +1,5 @@
 import React from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
 // import { inject, observer } from 'app/componentConnectors';
 
 import {
@@ -8,7 +9,6 @@ import {
   PreferenceContainer,
   PaddedPreference,
 } from '../elements';
-import track from '@codesandbox/common/lib/utils/analytics';
 
 const windowWithOvermind: {
   useOvermind?: (val?: boolean) => 'true' | null;
