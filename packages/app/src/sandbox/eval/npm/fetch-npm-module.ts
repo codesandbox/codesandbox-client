@@ -1,4 +1,5 @@
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
+import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
@@ -123,10 +124,8 @@ export function setCombinedMetas(givenCombinedMetas: Meta) {
   combinedMetas = givenCombinedMetas;
 }
 
-const CSB_DRAFT_PROTOCOL = /https:\/\/pkg(-staging)?\.csb.dev/;
-
 const getFetchProtocol = (depVersion: string, useFallback = false) => {
-  const isDraftProtocol = CSB_DRAFT_PROTOCOL.test(depVersion);
+  const isDraftProtocol = CSB_PKG_PROTOCOL.test(depVersion);
 
   if (isDraftProtocol) {
     return urlProtocols.csbGH;

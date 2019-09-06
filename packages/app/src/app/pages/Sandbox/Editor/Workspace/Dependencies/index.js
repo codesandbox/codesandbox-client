@@ -7,7 +7,7 @@ import getDefinition from '@codesandbox/common/lib/templates';
 import { WorkspaceSubtitle } from '../elements';
 
 import AddVersion from './AddVersion';
-import VersionEntry from './VersionEntry';
+import { VersionEntry } from './VersionEntry';
 import AddResource from './AddResource';
 import ExternalResource from './ExternalResource';
 

@@ -6,22 +6,47 @@ import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
 import algoliasearch from 'algoliasearch/lite';
 import compareVersions from 'compare-versions';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
 
 import { EntryContainer, IconArea, Icon } from '../../elements';
 import { Link } from '../elements';
 import { Version, VersionSelect } from './elements';
 import { BundleSizes } from './BundleSizes';
 
-export default class VersionEntry extends React.PureComponent {
-  state = {
+interface Props {
+  dependencies: { [dep: string]: string };
+  dependency: string;
+  onRemove: (dep: string) => void;
+  onRefresh: (dep: string, version?: string) => void;
+}
+
+interface State {
+  hovering: boolean;
+  version: null | string;
+  open: boolean;
+  versions: string[];
+}
+
+function formatVersion(version: string) {
+  if (CSB_PKG_PROTOCOL.test(version)) {
+    const commitSha = version.match(/commit\/(.*)\//);
+    if (commitSha && commitSha[1]) {
+      return `csb:${commitSha[1]}`;
+    }
+  }
+
+  return version;
+}
+
+export class VersionEntry extends React.PureComponent<Props, State> {
+  state: State = {
     hovering: false,
     version: null,
     open: false,
-    size: {},
     versions: [],
   };
 
-  setVersionsForLatestPkg(pkg) {
+  setVersionsForLatestPkg(pkg: string) {
     const that = this;
     fetch(`/api/v1/dependencies/${pkg}`)
       .then(response => response.json())
@@ -89,7 +114,7 @@ export default class VersionEntry extends React.PureComponent {
       return null;
     }
 
-    const { hovering, version, size, open, versions } = this.state;
+    const { hovering, version, open, versions } = this.state;
     return (
       <Fragment>
         <EntryContainer
@@ -112,9 +137,9 @@ export default class VersionEntry extends React.PureComponent {
               </option>
             ))}
           </VersionSelect>
-          <Version withSize={!!size.size} hovering={hovering}>
-            {dependencies[dependency]}{' '}
-            {hovering && version && <span>({version})</span>}
+          <Version hovering={hovering}>
+            {formatVersion(dependencies[dependency])}{' '}
+            {hovering && version && <span>({formatVersion(version)})</span>}
           </Version>
 
           {hovering && (
