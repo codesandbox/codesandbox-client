@@ -374,7 +374,6 @@ module.exports = {
     ],
   },
 
-  // To make jsonlint work
   externals: ['jsdom', 'prettier', 'cosmiconfig'],
 
   resolve: {
