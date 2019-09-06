@@ -1,5 +1,5 @@
 import toml from 'markty-toml';
-import { parse } from './jsonlint.browser';
+import { parse } from 'jsonlint';
 import { ConfigurationFile } from '../../templates/configuration/types';
 import { ParsedConfigurationFiles } from '../template';
 import { Sandbox } from '../../types';

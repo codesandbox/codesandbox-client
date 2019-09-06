@@ -374,7 +374,8 @@ module.exports = {
     ],
   },
 
-  externals: ['jsdom', 'prettier', 'cosmiconfig'],
+  // To make jsonlint work
+  externals: ['file', 'system', 'jsdom', 'prettier', 'cosmiconfig'],
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
