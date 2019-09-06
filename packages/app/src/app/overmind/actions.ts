@@ -1,7 +1,10 @@
 import { Action, AsyncAction } from '.';
 import * as internalActions from './internalActions';
 import { withLoadApp } from './factories';
-import { NotificationType } from '@codesandbox/common/lib/utils/notifications';
+import {
+  NotificationType,
+  convertTypeToStatus,
+} from '@codesandbox/common/lib/utils/notifications';
 
 export const internal = internalActions;
 
@@ -20,6 +23,29 @@ export const cliMounted: AsyncAction = withLoadApp(
     }
   }
 );
+
+export const notificationAdded: Action<{
+  title: string;
+  notificationType: NotificationType;
+  timeAlive: number;
+}> = ({ effects }, { title, notificationType, timeAlive }) => {
+  effects.notificationToast.add({
+    message: title,
+    status: convertTypeToStatus(notificationType),
+    timeAlive: timeAlive * 1000,
+  });
+};
+
+export const notificationRemoved: Action<{
+  id: number;
+}> = ({ state }, { id }) => {
+  const notifications = state.notifications;
+  const notificationToRemoveIndex = notifications.findIndex(
+    notification => notification.id === id
+  );
+
+  state.notifications.splice(notificationToRemoveIndex, 1);
+};
 
 export const forceRender: Action = ({ state }) => {
   state.editor.forceRender++;
@@ -135,7 +161,7 @@ export const requestAuthorisation: AsyncAction = async ({ actions }) => {
 
 export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = true;
-  await actions.internal.signIn({ useExtraScopes: false });
+  await actions.internal.signIn({ useExtraScopes: true });
   state.isLoadingGithub = false;
 };
 
@@ -200,9 +226,7 @@ export const refetchSandboxInfo: AsyncAction = async ({
         state.live.isTeam = Boolean(sandbox.team);
       }
 
-      await actions.live.internal.initialize();
+      await actions.live.internal.initialize(sandbox.roomId);
     }
-  } else {
-    actions.files.internal.recoverFiles();
   }
 };

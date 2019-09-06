@@ -8,6 +8,7 @@
     "url": "https://github.com/codesandbox/codesandbox-client"
   },
   "scripts": {
+    "commit": "concurrently \"yarn typecheck\" \"yarn lint\" && git commit -m",
     "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" yarn build:deps && yarn build:prod",
     "build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" lerna run build  --scope homepage --stream && lerna run build --scope app --stream && lerna run copy-assets --scope app --stream",
     "build:embed": "lerna run build:embed --scope app --stream && gulp",

@@ -34,18 +34,20 @@ export default {
 
     return response.token;
   },
-  createPatronSubscription(token: string, amount: number) {
+  createPatronSubscription(token: string, amount: number, coupon: string) {
     return api.post<CurrentUser>('/users/current_user/subscription', {
       subscription: {
-        amount: String(amount),
+        amount,
+        coupon,
         token,
       },
     });
   },
-  updatePatronSubscription(amount: number) {
+  updatePatronSubscription(amount: number, coupon: string) {
     return api.patch<CurrentUser>('/users/current_user/subscription', {
       subscription: {
-        amount: String(amount),
+        amount,
+        coupon,
       },
     });
   },
@@ -179,10 +181,15 @@ export default {
   getPickedSandboxes(): Promise<PickedSandboxes> {
     return api.get(`/sandboxes/picked`);
   },
-  createDirectory(sandboxId: string, title: string): Promise<Directory> {
+  createDirectory(
+    sandboxId: string,
+    directoryShortid: string,
+    title: string
+  ): Promise<Directory> {
     return api.post(`/sandboxes/${sandboxId}/directories`, {
       directory: {
         title,
+        directoryShortid,
       },
     });
   },
@@ -267,10 +274,14 @@ export default {
       message,
     });
   },
-  createLiveRoom(sandboxId: string): Promise<RoomInfo> {
-    return api.post(`/sandboxes/${sandboxId}/live`, {
+  async createLiveRoom(sandboxId: string): Promise<string> {
+    const data = await api.post<{
+      id: string;
+    }>(`/sandboxes/${sandboxId}/live`, {
       id: sandboxId,
     });
+
+    return data.id;
   },
   updateBadge(badgeId: string, visible: boolean): Promise<void> {
     return api.patch(`/users/current_user/badges/${badgeId}`, {

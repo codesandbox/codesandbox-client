@@ -87,7 +87,7 @@ export type TemplateType =
   | 'quasar'
   | 'unibit';
 
-export default function getDefinition(theme: TemplateType) {
+export default function getDefinition(theme?: TemplateType) {
   switch (theme) {
     case adonis.name:
       return adonis;

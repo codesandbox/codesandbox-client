@@ -27,7 +27,7 @@ import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 // @ts-ignore
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
 /* eslint-enable import/no-webpack-loader-syntax */
-
+import { clone } from 'app/componentConnectors';
 import eventToTransform from '../Monaco/event-to-transform';
 import MonacoEditorComponent, { EditorAPI } from './MonacoReactComponent';
 import { Container, GlobalStyles } from './elements';
@@ -35,6 +35,7 @@ import getSettings from '../Monaco/settings';
 
 import { Props, Editor } from '../types';
 import getMode from '../Monaco/mode';
+
 import {
   lineAndColumnToIndex,
   indexToLineAndColumn,
@@ -698,7 +699,7 @@ export class VSCode extends React.Component<Props> implements Editor {
   };
 
   applyOperations = (operations: { [moduleShortid: string]: any }) => {
-    const operationsJSON = operations.toJSON();
+    const operationsJSON = operations.toJSON ? operations.toJSON() : operations;
 
     Object.keys(operationsJSON).forEach(moduleShortid => {
       const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
@@ -1119,8 +1120,7 @@ export class VSCode extends React.Component<Props> implements Editor {
             <Configuration
               onChange={this.props.onChange}
               // Copy the object, we don't want mutations in the component
-              // @ts-ignore
-              currentModule={currentModule.toJSON()}
+              currentModule={clone(currentModule)}
               config={config}
               sandbox={this.sandbox}
               {...extraProps}

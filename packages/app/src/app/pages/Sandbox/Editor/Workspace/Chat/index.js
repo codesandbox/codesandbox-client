@@ -79,7 +79,9 @@ class ChatComponent extends React.Component {
                     metadata.color[2]
                   })`
                 : '#636363';
-              const name = users.get(message.userId);
+              const name = users.get
+                ? users.get(message.userId)
+                : users[message.userId];
               return (
                 <div key={message.date}>
                   {(i === 0 || messages[i - 1].userId !== message.userId) && (

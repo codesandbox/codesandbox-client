@@ -2,6 +2,7 @@ import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependenc
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import { Module } from '@codesandbox/common/lib/types';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
@@ -101,15 +102,27 @@ async function syncDependencyTypings(
   }
 }
 
+let getCurrentSandboxId;
+let getModulesByPath;
+
 export default {
+  initialize(options: {
+    getCurrentSandboxId: () => string;
+    getModulesByPath: () => {
+      [path: string]: Module;
+    };
+  }) {
+    getCurrentSandboxId = options.getCurrentSandboxId;
+    getModulesByPath = options.getModulesByPath;
+  },
   syncCurrentSandbox() {
     if (fileInterval) {
       clearInterval(fileInterval);
     }
 
     const sendFiles = () => {
-      if (this.context.controller.getState().editor.currentId) {
-        const { modulesByPath } = this.context.controller.getState().editor;
+      if (getCurrentSandboxId()) {
+        const modulesByPath = getModulesByPath();
 
         global.postMessage(
           {

@@ -131,7 +131,7 @@ export const uploadFiles: AsyncAction<
     if (dir.directoryShortid == null) {
       return {
         ...dir,
-        directoryShortid: directoryShortid,
+        directoryShortid,
       };
     }
 
@@ -142,7 +142,7 @@ export const uploadFiles: AsyncAction<
     if (m.directoryShortid == null) {
       return {
         ...m,
-        directoryShortid: directoryShortid,
+        directoryShortid,
       };
     }
 

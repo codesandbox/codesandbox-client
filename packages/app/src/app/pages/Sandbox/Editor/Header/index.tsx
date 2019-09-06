@@ -20,7 +20,6 @@ import { LikeHeart } from 'app/pages/common/LikeHeart';
 import { SignInButton } from 'app/pages/common/SignInButton';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import { saveAllModules } from 'app/store/modules/editor/utils';
-import { useStore, useSignals } from 'app/store';
 
 import { Action } from './Buttons/Action';
 import CollectionInfo from './CollectionInfo';
@@ -148,9 +147,7 @@ interface Props {
   zenMode: boolean;
 }
 
-const HeaderComponent = ({ zenMode }: Props) => {
-  const store = useStore();
-  const signals = useSignals();
+const HeaderComponent = ({ zenMode, store, signals }: Props) => {
   const sandbox = store.editor.currentSandbox;
   const vscode = store.preferences.settings.experimentVSCode;
 
@@ -300,4 +297,6 @@ const HeaderComponent = ({ zenMode }: Props) => {
   );
 };
 
-export const Header = hooksObserver(HeaderComponent);
+export const Header = inject('signals', 'store')(
+  hooksObserver(HeaderComponent)
+);

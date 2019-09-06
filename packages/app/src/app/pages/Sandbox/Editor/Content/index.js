@@ -2,63 +2,48 @@
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
-import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
-import { inject, observer } from 'app/componentConnectors';
-
+import { inject, observer, clone } from 'app/componentConnectors';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import type { ModuleError } from '@codesandbox/common/lib/types';
 import SplitPane from 'react-split-pane';
 
 import { CodeEditor } from 'app/components/CodeEditor';
-import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import { DevTools } from 'app/components/Preview/DevTools';
 
 import { Preview } from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
 
-const settings = store =>
-  ({
-    fontFamily: store.preferences.settings.fontFamily,
-    fontSize: store.preferences.settings.fontSize,
-    lineHeight: store.preferences.settings.lineHeight,
-    autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
-    autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
-    vimMode: store.preferences.settings.vimMode,
-    lintEnabled: store.preferences.settings.lintEnabled,
-    codeMirror: store.preferences.settings.codeMirror,
-    tabWidth: store.preferences.settings.prettierConfig
-      ? store.preferences.settings.prettierConfig.tabWidth || 2
-      : 2,
-    enableLigatures: store.preferences.settings.enableLigatures,
-    experimentVSCode: store.preferences.settings.experimentVSCode,
-    prettierConfig: store.preferences.settings.prettierConfig,
-    forceRefresh: store.preferences.settings.forceRefresh,
-  }: Settings);
+const settings = store => ({
+  fontFamily: store.preferences.settings.fontFamily,
+  fontSize: store.preferences.settings.fontSize,
+  lineHeight: store.preferences.settings.lineHeight,
+  autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
+  autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
+  vimMode: store.preferences.settings.vimMode,
+  lintEnabled: store.preferences.settings.lintEnabled,
+  codeMirror: store.preferences.settings.codeMirror,
+  tabWidth: store.preferences.settings.prettierConfig
+    ? store.preferences.settings.prettierConfig.tabWidth || 2
+    : 2,
+  enableLigatures: store.preferences.settings.enableLigatures,
+  experimentVSCode: store.preferences.settings.experimentVSCode,
+  prettierConfig: store.preferences.settings.prettierConfig,
+  forceRefresh: store.preferences.settings.forceRefresh,
+});
 
-type Props = {
-  signals: any,
-  store: any,
-};
-
-type State = {
-  width: ?number,
-  height: ?number,
-};
-
-class EditorPreview extends React.Component<Props, State> {
+class EditorPreview extends React.Component {
   state = { width: null, height: null };
-  interval: IntervalID; // eslint-disable-line
-  disposeEditorChange: Function;
-  el: ?HTMLElement;
-  devtools: DevTools;
-  contentNode: ?HTMLElement;
+  interval;
+  disposeEditorChange;
+  el;
+  devtools;
+  contentNode;
 
   componentDidMount() {
     this.props.signals.editor.contentMounted();
-    this.disposeEditorChange = reaction(
-      () => this.props.store.preferences.settings.codeMirror,
+    this.disposeEditorChange = this.props.reaction(
+      ({ preferences }) => preferences.settings.codeMirror,
       () => this.forceUpdate()
     );
 
@@ -105,12 +90,12 @@ class EditorPreview extends React.Component<Props, State> {
     }
   };
 
-  onInitialized = (editor: Editor) => {
+  onInitialized = editor => {
     const store = this.props.store;
     let isChangingSandbox = false;
 
-    const disposeSandboxChangeHandler = reaction(
-      () => store.editor.currentSandbox,
+    const disposeSandboxChangeHandler = this.props.reaction(
+      ({ editor: { currentSandbox } }) => currentSandbox,
       newSandbox => {
         isChangingSandbox = !!editor.changeSandbox;
 
@@ -131,32 +116,36 @@ class EditorPreview extends React.Component<Props, State> {
         });
       }
     );
-    const disposeErrorsHandler = reaction(
-      () => store.editor.errors.map(error => error),
-      (errors: Array<ModuleError>) => {
+    const disposeErrorsHandler = this.props.reaction(
+      ({ editor: { errors } }) => errors.map(error => error),
+      errors => {
         if (editor.setErrors) {
           editor.setErrors(errors);
         }
       }
     );
-    const disposeCorrectionsHandler = reaction(
-      () => store.editor.corrections.map(correction => correction),
+    const disposeCorrectionsHandler = this.props.reaction(
+      ({ editor: { corrections } }) =>
+        corrections.map(correction => correction),
       corrections => {
         if (editor.setCorrections) {
           editor.setCorrections(corrections);
         }
       }
     );
-    const disposeModulesHandler = reaction(this.detectStructureChange, () => {
-      if (isChangingSandbox) {
-        return;
+    const disposeModulesHandler = this.props.reaction(
+      this.detectStructureChange,
+      () => {
+        if (isChangingSandbox) {
+          return;
+        }
+        if (editor.updateModules) {
+          editor.updateModules();
+        }
       }
-      if (editor.updateModules) {
-        editor.updateModules();
-      }
-    });
-    const disposePreferencesHandler = reaction(
-      () => settings(store),
+    );
+    const disposePreferencesHandler = this.props.reaction(
+      state => settings(state),
       newSettings => {
         if (editor.changeSettings) {
           editor.changeSettings(newSettings);
@@ -166,11 +155,11 @@ class EditorPreview extends React.Component<Props, State> {
         compareStructural: true,
       }
     );
-    const disposeResizeHandler = reaction(
-      () => [
-        store.preferences.settings.zenMode,
-        store.workspace.workspaceHidden,
-        store.editor.previewWindowOrientation,
+    const disposeResizeHandler = this.props.reaction(
+      state => [
+        state.preferences.settings.zenMode,
+        state.workspace.workspaceHidden,
+        state.editor.previewWindowOrientation,
       ],
       () => {
         setTimeout(() => {
@@ -178,8 +167,8 @@ class EditorPreview extends React.Component<Props, State> {
         });
       }
     );
-    const disposePackageHandler = reaction(
-      () => store.editor.parsedConfigurations.package,
+    const disposePackageHandler = this.props.reaction(
+      state => state.editor.parsedConfigurations.package,
       () => {
         const { parsed } = store.editor.parsedConfigurations.package;
         if (parsed) {
@@ -191,8 +180,8 @@ class EditorPreview extends React.Component<Props, State> {
         }
       }
     );
-    const disposeTSConfigHandler = reaction(
-      () => store.editor.parsedConfigurations.typescript,
+    const disposeTSConfigHandler = this.props.reaction(
+      state => state.editor.parsedConfigurations.typescript,
       () => {
         if (store.editor.parsedConfigurations.typescript) {
           const { parsed } = store.editor.parsedConfigurations.typescript;
@@ -204,8 +193,8 @@ class EditorPreview extends React.Component<Props, State> {
         }
       }
     );
-    const disposeLiveHandler = reaction(
-      () => store.live.receivingCode,
+    const disposeLiveHandler = this.props.reaction(
+      state => state.live.receivingCode,
       () => {
         if (editor.setReceivingCode) {
           editor.setReceivingCode(store.live.receivingCode);
@@ -213,8 +202,8 @@ class EditorPreview extends React.Component<Props, State> {
       }
     );
 
-    const disposeModuleSyncedHandler = reaction(
-      () => store.editor.changedModuleShortids.map(shortid => shortid),
+    const disposeModuleSyncedHandler = this.props.reaction(
+      state => state.editor.changedModuleShortids.map(shortid => shortid),
       () => {
         if (editor.moduleSyncedChanged) {
           editor.moduleSyncedChanged();
@@ -222,8 +211,8 @@ class EditorPreview extends React.Component<Props, State> {
       }
     );
 
-    const disposePendingOperationHandler = reaction(
-      () => store.editor.pendingOperations.toJSON(),
+    const disposePendingOperationHandler = this.props.reaction(
+      state => clone(state.editor.pendingOperations),
       () => {
         if (store.live.isLive) {
           if (store.editor.pendingOperations) {
@@ -281,14 +270,14 @@ class EditorPreview extends React.Component<Props, State> {
         }
       }
     };
-    const disposeLiveSelectionHandler = reaction(
-      () => store.editor.pendingUserSelections.map(x => x),
+    const disposeLiveSelectionHandler = this.props.reaction(
+      state => state.editor.pendingUserSelections.map(x => x),
       updateUserSelections
     );
     updateUserSelections();
 
-    const disposeModuleHandler = reaction(
-      () => [store.editor.currentModule, store.editor.currentModule.code],
+    const disposeModuleHandler = this.props.reaction(
+      state => [state.editor.currentModule, state.editor.currentModule.code],
       ([newModule]) => {
         if (isChangingSandbox) {
           return;
@@ -321,14 +310,14 @@ class EditorPreview extends React.Component<Props, State> {
         }
       }
     );
-    const disposeToggleDevtools = reaction(
-      () => this.props.store.preferences.showDevtools,
+    const disposeToggleDevtools = this.props.reaction(
+      state => state.preferences.showDevtools,
       showDevtools => {
         this.handleToggleDevtools(showDevtools);
       }
     );
-    const disposeTogglePreview = reaction(
-      () => this.props.store.editor.previewWindowVisible,
+    const disposeTogglePreview = this.props.reaction(
+      state => state.editor.previewWindowVisible,
       () => {
         requestAnimationFrame(() => {
           this.getBounds();
@@ -355,8 +344,8 @@ class EditorPreview extends React.Component<Props, State> {
     };
   };
 
-  detectStructureChange = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
+  detectStructureChange = ({ editor }) => {
+    const sandbox = editor.currentSandbox;
 
     return String(
       sandbox.modules

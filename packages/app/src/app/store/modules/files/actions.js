@@ -594,7 +594,9 @@ export function setDefaultNewCode({ state, props }) {
     if (props.code) {
       code = props.code;
     } else if (config.generateFileFromState) {
-      code = config.generateFileFromState(state);
+      code = config.generateFileFromState(
+        state.get('preferences.settings.prettierConfig')
+      );
     } else if (config.generateFileFromSandbox) {
       code = config.generateFileFromSandbox(sandbox);
     } else {

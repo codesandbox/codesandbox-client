@@ -43,6 +43,10 @@ class Files extends React.Component {
         root
         getModulePath={this.getModulePath}
         title={sandbox.title || 'Project'}
+        signals={
+          this.props
+            .signals /* TODO: Just pass what is needed by the DragDrop */
+        }
         initializeProperties={({
           onCreateModuleClick,
           onCreateDirectoryClick,
