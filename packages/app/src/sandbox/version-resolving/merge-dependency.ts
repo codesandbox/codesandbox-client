@@ -93,13 +93,15 @@ function replaceDependencyInfo(
   depDepName: string,
   newDepDep: IDepDepInfo
 ) {
-  // eslint-disable-next-line
-  console.log(
-    'Resolving conflict for ' +
-      depDepName +
-      ' new version: ' +
-      newDepDep.resolved
-  );
+  if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line
+    console.log(
+      'Resolving conflict for ' +
+        depDepName +
+        ' new version: ' +
+        newDepDep.resolved
+    );
+  }
 
   const newPath = `${depDepName}/${newDepDep.resolved}`;
 
