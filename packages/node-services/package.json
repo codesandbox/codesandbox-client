@@ -6,6 +6,11 @@
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/node-services"
   },
+  "scripts": {
+    "build": "tsc",
+    "build:dev": "yarn build",
+    "start": "tsc --watch -p ./tsconfig.json"
+  },
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
     "constants-browserify": "^1.0.0",
@@ -21,10 +26,5 @@
     "@types/resolve": "^0.0.8",
     "@types/ws": "^6.0.1",
     "typescript": "3.5.2"
-  },
-  "scripts": {
-    "build": "tsc",
-    "build:dev": "yarn build",
-    "start": "tsc --watch -p ./tsconfig.json"
   }
 }

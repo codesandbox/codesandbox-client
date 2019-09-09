@@ -12,6 +12,9 @@
   "scripts": {
     "build:dev": "rollup -c rollup.config.js"
   },
+  "dependencies": {
+    "codesandbox-api": "^0.0.22"
+  },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
@@ -23,8 +26,5 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-terser": "^5.1.1",
     "rollup-plugin-uglify": "^4.0.0"
-  },
-  "dependencies": {
-    "codesandbox-api": "^0.0.22"
   }
 }

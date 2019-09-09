@@ -3,37 +3,34 @@
   "version": "0.0.22",
   "description": "",
   "keywords": [],
-  "main": "dist/codesandbox.umd.js",
-  "module": "dist/codesandbox.es5.js",
-  "typings": "dist/types/codesandbox.d.ts",
-  "files": [
-    "dist"
-  ],
-  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/codesandbox-api"
   },
   "license": "MIT",
-  "engines": {
-    "node": ">=6.0.0"
-  },
+  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/codesandbox.umd.js",
+  "module": "dist/codesandbox.es5.js",
+  "typings": "dist/types/codesandbox.d.ts",
   "scripts": {
-    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build:clean": "tsc && rollup -c",
     "build": "tsc && rollup -c && rimraf compiled",
+    "build:clean": "tsc && rollup -c",
     "build:dev": "tsc && rollup -c",
+    "commit": "git-cz",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "start": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"npm run build:clean\"",
     "test": "jest",
-    "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
-    "commit": "git-cz",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "semantic-release-prepare": "ts-node tools/semantic-release-prepare"
+    "test:watch": "jest --watch"
   },
   "config": {
     "commitizen": {
@@ -45,17 +42,6 @@
     }
   },
   "jest": {
-    "preset": "ts-jest",
-    "modulePathIgnorePatterns": [
-      "<rootDir>/dist/",
-      "<rootDir>/compiled/"
-    ],
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/test/"
@@ -67,8 +53,20 @@
         "lines": 95,
         "statements": 95
       }
-    }
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/",
+      "<rootDir>/compiled/"
+    ],
+    "preset": "ts-jest",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
+  "dependencies": {},
   "devDependencies": {
     "@types/debug": "^0.0.30",
     "@types/glob": "^7.1.1",
@@ -100,5 +98,7 @@
     "uuid": "^3.3.2",
     "validate-commit-msg": "^2.12.2"
   },
-  "dependencies": {}
+  "engines": {
+    "node": ">=6.0.0"
+  }
 }

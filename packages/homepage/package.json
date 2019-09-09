@@ -1,14 +1,31 @@
 {
   "name": "homepage",
-  "description": "CodeSandbox Homepage",
-  "private": true,
   "version": "1.0.0",
-  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
+  "private": true,
+  "description": "CodeSandbox Homepage",
+  "keywords": [
+    "gatsby"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/homepage"
   },
+  "license": "MIT",
+  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
+  "scripts": {
+    "build": "gatsby build",
+    "build:clean": "rimraf public",
+    "lint": "eslint .",
+    "start": "gatsby develop",
+    "start:dev": "LOCAL_SERVER=1 LOCAL_DEV=1 gatsby develop",
+    "test": "echo \"Todo: no test specified\" && exit 0"
+  },
+  "browserslist": [
+    "> 1%",
+    "IE >= 11",
+    "last 2 versions"
+  ],
   "dependencies": {
     "@babel/preset-flow": "^7.0.0",
     "@codesandbox/common": "^1.0.8",
@@ -58,29 +75,11 @@
     "typography": "^0.16.17",
     "typography-breakpoint-constants": "^0.15.10"
   },
-  "keywords": [
-    "gatsby"
-  ],
-  "license": "MIT",
-  "main": "n/a",
-  "scripts": {
-    "build": "gatsby build",
-    "build:clean": "rimraf public",
-    "start:dev": "LOCAL_SERVER=1 LOCAL_DEV=1 gatsby develop",
-    "start": "gatsby develop",
-    "lint": "eslint .",
-    "test": "echo \"Todo: no test specified\" && exit 0"
-  },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "babel-plugin-styled-components": "^1.10.6",
     "dotenv": "^6.2.0",
     "rimraf": "^2.6.2",
     "terser": "^3.17.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "IE >= 11",
-    "last 2 versions"
-  ]
+  }
 }
