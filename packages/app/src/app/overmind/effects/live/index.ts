@@ -149,17 +149,18 @@ export default {
       }
     });
   },
-  sendModuleUpdate(moduleShortid: string, module?: Module) {
-    return this.send('module:saved', {
+  sendModuleUpdate(module: Module) {
+    return this.send('module:updated', {
       type: 'module',
-      moduleShortid,
+      moduleShortid: module.shortid,
       module,
     });
   },
-  sendDirectoryUpdate(directoryShortid: string) {
-    return this.send('module:saved', {
-      type: 'module',
-      directoryShortid,
+  sendDirectoryUpdate(directory: Directory) {
+    return this.send('directory:updated', {
+      type: 'directory',
+      directoryShortid: directory.shortid,
+      module: directory,
     });
   },
   sendCodeUpdate(moduleShortid: string, currentCode: string, code: string) {
