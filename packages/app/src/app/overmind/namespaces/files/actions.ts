@@ -31,7 +31,7 @@ export const moduleRenamed: AsyncAction<{
       await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
 
       if (state.live.isCurrentEditor) {
-        effects.live.sendModuleUpdate(moduleShortid, module);
+        effects.live.sendModuleUpdate(module);
       }
     } catch (error) {
       module.title = oldTitle;
@@ -104,7 +104,7 @@ export const moduleMovedToDirectory: AsyncAction<{
         moduleShortid,
         directoryShortid
       );
-      effects.live.sendModuleUpdate(moduleShortid, module);
+      effects.live.sendModuleUpdate(module);
     } catch (error) {
       module.directoryShortid = currentDirectoryShortid;
 
@@ -131,7 +131,7 @@ export const directoryMovedToDirectory: AsyncAction<{
         shortid,
         directoryShortid
       );
-      effects.live.sendDirectoryUpdate(directoryShortid);
+      effects.live.sendDirectoryUpdate(directoryToMove);
     } catch (error) {
       directoryToMove.directoryShortid = shortid;
       effects.notificationToast.error('Could not save new directory location');
@@ -171,7 +171,7 @@ export const directoryRenamed: AsyncAction<{
   title: string;
   directoryShortid: string;
 }> = withOwnedSandbox(
-  async ({ actions, effects, state }, { title, directoryShortid }) => {
+  async ({ effects, state }, { title, directoryShortid }) => {
     const sandbox = state.editor.currentSandbox;
     const directory = sandbox.directories.find(
       directoryEntry => directoryEntry.shortid === directoryShortid
@@ -184,7 +184,7 @@ export const directoryRenamed: AsyncAction<{
       await effects.api.saveDirectoryTitle(sandbox.id, directoryShortid, title);
 
       if (state.live.isCurrentEditor) {
-        effects.live.sendDirectoryUpdate(directoryShortid);
+        effects.live.sendDirectoryUpdate(directory);
       }
     } catch (error) {
       directory.title = oldTitle;
