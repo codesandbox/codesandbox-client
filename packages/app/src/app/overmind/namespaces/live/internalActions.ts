@@ -6,7 +6,7 @@ import {
 } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
 
-export const clearUserSelections: Action<any> = ({ state }, data) => {
+export const clearUserSelections: Action<any> = ({ state }, live_user_id) => {
   const clearSelections = userId => {
     const userIndex = state.live.roomInfo.users.findIndex(u => u.id === userId);
 
@@ -23,11 +23,11 @@ export const clearUserSelections: Action<any> = ({ state }, data) => {
     }
   };
 
-  if (!data) {
+  if (!live_user_id) {
     // All users
     state.live.roomInfo.users.forEach(u => clearSelections(u.id));
   } else {
-    clearSelections(data.live_user_id);
+    clearSelections(live_user_id);
   }
 };
 

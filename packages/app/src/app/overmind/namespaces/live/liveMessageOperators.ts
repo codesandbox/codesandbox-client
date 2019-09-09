@@ -280,7 +280,7 @@ export const onUserCurrentModule: Operator<
       data.moduleShortid;
   }
 
-  actions.live.internal.clearUserSelections(data);
+  actions.live.internal.clearUserSelections(null);
 
   if (
     state.live.followingUserId === data.live_user_id &&
@@ -308,7 +308,7 @@ export const onLiveMode: Operator<
   if (!_isOwnMessage) {
     state.live.roomInfo.mode = data.mode;
   }
-  actions.live.internal.clearUserSelections(data);
+  actions.live.internal.clearUserSelections(null);
   state.editor.pendingUserSelections = state.editor.pendingUserSelections.concat(
     actions.live.internal.getSelectionsForModule(state.editor.currentModule)
   );
