@@ -58,13 +58,7 @@ export const Server = inject('store', 'signals')(
           })
         );
       }
-    }, [
-      editor.currentSandbox.id,
-      ports,
-      sandbox.id,
-      sandbox.template,
-      server.ports,
-    ]);
+    }, [ports, sandbox.id, sandbox.template]);
 
     return (
       <div>
