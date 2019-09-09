@@ -18,10 +18,10 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
 import { HeaderSearchBar } from 'app/components/HeaderSearchBar';
 import { Overlay } from 'app/components/Overlay';
-import Notifications from './Notifications';
+import { Notifications } from './Notifications';
 
-import SignInButton from '../SignInButton';
-import UserMenu from '../UserMenu';
+import { SignInButton } from '../SignInButton';
+import { UserMenu } from '../UserMenu';
 import {
   LogoWithBorder,
   Border,
@@ -40,7 +40,7 @@ interface Props {
   signals: any;
 }
 
-const Navigation = inject('store', 'signals')(
+export const Navigation = inject('store', 'signals')(
   hooksObserver(
     ({
       title,
@@ -142,5 +142,3 @@ const Navigation = inject('store', 'signals')(
     )
   )
 );
-
-export default Navigation;

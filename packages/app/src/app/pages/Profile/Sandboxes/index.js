@@ -13,6 +13,13 @@ class Sandboxes extends React.Component {
     page: 1,
   };
 
+  getPage(source, page) {
+    if (!source) {
+      return undefined;
+    }
+    return source.get ? source.get(page) : source[page];
+  }
+
   fetch(force = false) {
     const { signals, source, store, page } = this.props;
 
@@ -20,7 +27,11 @@ class Sandboxes extends React.Component {
       return;
     }
 
-    if (force || !store.profile[source] || !store.profile[source].get(page)) {
+    if (
+      force ||
+      !store.profile[source] ||
+      !this.getPage(store.profile[source], page)
+    ) {
       switch (source) {
         case 'currentSandboxes':
           signals.profile.sandboxesPageChanged({ page });
@@ -46,6 +57,10 @@ class Sandboxes extends React.Component {
     }
   }
 
+  getSandboxesByPage(sandboxes, page) {
+    return sandboxes.get ? sandboxes.get(page) : sandboxes[page];
+  }
+
   getLastPage = () => {
     if (this.props.source === 'currentSandboxes') {
       const { sandboxCount } = this.props.store.profile.current;
@@ -68,10 +83,15 @@ class Sandboxes extends React.Component {
     const isLoadingSandboxes = store.profile.isLoadingSandboxes;
     const sandboxes = store.profile[source];
 
-    if (isLoadingSandboxes || !sandboxes || !sandboxes.get(page))
+    if (
+      isLoadingSandboxes ||
+      !sandboxes ||
+      !this.getSandboxesByPage(sandboxes, page)
+    ) {
       return <div />;
+    }
 
-    const sandboxesPage = sandboxes.get(page);
+    const sandboxesPage = this.getSandboxesByPage(sandboxes, page);
 
     if (sandboxesPage.length === 0)
       return (

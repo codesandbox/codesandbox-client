@@ -8,12 +8,12 @@ import { inject, observer } from 'app/componentConnectors';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import { Skeleton } from 'app/components/Skeleton';
-import Navigation from 'app/pages/common/Navigation';
-import SignInButton from 'app/pages/common/SignInButton';
-import QuickActions from 'app/pages/Sandbox/QuickActions';
+import { Navigation } from 'app/pages/common/Navigation';
+import { SignInButton } from 'app/pages/common/SignInButton';
+import { QuickActions } from 'app/pages/Sandbox/QuickActions';
 import { hasAuthToken } from 'app/utils/user';
 import Editor from '../Sandbox/Editor';
-import BlinkingDot from './BlinkingDot';
+import { BlinkingDot } from './BlinkingDot';
 
 class LivePage extends React.Component {
   loggedIn = this.props.store.hasLogIn;
@@ -184,4 +184,5 @@ class LivePage extends React.Component {
   }
 }
 
+// eslint-disable-next-line import/no-default-export
 export default inject('signals', 'store')(observer(LivePage));

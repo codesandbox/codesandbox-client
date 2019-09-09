@@ -56,6 +56,10 @@ class DirectoryChildren extends React.Component {
               key={dir.id}
               siblings={[...directories, ...modules]}
               depth={depth + 1}
+              signals={
+                this.props
+                  .signals /* TODO: Just pass what is needed by the DragDrop */
+              }
               id={dir.id}
               shortid={dir.shortid}
               title={dir.title}
@@ -93,4 +97,4 @@ class DirectoryChildren extends React.Component {
   }
 }
 
-export default inject('store')(observer(DirectoryChildren));
+export default inject('store', 'signals')(observer(DirectoryChildren));

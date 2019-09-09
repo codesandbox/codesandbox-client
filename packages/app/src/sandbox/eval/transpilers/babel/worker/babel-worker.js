@@ -65,7 +65,7 @@ self.require = path => {
     return module;
   }
 
-  if (IGNORED_MODULES.includes(path)) {
+  if (IGNORED_MODULES.indexOf(path) > -1) {
     return {};
   }
 
@@ -340,13 +340,13 @@ async function compile(code, customConfig, path, isV7) {
   } catch (e) {
     if (
       !fsInitialized &&
-      (e.message.includes('Cannot find module') || e.code === 'EIO')
+      (e.message.indexOf('Cannot find module') > -1 || e.code === 'EIO')
     ) {
       // BrowserFS was needed but wasn't initialized
       await waitForFs();
 
       await compile(code, customConfig, path);
-    } else if (e.message.includes('Cannot find module')) {
+    } else if (e.message.indexOf('Cannot find module') > -1) {
       // Try to download the file and all dependencies, retry compilation then
       await downloadFromError(e).then(() => {
         resetCache();
@@ -504,8 +504,8 @@ self.addEventListener('message', async event => {
 
   if (!disableCodeSandboxPlugins) {
     if (
-      flattenedPresets.includes('env') &&
-      !Object.keys(Babel.availablePresets).includes('env') &&
+      flattenedPresets.indexOf('env') > -1 &&
+      Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
       version !== 7
     ) {
       Babel.registerPreset('env', Babel.availablePresets.latest);
@@ -513,10 +513,10 @@ self.addEventListener('message', async event => {
 
     if (
       version === 7 &&
-      !Object.keys(Babel.availablePresets).includes('env') &&
-      (flattenedPresets.includes('env') ||
-        flattenedPresets.includes('@babel/preset-env') ||
-        flattenedPresets.includes('@vue/app'))
+      Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
+      (flattenedPresets.indexOf('env') > -1 ||
+        flattenedPresets.indexOf('@babel/preset-env') > -1 ||
+        flattenedPresets.indexOf('@vue/app') > -1)
     ) {
       const envPreset = await import(
         /* webpackChunkName: 'babel-preset-env' */ '@babel/preset-env'
@@ -525,8 +525,8 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      flattenedPlugins.includes('transform-vue-jsx') &&
-      !Object.keys(Babel.availablePlugins).includes('transform-vue-jsx')
+      flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
     ) {
       const vuePlugin = await import(
         /* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx'
@@ -535,8 +535,8 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      flattenedPlugins.includes('jsx-pragmatic') &&
-      !Object.keys(Babel.availablePlugins).includes('jsx-pragmatic')
+      flattenedPlugins.indexOf('jsx-pragmatic') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
     ) {
       const pragmaticPlugin = await import(
         /* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic'
@@ -545,8 +545,8 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      flattenedPlugins.includes('babel-plugin-macros') &&
-      !Object.keys(Babel.availablePlugins).includes('babel-plugin-macros')
+      flattenedPlugins.indexOf('babel-plugin-macros') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('babel-plugin-macros') === -1
     ) {
       if (hasMacros) {
         await waitForFs();
@@ -556,8 +556,8 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      flattenedPlugins.includes('transform-cx-jsx') &&
-      !Object.keys(Babel.availablePlugins).includes('transform-cx-jsx')
+      flattenedPlugins.indexOf('transform-cx-jsx') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('transform-cx-jsx') === -1
     ) {
       const cxJsxPlugin = await import(
         /* webpackChunkName: 'transform-cx-jsx' */ 'babel-plugin-transform-cx-jsx'

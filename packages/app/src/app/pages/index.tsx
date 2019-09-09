@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { DragDropContext } from 'react-dnd';
 import _debug from '@codesandbox/common/lib/utils/debug';
-import { Toasts } from '@codesandbox/notifications';
+import { Toasts, NotificationStatus } from '@codesandbox/notifications';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
+import theme from '@codesandbox/common/lib/theme';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import Loadable from 'app/utils/Loadable';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import { ErrorBoundary } from './common/ErrorBoundary';
@@ -36,6 +38,7 @@ const Search = Loadable(() =>
   import(/* webpackChunkName: 'page-search' */ './Search')
 );
 const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
+
 const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub')
 );
@@ -48,10 +51,11 @@ const Patron = Loadable(() =>
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator')
 );
+const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
 
-const Routes = ({ signals: { appUnmounted } }) => {
+const RoutesComponent = ({ signals: { appUnmounted } }) => {
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
   return (
@@ -76,7 +80,16 @@ const Routes = ({ signals: { appUnmounted } }) => {
           return null;
         }}
       />
-      <Toasts state={notificationState} />
+      <Toasts
+        colors={{
+          [NotificationStatus.ERROR]: theme.dangerBackground(),
+          [NotificationStatus.SUCCESS]: theme.green(),
+          [NotificationStatus.NOTICE]: theme.secondary(),
+          [NotificationStatus.WARNING]: theme.primary(),
+        }}
+        state={notificationState}
+        Button={Button}
+      />
       <Boundary>
         <Content>
           <Switch>
@@ -95,6 +108,9 @@ const Routes = ({ signals: { appUnmounted } }) => {
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
+            {process.env.NODE_ENV === `development` && (
+              <Route path="/codesadbox" component={CodeSadbox} />
+            )}
             <Route component={NotFound} />
           </Switch>
         </Content>
@@ -104,6 +120,6 @@ const Routes = ({ signals: { appUnmounted } }) => {
   );
 };
 
-export default inject('signals')(
-  DragDropContext(HTML5Backend)(withRouter(hooksObserver(Routes)))
+export const Routes = inject('signals')(
+  DragDropContext(HTML5Backend)(withRouter(hooksObserver(RoutesComponent)))
 );

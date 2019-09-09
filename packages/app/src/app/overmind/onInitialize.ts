@@ -1,27 +1,31 @@
 import { OnInitialize } from '.';
 
-export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
+export const onInitialize: OnInitialize = (
+  { state, effects, actions },
+  overmindInstance
+) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
+
+  effects.fsSync.initialize({
+    getCurrentSandboxId() {
+      return state.editor.currentId;
+    },
+    getModulesByPath() {
+      return state.editor.modulesByPath;
+    },
+  });
 
   effects.live.initialize({
     provideJwtToken,
-    onApplyOperation: actions.live.onOperationApplied,
+    onApplyOperation: actions.live.applyTransformation,
   });
 
-  effects.keybindingManager.initialize(() => {
-    // Copy code from keybindingmanager
-  });
+  effects.keybindingManager.initialize(overmindInstance);
 
   effects.api.initialize({
     provideJwtToken,
     onError(error) {
-      /*
-      TODO: This needs to be handled differently!
-    controller.runSignal(
-      'showNotification',
-      addNotification(errorMessage, 'error')
-    );
-    */
+      effects.notificationToast.error(error);
     },
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;

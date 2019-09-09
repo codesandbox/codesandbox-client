@@ -15,9 +15,9 @@ import {
   EntryContainer,
 } from '../../elements';
 
-import Status from './Status';
-import Tasks from './Tasks';
-import EnvironmentVariables from './EnvVars';
+import { Status } from './Status';
+import { Tasks } from './Tasks';
+import { EnvironmentVariables } from './EnvVars';
 
 const SubTitle = styled.div`
   text-transform: uppercase;
@@ -29,7 +29,7 @@ const SubTitle = styled.div`
   font-size: 0.875rem;
 `;
 
-function Server({ store, signals }: { store: any; signals: any }) {
+function ServerComponent({ store, signals }) {
   const disconnected = store.server.status !== 'connected';
 
   const openPort = (port: {
@@ -186,4 +186,4 @@ function Server({ store, signals }: { store: any; signals: any }) {
   );
 }
 
-export default inject('store', 'signals')(observer(Server));
+export const Server = inject('store', 'signals')(observer(ServerComponent));

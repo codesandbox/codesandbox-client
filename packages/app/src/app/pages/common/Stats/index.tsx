@@ -4,17 +4,17 @@ import React from 'react';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 
-import LikeHeart from 'app/pages/common/LikeHeart';
+import { LikeHeart } from 'app/pages/common/LikeHeart';
 
-import { Stats } from './elements';
-import Stat from './Stat';
+import { Stats as StatsWrapper } from './elements';
+import { Stat } from './Stat';
 
 interface Props {
   sandbox: Sandbox;
 }
 
 const StatsComponent = ({ sandbox }: Props) => (
-  <Stats>
+  <StatsWrapper>
     <Stat Icon={<EyeIcon />} count={sandbox.viewCount} />
     <Stat
       Icon={<LikeHeart sandbox={sandbox} colorless />}
@@ -22,7 +22,7 @@ const StatsComponent = ({ sandbox }: Props) => (
     />
 
     <Stat Icon={<ForkIcon />} count={sandbox.forkCount} />
-  </Stats>
+  </StatsWrapper>
 );
 
-export default observer(StatsComponent);
+export const Stats = observer(StatsComponent);

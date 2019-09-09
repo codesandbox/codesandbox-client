@@ -5,7 +5,7 @@ import GithubIcon from 'react-icons/lib/go/mark-github';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
 
-const SignInButton = (props: any) => {
+const SignInButtonComponent = (props: any) => {
   const { signInClicked } = props.signals;
 
   return (
@@ -17,4 +17,4 @@ const SignInButton = (props: any) => {
   );
 };
 
-export default inject('signals')(observer(SignInButton));
+export const SignInButton = inject('signals')(observer(SignInButtonComponent));

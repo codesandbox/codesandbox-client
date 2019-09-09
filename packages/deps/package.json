@@ -11,6 +11,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "yarn build:clean && yarn build:rollup",
+    "build:dev": "yarn build",
     "build:clean": "rimraf dist",
     "build:rollup": "rollup -c"
   },

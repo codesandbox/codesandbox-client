@@ -27,7 +27,7 @@ import {
   findBoilerplate,
 } from './boilerplates';
 
-import loadDependencies from './npm';
+import { loadDependencies } from './npm';
 import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 
 import { showRunOnClick } from './status-screen/run-on-click';
@@ -254,7 +254,7 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
   Object.keys(devDependencies).forEach(dep => {
     const usedDep = DEPENDENCY_ALIASES[dep] || dep;
 
-    if (foundWhitelistedDevDependencies.includes(usedDep)) {
+    if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
       if (
         usedDep === '@vue/babel-preset-app' &&
         devDependencies[dep].startsWith('^3')
@@ -484,6 +484,7 @@ async function compile({
       templateDefinition,
       configurations
     );
+
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       disableDependencyPreprocessing

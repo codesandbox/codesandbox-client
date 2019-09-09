@@ -8,7 +8,7 @@ import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 
 import { Container } from './elements';
-import Workspace from './Workspace';
+import { Workspace } from './Workspace';
 import Content from './Content';
 import { Header } from './Header';
 import { Navigation } from './Navigation';

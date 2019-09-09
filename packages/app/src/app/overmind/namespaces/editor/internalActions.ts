@@ -1,12 +1,11 @@
 import { mapValues } from 'lodash-es';
 import { Action, AsyncAction } from 'app/overmind';
 import {
-  Sandbox,
   Module,
   ModuleTab,
   TabType,
+  ServerContainerStatus,
 } from '@codesandbox/common/lib/types';
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
@@ -23,11 +22,11 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   }
 
   const sandboxes = state.editor.sandboxes;
-  const matchingSandbox = Object.keys(sandboxes).find(
-    id => sandboxUrl(sandboxes[id]) === `${editorUrl()}${id}`
+  const matchingSandboxId = Object.keys(sandboxes).find(
+    idItem => sandboxUrl(sandboxes[idItem]) === `${editorUrl()}${id}`
   );
 
-  return matchingSandbox || id;
+  return matchingSandboxId || id;
 };
 
 export const setModuleSavedCode: Action<{
@@ -50,7 +49,8 @@ export const setModuleSavedCode: Action<{
 export const saveCode: AsyncAction<{
   code: string;
   moduleShortid: string;
-}> = async ({ state, effects, actions }, { code, moduleShortid }) => {
+  cbID: string;
+}> = async ({ state, effects, actions }, { code, moduleShortid, cbID }) => {
   effects.analytics.track('Save Code');
 
   const sandbox = state.editor.currentSandbox;
@@ -58,7 +58,12 @@ export const saveCode: AsyncAction<{
     module => module.shortid === moduleShortid
   );
 
-  if (state.preferences.settings.prettifyOnSaveEnabled) {
+  if (state.preferences.settings.experimentVSCode) {
+    await actions.editor.codeChanged({
+      code,
+      moduleShortid,
+    });
+  } else if (state.preferences.settings.prettifyOnSaveEnabled) {
     try {
       effects.analytics.track('Prettify Code');
       code = await effects.prettyfier.prettify(module.id, module.title, code);
@@ -69,20 +74,13 @@ export const saveCode: AsyncAction<{
     }
   }
 
-  actions.editor.internal.setModuleCode({
-    module,
-    code,
-  });
-
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
 
-    // There was some code here related to checking if module has changed
-    // code during saving... but is that an issue? It should just indicate
-    // that it needs saving as normal?
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
-    module.savedCode = null;
+    module.savedCode =
+      updatedModule.code === module.code ? null : updatedModule.code;
 
     effects.moduleRecover.remove(sandbox.id, module);
 
@@ -91,8 +89,7 @@ export const saveCode: AsyncAction<{
       1
     );
 
-    // Where does the ID come from?
-    // effects.vscode.callCallback()
+    effects.vscode.callCallback(cbID);
 
     if (
       state.editor.currentSandbox.originalGit &&
@@ -106,14 +103,26 @@ export const saveCode: AsyncAction<{
     }
 
     if (state.live.isLive && state.live.isCurrentEditor) {
-      effects.live.sendModuleUpdate(module.shortid);
+      effects.live.sendModuleUpdate(module);
     }
 
     await actions.editor.internal.updateCurrentTemplate();
+
+    if (state.preferences.settings.experimentVSCode) {
+      effects.vscode.runCommand('workbench.action.keepEditor');
+    }
+
+    const tabs = state.editor.tabs as ModuleTab[];
+    const tab = tabs.find(
+      tabItem => tabItem.moduleShortid === updatedModule.shortid
+    );
+
+    if (tab) {
+      tab.dirty = false;
+    }
   } catch (error) {
     effects.notificationToast.warning(error.message);
-    // Where does the ID come from?
-    // effects.vscode.callCallbackError()
+    effects.vscode.callCallbackError(cbID);
   }
 };
 
@@ -173,30 +182,8 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   await actions.editor.internal.saveCode({
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
+    cbID: null,
   });
-};
-
-export const ensureSandboxIsOwned: AsyncAction = async ({
-  state,
-  actions,
-  effects,
-}) => {
-  if (
-    !state.editor.currentSandbox.owned ||
-    (state.editor.currentSandbox.owned &&
-      state.editor.currentSandbox.isFrozen &&
-      effects.browser.confirm(
-        'This sandbox is frozen, and will be forked. Do you want to continue?'
-      ))
-  ) {
-    return actions.editor.internal.forkSandbox(state.editor.currentId);
-  } else if (
-    state.editor.currentSandbox.owned &&
-    state.editor.currentSandbox.isFrozen
-  ) {
-    // Where is the callback ID?
-    // effects.vscode.callCallbackError(?, "Can't save a frozen sandbox")
-  }
 };
 
 export const setModuleCode: Action<{
@@ -205,9 +192,32 @@ export const setModuleCode: Action<{
 }> = ({ state, effects }, { module, code }) => {
   const currentId = state.editor.currentId;
   const currentSandbox = state.editor.currentSandbox;
+  const hasChangedModuleId = state.editor.changedModuleShortids.includes(
+    module.shortid
+  );
 
   if (!module.savedCode) {
     module.savedCode = module.code;
+  }
+
+  if (hasChangedModuleId && module.savedCode === code) {
+    state.editor.changedModuleShortids.splice(
+      state.editor.changedModuleShortids.indexOf(module.shortid),
+      1
+    );
+  } else if (!hasChangedModuleId && module.savedCode !== code) {
+    state.editor.changedModuleShortids.push(module.shortid);
+  }
+
+  if (state.preferences.settings.experimentVSCode) {
+    effects.vscode.runCommand('workbench.action.keepEditor');
+  }
+
+  const tabs = state.editor.tabs as ModuleTab[];
+  const tab = tabs.find(tabItem => tabItem.moduleShortid === module.shortid);
+
+  if (tab) {
+    tab.dirty = false;
   }
 
   // Save the code to localStorage so we can recover in case of a crash
@@ -220,6 +230,15 @@ export const setModuleCode: Action<{
   );
 
   module.code = code;
+
+  // If the executor is a server we only should send updates if the sandbox has been
+  // started already
+  if (
+    !effects.executor.isServer() ||
+    state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
+  ) {
+    effects.executor.updateFiles(currentSandbox);
+  }
 };
 
 export const forkSandbox: AsyncAction<string> = async (
@@ -227,10 +246,10 @@ export const forkSandbox: AsyncAction<string> = async (
   id
 ) => {
   const templateDefinition = getTemplateDefinition(
-    state.editor.currentSandbox.template
+    state.editor.currentSandbox ? state.editor.currentSandbox.template : null
   );
 
-  if (templateDefinition.isServer) {
+  if (!state.isLoggedIn && templateDefinition.isServer) {
     effects.analytics.track('Show Server Fork Sign In Modal');
     actions.modalOpened({ modal: 'forkServerModal', message: null });
 
@@ -257,9 +276,9 @@ export const forkSandbox: AsyncAction<string> = async (
       });
     }
 
-    actions.internal.setCurrentSandbox(forkedSandbox);
-
+    await actions.internal.setCurrentSandbox(forkedSandbox);
     effects.notificationToast.success('Forked sandbox!');
+    effects.router.updateSandboxUrl(forkedSandbox);
   } catch (error) {
     effects.notificationToast.error('Sorry, unable to fork this sandbox');
   }
@@ -308,5 +327,32 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   await actions.editor.internal.saveCode({
     code,
     moduleShortid,
+    cbID: null,
   });
+};
+
+export const updateDevtools: AsyncAction<{
+  code: string;
+}> = async ({ state, actions }, { code }) => {
+  if (state.editor.currentSandbox.owned) {
+    const devtoolsModule =
+      state.editor.modulesByPath['/.codesandbox/workspace.json'];
+
+    if (devtoolsModule) {
+      await actions.editor.internal.saveCode({
+        code: devtoolsModule.code,
+        moduleShortid: devtoolsModule.shortid,
+        cbID: null,
+      });
+    } else {
+      await actions.files.createModulesByPath({
+        '/.codesandbox/workspace.json': {
+          content: code,
+          isBinary: false,
+        },
+      });
+    }
+  } else {
+    state.editor.workspaceConfigCode = code;
+  }
 };

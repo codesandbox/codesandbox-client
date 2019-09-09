@@ -1,7 +1,7 @@
 import React from 'react';
+import { inject, hooksObserver, clone } from 'app/componentConnectors';
 import Tags from '@codesandbox/common/lib/components/Tags';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { inject, hooksObserver } from 'app/componentConnectors';
 import { EditableTags } from 'app/components/EditableTags';
 import { Item } from './elements';
 
@@ -55,7 +55,7 @@ export const Keywords = inject('store', 'signals')(
           {editable ? (
             <EditableTags
               template={getTemplateDefinition(template)}
-              value={tags.toJS()}
+              value={clone(tags)}
               onChange={changeTags}
               onChangeInput={(value: string) => {
                 tagChanged({ tagName: value });

@@ -4,7 +4,7 @@ import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
 import RemoveIcon from 'react-icons/lib/md/highlight-remove';
 
-import Sandboxes from '../../Sandboxes';
+import { Content as Sandboxes } from '../../Sandboxes';
 
 import { DELETED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 

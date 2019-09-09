@@ -16,9 +16,9 @@ import SaveIcon from 'react-icons/lib/md/save';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 
-import LikeHeart from 'app/pages/common/LikeHeart';
-import SignInButton from 'app/pages/common/SignInButton';
-import UserMenu from 'app/pages/common/UserMenu';
+import { LikeHeart } from 'app/pages/common/LikeHeart';
+import { SignInButton } from 'app/pages/common/SignInButton';
+import { UserMenu } from 'app/pages/common/UserMenu';
 import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import { Action } from './Buttons/Action';
@@ -147,7 +147,7 @@ interface Props {
   zenMode: boolean;
 }
 
-const Header = ({ store, signals, zenMode }: Props) => {
+const HeaderComponent = ({ zenMode, store, signals }: Props) => {
   const sandbox = store.editor.currentSandbox;
   const vscode = store.preferences.settings.experimentVSCode;
 
@@ -297,4 +297,6 @@ const Header = ({ store, signals, zenMode }: Props) => {
   );
 };
 
-export default inject('signals', 'store')(hooksObserver(Header));
+export const Header = inject('signals', 'store')(
+  hooksObserver(HeaderComponent)
+);

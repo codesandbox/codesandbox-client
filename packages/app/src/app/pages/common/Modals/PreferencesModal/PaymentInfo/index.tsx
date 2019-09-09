@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
 import { SubscribeForm } from 'app/components/SubscribeForm';
-import Card from './Card';
+import { Card } from './Card';
 import { Title, Subheading } from '../elements';
 import { Container } from './elements';
 
@@ -10,7 +10,7 @@ interface Props {
   signals: any;
 }
 
-class PaymentInfo extends React.Component<Props> {
+class PaymentInfoComponent extends React.Component<Props> {
   componentDidMount() {
     this.props.signals.preferences.paymentDetailsRequested();
   }
@@ -60,4 +60,6 @@ class PaymentInfo extends React.Component<Props> {
   }
 }
 
-export default inject('store', 'signals')(observer(PaymentInfo));
+export const PaymentInfo = inject('store', 'signals')(
+  observer(PaymentInfoComponent)
+);

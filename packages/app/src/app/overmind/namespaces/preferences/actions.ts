@@ -18,11 +18,11 @@ export const setDevtoolsOpen: Action<boolean> = ({ state }, isOpen) => {
   state.preferences.showDevtools = isOpen;
 };
 
-export const itemIdChanged: AsyncAction<string> = async (
-  { state, actions, effects },
-  itemId
-) => {
+export const itemIdChanged: AsyncAction<{
+  itemId: string;
+}> = async ({ state, actions, effects }, { itemId }) => {
   state.preferences.itemId = itemId;
+
   if (itemId === 'keybindings') {
     effects.keybindingManager.pause();
   } else {
@@ -38,19 +38,20 @@ export const settingChanged: Action<{
   value: any;
   name: string;
 }> = ({ state, effects }, { name, value }) => {
-  state.preferences.settings[name] = value;
+  const path = name.split('.');
+  const lastKey = path.pop();
+  const firstKey = path[0];
+  const settingsTarget = path.reduce(
+    (aggr, pathKey) => aggr[pathKey],
+    state.preferences.settings
+  );
+  settingsTarget[lastKey] = value;
+
   if (name === 'vimMode') {
     setVimExtensionEnabled(value);
   }
 
-  if (name.split('.').length > 1) {
-    const prop = name.split('.')[0];
-    const value = state.preferences.settings[prop];
-
-    effects.settingsStore.set(prop, value);
-  } else {
-    effects.settingsStore.set(name, value);
-  }
+  effects.settingsStore.set(firstKey, state.preferences.settings[firstKey]);
 
   effects.analytics.track('Change Settings', {
     name,
@@ -86,9 +87,9 @@ export const paymentDetailsRequested: AsyncAction = async ({
   state.preferences.isLoadingPaymentDetails = false;
 };
 
-export const paymentDetailsUpdated: AsyncAction<string> = async (
+export const paymentDetailsUpdated: AsyncAction<{ token: string }> = async (
   { state, effects },
-  token
+  { token }
 ) => {
   state.preferences.isLoadingPaymentDetails = true;
   state.preferences.paymentDetails = await effects.api.updatePaymentDetails(
@@ -129,4 +130,8 @@ export const keybindingChanged: Action<{
 
 export const zenModeToggled: Action = ({ state }) => {
   state.preferences.settings.zenMode = !state.preferences.settings.zenMode;
+};
+
+export const codeMirrorForced: Action = ({ state }) => {
+  state.preferences.settings.codeMirror = true;
 };

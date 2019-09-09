@@ -3,13 +3,26 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import uuid from 'uuid';
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
-import { Module, Directory } from '@codesandbox/common/lib/types';
+import {
+  Module,
+  Directory,
+  RoomInfo,
+  Sandbox,
+} from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import clientsFactory from './clients';
 
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
   provideJwtToken(): string;
+};
+
+type JoinChannelResponse = {
+  sandboxId: string;
+  sandbox: Sandbox;
+  moduleState: object;
+  liveUserId: string;
+  roomInfo: RoomInfo;
 };
 
 declare global {
@@ -50,7 +63,7 @@ export default {
     provideJwtToken = options.provideJwtToken;
   },
   getSocket() {
-    return _socket;
+    return _socket || this.connect();
   },
   connect() {
     if (!_socket) {
@@ -64,6 +77,8 @@ export default {
       window.socket = _socket;
       debug('Connecting to socket', _socket);
     }
+
+    return _socket;
   },
   disconnect() {
     return new Promise((resolve, reject) => {
@@ -80,21 +95,26 @@ export default {
         .receive('error', resp => reject(resp));
     });
   },
-  joinChannel<T>(roomId: string): Promise<T> {
-    const { socket } = this.context;
-
-    channel = socket.getSocket().channel(`live:${roomId}`, {});
+  joinChannel(roomId: string): Promise<JoinChannelResponse> {
+    channel = this.getSocket().channel(`live:${roomId}`, {});
 
     return new Promise((resolve, reject) => {
       channel
         .join()
-        .receive('ok', resp => resolve(camelizeKeys(resp) as T))
+        .receive('ok', resp =>
+          resolve(camelizeKeys(resp) as JoinChannelResponse)
+        )
         .receive('error', resp => reject(camelizeKeys(resp)));
     });
   },
   // TODO: Need to take an action here
-  listen(signalPath) {
-    const signal = this.context.controller.getSignal(signalPath);
+  listen(
+    action: (payload: {
+      event: string;
+      _isOwnMessage: boolean;
+      data: object;
+    }) => {}
+  ) {
     channel.onMessage = (event: any, data: any) => {
       const disconnected = data == null && event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
@@ -103,7 +123,7 @@ export default {
         data && data._messageId && sentMessages.delete(data._messageId)
       );
 
-      signal({
+      action({
         event: alteredEvent,
         _isOwnMessage,
         data: data == null ? {} : data,
@@ -129,17 +149,18 @@ export default {
       }
     });
   },
-  sendModuleUpdate(moduleShortid: string, module?: Module) {
-    return this.send('module:saved', {
+  sendModuleUpdate(module: Module) {
+    return this.send('module:updated', {
       type: 'module',
-      moduleShortid,
+      moduleShortid: module.shortid,
       module,
     });
   },
-  sendDirectoryUpdate(directoryShortid: string) {
-    return this.send('module:saved', {
-      type: 'module',
-      directoryShortid,
+  sendDirectoryUpdate(directory: Directory) {
+    return this.send('directory:updated', {
+      type: 'directory',
+      directoryShortid: directory.shortid,
+      module: directory,
     });
   },
   sendCodeUpdate(moduleShortid: string, currentCode: string, code: string) {
@@ -166,10 +187,10 @@ export default {
       moduleShortid,
     });
   },
-  sendDirectoryCreated(directoryShortid: string) {
+  sendDirectoryCreated(directory: Directory) {
     this.send('directory:created', {
       type: 'directory',
-      directoryShortid,
+      module: directory,
     });
   },
   sendDirectoryDeleted(directoryShortid: string) {
@@ -183,10 +204,11 @@ export default {
       // { sendModule: false }
     );
   },
-  sendModuleCreated(moduleShortid: string) {
+  sendModuleCreated(module: Module) {
     this.send('module:created', {
       type: 'module',
-      moduleShortid,
+      moduleShortid: module.shortid,
+      module,
     });
   },
   sendModuleDeleted(moduleShortid: string) {

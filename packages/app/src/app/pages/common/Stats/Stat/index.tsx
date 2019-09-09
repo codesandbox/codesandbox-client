@@ -7,7 +7,7 @@ interface Props {
   count: number;
 }
 
-const Stat = ({ Icon, count }: Props) => (
+export const Stat = ({ Icon, count }: Props) => (
   <CenteredText>
     {Icon}
     <span
@@ -20,5 +20,3 @@ const Stat = ({ Icon, count }: Props) => (
     </span>
   </CenteredText>
 );
-
-export default Stat;

@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { reaction } from 'mobx';
 import { inject, observer } from 'app/componentConnectors';
 
 import BasePreview from '@codesandbox/common/lib/components/Preview';
@@ -13,56 +12,58 @@ type Props = {
   store: any;
   signals: any;
   options: { url?: string };
+  reaction: any;
 };
 
 type State = {
   running: boolean;
 };
 
-class Preview extends Component<Props, State> {
+class PreviewComponent extends Component<Props, State> {
   state: State = {
     running: !this.props.runOnClick,
   };
 
   onPreviewInitialized = preview => {
-    const disposeHandleProjectViewChange = reaction(
-      () => this.props.store.editor.isInProjectView,
+    const disposeHandleProjectViewChange = this.props.reaction(
+      ({ editor }) => editor.isInProjectView,
       this.handleProjectView.bind(this, preview)
     );
-    const disposeHandleForcedRenders = reaction(
-      () => this.props.store.editor.forceRender,
+    const disposeHandleForcedRenders = this.props.reaction(
+      ({ editor }) => editor.forceRender,
       this.handleExecuteCode.bind(this, preview)
     );
-    const disposeHandleExternalResources = reaction(
-      () => this.props.store.editor.currentSandbox.externalResources.length,
+    const disposeHandleExternalResources = this.props.reaction(
+      ({ editor }) => editor.currentSandbox.externalResources.length,
       this.handleExecuteCode.bind(this, preview)
     );
-    const disposeHandleModuleSyncedChange = reaction(
-      () => this.props.store.editor.isAllModulesSynced,
+    const disposeHandleModuleSyncedChange = this.props.reaction(
+      ({ editor }) => editor.isAllModulesSynced,
       this.handleModuleSyncedChange.bind(this, preview)
     );
-    const disposeHandleCodeChange = reaction(
-      () =>
-        String(this.props.store.editor.currentSandbox.modules.map(m => m.code)),
+    const disposeHandleCodeChange = this.props.reaction(
+      ({ editor }) => String(editor.currentSandbox.modules.map(m => m.code)),
       () => {
         this.handleCodeChange(preview);
       }
     );
-    const disposeHandleModuleChange = reaction(
-      () => this.props.store.editor.currentModule,
+    const disposeHandleModuleChange = this.props.reaction(
+      ({ editor }) => editor.currentModule,
       () => {
         if (!this.props.store.editor.isInProjectView) {
           this.handleCodeChange(preview);
         }
       }
     );
-    const disposeHandleStructureChange = reaction(
+    const disposeHandleStructureChange = this.props.reaction(
       this.detectStructureChange,
       this.handleStructureChange.bind(this, preview)
     );
-    const disposeDependenciesHandler = reaction(
-      () =>
-        this.props.store.editor.currentSandbox.npmDependencies.keys().length,
+    const disposeDependenciesHandler = this.props.reaction(
+      ({ editor }) =>
+        editor.currentSandbox.npmDependencies.keys
+          ? editor.currentSandbox.npmDependencies.keys().length
+          : Object.keys(editor.currentSandbox.npmDependencies),
       this.handleDependenciesChange.bind(this, preview)
     );
 
@@ -78,8 +79,8 @@ class Preview extends Component<Props, State> {
     };
   };
 
-  detectStructureChange = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
+  detectStructureChange = ({ editor }) => {
+    const sandbox = editor.currentSandbox;
 
     return String(
       sandbox.modules
@@ -123,15 +124,13 @@ class Preview extends Component<Props, State> {
 
   handleModuleSyncedChange = (preview, change) => {
     const settings = this.props.store.preferences.settings;
-    const isServer = getTemplate(
-      this.props.store.editor.currentSandbox.template
-    ).isServer;
-    if ((isServer || !settings.livePreviewEnabled) && change) {
-      if (this.props.store.editor.currentSandbox.template === 'static') {
-        preview.handleRefresh();
-      } else {
-        preview.executeCodeImmediately();
-      }
+
+    if (
+      change &&
+      (this.props.store.editor.currentSandbox.template === 'static' ||
+        !settings.livePreviewEnabled)
+    ) {
+      preview.handleRefresh();
     }
   };
 
@@ -204,4 +203,4 @@ class Preview extends Component<Props, State> {
   }
 }
 
-export default inject('signals', 'store')(observer(Preview));
+export const Preview = inject('signals', 'store')(observer(PreviewComponent));

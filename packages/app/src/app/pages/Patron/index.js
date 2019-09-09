@@ -5,8 +5,8 @@ import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import { inject, observer } from 'app/componentConnectors';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
-import Navigation from 'app/pages/common/Navigation';
-import PricingModal from './PricingModal';
+import { Navigation } from 'app/pages/common/Navigation';
+import { PricingModal } from './PricingModal';
 import { Content } from './elements';
 
 class Patron extends React.Component {

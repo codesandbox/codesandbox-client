@@ -8,12 +8,10 @@ export type Props = {
   unread: number;
 };
 
-function Unread({ status, unread }: Props) {
+export function Unread({ status, unread }: Props) {
   return (
     <Container unread={unread} status={status}>
       {unread}
     </Container>
   );
 }
-
-export default Unread;

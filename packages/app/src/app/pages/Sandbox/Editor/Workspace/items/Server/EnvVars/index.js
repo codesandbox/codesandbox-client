@@ -6,7 +6,7 @@ import { WorkspaceInputContainer } from '../../../elements';
 import EnvEntry from './EnvEntry';
 import EnvModal from './EnvModal';
 
-class EnvironmentVariables extends React.Component {
+class EnvironmentVariablesComponent extends React.Component {
   componentDidMount() {
     this.props.signals.editor.fetchEnvironmentVariables();
   }
@@ -32,15 +32,21 @@ class EnvironmentVariables extends React.Component {
 
     return (
       <div>
-        {Object.keys(envVars.toJSON()).map(keyName => (
-          <EnvEntry
-            onSubmit={this.createEnv}
-            onDelete={this.deleteEnv}
-            key={keyName}
-            name={keyName}
-            value={envVars.get(keyName)}
-          />
-        ))}
+        {Object.keys(envVars.toJSON ? envVars.toJSON() : envVars).map(
+          keyName => (
+            <EnvEntry
+              onSubmit={this.createEnv}
+              onDelete={this.deleteEnv}
+              key={keyName}
+              name={keyName}
+              value={
+                typeof envVars.get === 'function'
+                  ? envVars.get(keyName)
+                  : envVars[keyName]
+              }
+            />
+          )
+        )}
 
         <WorkspaceInputContainer style={{ flexDirection: 'column' }}>
           <EnvModal onSubmit={this.createEnv} />
@@ -50,4 +56,6 @@ class EnvironmentVariables extends React.Component {
   }
 }
 
-export default inject('store', 'signals')(observer(EnvironmentVariables));
+export const EnvironmentVariables = inject('store', 'signals')(
+  observer(EnvironmentVariablesComponent)
+);

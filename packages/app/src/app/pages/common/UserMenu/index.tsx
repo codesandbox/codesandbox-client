@@ -2,10 +2,10 @@ import * as React from 'react';
 import Relative from '@codesandbox/common/lib/components/Relative';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import { HoverMenu } from 'app/components/HoverMenu';
-import Menu from './Menu';
+import { Menu } from './Menu';
 import { ClickableContainer, ProfileImage } from './elements';
 
-const UserMenu = inject('store', 'signals')(
+export const UserMenu = inject('store', 'signals')(
   hooksObserver(
     ({
       store: { user, userMenuOpen },
@@ -42,5 +42,3 @@ const UserMenu = inject('store', 'signals')(
     )
   )
 );
-
-export default UserMenu;

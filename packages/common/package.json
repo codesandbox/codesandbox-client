@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/common",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
@@ -17,7 +17,7 @@
     "start:storybook": "start-storybook",
     "build:storybook": "build-storybook -c .storybook -o public",
     "build:lib": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib",
-    "build": "yarn build:lib && yarn build:storybook",
+    "build": "yarn build:lib",
     "build:dev": "yarn build",
     "prepublish": "yarn build",
     "lint": "eslint --ext .js,.ts,.tsx src"
@@ -25,8 +25,8 @@
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@babel/polyfill": "^7.4.4",
-    "@codesandbox/notifications": "^1.0.3",
-    "@codesandbox/template-icons": "^0.7.0",
+    "@codesandbox/notifications": "^1.0.6",
+    "@codesandbox/template-icons": "^0.7.1",
     "@sentry/browser": "^5.6.2",
     "@tippy.js/react": "^2.1.1",
     "babel-plugin-preval": "^3.0.1",
@@ -38,7 +38,6 @@
     "humps": "CompuIves/humps",
     "image-extensions": "^1.1.0",
     "immer": "^3.2.0",
-    "jsonlint": "^1.6.3",
     "lodash": "^4.17.11",
     "markty-toml": "^0.0.9",
     "memoize-one": "^3.1.1",
@@ -61,7 +60,6 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-async-to-generator": "^7.5.0",
     "@babel/plugin-transform-runtime": "^7.5.5",
-    "@codesandbox/template-icons": "^0.7.0",
     "@storybook/addon-a11y": "^5.1.11",
     "@storybook/addon-actions": "^5.1.9",
     "@storybook/addon-knobs": "^5.1.9",

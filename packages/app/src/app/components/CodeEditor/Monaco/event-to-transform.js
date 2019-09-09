@@ -13,7 +13,7 @@ export default function convertChangeEventToOperation(
   for (const change of [...changeEvent.changes]) {
     const newOt = new TextOperation();
     const cursorStartOffset = lineAndColumnToIndex(
-      composedCode.split(/\r?\n/),
+      composedCode.split(/\n/),
       change.range.startLineNumber,
       change.range.startColumn
     );
@@ -29,8 +29,7 @@ export default function convertChangeEventToOperation(
     }
 
     if (change.text) {
-      const normalizedChangeText = change.text.split(/\r?\n/).join('\n');
-      newOt.insert(normalizedChangeText);
+      newOt.insert(change.text);
     }
 
     const remaining = composedCode.length - newOt.baseLength;

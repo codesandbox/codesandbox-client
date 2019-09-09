@@ -15,12 +15,12 @@ import Live from './items/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
-import Server from './items/Server';
+import { Server } from './items/Server';
 import { Advertisement } from './Advertisement';
-import Chat from './Chat';
+import { Chat } from './Chat';
 import { ConnectionNotice } from './ConnectionNotice';
 import { SSEDownNotice } from './SSEDownNotice';
-import WorkspaceItem from './WorkspaceItem';
+import { WorkspaceItem } from './WorkspaceItem';
 import {
   Container,
   ContactContainer,
@@ -40,7 +40,7 @@ const workspaceTabs = {
   more: More,
 };
 
-const Workspace = ({ store }) => {
+const WorkspaceComponent = ({ store }) => {
   const {
     editor: {
       currentSandbox: { owned },
@@ -96,4 +96,4 @@ const Workspace = ({ store }) => {
   );
 };
 
-export default inject('store')(hooksObserver(Workspace));
+export const Workspace = inject('store')(hooksObserver(WorkspaceComponent));

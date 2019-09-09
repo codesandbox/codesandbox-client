@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
+import { reaction } from 'mobx';
 import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
 import { Provider } from 'mobx-react';
 import _debug from '@codesandbox/common/lib/utils/debug';
@@ -29,12 +30,12 @@ import { isSafari } from '@codesandbox/common/lib/utils/platform';
 // eslint-disable-next-line
 import * as childProcess from 'node-services/lib/child_process';
 import { Controller } from '@cerebral/mobx-state-tree';
-import App from './pages/index';
+import { Routes as App } from './pages';
 import { Provider as OvermindProvider } from './overmind/Provider';
 import './split-pane.css';
 import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
-
-import vscode from './vscode';
+import overmindLogo from './overmind.png';
+import { vscode } from './vscode';
 import {
   initializeThemeCache,
   initializeSettings,
@@ -123,7 +124,11 @@ async function boot(state, signals, overmind) {
       render(
         <Signals.Provider value={signals}>
           <Store.Provider value={state}>
-            <Provider store={state} signals={signals}>
+            <Provider
+              store={state}
+              signals={signals}
+              reaction={(cbA, cbB) => reaction(() => cbA(state), cbB)}
+            >
               <ApolloProvider client={client}>
                 <OvermindProvider value={overmind}>
                   <HooksProvider client={client}>
@@ -154,20 +159,51 @@ async function initialize() {
   let state = null;
   let overmind = null;
 
-  if (location.search.includes('overmind=true')) {
+  window.useOvermind = useIt => {
+    if (typeof useIt === 'undefined') {
+      return localStorage.getItem('overmind');
+    }
+
+    localStorage.setItem('overmind', JSON.stringify(useIt));
+    location.reload(true);
+
+    return useIt;
+  };
+
+  if (localStorage.getItem('overmind') === 'true') {
     await Promise.all([import('overmind'), import('./overmind')]).then(
       modules => {
         const createOvermind = modules[0].createOvermind;
         const config = modules[1].config;
 
         overmind = createOvermind(config, {
-          devtools: 'localhost:3032',
+          devtools:
+            window.opener && window.opener !== window && !window.chrome
+              ? false
+              : 'localhost:3031',
+          name: 'CodeSandbox',
           logProxies: true,
         });
 
-        getState = () => overmind.state;
+        getState = path =>
+          path
+            ? path.split('.').reduce((aggr, key) => aggr[key], overmind.state)
+            : overmind.state;
         getSignal = path =>
           path.split('.').reduce((aggr, key) => aggr[key], overmind.actions);
+
+        const logoContainer = document.createElement('div');
+        logoContainer.style.position = 'fixed';
+        logoContainer.style.bottom = '30px';
+        logoContainer.style.left = '10px';
+        logoContainer.style.zIndex = '999999';
+        logoContainer.style.width = '40px';
+        logoContainer.style.height = '40px';
+        logoContainer.style.borderRadius = '3px';
+        logoContainer.style.backgroundImage = `url(${overmindLogo})`;
+        logoContainer.style.backgroundSize = 'cover';
+        logoContainer.style.backgroundSize = 'cover';
+        document.body.appendChild(logoContainer);
       }
     );
   } else {
@@ -194,6 +230,9 @@ async function initialize() {
     getState = controller.getState.bind(controller);
     getSignal = controller.getSignal.bind(controller);
   }
+
+  window.getState = getState;
+  window.getSignal = getSignal;
 
   // Configures BrowserFS to use the LocalStorage file system.
   window.BrowserFS.configure(

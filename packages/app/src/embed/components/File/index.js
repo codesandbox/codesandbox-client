@@ -7,13 +7,12 @@ import EntryTitle from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/
 import { LeftOffset } from './elements';
 
 type Props = {
-  id: string,
-  setCurrentModule: (id: string) => void,
   title: string,
   depth: number,
   type: string,
   active?: boolean,
   alternative?: boolean,
+  onClick?: () => void,
 };
 
 export default class File extends React.PureComponent<Props> {
@@ -22,21 +21,15 @@ export default class File extends React.PureComponent<Props> {
     alternative: false,
   };
 
-  setCurrentModule = () => {
-    const { id, setCurrentModule } = this.props;
-
-    setCurrentModule(id);
-  };
-
   render() {
-    const { title, depth, type, active, alternative } = this.props;
+    const { title, depth, type, active, alternative, onClick } = this.props;
     return (
       <div>
         <Entry
           alternative={alternative}
           active={active}
-          onClick={this.setCurrentModule}
           type={type}
+          onClick={onClick}
         >
           <LeftOffset depth={depth}>
             <EntryIcons type={type} />

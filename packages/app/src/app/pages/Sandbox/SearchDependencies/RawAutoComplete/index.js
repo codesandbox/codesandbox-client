@@ -9,7 +9,6 @@ import DependencyHit from '../DependencyHit';
 import { AutoCompleteInput, SuggestionInput } from './elements';
 
 /* eslint-disable no-param-reassign */
-
 function getName(value: string) {
   const scope = value[0] === '@' ? '@' : '';
   value = scope ? value.substr(1) : value;
@@ -25,11 +24,14 @@ function isExplicitVersion(value: string) {
 }
 
 function getVersion(value: string, hit) {
-  return value.indexOf('@') > 0
-    ? value.split('@')[1]
-    : hit
-    ? hit.version
-    : null;
+  if (value.indexOf('@') > 0) {
+    return value.split('@')[1];
+  }
+  if (hit) {
+    return hit.version;
+  }
+
+  return null;
 }
 
 function getIsValid(value: string, hit, version: string) {
@@ -65,11 +67,22 @@ class RawAutoComplete extends React.Component {
     const version = getVersion(this.state.value, hit);
     const isValid = getIsValid(this.state.value, hit, version);
 
-    const autoCompletedQuery = isExplicitVersion(this.state.value)
-      ? null
-      : hit && isValid
-      ? hit.name + '@' + hit.version
-      : null;
+    const autoCompletedQuery = noName => {
+      if (isExplicitVersion(this.state.value)) return null;
+
+      if (hit && isValid)
+        return noName ? '@' + hit.version : hit.name + '@' + hit.version;
+
+      return null;
+    };
+
+    const getRefinement = () => {
+      if (isExplicitVersion(this.state.value)) return this.state.value;
+
+      if (hit) return hit.name;
+
+      return currentRefinement;
+    };
 
     return (
       <Downshift itemToString={h => (h ? h.name : h)} onSelect={onSelect}>
@@ -77,21 +90,13 @@ class RawAutoComplete extends React.Component {
           <div>
             {highlightedIndex == null && (
               <SuggestionInput as="div">
-                {isExplicitVersion(this.state.value)
-                  ? this.state.value
-                  : hit
-                  ? hit.name
-                  : currentRefinement}
+                {getRefinement()}
                 <span
                   css={{
                     color: 'var(--color-white-3)',
                   }}
                 >
-                  {isExplicitVersion(this.state.value)
-                    ? null
-                    : hit && isValid
-                    ? '@' + hit.version
-                    : null}
+                  {autoCompletedQuery(true)}
                 </span>
               </SuggestionInput>
             )}
@@ -133,9 +138,12 @@ class RawAutoComplete extends React.Component {
                 onKeyUp: e => {
                   // If enter with no selection
                   if (e.keyCode === ENTER) {
-                    onManualSelect(autoCompletedQuery || e.target.value);
-                  } else if (autoCompletedQuery && e.keyCode === ARROW_RIGHT) {
-                    this.setState({ value: autoCompletedQuery });
+                    onManualSelect(autoCompletedQuery() || e.target.value);
+                  } else if (
+                    autoCompletedQuery() &&
+                    e.keyCode === ARROW_RIGHT
+                  ) {
+                    this.setState({ value: autoCompletedQuery() });
                   }
                 },
               })}

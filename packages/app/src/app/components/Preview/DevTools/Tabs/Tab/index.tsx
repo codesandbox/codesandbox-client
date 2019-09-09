@@ -197,6 +197,8 @@ const collectSource = (connect, monitor) => ({
 
 export const PREVIEW_TAB_ID = 'PREVIEW_TAB';
 
-export default DropTarget(PREVIEW_TAB_ID, entryTarget, collectTarget)(
-  DragSource(PREVIEW_TAB_ID, entrySource, collectSource)(PaneTab)
-);
+export const DraggableTab = DropTarget(
+  PREVIEW_TAB_ID,
+  entryTarget,
+  collectTarget
+)(DragSource(PREVIEW_TAB_ID, entrySource, collectSource)(PaneTab));

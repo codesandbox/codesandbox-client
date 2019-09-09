@@ -1,7 +1,7 @@
 import { inject, hooksObserver } from 'app/componentConnectors';
 import React, { useState } from 'react';
 
-import ZeitIntegration from 'app/pages/common/ZeitIntegration';
+import { ZeitIntegration } from 'app/pages/common/ZeitIntegration';
 
 import { Wrapper } from '../elements';
 

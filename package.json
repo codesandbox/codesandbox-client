@@ -8,14 +8,15 @@
     "url": "https://github.com/codesandbox/codesandbox-client"
   },
   "scripts": {
+    "commit": "concurrently \"yarn typecheck\" \"yarn lint\" && git commit -m",
     "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" yarn build:deps && yarn build:prod",
     "build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" lerna run build  --scope homepage --stream && lerna run build --scope app --stream && lerna run copy-assets --scope app --stream",
     "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:clean": "lerna run build:clean --scope app --scope homepage && rimraf www",
-    "build:deps": "lerna run build:dev --scope codesandbox-api --scope @codesandbox/notifications --scope @codesandbox/executors && lerna run build:dev --scope @codesandbox/common && lerna run build:dev --scope vscode-textmate --scope codesandbox-browserfs --scope node-services && lerna run build:dev --scope sse-hooks && lerna run build --scope codesandbox-deps",
+    "build:deps": "lerna run build:dev",
     "build:common": "lerna run build:dev --scope @codesandbox/common --stream",
     "build:dynamic": "lerna run build --scope dynamic-pages --stream",
-    "start": "yarn build:deps && lerna run start --scope @codesandbox/common --scope app",
+    "start": "yarn build:deps && lerna run start --scope @codesandbox/common --scope app --parallel",
     "start:overmind": "yarn build:deps && concurrently \"lerna run start --scope app --stream\" \"overmind-devtools\"",
     "start:fast": "cd packages/app && yarn start",
     "start:vscode": "cross-env VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
@@ -27,6 +28,7 @@
     "start:storybook": "lerna run start:storybook --scope=@codesandbox/common --stream",
     "start:dev_api": "lerna run start:dev_api --scope app --stream",
     "test": "lerna run test --ignore codesandbox-browserfs",
+    "test:ci": "lerna run test --ignore codesandbox-browserfs -- --ci --testResultsProcessor=\"jest-junit\" ",
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
     "now-build": "yarn build:deps && lerna run build:storybook --scope @codesandbox/common",
@@ -59,11 +61,7 @@
       "codesandbox-deps/tern"
     ]
   },
-  "resolutions": {
-    "react-split-pane/react-dom": "^16.8.6"
-  },
   "devDependencies": {
-    "@types/react": "^16.8.12",
     "all-contributors-cli": "^5.4.0",
     "babel-eslint": "^10.0.2",
     "concurrently": "^4.1.0",
@@ -77,10 +75,9 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "~7.4.0",
     "eslint-plugin-react-hooks": "^1.6.0",
-    "flow-bin": "^0.72.0",
     "gulp": "^3.9.1",
     "husky": "^2.2.0",
-    "lerna": "^2.5.1",
+    "lerna": "^3.16.4",
     "prettier": "1.17.0",
     "pretty-quick": "^1.10.0",
     "typescript": "3.5.3"

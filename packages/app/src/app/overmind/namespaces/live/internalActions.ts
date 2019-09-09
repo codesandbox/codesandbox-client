@@ -1,13 +1,12 @@
 import { Action, AsyncAction } from 'app/overmind';
 import {
-  RoomInfo,
   Module,
   EditorSelection,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
-import { withLoadApp } from 'app/overmind/factories';
 import { json } from 'overmind';
 
-export const clearUserSelections: Action<any> = ({ state }, data) => {
+export const clearUserSelections: Action<any> = ({ state }, live_user_id) => {
   const clearSelections = userId => {
     const userIndex = state.live.roomInfo.users.findIndex(u => u.id === userId);
 
@@ -24,11 +23,11 @@ export const clearUserSelections: Action<any> = ({ state }, data) => {
     }
   };
 
-  if (!data) {
+  if (!live_user_id) {
     // All users
     state.live.roomInfo.users.forEach(u => clearSelections(u.id));
   } else {
-    clearSelections(data.live_user_id);
+    clearSelections(live_user_id);
   }
 };
 
@@ -50,39 +49,45 @@ export const sendModuleSaved: Action<string> = ({ effects }, moduleShortid) => {
   effects.live.sendModuleSaved(moduleShortid);
 };
 
-export const initialize: AsyncAction = withLoadApp(
-  async ({ state, effects, actions }) => {
-    state.live.isLoading = true;
+export const initialize: AsyncAction<string, Sandbox> = async (
+  { state, effects, actions },
+  id
+) => {
+  state.live.isLoading = true;
 
-    try {
-      state.live.roomInfo = await effects.live.joinChannel<RoomInfo>(
-        state.editor.currentSandbox.roomId
-      );
-      effects.analytics.track('Live Session Joined', {});
-      effects.live.listen(actions.live.liveMessageReceived);
-      /* 
-      set(state`live.liveUserId`, props`liveUserId`),
-      set(state`editor.currentId`, props`sandbox.id`),
-      when(state`editor.currentSandbox`),
-      {
-        true: [],
-        false: [
-          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-        ],
-      },
-    */
-      state.live.receivingCode = true; // Not necessary as next step is synchronous
-      // TODO: Where is the module state?
-      // actions.live.internal.initializeModuleState();
-      state.live.receivingCode = false;
-      state.live.isLive = true;
-      state.live.error = null;
-      effects.live.send('live:module_state', {});
-    } catch (error) {
-      state.live.error = error.reason;
+  try {
+    const {
+      roomInfo,
+      liveUserId,
+      sandbox,
+      moduleState,
+    } = await effects.live.joinChannel(id);
+
+    state.live.roomInfo = roomInfo;
+    state.live.liveUserId = liveUserId;
+
+    if (!state.editor.sandboxes[sandbox.id]) {
+      state.editor.sandboxes[sandbox.id] = sandbox;
     }
+    state.editor.currentId = sandbox.id;
+
+    effects.analytics.track('Live Session Joined', {});
+    effects.live.listen(actions.live.liveMessageReceived);
+
+    state.live.receivingCode = true;
+    actions.live.internal.initializeModuleState(moduleState);
+    state.live.receivingCode = false;
+    state.live.isLive = true;
+    state.live.error = null;
+    effects.live.send('live:module_state', {});
+
+    return sandbox;
+  } catch (error) {
+    state.live.error = error.reason;
   }
-);
+
+  return null;
+};
 
 export const initializeModuleState: Action<any> = (
   { state, effects },

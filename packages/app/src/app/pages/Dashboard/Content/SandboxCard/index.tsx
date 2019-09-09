@@ -78,7 +78,7 @@ type State = {
 export const DELETE_SANDBOX_DROP_KEY = 'delete';
 export const MAKE_TEMPLATE_DROP_KEY = 'makeTemplate';
 
-class SandboxItem extends React.PureComponent<Props, State> {
+class SandboxItemComponent extends React.PureComponent<Props, State> {
   el: HTMLDivElement;
   screenshotTimeout: number;
 
@@ -646,4 +646,6 @@ function collect(connect) {
   };
 }
 
-export default DragSource('SANDBOX', cardSource, collect)(SandboxItem);
+export const SandboxItem = DragSource('SANDBOX', cardSource, collect)(
+  SandboxItemComponent
+);

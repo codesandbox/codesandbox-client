@@ -9,7 +9,7 @@ import {
 } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
-import CodeEditor from 'app/components/CodeEditor';
+import { CodeEditor } from 'app/components/CodeEditor';
 import { Editor } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
@@ -420,8 +420,17 @@ export default class Content extends React.PureComponent<Props, State> {
       }
     }
 
-    if (expandDevTools) {
-      views[1].open = true;
+    /**
+      We can't make assumptions about the default value
+      of open because it's loaded from common/templates.
+
+      Example: server templates have devTools open by default
+
+      If the user wants to override the default, they can
+      do that by using the explicit flag.
+    */
+    if (typeof expandDevTools !== 'undefined') {
+      views[1].open = expandDevTools;
     }
 
     const browserConfig: IViewType = {

@@ -12,7 +12,7 @@ const DotContainer = styled.div`
   }
 `;
 
-export default class BlinkingDot extends React.PureComponent {
+export class BlinkingDot extends React.PureComponent {
   state = {
     showing: true,
   };

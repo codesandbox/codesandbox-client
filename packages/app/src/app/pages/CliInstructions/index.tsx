@@ -4,7 +4,7 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
-import Navigation from 'app/pages/common/Navigation';
+import { Navigation } from 'app/pages/common/Navigation';
 import { Container, Content, Code } from './elements';
 
 const CLIInstructions = inject('signals')(
@@ -42,4 +42,5 @@ const CLIInstructions = inject('signals')(
   })
 );
 
+// eslint-disable-next-line import/no-default-export
 export default CLIInstructions;

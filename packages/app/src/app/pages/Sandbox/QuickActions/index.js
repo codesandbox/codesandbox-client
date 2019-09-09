@@ -17,7 +17,7 @@ import {
   Keybindings,
 } from './elements';
 
-class QuickActions extends React.Component {
+class QuickActionsComponent extends React.Component {
   // we'll just keep track of what the user changes the inputValue to be
   // so when the user makes a wish we can provide that info to genie
   inputValue = '';
@@ -176,4 +176,6 @@ class QuickActions extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(observer(QuickActions));
+export const QuickActions = inject('signals', 'store')(
+  observer(QuickActionsComponent)
+);

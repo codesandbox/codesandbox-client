@@ -12,7 +12,7 @@ import {
 import { Rule, ErrorMessage } from './elements';
 import VSCodePlaceholder from '../VSCodePlaceholder';
 
-class KeyMapping extends React.Component {
+class KeyMappingComponent extends React.Component {
   state = { error: null };
 
   getUserBindings = () => {
@@ -112,4 +112,6 @@ class KeyMapping extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(observer(KeyMapping));
+export const KeyMapping = inject('signals', 'store')(
+  observer(KeyMappingComponent)
+);

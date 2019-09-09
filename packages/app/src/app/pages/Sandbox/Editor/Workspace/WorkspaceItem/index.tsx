@@ -24,7 +24,7 @@ type State = {
   open: boolean;
 };
 
-export default class WorkspaceItem extends React.Component<Props, State> {
+export class WorkspaceItem extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {

@@ -22,7 +22,7 @@ const Messages = styled.div`
   flex: 1;
 `;
 
-class Chat extends React.Component {
+class ChatComponent extends React.Component {
   state = {
     value: '',
   };
@@ -79,7 +79,9 @@ class Chat extends React.Component {
                     metadata.color[2]
                   })`
                 : '#636363';
-              const name = users.get(message.userId);
+              const name = users.get
+                ? users.get(message.userId)
+                : users[message.userId];
               return (
                 <div key={message.date}>
                   {(i === 0 || messages[i - 1].userId !== message.userId) && (
@@ -142,4 +144,4 @@ class Chat extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(observer(Chat));
+export const Chat = inject('signals', 'store')(observer(ChatComponent));
