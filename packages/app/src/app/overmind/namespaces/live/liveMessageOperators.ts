@@ -177,7 +177,9 @@ export const onModuleDeleted: Operator<
     return;
   }
   // Do not think this really works? Cause this would fork the sandbox
-  actions.files.removeModule(data.moduleShortid);
+  actions.files.removeModule({
+    moduleShortid: data.moduleShortid,
+  });
 });
 
 export const onDirectoryCreated: Operator<
@@ -219,7 +221,9 @@ export const onDirectoryDeleted: Operator<
   }
   state.editor.currentModuleShortid = state.editor.mainModule.shortid;
   // Again, this does not work very well?
-  actions.files.removeDirectory(data.directoryShortid);
+  actions.files.removeDirectory({
+    directoryShortid: data.directoryShortid,
+  });
 });
 
 export const onUserSelection: Operator<
