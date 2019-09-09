@@ -225,10 +225,9 @@ export const addedFileToSandbox: AsyncAction<{
   });
 };
 
-export const deletedUploadedFile: AsyncAction<string> = async (
-  { state, effects },
-  id
-) => {
+export const deletedUploadedFile: AsyncAction<{
+  id: string;
+}> = async ({ state, effects }, { id }) => {
   try {
     await effects.api.deleteUploadedFile(id);
     state.uploadedFiles = null;
@@ -481,8 +480,10 @@ export const syncSandbox: AsyncAction<any[]> = async (
   }
 };
 
-export const removeModule: AsyncAction<string> = withOwnedSandbox(
-  async ({ state, effects, actions }, moduleShortid) => {
+export const removeModule: AsyncAction<{
+  moduleShortid: string;
+}> = withOwnedSandbox(
+  async ({ state, effects, actions }, { moduleShortid }) => {
     if (state.editor.currentModule.shortid === moduleShortid) {
       actions.editor.internal.setCurrentModule(state.editor.mainModule);
     }
@@ -504,10 +505,9 @@ export const removeModule: AsyncAction<string> = withOwnedSandbox(
   }
 );
 
-export const removeDirectory: AsyncAction<string> = async (
-  { state },
-  directoryShortid
-) => {
+export const removeDirectory: AsyncAction<{
+  directoryShortid: string;
+}> = async ({ state }, { directoryShortid }) => {
   const sandbox = state.editor.currentSandbox;
   state.editor.currentModuleShortid = state.editor.mainModule.shortid;
   const directory = sandbox.directories.find(
