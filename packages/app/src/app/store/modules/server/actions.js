@@ -157,11 +157,25 @@ function getOpenedBrowserPorts(views: ViewConfig[]) {
 export function showPortOpenedNotifications({ state, props, controller }) {
   const currentPorts = state.get('server.ports');
   const newPorts = props.ports;
+  const template = state.get('editor.currentSandbox.template');
 
   const addedPorts = newPorts.filter(
     port => !currentPorts.find(p => p.port === port.port)
   );
   const openedPorts = getOpenedBrowserPorts(state.get('editor.devToolTabs'));
+  if (template === 'gatsby') {
+    const mainPort = addedPorts.find(port => port.main);
+    openBrowserFromPort({
+      props: {
+        port: {
+          ...mainPort,
+          main: false,
+          hostname: mainPort.hostname + '/___graphql',
+        },
+      },
+      controller,
+    });
+  }
 
   addedPorts.forEach(port => {
     if (!(port.main || openedPorts.includes(port.port))) {

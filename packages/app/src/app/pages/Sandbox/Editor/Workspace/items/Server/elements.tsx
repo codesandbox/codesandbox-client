@@ -29,7 +29,7 @@ export const Port = styled.div`
   margin-left: 0.5rem;
 
   > div {
-    margin-left: '0.75rem';
+    margin-left: 0.75rem;
   }
 `;
 

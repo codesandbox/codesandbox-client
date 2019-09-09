@@ -4,6 +4,7 @@ import {
   ServerContainerStatus,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { host } from '@codesandbox/common/lib/utils/url-generator';
 
 export const restartSandbox: Action = ({ effects }) => {
   effects.executor.emit('sandbox:restart');
@@ -103,6 +104,32 @@ export const onSSEMessage: Action<{
           }
         });
       });
+      const browserTabs = editor.devToolTabs.find(view =>
+        view.views.find(tab => tab.id === 'codesandbox.browser')
+      ).views;
+
+      if (
+        editor.currentSandbox.template === 'gatsby' &&
+        !browserTabs.find(tab => (tab.options || {}).url.contains('___graphql'))
+      ) {
+        const hostname = `https://${editor.currentSandbox.id}.sse.${
+          process.env.NODE_ENV === 'development' || process.env.STAGING
+            ? 'codesandbox.io'
+            : host()
+        }/___graphql`;
+
+        editor.currentDevToolsPosition = {
+          devToolIndex: 0,
+          tabPosition: 0,
+        };
+        actions.server.onBrowserFromPortOpened({
+          port: {
+            main: false,
+            port: 8080,
+            hostname,
+          },
+        });
+      }
 
       addedPorts.forEach(port => {
         if (!port.main && openedPorts.indexOf(port.port) === -1) {

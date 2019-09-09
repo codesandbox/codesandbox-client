@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import BrowserIcon from 'react-icons/lib/go/browser';
-
+import { host } from '@codesandbox/common/lib/utils/url-generator';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
 import {
@@ -40,18 +40,25 @@ export const Server = inject('store', 'signals')(
     };
 
     useEffect(() => {
-      if (sandbox.template === 'gatsby') {
-        const mainPort = server.ports.find((port: Port) => port.main);
+      if (
+        sandbox.template === 'gatsby' &&
+        !ports.find((port: Port) => port.name === 'GraphiQL')
+      ) {
+        const hostname = `https://${editor.currentSandbox.id}.sse.${
+          process.env.NODE_ENV === 'development' || process.env.STAGING
+            ? 'codesandbox.io'
+            : host()
+        }/___graphql`;
         setPorts((p: Port[]) =>
           p.concat({
-            ...mainPort,
+            port: 8080,
             main: false,
-            hostname: mainPort.hostname + '/___graphql',
+            hostname,
             name: 'GraphiQL',
           })
         );
       }
-    }, [sandbox.template, server.ports]);
+    }, [editor.currentSandbox.id, ports, sandbox.template, server.ports]);
 
     return (
       <div>
@@ -88,7 +95,7 @@ export const Server = inject('store', 'signals')(
           <SubTitle>Open Ports</SubTitle>
           <Margin top={0.5}>
             {ports.length ? (
-              ports.map(port => (
+              ports.map((port: Port) => (
                 <EntryContainer
                   style={{ position: 'relative' }}
                   onClick={() => openPort(port)}
