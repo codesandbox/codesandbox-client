@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { inject, hooksObserver } from 'app/componentConnectors';
-
-import PowerIcon from 'react-icons/lib/md/power-settings-new';
-
 import BrowserIcon from 'react-icons/lib/go/browser';
 
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { Button } from '@codesandbox/common/lib/components/Button';
+
 import {
   Description,
   WorkspaceInputContainer,
@@ -17,16 +13,14 @@ import {
 import { Status } from './Status';
 import { Tasks } from './Tasks';
 import { EnvironmentVariables } from './EnvVars';
-
-const SubTitle = styled.div`
-  text-transform: uppercase;
-  font-weight: 700;
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'};
-
-  padding-left: 1rem;
-  font-size: 0.875rem;
-`;
+import {
+  SubTitle,
+  TasksContainer,
+  Port,
+  MainBadge,
+  ActionButton,
+  Power as PowerIcon,
+} from './elements';
 
 type Port = {
   main: boolean;
@@ -79,21 +73,14 @@ export const Server = inject('store', 'signals')(
         <Margin top={1.5}>
           <SubTitle>Run Scripts</SubTitle>
           <Margin top={0.5}>
-            <WorkspaceInputContainer
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                pointerEvents: disconnected ? 'none' : 'initial',
-                opacity: disconnected ? 0.5 : 1,
-              }}
-            >
+            <TasksContainer disconnected={disconnected}>
               <Tasks
                 package={
                   editor.parsedConfigurations.package &&
                   editor.parsedConfigurations.package.parsed
                 }
               />
-            </WorkspaceInputContainer>
+            </TasksContainer>
           </Margin>
         </Margin>
 
@@ -106,30 +93,11 @@ export const Server = inject('store', 'signals')(
                   style={{ position: 'relative' }}
                   onClick={() => openPort(port)}
                 >
-                  <div
-                    style={{
-                      flex: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginLeft: '0.5rem',
-                    }}
-                  >
+                  <Port>
                     <BrowserIcon />
-                    <div style={{ marginLeft: '0.75rem' }}>
-                      {port.name || port.port}
-                    </div>
-                  </div>
-                  {port.main && (
-                    <div
-                      style={{
-                        fontWeight: 600,
-                        position: 'absolute',
-                        right: '2rem',
-                      }}
-                    >
-                      main
-                    </div>
-                  )}
+                    <div>{port.name || port.port}</div>
+                  </Port>
+                  {port.main && <MainBadge>main</MainBadge>}
                 </EntryContainer>
               ))
             ) : (
@@ -146,52 +114,32 @@ export const Server = inject('store', 'signals')(
             Control Container
           </SubTitle>
           <WorkspaceInputContainer>
-            <Button
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+            <ActionButton
               small
               block
               disabled={
                 disconnected || server.containerStatus !== 'sandbox-started'
               }
-              onClick={() => {
-                signals.server.restartSandbox({});
-              }}
+              onClick={() => signals.server.restartSandbox({})}
             >
-              <React.Fragment>
-                <PowerIcon
-                  style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
-                />{' '}
-                Restart Sandbox
-              </React.Fragment>
-            </Button>
+              <>
+                <PowerIcon /> Restart Sandbox
+              </>
+            </ActionButton>
           </WorkspaceInputContainer>
           <WorkspaceInputContainer>
-            <Button
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+            <ActionButton
               small
               block
               disabled={
                 disconnected || server.containerStatus === 'initializing'
               }
-              onClick={() => {
-                signals.server.restartContainer({});
-              }}
+              onClick={() => signals.server.restartContainer({})}
             >
-              <React.Fragment>
-                <PowerIcon
-                  style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
-                />{' '}
-                Restart Server
-              </React.Fragment>
-            </Button>
+              <>
+                <PowerIcon /> Restart Server
+              </>
+            </ActionButton>
           </WorkspaceInputContainer>
         </Margin>
 
