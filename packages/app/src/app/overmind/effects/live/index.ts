@@ -149,16 +149,16 @@ export default {
       }
     });
   },
-  sendModuleUpdate(moduleShortid: string, module?: Module) {
-    return this.send('module:saved', {
+  sendModuleUpdate(moduleShortid: string, module: Module) {
+    return this.send('module:updated', {
       type: 'module',
       moduleShortid,
       module,
     });
   },
   sendDirectoryUpdate(directoryShortid: string) {
-    return this.send('module:saved', {
-      type: 'module',
+    return this.send('directory:updated', {
+      type: 'directory',
       directoryShortid,
     });
   },

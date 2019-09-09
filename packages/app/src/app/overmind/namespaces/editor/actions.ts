@@ -566,7 +566,7 @@ export const renameModule: AsyncAction<{
       );
 
       if (state.live.isCurrentEditor) {
-        effects.live.sendModuleUpdate(moduleShortid);
+        effects.live.sendModuleUpdate(moduleShortid, module);
       }
     } catch (error) {
       module.title = oldTitle;

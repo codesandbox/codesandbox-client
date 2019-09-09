@@ -104,7 +104,7 @@ export const moduleMovedToDirectory: AsyncAction<{
         moduleShortid,
         directoryShortid
       );
-      effects.live.sendModuleUpdate(moduleShortid);
+      effects.live.sendModuleUpdate(moduleShortid, module);
     } catch (error) {
       module.directoryShortid = currentDirectoryShortid;
 
