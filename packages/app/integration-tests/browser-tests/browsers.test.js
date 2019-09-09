@@ -91,7 +91,7 @@ usedDescribe('browser-tests', () => {
     await testPageWitCapabilities(capabilities);
   }, 130000);
 
-  test('android', async () => {
+  test.skip('android', async () => {
     // Input capabilities
     const capabilities = {
       browserName: 'android',
