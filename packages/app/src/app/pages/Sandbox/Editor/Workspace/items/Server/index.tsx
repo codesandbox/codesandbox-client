@@ -44,7 +44,7 @@ export const Server = inject('store', 'signals')(
         sandbox.template === 'gatsby' &&
         !ports.find((port: Port) => port.name === 'GraphiQL')
       ) {
-        const hostname = `https://${editor.currentSandbox.id}.sse.${
+        const hostname = `https://${sandbox.id}.sse.${
           process.env.NODE_ENV === 'development' || process.env.STAGING
             ? 'codesandbox.io'
             : host()
@@ -58,7 +58,13 @@ export const Server = inject('store', 'signals')(
           })
         );
       }
-    }, [editor.currentSandbox.id, ports, sandbox.template, server.ports]);
+    }, [
+      editor.currentSandbox.id,
+      ports,
+      sandbox.id,
+      sandbox.template,
+      server.ports,
+    ]);
 
     return (
       <div>
