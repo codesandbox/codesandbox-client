@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import PlusIcon from 'react-icons/lib/go/plus';
 import nu from './nu-theme';
 import Row from '../flex/Row';
-import PlusIcon from 'react-icons/lib/go/plus';
 
 export const Container = styled(Row)`
   background: ${nu.colors.grays[5]};
