@@ -1,107 +1,75 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
 
-import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import { InputContainer, ErrorMessage, EnvName, EnvValue } from './elements';
 
-const InputContainer = styled.div`
-  display: flex;
-  width: 100%;
-`;
+export const EnvModal = props => {
+  const [name, setName] = useState(props.name || '');
+  const [value, setValue] = useState(props.value || '');
 
-const ErrorMessage = styled.div`
-  color: ${props => props.theme.red};
-  font-size: 12px;
-  margin: 0.5rem 0;
-  font-style: italic;
-`;
+  const onNameChange = e => setName(e.target.value);
+  const onValueChange = e => setValue(e.target.value);
 
-export default class EnvModal extends React.PureComponent {
-  state = {
-    name: this.props.name || '',
-    value: this.props.value || '',
-  };
-
-  onNameChange = e => this.setState({ name: e.target.value });
-  onValueChange = e => this.setState({ value: e.target.value });
-
-  onCancel = e => {
+  const onCancel = e => {
     e.preventDefault();
     e.stopPropagation();
 
-    this.props.onCancel();
+    props.onCancel();
   };
 
-  onSubmit = e => {
+  const onSubmit = e => {
     e.preventDefault();
     e.stopPropagation();
 
-    this.props.onSubmit({ name: this.state.name, value: this.state.value });
+    props.onSubmit({ name, value });
 
-    this.setState({ name: '', value: '' });
+    setName('');
+    setValue('');
   };
 
-  isValid = () => {
-    if (/\s/.test(this.state.name)) {
+  const isValid = () => {
+    if (/\s/.test(name)) {
       return "The name and the value can't contain spaces.";
     }
 
     return false;
   };
 
-  render() {
-    const errorMessage = this.isValid();
-    return (
-      <form style={{ width: '100%' }} onSubmit={this.onSubmit}>
-        <div>
-          <InputContainer
-            style={{
-              flexDirection: 'column',
-              marginBottom: '.5rem',
-            }}
-          >
-            <Input
-              placeholder="Name"
-              style={{
-                marginLeft: 0,
-                marginRight: 0,
-                marginBottom: '.25rem',
-                width: '100%',
-              }}
-              onChange={this.onNameChange}
-              value={this.state.name}
-            />
-            <Input
-              placeholder="Value"
-              onChange={this.onValueChange}
-              style={{ marginLeft: 0, marginRight: 0, width: '100%' }}
-              value={this.state.value}
-            />
-          </InputContainer>
-        </div>
-        <div style={{ display: 'flex' }}>
-          {this.props.onCancel && (
-            <Button
-              onClick={this.onCancel}
-              style={{ flex: 1, marginRight: '.25rem' }}
-              red
-              small
-            >
-              Cancel
-            </Button>
-          )}
-
+  const errorMessage = isValid();
+  return (
+    <form style={{ width: '100%' }} onSubmit={onSubmit}>
+      <div>
+        <InputContainer>
+          <EnvName placeholder="Name" onChange={onNameChange} value={name} />
+          <EnvValue
+            placeholder="Value"
+            onChange={onValueChange}
+            value={value}
+          />
+        </InputContainer>
+      </div>
+      <div style={{ display: 'flex' }}>
+        {props.onCancel && (
           <Button
-            style={{ flex: 1, marginLeft: this.props.onCancel ? '.25rem' : 0 }}
-            block
-            disabled={!this.state.name || !this.state.value || errorMessage}
+            onClick={onCancel}
+            style={{ flex: 1, marginRight: '.25rem' }}
+            red
             small
           >
-            Save Secret
+            Cancel
           </Button>
-        </div>
-        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-      </form>
-    );
-  }
-}
+        )}
+
+        <Button
+          style={{ flex: 1, marginLeft: props.onCancel ? '.25rem' : 0 }}
+          block
+          disabled={!name || !value || errorMessage}
+          small
+        >
+          Save Secret
+        </Button>
+      </div>
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+    </form>
+  );
+};

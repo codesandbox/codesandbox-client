@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
 import { WorkspaceInputContainer } from '../../elements';
@@ -16,10 +16,12 @@ export const SubTitle = styled.div`
 export const TasksContainer = styled(WorkspaceInputContainer)<{
   disconnected: boolean;
 }>`
-  display: flex;
-  flex-direction: column;
-  pointer-events: ${props => (props.disconnected ? 'none' : 'initial')};
-  opacity: ${props => (props.disconnected ? 0.5 : 1)};
+  ${({ disconnected }) => css`
+    display: flex;
+    flex-direction: column;
+    pointer-events: ${disconnected ? 'none' : 'initial'};
+    opacity: ${disconnected ? 0.5 : 1};
+  `}
 `;
 
 export const Port = styled.div`
