@@ -83,7 +83,6 @@ const theme = {
     link: '#40a9f3',
   }),
   vscodeTheme: codesandbox,
-
   new: createTheme({
     title: '#EEEEFF',
     description: '#777788',
