@@ -1,5 +1,7 @@
 import memoize from 'lodash/memoize';
-import { Module, Directory } from '../types';
+import { Module, Directory, Sandbox } from '../types';
+import getTemplateDefinition from '../templates';
+import parse from '../templates/configuration/parse';
 
 const compareTitle = (
   original: string,
@@ -248,18 +250,40 @@ export const isMainModule = (
   return path.replace('/', '') === entry;
 };
 
-export const findMainModule = (
-  modules: Module[],
-  directories: Directory[],
-  entry: string = 'index.js'
-) => {
-  try {
-    const module = resolveModule(entry, modules, directories);
+export const findMainModule = (sandbox?: Sandbox) => {
+  const resolve = resolveModuleWrapped(sandbox);
 
-    return module;
-  } catch (e) {
-    return modules[0];
+  // first attempt: try loading the entry file if it exists
+  const entryModule = resolve(sandbox.entry);
+  if (entryModule) {
+    return entryModule;
   }
+
+  // second attempt: try loading the first file that exists from
+  // the list of possible defaults in the template defination
+  const templateDefinition = getTemplateDefinition(sandbox.template);
+
+  const parsedConfigs = parse(
+    sandbox.template,
+    templateDefinition.configurationFiles,
+    resolve,
+    sandbox
+  );
+
+  const defaultOpenedFiles = templateDefinition.getDefaultOpenedFiles(
+    parsedConfigs
+  );
+
+  const defaultOpenModule = defaultOpenedFiles
+    .map(path => resolve(path))
+    .find(module => module);
+
+  if (defaultOpenModule) {
+    return defaultOpenModule;
+  }
+
+  // third attempt: give up and load the first file in the list
+  return sandbox.modules[0];
 };
 
 export const findCurrentModule = (
@@ -283,4 +307,20 @@ export const findCurrentModule = (
     modules.find(m => m.shortid === modulePath) || // deep-links requires this
     mainModule
   );
+};
+
+export const resolveModuleWrapped = sandbox => (path: string) => {
+  try {
+    return resolveModule(path, sandbox.modules, sandbox.directories);
+  } catch (e) {
+    return undefined;
+  }
+};
+
+export const resolveDirectoryWrapped = sandbox => (path: string) => {
+  try {
+    return resolveDirectory(path, sandbox.modules, sandbox.directories);
+  } catch (e) {
+    return undefined;
+  }
 };

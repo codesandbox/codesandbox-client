@@ -387,7 +387,7 @@ export default class Content extends React.PureComponent<Props, State> {
     } = this.props;
 
     const mainModule = isInProjectView
-      ? findMainModule(sandbox.modules, sandbox.directories, sandbox.entry)
+      ? findMainModule(sandbox)
       : currentModule;
 
     if (!mainModule) throw new Error('Cannot find main module');
