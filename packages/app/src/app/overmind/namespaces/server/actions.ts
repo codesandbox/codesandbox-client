@@ -104,13 +104,17 @@ export const onSSEMessage: Action<{
           }
         });
       });
-      const browserTabs = editor.devToolTabs.find(view =>
-        view.views.find(tab => tab.id === 'codesandbox.browser')
-      ).views;
-
+      const browserTabs = editor.devToolTabs
+        .map(view =>
+          view.views.filter(
+            tab => tab.id === 'codesandbox.browser' && tab.options
+          )
+        )
+        // @ts-ignore
+        .flat();
       if (
         editor.currentSandbox.template === 'gatsby' &&
-        !browserTabs.find(tab => (tab.options || {}).url.contains('___graphql'))
+        !browserTabs.find(tab => tab.options.url.contains('___graphql'))
       ) {
         const hostname = `https://${editor.currentSandbox.id}.sse.${
           process.env.NODE_ENV === 'development' || process.env.STAGING
@@ -118,10 +122,6 @@ export const onSSEMessage: Action<{
             : host()
         }/___graphql`;
 
-        editor.currentDevToolsPosition = {
-          devToolIndex: 0,
-          tabPosition: 0,
-        };
         actions.server.onBrowserFromPortOpened({
           port: {
             main: false,
@@ -129,6 +129,11 @@ export const onSSEMessage: Action<{
             hostname,
           },
         });
+
+        editor.currentDevToolsPosition = {
+          devToolIndex: 0,
+          tabPosition: 0,
+        };
       }
 
       addedPorts.forEach(port => {

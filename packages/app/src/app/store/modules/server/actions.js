@@ -1,7 +1,7 @@
 // @ts-check
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
-
+import { host } from '@codesandbox/common/lib/utils/url-generator';
 import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 
 import { INITIAL_SERVER_STATE } from './state';
@@ -157,20 +157,33 @@ function getOpenedBrowserPorts(views: ViewConfig[]) {
 export function showPortOpenedNotifications({ state, props, controller }) {
   const currentPorts = state.get('server.ports');
   const newPorts = props.ports;
-  const template = state.get('editor.currentSandbox.template');
+  const sandbox = state.get('editor.currentSandbox');
+  const tabs = state.get('editor.devToolTabs');
 
   const addedPorts = newPorts.filter(
     port => !currentPorts.find(p => p.port === port.port)
   );
-  const openedPorts = getOpenedBrowserPorts(state.get('editor.devToolTabs'));
-  if (template === 'gatsby') {
-    const mainPort = addedPorts.find(port => port.main);
+  const openedPorts = getOpenedBrowserPorts(tabs);
+  const hostname = `${sandbox.id}.sse.${
+    process.env.NODE_ENV === 'development' || process.env.STAGING
+      ? 'codesandbox.io'
+      : host()
+  }/___graphql`;
+  const browserTabs = tabs
+    .map(view =>
+      view.views.filter(tab => tab.id === 'codesandbox.browser' && tab.options)
+    )
+    .flat();
+  if (
+    sandbox.template === 'gatsby' &&
+    !browserTabs.find(tab => tab.options.url.contains('___graphql'))
+  ) {
     openBrowserFromPort({
       props: {
         port: {
-          ...mainPort,
+          port: 8080,
           main: false,
-          hostname: mainPort.hostname + '/___graphql',
+          hostname,
         },
       },
       controller,
