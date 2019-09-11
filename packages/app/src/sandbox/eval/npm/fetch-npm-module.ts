@@ -56,6 +56,19 @@ function normalizeJSDelivr(files: any, fileObject: Meta = {}, rootPath) {
   return fileObject;
 }
 
+/**
+ * Converts urls like "https://github.com/user/repo.git" to "user/repo".
+ */
+const convertGitHubURLToVersion = (version: string) => {
+  const result = version.match(/https:\/\/github\.com\/(.*)$/);
+  if (result && result[1]) {
+    const repo = result[1];
+    return repo.replace(/\.git$/, '');
+  }
+
+  return version;
+};
+
 const urlProtocols = {
   csbGH: {
     file: async (name: string, version: string, path: string) =>
@@ -80,16 +93,22 @@ const urlProtocols = {
   },
   jsDelivrGH: {
     file: async (name: string, version: string, path: string) =>
-      `https://cdn.jsdelivr.net/gh/${version}${path}`,
+      `https://cdn.jsdelivr.net/gh/${convertGitHubURLToVersion(
+        version
+      )}${path}`,
     meta: async (name: string, version: string) => {
       // First get latest sha from GitHub API
       const sha = await fetch(
-        `https://api.github.com/repos/${version}/commits/master`
+        `https://api.github.com/repos/${convertGitHubURLToVersion(
+          version
+        )}/commits/master`
       )
         .then(x => x.json())
         .then(x => x.sha);
 
-      return `https://data.jsdelivr.com/v1/package/gh/${version}@${sha}/flat`;
+      return `https://data.jsdelivr.com/v1/package/gh/${convertGitHubURLToVersion(
+        version
+      )}@${sha}/flat`;
     },
     normalizeMeta: normalizeJSDelivr,
   },
