@@ -340,7 +340,7 @@ export const updateDevtools: AsyncAction<{
 
     if (devtoolsModule) {
       await actions.editor.internal.saveCode({
-        code: devtoolsModule.code,
+        code,
         moduleShortid: devtoolsModule.shortid,
         cbID: null,
       });
