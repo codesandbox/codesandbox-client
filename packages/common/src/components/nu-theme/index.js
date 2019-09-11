@@ -2,8 +2,6 @@
 // this follows the System UI Theme Specification
 // Ref: https://system-ui.com/theme
 
-import components from './components';
-
 const colors = {
   white: '#fff',
   grays: {
@@ -24,7 +22,6 @@ const colors = {
 };
 
 const theme = {
-  components,
   colors,
   space: [0, 4, 8, 16, 32],
   fontSizes: [0, 12, 13, 14, 16, 20, 24, 32],

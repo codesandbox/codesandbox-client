@@ -1,4 +1,3 @@
-import React from 'react';
 import PlusIcon from 'react-icons/lib/go/plus';
 import styled, { css } from 'styled-components';
 
