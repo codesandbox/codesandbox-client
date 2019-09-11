@@ -178,10 +178,14 @@ async function initialize() {
 
         overmind = createOvermind(config, {
           devtools:
-            window.opener && window.opener !== window && !window.chrome
+            (window.opener && window.opener !== window) || !window.chrome
               ? false
               : 'localhost:3031',
-          name: 'CodeSandbox',
+          name:
+            'CodeSandbox - ' +
+            (navigator.userAgent.indexOf('Chrome/76') > 0
+              ? 'Chrome'
+              : 'Canary'),
           logProxies: true,
         });
 
