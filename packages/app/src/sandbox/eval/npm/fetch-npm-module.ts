@@ -61,7 +61,7 @@ function normalizeJSDelivr(files: any, fileObject: Meta = {}, rootPath) {
  */
 const convertGitHubURLToVersion = (version: string) => {
   const result = version.match(/https:\/\/github\.com\/(.*)$/);
-  if (result) {
+  if (result && result[1]) {
     const repo = result[1];
     return repo.replace(/\.git$/, '');
   }
