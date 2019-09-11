@@ -1,43 +1,43 @@
 import React from 'react';
-import { Element } from 'react-ui/primitives';
 import PlusIcon from 'react-icons/lib/go/plus';
+import styled, { css } from 'styled-components';
 
 import Row from '../flex/Row';
 
-const styles = {
-  Tabs: {
-    backgroundColor: 'grays.5',
-    fontSize: 2,
-    boxShadow: 'underline',
-  },
-  Tab: {
-    color: 'white',
-    paddingY: 3,
-    paddingLeft: 2,
-    cursor: 'pointer',
+export const Tabs = styled(Row)(
+  ({ theme }) => css`
+    background-color: ${theme.colors.grays[500]};
+    font-size: ${theme.fontSizes[2]}px;
+    box-shadow: ${theme.shadows.underline};
+  `
+);
 
-    '&[aria-selected]': {
-      boxShadow: 'active',
-      '& svg': {
-        opacity: 1,
-      },
-    },
-    '&:hover svg': {
-      opacity: 1,
-    },
-  },
-  Close: {
-    fontSize: 1,
-    marginY: 1,
-    opacity: 0,
-    // close icon is a lie, it's just a rotated PlusIcon
-    // TODO: replace it with a skinny X
-    transform: 'rotate(45deg)',
-  },
-};
+export const Tab = styled.div(
+  ({ theme }) => css`
+    color: ${theme.colors.white};
+    padding: ${theme.space[3]}px 0;
+    padding-left: ${theme.space[2]}px;
+    cursor: pointer;
 
-export const Tabs = props => <Element as={Row} css={styles.Tabs} {...props} />;
-export const Tab = props => <Element as="div" css={styles.Tab} {...props} />;
-export const Close = props => (
-  <Element as={PlusIcon} css={styles.Close} {...props} />
+    &[aria-selected] {
+      box-shadow: ${theme.shadows.active};
+      & svg {
+        opacity: 1;
+      }
+    }
+
+    &:hover svg {
+      opacity: 1;
+    }
+  `
+);
+
+/* close icon is a lie, it's just a rotated PlusIcon */
+export const Close = styled(PlusIcon)(
+  ({ theme }) => css`
+    opacity: 0;
+    fontsize: ${theme.fontSizes[1]}px;
+    margin: ${theme.space[1]}px 0;
+    transform: rotate(45deg);
+  `
 );

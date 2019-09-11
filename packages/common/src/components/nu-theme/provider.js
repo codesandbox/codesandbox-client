@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeProvider as ContextProvider } from 'react-ui/primitives';
+import { ThemeProvider as ContextProvider } from 'styled-components';
 
 import theme from './';
 
