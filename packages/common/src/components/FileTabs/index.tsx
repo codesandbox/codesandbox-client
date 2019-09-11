@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Tab, Close } from './elements';
+import { Menu, Tabs, Tab, Close } from './elements';
 
 /**
   Because we have two themes, we need to
@@ -18,6 +18,7 @@ export function FileTabs({ files, ...props }) {
   return (
     <ThemeProvider>
       <Tabs {...props}>
+        <Menu />
         {files.map(file => (
           <Tab key={file.id} aria-selected={file.selected}>
             {file.name} <Close />

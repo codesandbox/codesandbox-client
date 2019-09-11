@@ -27,9 +27,11 @@ const theme = {
   fontSizes: [0, 12, 13, 14, 16, 20, 24, 32],
 
   shadows: {
-    // this part is ugly, this can be improved
+    // this part is ugly, this can be improved.
+    // bonus: these are terrible names
     active: `inset 0px -2px 0px ${colors.blues[300]}`,
     underline: `inset 0px -2px 0px ${colors.grays[100] + '1a'}`,
+    fadeunder: `0px 8px 8px 0px ${colors.grays[700] + 'cc'}`,
   },
 };
 
