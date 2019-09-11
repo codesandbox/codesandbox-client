@@ -194,15 +194,10 @@ export default {
     });
   },
   sendDirectoryDeleted(directoryShortid: string) {
-    this.send(
-      'directory:deleted',
-      {
-        type: 'directory',
-        directoryShortid,
-      }
-      // When should we send module? Should we pass it when we should send it? Probably yeah
-      // { sendModule: false }
-    );
+    this.send('directory:deleted', {
+      type: 'directory',
+      directoryShortid,
+    });
   },
   sendModuleCreated(module: Module) {
     this.send('module:created', {

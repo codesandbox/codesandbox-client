@@ -154,15 +154,15 @@ export const codeSaved: AsyncAction<{
 export const codeChanged: Action<{
   code: string;
   moduleShortid: string;
-  ignoreLive?: boolean;
-}> = ({ effects, state, actions }, { code, moduleShortid, ignoreLive }) => {
+  noLive?: boolean;
+}> = ({ effects, state, actions }, { code, moduleShortid, noLive }) => {
   effects.analytics.trackOnce('Change Code');
 
   const module = state.editor.currentSandbox.modules.find(
     module => module.shortid === moduleShortid
   );
 
-  if (state.live.isLive && !ignoreLive) {
+  if (state.live.isLive && !noLive) {
     state.live.receivingCode = true;
     effects.live.sendCodeUpdate(moduleShortid, module.code, code);
     state.live.receivingCode = false;
