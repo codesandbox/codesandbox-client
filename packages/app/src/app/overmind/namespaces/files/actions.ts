@@ -1,4 +1,3 @@
-import * as internalActions from './internalActions';
 import { AsyncAction } from 'app/overmind';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
@@ -11,6 +10,7 @@ import { INormalizedModules } from 'codesandbox-import-util-types';
 import { ModuleTab } from '@codesandbox/common/lib/types';
 import { createOptimisticModule } from 'app/overmind/utils/common';
 import { withOwnedSandbox } from 'app/overmind/factories';
+import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
@@ -275,10 +275,11 @@ export const massCreateModules: AsyncAction<{
   modules: any;
   directories: any;
   directoryShortid: string;
+  cbID?: string;
 }> = withOwnedSandbox(
   async (
     { state, effects, actions },
-    { modules, directories, directoryShortid }
+    { modules, directories, directoryShortid, cbID }
   ) => {
     const sandboxId = state.editor.currentId;
 
@@ -300,11 +301,10 @@ export const massCreateModules: AsyncAction<{
       if (state.live.isCurrentEditor) {
         effects.live.sendMassCreatedModules(data.modules, data.directories);
       }
-      // Where is the id?
-      // effects.vscode.callCallback()
+
+      effects.vscode.callCallback(cbID);
     } catch (error) {
-      // Where is the id and message?
-      // effects.vscode.callCallbackError()
+      effects.vscode.callCallbackError(cbID);
       effects.notificationToast.error('Unable to create new files');
     }
   }
@@ -381,12 +381,14 @@ export const moduleCreated: AsyncAction<{
 
 export const moduleDeleted: AsyncAction<{
   moduleShortid: string;
-}> = async ({ state, effects }, { moduleShortid }) => {
+}> = async ({ state, effects, actions }, { moduleShortid }) => {
   const sandbox = state.editor.currentSandbox;
   const moduleToDeleteIndex = sandbox.modules.findIndex(
     module => module.shortid === moduleShortid
   );
   const removedModule = sandbox.modules.splice(moduleToDeleteIndex, 1)[0];
+
+  actions.editor.internal.setCurrentModule(state.editor.mainModule);
 
   try {
     await effects.api.deleteModule(sandbox.id, moduleShortid);
@@ -400,10 +402,10 @@ export const moduleDeleted: AsyncAction<{
   }
 };
 
-export const createModulesByPath: AsyncAction<INormalizedModules> = async (
-  { state, actions },
-  files
-) => {
+export const createModulesByPath: AsyncAction<{
+  cbID: string;
+  files: INormalizedModules;
+}> = async ({ state, actions }, { files, cbID }) => {
   const sandbox = state.editor.currentSandbox;
 
   const { modules, directories } = denormalize(files, sandbox.directories);
@@ -412,11 +414,12 @@ export const createModulesByPath: AsyncAction<INormalizedModules> = async (
     modules,
     directories,
     directoryShortid: null,
+    cbID,
   });
 };
 
 export const syncSandbox: AsyncAction<any[]> = async (
-  { state, effects, actions },
+  { state, effects },
   updates
 ) => {
   const id = state.editor.currentId;
