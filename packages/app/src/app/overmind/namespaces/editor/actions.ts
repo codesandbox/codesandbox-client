@@ -580,7 +580,7 @@ export const onDevToolsTabAdded: Action<{
 }> = ({ state, actions }, { tab }) => {
   const devToolTabs = state.editor.devToolTabs;
   const { devTools: newDevToolTabs, position } = addDevToolsTabUtil(
-    devToolTabs,
+    json(devToolTabs),
     tab
   );
 
@@ -599,7 +599,11 @@ export const onDevToolsTabMoved: Action<{
   nextPos: any;
 }> = ({ state, actions }, { prevPos, nextPos }) => {
   const devToolTabs = state.editor.devToolTabs;
-  const newDevToolTabs = moveDevToolsTabUtil(devToolTabs, prevPos, nextPos);
+  const newDevToolTabs = moveDevToolsTabUtil(
+    json(devToolTabs),
+    prevPos,
+    nextPos
+  );
   const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
 
   actions.editor.internal.updateDevtools({
@@ -614,7 +618,7 @@ export const onDevToolsTabClosed: Action<{
 }> = ({ state, actions }, { pos }) => {
   const devToolTabs = state.editor.devToolTabs;
   const closePos = pos;
-  const newDevToolTabs = closeDevToolsTabUtil(devToolTabs, closePos);
+  const newDevToolTabs = closeDevToolsTabUtil(json(devToolTabs), closePos);
   const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
 
   actions.editor.internal.updateDevtools({

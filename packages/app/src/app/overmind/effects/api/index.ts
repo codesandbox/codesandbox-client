@@ -1,4 +1,3 @@
-import apiFactory, { Api, ApiConfig } from './apiFactory';
 import {
   CurrentUser,
   Dependency,
@@ -14,7 +13,6 @@ import {
   GitInfo,
   GitCommit,
   GitPr,
-  RoomInfo,
   PaymentDetails,
   Profile,
   UserSandbox,
@@ -22,6 +20,7 @@ import {
 import { TemplateType } from '@codesandbox/common/lib/templates';
 import { client } from 'app/graphql/client';
 import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
+import apiFactory, { Api, ApiConfig } from './apiFactory';
 
 let api: Api;
 
@@ -60,8 +59,17 @@ export default {
   getDependency(name: string): Promise<Dependency> {
     return api.get(`/dependencies/${name}@latest`);
   },
-  getSandbox(id: string): Promise<Sandbox> {
-    return api.get(`/sandboxes/${id}`);
+  async getSandbox(id: string): Promise<Sandbox> {
+    const sandbox = await api.get<Sandbox>(`/sandboxes/${id}`);
+
+    // We need to add savedCode property to track it
+    return {
+      ...sandbox,
+      modules: sandbox.modules.map(module => ({
+        ...module,
+        savedCode: null,
+      })),
+    };
   },
   forkSandbox(id: string): Promise<Sandbox> {
     const url = id.includes('/')

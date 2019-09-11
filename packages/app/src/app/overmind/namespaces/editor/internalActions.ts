@@ -290,10 +290,10 @@ export const setCurrentModule: Action<Module> = ({ state }, module) => {
   state.editor.currentTabId = null;
 
   const tabs = state.editor.tabs as ModuleTab[];
-  const tab = tabs.find(tab => tab.moduleShortid === module.shortid);
+  const tab = tabs.find(tabItem => tabItem.moduleShortid === module.shortid);
 
   if (!tab) {
-    const dirtyTabIndex = tabs.findIndex(tab => tab.dirty);
+    const dirtyTabIndex = tabs.findIndex(tabItem => tabItem.dirty);
     const newTab: ModuleTab = {
       type: TabType.MODULE,
       moduleShortid: module.shortid,
@@ -340,16 +340,19 @@ export const updateDevtools: AsyncAction<{
 
     if (devtoolsModule) {
       await actions.editor.internal.saveCode({
-        code: devtoolsModule.code,
+        code,
         moduleShortid: devtoolsModule.shortid,
         cbID: null,
       });
     } else {
       await actions.files.createModulesByPath({
-        '/.codesandbox/workspace.json': {
-          content: code,
-          isBinary: false,
+        files: {
+          '/.codesandbox/workspace.json': {
+            content: code,
+            isBinary: false,
+          },
         },
+        cbID: null,
       });
     }
   } else {
