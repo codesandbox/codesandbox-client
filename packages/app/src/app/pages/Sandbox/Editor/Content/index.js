@@ -418,7 +418,6 @@ class EditorPreview extends React.Component {
     const browserConfig = {
       id: 'codesandbox.browser',
       title: options => {
-        console.log(options.url);
         const graphiql =
           typeof options.url === 'string' && options.url.includes('___graphql');
         if (graphiql) {

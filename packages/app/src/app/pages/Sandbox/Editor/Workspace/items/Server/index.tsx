@@ -64,12 +64,8 @@ export const Server = inject('store', 'signals')(
           )
         )
         .flat();
-      if (!browserTabs || browserTabs.length === 1) {
-        setGraphiQLTabOpen(false);
-        return;
-      }
       const graphiqlTab = browserTabs.find(tab =>
-        tab.options.url.contains('___graphql')
+        tab.options.url.includes('___graphql')
       );
       setGraphiQLTabOpen(graphiqlTab);
     }, [editor.devToolTabs]);
@@ -131,27 +127,21 @@ export const Server = inject('store', 'signals')(
                 doesn't open any ports.
               </Description>
             )}
-            {graphqlPort && server.ports.length && (
+            {graphqlPort && server.ports.length ? (
               <EntryContainer
                 style={{ position: 'relative' }}
                 onClick={() => {
                   if (!graphiQLTabOpen) {
                     openPort(graphqlPort);
-                  } else {
-                    editor.currentDevToolsPosition = {
-                      devToolIndex: 0,
-                      tabPosition: 1,
-                    };
                   }
                 }}
               >
                 <Port>
                   <BrowserIcon />
-
                   <div>{graphqlPort.name}</div>
                 </Port>
               </EntryContainer>
-            )}
+            ) : null}
           </Margin>
         </Margin>
 
