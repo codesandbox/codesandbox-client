@@ -114,9 +114,11 @@ export const onSSEMessage: Action<{
         .flat();
       if (
         editor.currentSandbox.template === 'gatsby' &&
-        !browserTabs.find(tab => tab.options.url.contains('___graphql'))
+        !browserTabs.find(
+          tab => tab.options.url && tab.options.url.includes('___graphql')
+        )
       ) {
-        const hostname = `https://${editor.currentSandbox.id}.sse.${
+        const hostname = `${editor.currentSandbox.id}.sse.${
           process.env.NODE_ENV === 'development' || process.env.STAGING
             ? 'codesandbox.io'
             : host()

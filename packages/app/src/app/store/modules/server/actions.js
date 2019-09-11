@@ -176,7 +176,7 @@ export function showPortOpenedNotifications({ state, props, controller }) {
     .flat();
   if (
     sandbox.template === 'gatsby' &&
-    !browserTabs.find(tab => tab.options.url.contains('___graphql'))
+    !browserTabs.find(tab => tab.options.url.includes('___graphql'))
   ) {
     openBrowserFromPort({
       props: {
