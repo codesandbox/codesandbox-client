@@ -1,6 +1,5 @@
 ---
 banner: ./images/banner.png
-featuredImage: ./images/banner.png
 slug: CodeSadbox
 authors: ['Drake Costa']
 photo: https://avatars0.githubusercontent.com/u/3144549?s=460&v=4

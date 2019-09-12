@@ -1,6 +1,5 @@
 ---
 banner: ./images/banner.png
-featuredImage: ./images/banner.png
 slug: codesandbox-1-5-changelog
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
