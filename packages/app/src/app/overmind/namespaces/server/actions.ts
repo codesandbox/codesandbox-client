@@ -104,39 +104,6 @@ export const onSSEMessage: Action<{
           }
         });
       });
-      const browserTabs = editor.devToolTabs
-        .map(view =>
-          view.views.filter(
-            tab => tab.id === 'codesandbox.browser' && tab.options
-          )
-        )
-        // @ts-ignore
-        .flat();
-      if (
-        editor.currentSandbox.template === 'gatsby' &&
-        !browserTabs.find(
-          tab => tab.options.url && tab.options.url.includes('___graphql')
-        )
-      ) {
-        const hostname = `${editor.currentSandbox.id}.sse.${
-          process.env.NODE_ENV === 'development' || process.env.STAGING
-            ? 'codesandbox.io'
-            : host()
-        }/___graphql`;
-
-        actions.server.onBrowserFromPortOpened({
-          port: {
-            main: false,
-            port: 8080,
-            hostname,
-          },
-        });
-
-        editor.currentDevToolsPosition = {
-          devToolIndex: 0,
-          tabPosition: 0,
-        };
-      }
 
       addedPorts.forEach(port => {
         if (!port.main && openedPorts.indexOf(port.port) === -1) {
