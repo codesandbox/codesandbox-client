@@ -103,7 +103,16 @@ export const deployClicked: AsyncAction = async ({
 export const deploySandboxClicked: AsyncAction = async ({ state, effects }) => {
   state.currentModal = 'deployment';
 
-  if (!state.user.integrations.zeit.email) {
+  const zeitIntegration = state.user.integrations.zeit;
+
+  if (!zeitIntegration || !zeitIntegration.token) {
+    effects.notificationToast.error(
+      'You are not authorized with Zeit, please refresh and log in again'
+    );
+    return;
+  }
+
+  if (!zeitIntegration.email) {
     try {
       const user = await effects.zeit.getUser();
 
@@ -116,7 +125,9 @@ export const deploySandboxClicked: AsyncAction = async ({ state, effects }) => {
   state.deployment.url = null;
 };
 
-export const setDeploymentToDelete: Action<string> = ({ state }, id) => {
+export const setDeploymentToDelete: Action<{
+  id: string;
+}> = ({ state }, { id }) => {
   state.deployment.deployToDelete = id;
 };
 
@@ -128,13 +139,12 @@ export const deleteDeployment: AsyncAction = async ({
   const id = state.deployment.deployToDelete;
 
   state.currentModal = null;
-  state.deployment.isDeletingDeployment = true;
+  state.deployment.deploysBeingDeleted.push(id);
 
   try {
     await effects.zeit.deleteDeployment(id);
 
     effects.notificationToast.success('Deployment deleted');
-
     actions.deployment.getDeploys();
   } catch (error) {
     effects.notificationToast.error(
@@ -142,11 +152,14 @@ export const deleteDeployment: AsyncAction = async ({
     );
   }
 
-  state.deployment.isDeletingDeployment = false;
+  state.deployment.deploysBeingDeleted.splice(
+    state.deployment.deploysBeingDeleted.indexOf(id),
+    1
+  );
 };
 
 export const aliasDeployment: AsyncAction<string> = async (
-  { state, effects },
+  { state, effects, actions },
   id
 ) => {
   const zeitConfig = effects.zeit.getConfig(state.editor.currentSandbox);
@@ -155,6 +168,7 @@ export const aliasDeployment: AsyncAction<string> = async (
     const url = await effects.zeit.aliasDeployment(id, zeitConfig);
 
     effects.notificationToast.success(`Deployed to ${url}`);
+    actions.deployment.getDeploys();
   } catch (error) {
     effects.notificationToast.error(
       'An unknown error occurred when aliasing your deployment'
