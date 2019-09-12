@@ -69,26 +69,35 @@ const getNodeInfo = ({ node, nodeType }) => ({
   ...getSpecificNodeInfo({ node, nodeType }),
 });
 
-const createBlogNodeFields = ({
+const createNodeFieldsFromNodeInfo = ({
   createNodeField,
-  nodeInfo: { author, date, description, photo },
+  nodeFieldNames,
+  nodeInfo,
 }) => {
-  createNodeField({ name: 'author', value: author });
-
-  createNodeField({ name: 'date', value: date });
-
-  createNodeField({ name: 'description', value: description });
-
-  createNodeField({ name: 'photo', value: photo });
+  nodeFieldNames.forEach(nodeFieldName => {
+    createNodeField({ name: nodeFieldName, value: nodeInfo[nodeFieldName] });
+  });
 };
-const createDocsNodeFields = ({
-  createNodeField,
-  nodeInfo: { description },
-}) => {
-  createNodeField({ name: 'description', value: description });
+const createBlogNodeFields = ({ createNodeField, nodeInfo }) => {
+  createNodeFieldsFromNodeInfo({
+    createNodeField,
+    nodeFieldNames: ['author', 'date', 'description', 'photo'],
+    nodeInfo,
+  });
 };
-const createJobsNodeFields = ({ createNodeField, nodeInfo: { applyLink } }) => {
-  createNodeField({ name: 'applyLink', value: applyLink || '' });
+const createDocsNodeFields = ({ createNodeField, nodeInfo }) => {
+  createNodeFieldsFromNodeInfo({
+    createNodeField,
+    nodeFieldNames: ['description'],
+    nodeInfo,
+  });
+};
+const createJobsNodeFields = ({ createNodeField, nodeInfo }) => {
+  createNodeFieldsFromNodeInfo({
+    createNodeField,
+    nodeFieldNames: ['applyLink'],
+    nodeInfo,
+  });
 };
 const createSpecificNodeFields = ({ createNodeField, nodeInfo, nodeType }) => {
   const createNodeFieldsMap = {
@@ -102,13 +111,13 @@ const createSpecificNodeFields = ({ createNodeField, nodeInfo, nodeType }) => {
 const createGenericNodeFields = ({
   createNodeField,
   getFilePathForNode,
-  nodeInfo: { editLink, slug, title },
+  nodeInfo: { slug, ...nodeInfo },
 }) => {
-  createNodeField({ name: 'editLink', value: editLink });
-
-  createNodeField({ name: 'title', value: title });
-
-  createNodeField({ name: 'slug', value: slug || getFilePathForNode() });
+  createNodeFieldsFromNodeInfo({
+    createNodeField,
+    nodeFieldNames: ['editLink', 'title', 'slug'],
+    nodeInfo: { ...nodeInfo, slug: slug || getFilePathForNode() },
+  });
 };
 const createNodeFields = ({
   createNodeField,
