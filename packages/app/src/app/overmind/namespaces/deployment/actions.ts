@@ -158,10 +158,9 @@ export const deleteDeployment: AsyncAction = async ({
   );
 };
 
-export const aliasDeployment: AsyncAction<string> = async (
-  { state, effects, actions },
-  id
-) => {
+export const aliasDeployment: AsyncAction<{
+  id: string;
+}> = async ({ state, effects, actions }, { id }) => {
   const zeitConfig = effects.zeit.getConfig(state.editor.currentSandbox);
 
   try {
