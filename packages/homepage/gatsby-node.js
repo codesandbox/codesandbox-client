@@ -42,11 +42,19 @@ const getJobsNodeInfo = ({
 }) => ({
   applyLink: `https://codesandbox.recruitee.com/o/${applySlug}`,
 });
+const getLegalNodeInfo = ({
+  node: {
+    frontmatter: { lastEdited },
+  },
+}) => ({
+  lastEdited,
+});
 const getSpecificNodeInfo = ({ node, nodeType }) => {
   const nodeInfoMap = {
     articles: getBlogNodeInfo,
     docs: getDocsNodeInfo,
     jobs: getJobsNodeInfo,
+    legal: getLegalNodeInfo,
   };
 
   return (nodeInfoMap[nodeType] || noop)({ node });
@@ -99,11 +107,19 @@ const createJobsNodeFields = ({ createNodeField, nodeInfo }) => {
     nodeInfo,
   });
 };
+const createLegalNodeFields = ({ createNodeField, nodeInfo }) => {
+  createNodeFieldsFromNodeInfo({
+    createNodeField,
+    nodeFieldNames: ['lastEdited'],
+    nodeInfo,
+  });
+};
 const createSpecificNodeFields = ({ createNodeField, nodeInfo, nodeType }) => {
   const createNodeFieldsMap = {
     articles: createBlogNodeFields,
     docs: createDocsNodeFields,
     jobs: createJobsNodeFields,
+    legal: createLegalNodeFields,
   };
 
   (createNodeFieldsMap[nodeType] || noop)({ createNodeField, nodeInfo });
