@@ -27,6 +27,22 @@ export default (() => {
     };
   }
 
+  async function deploysByID(id) {
+    try {
+      const response = await axios.get(
+        `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  }
+
   return {
     initialize(options: Options) {
       _options = options;
@@ -53,11 +69,22 @@ export default (() => {
         }
       );
 
-      return response.data
-        .filter(deployment => deployment.name === name)
-        .sort((deploymentA, deploymentB) =>
-          deploymentA.created < deploymentB.created ? 1 : -1
-        );
+      const deploysNoAlias = response.data
+        .filter(d => d.name === name)
+        .sort((a, b) => (a.created < b.created ? 1 : -1));
+
+      const assignAlias = async d => {
+        const alias = await deploysByID(d.uid);
+        if (alias) {
+          // eslint-disable-next-line
+          d.alias = alias.aliases;
+        } else {
+          d.alias = [];
+        }
+        return d;
+      };
+
+      return Promise.all(deploysNoAlias.map(assignAlias));
     },
     async getUser(): Promise<ZeitUser> {
       const response = await axios.get('https://api.zeit.co/www/user', {
@@ -67,32 +94,32 @@ export default (() => {
       return response.data;
     },
     async deleteDeployment(id: string) {
-      return axios.request({
-        url: `https://api.zeit.co/v2/now/deployments/${id}`,
-        method: 'DELETE',
+      return axios.delete(`https://api.zeit.co/v9/now/deployments/${id}`, {
         headers: getDefaultHeaders(),
       });
     },
     async deploy(contents: any, sandbox: Sandbox): Promise<string> {
       const apiData = await getApiData(contents, sandbox);
-      const deploymentVersion = apiData.version === 2 ? 'v6' : 'v3';
+      const deploymentVersion = apiData.version === 2 ? 'v9' : 'v3';
 
-      const response = await axios.request({
-        url: `https://api.zeit.co/${deploymentVersion}/now/deployments?forceNew=1`,
-        data: apiData,
-        method: 'POST',
-        headers: getDefaultHeaders(),
-      });
+      const response = await axios.post(
+        `https://api.zeit.co/${deploymentVersion}/now/deployments?forceNew=1`,
+        apiData,
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
 
       return `https://${response.data.result.url}`;
     },
     async aliasDeployment(id: string, zeitConfig: ZeitConfig): Promise<string> {
-      const response = await axios.request({
-        url: `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
-        data: { alias: zeitConfig.alias },
-        method: 'POST',
-        headers: getDefaultHeaders(),
-      });
+      const response = await axios.post(
+        `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
+        { alias: zeitConfig.alias },
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
 
       return `https://${response.data.result.alias}`;
     },
@@ -147,7 +174,16 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   apiData.public = nowJSON.public || nowDefaults.public;
 
   // if now v2 we need to tell now the version, builds and routes
-  if (nowJSON.version === 2) {
+  if (nowJSON.version === 1) {
+    apiData.config = omit(nowJSON, [
+      'public',
+      'type',
+      'name',
+      'files',
+      'version',
+    ]);
+    apiData.forceNew = true;
+  } else {
     apiData.version = 2;
     apiData.builds = nowJSON.builds;
     apiData.routes = nowJSON.routes;
@@ -155,9 +191,6 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     apiData.scope = nowJSON.scope;
     apiData['build.env'] = nowJSON['build.env'];
     apiData.regions = nowJSON.regions;
-  } else {
-    apiData.config = omit(nowJSON, ['public', 'type', 'name', 'files']);
-    apiData.forceNew = true;
   }
 
   if (!nowJSON.files) {
@@ -180,7 +213,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     // if person added some files but no package.json
     if (
       filePath === 'package.json' &&
-      !apiData.files.filter(f => f.name === 'package.json')
+      !apiData.files.find(f => f.name === 'package.json')
     ) {
       apiData.files.push({
         file: 'package.json',
