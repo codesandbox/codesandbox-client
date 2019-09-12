@@ -356,7 +356,9 @@ export function makeTemplates(selectedSandboxes, teamId, collections) {
       .mutate({
         mutation: MAKE_SANDBOXES_TEMPLATE_MUTATION,
         variables: {
-          sandboxIds: selectedSandboxes.toJS(),
+          sandboxIds: selectedSandboxes.toJS
+            ? selectedSandboxes.toJS()
+            : selectedSandboxes,
         },
         refetchQueries: [
           'DeletedSandboxes',
@@ -412,7 +414,11 @@ export function makeTemplates(selectedSandboxes, teamId, collections) {
                   track('Template - Removed', {
                     source: 'Undo',
                   });
-                  unmakeTemplates(selectedSandboxes.toJS());
+                  unmakeTemplates(
+                    selectedSandboxes.toJS
+                      ? selectedSandboxes.toJS()
+                      : selectedSandboxes
+                  );
                 },
               },
             ],
@@ -426,7 +432,9 @@ export function undeleteSandboxes(selectedSandboxes) {
   client.mutate({
     mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: selectedSandboxes.toJS
+        ? selectedSandboxes.toJS()
+        : selectedSandboxes,
       collectionPath: '/',
     },
     optimisticResponse: {
@@ -447,7 +455,9 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
   client.mutate({
     mutation: PERMANENTLY_DELETE_SANDBOXES_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: selectedSandboxes.toJS
+        ? selectedSandboxes.toJS()
+        : selectedSandboxes,
     },
     update: cache => {
       try {
@@ -480,7 +490,9 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
   client.mutate({
     mutation: DELETE_SANDBOXES_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: selectedSandboxes.toJS
+        ? selectedSandboxes.toJS()
+        : selectedSandboxes,
     },
     refetchQueries: [
       'DeletedSandboxes',
@@ -527,7 +539,9 @@ export function setSandboxesPrivacy(selectedSandboxes, privacy) {
   client.mutate({
     mutation: SET_SANDBOXES_PRIVACY_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: selectedSandboxes.toJS
+        ? selectedSandboxes.toJS()
+        : selectedSandboxes,
       privacy,
     },
   });
