@@ -29,11 +29,12 @@ export default (() => {
 
   async function deploysByID(id) {
     try {
-      const response = await axios.request({
-        url: `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
-        method: 'GET',
-        headers: getDefaultHeaders(),
-      });
+      const response = await axios.get(
+        `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
 
       return response.data;
     } catch (e) {
@@ -83,9 +84,7 @@ export default (() => {
         return d;
       };
 
-      const sandboxAlias = await deploysNoAlias.map(assignAlias);
-
-      return Promise.all(sandboxAlias);
+      return Promise.all(deploysNoAlias.map(assignAlias));
     },
     async getUser(): Promise<ZeitUser> {
       const response = await axios.get('https://api.zeit.co/www/user', {
@@ -95,9 +94,7 @@ export default (() => {
       return response.data;
     },
     async deleteDeployment(id: string) {
-      return axios.request({
-        url: `https://api.zeit.co/v9/now/deployments/${id}`,
-        method: 'DELETE',
+      return axios.delete(`https://api.zeit.co/v9/now/deployments/${id}`, {
         headers: getDefaultHeaders(),
       });
     },
@@ -105,22 +102,24 @@ export default (() => {
       const apiData = await getApiData(contents, sandbox);
       const deploymentVersion = apiData.version === 2 ? 'v9' : 'v3';
 
-      const response = await axios.request({
-        url: `https://api.zeit.co/${deploymentVersion}/now/deployments?forceNew=1`,
-        data: apiData,
-        method: 'POST',
-        headers: getDefaultHeaders(),
-      });
+      const response = await axios.post(
+        `https://api.zeit.co/${deploymentVersion}/now/deployments?forceNew=1`,
+        apiData,
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
 
       return `https://${response.data.result.url}`;
     },
     async aliasDeployment(id: string, zeitConfig: ZeitConfig): Promise<string> {
-      const response = await axios.request({
-        url: `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
-        data: { alias: zeitConfig.alias },
-        method: 'POST',
-        headers: getDefaultHeaders(),
-      });
+      const response = await axios.post(
+        `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
+        { alias: zeitConfig.alias },
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
 
       return `https://${response.data.result.alias}`;
     },

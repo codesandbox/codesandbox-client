@@ -10,8 +10,9 @@ export default {
   async getJson<T>(url: string): Promise<AxiosResponse<T>> {
     const response = await axios.get(url);
 
-    response.data = JSON.parse(response.data);
-
-    return response;
+    return {
+      ...response,
+      data: JSON.parse(response.data),
+    };
   },
 };
