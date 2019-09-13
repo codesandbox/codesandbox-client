@@ -3,7 +3,14 @@ import { inject, hooksObserver } from 'app/componentConnectors';
 import { format } from 'date-fns';
 import { LinkButton } from 'app/components/LinkButton';
 
-import { SmallText, Buttons, StyledButton, StripeInput } from './elements';
+import {
+  SmallText,
+  Buttons,
+  StyledButton,
+  StripeInput,
+  CancelText,
+  Centered,
+} from './elements';
 
 interface Props {
   date: string;
@@ -43,22 +50,23 @@ function ChangeSubscriptionComponent({
 
   let buttons = (
     <>
-      <div style={{ margin: '1rem 5rem', marginTop: '2rem' }}>
+      <div style={{ margin: '0 5rem', marginTop: '2rem' }}>
         <StripeInput
           onChange={e => setCoupon(e.target.value)}
           value={coupon}
           placeholder="Apply Coupon Code"
         />
       </div>
-
       <Buttons>
-        <StyledButton onClick={() => cancelSubscription()} red>
-          Cancel
-        </StyledButton>
         <StyledButton onClick={() => updateSubscription({ coupon })}>
           Update
         </StyledButton>
       </Buttons>
+      <Centered>
+        <CancelText onClick={() => cancelSubscription()}>
+          Cancel my subscription
+        </CancelText>
+      </Centered>
     </>
   );
 

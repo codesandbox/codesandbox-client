@@ -25,13 +25,18 @@ export const createSubscriptionClicked: AsyncAction<{
     );
     effects.notificationToast.error('Thank you very much for your support!');
   } catch (error) {
-    state.patron.error = error.message;
-
     if (error.error_code && error.error_code === 'requires_action') {
-      await effects.stripe.handleCardPayment(error.data.client_secret);
-    }
+      try {
+        await effects.stripe.handleCardPayment(error.data.client_secret);
 
-    state.user = await effects.api.getCurrentUser();
+        state.user = await effects.api.getCurrentUser();
+        state.patron.error = null;
+      } catch (e) {
+        state.patron.error = e.message;
+      }
+    } else {
+      state.patron.error = error.message;
+    }
   }
   state.patron.isUpdatingSubscription = false;
 };
