@@ -164,43 +164,40 @@ exports.onCreateNode = ({ actions: { createNodeField }, getNode, node }) => {
   }
 };
 
-const createBlogPages = ({ createPage, data: { edges: blogPosts } }) => {
-  const template = resolve(__dirname, './src/templates/post.js');
-
-  blogPosts.forEach(({ node: { fields: { slug }, id } }) => {
+const createPages = ({ createPage, data, getContext, getPath, template }) => {
+  data.forEach(({ node }) => {
     createPage({
-      path: `post/${slug}`,
+      path: getPath(node),
       component: template,
-      context: {
-        id,
-      },
+      context: getContext(node),
     });
+  });
+};
+const createBlogPages = ({ createPage, data: { edges: blogPosts } }) => {
+  createPages({
+    createPage,
+    data: blogPosts,
+    getContext: ({ fields: { slug } }) => `post/${slug}`,
+    getPath: ({ id }) => ({ id }),
+    template: resolve(__dirname, './src/templates/post.js'),
   });
 };
 const createDocsPages = ({ createPage, data: { edges: docs } }) => {
-  const template = resolve(__dirname, './src/templates/docs.js');
-
-  docs.forEach(({ node: { fields: { slug } } }) => {
-    createPage({
-      path: `docs${slug}`,
-      component: template,
-      context: {
-        slug,
-      },
-    });
+  createPages({
+    createPage,
+    data: docs,
+    getContext: ({ fields: { slug } }) => `docs${slug}`,
+    getPath: ({ fields: { slug } }) => ({ slug }),
+    template: resolve(__dirname, './src/templates/docs.js'),
   });
 };
-const createJobsPages = ({ createPage, data: { edges: jobs } }) => {
-  const template = resolve(__dirname, './src/templates/job.js');
-
-  jobs.forEach(({ node: { fields: { slug }, id } }) => {
-    createPage({
-      path: `job/${slug}`,
-      component: template,
-      context: {
-        id,
-      },
-    });
+const createJobsPages = ({ createPage, data: { edges: blogPosts } }) => {
+  createPages({
+    createPage,
+    data: blogPosts,
+    getContext: ({ fields: { slug } }) => `job/${slug}`,
+    getPath: ({ id }) => ({ id }),
+    template: resolve(__dirname, './src/templates/job.js'),
   });
 };
 exports.createPages = async ({
