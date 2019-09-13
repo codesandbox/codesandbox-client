@@ -164,13 +164,49 @@ exports.onCreateNode = ({ actions: { createNodeField }, getNode, node }) => {
   }
 };
 
-exports.createPages = async ({ graphql, actions }) => {
-  const { createPage, createRedirect } = actions;
+const createBlogPages = ({ createPage, data: { edges: blogPosts } }) => {
+  const template = resolve(__dirname, './src/templates/post.js');
 
-  const docsTemplate = resolve(__dirname, './src/templates/docs.js');
-  const blogTemplate = resolve(__dirname, './src/templates/post.js');
-  const jobTemplate = resolve(__dirname, './src/templates/job.js');
+  blogPosts.forEach(({ node: { fields: { slug }, id } }) => {
+    createPage({
+      path: `post/${slug}`,
+      component: template,
+      context: {
+        id,
+      },
+    });
+  });
+};
+const createDocsPages = ({ createPage, data: { edges: docs } }) => {
+  const template = resolve(__dirname, './src/templates/docs.js');
 
+  docs.forEach(({ node: { fields: { slug } } }) => {
+    createPage({
+      path: `docs${slug}`,
+      component: template,
+      context: {
+        slug,
+      },
+    });
+  });
+};
+const createJobsPages = ({ createPage, data: { edges: jobs } }) => {
+  const template = resolve(__dirname, './src/templates/job.js');
+
+  jobs.forEach(({ node: { fields: { slug }, id } }) => {
+    createPage({
+      path: `job/${slug}`,
+      component: template,
+      context: {
+        id,
+      },
+    });
+  });
+};
+exports.createPages = async ({
+  actions: { createPage, createRedirect },
+  graphql,
+}) => {
   // Redirect /index.html to root.
   createRedirect({
     fromPath: '/index.html',
@@ -178,92 +214,69 @@ exports.createPages = async ({ graphql, actions }) => {
     toPath: '/',
   });
 
-  const allMarkdownArticles = await graphql(`
-    {
-      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/articles/" } }) {
+  const { data, errors } = await graphql(`
+    fragment PostDetails on MarkdownRemark {
+      fields {
+        slug
+      }
+      id
+    }
+
+    query {
+      blogPosts: allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/articles/" } }
+        sort: { fields: [fields___date], order: [DESC] }
+      ) {
         edges {
           node {
-            id
-            frontmatter {
-              slug
-            }
+            ...PostDetails
+          }
+        }
+      }
+
+      docs: allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/docs/" } }
+        sort: { fields: [fileAbsolutePath], order: [ASC] }
+      ) {
+        edges {
+          node {
+            ...PostDetails
+          }
+        }
+      }
+
+      jobs: allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/jobs/" } }
+      ) {
+        edges {
+          node {
+            ...PostDetails
           }
         }
       }
     }
   `);
-  allMarkdownArticles.data.allMarkdownRemark.edges.forEach(edge => {
-    const { slug } = edge.node.frontmatter;
-    const { id } = edge.node;
 
-    createPage({
-      path: 'post/' + slug,
-      component: blogTemplate,
-      context: {
-        id,
-      },
-    });
+  if (errors) {
+    return Promise.reject(errors);
+  }
+
+  const { blogPosts, docs, jobs } = data;
+
+  createBlogPages({
+    createPage,
+    data: blogPosts,
+  });
+  createDocsPages({
+    createPage,
+    data: docs,
+  });
+  createJobsPages({
+    createPage,
+    data: jobs,
   });
 
-  const allDocs = await graphql(`
-    {
-      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/docs/" } }) {
-        edges {
-          node {
-            fields {
-              slug
-            }
-          }
-        }
-      }
-    }
-  `);
-  if (allDocs.errors) {
-    console.error(allDocs.errors);
-
-    throw Error(allDocs.errors);
-  }
-  allDocs.data.allMarkdownRemark.edges.forEach(
-    ({
-      node: {
-        fields: { slug },
-      },
-    }) => {
-      createPage({
-        path: `docs${slug}`,
-        component: docsTemplate,
-        context: {
-          slug,
-        },
-      });
-    }
-  );
-
-  // JOBS
-
-  const allJobs = await graphql(`
-    {
-      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/jobs/" } }) {
-        edges {
-          node {
-            id
-            frontmatter {
-              slug
-            }
-          }
-        }
-      }
-    }
-  `);
-  if (allJobs.data) {
-    allJobs.data.allMarkdownRemark.edges.forEach(edge => {
-      createPage({
-        path: 'job/' + edge.node.frontmatter.slug,
-        component: jobTemplate,
-        context: { id: edge.node.id },
-      });
-    });
-  }
+  return Promise.resolve();
 };
 
 exports.onCreateWebpackConfig = ({
