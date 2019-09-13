@@ -182,15 +182,31 @@ class BasePreview extends React.Component<Props, State> {
     }
   };
 
-  currentUrl = () =>
-    this.props.url ||
-    (this.serverPreview
-      ? getSSEUrl(this.props.sandbox, this.props.initialPath)
-      : frameUrl(
-          this.props.sandbox,
-          this.props.initialPath || '',
-          this.state && this.state.useFallbackDomain
-        ));
+  currentUrl = () => {
+    const url = this.props.url;
+    const server = getSSEUrl(this.props.sandbox, this.props.initialPath);
+    const client = frameUrl(
+      this.props.sandbox,
+      this.props.initialPath || '',
+      this.state && this.state.useFallbackDomain
+    );
+
+    if (url) {
+      if (url.startsWith('/')) {
+        return this.serverPreview
+          ? server.concat(url.substring(1))
+          : client.concat(url.substring(1));
+      }
+
+      return url;
+    }
+
+    if (this.serverPreview) {
+      return server;
+    }
+
+    return url;
+  };
 
   static defaultProps = {
     showNavigation: true,
