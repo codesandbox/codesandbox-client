@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import { json } from 'overmind';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
 import { TextOperation } from 'ot';
@@ -107,7 +108,12 @@ class EditorPreview extends React.Component {
               .changeSandbox(
                 newSandbox,
                 store.editor.currentModule,
-                parsed ? parsed.dependencies : newSandbox.npmDependencies.toJS()
+                // eslint-disable-next-line
+                parsed
+                  ? parsed.dependencies
+                  : newSandbox.npmDependencies.toJS
+                  ? newSandbox.npmDependencies.toJS()
+                  : json(newSandbox.npmDependencies)
               )
               .then(() => {
                 isChangingSandbox = false;

@@ -6,17 +6,17 @@ type State = {
   netlifyClaimUrl: string;
   netlifyLogs: string;
   netlifySite: NetlifySite;
+  deploysBeingDeleted: string[];
   deployToDelete: string;
   deploying: boolean;
   url: string;
   gettingDeploys: boolean;
   sandboxDeploys: ZeitDeployment[];
-  isDeletingDeployment: boolean;
 };
 
 export const state: State = {
   hasAlias: false,
-  isDeletingDeployment: false,
+  deploysBeingDeleted: [],
   deployToDelete: null,
   deploying: false,
   building: false,
