@@ -14,5 +14,6 @@ export default Module({
     onSSEMessage: sequences.onSSEMessage,
     onCodeSandboxAPIMessage: sequences.onCodeSandboxAPIMessage,
     onBrowserFromPortOpened: sequences.openBrowserFromPort,
+    onBrowserTabOpened: sequences.openBrowserTab,
   },
 });

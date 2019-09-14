@@ -4,7 +4,6 @@ import {
   ServerContainerStatus,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-import { host } from '@codesandbox/common/lib/utils/url-generator';
 
 export const restartSandbox: Action = ({ effects }) => {
   effects.executor.emit('sandbox:restart');
@@ -172,6 +171,18 @@ export const onCodeSandboxAPIMessage: Action<{
   }
 };
 
+export const onBrowserTabOpened: Action<{
+  port: any;
+}> = ({ actions }, { port }) => {
+  actions.editor.onDevToolsTabAdded({
+    tab: {
+      id: 'codesandbox.browser',
+      closeable: true,
+      options: port,
+    },
+  });
+};
+
 export const onBrowserFromPortOpened: Action<{
   port: any;
 }> = ({ actions }, { port }) => {
@@ -184,6 +195,7 @@ export const onBrowserFromPortOpened: Action<{
           options: {
             port: port.port,
             url: `https://${port.hostname}`,
+            title: port.title,
           },
         },
   });

@@ -99,6 +99,16 @@ export function setPorts({ props, state }) {
   state.set('server.ports', props.data);
 }
 
+export function openBrowserTab({ controller, props }) {
+  controller.getSignal('editor.openDevToolsTab')({
+    tab: {
+      id: 'codesandbox.browser',
+      closeable: true,
+      options: props.port,
+    },
+  });
+}
+
 export function openBrowserFromPort({ controller, props }) {
   controller.getSignal('editor.openDevToolsTab')({
     tab: props.port.main
@@ -164,31 +174,6 @@ export function showPortOpenedNotifications({ state, props, controller }) {
     port => !currentPorts.find(p => p.port === port.port)
   );
   const openedPorts = getOpenedBrowserPorts(tabs);
-  const hostname = `${sandbox.id}.sse.${
-    process.env.NODE_ENV === 'development' || process.env.STAGING
-      ? 'codesandbox.io'
-      : host()
-  }/___graphql`;
-  const browserTabs = tabs
-    .map(view =>
-      view.views.filter(tab => tab.id === 'codesandbox.browser' && tab.options)
-    )
-    .flat();
-  if (
-    sandbox.template === 'gatsby' &&
-    !browserTabs.find(tab => tab.options.url.includes('___graphql'))
-  ) {
-    openBrowserFromPort({
-      props: {
-        port: {
-          port: 8080,
-          main: false,
-          hostname,
-        },
-      },
-      controller,
-    });
-  }
 
   addedPorts.forEach(port => {
     if (!(port.main || openedPorts.includes(port.port))) {

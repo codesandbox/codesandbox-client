@@ -35,13 +35,12 @@ export const Server = inject('store', 'signals')(
 
     const graphqlPort = {
       port: 8080,
-      main: false,
-      hostname: '/___graphql',
-      name: 'GraphiQL',
+      url: '/___graphql',
+      title: 'GraphiQL',
     };
 
     const openPort = () => {
-      signals.server.onBrowserFromPortOpened({ port: graphqlPort });
+      signals.server.onBrowserTabOpened({ port: graphqlPort });
     };
 
     return (
@@ -104,7 +103,7 @@ export const Server = inject('store', 'signals')(
               >
                 <Port>
                   <BrowserIcon />
-                  <div>{graphqlPort.name}</div>
+                  <div>{graphqlPort.title}</div>
                 </Port>
               </EntryContainer>
             ) : null}
