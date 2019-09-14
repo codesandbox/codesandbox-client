@@ -4,7 +4,6 @@ import configurations from './configuration';
 
 class GatsbyTemplate extends Template {
   getViews(): ViewConfig[] {
-    console.log('sup');
     const GATSBY_VIEWS: ViewConfig[] = [
       {
         views: [

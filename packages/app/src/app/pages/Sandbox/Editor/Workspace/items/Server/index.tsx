@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import BrowserIcon from 'react-icons/lib/go/browser';
-import { host } from '@codesandbox/common/lib/utils/url-generator';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
 import {
@@ -31,48 +30,19 @@ type Port = {
 
 export const Server = inject('store', 'signals')(
   hooksObserver(({ store: { server, editor }, signals }) => {
-    const [graphqlPort, setGraphqlPort] = useState();
-    const [graphiQLTabOpen, setGraphiQLTabOpen] = useState(false);
     const disconnected = server.status !== 'connected';
     const sandbox = editor.currentSandbox;
 
-    const openPort = (port: Port) => {
-      signals.server.onBrowserFromPortOpened({ port });
+    const graphqlPort = {
+      port: 8080,
+      main: false,
+      hostname: '/___graphql',
+      name: 'GraphiQL',
     };
 
-    useEffect(() => {
-      if (sandbox.template === 'gatsby') {
-        const hostname = `${sandbox.id}.sse.${
-          process.env.NODE_ENV === 'development' || process.env.STAGING
-            ? 'codesandbox.io'
-            : host()
-        }/___graphql`;
-        setGraphqlPort({
-          port: 8080,
-          main: false,
-          hostname,
-          name: 'GraphiQL',
-        });
-      }
-    }, [sandbox.id, sandbox.template, server.ports]);
-
-    const checkForBrowserTab = useCallback(() => {
-      const browserTabs = editor.devToolTabs
-        .map(view =>
-          view.views.filter(
-            tab => tab.id === 'codesandbox.browser' && tab.options
-          )
-        )
-        .flat();
-      const graphiqlTab = browserTabs.find(tab =>
-        tab.options.url.includes('___graphql')
-      );
-      setGraphiQLTabOpen(graphiqlTab);
-    }, [editor.devToolTabs]);
-
-    useEffect(() => {
-      checkForBrowserTab();
-    }, [checkForBrowserTab, editor.devToolTabs]);
+    const openPort = () => {
+      signals.server.onBrowserFromPortOpened({ port: graphqlPort });
+    };
 
     return (
       <div>
@@ -127,14 +97,10 @@ export const Server = inject('store', 'signals')(
                 doesn't open any ports.
               </Description>
             )}
-            {graphqlPort && server.ports.length ? (
+            {sandbox.template === 'gatsby' && server.ports.length ? (
               <EntryContainer
                 style={{ position: 'relative' }}
-                onClick={() => {
-                  if (!graphiQLTabOpen) {
-                    openPort(graphqlPort);
-                  }
-                }}
+                onClick={openPort}
               >
                 <Port>
                   <BrowserIcon />
