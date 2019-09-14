@@ -167,7 +167,6 @@ function getOpenedBrowserPorts(views: ViewConfig[]) {
 export function showPortOpenedNotifications({ state, props, controller }) {
   const currentPorts = state.get('server.ports');
   const newPorts = props.ports;
-  const sandbox = state.get('editor.currentSandbox');
   const tabs = state.get('editor.devToolTabs');
 
   const addedPorts = newPorts.filter(
