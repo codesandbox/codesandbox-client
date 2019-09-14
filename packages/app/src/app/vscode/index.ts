@@ -52,6 +52,15 @@ class VSCodeManager {
 
   private addWorkbenchActions() {
     this.addWorkbenchAction({
+      id: 'view.statusBar.Toggle',
+      label: 'Toggle Status Bar',
+      commandLabel: 'Toggle Status Bar',
+      category: 'View',
+      run: () => {
+        this.controller.getSignal('editor.toggleStatusBar')();
+      },
+    });
+    this.addWorkbenchAction({
       id: 'view.preview.flip',
       label: 'Flip Preview Layout',
       commandLabel: 'Toggle Vertical/Horizontal Preview Layout',
