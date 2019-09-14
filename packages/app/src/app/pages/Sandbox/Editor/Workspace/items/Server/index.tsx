@@ -39,8 +39,12 @@ export const Server = inject('store', 'signals')(
       title: 'GraphiQL',
     };
 
-    const openPort = () => {
-      signals.server.onBrowserTabOpened({ port: graphqlPort });
+    const openPort = (port: {
+      main: boolean;
+      port: number;
+      hostname: string;
+    }) => {
+      signals.server.onBrowserFromPortOpened({ port });
     };
 
     return (
@@ -99,7 +103,9 @@ export const Server = inject('store', 'signals')(
             {sandbox.template === 'gatsby' && server.ports.length ? (
               <EntryContainer
                 style={{ position: 'relative' }}
-                onClick={openPort}
+                onClick={() =>
+                  signals.server.onBrowserTabOpened({ port: graphqlPort })
+                }
               >
                 <Port>
                   <BrowserIcon />
