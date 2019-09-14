@@ -14,7 +14,7 @@ class GatsbyTemplate extends Template {
             options: {
               port: 8080,
               url: '/___graphql',
-              name: 'GraphiQL',
+              title: 'GraphiQL',
             },
           },
         ],

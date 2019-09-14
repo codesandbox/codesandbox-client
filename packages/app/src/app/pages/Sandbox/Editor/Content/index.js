@@ -423,14 +423,10 @@ class EditorPreview extends React.Component {
 
     const browserConfig = {
       id: 'codesandbox.browser',
-      title: options => {
-        const graphiql =
-          typeof options.url === 'string' && options.url.includes('___graphql');
-        if (graphiql) {
-          return `Browser (GraphiQL)`;
-        }
-        return options.port ? `Browser (:${options.port})` : `Browser`;
-      },
+      title: options =>
+        options.port
+          ? `Browser (${options.title || `:${options.port}`})`
+          : `Browser`,
       Content: ({ hidden, options }) => (
         <Preview
           options={options}
