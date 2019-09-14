@@ -1,7 +1,6 @@
 // @ts-check
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
-import { host } from '@codesandbox/common/lib/utils/url-generator';
 import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 
 import { INITIAL_SERVER_STATE } from './state';
