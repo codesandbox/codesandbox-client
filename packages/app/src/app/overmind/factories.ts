@@ -1,5 +1,5 @@
 import { Contributor } from '@codesandbox/common/lib/types';
-import { json } from 'overmind';
+import { json, IState, IAction, IDerive } from 'overmind';
 import { AsyncAction } from '.';
 
 export const withLoadApp = <T>(
@@ -79,4 +79,79 @@ export const withOwnedSandbox = <T>(
   }
 
   return continueAction(context, payload);
+};
+
+export const createModals = <
+  T extends {
+    [name: string]: {
+      state?: IState;
+      result?: any;
+    };
+  }
+>(
+  modals: T
+): {
+  state?: {
+    current: keyof T;
+  } & {
+    [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> }
+  };
+  actions?: {
+    [K in keyof T]: {
+      open: AsyncAction<
+        T[K]['state'] extends IState ? T[K]['state'] : void,
+        T[K]['result']
+      >;
+      close: AsyncAction<T[K]['result']>;
+    }
+  };
+} => {
+  function createModal(name, modal) {
+    let resolver;
+
+    const open: AsyncAction<any, any> = async ({ state }, newState = {}) => {
+      state.modals.current = name;
+
+      Object.assign(state.modals[name], newState);
+
+      return new Promise(resolve => {
+        resolver = resolve;
+      });
+    };
+
+    const close: AsyncAction<T> = async ({ state }, payload) => {
+      state.modals.current = null;
+      resolver(payload || modal.result);
+    };
+
+    return {
+      state: {
+        ...modal.state,
+        isCurrent(_, root) {
+          return root.modals.current === name;
+        },
+      },
+      actions: {
+        open,
+        close,
+      },
+    };
+  }
+
+  return Object.keys(modals).reduce(
+    (aggr, name) => {
+      const modal = createModal(name, modals[name]);
+
+      aggr.state[name] = modal.state;
+      aggr.actions[name] = modal.actions;
+
+      return aggr;
+    },
+    {
+      state: {
+        current: null,
+      },
+      actions: {},
+    }
+  ) as any;
 };
