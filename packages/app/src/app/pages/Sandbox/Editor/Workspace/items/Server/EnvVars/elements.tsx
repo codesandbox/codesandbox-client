@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import EnvIcon from 'react-icons/lib/go/key';
-import Input from '@codesandbox/common/lib/components/Input';
 
 export const EnvironmentIcon = styled(EnvIcon)`
   margin-right: 0.6rem;
