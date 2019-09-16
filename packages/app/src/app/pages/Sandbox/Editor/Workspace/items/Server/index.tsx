@@ -33,12 +33,6 @@ export const Server = inject('store', 'signals')(
     const disconnected = server.status !== 'connected';
     const sandbox = editor.currentSandbox;
 
-    const graphqlPort = {
-      port: 8080,
-      url: '/___graphql',
-      title: 'GraphiQL',
-    };
-
     const openPort = (port: {
       main: boolean;
       port: number;
@@ -100,16 +94,27 @@ export const Server = inject('store', 'signals')(
                 doesn't open any ports.
               </Description>
             )}
-            {sandbox.template === 'gatsby' && server.ports.length ? (
+            {(sandbox.template === 'gatsby' ||
+              sandbox.template === 'gridsome') &&
+            server.ports.length ? (
               <EntryContainer
                 style={{ position: 'relative' }}
                 onClick={() =>
-                  signals.server.onBrowserTabOpened({ port: graphqlPort })
+                  signals.server.onBrowserTabOpened({
+                    port: {
+                      port: 8080,
+                      url:
+                        sandbox.template === 'gridsome'
+                          ? '/___explore'
+                          : '/___graphql',
+                      title: 'GraphiQL',
+                    },
+                  })
                 }
               >
                 <Port>
                   <BrowserIcon />
-                  <div>{graphqlPort.title}</div>
+                  <div>GraphiQL</div>
                 </Port>
               </EntryContainer>
             ) : null}
