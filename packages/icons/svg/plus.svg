@@ -1,0 +1,11 @@
+<svg
+  width="32"
+  height="32"
+  viewBox="0 0 32 32"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M16.8 8h-1.6v7.2H8v1.6h7.2V24h1.6v-7.2H24v-1.6h-7.2V8z"
+    fill="currentcolor"
+  />
+</svg>
