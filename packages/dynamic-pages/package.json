@@ -9,10 +9,18 @@
   },
   "source": true,
   "scripts": {
-    "dev": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 node server.js",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
-    "lint": "eslint ."
+    "dev": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 node server.js",
+    "lint": "eslint .",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "jest": {
+    "moduleDirectories": [
+      "node_modules"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
   },
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
@@ -40,13 +48,5 @@
     "cross-env": "^5.2.0",
     "file-loader": "^3.0.1",
     "jest": "^24.8.0"
-  },
-  "jest": {
-    "moduleDirectories": [
-      "node_modules"
-    ],
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    }
   }
 }

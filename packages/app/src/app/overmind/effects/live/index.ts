@@ -198,7 +198,7 @@ export default {
     });
   },
   sendDirectoryDeleted(directoryShortid: string) {
-    return this.send('directory:deleted', {
+    this.send('directory:deleted', {
       type: 'directory',
       directoryShortid,
     });

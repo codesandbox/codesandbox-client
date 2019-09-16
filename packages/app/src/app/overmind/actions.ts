@@ -1,10 +1,10 @@
-import { Action, AsyncAction } from '.';
-import * as internalActions from './internalActions';
-import { withLoadApp } from './factories';
 import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
+import { Action, AsyncAction } from '.';
+import * as internalActions from './internalActions';
+import { withLoadApp } from './factories';
 
 export const internal = internalActions;
 

@@ -66,7 +66,7 @@ export async function resolveDependencyInfo(dep: string, version: string) {
     contents: {},
     dependency: {
       name: dep,
-      version: packageJSON.version,
+      version,
     },
     peerDependencies: {},
     dependencyDependencies: {},

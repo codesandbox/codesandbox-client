@@ -77,6 +77,11 @@ export default () => (
                 </a>
               </li>
               <li>
+                <a href="/explore" target="_blank" rel="noopener noreferrer">
+                  Explore
+                </a>
+              </li>
+              <li>
                 <a href="/docs">Documentation</a>
               </li>
               <li>
@@ -91,6 +96,11 @@ export default () => (
                   rel="noopener noreferrer"
                 >
                   Status
+                </a>
+              </li>
+              <li>
+                <a href="/signin" target="_blank" rel="noopener noreferrer">
+                  Sign In
                 </a>
               </li>
             </List>
@@ -112,6 +122,9 @@ export default () => (
                 >
                   GitHub
                 </a>
+              </li>
+              <li>
+                <a href="/jobs">Careers</a>
               </li>
               <li>
                 <a href="/legal">Legal</a>

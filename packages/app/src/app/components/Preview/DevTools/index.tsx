@@ -326,8 +326,15 @@ export class DevTools extends React.PureComponent<Props, State> {
     event: MouseEvent & { clientX: number; clientY: number }
   ) => {
     if (this.state.mouseDown) {
-      const newHeight =
-        this.state.startHeight - (event.clientY - this.state.startY);
+      let maxHeight = 0;
+      if (this.node) {
+        maxHeight = this.node.parentElement.getBoundingClientRect().height;
+      }
+
+      const newHeight = Math.min(
+        maxHeight,
+        this.state.startHeight - (event.clientY - this.state.startY)
+      );
 
       this.setState({
         height: Math.max(this.closedHeight() - 2, newHeight),
