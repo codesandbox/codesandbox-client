@@ -15,7 +15,9 @@ function addSandboxesToCollection(props, item) {
     variables: {
       collectionPath: path || '/',
       teamId,
-      sandboxIds: selectedSandboxes,
+      sandboxIds: selectedSandboxes.toJS
+        ? selectedSandboxes.toJS()
+        : selectedSandboxes,
     },
     optimisticResponse: {
       __typename: 'Mutation',
