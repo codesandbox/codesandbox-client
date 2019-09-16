@@ -175,7 +175,7 @@ export default {
     }
 
     try {
-      clients.get(moduleShortid).applyClient(TextOperation.fromJSON());
+      clients.get(moduleShortid).applyClient(operation);
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
       console.error(
