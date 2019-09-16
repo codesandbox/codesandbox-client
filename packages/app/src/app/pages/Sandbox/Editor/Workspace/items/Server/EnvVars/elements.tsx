@@ -26,16 +26,3 @@ export const ErrorMessage = styled.div`
   margin: 0.5rem 0;
   font-style: italic;
 `;
-
-export const EnvName = styled(Input)`
-  margin-left: 0;
-  margin-right: 0;
-  margin-bottom: 0.25rem;
-  width: 100%;
-`;
-
-export const EnvValue = styled(Input)`
-  margin-left: 0;
-  margin-right: 0;
-  width: 100%;
-`;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-
+import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import { InputContainer, ErrorMessage, EnvName, EnvValue } from './elements';
+import { InputContainer, ErrorMessage } from './elements';
 
 export const EnvModal = props => {
   const [name, setName] = useState(props.name || '');
@@ -40,12 +40,15 @@ export const EnvModal = props => {
     <form style={{ width: '100%' }} onSubmit={onSubmit}>
       <div>
         <InputContainer>
-          <EnvName placeholder="Name" onChange={onNameChange} value={name} />
-          <EnvValue
-            placeholder="Value"
-            onChange={onValueChange}
-            value={value}
+          <Input
+            style={{
+              marginBottom: '0.25rem',
+            }}
+            placeholder="Name"
+            onChange={onNameChange}
+            value={name}
           />
+          <Input placeholder="Value" onChange={onValueChange} value={value} />
         </InputContainer>
       </div>
       <div style={{ display: 'flex' }}>
