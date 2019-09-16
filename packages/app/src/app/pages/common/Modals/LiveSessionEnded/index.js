@@ -9,14 +9,14 @@ import { Heading, Explanation } from '../elements';
 
 function LiveModeEnded({ signals, store }) {
   const suggestion = store.editor.currentSandbox.owned
-    ? 'You can continue working on the current sandbox.'
+    ? 'you can continue working on the current sandbox.'
     : 'you can continue working by forking the sandbox or by creating a new sandbox.';
   return (
     <Container>
       <Heading>The live session has ended</Heading>
       <Explanation css={{ marginBottom: '1rem' }}>
         {store.currentModalMessage || 'The session has ended due to inactivity'}
-        ,{suggestion}
+        , {suggestion}
       </Explanation>
 
       <Row justifyContent="space-around">
