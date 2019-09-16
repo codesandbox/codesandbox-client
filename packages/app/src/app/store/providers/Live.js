@@ -68,6 +68,6 @@ export default Provider({
       } else {
         reject('Channel is not defined');
       }
-    });
+    }).then(value => value);
   },
 });

@@ -103,7 +103,7 @@ export const saveCode: AsyncAction<{
     }
 
     if (state.live.isLive && state.live.isCurrentEditor) {
-      effects.live.sendModuleUpdate(module);
+      effects.live.sendModuleSaved(module);
     }
 
     await actions.editor.internal.updateCurrentTemplate();
