@@ -134,10 +134,11 @@ class ContentSplit extends React.Component {
                 <Content match={match} />
               </SplitPane>
 
-              {vscode && statusBar && (
+              {vscode && (
                 <StatusBar
                   style={{
                     position: 'fixed',
+                    display: statusBar ? 'block' : 'none',
                     bottom: 0,
                     left: 0,
                     right: 0,
