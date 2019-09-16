@@ -51,7 +51,7 @@ class PaymentInfoComponent extends React.Component<Props> {
     return (
       <Container>
         <Helmet>
-          <script async rel="prefetch" src="https://js.stripe.com/v3/" />
+          <script async src="https://js.stripe.com/v3/" />
         </Helmet>
         <Title>Payment Info</Title>
         {preferences.isLoadingPaymentDetails ? (
