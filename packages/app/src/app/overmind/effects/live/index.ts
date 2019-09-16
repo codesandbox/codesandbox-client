@@ -164,6 +164,10 @@ export default {
     });
   },
   sendCodeUpdate(moduleShortid: string, currentCode: string, code: string) {
+    if (currentCode === code) {
+      return;
+    }
+
     const operation = getTextOperation(currentCode, code);
 
     if (!operation) {
@@ -171,7 +175,7 @@ export default {
     }
 
     try {
-      clients.get(moduleShortid).applyClient(TextOperation.fromJSON(operation));
+      clients.get(moduleShortid).applyClient(TextOperation.fromJSON());
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
       console.error(
@@ -179,16 +183,16 @@ export default {
         moduleShortid,
         operation
       );
-      this.send('live:module_state', {});
+      return this.send('live:module_state', {});
     }
   },
   sendUserCurrentModule(moduleShortid: string) {
-    this.send('user:current-module', {
+    return this.send('user:current-module', {
       moduleShortid,
     });
   },
   sendDirectoryCreated(directory: Directory) {
-    this.send('directory:created', {
+    return this.send('directory:created', {
       type: 'directory',
       module: directory,
     });
@@ -200,61 +204,65 @@ export default {
     });
   },
   sendModuleCreated(module: Module) {
-    this.send('module:created', {
+    return this.send('module:created', {
       type: 'module',
       moduleShortid: module.shortid,
       module,
     });
   },
   sendModuleDeleted(moduleShortid: string) {
-    this.send('module:deleted', {
+    return this.send('module:deleted', {
       type: 'module',
       moduleShortid,
     });
   },
   sendMassCreatedModules(modules: Module[], directories: Directory[]) {
-    this.send('module:mass-created', {
+    return this.send('module:mass-created', {
       directories,
       modules,
     });
   },
   sendLiveMode(mode: string) {
-    this.send('live:mode', {
+    return this.send('live:mode', {
       mode,
     });
   },
   sendEditorAdded(liveUserId: string) {
-    this.send('live:add-editor', {
+    return this.send('live:add-editor', {
       editor_user_id: liveUserId,
     });
   },
   sendEditorRemoved(liveUserId: string) {
-    this.send('live:remove-editor', {
+    return this.send('live:remove-editor', {
       editor_user_id: liveUserId,
     });
   },
   sendClosed() {
-    this.send('live:close', {});
+    return this.send('live:close', {});
   },
   sendChat(message: string) {
-    this.send('chat', {
+    return this.send('chat', {
       message,
     });
   },
-  sendModuleSaved(moduleShortid: string) {
-    this.send('module:saved', {
+  sendModuleState() {
+    return this.send('live:module_state', {});
+  },
+  sendModuleSaved(module: Module) {
+    return this.send('module:saved', {
       type: 'module',
-      moduleShortid,
+      module,
+      moduleShortid: module.shortid,
     });
   },
   sendChatEnabled(enabled: boolean) {
-    this.send('live:chat_enabled', { enabled });
+    return this.send('live:chat_enabled', { enabled });
   },
   sendModuleUpdateRequest() {
-    this.send('live:module_state', {});
+    return this.send('live:module_state', {});
   },
   sendUserSelection(moduleShortid: string, liveUserId: string, selection: any) {
-    this.send('user:selection', {
+    return this.send('user:selection', {
       liveUserId,
       moduleShortid,
       selection,
@@ -263,8 +271,18 @@ export default {
   getAllClients() {
     return clients.getAll();
   },
-  getClient(moduleShortid: string) {
-    return clients.get(moduleShortid);
+  applyClient(moduleShortid: string, operation: any) {
+    return clients
+      .get(moduleShortid)
+      .applyClient(TextOperation.fromJSON(operation));
+  },
+  applyServer(moduleShortid: string, operation: any) {
+    return clients
+      .get(moduleShortid)
+      .applyServer(TextOperation.fromJSON(operation));
+  },
+  serverAck(moduleShortid: string) {
+    return clients.get(moduleShortid).serverAck();
   },
   createClient(moduleShortid: string, revision: number) {
     return clients.create(moduleShortid, revision);

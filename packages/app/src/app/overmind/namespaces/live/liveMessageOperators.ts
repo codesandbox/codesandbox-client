@@ -114,6 +114,12 @@ export const onModuleSaved: Operator<
     moduleItem => moduleItem.shortid === data.moduleShortid
   );
   module.isNotSynced = false;
+
+  state.editor.changedModuleShortids.splice(
+    state.editor.changedModuleShortids.indexOf(module.shortid),
+    1
+  );
+
   actions.editor.internal.setModuleSavedCode({
     moduleShortid: data.moduleShortid,
     savedCode: data.savedCode,
@@ -364,10 +370,10 @@ export const onOperation: Operator<
     return;
   }
   if (_isOwnMessage) {
-    effects.live.getClient(data.module_shortid).serverAck();
+    effects.live.serverAck(data.module_shortid);
   } else {
     try {
-      effects.live.getClient(data.module_shortid).applyServer(data.operation);
+      effects.live.applyServer(data.module_shortid, data.operation);
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
       console.error('Something went wrong with applying OT operation');

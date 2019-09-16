@@ -56,7 +56,6 @@ class CodeSandboxOTClient extends Client {
     super.applyClient(operation);
   }
   applyServer(operation: any) {
-    console.log(operation);
     super.applyServer(operation);
   }
 }
@@ -97,16 +96,11 @@ export default (
           sendOperation(
             moduleShortid,
             revision,
-            operationToElixir(
-              Array.isArray(operation) ? operation : operation.toJSON()
-            )
+            operationToElixir(operation.toJSON())
           );
         },
         operation => {
-          applyOperation(
-            moduleShortid,
-            Array.isArray(operation) ? operation : operation.toJSON()
-          );
+          applyOperation(moduleShortid, operation);
         }
       );
       modules.set(moduleShortid, client);
