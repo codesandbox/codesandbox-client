@@ -5,6 +5,4 @@ export const confirmCreateFile = {
   result: false,
 };
 
-export const someModal = {
-  result: null,
-};
+export const someModal = {};

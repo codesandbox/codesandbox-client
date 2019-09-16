@@ -85,7 +85,7 @@ export const createModals = <
   T extends {
     [name: string]: {
       state?: IState;
-      result?: any;
+      result?: unknown;
     };
   }
 >(
