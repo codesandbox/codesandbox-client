@@ -17,3 +17,13 @@ import CloseIcon from '@codesandbox/icons/react/close';
 
 import PlusIcon from '@codesandbox/icons/react/plus';
 ```
+
+Or you can use them on the master component
+
+```js
+import Icon from '@codesandbox/icons';
+
+<Icon name="close" />;
+
+<Icon name="plus" />;
+```

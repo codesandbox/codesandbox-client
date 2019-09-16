@@ -4,7 +4,6 @@ const SVGO = require('svgo');
 const path = require('path');
 const prettier = require('prettier');
 const camelCase = require('lodash.camelcase');
-const upperFirst = require('lodash.upperfirst');
 
 const svgo = new SVGO({});
 
@@ -80,7 +79,7 @@ function getComponentSource(source) {
 
 function getNamedExport(name, source) {
   return `
-    export const ${upperFirst(camelCase(name))} = props => (
+    export const ${camelCase(name)} = props => (
       ${getSvg(source)}
     );
   `;

@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-export const Close = props => (
+export const close = props => (
   <svg width="32" height="32" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M23 10.273L21.727 9 16 14.727 10.273 9 9 10.273 14.727 16 9 21.727 10.273 23 16 17.273 21.727 23 23 21.727 17.273 16 23 10.273z"
@@ -12,13 +12,13 @@ export const Close = props => (
   </svg>
 );
 
-export const Minus = props => (
+export const minus = props => (
   <svg width="32" height="32" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path d="M8 17v-2h16v2H8z" fill="currentcolor" />
   </svg>
 );
 
-export const Plus = props => (
+export const plus = props => (
   <svg width="32" height="32" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M16.8 8h-1.6v7.2H8v1.6h7.2V24h1.6v-7.2H24v-1.6h-7.2V8z"
