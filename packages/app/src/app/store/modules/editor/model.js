@@ -214,4 +214,5 @@ export default {
     tabPosition: types.number,
   }),
   workspaceConfigCode: types.string,
+  statusBar: types.boolean,
 };
