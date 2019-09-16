@@ -102,7 +102,6 @@ export const Server = inject('store', 'signals')(
                 onClick={() =>
                   signals.server.onBrowserTabOpened({
                     port: {
-                      port: 8080,
                       url:
                         sandbox.template === 'gridsome'
                           ? '/___explore'

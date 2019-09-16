@@ -12,7 +12,6 @@ class GatsbyTemplate extends Template {
             id: 'codesandbox.browser',
             closeable: true,
             options: {
-              port: 8080,
               url: '/___graphql',
               title: 'GraphiQL',
             },

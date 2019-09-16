@@ -11,7 +11,6 @@ class GridsomeTemplate extends Template {
             id: 'codesandbox.browser',
             closeable: true,
             options: {
-              port: 8080,
               url: '/___explore',
               title: 'GraphiQL',
             },
