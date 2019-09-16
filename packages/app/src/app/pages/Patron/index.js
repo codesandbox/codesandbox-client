@@ -19,6 +19,7 @@ class Patron extends React.Component {
       <MaxWidth>
         <Helmet>
           <title>Patron - CodeSandbox</title>
+          <script async rel="prefetch" src="https://js.stripe.com/v3/" />
         </Helmet>
         <Margin vertical={1.5} horizontal={1.5}>
           <Navigation title="Become a Patron" />

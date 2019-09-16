@@ -1,5 +1,4 @@
 import React from 'react';
-import Helmet from 'react-helmet';
 import { observer, inject } from 'app/componentConnectors';
 import PricingInfo from './PricingInfo';
 import { PricingChoice } from './PricingChoice';
@@ -11,9 +10,6 @@ const PricingModalComponent = ({ store }) => {
 
   return (
     <Container>
-      <Helmet>
-        <script async rel="prefetch" src="https://js.stripe.com/v3/" />
-      </Helmet>
       <Badge subscribed={store.isPatron} badge={badge} />
       <Details>
         <PricingInfo />
