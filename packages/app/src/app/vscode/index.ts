@@ -52,9 +52,9 @@ class VSCodeManager {
 
   private addWorkbenchActions() {
     this.addWorkbenchAction({
-      id: 'view.statusBar.Toggle',
-      label: 'Toggle Status Bar',
-      commandLabel: 'Toggle Status Bar',
+      id: 'workbench.action.toggleStatusbarVisibility',
+      label: 'Toggle Status Bar Visibility',
+      commandLabel: 'Toggle Status Bar Visibility',
       category: 'View',
       run: () => {
         this.controller.getSignal('editor.toggleStatusBar')();
