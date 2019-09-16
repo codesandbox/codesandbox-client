@@ -6,7 +6,6 @@ import RenameIcon from 'react-icons/lib/md/mode-edit';
 import TrashIcon from 'react-icons/lib/md/delete';
 import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
-import { inject, observer } from 'app/componentConnectors';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { client } from 'app/graphql/client';
 
@@ -390,10 +389,8 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-DropFolderEntry = inject('store', 'signals')(
-  DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
-    DragSource('FOLDER', entrySource, collectSource)(observer(FolderEntry))
-  )
+DropFolderEntry = DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
+  DragSource('FOLDER', entrySource, collectSource)(FolderEntry)
 ) as any;
 
 export { DropFolderEntry };

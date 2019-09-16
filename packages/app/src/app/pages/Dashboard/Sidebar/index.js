@@ -68,6 +68,8 @@ class Sidebar extends React.Component {
                   />
 
                   <SandboxesItem
+                    whatTheFuck
+                    selectedSandboxes={store.dashboard.selectedSandboxes}
                     currentPath={path}
                     currentTeamId={currentTeamId}
                     openByDefault
@@ -101,6 +103,10 @@ class Sidebar extends React.Component {
                           />
 
                           <SandboxesItem
+                            whatTheFuck
+                            selectedSandboxes={
+                              store.dashboard.selectedSandboxes
+                            }
                             currentPath={path}
                             currentTeamId={currentTeamId}
                             teamId={team.id}
