@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
@@ -49,4 +49,4 @@ function LiveModeEnded({ signals, store }) {
   );
 }
 
-export default inject('signals', 'store')(LiveModeEnded);
+export default inject('signals', 'store')(hooksObserver(LiveModeEnded));
