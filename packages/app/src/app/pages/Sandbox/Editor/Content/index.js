@@ -424,7 +424,9 @@ class EditorPreview extends React.Component {
     const browserConfig = {
       id: 'codesandbox.browser',
       title: options =>
-        options.port ? `Browser (:${options.port})` : `Browser`,
+        options.port || options.title
+          ? `Browser (${options.title || `:${options.port}`})`
+          : `Browser`,
       Content: ({ hidden, options }) => (
         <Preview
           options={options}
