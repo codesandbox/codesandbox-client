@@ -1,4 +1,5 @@
 import React from 'react';
+import Helmet from 'react-helmet';
 import { Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import Fuse from 'fuse.js';
@@ -50,12 +51,6 @@ const SearchSandboxes = () => (
               ? `${sandboxes.length} search results for '${search}'`
               : 'Search results for all sandboxes';
 
-          if (search) {
-            document.title = `Search: '${search}' - CodeSandbox`;
-          } else {
-            document.title = `Search - CodeSandbox`;
-          }
-
           let possibleTemplates = [];
           if (sandboxes) {
             possibleTemplates = getPossibleTemplates(sandboxes);
@@ -66,14 +61,23 @@ const SearchSandboxes = () => (
           }
 
           return (
-            <Sandboxes
-              isLoading={loading}
-              Header={Header}
-              page="search"
-              hideOrder={Boolean(search)}
-              sandboxes={loading ? [] : sandboxes}
-              possibleTemplates={possibleTemplates}
-            />
+            <>
+              <Helmet>
+                <title>
+                  {search
+                    ? `Search: '${search}' - CodeSandbox`
+                    : 'Search - CodeSandbox'}
+                </title>
+              </Helmet>
+              <Sandboxes
+                isLoading={loading}
+                Header={Header}
+                page="search"
+                hideOrder={Boolean(search)}
+                sandboxes={loading ? [] : sandboxes}
+                possibleTemplates={possibleTemplates}
+              />
+            </>
           );
         }}
       </Observer>

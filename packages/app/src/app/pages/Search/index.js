@@ -3,6 +3,7 @@ import {
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX,
 } from '@codesandbox/common/lib/utils/config';
+import Helmet from 'react-helmet';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import qs from 'qs';
@@ -39,10 +40,6 @@ const Search = inject('signals')(
     const debouncedSetState = useRef(null);
 
     useEffect(() => {
-      document.title = 'Search - CodeSandbox';
-    }, []);
-
-    useEffect(() => {
       searchMounted();
     }, [searchMounted]);
 
@@ -74,6 +71,9 @@ const Search = inject('signals')(
 
     return (
       <Container>
+        <Helmet>
+          <title>Search - CodeSandbox</title>
+        </Helmet>
         <Styles />
 
         <MaxWidth>
