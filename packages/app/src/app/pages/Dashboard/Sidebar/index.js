@@ -1,6 +1,6 @@
 import React from 'react';
 import history from 'app/utils/history';
-import { inject, observer } from 'app/componentConnectors';
+import { inject, observer, Observer } from 'app/componentConnectors';
 import { Route, withRouter } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import Input from '@codesandbox/common/lib/components/Input';
@@ -59,60 +59,74 @@ class Sidebar extends React.Component {
               : undefined;
 
             return (
-              <React.Fragment>
-                <Items style={{ marginBottom: '1rem' }}>
-                  <Item
-                    Icon={DashboardIcon}
-                    path="/dashboard/recent"
-                    name="Overview"
-                  />
+              <Observer>
+                {({ store: innerStore }) => (
+                  <React.Fragment>
+                    <Items style={{ marginBottom: '1rem' }}>
+                      <Item
+                        Icon={DashboardIcon}
+                        path="/dashboard/recent"
+                        name="Overview"
+                      />
 
-                  <SandboxesItem
-                    currentPath={path}
-                    currentTeamId={currentTeamId}
-                    openByDefault
-                  />
+                      <SandboxesItem
+                        selectedSandboxes={
+                          innerStore.dashboard.selectedSandboxes
+                        }
+                        currentPath={path}
+                        currentTeamId={currentTeamId}
+                        openByDefault
+                      />
 
-                  <TemplateItem currentPath={path} />
+                      <TemplateItem currentPath={path} />
 
-                  <TrashItem currentPath={path} />
-                </Items>
+                      <TrashItem currentPath={path} />
+                    </Items>
 
-                <Query query={TEAMS_QUERY}>
-                  {({ loading, data, error }) => {
-                    if (loading) {
-                      return null;
-                    }
+                    <Query query={TEAMS_QUERY}>
+                      {({ loading, data, error }) => {
+                        if (loading) {
+                          return null;
+                        }
 
-                    if (error) {
-                      return null;
-                    }
+                        if (error) {
+                          return null;
+                        }
 
-                    const teams = data.me.teams;
+                        const teams = data.me.teams;
 
-                    return teams.map(team => (
-                      <div key={team.id}>
-                        <Items>
-                          <CategoryHeader>{team.name}</CategoryHeader>
-                          <Item
-                            Icon={PeopleIcon}
-                            path={teamOverviewUrl(team.id)}
-                            name="Team Overview"
-                          />
+                        return teams.map(team => (
+                          <div key={team.id}>
+                            <Items>
+                              <CategoryHeader>{team.name}</CategoryHeader>
+                              <Item
+                                Icon={PeopleIcon}
+                                path={teamOverviewUrl(team.id)}
+                                name="Team Overview"
+                              />
 
-                          <SandboxesItem
-                            currentPath={path}
-                            currentTeamId={currentTeamId}
-                            teamId={team.id}
-                          />
+                              <SandboxesItem
+                                whatTheFuck
+                                selectedSandboxes={
+                                  store.dashboard.selectedSandboxes
+                                }
+                                currentPath={path}
+                                currentTeamId={currentTeamId}
+                                teamId={team.id}
+                              />
 
-                          <TemplateItem currentPath={path} teamId={team.id} />
-                        </Items>
-                      </div>
-                    ));
-                  }}
-                </Query>
-              </React.Fragment>
+                              <TemplateItem
+                                currentPath={path}
+                                teamId={team.id}
+                              />
+                            </Items>
+                          </div>
+                        ));
+                      }}
+                    </Query>
+                  </React.Fragment>
+                )}
+              </Observer>
             );
           }}
         </Route>

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import Helmet from 'react-helmet';
 import { sortBy } from 'lodash-es';
 import { useQuery } from '@apollo/react-hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -12,16 +13,12 @@ import { LIST_TEMPLATES, unmakeTemplates } from '../../../queries';
 import { Container, Grid, EmptyTitle } from './elements';
 import { Navigation } from './Navigation';
 
-export const Templates = props => {
-  const teamId = props.match.params.teamId;
+export const Templates = ({ match }) => {
+  const teamId = match.params.teamId;
 
   const { loading, error, data } = useQuery(LIST_TEMPLATES, {
     variables: { teamId },
   });
-
-  useEffect(() => {
-    document.title = `${teamId ? 'Team' : 'My'} Templates - CodeSandbox`;
-  }, [teamId]);
 
   if (error) {
     console.error(error);
@@ -50,6 +47,9 @@ export const Templates = props => {
 
   return (
     <Container>
+      <Helmet>
+        <title>{teamId ? 'Team' : 'My'} Templates - CodeSandbox</title>
+      </Helmet>
       <Navigation teamId={teamId} number={sortedTemplates.length} />
       {!sortedTemplates.length && (
         <div>

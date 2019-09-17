@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import Helmet from 'react-helmet';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import Padding from '@codesandbox/common/lib/components/spacing/Padding';
@@ -171,15 +172,16 @@ class LivePage extends React.Component {
 
     const sandbox = store.editor.currentSandbox;
 
-    if (sandbox) {
-      document.title = `${getSandboxName(sandbox)} - CodeSandbox`;
-    }
-
     return (
-      <React.Fragment>
+      <>
+        {sandbox && (
+          <Helmet>
+            <title>{getSandboxName(sandbox)} - CodeSandbox</title>
+          </Helmet>
+        )}
         <Editor match={match} />
         <QuickActions />
-      </React.Fragment>
+      </>
     );
   }
 }

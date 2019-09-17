@@ -55,6 +55,7 @@ type State = {
   quickActionsOpen: boolean;
   previewWindowVisible: boolean;
   workspaceConfigCode: string;
+  statusBar: boolean;
   previewWindowOrientation: WindowOrientation;
   isAllModulesSynced: Derive<State, boolean>;
   currentSandbox: Derive<State, Sandbox>;
@@ -103,6 +104,7 @@ export const state: State = {
   isUpdatingPrivacy: false,
   quickActionsOpen: false,
   previewWindowVisible: true,
+  statusBar: true,
   previewWindowOrientation:
     window.innerHeight / window.innerWidth > 0.9
       ? WindowOrientation.HORIZONTAL

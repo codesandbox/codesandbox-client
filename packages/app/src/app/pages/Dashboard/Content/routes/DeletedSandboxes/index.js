@@ -1,5 +1,6 @@
 import React from 'react';
 import { Observer } from 'app/componentConnectors';
+import Helmet from 'react-helmet';
 import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
 import RemoveIcon from 'react-icons/lib/md/highlight-remove';
@@ -8,10 +9,11 @@ import { Content as Sandboxes } from '../../Sandboxes';
 
 import { DELETED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
-const DeletedSandboxes = () => {
-  document.title = 'Deleted Sandboxes - CodeSandbox';
-
-  return (
+const DeletedSandboxes = () => (
+  <>
+    <Helmet>
+      <title>Deleted Sandboxes - CodeSandbox</title>
+    </Helmet>
     <Query
       fetchPolicy="cache-and-network"
       query={DELETED_SANDBOXES_CONTENT_QUERY}
@@ -65,7 +67,7 @@ const DeletedSandboxes = () => {
         </Observer>
       )}
     </Query>
-  );
-};
+  </>
+);
 
 export default DeletedSandboxes;

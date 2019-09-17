@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer, inject } from 'app/componentConnectors';
+import Helmet from 'react-helmet';
 
 import { Query } from 'react-apollo';
 
@@ -10,9 +11,11 @@ import { Content as Sandboxes } from '../../Sandboxes';
 import CreateNewSandbox from '../../CreateNewSandbox';
 import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
-const RecentSandboxes = ({ store }) => {
-  document.title = 'Recent Sandboxes - CodeSandbox';
-  return (
+const RecentSandboxes = ({ store }) => (
+  <>
+    <Helmet>
+      <title>Recent Sandboxes - CodeSandbox</title>
+    </Helmet>
     <Query
       variables={{
         orderField: store.dashboard.orderBy.field,
@@ -57,7 +60,7 @@ const RecentSandboxes = ({ store }) => {
         );
       }}
     </Query>
-  );
-};
+  </>
+);
 
 export default inject('signals', 'store')(observer(RecentSandboxes));

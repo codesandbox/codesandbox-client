@@ -1,5 +1,6 @@
 /* @flow */
 import React from 'react';
+import Helmet from 'react-helmet';
 import { Route, Switch } from 'react-router-dom';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
@@ -51,9 +52,11 @@ class Profile extends React.Component<Props> {
 
     const user = store.profile.current;
 
-    document.title = `${user.name || user.username} - CodeSandbox`;
     return (
       <Container>
+        <Helmet>
+          <title>{user.name || user.username} - CodeSandbox</title>
+        </Helmet>
         <Header user={user} />
         <Content>
           <MaxWidth>
