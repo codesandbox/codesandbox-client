@@ -321,7 +321,14 @@ class VSCodeManager {
     and server requires a full code update
   */
   changeCode(moduleShortid: string, code: string) {
-    context.monaco.editor.changeCode(code, moduleShortid);
+    try {
+      (window as any).CSEditor.editor
+        .getActiveCodeEditor()
+        .getModel(moduleShortid)
+        .setValue(code);
+    } catch (error) {
+      console.log();
+    }
   }
 
   /**
