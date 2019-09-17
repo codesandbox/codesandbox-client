@@ -35,6 +35,8 @@ export function Experiments() {
 
       <SubContainer>
         <PreferenceContainer>
+          No experiments at the moment
+          {/*
           <PaddedPreference
             title="Use Overmind"
             type="boolean"
@@ -51,6 +53,7 @@ export function Experiments() {
             Use Overmind (an evolution of our current state management) as the
             state management
           </SubDescription>
+            */}
         </PreferenceContainer>
       </SubContainer>
     </div>
