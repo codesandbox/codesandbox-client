@@ -114,7 +114,7 @@ function ServerComponent({ store, signals }) {
           ) : (
             <Description>
               No ports are opened. Maybe the server is still starting or it
-              doesn't open any ports.
+              doesn{"'"}t open any ports.
             </Description>
           )}
         </Margin>

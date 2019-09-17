@@ -4,6 +4,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "baseUrl": "./",
+    "strictNullChecks": true,
     "paths": {
       "app/*": ["./src/app/*"],
       "embed/*": ["./src/embed/*"],

@@ -722,6 +722,7 @@ export class VSCode extends React.Component<Props> implements Editor {
 
     Object.keys(operationsJSON).forEach(moduleShortid => {
       const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
+      console.log('Applying', operation);
 
       const moduleId = this.sandbox.modules.find(
         m => m.shortid === moduleShortid

@@ -32,9 +32,7 @@ export const state: State = {
     blacklistedTemplates: [],
     search: '',
   },
-  isTemplateSelected: state => templateName => {
-    return state.filters.blacklistedTemplates.indexOf(templateName) === -1;
-  },
+  isTemplateSelected: state => templateName => state.filters.blacklistedTemplates.indexOf(templateName) === -1,
   getFilteredSandboxes: state => sandboxes => {
     const orderField = state.orderBy.field;
     const orderOrder = state.orderBy.order;

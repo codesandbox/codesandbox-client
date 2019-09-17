@@ -1,15 +1,15 @@
 import { AsyncAction } from 'app/overmind';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
-import {
-  resolveModuleWrapped,
-  resolveDirectoryWrapped,
-} from '../../utils/resolve-module-wrapped';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 import { INormalizedModules } from 'codesandbox-import-util-types';
 import { ModuleTab } from '@codesandbox/common/lib/types';
 import { createOptimisticModule } from 'app/overmind/utils/common';
 import { withOwnedSandbox } from 'app/overmind/factories';
+import {
+  resolveModuleWrapped,
+  resolveDirectoryWrapped,
+} from '../../utils/resolve-module-wrapped';
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -23,6 +23,11 @@ export const moduleRenamed: AsyncAction<{
     const module = sandbox.modules.find(
       moduleItem => moduleItem.shortid === moduleShortid
     );
+
+    if (!module) {
+      return;
+    }
+
     const oldTitle = module.title;
 
     module.title = title;
@@ -274,7 +279,7 @@ export const filesUploaded: AsyncAction<{
 export const massCreateModules: AsyncAction<{
   modules: any;
   directories: any;
-  directoryShortid: string;
+  directoryShortid: string | null;
   cbID?: string;
 }> = withOwnedSandbox(
   async (
@@ -438,19 +443,18 @@ export const syncSandbox: AsyncAction<any[]> = async (
         if (op === 'update') {
           const newModule = resolveModuleNew(path);
 
-          if (oldModule) {
-            const modulePos = oldSandbox.modules.indexOf(oldModule);
-            Object.assign(
-              state.editor.sandboxes[oldSandbox.id].modules[modulePos],
-              newModule
-            );
-          } else {
-            state.editor.sandboxes[oldSandbox.id].modules.push(newModule);
+          if (newModule) {
+            if (oldModule) {
+              const modulePos = oldSandbox.modules.indexOf(oldModule);
+              Object.assign(
+                state.editor.sandboxes[oldSandbox.id].modules[modulePos],
+                newModule
+              );
+            } else {
+              state.editor.sandboxes[oldSandbox.id].modules.push(newModule);
+            }
           }
-        } else if (op === 'delete') {
-          const oldModule = oldSandbox.modules.find(
-            module => module.shortid === oldModule.shortid
-          );
+        } else if (op === 'delete' && oldModule) {
           oldSandbox.modules.splice(oldSandbox.modules.indexOf(oldModule), 1);
         }
       } else {
@@ -460,16 +464,24 @@ export const syncSandbox: AsyncAction<any[]> = async (
         if (op === 'update') {
           // Create
           const newDirectory = resolveDirectoryNew(path);
-          state.editor.sandboxes[oldSandbox.id].directories.push(newDirectory);
+          if (newDirectory) {
+            state.editor.sandboxes[oldSandbox.id].directories.push(
+              newDirectory
+            );
+          }
         } else {
           const oldDirectory = resolveDirectoryOld(path);
-          const directory = oldSandbox.directories.find(
-            directoryItem => directoryItem.shortid === oldDirectory.shortid
-          );
-          oldSandbox.directories.splice(
-            oldSandbox.directories.indexOf(directory),
-            1
-          );
+          if (oldDirectory) {
+            const directory = oldSandbox.directories.find(
+              directoryItem => directoryItem.shortid === oldDirectory.shortid
+            );
+            if (directory) {
+              oldSandbox.directories.splice(
+                oldSandbox.directories.indexOf(directory),
+                1
+              );
+            }
+          }
         }
       }
     });

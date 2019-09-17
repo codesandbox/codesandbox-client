@@ -1,6 +1,5 @@
 import { AsyncAction, Action } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-import { CurrentUser } from '@codesandbox/common/lib/types';
 
 export const patronMounted: AsyncAction = withLoadApp();
 
@@ -69,7 +68,9 @@ export const cancelSubscriptionClicked: AsyncAction = async ({
       effects.notificationToast.success(
         'Sorry to see you go, but thanks a bunch for the support this far!'
       );
-    } catch (error) {}
+    } catch (error) {
+      /* ignore */
+    }
 
     state.patron.isUpdatingSubscription = false;
   }

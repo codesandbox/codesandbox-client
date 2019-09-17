@@ -27,16 +27,17 @@ export const addNpmDependency: AsyncAction<{
   async ({ effects, actions, state }, { name, version, isDev }) => {
     effects.analytics.track('Add NPM Dependency');
     state.currentModal = null;
+    let newVersion = version;
 
-    if (!version) {
+    if (!newVersion) {
       const dependency = await effects.api.getDependency(name);
-      version = dependency.version;
+      newVersion = dependency.version;
     }
 
     await actions.editor.internal.addNpmDependencyToPackageJson({
       name,
-      version,
-      isDev,
+      version: newVersion,
+      isDev: !!isDev,
     });
   }
 );
@@ -63,14 +64,16 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 }>(async ({ state, actions, effects }, { id }) => {
   state.editor.error = null;
 
-  id = actions.editor.internal.ensureSandboxId(id);
+  let newId = id;
+
+  newId = actions.editor.internal.ensureSandboxId(newId);
 
   if (state.live.isLive) {
     actions.live.internal.disconnect();
   }
 
-  if (state.editor.sandboxes[id] && !state.editor.sandboxes[id].team) {
-    const sandbox = await effects.api.getSandbox(id);
+  if (state.editor.sandboxes[newId] && !state.editor.sandboxes[newId].team) {
+    const sandbox = await effects.api.getSandbox(newId);
 
     actions.internal.updateCurrentSandbox(sandbox);
 
@@ -85,9 +88,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   state.editor.changedModuleShortids = [];
 
   try {
-    const sandbox = await effects.api.getSandbox(id);
+    const sandbox = await effects.api.getSandbox(newId);
 
-    if (state.editor.sandboxes[id]) {
+    if (state.editor.sandboxes[newId]) {
       actions.internal.updateCurrentSandbox(sandbox);
     } else {
       actions.internal.setCurrentSandbox(sandbox);
@@ -159,12 +162,16 @@ export const codeChanged: Action<{
   effects.analytics.trackOnce('Change Code');
 
   const module = state.editor.currentSandbox.modules.find(
-    module => module.shortid === moduleShortid
+    m => m.shortid === moduleShortid
   );
+
+  if (!module) {
+    return;
+  }
 
   if (state.live.isLive && !noLive) {
     state.live.receivingCode = true;
-    effects.live.sendCodeUpdate(moduleShortid, module.code, code);
+    effects.live.sendCodeUpdate(moduleShortid, module.code || '', code);
     state.live.receivingCode = false;
   }
 
@@ -342,7 +349,7 @@ export const prettifyClicked: AsyncAction = async ({
   const newCode = await effects.prettyfier.prettify(
     module.id,
     module.title,
-    module.code
+    module.code || ''
   );
 
   actions.editor.codeChanged({
@@ -398,6 +405,10 @@ export const discardModuleChanges: Action<{
     moduleItem => moduleItem.shortid === moduleShortid
   );
 
+  if (!module) {
+    return;
+  }
+
   actions.editor.codeChanged({
     code: module.savedCode || module.code,
     moduleShortid,
@@ -437,7 +448,7 @@ export const deleteEnvironmentVariable: AsyncAction<{
   const id = state.editor.currentId;
 
   state.editor.currentSandbox.environmentVariables = await effects.api.deleteEnvironmentVariable(
-    state.editor.currentId,
+    id,
     name
   );
   effects.codesandboxApi.restartSandbox();

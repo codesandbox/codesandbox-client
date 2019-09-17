@@ -610,7 +610,7 @@ export type SandboxUrlSourceData = {
   git?: GitInfo;
 };
 
-export type LiveMessage<data = undefined> = {
+export type LiveMessage<data = any> = {
   event: LiveMessageEvent;
   data: data;
   _isOwnMessage: boolean;

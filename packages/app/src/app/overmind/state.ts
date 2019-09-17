@@ -32,7 +32,7 @@ type State = {
     x: number;
     y: number;
   };
-  currentModal: string;
+  currentModal: string | null;
   currentModalMessage: string;
   uploadedFiles: UploadFile[];
   maxStorage: number;
