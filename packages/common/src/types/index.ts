@@ -623,7 +623,6 @@ export type LiveMessage<data = unknown> = {
   event: LiveMessageEvent;
   data: data;
   _isOwnMessage: boolean;
-  liveUserId: string;
 };
 
 export enum LiveMessageEvent {
