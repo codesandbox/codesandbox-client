@@ -355,6 +355,10 @@ export const errorsCleared: Action = ({ state }) => {
   state.editor.errors = [];
 };
 
+export const toggleStatusBar: Action = ({ state }) => {
+  state.editor.statusBar = !state.editor.statusBar;
+};
+
 export const projectViewToggled: Action = ({ state }) => {
   state.editor.isInProjectView = !state.editor.isInProjectView;
 };

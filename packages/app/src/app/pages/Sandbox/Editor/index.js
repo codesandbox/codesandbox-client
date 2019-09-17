@@ -16,7 +16,7 @@ import getVSCodeTheme from './utils/get-vscode-theme';
 
 const STATUS_BAR_SIZE = 22;
 
-const AOverride = styled.div`
+const StatusBar = styled.div`
   a {
     color: inherit;
   }
@@ -68,6 +68,8 @@ class ContentSplit extends React.Component {
     const hideNavigation =
       store.preferences.settings.zenMode && store.workspace.workspaceHidden;
 
+    const statusBar = store.editor.statusBar;
+
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
 
     const topOffset = store.preferences.settings.zenMode ? 0 : 3 * 16;
@@ -99,6 +101,7 @@ class ContentSplit extends React.Component {
                 top: topOffset,
                 right: 0,
                 bottom: bottomOffset,
+                height: statusBar ? 'auto' : 'calc(100% - 3.5rem)',
               }}
             >
               <SplitPane
@@ -132,9 +135,10 @@ class ContentSplit extends React.Component {
               </SplitPane>
 
               {vscode && (
-                <AOverride
+                <StatusBar
                   style={{
                     position: 'fixed',
+                    display: statusBar ? 'block' : 'none',
                     bottom: 0,
                     left: 0,
                     right: 0,
@@ -146,7 +150,7 @@ class ContentSplit extends React.Component {
                     className="part statusbar"
                     id="workbench.parts.statusbar"
                   />
-                </AOverride>
+                </StatusBar>
               )}
             </div>
           </Fullscreen>
