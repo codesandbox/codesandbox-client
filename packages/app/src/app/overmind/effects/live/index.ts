@@ -183,7 +183,7 @@ export default {
         moduleShortid,
         operation
       );
-      return this.send('live:module_state', {});
+      this.send('live:module_state', {});
     }
   },
   sendUserCurrentModule(moduleShortid: string) {

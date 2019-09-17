@@ -1,6 +1,6 @@
+import { Sandbox } from '@codesandbox/common/lib/types';
 import JSZip from 'jszip';
 import { createZip, BLOB_ID } from '../zip/create-zip';
-import { Sandbox } from '@codesandbox/common/lib/types';
 
 export default async function deploy(sandbox: Sandbox) {
   // We first get the zip file, this is what we essentially need to have deployed.
