@@ -653,7 +653,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     model = this.editor.getActiveCodeEditor().getModel()
   ) => {
     const results: {
-      range: any;
+      range: unknown;
       text: string;
       forceMoveMarkers?: boolean;
     }[] = [];

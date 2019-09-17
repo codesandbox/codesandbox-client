@@ -37,7 +37,7 @@ export const addNpmDependency: AsyncAction<{
     await actions.editor.internal.addNpmDependencyToPackageJson({
       name,
       version: newVersion,
-      isDev: !!isDev,
+      isDev: Boolean(isDev),
     });
   }
 );

@@ -33,7 +33,7 @@ export const state: State = {
     search: '',
   },
   isTemplateSelected: ({ filters }) => templateName =>
-    filters.blacklistedTemplates.indexOf(templateName) === -1,
+    !filters.blacklistedTemplates.includes(templateName),
   getFilteredSandboxes: ({ orderBy, filters }) => sandboxes => {
     const orderField = orderBy.field;
     const orderOrder = orderBy.order;
