@@ -30,11 +30,16 @@ export const onModuleState: Operator<
   LiveMessage<{
     module_state: any;
   }>
-> = mutate(({ state, actions }, { data }) => {
+> = mutate(({ state, actions, effects }, { data }) => {
   // We get this when we notice that there is an out of sync
-  // Really no reason to set this state as everything runs sync
   state.live.receivingCode = true;
   actions.live.internal.initializeModuleState(data.module_state);
+  Object.keys(data.module_state).forEach(moduleShortid => {
+    effects.vscode.changeCode(
+      moduleShortid,
+      data.module_state[moduleShortid].code
+    );
+  });
   state.live.receivingCode = false;
 });
 

@@ -316,6 +316,14 @@ class VSCodeManager {
     });
   }
 
+  /*
+    Allows to change code of the editor. This happens when there is inconsistency in LIVE mode
+    and server requires a full code update
+  */
+  changeCode(moduleShortid: string, code: string) {
+    context.monaco.editor.changeCode(code, moduleShortid);
+  }
+
   /**
    * Initialize the base VSCode editor, this includes registering all the services in VSCode.
    */

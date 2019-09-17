@@ -25,4 +25,7 @@ export default {
     // @ts-ignore
     vscode.runCommand(command);
   },
+  changeCode(moduleShortid: string, code: string = '') {
+    vscode.changeCode(moduleShortid, code);
+  },
 };
