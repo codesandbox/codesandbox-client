@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { client } from 'app/graphql/client';
-import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
+import { LIST_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';

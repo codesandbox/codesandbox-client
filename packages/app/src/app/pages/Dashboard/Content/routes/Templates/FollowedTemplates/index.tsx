@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { sortBy } from 'lodash-es';
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
-import DelayedAnimation from 'app/components/DelayedAnimation';
+import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import history from 'app/utils/history';
@@ -9,10 +9,9 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import ContextMenu from 'app/components/ContextMenu';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { LIST_FOLLOWED_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 // @ts-ignore
 import { unfollowTemplate } from './mutations.gql';
-
-import { LIST_FOLLOWED_TEMPLATES } from '../../../../queries';
 import { ButtonContainer } from './elements';
 
 import { Container, Grid, EmptyTitle } from '../elements';
@@ -26,7 +25,7 @@ export const FollowedTemplates = props => {
   const client = useApolloClient();
   const [unfollow] = useMutation<any, any>(unfollowTemplate, {
     onCompleted({ unfollowTemplate: unfollowMutation }) {
-      const newTemplates = data.me.followedTemplates.filter(
+      const newTemplates = data.me.subscribedTemplates.filter(
         template => template.id !== unfollowMutation.id
       );
       client.writeData({
@@ -34,7 +33,7 @@ export const FollowedTemplates = props => {
           ...data,
           me: {
             ...data.me,
-            followedTemplates: newTemplates,
+            subscribedTemplates: newTemplates,
           },
         },
       });
@@ -51,9 +50,9 @@ export const FollowedTemplates = props => {
     if (data && data.me) {
       if (teamId) {
         const team = data.me.teams.find(t => t.id === teamId);
-        setSortedTemplates(team.followedTemplates);
+        setSortedTemplates(team.subscribedTemplates);
       } else {
-        setSortedTemplates(data.me.followedTemplates);
+        setSortedTemplates(data.me.subscribedTemplates);
       }
     }
   }, [teamId, data]);

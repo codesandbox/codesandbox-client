@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import Template from '@codesandbox/common/lib/components/Template';
-import { LIST_FOLLOWED_TEMPLATES } from '../../../../queries';
+import { LIST_FOLLOWED_TEMPLATES } from '../../queries';
 import { Templates, Title as Divider } from '../elements';
 import { Empty, Title } from './elements';
 
@@ -21,10 +21,10 @@ export const MyFavoriteTemplatesTab = ({ selectTemplate }) => {
     }
   );
 
-  return data && data.me && data.me.followedTemplates.length ? (
+  return data && data.me && data.me.subscribedTemplates.length ? (
     <Templates>
       <Divider>Templates followed by me</Divider>
-      {data.me.followedTemplates.map(template => (
+      {data.me.subscribedTemplates.map(template => (
         <Template
           key={template.id}
           template={template}
@@ -35,7 +35,7 @@ export const MyFavoriteTemplatesTab = ({ selectTemplate }) => {
       {data.me.teams.map(team => (
         <>
           <Divider>templates followed bt {team.name} team</Divider>
-          {team.followedTemplates.map(template => (
+          {team.subscribedTemplates.map(template => (
             <Template
               key={template.id}
               template={template}

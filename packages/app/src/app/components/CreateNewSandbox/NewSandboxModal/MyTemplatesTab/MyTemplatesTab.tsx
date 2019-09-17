@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import Template from '@codesandbox/common/lib/components/Template';
-import { LIST_TEMPLATES } from '../../../../queries';
+import { LIST_TEMPLATES } from '../../queries';
 import { Templates } from '../elements';
 import { Empty, Title } from './elements';
 

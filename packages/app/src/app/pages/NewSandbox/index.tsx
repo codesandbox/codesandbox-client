@@ -6,7 +6,7 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Navigation } from 'app/pages/common/Navigation';
 import { useOvermind } from 'app/overmind';
 import history from 'app/utils/history';
-import { NewSandboxModal } from '../Dashboard/Content/CreateNewSandbox/NewSandboxModal';
+import { NewSandboxModal } from 'app/components/CreateNewSandbox/NewSandboxModal';
 
 const createSandbox = template => {
   history.push(sandboxUrl({ id: template.shortid }));

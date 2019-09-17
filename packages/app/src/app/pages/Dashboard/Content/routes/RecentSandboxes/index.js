@@ -3,12 +3,11 @@ import { observer, inject } from 'app/componentConnectors';
 import Helmet from 'react-helmet';
 
 import { Query } from 'react-apollo';
-
+import CreateNewSandbox from 'app/components/CreateNewSandbox';
 import getMostUsedTemplate from '../../../utils/get-most-used-template';
 
 import { Content as Sandboxes } from '../../Sandboxes';
 
-import CreateNewSandbox from '../../CreateNewSandbox';
 import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
 const RecentSandboxes = ({ store }) => (

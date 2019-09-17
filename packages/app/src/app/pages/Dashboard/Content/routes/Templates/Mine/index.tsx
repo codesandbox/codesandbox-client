@@ -2,12 +2,18 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { sortBy } from 'lodash-es';
 import { useQuery } from '@apollo/react-hooks';
+
+import { DelayedAnimation } from 'app/components/DelayedAnimation';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import history from 'app/utils/history';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-
-import { LIST_TEMPLATES, unmakeTemplates } from '../../../../queries';
+import {
+  LIST_TEMPLATES,
+  unmakeTemplates,
+} from 'app/components/CreateNewSandbox/queries';
 import { Container, Grid, EmptyTitle } from '../elements';
 import { Navigation } from '../Navigation';
 
