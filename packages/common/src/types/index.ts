@@ -170,6 +170,15 @@ export type User = {
   color: any;
 };
 
+export type LiveUser = {
+  username: string;
+  selection: Selection;
+  id: string;
+  currentModuleShortid: string | null;
+  color: [number, number, number];
+  avatarUrl: string;
+};
+
 export type RoomInfo = {
   startTime: number;
   ownerIds: string[];
@@ -178,7 +187,7 @@ export type RoomInfo = {
   chatEnabled: boolean;
   sandboxId: string;
   editorIds: string[];
-  users: User[];
+  users: LiveUser[];
   chat: {
     messages: Array<{
       userId: string;
