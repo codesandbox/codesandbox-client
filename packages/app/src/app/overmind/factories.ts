@@ -50,7 +50,7 @@ export const withLoadApp = <T>(
   state.isAuthenticating = false;
 
   try {
-    const response = await effects.http.getJson<{
+    const response = await effects.http.get<{
       contributors: Contributor[];
     }>(
       'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'

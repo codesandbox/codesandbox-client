@@ -62,12 +62,13 @@ export default {
   async getSandbox(id: string): Promise<Sandbox> {
     const sandbox = await api.get<Sandbox>(`/sandboxes/${id}`);
 
-    // We need to add savedCode property to track it
+    // We need to add client side properties for tracking
     return {
       ...sandbox,
       modules: sandbox.modules.map(module => ({
         ...module,
         savedCode: null,
+        isNotSynced: false,
       })),
     };
   },

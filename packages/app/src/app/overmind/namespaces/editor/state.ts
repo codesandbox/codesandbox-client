@@ -72,7 +72,6 @@ type State = {
     }
   >;
   isAdvancedEditor: Derive<State, boolean>;
-  isModuleSynced: Derive<State, (moduleShortid: string) => boolean>;
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
   currentDevToolsPosition: {
     devToolIndex: number;
@@ -215,8 +214,6 @@ export const state: State = {
       ? currentPackageJSON.code
       : generateFileFromSandbox(currentSandbox);
   },
-  isModuleSynced: ({ changedModuleShortids }) => moduleShortid =>
-    changedModuleShortids.indexOf(moduleShortid) === -1,
   shouldDirectoryBeOpen: ({
     currentSandbox,
     currentModule,
