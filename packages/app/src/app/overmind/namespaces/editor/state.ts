@@ -25,7 +25,7 @@ import { mainModule as getMainModule } from '../../utils/main-module';
 
 type State = {
   currentId: string;
-  currentModuleShortid: string;
+  currentModuleShortid: string | null;
   isForkingSandbox: boolean;
   mainModuleShortid: string;
   sandboxes: {
@@ -36,7 +36,7 @@ type State = {
   devToolTabs: Derive<State, any[]>;
   isLoading: boolean;
   notFound: boolean;
-  error: string;
+  error: string | null;
   isResizing: boolean;
   changedModuleShortids: string[];
   pendingOperations: {

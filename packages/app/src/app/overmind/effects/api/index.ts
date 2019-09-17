@@ -250,7 +250,7 @@ export default {
   },
   massCreateModules(
     sandboxId: string,
-    directoryShortid: string,
+    directoryShortid: string | null,
     modules: Module[],
     directories: Directory[]
   ): Promise<{

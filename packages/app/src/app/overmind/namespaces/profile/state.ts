@@ -44,23 +44,17 @@ export const state: State = {
   currentLikedSandboxesPage: 1,
   isLoadingSandboxes: false,
   sandboxToDeleteId: null,
-  isProfileCurrentUser: (state, rootState) => {
-    return rootState.user && rootState.user.id === state.currentProfileId;
-  },
-  current: state => {
-    return state.profiles[state.currentProfileId];
-  },
-  showcasedSandbox: (state, rootState) => {
-    return (
-      state.current &&
-      state.current.showcasedSandboxShortid &&
-      rootState.editor.sandboxes[state.current.showcasedSandboxShortid]
-    );
-  },
-  currentLikedSandboxes: state => {
-    return state.current && state.likedSandboxes[state.current.username];
-  },
-  currentSandboxes: state => {
-    return state.current && state.sandboxes[state.current.username];
-  },
+  isProfileCurrentUser: (currentState, rootState) =>
+    rootState.user && rootState.user.id === currentState.currentProfileId,
+  current: currentState => currentState.profiles[currentState.currentProfileId],
+  showcasedSandbox: (currentState, rootState) =>
+    currentState.current &&
+    currentState.current.showcasedSandboxShortid &&
+    rootState.editor.sandboxes[currentState.current.showcasedSandboxShortid],
+  currentLikedSandboxes: currentState =>
+    currentState.current &&
+    currentState.likedSandboxes[currentState.current.username],
+  currentSandboxes: currentState =>
+    currentState.current &&
+    currentState.sandboxes[currentState.current.username],
 };

@@ -8,6 +8,7 @@ import {
   Directory,
   RoomInfo,
   Sandbox,
+  LiveMessageEvent,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import clientsFactory from './clients';
@@ -110,7 +111,7 @@ export default {
   // TODO: Need to take an action here
   listen(
     action: (payload: {
-      event: string;
+      event: LiveMessageEvent;
       _isOwnMessage: boolean;
       data: object;
     }) => {}
@@ -183,7 +184,7 @@ export default {
         moduleShortid,
         operation
       );
-      return this.send('live:module_state', {});
+      this.send('live:module_state', {});
     }
   },
   sendUserCurrentModule(moduleShortid: string) {

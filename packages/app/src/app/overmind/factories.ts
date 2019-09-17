@@ -60,7 +60,7 @@ export const withLoadApp = <T>(
       contributor => contributor.login
     );
   } catch (error) {
-    console.log(error);
+    // Something wrong in the parsing probably, make sure the file is JSON valid
   }
 };
 
