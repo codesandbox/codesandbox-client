@@ -7,9 +7,9 @@ import {
   PreferenceContainer,
 } from '../elements';
 
-const windowWithOvermind: {
-  useOvermind?: (val?: boolean) => 'true' | null;
-} = window as any;
+// const windowWithOvermind: {
+//   useOvermind?: (val?: boolean) => 'true' | null;
+// } = window as any;
 
 export function Experiments() {
   // const bindValue = name => ({
