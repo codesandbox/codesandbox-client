@@ -2,7 +2,6 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
-import { inject, observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
@@ -40,6 +39,7 @@ class SandboxesItemComponent extends React.Component {
       onSelect,
       currentPath,
       currentTeamId,
+      selectedSandboxes,
     } = this.props;
 
     const basePath = teamId
@@ -104,6 +104,7 @@ class SandboxesItemComponent extends React.Component {
                       return (
                         <DropFolderEntry
                           key={path}
+                          selectedSandboxes={selectedSandboxes}
                           basePath={basePath}
                           teamId={teamId}
                           path={path}
@@ -141,8 +142,8 @@ class SandboxesItemComponent extends React.Component {
   }
 }
 
-export const SandboxesItem = inject('store', 'signals')(
-  DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
-    withRouter(observer(SandboxesItemComponent))
-  )
-);
+export const SandboxesItem = DropTarget(
+  ['SANDBOX', 'FOLDER'],
+  entryTarget,
+  collectTarget
+)(withRouter(SandboxesItemComponent));
