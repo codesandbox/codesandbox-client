@@ -652,11 +652,11 @@ export class VSCode extends React.Component<Props> implements Editor {
     pushStack = false,
     model = this.editor.getActiveCodeEditor().getModel()
   ) => {
-    const results: {
+    const results: Array<{
       range: unknown;
       text: string;
       forceMoveMarkers?: boolean;
-    }[] = [];
+    }> = [];
     let index = 0;
     const currentEOLLength = model.getEOL().length;
     let eolChanged = false;
