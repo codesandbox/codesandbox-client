@@ -355,7 +355,6 @@ module.exports = merge(commonConfig, {
       },
     ]),
     new ImageminPlugin({
-      disable: process.env.NODE_ENV !== 'production', // Disable during development
       pngquant: {
         quality: '95-100',
       },
