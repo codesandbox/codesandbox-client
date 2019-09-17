@@ -1,4 +1,4 @@
-import { RoomInfo, User } from '@codesandbox/common/lib/types';
+import { RoomInfo, LiveUser } from '@codesandbox/common/lib/types';
 import { Derive } from 'app/overmind';
 
 type State = {
@@ -12,7 +12,7 @@ type State = {
   followingUserId: string | null;
   liveUserId: string;
   roomInfo: RoomInfo;
-  liveUser: Derive<State, User>;
+  liveUser: Derive<State, LiveUser>;
   isEditor: Derive<State, (liveUserId: string) => boolean>;
   isCurrentEditor: Derive<State, boolean>;
   isOwner: Derive<State, boolean>;
