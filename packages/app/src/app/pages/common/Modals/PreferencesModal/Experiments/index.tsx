@@ -1,13 +1,10 @@
 import React from 'react';
-import track from '@codesandbox/common/lib/utils/analytics';
-// import { inject, observer } from 'app/componentConnectors';
 
 import {
   Title,
   SubContainer,
   SubDescription,
   PreferenceContainer,
-  PaddedPreference,
 } from '../elements';
 
 const windowWithOvermind: {
@@ -24,10 +21,10 @@ export function Experiments() {
   //     }),
   // });
 
-  const [usingOvermind, setUsingOvermind] = React.useState(
-    typeof windowWithOvermind.useOvermind !== 'undefined' &&
-      windowWithOvermind.useOvermind() === 'true'
-  );
+  // const [usingOvermind, setUsingOvermind] = React.useState(
+  //   typeof windowWithOvermind.useOvermind !== 'undefined' &&
+  //     windowWithOvermind.useOvermind() === 'true'
+  // );
 
   return (
     <div>
@@ -35,7 +32,10 @@ export function Experiments() {
 
       <SubContainer>
         <PreferenceContainer>
-          No experiments at the moment
+          <SubDescription>
+            There are no experiments running at the moment. Stay tuned for new
+            experiments!
+          </SubDescription>
           {/*
           <PaddedPreference
             title="Use Overmind"
