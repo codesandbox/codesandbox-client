@@ -410,7 +410,7 @@ export const discardModuleChanges: Action<{
   }
 
   actions.editor.codeChanged({
-    code: module.savedCode || module.code,
+    code: module.savedCode || module.code || '',
     moduleShortid,
   });
 
@@ -541,7 +541,9 @@ export const previewActionReceived: Action<{
           moduleEntry => moduleEntry.shortid === module.shortid
         );
 
-        sandboxModule.title = action.title;
+        if (sandboxModule) {
+          sandboxModule.title = action.title;
+        }
       }
       break;
     }
@@ -565,6 +567,11 @@ export const renameModule: AsyncAction<{
     const module = sandbox.modules.find(
       moduleItem => moduleItem.shortid === moduleShortid
     );
+
+    if (!module) {
+      return;
+    }
+
     const oldTitle = module.title;
 
     module.title = title;

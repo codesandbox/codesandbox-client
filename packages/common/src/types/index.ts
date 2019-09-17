@@ -166,7 +166,7 @@ export type User = {
   likedSandboxes: PaginatedSandboxes;
   badges: Array<Badge>;
   subscriptionSince: string;
-  selection: Selection;
+  selection: Selection | null;
   color: any;
 };
 
@@ -404,9 +404,9 @@ export type UserSelection = {
 
 export type EditorSelection = {
   userId: string;
-  name: string;
-  selection: Selection;
-  color: number[];
+  name: string | null;
+  selection: Selection | null;
+  color: number[] | null;
 };
 
 export type EditorError = {

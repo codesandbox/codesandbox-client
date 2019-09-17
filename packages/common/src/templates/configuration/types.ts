@@ -8,7 +8,7 @@ export type ConfigurationFile = {
 
   getDefaultCode?: (
     template: string,
-    resolveModule: (path: string) => { code: string } | undefined
+    resolveModule: (path: string) => { code: string | null } | undefined
   ) => string;
   generateFileFromState?: (state: any) => string;
   generateFileFromSandbox?: (sandbox: Sandbox) => string;

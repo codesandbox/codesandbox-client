@@ -34,7 +34,7 @@ type State = {
   };
   currentModal: string | null;
   currentModalMessage: string;
-  uploadedFiles: UploadFile[];
+  uploadedFiles: UploadFile[] | null;
   maxStorage: number;
   usedStorage: number;
   updateStatus: string;
