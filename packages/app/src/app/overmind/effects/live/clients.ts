@@ -93,11 +93,7 @@ export default (
         revision,
         moduleShortid,
         (revision, operation) => {
-          sendOperation(
-            moduleShortid,
-            revision,
-            operationToElixir(operation.toJSON())
-          );
+          sendOperation(moduleShortid, revision, operation);
         },
         operation => {
           applyOperation(moduleShortid, operation);
