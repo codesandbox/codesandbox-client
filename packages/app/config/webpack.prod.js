@@ -1,6 +1,9 @@
-const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+/* eslint-disable global-require */
+
+// const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
@@ -10,15 +13,15 @@ const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VERSION = require('@codesandbox/common/lib/version').default;
-const childProcess = require('child_process');
+// const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
 
 const publicPath = '/';
-const isMaster =
-  childProcess
-    .execSync(`git branch | grep \\* | cut -d ' ' -f2`)
-    .toString()
-    .trim() === 'master';
+// const isMaster =
+//   childProcess
+//     .execSync(`git branch | grep \\* | cut -d ' ' -f2`)
+//     .toString()
+//     .trim() === 'master';
 
 const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
 
@@ -128,6 +131,7 @@ module.exports = merge(commonConfig, {
           // https://github.com/facebookincubator/create-react-app/issues/2612
           return;
         }
+        // eslint-disable-next-line no-console
         console.log(message);
       },
       minify: true,
@@ -219,6 +223,7 @@ module.exports = merge(commonConfig, {
           // https://github.com/facebookincubator/create-react-app/issues/2612
           return;
         }
+        // eslint-disable-next-line no-console
         console.log(message);
       },
       minify: true,
@@ -349,6 +354,11 @@ module.exports = merge(commonConfig, {
         to: 'public/sse-hooks',
       },
     ]),
+    new ImageminPlugin({
+      pngquant: {
+        quality: '95-100',
+      },
+    }),
     // isMaster &&
     //   new SentryWebpackPlugin({
     //     include: 'src',
