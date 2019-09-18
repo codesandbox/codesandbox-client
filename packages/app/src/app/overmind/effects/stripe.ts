@@ -15,7 +15,7 @@ function loadScript(path: string) {
 
 let localStripeVar: stripe.Stripe;
 const getStripe = async (): Promise<stripe.Stripe> => {
-  if (typeof Stripe === undefined) {
+  if (typeof Stripe === 'undefined') {
     await loadScript('https://js.stripe.com/v3/');
   }
 
