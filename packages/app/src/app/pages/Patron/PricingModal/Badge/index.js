@@ -16,7 +16,12 @@ export const Badge = React.memo(({ badge, subscribed }) => {
       {/* We prerender all particles, performance reasons */}
       <Particles makeItRain={subscribed} badge={badge} />
       <BadgeContainer key={badge} id="badge">
-        <img src={BadgeComponent} className={`badge ${badge}`} alt={badge} />
+        <img
+          style={{ height: '100%' }}
+          src={BadgeComponent}
+          className={`badge ${badge}`}
+          alt={badge}
+        />
       </BadgeContainer>
     </Relative>
   );
