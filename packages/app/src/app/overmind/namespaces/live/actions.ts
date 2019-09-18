@@ -30,8 +30,6 @@ export const createLiveClicked: AsyncAction<{
 
   const roomId = await effects.api.createLiveRoom(sandboxId);
   await actions.live.internal.initialize(roomId);
-
-  state.live.isLoading = false;
 };
 
 export const liveMessageReceived: Operator<LiveMessage> = pipe(
