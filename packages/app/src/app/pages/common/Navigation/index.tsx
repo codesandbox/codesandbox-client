@@ -14,9 +14,9 @@ import BellIcon from 'react-icons/lib/md/notifications';
 import FlameIcon from 'react-icons/lib/go/flame';
 import Row from '@codesandbox/common/lib/components/flex/Row';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-// @ts-ignore
 import { HeaderSearchBar } from 'app/components/HeaderSearchBar';
 import { Overlay } from 'app/components/Overlay';
+// @ts-ignore
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
 import { Notifications } from './Notifications';
 

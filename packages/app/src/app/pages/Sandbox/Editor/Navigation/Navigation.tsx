@@ -2,12 +2,12 @@ import React from 'react';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import PlusIcon from 'react-icons/lib/go/plus';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-// @ts-ignore
-// eslint-disable-next-line import/no-unresolved
 import getWorkspaceItems, {
   getDisabledItems,
   INavigationItem,
 } from 'app/store/modules/workspace/items';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved

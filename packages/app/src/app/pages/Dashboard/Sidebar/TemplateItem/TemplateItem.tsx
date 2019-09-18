@@ -1,9 +1,9 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
-// @ts-ignore
 
 import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'app/componentConnectors';
+// @ts-ignore
 import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
 
 import { Item } from '../Item';
