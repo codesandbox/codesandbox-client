@@ -2,6 +2,7 @@ import { Action, AsyncAction } from 'app/overmind';
 import getTemplate from '@codesandbox/common/lib/templates';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { withOwnedSandbox } from 'app/overmind/factories';
+import { CustomTemplate } from '@codesandbox/common/lib/types';
 
 export const valueChanged: Action<{
   field: string;
@@ -193,4 +194,78 @@ export const setWorkspaceHidden: Action<{ hidden: boolean }> = (
   { hidden }
 ) => {
   state.workspace.workspaceHidden = hidden;
+};
+
+export const deleteTemplate: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
+  effects.analytics.track('Template - Removed', { source: 'editor' });
+  const sandboxId = state.editor.currentId;
+  const templateId = state.editor.currentSandbox.customTemplate.id;
+
+  try {
+    await effects.api.deleteTemplate(sandboxId, templateId);
+    const sandbox = state.editor.sandboxes[sandboxId];
+
+    sandbox.isFrozen = false;
+    sandbox.customTemplate = null;
+    actions.modalClosed();
+    effects.notificationToast.success('Template Deleted');
+  } catch (error) {
+    effects.notificationToast.error('Could not delete custom template');
+  }
+};
+
+export const editTemplate: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
+  effects.analytics.track('Template - Removed', { source: 'editor' });
+
+  const sandboxId = state.editor.currentId;
+  const template = state.editor.currentSandbox.customTemplate;
+
+  try {
+    const updatedTemplate = await effects.api.updateTemplate(
+      sandboxId,
+      template
+    );
+
+    actions.modalClosed();
+    state.editor.currentSandbox.customTemplate = updatedTemplate;
+    effects.notificationToast.success('Templated Edited');
+  } catch (error) {
+    effects.notificationToast.error('Could not edit custom template');
+  }
+};
+
+export const addedTemplate: AsyncAction<{
+  template: CustomTemplate;
+}> = async ({ state, actions, effects }, { template }) => {
+  effects.analytics.track('Template - Created', { source: 'editor' });
+
+  const sandboxId = state.editor.currentId;
+
+  try {
+    const newTemplate = await effects.api.createTemplate(sandboxId, template);
+    const sandbox = state.editor.sandboxes[sandboxId];
+    sandbox.isFrozen = true;
+    sandbox.customTemplate = newTemplate;
+    actions.modalClosed();
+    effects.notificationToast.success('Templated Created');
+  } catch (error) {
+    effects.notificationToast.error(
+      'Could not create template, please try again later'
+    );
+  }
+};
+
+export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
+  { state },
+  { frozen }
+) => {
+  state.editor.sessionFrozen = frozen;
 };
