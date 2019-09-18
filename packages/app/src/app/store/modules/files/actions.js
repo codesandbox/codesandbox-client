@@ -592,7 +592,7 @@ export function setDefaultNewCode({ state, props }) {
     let code = '';
 
     if (props.code) {
-      code = props.code;
+      code = props.code; // eslint-disable-line prefer-destructuring
     } else if (config.generateFileFromState) {
       code = config.generateFileFromState(
         state.get('preferences.settings.prettierConfig')

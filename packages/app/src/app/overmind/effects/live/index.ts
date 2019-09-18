@@ -151,6 +151,7 @@ export default {
           .receive('ok', resolve)
           .receive('error', reject);
       } else {
+        // eslint-disable-next-line prefer-promise-reject-errors
         reject('Channel is not defined');
       }
     });

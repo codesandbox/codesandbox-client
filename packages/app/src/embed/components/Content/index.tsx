@@ -173,9 +173,9 @@ export default class Content extends React.PureComponent<Props, State> {
           m => m.id === nextProps.currentModule.id
         );
         if (module) {
-          this.setState({
-            tabs: [...this.state.tabs, module],
-          });
+          this.setState(state => ({
+            tabs: [...state.tabs, module],
+          }));
         }
       }
       if (this.editor && this.editor.changeModule) {
