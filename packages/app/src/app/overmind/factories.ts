@@ -1,5 +1,5 @@
 import { Contributor } from '@codesandbox/common/lib/types';
-import { json, IState, IAction, IDerive } from 'overmind';
+import { json, IState, IDerive } from 'overmind';
 import { AsyncAction } from '.';
 
 export const withLoadApp = <T>(
@@ -67,17 +67,21 @@ export const withLoadApp = <T>(
 export const withOwnedSandbox = <T>(
   continueAction: AsyncAction<T>
 ): AsyncAction<T> => async (context, payload) => {
-  const { state, actions, effects } = context;
+  const { state, actions } = context;
 
-  if (
-    !state.editor.currentSandbox.owned ||
-    (state.editor.currentSandbox.owned &&
-      state.editor.currentSandbox.isFrozen &&
-      effects.browser.confirm(
-        'This sandbox is frozen, and will be forked. Do you want to continue?'
-      ))
-  ) {
+  if (!state.editor.currentSandbox.owned) {
     await actions.editor.internal.forkSandbox(state.editor.currentId);
+  } else if (
+    state.editor.currentSandbox.isFrozen &&
+    state.editor.sessionFrozen
+  ) {
+    const modalResponse = await actions.modals.forkFrozenModal.open();
+
+    if (modalResponse === 'fork') {
+      await actions.editor.internal.forkSandbox(state.editor.currentId);
+    } else if (modalResponse === 'unfreeze') {
+      state.editor.sessionFrozen = false;
+    }
   }
 
   return continueAction(context, payload);

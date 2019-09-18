@@ -1,3 +1,3 @@
 export const forkFrozenModal = {
-  result: false,
+  result: 'fork' as 'fork' | 'cancel' | 'unfreeze',
 };
