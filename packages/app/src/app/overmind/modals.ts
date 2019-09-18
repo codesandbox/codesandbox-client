@@ -1,8 +1,3 @@
-export const confirmCreateFile = {
-  state: {
-    foo: 'bar',
-  },
+export const forkFrozenModal = {
   result: false,
 };
-
-export const someModal = {};
