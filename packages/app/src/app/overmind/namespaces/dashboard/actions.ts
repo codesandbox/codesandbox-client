@@ -64,7 +64,8 @@ export const searchChanged: Action<{ search: string }> = (
   state.dashboard.filters.search = search;
 };
 
-export const createSandboxClicked: AsyncAction<{ sandboxId: string }> = (
-  { actions },
-  { sandboxId }
-) => actions.editor.internal.forkSandbox(sandboxId);
+export const createSandboxClicked: AsyncAction<{
+  sandboxId: string;
+  body: { collectionId: string | undefined };
+}> = ({ actions }, { sandboxId, body }) =>
+  actions.editor.internal.forkSandbox({ sandboxId, body });

@@ -99,7 +99,8 @@ export type CurrentUser = {
   subscription:
     | {
         since: string;
-        amount: string;
+        amount: number;
+        cancelAtPeriodEnd: boolean;
       }
     | undefined;
   curatorAt: string;
@@ -655,3 +656,12 @@ export enum LiveMessageEvent {
 export enum StripeErrorCode {
   REQUIRES_ACTION = 'requires_action',
 }
+
+export enum PatronBadge {
+  ONE = 'patron-1',
+  TWO = 'patron-2',
+  THREE = 'patron-3',
+  FOURTH = 'patron-4',
+}
+
+export type PatronTier = 1 | 2 | 3 | 4;

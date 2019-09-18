@@ -5,6 +5,7 @@ import {
   ModuleTab,
   TabType,
   ServerContainerStatus,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
@@ -27,6 +28,28 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   );
 
   return matchingSandboxId || id;
+};
+
+export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
+  { state, actions },
+  sandbox
+) => {
+  state.live.isTeam = Boolean(sandbox.team);
+
+  if (state.live.isLive) {
+    const roomChanged = state.live.roomInfo.roomId !== sandbox.roomId;
+
+    if (!roomChanged) {
+      // In this case we don't need to initialize new live session, we reuse the existing one
+      return;
+    }
+
+    await actions.live.internal.disconnect();
+  }
+
+  if (sandbox.owned && sandbox.roomId) {
+    await actions.live.internal.initialize(sandbox.roomId);
+  }
 };
 
 export const setModuleSavedCode: Action<{
@@ -255,10 +278,10 @@ export const setModuleCode: Action<{
   }
 };
 
-export const forkSandbox: AsyncAction<string> = async (
-  { state, effects, actions },
-  id
-) => {
+export const forkSandbox: AsyncAction<{
+  sandboxId: string;
+  body?: { collectionId: string | undefined };
+}> = async ({ state, effects, actions }, { sandboxId: id, body }) => {
   const templateDefinition = getTemplateDefinition(
     state.editor.currentSandbox ? state.editor.currentSandbox.template : null
   );
@@ -275,7 +298,7 @@ export const forkSandbox: AsyncAction<string> = async (
   try {
     state.editor.isForkingSandbox = true;
 
-    const forkedSandbox = await effects.api.forkSandbox(id);
+    const forkedSandbox = await effects.api.forkSandbox(id, body);
 
     // Copy over any unsaved code
     if (state.editor.currentSandbox) {

@@ -78,6 +78,7 @@ type State = {
     devToolIndex: number;
     tabPosition: number;
   };
+  sessionFrozen: boolean;
 };
 
 export const state: State = {
@@ -94,6 +95,7 @@ export const state: State = {
   currentTabId: null,
   tabs: [],
   errors: [],
+  sessionFrozen: true,
   corrections: [],
   pendingOperations: {},
   pendingUserSelections: [],
@@ -234,15 +236,18 @@ export const state: State = {
   },
   devToolTabs: ({
     currentSandbox: sandbox,
+    parsedConfigurations,
     workspaceConfigCode: intermediatePreviewCode,
   }) => {
     if (!sandbox) {
       return [];
     }
 
-    // TODO: Should this be code or files?
-    // @ts-ignore
-    const views = getPreviewTabs(sandbox, intermediatePreviewCode);
+    const views = getPreviewTabs(
+      sandbox,
+      parsedConfigurations,
+      intermediatePreviewCode
+    );
 
     // Do it in an immutable manner, prevents changing the original object
     return immer(views, draft => {

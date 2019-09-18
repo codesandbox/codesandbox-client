@@ -67,8 +67,8 @@ export default ({
           <img src={twitterLogo} alt="twitter logo" />
           <a
             href={`https://twitter.com/${twitter}`}
-            rel="noopener noreferrer"
             target="_blank"
+            rel="noopener noreferrer"
           >
             @{twitter.toLowerCase()}
           </a>
@@ -94,8 +94,8 @@ export default ({
           <img src={mail} alt="email" />
           <a
             href={`mailto:${profile_email}`}
-            rel="noopener noreferrer"
             target="_blank"
+            rel="noopener noreferrer"
           >
             {profile_email.toLowerCase()}
           </a>

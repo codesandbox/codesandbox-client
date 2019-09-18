@@ -1,3 +1,4 @@
+import { createHook } from 'overmind-react';
 import {
   IConfig,
   IOnInitialize,
@@ -67,3 +68,5 @@ export interface Derive<Parent extends IState, Output>
   extends IDerive<Config, Parent, Output> {}
 
 export const connect = createConnect<typeof config>();
+
+export const useOvermind = createHook<typeof config>();

@@ -76,6 +76,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     const sandbox = await effects.api.getSandbox(newId);
 
     actions.internal.updateCurrentSandbox(sandbox);
+    state.editor.currentId = newId;
+    state.editor.isLoading = false;
+
+    await actions.editor.internal.initializeLiveSandbox(sandbox);
 
     return;
   }
@@ -104,13 +108,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   actions.internal.ensurePackageJSON();
 
-  if (sandbox.owned && sandbox.roomId) {
-    if (sandbox.team) {
-      state.live.isTeam = true;
-    }
+  await actions.editor.internal.initializeLiveSandbox(sandbox);
 
-    await actions.live.internal.initialize(sandbox.roomId);
-  } else if (sandbox.owned) {
+  if (sandbox.owned && !state.live.isLive) {
     actions.files.internal.recoverFiles();
   }
 
@@ -231,7 +231,9 @@ export const forkSandboxClicked: AsyncAction = async ({
     return;
   }
 
-  await actions.editor.internal.forkSandbox(state.editor.currentId);
+  await actions.editor.internal.forkSandbox({
+    sandboxId: state.editor.currentId,
+  });
 };
 
 export const likeSandboxToggled: AsyncAction<{
