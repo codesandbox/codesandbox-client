@@ -1,5 +1,4 @@
 import React from 'react';
-import Helmet from 'react-helmet';
 import { StripeProvider, Elements } from 'react-stripe-elements';
 import { STRIPE_API_KEY } from '@codesandbox/common/lib/utils/config';
 import { useScript } from 'app/hooks';
