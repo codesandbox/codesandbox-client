@@ -13,7 +13,8 @@
     "$PropertyType": true,
     "TimeoutID": true,
     "object": true,
-    "__DEV__": true
+    "__DEV__": true,
+    "Stripe": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,
