@@ -97,6 +97,7 @@ export default {
 
           return resolve(resp);
         })
+        // eslint-disable-next-line prefer-promise-reject-errors
         .receive('error', resp => reject(resp));
     });
   },
