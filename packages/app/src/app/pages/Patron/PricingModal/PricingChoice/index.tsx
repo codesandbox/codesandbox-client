@@ -64,7 +64,7 @@ export const PricingChoice: React.FC<IPricingChoiceProps> = ({ badge }) => {
             min={5}
             max={50}
             step={1}
-            value={[patron.price]}
+            value={patron.price}
             color={badges[badge].colors[0]}
           />
         </RangeContainer>
