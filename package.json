@@ -48,7 +48,7 @@
     "start:common": "lerna run start --scope @codesandbox/common --stream",
     "start:dev_api": "lerna run start:dev_api --scope app --stream",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
-    "start:fast": "cd packages/app && yarn start",
+    "start:fast": "concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\"",
     "start:home": "yarn build:deps && yarn start:home:fast",
     "start:home:fast": "cd packages/homepage && yarn start",
     "start:overmind": "yarn build:deps && concurrently \"lerna run start --scope app --stream\" \"overmind-devtools\"",
