@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://octodex.github.com/images/codercat.jpg" height="200px"/>
+  <img src="https://twitter-avatar.now.sh/codesandbox" height="200px"/>
   <br><br>
   <b>Description goes here</b>
   <br><br>
