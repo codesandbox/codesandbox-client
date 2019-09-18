@@ -14,8 +14,8 @@ export const StackbitImport = ({ username }: Props) => (
       <a href="https://stackbit.com" target="_blank" rel="noreferrer noopener">
         Stackbit
       </a>
-      . This generates a project for you that's automatically set up with any
-      Theme, Site Generator and CMS.
+      . This generates a project for you that&#39;s automatically set up with
+      any Theme, Site Generator and CMS.
       <StackbitButton
         style={{ marginTop: '1rem', float: 'right' }}
         username={username}
