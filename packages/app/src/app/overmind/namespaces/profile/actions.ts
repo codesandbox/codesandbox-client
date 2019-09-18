@@ -32,7 +32,7 @@ export const sandboxesPageChanged: AsyncAction<{
   state.profile.isLoadingSandboxes = true;
   state.profile.currentSandboxesPage = page;
 
-  const username = state.profile.current.username;
+  const { username } = state.profile.current;
   if (
     !state.profile.sandboxes[username] ||
     !state.profile.sandboxes[username][page] ||
@@ -54,7 +54,7 @@ export const likedSandboxesPageChanged: AsyncAction<{
   state.profile.isLoadingSandboxes = true;
   state.profile.currentLikedSandboxesPage = page;
 
-  const username = state.profile.current.username;
+  const { username } = state.profile.current;
 
   if (
     !state.profile.likedSandboxes[username] ||
@@ -122,7 +122,7 @@ export const sandboxDeleted: AsyncAction = async ({ state, effects }) => {
   state.profile.current.sandboxCount--;
 
   const page = state.profile.currentSandboxesPage;
-  const username = state.user.username;
+  const { username } = state.user;
   const data = await effects.api.getUserSandboxes(username, page);
 
   state.profile.sandboxes[username][page] = data[page];

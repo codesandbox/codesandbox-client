@@ -162,7 +162,9 @@ class DirectoryEntry extends React.Component {
   };
 
   toggleOpen = () => this.setOpen(!this.state.open);
+
   closeTree = () => this.setOpen(false);
+
   setOpen = open => this.setState({ open });
 
   validateModuleTitle = (_, title) => {
@@ -217,7 +219,7 @@ class DirectoryEntry extends React.Component {
       getModulePath,
     } = this.props;
     const { creating, open } = this.state;
-    const currentSandbox = store.editor.currentSandbox;
+    const { currentSandbox } = store.editor;
 
     const title = root
       ? 'Project'

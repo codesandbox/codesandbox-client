@@ -6,7 +6,7 @@ const path = self.BrowserFS.BFSRequire('path');
 function mkDirByPathSync(targetDir, { isRelativeToScript = false } = {}) {
   const fs = self.BrowserFS.BFSRequire('fs');
 
-  const sep = path.sep;
+  const { sep } = path;
   const initDir = path.isAbsolute(targetDir) ? sep : '';
   const baseDir = isRelativeToScript ? __dirname : '.';
 

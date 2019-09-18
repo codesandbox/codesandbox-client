@@ -25,7 +25,7 @@ let fsLoading = false;
 let lastConfig = null;
 
 const IGNORED_MODULES = ['util', 'os'];
-const BrowserFS = self.BrowserFS;
+const { BrowserFS } = self;
 
 // Default in memory
 BrowserFS.configure({ fs: 'InMemory' }, () => {});

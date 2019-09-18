@@ -15,7 +15,7 @@ import TranspiledModule, {
   SerializedTranspiledModule,
 } from './transpiled-module';
 import Preset from './presets';
-import { SCRIPT_VERSION } from '../';
+import { SCRIPT_VERSION } from '..';
 import fetchModule, {
   setCombinedMetas,
   combinedMetas,
@@ -106,6 +106,7 @@ export default class Manager {
       };
     };
   };
+
   envVariables: { [envName: string]: string } = {};
   preset: Preset;
   externals: Externals;
@@ -247,10 +248,11 @@ export default class Manager {
     const hasCallback = typeof callback === 'function';
 
     if (this.transpiledModules[p]) {
-      const code = this.transpiledModules[p].module.code;
+      const { code } = this.transpiledModules[p].module;
 
       return hasCallback ? callback(null, code) : code;
-    } else if (hasCallback && this.fileResolver) {
+    }
+    if (hasCallback && this.fileResolver) {
       return this.fileResolver.readFile(p).then(code => {
         this.addModule({ code, path: p });
 
@@ -338,8 +340,6 @@ export default class Manager {
       this.setHmrStatus('idle');
 
       return exports;
-    } catch (e) {
-      throw e;
     } finally {
       // Run post evaluate
       this.getTranspiledModules().forEach(t => t.postEvaluate(this));
@@ -854,12 +854,14 @@ export default class Manager {
     ignoredExtensions: string[],
     async: true
   ): Promise<TranspiledModule>;
+
   resolveTranspiledModule(
     path: string,
     currentPath: string,
     ignoredExtensions?: string[],
     async?: false
   ): TranspiledModule;
+
   resolveTranspiledModule(
     path: string,
     currentPath: string,

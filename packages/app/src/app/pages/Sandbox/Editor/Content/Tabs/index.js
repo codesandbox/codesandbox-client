@@ -101,8 +101,8 @@ class EditorTabs extends React.Component {
         tabNamesObject[module.title].push(module.shortid);
       });
 
-    const currentTab = store.editor.currentTab;
-    const currentModule = store.editor.currentModule;
+    const { currentTab } = store.editor;
+    const { currentModule } = store.editor;
 
     const previewVisible = store.editor.previewWindowVisible;
 
@@ -123,7 +123,7 @@ class EditorTabs extends React.Component {
 
                 const { module } = tab;
                 const modulesWithName = tabNamesObject[module.title];
-                const id = tab.module.id;
+                const { id } = tab.module;
                 let dirName = null;
 
                 if (
@@ -172,7 +172,8 @@ class EditorTabs extends React.Component {
                     }}
                   />
                 );
-              } else if (tab.type === 'DIFF') {
+              }
+              if (tab.type === 'DIFF') {
                 return (
                   <TabContainer
                     active={currentTab && currentTab.id === tab.id}

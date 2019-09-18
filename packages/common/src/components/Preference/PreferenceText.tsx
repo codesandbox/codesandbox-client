@@ -10,7 +10,7 @@ export type Props = {
 
 export default class PreferenceText extends React.PureComponent<Props> {
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const { value } = e.target;
 
     this.props.setValue(value);
   };

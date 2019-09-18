@@ -79,7 +79,7 @@ export const onUserLeft: Operator<
   }>
 > = mutate(({ state, actions, effects }, { data }) => {
   if (!state.live.notificationsHidden) {
-    const users = state.live.roomInfo.users;
+    const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
 
     effects.notificationToast.add({
@@ -244,8 +244,8 @@ export const onUserSelection: Operator<
   }
 
   const userSelectionLiveUserId = data.liveUserId;
-  const moduleShortid = data.moduleShortid;
-  const selection = data.selection;
+  const { moduleShortid } = data;
+  const { selection } = data;
   const userIndex = state.live.roomInfo.users.findIndex(
     u => u.id === userSelectionLiveUserId
   );
@@ -296,8 +296,8 @@ export const onUserCurrentModule: Operator<
     state.live.followingUserId === data.live_user_id &&
     data.moduleShortid !== state.editor.currentModuleShortid
   ) {
-    const moduleShortid = data.moduleShortid;
-    const modules = state.editor.currentSandbox.modules;
+    const { moduleShortid } = data;
+    const { modules } = state.editor.currentSandbox;
     const module = modules.find(m => m.shortid === moduleShortid);
 
     if (!module) {

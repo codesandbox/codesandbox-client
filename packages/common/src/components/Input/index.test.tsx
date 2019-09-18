@@ -1,7 +1,7 @@
 import 'jest-styled-components';
 import React from 'react';
 import mountWithTheme from '../../test/themeMount';
-import Input from './';
+import Input from '.';
 
 describe('<Input /> rendering', () => {
   it('basic', () => {

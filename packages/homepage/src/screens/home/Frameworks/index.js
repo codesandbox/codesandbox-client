@@ -412,7 +412,7 @@ export default class Frameworks extends React.Component {
               </div>
 
               {additionalInfo.loaders.length > 0 && (
-                <React.Fragment>
+                <>
                   <HeaderTitle>Supported Loaders</HeaderTitle>
                   <TemplateIcons>
                     {additionalInfo.loaders.map((data, i) => (
@@ -425,23 +425,23 @@ export default class Frameworks extends React.Component {
                       />
                     ))}
                   </TemplateIcons>
-                </React.Fragment>
+                </>
               )}
 
               {additionalInfo.css.length > 0 && (
-                <React.Fragment>
+                <>
                   <HeaderTitle>CSS Scoping Support</HeaderTitle>
                   <CSSTypes>{additionalInfo.css.join(', ')}</CSSTypes>
-                </React.Fragment>
+                </>
               )}
 
               {template.isServer && (
-                <React.Fragment>
+                <>
                   <HeaderTitle>Container Support</HeaderTitle>
                   <CSSTypes>
                     For this template we run the code on a server.
                   </CSSTypes>
-                </React.Fragment>
+                </>
               )}
             </Padding>
           </Container>

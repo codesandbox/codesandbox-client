@@ -61,10 +61,10 @@ const enableEmmet = (editor, monaco) => {
     // to ensure emmet triggered at the right time
     // we need to do grammar analysis
 
-    const model = editor.model;
+    const { model } = editor;
     cursor = cur.position;
 
-    const column = cursor.column;
+    const { column } = cursor;
     // there is no character before column 1
     // no need to continue
     if (column === 1) {
@@ -72,7 +72,7 @@ const enableEmmet = (editor, monaco) => {
       return;
     }
 
-    const lineNumber = cursor.lineNumber;
+    const { lineNumber } = cursor;
 
     /* eslint-disable no-underscore-dangle */
 

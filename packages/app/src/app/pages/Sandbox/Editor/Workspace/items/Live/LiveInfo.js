@@ -215,9 +215,9 @@ class LiveInfo extends React.Component {
             {reconnecting ? (
               'Reconnecting...'
             ) : (
-              <React.Fragment>
+              <>
                 <RecordIcon /> {liveMessage}
-              </React.Fragment>
+              </>
             )}
           </div>
           <div>
@@ -344,7 +344,7 @@ class LiveInfo extends React.Component {
                   roomInfo={roomInfo}
                   type="Editor"
                   sideView={
-                    <React.Fragment>
+                    <>
                       {user.id !== currentUserId && (
                         <IconContainer>
                           {followingUserId === user.id ? (
@@ -368,7 +368,7 @@ class LiveInfo extends React.Component {
                       )}
                       {isOwner && roomInfo.mode === 'classroom' && (
                         <IconContainer style={{ marginLeft: '0.25rem' }}>
-                          <Tooltip content={'Make spectator'}>
+                          <Tooltip content="Make spectator">
                             <RemoveIcon
                               onClick={() =>
                                 removeEditor({ liveUserId: user.id })
@@ -377,7 +377,7 @@ class LiveInfo extends React.Component {
                           </Tooltip>
                         </IconContainer>
                       )}
-                    </React.Fragment>
+                    </>
                   }
                 />
               ))}
@@ -398,7 +398,7 @@ class LiveInfo extends React.Component {
                   roomInfo={roomInfo}
                   type="Spectator"
                   sideView={
-                    <React.Fragment>
+                    <>
                       {roomInfo.mode !== 'classroom' &&
                         user.id !== currentUserId && (
                           <IconContainer>
@@ -423,14 +423,14 @@ class LiveInfo extends React.Component {
                         )}
                       {isOwner && roomInfo.mode === 'classroom' && (
                         <IconContainer style={{ marginLeft: '0.25rem' }}>
-                          <Tooltip content={'Make editor'}>
+                          <Tooltip content="Make editor">
                             <AddIcon
                               onClick={() => addEditor({ liveUserId: user.id })}
                             />
                           </Tooltip>
                         </IconContainer>
                       )}
-                    </React.Fragment>
+                    </>
                   }
                 />
               ))

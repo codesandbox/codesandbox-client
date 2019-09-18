@@ -340,7 +340,7 @@ class BasePreview extends React.Component<Props, State> {
 
   getModulesToSend = (): IModulesByPath => {
     const modulesObject: IModulesByPath = {};
-    const sandbox = this.props.sandbox;
+    const { sandbox } = this.props;
 
     sandbox.modules.forEach(m => {
       const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
@@ -373,8 +373,8 @@ class BasePreview extends React.Component<Props, State> {
     // directly as well
     // @ts-ignore
     this.executeCode.cancel();
-    const settings = this.props.settings;
-    const sandbox = this.props.sandbox;
+    const { settings } = this.props;
+    const { sandbox } = this.props;
 
     if (settings.clearConsoleEnabled && !this.serverPreview) {
       // @ts-ignore Chrome behaviour
@@ -545,7 +545,7 @@ class BasePreview extends React.Component<Props, State> {
           }}
         >
           {(style: { opacity: number }) => (
-            <React.Fragment>
+            <>
               <StyledFrame
                 sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
                 allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
@@ -594,7 +594,7 @@ class BasePreview extends React.Component<Props, State> {
                   />
                 </div>
               )}
-            </React.Fragment>
+            </>
           )}
         </AnySpring>
       </Container>

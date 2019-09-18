@@ -10,6 +10,7 @@ function PricingInfo() {
       <table style={{ borderCollapse: 'collapse' }}>
         <thead>
           <tr>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <th />
             <CenteredHeader>Free</CenteredHeader>
             <CenteredHeader supporter>Patron</CenteredHeader>

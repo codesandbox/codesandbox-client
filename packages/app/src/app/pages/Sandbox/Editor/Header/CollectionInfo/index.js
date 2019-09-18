@@ -14,7 +14,6 @@ class CollectionInfo extends React.Component {
   state = {
     updatingName: false,
     nameValue: '',
-    collectionNameWidth: undefined,
   };
 
   sandboxName = () => getSandboxName(this.props.sandbox) || 'Untitled';
@@ -62,15 +61,6 @@ class CollectionInfo extends React.Component {
     });
   };
 
-  initializeWidth = el => {
-    this.collectionNameEl = this.collectionNameEl || el;
-    if (this.collectionNameEl) {
-      const width = this.collectionNameEl.getBoundingClientRect().width;
-
-      this.setState({ collectionNameWidth: width });
-    }
-  };
-
   render() {
     const { sandbox, isLoggedIn, signals } = this.props;
     const { nameValue, updatingName } = this.state;
@@ -107,10 +97,7 @@ class CollectionInfo extends React.Component {
                 <Media
                   query="(min-width: 950px)"
                   render={() => (
-                    <div
-                      ref={this.initializeWidth}
-                      style={{ ...style, overflow: 'hidden' }}
-                    >
+                    <div style={{ ...style, overflow: 'hidden' }}>
                       {isLoggedIn ? (
                         <FolderName
                           onClick={() => {

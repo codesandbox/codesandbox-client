@@ -20,6 +20,7 @@ type Props = {
 
 export default class AnimatedSandboxItem extends React.Component<Props> {
   state = { render: true };
+
   UNSAFE_componentWillMount() {
     const sandboxBrotherItem = document.getElementById(this.props.id);
 

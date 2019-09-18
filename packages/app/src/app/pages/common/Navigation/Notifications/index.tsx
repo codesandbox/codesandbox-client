@@ -42,7 +42,8 @@ const getNotificationComponent = (type, data, read) => {
         inviterAvatar={parsedData.inviter_avatar}
       />
     );
-  } else if (type === 'team_accepted') {
+  }
+  if (type === 'team_accepted') {
     return (
       <TeamAccepted
         read={read}

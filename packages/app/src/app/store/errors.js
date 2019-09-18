@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import { CerebralError } from 'cerebral';
 
 export class AuthenticationError extends CerebralError {

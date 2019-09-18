@@ -58,7 +58,7 @@ class LivePage extends React.Component {
 
     if (!hasAuthToken()) {
       return (
-        <React.Fragment>
+        <>
           <div
             style={{
               fontWeight: 300,
@@ -76,14 +76,14 @@ class LivePage extends React.Component {
           <div>
             <SignInButton />
           </div>
-        </React.Fragment>
+        </>
       );
     }
 
     if (store.live.error) {
       if (store.live.error === 'room not found') {
         return (
-          <React.Fragment>
+          <>
             <div
               style={{
                 fontWeight: 300,
@@ -100,24 +100,24 @@ class LivePage extends React.Component {
             </Title>
             <br />
             <Link to="/s">Create Sandbox</Link>
-          </React.Fragment>
+          </>
         );
       }
 
       return (
-        <React.Fragment>
+        <>
           <Title>An error occured while connecting to the live session:</Title>
           <SubTitle>{store.live.error}</SubTitle>
           <br />
           <br />
           <Link to="/s">Create Sandbox</Link>
-        </React.Fragment>
+        </>
       );
     }
 
     if (store.live.isLoading || !store.editor.currentSandbox) {
       return (
-        <React.Fragment>
+        <>
           <Skeleton
             titles={[
               {
@@ -130,7 +130,7 @@ class LivePage extends React.Component {
               },
             ]}
           />
-        </React.Fragment>
+        </>
       );
     }
 

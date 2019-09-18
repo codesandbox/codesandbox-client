@@ -10,7 +10,7 @@ import {
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
 import { CodeEditor } from 'app/components/CodeEditor';
-import { Editor } from 'app/components/CodeEditor/types';
+import { Editor } from 'app/components/CodeEditor/types'; // eslint-disable-line
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 // eslint-disable-next-line import/extensions
@@ -141,19 +141,19 @@ export default class Content extends React.PureComponent<Props, State> {
     const { isNotSynced, tabCount } = this.props;
 
     if (hovering && isNotSynced && tabCount === 1) {
-      return <StyledNotSyncedIcon show={'true'} />;
+      return <StyledNotSyncedIcon show="true" />;
     }
     if (hovering && isNotSynced && tabCount > 1) {
-      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+      return <StyledCloseIcon onClick={closeTab} show="true" />;
     }
     if (hovering && tabCount === 1) {
       return <StyledCloseIcon onClick={closeTab} show={undefined} />;
     }
     if (hovering && tabCount > 1) {
-      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+      return <StyledCloseIcon onClick={closeTab} show="true" />;
     }
     if (!hovering && isNotSynced) {
-      return <StyledNotSyncedIcon show={'true'} />;
+      return <StyledNotSyncedIcon show="true" />;
     }
     if (!hovering && !isNotSynced) {
       return <StyledNotSyncedIcon show={undefined} />;
@@ -173,9 +173,9 @@ export default class Content extends React.PureComponent<Props, State> {
           m => m.id === nextProps.currentModule.id
         );
         if (module) {
-          this.setState({
-            tabs: [...this.state.tabs, module],
-          });
+          this.setState(state => ({
+            tabs: [...state.tabs, module],
+          }));
         }
       }
       if (this.editor && this.editor.changeModule) {
@@ -347,7 +347,7 @@ export default class Content extends React.PureComponent<Props, State> {
       this.state.tabs[pos + 1] ||
       this.state.tabs[0];
     this.props.setCurrentModule(newModule.id);
-    this.setState({ tabs: this.state.tabs.filter((_, i) => i !== pos) });
+    this.setState(state => ({ tabs: state.tabs.filter((_, i) => i !== pos) }));
   };
 
   onCodeEditorInitialized = (editor: Editor) => {
@@ -380,11 +380,12 @@ export default class Content extends React.PureComponent<Props, State> {
       previewWindow,
       currentModule,
       hideNavigation,
-      isInProjectView,
       editorSize,
       expandDevTools,
       verticalMode,
     } = this.props;
+
+    const { isInProjectView } = this.state;
 
     const mainModule = isInProjectView
       ? findMainModule(sandbox)
@@ -497,7 +498,7 @@ export default class Content extends React.PureComponent<Props, State> {
                   >
                     {({ hovering, closeTab }) => (
                       // TODO deduplicate this
-                      <React.Fragment>
+                      <>
                         <EntryIcons type={getType(module.title)} />
                         <TabTitle>{module.title}</TabTitle>
                         {dirName && (
@@ -508,7 +509,7 @@ export default class Content extends React.PureComponent<Props, State> {
                         )}
 
                         {this.renderTabStatus(hovering, closeTab)}
-                      </React.Fragment>
+                      </>
                     )}
                   </Tab>
                 );

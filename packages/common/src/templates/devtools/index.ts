@@ -1,4 +1,4 @@
-import getTemplateDefinition from '../';
+import getTemplateDefinition from '..';
 import { resolveModule } from '../../sandbox/modules';
 import { ViewConfig, ParsedConfigurationFiles } from '../template';
 import { Sandbox } from '../../types';

@@ -3,7 +3,7 @@ import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { Container, Title, SubTitle, Image, MaxWidth } from './elements';
 
-import { Props } from '../types';
+import { Props } from '../types'; // eslint-disable-line
 
 export class ImageViewer extends React.Component<Props> {
   onSubmit = (e: React.FormEvent<HTMLFormElement>) => {

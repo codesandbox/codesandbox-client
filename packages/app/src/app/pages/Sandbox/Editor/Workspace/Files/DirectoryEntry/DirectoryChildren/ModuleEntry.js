@@ -23,7 +23,7 @@ class ModuleEntry extends React.Component {
       discardModuleChanges,
       getModulePath,
     } = this.props;
-    const currentModuleShortid = store.editor.currentModuleShortid;
+    const { currentModuleShortid } = store.editor;
     const mainModuleId = store.editor.mainModule.id;
 
     const isActive = module.shortid === currentModuleShortid;

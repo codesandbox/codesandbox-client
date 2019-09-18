@@ -201,7 +201,7 @@ class TeamView extends React.PureComponent {
 
                         {data.me.team.invitees &&
                           data.me.team.invitees.length > 0 && (
-                            <React.Fragment>
+                            <>
                               <MemberHeader>Invited Members</MemberHeader>
 
                               {data.me.team.invitees.map(user => (
@@ -246,7 +246,7 @@ class TeamView extends React.PureComponent {
                                   }}
                                 </Mutation>
                               ))}
-                            </React.Fragment>
+                            </>
                           )}
 
                         <Margin top={1}>

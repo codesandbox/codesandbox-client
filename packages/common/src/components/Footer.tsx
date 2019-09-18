@@ -61,7 +61,7 @@ const Background = styled.div`
 export default () => (
   <Background id="footer">
     <MaxWidth width={1280}>
-      <React.Fragment>
+      <>
         <Container>
           <Column>
             <Title>CodeSandbox</Title>
@@ -159,7 +159,7 @@ export default () => (
             </List>
           </Column>
         </Container>
-      </React.Fragment>
+      </>
     </MaxWidth>
   </Background>
 );

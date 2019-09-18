@@ -126,7 +126,7 @@ export async function uploadFiles({ api, props, path }) {
       await Promise.all(
         filePathsChunk.map(async filePath => {
           const file = props.files[filePath];
-          const dataURI = file.dataURI;
+          const { dataURI } = file;
 
           if (
             (/\.(j|t)sx?$/.test(filePath) ||
@@ -216,7 +216,7 @@ export async function uploadFiles({ api, props, path }) {
 
 export function saveNewDirectoryDirectoryShortid({ api, state, props, path }) {
   const sandboxId = state.get('editor.currentId');
-  const shortid = props.shortid;
+  const { shortid } = props;
 
   return api
     .put(`/sandboxes/${sandboxId}/directories/${shortid}`, {
@@ -592,7 +592,7 @@ export function setDefaultNewCode({ state, props }) {
     let code = '';
 
     if (props.code) {
-      code = props.code;
+      code = props.code; // eslint-disable-line prefer-destructuring
     } else if (config.generateFileFromState) {
       code = config.generateFileFromState(
         state.get('preferences.settings.prettierConfig')

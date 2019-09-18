@@ -45,7 +45,7 @@ export const closeTab = [
 
 export const clearErrors = [set(state`editor.errors`, [])];
 
-export const moveTab = actions.moveTab;
+export const { moveTab } = actions;
 
 export const onUnload = actions.warnUnloadingContent;
 
@@ -53,7 +53,7 @@ export const startResizing = set(state`editor.isResizing`, true);
 
 export const stopResizing = set(state`editor.isResizing`, false);
 
-export const createZip = actions.createZip;
+export const { createZip } = actions;
 
 export const fetchEnvironmentVariables = [
   actions.fetchEnvironmentVariables,
@@ -108,7 +108,7 @@ export const changeCurrentModule = [
 
 export const changeCurrentTab = [set(state`editor.currentTabId`, props`tabId`)];
 
-export const unsetDirtyTab = actions.unsetDirtyTab;
+export const { unsetDirtyTab } = actions;
 
 export const updatePrivacy = [
   actions.ensureValidPrivacy,
@@ -122,7 +122,7 @@ export const updatePrivacy = [
   },
 ];
 
-export const updateFrozen = actions.updateFrozen;
+export const { updateFrozen } = actions;
 
 export const sessionFreezeOverride = set(
   state`editor.sessionFrozen`,

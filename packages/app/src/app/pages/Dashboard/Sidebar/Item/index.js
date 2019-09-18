@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Route } from 'react-router-dom';
 import { Animate } from 'react-show';
 import { ContextMenu } from 'app/components/ContextMenu';
@@ -66,7 +66,7 @@ export class Item extends React.Component {
             this.setState({ open: true });
           }
           return (
-            <Fragment>
+            <>
               <UsedContainer
                 style={style}
                 to={path}
@@ -105,7 +105,7 @@ export class Item extends React.Component {
                   {children}
                 </Animate>
               )}
-            </Fragment>
+            </>
           );
         }}
       </Route>

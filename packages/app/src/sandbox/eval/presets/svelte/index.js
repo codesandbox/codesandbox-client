@@ -3,7 +3,7 @@ import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';
 import svelteTranspiler from '../../transpilers/svelte';
 
-import Preset from '../';
+import Preset from '..';
 
 const babelOptions = {
   isV7: true,

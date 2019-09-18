@@ -33,6 +33,7 @@ class FilesList extends Component {
     );
     return selected;
   };
+
   render() {
     const {
       files,

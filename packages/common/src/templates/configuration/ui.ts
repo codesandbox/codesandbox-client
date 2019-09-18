@@ -1,5 +1,5 @@
 import React from 'react';
-import configs from './';
+import configs from '.';
 
 import prettierUI from './prettierRC/ui';
 import sandboxUI from './sandbox/ui';

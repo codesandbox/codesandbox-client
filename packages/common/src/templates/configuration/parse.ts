@@ -28,12 +28,14 @@ function getCode(
 ) {
   if (module) {
     return { code: module.code, generated: false };
-  } else if (configurationFile.getDefaultCode) {
+  }
+  if (configurationFile.getDefaultCode) {
     return {
       code: configurationFile.getDefaultCode(template, resolveModule),
       generated: true,
     };
-  } else if (sandbox && configurationFile.generateFileFromSandbox) {
+  }
+  if (sandbox && configurationFile.generateFileFromSandbox) {
     return {
       code: configurationFile.generateFileFromSandbox(sandbox),
       generated: true,
@@ -79,7 +81,7 @@ export default function parseConfigurations(
       ...getCode(template, module, sandbox, resolveModule, configurationFile),
     };
 
-    const code = baseObject.code;
+    const { code } = baseObject;
 
     if (code) {
       try {

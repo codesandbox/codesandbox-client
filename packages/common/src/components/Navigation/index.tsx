@@ -181,7 +181,7 @@ export default class Navigation extends React.PureComponent {
             </Item>
 
             {user && (
-              <Item hidePhone href={`/dashboard`} rel="noopener noreferrer">
+              <Item hidePhone href="/dashboard" rel="noopener noreferrer">
                 {user.username}
                 <Image alt={user.username} src={user.avatar_url} />
               </Item>

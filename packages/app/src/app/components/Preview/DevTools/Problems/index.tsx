@@ -27,6 +27,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
   state: State = {
     corrections: {},
   };
+
   listener: () => void;
 
   componentDidMount() {
@@ -41,34 +42,36 @@ class Problems extends React.PureComponent<DevToolProps, State> {
     if (data.action === 'show-correction') {
       const correction: CorrectionAction = data;
       correction.path = correction.path || 'root';
+      this.setState(state => {
+        const newMessages = [
+          ...(state.corrections[correction.path] || []),
+          correction,
+        ];
 
-      const newMessages = [
-        ...(this.state.corrections[correction.path] || []),
-        correction,
-      ];
-
-      this.setState({
-        corrections: {
-          ...this.state.corrections,
-          [correction.path]: newMessages,
-        },
+        return {
+          corrections: {
+            ...state.corrections,
+            [correction.path]: newMessages,
+          },
+        };
       });
 
       this.props.updateStatus('warning');
     } else if (data.action === 'show-error') {
       const correction: ErrorAction = data;
       correction.path = correction.path || 'root';
+      this.setState(state => {
+        const newMessages = [
+          ...(state.corrections[correction.path] || []),
+          correction,
+        ];
 
-      const newMessages = [
-        ...(this.state.corrections[correction.path] || []),
-        correction,
-      ];
-
-      this.setState({
-        corrections: {
-          ...this.state.corrections,
-          [correction.path]: newMessages,
-        },
+        return {
+          corrections: {
+            ...state.corrections,
+            [correction.path]: newMessages,
+          },
+        };
       });
 
       this.props.updateStatus('error');
@@ -79,31 +82,34 @@ class Problems extends React.PureComponent<DevToolProps, State> {
       const message: CorrectionClearAction | ErrorClearAction = data;
       const path = message.path || 'root';
 
-      const newState = immer(this.state.corrections, draft => {
-        const clearCorrections = (clearPath: string) => {
-          if (draft[clearPath]) {
-            draft[clearPath] = draft[clearPath].filter(
-              corr => corr.source !== message.source
-            );
+      this.setState(
+        state => ({
+          corrections: immer(state.corrections, draft => {
+            const clearCorrections = (clearPath: string) => {
+              if (draft[clearPath]) {
+                draft[clearPath] = draft[clearPath].filter(
+                  corr => corr.source !== message.source
+                );
 
-            if (Object.keys(draft[clearPath]).length === 0) {
-              delete draft[clearPath];
+                if (Object.keys(draft[clearPath]).length === 0) {
+                  delete draft[clearPath];
+                }
+              }
+            };
+
+            if (path === '*') {
+              Object.keys(draft).forEach(p => {
+                clearCorrections(p);
+              });
+            } else {
+              clearCorrections(path);
             }
-          }
-        };
-
-        if (path === '*') {
-          Object.keys(draft).forEach(p => {
-            clearCorrections(p);
-          });
-        } else {
-          clearCorrections(path);
+          }),
+        }),
+        () => {
+          this.setUpdatedStatus();
         }
-      });
-
-      this.setState({ corrections: newState }, () => {
-        this.setUpdatedStatus();
-      });
+      );
     }
   };
 
@@ -127,7 +133,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
       .sort()
       .filter(x => x !== 'root');
 
-    const root = this.state.corrections.root;
+    const { root } = this.state.corrections;
 
     return (
       <Container>

@@ -59,14 +59,14 @@ const Live = ({ signals, store }) => {
           followingUserId={store.live.followingUserId}
         />
       ) : (
-        <React.Fragment>
+        <>
           <Description style={{ marginBottom: '1rem' }}>
             Invite others to live edit this sandbox with you. We
             {"'"}
             re doing it live!
           </Description>
 
-          <React.Fragment>
+          <>
             <WorkspaceSubtitle>Create live room</WorkspaceSubtitle>
             <Description>
               To invite others you need to generate a URL that others can join.
@@ -88,8 +88,8 @@ const Live = ({ signals, store }) => {
                 disable={hasUnsyncedModules}
               />
             </WorkspaceInputContainer>
-          </React.Fragment>
-        </React.Fragment>
+          </>
+        </>
       )}
     </div>
   );
