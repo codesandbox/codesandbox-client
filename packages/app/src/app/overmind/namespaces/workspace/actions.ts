@@ -223,7 +223,7 @@ export const editTemplate: AsyncAction = async ({
   actions,
   effects,
 }) => {
-  effects.analytics.track('Template - Removed', { source: 'editor' });
+  effects.analytics.track('Template - Edited', { source: 'editor' });
 
   const sandboxId = state.editor.currentId;
   const template = state.editor.currentSandbox.customTemplate;
