@@ -12,11 +12,10 @@ export default function(code: string, loaderContext: LoaderContext) {
     let vueOptions = loaderContext.options.__vueOptions__;
 
     if (!vueOptions) {
-      vueOptions = Object.assign(
-        {},
-        loaderContext.options.vue,
-        loaderContext.vue
-      );
+      vueOptions = {
+        ...loaderContext.options.vue,
+        ...loaderContext.vue,
+      };
     }
 
     // TODO autoprefixer

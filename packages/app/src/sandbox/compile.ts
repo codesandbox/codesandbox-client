@@ -25,7 +25,7 @@ import {
   getBoilerplates,
   evalBoilerplates,
   findBoilerplate,
-} from './boilerplates';
+} from './boilerplates'; // eslint-disable-line
 
 import { loadDependencies } from './npm';
 import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
@@ -68,7 +68,7 @@ function sendTestCount(
   givenManager: Manager,
   modules: { [path: string]: Module }
 ) {
-  const testRunner = givenManager.testRunner;
+  const { testRunner } = givenManager;
   const tests = testRunner.findTests(modules);
 
   dispatch({
@@ -346,7 +346,7 @@ async function updateManager(
 }
 
 function getDocumentHeight() {
-  const body = document.body;
+  const { body } = document;
   const html = document.documentElement;
 
   return Math.max(
@@ -385,8 +385,6 @@ function overrideDocumentClose() {
   window.document.close = function close(...args) {
     try {
       oldClose.call(document, args);
-    } catch (e) {
-      throw e;
     } finally {
       inject();
       reattach();

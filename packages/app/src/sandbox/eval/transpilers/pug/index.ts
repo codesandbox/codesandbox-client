@@ -19,7 +19,7 @@ class PugTranspiler extends WorkerTranspiler {
     loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
     return new Promise((resolve, reject) => {
-      const path = loaderContext.path;
+      const { path } = loaderContext;
 
       this.queueTask(
         {

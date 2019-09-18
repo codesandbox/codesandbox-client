@@ -105,7 +105,7 @@ function Header({
           small
           href={`${sandboxUrl(sandbox)}?from-embed`}
         >
-          <Logo width={'1.125em'} height={'1.125em'} />
+          <Logo width="1.125em" height="1.125em" />
           <OnlyShowWideText hideOn={510}>Open in Editor</OnlyShowWideText>
         </CodeSandboxButton>
       </RightAligned>
