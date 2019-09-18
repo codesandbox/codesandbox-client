@@ -48,10 +48,6 @@ const Content = styled.div`
 `;
 
 export default class Modal extends React.PureComponent {
-  state = {
-    open: false,
-  };
-
   componentDidMount() {
     window.addEventListener('keydown', this.listenForEsc);
   }

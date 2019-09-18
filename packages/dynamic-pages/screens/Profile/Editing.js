@@ -65,7 +65,11 @@ export default ({
       {twitter && !editing && (
         <Social>
           <img src={twitterLogo} alt="twitter logo" />
-          <a href={`https://twitter.com/${twitter}`} target="_blank">
+          <a
+            href={`https://twitter.com/${twitter}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             @{twitter.toLowerCase()}
           </a>
         </Social>
@@ -88,7 +92,11 @@ export default ({
       {profile_email && !editing && (
         <Social>
           <img src={mail} alt="email" />
-          <a href={`mailto:${profile_email}`} target="_blank">
+          <a
+            href={`mailto:${profile_email}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             {profile_email.toLowerCase()}
           </a>
         </Social>
