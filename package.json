@@ -70,6 +70,7 @@
     "all-contributors-cli": "^5.4.0",
     "babel-eslint": "^10.0.2",
     "concurrently": "^4.1.0",
+    "cross-env": "^6.0.0",
     "eslint": "5.16.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.3.0",
@@ -93,8 +94,8 @@
     }
   },
   "lint-staged": {
-    "packages/**/*.{js,jsx,ts,tsx,json,css}": [
-      "eslint --fix",
+    "*.{js,jsx,ts,tsx}": [
+      "cross-env LINT=1 eslint --fix",
       "pretty-quick --staged",
       "git add"
     ]
