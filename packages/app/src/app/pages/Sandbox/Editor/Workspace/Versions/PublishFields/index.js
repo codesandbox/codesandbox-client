@@ -20,11 +20,8 @@ const DUPLICATE_VERSION_INFO =
 
 export default class PublishFields extends React.PureComponent {
   state = initialState;
-
   major;
-
   minor;
-
   patch;
 
   getVersion = ({

@@ -24,9 +24,7 @@ function operationToElixir(ot) {
 
 class CodeSandboxOTClient extends Client {
   moduleShortid: string;
-
   onSendOperation: (revision: string, operation: any) => void;
-
   onApplyOperation: (operation: any) => void;
 
   constructor(

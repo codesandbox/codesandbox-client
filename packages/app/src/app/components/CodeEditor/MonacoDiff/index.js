@@ -18,11 +18,8 @@ type Props = {
 export default class MonacoDiff extends React.Component<Props>
   implements Editor {
   editor: any;
-
   monaco: any;
-
   sizeProbeInterval: IntervalID; // eslint-disable-line no-undef
-
   settings: Settings;
 
   constructor(props: Props) {

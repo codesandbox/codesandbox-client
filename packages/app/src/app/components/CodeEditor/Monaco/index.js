@@ -456,7 +456,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   userClassesGenerated = {};
-
   userSelectionDecorations = {};
 
   updateUserSelections = (

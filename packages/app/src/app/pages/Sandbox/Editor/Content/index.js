@@ -35,15 +35,10 @@ const settings = store => ({
 
 class EditorPreview extends React.Component {
   state = { width: null, height: null };
-
   interval;
-
   disposeEditorChange;
-
   el;
-
   devtools;
-
   contentNode;
 
   componentDidMount() {

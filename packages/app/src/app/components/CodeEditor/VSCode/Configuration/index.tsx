@@ -29,11 +29,8 @@ type Props = EditorProps & {
 export class Configuration extends React.PureComponent<Props>
   implements Editor {
   disposeInitializer: Function;
-
   currentModule: Module;
-
   dirtyChangeListener: Disposable;
-
   receivingCode: boolean = false;
 
   constructor(props: Props) {

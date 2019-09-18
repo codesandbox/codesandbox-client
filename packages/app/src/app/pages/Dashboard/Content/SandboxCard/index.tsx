@@ -80,7 +80,6 @@ export const MAKE_TEMPLATE_DROP_KEY = 'makeTemplate';
 
 class SandboxItemComponent extends React.PureComponent<Props, State> {
   el: HTMLDivElement;
-
   screenshotTimeout: number;
 
   state: State = {

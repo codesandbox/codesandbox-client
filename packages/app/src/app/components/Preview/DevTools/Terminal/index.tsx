@@ -34,11 +34,8 @@ class DevToolTerminal extends React.Component<
   };
 
   term: TerminalWithFit;
-
   listener: () => void;
-
   node?: HTMLElement;
-
   timeout?: number;
 
   componentDidMount() {

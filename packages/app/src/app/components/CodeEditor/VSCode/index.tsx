@@ -85,40 +85,25 @@ export class VSCode extends React.Component<Props> implements Editor {
   };
 
   sandbox: Props['sandbox'];
-
   currentModule: Props['currentModule'];
-
   currentTitle: string;
-
   currentDirectoryShortid: string | null;
-
   settings: Props['settings'];
-
   dependencies: Props['dependencies'] | undefined;
-
   tsconfig: Props['tsconfig'] | undefined;
-
   disposeInitializer?: Function;
-
   lintWorker: Worker | null;
-
   editor?: any;
-
   monaco?: any;
-
   receivingCode: boolean = false;
-
   codeSandboxAPIListener: () => void;
-
   sizeProbeInterval: number | undefined;
+  resizeEditor: (() => void) | EventListener;
+  commitLibChanges: () => void;
 
   modelSelectionListener: {
     dispose: () => void;
   };
-
-  resizeEditor: (() => void) | EventListener;
-
-  commitLibChanges: () => void;
 
   constructor(props: Props) {
     super(props);
@@ -286,9 +271,7 @@ export class VSCode extends React.Component<Props> implements Editor {
   } = {};
 
   modelRemovedListener: { dispose: () => void };
-
   modelAddedListener: { dispose: () => void };
-
   activeEditorListener: { dispose: () => void };
 
   getModelContentChangeListener = model =>
@@ -591,7 +574,6 @@ export class VSCode extends React.Component<Props> implements Editor {
   };
 
   userClassesGenerated = {};
-
   userSelectionDecorations = {};
 
   updateUserSelections = (userSelections: UserSelection[]) => {

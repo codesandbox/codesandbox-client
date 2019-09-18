@@ -41,17 +41,11 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   codemirror: typeof CodeMirror;
 
   codemirrorElement: ?HTMLDivElement;
-
   server: $PropertyType<CodeMirror, 'TernServer'>;
-
   sandbox: $PropertyType<Props, 'sandbox'>;
-
   currentModule: $PropertyType<Props, 'currentModule'>;
-
   settings: $PropertyType<Props, 'settings'>;
-
   dependencies: $PropertyType<Props, 'dependencies'>;
-
   disposeInitializer: ?() => void;
 
   constructor(props: Props) {

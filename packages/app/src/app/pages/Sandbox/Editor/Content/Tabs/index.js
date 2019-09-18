@@ -77,7 +77,6 @@ class EditorTabs extends React.Component {
   };
 
   container;
-
   tabEls = {};
 
   render() {
