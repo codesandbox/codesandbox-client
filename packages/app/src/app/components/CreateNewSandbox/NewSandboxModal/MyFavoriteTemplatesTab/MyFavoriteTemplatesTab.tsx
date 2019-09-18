@@ -21,10 +21,10 @@ export const MyFavoriteTemplatesTab = ({ selectTemplate }) => {
     }
   );
 
-  return data && data.me && data.me.subscribedTemplates.length ? (
+  return data && data.me && data.me.followedTemplates.length ? (
     <Templates>
       <Divider>Templates followed by me</Divider>
-      {data.me.subscribedTemplates.map(template => (
+      {data.me.followedTemplates.map(template => (
         <Template
           key={template.id}
           template={template}
@@ -35,7 +35,7 @@ export const MyFavoriteTemplatesTab = ({ selectTemplate }) => {
       {data.me.teams.map(team => (
         <>
           <Divider>templates followed bt {team.name} team</Divider>
-          {team.subscribedTemplates.map(template => (
+          {team.followedTemplates.map(template => (
             <Template
               key={template.id}
               template={template}

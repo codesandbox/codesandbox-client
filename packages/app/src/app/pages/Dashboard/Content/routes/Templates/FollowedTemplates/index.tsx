@@ -25,7 +25,7 @@ export const FollowedTemplates = props => {
   const client = useApolloClient();
   const [unfollow] = useMutation<any, any>(unfollowTemplate, {
     onCompleted({ unfollowTemplate: unfollowMutation }) {
-      const newTemplates = data.me.subscribedTemplates.filter(
+      const newTemplates = data.me.followedTemplates.filter(
         template => template.id !== unfollowMutation.id
       );
       client.writeData({
@@ -33,7 +33,7 @@ export const FollowedTemplates = props => {
           ...data,
           me: {
             ...data.me,
-            subscribedTemplates: newTemplates,
+            followedTemplates: newTemplates,
           },
         },
       });
@@ -50,9 +50,9 @@ export const FollowedTemplates = props => {
     if (data && data.me) {
       if (teamId) {
         const team = data.me.teams.find(t => t.id === teamId);
-        setSortedTemplates(team.subscribedTemplates);
+        setSortedTemplates(team.followedTemplates);
       } else {
-        setSortedTemplates(data.me.subscribedTemplates);
+        setSortedTemplates(data.me.followedTemplates);
       }
     }
   }, [teamId, data]);
