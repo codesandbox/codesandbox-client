@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Container = styled.tr`
+export const Container = styled.tr<{ disabled: boolean }>`
   margin: 1rem 0;
   font-size: 1.125rem;
   font-weight: 400;
@@ -19,7 +19,7 @@ export const Feature = styled.td`
   padding-right: 2rem;
 `;
 
-export const Value = styled.td`
+export const Value = styled.td<{ supporter?: boolean }>`
   text-align: center;
   padding: 0 2rem;
   font-weight: 300;

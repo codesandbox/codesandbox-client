@@ -26,6 +26,7 @@ import { isSafari } from '@codesandbox/common/lib/utils/platform';
 
 // eslint-disable-next-line
 import * as childProcess from 'node-services/lib/child_process';
+import { Provider as ActualOvermindProvider } from 'overmind-react';
 import { Routes as App } from './pages';
 import { Provider as OvermindProvider } from './overmind/Provider';
 import { config } from './overmind';
@@ -119,15 +120,17 @@ async function boot(overmind) {
     try {
       render(
         <ApolloProvider client={client}>
-          <OvermindProvider value={overmind}>
-            <HooksProvider client={client}>
-              <ThemeProvider theme={theme}>
-                <Router history={history}>
-                  <App />
-                </Router>
-              </ThemeProvider>
-            </HooksProvider>
-          </OvermindProvider>
+          <ActualOvermindProvider value={overmind}>
+            <OvermindProvider value={overmind}>
+              <HooksProvider client={client}>
+                <ThemeProvider theme={theme}>
+                  <Router history={history}>
+                    <App />
+                  </Router>
+                </ThemeProvider>
+              </HooksProvider>
+            </OvermindProvider>
+          </ActualOvermindProvider>
         </ApolloProvider>,
         rootEl
       );

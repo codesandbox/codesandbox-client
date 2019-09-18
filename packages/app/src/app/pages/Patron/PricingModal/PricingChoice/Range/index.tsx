@@ -1,8 +1,12 @@
 import React from 'react';
-import Slider from 'rc-slider/lib/Slider';
+import Slider, { SliderProps } from 'rc-slider';
 import 'rc-slider/dist/rc-slider.css';
 
-export const Range = props => (
+type RangeProps = {
+  color: string;
+} & SliderProps;
+
+export const Range: React.FC<RangeProps> = props => (
   <Slider
     railStyle={{ background: 'rgba(0, 0, 0, 0.3)', height: 12 }}
     trackStyle={{

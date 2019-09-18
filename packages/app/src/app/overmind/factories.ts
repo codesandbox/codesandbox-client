@@ -78,7 +78,9 @@ export const withOwnedSandbox = <T>(
     const modalResponse = await actions.modals.forkFrozenModal.open();
 
     if (modalResponse === 'fork') {
-      await actions.editor.internal.forkSandbox(state.editor.currentId);
+      await actions.editor.internal.forkSandbox({
+        sandboxId: state.editor.currentId,
+      });
     } else if (modalResponse === 'unfreeze') {
       state.editor.sessionFrozen = false;
     }
