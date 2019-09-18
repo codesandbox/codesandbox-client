@@ -103,28 +103,26 @@ export const Navigation = inject('store', 'signals')(
               >
                 {open => (
                   <Observer>
-                    {({ store }) =>
-                      console.log('WTF?') || (
-                        <Action
-                          style={{ position: 'relative', fontSize: '1.25rem' }}
-                          onClick={open}
+                    {({ store }) => (
+                      <Action
+                        style={{ position: 'relative', fontSize: '1.25rem' }}
+                        onClick={open}
+                      >
+                        <Tooltip
+                          placement="bottom"
+                          content={
+                            store.userNotifications.unreadCount > 0
+                              ? 'Show Notifications'
+                              : 'No Notifications'
+                          }
                         >
-                          <Tooltip
-                            placement="bottom"
-                            content={
-                              store.userNotifications.unreadCount > 0
-                                ? 'Show Notifications'
-                                : 'No Notifications'
-                            }
-                          >
-                            <BellIcon height={35} />
-                            {store.userNotifications.unreadCount > 0 && (
-                              <UnreadIcon />
-                            )}
-                          </Tooltip>
-                        </Action>
-                      )
-                    }
+                          <BellIcon height={35} />
+                          {store.userNotifications.unreadCount > 0 && (
+                            <UnreadIcon />
+                          )}
+                        </Tooltip>
+                      </Action>
+                    )}
                   </Observer>
                 )}
               </Overlay>
