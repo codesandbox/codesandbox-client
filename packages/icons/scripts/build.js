@@ -1,14 +1,16 @@
-const fs = require('fs');
 const glob = require('glob');
 const SVGO = require('svgo');
 const path = require('path');
+const fs = require('fs-extra');
 const prettier = require('prettier');
 const camelCase = require('lodash.camelcase');
+const upperFirst = require('lodash.upperfirst');
 
 const svgo = new SVGO({});
 
 const svgPaths = glob.sync('./svg/*');
 const outputDir = './react/';
+fs.ensureDirSync(outputDir);
 
 const prettierOptions = { parser: 'babel', singleQuote: true };
 
@@ -26,7 +28,7 @@ svgPaths.forEach(filepath => {
         prettierOptions
       );
 
-      fs.writeFileSync(path.join(outputDir, name + '.js'), contents, 'utf8');
+      fs.writeFileSync(path.join(outputDir, name + '.tsx'), contents, 'utf8');
     })
     .catch(error => {
       console.log(filepath, error);
@@ -79,7 +81,7 @@ function getComponentSource(source) {
 
 function getNamedExport(name, source) {
   return `
-    export const ${camelCase(name)} = props => (
+    export const ${upperFirst(camelCase(name))} = props => (
       ${getSvg(source)}
     );
   `;
