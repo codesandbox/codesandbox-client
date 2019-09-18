@@ -11,12 +11,12 @@ import { CardContainer, StripeInput, ErrorText, Label } from './elements';
 
 interface Props {
   name: string;
-  stripe: ReactStripeElements.StripeProps;
   buttonName: string;
   loadingText: string;
   isLoading: boolean;
-  error?: Error;
   subscribe: (params: { token: string; coupon: string }) => void;
+  stripe?: ReactStripeElements.StripeProps;
+  error?: Error | string;
   hasCoupon?: boolean;
 }
 
@@ -121,7 +121,6 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
           <StripeInput
             value={this.state.name}
             onChange={this.setName}
-            error={!!errors.name}
             placeholder="Please enter your name"
           />
         </div>
