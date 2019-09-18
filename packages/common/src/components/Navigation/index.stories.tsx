@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import Navigation from './';
+import Navigation from '.';
 
 const stories = storiesOf('components/Navigation', module);
 

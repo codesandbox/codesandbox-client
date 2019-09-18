@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import CommunityBadge from './';
+import CommunityBadge from '.';
 
 const templates = [
   'create-react-app',

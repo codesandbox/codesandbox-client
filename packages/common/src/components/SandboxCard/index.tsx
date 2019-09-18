@@ -65,10 +65,6 @@ const kFormatter = (num: number): number | string => {
 };
 
 export default class SandboxCard extends React.PureComponent<Props> {
-  state = {
-    imageLoaded: false,
-  };
-
   toggleOpen = () => {
     this.props.selectSandbox({ ...this.props.sandbox });
   };
@@ -113,14 +109,6 @@ export default class SandboxCard extends React.PureComponent<Props> {
             src={sandbox.screenshot_url || getScreenshot(sandbox.id)}
             color={template.color()}
             style={{ height: defaultHeight }}
-            ref={img => {
-              if (img && img.complete) {
-                this.setState({ imageLoaded: true });
-              }
-            }}
-            onLoad={() => {
-              this.setState({ imageLoaded: true });
-            }}
           />
 
           <Overlay>

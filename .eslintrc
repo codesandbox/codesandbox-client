@@ -27,6 +27,7 @@
     "import/no-cycle": "warn",
     "react/prop-types": 0,
     "arrow-parens": 0,
+    "prefer-destructuring": ["error", { "object": true, "array": false }],
     "import/prefer-default-export": 0,
     "class-methods-use-this": 0,
     "jsx-a11y/click-events-have-key-events": "warn",

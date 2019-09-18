@@ -56,7 +56,7 @@ import {
   quasar,
   unibit,
   TemplateType,
-} from './';
+} from '.';
 
 export type ReturnedIcon = React.SFC<{
   width?: number;

@@ -1,4 +1,4 @@
-import * as diff from '../';
+import * as diff from '..';
 
 describe('Diffing', () => {
   it('can diff two strings', () => {
