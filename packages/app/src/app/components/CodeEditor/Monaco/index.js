@@ -1,5 +1,3 @@
-// @flow
-// @ts-ignore
 import * as React from 'react';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
@@ -215,8 +213,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.setCompilerOptions();
 
-    const sandbox = this.sandbox;
-    const currentModule = this.currentModule;
+    const { sandbox } = this;
+    const { currentModule } = this;
 
     liftOff(monaco);
 
@@ -426,6 +424,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   liveOperationCode = '';
+
   sendChangeOperations = changeEvent => {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
@@ -457,7 +456,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   userClassesGenerated = {};
+
   userSelectionDecorations = {};
+
   updateUserSelections = (
     userSelections: Array<
       | {
@@ -621,7 +622,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   updateModules = () => {
-    const sandbox = this.sandbox;
+    const { sandbox } = this;
 
     sandbox.modules.forEach(module => {
       if (modelCache[module.id] && modelCache[module.id].model) {
@@ -849,7 +850,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     if (this.typingsFetcherWorker) {
       this.typingsFetcherWorker.addEventListener('message', event => {
-        const sandbox = this.sandbox;
+        const { sandbox } = this;
         const dependencies = this.dependencies || sandbox.npmDependencies;
 
         Object.keys(event.data).forEach((path: string) => {
@@ -922,7 +923,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   setupWorkers = () => {
-    const settings = this.settings;
+    const { settings } = this;
 
     if (settings.lintEnabled) {
       // Delay this one, as initialization is very heavy
@@ -953,7 +954,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       },
     }));
 
-    const currentModule = this.currentModule;
+    const { currentModule } = this;
     const modelInfo = await this.getModelById(currentModule.id);
 
     modelInfo.decorations = this.editor.deltaDecorations(
@@ -990,7 +991,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       // this will give a perceived speed boost. Inspiration from vscode team
       setTimeout(async () => {
         if (modelCache[id]) {
-          const sandbox = this.sandbox;
+          const { sandbox } = this;
           const path = getModulePath(sandbox.modules, sandbox.directories, id);
 
           modelCache[id].viewState = this.editor.saveViewState();
@@ -1040,8 +1041,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   handleChange = () => {
     const newCode = this.editor.getModel().getValue(1) || '';
-    const currentModule = this.currentModule;
-    const title = currentModule.title;
+    const { currentModule } = this;
+    const { title } = currentModule;
 
     const oldCode = this.currentModule.code || '';
 
@@ -1058,7 +1059,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   hasNativeTypescript = () => {
-    const sandbox = this.sandbox;
+    const { sandbox } = this;
 
     // Add a quick hack for CRA+TS that will be removed when we fully made the switch to
     // VSCode
@@ -1070,8 +1071,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   fetchedSchemas = {};
+
   getConfigSchemas = async () => {
-    const sandbox = this.sandbox;
+    const { sandbox } = this;
     const template = getTemplate(sandbox.template);
 
     const configurations = template.configurationFiles;
@@ -1202,6 +1204,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   creatingModelMap = {};
+
   createModel = (
     module: Module,
     modules: Array<Module> = this.sandbox.modules,
@@ -1264,7 +1267,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   getModelById = async (id: string) => {
-    const modules = this.sandbox.modules;
+    const { modules } = this.sandbox;
 
     if (!modelCache[id] || !modelCache[id].model) {
       const module = modules.find(m => m.id === id);
@@ -1364,15 +1367,15 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
 
   handleSaveCode = async () => {
-    const onSave = this.props.onSave;
+    const { onSave } = this.props;
     if (onSave) {
       onSave(this.getCode() || '');
     }
   };
 
   getEditorOptions = () => {
-    const settings = this.settings;
-    const currentModule = this.currentModule;
+    const { settings } = this;
+    const { currentModule } = this;
 
     return {
       ...getSettings(settings),
@@ -1384,8 +1387,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   render() {
     const { hideNavigation } = this.props;
 
-    const sandbox = this.sandbox;
-    const currentModule = this.currentModule;
+    const { sandbox } = this;
+    const { currentModule } = this;
     const options = this.getEditorOptions();
 
     return (

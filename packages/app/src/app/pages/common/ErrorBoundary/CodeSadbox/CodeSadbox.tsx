@@ -5,8 +5,8 @@ import { inject, hooksObserver } from 'app/componentConnectors';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 // @ts-ignore
-import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 import { Navigation } from 'app/pages/common/Navigation';
+import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 import { Sadbox } from './Sadbox';
 import { IFallbackComponentProps } from '../types';
 import { buildCrashReport } from './buildCrashReport';

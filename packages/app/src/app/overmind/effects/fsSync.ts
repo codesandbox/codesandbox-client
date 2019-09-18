@@ -170,6 +170,7 @@ export default {
       }
     }, 1000);
 
+    // eslint-disable-next-line
     self.addEventListener('message', evt => {
       if (evt.data.$type === 'request-data') {
         sendTypes();

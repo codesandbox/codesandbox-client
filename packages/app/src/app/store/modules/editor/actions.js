@@ -140,7 +140,7 @@ export function setCurrentModuleByTab({ state, props }) {
     const currentTab = state.get(`editor.tabs.${index}`);
 
     if (currentTab.moduleShortid) {
-      const moduleShortid = currentTab.moduleShortid;
+      const { moduleShortid } = currentTab;
 
       state.set('editor.currentModuleShortid', moduleShortid);
     }
@@ -199,8 +199,8 @@ export function addDevToolsTab({ state, props }) {
 export function moveDevToolsTab({ state, props }) {
   const devToolTabs = state.get('editor.devToolTabs');
 
-  const prevPos = props.prevPos;
-  const nextPos = props.nextPos;
+  const { prevPos } = props;
+  const { nextPos } = props;
 
   const newDevToolTabs = moveDevToolsTabUtil(devToolTabs, prevPos, nextPos);
 
@@ -245,7 +245,7 @@ export function closeDevToolsTab({ state, props }) {
 }
 
 export function setCurrentTabToChangedTab({ state, props }) {
-  const nextPos = props.nextPos;
+  const { nextPos } = props;
 
   state.set('editor.currentDevToolsPosition', nextPos);
 }
@@ -665,7 +665,7 @@ export function saveModuleCode({ props, state, api, recover, path }) {
   );
 
   const codeToSave = moduleToSave.code;
-  const title = moduleToSave.title;
+  const { title } = moduleToSave;
 
   return api
     .put(`/sandboxes/${sandbox.id}/modules/${moduleToSave.shortid}`, {
@@ -746,7 +746,7 @@ export function warnUnloadingContent({ browser, state }) {
 export function setCode({ props, state, recover }) {
   const currentId = state.get('editor.currentId');
   const currentSandbox = state.get('editor.currentSandbox');
-  const moduleShortid = props.moduleShortid;
+  const { moduleShortid } = props;
   const moduleIndex = state
     .get('editor.currentSandbox')
     .modules.findIndex(module => module.shortid === moduleShortid);

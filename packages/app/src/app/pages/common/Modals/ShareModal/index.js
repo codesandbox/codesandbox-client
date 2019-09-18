@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
 import Files from 'embed/components/Files';
 import QRCode from 'qrcode.react';
@@ -59,8 +59,10 @@ class ShareView extends React.Component {
   };
 
   setEditorView = () => this.setState({ showEditor: true, showPreview: false });
+
   setPreviewView = () =>
     this.setState({ showEditor: false, showPreview: true });
+
   setMixedView = () => this.setState({ showEditor: true, showPreview: true });
 
   setDefaultModule = id => this.setState({ defaultModule: id });
@@ -111,12 +113,12 @@ class ShareView extends React.Component {
   };
 
   toggle = (key: string) => {
-    this.setState({ [key]: !this.state[key] });
+    this.setState(state => ({ [key]: !state[key] }));
   };
 
   render() {
     const sandbox = this.props.store.editor.currentSandbox;
-    const mainModule = this.props.store.editor.mainModule;
+    const { mainModule } = this.props.store.editor;
 
     const {
       view,
@@ -134,7 +136,7 @@ class ShareView extends React.Component {
     const defaultModule = this.state.defaultModule || mainModule.id;
 
     return (
-      <Fragment>
+      <>
         <header
           // eslint-disable-next-line
           dangerouslySetInnerHTML={{
@@ -290,7 +292,7 @@ class ShareView extends React.Component {
                 <Inputs>
                   <QRCode
                     value={getEmbedUrl(sandbox, mainModule, this.state)}
-                    size={'100%'}
+                    size="100%"
                     renderAs="svg"
                   />
                 </Inputs>
@@ -331,7 +333,7 @@ class ShareView extends React.Component {
             </section>
           </Wrapper>
         </ShareOptions>
-      </Fragment>
+      </>
     );
   }
 }

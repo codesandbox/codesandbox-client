@@ -65,8 +65,8 @@ export function sendSelection({ props, state, live }) {
     .findIndex(u => u.id === liveUserId);
 
   if (userIndex > -1) {
-    const moduleShortid = props.moduleShortid;
-    const selection = props.selection;
+    const { moduleShortid } = props;
+    const { selection } = props;
 
     if (state.get(`live.roomInfo.users.${userIndex}`)) {
       state.set(
@@ -91,9 +91,9 @@ export function consumeUserState({ props }) {
 }
 
 export function updateSelection({ props, state }) {
-  const liveUserId = props.data.liveUserId;
-  const moduleShortid = props.data.moduleShortid;
-  const selection = props.data.selection;
+  const { liveUserId } = props.data;
+  const { moduleShortid } = props.data;
+  const { selection } = props.data;
   const userIndex = state
     .get('live.roomInfo.users')
     .findIndex(u => u.id === liveUserId);
@@ -142,8 +142,8 @@ export function getSelectionsForCurrentModule({ state }) {
 
 export function sendSelectionToEditor({ props, state }) {
   const userId = props.liveUserId;
-  const moduleShortid = props.moduleShortid;
-  const selection = props.selection;
+  const { moduleShortid } = props;
+  const { selection } = props;
 
   if (
     moduleShortid === state.get('editor.currentModuleShortid') &&
@@ -529,7 +529,7 @@ export function sendChatEnabled({ live, props }) {
 }
 
 export function getModuleIdFromShortid({ props, state }) {
-  const moduleShortid = props.moduleShortid;
+  const { moduleShortid } = props;
   const modules = state.get('editor.currentSandbox.modules');
 
   const module = modules.find(m => m.shortid === moduleShortid);

@@ -123,7 +123,7 @@ export default (config: {
 };
 
 function convertError(error: AxiosError) {
-  const response = error.response;
+  const { response } = error;
 
   if (!response || response.status >= 500) {
     logError(error);
@@ -134,7 +134,7 @@ function convertError(error: AxiosError) {
       const errors = values(response.data.errors)[0];
       if (Array.isArray(errors)) {
         if (errors[0]) {
-          error.message = errors[0]; // eslint-disable-line no-param-reassign
+          error.message = errors[0]; // eslint-disable-line no-param-reassign,prefer-destructuring
         }
       } else {
         error.message = errors; // eslint-disable-line no-param-reassign

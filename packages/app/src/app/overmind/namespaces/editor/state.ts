@@ -187,7 +187,7 @@ export const state: State = {
       return false;
     }
 
-    const isServer = getTemplate(currentSandbox.template).isServer;
+    const { isServer } = getTemplate(currentSandbox.template);
 
     return isServer && currentSandbox.owned;
   },

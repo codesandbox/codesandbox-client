@@ -20,7 +20,7 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
     return id;
   }
 
-  const sandboxes = state.editor.sandboxes;
+  const { sandboxes } = state.editor;
   const matchingSandboxId = Object.keys(sandboxes).find(
     // @ts-ignore
     idItem => sandboxUrl(sandboxes[idItem]) === `${editorUrl()}${id}`
@@ -204,8 +204,8 @@ export const setModuleCode: Action<{
   module: Module;
   code: string;
 }> = ({ state, effects }, { module, code }) => {
-  const currentId = state.editor.currentId;
-  const currentSandbox = state.editor.currentSandbox;
+  const { currentId } = state.editor;
+  const { currentSandbox } = state.editor;
   const hasChangedModuleId = state.editor.changedModuleShortids.includes(
     module.shortid
   );

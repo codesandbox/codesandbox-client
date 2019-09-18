@@ -4,12 +4,15 @@ class TokenizerState {
   constructor(_ruleStack) {
     this._ruleStack = _ruleStack;
   }
+
   get ruleStack() {
     return this._ruleStack;
   }
+
   clone() {
     return new TokenizerState(this._ruleStack);
   }
+
   equals(other) {
     if (
       !other ||

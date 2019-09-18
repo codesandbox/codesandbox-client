@@ -24,8 +24,11 @@ function operationToElixir(ot) {
 
 class CodeSandboxOTClient extends Client {
   moduleShortid: string;
+
   onSendOperation: (revision: string, operation: any) => void;
+
   onApplyOperation: (operation: any) => void;
+
   constructor(
     revision: number,
     moduleShortid: string,
@@ -49,12 +52,15 @@ class CodeSandboxOTClient extends Client {
   serverReconnect() {
     super.serverReconnect();
   }
+
   serverAck() {
     super.serverAck();
   }
+
   applyClient(operation: any) {
     super.applyClient(operation);
   }
+
   applyServer(operation: any) {
     super.applyServer(operation);
   }

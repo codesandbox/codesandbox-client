@@ -14,6 +14,7 @@ class Patron extends React.Component {
   componentDidMount() {
     this.props.signals.patron.patronMounted();
   }
+
   render() {
     return (
       <MaxWidth>

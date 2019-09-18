@@ -1,10 +1,10 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
 // @ts-ignore
-import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
 
 import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'app/componentConnectors';
+import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
 
 import { Item } from '../Item';
 import { MAKE_TEMPLATE_DROP_KEY } from '../../Content/SandboxCard';

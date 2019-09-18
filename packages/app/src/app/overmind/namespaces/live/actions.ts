@@ -125,7 +125,7 @@ export const onSelectionChanged: Action<{
   moduleShortid: string;
 }> = ({ state, effects }, { selection, moduleShortid }) => {
   if (state.live.isCurrentEditor) {
-    const liveUserId = state.live.liveUserId;
+    const { liveUserId } = state.live;
     const userIndex = state.live.roomInfo.users.findIndex(
       u => u.id === liveUserId
     );
@@ -227,7 +227,7 @@ export const onFollow: Action<{
   const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
 
   if (user && user.currentModuleShortid) {
-    const modules = state.editor.currentSandbox.modules;
+    const { modules } = state.editor.currentSandbox;
     const module = modules.find(m => m.shortid === user.currentModuleShortid);
 
     actions.editor.moduleSelected({

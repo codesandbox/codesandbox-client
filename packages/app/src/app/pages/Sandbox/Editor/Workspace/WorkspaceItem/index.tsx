@@ -40,7 +40,7 @@ export class WorkspaceItem extends React.Component<Props, State> {
     );
   }
 
-  toggleOpen = () => this.setState({ open: !this.state.open });
+  toggleOpen = () => this.setState(state => ({ open: !state.open }));
 
   render() {
     const {

@@ -39,7 +39,7 @@ export const notificationAdded: Action<{
 export const notificationRemoved: Action<{
   id: number;
 }> = ({ state }, { id }) => {
-  const notifications = state.notifications;
+  const { notifications } = state;
   const notificationToRemoveIndex = notifications.findIndex(
     notification => notification.id === id
   );

@@ -10,7 +10,8 @@ export const withLoadApp = <T>(
   if (state.hasLoadedApp && continueAction) {
     await continueAction(context, value);
     return;
-  } else if (state.hasLoadedApp) {
+  }
+  if (state.hasLoadedApp) {
     return;
   }
 

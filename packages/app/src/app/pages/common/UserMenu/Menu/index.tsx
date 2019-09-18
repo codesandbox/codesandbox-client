@@ -15,8 +15,8 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import PatronBadge from '@codesandbox/common/lib/utils/badges/PatronBadge';
 // @ts-ignore
-import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 import track from '@codesandbox/common/lib/utils/analytics';
+import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 
 import { Container, Item, Icon, Separator } from './elements';
 import { FeedbackIcon } from './FeedbackIcon';

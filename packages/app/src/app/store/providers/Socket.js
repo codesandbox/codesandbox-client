@@ -11,7 +11,7 @@ export default Provider({
     const token = state.get('jwt') || jwt.get();
 
     if (!socket) {
-      socket = new Socket(`wss://${location.host}/socket`, {
+      socket = new Socket(`wss://${document.location.host}/socket`, {
         params: {
           guardian_token: token,
         },

@@ -4,6 +4,10 @@ import PlusIcon from 'react-icons/lib/go/plus';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
+import getWorkspaceItems, {
+  getDisabledItems,
+  INavigationItem,
+} from 'app/store/modules/workspace/items';
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
@@ -20,10 +24,6 @@ import RocketIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/rocket.
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
 import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
-import getWorkspaceItems, {
-  getDisabledItems,
-  INavigationItem,
-} from 'app/store/modules/workspace/items';
 import { Container, IconContainer, Separator } from './elements';
 import ServerIcon from './ServerIcon';
 

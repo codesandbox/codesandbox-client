@@ -44,7 +44,7 @@ class SandboxPage extends React.Component {
   }
 
   fetchSandbox = () => {
-    const id = this.props.match.params.id;
+    const { id } = this.props.match.params;
 
     this.props.signals.editor.sandboxChanged({ id });
   };
@@ -69,7 +69,7 @@ class SandboxPage extends React.Component {
       const isGithub = this.props.match.params.id.includes('github');
       const hasPrivateAccess = store.user && store.user.integrations.github;
       return (
-        <React.Fragment>
+        <>
           <div
             style={{
               fontWeight: 300,
@@ -111,7 +111,7 @@ class SandboxPage extends React.Component {
               <GithubIntegration small />
             </div>
           )}
-        </React.Fragment>
+        </>
       );
     }
 
@@ -121,7 +121,7 @@ class SandboxPage extends React.Component {
       store.editor.currentSandbox == null
     ) {
       return (
-        <React.Fragment>
+        <>
           <Skeleton
             titles={[
               {
@@ -134,7 +134,7 @@ class SandboxPage extends React.Component {
               },
             ]}
           />
-        </React.Fragment>
+        </>
       );
     }
 

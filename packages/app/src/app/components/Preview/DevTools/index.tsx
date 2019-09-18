@@ -202,13 +202,13 @@ export class DevTools extends React.PureComponent<Props, State> {
 
   setHidden = (hidden: boolean) => {
     if (!hidden) {
-      return this.setState({
+      return this.setState(state => ({
         status: {
-          ...this.state.status,
+          ...state.status,
           [this.getCurrentPane().id]: null,
         },
         hidden: false,
-      });
+      }));
     }
 
     return this.setState({ hidden }, () => {
@@ -253,15 +253,15 @@ export class DevTools extends React.PureComponent<Props, State> {
       unread = count;
     }
 
-    this.setState({
+    this.setState(state => ({
       status: {
-        ...this.state.status,
+        ...state.status,
         [id]: {
           type: newStatus,
           unread,
         },
       },
-    });
+    }));
   };
 
   handleTouchStart = (event: React.TouchEvent) => {
@@ -275,11 +275,12 @@ export class DevTools extends React.PureComponent<Props, State> {
   ) => {
     if (!this.state.mouseDown && typeof this.state.height === 'number') {
       unFocus(document, window);
-      this.setState({
+      // @ts-ignore
+      this.setState(state => ({
         startY: event.clientY,
-        startHeight: this.state.height,
+        startHeight: state.height,
         mouseDown: true,
-      });
+      }));
       if (this.props.setDragging) {
         this.props.setDragging(true);
       }
@@ -307,7 +308,7 @@ export class DevTools extends React.PureComponent<Props, State> {
         this.handleClick();
       } else {
         setTimeout(() => {
-          const height = this.state.height;
+          const { height } = this.state;
           if (height > 64) {
             store.set('devtools.height', height);
           }
@@ -400,15 +401,15 @@ export class DevTools extends React.PureComponent<Props, State> {
       devToolIndex: this.props.devToolIndex,
       tabPosition: index,
     });
-    this.setState({
+    this.setState(state => ({
       status: {
-        ...this.state.status,
+        ...state.status,
         [this.props.viewConfig.views[index].id]: {
           type: 'info',
           unread: 0,
         },
       },
-    });
+    }));
   };
 
   /**
@@ -436,6 +437,7 @@ export class DevTools extends React.PureComponent<Props, State> {
   getViews = (): IViews => this.allViews;
 
   node: HTMLDivElement;
+
   allViews: IViews;
 
   render() {

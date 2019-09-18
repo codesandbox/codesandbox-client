@@ -60,7 +60,7 @@ class Dashboard extends React.Component {
     });
 
     let DashboardContent = (
-      <React.Fragment>
+      <>
         <Sidebar active={showSidebar}>
           <SidebarContents />
           <ShowSidebarButton onClick={this.toggleSidebar}>
@@ -75,7 +75,7 @@ class Dashboard extends React.Component {
         <ContentContainer>
           <Content />
         </ContentContainer>
-      </React.Fragment>
+      </>
     );
 
     if (!hasLogIn) {

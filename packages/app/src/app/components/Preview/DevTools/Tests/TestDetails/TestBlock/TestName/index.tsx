@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Test } from '../../../';
+import { Test } from '../../..';
 
 import { StatusElements } from '../../../elements';
 import { Block, TestName as Name } from './elements';

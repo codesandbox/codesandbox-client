@@ -11,7 +11,7 @@ import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-th
 import NewSandbox from './NewSandbox';
 import PreferencesModal from './PreferencesModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
-import DeleteDeploymentModal from './DeleteDeploymentModal/';
+import DeleteDeploymentModal from './DeleteDeploymentModal';
 import ShareModal from './ShareModal';
 import DeploymentModal from './DeploymentModal';
 import ExportGitHubModal from './ExportGitHubModal';
@@ -169,8 +169,7 @@ class Modals extends Component {
   }
 
   loadTheme = async () => {
-    const customVSCodeTheme = this.props.store.preferences.settings
-      .customVSCodeTheme;
+    const { customVSCodeTheme } = this.props.store.preferences.settings;
 
     try {
       const theme = await getVSCodeTheme('', customVSCodeTheme);
@@ -179,6 +178,7 @@ class Modals extends Component {
       console.error(e);
     }
   };
+
   render() {
     const { signals, store } = this.props;
     const sandbox = store.editor.currentSandbox;

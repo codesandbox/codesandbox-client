@@ -35,10 +35,15 @@ const settings = store => ({
 
 class EditorPreview extends React.Component {
   state = { width: null, height: null };
+
   interval;
+
   disposeEditorChange;
+
   el;
+
   devtools;
+
   contentNode;
 
   componentDidMount() {
@@ -92,7 +97,7 @@ class EditorPreview extends React.Component {
   };
 
   onInitialized = editor => {
-    const store = this.props.store;
+    const { store } = this.props;
     let isChangingSandbox = false;
 
     const disposeSandboxChangeHandler = this.props.reaction(
@@ -291,7 +296,7 @@ class EditorPreview extends React.Component {
 
         const editorModule = editor.currentModule;
         const currentSandbox = editor.sandbox;
-        const changeModule = editor.changeModule;
+        const { changeModule } = editor;
         if (
           (!editorModule || newModule.id !== editorModule.id) &&
           changeModule
@@ -365,7 +370,7 @@ class EditorPreview extends React.Component {
   };
 
   sendTransforms = operation => {
-    const currentModuleShortid = this.props.store.editor.currentModuleShortid;
+    const { currentModuleShortid } = this.props.store.editor;
 
     this.props.signals.live.onTransformMade({
       moduleShortid: currentModuleShortid,
@@ -387,11 +392,11 @@ class EditorPreview extends React.Component {
 
   render() {
     const { signals, store } = this.props;
-    const currentModule = store.editor.currentModule;
+    const { currentModule } = store.editor;
     const notSynced = !store.editor.isAllModulesSynced;
     const sandbox = store.editor.currentSandbox;
-    const preferences = store.preferences;
-    const currentTab = store.editor.currentTab;
+    const { preferences } = store;
+    const { currentTab } = store.editor;
 
     const windowVisible = store.editor.previewWindowVisible;
 
@@ -428,12 +433,7 @@ class EditorPreview extends React.Component {
           ? `Browser (${options.title || `:${options.port}`})`
           : `Browser`,
       Content: ({ hidden, options }) => (
-        <Preview
-          options={options}
-          hidden={hidden}
-          width={'100%'}
-          height={'100%'}
-        />
+        <Preview options={options} hidden={hidden} width="100%" height="100%" />
       ),
       actions: [],
     };
@@ -483,7 +483,7 @@ class EditorPreview extends React.Component {
               overflow: 'visible', // For VSCode Context Menu
             }}
             split={this.props.store.editor.previewWindowOrientation}
-            defaultSize={'50%'}
+            defaultSize="50%"
             pane1Style={
               windowVisible
                 ? {

@@ -20,7 +20,9 @@ type Props = {
 
 class ShellComponent extends React.PureComponent<Props> {
   listener: Function;
+
   term: TerminalWithFit;
+
   node?: HTMLDivElement;
 
   initializeTerminal = (terminal: TerminalWithFit) => {

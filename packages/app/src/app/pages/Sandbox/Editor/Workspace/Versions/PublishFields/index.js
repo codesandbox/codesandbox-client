@@ -22,7 +22,9 @@ export default class PublishFields extends React.PureComponent {
   state = initialState;
 
   major;
+
   minor;
+
   patch;
 
   getVersion = ({
@@ -91,12 +93,14 @@ export default class PublishFields extends React.PureComponent {
       this.setStatus({ major: e.target.value });
     }
   };
+
   setMinor = e => {
     if (this.isValid(e.target.value)) {
       this.setState({ minor: e.target.value });
       this.setStatus({ minor: e.target.value });
     }
   };
+
   setPatch = e => {
     if (this.isValid(e.target.value)) {
       this.setState({ patch: e.target.value });

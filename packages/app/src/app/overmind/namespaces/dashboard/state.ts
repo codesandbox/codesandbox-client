@@ -37,7 +37,7 @@ export const state: State = {
   getFilteredSandboxes: ({ orderBy, filters }) => sandboxes => {
     const orderField = orderBy.field;
     const orderOrder = orderBy.order;
-    const blacklistedTemplates = filters.blacklistedTemplates;
+    const { blacklistedTemplates } = filters;
 
     const isDateField =
       orderField === 'insertedAt' || orderField === 'updatedAt';

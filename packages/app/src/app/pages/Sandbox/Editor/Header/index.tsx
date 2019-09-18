@@ -2,7 +2,6 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import ProgressButton from '@codesandbox/common/lib/components/ProgressButton';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 // @ts-ignore
-import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import {
   dashboardUrl,
   patronUrl,
@@ -20,6 +19,7 @@ import { LikeHeart } from 'app/pages/common/LikeHeart';
 import { SignInButton } from 'app/pages/common/SignInButton';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import { saveAllModules } from 'app/store/modules/editor/utils';
+import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
 import { Action } from './Buttons/Action';
 import CollectionInfo from './CollectionInfo';

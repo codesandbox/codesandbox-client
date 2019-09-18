@@ -56,7 +56,7 @@ export const state: State = {
       return {};
     }
 
-    const liveUserId = currentState.liveUserId;
+    const { liveUserId } = currentState;
 
     currentState.roomInfo.users.forEach(user => {
       const userId = user.id;

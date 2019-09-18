@@ -26,7 +26,7 @@ const DevTools = (props: DevToolProps) => {
     }
 
     if (iframe) {
-      const contentWindow = iframe.contentWindow;
+      const { contentWindow } = iframe;
 
       setDevTools(initialize(contentWindow));
       iframe.onload = () => {

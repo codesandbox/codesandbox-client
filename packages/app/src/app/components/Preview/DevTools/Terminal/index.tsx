@@ -34,8 +34,11 @@ class DevToolTerminal extends React.Component<
   };
 
   term: TerminalWithFit;
+
   listener: () => void;
+
   node?: HTMLElement;
+
   timeout?: number;
 
   componentDidMount() {
@@ -131,7 +134,7 @@ class DevToolTerminal extends React.Component<
     const { selectedShell } = this.state;
 
     return (
-      <div className={'terminal'}>
+      <div className="terminal">
         {!hidden && owned && (
           <ShellTabs
             selectedShell={this.state.selectedShell}
