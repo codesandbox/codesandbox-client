@@ -19,10 +19,6 @@ export const internal = internalActions;
 
 export const onNavigateAway: Action = () => {};
 
-export const test: Action<string> = ({ effects }, moduleShortid) => {
-  effects.vscode.changeCode(moduleShortid, 'hehehe');
-};
-
 export const addNpmDependency: AsyncAction<{
   name: string;
   version?: string;
