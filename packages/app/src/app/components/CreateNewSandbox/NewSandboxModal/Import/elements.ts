@@ -102,3 +102,22 @@ export const Input = styled.input`
     color: #757575;
   }
 `;
+
+export const PlaceHolderLink = styled.span<{ error: string }>`
+  transition: 0.3s ease color;
+
+  display: block;
+  margin: 1rem 0.25rem;
+  margin-left: 0.5rem;
+
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+
+  font-weight: 500;
+  font-size: 1rem;
+  ${props =>
+    props.error &&
+    css`
+      color: ${props.theme.red};
+    `}
+`;

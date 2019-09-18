@@ -10,6 +10,7 @@ export const Container = styled(Button)`
   box-shadow: 0px 1px 0px #242424;
   background: none;
   cursor: pointer;
+  margin-bottom: 1rem;
 `;
 
 export const Icon = styled.div<{ color: string }>`

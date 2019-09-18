@@ -1,11 +1,10 @@
 import React, { cloneElement, Children, useState } from 'react';
 import { Group } from 'reakit/Group';
 import { useRoverState, Rover } from 'reakit/Rover';
-import { Container } from './elements';
-import { NextIcon } from '../Icons/Next';
+import { Container, Arrow, CarrouselWrapper, Carrousel } from './elements';
 
-const chunk = (arr, size) =>
-  Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+const chunk = (arr: any[], size: number): any[] =>
+  Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
     arr.slice(i * size, i * size + size)
   );
 
@@ -14,50 +13,29 @@ export const GridList = ({ children, ...props }) => {
   const rover = useRoverState();
   const templates = chunk(children, 3);
 
-  const move = () => {
-    setNumberOfClick(n => n + 1);
-  };
-
-  const back = () => {
-    setNumberOfClick(n => n - 1);
+  const move = (n: number) => {
+    setNumberOfClick(numberOfClicks => numberOfClicks + n);
   };
 
   return (
     <Group as={Container} {...props}>
-      {numberOfClick > 0 ? (
-        <NextIcon
-          onClick={back}
-          style={{
-            position: 'absolute',
-            left: '0.5rem',
-            transform: 'rotate(180deg)',
-            marginTop: 40,
-          }}
-        />
-      ) : null}
-      <div
-        style={{
-          transition: 'transform 200ms ease',
-          transform: `translateX(-${50 * numberOfClick}%)`,
-          display: 'flex',
-        }}
-      >
-        {templates.map((kids, i) => (
+      {numberOfClick > 0 ? <Arrow onClick={() => move(-1)} /> : null}
+      <Carrousel number={numberOfClick}>
+        {templates.map((kids: any[], i: number) => (
           // eslint-disable-next-line react/no-array-index-key
-          <div key={i}>
-            {kids.map((child, idx) => (
+          <CarrouselWrapper key={i}>
+            {kids.map((child: any[], idx: number) => (
               // eslint-disable-next-line react/no-array-index-key
               <Rover key={idx} {...rover}>
                 {itemProps => cloneElement(Children.only(child), itemProps)}
               </Rover>
             ))}
-          </div>
+          </CarrouselWrapper>
         ))}
-      </div>
-      <NextIcon
-        onClick={move}
-        style={{ position: 'absolute', right: '0.5rem', marginTop: 40 }}
-      />
+      </Carrousel>
+      {templates.length > 2 && templates.length - 2 !== numberOfClick && (
+        <Arrow onClick={() => move(1)} next />
+      )}
     </Group>
   );
 };
