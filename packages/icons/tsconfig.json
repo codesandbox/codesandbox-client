@@ -1,0 +1,15 @@
+{
+  "exclude": ["node_modules"],
+  "include": ["./dist/index.tsx"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES6",
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "lib": ["es2015", "dom"],
+    "outDir": "dist",
+    "declaration": true,
+    "allowJs": false,
+    "esModuleInterop": true
+  }
+}
