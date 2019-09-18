@@ -80,6 +80,8 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     return sandbox;
   } catch (error) {
     state.live.error = error.reason;
+  } finally {
+    state.live.isLoading = false;
   }
 
   return null;

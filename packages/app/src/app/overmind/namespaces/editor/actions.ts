@@ -109,9 +109,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
       state.live.isTeam = true;
     }
 
-    state.live.isLoading = true;
     await actions.live.internal.initialize(sandbox.roomId);
-    state.live.isLoading = false;
   } else if (sandbox.owned) {
     actions.files.internal.recoverFiles();
   }

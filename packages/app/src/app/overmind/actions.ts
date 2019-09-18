@@ -217,26 +217,17 @@ export const refetchSandboxInfo: AsyncAction = async ({
     sandbox.owned = updatedSandbox.owned;
     sandbox.userLiked = updatedSandbox.userLiked;
     sandbox.title = updatedSandbox.title;
+    sandbox.team = updatedSandbox.team;
 
-    if (!sandbox.team && updatedSandbox.team) {
-      sandbox.team = updatedSandbox.team;
-    } else if (sandbox.team && !updatedSandbox.team) {
-      sandbox.team = updatedSandbox.team;
-    } else if (sandbox.team.id !== updatedSandbox.team.id) {
-      sandbox.team = updatedSandbox.team;
-    }
+    state.live.isTeam = Boolean(sandbox.team);
 
     if (sandbox.roomId === updatedSandbox.roomId) {
       return;
     }
 
     sandbox.roomId = updatedSandbox.roomId;
-
+    await actions.live.internal.disconnect();
     if (updatedSandbox.owned && updatedSandbox.roomId) {
-      await actions.live.internal.disconnect();
-
-      state.live.isTeam = Boolean(sandbox.team);
-
       await actions.live.internal.initialize(sandbox.roomId);
     }
   }

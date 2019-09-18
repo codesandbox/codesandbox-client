@@ -82,6 +82,10 @@ export default {
     return _socket;
   },
   disconnect() {
+    if (!channel) {
+      return Promise.resolve({});
+    }
+
     return new Promise((resolve, reject) => {
       channel
         .leave()
