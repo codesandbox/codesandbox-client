@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { inject, hooksObserver, Observer } from 'app/componentConnectors';
 import { Link } from 'react-router-dom';
 import Media from 'react-media';
 import {
@@ -102,22 +102,28 @@ export const Navigation = inject('store', 'signals')(
                 noHeightAnimation
               >
                 {open => (
-                  <Action
-                    style={{ position: 'relative', fontSize: '1.25rem' }}
-                    onClick={open}
-                  >
-                    <Tooltip
-                      placement="bottom"
-                      content={
-                        userNotifications.unreadCount > 0
-                          ? 'Show Notifications'
-                          : 'No Notifications'
-                      }
-                    >
-                      <BellIcon height={35} />
-                      {userNotifications.unreadCount > 0 && <UnreadIcon />}
-                    </Tooltip>
-                  </Action>
+                  <Observer>
+                    {({ store }) => (
+                      <Action
+                        style={{ position: 'relative', fontSize: '1.25rem' }}
+                        onClick={open}
+                      >
+                        <Tooltip
+                          placement="bottom"
+                          content={
+                            store.userNotifications.unreadCount > 0
+                              ? 'Show Notifications'
+                              : 'No Notifications'
+                          }
+                        >
+                          <BellIcon height={35} />
+                          {store.userNotifications.unreadCount > 0 && (
+                            <UnreadIcon />
+                          )}
+                        </Tooltip>
+                      </Action>
+                    )}
+                  </Observer>
                 )}
               </Overlay>
             )}
