@@ -71,12 +71,12 @@ export default {
       })),
     };
   },
-  forkSandbox(id: string): Promise<Sandbox> {
+  forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
     const url = id.includes('/')
       ? `/sandboxes/fork/${id}`
       : `/sandboxes/${id}/fork`;
 
-    return api.post(url, {});
+    return api.post(url, body || {});
   },
   createModule(sandboxId: string, module: Module): Promise<Module> {
     return api.post(`/sandboxes/${sandboxId}/modules`, {

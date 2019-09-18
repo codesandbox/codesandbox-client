@@ -77,7 +77,9 @@ export const withOwnedSandbox = <T>(
         'This sandbox is frozen, and will be forked. Do you want to continue?'
       ))
   ) {
-    await actions.editor.internal.forkSandbox(state.editor.currentId);
+    await actions.editor.internal.forkSandbox({
+      sandboxId: state.editor.currentId,
+    });
   }
 
   return continueAction(context, payload);
