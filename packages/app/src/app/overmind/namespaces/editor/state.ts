@@ -25,7 +25,7 @@ import { mainModule as getMainModule } from '../../utils/main-module';
 
 type State = {
   currentId: string;
-  currentModuleShortid: string;
+  currentModuleShortid: string | null;
   isForkingSandbox: boolean;
   mainModuleShortid: string;
   sandboxes: {
@@ -36,7 +36,7 @@ type State = {
   devToolTabs: Derive<State, any[]>;
   isLoading: boolean;
   notFound: boolean;
-  error: string;
+  error: string | null;
   isResizing: boolean;
   changedModuleShortids: string[];
   pendingOperations: {
@@ -55,6 +55,7 @@ type State = {
   quickActionsOpen: boolean;
   previewWindowVisible: boolean;
   workspaceConfigCode: string;
+  statusBar: boolean;
   previewWindowOrientation: WindowOrientation;
   isAllModulesSynced: Derive<State, boolean>;
   currentSandbox: Derive<State, Sandbox>;
@@ -103,6 +104,7 @@ export const state: State = {
   isUpdatingPrivacy: false,
   quickActionsOpen: false,
   previewWindowVisible: true,
+  statusBar: true,
   previewWindowOrientation:
     window.innerHeight / window.innerWidth > 0.9
       ? WindowOrientation.HORIZONTAL

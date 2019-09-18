@@ -32,9 +32,9 @@ type State = {
     x: number;
     y: number;
   };
-  currentModal: string;
+  currentModal: string | null;
   currentModalMessage: string;
-  uploadedFiles: UploadFile[];
+  uploadedFiles: UploadFile[] | null;
   maxStorage: number;
   usedStorage: number;
   updateStatus: string;

@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
@@ -336,7 +337,19 @@ module.exports = {
       // When you `import` an asset, you get its (virtual) filename.
       // In production, they would get copied to the `build` folder.
       {
-        test: /\.(ico|jpg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
+        test: /\.(svg)(\?.*)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'static/media/[name].[hash:8].[ext]',
+            },
+          },
+          { loader: 'svgo-loader' },
+        ],
+      },
+      {
+        test: /\.(ico|jpg|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
         exclude: [/\/favicon.ico$/],
         loader: 'file-loader',
         options: {

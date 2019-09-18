@@ -350,6 +350,26 @@ async function findDependencyVersion(
       defaultExtensions
     );
 
+    // If the dependency is in the root we get it from the manifest, as the manifest
+    // contains all the versions that we really wanted to resolve in the first place.
+    // An example of this is csb.dev packages, the package.json version doesn't say the
+    // actual version, but the semver it relates to. In this case we really want to have
+    // the actual url
+    if (
+      foundPackageJSONPath ===
+      pathUtils.join('/node_modules', dependencyName, 'package.json')
+    ) {
+      const rootDependency = manifest.dependencies.find(
+        dep => dep.name === dependencyName
+      );
+      if (rootDependency) {
+        return {
+          packageJSONPath: foundPackageJSONPath,
+          version: rootDependency.version,
+        };
+      }
+    }
+
     const packageJSON =
       manager.transpiledModules[foundPackageJSONPath] &&
       manager.transpiledModules[foundPackageJSONPath].module.code;

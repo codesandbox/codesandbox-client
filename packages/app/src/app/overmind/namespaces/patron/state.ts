@@ -11,9 +11,7 @@ export const state: State = {
   price: 10,
   error: null,
   isUpdatingSubscription: false,
-  tier: state => {
-    const price = state.price;
-
+  tier: ({ price }) => {
     if (price >= 20) return 4;
     if (price >= 15) return 3;
     if (price >= 10) return 2;

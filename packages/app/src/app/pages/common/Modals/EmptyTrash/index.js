@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert } from 'app/components/Alert';
-import { inject } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import { permanentlyDeleteSandboxes } from '../../../Dashboard/queries';
 
 function EmptyTrash({ signals, store }) {
@@ -22,4 +22,4 @@ function EmptyTrash({ signals, store }) {
   );
 }
 
-export default inject('signals', 'store')(EmptyTrash);
+export default inject('signals', 'store')(hooksObserver(EmptyTrash));

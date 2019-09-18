@@ -20,7 +20,11 @@ export const DeleteDeploymentButton = inject('store', 'signals')(
       store: { deployment },
     }: Props) => (
       <Action
-        disabled={deployment[`${id}Deleting`]}
+        disabled={
+          deployment.deploysBeingDeleted
+            ? deployment.deploysBeingDeleted.includes(id)
+            : deployment[`${id}Deleting`]
+        }
         onClick={() => {
           setDeploymentToDelete({ id });
           modalOpened({ modal: 'deleteDeployment' });

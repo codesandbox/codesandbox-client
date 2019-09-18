@@ -1,7 +1,7 @@
-import * as internalActions from './internalActions';
 import { AsyncAction, Action } from 'app/overmind';
 import { client } from 'app/graphql/client';
 import gql from 'graphql-tag';
+import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 

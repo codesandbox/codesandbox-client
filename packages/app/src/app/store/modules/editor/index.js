@@ -45,6 +45,7 @@ export default Module({
     isUpdatingPrivacy: false,
     quickActionsOpen: false,
     previewWindowVisible: true,
+    statusBar: true,
     previewWindowOrientation:
       window.innerHeight / window.innerWidth > 0.9 ? 'horizontal' : 'vertical',
     themes,
@@ -101,6 +102,7 @@ export default Module({
     prettifyClicked: sequences.prettifyCode,
     errorsCleared: sequences.clearErrors,
     projectViewToggled: sequences.toggleProjectView,
+    toggleStatusBar: sequences.toggleStatusBar,
     previewActionReceived: sequences.handlePreviewAction,
     privacyUpdated: sequences.updatePrivacy,
     frozenUpdated: sequences.updateFrozen,

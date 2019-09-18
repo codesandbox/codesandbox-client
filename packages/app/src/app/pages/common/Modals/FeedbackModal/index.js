@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { inject } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 import Loadable from 'app/utils/Loadable';
 
 import { Heading, Container } from '../elements';
@@ -17,4 +17,4 @@ const FeedbackModal = ({ store }) => (
   </Container>
 );
 
-export default inject('store')(FeedbackModal);
+export default inject('store')(hooksObserver(FeedbackModal));

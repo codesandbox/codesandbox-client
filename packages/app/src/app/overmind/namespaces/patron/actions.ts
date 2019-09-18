@@ -79,7 +79,9 @@ export const cancelSubscriptionClicked: AsyncAction = async ({
       effects.notificationToast.success(
         'Sorry to see you go, but thanks a bunch for the support this far!'
       );
-    } catch (error) {}
+    } catch (error) {
+      /* ignore */
+    }
 
     state.patron.isUpdatingSubscription = false;
   }
