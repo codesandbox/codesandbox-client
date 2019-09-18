@@ -1,6 +1,10 @@
 import { AsyncAction, Action } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 
+export enum StripeErrorCode {
+  REQUIRES_ACTION = 'requires_action',
+}
+
 export const patronMounted: AsyncAction = withLoadApp();
 
 export const priceChanged: Action<{ price: number }> = (
@@ -25,7 +29,21 @@ export const createSubscriptionClicked: AsyncAction<{
     );
     effects.notificationToast.error('Thank you very much for your support!');
   } catch (error) {
-    state.patron.error = error.message;
+    if (
+      error.error_code &&
+      error.error_code === StripeErrorCode.REQUIRES_ACTION
+    ) {
+      try {
+        await effects.stripe.handleCardPayment(error.data.client_secret);
+
+        state.user = await effects.api.getCurrentUser();
+        state.patron.error = null;
+      } catch (e) {
+        state.patron.error = e.message;
+      }
+    } else {
+      state.patron.error = error.message;
+    }
   }
   state.patron.isUpdatingSubscription = false;
 };

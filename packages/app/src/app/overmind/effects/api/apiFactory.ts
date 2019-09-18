@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
 import { values } from 'lodash-es';
@@ -46,20 +47,19 @@ export default (config: {
       : {};
 
   const showError = error => {
-    const errorMessage = getMessage(error);
-
-    config.onError(errorMessage);
-    error.apiMessage = errorMessage; // eslint-disable-line no-param-reassign
+    config.onError(error.message);
+    error.apiMessage = error.message; // eslint-disable-line no-param-reassign
   };
 
   const handleError = error => {
+    const newError = convertError(error);
     try {
-      showError(error);
+      showError(newError);
     } catch (e) {
       console.error(e);
     }
 
-    throw error;
+    throw newError;
   };
 
   const api: Api = {
@@ -122,7 +122,7 @@ export default (config: {
   return api;
 };
 
-function getMessage(error: AxiosError) {
+function convertError(error: AxiosError) {
   const response = error.response;
 
   if (!response || response.status >= 500) {
@@ -140,13 +140,22 @@ function getMessage(error: AxiosError) {
         error.message = errors; // eslint-disable-line no-param-reassign
       }
     } else if (response.data.error) {
-      error.message = response.data.error; // eslint-disable-line no-param-reassign
+      const { error_code, message, ...data } = response.data.error as {
+        message: string;
+        error_code: string;
+        [k: string]: any;
+      };
+      // @ts-ignore
+      error.error_code = error_code; // eslint-disable-line no-param-reassign
+      error.message = message; // eslint-disable-line no-param-reassign
+      // @ts-ignore
+      error.data = data; // eslint-disable-line no-param-reassign
     } else if (response.status === 413) {
       return 'File too large, upload limit is 5MB.';
     }
   }
 
-  return error.message;
+  return error;
 }
 
 export function handleResponse(
