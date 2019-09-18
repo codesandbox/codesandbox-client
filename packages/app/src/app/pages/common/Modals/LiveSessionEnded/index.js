@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'app/componentConnectors';
+import { inject, hooksObserver } from 'app/componentConnectors';
 
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
@@ -9,14 +9,14 @@ import { Heading, Explanation } from '../elements';
 
 function LiveModeEnded({ signals, store }) {
   const suggestion = store.editor.currentSandbox.owned
-    ? 'You can continue working on the current sandbox.'
+    ? 'you can continue working on the current sandbox.'
     : 'you can continue working by forking the sandbox or by creating a new sandbox.';
   return (
     <Container>
       <Heading>The live session has ended</Heading>
       <Explanation css={{ marginBottom: '1rem' }}>
         {store.currentModalMessage || 'The session has ended due to inactivity'}
-        ,{suggestion}
+        , {suggestion}
       </Explanation>
 
       <Row justifyContent="space-around">
@@ -49,4 +49,4 @@ function LiveModeEnded({ signals, store }) {
   );
 }
 
-export default inject('signals', 'store')(LiveModeEnded);
+export default inject('signals', 'store')(hooksObserver(LiveModeEnded));

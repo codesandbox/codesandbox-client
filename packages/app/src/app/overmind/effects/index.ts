@@ -24,3 +24,4 @@ export { default as zip } from './zip';
 export { default as codesandboxApi } from './codesandboxApi';
 export { default as themes } from './themes';
 export { default as executor } from './executor';
+export { default as stripe } from './stripe';

@@ -182,15 +182,24 @@ class BasePreview extends React.Component<Props, State> {
     }
   };
 
-  currentUrl = () =>
-    this.props.url ||
-    (this.serverPreview
-      ? getSSEUrl(this.props.sandbox, this.props.initialPath)
+  currentUrl = () => {
+    const { url, sandbox } = this.props;
+    if (url && !url.startsWith('/')) {
+      // An absolute url is given, just return that
+      return url;
+    }
+
+    // url may be a relative path (/test), so start with that
+    const initialPath = url || this.props.initialPath || '';
+
+    return this.serverPreview
+      ? getSSEUrl(sandbox, initialPath)
       : frameUrl(
-          this.props.sandbox,
-          this.props.initialPath || '',
+          sandbox,
+          initialPath,
           this.state && this.state.useFallbackDomain
-        ));
+        );
+  };
 
   static defaultProps = {
     showNavigation: true,

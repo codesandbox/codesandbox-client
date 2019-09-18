@@ -13,7 +13,8 @@
     "$PropertyType": true,
     "TimeoutID": true,
     "object": true,
-    "__DEV__": true
+    "__DEV__": true,
+    "Stripe": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,
@@ -41,13 +42,7 @@
       }
     ],
     "no-param-reassign": ["error", { "props": false }],
-    "camelcase": [
-      "error",
-      {
-        "allow": ["UNSAFE_componentDidMount", "_id$", "^UNSAFE_"],
-        "properties": "never"
-      }
-    ],
+    "camelcase": 0,
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "jsx-a11y/href-no-hash": "off",

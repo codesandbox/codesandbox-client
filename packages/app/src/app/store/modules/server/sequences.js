@@ -27,6 +27,8 @@ export const onCodeSandboxAPIMessage = [
 
 export const openBrowserFromPort = [actions.openBrowserFromPort];
 
+export const openBrowserTab = [actions.openBrowserTab];
+
 export const onSSEMessage = [
   equals(props`event`),
   {

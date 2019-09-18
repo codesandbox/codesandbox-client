@@ -114,6 +114,12 @@ export const onModuleSaved: Operator<
     moduleItem => moduleItem.shortid === data.moduleShortid
   );
   module.isNotSynced = false;
+
+  state.editor.changedModuleShortids.splice(
+    state.editor.changedModuleShortids.indexOf(module.shortid),
+    1
+  );
+
   actions.editor.internal.setModuleSavedCode({
     moduleShortid: data.moduleShortid,
     savedCode: data.savedCode,
@@ -343,9 +349,9 @@ export const onLiveRemoveEditor: Operator<
   LiveMessage<{
     editor_user_id: string;
   }>
-> = mutate(({ state }, { _isOwnMessage, liveUserId, data }) => {
+> = mutate(({ state }, { _isOwnMessage, data }) => {
   if (!_isOwnMessage) {
-    const userId = liveUserId || data.editor_user_id;
+    const userId = data.editor_user_id;
 
     const editors = state.live.roomInfo.editorIds;
     const newEditors = editors.filter(id => id !== userId);
@@ -364,10 +370,10 @@ export const onOperation: Operator<
     return;
   }
   if (_isOwnMessage) {
-    effects.live.getClient(data.module_shortid).serverAck();
+    effects.live.serverAck(data.module_shortid);
   } else {
     try {
-      effects.live.getClient(data.module_shortid).applyServer(data.operation);
+      effects.live.applyServer(data.module_shortid, data.operation);
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
       console.error('Something went wrong with applying OT operation');

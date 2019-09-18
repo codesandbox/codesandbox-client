@@ -1,7 +1,37 @@
-import Template from './template';
+import Template, { ViewConfig } from './template';
 import { decorateSelector } from '../theme';
 
-export default new Template(
+class GridsomeTemplate extends Template {
+  getViews(): ViewConfig[] {
+    const GRIDSOME_VIEWS: ViewConfig[] = [
+      {
+        views: [
+          { id: 'codesandbox.browser' },
+          {
+            id: 'codesandbox.browser',
+            closeable: true,
+            options: {
+              url: '/___explore',
+              title: 'GraphiQL',
+            },
+          },
+        ],
+      },
+      {
+        open: true,
+        views: [
+          { id: 'codesandbox.terminal' },
+          { id: 'codesandbox.console' },
+          { id: 'codesandbox.problems' },
+        ],
+      },
+    ];
+
+    return GRIDSOME_VIEWS;
+  }
+}
+
+export default new GridsomeTemplate(
   'gridsome',
   'Gridsome',
   'https://gridsome.org/',

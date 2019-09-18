@@ -1,4 +1,5 @@
 import React from 'react';
+import Helmet from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Button } from '@codesandbox/common/lib/components/Button';
@@ -172,15 +173,14 @@ class SandboxPage extends React.Component {
 
     const sandbox = store.editor.currentSandbox;
 
-    if (sandbox) {
-      document.title = `${getSandboxName(sandbox)} - CodeSandbox`;
-    }
-
     return (
-      <React.Fragment>
+      <>
+        <Helmet>
+          <title>{getSandboxName(sandbox)} - CodeSandbox</title>
+        </Helmet>
         <Editor match={match} />
         <QuickActions />
-      </React.Fragment>
+      </>
     );
   }
 }

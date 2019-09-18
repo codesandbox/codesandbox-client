@@ -29,6 +29,8 @@ export const openQuickActions = set(state`editor.quickActionsOpen`, true);
 
 export const closeQuickActions = set(state`editor.quickActionsOpen`, false);
 
+export const toggleStatusBar = toggle(state`editor.statusBar`);
+
 export const toggleProjectView = toggle(state`editor.isInProjectView`);
 
 const hasEnoughTabs = when(state`editor.tabs`, tabs => tabs.length > 1);

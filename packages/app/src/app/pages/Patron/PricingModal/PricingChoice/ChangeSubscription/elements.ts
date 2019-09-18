@@ -29,3 +29,26 @@ export const StripeInput = styled(Input)`
   margin-bottom: 0.5rem;
   height: 32.8px;
 `;
+
+export const Centered = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+export const CancelText = styled.button`
+  transition: 0.3s ease color;
+  background-color: transparent;
+  outline: 0;
+  border: 0;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.6);
+  }
+`;

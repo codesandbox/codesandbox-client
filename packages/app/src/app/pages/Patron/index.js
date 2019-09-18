@@ -1,4 +1,5 @@
 import React from 'react';
+import Helmet from 'react-helmet';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
@@ -14,10 +15,11 @@ class Patron extends React.Component {
     this.props.signals.patron.patronMounted();
   }
   render() {
-    document.title = 'Patron - CodeSandbox';
-
     return (
       <MaxWidth>
+        <Helmet>
+          <title>Patron - CodeSandbox</title>
+        </Helmet>
         <Margin vertical={1.5} horizontal={1.5}>
           <Navigation title="Become a Patron" />
           <Content>

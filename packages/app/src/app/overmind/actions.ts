@@ -219,13 +219,15 @@ export const refetchSandboxInfo: AsyncAction = async ({
     sandbox.title = updatedSandbox.title;
     sandbox.team = updatedSandbox.team;
 
-    if (state.live.isLive) {
-      await actions.live.internal.disconnect();
+    state.live.isTeam = Boolean(sandbox.team);
 
-      if (sandbox.owned && sandbox.roomId) {
-        state.live.isTeam = Boolean(sandbox.team);
-      }
+    if (sandbox.roomId === updatedSandbox.roomId) {
+      return;
+    }
 
+    sandbox.roomId = updatedSandbox.roomId;
+    await actions.live.internal.disconnect();
+    if (updatedSandbox.owned && updatedSandbox.roomId) {
       await actions.live.internal.initialize(sandbox.roomId);
     }
   }

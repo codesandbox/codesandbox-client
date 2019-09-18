@@ -1,4 +1,4 @@
-import { Client, TextOperation } from 'ot';
+import { Client } from 'ot';
 
 export type SendOperation = (
   moduleShortid: string,
@@ -56,7 +56,6 @@ class CodeSandboxOTClient extends Client {
     super.applyClient(operation);
   }
   applyServer(operation: any) {
-    console.log(operation);
     super.applyServer(operation);
   }
 }
@@ -89,24 +88,19 @@ export default (
 
       return client;
     },
-    create(moduleShortid, revision) {
+    create(moduleShortid, initialRevision) {
       const client = new CodeSandboxOTClient(
-        revision,
+        initialRevision,
         moduleShortid,
         (revision, operation) => {
           sendOperation(
             moduleShortid,
             revision,
-            operationToElixir(
-              Array.isArray(operation) ? operation : operation.toJSON()
-            )
+            operationToElixir(operation.toJSON())
           );
         },
         operation => {
-          applyOperation(
-            moduleShortid,
-            Array.isArray(operation) ? operation : operation.toJSON()
-          );
+          applyOperation(moduleShortid, operation);
         }
       );
       modules.set(moduleShortid, client);

@@ -30,8 +30,6 @@ export const createLiveClicked: AsyncAction<{
 
   const roomId = await effects.api.createLiveRoom(sandboxId);
   await actions.live.internal.initialize(roomId);
-
-  state.live.isLoading = false;
 };
 
 export const liveMessageReceived: Operator<LiveMessage> = pipe(
@@ -79,7 +77,7 @@ export const onTransformMade: Action<{
   }
 
   try {
-    effects.live.getClient(moduleShortid).applyClient(operation);
+    effects.live.applyClient(moduleShortid, operation);
   } catch (e) {
     // Something went wrong, probably a sync mismatch. Request new version
     console.error(
@@ -87,7 +85,7 @@ export const onTransformMade: Action<{
       moduleShortid,
       operation
     );
-    effects.live.send('live:module_state', {});
+    effects.live.sendModuleState();
   }
 };
 
@@ -102,10 +100,10 @@ export const applyTransformation: Action<{
 
   if (existingPendingOperation) {
     pendingOperation = TextOperation.fromJSON(existingPendingOperation)
-      .compose(TextOperation.fromJSON(operation))
+      .compose(operation)
       .toJSON();
   } else {
-    pendingOperation = operation;
+    pendingOperation = operation.toJSON();
   }
 
   state.editor.pendingOperations[moduleShortid] = pendingOperation;
@@ -233,7 +231,7 @@ export const onFollow: Action<{
     const module = modules.find(m => m.shortid === user.currentModuleShortid);
 
     actions.editor.moduleSelected({
-      id: module.id,
+      id: module ? module.id : undefined,
     });
   }
 };

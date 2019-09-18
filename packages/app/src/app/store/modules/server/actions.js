@@ -1,7 +1,6 @@
 // @ts-check
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
-
 import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 
 import { INITIAL_SERVER_STATE } from './state';
@@ -99,6 +98,16 @@ export function setPorts({ props, state }) {
   state.set('server.ports', props.data);
 }
 
+export function openBrowserTab({ controller, props }) {
+  controller.getSignal('editor.openDevToolsTab')({
+    tab: {
+      id: 'codesandbox.browser',
+      closeable: true,
+      options: props.port,
+    },
+  });
+}
+
 export function openBrowserFromPort({ controller, props }) {
   controller.getSignal('editor.openDevToolsTab')({
     tab: props.port.main
@@ -157,11 +166,12 @@ function getOpenedBrowserPorts(views: ViewConfig[]) {
 export function showPortOpenedNotifications({ state, props, controller }) {
   const currentPorts = state.get('server.ports');
   const newPorts = props.ports;
+  const tabs = state.get('editor.devToolTabs');
 
   const addedPorts = newPorts.filter(
     port => !currentPorts.find(p => p.port === port.port)
   );
-  const openedPorts = getOpenedBrowserPorts(state.get('editor.devToolTabs'));
+  const openedPorts = getOpenedBrowserPorts(tabs);
 
   addedPorts.forEach(port => {
     if (!(port.main || openedPorts.includes(port.port))) {

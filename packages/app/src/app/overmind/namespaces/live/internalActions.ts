@@ -45,10 +45,6 @@ export const disconnect: Action = ({ effects }) => {
   effects.live.disconnect();
 };
 
-export const sendModuleSaved: Action<string> = ({ effects }, moduleShortid) => {
-  effects.live.sendModuleSaved(moduleShortid);
-};
-
 export const initialize: AsyncAction<string, Sandbox> = async (
   { state, effects, actions },
   id
@@ -79,11 +75,13 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     state.live.receivingCode = false;
     state.live.isLive = true;
     state.live.error = null;
-    effects.live.send('live:module_state', {});
+    effects.live.sendModuleState();
 
     return sandbox;
   } catch (error) {
     state.live.error = error.reason;
+  } finally {
+    state.live.isLoading = false;
   }
 
   return null;
@@ -133,7 +131,7 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
     if (user.selection) {
       selections.push({
         userId,
-        color: user.color.toJS(),
+        color: user.color,
         name: user.username,
         selection: json(user.selection),
       });

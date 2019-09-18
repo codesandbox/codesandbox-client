@@ -50,7 +50,9 @@ export const withLoadApp = <T>(
   state.isAuthenticating = false;
 
   try {
-    const response = await effects.http.get<{ contributors: Contributor[] }>(
+    const response = await effects.http.getJson<{
+      contributors: Contributor[];
+    }>(
       'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'
     );
 
@@ -58,7 +60,7 @@ export const withLoadApp = <T>(
       contributor => contributor.login
     );
   } catch (error) {
-    console.log(error);
+    // Something wrong in the parsing probably, make sure the file is JSON valid
   }
 };
 
