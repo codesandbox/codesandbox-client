@@ -34,7 +34,7 @@ export const UserTemplate = ({
   small,
 }: IUserTemplateProps) => {
   const Icon =
-    Icons && template.iconUrl && Icons[template.iconUrl]
+    template.iconUrl && Icons[template.iconUrl]
       ? Icons[template.iconUrl]
       : getIcon(template.sandbox.source.template);
 

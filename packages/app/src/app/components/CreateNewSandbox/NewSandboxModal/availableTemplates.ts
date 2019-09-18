@@ -38,3 +38,5 @@ export const popular = [
 
 export const client = usedTemplates.filter(t => !t.isServer);
 export const container = usedTemplates.filter(t => t.isServer);
+
+export const all = [...client, ...presets, ...container];
