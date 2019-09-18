@@ -2,7 +2,7 @@
   "name": "@codesandbox/icons",
   "version": "0.0.1",
   "description": "Icons designed for the codesanbox app",
-  "main": "react/all",
+  "main": "dist/index",
   "scripts": {
     "storybook": "start-storybook -p 6007",
     "build": "node scripts/build"
