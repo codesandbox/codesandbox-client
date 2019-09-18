@@ -78,6 +78,7 @@ type State = {
     devToolIndex: number;
     tabPosition: number;
   };
+  sessionFrozen: boolean;
 };
 
 export const state: State = {
@@ -94,6 +95,7 @@ export const state: State = {
   currentTabId: null,
   tabs: [],
   errors: [],
+  sessionFrozen: true,
   corrections: [],
   pendingOperations: {},
   pendingUserSelections: [],
