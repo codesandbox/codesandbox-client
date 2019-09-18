@@ -78,15 +78,15 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
       hasChangedTitle || hasChangedDescription || hasChangedAlias;
 
     if (hasChanged) {
-      effects.analytics.track(
-        `Sandbox - Update ${
-          hasChangedTitle
-            ? 'Title'
-            : hasChangedDescription
-            ? 'Description'
-            : 'Alias'
-        }`
-      );
+      let event = 'Alias';
+
+      if (hasChangedTitle) {
+        event = 'Title';
+      } else if (hasChangedDescription) {
+        event = 'Description';
+      }
+
+      effects.analytics.track(`Sandbox - Update ${event}`);
 
       sandbox.title = project.title;
       sandbox.description = project.description;

@@ -99,7 +99,8 @@ export type CurrentUser = {
   subscription:
     | {
         since: string;
-        amount: string;
+        amount: number;
+        cancelAtPeriodEnd: boolean;
       }
     | undefined;
   curatorAt: string;
@@ -166,8 +167,17 @@ export type User = {
   likedSandboxes: PaginatedSandboxes;
   badges: Array<Badge>;
   subscriptionSince: string;
-  selection: Selection;
+  selection: Selection | null;
   color: any;
+};
+
+export type LiveUser = {
+  username: string;
+  selection: Selection;
+  id: string;
+  currentModuleShortid: string | null;
+  color: [number, number, number];
+  avatarUrl: string;
 };
 
 export type RoomInfo = {
@@ -178,7 +188,7 @@ export type RoomInfo = {
   chatEnabled: boolean;
   sandboxId: string;
   editorIds: string[];
-  users: User[];
+  users: LiveUser[];
   chat: {
     messages: Array<{
       userId: string;
@@ -404,9 +414,9 @@ export type UserSelection = {
 
 export type EditorSelection = {
   userId: string;
-  name: string;
-  selection: Selection;
-  color: number[];
+  name: string | null;
+  selection: Selection | null;
+  color: number[] | null;
 };
 
 export type EditorError = {
@@ -610,11 +620,10 @@ export type SandboxUrlSourceData = {
   git?: GitInfo;
 };
 
-export type LiveMessage<data = undefined> = {
+export type LiveMessage<data = unknown> = {
   event: LiveMessageEvent;
   data: data;
   _isOwnMessage: boolean;
-  liveUserId: string;
 };
 
 export enum LiveMessageEvent {
@@ -643,3 +652,16 @@ export enum LiveMessageEvent {
   CHAT = 'chat',
   NOTIFICATION = 'notification',
 }
+
+export enum StripeErrorCode {
+  REQUIRES_ACTION = 'requires_action',
+}
+
+export enum PatronBadge {
+  ONE = 'patron-1',
+  TWO = 'patron-2',
+  THREE = 'patron-3',
+  FOURTH = 'patron-4',
+}
+
+export type PatronTier = 1 | 2 | 3 | 4;

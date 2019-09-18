@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
@@ -13,7 +13,7 @@ import { Content } from './elements';
 const Patron: React.FC = () => {
   const { actions } = useOvermind();
 
-  React.useEffect(() => {
+  useEffect(() => {
     actions.patron.patronMounted();
   }, [actions]);
 
@@ -22,7 +22,6 @@ const Patron: React.FC = () => {
       <>
         <Helmet>
           <title>Patron - CodeSandbox</title>
-          <script async src="https://js.stripe.com/v3/" />
         </Helmet>
         <Margin vertical={1.5} horizontal={1.5}>
           <Navigation title="Become a Patron" />

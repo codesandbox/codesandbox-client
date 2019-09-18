@@ -30,8 +30,6 @@ export const createLiveClicked: AsyncAction<{
 
   const roomId = await effects.api.createLiveRoom(sandboxId);
   await actions.live.internal.initialize(roomId);
-
-  state.live.isLoading = false;
 };
 
 export const liveMessageReceived: Operator<LiveMessage> = pipe(
@@ -233,7 +231,7 @@ export const onFollow: Action<{
     const module = modules.find(m => m.shortid === user.currentModuleShortid);
 
     actions.editor.moduleSelected({
-      id: module.id,
+      id: module ? module.id : undefined,
     });
   }
 };

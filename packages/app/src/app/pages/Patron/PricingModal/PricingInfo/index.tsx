@@ -1,7 +1,5 @@
 import React from 'react';
-
-import Feature from './Feature';
-
+import { Feature } from './Feature';
 import { Title } from '../elements';
 import { Container, CenteredHeader } from './elements';
 

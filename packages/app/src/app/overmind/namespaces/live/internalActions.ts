@@ -80,6 +80,8 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     return sandbox;
   } catch (error) {
     state.live.error = error.reason;
+  } finally {
+    state.live.isLoading = false;
   }
 
   return null;
@@ -129,7 +131,7 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
     if (user.selection) {
       selections.push({
         userId,
-        color: user.color.toJS(),
+        color: user.color,
         name: user.username,
         selection: json(user.selection),
       });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { forEach } from 'lodash-es';
 
+import { PatronBadge } from '@codesandbox/common/lib/types';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
 import { Particle } from './elements';
 
@@ -8,7 +9,10 @@ const classNameRegex = /\shide/g;
 
 function showElement(el: HTMLElement) {
   if (el.nodeName === 'svg') {
-    el.setAttribute('class', el.className.baseVal.replace(classNameRegex, ''));
+    el.setAttribute(
+      'class',
+      el.getAttribute('class').replace(classNameRegex, '')
+    );
   } else {
     el.className = el.className.replace(classNameRegex, ''); // eslint-disable-line no-param-reassign
   }
@@ -16,7 +20,7 @@ function showElement(el: HTMLElement) {
 
 function hideElement(el: HTMLElement) {
   if (el.nodeName === 'svg') {
-    el.setAttribute('class', `${el.className.baseVal} hide`);
+    el.setAttribute('class', `${el.getAttribute('class')} hide`);
   } else {
     el.className += ' hide'; // eslint-disable-line no-param-reassign
   }
@@ -27,15 +31,21 @@ const createParticles = (amount: number, badge) =>
     .fill(0)
     .map((_, i) => (
       <Particle
-        key={`${i}_${badge}`} // eslint-disable-line
-        className={`${badge}-particle particle hide`}
+        // eslint-disable-next-line
+        key={`${i}_${badge}`}
         i={i}
+        className={`${badge}-particle particle hide`}
         deg={180 + (Math.floor(amount / 2) + i) * (360 / amount)}
         badge={badge}
       />
     ));
 
-export class Particles extends React.Component {
+type ParticlesProps = {
+  badge: PatronBadge;
+  makeItRain: boolean;
+};
+
+export class Particles extends React.Component<ParticlesProps> {
   makeItRain = () => {
     const particleSelector = document.getElementsByClassName('particle');
     forEach(particleSelector, hideElement);
@@ -45,9 +55,9 @@ export class Particles extends React.Component {
     });
   };
 
-  timeout: ?number;
+  timeout?: NodeJS.Timeout;
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps: ParticlesProps) {
     if (nextProps.badge !== this.props.badge) {
       const particleSelector = document.getElementsByClassName(
         `${nextProps.badge}-particle`

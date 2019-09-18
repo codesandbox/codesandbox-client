@@ -12,13 +12,13 @@ export interface Editor {
   changeSandbox?: (
     sandbox: Sandbox,
     newCurrentModule: Module,
-    dependencies: Object
+    dependencies: { [name: string]: string }
   ) => Promise<any>;
   setErrors?: (errors: Array<ModuleError>) => any;
   setCorrections?: (corrections: Array<ModuleCorrection>) => any;
   updateModules?: () => any;
   changeSettings?: (settings: Settings) => any;
-  changeDependencies?: (deps: Object) => any;
+  changeDependencies?: (deps: { [name: string]: string }) => any;
   changeModule?: (
     module: Module,
     errors?: Array<ModuleError>,

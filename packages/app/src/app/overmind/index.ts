@@ -1,3 +1,4 @@
+import { createHook } from 'overmind-react';
 import {
   IConfig,
   IOnInitialize,
@@ -8,7 +9,6 @@ import {
 } from 'overmind';
 import { merge, namespaced } from 'overmind/config';
 import { createConnect } from './createConnect';
-import { createHook } from 'overmind-react';
 import * as effects from './effects';
 import { state } from './state';
 import { onInitialize } from './onInitialize';

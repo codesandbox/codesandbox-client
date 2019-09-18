@@ -23,6 +23,10 @@ export const MyTemplates = ({ selectTemplate }: Props) => {
     fetchPolicy: 'cache-and-network',
   });
 
+  if (!data.me) {
+    return null;
+  }
+
   if (data.me && !data.me.templates.length) {
     return null;
   }

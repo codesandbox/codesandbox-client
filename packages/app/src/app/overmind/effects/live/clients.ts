@@ -1,4 +1,4 @@
-import { Client, TextOperation } from 'ot';
+import { Client } from 'ot';
 
 export type SendOperation = (
   moduleShortid: string,
@@ -88,9 +88,9 @@ export default (
 
       return client;
     },
-    create(moduleShortid, revision) {
+    create(moduleShortid, initialRevision) {
       const client = new CodeSandboxOTClient(
-        revision,
+        initialRevision,
         moduleShortid,
         (revision, operation) => {
           sendOperation(
