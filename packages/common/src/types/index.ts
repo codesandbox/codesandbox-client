@@ -651,3 +651,7 @@ export enum LiveMessageEvent {
   CHAT = 'chat',
   NOTIFICATION = 'notification',
 }
+
+export enum StripeErrorCode {
+  REQUIRES_ACTION = 'requires_action',
+}

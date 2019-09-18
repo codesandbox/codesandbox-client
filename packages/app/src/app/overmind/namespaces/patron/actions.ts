@@ -1,9 +1,6 @@
 import { AsyncAction, Action } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-
-export enum StripeErrorCode {
-  REQUIRES_ACTION = 'requires_action',
-}
+import { StripeErrorCode } from '@codesandbox/common/lib/types';
 
 export const patronMounted: AsyncAction = withLoadApp();
 
