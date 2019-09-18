@@ -3,20 +3,23 @@ import Helmet from 'react-helmet';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import { inject, observer } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import { Navigation } from 'app/pages/common/Navigation';
 import { PricingModal } from './PricingModal';
 import { Content } from './elements';
 
-class Patron extends React.Component {
-  componentDidMount() {
-    this.props.signals.patron.patronMounted();
-  }
-  render() {
-    return (
-      <MaxWidth>
+const Patron: React.FC = () => {
+  const { actions } = useOvermind();
+
+  React.useEffect(() => {
+    actions.patron.patronMounted();
+  }, [actions]);
+
+  return (
+    <MaxWidth>
+      <>
         <Helmet>
           <title>Patron - CodeSandbox</title>
           <script async src="https://js.stripe.com/v3/" />
@@ -25,22 +28,24 @@ class Patron extends React.Component {
           <Navigation title="Become a Patron" />
           <Content>
             <MaxWidth width={1024}>
-              <Title>Become a CodeSandbox Patron!</Title>
-              <SubTitle>
-                You can support us by paying a monthly amount of your choice.
-                <br />
-                The money goes to all expenses of CodeSandbox.
-              </SubTitle>
+              <>
+                <Title>Become a CodeSandbox Patron!</Title>
+                <SubTitle>
+                  You can support us by paying a monthly amount of your choice.
+                  <br />
+                  The money goes to all expenses of CodeSandbox.
+                </SubTitle>
 
-              <Centered horizontal>
-                <PricingModal />
-              </Centered>
+                <Centered horizontal>
+                  <PricingModal />
+                </Centered>
+              </>
             </MaxWidth>
           </Content>
         </Margin>
-      </MaxWidth>
-    );
-  }
-}
+      </>
+    </MaxWidth>
+  );
+};
 
-export default inject('signals')(observer(Patron));
+export default Patron;
