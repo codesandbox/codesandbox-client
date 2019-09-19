@@ -20,7 +20,7 @@ import {
   UserSandbox,
 } from '@codesandbox/common/lib/types';
 import { client } from 'app/graphql/client';
-import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
+import { LIST_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 
 import {
   transformSandbox,

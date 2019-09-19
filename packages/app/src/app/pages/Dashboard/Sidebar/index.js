@@ -122,10 +122,6 @@ class Sidebar extends React.Component {
                                 currentPath={path}
                                 teamId={team.id}
                               />
-                          <FollowedTemplatesItem
-                            currentPath={path}
-                            teamId={team.id}
-                          />
                             </Items>
                           </div>
                         ));
@@ -134,8 +130,6 @@ class Sidebar extends React.Component {
                   </>
                 )}
               </Observer>
-
-
             );
           }}
         </Route>
