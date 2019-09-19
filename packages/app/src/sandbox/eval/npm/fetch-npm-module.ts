@@ -79,7 +79,7 @@ const urlProtocols = {
   },
   unpkg: {
     file: async (name: string, version: string, path: string) =>
-      `https://unpkg.com/${name}@${version}/${path}`,
+      `https://unpkg.com/${name}@${version}${path}`,
     meta: async (name: string, version: string) =>
       `https://unpkg.com/${name}@${version}/?meta`,
     normalizeMeta: normalize,

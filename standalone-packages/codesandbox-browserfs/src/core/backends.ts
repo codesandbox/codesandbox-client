@@ -10,7 +10,7 @@ import InMemory from '../backend/InMemory';
 import IndexedDB from '../backend/IndexedDB';
 import LocalStorage from '../backend/LocalStorage';
 import MountableFileSystem from '../backend/MountableFileSystem';
-// import OverlayFS from '../backend/OverlayFS';
+import OverlayFS from '../backend/OverlayFS';
 import WorkerFS from '../backend/WorkerFS';
 import HTTPRequest from '../backend/HTTPRequest';
 import BundledHTTPRequest from '../backend/BundledHTTPRequest';
@@ -22,10 +22,10 @@ import CodeSandboxEditorFS from '../backend/CodeSandboxEditorFS';
 import DynamicHTTPRequest from '../backend/DynamicHTTPRequest';
 
 // Monkey-patch `Create` functions to check options before file system initialization.
-[AsyncMirror, InMemory, IndexedDB, FolderAdapter, LocalStorage, MountableFileSystem, WorkerFS, BundledHTTPRequest, HTTPRequest, UNPKGRequest, ZipFS, CodeSandboxFS, CodeSandboxEditorFS, DynamicHTTPRequest].forEach((fsType: FileSystemConstructor) => {
+[AsyncMirror, InMemory, IndexedDB, FolderAdapter, OverlayFS, LocalStorage, MountableFileSystem, WorkerFS, BundledHTTPRequest, HTTPRequest, UNPKGRequest, ZipFS, CodeSandboxFS, CodeSandboxEditorFS, DynamicHTTPRequest].forEach((fsType: FileSystemConstructor) => {
   const create = fsType.Create;
   fsType.Create = function(opts?: any, cb?: BFSCallback<FileSystem>): void {
-    const oneArg = typeof(opts) === "function";
+    const oneArg = typeof(opts) === 'function';
     const normalizedCb = oneArg ? opts : cb;
     const normalizedOpts = oneArg ? {} : opts;
 
@@ -44,7 +44,7 @@ import DynamicHTTPRequest from '../backend/DynamicHTTPRequest';
 /**
  * @hidden
  */
-const Backends = { AsyncMirror, FolderAdapter, InMemory, IndexedDB, LocalStorage, MountableFileSystem, WorkerFS, BundledHTTPRequest, HTTPRequest, UNPKGRequest, XmlHttpRequest: HTTPRequest, ZipFS, CodeSandboxFS, CodeSandboxEditorFS, DynamicHTTPRequest};
+const Backends = { AsyncMirror, FolderAdapter, InMemory, IndexedDB, OverlayFS, LocalStorage, MountableFileSystem, WorkerFS, BundledHTTPRequest, HTTPRequest, UNPKGRequest, XmlHttpRequest: HTTPRequest, ZipFS, CodeSandboxFS, CodeSandboxEditorFS, DynamicHTTPRequest};
 // Make sure all backends cast to FileSystemConstructor (for type checking)
 const _: {[name: string]: FileSystemConstructor} = Backends;
 // tslint:disable-next-line:no-unused-expression

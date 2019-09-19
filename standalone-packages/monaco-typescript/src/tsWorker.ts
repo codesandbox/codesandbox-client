@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -39,7 +40,7 @@ declare global {
 // @ts-ignore
 const oldamd = self.define.amd;
 (self as any).define.amd = null;
-(self as any).importScripts(`/static/browserfs3/browserfs.min.js`);
+(self as any).importScripts(`/static/browserfs4/browserfs.min.js`);
 (self as any).define.amd = oldamd;
 
 (self as any).BrowserFS = BrowserFS;
