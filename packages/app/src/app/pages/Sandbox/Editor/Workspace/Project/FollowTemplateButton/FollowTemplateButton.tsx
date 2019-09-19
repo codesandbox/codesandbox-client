@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-import { observer } from 'mobx-react-lite';
 import { useLazyQuery, useMutation } from '@apollo/react-hooks';
-import { useStore } from 'app/store';
-import SignInButton from 'app/pages/common/SignInButton';
+import { useOvermind } from 'app/overmind';
+import { SignInButton } from 'app/pages/common/SignInButton';
 import Checked from 'react-icons/lib/md/check-box';
 import Unchecked from 'react-icons/lib/md/check-box-outline-blank';
 import { MultiAction } from '@codesandbox/common/lib/components/MultiAction';
@@ -12,14 +11,16 @@ import { followTemplate, unfollowTemplate } from './mutations.gql';
 // @ts-ignore
 import { getSandboxInfo } from './queries.gql';
 
-export const FollowTemplateButton = observer(() => {
+export const FollowTemplateButton = () => {
   const {
-    isLoggedIn,
-    editor: {
-      currentId: sandboxId,
-      currentSandbox: { customTemplate },
+    state: {
+      isLoggedIn,
+      editor: {
+        currentId: sandboxId,
+        currentSandbox: { customTemplate },
+      },
     },
-  } = useStore();
+  } = useOvermind();
   const [runQuery, { loading, data }] = useLazyQuery(getSandboxInfo);
 
   useEffect(() => {
@@ -105,7 +106,11 @@ export const FollowTemplateButton = observer(() => {
           }
         >
           {entities.map(({ entity: { name } }, i: number) => (
-            <button key={name} onClick={() => handleToggleFollow(i)}>
+            <button
+              type="button"
+              key={name}
+              onClick={() => handleToggleFollow(i)}
+            >
               <ButtonIcon>
                 {entities[i].isFollowing ? <Checked /> : <Unchecked />}
               </ButtonIcon>
@@ -118,4 +123,4 @@ export const FollowTemplateButton = observer(() => {
       )}
     </ButtonContainer>
   ) : null;
-});
+};

@@ -6,7 +6,7 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import history from 'app/utils/history';
 import track from '@codesandbox/common/lib/utils/analytics';
-import ContextMenu from 'app/components/ContextMenu';
+import { ContextMenu } from 'app/components/ContextMenu';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { LIST_FOLLOWED_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
@@ -18,7 +18,7 @@ import { Container, Grid, EmptyTitle } from '../elements';
 import { Navigation } from '../Navigation';
 
 export const FollowedTemplates = props => {
-  const teamId = props.match.params.teamId;
+  const { teamId } = props.match.params;
   const [sortedTemplates, setSortedTemplates] = useState();
 
   const { loading, error, data } = useQuery(LIST_FOLLOWED_TEMPLATES);

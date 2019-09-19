@@ -3,7 +3,7 @@ import { DropTarget } from 'react-dnd';
 import { withRouter } from 'react-router-dom';
 // @ts-ignore
 import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
-import { Item } from '../Item';
+import { Item } from '../../Item';
 import { MAKE_TEMPLATE_DROP_KEY } from '../../../Content/SandboxCard';
 
 interface ITemplateItemProps {

@@ -4,7 +4,7 @@ import { sortBy } from 'lodash-es';
 import { useQuery } from '@apollo/react-hooks';
 
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { ContextMenu } from 'app/components/ContextMenu';
 import history from 'app/utils/history';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -18,7 +18,7 @@ import { Container, Grid, EmptyTitle } from '../elements';
 import { Navigation } from '../Navigation';
 
 export const Templates = props => {
-  const teamId = props.match.params.teamId;
+  const { teamId } = props.match.params;
   const { loading, error, data } = useQuery(LIST_TEMPLATES, {
     variables: { teamId },
   });

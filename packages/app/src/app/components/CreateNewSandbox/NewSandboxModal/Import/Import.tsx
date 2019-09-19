@@ -4,9 +4,11 @@ import {
   protocolAndHost,
   gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { useOvermind } from 'app/overmind';
 import { Button } from '../Button';
 import { GitHubIcon, StackbitIcon } from '../Icons';
 import { Header, Legend } from '../elements';
+import { StackbitButton } from './Stackbit';
 import {
   Features,
   Column,
@@ -16,7 +18,6 @@ import {
   ButtonContainer,
   PlaceHolderLink,
 } from './elements';
-import { StackbitButton } from '../Imports/StackbitButton';
 
 const getFullGitHubUrl = url =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
@@ -34,6 +35,7 @@ const copyToClipboard = str => {
 };
 
 export const Import = () => {
+  const { state } = useOvermind();
   const [error, setError] = useState(null);
   const [transformedUrl, setTransformedUrl] = useState('');
   const [url, setUrl] = useState('');
@@ -109,9 +111,10 @@ export const Import = () => {
           </FeatureName>
           <FeatureText>
             Create a project using Stackbit. This generates a project for you
-            that's automatically set up with any Theme, Site Generator and CMS.
+            that{"'"}s automatically set up with any Theme, Site Generator and
+            CMS.
           </FeatureText>
-          <StackbitButton username={`SaraVieira`} />
+          <StackbitButton username={(state.user || {}).username} />
         </Column>
       </Features>
     </>

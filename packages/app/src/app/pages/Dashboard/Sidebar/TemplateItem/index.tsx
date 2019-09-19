@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
 import { FollowedTemplatesItem } from './FollowedTemplatesItem';
 import { MyTemplateItem } from './MyTemplateItem';
-import Item from '../Item';
+import { Item } from '../Item';
 
 interface Props {
   currentPath: string;
