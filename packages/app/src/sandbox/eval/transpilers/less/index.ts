@@ -30,7 +30,7 @@ class LessTranspiler extends WorkerTranspiler {
         {}
       );
 
-      const path = loaderContext.path;
+      const { path } = loaderContext;
       files[path] = code;
 
       this.queueTask(

@@ -5,7 +5,7 @@ import { debounce } from 'lodash-es';
 import React from 'react';
 import SplitPane from 'react-split-pane';
 
-import { DevToolProps } from '../';
+import { DevToolProps } from '..';
 
 import { Container, TestDetails, TestContainer } from './elements';
 import { TestElement } from './TestElement';
@@ -38,11 +38,11 @@ export type TestError = Error & {
 
 export type Test = {
   testName: string[];
-  duration: number | undefined;
   status: Status;
-  errors: TestError[];
   running: boolean;
   path: string;
+  errors: TestError[];
+  duration?: number | undefined;
 };
 
 export type File = {
@@ -163,6 +163,7 @@ class Tests extends React.Component<DevToolProps, State> {
   state = INITIAL_STATE;
 
   listener: () => void;
+
   currentDescribeBlocks: string[] = [];
 
   componentDidMount() {
@@ -190,15 +191,15 @@ class Tests extends React.Component<DevToolProps, State> {
   }
 
   selectFile = (file: File) => {
-    this.setState({
+    this.setState(state => ({
       selectedFilePath:
-        file.fileName === this.state.selectedFilePath ? null : file.fileName,
-    });
+        file.fileName === state.selectedFilePath ? null : file.fileName,
+    }));
   };
 
   toggleFileExpansion = (file: File) => {
-    this.setState(
-      immer(this.state, state => {
+    this.setState(oldState =>
+      immer(oldState, state => {
         state.fileExpansionState[file.fileName] = !state.fileExpansionState[
           file.fileName
         ];
@@ -247,14 +248,12 @@ class Tests extends React.Component<DevToolProps, State> {
             this.props.updateStatus('clear');
           }
           this.setState({
-            ...this.state,
             running: true,
           });
           break;
         }
         case messages.TOTAL_TEST_END: {
           this.setState({
-            ...this.state,
             running: false,
           });
 
@@ -281,8 +280,8 @@ class Tests extends React.Component<DevToolProps, State> {
         }
 
         case messages.ADD_FILE: {
-          this.setState(
-            immer(this.state, state => {
+          this.setState(oldState =>
+            immer(oldState, state => {
               state.files[data.path] = {
                 tests: {},
                 fileName: data.path,
@@ -294,8 +293,8 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
         case 'remove_file': {
-          this.setState(
-            immer(this.state, state => {
+          this.setState(oldState =>
+            immer(oldState, state => {
               if (state.files[data.path]) {
                 delete state.files[data.path];
               }
@@ -306,8 +305,8 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
         case messages.FILE_ERROR: {
-          this.setState(
-            immer(this.state, state => {
+          this.setState(oldState =>
+            immer(oldState, state => {
               if (state.files[data.path]) {
                 state.files[data.path].fileError = data.error;
               }
@@ -326,8 +325,8 @@ class Tests extends React.Component<DevToolProps, State> {
         case messages.ADD_TEST: {
           const testName = [...this.currentDescribeBlocks, data.testName];
 
-          this.setState(
-            immer(this.state, state => {
+          this.setState(oldState =>
+            immer(oldState, state => {
               if (!state.files[data.path]) {
                 state.files[data.path] = {
                   tests: {},
@@ -342,17 +341,18 @@ class Tests extends React.Component<DevToolProps, State> {
                 errors: [],
                 testName,
                 path: data.path,
+                running: false,
               };
             })
           );
           break;
         }
         case messages.TEST_START: {
-          const test = data.test;
+          const { test } = data;
           const testName = [...test.blocks, test.name];
 
-          this.setState(
-            immer(this.state, state => {
+          this.setState(oldState =>
+            immer(oldState, state => {
               if (!state.files[test.path]) {
                 state.files[test.path] = {
                   tests: {},
@@ -368,6 +368,7 @@ class Tests extends React.Component<DevToolProps, State> {
                   running: true,
                   testName,
                   path: test.path,
+                  errors: [],
                 };
               } else {
                 currentTest.status = 'running';
@@ -378,11 +379,11 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
         case messages.TEST_END: {
-          const test = data.test;
+          const { test } = data;
           const testName = [...test.blocks, test.name];
 
-          this.setState(
-            immer(this.state, state => {
+          this.setState(oldState =>
+            immer(oldState, state => {
               const existingTest =
                 state.files[test.path].tests[testName.join('||||')];
 
@@ -418,6 +419,7 @@ class Tests extends React.Component<DevToolProps, State> {
       status: Status;
     };
   } = {};
+
   getStatus = (file: File | undefined): Status => {
     if (file == null) {
       return 'idle';
@@ -434,7 +436,7 @@ class Tests extends React.Component<DevToolProps, State> {
       return 'fail';
     }
 
-    const tests = file.tests;
+    const { tests } = file;
     const status = Object.keys(tests).reduce(
       (prev: Status, next: Status): Status => {
         const test = tests[next];
@@ -469,7 +471,7 @@ class Tests extends React.Component<DevToolProps, State> {
       type: 'set-test-watching',
       watching: !this.state.watching,
     });
-    this.setState({ watching: !this.state.watching });
+    this.setState(state => ({ watching: !state.watching }));
   };
 
   runAllTests = () => {
@@ -482,9 +484,10 @@ class Tests extends React.Component<DevToolProps, State> {
 
   runTests = (file: File) => {
     this.setState(
-      immer(this.state, state => {
-        state.files[file.fileName].tests = {};
-      }),
+      oldState =>
+        immer(oldState, state => {
+          state.files[file.fileName].tests = {};
+        }),
       () => {
         dispatch({
           type: 'run-tests',
@@ -523,7 +526,7 @@ class Tests extends React.Component<DevToolProps, State> {
     const TSplitPane = SplitPane as any;
     return (
       <Container>
-        <TSplitPane split="horizontal" defaultSize={'50%'}>
+        <TSplitPane split="horizontal" defaultSize="50%">
           <TestContainer>
             <TestSummary
               running={this.state.running}

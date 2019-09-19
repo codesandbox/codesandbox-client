@@ -31,16 +31,17 @@ export default class extends React.PureComponent {
   }
 
   openSandbox = index => {
-    const sandbox = this.state.sandboxes[index];
-    const { id, title, description } = sandbox;
-
-    this.setState({
-      selectedSandbox: {
-        id,
-        title,
-        description,
-        screenshotUrl: sandbox.screenshot_url,
-      },
+    this.setState(state => {
+      const sandbox = state.sandboxes[index];
+      const { id, title, description } = sandbox;
+      return {
+        selectedSandbox: {
+          id,
+          title,
+          description,
+          screenshotUrl: sandbox.screenshot_url,
+        },
+      };
     });
   };
 

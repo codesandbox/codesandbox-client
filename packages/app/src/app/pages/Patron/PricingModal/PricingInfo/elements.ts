@@ -4,7 +4,7 @@ export const Container = styled.div`
   padding: 1rem 0;
 `;
 
-export const CenteredHeader = styled.th`
+export const CenteredHeader = styled.th<{ supporter?: boolean }>`
   font-size: 1.25rem;
   font-weight: 400;
   text-align: center;

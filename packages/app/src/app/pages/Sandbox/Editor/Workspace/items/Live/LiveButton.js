@@ -65,7 +65,7 @@ export default class LiveButton extends React.PureComponent {
   componentDidUpdate() {
     if (this.state.hovering && !this.timer) {
       this.timer = setInterval(() => {
-        this.setState({ showIcon: !this.state.showIcon });
+        this.setState(state => ({ showIcon: !state.showIcon }));
       }, 1000);
     } else if (!this.state.hovering && this.timer) {
       clearInterval(this.timer);

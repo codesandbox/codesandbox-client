@@ -39,7 +39,7 @@ export default ({ data: { markdownRemark: job } }) => (
       title={`${job.frontmatter.title} - CodeSandbox Careers`}
     />
     <PageContainer width={800}>
-      <Button small as={Link} to={`/jobs`}>
+      <Button small as={Link} to="/jobs">
         See all jobs
       </Button>
       <Title>{job.frontmatter.title}</Title>

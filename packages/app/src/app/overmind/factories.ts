@@ -10,7 +10,8 @@ export const withLoadApp = <T>(
   if (state.hasLoadedApp && continueAction) {
     await continueAction(context, value);
     return;
-  } else if (state.hasLoadedApp) {
+  }
+  if (state.hasLoadedApp) {
     return;
   }
 
@@ -60,7 +61,7 @@ export const withLoadApp = <T>(
       contributor => contributor.login
     );
   } catch (error) {
-    console.log(error);
+    // Something wrong in the parsing probably, make sure the file is JSON valid
   }
 };
 
@@ -77,7 +78,9 @@ export const withOwnedSandbox = <T>(
         'This sandbox is frozen, and will be forked. Do you want to continue?'
       ))
   ) {
-    await actions.editor.internal.forkSandbox(state.editor.currentId);
+    await actions.editor.internal.forkSandbox({
+      sandboxId: state.editor.currentId,
+    });
   }
 
   return continueAction(context, payload);

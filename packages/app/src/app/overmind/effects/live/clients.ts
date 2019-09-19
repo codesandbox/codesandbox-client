@@ -1,4 +1,4 @@
-import { Client, TextOperation } from 'ot';
+import { Client } from 'ot';
 
 export type SendOperation = (
   moduleShortid: string,
@@ -26,6 +26,7 @@ class CodeSandboxOTClient extends Client {
   moduleShortid: string;
   onSendOperation: (revision: string, operation: any) => void;
   onApplyOperation: (operation: any) => void;
+
   constructor(
     revision: number,
     moduleShortid: string,
@@ -49,12 +50,15 @@ class CodeSandboxOTClient extends Client {
   serverReconnect() {
     super.serverReconnect();
   }
+
   serverAck() {
     super.serverAck();
   }
+
   applyClient(operation: any) {
     super.applyClient(operation);
   }
+
   applyServer(operation: any) {
     super.applyServer(operation);
   }
@@ -88,9 +92,9 @@ export default (
 
       return client;
     },
-    create(moduleShortid, revision) {
+    create(moduleShortid, initialRevision) {
       const client = new CodeSandboxOTClient(
-        revision,
+        initialRevision,
         moduleShortid,
         (revision, operation) => {
           sendOperation(moduleShortid, revision, operation);

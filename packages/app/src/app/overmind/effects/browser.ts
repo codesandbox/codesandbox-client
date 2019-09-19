@@ -27,7 +27,7 @@ export default {
     return alert(message); // eslint-disable-line no-alert
   },
   confirm(message) {
-    return confirm(message); // eslint-disable-line no-alert
+    return confirm(message); // eslint-disable-line no-alert,no-restricted-globals
   },
   onUnload(cb) {
     window.onbeforeunload = cb;

@@ -5,7 +5,7 @@ import ansiHTML from 'ansi-html';
 
 import { escapeHtml } from 'app/utils/escape';
 
-import { TestError } from '../../';
+import { TestError } from '../..';
 
 const Container = styled.div`
   font-family: Menlo, Source Code Pro, monospace;

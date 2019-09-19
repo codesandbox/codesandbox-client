@@ -1,5 +1,6 @@
 import styled, { css, keyframes } from 'styled-components';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
+import { PatronBadge } from '@codesandbox/common/lib/types';
 
 const particleAnimation = (deg: number) => keyframes`
   0% {
@@ -12,8 +13,12 @@ const particleAnimation = (deg: number) => keyframes`
   }
 `;
 
-export const Particle = styled.div`
-  animation: ${props => particleAnimation(props.deg, props.i)} 700ms ease;
+export const Particle = styled.div<{
+  deg: number;
+  i: number;
+  badge: PatronBadge;
+}>`
+  animation: ${props => particleAnimation(props.deg)} 700ms ease;
   position: absolute;
   top: 0;
   bottom: 20px;

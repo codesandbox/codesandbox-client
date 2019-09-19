@@ -1,15 +1,15 @@
 import { AsyncAction } from 'app/overmind';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
-import {
-  resolveModuleWrapped,
-  resolveDirectoryWrapped,
-} from '../../utils/resolve-module-wrapped';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 import { INormalizedModules } from 'codesandbox-import-util-types';
 import { ModuleTab } from '@codesandbox/common/lib/types';
 import { createOptimisticModule } from 'app/overmind/utils/common';
 import { withOwnedSandbox } from 'app/overmind/factories';
+import {
+  resolveModuleWrapped,
+  resolveDirectoryWrapped,
+} from '../../utils/resolve-module-wrapped';
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -23,6 +23,11 @@ export const moduleRenamed: AsyncAction<{
     const module = sandbox.modules.find(
       moduleItem => moduleItem.shortid === moduleShortid
     );
+
+    if (!module) {
+      return;
+    }
+
     const oldTitle = module.title;
 
     module.title = title;
@@ -94,6 +99,11 @@ export const moduleMovedToDirectory: AsyncAction<{
     const module = sandbox.modules.find(
       moduleItem => moduleItem.shortid === moduleShortid
     );
+
+    if (!module) {
+      return;
+    }
+
     const currentDirectoryShortid = module.directoryShortid;
 
     module.directoryShortid = directoryShortid;
@@ -123,6 +133,10 @@ export const directoryMovedToDirectory: AsyncAction<{
       directoryItem => directoryItem.shortid === shortid
     );
 
+    if (!directoryToMove) {
+      return;
+    }
+
     directoryToMove.directoryShortid = directoryShortid;
 
     try {
@@ -147,6 +161,11 @@ export const directoryDeleted: AsyncAction<{
     const directory = sandbox.directories.find(
       directoryItem => directoryItem.shortid === directoryShortid
     );
+
+    if (!directory) {
+      return;
+    }
+
     const removedDirectory = sandbox.directories.splice(
       sandbox.directories.indexOf(directory),
       1
@@ -176,6 +195,11 @@ export const directoryRenamed: AsyncAction<{
     const directory = sandbox.directories.find(
       directoryEntry => directoryEntry.shortid === directoryShortid
     );
+
+    if (!directory) {
+      return;
+    }
+
     const oldTitle = directory.title;
 
     directory.title = title;
@@ -274,7 +298,7 @@ export const filesUploaded: AsyncAction<{
 export const massCreateModules: AsyncAction<{
   modules: any;
   directories: any;
-  directoryShortid: string;
+  directoryShortid: string | null;
   cbID?: string;
 }> = withOwnedSandbox(
   async (
@@ -302,9 +326,13 @@ export const massCreateModules: AsyncAction<{
         effects.live.sendMassCreatedModules(data.modules, data.directories);
       }
 
-      effects.vscode.callCallback(cbID);
+      if (cbID) {
+        effects.vscode.callCallback(cbID);
+      }
     } catch (error) {
-      effects.vscode.callCallbackError(cbID);
+      if (cbID) {
+        effects.vscode.callCallbackError(cbID);
+      }
       effects.notificationToast.error('Unable to create new files');
     }
   }
@@ -312,7 +340,7 @@ export const massCreateModules: AsyncAction<{
 
 export const moduleCreated: AsyncAction<{
   title: string;
-  directoryShortid: string;
+  directoryShortid: string | null;
   code?: string;
   isBinary?: boolean;
 }> = withOwnedSandbox(
@@ -353,7 +381,7 @@ export const moduleCreated: AsyncAction<{
         );
       } else if (config.generateFileFromSandbox) {
         module.code = config.generateFileFromSandbox(sandbox);
-      } else {
+      } else if (config.getDefaultCode) {
         const resolveModule = resolveModuleWrapped(sandbox);
 
         module.code = config.getDefaultCode(sandbox.template, resolveModule);
@@ -438,19 +466,18 @@ export const syncSandbox: AsyncAction<any[]> = async (
         if (op === 'update') {
           const newModule = resolveModuleNew(path);
 
-          if (oldModule) {
-            const modulePos = oldSandbox.modules.indexOf(oldModule);
-            Object.assign(
-              state.editor.sandboxes[oldSandbox.id].modules[modulePos],
-              newModule
-            );
-          } else {
-            state.editor.sandboxes[oldSandbox.id].modules.push(newModule);
+          if (newModule) {
+            if (oldModule) {
+              const modulePos = oldSandbox.modules.indexOf(oldModule);
+              Object.assign(
+                state.editor.sandboxes[oldSandbox.id].modules[modulePos],
+                newModule
+              );
+            } else {
+              state.editor.sandboxes[oldSandbox.id].modules.push(newModule);
+            }
           }
-        } else if (op === 'delete') {
-          const oldModule = oldSandbox.modules.find(
-            module => module.shortid === oldModule.shortid
-          );
+        } else if (op === 'delete' && oldModule) {
           oldSandbox.modules.splice(oldSandbox.modules.indexOf(oldModule), 1);
         }
       } else {
@@ -460,16 +487,24 @@ export const syncSandbox: AsyncAction<any[]> = async (
         if (op === 'update') {
           // Create
           const newDirectory = resolveDirectoryNew(path);
-          state.editor.sandboxes[oldSandbox.id].directories.push(newDirectory);
+          if (newDirectory) {
+            state.editor.sandboxes[oldSandbox.id].directories.push(
+              newDirectory
+            );
+          }
         } else {
           const oldDirectory = resolveDirectoryOld(path);
-          const directory = oldSandbox.directories.find(
-            directoryItem => directoryItem.shortid === oldDirectory.shortid
-          );
-          oldSandbox.directories.splice(
-            oldSandbox.directories.indexOf(directory),
-            1
-          );
+          if (oldDirectory) {
+            const directory = oldSandbox.directories.find(
+              directoryItem => directoryItem.shortid === oldDirectory.shortid
+            );
+            if (directory) {
+              oldSandbox.directories.splice(
+                oldSandbox.directories.indexOf(directory),
+                1
+              );
+            }
+          }
         }
       }
     });
@@ -495,6 +530,11 @@ export const removeModule: AsyncAction<{
     const module = sandbox.modules.find(
       moduleEntry => moduleEntry.shortid === moduleShortid
     );
+
+    if (!module) {
+      return;
+    }
+
     const tabs = state.editor.tabs as ModuleTab[];
     const tabIndex = module
       ? tabs.findIndex(tab => tab.moduleShortid === module.shortid)
@@ -516,5 +556,10 @@ export const removeDirectory: AsyncAction<{
   const directory = sandbox.directories.find(
     directoryItem => directoryItem.shortid === directoryShortid
   );
+
+  if (!directory) {
+    return;
+  }
+
   sandbox.directories.splice(sandbox.directories.indexOf(directory), 1);
 };

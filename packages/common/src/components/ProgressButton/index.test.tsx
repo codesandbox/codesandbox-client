@@ -1,7 +1,7 @@
 import 'jest-styled-components';
 import React from 'react';
 import mountWithTheme from '../../test/themeMount';
-import ProgressButton from './';
+import ProgressButton from '.';
 
 describe('<ProgressButton /> rendering', () => {
   it('basic', () => {

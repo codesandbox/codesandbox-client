@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb", "prettier", "prettier/react", "prettier/flowtype"],
+  "extends": ["airbnb", "prettier", "prettier/react"],
   "plugins": ["react-hooks"],
   "parser": "babel-eslint",
   "env": {
@@ -13,16 +13,37 @@
     "$PropertyType": true,
     "TimeoutID": true,
     "object": true,
-    "__DEV__": true
+    "__DEV__": true,
+    "Stripe": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,
     "react/sort-comp": 0,
+    "react/destructuring-assignment": 0,
+    "react/state-in-constructor": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/static-property-placement": 0,
     "import/no-extraneous-dependencies": 0,
+    "import/no-cycle": "warn",
     "react/prop-types": 0,
     "arrow-parens": 0,
+    "prefer-destructuring": [
+      "error",
+      {
+        "VariableDeclarator": {
+          "array": false,
+          "object": true
+        },
+        "AssignmentExpression": {
+          "array": false,
+          "object": false
+        }
+      }
+    ],
+    "no-async-promise-executor": "warn",
     "import/prefer-default-export": 0,
     "class-methods-use-this": 0,
+    "jsx-a11y/click-events-have-key-events": "warn",
     "no-console": ["error", { "allow": ["error", "warn"] }],
     "prefer-template": "off",
     "no-plusplus": 0,
@@ -41,13 +62,7 @@
       }
     ],
     "no-param-reassign": ["error", { "props": false }],
-    "camelcase": [
-      "error",
-      {
-        "allow": ["UNSAFE_componentDidMount", "_id$", "^UNSAFE_"],
-        "properties": "never"
-      }
-    ],
+    "camelcase": 0,
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "jsx-a11y/href-no-hash": "off",
@@ -57,7 +72,15 @@
     ],
     "jsx-a11y/label-has-for": "off",
     "no-bitwise": "off",
-    "arrow-body-style": ["error", "as-needed"]
+    "arrow-body-style": ["error", "as-needed"],
+    "no-restricted-globals": "off",
+    "lines-between-class-members": [
+      "error",
+      "always",
+      {
+        "exceptAfterSingleLine": true
+      }
+    ]
   },
   "overrides": [
     {

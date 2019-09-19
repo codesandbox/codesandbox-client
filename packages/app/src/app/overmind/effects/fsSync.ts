@@ -92,7 +92,6 @@ async function syncDependencyTypings(
           if (process.env.NODE_ENV === 'development') {
             console.warn('Trouble fetching types for ' + depName);
           }
-          return {};
         }
       })
     );
@@ -112,8 +111,8 @@ export default {
       [path: string]: Module;
     };
   }) {
-    getCurrentSandboxId = options.getCurrentSandboxId;
-    getModulesByPath = options.getModulesByPath;
+    getCurrentSandboxId = options.getCurrentSandboxId; // eslint-disable-line prefer-destructuring
+    getModulesByPath = options.getModulesByPath; // eslint-disable-line prefer-destructuring
   },
   syncCurrentSandbox() {
     if (fileInterval) {
@@ -139,30 +138,39 @@ export default {
       sendFiles();
 
       try {
-        fs.stat('/sandbox/package.json', (e, stat) => {
-          if (e) {
+        fs.stat('/sandbox/package.json', (packageJsonError, stat) => {
+          if (packageJsonError) {
             return;
           }
 
           if (stat.mtime.toString() !== lastMTime.toString()) {
             lastMTime = stat.mtime;
 
-            fs.readFile('/sandbox/package.json', async (err, rv) => {
-              if (e) {
-                console.error(e);
-                return;
-              }
+            fs.readFile(
+              '/sandbox/package.json',
+              async (packageJsonReadError, rv) => {
+                if (packageJsonReadError) {
+                  console.error(packageJsonReadError);
+                  return;
+                }
 
-              fs.stat('/sandbox/tsconfig.json', (err, result) => {
-                // If tsconfig exists we want to sync the types
-                syncDependencyTypings(rv.toString(), Boolean(err) || !result);
-              });
-            });
+                fs.stat('/sandbox/tsconfig.json', (tsConfigError, result) => {
+                  // If tsconfig exists we want to sync the types
+                  syncDependencyTypings(
+                    rv.toString(),
+                    Boolean(tsConfigError) || !result
+                  );
+                });
+              }
+            );
           }
         });
-      } catch (e) {}
+      } catch (e) {
+        // Do nothing
+      }
     }, 1000);
 
+    // eslint-disable-next-line
     self.addEventListener('message', evt => {
       if (evt.data.$type === 'request-data') {
         sendTypes();

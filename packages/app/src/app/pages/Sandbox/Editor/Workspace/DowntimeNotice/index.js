@@ -21,6 +21,7 @@ class ConnectionNotice extends React.PureComponent {
   }
 
   index = 0;
+
   tick = () => {
     this.forceUpdate();
     if (++this.index >= 30) {

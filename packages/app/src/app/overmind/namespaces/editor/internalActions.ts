@@ -5,12 +5,12 @@ import {
   ModuleTab,
   TabType,
   ServerContainerStatus,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
-import getTemplate from '@codesandbox/common/lib/templates';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import slugify from '@codesandbox/common/lib/utils/slugify';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import {
   sandboxUrl,
   editorUrl,
@@ -21,12 +21,35 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
     return id;
   }
 
-  const sandboxes = state.editor.sandboxes;
+  const { sandboxes } = state.editor;
   const matchingSandboxId = Object.keys(sandboxes).find(
+    // @ts-ignore
     idItem => sandboxUrl(sandboxes[idItem]) === `${editorUrl()}${id}`
   );
 
   return matchingSandboxId || id;
+};
+
+export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
+  { state, actions },
+  sandbox
+) => {
+  state.live.isTeam = Boolean(sandbox.team);
+
+  if (state.live.isLive) {
+    const roomChanged = state.live.roomInfo.roomId !== sandbox.roomId;
+
+    if (!roomChanged) {
+      // In this case we don't need to initialize new live session, we reuse the existing one
+      return;
+    }
+
+    await actions.live.internal.disconnect();
+  }
+
+  if (sandbox.owned && sandbox.roomId) {
+    await actions.live.internal.initialize(sandbox.roomId);
+  }
 };
 
 export const setModuleSavedCode: Action<{
@@ -49,14 +72,16 @@ export const setModuleSavedCode: Action<{
 export const saveCode: AsyncAction<{
   code: string;
   moduleShortid: string;
-  cbID: string;
+  cbID?: string | null;
 }> = async ({ state, effects, actions }, { code, moduleShortid, cbID }) => {
   effects.analytics.track('Save Code');
 
   const sandbox = state.editor.currentSandbox;
-  const module = sandbox.modules.find(
-    module => module.shortid === moduleShortid
-  );
+  const module = sandbox.modules.find(m => m.shortid === moduleShortid);
+
+  if (!module) {
+    return;
+  }
 
   if (state.preferences.settings.experimentVSCode) {
     await actions.editor.codeChanged({
@@ -66,7 +91,13 @@ export const saveCode: AsyncAction<{
   } else if (state.preferences.settings.prettifyOnSaveEnabled) {
     try {
       effects.analytics.track('Prettify Code');
-      code = await effects.prettyfier.prettify(module.id, module.title, code);
+      const prettifiedCode = await effects.prettyfier.prettify(
+        module.id,
+        module.title,
+        code
+      );
+
+      actions.editor.internal.setModuleCode({ module, code: prettifiedCode });
     } catch (error) {
       effects.notificationToast.error(
         'Could not prettify code, probably invalid JSON in sandbox .prettierrc file'
@@ -89,7 +120,9 @@ export const saveCode: AsyncAction<{
       1
     );
 
-    effects.vscode.callCallback(cbID);
+    if (cbID) {
+      effects.vscode.callCallback(cbID);
+    }
 
     if (
       state.editor.currentSandbox.originalGit &&
@@ -122,14 +155,17 @@ export const saveCode: AsyncAction<{
     }
   } catch (error) {
     effects.notificationToast.warning(error.message);
-    effects.vscode.callCallbackError(cbID);
+
+    if (cbID) {
+      effects.vscode.callCallbackError(cbID);
+    }
   }
 };
 
 export const updateCurrentTemplate: Action = ({ state, effects }) => {
   try {
     const currentTemplate = state.editor.currentSandbox.template;
-    const templateDefinition = getTemplate(currentTemplate);
+    const templateDefinition = getTemplateDefinition(currentTemplate);
 
     // We always want to be able to update server template based on its detection.
     // We only want to update the client template when it's explicitly specified
@@ -141,7 +177,7 @@ export const updateCurrentTemplate: Action = ({ state, effects }) => {
       const { parsed } = state.editor.parsedConfigurations.package;
 
       const modulesByPath = mapValues(state.editor.modulesByPath, module => ({
-        content: module.code,
+        content: module.code || '',
         isBinary: module.isBinary,
       }));
 
@@ -152,7 +188,8 @@ export const updateCurrentTemplate: Action = ({ state, effects }) => {
 
       if (
         newTemplate !== currentTemplate &&
-        templateDefinition.isServer === getTemplate(newTemplate).isServer
+        templateDefinition.isServer ===
+          getTemplateDefinition(newTemplate).isServer
       ) {
         state.editor.currentSandbox.template = newTemplate;
         effects.api.saveTemplate(state.editor.currentId, newTemplate);
@@ -190,8 +227,8 @@ export const setModuleCode: Action<{
   module: Module;
   code: string;
 }> = ({ state, effects }, { module, code }) => {
-  const currentId = state.editor.currentId;
-  const currentSandbox = state.editor.currentSandbox;
+  const { currentId } = state.editor;
+  const { currentSandbox } = state.editor;
   const hasChangedModuleId = state.editor.changedModuleShortids.includes(
     module.shortid
   );
@@ -241,10 +278,10 @@ export const setModuleCode: Action<{
   }
 };
 
-export const forkSandbox: AsyncAction<string> = async (
-  { state, effects, actions },
-  id
-) => {
+export const forkSandbox: AsyncAction<{
+  sandboxId: string;
+  body?: { collectionId: string | undefined };
+}> = async ({ state, effects, actions }, { sandboxId: id, body }) => {
   const templateDefinition = getTemplateDefinition(
     state.editor.currentSandbox ? state.editor.currentSandbox.template : null
   );
@@ -261,7 +298,7 @@ export const forkSandbox: AsyncAction<string> = async (
   try {
     state.editor.isForkingSandbox = true;
 
-    const forkedSandbox = await effects.api.forkSandbox(id);
+    const forkedSandbox = await effects.api.forkSandbox(id, body);
 
     // Copy over any unsaved code
     if (state.editor.currentSandbox) {

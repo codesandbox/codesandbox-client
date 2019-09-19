@@ -63,7 +63,7 @@ export const setBadgeVisibility: AsyncAction<{
   id: string;
   visible: boolean;
 }> = async ({ state, effects }, { id, visible }) => {
-  const badges = state.user.badges;
+  const { badges } = state.user;
 
   badges.forEach((badge, index) => {
     if (badge.id === id) {
@@ -102,7 +102,7 @@ export const keybindingChanged: Action<{
   name: string;
   value: any;
 }> = ({ state, effects }, { name, value }) => {
-  const keybindings = state.preferences.settings.keybindings;
+  const { keybindings } = state.preferences.settings;
   const currentIndex = keybindings.findIndex(binding => binding.key === name);
   const newBinding = {
     key: name,

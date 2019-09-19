@@ -6,7 +6,7 @@ import FileIcon from 'react-icons/lib/md/insert-drive-file';
 import ExpandTestsIcon from 'react-icons/lib/fa/expand';
 import CollapseTestsIcon from 'react-icons/lib/fa/minus';
 
-import { File, Status } from '../';
+import { File, Status } from '..';
 
 import {
   Container,

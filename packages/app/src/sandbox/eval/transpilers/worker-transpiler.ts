@@ -1,7 +1,7 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { dispatch, actions } from 'codesandbox-api';
 
-import Transpiler, { TranspilerResult } from './';
+import Transpiler, { TranspilerResult } from '.';
 import { parseWorkerError } from './utils/worker-error-handler';
 import { LoaderContext } from '../transpiled-module';
 import Manager from '../manager';
@@ -31,10 +31,12 @@ export default abstract class WorkerTranspiler extends Transpiler {
   tasks: {
     [id: string]: Task;
   };
+
   initialized: boolean;
   runningTasks: {
     [id: string]: (error: Error, message: Object) => void;
   };
+
   hasFS: boolean;
 
   constructor(
@@ -68,34 +70,30 @@ export default abstract class WorkerTranspiler extends Transpiler {
     return Promise.resolve(new this.Worker());
   }
 
-  loadWorker() {
-    return new Promise(async resolve => {
-      this.loadingWorkers++;
-      const t = Date.now();
-      const worker = await this.getWorker();
-      const readyListener = e => {
-        if (e.data === 'ready') {
-          debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
-          worker.removeEventListener('message', readyListener);
-        }
-      };
-      worker.addEventListener('message', readyListener);
-
-      if (this.hasFS) {
-        // Register file system that syncs with filesystem in manager
-        // @ts-ignore
-        BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker); // eslint-disable-line
-        worker.postMessage({ type: 'initialize-fs', codesandbox: true });
+  async loadWorker() {
+    this.loadingWorkers++;
+    const t = Date.now();
+    const worker = await this.getWorker();
+    const readyListener = e => {
+      if (e.data === 'ready') {
+        debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
+        worker.removeEventListener('message', readyListener);
       }
+    };
+    worker.addEventListener('message', readyListener);
 
-      this.idleWorkers.push(worker);
+    if (this.hasFS) {
+      // Register file system that syncs with filesystem in manager
+      // @ts-ignore
+      BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker); // eslint-disable-line
+      worker.postMessage({ type: 'initialize-fs', codesandbox: true });
+    }
 
-      this.executeRemainingTasks();
+    this.idleWorkers.push(worker);
 
-      resolve();
+    this.executeRemainingTasks();
 
-      this.workers.push(worker);
-    });
+    this.workers.push(worker);
   }
 
   async initialize() {

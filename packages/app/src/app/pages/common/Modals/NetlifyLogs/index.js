@@ -13,6 +13,7 @@ class NetlifyLogs extends Component {
   componentDidMount() {
     this.interval = setInterval(this.getLogs, 2000);
   }
+
   componentWillUnmount() {
     clearInterval(this.interval);
   }
@@ -25,6 +26,7 @@ class NetlifyLogs extends Component {
 
     this.setState({ logs });
   };
+
   render() {
     const { signals } = this.props;
 

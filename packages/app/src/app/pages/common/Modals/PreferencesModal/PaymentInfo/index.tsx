@@ -1,5 +1,4 @@
 import React from 'react';
-import Helmet from 'react-helmet';
 import { inject, observer } from 'app/componentConnectors';
 import { SubscribeForm } from 'app/components/SubscribeForm';
 import { Card } from './Card';
@@ -50,9 +49,6 @@ class PaymentInfoComponent extends React.Component<Props> {
     const { preferences } = this.props.store;
     return (
       <Container>
-        <Helmet>
-          <script async src="https://js.stripe.com/v3/" />
-        </Helmet>
         <Title>Payment Info</Title>
         {preferences.isLoadingPaymentDetails ? (
           <div>Loading payment details...</div>

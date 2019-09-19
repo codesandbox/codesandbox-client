@@ -1,12 +1,12 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-// @ts-ignore
-import FullHeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart.svg'; // eslint-disable-line import/no-webpack-loader-syntax
-// @ts-ignore
-import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import { Sandbox } from '@codesandbox/common/lib/types';
 import noop from 'lodash/noop';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
+// @ts-ignore
+import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+// @ts-ignore
+import FullHeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
 import { Container } from './elements';
 

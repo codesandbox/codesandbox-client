@@ -21,7 +21,7 @@ function createHeaders({ state, jwt }) {
 }
 
 const getMessage = (error: Error & { response: ?Object }) => {
-  const response = error.response;
+  const { response } = error;
 
   if (!response || response.status >= 500) {
     logError(error);
@@ -32,7 +32,7 @@ const getMessage = (error: Error & { response: ?Object }) => {
       const errors = values(response.result.errors)[0];
       if (Array.isArray(errors)) {
         if (errors[0]) {
-          error.message = errors[0]; // eslint-disable-line no-param-reassign
+          error.message = errors[0]; // eslint-disable-line no-param-reassign,prefer-destructuring
         }
       } else {
         error.message = errors; // eslint-disable-line no-param-reassign

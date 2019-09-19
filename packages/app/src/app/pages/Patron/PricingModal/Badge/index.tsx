@@ -1,14 +1,18 @@
-import React from 'react';
-
+import React, { memo } from 'react';
+import { PatronBadge } from '@codesandbox/common/lib/types';
 import Relative from '@codesandbox/common/lib/components/Relative';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
-
 import './animations.css';
 import { Particles } from './Particles';
 
 import { BadgeContainer } from './elements';
 
-export const Badge = React.memo(({ badge, subscribed }) => {
+interface IBadgeProps {
+  badge: PatronBadge;
+  subscribed: boolean;
+}
+
+export const Badge: React.FC<IBadgeProps> = memo(({ badge, subscribed }) => {
   const BadgeComponent = badges[badge].Badge;
 
   return (
@@ -16,7 +20,12 @@ export const Badge = React.memo(({ badge, subscribed }) => {
       {/* We prerender all particles, performance reasons */}
       <Particles makeItRain={subscribed} badge={badge} />
       <BadgeContainer key={badge} id="badge">
-        <img src={BadgeComponent} className={`badge ${badge}`} alt={badge} />
+        <img
+          style={{ height: '100%' }}
+          src={BadgeComponent}
+          className={`badge ${badge}`}
+          alt={badge}
+        />
       </BadgeContainer>
     </Relative>
   );

@@ -3,7 +3,7 @@ import rawTranspiler from '../../transpilers/raw';
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 
-import Preset from '../';
+import Preset from '..';
 
 const transpilerMap = {
   'codesandbox:raw': rawTranspiler,
@@ -114,7 +114,7 @@ export default function initialize() {
           throw new Error('No configuration specified for the custom template');
         }
 
-        const sandpack = customConfig.sandpack;
+        const { sandpack } = customConfig;
 
         if (sandpack) {
           customPreset.defaultAliases = sandpack.defaultAliases || [];

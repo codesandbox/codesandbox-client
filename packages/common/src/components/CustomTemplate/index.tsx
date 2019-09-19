@@ -35,7 +35,7 @@ const CustomTemplate = ({ template, onClick, i }: Props) => {
     );
   }
 
-  const sandbox = template.sandbox;
+  const { sandbox } = template;
   const title = getSandboxName(sandbox);
 
   return (

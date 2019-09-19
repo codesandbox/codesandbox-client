@@ -134,7 +134,7 @@ export const SandboxName = inject('store', 'signals')(
                   <>
                     This sandbox is a template, you can learn about templates in
                     the{' '}
-                    <Link target="_blank" to={`/docs/templates`}>
+                    <Link target="_blank" to="/docs/templates">
                       docs
                     </Link>
                     .

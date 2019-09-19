@@ -26,7 +26,7 @@ export default ({ onSelect, currentPath, currentTeamId }) => (
           return null;
         }
 
-        const teams = data.me.teams;
+        const { teams } = data.me;
 
         return teams.map(team => (
           <TeamContainer key={team.id}>

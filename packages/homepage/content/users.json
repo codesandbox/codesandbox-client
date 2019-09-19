@@ -97,5 +97,10 @@
     "name": "Appbaseio",
     "link": "https://www.appbase.io/",
     "logoURL": "https://appbase.io/static/svg/appbase-white.svg"
+  },
+  {
+    "name": "Smooth Code",
+    "link": "https://www.smooth-code.com/",
+    "logoURL": "https://res.cloudinary.com/smooth/image/upload/c_scale,h_400,w_400/v1568384850/logos/smooth-code-code-sandbox-website.png"
   }
 ]

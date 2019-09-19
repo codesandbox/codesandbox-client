@@ -27,7 +27,8 @@ const isItemFileEntry = item => item.kind === 'file';
 const getAsEntry = item => {
   if (item.getAsEntry) {
     return item.getAsEntry();
-  } else if (item.webkitGetAsEntry) {
+  }
+  if (item.webkitGetAsEntry) {
     return item.webkitGetAsEntry();
   }
   return null;

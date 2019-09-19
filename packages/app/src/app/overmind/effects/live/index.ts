@@ -8,6 +8,7 @@ import {
   Directory,
   RoomInfo,
   Sandbox,
+  LiveMessageEvent,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import clientsFactory from './clients';
@@ -81,6 +82,10 @@ export default {
     return _socket;
   },
   disconnect() {
+    if (!channel) {
+      return Promise.resolve({});
+    }
+
     return new Promise((resolve, reject) => {
       channel
         .leave()
@@ -92,6 +97,7 @@ export default {
 
           return resolve(resp);
         })
+        // eslint-disable-next-line prefer-promise-reject-errors
         .receive('error', resp => reject(resp));
     });
   },
@@ -110,7 +116,7 @@ export default {
   // TODO: Need to take an action here
   listen(
     action: (payload: {
-      event: string;
+      event: LiveMessageEvent;
       _isOwnMessage: boolean;
       data: object;
     }) => {}
@@ -145,6 +151,7 @@ export default {
           .receive('ok', resolve)
           .receive('error', reject);
       } else {
+        // eslint-disable-next-line prefer-promise-reject-errors
         reject('Channel is not defined');
       }
     });
@@ -183,7 +190,7 @@ export default {
         moduleShortid,
         operation
       );
-      return this.send('live:module_state', {});
+      this.send('live:module_state', {});
     }
   },
   sendUserCurrentModule(moduleShortid: string) {

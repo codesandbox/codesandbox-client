@@ -25,7 +25,7 @@ import { mainModule as getMainModule } from '../../utils/main-module';
 
 type State = {
   currentId: string;
-  currentModuleShortid: string;
+  currentModuleShortid: string | null;
   isForkingSandbox: boolean;
   mainModuleShortid: string;
   sandboxes: {
@@ -36,7 +36,7 @@ type State = {
   devToolTabs: Derive<State, any[]>;
   isLoading: boolean;
   notFound: boolean;
-  error: string;
+  error: string | null;
   isResizing: boolean;
   changedModuleShortids: string[];
   pendingOperations: {
@@ -77,6 +77,7 @@ type State = {
     devToolIndex: number;
     tabPosition: number;
   };
+  sessionFrozen: boolean;
 };
 
 export const state: State = {
@@ -93,6 +94,7 @@ export const state: State = {
   currentTabId: null,
   tabs: [],
   errors: [],
+  sessionFrozen: true,
   corrections: [],
   pendingOperations: {},
   pendingUserSelections: [],
@@ -186,7 +188,7 @@ export const state: State = {
       return false;
     }
 
-    const isServer = getTemplate(currentSandbox.template).isServer;
+    const { isServer } = getTemplate(currentSandbox.template);
 
     return isServer && currentSandbox.owned;
   },
@@ -231,15 +233,18 @@ export const state: State = {
   },
   devToolTabs: ({
     currentSandbox: sandbox,
+    parsedConfigurations,
     workspaceConfigCode: intermediatePreviewCode,
   }) => {
     if (!sandbox) {
       return [];
     }
 
-    // TODO: Should this be code or files?
-    // @ts-ignore
-    const views = getPreviewTabs(sandbox, intermediatePreviewCode);
+    const views = getPreviewTabs(
+      sandbox,
+      parsedConfigurations,
+      intermediatePreviewCode
+    );
 
     // Do it in an immutable manner, prevents changing the original object
     return immer(views, draft => {

@@ -35,7 +35,7 @@ const FilterOptionsComponent = ({
   const Overlay = () => (
     <OverlayContainer>
       {possibleTemplates.length > 0 ? (
-        <React.Fragment>
+        <>
           {orderBy(possibleTemplates, 'niceName').map(template => {
             const selected = store.dashboard.isTemplateSelected(template.id);
 
@@ -67,7 +67,7 @@ const FilterOptionsComponent = ({
             style={{ marginTop: '1rem' }}
             niceName="Select All"
           />
-        </React.Fragment>
+        </>
       ) : (
         'No environments found'
       )}

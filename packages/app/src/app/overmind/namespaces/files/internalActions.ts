@@ -80,7 +80,7 @@ export const uploadFiles: AsyncAction<
     await Promise.all(
       filePathsChunk.map(async filePath => {
         const file = files[filePath];
-        const dataURI = file.dataURI;
+        const { dataURI } = file;
 
         if (
           (/\.(j|t)sx?$/.test(filePath) ||

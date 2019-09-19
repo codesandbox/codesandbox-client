@@ -4,9 +4,9 @@ import GoIssueOpened from 'react-icons/lib/go/issue-opened';
 import { inject, hooksObserver } from 'app/componentConnectors';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Navigation } from 'app/pages/common/Navigation';
 // @ts-ignore
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
-import { Navigation } from 'app/pages/common/Navigation';
 import { Sadbox } from './Sadbox';
 import { IFallbackComponentProps } from '../types';
 import { buildCrashReport } from './buildCrashReport';

@@ -3,17 +3,14 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
-import { reaction } from 'mobx';
 import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
-import { Provider } from 'mobx-react';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import { createOvermind } from 'overmind';
 import {
   initializeSentry,
   logError,
 } from '@codesandbox/common/lib/utils/analytics';
 import '@codesandbox/common/lib/global.css';
-
-import store, { Signals, Store } from 'app/store';
 import history from 'app/utils/history';
 import { client } from 'app/graphql/client';
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
@@ -29,12 +26,12 @@ import { isSafari } from '@codesandbox/common/lib/utils/platform';
 
 // eslint-disable-next-line
 import * as childProcess from 'node-services/lib/child_process';
-import { Controller } from '@cerebral/mobx-state-tree';
+import { Provider as ActualOvermindProvider } from 'overmind-react';
 import { Routes as App } from './pages';
 import { Provider as OvermindProvider } from './overmind/Provider';
+import { config } from './overmind';
 import './split-pane.css';
 import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
-import overmindLogo from './overmind.png';
 import { vscode } from './vscode';
 import {
   initializeThemeCache,
@@ -72,7 +69,7 @@ window.__isTouch = !matchMedia('(pointer:fine)').matches;
 let getState;
 let getSignal;
 
-async function boot(state, signals, overmind) {
+async function boot(overmind) {
   requirePolyfills().then(() => {
     if (isSafari) {
       import('subworkers');
@@ -122,27 +119,19 @@ async function boot(state, signals, overmind) {
 
     try {
       render(
-        <Signals.Provider value={signals}>
-          <Store.Provider value={state}>
-            <Provider
-              store={state}
-              signals={signals}
-              reaction={(cbA, cbB) => reaction(() => cbA(state), cbB)}
-            >
-              <ApolloProvider client={client}>
-                <OvermindProvider value={overmind}>
-                  <HooksProvider client={client}>
-                    <ThemeProvider theme={theme}>
-                      <Router history={history}>
-                        <App />
-                      </Router>
-                    </ThemeProvider>
-                  </HooksProvider>
-                </OvermindProvider>
-              </ApolloProvider>
-            </Provider>
-          </Store.Provider>
-        </Signals.Provider>,
+        <ApolloProvider client={client}>
+          <ActualOvermindProvider value={overmind}>
+            <OvermindProvider value={overmind}>
+              <HooksProvider client={client}>
+                <ThemeProvider theme={theme}>
+                  <Router history={history}>
+                    <App />
+                  </Router>
+                </ThemeProvider>
+              </HooksProvider>
+            </OvermindProvider>
+          </ActualOvermindProvider>
+        </ApolloProvider>,
         rootEl
       );
     } catch (e) {
@@ -155,85 +144,24 @@ async function initialize() {
   /*
     Configure Cerebral and Overmind
   */
-  let signals = null;
-  let state = null;
-  let overmind = null;
 
-  window.useOvermind = useIt => {
-    if (typeof useIt === 'undefined') {
-      return localStorage.getItem('overmind');
-    }
+  const overmind = createOvermind(config, {
+    devtools:
+      (window.opener && window.opener !== window) || !window.chrome
+        ? false
+        : 'localhost:3031',
+    name:
+      'CodeSandbox - ' +
+      (navigator.userAgent.indexOf('Chrome/76') > 0 ? 'Chrome' : 'Canary'),
+    logProxies: true,
+  });
 
-    localStorage.setItem('overmind', JSON.stringify(useIt));
-    location.reload(true);
-
-    return useIt;
-  };
-
-  if (localStorage.getItem('overmind') === 'true') {
-    await Promise.all([import('overmind'), import('./overmind')]).then(
-      modules => {
-        const createOvermind = modules[0].createOvermind;
-        const config = modules[1].config;
-
-        overmind = createOvermind(config, {
-          devtools:
-            (window.opener && window.opener !== window) || !window.chrome
-              ? false
-              : 'localhost:3031',
-          name:
-            'CodeSandbox - ' +
-            (navigator.userAgent.indexOf('Chrome/76') > 0
-              ? 'Chrome'
-              : 'Canary'),
-          logProxies: true,
-        });
-
-        getState = path =>
-          path
-            ? path.split('.').reduce((aggr, key) => aggr[key], overmind.state)
-            : overmind.state;
-        getSignal = path =>
-          path.split('.').reduce((aggr, key) => aggr[key], overmind.actions);
-
-        const logoContainer = document.createElement('div');
-        logoContainer.style.position = 'fixed';
-        logoContainer.style.bottom = '30px';
-        logoContainer.style.left = '10px';
-        logoContainer.style.zIndex = '999999';
-        logoContainer.style.width = '40px';
-        logoContainer.style.height = '40px';
-        logoContainer.style.borderRadius = '3px';
-        logoContainer.style.backgroundImage = `url(${overmindLogo})`;
-        logoContainer.style.backgroundSize = 'cover';
-        logoContainer.style.backgroundSize = 'cover';
-        document.body.appendChild(logoContainer);
-      }
-    );
-  } else {
-    let Devtools = null;
-
-    if (process.env.NODE_ENV !== 'production') {
-      Devtools = require('cerebral/devtools').default; // eslint-disable-line
-    }
-
-    const controller = Controller(store, {
-      devtools:
-        Devtools &&
-        Devtools({
-          host: 'localhost:8383',
-          reconnect: false,
-        }),
-    });
-
-    const controllerProvided = controller.provide();
-
-    state = controllerProvided.store;
-    signals = controllerProvided.signals;
-
-    getState = controller.getState.bind(controller);
-    getSignal = controller.getSignal.bind(controller);
-  }
+  getState = path =>
+    path
+      ? path.split('.').reduce((aggr, key) => aggr[key], overmind.state)
+      : overmind.state;
+  getSignal = path =>
+    path.split('.').reduce((aggr, key) => aggr[key], overmind.actions);
 
   window.getState = getState;
   window.getSignal = getSignal;
@@ -334,7 +262,7 @@ async function initialize() {
             //   }
             // );
           }
-          boot(state, signals, overmind);
+          boot(overmind);
         }
       );
     }

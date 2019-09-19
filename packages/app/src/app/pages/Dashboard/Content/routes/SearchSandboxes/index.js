@@ -21,7 +21,7 @@ const SearchSandboxes = () => (
             return <div>Error!</div>;
           }
 
-          const search = store.dashboard.filters.search;
+          const { search } = store.dashboard.filters;
           let sandboxes = data && data.me && data.me.sandboxes;
           if (
             sandboxes &&

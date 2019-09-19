@@ -86,10 +86,9 @@ export default class Animation extends React.PureComponent {
     this.timeout = setTimeout(() => {
       if (!this.state.templateSelected) {
         if (!window.scrolling && getScrollPos().y < window.innerHeight) {
-          this.setState({
-            templateIndex:
-              (this.state.templateIndex + 1) % this.state.templates.length,
-          });
+          this.setState(state => ({
+            templateIndex: (state.templateIndex + 1) % state.templates.length,
+          }));
         }
 
         this.startTimer();
@@ -102,10 +101,10 @@ export default class Animation extends React.PureComponent {
   };
 
   selectTemplate = template => {
-    this.setState({
-      templateIndex: this.state.templates.indexOf(template),
+    this.setState(state => ({
+      templateIndex: state.templates.indexOf(template),
       templateSelected: true,
-    });
+    }));
   };
 
   render() {

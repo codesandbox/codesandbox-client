@@ -6,7 +6,7 @@ import {
   Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
-import { Derive } from './';
+import { Derive } from '.';
 
 type State = {
   isPatron: Derive<State, boolean>;
@@ -32,9 +32,9 @@ type State = {
     x: number;
     y: number;
   };
-  currentModal: string;
+  currentModal: string | null;
   currentModalMessage: string;
-  uploadedFiles: UploadFile[];
+  uploadedFiles: UploadFile[] | null;
   maxStorage: number;
   usedStorage: number;
   updateStatus: string;

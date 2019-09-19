@@ -1,6 +1,6 @@
 import { Sandbox } from '../../types';
 
-import getDefinition from '../';
+import getDefinition from '..';
 import parse from './parse';
 import { resolveModuleWrapped } from './resolve-module-wrapped';
 

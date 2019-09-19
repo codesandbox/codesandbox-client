@@ -25,7 +25,7 @@ class SvelteTranspiler extends WorkerTranspiler {
       semver.coerce(packageJSON.parsed.dependencies.svelte);
 
     return new Promise<TranspilerResult>((resolve, reject) => {
-      const path = loaderContext.path;
+      const { path } = loaderContext;
 
       this.queueTask(
         {

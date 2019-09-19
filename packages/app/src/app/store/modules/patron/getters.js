@@ -1,5 +1,5 @@
 export function tier() {
-  const price = this.price;
+  const { price } = this;
 
   if (price >= 20) return 4;
   if (price >= 15) return 3;

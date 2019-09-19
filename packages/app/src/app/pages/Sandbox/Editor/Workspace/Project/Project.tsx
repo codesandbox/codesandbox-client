@@ -52,7 +52,7 @@ export const Project = inject('store', 'signals')(
     }: IProjectProps) => {
       const sandbox = editor.currentSandbox;
       const template = getTemplateDefinition(sandbox.template);
-      const isServer = template.isServer;
+      const { isServer } = template;
 
       return (
         <Container>
@@ -135,7 +135,7 @@ export const Project = inject('store', 'signals')(
             {!isPatron && (
               <Explanation style={{ marginTop: '-1rem' }}>
                 You can change privacy of a sandbox as a{' '}
-                <a href={patronUrl()} target="_blank">
+                <a href={patronUrl()} rel="noopener noreferrer" target="_blank">
                   patron
                 </a>
                 .

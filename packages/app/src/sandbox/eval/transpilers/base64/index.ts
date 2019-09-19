@@ -1,4 +1,4 @@
-import Transpiler, { TranspilerResult } from '../';
+import Transpiler, { TranspilerResult } from '..';
 
 class Base64Transpiler extends Transpiler {
   constructor() {

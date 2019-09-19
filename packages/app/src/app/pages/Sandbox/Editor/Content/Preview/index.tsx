@@ -98,10 +98,10 @@ class PreviewComponent extends Component<Props, State> {
   };
 
   handleCodeChange = preview => {
-    const settings = this.props.store.preferences.settings;
-    const isServer = getTemplate(
+    const { settings } = this.props.store.preferences;
+    const { isServer } = getTemplate(
       this.props.store.editor.currentSandbox.template
-    ).isServer;
+    );
     if (!isServer && settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
         preview.executeCodeImmediately();
@@ -112,7 +112,7 @@ class PreviewComponent extends Component<Props, State> {
   };
 
   handleStructureChange = preview => {
-    const settings = this.props.store.preferences.settings;
+    const { settings } = this.props.store.preferences;
     if (settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
         preview.executeCodeImmediately();
@@ -123,7 +123,7 @@ class PreviewComponent extends Component<Props, State> {
   };
 
   handleModuleSyncedChange = (preview, change) => {
-    const settings = this.props.store.preferences.settings;
+    const { settings } = this.props.store.preferences;
 
     if (
       change &&

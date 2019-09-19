@@ -1,7 +1,7 @@
 import 'jest-styled-components';
 import React from 'react';
 import mountWithTheme from '../../test/themeMount';
-import ContributorsBadge from './';
+import ContributorsBadge from '.';
 
 describe('<ContributorsBadge /> rendering', () => {
   it('contrib', () => {

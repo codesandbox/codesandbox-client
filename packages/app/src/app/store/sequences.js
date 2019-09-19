@@ -168,13 +168,13 @@ export const setSandbox = [
   },
 ];
 
-export const getAuthToken = actions.getAuthToken;
+export const { getAuthToken } = actions;
 
 export const openUserMenu = set(state`userMenuOpen`, true);
 
 export const closeUserMenu = set(state`userMenuOpen`, false);
 
-export const removeNotification = actions.removeNotification;
+export const { removeNotification } = actions;
 
 export const addNotification = factories.addNotification(
   props`message`,

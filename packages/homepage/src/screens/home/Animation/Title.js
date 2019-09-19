@@ -141,7 +141,7 @@ export default ({ template }) => (
           Open {template.niceName === 'Vanilla' ? 'Editor' : template.niceName}
         </Button>
 
-        <Button as={Link} to={`/explore`} color={template.color} secondary>
+        <Button as={Link} to="/explore" color={template.color} secondary>
           Explore Examples
         </Button>
       </Buttons>

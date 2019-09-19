@@ -16,7 +16,7 @@ class KeyMappingComponent extends React.Component {
   state = { error: null };
 
   getUserBindings = () => {
-    const keybindings = this.props.store.preferences.settings.keybindings;
+    const { keybindings } = this.props.store.preferences.settings;
 
     return keybindings.reduce(
       (bindings, binding) => ({

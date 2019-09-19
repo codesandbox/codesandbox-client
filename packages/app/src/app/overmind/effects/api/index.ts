@@ -16,6 +16,7 @@ import {
   PaymentDetails,
   Profile,
   UserSandbox,
+  CustomTemplate,
 } from '@codesandbox/common/lib/types';
 import { TemplateType } from '@codesandbox/common/lib/templates';
 import { client } from 'app/graphql/client';
@@ -72,12 +73,12 @@ export default {
       })),
     };
   },
-  forkSandbox(id: string): Promise<Sandbox> {
+  forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
     const url = id.includes('/')
       ? `/sandboxes/fork/${id}`
       : `/sandboxes/${id}/fork`;
 
-    return api.post(url, {});
+    return api.post(url, body || {});
   },
   createModule(sandboxId: string, module: Module): Promise<Module> {
     return api.post(`/sandboxes/${sandboxId}/modules`, {
@@ -251,7 +252,7 @@ export default {
   },
   massCreateModules(
     sandboxId: string,
-    directoryShortid: string,
+    directoryShortid: string | null,
     modules: Module[],
     directories: Directory[]
   ): Promise<{
@@ -394,5 +395,34 @@ export default {
   },
   preloadTemplates() {
     client.query({ query: LIST_TEMPLATES, variables: { showAll: true } });
+  },
+  deleteTemplate(
+    sandboxId: string,
+    templateId: string
+  ): Promise<CustomTemplate> {
+    return api.delete(`/sandboxes/${sandboxId}/templates/${templateId}`);
+  },
+  updateTemplate(
+    sandboxId: string,
+    template: CustomTemplate
+  ): Promise<CustomTemplate> {
+    return api
+      .put<{ template: CustomTemplate }>(
+        `/sandboxes/${sandboxId}/templates/${template.id}`,
+        {
+          template,
+        }
+      )
+      .then(data => data.template);
+  },
+  createTemplate(
+    sandboxId: string,
+    template: CustomTemplate
+  ): Promise<CustomTemplate> {
+    return api
+      .post<{ template: CustomTemplate }>(`/sandboxes/${sandboxId}/templates`, {
+        template,
+      })
+      .then(data => data.template);
   },
 };

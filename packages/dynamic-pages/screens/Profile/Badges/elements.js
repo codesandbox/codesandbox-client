@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Aside } from './../_sidebar.elements';
+import { Aside } from '../_sidebar.elements';
 
 export const BadgeWrapper = styled.ul`
   margin: 0;

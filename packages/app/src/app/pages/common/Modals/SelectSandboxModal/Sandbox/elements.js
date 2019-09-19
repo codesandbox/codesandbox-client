@@ -11,6 +11,7 @@ export const Button = styled.button`
   background-color: ${props => (props.active ? '#eee' : 'white')};
   padding: 1rem;
   color: rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
   border-bottom: 1px solid #ddd;
   text-align: left;
   ${props => props.active && 'font-weight: 600'};

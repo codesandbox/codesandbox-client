@@ -3,7 +3,7 @@ import localforage from 'localforage';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import Manager from './manager';
 
-import { SCRIPT_VERSION } from '../';
+import { SCRIPT_VERSION } from '..';
 
 const debug = _debug('cs:compiler:cache');
 

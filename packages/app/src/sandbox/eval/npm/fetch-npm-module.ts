@@ -340,7 +340,7 @@ async function findDependencyVersion(
   defaultExtensions: Array<string> = ['js', 'jsx', 'json'],
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
-  const manifest = manager.manifest;
+  const { manifest } = manager;
 
   try {
     const foundPackageJSONPath = await resolvePath(
@@ -390,6 +390,7 @@ async function findDependencyVersion(
     const dep = manifest.dependencies.find(m => m.name === dependencyName);
 
     if (dep) {
+      // eslint-disable-next-line
       version = dep.version;
     }
   }

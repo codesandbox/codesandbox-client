@@ -3,8 +3,8 @@ import { withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import { Query } from 'react-apollo';
-import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
+import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 import { Item } from '../Item';
 import { Container } from './elements';
 import { DropFolderEntry } from './FolderEntry';
@@ -64,7 +64,7 @@ class SandboxesItemComponent extends React.Component {
               title: 'Create Folder',
               icon: AddFolderIcon,
               action: () => {
-                this.setState({ creatingDirectory: true, open: true });
+                this.setState({ creatingDirectory: true });
                 return true;
               },
             },

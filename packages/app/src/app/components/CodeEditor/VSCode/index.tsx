@@ -33,7 +33,7 @@ import MonacoEditorComponent, { EditorAPI } from './MonacoReactComponent';
 import { Container, GlobalStyles } from './elements';
 import getSettings from '../Monaco/settings';
 
-import { Props, Editor } from '../types';
+import { Props, Editor } from '../types'; // eslint-disable-line
 import getMode from '../Monaco/mode';
 
 import {
@@ -87,30 +87,26 @@ export class VSCode extends React.Component<Props> implements Editor {
   sandbox: Props['sandbox'];
   currentModule: Props['currentModule'];
   currentTitle: string;
-  currentDirectoryShortid: string | undefined;
+  currentDirectoryShortid: string | null;
   settings: Props['settings'];
   dependencies: Props['dependencies'] | undefined;
   tsconfig: Props['tsconfig'] | undefined;
   disposeInitializer?: Function;
-  lintWorker: Worker | undefined;
+  lintWorker: Worker | null;
   editor?: any;
   monaco?: any;
   receivingCode: boolean = false;
   codeSandboxAPIListener: () => void;
-  sizeProbeInterval: number | null;
+  sizeProbeInterval: number | undefined;
+  resizeEditor: (() => void) | EventListener;
+  commitLibChanges: () => void;
 
   modelSelectionListener: {
     dispose: () => void;
   };
 
-  resizeEditor: (() => void) | EventListener;
-  commitLibChanges: () => void;
-
   constructor(props: Props) {
     super(props);
-    this.state = {
-      fuzzySearchEnabled: false,
-    };
     this.sandbox = props.sandbox;
     this.currentModule = props.currentModule;
     this.currentTitle = props.currentModule.title;
@@ -121,7 +117,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     this.tsconfig = props.tsconfig;
 
     this.lintWorker = null;
-    this.sizeProbeInterval = null;
+    this.sizeProbeInterval = undefined;
 
     this.resizeEditor = debounce(this.resizeEditorInstantly, 150);
     this.commitLibChanges = debounce(this.commitLibChangesInstantly, 300);
@@ -171,7 +167,7 @@ export class VSCode extends React.Component<Props> implements Editor {
   updateModules = () => {
     Object.keys(this.modelListeners).forEach(path => {
       const shortid = this.modelListeners[path].moduleShortid;
-      const model = this.modelListeners[path].model;
+      const { model } = this.modelListeners[path];
       const module = this.sandbox.modules.find(m => m.shortid === shortid);
       if (!module) {
         // Deleted
@@ -273,13 +269,14 @@ export class VSCode extends React.Component<Props> implements Editor {
       model: any;
     };
   } = {};
+
   modelRemovedListener: { dispose: () => void };
   modelAddedListener: { dispose: () => void };
   activeEditorListener: { dispose: () => void };
 
   getModelContentChangeListener = model =>
     model.onDidChangeContent(e => {
-      const path = model.uri.path;
+      const { path } = model.uri;
       try {
         const module = resolveModule(
           path.replace(/^\/sandbox/, ''),
@@ -543,6 +540,7 @@ export class VSCode extends React.Component<Props> implements Editor {
   });
 
   liveOperationCode = '';
+
   sendChangeOperations = changeEvent => {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
@@ -562,7 +560,9 @@ export class VSCode extends React.Component<Props> implements Editor {
         // Something went wrong while composing the operation, so we're opting for a full sync
         console.error(e);
 
-        this.props.onModuleStateMismatch();
+        if (this.props.onModuleStateMismatch) {
+          this.props.onModuleStateMismatch();
+        }
       }
 
       requestAnimationFrame(() => {
@@ -575,6 +575,7 @@ export class VSCode extends React.Component<Props> implements Editor {
 
   userClassesGenerated = {};
   userSelectionDecorations = {};
+
   updateUserSelections = (userSelections: UserSelection[]) => {
     if (this.editor.getActiveCodeEditor()) {
       updateUserSelections(
@@ -606,7 +607,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     const openedModels = this.editor.textFileService.getFileModels();
 
     openedModels.forEach(fileModel => {
-      const path = fileModel.resource.path;
+      const { path } = fileModel.resource;
 
       if (!path.startsWith('/sandbox') || !fileModel.isDirty()) {
         return;
@@ -650,7 +651,11 @@ export class VSCode extends React.Component<Props> implements Editor {
     pushStack = false,
     model = this.editor.getActiveCodeEditor().getModel()
   ) => {
-    const results = [];
+    const results: Array<{
+      range: unknown;
+      text: string;
+      forceMoveMarkers?: boolean;
+    }> = [];
     let index = 0;
     const currentEOLLength = model.getEOL().length;
     let eolChanged = false;
@@ -723,9 +728,15 @@ export class VSCode extends React.Component<Props> implements Editor {
     Object.keys(operationsJSON).forEach(moduleShortid => {
       const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
 
-      const moduleId = this.sandbox.modules.find(
+      const foundModule = this.sandbox.modules.find(
         m => m.shortid === moduleShortid
-      ).id;
+      );
+
+      if (!foundModule) {
+        return;
+      }
+
+      const moduleId = foundModule.id;
 
       const modulePath =
         '/sandbox' +
@@ -754,7 +765,9 @@ export class VSCode extends React.Component<Props> implements Editor {
           }
         } catch (e) {
           // Something went wrong while applying
-          this.props.onModuleStateMismatch();
+          if (this.props.onModuleStateMismatch) {
+            this.props.onModuleStateMismatch();
+          }
         }
       } else {
         this.liveOperationCode = '';
@@ -766,7 +779,7 @@ export class VSCode extends React.Component<Props> implements Editor {
             model.object.textEditorModel
           );
 
-          if (this.props.onChange) {
+          if (this.props.onChange && module) {
             this.props.onChange(
               model.object.textEditorModel.getValue(),
               module.shortid
@@ -878,7 +891,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     if (!this.lintWorker) {
       this.lintWorker = new LinterWorker();
 
-      this.lintWorker.addEventListener('message', event => {
+      this.lintWorker!.addEventListener('message', event => {
         const { markers, version } = event.data;
 
         requestAnimationFrame(() => {
@@ -922,7 +935,7 @@ export class VSCode extends React.Component<Props> implements Editor {
   };
 
   setupWorkers = () => {
-    const settings = this.settings;
+    const { settings } = this;
 
     if (settings.lintEnabled) {
       // Delay this one, as initialization is very heavy
@@ -959,7 +972,7 @@ export class VSCode extends React.Component<Props> implements Editor {
       },
     }));
 
-    const currentModule = this.currentModule;
+    const { currentModule } = this;
     const modelInfo = await this.getModelById(currentModule.id);
 
     modelInfo.decorations = this.editor
@@ -1033,7 +1046,7 @@ export class VSCode extends React.Component<Props> implements Editor {
       return;
     }
 
-    const mode = await getMode(title, this.monaco);
+    const mode = (await getMode(title, this.monaco)) || '';
     if (this.settings.lintEnabled) {
       if (
         ['javascript', 'typescript', 'typescriptreact', 'vue'].includes(mode)
@@ -1072,7 +1085,7 @@ export class VSCode extends React.Component<Props> implements Editor {
   };
 
   hasNativeTypescript = () => {
-    const sandbox = this.sandbox;
+    const { sandbox } = this;
     const template = getTemplate(sandbox.template);
     return template.isTypescript;
   };
@@ -1110,8 +1123,8 @@ export class VSCode extends React.Component<Props> implements Editor {
   };
 
   getEditorOptions = () => {
-    const settings = this.settings;
-    const currentModule = this.currentModule;
+    const { settings } = this;
+    const { currentModule } = this;
 
     return {
       ...getSettings(settings),

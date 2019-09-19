@@ -104,7 +104,7 @@ export default ({
                 <a
                   href={`https://github.com/${username}`}
                   target="_blank"
-                  rel="noopener noreferer"
+                  rel="noopener noreferrer"
                   css={`
                     margin-left: 10px;
                     display: inline-flex;

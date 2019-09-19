@@ -8,7 +8,7 @@ import React from 'react';
 import ClearIcon from 'react-icons/lib/md/block';
 import styled, { withTheme } from 'styled-components';
 
-import { DevToolProps } from '../';
+import { DevToolProps } from '..';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
 import { ConsoleInput } from './Input';
@@ -30,7 +30,6 @@ const StyledClearIcon = styled(ClearIcon)`
 class ConsoleComponent extends React.Component<StyledProps> {
   state = {
     messages: [],
-    scrollToBottom: true,
     initialClear: true,
     filter: [],
     searchKeywords: '',

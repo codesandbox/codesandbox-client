@@ -39,17 +39,15 @@ function createIframe() {
   });
 }
 
-export function createOverlay(html: string) {
-  return new Promise(async resolve => {
-    const iframe = await createIframe();
+export async function createOverlay(html: string) {
+  const iframe = await createIframe();
 
-    const isMounted = !!document.getElementById('frame');
-    if (!isMounted) {
-      document.body.appendChild(iframe);
-    }
+  const isMounted = !!document.getElementById('frame');
+  if (!isMounted) {
+    document.body.appendChild(iframe);
+  }
 
-    iframe.contentDocument.body.innerHTML = html;
+  iframe.contentDocument.body.innerHTML = html;
 
-    resolve(iframe);
-  });
+  return iframe;
 }

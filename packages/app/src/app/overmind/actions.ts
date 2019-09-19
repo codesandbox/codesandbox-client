@@ -39,7 +39,7 @@ export const notificationAdded: Action<{
 export const notificationRemoved: Action<{
   id: number;
 }> = ({ state }, { id }) => {
-  const notifications = state.notifications;
+  const { notifications } = state;
   const notificationToRemoveIndex = notifications.findIndex(
     notification => notification.id === id
   );
@@ -218,15 +218,8 @@ export const refetchSandboxInfo: AsyncAction = async ({
     sandbox.userLiked = updatedSandbox.userLiked;
     sandbox.title = updatedSandbox.title;
     sandbox.team = updatedSandbox.team;
+    sandbox.roomId = updatedSandbox.roomId;
 
-    if (state.live.isLive) {
-      await actions.live.internal.disconnect();
-
-      if (sandbox.owned && sandbox.roomId) {
-        state.live.isTeam = Boolean(sandbox.team);
-      }
-
-      await actions.live.internal.initialize(sandbox.roomId);
-    }
+    await actions.editor.internal.initializeLiveSandbox(sandbox);
   }
 };
