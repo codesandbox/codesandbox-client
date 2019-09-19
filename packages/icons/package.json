@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Icons designed for the codesanbox app",
   "main": "dist/index.js",
+  "sideEffects": false,
   "scripts": {
     "build": "node scripts/build && yarn tsc"
   },
