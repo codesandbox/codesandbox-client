@@ -40,7 +40,7 @@ class CodeSandboxOTClient extends Client {
   }
 
   sendOperation(revision, operation) {
-    this.onSendOperation(revision, operation);
+    this.onSendOperation(revision, operationToElixir(operation.toJSON()));
   }
 
   applyOperation(operation) {
@@ -97,11 +97,7 @@ export default (
         initialRevision,
         moduleShortid,
         (revision, operation) => {
-          sendOperation(
-            moduleShortid,
-            revision,
-            operationToElixir(operation.toJSON())
-          );
+          sendOperation(moduleShortid, revision, operation);
         },
         operation => {
           applyOperation(moduleShortid, operation);

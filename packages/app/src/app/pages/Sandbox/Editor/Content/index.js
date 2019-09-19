@@ -518,7 +518,9 @@ class EditorPreview extends React.Component {
                 sandbox={sandbox}
                 currentTab={currentTab}
                 currentModule={currentModule}
-                isModuleSynced={store.editor.isModuleSynced}
+                isModuleSynced={shortId =>
+                  !store.editor.changedModuleShortids.includes(shortId)
+                }
                 width={editorWidth}
                 height={editorHeight}
                 settings={settings(store)}

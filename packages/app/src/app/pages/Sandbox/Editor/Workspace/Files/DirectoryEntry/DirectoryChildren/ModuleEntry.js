@@ -38,7 +38,9 @@ class ModuleEntry extends React.Component {
 
     const liveUsers = store.live.liveUsersByModule[module.shortid] || [];
 
-    const isNotSynced = !store.editor.isModuleSynced(module.shortid);
+    const isNotSynced = store.editor.changedModuleShortids.includes(
+      module.shortid
+    );
 
     return (
       <Entry
