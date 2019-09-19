@@ -1,19 +1,13 @@
 const glob = require('glob');
-const SVGO = require('svgo');
 const path = require('path');
 const fs = require('fs-extra');
-const prettier = require('prettier');
+const svgr = require('@svgr/core').default;
 const camelCase = require('lodash.camelcase');
 const upperFirst = require('lodash.upperfirst');
-
-const svgo = new SVGO({});
 
 const svgPaths = glob.sync('./svg/*');
 const outputDir = './dist';
 fs.ensureDirSync(outputDir);
-
-/** Use prettier config from project root */
-const prettierOptions = prettier.resolveConfig.sync('../../.prettierrc');
 
 /** Create dist/index.tsx */
 const code = [
@@ -25,49 +19,35 @@ const code = [
   `,
 ];
 
+function template(
+  { template },
+  opts,
+  { imports, componentName, props, jsx, exports }
+) {
+  const typeScriptTpl = template.smart({ plugins: ['typescript'] });
+  return typeScriptTpl.ast`
+    export const ${componentName} = (props: React.SVGProps<SVGSVGElement>) => ${jsx};
+  `;
+}
+
 svgPaths.forEach((filepath, index) => {
   const source = fs.readFileSync(filepath, 'utf8');
 
-  svgo
-    .optimize(source, { filepath })
-    .then(result => {
-      const { name } = path.parse(filepath);
-      code.push(getNamedExport(name, result.data));
+  const { name } = path.parse(filepath);
 
-      if (index === svgPaths.length - 1) {
-        const contents = prettier.format(code.join('\n'), prettierOptions);
-        fs.writeFileSync(path.join(outputDir, 'index.tsx'), contents, 'utf8');
-      }
-    })
-    .catch(error => {
-      console.log(filepath, error);
-    });
+  const componentCode = svgr.sync(
+    source,
+    {
+      template,
+      svgProps: { height: 32, width: 32, viewBox: '0 0 32 32' },
+    },
+    {
+      componentName: upperFirst(camelCase(name)),
+    }
+  );
+
+  code.push(componentCode);
 });
 
-function getNamedExport(name, source) {
-  return `
-    export const ${upperFirst(camelCase(name))} = props => (
-      ${getSvg(source)}
-    );
-  `;
-}
-
-function getSvg(source) {
-  // Get the contents of the optimized SVG
-  // by trimming leading and tailing <svg> tags
-  const content = source.slice(source.indexOf('>') + 1).slice(0, -6);
-
-  // hardcoded width and height for Icons
-  const size = 32;
-
-  return `
-    <svg
-      width="${size}"
-      height="${size}"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      ${content}
-    </svg>
-  `;
-}
+const contents = code.join('\n');
+fs.writeFileSync(path.join(outputDir, 'index.tsx'), contents, 'utf8');
