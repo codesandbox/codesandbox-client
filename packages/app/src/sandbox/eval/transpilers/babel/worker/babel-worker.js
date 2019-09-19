@@ -12,7 +12,7 @@ import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
 
 import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
-import { downloadFromError } from './dynamic-download';
+import { downloadFromError, downloadPath } from './dynamic-download';
 
 import { evaluateFromPath, resetCache } from './evaluate';
 import {
@@ -85,10 +85,16 @@ async function initializeBrowserFS() {
   return new Promise(resolve => {
     BrowserFS.configure(
       {
-        fs: 'AsyncMirror',
+        fs: 'OverlayFS',
         options: {
-          sync: { fs: 'InMemory' },
-          async: { fs: 'WorkerFS', options: { worker: self } },
+          writable: { fs: 'InMemory' },
+          readable: {
+            fs: 'AsyncMirror',
+            options: {
+              sync: { fs: 'InMemory' },
+              async: { fs: 'WorkerFS', options: { worker: self } },
+            },
+          },
         },
       },
       e => {
@@ -127,6 +133,7 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
   let evaluatedPlugin = null;
 
   try {
+    await downloadPath(plugin);
     evaluatedPlugin = evaluateFromPath(
       fs,
       BFSRequire,

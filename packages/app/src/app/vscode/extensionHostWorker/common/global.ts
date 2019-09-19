@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import { EventEmitter } from 'events';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 
@@ -19,13 +20,12 @@ export const initializePolyfills = () => {
 
 export const loadBrowserFS = () => {
   ctx.importScripts(
-    `${process.env.CODESANDBOX_HOST}/static/browserfs3/browserfs.js`
+    `${process.env.CODESANDBOX_HOST}/static/browserfs4/browserfs.js`
   );
 };
 
 export const initializeGlobals = () => {
   // We need to initialize some node environment stubs
-  ctx.BrowserFS = ctx.BrowserFS;
   ctx.process = ctx.BrowserFS.BFSRequire('process');
   ctx.process.platform = 'linux';
   ctx.process.stdin = new EventEmitter();
