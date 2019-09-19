@@ -229,9 +229,7 @@ function addMiddleware(devServer, index) {
     devServer.use(
       '/api',
       proxy({
-        target: `https://codesandbox.${
-          process.argv.includes('--staging') ? `stream` : `io`
-        }`,
+        target: `https://codesandbox.stream`,
         changeOrigin: true,
       })
     );

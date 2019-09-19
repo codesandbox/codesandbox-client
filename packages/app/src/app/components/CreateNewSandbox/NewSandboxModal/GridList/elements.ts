@@ -46,6 +46,7 @@ export const CarrouselWrapper = styled.div`
   width: 50%;
   flex-grow: 1;
   flex-shrink: 0;
+  margin-bottom: 2rem;
 `;
 
 export const Carrousel = styled.div<{ number: number }>`

@@ -4,7 +4,7 @@ import { Button } from 'reakit/Button';
 export const Container = styled(Button)<{ ref?: any }>`
   display: inline-flex;
   width: 290px;
-  padding: 0 0.5rem;
+  padding: 0.5rem;
   margin: 0;
   border: none;
   box-shadow: 0px 1px 0px #242424;

@@ -50,6 +50,8 @@ export const Tab = styled(BaseTab)`
 export const TabContent = styled(TabPanel)`
   background: #151515;
   position: relative;
+  max-height: 500px;
+  overflow: auto;
   /* position: relative;
   max-height: 530px;
   overflow: scroll;
