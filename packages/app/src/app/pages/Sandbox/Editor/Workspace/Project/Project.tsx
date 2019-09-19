@@ -3,15 +3,16 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
-  sandboxUrl,
   githubRepoUrl,
   patronUrl,
+  sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { hooksObserver, inject } from 'app/componentConnectors';
+import { PrivacyStatus } from 'app/components/PrivacyStatus';
+import { Stats } from 'app/pages/common/Stats';
 import React from 'react';
 import TeamIcon from 'react-icons/lib/md/people';
-import { Stats } from 'app/pages/common/Stats';
-import { PrivacyStatus } from 'app/components/PrivacyStatus';
+
 // import AliasComponent from './Alias';
 import { Author } from './Author';
 import { Description } from './Description';
