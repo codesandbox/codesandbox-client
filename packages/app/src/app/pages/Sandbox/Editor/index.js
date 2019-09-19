@@ -46,8 +46,7 @@ class ContentSplit extends React.Component {
   }
 
   loadTheme = async () => {
-    const customVSCodeTheme = this.props.store.preferences.settings
-      .customVSCodeTheme;
+    const { customVSCodeTheme } = this.props.store.preferences.settings;
 
     try {
       const theme = await getVSCodeTheme('', customVSCodeTheme);
@@ -69,7 +68,7 @@ class ContentSplit extends React.Component {
     const hideNavigation =
       store.preferences.settings.zenMode && store.workspace.workspaceHidden;
 
-    const statusBar = store.editor.statusBar;
+    const { statusBar } = store.editor;
 
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
 

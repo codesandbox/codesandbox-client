@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import React from 'react';
 import styled from 'styled-components';
 
@@ -70,7 +71,6 @@ export default class Cubes extends React.Component {
           offset: OFFSETS[i],
         };
       }),
-      canvas: null,
     };
   }
 

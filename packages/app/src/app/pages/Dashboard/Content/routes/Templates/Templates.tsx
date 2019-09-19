@@ -14,7 +14,7 @@ import { Container, Grid, EmptyTitle } from './elements';
 import { Navigation } from './Navigation';
 
 export const Templates = ({ match }) => {
-  const teamId = match.params.teamId;
+  const { teamId } = match.params;
 
   const { loading, error, data } = useQuery(LIST_TEMPLATES, {
     variables: { teamId },

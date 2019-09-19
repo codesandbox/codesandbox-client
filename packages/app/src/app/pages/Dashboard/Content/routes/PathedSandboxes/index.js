@@ -14,7 +14,7 @@ import { getPossibleTemplates } from '../../Sandboxes/utils';
 
 const PathedSandboxes = props => {
   const path = '/' + decodeURIComponent(props.match.params.path || '');
-  const teamId = props.match.params.teamId;
+  const { teamId } = props.match.params;
   return (
     <>
       <Helmet>

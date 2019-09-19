@@ -17,9 +17,6 @@ export default class ZeitSignIn extends React.PureComponent {
 
     if (code) {
       if (window.opener) {
-        this.state = {
-          code,
-        };
         if (window.opener.location.origin === window.location.origin) {
           window.opener.postMessage(
             {

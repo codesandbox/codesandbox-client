@@ -12,7 +12,7 @@ class SelectedSandboxItems extends React.Component {
 
   render() {
     const { x, y, left, top, isOverPossibleTargets } = this.props;
-    const selectedSandboxes = this.props.store.dashboard.selectedSandboxes;
+    const { selectedSandboxes } = this.props.store.dashboard;
     const selectedIds = this.getSelectedIds(this.props.id, selectedSandboxes);
 
     const scale = isOverPossibleTargets ? 0.4 : 0.8;

@@ -39,6 +39,7 @@ const highlightLines = (
 
 class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   codemirror: typeof CodeMirror;
+
   codemirrorElement: ?HTMLDivElement;
   server: $PropertyType<CodeMirror, 'TernServer'>;
   sandbox: $PropertyType<Props, 'sandbox'>;
@@ -143,7 +144,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
       return;
     }
 
-    const linterWorker = this.linterWorker;
+    const { linterWorker } = this;
     if (linterWorker) {
       linterWorker.postMessage({
         code,
@@ -313,7 +314,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   changeModule = async (newModule: Module) => {
     this.currentModule = newModule;
 
-    const currentModule = this.currentModule;
+    const { currentModule } = this;
 
     if (!documentCache[currentModule.id]) {
       const mode = (await this.getMode(currentModule.title)) || 'typescript';
@@ -358,7 +359,8 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
           return 'text/x-scss';
         }
         return 'css';
-      } else if (kind[1] === 'html' || kind[1] === 'vue') {
+      }
+      if (kind[1] === 'html' || kind[1] === 'vue') {
         await import(
           /* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed'
         );
@@ -385,19 +387,23 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
         }
 
         return 'htmlmixed';
-      } else if (kind[1] === 'md') {
+      }
+      if (kind[1] === 'md') {
         await import(
           /* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown'
         );
         return 'markdown';
-      } else if (kind[1] === 'json') {
+      }
+      if (kind[1] === 'json') {
         return 'application/json';
-      } else if (kind[1] === 'sass') {
+      }
+      if (kind[1] === 'sass') {
         await import(
           /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'
         );
         return 'sass';
-      } else if (kind[1] === 'styl') {
+      }
+      if (kind[1] === 'styl') {
         await import(
           /* webpackChunkName: 'codemirror-stylus' */ 'codemirror/mode/stylus/stylus'
         );
@@ -441,7 +447,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   getCode = () => this.codemirror.getValue();
 
   handleSaveCode = async () => {
-    const onSave = this.props.onSave;
+    const { onSave } = this.props;
     if (onSave) {
       onSave(this.codemirror.getValue());
     }

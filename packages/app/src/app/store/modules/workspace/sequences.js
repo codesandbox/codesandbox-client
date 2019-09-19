@@ -4,7 +4,7 @@ import getTemplate from '@codesandbox/common/lib/templates';
 import track from '@codesandbox/common/lib/utils/analytics';
 import * as actions from './actions';
 import { ensureOwnedEditable, closeModal, openModal } from '../../sequences';
-import { updateSandboxPackage } from './../editor/sequences';
+import { updateSandboxPackage } from '../editor/sequences';
 import { addNotification } from '../../factories';
 
 export const changeSandboxPrivacy = [

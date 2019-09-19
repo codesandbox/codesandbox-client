@@ -36,7 +36,7 @@ const AddTeamMember = ({ teamId, signals }) => (
 
         const variables = { teamId };
 
-        const value = input.value;
+        const { value } = input;
         if (isEmail) {
           variables.email = value;
         } else {
@@ -59,7 +59,7 @@ const AddTeamMember = ({ teamId, signals }) => (
         error && error.graphQLErrors && error.graphQLErrors[0].message;
 
       return (
-        <React.Fragment>
+        <>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <form
             style={{ display: 'flex' }}
@@ -76,7 +76,7 @@ const AddTeamMember = ({ teamId, signals }) => (
               {loading ? 'Adding Member...' : 'Add Member'}
             </Button>
           </form>
-        </React.Fragment>
+        </>
       );
     }}
   </Mutation>

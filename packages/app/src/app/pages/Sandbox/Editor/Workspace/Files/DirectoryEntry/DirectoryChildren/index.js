@@ -4,7 +4,7 @@ import { sortBy } from 'lodash-es';
 import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
 import validateTitle from '../validateTitle';
 import ModuleEntry from './ModuleEntry';
-import DirectoryEntry from '../';
+import DirectoryEntry from '..';
 
 class DirectoryChildren extends React.Component {
   validateTitle = (id, title) => {

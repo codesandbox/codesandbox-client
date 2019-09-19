@@ -311,7 +311,7 @@ export const moduleDoubleClicked: Action = ({ state, effects }) => {
     effects.vscode.runCommand('workbench.action.keepEditor');
   }
 
-  const currentModule = state.editor.currentModule;
+  const { currentModule } = state.editor;
   const tabs = state.editor.tabs as ModuleTab[];
   const tab = tabs.find(
     tabItem => tabItem.moduleShortid === currentModule.shortid
@@ -332,7 +332,7 @@ export const tabMoved: Action<{
   prevIndex: number;
   nextIndex: number;
 }> = ({ state }, { prevIndex, nextIndex }) => {
-  const tabs = state.editor.tabs;
+  const { tabs } = state.editor;
   const tab = json(tabs[prevIndex]);
 
   state.editor.tabs.splice(prevIndex, 1);
@@ -600,7 +600,7 @@ export const renameModule: AsyncAction<{
 export const onDevToolsTabAdded: Action<{
   tab: any;
 }> = ({ state, actions }, { tab }) => {
-  const devToolTabs = state.editor.devToolTabs;
+  const { devToolTabs } = state.editor;
   const { devTools: newDevToolTabs, position } = addDevToolsTabUtil(
     json(devToolTabs),
     tab
@@ -620,7 +620,7 @@ export const onDevToolsTabMoved: Action<{
   prevPos: any;
   nextPos: any;
 }> = ({ state, actions }, { prevPos, nextPos }) => {
-  const devToolTabs = state.editor.devToolTabs;
+  const { devToolTabs } = state.editor;
   const newDevToolTabs = moveDevToolsTabUtil(
     json(devToolTabs),
     prevPos,
@@ -638,7 +638,7 @@ export const onDevToolsTabMoved: Action<{
 export const onDevToolsTabClosed: Action<{
   pos: any;
 }> = ({ state, actions }, { pos }) => {
-  const devToolTabs = state.editor.devToolTabs;
+  const { devToolTabs } = state.editor;
   const closePos = pos;
   const newDevToolTabs = closeDevToolsTabUtil(json(devToolTabs), closePos);
   const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
@@ -658,7 +658,7 @@ export const openDevtoolsTab: Action<{
   tab: any;
 }> = ({ state, actions }, { tab: tabToFind }) => {
   const serializedTab = JSON.stringify(tabToFind);
-  const devToolTabs = state.editor.devToolTabs;
+  const { devToolTabs } = state.editor;
   let nextPos;
 
   for (let i = 0; i < devToolTabs.length; i++) {

@@ -16,7 +16,7 @@ import { ImageViewer } from './ImageViewer';
 import { Configuration } from './Configuration';
 import { VSCode } from './VSCode';
 import MonacoDiff from './MonacoDiff';
-import { Props } from './types';
+import { Props } from './types'; // eslint-disable-line
 import { Icons, Icon } from './elements';
 
 const CodeMirror = Loadable(() =>
@@ -73,11 +73,11 @@ export class CodeEditor extends React.PureComponent<
   };
 
   toggleConfigUI = () => {
-    this.setState({ showConfigUI: !this.state.showConfigUI });
+    this.setState(state => ({ showConfigUI: !state.showConfigUI }));
   };
 
   render() {
-    const props = this.props;
+    const { props } = this;
 
     const {
       isModuleSynced,

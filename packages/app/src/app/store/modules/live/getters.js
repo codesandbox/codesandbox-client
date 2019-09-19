@@ -13,7 +13,7 @@ export function liveUsersByModule() {
     return {};
   }
 
-  const liveUserId = this.liveUserId;
+  const { liveUserId } = this;
 
   this.roomInfo.users.forEach(user => {
     const userId = user.id;

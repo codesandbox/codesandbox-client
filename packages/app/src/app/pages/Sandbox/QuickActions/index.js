@@ -21,9 +21,10 @@ class QuickActionsComponent extends React.Component {
   // we'll just keep track of what the user changes the inputValue to be
   // so when the user makes a wish we can provide that info to genie
   inputValue = '';
+
   updateGenie = () => {
-    const keybindings = this.props.store.preferences.keybindings;
-    const signals = this.props.signals;
+    const { keybindings } = this.props.store.preferences;
+    const { signals } = this.props;
 
     Object.keys(keybindings).forEach(bindingKey => {
       const quickAction = keybindings[bindingKey];
@@ -100,7 +101,7 @@ class QuickActionsComponent extends React.Component {
       return null;
     }
 
-    const keybindings = this.props.store.preferences.keybindings;
+    const { keybindings } = this.props.store.preferences;
 
     return (
       <Container>
@@ -155,12 +156,12 @@ class QuickActionsComponent extends React.Component {
                             {keybindings[item.id].bindings.length === 2 &&
                               keybindings[item.id].bindings[1] &&
                               keybindings[item.id].bindings[1].length && (
-                                <React.Fragment>
+                                <>
                                   {' - '}
                                   <Keys
                                     bindings={keybindings[item.id].bindings[1]}
                                   />
-                                </React.Fragment>
+                                </>
                               )}
                           </Keybindings>
                         )}

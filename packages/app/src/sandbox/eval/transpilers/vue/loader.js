@@ -233,7 +233,7 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   // <script>
   output += '  /* script */\n  ';
-  const script = parts.script;
+  const { script } = parts;
   if (script) {
     if (options.esModule) {
       output += script.src
@@ -262,7 +262,7 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   // <template>
   output += '/* template */\n';
-  const template = parts.template;
+  const { template } = parts;
   if (template) {
     if (options.esModule) {
       output +=

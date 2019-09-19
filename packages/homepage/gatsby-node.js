@@ -71,8 +71,8 @@ exports.createPages = async ({ graphql, actions }) => {
     `
   );
   allMarkdownArticles.data.allMarkdownRemark.edges.forEach(edge => {
-    const slug = edge.node.frontmatter.slug;
-    const id = edge.node.id;
+    const { slug } = edge.node.frontmatter;
+    const { id } = edge.node;
 
     createPage({
       path: 'post/' + slug,
@@ -108,8 +108,8 @@ exports.createPages = async ({ graphql, actions }) => {
     throw Error(allDocs.errors);
   }
   allDocs.data.allMarkdownRemark.edges.forEach(edge => {
-    const slug = edge.node.fields.slug;
-    const url = edge.node.fields.url;
+    const { slug } = edge.node.fields;
+    const { url } = edge.node.fields;
 
     if (slug.includes('docs/')) {
       let template;

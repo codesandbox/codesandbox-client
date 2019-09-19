@@ -53,7 +53,9 @@ export function moveDevToolsTab(
     draft.map((t, i) => {
       if (i === prevPos.devToolIndex) {
         return prevDevTools;
-      } else if (i === nextPos.devToolIndex) {
+      }
+
+      if (i === nextPos.devToolIndex) {
         return nextDevTools;
       }
 

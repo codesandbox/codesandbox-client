@@ -6,7 +6,7 @@ import {
   Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
-import { Derive } from './';
+import { Derive } from '.';
 
 type State = {
   isPatron: Derive<State, boolean>;

@@ -9,7 +9,7 @@ export function saveAllModules(store, signals) {
   // fine-grained control of which saves succeed and which saves fail
   if (sandbox.owned) {
     sandbox.modules
-      .filter(m => !store.editor.isModuleSynced(m.shortid))
+      .filter(m => store.editor.changedModuleShortids.includes(m.shortid))
       .forEach(module => {
         signals.editor.codeSaved({
           code: module.code,

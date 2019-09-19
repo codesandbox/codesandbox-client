@@ -11,7 +11,7 @@ export const repoTitleChanged: Action<{
 };
 
 export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
-  const repoTitle = state.git.repoTitle;
+  const { repoTitle } = state.git;
   const modulesNotSaved = !state.editor.isAllModulesSynced;
 
   if (!repoTitle) {
@@ -49,7 +49,7 @@ export const gitMounted: AsyncAction = ({ actions }) =>
   actions.git.internal.fetchGitChanges();
 
 export const createCommitClicked: AsyncAction = async ({ state, effects }) => {
-  const git = state.git;
+  const { git } = state;
   const id = state.editor.currentId;
 
   git.commit = null;
@@ -102,7 +102,7 @@ export const createPrClicked: AsyncAction = async ({ state, effects }) => {
   state.git.pr = pr;
   state.git.isCreatingPr = false;
 
-  const user = state.user;
+  const { user } = state;
   const git = state.editor.currentSandbox.originalGit;
   const url = `https://github.com/${git.username}/${git.repo}/compare/${
     git.branch

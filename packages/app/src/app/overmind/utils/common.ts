@@ -6,20 +6,18 @@ export function sortObjectByKeys(object) {
 }
 
 export function createOptimisticModule(overrides: Partial<Module>) {
-  return Object.assign(
-    {
-      id: null,
-      title: '',
-      directoryShortid: null,
-      code: '',
-      savedCode: null,
-      shortid: null,
-      isBinary: false,
-      sourceId: null,
-      insertedAt: new Date().toString(),
-      updatedAt: new Date().toString(),
-      isNotSynced: true,
-    },
-    overrides
-  );
+  return {
+    id: null,
+    title: '',
+    directoryShortid: null,
+    code: '',
+    savedCode: null,
+    shortid: null,
+    isBinary: false,
+    sourceId: null,
+    insertedAt: new Date().toString(),
+    updatedAt: new Date().toString(),
+    isNotSynced: true,
+    ...overrides,
+  };
 }

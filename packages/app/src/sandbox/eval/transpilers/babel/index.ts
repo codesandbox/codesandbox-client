@@ -43,7 +43,7 @@ class BabelTranspiler extends WorkerTranspiler {
     loaderContext: LoaderContext
   ): Promise<{ transpiledCode: string }> {
     return new Promise((resolve, reject) => {
-      const path = loaderContext.path;
+      const { path } = loaderContext;
 
       // When we find a node_module that already is commonjs we will just get the
       // dependencies from the file and return the same code. We get the dependencies

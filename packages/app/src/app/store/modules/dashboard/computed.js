@@ -7,7 +7,7 @@ export function isTemplateSelected(templateName) {
 export function getFilteredSandboxes(sandboxes) {
   const orderField = this.orderBy.field;
   const orderOrder = this.orderBy.order;
-  const blacklistedTemplates = this.filters.blacklistedTemplates;
+  const { blacklistedTemplates } = this.filters;
 
   const isDateField = orderField === 'insertedAt' || orderField === 'updatedAt';
 

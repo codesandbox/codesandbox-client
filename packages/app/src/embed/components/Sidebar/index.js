@@ -44,7 +44,7 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
     m => m.title === 'package.json' && m.directoryShortid == null
   );
 
-  let npmDependencies = sandbox.npmDependencies;
+  let { npmDependencies } = sandbox;
 
   if (packageJSON) {
     try {
@@ -97,7 +97,7 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
         ))}
 
         {sandbox.externalResources.length > 0 && (
-          <React.Fragment>
+          <>
             <Subtitle>External Resources</Subtitle>
             {sandbox.externalResources.map(dep => (
               <EntryContainer key={dep}>
@@ -110,7 +110,7 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
                 </a>
               </EntryContainer>
             ))}
-          </React.Fragment>
+          </>
         )}
       </Item>
 

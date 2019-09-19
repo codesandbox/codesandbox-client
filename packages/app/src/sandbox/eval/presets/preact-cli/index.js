@@ -8,7 +8,7 @@ import lessTranspiler from '../../transpilers/less';
 
 import asyncTranspiler from './transpilers/async';
 
-import Preset from '../';
+import Preset from '..';
 
 export default function initialize() {
   const preactPreset = new Preset(

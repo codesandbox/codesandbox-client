@@ -100,7 +100,8 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
           <Unlisted />
         </PrivacyIconContainer>
       );
-    } else if (this.props.privacy === 2) {
+    }
+    if (this.props.privacy === 2) {
       return (
         <PrivacyIconContainer content="Private Sandbox">
           <Private />

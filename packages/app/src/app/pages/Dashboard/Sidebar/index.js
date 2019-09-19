@@ -8,9 +8,8 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import PeopleIcon from 'react-icons/lib/md/people';
 
 // @ts-ignore
-import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
-
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
+import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
 import { Item } from './Item';
 import { SandboxesItem } from './SandboxesItem';
@@ -61,7 +60,7 @@ class Sidebar extends React.Component {
             return (
               <Observer>
                 {({ store: innerStore }) => (
-                  <React.Fragment>
+                  <>
                     <Items style={{ marginBottom: '1rem' }}>
                       <Item
                         Icon={DashboardIcon}
@@ -93,7 +92,7 @@ class Sidebar extends React.Component {
                           return null;
                         }
 
-                        const teams = data.me.teams;
+                        const { teams } = data.me;
 
                         return teams.map(team => (
                           <div key={team.id}>
@@ -124,7 +123,7 @@ class Sidebar extends React.Component {
                         ));
                       }}
                     </Query>
-                  </React.Fragment>
+                  </>
                 )}
               </Observer>
             );

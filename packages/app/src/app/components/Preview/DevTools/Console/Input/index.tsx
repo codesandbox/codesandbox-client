@@ -16,8 +16,6 @@ import {
 
 import { IconContainer, CodeMirrorContainer } from './elements';
 
-const CONSOLE_INPUT_LINE_HEIGHT = 20;
-
 const Container = styled.div`
   flex-shrink: 0;
   position: relative;
@@ -35,7 +33,6 @@ type Props = {
 };
 
 type State = {
-  editorHeight: number;
   commandHistory: Array<string>;
   commandCursor: number;
 };
@@ -55,11 +52,10 @@ export class ConsoleInput extends React.PureComponent<Props, State> {
   state = {
     commandHistory: [],
     commandCursor: -1,
-
-    editorHeight: CONSOLE_INPUT_LINE_HEIGHT,
   };
 
   editor: any;
+
   codemirror: CodeMirror.Editor;
 
   mountCodeMirror = el => {
@@ -82,25 +78,26 @@ export class ConsoleInput extends React.PureComponent<Props, State> {
           const command = this.codemirror.getDoc().getValue();
           evaluateConsole(command);
           this.codemirror.getDoc().setValue('');
-          this.setState({
+          this.setState(state => ({
             commandCursor: -1,
-            commandHistory: [command, ...this.state.commandHistory],
-          });
+            commandHistory: [command, ...state.commandHistory],
+          }));
         } else if (e.keyCode === ARROW_UP) {
           const lineNumber = this.codemirror.getDoc().getCursor().line;
           if (lineNumber !== 0) {
             return;
           }
 
-          const newCursor = Math.min(
-            this.state.commandCursor + 1,
-            this.state.commandHistory.length - 1
-          );
-          this.codemirror
-            .getDoc()
-            .setValue(this.state.commandHistory[newCursor] || '');
-          this.setState({
-            commandCursor: newCursor,
+          this.setState(state => {
+            const newCursor = Math.min(
+              state.commandCursor + 1,
+              state.commandHistory.length - 1
+            );
+            this.codemirror
+              .getDoc()
+              .setValue(state.commandHistory[newCursor] || '');
+
+            return { commandCursor: newCursor };
           });
         } else if (e.keyCode === ARROW_DOWN) {
           const lineNumber = this.codemirror.getDoc().getCursor().line;
@@ -109,12 +106,12 @@ export class ConsoleInput extends React.PureComponent<Props, State> {
             return;
           }
 
-          const newCursor = Math.max(this.state.commandCursor - 1, -1);
-          this.codemirror
-            .getDoc()
-            .setValue(this.state.commandHistory[newCursor] || '');
-          this.setState({
-            commandCursor: newCursor,
+          this.setState(state => {
+            const newCursor = Math.max(state.commandCursor - 1, -1);
+            this.codemirror
+              .getDoc()
+              .setValue(state.commandHistory[newCursor] || '');
+            return { commandCursor: newCursor };
           });
         }
       }

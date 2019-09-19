@@ -1,4 +1,4 @@
-import Transpiler, { TranspilerResult } from '../';
+import Transpiler, { TranspilerResult } from '..';
 import { LoaderContext } from '../../transpiled-module';
 
 /**

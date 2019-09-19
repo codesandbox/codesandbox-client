@@ -62,9 +62,9 @@ export function modulesByPath() {
 }
 
 export function currentTab() {
-  const currentTabId = this.currentTabId;
-  const tabs = this.tabs;
-  const currentModuleShortid = this.currentModuleShortid;
+  const { currentTabId } = this;
+  const { tabs } = this;
+  const { currentModuleShortid } = this;
 
   if (currentTabId) {
     const foundTab = this.tabs.find(tab => tab.id === currentTabId);
@@ -87,7 +87,7 @@ export function isAdvancedEditor() {
     return false;
   }
 
-  const isServer = getTemplate(this.currentSandbox.template).isServer;
+  const { isServer } = getTemplate(this.currentSandbox.template);
 
   return isServer && this.currentSandbox.owned;
 }

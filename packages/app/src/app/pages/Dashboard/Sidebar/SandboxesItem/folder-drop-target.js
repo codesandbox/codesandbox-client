@@ -59,7 +59,7 @@ function addSandboxesToCollection(props, item) {
 
       if (!item.removedAt) {
         // Update old folders
-        const collectionPath = item.collectionPath;
+        const { collectionPath } = item;
 
         const variables = { path: collectionPath };
 

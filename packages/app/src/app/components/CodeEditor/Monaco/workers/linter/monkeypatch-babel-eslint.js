@@ -4,7 +4,7 @@ const t = require('babel-types');
 
 export default function monkeypatch(modules, eslintOptions) {
   const escope = require('eslint-scope');
-  const Definition = require('eslint-scope/lib/definition').Definition;
+  const { Definition } = require('eslint-scope/lib/definition');
   const estraverse = require('estraverse');
   const referencer = require('eslint-scope/lib/referencer');
 
@@ -17,7 +17,7 @@ export default function monkeypatch(modules, eslintOptions) {
   estraverse.VisitorKeys.MethodDefinition.push('decorators');
   estraverse.VisitorKeys.Property.push('decorators');
 
-  var analyze = escope.analyze;
+  var { analyze } = escope;
   escope.analyze = function(ast, opts) {
     opts = opts || {};
     opts.ecmaVersion = eslintOptions.ecmaVersion;
@@ -161,7 +161,7 @@ export default function monkeypatch(modules, eslintOptions) {
   }
 
   // visit decorators that are in: ClassDeclaration / ClassExpression
-  var visitClass = referencer.prototype.visitClass;
+  var { visitClass } = referencer.prototype;
   referencer.prototype.visitClass = function(node) {
     visitDecorators.call(this, node);
     var typeParamScope;
@@ -186,7 +186,7 @@ export default function monkeypatch(modules, eslintOptions) {
   };
 
   // visit decorators that are in: Property / MethodDefinition
-  var visitProperty = referencer.prototype.visitProperty;
+  var { visitProperty } = referencer.prototype;
   referencer.prototype.visitProperty = function(node) {
     if (node.value && node.value.type === 'TypeCastExpression') {
       visitTypeAnnotation.call(this, node.value);
@@ -209,7 +209,7 @@ export default function monkeypatch(modules, eslintOptions) {
   referencer.prototype.ClassPrivateProperty = visitClassProperty;
 
   // visit flow type in FunctionDeclaration, FunctionExpression, ArrowFunctionExpression
-  var visitFunction = referencer.prototype.visitFunction;
+  var { visitFunction } = referencer.prototype;
   referencer.prototype.visitFunction = function(node) {
     var typeParamScope;
     if (node.typeParameters) {
@@ -249,8 +249,8 @@ export default function monkeypatch(modules, eslintOptions) {
   referencer.prototype.VariableDeclaration = function(node) {
     if (node.declarations) {
       for (var i = 0; i < node.declarations.length; i++) {
-        var id = node.declarations[i].id;
-        var typeAnnotation = id.typeAnnotation;
+        var { id } = node.declarations[i];
+        var { typeAnnotation } = id;
         if (typeAnnotation) {
           checkIdentifierOrVisit.call(this, typeAnnotation);
         }

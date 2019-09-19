@@ -14,9 +14,9 @@ import {
   dashboardUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import PatronBadge from '@codesandbox/common/lib/utils/badges/PatronBadge';
+import track from '@codesandbox/common/lib/utils/analytics';
 // @ts-ignore
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
-import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Container, Item, Icon, Separator } from './elements';
 import { FeedbackIcon } from './FeedbackIcon';

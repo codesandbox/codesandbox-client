@@ -77,6 +77,7 @@ export default class FeaturedSandbox extends React.PureComponent<
     sandbox: undefined,
     showPreview: false,
   };
+
   fetchedSandboxes = {};
 
   fetchSandbox = (id: string) => {

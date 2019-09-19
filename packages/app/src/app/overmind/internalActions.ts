@@ -105,7 +105,7 @@ export const signInGithub: Action<
   return effects.browser
     .waitForMessage<{ jwt: string }>('signin')
     .then(data => {
-      const jwt = data.jwt;
+      const { jwt } = data;
 
       popup.close();
 
@@ -145,7 +145,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   state.editor.sandboxes[sandbox.id] = sandbox;
   state.editor.currentId = sandbox.id;
 
-  let currentModuleShortid = state.editor.currentModuleShortid;
+  let { currentModuleShortid } = state.editor;
   const parsedConfigs = parseConfigurations(sandbox);
   const main = mainModule(sandbox, parsedConfigs);
 
@@ -311,7 +311,7 @@ export const ensurePackageJSON: AsyncAction = async ({
 };
 
 export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
-  const currentModule = state.editor.currentModule;
+  const { currentModule } = state.editor;
   const tabs = state.editor.tabs as ModuleTab[];
   const isActiveTab = currentModule.shortid === tabs[tabIndex].moduleShortid;
 

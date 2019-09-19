@@ -23,7 +23,7 @@ class ModuleEntry extends React.Component {
       discardModuleChanges,
       getModulePath,
     } = this.props;
-    const currentModuleShortid = store.editor.currentModuleShortid;
+    const { currentModuleShortid } = store.editor;
     const mainModuleId = store.editor.mainModule.id;
 
     const isActive = module.shortid === currentModuleShortid;
@@ -38,7 +38,9 @@ class ModuleEntry extends React.Component {
 
     const liveUsers = store.live.liveUsersByModule[module.shortid] || [];
 
-    const isNotSynced = !store.editor.isModuleSynced(module.shortid);
+    const isNotSynced = store.editor.changedModuleShortids.includes(
+      module.shortid
+    );
 
     return (
       <Entry

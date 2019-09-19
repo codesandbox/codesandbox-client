@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { PatronStar } from './';
+import { PatronStar } from '.';
 
 const stories = storiesOf('components/PatronStar', module);
 

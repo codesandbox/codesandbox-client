@@ -61,7 +61,7 @@ export type NumberPreference = {
 
 export default class Preference extends React.Component<Props> {
   getOptionComponent = () => {
-    const props = this.props;
+    const { props } = this;
     if (props.type === 'boolean') {
       return (
         <PreferenceSwitch

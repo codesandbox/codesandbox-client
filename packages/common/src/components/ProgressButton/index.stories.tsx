@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import ProgressButton from './';
+import ProgressButton from '.';
 
 const stories = storiesOf('components/ProgressButton', module);
 

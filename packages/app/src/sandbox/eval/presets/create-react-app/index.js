@@ -1,6 +1,6 @@
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 
-import Preset from '../';
+import Preset from '..';
 
 import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
@@ -38,7 +38,7 @@ export default function initialize() {
     {
       hasDotEnv: true,
       setup: manager => {
-        const configurations = manager.configurations;
+        const { configurations } = manager;
 
         if (
           isBabel7(
@@ -154,7 +154,7 @@ export default function initialize() {
       preEvaluate: manager => {
         if (!manager.webpackHMR) {
           try {
-            const children = document.body.children;
+            const { children } = document.body;
             // Do unmounting for react
             if (
               manager.manifest &&

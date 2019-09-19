@@ -26,7 +26,7 @@ export default function HTML(props) {
           This app works best with JavaScript enabled.
         </noscript>
         <div
-          key={`body`}
+          key="body"
           id="___gatsby"
           dangerouslySetInnerHTML={{ __html: props.body }}
         />

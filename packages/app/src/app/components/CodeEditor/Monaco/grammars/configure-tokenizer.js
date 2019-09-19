@@ -25,7 +25,8 @@ export async function liftOff(monaco) {
           format: 'json',
           content: cssGrammar,
         };
-      } else if (scopeName === 'text.html.basic') {
+      }
+      if (scopeName === 'text.html.basic') {
         return {
           format: 'json',
           content: htmlGrammar,

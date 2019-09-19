@@ -13,8 +13,8 @@ const FIELD_TO_NAME = {
 class SortOptionsComponent extends React.Component {
   toggleSort = e => {
     e.preventDefault();
-    const orderBy = this.props.store.dashboard.orderBy;
-    const orderByChanged = this.props.signals.dashboard.orderByChanged;
+    const { orderBy } = this.props.store.dashboard;
+    const { orderByChanged } = this.props.signals.dashboard;
     orderByChanged({
       orderBy: {
         order: orderBy.order === 'asc' ? 'desc' : 'asc',
@@ -24,8 +24,8 @@ class SortOptionsComponent extends React.Component {
   };
 
   setField = (field: string) => {
-    const orderBy = this.props.store.dashboard.orderBy;
-    const orderByChanged = this.props.signals.dashboard.orderByChanged;
+    const { orderBy } = this.props.store.dashboard;
+    const { orderByChanged } = this.props.signals.dashboard;
     orderByChanged({
       orderBy: {
         order: orderBy.order,

@@ -80,7 +80,6 @@ class ModalComponent extends React.Component {
   render() {
     const {
       isOpen,
-
       width,
       top,
       onClose,
@@ -90,7 +89,7 @@ class ModalComponent extends React.Component {
     } = this.props;
 
     return (
-      <React.Fragment>
+      <>
         <GlobalStyles />
         <Modal
           isOpen={isOpen}
@@ -106,7 +105,7 @@ class ModalComponent extends React.Component {
             <ModalBody>{children}</ModalBody>
           </BaseModal>
         </Modal>
-      </React.Fragment>
+      </>
     );
   }
 }
