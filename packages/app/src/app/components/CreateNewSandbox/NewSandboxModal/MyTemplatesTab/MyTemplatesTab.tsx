@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import Template from '@codesandbox/common/lib/components/Template';
 import { LIST_TEMPLATES } from '../../queries';
-import { Templates } from '../elements';
+// import { Templates } from '../elements';
 import { Empty, Title } from './elements';
 
 // Would be good to actually have this interface filled out
@@ -18,7 +18,7 @@ export const MyTemplatesTab = ({ selectTemplate }) => {
   });
 
   return data && data.me && data.me.templates.length ? (
-    <Templates>
+    <div>
       {data.me.templates.map(template => (
         <Template
           key={template.id}
@@ -27,7 +27,7 @@ export const MyTemplatesTab = ({ selectTemplate }) => {
           small={false}
         />
       ))}
-    </Templates>
+    </div>
   ) : (
     <Empty>
       <Title>You haven’t created any templates yet</Title>

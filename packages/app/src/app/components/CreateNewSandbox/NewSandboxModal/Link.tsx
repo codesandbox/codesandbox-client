@@ -4,7 +4,7 @@ import { Link as RouterLink } from '@reach/router';
 export interface ILinkProps {
   to?: string;
   external?: boolean;
-  innerRef: any;
+  innerRef?: any;
 }
 
 export const Link = React.forwardRef<HTMLAnchorElement, ILinkProps>(

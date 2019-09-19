@@ -19,6 +19,7 @@ export const Button: React.FC<IButtonProps> = React.forwardRef<
   HTMLAnchorElement,
   IButtonProps
 >(({ Icon, children, ...props }, ref) => (
+  // @ts-ignore
   <Base
     ref={ref}
     {...(props.to || props.href

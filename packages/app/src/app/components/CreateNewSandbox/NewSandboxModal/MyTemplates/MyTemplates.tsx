@@ -4,7 +4,7 @@ import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import history from 'app/utils/history';
 import { useQuery } from '@apollo/react-hooks';
 import { LIST_TEMPLATES } from '../../queries';
-import { Title } from '../elements';
+// import { Title } from '../elements';
 import { MyTemplatesList } from './elements';
 
 // Would be good to actually have this interface filled out
@@ -33,7 +33,7 @@ export const MyTemplates = ({ selectTemplate }: Props) => {
 
   return (
     <>
-      <Title>Templates</Title>
+      <h1>Templates</h1>
       <MyTemplatesList>
         {data.me
           ? data.me.templates.map((template, i) => (
