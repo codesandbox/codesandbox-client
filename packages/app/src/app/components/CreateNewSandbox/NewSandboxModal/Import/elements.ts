@@ -41,18 +41,26 @@ export const FeatureText = styled.p`
   }
 `;
 
-export const Column = styled.div`
+export const Column = styled.div<{ fullWidth?: boolean }>`
   border-bottom: 1px solid #242424;
   padding-bottom: 1.5rem;
+  ${props =>
+    !props.fullWidth &&
+    css`
+      &:first-of-type {
+        padding-right: 1.7rem;
+        border-right: 1px solid #242424;
+      }
 
-  &:first-of-type {
-    padding-right: 1.7rem;
-    border-right: 1px solid #242424;
-  }
-
-  &:last-of-type {
-    padding-left: 1.7rem;
-  }
+      &:last-of-type {
+        padding-left: 1.7rem;
+      }
+    `}
+  ${props =>
+    props.fullWidth &&
+    css`
+      grid-column: span 2;
+    `}
 `;
 
 export const Button = styled.button`
@@ -120,4 +128,27 @@ export const PlaceHolderLink = styled.span<{ error: string }>`
     css`
       color: ${props.theme.red};
     `}
+`;
+
+export const ImportChoices = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 60px;
+  padding: 0 1.5rem;
+  font-family: Inter;
+  font-size: 16px;
+  margin-bottom: 4rem;
+
+  color: #ffffff;
+
+  a {
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  svg {
+    margin-right: 0.5rem;
+  }
 `;

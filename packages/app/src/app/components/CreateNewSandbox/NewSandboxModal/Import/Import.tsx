@@ -5,9 +5,11 @@ import {
   gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
+import { TerminalIcon } from '../Icons/TerminalIcon';
+import { DownloadIcon } from '../Icons/DownloadIcon';
 import { Button } from '../Button';
 import { GitHubIcon, StackbitIcon } from '../Icons';
-import { Header, Legend } from '../elements';
+import { Header } from '../elements';
 import { StackbitButton } from './Stackbit';
 import {
   Features,
@@ -17,12 +19,13 @@ import {
   Input,
   ButtonContainer,
   PlaceHolderLink,
+  ImportChoices,
 } from './elements';
 
-const getFullGitHubUrl = url =>
+const getFullGitHubUrl = (url: string) =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
-const copyToClipboard = str => {
+const copyToClipboard = (str: string) => {
   const el = document.createElement('textarea');
   el.value = str;
   el.setAttribute('readonly', '');
@@ -60,10 +63,9 @@ export const Import = () => {
     <>
       <Header>
         <span>Import Project</span>
-        <Legend>Show All</Legend>
       </Header>
       <Features>
-        <Column>
+        <Column fullWidth={!state.user}>
           <FeatureName>
             <GitHubIcon />
             Import from GitHub
@@ -103,20 +105,32 @@ export const Import = () => {
             </ButtonContainer>
           </form>
         </Column>
-        <Column>
-          {' '}
-          <FeatureName>
-            <StackbitIcon />
-            Import from Stackbit
-          </FeatureName>
-          <FeatureText>
-            Create a project using Stackbit. This generates a project for you
-            that{"'"}s automatically set up with any Theme, Site Generator and
-            CMS.
-          </FeatureText>
-          <StackbitButton username={(state.user || {}).username} />
-        </Column>
+        {state.user && (
+          <Column>
+            {' '}
+            <FeatureName>
+              <StackbitIcon />
+              Import from Stackbit
+            </FeatureName>
+            <FeatureText>
+              Create a project using Stackbit. This generates a project for you
+              that{"'"}s automatically set up with any Theme, Site Generator and
+              CMS.
+            </FeatureText>
+            <StackbitButton username={(state.user || {}).username} />
+          </Column>
+        )}
       </Features>
+      <ImportChoices>
+        <a href="/docs/importing#export-with-cli">
+          <TerminalIcon />
+          CLI Documentation
+        </a>
+        <a href="/docs/importing#define-api">
+          <DownloadIcon />
+          CLI Documentation
+        </a>
+      </ImportChoices>
     </>
   );
 };
