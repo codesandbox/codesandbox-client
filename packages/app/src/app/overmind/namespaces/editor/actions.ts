@@ -683,3 +683,10 @@ export const openDevtoolsTab: Action<{
     });
   }
 };
+
+export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
+  { state },
+  { frozen }
+) => {
+  state.editor.sessionFrozen = frozen;
+};
