@@ -28,20 +28,20 @@ const RecentSandboxes = ({ store }) => (
           return <div>Error!</div>;
         }
 
+        const sandboxes = loading
+          ? []
+          : (data && data.me && data.me.sandboxes) || [];
+
         let mostUsedTemplate = null;
-        if (!loading) {
-          try {
-            mostUsedTemplate = getMostUsedTemplate(data.me.sandboxes);
-          } catch (e) {
-            // Not critical
-          }
+        try {
+          mostUsedTemplate = getMostUsedTemplate(sandboxes);
+        } catch (e) {
+          // Not critical
         }
 
         // We want to hide all templates
         // TODO: make this a query variable for graphql and move the logic to the server
-        const noTemplateSandboxes = (loading ? [] : data.me.sandboxes).filter(
-          s => !s.customTemplate
-        );
+        const noTemplateSandboxes = sandboxes.filter(s => !s.customTemplate);
 
         return (
           <Sandboxes
