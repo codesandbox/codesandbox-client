@@ -10,7 +10,8 @@ export const withLoadApp = <T>(
   if (state.hasLoadedApp && continueAction) {
     await continueAction(context, value);
     return;
-  } else if (state.hasLoadedApp) {
+  }
+  if (state.hasLoadedApp) {
     return;
   }
 
@@ -70,7 +71,9 @@ export const withOwnedSandbox = <T>(
   const { state, actions } = context;
 
   if (!state.editor.currentSandbox.owned) {
-    await actions.editor.internal.forkSandbox(state.editor.currentId);
+    await actions.editor.internal.forkSandbox({
+      sandboxId: state.editor.currentId,
+    });
   } else if (
     state.editor.currentSandbox.isFrozen &&
     state.editor.sessionFrozen
