@@ -11,7 +11,13 @@ export const Link: React.FC<ILinkProps> = React.forwardRef<
   ILinkProps
 >(({ to = undefined, external = false, children, ...props }, ref) =>
   external ? (
-    <a ref={ref} {...props} href={to as string} target="_blank" rel="noopener">
+    <a
+      ref={ref}
+      {...props}
+      href={to as string}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {children}
     </a>
   ) : (
