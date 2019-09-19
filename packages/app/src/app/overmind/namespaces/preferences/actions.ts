@@ -39,8 +39,8 @@ export const settingChanged: Action<{
   name: string;
 }> = ({ state, effects }, { name, value }) => {
   const path = name.split('.');
-  const lastKey = path.pop();
   const firstKey = path[0];
+  const lastKey = path.pop();
   const settingsTarget = path.reduce(
     (aggr, pathKey) => aggr[pathKey],
     state.preferences.settings
