@@ -70,7 +70,9 @@ export const withOwnedSandbox = <T>(
   const { state, actions } = context;
 
   if (!state.editor.currentSandbox.owned) {
-    await actions.editor.internal.forkSandbox(state.editor.currentId);
+    await actions.editor.internal.forkSandbox({
+      sandboxId: state.editor.currentId,
+    });
   } else if (
     state.editor.currentSandbox.isFrozen &&
     state.editor.sessionFrozen
