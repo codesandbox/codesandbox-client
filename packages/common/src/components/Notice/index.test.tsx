@@ -1,7 +1,7 @@
 import 'jest-styled-components';
 import React from 'react';
 import mountWithTheme from '../../test/themeMount';
-import Notice from './';
+import Notice from '.';
 
 describe('<Notice /> rendering', () => {
   it('basic', () => {

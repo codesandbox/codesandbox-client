@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 import ArrowDropDown from 'react-icons/lib/md/keyboard-arrow-down';
@@ -96,6 +96,7 @@ export class VersionEntry extends React.PureComponent<Props, State> {
     }
     this.props.onRemove(this.props.dependency);
   };
+
   handleRefresh = e => {
     if (e) {
       e.preventDefault();
@@ -103,8 +104,11 @@ export class VersionEntry extends React.PureComponent<Props, State> {
     }
     this.props.onRefresh(this.props.dependency);
   };
+
   onMouseEnter = () => this.setState({ hovering: true });
+
   onMouseLeave = () => this.setState({ hovering: false });
+
   handleOpen = () => this.setState(({ open }) => ({ open: !open }));
 
   render() {
@@ -116,7 +120,7 @@ export class VersionEntry extends React.PureComponent<Props, State> {
 
     const { hovering, version, open, versions } = this.state;
     return (
-      <Fragment>
+      <>
         <EntryContainer
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
@@ -171,7 +175,7 @@ export class VersionEntry extends React.PureComponent<Props, State> {
             version={dependencies[dependency]}
           />
         ) : null}
-      </Fragment>
+      </>
     );
   }
 }

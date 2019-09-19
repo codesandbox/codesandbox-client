@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Down from 'react-icons/lib/fa/angle-down';
 import Right from 'react-icons/lib/fa/angle-right';
 import { Spring, animated } from 'react-spring/renderprops';
@@ -13,7 +13,7 @@ export default class extends Component {
     const { children, title } = this.props;
     const { open } = this.state;
     return (
-      <Fragment>
+      <>
         <Title onClick={() => this.toggleShow()}>
           {open ? <Down /> : <Right />}
           {title}
@@ -27,7 +27,7 @@ export default class extends Component {
         >
           {props => <animated.div style={props}>{children}</animated.div>}
         </Spring>
-      </Fragment>
+      </>
     );
   }
 }

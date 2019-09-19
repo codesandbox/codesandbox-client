@@ -1,7 +1,7 @@
 import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
 // @ts-ignore
 import files from 'buffer-loader!./files.zip'; // eslint-disable-line import/no-webpack-loader-syntax
-import { createFile, createDirectoryWithFiles } from '../';
+import { createFile, createDirectoryWithFiles } from '..';
 
 /**
  * Add necessary scripts to package.json if they don't exist

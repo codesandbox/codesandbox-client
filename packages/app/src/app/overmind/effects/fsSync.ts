@@ -111,8 +111,8 @@ export default {
       [path: string]: Module;
     };
   }) {
-    getCurrentSandboxId = options.getCurrentSandboxId;
-    getModulesByPath = options.getModulesByPath;
+    getCurrentSandboxId = options.getCurrentSandboxId; // eslint-disable-line prefer-destructuring
+    getModulesByPath = options.getModulesByPath; // eslint-disable-line prefer-destructuring
   },
   syncCurrentSandbox() {
     if (fileInterval) {
@@ -170,6 +170,7 @@ export default {
       }
     }, 1000);
 
+    // eslint-disable-next-line
     self.addEventListener('message', evt => {
       if (evt.data.$type === 'request-data') {
         sendTypes();

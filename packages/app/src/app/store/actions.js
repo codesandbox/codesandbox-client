@@ -166,7 +166,7 @@ export function setUrlOptions({ state, router, utils }) {
 
 export function setCurrentModuleShortid({ props, state }) {
   const currentModuleShortid = state.get('editor.currentModuleShortid');
-  const sandbox = props.sandbox;
+  const { sandbox } = props;
 
   // Only change the module shortid if it doesn't exist in the new sandbox
   if (!sandbox.modules.map(m => m.shortid).includes(currentModuleShortid)) {
@@ -205,7 +205,7 @@ export function showUserSurveyIfNeeded({ state, controller, api }) {
 }
 
 export function setMainModuleShortid({ props, state }) {
-  const sandbox = props.sandbox;
+  const { sandbox } = props;
   const parsedConfigs = parseSandboxConfigurations(sandbox);
   const module = mainModule(sandbox, parsedConfigs);
 
@@ -295,7 +295,7 @@ export function signInGithub({ browser, path, props }) {
   );
 
   return browser.waitForMessage('signin').then(data => {
-    const jwt = data.jwt;
+    const { jwt } = data;
 
     popup.close();
 

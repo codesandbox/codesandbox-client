@@ -39,7 +39,7 @@ class Tab extends React.Component {
     const { hovering } = this.state;
 
     if (hovering && tabCount > 1) {
-      return <StyledCloseIcon onClick={this.closeTab} show={'true'} />;
+      return <StyledCloseIcon onClick={this.closeTab} show="true" />;
     }
 
     return <StyledCloseIcon onClick={this.closeTab} show={undefined} />;
@@ -71,10 +71,10 @@ class Tab extends React.Component {
           onMouseLeave={this.handleMouseLeave}
         >
           {title ? (
-            <React.Fragment>
+            <>
               <TabTitle>{title}</TabTitle>
               {this.renderTabStatus()}
-            </React.Fragment>
+            </>
           ) : (
             children({ hovering, closeTab: this.closeTab })
           )}

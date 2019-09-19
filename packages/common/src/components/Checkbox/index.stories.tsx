@@ -1,7 +1,8 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { Checkbox } from './';
+import { Checkbox } from '.';
 
 const stories = storiesOf('components/Checkbox', module);
 

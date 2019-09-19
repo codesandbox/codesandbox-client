@@ -52,7 +52,7 @@ export const Project = inject('store', 'signals')(
     }: IProjectProps) => {
       const sandbox = editor.currentSandbox;
       const template = getTemplateDefinition(sandbox.template);
-      const isServer = template.isServer;
+      const { isServer } = template;
 
       return (
         <Container>

@@ -32,7 +32,9 @@ export const Option = ({
       }}
       style={style}
     >
-      <label htmlFor={checkBoxName} style={{ display: 'none' }} />
+      <label htmlFor={checkBoxName} style={{ display: 'none' }}>
+        {checkBoxName}
+      </label>
       <CheckBox id={checkBoxName} color={color} selected={selected} />
       <OptionName style={{ fontWeight: 500 }}>{niceName}</OptionName>
     </Container>

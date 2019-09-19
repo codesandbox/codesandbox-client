@@ -18,7 +18,7 @@ export default function(html: string, loaderContext: LoaderContext) {
     false
   );
 
-  const options = loaderContext.options;
+  const { options } = loaderContext;
   const vueOptions = options.vueOptions || {};
   const needsHotReload = true;
 
@@ -68,7 +68,7 @@ export default function(html: string, loaderContext: LoaderContext) {
   } else {
     const bubleOptions = options.buble;
     const stripWith = bubleOptions.transforms.stripWith !== false;
-    const stripWithFunctional = bubleOptions.transforms.stripWithFunctional;
+    const { stripWithFunctional } = bubleOptions.transforms;
 
     const staticRenderFns = compiled.staticRenderFns.map(fn =>
       toFunction(fn, stripWithFunctional)

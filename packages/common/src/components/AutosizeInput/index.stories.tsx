@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import AutosizeInput from './';
+import AutosizeInput from '.';
 
 const stories = storiesOf('components/Input', module);
 

@@ -54,7 +54,7 @@ class SandboxGridComponent extends React.Component<*, State> {
 
   setSandboxesSelected = (ids, { additive = false, range = false } = {}) => {
     const { store, sandboxes, signals } = this.props;
-    const selectedSandboxes = store.dashboard.selectedSandboxes;
+    const { selectedSandboxes } = store.dashboard;
     if (range === true) {
       track('Dashboard - Sandbox Shift Selection');
       const indexedSandboxes = sandboxes.map((sandbox, i) => ({ sandbox, i }));
@@ -211,9 +211,10 @@ class SandboxGridComponent extends React.Component<*, State> {
         endX: event.clientX,
         endY: event.clientY,
       };
-      this.setState({
+      // eslint-disable-next-line
+      this.setState(state => ({
         selection: newSelection,
-      });
+      }));
 
       const sandboxes = document.querySelectorAll('.sandbox-item');
       const selectedSandboxes = [];
@@ -246,6 +247,7 @@ class SandboxGridComponent extends React.Component<*, State> {
       });
     }
   };
+
   isScrolling = () => this.scrolling;
 
   cellRenderer = ({ rowIndex, columnIndex, key, style, isScrolling }) => {

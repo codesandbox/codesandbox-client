@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import Input from './';
+import Input from '.';
 
 const stories = storiesOf('components/Input', module);
 

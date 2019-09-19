@@ -12,7 +12,7 @@ export type Props = {
 
 export default class PreferenceInput extends React.PureComponent<Props> {
   handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+    const { value } = e.target;
 
     this.props.setValue(value);
   };

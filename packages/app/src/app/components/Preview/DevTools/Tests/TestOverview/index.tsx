@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Test } from '../';
+import { Test } from '..';
 import { Tests } from '../elements';
 
 import { Container, HappyMessage, Item, ItemTitle } from './elements';

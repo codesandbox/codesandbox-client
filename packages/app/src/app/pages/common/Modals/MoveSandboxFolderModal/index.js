@@ -21,7 +21,7 @@ class MoveSandboxFolderModal extends React.Component {
     super(props);
 
     const sandbox = props.store.editor.currentSandbox;
-    const collection = sandbox.collection;
+    const { collection } = sandbox;
 
     this.state = {
       teamId: sandbox.team ? sandbox.team.id || undefined : undefined,
@@ -89,7 +89,7 @@ class MoveSandboxFolderModal extends React.Component {
             {this.state.loading ? (
               'Moving Sandbox...'
             ) : (
-              <React.Fragment>
+              <>
                 Move to{' '}
                 {path !== '/'
                   ? basename(path)
@@ -97,7 +97,7 @@ class MoveSandboxFolderModal extends React.Component {
                 <ChevronRight
                   css={{ marginRight: '-.25rem', marginLeft: '.25rem' }}
                 />
-              </React.Fragment>
+              </>
             )}
           </Button>
         </Block>

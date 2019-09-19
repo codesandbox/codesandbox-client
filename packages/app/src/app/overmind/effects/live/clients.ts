@@ -26,6 +26,7 @@ class CodeSandboxOTClient extends Client {
   moduleShortid: string;
   onSendOperation: (revision: string, operation: any) => void;
   onApplyOperation: (operation: any) => void;
+
   constructor(
     revision: number,
     moduleShortid: string,
@@ -39,7 +40,7 @@ class CodeSandboxOTClient extends Client {
   }
 
   sendOperation(revision, operation) {
-    this.onSendOperation(revision, operation);
+    this.onSendOperation(revision, operationToElixir(operation.toJSON()));
   }
 
   applyOperation(operation) {
@@ -49,12 +50,15 @@ class CodeSandboxOTClient extends Client {
   serverReconnect() {
     super.serverReconnect();
   }
+
   serverAck() {
     super.serverAck();
   }
+
   applyClient(operation: any) {
     super.applyClient(operation);
   }
+
   applyServer(operation: any) {
     super.applyServer(operation);
   }
@@ -93,11 +97,7 @@ export default (
         initialRevision,
         moduleShortid,
         (revision, operation) => {
-          sendOperation(
-            moduleShortid,
-            revision,
-            operationToElixir(operation.toJSON())
-          );
+          sendOperation(moduleShortid, revision, operation);
         },
         operation => {
           applyOperation(moduleShortid, operation);

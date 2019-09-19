@@ -8,7 +8,7 @@ import React from 'react';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 
-import { Props as EditorProps, Editor } from '../../types';
+import { Props as EditorProps, Editor } from '../../types'; // eslint-disable-line
 
 import { Container, Title, Description } from './elements';
 
@@ -29,7 +29,6 @@ type Props = EditorProps & {
 export class Configuration extends React.PureComponent<Props>
   implements Editor {
   disposeInitializer: Function;
-
   currentModule: Module;
   dirtyChangeListener: Disposable;
   receivingCode: boolean = false;
@@ -107,7 +106,7 @@ export class Configuration extends React.PureComponent<Props>
 
   render() {
     const { config, width, height, sandbox } = this.props;
-    const currentModule = this.props.currentModule;
+    const { currentModule } = this.props;
 
     const { ConfigWizard } = getUI(config.type);
 
@@ -122,6 +121,7 @@ export class Configuration extends React.PureComponent<Props>
           <Title>{config.title}</Title>
         </div>
         <button
+          type="button"
           style={{
             outline: 0,
             border: 0,

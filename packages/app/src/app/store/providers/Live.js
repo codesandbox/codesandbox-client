@@ -66,7 +66,7 @@ export default Provider({
           .receive('ok', resolve)
           .receive('error', reject);
       } else {
-        reject('Channel is not defined');
+        reject(new Error('Channel is not defined'));
       }
     }).then(value => value);
   },

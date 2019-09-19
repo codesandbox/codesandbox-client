@@ -5,7 +5,7 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 export const AddFileToSandboxButton = styled(props => (
   <Tooltip content="Add file to sandbox">
-    <button {...props}>
+    <button type="button" {...props}>
       <AddIcon />
     </button>
   </Tooltip>

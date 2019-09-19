@@ -4,7 +4,7 @@ import { GitProgress } from 'app/components/GitProgress';
 
 function CommitModal({ store }) {
   const git = store.editor.currentSandbox.originalGit;
-  const commit = store.git.commit;
+  const { commit } = store.git;
   let message;
 
   if (commit) {

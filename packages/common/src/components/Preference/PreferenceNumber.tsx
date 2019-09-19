@@ -10,7 +10,7 @@ export type Props = {
 
 export default class PreferenceInput extends React.PureComponent<Props> {
   handleChange = e => {
-    const value = e.target.value;
+    const { value } = e.target;
 
     if (!Number.isNaN(+value)) {
       this.props.setValue(+value);

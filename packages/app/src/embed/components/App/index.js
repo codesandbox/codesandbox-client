@@ -195,6 +195,7 @@ export default class App extends React.PureComponent<
   setEditorView = () => this.setState({ showEditor: true, showPreview: false });
   setPreviewView = () =>
     this.setState({ showEditor: false, showPreview: true });
+
   setMixedView = () => this.setState({ showEditor: true, showPreview: true });
 
   setCurrentModule = (id: string) => {
@@ -215,7 +216,8 @@ export default class App extends React.PureComponent<
     this.setState(newState);
   };
 
-  toggleSidebar = () => this.setState({ sidebarOpen: !this.state.sidebarOpen });
+  toggleSidebar = () =>
+    this.setState(state => ({ sidebarOpen: !state.sidebarOpen }));
 
   // eslint-disable-next-line
   setProjectView = (sandboxId?: ?string, isOpen: boolean, cb: Function) => {
@@ -328,7 +330,7 @@ export default class App extends React.PureComponent<
       );
     }
 
-    const sandbox = this.state.sandbox;
+    const { sandbox } = this.state;
 
     if (!sandbox) {
       return (
@@ -394,7 +396,7 @@ export default class App extends React.PureComponent<
   };
 
   render() {
-    const sandbox = this.state.sandbox;
+    const { sandbox } = this.state;
 
     return (
       <Fullscreen sidebarOpen={this.state.sidebarOpen}>

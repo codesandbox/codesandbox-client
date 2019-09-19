@@ -17,7 +17,7 @@ import pugTranspiler from '../../transpilers/pug';
 import coffeeTranspiler from '../../transpilers/coffee';
 import noopTranspiler from '../../transpilers/noop';
 
-import Preset from '../';
+import Preset from '..';
 
 export default function initialize() {
   const parcelPreset = new Preset(

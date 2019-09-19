@@ -16,7 +16,7 @@ import SaveIcon from './SaveIcon';
 
 const OpenedTabs = ({ store, signals }) => {
   const sandbox = store.editor.currentSandbox;
-  const currentModuleShortid = store.editor.currentModuleShortid;
+  const { currentModuleShortid } = store.editor;
   const moduleObject = {};
   sandbox.modules.forEach(m => {
     moduleObject[m.shortid] = m;

@@ -21,9 +21,9 @@ function getAngularJSONEntries(parsed) {
   const entries = [];
 
   if (parsed) {
-    const defaultProject = parsed.defaultProject;
+    const { defaultProject } = parsed;
     const project = parsed.projects[defaultProject];
-    const build = project.architect.build;
+    const { build } = project.architect;
 
     if (build.options.main) {
       entries.push(absolute(join(project.root, build.options.main)));
@@ -46,9 +46,9 @@ function getAngularCLIHTMLEntry(parsed) {
 
 function getAngularJSONHTMLEntry(parsed) {
   if (parsed) {
-    const defaultProject = parsed.defaultProject;
+    const { defaultProject } = parsed;
     const project = parsed.projects[defaultProject];
-    const build = project.architect.build;
+    const { build } = project.architect;
 
     if (build && project.root != null && build.options && build.options.index) {
       return [absolute(join(project.root, build.options.index))];

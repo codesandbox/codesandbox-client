@@ -10,7 +10,8 @@ export const withLoadApp = <T>(
   if (state.hasLoadedApp && continueAction) {
     await continueAction(context, value);
     return;
-  } else if (state.hasLoadedApp) {
+  }
+  if (state.hasLoadedApp) {
     return;
   }
 
@@ -50,7 +51,7 @@ export const withLoadApp = <T>(
   state.isAuthenticating = false;
 
   try {
-    const response = await effects.http.getJson<{
+    const response = await effects.http.get<{
       contributors: Contributor[];
     }>(
       'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'

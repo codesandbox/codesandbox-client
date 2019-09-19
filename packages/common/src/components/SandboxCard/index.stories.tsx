@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { text, select, number, array, boolean } from '@storybook/addon-knobs';
-import SandboxCard, { Props, Sandbox } from './';
+import SandboxCard, { Props, Sandbox } from '.';
 import * as fixtures from './fixtures';
 
 const authorWithKnobs = (

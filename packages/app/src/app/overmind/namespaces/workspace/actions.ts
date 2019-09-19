@@ -19,7 +19,7 @@ export const tagChanged: Action<{
 
 export const tagAdded: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {
-    const tagName = state.workspace.tags.tagName;
+    const { tagName } = state.workspace.tags;
     const sandbox = state.editor.currentSandbox;
 
     sandbox.tags.push(tagName);
@@ -69,7 +69,7 @@ export const tagRemoved: AsyncAction<{
 export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {
     const sandbox = state.editor.currentSandbox;
-    const project = state.workspace.project;
+    const { project } = state.workspace;
 
     const hasChangedTitle = project.title && sandbox.title !== project.title;
     const hasChangedDescription =
@@ -109,7 +109,7 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
 export const externalResourceAdded: AsyncAction<{
   resource: string;
 }> = withOwnedSandbox(async ({ state, effects, actions }, { resource }) => {
-  const externalResources = state.editor.currentSandbox.externalResources;
+  const { externalResources } = state.editor.currentSandbox;
 
   externalResources.push(resource);
 
@@ -124,7 +124,7 @@ export const externalResourceAdded: AsyncAction<{
 export const externalResourceRemoved: AsyncAction<{
   resource: string;
 }> = withOwnedSandbox(async ({ state, effects, actions }, { resource }) => {
-  const externalResources = state.editor.currentSandbox.externalResources;
+  const { externalResources } = state.editor.currentSandbox;
   const resourceIndex = externalResources.indexOf(resource);
 
   externalResources.splice(resourceIndex, 1);

@@ -1,4 +1,4 @@
-import Transpiler from '../';
+import Transpiler from '..';
 
 class RawTranspiler extends Transpiler {
   constructor() {

@@ -35,7 +35,7 @@ class Files extends React.Component {
   };
 
   render() {
-    const store = this.props.store;
+    const { store } = this.props;
     const sandbox = store.editor.currentSandbox;
 
     return (

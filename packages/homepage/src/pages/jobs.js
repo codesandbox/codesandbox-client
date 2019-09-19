@@ -80,7 +80,7 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
               line-height: 1;
               min-width: 110px;
             `}
-            href={'mailto:careers@codesandbox.io'}
+            href="mailto:careers@codesandbox.io"
             small
             secondary
             target="_blank"

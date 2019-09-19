@@ -129,9 +129,9 @@ class CreateNewSandbox extends React.PureComponent {
     }
 
     return (
-      <React.Fragment>
+      <>
         {this.state.creating && (
-          <React.Fragment>
+          <>
             <Portal>
               <DarkBG
                 onClick={this.close}
@@ -172,7 +172,7 @@ class CreateNewSandbox extends React.PureComponent {
                 </Spring>
               </ThemeProvider>
             </Portal>
-          </React.Fragment>
+          </>
         )}
 
         <div style={style}>
@@ -221,7 +221,7 @@ class CreateNewSandbox extends React.PureComponent {
             </div>
           </Portal>
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }

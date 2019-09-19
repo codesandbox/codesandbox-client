@@ -12,9 +12,11 @@ function sortKeys(keys) {
 
     if (isASpecial && isBSpecial) {
       return 0;
-    } else if (isASpecial) {
+    }
+    if (isASpecial) {
       return -1;
-    } else if (isBSpecial) {
+    }
+    if (isBSpecial) {
       return 1;
     }
 
@@ -42,7 +44,7 @@ export default class KeybindingInput extends React.Component<Props, State> {
   };
 
   handleChange = e => {
-    const value = e.target.value;
+    const { value } = e.target;
 
     this.props.setValue(value);
   };
@@ -72,9 +74,9 @@ export default class KeybindingInput extends React.Component<Props, State> {
     ) {
       this.keypresses += 1;
 
-      this.setState({
-        recordedKeys: sortKeys([...this.state.recordedKeys, upperCaseKey]),
-      });
+      this.setState(state => ({
+        recordedKeys: sortKeys([...state.recordedKeys, upperCaseKey]),
+      }));
     }
   };
 

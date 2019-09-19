@@ -41,12 +41,12 @@ interface State {
   x: number;
   y: number;
   down: boolean;
-  right: boolean;
   left: boolean;
 }
 
 export class ContextMenu extends React.PureComponent<Props, State> {
   unmounted: boolean;
+
   el?: HTMLDivElement;
 
   state: State = {
@@ -54,7 +54,6 @@ export class ContextMenu extends React.PureComponent<Props, State> {
     y: 0,
     show: false,
     down: true,
-    right: true,
     left: false,
   };
 
@@ -79,7 +78,7 @@ export class ContextMenu extends React.PureComponent<Props, State> {
 
   onContextMenu: OnContextMenu = event => {
     if (!this.unmounted) {
-      const body = document.body;
+      const { body } = document;
       const html = document.documentElement;
 
       const height = Math.max(

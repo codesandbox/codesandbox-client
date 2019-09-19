@@ -30,7 +30,7 @@ function ChangeSubscriptionComponent({
   signals,
 }: Props) {
   const isLoading = store.patron.isUpdatingSubscription;
-  const error = store.patron.error;
+  const { error } = store.patron;
 
   const [coupon, setCoupon] = useState('');
 

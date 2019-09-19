@@ -67,6 +67,7 @@ class Feedback extends React.Component {
   setHappy = () => {
     this.setState({ emoji: 'happy' });
   };
+
   setSad = () => {
     this.setState({ emoji: 'sad' });
   };

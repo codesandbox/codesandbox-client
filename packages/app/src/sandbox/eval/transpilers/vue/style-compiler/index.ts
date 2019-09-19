@@ -1,4 +1,4 @@
-import Transpiler from '../../';
+import Transpiler from '../..';
 import { LoaderContext } from '../../../transpiled-module';
 
 class VueStyleCompiler extends Transpiler {

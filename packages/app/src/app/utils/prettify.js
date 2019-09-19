@@ -64,7 +64,7 @@ export function canPrettify(title) {
 
 function getEditorInfo(prettierConfig) {
   const newConfig = { ...prettierConfig };
-  const fluid = newConfig.fluid;
+  const { fluid } = newConfig;
   delete newConfig.fluid;
 
   if (fluid && window.CSEditor && window.CSEditor.editor) {
@@ -179,6 +179,7 @@ export default function prettify(
     if (!cancellationToken) {
       timeout = setTimeout(() => {
         // If worker doesn't respond in time
+        // eslint-disable-next-line prefer-promise-reject-errors
         reject({ error: 'Prettify timeout' });
         timeout = null;
         worker.removeEventListener('message', handler);
@@ -199,6 +200,7 @@ export default function prettify(
 
         if (error) {
           console.error(error);
+          // eslint-disable-next-line prefer-promise-reject-errors
           reject({ error });
         }
 
