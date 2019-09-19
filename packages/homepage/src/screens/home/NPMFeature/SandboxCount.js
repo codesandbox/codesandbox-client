@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { search } from '../../../utils/algolia';
 
 class SandboxCount extends Component {
@@ -26,7 +26,8 @@ class SandboxCount extends Component {
     const { fallback } = this.props;
     const { sandboxes } = this.state;
     const number = sandboxes || fallback;
-    return <>{number.toLocaleString('en-US')}</>;
+
+    return number.toLocaleString('en-US');
   }
 }
 
