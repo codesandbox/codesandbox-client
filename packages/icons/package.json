@@ -1,6 +1,6 @@
 {
-  "name": "dummy-package-icons",
-  "version": "0.0.2",
+  "name": "@codesandox/icons",
+  "version": "0.0.1",
   "description": "Icons designed for the codesanbox app",
   "main": "dist/index.js",
   "scripts": {
