@@ -142,7 +142,7 @@ export const Project = inject('store', 'signals')(
               </Explanation>
             )}
 
-            {editable && <Frozen isFrozen={sandbox.isFrozen} />}
+            {editable && <Frozen />}
 
             {sandbox.forkedFromSandbox && (
               <Item>

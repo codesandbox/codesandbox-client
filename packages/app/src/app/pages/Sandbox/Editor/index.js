@@ -7,6 +7,7 @@ import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 
+import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Container } from './elements';
 import { Workspace } from './Workspace';
 import Content from './Content';
@@ -153,6 +154,7 @@ class ContentSplit extends React.Component {
               )}
             </div>
           </Fullscreen>
+          <ForkFrozenSandboxModal />
         </Container>
       </ThemeProvider>
     );

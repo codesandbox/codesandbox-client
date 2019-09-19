@@ -26,6 +26,8 @@ import * as git from './namespaces/git';
 import * as explore from './namespaces/explore';
 import * as profile from './namespaces/profile';
 import * as server from './namespaces/server';
+import { createModals } from './factories';
+import * as modals from './modals';
 
 export const config = merge(
   {
@@ -48,6 +50,7 @@ export const config = merge(
     explore,
     profile,
     server,
+    modals: createModals(modals),
   })
 );
 

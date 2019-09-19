@@ -14,13 +14,12 @@ interface IFrozenProps {
 export const Frozen = inject('store', 'signals')(
   hooksObserver(
     ({
-      isFrozen,
       signals: {
         editor: { frozenUpdated, sessionFreezeOverride },
       },
       store: {
         editor: {
-          currentSandbox: { customTemplate },
+          currentSandbox: { isFrozen, customTemplate },
           sessionFrozen,
         },
       },
@@ -63,7 +62,7 @@ export const Frozen = inject('store', 'signals')(
               </FreezeContainer>
             </PropertyValue>
           </Item>
-          {customTemplate && !sessionFrozen && (
+          {!sessionFrozen && (
             <FrozenWarning>Edits are enabled for this session</FrozenWarning>
           )}
         </>

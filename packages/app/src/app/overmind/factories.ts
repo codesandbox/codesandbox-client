@@ -1,5 +1,5 @@
 import { Contributor } from '@codesandbox/common/lib/types';
-import { json } from 'overmind';
+import { json, IState, IDerive } from 'overmind';
 import { AsyncAction } from '.';
 
 export const withLoadApp = <T>(
@@ -68,20 +68,101 @@ export const withLoadApp = <T>(
 export const withOwnedSandbox = <T>(
   continueAction: AsyncAction<T>
 ): AsyncAction<T> => async (context, payload) => {
-  const { state, actions, effects } = context;
+  const { state, actions } = context;
 
-  if (
-    !state.editor.currentSandbox.owned ||
-    (state.editor.currentSandbox.owned &&
-      state.editor.currentSandbox.isFrozen &&
-      effects.browser.confirm(
-        'This sandbox is frozen, and will be forked. Do you want to continue?'
-      ))
-  ) {
+  if (!state.editor.currentSandbox.owned) {
     await actions.editor.internal.forkSandbox({
       sandboxId: state.editor.currentId,
     });
+  } else if (
+    state.editor.currentSandbox.isFrozen &&
+    state.editor.sessionFrozen
+  ) {
+    const modalResponse = await actions.modals.forkFrozenModal.open();
+
+    if (modalResponse === 'fork') {
+      await actions.editor.internal.forkSandbox({
+        sandboxId: state.editor.currentId,
+      });
+    } else if (modalResponse === 'unfreeze') {
+      state.editor.sessionFrozen = false;
+    }
   }
 
   return continueAction(context, payload);
+};
+
+export const createModals = <
+  T extends {
+    [name: string]: {
+      state?: IState;
+      result?: unknown;
+    };
+  }
+>(
+  modals: T
+): {
+  state?: {
+    current: keyof T;
+  } & {
+    [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> }
+  };
+  actions?: {
+    [K in keyof T]: {
+      open: AsyncAction<
+        T[K]['state'] extends IState ? T[K]['state'] : void,
+        T[K]['result']
+      >;
+      close: AsyncAction<T[K]['result']>;
+    }
+  };
+} => {
+  function createModal(name, modal) {
+    let resolver;
+
+    const open: AsyncAction<any, any> = async ({ state }, newState = {}) => {
+      state.modals.current = name;
+
+      Object.assign(state.modals[name], newState);
+
+      return new Promise(resolve => {
+        resolver = resolve;
+      });
+    };
+
+    const close: AsyncAction<T> = async ({ state }, payload) => {
+      state.modals.current = null;
+      resolver(payload || modal.result);
+    };
+
+    return {
+      state: {
+        ...modal.state,
+        isCurrent(_, root) {
+          return root.modals.current === name;
+        },
+      },
+      actions: {
+        open,
+        close,
+      },
+    };
+  }
+
+  return Object.keys(modals).reduce(
+    (aggr, name) => {
+      const modal = createModal(name, modals[name]);
+
+      aggr.state[name] = modal.state;
+      aggr.actions[name] = modal.actions;
+
+      return aggr;
+    },
+    {
+      state: {
+        current: null,
+      },
+      actions: {},
+    }
+  ) as any;
 };
