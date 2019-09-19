@@ -9,6 +9,8 @@
   "license": "MIT",
   "devDependencies": {
     "@svgr/core": "^4.3.2",
+    "@svgr/plugin-jsx": "^4.3.2",
+    "@svgr/plugin-svgo": "^4.3.1",
     "fs-extra": "8.1.0",
     "lodash.camelcase": "4.3.0",
     "lodash.upperfirst": "4.3.1",

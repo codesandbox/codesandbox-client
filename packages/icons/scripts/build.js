@@ -40,6 +40,8 @@ svgPaths.forEach((filepath, index) => {
     {
       template,
       svgProps: { height: 32, width: 32, viewBox: '0 0 32 32' },
+      plugins: ['@svgr/plugin-svgo', '@svgr/plugin-jsx'],
+      // svgoConfig: { plugins: [{ convertColors: { currentColor: true } }] },
     },
     {
       componentName: upperFirst(camelCase(name)),
