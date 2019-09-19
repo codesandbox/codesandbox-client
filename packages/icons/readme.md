@@ -7,11 +7,11 @@
 
 &nbsp;
 
-See gallery to see list of icons available. When you pick one, you can reference
-it by path: `@codesandbox/icons/<ICON-NAME>`
+[See gallery](https://6izxn.csb.app) to see list of icons available. When you
+pick one, you can import it by name.
 
 Example:
 
 ```jsx
-import { CloseIcon, PlusIcon } from '@codesandbox/react';
+import { CloseIcon, PlusIcon } from '@codesandbox/icons';
 ```

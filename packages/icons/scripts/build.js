@@ -12,7 +12,8 @@ const svgPaths = glob.sync('./svg/*');
 const outputDir = './dist';
 fs.ensureDirSync(outputDir);
 
-const prettierOptions = { parser: 'babel', singleQuote: true };
+/** Use prettier config from project root */
+const prettierOptions = prettier.resolveConfig.sync('../../.prettierrc');
 
 /** Create dist/index.tsx */
 const code = [
