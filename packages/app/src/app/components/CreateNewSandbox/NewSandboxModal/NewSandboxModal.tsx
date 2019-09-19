@@ -1,8 +1,7 @@
 import { inject, hooksObserver } from 'app/componentConnectors';
 import React from 'react';
-import track from '@codesandbox/common/lib/utils/analytics';
-import Template from '@codesandbox/common/lib/components/Template';
-import { Template as TemplateType } from '@codesandbox/common/lib/types';
+// import track from '@codesandbox/common/lib/utils/analytics';
+// import { Template as TemplateType } from '@codesandbox/common/lib/types';
 
 import { useTabState } from 'reakit/Tab';
 import { CodeSandboxIcon, PlusIcon, StarIcon, UploadIcon } from './Icons';
@@ -32,10 +31,10 @@ export const NewSandboxModal = inject('store', 'signals')(
         selectedId: 'Import',
       });
 
-      const selectTemplate = (template: TemplateType) => {
-        track('New Sandbox Modal - Select Template', { template });
-        createSandbox(template);
-      };
+      // const selectTemplate = (template: TemplateType) => {
+      //   track('New Sandbox Modal - Select Template', { template });
+      //   createSandbox(template);
+      // };
 
       return (
         <Container closing={closing} forking={forking}>

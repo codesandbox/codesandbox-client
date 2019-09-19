@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { Button } from 'reakit/Button';
 
-export const Container = styled(Button)`
+export const Container = styled(Button)<{ ref?: any }>`
   display: inline-flex;
   width: 290px;
   padding: 0 0.5rem;

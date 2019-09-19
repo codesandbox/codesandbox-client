@@ -117,7 +117,7 @@ export const Import = () => {
               that{"'"}s automatically set up with any Theme, Site Generator and
               CMS.
             </FeatureText>
-            <StackbitButton username={(state.user || {}).username} />
+            <StackbitButton username={state.user.username} />
           </Column>
         )}
       </Features>

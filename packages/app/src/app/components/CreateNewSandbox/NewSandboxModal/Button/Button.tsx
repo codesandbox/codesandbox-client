@@ -3,7 +3,7 @@ import { Link, ILinkProps } from '../Link';
 import { Base, ButtonIcon } from './elements';
 
 export interface IButtonProps extends ILinkProps {
-  Icon?: React.ReactNode;
+  Icon?: React.ElementType;
   href?: string;
   small?: boolean;
   block?: boolean;

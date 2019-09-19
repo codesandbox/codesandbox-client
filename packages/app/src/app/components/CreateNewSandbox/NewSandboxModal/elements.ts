@@ -4,7 +4,10 @@ import styled from 'styled-components';
 
 import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
 
-export const Container = styled.div`
+export const Container = styled.div<{
+  closing: boolean;
+  forking: boolean;
+}>`
   display: grid;
   grid-template-columns: 176px minmax(640px, 976px);
   min-width: 870px;

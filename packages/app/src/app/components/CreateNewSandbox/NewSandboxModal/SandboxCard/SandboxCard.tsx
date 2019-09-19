@@ -44,18 +44,22 @@ export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
     const OfficialIcon = getIcon(name);
 
     return (
-      <Container ref={ref}>
-        <Icon color={color}>{official ? <OfficialIcon /> : <UserIcon />}</Icon>
-        <Details>
-          <Row>
-            <Title>{niceName}</Title>,mm
-          </Row>
-          <Row>
-            <Environment>{name}</Environment>
-            <Author>By: {author}</Author>
-          </Row>
-        </Details>
-      </Container>
+      <>
+        <Container ref={ref}>
+          <Icon color={color}>
+            {official ? <OfficialIcon /> : <UserIcon />}
+          </Icon>
+          <Details>
+            <Row>
+              <Title>{niceName}</Title>,mm
+            </Row>
+            <Row>
+              <Environment>{name}</Environment>
+              <Author>By: {author}</Author>
+            </Row>
+          </Details>
+        </Container>
+      </>
     );
   }
 );

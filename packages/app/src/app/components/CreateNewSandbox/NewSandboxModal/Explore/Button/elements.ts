@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import { Button } from 'reakit/Button';
-import { withoutProps } from '../../utils';
 
 export type OptionProps = {
   theme: any;
@@ -128,6 +127,7 @@ export interface IBaseProps {
   red?: boolean;
   block?: boolean;
   large?: boolean;
+  ref?: any;
 }
 
 export const buttonStyles = ({
@@ -169,9 +169,7 @@ export const buttonStyles = ({
 `;
 
 // eslint-disable-next-line
-export const Base = styled(
-  withoutProps(`block`, `secondary`, `danger`, `red`, `large`)(Button)
-)<IBaseProps>`
+export const Base = styled(Button)<IBaseProps>`
   ${buttonStyles}
 `;
 
