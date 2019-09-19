@@ -68,7 +68,7 @@ export const getDeploys: AsyncAction = async ({ state, effects }) => {
     );
   } catch (error) {
     effects.notificationToast.error(
-      'An unknown error occurred when connecting to Zite'
+      'An unknown error occurred when connecting to ZEIT'
     );
   }
 
@@ -91,7 +91,7 @@ export const deployClicked: AsyncAction = async ({
     );
   } catch (error) {
     effects.notificationToast.error(
-      'An unknown error occurred when connecting to Zite'
+      'An unknown error occurred when connecting to ZEIT'
     );
   }
 

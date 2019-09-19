@@ -30,7 +30,6 @@ import PrivacyServerWarning from './PrivacyServerWarning';
 import PickSandboxModal from './PickSandboxModal';
 import FeedbackModal from './FeedbackModal';
 import NetlifyLogs from './NetlifyLogs';
-import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 // eslint-disable-next-line
 import SignInForTemplates from './SignInForTemplates/index.ts';
 import { SurveyModal } from './SurveyModal';
@@ -67,10 +66,6 @@ const modals = {
   signInForTemplates: {
     Component: SignInForTemplates,
     width: 400,
-  },
-  forkFrozenModal: {
-    Component: ForkFrozenSandboxModal,
-    width: 450,
   },
   pr: {
     Component: PRModal,
