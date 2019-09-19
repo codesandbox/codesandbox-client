@@ -3,14 +3,13 @@ import { Button } from '../Button';
 import { CodeAnywhere } from './CodeAnywhere';
 import { StartQuickly } from './StartQuickly';
 import { PrototypeRapidly } from './PrototypeRapidly';
-import { Header, Legend } from '../elements';
+import { Header } from '../elements';
 import { Features, FeatureName, FeatureText, Actions } from './elements';
 
 export const Welcome = () => (
   <>
     <Header>
       <span>Welcome to CodeSandbox</span>
-      <Legend>Show All</Legend>
     </Header>
     <Features>
       <li>

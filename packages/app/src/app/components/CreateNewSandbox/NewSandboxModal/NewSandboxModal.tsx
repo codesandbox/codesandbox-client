@@ -1,7 +1,5 @@
 import React from 'react';
-// import track from '@codesandbox/common/lib/utils/analytics';
-// import { Template as TemplateType } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
+// import { useOvermind } from 'app/overmind';
 import { useTabState } from 'reakit/Tab';
 import { CodeSandboxIcon, PlusIcon, StarIcon, UploadIcon } from './Icons';
 import { Welcome } from './Welcome';
@@ -12,7 +10,6 @@ import { Container, Tabs, Tab, TabContent, Header, Legend } from './elements';
 interface INewSandboxModalProps {
   forking: boolean;
   closing: boolean;
-  createSandbox: (params: { shortid: string }) => void;
   store: any;
   signals: any;
 }
@@ -20,20 +17,11 @@ interface INewSandboxModalProps {
 export const NewSandboxModal = ({
   forking = false,
   closing = false,
-  createSandbox,
 }: INewSandboxModalProps) => {
-  const {
-    state: { user },
-  } = useOvermind();
   const tab = useTabState({
     orientation: 'vertical',
-    selectedId: user ? 'Create' : 'Welcome',
+    selectedId: 'Create',
   });
-
-  // const selectTemplate = (template: TemplateType) => {
-  //   track('New Sandbox Modal - Select Template', { template });
-  //   createSandbox(template);
-  // };
 
   return (
     <Container closing={closing} forking={forking}>

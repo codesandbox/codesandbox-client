@@ -13,12 +13,15 @@ export const Container = styled.div`
   }
 `;
 
-export const Arrow = styled(NextIcon)<{ next?: boolean }>`
+export const ArrowButton = styled.button<{ next?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
   position: absolute;
-  cursor: pointer;
   z-index: 10;
   left: 0.5rem;
-  transform: rotate(180deg);
   margin-top: 40px;
 
   ${props =>
@@ -26,6 +29,15 @@ export const Arrow = styled(NextIcon)<{ next?: boolean }>`
     css`
       left: auto;
       right: 0.5rem;
+    `}
+`;
+
+export const Arrow = styled(NextIcon)<{ next?: boolean }>`
+  transform: rotate(180deg);
+
+  ${props =>
+    props.next &&
+    css`
       transform: rotate(0deg);
     `}
 `;

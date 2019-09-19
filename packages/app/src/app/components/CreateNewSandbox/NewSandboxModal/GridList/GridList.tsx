@@ -1,7 +1,13 @@
 import React, { cloneElement, Children, useState } from 'react';
 import { Group } from 'reakit/Group';
 import { useRoverState, Rover } from 'reakit/Rover';
-import { Container, Arrow, CarrouselWrapper, Carrousel } from './elements';
+import {
+  Container,
+  Arrow,
+  CarrouselWrapper,
+  Carrousel,
+  ArrowButton,
+} from './elements';
 
 const chunk = (arr: any[], size: number): any[] =>
   Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
@@ -19,7 +25,15 @@ export const GridList = ({ children, ...props }) => {
 
   return (
     <Group as={Container} {...props}>
-      {numberOfClick > 0 ? <Arrow onClick={() => move(-1)} /> : null}
+      {numberOfClick > 0 ? (
+        <ArrowButton
+          type="button"
+          aria-label="Next Templates"
+          onClick={() => move(-1)}
+        >
+          <Arrow />
+        </ArrowButton>
+      ) : null}
       <Carrousel number={numberOfClick}>
         {templates.map((kids: any[], i: number) => (
           // eslint-disable-next-line react/no-array-index-key
@@ -34,7 +48,14 @@ export const GridList = ({ children, ...props }) => {
         ))}
       </Carrousel>
       {templates.length > 2 && templates.length - 2 !== numberOfClick && (
-        <Arrow onClick={() => move(1)} next />
+        <ArrowButton
+          type="button"
+          aria-label="Next Templates"
+          onClick={() => move(1)}
+          next
+        >
+          <Arrow next />
+        </ArrowButton>
       )}
     </Group>
   );

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Subheader = styled.h2`
+export const SubHeader = styled.h2`
   font-family: Inter;
   font-style: normal;
   font-weight: normal;

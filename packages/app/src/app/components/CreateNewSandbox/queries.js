@@ -51,6 +51,9 @@ export const LIST_TEMPLATES = gql`
         published
         sandbox {
           ...Sandbox
+          author {
+            username
+          }
         }
       }
     }
