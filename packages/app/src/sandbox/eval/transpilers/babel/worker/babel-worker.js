@@ -140,8 +140,8 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
     console.warn(firstError);
 
     try {
-      /** Fast fallback - We assume that the user has the shortcode
-          styled-components = babel-plugin-styled-components
+      /** We assume that the user has the shortcode
+          react = @babel/react or styled-components = babel-plugin-styled-components
           and try to fetch the correct plugin for them
        */
 
@@ -160,7 +160,7 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
       console.warn('Long path also failed ' + plugin + ' went wrong, got:');
       console.warn(secondError);
 
-      /** Slow fallback - If we still didn't get it, this means plugin wasn't downloaded
+      /** If we still didn't get it, this means plugin wasn't downloaded
           and that's why it could not be resolved.
 
           We can try to download it based on the first error
@@ -204,41 +204,17 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
       Babel.availablePlugins,
       Babel.availablePresets
     );
-  } catch (firstError) {
-    try {
-      /** Fast fallback - We assume that the user has the shortcode
-          react = @babel/react and try to fetch the correct plugin for them
-       */
-      const prefixedName = getPrefixedPresetName(preset, isV7);
+  } catch (e) {
+    const prefixedName = getPrefixedPresetName(preset, isV7);
 
-      evaluatedPreset = evaluateFromPath(
-        fs,
-        BFSRequire,
-        prefixedName,
-        currentPath,
-        Babel.availablePlugins,
-        Babel.availablePresets
-      );
-
-      console.log('Second try succeeded');
-    } catch (secondError) {
-      console.warn('Long path also failed ' + preset + ' went wrong, got:');
-      console.warn(secondError);
-
-      /** Slow fallback - If we still didn't get it, this means preset wasn't downloaded
-          and that's why it could not be resolved.
-
-          We can try to download it based on the first error
-      */
-
-      console.warn('Downloading ' + preset);
-
-      evaluatedPreset = await downloadFromError(firstError).then(() => {
-        console.warn('Downloaded ' + preset);
-        resetCache();
-        return installPreset(Babel, BFSRequire, preset, currentPath, isV7);
-      });
-    }
+    evaluatedPreset = evaluateFromPath(
+      fs,
+      BFSRequire,
+      prefixedName,
+      currentPath,
+      Babel.availablePlugins,
+      Babel.availablePresets
+    );
   }
 
   if (!evaluatedPreset) {
@@ -249,8 +225,6 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
     preset,
     evaluatedPreset.default ? evaluatedPreset.default : evaluatedPreset
   );
-
-  return evaluatedPreset;
 }
 
 function stripParams(regexp) {
