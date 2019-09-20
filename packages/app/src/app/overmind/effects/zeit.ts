@@ -93,7 +93,7 @@ export default (() => {
 
       return response.data.user;
     },
-    async deleteDeployment(id: string) {
+    async deleteDeployment(id: string): Promise<ZeitDeployment[]> {
       const response = await axios.delete(
         `https://api.zeit.co/v9/now/deployments/${id}`,
         {
