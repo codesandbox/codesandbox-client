@@ -50,6 +50,7 @@ interface IResolveResponse {
 }
 
 const downloadCache = new Map<string, Promise<IResolveResponse>>();
+let lastSentId = 0;
 
 export const resolveAsyncModule = (
   modulePath: string,
@@ -62,9 +63,7 @@ export const resolveAsyncModule = (
   downloadCache.set(
     modulePath,
     new Promise((r, reject) => {
-      const sendId = Math.floor(
-        Math.random() * 1000000000 + Math.random() * 1000000000
-      );
+      const sendId = lastSentId++;
 
       global.postMessage({
         type: 'resolve-async-transpiled-module',
