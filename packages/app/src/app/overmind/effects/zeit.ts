@@ -87,20 +87,20 @@ export default (() => {
       return Promise.all(deploysNoAlias.map(assignAlias));
     },
     async getUser(): Promise<ZeitUser> {
-      const response = await axios
-        .get('https://api.zeit.co/www/user', {
-          headers: getDefaultHeaders(),
-        })
-        .then(x => x.data.user);
+      const response = await axios.get('https://api.zeit.co/www/user', {
+        headers: getDefaultHeaders(),
+      });
 
-      return response;
+      return response.data.user;
     },
     async deleteDeployment(id: string) {
-      return axios
-        .delete(`https://api.zeit.co/v9/now/deployments/${id}`, {
+      const response = await axios.delete(
+        `https://api.zeit.co/v9/now/deployments/${id}`,
+        {
           headers: getDefaultHeaders(),
-        })
-        .then(x => x.data.deployments);
+        }
+      );
+      return response.data.deployments;
     },
     async deploy(contents: any, sandbox: Sandbox): Promise<string> {
       const apiData = await getApiData(contents, sandbox);
