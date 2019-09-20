@@ -62,14 +62,14 @@ export default (() => {
       return nowData;
     },
     async getDeployments(name: string): Promise<ZeitDeployment[]> {
-      const response = await axios.get<ZeitDeployment[]>(
+      const response = await axios.get<{ deployments: ZeitDeployment[] }>(
         'https://api.zeit.co/v4/now/deployments',
         {
           headers: getDefaultHeaders(),
         }
       );
 
-      const deploysNoAlias = response.data
+      const deploysNoAlias = response.data.deployments
         .filter(d => d.name === name)
         .sort((a, b) => (a.created < b.created ? 1 : -1));
 
@@ -91,12 +91,16 @@ export default (() => {
         headers: getDefaultHeaders(),
       });
 
-      return response.data;
+      return response.data.user;
     },
-    async deleteDeployment(id: string) {
-      return axios.delete(`https://api.zeit.co/v9/now/deployments/${id}`, {
-        headers: getDefaultHeaders(),
-      });
+    async deleteDeployment(id: string): Promise<ZeitDeployment[]> {
+      const response = await axios.delete(
+        `https://api.zeit.co/v9/now/deployments/${id}`,
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
+      return response.data.deployments;
     },
     async deploy(contents: any, sandbox: Sandbox): Promise<string> {
       const apiData = await getApiData(contents, sandbox);
@@ -110,7 +114,7 @@ export default (() => {
         }
       );
 
-      return `https://${response.data.result.url}`;
+      return `https://${response.data.url}`;
     },
     async aliasDeployment(id: string, zeitConfig: ZeitConfig): Promise<string> {
       const response = await axios.post(
@@ -121,7 +125,7 @@ export default (() => {
         }
       );
 
-      return `https://${response.data.result.alias}`;
+      return `https://${response.data.alias}`;
     },
   };
 })();

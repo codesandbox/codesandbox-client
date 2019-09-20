@@ -285,7 +285,6 @@ export const filesUploaded: AsyncAction<{
       directoryShortid,
     });
   } catch (error) {
-    console.error(error);
     if (error.message.indexOf('413') !== -1) {
       return;
     }
