@@ -1,7 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
 
-import { distanceInWordsToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
+import { zonedTimeToUtc } from 'date-fns-tz';
 import { uniq } from 'lodash-es';
 import { basename } from 'path';
 import { camelizeKeys } from 'humps';
@@ -44,6 +45,8 @@ const BASE_HEIGHT = 242;
 const IS_TABLE = false;
 
 const diff = (a, b) => (a > b ? a - b : b - a);
+const distanceInWordsToNow = date =>
+  formatDistanceToNow(zonedTimeToUtc(date, 'Etc/UTC'));
 
 class SandboxGridComponent extends React.Component<*, State> {
   state = {
