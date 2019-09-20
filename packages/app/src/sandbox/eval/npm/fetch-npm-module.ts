@@ -114,11 +114,11 @@ const urlProtocols = {
   },
 };
 
-async function fetchWithRetries(url: string, retries = 3): Promise<string> {
+async function fetchWithRetries(url: string, retries = 3): Promise<Response> {
   const doFetch = () =>
     window.fetch(url).then(x => {
       if (x.ok) {
-        return x.text();
+        return x;
       }
 
       throw new Error(`Could not fetch ${url}`);
@@ -176,7 +176,7 @@ async function getMeta(
   const protocol = getFetchProtocol(version);
   const metaUrl = await protocol.meta(nameWithoutAlias, version);
 
-  metas[id] = window.fetch(metaUrl).then(x => x.json());
+  metas[id] = fetchWithRetries(metaUrl).then(x => x.json());
 
   return metas[id];
 }
@@ -205,6 +205,7 @@ export async function downloadDependency(
   const url = await protocol.file(nameWithoutAlias, depVersion, relativePath);
 
   packages[id] = fetchWithRetries(url)
+    .then(x => x.text())
     .catch(async () => {
       const fallbackProtocol = getFetchProtocol(depVersion, true);
       const fallbackUrl = await fallbackProtocol.file(
@@ -213,7 +214,7 @@ export async function downloadDependency(
         relativePath
       );
 
-      return fetchWithRetries(fallbackUrl);
+      return fetchWithRetries(fallbackUrl).then(x => x.text());
     })
     .then(x => ({
       path,

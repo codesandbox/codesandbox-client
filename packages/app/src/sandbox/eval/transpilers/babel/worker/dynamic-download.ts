@@ -1,10 +1,15 @@
 import resolve from 'browser-resolve';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import getRequireStatements from './simple-get-require-statements';
 
-const path = self.BrowserFS.BFSRequire('path');
+const global = getGlobal();
+const path = global.BrowserFS.BFSRequire('path');
 
-function mkDirByPathSync(targetDir, { isRelativeToScript = false } = {}) {
-  const fs = self.BrowserFS.BFSRequire('fs');
+function mkDirByPathSync(
+  targetDir: string,
+  { isRelativeToScript = false } = {}
+) {
+  const fs = global.BrowserFS.BFSRequire('fs');
 
   const { sep } = path;
   const initDir = path.isAbsolute(targetDir) ? sep : '';
@@ -36,54 +41,78 @@ function mkDirByPathSync(targetDir, { isRelativeToScript = false } = {}) {
   }, initDir);
 }
 
+interface IResolveResponse {
+  found: boolean;
+  type: 'resolve-async-transpiled-module-response';
+  id: number;
+  path: string;
+  code: string;
+}
+
+const downloadCache = new Map<string, Promise<IResolveResponse>>();
+
 export const resolveAsyncModule = (
   modulePath: string,
-  { ignoredExtensions }?: { ignoredExtensions?: Array<string> }
-) =>
-  new Promise((r, reject) => {
-    const sendId = Math.floor(Math.random() * 10000);
-    self.postMessage({
-      type: 'resolve-async-transpiled-module',
-      path: modulePath,
-      id: sendId,
-      options: { isAbsolute: true, ignoredExtensions },
-    });
+  { ignoredExtensions }: { ignoredExtensions?: Array<string> }
+): Promise<IResolveResponse> => {
+  if (downloadCache.get(modulePath)) {
+    return downloadCache.get(modulePath);
+  }
 
-    const resolveFunc = message => {
-      const { type, id, found } = message.data;
+  downloadCache.set(
+    modulePath,
+    new Promise((r, reject) => {
+      const sendId = Math.floor(
+        Math.random() * 1000000000 + Math.random() * 1000000000
+      );
 
-      if (
-        type === 'resolve-async-transpiled-module-response' &&
-        id === sendId
-      ) {
-        if (found) {
-          r(message.data);
-        } else {
-          reject(new Error("Could not find path: '" + modulePath + "'."));
+      global.postMessage({
+        type: 'resolve-async-transpiled-module',
+        path: modulePath,
+        id: sendId,
+        options: { isAbsolute: true, ignoredExtensions },
+      });
+
+      const resolveFunc = (message: { data: IResolveResponse }) => {
+        const { type, id, found } = message.data;
+
+        if (
+          type === 'resolve-async-transpiled-module-response' &&
+          id === sendId
+        ) {
+          if (found) {
+            r(message.data);
+          } else {
+            reject(new Error("Could not find path: '" + modulePath + "'."));
+          }
+          global.removeEventListener('message', resolveFunc);
         }
-        self.removeEventListener('message', resolveFunc);
-      }
-    };
+      };
 
-    self.addEventListener('message', resolveFunc);
-  });
+      global.addEventListener('message', resolveFunc);
+    })
+  );
 
-const downloads = {};
-export async function downloadPath(absolutePath) {
+  return downloadCache.get(modulePath);
+};
+
+export async function downloadPath(
+  absolutePath: string
+): Promise<{ code: string; path: string }> {
   const r = await resolveAsyncModule(absolutePath, {});
 
   if (!r.found) {
     throw new Error(`${absolutePath} not found.`);
   }
 
-  self.postMessage({
+  global.postMessage({
     type: 'add-transpilation-dependency',
     path: r.path,
   });
 
-  const fs = self.BrowserFS.BFSRequire('fs');
+  const fs = global.BrowserFS.BFSRequire('fs');
 
-  let existingFile;
+  let existingFile: string;
 
   try {
     existingFile = fs.readFileSync(r.path);
@@ -108,27 +137,23 @@ export async function downloadPath(absolutePath) {
       /* ignore */
     }
 
-    return Promise.resolve({
+    return {
       code: existingFile,
       path: r.path,
-    });
+    };
   }
 
   mkDirByPathSync(path.dirname(r.path));
-
   fs.writeFileSync(r.path, r.code);
 
   const requires = getRequireStatements(r.code);
 
+  // Download all other needed files
   await Promise.all(
-    requires.map(foundR => {
+    requires.map(async foundR => {
       if (foundR.type === 'direct') {
         if (foundR.path === 'babel-plugin-macros') {
-          return '';
-        }
-
-        if (downloads[foundR.path]) {
-          return downloads[foundR.path];
+          return;
         }
 
         try {
@@ -137,35 +162,23 @@ export async function downloadPath(absolutePath) {
             extensions: ['.js', '.json'],
             moduleDirectory: ['node_modules'],
           });
-          return '';
         } catch (e) {
-          // eslint-disable-next-line no-use-before-define
-          downloads[foundR.path] = downloadFromError(e)
-            .then(() => {
-              delete downloads[foundR.path];
-            })
-            .catch(() => {
-              delete downloads[foundR.path];
-            });
-          return downloads[foundR.path];
+          await downloadFromError(e);
         }
       }
-      return Promise.resolve();
     })
   );
 
   return r;
 }
 
-export async function downloadFromError(e) {
+export function downloadFromError(e: Error) {
   if (e.message.indexOf('Cannot find module') > -1) {
-    return new Promise(res => {
-      const dep = e.message.match(/Cannot find module '(.*?)'/)[1];
-      const from = e.message.match(/from '(.*?)'/)[1];
-      const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
+    const dep = e.message.match(/Cannot find module '(.*?)'/)[1];
+    const from = e.message.match(/from '(.*?)'/)[1];
+    const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
 
-      res(downloadPath(absolutePath));
-    });
+    return downloadPath(absolutePath);
   }
 
   return Promise.resolve();
