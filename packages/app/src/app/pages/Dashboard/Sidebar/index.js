@@ -88,7 +88,7 @@ class Sidebar extends React.Component {
                           return null;
                         }
 
-                        if (error) {
+                        if (error || !data.me) {
                           return null;
                         }
 
