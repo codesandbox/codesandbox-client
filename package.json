@@ -41,7 +41,7 @@
     "build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" lerna run build  --scope homepage --stream && lerna run build --scope app --stream && lerna run copy-assets --scope app --stream",
     "commit": "concurrently \"yarn typecheck\" \"yarn lint\" && git commit -m",
     "generate": "all-contributors generate",
-    "postinstall": "yarn lerna run install-dependencies --scope vscode-textmate --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
+    "postinstall": "yarn lerna run install-dependencies --stream && opencollective postinstall",
     "lint": "lerna run lint --stream",
     "now-build": "yarn build:deps && lerna run build:storybook --scope @codesandbox/common",
     "start": "yarn build:deps && lerna run start --scope @codesandbox/common --scope app --parallel",

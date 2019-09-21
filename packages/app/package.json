@@ -97,7 +97,7 @@
     "cerebral": "^4.0.0",
     "circular-json": "^0.4.0",
     "codemirror": "^5.27.4",
-    "codesandbox-api": "^0.0.22",
+    "codesandbox-api": "0.0.23",
     "codesandbox-import-utils": "2.1.2",
     "color": "^0.11.4",
     "compare-versions": "^3.1.0",
