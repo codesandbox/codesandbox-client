@@ -135,6 +135,15 @@ export const saveCode: AsyncAction<{
       state.git.isFetching = false;
     }
 
+    // If the executor is a server we only should send updates if the sandbox has been
+    // started already
+    if (
+      !effects.executor.isServer() ||
+      state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
+    ) {
+      effects.executor.updateFiles(state.editor.currentSandbox);
+    }
+
     if (state.live.isLive && state.live.isCurrentEditor) {
       effects.live.sendModuleSaved(module);
     }
@@ -267,15 +276,6 @@ export const setModuleCode: Action<{
   );
 
   module.code = code;
-
-  // If the executor is a server we only should send updates if the sandbox has been
-  // started already
-  if (
-    !effects.executor.isServer() ||
-    state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
-  ) {
-    effects.executor.updateFiles(currentSandbox);
-  }
 };
 
 export const forkSandbox: AsyncAction<{
