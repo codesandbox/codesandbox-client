@@ -1,6 +1,6 @@
 {
   "name": "smooshpack",
-  "version": "0.0.54",
+  "version": "0.0.61",
   "description": "",
   "keywords": [],
   "repository": {
@@ -24,7 +24,7 @@
     "commit": "git-cz",
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prepublishOnly": "yarn build && lerna run build:sandbox --scope app --stream && rimraf sandpack && gulp copy-sandbox",
+    "prepublishOnly": "yarn build && lerna run build:sandpack-sandbox --scope app --stream && rimraf sandpack && gulp copy-sandbox",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",

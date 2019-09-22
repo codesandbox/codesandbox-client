@@ -13,8 +13,6 @@
       "packages/homepage",
       "packages/common",
       "packages/codesandbox-api",
-      "packages/sandpack",
-      "packages/react-sandpack",
       "packages/node-services",
       "packages/sandbox-hooks",
       "packages/sse-hooks",

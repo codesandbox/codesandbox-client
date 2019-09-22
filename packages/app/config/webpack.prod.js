@@ -6,10 +6,8 @@ const webpack = require('webpack');
 const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin;
-const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
-  .normalizeName;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { normalizeName } = require('webpack/lib/optimize/SplitChunksPlugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VERSION = require('@codesandbox/common/lib/version').default;
@@ -229,7 +227,9 @@ module.exports = merge(commonConfig, {
       minify: true,
       // For unknown URLs, fallback to the index page
       navigateFallback: 'https://new.codesandbox.io/frame.html',
-      staticFileGlobs: ['www/frame.html'],
+      staticFileGlobs: process.env.SANDBOX_ONLY
+        ? ['www/index.html']
+        : ['www/frame.html'],
       stripPrefix: 'www/',
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
