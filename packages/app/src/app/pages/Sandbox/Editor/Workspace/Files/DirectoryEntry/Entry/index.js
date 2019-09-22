@@ -39,6 +39,8 @@ class Entry extends React.PureComponent {
   handleValidateTitle = title => {
     const isInvalidTitle = this.props.renameValidator(this.props.id, title);
     this.setState({ error: isInvalidTitle });
+
+    return isInvalidTitle;
   };
 
   handleRename = (newTitle, force) => {
@@ -171,7 +173,7 @@ class Entry extends React.PureComponent {
               isOpen={isOpen}
               type={type}
               root={root}
-              error={moduleHasError}
+              error={moduleHasError || error}
             />
             {state === 'editing' ? (
               <EntryTitleInput
