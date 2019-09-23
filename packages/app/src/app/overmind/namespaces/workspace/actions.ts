@@ -1,8 +1,8 @@
-import { Action, AsyncAction } from 'app/overmind';
 import getTemplate from '@codesandbox/common/lib/templates';
-import slugify from '@codesandbox/common/lib/utils/slugify';
-import { withOwnedSandbox } from 'app/overmind/factories';
 import { CustomTemplate } from '@codesandbox/common/lib/types';
+import slugify from '@codesandbox/common/lib/utils/slugify';
+import { Action, AsyncAction } from 'app/overmind';
+import { withOwnedSandbox } from 'app/overmind/factories';
 
 export const valueChanged: Action<{
   field: string;
@@ -218,15 +218,13 @@ export const deleteTemplate: AsyncAction = async ({
   }
 };
 
-export const editTemplate: AsyncAction = async ({
-  state,
-  actions,
-  effects,
-}) => {
+export const editTemplate: AsyncAction<{ template: CustomTemplate }> = async (
+  { state, actions, effects },
+  { template }
+) => {
   effects.analytics.track('Template - Edited', { source: 'editor' });
 
   const sandboxId = state.editor.currentId;
-  const template = state.editor.currentSandbox.customTemplate;
 
   try {
     const updatedTemplate = await effects.api.updateTemplate(
@@ -236,7 +234,7 @@ export const editTemplate: AsyncAction = async ({
 
     actions.modalClosed();
     state.editor.currentSandbox.customTemplate = updatedTemplate;
-    effects.notificationToast.success('Templated Edited');
+    effects.notificationToast.success('Template Edited');
   } catch (error) {
     effects.notificationToast.error('Could not edit custom template');
   }
