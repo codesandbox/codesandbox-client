@@ -17,23 +17,27 @@ interface ListTemplatesResponse {
 }
 
 export const Create = () => {
-  const { data: mine = {} } = useQuery<ListTemplatesResponse>(LIST_TEMPLATES, {
-    variables: { showAll: true },
-    fetchPolicy: 'cache-and-network',
-  });
-  const { data: followed = {} } = useQuery<ListTemplatesResponse>(
-    LIST_FOLLOWED_TEMPLATES,
+  const { data: mine = {}, error: mineError } = useQuery<ListTemplatesResponse>(
+    LIST_TEMPLATES,
     {
       variables: { showAll: true },
       fetchPolicy: 'cache-and-network',
     }
   );
+  const { data: followed = {}, error: followedError } = useQuery<
+    ListTemplatesResponse
+  >(LIST_FOLLOWED_TEMPLATES, {
+    variables: { showAll: true },
+    fetchPolicy: 'cache-and-network',
+  });
 
   const done =
-    mine.me &&
-    mine.me.templates &&
-    followed.me &&
-    followed.me.followedTemplates;
+    (mine.me &&
+      mine.me.templates &&
+      followed.me &&
+      followed.me.followedTemplates) ||
+    followedError ||
+    mineError;
 
   return (
     <>
@@ -46,7 +50,7 @@ export const Create = () => {
             <>
               <SubHeader>My Templates</SubHeader>
               <GridList>
-                {mine.me.templates.map((template, i) => (
+                {mine.me.templates.map(template => (
                   <SandboxCard key={template.niceName} template={template} />
                 ))}
               </GridList>

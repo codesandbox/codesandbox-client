@@ -44,6 +44,12 @@ export const Title = styled.h2`
   color: #fff;
   font-size: 13px;
   line-height: 1rem;
+  max-width: 165px;
+  text-align: left;
+  max-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const Environment = styled.span`
