@@ -26,7 +26,7 @@ export function isBabel7(
     return true;
   }
 
-  if (devDependencies['@babel/core']) {
+  if (devDependencies['@babel/core'] || dependencies['@babel/core']) {
     return true;
   }
 
