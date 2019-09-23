@@ -60,6 +60,16 @@ export const getContainerStyles = props => {
     }
   `;
 
+  if (props.active) {
+    styles += `
+      color: ${getSelectedColor(
+        theme['list.activeSelectionForeground']
+      )} !important;
+      border-color: ${color()} !important;
+      background-color: ${color.lighten(0.1).clearer(0.8)()} !important;
+    `;
+  }
+
   if (props.editing) {
     styles += `
       color: ${theme.white()};
@@ -73,16 +83,6 @@ export const getContainerStyles = props => {
           theme.redBackground.clearer(0.4)()} !important;
       `;
     }
-  }
-
-  if (props.active) {
-    styles += `
-      color: ${getSelectedColor(
-        theme['list.activeSelectionForeground']
-      )} !important;
-      border-color: ${color()} !important;
-      background-color: ${color.lighten(0.1).clearer(0.8)()} !important;
-    `;
   }
 
   if (props.rightColors) {

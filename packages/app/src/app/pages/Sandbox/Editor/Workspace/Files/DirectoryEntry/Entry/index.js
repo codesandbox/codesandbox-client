@@ -173,7 +173,7 @@ class Entry extends React.PureComponent {
               isOpen={isOpen}
               type={type}
               root={root}
-              error={moduleHasError || error}
+              error={moduleHasError}
             />
             {state === 'editing' ? (
               <EntryTitleInput
