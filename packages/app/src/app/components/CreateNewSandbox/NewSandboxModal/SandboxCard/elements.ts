@@ -21,6 +21,7 @@ export const Icon = styled.div<{ color: string }>`
     align-items: center;
     width: 2rem;
     height: 2rem;
+    border-radius: 2px;
     background-color: ${color};
   `}
 `;

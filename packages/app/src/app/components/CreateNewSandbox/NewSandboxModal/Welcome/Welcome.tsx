@@ -6,7 +6,7 @@ import { PrototypeRapidly } from './PrototypeRapidly';
 import { Header } from '../elements';
 import { Features, FeatureName, FeatureText, Actions } from './elements';
 
-export const Welcome = () => (
+export const Welcome = ({ goToTab }: { goToTab: (id: string) => void }) => (
   <>
     <Header>
       <span>Welcome to CodeSandbox</span>
@@ -38,7 +38,7 @@ export const Welcome = () => (
       </li>
     </Features>
     <Actions>
-      <Button>Create Sandbox</Button>
+      <Button onClick={goToTab}>Create Sandbox</Button>
     </Actions>
   </>
 );

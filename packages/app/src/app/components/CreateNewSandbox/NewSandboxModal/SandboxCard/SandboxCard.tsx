@@ -40,13 +40,14 @@ export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
             if (official) {
               history.push(sandboxUrl({ id: template.shortid }));
             } else {
+              console.log(sandboxID);
               history.push(sandboxID);
             }
             actions.modalClosed();
           }}
         >
           <Icon color={template.color}>
-            {official ? <OfficialIcon /> : <UserIcon />}
+            {/* {official ? <OfficialIcon /> : <UserIcon />} */}
           </Icon>
           <Details>
             <Row>

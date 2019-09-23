@@ -3,9 +3,10 @@ import React from 'react';
 import { useTabState } from 'reakit/Tab';
 import { CodeSandboxIcon, PlusIcon, StarIcon, UploadIcon } from './Icons';
 import { Welcome } from './Welcome';
+import { Explore } from './Explore';
 import { Create } from './Create';
 import { Import } from './Import';
-import { Container, Tabs, Tab, TabContent, Header, Legend } from './elements';
+import { Container, Tabs, Tab, TabContent } from './elements';
 
 interface INewSandboxModalProps {
   forking: boolean;
@@ -44,16 +45,13 @@ export const NewSandboxModal = ({
         </Tab>
       </Tabs>
       <TabContent {...tab} stopId="Welcome">
-        <Welcome />
+        <Welcome goToTab={() => tab.select('Create')} />
       </TabContent>
       <TabContent {...tab} stopId="Create">
         <Create />
       </TabContent>
       <TabContent {...tab} stopId="Explore">
-        <Header>
-          <span>My Templates</span>
-          <Legend>Show All</Legend>
-        </Header>
+        <Explore />
       </TabContent>
       <TabContent {...tab} stopId="Import">
         <Import />

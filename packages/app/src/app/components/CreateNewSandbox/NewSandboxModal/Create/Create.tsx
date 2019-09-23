@@ -2,8 +2,10 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { LIST_TEMPLATES, LIST_FOLLOWED_TEMPLATES } from '../../queries';
 
+import { ScrollableContent } from '../ScrollableContent';
 import { SandboxCard } from '../SandboxCard';
 import { GridList } from '../GridList';
+import { Loader } from '../Loader/index';
 import { Header } from '../elements';
 import { SubHeader } from './elements';
 import { all } from '../availableTemplates';
@@ -27,46 +29,36 @@ export const Create = () => {
     }
   );
 
+  const done =
+    mine.me &&
+    mine.me.templates &&
+    followed.me &&
+    followed.me.followedTemplates;
+
   return (
     <>
       <Header>
         <span>Create Sandbox</span>
       </Header>
-
-      {mine.me && mine.me.templates.length ? (
-        <>
-          <SubHeader>My Templates</SubHeader>
-          <GridList>
-            {mine.me.templates.map((template, i) => (
-              <SandboxCard key={template.niceName} template={template} />
-            ))}
-          </GridList>
-        </>
-      ) : null}
-      {followed.me &&
-      followed.me.followedTemplates &&
-      followed.me.followedTemplates.length ? (
-        <>
-          <SubHeader>Templates followed by me</SubHeader>
-          <GridList>
-            {followed.me.followedTemplates.map((template, i) => (
-              <SandboxCard
-                official={!template.sandbox}
-                key={template.niceName}
-                template={template}
-              />
-            ))}
-          </GridList>
-        </>
-      ) : null}
-      {followed.me &&
-        followed.me.teams &&
-        followed.me.teams.map(team =>
-          team.followedTemplates.length ? (
+      {done ? (
+        <ScrollableContent>
+          {mine.me && mine.me.templates.length ? (
             <>
-              <SubHeader>Templates followed by {team.name} team</SubHeader>
+              <SubHeader>My Templates</SubHeader>
               <GridList>
-                {team.followedTemplates.map(template => (
+                {mine.me.templates.map((template, i) => (
+                  <SandboxCard key={template.niceName} template={template} />
+                ))}
+              </GridList>
+            </>
+          ) : null}
+          {followed.me &&
+          followed.me.followedTemplates &&
+          followed.me.followedTemplates.length ? (
+            <>
+              <SubHeader>Templates followed by me</SubHeader>
+              <GridList>
+                {followed.me.followedTemplates.map((template, i) => (
                   <SandboxCard
                     official={!template.sandbox}
                     key={template.niceName}
@@ -75,14 +67,39 @@ export const Create = () => {
                 ))}
               </GridList>
             </>
-          ) : null
-        )}
-      <SubHeader>Official Templates</SubHeader>
-      <GridList aria-label="Official Templates">
-        {all.map(template => (
-          <SandboxCard official key={template.niceName} template={template} />
-        ))}
-      </GridList>
+          ) : null}
+          {followed.me &&
+            followed.me.teams &&
+            followed.me.teams.map(team =>
+              team.followedTemplates.length ? (
+                <>
+                  <SubHeader>Templates followed by {team.name} team</SubHeader>
+                  <GridList>
+                    {team.followedTemplates.map(template => (
+                      <SandboxCard
+                        official={!template.sandbox}
+                        key={template.niceName}
+                        template={template}
+                      />
+                    ))}
+                  </GridList>
+                </>
+              ) : null
+            )}
+          <SubHeader>Official Templates</SubHeader>
+          <GridList aria-label="Official Templates">
+            {all.map(template => (
+              <SandboxCard
+                official
+                key={template.niceName}
+                template={template}
+              />
+            ))}
+          </GridList>
+        </ScrollableContent>
+      ) : (
+        <Loader />
+      )}
     </>
   );
 };

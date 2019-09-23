@@ -23,6 +23,7 @@ export const Tabs = styled(TabList)`
   flex-direction: column;
   background: #242424;
   padding: 1rem 0;
+  border-radius: 4px 0 0 4px;
 `;
 
 export const Tab = styled(BaseTab)`
@@ -50,21 +51,8 @@ export const Tab = styled(BaseTab)`
 export const TabContent = styled(TabPanel)`
   background: #151515;
   position: relative;
-  max-height: 500px;
-  overflow: auto;
-  /* position: relative;
-  max-height: 530px;
-  overflow: scroll;
-
-  &:after {
-    content: '';
-    height: 92px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: linear-gradient(180deg, rgba(21, 21, 21, 0) 0%, #151515 100%);
-  } */
+  height: 530px;
+  border-radius: 0 4px 4px 0;
 `;
 
 export const Header = styled.header`
