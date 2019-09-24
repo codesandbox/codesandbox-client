@@ -86,6 +86,8 @@ export const withOwnedSandbox = <T>(
       });
     } else if (modalResponse === 'unfreeze') {
       state.editor.sessionFrozen = false;
+    } else if (modalResponse === 'cancel') {
+      return { context, payload };
     }
   }
 
