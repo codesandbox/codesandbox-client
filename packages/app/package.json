@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "cross-env NODE_ENV=production node scripts/build.js",
+    "build": "cross-env NODE_ENV=production NODE_OPTIONS=\"--max-old-space-size=4096\" node scripts/build.js",
     "generate": "graphql-codegen --config ./scripts/codegen.js",
     "build:embed": "cross-env NODE_ENV=production webpack --config config/webpack.embed.js",
     "build:sandbox": "cross-env NODE_ENV=production SANDBOX_ONLY=true node scripts/build.js",
