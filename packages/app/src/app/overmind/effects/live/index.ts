@@ -151,8 +151,9 @@ export default {
           .receive('ok', resolve)
           .receive('error', reject);
       } else {
-        // eslint-disable-next-line prefer-promise-reject-errors
-        reject('Channel is not defined');
+        // we might try to send messages even when not on live, just
+        // ignore it
+        resolve();
       }
     });
   },
