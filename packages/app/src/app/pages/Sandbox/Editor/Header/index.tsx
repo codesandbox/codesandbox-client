@@ -1,3 +1,5 @@
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved,import/no-webpack-loader-syntax
 import { Button } from '@codesandbox/common/lib/components/Button';
 import ProgressButton from '@codesandbox/common/lib/components/ProgressButton';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
@@ -5,21 +7,18 @@ import {
   dashboardUrl,
   patronUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { toJS } from 'mobx';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { hooksObserver, inject } from 'app/componentConnectors';
+import { LikeHeart } from 'app/pages/common/LikeHeart';
+import { SignInButton } from 'app/pages/common/SignInButton';
+import { UserMenu } from 'app/pages/common/UserMenu';
+import { saveAllModules } from 'app/store/modules/editor/utils';
+import { json } from 'overmind';
 import * as React from 'react';
 import PlusIcon from 'react-icons/lib/go/plus';
 import Fork from 'react-icons/lib/go/repo-forked';
 import SaveIcon from 'react-icons/lib/md/save';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
-
-import { LikeHeart } from 'app/pages/common/LikeHeart';
-import { SignInButton } from 'app/pages/common/SignInButton';
-import { UserMenu } from 'app/pages/common/UserMenu';
-import { saveAllModules } from 'app/store/modules/editor/utils';
-// @ts-ignore
-// eslint-disable-next-line import/no-unresolved,import/no-webpack-loader-syntax
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
 
 import { Action } from './Buttons/Action';
@@ -193,7 +192,7 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
           <CollectionInfo
             isLoggedIn={store.isLoggedIn}
             // Passing a clone of observable requires it to be called in render of observer
-            sandbox={toJS(sandbox)}
+            sandbox={json(sandbox)}
           />
         </Centered>
       )}
