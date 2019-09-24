@@ -57,7 +57,7 @@ export const Explore = () => {
       return setCategory(`template: ${e.target.value}`);
     }
 
-    setCategory('');
+    return setCategory('');
   };
 
   return (
