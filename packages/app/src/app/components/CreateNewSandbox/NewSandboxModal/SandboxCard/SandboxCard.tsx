@@ -33,8 +33,8 @@ export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
     const title =
       template.niceName || template.sandbox.title || template.sandbox.id;
 
-    const openSandbox = (openNewWindow = false, o) => {
-      const url = o
+    const openSandbox = (openNewWindow = false, officialTemplate) => {
+      const url = officialTemplate
         ? sandboxUrl({ id: template.shortid })
         : sandboxUrl({ id: sandboxID });
 

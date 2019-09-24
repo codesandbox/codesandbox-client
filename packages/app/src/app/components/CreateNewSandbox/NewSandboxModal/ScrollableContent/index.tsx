@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import SimpleBar from 'simplebar-react';
+import Scrollbar from 'smooth-scrollbar';
 import {
   ScrollContent as Content,
   ScrollWrapper,
@@ -9,33 +9,53 @@ import {
 type ScrollableContentProps = {
   children: React.ReactNode;
   onBottomReached?: () => void;
+  keepCalling?: boolean;
 };
 
 export const ScrollableContent = ({
   children,
   onBottomReached,
+  keepCalling,
 }: ScrollableContentProps) => {
   const [scrolled, setScrolled] = useState(false);
   const scrollableElRef = useRef(null);
+  const [scrollbar, setScrollbar] = useState(null);
+  const [lastCalled, setLastCalled] = useState(null);
+  useEffect(() => {
+    setScrollbar(
+      Scrollbar.init(scrollableElRef.current, {
+        alwaysShowTracks: true,
+        continuousScrolling: true,
+      })
+    );
+  }, []);
 
   useEffect(() => {
-    scrollableElRef.current.addEventListener('scroll', e => {
-      const height = e.currentTarget.clientHeight + 100;
-      if (e.currentTarget.scrollTop >= height) {
-        onBottomReached();
-      }
-      setScrolled(e.currentTarget.scrollTop > 0);
-    });
-  }, [onBottomReached, scrollableElRef]);
+    if (scrollbar && keepCalling) {
+      scrollbar.addListener(status => {
+        setScrolled(status.offset.y > 10);
+        if (status.offset.y === status.limit.y) {
+          if (lastCalled !== status.offset.y) {
+            onBottomReached();
+            setLastCalled(status.offset.y);
+          }
+        }
+      });
+    }
+  }, [keepCalling, lastCalled, onBottomReached, scrollableElRef, scrollbar]);
 
   return (
     <>
       <ScrollBarCSS />
       <ScrollWrapper scrolled={scrolled}>
         <Content>
-          <SimpleBar scrollableNodeProps={{ ref: scrollableElRef }}>
+          <div
+            data-scrollbar
+            style={{ height: '100%', overflow: 'hidden' }}
+            ref={scrollableElRef}
+          >
             {children}
-          </SimpleBar>
+          </div>
         </Content>
       </ScrollWrapper>
     </>

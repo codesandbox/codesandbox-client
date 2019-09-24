@@ -15,7 +15,7 @@ export const makeTemplates = sandboxes =>
   }));
 
 // Our hook
-export function useDebounce(value: string, delay: number) {
+export function useDebounce(value: string | number, delay: number) {
   // State and setters for debounced value
   const [debouncedValue, setDebouncedValue] = useState(value);
 
