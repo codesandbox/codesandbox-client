@@ -23,7 +23,7 @@ export const Explore = () => {
   const [templates, setTemplates] = useState();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const query = useDebounce(search, 300);
   useKey('/', () => {
     window.setTimeout(() => {
@@ -32,24 +32,22 @@ export const Explore = () => {
   });
 
   useEffect(() => {
+    if (query || category) {
+      setPage(0);
+    }
     index
       .search({
         facetFilters: ['custom_template.published: true', category],
         hitsPerPage: 50,
         query,
+        page,
       })
-      .then(rsp => setTemplates(makeTemplates(rsp.hits)));
+      .then(rsp => {
+        const newTemplates = makeTemplates(rsp.hits);
+        if (page === 0) return setTemplates(newTemplates);
 
-    if (page !== 1) {
-      index
-        .search({
-          facetFilters: ['custom_template.published: true', category],
-          hitsPerPage: 50,
-          query,
-          page,
-        })
-        .then(rsp => setTemplates(t => t.concat(makeTemplates(rsp.hits))));
-    }
+        return setTemplates(t => t.concat(newTemplates));
+      });
   }, [category, page, query]);
 
   const updateCategory = e => {
@@ -74,7 +72,9 @@ export const Explore = () => {
             />
           </InputWrapper>
           <Categories onChange={updateCategory}>
-            <option selected> Categories</option>
+            <option selected value="">
+              Categories
+            </option>
             {all.map(template => (
               <option value={template.name}>{template.niceName}</option>
             ))}
