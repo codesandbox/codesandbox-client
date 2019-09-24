@@ -1,33 +1,39 @@
-import React from 'react';
-import GoHome from 'react-icons/lib/go/home';
-import GoIssueOpened from 'react-icons/lib/go/issue-opened';
-import { useOvermind } from 'app/overmind';
+// @ts-ignore
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
-// @ts-ignore
+import React, { useEffect } from 'react';
+import GoHome from 'react-icons/lib/go/home';
+import GoIssueOpened from 'react-icons/lib/go/issue-opened';
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
-import { Sadbox } from './Sadbox';
+
 import { IFallbackComponentProps } from '../types';
 import { buildCrashReport } from './buildCrashReport';
 import {
-  Container,
-  Header,
-  Nav,
-  Content,
-  Title,
-  Subtitle,
   Actions,
   ButtonIcon,
+  Container,
+  Content,
+  Header,
+  Nav,
+  Subtitle,
+  Title,
 } from './elements';
+import { Sadbox } from './Sadbox';
 
 export const CodeSadbox: React.FC<IFallbackComponentProps> = ({
   error,
   trace,
 }) => {
   const {
+    actions: { codesadboxMounted },
     state: { isLoggedIn },
   } = useOvermind();
+
+  useEffect(() => {
+    codesadboxMounted();
+  }, [codesadboxMounted]);
 
   return (
     <Container>
