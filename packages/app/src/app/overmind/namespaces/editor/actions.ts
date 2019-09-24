@@ -359,7 +359,9 @@ export const prettifyClicked: AsyncAction = async ({
 };
 
 export const errorsCleared: Action = ({ state }) => {
-  state.editor.errors = [];
+  if (state.editor.errors.length) {
+    state.editor.errors = [];
+  }
 };
 
 export const toggleStatusBar: Action = ({ state }) => {
