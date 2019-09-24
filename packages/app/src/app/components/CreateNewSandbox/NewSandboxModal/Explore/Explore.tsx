@@ -52,7 +52,13 @@ export const Explore = () => {
     }
   }, [category, page, query]);
 
-  const updateCategory = e => setCategory(`template: ${e.target.value}`);
+  const updateCategory = e => {
+    if (e.target.value !== '') {
+      return setCategory(`template: ${e.target.value}`);
+    }
+
+    setCategory('');
+  };
 
   return (
     <>
@@ -70,7 +76,7 @@ export const Explore = () => {
           <Categories onChange={updateCategory}>
             <option selected> Categories</option>
             {all.map(template => (
-              <option value={template.shortid}>{template.niceName}</option>
+              <option value={template.name}>{template.niceName}</option>
             ))}
           </Categories>
         </Form>
