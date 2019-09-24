@@ -6,7 +6,15 @@ import {
   ScrollBarCSS,
 } from './elements';
 
-export const ScrollableContent = ({ children, onBottomReached }) => {
+type ScrollableContentProps = {
+  children: React.ReactNode;
+  onBottomReached?: () => void;
+};
+
+export const ScrollableContent = ({
+  children,
+  onBottomReached,
+}: ScrollableContentProps) => {
   const [scrolled, setScrolled] = useState(false);
   const scrollableElRef = useRef(null);
 

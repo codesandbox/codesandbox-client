@@ -6,7 +6,7 @@ import { PrototypeRapidly } from './PrototypeRapidly';
 import { Header } from '../elements';
 import { Features, FeatureName, FeatureText, Actions } from './elements';
 
-export const Welcome = ({ goToTab }: { goToTab: (id: string) => void }) => (
+export const Welcome = ({ goToTab }: { goToTab: (event: any) => void }) => (
   <>
     <Header>
       <span>Welcome to CodeSandbox</span>

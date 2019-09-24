@@ -21,6 +21,7 @@ interface ISandboxCard {
 
 export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
   ({ template, official }, ref) => {
+    // @ts-ignore
     const { source, id: sandboxID, author = {} } = template.sandbox || {};
     // const UserIcon =
     //   template.iconUrl && Icons[template.iconUrl]
@@ -32,17 +33,27 @@ export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
     const title =
       template.niceName || template.sandbox.title || template.sandbox.id;
 
+    const openSandbox = (openNewWindow = false, o) => {
+      const url = o
+        ? sandboxUrl({ id: template.shortid })
+        : sandboxUrl({ id: sandboxID });
+
+      if (openNewWindow === true) {
+        window.open(url, '_blank');
+      } else {
+        history.push(url);
+      }
+
+      return actions.modalClosed();
+    };
+
     return (
       <>
         <Container
           ref={ref}
-          onClick={() => {
-            if (official) {
-              history.push(sandboxUrl({ id: template.shortid }));
-            } else {
-              history.push(sandboxID);
-            }
-            actions.modalClosed();
+          onClick={event => {
+            const cmd = event.ctrlKey || event.metaKey;
+            openSandbox(Boolean(cmd), official);
           }}
         >
           <Icon color={template.color}>
