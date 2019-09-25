@@ -1,5 +1,5 @@
-import React from 'react';
 import FontFaceObserver from 'fontfaceobserver';
+import React from 'react';
 
 function noop() {}
 
@@ -35,9 +35,10 @@ class MonacoEditor extends React.PureComponent {
     }
 
     // eslint-disable-next-line global-require
-    require('app/vscode/dev-bootstrap').default(false, [
-      'vs/editor/editor.main',
-    ])(() => {
+    require('app/overmind/effects/vscode/manager/dev-bootstrap').default(
+      false,
+      ['vs/editor/editor.main']
+    )(() => {
       this.initMonaco();
     });
   };

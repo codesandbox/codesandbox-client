@@ -46,8 +46,8 @@ class VSCodeManager {
     this.addWorkbenchActions();
   }
 
-  public loadScript(scripts: string[], isVSCode = true, cb: () => void) {
-    bootstrap(isVSCode, scripts)(cb);
+  public loadScript(scripts: string[], cb: () => void) {
+    bootstrap(true, scripts)(cb);
   }
 
   private addWorkbenchActions() {
@@ -515,4 +515,4 @@ class VSCodeManager {
   }
 }
 
-export const vscode = new VSCodeManager();
+export const manager = new VSCodeManager();

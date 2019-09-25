@@ -29,7 +29,7 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8]
 /* eslint-enable import/no-webpack-loader-syntax */
 import { clone } from 'app/componentConnectors';
 import eventToTransform from '../Monaco/event-to-transform';
-import MonacoEditorComponent, { EditorAPI } from './MonacoReactComponent';
+import MonacoEditorComponent from './MonacoReactComponent';
 import { Container, GlobalStyles } from './elements';
 import getSettings from '../Monaco/settings';
 
@@ -357,7 +357,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     });
   };
 
-  configureEditor = async (editor: EditorAPI, monaco: any) => {
+  configureEditor = async (editor: any, monaco: any) => {
     this.editor = editor;
     this.monaco = monaco;
 
@@ -1166,7 +1166,6 @@ export class VSCode extends React.Component<Props> implements Editor {
 
   render() {
     const { width, height } = this.props;
-
     const options = this.getEditorOptions();
 
     return (

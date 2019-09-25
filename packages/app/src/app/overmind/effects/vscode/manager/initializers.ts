@@ -1,4 +1,4 @@
-import { vscode } from 'app/vscode';
+import { manager } from '.';
 
 export function initializeThemeCache() {
   try {
@@ -14,7 +14,7 @@ export function initializeThemeCache() {
 
 export function initializeExtensionsFolder() {
   // @ts-ignore
-  const fs = BrowserFS.BFSRequire('fs');
+  const fs = window.BrowserFS.BFSRequire('fs');
 
   if (!fs.existsSync('/vscode/extensions')) {
     fs.mkdirSync('/vscode/extensions');
@@ -23,7 +23,7 @@ export function initializeExtensionsFolder() {
 
 export function initializeSettings() {
   // @ts-ignore
-  const fs = BrowserFS.BFSRequire('fs');
+  const fs = window.BrowserFS.BFSRequire('fs');
   if (!fs.existsSync('/vscode/settings.json')) {
     fs.writeFileSync(
       '/vscode/settings.json',
@@ -86,7 +86,7 @@ export function initializeCustomTheme() {
     };
 
     // @ts-ignore
-    const fs = BrowserFS.BFSRequire('fs');
+    const fs = window.BrowserFS.BFSRequire('fs');
     fs.writeFileSync(
       '/extensions/custom-theme/package.json',
       JSON.stringify(packageJSON)
@@ -102,7 +102,7 @@ export function initializeCustomTheme() {
 const VIM_EXTENSION_ID = 'vscodevim.vim';
 export function setVimExtensionEnabled(vimEnabled: boolean) {
   if (vimEnabled) {
-    vscode.enableExtension(VIM_EXTENSION_ID);
+    manager.enableExtension(VIM_EXTENSION_ID);
   } else {
     // Auto disable vim extension
     if (
@@ -116,6 +116,6 @@ export function setVimExtensionEnabled(vimEnabled: boolean) {
       );
     }
 
-    vscode.disableExtension(VIM_EXTENSION_ID);
+    manager.disableExtension(VIM_EXTENSION_ID);
   }
 }

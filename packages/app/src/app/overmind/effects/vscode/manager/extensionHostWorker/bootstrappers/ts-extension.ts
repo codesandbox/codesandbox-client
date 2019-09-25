@@ -9,6 +9,7 @@ childProcess.addDefaultForkHandler(SubWorkLoader);
 
 initializeAll().then(() => {
   // Use require so that it only starts executing the chunk with all globals specified.
+  // eslint-disable-next-line
   require('../workers/generic-worker').start({
     syncSandbox: true,
     syncTypes: true,

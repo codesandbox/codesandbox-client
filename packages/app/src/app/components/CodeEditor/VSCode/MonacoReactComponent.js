@@ -1,21 +1,13 @@
-import React from 'react';
-import FontFaceObserver from 'fontfaceobserver';
-import { vscode } from 'app/vscode';
-
 import './icon-theme.css';
 import './workbench-theme.css';
+
+import { manager } from 'app/overmind/effects/vscode/manager';
+import FontFaceObserver from 'fontfaceobserver';
+import React from 'react';
 
 // import { setSocketURL } from 'node-services/lib/net';
 
 function noop() {}
-
-export type EditorAPI = {
-  openFile(path: string): any,
-  getActiveCodeEditor(): any,
-  editorPart: any,
-  textFileService: any,
-  editorService: any,
-};
 
 const fontPromise = new FontFaceObserver('dm').load().catch(() => {});
 
@@ -45,16 +37,12 @@ class MonacoEditor extends React.PureComponent {
   };
 
   afterViewInit = () => {
-    // setSocketURL(`wss://${this.props.id}.sse.codesandbox.stream/cs-sse-ext`);
-    // setSocketURL(`ws://localhost:7070`);
-
-    // eslint-disable-next-line global-require
-
     this.initMonaco();
   };
 
   initMonaco = () => {
     const context = this.props.context || window;
+
     if (this.containerElement && typeof context.monaco !== 'undefined') {
       // Before initializing monaco editor
       this.editorWillMount(context.monaco);
@@ -87,12 +75,16 @@ class MonacoEditor extends React.PureComponent {
 
       const container = document.createElement('div');
       const part = document.createElement('div');
+
+      part.id = 'vscode-editor';
+      part.className = 'part editor has-watermark';
+
       container.appendChild(part);
 
       const rootEl = document.getElementById('vscode-container');
       rootEl.appendChild(container);
 
-      vscode.initializeEditor(
+      manager.initializeEditor(
         container,
         this.props.customEditorAPI,
         services => {
@@ -101,8 +93,7 @@ class MonacoEditor extends React.PureComponent {
           );
 
           container.className = 'monaco-workbench';
-          part.id = 'vscode-editor';
-          part.className = 'part editor has-watermark';
+
           editorElement.className += ' monaco-workbench mac nopanel';
 
           const instantiationService = services.get(IInstantiationService);
@@ -148,7 +139,7 @@ class MonacoEditor extends React.PureComponent {
             }
 
             const editorApi = {
-              openFile(path: string) {
+              openFile(path) {
                 fontPromise.then(() => {
                   codeEditorService.openCodeEditor({
                     resource: context.monaco.Uri.file('/sandbox' + path),

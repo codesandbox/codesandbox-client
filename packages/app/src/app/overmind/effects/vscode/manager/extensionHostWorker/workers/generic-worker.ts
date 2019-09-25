@@ -24,7 +24,7 @@ export function start({
   const pendingMessages = [];
   let initialized = false;
 
-  const log = console.log;
+  const { log } = console;
 
   function processMessage(data) {
     const process = ctx.BrowserFS.BFSRequire('process');
@@ -113,6 +113,7 @@ export function start({
 
             // Sometimes the module overwrites console.log for the VSCode output channel, we don't want this with
             // debugging
+            // eslint-disable-next-line
             console.log = log;
 
             debug(

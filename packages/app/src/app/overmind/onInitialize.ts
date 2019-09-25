@@ -1,10 +1,14 @@
 import { OnInitialize } from '.';
 
-export const onInitialize: OnInitialize = (
+export const onInitialize: OnInitialize = async (
   { state, effects, actions },
   overmindInstance
 ) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
+
+  await effects.vscode.initialize({
+    getPrettierConfig: () => state.preferences.settings.prettierConfig,
+  });
 
   effects.fsSync.initialize({
     getCurrentSandboxId() {
