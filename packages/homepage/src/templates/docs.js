@@ -208,59 +208,55 @@ const Description = styled.p`
   margin-bottom: 0.25rem;
 `;
 
-// eslint-disable-next-line
-export default class Docs extends React.Component {
-  render() {
-    const {
-      allDocs: { edges: docs },
-      doc: {
-        fields: { description, editLink, title },
-        html,
-      },
-    } = this.props.data;
+const Docs = ({
+  data: {
+    allDocs: { edges: docs },
+    doc: {
+      fields: { description, editLink, title },
+      html,
+    },
+  },
+}) => (
+  <Layout>
+    <Container style={{ overflowX: 'auto' }}>
+      <TitleAndMetaTags
+        description={description}
+        title={`${title} - CodeSandbox Documentation`}
+      />
 
-    return (
-      <Layout>
-        <Container style={{ overflowX: 'auto' }}>
-          <TitleAndMetaTags
-            description={description}
-            title={`${title} - CodeSandbox Documentation`}
-          />
-          <PageContainer>
-            <DocsContainer>
-              <div
-                style={{
-                  flex: 1,
-                  minWidth: 250,
-                }}
-              >
-                <DocSearch />
-                <StickyNavigation docs={docs} />
-              </div>
-              <Article>
-                <Heading>
-                  <Title>{title}</Title>
-                  <Edit
-                    href={editLink}
-                    rel="noreferrer noopener"
-                    target="_blank"
-                  >
-                    <EditIcon /> Edit this page
-                  </Edit>
-                  <Description>{description}</Description>
-                </Heading>
+      <PageContainer>
+        <DocsContainer>
+          <div
+            style={{
+              flex: 1,
+              minWidth: 250,
+            }}
+          >
+            <DocSearch />
 
-                <DocumentationContent
-                  dangerouslySetInnerHTML={{ __html: html }}
-                />
-              </Article>
-            </DocsContainer>
-          </PageContainer>
-        </Container>
-      </Layout>
-    );
-  }
-}
+            <StickyNavigation docs={docs} />
+          </div>
+
+          <Article>
+            <Heading>
+              <Title>{title}</Title>
+
+              <Edit href={editLink} rel="noreferrer noopener" target="_blank">
+                <EditIcon /> Edit this page
+              </Edit>
+
+              <Description>{description}</Description>
+            </Heading>
+
+            <DocumentationContent dangerouslySetInnerHTML={{ __html: html }} />
+          </Article>
+        </DocsContainer>
+      </PageContainer>
+    </Container>
+  </Layout>
+);
+
+export default Docs;
 
 export const pageQuery = graphql`
   query Docs($slug: String!) {
