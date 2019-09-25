@@ -1,9 +1,9 @@
 ---
-title: 'Environment'
+title: Environment
 authors: ['Saeris']
 description:
-  'CodeSandbox uses different execution environments based on the contents of a
-  sandbox.'
+  CodeSandbox uses different execution environments based on the contents of a
+  sandbox.
 ---
 
 ## What is an Environment?
