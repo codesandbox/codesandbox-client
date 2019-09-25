@@ -101,11 +101,16 @@ type Props = {
   }>,
 };
 
-const SubLink = ({ node }) => (
-  <ul style={{ marginTop: '.5rem' }} path={node.fields.url}>
-    {node.headings.map(({ value }) => (
+const SubLink = ({
+  node: {
+    fields: { slug },
+    headings,
+  },
+}) => (
+  <ul style={{ marginTop: '.5rem' }}>
+    {headings.map(({ value }) => (
       <li key={value}>
-        <SecondaryNavigationLink to={`${node.fields.url}#${slugify(value)}`}>
+        <SecondaryNavigationLink to={`docs${slug}#${slugify(value)}`}>
           {value}
         </SecondaryNavigationLink>
       </li>
@@ -171,15 +176,15 @@ export default class StickyNavigation extends React.PureComponent<Props> {
       >
         <ul>
           {docs.map(({ node }) => (
-            <NavigationItem key={node.frontmatter.title}>
+            <NavigationItem key={node.fields.title}>
               <PrimaryNavigationLink
-                to={node.fields.url}
+                to={`docs${node.fields.slug}`}
                 activeStyle={activeStyle}
               >
-                {node.frontmatter.title}
+                {node.fields.title}
               </PrimaryNavigationLink>
               <Router>
-                <SubLink node={node} path={node.fields.url} />
+                <SubLink node={node} path={`docs${node.fields.slug}`} />
               </Router>
             </NavigationItem>
           ))}

@@ -86,9 +86,12 @@ export const withOwnedSandbox = <T>(
       });
     } else if (modalResponse === 'unfreeze') {
       state.editor.sessionFrozen = false;
+    } else if (modalResponse === 'cancel') {
+      return;
     }
   }
 
+  // eslint-disable-next-line consistent-return
   return continueAction(context, payload);
 };
 

@@ -55,4 +55,7 @@ export default {
       });
     });
   },
+  reload() {
+    location.reload(true);
+  },
 };
