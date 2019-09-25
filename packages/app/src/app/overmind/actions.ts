@@ -2,9 +2,10 @@ import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
-import { Action, AsyncAction } from '.';
-import * as internalActions from './internalActions';
+
 import { withLoadApp } from './factories';
+import * as internalActions from './internalActions';
+import { Action, AsyncAction } from '.';
 
 export const internal = internalActions;
 
@@ -178,7 +179,7 @@ export const signOutClicked: AsyncAction = async ({
   await effects.api.signout();
   effects.jwt.reset();
   state.user = null;
-  await actions.refetchSandboxInfo();
+  effects.browser.reload();
 };
 
 export const signOutGithubIntegration: AsyncAction = async ({
