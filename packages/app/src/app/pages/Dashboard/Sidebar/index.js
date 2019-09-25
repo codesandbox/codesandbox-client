@@ -92,6 +92,10 @@ class Sidebar extends React.Component {
                           return null;
                         }
 
+                        if (!(data && data.me)) {
+                          return null;
+                        }
+
                         const { teams = [] } = data.me;
 
                         return teams.map(team => (
