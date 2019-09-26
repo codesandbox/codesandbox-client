@@ -146,7 +146,7 @@ export const Server: FunctionComponent = () => {
             disabled={
               disconnected || server.containerStatus !== 'sandbox-started'
             }
-            onClick={() => restartSandbox({})}
+            onClick={() => restartSandbox()}
           >
             <>
               <PowerIcon /> Restart Sandbox
@@ -159,7 +159,7 @@ export const Server: FunctionComponent = () => {
             small
             block
             disabled={disconnected || server.containerStatus === 'initializing'}
-            onClick={() => restartContainer({})}
+            onClick={() => restartContainer()}
           >
             <>
               <PowerIcon /> Restart Server
