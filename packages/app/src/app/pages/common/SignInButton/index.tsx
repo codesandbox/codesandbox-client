@@ -1,20 +1,21 @@
-import * as React from 'react';
-import { inject, observer } from 'app/componentConnectors';
-
-import GithubIcon from 'react-icons/lib/go/mark-github';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
+import React, { ComponentProps, FunctionComponent } from 'react';
+import GithubIcon from 'react-icons/lib/go/mark-github';
 
-const SignInButtonComponent = (props: any) => {
-  const { signInClicked } = props.signals;
+import { useOvermind } from 'app/overmind';
+
+type Props = Omit<ComponentProps<typeof Button>, 'onClick' | 'small'>;
+export const SignInButton: FunctionComponent<Props> = props => {
+  const {
+    actions: { signInClicked },
+  } = useOvermind();
 
   return (
-    <Button small onClick={signInClicked} {...props}>
+    <Button {...props} small onClick={signInClicked}>
       <Row>
         <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with GitHub
       </Row>
     </Button>
   );
 };
-
-export const SignInButton = inject('signals')(observer(SignInButtonComponent));
