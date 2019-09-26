@@ -480,7 +480,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
         className="sandbox-item"
         items={this.getContextItems()}
       >
-        {onContextMenu =>
+        {(onContextMenu, disclosureProps) =>
           connectDragSource(
             <div
               style={{
@@ -598,7 +598,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
                     </div>
                     <SandboxDetails>{details}</SandboxDetails>
                   </div>
-                  <KebabIcon onClick={onContextMenu} />
+                  <KebabIcon onClick={onContextMenu} {...disclosureProps} />
                 </SandboxInfo>
               </Container>
             </div>

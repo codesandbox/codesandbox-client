@@ -88,6 +88,7 @@ export const KebabIcon = styled(MoreInfoIcon)`
   width: 20px;
   color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
+  appearance: none !important;
 
   &:hover {
     color: rgba(255, 255, 255, 0.8);
