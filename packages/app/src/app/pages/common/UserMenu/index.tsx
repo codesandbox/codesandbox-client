@@ -14,7 +14,7 @@ export const UserMenu: FunctionComponent = () => {
       modalOpened,
       signOutClicked,
       userMenuOpened,
-      files,
+      files: { gotUploadedFiles },
     },
     state: { user, userMenuOpen },
   } = useOvermind();
@@ -33,12 +33,16 @@ export const UserMenu: FunctionComponent = () => {
       {userMenuOpen && (
         <HoverMenu onClose={() => userMenuClosed()}>
           <Menu
-            openPreferences={() => modalOpened({ modal: 'preferences' })}
-            openStorageManagement={files.gotUploadedFiles}
-            signOut={signOutClicked}
+            openPreferences={() =>
+              modalOpened({ message: null, modal: 'preferences' })
+            }
+            openStorageManagement={() => gotUploadedFiles()}
+            signOut={() => signOutClicked()}
             username={user.username}
             curator={user.curatorAt}
-            openFeedback={() => modalOpened({ modal: 'feedback' })}
+            openFeedback={() =>
+              modalOpened({ message: null, modal: 'feedback' })
+            }
           />
         </HoverMenu>
       )}
