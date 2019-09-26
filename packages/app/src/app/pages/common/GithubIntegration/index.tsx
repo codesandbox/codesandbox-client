@@ -27,8 +27,8 @@ export const GithubIntegration: FunctionComponent<Props> = ({
       Icon={GitHubLogo}
       loading={isLoadingGithub}
       name="GitHub"
-      onSignIn={() => signInGithubClicked({ useExtraScopes: true })}
-      onSignOut={signOutGithubIntegration}
+      onSignIn={() => signInGithubClicked()}
+      onSignOut={() => signOutGithubIntegration()}
       small={small}
       userInfo={github}
     />
