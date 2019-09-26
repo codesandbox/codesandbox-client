@@ -148,8 +148,12 @@ export const state: State = {
         m.id
       );
       if (path) {
+        // We need to track title and directoryShortid due to
+        // that affectings its path
         modulesObject[path] = {
           shortid: m.shortid,
+          title: m.title,
+          directoryShortid: m.directoryShortid,
           type: 'file',
         };
       }
@@ -164,7 +168,14 @@ export const state: State = {
 
       // If this is a single directory with no children
       if (!Object.keys(modulesObject).some(p => dirname(p) === path)) {
-        modulesObject[path] = { shortid: d.shortid, type: 'directory' };
+        // We need to track title and directoryShortid due to
+        // that affectings its path
+        modulesObject[path] = {
+          shortid: d.shortid,
+          title: d.title,
+          directoryShortid: d.directoryShortid,
+          type: 'directory',
+        };
       }
     });
 
