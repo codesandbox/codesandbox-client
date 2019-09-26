@@ -1,6 +1,22 @@
 import styled, { css } from 'styled-components';
 import { Button } from 'reakit/Button';
 
+export const ActionButton = styled.button`
+  background: #151515;
+  border: 1px solid #ffffff;
+  box-sizing: border-box;
+  border-radius: 2px;
+  font-weight: 500;
+  font-size: 11px;
+  text-align: right;
+  padding: 0 0.25rem !important;
+  color: #ffffff;
+  position: relative;
+  z-index: 99;
+  transition: opacity 500ms ease;
+  opacity: 0;
+`;
+
 export const Container = styled(Button)<{ ref?: any }>`
   display: inline-flex;
   width: 290px;
@@ -11,6 +27,12 @@ export const Container = styled(Button)<{ ref?: any }>`
   background: none;
   cursor: pointer;
   margin-bottom: 1rem;
+
+  &:hover {
+    ${ActionButton} {
+      opacity: 1;
+    }
+  }
 `;
 
 export const Icon = styled.div<{ color: string }>`
@@ -38,24 +60,26 @@ export const Row = styled.div`
   justify-content: space-between;
 `;
 
-export const Title = styled.h2`
+export const Title = styled.a`
   padding: 0;
   margin: 0;
   color: #fff;
   font-size: 13px;
   line-height: 1rem;
-  max-width: 165px;
+  max-width: 155px;
   text-align: left;
   max-height: 16px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-decoration: none;
 `;
 
-export const Environment = styled.span`
+export const Environment = styled.a`
   color: #fff;
   font-size: 11px;
   line-height: 13px;
+  text-decoration: none;
 `;
 
 export const Author = styled.span`

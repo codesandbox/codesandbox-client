@@ -3,7 +3,7 @@ import { fadeStyles } from '../ScrollableContent/elements';
 
 export const LoadingWrapper = styled.div`
   overflow: hidden;
-  height: calc(100% - 71px);
+  height: calc(100% - 110px);
 
   &:after {
     ${fadeStyles}

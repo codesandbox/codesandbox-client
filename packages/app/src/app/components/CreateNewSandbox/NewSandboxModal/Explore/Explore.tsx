@@ -6,6 +6,7 @@ import {
 } from '@codesandbox/common/lib/utils/config';
 import * as algoliasearch from 'algoliasearch';
 import { useKey } from 'react-use';
+import { makeTemplates as makeTemplatesMutation } from 'app/components/CreateNewSandbox/queries';
 import { Header } from '../elements';
 import { SandboxCard } from '../SandboxCard';
 import { makeTemplates, useDebounce } from './utils';
@@ -103,7 +104,11 @@ export const Explore = () => {
               </SubHeader>
               <Grid>
                 {templates.map(sandbox => (
-                  <SandboxCard key={sandbox.objectID} template={sandbox} />
+                  <SandboxCard
+                    onFollow={id => makeTemplatesMutation([id])}
+                    key={sandbox.objectID}
+                    template={sandbox}
+                  />
                 ))}
               </Grid>
             </>

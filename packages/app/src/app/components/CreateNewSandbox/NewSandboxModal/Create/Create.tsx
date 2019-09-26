@@ -1,6 +1,11 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { LIST_TEMPLATES, LIST_FOLLOWED_TEMPLATES } from '../../queries';
+import {
+  LIST_TEMPLATES,
+  unmakeTemplates,
+  LIST_FOLLOWED_TEMPLATES,
+  makeTemplates,
+} from 'app/components/CreateNewSandbox/queries';
 
 import { ScrollableContent } from '../ScrollableContent';
 import { SandboxCard } from '../SandboxCard';
@@ -51,7 +56,11 @@ export const Create = () => {
               <SubHeader>My Templates</SubHeader>
               <GridList>
                 {mine.me.templates.map(template => (
-                  <SandboxCard key={template.niceName} template={template} />
+                  <SandboxCard
+                    mine
+                    key={template.niceName}
+                    template={template}
+                  />
                 ))}
               </GridList>
             </>
@@ -64,6 +73,8 @@ export const Create = () => {
               <GridList>
                 {followed.me.followedTemplates.map((template, i) => (
                   <SandboxCard
+                    onUnfollow={id => unmakeTemplates([id])}
+                    followed
                     official={!template.sandbox}
                     key={template.niceName}
                     template={template}
@@ -81,6 +92,8 @@ export const Create = () => {
                   <GridList>
                     {team.followedTemplates.map(template => (
                       <SandboxCard
+                        onUnfollow={id => unmakeTemplates([id], team.id)}
+                        followed
                         official={!template.sandbox}
                         key={template.niceName}
                         template={template}
@@ -95,6 +108,7 @@ export const Create = () => {
             {all.map(template => (
               <SandboxCard
                 official
+                onFollow={id => makeTemplates(id)}
                 key={template.niceName}
                 template={template}
               />
