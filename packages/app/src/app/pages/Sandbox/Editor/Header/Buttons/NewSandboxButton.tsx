@@ -13,7 +13,7 @@ export const NewSandboxButton: FunctionComponent = () => {
   return (
     <Action
       Icon={PlusIcon}
-      onClick={() => modalOpened({ modal: 'newSandbox' })}
+      onClick={() => modalOpened({ message: null, modal: 'newSandbox' })}
       tooltip="New Sandbox"
     />
   );
