@@ -1,4 +1,3 @@
-import track from '@codesandbox/common/lib/utils/analytics';
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { FunctionComponent } from 'react';
 import { Mutation } from 'react-apollo';
@@ -29,7 +28,7 @@ export const TeamInvite: FunctionComponent<Props> = ({
   inviterAvatar,
 }) => {
   const {
-    actions: { notificationAdded },
+    actions: { acceptTeamInvitation, rejectTeamInvitation },
   } = useOvermind();
 
   return (
@@ -48,13 +47,7 @@ export const TeamInvite: FunctionComponent<Props> = ({
             variables={{ teamId }}
             mutation={REJECT_TEAM_INVITATION}
             refetchQueries={['RecentNotifications']}
-            onCompleted={() => {
-              track('Team - Invitation Rejected');
-              notificationAdded({
-                title: `Rejected invitation to ${teamName}`,
-                notificationType: 'success',
-              });
-            }}
+            onCompleted={() => rejectTeamInvitation({ teamName })}
           >
             {(mutate, { loading }) => (
               <Button onClick={() => mutate()} disabled={loading} decline>
@@ -68,11 +61,7 @@ export const TeamInvite: FunctionComponent<Props> = ({
             mutation={ACCEPT_TEAM_INVITATION}
             refetchQueries={['RecentNotifications', 'TeamsSidebar']}
             onCompleted={() => {
-              track('Team - Invitation Accepted');
-              notificationAdded({
-                title: `Accepted invitation to ${teamName}`,
-                notificationType: 'success',
-              });
+              acceptTeamInvitation({ teamName });
 
               history.push(teamOverviewUrl(teamId));
             }}

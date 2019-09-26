@@ -236,3 +236,21 @@ export const refetchSandboxInfo: AsyncAction = async ({
     await actions.editor.internal.initializeLiveSandbox(sandbox);
   }
 };
+
+export const acceptTeamInvitation: Action<{ teamName: string }> = (
+  { effects },
+  { teamName }
+) => {
+  effects.analytics.track('Team - Invitation Accepted', {});
+
+  effects.notificationToast.success(`Accepted invitation to ${teamName}`);
+};
+
+export const rejectTeamInvitation: Action<{ teamName: string }> = (
+  { effects },
+  { teamName }
+) => {
+  effects.analytics.track('Team - Invitation Accepted', {});
+
+  effects.notificationToast.success(`Rejected invitation to ${teamName}`);
+};
