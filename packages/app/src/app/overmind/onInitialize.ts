@@ -7,11 +7,15 @@ export const onInitialize: OnInitialize = (
   const provideJwtToken = () => state.jwt || effects.jwt.get();
 
   effects.fsSync.initialize({
-    getCurrentSandboxId() {
-      return state.editor.currentId;
+    onModulesByPathChange(cb) {
+      return overmindInstance.reaction(
+        ({ editor }) => editor.modulesByPath,
+        cb,
+        { immediate: true }
+      );
     },
-    getModulesByPath() {
-      return state.editor.modulesByPath;
+    getCurrentSandbox() {
+      return state.editor.currentSandbox;
     },
   });
 
@@ -26,12 +30,6 @@ export const onInitialize: OnInitialize = (
     provideJwtToken,
     onError(error) {
       effects.notificationToast.error(error);
-    },
-    getParsedConfigurations() {
-      return state.editor.parsedConfigurations;
-    },
-    getModulesByPath() {
-      return state.editor.modulesByPath;
     },
   });
 

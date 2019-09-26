@@ -185,10 +185,24 @@ export const updateCurrentTemplate: Action = ({ state, effects }) => {
     ) {
       const { parsed } = state.editor.parsedConfigurations.package;
 
-      const modulesByPath = mapValues(state.editor.modulesByPath, module => ({
-        content: module.code || '',
-        isBinary: module.isBinary,
-      }));
+      // There are also directories here... weird?
+      const modulesByPath = mapValues(
+        state.editor.modulesByPath,
+        modulePath => ({
+          content:
+            modulePath.type === 'directory'
+              ? ''
+              : state.editor.currentSandbox.modules.find(
+                  moduleItem => moduleItem.shortid === modulePath.shortid
+                ).code,
+          isBinary:
+            modulePath.type === 'directory'
+              ? false
+              : state.editor.currentSandbox.modules.find(
+                  moduleItem => moduleItem.shortid === modulePath.shortid
+                ).isBinary,
+        })
+      );
 
       // TODO: What is a templat really? Two different kinds of templates here, need to fix the types
       // Talk to Ives and Bogdan

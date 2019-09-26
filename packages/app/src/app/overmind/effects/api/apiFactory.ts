@@ -3,7 +3,6 @@ import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
 import { values } from 'lodash-es';
 import { camelizeKeys, decamelizeKeys } from 'humps';
-import { Module } from '@codesandbox/common/lib/types';
 
 export const API_ROOT = '/api/v1';
 
@@ -28,17 +27,10 @@ export type Api = {
 
 export type ApiConfig = {
   provideJwtToken: () => string;
-  getModulesByPath: () => {
-    [path: string]: Module;
-  };
-  getParsedConfigurations: () => any;
   onError: (error: string) => void;
 };
 
-export default (config: {
-  provideJwtToken: () => string;
-  onError: (error: string) => void;
-}) => {
+export default (config: ApiConfig) => {
   const createHeaders = (jwt: string) =>
     jwt
       ? {

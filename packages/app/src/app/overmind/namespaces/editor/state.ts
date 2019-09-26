@@ -68,7 +68,10 @@ type State = {
   modulesByPath: Derive<
     State,
     {
-      [path: string]: Module;
+      [path: string]: {
+        shortid: string;
+        type: 'file' | 'directory';
+      };
     }
   >;
   isAdvancedEditor: Derive<State, boolean>;
@@ -145,7 +148,10 @@ export const state: State = {
         m.id
       );
       if (path) {
-        modulesObject[path] = { ...m, type: 'file' };
+        modulesObject[path] = {
+          shortid: m.shortid,
+          type: 'file',
+        };
       }
     });
 
@@ -158,7 +164,7 @@ export const state: State = {
 
       // If this is a single directory with no children
       if (!Object.keys(modulesObject).some(p => dirname(p) === path)) {
-        modulesObject[path] = { ...d, type: 'directory' };
+        modulesObject[path] = { shortid: d.shortid, type: 'directory' };
       }
     });
 

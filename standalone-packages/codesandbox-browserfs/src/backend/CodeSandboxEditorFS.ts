@@ -36,6 +36,7 @@ function blobToBuffer(blob: Blob, cb: (err: any | undefined | null, result?: Buf
 }
 
 export interface IModule {
+  shortid: string
   path: string;
   updatedAt: string;
   insertedAt: string;
@@ -55,8 +56,13 @@ export type IDirectory = IModule & {
 export interface IManager {
   getState: () => {
       modulesByPath: {
-        [path: string]: IFile | IDirectory;
-      }
+        [path: string]: {
+          shortid: string
+          type: 'file' | 'directory'
+        };
+      },
+      modules: IModule[]
+      directories: IDirectory[]
   };
 }
 
@@ -77,10 +83,12 @@ class CodeSandboxFile extends PreloadFile<CodeSandboxEditorFS> implements File {
     if (this.isDirty()) {
       const buffer = this.getBuffer();
 
+      
       this._fs._sync(
+        // @ts-ignore
         this.getPath(),
         buffer,
-        (e: ApiError | undefined | null, stat?: Stats) => {
+        (e: ApiError | undefined | null) => {
           if (!e) {
             this.resetDirty();
           }
@@ -98,6 +106,7 @@ class CodeSandboxFile extends PreloadFile<CodeSandboxEditorFS> implements File {
 
   public syncSync(): void {
     if (this.isDirty()) {
+      // @ts-ignore
       this._fs._syncSync(this.getPath(), this.getBuffer());
       this.resetDirty();
     }
@@ -123,7 +132,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
         if (opt) {
           cb();
         } else {
-          cb(new ApiError(ErrorCode.EINVAL, `Manager is invalid`));
+          cb(new ApiError(ErrorCode.EINVAL, 'Manager is invalid'));
         }
       },
     },
@@ -167,19 +176,19 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
     return true;
   }
 
-  public empty(mainCb: BFSOneArgCallback): void {
-    throw new Error("Empty not supported");
+  public empty(): void {
+    throw new Error('Empty not supported');
   }
 
-  public renameSync(oldPath: string, newPath: string) {
-    throw new Error("Rename not supported");
+  public renameSync() {
+    throw new Error('Rename not supported');
   }
 
-  public statSync(p: string, isLstate: boolean): Stats {
+  public statSync(p: string): Stats {
     const modules = this.api.getState().modulesByPath;
-    const moduleInfo = modules[p];
+    const moduleByPath = modules[p];
 
-    if (!moduleInfo) {
+    if (!moduleByPath) {
       const modulesStartingWithPath = Object.keys(modules).filter(
         (pa: string) => pa.startsWith(p.endsWith('/') ? p : p + '/') || pa === p
       );
@@ -191,7 +200,8 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
       }
     }
 
-    if (moduleInfo.type === 'directory') {
+    if (moduleByPath.type === 'directory') {
+      const moduleInfo = this.api.getState().directories.find((directoryItem) => directoryItem.shortid === moduleByPath.shortid) as IDirectory;
       return new Stats(
         FileType.DIRECTORY,
         4096,
@@ -199,8 +209,10 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
         +new Date(),
         +new Date(moduleInfo.updatedAt),
         +new Date(moduleInfo.insertedAt)
-      )
+      );
     } else {
+      const moduleInfo = this.api.getState().modules.find((directoryItem) => directoryItem.shortid === moduleByPath.shortid) as IFile;
+
       return new Stats(
         FileType.FILE,
         (moduleInfo.savedCode || moduleInfo.code || '').length,
@@ -212,22 +224,24 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
     }
   }
 
-  public createFileSync(p: string, flag: FileFlag, mode: number): File {
-    throw new Error("Create file not supported");
+  public createFileSync(): File {
+    throw new Error('Create file not supported');
   }
 
   public open(p: string, flag: FileFlag, mode: number, cb: BFSCallback<File>): void {
-    const moduleInfo = this.api.getState().modulesByPath[p];
+    const moduleByPath = this.api.getState().modulesByPath[p];
 
-    if (!moduleInfo) {
+    if (!moduleByPath) {
       cb(ApiError.ENOENT(p));
       return;
     }
 
-    if (moduleInfo.type === 'directory') {
+    if (moduleByPath.type === 'directory') {
+      const moduleInfo = this.api.getState().directories.find((directoryItem) => directoryItem.shortid === moduleByPath.shortid) as IDirectory;
       const stats = new Stats(FileType.DIRECTORY, 4096, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
       cb(null, new CodeSandboxFile(this, p, flag, stats));
     } else {
+      const moduleInfo = this.api.getState().modules.find((moduleItem) => moduleItem.shortid === moduleByPath.shortid) as IFile;
       const { isBinary, savedCode, code = '' } = moduleInfo;
 
       if (isBinary) {
@@ -253,18 +267,20 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
     }
   }
 
-  public openFileSync(p: string, flag: FileFlag, mode: number): File {
-    const moduleInfo = this.api.getState().modulesByPath[p];
+  public openFileSync(p: string, flag: FileFlag): File {
+    const moduleByPath = this.api.getState().modulesByPath[p];
 
-    if (!moduleInfo) {
+    if (!moduleByPath) {
       throw ApiError.ENOENT(p);
     }
 
-    if (moduleInfo.type === 'directory') {
+    if (moduleByPath.type === 'directory') {
+      const moduleInfo = this.api.getState().directories.find((directoryItem) => directoryItem.shortid === directoryItem.shortid) as IDirectory;
       const stats = new Stats(FileType.DIRECTORY, 4096, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
       return new CodeSandboxFile(this, p, flag, stats);
     } else {
+      const moduleInfo = this.api.getState().modules.find((moduleItem) => moduleItem.shortid === moduleByPath.shortid) as IFile;
       const { savedCode, code = '' } = moduleInfo;
       const buffer = Buffer.from(savedCode || code || '');
       const stats = new Stats(FileType.FILE, buffer.length, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
@@ -277,11 +293,11 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
     // Stubbed
   }
 
-  public rmdirSync(p: string) {
+  public rmdirSync() {
     warn('rmDirSync not supported');
   }
 
-  public mkdirSync(p: string) {
+  public mkdirSync() {
     warn('rmDirSync not supported');
   }
 
@@ -313,11 +329,11 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
     return pathArray;
   }
 
-  public _sync(p: string, data: Buffer, cb: BFSCallback<Stats>): void {
+  public _sync(): void {
     warn('Sync not supported');
   }
 
-  public _syncSync(p: string, data: Buffer): void {
+  public _syncSync(): void {
     warn('Sync not supported');
   }
 }

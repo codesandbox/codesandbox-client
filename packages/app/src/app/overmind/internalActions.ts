@@ -257,8 +257,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
 
   effects.executor.setupExecutor();
 
-  effects.fsSync.syncCurrentSandbox();
-
   /*
     There seems to be a race condition here? Verify if this still happens with Overmind
   */

@@ -1,46 +1,48 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { ThemeProvider } from 'styled-components';
-import { Router } from 'react-router-dom';
-import { ApolloProvider } from 'react-apollo';
+import '@codesandbox/common/lib/global.css';
+import 'normalize.css';
+
+import './split-pane.css';
+
 import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { createOvermind } from 'overmind';
+import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
+import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
+import theme from '@codesandbox/common/lib/theme';
 import {
   initializeSentry,
   logError,
 } from '@codesandbox/common/lib/utils/analytics';
-import '@codesandbox/common/lib/global.css';
-import history from 'app/utils/history';
-import { client } from 'app/graphql/client';
-import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
-import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
+import _debug from '@codesandbox/common/lib/utils/debug';
 import {
-  notificationState,
   convertTypeToStatus,
+  notificationState,
 } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
-import 'normalize.css';
-import theme from '@codesandbox/common/lib/theme';
 import { isSafari } from '@codesandbox/common/lib/utils/platform';
-
+import { NotificationStatus } from '@codesandbox/notifications';
+import { client } from 'app/graphql/client';
+import history from 'app/utils/history';
 // eslint-disable-next-line
 import * as childProcess from 'node-services/lib/child_process';
+import { createOvermind } from 'overmind';
 import { Provider as ActualOvermindProvider } from 'overmind-react';
-import { Routes as App } from './pages';
-import { Provider as OvermindProvider } from './overmind/Provider';
+import React from 'react';
+import { ApolloProvider } from 'react-apollo';
+import { render } from 'react-dom';
+import { Router } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+
 import { config } from './overmind';
-import './split-pane.css';
-import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
+import { Provider as OvermindProvider } from './overmind/Provider';
+import { Routes as App } from './pages';
 import { vscode } from './vscode';
+import { EXTENSIONS_LOCATION } from './vscode/constants';
+import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
 import {
-  initializeThemeCache,
-  initializeSettings,
-  initializeExtensionsFolder,
   initializeCustomTheme,
+  initializeExtensionsFolder,
+  initializeSettings,
+  initializeThemeCache,
   setVimExtensionEnabled,
 } from './vscode/initializers';
-import { EXTENSIONS_LOCATION } from './vscode/constants';
 
 const debug = _debug('cs:app');
 
@@ -180,6 +182,12 @@ async function initialize() {
                 modulesByPath: getState().editor.currentSandbox
                   ? getState().editor.modulesByPath
                   : {},
+                modules: getState().editor.currentSandbox
+                  ? getState().editor.currentSandbox.modules
+                  : [],
+                directories: getState().editor.currentSandbox
+                  ? getState().editor.currentSandbox.directories
+                  : [],
               }),
             },
           },
