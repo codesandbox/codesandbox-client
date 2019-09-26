@@ -24,6 +24,10 @@ export const Container = styled.div<{
   border: 1px solid #242424;
   box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.24), 0px 2px 4px rgba(0, 0, 0, 0.12);
   font-family: Inter;
+
+  * {
+    box-sizing: border-box;
+  }
 `;
 
 export const Tabs = styled(TabList)`
@@ -74,6 +78,8 @@ export const Header = styled.header`
   justify-content: space-between;
   align-items: center;
   font-weight: 500;
+  margin-bottom: 2rem;
+  min-height: 50px;
 `;
 
 export const Legend = styled.span`
