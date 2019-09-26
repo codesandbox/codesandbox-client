@@ -32,9 +32,9 @@ export const FeatureName = styled.h3`
 `;
 
 export const FeatureText = styled.p`
-  font-family: Roboto;
+  font-weight: 500;
   font-size: 13px;
-  line-height: 17px;
+  line-height: 1.5;
   margin-top: 0.5rem;
   text-align: center;
   color: #757575;

@@ -13,12 +13,12 @@
   "scripts": {
     "build": "yarn build:lib",
     "build:dev": "yarn build",
-    "build:lib": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib",
+    "build:lib": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib",
     "build:storybook": "build-storybook -c .storybook -o public",
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react-native",
     "lint": "eslint --ext .js,.ts,.tsx src",
     "prepublish": "yarn build",
-    "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
+    "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib --watch)",
     "start:storybook": "start-storybook",
     "test": "NODE_ENV=test jest",
     "typecheck": "tsc --noEmit"

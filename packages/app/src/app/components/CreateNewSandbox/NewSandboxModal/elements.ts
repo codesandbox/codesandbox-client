@@ -1,8 +1,13 @@
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+import interCSS from '@codesandbox/common/lib/fonts/Inter/inter.css';
 // import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 // import delayOutEffect from '@codesandbox/common/lib/utils/animation/delay-out-effect';
 
 import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
+
+export const ImportFont = createGlobalStyle`
+${interCSS}
+`;
 
 export const Container = styled.div<{
   closing: boolean;
@@ -16,6 +21,9 @@ export const Container = styled.div<{
   border-radius: 0.25rem;
   background-color: #242424;
   color: #fff;
+  border: 1px solid #242424;
+  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.24), 0px 2px 4px rgba(0, 0, 0, 0.12);
+  font-family: Inter;
 `;
 
 export const Tabs = styled(TabList)`
@@ -24,6 +32,7 @@ export const Tabs = styled(TabList)`
   background: #242424;
   padding: 1rem 0;
   border-radius: 4px 0 0 4px;
+  border-right: 1px solid #040404;
 `;
 
 export const Tab = styled(BaseTab)`
@@ -64,6 +73,7 @@ export const Header = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-weight: 500;
 `;
 
 export const Legend = styled.span`

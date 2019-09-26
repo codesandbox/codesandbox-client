@@ -59,6 +59,12 @@ body {
     box-sizing: border-box;
     border-radius: 50px;
     width: 4px;
+    opacity: 0.4;
+    transition: opacity 200ms ease;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   .scroll-content {
