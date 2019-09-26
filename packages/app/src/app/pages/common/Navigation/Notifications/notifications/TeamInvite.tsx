@@ -51,8 +51,8 @@ export const TeamInvite: FunctionComponent<Props> = ({
             onCompleted={() => {
               track('Team - Invitation Rejected');
               notificationAdded({
-                message: `Rejected invitation to ${teamName}`,
-                type: 'success',
+                title: `Rejected invitation to ${teamName}`,
+                notificationType: 'success',
               });
             }}
           >
@@ -70,8 +70,8 @@ export const TeamInvite: FunctionComponent<Props> = ({
             onCompleted={() => {
               track('Team - Invitation Accepted');
               notificationAdded({
-                message: `Accepted invitation to ${teamName}`,
-                type: 'success',
+                title: `Accepted invitation to ${teamName}`,
+                notificationType: 'success',
               });
 
               history.push(teamOverviewUrl(teamId));
