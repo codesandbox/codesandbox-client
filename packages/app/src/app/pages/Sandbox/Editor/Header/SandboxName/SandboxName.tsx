@@ -98,7 +98,9 @@ export const SandboxName: FunctionComponent = () => {
             <Folder>
               {isLoggedIn ? (
                 <FolderName
-                  onClick={() => modalOpened({ modal: 'moveSandbox' })}
+                  onClick={() =>
+                    modalOpened({ message: null, modal: 'moveSandbox' })
+                  }
                 >
                   {folderName}
                 </FolderName>

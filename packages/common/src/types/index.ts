@@ -290,6 +290,7 @@ export type Sandbox = {
   externalResources: string[];
   team: {
     id: string;
+    name: string;
   };
   roomId: string;
   privacy: 0 | 1 | 2;
