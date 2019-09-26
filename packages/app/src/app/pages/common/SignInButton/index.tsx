@@ -12,7 +12,11 @@ export const SignInButton: FunctionComponent<Props> = props => {
   } = useOvermind();
 
   return (
-    <Button {...props} small onClick={signInClicked}>
+    <Button
+      {...props}
+      onClick={() => signInClicked({ useExtraScopes: false })}
+      small
+    >
       <Row>
         <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with GitHub
       </Row>
