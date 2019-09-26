@@ -16,7 +16,7 @@ export const ShareButton: FunctionComponent = () => {
 
   return (
     <Button
-      onClick={() => modalOpened({ modal: 'share' })}
+      onClick={() => modalOpened({ message: null, modal: 'share' })}
       secondary={!owned}
       small
     >
