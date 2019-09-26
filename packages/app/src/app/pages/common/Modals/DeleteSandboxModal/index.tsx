@@ -14,7 +14,7 @@ const DeleteSandboxModal: FunctionComponent = () => {
   return (
     <Alert
       title="Delete Sandbox"
-      body={<span>Are you sure you want to delete this sandbox?</span>}
+      body="Are you sure you want to delete this sandbox?"
       onCancel={() => modalClosed()}
       onConfirm={() => sandboxDeleted()}
     />
