@@ -19,7 +19,7 @@ export const Search = styled.input`
   box-sizing: border-box;
   border-radius: 2px;
   padding: 0.5rem;
-  padding-left: 2.5rem;
+  padding-left: 30px;
   padding-right: 1.5rem;
   min-width: 286px;
   font-style: normal;

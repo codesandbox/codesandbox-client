@@ -22,13 +22,13 @@ export const fadeStyles = css`
   height: 92px;
   position: absolute;
   left: 0;
-  width: calc(100% - 11px);
+  width: calc(100% - 12px);
   background: linear-gradient(180deg, rgba(21, 21, 21, 0) 0%, #151515 100%);
   z-index: 99;
 `;
 
 export const ScrollWrapper = styled.div<{ scrolled: boolean }>`
-  height: calc(100% - 71px);
+  height: calc(100% - 110px);
   position: relative;
   &:after {
     ${fadeStyles}
