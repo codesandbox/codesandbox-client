@@ -1,4 +1,7 @@
-import { ZeitDeployment } from '@codesandbox/common/lib/types';
+import {
+  ZeitDeployment,
+  ZeitDeploymentState,
+} from '@codesandbox/common/lib/types';
 import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
@@ -25,7 +28,7 @@ export const Actions: FunctionComponent<Props> = ({ deploy }) => {
 
       <DeleteDeploymentButton id={deploy.uid} />
 
-      {hasAlias && deploy.state === 'READY' ? (
+      {hasAlias && deploy.state === ZeitDeploymentState.READY ? (
         <AliasDeploymentButton deploy={deploy} />
       ) : null}
     </ButtonContainer>
