@@ -60,7 +60,19 @@ export const connectionChanged: Action<boolean> = ({ state }, connected) => {
   state.connected = connected;
 };
 
-export const modalOpened: Action<{ modal: string; message?: string }> = (
+type ModalName =
+  | 'deleteDeployment'
+  | 'feedback'
+  | 'forkServerModal'
+  | 'liveSessionEnded'
+  | 'moveSandbox'
+  | 'netlifyLogs'
+  | 'newSandbox'
+  | 'preferences'
+  | 'privacyServerWarning'
+  | 'share'
+  | 'signInForTemplates';
+export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },
   { modal, message }
 ) => {
