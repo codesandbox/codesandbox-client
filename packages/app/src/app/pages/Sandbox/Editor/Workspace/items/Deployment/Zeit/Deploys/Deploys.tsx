@@ -40,7 +40,9 @@ export const Deploys: FunctionComponent = () => {
                 <span>{`(${distanceInWordsToNow(deploy.created)} ago)`}</span>
               </Name>
 
-              <State state={deploy.state}>{deploy.state.toLowerCase()}</State>
+              <State state={deploy.state}>
+                {deploy.state.toString().toLowerCase()}
+              </State>
 
               {deploy.alias.length > 0 ? <Alias alias={deploy.alias} /> : null}
 
