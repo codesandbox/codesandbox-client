@@ -325,7 +325,14 @@ class DirectoryEntry extends React.Component {
                 body={
                   <span>
                     Are you sure you want to delete{' '}
-                    <b>{this.state.moduleToDeleteTitle}</b>?
+                    <b
+                      css={`
+                        word-break: break-all;
+                      `}
+                    >
+                      {this.state.moduleToDeleteTitle}
+                    </b>
+                    ?
                     <br />
                     The file will be permanently removed.
                   </span>
