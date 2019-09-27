@@ -60,7 +60,7 @@ export const connectionChanged: Action<boolean> = ({ state }, connected) => {
   state.connected = connected;
 };
 
-export const modalOpened: Action<{ modal: string; message: string }> = (
+export const modalOpened: Action<{ modal: string; message?: string }> = (
   { state, effects },
   { modal, message }
 ) => {
