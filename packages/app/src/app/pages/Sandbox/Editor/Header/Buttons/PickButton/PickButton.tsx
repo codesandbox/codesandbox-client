@@ -1,36 +1,36 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
+
+import { useOvermind } from 'app/overmind';
+
 import { Button } from './elements';
 
-export const PickButton = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      signals: {
-        explore: { pickSandboxModal },
+export const PickButton: FunctionComponent = () => {
+  const {
+    actions: {
+      explore: { pickSandboxModal },
+    },
+    state: {
+      editor: {
+        currentSandbox: { id, title, description, owned },
       },
-      store: {
-        editor: {
-          currentSandbox: { id, title, description, owned },
-        },
-      },
-    }) => {
-      const details = {
-        id,
-        title,
-        description,
-      };
+    },
+  } = useOvermind();
 
-      return (
-        <Button
-          onClick={() => {
-            pickSandboxModal({ details });
-          }}
-          secondary={owned}
-          small
-        >
-          Pick
-        </Button>
-      );
-    }
-  )
-);
+  const details = {
+    id,
+    title,
+    description,
+  };
+
+  return (
+    <Button
+      onClick={() => {
+        pickSandboxModal({ details });
+      }}
+      secondary={owned}
+      small
+    >
+      Pick
+    </Button>
+  );
+};
