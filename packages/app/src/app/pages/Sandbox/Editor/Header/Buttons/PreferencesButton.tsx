@@ -13,7 +13,7 @@ export const PreferencesButton: FunctionComponent = () => {
   return (
     <Action
       Icon={SettingsIcon}
-      onClick={() => modalOpened({ message: null, modal: 'preferences' })}
+      onClick={() => modalOpened({ modal: 'preferences' })}
       tooltip="Preferences"
     />
   );
