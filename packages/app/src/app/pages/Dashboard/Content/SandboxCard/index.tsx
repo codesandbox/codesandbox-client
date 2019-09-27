@@ -598,7 +598,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
                     </div>
                     <SandboxDetails>{details}</SandboxDetails>
                   </div>
-                  <KebabIcon onClick={onContextMenu} {...disclosureProps} />
+                  <KebabIcon {...disclosureProps} onClick={onContextMenu} />
                 </SandboxInfo>
               </Container>
             </div>

@@ -53,9 +53,12 @@ export const ContextMenu = ({
   onContextMenu,
   ...props
 }: Props) => {
-  const menu = useMenuState({
-    unstable_fixed: true,
+  const [position, setPosition] = React.useState({
+    x: 0,
+    y: 0,
   });
+
+  const menu = useMenuState();
 
   const mapFunction = (item: ItemType, i: number) => {
     if (Array.isArray(item)) {
@@ -106,7 +109,14 @@ export const ContextMenu = ({
   };
 
   const onMenuEvent: OnContextMenu = event => {
+    const { clientX, clientY } = event;
     event.preventDefault();
+
+    setPosition({
+      x: clientX,
+      y: clientY,
+    });
+
     menu.toggle();
 
     if (onContextMenu) {
@@ -123,7 +133,15 @@ export const ContextMenu = ({
             : children
         }
       </MenuDisclosure>
-      <Menu as={Container} {...menu}>
+      <Menu
+        unstable_portal
+        as={Container}
+        {...menu}
+        style={{
+          left: position.x,
+          top: position.y,
+        }}
+      >
         {items.map(mapFunction)}
       </Menu>
     </div>
