@@ -10,9 +10,7 @@ import { WorkspaceSubtitle, WorkspaceInputContainer } from '../../../elements';
 import { Container, Buttons, ErrorMessage, NoChanges } from './elements';
 import { TotalChanges } from './TotalChanges';
 
-type TRights = 'none' | 'read' | 'write' | 'admin';
-
-const hasWriteAccess = (rights: TRights) => ['admin', 'write'].includes(rights);
+const hasWriteAccess = (rights: string) => ['admin', 'write'].includes(rights);
 
 export const Git = () => {
   const {
