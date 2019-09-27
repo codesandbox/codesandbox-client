@@ -1,13 +1,19 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
+
+import { useOvermind } from 'app/overmind';
 
 import { SignInButton } from '../../SignInButton';
 import { Heading, Explanation } from '../elements';
 import { Container } from '../LiveSessionEnded/elements';
+
 import { Close, Buttons } from './elements';
 
-export const SignInForTemplates = inject('signals')(
-  hooksObserver(({ signals: { modalClosed } }) => (
+export const SignInForTemplates: FunctionComponent = () => {
+  const {
+    actions: { modalClosed },
+  } = useOvermind();
+
+  return (
     <Container>
       <Close onClick={() => modalClosed()} />
 
@@ -21,5 +27,5 @@ export const SignInForTemplates = inject('signals')(
         <SignInButton />
       </Buttons>
     </Container>
-  ))
-);
+  );
+};
