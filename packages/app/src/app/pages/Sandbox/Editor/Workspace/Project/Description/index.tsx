@@ -1,13 +1,16 @@
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import React, { FunctionComponent, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FunctionComponent,
+  KeyboardEvent,
+  useState,
+} from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { WorkspaceInputContainer } from '../../elements';
-
 import { EditPen } from '../elements';
 
-import { SandboxDescription } from './elements';
+import { SandboxDescription, WorkspaceInputContainer } from './elements';
 
 type Props = {
   editable: boolean;
@@ -25,37 +28,37 @@ export const Description: FunctionComponent<Props> = ({ editable }) => {
   } = useOvermind();
   const [editing, setEditing] = useState(false);
 
-  const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.keyCode === ENTER && !event.shiftKey) {
       event.preventDefault();
       event.stopPropagation();
+
       sandboxInfoUpdated();
+
       setEditing(false);
     }
   };
 
   return editing ? (
-    <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
+    <WorkspaceInputContainer>
       <textarea
-        rows={2}
+        onBlur={() => {
+          sandboxInfoUpdated();
+
+          setEditing(false);
+        }}
+        onChange={({ target: { value } }: ChangeEvent<HTMLTextAreaElement>) => {
+          valueChanged({ field: 'description', value });
+        }}
+        onKeyDown={onKeyDown}
         placeholder="Description"
-        value={description}
         ref={el => {
           if (el) {
             el.focus();
           }
         }}
-        onKeyDown={onKeyDown}
-        onChange={event => {
-          valueChanged({
-            field: 'description',
-            value: event.target.value,
-          });
-        }}
-        onBlur={() => {
-          sandboxInfoUpdated();
-          setEditing(false);
-        }}
+        rows={2}
+        value={description}
       />
     </WorkspaceInputContainer>
   ) : (

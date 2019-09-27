@@ -1,7 +1,7 @@
-import styled, { css } from 'styled-components';
-import { Link } from 'react-router-dom';
 import Question from 'react-icons/lib/go/question';
 import EditPenIcon from 'react-icons/lib/md/create';
+import { Link } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   position: relative;
@@ -9,16 +9,14 @@ export const Container = styled.div`
 `;
 
 export const BasicInfo = styled.div`
-  margin: 1rem;
-  margin-top: 0;
+  margin: 0 1rem 1rem;
   font-size: 0.875rem;
 `;
 
 export const Item = styled.div`
   display: flex;
   align-items: center;
-  margin: 1rem;
-  margin-top: 0;
+  margin: 0 1rem 1rem;
   font-size: 0.875rem;
 `;
 
@@ -68,22 +66,6 @@ export const PrivacySelect = styled.select`
   `}
 `;
 
-export const PatronMessage = styled.div`
-  ${({ theme }) => css`
-    color: ${theme.light ? css`rgba(0, 0, 0, 0.6)` : theme.placeholder};
-    font-size: 0.875rem;
-  `}
-`;
-
-export const UserLink = styled(Link)`
-  ${({ theme }) => css`
-    display: block;
-    color: ${theme[`editor.foreground`] || css`rgba(255, 255, 255, 0.8)`};
-    font-size: 0.875rem;
-    text-decoration: none;
-  `}
-`;
-
 export const StatsContainer = styled(Item)`
   ${({ theme }) => css`
     height: 1.5rem;
@@ -101,17 +83,6 @@ export const PrivacyContainer = styled.span`
     margin-bottom: 1rem;
     color: ${theme.templateColor};
     font-size: 0.875rem;
-  `}
-`;
-
-export const FreezeContainer = styled.span`
-  display: flex;
-  justify-content: flex-end;
-`;
-
-export const TemplateColor = styled.span`
-  ${({ theme }) => css`
-    color: ${theme.templateColor};
   `}
 `;
 
@@ -157,8 +128,7 @@ export const Explanation = styled.span`
   ${({ theme }) => css`
     display: block;
     padding-top: 5px;
-    margin: 1rem;
-    margin-top: -20px;
+    margin: -20px 1rem 1rem;
     color: ${theme.light
       ? css`rgba(0, 0, 0, 0.4)`
       : css`rgba(255, 255, 255, 0.4)`};

@@ -2,19 +2,13 @@ import * as templates from '@codesandbox/common/lib/templates';
 import getIcon from '@codesandbox/common/lib/templates/icons';
 import { ColorIcons as Icons } from '@codesandbox/template-icons';
 import React, { FunctionComponent, useState } from 'react';
-import { usePopoverState } from 'reakit/Popover';
+import { PopoverArrow as Arrow, usePopoverState } from 'reakit/Popover';
 
 import { useOvermind } from 'app/overmind';
 
-import { Item, PropertyName } from '../../elements';
-import {
-  Button,
-  IconWrapper,
-  List,
-  Value,
-  IconButton,
-  Arrow,
-} from './elements';
+import { Item, PropertyName } from '../../../elements';
+
+import { Button, IconButton, IconWrapper, List, Value } from './elements';
 
 export const Icon: FunctionComponent = () => {
   const {
@@ -41,10 +35,7 @@ export const Icon: FunctionComponent = () => {
 
     popover.hide();
 
-    editTemplate({
-      ...customTemplate,
-      iconUrl: key,
-    });
+    editTemplate({ ...customTemplate, iconUrl: key });
   };
   const TemplateIcon = Icons[selectedIcon];
 
@@ -62,10 +53,10 @@ export const Icon: FunctionComponent = () => {
         </Button>
 
         <IconWrapper
-          hideOnEsc
-          hideOnClickOutside
-          {...popover}
           aria-label="Choose an Icon"
+          hideOnClickOutside
+          hideOnEsc
+          {...popover}
         >
           <Arrow {...popover} />
 
@@ -75,7 +66,7 @@ export const Icon: FunctionComponent = () => {
 
               return (
                 // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                <li role="button" tabIndex={0} onClick={() => setIcon(i)}>
+                <li onClick={() => setIcon(i)} role="button" tabIndex={0}>
                   <IconButton>
                     <TemplateIconMap width={24} />
                   </IconButton>

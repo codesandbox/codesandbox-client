@@ -9,11 +9,12 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { PrivacyStatus } from 'app/components/PrivacyStatus';
 import { Stats } from 'app/pages/common/Stats';
-import React from 'react';
+import React, { ChangeEvent, FunctionComponent } from 'react';
 import TeamIcon from 'react-icons/lib/md/people';
+
 import { useOvermind } from 'app/overmind';
 
-// import AliasComponent from './Alias';
+// import { Alias } from './Alias';
 import { Author } from './Author';
 import { Description } from './Description';
 import {
@@ -36,59 +37,69 @@ import { Keywords } from './Keywords';
 import { SandboxConfig } from './SandboxConfig';
 import { Title } from './Title';
 
-interface IProjectProps {
+type Props = {
   editable?: boolean;
-}
-
-export const Project: React.FunctionComponent<IProjectProps> = ({
-  editable,
-}) => {
+};
+export const Project: FunctionComponent<Props> = ({ editable }) => {
   const {
-    state: {
-      editor: { currentSandbox: sandbox },
-      isPatron,
-    },
     actions: {
       workspace: { sandboxPrivacyChanged },
     },
+    state: {
+      editor: {
+        currentSandbox,
+        currentSandbox: {
+          author,
+          forkedFromSandbox,
+          forkedTemplateSandbox,
+          git,
+          privacy,
+          team,
+          template,
+        },
+      },
+      isPatron,
+    },
   } = useOvermind();
-
-  const template = getTemplateDefinition(sandbox.template);
+  const { url } = getTemplateDefinition(template);
 
   return (
     <Container>
       <BasicInfo>
         <Title editable={editable} />
+
         <Description editable={editable} />
+
         {/* Disable until we also moved SSE over */}
-        {/* <Alias editable={editable} /> */}
+        {/* {isPatron && <Alias editable={editable} />} */}
       </BasicInfo>
 
-      {!sandbox.team && sandbox.author && <Author author={sandbox.author} />}
+      {!team && author && <Author />}
 
-      {sandbox.team && (
+      {team && (
         <Tooltip appendTo="parent" content="This sandbox is owned by this team">
           <Item style={{ color: 'white', display: 'flex' }}>
             <TeamIcon style={{ fontSize: '1.125em', marginRight: '.5rem' }} />
-            <div>{sandbox.team.name}</div>
+
+            <div>{team.name}</div>
           </Item>
         </Tooltip>
       )}
 
-      {sandbox.git && (
+      {git && (
         <Item>
           <GithubBadge
-            url={githubRepoUrl(sandbox.git)}
-            username={sandbox.git.username}
-            repo={sandbox.git.repo}
-            branch={sandbox.git.branch}
-            commitSha={sandbox.git.commitSha}
+            branch={git.branch}
+            commitSha={git.commitSha}
+            repo={git.repo}
+            url={githubRepoUrl(git)}
+            username={git.username}
           />
         </Item>
       )}
 
       <StatsContainer>
-        <Stats sandbox={sandbox} />
+        <Stats sandbox={currentSandbox} />
       </StatsContainer>
 
       <Keywords editable={editable} />
@@ -96,30 +107,29 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
       <Group>
         <Item>
           <PropertyName>Privacy</PropertyName>
+
           <PropertyValue>
             <PrivacyContainer>
               {editable ? (
-                <>
-                  <PrivacySelect
-                    value={sandbox.privacy}
-                    disabled={!isPatron}
-                    onChange={event =>
-                      sandboxPrivacyChanged({
-                        privacy: Number(event.target.value) as 0 | 1 | 2,
-                      })
-                    }
-                  >
-                    <option value={0}>Public</option>
-                    {isPatron && (
-                      <option value={1}>
-                        Unlisted (only available by url)
-                      </option>
-                    )}
-                    {isPatron && <option value={2}>Private</option>}
-                  </PrivacySelect>
-                </>
+                <PrivacySelect
+                  disabled={!isPatron}
+                  onChange={({
+                    target: { value },
+                  }: ChangeEvent<HTMLSelectElement>) =>
+                    sandboxPrivacyChanged(Number(value) as 0 | 1 | 2)
+                  }
+                  value={privacy}
+                >
+                  <option value={0}>Public</option>
+
+                  {isPatron && (
+                    <option value={1}>Unlisted (only available by url)</option>
+                  )}
+
+                  {isPatron && <option value={2}>Private</option>}
+                </PrivacySelect>
               ) : (
-                <PrivacyStatus privacy={sandbox.privacy} />
+                <PrivacyStatus privacy={privacy} />
               )}
             </PrivacyContainer>
           </PropertyValue>
@@ -137,20 +147,17 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
 
         {editable && <Frozen />}
 
-        {(sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox) && (
+        {(forkedFromSandbox || forkedTemplateSandbox) && (
           <Item>
             <PropertyName>
-              {sandbox.forkedTemplateSandbox ? 'Template' : 'Forked From'}
+              {forkedTemplateSandbox ? 'Template' : 'Forked From'}
             </PropertyName>
+
             <PropertyValue>
               <TemplateStyledLink
-                to={sandboxUrl(
-                  sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox
-                )}
+                to={sandboxUrl(forkedFromSandbox || forkedTemplateSandbox)}
               >
-                {getSandboxName(
-                  sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox
-                )}
+                {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
               </TemplateStyledLink>
             </PropertyValue>
           </Item>
@@ -161,23 +168,24 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
             Environment{' '}
             <Tooltip
               boundary="viewport"
-              interactive
               content={
                 <>
                   The environment determines how a sandbox is executed, you can
                   find more info{' '}
-                  <a target="_blank" href="/docs/environment">
+                  <a href="/docs/environment" target="_blank">
                     here
                   </a>
                   .
                 </>
               }
+              interactive
             >
               <Icon />
             </Tooltip>
           </PropertyName>
+
           <PropertyValue>
-            <BundlerLink href={template.url}>{sandbox.template}</BundlerLink>
+            <BundlerLink href={url}>{template}</BundlerLink>
           </PropertyValue>
         </Item>
       </Group>

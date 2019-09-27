@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
-
 import Switch from '@codesandbox/common/lib/components/Switch';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import React, { FunctionComponent, useEffect } from 'react';
+
 import { useOvermind } from 'app/overmind';
-import { Item, PropertyValue, PropertyName, Icon } from '../elements';
+
+import { Icon, Item, PropertyName, PropertyValue } from '../elements';
+
 import { FreezeContainer, FrozenWarning } from './elements';
 
-export const Frozen: React.FC = () => {
+export const Frozen: FunctionComponent = () => {
   const {
     actions: {
       editor: { frozenUpdated, sessionFreezeOverride },
@@ -18,6 +20,7 @@ export const Frozen: React.FC = () => {
       },
     },
   } = useOvermind();
+
   useEffect(() => {
     // always freeze it on start
     if (customTemplate) {
@@ -27,11 +30,10 @@ export const Frozen: React.FC = () => {
 
   const updateFrozenState = () => {
     if (customTemplate) {
-      sessionFreezeOverride({ frozen: !sessionFrozen });
-      return;
+      return sessionFreezeOverride({ frozen: !sessionFrozen });
     }
 
-    frozenUpdated({ frozen: !isFrozen });
+    return frozenUpdated({ frozen: !isFrozen });
   };
 
   return (
@@ -46,18 +48,20 @@ export const Frozen: React.FC = () => {
             <Icon />
           </Tooltip>
         </PropertyName>
+
         <PropertyValue>
           <FreezeContainer>
             <Switch
-              small
-              right={customTemplate ? sessionFrozen : isFrozen}
-              onClick={updateFrozenState}
               offMode
+              onClick={updateFrozenState}
+              right={customTemplate ? sessionFrozen : isFrozen}
               secondary
+              small
             />
           </FreezeContainer>
         </PropertyValue>
       </Item>
+
       {!sessionFrozen && (
         <FrozenWarning>Edits are enabled for this session</FrozenWarning>
       )}

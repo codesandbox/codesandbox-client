@@ -1,14 +1,17 @@
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import React, { FunctionComponent, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FunctionComponent,
+  KeyboardEvent,
+  useState,
+} from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { WorkspaceInputContainer } from '../../elements';
-
 import { EditPen } from '../elements';
 
-import { SandboxTitle } from './elements';
+import { SandboxTitle, WorkspaceInputContainer } from './elements';
 
 type Props = {
   editable: boolean;
@@ -16,7 +19,7 @@ type Props = {
 export const Title: FunctionComponent<Props> = ({ editable }) => {
   const {
     actions: {
-      workspace: { valueChanged, sandboxInfoUpdated },
+      workspace: { sandboxInfoUpdated, valueChanged },
     },
     state: {
       editor: { currentSandbox },
@@ -28,34 +31,33 @@ export const Title: FunctionComponent<Props> = ({ editable }) => {
   const [editing, setEditing] = useState(false);
 
   return editing ? (
-    <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
+    <WorkspaceInputContainer>
       <input
-        type="text"
+        onBlur={() => {
+          sandboxInfoUpdated();
+
+          setEditing(false);
+        }}
+        onChange={({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+          valueChanged({ field: 'title', value });
+        }}
+        onKeyUp={({ keyCode }: KeyboardEvent<HTMLInputElement>) => {
+          if (keyCode === ENTER) {
+            sandboxInfoUpdated();
+
+            setEditing(false);
+          } else if (keyCode === ESC) {
+            setEditing(false);
+          }
+        }}
         placeholder="Title"
         ref={el => {
           if (el) {
             el.focus();
           }
         }}
+        type="text"
         value={title}
-        onChange={event => {
-          valueChanged({
-            field: 'title',
-            value: event.target.value,
-          });
-        }}
-        onBlur={() => {
-          sandboxInfoUpdated();
-          setEditing(false);
-        }}
-        onKeyUp={event => {
-          if (event.keyCode === ENTER) {
-            sandboxInfoUpdated();
-            setEditing(false);
-          } else if (event.keyCode === ESC) {
-            setEditing(false);
-          }
-        }}
       />
     </WorkspaceInputContainer>
   ) : (
@@ -69,6 +71,7 @@ export const Title: FunctionComponent<Props> = ({ editable }) => {
               field: 'title',
               value: getSandboxName(currentSandbox),
             });
+
             setEditing(true);
           }}
         />
