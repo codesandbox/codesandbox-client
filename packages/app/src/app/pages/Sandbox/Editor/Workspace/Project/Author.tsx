@@ -1,9 +1,16 @@
-import React from 'react';
-import { profileUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
+import { User } from '@codesandbox/common/lib/types';
+import { profileUrl } from '@codesandbox/common/lib/utils/url-generator';
+import React, { FunctionComponent } from 'react';
+
 import { Item, UserLink } from './elements';
 
-export const Author = ({ author: { username, avatarUrl, subscription } }) => (
+type Props = {
+  author: User;
+};
+export const Author: FunctionComponent<Props> = ({
+  author: { username, avatarUrl, subscription },
+}) => (
   <Item>
     <UserLink title={username} to={profileUrl(username)}>
       <UserWithAvatar
