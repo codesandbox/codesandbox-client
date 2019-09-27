@@ -7,13 +7,13 @@ import {
   patronUrl,
   sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { PrivacyStatus } from 'app/components/PrivacyStatus';
-import { Stats } from 'app/pages/common/Stats';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import TeamIcon from 'react-icons/lib/md/people';
+import { PrivacyStatus } from 'app/components/PrivacyStatus';
 import { useOvermind } from 'app/overmind';
+import { Stats } from 'app/pages/common/Stats';
 
-// import AliasComponent from './Alias';
+// import { Alias } from './Alias';
 import { Author } from './Author';
 import { Description } from './Description';
 import {
@@ -36,31 +36,29 @@ import { Keywords } from './Keywords';
 import { SandboxConfig } from './SandboxConfig';
 import { Title } from './Title';
 
-interface IProjectProps {
+type Props = {
   editable?: boolean;
-}
-
-export const Project: React.FunctionComponent<IProjectProps> = ({
-  editable,
-}) => {
+};
+export const Project: FunctionComponent<Props> = ({ editable }) => {
   const {
+    actions: {
+      workspace: { sandboxPrivacyChanged },
+    },
     state: {
       editor: { currentSandbox: sandbox },
       isPatron,
     },
-    actions: {
-      workspace: { sandboxPrivacyChanged },
-    },
   } = useOvermind();
 
   const template = getTemplateDefinition(sandbox.template);
-  const { isServer } = template;
 
   return (
     <Container>
       <BasicInfo>
         <Title editable={editable} />
+
         <Description editable={editable} />
+
         {/* Disable until we also moved SSE over */}
         {/* <Alias editable={editable} /> */}
       </BasicInfo>
@@ -71,6 +69,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
         <Tooltip appendTo="parent" content="This sandbox is owned by this team">
           <Item style={{ color: 'white', display: 'flex' }}>
             <TeamIcon style={{ fontSize: '1.125em', marginRight: '.5rem' }} />
+
             <div>{sandbox.team.name}</div>
           </Item>
         </Tooltip>
@@ -96,6 +95,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
       <Group>
         <Item>
           <PropertyName>Privacy</PropertyName>
+
           <PropertyValue>
             <PrivacyContainer>
               {editable ? (
@@ -103,19 +103,19 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
                   <PrivacySelect
                     value={sandbox.privacy}
                     disabled={!isPatron}
-                    onChange={event =>
-                      sandboxPrivacyChanged({
-                        privacy: Number(event.target.value) as 0 | 1 | 2,
-                      })
+                    onChange={({ target: { value } }) =>
+                      sandboxPrivacyChanged(Number(value) as 0 | 1 | 2)
                     }
                   >
                     <option value={0}>Public</option>
+
                     {isPatron && (
                       <option value={1}>
                         Unlisted (only available by url)
                       </option>
                     )}
-                    {!isServer && isPatron && (
+
+                    {!template.isServer && isPatron && (
                       <option value={2}>Private</option>
                     )}
                   </PrivacySelect>
@@ -142,6 +142,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
         {sandbox.forkedFromSandbox && (
           <Item>
             <PropertyName>Forked From</PropertyName>
+
             <PropertyValue>
               <TemplateStyledLink to={sandboxUrl(sandbox.forkedFromSandbox)}>
                 {getSandboxName(sandbox.forkedFromSandbox)}
@@ -160,7 +161,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
                 <>
                   The environment determines how a sandbox is executed, you can
                   find more info{' '}
-                  <a target="_blank" href="/docs/environment">
+                  <a href="/docs/environment" target="_blank">
                     here
                   </a>
                   .
@@ -170,6 +171,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
               <Icon />
             </Tooltip>
           </PropertyName>
+
           <PropertyValue>
             <BundlerLink href={template.url}>{sandbox.template}</BundlerLink>
           </PropertyValue>
