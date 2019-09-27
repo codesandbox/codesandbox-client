@@ -27,8 +27,10 @@ export const Frozen: React.FC = () => {
 
   const updateFrozenState = () => {
     if (customTemplate) {
-      sessionFreezeOverride({ frozen: !isFrozen });
+      sessionFreezeOverride({ frozen: !sessionFrozen });
+      return;
     }
+
     frozenUpdated({ frozen: !isFrozen });
   };
 
