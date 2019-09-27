@@ -256,9 +256,10 @@ export const editTemplate: AsyncAction<{ template: CustomTemplate }> = async (
   }
 };
 
-export const addedTemplate: AsyncAction<{
-  template: CustomTemplate;
-}> = async ({ state, actions, effects }, { template }) => {
+export const addedTemplate: AsyncAction<CustomTemplate> = async (
+  { state, actions, effects },
+  template
+) => {
   effects.analytics.track('Template - Created', { source: 'editor' });
 
   const sandboxId = state.editor.currentId;
