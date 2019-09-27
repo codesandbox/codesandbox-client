@@ -197,7 +197,13 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     const showAutoComplete = cm => {
       if (this.server) {
         const filter = new RegExp('[.a-z_$]', 'i');
+
+        // TODO: look why one of these values is undefined
         if (
+          cm &&
+          cm.display &&
+          cm.display.input &&
+          cm.display.input.textarea &&
           cm.display.input.textarea.value &&
           cm.display.input.textarea.value.slice(-1).match(filter)
         ) {
