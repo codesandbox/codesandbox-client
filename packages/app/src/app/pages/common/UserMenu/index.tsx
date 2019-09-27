@@ -33,16 +33,12 @@ export const UserMenu: FunctionComponent = () => {
       {userMenuOpen && (
         <HoverMenu onClose={() => userMenuClosed()}>
           <Menu
-            openPreferences={() =>
-              modalOpened({ message: null, modal: 'preferences' })
-            }
-            openStorageManagement={() => gotUploadedFiles()}
+            openPreferences={() => modalOpened({ modal: 'preferences' })}
+            openStorageManagement={() => gotUploadedFiles(null)}
             signOut={() => signOutClicked()}
             username={user.username}
             curator={user.curatorAt}
-            openFeedback={() =>
-              modalOpened({ message: null, modal: 'feedback' })
-            }
+            openFeedback={() => modalOpened({ modal: 'feedback' })}
           />
         </HoverMenu>
       )}
