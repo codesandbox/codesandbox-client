@@ -1,11 +1,13 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
-import PlusIcon from 'react-icons/lib/go/plus';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import React, { FunctionComponent } from 'react';
+import PlusIcon from 'react-icons/lib/go/plus';
+
+import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, {
   getDisabledItems,
   INavigationItem,
 } from 'app/store/modules/workspace/items';
+
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
@@ -24,6 +26,7 @@ import RocketIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/rocket.
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
 import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
+
 import { Container, IconContainer, Separator } from './elements';
 import ServerIcon from './ServerIcon';
 
@@ -39,78 +42,70 @@ const IDS_TO_ICONS = {
   server: ServerIcon,
 };
 
-interface IconProps {
+type IconProps = {
   item: INavigationItem;
   isDisabled?: boolean;
-  store: any;
-  signals: any;
-}
+};
+const IconComponent: FunctionComponent<IconProps> = ({
+  item: { id, name },
+  isDisabled,
+}) => {
+  const {
+    actions: {
+      workspace: { setWorkspaceHidden, setWorkspaceItem },
+    },
+    state: {
+      workspace: { openedWorkspaceItem, workspaceHidden },
+    },
+  } = useOvermind();
 
-const IconComponent = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      item,
-      isDisabled,
-      store,
-      signals: {
-        workspace: { setWorkspaceHidden, setWorkspaceItem },
-      },
-    }: IconProps) => {
-      const { id, name } = item;
+  const Icon = IDS_TO_ICONS[id];
+  const selected = !workspaceHidden && id === openedWorkspaceItem;
 
-      const Icon = IDS_TO_ICONS[id];
-      const selected =
-        !store.workspace.workspaceHidden &&
-        id === store.workspace.openedWorkspaceItem;
-      return (
-        <Tooltip key={id} placement="right" content={name}>
-          <IconContainer
-            isDisabled={isDisabled}
-            selected={selected}
-            onClick={() => {
-              if (selected) {
-                setWorkspaceHidden({ hidden: true });
-              } else {
-                setWorkspaceHidden({ hidden: false });
-                setWorkspaceItem({ item: id });
-              }
-            }}
-          >
-            <Icon />
-          </IconContainer>
-        </Tooltip>
-      );
-    }
-  )
-);
+  return (
+    <Tooltip placement="right" content={name}>
+      <IconContainer
+        isDisabled={isDisabled}
+        selected={selected}
+        onClick={() => {
+          if (selected) {
+            setWorkspaceHidden({ hidden: true });
+          } else {
+            setWorkspaceHidden({ hidden: false });
+            setWorkspaceItem({ item: id });
+          }
+        }}
+      >
+        <Icon />
+      </IconContainer>
+    </Tooltip>
+  );
+};
 
-export const Navigation = inject('store')(
-  hooksObserver(
-    ({
-      topOffset,
-      bottomOffset,
-      store,
-    }: {
-      topOffset: number;
-      bottomOffset: number;
-      store: any;
-    }) => {
-      const shownItems = getWorkspaceItems(store);
-      const disabledItems = getDisabledItems(store);
+type Props = {
+  topOffset: number;
+  bottomOffset: number;
+};
+export const Navigation: FunctionComponent<Props> = ({
+  topOffset,
+  bottomOffset,
+}) => {
+  const { state } = useOvermind();
 
-      return (
-        <Container topOffset={topOffset} bottomOffset={bottomOffset}>
-          {shownItems.map(item => (
-            <IconComponent key={item.id} item={item} />
-          ))}
+  const shownItems = getWorkspaceItems(state);
+  const disabledItems = getDisabledItems(state);
 
-          {disabledItems.length > 0 && <Separator />}
+  return (
+    <Container topOffset={topOffset} bottomOffset={bottomOffset}>
+      {shownItems.map(item => (
+        <IconComponent key={item.id} item={item} />
+      ))}
 
-          {disabledItems.map(item => (
-            <IconComponent key={item.id} item={item} isDisabled />
-          ))}
-        </Container>
-      );
-    }
-  )
-);
+      {disabledItems.length > 0 && <Separator />}
+
+      {disabledItems.map(item => (
+        <IconComponent key={item.id} item={item} isDisabled />
+      ))}
+    </Container>
+  );
+};

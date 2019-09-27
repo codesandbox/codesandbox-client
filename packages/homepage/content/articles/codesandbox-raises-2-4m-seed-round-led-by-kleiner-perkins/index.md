@@ -1,5 +1,5 @@
 ---
-featuredImage: ./images/banner.png
+banner: ./images/banner.png
 slug: codesandbox-raises-2-4m-seed-round-led-by-kleiner-perkins
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4

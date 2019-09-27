@@ -43,7 +43,7 @@ export default (() => {
       return response.data;
     },
     async deploy(file: string, sandbox: Sandbox): Promise<string> {
-      const userId = _options.getUserId;
+      const userId = _options.getUserId();
       const template = getTemplate(sandbox.template);
       const buildCommand = (name: string) => {
         if (name === 'styleguidist') {

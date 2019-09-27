@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { graphql, Link } from 'gatsby';
 import React from 'react';
 
+import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
 import {
   Author,
@@ -22,58 +23,65 @@ import {
   PageSubtitle,
 } from './_blog.elements';
 
-import Layout from '../components/layout';
-import { makeFeed } from '../utils/makePosts';
-
 // UNCOMMENT AT THE BOTTOM IF IT BREAKS
 // GATSBY DOES NOT LET YOU HAVE FIELDS THAT DON'T EXIST YET
 
-const Info = ({ mobile, post: { creator, date, photo }, ...props }) => (
+const Info = ({ author, date, mobile, photo, ...props }) => (
   <Aside mobile={mobile} {...props}>
     <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
 
     <section>
-      <AuthorImage src={photo} alt={creator} />
+      <AuthorImage src={photo} alt={author} />
 
-      <Author>{creator}</Author>
+      <Author>{author}</Author>
     </section>
   </Aside>
 );
 
-const Blog = ({ data: { allMarkdownRemark } }) => {
-  const posts = makeFeed(allMarkdownRemark);
+const Blog = ({
+  data: {
+    allBlogPosts: { edges: blogPosts },
+  },
+}) => (
+  <Layout>
+    <PageContainer width={1440}>
+      <TitleAndMetaTags
+        description="Here you can find articles written by the team and external contributors"
+        title="Blog - CodeSandbox"
+      />
 
-  return (
-    <Layout>
-      <PageContainer width={1440}>
-        <TitleAndMetaTags
-          description="Here you can find articles written by the team and external contributors"
-          title="Blog - CodeSandbox"
-        />
+      <Header>
+        <PageTitle>Blog</PageTitle>
 
-        <Header>
-          <PageTitle>Blog</PageTitle>
+        <PageSubtitle>
+          Welcome to the CodeSandbox blog. Here you can find posts about new
+          releases, tips and tricks and how we made CodeSandbox.
+        </PageSubtitle>
+      </Header>
 
-          <PageSubtitle>
-            Welcome to the CodeSandbox blog. Here you can find posts about new
-            releases, tips and tricks and how we made CodeSandbox.
-          </PageSubtitle>
-        </Header>
-
-        {posts.map(post => (
-          <Wrapper key={post.id}>
-            <Info post={post} />
+      {blogPosts.map(
+        ({
+          node: {
+            fields: { author, date, description, photo, slug, title },
+            frontmatter: {
+              banner: { publicURL: banner },
+            },
+            id,
+          },
+        }) => (
+          <Wrapper key={id}>
+            <Info author={author} date={date} photo={photo} />
 
             <Posts>
-              {post.src && (
+              {banner && (
                 <Link
                   css={`
                     display: contents;
                     text-decoration: none;
                   `}
-                  to={`post/${post.slug}`}
+                  to={`post/${slug}`}
                 >
-                  <Thumbnail alt={post.title} src={post.src} width="340" />
+                  <Thumbnail alt={title} src={banner} width="340" />
                 </Link>
               )}
 
@@ -82,44 +90,45 @@ const Blog = ({ data: { allMarkdownRemark } }) => {
                   css={`
                     text-decoration: none;
                   `}
-                  to={`post/${post.slug}`}
+                  to={`post/${slug}`}
                 >
-                  <Title>{post.title}</Title>
+                  <Title>{title}</Title>
                 </Link>
 
-                <Subtitle>{post.subtitle}</Subtitle>
+                <Subtitle>{description}</Subtitle>
               </div>
 
-              <Info post={post} mobile />
+              <Info author={author} date={date} mobile photo={photo} />
             </Posts>
           </Wrapper>
-        ))}
-      </PageContainer>
-    </Layout>
-  );
-};
+        )
+      )}
+    </PageContainer>
+  </Layout>
+);
 
 export const query = graphql`
   {
-    allMarkdownRemark(
+    allBlogPosts: allMarkdownRemark(
       filter: { fileAbsolutePath: { regex: "/articles/" } }
-      limit: 1000
+      sort: { fields: [fields___date], order: [DESC] }
     ) {
       edges {
         node {
-          id
-          html
+          fields {
+            author
+            date
+            description
+            photo
+            slug
+            title
+          }
           frontmatter {
-            featuredImage {
+            banner {
               publicURL
             }
-            slug
-            authors
-            photo
-            title
-            description
-            date
           }
+          id
         }
       }
     }
