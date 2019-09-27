@@ -23,15 +23,11 @@ import { FeedbackIcon } from './FeedbackIcon';
 
 interface Props {
   username: string;
-  curator: boolean;
-  openPreferences: (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => void;
-  openStorageManagement: (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => void;
-  openFeedback: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  signOut: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  curator: string;
+  openPreferences: () => void;
+  openStorageManagement: () => void;
+  openFeedback: () => void;
+  signOut: () => void;
 }
 
 export const Menu = ({

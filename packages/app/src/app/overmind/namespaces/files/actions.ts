@@ -217,9 +217,10 @@ export const directoryRenamed: AsyncAction<{
   }
 );
 
-export const gotUploadedFiles: AsyncAction<{
-  message: string;
-}> = async ({ state, effects }, { message }) => {
+export const gotUploadedFiles: AsyncAction<string> = async (
+  { state, effects },
+  message
+) => {
   const modal = 'storageManagement';
   effects.analytics.track('Open Modal', { modal });
   state.currentModalMessage = message;
