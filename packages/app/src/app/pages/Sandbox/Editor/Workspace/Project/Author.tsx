@@ -9,14 +9,14 @@ type Props = {
   author: User;
 };
 export const Author: FunctionComponent<Props> = ({
-  author: { username, avatarUrl, subscription },
+  author: { username, avatarUrl, subscriptionSince },
 }) => (
   <Item>
     <UserLink title={username} to={profileUrl(username)}>
       <UserWithAvatar
         username={username}
         avatarUrl={avatarUrl}
-        subscriptionSince={subscription && subscription.since}
+        subscriptionSince={subscriptionSince}
       />
     </UserLink>
   </Item>

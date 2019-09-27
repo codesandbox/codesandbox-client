@@ -1,26 +1,23 @@
-import React from 'react';
 import { format } from 'date-fns';
+import React, { FunctionComponent } from 'react';
 import StarIcon from 'react-icons/lib/go/star';
+
 import Tooltip from '../Tooltip';
 
 import { Container } from './elements';
 
-interface PatronStarProps {
-  subscriptionSince: number | Date;
+type Props = {
   style?: React.CSSProperties;
-}
+  subscriptionSince: string | number | Date;
+};
 
-export function PatronStar({ subscriptionSince, ...props }: PatronStarProps) {
-  return (
-    <Tooltip
-      content={`Patron since ${format(
-        new Date(subscriptionSince),
-        'MMM yyyy'
-      )}`}
-    >
-      <Container>
-        <StarIcon {...props} />
-      </Container>
-    </Tooltip>
-  );
-}
+export const PatronStar: FunctionComponent<Props> = ({
+  subscriptionSince,
+  ...props
+}) => (
+  <Tooltip content={`Patron since ${format(subscriptionSince, 'MMM yyyy')}`}>
+    <Container>
+      <StarIcon {...props} />
+    </Container>
+  </Tooltip>
+);
