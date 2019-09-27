@@ -84,13 +84,15 @@ export async function initializeBrowserFS({
 
       if (syncSandbox) {
         self.addEventListener('message', evt => {
-          if (evt.data.$type === 'file-sync') {
+          if (evt.data.$type === 'files-sync') {
             modulesByPath = evt.data.$data;
 
             if (!resolved) {
               resolve();
               resolved = true;
             }
+          } else if (evt.data.$type === 'file-sync') {
+            modulesByPath[evt.data.$data.path] = evt.data.$data.module;
           }
         });
       } else {

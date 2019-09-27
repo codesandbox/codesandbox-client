@@ -260,6 +260,8 @@ export const setModuleCode: Action<{
     module.savedCode = module.code;
   }
 
+  effects.fsSync.updateFile(currentSandbox, module);
+
   if (hasChangedModuleId && module.savedCode === code) {
     state.editor.changedModuleShortids.splice(
       state.editor.changedModuleShortids.indexOf(module.shortid),

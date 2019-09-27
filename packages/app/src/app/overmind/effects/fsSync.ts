@@ -2,7 +2,7 @@ import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependenc
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { Sandbox, Module } from '@codesandbox/common/lib/types';
 import {
   getModulePath,
   getDirectoryPath,
@@ -132,14 +132,10 @@ function getPopulatedModulesByPath(sandbox: Sandbox) {
 }
 
 function sendFiles(sandbox: Sandbox) {
-  if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line
-    console.info('## SYNC FILES');
-  }
   global.postMessage(
     {
       $broadcast: true,
-      $type: 'file-sync',
+      $type: 'files-sync',
       $data: getPopulatedModulesByPath(sandbox),
     },
     protocolAndHost()
@@ -189,14 +185,40 @@ export default {
     getCurrentSandbox: () => Sandbox;
   }) {
     onModulesByPathChange(() => {
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line
+        console.info('## SYNC FILES : structure change');
+      }
       sendFiles(getCurrentSandbox());
     });
     // eslint-disable-next-line
     self.addEventListener('message', evt => {
       if (evt.data.$type === 'request-data') {
+        if (process.env.NODE_ENV === 'development') {
+          // eslint-disable-next-line
+          console.info('## SYNC FILES : request update');
+        }
         sendTypes();
         sendFiles(getCurrentSandbox());
       }
     });
+  },
+  updateFile(sandbox: Sandbox, module: Module) {
+    const path = getModulePath(sandbox.modules, sandbox.directories, module.id);
+
+    global.postMessage(
+      {
+        $broadcast: true,
+        $type: 'file-sync',
+        $data: {
+          path,
+          module: {
+            ...module,
+            type: 'file',
+          },
+        },
+      },
+      protocolAndHost()
+    );
   },
 };

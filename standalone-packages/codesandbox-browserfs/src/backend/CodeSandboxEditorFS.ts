@@ -83,9 +83,9 @@ class CodeSandboxFile extends PreloadFile<CodeSandboxEditorFS> implements File {
     if (this.isDirty()) {
       const buffer = this.getBuffer();
 
-      
+      // The ignore needs to be here, VSCode looks at this differently
+      // @ts-ignore
       this._fs._sync(
-        // @ts-ignore
         this.getPath(),
         buffer,
         (e: ApiError | undefined | null) => {
