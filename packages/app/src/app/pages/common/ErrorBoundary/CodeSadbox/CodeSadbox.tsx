@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
@@ -6,6 +5,7 @@ import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import GoHome from 'react-icons/lib/go/home';
 import GoIssueOpened from 'react-icons/lib/go/issue-opened';
+// @ts-ignore
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
 import { IFallbackComponentProps } from '../types';
