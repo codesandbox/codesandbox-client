@@ -15,7 +15,9 @@ export const PatronStar: FunctionComponent<Props> = ({
   subscriptionSince,
   ...props
 }) => (
-  <Tooltip content={`Patron since ${format(subscriptionSince, 'MMM yyyy')}`}>
+  <Tooltip
+    content={`Patron since ${format(new Date(subscriptionSince), 'MMM yyyy')}`}
+  >
     <Container>
       <StarIcon {...props} />
     </Container>

@@ -5,14 +5,13 @@ import { PatronStar } from '../PatronStar';
 
 import { CenteredText, AuthorName, Image, Names, Username } from './elements';
 
-type Props = {
+type Props = ComponentProps<typeof CenteredText> & {
   avatarUrl: string;
   username: string;
   name?: string;
   hideBadge?: boolean;
   useBigName?: boolean;
-} & Pick<ComponentProps<typeof PatronStar>, 'subscriptionSince'> &
-  ComponentProps<typeof CenteredText>;
+} & Partial<Pick<ComponentProps<typeof PatronStar>, 'subscriptionSince'>>;
 
 export const UserWithAvatar: FunctionComponent<Props> = ({
   avatarUrl,
