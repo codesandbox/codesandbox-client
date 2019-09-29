@@ -1,5 +1,12 @@
 import { dispatch, isStandalone, listen } from 'codesandbox-api';
 
+/* eslint-disable no-console */
+
+const origHistoryProto = window.history.__proto__; // eslint-disable-line no-proto
+const historyList = [];
+let historyPosition = -1;
+let disableNextHashChange = false;
+
 function sendUrlChange(url) {
   dispatch({
     type: 'urlchange',
@@ -8,13 +15,6 @@ function sendUrlChange(url) {
     forward: historyPosition < historyList.length - 1,
   });
 }
-
-/* eslint-disable no-console */
-
-const origHistoryProto = window.history.__proto__; // eslint-disable-line no-proto
-const historyList = [];
-let historyPosition = -1;
-let disableNextHashChange = false;
 
 function pushHistory(url, state) {
   // remove "future" locations
