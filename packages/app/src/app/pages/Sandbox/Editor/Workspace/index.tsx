@@ -1,12 +1,23 @@
-import React from 'react';
+import VERSION from '@codesandbox/common/lib/version';
+import React, { FunctionComponent } from 'react';
 //  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
 import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
-import VERSION from '@codesandbox/common/lib/version';
-import { inject, hooksObserver } from 'app/componentConnectors';
+
 import { SocialInfo } from 'app/components/SocialInfo';
+import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, {
   getDisabledItems,
 } from 'app/store/modules/workspace/items';
+
+import { Advertisement } from './Advertisement';
+import { Chat } from './Chat';
+import { ConnectionNotice } from './ConnectionNotice';
+import {
+  Container,
+  ContactContainer,
+  ItemTitle,
+  VersionContainer,
+} from './elements';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import { Deployment } from './items/Deployment';
 import Files from './items/Files';
@@ -16,17 +27,8 @@ import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
 import { Server } from './items/Server';
-import { Advertisement } from './Advertisement';
-import { Chat } from './Chat';
-import { ConnectionNotice } from './ConnectionNotice';
 import { SSEDownNotice } from './SSEDownNotice';
 import { WorkspaceItem } from './WorkspaceItem';
-import {
-  Container,
-  ContactContainer,
-  ItemTitle,
-  VersionContainer,
-} from './elements';
 
 const workspaceTabs = {
   project: ProjectInfo,
@@ -40,7 +42,8 @@ const workspaceTabs = {
   more: More,
 };
 
-const WorkspaceComponent = ({ store }) => {
+export const Workspace: FunctionComponent = () => {
+  const { state } = useOvermind();
   const {
     editor: {
       currentSandbox: { owned },
@@ -51,7 +54,7 @@ const WorkspaceComponent = ({ store }) => {
       settings: { zenMode },
     },
     workspace: { openedWorkspaceItem: activeTab },
-  } = store;
+  } = state;
 
   if (!activeTab) {
     return null;
@@ -59,12 +62,13 @@ const WorkspaceComponent = ({ store }) => {
 
   const Component = workspaceTabs[activeTab];
   const item =
-    getWorkspaceItems(store).find(({ id }) => id === activeTab) ||
-    getDisabledItems(store).find(({ id }) => id === activeTab);
+    getWorkspaceItems(state).find(({ id }) => id === activeTab) ||
+    getDisabledItems(state).find(({ id }) => id === activeTab);
 
   return (
     <Container>
       {item && !item.hasCustomHeader && <ItemTitle>{item.name}</ItemTitle>}
+
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <Component />
       </div>
@@ -95,5 +99,3 @@ const WorkspaceComponent = ({ store }) => {
     </Container>
   );
 };
-
-export const Workspace = inject('store')(hooksObserver(WorkspaceComponent));
