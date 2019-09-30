@@ -142,14 +142,16 @@ export const ContextMenu = ({
             : children
         }
       </MenuDisclosure>
-      <Menu
-        unstable_portal
-        as={Container}
-        {...menu}
-        aria-label={`menu ${name}`}
-      >
-        {items.map(mapFunction)}
-      </Menu>
+      {menu.visible && (
+        <Menu
+          unstable_portal
+          as={Container}
+          {...menu}
+          aria-label={`menu ${name}`}
+        >
+          {items.map(mapFunction)}
+        </Menu>
+      )}
     </div>
   );
 };
