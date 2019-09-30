@@ -55,11 +55,8 @@ export const ContextMenu = ({
   name,
   ...props
 }: Props) => {
-  const hasChildFunction =
-    childFunction === true && typeof children === 'function';
   const menu = useMenuState({
     placement: 'bottom-end',
-    unstable_fixed: true,
   });
 
   const mapFunction = (item: ItemType, i: number) => {
@@ -140,7 +137,9 @@ export const ContextMenu = ({
     <div {...props} onContextMenu={childFunction ? undefined : onMenuEvent}>
       <MenuDisclosure {...menu}>
         {disclosureProps =>
-          hasChildFunction ? children(onMenuEvent, disclosureProps) : children
+          childFunction === true && typeof children === 'function'
+            ? children(onMenuEvent, disclosureProps)
+            : children
         }
       </MenuDisclosure>
       <Menu
