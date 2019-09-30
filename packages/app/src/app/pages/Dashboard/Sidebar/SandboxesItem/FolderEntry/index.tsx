@@ -211,7 +211,7 @@ class FolderEntry extends React.Component<Props, State> {
     return connectDropTarget(
       connectDragSource(
         <div>
-          <ContextMenu items={menuItems}>
+          <ContextMenu name="directory" items={menuItems}>
             <Container
               as={onSelect ? 'div' : undefined}
               onClick={onSelect ? this.handleSelect : undefined}

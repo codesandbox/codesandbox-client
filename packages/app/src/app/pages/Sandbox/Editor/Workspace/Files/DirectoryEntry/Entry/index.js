@@ -153,7 +153,7 @@ class Entry extends React.PureComponent {
 
     return connectDragSource(
       <div>
-        <ContextMenu items={items}>
+        <ContextMenu name="entry" items={items}>
           <EntryContainer
             onClick={setCurrentModule ? this.setCurrentModule : onClick}
             onDoubleClick={markTabsNotDirty}

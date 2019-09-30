@@ -59,7 +59,11 @@ class Tab extends React.Component {
     const { hovering } = this.state;
 
     return (
-      <ContextMenu style={{ height: 'calc(100% - 1px)' }} items={items || []}>
+      <ContextMenu
+        name="tab"
+        style={{ height: 'calc(100% - 1px)' }}
+        items={items || []}
+      >
         <Container
           active={active}
           dirty={dirty}

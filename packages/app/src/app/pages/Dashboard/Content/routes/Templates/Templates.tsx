@@ -71,6 +71,7 @@ export const Templates = ({ match }) => {
       <Grid>
         {sortedTemplates.map((template, i) => (
           <ContextMenu
+            name="templates"
             items={[
               {
                 title: 'Convert to Sandbox',

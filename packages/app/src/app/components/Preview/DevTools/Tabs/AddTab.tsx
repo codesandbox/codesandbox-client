@@ -29,6 +29,7 @@ export function AddTab() {
   return (
     <ContextMenu
       childFunction
+      name="tabs"
       items={[
         {
           title: 'Browser Pane',
