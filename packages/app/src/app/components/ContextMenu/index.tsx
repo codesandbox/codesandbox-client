@@ -122,6 +122,7 @@ export const ContextMenu = ({
       clientHeight: 0,
     };
 
+    // @ts-ignore
     menu.unstable_referenceRef.current = referenceObj;
 
     // necessary for subsequent right clicks
