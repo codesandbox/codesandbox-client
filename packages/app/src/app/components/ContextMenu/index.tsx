@@ -55,8 +55,11 @@ export const ContextMenu = ({
   name,
   ...props
 }: Props) => {
+  const hasChildFunction =
+    childFunction === true && typeof children === 'function';
   const menu = useMenuState({
     placement: 'bottom-end',
+    unstable_fixed: true,
   });
 
   const mapFunction = (item: ItemType, i: number) => {
@@ -108,9 +111,25 @@ export const ContextMenu = ({
   };
 
   const onMenuEvent: OnContextMenu = event => {
+    const { clientY, clientX } = event;
     event.preventDefault();
 
-    menu.toggle();
+    const referenceObj = {
+      getBoundingClientRect: () => ({
+        top: clientY,
+        right: clientX,
+        bottom: clientY,
+        left: clientX,
+      }),
+      clientWidth: 0,
+      clientHeight: 0,
+    };
+
+    menu.unstable_referenceRef.current = referenceObj;
+
+    // necessary for subsequent right clicks
+    menu.hide();
+    menu.show();
 
     if (onContextMenu) {
       onContextMenu(event);
@@ -121,9 +140,7 @@ export const ContextMenu = ({
     <div {...props} onContextMenu={childFunction ? undefined : onMenuEvent}>
       <MenuDisclosure {...menu}>
         {disclosureProps =>
-          childFunction === true && typeof children === 'function'
-            ? children(onMenuEvent, disclosureProps)
-            : children
+          hasChildFunction ? children(onMenuEvent, disclosureProps) : children
         }
       </MenuDisclosure>
       <Menu
