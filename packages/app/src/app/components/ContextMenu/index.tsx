@@ -148,7 +148,6 @@ export const ContextMenu = ({
         <Spring
           onRest={menu.unstable_stopAnimation}
           force
-          config={{ tension: 2000, friction: 100, precision: 1 }}
           // @ts-ignore
           from={{ opacity: 0.6, height: 0 }}
           to={{ opacity: 1, height: 'auto' }}
