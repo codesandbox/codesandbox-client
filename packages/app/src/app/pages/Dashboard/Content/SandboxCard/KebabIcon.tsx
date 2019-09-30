@@ -1,14 +1,22 @@
 import React from 'react';
 import IconBase from 'react-icons/lib/IconBase';
 
-export const KebabIcon = React.forwardRef(({ ...props }, ref) => (
-  <div ref={ref}>
-    <IconBase {...props} width="40px" height="184px" viewBox="0 0 40 184">
-      <g fill="currentFill" stroke="none" strokeWidth={1} fillRule="evenodd">
-        <circle cx={20} cy={20} r={20} />
-        <circle cx={20} cy={92} r={20} />
-        <circle cx={20} cy={164} r={20} />
-      </g>
-    </IconBase>
-  </div>
-));
+type Props = {
+  size?: string | number;
+  color?: string;
+  title?: string;
+};
+
+export const KebabIcon = React.forwardRef<HTMLDivElement, Props>(
+  ({ ...props }, ref) => (
+    <div ref={ref}>
+      <IconBase {...props} width="40px" height="184px" viewBox="0 0 40 184">
+        <g fill="currentFill" stroke="none" strokeWidth={1} fillRule="evenodd">
+          <circle cx={20} cy={20} r={20} />
+          <circle cx={20} cy={92} r={20} />
+          <circle cx={20} cy={164} r={20} />
+        </g>
+      </IconBase>
+    </div>
+  )
+);
