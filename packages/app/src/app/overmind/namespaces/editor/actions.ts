@@ -219,6 +219,15 @@ export const createZipClicked: Action = ({ state, effects }) => {
   effects.zip.download(state.editor.currentSandbox);
 };
 
+export const forkExternalSandbox: AsyncAction<string> = async (
+  { actions },
+  sandboxId
+) => {
+  await actions.editor.internal.forkSandbox({
+    sandboxId,
+  });
+};
+
 export const forkSandboxClicked: AsyncAction = async ({
   state,
   effects,

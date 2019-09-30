@@ -17,6 +17,7 @@ import theme from '@codesandbox/common/lib/theme';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import { RENAME_SANDBOX_MUTATION } from '../../queries';
 
 import {
@@ -48,7 +49,7 @@ type Props = {
   selectedCount: number;
   collectionPath: string; // eslint-disable-line react/no-unused-prop-types
   collectionTeamId: string | undefined;
-  sandbox: Object;
+  sandbox: Sandbox;
   page: string | undefined;
   privacy: number;
   isPatron: boolean;
@@ -63,6 +64,7 @@ type Props = {
   permanentlyDeleteSandboxes: () => void;
   undeleteSandboxes: () => void;
   makeTemplates: (teamId?: string) => void;
+  forkSandbox: (id: string) => void;
 
   // React-DnD, lazy typings
   connectDragSource: any;
@@ -277,6 +279,13 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
           title: 'Open Sandbox in new tab',
           action: () => {
             this.openSandbox(true);
+            return true;
+          },
+        },
+        {
+          title: 'Fork Sandbox',
+          action: () => {
+            this.props.forkSandbox(this.props.sandbox.id);
             return true;
           },
         },
