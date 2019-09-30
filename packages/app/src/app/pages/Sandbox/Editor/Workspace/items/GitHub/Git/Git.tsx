@@ -1,26 +1,22 @@
-import React, { useEffect } from 'react';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
 import Notice from '@codesandbox/common/lib/components/Notice';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
+import React, { ChangeEvent, FunctionComponent, useEffect } from 'react';
+
 import { useOvermind } from 'app/overmind';
-import { WorkspaceSubtitle, WorkspaceInputContainer } from '../../../elements';
+
+import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../../elements';
+
 import { Container, Buttons, ErrorMessage, NoChanges } from './elements';
 import { TotalChanges } from './TotalChanges';
 
 const hasWriteAccess = (rights: string) => ['admin', 'write'].includes(rights);
 
-export const Git = () => {
+export const Git: FunctionComponent = () => {
   const {
-    state: {
-      editor: {
-        currentSandbox: { originalGit },
-        isAllModulesSynced,
-      },
-      git: { description, isFetching, originalGitChanges: gitChanges, subject },
-    },
     actions: {
       git: {
         createCommitClicked,
@@ -30,6 +26,13 @@ export const Git = () => {
         subjectChanged,
       },
     },
+    state: {
+      editor: {
+        currentSandbox: { originalGit },
+        isAllModulesSynced,
+      },
+      git: { description, isFetching, originalGitChanges: gitChanges, subject },
+    },
   } = useOvermind();
 
   useEffect(() => {
@@ -38,14 +41,12 @@ export const Git = () => {
 
   const createCommit = () => createCommitClicked();
   const createPR = () => createPrClicked();
-
   const changeSubject = ({
     target: { value },
-  }: React.ChangeEvent<HTMLInputElement>) => subjectChanged({ subject: value });
-
+  }: ChangeEvent<HTMLInputElement>) => subjectChanged({ subject: value });
   const changeDescription = ({
     target: { value },
-  }: React.ChangeEvent<HTMLTextAreaElement>) =>
+  }: ChangeEvent<HTMLTextAreaElement>) =>
     descriptionChanged({ description: value });
 
   const modulesNotSaved = !isAllModulesSynced;
