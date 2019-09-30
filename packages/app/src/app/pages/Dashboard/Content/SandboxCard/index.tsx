@@ -478,6 +478,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
         id={id}
         childFunction
         className="sandbox-item"
+        name={title}
         items={this.getContextItems()}
       >
         {(onContextMenu, disclosureProps) =>

@@ -43,6 +43,7 @@ type Props = {
   className?: string;
   id?: string;
   isDraggingItem?: boolean;
+  name: string;
 } & ChildrenProps;
 
 export const ContextMenu = ({
@@ -51,14 +52,12 @@ export const ContextMenu = ({
   items,
   isDraggingItem,
   onContextMenu,
+  name,
   ...props
 }: Props) => {
-  const [position, setPosition] = React.useState({
-    x: 0,
-    y: 0,
+  const menu = useMenuState({
+    placement: 'bottom-end',
   });
-
-  const menu = useMenuState();
 
   const mapFunction = (item: ItemType, i: number) => {
     if (Array.isArray(item)) {
@@ -109,13 +108,7 @@ export const ContextMenu = ({
   };
 
   const onMenuEvent: OnContextMenu = event => {
-    const { clientX, clientY } = event;
     event.preventDefault();
-
-    setPosition({
-      x: clientX,
-      y: clientY,
-    });
 
     menu.toggle();
 
@@ -137,10 +130,7 @@ export const ContextMenu = ({
         unstable_portal
         as={Container}
         {...menu}
-        style={{
-          left: position.x,
-          top: position.y,
-        }}
+        aria-label={`menu ${name}`}
       >
         {items.map(mapFunction)}
       </Menu>
