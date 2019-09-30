@@ -171,11 +171,8 @@ class SandboxGridComponent extends React.Component<*, State> {
     );
   };
 
-  forkSandbox = async id => {
-    const { signals } = this.props;
-    signals.editor.forkExternalSandbox({
-      id,
-    });
+  forkSandbox = id => {
+    this.props.signals.editor.forkExternalSandbox(id);
   };
 
   onMouseDown = (event: MouseEvent) => {
