@@ -4,8 +4,6 @@ import { animated } from 'react-spring/renderprops';
 import theme from '@codesandbox/common/lib/theme';
 
 export const Container = styled(animated.div)`
-  position: fixed;
-
   font-size: 0.75rem;
   background-color: ${() => theme.background4()};
   color: rgba(255, 255, 255, 0.6);
@@ -14,8 +12,6 @@ export const Container = styled(animated.div)`
   z-index: 40;
   overflow: hidden;
   padding: 4px 0;
-
-  transform-origin: 0% 0%;
   font-weight: 600;
 `;
 
