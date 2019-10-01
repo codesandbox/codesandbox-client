@@ -23,11 +23,12 @@ interface ItemType {
 
 type Item = ItemType | ItemType[];
 
+type ChildFunction = (
+  onContextMenu: OnContextMenu,
+  disclosureProps: unknown
+) => React.ReactNode;
 type ChildrenProps = {
-  children: (
-    onContextMenu: OnContextMenu,
-    disclosureProps: unknown
-  ) => React.ReactNode | React.ReactNode;
+  children: React.ReactNode | JSX.Element | ChildFunction;
 };
 
 type Props = {
@@ -129,13 +130,16 @@ export const ContextMenu: FunctionComponent<Props> = ({
     }
   };
 
-  const childFunction = typeof children === 'function';
-
   return (
-    <div {...props} onContextMenu={childFunction ? undefined : onMenuEvent}>
+    <div
+      {...props}
+      onContextMenu={typeof children === 'function' ? undefined : onMenuEvent}
+    >
       <MenuDisclosure {...menu}>
         {disclosureProps =>
-          childFunction ? children(onMenuEvent, disclosureProps) : children
+          typeof children === 'function'
+            ? children(onMenuEvent, disclosureProps)
+            : children
         }
       </MenuDisclosure>
       {menu.visible && (
