@@ -28,7 +28,6 @@ const Container = styled.button`
 export function AddTab() {
   return (
     <ContextMenu
-      childFunction
       name="tabs"
       items={[
         {
