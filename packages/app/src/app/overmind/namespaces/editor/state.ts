@@ -70,7 +70,11 @@ type State = {
   modulePaths: Derive<
     State,
     {
-      [path: string]: { shortid: string; type: 'file' | 'directory' };
+      [path: string]: {
+        shortid: string;
+        savedCode: string;
+        type: 'file' | 'directory';
+      };
     }
   >;
   modulesByPath: Derive<
@@ -153,7 +157,11 @@ export const state: State = {
         m.id
       );
       if (path) {
-        paths[path] = { shortid: m.shortid, type: 'file' };
+        paths[path] = {
+          shortid: m.shortid,
+          savedCode: m.savedCode,
+          type: 'file',
+        };
       }
     });
 
