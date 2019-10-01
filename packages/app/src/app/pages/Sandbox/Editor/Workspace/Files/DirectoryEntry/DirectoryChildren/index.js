@@ -50,6 +50,7 @@ class DirectoryChildren extends React.Component {
           .map(dir => (
             <DirectoryEntry
               key={dir.id}
+              siblings={[...directories, ...modules]}
               depth={depth + 1}
               signals={
                 this.props
