@@ -1,7 +1,5 @@
 import React, { FunctionComponent } from 'react';
-
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import { Spring } from 'react-spring/renderprops';
 import {
   useMenuState,
   Menu,
@@ -51,7 +49,6 @@ export const ContextMenu: FunctionComponent<Props> = ({
 }) => {
   const menu = useMenuState({
     placement: 'bottom-end',
-    unstable_animated: true,
   });
 
   const mapFunction = (item: ItemType, i: number) => {
@@ -142,27 +139,15 @@ export const ContextMenu: FunctionComponent<Props> = ({
             : children
         }
       </MenuDisclosure>
-      {menu.visible && (
-        <Spring
-          onRest={menu.unstable_stopAnimation}
-          force
-          // @ts-ignore
-          from={{ opacity: 0.6, height: 0 }}
-          to={{ opacity: 1, height: 'auto' }}
-        >
-          {style => (
-            <Menu
-              unstable_portal
-              as={Container}
-              {...menu}
-              aria-label={`menu ${name}`}
-              style={style}
-            >
-              {items.map(mapFunction)}
-            </Menu>
-          )}
-        </Spring>
-      )}
+
+      <Menu
+        unstable_portal
+        as={Container}
+        {...menu}
+        aria-label={`menu ${name}`}
+      >
+        {items.map(mapFunction)}
+      </Menu>
     </div>
   );
 };
