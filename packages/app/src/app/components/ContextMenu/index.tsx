@@ -28,7 +28,7 @@ type ChildrenProps =
       childFunction: true;
       children: (
         onContextMenu: OnContextMenu,
-        disclosureProps: any
+        disclosureProps: unknown
       ) => React.ReactNode;
     }
   | {
