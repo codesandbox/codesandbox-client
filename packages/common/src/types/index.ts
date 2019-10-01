@@ -17,14 +17,14 @@ export type ModuleError = {
   message: string;
   line: number;
   column: number;
-  columnEnd: number;
-  lineEnd: number;
   title: string;
   path: string;
   severity: 'error' | 'warning';
   type: 'compile' | 'dependency-not-found' | 'no-dom-change';
-  payload: Object;
   source: string | undefined;
+  payload?: Object;
+  columnEnd?: number;
+  lineEnd?: number;
 };
 
 export type Contributor = {

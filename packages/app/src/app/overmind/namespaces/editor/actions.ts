@@ -503,7 +503,18 @@ export const previewActionReceived: Action<{
       });
       break;
     case 'show-error': {
-      const error: ModuleError = action;
+      const error: ModuleError = {
+        column: action.column,
+        line: action.line,
+        columnEnd: action.columnEnd,
+        lineEnd: action.lineEnd,
+        message: action.message,
+        title: action.title,
+        path: action.path,
+        source: action.source,
+        severity: action.severity,
+        type: action.type,
+      };
       const module = resolveModule(
         error.path,
         state.editor.currentSandbox.modules,
@@ -515,7 +526,16 @@ export const previewActionReceived: Action<{
       break;
     }
     case 'show-correction': {
-      const correction: ModuleCorrection = action;
+      const correction: ModuleCorrection = {
+        path: action.path,
+        column: action.column,
+        line: action.line,
+        columnEnd: action.columnEnd,
+        lineEnd: action.lineEnd,
+        message: action.message,
+        source: action.source,
+        severity: action.severity,
+      };
       const module = resolveModule(
         correction.path,
         state.editor.currentSandbox.modules,
