@@ -1,15 +1,12 @@
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import { Module } from '@codesandbox/common/lib/types';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
 const fs = global.BrowserFS.BFSRequire('fs');
 const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
 
-let fileInterval;
 let lastMTime = new Date(0);
 
 function sendTypes() {
@@ -101,81 +98,61 @@ async function syncDependencyTypings(
   }
 }
 
-let getCurrentSandboxId;
-let getModulesByPath;
+function sendFiles(modulesByPath) {
+  global.postMessage(
+    {
+      $broadcast: true,
+      $type: 'file-sync',
+      $data: modulesByPath,
+    },
+    protocolAndHost()
+  );
+
+  try {
+    fs.stat('/sandbox/package.json', (packageJsonError, stat) => {
+      if (packageJsonError) {
+        return;
+      }
+
+      if (stat.mtime.toString() !== lastMTime.toString()) {
+        lastMTime = stat.mtime;
+
+        fs.readFile(
+          '/sandbox/package.json',
+          async (packageJsonReadError, rv) => {
+            if (packageJsonReadError) {
+              console.error(packageJsonReadError);
+              return;
+            }
+
+            fs.stat('/sandbox/tsconfig.json', (tsConfigError, result) => {
+              // If tsconfig exists we want to sync the types
+              syncDependencyTypings(
+                rv.toString(),
+                Boolean(tsConfigError) || !result
+              );
+            });
+          }
+        );
+      }
+    });
+  } catch (e) {
+    // Do nothing
+  }
+}
 
 export default {
   initialize(options: {
-    getCurrentSandboxId: () => string;
-    getModulesByPath: () => {
-      [path: string]: Module;
-    };
+    onModulesByPathChange: (modulesByPath: any) => void;
+    getModulesByPath: () => any;
   }) {
-    getCurrentSandboxId = options.getCurrentSandboxId; // eslint-disable-line prefer-destructuring
-    getModulesByPath = options.getModulesByPath; // eslint-disable-line prefer-destructuring
-  },
-  syncCurrentSandbox() {
-    if (fileInterval) {
-      clearInterval(fileInterval);
-    }
-
-    const sendFiles = () => {
-      if (getCurrentSandboxId()) {
-        const modulesByPath = getModulesByPath();
-
-        global.postMessage(
-          {
-            $broadcast: true,
-            $type: 'file-sync',
-            $data: modulesByPath,
-          },
-          protocolAndHost()
-        );
-      }
-    };
-
-    fileInterval = setInterval(() => {
-      sendFiles();
-
-      try {
-        fs.stat('/sandbox/package.json', (packageJsonError, stat) => {
-          if (packageJsonError) {
-            return;
-          }
-
-          if (stat.mtime.toString() !== lastMTime.toString()) {
-            lastMTime = stat.mtime;
-
-            fs.readFile(
-              '/sandbox/package.json',
-              async (packageJsonReadError, rv) => {
-                if (packageJsonReadError) {
-                  console.error(packageJsonReadError);
-                  return;
-                }
-
-                fs.stat('/sandbox/tsconfig.json', (tsConfigError, result) => {
-                  // If tsconfig exists we want to sync the types
-                  syncDependencyTypings(
-                    rv.toString(),
-                    Boolean(tsConfigError) || !result
-                  );
-                });
-              }
-            );
-          }
-        });
-      } catch (e) {
-        // Do nothing
-      }
-    }, 1000);
-
-    // eslint-disable-next-line
     self.addEventListener('message', evt => {
       if (evt.data.$type === 'request-data') {
         sendTypes();
-        sendFiles();
+        sendFiles(options.getModulesByPath());
       }
     });
+
+    options.onModulesByPathChange(sendFiles);
   },
 };
