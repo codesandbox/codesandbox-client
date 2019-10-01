@@ -109,7 +109,7 @@ export const ContextMenu: FunctionComponent<Props> = ({
   };
 
   const onMenuEvent: OnContextMenu = ({ clientX, clientY, preventDefault }) => {
-    event.preventDefault();
+    preventDefault();
 
     const referenceObj = {
       getBoundingClientRect: () => ({
