@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { FunctionComponent } from 'react';
 
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { Spring } from 'react-spring/renderprops';
