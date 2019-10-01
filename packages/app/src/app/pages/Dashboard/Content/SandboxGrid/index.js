@@ -6,8 +6,9 @@ import { uniq } from 'lodash-es';
 import { basename } from 'path';
 import { camelizeKeys } from 'humps';
 
-import track from '@codesandbox/common/lib/utils/analytics';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
+
 import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
 import Table from 'react-virtualized/dist/commonjs/Table';
@@ -170,6 +171,10 @@ class SandboxGridComponent extends React.Component<*, State> {
     );
   };
 
+  forkSandbox = id => {
+    this.props.signals.editor.forkExternalSandbox(id);
+  };
+
   onMouseDown = (event: MouseEvent) => {
     this.setState({
       selection: {
@@ -317,6 +322,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         }
         collectionPath={item.collection.path}
         collectionTeamId={item.collection.teamId}
+        forkSandbox={this.forkSandbox}
         deleteSandboxes={this.deleteSandboxes}
         undeleteSandboxes={this.undeleteSandboxes}
         permanentlyDeleteSandboxes={this.permanentlyDeleteSandboxes}
