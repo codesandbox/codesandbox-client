@@ -333,6 +333,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         privacy={item.privacy}
         isPatron={this.props.store.isPatron}
         screenshotUrl={item.screenshotUrl}
+        screenshotOutdated={item.screenshotOutdated}
       />
     );
   };
