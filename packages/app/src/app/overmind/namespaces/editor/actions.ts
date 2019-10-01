@@ -1,18 +1,22 @@
-import { Action, AsyncAction } from 'app/overmind';
-import { sortObjectByKeys } from 'app/overmind/utils/common';
-import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
-import { json } from 'overmind';
-import { clearCorrectionsFromAction } from 'app/utils/corrections';
+import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import {
-  WindowOrientation,
   EnvironmentVariable,
+  ModuleCorrection,
+  ModuleError,
   ModuleTab,
+  WindowOrientation,
 } from '@codesandbox/common/lib/types';
+import { Action, AsyncAction } from 'app/overmind';
+import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
+import { sortObjectByKeys } from 'app/overmind/utils/common';
 import {
   addDevToolsTab as addDevToolsTabUtil,
-  moveDevToolsTab as moveDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
+  moveDevToolsTab as moveDevToolsTabUtil,
 } from 'app/pages/Sandbox/Editor/Content/utils';
+import { clearCorrectionsFromAction } from 'app/utils/corrections';
+import { json } from 'overmind';
+
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -369,6 +373,15 @@ export const prettifyClicked: AsyncAction = async ({
 
 export const errorsCleared: Action = ({ state }) => {
   if (state.editor.errors.length) {
+    state.editor.errors.forEach(error => {
+      const module = resolveModule(
+        error.path,
+        state.editor.currentSandbox.modules,
+        state.editor.currentSandbox.directories
+      );
+
+      module.errors = [];
+    });
     state.editor.errors = [];
   }
 };
@@ -490,34 +503,27 @@ export const previewActionReceived: Action<{
       });
       break;
     case 'show-error': {
-      const error = {
-        moduleId: action.module ? action.module.id : undefined,
-        column: action.column,
-        line: action.line,
-        columnEnd: action.columnEnd,
-        lineEnd: action.lineEnd,
-        message: action.message,
-        title: action.title,
-        path: action.path,
-        source: action.source,
-      };
+      const error: ModuleError = action;
+      const module = resolveModule(
+        error.path,
+        state.editor.currentSandbox.modules,
+        state.editor.currentSandbox.directories
+      );
 
+      module.errors.push(json(error));
       state.editor.errors.push(error);
       break;
     }
     case 'show-correction': {
-      const correction = {
-        path: action.path,
-        column: action.column,
-        line: action.line,
-        columnEnd: action.columnEnd,
-        lineEnd: action.lineEnd,
-        message: action.message,
-        source: action.source,
-        severity: action.severity,
-      };
+      const correction: ModuleCorrection = action;
+      const module = resolveModule(
+        correction.path,
+        state.editor.currentSandbox.modules,
+        state.editor.currentSandbox.directories
+      );
 
       state.editor.corrections.push(correction);
+      module.corrections.push(json(correction));
       break;
     }
     case 'clear-errors': {
@@ -526,6 +532,15 @@ export const previewActionReceived: Action<{
       const newErrors = clearCorrectionsFromAction(currentErrors, action);
 
       if (newErrors.length !== currentErrors.length) {
+        state.editor.errors.forEach(error => {
+          const module = resolveModule(
+            error.path,
+            state.editor.currentSandbox.modules,
+            state.editor.currentSandbox.directories
+          );
+
+          module.errors = [];
+        });
         state.editor.errors = newErrors;
       }
       break;
@@ -539,6 +554,15 @@ export const previewActionReceived: Action<{
       );
 
       if (newCorrections.length !== currentCorrections.length) {
+        state.editor.corrections.forEach(correction => {
+          const module = resolveModule(
+            correction.path,
+            state.editor.currentSandbox.modules,
+            state.editor.currentSandbox.directories
+          );
+
+          module.corrections = [];
+        });
         state.editor.corrections = newCorrections;
       }
       break;

@@ -9,10 +9,10 @@ import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/confi
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import {
   DiffTab,
-  EditorCorrection,
-  EditorError,
   EditorSelection,
   Module,
+  ModuleCorrection,
+  ModuleError,
   ModuleTab,
   Sandbox,
   Tabs,
@@ -47,8 +47,8 @@ type State = {
   pendingUserSelections: EditorSelection[];
   currentTabId: string;
   tabs: Tabs;
-  errors: EditorError[];
-  corrections: EditorCorrection[];
+  errors: ModuleError[];
+  corrections: ModuleCorrection[];
   isInProjectView: boolean;
   forceRender: number;
   initialPath: string;

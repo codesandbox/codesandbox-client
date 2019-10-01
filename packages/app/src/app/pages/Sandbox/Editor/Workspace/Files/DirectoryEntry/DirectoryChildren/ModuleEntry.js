@@ -1,9 +1,10 @@
-import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
-import validateTitle from '../validateTitle';
+import React from 'react';
+
 import Entry from '../Entry';
+import validateTitle from '../validateTitle';
 
 class ModuleEntry extends React.Component {
   validateTitle = (id, title) => {
@@ -29,18 +30,11 @@ class ModuleEntry extends React.Component {
     const isActive = module.shortid === currentModuleShortid;
     const isMainModule = module.id === mainModuleId;
     const type = getType(module.title);
-
-    const currentPath = getModulePath(module.id);
-
-    const hasError = store.editor.errors.filter(
-      error => error.path === currentPath
-    ).length;
+    const hasError = module.errors.length;
 
     const liveUsers = store.live.liveUsersByModule[module.shortid] || [];
 
-    const isNotSynced = store.editor.changedModuleShortids.includes(
-      module.shortid
-    );
+    const isNotSynced = module.savedCode && module.code !== module.savedCode;
 
     return (
       <Entry

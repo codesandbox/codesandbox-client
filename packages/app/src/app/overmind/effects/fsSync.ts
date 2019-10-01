@@ -1,6 +1,7 @@
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { json } from 'overmind';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
@@ -103,7 +104,7 @@ function sendFiles(modulesByPath) {
     {
       $broadcast: true,
       $type: 'file-sync',
-      $data: modulesByPath,
+      $data: json(modulesByPath),
     },
     protocolAndHost()
   );

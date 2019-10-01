@@ -1,5 +1,5 @@
-import { fromPairs, toPairs, sortBy } from 'lodash-es';
 import { Module } from '@codesandbox/common/lib/types';
+import { fromPairs, sortBy, toPairs } from 'lodash-es';
 
 export function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object)));
@@ -18,6 +18,8 @@ export function createOptimisticModule(overrides: Partial<Module>) {
     insertedAt: new Date().toString(),
     updatedAt: new Date().toString(),
     isNotSynced: true,
+    errors: [],
+    corrections: [],
     ...overrides,
   };
 }
