@@ -108,7 +108,7 @@ export const ContextMenu: FunctionComponent<Props> = ({
     );
   };
 
-  const onMenuEvent: OnContextMenu = event => {
+  const onMenuEvent: OnContextMenu = ({ clientX, clientY, preventDefault }) => {
     const { clientY, clientX } = event;
     event.preventDefault();
 
