@@ -46,7 +46,7 @@ type Props = {
   name: string;
 } & ChildrenProps;
 
-export const ContextMenu = ({
+export const ContextMenu: FunctionComponent<Props> = ({
   children,
   childFunction,
   items,
