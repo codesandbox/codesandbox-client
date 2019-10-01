@@ -1,7 +1,5 @@
 import { dispatch, isStandalone, listen } from 'codesandbox-api';
 
-/* eslint-disable no-console */
-
 const origHistoryProto = window.history.__proto__; // eslint-disable-line no-proto
 const historyList = [];
 let historyPosition = -1;
