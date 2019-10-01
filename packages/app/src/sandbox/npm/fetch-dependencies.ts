@@ -18,16 +18,16 @@ const VERSION = 1;
 
 const BUCKET_URL =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://dev-packager-packages.codesandbox.io'
-    : 'https://d1jyvh0kxilfa7.cloudfront.net';
+    ? 'https://d1jyvh0kxilfa7.cloudfront.net'
+    : 'https://dev-packager-packages.codesandbox.io';
 
 const NEW_PACKAGER_URL =
   'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages';
 
 const PACKAGER_URL =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://xi5p9f7czk.execute-api.eu-west-1.amazonaws.com/dev/packages'
-    : 'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages';
+    ? 'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages'
+    : 'https://xi5p9f7czk.execute-api.eu-west-1.amazonaws.com/dev/packages';
 
 function warmupPackager(url: string, method = 'GET') {
   fetch(url, {
