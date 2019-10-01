@@ -23,18 +23,12 @@ interface ItemType {
 
 type Item = ItemType | ItemType[];
 
-type ChildrenProps =
-  | {
-      childFunction: true;
-      children: (
-        onContextMenu: OnContextMenu,
-        disclosureProps: unknown
-      ) => React.ReactNode;
-    }
-  | {
-      childFunction?: false | null;
-      children: React.ReactNode;
-    };
+type ChildrenProps = {
+  children: (
+    onContextMenu: OnContextMenu,
+    disclosureProps: unknown
+  ) => React.ReactNode | React.ReactNode;
+};
 
 type Props = {
   items: Item[];
@@ -48,7 +42,6 @@ type Props = {
 
 export const ContextMenu: FunctionComponent<Props> = ({
   children,
-  childFunction,
   items,
   isDraggingItem,
   onContextMenu,
@@ -108,7 +101,9 @@ export const ContextMenu: FunctionComponent<Props> = ({
     );
   };
 
-  const onMenuEvent: OnContextMenu = ({ clientX, clientY, preventDefault }) => {
+  const onMenuEvent: OnContextMenu = event => {
+    const { clientX, clientY, preventDefault } = event;
+
     preventDefault();
 
     const referenceObj = {
@@ -134,13 +129,13 @@ export const ContextMenu: FunctionComponent<Props> = ({
     }
   };
 
+  const childFunction = typeof children === 'function';
+
   return (
     <div {...props} onContextMenu={childFunction ? undefined : onMenuEvent}>
       <MenuDisclosure {...menu}>
         {disclosureProps =>
-          childFunction === true && typeof children === 'function'
-            ? children(onMenuEvent, disclosureProps)
-            : children
+          childFunction ? children(onMenuEvent, disclosureProps) : children
         }
       </MenuDisclosure>
       {menu.visible && (
