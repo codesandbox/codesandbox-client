@@ -54,7 +54,7 @@ export const ContextMenu: FunctionComponent<Props> = ({
   onContextMenu,
   name,
   ...props
-}: Props) => {
+}) => {
   const menu = useMenuState({
     placement: 'bottom-end',
     unstable_animated: true,
