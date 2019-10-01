@@ -6,7 +6,7 @@ import React from 'react';
 import Entry from '../Entry';
 import validateTitle from '../validateTitle';
 
-class ModuleEntry extends React.Component {
+class ModuleEntry extends React.PureComponent {
   validateTitle = (id, title) => {
     const { directories, modules } = this.props.store.editor.currentSandbox;
     return !!validateTitle(id, title, [...directories, ...modules]);
