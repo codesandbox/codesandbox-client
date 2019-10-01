@@ -1,26 +1,27 @@
+import { TemplateType } from '@codesandbox/common/lib/templates';
 import {
   CurrentUser,
-  Dependency,
-  Sandbox,
-  Module,
-  GitChanges,
-  EnvironmentVariable,
-  PopularSandboxes,
-  SandboxPick,
-  PickedSandboxes,
-  UploadedFilesInfo,
-  Directory,
-  GitInfo,
-  GitCommit,
-  GitPr,
-  PaymentDetails,
-  Profile,
-  UserSandbox,
   CustomTemplate,
+  Dependency,
+  Directory,
+  EnvironmentVariable,
+  GitChanges,
+  GitCommit,
+  GitInfo,
+  GitPr,
+  Module,
+  PaymentDetails,
+  PickedSandboxes,
+  PopularSandboxes,
+  Profile,
+  Sandbox,
+  SandboxPick,
+  UploadedFilesInfo,
+  UserSandbox,
 } from '@codesandbox/common/lib/types';
-import { TemplateType } from '@codesandbox/common/lib/templates';
 import { client } from 'app/graphql/client';
 import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
+
 import apiFactory, { Api, ApiConfig } from './apiFactory';
 
 let api: Api;
@@ -70,15 +71,28 @@ export default {
         ...module,
         savedCode: null,
         isNotSynced: false,
+        errors: [],
+        corrections: [],
       })),
     };
   },
-  forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
+  async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
     const url = id.includes('/')
       ? `/sandboxes/fork/${id}`
       : `/sandboxes/${id}/fork`;
 
-    return api.post(url, body || {});
+    const sandbox = await api.post<Sandbox>(url, body || {});
+
+    return {
+      ...sandbox,
+      modules: sandbox.modules.map(module => ({
+        ...module,
+        savedCode: null,
+        isNotSynced: false,
+        errors: [],
+        corrections: [],
+      })),
+    };
   },
   createModule(sandboxId: string, module: Module): Promise<Module> {
     return api.post(`/sandboxes/${sandboxId}/modules`, {

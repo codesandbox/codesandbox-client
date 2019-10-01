@@ -1,7 +1,8 @@
-import * as React from 'react';
+import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
 import { inject, observer } from 'app/componentConnectors';
 import { sortBy } from 'lodash-es';
-import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
+import * as React from 'react';
+
 import validateTitle from '../validateTitle';
 import ModuleEntry from './ModuleEntry';
 import DirectoryEntry from '..';
@@ -32,12 +33,7 @@ class DirectoryChildren extends React.Component {
       directories,
       template: sandboxTemplate,
     } = store.editor.currentSandbox;
-    const {
-      mainModule,
-      currentModuleShortid,
-      errors,
-      corrections,
-    } = store.editor;
+    const { mainModule, currentModuleShortid } = store.editor;
     const mainModuleId = mainModule.id;
 
     return (
@@ -71,8 +67,6 @@ class DirectoryChildren extends React.Component {
               currentModuleShortid={currentModuleShortid}
               isInProjectView={isInProjectView}
               markTabsNotDirty={markTabsNotDirty}
-              errors={errors}
-              corrections={corrections}
               getModulePath={getModulePath}
             />
           ))}

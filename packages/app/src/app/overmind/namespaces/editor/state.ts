@@ -1,27 +1,29 @@
-import {
-  Sandbox,
-  EditorSelection,
-  EditorError,
-  EditorCorrection,
-  WindowOrientation,
-  Module,
-  Tabs,
-  DiffTab,
-  ModuleTab,
-} from '@codesandbox/common/lib/types';
-import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { dirname } from 'path';
-import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
-import immer from 'immer';
-import { getSandboxOptions } from '@codesandbox/common/lib/url';
+
 import {
-  getModulePath,
   getDirectoryPath,
+  getModulePath,
 } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
+import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
+import {
+  DiffTab,
+  EditorSelection,
+  Module,
+  ModuleCorrection,
+  ModuleError,
+  ModuleTab,
+  Sandbox,
+  Tabs,
+  WindowOrientation,
+} from '@codesandbox/common/lib/types';
+import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { Derive } from 'app/overmind';
-import { parseConfigurations } from '../../utils/parse-configurations';
+import immer from 'immer';
+
 import { mainModule as getMainModule } from '../../utils/main-module';
+import { parseConfigurations } from '../../utils/parse-configurations';
 
 type State = {
   currentId: string;
@@ -45,8 +47,8 @@ type State = {
   pendingUserSelections: EditorSelection[];
   currentTabId: string;
   tabs: Tabs;
-  errors: EditorError[];
-  corrections: EditorCorrection[];
+  errors: ModuleError[];
+  corrections: ModuleCorrection[];
   isInProjectView: boolean;
   forceRender: number;
   initialPath: string;
@@ -65,6 +67,16 @@ type State = {
   currentPackageJSONCode: Derive<State, string>;
   parsedConfigurations: Derive<State, any>;
   currentTab: Derive<State, ModuleTab | DiffTab>;
+  modulePaths: Derive<
+    State,
+    {
+      [path: string]: {
+        shortid: string;
+        savedCode: string;
+        type: 'file' | 'directory';
+      };
+    }
+  >;
   modulesByPath: Derive<
     State,
     {
@@ -131,11 +143,11 @@ export const state: State = {
         module => module.shortid === currentModuleShortid
       )) ||
     ({} as Module),
-  modulesByPath: ({ currentSandbox }) => {
-    const modulesObject = {};
+  modulePaths: ({ currentSandbox }) => {
+    const paths = {};
 
     if (!currentSandbox) {
-      return modulesObject;
+      return paths;
     }
 
     currentSandbox.modules.forEach(m => {
@@ -145,7 +157,11 @@ export const state: State = {
         m.id
       );
       if (path) {
-        modulesObject[path] = { ...m, type: 'file' };
+        paths[path] = {
+          shortid: m.shortid,
+          savedCode: m.savedCode,
+          type: 'file',
+        };
       }
     });
 
@@ -157,12 +173,37 @@ export const state: State = {
       );
 
       // If this is a single directory with no children
-      if (!Object.keys(modulesObject).some(p => dirname(p) === path)) {
-        modulesObject[path] = { ...d, type: 'directory' };
+      if (!Object.keys(paths).some(p => dirname(p) === path)) {
+        paths[path] = { shortid: d.shortid, type: 'directory' };
       }
     });
 
-    return modulesObject;
+    return paths;
+  },
+  modulesByPath: ({ currentSandbox, modulePaths }) => {
+    const modulesByPath = {};
+
+    Object.keys(modulePaths).forEach(path => {
+      const pathItem = modulePaths[path];
+
+      if (pathItem.type === 'file') {
+        modulesByPath[path] = {
+          ...modulePaths[path],
+          ...currentSandbox.modules.find(
+            moduleItem => moduleItem.shortid === pathItem.shortid
+          ),
+        };
+      } else {
+        modulesByPath[path] = {
+          ...modulePaths[path],
+          ...currentSandbox.directories.find(
+            moduleItem => moduleItem.shortid === pathItem.shortid
+          ),
+        };
+      }
+    });
+
+    return modulesByPath;
   },
   currentTab: ({ currentTabId, currentModuleShortid, tabs }) => {
     if (currentTabId) {

@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import React from 'react';
+
 import { TemplateType } from '../templates';
 
 export type SSEContainerStatus =
@@ -20,8 +21,10 @@ export type ModuleError = {
   path: string;
   severity: 'error' | 'warning';
   type: 'compile' | 'dependency-not-found' | 'no-dom-change';
-  payload: Object;
   source: string | undefined;
+  payload?: Object;
+  columnEnd?: number;
+  lineEnd?: number;
 };
 
 export type Contributor = {
@@ -45,6 +48,8 @@ export type Module = {
   code: string | undefined;
   savedCode: string | undefined;
   shortid: string;
+  errors: ModuleError[];
+  corrections: ModuleCorrection[];
   directoryShortid: string | undefined;
   isNotSynced: boolean;
   sourceId: string;
@@ -417,28 +422,6 @@ export type EditorSelection = {
   name: string | null;
   selection: Selection | null;
   color: number[] | null;
-};
-
-export type EditorError = {
-  column: number;
-  line: number;
-  columnEnd: number;
-  lineEnd: number;
-  message: string;
-  source: string;
-  title: string;
-  path: string;
-};
-
-export type EditorCorrection = {
-  column: number;
-  line: number;
-  columnEnd: number;
-  lineEnd: number;
-  message: string;
-  source: string;
-  path: string;
-  severity: string;
 };
 
 export enum WindowOrientation {
