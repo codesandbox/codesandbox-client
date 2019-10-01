@@ -5,6 +5,8 @@ import macrosPlugin from 'babel-plugin-macros';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
+import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
+import { join } from '@codesandbox/common/lib/utils/path';
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
@@ -125,6 +127,34 @@ async function waitForFs() {
   }
 }
 
+/**
+ * Babel can transform the plugin name to a longer name (eg. styled-jsx -> babel-styled-jsx)
+ * We want to know this beforehand, this function will check which one it is
+ */
+async function resolvePluginDependencyName(name: string, isV7: boolean) {
+  // styled-jsx/babel -> styled-jsx
+  // @babel/plugin-env/package.json -> @babel/plugin-env
+  const dependencyName = getDependencyName(name);
+  try {
+    await downloadPath(join(dependencyName, 'package.json'));
+
+    return name;
+  } catch (_e) {
+    // Get the prefixed path, try that
+    const prefixedName = getPrefixedPluginName(dependencyName, isV7);
+
+    try {
+      await downloadPath(join(prefixedName, 'package.json'));
+    } catch (_er) {
+      throw new Error(
+        `Cannot find plugin '${dependencyName}' or '${prefixedName}'`
+      );
+    }
+
+    return prefixedName;
+  }
+}
+
 async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
   await waitForFs();
 
@@ -132,12 +162,14 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
 
   let evaluatedPlugin = null;
 
+  const pluginName = await resolvePluginDependencyName(plugin, isV7);
+
   try {
-    await downloadPath(plugin);
+    await downloadPath(pluginName);
     evaluatedPlugin = evaluateFromPath(
       fs,
       BFSRequire,
-      plugin,
+      pluginName,
       currentPath,
       Babel.availablePlugins,
       Babel.availablePresets
@@ -146,47 +178,21 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
     console.warn('First time compiling ' + plugin + ' went wrong, got:');
     console.warn(firstError);
 
-    try {
-      /** We assume that the user has the shortcode
-          react = @babel/react or styled-components = babel-plugin-styled-components
-          and try to fetch the correct plugin for them
-       */
-
-      const prefixedName = getPrefixedPluginName(plugin, isV7);
-      evaluatedPlugin = evaluateFromPath(
-        fs,
-        BFSRequire,
-        prefixedName,
-        currentPath,
-        Babel.availablePlugins,
-        Babel.availablePresets
-      );
-
-      console.log('Second try succeeded');
-    } catch (secondError) {
-      console.warn('Long path also failed ' + plugin + ' went wrong, got:');
-      console.warn(secondError);
-
-      /** If we still didn't get it, this means plugin wasn't downloaded
-          and that's why it could not be resolved.
-
-          We can try to download it based on the first error
-      */
-
-      console.warn('Downloading ' + plugin);
-
-      evaluatedPlugin = await downloadFromError(firstError).then(() => {
-        console.warn('Downloaded ' + plugin);
-        resetCache();
-        return installPlugin(Babel, BFSRequire, plugin, currentPath, isV7);
-      });
-    }
+    /**
+     * We assume that a file is missing in the in-memory file system, and try to download it by
+     * parsing the error.
+     */
+    evaluatedPlugin = await downloadFromError(firstError).then(() => {
+      resetCache();
+      return installPlugin(Babel, BFSRequire, plugin, currentPath, isV7);
+    });
   }
 
   if (!evaluatedPlugin) {
     throw new Error(`Could not install plugin '${plugin}', it is undefined.`);
   }
 
+  console.warn('Downloaded ' + plugin);
   Babel.registerPlugin(
     plugin,
     evaluatedPlugin.default ? evaluatedPlugin.default : evaluatedPlugin
