@@ -274,6 +274,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     event: React.MouseEvent & { clientX: number; clientY: number }
   ) => {
     if (!this.state.mouseDown && typeof this.state.height === 'number') {
+      event.persist();
       unFocus(document, window);
       // @ts-ignore
       this.setState(state => ({
