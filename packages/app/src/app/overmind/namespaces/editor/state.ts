@@ -172,27 +172,31 @@ export const state: State = {
 
     return paths;
   },
-  modulesByPath: ({ currentSandbox, modulePaths }) =>
-    Object.keys(modulePaths).reduce((aggr, path) => {
+  modulesByPath: ({ currentSandbox, modulePaths }) => {
+    const modulesByPath = {};
+
+    Object.keys(modulePaths).forEach(path => {
       const pathItem = modulePaths[path];
+
       if (pathItem.type === 'file') {
-        aggr[path] = {
+        modulesByPath[path] = {
           ...modulePaths[path],
           ...currentSandbox.modules.find(
             moduleItem => moduleItem.shortid === pathItem.shortid
           ),
         };
       } else {
-        aggr[path] = {
+        modulesByPath[path] = {
           ...modulePaths[path],
           ...currentSandbox.directories.find(
             moduleItem => moduleItem.shortid === pathItem.shortid
           ),
         };
       }
+    });
 
-      return aggr;
-    }, {}),
+    return modulesByPath;
+  },
   currentTab: ({ currentTabId, currentModuleShortid, tabs }) => {
     if (currentTabId) {
       const foundTab = tabs.find(tab => 'id' in tab && tab.id === currentTabId);
