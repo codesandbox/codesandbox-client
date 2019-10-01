@@ -64,6 +64,12 @@ export default function initialize() {
 
   parcelPreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: tsTranspiler },
+    {
+      transpiler: babelTranspiler,
+      options: {
+        dynamicCSSModules: true,
+      },
+    },
   ]);
 
   parcelPreset.registerTranspiler(module => /\.pug$/.test(module.path), [
