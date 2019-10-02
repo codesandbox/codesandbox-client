@@ -505,15 +505,15 @@ export type ZeitAlias = {
 };
 
 export enum ZeitDeploymentState {
-  'DEPLOYING',
-  'INITIALIZING',
-  'DEPLOYMENT_ERROR',
-  'BOOTED',
-  'BUILDING',
-  'READY',
-  'BUILD_ERROR',
-  'FROZEN',
-  'ERROR',
+  DEPLOYING = 'DEPLOYING',
+  INITIALIZING = 'INITIALIZING',
+  DEPLOYMENT_ERROR = 'DEPLOYMENT_ERROR',
+  BOOTED = 'BOOTED',
+  BUILDING = 'BUILDING',
+  READY = 'READY',
+  BUILD_ERROR = 'BUILD_ERROR',
+  FROZEN = 'FROZEN',
+  ERROR = 'ERROR',
 }
 
 export enum ZeitDeploymentType {
