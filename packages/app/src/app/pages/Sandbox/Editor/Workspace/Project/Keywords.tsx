@@ -14,8 +14,7 @@ type Props = {
 export const Keywords: FunctionComponent<Props> = ({ editable }) => {
   const {
     actions: {
-      notificationAdded,
-      workspace: { tagAdded, tagChanged, tagRemoved },
+      workspace: { tagChanged, tagsChanged },
     },
     state: {
       editor: {
@@ -31,40 +30,23 @@ export const Keywords: FunctionComponent<Props> = ({ editable }) => {
     return null;
   }
 
-  const changeTags = (newTags: string[], removedTags: string[]) => {
-    if (tags.length > 5) {
-      notificationAdded('You can have a maximum of 5 tags', 'error');
-      return;
-    }
-
-    const tagWasRemoved =
-      newTags.length < tags.length && removedTags.length === 1;
-
-    if (tagWasRemoved) {
-      removedTags.forEach(tag => {
-        tagRemoved({ tag });
-      });
-    } else {
-      tagAdded();
-    }
-  };
+  const changeTags = (newTags: string[], removedTags: string[]) =>
+    tagsChanged({ newTags, removedTags });
 
   return (
     <Item>
       {editable ? (
         <EditableTags
-          template={getTemplateDefinition(template)}
-          value={clone(tags)}
-          onChange={changeTags}
-          onChangeInput={(value: string) => {
-            tagChanged({ tagName: value });
-          }}
-          maxTags={5}
           inputValue={tagName}
+          maxTags={5}
+          onChange={changeTags}
+          onChangeInput={tagChanged}
+          onlyUnique
           renderInput={({ addTag, ...props }: any) =>
             tags.length !== 5 ? <input type="text" {...props} /> : null
           }
-          onlyUnique
+          template={getTemplateDefinition(template)}
+          value={clone(tags)}
         />
       ) : (
         <Tags style={{ fontSize: 13 }} tags={tags} />

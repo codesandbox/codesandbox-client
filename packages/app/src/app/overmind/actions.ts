@@ -30,8 +30,8 @@ export const cliMounted: AsyncAction = withLoadApp(
 export const notificationAdded: Action<{
   title: string;
   notificationType: NotificationType;
-  timeAlive: number;
-}> = ({ effects }, { title, notificationType, timeAlive }) => {
+  timeAlive?: number;
+}> = ({ effects }, { title, notificationType, timeAlive = 1 }) => {
   effects.notificationToast.add({
     message: title,
     status: convertTypeToStatus(notificationType),
