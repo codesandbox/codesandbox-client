@@ -25,6 +25,7 @@ import {
   Main,
 } from './elements';
 
+const noop = () => undefined;
 export const SandboxName: FunctionComponent = () => {
   const {
     actions: {
@@ -109,6 +110,7 @@ export const SandboxName: FunctionComponent = () => {
             </Folder>
           </animated.div>
         )}
+
         {updatingName ? (
           <Form onSubmit={submitNameChange}>
             <NameInput
@@ -118,23 +120,21 @@ export const SandboxName: FunctionComponent = () => {
                   el.focus();
                 }
               }}
-              onKeyUp={handleKeyUp}
               onBlur={handleBlur}
               onChange={handleInputUpdate}
+              onKeyUp={handleKeyUp}
               placeholder={name}
               value={value}
             />
           </Form>
         ) : (
-          <Name owned={owned} onClick={owned ? handleNameClick : null}>
+          <Name onClick={owned ? handleNameClick : noop} owned={owned}>
             {sandboxName}
           </Name>
         )}
+
         {template ? (
           <Tooltip
-            interactive
-            delay={0}
-            placement="bottom"
             content={
               <>
                 This sandbox is a template, you can learn about templates in the{' '}
@@ -144,6 +144,9 @@ export const SandboxName: FunctionComponent = () => {
                 .
               </>
             }
+            delay={0}
+            interactive
+            placement="bottom"
           >
             <TemplateBadge color={customTemplate.color}>Template</TemplateBadge>
           </Tooltip>

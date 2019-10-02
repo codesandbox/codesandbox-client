@@ -278,9 +278,11 @@ export type Sandbox = {
   likeCount: number;
   forkCount: number;
   userLiked: boolean;
-  modules: Array<Module>;
-  directories: Array<Directory>;
-  collection: boolean;
+  modules: Module[];
+  directories: Directory[];
+  collection?: {
+    path: string;
+  };
   owned: boolean;
   npmDependencies: {
     [dep: string]: string;
@@ -288,7 +290,7 @@ export type Sandbox = {
   customTemplate: CustomTemplate | null;
   forkedTemplate: CustomTemplate | null;
   externalResources: string[];
-  team: {
+  team?: {
     id: string;
     name: string;
   };
