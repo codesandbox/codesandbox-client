@@ -1,3 +1,5 @@
+import { Sandbox } from '@codesandbox/common/lib/types';
+
 export function transformSandbox(sandbox: Sandbox) {
   // We need to add client side properties for tracking
   return {
