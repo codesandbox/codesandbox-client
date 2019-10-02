@@ -50,49 +50,49 @@ export const Menu = ({
   return (
     <ReakitMenu {...menuProps} unstable_portal>
       <Container>
-        <MenuItem as={Item} {...menuProps}>
-          <LinkItem to={profileUrl(username)}>
+        <LinkItem to={profileUrl(username)}>
+          <MenuItem as={Item} {...menuProps}>
             <Icon>
               <UserIcon />
             </Icon>
             My Profile
-          </LinkItem>
-        </MenuItem>
+          </MenuItem>
+        </LinkItem>
 
         <Separator role="presentation" />
-        <MenuItem as={Item} {...menuProps}>
-          <LinkItem to={dashboardUrl()}>
+        <LinkItem to={dashboardUrl()}>
+          <MenuItem as={Item} {...menuProps}>
             <Icon>
               <InfoIcon />
             </Icon>
             Dashboard
-          </LinkItem>
-        </MenuItem>
+          </MenuItem>
+        </LinkItem>
 
-        <MenuItem as={Item} {...menuProps}>
-          <LinkItem as="a" href="/docs">
+        <LinkItem as="a" href="/docs">
+          <MenuItem as={Item} {...menuProps}>
             <Icon>
               <BookIcon />
             </Icon>
             Documentation
-          </LinkItem>
-        </MenuItem>
+          </MenuItem>
+        </LinkItem>
 
         {curator && (
-          <MenuItem as={Item} {...menuProps}>
-            <LinkItem to={curatorUrl()}>
+          <LinkItem to={curatorUrl()}>
+            <MenuItem as={Item} {...menuProps}>
               <Icon>
                 <span style={{ width: 14 }} role="img" aria-label="Star">
                   ✨
                 </span>
               </Icon>
               Curator Dashboard
-            </LinkItem>
-          </MenuItem>
+            </MenuItem>
+          </LinkItem>
         )}
 
-        <MenuItem as={Item} {...menuProps}>
-          <LinkItem as={Link} to={patronUrl()}>
+        <LinkItem as={Link} to={patronUrl()}>
+          <MenuItem as={Item} {...menuProps}>
             <Icon>
               <PatronBadge
                 style={{ width: 24, margin: '-6px -5px' }}
@@ -100,8 +100,8 @@ export const Menu = ({
               />
             </Icon>
             Patron Page
-          </LinkItem>
-        </MenuItem>
+          </MenuItem>
+        </LinkItem>
 
         <Separator role="presentation" />
 
