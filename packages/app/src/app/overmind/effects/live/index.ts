@@ -12,6 +12,7 @@ import {
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import clientsFactory from './clients';
+import { transformSandbox } from '../utils/sandbox';
 
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
@@ -107,9 +108,11 @@ export default {
     return new Promise((resolve, reject) => {
       channel
         .join()
-        .receive('ok', resp =>
-          resolve(camelizeKeys(resp) as JoinChannelResponse)
-        )
+        .receive('ok', resp => {
+          const result = camelizeKeys(resp) as JoinChannelResponse;
+          result.sandbox = transformSandbox(result.sandbox);
+          resolve(result);
+        })
         .receive('error', resp => reject(camelizeKeys(resp)));
     });
   },
