@@ -50,7 +50,7 @@ export const Menu = ({
   return (
     <ReakitMenu {...menuProps} aria-label="user options">
       <Container>
-        <LinkItem to={profileUrl(username)}>
+        <LinkItem to={profileUrl(username)} tabIndex={-1}>
           <MenuItem as={Item} {...menuProps}>
             <Icon>
               <UserIcon />
