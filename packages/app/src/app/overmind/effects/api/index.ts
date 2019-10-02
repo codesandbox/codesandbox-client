@@ -23,6 +23,7 @@ import { client } from 'app/graphql/client';
 import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
 
 import apiFactory, { Api, ApiConfig } from './apiFactory';
+import { transformSandbox } from '../utils/sandbox';
 
 let api: Api;
 
@@ -65,16 +66,7 @@ export default {
     const sandbox = await api.get<Sandbox>(`/sandboxes/${id}`);
 
     // We need to add client side properties for tracking
-    return {
-      ...sandbox,
-      modules: sandbox.modules.map(module => ({
-        ...module,
-        savedCode: null,
-        isNotSynced: false,
-        errors: [],
-        corrections: [],
-      })),
-    };
+    return transformSandbox(sandbox);
   },
   async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
     const url = id.includes('/')
@@ -83,16 +75,7 @@ export default {
 
     const sandbox = await api.post<Sandbox>(url, body || {});
 
-    return {
-      ...sandbox,
-      modules: sandbox.modules.map(module => ({
-        ...module,
-        savedCode: null,
-        isNotSynced: false,
-        errors: [],
-        corrections: [],
-      })),
-    };
+    return transformSandbox(sandbox);
   },
   createModule(sandboxId: string, module: Module): Promise<Module> {
     return api.post(`/sandboxes/${sandboxId}/modules`, {
