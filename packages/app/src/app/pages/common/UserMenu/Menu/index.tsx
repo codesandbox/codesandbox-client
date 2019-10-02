@@ -48,7 +48,7 @@ export const Menu = ({
   }, [menuProps.visible]);
 
   return (
-    <ReakitMenu {...menuProps} unstable_portal>
+    <ReakitMenu {...menuProps} unstable_portal aria-label="user options">
       <Container>
         <LinkItem to={profileUrl(username)}>
           <MenuItem as={Item} {...menuProps}>
