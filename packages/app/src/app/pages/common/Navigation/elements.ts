@@ -38,6 +38,8 @@ export const Action = styled.div<{ noHover?: boolean }>`
   cursor: pointer;
   color: white;
   opacity: 0.8;
+  background: transparent;
+  border: none;
 
   ${props =>
     props.noHover

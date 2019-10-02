@@ -1,19 +1,21 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 
 export const Container = styled.div`
-  position: absolute;
   background-color: ${props => props.theme.background4};
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.75);
 
   ${delayEffect(0)};
-  top: 35px;
-
-  right: 0;
 
   min-width: 200px;
 
   z-index: 20;
+`;
+
+export const LinkItem = styled(Link)`
+  text-decoration: none;
+  color: inherit;
 `;
 
 export const Item = styled.div<{ to?: string; href?: string }>`
