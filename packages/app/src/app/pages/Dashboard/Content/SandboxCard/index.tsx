@@ -42,6 +42,7 @@ type Props = {
   template: TemplateType;
   customTemplate: { color: string } | null;
   screenshotUrl: string | undefined;
+  screenshotOutdated: boolean;
   setSandboxesSelected: (
     ids: string[],
     options?: { additive?: boolean; range?: boolean }
@@ -86,13 +87,18 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
 
   state: State = {
     renamingSandbox: false,
-    screenshotUrl: this.props.screenshotUrl,
+    screenshotUrl: null,
   };
 
-  requestScreenshot = () => {
-    this.setState({
-      screenshotUrl: `/api/v1/sandboxes/${this.props.id}/screenshot.png`,
-    });
+  requestScreenshot = async () => {
+    const url = `/api/v1/sandboxes/${this.props.id}/screenshot.png`;
+    try {
+      await fetch(url);
+    } finally {
+      this.setState({
+        screenshotUrl: url,
+      });
+    }
   };
 
   getPrivacyIcon = () => {
@@ -115,7 +121,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
   };
 
   checkScreenshot() {
-    if (!this.state.screenshotUrl && this.hasScreenshot()) {
+    if (this.props.screenshotOutdated && this.hasScreenshot()) {
       // We only request the screenshot if the sandbox card is in view for > 1 second
       this.screenshotTimeout = window.setTimeout(() => {
         this.requestScreenshot();
@@ -125,7 +131,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.id !== this.props.id) {
-      this.setState({ screenshotUrl: nextProps.screenshotUrl }, () => {
+      window.requestAnimationFrame(() => {
         this.checkScreenshot();
       });
     }
@@ -467,8 +473,6 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
       selected,
     } = this.props;
 
-    const { screenshotUrl } = this.state;
-
     const templateInfo = getTemplate(template);
 
     return (
@@ -517,7 +521,8 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
                   {this.hasScreenshot() && (
                     <SandboxImage
                       style={{
-                        backgroundImage: `url(${screenshotUrl})`,
+                        backgroundImage: `url(${this.state.screenshotUrl ||
+                          this.props.screenshotUrl})`,
                       }}
                     />
                   )}
