@@ -140,13 +140,8 @@ export const ContextMenu: FunctionComponent<Props> = ({
         }
       </MenuDisclosure>
 
-      <Menu
-        unstable_portal
-        as={Container}
-        {...menu}
-        aria-label={`menu ${name}`}
-      >
-        {items.map(mapFunction)}
+      <Menu unstable_portal {...menu} aria-label={`menu ${name}`}>
+        <Container>{items.map(mapFunction)}</Container>
       </Menu>
     </div>
   );

@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-
-import { animated } from 'react-spring/renderprops';
+import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 import theme from '@codesandbox/common/lib/theme';
 
-export const Container = styled(animated.div)`
+export const Container = styled.div`
+  ${delayEffect(0)};
   font-size: 0.75rem;
   background-color: ${() => theme.background4()};
   color: rgba(255, 255, 255, 0.6);
