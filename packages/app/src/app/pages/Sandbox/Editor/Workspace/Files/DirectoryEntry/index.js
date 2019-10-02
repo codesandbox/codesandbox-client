@@ -1,15 +1,15 @@
-import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
-import { DropTarget } from 'react-dnd';
-import { reaction } from 'mobx';
-import Modal from 'app/components/Modal';
 import { Alert } from 'app/components/Alert';
+import Modal from 'app/components/Modal';
+import { reaction } from 'mobx';
+import React from 'react';
+import { DropTarget } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
 
-import validateTitle from './validateTitle';
-import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
-import { EntryContainer, Overlay, Opener } from './elements';
+import { EntryContainer, Opener, Overlay } from './elements';
+import Entry from './Entry';
+import validateTitle from './validateTitle';
 
 const readDataURL = imageFile =>
   new Promise(resolve => {
@@ -36,7 +36,7 @@ const getFiles = async files => {
 
   return returnedFiles;
 };
-class DirectoryEntry extends React.Component {
+class DirectoryEntry extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -325,7 +325,14 @@ class DirectoryEntry extends React.Component {
                 body={
                   <span>
                     Are you sure you want to delete{' '}
-                    <b>{this.state.moduleToDeleteTitle}</b>?
+                    <b
+                      css={`
+                        word-break: break-all;
+                      `}
+                    >
+                      {this.state.moduleToDeleteTitle}
+                    </b>
+                    ?
                     <br />
                     The file will be permanently removed.
                   </span>

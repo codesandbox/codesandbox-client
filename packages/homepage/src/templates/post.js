@@ -13,7 +13,12 @@ import {
 } from '../components/PostElements';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
-import { mainStyle, Image } from './_post.elements';
+import {
+  AuthorContainer,
+  Image,
+  MetaData,
+  PostContainer,
+} from './_post.elements';
 
 export default ({
   data: {
@@ -37,30 +42,19 @@ export default ({
       <PageContainer width={800}>
         <Title>{title}</Title>
 
-        <aside
-          css={`
-            align-items: center;
-            display: flex;
-          `}
-        >
-          <div
-            css={`
-              align-items: center;
-              display: flex;
-              flex: 1;
-            `}
-          >
+        <MetaData>
+          <AuthorContainer>
             <AuthorImage alt={author} src={photo} />
 
             <Author>{author}</Author>
-          </div>
+          </AuthorContainer>
 
           <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
-        </aside>
+        </MetaData>
 
         <Image alt={title} src={banner} />
 
-        <div css={mainStyle} dangerouslySetInnerHTML={{ __html: html }} />
+        <PostContainer dangerouslySetInnerHTML={{ __html: html }} />
       </PageContainer>
     </Container>
   </Layout>

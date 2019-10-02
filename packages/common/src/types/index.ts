@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import React from 'react';
+
 import { TemplateType } from '../templates';
 
 export type SSEContainerStatus =
@@ -20,8 +21,10 @@ export type ModuleError = {
   path: string;
   severity: 'error' | 'warning';
   type: 'compile' | 'dependency-not-found' | 'no-dom-change';
-  payload: Object;
   source: string | undefined;
+  payload?: Object;
+  columnEnd?: number;
+  lineEnd?: number;
 };
 
 export type Contributor = {
@@ -45,6 +48,8 @@ export type Module = {
   code: string | undefined;
   savedCode: string | undefined;
   shortid: string;
+  errors: ModuleError[];
+  corrections: ModuleCorrection[];
   directoryShortid: string | undefined;
   isNotSynced: boolean;
   sourceId: string;
@@ -53,6 +58,7 @@ export type Module = {
   updatedAt: string;
   path?: string;
   now?: any;
+  type: 'file';
 };
 
 export type Directory = {
@@ -61,6 +67,7 @@ export type Directory = {
   directoryShortid: string | undefined;
   shortid: string;
   sourceId: string;
+  type: 'directory';
 };
 
 export type Template = {
@@ -419,28 +426,6 @@ export type EditorSelection = {
   color: number[] | null;
 };
 
-export type EditorError = {
-  column: number;
-  line: number;
-  columnEnd: number;
-  lineEnd: number;
-  message: string;
-  source: string;
-  title: string;
-  path: string;
-};
-
-export type EditorCorrection = {
-  column: number;
-  line: number;
-  columnEnd: number;
-  lineEnd: number;
-  message: string;
-  source: string;
-  path: string;
-  severity: string;
-};
-
 export enum WindowOrientation {
   VERTICAL = 'vertical',
   HORIZONTAL = 'horizontal',
@@ -522,15 +507,15 @@ export type ZeitAlias = {
 };
 
 export enum ZeitDeploymentState {
-  'DEPLOYING',
-  'INITIALIZING',
-  'DEPLOYMENT_ERROR',
-  'BOOTED',
-  'BUILDING',
-  'READY',
-  'BUILD_ERROR',
-  'FROZEN',
-  'ERROR',
+  DEPLOYING = 'DEPLOYING',
+  INITIALIZING = 'INITIALIZING',
+  DEPLOYMENT_ERROR = 'DEPLOYMENT_ERROR',
+  BOOTED = 'BOOTED',
+  BUILDING = 'BUILDING',
+  READY = 'READY',
+  BUILD_ERROR = 'BUILD_ERROR',
+  FROZEN = 'FROZEN',
+  ERROR = 'ERROR',
 }
 
 export enum ZeitDeploymentType {

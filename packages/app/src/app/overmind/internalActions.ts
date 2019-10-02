@@ -1,18 +1,19 @@
-import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
-import {
-  Sandbox,
-  NotificationButton,
-  TabType,
-  ModuleTab,
-  ServerStatus,
-  ServerContainerStatus,
-} from '@codesandbox/common/lib/types';
 import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-import { Action, AsyncAction } from '.';
-import { parseConfigurations } from './utils/parse-configurations';
-import { defaultOpenedModule, mainModule } from './utils/main-module';
-import getItems from './utils/items';
+import {
+  ModuleTab,
+  NotificationButton,
+  Sandbox,
+  ServerContainerStatus,
+  ServerStatus,
+  TabType,
+} from '@codesandbox/common/lib/types';
+import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
+
 import { createOptimisticModule } from './utils/common';
+import getItems from './utils/items';
+import { defaultOpenedModule, mainModule } from './utils/main-module';
+import { parseConfigurations } from './utils/parse-configurations';
+import { Action, AsyncAction } from '.';
 
 export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
   { state, effects, actions },
@@ -256,8 +257,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   });
 
   effects.executor.setupExecutor();
-
-  effects.fsSync.syncCurrentSandbox();
 
   /*
     There seems to be a race condition here? Verify if this still happens with Overmind

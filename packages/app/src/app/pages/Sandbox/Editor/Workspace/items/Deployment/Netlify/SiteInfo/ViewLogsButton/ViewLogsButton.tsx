@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 
 import { Button } from './elements';
 
-export const ViewLogsButton = inject('signals')(
-  hooksObserver(({ signals: { modalOpened } }) => (
+export const ViewLogsButton: FunctionComponent = () => {
+  const {
+    actions: { modalOpened },
+  } = useOvermind();
+
+  return (
     <Button onClick={() => modalOpened({ modal: 'netlifyLogs' })} small>
       View Logs
     </Button>
-  ))
-);
+  );
+};

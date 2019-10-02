@@ -17,6 +17,8 @@ export const sandboxPageMounted: AsyncAction = withLoadApp();
 
 export const searchMounted: AsyncAction = withLoadApp();
 
+export const codesadboxMounted: AsyncAction = withLoadApp();
+
 export const cliMounted: AsyncAction = withLoadApp(
   async ({ state, actions }) => {
     if (state.user) {
@@ -60,7 +62,19 @@ export const connectionChanged: Action<boolean> = ({ state }, connected) => {
   state.connected = connected;
 };
 
-export const modalOpened: Action<{ modal: string; message: string }> = (
+type ModalName =
+  | 'deleteDeployment'
+  | 'feedback'
+  | 'forkServerModal'
+  | 'liveSessionEnded'
+  | 'moveSandbox'
+  | 'netlifyLogs'
+  | 'newSandbox'
+  | 'preferences'
+  | 'privacyServerWarning'
+  | 'share'
+  | 'signInForTemplates';
+export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },
   { modal, message }
 ) => {
@@ -223,4 +237,22 @@ export const refetchSandboxInfo: AsyncAction = async ({
 
     await actions.editor.internal.initializeLiveSandbox(sandbox);
   }
+};
+
+export const acceptTeamInvitation: Action<{ teamName: string }> = (
+  { effects },
+  { teamName }
+) => {
+  effects.analytics.track('Team - Invitation Accepted', {});
+
+  effects.notificationToast.success(`Accepted invitation to ${teamName}`);
+};
+
+export const rejectTeamInvitation: Action<{ teamName: string }> = (
+  { effects },
+  { teamName }
+) => {
+  effects.analytics.track('Team - Invitation Accepted', {});
+
+  effects.notificationToast.success(`Rejected invitation to ${teamName}`);
 };

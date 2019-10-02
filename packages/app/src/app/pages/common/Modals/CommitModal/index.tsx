@@ -1,17 +1,27 @@
-import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
-import { GitProgress } from 'app/components/GitProgress';
+import React, { FunctionComponent } from 'react';
 
-function CommitModal({ store }) {
-  const git = store.editor.currentSandbox.originalGit;
-  const { commit } = store.git;
+import { GitProgress } from 'app/components/GitProgress';
+import { useOvermind } from 'app/overmind';
+
+const CommitModal: FunctionComponent = () => {
+  const {
+    state: {
+      editor: {
+        currentSandbox: { originalGit: git },
+      },
+      git: { commit },
+      user: { username },
+    },
+  } = useOvermind();
+
   let message;
 
   if (commit) {
     if (commit.newBranch) {
       const newUrl = `https://github.com/${git.username}/${git.repo}/compare/${
         git.branch
-      }...${store.user.username}:${commit.newBranch}?expand=1`;
+      }...${username}:${commit.newBranch}?expand=1`;
+
       message = (
         <div>
           There was a merge conflict while committing, you can open a PR
@@ -36,6 +46,6 @@ function CommitModal({ store }) {
   }
 
   return <GitProgress result={message} message="Creating Commit..." />;
-}
+};
 
-export default inject('store')(observer(CommitModal));
+export default CommitModal;

@@ -11,8 +11,11 @@ export const onInitialize: OnInitialize = async (
   });
 
   effects.fsSync.initialize({
-    getCurrentSandboxId() {
-      return state.editor.currentId;
+    onModulesByPathChange(cb: (modulesByPath: any) => void) {
+      overmindInstance.reaction(
+        ({ editor }) => editor.modulePaths,
+        ({ editor }) => cb(editor.modulesByPath)
+      );
     },
     getModulesByPath() {
       return state.editor.modulesByPath;

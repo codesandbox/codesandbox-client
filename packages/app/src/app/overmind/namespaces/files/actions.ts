@@ -1,14 +1,15 @@
-import { AsyncAction } from 'app/overmind';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
-import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
-import { INormalizedModules } from 'codesandbox-import-util-types';
 import { ModuleTab } from '@codesandbox/common/lib/types';
-import { createOptimisticModule } from 'app/overmind/utils/common';
+import { AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
+import { createOptimisticModule } from 'app/overmind/utils/common';
+import { INormalizedModules } from 'codesandbox-import-util-types';
+import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
+
 import {
-  resolveModuleWrapped,
   resolveDirectoryWrapped,
+  resolveModuleWrapped,
 } from '../../utils/resolve-module-wrapped';
 import * as internalActions from './internalActions';
 
@@ -59,6 +60,7 @@ export const directoryCreated: AsyncAction<{
       sourceId: state.editor.currentSandbox.sourceId,
       insertedAt: new Date().toString(),
       updatedAt: new Date().toString(),
+      type: 'directory' as 'directory',
     };
 
     sandbox.directories.push(optimisticDirectory);
@@ -217,9 +219,10 @@ export const directoryRenamed: AsyncAction<{
   }
 );
 
-export const gotUploadedFiles: AsyncAction<{
-  message: string;
-}> = async ({ state, effects }, { message }) => {
+export const gotUploadedFiles: AsyncAction<string> = async (
+  { state, effects },
+  message
+) => {
   const modal = 'storageManagement';
   effects.analytics.track('Open Modal', { modal });
   state.currentModalMessage = message;
