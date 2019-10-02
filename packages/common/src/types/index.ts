@@ -58,6 +58,7 @@ export type Module = {
   updatedAt: string;
   path?: string;
   now?: any;
+  type: 'file';
 };
 
 export type Directory = {
@@ -66,6 +67,7 @@ export type Directory = {
   directoryShortid: string | undefined;
   shortid: string;
   sourceId: string;
+  type: 'directory';
 };
 
 export type Template = {

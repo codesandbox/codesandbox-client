@@ -22,8 +22,8 @@ import {
 import { client } from 'app/graphql/client';
 import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
 
-import apiFactory, { Api, ApiConfig } from './apiFactory';
 import { transformSandbox } from '../utils/sandbox';
+import apiFactory, { Api, ApiConfig } from './apiFactory';
 
 let api: Api;
 
