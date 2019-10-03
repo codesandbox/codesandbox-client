@@ -99,11 +99,9 @@ export const ImportChoices = styled.div`
   ${delayEffect(0.1)};
 `;
 
-export const Tab = styled.section<{ visible: boolean }>`
-  ${({ visible }) => css`
-    display: ${visible ? 'block' : 'none'};
-    transition: 0.15s ease opacity;
-  `}
+export const Tab = styled.section`
+  display: block;
+  transition: 0.15s ease opacity;
 `;
 
 export const ImportChoice = styled.a.attrs({
@@ -157,7 +155,6 @@ export const Button = styled.button<{
       `};
 
     &:focus {
-      outline: none;
       color: white;
     }
     &:hover {
