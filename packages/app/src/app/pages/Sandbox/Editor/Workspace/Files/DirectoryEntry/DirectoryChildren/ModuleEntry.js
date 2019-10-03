@@ -30,7 +30,7 @@ class ModuleEntry extends React.PureComponent {
     const isActive = module.shortid === currentModuleShortid;
     const isMainModule = module.id === mainModuleId;
     const type = getType(module.title);
-    const hasError = module.errors.length;
+    const hasError = module.errors && module.errors.length;
 
     const liveUsers = store.live.liveUsersByModule[module.shortid] || [];
 
