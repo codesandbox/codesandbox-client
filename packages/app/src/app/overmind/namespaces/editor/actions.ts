@@ -374,13 +374,17 @@ export const prettifyClicked: AsyncAction = async ({
 export const errorsCleared: Action = ({ state }) => {
   if (state.editor.errors.length) {
     state.editor.errors.forEach(error => {
-      const module = resolveModule(
-        error.path,
-        state.editor.currentSandbox.modules,
-        state.editor.currentSandbox.directories
-      );
-
-      module.errors = [];
+      try {
+        const module = resolveModule(
+          error.path,
+          state.editor.currentSandbox.modules,
+          state.editor.currentSandbox.directories
+        );
+        module.errors = [];
+      } catch (e) {
+        // Module is probably somewhere in eg. /node_modules which is not
+        // in the store
+      }
     });
     state.editor.errors = [];
   }
@@ -575,13 +579,18 @@ export const previewActionReceived: Action<{
 
       if (newCorrections.length !== currentCorrections.length) {
         state.editor.corrections.forEach(correction => {
-          const module = resolveModule(
-            correction.path,
-            state.editor.currentSandbox.modules,
-            state.editor.currentSandbox.directories
-          );
+          try {
+            const module = resolveModule(
+              correction.path,
+              state.editor.currentSandbox.modules,
+              state.editor.currentSandbox.directories
+            );
 
-          module.corrections = [];
+            module.corrections = [];
+          } catch (e) {
+            // Module is probably in node_modules or something, which is not in
+            // our store
+          }
         });
         state.editor.corrections = newCorrections;
       }
