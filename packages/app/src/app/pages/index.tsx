@@ -47,7 +47,11 @@ const Search = Loadable(() =>
     default: module.Search,
   }))
 );
-const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
+const CLI = Loadable(() =>
+  import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
+    default: module.CLI,
+  }))
+);
 
 const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub').then(module => ({
