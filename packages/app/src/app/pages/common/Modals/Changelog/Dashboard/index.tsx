@@ -1,49 +1,20 @@
 import React, { FunctionComponent } from 'react';
-import CSS from 'csstype';
-import { useOvermind } from 'app/overmind';
 import { Link } from 'react-router-dom';
-import theme from '@codesandbox/common/lib/theme';
-import { Button } from '@codesandbox/common/lib/components/Button';
 
-// Inline styles because styled-components didn't load the styles
-const titleStyles: CSS.Properties = {
-  fontWeight: 600,
-  color: 'rgba(255, 255, 255, 0.9)',
-  fontSize: '1.125rem',
-  marginTop: 0,
-  marginBottom: 0,
-  width: '100%',
-  textTransform: 'uppercase',
-};
+import { useOvermind } from 'app/overmind';
 
-const dateStyles: CSS.Properties = {
-  color: 'rgba(255, 255, 255, 0.5)',
-  fontSize: '.875rem',
-  float: 'right',
-  width: '100%',
-  textAlign: 'right',
-};
-
-const subTitleStyles: CSS.Properties = {
-  fontWeight: 600,
-  color: 'rgba(255, 255, 255, .9)',
-  fontSize: '1rem',
-  marginTop: '1rem',
-  marginBottom: 0,
-};
-
-const descriptionStyles: CSS.Properties = {
-  lineHeight: 1.6,
-  color: 'rgba(255, 255, 255, 0.7)',
-  fontWeight: 600,
-  fontSize: '.875rem',
-  marginTop: '.5rem',
-  marginBottom: 0,
-};
-
-const W: FunctionComponent = props => (
-  <span {...props} style={{ color: 'white' }} />
-);
+import {
+  Button,
+  ButtonContainer,
+  Container,
+  Date,
+  Description,
+  Image,
+  SubTitle,
+  Title,
+  TitleContainer,
+  White,
+} from './elements';
 
 export const DashboardChangelog: FunctionComponent = () => {
   const {
@@ -51,65 +22,54 @@ export const DashboardChangelog: FunctionComponent = () => {
   } = useOvermind();
 
   return (
-    <div
-      style={{
-        padding: '1.5rem',
-        backgroundColor: theme.background(),
-      }}
-    >
-      <div
-        style={{
-          marginBottom: '1rem',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <h1 style={titleStyles}>
+    <Container>
+      <TitleContainer>
+        <Title>
           What
           {"'"}s New
-        </h1>
-        <div style={dateStyles}>July 2nd, 2018</div>
-      </div>
+        </Title>
 
-      <img
+        <Date>July 2nd, 2018</Date>
+      </TitleContainer>
+
+      <Image
         alt="CodeSandbox Announcement"
-        style={{
-          width: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.3)',
-          borderRadius: 2,
-        }}
         src="https://cdn-images-1.medium.com/max/1600/1*wIMw31_Phf1WNEP6zjuTUw.png"
       />
 
-      <p style={descriptionStyles}>
+      <Description>
         We
         {"'"}
         re back with a new update! This update is very focused on{' '}
-        <W>collaboration</W> and <W>organization</W>. Let
+        <White>collaboration</White> and <White>organization</White>. Let
         {"'"}s take a look!
-      </p>
+      </Description>
 
-      <h2 style={subTitleStyles}>Dashboard</h2>
-      <p style={descriptionStyles}>
+      <SubTitle>Dashboard</SubTitle>
+
+      <Description>
         You can now manage your sandboxes in your own{' '}
         <Link to="/dashboard">dashboard</Link>! You
         {"'"}
-        re able to <W>filter, sort, search, delete, create and update</W>{' '}
-        multiple sandboxes at the same time. The possibilities are endless!
-      </p>
+        re able to{' '}
+        <White>filter, sort, search, delete, create and update</White> multiple
+        sandboxes at the same time. The possibilities are endless!
+      </Description>
 
-      <h2 style={subTitleStyles}>Create Teams</h2>
-      <p style={descriptionStyles}>
-        An extension to the dashboard is <W>teams</W>! You can now create a team
-        with unlimited members to share sandboxes for collaboration. All
-        sandboxes automatically sync using <W>live collaboration</W> between
-        team members.
-      </p>
+      <SubTitle>Create Teams</SubTitle>
 
-      <h2 style={subTitleStyles}>Free CodeSandbox Live</h2>
-      <p style={descriptionStyles}>
+      <Description>
+        An extension to the dashboard is <White>teams</White>! You can now
+        create a team with unlimited members to share sandboxes for
+        collaboration. All sandboxes automatically sync using{' '}
+        <White>live collaboration</White> between team members.
+      </Description>
+
+      <SubTitle>Free CodeSandbox Live</SubTitle>
+
+      <Description>
         Teams is not our only feature that allows for collaboration. We also
-        have <W>real time collaboration</W> with{' '}
+        have <White>real time collaboration</White> with{' '}
         <Link target="_blank" to="/docs/live">
           CodeSandbox Live
         </Link>
@@ -120,39 +80,41 @@ export const DashboardChangelog: FunctionComponent = () => {
         subscription, but we
         {"'"}
         re happy to announce that{' '}
-        <W>CodeSandbox Live is from now on free for everyone</W>!
-      </p>
+        <White>CodeSandbox Live is from now on free for everyone</White>!
+      </Description>
 
-      <h2 style={subTitleStyles}>And More</h2>
-      <p style={descriptionStyles}>
+      <SubTitle>And More</SubTitle>
+
+      <Description>
         There
         {"'"}s a lot more included in this update! Make sure to check out the
         announcement post to find out more about this update.
-      </p>
+      </Description>
 
-      <div style={{ display: 'flex' }}>
+      <ButtonContainer>
         <Button
-          style={{ marginTop: '1rem', marginRight: '.25rem' }}
           block
-          small
-          secondary
           onClick={() => modalClosed()}
+          secondary
+          small
+          style={{ marginRight: '.25rem' }}
         >
           Close
         </Button>
-        {/* 
-  // @ts-ignore */}
+
+        {/*
+        // @ts-ignore */}
         <Button
-          href="/post/announcing-codesandbox-dashboard-teams"
-          style={{ marginTop: '1rem', marginLeft: '.25rem' }}
           block
-          small
-          target="_blank"
+          href="/post/announcing-codesandbox-dashboard-teams"
           rel="noreferrer noopener"
+          small
+          style={{ marginLeft: '.25rem' }}
+          target="_blank"
         >
           View Announcement
         </Button>
-      </div>
-    </div>
+      </ButtonContainer>
+    </Container>
   );
 };
