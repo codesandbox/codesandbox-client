@@ -50,7 +50,7 @@ const LikeButton = inject('store')(
       style,
       likeCount,
       store: { editor },
-    }: ButtonProps & { likeCount: string; store: any }) => (
+    }: ButtonProps & { likeCount: number; store: any }) => (
       <LikeHeart
         colorless
         style={style}

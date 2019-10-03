@@ -253,9 +253,10 @@ export const forkSandboxClicked: AsyncAction = async ({
   });
 };
 
-export const likeSandboxToggled: AsyncAction<{
-  id: string;
-}> = async ({ state, effects }, { id }) => {
+export const likeSandboxToggled: AsyncAction<string> = async (
+  { state, effects },
+  id
+) => {
   if (state.editor.sandboxes[id].userLiked) {
     state.editor.sandboxes[id].likeCount--;
     await effects.api.unlikeSandbox(id);
