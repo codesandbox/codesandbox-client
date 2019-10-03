@@ -15,10 +15,11 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import PatronBadge from '@codesandbox/common/lib/utils/badges/PatronBadge';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { MenuItem, Menu as ReakitMenu, MenuStateReturn } from 'reakit/Menu';
 // @ts-ignore
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 
-import { Container, Item, Icon, Separator } from './elements';
+import { Container, Item, Icon, Separator, LinkItem } from './elements';
 import { FeedbackIcon } from './FeedbackIcon';
 
 interface Props {
@@ -28,6 +29,7 @@ interface Props {
   openStorageManagement: () => void;
   openFeedback: () => void;
   signOut: () => void;
+  menuProps: MenuStateReturn;
 }
 
 export const Menu = ({
@@ -37,87 +39,103 @@ export const Menu = ({
   openStorageManagement,
   openFeedback,
   signOut,
+  menuProps,
 }: Props) => {
   useEffect(() => {
-    track('User Menu Open');
-  }, []);
+    if (menuProps.visible) {
+      track('User Menu Open');
+    }
+  }, [menuProps.visible]);
 
   return (
-    <Container>
-      <Item as={Link} to={profileUrl(username)}>
-        <Icon>
-          <UserIcon />
-        </Icon>
-        My Profile
-      </Item>
+    <ReakitMenu {...menuProps} aria-label="user options">
+      <Container>
+        <LinkItem to={profileUrl(username)} tabIndex={-1}>
+          <MenuItem as={Item} {...menuProps}>
+            <Icon>
+              <UserIcon />
+            </Icon>
+            My Profile
+          </MenuItem>
+        </LinkItem>
 
-      <Separator />
+        <Separator role="presentation" />
+        <LinkItem to={dashboardUrl()}>
+          <MenuItem as={Item} {...menuProps}>
+            <Icon>
+              <InfoIcon />
+            </Icon>
+            Dashboard
+          </MenuItem>
+        </LinkItem>
 
-      <Item as={Link} to={dashboardUrl()}>
-        <Icon>
-          <InfoIcon />
-        </Icon>
-        Dashboard
-      </Item>
+        <LinkItem as="a" href="/docs">
+          <MenuItem as={Item} {...menuProps}>
+            <Icon>
+              <BookIcon />
+            </Icon>
+            Documentation
+          </MenuItem>
+        </LinkItem>
 
-      <Item as="a" href="/docs">
-        <Icon>
-          <BookIcon />
-        </Icon>
-        Documentation
-      </Item>
+        {curator && (
+          <LinkItem to={curatorUrl()}>
+            <MenuItem as={Item} {...menuProps}>
+              <Icon>
+                <span style={{ width: 14 }} role="img" aria-label="Star">
+                  ✨
+                </span>
+              </Icon>
+              Curator Dashboard
+            </MenuItem>
+          </LinkItem>
+        )}
 
-      {curator && (
-        <Item as={Link} to={curatorUrl()}>
+        <LinkItem as={Link} to={patronUrl()}>
+          <MenuItem as={Item} {...menuProps}>
+            <Icon>
+              <PatronBadge
+                style={{ width: 24, margin: '-6px -5px' }}
+                size={24}
+              />
+            </Icon>
+            Patron Page
+          </MenuItem>
+        </LinkItem>
+
+        <Separator role="presentation" />
+
+        <MenuItem as={Item} {...menuProps} onClick={openStorageManagement}>
           <Icon>
-            <span style={{ width: 14 }} role="img" aria-label="Star">
-              ✨
-            </span>
+            <FolderIcon />
           </Icon>
-          Curator Dashboard
-        </Item>
-      )}
+          Storage Management
+        </MenuItem>
 
-      <Item as={Link} to={patronUrl()}>
-        <Icon>
-          <PatronBadge style={{ width: 24, margin: '-6px -5px' }} size={24} />
-        </Icon>
-        Patron Page
-      </Item>
+        <MenuItem as={Item} {...menuProps} onClick={openPreferences}>
+          <Icon>
+            <SettingsIcon />
+          </Icon>
+          Preferences
+        </MenuItem>
 
-      <Separator />
+        <Separator role="presentation" />
 
-      <Item onClick={openStorageManagement}>
-        <Icon>
-          <FolderIcon />
-        </Icon>
-        Storage Management
-      </Item>
+        <MenuItem as={Item} {...menuProps} onClick={openFeedback}>
+          <Icon>
+            <FeedbackIcon />
+          </Icon>
+          Submit Feedback
+        </MenuItem>
 
-      <Item onClick={openPreferences}>
-        <Icon>
-          <SettingsIcon />
-        </Icon>
-        Preferences
-      </Item>
-
-      <Separator />
-
-      <Item onClick={openFeedback}>
-        <Icon>
-          <FeedbackIcon />
-        </Icon>
-        Submit Feedback
-      </Item>
-
-      <Separator />
-
-      <Item onClick={signOut}>
-        <Icon>
-          <ExitIcon />
-        </Icon>
-        Sign out
-      </Item>
-    </Container>
+        <Separator role="presentation" />
+        <MenuItem as={Item} {...menuProps} onClick={signOut}>
+          <Icon>
+            <ExitIcon />
+          </Icon>
+          Sign out
+        </MenuItem>
+      </Container>
+    </ReakitMenu>
   );
 };

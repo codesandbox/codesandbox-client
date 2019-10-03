@@ -107,14 +107,6 @@ export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   }
 };
 
-export const userMenuOpened: Action = ({ state }) => {
-  state.userMenuOpen = true;
-};
-
-export const userMenuClosed: Action = ({ state }) => {
-  state.userMenuOpen = false;
-};
-
 export const addNotification: Action<{
   message: string;
   type: NotificationType;
