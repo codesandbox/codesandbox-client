@@ -20,6 +20,7 @@ export function createOptimisticModule(overrides: Partial<Module>) {
     isNotSynced: true,
     errors: [],
     corrections: [],
+    type: 'file' as 'file',
     ...overrides,
   };
 }

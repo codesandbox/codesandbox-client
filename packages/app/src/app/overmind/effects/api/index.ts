@@ -22,8 +22,12 @@ import {
 import { client } from 'app/graphql/client';
 import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
 
+import {
+  transformSandbox,
+  transformDirectory,
+  transformModule,
+} from '../utils/sandbox';
 import apiFactory, { Api, ApiConfig } from './apiFactory';
-import { transformSandbox } from '../utils/sandbox';
 
 let api: Api;
 
@@ -78,22 +82,26 @@ export default {
     return transformSandbox(sandbox);
   },
   createModule(sandboxId: string, module: Module): Promise<Module> {
-    return api.post(`/sandboxes/${sandboxId}/modules`, {
-      module: {
-        title: module.title,
-        directoryShortid: module.directoryShortid,
-        code: module.code,
-        isBinary: module.isBinary === undefined ? false : module.isBinary,
-      },
-    });
+    return api
+      .post(`/sandboxes/${sandboxId}/modules`, {
+        module: {
+          title: module.title,
+          directoryShortid: module.directoryShortid,
+          code: module.code,
+          isBinary: module.isBinary === undefined ? false : module.isBinary,
+        },
+      })
+      .then(transformModule);
   },
   deleteModule(sandboxId: string, moduleShortid: string): Promise<void> {
     return api.delete(`/sandboxes/${sandboxId}/modules/${moduleShortid}`);
   },
   saveModuleCode(sandboxId: string, module: Module): Promise<Module> {
-    return api.put(`/sandboxes/${sandboxId}/modules/${module.shortid}`, {
-      module: { code: module.code },
-    });
+    return api
+      .put(`/sandboxes/${sandboxId}/modules/${module.shortid}`, {
+        module: { code: module.code },
+      })
+      .then(transformModule);
   },
   saveModules(sandboxId: string, modules: Module[]) {
     return api.put(`/sandboxes/${sandboxId}/modules/mupdate`, {
@@ -193,12 +201,14 @@ export default {
     directoryShortid: string,
     title: string
   ): Promise<Directory> {
-    return api.post(`/sandboxes/${sandboxId}/directories`, {
-      directory: {
-        title,
-        directoryShortid,
-      },
-    });
+    return api
+      .post(`/sandboxes/${sandboxId}/directories`, {
+        directory: {
+          title,
+          directoryShortid,
+        },
+      })
+      .then(transformDirectory);
   },
   saveModuleDirectory(
     sandboxId: string,
@@ -247,7 +257,7 @@ export default {
       name,
     });
   },
-  massCreateModules(
+  async massCreateModules(
     sandboxId: string,
     directoryShortid: string | null,
     modules: Module[],
@@ -256,11 +266,18 @@ export default {
     modules: Module[];
     directories: Directory[];
   }> {
-    return api.post(`/sandboxes/${sandboxId}/modules/mcreate`, {
+    const data = (await api.post(`/sandboxes/${sandboxId}/modules/mcreate`, {
       directoryShortid,
       modules,
       directories,
-    });
+    })) as {
+      modules: Module[];
+      directories: Directory[];
+    };
+
+    data.modules = data.modules.map(transformModule);
+    data.directories = data.directories.map(transformDirectory);
+    return data;
   },
   createGit(
     sandboxId: string,

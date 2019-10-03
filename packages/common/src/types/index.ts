@@ -58,6 +58,7 @@ export type Module = {
   updatedAt: string;
   path?: string;
   now?: any;
+  type: 'file';
 };
 
 export type Directory = {
@@ -66,6 +67,7 @@ export type Directory = {
   directoryShortid: string | undefined;
   shortid: string;
   sourceId: string;
+  type: 'directory';
 };
 
 export type Template = {
@@ -465,6 +467,13 @@ export enum ServerContainerStatus {
   HIBERNATED = 'hibernated',
   ERROR = 'error',
 }
+
+export type ServerPort = {
+  main: boolean;
+  port: number;
+  hostname: string;
+  name?: string;
+};
 
 export type ZeitUser = {
   uid: string;

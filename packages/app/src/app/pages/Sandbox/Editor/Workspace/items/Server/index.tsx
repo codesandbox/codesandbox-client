@@ -1,4 +1,5 @@
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { ServerPort } from '@codesandbox/common/lib/types';
 import React, { FunctionComponent } from 'react';
 import BrowserIcon from 'react-icons/lib/go/browser';
 
@@ -22,19 +23,12 @@ import { EnvironmentVariables } from './EnvVars';
 import { Status } from './Status';
 import { Tasks } from './Tasks';
 
-type Port = {
-  main: boolean;
-  port: number;
-  hostname: string;
-  name?: string;
-};
-
 export const Server: FunctionComponent = () => {
   const {
     actions: {
       server: {
-        onBrowserFromPortOpened,
         onBrowserTabOpened,
+        onBrowserFromPortOpened,
         restartContainer,
         restartSandbox,
       },
@@ -47,7 +41,7 @@ export const Server: FunctionComponent = () => {
 
   const disconnected = server.status !== 'connected';
 
-  const openPort = (port: Port) => {
+  const openPort = (port: ServerPort) => {
     onBrowserFromPortOpened({ port });
   };
 
@@ -81,7 +75,6 @@ export const Server: FunctionComponent = () => {
             />
           </TasksContainer>
         </Margin>
-        s
       </Margin>
 
       <Margin top={1} bottom={0.5}>
@@ -89,7 +82,7 @@ export const Server: FunctionComponent = () => {
 
         <Margin top={0.5}>
           {server.ports.length ? (
-            server.ports.map((port: Port) => (
+            server.ports.map((port: ServerPort) => (
               <EntryContainer
                 style={{ position: 'relative' }}
                 onClick={() => openPort(port)}
@@ -116,7 +109,7 @@ export const Server: FunctionComponent = () => {
               style={{ position: 'relative' }}
               onClick={() =>
                 onBrowserTabOpened({
-                  port: {
+                  options: {
                     url:
                       sandbox.template === 'gridsome'
                         ? '/___explore'

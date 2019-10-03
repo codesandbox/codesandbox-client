@@ -2,6 +2,7 @@ import { Action } from 'app/overmind';
 import {
   ServerStatus,
   ServerContainerStatus,
+  ServerPort,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 
@@ -171,20 +172,26 @@ export const onCodeSandboxAPIMessage: Action<{
   }
 };
 
+type BrowserOptions = { title?: string; url?: string } & (
+  | {
+      port: number;
+    }
+  | { url: string });
+
 export const onBrowserTabOpened: Action<{
-  port: any;
-}> = ({ actions }, { port }) => {
+  options: BrowserOptions;
+}> = ({ actions }, { options }) => {
   actions.editor.onDevToolsTabAdded({
     tab: {
       id: 'codesandbox.browser',
       closeable: true,
-      options: port,
+      options,
     },
   });
 };
 
 export const onBrowserFromPortOpened: Action<{
-  port: any;
+  port: ServerPort;
 }> = ({ actions }, { port }) => {
   actions.editor.onDevToolsTabAdded({
     tab: port.main
@@ -195,7 +202,6 @@ export const onBrowserFromPortOpened: Action<{
           options: {
             port: port.port,
             url: `https://${port.hostname}`,
-            title: port.title,
           },
         },
   });

@@ -187,19 +187,13 @@ export const state: State = {
       const pathItem = modulePaths[path];
 
       if (pathItem.type === 'file') {
-        modulesByPath[path] = {
-          ...modulePaths[path],
-          ...currentSandbox.modules.find(
-            moduleItem => moduleItem.shortid === pathItem.shortid
-          ),
-        };
+        modulesByPath[path] = currentSandbox.modules.find(
+          moduleItem => moduleItem.shortid === pathItem.shortid
+        );
       } else {
-        modulesByPath[path] = {
-          ...modulePaths[path],
-          ...currentSandbox.directories.find(
-            moduleItem => moduleItem.shortid === pathItem.shortid
-          ),
-        };
+        modulesByPath[path] = currentSandbox.directories.find(
+          moduleItem => moduleItem.shortid === pathItem.shortid
+        );
       }
     });
 
