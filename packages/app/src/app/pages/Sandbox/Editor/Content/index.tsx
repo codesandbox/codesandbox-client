@@ -1,20 +1,19 @@
-// @flow
-import * as React from 'react';
-import { json } from 'overmind';
-import { ThemeProvider } from 'styled-components';
-import { Prompt } from 'react-router-dom';
-import { TextOperation } from 'ot';
-import { inject, observer, clone } from 'app/componentConnectors';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import SplitPane from 'react-split-pane';
-
 import { CodeEditor } from 'app/components/CodeEditor';
 import { DevTools } from 'app/components/Preview/DevTools';
+import { useOvermind } from 'app/overmind';
+import debounce from 'lodash-es/debounce';
+import { json } from 'overmind';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Prompt } from 'react-router-dom';
+import SplitPane from 'react-split-pane';
+import { ThemeProvider } from 'styled-components';
 
-import { Preview } from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
+import { Preview } from './Preview';
 import Tabs from './Tabs';
 
+/*
 const settings = store => ({
   fontFamily: store.preferences.settings.fontFamily,
   fontSize: store.preferences.settings.fontSize,
@@ -32,6 +31,283 @@ const settings = store => ({
   prettierConfig: store.preferences.settings.prettierConfig,
   forceRefresh: store.preferences.settings.forceRefresh,
 });
+*/
+
+export const Content: React.FC = () => {
+  const editorEl = useRef(null);
+  const contentEl = useRef(null);
+  const [editorSize, changeEditorSize] = useState({
+    width: 0,
+    height: 0,
+  });
+  const getBounds = useCallback(
+    debounce(function getBounds() {
+      if (editorEl.current) {
+        const { width, height } = editorEl.current.getBoundingClientRect();
+        if (width !== editorSize.width || height !== editorSize.height) {
+          changeEditorSize({ width, height });
+        }
+      }
+    }, 200),
+    [editorSize]
+  );
+  const { state, actions, effects, reaction } = useOvermind();
+
+  useEffect(() => {
+    const contentNode = contentEl.current;
+
+    const disposeResizeDetector = reaction(
+      ({ preferences, workspace, editor }) => [
+        preferences.settings.zenMode,
+        workspace.workspaceHidden,
+        editor.previewWindowOrientation,
+      ],
+      () => {
+        getBounds();
+      },
+      {
+        immediate: true,
+      }
+    );
+
+    preventGestureScroll(contentEl.current);
+
+    return () => {
+      effects.vscode.editor.unmount();
+      window.removeEventListener('resize', getBounds);
+      // clearInterval(this.interval);
+      disposeResizeDetector();
+      removeListener(contentNode);
+    };
+  }, [effects.vscode.editor, getBounds, reaction]);
+
+  const { currentModule } = state.editor;
+  const notSynced = !state.editor.isAllModulesSynced;
+  const sandbox = state.editor.currentSandbox;
+  const { preferences } = state;
+  const { currentTab } = state.editor;
+  const windowVisible = state.editor.previewWindowVisible;
+  const template = getTemplateDefinition(sandbox.template);
+  const views = state.editor.devToolTabs;
+  const currentPosition = state.editor.currentDevToolsPosition;
+
+  const browserConfig = {
+    id: 'codesandbox.browser',
+    title: options =>
+      options.port || options.title
+        ? `Browser (${options.title || `:${options.port}`})`
+        : `Browser`,
+    Content: ({ hidden, options }) => (
+      <Preview options={options} hidden={hidden} width="100%" height="100%" />
+    ),
+    actions: [],
+  };
+
+  function isReadOnly() {
+    if (state.live.isLive) {
+      if (
+        !state.live.isCurrentEditor ||
+        (state.live.roomInfo && state.live.roomInfo.ownerIds.length === 0)
+      ) {
+        return true;
+      }
+    }
+
+    if (template.isServer) {
+      if (!state.isLoggedIn || state.server.status !== 'connected') {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  return (
+    <ThemeProvider
+      theme={{
+        templateColor: template.color,
+        templateBackgroundColor: template.backgroundColor,
+      }}
+    >
+      <div
+        id="workbench.main.container"
+        style={{
+          height: '100%',
+          width: '100%',
+          overflow: 'visible', // For VSCode Context Menu
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+        ref={contentEl}
+      >
+        <Prompt
+          when={notSynced && !state.editor.isForkingSandbox}
+          message={() =>
+            'You have not saved this sandbox, are you sure you want to navigate away?'
+          }
+        />
+        <SplitPane
+          maxSize={-100}
+          onDragFinished={() => {
+            actions.editor.resizingStopped();
+          }}
+          onDragStarted={() => {
+            actions.editor.resizingStarted();
+          }}
+          onChange={() => {
+            requestAnimationFrame(() => {
+              getBounds();
+            });
+          }}
+          style={{
+            overflow: 'visible', // For VSCode Context Menu
+          }}
+          split={state.editor.previewWindowOrientation}
+          defaultSize="50%"
+          pane1Style={
+            windowVisible
+              ? {
+                  minWidth: 100,
+                }
+              : {
+                  width: '100%',
+                  minWidth: '100%',
+                  height: '100%',
+                  minHeight: '100%',
+                }
+          }
+          pane2Style={{
+            visibility: windowVisible ? 'visible' : 'hidden',
+            maxWidth: windowVisible ? 'inherit' : 0,
+            width: windowVisible ? 'inherit' : 0,
+            zIndex: 0, // For VSCode hovers, beware this is also dynamically changed in PreviewTabs
+          }}
+        >
+          <div
+            ref={editorEl}
+            style={{
+              position: 'relative',
+              display: 'flex',
+              flex: 1,
+              height: '100%',
+              width: '100%',
+              marginTop: 0,
+            }}
+          >
+            {!state.preferences.settings.experimentVSCode && <Tabs />}
+            <CodeEditor
+              style={{
+                top: state.preferences.settings.experimentVSCode ? 0 : 35,
+              }}
+              onInitialized={editor => {
+                // Just until we refactor the underlying editor
+                effects.vscode.editor.mount(editor);
+
+                return () => {};
+              }}
+              sandbox={sandbox}
+              currentTab={currentTab}
+              currentModule={currentModule}
+              isModuleSynced={shortId =>
+                !state.editor.changedModuleShortids.includes(shortId)
+              }
+              width={editorSize.width}
+              height={editorSize.height}
+              settings={state.preferences.settings}
+              sendTransforms={operation => {
+                actions.live.onTransformMade({
+                  moduleShortid: state.editor.currentModuleShortid,
+                  operation: operation.toJSON(),
+                });
+              }}
+              readOnly={isReadOnly()}
+              isLive={state.live.isLive}
+              onCodeReceived={actions.live.onCodeReceived}
+              onSelectionChanged={actions.live.onSelectionChanged}
+              onNpmDependencyAdded={name => {
+                if (sandbox.owned) {
+                  actions.editor.addNpmDependency({ name, isDev: true });
+                }
+              }}
+              onChange={(code, moduleShortid) =>
+                actions.editor.codeChanged({
+                  code,
+                  moduleShortid: moduleShortid || currentModule.shortid,
+                  noLive: true,
+                })
+              }
+              onModuleChange={moduleId =>
+                actions.editor.moduleSelected({ id: moduleId })
+              }
+              onModuleStateMismatch={actions.live.onModuleStateMismatch}
+              onSave={code =>
+                actions.editor.codeSaved({
+                  code,
+                  moduleShortid: currentModule.shortid,
+                  cbID: null,
+                })
+              }
+              tsconfig={
+                state.editor.parsedConfigurations.typescript &&
+                state.editor.parsedConfigurations.typescript.parsed
+              }
+            />
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+            }}
+            id="csb-devtools" // used for tabs for highlighting
+          >
+            {views.map((v, i) => (
+              <DevTools
+                // eslint-disable-next-line react/no-array-index-key
+                key={i}
+                devToolIndex={i}
+                addedViews={{
+                  'codesandbox.browser': browserConfig,
+                }}
+                setDragging={dragging => {
+                  if (dragging) {
+                    actions.editor.resizingStarted();
+                  } else {
+                    actions.editor.resizingStopped();
+                  }
+                }}
+                sandboxId={sandbox.id}
+                template={sandbox.template}
+                shouldExpandDevTools={state.preferences.showDevtools}
+                zenMode={preferences.settings.zenMode}
+                setDevToolsOpen={open =>
+                  actions.preferences.setDevtoolsOpen(open)
+                }
+                owned={sandbox.owned}
+                primary={i === 0}
+                viewConfig={v}
+                moveTab={(prevPos, nextPos) => {
+                  actions.editor.onDevToolsTabMoved({ prevPos, nextPos });
+                }}
+                closeTab={pos => {
+                  actions.editor.onDevToolsTabClosed({ pos });
+                }}
+                currentDevToolIndex={currentPosition.devToolIndex}
+                currentTabPosition={currentPosition.tabPosition}
+                setPane={position =>
+                  actions.editor.onDevToolsPositionChanged({
+                    position,
+                  })
+                }
+              />
+            ))}
+          </div>
+        </SplitPane>
+      </div>
+    </ThemeProvider>
+  );
+};
 
 class EditorPreview extends React.Component {
   state = { width: null, height: null };
@@ -43,6 +319,7 @@ class EditorPreview extends React.Component {
 
   componentDidMount() {
     this.props.signals.editor.contentMounted();
+
     this.disposeEditorChange = this.props.reaction(
       ({ preferences }) => preferences.settings.codeMirror,
       () => this.forceUpdate()
@@ -81,6 +358,7 @@ class EditorPreview extends React.Component {
     }
   };
 
+  // Is "this.devtools" ever set?
   handleToggleDevtools = showDevtools => {
     if (this.devtools) {
       if (showDevtools) {
@@ -93,8 +371,9 @@ class EditorPreview extends React.Component {
 
   onInitialized = editor => {
     const { store } = this.props;
-    let isChangingSandbox = false;
+    const isChangingSandbox = false;
 
+    // This was converted to imperative handling
     const disposeSandboxChangeHandler = this.props.reaction(
       ({ editor: { currentSandbox } }) => currentSandbox,
       newSandbox => {
@@ -122,6 +401,8 @@ class EditorPreview extends React.Component {
         });
       }
     );
+
+    // Created "nested" reaction
     const disposeErrorsHandler = this.props.reaction(
       ({ editor: { errors } }) => errors.map(error => error),
       errors => {
@@ -130,6 +411,7 @@ class EditorPreview extends React.Component {
         }
       }
     );
+    // Also "nested" reaction
     const disposeCorrectionsHandler = this.props.reaction(
       ({ editor: { corrections } }) =>
         corrections.map(correction => correction),
@@ -139,6 +421,8 @@ class EditorPreview extends React.Component {
         }
       }
     );
+
+    // Keeping this reaction
     const disposeModulesHandler = this.props.reaction(
       this.detectStructureChange,
       () => {
@@ -150,6 +434,8 @@ class EditorPreview extends React.Component {
         }
       }
     );
+
+    // Converted to nested
     const disposePreferencesHandler = this.props.reaction(
       state => settings(state),
       newSettings => {
@@ -161,6 +447,8 @@ class EditorPreview extends React.Component {
         compareStructural: true,
       }
     );
+
+    // Moved up to component effect
     const disposeResizeHandler = this.props.reaction(
       state => [
         state.preferences.settings.zenMode,
@@ -208,6 +496,7 @@ class EditorPreview extends React.Component {
       }
     );
 
+    // nested reaction
     const disposeModuleSyncedHandler = this.props.reaction(
       state => state.editor.changedModuleShortids.map(shortid => shortid),
       () => {
@@ -217,6 +506,7 @@ class EditorPreview extends React.Component {
       }
     );
 
+    // changed to imperative
     const disposePendingOperationHandler = this.props.reaction(
       state => clone(state.editor.pendingOperations),
       () => {
@@ -276,12 +566,15 @@ class EditorPreview extends React.Component {
         }
       }
     };
+
+    // Changed to imperative version
     const disposeLiveSelectionHandler = this.props.reaction(
       state => state.editor.pendingUserSelections.map(x => x),
       updateUserSelections
     );
     updateUserSelections();
 
+    // Imperative and changed codeChange to lint
     const disposeModuleHandler = this.props.reaction(
       state => [state.editor.currentModule, state.editor.currentModule.code],
       ([newModule]) => {
@@ -609,4 +902,4 @@ class EditorPreview extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(observer(EditorPreview));
+export default Content;

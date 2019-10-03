@@ -1,47 +1,43 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { ThemeProvider } from 'styled-components';
-import { TextOperation } from 'ot';
-import { debounce } from 'lodash-es';
+import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
 import {
   getModulePath,
   resolveModule,
 } from '@codesandbox/common/lib/sandbox/modules';
-import { listen, actions, dispatch } from 'codesandbox-api';
-
-import prettify from 'app/src/app/utils/prettify';
-import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
-import getUI from '@codesandbox/common/lib/templates/configuration/ui';
-
 import getTemplate from '@codesandbox/common/lib/templates';
+import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import theme from '@codesandbox/common/lib/theme';
 import {
   Module,
-  Sandbox,
-  ModuleError,
   ModuleCorrection,
+  ModuleError,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-
+/* eslint-enable import/no-webpack-loader-syntax */
+import { clone } from 'app/componentConnectors';
+import prettify from 'app/src/app/utils/prettify';
+import { actions, dispatch, listen } from 'codesandbox-api';
+import { debounce } from 'lodash-es';
+import { TextOperation } from 'ot';
+import React from 'react';
+import { render } from 'react-dom';
+import { ThemeProvider } from 'styled-components';
 /* eslint-disable import/no-webpack-loader-syntax */
 // @ts-ignore
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
-/* eslint-enable import/no-webpack-loader-syntax */
-import { clone } from 'app/componentConnectors';
+
 import eventToTransform from '../Monaco/event-to-transform';
-import MonacoEditorComponent from './MonacoReactComponent';
-import { Container, GlobalStyles } from './elements';
-import getSettings from '../Monaco/settings';
-
-import { Props, Editor } from '../types'; // eslint-disable-line
-import getMode from '../Monaco/mode';
-
-import {
-  lineAndColumnToIndex,
-  indexToLineAndColumn,
-} from '../Monaco/monaco-index-converter';
 import { updateUserSelections } from '../Monaco/live-decorations';
+import getMode from '../Monaco/mode';
+import {
+  indexToLineAndColumn,
+  lineAndColumnToIndex,
+} from '../Monaco/monaco-index-converter';
+import getSettings from '../Monaco/settings';
+import { Editor, Props } from '../types'; // eslint-disable-line
 import { Configuration } from './Configuration';
+import { Container, GlobalStyles } from './elements';
+import MonacoEditorComponent from './MonacoReactComponent';
 
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(

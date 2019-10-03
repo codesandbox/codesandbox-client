@@ -1,33 +1,35 @@
-import { createHook } from 'overmind-react';
 import {
-  IConfig,
-  IOnInitialize,
   IAction,
-  IOperator,
+  IConfig,
   IDerive,
+  IOnInitialize,
+  IOperator,
+  IReaction,
   IState,
 } from 'overmind';
+import { createHook } from 'overmind-react';
 import { merge, namespaced } from 'overmind/config';
+
+import * as actions from './actions';
 import { createConnect } from './createConnect';
 import * as effects from './effects';
-import { state } from './state';
-import { onInitialize } from './onInitialize';
-import * as actions from './actions';
-import * as preferences from './namespaces/preferences';
-import * as userNotifications from './namespaces/userNotifications';
-import * as patron from './namespaces/patron';
-import * as editor from './namespaces/editor';
-import * as live from './namespaces/live';
-import * as workspace from './namespaces/workspace';
-import * as dashboard from './namespaces/dashboard';
-import * as deployment from './namespaces/deployment';
-import * as files from './namespaces/files';
-import * as git from './namespaces/git';
-import * as explore from './namespaces/explore';
-import * as profile from './namespaces/profile';
-import * as server from './namespaces/server';
 import { createModals } from './factories';
 import * as modals from './modals';
+import * as dashboard from './namespaces/dashboard';
+import * as deployment from './namespaces/deployment';
+import * as editor from './namespaces/editor';
+import * as explore from './namespaces/explore';
+import * as files from './namespaces/files';
+import * as git from './namespaces/git';
+import * as live from './namespaces/live';
+import * as patron from './namespaces/patron';
+import * as preferences from './namespaces/preferences';
+import * as profile from './namespaces/profile';
+import * as server from './namespaces/server';
+import * as userNotifications from './namespaces/userNotifications';
+import * as workspace from './namespaces/workspace';
+import { onInitialize } from './onInitialize';
+import { state } from './state';
 
 export const config = merge(
   {
@@ -69,6 +71,8 @@ export interface Operator<Input = void, Output = Input>
 
 export interface Derive<Parent extends IState, Output>
   extends IDerive<Config, Parent, Output> {}
+
+export interface Reaction extends IReaction<Config> {}
 
 export const connect = createConnect<typeof config>();
 

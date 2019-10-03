@@ -118,6 +118,16 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.files.internal.recoverFiles();
   }
 
+  const { parsed } = state.editor.parsedConfigurations.package;
+
+  await effects.vscode.editor.changeSandbox(
+    sandbox,
+    state.editor.currentModule,
+    parsed && parsed.dependencies
+      ? parsed.dependencies
+      : json(sandbox.npmDependencies)
+  );
+
   state.editor.isLoading = false;
 });
 
@@ -181,6 +191,8 @@ export const codeChanged: Action<{
     module,
     code,
   });
+
+  effects.vscode.editor.lint(module);
 };
 
 export const saveClicked: AsyncAction = withOwnedSandbox(
@@ -289,8 +301,13 @@ export const moduleSelected: Action<{
     actions.editor.internal.setCurrentModule(module);
 
     if (state.live.isLive) {
+      /*
       state.editor.pendingUserSelections = actions.live.internal.getSelectionsForModule(
         module
+      );
+      */
+      effects.vscode.editor.updateUserSelections(
+        actions.live.internal.getSelectionsForModule(module)
       );
       state.live.liveUser.currentModuleShortid = module.shortid;
 
@@ -371,7 +388,7 @@ export const prettifyClicked: AsyncAction = async ({
   });
 };
 
-export const errorsCleared: Action = ({ state }) => {
+export const errorsCleared: Action = ({ state, effects }) => {
   if (state.editor.errors.length) {
     state.editor.errors.forEach(error => {
       const module = resolveModule(
@@ -561,6 +578,15 @@ export const previewActionReceived: Action<{
 
           module.errors = [];
         });
+        newErrors.forEach(error => {
+          const module = resolveModule(
+            error.path,
+            state.editor.currentSandbox.modules,
+            state.editor.currentSandbox.directories
+          );
+
+          module.errors.push(error);
+        });
         state.editor.errors = newErrors;
       }
       break;
@@ -582,6 +608,15 @@ export const previewActionReceived: Action<{
           );
 
           module.corrections = [];
+        });
+        newCorrections.forEach(correction => {
+          const module = resolveModule(
+            correction.path,
+            state.editor.currentSandbox.modules,
+            state.editor.currentSandbox.directories
+          );
+
+          module.corrections.push(correction);
         });
         state.editor.corrections = newCorrections;
       }

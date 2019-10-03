@@ -1,24 +1,37 @@
-import { Action, AsyncAction } from 'app/overmind';
 import {
-  Module,
   EditorSelection,
+  Module,
   Sandbox,
 } from '@codesandbox/common/lib/types';
+import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 
-export const clearUserSelections: Action<any> = ({ state }, live_user_id) => {
+export const clearUserSelections: Action<any> = (
+  { state, effects },
+  live_user_id
+) => {
   const clearSelections = userId => {
     const userIndex = state.live.roomInfo.users.findIndex(u => u.id === userId);
 
     if (userIndex > -1) {
       if (state.live.roomInfo.users[userIndex]) {
         state.live.roomInfo.users[userIndex].selection = null;
+        effects.vscode.editor.updateUserSelections([
+          {
+            userId,
+            selection: null,
+            name: null,
+            color: null,
+          },
+        ]);
+        /*
         state.editor.pendingUserSelections.push({
           userId,
           selection: null,
           name: null,
           color: null,
         });
+        */
       }
     }
   };

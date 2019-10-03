@@ -261,7 +261,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   /*
     There seems to be a race condition here? Verify if this still happens with Overmind
   */
-  if (oldSandboxId !== state.editor.currentId) {
+  if (oldSandboxId && oldSandboxId !== state.editor.currentId) {
     delete state.editor.sandboxes[oldSandboxId];
   }
 };

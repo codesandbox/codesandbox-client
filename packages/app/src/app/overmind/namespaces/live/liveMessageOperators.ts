@@ -1,14 +1,14 @@
 import {
-  LiveMessageEvent,
-  LiveMessage,
-  Module,
   Directory,
+  LiveMessage,
+  LiveMessageEvent,
+  Module,
   Selection,
 } from '@codesandbox/common/lib/types';
-import { mutate, json } from 'overmind';
+import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { json, mutate } from 'overmind';
 
 export const onJoin: Operator<LiveMessage<LiveMessageEvent.JOIN>> = mutate(
   ({ effects, state }) => {
@@ -106,7 +106,7 @@ export const onModuleSaved: Operator<
     moduleShortid: string;
     savedCode: string;
   }>
-> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
+> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
@@ -238,7 +238,7 @@ export const onUserSelection: Operator<
     moduleShortid: string;
     selection: Selection;
   }>
-> = mutate(({ state }, { _isOwnMessage, data }) => {
+> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
@@ -263,12 +263,22 @@ export const onUserSelection: Operator<
       u => u.id === userSelectionLiveUserId
     );
 
+    effects.vscode.editor.updateUserSelections([
+      {
+        userId: userSelectionLiveUserId,
+        name: user.username,
+        selection,
+        color: json(user.color),
+      },
+    ]);
+    /*
     state.editor.pendingUserSelections.push({
       userId: userSelectionLiveUserId,
       name: user.username,
       selection,
       color: json(user.color),
     });
+    */
   }
 });
 

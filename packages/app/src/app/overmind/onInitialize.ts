@@ -6,22 +6,6 @@ export const onInitialize: OnInitialize = async (
 ) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
 
-  await effects.vscode.initialize({
-    getPrettierConfig: () => state.preferences.settings.prettierConfig,
-  });
-
-  effects.fsSync.initialize({
-    onModulesByPathChange(cb: (modulesByPath: any) => void) {
-      overmindInstance.reaction(
-        ({ editor }) => editor.modulePaths,
-        ({ editor }) => cb(editor.modulesByPath)
-      );
-    },
-    getModulesByPath() {
-      return state.editor.modulesByPath;
-    },
-  });
-
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,
@@ -78,4 +62,27 @@ export const onInitialize: OnInitialize = async (
       return config;
     },
   });
+
+  /*
+    When VSCode is running from within effect we can call an action here
+    instead which manages the state to optimally load up and show the editor,
+    not blocking anything else
+  */
+  await effects.fsSync
+    .initialize({
+      onModulesByPathChange(cb: (modulesByPath: any) => void) {
+        overmindInstance.reaction(
+          ({ editor }) => editor.modulePaths,
+          modulesByPath => cb(modulesByPath)
+        );
+      },
+      getModulesByPath() {
+        return state.editor.modulesByPath;
+      },
+    })
+    .then(() =>
+      effects.vscode.initialize({
+        createReaction: overmindInstance.reaction,
+      })
+    );
 };

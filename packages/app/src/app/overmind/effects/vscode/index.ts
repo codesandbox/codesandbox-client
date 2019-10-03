@@ -1,13 +1,12 @@
-import * as childProcess from 'node-services/lib/child_process';
 import {
+  EditorSelection,
   Module,
-  ModuleError,
-  ModuleCorrection,
-  Settings,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
+import { Reaction } from 'app/overmind';
+import * as childProcess from 'node-services/lib/child_process';
+
 import { manager } from './manager';
-import { EXTENSIONS_LOCATION } from './manager/constants';
-import { getTypeFetcher } from './manager/extensionHostWorker/common/type-downloader';
 import {
   initializeCustomTheme,
   initializeExtensionsFolder,
@@ -24,88 +23,43 @@ declare global {
   }
 }
 
+let reactionDisposers: Function[];
+let _reaction: Reaction;
+let _editor;
+
 export default {
-  initialize(
-    settings: Settings,
-    onChange: (moduleShortid: string, code: string) => void
-  ) {
-    // Configures BrowserFS to use the LocalStorage file system.
+  initialize(options: { createReaction: Reaction }) {
+    _reaction = options.createReaction;
     return new Promise((resolve, reject) => {
-      window.BrowserFS.configure(
-        {
-          fs: 'MountableFileSystem',
-          options: {
-            '/': { fs: 'InMemory', options: {} },
-            '/sandbox': {
-              fs: 'CodeSandboxEditorFS',
-              options: {
-                api: {
-                  getState: () => ({
-                    modulesByPath: window.getState().editor.currentSandbox
-                      ? window.getState().editor.modulesByPath
-                      : {},
-                  }),
-                },
-              },
-            },
-            '/sandbox/node_modules': {
-              fs: 'CodeSandboxFS',
-              options: getTypeFetcher().options,
-            },
-            '/vscode': {
-              fs: 'LocalStorage',
-            },
-            '/home': {
-              fs: 'LocalStorage',
-            },
-            '/extensions': {
-              fs: 'BundledHTTPRequest',
-              options: {
-                index: EXTENSIONS_LOCATION + '/extensions/index.json',
-                baseUrl: EXTENSIONS_LOCATION + '/extensions',
-                bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
-                logReads: process.env.NODE_ENV === 'development',
-              },
-            },
-            '/extensions/custom-theme': {
-              fs: 'InMemory',
-            },
-          },
-        },
-        async e => {
-          if (e) {
-            reject(e);
-          } else {
-            // For first-timers initialize a theme in the cache so it doesn't jump colors
-            initializeExtensionsFolder();
-            initializeCustomTheme();
-            initializeThemeCache();
-            initializeSettings();
-            setVimExtensionEnabled(
-              localStorage.getItem('settings.vimmode') === 'true'
-            );
-
-            // eslint-disable-next-line global-require
-            manager.loadScript(['vs/editor/codesandbox.editor.main'], () => {
-              if (process.env.NODE_ENV === 'development') {
-                console.log('Loaded Monaco'); // eslint-disable-line
-              }
-              manager.acquireController({
-                getSignal: window.getSignal,
-                getState: window.getState,
-              });
-
-              import(
-                // @ts-ignore
-                'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./manager/extensionHostWorker/bootstrappers/ext-host'
-              ).then(ExtHostWorkerLoader => {
-                childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
-                resolve();
-              });
-            });
-          }
-        }
+      // For first-timers initialize a theme in the cache so it doesn't jump colors
+      initializeExtensionsFolder();
+      initializeCustomTheme();
+      initializeThemeCache();
+      initializeSettings();
+      setVimExtensionEnabled(
+        localStorage.getItem('settings.vimmode') === 'true'
       );
+
+      // eslint-disable-next-line global-require
+      manager.loadScript(['vs/editor/codesandbox.editor.main'], () => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Loaded Monaco'); // eslint-disable-line
+        }
+        manager.acquireController({
+          getSignal: window.getSignal,
+          getState: window.getState,
+        });
+
+        import(
+          // @ts-ignore
+          'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./manager/extensionHostWorker/bootstrappers/ext-host'
+        )
+          .then(ExtHostWorkerLoader => {
+            childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
+            resolve();
+          })
+          .catch(reject);
+      });
     });
   },
   callCallbackError(id: string, message?: string) {
@@ -145,14 +99,20 @@ export default {
   */
   // This editor thing could be put in its own file
   editor: {
-    mount({
+    /*
+    {
       container,
       editorElement,
       statusBar,
       root,
     }: {
       [key: string]: HTMLElement;
-    }) {
+    }
+    */
+    mount(editor: any) {
+      // To be removed when VSCode has full control
+      _editor = editor;
+      // _editor.changeSettings(settings);
       // FROM - VSCode/MonacoReactComponent
       // Should start manager.initializeEditor by giving it the elements to operate on
       // Monaco instance is grabbed from "window", should probably be set up inside here too
@@ -169,20 +129,116 @@ export default {
       // Listen to active editor change
       // "configureEditor" method. "Editor" is "editorAPI". Monaco is global on window, not sure how it gets there
       // Not quite sure what "commitLibChangesInstantly" does
+
+      reactionDisposers = [
+        _reaction(
+          state => state.editor.errors,
+          errors => {
+            _editor.editor.setErrors(errors);
+          },
+          {
+            nested: true,
+          }
+        ),
+        _reaction(
+          state => state.editor.corrections,
+          corrections => {
+            _editor.editor.setCorrections(corrections);
+          },
+          {
+            nested: true,
+          }
+        ),
+        _reaction(
+          state => state.editor.modulePaths,
+          () => {
+            _editor.updateModules();
+          }
+        ),
+        _reaction(
+          state => state.preferences.settings,
+          newSettings => {
+            if (!_editor) {
+              return;
+            }
+
+            _editor.changeSettings(newSettings);
+          },
+          {
+            nested: true,
+          }
+        ),
+        _reaction(
+          state => state.editor.parsedConfigurations.package,
+          packageConfiguration => {
+            if (packageConfiguration.parsed) {
+              _editor.changeDependencies(
+                packageConfiguration.parsed.dependencies || {}
+              );
+            }
+          }
+        ),
+        _reaction(
+          state => state.editor.parsedConfigurations.typescript,
+          typescript => {
+            if (typescript && typescript.parsed) {
+              _editor.setTSConfig(typescript.parsed);
+            }
+          }
+        ),
+        _reaction(
+          state => state.live.receivingCode,
+          isReceivingCode => {
+            _editor.setReceivingCode(isReceivingCode);
+          }
+        ),
+        _reaction(
+          state => state.editor.changedModuleShortids,
+          () => {
+            _editor.moduleSyncedChanged();
+          },
+          {
+            nested: true,
+          }
+        ),
+      ];
     },
     unmount() {
       // FROM - VSCode/MonacoReactComponent
       // "destroyMonaco" method
+
+      reactionDisposers.forEach(dispose => dispose());
     },
-    changeSize(width: number, height: number) {},
-    changeOptions(options: { readOnly: boolean }) {},
-    changeActiveModule(
-      module: Module,
-      {
-        errors = [],
-        corrections = [],
-      }: { errors?: ModuleError[]; corrections?: ModuleCorrection[] }
-    ) {},
-    updateModules(modules: Module[]) {},
+    changeSandbox(
+      sandbox: Sandbox,
+      currentModule: Module,
+      dependencies: { [key: string]: string }
+    ) {
+      if (_editor) {
+        _editor.changeSandbox(sandbox, currentModule, dependencies);
+      }
+    },
+    // Seems to only get one transformation at a time, why all?
+    // And why even have it in state as it seems to come directly
+    // from live message?
+    applyOperations(operations: { [x: string]: (string | number)[] }) {
+      _editor.setReceivingCode(true);
+      _editor.applyOperations(operations);
+      _editor.setReceivingCode(false);
+    },
+    // In previous version these userSelections was always
+    // cleared out after being consumed, because of the reaction, so now we are just pushing
+    // in new updates, not using state at all, might be something I have missed.
+    // Commented out old code just in case
+    updateUserSelections(userSelections: EditorSelection[]) {
+      _editor.updateUserSelections(userSelections);
+    },
+    changeModule(module: Module) {
+      _editor.changeModule(module, module.errors, module.corrections);
+    },
+    lint(module: Module) {
+      // This is actually linting
+      _editor.changeCode(module.code || '', module.id);
+    },
   },
 };

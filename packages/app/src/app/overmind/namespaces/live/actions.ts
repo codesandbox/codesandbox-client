@@ -1,8 +1,9 @@
-import { LiveMessageEvent, LiveMessage } from '@codesandbox/common/lib/types';
-import { fork, pipe, filter } from 'overmind';
-import { AsyncAction, Action, Operator } from 'app/overmind';
+import { LiveMessage, LiveMessageEvent } from '@codesandbox/common/lib/types';
+import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { TextOperation } from 'ot';
+import { filter, fork, pipe } from 'overmind';
+
 import * as internalActions from './internalActions';
 import * as liveMessage from './liveMessageOperators';
 
@@ -92,7 +93,7 @@ export const onTransformMade: Action<{
 export const applyTransformation: Action<{
   operation: any;
   moduleShortid: string;
-}> = ({ state }, { operation, moduleShortid }) => {
+}> = ({ state, effects }, { operation, moduleShortid }) => {
   let pendingOperation;
 
   const existingPendingOperation =
@@ -107,17 +108,15 @@ export const applyTransformation: Action<{
   }
 
   state.editor.pendingOperations[moduleShortid] = pendingOperation;
+  effects.vscode.editor.applyOperations(state.editor.pendingOperations);
+  // this.props.signals.live.onOperationApplied();
+  // Removed this action... but this whole object thing here does not seem to make sense
+  state.editor.pendingOperations = {};
   state.live.receivingCode = false;
 };
 
 export const onCodeReceived: Action = ({ state }) => {
   state.live.receivingCode = false;
-};
-
-export const onOperationApplied: Action = ({ state }) => {
-  if (Object.keys(state.editor.pendingOperations).length) {
-    state.editor.pendingOperations = {};
-  }
 };
 
 export const onSelectionChanged: Action<{
@@ -144,6 +143,8 @@ export const onSelectionChanged: Action<{
   }
 };
 
+/*
+Not run anymore
 export const onSelectionDecorationsApplied: Action = ({ state }) => {
   // We only clear it out if we actually need to. There is a reaction
   // running that reacts to any change here
@@ -151,6 +152,7 @@ export const onSelectionDecorationsApplied: Action = ({ state }) => {
     state.editor.pendingUserSelections = [];
   }
 };
+*/
 
 export const onModeChanged: Action<{ mode: string }> = (
   { state, effects },

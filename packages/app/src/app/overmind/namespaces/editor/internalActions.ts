@@ -1,20 +1,20 @@
-import { mapValues } from 'lodash-es';
-import { Action, AsyncAction } from 'app/overmind';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import {
   Module,
   ModuleTab,
-  TabType,
-  ServerContainerStatus,
   Sandbox,
+  ServerContainerStatus,
+  TabType,
 } from '@codesandbox/common/lib/types';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
-import { sortObjectByKeys } from 'app/overmind/utils/common';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
-  sandboxUrl,
   editorUrl,
+  sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { Action, AsyncAction } from 'app/overmind';
+import { sortObjectByKeys } from 'app/overmind/utils/common';
+import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
+import { mapValues } from 'lodash-es';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -324,7 +324,10 @@ export const forkSandbox: AsyncAction<{
   state.editor.isForkingSandbox = false;
 };
 
-export const setCurrentModule: Action<Module> = ({ state }, module) => {
+export const setCurrentModule: Action<Module> = (
+  { state, effects },
+  module
+) => {
   state.editor.currentTabId = null;
 
   const tabs = state.editor.tabs as ModuleTab[];
@@ -346,6 +349,8 @@ export const setCurrentModule: Action<Module> = ({ state }, module) => {
   }
 
   state.editor.currentModuleShortid = module.shortid;
+
+  effects.vscode.editor.changeModule(module);
 };
 
 export const updateSandboxPackageJson: AsyncAction = async ({

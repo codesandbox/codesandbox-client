@@ -3,6 +3,9 @@ import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { json } from 'overmind';
 
+import { EXTENSIONS_LOCATION } from './vscode/manager/constants';
+import { getTypeFetcher } from './vscode/manager/extensionHostWorker/common/type-downloader';
+
 const global = getGlobal() as Window & { BrowserFS: any };
 
 const fs = global.BrowserFS.BFSRequire('fs');
@@ -155,5 +158,57 @@ export default {
     });
 
     options.onModulesByPathChange(sendFiles);
+
+    return new Promise((resolve, reject) => {
+      window.BrowserFS.configure(
+        {
+          fs: 'MountableFileSystem',
+          options: {
+            '/': { fs: 'InMemory', options: {} },
+            '/sandbox': {
+              fs: 'CodeSandboxEditorFS',
+              options: {
+                api: {
+                  getState: () => ({
+                    modulesByPath: window.getState().editor.currentSandbox
+                      ? window.getState().editor.modulesByPath
+                      : {},
+                  }),
+                },
+              },
+            },
+            '/sandbox/node_modules': {
+              fs: 'CodeSandboxFS',
+              options: getTypeFetcher().options,
+            },
+            '/vscode': {
+              fs: 'LocalStorage',
+            },
+            '/home': {
+              fs: 'LocalStorage',
+            },
+            '/extensions': {
+              fs: 'BundledHTTPRequest',
+              options: {
+                index: EXTENSIONS_LOCATION + '/extensions/index.json',
+                baseUrl: EXTENSIONS_LOCATION + '/extensions',
+                bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+                logReads: process.env.NODE_ENV === 'development',
+              },
+            },
+            '/extensions/custom-theme': {
+              fs: 'InMemory',
+            },
+          },
+        },
+        async e => {
+          if (e) {
+            reject(e);
+          } else {
+            resolve();
+          }
+        }
+      );
+    });
   },
 };
