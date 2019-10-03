@@ -81,7 +81,6 @@ export const Server: FunctionComponent = () => {
             />
           </TasksContainer>
         </Margin>
-        s
       </Margin>
 
       <Margin top={1} bottom={0.5}>
