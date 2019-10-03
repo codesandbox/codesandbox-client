@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
+
 import { LinkButton, AButton, Button } from './elements';
 
 export type Props = {
@@ -14,19 +15,24 @@ export type Props = {
   danger?: boolean;
   secondary?: boolean;
   red?: boolean;
+  target?: string;
+  rel?: string;
 };
 
-function ButtonComponent({ style = {}, ...props }: Props) {
+const ButtonComponent: FunctionComponent<Props> = ({
+  style = {},
+  ...props
+}) => {
   // Link
   if (props.to) {
-    return <LinkButton style={style} {...props} />;
+    return <LinkButton {...props} style={style} />;
   }
 
   if (props.href) {
-    return <AButton style={style} {...props} />;
+    return <AButton {...props} style={style} />;
   }
 
-  return <Button style={style} {...props} />;
-}
+  return <Button {...props} style={style} />;
+};
 
 export { ButtonComponent as Button };

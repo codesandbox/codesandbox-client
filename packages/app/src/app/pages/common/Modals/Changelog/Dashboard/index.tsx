@@ -1,9 +1,10 @@
-import React, { FunctionComponent } from 'react';
 import CSS from 'csstype';
-import { useOvermind } from 'app/overmind';
-import { Link } from 'react-router-dom';
 import theme from '@codesandbox/common/lib/theme';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import React, { FunctionComponent } from 'react';
+import { Link } from 'react-router-dom';
+
+import { useOvermind } from 'app/overmind';
 
 // Inline styles because styled-components didn't load the styles
 const titleStyles: CSS.Properties = {
@@ -53,32 +54,33 @@ export const DashboardChangelog: FunctionComponent = () => {
   return (
     <div
       style={{
-        padding: '1.5rem',
         backgroundColor: theme.background(),
+        padding: '1.5rem',
       }}
     >
       <div
         style={{
-          marginBottom: '1rem',
-          display: 'flex',
           alignItems: 'center',
+          display: 'flex',
+          marginBottom: '1rem',
         }}
       >
         <h1 style={titleStyles}>
           What
           {"'"}s New
         </h1>
+
         <div style={dateStyles}>July 2nd, 2018</div>
       </div>
 
       <img
         alt="CodeSandbox Announcement"
+        src="https://cdn-images-1.medium.com/max/1600/1*wIMw31_Phf1WNEP6zjuTUw.png"
         style={{
           width: '100%',
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
           borderRadius: 2,
         }}
-        src="https://cdn-images-1.medium.com/max/1600/1*wIMw31_Phf1WNEP6zjuTUw.png"
       />
 
       <p style={descriptionStyles}>
@@ -90,6 +92,7 @@ export const DashboardChangelog: FunctionComponent = () => {
       </p>
 
       <h2 style={subTitleStyles}>Dashboard</h2>
+
       <p style={descriptionStyles}>
         You can now manage your sandboxes in your own{' '}
         <Link to="/dashboard">dashboard</Link>! You
@@ -99,6 +102,7 @@ export const DashboardChangelog: FunctionComponent = () => {
       </p>
 
       <h2 style={subTitleStyles}>Create Teams</h2>
+
       <p style={descriptionStyles}>
         An extension to the dashboard is <W>teams</W>! You can now create a team
         with unlimited members to share sandboxes for collaboration. All
@@ -107,6 +111,7 @@ export const DashboardChangelog: FunctionComponent = () => {
       </p>
 
       <h2 style={subTitleStyles}>Free CodeSandbox Live</h2>
+
       <p style={descriptionStyles}>
         Teams is not our only feature that allows for collaboration. We also
         have <W>real time collaboration</W> with{' '}
@@ -124,6 +129,7 @@ export const DashboardChangelog: FunctionComponent = () => {
       </p>
 
       <h2 style={subTitleStyles}>And More</h2>
+
       <p style={descriptionStyles}>
         There
         {"'"}s a lot more included in this update! Make sure to check out the
@@ -132,23 +138,24 @@ export const DashboardChangelog: FunctionComponent = () => {
 
       <div style={{ display: 'flex' }}>
         <Button
-          style={{ marginTop: '1rem', marginRight: '.25rem' }}
           block
-          small
-          secondary
           onClick={() => modalClosed()}
+          secondary
+          small
+          style={{ marginTop: '1rem', marginRight: '.25rem' }}
         >
           Close
         </Button>
-        {/* 
-  // @ts-ignore */}
+
+        {/*
+        // @ts-ignore */}
         <Button
-          href="/post/announcing-codesandbox-dashboard-teams"
-          style={{ marginTop: '1rem', marginLeft: '.25rem' }}
           block
-          small
-          target="_blank"
+          href="/post/announcing-codesandbox-dashboard-teams"
           rel="noreferrer noopener"
+          small
+          style={{ marginLeft: '.25rem', marginTop: '1rem' }}
+          target="_blank"
         >
           View Announcement
         </Button>
