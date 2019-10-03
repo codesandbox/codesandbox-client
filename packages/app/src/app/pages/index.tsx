@@ -8,7 +8,7 @@ import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
 import theme from '@codesandbox/common/lib/theme';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Loadable from 'app/utils/Loadable';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 import Modals from './common/Modals';
@@ -55,7 +55,10 @@ const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
 
-const RoutesComponent = ({ signals: { appUnmounted } }) => {
+const RoutesComponent: React.FC = () => {
+  const {
+    actions: { appUnmounted },
+  } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
   return (
@@ -120,6 +123,6 @@ const RoutesComponent = ({ signals: { appUnmounted } }) => {
   );
 };
 
-export const Routes = inject('signals')(
-  DragDropContext(HTML5Backend)(withRouter(hooksObserver(RoutesComponent)))
+export const Routes = DragDropContext(HTML5Backend)(
+  withRouter(RoutesComponent)
 );
