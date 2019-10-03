@@ -1,22 +1,24 @@
-import React, { useEffect } from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import { DragDropContext } from 'react-dnd';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { Toasts, NotificationStatus } from '@codesandbox/notifications';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
-import theme from '@codesandbox/common/lib/theme';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import Loadable from 'app/utils/Loadable';
+import theme from '@codesandbox/common/lib/theme';
+import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { Toasts, NotificationStatus } from '@codesandbox/notifications';
+import React, { FunctionComponent, useEffect } from 'react';
+import { DragDropContext } from 'react-dnd';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+
 import { useOvermind } from 'app/overmind';
+import Loadable from 'app/utils/Loadable';
+
 import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 import Modals from './common/Modals';
-import Sandbox from './Sandbox';
-import { NewSandbox } from './NewSandbox';
+import { Container, Content } from './elements';
 import Dashboard from './Dashboard';
 import { DevAuthPage } from './DevAuth';
-import { Container, Content } from './elements';
+import { NewSandbox } from './NewSandbox';
+import Sandbox from './Sandbox';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -56,10 +58,11 @@ const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
 
-const RoutesComponent: React.FC = () => {
+const RoutesComponent: FunctionComponent = () => {
   const {
     actions: { appUnmounted },
   } = useOvermind();
+
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
   return (
@@ -81,10 +84,13 @@ const RoutesComponent: React.FC = () => {
               send('pageview', { path: location.pathname + location.search });
             }
           }
+
           return null;
         }}
       />
+
       <Toasts
+        Button={Button}
         colors={{
           [NotificationStatus.ERROR]: theme.dangerBackground(),
           [NotificationStatus.SUCCESS]: theme.green(),
@@ -92,36 +98,54 @@ const RoutesComponent: React.FC = () => {
           [NotificationStatus.WARNING]: theme.primary(),
         }}
         state={notificationState}
-        Button={Button}
       />
+
       <Boundary>
         <Content>
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/s" />} />
+
             <Route exact path="/s/github" component={GitHub} />
+
             <Route exact path="/s/cli" component={CliInstructions} />
+
             <Route exact path="/s" component={NewSandbox} />
+
             <Route path="/dashboard" component={Dashboard} />
+
             <Route path="/curator" component={Curator} />
+
             <Route path="/s/:id*" component={Sandbox} />
+
             <Route path="/live/:id" component={Live} />
+
             <Route path="/signin" exact component={Dashboard} />
+
             <Route path="/signin/:jwt?" component={SignIn} />
+
             <Route path="/u/:username" component={Profile} />
+
             <Route path="/search" component={Search} />
+
             <Route path="/patron" component={Patron} />
+
             <Route path="/cli/login" component={CLI} />
+
             <Route path="/auth/zeit" component={ZeitSignIn} />
+
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
+
             {process.env.NODE_ENV === `development` && (
               <Route path="/codesadbox" component={CodeSadbox} />
             )}
+
             <Route component={NotFound} />
           </Switch>
         </Content>
       </Boundary>
+
       <Modals />
     </Container>
   );
