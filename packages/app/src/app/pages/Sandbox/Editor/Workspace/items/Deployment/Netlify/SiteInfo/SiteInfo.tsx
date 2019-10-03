@@ -1,9 +1,9 @@
-import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
-
-import getNetlifyConfig from 'app/utils/getNetlifyConfig';
-
 import { resolveDirectory } from '@codesandbox/common/lib/sandbox/modules';
+
+import React, { FunctionComponent } from 'react';
+
+import { useOvermind } from 'app/overmind';
+import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 
 import {
   WorkspaceInputContainer,
@@ -40,6 +40,7 @@ export const SiteInfo: FunctionComponent = () => {
       editor: { currentSandbox },
     },
   } = useOvermind();
+
   const functionDirectory = getFunctionDir(currentSandbox);
   const functions = functionDirectory
     ? currentSandbox.modules.filter(
