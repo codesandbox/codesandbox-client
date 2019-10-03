@@ -468,6 +468,13 @@ export enum ServerContainerStatus {
   ERROR = 'error',
 }
 
+export type ServerPort = {
+  main: boolean;
+  port: number;
+  hostname: string;
+  name?: string;
+};
+
 export type ZeitUser = {
   uid: string;
   email: string;
