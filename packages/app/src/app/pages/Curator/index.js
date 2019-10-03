@@ -1,8 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import getTime from 'date-fns/get_time';
-import subMonths from 'date-fns/sub_months';
-import subWeeks from 'date-fns/sub_weeks';
-import format from 'date-fns/format';
+import { getTime, subMonths, subWeeks, format } from 'date-fns';
 import DayPicker from 'react-day-picker';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
@@ -94,7 +91,9 @@ const Curator = inject('store', 'signals')(
                 Last 6 Months
               </Button>
               <Button onClick={() => setShowPicker(show => !show)} small>
-                {selectedDate ? format(selectedDate, 'DD/MM/YYYY') : 'Custom'}
+                {selectedDate
+                  ? format(new Date(selectedDate), 'dd/MM/yyyy')
+                  : 'Custom'}
               </Button>
               {showPicker ? (
                 <PickerWrapper>
