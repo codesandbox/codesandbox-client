@@ -10,7 +10,7 @@ import { ThemeProvider } from 'styled-components';
 
 import CommitModal from './CommitModal';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
-import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
+import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
 import DeploymentModal from './DeploymentModal';
 import { EmptyTrash } from './EmptyTrash';
