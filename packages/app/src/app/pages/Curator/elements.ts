@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+
+import { DelayedAnimation as DelayedAnimationBase } from 'app/components/DelayedAnimation';
 import { Title } from 'app/components/Title';
 
 export const Heading = styled(Title)`
@@ -38,4 +40,11 @@ export const PickerWrapper = styled.div`
   border-radius: 3px;
   top: 45px;
   right: 14px;
+`;
+
+export const DelayedAnimation = styled(DelayedAnimationBase)`
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  margin-top: 2rem;
+  text-align: center;
 `;

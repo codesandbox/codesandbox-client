@@ -64,7 +64,9 @@ const Patron = Loadable(() =>
 );
 const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
-  import(/* webpackChunkName: 'page-curator' */ './Curator')
+  import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
+    default: module.Curator,
+  }))
 );
 const CodeSadbox = () => this[`💥`].kaboom();
 

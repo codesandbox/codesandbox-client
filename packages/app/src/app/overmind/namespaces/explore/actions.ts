@@ -1,19 +1,19 @@
 import { AsyncAction, Action } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 
-export const popularSandboxesMounted: AsyncAction<{
-  date: string;
-}> = withLoadApp(async ({ state, effects }, { date }) => {
-  try {
-    state.explore.popularSandboxes = await effects.api.getPopularSandboxes(
-      date
-    );
-  } catch (error) {
-    effects.notificationToast.error(
-      'There has been a problem getting the sandboxes'
-    );
+export const popularSandboxesMounted: AsyncAction<string> = withLoadApp(
+  async ({ state, effects }, date) => {
+    try {
+      state.explore.popularSandboxes = await effects.api.getPopularSandboxes(
+        date
+      );
+    } catch (error) {
+      effects.notificationToast.error(
+        'There has been a problem getting the sandboxes'
+      );
+    }
   }
-});
+);
 
 export const pickSandbox: AsyncAction<{
   id: string;
@@ -44,12 +44,10 @@ export const pickSandbox: AsyncAction<{
 };
 
 export const pickSandboxModal: Action<{
-  details: {
-    id: string;
-    title: string;
-    description: string;
-  };
-}> = ({ state }, { details }) => {
+  description: string;
+  id: string;
+  title: string;
+}> = ({ state }, details) => {
   state.explore.pickedSandboxDetails = details;
   state.currentModal = 'pickSandbox';
 };
