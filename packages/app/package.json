@@ -104,6 +104,8 @@
     "console": "^0.7.2",
     "console-feed": "CompuIves/console-feed#build2",
     "css-modules-loader-core": "^1.1.0",
+    "date-fns": "^2.4.1",
+    "date-fns-tz": "^1.0.7",
     "debug": "^2.6.8",
     "downshift": "^1.0.0-rc.14",
     "eslint-plugin-react-hooks": "1.6.0",

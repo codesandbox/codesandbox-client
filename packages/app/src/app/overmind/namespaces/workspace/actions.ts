@@ -11,9 +11,7 @@ export const valueChanged: Action<{
   state.workspace.project[field] = value;
 };
 
-export const tagChanged: Action<{
-  tagName: string;
-}> = ({ state }, { tagName }) => {
+export const tagChanged: Action<string> = ({ state }, tagName) => {
   state.workspace.tags.tagName = tagName;
 };
 
@@ -35,36 +33,54 @@ export const tagAdded: AsyncAction = withOwnedSandbox(
   }
 );
 
-export const tagRemoved: AsyncAction<{
-  tag: string;
-}> = withOwnedSandbox(async ({ state, effects, actions }, { tag }) => {
-  const sandbox = state.editor.currentSandbox;
-  const tagIndex = sandbox.tags.indexOf(tag);
+export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
+  async ({ state, effects, actions }, tag) => {
+    const sandbox = state.editor.currentSandbox;
+    const tagIndex = sandbox.tags.indexOf(tag);
 
-  sandbox.tags.splice(tagIndex, 1);
+    sandbox.tags.splice(tagIndex, 1);
 
-  try {
-    sandbox.tags = await effects.api.deleteTag(sandbox.id, tag);
+    try {
+      sandbox.tags = await effects.api.deleteTag(sandbox.id, tag);
 
-    // Create a "joint action" on this
-    const { parsed } = state.editor.parsedConfigurations.package;
+      // Create a "joint action" on this
+      const { parsed } = state.editor.parsedConfigurations.package;
 
-    parsed.keywords = sandbox.tags;
-    parsed.name = slugify(sandbox.title || sandbox.id);
-    parsed.description = sandbox.description;
+      parsed.keywords = sandbox.tags;
+      parsed.name = slugify(sandbox.title || sandbox.id);
+      parsed.description = sandbox.description;
 
-    const code = JSON.stringify(parsed, null, 2);
-    const moduleShortid = state.editor.currentPackageJSON.shortid;
+      const code = JSON.stringify(parsed, null, 2);
+      const moduleShortid = state.editor.currentPackageJSON.shortid;
 
-    await actions.editor.internal.saveCode({
-      code,
-      moduleShortid,
-      cbID: null,
-    });
-  } catch (error) {
-    sandbox.tags.splice(tagIndex, 0, tag);
+      await actions.editor.internal.saveCode({
+        code,
+        moduleShortid,
+        cbID: null,
+      });
+    } catch (error) {
+      sandbox.tags.splice(tagIndex, 0, tag);
+    }
   }
-});
+);
+
+export const tagsChanged: AsyncAction<{
+  newTags: string[];
+  removedTags: string[];
+}> = async ({ actions, effects, state }, { newTags, removedTags }) => {
+  const { tags } = state.editor.currentSandbox;
+  if (tags.length > 5) {
+    return effects.notificationToast.error('You can have a maximum of 5 tags');
+  }
+
+  const tagWasRemoved =
+    newTags.length < tags.length && removedTags.length === 1;
+  if (tagWasRemoved) {
+    return removedTags.forEach(actions.workspace.tagRemoved);
+  }
+
+  return actions.workspace.tagAdded();
+};
 
 export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {

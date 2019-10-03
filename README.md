@@ -229,6 +229,7 @@ Thanks goes to these wonderful people
     <td align="center"><a href="http://yeisondaza.com"><img src="https://avatars0.githubusercontent.com/u/9127504?v=4" width="100px;" alt="Yeison Daza"/><br /><sub><b>Yeison Daza</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=yeion7" title="Code">💻</a></td>
     <td align="center"><a href="https://shriram-balaji.github.io"><img src="https://avatars1.githubusercontent.com/u/11358903?v=4" width="100px;" alt="Shriram Balaji"/><br /><sub><b>Shriram Balaji</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=Shriram-Balaji" title="Code">💻</a></td>
     <td align="center"><a href="http://ThomasDillard.com"><img src="https://avatars1.githubusercontent.com/u/12449668?v=4" width="100px;" alt="Thomas Dillard"/><br /><sub><b>Thomas Dillard</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=HTMLGhozt" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/chinmay17"><img src="https://avatars2.githubusercontent.com/u/7131231?v=4" width="100px;" alt="Chinmay Chaudhary"/><br /><sub><b>Chinmay Chaudhary</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=chinmay17" title="Code">💻</a></td>
   </tr>
 </table>
 
