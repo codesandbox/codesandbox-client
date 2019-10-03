@@ -517,9 +517,11 @@ class Tests extends React.Component<DevToolProps, State> {
     const tests = [];
     Object.keys(this.state.files).forEach(path => {
       const file = this.state.files[path];
-      Object.keys(file.tests).forEach(t => {
-        tests.push(file.tests[t]);
-      });
+      if (file && file.tests) {
+        Object.keys(file.tests).forEach(t => {
+          tests.push(file.tests[t]);
+        });
+      }
     });
 
     // Types for split-pane don't work because they're in root.
