@@ -1,7 +1,12 @@
 import React from 'react';
 import { useTransition, animated, config } from 'react-spring';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { usePopoverState, Popover, PopoverDisclosure } from 'reakit/Popover';
+import {
+  usePopoverState,
+  Popover,
+  PopoverDisclosure,
+  PopoverDisclosureHTMLProps,
+} from 'reakit/Popover';
 import { Container } from './elements';
 
 interface IOverlayProps {
@@ -9,7 +14,7 @@ interface IOverlayProps {
   isOpen?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
-  children: (props: any) => React.ReactNode;
+  children: (props: PopoverDisclosureHTMLProps) => React.ReactNode;
   content: React.ComponentType;
   noHeightAnimation?: boolean;
 }
