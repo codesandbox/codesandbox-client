@@ -1,6 +1,7 @@
 // @flow
 import React, { useState, useCallback, useEffect } from 'react';
 import _property from 'lodash/property';
+import _isFunction from 'lodash/isFunction';
 import { useOvermind } from 'app/overmind';
 
 import BasePreview from '@codesandbox/common/lib/components/Preview';
@@ -23,7 +24,9 @@ const useForceUpdate = () => {
   );
 
   useEffect(() => {
-    callback();
+    if (_isFunction(callback)) {
+      callback();
+    }
   }, [callback]);
 
   return forceUpdate;
