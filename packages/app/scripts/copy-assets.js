@@ -23,7 +23,7 @@ const assets = [
   },
   {
     from: 'standalone-packages/vscode-editor/release/min/vs',
-    to: 'public/vscode8',
+    to: 'public/vscode22/vs',
   },
   {
     from: 'packages/app/public',
