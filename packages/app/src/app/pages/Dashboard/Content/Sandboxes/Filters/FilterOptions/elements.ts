@@ -20,7 +20,9 @@ export const Container = styled.div<{ hideFilters: boolean }>`
 export const TemplatesName = styled.span`
   transition: 0.3s ease color;
   color: rgba(255, 255, 255, 0.8);
-
+  appearance: none !important;
+  background: none;
+  border: none;
   cursor: pointer;
 
   &:hover {
