@@ -1,7 +1,8 @@
 import React, { forwardRef } from 'react';
-// import * as Icons from '@codesandbox/template-icons';
+import { LightIcons, DarkIcons } from '@codesandbox/template-icons';
 import history from 'app/utils/history';
-// import getIcon from '@codesandbox/common/lib/templates/icons';
+import getLightIcons from '@codesandbox/common/lib/templates/iconsLight';
+import getDarkIcons from '@codesandbox/common/lib/templates/iconsDark';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 import {
@@ -24,16 +25,41 @@ interface ISandboxCard {
   onFollow?: (id: string) => void;
 }
 
+function getContrastYIQ(hex: string) {
+  // @ts-ignore
+  const color = typeof hex === 'function' ? hex() : hex;
+  const cleanColor = color.split('#')[1];
+  const r = parseInt(cleanColor.substr(0, 2), 16);
+  const g = parseInt(cleanColor.substr(2, 2), 16);
+  const b = parseInt(cleanColor.substr(4, 2), 16);
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+
+  return yiq;
+}
+
 export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
   ({ template, official, followed, mine, onUnfollow, onFollow }, ref) => {
     // @ts-ignore
     const { source, id: sandboxID, author = {} } = template.sandbox || {};
-    // const UserIcon =
-    //   template.iconUrl && Icons[template.iconUrl]
-    //     ? Icons[template.iconUrl]
-    //     : getIcon((source || {}).template);
+    let UserIcon;
+    let OfficialIcon;
 
-    // const OfficialIcon = getIcon(template.name);
+    if (getContrastYIQ(template.color) >= 128) {
+      UserIcon =
+        template.iconUrl && DarkIcons[template.iconUrl]
+          ? DarkIcons[template.iconUrl]
+          : getDarkIcons((source || {}).template);
+
+      OfficialIcon = getDarkIcons(template.name);
+    } else {
+      UserIcon =
+        template.iconUrl && LightIcons[template.iconUrl]
+          ? LightIcons[template.iconUrl]
+          : getLightIcons((source || {}).template);
+
+      OfficialIcon = getLightIcons(template.name);
+    }
+
     const { actions } = useOvermind();
     const title =
       template.niceName || template.sandbox.title || template.sandbox.id;
@@ -56,7 +82,11 @@ export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
       <>
         <Container ref={ref}>
           <Icon color={template.color}>
-            {/* {official ? <OfficialIcon /> : <UserIcon />} */}
+            {official && (OfficialIcon || UserIcon) ? (
+              <OfficialIcon />
+            ) : (
+              <UserIcon />
+            )}
           </Icon>
           <Details>
             <Row>

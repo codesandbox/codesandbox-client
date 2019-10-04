@@ -146,7 +146,6 @@ export const buttonStyles = ({
   ${getBackgroundColor};
   box-sizing: border-box;
   color: ${getColor};
-  ${large ? theme.fonts.secondary.medium : theme.fonts.secondary.normal};
   line-height: 24px;
   text-align: center;
   text-decoration: none;

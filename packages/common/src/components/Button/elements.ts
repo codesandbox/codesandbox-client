@@ -143,7 +143,6 @@ export const buttonStyles = ({
   ${getBackgroundColor};
   box-sizing: border-box;
   color: ${getColor};
-  ${small ? theme.fonts.secondary.normal : theme.fonts.secondary.medium};
   line-height: 24px;
   text-align: center;
   text-decoration: none;

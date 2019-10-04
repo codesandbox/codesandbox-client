@@ -22,7 +22,7 @@ export const ArrowButton = styled.button<{ next?: boolean }>`
   position: absolute;
   z-index: 10;
   left: 0.5rem;
-  margin-top: 40px;
+  margin-top: 80px;
 
   ${props =>
     props.next &&
