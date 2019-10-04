@@ -18,6 +18,15 @@ export const SandboxName = styled.span`
   text-overflow: ellipsis;
 `;
 
+export const SandboxForm = styled.form`
+  position: 'absolute';
+  left: 0;
+  right: 0;
+  display: 'flex';
+  align-items: 'center';
+  justify-content: 'center';
+`;
+
 export const SandboxInput = styled(AutosizeInput)`
   input {
     display: inline-block;
