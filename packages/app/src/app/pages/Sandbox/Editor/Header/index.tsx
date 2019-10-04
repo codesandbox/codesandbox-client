@@ -22,7 +22,7 @@ import ShareIcon from 'react-icons/lib/md/share';
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
 
 import { Action } from './Buttons/Action';
-import CollectionInfo from './CollectionInfo';
+import { CollectionInfo } from './CollectionInfo';
 import {
   Centered,
   Container,
