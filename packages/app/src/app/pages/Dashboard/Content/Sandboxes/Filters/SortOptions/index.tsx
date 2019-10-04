@@ -53,6 +53,7 @@ export const SortOptions: React.FC<{ hideOrder: boolean }> = ({
             Sort by{' '}
             <OrderName {...buttonProps}>{FIELD_TO_NAME[field]} </OrderName>
             <Arrow
+              aria-label={`toggle ${order === 'asc' ? 'desc' : 'asc'} sort`}
               onClick={toggleSort}
               style={{
                 transform: `rotate(${order === 'asc' ? -180 : 0}deg)`,
