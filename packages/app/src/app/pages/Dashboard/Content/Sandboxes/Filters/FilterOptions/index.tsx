@@ -1,43 +1,51 @@
 import React from 'react';
 import { orderBy } from 'lodash-es';
-import { inject, observer } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 import { Overlay as OverlayComponent } from 'app/components/Overlay';
 import { Container, TemplatesName, OverlayContainer } from './elements';
 import { Option } from './Option';
 import { ITemplate } from '../../types';
 
-interface Props {
+interface IFilterOptionsProps {
   possibleTemplates: ITemplate[];
   hideFilters?: boolean;
-  store?: any;
-  signals?: any;
 }
 
-const FilterOptionsComponent = ({
+const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
   possibleTemplates,
   hideFilters,
-  store,
-  signals,
-}: Props) => {
+}: IFilterOptionsProps) => {
+  const {
+    state: {
+      dashboard: { isTemplateSelected, filters },
+    },
+    actions: {
+      dashboard: {
+        blacklistedTemplateAdded,
+        blacklistedTemplateRemoved,
+        blacklistedTemplatesCleared,
+        blacklistedTemplatesChanged,
+      },
+    },
+  } = useOvermind();
+
   const toggleTemplate = (name: string, select: boolean) =>
     select
-      ? signals.dashboard.blacklistedTemplateRemoved({
+      ? blacklistedTemplateRemoved({
           template: name,
         })
-      : signals.dashboard.blacklistedTemplateAdded({
+      : blacklistedTemplateAdded({
           template: name,
         });
 
-  const allSelected = possibleTemplates.every(t =>
-    store.dashboard.isTemplateSelected(t.id)
-  );
+  const allSelected = possibleTemplates.every(t => isTemplateSelected(t.id));
 
   const Overlay = () => (
     <OverlayContainer>
       {possibleTemplates.length > 0 ? (
         <>
           {orderBy(possibleTemplates, 'niceName').map(template => {
-            const selected = store.dashboard.isTemplateSelected(template.id);
+            const selected = isTemplateSelected(template.id);
 
             return (
               <Option
@@ -54,9 +62,9 @@ const FilterOptionsComponent = ({
           <Option
             toggleTemplate={() => {
               if (!allSelected) {
-                signals.dashboard.blacklistedTemplatesCleared();
+                blacklistedTemplatesCleared();
               } else {
-                signals.dashboard.blacklistedTemplatesChanged({
+                blacklistedTemplatesChanged({
                   templates: possibleTemplates.map(t => t.id) || [],
                 });
               }
@@ -74,7 +82,7 @@ const FilterOptionsComponent = ({
     </OverlayContainer>
   );
 
-  const { blacklistedTemplates } = store.dashboard.filters;
+  const { blacklistedTemplates } = filters;
   const templateCount = possibleTemplates.length - blacklistedTemplates.length;
   const templateMessage =
     templateCount === possibleTemplates.length && templateCount > 0
@@ -95,6 +103,4 @@ const FilterOptionsComponent = ({
   );
 };
 
-export const FilterOptions = inject('store', 'signals')(
-  observer(FilterOptionsComponent)
-);
+export const FilterOptions = FilterOptionsComponent;
