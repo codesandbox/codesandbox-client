@@ -93,10 +93,10 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
 
   return (
     <OverlayComponent event="Dashboard - Order By" content={Overlay}>
-      {open => (
+      {buttonProps => (
         <Container hideFilters={hideFilters}>
           Showing{' '}
-          <TemplatesName onClick={open}>{templateMessage}</TemplatesName>
+          <TemplatesName {...buttonProps}>{templateMessage}</TemplatesName>
         </Container>
       )}
     </OverlayComponent>
