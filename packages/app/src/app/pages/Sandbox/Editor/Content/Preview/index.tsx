@@ -182,9 +182,7 @@ const PreviewComponent: React.FC<Props> = ({
       );
       const disposeDependenciesHandler = reaction(
         ({ editor: { currentSandbox: _currentSandbox } }) =>
-          _currentSandbox.npmDependencies.keys
-            ? _currentSandbox.npmDependencies.keys().length
-            : Object.keys(_currentSandbox.npmDependencies),
+          Object.keys(_currentSandbox.npmDependencies),
         () => handleDependenciesChange(preview)
       );
 
