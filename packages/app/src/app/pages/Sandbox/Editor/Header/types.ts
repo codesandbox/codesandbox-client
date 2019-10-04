@@ -1,6 +1,3 @@
-import React from 'react';
-
-export interface HeaderProps extends React.FunctionComponent {
+export interface IHeaderProps {
   zenMode: boolean;
-  store: any;
 }
