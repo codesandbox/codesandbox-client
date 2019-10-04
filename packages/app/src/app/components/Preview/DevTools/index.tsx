@@ -24,7 +24,7 @@ function unFocus(document, window) {
     try {
       window.getSelection().removeAllRanges();
       // eslint-disable-next-line no-empty
-    } catch {}
+    } catch { }
   }
 }
 
@@ -193,7 +193,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     this.updateStatus = (title: string) => (
       type: StatusType,
       count?: number
-    ) => {};
+    ) => { };
     document.removeEventListener('mouseup', this.handleMouseUp, false);
     document.removeEventListener('mousemove', this.handleMouseMove, false);
     document.removeEventListener('touchend', this.handleTouchEnd, false);
@@ -480,12 +480,12 @@ export class DevTools extends React.PureComponent<Props, State> {
               moveTab={
                 this.props.moveTab
                   ? (prevPos, nextPos) => {
-                      track('DevTools - Move Pane', {
-                        pane: this.props.viewConfig.views[prevPos.tabPosition]
-                          .id,
-                      });
-                      this.props.moveTab(prevPos, nextPos);
-                    }
+                    track('DevTools - Move Pane', {
+                      pane: this.props.viewConfig.views[prevPos.tabPosition]
+                        .id,
+                    });
+                    this.props.moveTab(prevPos, nextPos);
+                  }
                   : undefined
               }
               closeTab={this.props.closeTab}
