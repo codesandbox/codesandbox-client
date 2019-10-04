@@ -70,7 +70,7 @@ export const onSSEMessage: Action<{
       effects.codesandboxApi.logTerminalMessage(data.data);
       break;
     case 'sandbox:port': {
-      const newPorts = data;
+      const newPorts = data as ServerPort[];
       const currentPorts = server.ports;
       const removedPorts = currentPorts.filter(
         port => !newPorts.find(p => p.port === port.port)
@@ -78,7 +78,7 @@ export const onSSEMessage: Action<{
       const addedPorts = newPorts.filter(
         port => !currentPorts.find(p => p.port === port.port)
       );
-      const openedPorts = [];
+      const openedPorts: number[] = [];
 
       if (removedPorts.length > 0) {
         effects.notificationToast.add({
