@@ -50,10 +50,17 @@ export const SortOptions: React.FC<{ hideOrder: boolean }> = ({
       <MenuDisclosure {...menu}>
         {buttonProps => (
           <Container hideOrder={hideOrder}>
-            Sort by{' '}
-            <OrderName {...buttonProps}>{FIELD_TO_NAME[field]} </OrderName>
+            <span aria-hidden>Sort by </span>
+            <OrderName
+              aria-label={`Select short sandboxes by, current ${
+                FIELD_TO_NAME[field]
+              } `}
+              {...buttonProps}
+            >
+              {FIELD_TO_NAME[field]}{' '}
+            </OrderName>
             <Arrow
-              aria-label={`toggle ${order === 'asc' ? 'desc' : 'asc'} sort`}
+              aria-label={`toggle ${order === 'asc' ? 'desc' : 'asc'} short`}
               onClick={toggleSort}
               style={{
                 transform: `rotate(${order === 'asc' ? -180 : 0}deg)`,
@@ -65,7 +72,7 @@ export const SortOptions: React.FC<{ hideOrder: boolean }> = ({
         )}
       </MenuDisclosure>
       <Menu unstable_portal {...menu} aria-label="Dashboard - Order By">
-        <OverlayContainer>
+        <OverlayContainer as="ul">
           <MenuItem
             as={Option}
             {...menu}
