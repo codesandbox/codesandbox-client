@@ -18,10 +18,12 @@ export const Option = ({
   niceName,
   selected,
   toggleTemplate,
+  ...props
 }: Props) => {
   const checkBoxName = `${id}-checkbox`;
   return (
     <Container
+      {...props}
       selected={selected}
       onClick={e => {
         e.preventDefault();
