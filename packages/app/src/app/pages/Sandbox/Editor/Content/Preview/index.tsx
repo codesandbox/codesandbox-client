@@ -1,6 +1,7 @@
 // @flow
-import React, { Component } from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React, { useState, useCallback, useEffect } from 'react';
+import _property from 'lodash/property';
+import { useOvermind } from 'app/overmind';
 
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
@@ -9,200 +10,251 @@ import getTemplate from '@codesandbox/common/lib/templates';
 type Props = {
   hidden?: boolean;
   runOnClick?: boolean;
-  store: any;
-  signals: any;
   options: { url?: string };
-  reaction: any;
 };
 
-type State = {
-  running: boolean;
+const useForceUpdate = () => {
+  const [callback, setCallback] = useState(() => () => {});
+  const forceUpdate = useCallback(
+    cb => {
+      setCallback(() => cb);
+    },
+    [setCallback]
+  );
+
+  useEffect(() => {
+    callback();
+  }, [callback]);
+
+  return forceUpdate;
 };
 
-class PreviewComponent extends Component<Props, State> {
-  state: State = {
-    running: !this.props.runOnClick,
-  };
+const PreviewComponent: React.FC<Props> = ({
+  hidden,
+  runOnClick,
+  options: { url },
+}) => {
+  const [running, setRunning] = useState(!runOnClick);
+  const handleRunOnClick = useCallback(() => {
+    setRunning(true);
+  }, [setRunning]);
+  const forceUpdate = useForceUpdate();
 
-  onPreviewInitialized = preview => {
-    const disposeHandleProjectViewChange = this.props.reaction(
-      ({ editor }) => editor.isInProjectView,
-      this.handleProjectView.bind(this, preview)
-    );
-    const disposeHandleForcedRenders = this.props.reaction(
-      ({ editor }) => editor.forceRender,
-      this.handleExecuteCode.bind(this, preview)
-    );
-    const disposeHandleExternalResources = this.props.reaction(
-      ({ editor }) => editor.currentSandbox.externalResources.length,
-      this.handleExecuteCode.bind(this, preview)
-    );
-    const disposeHandleModuleSyncedChange = this.props.reaction(
-      ({ editor }) => editor.isAllModulesSynced,
-      this.handleModuleSyncedChange.bind(this, preview)
-    );
-    const disposeHandleCodeChange = this.props.reaction(
-      ({ editor }) => String(editor.currentSandbox.modules.map(m => m.code)),
-      () => {
-        this.handleCodeChange(preview);
-      }
-    );
-    const disposeHandleModuleChange = this.props.reaction(
-      ({ editor }) => editor.currentModule,
-      () => {
-        if (!this.props.store.editor.isInProjectView) {
-          this.handleCodeChange(preview);
+  const {
+    state: {
+      editor: {
+        currentSandbox,
+        currentModule,
+        isInProjectView,
+        previewWindowVisible,
+        initialPath,
+        isResizing,
+      },
+      preferences: { settings },
+      server,
+    },
+    actions: {
+      editor: { errorsCleared, previewActionReceived, projectViewToggled },
+    },
+    reaction,
+  } = useOvermind();
+  const { template } = currentSandbox;
+  const { livePreviewEnabled, instantPreviewEnabled } = settings;
+
+  const handleErrorsCleared = useCallback(() => errorsCleared(), [
+    errorsCleared,
+  ]);
+
+  const handleProjectViewToggled = useCallback(() => projectViewToggled(), [
+    projectViewToggled,
+  ]);
+
+  const handlePreviewAction = useCallback(
+    action => previewActionReceived({ action }),
+    [previewActionReceived]
+  );
+
+  const detectStructureChange = useCallback(
+    ({ editor: { currentSandbox: sandbox } }) =>
+      String(
+        sandbox.modules
+          .map(module => module.directoryShortid + module.title)
+          .concat(
+            sandbox.directories.map(
+              directory => directory.directoryShortid + directory.title
+            )
+          )
+      ),
+    []
+  );
+
+  const handleDependenciesChange = useCallback(preview => {
+    preview.handleDependenciesChange();
+  }, []);
+
+  const handleCodeChange = useCallback(
+    preview => {
+      const { isServer } = getTemplate(template);
+      if (!isServer && livePreviewEnabled) {
+        if (instantPreviewEnabled) {
+          preview.executeCodeImmediately();
+        } else {
+          preview.executeCode();
         }
       }
-    );
-    const disposeHandleStructureChange = this.props.reaction(
-      this.detectStructureChange,
-      this.handleStructureChange.bind(this, preview)
-    );
-    const disposeDependenciesHandler = this.props.reaction(
-      ({ editor }) =>
-        editor.currentSandbox.npmDependencies.keys
-          ? editor.currentSandbox.npmDependencies.keys().length
-          : Object.keys(editor.currentSandbox.npmDependencies),
-      this.handleDependenciesChange.bind(this, preview)
-    );
+    },
+    [template, livePreviewEnabled, instantPreviewEnabled]
+  );
 
-    return () => {
-      disposeHandleModuleChange();
-      disposeHandleProjectViewChange();
-      disposeHandleForcedRenders();
-      disposeHandleExternalResources();
-      disposeHandleModuleSyncedChange();
-      disposeHandleCodeChange();
-      disposeHandleStructureChange();
-      disposeDependenciesHandler();
-    };
-  };
-
-  detectStructureChange = ({ editor }) => {
-    const sandbox = editor.currentSandbox;
-
-    return String(
-      sandbox.modules
-        .map(module => module.directoryShortid + module.title)
-        .concat(
-          sandbox.directories.map(
-            directory => directory.directoryShortid + directory.title
-          )
-        )
-    );
-  };
-
-  handleDependenciesChange = preview => {
-    preview.handleDependenciesChange();
-  };
-
-  handleCodeChange = preview => {
-    const { settings } = this.props.store.preferences;
-    const { isServer } = getTemplate(
-      this.props.store.editor.currentSandbox.template
-    );
-    if (!isServer && settings.livePreviewEnabled) {
-      if (settings.instantPreviewEnabled) {
-        preview.executeCodeImmediately();
-      } else {
-        preview.executeCode();
+  const handleStructureChange = useCallback(
+    preview => {
+      if (livePreviewEnabled) {
+        if (instantPreviewEnabled) {
+          preview.executeCodeImmediately();
+        } else {
+          preview.executeCode();
+        }
       }
-    }
-  };
+    },
+    [livePreviewEnabled, instantPreviewEnabled]
+  );
 
-  handleStructureChange = preview => {
-    const { settings } = this.props.store.preferences;
-    if (settings.livePreviewEnabled) {
-      if (settings.instantPreviewEnabled) {
-        preview.executeCodeImmediately();
-      } else {
-        preview.executeCode();
+  const handleModuleSyncedChange = useCallback(
+    (preview, change) => {
+      if (change && (template === 'static' || !livePreviewEnabled)) {
+        preview.handleRefresh();
       }
-    }
-  };
+    },
+    [template, livePreviewEnabled]
+  );
 
-  handleModuleSyncedChange = (preview, change) => {
-    const { settings } = this.props.store.preferences;
-
-    if (
-      change &&
-      (this.props.store.editor.currentSandbox.template === 'static' ||
-        !settings.livePreviewEnabled)
-    ) {
-      preview.handleRefresh();
-    }
-  };
-
-  handleExecuteCode = preview => {
+  const handleExecuteCode = useCallback(preview => {
     preview.executeCodeImmediately();
-  };
+  }, []);
 
-  handleProjectView = preview => {
-    this.forceUpdate(() => {
-      preview.executeCodeImmediately();
-    });
-  };
+  const handleProjectView = useCallback(
+    preview => {
+      forceUpdate(() => {
+        preview.executeCodeImmediately();
+      });
+    },
+    [forceUpdate]
+  );
+
+  const handlePreviewInitialized = useCallback(
+    preview => {
+      const disposeHandleProjectViewChange = reaction(
+        _property('editor.isInProjectView'),
+        () => handleProjectView(preview)
+      );
+      const disposeHandleForcedRenders = reaction(
+        _property('editor.forceRender'),
+        () => handleExecuteCode(preview)
+      );
+      const disposeHandleExternalResources = reaction(
+        _property('editor.currentSandbox.externalResources.length'),
+        () => handleExecuteCode(preview)
+      );
+      const disposeHandleModuleSyncedChange = reaction(
+        _property('editor.isAllModulesSynced'),
+        change => handleModuleSyncedChange(preview, change)
+      );
+      const disposeHandleCodeChange = reaction(
+        ({ editor: { currentSandbox: _currentSandbox } }) =>
+          String(_currentSandbox.modules.map(m => m.code)),
+        () => {
+          handleCodeChange(preview);
+        }
+      );
+      const disposeHandleModuleChange = reaction(
+        _property('editor.currentModule'),
+        () => {
+          if (!isInProjectView) {
+            handleCodeChange(preview);
+          }
+        }
+      );
+      const disposeHandleStructureChange = reaction(detectStructureChange, () =>
+        handleStructureChange(preview)
+      );
+      const disposeDependenciesHandler = reaction(
+        ({ editor: { currentSandbox: _currentSandbox } }) =>
+          _currentSandbox.npmDependencies.keys
+            ? _currentSandbox.npmDependencies.keys().length
+            : Object.keys(_currentSandbox.npmDependencies),
+        () => handleDependenciesChange(preview)
+      );
+
+      return () => {
+        disposeHandleModuleChange();
+        disposeHandleProjectViewChange();
+        disposeHandleForcedRenders();
+        disposeHandleExternalResources();
+        disposeHandleModuleSyncedChange();
+        disposeHandleCodeChange();
+        disposeHandleStructureChange();
+        disposeDependenciesHandler();
+      };
+    },
+    [
+      detectStructureChange,
+      handleCodeChange,
+      handleDependenciesChange,
+      handleExecuteCode,
+      handleModuleSyncedChange,
+      handleProjectView,
+      handleStructureChange,
+      isInProjectView,
+      reaction,
+    ]
+  );
+
+  const completelyHidden = !previewWindowVisible;
 
   /**
    * Responsible for showing a message when something is happening with SSE. Only used
    * for server sandboxes right now, but we can extend it in the future. It would require
    * a better design if we want to use it for more though.
    */
-  getOverlayMessage = () => {
-    const {
-      containerStatus,
-      error,
-      hasUnrecoverableError,
-    } = this.props.store.server;
+  let overlayMessage: string;
+  const { containerStatus, error, hasUnrecoverableError } = server;
 
-    if (containerStatus === 'hibernated') {
-      return 'The container has been hibernated because of inactivity, you can start it by refreshing the browser.';
-    }
-
-    if (containerStatus === 'stopped') {
-      return 'Restarting the sandbox...';
-    }
-
-    if (error && hasUnrecoverableError) {
-      return 'A sandbox error occurred, you can refresh the page to restart the container.';
-    }
-
-    return undefined;
-  };
-
-  render() {
-    const { store, signals, options } = this.props;
-
-    const completelyHidden = !store.editor.previewWindowVisible;
-
-    return this.state.running ? (
-      <BasePreview
-        onInitialized={this.onPreviewInitialized}
-        sandbox={store.editor.currentSandbox}
-        privacy={store.editor.currentSandbox.privacy}
-        previewSecret={store.editor.currentSandbox.previewSecret}
-        currentModule={store.editor.currentModule}
-        settings={store.preferences.settings}
-        initialPath={store.editor.initialPath}
-        url={options.url}
-        isInProjectView={store.editor.isInProjectView}
-        onClearErrors={() => signals.editor.errorsCleared()}
-        onAction={action => signals.editor.previewActionReceived({ action })}
-        hide={this.props.hidden}
-        noPreview={completelyHidden}
-        onToggleProjectView={() => signals.editor.projectViewToggled()}
-        isResizing={store.editor.isResizing}
-        overlayMessage={this.getOverlayMessage()}
-      />
-    ) : (
-      <RunOnClick
-        onClick={() => {
-          this.setState({ running: true });
-        }}
-      />
-    );
+  if (containerStatus === 'hibernated') {
+    overlayMessage =
+      'The container has been hibernated because of inactivity, you can start it by refreshing the browser.';
   }
-}
 
-export const Preview = inject('signals', 'store')(observer(PreviewComponent));
+  if (containerStatus === 'stopped') {
+    overlayMessage = 'Restarting the sandbox...';
+  }
+
+  if (error && hasUnrecoverableError) {
+    overlayMessage =
+      'A sandbox error occurred, you can refresh the page to restart the container.';
+  }
+
+  return running ? (
+    <BasePreview
+      onInitialized={handlePreviewInitialized}
+      sandbox={currentSandbox}
+      privacy={currentSandbox.privacy}
+      previewSecret={currentSandbox.previewSecret}
+      currentModule={currentModule}
+      settings={settings}
+      initialPath={initialPath}
+      url={url}
+      isInProjectView={isInProjectView}
+      onClearErrors={handleErrorsCleared}
+      onAction={handlePreviewAction}
+      hide={hidden}
+      noPreview={completelyHidden}
+      onToggleProjectView={handleProjectViewToggled}
+      isResizing={isResizing}
+      overlayMessage={overlayMessage}
+    />
+  ) : (
+    <RunOnClick onClick={handleRunOnClick} />
+  );
+};
+
+export const Preview = PreviewComponent;
