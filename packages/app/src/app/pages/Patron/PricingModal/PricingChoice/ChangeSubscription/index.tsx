@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 import { format } from 'date-fns';
 import { LinkButton } from 'app/components/LinkButton';
 
@@ -12,25 +12,28 @@ import {
   Centered,
 } from './elements';
 
-interface Props {
+interface IChangeSubscriptionProps {
   date: string;
   markedAsCancelled: boolean;
   cancelSubscription: () => void;
   updateSubscription: (params: { coupon: string }) => void;
-  store: any;
-  signals: any;
 }
 
-function ChangeSubscriptionComponent({
+export const ChangeSubscription: React.FC<IChangeSubscriptionProps> = ({
   date,
   markedAsCancelled,
   cancelSubscription,
   updateSubscription,
-  store,
-  signals,
-}: Props) {
-  const isLoading = store.patron.isUpdatingSubscription;
-  const { error } = store.patron;
+}) => {
+  const {
+    state: {
+      patron: { isUpdatingSubscription, error },
+    },
+    actions: {
+      modalOpened,
+      patron: { tryAgainClicked },
+    },
+  } = useOvermind();
 
   const [coupon, setCoupon] = useState('');
 
@@ -40,7 +43,7 @@ function ChangeSubscriptionComponent({
         There was a problem updating this subscription.
         <SmallText>{error}</SmallText>
         <Buttons>
-          <StyledButton onClick={() => signals.patron.tryAgainClicked()}>
+          <StyledButton onClick={() => tryAgainClicked()}>
             Try again
           </StyledButton>
         </Buttons>
@@ -80,7 +83,7 @@ function ChangeSubscriptionComponent({
     );
   }
 
-  if (isLoading) {
+  if (isUpdatingSubscription) {
     buttons = (
       <Buttons>
         <StyledButton disabled>Processing...</StyledButton>
@@ -98,7 +101,7 @@ function ChangeSubscriptionComponent({
         <LinkButton
           onClick={e => {
             e.preventDefault();
-            signals.modalOpened({ modal: 'preferences' });
+            modalOpened({ modal: 'preferences' });
           }}
         >
           user preferences
@@ -107,8 +110,4 @@ function ChangeSubscriptionComponent({
       </SmallText>
     </div>
   );
-}
-
-export const ChangeSubscription = inject('signals', 'store')(
-  hooksObserver(ChangeSubscriptionComponent)
-);
+};
