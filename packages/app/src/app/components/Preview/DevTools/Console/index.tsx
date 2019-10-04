@@ -24,7 +24,6 @@ export type StyledProps = DevToolProps & {
   theme: typeof theme & { light: boolean };
 } & {
   store: any;
-  signals: any;
 };
 
 const StyledClearIcon = styled(ClearIcon)`
@@ -191,14 +190,14 @@ class ConsoleComponent extends React.Component<StyledProps> {
     const messages = nothing
       ? []
       : [
-        {
-          method: 'log',
-          data: [
-            '%cConsole was cleared',
-            'font-style: italic; color: rgba(255, 255, 255, 0.3)',
-          ],
-        },
-      ];
+          {
+            method: 'log',
+            data: [
+              '%cConsole was cleared',
+              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+            ],
+          },
+        ];
 
     this.setState({
       messages,
@@ -298,7 +297,7 @@ const ConsoleFilterSelect = props => {
   );
 };
 
-const ObservedConsole = inject('store', 'signals')(observer(Console));
+const ObservedConsole = inject('store')(observer(ConsoleComponent));
 
 export default {
   id: 'codesandbox.console',
@@ -323,7 +322,7 @@ export default {
     },
     {
       title: 'Log Filter',
-      onClick: () => { },
+      onClick: () => {},
       Icon: withTheme(ConsoleFilterSelect),
     },
   ],
