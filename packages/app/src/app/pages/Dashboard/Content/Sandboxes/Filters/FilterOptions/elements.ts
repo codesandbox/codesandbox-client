@@ -48,12 +48,13 @@ export const OverlayContainer = styled.div`
   background-color: ${props => props.theme.background};
 `;
 
-export const OptionName = styled.span`
+export const OptionName = styled.label`
   font-weight: 600;
   cursor: pointer;
 `;
 
 export const Option = styled.div<{ selected: boolean }>`
+  list-style: none;
   transition: 0.3s ease color;
   cursor: pointer;
   color: ${props =>

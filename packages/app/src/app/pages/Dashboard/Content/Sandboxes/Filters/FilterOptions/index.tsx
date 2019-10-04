@@ -60,15 +60,18 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
       <MenuDisclosure {...menu}>
         {disclosureProps => (
           <Container hideFilters={hideFilters}>
-            Showing{' '}
-            <TemplatesName {...disclosureProps}>
+            <span aria-hidden>Showing </span>
+            <TemplatesName
+              {...disclosureProps}
+              aria-label={`select showing sandboxes, curren ${templateMessage}`}
+            >
               {templateMessage}
             </TemplatesName>
           </Container>
         )}
       </MenuDisclosure>
       <Menu unstable_portal {...menu} aria-label="Dashboard - Order By">
-        <OverlayContainer>
+        <OverlayContainer as="ul">
           {possibleTemplates.length > 0 ? (
             <>
               {orderBy(possibleTemplates, 'niceName').map(template => {

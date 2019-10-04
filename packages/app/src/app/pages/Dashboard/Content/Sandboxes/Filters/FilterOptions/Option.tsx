@@ -16,6 +16,7 @@ export const Option = React.forwardRef<HTMLDivElement, Props>(
     const checkBoxName = `${id}-checkbox`;
     return (
       <Container
+        as="li"
         {...props}
         ref={ref}
         selected={selected}
@@ -24,12 +25,19 @@ export const Option = React.forwardRef<HTMLDivElement, Props>(
           toggleTemplate(id, !selected);
         }}
         style={style}
+        aria-label={`${checkBoxName} ${selected ? 'selected' : ''}`}
       >
-        <label htmlFor={checkBoxName} style={{ display: 'none' }}>
-          {checkBoxName}
-        </label>
-        <CheckBox id={checkBoxName} color={color} selected={selected} />
-        <OptionName style={{ fontWeight: 500 }}>{niceName}</OptionName>
+        <CheckBox
+          tabIndex={0}
+          aria-checked={selected}
+          role="checkbox"
+          id={checkBoxName}
+          color={color}
+          selected={selected}
+        />
+        <OptionName htmlFor={checkBoxName} style={{ fontWeight: 500 }}>
+          {niceName}
+        </OptionName>
       </Container>
     );
   }
