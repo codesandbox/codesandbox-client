@@ -63,10 +63,10 @@ class SortOptionsComponent extends React.Component {
 
     return (
       <OverlayComponent event="Dashboard - Order By" content={Overlay}>
-        {open => (
+        {buttonProps => (
           <Container hideOrder={hideOrder}>
             Sort by{' '}
-            <OrderName onClick={open}>{FIELD_TO_NAME[field]} </OrderName>
+            <OrderName {...buttonProps}>{FIELD_TO_NAME[field]} </OrderName>
             <Arrow
               onClick={this.toggleSort}
               style={{

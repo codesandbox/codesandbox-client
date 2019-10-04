@@ -105,13 +105,13 @@ export const Navigation = inject('store', 'signals')(
                 event="Notifications"
                 noHeightAnimation
               >
-                {open => (
+                {buttonProps => (
                   <Observer>
                     {({ store }) => (
                       <Action
                         as="button"
                         style={{ position: 'relative', fontSize: '1.25rem' }}
-                        onClick={open}
+                        {...buttonProps}
                         aria-label={
                           store.userNotifications.unreadCount > 0
                             ? 'Show Notifications'
