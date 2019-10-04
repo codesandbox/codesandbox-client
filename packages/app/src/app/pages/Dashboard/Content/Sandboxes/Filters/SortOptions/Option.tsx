@@ -14,7 +14,7 @@ export const Option = forwardRef<HTMLAnchorElement, Props>(
     const selected = field === currentField;
     return (
       <OptionContainer
-        as="li"
+        as="button"
         {...props}
         ref={ref}
         onClick={() => setField(field)}

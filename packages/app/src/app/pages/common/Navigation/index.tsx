@@ -146,6 +146,7 @@ export const Navigation = inject('store', 'signals')(
                   modal: 'newSandbox',
                 })
               }
+              aria-haspopup="true"
               aria-label="New Sandbox"
             >
               <Tooltip placement="bottom" content="New Sandbox">
