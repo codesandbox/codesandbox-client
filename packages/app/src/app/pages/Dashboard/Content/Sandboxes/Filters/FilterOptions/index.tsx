@@ -63,7 +63,7 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
             <span aria-hidden>Showing </span>
             <TemplatesName
               {...disclosureProps}
-              aria-label={`select showing sandboxes, curren ${templateMessage}`}
+              aria-label={`select showing sandboxes, current ${templateMessage}`}
             >
               {templateMessage}
             </TemplatesName>

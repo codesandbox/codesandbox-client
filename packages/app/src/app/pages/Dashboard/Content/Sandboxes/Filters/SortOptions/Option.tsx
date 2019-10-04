@@ -14,12 +14,12 @@ export const Option = forwardRef<HTMLAnchorElement, Props>(
     const selected = field === currentField;
     return (
       <OptionContainer
-        as="button"
+        as="li"
         {...props}
         ref={ref}
         onClick={() => setField(field)}
         selected={selected}
-        aria-selected={selected}
+        aria-label={`${name} ${selected ? 'selected' : ''}`}
       >
         <IconContainer>{selected && <Check />}</IconContainer> {name}
       </OptionContainer>
