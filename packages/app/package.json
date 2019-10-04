@@ -26,7 +26,9 @@
     "test": "jest --env=jsdom",
     "test:integrations": "jest --config integration-tests/jest.config.json --maxWorkers=2",
     "test:watch": "jest --watch --env=jsdom",
-    "typecheck": "tsc --noEmit -p tsconfig.check.json"
+    "typecheck": "tsc --noEmit -p tsconfig.check.json",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "jest": {
     "moduleDirectories": [
@@ -211,7 +213,8 @@
     "vue-hot-reload-api": "^2.3.3",
     "vue-template-compiler": "^2.6.10",
     "vue-template-es2015-compiler": "^1.9.1",
-    "xterm": "3.7.0"
+    "xterm": "3.7.0",
+    "snyk": "^1.230.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -317,5 +320,6 @@
     "whatwg-fetch": "^2.0.3",
     "workbox-webpack-plugin": "^3.6.3",
     "worker-loader": "2.0.0"
-  }
+  },
+  "snyk": true
 }
