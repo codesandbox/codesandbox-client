@@ -12,6 +12,9 @@ export const OptionContainer = styled.a`
   text-decoration: none;
   cursor: pointer;
   font-weight: 600;
+  appearance: none;
+  background: none;
+  border: none;
 
   &:last-child {
     margin-bottom: 0;
@@ -69,7 +72,9 @@ export const OverlayContainer = styled.div`
 export const OrderName = styled.span`
   transition: 0.3s ease color;
   color: rgba(255, 255, 255, 0.8);
-
+  appearance: none !important;
+  background: none;
+  border: none;
   cursor: pointer;
 
   &:hover {
