@@ -1374,6 +1374,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mkamranhamid",
+      "name": "Kamran Hamid",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/11710104?v=4",
+      "profile": "http://mkamranhamid.netlify.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "repoType": "github",
