@@ -1,65 +1,63 @@
-import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React, { FunctionComponent, useEffect, useCallback } from 'react';
+import { useOvermind } from 'app/overmind';
 import { SubscribeForm } from 'app/components/SubscribeForm';
 import { Card } from './Card';
 import { Title, Subheading } from '../elements';
 import { Container } from './elements';
 
-interface Props {
-  store: any;
-  signals: any;
-}
+export const PaymentInfo: FunctionComponent = () => {
+  const {
+    state: {
+      preferences: {
+        paymentDetailError,
+        paymentDetails: { last4, name, brand },
+        isLoadingPaymentDetails,
+      },
+    },
+    actions: {
+      preferences: { paymentDetailsRequested, paymentDetailsUpdated },
+    },
+  } = useOvermind();
 
-class PaymentInfoComponent extends React.Component<Props> {
-  componentDidMount() {
-    this.props.signals.preferences.paymentDetailsRequested();
-  }
+  useEffect(() => {
+    paymentDetailsRequested();
+  }, [paymentDetailsRequested]);
 
-  updatePaymentDetails = ({ token }) => {
-    this.props.signals.preferences.paymentDetailsUpdated({ token });
-  };
+  const updatePaymentDetails = useCallback(
+    ({ token }) => {
+      paymentDetailsUpdated({ token });
+    },
+    [paymentDetailsUpdated]
+  );
 
-  paymentDetails = () => {
-    const { preferences } = this.props.store;
-
-    if (preferences.paymentDetailError)
-      return <div>An error occurred: {preferences.paymentDetailError}</div>;
+  const paymentDetails = useCallback(() => {
+    if (paymentDetailError)
+      return <div>An error occurred: {paymentDetailError}</div>;
 
     return (
       <div>
         <Subheading>Current card</Subheading>
-        <Card
-          last4={preferences.paymentDetails.last4}
-          name={preferences.paymentDetails.name}
-          brand={preferences.paymentDetails.brand}
-        />
+        <Card last4={last4} name={name} brand={brand} />
 
         <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
         <SubscribeForm
           buttonName="Update"
           loadingText="Updating Card Info..."
-          name={preferences.paymentDetails.name}
-          subscribe={this.updatePaymentDetails}
+          name={name}
+          subscribe={updatePaymentDetails}
         />
       </div>
     );
-  };
+  }, [paymentDetailError, last4, name, brand, updatePaymentDetails]);
 
-  render() {
-    const { preferences } = this.props.store;
-    return (
-      <Container>
-        <Title>Payment Info</Title>
-        {preferences.isLoadingPaymentDetails ? (
-          <div>Loading payment details...</div>
-        ) : (
-          this.paymentDetails()
-        )}
-      </Container>
-    );
-  }
-}
-
-export const PaymentInfo = inject('store', 'signals')(
-  observer(PaymentInfoComponent)
-);
+  return (
+    <Container>
+      <Title>Payment Info</Title>
+      {isLoadingPaymentDetails ? (
+        <div>Loading payment details...</div>
+      ) : (
+        paymentDetails()
+      )}
+    </Container>
+  );
+};
