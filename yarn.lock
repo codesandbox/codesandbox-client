@@ -1144,7 +1144,7 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/template-icons@^1.0.1":
+"@codesandbox/template-icons@^1.0.1", "@codesandbox/template-icons@^1.01":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-1.0.1.tgz#c29068ce93d7d1db8dfbf0c82d618ee7192d9fb8"
   integrity sha512-o7Zgw88GoV/xogZ56rwXFohIYoYsB2UiKERC49Y1yuwV6SFAshPLdUBx9GX6HAHLUQg5R0pOoRrSeEsan+dHEw==
