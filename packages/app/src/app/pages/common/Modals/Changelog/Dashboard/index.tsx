@@ -1,12 +1,12 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
+import CSS from 'csstype';
+import { useOvermind } from 'app/overmind';
 import { Link } from 'react-router-dom';
 import theme from '@codesandbox/common/lib/theme';
-
 import { Button } from '@codesandbox/common/lib/components/Button';
 
 // Inline styles because styled-components didn't load the styles
-const titleStyles = {
+const titleStyles: CSS.Properties = {
   fontWeight: 600,
   color: 'rgba(255, 255, 255, 0.9)',
   fontSize: '1.125rem',
@@ -16,7 +16,7 @@ const titleStyles = {
   textTransform: 'uppercase',
 };
 
-const dateStyles = {
+const dateStyles: CSS.Properties = {
   color: 'rgba(255, 255, 255, 0.5)',
   fontSize: '.875rem',
   float: 'right',
@@ -24,7 +24,7 @@ const dateStyles = {
   textAlign: 'right',
 };
 
-const subTitleStyles = {
+const subTitleStyles: CSS.Properties = {
   fontWeight: 600,
   color: 'rgba(255, 255, 255, .9)',
   fontSize: '1rem',
@@ -32,7 +32,7 @@ const subTitleStyles = {
   marginBottom: 0,
 };
 
-const descriptionStyles = {
+const descriptionStyles: CSS.Properties = {
   lineHeight: 1.6,
   color: 'rgba(255, 255, 255, 0.7)',
   fontWeight: 600,
@@ -41,9 +41,15 @@ const descriptionStyles = {
   marginBottom: 0,
 };
 
-const W = props => <span {...props} style={{ color: 'white' }} />;
+const W: FunctionComponent = props => (
+  <span {...props} style={{ color: 'white' }} />
+);
 
-function DashboardChangelog({ signals }) {
+const DashboardChangelog: FunctionComponent = () => {
+  const {
+    actions: { modalClosed },
+  } = useOvermind();
+
   return (
     <div
       style={{
@@ -130,12 +136,12 @@ function DashboardChangelog({ signals }) {
           block
           small
           secondary
-          onClick={() => {
-            signals.modalClosed();
-          }}
+          onClick={() => modalClosed()}
         >
           Close
         </Button>
+        {/* 
+  // @ts-ignore */}
         <Button
           href="/post/announcing-codesandbox-dashboard-teams"
           style={{ marginTop: '1rem', marginLeft: '.25rem' }}
@@ -149,6 +155,6 @@ function DashboardChangelog({ signals }) {
       </div>
     </div>
   );
-}
+};
 
-export default inject('signals')(hooksObserver(DashboardChangelog));
+export default DashboardChangelog;
