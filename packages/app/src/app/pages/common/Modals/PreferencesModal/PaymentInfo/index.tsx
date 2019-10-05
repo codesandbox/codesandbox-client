@@ -21,7 +21,7 @@ export const PaymentInfo: FunctionComponent = () => {
 
   useEffect(() => {
     paymentDetailsRequested();
-  }, [paymentDetailsRequested]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updatePaymentDetails = useCallback(
     ({ token }) => {
