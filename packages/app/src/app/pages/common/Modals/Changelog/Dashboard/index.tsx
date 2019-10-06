@@ -45,7 +45,7 @@ const W: FunctionComponent = props => (
   <span {...props} style={{ color: 'white' }} />
 );
 
-const DashboardChangelog: FunctionComponent = () => {
+export const DashboardChangelog: FunctionComponent = () => {
   const {
     actions: { modalClosed },
   } = useOvermind();
@@ -156,5 +156,3 @@ const DashboardChangelog: FunctionComponent = () => {
     </div>
   );
 };
-
-export default DashboardChangelog;
