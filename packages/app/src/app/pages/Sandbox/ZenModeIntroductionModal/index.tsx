@@ -5,7 +5,7 @@ import Row from '@codesandbox/common/lib/components/flex/Row';
 
 import { Container, Heading, Explanation } from './elements';
 
-const ZenModeIntroduction: FunctionComponent = () => {
+export const ZenModeIntroduction: FunctionComponent = () => {
   const {
     actions: { modalClosed },
   } = useOvermind();
@@ -28,5 +28,3 @@ const ZenModeIntroduction: FunctionComponent = () => {
     </Container>
   );
 };
-
-export default ZenModeIntroduction;
