@@ -1,7 +1,7 @@
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useOvermind } from 'app/overmind';
-import React from 'react';
+import React, { ComponentProps, FunctionComponent } from 'react';
 
+import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 
 import {
@@ -29,18 +29,18 @@ import {
 import { Logo } from './Logo';
 import { MenuBar } from './MenuBar';
 import { SandboxName } from './SandboxName';
-import { IHeaderProps } from './types';
 
-export const Header: React.FC<IHeaderProps> = ({ zenMode }) => {
+type Props = Pick<ComponentProps<typeof Container>, 'zenMode'>;
+export const Header: FunctionComponent<Props> = ({ zenMode }) => {
   const {
     state: {
+      hasLogIn,
+      isLoggedIn,
+      isPatron,
       preferences: {
         settings: { experimentVSCode: vscode },
       },
-      isPatron,
       updateStatus,
-      hasLogIn,
-      isLoggedIn,
       user,
     },
   } = useOvermind();
@@ -65,13 +65,21 @@ export const Header: React.FC<IHeaderProps> = ({ zenMode }) => {
 
       <Right>
         {updateStatus === 'available' && <RefreshButton />}
-        {!isLoggedIn || (!isPatron && <PatronButton />)}
+
+        {!(isLoggedIn && isPatron) && <PatronButton />}
+
         {!isLoggedIn && <PreferencesButton />}
+
         <NewSandboxButton />
+
         {isLoggedIn && <LikeButton />}
+
         {user && user.curatorAt && <PickButton />}
+
         <ShareButton />
+
         <ForkButton />
+
         <AccountContainer>
           {isLoggedIn ? (
             <UserMenuContainer>
