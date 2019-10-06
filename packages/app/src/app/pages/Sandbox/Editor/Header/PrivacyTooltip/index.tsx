@@ -1,38 +1,40 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
-import { ThemeProvider } from 'styled-components';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import theme from '@codesandbox/common/lib/design-language/theme';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Container, Text, Link, Select } from './elements';
-import * as Icons from './icons';
+import React, { FunctionComponent } from 'react';
+import { ThemeProvider } from 'styled-components';
 
-export const PrivacyTooltip = () => {
+import { useOvermind } from 'app/overmind';
+
+import { Container, Text, Link, Select } from './elements';
+import { Private, Public, Unlisted } from './icons';
+
+export const PrivacyTooltip: FunctionComponent = () => {
   const {
     actions: {
       workspace: { sandboxPrivacyChanged },
     },
     state: {
-      user,
       editor: {
         currentSandbox: { owned, privacy },
       },
+      user,
     },
   } = useOvermind();
 
   const config = {
     0: {
       description: 'Everyone can see this Sandbox',
-      icon: <Icons.Public />,
+      Icon: Public,
     },
     1: {
       description:
         'Only people with a private link are able to see this Sandbox',
-      icon: <Icons.Unlisted />,
+      Icon: Unlisted,
     },
     2: {
       description: 'Only you can see this Sandbox.',
-      icon: <Icons.Private />,
+      Icon: Private,
     },
   };
 
@@ -43,22 +45,18 @@ export const PrivacyTooltip = () => {
       source: 'tooltip',
     });
   };
+  const { description, Icon } = config[privacy];
 
   return (
     <ThemeProvider theme={theme}>
       <Container>
         <Tooltip
-          delay={0}
-          interactive
-          onShown={() => {
-            track('Sandbox - Open Privacy Tooltip', { owned });
-          }}
           content={
             <>
               <Text size="3" marginBottom={4}>
                 {owned ? (
                   <>
-                    {user && user.subscription ? (
+                    {user?.subscription ? (
                       'Adjust privacy settings.'
                     ) : (
                       <>
@@ -74,22 +72,28 @@ export const PrivacyTooltip = () => {
               </Text>
 
               <Select
+                disabled={!user?.subscription || !owned}
                 marginBottom={2}
-                value={privacy}
                 onChange={onChange}
-                disabled={!user || !user.subscription || !owned}
+                value={privacy}
               >
                 <option value={0}>Public</option>
+
                 <option value={1}>Unlisted</option>
+
                 <option value={2}>Private</option>
               </Select>
+
               <Text size="2" color="grays.300">
-                {config[privacy].description}
+                {description}
               </Text>
             </>
           }
+          delay={0}
+          interactive
+          onShown={() => track('Sandbox - Open Privacy Tooltip', { owned })}
         >
-          {config[privacy].icon}
+          <Icon />
         </Tooltip>
       </Container>
     </ThemeProvider>

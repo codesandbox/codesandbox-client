@@ -11,7 +11,7 @@ export const PickButton: FunctionComponent = () => {
     },
     state: {
       editor: {
-        currentSandbox: { id, title, description, owned },
+        currentSandbox: { description, id, owned, title },
       },
     },
   } = useOvermind();
