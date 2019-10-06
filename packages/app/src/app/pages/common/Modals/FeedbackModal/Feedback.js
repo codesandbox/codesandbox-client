@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { inject, observer } from 'app/componentConnectors';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
 
@@ -7,147 +6,121 @@ import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextAre
 import Input from '@codesandbox/common/lib/components/Input';
 import pushToAirtable from 'app/store/utils/pushToAirtable';
 
+import { useOvermind } from 'app/overmind';
 import { EmojiButton } from './elements';
 
-class Feedback extends React.Component {
-  state = {
-    feedback: '',
-    email: (this.props.user || {}).email,
-    emoji: null,
-    loading: false,
-  };
+const Feedback = props => {
+  const {
+    actions: { modalClosed, notificationAdded },
+  } = useOvermind();
+  const { id, user } = props;
+  const [feedback, setFeedback] = React.useState('');
+  const [email, setEmail] = React.useState((user || {}).email);
+  const [emoji, setEmoji] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
 
-  onChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
+  const setHappy = () => setEmoji('happy');
 
-  onSubmit = evt => {
-    const { id, user, signals } = this.props;
-    const { feedback, emoji, email } = this.state;
+  const setSad = () => setEmoji('sad');
+
+  const onSubmit = async evt => {
     evt.preventDefault();
-
-    this.setState({ loading: true }, () => {
-      pushToAirtable({
+    setLoading(true);
+    try {
+      await pushToAirtable({
         sandboxId: id,
         feedback,
         emoji,
         username: (user || {}).username,
         email,
-      })
-        .then(() => {
-          this.setState(
-            {
-              feedback: '',
-              emoji: null,
-              loading: false,
-            },
-            () => {
-              signals.modalClosed();
+      });
+      setFeedback('');
+      setEmoji(null);
+      setLoading(false);
 
-              signals.notificationAdded({
-                message: `Thanks for your feedback!`,
-                type: 'success',
-              });
-            }
-          );
-        })
-        .catch(e => {
-          signals.notificationAdded({
-            message: `Something went wrong while sending feedback: ${
-              e.message
-            }`,
-            type: 'error',
-          });
-
-          this.setState({ loading: false });
-        });
-    });
+      modalClosed();
+      notificationAdded({
+        title: `Thanks for your feedback!`,
+        notificationType: 'success',
+      });
+    } catch (e) {
+      notificationAdded({
+        title: `Something went wrong while sending feedback: ${e.message}`,
+        notificationType: 'error',
+      });
+      setLoading(false);
+    }
   };
 
-  setHappy = () => {
-    this.setState({ emoji: 'happy' });
-  };
+  return (
+    <form onSubmit={onSubmit}>
+      <AutosizeTextArea
+        css={`
+          width: 100%;
+        `}
+        name="feedback"
+        value={feedback}
+        onChange={e => setFeedback(e.target.value)}
+        placeholder="What are your thoughts?"
+        minRows={3}
+        required
+      />
+      {!user && (
+        <Margin top={0.5}>
+          <Input
+            css={`
+              width: 100%;
+            `}
+            type="email"
+            name="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Email if you wish to be contacted"
+          />
+        </Margin>
+      )}
 
-  setSad = () => {
-    this.setState({ emoji: 'sad' });
-  };
+      <Margin
+        top={0.5}
+        css={`
+          display: flex;
+          align-items: center;
+        `}
+      >
+        <EmojiButton
+          type="button"
+          active={emoji === 'happy'}
+          onClick={setHappy}
+        >
+          <span role="img" aria-label="happy">
+            😊
+          </span>
+        </EmojiButton>
 
-  render() {
-    const { feedback, emoji, email } = this.state;
-    return (
-      <form onSubmit={this.onSubmit}>
-        <AutosizeTextArea
+        <EmojiButton type="button" active={emoji === 'sad'} onClick={setSad}>
+          <span role="img" aria-label="sad">
+            😞
+          </span>
+        </EmojiButton>
+
+        <div
           css={`
-            width: 100%;
-          `}
-          name="feedback"
-          value={feedback}
-          onChange={this.onChange}
-          placeholder="What are your thoughts?"
-          minRows={3}
-          required
-        />
-        {!this.props.user && (
-          <Margin top={0.5}>
-            <Input
-              css={`
-                width: 100%;
-              `}
-              type="email"
-              name="email"
-              value={email}
-              onChange={this.onChange}
-              placeholder="Email if you wish to be contacted"
-            />
-          </Margin>
-        )}
-
-        <Margin
-          top={0.5}
-          css={`
-            display: flex;
-            align-items: center;
+            flex: 1;
           `}
         >
-          <EmojiButton
-            type="button"
-            active={emoji === 'happy'}
-            onClick={this.setHappy}
-          >
-            <span role="img" aria-label="happy">
-              😊
-            </span>
-          </EmojiButton>
-
-          <EmojiButton
-            type="button"
-            active={emoji === 'sad'}
-            onClick={this.setSad}
-          >
-            <span role="img" aria-label="sad">
-              😞
-            </span>
-          </EmojiButton>
-
-          <div
+          <Button
+            disabled={loading}
+            small
             css={`
-              flex: 1;
+              float: right;
             `}
           >
-            <Button
-              disabled={this.state.loading}
-              small
-              css={`
-                float: right;
-              `}
-            >
-              {this.state.loading ? 'Sending...' : 'Submit'}
-            </Button>
-          </div>
-        </Margin>
-      </form>
-    );
-  }
-}
+            {loading ? 'Sending...' : 'Submit'}
+          </Button>
+        </div>
+      </Margin>
+    </form>
+  );
+};
 
-export default inject('signals')(observer(Feedback));
+export default Feedback;
