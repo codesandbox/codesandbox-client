@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useOvermind } from 'app/overmind';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import { CurrentUser } from '@codesandbox/common/lib/types';
 
 import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
 import Input from '@codesandbox/common/lib/components/Input';
@@ -9,11 +10,16 @@ import pushToAirtable from 'app/store/utils/pushToAirtable';
 
 import { EmojiButton } from './elements';
 
-const Feedback = props => {
+interface ICollectionInfoProps {
+  id: string;
+  user: CurrentUser;
+}
+
+const Feedback: React.FC<ICollectionInfoProps> = ({ id, user }) => {
   const {
     actions: { modalClosed, notificationAdded },
   } = useOvermind();
-  const { id, user } = props;
+
   const [feedback, setFeedback] = React.useState('');
   const [email, setEmail] = React.useState((user || {}).email);
   const [emoji, setEmoji] = React.useState(null);
