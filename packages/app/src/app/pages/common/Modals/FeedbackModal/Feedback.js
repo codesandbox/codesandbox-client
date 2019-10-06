@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useOvermind } from 'app/overmind';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
 
@@ -6,7 +7,6 @@ import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextAre
 import Input from '@codesandbox/common/lib/components/Input';
 import pushToAirtable from 'app/store/utils/pushToAirtable';
 
-import { useOvermind } from 'app/overmind';
 import { EmojiButton } from './elements';
 
 const Feedback = props => {
