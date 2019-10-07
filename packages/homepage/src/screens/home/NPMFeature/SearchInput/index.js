@@ -57,6 +57,7 @@ const SearchInput = () => {
           style={{ marginTop: '1rem' }}
           width={160}
           src={algoliaImage}
+          loading="lazy"
         />
       </a>
     </div>
