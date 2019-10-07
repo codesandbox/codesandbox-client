@@ -1,7 +1,7 @@
 import React from 'react';
 import { orderBy } from 'lodash-es';
 import { useOvermind } from 'app/overmind';
-import { Overlay as OverlayComponent } from 'app/components/Overlay';
+import { useMenuState, Menu, MenuItem, MenuDisclosure } from 'reakit/Menu';
 import { Container, TemplatesName, OverlayContainer } from './elements';
 import { Option } from './Option';
 import { ITemplate } from '../../types';
@@ -15,6 +15,10 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
   possibleTemplates,
   hideFilters,
 }: IFilterOptionsProps) => {
+  const menu = useMenuState({
+    placement: 'bottom-end',
+  });
+
   const {
     state: {
       dashboard: { isTemplateSelected, filters },
@@ -40,49 +44,8 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
 
   const allSelected = possibleTemplates.every(t => isTemplateSelected(t.id));
 
-  const Overlay = () => (
-    <OverlayContainer>
-      {possibleTemplates.length > 0 ? (
-        <>
-          {orderBy(possibleTemplates, 'niceName').map(template => {
-            const selected = isTemplateSelected(template.id);
-
-            return (
-              <Option
-                toggleTemplate={toggleTemplate}
-                selected={selected}
-                key={template.name}
-                color={template.color}
-                id={template.id}
-                niceName={template.niceName || template.name}
-              />
-            );
-          })}
-
-          <Option
-            toggleTemplate={() => {
-              if (!allSelected) {
-                blacklistedTemplatesCleared();
-              } else {
-                blacklistedTemplatesChanged({
-                  templates: possibleTemplates.map(t => t.id) || [],
-                });
-              }
-            }}
-            selected={allSelected}
-            color="#374140"
-            id="all"
-            style={{ marginTop: '1rem' }}
-            niceName="Select All"
-          />
-        </>
-      ) : (
-        'No environments found'
-      )}
-    </OverlayContainer>
-  );
-
   const { blacklistedTemplates } = filters;
+
   const templateCount = possibleTemplates.length - blacklistedTemplates.length;
   const templateMessage =
     templateCount === possibleTemplates.length && templateCount > 0
@@ -92,14 +55,68 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
         }`;
 
   return (
-    <OverlayComponent event="Dashboard - Order By" content={Overlay}>
-      {open => (
-        <Container hideFilters={hideFilters}>
-          Showing{' '}
-          <TemplatesName onClick={open}>{templateMessage}</TemplatesName>
-        </Container>
-      )}
-    </OverlayComponent>
+    <>
+      <MenuDisclosure {...menu}>
+        {disclosureProps => (
+          <Container hideFilters={hideFilters}>
+            <span aria-hidden>Showing </span>
+            <TemplatesName
+              {...disclosureProps}
+              aria-label={`select showing sandboxes, current ${templateMessage}`}
+            >
+              {templateMessage}
+            </TemplatesName>
+          </Container>
+        )}
+      </MenuDisclosure>
+      <Menu unstable_portal {...menu} aria-label="Dashboard - Order By">
+        <OverlayContainer as="ul">
+          {possibleTemplates.length > 0 ? (
+            <>
+              {orderBy(possibleTemplates, 'niceName').map(template => {
+                const selected = isTemplateSelected(template.id);
+
+                return (
+                  <MenuItem
+                    as={Option}
+                    {...menu}
+                    toggleTemplate={toggleTemplate}
+                    selected={selected}
+                    key={template.name}
+                    color={template.color}
+                    id={template.id}
+                    niceName={template.niceName || template.name}
+                  />
+                );
+              })}
+
+              <MenuItem
+                as={Option}
+                {...menu}
+                toggleTemplate={() => {
+                  if (!allSelected) {
+                    blacklistedTemplatesCleared();
+                  } else {
+                    blacklistedTemplatesChanged({
+                      templates: possibleTemplates.map(t => t.id) || [],
+                    });
+                  }
+                }}
+                selected={allSelected}
+                color="#374140"
+                id="all"
+                style={{ marginTop: '1rem' }}
+                niceName="Select All"
+              />
+            </>
+          ) : (
+            <MenuItem {...menu} disabled>
+              No environments found
+            </MenuItem>
+          )}
+        </OverlayContainer>
+      </Menu>
+    </>
   );
 };
 

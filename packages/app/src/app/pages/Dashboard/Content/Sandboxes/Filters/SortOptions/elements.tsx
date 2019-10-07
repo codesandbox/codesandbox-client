@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import ArrowDown from 'react-icons/lib/md/arrow-downward';
 
-export const OptionContainer = styled.a`
+export const OptionContainer = styled.a<{ selected: boolean }>`
   transition: 0.3s ease color;
   display: flex;
   vertical-align: middle;
@@ -12,6 +12,9 @@ export const OptionContainer = styled.a`
   text-decoration: none;
   cursor: pointer;
   font-weight: 600;
+  appearance: none;
+  background: none;
+  border: none;
 
   &:last-child {
     margin-bottom: 0;
@@ -33,7 +36,7 @@ export const IconContainer = styled.div`
   margin-right: 0.5rem;
 `;
 
-export const Container = styled.div`
+export const Container = styled.div<{ hideOrder: boolean }>`
   transition: 0.3s ease opacity;
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.875rem;
@@ -69,7 +72,9 @@ export const OverlayContainer = styled.div`
 export const OrderName = styled.span`
   transition: 0.3s ease color;
   color: rgba(255, 255, 255, 0.8);
-
+  appearance: none !important;
+  background: none;
+  border: none;
   cursor: pointer;
 
   &:hover {
