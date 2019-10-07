@@ -31,6 +31,8 @@ export const Container = styled.div`
   padding: 0 1rem;
   box-sizing: border-box;
   background-color: ${props => props.theme['editor.background']};
+  /* match sidebar border */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
 export const MenuIcon = styled(MenuIconSVG)`
