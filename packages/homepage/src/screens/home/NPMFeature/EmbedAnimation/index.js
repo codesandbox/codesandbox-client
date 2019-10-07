@@ -75,6 +75,7 @@ export default class EmbedAnimation extends React.PureComponent {
           alt="Browser"
           style={{ boxShadow: '0 5px 8px rgba(0, 0, 0, 0.3)' }}
           src={browserSvg}
+          loading="lazy"
         />
         <AbsoluteImage
           ref={el => {
