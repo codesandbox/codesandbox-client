@@ -1,9 +1,9 @@
 // @flow
-import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
 
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import getDefinition from '@codesandbox/common/lib/templates';
+import React, { FunctionComponent } from 'react';
+import { useOvermind } from 'app/overmind';
 import { WorkspaceSubtitle } from '../elements';
 
 import AddVersion from './AddVersion';
