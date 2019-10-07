@@ -24,7 +24,7 @@ export const createSubscriptionClicked: AsyncAction<{
       state.patron.price,
       coupon
     );
-    effects.notificationToast.error('Thank you very much for your support!');
+    effects.notificationToast.success('Thank you very much for your support!');
   } catch (error) {
     if (
       error.error_code &&
