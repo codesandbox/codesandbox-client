@@ -8,7 +8,7 @@ import { WorkspaceSubtitle } from '../elements';
 
 import AddVersion from './AddVersion';
 import { VersionEntry } from './VersionEntry';
-import AddResource from './AddResource';
+import { AddResource } from './AddResource';
 import ExternalResource from './ExternalResource';
 
 import { ErrorMessage } from './elements';
