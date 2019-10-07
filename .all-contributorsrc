@@ -1376,6 +1376,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "dangdennis",
+      "name": "Dennis Dang",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/22418429?v=4",
+      "profile": "https://dangdennis.com/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
