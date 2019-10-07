@@ -117,7 +117,7 @@ export type CurrentUser = {
     plan?: 'pro' | 'patron';
   } | null;
   curatorAt: string;
-  badges: Array<Badge>;
+  badges: Badge[];
   integrations: {
     zeit?: {
       token: string;
