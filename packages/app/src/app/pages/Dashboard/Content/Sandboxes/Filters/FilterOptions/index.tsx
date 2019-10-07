@@ -32,7 +32,7 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
       },
     },
   } = useOvermind();
-    
+
   const toggleTemplate = (name: string, select: boolean) =>
     select
       ? blacklistedTemplateRemoved({
@@ -44,7 +44,7 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
 
   const allSelected = possibleTemplates.every(t => isTemplateSelected(t.id));
 
-  const { blacklistedTemplates } = store.dashboard.filters;
+  const { blacklistedTemplates } = filters;
 
   const templateCount = possibleTemplates.length - blacklistedTemplates.length;
   const templateMessage =
@@ -74,9 +74,7 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
           {possibleTemplates.length > 0 ? (
             <>
               {orderBy(possibleTemplates, 'niceName').map(template => {
-                const selected = store.dashboard.isTemplateSelected(
-                  template.id
-                );
+                const selected = isTemplateSelected(template.id);
 
                 return (
                   <MenuItem
@@ -97,9 +95,9 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
                 {...menu}
                 toggleTemplate={() => {
                   if (!allSelected) {
-                    signals.dashboard.blacklistedTemplatesCleared();
+                    blacklistedTemplatesCleared();
                   } else {
-                    signals.dashboard.blacklistedTemplatesChanged({
+                    blacklistedTemplatesChanged({
                       templates: possibleTemplates.map(t => t.id) || [],
                     });
                   }
