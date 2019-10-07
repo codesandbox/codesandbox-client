@@ -1,98 +1,84 @@
-import React, { useCallback, useState } from 'react';
+import { Sandbox } from '@codesandbox/common/lib/types';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { getSandboxName as getSandboxNameBase } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { basename } from 'path';
-import { useOvermind } from 'app/overmind';
+import React, {
+  ChangeEvent,
+  FormEvent,
+  FunctionComponent,
+  KeyboardEvent,
+  useState,
+} from 'react';
 import Media from 'react-media';
-
 import { Spring } from 'react-spring/renderprops';
 
-import track from '@codesandbox/common/lib/utils/analytics';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { useOvermind } from 'app/overmind';
+
 import {
   Container,
-  SandboxName,
+  FolderName,
   SandboxForm,
   SandboxInput,
-  FolderName,
+  SandboxName,
 } from './elements';
 
-interface ICollectionInfoProps {
+type Props = {
   sandbox: Sandbox;
-  isLoggedIn: boolean;
-}
-
-const CollectionInfo: React.FC<ICollectionInfoProps> = ({
-  sandbox,
-  isLoggedIn,
-}) => {
-  const [updatingName, setUpdatingName] = useState(false);
-  const [nameValue, setNameValue] = useState('');
+};
+export const CollectionInfo: FunctionComponent<Props> = ({ sandbox }) => {
   const {
     actions: {
-      workspace: { sandboxInfoUpdated, valueChanged },
       modalOpened,
+      workspace: { sandboxInfoUpdated, valueChanged },
     },
+    state: { isLoggedIn },
   } = useOvermind();
+  const [nameValue, setNameValue] = useState('');
+  const [updatingName, setUpdatingName] = useState(false);
 
-  const sandboxName = useCallback(() => getSandboxName(sandbox) || 'Untitled', [
-    sandbox,
-  ]);
-
-  const updateSandboxInfo = useCallback(() => {
+  const getSandboxName = () => getSandboxNameBase(sandbox) || 'Untitled';
+  const updateSandboxInfo = () => {
     sandboxInfoUpdated();
+
     setUpdatingName(false);
-  }, [sandboxInfoUpdated]);
+  };
 
-  const submitNameChange = useCallback(
-    e => {
-      e.preventDefault();
-      updateSandboxInfo();
+  const submitNameChange = ({ preventDefault }: FormEvent<HTMLFormElement>) => {
+    preventDefault();
 
-      track('Change Sandbox Name From Header');
-    },
-    [updateSandboxInfo]
-  );
-
-  const handleNameClick = useCallback(() => {
-    setUpdatingName(true);
-    setNameValue(sandboxName());
-  }, [sandboxName]);
-
-  const handleKeyUp = useCallback(
-    e => {
-      if (e.keyCode === ESC) {
-        updateSandboxInfo();
-      }
-    },
-    [updateSandboxInfo]
-  );
-
-  const handleBlur = useCallback(() => {
     updateSandboxInfo();
-  }, [updateSandboxInfo]);
 
-  const handleInputUpdate = useCallback(
-    e => {
-      valueChanged({
-        field: 'title',
-        value: e.target.value,
-      });
+    track('Change Sandbox Name From Header');
+  };
+  const handleKeyUp = ({ keyCode }: KeyboardEvent<HTMLInputElement>) => {
+    if (keyCode === ESC) {
+      updateSandboxInfo();
+    }
+  };
+  const handleBlur = () => {
+    updateSandboxInfo();
+  };
+  const handleInputUpdate = ({
+    target: { value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    valueChanged({ field: 'title', value });
 
-      setNameValue(e.target.value);
-    },
-    [valueChanged]
-  );
+    setNameValue(value);
+  };
+  const handleNameClick = () => {
+    setNameValue(getSandboxName());
+    setUpdatingName(true);
+  };
 
   const value = nameValue !== 'Untitled' && updatingName ? nameValue : '';
-
   const folderName = sandbox.collection
     ? basename(sandbox.collection.path) ||
       (sandbox.team ? sandbox.team.name : 'My Sandboxes')
     : 'My Sandboxes';
 
   return (
-    <Spring<{ opacity: number; pointerEvents: 'none' | 'initial' }>
+    <Spring
       from={{
         opacity: 1,
       }}
@@ -116,19 +102,10 @@ const CollectionInfo: React.FC<ICollectionInfoProps> = ({
               <Media
                 query="(min-width: 950px)"
                 render={() => (
-                  <div
-                    style={{
-                      ...style,
-                      overflow: 'hidden',
-                    }}
-                  >
+                  <div style={{ ...style, overflow: 'hidden' }}>
                     {isLoggedIn ? (
                       <FolderName
-                        onClick={() => {
-                          modalOpened({
-                            modal: 'moveSandbox',
-                          });
-                        }}
+                        onClick={() => modalOpened({ modal: 'moveSandbox' })}
                       >
                         {folderName}
                       </FolderName>
@@ -139,6 +116,7 @@ const CollectionInfo: React.FC<ICollectionInfoProps> = ({
                   </div>
                 )}
               />
+
               {updatingName ? (
                 <SandboxForm onSubmit={submitNameChange}>
                   <SandboxInput
@@ -157,7 +135,7 @@ const CollectionInfo: React.FC<ICollectionInfoProps> = ({
                 </SandboxForm>
               ) : (
                 <SandboxName onClick={handleNameClick}>
-                  {sandboxName()}
+                  {getSandboxName()}
                 </SandboxName>
               )}
             </Container>
@@ -167,5 +145,3 @@ const CollectionInfo: React.FC<ICollectionInfoProps> = ({
     </Spring>
   );
 };
-
-export { CollectionInfo };
