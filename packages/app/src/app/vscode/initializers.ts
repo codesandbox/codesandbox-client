@@ -3,9 +3,12 @@ import { vscode } from 'app/vscode';
 export function initializeThemeCache() {
   try {
     if (!localStorage.getItem('vs-global://colorThemeData')) {
+      localStorage.setItem('newUser', 'true');
       import('./theme-cache').then(rawTheme => {
         localStorage.setItem('vs-global://colorThemeData', rawTheme.default);
       });
+    } else {
+      localStorage.removeItem('newUser');
     }
   } catch (e) {
     console.error(e);
@@ -14,6 +17,7 @@ export function initializeThemeCache() {
 
 export function initializeExtensionsFolder() {
   // @ts-ignore
+  // eslint-disable-next-line no-undef
   const fs = BrowserFS.BFSRequire('fs');
 
   if (!fs.existsSync('/vscode/extensions')) {
@@ -23,6 +27,7 @@ export function initializeExtensionsFolder() {
 
 export function initializeSettings() {
   // @ts-ignore
+  // eslint-disable-next-line no-undef
   const fs = BrowserFS.BFSRequire('fs');
   if (!fs.existsSync('/vscode/settings.json')) {
     fs.writeFileSync(
@@ -86,6 +91,7 @@ export function initializeCustomTheme() {
     };
 
     // @ts-ignore
+    // eslint-disable-next-line no-undef
     const fs = BrowserFS.BFSRequire('fs');
     fs.writeFileSync(
       '/extensions/custom-theme/package.json',

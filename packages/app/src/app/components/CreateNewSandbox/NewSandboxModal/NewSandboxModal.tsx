@@ -21,7 +21,7 @@ export const NewSandboxModal = ({
 }: INewSandboxModalProps) => {
   const tab = useTabState({
     orientation: 'vertical',
-    selectedId: 'Create',
+    selectedId: localStorage.getItem('newUser') ? 'Welcome' : 'Create',
   });
 
   return (
