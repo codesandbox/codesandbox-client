@@ -1,11 +1,13 @@
 {
   "projectName": "codesandbox-client",
   "projectOwner": "codesandbox",
+  "repoType": "github",
+  "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
   "imageSize": 100,
-  "commit": true,
+  "commit": false,
   "contributors": [
     {
       "login": "CompuIves",
@@ -1376,7 +1378,6 @@
       ]
     }
   ],
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "commitConvention": "none"
 }

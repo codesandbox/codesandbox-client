@@ -64,7 +64,7 @@ To install the project you need to have `yarn` and `node`
     - you can use [fnm](https://github.com/Schniz/fnm) (`fnm use`) to change
       your current node version to the one specified in `.nvmrc`
 3.  from the root of the project: `yarn` to install all dependencies
-    - make sure you have latest `yarn` version 
+    - make sure you have latest `yarn` version
 4.  from the root of the project: `yarn start`
     - this builds the dependencies (`codesandbox-api` and
       `codesandbox-browserfs`) and runs the `app` development environment,
@@ -126,9 +126,9 @@ To add yourself to the table of contributors on the `README.md`, please use the
 automated script as part of your PR:
 
 ```sh
-yarn add-contributor
+yarn contributors:add
 ```
 
 Follow the prompt and commit `.all-contributorsrc` and `README.md` in the PR.
 
-Thank you for taking the time to contribute! :+1:
+Thank you for taking the time to contribute! 👍
