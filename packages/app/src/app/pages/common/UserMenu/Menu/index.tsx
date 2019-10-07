@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 import UserIcon from 'react-icons/lib/ti/user';
 import ExitIcon from 'react-icons/lib/md/exit-to-app';
@@ -19,7 +18,14 @@ import { MenuItem, Menu as ReakitMenu, MenuStateReturn } from 'reakit/Menu';
 // @ts-ignore
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 
-import { Container, Item, Icon, Separator, LinkItem } from './elements';
+import {
+  Container,
+  Icon,
+  Separator,
+  ItemLink,
+  ItemA,
+  ItemButton,
+} from './elements';
 import { FeedbackIcon } from './FeedbackIcon';
 
 interface Props {
@@ -50,86 +56,79 @@ export const Menu = ({
   return (
     <ReakitMenu {...menuProps} aria-label="user options">
       <Container>
-        <LinkItem to={profileUrl(username)} tabIndex={-1}>
-          <MenuItem as={Item} {...menuProps}>
-            <Icon>
-              <UserIcon />
-            </Icon>
-            My Profile
-          </MenuItem>
-        </LinkItem>
+        <MenuItem {...menuProps} to={profileUrl(username)} as={ItemLink}>
+          <Icon>
+            <UserIcon />
+          </Icon>
+          My Profile
+        </MenuItem>
 
-        <Separator role="presentation" />
-        <LinkItem to={dashboardUrl()}>
-          <MenuItem as={Item} {...menuProps}>
-            <Icon>
-              <InfoIcon />
-            </Icon>
-            Dashboard
-          </MenuItem>
-        </LinkItem>
+        <Separator {...menuProps} />
 
-        <LinkItem as="a" href="/docs">
-          <MenuItem as={Item} {...menuProps}>
-            <Icon>
-              <BookIcon />
-            </Icon>
-            Documentation
-          </MenuItem>
-        </LinkItem>
+        <MenuItem {...menuProps} to={dashboardUrl()} as={ItemLink}>
+          <Icon>
+            <InfoIcon />
+          </Icon>
+          Dashboard
+        </MenuItem>
+
+        <MenuItem {...menuProps} href="/docs" as={ItemA}>
+          <Icon>
+            <BookIcon />
+          </Icon>
+          Documentation
+        </MenuItem>
 
         {curator && (
-          <LinkItem to={curatorUrl()}>
-            <MenuItem as={Item} {...menuProps}>
-              <Icon>
-                <span style={{ width: 14 }} role="img" aria-label="Star">
-                  ✨
-                </span>
-              </Icon>
-              Curator Dashboard
-            </MenuItem>
-          </LinkItem>
+          <MenuItem {...menuProps} to={curatorUrl()} as={ItemLink}>
+            <Icon>
+              <span style={{ width: 14 }} role="img" aria-label="Star">
+                ✨
+              </span>
+            </Icon>
+            Curator Dashboard
+          </MenuItem>
         )}
 
-        <LinkItem as={Link} to={patronUrl()}>
-          <MenuItem as={Item} {...menuProps}>
-            <Icon>
-              <PatronBadge
-                style={{ width: 24, margin: '-6px -5px' }}
-                size={24}
-              />
-            </Icon>
-            Patron Page
-          </MenuItem>
-        </LinkItem>
+        <MenuItem {...menuProps} to={patronUrl()} as={ItemLink}>
+          <Icon>
+            <PatronBadge style={{ width: 24, margin: '-6px -5px' }} size={24} />
+          </Icon>
+          Patron Page
+        </MenuItem>
 
-        <Separator role="presentation" />
+        <Separator {...menuProps} />
 
-        <MenuItem as={Item} {...menuProps} onClick={openStorageManagement}>
+        <MenuItem
+          {...menuProps}
+          as={ItemButton}
+          onClick={openStorageManagement}
+        >
           <Icon>
             <FolderIcon />
           </Icon>
           Storage Management
         </MenuItem>
 
-        <MenuItem as={Item} {...menuProps} onClick={openPreferences}>
+        <MenuItem {...menuProps} as={ItemButton} onClick={openPreferences}>
           <Icon>
             <SettingsIcon />
           </Icon>
           Preferences
         </MenuItem>
 
-        <Separator role="presentation" />
+        <Separator {...menuProps} />
 
-        <MenuItem as={Item} {...menuProps} onClick={openFeedback}>
+        <MenuItem {...menuProps} as={ItemButton} onClick={openFeedback}>
           <Icon>
             <FeedbackIcon />
           </Icon>
           Submit Feedback
         </MenuItem>
 
-        <Separator role="presentation" />
-        <MenuItem as={Item} {...menuProps} onClick={signOut}>
+        <Separator {...menuProps} />
+
+        <MenuItem {...menuProps} as={ItemButton} onClick={signOut}>
           <Icon>
             <ExitIcon />
           </Icon>
