@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: flex;
   position: relative;
-  background-color: ${props => props.theme.background2};
+  background-color: ${props => props.theme['editor.background']};
   height: calc(100% - 2.5rem);
 `;
 
@@ -11,7 +11,7 @@ export const Tabs = styled.div`
   display: flex;
   height: 35px;
   min-height: 35px;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: ${props => props.theme['tab.inactiveBackground']};
   overflow-x: auto;
   font-size: 0.875rem;
 
