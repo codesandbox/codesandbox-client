@@ -451,7 +451,7 @@ export default {
   },
   createTemplate(
     sandboxId: string,
-    template: CustomTemplate
+    template: { color: string; description: string; title: string }
   ): Promise<CustomTemplate> {
     return api
       .post<{ template: CustomTemplate }>(`/sandboxes/${sandboxId}/templates`, {

@@ -64,6 +64,7 @@ export const connectionChanged: Action<boolean> = ({ state }, connected) => {
 
 type ModalName =
   | 'deleteDeployment'
+  | 'deleteSandbox'
   | 'feedback'
   | 'forkServerModal'
   | 'liveSessionEnded'
