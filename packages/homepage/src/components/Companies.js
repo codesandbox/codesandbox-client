@@ -26,7 +26,12 @@ export default ({ companies }) => (
           rel="noopener noreferrer"
           aria-label={`${company.name} is using CodeSandbox`}
         >
-          <img height="150" src={company.logoURL} alt={company.name} />
+          <img
+            height="150"
+            src={company.logoURL}
+            alt={company.name}
+            loading="lazy"
+          />
         </a>
       </div>
     ))}
