@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { useOvermind } from 'app/overmind';
 import Files from '../../Files';
 import Dependencies from '../../Dependencies';
 import { WorkspaceItem } from '../../WorkspaceItem';
@@ -7,6 +8,10 @@ import { ItemTitle } from '../../elements';
 
 export default () => {
   const [editActions, setEditActions] = useState(null);
+  const {
+    state: { editor },
+  } = useOvermind();
+  const staticTemplate = editor.currentSandbox.template === 'static';
 
   return (
     <div>
@@ -15,9 +20,11 @@ export default () => {
         {editActions}
       </ItemTitle>
       <Files setEditActions={setEditActions} />
-      <WorkspaceItem defaultOpen title="Dependencies">
-        <Dependencies />
-      </WorkspaceItem>
+      {!staticTemplate ? (
+        <WorkspaceItem defaultOpen title="Dependencies">
+          <Dependencies />
+        </WorkspaceItem>
+      ) : null}
     </div>
   );
 };
