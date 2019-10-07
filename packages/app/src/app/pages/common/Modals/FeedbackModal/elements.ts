@@ -1,6 +1,10 @@
 import styled, { css } from 'styled-components';
 
-export const EmojiButton = styled.button`
+interface Props {
+  active: boolean;
+}
+
+export const EmojiButton = styled.button<Props>`
   transition: 0.3s ease all;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-color: rgba(0, 0, 0, 0.3);
