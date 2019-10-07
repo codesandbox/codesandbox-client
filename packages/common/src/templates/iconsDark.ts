@@ -22,7 +22,7 @@ import {
   GridsomeIconDark,
   QuasarIconDark,
   SapperIconDark,
-  ParcelIconDark,
+  JavaScriptIconDark,
   VuePressIconDark,
   UnibitIconDark,
 } from '@codesandbox/template-icons';
@@ -82,7 +82,7 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
     case angular.name:
       return AngularIconDark;
     case parcel.name:
-      return ParcelIconDark;
+      return JavaScriptIconDark;
     case dojo.name:
       return DojoIconDark;
     case ember.name:

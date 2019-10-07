@@ -19,7 +19,7 @@ type State = {
   authToken: string;
   error: string;
   contributors: string[];
-  user: CurrentUser;
+  user: CurrentUser | null;
   connected: boolean;
   notifications: Notification[];
   isLoadingCLI: boolean;
