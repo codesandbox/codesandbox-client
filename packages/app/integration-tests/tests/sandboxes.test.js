@@ -27,9 +27,7 @@ const SANDBOXES = [
   '2ppkvzx570', // nested imports
   'rl2m3xklyo', // node_modules import
   'vanilla',
-  // Disable material-ui test because it uses "latest" dependencies
-  // which have a breaking change
-  // 'n5wy74w8vl', // material-ui generated demo
+  'github/codesandbox/integration-sandboxes/tree/master/n5wy74w8vl', // material-ui generated demo
   'algolia-doc-onboarding-demos-angular-media', // algolia angular demo
   { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
   { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
