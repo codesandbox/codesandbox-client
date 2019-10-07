@@ -103,10 +103,8 @@ export const Project: FunctionComponent<Props> = ({ editable }) => {
                   <PrivacySelect
                     value={sandbox.privacy}
                     disabled={!isPatron}
-                    onChange={event =>
-                      sandboxPrivacyChanged({
-                        privacy: Number(event.target.value),
-                      })
+                    onChange={({ target: { value } }) =>
+                      sandboxPrivacyChanged(Number(value) as 0 | 1 | 2)
                     }
                   >
                     <option value={0}>Public</option>
@@ -144,6 +142,7 @@ export const Project: FunctionComponent<Props> = ({ editable }) => {
         {sandbox.forkedFromSandbox && (
           <Item>
             <PropertyName>Forked From</PropertyName>
+
             <PropertyValue>
               <TemplateStyledLink to={sandboxUrl(sandbox.forkedFromSandbox)}>
                 {getSandboxName(sandbox.forkedFromSandbox)}
@@ -162,7 +161,7 @@ export const Project: FunctionComponent<Props> = ({ editable }) => {
                 <>
                   The environment determines how a sandbox is executed, you can
                   find more info{' '}
-                  <a target="_blank" href="/docs/environment">
+                  <a href="/docs/environment" target="_blank">
                     here
                   </a>
                   .
@@ -172,6 +171,7 @@ export const Project: FunctionComponent<Props> = ({ editable }) => {
               <Icon />
             </Tooltip>
           </PropertyName>
+
           <PropertyValue>
             <BundlerLink href={template.url}>{sandbox.template}</BundlerLink>
           </PropertyValue>

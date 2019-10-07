@@ -177,17 +177,15 @@ export const sandboxDeleted: AsyncAction = async ({
   effects.router.redirectToSandboxWizard();
 };
 
-export const sandboxPrivacyChanged: AsyncAction<{
-  privacy: 0 | 1 | 2;
-}> = async ({ state, effects, actions }, { privacy }) => {
+export const sandboxPrivacyChanged: AsyncAction<0 | 1 | 2> = async (
+  { state, effects, actions },
+  privacy
+) => {
   if (
     getTemplate(state.editor.currentSandbox.template).isServer &&
     privacy === 2
   ) {
-    actions.modalOpened({
-      modal: 'privacyServerWarning',
-      message: null,
-    });
+    actions.modalOpened({ modal: 'privacyServerWarning' });
   }
 
   await effects.api.updatePrivacy(state.editor.currentId, privacy);
