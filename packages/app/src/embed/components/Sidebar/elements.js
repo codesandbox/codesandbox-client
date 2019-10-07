@@ -11,7 +11,7 @@ export const Container = styled.div`
   height: ${isIOS ? '100%' : '100vh'};
   color: rgba(255, 255, 255, 0.8);
   z-index: 10;
-  background-color: ${props => props.theme.sidebar};
+  background-color: ${props => props.theme['sideBar.background']};
   overflow: auto;
 `;
 

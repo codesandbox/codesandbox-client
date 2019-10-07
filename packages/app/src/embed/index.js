@@ -5,12 +5,10 @@ import { ThemeProvider } from 'styled-components';
 
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import 'normalize.css';
-import theme from '@codesandbox/common/lib/theme';
 import '@codesandbox/common/lib/global.css';
-
-import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import track from '@codesandbox/common/lib/utils/analytics';
 
+import theme from './theme';
 import App from './components/App';
 
 document.addEventListener('click', () => {
@@ -20,7 +18,7 @@ document.addEventListener('click', () => {
 requirePolyfills().then(() => {
   function renderApp(Component) {
     render(
-      <ThemeProvider theme={{ ...theme, ...codesandbox.colors }}>
+      <ThemeProvider theme={theme}>
         <Component />
       </ThemeProvider>,
       document.getElementById('root')
