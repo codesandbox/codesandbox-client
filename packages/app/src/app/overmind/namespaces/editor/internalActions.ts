@@ -83,6 +83,10 @@ export const saveCode: AsyncAction<{
     return;
   }
 
+  if (state.editor.currentId === 'new' && !state.editor.isForked) {
+    return;
+  }
+
   if (state.preferences.settings.experimentVSCode) {
     await actions.editor.codeChanged({
       code,
@@ -314,9 +318,11 @@ export const forkSandbox: AsyncAction<{
     }
 
     await actions.internal.setCurrentSandbox(forkedSandbox);
+    state.editor.isForked = true;
     effects.notificationToast.success('Forked sandbox!');
     effects.router.updateSandboxUrl(forkedSandbox);
   } catch (error) {
+    state.editor.isForked = false;
     console.error(error);
     effects.notificationToast.error('Sorry, unable to fork this sandbox');
   }
