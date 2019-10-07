@@ -1,79 +1,85 @@
-import React from 'react';
 import { orderBy } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+
 import { useOvermind } from 'app/overmind';
 import { Overlay as OverlayComponent } from 'app/components/Overlay';
+
 import { Container, TemplatesName, OverlayContainer } from './elements';
 import { Option } from './Option';
-import { ITemplate } from '../../types';
 
-interface IFilterOptionsProps {
-  possibleTemplates: ITemplate[];
+type Template = {
+  id: string;
+  name: string;
+  color: string;
+  niceName: string;
+};
+type Props = {
+  possibleTemplates: Template[];
   hideFilters?: boolean;
-}
-
-const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
+};
+export const FilterOptions: FunctionComponent<Props> = ({
   possibleTemplates,
   hideFilters,
-}: IFilterOptionsProps) => {
+}) => {
   const {
-    state: {
-      dashboard: { isTemplateSelected, filters },
-    },
     actions: {
       dashboard: {
         blacklistedTemplateAdded,
         blacklistedTemplateRemoved,
-        blacklistedTemplatesCleared,
         blacklistedTemplatesChanged,
+        blacklistedTemplatesCleared,
+      },
+    },
+    state: {
+      dashboard: {
+        filters: { blacklistedTemplates },
+        isTemplateSelected,
       },
     },
   } = useOvermind();
 
   const toggleTemplate = (name: string, select: boolean) =>
-    select
-      ? blacklistedTemplateRemoved({
-          template: name,
-        })
-      : blacklistedTemplateAdded({
-          template: name,
-        });
-
-  const allSelected = possibleTemplates.every(t => isTemplateSelected(t.id));
+    select ? blacklistedTemplateRemoved(name) : blacklistedTemplateAdded(name);
+  const allSelected = possibleTemplates.every(({ id }) =>
+    isTemplateSelected(id)
+  );
 
   const Overlay = () => (
     <OverlayContainer>
       {possibleTemplates.length > 0 ? (
         <>
-          {orderBy(possibleTemplates, 'niceName').map(template => {
-            const selected = isTemplateSelected(template.id);
+          {orderBy(possibleTemplates, 'niceName').map(
+            ({ color, id, name, niceName }) => {
+              const selected = isTemplateSelected(id);
 
-            return (
-              <Option
-                toggleTemplate={toggleTemplate}
-                selected={selected}
-                key={template.name}
-                color={template.color}
-                id={template.id}
-                niceName={template.niceName || template.name}
-              />
-            );
-          })}
+              return (
+                <Option
+                  color={color}
+                  id={id}
+                  key={name}
+                  niceName={niceName || name}
+                  selected={selected}
+                  toggleTemplate={toggleTemplate}
+                />
+              );
+            }
+          )}
 
           <Option
-            toggleTemplate={() => {
-              if (!allSelected) {
-                blacklistedTemplatesCleared();
-              } else {
-                blacklistedTemplatesChanged({
-                  templates: possibleTemplates.map(t => t.id) || [],
-                });
-              }
-            }}
-            selected={allSelected}
             color="#374140"
             id="all"
-            style={{ marginTop: '1rem' }}
             niceName="Select All"
+            selected={allSelected}
+            style={{ marginTop: '1rem' }}
+            toggleTemplate={() => {
+              if (allSelected) {
+                return blacklistedTemplatesChanged(
+                  possibleTemplates.map(({ id }) => id)
+                );
+              }
+
+              return blacklistedTemplatesCleared();
+            }}
           />
         </>
       ) : (
@@ -82,7 +88,6 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
     </OverlayContainer>
   );
 
-  const { blacklistedTemplates } = filters;
   const templateCount = possibleTemplates.length - blacklistedTemplates.length;
   const templateMessage =
     templateCount === possibleTemplates.length && templateCount > 0
@@ -92,7 +97,7 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
         }`;
 
   return (
-    <OverlayComponent event="Dashboard - Order By" content={Overlay}>
+    <OverlayComponent content={Overlay} event="Dashboard - Order By">
       {open => (
         <Container hideFilters={hideFilters}>
           Showing{' '}
@@ -102,5 +107,3 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
     </OverlayComponent>
   );
 };
-
-export const FilterOptions = FilterOptionsComponent;
