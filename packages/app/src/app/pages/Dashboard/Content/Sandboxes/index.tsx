@@ -1,43 +1,38 @@
+import React, { ComponentProps, ComponentType, FunctionComponent } from 'react';
+
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import { useOvermind } from 'app/overmind';
-import React from 'react';
 
-import { SandboxFragment } from 'app/graphql/types';
 import { Container, HeaderContainer, HeaderTitle } from '../elements';
 import { SandboxGrid } from '../SandboxGrid';
+
 import { DashboardActions } from './Actions';
 import { Filters } from './Filters';
-import { ITemplate } from './types';
 
-interface IContentProps {
-  sandboxes: SandboxFragment[];
-  Header: React.ComponentType | string;
-  SubHeader?: React.ComponentType;
-  ExtraElement: React.ComponentType<IExtraElementProps>;
-
-  possibleTemplates?: ITemplate[];
+type Props = {
+  Header: ComponentType | string;
   isLoading?: boolean;
-  hideOrder?: boolean;
-  hideFilters?: boolean;
-  page?: 'search' | 'recent';
-  actions?: any[];
-}
-
-export interface IExtraElementProps {
-  style?: React.CSSProperties;
-}
-
-export const Content: React.FC<IContentProps> = ({
-  sandboxes,
-  Header,
-  SubHeader,
-  isLoading,
-  ExtraElement,
-  hideOrder,
-  hideFilters,
-  possibleTemplates = [],
-  page,
+  SubHeader?: ComponentType;
+} & Pick<ComponentProps<typeof DashboardActions>, 'actions'> &
+  Pick<
+    ComponentProps<typeof SandboxGrid>,
+    'ExtraElement' | 'page' | 'sandboxes'
+  > &
+  Pick<
+    ComponentProps<typeof Filters>,
+    'hideFilters' | 'hideOrder' | 'possibleTemplates'
+  >;
+export const Content: FunctionComponent<Props> = ({
   actions: dashboardActions = [],
+  ExtraElement,
+  Header,
+  hideFilters,
+  hideOrder,
+  isLoading = false,
+  page,
+  possibleTemplates = [],
+  sandboxes,
+  SubHeader,
 }) => {
   const { state, actions } = useOvermind();
 
@@ -46,6 +41,7 @@ export const Content: React.FC<IContentProps> = ({
       <HeaderContainer>
         <HeaderTitle>
           {Header}
+
           {sandboxes && !isLoading && (
             <span
               style={{
@@ -59,14 +55,18 @@ export const Content: React.FC<IContentProps> = ({
             </span>
           )}
         </HeaderTitle>
+
         <DashboardActions actions={dashboardActions} />
+
         <Filters
-          hideOrder={hideOrder}
           hideFilters={hideFilters}
+          hideOrder={hideOrder}
           possibleTemplates={possibleTemplates}
         />
       </HeaderContainer>
+
       {SubHeader}
+
       {isLoading ? (
         <DelayedAnimation
           delay={0.6}
