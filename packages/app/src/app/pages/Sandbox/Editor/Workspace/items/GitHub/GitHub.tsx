@@ -17,9 +17,7 @@ export const GitHub: FunctionComponent = () => {
         currentSandbox: { originalGit, owned },
       },
       isLoggedIn,
-      user: {
-        integrations: { github },
-      },
+      user,
     },
   } = useOvermind();
   const showPlaceHolder = !owned || !isLoggedIn;
@@ -37,32 +35,33 @@ export const GitHub: FunctionComponent = () => {
     return <More message={message} id="github" />;
   }
 
-  return github ? ( // eslint-disable-line
-    originalGit ? (
+  if (!user.integrations.github) {
+    return (
       <>
-        <Git />
+        <Description>
+          You can create commits and open pull requests if you add GitHub to
+          your integrations.
+        </Description>
 
-        <WorkspaceItem title="Export to GitHub">
-          <CreateRepo />
-        </WorkspaceItem>
+        <div style={{ margin: '1rem' }}>
+          <GithubIntegration small />
+        </div>
       </>
-    ) : (
-      <>
-        <Description>Export your sandbox to GitHub.</Description>
+    );
+  }
+  return originalGit ? (
+    <>
+      <Git />
 
+      <WorkspaceItem title="Export to GitHub">
         <CreateRepo />
-      </>
-    )
+      </WorkspaceItem>
+    </>
   ) : (
     <>
-      <Description>
-        You can create commits and open pull requests if you add GitHub to your
-        integrations.
-      </Description>
+      <Description>Export your sandbox to GitHub.</Description>
 
-      <div style={{ margin: '1rem' }}>
-        <GithubIntegration small />
-      </div>
+      <CreateRepo />
     </>
   );
 };
