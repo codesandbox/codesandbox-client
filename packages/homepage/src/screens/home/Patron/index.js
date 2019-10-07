@@ -68,7 +68,12 @@ export default () => (
 
         <Content>
           <Badge>
-            <img width={200} src={getBadge('patron_4')} alt="Patron IV" />
+            <img
+              width={200}
+              src={getBadge('patron_4')}
+              alt="Patron IV"
+              loading="lazy"
+            />
           </Badge>
           <Button target="_blank" rel="noreferrer noopener" href="/patron">
             Open Patron Page
