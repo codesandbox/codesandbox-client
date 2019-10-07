@@ -165,13 +165,13 @@ Examples:
 
 We allow people to import sandboxes from GitHub/CLI/API, and to make sure that
 the right template is imported we have some specific logic that determines a
-template for every template. This logic is **not** found in `codesanbox-client`.
+template for every template. This logic is **not** found in `codesandbox-client`.
 
 This means you that you also have to add your template in another file in the
 `codesandbox-importers` repository called
 [templates.ts](https://github.com/codesandbox/codesandbox-importers/blob/master/packages/import-utils/src/create-sandbox/templates.ts).
 
-When you create your Pull Request in `codesanbox-client`, you also need to
+When you create your Pull Request in `codesandbox-client`, you also need to
 create a Pull Request in `codesandbox-importer` and reference it in your Pull
 Request for `codesandbox-client`. Example:
 
@@ -223,7 +223,7 @@ of:
 ```
 
 To test it, you use CodeSandbox to access the repository that will be used for
-the template like so: `https://codesanbox.io/s/github/user/repo-name`, where
+the template like so: `https://codesandbox.io/s/github/user/repo-name`, where
 `user` is the user/organisation who owns the repository and `repo-name` is the
 name of the repository to use for the template.
 
@@ -250,4 +250,4 @@ If your testing went well, congratulations! You have now created a new template
 for CodeSandbox!
 
 We will make sure to merge and deploy the two Pull Requests you made to both
-`codesanbox-client` and `codesandbox-importers` at the same time.
+`codesandbox-client` and `codesandbox-importers` at the same time.
