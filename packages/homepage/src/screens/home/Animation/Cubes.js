@@ -231,7 +231,7 @@ export default class Cubes extends React.Component {
     }
 
     return (
-      <Container>
+      <Container aria-hidden>
         {this.state.templates.map((t, i) => {
           const selected = template === t.template;
 
