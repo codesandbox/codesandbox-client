@@ -4,7 +4,6 @@ import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Navigation } from 'app/pages/common/Navigation';
-// import { inject, hooksObserver } from 'app/componentConnectors';
 import { useOvermind } from 'app/overmind';
 import history from 'app/utils/history';
 import { NewSandboxModal } from '../Dashboard/Content/CreateNewSandbox/NewSandboxModal';
