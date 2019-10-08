@@ -197,7 +197,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
     const messages = nothing
       ? []
       : [
-        {
+        s     {
           method: 'log',
           data: [
             isConsoleEnabled
