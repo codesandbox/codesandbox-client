@@ -39,6 +39,8 @@ const StyledClearIcon = styled(ClearIcon)`
 const extractToggleConsoleEnabled = (props: StyledProps) =>
   props.store.preferences.settings.toggleConsoleEnabled;
 
+const consoleLogFontStyle =
+  'font-style: italic; color: rgba(255, 255, 255, 0.3)';
 class ConsoleComponent extends React.Component<StyledProps> {
   state = {
     messages: [],
@@ -242,7 +244,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
               isConsoleEnabled
                 ? '%cConsole was cleared'
                 : '%cConsole is disabled',
-              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+              consoleLogFontStyle,
             ],
           },
         ];
@@ -264,20 +266,14 @@ class ConsoleComponent extends React.Component<StyledProps> {
           ...state.messages,
           {
             method: 'log',
-            data: [
-              '%cConsole is enabled',
-              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
-            ],
+            data: ['%cConsole is enabled', consoleLogFontStyle],
           },
         ]
       : [
           ...state.messages,
           {
             method: 'log',
-            data: [
-              '%cConsole is disabled',
-              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
-            ],
+            data: ['%cConsole is disabled', consoleLogFontStyle],
           },
         ];
 
