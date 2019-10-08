@@ -54,7 +54,7 @@ export const Menu = ({
   }, [menuProps.visible]);
 
   return (
-    <ReakitMenu {...menuProps} aria-label="user options">
+    <ReakitMenu {...menuProps} style={{ outline: 0 }} aria-label="user options">
       <Container>
         <MenuItem {...menuProps} to={profileUrl(username)} as={ItemLink}>
           <Icon>
