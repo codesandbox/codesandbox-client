@@ -157,59 +157,119 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
+<<<<<<< HEAD
+    if (!this.state.isConsoleEnabled) {
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Refactored 'addMessage' by using prop destructuring syntax for a simpler 'if' check for the toggleConsoleEnabled settings option
+      const {
+        updateStatus,
+        store: {
+          preferences: { settings },
+        },
+      } = this.props;
+
+      if (settings && !settings.toggleConsoleEnabled) {
+<<<<<<< HEAD
+        return;
+      }
+
+      if (updateStatus) {
+        updateStatus(this.getType(method));
+=======
+    if (
+      this.props.store &&
+      this.props.store.preferences &&
+      this.props.store.preferences.settings &&
+      !this.props.store.preferences.settings.toggleConsoleEnabled
+    )
+=======
+>>>>>>> Refactored 'addMessage' by using prop destructuring syntax for a simpler 'if' check for the toggleConsoleEnabled settings option
+>>>>>>> Virtual console toggle message is implemented
+        return;
+      }
+
+      if (this.props.updateStatus) {
+        this.props.updateStatus(this.getType(method));
+<<<<<<< HEAD
+=======
+>>>>>>> Implemented 'Toggle console output'
+=======
+    if (updateStatus) {
+      updateStatus(this.getType(method));
+>>>>>>> Refactored 'addMessage' by using prop destructuring syntax for a simpler 'if' check for the toggleConsoleEnabled settings option
+=======
     if (!this.state.isConsoleEnabled) {
       return;
     }
 
     if (this.props.updateStatus) {
       this.props.updateStatus(this.getType(method));
+>>>>>>> Virtual console toggle message is implemented
+>>>>>>> Virtual console toggle message is implemented
+      }
+
+      this.setState(state =>
+        update(state, {
+          messages: {
+            $push: [
+              {
+                method,
+                data,
+              },
+            ],
+          },
+        })
+      );
     }
 
-    this.setState(state =>
-      update(state, {
-        messages: {
-          $push: [
-            {
-              method,
-              data,
-            },
-          ],
-        },
-      })
-    );
-  }
+    list;
 
-  list;
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.sandboxId !== this.props.sandboxId) {
-      this.clearConsole(true);
-    }
-  }
-
-  clearConsole = (nothing?: boolean) => {
-    const { updateStatus } = this.props;
-    if (updateStatus) {
-      updateStatus('clear');
+    UNSAFE_componentWillReceiveProps(nextProps) {
+      if (nextProps.sandboxId !== this.props.sandboxId) {
+        this.clearConsole(true);
+      }
     }
 
-    const { isConsoleEnabled } = this.state;
-    const messages = nothing
-      ? []
-      : [
-        {
-          method: 'log',
-          data: [
-            isConsoleEnabled
-              ? '%cConsole was cleared'
-              : '%cConsole is disabled',
-            consoleLogFontStyle,
-          ],
-        },
-      ];
+    clearConsole = (nothing?: boolean) => {
+      const { updateStatus } = this.props;
+      if (updateStatus) {
+        updateStatus('clear');
+      }
 
-    this.setState({ messages });
-  };
+      const { isConsoleEnabled } = this.state;
+      const messages = nothing
+        ? []
+        : [
+<<<<<<< HEAD
+          {
+            method: 'log',
+            data: [
+              isConsoleEnabled
+                ? '%cConsole was cleared'
+                : '%cConsole is disabled',
+              consoleLogFontStyle,
+            ],
+          },
+        ];
+=======
+          {
+            method: 'log',
+            data: [
+              isConsoleEnabled
+                ? '%cConsole was cleared'
+                : '%cConsole is disabled',
+              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+            ],
+          },
+        ];
+>>>>>>> Virtual console toggle message is implemented
+
+      this.setState({ messages });
+    };
 
   // Add "Console is enabled/disabled" message when user changes preference
   static getDerivedStateFromProps(props, state) {
@@ -222,6 +282,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
 
     const messages = isConsoleEnabled
       ? [
+<<<<<<< HEAD
         ...state.messages,
         {
           method: 'log',
@@ -235,6 +296,27 @@ class ConsoleComponent extends React.Component<StyledProps> {
           data: ['%cConsole is disabled', consoleLogFontStyle],
         },
       ];
+=======
+          ...state.messages,
+          {
+            method: 'log',
+            data: [
+              '%cConsole is enabled',
+              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+            ],
+          },
+        ]
+      : [
+          ...state.messages,
+          {
+            method: 'log',
+            data: [
+              '%cConsole is disabled',
+              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+            ],
+          },
+        ];
+>>>>>>> Virtual console toggle message is implemented
 
     return { messages, isConsoleEnabled };
   }
