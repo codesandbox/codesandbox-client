@@ -161,8 +161,8 @@ class ConsoleComponent extends React.Component<StyledProps> {
       return;
     }
 
-    if (updateStatus) {
-      updateStatus(this.getType(method));
+    if (this.props.updateStatus) {
+      this.props.updateStatus(this.getType(method));
     }
 
     this.setState(state =>
@@ -208,9 +208,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
         },
       ];
 
-    this.setState({
-      messages,
-    });
+    this.setState({ messages });
   };
 
   // Add "Console is enabled/disabled" message when user changes preference
