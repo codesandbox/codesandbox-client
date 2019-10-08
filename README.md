@@ -41,8 +41,7 @@ Thanks goes to these wonderful people
 ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
+<!-- prettier-ignore -->
 <table>
   <tr>
     <td align="center"><a href="http://ivesvh.com"><img src="https://avatars0.githubusercontent.com/u/587016?v=3" width="100px;" alt="Ives van Hoorne"/><br /><sub><b>Ives van Hoorne</b></sub></a><br /><a href="#question-CompuIves" title="Answering Questions">💬</a> <a href="#blog-CompuIves" title="Blogposts">📝</a> <a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#example-CompuIves" title="Examples">💡</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#review-CompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
@@ -231,11 +230,9 @@ Thanks goes to these wonderful people
     <td align="center"><a href="https://shriram-balaji.github.io"><img src="https://avatars1.githubusercontent.com/u/11358903?v=4" width="100px;" alt="Shriram Balaji"/><br /><sub><b>Shriram Balaji</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=Shriram-Balaji" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/chinmay17"><img src="https://avatars2.githubusercontent.com/u/7131231?v=4" width="100px;" alt="Chinmay Chaudhary"/><br /><sub><b>Chinmay Chaudhary</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=chinmay17" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Sakthivel"><img src="https://avatars3.githubusercontent.com/u/205201?v=4" width="100px;" alt="Sakthivel Sengodan Sapient"/><br /><sub><b>Sakthivel Sengodan Sapient</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=sakthivel" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/vanya829"><img src="https://avatars0.githubusercontent.com/u/1397979?v=4" width="100px;" alt="vanya829"/><br /><sub><b>vanya829</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=vanya829" title="Code">💻</a></td>
   </tr>
 </table>
-
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
