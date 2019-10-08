@@ -14,7 +14,7 @@ import track, { identify } from '@codesandbox/common/lib/utils/analytics';
 import App from './components/App';
 
 try {
-  identify('signed_in', Boolean(localStorage.jwt).toString());
+  identify('signed_in', Boolean(localStorage.jwt));
 } catch (e) {
   /* ignore error */
 }

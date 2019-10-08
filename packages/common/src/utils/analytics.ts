@@ -130,7 +130,7 @@ export async function logError(err: Error) {
   if (window.console && console.error) console.error(err);
 }
 
-export async function identify(key: string, value: string) {
+export async function identify(key: string, value: any) {
   try {
     if (!DNT) {
       if (typeof global.amplitude !== 'undefined') {
