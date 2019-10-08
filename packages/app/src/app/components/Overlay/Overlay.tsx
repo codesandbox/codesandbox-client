@@ -1,12 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTransition, animated, config } from 'react-spring';
 import track from '@codesandbox/common/lib/utils/analytics';
-import {
-  usePopoverState,
-  Popover,
-  PopoverDisclosure,
-  PopoverDisclosureHTMLProps,
-} from 'reakit/Popover';
 import { Container } from './elements';
 
 interface IOverlayProps {
@@ -14,7 +8,7 @@ interface IOverlayProps {
   isOpen?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
-  children: (props: PopoverDisclosureHTMLProps) => React.ReactNode;
+  children: (handleOpen: () => void) => React.ReactNode;
   content: React.ComponentType;
   noHeightAnimation?: boolean;
 }
@@ -28,27 +22,47 @@ export const Overlay: React.FC<IOverlayProps> = ({
   content: Content,
   noHeightAnimation = true,
 }) => {
+  const [open, setOpen] = useState(isOpen === undefined ? false : isOpen);
   const isControlled = isOpen !== undefined;
-  const popover = usePopoverState({
-    visible: isControlled ? isOpen : undefined,
-    placement: 'bottom-end',
-  });
+  const openState = isControlled ? isOpen : open;
 
-  React.useEffect(() => {
-    if (popover.visible) {
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (!e.defaultPrevented && openState) {
+        if (event) {
+          track(`Closed ${event}`);
+        }
+        if (isControlled) {
+          if (onClose) {
+            onClose();
+          }
+        } else {
+          setOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, [isOpen, onClose, event, openState, isControlled]);
+
+  const handleOpen = () => {
+    if (event) {
       track(`Opened ${event}`);
-      if (isControlled) {
+    }
+    if (isControlled) {
+      if (onOpen) {
         onOpen();
       }
     } else {
-      track(`Closed ${event}`);
-      if (isControlled) {
-        onClose();
-      }
+      setOpen(true);
     }
-  }, [event, isControlled, onClose, onOpen, popover.visible]);
+  };
 
-  const transitions = useTransition(popover.visible, null, {
+  const transitions = useTransition(openState, null, {
     config: config.default,
     from: {
       ...(noHeightAnimation ? {} : { height: 0 }),
@@ -65,23 +79,19 @@ export const Overlay: React.FC<IOverlayProps> = ({
   });
 
   return (
-    <Container>
-      <PopoverDisclosure {...popover}>
-        {props => children(props)}
-      </PopoverDisclosure>
-      <Popover unstable_portal {...popover} aria-label={event}>
-        {transitions.map(({ item, props }, i) =>
-          item ? (
-            // eslint-disable-next-line
-            <animated.div key={i} style={props}>
-              <Content />
-            </animated.div>
-          ) : (
-            // eslint-disable-next-line
-            <animated.span key={i} style={props} />
-          )
-        )}
-      </Popover>
+    <Container onMouseDown={e => e.preventDefault()}>
+      {children(handleOpen)}
+      {transitions.map(({ item, props }, i) =>
+        item ? (
+          // eslint-disable-next-line
+          <animated.div key={i} style={props}>
+            <Content />
+          </animated.div>
+        ) : (
+          // eslint-disable-next-line
+          <animated.span key={i} style={props} />
+        )
+      )}
     </Container>
   );
 };
