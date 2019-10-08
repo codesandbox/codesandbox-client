@@ -23,12 +23,21 @@ export type IMessage = {
 export type StyledProps = DevToolProps & {
   theme: typeof theme & { light: boolean };
 } & {
-  store: any;
+  store: {
+    preferences: {
+      settings: {
+        toggleConsoleEnabled: boolean;
+      };
+    };
+  };
 };
 
 const StyledClearIcon = styled(ClearIcon)`
   font-size: 0.8em;
 `;
+
+const extractToggleConsoleEnabled = (props: StyledProps) =>
+  props.store.preferences.settings.toggleConsoleEnabled;
 
 class ConsoleComponent extends React.Component<StyledProps> {
   state = {
@@ -36,6 +45,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
     initialClear: true,
     filter: [],
     searchKeywords: '',
+    isConsoleEnabled: extractToggleConsoleEnabled(this.props),
   };
 
   listener;
@@ -145,19 +155,12 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
-    const {
-      updateStatus,
-      store: {
-        preferences: { settings },
-      },
-    } = this.props;
-
-    if (settings && !settings.toggleConsoleEnabled) {
+    if (!this.state.isConsoleEnabled) {
       return;
     }
 
-    if (updateStatus) {
-      updateStatus(this.getType(method));
+    if (this.props.updateStatus) {
+      this.props.updateStatus(this.getType(method));
     }
 
     this.setState(state =>
@@ -183,26 +186,62 @@ class ConsoleComponent extends React.Component<StyledProps> {
   }
 
   clearConsole = (nothing?: boolean) => {
-    if (this.props.updateStatus) {
-      this.props.updateStatus('clear');
+    const { updateStatus } = this.props;
+    if (updateStatus) {
+      updateStatus('clear');
     }
 
+    const { isConsoleEnabled } = this.state;
     const messages = nothing
       ? []
       : [
           {
             method: 'log',
             data: [
-              '%cConsole was cleared',
+              isConsoleEnabled
+                ? '%cConsole was cleared'
+                : '%cConsole is disabled',
               'font-style: italic; color: rgba(255, 255, 255, 0.3)',
             ],
           },
         ];
 
-    this.setState({
-      messages,
-    });
+    this.setState({ messages });
   };
+
+  // Add "Console is enabled/disabled" message when user changes preference
+  static getDerivedStateFromProps(props, state) {
+    const isConsoleEnabled = extractToggleConsoleEnabled(props);
+    if (
+      state.messages.length > 0 &&
+      state.isConsoleEnabled === isConsoleEnabled
+    )
+      return null;
+
+    const messages = isConsoleEnabled
+      ? [
+          ...state.messages,
+          {
+            method: 'log',
+            data: [
+              '%cConsole is enabled',
+              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+            ],
+          },
+        ]
+      : [
+          ...state.messages,
+          {
+            method: 'log',
+            data: [
+              '%cConsole is disabled',
+              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+            ],
+          },
+        ];
+
+    return { messages, isConsoleEnabled };
+  }
 
   componentDidUpdate() {
     this.scrollToBottom();
@@ -236,8 +275,12 @@ class ConsoleComponent extends React.Component<StyledProps> {
       searchKeywordsHasError = true;
     }
 
+    // We need to access  this.props.store.preferences.settings.toggleConsoleEnabled
+    // to trigger console enabled/disabled message
+    const isConsoleEnabled = extractToggleConsoleEnabled(this.props);
+
     return (
-      <Container>
+      <Container key={(isConsoleEnabled as unknown) as number}>
         <Messages
           ref={el => {
             this.list = el;
