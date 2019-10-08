@@ -23,7 +23,9 @@ export const SortOptions: React.FC<{ hideOrder: boolean }> = ({
       dashboard: { orderByChanged },
     },
   } = useOvermind();
-  const menu = useMenuState();
+  const menu = useMenuState({
+    gutter: 10,
+  });
 
   const toggleSort = e => {
     e.preventDefault();

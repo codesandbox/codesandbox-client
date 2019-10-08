@@ -16,6 +16,11 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
   possibleTemplates,
   hideFilters,
 }: IFilterOptionsProps) => {
+  const menu = useMenuState({
+    gutter: 10,
+    placement: 'bottom-end',
+  });
+
   const {
     state: {
       dashboard: { isTemplateSelected, filters },
