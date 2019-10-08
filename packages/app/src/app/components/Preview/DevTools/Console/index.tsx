@@ -39,6 +39,8 @@ const StyledClearIcon = styled(ClearIcon)`
 const extractToggleConsoleEnabled = (props: StyledProps) =>
   props.store.preferences.settings.toggleConsoleEnabled;
 
+const consoleLogFontStyle =
+  'font-style: italic; color: rgba(255, 255, 255, 0.3)';
 class ConsoleComponent extends React.Component<StyledProps> {
   state = {
     messages: [],
@@ -212,7 +214,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
             isConsoleEnabled
               ? '%cConsole was cleared'
               : '%cConsole is disabled',
-            'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+            consoleLogFontStyle,
           ],
         },
       ];
@@ -220,12 +222,6 @@ class ConsoleComponent extends React.Component<StyledProps> {
     this.setState({ messages });
   };
 
-<<<<<<< HEAD
-  componentDidUpdate(prevProps: StyledProps) {
-    if (prevProps.hidden && !this.props.hidden) {
-      this.props.updateStatus('clear');
-    }
-=======
   // Add "Console is enabled/disabled" message when user changes preference
   static getDerivedStateFromProps(props, state) {
     const isConsoleEnabled = extractToggleConsoleEnabled(props);
@@ -237,31 +233,24 @@ class ConsoleComponent extends React.Component<StyledProps> {
 
     const messages = isConsoleEnabled
       ? [
-          ...state.messages,
-          {
-            method: 'log',
-            data: [
-              '%cConsole is enabled',
-              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
-            ],
-          },
-        ]
+        ...state.messages,
+        {
+          method: 'log',
+          data: ['%cConsole is enabled', consoleLogFontStyle],
+        },
+      ]
       : [
-          ...state.messages,
-          {
-            method: 'log',
-            data: [
-              '%cConsole is disabled',
-              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
-            ],
-          },
-        ];
+        ...state.messages,
+        {
+          method: 'log',
+          data: ['%cConsole is disabled', consoleLogFontStyle],
+        },
+      ];
 
     return { messages, isConsoleEnabled };
   }
 
   componentDidUpdate() {
->>>>>>> Virtual console toggle message is implemented
     this.scrollToBottom();
   }
 
