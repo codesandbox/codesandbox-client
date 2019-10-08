@@ -16,11 +16,6 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
   possibleTemplates,
   hideFilters,
 }: IFilterOptionsProps) => {
-  const menu = useMenuState({
-    gutter: 10,
-    placement: 'bottom-end',
-  });
-
   const {
     state: {
       dashboard: { isTemplateSelected, filters },
@@ -75,7 +70,12 @@ const FilterOptionsComponent: React.FC<IFilterOptionsProps> = ({
           </Container>
         )}
       </MenuDisclosure>
-      <Menu unstable_portal {...menu} aria-label="Dashboard - Order By">
+      <Menu
+        unstable_portal
+        {...menu}
+        aria-label="Dashboard - Order By"
+        style={{ outline: 0 }}
+      >
         <OverlayContainer as="ul">
           {possibleTemplates.length > 0 ? (
             <>

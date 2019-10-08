@@ -73,7 +73,12 @@ export const SortOptions: React.FC<{ hideOrder: boolean }> = ({
           </Container>
         )}
       </MenuDisclosure>
-      <Menu unstable_portal {...menu} aria-label="Dashboard - Order By">
+      <Menu
+        unstable_portal
+        {...menu}
+        aria-label="Dashboard - Order By"
+        style={{ outline: 0 }}
+      >
         <OverlayContainer as="ul">
           <MenuItem
             as={Option}
