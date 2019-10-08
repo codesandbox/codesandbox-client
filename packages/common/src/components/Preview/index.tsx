@@ -286,7 +286,6 @@ class BasePreview extends React.Component<Props, State> {
         this.executeCodeImmediately(true);
       } else {
         const { type } = data;
-
         switch (type) {
           case 'render': {
             this.executeCodeImmediately();
