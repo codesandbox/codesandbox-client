@@ -18,7 +18,11 @@ const TemplateWrapper = ({ children }) => (
         <Navigation />
       </div>
 
-      <main style={{ maxWidth: '100vw', overflowX: 'hidden' }} id="main">
+      <main
+        style={{ maxWidth: '100vw', overflowX: 'hidden' }}
+        id="main"
+        aria-label="main content"
+      >
         {children}
       </main>
 
