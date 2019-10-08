@@ -129,7 +129,6 @@ export default {
   sessionFrozen: types.boolean,
   currentModuleShortid: types.maybeNull(types.string),
   isForkingSandbox: types.boolean,
-  isForked: types.boolean,
   mainModuleShortid: types.maybeNull(types.string),
   sandboxes: types.map(Sandbox),
   isLoading: types.boolean,
