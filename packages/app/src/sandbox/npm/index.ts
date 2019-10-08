@@ -4,10 +4,11 @@ import { fetchDependencies } from './fetch-dependencies';
 import { getDependencyVersions } from '../version-resolving';
 import dependenciesToQuery from './dependencies-to-query';
 
+import { Manifest } from '../eval/manager';
 import setScreen from '../status-screen';
 
 let loadedDependencyCombination: string | null = null;
-let manifest = null;
+let manifest: null | Manifest = null;
 
 type NPMDependencies = {
   [dependency: string]: string;

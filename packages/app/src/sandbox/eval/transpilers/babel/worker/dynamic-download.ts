@@ -56,8 +56,9 @@ export const resolveAsyncModule = (
   modulePath: string,
   { ignoredExtensions }: { ignoredExtensions?: Array<string> }
 ): Promise<IResolveResponse> => {
-  if (downloadCache.get(modulePath)) {
-    return downloadCache.get(modulePath);
+  const cache = downloadCache.get(modulePath);
+  if (cache) {
+    return cache;
   }
 
   downloadCache.set(
@@ -92,7 +93,7 @@ export const resolveAsyncModule = (
     })
   );
 
-  return downloadCache.get(modulePath);
+  return downloadCache.get(modulePath)!;
 };
 
 export async function downloadPath(
@@ -111,7 +112,7 @@ export async function downloadPath(
 
   const fs = global.BrowserFS.BFSRequire('fs');
 
-  let existingFile: string;
+  let existingFile: string | undefined;
 
   try {
     existingFile = fs.readFileSync(r.path);
@@ -173,11 +174,16 @@ export async function downloadPath(
 
 export function downloadFromError(e: Error) {
   if (e.message.indexOf('Cannot find module') > -1) {
-    const dep = e.message.match(/Cannot find module '(.*?)'/)[1];
-    const from = e.message.match(/from '(.*?)'/)[1];
-    const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
+    const matchDep = e.message.match(/Cannot find module '(.*?)'/);
+    const matchFrom = e.message.match(/from '(.*?)'/);
 
-    return downloadPath(absolutePath);
+    if (matchDep && matchFrom) {
+      const dep = matchDep[1];
+      const from = matchFrom[1];
+      const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
+
+      return downloadPath(absolutePath);
+    }
   }
 
   return Promise.resolve();

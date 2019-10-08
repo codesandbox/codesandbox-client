@@ -1,6 +1,6 @@
 import { LoaderContext } from '../../transpiled-module';
 
-let core = null;
+let core: null | any = null;
 
 export default async (code: string, loaderContext: LoaderContext) => {
   if (!core) {

@@ -107,9 +107,13 @@ class ReasonTranspiler extends Transpiler {
         moduleName: getModuleName(x.path),
       }));
 
-    const mainReasonModule: ReasonModule = reasonModules.find(
+    const mainReasonModule: ReasonModule | undefined = reasonModules.find(
       m => m.path === loaderContext._module.module.path
     );
+
+    if (!mainReasonModule) {
+      throw new Error('Could not find main reason module');
+    }
 
     const modulesToAdd: Set<ReasonModule> = new Set();
     getDependencyList(reasonModules, modulesToAdd, mainReasonModule);

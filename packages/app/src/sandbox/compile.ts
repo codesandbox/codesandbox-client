@@ -11,6 +11,7 @@ import getDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates/index';
 
+import { ParsedConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types';
 import getPreset from './eval';
 import Manager, { Manifest } from './eval/manager';
 
@@ -80,8 +81,8 @@ function sendTestCount(
 
 let firstLoad = true;
 let hadError = false;
-let lastHeadHTML = null;
-let lastBodyHTML = null;
+let lastHeadHTML: string | null = null;
+let lastBodyHTML: string | null = null;
 let lastHeight = 0;
 let changedModuleCount = 0;
 
@@ -314,7 +315,7 @@ async function updateManager(
   sandboxId: string,
   template: TemplateType,
   managerModules,
-  manifest: Manifest,
+  manifest: Manifest | null,
   configurations: ParsedConfigurationFiles,
   isNewCombination: boolean,
   hasFileResolver: boolean
@@ -439,9 +440,9 @@ async function compile({
 
   hadError = false;
 
-  actionsEnabled = hasActions;
+  actionsEnabled = !!hasActions;
+  let managerModuleToTranspile: Module | undefined;
 
-  let managerModuleToTranspile = null;
   try {
     const templateDefinition = getDefinition(template);
     const configurations = parseConfigurations(
@@ -452,9 +453,9 @@ async function compile({
 
     const errors = Object.keys(configurations)
       .map(c => configurations[c])
-      .filter(x => x.error);
+      .filter(x => x && x.error) as ParsedConfigurationFile<any>[];
 
-    if (errors.length) {
+    if (errors[0] && errors[0].error) {
       const e = new Error(
         `We weren't able to parse: '${errors[0].path}': ${
           errors[0].error.message
@@ -473,7 +474,7 @@ async function compile({
       throw new Error('Could not find package.json');
     }
 
-    const parsedPackageJSON = configurations.package.parsed;
+    const parsedPackageJSON = configurations.package!.parsed;
 
     dispatch({ type: 'status', status: 'installing-dependencies' });
 
@@ -528,154 +529,157 @@ async function compile({
     // TODO: make this a separate lifecycle
     // await manager.preset.setup(manager);
 
-    dispatch({ type: 'status', status: 'transpiling' });
-    manager.setStage('transpilation');
+    if (manager) {
+      dispatch({ type: 'status', status: 'transpiling' });
+      manager.setStage('transpilation');
 
-    await manager.verifyTreeTranspiled();
-    await manager.transpileModules(managerModuleToTranspile);
+      await manager.verifyTreeTranspiled();
+      await manager.transpileModules(managerModuleToTranspile);
 
-    debug(`Transpilation time ${Date.now() - t}ms`);
+      debug(`Transpilation time ${Date.now() - t}ms`);
 
-    dispatch({ type: 'status', status: 'evaluating' });
-    manager.setStage('evaluation');
+      dispatch({ type: 'status', status: 'evaluating' });
+      manager.setStage('evaluation');
 
-    if (!skipEval) {
-      resetScreen();
+      if (!skipEval) {
+        resetScreen();
 
-      try {
-        // We set it as a time value for people that run two sandboxes on one computer
-        // they execute at the same time and we don't want them to conflict, so we check
-        // if the message was set a second ago
-        if (
-          firstLoad &&
-          localStorage.getItem('running') &&
-          Date.now() - +localStorage.getItem('running') > 8000
-        ) {
-          localStorage.removeItem('running');
-          showRunOnClick();
-          return;
+        try {
+          const lastRunTime = localStorage.getItem('running');
+          // We set it as a time value for people that run two sandboxes on one computer
+          // they execute at the same time and we don't want them to conflict, so we check
+          // if the message was set a second ago
+          if (firstLoad && lastRunTime && Date.now() - +lastRunTime > 8000) {
+            localStorage.removeItem('running');
+            showRunOnClick();
+            return;
+          }
+
+          localStorage.setItem('running', '' + Date.now());
+        } catch (e) {
+          /* no */
         }
 
-        localStorage.setItem('running', '' + Date.now());
-      } catch (e) {
-        /* no */
+        manager.preset.preEvaluate(manager, updatedModules);
+
+        if (!manager.webpackHMR) {
+          const htmlModulePath = templateDefinition
+            .getHTMLEntries(configurations)
+            .find(p => Boolean(modules[p]));
+          if (htmlModulePath) {
+            const htmlModule = modules[htmlModulePath];
+
+            const { head, body } = getHTMLParts(
+              htmlModule && htmlModule.code
+                ? htmlModule.code
+                : template === 'vue-cli'
+                ? '<div id="app"></div>'
+                : '<div id="root"></div>'
+            );
+
+            if (lastHeadHTML && lastHeadHTML !== head) {
+              document.location.reload();
+            }
+            if (manager && lastBodyHTML && lastBodyHTML !== body) {
+              manager.clearCompiledCache();
+            }
+
+            if (
+              !manager.preset.htmlDisabled ||
+              !firstLoad ||
+              process.env.LOCAL_SERVER
+            ) {
+              // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+              // on the first run.
+              document.body.innerHTML = body;
+            }
+            lastBodyHTML = body;
+            lastHeadHTML = head;
+          }
+        }
+
+        const extDate = Date.now();
+        await handleExternalResources(externalResources);
+        debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
+
+        const tt = Date.now();
+        const oldHTML = document.body.innerHTML;
+        const evalled = manager.evaluateModule(managerModuleToTranspile, {
+          force: isModuleView,
+        });
+        debug(`Evaluation time: ${Date.now() - tt}ms`);
+        const domChanged =
+          !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
+
+        if (
+          isModuleView &&
+          !domChanged &&
+          !managerModuleToTranspile.path.endsWith('.html')
+        ) {
+          const isReact =
+            managerModuleToTranspile.code &&
+            managerModuleToTranspile.code.includes('React');
+
+          if (isReact && evalled) {
+            // initiate boilerplates
+            if (getBoilerplates().length === 0) {
+              try {
+                await evalBoilerplates(defaultBoilerplates);
+              } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log("Couldn't load all boilerplates: " + e.message);
+              }
+            }
+
+            const boilerplate = findBoilerplate(managerModuleToTranspile);
+
+            if (boilerplate) {
+              try {
+                boilerplate.module.default(evalled);
+              } catch (e) {
+                console.error(e);
+              }
+            }
+          }
+        }
       }
 
-      manager.preset.preEvaluate(manager, updatedModules);
+      await manager.preset.teardown(manager, updatedModules);
 
-      if (!manager.webpackHMR) {
-        const htmlModulePath = templateDefinition
-          .getHTMLEntries(configurations)
-          .find(p => Boolean(modules[p]));
-        const htmlModule = modules[htmlModulePath];
-
-        const { head, body } = getHTMLParts(
-          htmlModule && htmlModule.code
-            ? htmlModule.code
-            : template === 'vue-cli'
-            ? '<div id="app"></div>'
-            : '<div id="root"></div>'
-        );
-
-        if (lastHeadHTML && lastHeadHTML !== head) {
-          document.location.reload();
-        }
-        if (manager && lastBodyHTML && lastBodyHTML !== body) {
-          manager.clearCompiledCache();
-        }
-
-        if (
-          !manager.preset.htmlDisabled ||
-          !firstLoad ||
-          process.env.LOCAL_SERVER
-        ) {
-          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-          // on the first run.
-          document.body.innerHTML = body;
-        }
-        lastBodyHTML = body;
-        lastHeadHTML = head;
+      if (!initializedResizeListener && !manager.preset.htmlDisabled) {
+        initializeResizeListener();
       }
 
-      const extDate = Date.now();
-      await handleExternalResources(externalResources);
-      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
+      if (showOpenInCodeSandbox) {
+        createCodeSandboxOverlay(modules);
+      }
 
-      const tt = Date.now();
-      const oldHTML = document.body.innerHTML;
-      const evalled = manager.evaluateModule(managerModuleToTranspile, {
-        force: isModuleView,
+      debug(`Total time: ${Date.now() - startTime}ms`);
+
+      dispatch({
+        type: 'success',
       });
-      debug(`Evaluation time: ${Date.now() - tt}ms`);
-      const domChanged =
-        !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
 
-      if (
-        isModuleView &&
-        !domChanged &&
-        !managerModuleToTranspile.path.endsWith('.html')
-      ) {
-        const isReact =
-          managerModuleToTranspile.code &&
-          managerModuleToTranspile.code.includes('React');
+      saveCache(
+        sandboxId,
+        managerModuleToTranspile,
+        manager,
+        changedModuleCount,
+        firstLoad
+      );
 
-        if (isReact && evalled) {
-          // initiate boilerplates
-          if (getBoilerplates().length === 0) {
-            try {
-              await evalBoilerplates(defaultBoilerplates);
-            } catch (e) {
-              // eslint-disable-next-line no-console
-              console.log("Couldn't load all boilerplates: " + e.message);
-            }
-          }
-
-          const boilerplate = findBoilerplate(managerModuleToTranspile);
-
-          if (boilerplate) {
-            try {
-              boilerplate.module.default(evalled);
-            } catch (e) {
-              console.error(e);
+      setTimeout(() => {
+        if (manager) {
+          try {
+            sendTestCount(manager, modules);
+          } catch (e) {
+            if (process.env.NODE_ENV === 'development') {
+              console.error('Test error', e);
             }
           }
         }
-      }
+      }, 600);
     }
-
-    await manager.preset.teardown(manager, updatedModules);
-
-    if (!initializedResizeListener && !manager.preset.htmlDisabled) {
-      initializeResizeListener();
-    }
-
-    if (showOpenInCodeSandbox) {
-      createCodeSandboxOverlay(modules);
-    }
-
-    debug(`Total time: ${Date.now() - startTime}ms`);
-
-    dispatch({
-      type: 'success',
-    });
-
-    saveCache(
-      sandboxId,
-      managerModuleToTranspile,
-      manager,
-      changedModuleCount,
-      firstLoad
-    );
-
-    setTimeout(() => {
-      try {
-        sendTestCount(manager, modules);
-      } catch (e) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('Test error', e);
-        }
-      }
-    }, 600);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log('Error in sandbox:');
@@ -717,7 +721,7 @@ async function compile({
       delete managerState.cachedPaths;
       managerState.entry = managerModuleToTranspile
         ? managerModuleToTranspile.path
-        : null;
+        : undefined;
 
       dispatch({
         type: 'state',
@@ -739,9 +743,8 @@ const tasks: CompileOptions[] = [];
 let runningTask = false;
 
 async function executeTaskIfAvailable() {
-  if (tasks.length) {
-    const task = tasks.pop();
-
+  const task = tasks.pop();
+  if (task) {
     runningTask = true;
     await compile(task);
     runningTask = false;

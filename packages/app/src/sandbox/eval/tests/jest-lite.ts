@@ -29,7 +29,14 @@ import run from './run-circus';
 
 import Manager from '../manager';
 import { Module } from '../entities/module';
-import { Event, TestEntry, DescribeBlock, TestName, TestFn } from './types';
+import {
+  Event,
+  TestEntry,
+  DescribeBlock,
+  TestName,
+  TestFn,
+  BlockName,
+} from './types';
 
 export { messages };
 
@@ -53,7 +60,7 @@ function addScript(src: string) {
   });
 }
 
-let jsdomPromise = null;
+let jsdomPromise: null | Promise<unknown> = null;
 /**
  * Load JSDOM while the sandbox loads. Before we run a test we make sure that this has been loaded.
  */
@@ -95,7 +102,7 @@ function resetTestState() {
 }
 
 export default class TestRunner {
-  tests: Array<Module>;
+  tests: Module[] = [];
   ranTests: Set<string>;
   manager: Manager;
   watching: boolean = true;
@@ -115,13 +122,13 @@ export default class TestRunner {
   }
 
   testGlobals(module: Module) {
-    const test = (testName: TestName, fn?: TestFn) =>
+    const test = (testName: TestName, fn: TestFn) =>
       dispatchJest({
         fn,
         name: 'add_test',
         testName: `${module.path}:#:${testName}`,
       });
-    const skip = (testName: TestName, fn?: TestFn) =>
+    const skip = (testName: TestName, fn: TestFn) =>
       dispatchJest({
         fn,
         mode: 'skip',
@@ -186,7 +193,7 @@ export default class TestRunner {
   }
 
   findTests(modules: { [path: string]: Module }) {
-    if (this.tests) {
+    if (this.tests.length) {
       this.tests.forEach(t => {
         if (!modules[t.path]) {
           // A removed test
@@ -204,7 +211,7 @@ export default class TestRunner {
   /* istanbul ignore next */
   async transpileTests() {
     return Promise.all(
-      (this.tests || []).map(async t => {
+      this.tests.map(async t => {
         const tModule = this.manager.getTranspiledModule(t, '');
         if (
           tModule.source &&
@@ -310,8 +317,7 @@ export default class TestRunner {
       this.findTests(this.manager.modules);
     }
 
-    // $FlowIssue
-    const tests: Array<Module> = (await this.transpileTests()).filter(t => t);
+    const tests = (await this.transpileTests()).filter(Boolean) as Module[];
 
     resetTestState();
 
@@ -368,7 +374,7 @@ export default class TestRunner {
 
   getDescribeBlocks(test: TestEntry) {
     let t: TestEntry | DescribeBlock | undefined = test;
-    const blocks = [];
+    const blocks: BlockName[] = [];
 
     while (t.parent != null) {
       blocks.push(t.parent.name);

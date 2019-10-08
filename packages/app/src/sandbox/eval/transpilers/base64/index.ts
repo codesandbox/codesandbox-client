@@ -12,7 +12,8 @@ class Base64Transpiler extends Transpiler {
       reader.readAsDataURL(code);
 
       reader.onloadend = function() {
-        const base64data = reader.result;
+        const base64data = reader.result || '';
+
         resolve({
           transpiledCode: `module.exports = "${base64data.toString()}"`,
         });

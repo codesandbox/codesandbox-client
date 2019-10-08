@@ -1,6 +1,6 @@
 import { LoaderContext } from '../../../transpiled-module';
 
-let core = null;
+let core: any | null = null;
 
 export default async (code: string, loaderContext: LoaderContext) => {
   if (!core) {
@@ -11,7 +11,7 @@ export default async (code: string, loaderContext: LoaderContext) => {
     core = new Core();
   }
 
-  return core
+  return core!
     .load(code, loaderContext.path, (dependencyPath: string) => {
       loaderContext.addDependency(dependencyPath);
 

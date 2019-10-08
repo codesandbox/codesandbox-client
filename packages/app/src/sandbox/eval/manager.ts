@@ -32,10 +32,6 @@ import { splitQueryFromPath } from './utils/query-path';
 
 declare const BrowserFS: any;
 
-type Externals = {
-  [name: string]: string;
-};
-
 export type ModuleObject = {
   [path: string]: Module;
 };
@@ -80,6 +76,13 @@ const SHIMMED_MODULE: Module = {
   requires: [],
 };
 
+const DEFAULT_MANIFEST = {
+  contents: {},
+  dependencies: [],
+  dependencyDependencies: {},
+  dependencyAliases: {},
+};
+
 const getShimmedModuleFromPath = (currentPath: string, path: string) => ({
   ...SHIMMED_MODULE,
   path: pathUtils.join(pathUtils.dirname(currentPath), path),
@@ -109,10 +112,8 @@ export default class Manager {
 
   envVariables: { [envName: string]: string } = {};
   preset: Preset;
-  externals: Externals;
   modules: ModuleObject;
-  manifest: Manifest;
-  dependencies: Object;
+  manifest: Manifest = DEFAULT_MANIFEST;
   webpackHMR: boolean;
   hardReload: boolean;
   hmrStatus: HMRStatus = 'idle';
@@ -250,13 +251,13 @@ export default class Manager {
     if (this.transpiledModules[p]) {
       const { code } = this.transpiledModules[p].module;
 
-      return hasCallback ? callback(null, code) : code;
+      return hasCallback ? callback!(null, code) : code;
     }
     if (hasCallback && this.fileResolver) {
       return this.fileResolver.readFile(p).then(code => {
         this.addModule({ code, path: p });
 
-        callback(code);
+        callback!(code);
       });
     }
 
@@ -265,7 +266,7 @@ export default class Manager {
     err.code = 'ENOENT';
 
     if (hasCallback) {
-      return callback(err);
+      return callback!(err);
     }
     throw err;
   };
@@ -274,13 +275,8 @@ export default class Manager {
     this.stage = stage;
   };
 
-  setManifest(manifest?: Manifest) {
-    this.manifest = manifest || {
-      contents: {},
-      dependencies: [],
-      dependencyDependencies: {},
-      dependencyAliases: {},
-    };
+  setManifest(manifest: Manifest | null) {
+    this.manifest = manifest || DEFAULT_MANIFEST;
 
     Object.keys(this.manifest.contents).forEach(path => {
       const module: Module = {
@@ -525,10 +521,9 @@ export default class Manager {
       return path;
     }
 
-    const dependencyName = getDependencyName(path);
-    const previousDependencyName = getDependencyName(
-      currentPath.replace('/node_modules/', '')
-    );
+    const dependencyName = getDependencyName(path) || '';
+    const previousDependencyName =
+      getDependencyName(currentPath.replace('/node_modules/', '')) || '';
 
     if (
       this.manifest.dependencyAliases[previousDependencyName] &&
@@ -666,7 +661,7 @@ export default class Manager {
             throw new ModuleNotFoundError(shimmedPath, false, currentPath);
           }
 
-          const dependencyName = getDependencyName(connectedPath);
+          const dependencyName = getDependencyName(connectedPath) || '';
 
           if (
             this.manifest.dependencies.find(d => d.name === dependencyName) ||
@@ -756,7 +751,7 @@ export default class Manager {
           throw new ModuleNotFoundError(shimmedPath, false, currentPath);
         }
 
-        const dependencyName = getDependencyName(connectedPath);
+        const dependencyName = getDependencyName(connectedPath) || '';
 
         // TODO: fix the stack hack
         if (
@@ -851,7 +846,7 @@ export default class Manager {
   resolveTranspiledModule(
     path: string,
     currentPath: string,
-    ignoredExtensions: string[],
+    ignoredExtensions: string[] | undefined,
     async: true
   ): Promise<TranspiledModule>;
 
@@ -873,6 +868,10 @@ export default class Manager {
     }
 
     const { queryPath, modulePath } = splitQueryFromPath(path);
+
+    if (!modulePath) {
+      throw new Error('Cannot find the path of the module from ' + path);
+    }
 
     if (async) {
       return this.resolveModuleAsync(

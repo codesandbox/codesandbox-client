@@ -10,5 +10,5 @@ export default function getDependencyName(path: string) {
     dependencyName += `/${dependencyParts.shift()}`;
   }
 
-  return dependencyName;
+  return dependencyName || '';
 }

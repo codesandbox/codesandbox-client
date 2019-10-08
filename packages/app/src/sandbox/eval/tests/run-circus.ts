@@ -25,9 +25,10 @@ import {
   TestContext,
   Hook,
   DescribeBlock,
+  BlockName,
 } from './types';
 
-const currentDescribeBlocks = [];
+const currentDescribeBlocks: Array<BlockName> = [];
 
 const run = async (): Promise<TestResults> => {
   const { rootDescribeBlock } = getState();

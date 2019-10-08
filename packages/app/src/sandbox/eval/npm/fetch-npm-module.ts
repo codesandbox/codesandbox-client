@@ -39,8 +39,9 @@ function normalize(files: MetaFiles, fileObject: Meta = {}, rootPath: string) {
       fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
     }
 
-    if (files[i].files) {
-      normalize(files[i].files, fileObject, rootPath);
+    const { files: subFiles } = files[i];
+    if (subFiles) {
+      normalize(subFiles, fileObject, rootPath);
     }
   }
 
@@ -383,7 +384,7 @@ async function findDependencyVersion(
     /* do nothing */
   }
 
-  let version = null;
+  let version: null | string = null;
 
   if (manifest.dependencyDependencies[dependencyName]) {
     version = manifest.dependencyDependencies[dependencyName].resolved;

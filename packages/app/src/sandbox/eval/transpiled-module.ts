@@ -39,7 +39,7 @@ class ModuleSource {
   constructor(
     fileName: string,
     compiledCode: string,
-    sourceMap: SourceMap | undefined,
+    sourceMap?: SourceMap,
     sourceEqualsCompiled = false
   ) {
     this.fileName = fileName;
@@ -52,18 +52,11 @@ class ModuleSource {
 export type SerializedTranspiledModule = {
   module: Module;
   query: string;
-  source?: ModuleSource;
-  sourceEqualsCompiled: boolean;
-  assets: {
-    [name: string]: ModuleSource;
-  };
+  source: ModuleSource | null;
+  sourceEqualsCompiled: boolean | null;
   isEntry: boolean;
   isTestFile: boolean;
   childModules: Array<string>;
-  /**
-   * All extra modules emitted by the loader
-   */
-  emittedAssets: Array<ModuleSource>;
   initiators: Array<string>;
   dependencies: Array<string>;
   asyncDependencies: Array<string>;
@@ -83,7 +76,6 @@ export type LoaderContext = {
     overwrite?: boolean,
     isChild?: boolean
   ) => TranspiledModule;
-  emitFile: (name: string, content: string, sourceMap: SourceMap) => void;
   options: {
     context: string;
     config?: object;
@@ -144,7 +136,7 @@ type Compilation = {
     accept: Function | ((arg: string | string[], cb: Function) => void);
     decline: (path: string | Array<string>) => void;
     dispose: (cb: Function) => void;
-    data: Object;
+    data: Object | undefined;
     status: () => HMRStatus;
     addStatusHandler: (cb: (status: HMRStatus) => void) => void;
     removeStatusHandler: (cb: (status: HMRStatus) => void) => void;
@@ -154,21 +146,14 @@ type Compilation = {
 export default class TranspiledModule {
   module: Module;
   query: string;
-  previousSource: ModuleSource | undefined;
-  source: ModuleSource | undefined;
-  assets: {
-    [name: string]: ModuleSource;
-  };
+  previousSource: ModuleSource | null = null;
+  source: ModuleSource | null = null;
 
   isEntry: boolean;
   childModules: Array<TranspiledModule>;
   errors: Array<ModuleError>;
   warnings: Array<ModuleWarning>;
-  /**
-   * All extra modules emitted by the loader
-   */
-  emittedAssets: Array<ModuleSource>;
-  compilation: Compilation | undefined;
+  compilation: Compilation | null = null;
   initiators: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   dependencies: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   asyncDependencies: Array<Promise<TranspiledModule>>; // eslint-disable-line no-use-before-define
@@ -181,10 +166,10 @@ export default class TranspiledModule {
   isTestFile: boolean = false;
 
   /**
-   * Set how this module handles HMR. The default is undefined, which means
+   * Set how this module handles HMR. The default is null, which means
    * that we handle the HMR like CodeSandbox does.
    */
-  hmrConfig: HMR | undefined;
+  hmrConfig: HMR | null = null;
 
   hasMissingDependencies: boolean = false;
 
@@ -250,7 +235,6 @@ export default class TranspiledModule {
       m.reset();
     });
     this.childModules = [];
-    this.emittedAssets = [];
     this.resetTranspilation();
 
     this.setIsEntry(false);
@@ -459,7 +443,7 @@ export default class TranspiledModule {
         };
 
         // $FlowIssue
-        let transpiledModule: TranspiledModule;
+        let transpiledModule: TranspiledModule | undefined;
         if (!overwrite) {
           try {
             transpiledModule = manager.getTranspiledModule(
@@ -484,9 +468,6 @@ export default class TranspiledModule {
         transpiledModule.initiators.add(this);
 
         return transpiledModule;
-      },
-      emitFile: (name: string, content: string, sourceMap: SourceMap) => {
-        this.assets[name] = this.createSourceForAsset(name, content, sourceMap);
       },
       // Add an explicit transpilation dependency, this is needed for loaders
       // that include the source of another file by themselves, we need to
@@ -521,7 +502,7 @@ export default class TranspiledModule {
       resolveTranspiledModuleAsync: (depPath: string, options = {}) =>
         manager.resolveTranspiledModuleAsync(
           depPath,
-          options.isAbsolute ? null : this,
+          options.isAbsolute ? undefined : this,
           options.ignoredExtensions
         ),
       getModules: (): Array<Module> => manager.getModules(),
@@ -598,7 +579,7 @@ export default class TranspiledModule {
     this.warnings = [];
 
     let code = this.module.code || '';
-    let finalSourceMap = null;
+    let finalSourceMap: undefined | SourceMap;
 
     const { requires } = this.module;
     if (requires != null && this.query === '') {
@@ -728,10 +709,10 @@ export default class TranspiledModule {
         console.warn(warning.message); // eslint-disable-line no-console
         dispatch(
           actions.correction.show(warning.message, {
-            line: warning.lineNumber,
-            column: warning.columnNumber,
+            line: warning.lineNumber || undefined,
+            column: warning.columnNumber || undefined,
             path: warning.path,
-            source: warning.source,
+            source: warning.source || undefined,
             severity: warning.severity || 'warning',
           })
         );
@@ -774,7 +755,7 @@ export default class TranspiledModule {
           this.query ? `?${this.hash}` : ''
         }`;
 
-        this.source = new ModuleSource(this.module.path, code, null);
+        this.source = new ModuleSource(this.module.path, code);
 
         if (initiator) {
           initiator.dependencies.add(this);
@@ -1044,9 +1025,7 @@ export default class TranspiledModule {
       this.source && this.source.sourceEqualsCompiled;
     const serializableObject: SerializedTranspiledModule = {
       query: this.query,
-      assets: this.assets,
       module: this.module,
-      emittedAssets: this.emittedAssets,
       isEntry: this.isEntry,
       isTestFile: this.isTestFile,
 
@@ -1064,11 +1043,8 @@ export default class TranspiledModule {
         Array.from(this.asyncDependencies).map(m => m.then(x => x.getId()))
       ),
       warnings: this.warnings.map(war => war.serialize()),
+      source: !sourceEqualsCompiled || !optimizeForSize ? this.source : null,
     };
-
-    if (!sourceEqualsCompiled || !optimizeForSize) {
-      serializableObject.source = this.source;
-    }
 
     return serializableObject;
   }
@@ -1079,9 +1055,7 @@ export default class TranspiledModule {
     manager: Manager
   ) {
     this.query = data.query;
-    this.assets = data.assets;
     this.module = data.module;
-    this.emittedAssets = data.emittedAssets;
     this.isEntry = data.isEntry;
     this.isTestFile = data.isTestFile;
 
@@ -1089,7 +1063,7 @@ export default class TranspiledModule {
       this.source = new ModuleSource(
         this.module.path,
         this.module.code,
-        null,
+        undefined,
         true
       );
     } else {

@@ -117,12 +117,12 @@ export default abstract class WorkerTranspiler extends Transpiler {
   executeRemainingTasks() {
     const taskIds = Object.keys(this.tasks);
     while (this.idleWorkers.length && taskIds.length) {
-      const taskId = taskIds.shift();
+      const taskId = taskIds.shift()!;
+      const worker = this.idleWorkers.shift()!;
 
       const task = this.tasks[taskId];
       delete this.tasks[taskId];
 
-      const worker = this.idleWorkers.shift();
       this.executeTask(task, worker);
     }
   }
@@ -207,7 +207,7 @@ export default abstract class WorkerTranspiler extends Transpiler {
 
         // Means the transpile task has been completed
         if (data.type === 'result') {
-          this.runCallbacks(callbacks, null, data);
+          this.runCallbacks(callbacks, undefined, data);
         }
 
         if (data.type === 'error' || data.type === 'result') {
