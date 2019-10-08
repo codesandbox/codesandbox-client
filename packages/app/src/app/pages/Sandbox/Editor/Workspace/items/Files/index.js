@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { useOvermind } from 'app/overmind';
 import Files from '../../Files';
-import Dependencies from '../../Dependencies';
+import { Dependencies } from '../../Dependencies';
 import { WorkspaceItem } from '../../WorkspaceItem';
 import { ItemTitle } from '../../elements';
 
