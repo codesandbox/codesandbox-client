@@ -157,19 +157,12 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
-    const {
-      updateStatus,
-      store: {
-        preferences: { settings },
-      },
-    } = this.props;
-
-    if (updateStatus) {
-      updateStatus(this.getType(method));
-    }
-
     if (!this.state.isConsoleEnabled) {
       return;
+    }
+
+    if (this.props.updateStatus) {
+      this.props.updateStatus(this.getType(method));
     }
 
     this.setState(state =>
