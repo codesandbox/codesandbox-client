@@ -92,9 +92,9 @@ function ChangeSubscriptionComponent({
     <div>
       {buttons}
       <SmallText>
-        You will be billed every <strong>{format(date, 'Do')}</strong> of the
-        month, you can change or cancel your subscription at any time. You can
-        change your payment method in{' '}
+        You will be billed every <strong>{format(new Date(date), 'Do')}</strong>{' '}
+        of the month, you can change or cancel your subscription at any time.
+        You can change your payment method in{' '}
         <LinkButton
           onClick={e => {
             e.preventDefault();
