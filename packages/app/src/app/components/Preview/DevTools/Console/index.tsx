@@ -142,7 +142,7 @@ class ConsoleComponent extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
-    if (this.props.updateStatus) {
+    if (this.props.updateStatus && this.props.hidden) {
       this.props.updateStatus(this.getType(method));
     }
 
@@ -190,7 +190,10 @@ class ConsoleComponent extends React.Component<StyledProps> {
     });
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: StyledProps) {
+    if (prevProps.hidden && !this.props.hidden) {
+      this.props.updateStatus('clear');
+    }
     this.scrollToBottom();
   }
 

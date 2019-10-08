@@ -226,10 +226,6 @@ export class DevTools extends React.PureComponent<Props, State> {
     status: 'success' | 'warning' | 'error' | 'info' | 'clear',
     count?: number
   ) => {
-    if (!this.state.hidden && this.getCurrentPane().id === id) {
-      return;
-    }
-
     const currentStatus = (status !== 'clear' && this.state.status[id]) || {
       unread: 0,
       type: 'info',
@@ -402,15 +398,6 @@ export class DevTools extends React.PureComponent<Props, State> {
       devToolIndex: this.props.devToolIndex,
       tabPosition: index,
     });
-    this.setState(state => ({
-      status: {
-        ...state.status,
-        [this.props.viewConfig.views[index].id]: {
-          type: 'info',
-          unread: 0,
-        },
-      },
-    }));
   };
 
   /**
