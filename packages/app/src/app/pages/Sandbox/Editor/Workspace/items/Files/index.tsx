@@ -6,7 +6,7 @@ import { Dependencies } from '../../Dependencies';
 import { WorkspaceItem } from '../../WorkspaceItem';
 import { ItemTitle } from '../../elements';
 
-export default () => {
+export const FilesItem = () => {
   const [editActions, setEditActions] = useState(null);
   const {
     state: { editor },
