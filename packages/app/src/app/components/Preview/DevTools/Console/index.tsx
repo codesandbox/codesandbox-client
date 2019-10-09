@@ -338,7 +338,7 @@ const ConsoleFilterSelect = props => {
 
 const ObservedConsole = inject('store')(observer(ConsoleComponent));
 
-export default {
+export const console = {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
