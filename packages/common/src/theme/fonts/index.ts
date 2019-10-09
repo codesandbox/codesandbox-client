@@ -1,3 +1,5 @@
+import 'typeface-inter';
+
 export { editor } from './editor';
 export { header } from './header';
 export { primary } from './primary';

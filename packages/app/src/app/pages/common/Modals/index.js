@@ -8,26 +8,26 @@ import { templateColor } from 'app/utils/template-color';
 import React, { Component } from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import CommitModal from './CommitModal';
-import DeleteDeploymentModal from './DeleteDeploymentModal';
-import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
+import { CreateSandbox } from 'app/components/CreateNewSandbox/CreateSandbox';
+import PreferencesModal from './PreferencesModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
+import DeleteDeploymentModal from './DeleteDeploymentModal';
+import ShareModal from './ShareModal';
 import DeploymentModal from './DeploymentModal';
-import EmptyTrash from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
+import CommitModal from './CommitModal';
+import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
+import EmptyTrash from './EmptyTrash';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import LiveSessionEnded from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import NetlifyLogs from './NetlifyLogs';
-import NewSandbox from './NewSandbox';
 import { PickSandboxModal } from './PickSandboxModal';
-import PreferencesModal from './PreferencesModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
 import PRModal from './PRModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import SelectSandboxModal from './SelectSandboxModal';
-import ShareModal from './ShareModal';
 // eslint-disable-next-line
 import SignInForTemplates from './SignInForTemplates/index.ts';
 import { StorageManagementModal } from './StorageManagementModal';
@@ -44,7 +44,7 @@ const modals = {
     width: 900,
   },
   newSandbox: {
-    Component: NewSandbox,
+    Component: CreateSandbox,
     width: 950,
   },
   share: {

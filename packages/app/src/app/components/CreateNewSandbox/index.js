@@ -7,7 +7,7 @@ import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import theme from '@codesandbox/common/lib/theme';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Portal from '@codesandbox/common/lib/components/Portal';
-
+import { CreateSandbox } from './CreateSandbox';
 import {
   ButtonsContainer,
   Container,
@@ -15,9 +15,6 @@ import {
   ContainerLink,
   DarkBG,
 } from './elements';
-
-// eslint-disable-next-line import/no-named-as-default
-import { NewSandboxModal } from './NewSandboxModal';
 
 class CreateNewSandbox extends React.PureComponent {
   state = {
@@ -161,7 +158,7 @@ class CreateNewSandbox extends React.PureComponent {
                           : newStyle
                       }
                     >
-                      <NewSandboxModal
+                      <CreateSandbox
                         width={toRects.width}
                         forking={this.state.forking}
                         closing={this.state.closingCreating}

@@ -304,6 +304,7 @@
     "react-motion": "^0.5.0",
     "react-outside-click-handler": "^1.2.3",
     "react-router-dom": "^5.0.1",
+    "react-scrollbars-custom": "^4.0.20",
     "react-show": "^3.0.4",
     "react-split-pane": "^0.1.87",
     "react-spring": "^8.0.25",
