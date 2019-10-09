@@ -2,7 +2,7 @@ const isDev = process.env.NODE_ENV === 'development';
 const staticAssets = [
   {
     from: 'standalone-packages/vscode-editor/release/min/vs',
-    to: 'public/vscode23/vs',
+    to: 'public/vscode24/vs',
   },
   {
     from: 'standalone-packages/vscode-extensions/out',
