@@ -7,7 +7,7 @@ import { TemplateType } from '@codesandbox/common/lib/templates';
 import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-import console from './Console';
+import { console } from './Console';
 import { DevToolTabs, ITabPosition } from './Tabs';
 import { problems } from './Problems';
 import { reactDevTools } from './React-Devtools';
