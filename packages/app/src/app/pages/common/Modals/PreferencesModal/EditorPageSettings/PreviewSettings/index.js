@@ -52,7 +52,9 @@ function PreviewSettingsComponent({ store, signals }) {
             {...bindValue('toggleConsoleEnabled')}
             tooltip="Toggle console output"
           />
-          <SubDescription>Toggle your developer console output.</SubDescription>
+          <SubDescription>
+            Enable or disable developer console output.
+          </SubDescription>
           <Rule />
           <PaddedPreference
             title="Instant preview"
