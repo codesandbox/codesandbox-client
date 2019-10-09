@@ -6,7 +6,7 @@ const staticAssets = [
   },
   {
     from: 'standalone-packages/vscode-extensions/out',
-    to: 'public/vscode-extensions/v9',
+    to: 'public/vscode-extensions/v10',
   },
   {
     from: 'node_modules/onigasm/lib/onigasm.wasm',
