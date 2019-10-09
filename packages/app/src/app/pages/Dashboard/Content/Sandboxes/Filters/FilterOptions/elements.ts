@@ -28,6 +28,12 @@ export const TemplatesName = styled.span`
   &:hover {
     color: white;
   }
+
+  &:focus {
+    color: white;
+    background-color: ${props => props.theme.secondary.clearer(0.9)};
+    outline: 0;
+  }
 `;
 
 export const OverlayContainer = styled.div`
@@ -62,8 +68,15 @@ export const Option = styled.div<{ selected: boolean }>`
 
   margin-bottom: 0.25rem;
 
+  &:focus {
+    color: white;
+    background-color: ${props => props.theme.secondary.clearer(0.9)};
+    outline: 0;
+  }
+
   &:hover {
-    color: rgba(255, 255, 255, 0.9);
+    color: white;
+    background-color: ${props => props.theme.secondary.clearer(0.9)};
 
     ${props =>
       !props.selected &&

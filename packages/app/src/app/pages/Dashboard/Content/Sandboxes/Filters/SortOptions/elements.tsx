@@ -5,6 +5,7 @@ export const OptionContainer = styled.a<{ selected: boolean }>`
   transition: 0.3s ease color;
   display: flex;
   vertical-align: middle;
+  width: 100%;
   align-items: center;
   margin-bottom: 0.5rem;
   color: ${props =>
@@ -20,8 +21,15 @@ export const OptionContainer = styled.a<{ selected: boolean }>`
     margin-bottom: 0;
   }
 
+  &:focus {
+    color: white;
+    background-color: ${props => props.theme.secondary.clearer(0.9)};
+    outline: 0;
+  }
+
   &:hover {
     color: white;
+    background-color: ${props => props.theme.secondary.clearer(0.9)};
   }
 
   ${props =>
@@ -79,6 +87,12 @@ export const OrderName = styled.span`
 
   &:hover {
     color: white;
+  }
+
+  &:focus {
+    color: white;
+    background-color: ${props => props.theme.secondary.clearer(0.9)};
+    outline: 0;
   }
 `;
 
