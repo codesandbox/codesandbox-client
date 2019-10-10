@@ -38,6 +38,20 @@ declare global {
 let _manager: VSCodeManager;
 let _editorManager: VSCodeEditorManager;
 
+/*
+  We need to test:
+  - Changing code
+  - Turn on and off linting
+  - Save code
+  - Verify dirty indication
+  - Add/remove dependencies
+  - Verify preview updating
+  - Resizing the editor
+  - Change sandbox
+  - Add/move/delete files
+  - LIVE
+*/
+
 export default {
   initialize(options: VsCodeOptions) {
     _editorManager = new VSCodeEditorManager(options);
