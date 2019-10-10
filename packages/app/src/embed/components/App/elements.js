@@ -33,6 +33,6 @@ export const Moving = styled.div`
     left: 250px;
     transform: inherit;
     box-shadow: none;
-    border-left: 1px solid ${props => props.theme.background4};
+    border-left: 1px solid ${props => props.theme['sideBar.border']};
   }
 `;
