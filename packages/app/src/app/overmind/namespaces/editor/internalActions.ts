@@ -350,7 +350,7 @@ export const setCurrentModule: Action<Module> = (
 
   state.editor.currentModuleShortid = module.shortid;
 
-  effects.vscode.editor.changeModule(module);
+  effects.vscode.changeModule(module);
 };
 
 export const updateSandboxPackageJson: AsyncAction = async ({

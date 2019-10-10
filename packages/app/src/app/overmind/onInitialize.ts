@@ -80,9 +80,45 @@ export const onInitialize: OnInitialize = async (
         return state.editor.modulesByPath;
       },
     })
-    .then(() =>
-      effects.vscode.initialize({
-        createReaction: overmindInstance.reaction,
-      })
+    .then(
+      () =>
+        effects.vscode.initialize({
+          getCurrentSandbox: () => state.editor.currentSandbox,
+          getCurrentModule: () => state.editor.currentModule,
+          onCodeChange: actions.editor.codeChanged,
+          onSelectionChange: () => {},
+          reaction: overmindInstance.reaction,
+        })
+
+      /*
+sendTransforms={operation => {
+    
+                }}
+                onCodeReceived={actions.live.onCodeReceived}
+                onSelectionChanged={actions.live.onSelectionChanged}
+                onNpmDependencyAdded={name => {
+                  if (sandbox.owned) {
+                    actions.editor.addNpmDependency({ name, isDev: true });
+                  }
+                }}
+                onChange={(code, moduleShortid) =>
+                  actions.editor.codeChanged({
+                    code,
+                    moduleShortid: moduleShortid || currentModule.shortid,
+                    noLive: true,
+                  })
+                }
+                onModuleChange={moduleId =>
+                  actions.editor.moduleSelected({ id: moduleId })
+                }
+                onModuleStateMismatch={actions.live.onModuleStateMismatch}
+                onSave={code =>
+                  actions.editor.codeSaved({
+                    code,
+                    moduleShortid: currentModule.shortid,
+                    cbID: null,
+                  })
+                }
+      */
     );
 };

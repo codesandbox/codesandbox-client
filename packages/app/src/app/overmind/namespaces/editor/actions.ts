@@ -118,16 +118,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.files.internal.recoverFiles();
   }
 
-  const { parsed } = state.editor.parsedConfigurations.package;
-
-  await effects.vscode.editor.changeSandbox(
-    sandbox,
-    state.editor.currentModule,
-    parsed && parsed.dependencies
-      ? parsed.dependencies
-      : json(sandbox.npmDependencies)
-  );
-
   state.editor.isLoading = false;
 });
 
@@ -167,11 +157,33 @@ export const codeSaved: AsyncAction<{
 });
 
 export const codeChanged: Action<{
-  code: string;
   moduleShortid: string;
-  noLive?: boolean;
-}> = ({ effects, state, actions }, { code, moduleShortid, noLive }) => {
+  code: string;
+  event?: any;
+}> = ({ effects, state, actions }, { code, moduleShortid, event }) => {
   effects.analytics.trackOnce('Change Code');
+
+  if (
+    state.live.isLive &&
+    moduleShortid === state.editor.currentModuleShortid &&
+    event &&
+    event.changes
+  ) {
+    try {
+      actions.live.onTransformMade({
+        moduleShortid,
+        event,
+        code,
+      });
+    } catch (e) {
+      // Something went wrong while composing the operation, so we're opting for a full sync
+      console.error(e);
+
+      if (this.props.onModuleStateMismatch) {
+        this.props.onModuleStateMismatch();
+      }
+    }
+  }
 
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
@@ -181,7 +193,7 @@ export const codeChanged: Action<{
     return;
   }
 
-  if (state.live.isLive && !noLive) {
+  if (state.live.isLive) {
     state.live.receivingCode = true;
     effects.live.sendCodeUpdate(moduleShortid, module.code || '', code);
     state.live.receivingCode = false;
@@ -191,8 +203,6 @@ export const codeChanged: Action<{
     module,
     code,
   });
-
-  effects.vscode.editor.lint(module);
 };
 
 export const saveClicked: AsyncAction = withOwnedSandbox(
@@ -306,7 +316,7 @@ export const moduleSelected: Action<{
         module
       );
       */
-      effects.vscode.editor.updateUserSelections(
+      effects.vscode.updateUserSelections(
         actions.live.internal.getSelectionsForModule(module)
       );
       state.live.liveUser.currentModuleShortid = module.shortid;

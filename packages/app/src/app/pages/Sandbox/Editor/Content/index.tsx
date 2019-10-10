@@ -1,14 +1,11 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import getDefinition from '@codesandbox/common/lib/templates';
-import { Sandbox } from '@codesandbox/common/lib/types';
 import { Icons } from 'app/components/CodeEditor/elements';
 import { VSCode as CodeEditor } from 'app/components/CodeEditor/VSCode';
 import { DevTools } from 'app/components/Preview/DevTools';
 import { useOvermind } from 'app/overmind';
-import debounce from 'lodash-es/debounce';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import QuestionIcon from 'react-icons/lib/go/question';
 import { Prompt } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
@@ -37,54 +34,19 @@ const settings = store => ({
 });
 */
 
-// What is this thing?
-const getDependencies = (sandbox: Sandbox): { [key: string]: string } => {
-  const packageJSON = sandbox.modules.find(
-    m => m.title === 'package.json' && m.directoryShortid == null
-  );
-
-  if (packageJSON != null) {
-    try {
-      const { dependencies = {}, devDependencies = {} } = JSON.parse(
-        packageJSON.code || ''
-      );
-
-      const usedDevDependencies = {};
-      Object.keys(devDependencies).forEach(d => {
-        if (d.startsWith('@types')) {
-          usedDevDependencies[d] = devDependencies[d];
-        }
-      });
-
-      return { ...dependencies, ...usedDevDependencies };
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
-  } else {
-    return sandbox.npmDependencies;
-  }
-};
-
 export const Content: React.FC = () => {
+  const { state, actions, effects, reaction } = useOvermind();
   const editorEl = useRef(null);
   const contentEl = useRef(null);
-  const [editorSize, changeEditorSize] = useState({
-    width: 0,
-    height: 0,
-  });
-  const getBounds = useCallback(
-    debounce(function getBounds() {
+  const updateEditorSize = useCallback(
+    function updateEditorSize() {
       if (editorEl.current) {
         const { width, height } = editorEl.current.getBoundingClientRect();
-        if (width !== editorSize.width || height !== editorSize.height) {
-          changeEditorSize({ width, height });
-        }
+        effects.vscode.updateLayout(width, height);
       }
-    }, 200),
-    [editorSize]
+    },
+    [effects.vscode]
   );
-  const { state, actions, effects, reaction } = useOvermind();
 
   useEffect(() => {
     const contentNode = contentEl.current;
@@ -96,32 +58,31 @@ export const Content: React.FC = () => {
         editor.previewWindowOrientation,
       ],
       () => {
-        getBounds();
+        updateEditorSize();
       },
       {
         immediate: true,
       }
     );
 
+    window.addEventListener('resize', updateEditorSize);
+
     preventGestureScroll(contentEl.current);
 
     return () => {
-      effects.vscode.editor.unmount();
-      window.removeEventListener('resize', getBounds);
+      window.removeEventListener('resize', updateEditorSize);
       // clearInterval(this.interval);
       disposeResizeDetector();
       removeListener(contentNode);
     };
-  }, [effects.vscode.editor, getBounds, reaction]);
+  }, [effects.vscode, reaction, updateEditorSize]);
 
   const { currentModule } = state.editor;
   const notSynced = !state.editor.isAllModulesSynced;
   const sandbox = state.editor.currentSandbox;
   const { preferences } = state;
-  const { currentTab } = state.editor;
   const windowVisible = state.editor.previewWindowVisible;
-  // getDefinition?? What is difference?
-  const template = getDefinition(sandbox.template);
+  const template = getTemplateDefinition(sandbox.template);
   const views = state.editor.devToolTabs;
   const currentPosition = state.editor.currentDevToolsPosition;
   const modulePath = getModulePath(
@@ -142,25 +103,6 @@ export const Content: React.FC = () => {
     ),
     actions: [],
   };
-
-  function isReadOnly() {
-    if (state.live.isLive) {
-      if (
-        !state.live.isCurrentEditor ||
-        (state.live.roomInfo && state.live.roomInfo.ownerIds.length === 0)
-      ) {
-        return true;
-      }
-    }
-
-    if (template.isServer) {
-      if (!state.isLoggedIn || state.server.status !== 'connected') {
-        return true;
-      }
-    }
-
-    return false;
-  }
 
   return (
     <ThemeProvider
@@ -195,9 +137,7 @@ export const Content: React.FC = () => {
             actions.editor.resizingStarted();
           }}
           onChange={() => {
-            requestAnimationFrame(() => {
-              getBounds();
-            });
+            updateEditorSize();
           }}
           style={{
             overflow: 'visible', // For VSCode Context Menu
@@ -262,61 +202,7 @@ export const Content: React.FC = () => {
                   <div>Supported Configuration - What is this?</div>
                 )}
               </Icons>
-              <CodeEditor
-                onInitialized={editor => {
-                  // Just until we refactor the underlying editor
-                  effects.vscode.editor.mount(editor);
-
-                  return () => {};
-                }}
-                dependencies={getDependencies(sandbox)}
-                sandbox={sandbox}
-                currentTab={currentTab}
-                currentModule={currentModule}
-                isModuleSynced={shortId =>
-                  !state.editor.changedModuleShortids.includes(shortId)
-                }
-                width={editorSize.width}
-                height={editorSize.height}
-                settings={state.preferences.settings}
-                sendTransforms={operation => {
-                  actions.live.onTransformMade({
-                    moduleShortid: state.editor.currentModuleShortid,
-                    operation: operation.toJSON(),
-                  });
-                }}
-                readOnly={isReadOnly()}
-                isLive={state.live.isLive}
-                onCodeReceived={actions.live.onCodeReceived}
-                onSelectionChanged={actions.live.onSelectionChanged}
-                onNpmDependencyAdded={name => {
-                  if (sandbox.owned) {
-                    actions.editor.addNpmDependency({ name, isDev: true });
-                  }
-                }}
-                onChange={(code, moduleShortid) =>
-                  actions.editor.codeChanged({
-                    code,
-                    moduleShortid: moduleShortid || currentModule.shortid,
-                    noLive: true,
-                  })
-                }
-                onModuleChange={moduleId =>
-                  actions.editor.moduleSelected({ id: moduleId })
-                }
-                onModuleStateMismatch={actions.live.onModuleStateMismatch}
-                onSave={code =>
-                  actions.editor.codeSaved({
-                    code,
-                    moduleShortid: currentModule.shortid,
-                    cbID: null,
-                  })
-                }
-                tsconfig={
-                  state.editor.parsedConfigurations.typescript &&
-                  state.editor.parsedConfigurations.typescript.parsed
-                }
-              />
+              <CodeEditor key={sandbox.id} />
             </div>
           </div>
 

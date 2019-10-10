@@ -16,8 +16,8 @@ interface IServiceCache {
 /**
  * Responsible for rendering React components for files that are supported
  */
-interface ICustomEditorApi {
-  getCustomEditorAPI(
+export interface ICustomEditorApi {
+  getCustomEditor(
     modulePath: string
   ): false | ((container: HTMLElement, extraProps: object) => void);
 }
@@ -30,7 +30,7 @@ const context: any = window;
  * that's why in the first phase we let the CodeSandbox application handle all the initialization of the VSCode
  * parts.
  */
-class VSCodeManager {
+export class VSCodeManager {
   private serviceCache: IServiceCache;
   private controller: any;
 
@@ -514,5 +514,3 @@ class VSCodeManager {
     }
   }
 }
-
-export const manager = new VSCodeManager();

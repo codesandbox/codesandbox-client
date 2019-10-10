@@ -1,5 +1,3 @@
-import { manager } from '.';
-
 export function initializeThemeCache() {
   try {
     if (!localStorage.getItem('vs-global://colorThemeData')) {
@@ -96,26 +94,5 @@ export function initializeCustomTheme() {
       '/extensions/custom-theme/themes/custom-color-theme.json',
       JSON.parse(customTheme)
     );
-  }
-}
-
-const VIM_EXTENSION_ID = 'vscodevim.vim';
-export function setVimExtensionEnabled(vimEnabled: boolean) {
-  if (vimEnabled) {
-    manager.enableExtension(VIM_EXTENSION_ID);
-  } else {
-    // Auto disable vim extension
-    if (
-      [null, undefined].includes(
-        localStorage.getItem('vs-global://extensionsIdentifiers/disabled')
-      )
-    ) {
-      localStorage.setItem(
-        'vs-global://extensionsIdentifiers/disabled',
-        '[{"id":"vscodevim.vim"}]'
-      );
-    }
-
-    manager.disableExtension(VIM_EXTENSION_ID);
   }
 }

@@ -170,10 +170,10 @@ export default {
               options: {
                 api: {
                   getState: () => ({
-                    modulesByPath: window.getState().editor.currentSandbox
-                      ? window.getState().editor.modulesByPath
-                      : {},
-                  }),
+                      modulesByPath: window.getState().editor.currentSandbox
+                        ? window.getState().editor.modulesByPath
+                        : {},
+                    }),
                 },
               },
             },

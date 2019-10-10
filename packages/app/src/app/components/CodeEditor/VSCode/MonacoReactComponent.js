@@ -47,32 +47,6 @@ class MonacoEditor extends React.PureComponent {
       // Before initializing monaco editor
       this.editorWillMount(context.monaco);
 
-      const r = context.require;
-
-      const [
-        { IEditorService },
-        { ICodeEditorService },
-        { ITextFileService },
-        { ILifecycleService },
-        { IEditorGroupsService },
-        { IStatusbarService },
-        { IExtensionService },
-        { IContextViewService },
-        { IQuickOpenService },
-        { IInstantiationService },
-      ] = [
-        r('vs/workbench/services/editor/common/editorService'),
-        r('vs/editor/browser/services/codeEditorService'),
-        r('vs/workbench/services/textfile/common/textfiles'),
-        r('vs/platform/lifecycle/common/lifecycle'),
-        r('vs/workbench/services/editor/common/editorGroupsService'),
-        r('vs/platform/statusbar/common/statusbar'),
-        r('vs/workbench/services/extensions/common/extensions'),
-        r('vs/platform/contextview/browser/contextView'),
-        r('vs/platform/quickOpen/common/quickOpen'),
-        r('vs/platform/instantiation/common/instantiation'),
-      ];
-
       const container = document.createElement('div');
       const part = document.createElement('div');
 
@@ -206,12 +180,7 @@ class MonacoEditor extends React.PureComponent {
       width && width.toString().includes('%') ? width : `${width}px`;
     const fixedHeight =
       height && height.toString().includes('%') ? height : `${height}px`;
-    const style = {
-      width: fixedWidth,
-      height: fixedHeight,
-      overflow: 'hidden',
-      position: 'absolute',
-    };
+    const style = {};
 
     return (
       <div

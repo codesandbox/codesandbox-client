@@ -3,6 +3,7 @@ import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { TextOperation } from 'ot';
 import { filter, fork, pipe } from 'overmind';
+import eventToTransform from '../../utils/event-to-transform';
 
 import * as internalActions from './internalActions';
 import * as liveMessage from './liveMessageOperators';
@@ -66,19 +67,22 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
 );
 
 export const onTransformMade: Action<{
-  operation: any;
+  event: any;
   moduleShortid: string;
-}> = ({ effects, state }, { operation, moduleShortid }) => {
+  code: string;
+}> = ({ effects, state }, { event, moduleShortid, code }) => {
   if (!state.live.isCurrentEditor) {
     return;
   }
+
+  const { operation } = eventToTransform(event, code);
 
   if (!operation) {
     return;
   }
 
   try {
-    effects.live.applyClient(moduleShortid, operation);
+    effects.live.applyClient(moduleShortid, operation.toJSON());
   } catch (e) {
     // Something went wrong, probably a sync mismatch. Request new version
     console.error(
@@ -108,7 +112,7 @@ export const applyTransformation: Action<{
   }
 
   state.editor.pendingOperations[moduleShortid] = pendingOperation;
-  effects.vscode.editor.applyOperations(state.editor.pendingOperations);
+  effects.vscode.applyOperations(state.editor.pendingOperations);
   // this.props.signals.live.onOperationApplied();
   // Removed this action... but this whole object thing here does not seem to make sense
   state.editor.pendingOperations = {};
