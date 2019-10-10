@@ -6,8 +6,6 @@ import { ThemeProvider } from 'styled-components';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import 'normalize.css';
 import '@codesandbox/common/lib/global.css';
-import track from '@codesandbox/common/lib/utils/analytics';
-import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import track, { identify } from '@codesandbox/common/lib/utils/analytics';
 
 import theme from './theme';
