@@ -22,6 +22,7 @@ import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { Derive } from 'app/overmind';
 import immer from 'immer';
 
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
@@ -35,7 +36,7 @@ type State = {
   };
   // TODO: What is this really? Could not find it in Cerebral, but
   // EditorPreview is using it... weird stuff
-  devToolTabs: Derive<State, any[]>;
+  devToolTabs: Derive<State, ViewConfig[]>;
   isLoading: boolean;
   notFound: boolean;
   error: string | null;
