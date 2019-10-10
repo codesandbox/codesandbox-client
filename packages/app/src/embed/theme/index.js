@@ -1,10 +1,10 @@
 import applicationTheme from '@codesandbox/common/lib/theme';
-import codesandboxNu from '@codesandbox/common/lib/themes/codesandbox-nu.json';
+import codesandboxBlack from '@codesandbox/common/lib/themes/codesandbox-black.json';
 
 const theme = {
   ...applicationTheme,
-  ...codesandboxNu.colors,
-  vscodeTheme: codesandboxNu,
+  ...codesandboxBlack.colors,
+  vscodeTheme: codesandboxBlack,
 };
 
 export default theme;
