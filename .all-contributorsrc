@@ -1,11 +1,13 @@
 {
   "projectName": "codesandbox-client",
   "projectOwner": "codesandbox",
+  "repoType": "github",
+  "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
   "imageSize": 100,
-  "commit": true,
+  "commit": false,
   "contributors": [
     {
       "login": "CompuIves",
@@ -1374,9 +1376,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "vanya829",
+      "name": "vanya829",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1397979?v=4",
+      "profile": "https://github.com/vanya829",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "commitConvention": "none"
 }

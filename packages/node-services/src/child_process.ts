@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import { EventEmitter } from 'events';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
@@ -141,7 +142,7 @@ function getWorker(path: string) {
   const worker = WorkerConstructor();
 
   // Register file system that syncs with filesystem in manager
-  BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
+  // BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
 
   return worker;
 }
@@ -179,7 +180,7 @@ function handleBroadcast(
     return;
   }
 
-  data.$id = data.$id || Math.random() * 1000000;
+  data.$id = data.$id || Math.floor(Math.random() * 100000000);
 
   if (sentBroadcastsForPath.length > 100) {
     sentBroadcastsForPath.shift();

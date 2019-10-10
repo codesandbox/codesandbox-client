@@ -18,9 +18,11 @@ merge of your pull request!
 
 <!-- if this is a feature change -->
 
-## What steps did you take to test this?
+## What steps did you take to test this? This is required before we can merge.
 
-<!-- Most important part!  -->
+1. Step A
+2. Step B
+3. Step C
 
 ## Checklist
 
@@ -30,8 +32,10 @@ merge of your pull request!
 
 - [ ] Documentation
 - [ ] Testing <!-- We can only merge the PR if this is checked -->
-- [ ] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
-- [ ] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
+- [ ] Ready to be merged
+      <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+- [ ] Added myself to contributors table
+      <!-- this is optional, see the contributing guidelines for instructions -->
 
 <!-- feel free to add additional comments -->
 <!-- Thank you for contributing! -->
