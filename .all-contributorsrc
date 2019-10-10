@@ -1385,6 +1385,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "tanem",
+      "name": "Tane Morgan",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/464864?v=4",
+      "profile": "https://github.com/tanem",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
