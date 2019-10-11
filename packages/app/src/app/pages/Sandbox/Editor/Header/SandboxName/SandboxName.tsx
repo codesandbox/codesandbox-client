@@ -106,7 +106,7 @@ export const SandboxName: FunctionComponent = () => {
               ) : (
                 'Anonymous '
               )}
-              /{' '}
+              <span role="presentation">/ </span>
             </Folder>
           </animated.div>
         )}
@@ -125,10 +125,15 @@ export const SandboxName: FunctionComponent = () => {
               onKeyUp={handleKeyUp}
               placeholder={name}
               value={value}
+              arial-label="sandbox name"
             />
           </Form>
         ) : (
-          <Name onClick={owned ? handleNameClick : noop} owned={owned}>
+          <Name
+            as={owned ? 'button' : 'span'}
+            onClick={owned ? handleNameClick : noop}
+            owned={owned}
+          >
             {sandboxName}
           </Name>
         )}

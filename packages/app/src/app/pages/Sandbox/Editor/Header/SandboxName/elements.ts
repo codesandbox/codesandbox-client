@@ -65,6 +65,10 @@ export const Name = styled.span<{ owned?: boolean }>`
     margin-left: 0.25rem;
     cursor: ${owned ? 'pointer' : 'initial'};
     text-overflow: ellipsis;
+    appearance: ${owned ? 'none' : 'initial'};
+    background: none;
+    border: 0;
+    outline: 0;
   `}
 `;
 
