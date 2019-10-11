@@ -7,6 +7,7 @@ import { EntryContainer } from 'app/pages/Sandbox/Editor/Workspace/elements';
 
 import EditorLink from '../EditorLink';
 import Files from '../Files';
+import Section from './Section';
 import SandboxInfo from './SandboxInfo';
 
 import { Container, Title, Subtitle, Item, Version } from './elements';
@@ -50,12 +51,10 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
 
   return (
     <Container>
-      <Item>
+      <Section title="CodeSandbox" defaultOpen={true}>
         <SandboxInfo sandbox={sandbox} />
-      </Item>
-
-      <Item>
-        <Title>Files</Title>
+      </Section>
+      <Section title="Files">
         <Files
           modules={sandbox.modules}
           directories={sandbox.directories}
@@ -65,11 +64,8 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
           template={sandbox.template}
           entry={sandbox.entry}
         />
-      </Item>
-
-      <Item>
-        <Title>Dependencies</Title>
-
+      </Section>
+      <Section title="Dependencies">
         <Subtitle>npm dependencies</Subtitle>
         {Object.keys(npmDependencies).map(dep => (
           <EntryContainer key={dep}>
@@ -94,8 +90,7 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
             ))}
           </>
         )}
-      </Item>
-
+      </Section>
       <Item hover>
         <Padding margin={1}>
           <EditorLink sandbox={sandbox} />

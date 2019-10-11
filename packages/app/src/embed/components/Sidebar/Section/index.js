@@ -1,0 +1,36 @@
+import React from 'react';
+import { Header, Icon, Title } from './elements';
+
+function Section(props) {
+  const [open, setOpen] = React.useState(props.defaultOpen || false);
+  const toggle = () => setOpen(!open);
+
+  return (
+    <section>
+      <Header>
+        <ToggleIcon open={open} />
+        <Title onClick={toggle}>{props.title}</Title>
+      </Header>
+      {open ? props.children : null}
+    </section>
+  );
+}
+
+function ToggleIcon(props) {
+  return (
+    <Icon
+      width="9"
+      height="6"
+      viewBox="0 0 9 6"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M4.50009 6L-5.24537e-07 1.26364e-06L9 4.76837e-07L4.50009 6Z"
+        fill="#757575"
+      />
+    </Icon>
+  );
+}
+
+export default Section;
