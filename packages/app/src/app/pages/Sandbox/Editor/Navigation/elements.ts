@@ -42,6 +42,10 @@ export const IconContainer = styled.div<{
     props.theme[`activityBar.inactiveForeground`] ||
     css`rgba(255, 255, 255, 0.5)`};
   cursor: pointer;
+  background: transparent;
+  border: 0;
+  appearance: none;
+  outline: 0;
 
   &:hover {
     color: ${props => props.theme[`activityBar.foreground`] || css`white`};

@@ -67,6 +67,8 @@ const IconComponent: FunctionComponent<IconProps> = ({
       <IconContainer
         isDisabled={isDisabled}
         selected={selected}
+        as="button"
+        aria-label={name}
         onClick={() => {
           if (selected) {
             setWorkspaceHidden({ hidden: true });
@@ -76,7 +78,7 @@ const IconComponent: FunctionComponent<IconProps> = ({
           }
         }}
       >
-        <Icon />
+        <Icon aria-hidden />
       </IconContainer>
     </Tooltip>
   );
@@ -96,7 +98,12 @@ export const Navigation: FunctionComponent<Props> = ({
   const disabledItems = getDisabledItems(state);
 
   return (
-    <Container topOffset={topOffset} bottomOffset={bottomOffset}>
+    <Container
+      topOffset={topOffset}
+      bottomOffset={bottomOffset}
+      as="nav"
+      aria-label="Sandbox Navigation"
+    >
       {shownItems.map(item => (
         <IconComponent key={item.id} item={item} />
       ))}
