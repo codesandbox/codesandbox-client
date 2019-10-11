@@ -1,4 +1,3 @@
-// @flow
 import * as React from 'react';
 
 import type { Sandbox } from '@codesandbox/common/lib/types';
@@ -8,16 +7,9 @@ import { EntryContainer } from 'app/pages/Sandbox/Editor/Workspace/elements';
 
 import EditorLink from '../EditorLink';
 import Files from '../Files';
+import SandboxInfo from './SandboxInfo';
 
-import {
-  Container,
-  Title,
-  Subtitle,
-  Description,
-  Item,
-  Version,
-  Author,
-} from './elements';
+import { Container, Title, Subtitle, Item, Version } from './elements';
 
 const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
 
@@ -56,20 +48,10 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
 
   npmDependencies = npmDependencies || {};
 
-  const sandboxTitle = sandbox.title || sandbox.id;
-
   return (
     <Container>
       <Item>
-        <Title title={sandboxTitle}>{sandboxTitle}</Title>
-        {sandbox.author && (
-          <Author>
-            Made by <strong>{sandbox.author.username}</strong>
-          </Author>
-        )}
-        {sandbox.description && (
-          <Description>{sandbox.description}</Description>
-        )}
+        <SandboxInfo sandbox={sandbox} />
       </Item>
 
       <Item>
