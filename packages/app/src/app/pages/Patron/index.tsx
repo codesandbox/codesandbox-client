@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
