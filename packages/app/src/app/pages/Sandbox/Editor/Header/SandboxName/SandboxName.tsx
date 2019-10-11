@@ -133,6 +133,9 @@ export const SandboxName: FunctionComponent = () => {
             as={owned ? 'button' : 'span'}
             onClick={owned ? handleNameClick : noop}
             owned={owned}
+            aria-label={
+              owned ? `${sandboxName}, change sandbox name` : sandboxName
+            }
           >
             {sandboxName}
           </Name>
