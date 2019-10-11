@@ -6,6 +6,8 @@ export const onInitialize: OnInitialize = (
 ) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
 
+  effects.chameleon.initialize(overmindInstance.reaction);
+
   effects.fsSync.initialize({
     onModulesByPathChange(cb: (modulesByPath: any) => void) {
       overmindInstance.reaction(
