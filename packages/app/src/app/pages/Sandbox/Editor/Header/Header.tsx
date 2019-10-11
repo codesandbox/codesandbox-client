@@ -46,7 +46,7 @@ export const Header: React.FC<IHeaderProps> = ({ zenMode }) => {
   } = useOvermind();
 
   return (
-    <Container zenMode={zenMode}>
+    <Container zenMode={zenMode} as="header">
       <Left>
         {hasLogIn ? (
           <DashboardLink to={dashboardUrl()}>
