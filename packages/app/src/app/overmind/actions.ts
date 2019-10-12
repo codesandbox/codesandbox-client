@@ -73,7 +73,8 @@ type ModalName =
   | 'preferences'
   | 'privacyServerWarning'
   | 'share'
-  | 'signInForTemplates';
+  | 'signInForTemplates'
+  | 'deleteSandbox';
 export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },
   { modal, message }
