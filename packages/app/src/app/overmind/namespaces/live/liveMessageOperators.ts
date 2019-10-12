@@ -64,10 +64,12 @@ export const onUserEntered: Operator<
 
   const user = data.users.find(u => u.id === data.joined_user_id);
 
-  effects.notificationToast.add({
-    message: `${user.username} joined the live session.`,
-    status: NotificationStatus.NOTICE,
-  });
+  if (!state.live.notificationsHidden) {
+    effects.notificationToast.add({
+      message: `${user.username} joined the live session.`,
+      status: NotificationStatus.NOTICE,
+    });
+  }
 });
 
 export const onUserLeft: Operator<
