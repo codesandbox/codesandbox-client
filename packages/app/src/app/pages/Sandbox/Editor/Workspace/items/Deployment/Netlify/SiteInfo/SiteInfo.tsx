@@ -1,9 +1,10 @@
 import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 
 import { resolveDirectory } from '@codesandbox/common/lib/sandbox/modules';
+import { Sandbox, Directory, Module } from '@codesandbox/common/lib/types';
 
 import {
   WorkspaceInputContainer,
@@ -17,7 +18,7 @@ import { SiteInfoWrapper } from './elements';
 import { Functions } from './Functions';
 import { ViewLogsButton } from './ViewLogsButton';
 
-const getFunctionDir = sandbox => {
+const getFunctionDir = (sandbox: Sandbox): Directory | undefined => {
   try {
     return resolveDirectory(
       getNetlifyConfig(sandbox).functions,
@@ -29,43 +30,40 @@ const getFunctionDir = sandbox => {
   }
 };
 
-export const SiteInfo = inject('store')(
-  hooksObserver(
-    ({
-      store: {
-        deployment: { building, netlifyLogs, netlifySite },
-        editor: { currentSandbox },
-      },
-    }) => {
-      const functionDirectory = getFunctionDir(currentSandbox);
-      const functions = functionDirectory
-        ? currentSandbox.modules.filter(
-            ({ directoryShortid }) =>
-              directoryShortid === functionDirectory.shortid
-          )
-        : [];
+export const SiteInfo: React.FC = () => {
+  const {
+    state: {
+      deployment: { building, netlifyLogs, netlifySite },
+      editor: { currentSandbox },
+    },
+  } = useOvermind();
 
-      return (
-        <SiteInfoWrapper>
-          <WorkspaceSubtitle>Sandbox Site</WorkspaceSubtitle>
+  const functionDirectory: Directory = getFunctionDir(currentSandbox);
+  const functions: Module[] = functionDirectory
+    ? currentSandbox.modules.filter(
+        ({ directoryShortid }) => directoryShortid === functionDirectory.shortid
+      )
+    : [];
 
-          <WorkspaceInputContainer>
-            <Deploys>
-              <Deploy key={netlifySite.uid}>
-                <Name light>{netlifySite.name}</Name>
+  return (
+    <SiteInfoWrapper>
+      <WorkspaceSubtitle>Sandbox Site</WorkspaceSubtitle>
 
-                {!building && <div>Building</div>}
+      <WorkspaceInputContainer>
+        <Deploys>
+          <Deploy key={netlifySite.uid}>
+            <Name light>{netlifySite.name}</Name>
 
-                {functions.length ? <Functions functions={functions} /> : null}
+            {!building && <div>Building</div>}
 
-                <Actions />
+            {functions.length ? <Functions functions={functions} /> : null}
 
-                {netlifyLogs ? <ViewLogsButton /> : null}
-              </Deploy>
-            </Deploys>
-          </WorkspaceInputContainer>
-        </SiteInfoWrapper>
-      );
-    }
-  )
-);
+            <Actions />
+
+            {netlifyLogs ? <ViewLogsButton /> : null}
+          </Deploy>
+        </Deploys>
+      </WorkspaceInputContainer>
+    </SiteInfoWrapper>
+  );
+};
