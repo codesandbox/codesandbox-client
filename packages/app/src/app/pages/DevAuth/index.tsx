@@ -10,11 +10,16 @@ import { Container } from './elements';
 
 export const DevAuthPage = () => {
   const [authCode, setAuthCode] = React.useState('');
+  const [error, setError] = React.useState<string | null>(null);
 
   const getJWTToken = () => {
+    setError(null);
     fetch(`/api/v1/auth/verify/${authCode}`)
       .then(res => res.json())
       .then(res => {
+        if (!res.ok) {
+          throw new Error(res.errors.detail[0]);
+        }
         if (
           window.opener &&
           window.opener.location.origin === window.location.origin
@@ -29,6 +34,9 @@ export const DevAuthPage = () => {
             protocolAndHost()
           );
         }
+      })
+      .catch(e => {
+        setError(e.message);
       });
   };
 
@@ -68,6 +76,8 @@ export const DevAuthPage = () => {
         />
         <Button onClick={getJWTToken}>Submit</Button>
       </div>
+
+      {error && <div style={{ marginTop: '1rem' }}>Error: {error}</div>}
     </Container>
   );
 };
