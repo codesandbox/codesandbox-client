@@ -5,6 +5,7 @@ import {
   ServerPort,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { getDevToolsTabPosition } from 'app/overmind/utils/server';
 
 export const restartSandbox: Action = ({ effects }) => {
   effects.executor.emit('sandbox:restart');
@@ -192,17 +193,26 @@ export const onBrowserTabOpened: Action<{
 
 export const onBrowserFromPortOpened: Action<{
   port: ServerPort;
-}> = ({ actions }, { port }) => {
-  actions.editor.onDevToolsTabAdded({
-    tab: port.main
-      ? { id: 'codesandbox.browser' }
-      : {
-          id: 'codesandbox.browser',
-          closeable: true,
-          options: {
-            port: port.port,
-            url: `https://${port.hostname}`,
-          },
+}> = ({ actions, state }, { port }) => {
+  const tab = port.main
+    ? { id: 'codesandbox.browser' }
+    : {
+        id: 'codesandbox.browser',
+        closeable: true,
+        options: {
+          port: port.port,
+          url: `https://${port.hostname}`,
         },
+      };
+
+  const position = getDevToolsTabPosition({
+    tabs: state.editor.devToolTabs,
+    tab,
   });
+
+  if (position) {
+    actions.editor.onDevToolsPositionChanged({ position });
+  } else {
+    actions.editor.onDevToolsTabAdded({ tab });
+  }
 };
