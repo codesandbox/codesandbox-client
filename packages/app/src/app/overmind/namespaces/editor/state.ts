@@ -17,6 +17,7 @@ import {
   Sandbox,
   Tabs,
   WindowOrientation,
+  DevToolsTabPosition,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { Derive } from 'app/overmind';
@@ -86,10 +87,7 @@ type State = {
   >;
   isAdvancedEditor: Derive<State, boolean>;
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
-  currentDevToolsPosition: {
-    devToolIndex: number;
-    tabPosition: number;
-  };
+  currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
 };
 

@@ -2,6 +2,7 @@ import {
   ViewConfig,
   ViewTab,
 } from '@codesandbox/common/lib/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 
 // eslint-disable-next-line consistent-return
 export function getDevToolsTabPosition({
@@ -10,12 +11,7 @@ export function getDevToolsTabPosition({
 }: {
   tabs: ViewConfig[];
   tab: ViewTab;
-}):
-  | {
-      devToolIndex: number;
-      tabPosition: number;
-    }
-  | undefined {
+}): DevToolsTabPosition | undefined {
   const serializedTab = JSON.stringify(tab);
 
   for (let i = 0; i < tabs.length; i++) {

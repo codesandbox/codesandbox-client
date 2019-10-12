@@ -6,6 +6,7 @@ import {
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { getDevToolsTabPosition } from 'app/overmind/utils/server';
+import { ViewTab } from '@codesandbox/common/lib/templates/template';
 
 export const restartSandbox: Action = ({ effects }) => {
   effects.executor.emit('sandbox:restart');
@@ -180,30 +181,20 @@ type BrowserOptions = { title?: string; url?: string } & (
   | { url: string });
 
 export const onBrowserTabOpened: Action<{
-  options: BrowserOptions;
-}> = ({ actions }, { options }) => {
-  actions.editor.onDevToolsTabAdded({
-    tab: {
-      id: 'codesandbox.browser',
-      closeable: true,
-      options,
-    },
-  });
-};
+  closeable?: boolean;
+  options?: BrowserOptions;
+}> = ({ actions, state }, { options, closeable }) => {
+  const tab: ViewTab = {
+    id: 'codesandbox.browser',
+  };
 
-export const onBrowserFromPortOpened: Action<{
-  port: ServerPort;
-}> = ({ actions, state }, { port }) => {
-  const tab = port.main
-    ? { id: 'codesandbox.browser' }
-    : {
-        id: 'codesandbox.browser',
-        closeable: true,
-        options: {
-          port: port.port,
-          url: `https://${port.hostname}`,
-        },
-      };
+  if (typeof options !== 'undefined') {
+    tab.options = options;
+  }
+
+  if (typeof closeable !== 'undefined') {
+    tab.closeable = closeable;
+  }
 
   const position = getDevToolsTabPosition({
     tabs: state.editor.devToolTabs,
@@ -214,5 +205,21 @@ export const onBrowserFromPortOpened: Action<{
     actions.editor.onDevToolsPositionChanged({ position });
   } else {
     actions.editor.onDevToolsTabAdded({ tab });
+  }
+};
+
+export const onBrowserFromPortOpened: Action<{
+  port: ServerPort;
+}> = ({ actions }, { port }) => {
+  if (port.main) {
+    actions.server.onBrowserTabOpened({});
+  } else {
+    actions.server.onBrowserTabOpened({
+      closeable: true,
+      options: {
+        port: port.port,
+        url: `https://${port.hostname}`,
+      },
+    });
   }
 };
