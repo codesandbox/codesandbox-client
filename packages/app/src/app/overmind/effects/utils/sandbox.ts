@@ -3,6 +3,7 @@ import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
 export function transformModule(module: Module) {
   return {
     ...module,
+    code: typeof module.code === 'string' ? module.code : '',
     savedCode: null,
     isNotSynced: false,
     errors: [],

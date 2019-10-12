@@ -45,8 +45,8 @@ export type ModuleCorrection = {
 export type Module = {
   id?: string;
   title: string;
-  code: string | undefined;
-  savedCode: string | undefined;
+  code: string;
+  savedCode: string | null;
   shortid: string;
   errors: ModuleError[];
   corrections: ModuleCorrection[];
