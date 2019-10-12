@@ -64,7 +64,7 @@ export const setPatronPrice: Action = ({ state }) => {
 
 export const setSignedInCookie: Action = ({ state }) => {
   document.cookie = 'signedIn=true; Path=/;';
-  identify('signed_in', true);
+  identify('signed_in', 'true');
   setUserId(state.user.id);
 };
 
