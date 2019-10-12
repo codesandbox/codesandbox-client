@@ -129,6 +129,10 @@ const IconContainer = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  background: none;
+  border: none;
+  appearance: none;
+  color: inherit;
 
   width: 128px;
   height: 128px;
@@ -221,6 +225,7 @@ const HeaderTitle = styled.h3`
 
 const TemplateIcons = styled.div`
   display: flex;
+  margin: 0;
 
   font-size: 0.875rem;
   color: white;
@@ -332,7 +337,7 @@ export default class Frameworks extends React.Component {
         <Flex>
           <Icons>
             <ScrollAtMobile>
-              {templates.map(({ name }, i) => {
+              {templates.map(({ name, niceName }, i) => {
                 const TIcon = getIcon(name);
 
                 return (
@@ -344,6 +349,8 @@ export default class Frameworks extends React.Component {
                     onClick={() => {
                       this.setTemplate(templates[i]);
                     }}
+                    as="button"
+                    aria-label={`${niceName} template`}
                   >
                     <TIcon width={80} height={80} />
                   </IconContainer>
@@ -356,9 +363,10 @@ export default class Frameworks extends React.Component {
                 content="Check out other templates"
               >
                 <IconContainer
-                  onClick={() => {
-                    window.open('/s', '_blank');
-                  }}
+                  as="a"
+                  href="/s"
+                  target="_blank"
+                  aria-label="Check out other templates"
                 >
                   <ChevronRight width={56} height={56} />
                 </IconContainer>
@@ -376,7 +384,11 @@ export default class Frameworks extends React.Component {
             </p>
           </Intro>
 
-          <Container color={template.color}>
+          <Container
+            color={template.color}
+            aria-live="polite"
+            aria-labelledby={template.name}
+          >
             <RollingText
               style={{
                 display: 'flex',
@@ -386,8 +398,8 @@ export default class Frameworks extends React.Component {
               updateCheck={template}
             >
               <TemplateName>
-                <TemplateIcon width={96} height={96} />
-                <h4>{template.niceName}</h4>
+                <TemplateIcon width={96} height={96} aria-hidden />
+                <h4 id={template.name}>{template.niceName}</h4>
               </TemplateName>
             </RollingText>
             <Padding style={{ width: '100%' }} top={1}>
@@ -414,7 +426,7 @@ export default class Frameworks extends React.Component {
               {additionalInfo.loaders.length > 0 && (
                 <>
                   <HeaderTitle>Supported Loaders</HeaderTitle>
-                  <TemplateIcons>
+                  <TemplateIcons as="ul">
                     {additionalInfo.loaders.map((data, i) => (
                       <FileType
                         key={template.name + data.title}
@@ -422,6 +434,7 @@ export default class Frameworks extends React.Component {
                         title={data.title}
                         extension={data.extension}
                         i={i}
+                        as="li"
                       />
                     ))}
                   </TemplateIcons>
