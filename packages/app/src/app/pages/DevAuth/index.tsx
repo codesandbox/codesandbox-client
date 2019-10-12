@@ -14,10 +14,14 @@ export const DevAuthPage = () => {
 
   const getJWTToken = () => {
     setError(null);
+    let ok = true;
     fetch(`/api/v1/auth/verify/${authCode}`)
-      .then(res => res.json())
       .then(res => {
-        if (!res.ok) {
+        ok = res.ok;
+        return res.json();
+      })
+      .then(res => {
+        if (!ok) {
           throw new Error(res.errors.detail[0]);
         }
         if (
