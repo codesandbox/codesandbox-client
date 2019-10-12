@@ -33,7 +33,11 @@ const getFunctionDir = (sandbox: Sandbox): Directory | undefined => {
 export const SiteInfo: React.FC = () => {
   const {
     state: {
-      deployment: { building, netlifyLogs, netlifySite },
+      deployment: {
+        building,
+        netlifyLogs,
+        netlifySite: { id, name },
+      },
       editor: { currentSandbox },
     },
   } = useOvermind();
@@ -51,8 +55,8 @@ export const SiteInfo: React.FC = () => {
 
       <WorkspaceInputContainer>
         <Deploys>
-          <Deploy key={netlifySite.uid}>
-            <Name light>{netlifySite.name}</Name>
+          <Deploy key={id}>
+            <Name light>{name}</Name>
 
             {!building && <div>Building</div>}
 
