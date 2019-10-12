@@ -1,5 +1,5 @@
-import store from 'store/dist/store.modern';
 import { identify, resetUserId } from '@codesandbox/common/lib/utils/analytics';
+import store from 'store/dist/store.modern';
 
 export default {
   get() {
