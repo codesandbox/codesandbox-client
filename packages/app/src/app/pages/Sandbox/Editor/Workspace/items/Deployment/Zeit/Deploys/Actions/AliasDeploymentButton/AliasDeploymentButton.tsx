@@ -1,10 +1,10 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
+import { ZeitDeployment } from '@codesandbox/common/lib/types';
 import { Action } from '../../../../elements';
-import { Deploy } from '../types';
 
 type Props = {
-  deploy: Deploy;
+  deploy: ZeitDeployment;
 };
 
 export const AliasDeploymentButton: React.FC<Props> = ({
