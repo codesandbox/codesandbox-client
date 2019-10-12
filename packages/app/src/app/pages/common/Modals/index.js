@@ -27,7 +27,7 @@ import UploadModal from './UploadModal';
 import StorageManagementModal from './StorageManagementModal';
 import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
-import PickSandboxModal from './PickSandboxModal';
+import { PickSandboxModal } from './PickSandboxModal';
 import FeedbackModal from './FeedbackModal';
 import NetlifyLogs from './NetlifyLogs';
 // eslint-disable-next-line
