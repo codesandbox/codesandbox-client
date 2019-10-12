@@ -2,7 +2,7 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import SearchDependencies from 'app/pages/Sandbox/SearchDependencies';
 
-function SearchDependenciesModal() {
+const SearchDependenciesModal: React.FC = () => {
   const {
     actions: {
       editor: { addNpmDependency },
@@ -13,6 +13,6 @@ function SearchDependenciesModal() {
       onConfirm={(name, version) => addNpmDependency({ name, version })}
     />
   );
-}
+};
 
 export default SearchDependenciesModal;
