@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 import { Alert } from 'app/components/Alert';
 
-export const DeleteDeploymentModal: FunctionComponent = () => {
+const DeleteDeploymentModal: FunctionComponent = () => {
   const {
     actions: {
       modalClosed,
@@ -19,3 +19,6 @@ export const DeleteDeploymentModal: FunctionComponent = () => {
     />
   );
 };
+
+// eslint-disable-next-line import/no-default-export
+export default DeleteDeploymentModal;
