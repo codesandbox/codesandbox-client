@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 import { Alert } from 'app/components/Alert';
 
-export const DeleteProfileSandboxModal: FunctionComponent = () => {
+const DeleteProfileSandboxModal: FunctionComponent = () => {
   const {
     actions: {
       modalClosed,
@@ -19,3 +19,6 @@ export const DeleteProfileSandboxModal: FunctionComponent = () => {
     />
   );
 };
+
+// eslint-disable-next-line import/no-default-export
+export default DeleteProfileSandboxModal;
