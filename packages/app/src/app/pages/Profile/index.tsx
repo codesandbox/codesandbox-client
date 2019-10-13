@@ -17,8 +17,8 @@ import { Container, Content } from './elements';
 
 interface Props {
   match: {
-    params: { username: String };
-    url: String;
+    params: { username: string };
+    url: string;
   };
 }
 
