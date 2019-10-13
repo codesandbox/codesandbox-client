@@ -23,7 +23,7 @@ import {
 interface ISandboxListProps {
   sandboxes: SmallSandbox[];
   isCurrentUser: boolean;
-  onDelete: () => void;
+  onDelete: (id: any) => void;
 }
 
 export const SandboxList: React.FC<ISandboxListProps> = ({
