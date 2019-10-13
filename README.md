@@ -42,11 +42,17 @@ Thanks goes to these wonderful people
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 
+<<<<<<< HEAD
+
 <!-- prettier-ignore-start -->
 
 # <!-- markdownlint-disable -->
 
 <!-- prettier-ignore -->
+=======
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+>>>>>>> dc0e6ebe361d475549d3178eb82a6ebc4891da12
 <table>
   <tr>
     <td align="center"><a href="http://ivesvh.com"><img src="https://avatars0.githubusercontent.com/u/587016?v=3" width="100px;" alt="Ives van Hoorne"/><br /><sub><b>Ives van Hoorne</b></sub></a><br /><a href="#question-CompuIves" title="Answering Questions">💬</a> <a href="#blog-CompuIves" title="Blogposts">📝</a> <a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#example-CompuIves" title="Examples">💡</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#review-CompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
@@ -243,8 +249,13 @@ Thanks goes to these wonderful people
 </table>
 
 <!-- markdownlint-enable -->
+<<<<<<< HEAD
 
 # <!-- prettier-ignore-end -->
+=======
+<!-- prettier-ignore-end -->
+
+> > > > > > > dc0e6ebe361d475549d3178eb82a6ebc4891da12
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 

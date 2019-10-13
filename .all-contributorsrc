@@ -1387,10 +1387,17 @@
       ]
     },
     {
+<<<<<<< HEAD
       "login": "hetpatel33",
       "name": "Het Patel",
       "avatar_url": "https://avatars0.githubusercontent.com/u/13877514?v=4",
       "profile": "http://hetpatel33.github.io",
+=======
+      "login": "dance2die",
+      "name": "Sung M. Kim",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/8465237?v=4",
+      "profile": "https://twitter.com/dance2die",
+>>>>>>> dc0e6ebe361d475549d3178eb82a6ebc4891da12
       "contributions": [
         "code"
       ]

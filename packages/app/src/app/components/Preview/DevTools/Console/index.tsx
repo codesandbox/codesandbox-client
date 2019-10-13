@@ -27,9 +27,9 @@ export type StyledProps = DevToolProps & {
     preferences: {
       settings: {
         toggleConsoleEnabled: boolean;
-      }
-    }
-  }
+      };
+    };
+  };
 };
 
 const StyledClearIcon = styled(ClearIcon)`
@@ -197,16 +197,16 @@ class ConsoleComponent extends React.Component<StyledProps> {
     const messages = nothing
       ? []
       : [
-        {
-          method: 'log',
-          data: [
-            isConsoleEnabled
-              ? '%cConsole was cleared'
-              : '%cConsole is disabled',
-            consoleLogFontStyle,
-          ],
-        },
-      ];
+          {
+            method: 'log',
+            data: [
+              isConsoleEnabled
+                ? '%cConsole was cleared'
+                : '%cConsole is disabled',
+              consoleLogFontStyle,
+            ],
+          },
+        ];
 
     this.setState({ messages });
   };
@@ -223,19 +223,19 @@ class ConsoleComponent extends React.Component<StyledProps> {
 
     const messages = isConsoleEnabled
       ? [
-        ...state.messages,
-        {
-          method: 'log',
-          data: ['%cConsole is enabled', consoleLogFontStyle],
-        },
-      ]
+          ...state.messages,
+          {
+            method: 'log',
+            data: ['%cConsole is enabled', consoleLogFontStyle],
+          },
+        ]
       : [
-        ...state.messages,
-        {
-          method: 'log',
-          data: ['%cConsole is disabled', consoleLogFontStyle],
-        },
-      ];
+          ...state.messages,
+          {
+            method: 'log',
+            data: ['%cConsole is disabled', consoleLogFontStyle],
+          },
+        ];
 
     return { messages, isConsoleEnabled };
   }
@@ -362,7 +362,7 @@ export const console = {
     },
     {
       title: 'Log Filter',
-      onClick: () => { },
+      onClick: () => {},
       Icon: withTheme(ConsoleFilterSelect),
     },
   ],
