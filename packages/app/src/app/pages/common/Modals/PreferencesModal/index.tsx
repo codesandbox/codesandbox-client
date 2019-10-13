@@ -1,5 +1,5 @@
-import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React, { useMemo } from 'react';
+import { useOvermind } from 'app/overmind';
 
 import AppearanceIcon from 'react-icons/lib/md/color-lens';
 import CodeIcon from 'react-icons/lib/fa/code';
@@ -25,12 +25,20 @@ import { KeyMapping } from './KeyMapping';
 
 import { Container, ContentContainer } from './elements';
 
-class PreferencesModal extends React.Component {
-  getItems = () => {
-    const hasSubscription = this.props.store.isPatron;
-    const signedIn = this.props.store.isLoggedIn;
+const PreferencesModal: React.FC = () => {
+  const {
+    state: {
+      isPatron,
+      isLoggedIn,
+      preferences: { itemId },
+    },
+    actions: {
+      preferences: { itemIdChanged },
+    },
+  } = useOvermind();
 
-    return [
+  const items = useMemo(
+    () => [
       {
         id: 'appearance',
         title: 'Appearance',
@@ -61,19 +69,19 @@ class PreferencesModal extends React.Component {
         icon: <KeyboardIcon />,
         content: <KeyMapping />,
       },
-      signedIn && {
+      isLoggedIn && {
         id: 'integrations',
         title: 'Integrations',
         icon: <IntegrationIcon />,
         content: <Integrations />,
       },
-      hasSubscription && {
+      isPatron && {
         id: 'paymentInfo',
         title: 'Payment Info',
         icon: <CreditCardIcon />,
         content: <PaymentInfo />,
       },
-      hasSubscription && {
+      isPatron && {
         id: 'badges',
         title: 'Badges',
         icon: <StarIcon />,
@@ -85,26 +93,22 @@ class PreferencesModal extends React.Component {
         icon: <FlaskIcon />,
         content: <Experiments />,
       },
-    ].filter(x => x);
-  };
+    ],
+    [isLoggedIn, isPatron]
+  );
 
-  render() {
-    const items = this.getItems();
-    const item = items.find(
-      currentItem => currentItem.id === this.props.store.preferences.itemId
-    );
+  const item = items.find(currentItem => currentItem.id === itemId);
 
-    return (
-      <Container>
-        <SideNavigation
-          itemId={this.props.store.preferences.itemId}
-          menuItems={items}
-          setItem={this.props.signals.preferences.itemIdChanged}
-        />
-        <ContentContainer>{item.content}</ContentContainer>
-      </Container>
-    );
-  }
-}
+  return (
+    <Container>
+      <SideNavigation
+        itemId={itemId}
+        menuItems={items}
+        setItem={itemIdChanged}
+      />
+      <ContentContainer>{item.content}</ContentContainer>
+    </Container>
+  );
+};
 
-export default inject('store', 'signals')(observer(PreferencesModal));
+export default PreferencesModal;

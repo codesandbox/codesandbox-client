@@ -115,11 +115,11 @@ export default () => (
       }
     `}
     render={({ allBlogPosts: { edges: blogPosts } }) => (
-      <Container>
+      <Container as="section" aria-labelledby="recent-publications">
         <MaxWidth width={1280}>
-          <Title>Recent Publications</Title>
+          <Title id="recent-publications">Recent Publications</Title>
 
-          <SubTitle>
+          <SubTitle aria-label="You can follow our blog to stay up to date with new publications.">
             You can follow{' '}
             <a
               href="/blog"
@@ -132,7 +132,7 @@ export default () => (
             to stay up to date with new publications.
           </SubTitle>
 
-          <Items style={{ marginBottom: '2rem' }}>
+          <Items as="ul" style={{ marginBottom: '2rem' }}>
             {blogPosts.map(
               ({
                 node: {

@@ -616,6 +616,11 @@ export type SandboxUrlSourceData = {
   git?: GitInfo;
 };
 
+export type DevToolsTabPosition = {
+  devToolIndex: number;
+  tabPosition: number;
+};
+
 export type LiveMessage<data = unknown> = {
   event: LiveMessageEvent;
   data: data;

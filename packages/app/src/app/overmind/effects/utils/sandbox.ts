@@ -22,6 +22,7 @@ export function transformSandbox(sandbox: Sandbox) {
   // We need to add client side properties for tracking
   return {
     ...sandbox,
+    environmentVariables: null,
     modules: sandbox.modules.map(transformModule),
     directories: sandbox.directories.map(transformDirectory),
   };

@@ -493,8 +493,9 @@ class EditorPreview extends React.Component {
             }
             pane2Style={{
               visibility: windowVisible ? 'visible' : 'hidden',
-              maxWidth: windowVisible ? 'inherit' : 0,
-              width: windowVisible ? 'inherit' : 0,
+              maxWidth: windowVisible ? '100%' : 0,
+              width: windowVisible ? '100%' : 0,
+              overflow: 'hidden',
               zIndex: 0, // For VSCode hovers, beware this is also dynamically changed in PreviewTabs
             }}
           >
