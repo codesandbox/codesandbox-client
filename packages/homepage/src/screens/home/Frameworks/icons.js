@@ -18,6 +18,9 @@ import vueSvg from './vue.png';
 const Container = styled.div`
   display: flex;
   align-items: center;
+  width: 25%;
+  box-sizing: border-box;
+  margin-top: 0.5rem;
 
   ${props => fadeIn(props.i * 0.1)};
   img {
@@ -28,8 +31,8 @@ const Container = styled.div`
 
 export default ({ iconSrc, title, extension, ...props }) => (
   <Container {...props}>
-    <img width={20} height={20} src={iconSrc} alt={title} />
-    <span>.{extension}</span>
+    <img width={20} height={20} src={iconSrc} alt={title} aria-hidden />
+    <span aria-label={title}>.{extension}</span>
   </Container>
 );
 

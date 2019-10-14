@@ -10,7 +10,7 @@ export const onInitialize: OnInitialize = (
     onModulesByPathChange(cb: (modulesByPath: any) => void) {
       overmindInstance.reaction(
         ({ editor }) => editor.modulePaths,
-        ({ editor }) => cb(editor.modulesByPath)
+        modulesByPath => cb(modulesByPath)
       );
     },
     getModulesByPath() {

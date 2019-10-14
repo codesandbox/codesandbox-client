@@ -111,10 +111,10 @@ const Feature = ({ right, title, Icon, iconSize, children }) => (
 );
 
 export default () => (
-  <Background>
+  <Background as="section" aria-labelledby="share-one-click">
     <MaxWidth width={1280}>
       <Centered horizontal>
-        <Heading>Share in a single click</Heading>
+        <Heading id="share-one-click">Share in a single click</Heading>
         <SubHeading>
           Say goodbye to the days where you had to create a zip file just to
           share your code. Now you can copy the link and share away!
@@ -138,6 +138,7 @@ export default () => (
                   href="https://hackernoon.com/how-we-make-npm-packages-work-in-the-browser-announcing-the-new-packager-6ce16aa4cee6"
                   rel="noreferrer noopener"
                   target="_blank"
+                  aria-label="Learn how it works the NPM support"
                 >
                   Learn how it works.
                 </Link>

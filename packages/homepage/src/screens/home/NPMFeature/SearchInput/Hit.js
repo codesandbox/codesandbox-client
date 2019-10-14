@@ -59,6 +59,7 @@ const Hit = ({ hit: { count, value } }) => {
       ref={el}
       rel="noreferrer noopener"
       target="_blank"
+      aria-label={`${value}, ${count} sandboxes`}
     >
       <Title>{value}</Title>
 
