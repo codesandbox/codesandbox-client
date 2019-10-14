@@ -9,7 +9,6 @@ Object.assign(tokens.colors, dot.object(codesandboxBlack.colors));
 const theme = {
   // hope to remove this bit
   ...applicationTheme,
-
   // used for parts imported from outside embed
   ...codesandboxBlack.colors,
   // used for syntax highlighting
