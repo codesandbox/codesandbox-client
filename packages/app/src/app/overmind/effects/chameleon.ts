@@ -34,6 +34,7 @@ export default {
         const cmln = document.querySelector('#chmln-editor');
 
         if (cmln) {
+          // @ts-ignore
           cmln.shadowRoot.childNodes[0].innerHTML +=
             '#chmln-toggle-item { top: auto !important; bottom: 100px !important; }';
         }
