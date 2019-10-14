@@ -4,7 +4,6 @@ import {
   IDerive,
   IOnInitialize,
   IOperator,
-  IReaction,
   IState,
 } from 'overmind';
 import { createHook } from 'overmind-react';
@@ -62,9 +61,6 @@ export interface OnInitialize extends IOnInitialize<Config> {}
 
 export interface Action<Input = void, Output = void>
   extends IAction<Config, Input, Output> {}
-
-export interface Reaction<Input = void, Output = void>
-  extends IReaction<Config> {}
 
 export interface AsyncAction<Input = void, Output = void>
   extends IAction<Config, Input, Promise<Output>> {}
