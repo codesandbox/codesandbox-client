@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header, Icon, Title } from './elements';
+import { Header, Icon, Title, Body } from './elements';
 
 function Section(props) {
   const [open, setOpen] = React.useState(props.defaultOpen || false);
@@ -11,7 +11,7 @@ function Section(props) {
         <ToggleIcon open={open} />
         <Title>{props.title}</Title>
       </Header>
-      {open ? props.children : null}
+      {open ? <Body>{props.children}</Body> : null}
     </section>
   );
 }

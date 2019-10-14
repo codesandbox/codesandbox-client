@@ -1,6 +1,13 @@
 import styled from 'styled-components';
 import css from '@styled-system/css';
 
+export const Body = styled.div(
+  css({
+    borderBottom: '1px solid',
+    borderColor: 'sideBar.border',
+  })
+);
+
 export const Header = styled.div(
   css({
     display: 'flex',
