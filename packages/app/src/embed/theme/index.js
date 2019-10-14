@@ -4,7 +4,7 @@ import codesandboxBlack from '@codesandbox/common/lib/themes/codesandbox-nu.json
 import tokens from './tokens';
 
 // merge vscode colors into tokens
-Object.assign(tokens.colors, dot.object(codesandboxBlack.colors));
+Object.assign(tokens.colors, dot.object({ ...codesandboxBlack.colors }));
 
 const theme = {
   // hope to remove this bit
