@@ -7,9 +7,9 @@ function Section(props) {
 
   return (
     <section>
-      <Header>
+      <Header onClick={toggle}>
         <ToggleIcon open={open} />
-        <Title onClick={toggle}>{props.title}</Title>
+        <Title>{props.title}</Title>
       </Header>
       {open ? props.children : null}
     </section>

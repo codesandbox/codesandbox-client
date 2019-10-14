@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Title, Description } from './elements';
+import { Container, Title, Description, Stats } from './elements';
 import AvatarBlock from '../AvatarBlock';
 
 const SandboxInfo = ({ sandbox }) => {
@@ -15,6 +15,7 @@ const SandboxInfo = ({ sandbox }) => {
           name={sandbox.author.username}
         />
       )}
+      <Stats {...sandbox} />
     </Container>
   );
 };
