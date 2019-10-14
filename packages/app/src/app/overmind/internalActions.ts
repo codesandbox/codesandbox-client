@@ -98,10 +98,11 @@ export const signInGithub: Action<
   { useExtraScopes: boolean },
   Promise<string>
 > = ({ effects }, options) => {
-  const popup = effects.browser.openPopup(
-    `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`,
-    'sign in'
-  );
+  const authPath = process.env.LOCAL_SERVER
+    ? '/auth/dev'
+    : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
+
+  const popup = effects.browser.openPopup(authPath, 'sign in');
 
   return effects.browser
     .waitForMessage<{ jwt: string }>('signin')
