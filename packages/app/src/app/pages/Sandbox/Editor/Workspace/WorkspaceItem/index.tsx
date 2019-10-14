@@ -43,15 +43,7 @@ export class WorkspaceItem extends React.Component<Props, State> {
   toggleOpen = () => this.setState(state => ({ open: !state.open }));
 
   render() {
-    const {
-      children,
-      title,
-      keepState,
-      disabled,
-      actions,
-      style,
-      showOverflow,
-    } = this.props;
+    const { children, title, keepState, disabled, actions, style } = this.props;
     const { open } = this.state;
 
     return (
@@ -65,7 +57,7 @@ export class WorkspaceItem extends React.Component<Props, State> {
         <ReactShow
           style={{
             height: 'auto',
-            overflow: showOverflow ? 'initial' : 'hidden',
+            overflow: 'hidden',
           }}
           transitionOnMount
           start={{
