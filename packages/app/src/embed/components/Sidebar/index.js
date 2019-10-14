@@ -10,7 +10,7 @@ import Files from '../Files';
 import Section from './Section';
 import SandboxInfo from './SandboxInfo';
 
-import { Container, Title, Subtitle, Item, Version } from './elements';
+import { Container, Subtitle, Item, Version } from './elements';
 
 const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
 
@@ -51,7 +51,7 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
 
   return (
     <Container>
-      <Section title="CodeSandbox" defaultOpen={true}>
+      <Section title="CodeSandbox" defaultOpen>
         <SandboxInfo sandbox={sandbox} />
       </Section>
       <Section title="Files">
