@@ -26,11 +26,18 @@ export default {
   /*
     This method might be called at any point in time, with a user or not. We want to
     make sure that we load the script on first call and then make sure it finishes loading
-    if any new calls are made.
+    if any new calls are made during it loading
   */
   loadTour(userId: string) {
     if (!_script) {
-      _script = loadScript();
+      _script = loadScript().then(() => {
+        const cmln = document.querySelector('#chmln-editor');
+
+        if (cmln) {
+          cmln.shadowRoot.childNodes[0].innerHTML +=
+            '#chmln-toggle-item { top: auto !important; bottom: 100px !important; }';
+        }
+      });
     }
 
     if (userId) {
