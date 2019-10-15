@@ -1,12 +1,18 @@
-import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
 import { GitProgress } from 'app/components/GitProgress';
+import { useOvermind } from 'app/overmind';
 
-function PRModal({ store }) {
+const PRModal: FunctionComponent = () => {
+  const {
+    state: {
+      git: { isCreatingPr, pr },
+    },
+  } = useOvermind();
+
   let result = null;
 
-  if (!store.git.isCreatingPr) {
-    const newUrl = store.git.pr.prURL;
+  if (!isCreatingPr) {
+    const newUrl = pr.prURL;
 
     result = (
       <div>
@@ -27,6 +33,6 @@ function PRModal({ store }) {
       message="Forking Repository & Creating PR..."
     />
   );
-}
+};
 
-export default inject('store')(observer(PRModal));
+export default PRModal;
