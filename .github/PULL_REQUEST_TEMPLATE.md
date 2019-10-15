@@ -18,7 +18,7 @@ merge of your pull request!
 
 <!-- if this is a feature change -->
 
-## What steps did you take to test this? This is required before we can merge.
+## What steps did you take to test this? This is required before we can merge, make sure to test the flow you've updated.
 
 1. Step A
 2. Step B
