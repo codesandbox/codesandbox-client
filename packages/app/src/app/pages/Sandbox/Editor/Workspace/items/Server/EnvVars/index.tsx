@@ -1,12 +1,18 @@
 import React, { useEffect } from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 
 import { WorkspaceInputContainer } from '../../../elements';
 
 import { EnvEntry } from './EnvEntry';
 import { EnvModal } from './EnvModal';
 
-const EnvironmentVariablesComponent = ({ signals: { editor }, store }) => {
+export const EnvironmentVariables: React.FC<{}> = props => {
+  const {
+    actions: { editor },
+    state: {
+      editor: { currentSandbox },
+    },
+  } = useOvermind();
   useEffect(() => {
     editor.fetchEnvironmentVariables();
   }, [editor]);
@@ -19,7 +25,7 @@ const EnvironmentVariablesComponent = ({ signals: { editor }, store }) => {
     editor.deleteEnvironmentVariable({ name });
   };
 
-  const envVars = store.editor.currentSandbox.environmentVariables;
+  const envVars: any = currentSandbox.environmentVariables;
 
   if (!envVars) {
     return (
@@ -51,7 +57,3 @@ const EnvironmentVariablesComponent = ({ signals: { editor }, store }) => {
     </div>
   );
 };
-
-export const EnvironmentVariables = inject('store', 'signals')(
-  observer(EnvironmentVariablesComponent)
-);
