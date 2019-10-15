@@ -37,17 +37,15 @@ async function test(prId) {
       }
 
       if (stderror) {
-        throw new Error('Something went wrong:' + stderror);
+        console.error(stderror);
       }
 
       console.info(stdout);
 
       spawnPromise('git', ['checkout', branchName])
-        .then(() => {
-          return spawnPromise('yarn', ['install']).then(() => {
+        .then(() => spawnPromise('yarn', ['install']).then(() => {
             return spawnPromise('yarn', ['build:deps']);
-          });
-        })
+          }))
         .then(() => {
           console.log('DONE!');
         })
