@@ -22,7 +22,7 @@ import Cubes from './Cubes';
 import Frameworks from '../Frameworks';
 
 import getScrollPos from '../../../utils/scroll';
-import { useMatchMedia } from '../../../hooks';
+import { useMatchMedia, useInterval } from '../../../hooks';
 import media from '../../../utils/media';
 
 const Container = styled(Centered)`
@@ -73,17 +73,13 @@ const Animation = () => {
   const [templateSelected, setTemplateSelected] = React.useState(false);
   const canvas = React.useRef();
 
-  React.useEffect(() => {
-    const id = setTimeout(() => {
-      if (!templateSelected) {
-        // @ts-ignore
-        if (!window.scrolling && getScrollPos().y < window.innerHeight) {
-          setTemplateIndex(index => (index + 1) % templates.length);
-        }
+  const changeTemplate = React.useCallback(() => {
+    if (!templateSelected) {
+      // @ts-ignore
+      if (!window.scrolling && getScrollPos().y < window.innerHeight) {
+        setTemplateIndex(index => (index + 1) % templates.length);
       }
-    }, 6000);
-
-    return () => clearTimeout(id);
+    }
   }, [templateSelected, templates.length]);
 
   const setCanvas = canvasToSet => {
@@ -95,6 +91,7 @@ const Animation = () => {
     setTemplateSelected(true);
   };
 
+  useInterval(changeTemplate, 6000);
   const template = templates[templateIndex];
 
   return (
@@ -114,7 +111,6 @@ const Animation = () => {
                 templates={templates}
                 template={template}
                 setTemplate={selectTemplate}
-                reduceAnimation={reduceAnimation}
               />
             </Media>
           )}
