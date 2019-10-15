@@ -1,4 +1,4 @@
-const { exec, spawn } = require('child_process');
+const { spawn } = require('child_process');
 const { argv } = require('yargs');
 const username = require('username');
 
@@ -30,29 +30,24 @@ function spawnPromise(command, args) {
 async function test(prId) {
   const branchName = `pr-${username.sync()}-${prId}`;
 
-  exec(
-    `git fetch origin pull/${prId}/head:${branchName}`,
-    (error, stdout, stderror) => {
-      if (error) {
-        throw error;
-      }
-
-      if (stderror) {
-        console.error(stderror);
-      }
-
-      // eslint-disable-next-line
-      console.info(stdout);
-
-      spawnPromise('git', ['checkout', branchName])
-        .then(() => spawnPromise('yarn', ['build:deps']))
-        .catch(() => {
-          console.error(
-            'Something wrong happened building the deps, maybe missing a new package added. Please install and run build:deps manually before continuing'
-          );
-        });
-    }
-  );
+  Promise.resolve()
+    .then(() => spawnPromise('git', ['checkout', 'master']))
+    .then(() => spawnPromise('git', ['pull']))
+    .then(() =>
+      spawnPromise('git', [
+        'fetch',
+        'origin',
+        `pull/${prId}/head:${branchName}`,
+      ])
+    )
+    .then(() => spawnPromise('git', ['checkout', branchName]))
+    .then(() => spawnPromise('git', ['merge', 'master']))
+    .then(() => spawnPromise('yarn', ['build:deps']))
+    .catch(() => {
+      console.error(
+        'Something wrong happened building the deps, maybe missing a new package added. Please install and run build:deps manually before continuing'
+      );
+    });
 }
 
 if (id && Number(id)) {
