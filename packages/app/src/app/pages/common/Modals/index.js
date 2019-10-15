@@ -15,7 +15,7 @@ import DeleteSandboxModal from './DeleteSandboxModal';
 import DeploymentModal from './DeploymentModal';
 import EmptyTrash from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
-import FeedbackModal from './FeedbackModal';
+import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import LiveSessionEnded from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
