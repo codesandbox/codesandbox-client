@@ -98,9 +98,10 @@ export const signInGithub: Action<
   { useExtraScopes: boolean },
   Promise<string>
 > = ({ effects }, options) => {
-  const authPath = process.env.LOCAL_SERVER
-    ? '/auth/dev'
-    : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
+  const authPath =
+    process.env.LOCAL_SERVER || 'STAGING_BRANCH' in process.env
+      ? '/auth/dev'
+      : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
 
   const popup = effects.browser.openPopup(authPath, 'sign in');
 
