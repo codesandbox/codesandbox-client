@@ -15,6 +15,7 @@ import Modals from './common/Modals';
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
 import Dashboard from './Dashboard';
+import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 
 const routeDebugger = _debug('cs:app:router');
@@ -112,7 +113,10 @@ const RoutesComponent: React.FC = () => {
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
             {process.env.NODE_ENV === `development` && (
-              <Route path="/codesadbox" component={CodeSadbox} />
+              <>
+                <Route path="/auth/dev" component={DevAuthPage} />
+                <Route path="/codesadbox" component={CodeSadbox} />
+              </>
             )}
             <Route component={NotFound} />
           </Switch>
