@@ -4,7 +4,7 @@ import { Container, Title, Text, Buttons } from './elements';
 
 interface IAlertProps {
   title: string;
-  body: string;
+  body: string | React.ReactNode;
   confirmMessage?: string;
   onCancel: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onConfirm: (event: React.MouseEvent<HTMLButtonElement>) => void;
