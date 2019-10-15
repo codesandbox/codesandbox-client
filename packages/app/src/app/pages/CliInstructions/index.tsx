@@ -7,7 +7,7 @@ import { SubTitle } from 'app/components/SubTitle';
 import { Navigation } from 'app/pages/common/Navigation';
 import { Container, Content, Code } from './elements';
 
-const CLIInstructions: React.FC = () => {
+export const CLIInstructions: React.FC = () => {
   const {
     actions: { cliInstructionsMounted },
   } = useOvermind();
@@ -42,6 +42,3 @@ const CLIInstructions: React.FC = () => {
     </MaxWidth>
   );
 };
-
-// eslint-disable-next-line import/no-default-export
-export default CLIInstructions;
