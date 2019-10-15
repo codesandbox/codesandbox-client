@@ -43,9 +43,7 @@ async function test(prId) {
       console.info(stdout);
 
       spawnPromise('git', ['checkout', branchName])
-        .then(() => spawnPromise('yarn', ['install']).then(() => {
-            return spawnPromise('yarn', ['build:deps']);
-          }))
+        .then(() => spawnPromise('yarn', ['build:deps']))
         .then(() => {
           console.log('DONE!');
         })
