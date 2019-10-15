@@ -45,6 +45,12 @@ const Button = styled.a`
     box-shadow: 0 7px 12px rgba(0, 0, 0, 0.3);
     transform: translateY(-5px);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover {
+      transform: none;
+    }
+  }
 `;
 
 const Content = styled.div`
