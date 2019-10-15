@@ -9,6 +9,7 @@ import EditorLink from '../EditorLink';
 import Files from '../Files';
 import Section from './Section';
 import SandboxInfo from './SandboxInfo';
+import FileTree from './FileTree';
 
 import { Container, Subtitle, Item, Version } from './elements';
 
@@ -54,7 +55,14 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
       <Section title="CodeSandbox" defaultOpen>
         <SandboxInfo sandbox={sandbox} />
       </Section>
-      <Section title="Files">
+      <Section title="Files" defaultOpen>
+        <FileTree
+          sandbox={sandbox}
+          currentModuleId={currentModule}
+          setCurrentModuleId={setCurrentModule}
+        />
+      </Section>
+      <Section title="Files" defaultOpen>
         <Files
           modules={sandbox.modules}
           directories={sandbox.directories}
