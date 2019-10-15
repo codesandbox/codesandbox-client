@@ -9,6 +9,7 @@ function spawnPromise(command, args) {
     const p = spawn(command, args);
 
     p.stdout.on('data', data => {
+      // eslint-disable-next-line
       console.log(data.toString());
     });
 
@@ -40,14 +41,16 @@ async function test(prId) {
         console.error(stderror);
       }
 
+      // eslint-disable-next-line
       console.info(stdout);
 
       spawnPromise('git', ['checkout', branchName])
         .then(() => spawnPromise('yarn', ['build:deps']))
-        .then(() => {
-          console.log('DONE!');
-        })
-        .catch(() => {});
+        .catch(() => {
+          console.error(
+            'Something wrong happened building the deps, maybe missing a new package added. Please install and run build:deps manually before continuing'
+          );
+        });
     }
   );
 }
