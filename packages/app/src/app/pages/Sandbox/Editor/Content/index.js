@@ -1,5 +1,11 @@
 /* eslint-disable no-shadow */
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useReducer,
+} from 'react';
 import { json } from 'overmind';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
@@ -40,6 +46,7 @@ const EditorPreview = ({ reaction }) => {
   const currentEl = useRef(null);
   const devtools = useRef(null);
   const contentNode = useRef(null);
+  const [, forceUpdate] = useReducer(s => s + 1, 0);
   const {
     state,
     state: {
@@ -151,8 +158,8 @@ const EditorPreview = ({ reaction }) => {
     const disposeEditorChange =
       reaction &&
       reaction(
-        ({ preferences }) => preferences.settings.codeMirror
-        // () => this.forceUpdate()
+        ({ preferences }) => preferences.settings.codeMirror,
+        () => forceUpdate()
       );
 
     return () => {
