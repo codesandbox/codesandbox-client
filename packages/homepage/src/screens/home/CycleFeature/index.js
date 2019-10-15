@@ -154,7 +154,7 @@ const Progress = styled.div`
 `;
 
 const CycleFeatures = () => {
-  const verticalSteps = {};
+  const verticalSteps = React.useRef({});
   const cube = React.useRef();
   const animation = React.useRef();
   const reduceAnimation = useMatchMedia('(prefers-reduced-motion: reduce)');
@@ -184,13 +184,14 @@ const CycleFeatures = () => {
   const setStepForScroll = React.useCallback(
     (scroll: number, step: number) => {
       if (
-        scroll + window.innerHeight / 2 > verticalSteps[step] &&
+        scroll + window.innerHeight / 2 > verticalSteps.current[step] &&
         step > selectedStep
       ) {
         selectStep(step, false);
       }
     },
-    [selectStep, selectedStep, verticalSteps]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectStep, selectedStep, reduceAnimation]
   );
 
   const updateStepBasedOnScroll = React.useCallback(() => {
@@ -202,7 +203,7 @@ const CycleFeatures = () => {
   }, [setStepForScroll]);
 
   const setY = (step: number, y: number) => {
-    verticalSteps[step] = verticalSteps[step] || y;
+    verticalSteps.current[step] = verticalSteps.current[step] || y;
   };
 
   React.useEffect(() => {
@@ -211,6 +212,7 @@ const CycleFeatures = () => {
     } else {
       setSelectedStep(0);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduceAnimation]);
 
   React.useEffect(() => {
@@ -224,6 +226,7 @@ const CycleFeatures = () => {
 
   React.useEffect(() => {
     if (!cube.current || reduceAnimation) return;
+
     const cubeY = cube.current.getBoundingClientRect().top;
 
     animation.current = new TimelineMax({ paused: true })
@@ -262,10 +265,10 @@ const CycleFeatures = () => {
           x: 0,
           position: 'relative',
           rotation: 0,
-          y: verticalSteps[0] - cubeY - 40,
+          y: verticalSteps.current[0] - cubeY - 40,
         },
         {
-          y: verticalSteps[0] - cubeY - 40,
+          y: verticalSteps.current[0] - cubeY - 40,
           ease: Power2.easeInOut,
         }
       )
@@ -273,7 +276,7 @@ const CycleFeatures = () => {
         cube.current,
         1.2,
         {
-          y: verticalSteps[1] - cubeY - 40,
+          y: verticalSteps.current[1] - cubeY - 40,
           scale: 1,
           rotation: 720,
           ease: Power2.easeInOut,
@@ -306,7 +309,7 @@ const CycleFeatures = () => {
         cube.current,
         1.2,
         {
-          y: verticalSteps[2] - cubeY - 40,
+          y: verticalSteps.current[2] - cubeY - 40,
 
           ease: Power2.easeInOut,
         },
@@ -353,7 +356,7 @@ const CycleFeatures = () => {
         'step3'
       )
       .to(cube.current, 1.2, {
-        y: verticalSteps[3] - cubeY + 40,
+        y: verticalSteps.current[3] - cubeY + 40,
         scale: 0.5,
         ease: Power2.easeInOut,
       })
