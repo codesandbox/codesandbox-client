@@ -65,8 +65,8 @@ export const SandboxList: React.FC<ISandboxListProps> = ({
               <Link to={sandboxUrl(s)}>{s.title || s.id}</Link>
               <PrivacyStatus privacy={s.privacy} asIcon />
             </td>
-            <td>{format(s.insertedAt, 'MMM DD, YYYY')}</td>
-            <td>{format(s.updatedAt, 'MMM DD, YYYY')}</td>
+            <td>{format(new Date(s.insertedAt), 'MMM dd, yyyy')}</td>
+            <td>{format(new Date(s.updatedAt), 'MMM dd, yyyy')}</td>
             <StatBody>
               <Icon width={30} height={30} />
             </StatBody>

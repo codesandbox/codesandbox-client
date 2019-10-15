@@ -52,6 +52,7 @@ export default class RollingText extends React.Component {
           ref={el => {
             this.fadeout = el;
           }}
+          aria-hidden
         >
           {oldChildren}
         </div>

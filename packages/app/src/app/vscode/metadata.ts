@@ -1,7 +1,7 @@
 const VSCODE_METADATA = {
   CORE: {
     paths: {
-      src: process.env.VSCODE ? '/vscode/out/vs' : '/public/vscode22/vs',
+      src: process.env.VSCODE ? '/vscode/out/vs' : '/public/vscode23/vs',
       'npm/dev': 'node_modules/monaco-editor-core/dev/vs',
       'npm/min': 'node_modules/monaco-editor-core/min/vs',
       built: '/vscode/out-monaco-editor-core/min/vs',

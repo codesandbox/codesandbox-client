@@ -22,7 +22,7 @@ import {
   GridsomeIconDark,
   QuasarIconDark,
   SapperIconDark,
-  ParcelIconDark,
+  JavaScriptIconDark,
   VuePressIconDark,
   UnibitIconDark,
 } from '@codesandbox/template-icons';
@@ -58,14 +58,7 @@ import {
   TemplateType,
 } from '.';
 
-export type ReturnedIcon = React.SFC<{
-  width?: number;
-  height?: number;
-  className?: string;
-  style?: React.CSSProperties;
-}>;
-
-export default function getIcon(theme: TemplateType): ReturnedIcon {
+export default function getIcon(theme: TemplateType) {
   switch (theme) {
     case adonis.name:
       return AdonisIconDark;
@@ -82,7 +75,7 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
     case angular.name:
       return AngularIconDark;
     case parcel.name:
-      return ParcelIconDark;
+      return JavaScriptIconDark;
     case dojo.name:
       return DojoIconDark;
     case ember.name:

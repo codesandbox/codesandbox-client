@@ -1,3 +1,4 @@
+import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
 import { FileSystemConfiguration } from '../../../../../../../standalone-packages/codesandbox-browserfs';
 import { getTypeFetcher } from './type-downloader';
 import { EXTENSIONS_LOCATION } from '../../constants';
@@ -9,7 +10,6 @@ export const BROWSER_FS_CONFIG: FileSystemConfiguration = {
   options: {
     '/': { fs: 'InMemory', options: {} },
     '/tmp': { fs: 'InMemory', options: {} },
-    '/worker': { fs: 'WorkerFS', options: { worker: self } },
     '/sandbox': {
       fs: 'InMemory',
     },
@@ -47,7 +47,7 @@ export async function initializeBrowserFS({
   syncTypes = false,
   extraMounts = {},
 } = {}) {
-  return new Promise(async resolve => {
+  return new Promise(resolve => {
     const config = { ...BROWSER_FS_CONFIG };
     let modulesByPath = {};
 
@@ -75,7 +75,7 @@ export async function initializeBrowserFS({
 
     config.options = { ...config.options, ...extraMounts };
 
-    global.BrowserFS.configure(config, async e => {
+    global.BrowserFS.configure(config, e => {
       if (e) {
         console.error(e);
         return;
@@ -93,6 +93,8 @@ export async function initializeBrowserFS({
             }
           }
         });
+
+        commonPostMessage({ $type: 'request-data', $broadcast: true });
       } else {
         resolve();
       }

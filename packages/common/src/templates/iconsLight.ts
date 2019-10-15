@@ -22,7 +22,7 @@ import {
   GridsomeIconLight,
   QuasarIconLight,
   SapperIconLight,
-  ParcelIconLight,
+  JavaScriptIconLight,
   VuePressIconLight,
   UnibitIconLight,
 } from '@codesandbox/template-icons';
@@ -58,14 +58,7 @@ import {
   TemplateType,
 } from '.';
 
-export type ReturnedIcon = React.SFC<{
-  width?: number;
-  height?: number;
-  className?: string;
-  style?: React.CSSProperties;
-}>;
-
-export default function getIcon(theme: TemplateType): ReturnedIcon {
+export default function getIcon(theme: TemplateType) {
   switch (theme) {
     case adonis.name:
       return AdonisIconLight;
@@ -82,7 +75,7 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
     case angular.name:
       return AngularIconLight;
     case parcel.name:
-      return ParcelIconLight;
+      return JavaScriptIconLight;
     case dojo.name:
       return DojoIconLight;
     case ember.name:
