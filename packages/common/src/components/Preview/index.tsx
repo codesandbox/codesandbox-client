@@ -243,6 +243,7 @@ class BasePreview extends React.Component<Props, State> {
     resetState();
 
     const url = this.currentUrl();
+    dispatch({ type: 'clear-console' });
 
     if (this.serverPreview) {
       setTimeout(() => {
