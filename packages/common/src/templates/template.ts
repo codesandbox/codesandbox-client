@@ -67,7 +67,9 @@ const CLIENT_VIEWS: ViewConfig[] = [
 ];
 
 // React sandboxes have an additional devtool on top of CLIENT_VIEWS
-const REACT_CLIENT_VIEWS: ViewConfig[] = [...CLIENT_VIEWS];
+const REACT_CLIENT_VIEWS: ViewConfig[] = JSON.parse(
+  JSON.stringify(CLIENT_VIEWS)
+);
 REACT_CLIENT_VIEWS[1].views.push({ id: 'codesandbox.react-devtools' });
 
 const SERVER_VIEWS: ViewConfig[] = [
