@@ -47,7 +47,7 @@ class DevToolTerminal extends React.Component<
     this.term = terminal;
 
     this.messageQueue.forEach(this.handleMessage);
-    this.batchedMessages.length = 0;
+    this.messageQueue.length = 0;
   };
 
   handleMessage = (data: any) => {
