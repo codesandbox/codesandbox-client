@@ -38,62 +38,63 @@ const PreferencesModal: React.FC = () => {
   } = useOvermind();
 
   const items = useMemo(
-    () => [
-      {
-        id: 'appearance',
-        title: 'Appearance',
-        icon: <AppearanceIcon />,
-        content: <Appearance />,
-      },
-      {
-        id: 'editor',
-        title: 'Editor',
-        icon: <CodeIcon />,
-        content: <EditorSettings />,
-      },
-      {
-        id: 'prettierSettings',
-        title: 'Prettier Settings',
-        icon: <CodeFormatIcon />,
-        content: <CodeFormatting />,
-      },
-      {
-        id: 'preview',
-        title: 'Preview',
-        icon: <BrowserIcon />,
-        content: <PreviewSettings />,
-      },
-      {
-        id: 'keybindings',
-        title: 'Key Bindings',
-        icon: <KeyboardIcon />,
-        content: <KeyMapping />,
-      },
-      isLoggedIn && {
-        id: 'integrations',
-        title: 'Integrations',
-        icon: <IntegrationIcon />,
-        content: <Integrations />,
-      },
-      isPatron && {
-        id: 'paymentInfo',
-        title: 'Payment Info',
-        icon: <CreditCardIcon />,
-        content: <PaymentInfo />,
-      },
-      isPatron && {
-        id: 'badges',
-        title: 'Badges',
-        icon: <StarIcon />,
-        content: <Badges />,
-      },
-      {
-        id: 'experiments',
-        title: 'Experiments',
-        icon: <FlaskIcon />,
-        content: <Experiments />,
-      },
-    ],
+    () =>
+      [
+        {
+          id: 'appearance',
+          title: 'Appearance',
+          icon: <AppearanceIcon />,
+          content: <Appearance />,
+        },
+        {
+          id: 'editor',
+          title: 'Editor',
+          icon: <CodeIcon />,
+          content: <EditorSettings />,
+        },
+        {
+          id: 'prettierSettings',
+          title: 'Prettier Settings',
+          icon: <CodeFormatIcon />,
+          content: <CodeFormatting />,
+        },
+        {
+          id: 'preview',
+          title: 'Preview',
+          icon: <BrowserIcon />,
+          content: <PreviewSettings />,
+        },
+        {
+          id: 'keybindings',
+          title: 'Key Bindings',
+          icon: <KeyboardIcon />,
+          content: <KeyMapping />,
+        },
+        isLoggedIn && {
+          id: 'integrations',
+          title: 'Integrations',
+          icon: <IntegrationIcon />,
+          content: <Integrations />,
+        },
+        isPatron && {
+          id: 'paymentInfo',
+          title: 'Payment Info',
+          icon: <CreditCardIcon />,
+          content: <PaymentInfo />,
+        },
+        isPatron && {
+          id: 'badges',
+          title: 'Badges',
+          icon: <StarIcon />,
+          content: <Badges />,
+        },
+        {
+          id: 'experiments',
+          title: 'Experiments',
+          icon: <FlaskIcon />,
+          content: <Experiments />,
+        },
+      ].filter(Boolean),
     [isLoggedIn, isPatron]
   );
 
