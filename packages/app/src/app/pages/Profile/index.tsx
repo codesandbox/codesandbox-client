@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
-import { Route, Switch } from 'react-router-dom';
+import Helmet from 'react-helmet';
+import { Route, Switch, RouteComponentProps } from 'react-router-dom';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import {
@@ -15,19 +15,9 @@ import Showcase from './Showcase';
 import Sandboxes from './Sandboxes';
 import { Container, Content } from './elements';
 
-interface IProfileProps {
-  match: {
-    params: { username: string };
-    url: string;
-  };
-}
+interface IProfileProps extends RouteComponentProps<{ username: string }> {}
 
-const Profile: React.FC<IProfileProps> = ({
-  match: {
-    params: { username },
-    url,
-  },
-}) => {
+export const Profile: React.FC<IProfileProps> = ({ match }) => {
   const {
     state: {
       profile: { current: user, notFound },
@@ -36,6 +26,7 @@ const Profile: React.FC<IProfileProps> = ({
       profile: { profileMounted },
     },
   } = useOvermind();
+  const { username } = match.params;
 
   useEffect(() => {
     profileMounted({ username });
@@ -45,9 +36,7 @@ const Profile: React.FC<IProfileProps> = ({
     return <NotFound />;
   }
 
-  if (!user) {
-    return <div />;
-  }
+  if (!user) return <div />;
 
   return (
     <Container>
@@ -67,23 +56,25 @@ const Profile: React.FC<IProfileProps> = ({
       <MaxWidth width={1024}>
         <Margin horizontal={2} style={{ minHeight: '60vh' }}>
           <Switch>
-            <Route path={url} exact render={() => <Showcase />} />
+            <Route path={match.url} exact render={() => <Showcase />} />
             <Route
               path={`${profileSandboxesUrl(user.username)}/:page?`}
-              render={({ match }) => (
+              // eslint-disable-next-line
+              children={({ match: psMatch }) => (
                 <Sandboxes
                   source="currentSandboxes"
-                  page={match.params.page && +match.params.page}
+                  page={psMatch.params.page && +psMatch.params.page}
                   baseUrl={profileSandboxesUrl(user.username)}
                 />
               )}
             />
             <Route
               path={`${profileLikesUrl(user.username)}/:page?`}
-              render={({ match }) => (
+              // eslint-disable-next-line
+              children={({ match: plMatch }) => (
                 <Sandboxes
                   source="currentLikedSandboxes"
-                  page={match.params.page && +match.params.page}
+                  page={plMatch.params.page && +plMatch.params.page}
                   baseUrl={profileLikesUrl(user.username)}
                 />
               )}
@@ -94,5 +85,3 @@ const Profile: React.FC<IProfileProps> = ({
     </Container>
   );
 };
-
-export default Profile;

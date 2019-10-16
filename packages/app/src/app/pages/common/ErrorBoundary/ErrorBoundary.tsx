@@ -14,7 +14,7 @@ export class ErrorBoundary extends Component<
     props: IErrorBoundaryProps,
     state: IErrorBoundaryState
   ) {
-    if (props.location !== state.previousLocation) {
+    if (state.previousLocation && props.location.pathname !== state.previousLocation) {
       return {
         error: null,
         info: null,

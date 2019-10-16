@@ -13,8 +13,8 @@ export const ConfirmLink: React.FC<IConfirmLinkProps> = ({
   ...props
 }) => (
   <Link
+    to=""
     onClick={(e: React.MouseEvent) => {
-      // eslint-disable-next-line
       if (enabled && !confirm(message)) {
         e.preventDefault();
         e.stopPropagation();
