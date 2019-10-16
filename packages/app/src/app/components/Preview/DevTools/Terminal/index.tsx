@@ -46,7 +46,7 @@ class DevToolTerminal extends React.Component<
   setTerminal = (terminal: TerminalWithFit) => {
     this.term = terminal;
 
-    this.batchedMessages.forEach(this.handleMessage);
+    this.messageQueue.forEach(this.handleMessage);
     this.batchedMessages.length = 0;
   };
 
