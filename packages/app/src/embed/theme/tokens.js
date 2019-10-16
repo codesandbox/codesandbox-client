@@ -23,7 +23,13 @@ const colors = {
 const theme = {
   colors,
   space: [0, 4, 8, 12, 16, 20, 24, 28, 32],
-  fontSizes: [0, 10, 12, 13, 14, 16, 20, 24, 32],
+  fontSizes: [
+    0,
+    9, // not used yet.
+    11,
+    13,
+    16,
+  ],
   fontWeights: {
     // matches Inter weights
     thin: 100,
