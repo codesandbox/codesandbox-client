@@ -52,7 +52,7 @@ class DevToolTerminal extends React.Component<
 
   handleMessage = (data: any) => {
     if (!this.term) {
-      this.batchedMessages.push(data);
+      this.messageQueue.push(data);
       return;
     }
 
