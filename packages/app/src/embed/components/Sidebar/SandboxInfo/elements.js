@@ -28,7 +28,8 @@ export const Description = styled.div(
 
 export const Stats = styled(CommonStats)(
   css({
-    fontSize: 1,
+    fontSize: 2,
+    color: 'grays.400',
     // ouch ouch ouch, modifying a child of
     // a common element is just pure evil
     // this will definitely break on the

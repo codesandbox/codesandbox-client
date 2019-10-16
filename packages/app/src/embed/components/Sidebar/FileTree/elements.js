@@ -5,7 +5,9 @@ export const FileContainer = styled.div(props =>
   css(theme => ({
     display: 'flex',
     alignItems: 'center',
-    paddingLeft: theme => theme.space[3] * (props.depth + 1),
+    fontSize: 2,
+    height: 24,
+    paddingLeft: theme.space[3] * (props.depth + 1),
     backgroundColor: props.isSelected ? 'grays.500' : 'transparent',
     ':hover': {
       cursor: 'pointer',
@@ -17,8 +19,8 @@ export const FileContainer = styled.div(props =>
 export const IconContainer = styled.span(
   css({
     display: 'inline-flex',
-    width: 32,
-    height: 32,
+    width: 16,
+    height: 16,
     justifyContent: 'center',
     alignItems: 'center',
   })
