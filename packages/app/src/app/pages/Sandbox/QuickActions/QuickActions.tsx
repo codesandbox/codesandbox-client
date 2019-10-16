@@ -1,7 +1,8 @@
 import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
 import Downshift from 'downshift';
 import genie from 'geniejs';
+
+import { useOvermind } from 'app/overmind';
 
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 
@@ -17,32 +18,35 @@ import {
   Keybindings,
 } from './elements';
 
-class QuickActionsComponent extends React.Component {
+export class QuickActions extends React.Component {
   // we'll just keep track of what the user changes the inputValue to be
   // so when the user makes a wish we can provide that info to genie
   inputValue = '';
 
   updateGenie = () => {
-    const { keybindings } = this.props.store.preferences;
-    const { signals } = this.props;
+    const {
+      state,
+      state: { preferences: keybindings },
+      actions,
+    } = useOvermind();
 
     Object.keys(keybindings).forEach(bindingKey => {
-      const quickAction = keybindings[bindingKey];
+      const {
+        quickAction: { type, title, signal, payload },
+      } = keybindings[bindingKey];
 
       genie({
-        magicWords: `${quickAction.type}: ${quickAction.title}`,
+        magicWords: `${type}: ${title}`,
         id: bindingKey,
         action: () => {
-          const signalPath = quickAction.signal.split('.');
-          const signal = signalPath.reduce(
+          const signalPath = signal.split('.');
+          const signalFn = signalPath.reduce(
             (currentSignal, key) => currentSignal[key],
-            signals
+            actions
           );
-          const payload =
-            typeof quickAction.payload === 'function'
-              ? quickAction.payload(this.props.store)
-              : quickAction.payload || {};
-          signal(payload);
+          const payloadVal =
+            typeof payload === 'function' ? payload(state) : payload || {};
+          signalFn(payloadVal);
         },
       });
     });
@@ -66,7 +70,10 @@ class QuickActionsComponent extends React.Component {
   };
 
   closeQuickActions = () => {
-    this.props.signals.editor.quickActionsClosed();
+    const {
+      actions: { editor },
+    } = useOvermind();
+    editor.quickActionsClosed();
   };
 
   onChange = item => {
@@ -97,11 +104,17 @@ class QuickActionsComponent extends React.Component {
   itemToString = item => item && item.magicWords.join(', ');
 
   render() {
-    if (!this.props.store.editor.quickActionsOpen) {
+    const {
+      state: {
+        preferences,
+        editor: { quickActionsOpen },
+      },
+    } = useOvermind();
+    if (!quickActionsOpen) {
       return null;
     }
 
-    const { keybindings } = this.props.store.preferences;
+    const { keybindings } = preferences;
 
     return (
       <Container>
@@ -119,14 +132,14 @@ class QuickActionsComponent extends React.Component {
             highlightedIndex,
           }) => {
             const inputProps = getInputProps({
-              onChange: ev => {
+              onChange: (ev: React.ChangeEvent<HTMLInputElement>) => {
                 this.inputValue = ev.target.value;
               },
-              innerRef: el => el && el.focus(),
+              innerRef: (el: any) => el && el.focus(),
               onKeyUp: this.handleKeyUp,
               // Timeout so the fuzzy handler can still select the module
               onBlur: () => setTimeout(this.closeQuickActions, 100),
-            });
+            } as any);
             return (
               <div style={{ width: '100%' }}>
                 <InputContainer>
@@ -176,7 +189,3 @@ class QuickActionsComponent extends React.Component {
     );
   }
 }
-
-export const QuickActions = inject('signals', 'store')(
-  observer(QuickActionsComponent)
-);
