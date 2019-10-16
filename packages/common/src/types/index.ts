@@ -129,11 +129,11 @@ export type CurrentUser = {
 
 export type CustomTemplate = {
   color?: string;
-  title: string;
-  id: string;
   iconUrl?: string;
-  url: string | null;
+  id: string;
   published?: boolean;
+  title: string;
+  url: string | null;
 };
 
 export type GitInfo = {

@@ -1,20 +1,23 @@
 import Switch from '@codesandbox/common/lib/components/Switch';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import * as templates from '@codesandbox/common/lib/templates';
-import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import { Link } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 
+import { useOvermind } from 'app/overmind';
+
 import { WorkspaceItem } from '../../WorkspaceItem';
+
 import {
   Explanation,
+  Icon as QuestionIcon,
   Item,
   PropertyName,
   PropertyValue,
-  Icon as QuestionIcon,
 } from '../elements';
+
 import { PickColor, PickerContainer, PublicValue } from './elements';
 import { Icon } from './Icon';
 
@@ -31,11 +34,11 @@ export const TemplateConfig: FunctionComponent = () => {
   } = useOvermind();
   const picker = useRef(null);
   const [showPicker, setShowPicker] = useState(false);
-  const [publicTemplate, setPublic] = useState(customTemplate.published);
+  const [publicTemplate, setPublic] = useState(
+    customTemplate.published || false
+  );
   const [selectedColor, setSelectedColor] = useState(
-    () =>
-      (customTemplate && customTemplate.color) ||
-      templates.default(template).color()
+    () => customTemplate.color || templates.default(template).color()
   );
 
   const colors = Object.keys(templates)
@@ -45,30 +48,27 @@ export const TemplateConfig: FunctionComponent = () => {
 
   useClickAway(picker, () => {
     setShowPicker(false);
+
     editTemplate({
-      template: {
-        ...customTemplate,
-        color: selectedColor,
-      },
+      ...customTemplate,
+      color: selectedColor,
     });
   });
 
   const togglePublic = () => {
     editTemplate({
-      template: {
-        ...customTemplate,
-        published: !publicTemplate,
-      },
+      ...customTemplate,
+      published: !publicTemplate,
     });
+
     setPublic(!publicTemplate);
   };
 
   return (
     <WorkspaceItem showOverflow defaultOpen title="Template">
       <Explanation style={{ marginTop: 0, marginBottom: '.5rem' }}>
-        This is a template, you can find more info about templates
+        This is a template, you can find more info about templates{' '}
         <Link target="_blank" to="/docs/templates">
-          {' '}
           here
         </Link>
         .
