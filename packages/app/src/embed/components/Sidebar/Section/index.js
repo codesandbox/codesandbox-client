@@ -27,7 +27,7 @@ function ToggleIcon(props) {
     >
       <path
         d="M4.50009 6L-5.24537e-07 1.26364e-06L9 4.76837e-07L4.50009 6Z"
-        fill="#757575"
+        fill="currentcolor"
       />
     </Icon>
   );

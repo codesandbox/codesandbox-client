@@ -19,9 +19,10 @@ export const Header = styled.div(
     cursor: 'pointer',
     ':hover': {
       backgroundColor: 'sideBar.border',
-    },
-    ':focus': {
-      backgroundColor: 'sideBar.border',
+      color: 'white',
+      svg: {
+        color: 'grays.300',
+      },
     },
   })
 );
@@ -36,5 +37,6 @@ export const Icon = styled.svg(props =>
   css({
     marginRight: 1,
     transform: props.open ? 'rotate(0)' : 'rotate(-90deg)',
+    color: 'grays.400',
   })
 );
