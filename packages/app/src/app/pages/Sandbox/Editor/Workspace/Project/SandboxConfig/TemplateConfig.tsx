@@ -1,23 +1,20 @@
 import Switch from '@codesandbox/common/lib/components/Switch';
-import * as templates from '@codesandbox/common/lib/templates';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import * as templates from '@codesandbox/common/lib/templates';
+import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import { Link } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 
-import { useOvermind } from 'app/overmind';
-
 import { WorkspaceItem } from '../../WorkspaceItem';
-
 import {
+  Explanation,
   Item,
   PropertyName,
   PropertyValue,
-  Explanation,
   Icon as QuestionIcon,
 } from '../elements';
-
 import { PickColor, PickerContainer, PublicValue } from './elements';
 import { Icon } from './Icon';
 
@@ -50,6 +47,7 @@ export const TemplateConfig: FunctionComponent = () => {
     setShowPicker(false);
     editTemplate({
       template: {
+        ...customTemplate,
         color: selectedColor,
       },
     });
