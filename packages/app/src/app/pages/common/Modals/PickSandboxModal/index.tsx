@@ -72,7 +72,7 @@ export const StorageManagementModal: React.FC = () => {
             name="description"
             id="description"
             required
-            rows="3"
+            rows={3}
           />
         </Field>
 
