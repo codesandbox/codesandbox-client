@@ -1,8 +1,12 @@
 import React from 'react';
 
-export function useMatchMedia(query) {
-  const mediaQueryList = window.matchMedia(query);
-  const [match, setMatch] = React.useState(mediaQueryList.matches);
+const isServerRender = typeof window === `undefined`;
+
+export function useMatchMedia(query, defaultMatch = false) {
+  const mediaQueryList = !isServerRender && window.matchMedia(query);
+  const [match, setMatch] = React.useState(
+    isServerRender ? defaultMatch : mediaQueryList.matches
+  );
 
   React.useEffect(() => {
     const handleMatchChange = ev => setMatch(ev.matches);
