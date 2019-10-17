@@ -1,22 +1,19 @@
+import theme from '@codesandbox/common/lib/theme';
+import { ContextMenu, Item } from 'app/components/ContextMenu';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
-import { ContextMenu, Item } from 'app/components/ContextMenu';
-
-import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
-import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import EditIcon from 'react-icons/lib/go/pencil';
 import DeleteIcon from 'react-icons/lib/go/trashcan';
+import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import UploadFileIcon from 'react-icons/lib/md/file-upload';
-
-import theme from '@codesandbox/common/lib/theme';
+import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
 
 import { EntryContainer } from '../../../elements';
+import EditIcons from './EditIcons';
+import { NotSyncedIconWithMargin, Right } from './elements';
+import EntryIcons from './EntryIcons';
 import EntryTitle from './EntryTitle';
 import EntryTitleInput from './EntryTitleInput';
-import EntryIcons from './EntryIcons';
-import EditIcons from './EditIcons';
-
-import { Right, NotSyncedIconWithMargin } from './elements';
 
 interface IEntryProps {
   renameValidator: (id: string, title: string) => boolean;
@@ -97,9 +94,8 @@ const Entry: React.FC<IEntryProps> = ({
   const deleteAction = () =>
     deleteEntry ? deleteEntry(shortid, title) : false;
 
-  const discardModuleChangesAction = discardModuleChanges
-    ? discardModuleChanges(shortid)
-    : false;
+  const discardModuleChangesAction = () =>
+    discardModuleChanges ? discardModuleChanges(shortid) : false;
 
   const handleRename = (newTitle: string, force: boolean) => {
     if (newTitle === title) {
