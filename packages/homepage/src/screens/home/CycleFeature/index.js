@@ -52,6 +52,8 @@ const Steps = styled.div`
   position: relative;
   flex-direction: column;
   justify-content: center;
+  list-style: none;
+  margin: 0;
 
   ${media.tablet`
     flex: 1;
@@ -352,127 +354,132 @@ export default class CycleFeatures extends React.PureComponent {
   render() {
     const { selectedStep } = this.state;
     return (
-      <MaxWidth width={1280}>
-        <Centered horizontal>
-          <Heading>Be Productive, Anywhere</Heading>
-          <SubHeading>
-            We aim to give you the tools to build a full blown web application.
-            You can easily import projects from GitHub, make commits, and
-            finally deploy. We support the whole cycle.
-          </SubHeading>
-          {/*
+      <section aria-labelledby="be-productive">
+        <MaxWidth width={1280}>
+          <Centered horizontal>
+            <Heading id="be-productive">Be Productive, Anywhere</Heading>
+            <SubHeading>
+              We aim to give you the tools to build a full blown web
+              application. You can easily import projects from GitHub, make
+              commits, and finally deploy. We support the whole cycle.
+            </SubHeading>
+            {/*
           <StepDescription>
             You can import projects on GitHub by going to
             codesandbox.io/s/github.
           </StepDescription> */}
-        </Centered>
+          </Centered>
 
-        <Flow>
-          <Steps>
-            <Step
-              selected={selectedStep >= 0}
-              i={0}
-              selectedStep={selectedStep}
-              selectStep={this.selectStep}
-              getY={this.setY}
-              Icon={GithubIcon}
-              title="Import"
-              description="Paste your GitHub URL. You get a sandbox that stays up to date with the latest changes automatically."
-            />
-            <Step
-              selected={selectedStep >= 1}
-              i={1}
-              selectedStep={selectedStep}
-              selectStep={this.selectStep}
-              getY={this.setY}
-              Icon={BuildIcon}
-              title="Build"
-              description="Fork the sandbox and start building that long awaited feature!"
-            />
-            <Step
-              selected={selectedStep >= 2}
-              i={2}
-              selectedStep={selectedStep}
-              selectStep={this.selectStep}
-              getY={this.setY}
-              Icon={CommitIcon}
-              title="Commit"
-              description="Commit your changes or open a pull request with a user friendly UI."
-            />
-            <Step
-              selected={selectedStep >= 3}
-              i={3}
-              selectedStep={selectedStep}
-              selectStep={this.selectStep}
-              getY={this.setY}
-              Icon={RocketIcon}
-              title="Deploy"
-              description="Deploy a production version of your sandbox using ZEIT's Now."
-            />
-          </Steps>
-
-          <CubeSteps>
-            <OffsettedCube
-              ref={el => {
-                this.cube = el;
-              }}
-            >
-              <Cube
-                id="addition-cube"
-                noAnimation
-                size={90}
-                offset={40}
-                color={Theme.secondary}
-                style={{ position: 'absolute', top: 0 }}
+          <Flow>
+            <Steps as="ul">
+              <Step
+                selected={selectedStep >= 0}
+                i={0}
+                selectedStep={selectedStep}
+                selectStep={this.selectStep}
+                getY={this.setY}
+                Icon={GithubIcon}
+                title="Import"
+                description="Paste your GitHub URL. You get a sandbox that stays up to date with the latest changes automatically."
               />
-              <Cube
-                id="main-cube"
-                noAnimation
-                size={90}
-                offset={40}
-                color={Theme.primary}
-                style={{ position: 'absolute', top: 0 }}
+              <Step
+                selected={selectedStep >= 1}
+                i={1}
+                selectedStep={selectedStep}
+                selectStep={this.selectStep}
+                getY={this.setY}
+                Icon={BuildIcon}
+                title="Build"
+                description="Fork the sandbox and start building that long awaited feature!"
               />
-            </OffsettedCube>
-            <ImportContainer>
-              <AddressBar
-                href="https://github.com/reduxjs/redux/tree/master/examples/todos"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>github.com/</span>
-                <AddedUrl>reduxjs/redux/tree/master/examples/todos</AddedUrl>
-              </AddressBar>
-              <AddressBar
-                href="/s/github/reduxjs/redux/tree/master/examples/todos"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>codesandbox.io/s/github/</span>
-                <AddedUrl>reduxjs/redux/tree/master/examples/todos</AddedUrl>
-              </AddressBar>
-            </ImportContainer>
+              <Step
+                selected={selectedStep >= 2}
+                i={2}
+                selectedStep={selectedStep}
+                selectStep={this.selectStep}
+                getY={this.setY}
+                Icon={CommitIcon}
+                title="Commit"
+                description="Commit your changes or open a pull request with a user friendly UI."
+              />
+              <Step
+                selected={selectedStep >= 3}
+                i={3}
+                selectedStep={selectedStep}
+                selectStep={this.selectStep}
+                getY={this.setY}
+                Icon={RocketIcon}
+                title="Deploy"
+                description="Deploy a production version of your sandbox using ZEIT's Now."
+              />
+            </Steps>
 
-            <DeployContainer id="deploy-container">
-              <AddressBar
-                id="deploy-container-address"
-                href="https://csb-921ywn9qrw-emlplxhibt.now.sh/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Open deployed sandbox"
+            <CubeSteps aria-hidden>
+              <OffsettedCube
+                ref={el => {
+                  this.cube = el;
+                }}
               >
-                <span id="progress-text" style={{ textAlign: 'center' }}>
-                  Deploying...
-                </span>
-                <span style={{ color: Theme.secondary() }} id="deploy-text">
-                  https://csb-921ywn9qrw-emlplxhibt.now.sh/
-                </span>
-                <Progress id="progress" />
-              </AddressBar>
-            </DeployContainer>
-          </CubeSteps>
-        </Flow>
-      </MaxWidth>
+                <Cube
+                  id="addition-cube"
+                  noAnimation
+                  size={90}
+                  offset={40}
+                  color={Theme.secondary}
+                  style={{ position: 'absolute', top: 0 }}
+                />
+                <Cube
+                  id="main-cube"
+                  noAnimation
+                  size={90}
+                  offset={40}
+                  color={Theme.primary}
+                  style={{ position: 'absolute', top: 0 }}
+                />
+              </OffsettedCube>
+              <ImportContainer>
+                <AddressBar
+                  aria-hidden
+                  href="https://github.com/reduxjs/redux/tree/master/examples/todos"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>github.com/</span>
+                  <AddedUrl>reduxjs/redux/tree/master/examples/todos</AddedUrl>
+                </AddressBar>
+                <AddressBar
+                  aria-hidden
+                  href="/s/github/reduxjs/redux/tree/master/examples/todos"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>codesandbox.io/s/github/</span>
+                  <AddedUrl>reduxjs/redux/tree/master/examples/todos</AddedUrl>
+                </AddressBar>
+              </ImportContainer>
+
+              <DeployContainer id="deploy-container">
+                <AddressBar
+                  aria-hidden
+                  id="deploy-container-address"
+                  href="https://csb-921ywn9qrw-emlplxhibt.now.sh/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open deployed sandbox"
+                >
+                  <span id="progress-text" style={{ textAlign: 'center' }}>
+                    Deploying...
+                  </span>
+                  <span style={{ color: Theme.secondary() }} id="deploy-text">
+                    https://csb-921ywn9qrw-emlplxhibt.now.sh/
+                  </span>
+                  <Progress id="progress" />
+                </AddressBar>
+              </DeployContainer>
+            </CubeSteps>
+          </Flow>
+        </MaxWidth>
+      </section>
     );
   }
 }

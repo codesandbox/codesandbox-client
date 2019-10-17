@@ -15,7 +15,7 @@ interface ItemType {
   action: () => boolean | void;
 }
 
-type Item = ItemType | ItemType[];
+export type Item = ItemType | ItemType[];
 
 type ChildrenProps =
   | {
