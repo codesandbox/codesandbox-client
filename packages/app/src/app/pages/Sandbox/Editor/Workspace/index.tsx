@@ -22,7 +22,7 @@ import ConfigurationFiles from './items/ConfigurationFiles';
 import { Deployment } from './items/Deployment';
 import { FilesItem } from './items/Files';
 import { GitHub } from './items/GitHub';
-import Live from './items/Live';
+import { Live } from './items/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
