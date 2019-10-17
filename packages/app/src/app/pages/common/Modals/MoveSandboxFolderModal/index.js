@@ -1,5 +1,5 @@
-import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useOvermind } from 'app/overmind';
 import { basename } from 'path';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Button } from '@codesandbox/common/lib/components/Button';
@@ -11,99 +11,88 @@ import { Container } from '../elements';
 import { Block, CancelButton } from './elements';
 import { addSandboxesToFolder } from '../../../Dashboard/queries';
 
-class MoveSandboxFolderModal extends React.Component {
-  state = {
-    loading: false,
-    error: undefined,
-  };
+const MoveSandboxFolderModal = () => {
+  const {
+    state: {
+      editor: { currentSandbox: sandbox },
+    },
+    actions: { refetchSandboxInfo, modalClosed },
+  } = useOvermind();
+  const { collection } = sandbox;
 
-  constructor(props) {
-    super(props);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(undefined);
+  const [teamId, setTeamId] = useState(
+    sandbox.team ? sandbox.team.id || undefined : undefined
+  );
+  const [path, setPath] = useState(collection ? collection.path : '/');
 
-    const sandbox = props.store.editor.currentSandbox;
-    const { collection } = sandbox;
+  const onSelect = useCallback(({ teamId: newTeamId, path: newPath }) => {
+    setTeamId(newTeamId);
+    setPath(newPath);
+  }, []);
 
-    this.state = {
-      teamId: sandbox.team ? sandbox.team.id || undefined : undefined,
-      path: collection ? collection.path : '/',
-    };
-  }
+  const handleMove = useCallback(() => {
+    setLoading(true);
+    setError(undefined);
+  }, []);
 
-  onSelect = ({ teamId, path }) => {
-    this.setState({ teamId, path });
-  };
+  useEffect(() => {
+    if (!loading) return;
+    addSandboxesToFolder([sandbox.id], path, teamId)
+      .then(() => {
+        refetchSandboxInfo();
 
-  handleMove = () => {
-    this.setState({ loading: true, error: undefined }, () => {
-      addSandboxesToFolder(
-        [this.props.store.editor.currentSandbox.id],
-        this.state.path,
-        this.state.teamId
-      )
-        .then(() => {
-          this.props.signals.refetchSandboxInfo();
+        setLoading(false);
+        modalClosed();
 
-          this.setState({ loading: false });
-          this.props.signals.modalClosed();
+        track('Move Sandbox From Editor');
+      })
+      .catch(e => {
+        setError(e.message);
+        setLoading(false);
+      });
+  }, [loading, path, teamId, sandbox, refetchSandboxInfo, modalClosed]);
 
-          track('Move Sandbox From Editor');
-        })
-        .catch(e => {
-          this.setState({ error: e.message, loading: false });
-        });
-    });
-  };
+  return (
+    <div>
+      <Block>Move to Folder</Block>
+      <Container css={{ maxHeight: 400, overflow: 'auto' }}>
+        <DirectoryPicker
+          onSelect={onSelect}
+          currentTeamId={teamId}
+          currentPath={path}
+        />
+      </Container>
 
-  render() {
-    const { path, teamId } = this.state;
-    const { signals } = this.props;
+      {error}
 
-    return (
-      <div>
-        <Block>Move to Folder</Block>
-        <Container css={{ maxHeight: 400, overflow: 'auto' }}>
-          <DirectoryPicker
-            onSelect={this.onSelect}
-            currentTeamId={teamId}
-            currentPath={path}
-          />
-        </Container>
+      <Block right>
+        <CancelButton onClick={modalClosed}>Cancel</CancelButton>
 
-        {this.state.error}
+        <Button
+          onClick={handleMove}
+          css={{ display: 'inline-flex', alignItems: 'center' }}
+          small
+          disabled={loading}
+        >
+          {loading ? (
+            'Moving Sandbox...'
+          ) : (
+            <>
+              Move to{' '}
+              {path !== '/'
+                ? basename(path)
+                : `${teamId ? 'Our' : 'My'} Sandboxes`}
+              <ChevronRight
+                css={{ marginRight: '-.25rem', marginLeft: '.25rem' }}
+              />
+            </>
+          )}
+        </Button>
+      </Block>
+    </div>
+  );
+};
 
-        <Block right>
-          <CancelButton
-            onClick={() => {
-              signals.modalClosed();
-            }}
-          >
-            Cancel
-          </CancelButton>
-
-          <Button
-            onClick={this.handleMove}
-            css={{ display: 'inline-flex', alignItems: 'center' }}
-            small
-            disabled={this.state.loading}
-          >
-            {this.state.loading ? (
-              'Moving Sandbox...'
-            ) : (
-              <>
-                Move to{' '}
-                {path !== '/'
-                  ? basename(path)
-                  : `${teamId ? 'Our' : 'My'} Sandboxes`}
-                <ChevronRight
-                  css={{ marginRight: '-.25rem', marginLeft: '.25rem' }}
-                />
-              </>
-            )}
-          </Button>
-        </Block>
-      </div>
-    );
-  }
-}
-
-export default inject('store', 'signals')(observer(MoveSandboxFolderModal));
+export default MoveSandboxFolderModal;

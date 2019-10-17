@@ -1,5 +1,6 @@
 import React from 'react';
 import { Location } from 'history';
+import { RouteComponentProps } from 'react-router';
 
 export type ErrorInfo = {
   componentStack: string;
@@ -10,11 +11,10 @@ export interface IFallbackComponentProps {
   trace?: string;
 }
 
-export interface IErrorBoundaryProps {
+export interface IErrorBoundaryProps extends RouteComponentProps {
   children?: React.ReactNode;
-  FallbackComponent: React.ComponentType<IFallbackComponentProps>;
+  FallbackComponent?: React.ComponentType<IFallbackComponentProps>;
   onError?: (error: Error, trace: string) => void;
-  location?: Location;
 }
 
 export interface IErrorBoundaryState {

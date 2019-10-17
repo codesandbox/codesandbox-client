@@ -1,12 +1,15 @@
 import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
 
 import { Container, Heading, Explanation } from './elements';
 
-function SignOutNotice({ signals }) {
+export const SignOutNotice = () => {
+  const {
+    actions: { modalClosed, signInClicked },
+  } = useOvermind();
   return (
     <Container>
       <Heading>You have been signed out</Heading>
@@ -25,7 +28,7 @@ function SignOutNotice({ signals }) {
           style={{ marginRight: '.5rem' }}
           red
           onClick={() => {
-            signals.modalClosed();
+            modalClosed();
           }}
         >
           Close
@@ -33,7 +36,7 @@ function SignOutNotice({ signals }) {
         <Button
           block
           style={{ marginLeft: '.5rem' }}
-          onClick={() => signals.signInClicked({ useExtraScopes: false })}
+          onClick={() => signInClicked({ useExtraScopes: false })}
         >
           Sign in
         </Button>
@@ -41,5 +44,3 @@ function SignOutNotice({ signals }) {
     </Container>
   );
 }
-
-export default inject('store', 'signals')(observer(SignOutNotice));
