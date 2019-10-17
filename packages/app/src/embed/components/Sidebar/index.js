@@ -6,7 +6,7 @@ import SandboxInfo from './SandboxInfo';
 import FileTree from './FileTree';
 import Dependencies from './Dependencies';
 import ExternalResources from './ExternalResources';
-import EditorLink from '../EditorLink';
+
 import { Container } from './elements';
 
 type Props = {
@@ -37,8 +37,6 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
       >
         <ExternalResources sandbox={sandbox} />
       </Section>
-
-      <EditorLink sandbox={sandbox} />
     </Container>
   );
 }
