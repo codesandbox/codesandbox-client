@@ -1,6 +1,10 @@
 import styled, { css } from 'styled-components';
 
-export const Block = styled.div`
+interface IBlockProps {
+  right?: boolean;
+}
+
+export const Block = styled.div<IBlockProps>`
   background-color: ${props => props.theme.background2};
   color: rgba(255, 255, 255, 0.9);
   padding: 1rem 1.5rem;
