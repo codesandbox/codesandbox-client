@@ -1,17 +1,17 @@
 import React from 'react';
 import { Header, Icon, Title, Body } from './elements';
 
-function Section(props) {
-  const [open, setOpen] = React.useState(props.defaultOpen || false);
+function Section({ openByDefault, title, children, ...props }) {
+  const [open, setOpen] = React.useState(openByDefault || false);
   const toggle = () => setOpen(!open);
 
   return (
-    <section>
+    <section {...props}>
       <Header onClick={toggle}>
         <ToggleIcon open={open} />
-        <Title>{props.title}</Title>
+        <Title>{title}</Title>
       </Header>
-      {open ? <Body>{props.children}</Body> : null}
+      {open ? <Body>{children}</Body> : null}
     </section>
   );
 }

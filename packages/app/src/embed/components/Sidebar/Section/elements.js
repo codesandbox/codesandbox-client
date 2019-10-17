@@ -21,7 +21,6 @@ export const Header = styled.div(
     cursor: 'pointer',
     ':hover': {
       backgroundColor: 'sideBar.border',
-      color: 'white',
       svg: {
         color: 'grays.300',
       },

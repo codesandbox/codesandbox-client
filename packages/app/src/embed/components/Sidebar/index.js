@@ -1,30 +1,13 @@
 import * as React from 'react';
-
 import type { Sandbox } from '@codesandbox/common/lib/types';
 
-import Padding from '@codesandbox/common/lib/components/spacing/Padding';
-import { EntryContainer } from 'app/pages/Sandbox/Editor/Workspace/elements';
-
-import EditorLink from '../EditorLink';
 import Section from './Section';
 import SandboxInfo from './SandboxInfo';
 import FileTree from './FileTree';
-
-import { Container, Subtitle, Item, Version } from './elements';
-
-const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
-
-function getName(resource: string) {
-  if (resource.endsWith('.css') || resource.endsWith('.js')) {
-    const match = resource.match(/.*\/(.*)/);
-    if (match && match[1]) {
-      return match[1];
-    }
-  }
-
-  // Add trailing / but no double one
-  return getNormalizedUrl(resource);
-}
+import Dependencies from './Dependencies';
+import ExternalResources from './ExternalResources';
+import EditorLink from '../EditorLink';
+import { Container } from './elements';
 
 type Props = {
   sandbox: Sandbox,
@@ -33,28 +16,12 @@ type Props = {
 };
 
 function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
-  const packageJSON = sandbox.modules.find(
-    m => m.title === 'package.json' && m.directoryShortid == null
-  );
-
-  let { npmDependencies } = sandbox;
-
-  if (packageJSON) {
-    try {
-      npmDependencies = JSON.parse(packageJSON.code).dependencies;
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  npmDependencies = npmDependencies || {};
-
   return (
     <Container>
-      <Section title="CodeSandbox" defaultOpen>
+      <Section title="CodeSandbox" openByDefault>
         <SandboxInfo sandbox={sandbox} />
       </Section>
-      <Section title="Files" defaultOpen>
+      <Section title="Files">
         <FileTree
           sandbox={sandbox}
           currentModuleId={currentModule}
@@ -62,36 +29,16 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
         />
       </Section>
       <Section title="Dependencies">
-        <Subtitle>npm dependencies</Subtitle>
-        {Object.keys(npmDependencies).map(dep => (
-          <EntryContainer key={dep}>
-            {dep}
-            <Version>{npmDependencies[dep]}</Version>
-          </EntryContainer>
-        ))}
-
-        {sandbox.externalResources.length > 0 && (
-          <>
-            <Subtitle>External Resources</Subtitle>
-            {sandbox.externalResources.map(dep => (
-              <EntryContainer key={dep}>
-                <a
-                  href={dep}
-                  rel="nofollow noopener noreferrer"
-                  target="_blank"
-                >
-                  {getName(dep)}
-                </a>
-              </EntryContainer>
-            ))}
-          </>
-        )}
+        <Dependencies sandbox={sandbox} />
       </Section>
-      <Item hover>
-        <Padding margin={1}>
-          <EditorLink sandbox={sandbox} />
-        </Padding>
-      </Item>
+      <Section
+        title="External Resources"
+        hidden={sandbox.externalResources.length === 0}
+      >
+        <ExternalResources sandbox={sandbox} />
+      </Section>
+
+      <EditorLink sandbox={sandbox} />
     </Container>
   );
 }
