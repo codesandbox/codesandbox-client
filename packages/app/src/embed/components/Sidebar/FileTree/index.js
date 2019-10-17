@@ -1,6 +1,12 @@
 import React from 'react';
 import * as Icons from './icons';
 import { FileContainer, IconContainer, FileName } from './elements';
+import {
+  sortingFunction,
+  isRootLevel,
+  getDepth,
+  isChildSelected,
+} from './utils';
 
 function FileTree({ sandbox, currentModuleId, setCurrentModuleId }) {
   const { modules, directories } = sandbox;
@@ -29,7 +35,7 @@ function FileTree({ sandbox, currentModuleId, setCurrentModuleId }) {
 
 export default FileTree;
 
-function SubTree({ files, allFiles, selectedFile, onSelect, ...props }) {
+function SubTree({ files, allFiles, selectedFile, onSelect }) {
   return (
     <div>
       {files
@@ -49,7 +55,7 @@ function SubTree({ files, allFiles, selectedFile, onSelect, ...props }) {
               <File
                 selectedFile={selectedFile}
                 allFiles={allFiles}
-                onClick={_ => onSelect(child)}
+                onClick={() => onSelect(child)}
                 {...child}
               />
             )}
@@ -113,72 +119,4 @@ function File(props) {
       <FileName>{props.title}</FileName>
     </FileContainer>
   );
-}
-
-function sortingFunction(a, b) {
-  // directories come first, sorted alphabetically
-  // then files, also sorted alphabetically
-  let first;
-
-  if (a.type === b.type) {
-    if (a.title < b.title) first = a;
-    else first = b;
-  } else if (a.type === 'directory') {
-    first = a;
-  } else {
-    first = b;
-  }
-
-  // js be weird
-  if (first === a) return -1;
-  return 1;
-}
-
-function isRootLevel(files, file) {
-  // find out if parent directory is in sub-tree
-
-  const parentId = file.directory;
-  if (!parentId) return true;
-
-  const parent = files.find(file => file.id === parentId);
-  if (!parent) return true;
-}
-
-function getDepth(allFiles, file) {
-  let depth = 0;
-
-  let parent = getParentDirectory(allFiles, file);
-
-  while (parent) {
-    depth++;
-    parent = getParentDirectory(allFiles, parent);
-  }
-
-  return depth;
-}
-
-function isChildSelected({ allFiles, directory, selectedFile }) {
-  const filesInCurrentSubTree = getFilesInSubTree(allFiles, selectedFile);
-
-  return filesInCurrentSubTree.find(file => file.id === directory.id);
-}
-
-function getFilesInSubTree(allFiles, selectedFile) {
-  const currentModuleTree = [selectedFile];
-
-  let parentDirectory = getParentDirectory(allFiles, selectedFile);
-
-  while (parentDirectory) {
-    currentModuleTree.push(parentDirectory);
-    // get parent directory of the parent directory
-    parentDirectory = getParentDirectory(allFiles, parentDirectory);
-  }
-
-  return currentModuleTree;
-}
-
-function getParentDirectory(allFiles, file) {
-  if (file.directory) {
-    return allFiles.find(parent => parent.id === file.directory);
-  }
 }
