@@ -3,7 +3,7 @@ import {
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX,
 } from '@codesandbox/common/lib/utils/config';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import qs from 'qs';
@@ -14,7 +14,7 @@ import {
   PoweredBy,
   Configure,
 } from 'react-instantsearch/dom';
-import { History, Location} from 'history';
+import { History, Location } from 'history';
 
 import { Navigation } from 'app/pages/common/Navigation';
 import { useOvermind } from 'app/overmind';

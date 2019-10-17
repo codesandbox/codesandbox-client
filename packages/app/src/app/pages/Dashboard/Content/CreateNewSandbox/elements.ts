@@ -32,7 +32,7 @@ export const ButtonsContainer = styled.div`
   box-sizing: border-box;
 `;
 
-export const Container = styled.div<{ hide: boolean }>`
+export const Container = styled.div<{ hide?: boolean }>`
   ${({ color, hide, theme }) => css`
     display: flex;
     justify-content: center;
