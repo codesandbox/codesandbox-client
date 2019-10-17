@@ -6,7 +6,7 @@ import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 import { WorkspaceSubtitle } from '../elements';
 
-import AddVersion from './AddVersion';
+import { AddVersion } from './AddVersion';
 import { VersionEntry } from './VersionEntry';
 import AddResource from './AddResource';
 import ExternalResource from './ExternalResource';
