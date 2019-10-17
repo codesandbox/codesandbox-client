@@ -53,7 +53,6 @@ export const Appearance: React.FC = () => {
               title="Font Family"
               type="dropdown"
               options={['Custom'].concat(fontOptions)}
-              placeholder="Source Code Pro"
               {...bindValue('fontFamily')}
             />
             <SubDescription>
@@ -96,8 +95,7 @@ export const Appearance: React.FC = () => {
             <PaddedPreference
               title="Line Height"
               type="number"
-              placeholder="1.15"
-              step="0.05"
+              step={0.05}
               {...bindValue('lineHeight')}
             />
             <Rule />

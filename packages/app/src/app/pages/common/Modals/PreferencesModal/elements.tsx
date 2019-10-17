@@ -1,5 +1,8 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
-import Preference from '@codesandbox/common/lib/components/Preference';
+import Preference, {
+  Props as PreferenceProps,
+} from '@codesandbox/common/lib/components/Preference';
 
 export const SubContainer = styled.div`
   color: ${props => props.theme.white};
@@ -20,7 +23,7 @@ export const Subheading = styled.div`
   text-transform: uppercase;
 `;
 
-export const PreferenceContainer = styled.div`
+export const PreferenceContainer = styled.div<{ disabled?: boolean }>`
   padding-top: 0.5rem;
 
   ${props =>
@@ -35,7 +38,7 @@ export const PreferenceContainer = styled.div`
 export const PaddedPreference = styled(Preference)`
   padding: 0;
   font-weight: 400;
-`;
+` as React.FC<PreferenceProps>; // TODO: remove when styled() can infer union type Props correctly
 
 export const SubDescription = styled.div`
   margin-top: 0.25rem;
