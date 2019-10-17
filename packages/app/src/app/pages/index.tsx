@@ -43,7 +43,9 @@ const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub')
 );
 const CliInstructions = Loadable(() =>
-  import(/* webpackChunkName: 'page-cli-instructions' */ './CliInstructions')
+  import(
+    /* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'
+  ).then(module => ({ default: module.CLIInstructions }))
 );
 const Patron = Loadable(() =>
   import(/* webpackChunkName: 'page-patron' */ './Patron')
