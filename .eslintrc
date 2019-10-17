@@ -16,9 +16,6 @@
     "__DEV__": true,
     "Stripe": true
   },
-  "settings": {
-    "import/ignore": ["worker-loader/?", "sandbox-hooks"]
-  },
   "rules": {
     "react/jsx-filename-extension": 0,
     "react/sort-comp": 0,
