@@ -5,8 +5,8 @@ export const FileContainer = styled.div(props =>
   css(theme => ({
     display: 'flex',
     alignItems: 'center',
-    fontSize: 2,
-    paddingY: 1,
+    fontSize: 3,
+    lineHeight: '24px',
     paddingLeft: theme.space[3] * (props.depth + 1),
     backgroundColor: props.isSelected ? 'grays.500' : 'transparent',
     ':hover': {

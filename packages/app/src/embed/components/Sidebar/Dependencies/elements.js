@@ -12,6 +12,6 @@ export const Row = styled.div(
   css({
     display: 'flex',
     justifyContent: 'space-between',
-    paddingY: 1,
+    lineHeight: '24px',
   })
 );
