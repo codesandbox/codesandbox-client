@@ -1,23 +1,24 @@
-import React from 'react';
-import UIIcon from 'react-icons/lib/md/dvr';
-import QuestionIcon from 'react-icons/lib/go/question';
-import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import isImage from '@codesandbox/common/lib/utils/is-image';
-import getDefinition from '@codesandbox/common/lib/templates';
-import { Sandbox } from '@codesandbox/common/lib/types';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Title } from 'app/components/Title';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import getDefinition from '@codesandbox/common/lib/templates';
+import getUI from '@codesandbox/common/lib/templates/configuration/ui';
+import { Sandbox } from '@codesandbox/common/lib/types';
+import isImage from '@codesandbox/common/lib/utils/is-image';
 import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
 import Loadable from 'app/utils/Loadable';
-import { ImageViewer } from './ImageViewer';
+import React from 'react';
+import QuestionIcon from 'react-icons/lib/go/question';
+import UIIcon from 'react-icons/lib/md/dvr';
+
 import { Configuration } from './Configuration';
-import { VSCode } from './VSCode';
+import { Icon, Icons } from './elements';
+import { ImageViewer } from './ImageViewer';
 import MonacoDiff from './MonacoDiff';
 import { Props } from './types'; // eslint-disable-line
-import { Icons, Icon } from './elements';
+import { VSCode } from './VSCode';
 
 const CodeMirror = Loadable(() =>
   import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror')
@@ -164,7 +165,7 @@ export class CodeEditor extends React.PureComponent<
       );
     }
 
-    let Editor: React.ComponentClass<Props> =
+    let Editor: any =
       settings.codeMirror && !props.isLive ? CodeMirror : Monaco;
 
     if (settings.experimentVSCode) {
