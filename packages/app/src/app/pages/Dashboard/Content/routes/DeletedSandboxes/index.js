@@ -1,13 +1,13 @@
 import React from 'react';
 import { Observer } from 'app/componentConnectors';
 import Helmet from 'react-helmet';
-import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
 import RemoveIcon from 'react-icons/lib/md/highlight-remove';
 
 import { Content as Sandboxes } from '../../Sandboxes';
 
 import { DELETED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
+import { getPossibleTemplates } from '../../Sandboxes/utils';
 
 const DeletedSandboxes = () => (
   <>
@@ -29,9 +29,7 @@ const DeletedSandboxes = () => (
               ? []
               : (data && data.me && data.me.sandboxes) || [];
 
-            const possibleTemplates = uniq(
-              sandboxes.map(x => x.source.template)
-            );
+            const possibleTemplates = getPossibleTemplates(sandboxes);
 
             const orderedSandboxes = store.dashboard.getFilteredSandboxes(
               sandboxes

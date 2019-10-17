@@ -9,10 +9,15 @@ import theme from '@codesandbox/common/lib/theme';
 import '@codesandbox/common/lib/global.css';
 
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
-import track from '@codesandbox/common/lib/utils/analytics';
+import track, { identify } from '@codesandbox/common/lib/utils/analytics';
 
 import App from './components/App';
 
+try {
+  identify('signed_in', Boolean(localStorage.jwt));
+} catch (e) {
+  /* ignore error */
+}
 document.addEventListener('click', () => {
   track('Embed Interaction');
 });

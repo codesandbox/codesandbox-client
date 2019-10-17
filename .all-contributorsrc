@@ -1,11 +1,13 @@
 {
   "projectName": "codesandbox-client",
   "projectOwner": "codesandbox",
+  "repoType": "github",
+  "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
   "imageSize": 100,
-  "commit": true,
+  "commit": false,
   "contributors": [
     {
       "login": "CompuIves",
@@ -1367,6 +1369,15 @@
       ]
     },
     {
+      "login": "sakthivel",
+      "name": "Sakthivel Sengodan Sapient",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/205201?v=4",
+      "profile": "https://github.com/Sakthivel",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "vanya829",
       "name": "vanya829",
       "avatar_url": "https://avatars0.githubusercontent.com/u/1397979?v=4",
@@ -1374,9 +1385,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "hetpatel33",
+      "name": "Het Patel",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/13877514?v=4",
+      "profile": "http://hetpatel33.github.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "commitConvention": "none"
 }

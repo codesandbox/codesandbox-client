@@ -20,7 +20,8 @@
     "prepublish": "yarn build",
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
     "start:storybook": "start-storybook",
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest",
+    "typecheck": "tsc --noEmit"
   },
   "jest": {
     "moduleDirectories": [
@@ -42,7 +43,7 @@
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@babel/polyfill": "^7.4.4",
     "@codesandbox/notifications": "^1.0.6",
-    "@codesandbox/template-icons": "^0.7.1",
+    "@codesandbox/template-icons": "^1.0.1",
     "@sentry/browser": "^5.6.2",
     "@tippy.js/react": "^2.1.1",
     "babel-plugin-preval": "^3.0.1",

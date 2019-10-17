@@ -81,7 +81,7 @@ export const Navigation = inject('store', 'signals')(
             <Action>
               <Tooltip placement="bottom" content="Explore Sandboxes">
                 <a style={{ color: 'white' }} href={exploreUrl()}>
-                  <FlameIcon />
+                  <FlameIcon height={35} />
                 </a>
               </Tooltip>
             </Action>

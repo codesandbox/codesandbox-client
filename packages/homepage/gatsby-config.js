@@ -68,6 +68,7 @@ module.exports = {
           `source sans pro:300,400,500,600,700`,
           'open sans:300,400',
         ],
+        display: 'swap',
       },
     },
     {

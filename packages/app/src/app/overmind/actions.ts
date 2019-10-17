@@ -73,6 +73,7 @@ type ModalName =
   | 'preferences'
   | 'privacyServerWarning'
   | 'share'
+  | 'searchDependencies'
   | 'signInForTemplates';
 export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },

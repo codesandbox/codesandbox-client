@@ -55,10 +55,10 @@ const Content = styled.div`
 `;
 
 export default () => (
-  <Container>
+  <Container as="section" aria-labelledby="patron">
     <MaxWidth>
       <Centered horizontal>
-        <Header>Become a Patron</Header>
+        <Header id="patron">Become a Patron</Header>
         <Text>
           You can support our development by becoming a Patron and paying a
           monthly amount of your choice. As a Patron you get less limits and
@@ -68,7 +68,12 @@ export default () => (
 
         <Content>
           <Badge>
-            <img width={200} src={getBadge('patron_4')} alt="Patron IV" />
+            <img
+              width={200}
+              src={getBadge('patron_4')}
+              alt="Patron IV"
+              loading="lazy"
+            />
           </Badge>
           <Button target="_blank" rel="noreferrer noopener" href="/patron">
             Open Patron Page
