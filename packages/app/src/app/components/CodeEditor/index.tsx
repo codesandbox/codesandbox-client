@@ -165,11 +165,13 @@ export class CodeEditor extends React.PureComponent<
       );
     }
 
-    let Editor: any =
-      settings.codeMirror && !props.isLive ? CodeMirror : Monaco;
+    let Editor =
+      settings.codeMirror && !props.isLive
+        ? ((CodeMirror as unknown) as React.ComponentClass<Props>)
+        : ((Monaco as unknown) as React.ComponentClass<Props>);
 
     if (settings.experimentVSCode) {
-      Editor = VSCode;
+      Editor = VSCode as React.ComponentClass<Props>;
     }
 
     return (
