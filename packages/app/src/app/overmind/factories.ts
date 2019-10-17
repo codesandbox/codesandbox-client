@@ -71,6 +71,10 @@ export const withOwnedSandbox = <T>(
   const { state, actions } = context;
 
   if (!state.editor.currentSandbox.owned) {
+    if (state.editor.isForkingSandbox) {
+      return;
+    }
+
     await actions.editor.internal.forkSandbox({
       sandboxId: state.editor.currentId,
     });
