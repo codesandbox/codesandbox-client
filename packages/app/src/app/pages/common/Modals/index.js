@@ -21,7 +21,7 @@ import LiveSessionEnded from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import NetlifyLogs from './NetlifyLogs';
 import NewSandbox from './NewSandbox';
-import PickSandboxModal from './PickSandboxModal';
+import { PickSandboxModal } from './PickSandboxModal';
 import PreferencesModal from './PreferencesModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
 import PRModal from './PRModal';
