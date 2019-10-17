@@ -99,7 +99,7 @@ export const signInGithub: Action<
   Promise<string>
 > = ({ effects }, options) => {
   const authPath =
-    process.env.LOCAL_SERVER || 'STAGING_BRANCH' in process.env
+    process.env.LOCAL_SERVER || process.env.STAGING_BRANCH
       ? '/auth/dev'
       : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
 
