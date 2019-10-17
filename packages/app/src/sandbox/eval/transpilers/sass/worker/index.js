@@ -1,5 +1,5 @@
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST}/static/browserfs4/browserfs.min.js`
+  `${process.env.CODESANDBOX_HOST}/static/browserfs5/browserfs.min.js`
 );
 
 self.process = self.BrowserFS.BFSRequire('process');

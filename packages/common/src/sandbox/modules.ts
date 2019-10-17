@@ -276,7 +276,7 @@ export const findMainModule = (sandbox?: Sandbox) => {
 
   const defaultOpenModule = defaultOpenedFiles
     .map(path => resolve(path))
-    .find(module => module);
+    .find(module => Boolean(module));
 
   if (defaultOpenModule) {
     return defaultOpenModule;
