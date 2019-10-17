@@ -64,7 +64,7 @@ export const setPatronPrice: Action = ({ state }) => {
 
 export const setSignedInCookie: Action = ({ state }) => {
   document.cookie = 'signedIn=true; Path=/;';
-  identify('signed_in', 'true');
+  identify('signed_in', true);
   setUserId(state.user.id);
 };
 
@@ -98,10 +98,12 @@ export const signInGithub: Action<
   { useExtraScopes: boolean },
   Promise<string>
 > = ({ effects }, options) => {
-  const popup = effects.browser.openPopup(
-    `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`,
-    'sign in'
-  );
+  const authPath =
+    process.env.LOCAL_SERVER || process.env.STAGING
+      ? '/auth/dev'
+      : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
+
+  const popup = effects.browser.openPopup(authPath, 'sign in');
 
   return effects.browser
     .waitForMessage<{ jwt: string }>('signin')

@@ -23,10 +23,10 @@ import {
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 
-/* eslint-disable import/no-webpack-loader-syntax */
+/* eslint-disable import/no-webpack-loader-syntax, import/default */
 // @ts-ignore
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
-/* eslint-enable import/no-webpack-loader-syntax */
+/* eslint-enable import/no-webpack-loader-syntax, import/default */
 import { clone } from 'app/componentConnectors';
 import eventToTransform from '../Monaco/event-to-transform';
 import MonacoEditorComponent, { EditorAPI } from './MonacoReactComponent';
@@ -1072,15 +1072,9 @@ export class VSCode extends React.Component<Props> implements Editor {
       this.props.onChange(newCode, currentModuleShortid);
     }
 
-    if (currentModuleShortid === this.currentModule.shortid) {
-      this.lint(
-        newCode,
-        currentModuleTitle,
-        this.editor
-          .getActiveCodeEditor()
-          .getModel()
-          .getVersionId()
-      );
+    const editor = this.editor.getActiveCodeEditor();
+    if (currentModuleShortid === this.currentModule.shortid && editor) {
+      this.lint(newCode, currentModuleTitle, editor.getModel().getVersionId());
     }
   };
 

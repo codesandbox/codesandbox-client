@@ -81,7 +81,7 @@ export const Navigation = inject('store', 'signals')(
             <Action>
               <Tooltip placement="bottom" content="Explore Sandboxes">
                 <a style={{ color: 'white' }} href={exploreUrl()}>
-                  <FlameIcon />
+                  <FlameIcon height={35} />
                 </a>
               </Tooltip>
             </Action>
@@ -105,13 +105,13 @@ export const Navigation = inject('store', 'signals')(
                 event="Notifications"
                 noHeightAnimation
               >
-                {buttonProps => (
+                {open => (
                   <Observer>
                     {({ store }) => (
                       <Action
                         as="button"
                         style={{ position: 'relative', fontSize: '1.25rem' }}
-                        {...buttonProps}
+                        onClick={open}
                         aria-label={
                           store.userNotifications.unreadCount > 0
                             ? 'Show Notifications'
@@ -146,7 +146,6 @@ export const Navigation = inject('store', 'signals')(
                   modal: 'newSandbox',
                 })
               }
-              aria-haspopup="true"
               aria-label="New Sandbox"
             >
               <Tooltip placement="bottom" content="New Sandbox">

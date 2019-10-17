@@ -6,6 +6,9 @@ export type Props = {
   value: string;
   placeholder?: string;
   isTextArea?: boolean;
+  style?: React.CSSProperties;
+  block?: boolean;
+  rows?: number;
 };
 
 export default class PreferenceText extends React.PureComponent<Props> {
