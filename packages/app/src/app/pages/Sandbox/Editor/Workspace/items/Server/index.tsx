@@ -109,6 +109,7 @@ export const Server: FunctionComponent = () => {
               style={{ position: 'relative' }}
               onClick={() =>
                 onBrowserTabOpened({
+                  closeable: true,
                   options: {
                     url:
                       sandbox.template === 'gridsome'

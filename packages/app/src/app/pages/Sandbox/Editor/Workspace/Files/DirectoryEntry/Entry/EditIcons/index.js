@@ -19,7 +19,7 @@ const handleClick = func => e => {
 };
 
 function EditIcons({
-  className,
+  className = undefined,
   hovering,
   onDelete,
   onEdit,
@@ -27,7 +27,7 @@ function EditIcons({
   onCreateDirectory,
   active,
   onUploadFile,
-  onDownload,
+  onDownload = undefined,
   forceShow,
 }) {
   // Phones need double click if we show elements on click, that's why we only want

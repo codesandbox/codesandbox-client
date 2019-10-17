@@ -106,6 +106,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   } catch (error) {
     state.editor.notFound = true;
     state.editor.error = error.message;
+    state.editor.isLoading = false;
+    return;
   }
 
   const sandbox = state.editor.currentSandbox;
@@ -441,8 +443,9 @@ export const discardModuleChanges: Action<{
     return;
   }
 
+  const code = module.savedCode === null ? module.code || '' : module.savedCode;
   actions.editor.codeChanged({
-    code: module.savedCode || module.code || '',
+    code,
     moduleShortid,
   });
 

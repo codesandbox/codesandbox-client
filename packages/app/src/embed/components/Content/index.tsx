@@ -6,6 +6,7 @@ import {
   ModuleError,
   ModuleCorrection,
   Settings,
+  DevToolsTabPosition,
 } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
@@ -31,7 +32,6 @@ import {
   IViewType,
   DevToolProps,
 } from 'app/components/Preview/DevTools';
-import { ITabPosition } from 'app/components/Preview/DevTools/Tabs';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
 import {
@@ -78,7 +78,7 @@ type State = {
   isInProjectView: boolean;
   dragging: boolean;
   running: boolean;
-  currentDevToolPosition: ITabPosition;
+  currentDevToolPosition: DevToolsTabPosition;
 };
 
 export default class Content extends React.PureComponent<Props, State> {
@@ -104,7 +104,7 @@ export default class Content extends React.PureComponent<Props, State> {
     this.corrections = [];
   }
 
-  setPane = (pos: ITabPosition) => {
+  setPane = (pos: DevToolsTabPosition) => {
     this.setState({ currentDevToolPosition: pos });
   };
 

@@ -20,9 +20,9 @@ import {
 } from './elements';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import { Deployment } from './items/Deployment';
-import Files from './items/Files';
+import { FilesItem } from './items/Files';
 import { GitHub } from './items/GitHub';
-import Live from './items/Live';
+import { Live } from './items/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
@@ -33,7 +33,7 @@ import { WorkspaceItem } from './WorkspaceItem';
 const workspaceTabs = {
   project: ProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
-  files: Files,
+  files: FilesItem,
   github: GitHub,
   deploy: Deployment,
   config: ConfigurationFiles,

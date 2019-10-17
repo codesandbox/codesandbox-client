@@ -1,38 +1,38 @@
-import React, { Component } from 'react';
-import { inject, observer } from 'app/componentConnectors';
-import { ThemeProvider } from 'styled-components';
-import Modal from 'app/components/Modal';
-import Loadable from 'app/utils/Loadable';
-import { templateColor } from 'app/utils/template-color';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import { inject, observer } from 'app/componentConnectors';
+import Modal from 'app/components/Modal';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
+import Loadable from 'app/utils/Loadable';
+import { templateColor } from 'app/utils/template-color';
+import React, { Component } from 'react';
+import { ThemeProvider } from 'styled-components';
 
-import NewSandbox from './NewSandbox';
-import PreferencesModal from './PreferencesModal';
-import DeleteSandboxModal from './DeleteSandboxModal';
-import DeleteDeploymentModal from './DeleteDeploymentModal';
-import ShareModal from './ShareModal';
-import DeploymentModal from './DeploymentModal';
-import ExportGitHubModal from './ExportGitHubModal';
 import CommitModal from './CommitModal';
-import PRModal from './PRModal';
-import SelectSandboxModal from './SelectSandboxModal';
-import SearchDependenciesModal from './SearchDependenciesModal';
+import DeleteDeploymentModal from './DeleteDeploymentModal';
 import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
+import DeleteSandboxModal from './DeleteSandboxModal';
+import DeploymentModal from './DeploymentModal';
 import EmptyTrash from './EmptyTrash';
+import ExportGitHubModal from './ExportGitHubModal';
+import { FeedbackModal } from './FeedbackModal';
+import { ForkServerModal } from './ForkServerModal';
 import LiveSessionEnded from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
-import UploadModal from './UploadModal';
-import StorageManagementModal from './StorageManagementModal';
-import ForkServerModal from './ForkServerModal';
-import PrivacyServerWarning from './PrivacyServerWarning';
-import PickSandboxModal from './PickSandboxModal';
-import FeedbackModal from './FeedbackModal';
 import NetlifyLogs from './NetlifyLogs';
+import NewSandbox from './NewSandbox';
+import PickSandboxModal from './PickSandboxModal';
+import PreferencesModal from './PreferencesModal';
+import PrivacyServerWarning from './PrivacyServerWarning';
+import PRModal from './PRModal';
+import SearchDependenciesModal from './SearchDependenciesModal';
+import SelectSandboxModal from './SelectSandboxModal';
+import ShareModal from './ShareModal';
 // eslint-disable-next-line
 import SignInForTemplates from './SignInForTemplates/index.ts';
+import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
+import UploadModal from './UploadModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import('./MoveSandboxFolderModal')

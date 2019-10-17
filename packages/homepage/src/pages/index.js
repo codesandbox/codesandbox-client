@@ -36,8 +36,9 @@ export default class HomePage extends React.Component {
     return (
       <Layout>
         <TitleAndMetaTags />
-
-        <Animation />
+        <header role="banner" aria-label="codesandbox">
+          <Animation />
+        </header>
         <NPMFeature />
         <CycleFeature />
         <ExtraFeatures />

@@ -1,4 +1,4 @@
-# [CodeSandbox](https://codesandbox.io) [![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/codesandbox) [![All Contributors](https://img.shields.io/badge/all_contributors-145-orange.svg?style=flat-square)](#contributors) [![CircleCI](https://circleci.com/gh/codesandbox/codesandbox-client.svg?style=svg)](https://circleci.com/gh/codesandbox/codesandbox-client) [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=cVJuczlJWUtqWXhIbFN1ZjVQekF4NzNsd3phNEZRaGlWU0pHYVVkdGRFWT0tLXFtTVhaOWRySmN0ZG5QVDNDQ0g5Z0E9PQ==--79fe3eae4f149a400d396c9b12d3988f685785cf)](https://www.browserstack.com/automate/public-build/cVJuczlJWUtqWXhIbFN1ZjVQekF4NzNsd3phNEZRaGlWU0pHYVVkdGRFWT0tLXFtTVhaOWRySmN0ZG5QVDNDQ0g5Z0E9PQ==--79fe3eae4f149a400d396c9b12d3988f685785cf) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![first-timers-only Friendly](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](http://www.firsttimersonly.com/) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
+# [CodeSandbox](https://codesandbox.io) [![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/codesandbox) [![All Contributors](https://img.shields.io/badge/all_contributors-148-orange.svg?style=flat-square)](#contributors-) [![CircleCI](https://circleci.com/gh/codesandbox/codesandbox-client.svg?style=svg)](https://circleci.com/gh/codesandbox/codesandbox-client) [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=cVJuczlJWUtqWXhIbFN1ZjVQekF4NzNsd3phNEZRaGlWU0pHYVVkdGRFWT0tLXFtTVhaOWRySmN0ZG5QVDNDQ0g5Z0E9PQ==--79fe3eae4f149a400d396c9b12d3988f685785cf)](https://www.browserstack.com/automate/public-build/cVJuczlJWUtqWXhIbFN1ZjVQekF4NzNsd3phNEZRaGlWU0pHYVVkdGRFWT0tLXFtTVhaOWRySmN0ZG5QVDNDQ0g5Z0E9PQ==--79fe3eae4f149a400d396c9b12d3988f685785cf) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![first-timers-only Friendly](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](http://www.firsttimersonly.com/) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 
 [![Backers on Open Collective](https://opencollective.com/codesandbox/backers/badge.svg)](#backers)
 [![Sponsors on Open Collective](https://opencollective.com/codesandbox/sponsors/badge.svg)](#sponsors)
@@ -35,13 +35,14 @@ sourced.
 - [CLI](https://github.com/codesandbox/codesandbox-importers/tree/master/packages/cli):
   the CLI to upload a CodeSandbox project from your command line
 
-## Contributors
+## Contributors ✨
 
 Thanks goes to these wonderful people
 ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
   <tr>
     <td align="center"><a href="http://ivesvh.com"><img src="https://avatars0.githubusercontent.com/u/587016?v=3" width="100px;" alt="Ives van Hoorne"/><br /><sub><b>Ives van Hoorne</b></sub></a><br /><a href="#question-CompuIves" title="Answering Questions">💬</a> <a href="#blog-CompuIves" title="Blogposts">📝</a> <a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#example-CompuIves" title="Examples">💡</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#review-CompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
@@ -229,9 +230,16 @@ Thanks goes to these wonderful people
     <td align="center"><a href="http://yeisondaza.com"><img src="https://avatars0.githubusercontent.com/u/9127504?v=4" width="100px;" alt="Yeison Daza"/><br /><sub><b>Yeison Daza</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=yeion7" title="Code">💻</a></td>
     <td align="center"><a href="https://shriram-balaji.github.io"><img src="https://avatars1.githubusercontent.com/u/11358903?v=4" width="100px;" alt="Shriram Balaji"/><br /><sub><b>Shriram Balaji</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=Shriram-Balaji" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/chinmay17"><img src="https://avatars2.githubusercontent.com/u/7131231?v=4" width="100px;" alt="Chinmay Chaudhary"/><br /><sub><b>Chinmay Chaudhary</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=chinmay17" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Sakthivel"><img src="https://avatars3.githubusercontent.com/u/205201?v=4" width="100px;" alt="Sakthivel Sengodan Sapient"/><br /><sub><b>Sakthivel Sengodan Sapient</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=sakthivel" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/vanya829"><img src="https://avatars0.githubusercontent.com/u/1397979?v=4" width="100px;" alt="vanya829"/><br /><sub><b>vanya829</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=vanya829" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://hetpatel33.github.io"><img src="https://avatars0.githubusercontent.com/u/13877514?v=4" width="100px;" alt="Het Patel"/><br /><sub><b>Het Patel</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=hetpatel33" title="Code">💻</a></td>
   </tr>
 </table>
 
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Backers

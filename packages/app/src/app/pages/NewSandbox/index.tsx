@@ -12,7 +12,7 @@ const createSandbox = template => {
   history.push(sandboxUrl({ id: template.shortid }));
 };
 
-export const NewSandbox = () => {
+export const NewSandbox: React.FC = () => {
   const {
     actions: { sandboxPageMounted },
   } = useOvermind();
@@ -29,7 +29,6 @@ export const NewSandbox = () => {
     >
       <Margin horizontal={1.5} style={{ height: '100%' }} vertical={1.5}>
         <Navigation title="New Sandbox" />
-
         <Margin top={5}>
           <Centered horizontal vertical>
             <Margin style={{ maxWidth: '100%', width: 900 }} top={2}>

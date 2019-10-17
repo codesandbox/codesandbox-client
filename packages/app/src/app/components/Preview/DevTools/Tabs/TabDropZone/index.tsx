@@ -6,8 +6,8 @@ import {
   DropTargetMonitor,
   DropTargetConnector,
 } from 'react-dnd';
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 
-import { ITabPosition } from '..';
 import { PREVIEW_TAB_ID } from '../Tab';
 
 const DropZone = styled.div<{ isOver: boolean }>`
@@ -26,7 +26,10 @@ const DropZone = styled.div<{ isOver: boolean }>`
 `;
 
 export interface TabDropZoneProps {
-  moveTab: (currentPosition: ITabPosition, nextPosition: ITabPosition) => void;
+  moveTab: (
+    currentPosition: DevToolsTabPosition,
+    nextPosition: DevToolsTabPosition
+  ) => void;
   index: number;
   devToolIndex: number;
 }
@@ -61,7 +64,7 @@ const entryTarget = {
       return;
     }
 
-    const previousPosition: ITabPosition = {
+    const previousPosition: DevToolsTabPosition = {
       tabPosition: sourceItem.index,
       devToolIndex: sourceItem.devToolIndex,
     };

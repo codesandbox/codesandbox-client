@@ -40,6 +40,7 @@ export const Action = styled.div<{ noHover?: boolean }>`
   opacity: 0.8;
   background: transparent;
   border: none;
+  padding: 0;
 
   ${props =>
     props.noHover
