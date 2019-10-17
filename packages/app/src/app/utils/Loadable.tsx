@@ -1,7 +1,11 @@
 import React from 'react';
 import { Loading } from 'app/components/Loading';
 
-export default (loader: () => Promise<{ default: React.ComponentType }>) =>
+type Unpacked<T> = T extends Promise<infer U> ? U : T;
+
+const Loadable: <T extends Promise<{ default: React.ComponentType }>>(
+  loader: () => T
+) => Unpacked<T>['default'] = loader =>
   class extends React.Component {
     state = {
       LoadedComponent: null,
@@ -43,3 +47,5 @@ export default (loader: () => Promise<{ default: React.ComponentType }>) =>
       return null;
     }
   };
+
+export default Loadable;
