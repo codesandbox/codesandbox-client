@@ -6,7 +6,6 @@ import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 import { EntryContainer } from 'app/pages/Sandbox/Editor/Workspace/elements';
 
 import EditorLink from '../EditorLink';
-import Files from '../Files';
 import Section from './Section';
 import SandboxInfo from './SandboxInfo';
 import FileTree from './FileTree';
@@ -60,17 +59,6 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
           sandbox={sandbox}
           currentModuleId={currentModule}
           setCurrentModuleId={setCurrentModule}
-        />
-      </Section>
-      <Section title="Files" defaultOpen>
-        <Files
-          modules={sandbox.modules}
-          directories={sandbox.directories}
-          directoryId={null}
-          setCurrentModule={setCurrentModule}
-          currentModule={currentModule}
-          template={sandbox.template}
-          entry={sandbox.entry}
         />
       </Section>
       <Section title="Dependencies">
