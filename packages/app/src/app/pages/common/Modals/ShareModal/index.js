@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
-import FileTree from 'embed/components/Sidebar/FileTree';
+import Files from 'embed/components/legacy/Files';
 import QRCode from 'qrcode.react';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -213,10 +213,12 @@ class ShareView extends React.Component {
                   <h4>Default module to show</h4>
 
                   <FilesContainer>
-                    <FileTree
-                      sandbox={sandbox}
+                    <Files
+                      modules={sandbox.modules}
+                      directoryId={null}
+                      directories={sandbox.directories}
                       currentModule={defaultModule}
-                      setCurrentModuleId={this.setDefaultModule}
+                      setCurrentModule={this.setDefaultModule}
                     />
                   </FilesContainer>
                 </div>
