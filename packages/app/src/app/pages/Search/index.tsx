@@ -14,6 +14,7 @@ import {
   PoweredBy,
   Configure,
 } from 'react-instantsearch/dom';
+import { History, Location} from 'history';
 
 import { Navigation } from 'app/pages/common/Navigation';
 import { useOvermind } from 'app/overmind';
@@ -25,6 +26,11 @@ import Filters from './Filters';
 import Results from './Results';
 import Styles from './search';
 
+interface ISearchProps {
+  history: History;
+  location: Location;
+}
+
 const updateAfter = 700;
 
 const createURL = state => `?${qs.stringify(state)}`;
@@ -32,7 +38,7 @@ const createURL = state => `?${qs.stringify(state)}`;
 const searchStateToUrl = (location, searchState) =>
   searchState ? `${location.pathname}${createURL(searchState)}` : '';
 
-const Search = ({ history, location }) => {
+const Search: React.FC<ISearchProps> = ({ history, location }) => {
   const {
     actions: { searchMounted },
   } = useOvermind();
