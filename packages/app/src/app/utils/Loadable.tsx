@@ -1,14 +1,14 @@
 import React from 'react';
 import { Loading } from 'app/components/Loading';
 
-export default loader =>
+export default (loader: () => Promise<{ default: React.ComponentType }>) =>
   class extends React.Component {
     state = {
       LoadedComponent: null,
       hasTimedOut: false,
     };
 
-    timer;
+    timer: number;
 
     componentDidMount() {
       loader().then(module => {
@@ -16,7 +16,7 @@ export default loader =>
           LoadedComponent: module.default,
         });
       });
-      this.timer = setTimeout(
+      this.timer = window.setTimeout(
         () =>
           this.setState({
             hasTimedOut: true,
