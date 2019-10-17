@@ -443,8 +443,9 @@ export const discardModuleChanges: Action<{
     return;
   }
 
+  const code = module.savedCode === null ? module.code || '' : module.savedCode;
   actions.editor.codeChanged({
-    code: module.savedCode || module.code || '',
+    code,
     moduleShortid,
   });
 
