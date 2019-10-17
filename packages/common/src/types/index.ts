@@ -61,6 +61,13 @@ export type Module = {
   type: 'file';
 };
 
+export type Configuration = {
+  title: string;
+  moreInfoUrl: string;
+  type: string;
+  description: string;
+};
+
 export type Directory = {
   id: string;
   title: string;
