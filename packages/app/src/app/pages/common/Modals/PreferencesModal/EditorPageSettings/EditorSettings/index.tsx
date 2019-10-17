@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useOvermind } from 'app/overmind';
 
 import {
@@ -26,10 +26,17 @@ export const EditorSettings: React.FC = () => {
     },
   } = useOvermind();
 
-  const bindValue = (name: string) => ({
-    value: settings[name],
-    setValue: (value: any) => settingChanged({ name, value }),
-  });
+  const bindValue = useMemo(
+    () => (name: string) => ({
+      value: settings[name],
+      setValue: (value: any) =>
+        settingChanged({
+          name,
+          value,
+        }),
+    }),
+    [settings, settingChanged]
+  );
 
   return (
     <div>
