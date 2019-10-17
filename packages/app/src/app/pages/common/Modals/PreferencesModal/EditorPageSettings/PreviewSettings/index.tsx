@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 
 import {
   Title,
@@ -10,14 +10,19 @@ import {
   Rule,
 } from '../../elements';
 
-function PreviewSettingsComponent({ store, signals }) {
-  const bindValue = name => ({
-    value: store.preferences.settings[name],
-    setValue: value =>
-      signals.preferences.settingChanged({
-        name,
-        value,
-      }),
+export const PreviewSettings: React.FC = () => {
+  const {
+    state: {
+      preferences: { settings },
+    },
+    actions: {
+      preferences: { settingChanged },
+    },
+  } = useOvermind();
+
+  const bindValue = (name: string) => ({
+    value: settings[name],
+    setValue: (value: any) => settingChanged({ name, value }),
   });
 
   return (
@@ -56,8 +61,4 @@ function PreviewSettingsComponent({ store, signals }) {
       </SubContainer>
     </div>
   );
-}
-
-export const PreviewSettings = inject('store', 'signals')(
-  observer(PreviewSettingsComponent)
-);
+};
