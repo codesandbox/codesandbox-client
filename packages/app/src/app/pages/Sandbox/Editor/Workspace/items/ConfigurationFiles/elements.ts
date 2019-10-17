@@ -1,16 +1,18 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const FilesContainer = styled.div`
   margin-top: 1rem;
 `;
 
-export const File = styled.div`
-  position: relative;
-  transition: 0.3s ease background-color;
-  padding: 0.75rem 1rem;
+export const File = styled.div<{ created: boolean }>`
+  ${({ created }) => css`
+    position: relative;
+    transition: 0.3s ease background-color;
+    padding: 0.75rem 1rem;
 
-  ${props => props.created && `cursor: pointer`};
-  ${props => !props.created && `opacity: 0.9`};
+    ${created && `cursor: pointer`};
+    ${!created && `opacity: 0.9`};
+  `}
 `;
 
 export const CreateButton = styled.button`
