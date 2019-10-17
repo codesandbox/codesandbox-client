@@ -1,16 +1,14 @@
-import React from 'react';
-import { withTheme } from 'styled-components';
-import { listen } from 'codesandbox-api';
-
-import uuid from 'uuid';
-import PlusIcon from 'react-icons/lib/md/add';
-
 import './styles.css';
+
+import { listen } from 'codesandbox-api';
+import React from 'react';
+import PlusIcon from 'react-icons/lib/md/add';
+import { withTheme } from 'styled-components';
+import uuid from 'uuid';
 
 import { Shell } from './Shell';
 import { TerminalComponent } from './Shell/Term';
 import { ShellTabs } from './ShellTabs';
-
 import { ShellT, TerminalWithFit } from './types';
 import { DevToolProps } from '..';
 
@@ -34,6 +32,7 @@ class DevToolTerminal extends React.Component<
   };
 
   term: TerminalWithFit;
+  messageQueue: any[];
   listener: () => void;
   node?: HTMLElement;
   timeout?: number;
@@ -46,9 +45,17 @@ class DevToolTerminal extends React.Component<
 
   setTerminal = (terminal: TerminalWithFit) => {
     this.term = terminal;
+
+    this.messageQueue.forEach(this.handleMessage);
+    this.messageQueue.length = 0;
   };
 
   handleMessage = (data: any) => {
+    if (!this.term) {
+      this.messageQueue.push(data);
+      return;
+    }
+
     if (data.type === 'terminal:message') {
       this.term.write(data.data);
 

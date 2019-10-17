@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
+import React, { useEffect } from 'react';
 
 import { WorkspaceInputContainer } from '../../../elements';
-
 import { EnvEntry } from './EnvEntry';
 import { EnvModal } from './EnvModal';
 
@@ -25,7 +24,7 @@ export const EnvironmentVariables: React.FC<{}> = props => {
     editor.deleteEnvironmentVariable({ name });
   };
 
-  const envVars: any = currentSandbox.environmentVariables;
+  const envVars = currentSandbox.environmentVariables;
 
   if (!envVars) {
     return (
@@ -37,17 +36,13 @@ export const EnvironmentVariables: React.FC<{}> = props => {
 
   return (
     <div>
-      {Object.keys(envVars.toJSON ? envVars.toJSON() : envVars).map(keyName => (
+      {Object.keys(envVars).map(keyName => (
         <EnvEntry
           onSubmit={createEnv}
           onDelete={deleteEnv}
           key={keyName}
           name={keyName}
-          value={
-            typeof envVars.get === 'function'
-              ? envVars.get(keyName)
-              : envVars[keyName]
-          }
+          value={envVars[keyName]}
         />
       ))}
 

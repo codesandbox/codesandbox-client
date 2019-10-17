@@ -112,11 +112,11 @@ const RoutesComponent: React.FC = () => {
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
+            {(process.env.LOCAL_SERVER || 'STAGING_BRANCH' in process.env) && (
+              <Route path="/auth/dev" component={DevAuthPage} />
+            )}
             {process.env.NODE_ENV === `development` && (
-              <>
-                <Route path="/auth/dev" component={DevAuthPage} />
-                <Route path="/codesadbox" component={CodeSadbox} />
-              </>
+              <Route path="/codesadbox" component={CodeSadbox} />
             )}
             <Route component={NotFound} />
           </Switch>

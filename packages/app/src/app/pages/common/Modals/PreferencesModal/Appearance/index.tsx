@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 import themes from '@codesandbox/common/lib/themes';
 
 import PreferenceText from '@codesandbox/common/lib/components/Preference/PreferenceText';
@@ -14,13 +14,20 @@ import {
 import { BigTitle } from './elements';
 import VSCodePlaceholder from '../VSCodePlaceholder';
 
-function EditorSettings({ store, signals }) {
-  const bindValue = (name, setUndefined) => ({
-    value: setUndefined
-      ? store.preferences.settings[name] || undefined
-      : store.preferences.settings[name],
+export const Appearance: React.FC = () => {
+  const {
+    state: {
+      preferences: { settings },
+    },
+    actions: {
+      preferences: { settingChanged },
+    },
+  } = useOvermind();
+
+  const bindValue = (name: string, setUndefined?: boolean) => ({
+    value: setUndefined ? settings[name] || undefined : settings[name],
     setValue: value =>
-      signals.preferences.settingChanged({
+      settingChanged({
         name,
         value,
       }),
@@ -60,7 +67,7 @@ function EditorSettings({ store, signals }) {
               </a>{' '}
               as default font, you can also use locally installed fonts
             </SubDescription>
-            {!fontOptions.includes(store.preferences.settings.fontFamily) && (
+            {!fontOptions.includes(settings.fontFamily) && (
               <PreferenceText
                 style={{ marginTop: '1rem' }}
                 placeholder="Enter your custom font"
@@ -105,7 +112,7 @@ function EditorSettings({ store, signals }) {
             </SubDescription>
           </VSCodePlaceholder>
 
-          {store.preferences.settings.experimentVSCode ? (
+          {settings.experimentVSCode ? (
             <div>
               <BigTitle>Editor Theme</BigTitle>
               <SubDescription>
@@ -176,6 +183,4 @@ function EditorSettings({ store, signals }) {
       </SubContainer>
     </div>
   );
-}
-
-export const Appearance = inject('store', 'signals')(observer(EditorSettings));
+};
