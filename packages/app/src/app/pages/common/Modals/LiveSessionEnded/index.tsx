@@ -1,22 +1,32 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
-
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
-
+import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+import { Explanation, Heading } from '../elements';
 import { Container } from './elements';
-import { Heading, Explanation } from '../elements';
 
-function LiveModeEnded({ signals, store }) {
-  const suggestion = store.editor.currentSandbox.owned
+const LiveModeEnded: FunctionComponent = () => {
+  const {
+    state: {
+      editor: {
+        currentSandbox: { owned },
+      },
+      currentModalMessage,
+    },
+    actions: {
+      modalClosed,
+      editor: { forkSandboxClicked },
+    },
+  } = useOvermind();
+  const suggestion = owned
     ? 'you can continue working on the current sandbox.'
     : 'you can continue working by forking the sandbox or by creating a new sandbox.';
   return (
     <Container>
       <Heading>The live session has ended</Heading>
-      <Explanation css={{ marginBottom: '1rem' }}>
-        {store.currentModalMessage || 'The session has ended due to inactivity'}
-        , {suggestion}
+      <Explanation style={{ marginBottom: '1rem' }}>
+        {currentModalMessage || 'The session has ended due to inactivity'},{' '}
+        {suggestion}
       </Explanation>
 
       <Row justifyContent="space-around">
@@ -24,11 +34,11 @@ function LiveModeEnded({ signals, store }) {
           Create Sandbox
         </Button>
 
-        {store.editor.currentSandbox.owned ? (
+        {owned ? (
           <Button
             small
             onClick={() => {
-              signals.modalClosed();
+              modalClosed();
             }}
           >
             Close Modal
@@ -37,8 +47,8 @@ function LiveModeEnded({ signals, store }) {
           <Button
             small
             onClick={() => {
-              signals.editor.forkSandboxClicked();
-              signals.modalClosed();
+              forkSandboxClicked();
+              modalClosed();
             }}
           >
             Fork Sandbox
@@ -47,6 +57,6 @@ function LiveModeEnded({ signals, store }) {
       </Row>
     </Container>
   );
-}
+};
 
-export default inject('signals', 'store')(hooksObserver(LiveModeEnded));
+export default LiveModeEnded;
