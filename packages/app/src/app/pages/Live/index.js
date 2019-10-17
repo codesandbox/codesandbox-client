@@ -11,7 +11,7 @@ import { SubTitle } from 'app/components/SubTitle';
 import { Skeleton } from 'app/components/Skeleton';
 import { Navigation } from 'app/pages/common/Navigation';
 import { SignInButton } from 'app/pages/common/SignInButton';
-import { QuickActions } from 'app/pages/Sandbox/QuickActions/QuickActions';
+import { QuickActions } from 'app/pages/Sandbox/QuickActions';
 import { hasAuthToken } from 'app/utils/user';
 import Editor from '../Sandbox/Editor';
 import { BlinkingDot } from './BlinkingDot';
