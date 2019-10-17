@@ -10,7 +10,7 @@ import { Heading, Explanation } from '../elements';
 
 import { Field, Label } from './elements';
 
-export const StorageManagementModal: React.FC = () => {
+export const PickSandboxModal: React.FC = () => {
   const {
     state: {
       explore: {
@@ -90,4 +90,4 @@ export const StorageManagementModal: React.FC = () => {
       </form>
     </Container>
   );
-}
+};
