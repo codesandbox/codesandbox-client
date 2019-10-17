@@ -1,17 +1,18 @@
 import React from 'react';
-import * as Icons from './icon';
+import * as Icons from './icons';
 import { FileContainer, IconContainer, FileName } from './elements';
 
 function FileTree({ sandbox, currentModuleId, setCurrentModuleId }) {
   const { modules, directories } = sandbox;
 
   const allFiles = [...directories, ...modules].map(file => ({
-      id: file.shortid,
-      longid: file.id,
-      title: file.title,
-      directory: file.directoryShortid,
-      type: file.code ? 'file' : 'directory',
-    }));
+    id: file.shortid,
+    longid: file.id,
+    title: file.title,
+    directory: file.directoryShortid,
+    // this line is so silly because we already know directories
+    type: file.code ? 'file' : 'directory',
+  }));
 
   const selectedFile = allFiles.find(file => file.longid === currentModuleId);
   const onSelect = file => setCurrentModuleId(file.longid);
@@ -73,7 +74,6 @@ function Directory(props) {
   return (
     <>
       <File
-        icon="ClosedDirectory"
         selectedFile={props.selectedFile}
         allFiles={props.allFiles}
         onClick={toggle}
@@ -91,11 +91,14 @@ function Directory(props) {
   );
 }
 
-function FileIcon({ name, extension }) {
-  const Icon = Icons[extension] || Icons[name];
+function FileIcon(props) {
   return (
     <IconContainer>
-      <Icon />
+      {props.type === 'directory' ? (
+        <Icons.Directory />
+      ) : (
+        <Icons.File {...props} />
+      )}
     </IconContainer>
   );
 }
@@ -106,7 +109,7 @@ function File(props) {
 
   return (
     <FileContainer depth={depth} isSelected={selected} onClick={props.onClick}>
-      <FileIcon name={props.icon || 'File'} />
+      <FileIcon {...props} />
       <FileName>{props.title}</FileName>
     </FileContainer>
   );

@@ -5,7 +5,7 @@ import { CenteredText } from '@codesandbox/common/lib/components/Stats/Stat/elem
 
 export const Container = styled.div(
   css({
-    padding: 4,
+    paddingX: 4,
   })
 );
 

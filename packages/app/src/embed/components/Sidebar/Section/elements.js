@@ -5,6 +5,8 @@ export const Body = styled.div(
   css({
     borderBottom: '1px solid',
     borderColor: 'sideBar.border',
+    paddingTop: 4,
+    paddingBottom: 8,
   })
 );
 
