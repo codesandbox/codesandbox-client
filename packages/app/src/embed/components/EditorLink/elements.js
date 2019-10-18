@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import css from '@styled-system/css';
 
-export const Button = styled.a(
+export const Button = styled.a(props =>
   css({
     position: 'absolute',
-    bottom: 32 + 16, // dev console + 16 for margin
+    bottom: props.previewVisible ? 32 + 16 : 16,
     right: 16,
     zIndex: 99,
 

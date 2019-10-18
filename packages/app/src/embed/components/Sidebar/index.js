@@ -21,7 +21,7 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
       <Section title="CodeSandbox" openByDefault>
         <SandboxInfo sandbox={sandbox} />
       </Section>
-      <Section title="Files">
+      <Section title="Files" openByDefault>
         <FileTree
           sandbox={sandbox}
           currentModuleId={currentModule}

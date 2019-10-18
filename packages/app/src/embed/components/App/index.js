@@ -408,7 +408,10 @@ export default class App extends React.PureComponent<
               currentModule={this.getCurrentModuleFromPath(sandbox).id}
               sandbox={sandbox}
             />
-            <EditorLink sandbox={sandbox} />
+            <EditorLink
+              sandbox={sandbox}
+              previewVisible={this.state.showPreview}
+            />
           </>
         )}
         <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
