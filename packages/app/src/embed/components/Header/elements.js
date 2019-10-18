@@ -27,14 +27,14 @@ export const Container = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 3rem;
+
   padding: 0 1rem;
   box-sizing: border-box;
   background-color: ${props => props.theme['editor.background']};
 
   /* compatibility mode for the redesign */
-  height: 32px;
-  border-bottom: none;
+  height: calc(32px + 1px);
+  border-bottom: 1px solid ${props => props.theme['sideBar.border']};
 `;
 
 export const MenuIcon = styled(MenuIconSVG)`
