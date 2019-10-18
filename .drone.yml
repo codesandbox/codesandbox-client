@@ -76,6 +76,21 @@ steps:
         - success
         - failure
 
+  - name: github comment
+    image: lbogdan/github-comment-plugin:1
+    settings:
+      domain: *domain
+      github_token:
+        from_secret: github_token
+      template: |
+        Build for latest commit https://github.com/{{owner}}/{{repo}}/pull/{{pr}}/commits/{{commitSha}} {{#success}}is at https://pr{{pr}}.{{buildDomain}}/s/new{{/success}}{{^success}}failed{{/success}}.
+    when:
+      event:
+        - pull_request
+      status:
+        - success
+        - failure
+
   - name: rebuild node_modules cache
     image: codesandbox-cache:1
     settings:
@@ -102,6 +117,6 @@ volumes:
       path: /root/docker/deployments
 ---
 kind: signature
-hmac: 4d9c06dbed6f93871c3a0bb5b80b35e353d8a5254d84ba07c0fb14e4f6ea9ecd
+hmac: 6efec100a920adf22e7c8a0b594d0a82a03f6588297246f96f20c6f05599d408
 
 ...
