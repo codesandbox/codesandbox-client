@@ -1,7 +1,7 @@
 // @flow
 import styled, { css } from 'styled-components';
-import MenuIconSVG from 'react-icons/lib/md/menu';
 import { Button as RealButton } from '@codesandbox/common/lib/components/Button';
+import { MenuIconSVG } from './MenuIconSVG';
 
 import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
 
@@ -31,8 +31,10 @@ export const Container = styled.div`
   padding: 0 1rem;
   box-sizing: border-box;
   background-color: ${props => props.theme['editor.background']};
-  /* match sidebar border */
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+  /* compatibility mode for the redesign */
+  height: 32px;
+  border-bottom: none;
 `;
 
 export const MenuIcon = styled(MenuIconSVG)`
@@ -82,6 +84,9 @@ export const Title = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   flex: 1;
+
+  /* compatibility mode for the redesign */
+  font-size: 13px;
 
   @media (max-width: 450px) {
     display: none;
