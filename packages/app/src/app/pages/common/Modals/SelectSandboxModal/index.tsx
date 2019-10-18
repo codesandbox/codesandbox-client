@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
-import Sandbox from './Sandbox';
-
-import { Padding } from './elements';
 import { useOvermind } from 'app/overmind';
+import { Padding } from './elements';
+
+import Sandbox from './Sandbox';
 
 export const SelectSandboxModal: FunctionComponent = () => {
   const {
