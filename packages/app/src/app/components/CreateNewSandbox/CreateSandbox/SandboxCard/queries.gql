@@ -1,0 +1,27 @@
+query getSandboxInfo($id: ID!) {
+  sandbox(sandboxId: $id) {
+    id
+    author {
+      id
+      name: username
+    }
+    customTemplate {
+      id
+      following {
+        isFollowing
+        entity {
+          __typename
+          ... on User {
+            id
+            name: username
+          }
+
+          ... on Team {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}

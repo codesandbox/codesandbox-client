@@ -10,38 +10,55 @@ import { Button, IButtonProps } from '../Button';
 import { Backdrop, Container } from './elements';
 
 export interface IModalProps extends IButtonProps {
-  name: string;
+  label?: string;
   button?: React.ElementType;
   backdrop?: React.ElementType;
   container?: React.ElementType;
-  defaultOpen?: boolean;
-  children: ({
-    open: boolean,
-    toggleOpen: Function,
-  }) => React.ReactNode | React.ReactNode;
+  isOpen?: boolean;
+  onClose?: () => void;
+  children:
+    | (({ open: boolean, toggleOpen: Function }) => React.ReactNode)
+    | React.ReactNode;
 }
 
 export const Modal: React.FC<IModalProps> = ({
-  name,
+  label,
   button = Button,
   backdrop = Backdrop,
   container = Container,
-  defaultOpen = false,
+  isOpen,
+  onClose = () => undefined,
   children,
   ...props
 }) => {
-  const dialog = useDialogState({ visible: defaultOpen });
+  const dialog = useDialogState();
+  const onHide = () => {
+    dialog.hide();
+    onClose();
+  };
 
   return (
     <>
-      <DialogDisclosure block as={button} {...dialog} {...props}>
-        {name}
-      </DialogDisclosure>
+      {label && (
+        <DialogDisclosure block as={button} {...dialog} {...props}>
+          {label}
+        </DialogDisclosure>
+      )}
       <Portal>
         <DialogBackdrop {...dialog} as={backdrop}>
-          <Dialog {...dialog} as={container} aria-label={name} modal={false}>
+          <Dialog
+            {...dialog}
+            as={container}
+            aria-label={name}
+            modal={false}
+            visible={typeof isOpen !== 'undefined' ? isOpen : dialog.visible}
+            hide={onHide}
+          >
             {typeof children === `function`
-              ? children({ open: dialog.visible, toggleOpen: dialog.toggle })
+              ? (children as Function)({
+                  open: dialog.visible,
+                  toggleOpen: dialog.toggle,
+                })
               : children}
           </Dialog>
         </DialogBackdrop>

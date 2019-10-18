@@ -1,11 +1,5 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import {
-  LIST_TEMPLATES,
-  unmakeTemplates,
-  LIST_FOLLOWED_TEMPLATES,
-  makeTemplates,
-} from 'app/components/CreateNewSandbox/queries';
 import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
 import { GridList } from '@codesandbox/common/lib/components/GridList';
 import { SandboxCard } from '../SandboxCard';
@@ -13,6 +7,7 @@ import { Loader } from '../Loader/index';
 import { Header } from '../elements';
 import { SubHeader } from './elements';
 import { all } from '../availableTemplates';
+import { ListFollowedTemplates, ListTemplates } from '../queries.gql';
 
 // Would be good to actually have this interface filled out
 // Would be better if we could generate types from our GraphQL server
@@ -22,7 +17,7 @@ interface ListTemplatesResponse {
 
 export const Create = () => {
   const { data: mine = {}, error: mineError } = useQuery<ListTemplatesResponse>(
-    LIST_TEMPLATES,
+    ListTemplates ,
     {
       variables: { showAll: true },
       fetchPolicy: 'cache-and-network',
@@ -30,7 +25,7 @@ export const Create = () => {
   );
   const { data: followed = {}, error: followedError } = useQuery<
     ListTemplatesResponse
-  >(LIST_FOLLOWED_TEMPLATES, {
+  >(ListFollowedTemplates, {
     variables: { showAll: true },
     fetchPolicy: 'cache-and-network',
   });
@@ -72,7 +67,6 @@ export const Create = () => {
               <GridList>
                 {followed.me.followedTemplates.map((template, i) => (
                   <SandboxCard
-                    onUnfollow={id => unmakeTemplates([id])}
                     followed
                     official={!template.sandbox}
                     key={template.niceName}
@@ -91,7 +85,6 @@ export const Create = () => {
                   <GridList>
                     {team.followedTemplates.map(template => (
                       <SandboxCard
-                        onUnfollow={id => unmakeTemplates([id], team.id)}
                         followed
                         official={!template.sandbox}
                         key={template.niceName}
@@ -107,7 +100,6 @@ export const Create = () => {
             {all.map(template => (
               <SandboxCard
                 official
-                onFollow={id => makeTemplates(id)}
                 key={template.niceName}
                 template={template}
               />

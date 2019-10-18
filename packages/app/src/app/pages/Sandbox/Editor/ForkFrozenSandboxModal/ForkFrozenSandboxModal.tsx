@@ -1,9 +1,8 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Modal from 'app/components/Modal';
-import { useOvermind } from 'app/overmind';
 import React from 'react';
 import useKeyPressEvent from 'react-use/lib/useKeyPressEvent';
-
+import { useOvermind } from 'app/overmind';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import { Modal } from '@codesandbox/common/lib/components/Modal';
 import {
   Actions,
   Close,
@@ -61,11 +60,10 @@ export const ForkFrozenSandboxModal: React.FC = () => {
     state: { modals },
     actions: { modals: modalsActions },
   } = useOvermind();
-
+  console.log(`Modal showing: ${modals.forkFrozenModal.isCurrent}`)
   return (
     <Modal
       isOpen={modals.forkFrozenModal.isCurrent}
-      width={450}
       onClose={() => modalsActions.forkFrozenModal.close('cancel')}
     >
       <ModalContent />

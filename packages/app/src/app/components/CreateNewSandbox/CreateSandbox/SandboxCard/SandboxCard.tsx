@@ -1,9 +1,11 @@
 import React, { forwardRef } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import { LightIcons, DarkIcons } from '@codesandbox/template-icons';
 import history from 'app/utils/history';
 import getLightIcons from '@codesandbox/common/lib/templates/iconsLight';
 import getDarkIcons from '@codesandbox/common/lib/templates/iconsDark';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { getContrastYIQ } from '@codesandbox/common/lib/utils';
 import { useOvermind } from 'app/overmind';
 import {
   Container,
@@ -15,34 +17,24 @@ import {
   Author,
   ActionButton,
 } from './elements';
+// @ts-ignore
+import { followTemplate, unfollowTemplate } from './mutations.gql';
+// @ts-ignore
+import { getSandboxInfo } from './queries.gql';
 
-interface ISandboxCard {
+interface ISandboxCardProps {
   template: any;
   official?: boolean;
   followed?: boolean;
   mine?: boolean;
-  onUnfollow?: (id: string) => void;
-  onFollow?: (id: string) => void;
 }
 
-function getContrastYIQ(hex: string) {
-  // @ts-ignore
-  const color = typeof hex === 'function' ? hex() : hex;
-  const cleanColor = color.split('#')[1];
-  const r = parseInt(cleanColor.substr(0, 2), 16);
-  const g = parseInt(cleanColor.substr(2, 2), 16);
-  const b = parseInt(cleanColor.substr(4, 2), 16);
-  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-
-  return yiq;
-}
-
-export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
-  ({ template, official, followed, mine, onUnfollow, onFollow }, ref) => {
+export const SandboxCard: React.FC<ISandboxCardProps> = forwardRef(
+  ({ template, official, followed, mine }, ref) => {
     // @ts-ignore
     const { source, id: sandboxID, author = {} } = template.sandbox || {};
-    let UserIcon;
-    let OfficialIcon;
+    let UserIcon: React.FunctionComponent;
+    let OfficialIcon: React.FunctionComponent;
 
     if (getContrastYIQ(template.color) >= 128) {
       UserIcon =
@@ -65,9 +57,9 @@ export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
       template.niceName || template.sandbox.title || template.sandbox.id;
 
     const openSandbox = (openNewWindow = false, officialTemplate) => {
-      const url = officialTemplate
-        ? sandboxUrl({ id: template.shortid })
-        : sandboxUrl({ id: sandboxID });
+      const url = sandboxUrl({
+        id: officialTemplate ? template.shortid : sandboxID,
+      });
 
       if (openNewWindow === true) {
         window.open(url, '_blank');
@@ -77,6 +69,43 @@ export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
 
       return actions.modalClosed();
     };
+
+    const config = (sandbox: string) => ({
+      variables: {
+        template: customTemplate.id,
+        ...(entity ? { team: entities[entity].id } : {}),
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        template: {
+          __typename: 'Template',
+          id: customTemplate.id,
+          following,
+        },
+      },
+      update: (proxy: any, { data: { template } }) => {
+        const result = proxy.readQuery({
+          query: getSandboxInfo,
+          variables: { id: sandboxId },
+        });
+        proxy.writeQuery({
+          query: getSandboxInfo,
+          variables: { id: sandboxId },
+          data: {
+            sandbox: {
+              ...result.sandbox,
+              customTemplate: {
+                ...result.sandbox.customTemplate,
+                following: template.following,
+              },
+            },
+          },
+        });
+      },
+    });
+
+    const [follow] = useMutation<any, any>(followTemplate, config());
+    const [unfollow] = useMutation<any, any>(unfollowTemplate, config());
 
     return (
       <>
@@ -91,11 +120,9 @@ export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
           <Details>
             <Row>
               <Title
-                href={
-                  official
-                    ? sandboxUrl({ id: template.shortid })
-                    : sandboxUrl({ id: sandboxID })
-                }
+                href={sandboxUrl({
+                  id: official ? template.shortid : sandboxID,
+                })}
               >
                 {title}
               </Title>
@@ -123,11 +150,9 @@ export const SandboxCard: React.FC<ISandboxCard> = forwardRef(
             </Row>
             <Row>
               <Environment
-                href={
-                  official
-                    ? sandboxUrl({ id: template.shortid })
-                    : sandboxUrl({ id: sandboxID })
-                }
+                href={sandboxUrl({
+                  id: official ? template.shortid : sandboxID,
+                })}
               >
                 {template.name || source.template}
               </Environment>

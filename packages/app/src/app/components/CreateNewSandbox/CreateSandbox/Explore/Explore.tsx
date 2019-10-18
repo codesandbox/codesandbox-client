@@ -6,7 +6,6 @@ import {
 } from '@codesandbox/common/lib/utils/config';
 import * as algoliasearch from 'algoliasearch';
 import { useKey } from 'react-use';
-import { makeTemplates as makeTemplatesMutation } from 'app/components/CreateNewSandbox/queries';
 import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
 import { Header } from '../elements';
 import { SandboxCard } from '../SandboxCard';
@@ -55,7 +54,7 @@ export const Explore = () => {
     }
   }, [allPages, category, page, query]);
 
-  const updateCategory = e => {
+  const updateCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value !== '') {
       return setCategory(`template: ${e.target.value}`);
     }
@@ -88,10 +87,7 @@ export const Explore = () => {
       </Header>
 
       {templates ? (
-        <Scrollable
-          keepCalling={page <= allPages}
-          onBottomReached={() => setPage(p => p + 1)}
-        >
+        <Scrollable>
           {templates.length ? (
             <>
               <SubHeader>
@@ -105,7 +101,6 @@ export const Explore = () => {
               <Grid>
                 {templates.map(sandbox => (
                   <SandboxCard
-                    onFollow={id => makeTemplatesMutation([id])}
                     key={sandbox.objectID}
                     template={sandbox}
                   />

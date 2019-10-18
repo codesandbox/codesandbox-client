@@ -1,0 +1,68 @@
+fragment Sandbox on Sandbox {
+	id
+	alias
+	title
+	description
+	insertedAt
+	updatedAt
+	privacy
+	screenshotUrl
+	screenshotOutdated
+	source {
+		template
+	}
+	customTemplate {
+		id
+	}
+	forkedTemplate {
+		id
+		color
+	}
+	collection {
+		path
+		teamId
+	}
+}
+
+fragment Template on Template {
+	color
+	iconUrl
+	id
+	published
+	sandbox {
+		...Sandbox
+	}
+}
+
+query ListFollowedTemplates {
+  me {
+    teams {
+      id
+      name
+			followedTemplates {
+				...Template
+			}
+    }
+		followedTemplates {
+			...Template
+		}
+  }
+}
+
+
+query ListTemplates($teamId: ID, $showAll: Boolean) {
+  me {
+    templates(teamId: $teamId, showAll: $showAll) {
+      color
+      iconUrl
+      id
+      published
+      sandbox {
+        ...Sandbox
+        author {
+          username
+        }
+      }
+    }
+  }
+}
