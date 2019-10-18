@@ -16,7 +16,7 @@ export const LIST_FOLLOWED_TEMPLATES = gql`
       teams {
         id
         name
-        followedTemplates {
+        bookmarkedTemplates {
           color
           iconUrl
           id
@@ -26,7 +26,7 @@ export const LIST_FOLLOWED_TEMPLATES = gql`
           }
         }
       }
-      followedTemplates {
+      bookmarkedTemplates {
         color
         iconUrl
         id

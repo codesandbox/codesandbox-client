@@ -1,7 +1,7 @@
 fragment templateFields on Template {
   id
-  following {
-    isFollowing
+  bookmarked {
+    isBookmarked
     entity {
       __typename
       ... on User {
@@ -16,14 +16,14 @@ fragment templateFields on Template {
   }
 }
 
-mutation followTemplate($template: ID!, $team: ID) {
-  template: followTemplate(templateId: $template, teamId: $team) {
+mutation bookmarkTemplate($template: ID!, $team: ID) {
+  template: bookmarkTemplate(templateId: $template, teamId: $team) {
     ...templateFields
   }
 }
 
-mutation unfollowTemplate($template: ID!, $team: ID) {
-  template: unfollowTemplate(templateId: $template, teamId: $team) {
+mutation unbookmarkTemplate($template: ID!, $team: ID) {
+  template: unbookmarkTemplate(templateId: $template, teamId: $team) {
     ...templateFields
   }
 }

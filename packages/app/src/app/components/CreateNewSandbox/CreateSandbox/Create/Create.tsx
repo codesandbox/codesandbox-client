@@ -17,7 +17,7 @@ interface ListTemplatesResponse {
 
 export const Create = () => {
   const { data: mine = {}, error: mineError } = useQuery<ListTemplatesResponse>(
-    ListTemplates ,
+    ListTemplates,
     {
       variables: { showAll: true },
       fetchPolicy: 'cache-and-network',
@@ -34,7 +34,7 @@ export const Create = () => {
     (mine.me &&
       mine.me.templates &&
       followed.me &&
-      followed.me.followedTemplates) ||
+      followed.me.bookmarkedTemplates) ||
     followedError ||
     mineError;
 
@@ -60,12 +60,12 @@ export const Create = () => {
             </>
           ) : null}
           {followed.me &&
-          followed.me.followedTemplates &&
-          followed.me.followedTemplates.length ? (
+          followed.me.bookmarkedTemplates &&
+          followed.me.bookmarkedTemplates.length ? (
             <>
               <SubHeader>Templates followed by me</SubHeader>
               <GridList>
-                {followed.me.followedTemplates.map((template, i) => (
+                {followed.me.bookmarkedTemplates.map((template, i) => (
                   <SandboxCard
                     followed
                     official={!template.sandbox}
@@ -79,13 +79,14 @@ export const Create = () => {
           {followed.me &&
             followed.me.teams &&
             followed.me.teams.map(team =>
-              team.followedTemplates.length ? (
+              team.bookmarkedTemplates.length ? (
                 <>
                   <SubHeader>Templates followed by {team.name} team</SubHeader>
                   <GridList>
-                    {team.followedTemplates.map(template => (
+                    {team.bookmarkedTemplates.map(template => (
                       <SandboxCard
                         followed
+                        team={team}
                         official={!template.sandbox}
                         key={template.niceName}
                         template={template}

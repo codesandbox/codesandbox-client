@@ -18,7 +18,7 @@ import {
   ActionButton,
 } from './elements';
 // @ts-ignore
-import { followTemplate, unfollowTemplate } from './mutations.gql';
+import { bookmarkTemplate, unbookmarkTemplate } from './mutations.gql';
 // @ts-ignore
 import { getSandboxInfo } from './queries.gql';
 
@@ -27,14 +27,16 @@ interface ISandboxCardProps {
   official?: boolean;
   followed?: boolean;
   mine?: boolean;
+  team?: any;
 }
 
 export const SandboxCard: React.FC<ISandboxCardProps> = forwardRef(
-  ({ template, official, followed, mine }, ref) => {
+  ({ template, official, followed: bookmarked, mine, team }, ref) => {
     // @ts-ignore
     const { source, id: sandboxID, author = {} } = template.sandbox || {};
     let UserIcon: React.FunctionComponent;
     let OfficialIcon: React.FunctionComponent;
+    const ID = official ? template.shortid : sandboxID;
 
     if (getContrastYIQ(template.color) >= 128) {
       UserIcon =
@@ -70,42 +72,43 @@ export const SandboxCard: React.FC<ISandboxCardProps> = forwardRef(
       return actions.modalClosed();
     };
 
-    const config = (sandbox: string) => ({
+    const config = () => ({
       variables: {
-        template: customTemplate.id,
-        ...(entity ? { team: entities[entity].id } : {}),
+        template: ID,
+        ...(team ? { team: team.id } : {}),
       },
       optimisticResponse: {
         __typename: 'Mutation',
         template: {
           __typename: 'Template',
-          id: customTemplate.id,
-          following,
+          id: ID,
+          bookmarked,
         },
       },
-      update: (proxy: any, { data: { template } }) => {
-        const result = proxy.readQuery({
-          query: getSandboxInfo,
-          variables: { id: sandboxId },
-        });
-        proxy.writeQuery({
-          query: getSandboxInfo,
-          variables: { id: sandboxId },
-          data: {
-            sandbox: {
-              ...result.sandbox,
-              customTemplate: {
-                ...result.sandbox.customTemplate,
-                following: template.following,
-              },
-            },
-          },
-        });
+      update: (proxy: any, { data }) => {
+        console.log(data);
+        // const result = proxy.readQuery({
+        //   query: getSandboxInfo,
+        //   variables: { id: sandboxId },
+        // });
+        // proxy.writeQuery({
+        //   query: getSandboxInfo,
+        //   variables: { id: sandboxId },
+        //   data: {
+        //     sandbox: {
+        //       ...result.sandbox,
+        //       customTemplate: {
+        //         ...result.sandbox.customTemplate,
+        //         following: template.following,
+        //       },
+        //     },
+        //   },
+        // });
       },
     });
 
-    const [follow] = useMutation<any, any>(followTemplate, config());
-    const [unfollow] = useMutation<any, any>(unfollowTemplate, config());
+    const [follow] = useMutation<any, any>(bookmarkTemplate, config());
+    const [unfollow] = useMutation<any, any>(unbookmarkTemplate, config());
 
     return (
       <>
@@ -136,16 +139,12 @@ export const SandboxCard: React.FC<ISandboxCardProps> = forwardRef(
                   Open
                 </ActionButton>
               ) : null}
-              {followed ? (
-                <ActionButton onClick={() => onUnfollow(sandboxID)}>
-                  Remove
-                </ActionButton>
+              {bookmarked ? (
+                <ActionButton onClick={() => unfollow()}>Remove</ActionButton>
               ) : null}
 
-              {!followed && !mine ? (
-                <ActionButton onClick={() => onFollow(sandboxID)}>
-                  + Bookmark
-                </ActionButton>
+              {!bookmarked && !mine ? (
+                <ActionButton onClick={() => follow()}>+ Bookmark</ActionButton>
               ) : null}
             </Row>
             <Row>
