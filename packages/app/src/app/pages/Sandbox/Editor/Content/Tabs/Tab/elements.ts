@@ -15,7 +15,7 @@ export const Container = styled.div<{
   font-size: 0.875rem;
   cursor: pointer;
 
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid ${props => props.theme['tab.border']};
 
   padding: 0 1rem;
   padding-left: 0.75rem;
@@ -42,7 +42,7 @@ export const Container = styled.div<{
     css`
       background-color: ${props.theme['tab.activeBackground'] ||
         props.theme.background2};
-      border-color: ${props.theme.secondary};
+      border-color: ${props.theme['tab.activeBorder']};
       color: ${props.theme['tab.activeForeground'] ||
         props.theme['editor.foreground'] ||
         'white'};
