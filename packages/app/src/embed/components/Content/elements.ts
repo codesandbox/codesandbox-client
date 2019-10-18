@@ -4,7 +4,8 @@ export const Container = styled.div`
   display: flex;
   position: relative;
   background-color: ${props => props.theme['editor.background']};
-  height: calc(100% - 2.5rem);
+  /* compatibility mode for the redesign, the header is smaller now*/
+  height: calc(100% - 32px);
 `;
 
 export const Tabs = styled.div`
