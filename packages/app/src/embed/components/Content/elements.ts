@@ -13,6 +13,8 @@ export const Tabs = styled.div`
   height: 35px;
   min-height: 35px;
   background-color: ${props => props.theme['tab.inactiveBackground']};
+  /* shadow instead of border to align with the border of the child tab */
+  box-shadow: inset 0px -1px 0 ${props => props.theme['sideBar.border']};
   overflow-x: auto;
   font-size: 0.875rem;
 
