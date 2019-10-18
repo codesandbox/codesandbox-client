@@ -2,7 +2,13 @@
 import * as React from 'react';
 import type { Sandbox } from '@codesandbox/common/lib/types';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+ embed-filetree
 import { embedUrl } from '@codesandbox/common/lib/utils/url-generator';
+
+import track from '@codesandbox/common/lib/utils/analytics';
+
+
+
 
 import {
   Button,
@@ -30,6 +36,7 @@ type Props = {
 };
 
 const copyToClipboard = str => {
+  track('Embed - Copy URL');
   const el = document.createElement('textarea');
   el.value = str;
   el.setAttribute('readonly', '');

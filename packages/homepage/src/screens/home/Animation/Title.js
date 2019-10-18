@@ -109,11 +109,11 @@ const isBot = () =>
 
 export default ({ template }) => (
   <Container>
-    <Title title="CodeSandbox">
+    <Title title="CodeSandbox" aria-label="CodeSandbox">
       <Secondary style={{ color: template.color() }}>Code</Secondary>
       <Primary>Sandbox</Primary>
     </Title>
-    <SubTitle title="The online code editor tailored for web applications">
+    <SubTitle aria-label="The online code editor tailored for web applications">
       {typeof window === 'undefined' || isBot() ? (
         <span>The online code editor for web applications</span>
       ) : (
@@ -129,7 +129,7 @@ export default ({ template }) => (
     </SubTitle>
 
     <ResponsiveRollingText updateCheck={template.name}>
-      <Buttons>
+      <Buttons aria-hidden>
         <Button
           onClick={() => {
             track('Homepage - Open X Clicked', { template: template.niceName });

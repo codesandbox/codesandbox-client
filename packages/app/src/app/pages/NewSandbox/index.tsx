@@ -4,7 +4,7 @@ import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Navigation } from 'app/pages/common/Navigation';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 import history from 'app/utils/history';
 import { NewSandboxModal } from '../Dashboard/Content/CreateNewSandbox/NewSandboxModal';
 
@@ -12,7 +12,11 @@ const createSandbox = template => {
   history.push(sandboxUrl({ id: template.shortid }));
 };
 
-const NewSandbox = ({ signals: { sandboxPageMounted } }) => {
+export const NewSandbox: React.FC = () => {
+  const {
+    actions: { sandboxPageMounted },
+  } = useOvermind();
+
   useEffect(() => {
     sandboxPageMounted();
   }, [sandboxPageMounted]);
@@ -25,7 +29,6 @@ const NewSandbox = ({ signals: { sandboxPageMounted } }) => {
     >
       <Margin horizontal={1.5} style={{ height: '100%' }} vertical={1.5}>
         <Navigation title="New Sandbox" />
-
         <Margin top={5}>
           <Centered horizontal vertical>
             <Margin style={{ maxWidth: '100%', width: 900 }} top={2}>
@@ -37,5 +40,3 @@ const NewSandbox = ({ signals: { sandboxPageMounted } }) => {
     </MaxWidth>
   );
 };
-
-export default inject('signals')(hooksObserver(NewSandbox));

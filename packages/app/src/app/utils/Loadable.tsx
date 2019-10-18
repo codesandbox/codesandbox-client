@@ -1,14 +1,18 @@
 import React from 'react';
 import { Loading } from 'app/components/Loading';
 
-export default loader =>
+type Unpacked<T> = T extends Promise<infer U> ? U : T;
+
+const Loadable: <T extends Promise<{ default: React.ComponentType }>>(
+  loader: () => T
+) => Unpacked<T>['default'] = loader =>
   class extends React.Component {
     state = {
       LoadedComponent: null,
       hasTimedOut: false,
     };
 
-    timer;
+    timer: number;
 
     componentDidMount() {
       loader().then(module => {
@@ -16,7 +20,7 @@ export default loader =>
           LoadedComponent: module.default,
         });
       });
-      this.timer = setTimeout(
+      this.timer = window.setTimeout(
         () =>
           this.setState({
             hasTimedOut: true,
@@ -43,3 +47,5 @@ export default loader =>
       return null;
     }
   };
+
+export default Loadable;

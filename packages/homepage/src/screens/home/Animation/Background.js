@@ -48,6 +48,7 @@ export default class Background extends React.PureComponent {
 
     return (
       <Container
+        aria-hidden
         style={{
           backgroundColor:
             this.colors[template.name] || template.color.clearer(0.97)(),

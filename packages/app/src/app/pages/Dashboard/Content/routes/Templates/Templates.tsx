@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet';
 import { sortBy } from 'lodash-es';
 import { useQuery } from '@apollo/react-hooks';
 import track from '@codesandbox/common/lib/utils/analytics';

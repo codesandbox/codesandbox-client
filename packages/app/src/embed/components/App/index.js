@@ -5,6 +5,7 @@ import { camelizeKeys } from 'humps';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { Module, Sandbox } from '@codesandbox/common/lib/types';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import {
   findCurrentModule,
@@ -19,7 +20,7 @@ import EditorLink from '../EditorLink';
 import { Container, Fullscreen, Moving } from './elements';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently
-// that makes it think we have core-js/es6/map available in embed, but we don't.
+// that makes it think we havecore-js/es6/map available in embed, but we don't.
 // So we explicitly make sure that we have `core-js/es6/map` available by declaring
 // new Map.
 new Map(); // eslint-disable-line
@@ -246,6 +247,7 @@ export default class App extends React.PureComponent<
 
   toggleLike = () => {
     const jwt = this.jwt();
+    track('Embed - Toggle Like');
 
     if (this.state.sandbox.userLiked && jwt) {
       this.setState(s => ({
