@@ -38,7 +38,6 @@ export const Container = styled.div`
 `;
 
 export const MenuIcon = styled(MenuIconSVG)`
-  font-size: 2rem;
   color: rgba(255, 255, 255, 0.7);
   margin-right: 1rem;
   cursor: pointer;
@@ -87,6 +86,10 @@ export const Title = styled.div`
 
   /* compatibility mode for the redesign */
   font-size: 13px;
+
+  @media (min-width: ${SIDEBAR_SHOW_SCREEN_SIZE}px) {
+    display: none;
+  }
 
   @media (max-width: 450px) {
     display: none;
