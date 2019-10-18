@@ -80,7 +80,7 @@ function Header({
           <LinkIcon />
         </Button>
 
-        {(true || toggleLike) && (
+        {toggleLike && (
           <Button onClick={toggleLike}>
             <HeartIcon liked={liked} />
           </Button>
