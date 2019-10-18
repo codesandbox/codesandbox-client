@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 
 import {
   Title,
@@ -11,17 +11,24 @@ import {
 } from '../../elements';
 import VSCodePlaceholder from '../../VSCodePlaceholder';
 
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-const isFF = navigator.userAgent.toLowerCase().includes('firefox');
+const isSafari: boolean = /^((?!chrome|android).)*safari/i.test(
+  navigator.userAgent
+);
+const isFF: boolean = navigator.userAgent.toLowerCase().includes('firefox');
 
-function EditorSettingsComponent({ store, signals }) {
-  const bindValue = name => ({
-    value: store.preferences.settings[name],
-    setValue: value =>
-      signals.preferences.settingChanged({
-        name,
-        value,
-      }),
+export const EditorSettings: React.FC = () => {
+  const {
+    state: {
+      preferences: { settings },
+    },
+    actions: {
+      preferences: { settingChanged },
+    },
+  } = useOvermind();
+
+  const bindValue = (name: string) => ({
+    value: settings[name],
+    setValue: (value: any) => settingChanged({ name, value }),
   });
 
   return (
@@ -97,8 +104,4 @@ function EditorSettingsComponent({ store, signals }) {
       </SubContainer>
     </div>
   );
-}
-
-export const EditorSettings = inject('store', 'signals')(
-  observer(EditorSettingsComponent)
-);
+};
