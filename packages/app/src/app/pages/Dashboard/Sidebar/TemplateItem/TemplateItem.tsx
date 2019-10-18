@@ -1,30 +1,26 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
-
 import { withRouter } from 'react-router-dom';
-import { inject, observer } from 'app/componentConnectors';
 // @ts-ignore
 import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
-
 import { Item } from '../Item';
 import { MAKE_TEMPLATE_DROP_KEY } from '../../Content/SandboxCard';
 
-interface Props {
+interface ITemplateItemProps {
   currentPath: string;
   teamId?: string;
-
   canDrop?: boolean;
   isOver?: boolean;
   connectDropTarget?: any;
 }
 
-const TemplateItemComponent = ({
+const TemplateItemComponent: React.FC<ITemplateItemProps> = ({
   currentPath,
   isOver,
   canDrop,
   connectDropTarget,
   teamId,
-}: Props) => {
+}: ITemplateItemProps) => {
   const url = teamId
     ? `/dashboard/teams/${teamId}/templates`
     : `/dashboard/templates`;
@@ -76,8 +72,6 @@ export function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export const TemplateItem = inject('store', 'signals')(
-  DropTarget(['SANDBOX'], entryTarget, collectTarget)(
-    withRouter(observer(TemplateItemComponent))
-  )
+export const TemplateItem = DropTarget(['SANDBOX'], entryTarget, collectTarget)(
+  withRouter(TemplateItemComponent)
 );

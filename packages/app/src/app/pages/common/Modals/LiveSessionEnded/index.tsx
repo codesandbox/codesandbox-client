@@ -4,24 +4,28 @@ import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 import { Explanation, Heading } from '../elements';
 import { Container } from './elements';
-
 export const LiveModeEnded: FunctionComponent = () => {
   const {
-    state: { editor, currentModalMessage },
+    state: {
+      editor: {
+        currentSandbox: { owned },
+      },
+      currentModalMessage,
+    },
     actions: {
       modalClosed,
       editor: { forkSandboxClicked },
     },
   } = useOvermind();
 
-  const suggestion = editor.currentSandbox.owned
+  const suggestion = owned
     ? 'you can continue working on the current sandbox.'
     : 'you can continue working by forking the sandbox or by creating a new sandbox.';
 
   return (
     <Container>
       <Heading>The live session has ended</Heading>
-      <Explanation css={{ marginBottom: '1rem' }}>
+      <Explanation style={{ marginBottom: '1rem' }}>
         {currentModalMessage || 'The session has ended due to inactivity'},{' '}
         {suggestion}
       </Explanation>
@@ -31,7 +35,7 @@ export const LiveModeEnded: FunctionComponent = () => {
           Create Sandbox
         </Button>
 
-        {editor.currentSandbox.owned ? (
+        {owned ? (
           <Button
             small
             onClick={() => {
