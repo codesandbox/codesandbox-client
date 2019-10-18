@@ -24,6 +24,13 @@ export const Tabs = styled.div`
   &::-webkit-scrollbar {
     height: 2px; // Safari and Chrome
   }
+
+  /* override children, bad but vscode doesnt support
+     tab.hoverForeground :shrug:
+  */
+  > div:hover > div {
+    color: white !important;
+  }
 `;
 
 export const Split = styled.div<{
