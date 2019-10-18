@@ -23,6 +23,13 @@ export const IconContainer = styled.span(
     height: 16,
     justifyContent: 'center',
     alignItems: 'center',
+
+    // thanks I hate it
+    // had to add !important to because EntryIcon which has
+    // all the icons has inline styles :(
+    '> div': {
+      display: 'flex !important',
+    },
   })
 );
 
