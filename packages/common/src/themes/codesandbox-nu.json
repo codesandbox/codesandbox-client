@@ -62,8 +62,8 @@
     "editorGroupHeader.tabsBackground": "#151515",
     "editorGroupHeader.tabsBorder": null,
 
-    "editor.lineHighlightBackground": "#333",
-    "editor.lineHighlightBorder": "#333",
+    "editor.lineHighlightBackground": "#242424",
+    "editor.lineHighlightBorder": "#242424",
     "editor.rangeHighlightBackground": "#222",
 
     "editor.selectionBackground": "#242424",
