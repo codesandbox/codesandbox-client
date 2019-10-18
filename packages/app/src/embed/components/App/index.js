@@ -15,6 +15,7 @@ import { SubTitle } from 'app/components/SubTitle';
 import Header from '../Header';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
+import EditorLink from '../EditorLink';
 import { Container, Fullscreen, Moving } from './elements';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently
@@ -401,11 +402,14 @@ export default class App extends React.PureComponent<
     return (
       <Fullscreen sidebarOpen={this.state.sidebarOpen}>
         {sandbox && (
-          <Sidebar
-            setCurrentModule={this.setCurrentModule}
-            currentModule={this.getCurrentModuleFromPath(sandbox).id}
-            sandbox={sandbox}
-          />
+          <>
+            <Sidebar
+              setCurrentModule={this.setCurrentModule}
+              currentModule={this.getCurrentModuleFromPath(sandbox).id}
+              sandbox={sandbox}
+            />
+            <EditorLink sandbox={sandbox} />
+          </>
         )}
         <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
       </Fullscreen>

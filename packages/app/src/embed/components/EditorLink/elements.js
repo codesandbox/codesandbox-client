@@ -1,24 +1,26 @@
-// @flow
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
+import css from '@styled-system/css';
 
-export const Text = styled.span`
-  color: white;
-  ${({ small }) =>
-    small &&
-    css`
-      @media (max-width: 620px) {
-        display: none;
-      }
-    `};
-`;
+export const Button = styled.a(
+  css({
+    position: 'absolute',
+    bottom: 32 + 16, // dev console + 16 for margin
+    right: 16,
+    zIndex: 99,
 
-export const EditText = styled.a`
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  color: white;
+    fontSize: 3,
+    lineHeight: '32px',
+    fontWeight: 'medium',
+    border: '1px solid',
+    borderColor: 'grays.500',
+    color: 'white',
+    backgroundColor: 'grays.700',
+    borderRadius: 4,
+    paddingX: 3,
+    textDecoration: 'none',
 
-  svg {
-    margin-left: 0.5rem;
-  }
-`;
+    ':hover': {
+      backgroundColor: 'grays.500',
+    },
+  })
+);
