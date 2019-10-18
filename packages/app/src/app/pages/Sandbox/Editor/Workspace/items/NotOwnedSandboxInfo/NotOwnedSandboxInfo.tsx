@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
 import { Dependencies } from '../../Dependencies';
-import Files from '../../Files';
+import { Files } from '../../Files';
 import { Project } from '../../Project';
 import { WorkspaceItem } from '../../WorkspaceItem';
 
