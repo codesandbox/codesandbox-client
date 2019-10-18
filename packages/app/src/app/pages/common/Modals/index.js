@@ -13,7 +13,7 @@ import DeleteDeploymentModal from './DeleteDeploymentModal';
 import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
 import DeploymentModal from './DeploymentModal';
-import EmptyTrash from './EmptyTrash';
+import { EmptyTrash } from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
