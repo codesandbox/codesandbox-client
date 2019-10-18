@@ -18,6 +18,10 @@ const colors = {
     300: '#6CC7F6', // danny's teal
     600: '#0971f1', // danny's blue
   },
+  reds: {
+    300: '#FF453A', // heart
+    500: '#E1270E', // danny's red
+  },
 };
 
 const theme = {
@@ -41,6 +45,9 @@ const theme = {
     extrabold: 800,
     black: 900,
   },
+
+  // transition speeds in ms
+  speed: [0, '75ms', '100ms', '150ms', '200ms', '300ms', '500ms'],
 
   shadows: {
     // this part is ugly, this can be improved.
