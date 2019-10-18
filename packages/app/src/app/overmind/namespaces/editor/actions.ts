@@ -121,6 +121,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   state.editor.isLoading = false;
+
+  effects.chameleon.loadTour(state.user && state.user.id);
 });
 
 export const contentMounted: Action = ({ state, effects }) => {
@@ -443,8 +445,9 @@ export const discardModuleChanges: Action<{
     return;
   }
 
+  const code = module.savedCode === null ? module.code || '' : module.savedCode;
   actions.editor.codeChanged({
-    code: module.savedCode || module.code || '',
+    code,
     moduleShortid,
   });
 

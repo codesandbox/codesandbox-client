@@ -1,11 +1,14 @@
 import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 
 import { Button } from '@codesandbox/common/lib/components/Button';
 
 import { ButtonContainer } from './elements';
 
-function AddVersion({ signals, children }) {
+export const AddVersion: React.FC = ({ children }) => {
+  const {
+    actions: { modalOpened },
+  } = useOvermind();
   return (
     <div style={{ position: 'relative' }}>
       <ButtonContainer>
@@ -13,7 +16,7 @@ function AddVersion({ signals, children }) {
           block
           small
           onClick={() =>
-            signals.modalOpened({
+            modalOpened({
               modal: 'searchDependencies',
             })
           }
@@ -23,6 +26,4 @@ function AddVersion({ signals, children }) {
       </ButtonContainer>
     </div>
   );
-}
-
-export default inject('signals')(hooksObserver(AddVersion));
+};

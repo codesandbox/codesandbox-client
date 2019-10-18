@@ -25,3 +25,4 @@ export { default as codesandboxApi } from './codesandboxApi';
 export { default as themes } from './themes';
 export { default as executor } from './executor';
 export { default as stripe } from './stripe';
+export { default as chameleon } from './chameleon';

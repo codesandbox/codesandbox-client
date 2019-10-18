@@ -4,7 +4,7 @@ import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import { Module, Configuration } from '@codesandbox/common/lib/types';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 
-import { inject, observer } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 
 import BookIcon from 'react-icons/lib/md/library-books';
 import UIIcon from 'react-icons/lib/md/dvr';
@@ -21,12 +21,13 @@ import {
 } from './elements';
 
 type FileConfigProps = {
-  path: string,
+  path: string;
   info: {
-    module?: Module,
-    config: Configuration,
-  },
-  createModule: (title: string) => void,
+    module?: Module;
+    config: Configuration;
+  };
+  createModule?: (title: string) => void;
+  openModule?: (id: string) => void;
 };
 
 const FileConfig = ({
@@ -82,8 +83,13 @@ const FileConfig = ({
   );
 };
 
-const ConfigurationFiles = ({ store, signals }) => {
-  const sandbox = store.editor.currentSandbox;
+const ConfigurationFiles = () => {
+  const {
+    state,
+    actions: { files, editor },
+  } = useOvermind();
+
+  const sandbox = state.editor.currentSandbox;
   const { configurationFiles } = getDefinition(sandbox.template);
 
   const createdPaths = {};
@@ -123,7 +129,7 @@ const ConfigurationFiles = ({ store, signals }) => {
             <FileConfig
               key={path}
               openModule={id => {
-                signals.editor.moduleSelected({ id });
+                editor.moduleSelected({ id });
               }}
               path={path}
               info={info}
@@ -140,7 +146,7 @@ const ConfigurationFiles = ({ store, signals }) => {
             <FileConfig
               key={path}
               createModule={title => {
-                signals.files.moduleCreated({ title });
+                files.moduleCreated({ title, directoryShortid: null });
               }}
               path={path}
               info={info}
@@ -152,4 +158,4 @@ const ConfigurationFiles = ({ store, signals }) => {
   );
 };
 
-export default inject('signals', 'store')(observer(ConfigurationFiles));
+export default ConfigurationFiles;

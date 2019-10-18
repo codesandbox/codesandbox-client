@@ -6,10 +6,6 @@ export class ErrorBoundary extends Component<
   IErrorBoundaryProps,
   IErrorBoundaryState
 > {
-  static defaultProps = {
-    FallbackComponent: CodeSadbox,
-  };
-
   static getDerivedStateFromError(error: Error) {
     return { error };
   }
@@ -48,7 +44,7 @@ export class ErrorBoundary extends Component<
   }
 
   render() {
-    const { children, FallbackComponent } = this.props;
+    const { children, FallbackComponent = CodeSadbox } = this.props;
     const { error, info } = this.state;
 
     return error !== null ? (

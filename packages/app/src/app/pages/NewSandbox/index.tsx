@@ -12,7 +12,7 @@ const createSandbox = template => {
   history.push(sandboxUrl({ id: template.shortid }));
 };
 
-const NewSandbox: React.FC = () => {
+export const NewSandbox: React.FC = () => {
   const {
     actions: { sandboxPageMounted },
   } = useOvermind();
@@ -40,5 +40,3 @@ const NewSandbox: React.FC = () => {
     </MaxWidth>
   );
 };
-
-export default NewSandbox;
