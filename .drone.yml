@@ -48,7 +48,7 @@ steps:
         - pull_request
 
   - name: create github deployment
-    image: codesandbox-github-deployment:1
+    image: lbogdan/github-deployment-plugin:1
     settings:
       domain: *domain
       github_token:
@@ -117,6 +117,6 @@ volumes:
       path: /root/docker/deployments
 ---
 kind: signature
-hmac: 6efec100a920adf22e7c8a0b594d0a82a03f6588297246f96f20c6f05599d408
+hmac: 2ad4de4e3c9ecba2f0e8b2dd67bc7795278ea5f0785b2cb3ddd40464ad17a0dd
 
 ...
