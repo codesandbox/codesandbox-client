@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 interface IConfirmLinkProps {
   enabled: boolean;
   message: string;
+  to: string;
 }
 
 export const ConfirmLink: React.FC<IConfirmLinkProps> = ({

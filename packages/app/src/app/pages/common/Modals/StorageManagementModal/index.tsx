@@ -1,6 +1,6 @@
 import React from 'react';
 import filesize from 'filesize';
-import { inject, observer } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 import {
   Container,
   Title,
@@ -13,22 +13,33 @@ import {
 } from './elements';
 import FilesList from './FilesList';
 
-// eslint-disable-next-line
-class StorageManagementModal extends React.Component {
-  render() {
-    const { store, signals } = this.props;
+export const StorageManagementModal: React.FC = () => {
+  const {
+    state: {
+      usedStorage,
+      maxStorage,
+      uploadedFiles
+    },
+    actions: {
+      files: {
+        deletedUploadedFile,
+        addedFileToSandbox,
 
-    const isLoading = store.uploadedFiles === null;
-    const isEmpty = !isLoading && store.uploadedFiles.length === 0;
+       }
+    }
+  } = useOvermind();
+
+    const isLoading = uploadedFiles === null;
+    const isEmpty = !isLoading && uploadedFiles.length === 0;
 
     return (
       <Container>
         <JustifiedArea>
           <Title>Storage Management</Title>
           <SubTitle>
-            Used {filesize(store.usedStorage)}
+            Used {filesize(usedStorage)}
             {' / '}
-            Total {filesize(store.maxStorage)}
+            Total {filesize(maxStorage)}
           </SubTitle>
         </JustifiedArea>
         <Description>
@@ -37,15 +48,15 @@ class StorageManagementModal extends React.Component {
         <Rule />
         {!isEmpty && !isLoading && (
           <FilesList
-            files={store.uploadedFiles}
-            deleteFile={signals.files.deletedUploadedFile}
+            files={uploadedFiles}
+            deleteFile={deletedUploadedFile}
             deleteFiles={files =>
-              files.map(id => signals.files.deletedUploadedFile({ id }))
+              files.map(id => deletedUploadedFile({ id }))
             }
             addFilesToSandbox={files =>
-              files.map(signals.files.addedFileToSandbox)
+              files.map(addedFileToSandbox)
             }
-            addFileToSandbox={signals.files.addedFileToSandbox}
+            addFileToSandbox={addedFileToSandbox}
           />
         )}
         {isEmpty && (
@@ -54,7 +65,4 @@ class StorageManagementModal extends React.Component {
         {isLoading && <LoadingAnimationContainer />}
       </Container>
     );
-  }
 }
-
-export default inject('store', 'signals')(observer(StorageManagementModal));

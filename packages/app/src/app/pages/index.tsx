@@ -13,7 +13,7 @@ import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
-import NewSandbox from './NewSandbox';
+import { NewSandbox } from './NewSandbox';
 import Dashboard from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
