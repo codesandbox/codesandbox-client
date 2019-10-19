@@ -69,9 +69,8 @@ export const withOwnedSandbox = <T>(
   continueAction: AsyncAction<T>,
   cancelAction: AsyncAction<T> = () => Promise.resolve()
 ): AsyncAction<T> => async (context, payload) => {
-  const { state, actions, effects } = context;
+  const { state, actions } = context;
 
-  const typedPayload = payload as any;
   if (!state.editor.currentSandbox.owned) {
     if (state.editor.isForkingSandbox) {
       return cancelAction(context, payload);
@@ -93,9 +92,6 @@ export const withOwnedSandbox = <T>(
     } else if (modalResponse === 'unfreeze') {
       state.editor.sessionFrozen = false;
     } else if (modalResponse === 'cancel') {
-      if (typedPayload.cbId) {
-        effects.vscode.callCallbackError(typedPayload.cbId);
-      }
       return cancelAction(context, payload);
     }
   }
