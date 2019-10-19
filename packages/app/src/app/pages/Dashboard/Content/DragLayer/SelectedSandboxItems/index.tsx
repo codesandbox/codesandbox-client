@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useOvermind } from 'app/overmind';
 
-import AnimatedSandboxItem from './AnimatedSandboxItem';
+import { AnimatedSandboxItem } from './AnimatedSandboxItem';
 
 interface ISelectedSandboxItemsProps {
   x: number;
