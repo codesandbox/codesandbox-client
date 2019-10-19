@@ -307,7 +307,9 @@ export type Sandbox = {
   git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
-  environmentVariables: EnvironmentVariable[] | null;
+  environmentVariables: {
+    [key: string]: string;
+  } | null;
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
