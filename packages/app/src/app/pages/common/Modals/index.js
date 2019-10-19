@@ -9,11 +9,11 @@ import React, { Component } from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import CommitModal from './CommitModal';
-import DeleteDeploymentModal from './DeleteDeploymentModal';
-import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
+import { DeleteDeploymentModal } from './DeleteDeploymentModal';
+import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
 import DeploymentModal from './DeploymentModal';
-import EmptyTrash from './EmptyTrash';
+import { EmptyTrash } from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
@@ -28,8 +28,7 @@ import PRModal from './PRModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import SelectSandboxModal from './SelectSandboxModal';
 import ShareModal from './ShareModal';
-// eslint-disable-next-line
-import SignInForTemplates from './SignInForTemplates/index.ts';
+import SignInForTemplates from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
 import UploadModal from './UploadModal';
