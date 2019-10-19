@@ -5,7 +5,7 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Badge from '@codesandbox/common/lib/utils/badges/Badge';
 import { Title } from '../elements';
 
-export const BadgesComponent: React.FunctionComponent = () => {
+export const BadgesComponent: FunctionComponent = () => {
   const {
     state: {
       user: {badges},
