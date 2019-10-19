@@ -121,6 +121,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   state.editor.isLoading = false;
+
+  effects.chameleon.loadTour(state.user && state.user.id);
 });
 
 export const contentMounted: Action = ({ state, effects }) => {
@@ -150,13 +152,18 @@ export const codeSaved: AsyncAction<{
   code: string;
   moduleShortid: string;
   cbID: string;
-}> = withOwnedSandbox(async ({ actions }, { code, moduleShortid, cbID }) => {
-  actions.editor.internal.saveCode({
-    code,
-    moduleShortid,
-    cbID,
-  });
-});
+}> = withOwnedSandbox(
+  async ({ actions }, { code, moduleShortid, cbID }) => {
+    actions.editor.internal.saveCode({
+      code,
+      moduleShortid,
+      cbID,
+    });
+  },
+  async ({ effects }, { cbID }) => {
+    effects.vscode.callCallbackError(cbID);
+  }
+);
 
 export const codeChanged: Action<{
   code: string;

@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
 import Loadable from 'app/utils/Loadable';
 
-import { Heading, Container } from '../elements';
+import { Container, Heading } from '../elements';
 
 const Feedback = Loadable(() =>
   import(/* webpackChunkName: 'feedback' */ './Feedback')
 );
 
-export const FeedbackModal: React.FC = () => {
+export const FeedbackModal: FunctionComponent = () => {
   const {
     state: {
-      user,
       editor: { currentId },
+      user,
     },
   } = useOvermind();
 

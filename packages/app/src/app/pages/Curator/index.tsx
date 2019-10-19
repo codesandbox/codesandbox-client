@@ -52,6 +52,7 @@ const Curator: React.FC = () => {
     },
     [fetchPopularSandboxes]
   );
+
   return (
     <MaxWidth>
       <Margin horizontal={1.5} vertical={1.5}>
