@@ -150,13 +150,18 @@ export const codeSaved: AsyncAction<{
   code: string;
   moduleShortid: string;
   cbID: string;
-}> = withOwnedSandbox(async ({ actions }, { code, moduleShortid, cbID }) => {
-  actions.editor.internal.saveCode({
-    code,
-    moduleShortid,
-    cbID,
-  });
-});
+}> = withOwnedSandbox(
+  async ({ actions }, { code, moduleShortid, cbID }) => {
+    actions.editor.internal.saveCode({
+      code,
+      moduleShortid,
+      cbID,
+    });
+  },
+  async ({ effects }, { cbID }) => {
+    effects.vscode.callCallbackError(cbID);
+  }
+);
 
 export const codeChanged: Action<{
   code: string;
