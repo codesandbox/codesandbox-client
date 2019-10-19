@@ -14,13 +14,14 @@ export const BadgesComponent: FunctionComponent = () => {
       preferences: {setBadgeVisibility},
     },
   } = useOvermind();
+  const badgesCount = badges.length;
 
   return (
     <div>
       <Title>Badges</Title>
       <strong>
-        You currently have {badges.badgesCount} badge
-        {badges.badgesCount === 1 ? '' : 's'}. You can click on the badges to toggle
+        You currently have {badgesCount} badge
+        {badgesCount === 1 ? '' : 's'}. You can click on the badges to toggle
         visibility.
       </strong>
       <Margin top={2}>
