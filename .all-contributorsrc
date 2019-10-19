@@ -1403,6 +1403,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "armujahid",
+      "name": "Abdul Rauf",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/3725386?v=4",
+      "profile": "https://armujahid.me",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
