@@ -5,7 +5,7 @@ import {
 } from '@codesandbox/common/lib/utils/config';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { History, Location } from 'history';
+import { RouteComponentProps } from 'react-router-dom';
 import qs from 'qs';
 import React, {
   FunctionComponent,
@@ -39,10 +39,7 @@ const createURL = state => `?${qs.stringify(state)}`;
 const searchStateToUrl = (location, searchState) =>
   searchState ? `${location.pathname}${createURL(searchState)}` : '';
 
-type Props = {
-  history: History;
-  location: Location;
-};
+type Props = RouteComponentProps;
 const Search: FunctionComponent<Props> = ({ history, location }) => {
   const {
     actions: { searchMounted },
