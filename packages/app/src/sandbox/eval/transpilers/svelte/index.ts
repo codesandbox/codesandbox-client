@@ -1,5 +1,7 @@
+/* eslint-disable import/default */
 // @ts-ignore
 import SvelteWorker from 'worker-loader?publicPath=/&name=svelte-transpiler.[hash:8].worker.js!./svelte-worker';
+/* eslint-enable import/default */
 
 import semver from 'semver';
 

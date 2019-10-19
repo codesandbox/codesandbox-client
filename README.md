@@ -236,6 +236,7 @@ Thanks goes to these wonderful people
   <tr>
     <td align="center"><a href="http://hetpatel33.github.io"><img src="https://avatars0.githubusercontent.com/u/13877514?v=4" width="100px;" alt="Het Patel"/><br /><sub><b>Het Patel</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=hetpatel33" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/milap1296"><img src="https://avatars2.githubusercontent.com/u/19545730?v=4" width="100px;" alt="milap1296"/><br /><sub><b>milap1296</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=milap1296" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Gobinath-Manokaran"><img src="https://avatars2.githubusercontent.com/u/6711914?v=4" width="100px;" alt="Gobinath-Manokaran"/><br /><sub><b>Gobinath-Manokaran</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=Gobinath-Manokaran" title="Code">💻</a></td>
   </tr>
 </table>
 

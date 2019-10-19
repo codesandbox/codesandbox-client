@@ -4,7 +4,7 @@ name: default
 
 steps:
   - name: restore node_modules cache
-    image: codesandbox-cache:1
+    image: lbogdan/codesandbox-cache-plugin:1
     settings:
       restore: true
     volumes:
@@ -15,7 +15,7 @@ steps:
         - pull_request
 
   - name: install packages
-    image: node:10.15.3-jessie
+    image: node:10.16.3-jessie
     volumes:
       - name: yarn-cache
         path: /usr/local/share/.cache/yarn/v4
@@ -26,7 +26,7 @@ steps:
         - pull_request
 
   - name: build
-    image: node:10.15.3-jessie
+    image: node:10.16.3-jessie
     commands:
       - export STAGING_BRANCH=pr$DRONE_PULL_REQUEST
       - yarn build
@@ -35,7 +35,7 @@ steps:
         - pull_request
 
   - name: deploy
-    image: codesandbox-deploy:1
+    image: lbogdan/codesandbox-deploy-plugin:1
     settings:
       domain: &domain build.csb.dev
     volumes:
@@ -48,7 +48,7 @@ steps:
         - pull_request
 
   - name: create github deployment
-    image: codesandbox-github-deployment:1
+    image: lbogdan/github-deployment-plugin:1
     settings:
       domain: *domain
       github_token:
@@ -76,8 +76,23 @@ steps:
         - success
         - failure
 
+  - name: github comment
+    image: lbogdan/github-comment-plugin:1
+    settings:
+      domain: *domain
+      github_token:
+        from_secret: github_token
+      template: |
+        Build for latest commit https://github.com/{{owner}}/{{repo}}/pull/{{pr}}/commits/{{commitSha}} {{#success}}is at https://pr{{pr}}.{{buildDomain}}/s/new{{/success}}{{^success}}failed{{/success}}.
+    when:
+      event:
+        - pull_request
+      status:
+        - success
+        - failure
+
   - name: rebuild node_modules cache
-    image: codesandbox-cache:1
+    image: lbogdan/codesandbox-cache-plugin:1
     settings:
       rebuild: true
     volumes:
@@ -102,6 +117,6 @@ volumes:
       path: /root/docker/deployments
 ---
 kind: signature
-hmac: 4d9c06dbed6f93871c3a0bb5b80b35e353d8a5254d84ba07c0fb14e4f6ea9ecd
+hmac: c3f983c3f9243b3da5fd33f2d22435338c96486e27d5fb569455c05e55353a51
 
 ...

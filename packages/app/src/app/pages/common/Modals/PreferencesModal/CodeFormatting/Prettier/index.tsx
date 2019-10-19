@@ -1,5 +1,5 @@
-import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
+import { useOvermind } from 'app/overmind';
 
 import {
   SubContainer,
@@ -9,16 +9,28 @@ import {
   Rule,
 } from '../../elements';
 
-function PrettierComponent({ store, signals }) {
+const PrettierComponent: FunctionComponent = () => {
+  const {
+    state: {
+      preferences: {
+        settings: { prettierConfig },
+      },
+    },
+    actions: {
+      preferences: { settingChanged },
+    },
+  } = useOvermind();
+
   const bindValue = name => ({
-    value: store.preferences.settings.prettierConfig[name],
+    value: prettierConfig[name],
     setValue: value =>
-      signals.preferences.settingChanged({
+      settingChanged({
         name: `prettierConfig.${name}`,
         value,
       }),
   });
 
+  const { fluid } = prettierConfig;
   return (
     <SubContainer>
       <PreferenceContainer>
@@ -45,7 +57,7 @@ function PrettierComponent({ store, signals }) {
         <Rule />
         <PaddedPreference
           style={{
-            opacity: store.preferences.settings.prettierConfig.fluid ? 0.5 : 1,
+            opacity: fluid ? 0.5 : 1,
           }}
           title="Print width"
           type="number"
@@ -53,7 +65,7 @@ function PrettierComponent({ store, signals }) {
         />
         <SubDescription
           style={{
-            opacity: store.preferences.settings.prettierConfig.fluid ? 0.5 : 1,
+            opacity: fluid ? 0.5 : 1,
           }}
         >
           Specify the line length that the printer will wrap on.
@@ -143,6 +155,6 @@ function PrettierComponent({ store, signals }) {
       </PreferenceContainer>
     </SubContainer>
   );
-}
+};
 
-export const Prettier = inject('store', 'signals')(observer(PrettierComponent));
+export const Prettier = PrettierComponent;

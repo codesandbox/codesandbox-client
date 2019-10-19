@@ -242,7 +242,7 @@ export const setModuleCode: Action<{
     module.shortid
   );
 
-  if (!module.savedCode) {
+  if (module.savedCode === null) {
     module.savedCode = module.code;
   }
 
