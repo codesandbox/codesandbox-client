@@ -234,9 +234,9 @@ export const deleteTemplate: AsyncAction = async ({
   }
 };
 
-export const editTemplate: AsyncAction<{ template: CustomTemplate }> = async (
+export const editTemplate: AsyncAction<CustomTemplate> = async (
   { state, actions, effects },
-  { template }
+  template
 ) => {
   effects.analytics.track('Template - Edited', { source: 'editor' });
 

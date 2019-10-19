@@ -129,9 +129,10 @@ export type CurrentUser = {
 
 export type CustomTemplate = {
   color?: string;
-  title: string;
-  id: string;
   iconUrl?: string;
+  id: string;
+  published?: boolean;
+  title: string;
   url: string | null;
 };
 
