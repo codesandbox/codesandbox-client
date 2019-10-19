@@ -12,7 +12,7 @@ import 'react-day-picker/lib/style.css';
 import { Container, Buttons, Heading, PickerWrapper } from './elements';
 import SandboxCard from './SandboxCard';
 
-export const Curator: React.FC = () => {
+const Curator: React.FC = () => {
   const {
     state: {
       explore: { popularSandboxes },
@@ -132,3 +132,5 @@ export const Curator: React.FC = () => {
     </MaxWidth>
   );
 };
+
+export default Curator;
