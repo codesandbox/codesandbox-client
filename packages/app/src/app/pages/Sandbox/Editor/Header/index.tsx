@@ -7,7 +7,6 @@ import {
   dashboardUrl,
   patronUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { hooksObserver, inject } from 'app/componentConnectors';
 import { LikeHeart } from 'app/pages/common/LikeHeart';
 import { SignInButton } from 'app/pages/common/SignInButton';
 import { UserMenu } from 'app/pages/common/UserMenu';
@@ -19,6 +18,7 @@ import Fork from 'react-icons/lib/go/repo-forked';
 import SaveIcon from 'react-icons/lib/md/save';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
+import {useOvermind} from "app/overmind";
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
 
 import { Action } from './Buttons/Action';
@@ -35,42 +35,42 @@ import { Logo } from './Logo';
 import { MenuBar } from './MenuBar';
 import UpdateFound from './UpdateFound';
 
-type ButtonProps = {
+interface IButtonProps {
   style: React.CSSProperties;
   secondary?: boolean;
 };
 
-type ForkButtonProps = ButtonProps & {
+interface ILikeButtonProps extends IButtonProps{
+  likeCount: number;
+}
+interface IForkButtonProps extends IButtonProps {
   isForking: boolean;
 };
 
-const LikeButton = inject('store')(
-  hooksObserver(
-    ({
-      style,
-      likeCount,
-      store: { editor },
-    }: ButtonProps & { likeCount: string; store: any }) => (
-      <LikeHeart
-        colorless
-        style={style}
-        text={likeCount}
-        sandbox={editor.currentSandbox}
-        disableTooltip
-        highlightHover
-      />
-    )
+const LikeButton : React.FC<ILikeButtonProps> = ({ style, likeCount }) => {
+  const {
+    state : {
+      editor
+    }
+  } = useOvermind();
+  return (
+    <LikeHeart
+      colorless
+      style={style}
+      text={likeCount.toString()}
+      sandbox={editor.currentSandbox}
+      disableTooltip
+      highlightHover
+    />
   )
-);
-
-const ForkButton = inject('signals')(
-  hooksObserver(
-    ({
-      secondary,
-      isForking,
-      style,
-      signals: { editor },
-    }: ForkButtonProps & { signals: any }) => (
+}
+const ForkButton : React.FC<IForkButtonProps> = ({ secondary, style, isForking } ) => {
+  const {
+    actions: {
+      editor
+    }
+  } = useOvermind();
+  return (
       <ProgressButton
         onClick={editor.forkSandboxClicked}
         style={style}
@@ -84,20 +84,19 @@ const ForkButton = inject('signals')(
         </>
       </ProgressButton>
     )
-  )
-);
+}
 
-const PickButton = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      secondary,
-      style,
-      store: { editor },
-      signals: { explore },
-    }: ButtonProps & { store: any; signals: any }) => {
-      const { id, title, description } = editor.currentSandbox;
-
-      return (
+const PickButton : React.FC<IButtonProps> = ({ style, secondary }) => {
+  const {
+    state: {
+      editor
+    },
+    actions: {
+      explore
+    }
+  } = useOvermind();
+  const { id, title, description } = editor.currentSandbox;
+  return (
         <Button
           onClick={() =>
             explore.pickSandboxModal({
@@ -115,18 +114,15 @@ const PickButton = inject('store', 'signals')(
           Pick
         </Button>
       );
+}
+const ShareButton : React.FC<IButtonProps> = ({ secondary, style}) => {
+  const {
+    actions:{
+      modalOpened
     }
-  )
-);
-
-const ShareButton = inject('signals')(
-  hooksObserver(
-    ({
-      secondary,
-      style,
-      signals: { modalOpened },
-    }: ButtonProps & { signals: any }) => (
-      <Button
+  } = useOvermind();
+  return (
+    <Button
         onClick={() => modalOpened({ modal: 'share' })}
         secondary={secondary}
         style={style}
@@ -138,23 +134,34 @@ const ShareButton = inject('signals')(
         </>
       </Button>
     )
-  )
-);
+}
 
-interface Props {
-  store: any;
-  signals: any;
+interface IProps {
   zenMode: boolean;
 }
 
-const HeaderComponent = ({ zenMode, store, signals }: Props) => {
-  const sandbox = store.editor.currentSandbox;
-  const vscode = store.preferences.settings.experimentVSCode;
+const HeaderComponent : React.FC<IProps> = ({ zenMode }) => {
+  const {
+    state: {
+      editor,
+      preferences,
+      hasLogIn,
+      isLoggedIn,
+      updateStatus,
+      user,
+      isPatron
+    },
+    actions: {
+      modalOpened
+    }
+  } = useOvermind();
+  const sandbox = editor.currentSandbox;
+  const vscode = preferences.settings.experimentVSCode;
 
   return (
     <Container zenMode={zenMode}>
       <Left>
-        {store.hasLogIn ? (
+        {hasLogIn ? (
           <DashboardLink to={dashboardUrl()}>
             <DashboardIcon />
           </DashboardLink>
@@ -169,16 +176,16 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
             {
               <Action
                 onClick={
-                  store.editor.isAllModulesSynced
+                  editor.isAllModulesSynced
                     ? null
-                    : () => saveAllModules(store, signals)
+                    : () => saveAllModules()
                 }
                 placeholder={
-                  store.editor.isAllModulesSynced
+                  editor.isAllModulesSynced
                     ? 'All modules are saved'
                     : false
                 }
-                blink={store.editor.changedModuleShortids.length > 2}
+                blink={editor.changedModuleShortids.length > 2}
                 title="Save"
                 Icon={SaveIcon}
               />
@@ -190,7 +197,7 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
       {sandbox.owned && (
         <Centered style={{ margin: '0 3rem' }}>
           <CollectionInfo
-            isLoggedIn={store.isLoggedIn}
+            isLoggedIn={isLoggedIn}
             // Passing a clone of observable requires it to be called in render of observer
             sandbox={json(sandbox)}
           />
@@ -198,7 +205,7 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
       )}
 
       <Right>
-        {store.updateStatus === 'available' && (
+        {updateStatus === 'available' && (
           <Action
             onClick={() => document.location.reload()}
             Icon={UpdateFound}
@@ -206,8 +213,8 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
           />
         )}
 
-        {!store.isLoggedIn ||
-          (!store.isPatron && (
+        {!isLoggedIn ||
+          (!isPatron && (
             <Action
               href={patronUrl()}
               tooltip="Support CodeSandbox"
@@ -220,10 +227,10 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
             />
           ))}
 
-        {!store.isLoggedIn && (
+        {!isLoggedIn && (
           <Action
             onClick={() =>
-              signals.modalOpened({
+              modalOpened({
                 modal: 'preferences',
               })
             }
@@ -234,7 +241,7 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
 
         <Action
           onClick={() =>
-            signals.modalOpened({
+            modalOpened({
               modal: 'newSandbox',
             })
           }
@@ -242,15 +249,15 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
           Icon={PlusIcon}
         />
 
-        {store.isLoggedIn && (
+        {isLoggedIn && (
           <LikeButton
             style={{ fontSize: '.75rem', margin: '0 0.5rem' }}
             secondary={!sandbox.owned}
-            likeCount={store.editor.currentSandbox.likeCount}
+            likeCount={editor.currentSandbox.likeCount}
           />
         )}
 
-        {store.user && store.user.curatorAt && (
+        {user && user.curatorAt && (
           <PickButton
             style={{ fontSize: '.75rem', marginLeft: '0.5rem' }}
             secondary={sandbox.owned}
@@ -264,7 +271,7 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
 
         <ForkButton
           secondary={sandbox.owned}
-          isForking={store.editor.isForkingSandbox}
+          isForking={editor.isForkingSandbox}
           style={{ fontSize: '.75rem' }}
         />
 
@@ -278,7 +285,7 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
           left={1}
           right={1}
         >
-          {store.isLoggedIn ? (
+          {isLoggedIn ? (
             <div
               style={{
                 fontSize: '0.8rem',
@@ -297,6 +304,4 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
   );
 };
 
-export const Header = inject('signals', 'store')(
-  hooksObserver(HeaderComponent)
-);
+export default HeaderComponent
