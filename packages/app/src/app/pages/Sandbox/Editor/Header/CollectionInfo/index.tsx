@@ -44,8 +44,8 @@ export const CollectionInfo: FunctionComponent<Props> = ({ sandbox }) => {
     setUpdatingName(false);
   };
 
-  const submitNameChange = ({ preventDefault }: FormEvent<HTMLFormElement>) => {
-    preventDefault();
+  const submitNameChange = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
     updateSandboxInfo();
 
@@ -78,7 +78,7 @@ export const CollectionInfo: FunctionComponent<Props> = ({ sandbox }) => {
     : 'My Sandboxes';
 
   return (
-    <Spring
+    <Spring<{ opacity: number; pointerEvents: 'none' | 'initial' }>
       from={{
         opacity: 1,
       }}
