@@ -121,6 +121,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   state.editor.isLoading = false;
+
+  effects.chameleon.loadTour(state.user && state.user.id);
 });
 
 export const contentMounted: Action = ({ state, effects }) => {
