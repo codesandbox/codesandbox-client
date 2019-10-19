@@ -57,7 +57,7 @@ const MoveSandboxFolderModal = () => {
   return (
     <div>
       <Block>Move to Folder</Block>
-      <Container css={{ maxHeight: 400, overflow: 'auto' }}>
+      <Container style={{ maxHeight: 400, overflow: 'auto' }}>
         <DirectoryPicker
           onSelect={onSelect}
           currentTeamId={teamId}
@@ -72,7 +72,7 @@ const MoveSandboxFolderModal = () => {
 
         <Button
           onClick={handleMove}
-          css={{ display: 'inline-flex', alignItems: 'center' }}
+          style={{ display: 'inline-flex', alignItems: 'center' }}
           small
           disabled={loading}
         >
@@ -85,7 +85,7 @@ const MoveSandboxFolderModal = () => {
                 ? basename(path)
                 : `${teamId ? 'Our' : 'My'} Sandboxes`}
               <ChevronRight
-                css={{ marginRight: '-.25rem', marginLeft: '.25rem' }}
+                style={{ marginRight: '-.25rem', marginLeft: '.25rem' }}
               />
             </>
           )}
@@ -95,4 +95,5 @@ const MoveSandboxFolderModal = () => {
   );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default MoveSandboxFolderModal;

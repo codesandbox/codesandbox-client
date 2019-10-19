@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Block = styled.div`
+export const Block = styled.div<{ right?: boolean }>`
   background-color: ${props => props.theme.background2};
   color: rgba(255, 255, 255, 0.9);
   padding: 1rem 1.5rem;
