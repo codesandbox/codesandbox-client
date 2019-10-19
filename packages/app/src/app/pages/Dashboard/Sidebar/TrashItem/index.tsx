@@ -2,7 +2,7 @@ import React from 'react';
 import { DropTarget } from 'react-dnd';
 import TrashIcon from 'react-icons/lib/md/delete';
 
-import { withRouter } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import { Item } from '../Item';
 import { DELETE_SANDBOX_DROP_KEY } from '../../Content/SandboxCard';
@@ -14,7 +14,7 @@ interface Props {
   connectDropTarget: (target: React.ReactElement) => React.ReactElement;
 }
 
-const TrashItemComponent: React.FC<Props> = ({
+const TrashItemComponent: React.FC<Props & RouteComponentProps> = ({
   currentPath,
   isOver,
   canDrop,
