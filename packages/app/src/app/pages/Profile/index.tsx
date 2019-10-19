@@ -1,10 +1,6 @@
-/* @flow */
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import {
-  profileLikesUrl,
-  profileSandboxesUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+import { profileLikesUrl, profileSandboxesUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 import { NotFound } from 'app/pages/common/NotFound';
 import React from 'react';
