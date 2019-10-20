@@ -4,6 +4,7 @@ import { LinkButton, AButton, Button } from './elements';
 export type Props = {
   to?: string;
   href?: string;
+  big?: boolean;
   small?: boolean;
   style?: React.CSSProperties;
   block?: boolean;
