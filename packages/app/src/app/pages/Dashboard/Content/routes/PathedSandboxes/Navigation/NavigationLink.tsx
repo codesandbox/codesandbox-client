@@ -4,7 +4,7 @@ import {
   entryTarget,
   collectTarget,
 } from '../../../../Sidebar/SandboxesItem/folder-drop-target';
-import { NavigationLink } from './elements';
+import { NavigationLink as StyledLink } from './elements';
 
 interface ICollectedProps {
   connectDropTarget: ConnectDropTarget;
@@ -14,38 +14,27 @@ interface IOwnProps {
   teamId?: string;
   name: string;
   path: string;
-  splittedPath: string[];
-  i: number;
 }
 
 type Props = ICollectedProps & IOwnProps;
 
-const Link: React.FC<Props> = ({
-  teamId,
-  name,
-  path,
-  splittedPath,
-  i,
-  connectDropTarget,
-}) =>
+const Link: React.FC<Props> = ({ teamId, name, path, connectDropTarget }) =>
   connectDropTarget(
     <div>
-      <NavigationLink
+      <StyledLink
         to={
           teamId
             ? `/dashboard/teams/${teamId}/sandboxes${path}`
             : `/dashboard/sandboxes${path}`
         }
-        last={i === splittedPath.length - 1 ? 'true' : undefined}
-        first={i === 0 ? 'true' : undefined}
       >
         {name}
-      </NavigationLink>
+      </StyledLink>
     </div>
   );
 
 // TODO: remove generic when entryTarget(DropTargetSpec) and collectTarget(DropTargetCollector) are typed
-export default DropTarget<IOwnProps, ICollectedProps>(
+export const NavigationLink = DropTarget<IOwnProps, ICollectedProps>(
   'SANDBOX',
   entryTarget,
   collectTarget

@@ -2,7 +2,7 @@ import React from 'react';
 import { join } from 'path';
 
 import { Container } from './elements';
-import NavigationLink from './NavigationLink';
+import { NavigationLink } from './NavigationLink';
 
 interface INavigationProps {
   path: string;
@@ -27,15 +27,8 @@ export const Navigation: React.FC<INavigationProps> = ({ path, teamId }) => {
 
   return (
     <Container>
-      {paths.map(({ name, url }, i) => (
-        <NavigationLink
-          teamId={teamId}
-          name={name}
-          path={url}
-          splittedPath={splittedPath}
-          i={i}
-          key={url}
-        />
+      {paths.map(({ name, url }) => (
+        <NavigationLink teamId={teamId} name={name} path={url} key={url} />
       ))}
     </Container>
   );

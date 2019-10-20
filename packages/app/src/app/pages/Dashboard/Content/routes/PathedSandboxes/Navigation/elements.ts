@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
@@ -23,24 +23,19 @@ export const NavigationLink = styled(Link)`
     margin-right: 0;
   }
 
-  ${(props: { first?: 'true'; last?: 'true' }) =>
-    props.first
-      ? css`
-          margin-left: 0;
-        `
-      : css`
-          margin-left: 0.5rem;
-        `};
+  margin-left: 0.5rem;
+  &:first-of-type {
+    margin-left: 0;
+  }
 
-  ${props =>
-    props.last
-      ? css`
-          color: white;
-        `
-      : css`
-          &::after {
-            content: '›';
-            margin-left: 0.5rem;
-          }
-        `};
+  &:last-of-type {
+    color: white;
+  }
+
+  &::after {
+    content: '›';
+  }
+  &:last-of-type::after {
+    content: none;
+  }
 `;
