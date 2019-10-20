@@ -2,7 +2,7 @@ import { GitProgress } from 'app/components/GitProgress';
 import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 
-export const PRModal: FunctionComponent = () => {
+const PRModal: FunctionComponent = () => {
   const {
     state: { git },
   } = useOvermind();
@@ -32,3 +32,5 @@ export const PRModal: FunctionComponent = () => {
     />
   );
 };
+
+export default PRModal;
