@@ -185,7 +185,7 @@ $ npm install -g codesandboxer-fs
 $ codesandboxer docs/examples/my-single-component.js
 ```
 
-This will print out the id of a sandbox that does nothing but render the targeted component, along with a link to that sandbox.
+This will print out the id of a sandbox that does nothing but render the targeted component, along with a link to that sandbox. This will also bundle in other local files used by the component to ensure render.
 
 
 ## Import Using React-Codesandboxer
