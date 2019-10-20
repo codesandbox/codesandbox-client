@@ -23,7 +23,7 @@ export const NavigationLink = styled(Link)`
     margin-right: 0;
   }
 
-  ${(props: { first?: boolean; last?: boolean }) =>
+  ${(props: { first?: 'true'; last?: 'true' }) =>
     props.first
       ? css`
           margin-left: 0;
