@@ -1,4 +1,3 @@
-// @ts-check
 import React, { useState, useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import RightIcon from 'react-icons/lib/md/keyboard-arrow-right';
