@@ -4,6 +4,8 @@ exports[`<Preference /> rendering boolean 1`] = `ReactWrapper {}`;
 
 exports[`<Preference /> rendering dropdown 1`] = `ReactWrapper {}`;
 
+exports[`<Preference /> rendering number 1`] = `ReactWrapper {}`;
+
 exports[`<Preference /> rendering string 1`] = `ReactWrapper {}`;
 
 exports[`<Preference /> rendering string 2`] = `ReactWrapper {}`;

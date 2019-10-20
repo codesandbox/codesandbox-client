@@ -56,4 +56,17 @@ describe('<Preference /> rendering', () => {
       expect(wrapper).toMatchSnapshot();
     })
   );
+  it('number', () => {
+    const wrapper = mountWithTheme(
+      <Preference
+        title="Line Height"
+        setValue={noop}
+        type="number"
+        value={0}
+        placeholder="1.15"
+        step={0.05}
+      />
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
 });

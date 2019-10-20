@@ -43,4 +43,14 @@ stories
       value="one"
       options={['one', 'two']}
     />
+  ))
+  .add('Number Preference', () => (
+    <Preference
+      title="Line Height"
+      setValue={noop}
+      type="number"
+      value={0}
+      placeholder="1.15"
+      step={0.05}
+    />
   ));

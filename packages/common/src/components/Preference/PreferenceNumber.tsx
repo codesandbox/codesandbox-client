@@ -4,6 +4,7 @@ import { StyledInput } from './elements';
 export type Props = {
   setValue: (value: number) => void;
   value: number;
+  placeholder?: string;
   step?: number;
   style?: React.CSSProperties;
 };
@@ -18,7 +19,7 @@ export default class PreferenceInput extends React.PureComponent<Props> {
   };
 
   render() {
-    const { value, style, step } = this.props;
+    const { value, placeholder, style, step } = this.props;
 
     return (
       <StyledInput
@@ -26,6 +27,7 @@ export default class PreferenceInput extends React.PureComponent<Props> {
         style={{ width: '3rem', ...style }}
         type="number"
         value={value}
+        placeholder={placeholder}
         onChange={this.handleChange}
       />
     );

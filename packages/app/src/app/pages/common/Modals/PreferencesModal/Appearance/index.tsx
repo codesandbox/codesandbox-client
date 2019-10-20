@@ -95,6 +95,7 @@ export const Appearance: React.FC = () => {
             <PaddedPreference
               title="Line Height"
               type="number"
+              placeholder="1.15"
               step={0.05}
               {...bindValue('lineHeight')}
             />
