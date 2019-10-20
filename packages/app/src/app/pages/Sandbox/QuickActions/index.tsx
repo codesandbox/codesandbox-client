@@ -29,6 +29,11 @@ export const QuickActions: React.FunctionComponent = () => {
     actions: { editor },
   } = useOvermind();
 
+  const persistGenie = () => {
+    const { enteredMagicWords } = genie.options();
+    window.localStorage.setItem('genie', JSON.stringify({ enteredMagicWords }));
+  };
+
   const loadGenie = useCallback(() => {
     try {
       const { enteredMagicWords } = JSON.parse(
@@ -45,9 +50,7 @@ export const QuickActions: React.FunctionComponent = () => {
 
   const updateGenie = useCallback(() => {
     Object.keys(keybindings).forEach(bindingKey => {
-      const {
-        quickAction: { type, title, signal, payload },
-      } = keybindings[bindingKey];
+      const { type, title, signal, payload } = keybindings[bindingKey];
 
       genie({
         magicWords: `${type}: ${title}`,
@@ -89,11 +92,6 @@ export const QuickActions: React.FunctionComponent = () => {
 
   const closeQuickActions = () => {
     editor.quickActionsClosed();
-  };
-
-  const persistGenie = () => {
-    const { enteredMagicWords } = genie.options();
-    window.localStorage.setItem('genie', JSON.stringify({ enteredMagicWords }));
   };
 
   let inputVal = '';
