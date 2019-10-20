@@ -172,6 +172,22 @@ example sandbox of that is here:
 
 <iframe src="https://codesandbox.io/embed/9loovqj5oy?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
+## Import single Component as a Sandbox
+
+You can export a local component to CodeSandbox by using our other
+[CLI](https://github.com/codesandbox/codesandboxer/tree/master/packages/codesandboxer-fs).
+
+You can install our CLI by running `npm install -g codesandbox`. Then you can
+export a project by running `codesandboxer {filePath}`.
+
+```
+$ npm install -g codesandboxer-fs
+$ codesandboxer docs/examples/my-single-component.js
+```
+
+This will print out the id of a sandbox that does nothing but render the targeted component, along with a link to that sandbox.
+
+
 ## Import Using React-Codesandboxer
 
 Import from a single file from a git repository, along with supplemental files
