@@ -8,13 +8,13 @@ import { Navigation, Notice, NoSandboxes } from './elements';
 
 const PER_PAGE_COUNT = 15;
 
-interface iProps {
+interface ISandboxesProps {
   source: string;
   page: number;
   baseUrl: string;
 }
 
-export const Sandboxes: React.FC<iProps> = ({ source, page, baseUrl }) => {
+export const Sandboxes: React.FC<ISandboxesProps> = ({ source, page, baseUrl }) => {
   const {
     state: { profile },
     actions: {
