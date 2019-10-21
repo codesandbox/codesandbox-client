@@ -2,28 +2,22 @@
 import * as React from 'react';
 import type { Sandbox } from '@codesandbox/common/lib/types';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { ModeIcons } from 'app/components/ModeIcons';
-import HeartIcon from 'react-icons/lib/fa/heart-o';
-import FullHeartIcon from 'react-icons/lib/fa/heart';
-import Logo from '@codesandbox/common/lib/components/Logo';
-import {
-  sandboxUrl,
-  embedUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+import { embedUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
-
-import LinkIcon from './Link';
 
 import {
   Button,
   Container,
-  MenuIcon,
   Title,
   RightAligned,
   CenterAligned,
   LeftAligned,
-  OnlyShowWideText,
-  CodeSandboxButton,
+  MenuIcon,
+  HeartIcon,
+  LinkIcon,
+  EditorViewIcon,
+  SplitViewIcon,
+  PreviewViewIcon,
 } from './elements';
 
 type Props = {
@@ -72,46 +66,52 @@ function Header({
         <ModeIcons
           showEditor={showEditor}
           showPreview={showPreview}
-          onSetEditorView={setEditorView}
-          onSetPreviewView={setPreviewView}
-          onSetMixedView={setMixedView}
+          setEditorView={setEditorView}
+          setPreviewView={setPreviewView}
+          setMixedView={setMixedView}
         />
       </CenterAligned>
       <RightAligned>
-        {toggleLike && (
-          <Button
-            hideSmall={640}
-            bgColor="rgba(255, 122, 122, 0.11)"
-            color="rgb(254, 122, 122)"
-            onClick={toggleLike}
-          >
-            {liked ? <FullHeartIcon /> : <HeartIcon />}
-            <OnlyShowWideText hideOn={726}>
-              {liked ? 'Undo Like' : 'Like'}
-            </OnlyShowWideText>
-          </Button>
-        )}
         <Button
           onClick={() =>
             copyToClipboard(`https://codesandbox.io${embedUrl(sandbox)}`)
           }
-          hideSmall={960}
         >
           <LinkIcon />
-          <OnlyShowWideText>Copy Link</OnlyShowWideText>
         </Button>
 
-        <CodeSandboxButton
-          target="_blank"
-          rel="noreferrer noopener"
-          small
-          href={`${sandboxUrl(sandbox)}?from-embed`}
-        >
-          <Logo width="1.125em" height="1.125em" />
-          <OnlyShowWideText hideOn={510}>Open in Editor</OnlyShowWideText>
-        </CodeSandboxButton>
+        {toggleLike && (
+          <Button onClick={toggleLike}>
+            <HeartIcon liked={liked} />
+          </Button>
+        )}
       </RightAligned>
     </Container>
+  );
+}
+
+function ModeIcons({
+  showEditor,
+  showPreview,
+  setEditorView,
+  setMixedView,
+  setPreviewView,
+}) {
+  return (
+    <>
+      <EditorViewIcon
+        active={showEditor && !showPreview}
+        onClick={setEditorView}
+      />
+      <SplitViewIcon
+        active={showEditor && showPreview}
+        onClick={setMixedView}
+      />
+      <PreviewViewIcon
+        active={showPreview && !showEditor}
+        onClick={setPreviewView}
+      />
+    </>
   );
 }
 
