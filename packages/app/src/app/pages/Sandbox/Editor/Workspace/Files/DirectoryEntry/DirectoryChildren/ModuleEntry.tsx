@@ -1,12 +1,28 @@
-import { inject, observer } from 'app/componentConnectors';
+import { Module, Directory } from '@codesandbox/common/lib/types';
+import { useOvermind } from 'app/overmind';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
 import React from 'react';
 
 import Entry from '../Entry';
 
-const ModuleEntry = ({
-  store,
+interface IModuleEntryProps {
+  module: Module;
+  setCurrentModule: (id: string) => void;
+  markTabsNotDirty: () => void;
+  depth: number;
+  renameModule: (title: string, moduleShortid: string) => void;
+  deleteEntry: (shortid: string, title: string) => void;
+  discardModuleChanges: (shortid: string) => void;
+  getModulePath: (
+    modules: Module[],
+    directories: Directory[],
+    id: string
+  ) => string;
+  renameValidator: (id: string, title: string) => boolean;
+}
+
+const ModuleEntry: React.FC<IModuleEntryProps> = ({
   module,
   setCurrentModule,
   markTabsNotDirty,
@@ -17,15 +33,17 @@ const ModuleEntry = ({
   getModulePath,
   renameValidator,
 }) => {
-  const { currentModuleShortid } = store.editor;
-  const mainModuleId = store.editor.mainModule.id;
-
+  const {
+    state: {
+      editor: { mainModule, currentModuleShortid },
+      live,
+    },
+  } = useOvermind();
   const isActive = module.shortid === currentModuleShortid;
-  const isMainModule = module.id === mainModuleId;
+  const isMainModule = module.id === mainModule.id;
   const type = getType(module.title);
   const hasError = module.errors.length;
-
-  const liveUsers = store.live.liveUsersByModule[module.shortid] || [];
+  const liveUsers = live.liveUsersByModule[module.shortid] || [];
 
   const isNotSynced = module.savedCode && module.code !== module.savedCode;
 
@@ -52,4 +70,4 @@ const ModuleEntry = ({
   );
 };
 
-export default inject('store')(observer(ModuleEntry));
+export default ModuleEntry;
