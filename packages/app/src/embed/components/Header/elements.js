@@ -120,6 +120,16 @@ export const MenuIcon = styled(MenuIconSVG)(
 
 export const LinkIcon = styled(LinkIconSVG)(css({}));
 
+export const HeartButton = styled(Button)(props =>
+  css({
+    '&:hover': {
+      svg: {
+        color: props.liked ? 'reds.300' : 'white',
+      },
+    },
+  })
+);
+
 export const HeartIcon = styled(HeartIconSVG)(props =>
   css({
     color: props.liked ? 'reds.300' : 'grays.400',
