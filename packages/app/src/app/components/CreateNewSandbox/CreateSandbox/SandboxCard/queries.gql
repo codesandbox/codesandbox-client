@@ -1,3 +1,17 @@
+query isBookmarked($id: ID!) {
+  sandbox(sandboxId: $id) {
+    customTemplate {
+      id
+      bookmarked {
+        isBookmarked
+        entity {
+          __typename
+        }
+      }
+    }
+  }
+}
+
 query getSandboxInfo($id: ID!) {
   sandbox(sandboxId: $id) {
     id

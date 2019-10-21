@@ -16,7 +16,7 @@ import { Grid, Search, Categories, Form, InputWrapper } from './elements';
 import { all } from '../availableTemplates';
 
 const client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
-const index = client.initIndex(ALGOLIA_DEFAULT_INDEX);
+const index = client.initIndex('staging_sandboxes');
 
 export const Explore = () => {
   const searchEl = useRef(null);
@@ -100,10 +100,7 @@ export const Explore = () => {
               </SubHeader>
               <Grid>
                 {templates.map(sandbox => (
-                  <SandboxCard
-                    key={sandbox.objectID}
-                    template={sandbox}
-                  />
+                  <SandboxCard key={sandbox.objectID} template={sandbox} />
                 ))}
               </Grid>
             </>
@@ -111,9 +108,10 @@ export const Explore = () => {
             <SubHeader
               css={`
                 text-align: center;
+                margin-top: 2rem;
               `}
             >
-              Oh no
+              There are no templates matching your search.
             </SubHeader>
           )}
         </Scrollable>

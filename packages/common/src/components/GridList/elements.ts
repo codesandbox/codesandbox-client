@@ -5,6 +5,7 @@ export const Container = styled.div`
   display: flex;
   margin: 0 1.5rem;
   overflow: hidden;
+  position: relative;
 
   > div {
     &:first-child button {
@@ -19,10 +20,11 @@ export const ArrowButton = styled.button<{ next?: boolean }>`
   justify-content: center;
   background: none;
   border: none;
-  position: absolute;
   z-index: 10;
-  left: 0.5rem;
-  margin-top: 40px;
+  position: absolute;
+  top: 50%;
+  margin: 0;
+  transform: translateY(-50%);
 
   ${props =>
     props.next &&

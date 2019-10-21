@@ -92,6 +92,7 @@ export const Import = () => {
             ) : null}
             <ButtonContainer>
               <Button
+                small
                 onClick={() => {
                   copyToClipboard(transformedUrl);
                 }}
@@ -99,7 +100,11 @@ export const Import = () => {
               >
                 Copy Link
               </Button>
-              <Button disabled={!transformedUrl} to={gitHubToSandboxUrl(url)}>
+              <Button
+                small
+                disabled={!transformedUrl}
+                to={gitHubToSandboxUrl(url)}
+              >
                 Generate Sandbox
               </Button>
             </ButtonContainer>
@@ -107,7 +112,6 @@ export const Import = () => {
         </Column>
         {state.user && (
           <Column>
-            {' '}
             <FeatureName>
               <StackbitIcon />
               Import from Stackbit
