@@ -1422,6 +1422,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "yevhenorlov",
+      "name": "yevhen orlov",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/17388747?v=4",
+      "profile": "http://yevhenorlov.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
