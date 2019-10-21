@@ -44,7 +44,7 @@ export class Content extends React.Component<IContentProps> {
       <Container>
         <HeaderContainer>
           <HeaderTitle>
-            {Header}{' '}
+            {Header}
             {sandboxes && !isLoading && (
               <span
                 style={{
