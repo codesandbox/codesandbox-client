@@ -36,7 +36,6 @@ export const SandboxCard: React.FC<ISandboxCardProps> = forwardRef(
     const { source, id: sandboxID, author = {} } = template.sandbox || {};
     let UserIcon: React.FunctionComponent;
     let OfficialIcon: React.FunctionComponent;
-    const ID = official ? template.shortid : sandboxID;
 
     if (getContrastYIQ(template.color) >= 128) {
       UserIcon =
@@ -74,14 +73,14 @@ export const SandboxCard: React.FC<ISandboxCardProps> = forwardRef(
 
     const config = () => ({
       variables: {
-        template: ID,
+        template: template.id,
         ...(team ? { team: team.id } : {}),
       },
       optimisticResponse: {
         __typename: 'Mutation',
         template: {
           __typename: 'Template',
-          id: ID,
+          id: template.id,
           bookmarked,
         },
       },
@@ -89,11 +88,11 @@ export const SandboxCard: React.FC<ISandboxCardProps> = forwardRef(
         console.log(data);
         // const result = proxy.readQuery({
         //   query: getSandboxInfo,
-        //   variables: { id: sandboxId },
+        //   variables: { id: template.id },
         // });
         // proxy.writeQuery({
         //   query: getSandboxInfo,
-        //   variables: { id: sandboxId },
+        //   variables: { id: template.id },
         //   data: {
         //     sandbox: {
         //       ...result.sandbox,
