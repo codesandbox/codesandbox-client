@@ -1,11 +1,11 @@
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
-import { inject, observer } from 'app/componentConnectors';
 import Modal from 'app/components/Modal';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import Loadable from 'app/utils/Loadable';
 import { templateColor } from 'app/utils/template-color';
 import React, { useReducer, useEffect, useCallback } from 'react';
+import { useOvermind } from 'app/overmind';
 import { ThemeProvider } from 'styled-components';
 
 import CommitModal from './CommitModal';
@@ -140,16 +140,26 @@ const modals = {
   },
 };
 
-const Modals = props => {
+const Modals = () => {
+  const {
+    actions: { modalClosed },
+    state: {
+      editor: { currentSandbox },
+      preferences: {
+        settings: { customVSCodeTheme },
+      },
+      currentModal,
+    },
+  } = useOvermind();
+
   const [state, setState] = useReducer((s, a) => ({ ...s, ...a }), {
     theme: {
       colors: {},
       vscodeTheme: codesandbox,
     },
-    customVSCodeTheme: props.store.preferences.settings.customVSCodeTheme,
+    customVSCodeTheme,
   });
 
-  const { customVSCodeTheme } = props.store.preferences.settings;
   const loadTheme = useCallback(async () => {
     try {
       const theme = await getVSCodeTheme('', customVSCodeTheme);
@@ -159,22 +169,20 @@ const Modals = props => {
     }
   }, [customVSCodeTheme]);
 
-  useEffect(() => loadTheme(), [loadTheme]);
+  useEffect(() => {
+    loadTheme();
+  }, [loadTheme]);
 
   useEffect(() => {
-    if (
-      props.store.preferences.settings.customVSCodeTheme !==
-      state.customVSCodeTheme
-    ) {
+    if (customVSCodeTheme !== state.customVSCodeTheme) {
       loadTheme();
     }
   });
 
-  const { signals, store } = props;
-  const sandbox = store.editor.currentSandbox;
+  const sandbox = currentSandbox;
   const templateDef = sandbox && getTemplateDefinition(sandbox.template);
 
-  const modal = store.currentModal && modals[store.currentModal];
+  const modal = currentModal && modals[currentModal];
 
   return (
     <ThemeProvider
@@ -187,16 +195,16 @@ const Modals = props => {
       <Modal
         isOpen={Boolean(modal)}
         width={modal && modal.width}
-        onClose={isKeyDown => signals.modalClosed({ isKeyDown })}
+        onClose={isKeyDown => modalClosed({ isKeyDown })}
       >
         {modal
           ? React.createElement(modal.Component, {
-              closeModal: () => signals.modalClosed({ isKeyDown: false }),
+              closeModal: () => modalClosed({ isKeyDown: false }),
             })
           : null}
       </Modal>
     </ThemeProvider>
   );
 };
-
-export default inject('store', 'signals')(observer(Modals));
+export default Modals;
+// export default inject('store', 'signals')(observer(Modals));
