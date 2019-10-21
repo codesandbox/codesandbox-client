@@ -13,6 +13,7 @@ import {
   CenterAligned,
   LeftAligned,
   MenuIcon,
+  HeartButton,
   HeartIcon,
   LinkIcon,
   EditorViewIcon,
@@ -81,9 +82,9 @@ function Header({
         </Button>
 
         {toggleLike && (
-          <Button onClick={toggleLike}>
+          <HeartButton onClick={toggleLike} liked={liked}>
             <HeartIcon liked={liked} />
-          </Button>
+          </HeartButton>
         )}
       </RightAligned>
     </Container>
