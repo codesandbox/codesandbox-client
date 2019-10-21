@@ -38,7 +38,9 @@ export const Welcome = ({ goToTab }: { goToTab: (event: any) => void }) => (
       </li>
     </Features>
     <Actions>
-      <Button onClick={goToTab}>Create Sandbox</Button>
+      <Button small style={{ fontSize: 12, width: 200 }} onClick={goToTab}>
+        Create Sandbox
+      </Button>
     </Actions>
   </>
 );

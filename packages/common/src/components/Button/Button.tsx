@@ -24,6 +24,7 @@ export const Button: React.FC<IButtonProps> = ({
   ...props
 }) => (
   <Base
+    style={style}
     {...(props.to || props.href
       ? {
           as: props.to

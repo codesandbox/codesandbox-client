@@ -93,6 +93,7 @@ export const Import = () => {
             <ButtonContainer>
               <Button
                 small
+                style={{ fontSize: 12 }}
                 onClick={() => {
                   copyToClipboard(transformedUrl);
                 }}
@@ -102,6 +103,7 @@ export const Import = () => {
               </Button>
               <Button
                 small
+                style={{ fontSize: 12 }}
                 disabled={!transformedUrl}
                 to={gitHubToSandboxUrl(url)}
               >
@@ -121,7 +123,10 @@ export const Import = () => {
               that{"'"}s automatically set up with any Theme, Site Generator and
               CMS.
             </FeatureText>
-            <StackbitButton username={state.user.username} />
+            <StackbitButton
+              style={{ fontSize: 12 }}
+              username={state.user.username}
+            />
           </Column>
         )}
       </Features>
