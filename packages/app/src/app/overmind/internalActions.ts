@@ -1,18 +1,19 @@
-import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
-import {
-  Sandbox,
-  NotificationButton,
-  TabType,
-  ModuleTab,
-  ServerStatus,
-  ServerContainerStatus,
-} from '@codesandbox/common/lib/types';
 import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-import { Action, AsyncAction } from '.';
-import { parseConfigurations } from './utils/parse-configurations';
-import { defaultOpenedModule, mainModule } from './utils/main-module';
-import getItems from './utils/items';
+import {
+  ModuleTab,
+  NotificationButton,
+  Sandbox,
+  ServerContainerStatus,
+  ServerStatus,
+  TabType,
+} from '@codesandbox/common/lib/types';
+import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
+
 import { createOptimisticModule } from './utils/common';
+import getItems from './utils/items';
+import { defaultOpenedModule, mainModule } from './utils/main-module';
+import { parseConfigurations } from './utils/parse-configurations';
+import { Action, AsyncAction } from '.';
 
 export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
   { state, effects, actions },
@@ -63,7 +64,7 @@ export const setPatronPrice: Action = ({ state }) => {
 
 export const setSignedInCookie: Action = ({ state }) => {
   document.cookie = 'signedIn=true; Path=/;';
-  identify('signed_in', 'true');
+  identify('signed_in', true);
   setUserId(state.user.id);
 };
 
@@ -97,10 +98,12 @@ export const signInGithub: Action<
   { useExtraScopes: boolean },
   Promise<string>
 > = ({ effects }, options) => {
-  const popup = effects.browser.openPopup(
-    `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`,
-    'sign in'
-  );
+  const authPath =
+    process.env.LOCAL_SERVER || process.env.STAGING
+      ? '/auth/dev'
+      : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
+
+  const popup = effects.browser.openPopup(authPath, 'sign in');
 
   return effects.browser
     .waitForMessage<{ jwt: string }>('signin')
@@ -256,8 +259,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   });
 
   effects.executor.setupExecutor();
-
-  effects.fsSync.syncCurrentSandbox();
 
   /*
     There seems to be a race condition here? Verify if this still happens with Overmind

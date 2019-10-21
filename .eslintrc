@@ -61,6 +61,7 @@
         "js": "never"
       }
     ],
+    "import/default": "error",
     "no-param-reassign": ["error", { "props": false }],
     "camelcase": 0,
     "react-hooks/rules-of-hooks": "error",

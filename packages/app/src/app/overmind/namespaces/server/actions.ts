@@ -2,8 +2,11 @@ import { Action } from 'app/overmind';
 import {
   ServerStatus,
   ServerContainerStatus,
+  ServerPort,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { getDevToolsTabPosition } from 'app/overmind/utils/server';
+import { ViewTab } from '@codesandbox/common/lib/templates/template';
 
 export const restartSandbox: Action = ({ effects }) => {
   effects.executor.emit('sandbox:restart');
@@ -69,7 +72,7 @@ export const onSSEMessage: Action<{
       effects.codesandboxApi.logTerminalMessage(data.data);
       break;
     case 'sandbox:port': {
-      const newPorts = data;
+      const newPorts = data as ServerPort[];
       const currentPorts = server.ports;
       const removedPorts = currentPorts.filter(
         port => !newPorts.find(p => p.port === port.port)
@@ -77,7 +80,7 @@ export const onSSEMessage: Action<{
       const addedPorts = newPorts.filter(
         port => !currentPorts.find(p => p.port === port.port)
       );
-      const openedPorts = [];
+      const openedPorts: number[] = [];
 
       if (removedPorts.length > 0) {
         effects.notificationToast.add({
@@ -171,32 +174,52 @@ export const onCodeSandboxAPIMessage: Action<{
   }
 };
 
+type BrowserOptions = { title?: string; url?: string } & (
+  | {
+      port: number;
+    }
+  | { url: string });
+
 export const onBrowserTabOpened: Action<{
-  port: any;
-}> = ({ actions }, { port }) => {
-  actions.editor.onDevToolsTabAdded({
-    tab: {
-      id: 'codesandbox.browser',
-      closeable: true,
-      options: port,
-    },
+  closeable?: boolean;
+  options?: BrowserOptions;
+}> = ({ actions, state }, { options, closeable }) => {
+  const tab: ViewTab = {
+    id: 'codesandbox.browser',
+  };
+
+  if (typeof options !== 'undefined') {
+    tab.options = options;
+  }
+
+  if (typeof closeable !== 'undefined') {
+    tab.closeable = closeable;
+  }
+
+  const position = getDevToolsTabPosition({
+    tabs: state.editor.devToolTabs,
+    tab,
   });
+
+  if (position) {
+    actions.editor.onDevToolsPositionChanged({ position });
+  } else {
+    actions.editor.onDevToolsTabAdded({ tab });
+  }
 };
 
 export const onBrowserFromPortOpened: Action<{
-  port: any;
+  port: ServerPort;
 }> = ({ actions }, { port }) => {
-  actions.editor.onDevToolsTabAdded({
-    tab: port.main
-      ? { id: 'codesandbox.browser' }
-      : {
-          id: 'codesandbox.browser',
-          closeable: true,
-          options: {
-            port: port.port,
-            url: `https://${port.hostname}`,
-            title: port.title,
-          },
-        },
-  });
+  if (port.main) {
+    actions.server.onBrowserTabOpened({});
+  } else {
+    actions.server.onBrowserTabOpened({
+      closeable: true,
+      options: {
+        port: port.port,
+        url: `https://${port.hostname}`,
+      },
+    });
+  }
 };

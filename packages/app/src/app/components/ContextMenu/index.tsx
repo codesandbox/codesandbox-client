@@ -15,7 +15,7 @@ interface ItemType {
   action: () => boolean | void;
 }
 
-type Item = ItemType | ItemType[];
+export type Item = ItemType | ItemType[];
 
 type ChildrenProps =
   | {
@@ -228,10 +228,13 @@ export class ContextMenu extends React.PureComponent<Props, State> {
                     style={{
                       left: left
                         ? x
-                        : x - (typeof width === 'string' ? 0 : width),
+                        : x - (typeof width === 'string' ? 194 : width),
                       top: down
                         ? y
-                        : y - (typeof height === 'string' ? 0 : height),
+                        : y -
+                          (typeof height === 'string'
+                            ? items.length * 81
+                            : height),
                       opacity,
                       height,
                     }}

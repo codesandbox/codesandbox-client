@@ -43,6 +43,7 @@ type Props = {
   url: string;
   folders: { path: string }[];
   foldersByPath: { [path: string]: string };
+  selectedSandboxes: string[];
   depth: number;
   toToggle?: boolean;
   allowCreate?: boolean;
@@ -122,6 +123,7 @@ class FolderEntry extends React.Component<Props, State> {
       path,
       url,
       folders,
+      selectedSandboxes,
       foldersByPath,
       depth,
       isOver,
@@ -343,6 +345,7 @@ class FolderEntry extends React.Component<Props, State> {
                 return (
                   <DropFolderEntry
                     path={childPath}
+                    selectedSandboxes={selectedSandboxes}
                     url={childUrl}
                     basePath={basePath}
                     teamId={teamId}

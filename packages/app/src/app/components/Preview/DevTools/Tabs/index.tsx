@@ -1,6 +1,7 @@
 import React from 'react';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { ViewTab } from '@codesandbox/common/lib/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 
 import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';
@@ -8,19 +9,14 @@ import { DraggableTab, PaneTab, TabProps } from './Tab';
 import { TabDropZone, TabDropZoneProps } from './TabDropZone';
 // import { AddTab } from './AddTab';
 
-export interface ITabPosition {
-  devToolIndex: number;
-  tabPosition: number;
-}
-
 export interface Props {
   hidden: boolean;
   currentPaneIndex: number;
   owned: boolean;
   setPane: (i: number) => void;
   devToolIndex: number;
-  moveTab?: (prevPos: ITabPosition, newPos: ITabPosition) => void;
-  closeTab?: (pos: ITabPosition) => void;
+  moveTab?: (prevPos: DevToolsTabPosition, newPos: DevToolsTabPosition) => void;
+  closeTab?: (pos: DevToolsTabPosition) => void;
   status?: { [title: string]: Status | undefined };
 
   panes: ViewTab[];

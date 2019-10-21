@@ -12,86 +12,71 @@ import {
   Title,
 } from '../components/PostElements';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
-import { makePost } from '../utils/makePosts';
 
-import { mainStyle, Image } from './_post.elements';
+import {
+  AuthorContainer,
+  Image,
+  MetaData,
+  PostContainer,
+} from './_post.elements';
 
-export default ({ data: { markdownRemark } }) => {
-  const {
-    creator,
-    title,
-    content,
-    date,
-    photo,
-    featuredImage,
-    description,
-  } = makePost(markdownRemark);
+export default ({
+  data: {
+    blogPost: {
+      fields: { author, date, description, photo, title },
+      frontmatter: {
+        banner: { publicURL: banner },
+      },
+      html,
+    },
+  },
+}) => (
+  <Layout>
+    <Container style={{ overflowX: 'auto' }}>
+      <TitleAndMetaTags
+        description={description}
+        image={banner}
+        title={`${title} - CodeSandbox Blog`}
+      />
 
-  const featuredImageUrl = (featuredImage || '').includes('http')
-    ? featuredImage
-    : `https://codesandbox.io${featuredImage}`;
-  return (
-    <Layout>
-      <Container style={{ overflowX: 'auto' }}>
-        <TitleAndMetaTags
-          description={description}
-          image={featuredImageUrl}
-          title={`${title} - CodeSandbox Blog`}
-        />
+      <PageContainer width={800}>
+        <Title>{title}</Title>
 
-        <PageContainer width={800}>
-          <Title>{title}</Title>
+        <MetaData>
+          <AuthorContainer>
+            <AuthorImage alt={author} src={photo} />
 
-          <aside
-            css={`
-              align-items: center;
-              display: flex;
-            `}
-          >
-            <div
-              css={`
-                align-items: center;
-                display: flex;
-                flex: 1;
-              `}
-            >
-              <AuthorImage src={photo} alt={creator} />
+            <Author>{author}</Author>
+          </AuthorContainer>
 
-              <Author>{creator}</Author>
-            </div>
+          <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
+        </MetaData>
 
-            <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
-          </aside>
+        <Image alt={title} src={banner} />
 
-          {featuredImage ? <Image alt={title} src={featuredImage} /> : null}
-
-          <div
-            css={mainStyle}
-            dangerouslySetInnerHTML={{
-              __html: content,
-            }}
-          />
-        </PageContainer>
-      </Container>
-    </Layout>
-  );
-};
+        <PostContainer dangerouslySetInnerHTML={{ __html: html }} />
+      </PageContainer>
+    </Container>
+  </Layout>
+);
 
 export const pageQuery = graphql`
   query Post($id: String) {
-    markdownRemark(id: { eq: $id }) {
-      html
+    blogPost: markdownRemark(id: { eq: $id }) {
+      fields {
+        author
+        date
+        description
+        photo
+        slug
+        title
+      }
       frontmatter {
-        featuredImage {
+        banner {
           publicURL
         }
-        slug
-        authors
-        photo
-        title
-        description
-        date
       }
+      html
     }
   }
 `;

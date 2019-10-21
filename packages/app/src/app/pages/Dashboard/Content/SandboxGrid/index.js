@@ -1,13 +1,15 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
 
-import { distanceInWordsToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
+import { zonedTimeToUtc } from 'date-fns-tz';
 import { uniq } from 'lodash-es';
 import { basename } from 'path';
 import { camelizeKeys } from 'humps';
 
-import track from '@codesandbox/common/lib/utils/analytics';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
+
 import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
 import Table from 'react-virtualized/dist/commonjs/Table';
@@ -44,6 +46,8 @@ const BASE_HEIGHT = 242;
 const IS_TABLE = false;
 
 const diff = (a, b) => (a > b ? a - b : b - a);
+const distanceInWordsToNow = date =>
+  formatDistanceToNow(zonedTimeToUtc(date, 'Etc/UTC'));
 
 class SandboxGridComponent extends React.Component<*, State> {
   state = {
@@ -168,6 +172,10 @@ class SandboxGridComponent extends React.Component<*, State> {
     return Promise.all(
       sandboxes.map(s => downloadZip(s, s.modules, s.directories))
     );
+  };
+
+  forkSandbox = id => {
+    this.props.signals.editor.forkExternalSandbox(id);
   };
 
   onMouseDown = (event: MouseEvent) => {
@@ -317,6 +325,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         }
         collectionPath={item.collection.path}
         collectionTeamId={item.collection.teamId}
+        forkSandbox={this.forkSandbox}
         deleteSandboxes={this.deleteSandboxes}
         undeleteSandboxes={this.undeleteSandboxes}
         permanentlyDeleteSandboxes={this.permanentlyDeleteSandboxes}
@@ -327,6 +336,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         privacy={item.privacy}
         isPatron={this.props.store.isPatron}
         screenshotUrl={item.screenshotUrl}
+        screenshotOutdated={item.screenshotOutdated}
       />
     );
   };

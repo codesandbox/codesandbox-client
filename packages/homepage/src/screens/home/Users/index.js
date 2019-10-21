@@ -58,11 +58,16 @@ export default () => (
       }
     `}
     render={({ allUsersJson: { edges } }) => (
-      <Container>
+      <Container as="section" aria-labelledby="who-using-codesandbox">
         <MaxWidth width={1280}>
-          <Title>Who's using CodeSandbox?</Title>
+          <Title id="who-using-codesandbox">Who's using CodeSandbox?</Title>
           <Companies companies={edges} />
-          <Button to="/who-uses-codesandbox">More Users</Button>
+          <Button
+            to="/who-uses-codesandbox"
+            aria-label="moew users using codesandbox"
+          >
+            More Users
+          </Button>
         </MaxWidth>
       </Container>
     )}

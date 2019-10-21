@@ -12,7 +12,7 @@ export interface IFallbackComponentProps {
 
 export interface IErrorBoundaryProps {
   children?: React.ReactNode;
-  FallbackComponent: React.ComponentType<IFallbackComponentProps>;
+  FallbackComponent?: React.ComponentType<IFallbackComponentProps>;
   onError?: (error: Error, trace: string) => void;
   location?: Location;
 }

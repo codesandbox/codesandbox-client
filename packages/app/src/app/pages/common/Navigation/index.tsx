@@ -53,7 +53,7 @@ export const Navigation = inject('store', 'signals')(
           <a href="/?from-app=1">
             <LogoWithBorder height={35} width={35} />
           </a>
-          <Border />
+          <Border role="presentation" />
           <Title>{title}</Title>
         </TitleWrapper>
         <Wrapper>
@@ -63,7 +63,11 @@ export const Navigation = inject('store', 'signals')(
                 {matches =>
                   matches || searchNoInput ? (
                     <Tooltip placement="bottom" content="Search All Sandboxes">
-                      <Link style={{ color: 'white' }} to={searchUrl()}>
+                      <Link
+                        style={{ color: 'white' }}
+                        to={searchUrl()}
+                        aria-label="Search All Sandboxes"
+                      >
                         <SearchIcon height={35} />
                       </Link>
                     </Tooltip>
@@ -77,7 +81,7 @@ export const Navigation = inject('store', 'signals')(
             <Action>
               <Tooltip placement="bottom" content="Explore Sandboxes">
                 <a style={{ color: 'white' }} href={exploreUrl()}>
-                  <FlameIcon />
+                  <FlameIcon height={35} />
                 </a>
               </Tooltip>
             </Action>
@@ -105,8 +109,14 @@ export const Navigation = inject('store', 'signals')(
                   <Observer>
                     {({ store }) => (
                       <Action
+                        as="button"
                         style={{ position: 'relative', fontSize: '1.25rem' }}
                         onClick={open}
+                        aria-label={
+                          store.userNotifications.unreadCount > 0
+                            ? 'Show Notifications'
+                            : 'No Notifications'
+                        }
                       >
                         <Tooltip
                           placement="bottom"
@@ -129,12 +139,14 @@ export const Navigation = inject('store', 'signals')(
             )}
 
             <Action
+              as="button"
               style={{ fontSize: '1.125rem' }}
               onClick={() =>
                 modalOpened({
                   modal: 'newSandbox',
                 })
               }
+              aria-label="New Sandbox"
             >
               <Tooltip placement="bottom" content="New Sandbox">
                 <PlusIcon height={35} />

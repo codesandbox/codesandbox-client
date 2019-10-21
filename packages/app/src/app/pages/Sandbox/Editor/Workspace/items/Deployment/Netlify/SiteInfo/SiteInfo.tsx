@@ -1,5 +1,5 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
+import { useOvermind } from 'app/overmind';
 
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 
@@ -29,43 +29,43 @@ const getFunctionDir = sandbox => {
   }
 };
 
-export const SiteInfo = inject('store')(
-  hooksObserver(
-    ({
-      store: {
-        deployment: { building, netlifyLogs, netlifySite },
-        editor: { currentSandbox },
+export const SiteInfo: FunctionComponent = () => {
+  const {
+    state: {
+      deployment: {
+        building,
+        netlifyLogs,
+        netlifySite: { id, name },
       },
-    }) => {
-      const functionDirectory = getFunctionDir(currentSandbox);
-      const functions = functionDirectory
-        ? currentSandbox.modules.filter(
-            ({ directoryShortid }) =>
-              directoryShortid === functionDirectory.shortid
-          )
-        : [];
+      editor: { currentSandbox },
+    },
+  } = useOvermind();
+  const functionDirectory = getFunctionDir(currentSandbox);
+  const functions = functionDirectory
+    ? currentSandbox.modules.filter(
+        ({ directoryShortid }) => directoryShortid === functionDirectory.shortid
+      )
+    : [];
 
-      return (
-        <SiteInfoWrapper>
-          <WorkspaceSubtitle>Sandbox Site</WorkspaceSubtitle>
+  return (
+    <SiteInfoWrapper>
+      <WorkspaceSubtitle>Sandbox Site</WorkspaceSubtitle>
 
-          <WorkspaceInputContainer>
-            <Deploys>
-              <Deploy key={netlifySite.uid}>
-                <Name light>{netlifySite.name}</Name>
+      <WorkspaceInputContainer>
+        <Deploys>
+          <Deploy key={id}>
+            <Name light>{name}</Name>
 
-                {!building && <div>Building</div>}
+            {!building && <div>Building</div>}
 
-                {functions.length ? <Functions functions={functions} /> : null}
+            {functions.length ? <Functions functions={functions} /> : null}
 
-                <Actions />
+            <Actions />
 
-                {netlifyLogs ? <ViewLogsButton /> : null}
-              </Deploy>
-            </Deploys>
-          </WorkspaceInputContainer>
-        </SiteInfoWrapper>
-      );
-    }
-  )
-);
+            {netlifyLogs ? <ViewLogsButton /> : null}
+          </Deploy>
+        </Deploys>
+      </WorkspaceInputContainer>
+    </SiteInfoWrapper>
+  );
+};

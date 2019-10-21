@@ -8,13 +8,14 @@ import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
 import theme from '@codesandbox/common/lib/theme';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Loadable from 'app/utils/Loadable';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
-import NewSandbox from './NewSandbox';
+import { NewSandbox } from './NewSandbox';
 import Dashboard from './Dashboard';
+import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 
 const routeDebugger = _debug('cs:app:router');
@@ -55,7 +56,10 @@ const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
 
-const RoutesComponent = ({ signals: { appUnmounted } }) => {
+const RoutesComponent: React.FC = () => {
+  const {
+    actions: { appUnmounted },
+  } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
   return (
@@ -108,6 +112,9 @@ const RoutesComponent = ({ signals: { appUnmounted } }) => {
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
+            {(process.env.LOCAL_SERVER || process.env.STAGING) && (
+              <Route path="/auth/dev" component={DevAuthPage} />
+            )}
             {process.env.NODE_ENV === `development` && (
               <Route path="/codesadbox" component={CodeSadbox} />
             )}
@@ -120,6 +127,6 @@ const RoutesComponent = ({ signals: { appUnmounted } }) => {
   );
 };
 
-export const Routes = inject('signals')(
-  DragDropContext(HTML5Backend)(withRouter(hooksObserver(RoutesComponent)))
+export const Routes = DragDropContext(HTML5Backend)(
+  withRouter(RoutesComponent)
 );

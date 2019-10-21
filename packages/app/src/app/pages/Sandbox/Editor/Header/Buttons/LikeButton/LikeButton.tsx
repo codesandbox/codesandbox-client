@@ -1,15 +1,23 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
+
+import { useOvermind } from 'app/overmind';
+
 import { LikeHeart } from './elements';
 
-export const LikeButton = inject('store')(
-  hooksObserver(({ store: { editor: { currentSandbox } } }) => (
+export const LikeButton: FunctionComponent = () => {
+  const {
+    state: {
+      editor: { currentSandbox },
+    },
+  } = useOvermind();
+
+  return (
     <LikeHeart
       colorless
-      text={currentSandbox.likeCount}
+      text={String(currentSandbox.likeCount)}
       sandbox={currentSandbox}
       disableTooltip
       highlightHover
     />
-  ))
-);
+  );
+};

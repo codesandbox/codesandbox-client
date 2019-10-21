@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { inject, observer } from 'app/componentConnectors';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { inject, observer } from 'app/componentConnectors';
+import * as React from 'react';
 
-import DirectoryEntry from './DirectoryEntry/index';
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
+import DirectoryEntry from './DirectoryEntry/index';
 
 class Files extends React.Component {
   createModule = () => {
@@ -25,7 +25,7 @@ class Files extends React.Component {
     this.props.signals.editor.createZipClicked();
   };
 
-  getModulePath = (moduleId: string) => {
+  getModulePath = moduleId => {
     try {
       const sandbox = this.props.store.editor.currentSandbox;
       return getModulePath(sandbox.modules, sandbox.directories, moduleId);

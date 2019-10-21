@@ -16,11 +16,10 @@ type State = {
   hasLoadedApp: boolean;
   jwt: string;
   isAuthenticating: boolean;
-  userMenuOpen: boolean;
   authToken: string;
   error: string;
   contributors: string[];
-  user: CurrentUser;
+  user: CurrentUser | null;
   connected: boolean;
   notifications: Notification[];
   isLoadingCLI: boolean;
@@ -63,7 +62,6 @@ export const state: State = {
   connected: true,
   notifications: [],
   contributors: [],
-  userMenuOpen: false,
   isLoadingZeit: false,
   isLoadingCLI: false,
   isLoadingGithub: false,

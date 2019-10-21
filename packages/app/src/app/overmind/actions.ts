@@ -2,9 +2,10 @@ import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
-import { Action, AsyncAction } from '.';
-import * as internalActions from './internalActions';
+
 import { withLoadApp } from './factories';
+import * as internalActions from './internalActions';
+import { Action, AsyncAction } from '.';
 
 export const internal = internalActions;
 
@@ -15,6 +16,8 @@ export const appUnmounted: AsyncAction = async ({ effects, actions }) => {
 export const sandboxPageMounted: AsyncAction = withLoadApp();
 
 export const searchMounted: AsyncAction = withLoadApp();
+
+export const codesadboxMounted: AsyncAction = withLoadApp();
 
 export const cliMounted: AsyncAction = withLoadApp(
   async ({ state, actions }) => {
@@ -27,8 +30,8 @@ export const cliMounted: AsyncAction = withLoadApp(
 export const notificationAdded: Action<{
   title: string;
   notificationType: NotificationType;
-  timeAlive: number;
-}> = ({ effects }, { title, notificationType, timeAlive }) => {
+  timeAlive?: number;
+}> = ({ effects }, { title, notificationType, timeAlive = 1 }) => {
   effects.notificationToast.add({
     message: title,
     status: convertTypeToStatus(notificationType),
@@ -59,7 +62,21 @@ export const connectionChanged: Action<boolean> = ({ state }, connected) => {
   state.connected = connected;
 };
 
-export const modalOpened: Action<{ modal: string; message: string }> = (
+type ModalName =
+  | 'deleteDeployment'
+  | 'deleteSandbox'
+  | 'feedback'
+  | 'forkServerModal'
+  | 'liveSessionEnded'
+  | 'moveSandbox'
+  | 'netlifyLogs'
+  | 'newSandbox'
+  | 'preferences'
+  | 'privacyServerWarning'
+  | 'share'
+  | 'searchDependencies'
+  | 'signInForTemplates';
+export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },
   { modal, message }
 ) => {
@@ -90,14 +107,6 @@ export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   if (state.user) {
     await actions.internal.authorize();
   }
-};
-
-export const userMenuOpened: Action = ({ state }) => {
-  state.userMenuOpen = true;
-};
-
-export const userMenuClosed: Action = ({ state }) => {
-  state.userMenuOpen = false;
 };
 
 export const addNotification: Action<{
@@ -178,7 +187,7 @@ export const signOutClicked: AsyncAction = async ({
   await effects.api.signout();
   effects.jwt.reset();
   state.user = null;
-  await actions.refetchSandboxInfo();
+  effects.browser.reload();
 };
 
 export const signOutGithubIntegration: AsyncAction = async ({
@@ -222,4 +231,22 @@ export const refetchSandboxInfo: AsyncAction = async ({
 
     await actions.editor.internal.initializeLiveSandbox(sandbox);
   }
+};
+
+export const acceptTeamInvitation: Action<{ teamName: string }> = (
+  { effects },
+  { teamName }
+) => {
+  effects.analytics.track('Team - Invitation Accepted', {});
+
+  effects.notificationToast.success(`Accepted invitation to ${teamName}`);
+};
+
+export const rejectTeamInvitation: Action<{ teamName: string }> = (
+  { effects },
+  { teamName }
+) => {
+  effects.analytics.track('Team - Invitation Accepted', {});
+
+  effects.notificationToast.success(`Rejected invitation to ${teamName}`);
 };

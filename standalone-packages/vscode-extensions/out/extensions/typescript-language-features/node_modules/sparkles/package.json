@@ -1,0 +1,36 @@
+{
+  "name": "sparkles",
+  "version": "1.0.0",
+  "description": "Namespaced global event emitter",
+  "author": "Blaine Bublitz <blaine@iceddev.com> (http://iceddev.com/)",
+  "contributors": [],
+  "repository": "phated/sparkles",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 0.10"
+  },
+  "main": "index.js",
+  "files": [
+    "LICENSE",
+    "index.js"
+  ],
+  "scripts": {
+    "test": "lab -cvL --ignore store@sparkles"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@phated/eslint-config-iceddev": "^0.2.1",
+    "code": "^1.5.0",
+    "eslint": "^1.3.1",
+    "eslint-plugin-mocha": "^0.5.1",
+    "eslint-plugin-react": "^3.3.1",
+    "lab": "^5.16.0"
+  },
+  "keywords": [
+    "ee",
+    "emitter",
+    "events",
+    "global",
+    "namespaced"
+  ]
+}

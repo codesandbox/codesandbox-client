@@ -25,11 +25,17 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 function createReaction(overmind: any) {
   return (reactionCb: any, updateCb: any) => {
     const tree = overmind.proxyStateTree.getTrackStateTree();
+    const updateReaction = () => {
+      tree.trackScope(
+        () => reactionCb(tree.state),
+        () => {
+          updateCb(reactionCb(tree.state));
+          updateReaction();
+        }
+      );
+    };
 
-    tree.trackScope(
-      () => reactionCb(tree.state),
-      () => updateCb(reactionCb(tree.state))
-    );
+    updateReaction();
 
     return () => {
       overmind.proxyStateTree.disposeTree(tree);

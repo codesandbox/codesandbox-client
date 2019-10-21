@@ -7,11 +7,13 @@ import {
   Module,
   Directory,
   RoomInfo,
-  Sandbox,
   LiveMessageEvent,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import clientsFactory from './clients';
+import { transformSandbox } from '../utils/sandbox';
+import { SandboxAPIResponse } from '../api/types';
 
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
@@ -20,10 +22,14 @@ type Options = {
 
 type JoinChannelResponse = {
   sandboxId: string;
-  sandbox: Sandbox;
+  sandbox: SandboxAPIResponse;
   moduleState: object;
   liveUserId: string;
   roomInfo: RoomInfo;
+};
+
+type JoinChannelTransformedResponse = JoinChannelResponse & {
+  sandbox: Sandbox;
 };
 
 declare global {
@@ -101,15 +107,18 @@ export default {
         .receive('error', resp => reject(resp));
     });
   },
-  joinChannel(roomId: string): Promise<JoinChannelResponse> {
+  joinChannel(roomId: string): Promise<JoinChannelTransformedResponse> {
     channel = this.getSocket().channel(`live:${roomId}`, {});
 
     return new Promise((resolve, reject) => {
       channel
         .join()
-        .receive('ok', resp =>
-          resolve(camelizeKeys(resp) as JoinChannelResponse)
-        )
+        .receive('ok', resp => {
+          const result = camelizeKeys(resp) as JoinChannelResponse;
+          // @ts-ignore
+          result.sandbox = transformSandbox(result.sandbox);
+          resolve(result as JoinChannelTransformedResponse);
+        })
         .receive('error', resp => reject(camelizeKeys(resp)));
     });
   },
@@ -151,8 +160,9 @@ export default {
           .receive('ok', resolve)
           .receive('error', reject);
       } else {
-        // eslint-disable-next-line prefer-promise-reject-errors
-        reject('Channel is not defined');
+        // we might try to send messages even when not on live, just
+        // ignore it
+        resolve();
       }
     });
   },

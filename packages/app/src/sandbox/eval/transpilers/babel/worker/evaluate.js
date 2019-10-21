@@ -64,7 +64,7 @@ export default function evaluate(
       availablePlugins[requirePath.replace('babel-plugin-', '')] ||
       availablePlugins[requirePath.replace('@babel/plugin-', '')];
     if (plugin && requirePath !== 'react') {
-      return plugin.__esModule ? plugin.default : plugin;
+      return plugin;
     }
 
     const preset =

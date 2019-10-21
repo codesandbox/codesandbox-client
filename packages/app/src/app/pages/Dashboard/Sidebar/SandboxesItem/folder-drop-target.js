@@ -1,10 +1,11 @@
+import { basename, join } from 'path';
+
 import { client } from 'app/graphql/client';
-import { join, basename } from 'path';
 
 import {
   ADD_SANDBOXES_TO_FOLDER_MUTATION,
-  RENAME_FOLDER_MUTATION,
   PATHED_SANDBOXES_CONTENT_QUERY,
+  RENAME_FOLDER_MUTATION,
 } from '../../queries';
 
 function addSandboxesToCollection(props, item) {
@@ -15,9 +16,7 @@ function addSandboxesToCollection(props, item) {
     variables: {
       collectionPath: path || '/',
       teamId,
-      sandboxIds: selectedSandboxes.toJS
-        ? selectedSandboxes.toJS()
-        : selectedSandboxes,
+      sandboxIds: selectedSandboxes,
     },
     optimisticResponse: {
       __typename: 'Mutation',

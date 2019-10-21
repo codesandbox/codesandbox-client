@@ -66,11 +66,16 @@ export const withLoadApp = <T>(
 };
 
 export const withOwnedSandbox = <T>(
-  continueAction: AsyncAction<T>
+  continueAction: AsyncAction<T>,
+  cancelAction: AsyncAction<T> = () => Promise.resolve()
 ): AsyncAction<T> => async (context, payload) => {
   const { state, actions } = context;
 
   if (!state.editor.currentSandbox.owned) {
+    if (state.editor.isForkingSandbox) {
+      return cancelAction(context, payload);
+    }
+
     await actions.editor.internal.forkSandbox({
       sandboxId: state.editor.currentId,
     });
@@ -86,6 +91,8 @@ export const withOwnedSandbox = <T>(
       });
     } else if (modalResponse === 'unfreeze') {
       state.editor.sessionFrozen = false;
+    } else if (modalResponse === 'cancel') {
+      return cancelAction(context, payload);
     }
   }
 

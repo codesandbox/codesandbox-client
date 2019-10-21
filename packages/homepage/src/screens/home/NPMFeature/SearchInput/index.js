@@ -17,6 +17,11 @@ const Legend = styled.div`
   color: white;
 `;
 
+const Hits = styled.ul`
+  list-style: none;
+  margin: 0;
+`;
+
 const SearchInput = () => {
   const [hits, setHits] = useState([]);
 
@@ -38,14 +43,18 @@ const SearchInput = () => {
     <div style={{ width: '100%' }}>
       <Input searchQuery={searchQuery} />
 
-      <Legend>
+      <Legend aria-hidden>
         <div>Dependency</div>
         <div>Sandbox Count</div>
       </Legend>
 
-      {hits.map(hit => (
-        <Hit key={hit.value} hit={hit} />
-      ))}
+      <Hits aria-live="polite">
+        {hits.map(hit => (
+          <li>
+            <Hit key={hit.value} hit={hit} />
+          </li>
+        ))}
+      </Hits>
 
       <a
         href="https://www.algolia.com/?utm_source=algoliaclient&utm_medium=website&utm_content=codesandbox.io&utm_campaign=poweredby"
@@ -53,10 +62,11 @@ const SearchInput = () => {
         rel="noreferrer noopener"
       >
         <img
-          alt="Algolia"
+          alt="search by Algolia"
           style={{ marginTop: '1rem' }}
           width={160}
           src={algoliaImage}
+          loading="lazy"
         />
       </a>
     </div>

@@ -1,9 +1,9 @@
 ---
-title: 'Importing Sandboxes'
+title: Importing Sandboxes
 authors: ['CompuIves']
 description:
-  'There are many ways to create a sandbox on CodeSandbox, either
-  programmatically or with a UI.'
+  There are many ways to create a sandbox on CodeSandbox, either
+  programmatically or with a UI.
 ---
 
 ## Create Wizard

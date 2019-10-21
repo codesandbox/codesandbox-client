@@ -101,6 +101,18 @@ const Image = styled.img`
   margin-bottom: 0;
 `;
 
+const Ul = styled.ul`
+  list-style: none;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex: auto;
+`;
+
+const Li = styled.li`
+  margin: 0;
+`;
+
 export default class Navigation extends React.PureComponent {
   state = {
     user: null,
@@ -133,7 +145,7 @@ export default class Navigation extends React.PureComponent {
     const { user } = this.state;
     return (
       <MaxWidth width={1440}>
-        <Container>
+        <Container as="nav" aria-label="main">
           <Left>
             <a href="/">
               <StyledLogo
@@ -143,49 +155,66 @@ export default class Navigation extends React.PureComponent {
               />
             </a>
 
-            <Item href="/explore">Explore</Item>
-            <Item href="/search">Search</Item>
-            <Item href="/docs">Docs</Item>
-
-            <Item href="/blog">Blog</Item>
-
-            <Item
-              href="https://github.com/codesandbox/codesandbox-client"
-              target="_blank"
-              rel="noopener noreferrer"
-              hideOn={970}
-            >
-              GitHub
-            </Item>
-
-            <Item href="/jobs">Careers</Item>
+            <Ul>
+              <Li>
+                <Item href="/explore">Explore</Item>
+              </Li>
+              <Li>
+                <Item href="/search">Search</Item>
+              </Li>
+              <Li>
+                <Item href="/docs">Docs</Item>
+              </Li>
+              <Li>
+                <Item href="/blog">Blog</Item>
+              </Li>
+              <Li>
+                <Item
+                  href="https://github.com/codesandbox/codesandbox-client"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  hideOn={970}
+                >
+                  GitHub
+                </Item>
+              </Li>
+              <Li>
+                <Item href="/jobs">Careers</Item>
+              </Li>
+            </Ul>
           </Left>
 
           <Right>
-            {!user && (
-              <Item hideOn={875} href="/signin">
-                Sign In
-              </Item>
-            )}
-
-            <Item
-              onClick={() => {
-                track('Navigation - Create Sandbox Clicked');
-              }}
-              hidePhone
-              href="/s"
-              rel="noopener noreferrer"
-              button={!user}
-            >
-              Create Sandbox
-            </Item>
-
-            {user && (
-              <Item hidePhone href="/dashboard" rel="noopener noreferrer">
-                {user.username}
-                <Image alt={user.username} src={user.avatar_url} />
-              </Item>
-            )}
+            <Ul>
+              {!user && (
+                <Li>
+                  <Item hideOn={875} href="/signin">
+                    Sign In
+                  </Item>
+                </Li>
+              )}
+              <Li>
+                <Item
+                  onClick={() => {
+                    track('Navigation - Create Sandbox Clicked');
+                  }}
+                  hidePhone
+                  href="/s"
+                  rel="noopener noreferrer"
+                  button={!user}
+                >
+                  Create Sandbox
+                </Item>
+              </Li>
+              {user && (
+                <Li>
+                  <Item hidePhone href="/dashboard" rel="noopener noreferrer">
+                    {user.username}
+                    <Image alt={user.username} src={user.avatar_url} />
+                  </Item>
+                </Li>
+              )}
+            </Ul>
           </Right>
         </Container>
       </MaxWidth>

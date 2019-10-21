@@ -1,8 +1,7 @@
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import { StaticQuery, graphql } from 'gatsby';
 import React from 'react';
 import styled from 'styled-components';
-import { StaticQuery, graphql } from 'gatsby';
-
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 
 import media from '../../../utils/media';
 
@@ -78,10 +77,12 @@ const Image = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;
 
-const PublicationItem = ({ title, image, url, description }) => (
+const PublicationItem = ({ description, image, title, url }) => (
   <Item href={url} target="_blank" rel="noopener noreferrer">
-    <Image bg={image} aria-label={title} />
+    <Image aria-label={title} bg={image} />
+
     <PublicationTitle>{title}</PublicationTitle>
+
     <PublicationDescription>{description}</PublicationDescription>
   </Item>
 );
@@ -90,70 +91,70 @@ export default () => (
   <StaticQuery
     query={graphql`
       query {
-        allMarkdownRemark(
+        allBlogPosts: allMarkdownRemark(
           filter: { fileAbsolutePath: { regex: "/articles/" } }
           limit: 3
-          sort: { order: DESC, fields: [frontmatter___date] }
+          sort: { fields: [fields___date], order: [DESC] }
         ) {
           edges {
             node {
-              id
-              html
+              fields {
+                description
+                slug
+                title
+              }
               frontmatter {
-                featuredImage {
+                banner {
                   publicURL
                 }
-                slug
-                authors
-                photo
-                title
-                description
-                date
               }
+              id
             }
           }
         }
       }
     `}
-    render={({ allMarkdownRemark }) => {
-      const { edges } = allMarkdownRemark;
-      const posts = edges
-        .map(({ node }) => ({
-          id: node.id,
-          ...node.frontmatter,
-        }))
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    render={({ allBlogPosts: { edges: blogPosts } }) => (
+      <Container as="section" aria-labelledby="recent-publications">
+        <MaxWidth width={1280}>
+          <Title id="recent-publications">Recent Publications</Title>
 
-      return (
-        <Container>
-          <MaxWidth width={1280}>
-            <Title>Recent Publications</Title>
-            <SubTitle>
-              You can follow{' '}
-              <a
-                href="/blog"
-                target="_blank"
-                rel="noreferrer noopener"
-                style={{ textDecoration: 'none' }}
-              >
-                our blog
-              </a>{' '}
-              to stay up to date with new publications.
-            </SubTitle>
-            <Items style={{ marginBottom: '2rem' }}>
-              {posts.map(post => (
+          <SubTitle aria-label="You can follow our blog to stay up to date with new publications.">
+            You can follow{' '}
+            <a
+              href="/blog"
+              rel="noreferrer noopener"
+              style={{ textDecoration: 'none' }}
+              target="_blank"
+            >
+              our blog
+            </a>{' '}
+            to stay up to date with new publications.
+          </SubTitle>
+
+          <Items as="ul" style={{ marginBottom: '2rem' }}>
+            {blogPosts.map(
+              ({
+                node: {
+                  fields: { description, slug, title },
+                  frontmatter: {
+                    banner: { publicURL: banner },
+                  },
+                  id,
+                },
+              }) => (
                 <PublicationItem
-                  key={post.id}
-                  title={post.title}
-                  description={post.description}
-                  url={`/post/${post.slug}`}
-                  image={post.featuredImage.publicURL}
+                  description={description}
+                  image={banner}
+                  key={id}
+                  title={title}
+                  url={`/post/${slug}`}
                 />
-              ))}
-            </Items>
-          </MaxWidth>
-        </Container>
-      );
-    }}
+              )
+            )}
+          </Items>
+        </MaxWidth>
+      </Container>
+    )}
   />
 );

@@ -1,10 +1,10 @@
 ---
-title: 'Back-end / Infrastructure engineer'
-slug: 'backend-infrastructure-engineer'
+title: Back-end / Infrastructure engineer
+slug: backend-infrastructure-engineer
 description:
-  "As a backend engineer you’re key to our success. You'll work on building the
-  infrastructure to support and determine our growth."
-link: 'https://codesandbox.recruitee.com/o/backendinfrastructure-engineer'
+  As a backend engineer you’re key to our success. You'll work on building the
+  infrastructure to support and determine our growth.
+applySlug: backendinfrastructure-engineer
 ---
 
 ## Role
