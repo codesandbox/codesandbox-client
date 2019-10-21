@@ -1,6 +1,6 @@
 // @flow
 
-import type {
+import {
   Module,
   Sandbox,
   ModuleError,

@@ -16,7 +16,7 @@ import UIIcon from 'react-icons/lib/md/dvr';
 import { Configuration } from './Configuration';
 import { Icon, Icons } from './elements';
 import { ImageViewer } from './ImageViewer';
-import MonacoDiff from './MonacoDiff';
+import { MonacoDiff } from './MonacoDiff';
 import { Props } from './types'; // eslint-disable-line
 import { VSCode } from './VSCode';
 

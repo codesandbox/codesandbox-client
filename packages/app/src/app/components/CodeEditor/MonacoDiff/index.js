@@ -8,27 +8,27 @@ import { Container, CodeContainer } from '../Monaco/elements';
 import getSettings from '../Monaco/settings';
 import getMode from '../Monaco/mode';
 
-type Props = {
-  originalCode: string,
-  modifiedCode: string,
-  title?: string,
-  settings: Settings,
-};
+interface IMonacoDiffProps {
+  originalCode: string;
+  modifiedCode: string;
+  title?: string;
+  settings: Settings;
+}
 
-export default class MonacoDiff extends React.Component<Props>
+export class MonacoDiff extends React.Component<IMonacoDiffProps>
   implements Editor {
   editor: any;
   monaco: any;
   sizeProbeInterval: IntervalID; // eslint-disable-line no-undef
   settings: Settings;
 
-  constructor(props: Props) {
+  constructor(props: IMonacoDiffProps) {
     super(props);
 
     this.settings = props.settings;
   }
 
-  UNSAFE_componentWillUpdate(nextProps: Props) {
+  UNSAFE_componentWillUpdate(nextProps: IMonacoDiffProps) {
     if (
       this.props.originalCode !== nextProps.originalCode ||
       this.props.modifiedCode !== nextProps.modifiedCode

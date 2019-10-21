@@ -1422,6 +1422,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jeffsieu",
+      "name": "Jeff Sieu",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/8487294?v=4",
+      "profile": "https://github.com/jeffsieu",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
