@@ -159,11 +159,15 @@ if (process.env.NODE_ENV === 'production') {
   }, 5000);
 }
 
+export function getHashedUserId(userId: string) {
+  return hash(userId);
+}
+
 export async function setUserId(userId: string) {
   try {
     if (!DNT) {
       if (typeof global.amplitude !== 'undefined') {
-        const hashedId = hash(userId);
+        const hashedId = getHashedUserId(userId);
         debug('[Amplitude] Setting User ID', hashedId);
         identify('userId', hashedId);
 

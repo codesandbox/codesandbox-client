@@ -1,4 +1,5 @@
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import { getHashedUserId } from '@codesandbox/common/lib/utils/analytics';
 import {
   EnvironmentVariable,
   ModuleCorrection,
@@ -122,7 +123,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   state.editor.isLoading = false;
 
-  effects.chameleon.loadTour(state.user && state.user.id);
+  effects.chameleon.loadTour(state.user && getHashedUserId(state.user.id));
 });
 
 export const contentMounted: Action = ({ state, effects }) => {
