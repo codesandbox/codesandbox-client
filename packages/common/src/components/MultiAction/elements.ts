@@ -68,7 +68,6 @@ export const SecondaryAction = styled(MenuItem)<{ disabled?: boolean }>`
     border: none;
     background: none;
     color: rgba(255, 255, 255, 0.8);
-    ${theme.fonts.primary.normal};
     text-align: initial;
     transition: all 0.3s ease 0s;
     ${!disabled && `cursor: pointer;`};

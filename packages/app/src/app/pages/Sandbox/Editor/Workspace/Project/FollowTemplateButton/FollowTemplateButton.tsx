@@ -7,7 +7,7 @@ import Unchecked from 'react-icons/lib/md/check-box-outline-blank';
 import { MultiAction } from '@codesandbox/common/lib/components/MultiAction';
 import { ButtonContainer, ButtonIcon } from './elements';
 // @ts-ignore
-import { followTemplate, unfollowTemplate } from './mutations.gql';
+import { bookmarkTemplate, unbookmarkTemplate } from './mutations.gql';
 // @ts-ignore
 import { getSandboxInfo } from './queries.gql';
 
@@ -35,14 +35,14 @@ export const FollowTemplateButton = () => {
     (data &&
       data.sandbox &&
       data.sandbox.customTemplate &&
-      data.sandbox.customTemplate.following) ||
+      data.sandbox.customTemplate.bookmarked) ||
     [];
 
   const config = (entity: number = 0) => {
-    const following = entities;
+    const bookmarked = entities;
 
-    if (following[entity]) {
-      following[entity].isFollowing = !following[entity].isFollowing;
+    if (bookmarked[entity]) {
+      bookmarked[entity].isBookmarked = !bookmarked[entity].isBookmarked;
     }
 
     return {
@@ -55,7 +55,7 @@ export const FollowTemplateButton = () => {
         template: {
           __typename: 'Template',
           id: customTemplate.id,
-          following,
+          bookmarked,
         },
       },
       update: (proxy: any, { data: { template } }) => {
@@ -71,7 +71,7 @@ export const FollowTemplateButton = () => {
               ...result.sandbox,
               customTemplate: {
                 ...result.sandbox.customTemplate,
-                following: template.following,
+                bookmarked: template.bookmarked,
               },
             },
           },
@@ -80,11 +80,11 @@ export const FollowTemplateButton = () => {
     };
   };
 
-  const [follow] = useMutation<any, any>(followTemplate, config());
-  const [unfollow] = useMutation<any, any>(unfollowTemplate, config());
+  const [follow] = useMutation<any, any>(bookmarkTemplate, config());
+  const [unfollow] = useMutation<any, any>(unbookmarkTemplate, config());
 
   const handleToggleFollow = (i: number = 0) =>
-    entities[i].isFollowing ? unfollow(config(i)) : follow(config(i));
+    entities[i].isBookmarked ? unfollow(config(i)) : follow(config(i));
 
   return customTemplate ? (
     <ButtonContainer>
@@ -100,7 +100,7 @@ export const FollowTemplateButton = () => {
           disabled={loading}
           onPrimaryClick={() => handleToggleFollow()}
           primaryActionLabel={
-            entities[0] && entities[0].isFollowing
+            entities[0] && entities[0].isBookmarked
               ? `Unfollow Template`
               : `Follow Template`
           }
@@ -112,9 +112,9 @@ export const FollowTemplateButton = () => {
               onClick={() => handleToggleFollow(i)}
             >
               <ButtonIcon>
-                {entities[i].isFollowing ? <Checked /> : <Unchecked />}
+                {entities[i].isBookmarked ? <Checked /> : <Unchecked />}
               </ButtonIcon>
-              {`${entities[i].isFollowing ? `Remove from` : `Add to`} ${
+              {`${entities[i].isBookmarked ? `Remove from` : `Add to`} ${
                 i ? name : `my`
               } followed templates.`}
             </button>

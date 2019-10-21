@@ -7,8 +7,8 @@ query getSandboxInfo($id: ID!) {
     }
     customTemplate {
       id
-      following {
-        isFollowing
+      bookmarked {
+        isBookmarked
         entity {
           __typename
           ... on User {
