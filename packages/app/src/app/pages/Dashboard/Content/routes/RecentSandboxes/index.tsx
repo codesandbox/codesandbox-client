@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet';
 import { useQuery } from '@apollo/react-hooks';
 
 import { useOvermind } from 'app/overmind';
@@ -16,6 +16,11 @@ export const RecentSandboxes = () => {
       orderDirection: state.dashboard.orderBy.order.toUpperCase(),
     },
   });
+
+  if (error) {
+    return <div>Error!</div>;
+  }
+
   const sandboxes = loading ? [] : (data && data.me && data.me.sandboxes) || [];
 
   let mostUsedTemplate = null;
@@ -28,13 +33,11 @@ export const RecentSandboxes = () => {
   // We want to hide all templates
   // TODO: make this a query variable for graphql and move the logic to the server
   const noTemplateSandboxes = sandboxes.filter(s => !s.customTemplate);
-
   return (
     <>
       <Helmet>
         <title>Recent Sandboxes - CodeSandbox</title>
       </Helmet>
-      {error && <div>Error!</div>}
       <Sandboxes
         isLoading={loading}
         Header="Recent Sandboxes"
