@@ -1,4 +1,3 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
@@ -9,7 +8,6 @@ import React, {
   KeyboardEvent,
   useState,
 } from 'react';
-import { Link } from 'react-router-dom';
 import { useSpring, animated } from 'react-spring';
 
 import { useOvermind } from 'app/overmind';
@@ -21,7 +19,6 @@ import {
   Form,
   Name,
   NameInput,
-  TemplateBadge,
   Main,
 } from './elements';
 
@@ -84,7 +81,6 @@ export const SandboxName: FunctionComponent = () => {
       (currentSandbox.team ? currentSandbox.team.name : 'My Sandboxes')
     : 'My Sandboxes';
 
-  const template = currentSandbox.customTemplate && !updatingName;
   const spring = useSpring({
     opacity: updatingName ? 0 : 1,
     pointerEvents: updatingName ? 'none' : 'initial',
@@ -132,25 +128,6 @@ export const SandboxName: FunctionComponent = () => {
             {sandboxName}
           </Name>
         )}
-
-        {template ? (
-          <Tooltip
-            content={
-              <>
-                This sandbox is a template, you can learn about templates in the{' '}
-                <Link target="_blank" to="/docs/templates">
-                  docs
-                </Link>
-                .
-              </>
-            }
-            delay={0}
-            interactive
-            placement="bottom"
-          >
-            <TemplateBadge color={customTemplate.color}>Template</TemplateBadge>
-          </Tooltip>
-        ) : null}
       </Container>
     </Main>
   );

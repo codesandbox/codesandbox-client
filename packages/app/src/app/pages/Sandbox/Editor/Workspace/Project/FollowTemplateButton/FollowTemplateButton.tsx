@@ -11,7 +11,7 @@ import { bookmarkTemplate, unbookmarkTemplate } from './mutations.gql';
 // @ts-ignore
 import { getSandboxInfo } from './queries.gql';
 
-export const FollowTemplateButton = () => {
+export const FollowTemplateButton = ({ style }) => {
   const {
     state: {
       isLoggedIn,
@@ -87,7 +87,7 @@ export const FollowTemplateButton = () => {
     entities[i].isBookmarked ? unfollow(config(i)) : follow(config(i));
 
   return customTemplate ? (
-    <ButtonContainer>
+    <ButtonContainer css={style}>
       {!isLoggedIn ? (
         <>
           You need to be signed in to follow templates.
