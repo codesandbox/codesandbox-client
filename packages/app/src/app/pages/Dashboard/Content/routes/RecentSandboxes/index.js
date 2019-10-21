@@ -8,7 +8,7 @@ import { Content as Sandboxes } from '../../Sandboxes';
 import CreateNewSandbox from '../../CreateNewSandbox';
 import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
-const RecentSandboxes = () => {
+export const RecentSandboxes = () => {
   const { state } = useOvermind();
   return (
     <>
@@ -62,5 +62,3 @@ const RecentSandboxes = () => {
     </>
   );
 };
-
-export default RecentSandboxes;
