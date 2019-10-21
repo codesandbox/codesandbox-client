@@ -1,8 +1,10 @@
-import React from 'react';
 import { storiesOf } from '@storybook/react';
+import React from 'react';
+
 import { noop } from '../../test/mocks';
-import Preference from '.';
 import { KEYBINDINGS } from '../../utils/keybindings';
+
+import { Preference } from '.';
 
 const stories = storiesOf('components/Preference', module);
 const keyBindingKeys = Object.keys(KEYBINDINGS);
