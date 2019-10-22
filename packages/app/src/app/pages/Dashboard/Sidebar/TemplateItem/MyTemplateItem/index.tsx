@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
-import { withRouter } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 // @ts-ignore
 import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
 import { Item } from '../../Item';
@@ -14,13 +14,9 @@ interface ITemplateItemProps {
   connectDropTarget?: any;
 }
 
-const TemplateItemComponent: React.FC<ITemplateItemProps> = ({
-  currentPath,
-  isOver,
-  canDrop,
-  connectDropTarget,
-  teamId,
-}: ITemplateItemProps) => {
+const TemplateItemComponent: React.FC<
+  ITemplateItemProps & RouteComponentProps
+> = ({ currentPath, isOver, canDrop, connectDropTarget, teamId }) => {
   const url = teamId
     ? `/dashboard/teams/${teamId}/templates`
     : `/dashboard/templates`;

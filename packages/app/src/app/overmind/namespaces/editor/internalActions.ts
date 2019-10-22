@@ -166,12 +166,15 @@ export const saveCode: AsyncAction<{
     effects.notificationToast.warning(error.message);
 
     if (cbID) {
-      effects.vscode.callCallbackError(cbID);
+      effects.vscode.callCallbackError(cbID, error.message);
     }
   }
 };
 
-export const updateCurrentTemplate: Action = ({ state, effects }) => {
+export const updateCurrentTemplate: AsyncAction = async ({
+  state,
+  effects,
+}) => {
   try {
     const currentTemplate = state.editor.currentSandbox.template;
     const templateDefinition = getTemplateDefinition(currentTemplate);
@@ -201,7 +204,7 @@ export const updateCurrentTemplate: Action = ({ state, effects }) => {
           getTemplateDefinition(newTemplate).isServer
       ) {
         state.editor.currentSandbox.template = newTemplate;
-        effects.api.saveTemplate(state.editor.currentId, newTemplate);
+        await effects.api.saveTemplate(state.editor.currentId, newTemplate);
       }
     }
   } catch (e) {
