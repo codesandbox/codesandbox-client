@@ -124,6 +124,8 @@ const getBorder = ({
 export interface IBaseProps extends OptionProps {
   block?: boolean;
   small?: boolean;
+  style?: React.CSSProperties;
+  children?: any;
 }
 
 export const buttonStyles = ({

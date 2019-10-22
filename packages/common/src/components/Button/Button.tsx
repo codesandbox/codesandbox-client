@@ -15,6 +15,7 @@ export interface IButtonProps extends ILinkProps {
   red?: boolean;
   danger?: boolean;
   style?: React.CSSProperties;
+  children?: any;
 }
 
 export const Button: React.FC<IButtonProps> = ({
