@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { sortBy, takeRight } from 'lodash-es';
-import { inject, observer } from 'app/componentConnectors';
 
 import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { useOvermind } from 'app/overmind';
 
 const Container = styled.div`
   min-height: 200px;
@@ -22,9 +22,10 @@ const Messages = styled.div`
   flex: 1;
 `;
 
-const ChatComponent = ({ signals, store }) => {
+export const Chat = () => {
   const [value, setValue] = useState('');
   const [height, setHeight] = useState('');
+  const { state, actions } = useOvermind();
   const messagesRef = useRef(null);
   function scrollDown() {
     if (messagesRef.current) {
@@ -38,7 +39,7 @@ const ChatComponent = ({ signals, store }) => {
       e.preventDefault();
       e.stopPropagation();
       // Enter
-      signals.live.onSendChat({
+      actions.live.onSendChat({
         message: value,
       });
       setValue('');
@@ -50,9 +51,9 @@ const ChatComponent = ({ signals, store }) => {
     setValue(e.target.value);
   };
 
-  const { messages, users } = store.live.roomInfo.chat;
-  const currentUserId = store.live.liveUserId;
-  const roomInfoUsers = store.live.roomInfo.users;
+  const { messages, users } = state.live.roomInfo.chat;
+  const currentUserId = state.live.liveUserId;
+  const roomInfoUsers = state.live.roomInfo.users;
 
   return (
     <Container
@@ -132,5 +133,3 @@ const ChatComponent = ({ signals, store }) => {
     </Container>
   );
 };
-
-export const Chat = inject('signals', 'store')(observer(ChatComponent));
