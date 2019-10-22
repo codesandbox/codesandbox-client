@@ -20,7 +20,7 @@ const ErrorMessage = styled.div`
 
 export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
   const { actions } = useOvermind();
-  const [mutate, { loading, error }] = useMutation(INVITE_TO_TEAM);
+  const [inviteToTeam, { loading, error }] = useMutation(INVITE_TO_TEAM);
   let input: HTMLInputElement = null;
 
   const submit: React.FormEventHandler = e => {
@@ -44,7 +44,7 @@ export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
       variables.username = value;
     }
 
-    mutate({
+    inviteToTeam({
       variables,
     }).then(() => {
       actions.notificationAdded({
