@@ -177,7 +177,7 @@ example sandbox of that is here:
 You can export a local component to CodeSandbox by using our other
 [CLI](https://github.com/codesandbox/codesandboxer/tree/master/packages/codesandboxer-fs).
 
-You can install our CLI by running `npm install -g codesandbox`. Then you can
+You can install our CLI by running `npm install -g codesandboxer-fs`. Then you can
 export a project by running `codesandboxer {filePath}`.
 
 ```
