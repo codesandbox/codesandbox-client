@@ -60,7 +60,6 @@ export const ForkFrozenSandboxModal: React.FC = () => {
     state: { modals },
     actions: { modals: modalsActions },
   } = useOvermind();
-  console.log(`Modal showing: ${modals.forkFrozenModal.isCurrent}`)
   return (
     <Modal
       isOpen={modals.forkFrozenModal.isCurrent}

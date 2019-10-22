@@ -82,7 +82,7 @@ const Dashboard = props => {
             <OffsettedLogo />
             <LoggedInTitle>Sign in to CodeSandbox</LoggedInTitle>
 
-            <SignInButton big style={{ fontSize: '1rem' }} />
+            <SignInButton style={{ fontSize: '1rem' }} />
           </LoggedInContainer>
         </Centered>
       </Container>

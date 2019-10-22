@@ -11,7 +11,11 @@ import { bookmarkTemplate, unbookmarkTemplate } from './mutations.gql';
 // @ts-ignore
 import { getSandboxInfo } from './queries.gql';
 
-export const FollowTemplateButton = ({ style }) => {
+interface IFollowTemplateButton {
+  style?: string;
+}
+
+export const FollowTemplateButton = ({ style }: IFollowTemplateButton) => {
   const {
     state: {
       isLoggedIn,

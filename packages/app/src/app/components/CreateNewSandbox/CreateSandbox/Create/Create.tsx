@@ -7,6 +7,7 @@ import { Loader } from '../Loader/index';
 import { Header } from '../elements';
 import { SubHeader } from './elements';
 import { all } from '../availableTemplates';
+// @ts-ignore
 import { ListFollowedTemplates, ListTemplates } from '../queries.gql';
 
 // Would be good to actually have this interface filled out
