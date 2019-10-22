@@ -55,10 +55,8 @@ export const Explore = () => {
           page,
         })
         .then(rsp => {
-          setAllPages(rsp.nbPages);
+          setAllPages(rsp.nbPages - 1);
           const newTemplates = makeTemplates(rsp.hits);
-          if (page === 0) return setTemplates(newTemplates);
-
           return setTemplates(newTemplates);
         });
     }
@@ -116,7 +114,7 @@ export const Explore = () => {
               <Pagination
                 pages={allPages}
                 onChange={destination => {
-                  setPage(destination);
+                  setPage(destination - 1);
                 }}
               />
             </Results>
