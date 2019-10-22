@@ -1,23 +1,26 @@
-import { GitProgress } from 'app/components/GitProgress';
-import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
+import { useOvermind } from 'app/overmind';
+import { GitProgress } from 'app/components/GitProgress';
 
-export const PRModal: FunctionComponent = () => {
+const PRModal: FunctionComponent = () => {
   const {
-    state: { git },
+    state: {
+      git: {
+        isCreatingPr,
+        pr: { prURL },
+      },
+    },
   } = useOvermind();
 
   let result = null;
 
-  if (!git.isCreatingPr) {
-    const newUrl = git.pr.prURL;
-
+  if (!isCreatingPr) {
     result = (
       <div>
         Done! We{"'"}ll now open the new sandbox of this PR and GitHub in 3
         seconds...
         <div style={{ fontSize: '.875rem', marginTop: '1rem' }}>
-          <a href={newUrl} target="_blank" rel="noreferrer noopener">
+          <a href={prURL} target="_blank" rel="noreferrer noopener">
             Click here if nothing happens.
           </a>
         </div>
@@ -32,3 +35,5 @@ export const PRModal: FunctionComponent = () => {
     />
   );
 };
+
+export default PRModal

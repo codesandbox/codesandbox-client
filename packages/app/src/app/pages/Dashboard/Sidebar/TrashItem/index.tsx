@@ -2,13 +2,19 @@ import React from 'react';
 import { DropTarget } from 'react-dnd';
 import TrashIcon from 'react-icons/lib/md/delete';
 
-import { withRouter } from 'react-router-dom';
-import { inject, observer } from 'app/componentConnectors';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import { Item } from '../Item';
 import { DELETE_SANDBOX_DROP_KEY } from '../../Content/SandboxCard';
 
-const TrashItemComponent = ({
+interface Props {
+  currentPath: string;
+  isOver: boolean;
+  canDrop: boolean;
+  connectDropTarget: (target: React.ReactElement) => React.ReactElement;
+}
+
+const TrashItemComponent: React.FC<Props & RouteComponentProps> = ({
   currentPath,
   isOver,
   canDrop,
@@ -60,8 +66,6 @@ export function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export const TrashItem = inject('store', 'signals')(
-  DropTarget(['SANDBOX'], entryTarget, collectTarget)(
-    withRouter(observer(TrashItemComponent))
-  )
+export const TrashItem = DropTarget(['SANDBOX'], entryTarget, collectTarget)(
+  withRouter(TrashItemComponent)
 );

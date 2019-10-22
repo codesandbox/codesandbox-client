@@ -42,6 +42,13 @@ const staticAssets = [
       : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs4',
   },
+  // For Monaco
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs3',
+  },
 ];
 
 module.exports = {

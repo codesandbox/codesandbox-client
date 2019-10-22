@@ -1,23 +1,22 @@
 import React, { FunctionComponent } from 'react';
+
 import { Alert } from 'app/components/Alert';
 import { useOvermind } from 'app/overmind';
 
-const DeleteDeploymentModal: FunctionComponent = () => {
+export const DeleteDeploymentModal: FunctionComponent = () => {
   const {
     actions: {
-      modalClosed,
       deployment: { deleteDeployment },
+      modalClosed,
     },
   } = useOvermind();
 
   return (
     <Alert
-      title="Delete Deployment"
-      body={<span>Are you sure you want to delete this Deployment?</span>}
+      body="Are you sure you want to delete this Deployment?"
       onCancel={() => modalClosed()}
       onConfirm={() => deleteDeployment()}
+      title="Delete Deployment"
     />
   );
 };
-
-export default DeleteDeploymentModal;

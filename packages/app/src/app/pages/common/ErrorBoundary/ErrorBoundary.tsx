@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { CodeSadbox } from './CodeSadbox';
 import { IErrorBoundaryProps, ErrorInfo, IErrorBoundaryState } from './types';
 
 export class ErrorBoundary extends Component<
-  IErrorBoundaryProps,
+  RouteComponentProps & IErrorBoundaryProps,
   IErrorBoundaryState
 > {
   static getDerivedStateFromError(error: Error) {

@@ -1,25 +1,19 @@
-// @flow
-
 import React from 'react';
-import type { Sandbox } from '@codesandbox/common/lib/types';
-
-import Logo from '@codesandbox/common/lib/components/Logo';
-
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { Text, EditText } from './elements';
+import { Button } from './elements';
 
-function EditorLink({ sandbox, small }: { sandbox: Sandbox, small?: boolean }) {
+function EditorLink({ sandbox, previewVisible }) {
   return (
-    <EditText
-      small={small}
+    <Button
+      id="openinsandbox"
       target="_blank"
       rel="noopener noreferrer"
       href={`${sandboxUrl(sandbox)}?from-embed`}
+      previewVisible={previewVisible}
     >
-      <Text small={small}>Open In CodeSandbox</Text>
-      <Logo />
-    </EditText>
+      Open Sandbox
+    </Button>
   );
 }
 
