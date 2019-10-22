@@ -17,7 +17,7 @@ const ErrorMessage = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-const AddTeamMember = ({ teamId }) => {
+export const AddTeamMember = ({ teamId }) => {
   const { actions } = useOvermind();
   return (
     <Mutation mutation={INVITE_TO_TEAM}>
@@ -84,5 +84,3 @@ const AddTeamMember = ({ teamId }) => {
     </Mutation>
   );
 };
-
-export default AddTeamMember;
