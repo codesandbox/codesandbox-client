@@ -9,6 +9,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useOvermind } from 'app/overmind';
 import { INVITE_TO_TEAM } from '../../../../queries';
+import { IAddTeamMemberProps, IMutationVariables } from './types';
 
 const ErrorMessage = styled.div`
   color: ${props => props.theme.red};
@@ -17,12 +18,12 @@ const ErrorMessage = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-export const AddTeamMember = ({ teamId }) => {
+export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
   const { actions } = useOvermind();
   const [mutate, { loading, error }] = useMutation(INVITE_TO_TEAM);
-  let input = null;
+  let input: HTMLInputElement = null;
 
-  const submit = e => {
+  const submit: React.FormEventHandler = e => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -34,7 +35,7 @@ export const AddTeamMember = ({ teamId }) => {
 
     // We don't enable email for now for privacy reasons
 
-    const variables = { teamId };
+    const variables: IMutationVariables = { teamId };
 
     const { value } = input;
     if (isEmail) {
@@ -47,8 +48,8 @@ export const AddTeamMember = ({ teamId }) => {
       variables,
     }).then(() => {
       actions.notificationAdded({
-        message: `${value} has been invited!`,
-        type: 'success',
+        title: `${value} has been invited!`,
+        notificationType: 'success',
       });
     });
 
