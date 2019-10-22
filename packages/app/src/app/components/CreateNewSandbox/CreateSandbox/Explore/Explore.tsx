@@ -24,10 +24,8 @@ import {
 import { all } from '../availableTemplates';
 
 const client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
-const index = client.initIndex('staging_sandboxes');
-
-const paginate = (array: any[], pageSize: number, pageNumber: number) =>
-  array.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize);
+// staging = 'staging_sandboxes'
+const index = client.initIndex(ALGOLIA_DEFAULT_INDEX);
 
 export const Explore = () => {
   const searchEl = useRef(null);
@@ -61,7 +59,7 @@ export const Explore = () => {
           const newTemplates = makeTemplates(rsp.hits);
           if (page === 0) return setTemplates(newTemplates);
 
-          return setTemplates(t => t.concat(newTemplates));
+          return setTemplates(newTemplates);
         });
     }
   }, [allPages, category, page, query]);
@@ -111,7 +109,7 @@ export const Explore = () => {
                 Templates
               </SubHeader>
               <Grid>
-                {paginate(templates, perPage, page).map(sandbox => (
+                {templates.map(sandbox => (
                   <SandboxCard key={sandbox.objectID} template={sandbox} />
                 ))}
               </Grid>
