@@ -7,7 +7,12 @@ import { bookmarkTemplate, unbookmarkTemplate } from './mutations.gql';
 // @ts-ignore
 import { isBookmarked } from './queries.gql';
 
-export const ActionButtons = ({ sandboxID, id }) => {
+interface IActionButtons {
+  sandboxID: string;
+  id: string;
+}
+
+export const ActionButtons = ({ sandboxID, id }: IActionButtons) => {
   const { data, loading, error } = useQuery(isBookmarked, {
     variables: { id: sandboxID },
   });

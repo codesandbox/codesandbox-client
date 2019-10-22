@@ -22,13 +22,12 @@ import {
 interface ISandboxCardProps {
   template: any;
   official?: boolean;
-  followed?: boolean;
   mine?: boolean;
   team?: any;
 }
 
 export const SandboxCard: React.FC<ISandboxCardProps> = forwardRef(
-  ({ template, official, followed: bookmarked, mine, team }, ref) => {
+  ({ template, official, mine, team }, ref) => {
     // @ts-ignore
     const { source, id: sandboxID, author = {} } = template.sandbox || {};
     const {

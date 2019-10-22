@@ -67,7 +67,6 @@ export const Create = () => {
               <GridList>
                 {followed.me.bookmarkedTemplates.map((template, i) => (
                   <SandboxCard
-                    followed
                     official={!template.sandbox}
                     key={template.niceName}
                     template={template}
@@ -85,7 +84,6 @@ export const Create = () => {
                   <GridList>
                     {team.bookmarkedTemplates.map(template => (
                       <SandboxCard
-                        followed
                         team={team}
                         official={!template.sandbox}
                         key={template.niceName}
