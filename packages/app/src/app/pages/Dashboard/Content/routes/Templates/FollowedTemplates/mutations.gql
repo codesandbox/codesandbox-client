@@ -1,8 +1,8 @@
 mutation unfollowTemplate($template: ID!, $team: ID) {
   followTemplate(templateId: $template, teamId: $team) {
     id
-    following {
-      isFollowing
+    bookmarked {
+      isBookmarked
       entity {
         __typename
         ... on User {

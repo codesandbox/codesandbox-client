@@ -19,6 +19,7 @@ interface IMultiActionProps {
   small?: boolean;
   block?: boolean;
   disabled?: boolean;
+  light?: boolean;
   secondary?: boolean;
   red?: boolean;
   danger?: boolean;

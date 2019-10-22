@@ -7,7 +7,7 @@ export const Features = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
-  margin-top: 6rem;
+  margin-top: 4rem;
   margin-bottom: 4rem;
   padding: 0 1.5rem;
 

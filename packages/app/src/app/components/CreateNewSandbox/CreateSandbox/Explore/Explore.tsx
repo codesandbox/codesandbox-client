@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
-  ALGOLIA_DEFAULT_INDEX,
+  ALGOLIA_DEFAULT_INDEX, // eslint-disable-line
 } from '@codesandbox/common/lib/utils/config';
 import * as algoliasearch from 'algoliasearch';
 import { useKey } from 'react-use';
@@ -24,7 +24,7 @@ import {
 import { all } from '../availableTemplates';
 
 const client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
-const index = client.initIndex(ALGOLIA_DEFAULT_INDEX);
+const index = client.initIndex('staging_sandboxes');
 
 const paginate = (array: any[], pageSize: number, pageNumber: number) =>
   array.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize);
@@ -126,9 +126,10 @@ export const Explore = () => {
             <SubHeader
               css={`
                 text-align: center;
+                margin-top: 2rem;
               `}
             >
-              Oh no
+              There are no templates matching your search.
             </SubHeader>
           )}
         </Scrollable>

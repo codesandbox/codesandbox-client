@@ -72,6 +72,8 @@ export function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export const TemplateItem = DropTarget(['SANDBOX'], entryTarget, collectTarget)(
-  withRouter(TemplateItemComponent)
-);
+export const MyTemplateItem = DropTarget(
+  ['SANDBOX'],
+  entryTarget,
+  collectTarget
+)(withRouter(TemplateItemComponent));
