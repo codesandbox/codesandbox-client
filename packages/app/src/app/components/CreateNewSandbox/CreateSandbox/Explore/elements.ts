@@ -6,6 +6,12 @@ const svg = (hover?: boolean) => css`
   }'/%3E%3C/svg%3E%0A");
 `;
 
+export const Results = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const Grid = styled.div`
   margin: 0 1.5rem;
   display: grid;

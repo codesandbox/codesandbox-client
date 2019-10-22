@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import {
-  MdFirstPage,
-  MdChevronLeft,
-  MdChevronRight,
-  MdLastPage,
-} from 'react-icons/md';
+import MdFirstPage from 'react-icons/lib/md/first-page';
+import MdChevronLeft from 'react-icons/lib/md/chevron-left';
+import MdChevronRight from 'react-icons/lib/md/chevron-right';
+import MdLastPage from 'react-icons/lib/md/last-page';
 import { clamp, range } from '../../utils';
 import { Navigation, Controls, Button as DefaultButton } from './elements';
 

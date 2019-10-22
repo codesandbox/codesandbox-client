@@ -7,16 +7,27 @@ import {
 import * as algoliasearch from 'algoliasearch';
 import { useKey } from 'react-use';
 import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
+import { Pagination } from '@codesandbox/common/lib/components/Pagination';
 import { Header } from '../elements';
 import { SandboxCard } from '../SandboxCard';
 import { makeTemplates, useDebounce } from './utils';
 import { Loader } from '../Loader';
 import { SubHeader } from '../Create/elements';
-import { Grid, Search, Categories, Form, InputWrapper } from './elements';
+import {
+  Grid,
+  Results,
+  Search,
+  Categories,
+  Form,
+  InputWrapper,
+} from './elements';
 import { all } from '../availableTemplates';
 
 const client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
 const index = client.initIndex(ALGOLIA_DEFAULT_INDEX);
+
+const paginate = (array: any[], pageSize: number, pageNumber: number) =>
+  array.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize);
 
 export const Explore = () => {
   const searchEl = useRef(null);
@@ -25,6 +36,7 @@ export const Explore = () => {
   const [category, setCategory] = useState('');
   const [allPages, setAllPages] = useState(1);
   const [page, setPage] = useState(0);
+  const perPage = 10;
   const query = useDebounce(search, 300);
   useKey('/', () => {
     window.setTimeout(() => {
@@ -40,7 +52,7 @@ export const Explore = () => {
       index
         .search({
           facetFilters: ['custom_template.published: true', category],
-          hitsPerPage: 50,
+          hitsPerPage: perPage,
           query,
           page,
         })
@@ -89,7 +101,7 @@ export const Explore = () => {
       {templates ? (
         <Scrollable>
           {templates.length ? (
-            <>
+            <Results>
               <SubHeader>
                 {category
                   ? all.find(
@@ -99,14 +111,17 @@ export const Explore = () => {
                 Templates
               </SubHeader>
               <Grid>
-                {templates.map(sandbox => (
-                  <SandboxCard
-                    key={sandbox.objectID}
-                    template={sandbox}
-                  />
+                {paginate(templates, perPage, page).map(sandbox => (
+                  <SandboxCard key={sandbox.objectID} template={sandbox} />
                 ))}
               </Grid>
-            </>
+              <Pagination
+                pages={allPages}
+                onChange={destination => {
+                  setPage(destination);
+                }}
+              />
+            </Results>
           ) : (
             <SubHeader
               css={`

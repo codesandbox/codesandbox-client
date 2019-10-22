@@ -10,6 +10,8 @@ export const Navigation = styled.nav.attrs({
 export const Controls = styled.ul`
   display: flex;
   list-style: none;
+  margin: 0;
+  padding: 0;
 `;
 
 export const Button = styled(withoutProps(`active`)(BaseButton))<{
