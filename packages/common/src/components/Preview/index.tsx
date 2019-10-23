@@ -62,7 +62,7 @@ type State = {
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
   `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
     process.env.NODE_ENV === 'development' || process.env.STAGING
-      ? 'codesandbox.io'
+      ? 'codesandbox.stream'
       : host()
   }${initialPath}`;
 
@@ -220,12 +220,14 @@ class BasePreview extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (
-      prevProps.sandbox &&
-      this.props.sandbox &&
-      prevProps.sandbox.id !== this.props.sandbox.id
-    ) {
-      this.handleSandboxChange(this.props.sandbox);
+    if (prevProps.sandbox && this.props.sandbox) {
+      if (prevProps.sandbox.id !== this.props.sandbox.id) {
+        this.handleSandboxChange(this.props.sandbox);
+      }
+
+      if (prevProps.sandbox.privacy !== this.props.sandbox.privacy) {
+        this.handlePrivacyChange(this.props.sandbox);
+      }
     }
   }
 
@@ -235,6 +237,17 @@ class BasePreview extends React.Component<Props, State> {
     }
 
     window.open(this.state.urlInAddressBar, '_blank');
+  };
+
+  sendPreviewSecret = () => {
+    dispatch({
+      $type: 'preview-secret',
+      previewSecret: this.props.sandbox.previewSecret,
+    });
+  };
+
+  handlePrivacyChange = () => {
+    this.sendPreviewSecret();
   };
 
   handleSandboxChange = (sandbox: Sandbox) => {
@@ -274,6 +287,8 @@ class BasePreview extends React.Component<Props, State> {
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
         }
+
+        this.sendPreviewSecret();
 
         setTimeout(
           () => {

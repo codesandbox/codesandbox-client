@@ -1,4 +1,4 @@
-const PREVIEW_SECRET_COOKIE_NAME = 'preview_secret';
+const PREVIEW_SECRET_COOKIE_NAME = 'csb_sandbox_secret';
 
 export const getPreviewSecret = () =>
   document.cookie.replace(

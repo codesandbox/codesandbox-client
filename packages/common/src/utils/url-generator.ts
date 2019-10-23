@@ -118,6 +118,16 @@ export const frameUrl = (
 export const forkSandboxUrl = (sandbox: Sandbox) =>
   `${sandboxUrl(sandbox)}/fork`;
 
+export const signInPageUrl = (redirectTo?: string) => {
+  let url = `/signin`;
+
+  if (redirectTo) {
+    url += '?continue=' + redirectTo;
+  }
+
+  return url;
+};
+
 export const signInUrl = (extraScopes: boolean = false) =>
   '/auth/github' + (extraScopes ? '?scope=user:email,public_repo' : '');
 export const signInZeitUrl = () => '/auth/zeit';

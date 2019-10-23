@@ -19,6 +19,8 @@ export const searchMounted: AsyncAction = withLoadApp();
 
 export const codesadboxMounted: AsyncAction = withLoadApp();
 
+export const genericPageMounted: AsyncAction = withLoadApp();
+
 export const cliMounted: AsyncAction = withLoadApp(
   async ({ state, actions }) => {
     if (state.user) {

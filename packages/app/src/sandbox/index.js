@@ -10,6 +10,8 @@ import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/confi
 import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
 import setupConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
+import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
+import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
 import { getPreviewSecret } from './utils/preview-secret';
@@ -64,6 +66,7 @@ requirePolyfills().then(() => {
       // Means we're in the editor
       setupHistoryListeners();
       setupConsole();
+      listenForPreviewSecret();
       window.addEventListener('message', ({ data }) => {
         switch (data.type) {
           case 'activate':
@@ -88,7 +91,12 @@ requirePolyfills().then(() => {
         credentials: 'include',
         mode: 'cors',
       })
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 404) {
+          show404(id);
+        }
+        return res.json();
+      })
       .then(res => {
         const camelized = camelizeKeys(res);
         camelized.data.npmDependencies = res.data.npm_dependencies;
@@ -126,7 +134,6 @@ requirePolyfills().then(() => {
           disableDependencyPreprocessing: document.location.search.includes(
             'csb-dynamic-download'
           ),
-          previewSecret: x.data.previewSecret,
         };
 
         compile(data);

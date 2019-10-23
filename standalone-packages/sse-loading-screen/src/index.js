@@ -12,7 +12,9 @@ import { Power3 } from 'gsap/EasePack';
 import TweenLite from 'gsap/TweenLite';
 import TimelineLite from 'gsap/TimelineLite';
 
+import { isStandalone } from 'codesandbox-api'
 import getTemplate from '@codesandbox/common/lib/templates';
+import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import Cube from './Cube';
 
@@ -300,7 +302,10 @@ if (isLoop) {
     fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
       .then(res => {
         if (res.status === 404) {
-          window.location.replace(`https://${rootDomain}/s/${sandbox}`);
+          if (isStandalone) {
+            show404(sandbox);
+          }
+
           return {};
         }
 
