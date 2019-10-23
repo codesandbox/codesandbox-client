@@ -4,7 +4,8 @@ import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 import { Explanation, Heading } from '../elements';
 import { Container } from './elements';
-export const LiveModeEnded: FunctionComponent = () => {
+
+export const LiveSessionEnded: FunctionComponent = () => {
   const {
     state: {
       editor: {
