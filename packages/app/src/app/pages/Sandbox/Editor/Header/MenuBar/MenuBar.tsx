@@ -9,7 +9,7 @@ export const MenuBar = () => {
 
   useEffect(() => {
     // Get the menu bar part from vscode and mount it
-    effects.vscode.createMenubar(menuBarEl.current);
+    effects.vscode.mountMenubar(menuBarEl.current);
   }, [effects.vscode]);
 
   return (
@@ -21,16 +21,7 @@ export const MenuBar = () => {
         marginLeft: ' 0.5rem',
       }}
       className="part titlebar"
-    >
-      <div
-        style={{
-          alignItems: 'center',
-          height: 38,
-          fontSize: '0.875rem',
-        }}
-        className="menubar"
-        ref={menuBarEl}
-      />
-    </div>
+      ref={menuBarEl}
+    />
   );
 };

@@ -2,9 +2,15 @@ import {
   convertTypeToStatus,
   notificationState,
 } from '@codesandbox/common/lib/utils/notifications';
-import { blocker } from 'app/utils/blocker';
+import { blocker, Blocker } from 'app/utils/blocker';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
-
+import * as childProcess from 'node-services/lib/child_process';
+import {
+  initializeCustomTheme,
+  initializeExtensionsFolder,
+  initializeSettings,
+  initializeThemeCache,
+} from './initializers';
 import { KeyCode, KeyMod } from './keyCodes';
 import bootstrap from './dev-bootstrap';
 import { MenuId } from './menus';
@@ -31,23 +37,22 @@ const context: any = window;
  * parts.
  */
 export class VSCodeManager {
-  private serviceCache: IServiceCache;
+  // We should not need this as we load VSCode at effects level
+  // private serviceCache: IServiceCache;
   private controller: any;
-
-  private statusbarPart = blocker<any>();
-  private menubarPart = blocker<any>();
+  private editor: Blocker<any>;
   private commandService = blocker<any>();
   private extensionService = blocker<any>();
   private extensionEnablementService = blocker<any>();
 
-  public acquireController(controller: any) {
+  constructor(controller: any) {
     this.controller = controller;
-
-    this.addWorkbenchActions();
   }
 
-  public loadScript(scripts: string[], cb: () => void) {
-    bootstrap(true, scripts)(cb);
+  public loadScript(scripts: string[]) {
+    return new Promise(resolve => {
+      bootstrap(true, scripts)(resolve);
+    });
   }
 
   private addWorkbenchActions() {
@@ -316,116 +321,180 @@ export class VSCodeManager {
     });
   }
 
-  /**
-   * Initialize the base VSCode editor, this includes registering all the services in VSCode.
-   */
-  public initializeEditor(
+  public async loadEditor(
     container: HTMLElement,
-    customEditorAPI: ICustomEditorApi,
-    cb: (services: IServiceCache) => void
+    getCustomEditor: any,
+    cb: (result: {
+      monaco: any;
+      statusbarPart: any;
+      menubarPart: any;
+      editorPart: any;
+      editorApi: any;
+    }) => any
   ) {
-    if (this.serviceCache) {
-      const [{ IConfigurationService }, { IInstantiationService }] = [
-        context.require('vs/platform/configuration/common/configuration'),
-        context.require('vs/platform/instantiation/common/instantiation'),
+    if (!this.editor) {
+      this.editor = blocker();
+
+      // For first-timers initialize a theme in the cache so it doesn't jump colors
+      initializeExtensionsFolder();
+      initializeCustomTheme();
+      initializeThemeCache();
+      initializeSettings();
+
+      if (localStorage.getItem('settings.vimmode') === 'true') {
+        this.enableExtension('vscodevim.vim');
+      }
+
+      // eslint-disable-next-line global-require
+      await this.loadScript(['vs/editor/codesandbox.editor.main']);
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Loaded Monaco'); // eslint-disable-line
+      }
+
+      this.addWorkbenchActions();
+
+      const ExtHostWorkerLoader = await import(
+        // @ts-ignore
+        'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/ext-host'
+      );
+
+      childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
+
+      const r = window.require;
+      const [
+        { IEditorService },
+        { ICodeEditorService },
+        { ITextFileService },
+        { ILifecycleService },
+        { IEditorGroupsService },
+        { IStatusbarService },
+        { IExtensionService },
+        { IContextViewService },
+        { IQuickOpenService },
+        { CodeSandboxService },
+        { CodeSandboxConfigurationUIService },
+        { ICodeSandboxEditorConnectorService },
+        { ICommandService },
+        { SyncDescriptor },
+        { IInstantiationService },
+        { IExtensionEnablementService },
+      ] = [
+        r('vs/workbench/services/editor/common/editorService'),
+        r('vs/editor/browser/services/codeEditorService'),
+        r('vs/workbench/services/textfile/common/textfiles'),
+        r('vs/platform/lifecycle/common/lifecycle'),
+        r('vs/workbench/services/editor/common/editorGroupsService'),
+        r('vs/platform/statusbar/common/statusbar'),
+        r('vs/workbench/services/extensions/common/extensions'),
+        r('vs/platform/contextview/browser/contextView'),
+        r('vs/platform/quickOpen/common/quickOpen'),
+        r('vs/codesandbox/services/codesandbox/browser/codesandboxService'),
+        r('vs/codesandbox/services/codesandbox/configurationUIService'),
+        r(
+          'vs/codesandbox/services/codesandbox/common/codesandboxEditorConnector'
+        ),
+        r('vs/platform/commands/common/commands'),
+        r('vs/platform/instantiation/common/descriptors'),
+        r('vs/platform/instantiation/common/instantiation'),
+        r('vs/platform/extensionManagement/common/extensionManagement'),
       ];
 
-      const instantiationService = this.serviceCache.get(IInstantiationService);
-      instantiationService.invokeFunction(accessor => {
-        const workspaceService = accessor.get(IConfigurationService);
+      const { serviceCollection } = await new Promise<any>(resolve => {
+        window.monaco.editor.create(
+          container,
+          {
+            codesandboxService: i =>
+              new SyncDescriptor(CodeSandboxService, [this.controller, this]),
+            codesandboxConfigurationUIService: i =>
+              new SyncDescriptor(CodeSandboxConfigurationUIService, [
+                { getCustomEditor },
+              ]),
+          },
+          resolve
+        );
+      });
 
-        workspaceService.initialize(
-          context.monaco.editor.getDefaultWorkspace()
+      // It has to run the accessor within the callback
+      serviceCollection.get(IInstantiationService).invokeFunction(accessor => {
+        // Initialize these services
+        accessor.get(CodeSandboxConfigurationUIService);
+        accessor.get(ICodeSandboxEditorConnectorService);
+
+        const statusbarPart = accessor.get(IStatusbarService);
+        const menubarPart = accessor.get('menubar');
+        const commandService = accessor.get(ICommandService);
+        const extensionService = accessor.get(IExtensionService);
+        const extensionEnablementService = accessor.get(
+          IExtensionEnablementService
         );
 
-        cb(accessor);
+        this.commandService.resolve(commandService);
+        this.extensionService.resolve(extensionService);
+        this.extensionEnablementService.resolve(extensionEnablementService);
+
+        const editorPart = accessor.get(IEditorGroupsService);
+
+        const codeEditorService = accessor.get(ICodeEditorService);
+        const textFileService = accessor.get(ITextFileService);
+        const editorService = accessor.get(IEditorService);
+
+        /*
+      this.lifecycleService = accessor.get(ILifecycleService);
+      this.quickopenService = accessor.get(IQuickOpenService);
+
+      if (this.lifecycleService.phase !== 3) {
+        this.lifecycleService.phase = 2; // Restoring
+        requestAnimationFrame(() => {
+          this.lifecycleService.phase = 3; // Running
+        });
+      } else {
+        // It seems like the VSCode instance has been started before
+        const extensionService = accessor.get(IExtensionService);
+        const contextViewService = accessor.get(IContextViewService);
+
+        // It was killed in the last quit
+        extensionService.startExtensionHost();
+        contextViewService.setContainer(el);
+
+        // We force this to recreate, otherwise it's bound to an element that's disposed
+        this.quickopenService.quickOpenWidget = undefined;
+      }
+      */
+
+        const editorApi = {
+          openFile(path) {
+            codeEditorService.openCodeEditor({
+              resource: window.monaco.Uri.file('/sandbox' + path),
+            });
+          },
+          getActiveCodeEditor() {
+            return codeEditorService.getActiveCodeEditor();
+          },
+          textFileService,
+          editorPart,
+          editorService,
+          codeEditorService,
+        };
+
+        if (process.env.NODE_ENV === 'development') {
+          // eslint-disable-next-line
+          console.log(accessor);
+        }
+
+        this.editor.resolve(
+          cb({
+            monaco: window.monaco,
+            statusbarPart,
+            menubarPart,
+            editorPart,
+            editorApi,
+          })
+        );
       });
-      return;
     }
 
-    const [
-      { CodeSandboxService },
-      { CodeSandboxConfigurationUIService },
-      { ICodeSandboxEditorConnectorService },
-      { IStatusbarService },
-      { ICommandService },
-      { SyncDescriptor },
-      { IInstantiationService },
-      { IExtensionService },
-      { IExtensionEnablementService },
-    ] = [
-      context.require(
-        'vs/codesandbox/services/codesandbox/browser/codesandboxService'
-      ),
-      context.require(
-        'vs/codesandbox/services/codesandbox/configurationUIService'
-      ),
-      context.require(
-        'vs/codesandbox/services/codesandbox/common/codesandboxEditorConnector'
-      ),
-      context.require('vs/platform/statusbar/common/statusbar'),
-      context.require('vs/platform/commands/common/commands'),
-      context.require('vs/platform/instantiation/common/descriptors'),
-      context.require('vs/platform/instantiation/common/instantiation'),
-      context.require('vs/workbench/services/extensions/common/extensions'),
-      context.require(
-        'vs/platform/extensionManagement/common/extensionManagement'
-      ),
-    ];
-
-    context.monaco.editor.create(
-      container,
-      {
-        codesandboxService: i =>
-          new SyncDescriptor(CodeSandboxService, [this.controller, this]),
-        codesandboxConfigurationUIService: i =>
-          new SyncDescriptor(CodeSandboxConfigurationUIService, [
-            customEditorAPI,
-          ]),
-      },
-      ({ serviceCollection }) => {
-        const instantiationService = serviceCollection.get(
-          IInstantiationService
-        );
-        instantiationService.invokeFunction(accessor => {
-          this.serviceCache = serviceCollection;
-
-          // Initialize status bar
-          const statusbarPart = accessor.get(IStatusbarService);
-          this.statusbarPart.resolve(statusbarPart);
-
-          // Initialize menu bar
-          const menubarPart = accessor.get('menubar');
-          this.menubarPart.resolve(menubarPart);
-
-          // Initialize command service
-          const commandService = accessor.get(ICommandService);
-          this.commandService.resolve(commandService);
-
-          const extensionService = accessor.get(IExtensionService);
-          this.extensionService.resolve(extensionService);
-
-          const extensionEnablementService = accessor.get(
-            IExtensionEnablementService
-          );
-          this.extensionEnablementService.resolve(extensionEnablementService);
-
-          // Initialize these services
-          accessor.get(CodeSandboxConfigurationUIService);
-          accessor.get(ICodeSandboxEditorConnectorService);
-
-          cb(accessor);
-        });
-      }
-    );
-  }
-
-  public async getStatusbarPart(): Promise<any> {
-    return this.statusbarPart.promise;
-  }
-
-  public async getMenubarPart(): Promise<any> {
-    return this.menubarPart.promise;
+    return this.editor.promise;
   }
 
   public async getCommandService(): Promise<any> {

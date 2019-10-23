@@ -145,12 +145,11 @@ class ContentSplit extends React.Component {
                     height: STATUS_BAR_SIZE,
                   }}
                   className="monaco-workbench mac nopanel"
-                >
-                  <div
-                    className="part statusbar"
-                    id="workbench.parts.statusbar"
-                  />
-                </StatusBar>
+                  ref={node => {
+                    // HAVE TO REFACTOR TO HOOKS
+                    this.statusbarNode = node;
+                  }}
+                />
               )}
             </div>
           </Fullscreen>

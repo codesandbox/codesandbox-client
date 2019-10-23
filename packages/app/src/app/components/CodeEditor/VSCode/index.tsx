@@ -16,20 +16,19 @@ export const VSCode: React.FunctionComponent = () => {
   useEffect(() => {
     const rootEl = containerEl.current;
     effects.vscode
-      .mount(rootEl, {
-        getCustomEditor: (modulePath: string) => {
-          const template = getTemplate(state.editor.currentSandbox.template);
-          const config = template.configurationFiles[modulePath];
+      .getEditorElement((modulePath: string) => {
+        const template = getTemplate(state.editor.currentSandbox.template);
+        const config = template.configurationFiles[modulePath];
 
-          const ui = config && getUI(config.type);
-          return (
-            ui &&
-            ui.ConfigWizard &&
-            ((container, extraProps) =>
-              render(
-                <ThemeProvider theme={theme}>
-                  <Configuration
-                  /*
+        const ui = config && getUI(config.type);
+        return (
+          ui &&
+          ui.ConfigWizard &&
+          ((container, extraProps) =>
+            render(
+              <ThemeProvider theme={theme}>
+                <Configuration
+                /*
                     onChange={this.props.onChange}
                     // Copy the object, we don't want mutations in the component
                     currentModule={json(state.editor.currentModule)}
@@ -37,12 +36,11 @@ export const VSCode: React.FunctionComponent = () => {
                     sandbox={this.sandbox}
                     {...extraProps}
                     */
-                  />
-                </ThemeProvider>,
-                container
-              ))
-          );
-        },
+                />
+              </ThemeProvider>,
+              container
+            ))
+        );
       })
       .then(mainContainer => {
         rootEl.appendChild(mainContainer);

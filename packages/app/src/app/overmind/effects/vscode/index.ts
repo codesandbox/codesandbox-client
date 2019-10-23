@@ -1,5 +1,4 @@
 import { Reaction } from 'app/overmind';
-import * as childProcess from 'node-services/lib/child_process';
 import {
   Sandbox,
   Module,
@@ -10,12 +9,7 @@ import {
 import FontFaceObserver from 'fontfaceobserver';
 import { VSCodeEditorManager } from './editorManager';
 import { VSCodeManager, ICustomEditorApi } from './manager';
-import {
-  initializeCustomTheme,
-  initializeExtensionsFolder,
-  initializeSettings,
-  initializeThemeCache,
-} from './manager/initializers';
+
 import { OnFileChangeData } from './editorManager/FilesSync';
 
 export type VsCodeOptions = {
@@ -24,6 +18,9 @@ export type VsCodeOptions = {
   onCodeChange: (data: OnFileChangeData) => void;
   onSelectionChange: (selection: any) => void;
   reaction: Reaction;
+  // These two should be removed
+  getSignal: any;
+  getState: any;
 };
 
 declare global {
@@ -34,9 +31,6 @@ declare global {
     monaco: any;
   }
 }
-
-let _manager: VSCodeManager;
-let _editorManager: VSCodeEditorManager;
 
 /*
   We need to test:
@@ -52,44 +46,45 @@ let _editorManager: VSCodeEditorManager;
   - LIVE
 */
 
-export default {
-  initialize(options: VsCodeOptions) {
-    _editorManager = new VSCodeEditorManager(options);
-    _manager = new VSCodeManager();
+class VSCodeEffect {
+  private controller: {
+    getSignal: any;
+    getState: any;
+  };
 
-    return new Promise((resolve, reject) => {
-      // For first-timers initialize a theme in the cache so it doesn't jump colors
-      initializeExtensionsFolder();
-      initializeCustomTheme();
-      initializeThemeCache();
-      initializeSettings();
-      this.setVimExtensionEnabled(
-        localStorage.getItem('settings.vimmode') === 'true'
-      );
+  private manager: VSCodeManager;
+  private editorManager: VSCodeEditorManager;
+  private elements = {
+    editor: document.createElement('div'),
+    menubar: document.createElement('div'),
+    statusbar: document.createElement('div'),
+  };
 
-      // eslint-disable-next-line global-require
-      _manager.loadScript(['vs/editor/codesandbox.editor.main'], () => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Loaded Monaco'); // eslint-disable-line
-        }
-        _manager.acquireController({
-          getSignal: window.getSignal,
-          getState: window.getState,
-        });
+  public initialize(options: VsCodeOptions) {
+    // This should be changed to be more specific functions
+    this.controller = {
+      getSignal: options.getSignal,
+      getState: options.getState,
+    };
 
-        import(
-          // @ts-ignore
-          'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./manager/extensionHostWorker/bootstrappers/ext-host'
-        )
-          .then(ExtHostWorkerLoader => {
-            childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
-            resolve();
-          })
-          .catch(reject);
-      });
-    });
-  },
-  callCallbackError(id: string, message?: string) {
+    this.styleElements();
+
+    this.editorManager = new VSCodeEditorManager(options);
+    this.manager = new VSCodeManager(this.controller);
+  }
+
+  private styleElements() {
+    this.elements.editor.className = 'monaco-workbench';
+    this.elements.editor.style.width = '100%';
+    this.elements.editor.style.height = '100%';
+
+    this.elements.menubar.style.alignItems = 'center';
+    this.elements.menubar.style.height = '38px';
+    this.elements.menubar.style.fontSize = '0.875rem';
+    this.elements.menubar.className = 'menubar';
+  }
+
+  public callCallbackError(id: string, message?: string) {
     // @ts-ignore
     if (window.cbs && window.cbs[id]) {
       const errorMessage =
@@ -99,8 +94,9 @@ export default {
       // @ts-ignore
       delete window.cbs[id];
     }
-  },
-  callCallback(id: string) {
+  }
+
+  public callCallback(id: string) {
     // @ts-ignore
     if (window.cbs && window.cbs[id]) {
       // @ts-ignore
@@ -108,19 +104,20 @@ export default {
       // @ts-ignore
       delete window.cbs[id];
     }
-  },
-  runCommand(command: string): Promise<void> {
-    // @ts-ignore
-    return _manager.runCommand(command);
-  },
-  async createMenubar(el: HTMLElement) {
-    const part = await _manager.getMenubarPart();
+  }
 
-    part.create(el);
-  },
-  setVimExtensionEnabled(enabled: boolean) {
+  public runCommand(command: string): Promise<void> {
+    // @ts-ignore
+    return this.manager.runCommand(command);
+  }
+
+  public async mountMenubar(el: HTMLElement) {
+    el.appendChild(this.elements.menubar);
+  }
+
+  public setVimExtensionEnabled(enabled: boolean) {
     if (enabled) {
-      _manager.enableExtension('vscodevim.vim');
+      this.manager.enableExtension('vscodevim.vim');
     } else {
       // Auto disable vim extension
       if (
@@ -134,135 +131,51 @@ export default {
         );
       }
 
-      _manager.disableExtension('vscodevim.vim');
+      this.manager.disableExtension('vscodevim.vim');
     }
-  },
-  mount(rootEl: HTMLElement, customEditorAPI: ICustomEditorApi) {
-    const container = document.createElement('div');
-    const part = document.createElement('div');
+  }
 
-    part.id = 'vscode-editor';
-    part.className = 'part editor has-watermark';
-    part.style.width = '100%';
-    part.style.height = '100%';
+  public async getEditorElement(
+    getCustomEditor: ICustomEditorApi['getCustomEditor']
+  ) {
+    const container = this.elements.editor;
 
-    container.appendChild(part);
+    // It will only load the editor once. We should probably call this
+    await this.manager.loadEditor(
+      container,
+      getCustomEditor,
+      async ({ monaco, statusbarPart, menubarPart, editorPart, editorApi }) => {
+        await new FontFaceObserver('dm').load();
 
-    const r = window.require;
-    const [
-      { IEditorService },
-      { ICodeEditorService },
-      { ITextFileService },
-      { ILifecycleService },
-      { IEditorGroupsService },
-      { IStatusbarService },
-      { IExtensionService },
-      { IContextViewService },
-      { IQuickOpenService },
-      { IInstantiationService },
-    ] = [
-      r('vs/workbench/services/editor/common/editorService'),
-      r('vs/editor/browser/services/codeEditorService'),
-      r('vs/workbench/services/textfile/common/textfiles'),
-      r('vs/platform/lifecycle/common/lifecycle'),
-      r('vs/workbench/services/editor/common/editorGroupsService'),
-      r('vs/platform/statusbar/common/statusbar'),
-      r('vs/workbench/services/extensions/common/extensions'),
-      r('vs/platform/contextview/browser/contextView'),
-      r('vs/platform/quickOpen/common/quickOpen'),
-      r('vs/platform/instantiation/common/instantiation'),
-    ];
+        const part = document.createElement('div');
 
-    return new Promise(resolve => {
-      _manager.initializeEditor(container, customEditorAPI, services => {
-        // Probably grab this from "container"?
-        const editorElement = document.getElementById(
-          'workbench.main.container'
-        );
+        part.id = 'vscode-editor';
+        part.className = 'part editor has-watermark';
+        part.style.width = '100%';
+        part.style.height = '100%';
 
-        container.className = 'monaco-workbench';
-        container.style.width = '100%';
-        container.style.height = '100%';
+        container.appendChild(part);
 
-        editorElement.className += ' monaco-workbench mac nopanel';
+        statusbarPart.create(this.elements.statusbar);
+        menubarPart.create(this.elements.menubar);
 
-        const instantiationService = services.get(IInstantiationService);
-        instantiationService.invokeFunction(accessor => {
-          const EditorPart = accessor.get(IEditorGroupsService);
+        editorPart.create(part);
+        editorPart.layout(container.offsetWidth, container.offsetHeight);
 
-          EditorPart.create(part);
+        this.editorManager.initialize(editorApi, monaco);
+      }
+    );
 
-          const statusBarPart = accessor.get(IStatusbarService);
-          statusBarPart.create(
-            document.getElementById('workbench.parts.statusbar')
-          );
+    return container;
+  }
 
-          EditorPart.layout(container.offsetWidth, container.offsetHeight);
+  public unmount() {
+    this.editorManager.dispose();
+  }
 
-          const codeEditorService = accessor.get(ICodeEditorService);
-          const textFileService = accessor.get(ITextFileService);
-          const editorService = accessor.get(IEditorService);
-          this.lifecycleService = accessor.get(ILifecycleService);
-          this.quickopenService = accessor.get(IQuickOpenService);
-
-          if (this.lifecycleService.phase !== 3) {
-            this.lifecycleService.phase = 2; // Restoring
-            requestAnimationFrame(() => {
-              this.lifecycleService.phase = 3; // Running
-            });
-          } else {
-            // It seems like the VSCode instance has been started before
-            const extensionService = accessor.get(IExtensionService);
-            const contextViewService = accessor.get(IContextViewService);
-
-            // It was killed in the last quit
-            extensionService.startExtensionHost();
-            contextViewService.setContainer(rootEl);
-
-            // We force this to recreate, otherwise it's bound to an element that's disposed
-            this.quickopenService.quickOpenWidget = undefined;
-          }
-
-          const editorApi = {
-            openFile(path) {
-              new FontFaceObserver('dm')
-                .load()
-                .catch(() => {})
-                .then(() => {
-                  codeEditorService.openCodeEditor({
-                    resource: window.monaco.Uri.file('/sandbox' + path),
-                  });
-                });
-            },
-            getActiveCodeEditor() {
-              return codeEditorService.getActiveCodeEditor();
-            },
-            textFileService,
-            editorPart: EditorPart,
-            editorService,
-            codeEditorService,
-          };
-          if (process.env.NODE_ENV === 'development') {
-            // eslint-disable-next-line
-            console.log(accessor);
-          }
-
-          this.editor = editorApi;
-
-          // After initializing monaco editor
-          // this.editorDidMount(editorApi, context.monaco);
-          _editorManager.initialize(editorApi, window.monaco);
-          document.getElementById('root').className += ` monaco-shell`;
-
-          resolve(container);
-        });
-      });
-    });
-  },
-  unmount() {
-    _editorManager.dispose();
-  },
-  async applyOperations(operations: { [x: string]: (string | number)[] }) {
+  public async applyOperations(operations: {
+    [x: string]: (string | number)[];
+  }) {
     this.isApplyingCode = true;
 
     // The call to "apployOperations" should "try" and treat error as "moduleStateMismatch"
@@ -274,27 +187,35 @@ export default {
       this.isApplyingCode = false;
       throw error;
     }
-  },
-  updateOptions(options: { readOnly: boolean }) {
-    _editorManager.updateOptions(options);
-  },
-  updateUserSelections(userSelections: EditorSelection[]) {
-    _editorManager.updateUserSelections(userSelections);
-  },
-  changeModule(
+  }
+
+  public updateOptions(options: { readOnly: boolean }) {
+    this.editorManager.updateOptions(options);
+  }
+
+  public updateUserSelections(userSelections: EditorSelection[]) {
+    this.editorManager.updateUserSelections(userSelections);
+  }
+
+  public changeModule(
     newModule: Module,
     errors?: ModuleError[],
     corrections?: ModuleCorrection[]
   ) {
-    _editorManager.changeModule(newModule, errors, corrections);
-  },
-  setReadOnly(enabled: boolean) {
-    _editorManager.setReadOnly(enabled);
-  },
-  openModule(module: Module) {
-    _editorManager.openModule(module);
-  },
-  updateLayout(width: number, height: number) {
-    _editorManager.updateLayout(width, height);
-  },
-};
+    this.editorManager.changeModule(newModule, errors, corrections);
+  }
+
+  public setReadOnly(enabled: boolean) {
+    this.editorManager.setReadOnly(enabled);
+  }
+
+  public openModule(module: Module) {
+    this.editorManager.openModule(module);
+  }
+
+  public updateLayout(width: number, height: number) {
+    this.editorManager.updateLayout(width, height);
+  }
+}
+
+export default new VSCodeEffect();

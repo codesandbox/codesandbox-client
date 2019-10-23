@@ -112,7 +112,7 @@ export const Content: React.FC = () => {
       }}
     >
       <div
-        id="workbench.main.container"
+        className="monaco-workbench mac nopanel"
         style={{
           height: '100%',
           width: '100%',
