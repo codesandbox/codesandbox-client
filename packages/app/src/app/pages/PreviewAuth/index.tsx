@@ -31,6 +31,7 @@ const PreviewAuth = (props: RouteComponentProps<{ id: string }>) => {
 
   useEffect(() => {
     if (state.hasLogIn) {
+      setError(null);
       // eslint-disable-next-line
       const id: string = props.match.params.id;
 
