@@ -1,12 +1,4 @@
 import React from 'react';
-
-import Animation from '../screens/home/Animation';
-import NPMFeature from '../screens/home/NPMFeature';
-import CycleFeature from '../screens/home/CycleFeature';
-import ExtraFeatures from '../screens/home/ExtraFeatures';
-import RecentPublications from '../screens/home/RecentPublications';
-import Patron from '../screens/home/Patron';
-import Users from '../screens/home/Users';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
 
@@ -36,15 +28,10 @@ export default class HomePage extends React.Component {
     return (
       <Layout>
         <TitleAndMetaTags />
-        <header role="banner" aria-label="codesandbox">
-          <Animation />
-        </header>
-        <NPMFeature />
-        <CycleFeature />
-        <ExtraFeatures />
-        <RecentPublications />
-        <Patron />
-        <Users />
+        <div style={{ textAlign: 'center', marginTop: 100 }}>
+          <h1>CodeSandbox</h1>
+          <h2>We are goth Glitch</h2>
+        </div>
       </Layout>
     );
   }

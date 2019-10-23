@@ -89,18 +89,6 @@ const MissingNotice = styled.a`
   }
 `;
 
-type Props = {
-  docs: Array<{
-    frontmatter: {
-      title: string,
-    },
-    fields: {
-      url: string,
-    },
-    headings: Array<{ value: string }>,
-  }>,
-};
-
 const SubLink = ({
   node: {
     fields: { slug },
@@ -118,7 +106,7 @@ const SubLink = ({
   </ul>
 );
 
-export default class StickyNavigation extends React.PureComponent<Props> {
+export default class StickyNavigation extends React.PureComponent {
   state = {
     fixed: false,
   };

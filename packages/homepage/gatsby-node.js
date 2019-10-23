@@ -266,26 +266,7 @@ exports.createPages = async ({ graphql, actions }) => {
   }
 };
 
-exports.onCreateWebpackConfig = ({
-  stage,
-  getConfig,
-  loaders,
-  actions,
-  plugins,
-}) => {
-  if (stage === 'build-html') {
-    actions.setWebpackConfig({
-      module: {
-        rules: [
-          {
-            test: /gsap/,
-            use: loaders.null(),
-          },
-        ],
-      },
-    });
-  }
-
+exports.onCreateWebpackConfig = ({ getConfig, loaders, actions, plugins }) => {
   actions.setWebpackConfig({
     plugins: [plugins.define(env.default)],
   });

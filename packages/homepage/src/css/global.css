@@ -11,7 +11,9 @@ body {
   min-height: 100%;
   -webkit-text-size-adjust: 100%;
   height: 100%;
-  background: #111518;
+  background: #040404;
+  color: white;
+  font-family: Inter, sans-serif;
 }
 
 input {
@@ -51,9 +53,7 @@ twitter-widget {
   margin-right: auto;
 }
 
-@media screen and
-  (prefers-reduced-motion: reduce), 
-  (update: slow) {
+@media screen and (prefers-reduced-motion: reduce), (update: slow) {
   * {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;

@@ -2,8 +2,6 @@ import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import theme from '@codesandbox/common/lib/theme';
-import Navigation from '@codesandbox/common/lib/components/Navigation';
-import Footer from '@codesandbox/common/lib/components/Footer';
 import { VisuallyHidden } from './style';
 import '../css/typography.css';
 import '../css/global.css';
@@ -15,7 +13,6 @@ const TemplateWrapper = ({ children }) => (
         <VisuallyHidden as="a" href="#main">
           Skip to main content
         </VisuallyHidden>
-        <Navigation />
       </div>
 
       <main
@@ -25,8 +22,6 @@ const TemplateWrapper = ({ children }) => (
       >
         {children}
       </main>
-
-      <Footer />
     </div>
   </ThemeProvider>
 );

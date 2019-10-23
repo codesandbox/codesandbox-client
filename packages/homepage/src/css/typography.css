@@ -240,8 +240,6 @@ html {
 }
 
 body {
-  color: hsla(0, 0%, 0%, 0.8);
-  font-family: Source Sans Pro, Open Sans, Segoe UI, sans-serif;
   font-weight: normal;
   word-wrap: break-word;
   font-kerning: normal;
@@ -273,7 +271,6 @@ h1 {
   padding-top: 0;
   margin-bottom: 1.0875rem;
   color: inherit;
-  font-family: 'Source Sans Pro';
   font-weight: bold;
   text-rendering: optimizeLegibility;
   font-size: 2.15rem;
@@ -290,7 +287,6 @@ h2 {
   padding-top: 0;
   margin-bottom: 1.0875rem;
   color: inherit;
-  font-family: 'Source Sans Pro';
   font-weight: bold;
   text-rendering: optimizeLegibility;
   font-size: 1.58293rem;
@@ -307,7 +303,6 @@ h3 {
   padding-top: 0;
   margin-bottom: 1.0875rem;
   color: inherit;
-  font-family: 'Source Sans Pro';
   font-weight: bold;
   text-rendering: optimizeLegibility;
   font-size: 1.35824rem;
@@ -324,7 +319,6 @@ h4 {
   padding-top: 0;
   margin-bottom: 1.0875rem;
   color: inherit;
-  font-family: 'Source Sans Pro';
   font-weight: bold;
   text-rendering: optimizeLegibility;
   font-size: 1rem;
@@ -341,7 +335,6 @@ h5 {
   padding-top: 0;
   margin-bottom: 1.0875rem;
   color: inherit;
-  font-family: 'Source Sans Pro';
   font-weight: bold;
   text-rendering: optimizeLegibility;
   font-size: 0.85805rem;
@@ -358,7 +351,6 @@ h6 {
   padding-top: 0;
   margin-bottom: 1.0875rem;
   color: inherit;
-  font-family: 'Source Sans Pro';
   font-weight: bold;
   text-rendering: optimizeLegibility;
   font-size: 0.79482rem;
