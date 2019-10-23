@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 export const InputContainer = styled.div<{ errorMessage?: boolean }>`
   display: inline-block;
-  position: relative;
 
   input {
     transition: 0.3s ease all;
