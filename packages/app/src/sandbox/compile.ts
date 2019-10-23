@@ -33,6 +33,7 @@ import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { Module } from './eval/entities/module';
 import TranspiledModule from './eval/transpiled-module';
+import { setPreviewSecret } from './utils/preview-secret';
 
 let initializedResizeListener = false;
 let manager: Manager | null = null;
@@ -408,6 +409,7 @@ interface CompileOptions {
   skipEval?: boolean;
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
+  previewSecret: string | null;
 }
 
 async function compile({
@@ -422,6 +424,7 @@ async function compile({
   skipEval = false,
   hasFileResolver = false,
   disableDependencyPreprocessing = false,
+  previewSecret,
 }: CompileOptions) {
   dispatch({
     type: 'start',
@@ -436,6 +439,8 @@ async function compile({
   } catch (e) {
     console.error(e);
   }
+
+  setPreviewSecret(previewSecret);
 
   hadError = false;
 

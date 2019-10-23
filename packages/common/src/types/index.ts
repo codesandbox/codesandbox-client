@@ -331,6 +331,7 @@ export type Sandbox = {
   } | null;
   version: number;
   screenshotUrl: string | null;
+  previewSecret: string | null;
 };
 
 export type PrettierConfig = {

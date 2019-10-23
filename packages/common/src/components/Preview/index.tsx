@@ -407,6 +407,7 @@ class BasePreview extends React.Component<Props, State> {
           isModuleView: !this.props.isInProjectView,
           template: sandbox.template,
           hasActions: Boolean(this.props.onAction),
+          previewSecret: sandbox.previewSecret,
         });
       }
     }

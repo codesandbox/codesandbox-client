@@ -12,6 +12,7 @@ import setupConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 
 import compile, { getCurrentManager } from './compile';
+import { getPreviewSecret } from './utils/preview-secret';
 
 // Call this before importing React (or any other packages that might import React).
 initialize(window);
@@ -80,7 +81,12 @@ requirePolyfills().then(() => {
     const id = getSandboxId();
     window
       .fetch(host + `/api/v1/sandboxes/${id}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Basic ${getPreviewSecret()}`,
+        },
         credentials: 'include',
+        mode: 'cors',
       })
       .then(res => res.json())
       .then(res => {
@@ -120,6 +126,7 @@ requirePolyfills().then(() => {
           disableDependencyPreprocessing: document.location.search.includes(
             'csb-dynamic-download'
           ),
+          previewSecret: x.data.previewSecret,
         };
 
         compile(data);
