@@ -25,6 +25,7 @@ import { Settings } from './types';
 
 export type Props = {
   sandbox: Sandbox;
+  privacy?: number;
   settings: Settings;
   onInitialized?: (preview: BasePreview) => () => void; // eslint-disable-line no-use-before-define
   extraModules?: { [path: string]: { code: string; path: string } };
@@ -224,10 +225,10 @@ class BasePreview extends React.Component<Props, State> {
       if (prevProps.sandbox.id !== this.props.sandbox.id) {
         this.handleSandboxChange(this.props.sandbox);
       }
+    }
 
-      if (prevProps.sandbox.privacy !== this.props.sandbox.privacy) {
-        this.handlePrivacyChange();
-      }
+    if (prevProps.privacy !== this.props.privacy) {
+      this.handlePrivacyChange();
     }
   }
 
