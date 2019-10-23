@@ -27,11 +27,11 @@ export const Chat: React.FC = () => {
   const [height, setHeight] = useState('');
   const { state, actions } = useOvermind();
   const messagesRef = useRef(null);
-  function scrollDown() {
+  const scrollDown = () => {
     if (messagesRef.current) {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
-  }
+  };
   useEffect(scrollDown);
 
   const handleKeyDown = (e: KeyboardEvent) => {
