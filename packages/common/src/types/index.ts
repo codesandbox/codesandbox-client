@@ -193,8 +193,6 @@ export type LiveUser = {
   avatarUrl: string;
 };
 
-export type ChatUserGetter = (id: string) => string;
-
 export type RoomInfo = {
   startTime: number;
   ownerIds: string[];
@@ -213,8 +211,7 @@ export type RoomInfo = {
     // We keep a separate map of user_id -> username for the case when
     // a user disconnects. We still need to keep track of the name.
     users: {
-      [id: string]: string | ChatUserGetter;
-      get: ChatUserGetter;
+      [id: string]: string;
     };
   };
 };

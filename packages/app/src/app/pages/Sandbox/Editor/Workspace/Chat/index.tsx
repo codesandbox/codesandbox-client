@@ -56,11 +56,7 @@ export const Chat: React.FC = () => {
   const roomInfoUsers = state.live.roomInfo.users;
 
   return (
-    <Container
-      ref={el => {
-        messagesRef.current = el;
-      }}
-    >
+    <Container ref={messagesRef}>
       <Messages>
         {messages.length > 0 ? (
           sortBy(takeRight(messages, 100), 'date').map((message, i) => {
@@ -70,9 +66,7 @@ export const Chat: React.FC = () => {
                   metadata.color[2]
                 })`
               : '#636363';
-            const name = users.get
-              ? users.get(message.userId)
-              : users[message.userId];
+            const name = users[message.userId];
             return (
               <div key={message.date}>
                 {(i === 0 || messages[i - 1].userId !== message.userId) && (
