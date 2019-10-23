@@ -240,12 +240,12 @@ Thanks goes to these wonderful people
     <td align="center"><a href="https://github.com/milap1296"><img src="https://avatars2.githubusercontent.com/u/19545730?v=4" width="100px;" alt="milap1296"/><br /><sub><b>milap1296</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=milap1296" title="Code">💻</a></td>
     <td align="center"><a href="http://yevhenorlov.com"><img src="https://avatars2.githubusercontent.com/u/17388747?v=4" width="100px;" alt="yevhen orlov"/><br /><sub><b>yevhen orlov</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=yevhenorlov" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/NileshPatel17"><img src="https://avatars2.githubusercontent.com/u/27020381?v=4" width="100px;" alt="Nilesh Patel"/><br /><sub><b>Nilesh Patel</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=NileshPatel17" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/22PoojaGaur"><img src="https://avatars2.githubusercontent.com/u/43316760?v=4" width="100px;" alt="Pooja Gaur"/><br /><sub><b>Pooja Gaur</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=22PoojaGaur" title="Code">💻</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Backers
