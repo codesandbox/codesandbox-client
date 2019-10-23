@@ -226,7 +226,7 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       if (prevProps.sandbox.privacy !== this.props.sandbox.privacy) {
-        this.handlePrivacyChange(this.props.sandbox);
+        this.handlePrivacyChange();
       }
     }
   }
