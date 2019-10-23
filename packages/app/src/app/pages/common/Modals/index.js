@@ -26,7 +26,7 @@ import PreferencesModal from './PreferencesModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
 import PRModal from './PRModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
-import SelectSandboxModal from './SelectSandboxModal';
+import { SelectSandboxModal } from './SelectSandboxModal';
 import ShareModal from './ShareModal';
 import SignInForTemplates from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
