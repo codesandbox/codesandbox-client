@@ -4,7 +4,6 @@ import {
 } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { Blocker, blocker } from 'app/utils/blocker';
-import * as childProcess from 'node-services/lib/child_process';
 
 import bootstrap from './dev-bootstrap';
 import {
@@ -348,21 +347,6 @@ export class VSCodeManager {
 
       if (localStorage.getItem('settings.vimmode') === 'true') {
         this.enableExtension('vscodevim.vim');
-      }
-
-      import(
-        // @ts-ignore
-        'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/ext-host'
-      ).then(ExtHostWorkerLoader => {
-        childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
-      });
-
-      const loadingScriptStart = performance.now();
-
-      await this.loadScript(['vs/editor/codesandbox.editor.main']);
-      console.log('LOADING SCRIPT', performance.now() - loadingScriptStart);
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Loaded Monaco'); // eslint-disable-line
       }
 
       this.addWorkbenchActions();

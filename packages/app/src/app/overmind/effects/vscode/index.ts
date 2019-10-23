@@ -7,10 +7,11 @@ import {
 } from '@codesandbox/common/lib/types';
 import { Reaction } from 'app/overmind';
 import FontFaceObserver from 'fontfaceobserver';
+import * as childProcess from 'node-services/lib/child_process';
 
+import browserFs from './browserFs';
 import { VSCodeEditorManager } from './editorManager';
 import { OnFileChangeData } from './editorManager/FilesSync';
-import fs from './fs';
 import { ICustomEditorApi, VSCodeManager } from './manager';
 
 export type VsCodeOptions = {
@@ -79,9 +80,26 @@ class VSCodeEffect {
       this.customEditorApi.getCustomEditor(modulePath)
     );
 
+    import(
+      // @ts-ignore
+      'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./manager/extensionHostWorker/bootstrappers/ext-host'
+    ).then(ExtHostWorkerLoader => {
+      childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
+    });
+
+    const loadingScriptStart = performance.now();
+
+    this.manager.loadScript(['vs/editor/codesandbox.editor.main']).then(() => {
+      console.log('LOADING SCRIPT', performance.now() - loadingScriptStart);
+    });
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Loaded Monaco'); // eslint-disable-line
+    }
+
     // It will only load the editor once. We should probably call this
     const container = this.elements.editor;
-    this.editorPromise = fs
+    this.editorPromise = browserFs
       .initialize({
         onModulesByPathChange(cb) {
           options.reaction(

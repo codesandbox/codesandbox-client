@@ -1,17 +1,18 @@
-import { css } from 'glamor';
-import { TextOperation } from 'ot';
-import { actions, dispatch } from 'codesandbox-api';
 import {
+  getModulePath,
+  resolveModule,
+} from '@codesandbox/common/lib/sandbox/modules';
+import {
+  EditorSelection,
   Module,
   Sandbox,
   UserSelection,
-  EditorSelection,
 } from '@codesandbox/common/lib/types';
-import {
-  resolveModule,
-  getModulePath,
-} from '@codesandbox/common/lib/sandbox/modules';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
+import { actions, dispatch } from 'codesandbox-api';
+import { css } from 'glamor';
+import { TextOperation } from 'ot';
+
 import { getModel } from './utils';
 
 // @ts-ignore
