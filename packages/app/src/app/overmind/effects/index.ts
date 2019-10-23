@@ -3,7 +3,6 @@ export { default as git } from './git';
 export { default as api } from './api';
 export { default as browser } from './browser';
 export { default as connection } from './connection';
-export { default as fsSync } from './fsSync';
 export { default as jsZip } from './jsZip';
 export { default as jwt } from './jwt';
 export { default as keybindingManager } from './keybindingManager';

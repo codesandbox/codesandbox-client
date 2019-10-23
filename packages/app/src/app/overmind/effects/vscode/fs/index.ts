@@ -3,8 +3,8 @@ import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { json } from 'overmind';
 
-import { EXTENSIONS_LOCATION } from './vscode/manager/constants';
-import { getTypeFetcher } from './vscode/manager/extensionHostWorker/common/type-downloader';
+import { EXTENSIONS_LOCATION } from '../manager/constants';
+import { getTypeFetcher } from '../manager/extensionHostWorker/common/type-downloader';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
@@ -170,10 +170,10 @@ export default {
               options: {
                 api: {
                   getState: () => ({
-                      modulesByPath: window.getState().editor.currentSandbox
-                        ? window.getState().editor.modulesByPath
-                        : {},
-                    }),
+                    modulesByPath: window.getState().editor.currentSandbox
+                      ? window.getState().editor.modulesByPath
+                      : {},
+                  }),
                 },
               },
             },

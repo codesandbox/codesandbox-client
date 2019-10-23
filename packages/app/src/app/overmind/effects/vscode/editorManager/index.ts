@@ -1,23 +1,23 @@
-import prettify from 'app/src/app/utils/prettify';
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
-import getTemplate from '@codesandbox/common/lib/templates';
-import {
-  Settings,
-  Module,
-  ModuleError,
-  ModuleCorrection,
-  EditorSelection,
-} from '@codesandbox/common/lib/types';
 import {
   getModulePath,
   resolveModule,
 } from '@codesandbox/common/lib/sandbox/modules';
+import {
+  EditorSelection,
+  Module,
+  ModuleCorrection,
+  ModuleError,
+  Settings,
+} from '@codesandbox/common/lib/types';
+import prettify from 'app/src/app/utils/prettify';
 import { listen } from 'codesandbox-api';
 import throttle from 'lodash-es/throttle';
-import { VsCodeOptions } from '..';
+
 import { FilesSync, OnFileChangeData } from './FilesSync';
 import { Linter } from './Linter';
-import { getCurrentModelPath, getCode, getModel, getSelection } from './utils';
+import { getCode, getCurrentModelPath, getModel, getSelection } from './utils';
+import { VsCodeOptions } from '..';
 
 export class VSCodeEditorManager {
   private options: VsCodeOptions;
@@ -249,41 +249,6 @@ export class VSCodeEditorManager {
     });
   }
 
-  private hasNativeTypescript() {
-    const sandbox = this.options.getCurrentSandbox();
-    const template = getTemplate(sandbox.template);
-    return template.isTypescript;
-  }
-
-  private getDependencies() {
-    const sandbox = this.options.getCurrentSandbox();
-    const packageJSON = sandbox.modules.find(
-      m => m.title === 'package.json' && m.directoryShortid == null
-    );
-
-    if (packageJSON != null) {
-      try {
-        const { dependencies = {}, devDependencies = {} } = JSON.parse(
-          packageJSON.code || ''
-        );
-
-        const usedDevDependencies = {};
-        Object.keys(devDependencies).forEach(d => {
-          if (d.startsWith('@types')) {
-            usedDevDependencies[d] = devDependencies[d];
-          }
-        });
-
-        return { ...dependencies, ...usedDevDependencies };
-      } catch (e) {
-        console.error(e);
-        return null;
-      }
-    } else {
-      return sandbox.npmDependencies;
-    }
-  }
-
   private initializeReactions() {
     const { reaction } = this.options;
 
@@ -300,11 +265,15 @@ export class VSCodeEditorManager {
         immediate: true,
       }),
       reaction(
-        state => state.editor.parsedConfigurations.package,
+        state =>
+          state.editor.parsedConfigurations &&
+          state.editor.parsedConfigurations.package,
         this.changeDependencies
       ),
       reaction(
-        state => state.editor.parsedConfigurations.typescript,
+        state =>
+          state.editor.parsedConfigurations &&
+          state.editor.parsedConfigurations.typescript,
         this.setTSConfig
       ),
       reaction(state => state.live.receivingCode, this.setReceivingCode),

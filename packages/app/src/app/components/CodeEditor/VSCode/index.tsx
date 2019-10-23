@@ -1,13 +1,14 @@
-import React, { useEffect, useRef } from 'react';
-import { useOvermind } from 'app/overmind';
 import getTemplate from '@codesandbox/common/lib/templates';
 import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import theme from '@codesandbox/common/lib/theme';
+import { useOvermind } from 'app/overmind';
+import { json } from 'overmind';
+import React, { useEffect, useRef } from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
-import { json } from 'overmind';
-import { Container, GlobalStyles } from './elements';
+
 import { Configuration } from './Configuration';
+import { Container, GlobalStyles } from './elements';
 
 export const VSCode: React.FunctionComponent = () => {
   const { state, effects } = useOvermind();
@@ -15,8 +16,8 @@ export const VSCode: React.FunctionComponent = () => {
 
   useEffect(() => {
     const rootEl = containerEl.current;
-    effects.vscode
-      .getEditorElement((modulePath: string) => {
+    const mainContainer = effects.vscode.getEditorElement(
+      (modulePath: string) => {
         const template = getTemplate(state.editor.currentSandbox.template);
         const config = template.configurationFiles[modulePath];
 
@@ -41,12 +42,12 @@ export const VSCode: React.FunctionComponent = () => {
               container
             ))
         );
-      })
-      .then(mainContainer => {
-        rootEl.appendChild(mainContainer);
-        const { width, height } = rootEl.getBoundingClientRect();
-        effects.vscode.updateLayout(width, height);
-      });
+      }
+    );
+
+    rootEl.appendChild(mainContainer);
+    const { width, height } = rootEl.getBoundingClientRect();
+    effects.vscode.updateLayout(width, height);
 
     return () => {
       document.getElementById('root').className = document

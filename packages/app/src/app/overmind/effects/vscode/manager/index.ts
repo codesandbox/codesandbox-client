@@ -2,9 +2,11 @@ import {
   convertTypeToStatus,
   notificationState,
 } from '@codesandbox/common/lib/utils/notifications';
-import { blocker, Blocker } from 'app/utils/blocker';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
+import { Blocker, blocker } from 'app/utils/blocker';
 import * as childProcess from 'node-services/lib/child_process';
+
+import bootstrap from './dev-bootstrap';
 import {
   initializeCustomTheme,
   initializeExtensionsFolder,
@@ -12,7 +14,6 @@ import {
   initializeThemeCache,
 } from './initializers';
 import { KeyCode, KeyMod } from './keyCodes';
-import bootstrap from './dev-bootstrap';
 import { MenuId } from './menus';
 
 interface IServiceCache {
@@ -44,9 +45,14 @@ export class VSCodeManager {
   private commandService = blocker<any>();
   private extensionService = blocker<any>();
   private extensionEnablementService = blocker<any>();
+  private getCustomEditor: ICustomEditorApi['getCustomEditor'];
 
-  constructor(controller: any) {
+  constructor(
+    controller: any,
+    getCustomEditor: ICustomEditorApi['getCustomEditor']
+  ) {
     this.controller = controller;
+    this.getCustomEditor = getCustomEditor;
   }
 
   public loadScript(scripts: string[]) {
@@ -323,7 +329,6 @@ export class VSCodeManager {
 
   public async loadEditor(
     container: HTMLElement,
-    getCustomEditor: any,
     cb: (result: {
       monaco: any;
       statusbarPart: any;
@@ -345,21 +350,22 @@ export class VSCodeManager {
         this.enableExtension('vscodevim.vim');
       }
 
-      // eslint-disable-next-line global-require
-      await this.loadScript(['vs/editor/codesandbox.editor.main']);
+      import(
+        // @ts-ignore
+        'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/ext-host'
+      ).then(ExtHostWorkerLoader => {
+        childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
+      });
 
+      const loadingScriptStart = performance.now();
+
+      await this.loadScript(['vs/editor/codesandbox.editor.main']);
+      console.log('LOADING SCRIPT', performance.now() - loadingScriptStart);
       if (process.env.NODE_ENV === 'development') {
         console.log('Loaded Monaco'); // eslint-disable-line
       }
 
       this.addWorkbenchActions();
-
-      const ExtHostWorkerLoader = await import(
-        // @ts-ignore
-        'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/ext-host'
-      );
-
-      childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
 
       const r = window.require;
       const [
@@ -400,6 +406,7 @@ export class VSCodeManager {
         r('vs/platform/extensionManagement/common/extensionManagement'),
       ];
 
+      const monacoCreateStart = performance.now();
       const { serviceCollection } = await new Promise<any>(resolve => {
         window.monaco.editor.create(
           container,
@@ -408,12 +415,13 @@ export class VSCodeManager {
               new SyncDescriptor(CodeSandboxService, [this.controller, this]),
             codesandboxConfigurationUIService: i =>
               new SyncDescriptor(CodeSandboxConfigurationUIService, [
-                { getCustomEditor },
+                { getCustomEditor: this.getCustomEditor },
               ]),
           },
           resolve
         );
       });
+      console.log('MONACO CREATE', performance.now() - monacoCreateStart);
 
       // It has to run the accessor within the callback
       serviceCollection.get(IInstantiationService).invokeFunction(accessor => {

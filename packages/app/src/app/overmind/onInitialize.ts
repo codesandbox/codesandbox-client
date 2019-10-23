@@ -63,18 +63,6 @@ export const onInitialize: OnInitialize = async (
     },
   });
 
-  effects.vscode.initialize({
-    getCurrentSandbox: () => state.editor.currentSandbox,
-    getCurrentModule: () => state.editor.currentModule,
-    onCodeChange: actions.editor.codeChanged,
-    onSelectionChange: () => {},
-    reaction: overmindInstance.reaction,
-    getState: path =>
-      path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,
-    getSignal: path =>
-      path.split('.').reduce((aggr, key) => aggr[key], actions),
-  });
-
   /*
 sendTransforms={operation => {
     
@@ -111,15 +99,16 @@ sendTransforms={operation => {
     instead which manages the state to optimally load up and show the editor,
     not blocking anything else
   */
-  await effects.fsSync.initialize({
-    onModulesByPathChange(cb: (modulesByPath: any) => void) {
-      overmindInstance.reaction(
-        ({ editor }) => editor.modulePaths,
-        modulesByPath => cb(modulesByPath)
-      );
-    },
-    getModulesByPath() {
-      return state.editor.modulesByPath;
-    },
+  effects.vscode.initialize({
+    getCurrentSandbox: () => state.editor.currentSandbox,
+    getCurrentModule: () => state.editor.currentModule,
+    getModulesByPath: () => state.editor.modulesByPath,
+    onCodeChange: actions.editor.codeChanged,
+    onSelectionChange: () => {},
+    reaction: overmindInstance.reaction,
+    getState: path =>
+      path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,
+    getSignal: path =>
+      path.split('.').reduce((aggr, key) => aggr[key], actions),
   });
 };

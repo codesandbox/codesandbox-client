@@ -1,20 +1,22 @@
-import { Reaction } from 'app/overmind';
 import {
-  Sandbox,
-  Module,
   EditorSelection,
-  ModuleError,
+  Module,
   ModuleCorrection,
+  ModuleError,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
+import { Reaction } from 'app/overmind';
 import FontFaceObserver from 'fontfaceobserver';
-import { VSCodeEditorManager } from './editorManager';
-import { VSCodeManager, ICustomEditorApi } from './manager';
 
+import { VSCodeEditorManager } from './editorManager';
 import { OnFileChangeData } from './editorManager/FilesSync';
+import fs from './fs';
+import { ICustomEditorApi, VSCodeManager } from './manager';
 
 export type VsCodeOptions = {
   getCurrentSandbox: () => Sandbox;
   getCurrentModule: () => Module;
+  getModulesByPath: () => { [path: string]: Module };
   onCodeChange: (data: OnFileChangeData) => void;
   onSelectionChange: (selection: any) => void;
   reaction: Reaction;
@@ -60,6 +62,9 @@ class VSCodeEffect {
     statusbar: document.createElement('div'),
   };
 
+  private customEditorApi: ICustomEditorApi;
+  private editorPromise: Promise<{ monaco: any; editorApi: any }>;
+
   public initialize(options: VsCodeOptions) {
     // This should be changed to be more specific functions
     this.controller = {
@@ -70,7 +75,53 @@ class VSCodeEffect {
     this.styleElements();
 
     this.editorManager = new VSCodeEditorManager(options);
-    this.manager = new VSCodeManager(this.controller);
+    this.manager = new VSCodeManager(this.controller, modulePath =>
+      this.customEditorApi.getCustomEditor(modulePath)
+    );
+
+    // It will only load the editor once. We should probably call this
+    const container = this.elements.editor;
+    this.editorPromise = fs
+      .initialize({
+        onModulesByPathChange(cb) {
+          options.reaction(
+            ({ editor }) => editor.modulePaths,
+            modulesByPath => cb(modulesByPath)
+          );
+        },
+        getModulesByPath: options.getModulesByPath,
+      })
+      .then(() =>
+        this.manager.loadEditor(
+          container,
+          async ({
+            monaco,
+            statusbarPart,
+            menubarPart,
+            editorPart,
+            editorApi,
+          }) => {
+            await new FontFaceObserver('dm').load();
+
+            const part = document.createElement('div');
+
+            part.id = 'vscode-editor';
+            part.className = 'part editor has-watermark';
+            part.style.width = '100%';
+            part.style.height = '100%';
+
+            container.appendChild(part);
+
+            statusbarPart.create(this.elements.statusbar);
+            menubarPart.create(this.elements.menubar);
+
+            editorPart.create(part);
+            editorPart.layout(container.offsetWidth, container.offsetHeight);
+
+            return { monaco, editorApi };
+          }
+        )
+      );
   }
 
   private styleElements() {
@@ -82,6 +133,9 @@ class VSCodeEffect {
     this.elements.menubar.style.height = '38px';
     this.elements.menubar.style.fontSize = '0.875rem';
     this.elements.menubar.className = 'menubar';
+
+    this.elements.statusbar.className = 'part statusbar';
+    this.elements.statusbar.id = 'workbench.parts.statusbar';
   }
 
   public callCallbackError(id: string, message?: string) {
@@ -135,38 +189,25 @@ class VSCodeEffect {
     }
   }
 
-  public async getEditorElement(
+  public getStatusbarElement() {
+    return this.elements.statusbar;
+  }
+
+  public getEditorElement(
     getCustomEditor: ICustomEditorApi['getCustomEditor']
   ) {
-    const container = this.elements.editor;
+    const start = performance.now();
 
-    // It will only load the editor once. We should probably call this
-    await this.manager.loadEditor(
-      container,
+    this.customEditorApi = {
       getCustomEditor,
-      async ({ monaco, statusbarPart, menubarPart, editorPart, editorApi }) => {
-        await new FontFaceObserver('dm').load();
+    };
 
-        const part = document.createElement('div');
+    this.editorPromise.then(({ editorApi, monaco }) => {
+      console.log('Had to wait', performance.now() - start);
+      this.editorManager.initialize(editorApi, monaco);
+    });
 
-        part.id = 'vscode-editor';
-        part.className = 'part editor has-watermark';
-        part.style.width = '100%';
-        part.style.height = '100%';
-
-        container.appendChild(part);
-
-        statusbarPart.create(this.elements.statusbar);
-        menubarPart.create(this.elements.menubar);
-
-        editorPart.create(part);
-        editorPart.layout(container.offsetWidth, container.offsetHeight);
-
-        this.editorManager.initialize(editorApi, monaco);
-      }
-    );
-
-    return container;
+    return this.elements.editor;
   }
 
   public unmount() {
