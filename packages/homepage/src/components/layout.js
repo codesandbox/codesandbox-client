@@ -5,6 +5,7 @@ import theme from '@codesandbox/common/lib/theme';
 import { VisuallyHidden } from './style';
 import '../css/typography.css';
 import '../css/global.css';
+import Navigation from './Navigation/index';
 
 const TemplateWrapper = ({ children }) => (
   <ThemeProvider theme={theme}>
@@ -14,9 +15,15 @@ const TemplateWrapper = ({ children }) => (
           Skip to main content
         </VisuallyHidden>
       </div>
+      <Navigation />
 
       <main
-        style={{ maxWidth: '100vw', overflowX: 'hidden' }}
+        style={{
+          maxWidth: '80%',
+          width: '1200px',
+          margin: 'auto',
+          overflowX: 'hidden',
+        }}
         id="main"
         aria-label="main content"
       >

@@ -1,38 +1,37 @@
 import React from 'react';
+
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
+import Hero from '../screens/home/hero';
+import Prototype from '../screens/home/prototype';
+import Started from '../screens/home/started';
 
-export default class HomePage extends React.Component {
-  componentDidMount() {
-    window.addEventListener('scroll', this.scrollCheck, false);
-  }
+const Homepage = () => (
+  <Layout>
+    <TitleAndMetaTags />
+    <section
+      css={`
+        margin-bottom: 8rem;
+      `}
+    >
+      <Hero />
+    </section>
+    <section
+      css={`
+        margin-bottom: 8rem;
+      `}
+    >
+      <Prototype />
+    </section>
+    <section
+      css={`
+        margin-bottom: 8rem;
+      `}
+    >
+      <Started />
+    </section>
+    <Hero /> <Hero /> <Hero /> <Hero /> <Hero />
+  </Layout>
+);
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.scrollCheck);
-  }
-
-  scrollCheck = () => {
-    clearTimeout(this.timer);
-    if (!document.body.classList.contains('disable-hover')) {
-      document.body.classList.add('disable-hover');
-      window.scrolling = true;
-    }
-
-    this.timer = setTimeout(() => {
-      document.body.classList.remove('disable-hover');
-      window.scrolling = false;
-    }, 500);
-  };
-
-  render() {
-    return (
-      <Layout>
-        <TitleAndMetaTags />
-        <div style={{ textAlign: 'center', marginTop: 100 }}>
-          <h1>CodeSandbox</h1>
-          <h2>We are goth Glitch</h2>
-        </div>
-      </Layout>
-    );
-  }
-}
+export default Homepage;
