@@ -22,7 +22,7 @@ const Messages = styled.div`
   flex: 1;
 `;
 
-export const Chat = () => {
+export const Chat: React.FC = () => {
   const [value, setValue] = useState('');
   const [height, setHeight] = useState('');
   const { state, actions } = useOvermind();
@@ -34,7 +34,7 @@ export const Chat = () => {
   }
   useEffect(scrollDown);
 
-  const handleKeyDown = e => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     if (e.keyCode === ENTER && !e.shiftKey) {
       e.preventDefault();
       e.stopPropagation();
@@ -47,7 +47,7 @@ export const Chat = () => {
     }
   };
 
-  const handleChange = e => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
 
