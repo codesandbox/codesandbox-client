@@ -72,8 +72,8 @@ const context: any = window;
  * parts.
  */
 export class VSCodeEffect {
-  // We should not need this as we load VSCode at effects level
-  // private serviceCache: IServiceCache;
+  public initialized: Promise<void>;
+
   private monaco: any;
   private editorApi: any;
   private options: VsCodeOptions;
@@ -118,7 +118,7 @@ export class VSCodeEffect {
     // It will only load the editor once. We should probably call this
     const container = this.elements.editor;
 
-    return Promise.all([
+    this.initialized = Promise.all([
       new Promise(resolve => {
         loadScript(['vs/editor/codesandbox.editor.main'])(resolve);
       }),
@@ -133,6 +133,8 @@ export class VSCodeEffect {
         getState: options.getState,
       }),
     ]).then(() => this.loadEditor(window.monaco, container));
+
+    return this.initialized;
   }
 
   public getEditorElement(

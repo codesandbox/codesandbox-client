@@ -118,6 +118,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.files.internal.recoverFiles();
   }
 
+  await effects.vscode.initialized;
+
+  effects.vscode.openModule(state.editor.currentModule);
+
   state.editor.isLoading = false;
 });
 

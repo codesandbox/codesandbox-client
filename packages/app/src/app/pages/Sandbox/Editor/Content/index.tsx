@@ -185,24 +185,25 @@ export const Content: React.FC = () => {
                 bottom: 0,
               }}
             >
-              <Icons>
-                {config && config.partialSupportDisclaimer ? (
-                  <Tooltip
-                    placement="bottom"
-                    content={config.partialSupportDisclaimer}
-                    style={{
-                      display: 'flex',
-                      'align-items': 'center',
-                    }}
-                  >
-                    Partially Supported Config{' '}
-                    <QuestionIcon style={{ marginLeft: '.5rem' }} />
-                  </Tooltip>
-                ) : null}
-                {config && !config.partialSupportDisclaimer ? (
-                  <div>Supported Configuration</div>
-                ) : null}
-              </Icons>
+              {config ? (
+                <Icons>
+                  {config.partialSupportDisclaimer ? (
+                    <Tooltip
+                      placement="bottom"
+                      content={config.partialSupportDisclaimer}
+                      style={{
+                        display: 'flex',
+                        'align-items': 'center',
+                      }}
+                    >
+                      Partially Supported Config{' '}
+                      <QuestionIcon style={{ marginLeft: '.5rem' }} />
+                    </Tooltip>
+                  ) : (
+                    <div>Supported Configuration</div>
+                  )}
+                </Icons>
+              ) : null}
               <CodeEditor key={sandbox.id} />
             </div>
           </div>
