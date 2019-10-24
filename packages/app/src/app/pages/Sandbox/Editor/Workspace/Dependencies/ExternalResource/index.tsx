@@ -31,7 +31,7 @@ export class ExternalResource extends React.PureComponent<IExternalResource> {
   render() {
     const { resource } = this.props;
     return (
-      <EntryContainer>
+      <EntryContainer as="li">
         <Link href={resource}>{getName(resource)}</Link>
         <IconArea>
           <Icon onClick={this.removeResource}>

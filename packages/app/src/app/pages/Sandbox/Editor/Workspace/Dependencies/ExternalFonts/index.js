@@ -21,12 +21,15 @@ const getFamily = search => {
 };
 
 export const ExternalFonts = ({ removeResource, resource }) => (
-  <EntryContainer>
+  <EntryContainer as="li">
     <Link id={`font-button-${getFamily(resource).id}`} href={resource}>
       {getFamily(resource).name}
     </Link>
     <IconArea>
-      <Icon onClick={() => removeResource(resource)}>
+      <Icon
+        ariaLabel="Remove Resource"
+        onClick={() => removeResource(resource)}
+      >
         <CrossIcon />
       </Icon>
     </IconArea>
