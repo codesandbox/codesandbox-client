@@ -1,9 +1,9 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import delayInEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 import delayOutEffect from '@codesandbox/common/lib/utils/animation/delay-out-effect';
 import { NowLogo } from 'app/components/NowLogo';
 import { OpaqueLogo } from 'app/components/OpaqueLogo';
-import Cube from './Cube';
+import { Cube } from 'app/components/Cube';
 
 const cubeAnimation = keyframes`
   0% {
@@ -23,24 +23,28 @@ const cubeAnimation = keyframes`
   }
 `;
 
-export const ButtonContainer = styled.div`
-  margin: 2rem 4rem;
-  margin-bottom: 3rem;
-  ${delayInEffect()} ${({ deploying }) =>
-    deploying && delayOutEffect(0, false)};
+export const ButtonContainer = styled.div<{ deploying: boolean }>`
+  ${({ deploying }) => css`
+    margin: 2rem 4rem;
+    margin-bottom: 3rem;
+    ${delayInEffect()}
+    ${deploying && delayOutEffect(0, false)};
+  `}
 `;
 
-export const DeployAnimationContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 16px;
-  bottom: 10px;
-  right: 0;
-  left: 0;
+export const DeployAnimationContainer = styled.div<{ deploying: boolean }>`
+  ${({ deploying }) => css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 16px;
+    bottom: 10px;
+    right: 0;
+    left: 0;
 
-  ${({ deploying }) => deploying && delayInEffect(0, false)};
+    ${deploying && delayInEffect(0, false)};
+  `}
 `;
 
 export const StyledNowLogo = styled(NowLogo)`
@@ -49,7 +53,7 @@ export const StyledNowLogo = styled(NowLogo)`
   transform: translateY(10px) translateX(80px);
 `;
 
-export const StyledCube = styled(Cube)`
+export const StyledCube = styled(Cube)<{ i: number }>`
   position: absolute;
   animation: ${cubeAnimation} 2s ease-in infinite;
   animation-delay: ${({ i }) => i * 0.5}s;
