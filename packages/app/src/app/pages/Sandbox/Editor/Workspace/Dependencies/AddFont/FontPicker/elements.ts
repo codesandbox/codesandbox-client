@@ -6,6 +6,11 @@ const makeDarker = ({ theme }) =>
     .darken(theme.light ? 0.1 : 0.3)
     .rgbString();
 
+const makeLighter = ({ theme }) =>
+  Color(theme['sideBar.background'])
+    .lighten(0.3)
+    .rgbString();
+
 export const SearchFonts = styled.input`
   border: 1px solid ${props => makeDarker(props)};
   box-sizing: border-box;
@@ -38,7 +43,7 @@ export const SearchFonts = styled.input`
 export const FontFamily = styled.button<{ active?: boolean }>`
   margin: 0;
   padding: 0;
-  background-color: ${props => props.theme['sideBar.background']};
+  background-color: ${props => makeLighter(props)};
   width: 100%;
   padding-left: 0.25rem;
   border: none;
@@ -72,7 +77,7 @@ export const List = styled.ul<{ expanded?: boolean }>`
   text-align: left;
   display: none;
   margin-top: 0.5rem;
-  background-color: ${props => props.theme['sideBar.background']};
+  background-color: ${props => makeLighter(props)};
   width: 240px;
   z-index: 10;
 
