@@ -3,6 +3,7 @@ import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
+import delay from 'sandbox/utils/delay';
 import { Module } from '../entities/module';
 import Manager from '../manager';
 
@@ -114,7 +115,7 @@ const urlProtocols = {
   },
 };
 
-async function fetchWithRetries(url: string, retries = 3): Promise<Response> {
+async function fetchWithRetries(url: string, retries = 6): Promise<Response> {
   const doFetch = () =>
     window.fetch(url).then(x => {
       if (x.ok) {
@@ -124,8 +125,15 @@ async function fetchWithRetries(url: string, retries = 3): Promise<Response> {
       throw new Error(`Could not fetch ${url}`);
     });
 
+  let lastTryTime = 0;
   for (let i = 0; i < retries; i++) {
+    if (Date.now() - lastTryTime < 3000) {
+      // Ensure that we at least wait 3s before retrying a request to prevent rate limits
+      // eslint-disable-next-line
+      await delay(3000 - (Date.now() - lastTryTime));
+    }
     try {
+      lastTryTime = Date.now();
       // eslint-disable-next-line
       return await doFetch();
     } catch (e) {
@@ -174,9 +182,11 @@ async function getMeta(
   }
 
   const protocol = getFetchProtocol(version);
-  const metaUrl = await protocol.meta(nameWithoutAlias, version);
 
-  metas[id] = fetchWithRetries(metaUrl).then(x => x.json());
+  metas[id] = protocol
+    .meta(nameWithoutAlias, version)
+    .then(fetchWithRetries)
+    .then(x => x.json());
 
   return metas[id];
 }
@@ -202,9 +212,10 @@ export async function downloadDependency(
 
   const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
   const protocol = getFetchProtocol(depVersion);
-  const url = await protocol.file(nameWithoutAlias, depVersion, relativePath);
 
-  packages[id] = fetchWithRetries(url)
+  packages[id] = protocol
+    .file(nameWithoutAlias, depVersion, relativePath)
+    .then(fetchWithRetries)
     .then(x => x.text())
     .catch(async () => {
       const fallbackProtocol = getFetchProtocol(depVersion, true);

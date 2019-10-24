@@ -33,6 +33,9 @@ export type ParsedConfigurationFiles = {
     main: string;
     dependencies?: Dependencies;
     devDependencies: Dependencies;
+    resolutions?: {
+      [source: string]: string;
+    };
     [otherProperties: string]: any | undefined;
   }>;
   [path: string]: ParsedConfigurationFile<any> | undefined;

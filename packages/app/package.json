@@ -143,6 +143,7 @@
     "lru-cache": "^4.1.3",
     "match-sorter": "^1.8.1",
     "memoize-one": "^4.0.0",
+    "minimatch": "^3.0.4",
     "mobx": "^5.11.0",
     "mobx-react": "^6.1.1",
     "mobx-react-lite": "^1.4.1",
