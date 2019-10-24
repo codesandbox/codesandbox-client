@@ -10,11 +10,11 @@ const PER_PAGE_COUNT = 15;
 
 interface ISandboxesProps {
   source: string;
-  page: number;
+  page?: number;
   baseUrl: string;
 }
 
-export const Sandboxes: React.FC<ISandboxesProps> = ({ source, page, baseUrl }) => {
+export const Sandboxes: React.FC<ISandboxesProps> = ({ source, page = 1, baseUrl }) => {
   const {
     state: { profile },
     actions: {
@@ -150,8 +150,4 @@ export const Sandboxes: React.FC<ISandboxesProps> = ({ source, page, baseUrl }) 
       </Navigation>
     </div>
   );
-};
-
-Sandboxes.defaultProps = {
-  page: 1,
 };
