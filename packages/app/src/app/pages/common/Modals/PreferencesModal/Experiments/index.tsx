@@ -7,7 +7,7 @@ import {
   PreferenceContainer,
 } from '../elements';
 
-const Experiments: React.FunctionComponent = () => (
+export const Experiments: React.FunctionComponent = () => (
   <div>
     <Title>Experiments</Title>
 
@@ -21,5 +21,3 @@ const Experiments: React.FunctionComponent = () => (
     </SubContainer>
   </div>
 );
-
-export { Experiments };
