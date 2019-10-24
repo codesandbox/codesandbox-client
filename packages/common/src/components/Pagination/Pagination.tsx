@@ -57,6 +57,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
       </Button>
     </li>
   ),
+  ...props
 }) => {
   const [currentPage, setCurrentPage] = useState(initial);
 
@@ -95,7 +96,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
   };
 
   return (
-    <Navigation>
+    <Navigation {...props}>
       <Controls>
         <First disabled={currentPage === 1} onClick={handleFirst} />
         <Previous disabled={currentPage === 1} onClick={handlePrevious} />

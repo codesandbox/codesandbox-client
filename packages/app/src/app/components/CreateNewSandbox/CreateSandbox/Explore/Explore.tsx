@@ -6,16 +6,16 @@ import {
 } from '@codesandbox/common/lib/utils/config';
 import * as algoliasearch from 'algoliasearch';
 import { useKey } from 'react-use';
-import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
-import { Pagination } from '@codesandbox/common/lib/components/Pagination';
+// import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
 import { Header } from '../elements';
 import { SandboxCard } from '../SandboxCard';
 import { makeTemplates, useDebounce } from './utils';
 import { Loader } from '../Loader';
 import { SubHeader } from '../Create/elements';
 import {
-  Grid,
   Results,
+  Grid,
+  Pagination,
   Search,
   Categories,
   Form,
@@ -95,7 +95,7 @@ export const Explore = () => {
       </Header>
 
       {templates ? (
-        <Scrollable>
+        <>
           {templates.length ? (
             <Results>
               <SubHeader>
@@ -128,7 +128,7 @@ export const Explore = () => {
               There are no templates matching your search.
             </SubHeader>
           )}
-        </Scrollable>
+        </>
       ) : (
         <Loader />
       )}

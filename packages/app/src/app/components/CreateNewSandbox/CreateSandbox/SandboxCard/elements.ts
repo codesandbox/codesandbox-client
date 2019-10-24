@@ -1,7 +1,8 @@
 import styled, { css } from 'styled-components';
-import { Button } from 'reakit/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import { Link } from '@codesandbox/common/lib/components/Link';
 
-export const ActionButton = styled.button`
+export const ActionButton = styled(Button)`
   background: #151515;
   border: 1px solid #ffffff;
   box-sizing: border-box;
@@ -17,7 +18,7 @@ export const ActionButton = styled.button`
   opacity: 0;
 `;
 
-export const Container = styled(Button)<{ ref?: any }>`
+export const Container = styled(Link)`
   display: inline-flex;
   width: 290px;
   padding: 0.5rem;
@@ -27,6 +28,7 @@ export const Container = styled(Button)<{ ref?: any }>`
   background: none;
   cursor: pointer;
   margin-bottom: 1rem;
+  text-decoration: none;
 
   &:hover {
     ${ActionButton} {
@@ -60,7 +62,7 @@ export const Row = styled.div`
   justify-content: space-between;
 `;
 
-export const Title = styled.a`
+export const Title = styled.span`
   padding: 0;
   margin: 0;
   color: #fff;
@@ -72,14 +74,12 @@ export const Title = styled.a`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-decoration: none;
 `;
 
-export const Environment = styled.a`
+export const Environment = styled.span`
   color: #fff;
   font-size: 11px;
   line-height: 13px;
-  text-decoration: none;
 `;
 
 export const Author = styled.span`

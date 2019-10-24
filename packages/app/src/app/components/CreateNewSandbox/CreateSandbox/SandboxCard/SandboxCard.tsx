@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { LightIcons, DarkIcons } from '@codesandbox/template-icons';
 import history from 'app/utils/history';
 import getLightIcons from '@codesandbox/common/lib/templates/iconsLight';
@@ -26,99 +26,95 @@ interface ISandboxCardProps {
   team?: any;
 }
 
-export const SandboxCard: React.FC<ISandboxCardProps> = forwardRef(
-  ({ template, official, mine, team }, ref) => {
-    // @ts-ignore
-    const { source, id: sandboxID, author = {} } = template.sandbox || {};
-    const {
-      state: { user },
-    } = useOvermind();
-    const myTemplate = mine || author.username === (user || {}).username;
-    let UserIcon: React.FunctionComponent;
-    let OfficialIcon: React.FunctionComponent;
+export const SandboxCard: React.FC<ISandboxCardProps> = ({
+  template,
+  official,
+  mine,
+  team,
+}) => {
+  // @ts-ignore
+  const { source, id: sandboxID, author = {} } = template.sandbox || {};
+  const {
+    state: { user },
+  } = useOvermind();
+  const myTemplate = mine || author.username === (user || {}).username;
+  let UserIcon: React.FunctionComponent;
+  let OfficialIcon: React.FunctionComponent;
 
-    if (getContrastYIQ(template.color) >= 128) {
-      UserIcon =
-        template.iconUrl && DarkIcons[template.iconUrl]
-          ? DarkIcons[template.iconUrl]
-          : getDarkIcons((source || {}).template);
+  if (getContrastYIQ(template.color) >= 128) {
+    UserIcon =
+      template.iconUrl && DarkIcons[template.iconUrl]
+        ? DarkIcons[template.iconUrl]
+        : getDarkIcons((source || {}).template);
 
-      OfficialIcon = getDarkIcons(template.name);
+    OfficialIcon = getDarkIcons(template.name);
+  } else {
+    UserIcon =
+      template.iconUrl && LightIcons[template.iconUrl]
+        ? LightIcons[template.iconUrl]
+        : getLightIcons((source || {}).template);
+
+    OfficialIcon = getLightIcons(template.name);
+  }
+
+  const { actions } = useOvermind();
+  const title =
+    template.niceName || template.sandbox.title || template.sandbox.id;
+  const url = sandboxUrl({
+    id: official ? template.shortid : sandboxID,
+  });
+
+  const openSandbox = (openNewWindow = false) => {
+    if (openNewWindow === true) {
+      window.open(url, '_blank');
     } else {
-      UserIcon =
-        template.iconUrl && LightIcons[template.iconUrl]
-          ? LightIcons[template.iconUrl]
-          : getLightIcons((source || {}).template);
-
-      OfficialIcon = getLightIcons(template.name);
+      history.push(url);
     }
 
-    const { actions } = useOvermind();
-    const title =
-      template.niceName || template.sandbox.title || template.sandbox.id;
+    return actions.modalClosed();
+  };
 
-    const openSandbox = (openNewWindow = false, officialTemplate) => {
-      const url = sandboxUrl({
-        id: officialTemplate ? template.shortid : sandboxID,
-      });
+  const Open = () => (
+    <ActionButton
+      onClick={event => {
+        const cmd = event.ctrlKey || event.metaKey;
+        openSandbox(Boolean(cmd));
+      }}
+    >
+      Open
+    </ActionButton>
+  );
 
-      if (openNewWindow === true) {
-        window.open(url, '_blank');
-      } else {
-        history.push(url);
-      }
-
-      return actions.modalClosed();
-    };
-
-    const Open = () => (
-      <ActionButton
+  return (
+    <>
+      <Container
+        to={url}
         onClick={event => {
           const cmd = event.ctrlKey || event.metaKey;
-          openSandbox(Boolean(cmd), official);
+          openSandbox(Boolean(cmd));
         }}
       >
-        Open
-      </ActionButton>
-    );
-
-    return (
-      <>
-        <Container ref={ref}>
-          <Icon color={template.color}>
-            {official && (OfficialIcon || UserIcon) ? (
-              <OfficialIcon />
-            ) : (
-              <UserIcon />
-            )}
-          </Icon>
-          <Details>
-            <Row>
-              <Title
-                href={sandboxUrl({
-                  id: official ? template.shortid : sandboxID,
-                })}
-              >
-                {title}
-              </Title>
-              {myTemplate || !user || official ? <Open /> : null}
-              {user && !myTemplate && !official ? (
-                <ActionButtons id={template.id} sandboxID={sandboxID} />
-              ) : null}
-            </Row>
-            <Row>
-              <Environment
-                href={sandboxUrl({
-                  id: official ? template.shortid : sandboxID,
-                })}
-              >
-                {template.name || source.template}
-              </Environment>
-              <Author>By: {author.username || 'CodeSandbox'}</Author>
-            </Row>
-          </Details>
-        </Container>
-      </>
-    );
-  }
-);
+        <Icon color={template.color}>
+          {official && (OfficialIcon || UserIcon) ? (
+            <OfficialIcon />
+          ) : (
+            <UserIcon />
+          )}
+        </Icon>
+        <Details>
+          <Row>
+            <Title>{title}</Title>
+            {myTemplate || !user || official ? <Open /> : null}
+            {user && !myTemplate && !official ? (
+              <ActionButtons id={template.id} sandboxID={sandboxID} />
+            ) : null}
+          </Row>
+          <Row>
+            <Environment>{template.name || source.template}</Environment>
+            <Author>By: {author.username || 'CodeSandbox'}</Author>
+          </Row>
+        </Details>
+      </Container>
+    </>
+  );
+};

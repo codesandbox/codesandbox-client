@@ -42,8 +42,8 @@ export const Tab = styled(BaseTab)`
 `;
 
 export const TabContent = styled(TabPanel)`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: min-content auto;
   background: #151515;
   max-height: 496px;
 `;
