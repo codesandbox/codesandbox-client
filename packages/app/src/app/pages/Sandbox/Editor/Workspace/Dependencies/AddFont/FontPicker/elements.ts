@@ -71,7 +71,7 @@ export const List = styled.ul<{ expanded?: boolean }>`
   display: none;
   margin-top: 0.5rem;
   background-color: ${props => props.theme['sideBar.background']};
-  position: absolute;
+  width: 240px;
   z-index: 10;
 
   ${props =>
