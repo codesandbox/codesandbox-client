@@ -44,7 +44,7 @@ export const Showcase: FunctionComponent = () => {
     );
   }
   return (
-    <Column alignItems="center">
+    <Column alignItems="center" justifyContent="normal">
       <Margin top={1}>
         {isProfileCurrentUser && (
           <Button small onClick={selectSandboxClicked}>
@@ -53,7 +53,7 @@ export const Showcase: FunctionComponent = () => {
         )}
       </Margin>
       <Margin top={2} style={{ width: '100%' }}>
-        <Column alignItems="initial">
+        <Column alignItems="initial" justifyContent="normal">
           <div style={{ flex: 2 }}>
             <ShowcasePreview sandbox={showcasedSandbox} settings={settings} />
           </div>
