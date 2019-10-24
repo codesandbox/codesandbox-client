@@ -115,7 +115,11 @@ export const frameUrl = (
   }
 
   let sHost = host();
-  if (`https://${sHost}` in sandboxHost && !useFallbackDomain) {
+  if (
+    `https://${sHost}` in sandboxHost &&
+    !useFallbackDomain &&
+    !templateIsServer
+  ) {
     sHost = sandboxHost[`https://${sHost}`].split('//')[1];
   }
   return `${location.protocol}//${sandbox.id}${port ? `-${port}` : ''}.${
