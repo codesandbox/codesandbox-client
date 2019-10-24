@@ -2,9 +2,10 @@
 
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
-import loader from '../../dev-bootstrap';
-import { initializeBrowserFS } from '../common/fs';
+
 import { EXTENSIONS_LOCATION } from '../../constants';
+import loader from '../../vscode-script-loader';
+import { initializeBrowserFS } from '../common/fs';
 
 const debug = _debug('cs:cp-worker');
 

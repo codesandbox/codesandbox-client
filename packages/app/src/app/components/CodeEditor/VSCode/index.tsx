@@ -2,7 +2,6 @@ import getTemplate from '@codesandbox/common/lib/templates';
 import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import theme from '@codesandbox/common/lib/theme';
 import { useOvermind } from 'app/overmind';
-import { json } from 'overmind';
 import React, { useEffect, useRef } from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
@@ -55,8 +54,6 @@ export const VSCode: React.FunctionComponent = () => {
         .className.split(' ')
         .filter(x => !['monaco-shell', 'vs-dark'].includes(x))
         .join(' ');
-
-      effects.vscode.unmount();
     };
   }, [effects.vscode, state.editor.currentSandbox.template]);
 

@@ -9,7 +9,7 @@ export const MenuBar = () => {
 
   useEffect(() => {
     // Get the menu bar part from vscode and mount it
-    effects.vscode.mountMenubar(menuBarEl.current);
+    menuBarEl.current.appendChild(effects.vscode.getMenubarElement());
   }, [effects.vscode]);
 
   return (

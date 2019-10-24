@@ -1,7 +1,7 @@
 /* eslint-disable */
 import * as child_process from 'node-services/lib/child_process';
-import * as net from 'node-services/lib/net';
 import { default as Module } from 'node-services/lib/module';
+import * as net from 'node-services/lib/net';
 import resolve from 'resolve';
 
 const { VSCODE_METADATA, MONACO_METADATA } = require('./metadata');
@@ -364,8 +364,8 @@ function initializeRequires() {
   });
 }
 
-export default function(isVSCode = false, requiredModule?: string[]) {
-  var METADATA = isVSCode ? VSCODE_METADATA : MONACO_METADATA;
+export default function(requiredModule?: string[]) {
+  var METADATA = VSCODE_METADATA;
   var IS_FILE_PROTOCOL = global.location.protocol === 'file:';
   var DIRNAME = null;
   if (IS_FILE_PROTOCOL) {
@@ -632,20 +632,7 @@ export default function(isVSCode = false, requiredModule?: string[]) {
 
       if (requiredModule) {
         global.require(requiredModule, function(a) {
-          if (!isVSCode && !RESOLVED_CORE.isRelease()) {
-            // At this point we've loaded the monaco-editor-core
-            global.require(
-              RESOLVED_PLUGINS.map(function(plugin) {
-                return plugin.contrib;
-              }),
-              function() {
-                // At this point we've loaded all the plugins
-                callback();
-              }
-            );
-          } else {
-            callback();
-          }
+          callback();
         });
       } else {
         callback();

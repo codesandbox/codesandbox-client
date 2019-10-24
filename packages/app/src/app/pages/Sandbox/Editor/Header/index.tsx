@@ -11,12 +11,10 @@ import { hooksObserver, inject } from 'app/componentConnectors';
 import { LikeHeart } from 'app/pages/common/LikeHeart';
 import { SignInButton } from 'app/pages/common/SignInButton';
 import { UserMenu } from 'app/pages/common/UserMenu';
-import { saveAllModules } from 'app/store/modules/editor/utils';
 import { json } from 'overmind';
 import * as React from 'react';
 import PlusIcon from 'react-icons/lib/go/plus';
 import Fork from 'react-icons/lib/go/repo-forked';
-import SaveIcon from 'react-icons/lib/md/save';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
@@ -149,7 +147,6 @@ interface Props {
 
 const HeaderComponent = ({ zenMode, store, signals }: Props) => {
   const sandbox = store.editor.currentSandbox;
-  const vscode = store.preferences.settings.experimentVSCode;
 
   return (
     <Container zenMode={zenMode}>
@@ -161,30 +158,7 @@ const HeaderComponent = ({ zenMode, store, signals }: Props) => {
         ) : (
           <Logo />
         )}
-
-        {vscode ? (
-          <MenuBar />
-        ) : (
-          <>
-            {
-              <Action
-                onClick={
-                  store.editor.isAllModulesSynced
-                    ? null
-                    : () => saveAllModules(store, signals)
-                }
-                placeholder={
-                  store.editor.isAllModulesSynced
-                    ? 'All modules are saved'
-                    : false
-                }
-                blink={store.editor.changedModuleShortids.length > 2}
-                title="Save"
-                Icon={SaveIcon}
-              />
-            }
-          </>
-        )}
+        <MenuBar />
       </Left>
 
       {sandbox.owned && (

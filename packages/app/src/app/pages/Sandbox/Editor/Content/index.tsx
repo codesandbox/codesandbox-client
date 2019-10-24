@@ -198,9 +198,10 @@ export const Content: React.FC = () => {
                     Partially Supported Config{' '}
                     <QuestionIcon style={{ marginLeft: '.5rem' }} />
                   </Tooltip>
-                ) : (
-                  <div>Supported Configuration - What is this?</div>
-                )}
+                ) : null}
+                {config && !config.partialSupportDisclaimer ? (
+                  <div>Supported Configuration</div>
+                ) : null}
               </Icons>
               <CodeEditor key={sandbox.id} />
             </div>

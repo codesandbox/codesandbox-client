@@ -38,7 +38,7 @@ export type OnFileChangeData = {
 
 export type OnFileChangeCallback = (data: OnFileChangeData) => void;
 
-export class FilesSync {
+export class ModelHandler {
   private modelAddedListener: { dispose: Function };
   private modelRemovedListener: { dispose: Function };
   private onChangeCallback: OnFileChangeCallback;

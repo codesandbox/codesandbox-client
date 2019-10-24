@@ -3,8 +3,8 @@ import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { json } from 'overmind';
 
-import { EXTENSIONS_LOCATION } from '../manager/constants';
-import { getTypeFetcher } from '../manager/extensionHostWorker/common/type-downloader';
+import { EXTENSIONS_LOCATION } from '../constants';
+import { getTypeFetcher } from '../extensionHostWorker/common/type-downloader';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
@@ -12,6 +12,12 @@ const fs = global.BrowserFS.BFSRequire('fs');
 const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
 
 let lastMTime = new Date(0);
+
+declare global {
+  interface Window {
+    BrowserFS: any;
+  }
+}
 
 function sendTypes() {
   global.postMessage(
@@ -149,6 +155,7 @@ export default {
   initialize(options: {
     onModulesByPathChange: (modulesByPath: any) => void;
     getModulesByPath: () => any;
+    getState: any;
   }) {
     self.addEventListener('message', evt => {
       if (evt.data.$type === 'request-data') {
@@ -170,8 +177,8 @@ export default {
               options: {
                 api: {
                   getState: () => ({
-                    modulesByPath: window.getState().editor.currentSandbox
-                      ? window.getState().editor.modulesByPath
+                    modulesByPath: options.getState().editor.currentSandbox
+                      ? options.getState().editor.modulesByPath
                       : {},
                   }),
                 },
