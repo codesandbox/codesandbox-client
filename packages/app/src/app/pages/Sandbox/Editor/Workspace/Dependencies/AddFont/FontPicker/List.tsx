@@ -40,13 +40,15 @@ export const FontList: FunctionComponent<Props> = ({
           placeholder="Search Typefaces"
         />
         {getFonts.map((font: Font) => (
-          <FontLI key={font.family}>
+          <FontLI
+            key={font.family}
+            onClick={onSelection}
+            onKeyPress={onSelection}
+          >
             <FontFamily
               type="button"
               id={`font-button-${getFontId(font.family)}`}
               active={font.family === activeFontFamily}
-              onClick={onSelection}
-              onKeyPress={onSelection}
             >
               {font.family}
             </FontFamily>

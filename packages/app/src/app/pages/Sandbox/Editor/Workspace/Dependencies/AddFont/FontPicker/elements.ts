@@ -44,6 +44,7 @@ export const FontFamily = styled.button<{ active?: boolean }>`
   border: none;
   text-align: left;
   color: ${props => props.theme['sideBar.foreground'] || 'inherit'};
+  cursor: pointer;
 
   &:focus {
     border-color: ${props => props.theme.secondary.clearer(0.6)};
@@ -54,10 +55,11 @@ export const FontLI = styled.li`
   color: ${props => props.theme['sideBar.foreground'] || 'inherit'};
   padding: 0.5rem;
   text-align: left;
+  cursor: pointer;
 `;
 
 export const List = styled.ul<{ expanded?: boolean }>`
-  width: 100%;
+  font-size: 13px;
   list-style: none;
   border: 1px solid ${props => makeDarker(props)};
   box-sizing: border-box;
