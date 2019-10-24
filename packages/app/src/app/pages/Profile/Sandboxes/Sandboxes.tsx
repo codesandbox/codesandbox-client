@@ -1,10 +1,10 @@
 import React, { useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@codesandbox/common/lib/components/Button';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 import { SandboxList } from 'app/components/SandboxList';
-import { Navigation, Notice, NoSandboxes } from './elements';
+import { NoSandboxes } from './NoSandboxes';
+import { Navigation, NavButton, Notice } from './elements';
 
 const PER_PAGE_COUNT = 15;
 
@@ -14,7 +14,11 @@ interface ISandboxesProps {
   baseUrl: string;
 }
 
-export const Sandboxes: React.FC<ISandboxesProps> = ({ source, page = 1, baseUrl }) => {
+export const Sandboxes: React.FC<ISandboxesProps> = ({
+  source,
+  page = 1,
+  baseUrl,
+}) => {
   const {
     state: { profile },
     actions: {
@@ -65,17 +69,15 @@ export const Sandboxes: React.FC<ISandboxesProps> = ({ source, page = 1, baseUrl
     likedSandboxesPageChangedCallback,
   ]);
 
-  // eslint-disable-next-line
-  const getPage = (source, page) => {
-    if (!source) {
+  const getPage = (sourcePage: any, pageNumber: number) => {
+    if (!sourcePage) {
       return undefined;
     }
-    return source.get ? source.get(page) : source[page];
+    return sourcePage.get ? sourcePage.get(pageNumber) : sourcePage[pageNumber];
   };
 
-  // eslint-disable-next-line
-  const getSandboxesByPage = (sandboxes, page) =>
-    sandboxes.get ? sandboxes.get(page) : sandboxes[page];
+  const getSandboxesByPage = (allSandboxes: any, pageNumber: number) =>
+    allSandboxes.get ? allSandboxes.get(pageNumber) : allSandboxes[pageNumber];
 
   // Get Last Page
   const getLastPage = () => {
@@ -91,7 +93,7 @@ export const Sandboxes: React.FC<ISandboxesProps> = ({ source, page = 1, baseUrl
   };
 
   // Delete Sandbox
-  const deleteSandbox = id => {
+  const deleteSandbox = (id: string) => {
     deleteSandboxClicked({ id });
   };
 
@@ -129,22 +131,10 @@ export const Sandboxes: React.FC<ISandboxesProps> = ({ source, page = 1, baseUrl
       <Navigation>
         <div>
           {page > 1 && (
-            <Button
-              style={{ margin: '0 0.5rem' }}
-              small
-              to={`${baseUrl}/${page - 1}`}
-            >
-              {'<'}
-            </Button>
+            <NavButton to={`${baseUrl}/${page - 1}`}>{'<'}</NavButton>
           )}
           {getLastPage() !== page && (
-            <Button
-              style={{ margin: '0 0.5rem' }}
-              small
-              to={`${baseUrl}/${page + 1}`}
-            >
-              {'>'}
-            </Button>
+            <NavButton to={`${baseUrl}/${page + 1}`}>{'>'}</NavButton>
           )}
         </div>
       </Navigation>
