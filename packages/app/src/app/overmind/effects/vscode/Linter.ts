@@ -1,7 +1,8 @@
+import { actions, dispatch } from 'codesandbox-api';
+import debounce from 'lodash-es/debounce';
 // @ts-ignore
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./LinterWorker';
-import { dispatch, actions } from 'codesandbox-api';
-import debounce from 'lodash-es/debounce';
+
 import { getCurrentModelPath } from './utils';
 
 const requireAMDModule = paths =>
@@ -11,14 +12,15 @@ export class Linter {
   private worker: LinterWorker;
   private editor;
   private monaco;
-  private template;
   private isDisposed: boolean = false;
   // Can the template change during session of sandbox?
-  constructor(template, editor, monaco) {
-    this.template = template;
+  constructor(editor, monaco) {
     this.editor = editor;
     this.monaco = monaco;
-    this.initialize();
+    this.worker = new LinterWorker();
+
+    // This should be disposed?
+    this.worker.addEventListener('message', this.onMessage);
   }
 
   dispose(): null {
@@ -27,13 +29,6 @@ export class Linter {
     this.isDisposed = true;
 
     return null;
-  }
-
-  private initialize() {
-    this.worker = new LinterWorker();
-
-    // This should be disposed?
-    this.worker.addEventListener('message', this.onMessage);
   }
 
   private onMessage = event => {
@@ -63,22 +58,27 @@ export class Linter {
     }
   };
 
-  lint = debounce(async (code: string, title: string, version: number) => {
-    if (!title || this.isDisposed) {
-      return;
-    }
+  lint = debounce(
+    async (code: string, title: string, version: number, template: string) => {
+      if (!title || this.isDisposed) {
+        return;
+      }
 
-    const mode = (await this.getMonacoMode(title)) || '';
+      const mode = (await this.getMonacoMode(title)) || '';
 
-    if (['javascript', 'typescript', 'typescriptreact', 'vue'].includes(mode)) {
-      this.worker.postMessage({
-        code,
-        title,
-        version,
-        template: this.template,
-      });
-    }
-  }, 100);
+      if (
+        ['javascript', 'typescript', 'typescriptreact', 'vue'].includes(mode)
+      ) {
+        this.worker.postMessage({
+          code,
+          title,
+          version,
+          template,
+        });
+      }
+    },
+    100
+  );
 
   private async getMonacoMode(title: string) {
     if (title == null) return 'javascript';

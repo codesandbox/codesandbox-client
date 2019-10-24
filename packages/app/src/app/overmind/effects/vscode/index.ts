@@ -1,13 +1,8 @@
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
-import {
-  getModulePath,
-  resolveModule,
-} from '@codesandbox/common/lib/sandbox/modules';
+import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import {
   EditorSelection,
   Module,
-  ModuleCorrection,
-  ModuleError,
   Sandbox,
   Settings,
 } from '@codesandbox/common/lib/types';
@@ -30,8 +25,8 @@ import {
   initializeThemeCache,
 } from './initializers';
 import { Linter } from './Linter';
-import { ModelHandler, OnFileChangeData } from './ModelHandler';
-import { getCode, getCurrentModelPath, getModel, getSelection } from './utils';
+import { ModelsHandler, OnFileChangeData } from './ModelsHandler';
+import { getCode, getModel, getSelection, getVSCodePath } from './utils';
 import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
 
@@ -84,7 +79,7 @@ export class VSCodeEffect {
   private workbench: Workbench;
   private settings: Settings;
   private linter: Linter;
-  private modelHandler: ModelHandler;
+  private modelsHandler: ModelsHandler;
   private isApplyingCode: boolean = false;
   private modelSelectionListener: { dispose: Function };
   private readOnly: boolean;
@@ -164,12 +159,8 @@ export class VSCodeEffect {
     });
   }
 
-  public async getCommandService(): Promise<any> {
-    return this.commandService.promise;
-  }
-
   public runCommand = async (id: string, ...args: any[]) => {
-    const commandService = await this.getCommandService();
+    const commandService = await this.commandService.promise;
 
     return commandService.executeCommand(id, ...args);
   };
@@ -225,7 +216,7 @@ export class VSCodeEffect {
     // this.props.onModuleStateMismatch();
 
     try {
-      await this.modelHandler.applyOperations(operations);
+      await this.modelsHandler.applyOperations(operations);
     } catch (error) {
       this.isApplyingCode = false;
       throw error;
@@ -237,41 +228,10 @@ export class VSCodeEffect {
   }
 
   public updateUserSelections(userSelections: EditorSelection[]) {
-    this.modelHandler.updateUserSelections(
+    this.modelsHandler.updateUserSelections(
       this.options.getCurrentModule(),
       userSelections
     );
-  }
-
-  public changeModule(
-    newModule: Module,
-    errors?: ModuleError[],
-    corrections?: ModuleCorrection[]
-  ) {
-    this.openModule(newModule);
-
-    // Let the model load first, this seems
-    // very hacky
-    setTimeout(() => {
-      if (errors) {
-        this.setErrors(errors);
-      }
-      if (corrections) {
-        this.setCorrections(corrections);
-      }
-    }, 100);
-
-    /*
-    Not sure about this stuff, do not want any LIVE related code in here
-    
-    if (this.props.onCodeReceived) {
-      // Whenever the user changes a module we set up a state that defines
-      // that the changes of code are not sent to live users. We need to reset
-      // this state when we're doing changing modules
-      this.props.onCodeReceived();
-      this.liveOperationCode = '';
-    }
-    */
   }
 
   public setReadOnly(enabled: boolean) {
@@ -280,21 +240,6 @@ export class VSCodeEffect {
     const activeEditor = this.editorApi.getActiveCodeEditor();
 
     activeEditor.updateOptions({ readOnly: enabled });
-  }
-
-  public openModule(module: Module) {
-    if (module && module.id) {
-      const sandbox = this.options.getCurrentSandbox();
-      const path = getModulePath(
-        sandbox.modules,
-        sandbox.directories,
-        module.id
-      );
-
-      if (path && getCurrentModelPath(this.editorApi) !== path) {
-        this.editorApi.openFile(path);
-      }
-    }
   }
 
   public updateLayout = (width: number, height: number) => {
@@ -317,6 +262,57 @@ export class VSCodeEffect {
       const extension = toExtension(extensionDescription);
       extensionEnablementService.setEnablement([extension], 0);
     }
+  }
+
+  private initializeReactions() {
+    const { reaction } = this.options;
+
+    reaction(state => state.preferences.settings, this.changeSettings, {
+      nested: true,
+      immediate: true,
+    });
+
+    reaction(
+      state => state.editor.currentSandbox,
+      sandbox => {
+        if (this.modelsHandler) {
+          this.modelsHandler.dispose();
+        }
+
+        this.modelsHandler = new ModelsHandler(
+          this.editorApi,
+          this.monaco,
+          sandbox,
+          this.onFileChange
+        );
+      },
+      { immediate: true }
+    );
+
+    reaction(
+      state => state.editor.modulePaths,
+      () => {
+        this.modelsHandler.updateModules();
+      },
+      { immediate: true }
+    );
+
+    reaction(
+      state => state.editor.currentModule,
+      async module => {
+        await this.modelsHandler.changeModule(module);
+
+        const model = getModel(this.editorApi);
+
+        this.linter.lint(
+          getCode(this.editorApi),
+          module.title,
+          model.getVersionId(),
+          this.options.getCurrentSandbox().template
+        );
+      },
+      { immediate: true }
+    );
   }
 
   private async enableExtension(id: string) {
@@ -452,7 +448,7 @@ export class VSCodeEffect {
 
       this.editorApi = {
         openFile(path) {
-          codeEditorService.openCodeEditor({
+          return codeEditorService.openCodeEditor({
             resource: monaco.Uri.file('/sandbox' + path),
           });
         },
@@ -483,17 +479,11 @@ export class VSCodeEffect {
       container.appendChild(this.elements.editorPart);
 
       this.initializeReactions();
+
       this.configureMonacoLanguages(monaco);
-      this.modelHandler = new ModelHandler(
-        this.editorApi,
-        monaco,
-        this.options.getCurrentSandbox(),
-        this.onFileChange
-      );
+
       editorService.onDidActiveEditorChange(this.onActiveEditorChange);
       this.initializeCodeSandboxAPIListener();
-
-      this.openModule(this.options.getCurrentModule());
 
       if (this.settings.lintEnabled) {
         this.createLinter();
@@ -518,49 +508,6 @@ export class VSCodeEffect {
     this.elements.editorPart.className = 'part editor has-watermark';
     this.elements.editorPart.style.width = '100%';
     this.elements.editorPart.style.height = '100%';
-  }
-
-  private initializeReactions() {
-    const { reaction } = this.options;
-
-    reaction(state => state.editor.errors, this.setErrors, {
-      nested: true,
-    });
-
-    reaction(state => state.editor.corrections, this.setCorrections, {
-      nested: true,
-    });
-
-    reaction(state => state.editor.modulePaths, this.updateModules);
-
-    reaction(state => state.preferences.settings, this.changeSettings, {
-      nested: true,
-      immediate: true,
-    });
-
-    reaction(
-      state =>
-        state.editor.parsedConfigurations &&
-        state.editor.parsedConfigurations.package,
-      this.changeDependencies
-    );
-
-    reaction(
-      state =>
-        state.editor.parsedConfigurations &&
-        state.editor.parsedConfigurations.typescript,
-      this.setTSConfig
-    );
-
-    reaction(state => state.live.receivingCode, this.setReceivingCode);
-
-    reaction(
-      state => state.editor.changedModuleShortids,
-      this.moduleSyncedChanged,
-      {
-        nested: true,
-      }
-    );
   }
 
   private configureMonacoLanguages(monaco) {
@@ -609,21 +556,7 @@ export class VSCodeEffect {
   };
 
   private createLinter() {
-    this.linter = new Linter(
-      this.options.getCurrentSandbox().template,
-      this.editorApi,
-      this.monaco
-    );
-
-    const model = getModel(this.editorApi);
-
-    if (model) {
-      this.linter.lint(
-        getCode(this.editorApi),
-        this.options.getCurrentModule().title,
-        model.getVersionId()
-      );
-    }
+    this.linter = new Linter(this.editorApi, this.monaco);
   }
 
   private getPrettierConfig = () => {
@@ -676,7 +609,8 @@ export class VSCodeEffect {
       const currentModule = this.options.getCurrentModule();
 
       if (
-        modulePath === this.getVSCodePath(currentModule.id) &&
+        modulePath ===
+          getVSCodePath(this.options.getCurrentSandbox(), currentModule.id) &&
         currentModule.code !== undefined &&
         activeEditor.getValue() !== currentModule.code
       ) {
@@ -741,36 +675,6 @@ export class VSCodeEffect {
         });
       }
     });
-  }
-
-  private setErrors = errors => {};
-  private setCorrections = corrections => {};
-  private updateModules = () => {};
-  private changeDependencies = packageConfiguration => {
-    /*
-  const { parsed } = state.editor.parsedConfigurations.package;
-
-  await effects.vscode.editor.changeSandbox(
-    sandbox,
-    state.editor.currentModule,
-    parsed && parsed.dependencies
-      ? parsed.dependencies
-      : json(sandbox.npmDependencies)
-  );
-    */
-  };
-
-  private setTSConfig = typescript => {};
-  private setReceivingCode = isReceivingCode => {};
-  private moduleSyncedChanged = () => {};
-  private getVSCodePath(moduleId: string) {
-    const sandbox = this.options.getCurrentSandbox();
-
-    return `/sandbox${getModulePath(
-      sandbox.modules,
-      sandbox.directories,
-      moduleId
-    )}`;
   }
 }
 

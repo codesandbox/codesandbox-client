@@ -1,4 +1,14 @@
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import { lineAndColumnToIndex } from 'app/overmind/utils/common';
+
+export function getVSCodePath(sandbox: Sandbox, moduleId: string) {
+  return `/sandbox${getModulePath(
+    sandbox.modules,
+    sandbox.directories,
+    moduleId
+  )}`;
+}
 
 export function getCurrentModelPath(editor) {
   const activeEditor = editor.getActiveCodeEditor();
