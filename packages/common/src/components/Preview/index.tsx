@@ -26,6 +26,7 @@ import { Settings } from './types';
 export type Props = {
   sandbox: Sandbox;
   privacy?: number;
+  previewSecret?: string;
   settings: Settings;
   onInitialized?: (preview: BasePreview) => () => void; // eslint-disable-line no-use-before-define
   extraModules?: { [path: string]: { code: string; path: string } };
@@ -147,7 +148,7 @@ class BasePreview extends React.Component<Props, State> {
     const fallbackUrl = frameUrl(
       this.props.sandbox,
       this.props.initialPath || '',
-      true
+      { useFallbackDomain: true }
     );
 
     const setFallbackDomain = () => {
@@ -157,7 +158,7 @@ class BasePreview extends React.Component<Props, State> {
           urlInAddressBar: frameUrl(
             this.props.sandbox,
             this.props.initialPath || '',
-            true
+            { useFallbackDomain: true }
           ),
         },
         () => {
@@ -195,11 +196,9 @@ class BasePreview extends React.Component<Props, State> {
 
     return this.serverPreview
       ? getSSEUrl(sandbox, initialPath)
-      : frameUrl(
-          sandbox,
-          initialPath,
-          this.state && this.state.useFallbackDomain
-        );
+      : frameUrl(sandbox, initialPath, {
+          useFallbackDomain: this.state && this.state.useFallbackDomain,
+        });
   };
 
   static defaultProps = {
@@ -243,7 +242,7 @@ class BasePreview extends React.Component<Props, State> {
   sendPreviewSecret = () => {
     dispatch({
       $type: 'preview-secret',
-      previewSecret: this.props.sandbox.previewSecret,
+      previewSecret: this.props.previewSecret,
     });
   };
 

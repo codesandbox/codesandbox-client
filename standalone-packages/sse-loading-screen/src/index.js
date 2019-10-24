@@ -15,6 +15,7 @@ import TimelineLite from 'gsap/TimelineLite';
 import { isStandalone } from 'codesandbox-api'
 import getTemplate from '@codesandbox/common/lib/templates';
 import { show404 } from 'sandbox-hooks/not-found-screen';
+import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
 
 import Cube from './Cube';
 
@@ -41,6 +42,11 @@ const lastLoadedAt = parseInt(localStorage.getItem('last_loaded_at'), 10);
 const now = Date.now();
 let isLoop = false;
 let reloadTimeout = null;
+
+if (!isStandalone) {
+  // Editor can send a preview secret
+  listenForPreviewSecret()
+}
 
 if (lastLoadedAt) {
   const timeDiff = now - lastLoadedAt;

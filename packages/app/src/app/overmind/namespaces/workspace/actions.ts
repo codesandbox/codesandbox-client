@@ -181,8 +181,12 @@ export const sandboxPrivacyChanged: AsyncAction<{
   privacy: 0 | 1 | 2;
 }> = async ({ state, effects, actions }, { privacy }) => {
   const oldPrivacy = state.editor.currentSandbox.privacy;
-  await effects.api.updatePrivacy(state.editor.currentId, privacy);
+  const sandbox = await effects.api.updatePrivacy(
+    state.editor.currentId,
+    privacy
+  );
   state.editor.currentSandbox.privacy = privacy;
+  state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
 
   if (
     getTemplate(state.editor.currentSandbox.template).isServer &&

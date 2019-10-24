@@ -4,6 +4,8 @@ import {
   ParsedConfigurationFile,
 } from './configuration/types';
 import configurations from './configuration';
+import { isServer } from './helpers/is-server';
+import { TemplateType } from '.';
 
 export type Options = {
   showOnHomePage?: boolean;
@@ -16,7 +18,6 @@ export type Options = {
   isTypescript?: boolean;
   externalResourcesEnabled?: boolean;
   showCube?: boolean;
-  isServer?: boolean;
   main?: boolean;
   backgroundColor?: () => string;
   mainFile?: string[];
@@ -87,7 +88,7 @@ const SERVER_VIEWS: ViewConfig[] = [
 ];
 
 export default class Template {
-  name: string;
+  name: TemplateType;
   niceName: string;
   shortid: string;
   url: string;
@@ -107,7 +108,7 @@ export default class Template {
   mainFile: undefined | string[];
 
   constructor(
-    name: string,
+    name: TemplateType,
     niceName: string,
     url: string,
     shortid: string,
@@ -121,7 +122,7 @@ export default class Template {
     this.color = color;
 
     this.popular = options.popular || false;
-    this.isServer = options.isServer || false;
+    this.isServer = isServer(this.name);
     this.main = options.main || false;
     this.showOnHomePage = options.showOnHomePage || false;
     this.distDir = options.distDir || 'build';

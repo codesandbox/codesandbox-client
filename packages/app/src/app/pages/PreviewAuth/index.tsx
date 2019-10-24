@@ -33,12 +33,14 @@ const PreviewAuth = (props: RouteComponentProps<{ id: string }>) => {
     if (state.hasLogIn) {
       setError(null);
       // eslint-disable-next-line
-      const id: string = props.match.params.id;
+      const [id, port] = props.match.params.id.split('-');
 
       effects.api
         .getSandbox(id)
         .then(sandbox => {
-          const sandboxUrl = frameUrl(sandbox);
+          const sandboxUrl = frameUrl(sandbox, '', {
+            port: port ? Number.parseInt(port, 10) : undefined,
+          });
           // Only send domains to urls from this sandbox
           const trustedDomain = new URL(sandboxUrl).origin;
 

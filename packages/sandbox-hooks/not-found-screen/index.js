@@ -2,7 +2,6 @@ import { createOverlay } from './overlay-manager';
 import { requestPreviewSecretFromApp } from '../preview-secret';
 
 const HTML = `
-
 <style>
 body {
   font-family: "Roboto", sans-serif;

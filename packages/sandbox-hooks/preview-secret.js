@@ -66,15 +66,33 @@ function getPopupDimensions() {
   return `width=${width},height=${height},top=${top},left=${left}`;
 }
 
+/**
+ * This helper function is purely there to also work when we're building
+ * for SSE, which means that the env vars are not set and we thus don't
+ * know the host.
+ */
+function getProtocolAndHostWithSSE() {
+  if (process.env.CODESANDBOX_HOST) {
+    return protocolAndHost();
+  }
+
+  if (document.location.host.endsWith('.stream')) {
+    return 'https://codesandbox.stream';
+  }
+
+  return 'https://codesandbox.io';
+}
+
 export const requestPreviewSecretFromApp = sandboxId => {
+  const host = getProtocolAndHostWithSSE();
   const popup = window.open(
-    protocolAndHost() + '/auth/sandbox/' + sandboxId,
+    host + '/auth/sandbox/' + sandboxId,
     name,
     `scrollbars=no,toolbar=no,location=no,titlebar=no,directories=no,status=no,menubar=no, ${getPopupDimensions()}`
   );
 
   setInterval(() => {
-    popup.postMessage({ $type: 'request-preview-secret' }, protocolAndHost());
+    popup.postMessage({ $type: 'request-preview-secret' }, host);
   }, 500);
 
   const listener = e => {
