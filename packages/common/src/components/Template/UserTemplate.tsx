@@ -1,10 +1,6 @@
 import React from 'react';
-<<<<<<< HEAD
 import { ColorIcons as Icons } from '@codesandbox/template-icons';
-=======
->>>>>>> add google font
 import color from 'color';
-import * as Icons from '@codesandbox/template-icons';
 import { Template } from '../../types/index';
 import getIcon from '../../templates/icons';
 import { ENTER } from '../../utils/keycodes';

@@ -20,7 +20,7 @@ const getFamily = search => {
   };
 };
 
-const ExternalResource = ({ removeResource, resource }) => (
+export const ExternalFonts = ({ removeResource, resource }) => (
   <EntryContainer>
     <Link id={`font-button-${getFamily(resource).id}`} href={resource}>
       {getFamily(resource).name}
@@ -32,5 +32,3 @@ const ExternalResource = ({ removeResource, resource }) => (
     </IconArea>
   </EntryContainer>
 );
-
-export default ExternalResource;

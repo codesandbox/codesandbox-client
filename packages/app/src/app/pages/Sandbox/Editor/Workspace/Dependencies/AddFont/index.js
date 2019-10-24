@@ -3,7 +3,7 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import FontPicker from './FontPicker/index';
 import { Container } from './elements';
 
-const AddTypeface = ({ addResource }) => {
+export const AddFont = ({ addResource }) => {
   const [activeFontFamily, setActiveFontFamily] = useState('Roboto');
 
   const addFont = async () => {
@@ -31,5 +31,3 @@ const AddTypeface = ({ addResource }) => {
     </>
   );
 };
-
-export default AddTypeface;

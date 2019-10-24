@@ -8,8 +8,10 @@ import { WorkspaceSubtitle } from '../elements';
 
 import { AddVersion } from './AddVersion';
 import { VersionEntry } from './VersionEntry';
-import AddResource from './AddResource';
-import ExternalResource from './ExternalResource';
+import { AddResource } from './AddResource';
+import { AddFont } from './AddFont';
+import { ExternalResource } from './ExternalResource';
+import { ExternalFonts } from './ExternalFonts';
 
 import { ErrorMessage } from './elements';
 
@@ -40,6 +42,12 @@ export const Dependencies: FunctionComponent = () => {
   // const devDependencies = parsed.devDependencies || {};
 
   const templateDefinition = getDefinition(sandbox.template);
+  const fonts = sandbox.externalResources.filter(resource =>
+    resource.includes('fonts.googleapis.com/css')
+  );
+  const otherResources = sandbox.externalResources.filter(
+    resource => !resource.includes('fonts.googleapis.com/css')
+  );
 
   return (
     <div>
@@ -61,30 +69,37 @@ export const Dependencies: FunctionComponent = () => {
             />
           ))}
         {/* {Object.keys(devDependencies).length > 0 && (
-      <WorkspaceSubtitle>Development Dependencies</WorkspaceSubtitle>
-    )}
-    {Object.keys(devDependencies)
-      .sort()
-      .map(dep => (
-        <VersionEntry
-          key={dep}
-          dependencies={devDependencies}
-          dependency={dep}
-          onRemove={name => signals.editor.npmDependencyRemoved({ name })}
-          onRefresh={(name, version) =>
-            signals.editor.addNpmDependency({
-              name,
-              version,
-            })
-          }
-        />
-      ))} */}
+          <WorkspaceSubtitle>Development Dependencies</WorkspaceSubtitle>
+        )}
+        {Object.keys(devDependencies)
+          .sort()
+          .map(dep => (
+            <VersionEntry
+              key={dep}
+              dependencies={devDependencies}
+              dependency={dep}
+              onRemove={name => signals.editor.npmDependencyRemoved({ name })}
+              onRefresh={(name, version) =>
+                signals.editor.addNpmDependency({
+                  name,
+                  version,
+                })
+              }
+            />
+          ))} */}
         <AddVersion>Add Dependency</AddVersion>
       </Margin>
       {templateDefinition.externalResourcesEnabled && (
         <div>
           <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
-          {(sandbox.externalResources || []).map(resource => (
+          <AddResource
+            addResource={resource =>
+              workspace.externalResourceAdded({
+                resource,
+              })
+            }
+          />
+          {otherResources.map(resource => (
             <ExternalResource
               key={resource}
               resource={resource}
@@ -95,13 +110,26 @@ export const Dependencies: FunctionComponent = () => {
               }
             />
           ))}
-          <AddResource
+          <WorkspaceSubtitle>Google Fonts</WorkspaceSubtitle>
+
+          <AddFont
             addResource={resource =>
               workspace.externalResourceAdded({
                 resource,
               })
             }
           />
+          {fonts.map(resource => (
+            <ExternalFonts
+              key={resource}
+              resource={resource}
+              removeResource={() =>
+                workspace.externalResourceRemoved({
+                  resource,
+                })
+              }
+            />
+          ))}
         </div>
       )}
     </div>

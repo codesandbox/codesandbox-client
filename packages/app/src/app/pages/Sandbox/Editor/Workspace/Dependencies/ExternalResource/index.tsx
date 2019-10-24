@@ -18,7 +18,7 @@ function getName(resource: string) {
   return getNormalizedUrl(resource);
 }
 
-export default class ExternalResource extends React.PureComponent {
+export class ExternalResource extends React.PureComponent {
   removeResource = () => {
     this.props.removeResource(this.props.resource);
   };
