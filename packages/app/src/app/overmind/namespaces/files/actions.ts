@@ -466,6 +466,8 @@ export const moduleCreated: AsyncAction<{
       }
     }
 
+    actions.editor.internal.setCurrentModule(module);
+
     if (isNested) {
       const syncedDirectories = await actions.files.syncDirectories({
         directories: optimisticDirectories,
