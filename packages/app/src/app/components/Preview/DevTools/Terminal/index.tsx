@@ -32,7 +32,7 @@ class DevToolTerminal extends React.Component<
   };
 
   term: TerminalWithFit;
-  messageQueue: any[] = [];
+  messageQueue: unknown[] = [];
   listener: () => void;
   node?: HTMLElement;
   timeout?: number;
