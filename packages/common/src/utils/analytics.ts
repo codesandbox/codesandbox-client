@@ -98,7 +98,7 @@ export async function initializeSentry(dsn: string) {
         /.*\.codesandbox\.io/,
         /.*\.csb\.app/,
       ],
-      beforeSend: event => {
+      beforeSend: (event, hint) => {
         if (
           event.stacktrace &&
           event.stacktrace.frames &&
@@ -110,6 +110,18 @@ export async function initializeSentry(dsn: string) {
           // This is the spammy event that doesn't do anything: https://sentry.io/organizations/codesandbox/issues/1054971728/?project=155188&query=is%3Aunresolved
           // Don't do anything with it right now, I can't seem to reproduce it for some reason.
           // We need to add sourcemaps
+          return undefined;
+        }
+
+        const customError = ((hint && (hint.originalException as any)) || {})
+          .error;
+
+        if (
+          customError &&
+          event.message &&
+          event.message.startsWith('Non-Error exception captured')
+        ) {
+          // This is an error coming from the sandbox, return with no error.
           return undefined;
         }
 
