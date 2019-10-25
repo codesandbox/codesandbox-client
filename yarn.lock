@@ -3019,6 +3019,13 @@
     react-lifecycles-compat "^3.0.4"
     warning "^3.0.0"
 
+"@samuelmeuli/font-manager@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@samuelmeuli/font-manager/-/font-manager-1.2.0.tgz#ec9ec3dab4cbbd56ce2f579f332bbd7e3aa26894"
+  integrity sha512-ChNcTdVDL0OjXAMQYi8R9ScXvVZ3p32/4MupKbGksGtF1xPKKTM6vEo74XCBo7LEPQ+Eb+BiS9yD4B0Oo4/LQw==
+  dependencies:
+    "@babel/runtime" "^7.5.5"
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"
@@ -21212,7 +21219,7 @@ react-dom@16.8.1:
     prop-types "^15.6.2"
     scheduler "^0.13.1"
 
-react-dom@16.9.0, react-dom@^16.2.0, react-dom@^16.8.3, react-dom@^16.9.0:
+react-dom@16.9.0, react-dom@^16.2.0, react-dom@^16.8.3, react-dom@^16.8.6, react-dom@^16.9.0:
   version "16.9.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.9.0.tgz#5e65527a5e26f22ae3701131bcccaee9fb0d3962"
   integrity sha512-YFT2rxO9hM70ewk9jq0y6sQk8cL02xm4+IzYBz75CQGlClQQ1Bxq0nhHF6OtSbit+AIahujJgb/CPRibFkMNJQ==

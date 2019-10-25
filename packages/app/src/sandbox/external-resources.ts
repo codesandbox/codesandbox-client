@@ -4,10 +4,12 @@ function getExternalResourcesConcatenation(resources: Array<string>) {
 /* eslint-disable no-cond-assign */
 function clearExternalResources() {
   let el = null;
+  // eslint-disable-next-line no-cond-assign
   while ((el = document.getElementById('external-css'))) {
     el.remove();
   }
 
+  // eslint-disable-next-line no-cond-assign
   while ((el = document.getElementById('external-js'))) {
     el.remove();
   }
@@ -40,7 +42,10 @@ function addJS(resource: string) {
 function addResource(resource: string) {
   const match = resource.match(/\.([^.]*)$/);
 
-  const el = match && match[1] === 'css' ? addCSS(resource) : addJS(resource);
+  const el =
+    (match && match[1] === 'css') || resource.includes('fonts.googleapis')
+      ? addCSS(resource)
+      : addJS(resource);
 
   return new Promise(r => {
     el.onload = r;
