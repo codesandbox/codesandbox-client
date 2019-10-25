@@ -6,7 +6,7 @@ const LoadInView = ({ children }) => {
   const [ref, inView] = useInView({ unobserveOnEnter: true });
   return (
     <div ref={ref}>
-      {inView && (
+      {inView ? (
         <motion.section
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -20,6 +20,14 @@ const LoadInView = ({ children }) => {
         >
           {children}
         </motion.section>
+      ) : (
+        <div
+          css={`
+            visibility: hidden;
+          `}
+        >
+          {children}
+        </div>
       )}
     </div>
   );

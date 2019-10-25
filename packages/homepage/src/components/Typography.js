@@ -14,12 +14,17 @@ export const H2 = styled.h2`
 
 export const P = styled.p`
   font-weight: normal;
-  font-size: 14px;
-  line-height: 17px;
-
+  font-size: 18px;
+  line-height: 1.3;
   color: #ffffff;
   margin: 0;
   margin-bottom: 1rem;
+
+  ${props =>
+    props.small &&
+    `
+    font-size: 14px;
+  `}
 
   ${props =>
     props.muted &&

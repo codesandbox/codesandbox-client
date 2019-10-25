@@ -6,6 +6,9 @@ import Hero from '../screens/home/hero';
 import Prototype from '../screens/home/prototype';
 import Started from '../screens/home/started';
 import LoadInView from '../components/LoadInView';
+import Experiment from '../screens/home/experiment';
+import Teams from '../screens/home/teams';
+import Share from '../screens/home/share';
 
 const Homepage = () => (
   <Layout>
@@ -22,6 +25,15 @@ const Homepage = () => (
     </LoadInView>
     <LoadInView>
       <Started />
+    </LoadInView>
+    <LoadInView>
+      <Experiment />
+    </LoadInView>
+    <LoadInView>
+      <Teams />
+    </LoadInView>
+    <LoadInView>
+      <Share />
     </LoadInView>
   </Layout>
 );

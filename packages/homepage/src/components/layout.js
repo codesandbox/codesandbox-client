@@ -22,7 +22,6 @@ const TemplateWrapper = ({ children }) => (
           maxWidth: '80%',
           width: '1200px',
           margin: 'auto',
-          overflowX: 'hidden',
         }}
         id="main"
         aria-label="main content"

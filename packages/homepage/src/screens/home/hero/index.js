@@ -9,6 +9,7 @@ export default () => (
   <HeroWrapper>
     <H2 as="h1">CodeSandbox</H2>
     <P
+      small
       css={`
         margin-bottom: 2rem;
       `}
