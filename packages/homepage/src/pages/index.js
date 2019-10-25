@@ -9,6 +9,7 @@ import LoadInView from '../components/LoadInView';
 import Experiment from '../screens/home/experiment';
 import Teams from '../screens/home/teams';
 import Share from '../screens/home/share';
+import Join from '../screens/home/join';
 
 const Homepage = () => (
   <Layout>
@@ -34,6 +35,9 @@ const Homepage = () => (
     </LoadInView>
     <LoadInView>
       <Share />
+    </LoadInView>
+    <LoadInView>
+      <Join />
     </LoadInView>
   </Layout>
 );
