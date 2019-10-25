@@ -76,7 +76,7 @@ export const FontPicker = ({
       >
         {loadingStatus === 'loading' ? 'Loading Typefaces' : activeFontFamily}
       </SelectedFont>
-      {loadingStatus === 'finished' && (
+      {expanded && loadingStatus === 'finished' && (
         <Portal>
           <div
             style={{
