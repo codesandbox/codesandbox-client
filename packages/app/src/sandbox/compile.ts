@@ -485,7 +485,10 @@ async function compile({
 
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
-      disableDependencyPreprocessing
+      {
+        disableExternalConnection: disableDependencyPreprocessing,
+        resolutions: parsedPackageJSON.resolutions,
+      }
     );
 
     if (isNewCombination && !firstLoad) {
