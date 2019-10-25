@@ -16,7 +16,7 @@ export default () => (
     >
       An instant IDE and prototyping tool for rapid web development.
     </P>
-    <Button>Create a Sandbox, it’s free</Button>
+    <Button href="/s">Create a Sandbox, it’s free</Button>
     <SignUp>No signup required</SignUp>
     <motion.img
       initial={{ opacity: 0, y: 50 }}

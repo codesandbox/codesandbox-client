@@ -37,7 +37,7 @@ const Join = () => (
   <JoinWrapper>
     <div>
       <Text>Join millions of people prototyping what’s next</Text>
-      <Button>Create Sandbox, it’s free</Button>
+      <Button href="/s">Create Sandbox, it’s free</Button>
     </div>
     <IDE src={HeroSmall} alt="safari with codesandbox" />
   </JoinWrapper>

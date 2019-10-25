@@ -1,7 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-const Button = styled.button`
+const styles = css`
   background: #0971f1;
   border-radius: 2px;
   border: none;
@@ -12,8 +12,19 @@ const Button = styled.button`
   line-height: 19px;
   text-align: center;
   padding: 2.5px 21px;
+  text-decoration: none;
 `;
 
-export default ({ children, ...props }) => (
-  <Button {...props}>{children}</Button>
-);
+const Button = styled.button`
+  ${styles}
+`;
+const Link = styled.a`
+  ${styles}
+`;
+
+export default ({ children, ...props }) =>
+  props.href ? (
+    <Link {...props}>{children}</Link>
+  ) : (
+    <Button {...props}>{children}</Button>
+  );
