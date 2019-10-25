@@ -1,5 +1,4 @@
 import React from 'react';
-//import { inject, observer } from 'app/componentConnectors';
 import { userOvermind } from 'app/overmind';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 // eslint-disable-next-line import/extensions

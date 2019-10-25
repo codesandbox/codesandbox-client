@@ -1,8 +1,6 @@
 import { useOvermind } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-import track from '@codesandbox/common/lib/utils/analytics';
-
 export function saveAllModules() {
   const {
     state: {
