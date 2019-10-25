@@ -5,6 +5,11 @@ import CrossIcon from 'react-icons/lib/md/clear';
 import { EntryContainer, IconArea, Icon } from '../../elements';
 import { Link } from '../elements';
 
+interface IExternalResource {
+  removeResource: (a: any) => void;
+  resource: any;
+}
+
 const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
 
 function getName(resource: string) {
@@ -18,7 +23,7 @@ function getName(resource: string) {
   return getNormalizedUrl(resource);
 }
 
-export default class ExternalResource extends React.PureComponent {
+export class ExternalResource extends React.PureComponent<IExternalResource> {
   removeResource = () => {
     this.props.removeResource(this.props.resource);
   };
@@ -26,7 +31,7 @@ export default class ExternalResource extends React.PureComponent {
   render() {
     const { resource } = this.props;
     return (
-      <EntryContainer>
+      <EntryContainer as="li">
         <Link href={resource}>{getName(resource)}</Link>
         <IconArea>
           <Icon onClick={this.removeResource}>

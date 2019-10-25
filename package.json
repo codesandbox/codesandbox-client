@@ -68,7 +68,7 @@
     "opencollective": "^1.0.3"
   },
   "devDependencies": {
-    "all-contributors-cli": "^6.9.1",
+    "all-contributors-cli": "^6.9.2",
     "babel-eslint": "^10.0.2",
     "concurrently": "^4.1.0",
     "cross-env": "^6.0.0",

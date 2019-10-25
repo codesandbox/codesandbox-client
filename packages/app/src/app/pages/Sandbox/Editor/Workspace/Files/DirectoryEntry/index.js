@@ -168,11 +168,8 @@ class DirectoryEntry extends React.PureComponent {
 
   setOpen = open => this.setState({ open });
 
-  validateModuleTitle = (_, title) => {
-    const { id } = this.props;
-
-    return validateTitle(id, title, this.getChildren());
-  };
+  validateModuleTitle = (id, title) =>
+    validateTitle(id, title, this.getChildren());
 
   validateDirectoryTitle = (id, title) => {
     const { root } = this.props;

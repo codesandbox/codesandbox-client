@@ -145,7 +145,10 @@ async function getDependencies(dependencies: Object) {
   }
 }
 
-export async function fetchDependencies(npmDependencies: Dependencies) {
+export async function fetchDependencies(
+  npmDependencies: Dependencies,
+  resolutions?: { [key: string]: string }
+) {
   if (Object.keys(npmDependencies).length !== 0) {
     // New Packager flow
 

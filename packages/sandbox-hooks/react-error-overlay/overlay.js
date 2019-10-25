@@ -11,32 +11,7 @@
 import { transformError } from 'codesandbox-api';
 import { getCurrentManager } from 'app/src/sandbox/compile';
 
-import {
-  register as registerError,
-  unregister as unregisterError,
-} from './effects/unhandledError';
-import {
-  register as registerPromise,
-  unregister as unregisterPromise,
-} from './effects/unhandledRejection';
-import {
-  register as registerShortcuts,
-  unregister as unregisterShortcuts,
-  handler as keyEventHandler,
-  SHORTCUT_ESCAPE,
-  SHORTCUT_LEFT,
-  SHORTCUT_RIGHT,
-} from './effects/shortcuts';
-import {
-  register as registerStackTraceLimit,
-  unregister as unregisterStackTraceLimit,
-} from './effects/stackTraceLimit';
-import {
-  permanentRegister as permanentRegisterConsole,
-  registerReactStack,
-  unregisterReactStack,
-} from './effects/proxyConsole';
-import { massage as massageWarning } from './utils/warnings';
+import { listenToRuntimeErrors } from './listenToRuntimeErrors';
 
 import {
   consume as consumeError,
@@ -204,7 +179,7 @@ function transformErrors() {
         }
       });
 
-      let tModule = errRef.error.tModule;
+      let { tModule } = errRef.error;
 
       if (!tModule && relevantFrame) {
         const fileName =
@@ -294,38 +269,25 @@ function shortcutHandler(type: string) {
       break;
     }
     default: {
-      //TODO: this
+      // TODO: this
       break;
     }
   }
 }
 
-function inject() {
-  registerError(window, error => crash(error));
-  registerPromise(window, error => crash(error, true));
-  registerShortcuts(window, shortcutHandler);
-  registerStackTraceLimit();
+let listenToRuntimeErrorsUnmounter;
 
-  registerReactStack();
-  permanentRegisterConsole('error', (warning, stack) => {
-    const data = massageWarning(warning, stack);
-    crash(
-      // $FlowFixMe
-      {
-        message: data.message,
-        stack: data.stack,
-      },
-      false
-    );
+function inject() {
+  listenToRuntimeErrorsUnmounter = listenToRuntimeErrors(error => {
+    console.log('what the matter', error);
+    crash(error.error);
   });
 }
 
 function uninject() {
-  unregisterStackTraceLimit();
-  unregisterShortcuts(window);
-  unregisterPromise(window);
-  unregisterError(window);
-  unregisterReactStack();
+  if (listenToRuntimeErrorsUnmounter) {
+    listenToRuntimeErrorsUnmounter();
+  }
   unmount();
 }
 

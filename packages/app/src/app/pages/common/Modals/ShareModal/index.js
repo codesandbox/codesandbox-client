@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'app/componentConnectors';
-import Files from 'embed/components/Files';
+import Files from 'embed/components/legacy/Files';
 import QRCode from 'qrcode.react';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import track from '@codesandbox/common/lib/utils/analytics';

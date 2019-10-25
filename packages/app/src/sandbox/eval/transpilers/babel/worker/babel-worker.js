@@ -359,11 +359,17 @@ async function compile(code, customConfig, path, isV7) {
     if (isV7) {
       // Force push this dependency, there are cases where it isn't included out of our control.
       // https://twitter.com/vigs072/status/1103005932886343680
+      // TODO: look into this
       dependencies.push({
-        type: 'direct',
         path: '@babel/runtime/helpers/interopRequireDefault',
+        type: 'direct',
+      });
+      dependencies.push({
+        path: '@babel/runtime/helpers/interopRequireWildcard',
+        type: 'direct',
       });
     }
+
     dependencies.forEach(dependency => {
       self.postMessage({
         type: 'add-dependency',

@@ -112,7 +112,7 @@ function Directory({
   depth,
 }) {
   /** directory should be open by default if currentModule is inside it */
-  const [open, setOpen] = React.useState(function() {
+  const [open, setOpen] = React.useState(() => {
     const currentModule = getCurrentModule(modules, currentModuleId);
     const currentModuleTree = getCurrentModuleTree(directories, currentModule);
 

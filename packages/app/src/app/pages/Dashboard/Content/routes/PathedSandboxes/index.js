@@ -33,7 +33,7 @@ const PathedSandboxes = props => {
               }
 
               const sandboxes =
-                loading || !data.me.collection
+                loading || !data.me || !data.me.collection
                   ? []
                   : data.me.collection.sandboxes;
 

@@ -1,12 +1,20 @@
-import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React, {FunctionComponent} from 'react';
+import { useOvermind } from 'app/overmind';
 
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Badge from '@codesandbox/common/lib/utils/badges/Badge';
 import { Title } from '../elements';
 
-function BadgesComponent({ store, signals }) {
-  const badgesCount = store.user.badges.length;
+export const Badges: FunctionComponent = () => {
+  const {
+    state: {
+      user: {badges},
+    },
+    actions: {
+      preferences: {setBadgeVisibility},
+    },
+  } = useOvermind();
+  const badgesCount = badges.length;
 
   return (
     <div>
@@ -17,12 +25,12 @@ function BadgesComponent({ store, signals }) {
         visibility.
       </strong>
       <Margin top={2}>
-        {store.user.badges.map(badge => (
+        {badges.map(badge => (
           <Badge
             key={badge.id}
             tooltip={false}
             onClick={b =>
-              signals.preferences.setBadgeVisibility({
+              setBadgeVisibility({
                 ...b,
                 visible: !b.visible,
               })
@@ -37,4 +45,3 @@ function BadgesComponent({ store, signals }) {
   );
 }
 
-export const Badges = inject('store', 'signals')(observer(BadgesComponent));

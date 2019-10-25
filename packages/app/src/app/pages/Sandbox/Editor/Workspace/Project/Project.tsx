@@ -83,6 +83,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
             username={sandbox.git.username}
             repo={sandbox.git.repo}
             branch={sandbox.git.branch}
+            commitSha={sandbox.git.commitSha}
           />
         </Item>
       )}

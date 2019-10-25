@@ -72,7 +72,10 @@ async function syncDependencyTypings(
 
     return Promise.all(
       Object.keys(absoluteDependencies).map(async depName => {
-        const depVersion = absoluteDependencies[depName];
+        const depVersion = absoluteDependencies[depName].replace(
+          /^https:\/\//,
+          'https:'
+        );
 
         try {
           const fetchRequest = await fetch(
