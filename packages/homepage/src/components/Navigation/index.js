@@ -62,7 +62,7 @@ const Navigation = () => {
               </li>
             )}
             <LogIn>
-              <Button>Create Sandbox</Button>
+              <Button href="/s">Create Sandbox</Button>
               {user && <UserAvatar src={user.avatar_url} alt={user.username} />}
             </LogIn>
           </List>

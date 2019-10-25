@@ -11,8 +11,9 @@ const styles = css`
   font-size: 13px;
   line-height: 19px;
   text-align: center;
-  padding: 2.5px 21px;
+  padding: 4px 21px;
   text-decoration: none;
+  color: white !important;
 `;
 
 const Button = styled.button`
