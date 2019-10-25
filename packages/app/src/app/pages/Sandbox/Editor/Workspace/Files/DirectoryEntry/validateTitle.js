@@ -9,8 +9,8 @@ export default (id, title, siblings = []) => {
     return "The title can't be more than 32 characters long";
   }
 
-  if (title.includes('/') || title.includes('\\')) {
-    return "The title can't include slash or backslash";
+  if (title.startsWith('/') || title.startsWith('\\')) {
+    return "The title can't start with slash or backslash";
   }
 
   if (siblings.find(sibling => sibling.title === title && sibling.id !== id)) {
