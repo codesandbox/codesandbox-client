@@ -15,6 +15,7 @@ import EmbedIcon from './EmbedIcon';
 
 import media from '../../../utils/media';
 import { Background, Heading, SubHeading } from '../../../components/style';
+import { useMatchMedia } from '../../../hooks';
 
 const FeatureHeading = styled.h4`
   color: white;
@@ -110,74 +111,80 @@ const Feature = ({ right, title, Icon, iconSize, children }) => (
   </section>
 );
 
-export default () => (
-  <Background>
-    <MaxWidth width={1280}>
-      <Centered horizontal>
-        <Heading>Share in a single click</Heading>
-        <SubHeading>
-          Say goodbye to the days where you had to create a zip file just to
-          share your code. Now you can copy the link and share away!
-        </SubHeading>
-      </Centered>
+export default () => {
+  const reduceAnimation = useMatchMedia('(prefers-reduced-motion: reduce)');
 
-      <FeatureMargin>
-        <FeatureRow>
-          <Column flex={1} style={{ width: '100%' }}>
-            <ExtraSpacing>
-              <SearchInput />
-            </ExtraSpacing>
-          </Column>
+  return (
+    <Background as="section" aria-labelledby="share-one-click">
+      <MaxWidth width={1280}>
+        <Centered horizontal>
+          <Heading id="share-one-click">Share in a single click</Heading>
+          <SubHeading>
+            Say goodbye to the days where you had to create a zip file just to
+            share your code.Now you can copy the link and share away!
+          </SubHeading>
+        </Centered>
 
-          <Column flex={1}>
-            <ExtraSpacing>
-              <Feature Icon={NPMIcon} iconSize={42} title="NPM Support">
-                Think of any npm dependency you want to use, we probably support
-                it! You can install a new dependency within seconds. <br />
-                <Link
-                  href="https://hackernoon.com/how-we-make-npm-packages-work-in-the-browser-announcing-the-new-packager-6ce16aa4cee6"
-                  rel="noreferrer noopener"
-                  target="_blank"
-                >
-                  Learn how it works.
-                </Link>
-              </Feature>
+        <FeatureMargin>
+          <FeatureRow>
+            <Column flex={1} style={{ width: '100%' }}>
+              <ExtraSpacing>
+                <SearchInput />
+              </ExtraSpacing>
+            </Column>
 
-              <Feature Icon={SearchIcon} title="Search & Discovery">
-                Want to know how a library works? You can easily browse through
-                the{' '}
-                <Link href="https://codesandbox.io/search" target="_blank">
-                  <SandboxCount />+ created sandboxes
-                </Link>{' '}
-                on CodeSandbox. We want this to be a platform where everyone can
-                easily learn and share.
-              </Feature>
-            </ExtraSpacing>
-          </Column>
-        </FeatureRow>
-      </FeatureMargin>
+            <Column flex={1}>
+              <ExtraSpacing>
+                <Feature Icon={NPMIcon} iconSize={42} title="NPM Support">
+                  Think of any npm dependency you want to use, we probably
+                  support it!You can install a new dependency within seconds.
+                  <br />
+                  <Link
+                    href="https://hackernoon.com/how-we-make-npm-packages-work-in-the-browser-announcing-the-new-packager-6ce16aa4cee6"
+                    rel="noreferrer noopener"
+                    target="_blank"
+                    aria-label="Learn how it works the NPM support"
+                  >
+                    Learn how it works.
+                  </Link>
+                </Feature>
 
-      <FeatureMargin>
-        <FeatureRow alignItems="flex-start">
-          <Column flex={1} style={{ width: '100%' }}>
-            <ExtraSpacing>
-              <Feature right Icon={EmbedIcon} iconSize={42} title="Embedding">
-                We built a lightweight version of CodeSandbox for embeds, this
-                allows you to embed your sandbox anywhere. Viewers can even play
-                with the code in the embed, without leaving the website. We
-                offer many customization options to make sure you can show the
-                embed exactly the way you want.
-              </Feature>
-            </ExtraSpacing>
-          </Column>
+                <Feature Icon={SearchIcon} title="Search & Discovery">
+                  Want to know how a library works? You can easily browse
+                  through the{' '}
+                  <Link href="https://codesandbox.io/search" target="_blank">
+                    <SandboxCount />+ created sandboxes
+                  </Link>{' '}
+                  on CodeSandbox.We want this to be a platform where everyone
+                  can easily learn and share.
+                </Feature>
+              </ExtraSpacing>
+            </Column>
+          </FeatureRow>
+        </FeatureMargin>
 
-          <Column flex={1}>
-            <ExtraSpacing>
-              <EmbedAnimation />
-            </ExtraSpacing>
-          </Column>
-        </FeatureRow>
-      </FeatureMargin>
-    </MaxWidth>
-  </Background>
-);
+        <FeatureMargin>
+          <FeatureRow alignItems="flex-start">
+            <Column flex={1} style={{ width: '100%' }}>
+              <ExtraSpacing>
+                <Feature right Icon={EmbedIcon} iconSize={42} title="Embedding">
+                  We built a lightweight version of CodeSandbox for embeds, this
+                  allows you to embed your sandbox anywhere.Viewers can even
+                  play ith the code in the embed, without leaving the website.We
+                  fer many customization options to make sure you can show the
+                  embed exactly the way you want.
+                </Feature>
+              </ExtraSpacing>
+            </Column>
+
+            <Column flex={1}>
+              <ExtraSpacing>
+                {!reduceAnimation && <EmbedAnimation />}
+              </ExtraSpacing>
+            </Column>
+          </FeatureRow>
+        </FeatureMargin>
+      </MaxWidth>
+    </Background>
+  );
+};

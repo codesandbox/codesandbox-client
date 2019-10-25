@@ -4,6 +4,7 @@ import UserIcon from 'react-icons/lib/ti/user';
 import ExitIcon from 'react-icons/lib/md/exit-to-app';
 import FolderIcon from 'react-icons/lib/md/folder';
 import SettingsIcon from 'react-icons/lib/md/settings';
+import SearchIcon from 'react-icons/lib/go/search';
 import BookIcon from 'react-icons/lib/md/library-books';
 
 import {
@@ -11,6 +12,7 @@ import {
   patronUrl,
   curatorUrl,
   dashboardUrl,
+  searchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import PatronBadge from '@codesandbox/common/lib/utils/badges/PatronBadge';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -77,6 +79,13 @@ export const Menu = ({
             <BookIcon />
           </Icon>
           Documentation
+        </MenuItem>
+
+        <MenuItem {...menuProps} to={searchUrl()} as={ItemLink}>
+          <Icon>
+            <SearchIcon />
+          </Icon>
+          Search Sandboxes
         </MenuItem>
 
         {curator && (

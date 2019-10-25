@@ -13,8 +13,9 @@ import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
-import NewSandbox from './NewSandbox';
+import { NewSandbox } from './NewSandbox';
 import Dashboard from './Dashboard';
+import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 
 const routeDebugger = _debug('cs:app:router');
@@ -43,7 +44,9 @@ const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub')
 );
 const CliInstructions = Loadable(() =>
-  import(/* webpackChunkName: 'page-cli-instructions' */ './CliInstructions')
+  import(
+    /* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'
+  ).then(module => ({ default: module.CLIInstructions }))
 );
 const Patron = Loadable(() =>
   import(/* webpackChunkName: 'page-patron' */ './Patron')
@@ -111,6 +114,9 @@ const RoutesComponent: React.FC = () => {
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
+            {(process.env.LOCAL_SERVER || process.env.STAGING) && (
+              <Route path="/auth/dev" component={DevAuthPage} />
+            )}
             {process.env.NODE_ENV === `development` && (
               <Route path="/codesadbox" component={CodeSadbox} />
             )}

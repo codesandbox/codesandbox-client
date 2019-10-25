@@ -15,7 +15,7 @@ type NPMDependencies = {
 };
 
 /**
- * If there is a URL to a file we need to fetch the dependenices dynamically, at least
+ * If there is a URL to a file we need to fetch the dependencies dynamically, at least
  * for the first version. In the future we might want to consider a hybrid version where
  * we only fetch the dynamic files for dependencies with a url as version. But this is a good
  * start.
@@ -32,7 +32,7 @@ function shouldFetchDynamically(dependencies: NPMDependencies) {
  */
 export async function loadDependencies(
   dependencies: NPMDependencies,
-  disableExternalConnection = false
+  { disableExternalConnection = false, resolutions = undefined } = {}
 ) {
   let isNewCombination = false;
   if (Object.keys(dependencies).length !== 0) {
@@ -55,7 +55,7 @@ export async function loadDependencies(
         ? getDependencyVersions
         : fetchDependencies;
 
-      const data = await fetchFunction(dependenciesWithoutTypings);
+      const data = await fetchFunction(dependenciesWithoutTypings, resolutions);
 
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;

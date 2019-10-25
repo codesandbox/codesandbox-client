@@ -9,8 +9,8 @@ export const onInitialize: OnInitialize = (
   effects.fsSync.initialize({
     onModulesByPathChange(cb: (modulesByPath: any) => void) {
       overmindInstance.reaction(
-        ({ editor }) => editor.modulePaths,
-        ({ editor }) => cb(editor.modulesByPath)
+        ({ editor }) => editor.modulesByPath,
+        modulesByPath => cb(modulesByPath)
       );
     },
     getModulesByPath() {

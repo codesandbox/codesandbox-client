@@ -5,6 +5,7 @@ import { reaction } from 'mobx';
 import React from 'react';
 import { DropTarget } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
+import { getChildren } from '@codesandbox/common/lib/sandbox/modules';
 
 import DirectoryChildren from './DirectoryChildren';
 import { EntryContainer, Opener, Overlay } from './elements';
@@ -167,30 +168,27 @@ class DirectoryEntry extends React.PureComponent {
 
   setOpen = open => this.setState({ open });
 
-  validateModuleTitle = (_, title) => {
-    const { store, id } = this.props;
-    const { directories, modules } = store.editor.currentSandbox;
-    return validateTitle(id, title, [...directories, ...modules]);
-  };
+  validateModuleTitle = (id, title) =>
+    validateTitle(id, title, this.getChildren());
 
   validateDirectoryTitle = (id, title) => {
-    const { root, siblings } = this.props;
+    const { root } = this.props;
     if (root) return false;
 
-    return validateTitle(id, title, siblings);
+    return validateTitle(id, title, this.getChildren());
   };
 
   getChildren = () => {
-    const { shortid } = this.props;
+    const {
+      shortid,
+      store: {
+        editor: {
+          currentSandbox: { modules, directories },
+        },
+      },
+    } = this.props;
 
-    return [
-      ...this.props.store.editor.currentSandbox.modules.filter(
-        m => m.directoryShortid === shortid
-      ),
-      ...this.props.store.editor.currentSandbox.directories.filter(
-        d => d.directoryShortid === shortid
-      ),
-    ];
+    return getChildren(modules, directories, shortid);
   };
 
   setCurrentModule = moduleId => {
@@ -300,6 +298,7 @@ class DirectoryEntry extends React.PureComponent {
             depth={depth}
             renameModule={this.renameModule}
             parentShortid={shortid}
+            renameValidator={this.validateModuleTitle}
             deleteEntry={this.deleteModule}
             setCurrentModule={this.setCurrentModule}
             markTabsNotDirty={this.markTabsNotDirty}

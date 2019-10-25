@@ -64,6 +64,7 @@ export const connectionChanged: Action<boolean> = ({ state }, connected) => {
 
 type ModalName =
   | 'deleteDeployment'
+  | 'deleteSandbox'
   | 'feedback'
   | 'forkServerModal'
   | 'liveSessionEnded'
@@ -73,6 +74,7 @@ type ModalName =
   | 'preferences'
   | 'privacyServerWarning'
   | 'share'
+  | 'searchDependencies'
   | 'signInForTemplates';
 export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },

@@ -45,6 +45,12 @@ const Button = styled.a`
     box-shadow: 0 7px 12px rgba(0, 0, 0, 0.3);
     transform: translateY(-5px);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover {
+      transform: none;
+    }
+  }
 `;
 
 const Content = styled.div`
@@ -55,10 +61,10 @@ const Content = styled.div`
 `;
 
 export default () => (
-  <Container>
+  <Container as="section" aria-labelledby="patron">
     <MaxWidth>
       <Centered horizontal>
-        <Header>Become a Patron</Header>
+        <Header id="patron">Become a Patron</Header>
         <Text>
           You can support our development by becoming a Patron and paying a
           monthly amount of your choice. As a Patron you get less limits and

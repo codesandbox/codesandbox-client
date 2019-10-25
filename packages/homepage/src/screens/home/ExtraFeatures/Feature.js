@@ -9,6 +9,7 @@ const Container = styled.div`
   padding: 1.5rem 1rem;
   border: 0 solid rgba(255, 255, 255, 0.12);
   border-top-width: 1px;
+  margin: 0;
 
   &:first-child {
     border-top-width: 0;
@@ -117,8 +118,8 @@ const PatronBadge = styled.a`
   text-decoration: none;
 `;
 
-export default ({ Icon, title, description, newFeature, patron }) => (
-  <Container>
+export default ({ Icon, title, description, newFeature, patron, ...props }) => (
+  <Container {...props}>
     <Icon />
     <Title>{title}</Title>
     {newFeature && <NewBadge>new</NewBadge>}
