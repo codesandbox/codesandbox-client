@@ -1,6 +1,6 @@
 import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
-
+//import { inject, observer } from 'app/componentConnectors';
+import { userOvermind } from 'app/overmind';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
@@ -14,30 +14,38 @@ import { EntryContainer } from '../elements';
 import { Title, Dir, CrossIconContainer } from './elements';
 import SaveIcon from './SaveIcon';
 
-const OpenedTabs = ({ store, signals }) => {
-  const sandbox = store.editor.currentSandbox;
-  const { currentModuleShortid } = store.editor;
+const OpenedTabs = React.FunctionComponent = () => {
+  const {
+    state: {
+      editor: { currentSandbox, currentModuleShortid, tabs, isAllModulesSynced },
+    },
+    actions: {
+      editor: { moduleSelected, tabClosed },
+    }
+  } = userOvermind();
+
+  const sandbox = currentSandbox;
   const moduleObject = {};
   sandbox.modules.forEach(m => {
     moduleObject[m.shortid] = m;
   });
 
-  const openModules = store.editor.tabs
+  const openModules = tabs
     .map(t => moduleObject[t.moduleShortid])
     .filter(x => x);
-
+  
   return (
     <WorkspaceItem
       title="Open Tabs"
       actions={
         <SaveIcon
-          disabled={store.editor.isAllModulesSynced}
+          disabled={isAllModulesSynced}
           onClick={e => {
             if (e) {
               e.preventDefault();
               e.stopPropagation();
             }
-            saveAllModules(store, signals);
+            saveAllModules();
           }}
         />
       }
@@ -45,7 +53,7 @@ const OpenedTabs = ({ store, signals }) => {
       {openModules.map((m, i) => (
         <EntryContainer
           onClick={() => {
-            signals.editor.moduleSelected({ id: m.id });
+            moduleSelected({ id: m.id });
           }}
           active={currentModuleShortid === m.shortid}
           key={m.id}
@@ -69,7 +77,7 @@ const OpenedTabs = ({ store, signals }) => {
                   e.stopPropagation();
                 }
 
-                signals.editor.tabClosed({ tabIndex: i });
+                tabClosed({ tabIndex: i });
               }}
             >
               <CrossIcon />
@@ -81,4 +89,4 @@ const OpenedTabs = ({ store, signals }) => {
   );
 };
 
-export default inject('signals', 'store')(observer(OpenedTabs));
+export default OpenedTabs;

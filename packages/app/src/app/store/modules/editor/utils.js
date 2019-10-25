@@ -1,7 +1,18 @@
+import { useOvermind } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-export function saveAllModules(store, signals) {
-  const sandbox = store.editor.currentSandbox;
+import track from '@codesandbox/common/lib/utils/analytics';
+
+export function saveAllModules() {
+  const {
+    state: {
+      editor: { currentSandbox, changeModuleShortids, changedModuleShortids },
+    },
+    actions: {
+      editor: { codeSaved, saveClicked },
+    }
+  } = useOvermind();
+  const sandbox = currentSandbox;
 
   track('Save Modified Modules');
   // In case you don't own the sandbox we cannot do >1 calls for saving module as you would then
@@ -9,14 +20,14 @@ export function saveAllModules(store, signals) {
   // fine-grained control of which saves succeed and which saves fail
   if (sandbox.owned) {
     sandbox.modules
-      .filter(m => store.editor.changedModuleShortids.includes(m.shortid))
+      .filter(m => changedModuleShortids.includes(m.shortid))
       .forEach(module => {
-        signals.editor.codeSaved({
+        codeSaved({
           code: module.code,
           moduleShortid: module.shortid,
         });
       });
   } else {
-    signals.editor.saveClicked();
+    saveClicked();
   }
 }
