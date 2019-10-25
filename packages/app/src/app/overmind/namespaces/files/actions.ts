@@ -1,6 +1,6 @@
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
-import { ModuleTab } from '@codesandbox/common/lib/types';
+import { ModuleTab, Directory } from '@codesandbox/common/lib/types';
 import { AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import { createOptimisticModule } from 'app/overmind/utils/common';
@@ -50,44 +50,64 @@ export const directoryCreated: AsyncAction<{
   title: string;
   directoryShortid: string;
 }> = withOwnedSandbox(
-  async ({ state, effects, actions }, { title, directoryShortid }) => {
+  async ({ state, effects }, { title, directoryShortid }) => {
     const sandbox = state.editor.currentSandbox;
-    const optimisticDirectory = {
-      id: effects.utils.createOptimisticId(),
-      title,
-      directoryShortid,
-      shortid: effects.utils.createOptimisticId(),
-      sourceId: state.editor.currentSandbox.sourceId,
-      insertedAt: new Date().toString(),
-      updatedAt: new Date().toString(),
-      type: 'directory' as 'directory',
-    };
+    const isNested = title.includes('/');
+    const directories = isNested ? title.split('/').filter(Boolean) : [title];
+    const optimisticDirectories: Directory[] = [];
 
-    sandbox.directories.push(optimisticDirectory);
+    directories.forEach((directoryTitle, index) => {
+      const optimisticDirectory: Directory = {
+        id: effects.utils.createOptimisticId(),
+        title: directoryTitle,
+        directoryShortid:
+          index === 0
+            ? directoryShortid
+            : optimisticDirectories[index - 1].shortid,
+        shortid: effects.utils.createOptimisticId(),
+        sourceId: state.editor.currentSandbox.sourceId,
+        insertedAt: new Date().toString(),
+        updatedAt: new Date().toString(),
+        type: 'directory' as 'directory',
+      };
 
-    try {
-      const newDirectory = await effects.api.createDirectory(
-        sandbox.id,
-        directoryShortid,
-        title
-      );
-      const directory = state.editor.currentSandbox.directories.find(
-        directoryItem => directoryItem.shortid === optimisticDirectory.shortid
-      );
+      optimisticDirectories.push(optimisticDirectory);
+      sandbox.directories.push(optimisticDirectory);
+    });
 
-      Object.assign(directory, {
-        id: newDirectory.id,
-        shortid: newDirectory.shortid,
-      });
+    let lastShortid = directoryShortid;
 
-      effects.live.sendDirectoryCreated(newDirectory);
-    } catch (error) {
-      const directoryIndex = state.editor.currentSandbox.directories.findIndex(
-        directoryItem => directoryItem.shortid === optimisticDirectory.shortid
-      );
+    for (let index = 0; index < optimisticDirectories.length; index++) {
+      try {
+        const optimisticDirectory = optimisticDirectories[index];
+        // eslint-disable-next-line no-await-in-loop
+        const newDirectory = await effects.api.createDirectory(
+          sandbox.id,
+          lastShortid,
+          optimisticDirectory.title
+        );
+        const directory = state.editor.currentSandbox.directories.find(
+          directoryItem => directoryItem.shortid === optimisticDirectory.shortid
+        );
 
-      sandbox.directories.splice(directoryIndex, 1);
-      effects.notificationToast.error('Unable to save new directory');
+        Object.assign(directory, {
+          id: newDirectory.id,
+          shortid: newDirectory.shortid,
+          directoryShortid: newDirectory.directoryShortid,
+        });
+
+        lastShortid = newDirectory.shortid;
+        effects.live.sendDirectoryCreated(newDirectory);
+      } catch (error) {
+        const directoryIndex = state.editor.currentSandbox.directories.findIndex(
+          directoryItem =>
+            directoryItem.shortid === optimisticDirectories[index].shortid
+        );
+
+        sandbox.directories.splice(directoryIndex, 1);
+        effects.notificationToast.error('Unable to save new directory');
+        break;
+      }
     }
   }
 );
