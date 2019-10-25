@@ -26,6 +26,12 @@ export const P = styled.p`
     font-size: 14px;
   `}
 
+    ${props =>
+      props.big &&
+      `
+    font-size: 23px;
+  `}
+
   ${props =>
     props.muted &&
     `

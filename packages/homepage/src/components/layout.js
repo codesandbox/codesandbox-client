@@ -6,6 +6,7 @@ import { VisuallyHidden } from './style';
 import '../css/typography.css';
 import '../css/global.css';
 import Navigation from './Navigation/index';
+import Footer from './Footer';
 
 const TemplateWrapper = ({ children }) => (
   <ThemeProvider theme={theme}>
@@ -28,6 +29,7 @@ const TemplateWrapper = ({ children }) => (
       >
         {children}
       </main>
+      <Footer />
     </div>
   </ThemeProvider>
 );

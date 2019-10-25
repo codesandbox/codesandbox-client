@@ -58,7 +58,7 @@ export const List = styled.ul`
 
   a {
     text-decoration: none;
-    color: #757575;
+    color: #9d9d9d;
     transition: all 200ms ease;
 
     &:hover {
