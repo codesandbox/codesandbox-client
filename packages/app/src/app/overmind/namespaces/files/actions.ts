@@ -1,12 +1,13 @@
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
 import { ModuleTab, Directory } from '@codesandbox/common/lib/types';
-import { AsyncAction } from 'app/overmind';
+import { AsyncAction, Action } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import { createOptimisticModule } from 'app/overmind/utils/common';
 import { INormalizedModules } from 'codesandbox-import-util-types';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 
+import { last } from 'lodash-es';
 import {
   resolveDirectoryWrapped,
   resolveModuleWrapped,
@@ -46,71 +47,107 @@ export const moduleRenamed: AsyncAction<{
   }
 );
 
+export const createOptimisticDirectories: Action<
+  {
+    directories: string[];
+    directoryShortid: string;
+  },
+  Directory[]
+> = ({ state, effects }, { directories, directoryShortid }) => {
+  const sandbox = state.editor.currentSandbox;
+
+  const optimisticDirectories: Directory[] = [];
+
+  directories.forEach((directoryTitle, index) => {
+    const optimisticDirectory: Directory = {
+      id: effects.utils.createOptimisticId(),
+      title: directoryTitle,
+      directoryShortid:
+        index === 0
+          ? directoryShortid
+          : optimisticDirectories[index - 1].shortid,
+      shortid: effects.utils.createOptimisticId(),
+      sourceId: state.editor.currentSandbox.sourceId,
+      insertedAt: new Date().toString(),
+      updatedAt: new Date().toString(),
+      type: 'directory' as 'directory',
+    };
+
+    optimisticDirectories.push(optimisticDirectory);
+    sandbox.directories.push(optimisticDirectory);
+  });
+
+  return optimisticDirectories;
+};
+
+export const syncDirectories: AsyncAction<
+  {
+    directories: Directory[];
+    directoryShortid: string;
+  },
+  Directory[]
+> = async ({ state, effects }, { directoryShortid, directories }) => {
+  const sandbox = state.editor.currentSandbox;
+  const syncedDirectories: Directory[] = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for await (const optimisticDirectory of directories) {
+    try {
+      const shortid = syncedDirectories.length
+        ? last(syncedDirectories).shortid
+        : directoryShortid;
+      // eslint-disable-next-line no-await-in-loop
+      const newDirectory = await effects.api.createDirectory(
+        sandbox.id,
+        shortid,
+        optimisticDirectory.title
+      );
+      const directory = state.editor.currentSandbox.directories.find(
+        directoryItem => directoryItem.shortid === optimisticDirectory.shortid
+      );
+
+      Object.assign(directory, {
+        id: newDirectory.id,
+        shortid: newDirectory.shortid,
+        directoryShortid: newDirectory.directoryShortid,
+      });
+
+      syncedDirectories.push(directory);
+
+      if (state.live.isCurrentEditor) {
+        effects.live.sendDirectoryCreated(newDirectory);
+      }
+    } catch (error) {
+      const directoryIndex = state.editor.currentSandbox.directories.findIndex(
+        directoryItem => directoryItem.shortid === optimisticDirectory.shortid
+      );
+
+      sandbox.directories.splice(directoryIndex, 1);
+      effects.notificationToast.error('Unable to save new directory');
+      break;
+    }
+  }
+
+  return syncedDirectories;
+};
+
 export const directoryCreated: AsyncAction<{
   title: string;
   directoryShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, effects }, { title, directoryShortid }) => {
-    const sandbox = state.editor.currentSandbox;
-    const isNested = title.includes('/');
-    const directories = isNested ? title.split('/').filter(Boolean) : [title];
-    const optimisticDirectories: Directory[] = [];
+}> = withOwnedSandbox(async ({ actions }, { title, directoryShortid }) => {
+  const isNested = title.includes('/');
+  const directories = isNested ? title.split('/').filter(Boolean) : [title];
 
-    directories.forEach((directoryTitle, index) => {
-      const optimisticDirectory: Directory = {
-        id: effects.utils.createOptimisticId(),
-        title: directoryTitle,
-        directoryShortid:
-          index === 0
-            ? directoryShortid
-            : optimisticDirectories[index - 1].shortid,
-        shortid: effects.utils.createOptimisticId(),
-        sourceId: state.editor.currentSandbox.sourceId,
-        insertedAt: new Date().toString(),
-        updatedAt: new Date().toString(),
-        type: 'directory' as 'directory',
-      };
+  const optimisticDirectories = actions.files.createOptimisticDirectories({
+    directories,
+    directoryShortid,
+  });
 
-      optimisticDirectories.push(optimisticDirectory);
-      sandbox.directories.push(optimisticDirectory);
-    });
-
-    let lastShortid = directoryShortid;
-
-    for (let index = 0; index < optimisticDirectories.length; index++) {
-      try {
-        const optimisticDirectory = optimisticDirectories[index];
-        // eslint-disable-next-line no-await-in-loop
-        const newDirectory = await effects.api.createDirectory(
-          sandbox.id,
-          lastShortid,
-          optimisticDirectory.title
-        );
-        const directory = state.editor.currentSandbox.directories.find(
-          directoryItem => directoryItem.shortid === optimisticDirectory.shortid
-        );
-
-        Object.assign(directory, {
-          id: newDirectory.id,
-          shortid: newDirectory.shortid,
-          directoryShortid: newDirectory.directoryShortid,
-        });
-
-        lastShortid = newDirectory.shortid;
-        effects.live.sendDirectoryCreated(newDirectory);
-      } catch (error) {
-        const directoryIndex = state.editor.currentSandbox.directories.findIndex(
-          directoryItem =>
-            directoryItem.shortid === optimisticDirectories[index].shortid
-        );
-
-        sandbox.directories.splice(directoryIndex, 1);
-        effects.notificationToast.error('Unable to save new directory');
-        break;
-      }
-    }
-  }
-);
+  actions.files.syncDirectories({
+    directories: optimisticDirectories,
+    directoryShortid,
+  });
+});
 
 export const moduleMovedToDirectory: AsyncAction<{
   moduleShortid: string;
@@ -375,10 +412,25 @@ export const moduleCreated: AsyncAction<{
     { title, directoryShortid, code, isBinary }
   ) => {
     const sandbox = state.editor.currentSandbox;
+    const isNested = title.includes('/');
+    const directories = title.split('/');
+    const fileTitle = isNested ? directories.pop() : title;
+    let shortid = directoryShortid || null;
+    let optimisticDirectories = [];
+
+    if (isNested) {
+      optimisticDirectories = actions.files.createOptimisticDirectories({
+        directories,
+        directoryShortid,
+      });
+
+      shortid = last(optimisticDirectories).shortid;
+    }
+
     const optimisticModule = createOptimisticModule({
       id: effects.utils.createOptimisticId(),
-      title,
-      directoryShortid: directoryShortid || null,
+      title: fileTitle,
+      directoryShortid: shortid,
       shortid: effects.utils.createOptimisticId(),
       sourceId: sandbox.sourceId,
       isNotSynced: true,
@@ -412,6 +464,15 @@ export const moduleCreated: AsyncAction<{
 
         module.code = config.getDefaultCode(sandbox.template, resolveModule);
       }
+    }
+
+    if (isNested) {
+      const syncedDirectories = await actions.files.syncDirectories({
+        directories: optimisticDirectories,
+        directoryShortid,
+      });
+
+      module.directoryShortid = last(syncedDirectories).shortid;
     }
 
     try {
