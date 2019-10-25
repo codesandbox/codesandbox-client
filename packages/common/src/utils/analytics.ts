@@ -125,6 +125,13 @@ export async function initializeSentry(dsn: string) {
           return undefined;
         }
 
+        if (
+          event.message &&
+          event.message.startsWith('Unexpected frame by generating stack.')
+        ) {
+          // A firefox error with error-polyfill, not critical. Referenced here: https://sentry.io/organizations/codesandbox/issues/1293236389/?project=155188&query=is%3Aunresolved
+        }
+
         return event;
       },
     });
