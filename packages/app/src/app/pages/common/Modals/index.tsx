@@ -140,9 +140,9 @@ const modals = {
   },
 };
 
-const Modals = () => {
+const Modals: React.FC = () => {
   const {
-    actions: { modalClosed },
+    actions,
     state: {
       editor: { currentSandbox },
       preferences: {
@@ -195,16 +195,15 @@ const Modals = () => {
       <Modal
         isOpen={Boolean(modal)}
         width={modal && modal.width}
-        onClose={isKeyDown => modalClosed({ isKeyDown })}
+        onClose={isKeyDown => actions.modalClosed({ isKeyDown })}
       >
         {modal
           ? React.createElement(modal.Component, {
-              closeModal: () => modalClosed({ isKeyDown: false }),
+              closeModal: () => actions.modalClosed({ isKeyDown: false }),
             })
           : null}
       </Modal>
     </ThemeProvider>
   );
 };
-export default Modals;
-// export default inject('store', 'signals')(observer(Modals));
+export { Modals };

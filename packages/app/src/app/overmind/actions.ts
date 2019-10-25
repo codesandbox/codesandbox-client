@@ -85,7 +85,7 @@ export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   state.currentModal = modal;
 };
 
-export const modalClosed: Action = ({ state, effects }) => {
+export const modalClosed: Action<any> = ({ state, effects }) => {
   // We just start it whenever it closes, if already started nothing happens
   if (state.currentModal === 'preferences') {
     effects.keybindingManager.start();

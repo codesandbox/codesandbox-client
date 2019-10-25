@@ -11,7 +11,7 @@ import Loadable from 'app/utils/Loadable';
 import { useOvermind } from 'app/overmind';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
-import Modals from './common/Modals';
+import { Modals } from './common/Modals';
 import Sandbox from './Sandbox';
 import { NewSandbox } from './NewSandbox';
 import Dashboard from './Dashboard';
