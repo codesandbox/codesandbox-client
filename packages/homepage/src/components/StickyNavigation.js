@@ -61,7 +61,7 @@ const PrimaryNavigationLink = styled(Link)`
   font-weight: 500;
 
   &:hover {
-    color: white;
+    color: ${props => props.theme.homepage.white};
   }
 `;
 
@@ -73,7 +73,7 @@ const SecondaryNavigationLink = styled(Link)`
   margin-left: 1rem;
 
   &:hover {
-    color: white;
+    color: ${props => props.theme.homepage.white};
   }
 `;
 
@@ -85,7 +85,7 @@ const MissingNotice = styled.a`
   font-size: 0.875rem;
 
   &:hover {
-    color: white;
+    color: ${props => props.theme.homepage.white};
   }
 `;
 

@@ -122,7 +122,7 @@ const ArrowStyles = css`
   position: absolute;
 
   &:hover {
-    color: white;
+    color: ${props => props.theme.homepage.white};
   }
 `;
 

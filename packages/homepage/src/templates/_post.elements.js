@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 export const PostContainer = styled.div`
   ${({ theme }) => css`
     margin: auto;
-    color: white;
+    color: ${props => props.theme.homepage.white};
     overflow: hidden;
     line-height: 1.7;
 
@@ -18,7 +18,7 @@ export const PostContainer = styled.div`
     h4,
     h5,
     h6 {
-      color: white;
+      color: ${props => props.theme.homepage.white};
       font-weight: 800;
     }
 

@@ -25,9 +25,8 @@ const Text = styled.h3`
   font-weight: 500;
   font-size: 36px;
   line-height: 43px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue';
-  color: #ffffff;
+  font-family: ${props => props.theme.homepage.appleFont};
+  color: ${props => props.theme.homepage.white};
   max-width: 80%;
   margin: auto;
   margin-bottom: 2.5rem;

@@ -8,8 +8,20 @@ import '../css/global.css';
 import Navigation from './Navigation/index';
 import Footer from './Footer';
 
+const homepageTheme = {
+  ...theme,
+  homepage: {
+    appleFont:
+      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue'",
+    white: '#fff',
+    primary: '#0971f1',
+    grey: '#242424',
+    muted: '#9d9d9d',
+  },
+};
+
 const TemplateWrapper = ({ children }) => (
-  <ThemeProvider theme={theme}>
+  <ThemeProvider theme={homepageTheme}>
     <div>
       <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 10 }}>
         <VisuallyHidden as="a" href="#main">

@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
 export const Header = styled.header`
-  background: #040404;
-  box-shadow: 0px 1px 0px #242424;
+  box-shadow: 0px 1px 0px ${props => props.theme.homepage.grey};
   height: 48px;
   width: 100%;
 `;
@@ -24,7 +23,7 @@ export const Wrapper = styled.div`
 `;
 
 export const UserAvatar = styled.img`
-  border: 1px solid #242424;
+  border: 1px solid ${props => props.theme.homepage.grey};
   border-radius: 2px;
   width: 24px;
   height: 24px;
@@ -32,8 +31,7 @@ export const UserAvatar = styled.img`
 `;
 
 export const LogoWrapper = styled.section`
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue';
+  font-family: ${props => props.theme.homepage.appleFont};
   display: flex;
   align-items: center;
   font-size: 13px;
@@ -58,11 +56,11 @@ export const List = styled.ul`
 
   a {
     text-decoration: none;
-    color: #9d9d9d;
+    color: ${props => props.theme.homepage.muted};
     transition: all 200ms ease;
 
     &:hover {
-      color: white;
+      color: ${props => props.theme.homepage.white};
     }
   }
 `;

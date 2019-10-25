@@ -2,18 +2,16 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const styles = css`
-  background: #0971f1;
+  background: ${props => props.theme.homepage.primary};
   border-radius: 2px;
   border: none;
-  color: white;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: ${props => props.theme.homepage.appleFont};
   font-size: 13px;
   line-height: 19px;
   text-align: center;
   padding: 4px 21px;
   text-decoration: none;
-  color: white !important;
+  color: ${props => props.theme.homepage.white} !important;
 `;
 
 const Button = styled.button`

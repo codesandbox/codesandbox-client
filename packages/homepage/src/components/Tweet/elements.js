@@ -5,7 +5,7 @@ export const TweetsWrapper = styled.a`
   text-decoration: none;
   position: relative;
   max-width: 520px;
-  background: #242424;
+  background: ${props => props.theme.homepage.grey};
   box-shadow: 0px 16px 16px rgba(4, 4, 4, 0.25);
   border-radius: 4px;
   margin-top: 5.5rem;
@@ -27,7 +27,7 @@ export const Quote = styled.blockquote`
   font-size: 23px;
   line-height: 32px;
 
-  color: #ffffff;
+  color: ${props => props.theme.homepage.white};
   margin: 0;
   margin-bottom: 2rem;
 `;
@@ -39,7 +39,7 @@ export const Info = styled.p`
   line-height: 24px;
   margin: 0;
 
-  color: #999999;
+  color: ${props => props.theme.homepage.muted};
 `;
 
 export const Avatar = styled.img`

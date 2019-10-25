@@ -10,6 +10,6 @@ export const SignUp = styled.p`
   line-height: 13px;
   text-align: center;
   margin-top: 0.5rem;
-  color: #ffffff;
+  color: ${props => props.theme.homepage.white};
   margin-bottom: 2.5rem;
 `;

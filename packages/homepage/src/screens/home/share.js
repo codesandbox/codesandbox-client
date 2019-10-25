@@ -25,7 +25,7 @@ const Section = styled.section`
 `;
 
 const White = styled.span`
-  color: white;
+  color: ${props => props.theme.homepage.white};
 `;
 
 const Share = () => (
