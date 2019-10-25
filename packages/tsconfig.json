@@ -12,7 +12,6 @@
     ],
     "resolveJsonModule": true,
     "jsx": "react",
-    "allowJs": true,
-    "strictNullChecks": true
+    "allowJs": true
   }
 }
