@@ -105,5 +105,9 @@ usedDescribe('browser-tests', () => {
 
       await testPageWitCapabilities(capabilities);
     }, 130000);
+  } else {
+    test('it just works', () => {
+      expect(1).toBe(1);
+    });
   }
 });
