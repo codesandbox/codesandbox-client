@@ -279,6 +279,7 @@ jobs:
       - build_prod
   test-integrations:
     executor: node-with-puppeteer
+    parallelism: 2
     steps:
       - checkout_with_cache
       - test_integrations

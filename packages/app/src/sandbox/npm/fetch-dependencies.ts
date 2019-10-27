@@ -51,10 +51,10 @@ function callApi(url: string, method = 'GET') {
         error.response = message;
         // @ts-ignore
         error.statusCode = response.status;
-        return Promise.reject(error);
+        throw error;
       }
 
-      return Promise.resolve(response);
+      return response;
     })
     .then(response => response.json());
 }
