@@ -69,19 +69,19 @@ export default function evaluate(
       return requiredNativeModule;
     }
 
-    // const plugin =
-    //   availablePlugins[requirePath] ||
-    //   availablePlugins[requirePath.replace('babel-plugin-', '')] ||
-    //   availablePlugins[requirePath.replace('@babel/plugin-', '')];
+    const plugin =
+      availablePlugins[requirePath] ||
+      availablePlugins[requirePath.replace('babel-plugin-', '')] ||
+      availablePlugins[requirePath.replace('@babel/plugin-', '')];
 
     // This is some weird behaviour, it seems like we have a mix of { __esModule: true, default ... } modules in
     // this list and some direct functions. If we return the plugin itself (not .default) one sandbox breaks,
     // if we return a .default the other sandbox breaks. The two sandboxes are: `utmms` and `sebn6`. I've decided
     // to only return plugins that have been pre-added to babel-standalone (the plugins with a .default), this
     // way both sandboxes work.
-    // if (plugin && requirePath !== 'react' && plugin.__esModule) {
-    //   return plugin;
-    // }
+    if (plugin && requirePath !== 'react') {
+      return plugin;
+    }
 
     const preset =
       availablePresets[requirePath] ||
