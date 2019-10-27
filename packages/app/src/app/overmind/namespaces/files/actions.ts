@@ -55,13 +55,15 @@ export const moduleRenamed: AsyncAction<{
         directoryShortid,
       });
 
-      module.directoryShortid = last(syncedDirectories).shortid;
+      if (syncedDirectories) {
+        module.directoryShortid = last(syncedDirectories).shortid;
 
-      await effects.api.saveModuleDirectory(
-        sandbox.id,
-        moduleShortid,
-        last(syncedDirectories).shortid
-      );
+        await effects.api.saveModuleDirectory(
+          sandbox.id,
+          moduleShortid,
+          last(syncedDirectories).shortid
+        );
+      }
     }
 
     try {
@@ -115,7 +117,7 @@ export const syncDirectories: AsyncAction<
     directories: Directory[];
     directoryShortid: string;
   },
-  Directory[]
+  Directory[] | undefined
 > = async ({ state, effects }, { directoryShortid, directories }) => {
   const sandbox = state.editor.currentSandbox;
   const syncedDirectories: Directory[] = [];
@@ -126,7 +128,7 @@ export const syncDirectories: AsyncAction<
       const shortid = syncedDirectories.length
         ? last(syncedDirectories).shortid
         : directoryShortid;
-      // eslint-disable-next-line no-await-in-loop
+
       const newDirectory = await effects.api.createDirectory(
         sandbox.id,
         shortid,
@@ -159,17 +161,17 @@ export const syncDirectories: AsyncAction<
         effects.live.sendDirectoryCreated(newDirectory);
       }
     } catch (error) {
-      console.error(error);
       const directoryIndex = state.editor.currentSandbox.directories.findIndex(
         directoryItem => directoryItem.shortid === optimisticDirectory.shortid
       );
 
       sandbox.directories.splice(directoryIndex, 1);
       effects.notificationToast.error('Unable to save new directory');
-      break;
+      return;
     }
   }
 
+  // eslint-disable-next-line consistent-return
   return syncedDirectories;
 };
 
@@ -498,6 +500,12 @@ export const moduleCreated: AsyncAction<{
         directories: optimisticDirectories,
         directoryShortid,
       });
+
+      if (!syncedDirectories) {
+        actions.editor.internal.setCurrentModule(state.editor.mainModule);
+
+        return;
+      }
 
       module.directoryShortid = last(syncedDirectories).shortid;
     }
