@@ -80,7 +80,7 @@ export default function evaluate(
     // to only return plugins that have been pre-added to babel-standalone (the plugins with a .default), this
     // way both sandboxes work.
     if (plugin && requirePath !== 'react' && plugin.__esModule) {
-      return plugin.default;
+      return plugin;
     }
 
     const preset =
