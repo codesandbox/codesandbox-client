@@ -1,5 +1,3 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import getDefinition from '@codesandbox/common/lib/templates';
 import { ModuleTab, Directory } from '@codesandbox/common/lib/types';
 import { AsyncAction, Action } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
@@ -8,6 +6,7 @@ import { INormalizedModules } from 'codesandbox-import-util-types';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 
 import { last } from 'lodash-es';
+import { getModuleCode } from 'app/overmind/utils/files';
 import {
   resolveDirectoryWrapped,
   resolveModuleWrapped,
@@ -102,8 +101,13 @@ export const syncDirectories: AsyncAction<
         shortid,
         optimisticDirectory.title
       );
+
       const directory = state.editor.currentSandbox.directories.find(
         directoryItem => directoryItem.shortid === optimisticDirectory.shortid
+      );
+      const nextDirectory = state.editor.currentSandbox.directories.find(
+        directoryItem =>
+          directoryItem.directoryShortid === optimisticDirectory.shortid
       );
 
       Object.assign(directory, {
@@ -112,12 +116,19 @@ export const syncDirectories: AsyncAction<
         directoryShortid: newDirectory.directoryShortid,
       });
 
+      if (nextDirectory) {
+        Object.assign(nextDirectory, {
+          directoryShortid: newDirectory.shortid,
+        });
+      }
+
       syncedDirectories.push(directory);
 
       if (state.live.isCurrentEditor) {
         effects.live.sendDirectoryCreated(newDirectory);
       }
     } catch (error) {
+      console.error(error);
       const directoryIndex = state.editor.currentSandbox.directories.findIndex(
         directoryItem => directoryItem.shortid === optimisticDirectory.shortid
       );
@@ -443,29 +454,12 @@ export const moduleCreated: AsyncAction<{
     // We grab the module from the state to continue working with it (proxy)
     const module = sandbox.modules[sandbox.modules.length - 1];
 
-    const path = getModulePath(sandbox.modules, sandbox.directories, module.id);
-    const template = getDefinition(sandbox.template);
-    const config = template.configurationFiles[path];
+    module.code = getModuleCode(
+      sandbox,
+      state.preferences.settings.prettierConfig
+    );
 
-    if (
-      config &&
-      (config.generateFileFromSandbox ||
-        config.getDefaultCode ||
-        config.generateFileFromState)
-    ) {
-      if (config.generateFileFromState) {
-        module.code = config.generateFileFromState(
-          state.preferences.settings.prettierConfig
-        );
-      } else if (config.generateFileFromSandbox) {
-        module.code = config.generateFileFromSandbox(sandbox);
-      } else if (config.getDefaultCode) {
-        const resolveModule = resolveModuleWrapped(sandbox);
-
-        module.code = config.getDefaultCode(sandbox.template, resolveModule);
-      }
-    }
-
+    // Optimistic open file
     actions.editor.internal.setCurrentModule(module);
 
     if (isNested) {

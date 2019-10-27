@@ -75,6 +75,8 @@ export type Directory = {
   shortid: string;
   sourceId: string;
   type: 'directory';
+  insertedAt: string;
+  updatedAt: string;
 };
 
 export type Template = {
