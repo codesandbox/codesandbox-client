@@ -55,13 +55,15 @@ export const moduleRenamed: AsyncAction<{
         directoryShortid,
       });
 
-      module.directoryShortid = last(syncedDirectories).shortid;
+      if (syncedDirectories) {
+        module.directoryShortid = last(syncedDirectories).shortid;
 
-      await effects.api.saveModuleDirectory(
-        sandbox.id,
-        moduleShortid,
-        last(syncedDirectories).shortid
-      );
+        await effects.api.saveModuleDirectory(
+          sandbox.id,
+          moduleShortid,
+          last(syncedDirectories).shortid
+        );
+      }
     }
 
     try {
@@ -115,7 +117,7 @@ export const syncDirectories: AsyncAction<
     directories: Directory[];
     directoryShortid: string;
   },
-  Directory[]
+  Directory[] | undefined
 > = async ({ state, effects }, { directoryShortid, directories }) => {
   const sandbox = state.editor.currentSandbox;
   const syncedDirectories: Directory[] = [];
@@ -166,10 +168,11 @@ export const syncDirectories: AsyncAction<
 
       sandbox.directories.splice(directoryIndex, 1);
       effects.notificationToast.error('Unable to save new directory');
-      break;
+      return;
     }
   }
 
+  // eslint-disable-next-line consistent-return
   return syncedDirectories;
 };
 
@@ -498,6 +501,12 @@ export const moduleCreated: AsyncAction<{
         directories: optimisticDirectories,
         directoryShortid,
       });
+
+      if (!syncedDirectories) {
+        actions.editor.internal.setCurrentModule(state.editor.mainModule);
+
+        return;
+      }
 
       module.directoryShortid = last(syncedDirectories).shortid;
     }
