@@ -578,6 +578,7 @@ self.addEventListener('message', async event => {
         /* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx'
       );
       Babel.registerPlugin('transform-vue-jsx', vuePlugin);
+      Babel.registerPlugin('babel-plugin-transform-vue-jsx', vuePlugin);
     }
 
     if (
@@ -589,6 +590,7 @@ self.addEventListener('message', async event => {
         /* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic'
       );
       Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+      Babel.registerPlugin('babel-plugin-jsx-pragmatic', pragmaticPlugin);
     }
 
     if (
