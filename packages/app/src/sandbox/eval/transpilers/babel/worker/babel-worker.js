@@ -406,7 +406,7 @@ async function compile(code, customConfig, path, isV7) {
 try {
   self.importScripts(
     process.env.NODE_ENV === 'development'
-      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
+      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.js`
       : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
   );
 } catch (e) {
@@ -577,16 +577,6 @@ self.addEventListener('message', async event => {
         /* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx'
       );
       Babel.registerPlugin('transform-vue-jsx', vuePlugin);
-    }
-
-    if (
-      flattenedPlugins.indexOf('jsx-pragmatic') > -1 &&
-      Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
-    ) {
-      const pragmaticPlugin = await import(
-        /* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic'
-      );
-      Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
     }
 
     if (
