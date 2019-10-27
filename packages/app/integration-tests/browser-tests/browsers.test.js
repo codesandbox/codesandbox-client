@@ -38,68 +38,72 @@ function testPageWitCapabilities(capabilities) {
     });
 }
 
+const PARALLEL_INDEX = Number.parseInt(process.env.CIRCLE_NODE_INDEX, 10) || 0;
+
 const usedDescribe = process.env.BROWSER_STACK_KEY ? describe : describe.skip;
 usedDescribe('browser-tests', () => {
-  test.skip('ie11', async () => {
-    // Input capabilities
-    const capabilities = {
-      browserName: 'IE',
-      browser_version: '11.0',
-      os: 'Windows',
-      os_version: '10',
-      resolution: '1024x768',
-    };
+  if (PARALLEL_INDEX === 0) {
+    test.skip('ie11', async () => {
+      // Input capabilities
+      const capabilities = {
+        browserName: 'IE',
+        browser_version: '11.0',
+        os: 'Windows',
+        os_version: '10',
+        resolution: '1024x768',
+      };
 
-    await testPageWitCapabilities(capabilities);
-  }, 130000);
+      await testPageWitCapabilities(capabilities);
+    }, 130000);
 
-  test.skip('ios', async () => {
-    // Input capabilities
-    const capabilities = {
-      browserName: 'iPhone',
-      device: 'iPhone X',
-      real_mobile: 'true',
-      os_version: '11.0',
-    };
+    test.skip('ios', async () => {
+      // Input capabilities
+      const capabilities = {
+        browserName: 'iPhone',
+        device: 'iPhone X',
+        real_mobile: 'true',
+        os_version: '11.0',
+      };
 
-    await testPageWitCapabilities(capabilities);
-  }, 130000);
+      await testPageWitCapabilities(capabilities);
+    }, 130000);
 
-  test('firefox', async () => {
-    // Input capabilities
-    const capabilities = {
-      browserName: 'Firefox',
-      browser_version: '58.0',
-      os: 'Windows',
-      os_version: '10',
-      resolution: '1024x768',
-    };
+    test('firefox', async () => {
+      // Input capabilities
+      const capabilities = {
+        browserName: 'Firefox',
+        browser_version: '58.0',
+        os: 'Windows',
+        os_version: '10',
+        resolution: '1024x768',
+      };
 
-    await testPageWitCapabilities(capabilities);
-  }, 130000);
+      await testPageWitCapabilities(capabilities);
+    }, 130000);
 
-  test('safari', async () => {
-    // Input capabilities
-    const capabilities = {
-      browserName: 'Safari',
-      browser_version: '11.0',
-      os: 'OS X',
-      os_version: 'High Sierra',
-      resolution: '1024x768',
-    };
+    test('safari', async () => {
+      // Input capabilities
+      const capabilities = {
+        browserName: 'Safari',
+        browser_version: '11.0',
+        os: 'OS X',
+        os_version: 'High Sierra',
+        resolution: '1024x768',
+      };
 
-    await testPageWitCapabilities(capabilities);
-  }, 130000);
+      await testPageWitCapabilities(capabilities);
+    }, 130000);
 
-  test.skip('android', async () => {
-    // Input capabilities
-    const capabilities = {
-      browserName: 'android',
-      device: 'Samsung Galaxy S8',
-      real_mobile: 'true',
-      os_version: '7.0',
-    };
+    test.skip('android', async () => {
+      // Input capabilities
+      const capabilities = {
+        browserName: 'android',
+        device: 'Samsung Galaxy S8',
+        real_mobile: 'true',
+        os_version: '7.0',
+      };
 
-    await testPageWitCapabilities(capabilities);
-  }, 130000);
+      await testPageWitCapabilities(capabilities);
+    }, 130000);
+  }
 });
