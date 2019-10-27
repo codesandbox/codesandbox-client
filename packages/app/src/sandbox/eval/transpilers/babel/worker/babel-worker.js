@@ -570,13 +570,25 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&
+      (flattenedPlugins.indexOf('transform-vue-jsx') > -1 ||
+        flattenedPlugins.indexOf('babel-plugin-transform-vue-jsx') > -1) &&
       Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
     ) {
       const vuePlugin = await import(
         /* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx'
       );
       Babel.registerPlugin('transform-vue-jsx', vuePlugin);
+    }
+
+    if (
+      (flattenedPlugins.indexOf('jsx-pragmatic') > -1 ||
+        flattenedPlugins.indexOf('babel-plugin-jsx-pragmatic') > -1) &&
+      Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
+    ) {
+      const pragmaticPlugin = await import(
+        /* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic'
+      );
+      Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
     }
 
     if (
