@@ -21,9 +21,14 @@ export const moduleRenamed: AsyncAction<{
 }> = withOwnedSandbox(
   async ({ state, effects, actions }, { title, moduleShortid }) => {
     const sandbox = state.editor.currentSandbox;
+    const isNested = title.includes('/');
+    const directories = title.split('/').filter(Boolean);
+    const fileTitle = isNested ? directories.pop() : title;
     const module = sandbox.modules.find(
       moduleItem => moduleItem.shortid === moduleShortid
     );
+
+    const { directoryShortid } = module;
 
     if (!module) {
       return;
@@ -31,10 +36,36 @@ export const moduleRenamed: AsyncAction<{
 
     const oldTitle = module.title;
 
-    module.title = title;
+    module.title = fileTitle;
+
+    actions.editor.internal.setCurrentModule(module);
+
+    if (isNested) {
+      const optimisticDirectories = actions.files.createOptimisticDirectories({
+        directories,
+        directoryShortid,
+      });
+
+      module.directoryShortid = last(optimisticDirectories).shortid;
+
+      actions.editor.internal.setCurrentModule(module);
+
+      const syncedDirectories = await actions.files.syncDirectories({
+        directories: optimisticDirectories,
+        directoryShortid,
+      });
+
+      module.directoryShortid = last(syncedDirectories).shortid;
+
+      await effects.api.saveModuleDirectory(
+        sandbox.id,
+        moduleShortid,
+        last(syncedDirectories).shortid
+      );
+    }
 
     try {
-      await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
+      await effects.api.saveModuleTitle(sandbox.id, moduleShortid, fileTitle);
 
       if (state.live.isCurrentEditor) {
         effects.live.sendModuleUpdate(module);
