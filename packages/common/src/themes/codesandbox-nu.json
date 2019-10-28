@@ -200,7 +200,8 @@
     "list.hoverForeground": null,
     "list.focusForeground": null,
 
-    "panel.background": "#040404"
+    "panel.background": "#040404",
+    "panel.border": "#242424"
   },
   "tokenColors": [
     {
