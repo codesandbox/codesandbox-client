@@ -331,6 +331,7 @@ export type Sandbox = {
   } | null;
   version: number;
   screenshotUrl: string | null;
+  previewSecret: string | null;
 };
 
 export type PrettierConfig = {
@@ -669,5 +670,7 @@ export enum PatronBadge {
   THREE = 'patron-3',
   FOURTH = 'patron-4',
 }
+
+export type LiveDisconnectReason = 'close' | 'inactivity';
 
 export type PatronTier = 1 | 2 | 3 | 4;

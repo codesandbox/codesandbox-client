@@ -116,7 +116,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
                         Unlisted (only available by url)
                       </option>
                     )}
-                    {!isServer && isPatron && (
+                    {isPatron && !isServer && (
                       <option value={2}>Private</option>
                     )}
                   </PrivacySelect>

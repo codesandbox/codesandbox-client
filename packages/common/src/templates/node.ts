@@ -1,5 +1,5 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 export default new Template(
   'node',
@@ -8,7 +8,6 @@ export default new Template(
   'node',
   decorateSelector(() => '#66cc33'),
   {
-    isServer: true,
     showOnHomePage: true,
     main: true,
     netlify: false,

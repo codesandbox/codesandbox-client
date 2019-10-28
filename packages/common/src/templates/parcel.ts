@@ -1,7 +1,7 @@
 import { absolute } from '../utils/path';
 
 import Template, { ParsedConfigurationFiles } from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 import configurations from './configuration';
 
 export class ParcelTemplate extends Template {

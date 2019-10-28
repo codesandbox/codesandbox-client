@@ -73,6 +73,7 @@ export default function evaluate(
       availablePlugins[requirePath] ||
       availablePlugins[requirePath.replace('babel-plugin-', '')] ||
       availablePlugins[requirePath.replace('@babel/plugin-', '')];
+
     if (plugin && requirePath !== 'react') {
       return plugin;
     }

@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 import { GitProgress } from 'app/components/GitProgress';
 
-const PRModal: React.FC = () => {
-  let result = null;
-
+const PRModal: FunctionComponent = () => {
   const {
     state: {
       git: { isCreatingPr, pr },
     },
   } = useOvermind();
+
+  let result = null;
 
   if (!isCreatingPr) {
     result = (
@@ -33,4 +33,4 @@ const PRModal: React.FC = () => {
   );
 };
 
-export default PRModal;
+export default PRModal
