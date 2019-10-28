@@ -185,8 +185,8 @@ export const sandboxPrivacyChanged: AsyncAction<{
     state.editor.currentId,
     privacy
   );
-  state.editor.currentSandbox.privacy = privacy;
   state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
+  state.editor.currentSandbox.privacy = privacy;
 
   if (
     getTemplate(state.editor.currentSandbox.template).isServer &&
