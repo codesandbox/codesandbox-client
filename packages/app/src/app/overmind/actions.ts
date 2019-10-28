@@ -74,7 +74,6 @@ type ModalName =
   | 'netlifyLogs'
   | 'newSandbox'
   | 'preferences'
-  | 'privacyServerWarning'
   | 'share'
   | 'searchDependencies'
   | 'signInForTemplates';
