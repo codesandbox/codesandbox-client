@@ -54,6 +54,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
   } = useOvermind();
 
   const template = getTemplateDefinition(sandbox.template);
+  const { isServer } = template;
 
   return (
     <Container>
@@ -115,7 +116,9 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
                         Unlisted (only available by url)
                       </option>
                     )}
-                    {isPatron && <option value={2}>Private</option>}
+                    {isPatron && !isServer && (
+                      <option value={2}>Private</option>
+                    )}
                   </PrivacySelect>
                 </>
               ) : (
