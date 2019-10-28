@@ -4,10 +4,19 @@ import getLightIcons from '@codesandbox/common/lib/templates/iconsLight';
 import getDarkIcons from '@codesandbox/common/lib/templates/iconsDark';
 import { getContrastYIQ } from '@codesandbox/common/lib/utils';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import { Container, Title, Info, Side, Counts, Icon, Close } from './elements';
 import { FollowTemplateButton } from '../../Workspace/Project/FollowTemplateButton';
 
-export const TemplateBanner = ({ sandbox, hideBanner }) => {
+interface ITemplateBannerProps {
+  sandbox: Sandbox;
+  hideBanner: () => void;
+}
+
+export const TemplateBanner = ({
+  sandbox,
+  hideBanner,
+}: ITemplateBannerProps) => {
   const { customTemplate: template } = sandbox;
   const environment = getTemplateDefinition(sandbox.template);
   let UserIcon: React.FunctionComponent;
