@@ -24,13 +24,15 @@ export const Navigation = styled.div`
 `;
 
 export const TestContainer = styled(Navigation)`
-  background-color: ${props => props.theme['sideBar.background']};
+  background-color: ${props =>
+    props.theme['panel.background'] || props.theme['sideBar.background']};
   height: 100%;
 `;
 
 export const TestDetails = styled.div`
   flex: 3;
-  background-color: ${props => props.theme['sideBar.background']};
+  background-color: ${props =>
+    props.theme['panel.background'] || props.theme['sideBar.background']};
   height: 100%;
 `;
 

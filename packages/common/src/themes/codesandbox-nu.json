@@ -198,7 +198,9 @@
     "list.warningForeground": "#FBCC43",
     "list.errorForeground": "#E1270E",
     "list.hoverForeground": null,
-    "list.focusForeground": null
+    "list.focusForeground": null,
+
+    "panel.background": "#040404"
   },
   "tokenColors": [
     {
