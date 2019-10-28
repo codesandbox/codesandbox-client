@@ -17,7 +17,7 @@ import { EmptyTrash } from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
-import LiveSessionEnded from './LiveSessionEnded';
+import { LiveSessionEnded } from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import NetlifyLogs from './NetlifyLogs';
 import NewSandbox from './NewSandbox';
