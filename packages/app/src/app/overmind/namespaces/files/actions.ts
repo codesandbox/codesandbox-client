@@ -515,7 +515,7 @@ export const moduleCreated: AsyncAction<{
 
         if (!syncedDirectories) {
           actions.editor.internal.setCurrentModule(state.editor.mainModule);
-
+          actions.files.removeModule({ moduleShortid: module.shortid });
           return;
         }
 
