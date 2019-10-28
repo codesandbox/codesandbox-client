@@ -98,7 +98,7 @@ export async function initializeSentry(dsn: string) {
         /.*\.codesandbox\.io/,
         /.*\.csb\.app/,
       ],
-      beforeSend: event => {
+      beforeSend: (event, hint) => {
         if (
           event.stacktrace &&
           event.stacktrace.frames &&
@@ -111,6 +111,25 @@ export async function initializeSentry(dsn: string) {
           // Don't do anything with it right now, I can't seem to reproduce it for some reason.
           // We need to add sourcemaps
           return undefined;
+        }
+
+        const customError = ((hint && (hint.originalException as any)) || {})
+          .error;
+
+        if (
+          customError &&
+          event.message &&
+          event.message.startsWith('Non-Error exception captured')
+        ) {
+          // This is an error coming from the sandbox, return with no error.
+          return undefined;
+        }
+
+        if (
+          event.message &&
+          event.message.startsWith('Unexpected frame by generating stack.')
+        ) {
+          // A firefox error with error-polyfill, not critical. Referenced here: https://sentry.io/organizations/codesandbox/issues/1293236389/?project=155188&query=is%3Aunresolved
         }
 
         return event;

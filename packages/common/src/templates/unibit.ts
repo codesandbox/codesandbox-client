@@ -1,5 +1,5 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 export default new Template(
   'unibit',
@@ -9,7 +9,6 @@ export default new Template(
   decorateSelector(() => '#3EB0FD'),
   {
     distDir: 'public',
-    isServer: true,
     popular: true,
     mainFile: ['README.md'],
     showOnHomePage: true,

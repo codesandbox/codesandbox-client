@@ -1,5 +1,9 @@
+import minimatch from 'minimatch';
+import * as semver from 'semver';
+
 import { ILambdaResponse } from './merge-dependency';
 import { downloadDependency } from '../eval/npm/fetch-npm-module';
+import { IParsedResolution } from './resolutions';
 
 function getPackageJSON(dep: string, version: string) {
   return downloadDependency(dep, version, '/package.json').then(m => m.code);
@@ -18,9 +22,39 @@ interface IPeerDependencyResult {
   };
 }
 
+function getAbsoluteVersion(
+  originalDep: string,
+  depName: string,
+  depVersion: string,
+  parsedResolutions: { [name: string]: IParsedResolution[] }
+) {
+  // Try getting it from the resolutions field first, if that doesn't work
+  // we try to get the latest version from the semver.
+  const applicableResolutions = parsedResolutions[depName];
+  if (applicableResolutions) {
+    const modulePath = [originalDep, depName].join('/');
+
+    const { range } =
+      applicableResolutions.find(({ globPattern }) =>
+        minimatch(modulePath, globPattern)
+      ) || {};
+
+    if (range) {
+      if (semver.valid(range)) {
+        return getLatestVersionForSemver(depName, range);
+      }
+
+      return range;
+    }
+  }
+
+  return getLatestVersionForSemver(depName, depVersion);
+}
+
 async function getDependencyDependencies(
   dep: string,
   version: string,
+  parsedResolutions: { [name: string]: IParsedResolution[] },
   peerDependencyResult: IPeerDependencyResult = {}
 ): Promise<IPeerDependencyResult> {
   const packageJSONCode = await getPackageJSON(dep, version);
@@ -35,9 +69,11 @@ async function getDependencyDependencies(
         return;
       }
 
-      const absoluteVersion = await getLatestVersionForSemver(
+      const absoluteVersion = await getAbsoluteVersion(
+        dep,
         depName,
-        depVersion
+        depVersion,
+        parsedResolutions
       );
 
       // eslint-disable-next-line
@@ -51,6 +87,7 @@ async function getDependencyDependencies(
       await getDependencyDependencies(
         depName,
         depVersion,
+        parsedResolutions,
         peerDependencyResult
       );
     })
@@ -59,7 +96,11 @@ async function getDependencyDependencies(
   return peerDependencyResult;
 }
 
-export async function resolveDependencyInfo(dep: string, version: string) {
+export async function resolveDependencyInfo(
+  dep: string,
+  version: string,
+  parsedResolutions: IParsedResolution[]
+) {
   const packageJSONCode = await getPackageJSON(dep, version);
   const packageJSON = JSON.parse(packageJSONCode);
   const response: ILambdaResponse = {
@@ -73,10 +114,17 @@ export async function resolveDependencyInfo(dep: string, version: string) {
     dependencyAliases: {},
   };
 
+  const resolutionsByPackage = {};
+  parsedResolutions.forEach(res => {
+    resolutionsByPackage[res.name] = resolutionsByPackage[res.name] || [];
+    resolutionsByPackage[res.name].push(res);
+  });
+
   response.peerDependencies = packageJSON.peerDependencies || {};
   response.dependencyDependencies = await getDependencyDependencies(
     dep,
-    version
+    version,
+    resolutionsByPackage
   );
 
   response.contents = {

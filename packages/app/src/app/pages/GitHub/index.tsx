@@ -7,7 +7,7 @@ import {
   protocolAndHost,
   gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import { Navigation } from 'app/pages/common/Navigation';
@@ -23,10 +23,14 @@ import {
 const getFullGitHubUrl = url =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
-const GitHub = ({ signals: { githubPageMounted } }) => {
+export const GitHub = () => {
   const [error, setError] = useState(null);
   const [transformedUrl, setTransformedUrl] = useState('');
   const [url, setUrl] = useState('');
+
+  const {
+    actions: { githubPageMounted },
+  } = useOvermind();
 
   useEffect(() => {
     githubPageMounted();
@@ -109,6 +113,3 @@ const GitHub = ({ signals: { githubPageMounted } }) => {
     </MaxWidth>
   );
 };
-
-// eslint-disable-next-line import/no-default-export
-export default inject('signals')(hooksObserver(GitHub));

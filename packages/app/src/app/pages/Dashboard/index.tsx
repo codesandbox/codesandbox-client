@@ -2,23 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import RightIcon from 'react-icons/lib/md/keyboard-arrow-right';
 import LeftIcon from 'react-icons/lib/md/keyboard-arrow-left';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import { Navigation } from 'app/pages/common/Navigation';
-import { SignInButton } from 'app/pages/common/SignInButton';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { client } from 'app/graphql/client';
 
 import SidebarContents from './Sidebar';
 import Content from './Content';
 import {
   Container,
-  Centered,
   Content as ContentContainer,
-  LoggedInContainer,
-  LoggedInTitle,
   Sidebar,
-  NavigationContainer,
   ShowSidebarButton,
-  OffsettedLogo,
 } from './elements';
 
 const Dashboard = props => {
@@ -55,7 +50,7 @@ const Dashboard = props => {
     onRouteChange();
   });
 
-  let DashboardContent = (
+  const DashboardContent = (
     <>
       <Sidebar active={showSidebar}>
         <SidebarContents />
@@ -75,25 +70,12 @@ const Dashboard = props => {
   );
 
   if (!hasLogIn) {
-    DashboardContent = (
-      <Container>
-        <Centered>
-          <LoggedInContainer>
-            <OffsettedLogo />
-            <LoggedInTitle>Sign in to CodeSandbox</LoggedInTitle>
-
-            <SignInButton style={{ fontSize: '1rem' }} />
-          </LoggedInContainer>
-        </Centered>
-      </Container>
-    );
+    return <Redirect to={signInPageUrl()} />;
   }
 
   return (
     <Container>
-      <NavigationContainer>
-        <Navigation searchNoInput title="Dashboard" />
-      </NavigationContainer>
+      <Navigation float searchNoInput title="Dashboard" />
 
       <div style={{ display: 'flex', overflow: 'hidden' }}>
         {DashboardContent}

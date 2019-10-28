@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
-import Sandbox from './Sandbox';
-
 import { Padding } from './elements';
 
-function SelectSandboxModal() {
+import Sandbox from './Sandbox';
+
+export const SelectSandboxModal: FunctionComponent = () => {
   const {
     state: {
       profile: { isLoadingSandboxes, showcasedSandbox, userSandboxes },
@@ -32,5 +32,4 @@ function SelectSandboxModal() {
         ))}
     </div>
   );
-}
-export default SelectSandboxModal;
+};

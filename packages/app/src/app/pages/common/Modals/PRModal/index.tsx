@@ -1,18 +1,15 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 import { GitProgress } from 'app/components/GitProgress';
 
-const PRModal: React.FC = () => {
-  let result = null;
-
+const PRModal: FunctionComponent = () => {
   const {
     state: {
-      git: {
-        isCreatingPr,
-        pr: { prURL },
-      },
+      git: { isCreatingPr, pr },
     },
   } = useOvermind();
+
+  let result = null;
 
   if (!isCreatingPr) {
     result = (
@@ -20,7 +17,7 @@ const PRModal: React.FC = () => {
         Done! We{"'"}ll now open the new sandbox of this PR and GitHub in 3
         seconds...
         <div style={{ fontSize: '.875rem', marginTop: '1rem' }}>
-          <a href={prURL} target="_blank" rel="noreferrer noopener">
+          <a href={pr.prURL} target="_blank" rel="noreferrer noopener">
             Click here if nothing happens.
           </a>
         </div>

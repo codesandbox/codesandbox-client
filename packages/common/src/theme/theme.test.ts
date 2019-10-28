@@ -1,4 +1,4 @@
-import theme from './theme';
+import { theme } from './theme';
 
 describe('theme', () => {
   it('has a theme', () => {

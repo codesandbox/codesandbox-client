@@ -359,11 +359,17 @@ async function compile(code, customConfig, path, isV7) {
     if (isV7) {
       // Force push this dependency, there are cases where it isn't included out of our control.
       // https://twitter.com/vigs072/status/1103005932886343680
+      // TODO: look into this
       dependencies.push({
-        type: 'direct',
         path: '@babel/runtime/helpers/interopRequireDefault',
+        type: 'direct',
+      });
+      dependencies.push({
+        path: '@babel/runtime/helpers/interopRequireWildcard',
+        type: 'direct',
       });
     }
+
     dependencies.forEach(dependency => {
       self.postMessage({
         type: 'add-dependency',
@@ -400,7 +406,7 @@ async function compile(code, customConfig, path, isV7) {
 try {
   self.importScripts(
     process.env.NODE_ENV === 'development'
-      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
+      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.js`
       : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
   );
 } catch (e) {
@@ -564,23 +570,27 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&
+      (flattenedPlugins.indexOf('transform-vue-jsx') > -1 ||
+        flattenedPlugins.indexOf('babel-plugin-transform-vue-jsx') > -1) &&
       Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
     ) {
       const vuePlugin = await import(
         /* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx'
       );
       Babel.registerPlugin('transform-vue-jsx', vuePlugin);
+      Babel.registerPlugin('babel-plugin-transform-vue-jsx', vuePlugin);
     }
 
     if (
-      flattenedPlugins.indexOf('jsx-pragmatic') > -1 &&
+      (flattenedPlugins.indexOf('jsx-pragmatic') > -1 ||
+        flattenedPlugins.indexOf('babel-plugin-jsx-pragmatic') > -1) &&
       Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
     ) {
       const pragmaticPlugin = await import(
         /* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic'
       );
       Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+      Babel.registerPlugin('babel-plugin-jsx-pragmatic', pragmaticPlugin);
     }
 
     if (
