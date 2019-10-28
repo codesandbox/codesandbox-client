@@ -1,6 +1,6 @@
 // Tell Babel to transform JSX into h() calls:
 /** @jsx h */
-import { h, Component } from 'preact';
+import { h, Component } from 'preact/dist/preact.mjs';
 import styled, { keyframes } from 'preact-emotion';
 
 const isSafari =
@@ -15,10 +15,10 @@ const SHADOW_SIZE = (() => {
   }
 
   if (isSafari) {
-    return 50;
+    return 20;
   }
 
-  return 50;
+  return 20;
 })();
 
 const getContainerAnimation = () => keyframes`
@@ -50,8 +50,7 @@ const Container = styled.div`
   }
 `;
 
-const getAnimation = (offset: number) => {
-  return keyframes`
+const getAnimation = (offset: number) => keyframes`
   0% {
     transform: rotateY(${45 + offset}deg) rotateX(${50 + offset}deg);
   }
@@ -59,7 +58,6 @@ const getAnimation = (offset: number) => {
     transform: rotateY(${45 + offset + 360}deg) rotateX(${50 + offset}deg);
   }
 `;
-};
 
 const Sides = styled.div`
   ${({ noAnimation, offset, speed }) =>
@@ -95,6 +93,7 @@ interface Props {
   id: string;
 }
 
+// eslint-disable-next-line
 export default class Cube extends Component<Props> {
   // Set default properties
   static defaultProps = {

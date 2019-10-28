@@ -1,18 +1,19 @@
-import React from 'react';
-import Helmet from 'react-helmet';
-import { Link } from 'react-router-dom';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import Padding from '@codesandbox/common/lib/components/spacing/Padding';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { inject, observer } from 'app/componentConnectors';
-import { Title } from 'app/components/Title';
 import { Skeleton } from 'app/components/Skeleton';
-import { QuickActions } from 'app/pages/Sandbox/QuickActions';
-import { NotFound } from 'app/pages/common/NotFound';
-import { Navigation } from 'app/pages/common/Navigation';
+import { Title } from 'app/components/Title';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
+import { Navigation } from 'app/pages/common/Navigation';
+import { NotFound } from 'app/pages/common/NotFound';
+import { QuickActions } from 'app/pages/Sandbox/QuickActions';
+import React from 'react';
+import Helmet from 'react-helmet';
+import { Link } from 'react-router-dom';
+
 import Editor from './Editor';
 
 class SandboxPage extends React.Component {
@@ -159,7 +160,9 @@ class SandboxPage extends React.Component {
             }}
             margin={1}
           >
-            <Navigation title="Sandbox Editor" />
+            {store.editor.isLoading ? null : (
+              <Navigation title="Sandbox Editor" />
+            )}
             <Centered
               style={{ flex: 1, width: '100%', height: '100%' }}
               horizontal

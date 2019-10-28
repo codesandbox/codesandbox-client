@@ -72,7 +72,7 @@ export class ServerExecutor implements IExecutor {
   }
 
   private initializeSocket() {
-    return io(`https://sse.codesandbox.io`, {
+    return io(`https://sse.codesandbox.stream`, {
       autoConnect: false,
       transports: ['websocket', 'polling'],
     });
@@ -80,7 +80,7 @@ export class ServerExecutor implements IExecutor {
 
   async initialize({ sandboxId, files }: ISetupParams) {
     if (this.sandboxId === sandboxId && this.socket.connected) {
-      return Promise.resolve();
+      return;
     }
 
     this.sandboxId = sandboxId;

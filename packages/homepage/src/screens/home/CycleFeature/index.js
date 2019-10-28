@@ -12,6 +12,7 @@ import BuildIcon from 'react-icons/lib/go/tools';
 import CommitIcon from 'react-icons/lib/go/git-commit';
 import RocketIcon from 'react-icons/lib/go/rocket';
 
+import { useMatchMedia } from '../../../hooks';
 import getScrollPos from '../../../utils/scroll';
 import media from '../../../utils/media';
 
@@ -152,56 +153,83 @@ const Progress = styled.div`
   box-shadow: 0 0 100px ${props => props.theme.secondary.clearer(0.3)};
 `;
 
-export default class CycleFeatures extends React.PureComponent {
-  state = {
-    selectedStep: 0,
-    manuallySelected: false,
-  };
+const CycleFeatures = () => {
+  const verticalSteps = React.useRef({});
+  const cube = React.useRef();
+  const animation = React.useRef();
+  const reduceAnimation = useMatchMedia('(prefers-reduced-motion: reduce)');
+  const [selectedStep, setSelectedStep] = React.useState(0);
+  const [manuallySelected, setManuallySelected] = React.useState(false);
 
-  verticalSteps = {};
+  const selectStep = React.useCallback(
+    (step, manual = true) => {
+      if ((!manual && manuallySelected) || !animation.current) {
+        // User selected manually, we don't want to override manual behaviour
+        // with scroll behaviour
+        return;
+      }
 
-  setStepForScroll(scroll: number, step: number) {
-    if (
-      scroll + window.innerHeight / 2 > this.verticalSteps[step] &&
-      step > this.state.selectedStep
-    ) {
-      this.selectStep(step, false);
-    }
-  }
+      if (selectedStep === 3) {
+        animation.current.progress(0);
+      }
 
-  updateStepBasedOnScroll = () => {
+      setSelectedStep(step);
+      setManuallySelected(manual);
+
+      animation.current.tweenTo('step' + (step + 1));
+    },
+    [manuallySelected, selectedStep]
+  );
+
+  const setStepForScroll = React.useCallback(
+    (scroll: number, step: number) => {
+      if (
+        scroll + window.innerHeight / 2 > verticalSteps.current[step] &&
+        step > selectedStep
+      ) {
+        selectStep(step, false);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectStep, selectedStep, reduceAnimation]
+  );
+
+  const updateStepBasedOnScroll = React.useCallback(() => {
     const scrollTop = getScrollPos().y;
 
     for (let i = 0; i < 4; i++) {
-      this.setStepForScroll(scrollTop, i);
+      setStepForScroll(scrollTop, i);
     }
+  }, [setStepForScroll]);
+
+  const setY = (step: number, y: number) => {
+    verticalSteps.current[step] = verticalSteps.current[step] || y;
   };
 
-  selectStep = (step, manual = true) => {
-    if (!manual && this.state.manuallySelected) {
-      // User selected manually, we don't want to override manual behaviour
-      // with scroll behaviour
-      return;
+  React.useEffect(() => {
+    if (reduceAnimation) {
+      setSelectedStep(3);
+    } else {
+      setSelectedStep(0);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduceAnimation]);
 
-    if (this.state.selectedStep === 3) {
-      this.animation.progress(0);
-    }
+  React.useEffect(() => {
+    if (reduceAnimation) return;
 
-    this.setState({ selectedStep: step, manuallySelected: manual });
+    window.addEventListener('scroll', updateStepBasedOnScroll);
 
-    this.animation.tweenTo('step' + (step + 1));
-  };
+    // eslint-disable-next-line consistent-return
+    return () => window.removeEventListener('scroll', updateStepBasedOnScroll);
+  }, [reduceAnimation, updateStepBasedOnScroll]);
 
-  setY = (step: number, y: number) => {
-    this.verticalSteps[step] = this.verticalSteps[step] || y;
-  };
+  React.useEffect(() => {
+    if (!cube.current || reduceAnimation) return;
 
-  componentDidMount() {
-    window.addEventListener('scroll', this.updateStepBasedOnScroll);
-    const cubeY = this.cube.getBoundingClientRect().top;
+    const cubeY = cube.current.getBoundingClientRect().top;
 
-    this.animation = new TimelineMax({ paused: true })
+    animation.current = new TimelineMax({ paused: true })
       .set('#addition-cube', {
         y: 0,
         x: 0,
@@ -230,25 +258,25 @@ export default class CycleFeatures extends React.PureComponent {
         width: 0,
       })
       .fromTo(
-        this.cube,
+        cube.current,
         0.8,
         {
           scale: 0,
           x: 0,
           position: 'relative',
           rotation: 0,
-          y: this.verticalSteps[0] - cubeY - 40,
+          y: verticalSteps.current[0] - cubeY - 40,
         },
         {
-          y: this.verticalSteps[0] - cubeY - 40,
+          y: verticalSteps.current[0] - cubeY - 40,
           ease: Power2.easeInOut,
         }
       )
       .to(
-        this.cube,
+        cube.current,
         1.2,
         {
-          y: this.verticalSteps[1] - cubeY - 40,
+          y: verticalSteps.current[1] - cubeY - 40,
           scale: 1,
           rotation: 720,
           ease: Power2.easeInOut,
@@ -278,10 +306,10 @@ export default class CycleFeatures extends React.PureComponent {
         '-=0.6'
       )
       .to(
-        this.cube,
+        cube.current,
         1.2,
         {
-          y: this.verticalSteps[2] - cubeY - 40,
+          y: verticalSteps.current[2] - cubeY - 40,
 
           ease: Power2.easeInOut,
         },
@@ -327,8 +355,8 @@ export default class CycleFeatures extends React.PureComponent {
         },
         'step3'
       )
-      .to(this.cube, 1.2, {
-        y: this.verticalSteps[3] - cubeY + 40,
+      .to(cube.current, 1.2, {
+        y: verticalSteps.current[3] - cubeY + 40,
         scale: 0.5,
         ease: Power2.easeInOut,
       })
@@ -346,80 +374,76 @@ export default class CycleFeatures extends React.PureComponent {
         display: 'inline-block',
       })
       .to('#progress', 0.3, { height: 0, ease: Power2.easeInOut })
-      .to(this.cube, 0, {}, 'step4');
+      .to(cube.current, 0, {}, 'step4');
 
-    this.animation.tweenTo('step1');
-  }
+    animation.current.tweenTo('step1');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduceAnimation]);
 
-  render() {
-    const { selectedStep } = this.state;
-    return (
-      <section aria-labelledby="be-productive">
-        <MaxWidth width={1280}>
-          <Centered horizontal>
-            <Heading id="be-productive">Be Productive, Anywhere</Heading>
-            <SubHeading>
-              We aim to give you the tools to build a full blown web
-              application. You can easily import projects from GitHub, make
-              commits, and finally deploy. We support the whole cycle.
-            </SubHeading>
-            {/*
+  return (
+    <section aria-labelledby="be-productive">
+      <MaxWidth width={1280}>
+        <Centered horizontal>
+          <Heading id="be-productive">Be Productive, Anywhere</Heading>
+          <SubHeading>
+            We aim to give you the tools to build a full blown web application.
+            You can easily import projects from GitHub, make commits, and
+            finally deploy. We support the whole cycle.
+          </SubHeading>
+          {/*
           <StepDescription>
             You can import projects on GitHub by going to
             codesandbox.io/s/github.
           </StepDescription> */}
-          </Centered>
+        </Centered>
 
-          <Flow>
-            <Steps as="ul">
-              <Step
-                selected={selectedStep >= 0}
-                i={0}
-                selectedStep={selectedStep}
-                selectStep={this.selectStep}
-                getY={this.setY}
-                Icon={GithubIcon}
-                title="Import"
-                description="Paste your GitHub URL. You get a sandbox that stays up to date with the latest changes automatically."
-              />
-              <Step
-                selected={selectedStep >= 1}
-                i={1}
-                selectedStep={selectedStep}
-                selectStep={this.selectStep}
-                getY={this.setY}
-                Icon={BuildIcon}
-                title="Build"
-                description="Fork the sandbox and start building that long awaited feature!"
-              />
-              <Step
-                selected={selectedStep >= 2}
-                i={2}
-                selectedStep={selectedStep}
-                selectStep={this.selectStep}
-                getY={this.setY}
-                Icon={CommitIcon}
-                title="Commit"
-                description="Commit your changes or open a pull request with a user friendly UI."
-              />
-              <Step
-                selected={selectedStep >= 3}
-                i={3}
-                selectedStep={selectedStep}
-                selectStep={this.selectStep}
-                getY={this.setY}
-                Icon={RocketIcon}
-                title="Deploy"
-                description="Deploy a production version of your sandbox using ZEIT's Now."
-              />
-            </Steps>
+        <Flow>
+          <Steps as="ul">
+            <Step
+              selected={selectedStep >= 0}
+              i={0}
+              selectedStep={selectedStep}
+              selectStep={selectStep}
+              getY={setY}
+              Icon={GithubIcon}
+              title="Import"
+              description="Paste your GitHub URL. You get a sandbox that stays up to date with the latest changes automatically."
+            />
+            <Step
+              selected={selectedStep >= 1}
+              i={1}
+              selectedStep={selectedStep}
+              selectStep={selectStep}
+              getY={setY}
+              Icon={BuildIcon}
+              title="Build"
+              description="Fork the sandbox and start building that long awaited feature!"
+            />
+            <Step
+              selected={selectedStep >= 2}
+              i={2}
+              selectedStep={selectedStep}
+              selectStep={selectStep}
+              getY={setY}
+              Icon={CommitIcon}
+              title="Commit"
+              description="Commit your changes or open a pull request with a user friendly UI."
+            />
+            <Step
+              selected={selectedStep >= 3}
+              i={3}
+              selectedStep={selectedStep}
+              selectStep={selectStep}
+              getY={setY}
+              Icon={RocketIcon}
+              title="Deploy"
+              description="Deploy a production version of your sandbox using ZEIT's Now."
+            />
+          </Steps>
 
+          {!reduceAnimation && (
             <CubeSteps aria-hidden>
-              <OffsettedCube
-                ref={el => {
-                  this.cube = el;
-                }}
-              >
+              <OffsettedCube ref={cube}>
                 <Cube
                   id="addition-cube"
                   noAnimation
@@ -477,9 +501,11 @@ export default class CycleFeatures extends React.PureComponent {
                 </AddressBar>
               </DeployContainer>
             </CubeSteps>
-          </Flow>
-        </MaxWidth>
-      </section>
-    );
-  }
-}
+          )}
+        </Flow>
+      </MaxWidth>
+    </section>
+  );
+};
+
+export default React.memo(CycleFeatures);

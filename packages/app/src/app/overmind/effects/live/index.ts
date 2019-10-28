@@ -131,7 +131,9 @@ export default {
     }) => {}
   ) {
     channel.onMessage = (event: any, data: any) => {
-      const disconnected = data == null && event === 'phx_error';
+      const disconnected =
+        (data == null || Object.keys(data).length === 0) &&
+        event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
 
       const _isOwnMessage = Boolean(
