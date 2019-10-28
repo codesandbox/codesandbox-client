@@ -670,4 +670,6 @@ export enum PatronBadge {
   FOURTH = 'patron-4',
 }
 
+export type LiveDisconnectReason = 'close' | 'inactivity';
+
 export type PatronTier = 1 | 2 | 3 | 4;

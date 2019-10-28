@@ -3,6 +3,7 @@ import {
   Module,
   Directory,
   Selection,
+  LiveDisconnectReason,
 } from '@codesandbox/common/lib/types';
 import { mutate, json } from 'overmind';
 import { Operator } from 'app/overmind';
@@ -400,9 +401,7 @@ export const onConnectionLoss: Operator<LiveMessage> = mutate(
 );
 
 export const onDisconnect: Operator<
-  LiveMessage<{
-    reason: 'close' | 'inactivity';
-  }>
+  LiveMessage<{ reason: LiveDisconnectReason }>
 > = mutate(({ state, actions }, { data }) => {
   actions.live.internal.disconnect();
   state.editor.currentSandbox.owned = state.live.isOwner;
