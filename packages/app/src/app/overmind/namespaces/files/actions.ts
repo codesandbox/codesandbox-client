@@ -308,7 +308,7 @@ export const massCreateModules: AsyncAction<{
   cbID?: string;
 }> = withOwnedSandbox(
   async (
-    { state, effects, actions },
+    { state, effects },
     { modules, directories, directoryShortid, cbID }
   ) => {
     const sandboxId = state.editor.currentId;
@@ -337,7 +337,7 @@ export const massCreateModules: AsyncAction<{
       }
     } catch (error) {
       if (cbID) {
-        effects.vscode.callCallbackError(cbID);
+        effects.vscode.callCallbackError(cbID, error.message);
       }
       effects.notificationToast.error('Unable to create new files');
     }

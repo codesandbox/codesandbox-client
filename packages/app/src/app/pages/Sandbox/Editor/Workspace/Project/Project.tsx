@@ -83,6 +83,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
             username={sandbox.git.username}
             repo={sandbox.git.repo}
             branch={sandbox.git.branch}
+            commitSha={sandbox.git.commitSha}
           />
         </Item>
       )}
@@ -115,7 +116,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
                         Unlisted (only available by url)
                       </option>
                     )}
-                    {!isServer && isPatron && (
+                    {isPatron && !isServer && (
                       <option value={2}>Private</option>
                     )}
                   </PrivacySelect>

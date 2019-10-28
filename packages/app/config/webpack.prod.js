@@ -6,10 +6,8 @@ const webpack = require('webpack');
 const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin;
-const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
-  .normalizeName;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { normalizeName } = require('webpack/lib/optimize/SplitChunksPlugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VERSION = require('@codesandbox/common/lib/version').default;
@@ -182,7 +180,7 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /\/vscode23/,
+          urlPattern: /\/vscode24/,
           handler: 'cacheFirst',
           options: {
             cache: {

@@ -23,15 +23,15 @@ import { client } from 'app/graphql/client';
 import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
 
 import {
-  transformSandbox,
   transformDirectory,
   transformModule,
+  transformSandbox,
 } from '../utils/sandbox';
 import apiFactory, { Api, ApiConfig } from './apiFactory';
 import {
-  SandboxAPIResponse,
-  IModuleAPIResponse,
   IDirectoryAPIResponse,
+  IModuleAPIResponse,
+  SandboxAPIResponse,
 } from './types';
 
 let api: Api;
@@ -154,7 +154,9 @@ export default {
       },
     });
   },
-  getEnvironmentVariables(sandboxId: string): Promise<EnvironmentVariable[]> {
+  getEnvironmentVariables(
+    sandboxId: string
+  ): Promise<{ [key: string]: string }> {
     return api.get(
       `/sandboxes/${sandboxId}/env`,
       {},
@@ -164,7 +166,7 @@ export default {
   saveEnvironmentVariable(
     sandboxId: string,
     environmentVariable: EnvironmentVariable
-  ): Promise<EnvironmentVariable[]> {
+  ): Promise<{ [key: string]: string }> {
     return api.post(
       `/sandboxes/${sandboxId}/env`,
       {
@@ -178,7 +180,7 @@ export default {
   deleteEnvironmentVariable(
     sandboxId: string,
     name: string
-  ): Promise<EnvironmentVariable[]> {
+  ): Promise<{ [key: string]: string }> {
     return api.delete(
       `/sandboxes/${sandboxId}/env/${name}`,
       {},
@@ -409,7 +411,10 @@ export default {
       },
     });
   },
-  updatePrivacy(sandboxId: string, privacy: 0 | 1 | 2): Promise<void> {
+  updatePrivacy(
+    sandboxId: string,
+    privacy: 0 | 1 | 2
+  ): Promise<SandboxAPIResponse> {
     return api.patch(`/sandboxes/${sandboxId}/privacy`, {
       sandbox: {
         privacy,
@@ -451,7 +456,7 @@ export default {
   },
   createTemplate(
     sandboxId: string,
-    template: CustomTemplate
+    template: { color: string; description: string; title: string }
   ): Promise<CustomTemplate> {
     return api
       .post<{ template: CustomTemplate }>(`/sandboxes/${sandboxId}/templates`, {

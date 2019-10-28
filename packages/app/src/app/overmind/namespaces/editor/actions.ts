@@ -1,4 +1,5 @@
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import { getHashedUserId } from '@codesandbox/common/lib/utils/analytics';
 import {
   EnvironmentVariable,
   ModuleCorrection,
@@ -122,7 +123,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   state.editor.isLoading = false;
 
-  effects.chameleon.loadTour(state.user && state.user.id);
+  effects.chameleon.loadTour(state.user && getHashedUserId(state.user.id));
 });
 
 export const contentMounted: Action = ({ state, effects }) => {
@@ -152,13 +153,18 @@ export const codeSaved: AsyncAction<{
   code: string;
   moduleShortid: string;
   cbID: string;
-}> = withOwnedSandbox(async ({ actions }, { code, moduleShortid, cbID }) => {
-  actions.editor.internal.saveCode({
-    code,
-    moduleShortid,
-    cbID,
-  });
-});
+}> = withOwnedSandbox(
+  async ({ actions }, { code, moduleShortid, cbID }) => {
+    actions.editor.internal.saveCode({
+      code,
+      moduleShortid,
+      cbID,
+    });
+  },
+  async ({ effects }, { cbID }) => {
+    effects.vscode.callCallbackError(cbID);
+  }
+);
 
 export const codeChanged: Action<{
   code: string;
@@ -524,14 +530,18 @@ export const previewActionReceived: Action<{
         severity: action.severity,
         type: action.type,
       };
-      const module = resolveModule(
-        error.path,
-        state.editor.currentSandbox.modules,
-        state.editor.currentSandbox.directories
-      );
+      try {
+        const module = resolveModule(
+          error.path,
+          state.editor.currentSandbox.modules,
+          state.editor.currentSandbox.directories
+        );
 
-      module.errors.push(json(error));
-      state.editor.errors.push(error);
+        module.errors.push(json(error));
+        state.editor.errors.push(error);
+      } catch (e) {
+        /* ignore, this module can be in a node_modules for example */
+      }
       break;
     }
     case 'show-correction': {
@@ -545,14 +555,18 @@ export const previewActionReceived: Action<{
         source: action.source,
         severity: action.severity,
       };
-      const module = resolveModule(
-        correction.path,
-        state.editor.currentSandbox.modules,
-        state.editor.currentSandbox.directories
-      );
+      try {
+        const module = resolveModule(
+          correction.path,
+          state.editor.currentSandbox.modules,
+          state.editor.currentSandbox.directories
+        );
 
-      state.editor.corrections.push(correction);
-      module.corrections.push(json(correction));
+        state.editor.corrections.push(correction);
+        module.corrections.push(json(correction));
+      } catch (e) {
+        /* ignore, this module can be in a node_modules for example */
+      }
       break;
     }
     case 'clear-errors': {

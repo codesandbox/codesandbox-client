@@ -51,10 +51,10 @@ function callApi(url: string, method = 'GET') {
         error.response = message;
         // @ts-ignore
         error.statusCode = response.status;
-        return Promise.reject(error);
+        throw error;
       }
 
-      return Promise.resolve(response);
+      return response;
     })
     .then(response => response.json());
 }
@@ -145,7 +145,10 @@ async function getDependencies(dependencies: Object) {
   }
 }
 
-export async function fetchDependencies(npmDependencies: Dependencies) {
+export async function fetchDependencies(
+  npmDependencies: Dependencies,
+  resolutions?: { [key: string]: string }
+) {
   if (Object.keys(npmDependencies).length !== 0) {
     // New Packager flow
 

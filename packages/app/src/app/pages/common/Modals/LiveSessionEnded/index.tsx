@@ -5,7 +5,7 @@ import React, { FunctionComponent } from 'react';
 import { Explanation, Heading } from '../elements';
 import { Container } from './elements';
 
-const LiveModeEnded: FunctionComponent = () => {
+export const LiveSessionEnded: FunctionComponent = () => {
   const {
     state: {
       editor: {
@@ -60,5 +60,3 @@ const LiveModeEnded: FunctionComponent = () => {
     </Container>
   );
 };
-
-export default LiveModeEnded;

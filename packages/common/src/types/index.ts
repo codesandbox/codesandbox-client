@@ -129,9 +129,10 @@ export type CurrentUser = {
 
 export type CustomTemplate = {
   color?: string;
-  title: string;
-  id: string;
   iconUrl?: string;
+  id: string;
+  published?: boolean;
+  title: string;
   url: string | null;
 };
 
@@ -306,7 +307,9 @@ export type Sandbox = {
   git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
-  environmentVariables: EnvironmentVariable[] | null;
+  environmentVariables: {
+    [key: string]: string;
+  } | null;
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
@@ -328,6 +331,7 @@ export type Sandbox = {
   } | null;
   version: number;
   screenshotUrl: string | null;
+  previewSecret: string | null;
 };
 
 export type PrettierConfig = {
@@ -666,5 +670,7 @@ export enum PatronBadge {
   THREE = 'patron-3',
   FOURTH = 'patron-4',
 }
+
+export type LiveDisconnectReason = 'close' | 'inactivity';
 
 export type PatronTier = 1 | 2 | 3 | 4;
