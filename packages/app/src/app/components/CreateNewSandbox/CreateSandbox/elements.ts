@@ -7,7 +7,9 @@ export const Container = styled.div`
   min-width: 870px;
   max-width: 1200px;
   height: 496px;
-  border-radius: 0.25rem;
+  overflow: hidden;
+  border: 1px solid #242424;
+  border-radius: 4px;
   background-color: #242424;
   color: #fff;
 `;
