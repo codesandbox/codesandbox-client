@@ -275,6 +275,7 @@
     "file-loader": "^1.1.11",
     "filesize": "^3.5.6",
     "fs-extra": "^8.0.1",
+    "graphql-codegen": "^0.4.0",
     "gulp-replace": "^0.5.4",
     "gzip-size": "3.0.0",
     "html-loader": "^0.5.5",
