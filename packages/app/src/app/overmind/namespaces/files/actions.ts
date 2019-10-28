@@ -197,7 +197,7 @@ export const moduleMovedToDirectory: AsyncAction<{
   moduleShortid: string;
   directoryShortid: string;
 }> = withOwnedSandbox(
-  async ({ state, effects, actions }, { moduleShortid, directoryShortid }) => {
+  async ({ state, effects }, { moduleShortid, directoryShortid }) => {
     const sandbox = state.editor.currentSandbox;
     const module = sandbox.modules.find(
       moduleItem => moduleItem.shortid === moduleShortid
@@ -492,31 +492,38 @@ export const moduleCreated: AsyncAction<{
       state.preferences.settings.prettierConfig
     );
 
-    // Optimistic open file
-    actions.editor.internal.setCurrentModule(module);
-
-    if (isNested) {
-      const syncedDirectories = await actions.files.syncDirectories({
-        directories: optimisticDirectories,
+    try {
+      const updatedModule = await effects.api.createModule(sandbox.id, {
+        ...optimisticModule,
         directoryShortid,
       });
-
-      if (!syncedDirectories) {
-        actions.editor.internal.setCurrentModule(state.editor.mainModule);
-
-        return;
-      }
-
-      module.directoryShortid = last(syncedDirectories).shortid;
-    }
-
-    try {
-      const updatedModule = await effects.api.createModule(sandbox.id, module);
 
       module.id = updatedModule.id;
       module.shortid = updatedModule.shortid;
 
+      module.directoryShortid = isNested
+        ? last(optimisticDirectories).shortid
+        : updatedModule.directoryShortid;
+
       actions.editor.internal.setCurrentModule(module);
+
+      if (isNested) {
+        const syncedDirectories = await actions.files.syncDirectories({
+          directories: optimisticDirectories,
+          directoryShortid,
+        });
+
+        if (!syncedDirectories) {
+          actions.editor.internal.setCurrentModule(state.editor.mainModule);
+
+          return;
+        }
+
+        actions.files.moduleMovedToDirectory({
+          moduleShortid: module.shortid,
+          directoryShortid: last(syncedDirectories).shortid,
+        });
+      }
 
       if (state.live.isCurrentEditor) {
         effects.live.sendModuleCreated(module);
