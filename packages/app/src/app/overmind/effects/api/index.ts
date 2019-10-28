@@ -411,7 +411,10 @@ export default {
       },
     });
   },
-  updatePrivacy(sandboxId: string, privacy: 0 | 1 | 2): Promise<void> {
+  updatePrivacy(
+    sandboxId: string,
+    privacy: 0 | 1 | 2
+  ): Promise<SandboxAPIResponse> {
     return api.patch(`/sandboxes/${sandboxId}/privacy`, {
       sandbox: {
         privacy,

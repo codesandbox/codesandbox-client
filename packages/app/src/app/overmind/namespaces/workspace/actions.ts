@@ -180,19 +180,22 @@ export const sandboxDeleted: AsyncAction = async ({
 export const sandboxPrivacyChanged: AsyncAction<{
   privacy: 0 | 1 | 2;
 }> = async ({ state, effects, actions }, { privacy }) => {
+  const oldPrivacy = state.editor.currentSandbox.privacy;
+  const sandbox = await effects.api.updatePrivacy(
+    state.editor.currentId,
+    privacy
+  );
+  state.editor.currentSandbox.privacy = privacy;
+  state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
+
   if (
     getTemplate(state.editor.currentSandbox.template).isServer &&
-    privacy === 2
+    ((oldPrivacy !== 2 && privacy === 2) || (oldPrivacy === 2 && privacy !== 2))
   ) {
-    actions.modalOpened({
-      modal: 'privacyServerWarning',
-      message: null,
-    });
+    // Privacy changed from private to unlisted/public or other way around, restart
+    // the sandbox to notify containers
+    actions.server.restartContainer();
   }
-
-  await effects.api.updatePrivacy(state.editor.currentId, privacy);
-
-  state.editor.currentSandbox.privacy = privacy;
 };
 
 export const setWorkspaceItem: Action<{

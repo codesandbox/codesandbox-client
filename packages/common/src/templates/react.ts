@@ -1,5 +1,5 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 import configurations from './configuration';
 
