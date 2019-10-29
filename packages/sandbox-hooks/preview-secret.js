@@ -23,10 +23,10 @@ export const setPreviewSecret = secret => {
   ) {
     if (secret) {
       document.cookie = `${PREVIEW_SECRET_COOKIE_NAME}=${secret}`;
+      location.reload();
     } else {
       document.cookie = `${PREVIEW_SECRET_COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
     }
-    location.reload();
   }
 };
 
