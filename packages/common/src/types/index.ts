@@ -650,3 +650,10 @@ export enum PatronBadge {
 }
 
 export type PatronTier = 1 | 2 | 3 | 4;
+
+export type SandboxFs = {
+  [path: string]: SandboxFsModule | SandboxFsDirectory;
+};
+export type SandboxFsModule = Module & { type: 'file ' };
+
+export type SandboxFsDirectory = Directory & { type: 'directory ' };

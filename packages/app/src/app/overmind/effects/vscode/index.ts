@@ -5,11 +5,13 @@ import {
   Module,
   Sandbox,
   Settings,
+  SandboxFs,
 } from '@codesandbox/common/lib/types';
 import {
   convertTypeToStatus,
   notificationState,
 } from '@codesandbox/common/lib/utils/notifications';
+import FontFaceObserver from 'fontfaceobserver';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { Reaction } from 'app/overmind';
 import prettify from 'app/src/app/utils/prettify';
@@ -17,7 +19,7 @@ import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
 import * as childProcess from 'node-services/lib/child_process';
 
-import browserFs from './browserFs';
+import fs from './fs';
 import {
   initializeCustomTheme,
   initializeExtensionsFolder,
@@ -33,7 +35,7 @@ import { Workbench } from './Workbench';
 export type VsCodeOptions = {
   getCurrentSandbox: () => Sandbox;
   getCurrentModule: () => Module;
-  getModulesByPath: () => { [path: string]: Module };
+  getSandboxFs: () => SandboxFs;
   onCodeChange: (data: OnFileChangeData) => void;
   onSelectionChange: (selection: any) => void;
   reaction: Reaction;
@@ -114,23 +116,19 @@ export class VSCodeEffect {
     const container = this.elements.editor;
 
     this.initialized = Promise.all([
+      new FontFaceObserver('dm').load(),
       new Promise(resolve => {
         loadScript(['vs/editor/codesandbox.editor.main'])(resolve);
       }),
-      browserFs.initialize({
-        onModulesByPathChange(cb) {
-          options.reaction(
-            ({ editor }) => editor.modulePaths,
-            modulesByPath => cb(modulesByPath)
-          );
-        },
-        getModulesByPath: options.getModulesByPath,
-        getState: options.getState,
+      fs.initialize({
+        getSandboxFs: options.getSandboxFs,
       }),
     ]).then(() => this.loadEditor(window.monaco, container));
 
     return this.initialized;
   }
+
+  public fs = fs;
 
   public getEditorElement(
     getCustomEditor: ICustomEditorApi['getCustomEditor']
@@ -248,6 +246,40 @@ export class VSCodeEffect {
     }
   };
 
+  public async changeSandbox(sandbox: Sandbox) {
+    await this.initialized;
+
+    if (this.modelsHandler) {
+      this.modelsHandler.dispose();
+    }
+
+    this.modelsHandler = new ModelsHandler(
+      this.editorApi,
+      this.monaco,
+      sandbox,
+      this.onFileChange
+    );
+  }
+
+  public async updateModules() {
+    await this.initialized;
+    await this.modelsHandler.updateModules();
+  }
+
+  public async openModule(module: Module) {
+    await this.initialized;
+    await this.modelsHandler.changeModule(module);
+
+    const model = getModel(this.editorApi);
+
+    this.linter.lint(
+      getCode(this.editorApi),
+      module.title,
+      model.getVersionId(),
+      this.options.getCurrentSandbox().template
+    );
+  }
+
   private async disableExtension(id: string) {
     const extensionService = await this.extensionService.promise;
     const extensionEnablementService = await this.extensionEnablementService
@@ -271,48 +303,6 @@ export class VSCodeEffect {
       nested: true,
       immediate: true,
     });
-
-    reaction(
-      state => state.editor.currentSandbox,
-      sandbox => {
-        if (this.modelsHandler) {
-          this.modelsHandler.dispose();
-        }
-
-        this.modelsHandler = new ModelsHandler(
-          this.editorApi,
-          this.monaco,
-          sandbox,
-          this.onFileChange
-        );
-      },
-      { immediate: true }
-    );
-
-    reaction(
-      state => state.editor.modulePaths,
-      () => {
-        this.modelsHandler.updateModules();
-      },
-      { immediate: true }
-    );
-
-    reaction(
-      state => state.editor.currentModule,
-      async module => {
-        await this.modelsHandler.changeModule(module);
-
-        const model = getModel(this.editorApi);
-
-        this.linter.lint(
-          getCode(this.editorApi),
-          module.title,
-          model.getVersionId(),
-          this.options.getCurrentSandbox().template
-        );
-      },
-      { immediate: true }
-    );
   }
 
   private async enableExtension(id: string) {
@@ -602,7 +592,8 @@ export class VSCodeEffect {
         this.linter.lint(
           activeEditor.getModel().getValue(),
           modulePath,
-          activeEditor.getModel().getVersionId()
+          activeEditor.getModel().getVersionId(),
+          this.options.getCurrentSandbox().template
         );
       }
 

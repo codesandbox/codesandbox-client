@@ -1,9 +1,3 @@
-import { dirname } from 'path';
-
-import {
-  getDirectoryPath,
-  getModulePath,
-} from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
@@ -17,6 +11,7 @@ import {
   Sandbox,
   Tabs,
   WindowOrientation,
+  SandboxFs,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { Derive } from 'app/overmind';
@@ -67,22 +62,7 @@ type State = {
   currentPackageJSONCode: Derive<State, string>;
   parsedConfigurations: Derive<State, any>;
   currentTab: Derive<State, ModuleTab | DiffTab>;
-  modulePaths: Derive<
-    State,
-    {
-      [path: string]: {
-        shortid: string;
-        savedCode: string;
-        type: 'file' | 'directory';
-      };
-    }
-  >;
-  modulesByPath: Derive<
-    State,
-    {
-      [path: string]: Module;
-    }
-  >;
+  modulesByPath: SandboxFs;
   isAdvancedEditor: Derive<State, boolean>;
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
   currentDevToolsPosition: {
@@ -102,6 +82,7 @@ export const state: State = {
   notFound: false,
   error: null,
   isResizing: false,
+  modulesByPath: {},
   changedModuleShortids: [],
   currentTabId: null,
   tabs: [],
@@ -143,62 +124,6 @@ export const state: State = {
         module => module.shortid === currentModuleShortid
       )) ||
     ({} as Module),
-  modulePaths: ({ currentSandbox }) => {
-    const paths = {};
-
-    if (!currentSandbox) {
-      return paths;
-    }
-
-    currentSandbox.modules.forEach(m => {
-      const path = getModulePath(
-        currentSandbox.modules,
-        currentSandbox.directories,
-        m.id
-      );
-      if (path) {
-        paths[path] = {
-          shortid: m.shortid,
-          savedCode: m.savedCode,
-          type: 'file',
-        };
-      }
-    });
-
-    currentSandbox.directories.forEach(d => {
-      const path = getDirectoryPath(
-        currentSandbox.modules,
-        currentSandbox.directories,
-        d.id
-      );
-
-      // If this is a single directory with no children
-      if (!Object.keys(paths).some(p => dirname(p) === path)) {
-        paths[path] = { shortid: d.shortid, type: 'directory' };
-      }
-    });
-
-    return paths;
-  },
-  modulesByPath: ({ currentSandbox, modulePaths }) => {
-    const modulesByPath = {};
-
-    Object.keys(modulePaths).forEach(path => {
-      const pathItem = modulePaths[path];
-
-      if (pathItem.type === 'file') {
-        modulesByPath[path] = currentSandbox.modules.find(
-          moduleItem => moduleItem.shortid === pathItem.shortid
-        );
-      } else {
-        modulesByPath[path] = currentSandbox.directories.find(
-          moduleItem => moduleItem.shortid === pathItem.shortid
-        );
-      }
-    });
-
-    return modulesByPath;
-  },
   currentTab: ({ currentTabId, currentModuleShortid, tabs }) => {
     if (currentTabId) {
       const foundTab = tabs.find(tab => 'id' in tab && tab.id === currentTabId);

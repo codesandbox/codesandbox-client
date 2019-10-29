@@ -1,14 +1,21 @@
+import { dirname } from 'path';
+
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { json } from 'overmind';
-
+import {
+  getDirectoryPath,
+  getModulePath,
+} from '@codesandbox/common/lib/sandbox/modules';
+import { SandboxFs, Module, Directory } from '@codesandbox/common/lib/types';
 import { EXTENSIONS_LOCATION } from '../constants';
 import { getTypeFetcher } from '../extensionHostWorker/common/type-downloader';
+import { writeFile, rename, rmdir, unlink, mkdir } from './utils';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
-const fs = global.BrowserFS.BFSRequire('fs');
+const browserFs = global.BrowserFS.BFSRequire('fs');
 const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
 
 let lastMTime = new Date(0);
@@ -108,18 +115,18 @@ async function syncDependencyTypings(
   }
 }
 
-function sendFiles(modulesByPath) {
+function sendSandboxFs(sandboxFs) {
   global.postMessage(
     {
       $broadcast: true,
-      $type: 'file-sync',
-      $data: json(modulesByPath),
+      $type: 'sandbox-fs',
+      $data: json(sandboxFs),
     },
     protocolAndHost()
   );
 
   try {
-    fs.stat('/sandbox/package.json', (packageJsonError, stat) => {
+    browserFs.stat('/sandbox/package.json', (packageJsonError, stat) => {
       if (packageJsonError) {
         return;
       }
@@ -127,7 +134,7 @@ function sendFiles(modulesByPath) {
       if (stat.mtime.toString() !== lastMTime.toString()) {
         lastMTime = stat.mtime;
 
-        fs.readFile(
+        browserFs.readFile(
           '/sandbox/package.json',
           async (packageJsonReadError, rv) => {
             if (packageJsonReadError) {
@@ -135,13 +142,16 @@ function sendFiles(modulesByPath) {
               return;
             }
 
-            fs.stat('/sandbox/tsconfig.json', (tsConfigError, result) => {
-              // If tsconfig exists we want to sync the types
-              syncDependencyTypings(
-                rv.toString(),
-                Boolean(tsConfigError) || !result
-              );
-            });
+            browserFs.stat(
+              '/sandbox/tsconfig.json',
+              (tsConfigError, result) => {
+                // If tsconfig exists we want to sync the types
+                syncDependencyTypings(
+                  rv.toString(),
+                  Boolean(tsConfigError) || !result
+                );
+              }
+            );
           }
         );
       }
@@ -152,19 +162,15 @@ function sendFiles(modulesByPath) {
 }
 
 export default {
-  initialize(options: {
-    onModulesByPathChange: (modulesByPath: any) => void;
-    getModulesByPath: () => any;
-    getState: any;
-  }) {
+  initialize(options: { getSandboxFs: () => SandboxFs }) {
     self.addEventListener('message', evt => {
       if (evt.data.$type === 'request-data') {
         sendTypes();
-        sendFiles(options.getModulesByPath());
+        sendSandboxFs(options.getSandboxFs());
       }
     });
 
-    options.onModulesByPathChange(sendFiles);
+    sendSandboxFs(options.getSandboxFs());
 
     return new Promise((resolve, reject) => {
       window.BrowserFS.configure(
@@ -176,11 +182,7 @@ export default {
               fs: 'CodeSandboxEditorFS',
               options: {
                 api: {
-                  getState: () => ({
-                    modulesByPath: options.getState().editor.currentSandbox
-                      ? options.getState().editor.modulesByPath
-                      : {},
-                  }),
+                  getSandboxFs: options.getSandboxFs,
                 },
               },
             },
@@ -217,5 +219,103 @@ export default {
         }
       );
     });
+  },
+
+  create(modules: Module[], directories: Directory[]): SandboxFs {
+    const paths = {};
+
+    modules.forEach(m => {
+      const path = getModulePath(modules, directories, m.id);
+      if (path) {
+        paths[path] = {
+          ...m,
+          type: 'file',
+        };
+      }
+    });
+
+    directories.forEach(d => {
+      const path = getDirectoryPath(modules, directories, d.id);
+
+      // If this is a single directory with no children
+      if (!Object.keys(paths).some(p => dirname(p) === path)) {
+        paths[path] = { ...d, type: 'directory' };
+      }
+    });
+
+    return paths;
+  },
+
+  writeFile(fs: SandboxFs, path: string, module: Module) {
+    writeFile(fs, path, module);
+    global.postMessage(
+      {
+        $broadcast: true,
+        $type: 'write-file',
+        $data: {
+          path,
+          module: json(module),
+        },
+      },
+      protocolAndHost()
+    );
+  },
+
+  rename(fs: SandboxFs, fromPath: string, toPath: string) {
+    rename(fs, fromPath, toPath);
+    global.postMessage(
+      {
+        $broadcast: true,
+        $type: 'rename',
+        $data: {
+          fromPath,
+          toPath,
+        },
+      },
+      protocolAndHost()
+    );
+  },
+
+  rmdir(fs: SandboxFs, removePath: string) {
+    rmdir(fs, removePath);
+    global.postMessage(
+      {
+        $broadcast: true,
+        $type: 'rmdir',
+        $data: {
+          removePath,
+        },
+      },
+      protocolAndHost()
+    );
+  },
+
+  unlink(fs: SandboxFs, removePath: string) {
+    unlink(fs, removePath);
+    global.postMessage(
+      {
+        $broadcast: true,
+        $type: 'unlink',
+        $data: {
+          removePath,
+        },
+      },
+      protocolAndHost()
+    );
+  },
+
+  mkdir(fs: SandboxFs, path: string, directory: Directory) {
+    mkdir(fs, path, directory);
+    global.postMessage(
+      {
+        $broadcast: true,
+        $type: 'mkdir',
+        $data: {
+          path,
+          directory: json(directory),
+        },
+      },
+      protocolAndHost()
+    );
   },
 };

@@ -53,10 +53,8 @@ export type IDirectory = IModule & {
 }
 
 export interface IManager {
-  getState: () => {
-      modulesByPath: {
-        [path: string]: IFile | IDirectory;
-      }
+  getSandboxFs: () => {
+    [path: string]: IFile | IDirectory;
   };
 }
 
@@ -123,7 +121,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
         if (opt) {
           cb();
         } else {
-          cb(new ApiError(ErrorCode.EINVAL, `Manager is invalid`));
+          cb(new ApiError(ErrorCode.EINVAL, 'Manager is invalid'));
         }
       },
     },
@@ -168,15 +166,15 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public empty(mainCb: BFSOneArgCallback): void {
-    throw new Error("Empty not supported");
+    throw new Error('Empty not supported');
   }
 
   public renameSync(oldPath: string, newPath: string) {
-    throw new Error("Rename not supported");
+    throw new Error('Rename not supported');
   }
 
   public statSync(p: string, isLstate: boolean): Stats {
-    const modules = this.api.getState().modulesByPath;
+    const modules = this.api.getSandboxFs();
     const moduleInfo = modules[p];
 
     if (!moduleInfo) {
@@ -199,7 +197,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
         +new Date(),
         +new Date(moduleInfo.updatedAt),
         +new Date(moduleInfo.insertedAt)
-      )
+      );
     } else {
       return new Stats(
         FileType.FILE,
@@ -213,11 +211,11 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public createFileSync(p: string, flag: FileFlag, mode: number): File {
-    throw new Error("Create file not supported");
+    throw new Error('Create file not supported');
   }
 
   public open(p: string, flag: FileFlag, mode: number, cb: BFSCallback<File>): void {
-    const moduleInfo = this.api.getState().modulesByPath[p];
+    const moduleInfo = this.api.getSandboxFs()[p];
 
     if (!moduleInfo) {
       cb(ApiError.ENOENT(p));
@@ -254,7 +252,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public openFileSync(p: string, flag: FileFlag, mode: number): File {
-    const moduleInfo = this.api.getState().modulesByPath[p];
+    const moduleInfo = this.api.getSandboxFs()[p];
 
     if (!moduleInfo) {
       throw ApiError.ENOENT(p);
@@ -286,7 +284,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public readdirSync(path: string): string[] {
-    const paths = Object.keys(this.api.getState().modulesByPath);
+    const paths = Object.keys(this.api.getSandboxFs());
 
     const p = path.endsWith('/') ? path : path + '/';
 

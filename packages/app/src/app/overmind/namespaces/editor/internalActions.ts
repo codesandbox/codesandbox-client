@@ -15,6 +15,7 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -83,27 +84,16 @@ export const saveCode: AsyncAction<{
     return;
   }
 
-  if (state.preferences.settings.experimentVSCode) {
-    await actions.editor.codeChanged({
-      code,
-      moduleShortid,
-    });
-  } else if (state.preferences.settings.prettifyOnSaveEnabled) {
-    try {
-      effects.analytics.track('Prettify Code');
-      const prettifiedCode = await effects.prettyfier.prettify(
-        module.id,
-        module.title,
-        code
-      );
+  await actions.editor.codeChanged({
+    code,
+    moduleShortid,
+  });
 
-      actions.editor.internal.setModuleCode({ module, code: prettifiedCode });
-    } catch (error) {
-      effects.notificationToast.error(
-        'Could not prettify code, probably invalid JSON in sandbox .prettierrc file'
-      );
-    }
-  }
+  effects.vscode.fs.writeFile(
+    state.editor.modulesByPath,
+    getModulePath(sandbox.modules, sandbox.directories, module.id),
+    module
+  );
 
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);

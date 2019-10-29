@@ -1,4 +1,5 @@
-import { FileSystemConfiguration } from '../../../../../../../standalone-packages/codesandbox-browserfs';
+import { writeFile, rename, rmdir, unlink, mkdir } from '../../fs/utils';
+import { FileSystemConfiguration } from '../../../../../../../../../standalone-packages/codesandbox-browserfs';
 import { getTypeFetcher } from './type-downloader';
 import { EXTENSIONS_LOCATION } from '../../constants';
 
@@ -49,7 +50,7 @@ export async function initializeBrowserFS({
 } = {}) {
   return new Promise(async resolve => {
     const config = { ...BROWSER_FS_CONFIG };
-    let modulesByPath = {};
+    let currentSandboxFs = {};
 
     if (syncSandbox) {
       if (syncTypes) {
@@ -65,9 +66,7 @@ export async function initializeBrowserFS({
         fs: 'CodeSandboxEditorFS',
         options: {
           api: {
-            getState: () => ({
-              modulesByPath,
-            }),
+            getSandboxFs: () => currentSandboxFs,
           },
         },
       };
@@ -84,12 +83,42 @@ export async function initializeBrowserFS({
 
       if (syncSandbox) {
         self.addEventListener('message', evt => {
-          if (evt.data.$type === 'file-sync') {
-            modulesByPath = evt.data.$data;
+          switch (evt.data.$type) {
+            case 'sandbox-fs': {
+              currentSandboxFs = evt.data.$data;
 
-            if (!resolved) {
-              resolve();
-              resolved = true;
+              console.log('HEEEEEY', currentSandboxFs);
+
+              if (!resolved) {
+                resolve();
+                resolved = true;
+              }
+              break;
+            }
+            case 'writeFile': {
+              const { path, module } = evt.data.$data;
+              writeFile(currentSandboxFs, path, module);
+              break;
+            }
+            case 'rename': {
+              const { fromPath, toPath } = evt.data.$data;
+              rename(currentSandboxFs, fromPath, toPath);
+              break;
+            }
+            case 'rmdir': {
+              const { removePath } = evt.data.$data;
+              rmdir(currentSandboxFs, removePath);
+              break;
+            }
+            case 'unlink': {
+              const { removePath } = evt.data.$data;
+              unlink(currentSandboxFs, removePath);
+              break;
+            }
+            case 'mkdir': {
+              const { path, directory } = evt.data.$data;
+              mkdir(currentSandboxFs, path, directory);
+              break;
             }
           }
         });

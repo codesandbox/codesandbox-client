@@ -21,9 +21,6 @@ export const onInitialize: OnInitialize = async (
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
     },
-    getModulesByPath() {
-      return state.editor.modulesByPath;
-    },
   });
 
   effects.notifications.initialize({
@@ -63,48 +60,12 @@ export const onInitialize: OnInitialize = async (
     },
   });
 
-  /*
-sendTransforms={operation => {
-    
-                }}
-                onCodeReceived={actions.live.onCodeReceived}
-                onSelectionChanged={actions.live.onSelectionChanged}
-                onNpmDependencyAdded={name => {
-                  if (sandbox.owned) {
-                    actions.editor.addNpmDependency({ name, isDev: true });
-                  }
-                }}
-                onChange={(code, moduleShortid) =>
-                  actions.editor.codeChanged({
-                    code,
-                    moduleShortid: moduleShortid || currentModule.shortid,
-                    noLive: true,
-                  })
-                }
-                onModuleChange={moduleId =>
-                  actions.editor.moduleSelected({ id: moduleId })
-                }
-                onModuleStateMismatch={actions.live.onModuleStateMismatch}
-                onSave={code =>
-                  actions.editor.codeSaved({
-                    code,
-                    moduleShortid: currentModule.shortid,
-                    cbID: null,
-                  })
-                }
-      */
-
-  /*
-    When VSCode is running from within effect we can call an action here
-    instead which manages the state to optimally load up and show the editor,
-    not blocking anything else
-  */
   effects.vscode.initialize({
     getCurrentSandbox: () => state.editor.currentSandbox,
     getCurrentModule: () => state.editor.currentModule,
-    getModulesByPath: () => state.editor.modulesByPath,
+    getSandboxFs: () => state.editor.modulesByPath,
     onCodeChange: actions.editor.codeChanged,
-    onSelectionChange: () => {},
+    onSelectionChange: actions.live.onSelectionChanged,
     reaction: overmindInstance.reaction,
     getState: path =>
       path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,

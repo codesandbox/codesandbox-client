@@ -103,6 +103,11 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     } else {
       actions.internal.setCurrentSandbox(sandbox);
     }
+
+    state.editor.modulesByPath = effects.vscode.fs.create(
+      sandbox.modules,
+      sandbox.directories
+    );
   } catch (error) {
     state.editor.notFound = true;
     state.editor.error = error.message;
@@ -117,6 +122,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   if (sandbox.owned && !state.live.isLive) {
     actions.files.internal.recoverFiles();
   }
+
+  await effects.vscode.changeSandbox(sandbox);
+  effects.vscode.openModule(state.editor.currentModule);
 
   state.editor.isLoading = false;
 });
@@ -309,6 +317,8 @@ export const moduleSelected: Action<{
     }
 
     actions.editor.internal.setCurrentModule(module);
+
+    effects.vscode.openModule(module);
 
     if (state.live.isLive) {
       /*
