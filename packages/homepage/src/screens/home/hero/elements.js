@@ -15,10 +15,9 @@ export const SignUp = styled.p`
 `;
 
 export const ImageWrapper = styled.div`
-  box-shadow: 0 -8px 120px #1d1d1d;
-
   img {
     display: block;
+    box-shadow: 0 -8px 120px #1d1d1d;
   }
 `;
 
