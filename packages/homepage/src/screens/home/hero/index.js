@@ -7,7 +7,7 @@ import { HeroWrapper, SignUp, ImageWrapper, Border } from './elements';
 
 export default () => (
   <HeroWrapper>
-    <H2 as="h1">CodeSandbox</H2>
+    <H2 as="h1"> Web Development, Accelerated </H2>
     <P
       small
       css={`
