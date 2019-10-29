@@ -8,7 +8,7 @@ import { Import } from './Import';
 import { Container, Tabs, Tab, TabContent } from './elements';
 
 export const CreateSandbox: React.FC = props => {
-  const tab = useTabState({ orientation: 'vertical', selectedId: 'Explore' });
+  const tab = useTabState({ orientation: 'vertical', selectedId: 'Create' });
 
   return (
     <Container {...props}>

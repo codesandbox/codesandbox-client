@@ -20,14 +20,12 @@ export const ActionButton = styled(Button)`
 
 export const Container = styled(Link)`
   display: inline-flex;
-  width: 290px;
   padding: 0.5rem;
   margin: 0;
   border: none;
   box-shadow: 0px 1px 0px #242424;
   background: none;
   cursor: pointer;
-  margin-bottom: 1rem;
   text-decoration: none;
 
   &:focus,
