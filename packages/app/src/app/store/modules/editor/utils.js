@@ -1,15 +1,19 @@
-import { useOvermind } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-export function saveAllModules() {
-  const {
-    state: {
-      editor: { currentSandbox, changeModuleShortids, changedModuleShortids },
-    },
-    actions: {
-      editor: { codeSaved, saveClicked },
-    }
-  } = useOvermind();
+export function saveAllModules(
+  currentSandbox,
+  changedModuleShortids,
+  codeSaved,
+  saveClicked
+) {
+  // const {
+  //   state: {
+  //     editor: { currentSandbox, changedModuleShortids },
+  //   },
+  //   actions: {
+  //     editor: { codeSaved, saveClicked },
+  //   }
+  // } = useOvermind();
   const sandbox = currentSandbox;
 
   track('Save Modified Modules');

@@ -13,14 +13,20 @@ import { EntryContainer } from '../elements';
 import { Title, Dir, CrossIconContainer } from './elements';
 import SaveIcon from './SaveIcon';
 
-const OpenedTabs = React.FunctionComponent = () => {
+const OpenedTabs: React.FunctionComponent = () => {
   const {
     state: {
-      editor: { currentSandbox, currentModuleShortid, tabs, isAllModulesSynced },
+      editor: {
+        currentSandbox,
+        currentModuleShortid,
+        changedModuleShortIds,
+        tabs,
+        isAllModulesSynced,
+      },
     },
     actions: {
-      editor: { moduleSelected, tabClosed },
-    }
+      editor: { moduleSelected, tabClosed, codeSaved, saveClicked },
+    },
   } = userOvermind();
 
   const sandbox = currentSandbox;
@@ -32,7 +38,7 @@ const OpenedTabs = React.FunctionComponent = () => {
   const openModules = tabs
     .map(t => moduleObject[t.moduleShortid])
     .filter(x => x);
-  
+
   return (
     <WorkspaceItem
       title="Open Tabs"
@@ -44,7 +50,12 @@ const OpenedTabs = React.FunctionComponent = () => {
               e.preventDefault();
               e.stopPropagation();
             }
-            saveAllModules();
+            saveAllModules(
+              currentSandbox,
+              changedModuleShortIds,
+              codeSaved,
+              saveClicked
+            );
           }}
         />
       }
