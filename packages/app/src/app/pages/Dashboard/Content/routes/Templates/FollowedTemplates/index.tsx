@@ -11,7 +11,7 @@ import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { LIST_FOLLOWED_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 // @ts-ignore
-import { unfollowTemplate } from './mutations.gql';
+import { unbookmarkTemplatee } from './mutations.gql';
 import { ButtonContainer } from './elements';
 
 import { Container, Grid, EmptyTitle } from '../elements';
@@ -23,8 +23,8 @@ export const FollowedTemplates = props => {
 
   const { loading, error, data } = useQuery(LIST_FOLLOWED_TEMPLATES);
   const client = useApolloClient();
-  const [unfollow] = useMutation<any, any>(unfollowTemplate, {
-    onCompleted({ unfollowTemplate: unfollowMutation }) {
+  const [unfollow] = useMutation<any, any>(unbookmarkTemplatee, {
+    onCompleted({ unbookmarkTemplate: unfollowMutation }) {
       const newTemplates = data.me.followedTemplates.filter(
         template => template.id !== unfollowMutation.id
       );

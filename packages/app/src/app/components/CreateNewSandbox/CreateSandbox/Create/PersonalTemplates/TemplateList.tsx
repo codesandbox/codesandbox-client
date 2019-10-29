@@ -4,7 +4,7 @@ import { SubHeader, Grid } from '../elements';
 
 // TODO: better typings
 interface ITemplateListProps {
-  templates: { sandbox?: unknown; id: string; template: unknown }[];
+  templates: { sandbox?: unknown; id: string }[];
   title: string;
 }
 

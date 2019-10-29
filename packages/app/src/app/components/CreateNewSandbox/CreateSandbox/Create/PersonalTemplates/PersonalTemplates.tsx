@@ -1,34 +1,37 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
+import {
+  ListTemplatesQuery,
+  ListFollowedTemplatesQuery,
+  ListFollowedTemplatesQueryVariables,
+  ListTemplatesQueryVariables,
+} from 'app/graphql/types';
 import { Loader } from '../../Loader/index';
 // @ts-ignore
 import { ListFollowedTemplates, ListTemplates } from '../../queries.gql';
 import { TemplateList } from './TemplateList';
 
-// Would be good to actually have this interface filled out
-// Would be better if we could generate types from our GraphQL server
-interface ListTemplatesResponse {
-  me?: any;
-}
-
 export const PersonalTemplates = () => {
-  const { data: mine = {}, error: mineError } = useQuery<ListTemplatesResponse>(
-    ListTemplates,
-    {
-      variables: { showAll: true },
-      fetchPolicy: 'cache-and-network',
-    }
-  );
-  const { data: followed = {}, error: followedError } = useQuery<
-    ListTemplatesResponse
+  const { data: mine, error: mineError } = useQuery<
+    ListTemplatesQuery,
+    ListTemplatesQueryVariables
+  >(ListTemplates, {
+    variables: { showAll: true, teamId: undefined },
+    fetchPolicy: 'cache-and-network',
+  });
+  const { data: followed, error: followedError } = useQuery<
+    ListFollowedTemplatesQuery,
+    ListFollowedTemplatesQueryVariables
   >(ListFollowedTemplates, {
     variables: { showAll: true },
     fetchPolicy: 'cache-and-network',
   });
 
   const done =
-    (mine.me &&
+    (mine &&
+      mine.me &&
       mine.me.templates &&
+      followed &&
       followed.me &&
       followed.me.bookmarkedTemplates) ||
     followedError ||

@@ -4,6 +4,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "baseUrl": "./",
+    "typeRoots": ["./src/app/graphql"],
     "paths": {
       "app/*": ["./src/app/*"],
       "embed/*": ["./src/embed/*"],

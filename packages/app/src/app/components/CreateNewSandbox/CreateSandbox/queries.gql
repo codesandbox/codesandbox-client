@@ -25,9 +25,9 @@ fragment Sandbox on Sandbox {
 }
 
 fragment Template on Template {
+  id
   color
   iconUrl
-  id
   published
   sandbox {
     ...Sandbox
@@ -52,9 +52,9 @@ query ListFollowedTemplates {
 query ListTemplates($teamId: ID, $showAll: Boolean) {
   me {
     templates(teamId: $teamId, showAll: $showAll) {
+      id
       color
       iconUrl
-      id
       published
       sandbox {
         ...Sandbox

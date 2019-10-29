@@ -1,9 +1,18 @@
 import React from 'react';
 import { client } from 'app/graphql/client';
 import { useMutation, useQuery } from '@apollo/react-hooks';
+import {
+  BookmarkTemplateFromCardMutation,
+  BookmarkTemplateFromCardMutationVariables,
+  UnbookmarkTemplateFromCardMutation,
+  UnbookmarkTemplateFromCardMutationVariables,
+  IsBookmarkedQuery,
+} from 'app/graphql/types';
 import { ActionButton } from './elements';
-// @ts-ignore
-import { bookmarkTemplate, unbookmarkTemplate } from './mutations.gql';
+import {
+  bookmarkTemplateFromCard,
+  unbookmarkTemplateFromCard,
+} from './mutations.gql';
 // @ts-ignore
 import { isBookmarked } from './queries.gql';
 
@@ -13,7 +22,7 @@ interface IActionButtons {
 }
 
 export const ActionButtons = ({ sandboxID, id }: IActionButtons) => {
-  const { data, loading, error } = useQuery(isBookmarked, {
+  const { data, loading, error } = useQuery<IsBookmarkedQuery>(isBookmarked, {
     variables: { id: sandboxID },
   });
   const config = {
@@ -22,8 +31,14 @@ export const ActionButtons = ({ sandboxID, id }: IActionButtons) => {
     },
     update: () => client.resetStore(),
   };
-  const [follow] = useMutation<any, any>(bookmarkTemplate, config);
-  const [unfollow] = useMutation<any, any>(unbookmarkTemplate, config);
+  const [follow] = useMutation<
+    BookmarkTemplateFromCardMutation,
+    BookmarkTemplateFromCardMutationVariables
+  >(bookmarkTemplateFromCard, config);
+  const [unfollow] = useMutation<
+    UnbookmarkTemplateFromCardMutation,
+    UnbookmarkTemplateFromCardMutationVariables
+  >(unbookmarkTemplateFromCard, config);
 
   if (loading || error || !data.sandbox) return null;
   const userBookmarked = data.sandbox.customTemplate.bookmarked.find(

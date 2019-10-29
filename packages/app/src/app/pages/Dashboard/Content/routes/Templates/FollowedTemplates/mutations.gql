@@ -1,5 +1,5 @@
-mutation unfollowTemplate($template: ID!, $team: ID) {
-  followTemplate(templateId: $template, teamId: $team) {
+mutation unbookmarkTemplatee($template: ID!, $team: ID) {
+  unbookmarkTemplate(templateId: $template, teamId: $team) {
     id
     bookmarked {
       isBookmarked
