@@ -40,8 +40,10 @@ import {
 } from '@codesandbox/common/lib/sandbox/modules';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
+import SplitPane from '../SplitPane';
 
-import { Container, Tabs, Split } from './elements';
+// import { Container, Tabs, Split } from './elements';
+import { Container, Tabs } from './elements';
 
 type Props = {
   showEditor: boolean;
@@ -62,7 +64,6 @@ type Props = {
   setCurrentModule: (moduleId: string) => void;
   useCodeMirror: boolean;
   enableEslint: boolean;
-  editorSize: number;
   highlightedLines: number[];
   forceRefresh: boolean;
   expandDevTools: boolean;
@@ -380,7 +381,6 @@ export default class Content extends React.PureComponent<Props, State> {
       previewWindow,
       currentModule,
       hideNavigation,
-      editorSize,
       expandDevTools,
       verticalMode,
     } = this.props;
@@ -459,16 +459,19 @@ export default class Content extends React.PureComponent<Props, State> {
       actions: [],
     };
 
+    let defaultSplit = '50%';
+    if (showEditor && !showPreview) defaultSplit = '100%';
+    if (showPreview && !showEditor) defaultSplit = '0%';
+
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
-        {showEditor && (
-          // @ts-ignore
-          <Split
-            show={showEditor}
-            only={showEditor && !showPreview}
-            size={editorSize}
-            verticalMode={verticalMode}
-          >
+        <SplitPane
+          split={verticalMode ? 'horizontal' : 'vertical'}
+          defaultSize={defaultSplit}
+          minSize="0%"
+          maxSize="100%"
+        >
+          <>
             <Tabs>
               {this.state.tabs.map((module, i) => {
                 const tabsWithSameName = this.state.tabs.filter(
@@ -534,17 +537,8 @@ export default class Content extends React.PureComponent<Props, State> {
                 highlightedLines={this.props.highlightedLines}
               />
             </div>
-          </Split>
-        )}
-
-        {showPreview && (
-          // @ts-ignore
-          <Split
-            show={showPreview}
-            only={showPreview && !showEditor}
-            size={100 - editorSize}
-            verticalMode={verticalMode}
-          >
+          </>
+          <>
             {!this.state.running ? (
               <RunOnClick onClick={() => this.setState({ running: true })} />
             ) : (
@@ -581,8 +575,8 @@ export default class Content extends React.PureComponent<Props, State> {
                 ))}
               </div>
             )}
-          </Split>
-        )}
+          </>
+        </SplitPane>
       </Container>
     );
   }

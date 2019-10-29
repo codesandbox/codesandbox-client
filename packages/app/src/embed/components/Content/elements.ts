@@ -32,27 +32,3 @@ export const Tabs = styled.div`
     color: white !important;
   }
 `;
-
-export const Split = styled.div<{
-  verticalMode?: boolean;
-  show?: boolean;
-  only?: boolean;
-  size?: number;
-}>`
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  ${props =>
-    (props.verticalMode ? 'height: ' : 'width: ') +
-    (props.show ? `${props.size}%` : '0px')};
-
-  ${props =>
-    (props.verticalMode ? 'max-height: ' : 'max-width: ') +
-    (props.only ? '100%' : `${props.size}%`)};
-
-  ${props =>
-    (props.verticalMode ? 'min-height: ' : 'min-width: ') +
-    (props.only ? '100%' : `${props.size}%`)};
-
-  height: 100%;
-`;
