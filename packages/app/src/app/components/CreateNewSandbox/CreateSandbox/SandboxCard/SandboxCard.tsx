@@ -1,8 +1,9 @@
 import React from 'react';
-import { LightIcons, DarkIcons } from '@codesandbox/template-icons';
+import { LightIcons, DarkIcons, Icons } from '@codesandbox/template-icons';
 import history from 'app/utils/history';
 import getLightIcons from '@codesandbox/common/lib/templates/iconsLight';
 import getDarkIcons from '@codesandbox/common/lib/templates/iconsDark';
+import getColorIcons from '@codesandbox/common/lib/templates/icons';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { getContrastYIQ } from '@codesandbox/common/lib/utils';
 import { useOvermind } from 'app/overmind';
@@ -43,18 +44,18 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
 
   if (getContrastYIQ(template.color) >= 128) {
     UserIcon =
-      template.iconUrl && DarkIcons[template.iconUrl]
-        ? DarkIcons[template.iconUrl]
-        : getDarkIcons((source || {}).template);
+      template.iconUrl && Icons[template.iconUrl]
+        ? Icons[template.iconUrl]
+        : getColorIcons((source || {}).template);
 
-    OfficialIcon = getDarkIcons(template.name);
+    OfficialIcon = getColorIcons(template.name);
   } else {
     UserIcon =
-      template.iconUrl && LightIcons[template.iconUrl]
-        ? LightIcons[template.iconUrl]
-        : getLightIcons((source || {}).template);
+      template.iconUrl && Icons[template.iconUrl]
+        ? Icons[template.iconUrl]
+        : getColorIcons((source || {}).template);
 
-    OfficialIcon = getLightIcons(template.name);
+    OfficialIcon = getColorIcons(template.name);
   }
 
   const { actions } = useOvermind();
@@ -62,6 +63,8 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
     template.niceName || template.sandbox.title || template.sandbox.id;
   const url = sandboxUrl({
     id: official ? template.shortid : sandboxID,
+    alias: null, // TODO: give alias
+    git: null,
   });
 
   const openSandbox = (openNewWindow = false) => {
@@ -111,7 +114,7 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
           </Row>
           <Row>
             <Environment>{template.name || source.template}</Environment>
-            <Author>By: {author.username || 'CodeSandbox'}</Author>
+            <Author>By {author.username || 'CodeSandbox'}</Author>
           </Row>
         </Details>
       </Container>

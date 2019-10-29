@@ -4,14 +4,14 @@ import { Link } from '@codesandbox/common/lib/components/Link';
 
 export const ActionButton = styled(Button)`
   background: #151515;
-  border: 1px solid #ffffff;
+  border: 1px solid #0971f1;
   box-sizing: border-box;
   border-radius: 2px;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 9px;
   text-align: right;
-  padding: 0 0.25rem !important;
-  color: #ffffff;
+  padding: 0 0.125rem !important;
+  color: #0971f1;
   position: relative;
   z-index: 99;
   transition: opacity 500ms ease;
@@ -30,6 +30,7 @@ export const Container = styled(Link)`
   margin-bottom: 1rem;
   text-decoration: none;
 
+  &:focus,
   &:hover {
     ${ActionButton} {
       opacity: 1;
@@ -46,7 +47,7 @@ export const Icon = styled.div<{ color: string }>`
     width: 2rem;
     height: 2rem;
     border-radius: 2px;
-    background-color: ${color};
+    /* background-color: ${color}; */
   `}
 `;
 
@@ -60,12 +61,15 @@ export const Details = styled.div`
 export const Row = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 export const Title = styled.span`
   padding: 0;
   margin: 0;
   color: #fff;
+  font-weight: 600;
+  margin-bottom: 0.125rem;
   font-size: 13px;
   line-height: 1rem;
   max-width: 155px;

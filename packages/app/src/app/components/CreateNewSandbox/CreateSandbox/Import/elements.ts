@@ -131,6 +131,7 @@ export const PlaceHolderLink = styled.span<{ error: string }>`
 `;
 
 export const ImportChoices = styled.div`
+  transition: 0.3s ease color;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 60px;
@@ -138,14 +139,19 @@ export const ImportChoices = styled.div`
   font-family: Inter;
   font-size: 16px;
   margin-bottom: 4rem;
-
-  color: #ffffff;
+  color: #757575;
 
   a {
-    color: #ffffff;
+    transition: 0.3s ease color;
+    color: #757575;
     display: flex;
     align-items: center;
     text-decoration: none;
+
+    &:hover,
+    &:focus {
+      color: white;
+    }
   }
 
   svg {

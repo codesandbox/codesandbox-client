@@ -137,7 +137,7 @@ export const Import = () => {
         </a>
         <a href="/docs/importing#define-api">
           <DownloadIcon />
-          CLI Documentation
+          API Documentation
         </a>
       </ImportChoices>
     </>

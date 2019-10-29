@@ -12,6 +12,8 @@ export const Container = styled.div`
   border-radius: 4px;
   background-color: #242424;
   color: #fff;
+
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.24);
 `;
 
 export const Tabs = styled(TabList)`
@@ -38,6 +40,10 @@ export const Tab = styled(BaseTab)`
     background: #151515;
   }
 
+  &:focus {
+    outline: none;
+  }
+
   svg {
     margin-right: 0.5rem;
   }
@@ -48,6 +54,9 @@ export const TabContent = styled(TabPanel)`
   grid-template-rows: min-content auto;
   background: #151515;
   max-height: 496px;
+  border-left: 1px solid #040404;
+
+  outline: none;
 `;
 
 export const Header = styled.header`

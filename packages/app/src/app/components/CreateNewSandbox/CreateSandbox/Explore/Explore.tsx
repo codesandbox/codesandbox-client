@@ -122,7 +122,7 @@ export const Explore = () => {
             <SubHeader
               css={`
                 text-align: center;
-                margin-top: 2rem;
+                margin-top: 10rem;
               `}
             >
               There are no templates matching your search.

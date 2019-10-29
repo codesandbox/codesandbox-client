@@ -31,10 +31,10 @@ export const Search = styled.input`
   border: 1px solid #040404;
   box-sizing: border-box;
   border-radius: 2px;
-  padding: 0.5rem;
+  padding: 0.25rem;
   padding-left: 30px;
   padding-right: 1.5rem;
-  min-width: 286px;
+  min-width: 14rem;
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -48,7 +48,7 @@ export const Search = styled.input`
   transition: width 1s ease, border-color 200ms ease;
 
   &:focus {
-    border-color: #ffffff;
+    border-color: #757575;
     ${svg(true)}
   }
 
@@ -74,7 +74,7 @@ export const Categories = styled.select`
   border: 1px solid #040404;
   box-sizing: border-box;
   border-radius: 2px;
-  padding: 0.5rem;
+  padding: 0.25rem;
   padding-right: 1rem;
   font-style: normal;
   font-weight: 500;
@@ -103,8 +103,8 @@ export const InputWrapper = styled.div`
     background-image: url("data:image/svg+xml,%3Csvg width='13' height='12' viewBox='0 0 13 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1.20227' y='0.375' width='11.2083' height='11.25' rx='0.375' stroke='%23757575' stroke-width='0.75'/%3E%3Cpath d='M8.00501 2.71875H7.37219L5.4386 9.90234H6.07141L8.00501 2.71875Z' fill='%23757575'/%3E%3C/svg%3E%0A");
     width: 13px;
     height: 13px;
-    top: 9px;
-    right: 0.25rem;
+    top: 5px;
+    right: 0.5rem;
     position: absolute;
     background-repeat: no-repeat;
   }

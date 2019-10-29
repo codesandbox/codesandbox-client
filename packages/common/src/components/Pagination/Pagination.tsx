@@ -62,6 +62,10 @@ export const Pagination: React.FC<IPaginationProps> = ({
   const [currentPage, setCurrentPage] = useState(initial);
 
   const fetchPageNumbers = () => {
+    if (pages <= 0) {
+      return [];
+    }
+
     const middle = clamp(currentPage, neighbors + 1, pages - neighbors);
     const start = Math.max(1, middle - neighbors);
     const end = Math.min(pages, middle + neighbors);

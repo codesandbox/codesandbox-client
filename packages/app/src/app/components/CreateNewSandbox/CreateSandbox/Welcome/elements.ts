@@ -32,7 +32,7 @@ export const FeatureName = styled.h3`
 `;
 
 export const FeatureText = styled.p`
-  font-weight: 500;
+  font-weight: 400;
   font-size: 13px;
   line-height: 1.5;
   margin-top: 0.5rem;

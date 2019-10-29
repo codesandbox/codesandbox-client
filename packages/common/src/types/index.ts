@@ -617,9 +617,9 @@ export type UploadedFilesInfo = {
 };
 
 export type SandboxUrlSourceData = {
-  id?: string;
-  alias?: string;
-  git?: GitInfo;
+  id: string;
+  alias: string | null;
+  git: GitInfo | null;
 };
 
 export type DevToolsTabPosition = {
