@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import Button from '../../../components/Button';
 import hero from '../../../assets/images/hero.png';
 import { H2, P } from '../../../components/Typography';
-import { HeroWrapper, SignUp } from './elements';
+import { HeroWrapper, SignUp, ImageWrapper, Border } from './elements';
 
 export default () => (
   <HeroWrapper>
@@ -18,15 +18,18 @@ export default () => (
     </P>
     <Button href="/s">Create a Sandbox, it’s free</Button>
     <SignUp>No signup required</SignUp>
-    <motion.img
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.4,
-        ease: 'easeInOut',
-      }}
-      src={hero}
-      alt="browser showing codesandbox running"
-    />
+    <ImageWrapper>
+      <motion.img
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.4,
+          ease: 'easeInOut',
+        }}
+        src={hero}
+        alt="browser showing codesandbox running"
+      />
+      <Border />
+    </ImageWrapper>
   </HeroWrapper>
 );
