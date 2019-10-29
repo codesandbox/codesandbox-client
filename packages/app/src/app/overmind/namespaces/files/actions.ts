@@ -1,4 +1,7 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import {
+  getModulePath,
+  getDirectoryPath,
+} from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
 import { AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
@@ -6,6 +9,7 @@ import { createOptimisticModule } from 'app/overmind/utils/common';
 import { INormalizedModules } from 'codesandbox-import-util-types';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 
+import { Module } from '@codesandbox/common/lib/types';
 import {
   resolveDirectoryWrapped,
   resolveModuleWrapped,
@@ -17,45 +21,46 @@ export const internal = internalActions;
 export const moduleRenamed: AsyncAction<{
   title: string;
   moduleShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, effects, actions }, { title, moduleShortid }) => {
-    const sandbox = state.editor.currentSandbox;
-    const module = sandbox.modules.find(
-      moduleItem => moduleItem.shortid === moduleShortid
-    );
+}> = withOwnedSandbox(async ({ state, effects }, { title, moduleShortid }) => {
+  const sandbox = state.editor.currentSandbox;
+  const module = sandbox.modules.find(
+    moduleItem => moduleItem.shortid === moduleShortid
+  );
 
-    if (!module) {
-      return;
-    }
-
-    const oldTitle = module.title;
-
-    module.title = title;
-
-    effects.vscode.updateModules();
-
-    try {
-      await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
-
-      if (state.live.isCurrentEditor) {
-        effects.live.sendModuleUpdate(module);
-      }
-    } catch (error) {
-      module.title = oldTitle;
-      effects.vscode.updateModules();
-      effects.notificationToast.error('Could not rename file');
-    }
+  if (!module) {
+    return;
   }
-);
+
+  const oldTitle = module.title;
+  const oldPath = module.path;
+
+  module.title = title;
+  module.path = getModulePath(sandbox.modules, sandbox.directories, module.id);
+
+  effects.vscode.fs.rename(state.editor.modulesByPath, oldPath, module.path);
+
+  try {
+    await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
+
+    if (state.live.isCurrentEditor) {
+      effects.live.sendModuleUpdate(module);
+    }
+  } catch (error) {
+    module.title = oldTitle;
+    state.editor.modulesByPath = effects.vscode.fs.reset(sandbox);
+    effects.notificationToast.error('Could not rename file');
+  }
+});
 
 export const directoryCreated: AsyncAction<{
   title: string;
   directoryShortid: string;
 }> = withOwnedSandbox(
-  async ({ state, effects, actions }, { title, directoryShortid }) => {
+  async ({ state, effects }, { title, directoryShortid }) => {
     const sandbox = state.editor.currentSandbox;
+    const optimisticId = effects.utils.createOptimisticId();
     const optimisticDirectory = {
-      id: effects.utils.createOptimisticId(),
+      id: optimisticId,
       title,
       directoryShortid,
       shortid: effects.utils.createOptimisticId(),
@@ -63,9 +68,15 @@ export const directoryCreated: AsyncAction<{
       insertedAt: new Date().toString(),
       updatedAt: new Date().toString(),
       type: 'directory' as 'directory',
+      path: getDirectoryPath(
+        sandbox.modules,
+        sandbox.directories,
+        optimisticId
+      ),
     };
 
     sandbox.directories.push(optimisticDirectory);
+    effects.vscode.fs.mkdir(state.editor.modulesByPath, optimisticDirectory);
 
     try {
       const newDirectory = await effects.api.createDirectory(
@@ -82,8 +93,6 @@ export const directoryCreated: AsyncAction<{
         shortid: newDirectory.shortid,
       });
 
-      effects.vscode.updateModules();
-
       effects.live.sendDirectoryCreated(newDirectory);
     } catch (error) {
       const directoryIndex = state.editor.currentSandbox.directories.findIndex(
@@ -91,7 +100,7 @@ export const directoryCreated: AsyncAction<{
       );
 
       sandbox.directories.splice(directoryIndex, 1);
-      effects.vscode.updateModules();
+      state.editor.modulesByPath = effects.vscode.fs.reset(sandbox);
       effects.notificationToast.error('Unable to save new directory');
     }
   }
@@ -101,7 +110,7 @@ export const moduleMovedToDirectory: AsyncAction<{
   moduleShortid: string;
   directoryShortid: string;
 }> = withOwnedSandbox(
-  async ({ state, effects, actions }, { moduleShortid, directoryShortid }) => {
+  async ({ state, effects }, { moduleShortid, directoryShortid }) => {
     const sandbox = state.editor.currentSandbox;
     const module = sandbox.modules.find(
       moduleItem => moduleItem.shortid === moduleShortid
@@ -112,9 +121,17 @@ export const moduleMovedToDirectory: AsyncAction<{
     }
 
     const currentDirectoryShortid = module.directoryShortid;
+    const oldPath = module.path;
 
     module.directoryShortid = directoryShortid;
-    effects.vscode.updateModules();
+    module.path = getModulePath(
+      sandbox.modules,
+      sandbox.directories,
+      module.id
+    );
+
+    effects.vscode.fs.rename(state.editor.modulesByPath, oldPath, module.path);
+    effects.vscode.openModule(module);
     try {
       await effects.api.saveModuleDirectory(
         sandbox.id,
@@ -124,7 +141,8 @@ export const moduleMovedToDirectory: AsyncAction<{
       effects.live.sendModuleUpdate(module);
     } catch (error) {
       module.directoryShortid = currentDirectoryShortid;
-      effects.vscode.updateModules();
+      module.path = oldPath;
+      state.editor.modulesByPath = effects.vscode.fs.reset(sandbox);
       effects.notificationToast.error('Could not save new module location');
     }
   }
@@ -134,7 +152,7 @@ export const directoryMovedToDirectory: AsyncAction<{
   shortid: string;
   directoryShortid: string;
 }> = withOwnedSandbox(
-  async ({ state, effects, actions }, { shortid, directoryShortid }) => {
+  async ({ state, effects }, { shortid, directoryShortid }) => {
     const sandbox = state.editor.currentSandbox;
     const directoryToMove = sandbox.directories.find(
       directoryItem => directoryItem.shortid === shortid
@@ -144,8 +162,20 @@ export const directoryMovedToDirectory: AsyncAction<{
       return;
     }
 
+    const oldPath = directoryToMove.path;
+
     directoryToMove.directoryShortid = directoryShortid;
-    effects.vscode.updateModules();
+    directoryToMove.path = getDirectoryPath(
+      sandbox.modules,
+      sandbox.directories,
+      directoryToMove.id
+    );
+
+    effects.vscode.fs.rename(
+      state.editor.modulesByPath,
+      oldPath,
+      directoryToMove.path
+    );
     try {
       await effects.api.saveDirectoryDirectory(
         sandbox.id,
@@ -155,7 +185,8 @@ export const directoryMovedToDirectory: AsyncAction<{
       effects.live.sendDirectoryUpdate(directoryToMove);
     } catch (error) {
       directoryToMove.directoryShortid = shortid;
-      effects.vscode.updateModules();
+      directoryToMove.path = oldPath;
+      state.editor.modulesByPath = effects.vscode.fs.reset(sandbox);
       effects.notificationToast.error('Could not save new directory location');
     }
   }
@@ -163,37 +194,32 @@ export const directoryMovedToDirectory: AsyncAction<{
 
 export const directoryDeleted: AsyncAction<{
   directoryShortid;
-}> = withOwnedSandbox(
-  async ({ state, effects, actions }, { directoryShortid }) => {
-    const sandbox = state.editor.currentSandbox;
-    const directory = sandbox.directories.find(
-      directoryItem => directoryItem.shortid === directoryShortid
-    );
+}> = withOwnedSandbox(async ({ state, effects }, { directoryShortid }) => {
+  const sandbox = state.editor.currentSandbox;
+  const directory = sandbox.directories.find(
+    directoryItem => directoryItem.shortid === directoryShortid
+  );
 
-    if (!directory) {
-      return;
-    }
-
-    const removedDirectory = sandbox.directories.splice(
-      sandbox.directories.indexOf(directory),
-      1
-    )[0];
-
-    state.editor.currentModuleShortid = state.editor.mainModule.shortid;
-    effects.vscode.updateModules();
-    try {
-      await effects.api.deleteDirectory(
-        state.editor.currentId,
-        directoryShortid
-      );
-      effects.live.sendDirectoryDeleted(directoryShortid);
-    } catch (error) {
-      sandbox.directories.push(removedDirectory);
-      effects.vscode.updateModules();
-      effects.notificationToast.error('Could not delete directory');
-    }
+  if (!directory) {
+    return;
   }
-);
+
+  const removedDirectory = sandbox.directories.splice(
+    sandbox.directories.indexOf(directory),
+    1
+  )[0];
+
+  state.editor.currentModuleShortid = state.editor.mainModule.shortid;
+  effects.vscode.fs.rmdir(state.editor.modulesByPath, removedDirectory);
+  try {
+    await effects.api.deleteDirectory(state.editor.currentId, directoryShortid);
+    effects.live.sendDirectoryDeleted(directoryShortid);
+  } catch (error) {
+    sandbox.directories.push(removedDirectory);
+    state.editor.modulesByPath = effects.vscode.fs.reset(sandbox);
+    effects.notificationToast.error('Could not delete directory');
+  }
+});
 
 export const directoryRenamed: AsyncAction<{
   title: string;
@@ -210,9 +236,20 @@ export const directoryRenamed: AsyncAction<{
     }
 
     const oldTitle = directory.title;
+    const oldPath = directory.path;
 
     directory.title = title;
-    effects.vscode.updateModules();
+    directory.path = getDirectoryPath(
+      sandbox.modules,
+      sandbox.directories,
+      directory.id
+    );
+
+    effects.vscode.fs.rename(
+      state.editor.modulesByPath,
+      oldPath,
+      directory.path
+    );
     try {
       await effects.api.saveDirectoryTitle(sandbox.id, directoryShortid, title);
 
@@ -221,7 +258,7 @@ export const directoryRenamed: AsyncAction<{
       }
     } catch (error) {
       directory.title = oldTitle;
-      effects.vscode.updateModules();
+      state.editor.modulesByPath = effects.vscode.fs.reset(sandbox);
       effects.notificationToast.error('Could not rename directory');
     }
   }
@@ -266,8 +303,6 @@ export const deletedUploadedFile: AsyncAction<{
   try {
     await effects.api.deleteUploadedFile(id);
     state.uploadedFiles = null;
-    // Why are we opening it again?  And what is the message?
-    // actions.files.gotUploadedFiles()
   } catch (error) {
     effects.notificationToast.error('Unable to delete uploaded file');
   }
@@ -332,7 +367,9 @@ export const massCreateModules: AsyncAction<{
         data.directories
       );
 
-      effects.vscode.updateModules();
+      state.editor.modulesByPath = effects.vscode.fs.reset(
+        state.editor.currentSandbox
+      );
 
       if (state.live.isCurrentEditor) {
         effects.live.sendMassCreatedModules(data.modules, data.directories);
@@ -345,7 +382,7 @@ export const massCreateModules: AsyncAction<{
       if (cbID) {
         effects.vscode.callCallbackError(cbID);
       }
-      effects.vscode.updateModules();
+
       effects.notificationToast.error('Unable to create new files');
     }
   }
@@ -362,8 +399,9 @@ export const moduleCreated: AsyncAction<{
     { title, directoryShortid, code, isBinary }
   ) => {
     const sandbox = state.editor.currentSandbox;
+    const optimisticId = effects.utils.createOptimisticId();
     const optimisticModule = createOptimisticModule({
-      id: effects.utils.createOptimisticId(),
+      id: optimisticId,
       title,
       directoryShortid: directoryShortid || null,
       shortid: effects.utils.createOptimisticId(),
@@ -373,14 +411,20 @@ export const moduleCreated: AsyncAction<{
       ...(typeof isBinary === 'boolean' ? { isBinary } : {}),
     });
 
-    sandbox.modules.push(optimisticModule);
+    // We have to push the module to the array before we can figure out its path,
+    // this is all changing soon
+    sandbox.modules.push(optimisticModule as Module);
+    optimisticModule.path = getModulePath(
+      sandbox.modules,
+      sandbox.directories,
+      optimisticId
+    );
 
     // We grab the module from the state to continue working with it (proxy)
     const module = sandbox.modules[sandbox.modules.length - 1];
 
-    const path = getModulePath(sandbox.modules, sandbox.directories, module.id);
     const template = getDefinition(sandbox.template);
-    const config = template.configurationFiles[path];
+    const config = template.configurationFiles[module.path];
 
     if (
       config &&
@@ -401,6 +445,8 @@ export const moduleCreated: AsyncAction<{
       }
     }
 
+    effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
+
     try {
       const updatedModule = await effects.api.createModule(sandbox.id, module);
 
@@ -409,8 +455,6 @@ export const moduleCreated: AsyncAction<{
 
       actions.editor.internal.setCurrentModule(module);
 
-      effects.vscode.updateModules();
-      effects.vscode.fs.writeFile(state.editor.modulesByPath, path, module);
       effects.vscode.openModule(module);
 
       if (state.live.isCurrentEditor) {
@@ -419,7 +463,7 @@ export const moduleCreated: AsyncAction<{
     } catch (error) {
       sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
       actions.editor.internal.setCurrentModule(state.editor.mainModule);
-      effects.vscode.updateModules();
+      state.editor.modulesByPath = effects.vscode.fs.reset(sandbox);
       effects.notificationToast.error('Unable to save new file');
     }
   }
@@ -435,11 +479,7 @@ export const moduleDeleted: AsyncAction<{
   const removedModule = sandbox.modules.splice(moduleToDeleteIndex, 1)[0];
   const wasCurrentModule = state.editor.currentModuleShortid === moduleShortid;
 
-  effects.vscode.updateModules();
-  effects.vscode.fs.unlink(
-    state.editor.modulesByPath,
-    getModulePath(sandbox.modules, sandbox.directories, removedModule.id)
-  );
+  effects.vscode.fs.unlink(state.editor.modulesByPath, removedModule);
 
   if (wasCurrentModule) {
     actions.editor.internal.setCurrentModule(state.editor.mainModule);
@@ -454,7 +494,7 @@ export const moduleDeleted: AsyncAction<{
     }
   } catch (error) {
     sandbox.modules.push(removedModule);
-    effects.vscode.updateModules();
+    state.editor.modulesByPath = effects.vscode.fs.reset(sandbox);
     effects.notificationToast.error('Could not delete file');
   }
 };
@@ -537,14 +577,18 @@ export const syncSandbox: AsyncAction<any[]> = async (
         }
       }
     });
-    effects.vscode.updateModules();
   } catch (error) {
     if (error.response.status === 404) {
       return;
     }
-    effects.vscode.updateModules();
+
     effects.notificationToast.error(
       "We weren't able to retrieve the latest files of the sandbox, please refresh"
     );
   }
+
+  // No matter if error or not we resync the whole shabang!
+  state.editor.modulesByPath = effects.vscode.fs.reset(
+    state.editor.currentSandbox
+  );
 };

@@ -32,6 +32,7 @@ export type Props = {
   initialPath?: string;
   url?: string;
   isInProjectView?: boolean;
+  modulesByPath?: IModulesByPath;
   onClearErrors?: () => void;
   onAction?: (action: Object) => void;
   onOpenNewWindow?: () => void;
@@ -333,25 +334,12 @@ class BasePreview extends React.Component<Props, State> {
   getRenderedModule = () => {
     const { sandbox, currentModule, isInProjectView } = this.props;
 
-    return isInProjectView
-      ? '/' + sandbox.entry
-      : getModulePath(sandbox.modules, sandbox.directories, currentModule.id);
+    return isInProjectView ? '/' + sandbox.entry : currentModule.path;
   };
 
   getModulesToSend = (): IModulesByPath => {
-    const modulesObject: IModulesByPath = {};
+    const modulesObject: IModulesByPath = this.props.modulesByPath;
     const { sandbox } = this.props;
-
-    sandbox.modules.forEach(m => {
-      const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
-      if (path) {
-        modulesObject[path] = {
-          path,
-          code: m.code,
-          isBinary: m.isBinary,
-        };
-      }
-    });
 
     const extraModules = this.props.extraModules || {};
     const modulesToSend = { ...extraModules, ...modulesObject };
@@ -395,6 +383,7 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       const modulesToSend = this.getModulesToSend();
+
       if (!this.serverPreview) {
         dispatch({
           type: 'compile',
@@ -585,9 +574,7 @@ class BasePreview extends React.Component<Props, State> {
                       height: '100%',
                       filter: `blur(2px)`,
                       transform: 'scale(1.025, 1.025)',
-                      backgroundImage: `url("${
-                        this.props.sandbox.screenshotUrl
-                      }")`,
+                      backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
                       backgroundRepeat: 'no-repeat',
                       backgroundPositionX: 'center',
                     }}

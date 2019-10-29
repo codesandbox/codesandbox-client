@@ -181,6 +181,7 @@ class PreviewComponent extends Component<Props, State> {
         onInitialized={this.onPreviewInitialized}
         sandbox={store.editor.currentSandbox}
         currentModule={store.editor.currentModule}
+        modulesByPath={store.editor.modulesByPath}
         settings={store.preferences.settings}
         initialPath={store.editor.initialPath}
         url={options.url}

@@ -223,21 +223,17 @@ const getPath = (
   return `${path}${module.title}`;
 };
 
-const memoizeFunction = (modules, directories, id) =>
-  id +
-  modules.map(m => m.id + m.title + m.directoryShortid).join(',') +
-  directories.map(d => d.id + d.title + d.directoryShortid).join(',');
+export const getModulePath = (
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  id: string
+) => getPath(modules, modules, directories, id);
 
-export const getModulePath = memoize(
-  (modules: Array<Module>, directories: Array<Directory>, id: string) =>
-    getPath(modules, modules, directories, id),
-  memoizeFunction
-);
-export const getDirectoryPath = memoize(
-  (modules: Array<Module>, directories: Array<Directory>, id: string) =>
-    getPath(directories, modules, directories, id),
-  memoizeFunction
-);
+export const getDirectoryPath = (
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  id: string
+) => getPath(directories, modules, directories, id);
 
 export const isMainModule = (
   module: Module,

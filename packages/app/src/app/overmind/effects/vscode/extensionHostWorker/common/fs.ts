@@ -1,4 +1,10 @@
-import { writeFile, rename, rmdir, unlink, mkdir } from '../../fs/utils';
+import {
+  writeFile,
+  rename,
+  rmdir,
+  unlink,
+  mkdir,
+} from '../../sandboxFsSync/utils';
 import { FileSystemConfiguration } from '../../../../../../../../../standalone-packages/codesandbox-browserfs';
 import { getTypeFetcher } from './type-downloader';
 import { EXTENSIONS_LOCATION } from '../../constants';
@@ -87,8 +93,6 @@ export async function initializeBrowserFS({
             case 'sandbox-fs': {
               currentSandboxFs = evt.data.$data;
 
-              console.log('HEEEEEY', currentSandboxFs);
-
               if (!resolved) {
                 resolve();
                 resolved = true;
@@ -96,8 +100,8 @@ export async function initializeBrowserFS({
               break;
             }
             case 'writeFile': {
-              const { path, module } = evt.data.$data;
-              writeFile(currentSandboxFs, path, module);
+              const module = evt.data.$data;
+              writeFile(currentSandboxFs, module);
               break;
             }
             case 'rename': {
@@ -106,18 +110,18 @@ export async function initializeBrowserFS({
               break;
             }
             case 'rmdir': {
-              const { removePath } = evt.data.$data;
-              rmdir(currentSandboxFs, removePath);
+              const directory = evt.data.$data;
+              rmdir(currentSandboxFs, directory);
               break;
             }
             case 'unlink': {
-              const { removePath } = evt.data.$data;
-              unlink(currentSandboxFs, removePath);
+              const module = evt.data.$data;
+              unlink(currentSandboxFs, module);
               break;
             }
             case 'mkdir': {
-              const { path, directory } = evt.data.$data;
-              mkdir(currentSandboxFs, path, directory);
+              const directory = evt.data.$data;
+              mkdir(currentSandboxFs, directory);
               break;
             }
           }

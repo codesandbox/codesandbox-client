@@ -56,7 +56,7 @@ export type Module = {
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path?: string;
+  path: string;
   now?: any;
   type: 'file';
 };
@@ -66,6 +66,7 @@ export type Directory = {
   title: string;
   directoryShortid: string | undefined;
   shortid: string;
+  path: string;
   sourceId: string;
   type: 'directory';
 };
@@ -652,8 +653,5 @@ export enum PatronBadge {
 export type PatronTier = 1 | 2 | 3 | 4;
 
 export type SandboxFs = {
-  [path: string]: SandboxFsModule | SandboxFsDirectory;
+  [path: string]: Module | Directory;
 };
-export type SandboxFsModule = Module & { type: 'file ' };
-
-export type SandboxFsDirectory = Directory & { type: 'directory ' };

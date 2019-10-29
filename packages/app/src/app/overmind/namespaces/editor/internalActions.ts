@@ -89,11 +89,7 @@ export const saveCode: AsyncAction<{
     moduleShortid,
   });
 
-  effects.vscode.fs.writeFile(
-    state.editor.modulesByPath,
-    getModulePath(sandbox.modules, sandbox.directories, module.id),
-    module
-  );
+  effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
 
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);

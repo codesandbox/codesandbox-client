@@ -19,7 +19,7 @@ import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
 import * as childProcess from 'node-services/lib/child_process';
 
-import fs from './fs';
+import sandboxFsSync from './sandboxFsSync';
 import {
   initializeCustomTheme,
   initializeExtensionsFolder,
@@ -120,15 +120,18 @@ export class VSCodeEffect {
       new Promise(resolve => {
         loadScript(['vs/editor/codesandbox.editor.main'])(resolve);
       }),
-      fs.initialize({
+      sandboxFsSync.initialize({
         getSandboxFs: options.getSandboxFs,
       }),
-    ]).then(() => this.loadEditor(window.monaco, container));
+    ]).then(() => {
+      sandboxFsSync.sync();
+      return this.loadEditor(window.monaco, container);
+    });
 
     return this.initialized;
   }
 
-  public fs = fs;
+  public fs = sandboxFsSync;
 
   public getEditorElement(
     getCustomEditor: ICustomEditorApi['getCustomEditor']
@@ -259,11 +262,6 @@ export class VSCodeEffect {
       sandbox,
       this.onFileChange
     );
-  }
-
-  public async updateModules() {
-    await this.initialized;
-    await this.modelsHandler.updateModules();
   }
 
   public async openModule(module: Module) {
@@ -600,8 +598,7 @@ export class VSCodeEffect {
       const currentModule = this.options.getCurrentModule();
 
       if (
-        modulePath ===
-          getVSCodePath(this.options.getCurrentSandbox(), currentModule.id) &&
+        modulePath === `/sandbox${currentModule.path}` &&
         currentModule.code !== undefined &&
         activeEditor.getValue() !== currentModule.code
       ) {

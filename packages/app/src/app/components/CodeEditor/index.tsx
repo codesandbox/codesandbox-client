@@ -35,11 +35,7 @@ export class CodeEditor extends React.PureComponent<
     const { isModuleSynced, sandbox, currentModule: module, settings } = props;
 
     const template = getDefinition(sandbox.template);
-    const modulePath = getModulePath(
-      sandbox.modules,
-      sandbox.directories,
-      module.id
-    );
+    const modulePath = module.path;
     const config = template.configurationFiles[modulePath];
 
     return (

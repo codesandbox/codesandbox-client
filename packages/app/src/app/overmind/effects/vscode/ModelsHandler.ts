@@ -77,51 +77,12 @@ export class ModelsHandler {
   }
 
   public changeModule = (module: Module) => {
-    const { sandbox } = this;
-
-    const path = getModulePath(sandbox.modules, sandbox.directories, module.id);
-
-    if (path && getCurrentModelPath(this.editorApi) !== path) {
-      return this.editorApi.openFile(path);
+    if (getCurrentModelPath(this.editorApi) !== module.path) {
+      return this.editorApi.openFile(module.path);
     }
 
     return Promise.resolve();
   };
-
-  public updateModules = () =>
-    Promise.all(
-      Object.keys(this.modelListeners).map(path => {
-        const shortid = this.modelListeners[path].moduleShortid;
-        const { model } = this.modelListeners[path];
-        const module = this.sandbox.modules.find(m => m.shortid === shortid);
-        if (!module) {
-          // Deleted
-          return Promise.resolve();
-        }
-
-        const modulePath = getVSCodePath(this.sandbox, module.id);
-
-        if (modulePath !== model.uri.path) {
-          return this.editorApi.textFileService
-            .move(model.uri, this.monaco.Uri.file(modulePath))
-            .then(() => {
-              const editor = this.editorApi.getActiveCodeEditor();
-              const currentModel = editor && editor.getModel();
-              const isCurrentFile =
-                currentModel && currentModel.uri.path === path;
-              if (isCurrentFile) {
-                return this.editorApi.openFile(
-                  modulePath.replace('/sandbox', '')
-                );
-              }
-
-              return Promise.resolve();
-            });
-        }
-
-        return Promise.resolve();
-      })
-    );
 
   public applyOperations(operations: { [moduleShortid: string]: any }) {
     const operationsJSON = operations.toJSON ? operations.toJSON() : operations;
@@ -138,15 +99,7 @@ export class ModelsHandler {
           return Promise.resolve();
         }
 
-        const moduleId = foundModule.id;
-
-        const modulePath =
-          '/sandbox' +
-          getModulePath(
-            this.sandbox.modules,
-            this.sandbox.directories,
-            moduleId
-          );
+        const modulePath = '/sandbox' + foundModule.path;
 
         const modelEditor = this.editorApi.editorService.editors.find(
           editor => editor.resource && editor.resource.path === modulePath

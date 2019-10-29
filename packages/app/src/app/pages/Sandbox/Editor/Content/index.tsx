@@ -85,11 +85,7 @@ export const Content: React.FC = () => {
   const template = getTemplateDefinition(sandbox.template);
   const views = state.editor.devToolTabs;
   const currentPosition = state.editor.currentDevToolsPosition;
-  const modulePath = getModulePath(
-    sandbox.modules,
-    sandbox.directories,
-    currentModule.id
-  );
+  const modulePath = currentModule.path;
   const config = template.configurationFiles[modulePath];
 
   const browserConfig = {

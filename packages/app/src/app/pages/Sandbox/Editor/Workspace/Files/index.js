@@ -28,7 +28,7 @@ class Files extends React.Component {
   getModulePath = moduleId => {
     try {
       const sandbox = this.props.store.editor.currentSandbox;
-      return getModulePath(sandbox.modules, sandbox.directories, moduleId);
+      return sandbox.modules.find(module => module.id === moduleId).path;
     } catch (e) {
       return '';
     }

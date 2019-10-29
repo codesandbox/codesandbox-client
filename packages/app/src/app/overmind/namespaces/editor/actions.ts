@@ -104,10 +104,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
       actions.internal.setCurrentSandbox(sandbox);
     }
 
-    state.editor.modulesByPath = effects.vscode.fs.create(
-      sandbox.modules,
-      sandbox.directories
-    );
+    state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
   } catch (error) {
     state.editor.notFound = true;
     state.editor.error = error.message;
