@@ -9,7 +9,7 @@ export const Title = styled.div`
   display: flex;
   align-items: center;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.4)'};
   width: 100%;
@@ -30,11 +30,11 @@ const Bar = styled.div<{ count: number }>`
 `;
 
 export const SuccessBar = styled(Bar)`
-  background-color: ${props => props.theme.green.clearer(0.2)};
+  background-color: ${props => props.theme.success};
 `;
 
 export const FailBar = styled(Bar)`
-  background-color: ${props => props.theme.red.clearer(0.2)};
+  background-color: ${props => props.theme.failure};
 `;
 
 export const IdleBar = styled(Bar)`

@@ -37,6 +37,8 @@ const theme = {
     sidebar: '#191d1f',
     placeholder: '#B8B9BA',
     link: '#40a9f3',
+    success: '#5BC266',
+    failure: '#E1270E',
   }),
   vscodeTheme: codesandbox,
 

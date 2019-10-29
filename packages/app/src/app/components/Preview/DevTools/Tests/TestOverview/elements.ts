@@ -16,7 +16,7 @@ export const Item = styled.div`
 `;
 
 export const ItemTitle = styled.div`
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 500;
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
