@@ -39,7 +39,7 @@ const Navigation = () => {
     <Header>
       <Nav>
         <Wrapper>
-          <LogoWrapper>
+          <LogoWrapper to="/">
             <LogoImage src={Logo} alt="CodeSandbox Logo" />
             CodeSandbox
           </LogoWrapper>

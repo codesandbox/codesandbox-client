@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from '@reach/router';
 
 export const Header = styled.header`
   box-shadow: 0px 1px 0px ${props => props.theme.homepage.grey};
@@ -30,12 +31,14 @@ export const UserAvatar = styled.img`
   margin-left: 0.5rem;
 `;
 
-export const LogoWrapper = styled.section`
+export const LogoWrapper = styled(Link)`
   font-family: ${props => props.theme.homepage.appleFont};
   display: flex;
   align-items: center;
   font-size: 13px;
   margin-right: 4rem;
+  color: white;
+  text-decoration: none;
 `;
 
 export const LogoImage = styled.img`
