@@ -10,6 +10,13 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: 642px 1fr;
   grid-gap: 30px;
+  margin-bottom: 14rem;
+  margin-top: 5rem;
+`;
+
+const ImageWrapper = styled.div`
+  background: #151515;
+  border-radius: 3px;
 `;
 
 const Prototype = () => {
@@ -24,8 +31,9 @@ const Prototype = () => {
       <H2>Prototype Quickly</H2>
       <P muted>Test your ideas early and often</P>
       <Grid css="">
-        <img src={prototype} alt="prototype" />
-
+        <ImageWrapper>
+          <img src={prototype} alt="prototype" />
+        </ImageWrapper>
         <div
           css={`
             position: relative;

@@ -3,13 +3,13 @@ import styled from 'styled-components';
 export const TweetsWrapper = styled.a`
   display: block;
   text-decoration: none;
-  position: relative;
+  position: absolute;
   max-width: 520px;
   background: ${props => props.theme.homepage.grey};
   box-shadow: 0px 16px 16px rgba(4, 4, 4, 0.25);
   border-radius: 4px;
   margin-top: 5.5rem;
-  left: -7rem;
+  left: -6rem;
   padding: 2.7rem 4.2rem;
 
   ${props =>
