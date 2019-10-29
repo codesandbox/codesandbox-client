@@ -180,6 +180,8 @@ class PreviewComponent extends Component<Props, State> {
       <BasePreview
         onInitialized={this.onPreviewInitialized}
         sandbox={store.editor.currentSandbox}
+        privacy={store.editor.currentSandbox.privacy}
+        previewSecret={store.editor.currentSandbox.previewSecret}
         currentModule={store.editor.currentModule}
         settings={store.preferences.settings}
         initialPath={store.editor.initialPath}

@@ -5,7 +5,7 @@ import React, { FunctionComponent } from 'react';
 import { Explanation, Heading } from '../elements';
 import { Container } from './elements';
 
-const LiveModeEnded: FunctionComponent = () => {
+export const LiveSessionEnded: FunctionComponent = () => {
   const {
     state: {
       editor: {
@@ -18,9 +18,11 @@ const LiveModeEnded: FunctionComponent = () => {
       editor: { forkSandboxClicked },
     },
   } = useOvermind();
+
   const suggestion = owned
     ? 'you can continue working on the current sandbox.'
     : 'you can continue working by forking the sandbox or by creating a new sandbox.';
+
   return (
     <Container>
       <Heading>The live session has ended</Heading>
@@ -58,5 +60,3 @@ const LiveModeEnded: FunctionComponent = () => {
     </Container>
   );
 };
-
-export default LiveModeEnded;
