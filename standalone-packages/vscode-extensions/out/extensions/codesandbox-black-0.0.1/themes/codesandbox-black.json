@@ -1,6 +1,7 @@
 {
+	"$schema": "vscode://schemas/color-theme",
   "name": "CodeSandbox Black",
-  "type": "dark",
+	"type": "dark",
   "colors": {
     "activityBar.background": "#151515",
     "activityBar.border": "#242424",
