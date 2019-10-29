@@ -6,7 +6,7 @@ export default function(props) {
   const [isDragging, setDragging] = React.useState(false);
 
   return (
-    <Container>
+    <Container isDragging={isDragging}>
       <SplitPane
         onDragStarted={() => setDragging(true)}
         onDragFinished={() => setDragging(false)}
