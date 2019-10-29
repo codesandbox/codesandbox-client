@@ -12,6 +12,7 @@ const Grid = styled.div`
   grid-template-columns: 1fr 304px;
   grid-gap: 2rem;
   position: relative;
+  margin-top: 15rem;
 `;
 
 const Section = styled.section`
@@ -58,6 +59,7 @@ const Experiment = () => (
           margin-top: 0;
           position: absolute;
           height: 440px;
+          background: #151515
         `}
         tweet={{
           username: 'gethackteam',
