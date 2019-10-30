@@ -4,7 +4,7 @@ import { Container, IframeContainer, PointerOverlay } from './elements';
 
 export default function(props) {
   const [isDragging, setDragging] = React.useState(false);
-  const [size, setSize] = React.useState('50%');
+  const [size, setSize] = React.useState(props.defaultSize);
   const containerRef = React.useRef(null);
 
   // snap to edges

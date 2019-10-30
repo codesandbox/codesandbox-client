@@ -457,15 +457,15 @@ export default class Content extends React.PureComponent<Props, State> {
       actions: [],
     };
 
-    let defaultSplit = '50%';
-    if (showEditor && !showPreview) defaultSplit = '100%';
-    if (showPreview && !showEditor) defaultSplit = '0%';
+    let defaultSize = '50%';
+    if (showEditor && !showPreview) defaultSize = '100%';
+    if (showPreview && !showEditor) defaultSize = '0%';
 
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
         <SplitPane
           split={verticalMode ? 'horizontal' : 'vertical'}
-          defaultSize={defaultSplit}
+          defaultSize={defaultSize}
         >
           <>
             <Tabs>
