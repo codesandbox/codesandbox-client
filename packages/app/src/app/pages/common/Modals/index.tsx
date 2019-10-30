@@ -17,13 +17,12 @@ import { EmptyTrash } from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
-import LiveSessionEnded from './LiveSessionEnded';
+import { LiveSessionEnded } from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import NetlifyLogs from './NetlifyLogs';
 import NewSandbox from './NewSandbox';
 import { PickSandboxModal } from './PickSandboxModal';
 import PreferencesModal from './PreferencesModal';
-import PrivacyServerWarning from './PrivacyServerWarning';
 import PRModal from './PRModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
@@ -121,10 +120,6 @@ const modals = {
   forkServerModal: {
     Component: ForkServerModal,
     width: 500,
-  },
-  privacyServerWarning: {
-    Component: PrivacyServerWarning,
-    width: 400,
   },
   moveSandbox: {
     Component: MoveSandboxFolderModal,

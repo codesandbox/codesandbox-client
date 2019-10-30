@@ -279,7 +279,6 @@ let listenToRuntimeErrorsUnmounter;
 
 function inject() {
   listenToRuntimeErrorsUnmounter = listenToRuntimeErrors(error => {
-    console.log('what the matter', error);
     crash(error.error);
   });
 }

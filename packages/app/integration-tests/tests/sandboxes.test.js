@@ -38,9 +38,21 @@ const SANDBOXES = [
   '31kn7voz4q', // cxjs
   'zw9zjy0683', // aurelia
   'zx22owojr3', // vue v-slot test
-  '4888omqqz7', // material-ui https://github.com/codesandbox/codesandbox-client/issues/1741
+  '4888omqqz7', // material-ui https://github.com/codesandbox/codesandbox-client/issues/1741,
+  'sebn6', // babel plugin dynamically downloaded
+  'utmms', // babel plugin pragmatic-jsx which requires other babel plugin
 ];
 const SANDBOXES_REPO = 'codesandbox/integration-sandboxes';
+
+// Logic for parallelizing the tests
+const PARALLEL_NODES = Number.parseInt(process.env.CIRCLE_NODE_TOTAL, 10) || 1;
+const PARALLEL_INDEX = Number.parseInt(process.env.CIRCLE_NODE_INDEX, 10) || 0;
+
+const batchSize = Math.floor(SANDBOXES.length / PARALLEL_NODES);
+const sandboxesToTest = SANDBOXES.slice(
+  batchSize * PARALLEL_INDEX,
+  batchSize * (PARALLEL_INDEX + 1)
+);
 
 function pageLoaded(page) {
   return new Promise(async resolve => {
@@ -110,7 +122,7 @@ describe('sandboxes', () => {
     browser.close();
   });
 
-  SANDBOXES.forEach(sandbox => {
+  sandboxesToTest.forEach(sandbox => {
     const id = sandbox.id || sandbox;
     const threshold = sandbox.threshold || 0.01;
 
