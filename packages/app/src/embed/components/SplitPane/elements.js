@@ -5,6 +5,7 @@ export const Container = styled.div`
   height: 100%;
 
   .Resizer {
+    display: ${props => (props.hideResizer ? 'none' : 'block')};
     background: #000;
     opacity: 1;
     z-index: 99;

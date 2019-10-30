@@ -57,8 +57,10 @@ export default function({
       ref={containerRef}
       size={size}
       totalSize={totalSize}
+      hideResizer={split === 'horizontal'}
     >
       <SplitPane
+        split={split}
         onDragStarted={() => setDragging(true)}
         onDragFinished={onDragFinished}
         minSize="0%"
