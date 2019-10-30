@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  width: 100%;
+  height: 100%;
+
   .Resizer {
     background: #000;
     opacity: 1;
@@ -18,7 +21,7 @@ export const Container = styled.div`
     width: 5px;
     background: #242424;
     border-radius: 50px;
-    margin: 0 2px;
+    margin-left: ${props => (props.size === props.totalSize ? -12 : 4)}px;
     border: 1px solid #fff;
   }
 

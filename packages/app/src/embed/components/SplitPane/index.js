@@ -5,22 +5,37 @@ import { Container, IframeContainer, PointerOverlay } from './elements';
 export default function(props) {
   const [isDragging, setDragging] = React.useState(false);
   const [size, setSize] = React.useState(props.defaultSize);
+  const [totalSize, setTotalSize] = React.useState(null);
   const containerRef = React.useRef(null);
 
+  React.useEffect(() => {
+    setTotalSize(
+      containerRef.current ? containerRef.current.offsetWidth : Infinity
+    );
+  }, [containerRef]);
+
+  React.useEffect(() => {
+    if (size === '100%' && totalSize) setSize(totalSize);
+  }, [size, totalSize]);
+
   // snap to edges
-  const onChange = width => {
-    const totalWidth = containerRef.current.offsetWidth;
+  const onDragFinished = width => {
+    setDragging(false);
     if (width < 50) setSize(0);
-    else if (width > totalWidth - 50) setSize(totalWidth);
+    else if (width > totalSize - 50) setSize(totalSize);
     else setSize(width);
   };
 
   return (
-    <Container isDragging={isDragging} ref={containerRef}>
+    <Container
+      isDragging={isDragging}
+      ref={containerRef}
+      size={size}
+      totalSize={totalSize}
+    >
       <SplitPane
         onDragStarted={() => setDragging(true)}
-        onDragFinished={() => setDragging(false)}
-        onChange={onChange}
+        onDragFinished={onDragFinished}
         minSize="0%"
         maxSize="100%"
         size={isDragging ? undefined : size}
