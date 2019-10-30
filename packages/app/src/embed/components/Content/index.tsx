@@ -464,7 +464,10 @@ export default class Content extends React.PureComponent<Props, State> {
     };
 
     return (
-      <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
+      <Container
+        style={{ flexDirection: verticalMode ? 'column' : 'row' }}
+        offsetHeight={verticalMode ? '32px' : '0px'}
+      >
         <SplitPane
           split={verticalMode ? 'horizontal' : 'vertical'}
           showEditor={showEditor}

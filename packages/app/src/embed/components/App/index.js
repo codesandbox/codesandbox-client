@@ -359,17 +359,19 @@ export default class App extends React.PureComponent<
         }}
       >
         <Container>
-          <Header
-            showEditor={showEditor}
-            showPreview={showPreview}
-            setEditorView={this.setEditorView}
-            setPreviewView={this.setPreviewView}
-            setMixedView={this.setMixedView}
-            sandbox={sandbox}
-            toggleSidebar={this.toggleSidebar}
-            toggleLike={this.jwt() && this.toggleLike}
-            liked={sandbox.userLiked}
-          />
+          {verticalMode ? (
+            <Header
+              showEditor={showEditor}
+              showPreview={showPreview}
+              setEditorView={this.setEditorView}
+              setPreviewView={this.setPreviewView}
+              setMixedView={this.setMixedView}
+              sandbox={sandbox}
+              toggleSidebar={this.toggleSidebar}
+              toggleLike={this.jwt() && this.toggleLike}
+              liked={sandbox.userLiked}
+            />
+          ) : null}
           <Content
             showEditor={showEditor}
             showPreview={showPreview}

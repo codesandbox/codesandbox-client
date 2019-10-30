@@ -4,8 +4,8 @@ export const Container = styled.div`
   display: flex;
   position: relative;
   background-color: ${props => props.theme['editor.background']};
-  /* compatibility mode for the redesign, the header is smaller now*/
-  height: calc(100% - 32px);
+  /* if the header is visible, we offset the height to make room for it */
+  height: ${props => `calc(100% - ${props.offsetHeight})`};
 `;
 
 export const Tabs = styled.div`
