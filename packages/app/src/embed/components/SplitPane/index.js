@@ -41,7 +41,7 @@ export default function(props) {
         size={isDragging ? undefined : size}
         {...props}
       >
-        <div>{props.children[0]}</div>
+        <>{props.children[0]}</>
         <IframeContainer>
           {isDragging ? <PointerOverlay /> : null}
           {props.children[1]}
