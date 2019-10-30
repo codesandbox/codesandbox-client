@@ -195,11 +195,11 @@ const Modals: React.FC = () => {
       <Modal
         isOpen={Boolean(modal)}
         width={modal && modal.width}
-        onClose={isKeyDown => actions.modalClosed({ isKeyDown })}
+        onClose={isKeyDown => actions.modalClosed()}
       >
         {modal
           ? React.createElement(modal.Component, {
-              closeModal: () => actions.modalClosed({ isKeyDown: false }),
+              closeModal: () => actions.modalClosed(),
             })
           : null}
       </Modal>
