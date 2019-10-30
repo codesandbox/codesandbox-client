@@ -23,6 +23,7 @@ export const Container = styled.div`
     border-radius: 50px;
     margin-left: ${props => (props.size === props.totalSize ? -12 : 4)}px;
     border: 1px solid #fff;
+    transition: margin 500ms;
   }
 
   .Resizer:hover {
