@@ -41,8 +41,6 @@ import {
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import SplitPane from '../SplitPane';
-
-// import { Container, Tabs, Split } from './elements';
 import { Container, Tabs } from './elements';
 
 type Props = {
@@ -468,8 +466,6 @@ export default class Content extends React.PureComponent<Props, State> {
         <SplitPane
           split={verticalMode ? 'horizontal' : 'vertical'}
           defaultSize={defaultSplit}
-          minSize="0%"
-          maxSize="100%"
         >
           <>
             <Tabs>
