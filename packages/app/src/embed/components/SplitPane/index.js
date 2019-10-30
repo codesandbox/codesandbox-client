@@ -7,22 +7,38 @@ import {
   PointerOverlay,
 } from './elements';
 
-export default function(props) {
+export default function({
+  split,
+  showEditor,
+  showPreview,
+  setEditorView,
+  setPreviewView,
+  ...props
+}) {
+  const [size, setSize] = React.useState('50%');
+
   const [isDragging, setDragging] = React.useState(false);
-  const [size, setSize] = React.useState(props.defaultSize);
   const [totalSize, setTotalSize] = React.useState(null);
   const containerRef = React.useRef(null);
 
+  // response to buttons in the header
   React.useEffect(() => {
-    const sizeProp =
-      props.split === 'horizontal' ? 'offsetHeight' : 'offsetWidth';
+    if (showEditor && showPreview) setSize('50%');
+    else if (showEditor && !showPreview) setSize('100%');
+    else if (showPreview && !showEditor) setSize('0%');
+  }, [showEditor, showPreview]);
+
+  React.useEffect(() => {
+    const sizeProp = split === 'horizontal' ? 'offsetHeight' : 'offsetWidth';
     setTotalSize(
       containerRef.current ? containerRef.current[sizeProp] : Infinity
     );
-  }, [containerRef, props.split]);
+  }, [containerRef, split]);
 
   // TODO: handle window resize
 
+  // update with pixel size when we have the value
+  // that's useful for the calculation in elements.Resizer
   React.useEffect(() => {
     if (size === '100%' && totalSize) setSize(totalSize);
   }, [size, totalSize]);

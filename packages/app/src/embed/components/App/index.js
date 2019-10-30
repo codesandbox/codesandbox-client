@@ -373,6 +373,9 @@ export default class App extends React.PureComponent<
           <Content
             showEditor={showEditor}
             showPreview={showPreview}
+            setEditorView={this.setEditorView}
+            setPreviewView={this.setPreviewView}
+            setMixedView={this.setMixedView}
             previewWindow={previewWindow}
             isInProjectView={isInProjectView}
             setProjectView={this.setProjectView}

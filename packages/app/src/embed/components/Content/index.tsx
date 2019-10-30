@@ -47,6 +47,9 @@ type Props = {
   showEditor: boolean;
   showPreview: boolean;
   previewWindow: string;
+  setEditorView: () => void;
+  setPreviewView: () => void;
+  setMixedView: () => void;
   isInProjectView: boolean;
   setProjectView: (
     sandboxId: string | undefined,
@@ -376,6 +379,9 @@ export default class Content extends React.PureComponent<Props, State> {
       sandbox,
       showEditor,
       showPreview,
+      setEditorView,
+      setPreviewView,
+      setMixedView,
       previewWindow,
       currentModule,
       hideNavigation,
@@ -457,15 +463,15 @@ export default class Content extends React.PureComponent<Props, State> {
       actions: [],
     };
 
-    let defaultSize = '50%';
-    if (showEditor && !showPreview) defaultSize = '100%';
-    if (showPreview && !showEditor) defaultSize = '0%';
-
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
         <SplitPane
           split={verticalMode ? 'horizontal' : 'vertical'}
-          defaultSize={defaultSize}
+          showEditor={showEditor}
+          showPreview={showPreview}
+          setEditorView={setEditorView}
+          setPreviewView={setPreviewView}
+          setMixedView={setMixedView}
         >
           <>
             <Tabs>
