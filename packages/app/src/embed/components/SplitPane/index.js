@@ -1,6 +1,11 @@
 import React from 'react';
 import SplitPane from 'react-split-pane';
-import { Container, IframeContainer, PointerOverlay } from './elements';
+import {
+  Container,
+  EditorContainer,
+  IframeContainer,
+  PointerOverlay,
+} from './elements';
 
 export default function(props) {
   const [isDragging, setDragging] = React.useState(false);
@@ -9,10 +14,14 @@ export default function(props) {
   const containerRef = React.useRef(null);
 
   React.useEffect(() => {
+    const sizeProp =
+      props.split === 'horizontal' ? 'offsetHeight' : 'offsetWidth';
     setTotalSize(
-      containerRef.current ? containerRef.current.offsetWidth : Infinity
+      containerRef.current ? containerRef.current[sizeProp] : Infinity
     );
-  }, [containerRef]);
+  }, [containerRef, props.split]);
+
+  // TODO: handle window resize
 
   React.useEffect(() => {
     if (size === '100%' && totalSize) setSize(totalSize);
@@ -41,7 +50,7 @@ export default function(props) {
         size={isDragging ? undefined : size}
         {...props}
       >
-        <>{props.children[0]}</>
+        <EditorContainer>{props.children[0]}</EditorContainer>
         <IframeContainer>
           {isDragging ? <PointerOverlay /> : null}
           {props.children[1]}

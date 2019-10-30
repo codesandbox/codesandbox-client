@@ -13,15 +13,10 @@ export const Container = styled.div`
     opacity: ${props => (props.isDragging ? 0.6 : 0.4)};
   }
 
-  .Resizer.vertical::after {
+  .Resizer::after {
     content: '';
-    position: absolute;
-    top: calc(50% - 20px);
-    height: 40px;
-    width: 5px;
     background: #242424;
     border-radius: 50px;
-    margin-left: ${props => (props.size === props.totalSize ? -12 : 4)}px;
     border: 1px solid #fff;
     transition: margin 500ms;
   }
@@ -31,23 +26,33 @@ export const Container = styled.div`
   }
 
   .Resizer.vertical {
-    /* margin: 0 -5px; */
     cursor: ew-resize;
   }
 
-  .Resizer.horizontal {
-    height: 11px;
-    margin: -5px 0;
-    border-top: 5px solid rgba(255, 255, 255, 0);
-    border-bottom: 5px solid rgba(255, 255, 255, 0);
-    cursor: ns-resize;
-    width: 100%;
+  .Resizer.vertical::after {
+    position: absolute;
+    top: calc(50% - 20px);
+    height: 40px;
+    width: 5px;
+    margin-left: ${props => (props.size === props.totalSize ? -12 : 4)}px;
   }
 
-  .Resizer.horizontal:hover {
-    border-top: 5px solid rgba(0, 0, 0, 0.5);
-    border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+  .Resizer.horizontal {
+    cursor: ns-resize;
   }
+  .Resizer.horizontal::after {
+    position: absolute;
+    left: calc(50% - 20px);
+    width: 40px;
+    height: 5px;
+    margin-top: -12px;
+    /* margin-top: ${props => (props.size === props.totalSize ? -12 : 4)}px; */
+  }
+`;
+
+export const EditorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 export const IframeContainer = styled.div`
