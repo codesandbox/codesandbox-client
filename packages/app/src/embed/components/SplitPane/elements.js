@@ -45,8 +45,7 @@ export const Container = styled.div`
     left: calc(50% - 20px);
     width: 40px;
     height: 5px;
-    margin-top: -12px;
-    /* margin-top: ${props => (props.size === props.totalSize ? -12 : 4)}px; */
+    margin-top: ${props => (props.size === props.totalSize ? -12 : 4)}px;
   }
 `;
 
