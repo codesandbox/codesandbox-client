@@ -1,66 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX, // eslint-disable-line
 } from '@codesandbox/common/lib/utils/config';
-import * as algoliasearch from 'algoliasearch';
+import { InstantSearch, Configure, Stats } from 'react-instantsearch/dom';
 import { useKey } from 'react-use';
-// import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
+import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
 import { Header } from '../elements';
-import { SandboxCard } from '../SandboxCard';
-import { makeTemplates, useDebounce } from './utils';
-import { Loader } from '../Loader';
-import { SubHeader } from '../Create/elements';
-import {
-  Results,
-  Grid,
-  Pagination,
-  Search,
-  Categories,
-  Form,
-  InputWrapper,
-} from './elements';
+import { Categories, Form, InputWrapper, GlobalSearchStyles } from './elements';
 import { all } from '../availableTemplates';
-
-const client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
-// staging = 'staging_sandboxes'
-const index = client.initIndex(ALGOLIA_DEFAULT_INDEX);
+import { ExploreResults } from './Results';
+import { SubHeader } from '../Create/elements';
+import { ExploreSearch } from './Search';
 
 export const Explore = () => {
-  const searchEl = useRef(null);
-  const [templates, setTemplates] = useState();
-  const [search, setSearch] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
   const [category, setCategory] = useState('');
-  const [allPages, setAllPages] = useState(1);
-  const [page, setPage] = useState(0);
-  const perPage = 10;
-  const query = useDebounce(search, 300);
-  useKey('/', () => {
-    window.setTimeout(() => {
-      searchEl.current.focus();
-    });
-  });
 
-  useEffect(() => {
-    if (query || category) {
-      setPage(0);
+  useKey('/', () => {
+    if (searchRef.current) {
+      searchRef.current.focus();
     }
-    if (page <= allPages) {
-      index
-        .search({
-          facetFilters: ['custom_template.published: true', category],
-          hitsPerPage: perPage,
-          query,
-          page,
-        })
-        .then(rsp => {
-          setAllPages(rsp.nbPages - 1);
-          const newTemplates = makeTemplates(rsp.hits);
-          return setTemplates(newTemplates);
-        });
-    }
-  }, [allPages, category, page, query]);
+  });
 
   const updateCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value !== '') {
@@ -72,66 +34,45 @@ export const Explore = () => {
 
   return (
     <>
-      <Header>
-        <span>Explore Templates</span>
-        <Form>
-          <InputWrapper>
-            <Search
-              value={search}
-              placeholder="Search"
-              ref={searchEl}
-              onChange={e => setSearch(e.target.value)}
-            />
-          </InputWrapper>
-          <Categories onChange={updateCategory}>
-            <option selected value="">
-              Categories
-            </option>
-            {all.map(template => (
-              <option value={template.name}>{template.niceName}</option>
-            ))}
-          </Categories>
-        </Form>
-      </Header>
+      <GlobalSearchStyles />
+      <InstantSearch
+        appId={ALGOLIA_APPLICATION_ID}
+        apiKey={ALGOLIA_API_KEY}
+        indexName={ALGOLIA_DEFAULT_INDEX}
+      >
+        <Configure
+          hitsPerPage={50}
+          facetFilters={['custom_template.published: true', category]}
+        />
+        <Header>
+          <span>Explore Templates</span>
+          <Form>
+            <InputWrapper>
+              <ExploreSearch ref={searchRef} />
+            </InputWrapper>
+            <Categories onChange={updateCategory}>
+              <option selected value="">
+                Categories
+              </option>
+              {all.map(template => (
+                <option value={template.name}>{template.niceName}</option>
+              ))}
+            </Categories>
+          </Form>
+        </Header>
 
-      {templates ? (
-        <>
-          {templates.length ? (
-            <Results>
-              <SubHeader>
-                {category
-                  ? all.find(
-                      temp => temp.name === category.split(':')[1].trim()
-                    ).niceName
-                  : 'All'}{' '}
-                Templates
-              </SubHeader>
-              <Grid>
-                {templates.map(sandbox => (
-                  <SandboxCard key={sandbox.objectID} template={sandbox} />
-                ))}
-              </Grid>
-              <Pagination
-                pages={allPages}
-                onChange={destination => {
-                  setPage(destination - 1);
-                }}
-              />
-            </Results>
-          ) : (
-            <SubHeader
-              css={`
-                text-align: center;
-                margin-top: 10rem;
-              `}
-            >
-              There are no templates matching your search.
-            </SubHeader>
-          )}
-        </>
-      ) : (
-        <Loader />
-      )}
+        <SubHeader>
+          <Stats
+            translations={{
+              stats: nbHits => `${nbHits.toLocaleString()} results found`,
+            }}
+          />
+        </SubHeader>
+
+        <Scrollable>
+          <ExploreResults />
+        </Scrollable>
+      </InstantSearch>
     </>
   );
 };

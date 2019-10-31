@@ -2,6 +2,7 @@ import React from 'react';
 import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
 import { useOvermind } from 'app/overmind';
 import { LinkButton } from 'app/components/LinkButton';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { SandboxCard } from '../SandboxCard';
 import { Header } from '../elements';
 import { SubHeader, Grid, CenteredMessage } from './elements';
@@ -34,7 +35,19 @@ export const Create = () => {
         <SubHeader>Official Templates</SubHeader>
         <Grid>
           {all.map(template => (
-            <SandboxCard official key={template.niceName} template={template} />
+            <SandboxCard
+              key={template.name}
+              title={template.niceName}
+              iconUrl={template.name}
+              environment={template.name}
+              owner="CodeSandbox"
+              url={sandboxUrl({ id: template.shortid, alias: null })}
+              official
+              color={template.color}
+              mine={false}
+              templateId="" // TODO
+              sandboxId={template.shortid}
+            />
           ))}
         </Grid>
       </Scrollable>

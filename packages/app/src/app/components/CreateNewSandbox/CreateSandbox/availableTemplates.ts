@@ -1,5 +1,6 @@
 import * as templates from '@codesandbox/common/lib/templates';
 import { sortBy } from 'lodash-es';
+import { Template } from '@codesandbox/common/lib/types';
 
 const usedTemplates = sortBy(
   Object.keys(templates)
@@ -39,4 +40,4 @@ export const popular = [
 export const client = usedTemplates.filter(t => !t.isServer);
 export const container = usedTemplates.filter(t => t.isServer);
 
-export const all = [...client, ...presets, ...container];
+export const all: Template[] = [...client, ...presets, ...container];
