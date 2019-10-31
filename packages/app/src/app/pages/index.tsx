@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import { DragDropContext } from 'react-dnd';
+
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { Toasts, NotificationStatus } from '@codesandbox/notifications';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -10,7 +10,7 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import Loadable from 'app/utils/Loadable';
 import { useOvermind } from 'app/overmind';
 import { ErrorBoundary } from './common/ErrorBoundary';
-import HTML5Backend from './common/HTML5BackendWithFolderSupport';
+
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
 import { NewSandbox } from './NewSandbox';
@@ -138,6 +138,4 @@ const RoutesComponent: React.FC = () => {
   );
 };
 
-export const Routes = DragDropContext(HTML5Backend)(
-  withRouter(RoutesComponent)
-);
+export const Routes = withRouter(RoutesComponent);

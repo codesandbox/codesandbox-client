@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
+import { DndProvider } from 'react-dnd';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { createOvermind } from 'overmind';
 import {
@@ -31,6 +32,8 @@ import { Routes as App } from './pages';
 import { Provider as OvermindProvider } from './overmind/Provider';
 import { config } from './overmind';
 import './split-pane.css';
+import HTML5Backend from './pages/common/HTML5BackendWithFolderSupport';
+
 import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
 import { vscode } from './vscode';
 import {
@@ -124,9 +127,11 @@ async function boot(overmind) {
             <OvermindProvider value={overmind}>
               <HooksProvider client={client}>
                 <ThemeProvider theme={theme}>
-                  <Router history={history}>
-                    <App />
-                  </Router>
+                  <DndProvider backend={HTML5Backend}>
+                    <Router history={history}>
+                      <App />
+                    </Router>
+                  </DndProvider>
                 </ThemeProvider>
               </HooksProvider>
             </OvermindProvider>
