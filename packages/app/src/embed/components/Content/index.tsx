@@ -41,7 +41,9 @@ import {
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import SplitPane from '../SplitPane';
-import { Container, Tabs } from './elements';
+import { Container, Tabs, MenuInTabs } from './elements';
+// borrow the menu icon from Header in case header is not shown
+import { MenuIcon } from '../Header/elements';
 
 type Props = {
   showEditor: boolean;
@@ -387,6 +389,7 @@ export default class Content extends React.PureComponent<Props, State> {
       hideNavigation,
       expandDevTools,
       verticalMode,
+      toggleSidebar,
     } = this.props;
 
     const { isInProjectView } = this.state;
@@ -478,6 +481,11 @@ export default class Content extends React.PureComponent<Props, State> {
         >
           <>
             <Tabs>
+              {verticalMode ? null : (
+                <MenuInTabs>
+                  <MenuIcon onClick={toggleSidebar} />
+                </MenuInTabs>
+              )}
               {this.state.tabs.map((module, i) => {
                 const tabsWithSameName = this.state.tabs.filter(
                   m => m.title === module.title

@@ -397,6 +397,7 @@ export default class App extends React.PureComponent<
             tabs={this.state.tabs}
             runOnClick={runOnClick}
             verticalMode={verticalMode}
+            toggleSidebar={this.toggleSidebar}
           />
         </Container>
       </ThemeProvider>

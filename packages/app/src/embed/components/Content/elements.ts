@@ -32,3 +32,10 @@ export const Tabs = styled.div`
     color: white !important;
   }
 `;
+
+export const MenuInTabs = styled.span`
+  display: inline-flex;
+  height: 100%;
+  align-items: center;
+  padding-left: 8px;
+`;
