@@ -299,12 +299,12 @@ jobs:
   deploy-to-production:
     executor: node
     steps:
-      - run:
-          name: Mark Sentry release
-          command: node packages/app/scripts/sentry-create-release.js
       - checkout_with_cache
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
+      - run:
+          name: Mark Sentry release
+          command: node packages/app/scripts/sentry-create-release.js
       - run:
           name: Deploy Image
           command: node packages/app/scripts/deploy.js
