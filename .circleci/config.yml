@@ -297,8 +297,7 @@ jobs:
     steps:
       - docker_cache
   deploy-to-production:
-    docker:
-      - image: curlimages/curl:7.65.3
+    executor: node
     steps:
       - run:
           name: Mark Sentry release
