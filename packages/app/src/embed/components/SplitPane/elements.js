@@ -48,6 +48,9 @@ export const Container = styled.div`
     height: 5px;
     margin-top: ${props => (props.size === props.totalSize ? -12 : 4)}px;
   }
+  .Pane {
+    transition: ${props => (props.isDragging ? null : 'width 200ms ease')};
+  }
 `;
 
 export const PaneContainer = styled.div`
