@@ -87,7 +87,7 @@
     "lint-staged": "^9.2.5",
     "prettier": "1.17.0",
     "pretty-quick": "^1.10.0",
-    "typescript": "3.6.3",
+    "typescript": "3.7.1-rc",
     "username": "^5.1.0"
   },
   "husky": {
