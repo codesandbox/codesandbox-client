@@ -4,6 +4,8 @@ import {
   ParsedConfigurationFile,
 } from './configuration/types';
 import configurations from './configuration';
+import { isServer } from './helpers/is-server';
+import { TemplateType } from '.';
 
 export type Options = {
   showOnHomePage?: boolean;
@@ -16,7 +18,6 @@ export type Options = {
   isTypescript?: boolean;
   externalResourcesEnabled?: boolean;
   showCube?: boolean;
-  isServer?: boolean;
   main?: boolean;
   backgroundColor?: () => string;
   mainFile?: string[];
@@ -33,6 +34,9 @@ export type ParsedConfigurationFiles = {
     main: string;
     dependencies?: Dependencies;
     devDependencies: Dependencies;
+    resolutions?: {
+      [source: string]: string;
+    };
     [otherProperties: string]: any | undefined;
   }>;
   [path: string]: ParsedConfigurationFile<any> | undefined;
@@ -67,7 +71,9 @@ const CLIENT_VIEWS: ViewConfig[] = [
 ];
 
 // React sandboxes have an additional devtool on top of CLIENT_VIEWS
-const REACT_CLIENT_VIEWS: ViewConfig[] = [...CLIENT_VIEWS];
+const REACT_CLIENT_VIEWS: ViewConfig[] = JSON.parse(
+  JSON.stringify(CLIENT_VIEWS)
+);
 REACT_CLIENT_VIEWS[1].views.push({ id: 'codesandbox.react-devtools' });
 
 const SERVER_VIEWS: ViewConfig[] = [
@@ -85,7 +91,7 @@ const SERVER_VIEWS: ViewConfig[] = [
 ];
 
 export default class Template {
-  name: string;
+  name: TemplateType;
   niceName: string;
   shortid: string;
   url: string;
@@ -105,7 +111,7 @@ export default class Template {
   mainFile: undefined | string[];
 
   constructor(
-    name: string,
+    name: TemplateType,
     niceName: string,
     url: string,
     shortid: string,
@@ -119,7 +125,7 @@ export default class Template {
     this.color = color;
 
     this.popular = options.popular || false;
-    this.isServer = options.isServer || false;
+    this.isServer = isServer(this.name);
     this.main = options.main || false;
     this.showOnHomePage = options.showOnHomePage || false;
     this.distDir = options.distDir || 'build';

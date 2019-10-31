@@ -1,6 +1,7 @@
 import { TimelineMax } from 'gsap';
 import React, { useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
+import { useMatchMedia } from '../../../../hooks';
 
 const Container = styled.a`
   transition: 0.3s ease all;
@@ -17,6 +18,12 @@ const Container = styled.a`
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover {
+      transform: none;
+    }
   }
 
   ${props => css`
@@ -37,21 +44,26 @@ const Count = styled.div`
 `;
 
 const Hit = ({ hit: { count, value } }) => {
+  const reduceAnimation = useMatchMedia('(prefers-reduced-motion: reduce)');
   const el = useRef(null);
   const tl = useRef(null);
 
   useEffect(() => {
+    if (reduceAnimation) return;
+
     tl.current = new TimelineMax().fromTo(
       el.current,
       0.1,
       { opacity: 0 },
       { opacity: 1 }
     );
-  }, []);
+  }, [reduceAnimation]);
 
   useEffect(() => {
+    if (reduceAnimation) return;
+
     tl.current.restart();
-  }, [value]);
+  }, [reduceAnimation, value]);
 
   return (
     <Container
@@ -59,6 +71,7 @@ const Hit = ({ hit: { count, value } }) => {
       ref={el}
       rel="noreferrer noopener"
       target="_blank"
+      aria-label={`${value}, ${count} sandboxes`}
     >
       <Title>{value}</Title>
 

@@ -1,5 +1,5 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 import configurations from './configuration';
 
 export default new Template(
@@ -12,7 +12,6 @@ export default new Template(
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
     },
-    isServer: true,
     distDir: 'styleguide',
     mainFile: [], // '/src/components/Button.js'
     showOnHomePage: true,

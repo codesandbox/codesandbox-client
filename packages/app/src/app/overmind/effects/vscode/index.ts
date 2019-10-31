@@ -145,18 +145,6 @@ export class VSCodeEffect {
     return this.elements.statusbar;
   }
 
-  public addNotification(
-    message: string,
-    type: 'warning' | 'notice' | 'error' | 'success',
-    notification: NotificationMessage
-  ) {
-    notificationState.addNotification({
-      message,
-      status: convertTypeToStatus(type),
-      ...notification,
-    });
-  }
-
   public runCommand = async (id: string, ...args: any[]) => {
     const commandService = await this.commandService.promise;
 

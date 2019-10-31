@@ -1,6 +1,6 @@
 import * as templates from '@codesandbox/common/lib/templates';
 import getIcon from '@codesandbox/common/lib/templates/icons';
-import * as Icons from '@codesandbox/template-icons';
+import { ColorIcons as Icons } from '@codesandbox/template-icons';
 import React, { FunctionComponent, useState } from 'react';
 import { usePopoverState } from 'reakit/Popover';
 
@@ -28,22 +28,22 @@ export const Icon: FunctionComponent = () => {
     },
   } = useOvermind();
   const popover = usePopoverState();
-
-  const [selectedIcon, setSelectedIcon] = useState(customTemplate.iconUrl);
+  const [selectedIcon, setSelectedIcon] = useState(
+    customTemplate.iconUrl || ''
+  );
 
   const DefaultIcon = getIcon(template);
   const defaultColor =
-    (customTemplate && customTemplate.color) ||
-    templates.default(template).color();
+    customTemplate.color || templates.default(template).color();
 
   const setIcon = (key: string) => {
     setSelectedIcon(key);
+
     popover.hide();
+
     editTemplate({
-      template: {
-        ...customTemplate,
-        iconUrl: key,
-      },
+      ...customTemplate,
+      iconUrl: key,
     });
   };
   const TemplateIcon = Icons[selectedIcon];

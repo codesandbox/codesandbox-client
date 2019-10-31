@@ -1,7 +1,8 @@
 import memoize from 'lodash/memoize';
-import { Module, Directory, Sandbox } from '../types';
+
 import getTemplateDefinition from '../templates';
 import parse from '../templates/configuration/parse';
+import { Directory, Module, Sandbox } from '../types';
 
 const compareTitle = (
   original: string,
@@ -223,6 +224,11 @@ const getPath = (
   return `${path}${module.title}`;
 };
 
+const memoizeFunction = (modules, directories, id) =>
+  id +
+  modules.map(m => m.id + m.title + m.directoryShortid).join(',') +
+  directories.map(d => d.id + d.title + d.directoryShortid).join(',');
+
 export const getModulePath = (
   modules: Array<Module>,
   directories: Array<Directory>,
@@ -234,6 +240,18 @@ export const getDirectoryPath = (
   directories: Array<Directory>,
   id: string
 ) => getPath(directories, modules, directories, id);
+
+export const getChildren = memoize(
+  (
+    modules: Array<Module> = [],
+    directories: Array<Directory> = [],
+    id: string
+  ) => [
+    ...directories.filter(d => d.directoryShortid === id),
+    ...modules.filter(m => m.directoryShortid === id),
+  ],
+  memoizeFunction
+);
 
 export const isMainModule = (
   module: Module,
@@ -272,7 +290,7 @@ export const findMainModule = (sandbox?: Sandbox) => {
 
   const defaultOpenModule = defaultOpenedFiles
     .map(path => resolve(path))
-    .find(module => module);
+    .find(module => Boolean(module));
 
   if (defaultOpenModule) {
     return defaultOpenModule;

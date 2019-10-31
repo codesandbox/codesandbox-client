@@ -1,5 +1,5 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 import configurations from './configuration';
 
 export default new Template(
@@ -13,7 +13,6 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     distDir: 'dist',
-    isServer: true,
     popular: true,
     mainFile: ['/pages/index.vue'],
     showOnHomePage: true,

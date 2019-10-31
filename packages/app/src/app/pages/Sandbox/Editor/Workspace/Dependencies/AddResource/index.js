@@ -9,7 +9,7 @@ const initialState = {
   name: '',
 };
 
-export default class AddVersion extends React.PureComponent {
+export class AddResource extends React.PureComponent {
   state = initialState;
 
   setName = e => {

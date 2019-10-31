@@ -1,3 +1,9 @@
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import {
+  NotificationMessage,
+  NotificationStatus,
+} from '@codesandbox/notifications/lib/state';
+
 import { KeyCode, KeyMod } from './keyCodes';
 
 // Copied from 'common/actions' in vscode
@@ -119,6 +125,42 @@ export class Workbench {
       },
     });
 
+    this.addWorkbenchAction({
+      id: 'view.fullscreen',
+      label: 'Toggle Fullscreen',
+      category: 'View',
+      run: () => {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          document.documentElement.requestFullscreen();
+
+          this.addNotification({
+            title: 'Fullscreen',
+            message:
+              'You are now in fullscreen mode. Press and hold ESC to exit',
+            status: NotificationStatus.NOTICE,
+            timeAlive: 5000,
+          });
+
+          if ('keyboard' in navigator) {
+            // @ts-ignore - keyboard locking is experimental api
+            navigator.keyboard.lock([
+              'Escape',
+              'KeyW',
+              'KeyN',
+              'KeyT',
+              'ArrowLeft',
+              'ArrowRight',
+            ]);
+          }
+        }
+      },
+      keybindings: {
+        primary: KeyMod.WinCtrl | KeyMod.Alt | KeyCode.KEY_F,
+      },
+    });
+
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '1_new',
       order: 1,
@@ -163,6 +205,15 @@ export class Workbench {
         title: 'Flip Full Layout',
       },
       order: 2,
+    });
+
+    this.appendMenuItem(MenuId.MenubarViewMenu, {
+      group: '1_toggle_view',
+      order: 0,
+      command: {
+        id: 'view.fullscreen',
+        title: 'Toggle Fullscreen',
+      },
     });
 
     const addBrowserNavigationCommand = (

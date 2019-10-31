@@ -1,7 +1,7 @@
 import Relative from '@codesandbox/common/lib/components/Relative';
 import React, { FunctionComponent } from 'react';
 
-import { HoverMenu } from 'app/components/HoverMenu';
+import { useMenuState, MenuDisclosure } from 'reakit/Menu';
 import { useOvermind } from 'app/overmind';
 
 import { ClickableContainer, ProfileImage } from './elements';
@@ -10,38 +10,40 @@ import { Menu } from './Menu';
 export const UserMenu: FunctionComponent = () => {
   const {
     actions: {
-      userMenuClosed,
       modalOpened,
       signOutClicked,
-      userMenuOpened,
       files: { gotUploadedFiles },
     },
-    state: { user, userMenuOpen },
+    state: { user },
   } = useOvermind();
+  const menu = useMenuState({
+    placement: 'bottom-end',
+  });
 
   return (
     <Relative>
-      <ClickableContainer onClick={userMenuOpened}>
+      <MenuDisclosure
+        as={ClickableContainer}
+        {...menu}
+        aria-label="profile menu"
+      >
         <ProfileImage
           alt={user.username}
           width={30}
           height={30}
           src={user.avatarUrl}
         />
-      </ClickableContainer>
+      </MenuDisclosure>
 
-      {userMenuOpen && (
-        <HoverMenu onClose={() => userMenuClosed()}>
-          <Menu
-            openPreferences={() => modalOpened({ modal: 'preferences' })}
-            openStorageManagement={() => gotUploadedFiles(null)}
-            signOut={() => signOutClicked()}
-            username={user.username}
-            curator={user.curatorAt}
-            openFeedback={() => modalOpened({ modal: 'feedback' })}
-          />
-        </HoverMenu>
-      )}
+      <Menu
+        openPreferences={() => modalOpened({ modal: 'preferences' })}
+        openStorageManagement={() => gotUploadedFiles(null)}
+        signOut={() => signOutClicked()}
+        username={user.username}
+        curator={user.curatorAt}
+        openFeedback={() => modalOpened({ modal: 'feedback' })}
+        menuProps={menu}
+      />
     </Relative>
   );
 };

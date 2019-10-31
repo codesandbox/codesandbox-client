@@ -22,8 +22,17 @@ import {
 import { client } from 'app/graphql/client';
 import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
 
-import { transformSandbox } from '../utils/sandbox';
+import {
+  transformDirectory,
+  transformModule,
+  transformSandbox,
+} from '../utils/sandbox';
 import apiFactory, { Api, ApiConfig } from './apiFactory';
+import {
+  IDirectoryAPIResponse,
+  IModuleAPIResponse,
+  SandboxAPIResponse,
+} from './types';
 
 let api: Api;
 
@@ -63,7 +72,7 @@ export default {
     return api.get(`/dependencies/${name}@latest`);
   },
   async getSandbox(id: string): Promise<Sandbox> {
-    const sandbox = await api.get<Sandbox>(`/sandboxes/${id}`);
+    const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
 
     // We need to add client side properties for tracking
     return transformSandbox(sandbox);
@@ -73,27 +82,36 @@ export default {
       ? `/sandboxes/fork/${id}`
       : `/sandboxes/${id}/fork`;
 
-    const sandbox = await api.post<Sandbox>(url, body || {});
+    const sandbox = await api.post<SandboxAPIResponse>(url, body || {});
 
     return transformSandbox(sandbox);
   },
   createModule(sandboxId: string, module: Module): Promise<Module> {
-    return api.post(`/sandboxes/${sandboxId}/modules`, {
-      module: {
-        title: module.title,
-        directoryShortid: module.directoryShortid,
-        code: module.code,
-        isBinary: module.isBinary === undefined ? false : module.isBinary,
-      },
-    });
+    return api
+      .post<IModuleAPIResponse>(`/sandboxes/${sandboxId}/modules`, {
+        module: {
+          title: module.title,
+          directoryShortid: module.directoryShortid,
+          code: module.code,
+          isBinary: module.isBinary === undefined ? false : module.isBinary,
+        },
+      })
+      .then(transformModule);
   },
-  deleteModule(sandboxId: string, moduleShortid: string): Promise<void> {
-    return api.delete(`/sandboxes/${sandboxId}/modules/${moduleShortid}`);
+  async deleteModule(sandboxId: string, moduleShortid: string): Promise<void> {
+    await api.delete<IModuleAPIResponse>(
+      `/sandboxes/${sandboxId}/modules/${moduleShortid}`
+    );
   },
   saveModuleCode(sandboxId: string, module: Module): Promise<Module> {
-    return api.put(`/sandboxes/${sandboxId}/modules/${module.shortid}`, {
-      module: { code: module.code },
-    });
+    return api
+      .put<IModuleAPIResponse>(
+        `/sandboxes/${sandboxId}/modules/${module.shortid}`,
+        {
+          module: { code: module.code },
+        }
+      )
+      .then(transformModule);
   },
   saveModules(sandboxId: string, modules: Module[]) {
     return api.put(`/sandboxes/${sandboxId}/modules/mupdate`, {
@@ -123,20 +141,22 @@ export default {
     });
   },
   savePrivacy(sandboxId: string, privacy: 0 | 1 | 2) {
-    return api.patch(`/sandboxes/${sandboxId}/privacy`, {
+    return api.patch<SandboxAPIResponse>(`/sandboxes/${sandboxId}/privacy`, {
       sandbox: {
         privacy,
       },
     });
   },
   saveFrozen(sandboxId: string, isFrozen: boolean) {
-    return api.put(`/sandboxes/${sandboxId}`, {
+    return api.put<SandboxAPIResponse>(`/sandboxes/${sandboxId}`, {
       sandbox: {
         is_frozen: isFrozen,
       },
     });
   },
-  getEnvironmentVariables(sandboxId: string): Promise<EnvironmentVariable[]> {
+  getEnvironmentVariables(
+    sandboxId: string
+  ): Promise<{ [key: string]: string }> {
     return api.get(
       `/sandboxes/${sandboxId}/env`,
       {},
@@ -146,7 +166,7 @@ export default {
   saveEnvironmentVariable(
     sandboxId: string,
     environmentVariable: EnvironmentVariable
-  ): Promise<EnvironmentVariable[]> {
+  ): Promise<{ [key: string]: string }> {
     return api.post(
       `/sandboxes/${sandboxId}/env`,
       {
@@ -160,7 +180,7 @@ export default {
   deleteEnvironmentVariable(
     sandboxId: string,
     name: string
-  ): Promise<EnvironmentVariable[]> {
+  ): Promise<{ [key: string]: string }> {
     return api.delete(
       `/sandboxes/${sandboxId}/env/${name}`,
       {},
@@ -168,9 +188,12 @@ export default {
     );
   },
   saveModuleTitle(sandboxId: string, moduleShortid: string, title: string) {
-    return api.put(`/sandboxes/${sandboxId}/modules/${moduleShortid}`, {
-      module: { title },
-    });
+    return api.put<IModuleAPIResponse>(
+      `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
+      {
+        module: { title },
+      }
+    );
   },
   getPopularSandboxes(date: string): Promise<PopularSandboxes> {
     return api.get(`/sandboxes/popular?start_date=${date}`);
@@ -193,28 +216,33 @@ export default {
     directoryShortid: string,
     title: string
   ): Promise<Directory> {
-    return api.post(`/sandboxes/${sandboxId}/directories`, {
-      directory: {
-        title,
-        directoryShortid,
-      },
-    });
+    return api
+      .post<IDirectoryAPIResponse>(`/sandboxes/${sandboxId}/directories`, {
+        directory: {
+          title,
+          directoryShortid,
+        },
+      })
+      .then(transformDirectory);
   },
   saveModuleDirectory(
     sandboxId: string,
     moduleShortid: string,
     directoryShortid: string
   ) {
-    return api.put(`/sandboxes/${sandboxId}/modules/${moduleShortid}`, {
-      module: { directoryShortid },
-    });
+    return api.put<IDirectoryAPIResponse>(
+      `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
+      {
+        module: { directoryShortid },
+      }
+    );
   },
   saveDirectoryDirectory(
     sandboxId: string,
     sourceDirectoryShortid: string,
     targetDirectoryShortId: string
   ) {
-    return api.put(
+    return api.put<IDirectoryAPIResponse>(
       `/sandboxes/${sandboxId}/directories/${sourceDirectoryShortid}`,
       {
         directory: { directoryShortid: targetDirectoryShortId },
@@ -231,9 +259,12 @@ export default {
     directoryShortid: string,
     title: string
   ) {
-    return api.put(`/sandboxes/${sandboxId}/directories/${directoryShortid}`, {
-      directory: { title },
-    });
+    return api.put<IDirectoryAPIResponse>(
+      `/sandboxes/${sandboxId}/directories/${directoryShortid}`,
+      {
+        directory: { title },
+      }
+    );
   },
   getUploads(): Promise<UploadedFilesInfo> {
     return api.get('/users/current_user/uploads');
@@ -247,7 +278,7 @@ export default {
       name,
     });
   },
-  massCreateModules(
+  async massCreateModules(
     sandboxId: string,
     directoryShortid: string | null,
     modules: Module[],
@@ -256,11 +287,19 @@ export default {
     modules: Module[];
     directories: Directory[];
   }> {
-    return api.post(`/sandboxes/${sandboxId}/modules/mcreate`, {
+    const data = (await api.post(`/sandboxes/${sandboxId}/modules/mcreate`, {
       directoryShortid,
       modules,
       directories,
-    });
+    })) as {
+      modules: IModuleAPIResponse[];
+      directories: IDirectoryAPIResponse[];
+    };
+
+    return {
+      modules: data.modules.map(transformModule),
+      directories: data.directories.map(transformDirectory),
+    };
   },
   createGit(
     sandboxId: string,
@@ -372,7 +411,10 @@ export default {
       },
     });
   },
-  updatePrivacy(sandboxId: string, privacy: 0 | 1 | 2): Promise<void> {
+  updatePrivacy(
+    sandboxId: string,
+    privacy: 0 | 1 | 2
+  ): Promise<SandboxAPIResponse> {
     return api.patch(`/sandboxes/${sandboxId}/privacy`, {
       sandbox: {
         privacy,
@@ -414,7 +456,7 @@ export default {
   },
   createTemplate(
     sandboxId: string,
-    template: CustomTemplate
+    template: { color: string; description: string; title: string }
   ): Promise<CustomTemplate> {
     return api
       .post<{ template: CustomTemplate }>(`/sandboxes/${sandboxId}/templates`, {

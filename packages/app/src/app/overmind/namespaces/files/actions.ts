@@ -293,7 +293,7 @@ export const gotUploadedFiles: AsyncAction<string> = async (
 export const addedFileToSandbox: AsyncAction<{
   url: string;
   name: string;
-}> = async ({ actions }, { name, url }) => {
+}> = withOwnedSandbox(async ({ actions }, { name, url }) => {
   actions.internal.closeModals(false);
   await actions.files.moduleCreated({
     title: name,
@@ -301,50 +301,56 @@ export const addedFileToSandbox: AsyncAction<{
     code: url,
     isBinary: true,
   });
-};
+});
 
 export const deletedUploadedFile: AsyncAction<{
   id: string;
-}> = async ({ state, effects }, { id }) => {
+}> = withOwnedSandbox(async ({ state, effects }, { id }) => {
+  const index = state.uploadedFiles.findIndex(file => file.id === id);
+  const removedFiles = state.uploadedFiles.splice(index, 1);
+
   try {
     await effects.api.deleteUploadedFile(id);
-    state.uploadedFiles = null;
   } catch (error) {
+    state.uploadedFiles.splice(index, 0, ...removedFiles);
     effects.notificationToast.error('Unable to delete uploaded file');
   }
-};
+});
 
 export const filesUploaded: AsyncAction<{
   files: any[];
   directoryShortid: string;
-}> = async ({ state, effects, actions }, { files, directoryShortid }) => {
-  const modal = 'uploading';
-  effects.analytics.track('Open Modal', { modal });
-  // What message?
-  // state.currentModalMessage = message;
-  state.currentModal = modal;
+}> = withOwnedSandbox(
+  async ({ state, effects, actions }, { files, directoryShortid }) => {
+    const modal = 'uploading';
+    effects.analytics.track('Open Modal', { modal });
+    // What message?
+    // state.currentModalMessage = message;
+    state.currentModal = modal;
 
-  try {
-    const { modules, directories } = await actions.files.internal.uploadFiles({
-      files,
-      directoryShortid,
-    });
-    state.uploadedFiles = null;
+    try {
+      const { modules, directories } = await actions.files.internal.uploadFiles(
+        {
+          files,
+          directoryShortid,
+        }
+      );
 
-    actions.files.massCreateModules({
-      modules,
-      directories,
-      directoryShortid,
-    });
-  } catch (error) {
-    if (error.message.indexOf('413') !== -1) {
-      return;
+      actions.files.massCreateModules({
+        modules,
+        directories,
+        directoryShortid,
+      });
+    } catch (error) {
+      if (error.message.indexOf('413') !== -1) {
+        return;
+      }
+      effects.notificationToast.error(error.message);
     }
-    effects.notificationToast.error(error.message);
-  }
 
-  actions.internal.closeModals(false);
-};
+    actions.internal.closeModals(false);
+  }
+);
 
 export const massCreateModules: AsyncAction<{
   modules: any;
@@ -353,7 +359,7 @@ export const massCreateModules: AsyncAction<{
   cbID?: string;
 }> = withOwnedSandbox(
   async (
-    { state, effects, actions },
+    { state, effects },
     { modules, directories, directoryShortid, cbID }
   ) => {
     const sandboxId = state.editor.currentId;
@@ -387,7 +393,7 @@ export const massCreateModules: AsyncAction<{
       }
     } catch (error) {
       if (cbID) {
-        effects.vscode.callCallbackError(cbID);
+        effects.vscode.callCallbackError(cbID, error.message);
       }
 
       effects.notificationToast.error('Unable to create new files');

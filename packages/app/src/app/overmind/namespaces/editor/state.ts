@@ -1,7 +1,9 @@
 import getTemplate from '@codesandbox/common/lib/templates';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import {
+  DevToolsTabPosition,
   DiffTab,
   EditorSelection,
   Module,
@@ -9,9 +11,9 @@ import {
   ModuleError,
   ModuleTab,
   Sandbox,
+  SandboxFs,
   Tabs,
   WindowOrientation,
-  SandboxFs,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { Derive } from 'app/overmind';
@@ -30,7 +32,7 @@ type State = {
   };
   // TODO: What is this really? Could not find it in Cerebral, but
   // EditorPreview is using it... weird stuff
-  devToolTabs: Derive<State, any[]>;
+  devToolTabs: Derive<State, ViewConfig[]>;
   isLoading: boolean;
   notFound: boolean;
   error: string | null;
@@ -65,10 +67,7 @@ type State = {
   modulesByPath: SandboxFs;
   isAdvancedEditor: Derive<State, boolean>;
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
-  currentDevToolsPosition: {
-    devToolIndex: number;
-    tabPosition: number;
-  };
+  currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
 };
 

@@ -1,11 +1,10 @@
-const generateId = () => {
+const generateId = () =>
   // Such a random ID
-  return Math.random() * 1000000 + Math.random() * 1000000 + '';
-};
+  Math.floor(Math.random() * 1000000 + Math.random() * 1000000);
 
 export default class Protocol {
-  private outgoingMessages: Set<string> = new Set();
-  private internalId: string;
+  private outgoingMessages: Set<number> = new Set();
+  private internalId: number;
 
   constructor(
     private type: string,
@@ -105,8 +104,3 @@ export default class Protocol {
     }
   }
 }
-
-// {
-//   isFile(),
-//   readFile(),
-// }

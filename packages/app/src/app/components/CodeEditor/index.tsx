@@ -1,5 +1,4 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
 import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import React from 'react';

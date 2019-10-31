@@ -62,13 +62,10 @@ class SandboxPage extends React.Component {
 
     const { hasLogIn } = store;
 
-    if (store.editor.notFound) {
-      return <NotFound />;
-    }
-
     if (store.editor.error) {
       const isGithub = this.props.match.params.id.includes('github');
       const hasPrivateAccess = store.user && store.user.integrations.github;
+
       return (
         <>
           <div
@@ -114,6 +111,10 @@ class SandboxPage extends React.Component {
           )}
         </>
       );
+    }
+
+    if (store.editor.notFound) {
+      return <NotFound />;
     }
 
     if (

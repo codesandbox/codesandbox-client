@@ -7,8 +7,9 @@ import { TemplateType } from '@codesandbox/common/lib/templates';
 import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import track from '@codesandbox/common/lib/utils/analytics';
 
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 import { console } from './Console';
-import { DevToolTabs, ITabPosition } from './Tabs';
+import { DevToolTabs } from './Tabs';
 import { problems } from './Problems';
 import { reactDevTools } from './React-Devtools';
 import { terminal } from './Terminal';
@@ -95,9 +96,12 @@ type Props = {
   primary: boolean;
   viewConfig: ViewConfig;
   devToolIndex: number;
-  moveTab?: (prevPos: ITabPosition, nextPos: ITabPosition) => void;
-  closeTab?: (pos: ITabPosition) => void;
-  setPane: (pos: ITabPosition) => void;
+  moveTab?: (
+    prevPos: DevToolsTabPosition,
+    nextPos: DevToolsTabPosition
+  ) => void;
+  closeTab?: (pos: DevToolsTabPosition) => void;
+  setPane: (pos: DevToolsTabPosition) => void;
   addedViews?: IViews;
   hideTabs?: boolean;
   currentDevToolIndex: number;
@@ -226,10 +230,6 @@ export class DevTools extends React.PureComponent<Props, State> {
     status: 'success' | 'warning' | 'error' | 'info' | 'clear',
     count?: number
   ) => {
-    if (!this.state.hidden && this.getCurrentPane().id === id) {
-      return;
-    }
-
     const currentStatus = (status !== 'clear' && this.state.status[id]) || {
       unread: 0,
       type: 'info',
@@ -402,15 +402,6 @@ export class DevTools extends React.PureComponent<Props, State> {
       devToolIndex: this.props.devToolIndex,
       tabPosition: index,
     });
-    this.setState(state => ({
-      status: {
-        ...state.status,
-        [this.props.viewConfig.views[index].id]: {
-          type: 'info',
-          unread: 0,
-        },
-      },
-    }));
   };
 
   /**
