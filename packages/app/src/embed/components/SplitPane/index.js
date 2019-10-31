@@ -14,30 +14,48 @@ export default function({
 
   const [isDragging, setDragging] = React.useState(false);
   const [totalSize, setTotalSize] = React.useState(null);
+  const [snapped, setSnapped] = React.useState(false);
   const containerRef = React.useRef(null);
 
   // response to buttons in the header
+  // if there is no header, this can go in the default
   React.useEffect(() => {
     if (showEditor && showPreview) setSize('50%');
     else if (showEditor && !showPreview) setSize('100%');
     else if (showPreview && !showEditor) setSize('0%');
   }, [showEditor, showPreview]);
 
-  React.useEffect(() => {
+  // update max size possible based on  width of container
+  function updateTotalSize() {
     const sizeProp = split === 'horizontal' ? 'offsetHeight' : 'offsetWidth';
     setTotalSize(
       containerRef.current ? containerRef.current[sizeProp] : Infinity
     );
-  }, [containerRef, split]);
+  }
 
-  // TODO: handle window resize
+  // update total size in pixels when it's ready, useful for:
+  // 1. calculation in elements.Resizer
+  // 2. window resize events
+  React.useEffect(() => {
+    updateTotalSize();
+  }, [containerRef, split, updateTotalSize]);
 
-  // update with pixel size when we have the value
-  // that's useful for the calculation in elements.Resizer
+  // update size when totalSize changes
   React.useEffect(() => {
     if (size === '100%' && totalSize) setSize(totalSize);
+    else if (snapped === 'right') setSize(totalSize);
     else if (size === '50%' && totalSize) setSize(totalSize / 2);
-  }, [size, totalSize]);
+  }, [totalSize, snapped, size]);
+
+  // handle browser window resize
+  React.useEffect(() => {
+    const handleResize = () => {
+      updateTotalSize();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [totalSize, updateTotalSize]);
 
   // snap to edges
   const onDragFinished = width => {
@@ -46,6 +64,13 @@ export default function({
     else if (width > totalSize - 50) setSize(totalSize);
     else setSize(width);
   };
+
+  // sync snapped state based on size
+  React.useEffect(() => {
+    if (size === 0) setSnapped('left');
+    else if (size === totalSize) setSnapped('right');
+    else setSnapped('none');
+  }, [size, totalSize]);
 
   return (
     <Container
