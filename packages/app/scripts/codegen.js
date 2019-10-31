@@ -23,11 +23,11 @@ module.exports = {
       },
     },
   },
-  documents: `./src/**/*.gql`,
+  documents: [`./src/**/*.gql`, `./src/**/queries.ts`],
   overwrite: true,
-  // hooks: {
-  //   afterAllFileWrite: [`prettier --write`],
-  // },
+  hooks: {
+    afterAllFileWrite: [`prettier --write`],
+  },
   generates: {
     './src/app/graphql/types.ts': {
       plugins: [`typescript`, `typescript-operations`],

@@ -6,16 +6,17 @@ import {
   ListFollowedTemplatesQueryVariables,
   ListTemplatesQueryVariables,
 } from 'app/graphql/types';
+import { LIST_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 import { Loader } from '../../Loader/index';
 // @ts-ignore
-import { ListFollowedTemplates, ListTemplates } from '../../queries.gql';
+import { ListFollowedTemplates } from '../../queries.gql';
 import { TemplateList } from './TemplateList';
 
 export const PersonalTemplates = () => {
   const { data: mine, error: mineError } = useQuery<
     ListTemplatesQuery,
     ListTemplatesQueryVariables
-  >(ListTemplates, {
+  >(LIST_TEMPLATES, {
     variables: { showAll: true, teamId: undefined },
     fetchPolicy: 'cache-and-network',
   });

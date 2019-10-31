@@ -9,9 +9,14 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { ContextMenu } from 'app/components/ContextMenu';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { LIST_FOLLOWED_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
+import { LIST_BOOKMARKED_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 // @ts-ignore
-import { unbookmarkTemplatee } from './mutations.gql';
+import {
+  UnbookmarkTemplateFromDashboardMutation,
+  UnbookmarkTemplateFromDashboardMutationVariables,
+  ListFollowedTemplatesQuery,
+} from 'app/graphql/types';
+import { unbookmarkTemplateFromDashboard } from './mutations.gql';
 import { ButtonContainer } from './elements';
 
 import { Container, Grid, EmptyTitle } from '../elements';
@@ -19,21 +24,28 @@ import { Navigation } from '../Navigation';
 
 export const FollowedTemplates = props => {
   const { teamId } = props.match.params;
-  const [sortedTemplates, setSortedTemplates] = useState();
+  const [sortedTemplates, setSortedTemplates] = useState<
+    ListFollowedTemplatesQuery['me']['bookmarkedTemplates']
+  >();
 
-  const { loading, error, data } = useQuery(LIST_FOLLOWED_TEMPLATES);
+  const { loading, error, data } = useQuery<ListFollowedTemplatesQuery>(
+    LIST_BOOKMARKED_TEMPLATES
+  );
   const client = useApolloClient();
-  const [unfollow] = useMutation<any, any>(unbookmarkTemplatee, {
-    onCompleted({ unbookmarkTemplate: unfollowMutation }) {
-      const newTemplates = data.me.followedTemplates.filter(
-        template => template.id !== unfollowMutation.id
+  const [unBookmark] = useMutation<
+    UnbookmarkTemplateFromDashboardMutation,
+    UnbookmarkTemplateFromDashboardMutationVariables
+  >(unbookmarkTemplateFromDashboard, {
+    onCompleted({ unbookmarkTemplate: unbookmarkMutation }) {
+      const newTemplates = data.me.bookmarkedTemplates.filter(
+        template => template.id !== unbookmarkMutation.id
       );
       client.writeData({
         data: {
           ...data,
           me: {
             ...data.me,
-            followedTemplates: newTemplates,
+            bookmarkedTemplates: newTemplates,
           },
         },
       });
@@ -50,9 +62,9 @@ export const FollowedTemplates = props => {
     if (data && data.me) {
       if (teamId) {
         const team = data.me.teams.find(t => t.id === teamId);
-        setSortedTemplates(team.followedTemplates);
+        setSortedTemplates(team.bookmarkedTemplates);
       } else {
-        setSortedTemplates(data.me.followedTemplates);
+        setSortedTemplates(data.me.bookmarkedTemplates);
       }
     }
   }, [teamId, data]);
@@ -83,13 +95,13 @@ export const FollowedTemplates = props => {
 
   return (
     <Container>
-      <Navigation following teamId={teamId} number={orderedTemplates.length} />
+      <Navigation bookmarked teamId={teamId} number={orderedTemplates.length} />
       {!orderedTemplates.length && (
         <div>
           <EmptyTitle>
             <p style={{ marginBottom: '0.5rem' }}>
-              You are not following any templates yet. You can discover new
-              templates on the discover page!
+              You don{"'"}t have any bookmarked templates yet. You can discover
+              new templates on Template Universe!
             </p>
             <ButtonContainer>
               <Button small href="/docs/templates" secondary>
@@ -107,17 +119,18 @@ export const FollowedTemplates = props => {
           <ContextMenu
             items={[
               {
-                title: 'Unfollow Template',
+                title: 'Unbookmark Template',
                 action: () => {
-                  track('Template - Unfollowed', { source: 'Context Menu' });
+                  track('Template - Unbookmarked', { source: 'Context Menu' });
                   if (teamId) {
-                    unfollow({
-                      variables: { team: teamId, template: template.id },
+                    unBookmark({
+                      variables: { teamId, template: template.id },
                     });
                   } else {
-                    unfollow({
+                    unBookmark({
                       variables: {
                         template: template.id,
+                        teamId: undefined,
                       },
                     });
                   }

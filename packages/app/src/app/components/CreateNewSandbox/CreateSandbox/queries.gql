@@ -48,20 +48,3 @@ query ListFollowedTemplates {
     }
   }
 }
-
-query ListTemplates($teamId: ID, $showAll: Boolean) {
-  me {
-    templates(teamId: $teamId, showAll: $showAll) {
-      id
-      color
-      iconUrl
-      published
-      sandbox {
-        ...Sandbox
-        author {
-          username
-        }
-      }
-    }
-  }
-}

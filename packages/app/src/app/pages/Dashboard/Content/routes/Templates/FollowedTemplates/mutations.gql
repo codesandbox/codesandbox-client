@@ -1,5 +1,5 @@
-mutation unbookmarkTemplatee($template: ID!, $team: ID) {
-  unbookmarkTemplate(templateId: $template, teamId: $team) {
+mutation unbookmarkTemplateFromDashboard($template: ID!, $teamId: ID) {
+  unbookmarkTemplate(templateId: $template, teamId: $teamId) {
     id
     bookmarked {
       isBookmarked

@@ -14,13 +14,23 @@ import {
   LIST_TEMPLATES,
   unmakeTemplates,
 } from 'app/components/CreateNewSandbox/queries';
+import {
+  ListTemplatesQuery,
+  ListTemplatesQueryVariables,
+} from 'app/graphql/types';
+import { RouteComponentProps } from 'react-router';
 import { Container, Grid, EmptyTitle } from '../elements';
 import { Navigation } from '../Navigation';
 
-export const Templates = props => {
+type TemplatesProps = RouteComponentProps<{ teamId: string }> & {};
+
+export const Templates = (props: TemplatesProps) => {
   const { teamId } = props.match.params;
-  const { loading, error, data } = useQuery(LIST_TEMPLATES, {
-    variables: { teamId },
+  const { loading, error, data } = useQuery<
+    ListTemplatesQuery,
+    ListTemplatesQueryVariables
+  >(LIST_TEMPLATES, {
+    variables: { teamId, showAll: false },
   });
 
   if (error) {

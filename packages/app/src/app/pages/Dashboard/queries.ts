@@ -170,7 +170,7 @@ export const SET_SANDBOXES_PRIVACY_MUTATION = gql`
 `;
 
 export const RENAME_SANDBOX_MUTATION = gql`
-  mutation RenameSandbox($id: [ID]!, $title: String!) {
+  mutation RenameSandbox($id: ID!, $title: String!) {
     renameSandbox(id: $id, title: $title) {
       ...Sandbox
     }
@@ -448,7 +448,7 @@ export const REJECT_TEAM_INVITATION = gql`
 
 export const SET_TEAM_DESCRIPTION = gql`
   mutation SetTeamDescription($teamId: ID!, $description: String!) {
-    SetTeamDescription(teamId: $teamId, description: $description) {
+    setTeamDescription(teamId: $teamId, description: $description) {
       ...Team
     }
   }

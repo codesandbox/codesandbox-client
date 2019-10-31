@@ -9,9 +9,17 @@ import {
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { NotificationStatus } from '@codesandbox/notifications';
+import {
+  UnmakeSandboxesTemplateMutation,
+  UnmakeSandboxesTemplateMutationVariables,
+  ListTemplatesQueryVariables,
+  ListTemplatesQuery,
+  Collection,
+  PathedSandboxesQuery,
+} from 'app/graphql/types';
 
-export const LIST_FOLLOWED_TEMPLATES = gql`
-  query ListFollowedTemplates {
+export const LIST_BOOKMARKED_TEMPLATES = gql`
+  query ListBookmarkedTemplates {
     me {
       teams {
         id
@@ -79,8 +87,11 @@ export const UNMAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
-export function unmakeTemplates(selectedSandboxes, teamId) {
-  return client.mutate({
+export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
+  return client.mutate<
+    UnmakeSandboxesTemplateMutation,
+    UnmakeSandboxesTemplateMutationVariables
+  >({
     mutation: UNMAKE_SANDBOXES_TEMPLATE_MUTATION,
     variables: {
       sandboxIds: selectedSandboxes,
@@ -94,13 +105,13 @@ export function unmakeTemplates(selectedSandboxes, teamId) {
     ],
     update: cache => {
       try {
-        const variables = {};
+        const variables: Partial<ListTemplatesQueryVariables> = {};
 
         if (teamId) {
           variables.teamId = teamId;
         }
 
-        const oldTemplatesCache = cache.readQuery({
+        const oldTemplatesCache = cache.readQuery<ListTemplatesQuery>({
           query: LIST_TEMPLATES,
           variables,
         });
@@ -123,14 +134,23 @@ export function unmakeTemplates(selectedSandboxes, teamId) {
   });
 }
 
-export function makeTemplates(selectedSandboxes, teamId, collections) {
+export function makeTemplates(
+  selectedSandboxes: string[],
+  teamId?: string,
+  collections?: Collection[]
+) {
+  const unpackedSelectedSandboxes: string[] =
+    // @ts-ignore
+    typeof selectedSandboxes.toJS === 'function'
+      ? (selectedSandboxes as any).toJS()
+      : selectedSandboxes;
   return Promise.all([
-    addSandboxesToFolder(selectedSandboxes, '/', teamId),
+    addSandboxesToFolder(unpackedSelectedSandboxes, '/', teamId),
     client
       .mutate({
         mutation: MAKE_SANDBOXES_TEMPLATE_MUTATION,
         variables: {
-          sandboxIds: selectedSandboxes.toJS(),
+          sandboxIds: unpackedSelectedSandboxes,
         },
         refetchQueries: [
           'DeletedSandboxes',
@@ -143,13 +163,15 @@ export function makeTemplates(selectedSandboxes, teamId, collections) {
           if (collections) {
             collections.forEach(({ path, teamId: cacheTeamId }) => {
               try {
-                const variables = { path };
+                const variables: { path: string; teamId?: string } = { path };
 
                 if (cacheTeamId) {
                   variables.teamId = cacheTeamId;
                 }
 
-                const oldFolderCacheData = cache.readQuery({
+                const oldFolderCacheData = cache.readQuery<
+                  PathedSandboxesQuery
+                >({
                   query: PATHED_SANDBOXES_CONTENT_QUERY,
                   variables,
                 });
@@ -174,7 +196,7 @@ export function makeTemplates(selectedSandboxes, teamId, collections) {
       })
       .then(() => {
         notificationState.addNotification({
-          title: `Successfully created ${selectedSandboxes.length} template${
+          message: `Successfully created ${selectedSandboxes.length} template${
             selectedSandboxes.length === 1 ? '' : 's'
           }`,
           status: NotificationStatus.SUCCESS,
@@ -186,7 +208,7 @@ export function makeTemplates(selectedSandboxes, teamId, collections) {
                   track('Template - Removed', {
                     source: 'Undo',
                   });
-                  unmakeTemplates(selectedSandboxes.toJS());
+                  unmakeTemplates(unpackedSelectedSandboxes);
                 },
               },
             ],

@@ -4,20 +4,24 @@ import { Container, NavigationLink, Number } from './elements';
 interface INavigationProps {
   teamId?: string;
   number?: number;
-  following?: boolean;
+  bookmarked?: boolean;
 }
 
-export const Navigation = ({ teamId, number, following }: INavigationProps) => (
+export const Navigation = ({
+  teamId,
+  number,
+  bookmarked,
+}: INavigationProps) => (
   <Container>
-    {following ? (
+    {bookmarked ? (
       <NavigationLink
         to={
           teamId
-            ? `/dashboard/teams/${teamId}/templates/followed`
-            : `/dashboard/templates/followed`
+            ? `/dashboard/teams/${teamId}/templates/bookmarked`
+            : `/dashboard/templates/bookmarked`
         }
       >
-        {teamId ? 'Team Followed Templates' : 'Followed Templates'}
+        {teamId ? 'Team Bookmarked Templates' : 'Bookmarked Templates'}
       </NavigationLink>
     ) : (
       <NavigationLink
