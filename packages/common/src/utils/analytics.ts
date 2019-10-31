@@ -102,15 +102,19 @@ export async function initializeSentry(dsn: string) {
         if (
           event.stacktrace &&
           event.stacktrace.frames &&
-          event.stacktrace.frames[0] &&
-          event.stacktrace.frames[0].filename.endsWith(
-            'codesandbox.editor.main.js'
-          )
+          event.stacktrace.frames[0]
         ) {
-          // This is the spammy event that doesn't do anything: https://sentry.io/organizations/codesandbox/issues/1054971728/?project=155188&query=is%3Aunresolved
-          // Don't do anything with it right now, I can't seem to reproduce it for some reason.
-          // We need to add sourcemaps
-          return undefined;
+          const { filename } = event.stacktrace.frames[0];
+
+          if (
+            filename.endsWith('codesandbox.editor.main.js') ||
+            filename.startsWith('/extensions/')
+          ) {
+            // This is the spammy event that doesn't do anything: https://sentry.io/organizations/codesandbox/issues/1054971728/?project=155188&query=is%3Aunresolved
+            // Don't do anything with it right now, I can't seem to reproduce it for some reason.
+            // We need to add sourcemaps
+            return undefined;
+          }
         }
 
         const customError = ((hint && (hint.originalException as any)) || {})
