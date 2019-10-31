@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropTarget } from 'react-dnd';
+import { DropTarget, DropTargetMonitor } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
 import { useOvermind } from 'app/overmind';
 import { Alert } from 'app/components/Alert';
@@ -11,23 +11,24 @@ import { EntryContainer, Opener, Overlay } from './elements';
 import Entry from './Entry';
 import validateTitle from './validateTitle';
 
-const readDataURL = imageFile =>
+const readDataURL = (file: File): Promise<string | ArrayBuffer> =>
   new Promise(resolve => {
     const reader = new FileReader();
     reader.onload = e => {
       resolve(e.target.result);
     };
-    reader.readAsDataURL(imageFile);
+    reader.readAsDataURL(file);
   });
 
-const getFiles = async (files: File[]) => {
+type parsedFiles = { [k: string]: { dataURI: string; type: string } };
+const getFiles = async (files: File[] | FileList): Promise<parsedFiles> => {
   const returnedFiles = {};
   await Promise.all(
     Array.from(files)
       .filter(Boolean)
       .map(async file => {
         const dataURI = await readDataURL(file);
-        returnedFiles[file.path || file.name] = {
+        returnedFiles[file.name] = {
           dataURI,
           type: file.type,
         };
@@ -37,7 +38,24 @@ const getFiles = async (files: File[]) => {
   return returnedFiles;
 };
 
-const DirectoryEntry = ({
+interface DeleteModal {
+  type: 'module' | 'directory';
+  title: string;
+  shortid: string;
+}
+
+interface Props {
+  id: string;
+  root: boolean;
+  initializeProperties: Function;
+  shortid: string;
+  connectDropTarget: Function;
+  isOver: boolean;
+  depth: number;
+  getModulePath: Function;
+}
+
+const DirectoryEntry: React.FunctionComponent<Props> = ({
   id,
   root,
   initializeProperties,
@@ -72,11 +90,9 @@ const DirectoryEntry = ({
 
   const [creating, setCreating] = React.useState('');
   const [open, setOpen] = React.useState(root || shouldDirectoryBeOpen(id));
-  const [deleteModal, setDeleteModal] = React.useState<{
-    type: 'module' | 'directory';
-    title: string;
-    shortid: string;
-  }>(null);
+  const [deleteModal, setDeleteModal] = React.useState<DeleteModal | null>(
+    null
+  );
 
   React.useEffect(() => {
     if (initializeProperties) {
@@ -100,6 +116,12 @@ const DirectoryEntry = ({
     [id, reaction, shouldDirectoryBeOpen]
   );
 
+  React.useEffect(() => {
+    if (isOver) {
+      setOpen(true);
+    }
+  }, [isOver]);
+
   const resetState = () => setCreating('');
 
   const onCreateModuleClick = () => {
@@ -109,7 +131,7 @@ const DirectoryEntry = ({
     return true;
   };
 
-  const createModule = (_, title) => {
+  const createModule = (_, title: string) => {
     moduleCreated({
       title,
       directoryShortid: shortid,
@@ -118,11 +140,11 @@ const DirectoryEntry = ({
     resetState();
   };
 
-  const renameModule = (moduleShortid, title) => {
+  const renameModule = (moduleShortid: string, title: string) => {
     moduleRenamed({ moduleShortid, title });
   };
 
-  const deleteModule = (moduleId, title) => {
+  const deleteModule = (moduleId: string, title: string) => {
     setDeleteModal({
       type: 'module',
       shortid: moduleId,
@@ -137,7 +159,7 @@ const DirectoryEntry = ({
     return true;
   };
 
-  const createDirectory = (_, title) => {
+  const createDirectory = (_, title: string) => {
     directoryCreated({
       title,
       directoryShortid: shortid,
@@ -150,7 +172,8 @@ const DirectoryEntry = ({
     fileSelector.setAttribute('type', 'file');
     fileSelector.setAttribute('multiple', 'true');
     fileSelector.onchange = async event => {
-      const files = await getFiles(event.target.files);
+      const target = event.target as HTMLInputElement;
+      const files = await getFiles(target.files);
 
       filesUploaded({
         files,
@@ -376,7 +399,7 @@ const entryTarget = {
   },
 };
 
-function collectTarget(connectMonitor, monitor) {
+function collectTarget(connectMonitor, monitor: DropTargetMonitor) {
   return {
     // Call this function inside render()
     // to let React DnD handle the drag events:

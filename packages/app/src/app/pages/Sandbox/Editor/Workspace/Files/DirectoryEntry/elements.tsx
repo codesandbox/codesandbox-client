@@ -4,7 +4,7 @@ export const EntryContainer = styled.div`
   position: relative;
 `;
 
-export const Overlay = styled.div`
+export const Overlay = styled.div<{ isOver: boolean }>`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -14,7 +14,7 @@ export const Overlay = styled.div`
   display: ${props => (props.isOver ? 'block' : 'none')};
 `;
 
-export const Opener = styled.div`
+export const Opener = styled.div<{ open: boolean }>`
   height: ${props => (props.open ? '100%' : '0px')};
   overflow: hidden;
 `;

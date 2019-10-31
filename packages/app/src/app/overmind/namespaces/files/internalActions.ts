@@ -60,7 +60,7 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
 
 export const uploadFiles: AsyncAction<
   {
-    files: any[];
+    files: { [k: string]: { dataURI: string; type: string } };
     directoryShortid: string;
   },
   {
