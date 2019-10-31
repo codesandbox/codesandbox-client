@@ -298,6 +298,8 @@ jobs:
       - docker_cache
   deploy-to-production:
     executor: node
+    environment:
+      ENVIRONMENT: production
     steps:
       - checkout_with_cache
       - restore_cache: *restore_deps_cache
@@ -311,6 +313,17 @@ jobs:
       - run:
           name: Deploy Sentry release
           command: node packages/app/scripts/sentry-deploy-release.js
+  deploy-to-staging:
+    executor: node
+    environment:
+      ENVIRONMENT: staging
+    steps:
+      - checkout_with_cache
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
+      - run:
+          name: Deploy Image
+          command: node packages/app/scripts/deploy.js
 
 ################################
 # Workflows
@@ -347,6 +360,16 @@ workflows:
           type: approval
           requires:
             - create-docker-image
+          branches:
+            only:
+              - master
       - deploy-to-production:
           requires:
             - deploy-production-approval
+      - deploy-staging-approval:
+          type: approval
+          requires:
+            - create-docker-image
+      - deploy-to-staging:
+          requires:
+            - deploy-staging-approval

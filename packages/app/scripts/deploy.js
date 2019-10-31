@@ -7,7 +7,7 @@ fetch('https://deployment-api.lbogdan.ro/image', {
     Authorization: `Bearer ${process.env.DEPLOY_TOKEN}`,
   },
   body: JSON.stringify({
-    env: 'production',
+    env: process.env.ENVIRONMENT,
     image: 'client',
     tag: process.env.CIRCLE_SHA1.substr(0, 7),
     deploy: true,
