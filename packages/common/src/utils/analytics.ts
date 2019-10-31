@@ -107,6 +107,15 @@ export async function initializeSentry(dsn: string) {
           const { filename } = event.stacktrace.frames[0];
 
           if (
+            filename.includes('typescript-worker') &&
+            event.message &&
+            event.message.includes('too much recursion')
+          ) {
+            // https://sentry.io/organizations/codesandbox/issues/1293123855/events/b01ee0feb7e3415a8bb81b6a9df19152/?project=155188&query=is%3Aunresolved&statsPeriod=14d
+            return undefined;
+          }
+
+          if (
             filename.endsWith('codesandbox.editor.main.js') ||
             filename.startsWith('/extensions/')
           ) {
