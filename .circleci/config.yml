@@ -365,8 +365,10 @@ workflows:
       - deploy-to-production:
           requires:
             - deploy-production-approval
+            - create-docker-image
       - deploy-staging-approval:
           type: approval
       - deploy-to-staging:
           requires:
             - deploy-staging-approval
+            - create-docker-image
