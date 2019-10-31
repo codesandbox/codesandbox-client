@@ -358,8 +358,6 @@ workflows:
             - test-jest
       - deploy-production-approval:
           type: approval
-          requires:
-            - create-docker-image
           filters:
             branches:
               only:
@@ -369,8 +367,6 @@ workflows:
             - deploy-production-approval
       - deploy-staging-approval:
           type: approval
-          requires:
-            - create-docker-image
       - deploy-to-staging:
           requires:
             - deploy-staging-approval
