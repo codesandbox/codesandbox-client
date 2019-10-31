@@ -1,13 +1,15 @@
+import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
+
+import { FileSystemConfiguration } from '../../../../../../../../../standalone-packages/codesandbox-browserfs';
+import { EXTENSIONS_LOCATION } from '../../constants';
 import {
-  writeFile,
+  mkdir,
   rename,
   rmdir,
   unlink,
-  mkdir,
+  writeFile,
 } from '../../sandboxFsSync/utils';
-import { FileSystemConfiguration } from '../../../../../../../../../standalone-packages/codesandbox-browserfs';
 import { getTypeFetcher } from './type-downloader';
-import { EXTENSIONS_LOCATION } from '../../constants';
 
 const global = self as any;
 
@@ -85,18 +87,12 @@ export async function initializeBrowserFS({
         console.error(e);
         return;
       }
-      let resolved = false;
 
       if (syncSandbox) {
         self.addEventListener('message', evt => {
           switch (evt.data.$type) {
             case 'sandbox-fs': {
               currentSandboxFs = evt.data.$data;
-
-              if (!resolved) {
-                resolve();
-                resolved = true;
-              }
               break;
             }
             case 'writeFile': {
@@ -126,9 +122,15 @@ export async function initializeBrowserFS({
             }
           }
         });
-      } else {
-        resolve();
+
+        commonPostMessage({
+          $broadcast: true,
+          $type: 'sync-sandbox',
+          $data: {},
+        });
       }
+
+      resolve();
 
       // BrowserFS is initialized and ready-to-use!
     });

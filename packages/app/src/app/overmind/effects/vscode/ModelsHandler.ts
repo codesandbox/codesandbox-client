@@ -76,12 +76,14 @@ export class ModelsHandler {
     return null;
   }
 
-  public changeModule = (module: Module) => {
+  public changeModule = async (module: Module) => {
     if (getCurrentModelPath(this.editorApi) !== module.path) {
-      return this.editorApi.openFile(module.path);
+      const file = await this.editorApi.openFile(module.path);
+
+      return file.getModel();
     }
 
-    return Promise.resolve();
+    return Promise.resolve(getModel(this.editorApi));
   };
 
   public applyOperations(operations: { [moduleShortid: string]: any }) {

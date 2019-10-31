@@ -4,22 +4,21 @@ import {
   EditorSelection,
   Module,
   Sandbox,
-  Settings,
   SandboxFs,
+  Settings,
 } from '@codesandbox/common/lib/types';
 import {
   convertTypeToStatus,
   notificationState,
 } from '@codesandbox/common/lib/utils/notifications';
-import FontFaceObserver from 'fontfaceobserver';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { Reaction } from 'app/overmind';
 import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
+import FontFaceObserver from 'fontfaceobserver';
 import * as childProcess from 'node-services/lib/child_process';
 
-import sandboxFsSync from './sandboxFsSync';
 import {
   initializeCustomTheme,
   initializeExtensionsFolder,
@@ -28,6 +27,7 @@ import {
 } from './initializers';
 import { Linter } from './Linter';
 import { ModelsHandler, OnFileChangeData } from './ModelsHandler';
+import sandboxFsSync from './sandboxFsSync';
 import { getCode, getModel, getSelection, getVSCodePath } from './utils';
 import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
@@ -123,10 +123,7 @@ export class VSCodeEffect {
       sandboxFsSync.initialize({
         getSandboxFs: options.getSandboxFs,
       }),
-    ]).then(() => {
-      sandboxFsSync.sync();
-      return this.loadEditor(window.monaco, container);
-    });
+    ]).then(() => this.loadEditor(window.monaco, container));
 
     return this.initialized;
   }
@@ -262,16 +259,16 @@ export class VSCodeEffect {
       sandbox,
       this.onFileChange
     );
+
+    this.fs.sync();
   }
 
   public async openModule(module: Module) {
     await this.initialized;
-    await this.modelsHandler.changeModule(module);
-
-    const model = getModel(this.editorApi);
+    const model = await this.modelsHandler.changeModule(module);
 
     this.linter.lint(
-      getCode(this.editorApi),
+      model.getValue(),
       module.title,
       model.getVersionId(),
       this.options.getCurrentSandbox().template

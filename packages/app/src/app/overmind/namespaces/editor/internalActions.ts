@@ -15,7 +15,6 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -335,6 +334,7 @@ export const setCurrentModule: Action<Module> = (
   }
 
   state.editor.currentModuleShortid = module.shortid;
+  effects.vscode.openModule(module);
 };
 
 export const updateSandboxPackageJson: AsyncAction = async ({

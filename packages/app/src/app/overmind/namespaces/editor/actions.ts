@@ -290,6 +290,7 @@ export const likeSandboxToggled: AsyncAction<{
   state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
+// This might be called from explorer or vscode
 export const moduleSelected: Action<{
   path?: string;
   id?: string;
@@ -313,9 +314,11 @@ export const moduleSelected: Action<{
       );
     }
 
-    actions.editor.internal.setCurrentModule(module);
+    if (module.shortid === state.editor.currentModuleShortid) {
+      return;
+    }
 
-    effects.vscode.openModule(module);
+    actions.editor.internal.setCurrentModule(module);
 
     if (state.live.isLive) {
       /*

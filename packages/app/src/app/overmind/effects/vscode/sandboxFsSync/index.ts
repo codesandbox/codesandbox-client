@@ -1,22 +1,24 @@
 import { dirname } from 'path';
 
-import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import {
   getDirectoryPath,
   getModulePath,
 } from '@codesandbox/common/lib/sandbox/modules';
 import {
-  SandboxFs,
-  Module,
   Directory,
+  Module,
   Sandbox,
+  SandboxFs,
 } from '@codesandbox/common/lib/types';
+import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { blocker } from 'app/utils/blocker';
 import { json } from 'overmind';
+
 import { EXTENSIONS_LOCATION } from '../constants';
 import { getTypeFetcher } from '../extensionHostWorker/common/type-downloader';
-import { writeFile, rename, rmdir, unlink, mkdir } from './utils';
+import { mkdir, rename, rmdir, unlink, writeFile } from './utils';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
@@ -39,12 +41,27 @@ class SandboxFsSync {
   private options: SandboxFsSyncOptions;
   private types: any;
   private typesInfo: Promise<any>;
+  private initializingWorkers = blocker<void>();
+  // We do not want to send initial sandbox until
+  // all 3 filesystems are running
+  private workersInitializedCount = 0;
   public initialize(options: SandboxFsSyncOptions) {
     this.options = options;
     self.addEventListener('message', evt => {
-      if (evt.data.$type === 'request-data') {
-        this.sendTypes();
-        this.sync();
+      if (this.initializingWorkers.isResolved()) {
+        if (evt.data.$type === 'sync-types') {
+          this.syncDependencyTypings();
+        }
+
+        if (evt.data.$type === 'sync-sandbox') {
+          this.syncSandbox();
+        }
+      } else if (evt.data.$type === 'sync-sandbox') {
+        this.workersInitializedCount++;
+
+        if (this.workersInitializedCount === 3) {
+          this.initializingWorkers.resolve();
+        }
       }
     });
 
@@ -97,17 +114,18 @@ class SandboxFsSync {
     });
   }
 
-  public sync() {
-    global.postMessage(
-      {
-        $broadcast: true,
-        $type: 'sandbox-fs',
-        $data: json(this.options.getSandboxFs()),
-      },
-      protocolAndHost()
-    );
+  public async sync() {
+    await this.initializingWorkers.promise;
 
-    this.syncDependencyTypings();
+    console.log('## SYNCING SANDBOX AND TYPINGS WITH WORKERS');
+    this.syncSandbox();
+
+    try {
+      await this.syncDependencyTypings();
+    } catch (error) {
+      // Might not be a filesystem ready yet
+      // console.log('ERROR SYNCING', error);
+    }
   }
 
   public create(sandbox: Sandbox): SandboxFs {
@@ -134,21 +152,6 @@ class SandboxFsSync {
         sandboxFs[path] = { ...d, path, type: 'directory' };
       }
     });
-
-    return sandboxFs;
-  }
-
-  public reset(sandbox: Sandbox): SandboxFs {
-    const sandboxFs = this.create(sandbox);
-
-    global.postMessage(
-      {
-        $broadcast: true,
-        $type: 'sandbox-fs',
-        $data: json(sandboxFs),
-      },
-      protocolAndHost()
-    );
 
     return sandboxFs;
   }
@@ -203,6 +206,17 @@ class SandboxFsSync {
     );
   }
 
+  private syncSandbox() {
+    global.postMessage(
+      {
+        $broadcast: true,
+        $type: 'sandbox-fs',
+        $data: json(this.options.getSandboxFs()),
+      },
+      protocolAndHost()
+    );
+  }
+
   private send(type: string, data: any) {
     global.postMessage(
       {
@@ -215,18 +229,14 @@ class SandboxFsSync {
   }
 
   private async syncDependencyTypings() {
-    try {
-      const syncDetails = await this.getDependencyTypingsSyncDetails();
+    const syncDetails = await this.getDependencyTypingsSyncDetails();
 
-      if (syncDetails) {
-        this.types = await this.getDependencyTypings(
-          syncDetails.packageJsonContent,
-          syncDetails.autoInstall
-        );
-        this.sendTypes();
-      }
-    } catch (error) {
-      console.error('DependencyTypingsSync', error);
+    if (syncDetails) {
+      this.types = await this.getDependencyTypings(
+        syncDetails.packageJsonContent,
+        syncDetails.autoInstall
+      );
+      this.sendTypes();
     }
   }
 
