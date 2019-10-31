@@ -168,12 +168,6 @@ commands:
       - run:
           name: Build Application
           command: yarn build:prod
-      - run:
-          name: Mark Sentry release
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              node packages/app/scripts/sentry-create-release.js
-            fi
       - save_cache: *save_prod_build_cache
       - save_cache: *save_prod_result
       - run:
@@ -307,16 +301,17 @@ jobs:
       - image: curlimages/curl:7.65.3
     steps:
       - run:
+          name: Mark Sentry release
+          command: node packages/app/scripts/sentry-create-release.js
+      - checkout_with_cache
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
+      - run:
           name: Deploy Image
-          command: |
-            curl --request POST \
-              --url https://deployment-api.lbogdan.ro/image \
-              --header 'Accept: */*' \
-              --header 'Authorization: Bearer '$DEPLOY_TOKEN'' \
-              --header 'Content-Type: application/json' \
-              --header 'Postman-Token: e9e28b11-1889-488e-92c8-d8e41ef24e75' \
-              --header 'cache-control: no-cache' \
-              --data '{ "env": "production", "image": "client", "tag": "'${CIRCLE_SHA1:0:7}'", "deploy": true }'
+          command: node packages/app/scripts/deploy.js
+      - run:
+          name: Deploy Sentry release
+          command: node packages/app/scripts/sentry-deploy-release.js
 
 ################################
 # Workflows
