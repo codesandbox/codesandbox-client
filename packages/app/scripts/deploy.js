@@ -1,4 +1,4 @@
-const { fetch } = require('whatwg-fetch');
+const fetch = require('cross-fetch');
 
 fetch('https://deployment-api.lbogdan.ro/image', {
   method: 'POST',
