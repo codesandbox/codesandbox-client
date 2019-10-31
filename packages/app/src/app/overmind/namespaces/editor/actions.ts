@@ -1,5 +1,4 @@
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
-import { getHashedUserId } from '@codesandbox/common/lib/utils/analytics';
 import {
   EnvironmentVariable,
   ModuleCorrection,
@@ -7,6 +6,7 @@ import {
   ModuleTab,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
+import { getHashedUserId } from '@codesandbox/common/lib/utils/analytics';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
@@ -576,6 +576,7 @@ export const previewActionReceived: Action<{
 
         module.errors.push(json(error));
         state.editor.errors.push(error);
+        effects.vscode.setErrors(state.editor.errors);
       } catch (e) {
         /* ignore, this module can be in a node_modules for example */
       }
@@ -601,6 +602,7 @@ export const previewActionReceived: Action<{
 
         state.editor.corrections.push(correction);
         module.corrections.push(json(correction));
+        effects.vscode.setCorrections(state.editor.corrections);
       } catch (e) {
         /* ignore, this module can be in a node_modules for example */
       }
@@ -631,6 +633,7 @@ export const previewActionReceived: Action<{
           module.errors.push(error);
         });
         state.editor.errors = newErrors;
+        effects.vscode.setErrors(state.editor.errors);
       }
       break;
     }
@@ -667,6 +670,7 @@ export const previewActionReceived: Action<{
           module.corrections.push(correction);
         });
         state.editor.corrections = newCorrections;
+        effects.vscode.setCorrections(state.editor.corrections);
       }
       break;
     }

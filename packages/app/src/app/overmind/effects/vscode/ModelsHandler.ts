@@ -1,7 +1,4 @@
-import {
-  getModulePath,
-  resolveModule,
-} from '@codesandbox/common/lib/sandbox/modules';
+import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import {
   EditorSelection,
   Module,
@@ -13,7 +10,7 @@ import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
 import { TextOperation } from 'ot';
 
-import { getCurrentModelPath, getModel, getVSCodePath } from './utils';
+import { getCurrentModelPath, getModel } from './utils';
 
 // @ts-ignore
 const fadeIn = css.keyframes('fadeIn', {
@@ -34,6 +31,7 @@ export type OnFileChangeData = {
   title: string;
   code: string;
   event?: any[];
+  model?: any;
 };
 
 export type OnFileChangeCallback = (data: OnFileChangeData) => void;
@@ -147,6 +145,7 @@ export class ModelsHandler {
               code: model.object.textEditorModel.getValue(),
               moduleShortid: module.shortid,
               title: module.title,
+              model,
             });
           }
         });
@@ -462,6 +461,7 @@ export class ModelsHandler {
           title: module.title,
           code: model.getValue(),
           event: e,
+          model,
         });
       } catch (err) {
         if (process.env.NODE_ENV === 'development') {

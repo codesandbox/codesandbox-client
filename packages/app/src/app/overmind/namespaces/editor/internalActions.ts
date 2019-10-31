@@ -88,8 +88,6 @@ export const saveCode: AsyncAction<{
     moduleShortid,
   });
 
-  effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
-
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
 
@@ -98,6 +96,7 @@ export const saveCode: AsyncAction<{
     module.savedCode =
       updatedModule.code === module.code ? null : updatedModule.code;
 
+    effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
     effects.moduleRecover.remove(sandbox.id, module);
 
     state.editor.changedModuleShortids.splice(

@@ -42,12 +42,12 @@ class SandboxFsSync {
   private types: any;
   private typesInfo: Promise<any>;
   private initializingWorkers = blocker<void>();
-  // We do not want to send initial sandbox until
-  // all 3 filesystems are running
   private workersInitializedCount = 0;
   public initialize(options: SandboxFsSyncOptions) {
     this.options = options;
     self.addEventListener('message', evt => {
+      // We do not want to send initial sandbox until
+      // all 3 filesystems are running
       if (this.initializingWorkers.isResolved()) {
         if (evt.data.$type === 'sync-types') {
           this.syncDependencyTypings();
@@ -117,6 +117,7 @@ class SandboxFsSync {
   public async sync() {
     await this.initializingWorkers.promise;
 
+    // eslint-disable-next-line
     console.log('## SYNCING SANDBOX AND TYPINGS WITH WORKERS');
     this.syncSandbox();
 

@@ -1,26 +1,22 @@
-import React from 'react';
 import {
-  listen,
-  dispatch,
   actions,
+  dispatch,
+  listen,
   registerFrame,
   resetState,
 } from 'codesandbox-api';
 import debounce from 'lodash/debounce';
-import { Spring } from 'react-spring/renderprops.cjs';
-import { Sandbox, Module } from '../../types';
+import React from 'react';
 
-import { frameUrl, host } from '../../utils/url-generator';
 import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
-
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
-
-import { getSandboxName } from '../../utils/get-sandbox-name';
+import { Module, Sandbox } from '../../types';
 import track from '../../utils/analytics';
-
+import { getSandboxName } from '../../utils/get-sandbox-name';
+import { frameUrl, host } from '../../utils/url-generator';
+import { Container, Loading, StyledFrame } from './elements';
 import Navigator from './Navigator';
-import { Container, StyledFrame, Loading } from './elements';
 import { Settings } from './types';
 
 export type Props = {
@@ -34,7 +30,6 @@ export type Props = {
   initialPath?: string;
   url?: string;
   isInProjectView?: boolean;
-  modulesByPath?: IModulesByPath;
   onClearErrors?: () => void;
   onAction?: (action: Object) => void;
   onOpenNewWindow?: () => void;
@@ -350,12 +345,25 @@ class BasePreview extends React.Component<Props, State> {
   getRenderedModule = () => {
     const { sandbox, currentModule, isInProjectView } = this.props;
 
-    return isInProjectView ? '/' + sandbox.entry : currentModule.path;
+    return isInProjectView
+      ? '/' + sandbox.entry
+      : getModulePath(sandbox.modules, sandbox.directories, currentModule.id);
   };
 
   getModulesToSend = (): IModulesByPath => {
-    const modulesObject: IModulesByPath = this.props.modulesByPath;
+    const modulesObject: IModulesByPath = {};
     const { sandbox } = this.props;
+
+    sandbox.modules.forEach(m => {
+      const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
+      if (path) {
+        modulesObject[path] = {
+          path,
+          code: m.code,
+          isBinary: m.isBinary,
+        };
+      }
+    });
 
     const extraModules = this.props.extraModules || {};
     const modulesToSend = { ...extraModules, ...modulesObject };
@@ -399,7 +407,6 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       const modulesToSend = this.getModulesToSend();
-
       if (!this.serverPreview) {
         dispatch({
           type: 'compile',
@@ -514,9 +521,6 @@ class BasePreview extends React.Component<Props, State> {
       return null;
     }
 
-    // Weird TS typing bug
-    const AnySpring = Spring as any;
-
     return (
       <Container
         className={className}
@@ -544,63 +548,51 @@ class BasePreview extends React.Component<Props, State> {
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
 
-        <AnySpring
-          from={{ opacity: 0 }}
-          to={{
-            opacity: this.state.showScreenshot ? 0 : 1,
+        <StyledFrame
+          sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
+          allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+          src={this.currentUrl()}
+          ref={this.setIframeElement}
+          title={getSandboxName(sandbox)}
+          id="sandbox-preview"
+          style={{
+            zIndex: 1,
+            backgroundColor: 'white',
+            pointerEvents:
+              dragging || inactive || this.props.isResizing
+                ? 'none'
+                : 'initial',
           }}
-        >
-          {(style: { opacity: number }) => (
-            <>
-              <StyledFrame
-                sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-                allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
-                src={this.currentUrl()}
-                ref={this.setIframeElement}
-                title={getSandboxName(sandbox)}
-                id="sandbox-preview"
-                style={{
-                  ...style,
-                  zIndex: 1,
-                  backgroundColor: 'white',
-                  pointerEvents:
-                    dragging || inactive || this.props.isResizing
-                      ? 'none'
-                      : 'initial',
-                }}
-              />
+        />
 
-              {this.props.sandbox.screenshotUrl && style.opacity !== 1 && (
-                <div
-                  style={{
-                    overflow: 'hidden',
-                    width: '100%',
-                    position: 'absolute',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    top: 35,
-                    zIndex: 0,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      filter: `blur(2px)`,
-                      transform: 'scale(1.025, 1.025)',
-                      backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPositionX: 'center',
-                    }}
-                  />
-                </div>
-              )}
-            </>
-          )}
-        </AnySpring>
+        {this.props.sandbox.screenshotUrl && (
+          <div
+            style={{
+              overflow: 'hidden',
+              width: '100%',
+              position: 'absolute',
+              display: 'flex',
+              justifyContent: 'center',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              top: 35,
+              zIndex: 0,
+            }}
+          >
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                filter: `blur(2px)`,
+                transform: 'scale(1.025, 1.025)',
+                backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPositionX: 'center',
+              }}
+            />
+          </div>
+        )}
       </Container>
     );
   }

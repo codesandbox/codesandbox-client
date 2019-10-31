@@ -3,15 +3,12 @@ import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import {
   EditorSelection,
   Module,
+  ModuleCorrection,
+  ModuleError,
   Sandbox,
   SandboxFs,
   Settings,
 } from '@codesandbox/common/lib/types';
-import {
-  convertTypeToStatus,
-  notificationState,
-} from '@codesandbox/common/lib/utils/notifications';
-import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { Reaction } from 'app/overmind';
 import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
@@ -28,7 +25,7 @@ import {
 import { Linter } from './Linter';
 import { ModelsHandler, OnFileChangeData } from './ModelsHandler';
 import sandboxFsSync from './sandboxFsSync';
-import { getCode, getModel, getSelection, getVSCodePath } from './utils';
+import { getSelection } from './utils';
 import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
 
@@ -255,13 +252,91 @@ export class VSCodeEffect {
     await this.initialized;
     const model = await this.modelsHandler.changeModule(module);
 
-    this.linter.lint(
-      model.getValue(),
-      module.title,
-      model.getVersionId(),
-      this.options.getCurrentSandbox().template
-    );
+    this.lint(module.title, model);
   }
+
+  setErrors = (errors: ModuleError[]) => {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (activeEditor) {
+      if (errors.length > 0) {
+        const currentPath = this.getCurrentModelPath();
+        const thisModuleErrors = errors.filter(
+          error => error.path === currentPath
+        );
+        const errorMarkers = thisModuleErrors
+          .map(error => {
+            if (error) {
+              return {
+                severity: this.monaco.MarkerSeverity.Error,
+                startColumn: 1,
+                startLineNumber: error.line,
+                endColumn: error.column,
+                endLineNumber: error.line + 1,
+                message: error.message,
+              };
+            }
+
+            return null;
+          })
+          .filter(x => x);
+
+        this.monaco.editor.setModelMarkers(
+          activeEditor.getModel(),
+          'error',
+          errorMarkers
+        );
+      } else {
+        this.monaco.editor.setModelMarkers(
+          activeEditor.getModel(),
+          'error',
+          []
+        );
+      }
+    }
+  };
+
+  setCorrections = (corrections: ModuleCorrection[]) => {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+    if (activeEditor) {
+      if (corrections.length > 0) {
+        const currentPath = this.getCurrentModelPath();
+        const correctionMarkers = corrections
+          .filter(correction => correction.path === currentPath)
+          .map(correction => {
+            if (correction) {
+              return {
+                severity:
+                  correction.severity === 'warning'
+                    ? this.monaco.MarkerSeverity.Warning
+                    : this.monaco.MarkerSeverity.Notice,
+                startColumn: correction.column,
+                startLineNumber: correction.line,
+                endColumn: correction.columnEnd || 1,
+                endLineNumber: correction.lineEnd || correction.line + 1,
+                message: correction.message,
+                source: correction.source,
+              };
+            }
+
+            return null;
+          })
+          .filter(x => x);
+
+        this.monaco.editor.setModelMarkers(
+          activeEditor.getModel(),
+          'correction',
+          correctionMarkers
+        );
+      } else {
+        this.monaco.editor.setModelMarkers(
+          activeEditor.getModel(),
+          'correction',
+          []
+        );
+      }
+    }
+  };
 
   private async disableExtension(id: string) {
     const extensionService = await this.extensionService.promise;
@@ -552,6 +627,8 @@ export class VSCodeEffect {
       return;
     }
 
+    this.lint(data.title, data.model);
+
     this.options.onCodeChange(data);
   };
 
@@ -649,6 +726,29 @@ export class VSCodeEffect {
       }
     });
   }
+
+  private lint(title: string, model: any) {
+    this.linter.lint(
+      model.getValue(),
+      title,
+      model.getVersionId(),
+      this.options.getCurrentSandbox().template
+    );
+  }
+
+  private getCurrentModelPath = () => {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (!activeEditor) {
+      return undefined;
+    }
+    const model = activeEditor.getModel();
+    if (!model) {
+      return undefined;
+    }
+
+    return model.uri.path.replace(/^\/sandbox/, '');
+  };
 }
 
 export default new VSCodeEffect();

@@ -400,4 +400,8 @@ export class Workbench {
   ) {
     this.monaco.editor.appendMenuItem(menubarId, item);
   }
+
+  private addNotification(notification: NotificationMessage) {
+    notificationState.addNotification(notification);
+  }
 }
