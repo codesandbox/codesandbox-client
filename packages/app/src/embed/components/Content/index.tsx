@@ -472,7 +472,6 @@ export default class Content extends React.PureComponent<Props, State> {
         offsetHeight={verticalMode ? '32px' : '0px'}
       >
         <SplitPane
-          split={verticalMode ? 'horizontal' : 'vertical'}
           showEditor={showEditor}
           showPreview={showPreview}
           setEditorView={setEditorView}

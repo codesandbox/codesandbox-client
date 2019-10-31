@@ -5,7 +5,6 @@ export const Container = styled.div`
   height: 100%;
 
   .Resizer {
-    display: ${props => (props.hideResizer ? 'none' : 'block')};
     background: #000;
     opacity: 1;
     z-index: 99;
@@ -38,16 +37,6 @@ export const Container = styled.div`
     margin-left: ${props => (props.size === props.totalSize ? -12 : 4)}px;
   }
 
-  .Resizer.horizontal {
-    cursor: ns-resize;
-  }
-  .Resizer.horizontal::after {
-    position: absolute;
-    left: calc(50% - 20px);
-    width: 40px;
-    height: 5px;
-    margin-top: ${props => (props.size === props.totalSize ? -12 : 4)}px;
-  }
   .Pane {
     transition: ${props => (props.isDragging ? null : 'width 200ms ease')};
   }

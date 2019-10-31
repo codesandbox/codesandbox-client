@@ -3,7 +3,6 @@ import SplitPane from 'react-split-pane';
 import { Container, PaneContainer, PointerOverlay } from './elements';
 
 export default function({
-  split,
   showEditor,
   showPreview,
   setEditorView,
@@ -27,9 +26,8 @@ export default function({
 
   // update max size possible based on  width of container
   function updateTotalSize() {
-    const sizeProp = split === 'horizontal' ? 'offsetHeight' : 'offsetWidth';
     setTotalSize(
-      containerRef.current ? containerRef.current[sizeProp] : Infinity
+      containerRef.current ? containerRef.current.offsetWidth : Infinity
     );
   }
 
@@ -38,7 +36,7 @@ export default function({
   // 2. window resize events
   React.useEffect(() => {
     updateTotalSize();
-  }, [containerRef, split, updateTotalSize]);
+  }, [containerRef, updateTotalSize]);
 
   // update size when totalSize changes
   React.useEffect(() => {
@@ -78,10 +76,9 @@ export default function({
       ref={containerRef}
       size={size}
       totalSize={totalSize}
-      hideResizer={split === 'horizontal'}
     >
       <SplitPane
-        split={split}
+        split="vertical"
         onDragStarted={() => setDragging(true)}
         onDragFinished={onDragFinished}
         minSize="0%"
