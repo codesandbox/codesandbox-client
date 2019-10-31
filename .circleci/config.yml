@@ -316,7 +316,7 @@ jobs:
               --header 'Content-Type: application/json' \
               --header 'Postman-Token: e9e28b11-1889-488e-92c8-d8e41ef24e75' \
               --header 'cache-control: no-cache' \
-              --data '{\n  "env": "production",\n  "image": "client",\n  "tag": "'${CIRCLE_SHA1:0:7}'",\n  "deploy": true\n}'
+              --data '{ "env": "production", "image": "client", "tag": "'${CIRCLE_SHA1:0:7}'", "deploy": true }'
 
 ################################
 # Workflows
