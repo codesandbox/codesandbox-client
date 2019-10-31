@@ -50,12 +50,7 @@ export const Container = styled.div`
   }
 `;
 
-export const EditorContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const IframeContainer = styled.div`
+export const PaneContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;

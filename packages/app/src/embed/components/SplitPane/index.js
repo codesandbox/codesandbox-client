@@ -1,11 +1,6 @@
 import React from 'react';
 import SplitPane from 'react-split-pane';
-import {
-  Container,
-  EditorContainer,
-  IframeContainer,
-  PointerOverlay,
-} from './elements';
+import { Container, PaneContainer, PointerOverlay } from './elements';
 
 export default function({
   split,
@@ -41,6 +36,7 @@ export default function({
   // that's useful for the calculation in elements.Resizer
   React.useEffect(() => {
     if (size === '100%' && totalSize) setSize(totalSize);
+    else if (size === '50%' && totalSize) setSize(totalSize / 2);
   }, [size, totalSize]);
 
   // snap to edges
@@ -68,11 +64,11 @@ export default function({
         size={isDragging ? undefined : size}
         {...props}
       >
-        <EditorContainer>{props.children[0]}</EditorContainer>
-        <IframeContainer>
+        <PaneContainer>{props.children[0]}</PaneContainer>
+        <PaneContainer>
           {isDragging ? <PointerOverlay /> : null}
           {props.children[1]}
-        </IframeContainer>
+        </PaneContainer>
       </SplitPane>
     </Container>
   );
