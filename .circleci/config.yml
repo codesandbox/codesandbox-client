@@ -366,6 +366,9 @@ workflows:
       - deploy-to-production:
           requires:
             - deploy-production-approval
+          branches:
+            only:
+              - master
       - deploy-staging-approval:
           type: approval
           requires:
