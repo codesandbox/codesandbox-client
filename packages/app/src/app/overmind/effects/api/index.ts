@@ -432,6 +432,9 @@ export default {
   signoutGithubIntegration(): Promise<void> {
     return api.delete(`/users/current_user/integrations/github`);
   },
+  signoutZeit(): Promise<void> {
+    return api.delete(`/users/current_user/integrations/zeit`);
+  },
   preloadTemplates() {
     client.query({ query: LIST_TEMPLATES, variables: { showAll: true } });
   },

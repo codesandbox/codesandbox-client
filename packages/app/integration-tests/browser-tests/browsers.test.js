@@ -4,6 +4,13 @@ const hash = require('child_process')
   .execSync('git rev-parse --short HEAD')
   .toString();
 
+const delay = ms =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+
 function getCapabilities(browserInfo) {
   return {
     ...browserInfo,
@@ -77,8 +84,13 @@ usedDescribe('browser-tests', () => {
         os_version: '10',
         resolution: '1024x768',
       };
-
-      await testPageWitCapabilities(capabilities);
+      try {
+        await testPageWitCapabilities(capabilities);
+      } catch (e) {
+        await delay(10000);
+        // Retry
+        await testPageWitCapabilities(capabilities);
+      }
     }, 130000);
 
     test('safari', async () => {
@@ -90,8 +102,13 @@ usedDescribe('browser-tests', () => {
         os_version: 'High Sierra',
         resolution: '1024x768',
       };
-
-      await testPageWitCapabilities(capabilities);
+      try {
+        await testPageWitCapabilities(capabilities);
+      } catch (e) {
+        await delay(10000);
+        // Retry
+        await testPageWitCapabilities(capabilities);
+      }
     }, 130000);
 
     test.skip('android', async () => {

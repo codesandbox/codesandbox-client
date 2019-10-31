@@ -285,7 +285,7 @@ function resolvePath(
             }
 
             // eslint-disable-next-line
-            const subDepVersionVersionInfo = await findDependencyVersion(
+            const subDepVersionVersionInfo = await getDependencyVersion(
               currentTModule,
               manager,
               defaultExtensions,
@@ -346,10 +346,10 @@ type DependencyVersionResult =
       packageJSONPath: null;
     };
 
-async function findDependencyVersion(
+async function getDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json'],
+  defaultExtensions: string[] = ['js', 'jsx', 'json'],
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
@@ -428,7 +428,7 @@ export default async function fetchModule(
     path.replace(/.*\/node_modules\//, '')
   );
 
-  const versionInfo = await findDependencyVersion(
+  const versionInfo = await getDependencyVersion(
     currentTModule,
     manager,
     defaultExtensions,

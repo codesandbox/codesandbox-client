@@ -12,7 +12,7 @@ try {
     `yarn sentry-cli releases --org=codesandbox -p frontend new "${VERSION}"`
   );
   childProcess.execSync(
-    `yarn sentry-cli releases --org=codesandbox set-commits "${VERSION}" --commit "CompuIves/codesandbox-client@${COMMIT_HASH}"`
+    `yarn sentry-cli releases --org=codesandbox set-commits "${VERSION}" --commit "codesandbox/codesandbox-client@${COMMIT_HASH}"`
   );
   console.log('Marked release');
 } catch (e) {
