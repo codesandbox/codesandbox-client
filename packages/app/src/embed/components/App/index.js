@@ -13,7 +13,6 @@ import {
 } from '@codesandbox/common/lib/sandbox/modules';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
-import Header from '../Header';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
 import EditorLink from '../EditorLink';
@@ -359,19 +358,6 @@ export default class App extends React.PureComponent<
         }}
       >
         <Container>
-          {verticalMode ? (
-            <Header
-              showEditor={showEditor}
-              showPreview={showPreview}
-              setEditorView={this.setEditorView}
-              setPreviewView={this.setPreviewView}
-              setMixedView={this.setMixedView}
-              sandbox={sandbox}
-              toggleSidebar={this.toggleSidebar}
-              toggleLike={this.jwt() && this.toggleLike}
-              liked={sandbox.userLiked}
-            />
-          ) : null}
           <Content
             showEditor={showEditor}
             showPreview={showPreview}

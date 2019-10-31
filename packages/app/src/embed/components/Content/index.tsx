@@ -467,10 +467,7 @@ export default class Content extends React.PureComponent<Props, State> {
     };
 
     return (
-      <Container
-        style={{ flexDirection: verticalMode ? 'column' : 'row' }}
-        offsetHeight={verticalMode ? '32px' : '0px'}
-      >
+      <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
         <SplitPane
           showEditor={showEditor}
           showPreview={showPreview}
@@ -480,11 +477,10 @@ export default class Content extends React.PureComponent<Props, State> {
         >
           <>
             <Tabs>
-              {verticalMode ? null : (
-                <MenuInTabs>
-                  <MenuIcon onClick={toggleSidebar} />
-                </MenuInTabs>
-              )}
+              <MenuInTabs>
+                <MenuIcon onClick={toggleSidebar} />
+              </MenuInTabs>
+
               {this.state.tabs.map((module, i) => {
                 const tabsWithSameName = this.state.tabs.filter(
                   m => m.title === module.title
