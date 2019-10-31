@@ -360,9 +360,10 @@ workflows:
           type: approval
           requires:
             - create-docker-image
-          branches:
-            only:
-              - master
+          filters:
+            branches:
+              only:
+                - master
       - deploy-to-production:
           requires:
             - deploy-production-approval
