@@ -365,7 +365,7 @@ export const inDirectory = memoize(
   (directories: Directory[], rootShortid: string, shortid: string) => {
     let directory = findByShortid(directories, shortid);
 
-    while (directory != null) {
+    while (directory) {
       if (directory.directoryShortid === rootShortid) {
         return true;
       }
