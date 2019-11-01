@@ -68,6 +68,19 @@
     </script>
 
     <!-- {{SANDBOX_DATA}} -->
+    <style>
+      html, body {
+        /*
+        The overscroll-behavior CSS property sets what a
+        browser does when reaching the boundary of a
+        scrolling area.
+
+        We set it to null so that the browser gestures don't
+        override our scroll behavior
+        */
+        overscroll-behavior-x: none;
+      }
+    </style>
   </head>
 
   <body style="margin: 0; padding: 0; background-color: #191d1f; overflow: hidden;">

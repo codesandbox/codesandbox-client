@@ -49,9 +49,6 @@ type Props = {
   showEditor: boolean;
   showPreview: boolean;
   previewWindow: string;
-  setEditorView: () => void;
-  setPreviewView: () => void;
-  setMixedView: () => void;
   isInProjectView: boolean;
   setProjectView: (
     sandboxId: string | undefined,
@@ -381,14 +378,12 @@ export default class Content extends React.PureComponent<Props, State> {
       sandbox,
       showEditor,
       showPreview,
-      setEditorView,
-      setPreviewView,
-      setMixedView,
       previewWindow,
       currentModule,
       hideNavigation,
       expandDevTools,
       verticalMode,
+      sidebarOpen,
       toggleSidebar,
     } = this.props;
 
@@ -466,14 +461,17 @@ export default class Content extends React.PureComponent<Props, State> {
       actions: [],
     };
 
+    // TODO: we use verticalMode as a very very bad proxy
+    // for identifying mobile mode
+    // mobile isn't even vertical anymore!
+    // we should really rename it
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
         <SplitPane
           showEditor={showEditor}
           showPreview={showPreview}
-          setEditorView={setEditorView}
-          setPreviewView={setPreviewView}
-          setMixedView={setMixedView}
+          isMobile={verticalMode}
+          sidebarOpen={sidebarOpen}
         >
           <>
             <Tabs>

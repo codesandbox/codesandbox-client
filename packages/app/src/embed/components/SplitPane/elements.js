@@ -11,6 +11,11 @@ export const Container = styled.div`
     box-sizing: border-box;
     background-clip: padding-box;
     opacity: ${props => (props.isDragging ? 0.6 : 0.4)};
+    /* Safari, sigh.
+      We recently encountered this and discovered that promoting the affected element to a composite layer with translateZ in CSS fixed the issue without needing extra JavaScript.
+      https://stackoverflow.com/a/21947628/1501871
+    */
+    transform: translateZ(0);
   }
 
   .Resizer::after {
@@ -34,7 +39,7 @@ export const Container = styled.div`
     top: calc(50% - 20px);
     height: 40px;
     width: 5px;
-    margin-left: ${props => (props.size === props.totalSize ? -12 : 4)}px;
+    margin-left: ${props => (props.size === props.maxSize ? -12 : 4)}px;
   }
 
   .Pane {

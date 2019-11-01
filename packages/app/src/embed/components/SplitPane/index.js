@@ -2,94 +2,72 @@ import React from 'react';
 import SplitPane from 'react-split-pane';
 import { Container, PaneContainer, PointerOverlay } from './elements';
 
-export default function({
+export default function SplitView({
   showEditor,
   showPreview,
-  setEditorView,
-  setPreviewView,
+  isMobile,
+  sidebarOpen,
+  children,
   ...props
 }) {
-  const [size, setSize] = React.useState('50%');
+  /* Things this component should do
+    1. set inital size based on props
+    2. let user move it around
+    3. snap to edges
+    4. stay snapped on window.resize and sidebar toggle (not implemented)
+  */
 
+  const windowWidth = window.innerWidth;
+  // TODO: pick this from the sidebar or ref instead of hardcoding
+  const sidebarWidth = 250;
+
+  const maxSize = sidebarOpen ? windowWidth - sidebarWidth : windowWidth;
+
+  // #1. set initial size based on props
+  let initialSize = null;
+  if (showEditor && showPreview) initialSize = maxSize / 2;
+  else if (showEditor && !showPreview) initialSize = maxSize;
+  else if (showPreview && !showEditor) initialSize = 0;
+
+  const [size, setSize] = React.useState(initialSize);
+
+  // #2. We track dragging so that we can add an overlay on top
+  // of the iframe which lets us keep focus on the resize toggle
   const [isDragging, setDragging] = React.useState(false);
-  const [totalSize, setTotalSize] = React.useState(null);
-  const [snapped, setSnapped] = React.useState(false);
-  const containerRef = React.useRef(null);
 
-  // response to buttons in the header
-  // if there is no header, this can go in the default
-  React.useEffect(() => {
-    if (showEditor && showPreview) setSize('50%');
-    else if (showEditor && !showPreview) setSize('100%');
-    else if (showPreview && !showEditor) setSize('0%');
-  }, [showEditor, showPreview]);
-
-  // update max size possible based on  width of container
-  function updateTotalSize() {
-    setTotalSize(
-      containerRef.current ? containerRef.current.offsetWidth : Infinity
-    );
-  }
-
-  // update total size in pixels when it's ready, useful for:
-  // 1. calculation in elements.Resizer
-  // 2. window resize events
-  React.useEffect(() => {
-    updateTotalSize();
-  }, [containerRef, updateTotalSize]);
-
-  // update size when totalSize changes
-  React.useEffect(() => {
-    if (size === '100%' && totalSize) setSize(totalSize);
-    else if (snapped === 'right') setSize(totalSize);
-    else if (size === '50%' && totalSize) setSize(totalSize / 2);
-  }, [totalSize, snapped, size]);
-
-  // handle browser window resize
-  React.useEffect(() => {
-    const handleResize = () => {
-      updateTotalSize();
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [totalSize, updateTotalSize]);
-
-  // snap to edges
+  const onDragStarted = () => setDragging(true);
   const onDragFinished = width => {
+    // #3. snap to edges
+    // snap threshold on desktop is0 50px
+    // on mobile, it's 50% of the screen
     setDragging(false);
-    if (width < 50) setSize(0);
-    else if (width > totalSize - 50) setSize(totalSize);
+
+    const leftSnapThreshold = isMobile ? maxSize / 2 : 50;
+    const rightSnapThreshold = isMobile ? maxSize / 2 : maxSize - 50;
+
+    if (width < leftSnapThreshold) setSize(0);
+    else if (width > rightSnapThreshold) setSize(maxSize);
     else setSize(width);
   };
 
-  // sync snapped state based on size
-  React.useEffect(() => {
-    if (size === 0) setSnapped('left');
-    else if (size === totalSize) setSnapped('right');
-    else setSnapped('none');
-  }, [size, totalSize]);
+  // TODO: Handle edge case of keeping panes snapped
+  // on window.resize and sidebar toggle
 
   return (
-    <Container
-      isDragging={isDragging}
-      ref={containerRef}
-      size={size}
-      totalSize={totalSize}
-    >
+    <Container isDragging={isDragging} size={size} maxSize={maxSize}>
       <SplitPane
         split="vertical"
-        onDragStarted={() => setDragging(true)}
+        onDragStarted={onDragStarted}
         onDragFinished={onDragFinished}
         minSize="0%"
         maxSize="100%"
-        size={isDragging ? undefined : size}
+        size={size}
         {...props}
       >
-        <PaneContainer>{props.children[0]}</PaneContainer>
+        <PaneContainer>{children[0]}</PaneContainer>
         <PaneContainer>
           {isDragging ? <PointerOverlay /> : null}
-          {props.children[1]}
+          {children[1]}
         </PaneContainer>
       </SplitPane>
     </Container>

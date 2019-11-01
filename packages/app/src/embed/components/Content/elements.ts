@@ -9,8 +9,8 @@ export const Container = styled.div`
 
 export const Tabs = styled.div`
   display: flex;
-  height: 35px;
-  min-height: 35px;
+  height: 33px;
+  min-height: 33px;
   background-color: ${props => props.theme['tab.inactiveBackground']};
   /* shadow instead of border to align with the border of the child tab */
   box-shadow: inset 0px -1px 0 ${props => props.theme['sideBar.border']};

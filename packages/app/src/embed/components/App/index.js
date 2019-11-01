@@ -17,6 +17,7 @@ import Content from '../Content';
 import Sidebar from '../Sidebar';
 import EditorLink from '../EditorLink';
 import { Container, Fullscreen, Moving } from './elements';
+import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently
 // that makes it think we havecore-js/es6/map available in embed, but we don't.
@@ -100,7 +101,7 @@ export default class App extends React.PureComponent<
       isInProjectView,
       currentModule,
       initialPath,
-      sidebarOpen: false,
+      sidebarOpen: window.innerWidth > SIDEBAR_SHOW_SCREEN_SIZE,
       autoResize,
       hideNavigation,
       enableEslint,
@@ -193,6 +194,7 @@ export default class App extends React.PureComponent<
     }
   }
 
+  // TODO: See if this is still useful
   setEditorView = () => this.setState({ showEditor: true, showPreview: false });
   setPreviewView = () =>
     this.setState({ showEditor: false, showPreview: true });
@@ -383,6 +385,7 @@ export default class App extends React.PureComponent<
             tabs={this.state.tabs}
             runOnClick={runOnClick}
             verticalMode={verticalMode}
+            sidebarOpen={this.state.sidebarOpen}
             toggleSidebar={this.toggleSidebar}
           />
         </Container>
