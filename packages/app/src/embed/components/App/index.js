@@ -268,12 +268,12 @@ export default class App extends React.PureComponent<
         }),
       })
         .then(x => x.json())
-        .then(() => {
+        .then(res => {
           this.setState(s => ({
             sandbox: {
               ...s.sandbox,
               userLiked: false,
-              likeCount: s.sandbox.likeCount - 1,
+              likeCount: res.count,
             },
           }));
         })
