@@ -88,8 +88,16 @@ const urlProtocols = {
   jsDelivrNPM: {
     file: async (name: string, version: string, path: string) =>
       `https://cdn.jsdelivr.net/npm/${name}@${version}${path}`,
-    meta: async (name: string, version: string) =>
-      `https://data.jsdelivr.com/v1/package/npm/${name}@${version}/flat`,
+    meta: async (name: string, version: string) => {
+      // if it's a tag it won't work, so we fetch latest version otherwise
+      const latestVersion = /^\d/.test(version)
+        ? version
+        : JSON.parse(
+            (await downloadDependency(name, version, '/package.json')).code
+          ).version;
+
+      return `https://data.jsdelivr.com/v1/package/npm/${name}@${latestVersion}/flat`;
+    },
     normalizeMeta: normalizeJSDelivr,
   },
   jsDelivrGH: {
