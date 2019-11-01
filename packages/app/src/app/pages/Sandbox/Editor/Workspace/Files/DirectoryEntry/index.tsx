@@ -28,7 +28,8 @@ const getFiles = async (files: File[] | FileList): Promise<parsedFiles> => {
       .filter(Boolean)
       .map(async file => {
         const dataURI = await readDataURL(file);
-        returnedFiles[file.name] = {
+        // @ts-ignore
+        returnedFiles[file.path || file.name] = {
           dataURI,
           type: file.type,
         };
