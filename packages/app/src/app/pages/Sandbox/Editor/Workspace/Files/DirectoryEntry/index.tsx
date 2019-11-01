@@ -38,8 +38,9 @@ const getFiles = async (files: File[] | FileList): Promise<parsedFiles> => {
   return returnedFiles;
 };
 
+type ItemTypes = 'module' | 'directory';
 interface DeleteModal {
-  type: 'module' | 'directory';
+  type: ItemTypes;
   title: string;
   shortid: string;
 }
@@ -88,7 +89,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     reaction,
   } = useOvermind();
 
-  const [creating, setCreating] = React.useState('');
+  const [creating, setCreating] = React.useState<ItemTypes>(null);
   const [open, setOpen] = React.useState(root || shouldDirectoryBeOpen(id));
   const [deleteModal, setDeleteModal] = React.useState<DeleteModal | null>(
     null
@@ -122,7 +123,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     }
   }, [isOver]);
 
-  const resetState = () => setCreating('');
+  const resetState = () => setCreating(null);
 
   const onCreateModuleClick = () => {
     setCreating('module');
@@ -184,7 +185,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     fileSelector.click();
   }, [filesUploaded, shortid]);
 
-  const renameDirectory = (directoryShortid, title) => {
+  const renameDirectory = (directoryShortid: string, title: string) => {
     directoryRenamed({ title, directoryShortid });
   };
 
@@ -204,18 +205,18 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
 
   const closeTree = () => setOpen(false);
 
-  const validateModuleTitle = (moduleId, title) =>
+  const validateModuleTitle = (moduleId: string, title: string) =>
     validateTitle(moduleId, title, getChildren());
 
-  const validateDirectoryTitle = (directoryId, title) => {
-    if (root) return false;
+  const validateDirectoryTitle = (directoryId: string, title: string) => {
+    if (root) return null;
 
     return validateTitle(directoryId, title, getChildren());
   };
 
   const getChildren = () => calculateChildren(modules, directories, shortid);
 
-  const setCurrentModule = moduleId => {
+  const setCurrentModule = (moduleId: string) => {
     moduleSelected({ id: moduleId });
   };
 
@@ -223,7 +224,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     moduleDoubleClicked();
   };
 
-  const discardChanges = moduleShortid => {
+  const discardChanges = (moduleShortid: string) => {
     discardModuleChanges({ moduleShortid });
 
     return true;
