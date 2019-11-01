@@ -57,8 +57,7 @@ export const Templates = ({ match }) => {
             <p style={{ marginBottom: '0.5rem' }}>
               You have not created any templates yet. You can create a template
               by dragging a sandbox from {'"'}My Sandboxes{'"'} to here or by
-              clicking
-              {'"'}Create Template{'"'} from the editor.
+              clicking {'"'}Create Template{'"'} from the editor.
             </p>
             You can learn more about templates{' '}
             <a href="/docs/templates" target="_blank">
