@@ -3,7 +3,7 @@ import { Container, Title, Description, Stats } from './elements';
 import AvatarBlock from '../AvatarBlock';
 
 const SandboxInfo = ({ sandbox }) => {
-  const title = sandbox.title || sandbox.id;
+  const title = sandbox.title || sandbox.alias || sandbox.id;
 
   return (
     <Container>
