@@ -4,7 +4,10 @@ import { NativeTypes } from 'react-dnd-html5-backend';
 import { useOvermind } from 'app/overmind';
 import { Alert } from 'app/components/Alert';
 import Modal from 'app/components/Modal';
-import { getChildren as calculateChildren } from '@codesandbox/common/lib/sandbox/modules';
+import {
+  getChildren as calculateChildren,
+  inDirectory,
+} from '@codesandbox/common/lib/sandbox/modules';
 
 import DirectoryChildren from './DirectoryChildren';
 import { EntryContainer, Opener, Overlay } from './elements';
@@ -53,6 +56,7 @@ interface Props {
   shortid: string;
   connectDropTarget: Function;
   isOver: boolean;
+  canDrop: boolean;
   depth: number;
   getModulePath: Function;
 }
@@ -66,6 +70,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   isOver,
   depth = 0,
   getModulePath,
+  canDrop,
 }) => {
   const {
     state: {
@@ -235,7 +240,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
 
   return connectDropTarget(
     <div style={{ position: 'relative' }}>
-      <Overlay isOver={isOver} />
+      <Overlay isOver={isOver && canDrop} />
       {!root && (
         <EntryContainer>
           <Entry
@@ -374,6 +379,7 @@ const entryTarget = {
     if (!monitor.isOver({ shallow: true })) return;
 
     const sourceItem = monitor.getItem();
+
     if (sourceItem.dirContent) {
       sourceItem.dirContent.then(async (droppedFiles: File[]) => {
         const files = await getFiles(
@@ -404,7 +410,9 @@ const entryTarget = {
     if (source == null) return false;
 
     if (source.id === props.id) return false;
-    return true;
+    if (props.root) return true;
+
+    return !inDirectory(props.directories, source.shortid, props.shortid);
   },
 };
 
