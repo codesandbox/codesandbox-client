@@ -361,6 +361,11 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   );
 };
 
+const FILES_TO_IGNORE = [
+  '.DS_Store', // macOs
+  'Thumbs.db', // Windows
+];
+
 const entryTarget = {
   drop: (props, monitor) => {
     if (monitor == null) return;
@@ -370,8 +375,10 @@ const entryTarget = {
 
     const sourceItem = monitor.getItem();
     if (sourceItem.dirContent) {
-      sourceItem.dirContent.then(async droppedFiles => {
-        const files = await getFiles(droppedFiles);
+      sourceItem.dirContent.then(async (droppedFiles: File[]) => {
+        const files = await getFiles(
+          droppedFiles.filter(file => !FILES_TO_IGNORE.includes(file.name))
+        );
 
         props.signals.files.filesUploaded({
           files,
