@@ -7,6 +7,7 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { withRouter } from 'react-router-dom';
 import { client } from 'app/graphql/client';
 
 import { Animate as ReactShow } from 'react-show';
@@ -53,6 +54,9 @@ type Props = {
   onSelect: (params: { teamId: string; path: string }) => void;
   currentPath: string;
   currentTeamId: string;
+
+  // router props
+  history: any;
 
   // dnd handlers
   canDrop?: boolean;
@@ -138,6 +142,7 @@ class FolderEntry extends React.Component<Props, State> {
       onSelect,
       currentPath,
       currentTeamId,
+      history,
     } = this.props;
 
     const children = getDirectChildren(path, folders);
@@ -283,6 +288,14 @@ class FolderEntry extends React.Component<Props, State> {
                             },
                             variables,
                           });
+                          const modifiedPath = path
+                            .split('/')
+                            .slice(0, -1)
+                            .join('/');
+
+                          history.replace(
+                            `${basePath}${modifiedPath}/${input.value}`
+                          );
                         },
                       });
 
@@ -392,8 +405,10 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-DropFolderEntry = DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
-  DragSource('FOLDER', entrySource, collectSource)(FolderEntry)
+DropFolderEntry = withRouter(
+  DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
+    DragSource('FOLDER', entrySource, collectSource)(FolderEntry)
+  )
 ) as any;
 
 export { DropFolderEntry };
