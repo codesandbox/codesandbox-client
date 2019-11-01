@@ -15,6 +15,8 @@ export type Props = {
   danger?: boolean;
   secondary?: boolean;
   red?: boolean;
+  target?: string;
+  rel?: string;
 };
 
 function ButtonComponent({ style = {}, ...props }: Props) {
