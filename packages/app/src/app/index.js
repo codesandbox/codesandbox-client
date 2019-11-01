@@ -17,7 +17,6 @@ import {
   notificationState,
 } from '@codesandbox/common/lib/utils/notifications';
 import { isSafari } from '@codesandbox/common/lib/utils/platform';
-import { NotificationStatus } from '@codesandbox/notifications';
 import { client } from 'app/graphql/client';
 import history from 'app/utils/history';
 import { createOvermind } from 'overmind';
@@ -98,23 +97,8 @@ overmind.initialized.then(() => {
     registerServiceWorker('/service-worker.js', {
       onUpdated: () => {
         debug('Updated SW');
-        window.getSignal('setUpdateStatus')({ status: 'available' });
 
-        notificationState.addNotification({
-          title: 'CodeSandbox Update Available',
-          message:
-            'We just installed a new version of CodeSandbox, refresh to update!',
-          status: NotificationStatus.SUCCESS,
-          sticky: true,
-          actions: {
-            primary: [
-              {
-                run: () => document.location.reload(),
-                label: 'Reload Page',
-              },
-            ],
-          },
-        });
+        window.getSignal('setUpdateStatus')({ status: 'available' });
       },
       onInstalled: () => {
         debug('Installed SW');
