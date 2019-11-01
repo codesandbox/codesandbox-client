@@ -1,6 +1,6 @@
 import dot from 'dot-object';
 import applicationTheme from '@codesandbox/common/lib/theme';
-import codesandboxBlack from '@codesandbox/common/lib/themes/codesandbox-nu.json';
+import codesandboxBlack from '@codesandbox/common/lib/themes/codesandbox-black.json';
 import tokens from './tokens';
 
 // merge vscode colors into tokens
