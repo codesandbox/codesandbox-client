@@ -7,7 +7,7 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { withRouter } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { client } from 'app/graphql/client';
 
 import { Animate as ReactShow } from 'react-show';
@@ -55,16 +55,13 @@ type Props = {
   currentPath: string;
   currentTeamId: string;
 
-  // router props
-  history: any;
-
   // dnd handlers
   canDrop?: boolean;
   isOver?: boolean;
   isDragging?: boolean;
   connectDropTarget?: any;
   connectDragSource?: any;
-};
+} & RouteComponentProps;
 
 type State = {
   open: boolean;
