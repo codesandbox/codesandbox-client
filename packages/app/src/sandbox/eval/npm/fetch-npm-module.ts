@@ -164,7 +164,7 @@ const getFetchProtocol = (depVersion: string, useFallback = false) => {
     return urlProtocols.jsDelivrGH;
   }
 
-  return useFallback ? urlProtocols.jsDelivrNPM : urlProtocols.unpkg;
+  return useFallback ? urlProtocols.unpkg : urlProtocols.jsDelivrNPM;
 };
 
 // Strips the version of a path, eg. test/1.3.0 -> test
