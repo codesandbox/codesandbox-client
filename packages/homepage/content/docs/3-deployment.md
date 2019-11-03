@@ -33,9 +33,8 @@ With [Netlify](https://netlify.com) you don't even need to connect to your
 account. This means you can create deployments to share and use even if you
 don't have a [Netlify](https://netlify.com) account.
 
-Some templates are better than others, but as of now, we
-have a number of templates that support [Netlify](https://netlify.com)
-deployments:
+Some templates are better than others, but as of now, we have a number of
+templates that support [Netlify](https://netlify.com) deployments:
 
 - React
 - Vue
