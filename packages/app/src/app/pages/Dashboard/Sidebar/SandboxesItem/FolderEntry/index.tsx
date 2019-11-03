@@ -406,6 +406,7 @@ const collectSource = (connect, monitor) => ({
 });
 
 DropFolderEntry = (withRouter(
+  // @ts-ignore Don't know how to mix dnd and react-router with right typings
   DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
     DragSource('FOLDER', entrySource, collectSource)(FolderEntry)
   )
