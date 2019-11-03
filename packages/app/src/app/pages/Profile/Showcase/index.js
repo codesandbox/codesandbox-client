@@ -62,7 +62,7 @@ class Showcase extends React.Component {
               />
             </div>
             <div style={{ flex: 1 }}>
-              <SandboxInfo sandbox={sandbox} />
+              <SandboxInfo sandbox={sandbox} isLoggedIn={store.isLoggedIn} />
             </div>
           </Column>
         </Margin>
