@@ -7,7 +7,8 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { History } from 'history';
 import { client } from 'app/graphql/client';
 
 import { Animate as ReactShow } from 'react-show';
@@ -61,7 +62,9 @@ type Props = {
   isDragging?: boolean;
   connectDropTarget?: any;
   connectDragSource?: any;
-} & RouteComponentProps;
+
+  history?: History;
+};
 
 type State = {
   open: boolean;
@@ -402,10 +405,10 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-DropFolderEntry = withRouter(
+DropFolderEntry = (withRouter(
   DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
     DragSource('FOLDER', entrySource, collectSource)(FolderEntry)
   )
-) as any;
+) as unknown) as React.ComponentClass<Props, State>;
 
 export { DropFolderEntry };
