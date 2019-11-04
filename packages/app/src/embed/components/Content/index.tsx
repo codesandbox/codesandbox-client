@@ -370,6 +370,12 @@ export default class Content extends React.PureComponent<Props, State> {
     }
   };
 
+  openInNewWindow = () => {
+    // this is set in app/Preview
+    // i don't know why but I ain't complaining
+    if (window.openNewWindow) window.openNewWindow();
+  };
+
   onPreviewInitialized = (preview: BasePreview) => {
     this.preview = preview;
     return () => {};
@@ -480,6 +486,7 @@ export default class Content extends React.PureComponent<Props, State> {
           sidebarOpen={sidebarOpen}
           showNavigationActions={hideNavigation}
           refresh={this.refresh}
+          openInNewWindow={this.openInNewWindow}
         >
           <>
             <Tabs>

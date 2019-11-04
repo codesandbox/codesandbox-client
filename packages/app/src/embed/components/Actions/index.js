@@ -24,10 +24,13 @@ export function GlobalActions({ sandbox, toggleLike, previewVisible }) {
   );
 }
 
-export function NavigationActions({ refresh }) {
+export function NavigationActions({ refresh, openInNewWindow }) {
   return (
     <Container align="left">
       <Button onClick={refresh}>
+        <HeartIcon />
+      </Button>
+      <Button onClick={openInNewWindow}>
         <HeartIcon />
       </Button>
     </Container>

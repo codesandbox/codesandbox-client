@@ -11,6 +11,7 @@ export default function SplitView({
   children,
   showNavigationActions,
   refresh,
+  openInNewWindow,
   ...props
 }) {
   /* Things this component should do
@@ -70,7 +71,10 @@ export default function SplitView({
         <PaneContainer>{children[0]}</PaneContainer>
         <PaneContainer>
           {showNavigationActions ? (
-            <NavigationActions refresh={refresh} />
+            <NavigationActions
+              refresh={refresh}
+              openInNewWindow={openInNewWindow}
+            />
           ) : null}
           {isDragging ? <PointerOverlay /> : null}
           {children[1]}
