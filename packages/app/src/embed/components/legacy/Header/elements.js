@@ -10,7 +10,7 @@ import {
   SplitViewIconSVG,
 } from './icons';
 
-import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
+import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../../util/constants';
 
 export const Container = styled.div`
   position: relative;

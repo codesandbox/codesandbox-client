@@ -15,7 +15,7 @@ import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
-import EditorLink from '../EditorLink';
+import Actions from '../Actions';
 import { Container, Fullscreen, Moving } from './elements';
 import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
 
@@ -405,8 +405,9 @@ export default class App extends React.PureComponent<
               currentModule={this.getCurrentModuleFromPath(sandbox).id}
               sandbox={sandbox}
             />
-            <EditorLink
+            <Actions
               sandbox={sandbox}
+              toggleLike={this.jwt() && this.toggleLike}
               previewVisible={this.state.showPreview}
             />
           </>

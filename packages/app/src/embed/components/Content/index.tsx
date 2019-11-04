@@ -43,7 +43,7 @@ import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import SplitPane from '../SplitPane';
 import { Container, Tabs, MenuInTabs } from './elements';
 // borrow the menu icon from Header in case header is not shown
-import { MenuIcon } from '../Header/elements';
+import { MenuIcon } from '../legacy/Header/elements';
 
 type Props = {
   showEditor: boolean;
