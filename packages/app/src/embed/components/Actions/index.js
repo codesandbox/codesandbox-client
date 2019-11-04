@@ -3,9 +3,9 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { Container, Button, HeartIcon } from './elements';
 
-function Actions({ sandbox, toggleLike, previewVisible }) {
+export function GlobalActions({ sandbox, toggleLike, previewVisible }) {
   return (
-    <Container>
+    <Container align="right">
       {toggleLike ? (
         <Button onClick={toggleLike}>
           <HeartIcon liked={sandbox.userLiked} />
@@ -24,4 +24,12 @@ function Actions({ sandbox, toggleLike, previewVisible }) {
   );
 }
 
-export default Actions;
+export function NavigationActions({ refresh }) {
+  return (
+    <Container align="left">
+      <Button onClick={refresh}>
+        <HeartIcon />
+      </Button>
+    </Container>
+  );
+}

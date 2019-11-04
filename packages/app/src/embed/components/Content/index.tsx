@@ -364,6 +364,12 @@ export default class Content extends React.PureComponent<Props, State> {
     });
   };
 
+  refresh = () => {
+    if (this.preview && this.preview.handleRefresh) {
+      this.preview.handleRefresh();
+    }
+  };
+
   onPreviewInitialized = (preview: BasePreview) => {
     this.preview = preview;
     return () => {};
@@ -472,6 +478,8 @@ export default class Content extends React.PureComponent<Props, State> {
           showPreview={showPreview}
           isMobile={verticalMode}
           sidebarOpen={sidebarOpen}
+          showNavigationActions={hideNavigation}
+          refresh={this.refresh}
         >
           <>
             <Tabs>

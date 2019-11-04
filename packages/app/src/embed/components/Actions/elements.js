@@ -7,7 +7,7 @@ export const Container = styled.div(props =>
   css({
     position: 'absolute',
     bottom: props.previewVisible ? 32 + 16 : 16,
-    right: 16,
+    [props.align]: 16,
     zIndex: 99,
 
     display: 'flex',

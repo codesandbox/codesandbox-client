@@ -1,5 +1,6 @@
 import React from 'react';
 import SplitPane from 'react-split-pane';
+import { NavigationActions } from '../Actions';
 import { Container, PaneContainer, PointerOverlay } from './elements';
 
 export default function SplitView({
@@ -8,6 +9,8 @@ export default function SplitView({
   isMobile,
   sidebarOpen,
   children,
+  showNavigationActions,
+  refresh,
   ...props
 }) {
   /* Things this component should do
@@ -66,6 +69,9 @@ export default function SplitView({
       >
         <PaneContainer>{children[0]}</PaneContainer>
         <PaneContainer>
+          {showNavigationActions ? (
+            <NavigationActions refresh={refresh} />
+          ) : null}
           {isDragging ? <PointerOverlay /> : null}
           {children[1]}
         </PaneContainer>
