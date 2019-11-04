@@ -9,9 +9,18 @@ import {
   NewWindowIcon,
 } from './elements';
 
-export function GlobalActions({ sandbox, toggleLike, previewVisible }) {
+export function GlobalActions({
+  sandbox,
+  toggleLike,
+  previewVisible,
+  isDragging,
+}) {
   return (
-    <Container align="right">
+    <Container
+      align="right"
+      previewVisible={previewVisible}
+      isDragging={isDragging}
+    >
       {toggleLike ? (
         <Button onClick={toggleLike}>
           <HeartIcon liked={sandbox.userLiked} />
@@ -22,7 +31,6 @@ export function GlobalActions({ sandbox, toggleLike, previewVisible }) {
         target="_blank"
         rel="noopener noreferrer"
         href={`${sandboxUrl(sandbox)}?from-embed`}
-        previewVisible={previewVisible}
       >
         Open Sandbox
       </Button>
@@ -30,9 +38,9 @@ export function GlobalActions({ sandbox, toggleLike, previewVisible }) {
   );
 }
 
-export function NavigationActions({ refresh, openInNewWindow }) {
+export function NavigationActions({ refresh, openInNewWindow, isDragging }) {
   return (
-    <Container align="left">
+    <Container align="left" previewVisible isDragging={isDragging}>
       <Button onClick={refresh}>
         <ReloadIcon />
       </Button>

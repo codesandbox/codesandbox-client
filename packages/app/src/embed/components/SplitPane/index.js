@@ -74,6 +74,7 @@ export default function SplitView({
             <NavigationActions
               refresh={refresh}
               openInNewWindow={openInNewWindow}
+              isDragging={isDragging}
             />
           ) : null}
           {isDragging ? <PointerOverlay /> : null}
