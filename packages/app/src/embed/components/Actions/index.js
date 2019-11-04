@@ -1,7 +1,13 @@
 import React from 'react';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { Container, Button, HeartIcon } from './elements';
+import {
+  Container,
+  Button,
+  HeartIcon,
+  ReloadIcon,
+  NewWindowIcon,
+} from './elements';
 
 export function GlobalActions({ sandbox, toggleLike, previewVisible }) {
   return (
@@ -28,10 +34,10 @@ export function NavigationActions({ refresh, openInNewWindow }) {
   return (
     <Container align="left">
       <Button onClick={refresh}>
-        <HeartIcon />
+        <ReloadIcon />
       </Button>
       <Button onClick={openInNewWindow}>
-        <HeartIcon />
+        <NewWindowIcon />
       </Button>
     </Container>
   );

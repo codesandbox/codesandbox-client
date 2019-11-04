@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { HeartIconSVG } from './icons';
+import { HeartIconSVG, ReloadIconSVG, NewWindowIconSVG } from './icons';
 
 // TODO: Check if we still need previewVisible
 export const Container = styled.div(props =>
@@ -38,6 +38,9 @@ export const Button = styled.button(
 
     ':hover': {
       backgroundColor: 'grays.500',
+      svg: {
+        color: 'white',
+      },
     },
   })
 );
@@ -48,5 +51,16 @@ export const HeartIcon = styled(HeartIconSVG)(props =>
       stroke: props.liked ? 'reds.300' : 'white',
       fill: props.liked ? 'reds.300' : 'none',
     },
+  })
+);
+
+export const ReloadIcon = styled(ReloadIconSVG)(
+  css({
+    color: 'grays.400',
+  })
+);
+export const NewWindowIcon = styled(NewWindowIconSVG)(
+  css({
+    color: 'grays.400',
   })
 );
