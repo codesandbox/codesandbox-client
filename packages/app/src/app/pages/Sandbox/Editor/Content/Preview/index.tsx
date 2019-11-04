@@ -8,7 +8,7 @@ import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import getTemplate from '@codesandbox/common/lib/templates';
 
-type Props = {
+type IPreviewProps = {
   hidden?: boolean;
   runOnClick?: boolean;
   options: { url?: string };
@@ -32,7 +32,7 @@ const useForceUpdate = () => {
   return forceUpdate;
 };
 
-const PreviewComponent: React.FC<Props> = ({
+export const Preview: React.FC<IPreviewProps> = ({
   hidden,
   runOnClick,
   options: { url },
@@ -257,5 +257,3 @@ const PreviewComponent: React.FC<Props> = ({
     <RunOnClick onClick={handleRunOnClick} />
   );
 };
-
-export const Preview = PreviewComponent;
