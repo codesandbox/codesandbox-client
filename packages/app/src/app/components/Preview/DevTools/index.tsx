@@ -238,7 +238,8 @@ export class DevTools extends React.PureComponent<Props, State> {
 
     if (
       status === 'success' &&
-      (newStatus !== 'error' && newStatus !== 'warning')
+      newStatus !== 'error' &&
+      newStatus !== 'warning'
     ) {
       newStatus = 'success';
     } else if (status === 'warning' && newStatus !== 'error') {

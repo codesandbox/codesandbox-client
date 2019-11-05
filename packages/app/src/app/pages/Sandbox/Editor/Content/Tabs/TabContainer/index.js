@@ -97,6 +97,8 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-export default DropTarget('TAB', entryTarget, collectTarget)(
-  DragSource('TAB', entrySource, collectSource)(TabContainer)
-);
+export default DropTarget(
+  'TAB',
+  entryTarget,
+  collectTarget
+)(DragSource('TAB', entrySource, collectSource)(TabContainer));

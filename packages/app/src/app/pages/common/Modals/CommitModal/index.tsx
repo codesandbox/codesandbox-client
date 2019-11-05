@@ -18,9 +18,7 @@ const CommitModal: FunctionComponent = () => {
 
   if (commit) {
     if (commit.newBranch) {
-      const newUrl = `https://github.com/${git.username}/${git.repo}/compare/${
-        git.branch
-      }...${username}:${commit.newBranch}?expand=1`;
+      const newUrl = `https://github.com/${git.username}/${git.repo}/compare/${git.branch}...${username}:${commit.newBranch}?expand=1`;
 
       message = (
         <div>

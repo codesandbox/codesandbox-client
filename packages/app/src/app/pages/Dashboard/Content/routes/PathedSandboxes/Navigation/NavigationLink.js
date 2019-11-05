@@ -35,6 +35,7 @@ const Link = ({
     </div>
   );
 
-export default inject('signals', 'store')(
-  DropTarget('SANDBOX', entryTarget, collectTarget)(observer(Link))
-);
+export default inject(
+  'signals',
+  'store'
+)(DropTarget('SANDBOX', entryTarget, collectTarget)(observer(Link)));
