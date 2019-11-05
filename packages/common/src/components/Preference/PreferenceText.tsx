@@ -28,10 +28,10 @@ export const PreferenceText: FunctionComponent<Props> = ({
   };
 
   return createElement(isTextArea ? TextArea : Input, {
-    ...props,
     style: { width: '9rem' },
     value,
     placeholder,
     onChange: handleChange,
+    ...props,
   });
 };
