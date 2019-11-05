@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const FooterWrapper = styled.footer`
   border-top: 1px solid ${props => props.theme.homepage.grey};
   padding-top: 2.5rem;
+  padding-bottom: 1rem;
   margin-top: 6rem;
   margin-bottom: 3rem;
 `;

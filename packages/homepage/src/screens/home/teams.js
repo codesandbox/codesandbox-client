@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
+
 import { P } from '../../components/Typography';
 
 import zendesk from '../../assets/images/zendesk.svg';
@@ -23,62 +25,72 @@ const List = styled.ul`
 
 const Teams = () => (
   <>
-    <P
-      muted
-      css={`
-        text-align: center;
-        margin-top: 12rem;
-      `}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 0.6 }}
+      transition={{
+        duration: 1,
+        ease: 'easeIn',
+      }}
     >
-      Accelerating the most creative developers and product teams
-    </P>
-    <List>
-      <li>
-        <a
-          href="https://www.zendesk.com/"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <img src={zendesk} alt="Zendesk" />
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://www.atlassian.com/"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <img src={atlassian} alt="Atlasian" />
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://www.shopify.com/"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <img src={shopify} alt="Shopify" />
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://www.algolia.com/"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <img src={algolia} alt="Algolia" />
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://www.gitlab.com/"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <img src={gitlab} alt="Gitlab" />
-        </a>
-      </li>
-    </List>
+      <P
+        muted
+        css={`
+          text-align: center;
+          margin-top: 12rem;
+        `}
+      >
+        Accelerating the most creative developers and product teams
+      </P>
+
+      <List>
+        <li>
+          <a
+            href="https://www.zendesk.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <img src={zendesk} alt="Zendesk" />
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.atlassian.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <img src={atlassian} alt="Atlasian" />
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.shopify.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <img src={shopify} alt="Shopify" />
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.algolia.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <img src={algolia} alt="Algolia" />
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.gitlab.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <img src={gitlab} alt="Gitlab" />
+          </a>
+        </li>
+      </List>
+    </motion.div>
   </>
 );
 

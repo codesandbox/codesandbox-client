@@ -3,6 +3,8 @@ import styled from 'styled-components';
 export const HeroWrapper = styled.section`
   margin-top: 6rem;
   text-align: center;
+  overflow: hidden;
+  padding: 0 2rem;
 `;
 
 export const SignUp = styled.p`

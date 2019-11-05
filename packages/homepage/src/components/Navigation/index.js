@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from '@reach/router';
 import Button from '../Button';
 import Logo from '../../assets/images/logo.svg';
@@ -36,39 +37,50 @@ const Navigation = () => {
   }, []);
 
   return (
-    <Header>
-      <Nav>
-        <Wrapper>
-          <LogoWrapper to="/">
-            <LogoImage src={Logo} alt="CodeSandbox Logo" />
-            CodeSandbox
-          </LogoWrapper>
-          <List>
-            <li>
-              <Link to="/explore">Explore</Link>
-            </li>
-            <li>
-              <Link to="/resources">Resources</Link>
-            </li>
-            <li>
-              <Link to="/explore">Support</Link>
-            </li>
-            <li>
-              <Link to="/explore">Pricing</Link>
-            </li>
-            {!user && (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.5,
+        ease: 'easeIn',
+      }}
+    >
+      <Header>
+        <Nav>
+          <Wrapper>
+            <LogoWrapper to="/">
+              <LogoImage src={Logo} alt="CodeSandbox Logo" />
+              CodeSandbox
+            </LogoWrapper>
+            <List>
               <li>
-                <a href="https://codesandbox.io/signin">Sign In</a>
+                <Link to="/explore">Explore</Link>
               </li>
-            )}
-            <LogIn>
-              <Button href="/s">Create Sandbox</Button>
-              {user && <UserAvatar src={user.avatar_url} alt={user.username} />}
-            </LogIn>
-          </List>
-        </Wrapper>
-      </Nav>
-    </Header>
+              <li>
+                <Link to="/resources">Resources</Link>
+              </li>
+              <li>
+                <Link to="/explore">Support</Link>
+              </li>
+              <li>
+                <Link to="/explore">Pricing</Link>
+              </li>
+              {!user && (
+                <li>
+                  <a href="https://codesandbox.io/signin">Sign In</a>
+                </li>
+              )}
+              <LogIn>
+                <Button href="/s">Create Sandbox</Button>
+                {user && (
+                  <UserAvatar src={user.avatar_url} alt={user.username} />
+                )}
+              </LogIn>
+            </List>
+          </Wrapper>
+        </Nav>
+      </Header>
+    </motion.div>
   );
 };
 

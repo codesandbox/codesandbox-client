@@ -7,24 +7,35 @@ import { HeroWrapper, SignUp, ImageWrapper, Border } from './elements';
 
 export default () => (
   <HeroWrapper>
-    <H2 as="h1"> Web Development, Accelerated </H2>
-    <P
-      small
-      css={`
-        margin-bottom: 2rem;
-      `}
+    <motion.div
+      initial={{ opacity: 0, y: 140 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 1,
+        ease: 'easeOut',
+      }}
     >
-      An instant IDE and prototyping tool for rapid web development.
-    </P>
-    <Button href="/s">Create a Sandbox, it’s free</Button>
-    <SignUp>No signup required</SignUp>
+      <H2 as="h1"> Web Development, Accelerated </H2>
+      <P
+        small
+        css={`
+          margin-bottom: 2rem;
+        `}
+      >
+        An instant IDE and prototyping tool for rapid web development.
+      </P>
+      <Button href="/s">Create a Sandbox, it’s free</Button>
+      <SignUp>No signup required</SignUp>
+    </motion.div>
+
     <ImageWrapper>
       <motion.img
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 120, boxShadow: '0 0 0 #040404' }}
+        animate={{ opacity: 1, y: 0, boxShadow: '0 -4px 20px #040404' }}
         transition={{
-          duration: 0.4,
-          ease: 'easeInOut',
+          duration: 1,
+          delay: 0.3,
+          ease: 'easeOut',
         }}
         src={hero}
         alt="browser showing codesandbox running"
