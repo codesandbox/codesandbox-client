@@ -9,7 +9,6 @@ import {
 } from '@codesandbox/common/lib/types';
 import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
 
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { createOptimisticModule } from './utils/common';
 import getItems from './utils/items';
@@ -75,7 +74,7 @@ export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
     // Let the server know that we've seen the survey
     effects.api.markSurveySeen();
 
-    notificationState.addNotification({
+    effects.notificationToast.add({
       title: 'Help improve CodeSandbox',
       message:
         "We'd love to hear your thoughts, it's 7 questions and will only take 2 minutes.",
