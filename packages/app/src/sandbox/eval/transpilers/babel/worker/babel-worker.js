@@ -199,7 +199,9 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
     throw new Error(`Could not install plugin '${plugin}', it is undefined.`);
   }
 
-  console.warn('Downloaded ' + plugin);
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('Downloaded ' + plugin);
+  }
   Babel.registerPlugin(
     plugin,
     evaluatedPlugin.default ? evaluatedPlugin.default : evaluatedPlugin
@@ -241,7 +243,9 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
     });
   }
 
-  console.warn('Downloaded ' + preset);
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('Downloaded ' + preset);
+  }
   if (!evaluatedPreset) {
     throw new Error(`Could not install preset '${preset}', it is undefined.`);
   }
