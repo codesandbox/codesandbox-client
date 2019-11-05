@@ -12,39 +12,20 @@ import {
 import { More } from '../More';
 
 import LiveButton from './LiveButton';
-import LiveInfo from './LiveInfo';
+import { LiveInfo } from './LiveInfo';
 
 export const Live: FunctionComponent = () => {
   const {
     actions: {
-      live: {
-        createLiveClicked,
-        onAddEditorClicked,
-        onChatEnabledChange,
-        onFollow,
-        onModeChanged,
-        onRemoveEditorClicked,
-        onSessionCloseClicked,
-        onToggleNotificationsHidden,
-      },
+      live: { createLiveClicked },
     },
     state: {
       editor: {
         currentSandbox: { id, owned },
         isAllModulesSynced,
       },
-      live: {
-        followingUserId,
-        isLive,
-        isLoading,
-        isOwner,
-        isTeam,
-        liveUserId,
-        notificationsHidden,
-        reconnecting,
-        roomInfo,
-      },
       isLoggedIn,
+      live: { isLive, isLoading },
     },
   } = useOvermind();
   const showPlaceHolder = (!isLive && !owned) || !isLoggedIn;
@@ -66,24 +47,7 @@ export const Live: FunctionComponent = () => {
   return (
     <div>
       {isLive ? (
-        <LiveInfo
-          addEditor={onAddEditorClicked}
-          chatEnabled={roomInfo.chatEnabled}
-          currentUserId={liveUserId}
-          followingUserId={followingUserId}
-          isOwner={isOwner}
-          isTeam={isTeam}
-          notificationsHidden={notificationsHidden}
-          onSessionCloseClicked={onSessionCloseClicked}
-          ownerIds={roomInfo.ownerIds}
-          reconnecting={reconnecting}
-          removeEditor={onRemoveEditorClicked}
-          roomInfo={roomInfo}
-          setFollowing={onFollow}
-          setMode={onModeChanged}
-          toggleChatEnabled={() => onChatEnabledChange(!roomInfo.chatEnabled)}
-          toggleNotificationsHidden={onToggleNotificationsHidden}
-        />
+        <LiveInfo />
       ) : (
         <>
           <Description style={{ marginBottom: '1rem' }}>

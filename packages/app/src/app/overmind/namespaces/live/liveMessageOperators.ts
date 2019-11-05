@@ -5,12 +5,14 @@ import {
   LiveMessage,
   LiveUser,
   Module,
+  RoomInfo,
   UserSelection,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
+
+import { Operator } from 'app/overmind';
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
@@ -419,8 +421,8 @@ export const onUserCurrentModule: Operator<LiveMessage<{
 });
 
 export const onLiveMode: Operator<LiveMessage<{
-  mode: string;
-}>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
+  mode: RoomInfo['mode'];
+}>> = mutate(({ actions, state }, { _isOwnMessage, data }) => {
   if (!state.live.roomInfo) {
     return;
   }
@@ -428,6 +430,7 @@ export const onLiveMode: Operator<LiveMessage<{
   if (!_isOwnMessage) {
     state.live.roomInfo.mode = data.mode;
   }
+
   actions.live.internal.clearUserSelections(null);
 });
 

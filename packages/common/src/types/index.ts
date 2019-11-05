@@ -210,7 +210,7 @@ export type RoomInfo = {
   startTime: number;
   ownerIds: string[];
   roomId: string;
-  mode: string;
+  mode: 'classroom' | 'open';
   chatEnabled: boolean;
   sandboxId: string;
   editorIds: string[];

@@ -1,4 +1,8 @@
-import { LiveMessage, LiveMessageEvent } from '@codesandbox/common/lib/types';
+import {
+  LiveMessage,
+  LiveMessageEvent,
+  RoomInfo,
+} from '@codesandbox/common/lib/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
@@ -176,9 +180,9 @@ export const onSelectionChanged: Action<any> = (
   }
 };
 
-export const onModeChanged: Action<{ mode: string }> = (
-  { state, effects },
-  { mode }
+export const onModeChanged: Action<RoomInfo['mode']> = (
+  { efects, state },
+  mode
 ) => {
   if (state.live.isOwner && state.live.roomInfo) {
     state.live.roomInfo.mode = mode;
@@ -186,31 +190,29 @@ export const onModeChanged: Action<{ mode: string }> = (
   }
 };
 
-export const onAddEditorClicked: Action<{
-  liveUserId: string;
-}> = ({ state, effects }, { liveUserId }) => {
+export const onAddEditorClicked: Action<string> = (
+  { effects, state },
+  liveUserId
+) => {
   if (!state.live.roomInfo) {
     return;
   }
+
   state.live.roomInfo.editorIds.push(liveUserId);
 
   effects.live.sendEditorAdded(liveUserId);
 };
 
-export const onRemoveEditorClicked: Action<any> = (
-  { state, effects },
-  { liveUserId, data }
+export const onRemoveEditorClicked: Action<string> = (
+  { effects, state },
+  liveUserId
 ) => {
-  const userId = liveUserId || data.editor_user_id;
-
   if (!state.live.roomInfo) {
     return;
   }
 
   const editors = state.live.roomInfo.editorIds;
-  const newEditors = editors.filter(id => id !== userId);
-
-  state.live.roomInfo.editorIds = newEditors;
+  state.live.roomInfo.editorIds = editors.filter(id => id !== liveUserId);
 
   effects.live.sendEditorRemoved(liveUserId);
 };
@@ -249,9 +251,10 @@ export const onChatEnabledChange: Action<boolean> = (
   }
 };
 
-export const onFollow: Action<{
-  liveUserId: string;
-}> = ({ state, effects, actions }, { liveUserId }) => {
+export const onFollow: Action<string> = (
+  { actions, effects, state },
+  liveUserId
+) => {
   if (!state.live.roomInfo) {
     return;
   }
@@ -259,11 +262,13 @@ export const onFollow: Action<{
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
 
-  const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
+  const user = state.live.roomInfo.users.find(({ id }) => id === liveUserId);
 
   if (user && user.currentModuleShortid && state.editor.currentSandbox) {
     const { modules } = state.editor.currentSandbox;
-    const module = modules.find(m => m.shortid === user.currentModuleShortid);
+    const module = modules.find(
+      ({ shortid }) => shortid === user.currentModuleShortid
+    );
 
     actions.editor.moduleSelected({
       id: module ? module.id : undefined,

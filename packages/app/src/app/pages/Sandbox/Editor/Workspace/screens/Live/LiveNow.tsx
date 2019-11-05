@@ -18,6 +18,7 @@ import {
   Switch,
 } from '@codesandbox/components';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { RoomInfo } from '@codesandbox/common/lib/types';
 
 import { useOvermind } from 'app/overmind';
 
@@ -135,7 +136,9 @@ export const LiveNow = () => {
           <Select
             icon={mode === 'open' ? OpenIcon : ClassroomIcon}
             value={mode}
-            onChange={event => onModeChanged({ mode: event.target.value })}
+            onChange={event =>
+              onModeChanged(event.target.value as RoomInfo['mode'])
+            }
             disabled={!isOwner}
           >
             <option value="open">Everyone can edit</option>
@@ -235,7 +238,7 @@ const User = ({ user, liveRole }) => {
               <Tooltip content="Make editor">
                 <AddIcon
                   css={{ cursor: 'pointer' }}
-                  onClick={() => onAddEditorClicked({ liveUserId: user.id })}
+                  onClick={() => onAddEditorClicked(user.id)}
                 />
               </Tooltip>
             )}
@@ -243,7 +246,7 @@ const User = ({ user, liveRole }) => {
               <Tooltip content="Make spectator">
                 <RemoveIcon
                   css={{ cursor: 'pointer' }}
-                  onClick={() => onRemoveEditorClicked({ liveUserId: user.id })}
+                  onClick={() => onRemoveEditorClicked(user.id)}
                 />
               </Tooltip>
             )}
@@ -256,14 +259,14 @@ const User = ({ user, liveRole }) => {
               <Tooltip content="Stop following">
                 <UnfollowIcon
                   css={{ cursor: 'pointer' }}
-                  onClick={() => onFollow({ liveUserId: null })}
+                  onClick={() => onFollow(null)}
                 />
               </Tooltip>
             ) : (
               <Tooltip content="Follow along">
                 <FollowIcon
                   css={{ cursor: 'pointer' }}
-                  onClick={() => onFollow({ liveUserId: user.id })}
+                  onClick={() => onFollow(user.id)}
                 />
               </Tooltip>
             )}
