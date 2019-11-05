@@ -152,6 +152,7 @@ class DevToolTerminal extends React.Component<
         <div style={{ position: 'relative', flex: 'auto' }}>
           <TerminalComponent
             hidden={hidden || selectedShell !== undefined}
+            owned={this.props.owned}
             theme={theme}
             onTerminalInitialized={this.setTerminal}
           />
