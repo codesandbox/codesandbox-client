@@ -1,11 +1,15 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import { useInView } from 'react-hook-inview';
 
 import styled from 'styled-components';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
-import { H2, P, H3, H5 } from '../../components/Typography';
+import { TimelineLite } from 'gsap/TweenMax';
+import { H2, P, H3, H5 } from '../../../components/Typography';
 
-import prototype from '../../assets/images/prototype.png';
-import Tweet from '../../components/Tweet';
+import Tweet from '../../../components/Tweet';
+
+import Stars from './stars.svg';
+import IDE from './ide.svg';
 
 const Grid = styled.div`
   display: grid;
@@ -18,28 +22,65 @@ const Grid = styled.div`
 const ImageWrapper = styled.div`
   background: #151515;
   border-radius: 4px;
+  min-height: 475px;
+  position: relative;
 `;
 
 const Prototype = () => {
   const [elementTop, setElementTop] = useState(0);
+  const [inViewRef, inView] = useInView();
   const ref = useRef(null);
   const { scrollY } = useViewportScroll();
+  const stars = useRef(null);
+  const ideRef = useRef(null);
+  const animation = new TimelineLite();
 
   const y = useTransform(scrollY, [elementTop, elementTop + 1], [0, -0.1], {
     clamp: false,
   });
-
   useLayoutEffect(() => {
     const element = ref.current;
     setElementTop(element.offsetTop);
   }, [ref]);
+
+  useEffect(() => {
+    animation
+      .to(stars.current, 1, { scale: 2, delay: 2 })
+      .to(ideRef.current, 1.5, { y: -400, opacity: 1, delay: 1 })
+      .to(stars.current, 1, { scale: 1, y: 70, x: 60 }, '-=1');
+    if (inView) animation.resume();
+  }, [animation, inView]);
+
   return (
     <>
       <H2>Prototype Quickly</H2>
       <P muted>Test your ideas early and often</P>
       <Grid css="">
-        <ImageWrapper>
-          <img src={prototype} alt="prototype" />
+        <ImageWrapper ref={inViewRef}>
+          <div
+            css={`
+              position: absolute;
+              left: 50%;
+              top: 50%;
+              margin-top: -60px;
+              margin-left: -121px;
+              z-index: 2;
+              transform: scale(0.01);
+            `}
+            ref={stars}
+          >
+            <Stars />
+          </div>
+          <div
+            ref={ideRef}
+            css={`
+              opacity: 0;
+              position: absolute;
+              top: 100%;
+            `}
+          >
+            <IDE />
+          </div>
         </ImageWrapper>
         <div
           css={`

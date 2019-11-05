@@ -44,6 +44,14 @@ module.exports = {
       },
     },
     {
+      resolve: 'gatsby-plugin-react-svg',
+      options: {
+        rule: {
+          include: /screens/, // See below to configure properly
+        },
+      },
+    },
+    {
       resolve: 'gatsby-plugin-nprogress',
       options: {
         color: '#40A9F3',
