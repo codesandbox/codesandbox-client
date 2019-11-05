@@ -121,11 +121,15 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
   };
 
   checkScreenshot() {
-    if (this.props.screenshotOutdated && this.hasScreenshot()) {
-      // We only request the screenshot if the sandbox card is in view for > 1 second
-      this.screenshotTimeout = window.setTimeout(() => {
-        this.requestScreenshot();
-      }, 1000);
+    if (this.props.screenshotOutdated) {
+      if (this.hasScreenshot()) {
+        // We only request the screenshot if the sandbox card is in view for > 1 second
+        this.screenshotTimeout = window.setTimeout(() => {
+          this.requestScreenshot();
+        }, 1000);
+      }
+    } else {
+      this.setState({ screenshotUrl: this.props.screenshotUrl });
     }
   }
 
@@ -266,9 +270,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
           action: () => {
             if (this.props.collectionTeamId) {
               history.push(
-                `/dashboard/teams/${this.props.collectionTeamId}/sandboxes${
-                  this.props.collectionPath
-                }`
+                `/dashboard/teams/${this.props.collectionTeamId}/sandboxes${this.props.collectionPath}`
               );
             } else {
               history.push(`/dashboard/sandboxes${this.props.collectionPath}`);
