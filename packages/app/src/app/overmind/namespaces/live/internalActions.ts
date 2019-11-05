@@ -16,7 +16,7 @@ export const clearUserSelections: Action<any> = (
     if (userIndex > -1) {
       if (state.live.roomInfo.users[userIndex]) {
         state.live.roomInfo.users[userIndex].selection = null;
-        effects.vscode.editor.updateUserSelections([
+        effects.vscode.updateUserSelections([
           {
             userId,
             selection: null,

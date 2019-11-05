@@ -1,5 +1,4 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { Icons } from 'app/components/CodeEditor/elements';
 import { VSCode as CodeEditor } from 'app/components/CodeEditor/VSCode';
@@ -201,7 +200,7 @@ export const Content: React.FC = () => {
                   )}
                 </Icons>
               ) : null}
-              <CodeEditor key={sandbox.id} />
+              <CodeEditor />
             </div>
           </div>
 

@@ -9,6 +9,8 @@ import {
   SandboxFs,
   Settings,
 } from '@codesandbox/common/lib/types';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { Reaction } from 'app/overmind';
 import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
@@ -250,9 +252,16 @@ export class VSCodeEffect {
 
   public async openModule(module: Module) {
     await this.initialized;
-    const model = await this.modelsHandler.changeModule(module);
+    try {
+      const model = await this.modelsHandler.changeModule(module);
 
-    this.lint(module.title, model);
+      this.lint(module.title, model);
+    } catch (error) {
+      // We might try to open a module that is not actually opened in the editor,
+      // but the configuration wizard.. currently this throws an error as there
+      // is really no good way to identify when it happen. This needs to be
+      // improved in next version
+    }
   }
 
   setErrors = (errors: ModuleError[]) => {
@@ -398,12 +407,9 @@ export class VSCodeEffect {
       { IEditorService },
       { ICodeEditorService },
       { ITextFileService },
-      // { ILifecycleService },
       { IEditorGroupsService },
       { IStatusbarService },
       { IExtensionService },
-      // { IContextViewService },
-      // { IQuickOpenService },
       { CodeSandboxService },
       { CodeSandboxConfigurationUIService },
       { ICodeSandboxEditorConnectorService },
@@ -415,12 +421,9 @@ export class VSCodeEffect {
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
       r('vs/workbench/services/textfile/common/textfiles'),
-      // r('vs/platform/lifecycle/common/lifecycle'),
       r('vs/workbench/services/editor/common/editorGroupsService'),
       r('vs/platform/statusbar/common/statusbar'),
       r('vs/workbench/services/extensions/common/extensions'),
-      // r('vs/platform/contextview/browser/contextView'),
-      // r('vs/platform/quickOpen/common/quickOpen'),
       r('vs/codesandbox/services/codesandbox/browser/codesandboxService'),
       r('vs/codesandbox/services/codesandbox/configurationUIService'),
       r(
@@ -460,6 +463,7 @@ export class VSCodeEffect {
       const extensionEnablementService = accessor.get(
         IExtensionEnablementService
       );
+      // const quickopenService = accessor.get(IQuickOpenService);
 
       this.commandService.resolve(commandService);
       this.extensionService.resolve(extensionService);
@@ -470,29 +474,6 @@ export class VSCodeEffect {
       const codeEditorService = accessor.get(ICodeEditorService);
       const textFileService = accessor.get(ITextFileService);
       const editorService = accessor.get(IEditorService);
-
-      /*
-      this.lifecycleService = accessor.get(ILifecycleService);
-      this.quickopenService = accessor.get(IQuickOpenService);
-
-      if (this.lifecycleService.phase !== 3) {
-        this.lifecycleService.phase = 2; // Restoring
-        requestAnimationFrame(() => {
-          this.lifecycleService.phase = 3; // Running
-        });
-      } else {
-        // It seems like the VSCode instance has been started before
-        const extensionService = accessor.get(IExtensionService);
-        const contextViewService = accessor.get(IContextViewService);
-
-        // It was killed in the last quit
-        extensionService.startExtensionHost();
-        contextViewService.setContainer(el);
-
-        // We force this to recreate, otherwise it's bound to an element that's disposed
-        this.quickopenService.quickOpenWidget = undefined;
-      }
-      */
 
       this.editorApi = {
         openFile(path) {
@@ -524,6 +505,8 @@ export class VSCodeEffect {
       editorPart.create(this.elements.editorPart);
       editorPart.layout(container.offsetWidth, container.offsetHeight);
 
+      editorPart.parent = container;
+
       container.appendChild(this.elements.editorPart);
 
       this.initializeReactions();
@@ -540,7 +523,8 @@ export class VSCodeEffect {
   }
 
   private prepareElements() {
-    this.elements.editor.className = 'monaco-workbench';
+    this.elements.editor.id = 'workbench.main.container';
+    this.elements.editor.className = 'monaco-workbench mac nopanel';
     this.elements.editor.style.width = '100%';
     this.elements.editor.style.height = '100%';
 
@@ -749,6 +733,11 @@ export class VSCodeEffect {
 
     return model.uri.path.replace(/^\/sandbox/, '');
   };
+
+  // This is used by the CodesandboxService internally
+  private addNotification(notification: NotificationMessage) {
+    notificationState.addNotification(notification);
+  }
 }
 
 export default new VSCodeEffect();

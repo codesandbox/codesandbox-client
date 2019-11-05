@@ -1,5 +1,7 @@
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import {
+  Module,
   ModuleTab,
   NotificationButton,
   Sandbox,
@@ -8,8 +10,8 @@ import {
   TabType,
 } from '@codesandbox/common/lib/types';
 import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
-
 import { NotificationStatus } from '@codesandbox/notifications';
+
 import { createOptimisticModule } from './utils/common';
 import getItems from './utils/items';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
@@ -307,34 +309,41 @@ export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
   state.editor.currentSandbox.title = sandbox.title;
 };
 
-export const ensurePackageJSON: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const ensurePackageJSON: AsyncAction = async ({ state, effects }) => {
   const sandbox = state.editor.currentSandbox;
   const existingPackageJson = sandbox.modules.find(
     module => module.directoryShortid == null && module.title === 'package.json'
   );
 
   if (sandbox.owned && !existingPackageJson) {
+    const optimisticId = effects.utils.createOptimisticId();
     const optimisticModule = createOptimisticModule({
+      id: optimisticId,
       title: 'package.json',
       code: generatePackageJsonFromSandbox(sandbox),
+      path: '/package.json',
     });
 
-    state.editor.currentSandbox.modules.push(optimisticModule);
+    state.editor.currentSandbox.modules.push(optimisticModule as Module);
+    optimisticModule.path = getModulePath(
+      sandbox.modules,
+      sandbox.directories,
+      optimisticId
+    );
+
+    // We grab the module from the state to continue working with it (proxy)
+    const module = sandbox.modules[sandbox.modules.length - 1];
+
+    effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
 
     try {
-      const updatedModule = await effects.api.createModule(
-        sandbox.id,
-        optimisticModule
-      );
+      const updatedModule = await effects.api.createModule(sandbox.id, module);
 
-      optimisticModule.id = updatedModule.id;
-      optimisticModule.shortid = updatedModule.shortid;
+      module.id = updatedModule.id;
+      module.shortid = updatedModule.shortid;
     } catch (error) {
-      sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1);
+      sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
+      state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
     }
   }
 };

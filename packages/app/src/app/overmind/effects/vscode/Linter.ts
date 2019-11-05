@@ -1,6 +1,7 @@
 import { actions, dispatch } from 'codesandbox-api';
 import debounce from 'lodash-es/debounce';
 // @ts-ignore
+// eslint-disable-next-line
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./LinterWorker';
 
 import { getCurrentModelPath } from './utils';

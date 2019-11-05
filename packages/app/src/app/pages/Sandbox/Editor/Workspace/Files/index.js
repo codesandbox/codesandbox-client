@@ -1,4 +1,3 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { inject, observer } from 'app/componentConnectors';
 import * as React from 'react';
 

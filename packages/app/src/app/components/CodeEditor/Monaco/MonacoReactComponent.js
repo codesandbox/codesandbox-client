@@ -35,10 +35,9 @@ class MonacoEditor extends React.PureComponent {
     }
 
     // eslint-disable-next-line global-require
-    require('app/overmind/effects/vscode/manager/dev-bootstrap').default(
-      false,
-      ['vs/editor/editor.main']
-    )(() => {
+    require('app/overmind/effects/vscode/vscode-script-loader').default(false, [
+      'vs/editor/editor.main',
+    ])(() => {
       this.initMonaco();
     });
   };

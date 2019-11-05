@@ -5,7 +5,7 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 
 interface IVSCodePlaceholderProps {
-  hideTitle: boolean;
+  hideTitle?: boolean;
 }
 
 const VSCodePlaceholder: React.FC<IVSCodePlaceholderProps> = ({

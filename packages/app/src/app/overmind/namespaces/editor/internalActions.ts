@@ -173,7 +173,10 @@ export const updateCurrentTemplate: AsyncAction = async ({
       const { parsed } = state.editor.parsedConfigurations.package;
 
       const modulesByPath = mapValues(state.editor.modulesByPath, module => ({
+        // No idea why this typing fails!
+        // @ts-ignore
         content: module.code || '',
+        // @ts-ignore
         isBinary: module.isBinary,
       }));
 

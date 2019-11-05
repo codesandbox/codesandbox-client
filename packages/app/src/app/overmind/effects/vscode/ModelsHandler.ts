@@ -292,16 +292,22 @@ export class ModelsHandler {
         }
 
         // These types are not working, have to figure this out
+        // @ts-ignore
         addCursor(selection.primary.cursorPosition, cursorClassName);
+        // @ts-ignore
         if (selection.primary.selection.length) {
           addSelection(
+            // @ts-ignore
             selection.primary.selection[0],
+            // @ts-ignore
             selection.primary.selection[1],
             selectionClassName
           );
         }
 
+        // @ts-ignore
         if (selection.secondary.length) {
+          // @ts-ignore
           selection.secondary.forEach(s => {
             addCursor(s.cursorPosition, secondaryCursorClassName);
 

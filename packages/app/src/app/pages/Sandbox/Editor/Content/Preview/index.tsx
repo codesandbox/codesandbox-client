@@ -1,10 +1,9 @@
-// @flow
-import React, { Component } from 'react';
-import { inject, observer } from 'app/componentConnectors';
-
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import getTemplate from '@codesandbox/common/lib/templates';
+import { inject, observer } from 'app/componentConnectors';
+// @flow
+import React, { Component } from 'react';
 
 type Props = {
   hidden?: boolean;
@@ -183,7 +182,6 @@ class PreviewComponent extends Component<Props, State> {
         privacy={store.editor.currentSandbox.privacy}
         previewSecret={store.editor.currentSandbox.previewSecret}
         currentModule={store.editor.currentModule}
-        modulesByPath={store.editor.modulesByPath}
         settings={store.preferences.settings}
         initialPath={store.editor.initialPath}
         url={options.url}

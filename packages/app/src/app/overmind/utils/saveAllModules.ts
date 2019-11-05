@@ -1,6 +1,6 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-
-export function saveAllModules(store, signals) {
+// This should be an action of its own
+export default function saveAllModules(store, signals) {
   const sandbox = store.editor.currentSandbox;
 
   track('Save Modified Modules');

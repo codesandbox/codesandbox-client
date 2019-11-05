@@ -20,7 +20,7 @@ export const Subheading = styled.div`
   text-transform: uppercase;
 `;
 
-export const PreferenceContainer = styled.div`
+export const PreferenceContainer = styled.div<{ disabled?: boolean }>`
   padding-top: 0.5rem;
 
   ${props =>
@@ -32,7 +32,9 @@ export const PreferenceContainer = styled.div`
     `}
 `;
 
-export const PaddedPreference = styled(Preference)`
+// Preference is typed in a bad way, not possible to infer
+// correct values
+export const PaddedPreference = styled<any>(Preference)`
   padding: 0;
   font-weight: 400;
 `;
