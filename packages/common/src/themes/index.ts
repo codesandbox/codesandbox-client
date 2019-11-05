@@ -1,5 +1,5 @@
 import codesandbox from './codesandbox.json';
-import codesandboxNu from './codesandbox-nu.json';
+import codesandboxBlack from './codesandbox-black.json';
 
 export default [
   {
@@ -8,9 +8,9 @@ export default [
     content: codesandbox,
   },
   {
-    name: 'CodeSandbox Nu',
-    id: 'codesandboxNu',
-    content: codesandboxNu,
+    name: 'CodeSandbox Black',
+    id: 'codesandboxBlack',
+    content: codesandboxBlack,
   },
   {
     name: 'Night Owl',
