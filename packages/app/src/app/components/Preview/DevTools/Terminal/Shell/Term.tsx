@@ -5,11 +5,15 @@ import * as fit from 'xterm/lib/addons/fit/fit';
 
 import ResizeObserver from 'resize-observer-polyfill';
 
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { dispatch } from 'codesandbox-api';
+import { NotificationStatus } from '@codesandbox/notifications';
 import getTerminalTheme, { VSTheme } from '../terminal-theme';
 import { TerminalWithFit } from '../types';
 
 type Props = {
   theme: VSTheme;
+  owned: boolean;
   hidden: boolean;
   onTerminalInitialized: (term: TerminalWithFit) => void;
 };
@@ -34,6 +38,37 @@ export class TerminalComponentNoTheme extends React.PureComponent<Props> {
     this.term.open(this.node);
     this.resizeTerminal();
     window.addEventListener('resize', this.listenForResize);
+
+    let shownNotification = false;
+
+    this.term.on('data', () => {
+      // This is readonly, so let the user know they need to open a new
+      // terminal
+
+      if (!shownNotification) {
+        if (this.props.owned) {
+          notificationState.addNotification({
+            title: 'Terminal Read-Only',
+            message:
+              "The main terminal is read-only and runs what's defined in package.json#start, you can create a new terminal to input commands",
+            status: NotificationStatus.NOTICE,
+            actions: {
+              primary: [
+                {
+                  label: 'Create Terminal',
+                  run: () => {
+                    dispatch({
+                      type: 'codesandbox:create-shell',
+                    });
+                  },
+                },
+              ],
+            },
+          });
+        }
+        shownNotification = true;
+      }
+    });
 
     this.props.onTerminalInitialized(this.term);
   };
