@@ -15,6 +15,7 @@ import { Description, WorkspaceInputContainer } from '../../../elements';
 import LiveButton from '../LiveButton';
 
 import Countdown from './Countdown';
+import { LiveMode } from './LiveMode';
 import { Preferences } from './Preferences';
 import { User } from './User';
 
@@ -22,16 +23,10 @@ import {
   Container,
   IconContainer,
   Input,
-  Mode,
-  ModeDetails,
-  ModeSelect,
-  ModeSelector,
   SubTitle,
   Title,
   Users,
 } from './elements';
-
-const noop = () => undefined;
 
 export const LiveInfo: FunctionComponent = () => {
   const {
@@ -39,7 +34,6 @@ export const LiveInfo: FunctionComponent = () => {
       live: {
         onAddEditorClicked,
         onFollow,
-        onModeChanged,
         onRemoveEditorClicked,
         onSessionCloseClicked,
       },
@@ -119,31 +113,7 @@ export const LiveInfo: FunctionComponent = () => {
 
       <Preferences />
 
-      <Margin top={1}>
-        <SubTitle>Live Mode</SubTitle>
-
-        <ModeSelect>
-          <ModeSelector i={mode === 'open' ? 0 : 1} />
-
-          <Mode
-            onClick={isOwner ? () => onModeChanged('open') : noop}
-            selected={mode === 'open'}
-          >
-            <div>Open</div>
-
-            <ModeDetails>Everyone can edit</ModeDetails>
-          </Mode>
-
-          <Mode
-            onClick={isOwner ? () => onModeChanged('classroom') : noop}
-            selected={mode === 'classroom'}
-          >
-            <div>Classroom</div>
-
-            <ModeDetails>Take control over who can edit</ModeDetails>
-          </Mode>
-        </ModeSelect>
-      </Margin>
+      <LiveMode />
 
       {owners && (
         <Margin top={1}>
