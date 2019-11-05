@@ -162,6 +162,7 @@ class DevToolTerminal extends React.Component<
               id={shell.id}
               script={shell.script}
               ended={shell.ended}
+              owned={this.props.owned}
               hidden={hidden || shell.id !== this.state.selectedShell}
               closeShell={() => this.closeShell(shell.id)}
               endShell={() => this.endShell(shell.id)}
