@@ -72,6 +72,8 @@ type Props = {
   tabs?: string[];
   isNotSynced: boolean;
   tabCount: number;
+  sidebarOpen: boolean;
+  toggleSidebar: () => void;
 };
 
 type State = {
