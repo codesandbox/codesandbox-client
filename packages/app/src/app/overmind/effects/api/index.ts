@@ -68,6 +68,9 @@ export default {
   getCurrentUser(): Promise<CurrentUser> {
     return api.get('/users/current');
   },
+  markSurveySeen(): Promise<void> {
+    return api.post('/users/survey-seen', {});
+  },
   getDependency(name: string): Promise<Dependency> {
     return api.get(`/dependencies/${name}@latest`);
   },

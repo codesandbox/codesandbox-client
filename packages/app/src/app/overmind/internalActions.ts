@@ -9,6 +9,8 @@ import {
 } from '@codesandbox/common/lib/types';
 import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
 
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { createOptimisticModule } from './utils/common';
 import getItems from './utils/items';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
@@ -66,6 +68,33 @@ export const setSignedInCookie: Action = ({ state }) => {
   document.cookie = 'signedIn=true; Path=/;';
   identify('signed_in', true);
   setUserId(state.user.id);
+};
+
+export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
+  if (state.user.sendSurvey) {
+    // Let the server know that we've seen the survey
+    effects.api.markSurveySeen();
+
+    notificationState.addNotification({
+      title: 'Help improve CodeSandbox',
+      message:
+        "We'd love to hear your thoughts, it's 7 questions and will only take 2 minutes.",
+      status: NotificationStatus.NOTICE,
+      sticky: true,
+      actions: {
+        primary: [
+          {
+            label: 'Open Survey',
+            run: () => {
+              actions.modalOpened({
+                modal: 'userSurvey',
+              });
+            },
+          },
+        ],
+      },
+    });
+  }
 };
 
 export const addNotification: Action<{
