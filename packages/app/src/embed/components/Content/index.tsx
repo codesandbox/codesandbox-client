@@ -375,6 +375,7 @@ export default class Content extends React.PureComponent<Props, State> {
   openInNewWindow = () => {
     // this is set in app/Preview
     // i don't know why but I ain't complaining
+    // @ts-ignore
     if (window.openNewWindow) window.openNewWindow();
   };
 
