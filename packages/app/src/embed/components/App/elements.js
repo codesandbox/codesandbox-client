@@ -26,5 +26,5 @@ export const Moving = styled.div`
   left: 0;
   right: 0;
   transform: translateX(${props => (props.sidebarOpen ? 250 : 0)}px);
-  border-left: 1px solid ${props => props.theme.colors.sideBar.border};
+  border: 1px solid ${props => props.theme.colors.sideBar.border};
 `;
