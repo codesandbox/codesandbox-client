@@ -3,8 +3,8 @@ import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { TextOperation } from 'ot';
 import { filter, fork, pipe } from 'overmind';
-import eventToTransform from '../../utils/event-to-transform';
 
+import eventToTransform from '../../utils/event-to-transform';
 import * as internalActions from './internalActions';
 import * as liveMessage from './liveMessageOperators';
 
@@ -22,6 +22,9 @@ export const roomJoined: AsyncAction<{
   }
 
   actions.internal.setCurrentSandbox(sandbox);
+  state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+  await effects.vscode.changeSandbox(sandbox);
+  effects.vscode.openModule(state.editor.currentModule);
   state.live.isLoading = false;
 });
 
@@ -123,12 +126,13 @@ export const onCodeReceived: Action = ({ state }) => {
   state.live.receivingCode = false;
 };
 
-export const onSelectionChanged: Action<{
-  selection: any;
-  moduleShortid: string;
-}> = ({ state, effects }, { selection, moduleShortid }) => {
+export const onSelectionChanged: Action<any> = (
+  { state, effects },
+  selection
+) => {
   if (state.live.isCurrentEditor) {
     const { liveUserId } = state.live;
+    const moduleShortid = state.editor.currentModuleShortid;
     const userIndex = state.live.roomInfo.users.findIndex(
       u => u.id === liveUserId
     );

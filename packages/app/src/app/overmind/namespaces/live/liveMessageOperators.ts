@@ -2,7 +2,6 @@ import {
   Directory,
   LiveDisconnectReason,
   LiveMessage,
-  LiveMessageEvent,
   Module,
   Selection,
 } from '@codesandbox/common/lib/types';
@@ -190,7 +189,7 @@ export const onModuleDeleted: Operator<
     return;
   }
   // Do not think this really works? Cause this would fork the sandbox
-  actions.files.removeModule({
+  actions.files.moduleDeleted({
     moduleShortid: data.moduleShortid,
   });
 });
@@ -234,7 +233,7 @@ export const onDirectoryDeleted: Operator<
   }
   state.editor.currentModuleShortid = state.editor.mainModule.shortid;
   // Again, this does not work very well?
-  actions.files.removeDirectory({
+  actions.files.directoryDeleted({
     directoryShortid: data.directoryShortid,
   });
 });
@@ -270,7 +269,7 @@ export const onUserSelection: Operator<
       u => u.id === userSelectionLiveUserId
     );
 
-    effects.vscode.editor.updateUserSelections([
+    effects.vscode.updateUserSelections([
       {
         userId: userSelectionLiveUserId,
         name: user.username,

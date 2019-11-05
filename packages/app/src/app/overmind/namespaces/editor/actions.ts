@@ -188,7 +188,7 @@ export const codeChanged: Action<{
       actions.live.onTransformMade({
         moduleShortid,
         event,
-        code,
+        code: state.editor.currentModule.code,
       });
     } catch (e) {
       // Something went wrong while composing the operation, so we're opting for a full sync

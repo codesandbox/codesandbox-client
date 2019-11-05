@@ -164,7 +164,7 @@ export class ModelsHandler {
     }
 
     const lines = model.getLinesContent() || [];
-    const activeEditor = this.editorApi.getActiveEditor();
+    const activeEditor = this.editorApi.getActiveCodeEditor();
 
     userSelections.forEach((data: EditorSelection & UserSelection) => {
       const { userId } = data;
