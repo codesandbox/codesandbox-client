@@ -13,12 +13,13 @@ import {
   PlayButtonContainer,
 } from './elements';
 
-function SandboxInfo({ sandbox }) {
+function SandboxInfo({ sandbox, isLoggedIn }) {
   return (
     <Container>
       <Row alignItems="center">
         <Title>
-          {getSandboxName(sandbox)} <Like sandbox={sandbox} />
+          {getSandboxName(sandbox)}{' '}
+          {isLoggedIn ? <Like sandbox={sandbox} /> : null}
         </Title>
       </Row>
       <Row alignItems="flex-start">

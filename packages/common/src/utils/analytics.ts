@@ -100,8 +100,7 @@ export async function initializeSentry(dsn: string) {
       ],
       beforeSend: (event, hint) => {
         if (
-          event.stacktrace &&
-          event.stacktrace.frames &&
+          event?.stacktrace?.frames &&
           event.stacktrace.frames[0]
         ) {
           const { filename } = event.stacktrace.frames[0];
@@ -135,6 +134,10 @@ export async function initializeSentry(dsn: string) {
           event.message.startsWith('Non-Error exception captured')
         ) {
           // This is an error coming from the sandbox, return with no error.
+          return undefined;
+        }
+
+        if (event?.message === 'Unexpected frame by generating stack.' && event?.tags?.handled === 'yes') {
           return undefined;
         }
 

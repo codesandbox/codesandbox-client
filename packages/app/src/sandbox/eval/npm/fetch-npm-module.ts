@@ -395,6 +395,19 @@ async function getDependencyVersion(
       manager.transpiledModules[foundPackageJSONPath].module.code;
     const { version } = JSON.parse(packageJSON);
 
+    const savedDepDep = manifest.dependencyDependencies[dependencyName];
+
+    if (
+      savedDepDep &&
+      savedDepDep.resolved === version &&
+      savedDepDep.semver.startsWith('https://')
+    ) {
+      return {
+        packageJSONPath: foundPackageJSONPath,
+        version: savedDepDep.semver,
+      };
+    }
+
     if (packageJSON !== '//empty.js') {
       return { packageJSONPath: foundPackageJSONPath, version };
     }
@@ -405,7 +418,15 @@ async function getDependencyVersion(
   let version = null;
 
   if (manifest.dependencyDependencies[dependencyName]) {
-    version = manifest.dependencyDependencies[dependencyName].resolved;
+    if (
+      manifest.dependencyDependencies[dependencyName].semver.startsWith(
+        'https://'
+      )
+    ) {
+      version = manifest.dependencyDependencies[dependencyName].semver;
+    } else {
+      version = manifest.dependencyDependencies[dependencyName].resolved;
+    }
   } else {
     const dep = manifest.dependencies.find(m => m.name === dependencyName);
 

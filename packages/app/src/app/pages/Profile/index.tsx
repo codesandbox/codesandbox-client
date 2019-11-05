@@ -11,7 +11,7 @@ import { NotFound } from 'app/pages/common/NotFound';
 import { useOvermind } from 'app/overmind';
 import Header from './Header';
 import Navigation from './Navigation';
-import Showcase from './Showcase';
+import { Showcase } from './Showcase';
 import Sandboxes from './Sandboxes';
 import { Container, Content } from './elements';
 

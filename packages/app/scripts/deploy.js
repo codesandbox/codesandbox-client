@@ -15,7 +15,10 @@ fetch('https://deployment-api.lbogdan.ro/image', {
 })
   .then(x => {
     if (!x.ok) {
-      throw new Error('Request failed');
+      return x.json().then(res => {
+        console.error(res);
+        throw new Error('Request failed');
+      });
     }
 
     return x.json();
