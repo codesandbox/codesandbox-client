@@ -454,6 +454,7 @@ export default class Content extends React.PureComponent<Props, State> {
           onToggleProjectView={this.onToggleProjectView}
           onResize={this.handleResize}
           dragging={this.state.dragging}
+          showScreenshotOverlay
         />
       ),
       actions: [],
