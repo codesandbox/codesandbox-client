@@ -19,6 +19,8 @@ export const searchMounted: AsyncAction = withLoadApp();
 
 export const codesadboxMounted: AsyncAction = withLoadApp();
 
+export const genericPageMounted: AsyncAction = withLoadApp();
+
 export const cliMounted: AsyncAction = withLoadApp(
   async ({ state, actions }) => {
     if (state.user) {
@@ -64,6 +66,7 @@ export const connectionChanged: Action<boolean> = ({ state }, connected) => {
 
 type ModalName =
   | 'deleteDeployment'
+  | 'deleteSandbox'
   | 'feedback'
   | 'forkServerModal'
   | 'liveSessionEnded'
@@ -71,8 +74,8 @@ type ModalName =
   | 'netlifyLogs'
   | 'newSandbox'
   | 'preferences'
-  | 'privacyServerWarning'
   | 'share'
+  | 'searchDependencies'
   | 'signInForTemplates';
 export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },
@@ -154,7 +157,7 @@ export const signInZeitClicked: AsyncAction = async ({
 };
 
 export const signOutZeitClicked: AsyncAction = async ({ state, effects }) => {
-  await effects.http.delete(`/users/current_user/integrations/zeit`);
+  await effects.api.signoutZeit();
   state.user.integrations.zeit = null;
 };
 

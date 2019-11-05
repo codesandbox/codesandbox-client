@@ -1,10 +1,16 @@
 import codesandbox from './codesandbox.json';
+import codesandboxBlack from './codesandbox-black.json';
 
 export default [
   {
     name: 'CodeSandbox',
     id: 'codesandbox',
     content: codesandbox,
+  },
+  {
+    name: 'CodeSandbox Black',
+    id: 'codesandboxBlack',
+    content: codesandboxBlack,
   },
   {
     name: 'Night Owl',

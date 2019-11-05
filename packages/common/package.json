@@ -20,7 +20,8 @@
     "prepublish": "yarn build",
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
     "start:storybook": "start-storybook",
-    "test": "NODE_ENV=test jest"
+    "test": "cross-env NODE_ENV=test jest",
+    "typecheck": "tsc --noEmit"
   },
   "jest": {
     "moduleDirectories": [
@@ -106,7 +107,7 @@
     "jest-styled-components": "^6.3.3",
     "jest-svg-transformer": "^1.0.0",
     "rimraf": "^2.6.3",
-    "typescript": "3.6.3",
+    "typescript": "3.7.1-rc",
     "yarn": "^1.17.3"
   }
 }

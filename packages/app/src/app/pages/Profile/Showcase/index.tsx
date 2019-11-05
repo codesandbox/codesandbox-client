@@ -17,6 +17,7 @@ export const Showcase: React.FC<{}> = () => {
       profile,
       profile: { isLoadingProfile },
       preferences: { settings },
+      isLoggedIn,
     },
     actions: {
       profile: { selectSandboxClicked },
@@ -67,7 +68,7 @@ export const Showcase: React.FC<{}> = () => {
             <ShowcasePreview sandbox={sandbox} settings={settings} />
           </div>
           <div style={{ flex: 1 }}>
-            <SandboxInfo sandbox={sandbox} />
+            <SandboxInfo sandbox={sandbox} isLoggedIn={isLoggedIn} />
           </div>
         </Column>
       </Margin>

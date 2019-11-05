@@ -1,10 +1,8 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 /* @flow */
@@ -23,7 +21,7 @@ export type { ReactFrame };
 // We're implementing just enough to get the invalid element type warnings
 // to display the component stack in React 15.6+:
 // https://github.com/facebook/react/pull/9679
-/// TODO: a more comprehensive implementation.
+// / TODO: a more comprehensive implementation.
 
 const registerReactStack = () => {
   if (typeof console !== 'undefined') {
@@ -44,34 +42,27 @@ const unregisterReactStack = () => {
 };
 
 type ConsoleProxyCallback = (message: string, frames: ReactFrame[]) => void;
-
-let registered = false;
 const permanentRegister = function proxyConsole(
   type: string,
   callback: ConsoleProxyCallback
 ) {
-  if (!registered) {
-    registered = true;
-    if (typeof console !== 'undefined') {
-      const orig = console[type];
-      if (typeof orig === 'function') {
-        console[type] = function __stack_frame_overlay_proxy_console__() {
-          try {
-            const message = arguments[0];
-            if (typeof message === 'string') {
-              if (reactFrameStack.length > 0) {
-                callback(message, reactFrameStack[reactFrameStack.length - 1]);
-              }
-            }
-          } catch (err) {
-            // Warnings must never crash. Rethrow with a clean stack.
-            setTimeout(function() {
-              throw err;
-            });
+  if (typeof console !== 'undefined') {
+    const orig = console[type];
+    if (typeof orig === 'function') {
+      console[type] = function __stack_frame_overlay_proxy_console__() {
+        try {
+          const message = arguments[0];
+          if (typeof message === 'string' && reactFrameStack.length > 0) {
+            callback(message, reactFrameStack[reactFrameStack.length - 1]);
           }
-          return orig.apply(this, arguments);
-        };
-      }
+        } catch (err) {
+          // Warnings must never crash. Rethrow with a clean stack.
+          setTimeout(function() {
+            throw err;
+          });
+        }
+        return orig.apply(this, arguments);
+      };
     }
   }
 };

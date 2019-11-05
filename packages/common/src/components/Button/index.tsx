@@ -4,6 +4,7 @@ import { LinkButton, AButton, Button } from './elements';
 export type Props = {
   to?: string;
   href?: string;
+  big?: boolean;
   small?: boolean;
   style?: React.CSSProperties;
   block?: boolean;
@@ -14,6 +15,8 @@ export type Props = {
   danger?: boolean;
   secondary?: boolean;
   red?: boolean;
+  target?: string;
+  rel?: string;
 };
 
 function ButtonComponent({ style = {}, ...props }: Props) {

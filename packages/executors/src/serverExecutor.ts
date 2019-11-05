@@ -80,7 +80,7 @@ export class ServerExecutor implements IExecutor {
 
   async initialize({ sandboxId, files }: ISetupParams) {
     if (this.sandboxId === sandboxId && this.socket.connected) {
-      return Promise.resolve();
+      return;
     }
 
     this.sandboxId = sandboxId;

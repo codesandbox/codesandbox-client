@@ -180,19 +180,22 @@ export const sandboxDeleted: AsyncAction = async ({
 export const sandboxPrivacyChanged: AsyncAction<{
   privacy: 0 | 1 | 2;
 }> = async ({ state, effects, actions }, { privacy }) => {
+  const oldPrivacy = state.editor.currentSandbox.privacy;
+  const sandbox = await effects.api.updatePrivacy(
+    state.editor.currentId,
+    privacy
+  );
+  state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
+  state.editor.currentSandbox.privacy = privacy;
+
   if (
     getTemplate(state.editor.currentSandbox.template).isServer &&
-    privacy === 2
+    ((oldPrivacy !== 2 && privacy === 2) || (oldPrivacy === 2 && privacy !== 2))
   ) {
-    actions.modalOpened({
-      modal: 'privacyServerWarning',
-      message: null,
-    });
+    // Privacy changed from private to unlisted/public or other way around, restart
+    // the sandbox to notify containers
+    actions.server.restartContainer();
   }
-
-  await effects.api.updatePrivacy(state.editor.currentId, privacy);
-
-  state.editor.currentSandbox.privacy = privacy;
 };
 
 export const setWorkspaceItem: Action<{
@@ -234,9 +237,9 @@ export const deleteTemplate: AsyncAction = async ({
   }
 };
 
-export const editTemplate: AsyncAction<{ template: CustomTemplate }> = async (
+export const editTemplate: AsyncAction<CustomTemplate> = async (
   { state, actions, effects },
-  { template }
+  template
 ) => {
   effects.analytics.track('Template - Edited', { source: 'editor' });
 
@@ -257,8 +260,10 @@ export const editTemplate: AsyncAction<{ template: CustomTemplate }> = async (
 };
 
 export const addedTemplate: AsyncAction<{
-  template: CustomTemplate;
-}> = async ({ state, actions, effects }, { template }) => {
+  color: string;
+  description: string;
+  title: string;
+}> = async ({ state, actions, effects }, template) => {
   effects.analytics.track('Template - Created', { source: 'editor' });
 
   const sandboxId = state.editor.currentId;

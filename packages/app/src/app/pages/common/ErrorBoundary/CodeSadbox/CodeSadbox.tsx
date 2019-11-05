@@ -62,8 +62,7 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = ({
               Back to Home
             </Button>
           )}
-          {/*
-              // @ts-ignore */}
+
           <Button
             small
             target="_blank"

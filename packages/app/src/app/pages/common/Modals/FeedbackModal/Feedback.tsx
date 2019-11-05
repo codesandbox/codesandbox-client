@@ -1,129 +1,135 @@
-import * as React from 'react';
-import { useOvermind } from 'app/overmind';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { Button } from '@codesandbox/common/lib/components/Button';
 import { CurrentUser } from '@codesandbox/common/lib/types';
+import React, {
+  ChangeEvent,
+  FormEvent,
+  FunctionComponent,
+  useState,
+} from 'react';
 
-import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
-import Input from '@codesandbox/common/lib/components/Input';
+import { useOvermind } from 'app/overmind';
 import pushToAirtable from 'app/store/utils/pushToAirtable';
 
-import { EmojiButton } from './elements';
+import {
+  AutosizeTextArea,
+  Button,
+  ButtonContainer,
+  EmojiButton,
+  Input,
+} from './elements';
 
-interface ICollectionInfoProps {
+type Props = {
   id: string;
-  user: CurrentUser;
-}
-
-const Feedback: React.FC<ICollectionInfoProps> = ({ id, user }) => {
+  user?: CurrentUser;
+};
+const Feedback: FunctionComponent<Props> = ({ id, user }) => {
   const {
-    actions: { modalClosed, notificationAdded },
+    actions: { notificationAdded, modalClosed },
   } = useOvermind();
+  const [email, setEmail] = useState((user || {}).email);
+  const [emoji, setEmoji] = useState(null);
+  const [feedback, setFeedback] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const [feedback, setFeedback] = React.useState('');
-  const [email, setEmail] = React.useState((user || {}).email);
-  const [emoji, setEmoji] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
+  const onChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    const noop = () => undefined;
+    const settersByInputName = {
+      email: setEmail,
+      feedback: setFeedback,
+    };
+
+    (settersByInputName[name] || noop)(value);
+  };
+
+  const onSubmit = ({ preventDefault }: FormEvent<HTMLFormElement>) => {
+    preventDefault();
+
+    setLoading(true);
+
+    pushToAirtable({
+      sandboxId: id,
+      feedback,
+      emoji,
+      username: (user || {}).username,
+      email,
+    })
+      .then(() => {
+        setEmoji(null);
+        setFeedback('');
+        setLoading(false);
+
+        modalClosed();
+        notificationAdded({
+          notificationType: 'success',
+          title: 'Thanks for your feedback!',
+        });
+      })
+      .catch(({ message }) => {
+        notificationAdded({
+          notificationType: 'error',
+          title: `Something went wrong while sending feedback: ${message}`,
+        });
+
+        setLoading(false);
+      });
+  };
 
   const setHappy = () => setEmoji('happy');
-
   const setSad = () => setEmoji('sad');
-
-  const onSubmit = async evt => {
-    evt.preventDefault();
-    setLoading(true);
-    try {
-      await pushToAirtable({
-        sandboxId: id,
-        feedback,
-        emoji,
-        username: (user || {}).username,
-        email,
-      });
-      setFeedback('');
-      setEmoji(null);
-      setLoading(false);
-
-      modalClosed();
-      notificationAdded({
-        title: `Thanks for your feedback!`,
-        notificationType: 'success',
-      });
-    } catch (e) {
-      notificationAdded({
-        title: `Something went wrong while sending feedback: ${e.message}`,
-        notificationType: 'error',
-      });
-      setLoading(false);
-    }
-  };
 
   return (
     <form onSubmit={onSubmit}>
       <AutosizeTextArea
-        css={`
-          width: 100%;
-        `}
-        name="feedback"
-        value={feedback}
-        onChange={e => setFeedback(e.target.value)}
-        placeholder="What are your thoughts?"
         minRows={3}
+        name="feedback"
+        onChange={onChange}
+        placeholder="What are your thoughts?"
         required
+        value={feedback}
       />
+
       {!user && (
         <Margin top={0.5}>
           <Input
-            css={`
-              width: 100%;
-            `}
-            type="email"
             name="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={onChange}
             placeholder="Email if you wish to be contacted"
+            type="email"
+            value={email}
           />
         </Margin>
       )}
 
       <Margin
-        top={0.5}
         css={`
           display: flex;
           align-items: center;
         `}
+        top={0.5}
       >
         <EmojiButton
-          type="button"
           active={emoji === 'happy'}
           onClick={setHappy}
+          type="button"
         >
-          <span role="img" aria-label="happy">
+          <span aria-label="happy" role="img">
             😊
           </span>
         </EmojiButton>
 
-        <EmojiButton type="button" active={emoji === 'sad'} onClick={setSad}>
-          <span role="img" aria-label="sad">
+        <EmojiButton active={emoji === 'sad'} onClick={setSad} type="button">
+          <span aria-label="sad" role="img">
             😞
           </span>
         </EmojiButton>
 
-        <div
-          css={`
-            flex: 1;
-          `}
-        >
-          <Button
-            disabled={loading}
-            small
-            css={`
-              float: right;
-            `}
-          >
+        <ButtonContainer>
+          <Button disabled={loading} small>
             {loading ? 'Sending...' : 'Submit'}
           </Button>
-        </div>
+        </ButtonContainer>
       </Margin>
     </form>
   );

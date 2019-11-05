@@ -25,6 +25,8 @@ import { Settings } from './types';
 
 export type Props = {
   sandbox: Sandbox;
+  privacy?: number;
+  previewSecret?: string;
   settings: Settings;
   onInitialized?: (preview: BasePreview) => () => void; // eslint-disable-line no-use-before-define
   extraModules?: { [path: string]: { code: string; path: string } };
@@ -146,7 +148,7 @@ class BasePreview extends React.Component<Props, State> {
     const fallbackUrl = frameUrl(
       this.props.sandbox,
       this.props.initialPath || '',
-      true
+      { useFallbackDomain: true }
     );
 
     const setFallbackDomain = () => {
@@ -156,7 +158,7 @@ class BasePreview extends React.Component<Props, State> {
           urlInAddressBar: frameUrl(
             this.props.sandbox,
             this.props.initialPath || '',
-            true
+            { useFallbackDomain: true }
           ),
         },
         () => {
@@ -194,11 +196,9 @@ class BasePreview extends React.Component<Props, State> {
 
     return this.serverPreview
       ? getSSEUrl(sandbox, initialPath)
-      : frameUrl(
-          sandbox,
-          initialPath,
-          this.state && this.state.useFallbackDomain
-        );
+      : frameUrl(sandbox, initialPath, {
+          useFallbackDomain: this.state && this.state.useFallbackDomain,
+        });
   };
 
   static defaultProps = {
@@ -220,12 +220,14 @@ class BasePreview extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (
-      prevProps.sandbox &&
-      this.props.sandbox &&
-      prevProps.sandbox.id !== this.props.sandbox.id
-    ) {
-      this.handleSandboxChange(this.props.sandbox);
+    if (prevProps.sandbox && this.props.sandbox) {
+      if (prevProps.sandbox.id !== this.props.sandbox.id) {
+        this.handleSandboxChange(this.props.sandbox);
+      }
+    }
+
+    if (prevProps.privacy !== this.props.privacy) {
+      this.handlePrivacyChange();
     }
   }
 
@@ -237,12 +239,24 @@ class BasePreview extends React.Component<Props, State> {
     window.open(this.state.urlInAddressBar, '_blank');
   };
 
+  sendPreviewSecret = () => {
+    dispatch({
+      $type: 'preview-secret',
+      previewSecret: this.props.previewSecret,
+    });
+  };
+
+  handlePrivacyChange = () => {
+    this.sendPreviewSecret();
+  };
+
   handleSandboxChange = (sandbox: Sandbox) => {
     this.serverPreview = getTemplate(sandbox.template).isServer;
 
     resetState();
 
     const url = this.currentUrl();
+    dispatch({ type: 'clear-console' });
 
     if (this.serverPreview) {
       setTimeout(() => {
@@ -273,6 +287,8 @@ class BasePreview extends React.Component<Props, State> {
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
         }
+
+        this.sendPreviewSecret();
 
         setTimeout(
           () => {
@@ -406,6 +422,7 @@ class BasePreview extends React.Component<Props, State> {
           isModuleView: !this.props.isInProjectView,
           template: sandbox.template,
           hasActions: Boolean(this.props.onAction),
+          previewSecret: sandbox.previewSecret,
         });
       }
     }

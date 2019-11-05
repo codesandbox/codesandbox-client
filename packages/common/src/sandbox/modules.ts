@@ -239,6 +239,18 @@ export const getDirectoryPath = memoize(
   memoizeFunction
 );
 
+export const getChildren = memoize(
+  (
+    modules: Array<Module> = [],
+    directories: Array<Directory> = [],
+    id: string
+  ) => [
+    ...directories.filter(d => d.directoryShortid === id),
+    ...modules.filter(m => m.directoryShortid === id),
+  ],
+  memoizeFunction
+);
+
 export const isMainModule = (
   module: Module,
   modules: Module[],
@@ -276,7 +288,7 @@ export const findMainModule = (sandbox?: Sandbox) => {
 
   const defaultOpenModule = defaultOpenedFiles
     .map(path => resolve(path))
-    .find(module => module);
+    .find(module => Boolean(module));
 
   if (defaultOpenModule) {
     return defaultOpenModule;

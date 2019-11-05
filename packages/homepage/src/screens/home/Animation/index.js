@@ -22,7 +22,7 @@ import Cubes from './Cubes';
 import Frameworks from '../Frameworks';
 
 import getScrollPos from '../../../utils/scroll';
-
+import { useMatchMedia, useInterval } from '../../../hooks';
 import media from '../../../utils/media';
 
 const Container = styled(Centered)`
@@ -66,77 +66,65 @@ const Message = styled.h2`
 
 const TEMPLATES = [parcel, react, vue, angular, gatsby, nuxt, next];
 
-export default class Animation extends React.PureComponent {
-  state = {
-    templates: TEMPLATES.filter(tem => tem.showOnHomePage && tem.showCube),
-    templateIndex: 0,
-    templateSelected: false,
-    canvas: null,
-  };
+const Animation = () => {
+  const templates = TEMPLATES.filter(tem => tem.showOnHomePage && tem.showCube);
+  const reduceAnimation = useMatchMedia('(prefers-reduced-motion: reduce)');
+  const [templateIndex, setTemplateIndex] = React.useState(0);
+  const [templateSelected, setTemplateSelected] = React.useState(false);
+  const canvas = React.useRef();
 
-  componentDidMount() {
-    this.startTimer();
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.timeout);
-  }
-
-  startTimer = () => {
-    this.timeout = setTimeout(() => {
-      if (!this.state.templateSelected) {
-        if (!window.scrolling && getScrollPos().y < window.innerHeight) {
-          this.setState(state => ({
-            templateIndex: (state.templateIndex + 1) % state.templates.length,
-          }));
-        }
-
-        this.startTimer();
+  const changeTemplate = React.useCallback(() => {
+    if (!templateSelected) {
+      // @ts-ignore
+      if (!window.scrolling && getScrollPos().y < window.innerHeight) {
+        setTemplateIndex(index => (index + 1) % templates.length);
       }
-    }, 6000);
+    }
+  }, [templateSelected, templates.length]);
+
+  const setCanvas = canvasToSet => {
+    canvas.current = canvasToSet;
   };
 
-  setCanvas = canvas => {
-    this.setState({ canvas });
+  const selectTemplate = template => {
+    setTemplateIndex(templates.indexOf(template));
+    setTemplateSelected(true);
   };
 
-  selectTemplate = template => {
-    this.setState(state => ({
-      templateIndex: state.templates.indexOf(template),
-      templateSelected: true,
-    }));
-  };
+  useInterval(changeTemplate, 6000);
+  const template = templates[templateIndex];
 
-  render() {
-    const template = this.state.templates[this.state.templateIndex];
-    return (
-      <Relative>
-        <Fullscreen>
-          <Background
-            templateIndex={this.state.templateIndex}
-            template={template}
-            setCanvas={this.setCanvas}
-          />
-          <Container horizontal>
-            <HomeTitle template={template} />
+  return (
+    <Relative>
+      <Fullscreen>
+        <Background
+          templateIndex={templateIndex}
+          template={template}
+          setCanvas={setCanvas}
+        />
+        <Container horizontal>
+          <HomeTitle template={template} />
+          {!reduceAnimation && (
             <Media query="(min-width: 1280px)">
               <Cubes
-                canvas={this.state.canvas}
-                templates={this.state.templates}
+                canvas={canvas.current}
+                templates={templates}
                 template={template}
-                setTemplate={this.selectTemplate}
+                setTemplate={selectTemplate}
               />
             </Media>
-          </Container>
-        </Fullscreen>
-        <Centered horizontal>
-          <Message>
-            CodeSandbox is an online editor that helps you create web
-            applications, from prototype to deployment.
-          </Message>
-        </Centered>
-        <Frameworks templates={TEMPLATES.filter(tem => tem.showOnHomePage)} />
-      </Relative>
-    );
-  }
-}
+          )}
+        </Container>
+      </Fullscreen>
+      <Centered horizontal>
+        <Message>
+          CodeSandbox is an online editor that helps you create web
+          applications, from prototype to deployment.
+        </Message>
+      </Centered>
+      <Frameworks templates={TEMPLATES.filter(tem => tem.showOnHomePage)} />
+    </Relative>
+  );
+};
+
+export default React.memo(Animation);
