@@ -1,5 +1,4 @@
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import Switch from '@codesandbox/common/lib/components/Switch';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { sortBy } from 'lodash-es';
 import React, { FocusEvent, FunctionComponent } from 'react';
@@ -16,6 +15,7 @@ import { Description, WorkspaceInputContainer } from '../../../elements';
 import LiveButton from '../LiveButton';
 
 import Countdown from './Countdown';
+import { Preferences } from './Preferences';
 import { User } from './User';
 
 import {
@@ -26,8 +26,6 @@ import {
   ModeDetails,
   ModeSelect,
   ModeSelector,
-  Preference,
-  PreferencesContainer,
   SubTitle,
   Title,
   Users,
@@ -40,12 +38,10 @@ export const LiveInfo: FunctionComponent = () => {
     actions: {
       live: {
         onAddEditorClicked,
-        onChatEnabledChange,
         onFollow,
         onModeChanged,
         onRemoveEditorClicked,
         onSessionCloseClicked,
-        onToggleNotificationsHidden,
       },
     },
     state: {
@@ -54,17 +50,8 @@ export const LiveInfo: FunctionComponent = () => {
         isOwner,
         isTeam,
         liveUserId,
-        notificationsHidden,
         reconnecting,
-        roomInfo: {
-          chatEnabled,
-          editorIds,
-          mode,
-          ownerIds,
-          roomId,
-          startTime,
-          users,
-        },
+        roomInfo: { editorIds, mode, ownerIds, roomId, startTime, users },
       },
     },
   } = useOvermind();
@@ -130,35 +117,7 @@ export const LiveInfo: FunctionComponent = () => {
         </WorkspaceInputContainer>
       )}
 
-      <Margin top={1}>
-        <SubTitle>Preferences</SubTitle>
-
-        {isOwner && (
-          <PreferencesContainer>
-            <Preference>Chat enabled</Preference>
-
-            <Switch
-              offMode
-              onClick={() => onChatEnabledChange(!chatEnabled)}
-              right={chatEnabled}
-              secondary
-              small
-            />
-          </PreferencesContainer>
-        )}
-
-        <PreferencesContainer>
-          <Preference>Hide notifications</Preference>
-
-          <Switch
-            offMode
-            onClick={() => onToggleNotificationsHidden()}
-            right={notificationsHidden}
-            secondary
-            small
-          />
-        </PreferencesContainer>
-      </Margin>
+      <Preferences />
 
       <Margin top={1}>
         <SubTitle>Live Mode</SubTitle>
