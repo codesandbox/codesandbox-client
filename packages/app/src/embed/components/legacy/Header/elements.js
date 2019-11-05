@@ -146,7 +146,8 @@ const ModeStyleStyles = props =>
       color: 'white',
     },
     path: {
-      transition: theme => 'fill ' + theme.speed[2],
+      transitionProperty: 'fill',
+      transitionDuration: theme => theme.speed[2],
     },
   });
 

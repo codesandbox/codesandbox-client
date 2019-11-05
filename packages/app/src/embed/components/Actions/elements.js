@@ -6,7 +6,7 @@ import { HeartIconSVG, ReloadIconSVG, NewWindowIconSVG } from './icons';
 export const Container = styled.div(props =>
   css({
     position: 'absolute',
-    bottom: props.previewVisible ? 28 + 16 : 16,
+    // bottom: props.previewVisible ? 28 + 16 : 16,
     [props.align]: 16,
     zIndex: 99,
 
@@ -16,8 +16,12 @@ export const Container = styled.div(props =>
       marginLeft: 1,
     },
 
+    bottom: props.isDragging ? -32 : 28 + 16, // 28 is the height of console
     opacity: props.isDragging ? 0 : 1,
-    transition: 'opacity 200ms',
+    transitionProperty: 'opacity, bottom',
+    transitionDuration: theme =>
+      // go out fast, come back slow
+      props.isDragging ? theme.speed[3] : theme.speed[5],
   })
 );
 
