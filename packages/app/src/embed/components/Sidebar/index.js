@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { Sandbox } from '@codesandbox/common/lib/types';
 
 import Section from './Section';
-import SandboxInfo from './SandboxInfo';
+import { SandboxInfo } from './SandboxInfo';
 import FileTree from './FileTree';
 import Dependencies from './Dependencies';
 import ExternalResources from './ExternalResources';
