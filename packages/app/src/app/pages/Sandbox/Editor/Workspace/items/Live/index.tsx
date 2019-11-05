@@ -1,5 +1,6 @@
-import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
+
+import { useOvermind } from 'app/overmind';
 
 import {
   Description,
@@ -7,48 +8,47 @@ import {
   WorkspaceInputContainer,
   WorkspaceSubtitle,
 } from '../../elements';
+
 import { More } from '../More';
+
 import LiveButton from './LiveButton';
 import LiveInfo from './LiveInfo';
 
 export const Live: FunctionComponent = () => {
   const {
-    state: {
-      isLoggedIn,
-      live: {
-        isLive,
-        isOwner,
-        isTeam,
-        roomInfo,
-        liveUserId,
-        reconnecting,
-        notificationsHidden,
-        followingUserId,
-        isLoading,
-      },
-      editor: {
-        isAllModulesSynced,
-        currentSandbox: { owned, id },
-      },
-    },
     actions: {
       live: {
-        onModeChanged,
+        createLiveClicked,
         onAddEditorClicked,
+        onChatEnabledChange,
+        onFollow,
+        onModeChanged,
         onRemoveEditorClicked,
         onSessionCloseClicked,
         onToggleNotificationsHidden,
-        onChatEnabledChange,
-        onFollow,
-        createLiveClicked,
       },
     },
+    state: {
+      editor: {
+        currentSandbox: { id, owned },
+        isAllModulesSynced,
+      },
+      live: {
+        followingUserId,
+        isLive,
+        isLoading,
+        isOwner,
+        isTeam,
+        liveUserId,
+        notificationsHidden,
+        reconnecting,
+        roomInfo,
+      },
+      isLoggedIn,
+    },
   } = useOvermind();
-  const hasUnsyncedModules = !isAllModulesSynced;
 
-  const showPlaceHolder = (!isLive && !owned) || !isLoggedIn;
-
-  if (showPlaceHolder) {
+  if ((!isLive && !owned) || !isLoggedIn) {
     const message = isLoggedIn ? (
       <>
         You need to own this sandbox to open a live session to collaborate with
@@ -66,26 +66,22 @@ export const Live: FunctionComponent = () => {
     <div>
       {isLive ? (
         <LiveInfo
-          setMode={onModeChanged}
           addEditor={onAddEditorClicked}
-          removeEditor={onRemoveEditorClicked}
+          chatEnabled={roomInfo.chatEnabled}
+          currentUserId={liveUserId}
+          followingUserId={followingUserId}
           isOwner={isOwner}
           isTeam={isTeam}
-          roomInfo={roomInfo}
-          ownerIds={roomInfo.ownerIds}
-          currentUserId={liveUserId}
-          reconnecting={reconnecting}
-          onSessionCloseClicked={onSessionCloseClicked}
           notificationsHidden={notificationsHidden}
-          toggleNotificationsHidden={onToggleNotificationsHidden}
-          chatEnabled={roomInfo.chatEnabled}
-          toggleChatEnabled={() => {
-            onChatEnabledChange({
-              enabled: !roomInfo.chatEnabled,
-            });
-          }}
+          onSessionCloseClicked={onSessionCloseClicked}
+          ownerIds={roomInfo.ownerIds}
+          reconnecting={reconnecting}
+          removeEditor={onRemoveEditorClicked}
+          roomInfo={roomInfo}
           setFollowing={onFollow}
-          followingUserId={followingUserId}
+          setMode={onModeChanged}
+          toggleChatEnabled={() => onChatEnabledChange(!roomInfo.chatEnabled)}
+          toggleNotificationsHidden={onToggleNotificationsHidden}
         />
       ) : (
         <>
@@ -95,29 +91,25 @@ export const Live: FunctionComponent = () => {
             re doing it live!
           </Description>
 
-          <>
-            <WorkspaceSubtitle>Create live room</WorkspaceSubtitle>
-            <Description>
-              To invite others you need to generate a URL that others can join.
-            </Description>
+          <WorkspaceSubtitle>Create live room</WorkspaceSubtitle>
 
-            {hasUnsyncedModules && (
-              <ErrorDescription>
-                Save all your files before going live
-              </ErrorDescription>
-            )}
-            <WorkspaceInputContainer>
-              <LiveButton
-                onClick={() => {
-                  createLiveClicked({
-                    sandboxId: id,
-                  });
-                }}
-                isLoading={isLoading}
-                disable={hasUnsyncedModules}
-              />
-            </WorkspaceInputContainer>
-          </>
+          <Description>
+            To invite others you need to generate a URL that others can join.
+          </Description>
+
+          {!isAllModulesSynced && (
+            <ErrorDescription>
+              Save all your files before going live
+            </ErrorDescription>
+          )}
+
+          <WorkspaceInputContainer>
+            <LiveButton
+              disable={!isAllModulesSynced}
+              isLoading={isLoading}
+              onClick={() => createLiveClicked(id)}
+            />
+          </WorkspaceInputContainer>
         </>
       )}
     </div>

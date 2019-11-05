@@ -39,9 +39,10 @@ export const roomJoined: AsyncAction<{
   state.live.isLoading = false;
 });
 
-export const createLiveClicked: AsyncAction<{
-  sandboxId: string;
-}> = async ({ state, effects, actions }, { sandboxId }) => {
+export const createLiveClicked: AsyncAction<string> = async (
+  { actions, effects },
+  sandboxId
+) => {
   effects.analytics.track('Create Live Session');
 
   const roomId = await effects.api.createLiveRoom(sandboxId);
@@ -186,9 +187,9 @@ export const onSendChat: Action<{ message: string }> = (
   effects.live.sendChat(message);
 };
 
-export const onChatEnabledChange: Action<{ enabled: boolean }> = (
+export const onChatEnabledChange: Action<boolean> = (
   { effects, state },
-  { enabled }
+  enabled
 ) => {
   effects.analytics.track('Enable Live Chat');
 
