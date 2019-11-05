@@ -43,4 +43,4 @@ export const SignOutNotice = () => {
       </Row>
     </Container>
   );
-}
+};
