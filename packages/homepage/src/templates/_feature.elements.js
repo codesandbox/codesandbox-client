@@ -23,7 +23,7 @@ export const Description = styled.h2`
 `;
 
 export const Banner = styled.div`
-  ${({ color }) => css`
+  ${({ color, reverse }) => css`
     background: #${color};
     height: 480px;
     width: 100%;
@@ -32,13 +32,14 @@ export const Banner = styled.div`
     margin-top: 3.75rem;
     position: relative;
     display: grid;
-    grid-template-columns: 1fr 500px;
+    grid-template-columns: ${reverse ? '500px 1fr' : '1fr 500px'};
     grid-gap: 5rem;
     justify-content: space-between;
     align-items: flex-end;
     flex-grow: 0;
     flex-shrink: 1;
     overflow: hidden;
+    grid-auto-flow: column-reverse;
 
     img {
       display: block;
@@ -67,8 +68,8 @@ export const ContentBlock = styled.div`
 `;
 
 export const Tweet = styled.div`
-  ${({ theme }) => css`
-    margin-left: 3rem;
+  ${({ theme, reverse }) => css`
+    ${reverse ? 'margin-right: 3rem' : 'margin-left: 3rem'};
     font-family: Roboto;
     font-style: italic;
     font-weight: normal;

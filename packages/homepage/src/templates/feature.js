@@ -27,63 +27,82 @@ export default ({
         tweetJob,
         tweetName,
         tweetHandle,
+        coverReversed,
       },
       fields: { title },
       html,
     },
   },
-}) => (
-  <Layout>
-    <TitleAndMetaTags title={`${title} - CodeSandbox`} />
-    <PageContainer width={1086}>
-      <Title>{title}</Title>
-      <span>{description}</span>
-      <Banner color={bgColor}>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          style={{
-            height: '100%',
-            display: 'flex',
-          }}
-          transition={{
-            duration: 1,
-            ease: 'easeOut',
-          }}
-        >
-          <Tweet>
-            "{tweetText}"
-            <User>
-              <Avatar
-                src={`https://avatars.io/twitter/${tweetHandle}`}
-                alt={tweetName}
-              />
-              <div>
-                <p>{tweetName}</p>
-                <p>{tweetJob}</p>
-              </div>
-            </User>
-          </Tweet>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 140 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 1,
-            ease: 'easeOut',
-          }}
-        >
-          <img src={coverImage.publicURL} alt={title} />
-        </motion.div>
-      </Banner>
+}) => {
+  const TweetSide = () => (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      style={{
+        height: '100%',
+        display: 'flex',
+      }}
+      transition={{
+        duration: 1,
+        ease: 'easeOut',
+      }}
+    >
+      <Tweet reverse={coverReversed}>
+        "{tweetText}"
+        <User>
+          <Avatar
+            src={`https://avatars.io/twitter/${tweetHandle}`}
+            alt={tweetName}
+          />
+          <div>
+            <p>{tweetName}</p>
+            <p>{tweetJob}</p>
+          </div>
+        </User>
+      </Tweet>
+    </motion.div>
+  );
 
-      <ContentBlock
-        columns={columns}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    </PageContainer>
-  </Layout>
-);
+  const ImageSide = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 140 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 1,
+        ease: 'easeOut',
+      }}
+    >
+      <img src={coverImage.publicURL} alt={title} />
+    </motion.div>
+  );
+  return (
+    <Layout>
+      <TitleAndMetaTags title={`${title} - CodeSandbox`} />
+      <PageContainer width={1086}>
+        <Title>{title}</Title>
+        <span>{description}</span>
+        <Banner color={bgColor} reverse={coverReversed}>
+          {coverReversed ? (
+            <>
+              <ImageSide />
+              <TweetSide />
+            </>
+          ) : (
+            <>
+              <TweetSide />
+              <ImageSide />
+            </>
+          )}
+        </Banner>
+
+        <ContentBlock
+          columns={columns}
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      </PageContainer>
+    </Layout>
+  );
+};
 
 export const pageQuery = graphql`
   query Feature($id: String) {
@@ -96,6 +115,7 @@ export const pageQuery = graphql`
         tweetJob
         tweetName
         tweetHandle
+        coverReversed
         coverImage {
           publicURL
         }
