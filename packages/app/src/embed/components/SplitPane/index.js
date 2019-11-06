@@ -39,22 +39,45 @@ export default function SplitView({
   // of the iframe which lets us keep focus on the resize toggle
   const [isDragging, setDragging] = React.useState(false);
 
-  const onDragStarted = () => setDragging(true);
-  const onDragFinished = width => {
-    // #3. snap to edges
-    // snap threshold on desktop is 50px on the left
-    // and 150px on the right
-    // (to keep the open sandbox button on one side)
-    // on mobile, it's 50% of the screen
-    setDragging(false);
-
+  // #3. snap to edges, much logic, such wow.
+  const handleAutomaticSnapping = width => {
+    /* snap threshold on desktop is 50px on the left
+      and 150px on the right (to keep the open sandbox button on one side)
+      On mobile, it's 50% of the screen
+    */
     const leftSnapThreshold = isMobile ? maxSize / 2 : 50;
     const rightSnapThreshold = isMobile ? maxSize / 2 : maxSize - 150;
 
-    if (width < leftSnapThreshold) setSize(0);
-    else if (width > rightSnapThreshold) setSize(maxSize);
-    else setSize(width);
+    // TODO: sometimes width is undefined for the first drag, we don't handle that
+
+    if (width === size) {
+      /* if the width is unchanged, we assume it's a click.
+          we don't rely on onResizerClick from react-split-pane
+          because it requires the resizer to have some width which
+          in our case isn't true because we artificially overlap
+          the resizer on top of the preview/editor
+
+          on mobile, we want to flip the current state.
+          on desktop, we want to set it half if it's snapped to an edge.
+       */
+      if (isMobile) setSize(size === 0 ? maxSize : 0);
+      else if (size === 0 || size === maxSize) setSize(maxSize / 2);
+    } else {
+      // this means the user was able to drag
+      // eslint-disable-next-line no-lonely-if
+      if (width < leftSnapThreshold) setSize(0);
+      else if (width > rightSnapThreshold) setSize(maxSize);
+      else setSize(width);
+    }
   };
+
+  const onDragStarted = () => setDragging(true);
+
+  const onDragFinished = width => {
+    setDragging(false);
+    handleAutomaticSnapping(width);
+  };
+
   // TODO: #4. Handle edge case of keeping panes snapped
   // on window.resize and sidebar toggle
 
