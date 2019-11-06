@@ -5,7 +5,7 @@ import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 
 export default ({ children, ...props }) => (
   <MaxWidth width={1440} {...props}>
-    <Padding top={8} bottom={1}>
+    <Padding top={4.5} bottom={1}>
       {children}
     </Padding>
   </MaxWidth>

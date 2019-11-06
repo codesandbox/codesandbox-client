@@ -37,6 +37,7 @@
     "framer-motion": "^1.6.14",
     "gatsby": "^2.13.45",
     "gatsby-cli": "^2.7.21",
+    "gatsby-image": "^2.2.30",
     "gatsby-plugin-google-fonts": "^1.0.1",
     "gatsby-plugin-google-tagmanager": "^2.1.4",
     "gatsby-plugin-nprogress": "^2.1.2",
