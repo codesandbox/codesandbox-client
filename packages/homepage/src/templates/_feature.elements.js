@@ -1,13 +1,20 @@
 import styled, { css } from 'styled-components';
 
 export const Title = styled.h1`
-  ${({ theme }) => css`
+  ${({ theme, textCenter }) => css`
     font-family: ${theme.homepage.appleFont};
     font-weight: 500;
     font-size: 40px;
     line-height: 48px;
     color: ${theme.homepage.white};
     margin: 0.5rem 0;
+
+    ${textCenter &&
+      css`
+        text-align: center;
+        max-width: 50%;
+        margin: auto;
+      `}
   `};
 `;
 
@@ -23,9 +30,9 @@ export const Description = styled.h2`
 `;
 
 export const Banner = styled.div`
-  ${({ color, reverse }) => css`
+  ${({ color, reverse, coverSmaller }) => css`
     background: #${color};
-    height: 480px;
+    height: ${coverSmaller ? '380px' : '480px'};
     width: 100%;
     border-radius: 4px;
     margin-bottom: 7.5rem;

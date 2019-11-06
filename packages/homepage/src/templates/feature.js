@@ -28,6 +28,8 @@ export default ({
         tweetName,
         tweetHandle,
         coverReversed,
+        textCenter,
+        coverSmaller,
       },
       fields: { title },
       html,
@@ -79,9 +81,13 @@ export default ({
     <Layout>
       <TitleAndMetaTags title={`${title} - CodeSandbox`} />
       <PageContainer width={1086}>
-        <Title>{title}</Title>
+        <Title textCenter={textCenter}>{title}</Title>
         <span>{description}</span>
-        <Banner color={bgColor} reverse={coverReversed}>
+        <Banner
+          coverSmaller={coverSmaller}
+          color={bgColor}
+          reverse={coverReversed}
+        >
           {coverReversed ? (
             <>
               <ImageSide />
@@ -116,6 +122,8 @@ export const pageQuery = graphql`
         tweetName
         tweetHandle
         coverReversed
+        textCenter
+        coverSmaller
         coverImage {
           publicURL
         }
