@@ -523,8 +523,7 @@ export class VSCodeEffect {
   }
 
   private prepareElements() {
-    this.elements.editor.id = 'workbench.main.container';
-    this.elements.editor.className = 'monaco-workbench mac nopanel';
+    this.elements.editor.className = 'monaco-workbench';
     this.elements.editor.style.width = '100%';
     this.elements.editor.style.height = '100%';
 

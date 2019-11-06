@@ -36,11 +36,11 @@ const ContentSplit: React.FC = () => {
 
   useEffect(() => {
     async function loadTheme() {
-      const { customVSCodeTheme } = state.preferences.settings;
+      const vsCodeTheme = state.preferences.settings.customVSCodeTheme;
 
       try {
-        const theme = await getVSCodeTheme('', customVSCodeTheme);
-        setLocalState({ theme, customVSCodeTheme });
+        const theme = await getVSCodeTheme('', vsCodeTheme);
+        setLocalState({ theme, vsCodeTheme });
       } catch (e) {
         console.error(e);
       }
@@ -51,7 +51,10 @@ const ContentSplit: React.FC = () => {
     ) {
       loadTheme();
     }
-  }, [localState.customVSCodeTheme, state.preferences.settings]);
+  }, [
+    localState.customVSCodeTheme,
+    state.preferences.settings.customVSCodeTheme,
+  ]);
 
   useEffect(() => {
     statusbarEl.current.appendChild(effects.vscode.getStatusbarElement());

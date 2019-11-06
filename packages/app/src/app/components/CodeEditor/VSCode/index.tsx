@@ -10,6 +10,9 @@ import { ThemeProvider } from 'styled-components';
 import { Configuration } from './Configuration';
 import { Container, GlobalStyles } from './elements';
 
+import './icon-theme.css';
+import './workbench-theme.css';
+
 export const VSCode: React.FunctionComponent = () => {
   const { state, actions, effects } = useOvermind();
   const containerEl = useRef(null);
