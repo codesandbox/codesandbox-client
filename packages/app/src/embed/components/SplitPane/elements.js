@@ -26,20 +26,30 @@ export const Container = styled.div`
     transition: margin 500ms;
   }
 
-  .Resizer:hover {
-    opacity: 0.6;
-  }
-
-  .Resizer.vertical {
-    cursor: ew-resize;
-  }
-
   .Resizer.vertical::after {
     position: absolute;
     top: calc(50% - 20px);
     height: 40px;
     width: 5px;
     margin-left: ${props => (props.size === props.maxSize ? -12 : 4)}px;
+  }
+
+  /* Big tap area - 48*2 by 48*/
+  .Resizer::before {
+    content: '';
+    position: absolute;
+    width: calc(48px * 2);
+    height: 64px;
+    top: calc(50% - 32px);
+    left: -48px;
+  }
+
+  .Resizer:hover {
+    opacity: 0.6;
+  }
+
+  .Resizer.vertical {
+    cursor: ew-resize;
   }
 
   .Pane {
