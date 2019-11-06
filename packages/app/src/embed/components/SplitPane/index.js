@@ -42,12 +42,14 @@ export default function SplitView({
   const onDragStarted = () => setDragging(true);
   const onDragFinished = width => {
     // #3. snap to edges
-    // snap threshold on desktop is0 50px
+    // snap threshold on desktop is 50px on the left
+    // and 150px on the right
+    // (to keep the open sandbox button on one side)
     // on mobile, it's 50% of the screen
     setDragging(false);
 
     const leftSnapThreshold = isMobile ? maxSize / 2 : 50;
-    const rightSnapThreshold = isMobile ? maxSize / 2 : maxSize - 50;
+    const rightSnapThreshold = isMobile ? maxSize / 2 : maxSize - 150;
 
     if (width < leftSnapThreshold) setSize(0);
     else if (width > rightSnapThreshold) setSize(maxSize);
