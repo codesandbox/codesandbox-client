@@ -40,7 +40,7 @@ export default function SplitView({
   const [isDragging, setDragging] = React.useState(false);
 
   // #3. snap to edges, much logic, such wow.
-  const handleAutomaticSnapping = width => {
+  const handleAutomaticSnapping = newSize => {
     /* snap threshold on desktop is 50px on the left
       and 150px on the right (to keep the open sandbox button on one side)
       On mobile, it's 50% of the screen
@@ -48,12 +48,10 @@ export default function SplitView({
     const leftSnapThreshold = isMobile ? maxSize / 2 : 50;
     const rightSnapThreshold = isMobile ? maxSize / 2 : maxSize - 150;
 
-    // TODO: sometimes width is undefined for the first drag, we don't handle that
-
-    if (width === size) {
-      /* if the width is unchanged, we assume it's a click.
+    if (newSize === size) {
+      /* if the size is unchanged, we assume it's a click.
           we don't rely on onResizerClick from react-split-pane
-          because it requires the resizer to have some width which
+          because it requires the resizer to have some size which
           in our case isn't true because we artificially overlap
           the resizer on top of the preview/editor
 
@@ -65,17 +63,21 @@ export default function SplitView({
     } else {
       // this means the user was able to drag
       // eslint-disable-next-line no-lonely-if
-      if (width < leftSnapThreshold) setSize(0);
-      else if (width > rightSnapThreshold) setSize(maxSize);
-      else setSize(width);
+      if (newSize < leftSnapThreshold) setSize(0);
+      else if (newSize > rightSnapThreshold) setSize(maxSize);
+      else setSize(newSize);
     }
   };
 
   const onDragStarted = () => setDragging(true);
 
-  const onDragFinished = width => {
+  const onDragFinished = newSize => {
     setDragging(false);
-    handleAutomaticSnapping(width);
+
+    // react-split-pane doesn't set newSize until
+    // the end of the first drag, that breaks the click case
+    // so we set it to the size that already is set
+    handleAutomaticSnapping(newSize || size);
   };
 
   // TODO: #4. Handle edge case of keeping panes snapped
