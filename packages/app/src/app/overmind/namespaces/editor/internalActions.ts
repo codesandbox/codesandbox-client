@@ -304,6 +304,7 @@ export const forkSandbox: AsyncAction<{
     }
 
     await actions.internal.setCurrentSandbox(forkedSandbox);
+    state.editor.modulesByPath = effects.vscode.fs.create(forkedSandbox);
     effects.notificationToast.success('Forked sandbox!');
     effects.router.updateSandboxUrl(forkedSandbox);
   } catch (error) {
