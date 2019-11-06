@@ -45,6 +45,11 @@ export type Props = {
   delay?: number;
   className?: string;
   overlayMessage?: string;
+  /**
+   * Whether to show a screenshot in the preview as a "placeholder" while loading
+   * to reduce perceived loading time
+   */
+  showScreenshotOverlay?: boolean;
 };
 
 type State = {
@@ -86,7 +91,7 @@ class BasePreview extends React.Component<Props, State> {
       url: initialUrl,
       forward: false,
       back: false,
-      showScreenshot: true,
+      showScreenshot: props.showScreenshotOverlay,
       useFallbackDomain: false,
     };
 
@@ -100,7 +105,14 @@ class BasePreview extends React.Component<Props, State> {
         // Remove screenshot after specific time, so the loading container spinner can still show
         this.setState({ showScreenshot: false });
       }, 100);
+    } else {
+      setTimeout(() => {
+        if (this.state.showScreenshot) {
+          this.setState({ showScreenshot: false });
+        }
+      }, 800);
     }
+
     this.listener = listen(this.handleMessage);
 
     if (props.delay) {
@@ -110,12 +122,6 @@ class BasePreview extends React.Component<Props, State> {
     (window as any).openNewWindow = this.openNewWindow;
 
     this.testFallbackDomainIfNeeded();
-
-    setTimeout(() => {
-      if (this.state.showScreenshot) {
-        this.setState({ showScreenshot: false });
-      }
-    }, 800);
   }
 
   UNSAFE_componentWillUpdate(nextProps: Props, nextState: State) {
@@ -565,34 +571,36 @@ class BasePreview extends React.Component<Props, State> {
           }}
         />
 
-        {this.props.sandbox.screenshotUrl && (
-          <div
-            style={{
-              overflow: 'hidden',
-              width: '100%',
-              position: 'absolute',
-              display: 'flex',
-              justifyContent: 'center',
-              left: 0,
-              right: 0,
-              bottom: 0,
-              top: 35,
-              zIndex: 0,
-            }}
-          >
+        {this.props.sandbox.screenshotUrl &&
+          this.props.showScreenshotOverlay &&
+          this.state.showScreenshot && (
             <div
               style={{
+                overflow: 'hidden',
                 width: '100%',
-                height: '100%',
-                filter: `blur(2px)`,
-                transform: 'scale(1.025, 1.025)',
-                backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPositionX: 'center',
+                position: 'absolute',
+                display: 'flex',
+                justifyContent: 'center',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 35,
+                zIndex: 0,
               }}
-            />
-          </div>
-        )}
+            >
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  filter: `blur(2px)`,
+                  transform: 'scale(1.025, 1.025)',
+                  backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPositionX: 'center',
+                }}
+              />
+            </div>
+          )}
       </Container>
     );
   }

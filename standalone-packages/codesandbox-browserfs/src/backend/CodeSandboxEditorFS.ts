@@ -60,9 +60,9 @@ export interface IManager {
 
 const warn = console.warn;
 
-function getCode(savedCode: string | null, code: string | undefined) {
+function getCode(savedCode: string | null | undefined, code: string | undefined) {
   if (savedCode !== null) {
-    return savedCode;
+    return savedCode || '';
   }
 
   return code || '';
