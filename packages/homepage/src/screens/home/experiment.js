@@ -81,7 +81,7 @@ const Experiment = ({ src, ...style }) => {
         `}
           tweet={{
             username: 'gethackteam',
-            job: 'Frontend Dev,eloper Hackteam',
+            job: 'Frontend Developer Hackteam',
             name: 'Roy Derks',
             quote:
               'I often use CodeSandbox to create demos or try out new JavaScript features or packages',
