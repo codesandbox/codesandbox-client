@@ -88,8 +88,16 @@ const urlProtocols = {
   jsDelivrNPM: {
     file: async (name: string, version: string, path: string) =>
       `https://cdn.jsdelivr.net/npm/${name}@${version}${path}`,
-    meta: async (name: string, version: string) =>
-      `https://data.jsdelivr.com/v1/package/npm/${name}@${version}/flat`,
+    meta: async (name: string, version: string) => {
+      // if it's a tag it won't work, so we fetch latest version otherwise
+      const latestVersion = /^\d/.test(version)
+        ? version
+        : JSON.parse(
+            (await downloadDependency(name, version, '/package.json')).code
+          ).version;
+
+      return `https://data.jsdelivr.com/v1/package/npm/${name}@${latestVersion}/flat`;
+    },
     normalizeMeta: normalizeJSDelivr,
   },
   jsDelivrGH: {
@@ -164,7 +172,7 @@ const getFetchProtocol = (depVersion: string, useFallback = false) => {
     return urlProtocols.jsDelivrGH;
   }
 
-  return useFallback ? urlProtocols.jsDelivrNPM : urlProtocols.unpkg;
+  return useFallback ? urlProtocols.unpkg : urlProtocols.jsDelivrNPM;
 };
 
 // Strips the version of a path, eg. test/1.3.0 -> test
@@ -387,6 +395,19 @@ async function getDependencyVersion(
       manager.transpiledModules[foundPackageJSONPath].module.code;
     const { version } = JSON.parse(packageJSON);
 
+    const savedDepDep = manifest.dependencyDependencies[dependencyName];
+
+    if (
+      savedDepDep &&
+      savedDepDep.resolved === version &&
+      savedDepDep.semver.startsWith('https://')
+    ) {
+      return {
+        packageJSONPath: foundPackageJSONPath,
+        version: savedDepDep.semver,
+      };
+    }
+
     if (packageJSON !== '//empty.js') {
       return { packageJSONPath: foundPackageJSONPath, version };
     }
@@ -397,7 +418,15 @@ async function getDependencyVersion(
   let version = null;
 
   if (manifest.dependencyDependencies[dependencyName]) {
-    version = manifest.dependencyDependencies[dependencyName].resolved;
+    if (
+      manifest.dependencyDependencies[dependencyName].semver.startsWith(
+        'https://'
+      )
+    ) {
+      version = manifest.dependencyDependencies[dependencyName].semver;
+    } else {
+      version = manifest.dependencyDependencies[dependencyName].resolved;
+    }
   } else {
     const dep = manifest.dependencies.find(m => m.name === dependencyName);
 

@@ -14,7 +14,9 @@ export const SelectSandboxModal: FunctionComponent = () => {
     },
   } = useOvermind();
 
-  if (isLoadingSandboxes) return <Padding>Loading sandboxes...</Padding>;
+  if (isLoadingSandboxes) {
+    return <Padding>Loading sandboxes...</Padding>;
+  }
 
   const currentShowcasedSandboxId = showcasedSandbox && showcasedSandbox.id;
 

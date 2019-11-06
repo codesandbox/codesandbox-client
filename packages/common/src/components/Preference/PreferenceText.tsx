@@ -1,32 +1,37 @@
-import React from 'react';
+import {
+  ChangeEvent,
+  ComponentProps,
+  createElement,
+  FunctionComponent,
+} from 'react';
+
 import Input, { TextArea } from '../Input';
 
-export type Props = {
+type Props = {
+  block?: boolean;
+  isTextArea?: boolean;
+  placeholder?: string;
+  rows?: number;
   setValue: (value: string) => void;
   value: string;
-  placeholder?: string;
-  isTextArea?: boolean;
-  style?: React.CSSProperties;
-  block?: boolean;
-  rows?: number;
-};
+} & Pick<ComponentProps<typeof Input>, 'style'>;
 
-export default class PreferenceText extends React.PureComponent<Props> {
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-
-    this.props.setValue(value);
+export const PreferenceText: FunctionComponent<Props> = ({
+  isTextArea,
+  placeholder,
+  setValue,
+  value,
+  ...props
+}) => {
+  const handleChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    setValue(target.value);
   };
 
-  render() {
-    const { value, placeholder, isTextArea, ...props } = this.props;
-
-    return React.createElement(isTextArea ? TextArea : Input, {
-      style: { width: '9rem' },
-      value,
-      placeholder,
-      onChange: this.handleChange,
-      ...props,
-    });
-  }
-}
+  return createElement(isTextArea ? TextArea : Input, {
+    style: { width: '9rem' },
+    value,
+    placeholder,
+    onChange: handleChange,
+    ...props,
+  });
+};

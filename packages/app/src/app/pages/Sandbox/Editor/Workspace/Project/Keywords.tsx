@@ -8,10 +8,10 @@ import { useOvermind } from 'app/overmind';
 
 import { Item } from './elements';
 
-interface IKeywordsProps {
+type Props = {
   editable?: boolean;
-}
-export const Keywords: FunctionComponent<IKeywordsProps> = ({ editable }) => {
+};
+export const Keywords: FunctionComponent<Props> = ({ editable }) => {
   const {
     actions: {
       workspace: { tagChanged, tagsChanged },

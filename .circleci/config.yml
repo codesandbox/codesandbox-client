@@ -366,6 +366,10 @@ workflows:
           requires:
             - deploy-production-approval
             - create-docker-image
+          filters:
+            branches:
+              only:
+                - master
       - deploy-staging-approval:
           type: approval
       - deploy-to-staging:
