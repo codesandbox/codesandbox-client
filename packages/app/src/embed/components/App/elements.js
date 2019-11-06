@@ -26,5 +26,7 @@ export const Moving = styled.div`
   left: 0;
   right: 0;
   transform: translateX(${props => (props.sidebarOpen ? 250 : 0)}px);
-  border: 1px solid ${props => props.theme.colors.sideBar.border};
+  border: 1px solid;
+  /* 8 digit hex code with last 2 for opacity */
+  border-color: ${props => props.theme.colors.sideBar.border + '33'};
 `;
