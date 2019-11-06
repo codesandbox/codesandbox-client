@@ -40,7 +40,7 @@ const ContentSplit: React.FC = () => {
 
       try {
         const theme = await getVSCodeTheme('', vsCodeTheme);
-        setLocalState({ theme, vsCodeTheme });
+        setLocalState({ theme, customVSCodeTheme: vsCodeTheme });
       } catch (e) {
         console.error(e);
       }
