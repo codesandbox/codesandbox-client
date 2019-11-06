@@ -16,7 +16,7 @@ const homepageTheme = {
     white: '#fff',
     primary: '#0971f1',
     grey: '#242424',
-    muted: '#9d9d9d',
+    muted: '#999',
   },
 };
 

@@ -7,6 +7,45 @@ export const Header = styled.header`
   width: 100%;
 `;
 
+export const SubNav = styled.nav`
+  width: 866px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: ${props => props.theme.homepage.white};
+
+  a {
+    text-decoration: none;
+    color: ${props => props.theme.homepage.white};
+  }
+
+  ul {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  li {
+    padding: 1.5rem 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-right: 5rem;
+    }
+
+    a {
+      margin-top: 0.5rem;
+    }
+  }
+`;
+
 export const Nav = styled.nav`
   width: 866px;
   margin: auto;
@@ -57,10 +96,15 @@ export const List = styled.ul`
     margin: 0;
   }
 
-  a {
+  a,
+  button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
     text-decoration: none;
     color: ${props => props.theme.homepage.muted};
     transition: all 200ms ease;
+    outline: none;
 
     &:hover {
       color: ${props => props.theme.homepage.white};
