@@ -300,9 +300,10 @@ export const likeSandboxToggled: AsyncAction<{
   state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
-// This might be called from explorer or vscode
 export const moduleSelected: Action<{
+  // Path means it is coming from VSCode
   path?: string;
+  // Id means it is coming from Explorer
   id?: string;
 }> = ({ state, effects, actions }, { path, id }) => {
   effects.analytics.track('Open File');
@@ -358,7 +359,8 @@ export const moduleSelected: Action<{
       effects.live.sendUserCurrentModule(module.shortid);
     }
   } catch (error) {
-    state.editor.currentModuleShortid = null;
+    // Do nothing, it is most likely VSCode selecting a file
+    // that is deleted... yeah... it does that
   }
 };
 

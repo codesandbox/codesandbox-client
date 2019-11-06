@@ -214,7 +214,12 @@ export const directoryDeleted: AsyncAction<{
   )[0];
 
   state.editor.currentModuleShortid = state.editor.mainModule.shortid;
-  effects.vscode.fs.rmdir(state.editor.modulesByPath, removedDirectory);
+
+  // we need to recreate everything, as you might have deleted any number
+  // of nested directories or files
+  state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+  effects.vscode.openModule(state.editor.currentModule);
+
   try {
     await effects.api.deleteDirectory(state.editor.currentId, directoryShortid);
     effects.live.sendDirectoryDeleted(directoryShortid);
