@@ -13,6 +13,7 @@ import {
   Tweet,
   User,
   Avatar,
+  Description,
 } from './_feature.elements';
 
 export default ({
@@ -82,7 +83,7 @@ export default ({
       <TitleAndMetaTags title={`${title} - CodeSandbox`} />
       <PageContainer width={1086}>
         <Title textCenter={textCenter}>{title}</Title>
-        <span>{description}</span>
+        <Description>{description}</Description>
         <Banner
           coverSmaller={coverSmaller}
           color={bgColor}

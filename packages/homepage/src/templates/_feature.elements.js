@@ -50,7 +50,7 @@ export const Banner = styled.div`
 
     img {
       display: block;
-      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4);
+      filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.4));
     }
   `};
 `;
