@@ -55,9 +55,15 @@ export default function SplitView({
     else if (width > rightSnapThreshold) setSize(maxSize);
     else setSize(width);
   };
-
-  // TODO: Handle edge case of keeping panes snapped
+  // TODO: #4. Handle edge case of keeping panes snapped
   // on window.resize and sidebar toggle
+
+  /* We need at least 270px of space in the preview to
+    fit global actions and navigation actions
+    if there isn't enough space, navigation gets
+    depririotized
+  */
+  const outOfSpaceForNavigation = maxSize - size < 270;
 
   return (
     <Container isDragging={isDragging} size={size} maxSize={maxSize}>
@@ -72,7 +78,7 @@ export default function SplitView({
       >
         <PaneContainer>{children[0]}</PaneContainer>
         <PaneContainer>
-          {showNavigationActions ? (
+          {showNavigationActions && !outOfSpaceForNavigation ? (
             <NavigationActions
               refresh={refresh}
               openInNewWindow={openInNewWindow}
