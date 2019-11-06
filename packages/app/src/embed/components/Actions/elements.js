@@ -45,9 +45,6 @@ export const Button = styled.button(
 
     ':hover': {
       backgroundColor: 'grays.500',
-      svg: {
-        color: 'white',
-      },
     },
   })
 );
@@ -61,13 +58,5 @@ export const HeartIcon = styled(HeartIconSVG)(props =>
   })
 );
 
-export const ReloadIcon = styled(ReloadIconSVG)(
-  css({
-    color: 'grays.400',
-  })
-);
-export const NewWindowIcon = styled(NewWindowIconSVG)(
-  css({
-    color: 'grays.400',
-  })
-);
+export const ReloadIcon = ReloadIconSVG;
+export const NewWindowIcon = NewWindowIconSVG;
