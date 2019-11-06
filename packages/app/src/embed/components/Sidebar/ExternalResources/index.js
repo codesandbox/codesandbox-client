@@ -1,7 +1,20 @@
 import React from 'react';
 import { Container, Row } from './elements';
 
+function getFontFamily(search) {
+  const hashes = search.slice(search.indexOf('?') + 1).split('&');
+  const family = hashes
+    .find(hash => hash.split('=')[0] === 'family')
+    .split('=')[1];
+
+  return family.split('+').join(' ');
+}
+
 function getName(resource) {
+  if (resource.includes('https://fonts.googleapis.com/css')) {
+    return `${getFontFamily(resource)} (Google Fonts)`;
+  }
+
   if (resource.endsWith('.css') || resource.endsWith('.js')) {
     const match = resource.match(/.*\/(.*)/);
     if (match && match[1]) {
