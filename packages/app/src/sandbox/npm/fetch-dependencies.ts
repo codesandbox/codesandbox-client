@@ -51,10 +51,10 @@ function callApi(url: string, method = 'GET') {
         error.response = message;
         // @ts-ignore
         error.statusCode = response.status;
-        return Promise.reject(error);
+        throw error;
       }
 
-      return Promise.resolve(response);
+      return response;
     })
     .then(response => response.json());
 }
@@ -145,7 +145,10 @@ async function getDependencies(dependencies: Object) {
   }
 }
 
-export async function fetchDependencies(npmDependencies: Dependencies) {
+export async function fetchDependencies(
+  npmDependencies: Dependencies,
+  resolutions?: { [key: string]: string }
+) {
   if (Object.keys(npmDependencies).length !== 0) {
     // New Packager flow
 
@@ -155,9 +158,7 @@ export async function fetchDependencies(npmDependencies: Dependencies) {
 
       return result;
     } catch (e) {
-      e.message = `Could not fetch dependencies, please try again in a couple seconds: ${
-        e.message
-      }`;
+      e.message = `Could not fetch dependencies, please try again in a couple seconds: ${e.message}`;
       dispatch(actions.notifications.show(e.message, 'error'));
 
       throw e;

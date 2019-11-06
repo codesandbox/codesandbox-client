@@ -13,10 +13,10 @@ import EditIcons from './EditIcons';
 import { NotSyncedIconWithMargin, Right } from './elements';
 import EntryIcons from './EntryIcons';
 import EntryTitle from './EntryTitle';
-import EntryTitleInput from './EntryTitleInput';
+import { EntryTitleInput } from './EntryTitleInput';
 
 interface IEntryProps {
-  renameValidator: (id: string, title: string) => boolean;
+  renameValidator: (id: string, title: string) => string;
   shortid: string;
   id: string;
   title: string;
@@ -67,7 +67,7 @@ const Entry: React.FC<IEntryProps> = ({
   state: incomingState = '',
 }) => {
   const [state, setState] = useState(incomingState);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [hovering, setHovering] = useState(false);
 
   const resetState = () => {
@@ -76,7 +76,7 @@ const Entry: React.FC<IEntryProps> = ({
     }
 
     setState('');
-    setError(false);
+    setError(null);
   };
 
   const handleValidateTitle = (titleToValidate: string) => {
@@ -97,7 +97,7 @@ const Entry: React.FC<IEntryProps> = ({
   const discardModuleChangesAction = () =>
     discardModuleChanges ? discardModuleChanges(shortid) : false;
 
-  const handleRename = (newTitle: string, force: boolean) => {
+  const handleRename = (newTitle: string, force: boolean = false) => {
     if (newTitle === title) {
       resetState();
       return;
@@ -174,10 +174,12 @@ const Entry: React.FC<IEntryProps> = ({
           <EntryIcons type={type} error={moduleHasError} />
           {state === 'editing' ? (
             <EntryTitleInput
+              id={id}
               title={title}
               onChange={handleValidateTitle}
               onCancel={resetState}
               onCommit={handleRename}
+              error={error}
             />
           ) : (
             <EntryTitle title={title} />

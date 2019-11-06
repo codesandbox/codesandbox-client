@@ -32,7 +32,7 @@ class DevToolTerminal extends React.Component<
   };
 
   term: TerminalWithFit;
-  messageQueue: any[];
+  messageQueue: unknown[] = [];
   listener: () => void;
   node?: HTMLElement;
   timeout?: number;
@@ -152,6 +152,7 @@ class DevToolTerminal extends React.Component<
         <div style={{ position: 'relative', flex: 'auto' }}>
           <TerminalComponent
             hidden={hidden || selectedShell !== undefined}
+            owned={this.props.owned}
             theme={theme}
             onTerminalInitialized={this.setTerminal}
           />
@@ -161,6 +162,7 @@ class DevToolTerminal extends React.Component<
               id={shell.id}
               script={shell.script}
               ended={shell.ended}
+              owned={this.props.owned}
               hidden={hidden || shell.id !== this.state.selectedShell}
               closeShell={() => this.closeShell(shell.id)}
               endShell={() => this.endShell(shell.id)}

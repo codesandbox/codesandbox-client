@@ -456,9 +456,7 @@ async function compile({
 
     if (errors.length) {
       const e = new Error(
-        `We weren't able to parse: '${errors[0].path}': ${
-          errors[0].error.message
-        }`
+        `We weren't able to parse: '${errors[0].path}': ${errors[0].error.message}`
       );
 
       // @ts-ignore
@@ -485,7 +483,10 @@ async function compile({
 
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
-      disableDependencyPreprocessing
+      {
+        disableExternalConnection: disableDependencyPreprocessing,
+        resolutions: parsedPackageJSON.resolutions,
+      }
     );
 
     if (isNewCombination && !firstLoad) {
@@ -516,9 +517,7 @@ async function compile({
 
     if (!foundMain) {
       throw new Error(
-        `Could not find entry file: ${
-          possibleEntries[0]
-        }. You can specify one in package.json by defining a \`main\` property.`
+        `Could not find entry file: ${possibleEntries[0]}. You can specify one in package.json by defining a \`main\` property.`
       );
     }
 

@@ -14,5 +14,6 @@ module.exports = {
     '@babel/plugin-syntax-dynamic-import',
     'babel-plugin-system-import-transformer',
     'babel-plugin-macros',
+    '@babel/plugin-proposal-optional-chaining',
   ],
 };

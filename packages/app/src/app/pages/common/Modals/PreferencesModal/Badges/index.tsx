@@ -1,17 +1,18 @@
-import React, {FunctionComponent} from 'react';
-import { useOvermind } from 'app/overmind';
-
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Badge from '@codesandbox/common/lib/utils/badges/Badge';
+import React, { FunctionComponent } from 'react';
+
+import { useOvermind } from 'app/overmind';
+
 import { Title } from '../elements';
 
 export const Badges: FunctionComponent = () => {
   const {
     state: {
-      user: {badges},
+      user: { badges },
     },
     actions: {
-      preferences: {setBadgeVisibility},
+      preferences: { setBadgeVisibility },
     },
   } = useOvermind();
   const badgesCount = badges.length;
@@ -43,5 +44,4 @@ export const Badges: FunctionComponent = () => {
       </Margin>
     </div>
   );
-}
-
+};

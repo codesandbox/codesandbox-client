@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 
-export const InputContainer = styled.div`
+export const InputContainer = styled.div<{ errorMessage?: boolean }>`
   display: inline-block;
-  overflow: auto;
+
   input {
     transition: 0.3s ease all;
     font-family: inherit;
-    position: absolute;
     border: 1px solid ${props => props.theme.primary};
     outline: none;
     background-color: ${props =>
@@ -23,4 +22,10 @@ export const InputContainer = styled.div`
       outline: none;
     }
   }
+`;
+
+export const InputError = styled.p`
+  font-size: 0.9em;
+  padding: 0.25rem;
+  margin: 0;
 `;
