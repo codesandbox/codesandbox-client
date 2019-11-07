@@ -3,7 +3,7 @@
 [![Backers on Open Collective](https://opencollective.com/codesandbox/backers/badge.svg)](#backers)
 [![Sponsors on Open Collective](https://opencollective.com/codesandbox/sponsors/badge.svg)](#sponsors)
 
-![Banner](https://codesandbox.io/static/img/banner.png)
+![Banner](https://user-images.githubusercontent.com/1863771/68405395-5020f400-0180-11ea-8818-8cb255d9fe71.png)
 
 An online code editor tailored for web applications.
 
