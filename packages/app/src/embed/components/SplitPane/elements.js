@@ -1,27 +1,38 @@
 import styled, { css, keyframes } from 'styled-components';
 
 const introduction = {
-  bounce: keyframes`
+  slideFromLeft: keyframes(css`
     0% {
-      transform: scaleY(1);
+      margin-left: -12px;
       background: #fff;
-      opacity: 1;
-
     }
-    16% { transform: scaleY(0.8) }
-    28% { transform: scaleY(1.8) }
-    44% { transform: scaleY(0.8) }
-    59% { transform: scaleY(1.2) }
-    73% { transform: scaleY(0.95) }
-    88% { transform: scaleY(1.05) }
+    50% {
+      margin-left: 12px;
+      background: #fff;
+    }
     100% {
-      transform: scaleY(1);
+      margin-left: 4px;
+      background: #fff;
+    }
+  `),
+  slideFromRight: keyframes(css`
+    0% {
+      margin-left: 4px;
       background: #fff;
       opacity: 1;
-
     }
-  `,
-  fade: keyframes`
+    50% {
+      margin-left: -20px;
+      background: #fff;
+      opacity: 1;
+    }
+    100% {
+      margin-left: -12px;
+      background: #fff;
+      opacity: 1;
+    }
+  `),
+  fade: keyframes(css`
     0% {
       opacity: 1;
       background: #fff;
@@ -30,17 +41,23 @@ const introduction = {
       opacity: 0.6;
       background: #242424;
     }
-  `,
+  `),
 };
 
 const notIntroducedYet = css`
-  transform: scaleY(1);
+  margin-left: ${props => (props.size === props.maxSize ? 4 : -12)}px;
   background: #fff;
   opacity: 1;
 `;
 
 const introductionAnimation = css`
-  animation: ${introduction.bounce} 2s, ${introduction.fade} 1s 1s;
+  animation: ${props =>
+        props.size === props.maxSize
+          ? introduction.slideFromRight
+          : introduction.slideFromLeft}
+      1s,
+    ${introduction.fade} 1s 1s;
+  animation-fill-mode: forwards;
 `;
 
 export const Container = styled.div`
@@ -48,39 +65,36 @@ export const Container = styled.div`
   height: 100%;
 
   .Resizer {
-    background: #000;
     z-index: 99;
-    box-sizing: border-box;
-    background-clip: padding-box;
     /* Safari, sigh.
-      We recently encountered this and discovered that promoting the
+      Quote: We recently encountered this and discovered that promoting the
       affected element to a composite layer with translateZ in CSS fixed
       the issue without needing extra JavaScript.
-      https://stackoverflow.com/a/21947628/1501871
+      — https://stackoverflow.com/a/21947628/1501871
     */
     transform: translateZ(0);
   }
 
   .Resizer::after {
-    opacity: ${props => (props.isDragging ? 0.6 : 0.4)};
     content: '';
     background: #242424;
     border-radius: 50px;
     border: 1px solid #fff;
     transition: margin 500ms, height 150ms, top 150ms ease;
-    ${props => (props.hasAttention ? introductionAnimation : notIntroducedYet)};
-  }
-  .Resizer:hover::after {
-    opacity: 0.6;
-  }
-
-  .Resizer.vertical::after {
     position: absolute;
+
     width: 5px;
     height: ${props => (props.isDragging ? 32 : 40)}px;
     top: ${props =>
       props.isDragging ? `calc(50% - 16px)` : `calc(50% - 20px)`};
     margin-left: ${props => (props.size === props.maxSize ? -12 : 4)}px;
+    opacity: ${props => (props.isDragging ? 0.6 : 0.4)};
+
+    ${props => (props.hasAttention ? introductionAnimation : notIntroducedYet)};
+  }
+
+  .Resizer:hover::after {
+    opacity: 0.6;
   }
 
   /* Big tap area - 48*2 by 48*/
@@ -93,7 +107,7 @@ export const Container = styled.div`
     left: -48px;
   }
 
-  .Resizer.vertical {
+  .Resizer {
     cursor: ew-resize;
   }
 
