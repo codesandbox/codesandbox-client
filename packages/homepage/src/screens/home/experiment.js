@@ -34,14 +34,9 @@ const Experiment = ({ src, ...style }) => {
   const [elementTop, setElementTop] = useState(0);
   const ref = useRef(null);
   const { scrollY } = useViewportScroll();
-  const y = useTransform(
-    scrollY,
-    [elementTop + 2300, elementTop + 2300 + 1],
-    [0, -0.1],
-    {
-      clamp: false,
-    }
-  );
+  const y = useTransform(scrollY, [elementTop, elementTop + 1], [0, -0.1], {
+    clamp: false,
+  });
 
   useLayoutEffect(() => {
     const element = ref.current;
