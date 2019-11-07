@@ -7,17 +7,27 @@ export const Header = styled.header`
   width: 100%;
 `;
 
-export const SubNav = styled.nav`
-  width: 866px;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+export const SubNav = styled.div`
+  width: 100%;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
+  /* background: #151515; */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  /* border-bottom: 1px solid ${props => props.theme.homepage.grey}; */
+  /* box-shadow: 0, 8px, 16px rgba(0, 0, 0, 0.12), 0, 4px, 2px rgba(0, 0, 0, 0.24); */
 
   color: ${props => props.theme.homepage.white};
+
+  > nav {
+    width: 866px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   a {
     text-decoration: none;
@@ -27,14 +37,22 @@ export const SubNav = styled.nav`
   ul {
     display: flex;
     align-items: flex-end;
+    margin: 0;
   }
 
   li {
-    padding: 1.5rem 0;
+    padding: 1rem 0;
     list-style: none;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 0;
+
+    > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
 
     &:not(:last-child) {
       margin-right: 5rem;

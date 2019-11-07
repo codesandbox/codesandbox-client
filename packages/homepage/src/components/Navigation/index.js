@@ -8,6 +8,11 @@ import StatusIcon from '../../assets/icons/Status';
 import LearnIcon from '../../assets/icons/Learn';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
+import IDEIcon from '../../assets/icons/Ide';
+import EmbedIcon from '../../assets/icons/Embed';
+import CIIcon from '../../assets/icons/Ci';
+import TeamsIcon from '../../assets/icons/Teams';
+import NewIcon from '../../assets/icons/New';
 import {
   Header,
   Nav,
@@ -62,7 +67,14 @@ const Navigation = () => {
               </LogoWrapper>
               <List>
                 <li>
-                  <Link to="/explore">Explore</Link>
+                  <button
+                    onClick={() =>
+                      setOpenedNav(openedNav === 'features' ? null : 'features')
+                    }
+                    type="button"
+                  >
+                    Features
+                  </button>
                 </li>
                 <li>
                   <button
@@ -87,6 +99,9 @@ const Navigation = () => {
                   </button>
                 </li>
                 <li>
+                  <Link to="/explore">Explore</Link>
+                </li>
+                <li>
                   <Link to="/explore">Pricing</Link>
                 </li>
                 {!user && (
@@ -105,36 +120,112 @@ const Navigation = () => {
           </Nav>
         </Header>
       </motion.div>
-      <SubNav openedNav={openedNav} name="resources">
-        <li>
-          <LearnIcon />
-          <a>Learn</a>
-        </li>
-        <li>
-          <DocsIcon />
-          <a>Documentation</a>
-        </li>
-        <li>
-          <Link to="/blog">
-            <BlogIcon />
-          </Link>
-          <Link to="/blog">Blog</Link>
-        </li>
-      </SubNav>
-      <SubNav openedNav={openedNav} name="support">
-        <li>
-          <a href="mailto:hello@codesandbox.io" title="Support">
-            <SupportIcon />
-          </a>
-          <a href="mailto:hello@codesandbox.io">Contact Support</a>
-        </li>
-        <li>
-          <a href="https://status.codesandbox.io" title="Status">
-            <StatusIcon />
-          </a>
-          <a href="https://status.codesandbox.io">Status</a>
-        </li>
-      </SubNav>
+      <SubNav
+        openedNav={openedNav}
+        name="resources"
+        components={[
+          () => (
+            <>
+              <LearnIcon />
+              <a>Learn</a>
+            </>
+          ),
+
+          () => (
+            <>
+              <DocsIcon />
+              <a>Documentation</a>
+            </>
+          ),
+          () => (
+            <>
+              <Link to="/blog">
+                <BlogIcon />
+              </Link>
+              <Link to="/blog">Blog</Link>
+            </>
+          ),
+        ]}
+      />
+      <SubNav
+        openedNav={openedNav}
+        name="support"
+        components={[
+          () => (
+            <>
+              <a href="mailto:hello@codesandbox.io" title="Support">
+                <SupportIcon />
+              </a>
+              <a href="mailto:hello@codesandbox.io">Contact Support</a>
+            </>
+          ),
+          () => (
+            <>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://status.codesandbox.io"
+                title="Status"
+              >
+                <StatusIcon />
+              </a>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://status.codesandbox.io"
+              >
+                Status
+              </a>
+            </>
+          ),
+        ]}
+      />
+      <SubNav
+        openedNav={openedNav}
+        name="features"
+        components={[
+          () => (
+            <>
+              <a>
+                <IDEIcon />
+              </a>
+              <a>IDE</a>
+            </>
+          ),
+          () => (
+            <>
+              <Link to="/embeds">
+                <EmbedIcon />
+              </Link>
+              <Link to="/embeds">Embed</Link>
+            </>
+          ),
+          () => (
+            <>
+              <Link to="/ci">
+                <CIIcon />
+              </Link>
+              <Link to="/ci">CodeSandbox CI</Link>
+            </>
+          ),
+          () => (
+            <>
+              <Link to="/team">
+                <TeamsIcon />
+              </Link>
+              <Link to="/team">Teams</Link>
+            </>
+          ),
+          () => (
+            <>
+              <a>
+                <NewIcon />
+              </a>
+              <a>What’s New</a>
+            </>
+          ),
+        ]}
+      />
     </>
   );
 };
