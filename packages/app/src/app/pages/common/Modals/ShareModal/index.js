@@ -35,7 +35,7 @@ class ShareView extends React.Component {
     testsView: false,
     defaultModule: null,
     autoResize: false,
-    hideNavigation: false,
+    hideNavigation: true,
     isCurrentModuleView: false,
     fontSize: 14,
     initialPath: '',
