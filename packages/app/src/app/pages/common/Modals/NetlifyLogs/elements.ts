@@ -9,7 +9,6 @@ const loading = keyframes`
 `;
 
 export const List = styled.ul`
-  margin: 0;
   padding: 1.3em;
   list-style: none;
   font-family: 'dm';
