@@ -2,7 +2,6 @@ import gql from 'graphql-tag';
 import { client } from 'app/graphql/client';
 import immer from 'immer';
 import {
-  SANDBOX_FRAGMENT,
   addSandboxesToFolder,
   PATHED_SANDBOXES_CONTENT_QUERY,
 } from 'app/pages/Dashboard/queries';
@@ -18,6 +17,25 @@ import {
   PathedSandboxesQuery,
 } from 'app/graphql/types';
 
+const TEMPLATE_SANDBOX_FRAGMENT = gql`
+  fragment Sandbox on Sandbox {
+    id
+    alias
+    title
+    description
+    insertedAt
+    updatedAt
+
+    author {
+      username
+    }
+
+    source {
+      template
+    }
+  }
+`;
+
 const TEMPLATE_FRAGMENT = gql`
   fragment Template on Template {
     id
@@ -29,7 +47,7 @@ const TEMPLATE_FRAGMENT = gql`
     }
   }
 
-  ${SANDBOX_FRAGMENT}
+  ${TEMPLATE_SANDBOX_FRAGMENT}
 `;
 
 export const LIST_BOOKMARKED_TEMPLATES = gql`
@@ -49,7 +67,7 @@ export const LIST_BOOKMARKED_TEMPLATES = gql`
   }
 
   ${TEMPLATE_FRAGMENT}
-  ${SANDBOX_FRAGMENT}
+  ${TEMPLATE_SANDBOX_FRAGMENT}
 `;
 
 export const LIST_OWNED_TEMPLATES = gql`
@@ -68,7 +86,7 @@ export const LIST_OWNED_TEMPLATES = gql`
   }
 
   ${TEMPLATE_FRAGMENT}
-  ${SANDBOX_FRAGMENT}
+  ${TEMPLATE_SANDBOX_FRAGMENT}
 `;
 
 export const LIST_BOOKMARKED_TEMPLATES_QUERY = gql`
@@ -86,7 +104,7 @@ export const LIST_BOOKMARKED_TEMPLATES_QUERY = gql`
       }
     }
   }
-  ${SANDBOX_FRAGMENT}
+  ${TEMPLATE_SANDBOX_FRAGMENT}
   ${TEMPLATE_FRAGMENT}
 `;
 
@@ -104,7 +122,7 @@ export const UNMAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
       id
     }
   }
-  ${SANDBOX_FRAGMENT}
+  ${TEMPLATE_SANDBOX_FRAGMENT}
 `;
 
 export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
