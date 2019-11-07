@@ -124,43 +124,48 @@ const Navigation = () => {
         openedNav={openedNav}
         name="resources"
         components={[
-          () => (
-            <>
-              <LearnIcon />
-              <a>Learn</a>
-            </>
-          ),
-
-          () => (
-            <>
-              <DocsIcon />
-              <a>Documentation</a>
-            </>
-          ),
-          () => (
-            <>
+          {
+            Icon: () => (
+              <a>
+                <LearnIcon />
+              </a>
+            ),
+            Label: () => <a>Learn</a>,
+          },
+          {
+            Icon: () => (
+              <a>
+                <DocsIcon />
+              </a>
+            ),
+            Label: () => <a>Documentation</a>,
+          },
+          {
+            Icon: () => (
               <Link to="/blog">
                 <BlogIcon />
               </Link>
-              <Link to="/blog">Blog</Link>
-            </>
-          ),
+            ),
+            Label: () => <Link to="/blog">Blog</Link>,
+          },
         ]}
       />
       <SubNav
         openedNav={openedNav}
         name="support"
         components={[
-          () => (
-            <>
+          {
+            Icon: () => (
               <a href="mailto:hello@codesandbox.io" title="Support">
                 <SupportIcon />
               </a>
+            ),
+            Label: () => (
               <a href="mailto:hello@codesandbox.io">Contact Support</a>
-            </>
-          ),
-          () => (
-            <>
+            ),
+          },
+          {
+            Icon: () => (
               <a
                 target="_blank"
                 rel="noopener noreferrer"
@@ -169,6 +174,8 @@ const Navigation = () => {
               >
                 <StatusIcon />
               </a>
+            ),
+            Label: () => (
               <a
                 target="_blank"
                 rel="noopener noreferrer"
@@ -176,54 +183,54 @@ const Navigation = () => {
               >
                 Status
               </a>
-            </>
-          ),
+            ),
+          },
         ]}
       />
       <SubNav
         openedNav={openedNav}
         name="features"
         components={[
-          () => (
-            <>
+          {
+            Icon: () => (
               <a>
                 <IDEIcon />
               </a>
-              <a>IDE</a>
-            </>
-          ),
-          () => (
-            <>
+            ),
+            Label: () => <a>IDE</a>,
+          },
+          {
+            Icon: () => (
               <Link to="/embeds">
                 <EmbedIcon />
               </Link>
-              <Link to="/embeds">Embed</Link>
-            </>
-          ),
-          () => (
-            <>
+            ),
+            Label: () => <Link to="/embeds">Embed</Link>,
+          },
+          {
+            Icon: () => (
               <Link to="/ci">
                 <CIIcon />
               </Link>
-              <Link to="/ci">CodeSandbox CI</Link>
-            </>
-          ),
-          () => (
-            <>
+            ),
+            Label: () => <Link to="/ci">CodeSandbox CI</Link>,
+          },
+          {
+            Icon: () => (
               <Link to="/team">
                 <TeamsIcon />
               </Link>
-              <Link to="/team">Teams</Link>
-            </>
-          ),
-          () => (
-            <>
+            ),
+            Label: () => <Link to="/team">Teams</Link>,
+          },
+          {
+            Icon: () => (
               <a>
                 <NewIcon />
               </a>
-              <a>What’s New</a>
-            </>
-          ),
+            ),
+            Label: () => <a>What’s New</a>,
+          },
         ]}
       />
     </>

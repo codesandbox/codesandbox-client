@@ -24,6 +24,7 @@ const ImageWrapper = styled.div`
   border-radius: 4px;
   min-height: 475px;
   position: relative;
+  overflow: hidden;
 `;
 
 const Prototype = () => {
