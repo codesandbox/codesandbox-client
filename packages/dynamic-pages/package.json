@@ -25,7 +25,7 @@
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
     "@zeit/next-css": "^1.0.1",
-    "airtable": "^0.5.9",
+    "airtable": "^0.7.2",
     "date-fns": "^1.30.1",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
