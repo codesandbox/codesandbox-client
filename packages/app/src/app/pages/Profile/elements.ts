@@ -1,5 +1,6 @@
-import styled from 'styled-components';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
+import MarginBase from '@codesandbox/common/lib/components/spacing/Margin';
+import styled, { css } from 'styled-components';
 
 export const Container = styled(Fullscreen)`
   color: white;
@@ -11,6 +12,12 @@ export const Container = styled(Fullscreen)`
 `;
 
 export const Content = styled(Fullscreen)`
-  border-top: 1px solid ${props => props.theme.background3};
-  flex: 0 0 70px;
+  ${({ theme }) => css`
+    border-top: 1px solid ${theme.background3};
+    flex: 0 0 70px;
+  `};
+`;
+
+export const Margin = styled(MarginBase)`
+  min-height: 60vh;
 `;
