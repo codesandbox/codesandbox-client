@@ -21,6 +21,8 @@ export { getHashedUserId };
 
 export const initializeSentry = sentry.initialize;
 
+export const DNT = DO_NOT_TRACK_ENABLED;
+
 export async function logError(err: Error) {
   sentry.captureException(err);
 
@@ -72,6 +74,19 @@ export async function resetUserId() {
   }
 }
 
+export function trackPageview() {
+  if (!DO_NOT_TRACK_ENABLED) {
+    const data = {
+      version: VERSION,
+      path: location.pathname + location.search,
+    };
+
+    amplitude.track('pageview', data);
+    vero.trackPageview();
+    google.trackPageView();
+  }
+}
+
 export default function track(eventName, secondArg: Object = {}) {
   if (!DO_NOT_TRACK_ENABLED && isAllowedEvent(eventName, secondArg)) {
     const data = {
@@ -79,8 +94,8 @@ export default function track(eventName, secondArg: Object = {}) {
       version: VERSION,
       path: location.pathname + location.search,
     };
-    google.track(eventName, data);
     amplitude.track(eventName, data);
+    google.track(eventName, data);
     vero.track(eventName, data);
   }
 }

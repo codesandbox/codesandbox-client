@@ -17,21 +17,25 @@ const markLastTimeEventSent = () => {
   localStorage.setItem('csb-last-event-sent', Date.now().toString());
 };
 
-export const identify = (key, value) => {
+export const identify = (key: string, value: any) => {
   if (typeof global.amplitude !== 'undefined') {
     const identity = new global.amplitude.Identify();
     identity.set(key, value);
     global.amplitude.identify(identity);
     debug('[Amplitude] Identifying', key, value);
+  } else {
+    debug('[Amplitude] NOT identifying because Amplitude is not loaded');
   }
 };
 
-export const setUserId = userId => {
+export const setUserId = (userId: string) => {
   if (typeof global.amplitude !== 'undefined') {
     debug('[Amplitude] Setting User ID', userId);
     identify('userId', userId);
 
     global.amplitude.getInstance().setUserId(userId);
+  } else {
+    debug('[Amplitude] NOT setting userid because Amplitude is not loaded');
   }
 };
 
@@ -44,10 +48,12 @@ export const resetUserId = () => {
       global.amplitude.getInstance().setUserId(null);
       global.amplitude.getInstance().regenerateDeviceId();
     }
+  } else {
+    debug('[Amplitude] NOT resetting user id because Amplitude is not loaded');
   }
 };
 
-export const track = (eventName, data) => {
+export const track = (eventName: string, data: any) => {
   if (typeof global.amplitude !== 'undefined') {
     const currentTime = Date.now();
     if (currentTime - getLastTimeEventSent() > NEW_SESSION_TIME) {
@@ -58,5 +64,10 @@ export const track = (eventName, data) => {
 
     debug('[Amplitude] Tracking', eventName, data);
     global.amplitude.logEvent(eventName, data);
+  } else {
+    debug(
+      '[Amplitude] NOT tracking because Amplitude is not loaded',
+      eventName
+    );
   }
 };

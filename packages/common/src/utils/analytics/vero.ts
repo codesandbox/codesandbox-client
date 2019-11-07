@@ -7,6 +7,13 @@ const _veroq: any[] = [
 
 global.veroq = _veroq;
 
+export const trackPageview = () => {
+  _veroq.push(['trackPageview']);
+};
+
+// Already start tracking the first pageview
+trackPageview();
+
 function loadScript() {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
@@ -56,6 +63,6 @@ export const setUserId = userId => {
   });
 };
 
-export const track = (eventName, data) => {
+export const track = (eventName: string, data: unknown) => {
   _veroq.push(['track', eventName, data]);
 };
