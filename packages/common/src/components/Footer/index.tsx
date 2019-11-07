@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import MaxWidth from '../flex/MaxWidth';
 import LinkGroup from './LinkGroup';
 
-import linkGroups from './LinkGroups.json';
+import linkGroups from './linkGroups.json';
 
 const Container = styled.div`
   display: flex;
