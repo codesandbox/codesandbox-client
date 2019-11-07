@@ -79,7 +79,7 @@
     "@typeform/embed": "^0.12.0",
     "@types/rc-slider": "^8.6.5",
     "@vue/babel-preset-app": "^3.2.0",
-    "airtable": "^0.5.8",
+    "airtable": "^0.7.2",
     "apollo-boost": "^0.4.3",
     "apollo-link-batch-http": "^1.2.12",
     "apollo-link-context": "^1.0.18",
