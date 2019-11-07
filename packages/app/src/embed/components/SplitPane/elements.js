@@ -12,10 +12,16 @@ export const Container = styled.div`
     background-clip: padding-box;
     opacity: ${props => (props.isDragging ? 0.6 : 0.4)};
     /* Safari, sigh.
-      We recently encountered this and discovered that promoting the affected element to a composite layer with translateZ in CSS fixed the issue without needing extra JavaScript.
+      We recently encountered this and discovered that promoting the
+      affected element to a composite layer with translateZ in CSS fixed
+      the issue without needing extra JavaScript.
       https://stackoverflow.com/a/21947628/1501871
     */
     transform: translateZ(0);
+  }
+
+  .Resizer:hover {
+    opacity: 0.6;
   }
 
   .Resizer::after {
@@ -23,16 +29,21 @@ export const Container = styled.div`
     background: #242424;
     border-radius: 50px;
     border: 1px solid #fff;
-    transition: margin 500ms;
+    transition: margin 500ms, height 150ms, top 150ms ease;
   }
 
   .Resizer.vertical::after {
     position: absolute;
-    top: calc(50% - 20px);
-    height: 40px;
     width: 5px;
+    height: ${props => (props.isDragging ? 32 : 40)}px;
+    top: ${props =>
+      props.isDragging ? `calc(50% - 16px)` : `calc(50% - 20px)`};
     margin-left: ${props => (props.size === props.maxSize ? -12 : 4)}px;
   }
+  /* .Resizer.vertical:hover::after {
+    height: 44px;
+    top: calc(50% - 22px);
+  } */
 
   /* Big tap area - 48*2 by 48*/
   .Resizer::before {
@@ -42,10 +53,6 @@ export const Container = styled.div`
     height: 64px;
     top: calc(50% - 32px);
     left: -48px;
-  }
-
-  .Resizer:hover {
-    opacity: 0.6;
   }
 
   .Resizer.vertical {

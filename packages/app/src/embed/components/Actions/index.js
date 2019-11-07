@@ -1,4 +1,5 @@
 import React from 'react';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import {
@@ -22,9 +23,16 @@ export function GlobalActions({
       isDragging={isDragging}
     >
       {toggleLike ? (
-        <Button onClick={toggleLike}>
-          <HeartIcon liked={sandbox.userLiked} />
-        </Button>
+        <Tooltip
+          content={sandbox.userLiked ? 'Dislike sandbox' : 'Like sandbox'}
+        >
+          <Button
+            onClick={toggleLike}
+            aria-label={sandbox.userLiked ? 'Dislike sandbox' : 'Like sandbox'}
+          >
+            <HeartIcon liked={sandbox.userLiked} />
+          </Button>
+        </Tooltip>
       ) : null}
       <Button
         as="a"
@@ -41,12 +49,19 @@ export function GlobalActions({
 export function NavigationActions({ refresh, openInNewWindow, isDragging }) {
   return (
     <Container align="left" previewVisible isDragging={isDragging}>
-      <Button onClick={refresh}>
-        <ReloadIcon />
-      </Button>
-      <Button onClick={openInNewWindow}>
-        <NewWindowIcon />
-      </Button>
+      <Tooltip content="Refresh preview">
+        <Button onClick={refresh} aria-label="Refresh preview">
+          <ReloadIcon />
+        </Button>
+      </Tooltip>
+      <Tooltip content="Open preview in new window">
+        <Button
+          onClick={openInNewWindow}
+          aria-label="Open preview in new window"
+        >
+          <NewWindowIcon />
+        </Button>
+      </Tooltip>
     </Container>
   );
 }
