@@ -14,7 +14,6 @@ export default function SplitView({
   openInNewWindow,
   sandbox,
   toggleLike,
-  previewVisible,
   ...props
 }) {
   /* Things this component should do
@@ -98,7 +97,8 @@ export default function SplitView({
       <GlobalActions
         sandbox={sandbox}
         toggleLike={toggleLike}
-        previewVisible={previewVisible}
+        previewVisible={size < maxSize}
+        isDragging={isDragging}
       />
       <SplitPane
         split="vertical"

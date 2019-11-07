@@ -75,7 +75,6 @@ type Props = {
   sidebarOpen: boolean;
   toggleSidebar: () => void;
   toggleLike: () => void;
-  previewVisible: boolean;
 };
 
 type State = {
@@ -403,7 +402,6 @@ export default class Content extends React.PureComponent<Props, State> {
       sidebarOpen,
       toggleSidebar,
       toggleLike,
-      previewVisible,
     } = this.props;
 
     const { isInProjectView } = this.state;
@@ -496,7 +494,6 @@ export default class Content extends React.PureComponent<Props, State> {
           refresh={this.refresh}
           openInNewWindow={this.openInNewWindow}
           toggleLike={toggleLike}
-          previewVisible={previewVisible}
         >
           <>
             <Tabs>

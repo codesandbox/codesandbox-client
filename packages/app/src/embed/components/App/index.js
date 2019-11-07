@@ -387,7 +387,6 @@ export default class App extends React.PureComponent<
             sidebarOpen={this.state.sidebarOpen}
             toggleSidebar={this.toggleSidebar}
             toggleLike={this.jwt() && this.toggleLike}
-            previewVisible={this.state.showPreview}
           />
         </Container>
       </ThemeProvider>
