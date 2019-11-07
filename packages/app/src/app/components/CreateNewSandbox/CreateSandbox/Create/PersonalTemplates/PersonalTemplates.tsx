@@ -28,7 +28,7 @@ export const PersonalTemplates = () => {
   });
 
   if (mineError || bookmarkedError) {
-    return <CenteredMessage>An error has occurred while fetching your bookmarked templates, please try again in a minute</CenteredMessage>;
+    return <CenteredMessage>An error has occurred while fetching your templates, please try again in a minute</CenteredMessage>;
   }
 
   const isDone =
