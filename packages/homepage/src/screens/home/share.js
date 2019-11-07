@@ -36,9 +36,14 @@ const Share = () => {
   const ref = useRef(null);
   const { scrollY } = useViewportScroll();
 
-  const y = useTransform(scrollY, [elementTop, elementTop + 1], [0, -0.1], {
-    clamp: false,
-  });
+  const y = useTransform(
+    scrollY,
+    [elementTop + 3300, elementTop + 3300 + 1],
+    [0, -0.1],
+    {
+      clamp: false,
+    }
+  );
 
   useLayoutEffect(() => {
     const element = ref.current;
