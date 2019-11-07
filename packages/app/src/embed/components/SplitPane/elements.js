@@ -1,4 +1,51 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const introduction = {
+  bounce: keyframes`
+    0% {
+      transform: scale(1.6);
+      background: #fff;
+      opacity:1;
+    }
+    16% {
+      transform: scale(1.08);
+    }
+
+    28% {
+      transform: scale(1.2);
+    }
+
+    44% {
+      transform: scale(0.92);
+    }
+
+    59% {
+      transform: scale(1.02);
+    }
+
+    73% {
+      transform: scale(0.99);
+    }
+
+    88% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  `,
+  fade: keyframes`
+    0%: {
+      opacity: 1;
+      background: #fff;
+    }
+    100% {
+      opacity: 0.6;
+      background: #242424;
+    }
+  `,
+};
 
 export const Container = styled.div`
   width: 100%;
@@ -6,11 +53,9 @@ export const Container = styled.div`
 
   .Resizer {
     background: #000;
-    opacity: 1;
     z-index: 99;
     box-sizing: border-box;
     background-clip: padding-box;
-    opacity: ${props => (props.isDragging ? 0.6 : 0.4)};
     /* Safari, sigh.
       We recently encountered this and discovered that promoting the
       affected element to a composite layer with translateZ in CSS fixed
@@ -20,16 +65,17 @@ export const Container = styled.div`
     transform: translateZ(0);
   }
 
-  .Resizer:hover {
-    opacity: 0.6;
-  }
-
   .Resizer::after {
+    opacity: ${props => (props.isDragging ? 0.6 : 0.4)};
     content: '';
     background: #242424;
     border-radius: 50px;
     border: 1px solid #fff;
     transition: margin 500ms, height 150ms, top 150ms ease;
+    animation: ${introduction.bounce} 2s, ${introduction.fade} 2s 2s;
+  }
+  .Resizer:hover::after {
+    opacity: 0.6;
   }
 
   .Resizer.vertical::after {
@@ -40,10 +86,6 @@ export const Container = styled.div`
       props.isDragging ? `calc(50% - 16px)` : `calc(50% - 20px)`};
     margin-left: ${props => (props.size === props.maxSize ? -12 : 4)}px;
   }
-  /* .Resizer.vertical:hover::after {
-    height: 44px;
-    top: calc(50% - 22px);
-  } */
 
   /* Big tap area - 48*2 by 48*/
   .Resizer::before {
