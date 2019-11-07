@@ -13,26 +13,6 @@ import { ThemeProvider } from 'styled-components';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import { Preview } from './Preview';
 
-/*
-const settings = store => ({
-  fontFamily: store.preferences.settings.fontFamily,
-  fontSize: store.preferences.settings.fontSize,
-  lineHeight: store.preferences.settings.lineHeight,
-  autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
-  autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
-  vimMode: store.preferences.settings.vimMode,
-  lintEnabled: store.preferences.settings.lintEnabled,
-  codeMirror: store.preferences.settings.codeMirror,
-  tabWidth: store.preferences.settings.prettierConfig
-    ? store.preferences.settings.prettierConfig.tabWidth || 2
-    : 2,
-  enableLigatures: store.preferences.settings.enableLigatures,
-  experimentVSCode: store.preferences.settings.experimentVSCode,
-  prettierConfig: store.preferences.settings.prettierConfig,
-  forceRefresh: store.preferences.settings.forceRefresh,
-});
-*/
-
 export const Content: React.FC = () => {
   const { state, actions, effects, reaction } = useOvermind();
   const editorEl = useRef(null);

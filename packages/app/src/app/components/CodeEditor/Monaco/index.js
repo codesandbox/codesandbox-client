@@ -1,43 +1,41 @@
-import * as React from 'react';
-import { TextOperation } from 'ot';
-import { debounce } from 'lodash-es';
-import { join, dirname } from 'path';
-import { withTheme } from 'styled-components';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { listen, dispatch, actions } from 'codesandbox-api';
+import { dirname, join } from 'path';
 
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import type {
-  Module,
-  Sandbox,
-  ModuleError,
-  ModuleCorrection,
   Directory,
+  Module,
+  ModuleCorrection,
+  ModuleError,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-
 import delay from '@codesandbox/common/lib/utils/delay';
-
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { actions, dispatch, listen } from 'codesandbox-api';
+import { debounce } from 'lodash-es';
+import { TextOperation } from 'ot';
+import * as React from 'react';
+import { withTheme } from 'styled-components';
 /* eslint-disable import/no-webpack-loader-syntax, import/default */
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./workers/linter';
 import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
-/* eslint-enable import/no-webpack-loader-syntax, import/default */
 
-import eventToTransform from './event-to-transform';
-import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
-import { Container, CodeContainer } from './elements';
+import type { Editor, Props } from '../types';
 import defineTheme from './define-theme';
+import { CodeContainer, Container } from './elements';
+import eventToTransform from './event-to-transform';
+import { liftOff } from './grammars/configure-tokenizer';
+import { updateUserSelections } from './live-decorations';
+import getMode from './mode';
+import {
+  indexToLineAndColumn,
+  lineAndColumnToIndex,
+} from './monaco-index-converter';
+import MonacoEditorComponent from './MonacoReactComponent';
 import getSettings from './settings';
 
-import type { Props, Editor } from '../types';
-import getMode from './mode';
-import { liftOff } from './grammars/configure-tokenizer';
-import {
-  lineAndColumnToIndex,
-  indexToLineAndColumn,
-} from './monaco-index-converter';
-import { updateUserSelections } from './live-decorations';
+/* eslint-enable import/no-webpack-loader-syntax, import/default */
 
 type State = {
   fuzzySearchEnabled: boolean,
