@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { client } from 'app/graphql/client';
-import { LIST_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
+import { LIST_OWNED_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
@@ -22,7 +22,7 @@ import getItems from './modules/workspace/items';
  * We use this to eagerly load templates for the new sandbox modal.
  */
 export function loadTemplatesForStartModal() {
-  client.query({ query: LIST_TEMPLATES, variables: { showAll: true } });
+  client.query({ query: LIST_OWNED_TEMPLATES, variables: { showAll: true } });
 }
 
 export function getSandbox({ props, api, path }) {

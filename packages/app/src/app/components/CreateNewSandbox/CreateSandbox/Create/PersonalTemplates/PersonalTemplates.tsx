@@ -2,45 +2,42 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import {
   ListTemplatesQuery,
-  ListFollowedTemplatesQuery,
-  ListFollowedTemplatesQueryVariables,
+  ListBookmarkedTemplatesQuery,
+  ListBookmarkedTemplatesQueryVariables,
   ListTemplatesQueryVariables,
 } from 'app/graphql/types';
-import { LIST_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
+import { LIST_OWNED_TEMPLATES, LIST_BOOKMARKED_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 import { Loader } from '../../Loader/index';
-// @ts-ignore
-import { ListFollowedTemplates } from '../../queries.gql';
 import { TemplateList } from './TemplateList';
+import { CenteredMessage } from '../elements';
 
 export const PersonalTemplates = () => {
   const { data: mine, error: mineError } = useQuery<
     ListTemplatesQuery,
     ListTemplatesQueryVariables
-  >(LIST_TEMPLATES, {
+  >(LIST_OWNED_TEMPLATES, {
     variables: { showAll: true, teamId: undefined },
     fetchPolicy: 'cache-and-network',
   });
-  const { data: followed, error: followedError } = useQuery<
-    ListFollowedTemplatesQuery,
-    ListFollowedTemplatesQueryVariables
-  >(ListFollowedTemplates, {
+  const { data: bookmarked, error: bookmarkedError } = useQuery<
+    ListBookmarkedTemplatesQuery,
+    ListBookmarkedTemplatesQueryVariables
+  >(LIST_BOOKMARKED_TEMPLATES, {
     variables: { showAll: true },
     fetchPolicy: 'cache-and-network',
   });
 
-  const done =
-    (mine &&
-      mine.me &&
-      mine.me.templates &&
-      followed &&
-      followed.me &&
-      followed.me.bookmarkedTemplates) ||
-    followedError ||
-    mineError;
+  if (mineError || bookmarkedError) {
+    return <CenteredMessage>An error has occurred while fetching your bookmarked templates, please try again in a minute</CenteredMessage>;
+  }
+
+  const isDone =
+    mine?.me?.templates &&
+    bookmarked?.me?.bookmarkedTemplates;
 
   return (
     <>
-      {done ? (
+      {isDone ? (
         <>
           {mine.me.templates.length ? (
             <TemplateList
@@ -48,13 +45,13 @@ export const PersonalTemplates = () => {
               title="Your Templates"
             />
           ) : null}
-          {followed.me.bookmarkedTemplates.length ? (
+          {bookmarked.me.bookmarkedTemplates.length ? (
             <TemplateList
-              templates={followed.me.bookmarkedTemplates}
+              templates={bookmarked.me.bookmarkedTemplates}
               title="Bookmarked Templates"
             />
           ) : null}
-          {followed.me.teams.map(team =>
+          {bookmarked.me.teams.map(team =>
             team.bookmarkedTemplates.length ? (
               <TemplateList
                 templates={team.bookmarkedTemplates}

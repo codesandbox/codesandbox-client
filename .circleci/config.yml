@@ -246,6 +246,9 @@ commands:
             '[ -n "<< parameters.user >>" ] && echo << parameters.password >> |
             docker login -u << parameters.user >> --password-stdin || true'
       - run:
+          name: Create DockerIgnore
+          command: echo '**\n!www' > .dockerignore
+      - run:
           name: Create Image
           command:
             '[ -n "<< parameters.user >>" ] && docker build -t

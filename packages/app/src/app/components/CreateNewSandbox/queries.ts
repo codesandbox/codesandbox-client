@@ -18,6 +18,20 @@ import {
   PathedSandboxesQuery,
 } from 'app/graphql/types';
 
+const TEMPLATE_FRAGMENT = gql`
+  fragment Template on Template {
+    id
+    color
+    iconUrl
+    published
+    sandbox {
+      ...Sandbox
+    }
+  }
+
+  ${SANDBOX_FRAGMENT}
+`;
+
 export const LIST_BOOKMARKED_TEMPLATES = gql`
   query ListBookmarkedTemplates {
     me {
@@ -25,49 +39,55 @@ export const LIST_BOOKMARKED_TEMPLATES = gql`
         id
         name
         bookmarkedTemplates {
-          color
-          iconUrl
-          id
-          published
-          sandbox {
-            ...Sandbox
-          }
+          ...Template
         }
       }
       bookmarkedTemplates {
-        color
-        iconUrl
-        id
-        published
-        sandbox {
-          ...Sandbox
-        }
+        ...Template
       }
     }
   }
 
+  ${TEMPLATE_FRAGMENT}
   ${SANDBOX_FRAGMENT}
 `;
 
-export const LIST_TEMPLATES = gql`
+export const LIST_OWNED_TEMPLATES = gql`
   query ListTemplates($teamId: ID, $showAll: Boolean) {
     me {
       templates(teamId: $teamId, showAll: $showAll) {
-        color
-        iconUrl
-        id
-        published
-        sandbox {
-          ...Sandbox
-          author {
-            username
-          }
+        ...Template
+      }
+
+      teams {
+        templates {
+          id
         }
       }
     }
   }
 
+  ${TEMPLATE_FRAGMENT}
   ${SANDBOX_FRAGMENT}
+`;
+
+export const LIST_BOOKMARKED_TEMPLATES_QUERY = gql`
+  query ListPersonalBookmarkedTemplates {
+    me {
+      teams {
+        id
+        name
+        bookmarkedTemplates {
+          ...Template
+        }
+      }
+      bookmarkedTemplates {
+        ...Template
+      }
+    }
+  }
+  ${SANDBOX_FRAGMENT}
+  ${TEMPLATE_FRAGMENT}
 `;
 
 export const MAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
@@ -112,7 +132,7 @@ export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
         }
 
         const oldTemplatesCache = cache.readQuery<ListTemplatesQuery>({
-          query: LIST_TEMPLATES,
+          query: LIST_OWNED_TEMPLATES,
           variables,
         });
 
@@ -123,7 +143,7 @@ export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
         });
 
         cache.writeQuery({
-          query: LIST_TEMPLATES,
+          query: LIST_OWNED_TEMPLATES,
           variables,
           data,
         });

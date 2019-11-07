@@ -11,7 +11,7 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
-  LIST_TEMPLATES,
+  LIST_OWNED_TEMPLATES,
   unmakeTemplates,
 } from 'app/components/CreateNewSandbox/queries';
 import {
@@ -29,7 +29,7 @@ export const Templates = (props: TemplatesProps) => {
   const { loading, error, data } = useQuery<
     ListTemplatesQuery,
     ListTemplatesQueryVariables
-  >(LIST_TEMPLATES, {
+  >(LIST_OWNED_TEMPLATES, {
     variables: { teamId, showAll: false },
   });
 

@@ -1,6 +1,7 @@
 FROM node:10
 LABEL maintainer "Ives van Hoorne"
 
-RUN mkdir /usr/src/app
+RUN mkdir /workspace
+COPY * /workspace/
 
-WORKDIR /usr/src/app
+WORKDIR /workspace

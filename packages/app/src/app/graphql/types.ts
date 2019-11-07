@@ -423,6 +423,11 @@ export type ListFollowedTemplatesQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type TemplateFragment = { __typename?: 'Template' } & Pick<
+  Template,
+  'id' | 'color' | 'iconUrl' | 'published'
+> & { sandbox: Maybe<{ __typename?: 'Sandbox' } & SandboxFragment> };
+
 export type ListBookmarkedTemplatesQueryVariables = {};
 
 export type ListBookmarkedTemplatesQuery = { __typename?: 'RootQueryType' } & {
@@ -433,32 +438,14 @@ export type ListBookmarkedTemplatesQuery = { __typename?: 'RootQueryType' } & {
           Maybe<
             { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
                 bookmarkedTemplates: Maybe<
-                  Array<
-                    Maybe<
-                      { __typename?: 'Template' } & Pick<
-                        Template,
-                        'color' | 'iconUrl' | 'id' | 'published'
-                      > & {
-                          sandbox: Maybe<
-                            { __typename?: 'Sandbox' } & SandboxFragment
-                          >;
-                        }
-                    >
-                  >
+                  Array<Maybe<{ __typename?: 'Template' } & TemplateFragment>>
                 >;
               }
           >
         >
       >;
       bookmarkedTemplates: Maybe<
-        Array<
-          Maybe<
-            { __typename?: 'Template' } & Pick<
-              Template,
-              'color' | 'iconUrl' | 'id' | 'published'
-            > & { sandbox: Maybe<{ __typename?: 'Sandbox' } & SandboxFragment> }
-          >
-        >
+        Array<Maybe<{ __typename?: 'Template' } & TemplateFragment>>
       >;
     }
   >;
@@ -473,22 +460,32 @@ export type ListTemplatesQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       templates: Maybe<
+        Array<Maybe<{ __typename?: 'Template' } & TemplateFragment>>
+      >;
+    }
+  >;
+};
+
+export type ListPersonalBookmarkedTemplatesQueryVariables = {};
+
+export type ListPersonalBookmarkedTemplatesQuery = {
+  __typename?: 'RootQueryType';
+} & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      teams: Maybe<
         Array<
           Maybe<
-            { __typename?: 'Template' } & Pick<
-              Template,
-              'color' | 'iconUrl' | 'id' | 'published'
-            > & {
-                sandbox: Maybe<
-                  { __typename?: 'Sandbox' } & {
-                    author: Maybe<
-                      { __typename?: 'User' } & Pick<User, 'username'>
-                    >;
-                  } & SandboxFragment
+            { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
+                bookmarkedTemplates: Maybe<
+                  Array<Maybe<{ __typename?: 'Template' } & TemplateFragment>>
                 >;
               }
           >
         >
+      >;
+      bookmarkedTemplates: Maybe<
+        Array<Maybe<{ __typename?: 'Template' } & TemplateFragment>>
       >;
     }
   >;

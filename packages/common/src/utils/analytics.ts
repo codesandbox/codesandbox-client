@@ -201,8 +201,8 @@ export function getHashedUserId(userId: string) {
 export async function setUserId(userId: string) {
   try {
     if (!DNT) {
+      const hashedId = getHashedUserId(userId);
       if (typeof global.amplitude !== 'undefined') {
-        const hashedId = getHashedUserId(userId);
         debug('[Amplitude] Setting User ID', hashedId);
         identify('userId', hashedId);
 
@@ -214,6 +214,10 @@ export async function setUserId(userId: string) {
         Sentry.configureScope(scope => {
           scope.setUser({ id: userId });
         });
+      }
+
+      if (typeof global.veroq !== 'undefined') {
+        global._veroq.push(['reidentify', hashedId]);
       }
     }
   } catch (e) {
@@ -300,6 +304,10 @@ export default function track(eventName, secondArg: Object = {}) {
 
           debug('[Amplitude] Tracking', eventName, data);
           global.amplitude.logEvent(eventName, data);
+        }
+
+        if (typeof global.veroq !== 'undefined') {
+          global.veroq.push(['track', eventName, secondArg]);
         }
       } catch (e) {
         /* */

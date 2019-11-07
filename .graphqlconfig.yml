@@ -1,0 +1,4 @@
+projects:
+  packages:
+    schemaPath: schema.graphql
+    includes: ['packages/app/**/*.{gql,ts,graphql}', 'schema.graphql']
