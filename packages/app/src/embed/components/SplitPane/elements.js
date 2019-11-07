@@ -1,42 +1,28 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 const introduction = {
   bounce: keyframes`
     0% {
-      transform: scale(1.6);
+      transform: scaleY(1);
       background: #fff;
-      opacity:1;
-    }
-    16% {
-      transform: scale(1.08);
-    }
+      opacity: 1;
 
-    28% {
-      transform: scale(1.2);
     }
-
-    44% {
-      transform: scale(0.92);
-    }
-
-    59% {
-      transform: scale(1.02);
-    }
-
-    73% {
-      transform: scale(0.99);
-    }
-
-    88% {
-      transform: scale(1);
-    }
-
+    16% { transform: scaleY(0.8) }
+    28% { transform: scaleY(1.8) }
+    44% { transform: scaleY(0.8) }
+    59% { transform: scaleY(1.2) }
+    73% { transform: scaleY(0.95) }
+    88% { transform: scaleY(1.05) }
     100% {
-      transform: scale(1);
+      transform: scaleY(1);
+      background: #fff;
+      opacity: 1;
+
     }
   `,
   fade: keyframes`
-    0%: {
+    0% {
       opacity: 1;
       background: #fff;
     }
@@ -46,6 +32,16 @@ const introduction = {
     }
   `,
 };
+
+const notIntroducedYet = css`
+  transform: scaleY(1);
+  background: #fff;
+  opacity: 1;
+`;
+
+const introductionAnimation = css`
+  animation: ${introduction.bounce} 2s, ${introduction.fade} 1s 1s;
+`;
 
 export const Container = styled.div`
   width: 100%;
@@ -72,7 +68,7 @@ export const Container = styled.div`
     border-radius: 50px;
     border: 1px solid #fff;
     transition: margin 500ms, height 150ms, top 150ms ease;
-    animation: ${introduction.bounce} 2s, ${introduction.fade} 2s 2s;
+    ${props => (props.hasAttention ? introductionAnimation : notIntroducedYet)};
   }
   .Resizer:hover::after {
     opacity: 0.6;

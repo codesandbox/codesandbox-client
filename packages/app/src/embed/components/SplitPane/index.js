@@ -21,6 +21,7 @@ export default function SplitView({
     2. let user move it around
     3. snap to edges
     4. stay snapped on window.resize and sidebar toggle (not implemented)
+    5. introduce the resizer element with animation
   */
 
   const windowWidth = window.innerWidth;
@@ -85,6 +86,10 @@ export default function SplitView({
   // TODO: #4. Handle edge case of keeping panes snapped
   // on window.resize and sidebar toggle
 
+  // #5. Intoduce resizer on first mouse over
+  const [hasAttention, setAttention] = React.useState(false);
+  const onMouseOver = () => setAttention(true);
+
   /* We need at least 270px of space in the preview to
     fit global actions and navigation actions
     if there isn't enough space, navigation gets
@@ -93,7 +98,14 @@ export default function SplitView({
   const outOfSpaceForNavigation = maxSize - size < 270;
 
   return (
-    <Container isDragging={isDragging} size={size} maxSize={maxSize}>
+    <Container
+      isDragging={isDragging}
+      size={size}
+      maxSize={maxSize}
+      hasAttention={hasAttention}
+      onMouseOver={onMouseOver}
+      onFocus={onMouseOver}
+    >
       <GlobalActions
         sandbox={sandbox}
         toggleLike={toggleLike}
