@@ -1,5 +1,6 @@
 import { Contributor } from '@codesandbox/common/lib/types';
-import { json, IState, IDerive } from 'overmind';
+import { IDerive, IState, json } from 'overmind';
+
 import { AsyncAction } from '.';
 
 export const withLoadApp = <T>(
@@ -39,9 +40,11 @@ export const withLoadApp = <T>(
         'Your session seems to be expired, please log in again...'
       );
       effects.jwt.reset();
+      effects.analytics.setAnonymousId();
     }
   } else {
     effects.jwt.reset();
+    effects.analytics.setAnonymousId();
   }
 
   if (continueAction) {
