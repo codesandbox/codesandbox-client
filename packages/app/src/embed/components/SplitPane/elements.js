@@ -44,7 +44,7 @@ const introduction = {
   `),
 };
 
-const notIntroducedYet = css`
+const notIntroducedYetStyles = css`
   margin-left: ${props => (props.size === props.maxSize ? 4 : -12)}px;
   background: #fff;
   opacity: 1;
@@ -57,7 +57,7 @@ const introductionAnimation = css`
           : introduction.slideFromLeft}
       1s,
     ${introduction.fade} 1s 1s;
-  animation-fill-mode: forwards;
+  animation-fill-mode: forwards, forwards;
 `;
 
 export const Container = styled.div`
@@ -90,7 +90,12 @@ export const Container = styled.div`
     margin-left: ${props => (props.size === props.maxSize ? -12 : 4)}px;
     opacity: ${props => (props.isDragging ? 0.6 : 0.4)};
 
-    ${props => (props.hasAttention ? introductionAnimation : notIntroducedYet)};
+    /* intro animations */
+    ${props => {
+      if (props.hasBeenIntroduced) return null;
+      if (props.hasAttention) return introductionAnimation;
+      return notIntroducedYetStyles;
+    }}
   }
 
   .Resizer:hover::after {

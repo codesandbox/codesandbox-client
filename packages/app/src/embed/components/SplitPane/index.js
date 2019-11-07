@@ -87,8 +87,19 @@ export default function SplitView({
   // on window.resize and sidebar toggle
 
   // #5. Intoduce resizer on first mouse over
-  const [hasAttention, setAttention] = React.useState(!!isMobile);
-  const onMouseOver = () => setAttention(true);
+  const [hasAttention, setAttention] = React.useState(false);
+  const [hasBeenIntroduced, setHasBeenIntroduction] = React.useState(false);
+  const ANIMATION_DURATION = 3000;
+
+  const onMouseOver = () => {
+    // this should run only once
+    if (hasAttention) return;
+
+    setAttention(true);
+    window.setTimeout(() => {
+      setHasBeenIntroduction(true);
+    }, ANIMATION_DURATION);
+  };
 
   /* We need at least 270px of space in the preview to
     fit global actions and navigation actions
@@ -105,6 +116,7 @@ export default function SplitView({
       hasAttention={hasAttention}
       onMouseOver={onMouseOver}
       onFocus={onMouseOver}
+      hasBeenIntroduced={hasBeenIntroduced}
     >
       <GlobalActions
         sandbox={sandbox}
