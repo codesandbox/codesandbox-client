@@ -1,0 +1,41 @@
+[
+  {
+    "id": "codesandbox-footer",
+    "title": "CodeSandbox",
+    "links": [
+      { "name": "Create Sandbox", "url": "/s" },
+      { "name": "Search", "url": "/search" },
+      { "name": "Explore", "url": "/explore" },
+      { "name": "Documentation", "url": "/docs", "newTab": false },
+      { "name": "Patron", "url": "/patron" },
+      { "name": "Status", "url": "https://status.codesandbox.io" },
+      { "name": "Sign In", "url": "/signin" }
+    ]
+  },
+  {
+    "id": "about-footer",
+    "title": "About",
+    "links": [
+      { "name": "Blog", "url": "/blog" },
+      {
+        "name": "GitHub",
+        "url": "https://github.com/codesandbox/codesandbox-client"
+      },
+      { "name": "Careers", "url": "/jobs", "newTab": false },
+      { "name": "Legal", "url": "/legal", "newTab": false },
+      {
+        "name": "Contact Us",
+        "url": "mailto:hello@codesandbox.io",
+        "newTab": false
+      }
+    ]
+  },
+  {
+    "id": "social-footer",
+    "title": "Social",
+    "links": [
+      { "name": "Twitter", "url": "https://twitter.com/codesandbox" },
+      { "name": "Spectrum", "url": "https://spectrum.chat/codesandbox" }
+    ]
+  }
+]
