@@ -15,7 +15,6 @@ import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
-import { GlobalActions } from '../Actions';
 import { Container, Fullscreen, Moving } from './elements';
 import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
 
@@ -387,6 +386,8 @@ export default class App extends React.PureComponent<
             verticalMode={verticalMode}
             sidebarOpen={this.state.sidebarOpen}
             toggleSidebar={this.toggleSidebar}
+            toggleLike={this.jwt() && this.toggleLike}
+            previewVisible={this.state.showPreview}
           />
         </Container>
       </ThemeProvider>
@@ -404,11 +405,6 @@ export default class App extends React.PureComponent<
               setCurrentModule={this.setCurrentModule}
               currentModule={this.getCurrentModuleFromPath(sandbox).id}
               sandbox={sandbox}
-            />
-            <GlobalActions
-              sandbox={sandbox}
-              toggleLike={this.jwt() && this.toggleLike}
-              previewVisible={this.state.showPreview}
             />
           </>
         )}

@@ -1,6 +1,6 @@
 import React from 'react';
 import SplitPane from 'react-split-pane';
-import { NavigationActions } from '../Actions';
+import { GlobalActions, NavigationActions } from '../Actions';
 import { Container, PaneContainer, PointerOverlay } from './elements';
 
 export default function SplitView({
@@ -12,6 +12,9 @@ export default function SplitView({
   showNavigationActions,
   refresh,
   openInNewWindow,
+  sandbox,
+  toggleLike,
+  previewVisible,
   ...props
 }) {
   /* Things this component should do
@@ -92,6 +95,11 @@ export default function SplitView({
 
   return (
     <Container isDragging={isDragging} size={size} maxSize={maxSize}>
+      <GlobalActions
+        sandbox={sandbox}
+        toggleLike={toggleLike}
+        previewVisible={previewVisible}
+      />
       <SplitPane
         split="vertical"
         onDragStarted={onDragStarted}

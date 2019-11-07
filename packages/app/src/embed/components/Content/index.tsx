@@ -74,6 +74,8 @@ type Props = {
   tabCount: number;
   sidebarOpen: boolean;
   toggleSidebar: () => void;
+  toggleLike: () => void;
+  previewVisible: boolean;
 };
 
 type State = {
@@ -400,6 +402,8 @@ export default class Content extends React.PureComponent<Props, State> {
       verticalMode,
       sidebarOpen,
       toggleSidebar,
+      toggleLike,
+      previewVisible,
     } = this.props;
 
     const { isInProjectView } = this.state;
@@ -483,6 +487,7 @@ export default class Content extends React.PureComponent<Props, State> {
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
         <SplitPane
+          sandbox={sandbox}
           showEditor={showEditor}
           showPreview={showPreview}
           isMobile={verticalMode}
@@ -490,6 +495,8 @@ export default class Content extends React.PureComponent<Props, State> {
           showNavigationActions={hideNavigation}
           refresh={this.refresh}
           openInNewWindow={this.openInNewWindow}
+          toggleLike={toggleLike}
+          previewVisible={previewVisible}
         >
           <>
             <Tabs>
