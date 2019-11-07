@@ -67,7 +67,7 @@ export const WHITELISTED_VSCODE_EVENTS = [
   'code-runner.run',
 ];
 
-export const DO_TRACK =
+export const DO_NOT_TRACK_ENABLED =
   typeof window !== 'undefined' &&
   Boolean(
     // @ts-ignore

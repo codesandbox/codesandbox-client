@@ -5,7 +5,7 @@ import * as google from './google';
 import * as sentry from './sentry';
 import {
   ANONYMOUS_UID_KEY,
-  DO_TRACK,
+  DO_NOT_TRACK_ENABLED,
   getHashedUserId,
   isAllowedEvent,
 } from './utils';
@@ -29,7 +29,7 @@ export async function logError(err: Error) {
 
 // Used to configure stuff?
 export async function identify(key: string, value: any) {
-  if (DO_TRACK) {
+  if (!DO_NOT_TRACK_ENABLED) {
     amplitude.identify(key, value);
 
     sentry.configureScope(scope => {
@@ -56,7 +56,7 @@ export async function setAnonymousId() {
 }
 
 export async function setUserId(userId: string) {
-  if (DO_TRACK) {
+  if (!DO_NOT_TRACK_ENABLED) {
     const hashedId = getHashedUserId(userId);
 
     amplitude.setUserId(hashedId);
@@ -66,14 +66,14 @@ export async function setUserId(userId: string) {
 }
 
 export async function resetUserId() {
-  if (DO_TRACK) {
+  if (!DO_NOT_TRACK_ENABLED) {
     amplitude.resetUserId();
     sentry.resetUserId();
   }
 }
 
 export default function track(eventName, secondArg: Object = {}) {
-  if (DO_TRACK && isAllowedEvent(eventName, secondArg)) {
+  if (!DO_NOT_TRACK_ENABLED && isAllowedEvent(eventName, secondArg)) {
     const data = {
       ...secondArg,
       version: VERSION,

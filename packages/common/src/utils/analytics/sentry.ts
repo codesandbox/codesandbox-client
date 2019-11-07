@@ -1,5 +1,5 @@
 import VERSION from '../../version';
-import { DO_TRACK } from './utils';
+import { DO_NOT_TRACK_ENABLED } from './utils';
 
 let _Sentry;
 
@@ -8,7 +8,7 @@ function getSentry() {
 }
 
 export async function initialize(dsn: string) {
-  if (DO_TRACK) {
+  if (!DO_NOT_TRACK_ENABLED) {
     _Sentry = await getSentry();
 
     return _Sentry.init({
