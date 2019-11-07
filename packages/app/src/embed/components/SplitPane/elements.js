@@ -5,14 +5,17 @@ const introduction = {
     0% {
       margin-left: -12px;
       background: #fff;
+      opacity: 1;
     }
     50% {
       margin-left: 12px;
       background: #fff;
+      opacity: 1;
     }
     100% {
       margin-left: 4px;
       background: #fff;
+      opacity: 1;
     }
   `),
   slideFromRight: keyframes(css`
