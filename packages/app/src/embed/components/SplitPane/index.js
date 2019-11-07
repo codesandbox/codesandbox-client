@@ -87,7 +87,7 @@ export default function SplitView({
   // on window.resize and sidebar toggle
 
   // #5. Intoduce resizer on first mouse over
-  const [hasAttention, setAttention] = React.useState(false);
+  const [hasAttention, setAttention] = React.useState(!!isMobile);
   const onMouseOver = () => setAttention(true);
 
   /* We need at least 270px of space in the preview to
