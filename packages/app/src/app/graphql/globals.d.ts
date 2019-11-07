@@ -1,5 +1,6 @@
 declare module '*/mutations.gql' {
-  import { DocumentNode } from 'graphql';
+  import { DocumentNode , DocumentNode , DocumentNode } from 'graphql';
+
   const defaultDocument: DocumentNode;
   export const templateFields: DocumentNode;
   export const bookmarkTemplateFromCard: DocumentNode;
@@ -13,7 +14,7 @@ declare module '*/mutations.gql' {
 }
 
 declare module '*/queries.gql' {
-  import { DocumentNode } from 'graphql';
+  
   const defaultDocument: DocumentNode;
   export const isBookmarked: DocumentNode;
   export const Sandbox: DocumentNode;
@@ -25,7 +26,7 @@ declare module '*/queries.gql' {
 }
 
 declare module '*/queries.ts' {
-  import { DocumentNode } from 'graphql';
+  
   const defaultDocument: DocumentNode;
   export const Template: DocumentNode;
   export const ListBookmarkedTemplates: DocumentNode;
