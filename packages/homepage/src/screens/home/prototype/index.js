@@ -46,7 +46,7 @@ const Prototype = () => {
 
   useEffect(() => {
     animation
-      .to(stars.current, 1, { scale: 2, delay: 2 })
+      .to(stars.current, 1, { scale: 2, delay: 0 })
       .to(ideRef.current, 1.5, { y: -400, opacity: 1, delay: 1 })
       .to(stars.current, 1, { scale: 1, y: 70, x: 60 }, '-=1');
     if (inView) animation.resume();

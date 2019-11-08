@@ -5,7 +5,7 @@ export const Posts = styled.article`
   align-items: flex-start;
   background: ${props => props.theme.background2};
   border-radius: 4px;
-  padding: 16px;
+  padding: 1rem;
   margin-bottom: 30px;
 
   @media screen and (max-width: 1200px) {
@@ -16,7 +16,7 @@ export const Posts = styled.article`
 export const Subtitle = styled.h3`
   font-family: 'Open Sans', sans-serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.5;
 
   color: #b8b9ba;

@@ -13,7 +13,7 @@ export const Nav = styled.section`
   grid-template-columns: repeat(5, 1fr);
   grid-gap: 3rem;
   max-width: 80%;
-  width: 1200px;
+  width: 1086px;
   margin: auto;
   margin-bottom: 4.5rem;
 

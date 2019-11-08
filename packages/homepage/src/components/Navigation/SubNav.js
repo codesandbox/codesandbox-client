@@ -23,7 +23,7 @@ export default ({ components, name, openedNav }) => {
             overflow: 'hidden',
             borderBottom: '1px solid #242424',
             boxShadow:
-              '0, 8px, 16px rgba(0, 0, 0, 0.12), 0, 4px, 2px rgba(0, 0, 0, 0.24)',
+              '0, 8px, 1rem rgba(0, 0, 0, 0.12), 0, 4px, 2px rgba(0, 0, 0, 0.24)',
           }}
           transition={{
             duration: 0.2,

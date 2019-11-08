@@ -88,7 +88,7 @@ export default createGlobalStyle`
         font-size: 18px;
         border: none;
         border-left: 8px solid #0d7bc9;
-        padding-left: 16px;
+        padding-left: 1rem;
         margin-bottom: 8px;
       }
 

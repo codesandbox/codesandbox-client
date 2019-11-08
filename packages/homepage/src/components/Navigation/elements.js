@@ -10,14 +10,11 @@ export const Header = styled.header`
 export const SubNav = styled.div`
   width: 100%;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 24px;
-  /* background: #151515; */
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  /* border-bottom: 1px solid ${props => props.theme.homepage.grey}; */
-  /* box-shadow: 0, 8px, 16px rgba(0, 0, 0, 0.12), 0, 4px, 2px rgba(0, 0, 0, 0.24); */
 
   color: ${props => props.theme.homepage.white};
 
@@ -49,9 +46,9 @@ export const SubNav = styled.div`
     margin-bottom: 0;
 
     > div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     &:not(:last-child) {

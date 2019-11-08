@@ -22,7 +22,7 @@ export const Description = styled.h2`
   ${({ theme }) => css`
     font-style: normal;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 19px;
 
     color: ${theme.homepage.white};
@@ -60,7 +60,7 @@ export const ContentBlock = styled.div`
     display: grid;
     grid-template-columns: repeat(${columns}, 1fr);
     grid-gap: 5rem;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 23px;
     color: ${theme.homepage.muted};
 
@@ -70,6 +70,7 @@ export const ContentBlock = styled.div`
       font-size: 23px;
       line-height: 27px;
       color: ${theme.homepage.white};
+      min-height: 54px;
     }
   `};
 `;
@@ -95,7 +96,7 @@ export const User = styled.div`
     font-style: normal;
     display: flex;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 20px;
 
     color: ${theme.homepage.white};

@@ -6,7 +6,7 @@ export const TweetsWrapper = styled.a`
   position: absolute;
   max-width: 520px;
   background: ${props => props.theme.homepage.grey};
-  box-shadow: 0px 16px 16px rgba(4, 4, 4, 0.25);
+  box-shadow: 0px 1rem 1rem rgba(4, 4, 4, 0.25);
   border-radius: 4px;
   margin-top: 5.5rem;
   left: -6rem;
@@ -35,7 +35,7 @@ export const Quote = styled.blockquote`
 export const Info = styled.p`
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 24px;
   margin: 0;
 

@@ -21,7 +21,7 @@ const Section = styled.section`
   display: grid;
   grid-template-columns: repeat(3, 300px);
   grid-gap: 2rem;
-  margin-top: 12.5rem;
+  margin-top: 14.5rem;
   position: relative;
   z-index: 2;
   margin-left: 200px;

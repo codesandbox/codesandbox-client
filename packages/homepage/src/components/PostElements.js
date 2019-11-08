@@ -35,7 +35,7 @@ export const Author = styled.h4`
   font-weight: 500;
   font-size: 18px;
   margin: 0;
-  margin-left: 16px;
+  margin-left: 1rem;
 
   color: #f2f2f2;
 `;
