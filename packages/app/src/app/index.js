@@ -38,6 +38,7 @@ import {
   initializeExtensionsFolder,
   initializeCustomTheme,
   setVimExtensionEnabled,
+  initializeCodeSandboxTheme,
 } from './vscode/initializers';
 import { EXTENSIONS_LOCATION } from './vscode/constants';
 
@@ -178,12 +179,18 @@ async function initialize() {
           fs: 'LocalStorage',
         },
         '/extensions': {
-          fs: 'BundledHTTPRequest',
+          fs: 'OverlayFS',
           options: {
-            index: EXTENSIONS_LOCATION + '/extensions/index.json',
-            baseUrl: EXTENSIONS_LOCATION + '/extensions',
-            bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
-            logReads: process.env.NODE_ENV === 'development',
+            writable: { fs: 'InMemory' },
+            readable: {
+              fs: 'BundledHTTPRequest',
+              options: {
+                index: EXTENSIONS_LOCATION + '/extensions/index.json',
+                baseUrl: EXTENSIONS_LOCATION + '/extensions',
+                bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+                logReads: process.env.NODE_ENV === 'development',
+              },
+            },
           },
         },
         '/extensions/custom-theme': {
@@ -205,6 +212,7 @@ async function initialize() {
         initializeExtensionsFolder();
         initializeCustomTheme();
         initializeThemeCache();
+        initializeCodeSandboxTheme();
         initializeSettings();
         setVimExtensionEnabled(
           localStorage.getItem('settings.vimmode') === 'true'
