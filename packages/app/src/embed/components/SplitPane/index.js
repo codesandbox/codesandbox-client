@@ -24,7 +24,7 @@ export default function SplitView({
     5. introduce the resizer element with animation
   */
 
-  const windowWidth = window.innerWidth;
+  const windowWidth = window.outerWidth;
   // TODO: pick this from the sidebar or ref instead of hardcoding
   const sidebarWidth = 250;
 
@@ -113,6 +113,7 @@ export default function SplitView({
       isDragging={isDragging}
       size={size}
       maxSize={maxSize}
+      fullSize={size === maxSize}
       hasAttention={hasAttention}
       onMouseOver={onMouseOver}
       onFocus={onMouseOver}
