@@ -47,8 +47,7 @@
     "inputValidation.errorForeground": null,
     "inputValidation.errorBackground": null,
     "inputValidation.errorBorder": "#E1270E",
-    "tab.activeBackground": "#282A36",
-    "tab.activeForeground": "#F8F8F2",
+
     "editor.background": "#151515",
     "editor.foreground": "#ffffff",
     "editor.hoverHighlightBackground": "#333",
@@ -142,6 +141,7 @@
 
     "tab.activeBackground": "#151515",
     "tab.activeForeground": "#fff",
+    "tab.hoverForeground": "#fff",
     "tab.border": "#242424",
     "tab.activeBorder": "#6CC7F6",
     "tab.unfocusedActiveBorder": null,
@@ -198,7 +198,10 @@
     "list.warningForeground": "#FBCC43",
     "list.errorForeground": "#E1270E",
     "list.hoverForeground": null,
-    "list.focusForeground": null
+    "list.focusForeground": null,
+
+    "panel.background": "#151515",
+    "panel.border": "#242424"
   },
   "tokenColors": [
     {
