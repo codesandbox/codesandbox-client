@@ -7,9 +7,8 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
-import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
-
 import { NotificationStatus } from '@codesandbox/notifications';
+
 import { createOptimisticModule } from './utils/common';
 import getItems from './utils/items';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
@@ -28,6 +27,8 @@ export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
     state.user = await effects.api.getCurrentUser();
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
+    effects.analytics.identify('signed_in', true);
+    effects.analytics.setUserId(state.user.id);
     actions.internal.setStoredSettings();
     effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
@@ -65,8 +66,6 @@ export const setPatronPrice: Action = ({ state }) => {
 
 export const setSignedInCookie: Action = ({ state }) => {
   document.cookie = 'signedIn=true; Path=/;';
-  identify('signed_in', true);
-  setUserId(state.user.id);
 };
 
 export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
