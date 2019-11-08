@@ -3,7 +3,7 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import { FontPicker } from './FontPicker/index';
 import { Container } from './elements';
 
-export const AddFont = ({ addResource }) => {
+export const AddFont = ({ addResource, addedResource }) => {
   const [activeFontFamily, setActiveFontFamily] = useState('Roboto');
 
   const addFont = async () => {
@@ -13,6 +13,10 @@ export const AddFont = ({ addResource }) => {
       await addResource(link);
     }
   };
+
+  const fontAlreadyExists = addedResource.filter(font =>
+    font.includes(activeFontFamily)
+  );
 
   return (
     <>
@@ -24,8 +28,15 @@ export const AddFont = ({ addResource }) => {
         />
       </Container>
       <Container>
-        <Button disabled={!activeFontFamily} block small onClick={addFont}>
-          Add Typeface
+        <Button
+          disabled={!activeFontFamily || fontAlreadyExists.length}
+          block
+          small
+          onClick={addFont}
+        >
+          {fontAlreadyExists.length > 0
+            ? 'Typeface already added'
+            : 'Add Typeface'}
         </Button>
       </Container>
     </>
