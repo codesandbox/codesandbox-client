@@ -121,6 +121,7 @@ export const Container = styled.div`
 
   .Pane {
     transition: ${props => (props.isDragging ? null : 'width 200ms ease')};
+    overflow: hidden;
   }
 `;
 
