@@ -48,6 +48,7 @@ type State = {
   verticalMode: boolean,
   highlightedLines: Array<number>,
   tabs?: Array<number>,
+  theme: string,
 };
 
 const isSafari = () => {
@@ -90,6 +91,7 @@ export default class App extends React.PureComponent<
       runOnClick,
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
+      theme = 'dark',
     } = props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
@@ -111,6 +113,7 @@ export default class App extends React.PureComponent<
       forceRefresh,
       expandDevTools,
       tabs,
+      theme,
       runOnClick:
         runOnClick === false
           ? false
@@ -397,7 +400,7 @@ export default class App extends React.PureComponent<
 
   render() {
     const { sandbox } = this.state;
-    const theme = getTheme('dark');
+    const theme = getTheme(this.state.theme);
 
     return (
       <ThemeProvider theme={theme}>
