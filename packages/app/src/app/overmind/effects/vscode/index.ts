@@ -131,6 +131,9 @@ export class VSCodeEffect {
         initializeCustomTheme();
         initializeThemeCache();
         initializeSettings();
+        this.setVimExtensionEnabled(
+          localStorage.getItem('settings.vimmode') === 'true'
+        );
 
         return Promise.all([
           new FontFaceObserver('dm').load(),
