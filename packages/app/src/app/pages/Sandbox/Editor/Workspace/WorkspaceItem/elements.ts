@@ -5,7 +5,7 @@ export const ChildContainer = styled.div<{ disabled?: boolean }>`
   position: relative;
   margin: 0;
   padding-top: 0.5rem;
-  padding-bottom: 2rem;
+  padding-bottom: 1.75rem;
   height: 100%;
   border-top: 1px solid
     ${props => props.theme['sideBar.border'] || props.theme.background};
