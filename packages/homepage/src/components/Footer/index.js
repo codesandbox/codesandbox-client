@@ -14,31 +14,31 @@ const Footer = () => (
         <li>
           <P big>Product</P>
         </li>
-        <li>
+        {/* <li>
           <P small muted>
             <a href="">Online IDE</a>
           </P>
-        </li>
+        </li> */}
         <li>
           <P small muted>
-            <a href="">Embed</a>
+            <a href="/embeds">Embed</a>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="">CodeSandbox CI</a>
+            <a href="/ci">CodeSandbox CI</a>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="">Teams</a>
+            <a href="/teams">Teams</a>
           </P>
         </li>
-        <li>
+        {/* <li>
           <P small muted>
             <a href="">What’s New</a>
           </P>
-        </li>
+        </li> */}
       </ul>
       <ul>
         <li>
@@ -46,12 +46,12 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <a href="">Community Picks</a>
+            <a href="/explore">Community Picks</a>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="">Search</a>
+            <a href="/search">Search</a>
           </P>
         </li>
       </ul>
@@ -107,7 +107,7 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <a href="">Blog</a>
+            <a href="/blog">Blog</a>
           </P>
         </li>
       </ul>
