@@ -7,13 +7,6 @@ const _veroq: any[] = [
 
 global.veroq = _veroq;
 
-export const trackPageview = () => {
-  _veroq.push(['trackPageview']);
-};
-
-// Already start tracking the first pageview
-trackPageview();
-
 /**
  * For some reason vero doesn't call it, so we do it for them.
  */
@@ -25,6 +18,14 @@ function processArray() {
     global.__vero.processVeroArray(_veroq);
   }
 }
+
+export const trackPageview = () => {
+  _veroq.push(['trackPageview']);
+  processArray();
+};
+
+// Already start tracking the first pageview
+trackPageview();
 
 function loadScript() {
   return new Promise((resolve, reject) => {
