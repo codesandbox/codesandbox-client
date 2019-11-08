@@ -472,6 +472,7 @@ export const moduleCreated: AsyncAction<{
       module.id = updatedModule.id;
       module.shortid = updatedModule.shortid;
 
+      effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
       state.editor.currentModuleShortid = module.shortid;
 
       if (state.live.isCurrentEditor) {
