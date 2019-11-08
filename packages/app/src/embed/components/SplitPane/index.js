@@ -24,7 +24,7 @@ export default function SplitView({
     5. introduce the resizer element with animation
   */
 
-  const windowWidth = window.innerWidth;
+  const windowWidth = document.body.clientWidth;
   // TODO: pick this from the sidebar or ref instead of hardcoding
   const sidebarWidth = 250;
 
