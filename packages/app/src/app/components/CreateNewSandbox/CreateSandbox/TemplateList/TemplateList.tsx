@@ -47,18 +47,21 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
     return actions.modalClosed();
   };
 
-  const getTemplateInfoByIndex = (index: number) => {
-    let count = 0;
-    let i = 0;
-    while (index >= count && i < templateInfos.length) {
-      count += templateInfos[i].templates.length;
-      i++;
-    }
-    return {
-      templateInfo: templateInfos[i - 1],
-      offset: count - templateInfos[i - 1].templates.length,
-    };
-  };
+  const getTemplateInfoByIndex = React.useCallback(
+    (index: number) => {
+      let count = 0;
+      let i = 0;
+      while (index >= count && i < templateInfos.length) {
+        count += templateInfos[i].templates.length;
+        i++;
+      }
+      return {
+        templateInfo: templateInfos[i - 1],
+        offset: count - templateInfos[i - 1].templates.length,
+      };
+    },
+    [templateInfos]
+  );
 
   const getTemplateByIndex = (index: number) => {
     const { templateInfo, offset } = getTemplateInfoByIndex(index);
@@ -67,29 +70,62 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
     return templateInfo.templates[indexInTemplateInfo];
   };
 
+  const getTotalTemplateCount = React.useCallback(
+    () =>
+      templateInfos.reduce(
+        (total, templateInfo) => total + templateInfo.templates.length,
+        0
+      ),
+    [templateInfos]
+  );
+
   /**
    * Ensures that the next set is in bound of 0 and the max template count
    */
-  const safeSetFocusedTemplate = (setter: (newPos: number) => number) => {
-    const totalCount = templateInfos.reduce(
-      (total, templateInfo) => total + templateInfo.templates.length,
-      0
-    );
+  const safeSetFocusedTemplate = React.useCallback(
+    (setter: (newPos: number) => number) => {
+      const totalCount = getTotalTemplateCount();
 
-    return setFocusedTemplate(i =>
-      Math.max(0, Math.min(setter(i), totalCount - 1))
-    );
-  };
+      return setFocusedTemplate(i =>
+        Math.max(0, Math.min(setter(i), totalCount - 1))
+      );
+    },
+    [getTotalTemplateCount]
+  );
 
-  useKey('ArrowRight', evt => {
-    evt.preventDefault();
-    safeSetFocusedTemplate(i => i + 1);
-  });
+  React.useEffect(() => {
+    // Make sure our index stays in bounds with max templateInfos
 
-  useKey('ArrowLeft', evt => {
-    evt.preventDefault();
-    safeSetFocusedTemplate(i => i - 1);
-  });
+    const totalCount = getTotalTemplateCount();
+
+    if (focusedTemplateIndex >= totalCount || focusedTemplateIndex < 0) {
+      safeSetFocusedTemplate(i => i);
+    }
+
+    // We only want this check to happen if templateInfos changes. Only then we
+    // can get our index out of bounds
+    // eslint-disable-next-line
+  }, [templateInfos]);
+
+  useKey(
+    'ArrowRight',
+    evt => {
+      evt.preventDefault();
+      safeSetFocusedTemplate(i => i + 1);
+    },
+    {},
+    [safeSetFocusedTemplate]
+  );
+
+  useKey(
+    'ArrowLeft',
+    evt => {
+      evt.preventDefault();
+      safeSetFocusedTemplate(i => i - 1);
+    },
+    {},
+    [safeSetFocusedTemplate]
+  );
 
   useKey(
     'ArrowDown',
@@ -102,7 +138,7 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
       );
     },
     {},
-    [focusedTemplateIndex]
+    [focusedTemplateIndex, getTemplateInfoByIndex, safeSetFocusedTemplate]
   );
 
   useKey(
@@ -118,7 +154,7 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
       );
     },
     {},
-    [focusedTemplateIndex]
+    [focusedTemplateIndex, getTemplateInfoByIndex, safeSetFocusedTemplate]
   );
 
   /**

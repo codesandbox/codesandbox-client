@@ -19,7 +19,7 @@ export const FilteredTemplates = ({
         uniqBy(flatten(templateInfos.map(t => t.templates)), t => t.id),
         {
           shouldSort: true,
-          threshold: 0.5,
+          threshold: 0.3,
           distance: 10,
           keys: [
             { name: 'sandbox.title', weight: 0.5 },
