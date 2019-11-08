@@ -5,14 +5,14 @@ import Button from '../Button';
 import Logo from '../../assets/images/logo.svg';
 import SupportIcon from '../../assets/icons/Support';
 import StatusIcon from '../../assets/icons/Status';
-import LearnIcon from '../../assets/icons/Learn';
+// import LearnIcon from '../../assets/icons/Learn';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
-import IDEIcon from '../../assets/icons/Ide';
+// import IDEIcon from '../../assets/icons/Ide';
 import EmbedIcon from '../../assets/icons/Embed';
 import CIIcon from '../../assets/icons/Ci';
 import TeamsIcon from '../../assets/icons/Teams';
-import NewIcon from '../../assets/icons/New';
+// import NewIcon from '../../assets/icons/New';
 import {
   Header,
   Nav,
@@ -124,21 +124,23 @@ const Navigation = () => {
         openedNav={openedNav}
         name="resources"
         components={[
+          // {
+          //   Icon: () => (
+          //     <a>
+          //       <LearnIcon />
+          //     </a>
+          //   ),
+          //   Label: () => <a>Learn</a>,
+          // },
           {
             Icon: () => (
-              <a>
-                <LearnIcon />
-              </a>
-            ),
-            Label: () => <a>Learn</a>,
-          },
-          {
-            Icon: () => (
-              <a>
+              <a href="https://codesandbox.io/docs" title="Documentation">
                 <DocsIcon />
               </a>
             ),
-            Label: () => <a>Documentation</a>,
+            Label: () => (
+              <a href="https://codesandbox.io/docs">Documentation</a>
+            ),
           },
           {
             Icon: () => (
@@ -191,14 +193,14 @@ const Navigation = () => {
         openedNav={openedNav}
         name="features"
         components={[
-          {
-            Icon: () => (
-              <a>
-                <IDEIcon />
-              </a>
-            ),
-            Label: () => <a>IDE</a>,
-          },
+          // {
+          //   Icon: () => (
+          //     <a>
+          //       <IDEIcon />
+          //     </a>
+          //   ),
+          //   Label: () => <a>IDE</a>,
+          // },
           {
             Icon: () => (
               <Link to="/embeds">
@@ -223,14 +225,14 @@ const Navigation = () => {
             ),
             Label: () => <Link to="/team">Teams</Link>,
           },
-          {
-            Icon: () => (
-              <a>
-                <NewIcon />
-              </a>
-            ),
-            Label: () => <a>What’s New</a>,
-          },
+          // {
+          //   Icon: () => (
+          //     <a>
+          //       <NewIcon />
+          //     </a>
+          //   ),
+          //   Label: () => <a>What’s New</a>,
+          // },
         ]}
       />
     </>

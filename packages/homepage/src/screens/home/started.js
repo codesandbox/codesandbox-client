@@ -58,9 +58,9 @@ const Started = () => {
              width: 30rem;
              margin-top: 10rem;
              position: absolute;
-             height: 20rem;
+             min-height: 20rem;
              background: #242424
-           
+
            `}
                 tweet={{
                   name: 'Peggy Rayzis',

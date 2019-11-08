@@ -10,6 +10,7 @@ import Experiment from '../screens/home/experiment';
 import Teams from '../screens/home/teams';
 import Share from '../screens/home/share';
 import Join from '../screens/home/join';
+import Explore from '../screens/home/explore';
 
 const Homepage = () => (
   <Layout>
@@ -26,6 +27,9 @@ const Homepage = () => (
     </LoadInView>
     <LoadInView>
       <Started />
+    </LoadInView>
+    <LoadInView>
+      <Explore />
     </LoadInView>
     <LoadInView>
       <Experiment />
