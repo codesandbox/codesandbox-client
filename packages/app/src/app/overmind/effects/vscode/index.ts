@@ -30,6 +30,7 @@ import sandboxFsSync from './sandboxFsSync';
 import { getSelection } from './utils';
 import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
+import { VIM_EXTENSION_ID } from './constants';
 
 export type VsCodeOptions = {
   getCurrentSandbox: () => Sandbox;
@@ -173,8 +174,9 @@ export class VSCodeEffect {
   }
 
   public setVimExtensionEnabled(enabled: boolean) {
+    console.log('SET VIM MODE!!', enabled);
     if (enabled) {
-      this.enableExtension('vscodevim.vim');
+      this.enableExtension(VIM_EXTENSION_ID);
     } else {
       // Auto disable vim extension
       if (
@@ -188,7 +190,7 @@ export class VSCodeEffect {
         );
       }
 
-      this.disableExtension('vscodevim.vim');
+      this.disableExtension(VIM_EXTENSION_ID);
     }
   }
 
@@ -397,7 +399,8 @@ export class VSCodeEffect {
     initializeSettings();
 
     if (localStorage.getItem('settings.vimmode') === 'true') {
-      this.enableExtension('vscodevim.vim');
+      console.log('SET VIM MODE IN INITIALIZE!!');
+      this.enableExtension(VIM_EXTENSION_ID);
     }
 
     this.workbench.addWorkbenchActions();
