@@ -397,7 +397,7 @@ export default class App extends React.PureComponent<
 
   render() {
     const { sandbox } = this.state;
-    const theme = getTheme('variant');
+    const theme = getTheme('dark');
 
     return (
       <ThemeProvider theme={theme}>
