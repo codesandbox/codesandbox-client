@@ -18,7 +18,8 @@ export const ActionButton = styled(Button)`
   opacity: 0;
 `;
 
-export const Container = styled(Link)`
+export const Container = styled(Link)<{ focused?: boolean }>`
+  transition: 0.3s ease background-color;
   display: inline-flex;
   padding: 0.5rem;
   margin: 0;
@@ -27,9 +28,20 @@ export const Container = styled(Link)`
   background: none;
   cursor: pointer;
   text-decoration: none;
+  border-radius: 2px;
+
+  ${props =>
+    props.focused &&
+    css`
+      background-color: #242424;
+      outline: 0;
+    `}
 
   &:focus,
   &:hover {
+    background-color: #242424;
+    outline: 0;
+
     ${ActionButton} {
       opacity: 1;
     }

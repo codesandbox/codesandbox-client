@@ -45,3 +45,7 @@ wercker.yml
 
 @types/react-native
 packages/app/node_modules/styled-components
+
+# Prevent duplicate graphql. This doesn't seem to break anything
+node_modules/@divyenduz/ts-graphql-plugin/node_modules
+node_modules/graphql-config/node_modules

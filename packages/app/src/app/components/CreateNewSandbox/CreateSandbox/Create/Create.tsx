@@ -4,23 +4,33 @@ import { useOvermind } from 'app/overmind';
 import { LinkButton } from 'app/components/LinkButton';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { SandboxCard } from '../SandboxCard';
-import { Header } from '../elements';
-import { SubHeader, Grid, CenteredMessage } from './elements';
+import { Header, SubHeader, Grid } from '../elements';
+import { CenteredMessage } from './elements';
 import { all } from '../availableTemplates';
 
 import { PersonalTemplates } from './PersonalTemplates';
+import { SearchBox } from '../SearchBox';
 
 export const Create = () => {
   const { state, actions } = useOvermind();
+  const [filter, setFilter] = React.useState('');
 
   return (
     <>
       <Header>
         <span>Create Sandbox</span>
+
+        <div>
+          <SearchBox
+            onChange={evt => setFilter(evt.target.value)}
+            value={filter}
+            placeholder="Filter Templates"
+          />
+        </div>
       </Header>
       <Scrollable>
         {state.hasLogIn ? (
-          <PersonalTemplates />
+          <PersonalTemplates filter={filter} />
         ) : (
           <CenteredMessage>
             <div>
@@ -33,7 +43,7 @@ export const Create = () => {
         )}
 
         <SubHeader>Official Templates</SubHeader>
-        <Grid>
+        <Grid columnCount={2}>
           {all.map(template => (
             <SandboxCard
               key={template.name}

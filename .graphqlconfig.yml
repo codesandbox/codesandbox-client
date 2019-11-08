@@ -1,4 +1,8 @@
 projects:
-  packages:
-    schemaPath: schema.graphql
-    includes: ['packages/app/**/*.{gql,ts,graphql}', 'schema.graphql']
+  app:
+    schemaPath: packages/app/src/app/graphql/schema.graphql
+    extensions:
+      endpoints:
+        default: 'https://codesandbox.io/api/graphql'
+        staging: 'https://codesandbox.stream/api/graphql'
+        dev: 'http://localhost:4000/api/graphql'

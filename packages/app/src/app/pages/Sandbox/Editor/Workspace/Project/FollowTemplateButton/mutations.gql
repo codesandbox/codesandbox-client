@@ -1,4 +1,4 @@
-fragment templateFields on Template {
+fragment templateFieldsOld on Template {
   id
   bookmarked {
     isBookmarked
@@ -18,12 +18,12 @@ fragment templateFields on Template {
 
 mutation bookmarkTemplate($template: ID!, $team: ID) {
   template: bookmarkTemplate(templateId: $template, teamId: $team) {
-    ...templateFields
+    ...templateFieldsOld
   }
 }
 
 mutation unbookmarkTemplate($template: ID!, $team: ID) {
   template: unbookmarkTemplate(templateId: $template, teamId: $team) {
-    ...templateFields
+    ...templateFieldsOld
   }
 }

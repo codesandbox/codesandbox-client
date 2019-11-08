@@ -5,7 +5,7 @@ import { AlgoliaSandboxHit } from '@codesandbox/common/lib/types/algolia';
 import { TemplateType } from '@codesandbox/common/lib/templates';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { SandboxCard } from '../../SandboxCard';
-import { Grid } from '../../Create/elements';
+import { Grid } from '../../elements';
 
 type ResultsProps = InfiniteHitsProvided<AlgoliaSandboxHit> & {};
 
@@ -40,7 +40,7 @@ const Results = (props: ResultsProps) => {
 
   return (
     <>
-      <Grid>
+      <Grid columnCount={2}>
         {hits.map(hit => (
           <SandboxCard
             key={hit.objectID}

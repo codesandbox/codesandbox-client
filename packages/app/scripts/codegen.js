@@ -1,28 +1,9 @@
-const { execSync } = require('child_process');
-
 const isStaging = process.argv.includes('--staging');
 
 const URL = `https://codesandbox.${isStaging ? `stream` : `io`}/api/graphql`;
 
-const token = execSync(`codesandbox token`, {
-  env: {
-    ...process.env,
-    CODESANDBOX_NODE_ENV: isStaging ? 'development' : 'production',
-  },
-  cwd: process.cwd(),
-  shell: true,
-})
-  .toString()
-  .trim();
-
 module.exports = {
-  schema: {
-    [URL]: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  },
+  schema: URL,
   documents: [`./src/**/*.gql`, `./src/**/queries.ts`],
   overwrite: true,
   hooks: {

@@ -17,25 +17,6 @@ import {
   PathedSandboxesQuery,
 } from 'app/graphql/types';
 
-const TEMPLATE_SANDBOX_FRAGMENT = gql`
-  fragment Sandbox on Sandbox {
-    id
-    alias
-    title
-    description
-    insertedAt
-    updatedAt
-
-    author {
-      username
-    }
-
-    source {
-      template
-    }
-  }
-`;
-
 const TEMPLATE_FRAGMENT = gql`
   fragment Template on Template {
     id
@@ -43,31 +24,53 @@ const TEMPLATE_FRAGMENT = gql`
     iconUrl
     published
     sandbox {
-      ...Sandbox
+      id
+      alias
+      title
+      description
+      insertedAt
+      updatedAt
+
+      author {
+        username
+      }
+
+      source {
+        template
+      }
     }
   }
-
-  ${TEMPLATE_SANDBOX_FRAGMENT}
 `;
 
-export const LIST_BOOKMARKED_TEMPLATES = gql`
-  query ListBookmarkedTemplates {
+export const LIST_PERSONAL_TEMPLATES = gql`
+  query ListPersonalTemplates {
     me {
+      templates {
+        ...Template
+      }
+
+      recentlyUsedTemplates {
+        ...Template
+      }
+
+      bookmarkedTemplates {
+        ...Template
+      }
+
       teams {
         id
         name
         bookmarkedTemplates {
           ...Template
         }
-      }
-      bookmarkedTemplates {
-        ...Template
+        templates {
+          ...Template
+        }
       }
     }
   }
 
   ${TEMPLATE_FRAGMENT}
-  ${TEMPLATE_SANDBOX_FRAGMENT}
 `;
 
 export const LIST_OWNED_TEMPLATES = gql`
@@ -78,15 +81,15 @@ export const LIST_OWNED_TEMPLATES = gql`
       }
 
       teams {
+        name
         templates {
-          id
+          ...Template
         }
       }
     }
   }
 
   ${TEMPLATE_FRAGMENT}
-  ${TEMPLATE_SANDBOX_FRAGMENT}
 `;
 
 export const LIST_BOOKMARKED_TEMPLATES_QUERY = gql`
@@ -104,7 +107,7 @@ export const LIST_BOOKMARKED_TEMPLATES_QUERY = gql`
       }
     }
   }
-  ${TEMPLATE_SANDBOX_FRAGMENT}
+
   ${TEMPLATE_FRAGMENT}
 `;
 
@@ -122,7 +125,6 @@ export const UNMAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
       id
     }
   }
-  ${TEMPLATE_SANDBOX_FRAGMENT}
 `;
 
 export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {

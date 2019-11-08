@@ -75,3 +75,20 @@ export const Legend = styled.span`
   font-size: 16px;
   line-height: 19px;
 `;
+
+export const SubHeader = styled.h2`
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+  margin: 1rem 1.5rem;
+  margin-top: 24px;
+`;
+
+export const Grid = styled.div<{ columnCount: number }>`
+  display: grid;
+  margin: 0 1.5rem;
+  grid-template-columns: repeat(${props => props.columnCount}, 1fr);
+  gap: 1rem;
+`;

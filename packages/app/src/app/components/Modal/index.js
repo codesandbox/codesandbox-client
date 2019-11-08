@@ -88,6 +88,10 @@ class ModalComponent extends React.Component {
       ...props
     } = this.props;
 
+    if (!isOpen) {
+      return null;
+    }
+
     return (
       <>
         <GlobalStyles />

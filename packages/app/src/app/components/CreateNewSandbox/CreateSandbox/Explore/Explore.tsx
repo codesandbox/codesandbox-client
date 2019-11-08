@@ -1,28 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX, // eslint-disable-line
 } from '@codesandbox/common/lib/utils/config';
 import { InstantSearch, Configure, Stats } from 'react-instantsearch/dom';
-import { useKey } from 'react-use';
 import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
-import { Header } from '../elements';
-import { Categories, Form, InputWrapper, GlobalSearchStyles } from './elements';
+import { Header, SubHeader } from '../elements';
+import { Categories, Form, GlobalSearchStyles } from './elements';
 import { all } from '../availableTemplates';
 import { ExploreResults } from './Results';
-import { SubHeader } from '../Create/elements';
 import { ExploreSearch } from './Search';
 
 export const Explore = () => {
-  const searchRef = useRef<HTMLInputElement>(null);
   const [category, setCategory] = useState('');
-
-  useKey('/', () => {
-    if (searchRef.current) {
-      searchRef.current.focus();
-    }
-  });
 
   const updateCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value !== '') {
@@ -47,9 +38,8 @@ export const Explore = () => {
         <Header>
           <span>Explore Templates</span>
           <Form>
-            <InputWrapper>
-              <ExploreSearch ref={searchRef} />
-            </InputWrapper>
+            <ExploreSearch />
+
             <Categories onChange={updateCategory}>
               <option selected value="">
                 Categories

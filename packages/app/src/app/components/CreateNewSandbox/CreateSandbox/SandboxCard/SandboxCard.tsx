@@ -16,8 +16,8 @@ import {
   Row,
   Title,
   Environment,
-  Author,
-  ActionButton,
+  Author as Detail,
+  // ActionButton,
 } from './elements';
 
 interface ISandboxCardProps {
@@ -31,6 +31,8 @@ interface ISandboxCardProps {
   sandboxId: string;
   official?: boolean;
   mine?: boolean;
+  focused?: boolean;
+  detailText?: string;
 }
 
 export const SandboxCard: React.FC<ISandboxCardProps> = ({
@@ -44,6 +46,8 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
   mine,
   templateId,
   sandboxId,
+  focused,
+  detailText,
 }) => {
   const UserIcon: React.FunctionComponent =
     iconUrl && Icons[iconUrl] ? Icons[iconUrl] : getColorIcons(environment);
@@ -51,6 +55,16 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
   const parsedEnvironment = getEnvironment(environment);
 
   const { actions } = useOvermind();
+
+  const elRef = React.useRef<HTMLAnchorElement>();
+
+  React.useEffect(() => {
+    const inputHasFocus =
+      document.activeElement && document.activeElement.tagName === 'INPUT';
+    if (focused && elRef.current && !inputHasFocus) {
+      elRef.current.focus();
+    }
+  }, [focused]);
 
   const openSandbox = (openNewWindow = false) => {
     if (openNewWindow === true) {
@@ -62,16 +76,16 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
     return actions.modalClosed();
   };
 
-  const Open = () => (
-    <ActionButton
-      onClick={event => {
-        const cmd = event.ctrlKey || event.metaKey;
-        openSandbox(Boolean(cmd));
-      }}
-    >
-      Open
-    </ActionButton>
-  );
+  // const Open = () => (
+  //   <ActionButton
+  //     onClick={event => {
+  //       const cmd = event.ctrlKey || event.metaKey;
+  //       openSandbox(Boolean(cmd));
+  //     }}
+  //   >
+  //     Open
+  //   </ActionButton>
+  // );
 
   return (
     <>
@@ -81,6 +95,9 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
           const cmd = event.ctrlKey || event.metaKey;
           openSandbox(Boolean(cmd));
         }}
+        ref={elRef}
+        focused={focused}
+        tabIndex={focused ? '0' : '-1'}
       >
         <Icon color={color}>
           {official && OfficialIcon ? <OfficialIcon /> : <UserIcon />}
@@ -88,17 +105,10 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
         <Details>
           <Row>
             <Title>{title}</Title>
-            {mine ? (
-              <Open />
-            ) : (
-              // TODO: prevent spam of server with isSubscribed
-              // <ActionButtons id={templateId} sandboxID={sandboxId} />
-              <Open />
-            )}
           </Row>
           <Row>
             <Environment>{parsedEnvironment.name}</Environment>
-            <Author>By {owner}</Author>
+            {detailText && <Detail>{detailText}</Detail>}
           </Row>
         </Details>
       </Container>
