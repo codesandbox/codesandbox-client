@@ -42,7 +42,7 @@ self.addEventListener('message', async e => {
       process.env = data.data.env || {};
       process.env.HOME = '/home';
 
-      loader()(() => {
+      loader(true)(() => {
         ctx.require(
           ['vs/workbench/services/extensions/node/extensionHostProcess'],
           () => {

@@ -364,7 +364,7 @@ function initializeRequires() {
   });
 }
 
-export default function(requiredModule?: string[], isVSCode = true) {
+export default function(isVSCode: boolean, requiredModule?: string[]) {
   var METADATA = isVSCode ? VSCODE_METADATA : MONACO_METADATA;
   var IS_FILE_PROTOCOL = global.location.protocol === 'file:';
   var DIRNAME = null;

@@ -118,7 +118,7 @@ export class VSCodeEffect {
     this.initialized = Promise.all([
       new FontFaceObserver('dm').load(),
       new Promise(resolve => {
-        loadScript(['vs/editor/codesandbox.editor.main'])(resolve);
+        loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
       }),
       sandboxFsSync.initialize({
         getSandboxFs: options.getSandboxFs,
@@ -174,8 +174,6 @@ export class VSCodeEffect {
   }
 
   public setVimExtensionEnabled(enabled: boolean) {
-    // eslint-disable-next-line
-    console.log('SET VIM MODE!!', enabled);
     if (enabled) {
       this.enableExtension(VIM_EXTENSION_ID);
     } else {
@@ -400,8 +398,6 @@ export class VSCodeEffect {
     initializeSettings();
 
     if (localStorage.getItem('settings.vimmode') === 'true') {
-      // eslint-disable-next-line
-      console.log('SET VIM MODE IN INITIALIZE!!');
       this.enableExtension(VIM_EXTENSION_ID);
     }
 
