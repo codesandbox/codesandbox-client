@@ -13,7 +13,7 @@ export const MenuIconSVG = props => (
       fillRule="evenodd"
       clipRule="evenodd"
       d="M12.3105 1H0.124207V0H12.3105V1ZM12.3105 4.50072H0.124207V3.50072H12.3105V4.50072ZM0.124207 8.00141H12.3105V7.00141H0.124207V8.00141Z"
-      fill="white"
+      fill="currentcolor"
     />
   </svg>
 );
