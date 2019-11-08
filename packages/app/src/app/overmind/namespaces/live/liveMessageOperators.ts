@@ -130,17 +130,20 @@ export const onModuleSaved: Operator<
     moduleShortid: data.moduleShortid,
     savedCode: data.savedCode,
   });
+
+  effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
 });
 
 export const onModuleCreated: Operator<
   LiveMessage<{
     module: Module;
   }>
-> = mutate(({ state }, { _isOwnMessage, data }) => {
+> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
   state.editor.currentSandbox.modules.push(data.module);
+  effects.vscode.fs.writeFile(state.editor.modulesByPath, data.module);
 });
 
 export const onModuleMassCreated: Operator<
@@ -148,7 +151,7 @@ export const onModuleMassCreated: Operator<
     modules: Module[];
     directories: Directory[];
   }>
-> = mutate(({ state }, { _isOwnMessage, data }) => {
+> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
@@ -158,6 +161,10 @@ export const onModuleMassCreated: Operator<
   state.editor.currentSandbox.directories = state.editor.currentSandbox.directories.concat(
     data.directories
   );
+
+  state.editor.modulesByPath = effects.vscode.fs.create(
+    state.editor.currentSandbox
+  );
 });
 
 export const onModuleUpdated: Operator<
@@ -165,7 +172,7 @@ export const onModuleUpdated: Operator<
     moduleShortid: string;
     module: Module;
   }>
-> = mutate(({ state }, { _isOwnMessage, data }) => {
+> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
@@ -177,6 +184,11 @@ export const onModuleUpdated: Operator<
   Object.assign(
     state.editor.sandboxes[sandbox.id].modules[moduleIndex],
     data.module
+  );
+
+  effects.vscode.fs.writeFile(
+    state.editor.modulesByPath,
+    state.editor.sandboxes[sandbox.id].modules[moduleIndex]
   );
 });
 
@@ -198,12 +210,13 @@ export const onDirectoryCreated: Operator<
   LiveMessage<{
     module: Directory; // This is very weird?
   }>
-> = mutate(({ state }, { _isOwnMessage, data }) => {
+> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
   // Should this not be a directory?
   state.editor.currentSandbox.directories.push(data.module);
+  effects.vscode.fs.mkdir(state.editor.modulesByPath, data.module);
 });
 
 export const onDirectoryUpdated: Operator<
@@ -220,7 +233,10 @@ export const onDirectoryUpdated: Operator<
     directoryEntry => directoryEntry.shortid === data.directoryShortid
   );
 
-  state.editor.sandboxes[sandbox.id].directories[directoryIndex] = data.module;
+  Object.assign(
+    state.editor.sandboxes[sandbox.id].directories[directoryIndex],
+    data.module
+  );
 });
 
 export const onDirectoryDeleted: Operator<
@@ -277,14 +293,6 @@ export const onUserSelection: Operator<
         color: json(user.color),
       },
     ]);
-    /*
-    state.editor.pendingUserSelections.push({
-      userId: userSelectionLiveUserId,
-      name: user.username,
-      selection,
-      color: json(user.color),
-    });
-    */
   }
 });
 
@@ -335,9 +343,6 @@ export const onLiveMode: Operator<
     state.live.roomInfo.mode = data.mode;
   }
   actions.live.internal.clearUserSelections(null);
-  state.editor.pendingUserSelections = state.editor.pendingUserSelections.concat(
-    actions.live.internal.getSelectionsForModule(state.editor.currentModule)
-  );
 });
 
 export const onLiveChatEnabled: Operator<

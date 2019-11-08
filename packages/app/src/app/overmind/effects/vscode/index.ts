@@ -18,6 +18,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import * as childProcess from 'node-services/lib/child_process';
 
+import { VIM_EXTENSION_ID } from './constants';
 import {
   initializeCustomTheme,
   initializeExtensionsFolder,
@@ -25,7 +26,11 @@ import {
   initializeThemeCache,
 } from './initializers';
 import { Linter } from './Linter';
-import { ModelsHandler, OnFileChangeData } from './ModelsHandler';
+import {
+  ModelsHandler,
+  OnFileChangeData,
+  OnOperationAppliedData,
+} from './ModelsHandler';
 import sandboxFsSync from './sandboxFsSync';
 import { getSelection } from './utils';
 import loadScript from './vscode-script-loader';
@@ -36,6 +41,7 @@ export type VsCodeOptions = {
   getCurrentModule: () => Module;
   getSandboxFs: () => SandboxFs;
   onCodeChange: (data: OnFileChangeData) => void;
+  onOperationApplied: (data: OnOperationAppliedData) => void;
   onSelectionChange: (selection: any) => void;
   reaction: Reaction;
   // These two should be removed
@@ -117,7 +123,7 @@ export class VSCodeEffect {
     this.initialized = Promise.all([
       new FontFaceObserver('dm').load(),
       new Promise(resolve => {
-        loadScript(['vs/editor/codesandbox.editor.main'])(resolve);
+        loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
       }),
       sandboxFsSync.initialize({
         getSandboxFs: options.getSandboxFs,
@@ -174,7 +180,7 @@ export class VSCodeEffect {
 
   public setVimExtensionEnabled(enabled: boolean) {
     if (enabled) {
-      this.enableExtension('vscodevim.vim');
+      this.enableExtension(VIM_EXTENSION_ID);
     } else {
       // Auto disable vim extension
       if (
@@ -188,24 +194,23 @@ export class VSCodeEffect {
         );
       }
 
-      this.disableExtension('vscodevim.vim');
+      this.disableExtension(VIM_EXTENSION_ID);
     }
   }
 
-  public async applyOperations(operations: {
-    [x: string]: (string | number)[];
-  }) {
+  public async applyOperation(
+    moduleShortid: string,
+    operation: (string | number)[]
+  ) {
     this.isApplyingCode = true;
 
-    // The call to "apployOperations" should "try" and treat error as "moduleStateMismatch"
-    // this.props.onModuleStateMismatch();
-
     try {
-      await this.modelsHandler.applyOperations(operations);
+      await this.modelsHandler.applyOperation(moduleShortid, operation);
     } catch (error) {
       this.isApplyingCode = false;
       throw error;
     }
+    this.isApplyingCode = false;
   }
 
   public updateOptions(options: { readOnly: boolean }) {
@@ -244,7 +249,8 @@ export class VSCodeEffect {
       this.editorApi,
       this.monaco,
       sandbox,
-      this.onFileChange
+      this.onFileChange,
+      this.onOperationApplied
     );
 
     this.fs.sync();
@@ -397,7 +403,7 @@ export class VSCodeEffect {
     initializeSettings();
 
     if (localStorage.getItem('settings.vimmode') === 'true') {
-      this.enableExtension('vscodevim.vim');
+      this.enableExtension(VIM_EXTENSION_ID);
     }
 
     this.workbench.addWorkbenchActions();
@@ -605,13 +611,16 @@ export class VSCodeEffect {
     }
   };
 
-  private onFileChange = (data: OnFileChangeData) => {
-    if (this.isApplyingCode) {
-      return;
+  private onOperationApplied = (data: OnOperationAppliedData) => {
+    if (data.moduleShortid === this.options.getCurrentModule().shortid) {
+      this.lint(data.title, data.model);
     }
 
-    this.lint(data.title, data.model);
+    this.options.onOperationApplied(data);
+  };
 
+  private onFileChange = (data: OnFileChangeData) => {
+    this.lint(data.title, data.model);
     this.options.onCodeChange(data);
   };
 

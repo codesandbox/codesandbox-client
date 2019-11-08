@@ -5,7 +5,6 @@ import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import {
   DevToolsTabPosition,
   DiffTab,
-  EditorSelection,
   Module,
   ModuleCorrection,
   ModuleError,
@@ -38,10 +37,6 @@ type State = {
   error: string | null;
   isResizing: boolean;
   changedModuleShortids: string[];
-  pendingOperations: {
-    [id: string]: Array<string | number>;
-  };
-  pendingUserSelections: EditorSelection[];
   currentTabId: string;
   tabs: Tabs;
   errors: ModuleError[];
@@ -88,8 +83,6 @@ export const state: State = {
   errors: [],
   sessionFrozen: true,
   corrections: [],
-  pendingOperations: {},
-  pendingUserSelections: [],
   isInProjectView: false,
   forceRender: 0,
   initialPath: '/',

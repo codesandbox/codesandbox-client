@@ -24,14 +24,6 @@ export const clearUserSelections: Action<any> = (
             color: null,
           },
         ]);
-        /*
-        state.editor.pendingUserSelections.push({
-          userId,
-          selection: null,
-          name: null,
-          color: null,
-        });
-        */
       }
     }
   };
