@@ -343,9 +343,6 @@ export const onLiveMode: Operator<
     state.live.roomInfo.mode = data.mode;
   }
   actions.live.internal.clearUserSelections(null);
-  state.editor.pendingUserSelections = state.editor.pendingUserSelections.concat(
-    actions.live.internal.getSelectionsForModule(state.editor.currentModule)
-  );
 });
 
 export const onLiveChatEnabled: Operator<

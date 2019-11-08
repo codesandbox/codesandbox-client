@@ -64,6 +64,7 @@ export const onInitialize: OnInitialize = async (
     getCurrentSandbox: () => state.editor.currentSandbox,
     getCurrentModule: () => state.editor.currentModule,
     getSandboxFs: () => state.editor.modulesByPath,
+    onOperationApplied: actions.editor.onOperationApplied,
     onCodeChange: actions.editor.codeChanged,
     onSelectionChange: actions.live.onSelectionChanged,
     reaction: overmindInstance.reaction,

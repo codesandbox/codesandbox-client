@@ -1,7 +1,6 @@
 import { LiveMessage, LiveMessageEvent } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-import { TextOperation } from 'ot';
 import { filter, fork, pipe } from 'overmind';
 
 import eventToTransform from '../../utils/event-to-transform';
@@ -101,25 +100,9 @@ export const applyTransformation: Action<{
   operation: any;
   moduleShortid: string;
 }> = ({ state, effects }, { operation, moduleShortid }) => {
-  let pendingOperation;
-
-  const existingPendingOperation =
-    state.editor.pendingOperations[moduleShortid];
-
-  if (existingPendingOperation) {
-    pendingOperation = TextOperation.fromJSON(existingPendingOperation)
-      .compose(operation)
-      .toJSON();
-  } else {
-    pendingOperation = operation.toJSON();
-  }
-
-  state.editor.pendingOperations[moduleShortid] = pendingOperation;
-  effects.vscode.applyOperations(state.editor.pendingOperations);
-  // this.props.signals.live.onOperationApplied();
-  // Removed this action... but this whole object thing here does not seem to make sense
-  state.editor.pendingOperations = {};
   state.live.receivingCode = false;
+
+  effects.vscode.applyOperation(moduleShortid, operation);
 };
 
 export const onCodeReceived: Action = ({ state }) => {
@@ -150,17 +133,6 @@ export const onSelectionChanged: Action<any> = (
     }
   }
 };
-
-/*
-Not run anymore
-export const onSelectionDecorationsApplied: Action = ({ state }) => {
-  // We only clear it out if we actually need to. There is a reaction
-  // running that reacts to any change here
-  if (state.editor.pendingUserSelections.length) {
-    state.editor.pendingUserSelections = [];
-  }
-};
-*/
 
 export const onModeChanged: Action<{ mode: string }> = (
   { state, effects },

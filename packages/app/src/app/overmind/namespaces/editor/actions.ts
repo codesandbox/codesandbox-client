@@ -171,6 +171,24 @@ export const codeSaved: AsyncAction<{
   }
 );
 
+export const onOperationApplied: Action<{
+  moduleShortid: string;
+  code: string;
+}> = ({ state, actions }, { code, moduleShortid }) => {
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  actions.editor.internal.setModuleCode({
+    module,
+    code,
+  });
+};
+
 export const codeChanged: Action<{
   moduleShortid: string;
   code: string;
@@ -332,11 +350,6 @@ export const moduleSelected: Action<{
     actions.editor.internal.setCurrentModule(module);
 
     if (state.live.isLive) {
-      /*
-      state.editor.pendingUserSelections = actions.live.internal.getSelectionsForModule(
-        module
-      );
-      */
       effects.vscode.updateUserSelections(
         actions.live.internal.getSelectionsForModule(module)
       );

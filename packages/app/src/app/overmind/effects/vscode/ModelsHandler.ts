@@ -34,12 +34,22 @@ export type OnFileChangeData = {
   model?: any;
 };
 
+export type OnOperationAppliedData = {
+  moduleShortid: string;
+  title: string;
+  code: string;
+  model: any;
+};
+
 export type OnFileChangeCallback = (data: OnFileChangeData) => void;
+
+export type OnOperationAppliedCallback = (data: OnOperationAppliedData) => void;
 
 export class ModelsHandler {
   private modelAddedListener: { dispose: Function };
   private modelRemovedListener: { dispose: Function };
   private onChangeCallback: OnFileChangeCallback;
+  private onOperationAppliedCallback: OnOperationAppliedCallback;
   private sandbox: Sandbox;
   private editorApi;
   private monaco;
@@ -55,11 +65,18 @@ export class ModelsHandler {
     };
   } = {};
 
-  constructor(editorApi, monaco, sandbox: Sandbox, cb: OnFileChangeCallback) {
+  constructor(
+    editorApi,
+    monaco,
+    sandbox: Sandbox,
+    onChangeCallback: OnFileChangeCallback,
+    onOperationAppliedCallback: OnOperationAppliedCallback
+  ) {
     this.editorApi = editorApi;
     this.monaco = monaco;
     this.sandbox = sandbox;
-    this.onChangeCallback = cb;
+    this.onChangeCallback = onChangeCallback;
+    this.onOperationAppliedCallback = onOperationAppliedCallback;
     this.listenForChanges();
   }
 
@@ -77,80 +94,43 @@ export class ModelsHandler {
   public changeModule = async (module: Module) => {
     if (getCurrentModelPath(this.editorApi) !== module.path) {
       const file = await this.editorApi.openFile(module.path);
-
       return file.getModel();
     }
 
     return Promise.resolve(getModel(this.editorApi));
   };
 
-  public applyOperations(operations: { [moduleShortid: string]: any }) {
-    const operationsJSON = operations.toJSON ? operations.toJSON() : operations;
+  public async applyOperation(moduleShortid: string, operation: any) {
+    const module = this.sandbox.modules.find(m => m.shortid === moduleShortid);
 
-    return Promise.all(
-      Object.keys(operationsJSON).map(moduleShortid => {
-        const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
+    if (!module) {
+      return;
+    }
 
-        const foundModule = this.sandbox.modules.find(
-          m => m.shortid === moduleShortid
-        );
+    const modulePath = '/sandbox' + module.path;
 
-        if (!foundModule) {
-          return Promise.resolve();
-        }
-
-        const modulePath = '/sandbox' + foundModule.path;
-
-        const modelEditor = this.editorApi.editorService.editors.find(
-          editor => editor.resource && editor.resource.path === modulePath
-        );
-
-        // Apply the code to the current module code itself
-        const module = this.sandbox.modules.find(
-          m => m.shortid === moduleShortid
-        );
-
-        if (!modelEditor) {
-          if (!module) {
-            return Promise.resolve();
-          }
-
-          try {
-            const code = operation.apply(module.code || '');
-
-            // Should this run? We are applying changes from the outside,
-            // should not trigger a change?
-            this.onChangeCallback({
-              code,
-              moduleShortid: module.shortid,
-              title: module.title,
-            });
-          } catch (e) {
-            throw new Error('Module state mismatch');
-          }
-
-          return Promise.resolve();
-        }
-
-        return modelEditor.textModelReference.then(model => {
-          this.applyOperationToModel(
-            operation,
-            false,
-            model.object.textEditorModel
-          );
-
-          if (module) {
-            // Should this really run? We have applied from the outside
-            this.onChangeCallback({
-              code: model.object.textEditorModel.getValue(),
-              moduleShortid: module.shortid,
-              title: module.title,
-              model,
-            });
-          }
-        });
-      })
+    const modelEditor = this.editorApi.editorService.editors.find(
+      editor => editor.resource && editor.resource.path === modulePath
     );
+
+    let model;
+
+    if (modelEditor) {
+      model = (await modelEditor.textModelReference).object;
+    } else {
+      model = await this.editorApi.textFileService.models.loadOrCreate(
+        this.monaco.Uri.file(modulePath)
+      );
+    }
+
+    this.applyOperationToModel(operation, false, model.textEditorModel);
+
+    this.onOperationAppliedCallback({
+      code: model.textEditorModel.getValue(),
+      moduleShortid: module.shortid,
+      title: module.title,
+      model: model.textEditorModel,
+    });
   }
 
   public updateUserSelections(
