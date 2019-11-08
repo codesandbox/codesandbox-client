@@ -87,7 +87,8 @@ export default function SplitView({
   // on window.resize and sidebar toggle
 
   // #5. Intoduce resizer on first mouse over
-  const [hasAttention, setAttention] = React.useState(false);
+  // there is no mousover on mobile, so we introduce on load
+  const [hasAttention, setAttention] = React.useState(!!isMobile);
   const [hasBeenIntroduced, setHasBeenIntroduction] = React.useState(false);
   const ANIMATION_DURATION = 3000;
 
