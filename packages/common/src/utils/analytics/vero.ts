@@ -14,6 +14,18 @@ export const trackPageview = () => {
 // Already start tracking the first pageview
 trackPageview();
 
+/**
+ * For some reason vero doesn't call it, so we do it for them.
+ */
+function processArray() {
+  if (
+    typeof global.__vero !== 'undefined' &&
+    typeof global.__vero.processVeroArray === 'function'
+  ) {
+    global.__vero.processVeroArray(_veroq);
+  }
+}
+
 function loadScript() {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
@@ -22,6 +34,8 @@ function loadScript() {
     script.onerror = reject;
     script.src = '//d3qxef4rp70elm.cloudfront.net/m.js';
     document.body.appendChild(script);
+  }).then(() => {
+    processArray();
   });
 }
 
@@ -34,14 +48,13 @@ export const setAnonymousUserId = (userId: string) => {
 
   _hasSetAnonymousUserId = true;
 
-  _script.then(() => {
-    _veroq.push([
-      'user',
-      {
-        id: userId,
-      },
-    ]);
-  });
+  _veroq.push([
+    'user',
+    {
+      id: userId,
+    },
+  ]);
+  processArray();
 };
 
 export const setUserId = (userId: string) => {
@@ -49,20 +62,20 @@ export const setUserId = (userId: string) => {
     _script = loadScript();
   }
 
-  _script.then(() => {
-    if (_hasSetAnonymousUserId) {
-      _veroq.push([
-        'user',
-        {
-          id: userId,
-        },
-      ]);
-    } else {
-      _veroq.push(['reidentify', userId]);
-    }
-  });
+  if (_hasSetAnonymousUserId) {
+    _veroq.push([
+      'user',
+      {
+        id: userId,
+      },
+    ]);
+  } else {
+    _veroq.push(['reidentify', userId]);
+  }
+  processArray();
 };
 
 export const track = (eventName: string, data: unknown) => {
   _veroq.push(['track', eventName, data]);
+  processArray();
 };
