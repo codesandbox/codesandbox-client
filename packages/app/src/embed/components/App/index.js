@@ -18,7 +18,7 @@ import Sidebar from '../Sidebar';
 import { Container, Fullscreen, Moving } from './elements';
 import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
 
-import theme from '../../theme';
+import { getTheme } from '../../theme';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently
 // that makes it think we havecore-js/es6/map available in embed, but we don't.
@@ -397,6 +397,7 @@ export default class App extends React.PureComponent<
 
   render() {
     const { sandbox } = this.state;
+    const theme = getTheme('variant');
 
     return (
       <ThemeProvider theme={theme}>

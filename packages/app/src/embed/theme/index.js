@@ -17,4 +17,6 @@ const theme = {
   ...tokens,
 };
 
-export default theme;
+export function getTheme() {
+  return theme;
+}
