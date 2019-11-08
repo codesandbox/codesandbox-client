@@ -6,7 +6,6 @@ import {
   ModuleTab,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
-import { getHashedUserId } from '@codesandbox/common/lib/utils/analytics';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
@@ -127,8 +126,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   effects.vscode.openModule(state.editor.currentModule);
 
   state.editor.isLoading = false;
-
-  effects.chameleon.loadTour(state.user && getHashedUserId(state.user.id));
 });
 
 export const contentMounted: Action = ({ state, effects }) => {

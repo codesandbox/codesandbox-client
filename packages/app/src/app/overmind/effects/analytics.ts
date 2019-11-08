@@ -1,5 +1,6 @@
 import track, {
   identify,
+  setAnonymousId,
   setUserId,
 } from '@codesandbox/common/lib/utils/analytics';
 
@@ -16,6 +17,7 @@ export default (() => {
       track(event, data);
     },
     identify,
+    setAnonymousId,
     setUserId,
   };
 })();

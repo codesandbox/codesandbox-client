@@ -120,15 +120,25 @@ export class VSCodeEffect {
     // It will only load the editor once. We should probably call this
     const container = this.elements.editor;
 
-    this.initialized = Promise.all([
-      new FontFaceObserver('dm').load(),
-      new Promise(resolve => {
-        loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
-      }),
-      sandboxFsSync.initialize({
+    this.initialized = sandboxFsSync
+      .initialize({
         getSandboxFs: options.getSandboxFs,
-      }),
-    ]).then(() => this.loadEditor(window.monaco, container));
+      })
+      .then(() => {
+        // We want to initialize before VSCode, but after browserFS is configured
+        // For first-timers initialize a theme in the cache so it doesn't jump colors
+        initializeExtensionsFolder();
+        initializeCustomTheme();
+        initializeThemeCache();
+        initializeSettings();
+
+        return Promise.all([
+          new FontFaceObserver('dm').load(),
+          new Promise(resolve => {
+            loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
+          }),
+        ]).then(() => this.loadEditor(window.monaco, container));
+      });
 
     return this.initialized;
   }
@@ -395,12 +405,6 @@ export class VSCodeEffect {
   private async loadEditor(monaco: any, container: HTMLElement) {
     this.monaco = monaco;
     this.workbench = new Workbench(monaco, this.controller, this.runCommand);
-
-    // For first-timers initialize a theme in the cache so it doesn't jump colors
-    initializeExtensionsFolder();
-    initializeCustomTheme();
-    initializeThemeCache();
-    initializeSettings();
 
     if (localStorage.getItem('settings.vimmode') === 'true') {
       this.enableExtension(VIM_EXTENSION_ID);
