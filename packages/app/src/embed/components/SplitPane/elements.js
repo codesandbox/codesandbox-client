@@ -48,14 +48,14 @@ const introduction = {
 };
 
 const notIntroducedYetStyles = css`
-  margin-left: ${props => (props.size === props.maxSize ? 4 : -12)}px;
+  margin-left: ${props => (props.fullSize ? 4 : -12)}px;
   background: #fff;
   opacity: 1;
 `;
 
 const introductionAnimation = css`
   animation: ${props =>
-        props.size === props.maxSize
+        props.fullSize
           ? introduction.slideFromRight
           : introduction.slideFromLeft}
       1s,
@@ -90,7 +90,7 @@ export const Container = styled.div`
     height: ${props => (props.isDragging ? 32 : 40)}px;
     top: ${props =>
       props.isDragging ? `calc(50% - 16px)` : `calc(50% - 20px)`};
-    margin-left: ${props => (props.size === props.maxSize ? -12 : 4)}px;
+    margin-left: ${props => (props.fullSize ? -12 : 4)}px;
     opacity: ${props => (props.isDragging ? 0.6 : 0.4)};
 
     /* intro animations */

@@ -113,6 +113,7 @@ export default function SplitView({
       isDragging={isDragging}
       size={size}
       maxSize={maxSize}
+      fullSize={size === maxSize}
       hasAttention={hasAttention}
       onMouseOver={onMouseOver}
       onFocus={onMouseOver}
