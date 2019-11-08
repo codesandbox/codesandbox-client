@@ -174,6 +174,7 @@ export class VSCodeEffect {
   }
 
   public setVimExtensionEnabled(enabled: boolean) {
+    // eslint-disable-next-line
     console.log('SET VIM MODE!!', enabled);
     if (enabled) {
       this.enableExtension(VIM_EXTENSION_ID);
@@ -399,6 +400,7 @@ export class VSCodeEffect {
     initializeSettings();
 
     if (localStorage.getItem('settings.vimmode') === 'true') {
+      // eslint-disable-next-line
       console.log('SET VIM MODE IN INITIALIZE!!');
       this.enableExtension(VIM_EXTENSION_ID);
     }
