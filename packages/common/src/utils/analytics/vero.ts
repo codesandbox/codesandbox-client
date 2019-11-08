@@ -27,7 +27,7 @@ function loadScript() {
 
 let _hasSetAnonymousUserId = false;
 
-export const setAnonymousUserId = userId => {
+export const setAnonymousUserId = (userId: string) => {
   if (!_script) {
     _script = loadScript();
   }
@@ -44,7 +44,7 @@ export const setAnonymousUserId = userId => {
   });
 };
 
-export const setUserId = userId => {
+export const setUserId = (userId: string) => {
   if (!_script) {
     _script = loadScript();
   }

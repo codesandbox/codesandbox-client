@@ -64,6 +64,7 @@ export async function setUserId(userId: string) {
     amplitude.setUserId(hashedId);
     sentry.setUserId(hashedId);
     chameleon.setUserId(hashedId);
+    vero.setUserId(hashedId);
   }
 }
 
