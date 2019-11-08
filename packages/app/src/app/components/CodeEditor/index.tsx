@@ -171,7 +171,7 @@ export class CodeEditor extends React.PureComponent<
         : ((Monaco as unknown) as React.ComponentClass<Props>);
 
     if (settings.experimentVSCode) {
-      Editor = VSCode as React.ComponentClass<Props>;
+      Editor = (VSCode as unknown) as React.ComponentClass<Props>;
     }
 
     return (
