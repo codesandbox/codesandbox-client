@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React from 'react';
 
 import styled from 'styled-components';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
@@ -21,7 +21,7 @@ const Section = styled.section`
   display: grid;
   grid-template-columns: repeat(3, 300px);
   grid-gap: 2rem;
-  margin-top: 6.5rem;
+  margin-top: 12.5rem;
   position: relative;
   z-index: 2;
   margin-left: 200px;
@@ -32,18 +32,8 @@ const White = styled.span`
 `;
 
 const Share = () => {
-  const [elementTop, setElementTop] = useState(0);
-  const ref = useRef(null);
   const { scrollY } = useViewportScroll();
-
-  const y = useTransform(scrollY, [elementTop, elementTop + 1], [0, -0.1], {
-    clamp: false,
-  });
-
-  useLayoutEffect(() => {
-    const element = ref.current;
-    setElementTop(element.offsetTop);
-  }, [ref]);
+  const y = useTransform(scrollY, [0, -100], [0, 5], { clamp: false });
 
   return (
     <>
@@ -97,7 +87,7 @@ const Share = () => {
       </Grid>
 
       <motion.div style={{ y }}>
-        <Section ref={ref}>
+        <Section>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

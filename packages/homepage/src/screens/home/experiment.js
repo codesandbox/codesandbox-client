@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React from 'react';
 
 import styled from 'styled-components';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
@@ -21,7 +21,7 @@ const Section = styled.section`
   display: grid;
   grid-template-columns: repeat(3, 300px);
   grid-gap: 2rem;
-  margin-top: 6.5rem;
+  margin-top: 12.5rem;
   position: relative;
   z-index: 2;
 `;
@@ -30,18 +30,19 @@ const White = styled.span`
   color: white;
 `;
 
-const Experiment = ({ src, ...style }) => {
-  const [elementTop, setElementTop] = useState(0);
-  const ref = useRef(null);
-  const { scrollY } = useViewportScroll();
-  const y = useTransform(scrollY, [elementTop, elementTop + 1], [0, -0.1], {
-    clamp: false,
-  });
+const tweetStyle = `
+  right: 1rem;
+  left: auto;
+  width: 25rem;
+  margin-top: 1rem;
+  position: absolute;
+  height: 22rem;
+  background: #151515
+`;
 
-  useLayoutEffect(() => {
-    const element = ref.current;
-    setElementTop(element.offsetTop);
-  }, [ref]);
+const Experiment = ({ src, ...style }) => {
+  const { scrollY } = useViewportScroll();
+  const y = useTransform(scrollY, [0, -100], [0, 5], { clamp: false });
 
   return (
     <>
@@ -69,15 +70,7 @@ const Experiment = ({ src, ...style }) => {
         </div>
 
         <Tweet
-          style={`
-          right: 1rem;
-          left: auto;
-          width: 25rem;
-          margin-top: 1rem;
-          position: absolute;
-          height: 22rem;
-           background: #151515
-        `}
+          style={tweetStyle}
           tweet={{
             username: 'gethackteam',
             job: 'Frontend Developer Hackteam',
@@ -91,7 +84,7 @@ const Experiment = ({ src, ...style }) => {
       </Grid>
 
       <motion.div style={{ ...style, y }}>
-        <Section ref={ref}>
+        <Section>
           <img src={frameworks} alt="Frameworks" />
           <img src={npm} alt="NPM Dependencies" />
           <img src={things} alt="Experiment" />

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React from 'react';
 
 import styled from 'styled-components';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
@@ -39,22 +39,12 @@ const Text = styled.h3`
 `;
 
 const Join = ({ src, ...style }) => {
-  const [elementTop, setElementTop] = useState(0);
-  const ref = useRef(null);
   const { scrollY } = useViewportScroll();
-
-  const y = useTransform(scrollY, [elementTop, elementTop + 1], [0, -0.1], {
-    clamp: false,
-  });
-
-  useLayoutEffect(() => {
-    const element = ref.current;
-    setElementTop(element.offsetTop);
-  }, [ref]);
+  const y = useTransform(scrollY, [0, 20], [0, 5], { clamp: true });
 
   return (
     <>
-      <JoinWrapper ref={ref}>
+      <JoinWrapper>
         <div>
           <Text>Join millions of people prototyping what’s next</Text>
           <Button href="/s">Create Sandbox, it’s free</Button>
