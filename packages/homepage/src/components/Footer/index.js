@@ -86,7 +86,7 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <a href="">Open Source</a>
+            <a href="/open-source">Open Source</a>
           </P>
         </li>
         <li>
