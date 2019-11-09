@@ -91,7 +91,7 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <a href="">DevRel</a>
+            <a href="/devrel">DevRel</a>
           </P>
         </li>
       </ul>
