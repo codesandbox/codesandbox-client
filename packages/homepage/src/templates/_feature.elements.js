@@ -19,13 +19,21 @@ export const Title = styled.h1`
 `;
 
 export const Description = styled.h2`
-  ${({ theme }) => css`
+  ${({ theme, seoText }) => css`
     font-style: normal;
     font-weight: 500;
     font-size: 1rem;
     line-height: 19px;
 
     color: ${theme.homepage.white};
+
+    ${seoText &&
+      css`
+        margin-top: 1rem;
+        font-size: 32px;
+        line-height: 24px;
+        color: ${props => props.theme.homepage.muted};
+      `}
   `};
 `;
 
@@ -53,6 +61,14 @@ export const Banner = styled.div`
       filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.4));
     }
   `};
+`;
+
+export const SeoText = styled.p`
+  color: ${props => props.theme.homepage.muted};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 23px;
+  line-height: 37px;
 `;
 
 export const ContentBlock = styled.div`

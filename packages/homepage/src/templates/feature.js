@@ -7,6 +7,7 @@ import PageContainer from '../components/PageContainer';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import {
+  SeoText,
   ContentBlock,
   Title,
   Banner,
@@ -22,6 +23,7 @@ export default ({
       frontmatter: {
         columns,
         bgColor,
+        SEOText,
         description,
         coverImage,
         tweetText,
@@ -83,7 +85,8 @@ export default ({
       <TitleAndMetaTags title={`${title} - CodeSandbox`} />
       <PageContainer width={1086}>
         <Title textCenter={textCenter}>{title}</Title>
-        <Description>{description}</Description>
+        <Description seoText={SEOText}>{description}</Description>
+        {SEOText ? <SeoText>{SEOText}</SeoText> : null}
         <Banner
           coverSmaller={coverSmaller}
           color={bgColor}
@@ -117,6 +120,7 @@ export const pageQuery = graphql`
       frontmatter {
         columns
         bgColor
+        SEOText
         description
         tweetText
         tweetJob
