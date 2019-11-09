@@ -59,6 +59,7 @@ export const Banner = styled.div`
     img {
       display: block;
       filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.4));
+      maxw-width: 60%;
     }
   `};
 `;
@@ -75,7 +76,7 @@ export const ContentBlock = styled.div`
   ${({ theme, columns }) => css`
     display: grid;
     grid-template-columns: repeat(${columns}, 1fr);
-    grid-gap: 5rem;
+    grid-gap: 3rem 5rem;
     font-size: 1rem;
     line-height: 23px;
     color: ${theme.homepage.muted};
@@ -86,7 +87,7 @@ export const ContentBlock = styled.div`
       font-size: 23px;
       line-height: 27px;
       color: ${theme.homepage.white};
-      min-height: 54px;
+      /* min-height: 54px; */
     }
   `};
 `;
