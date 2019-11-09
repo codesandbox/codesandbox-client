@@ -7,7 +7,9 @@ import { useOvermind } from 'app/overmind';
 type Props = {
   small?: boolean;
 };
-export const VercelIntegration: FunctionComponent<Props> = ({ small }) => {
+export const VercelIntegration: FunctionComponent<Props> = ({
+  small = false,
+}) => {
   const {
     actions: { signInVercelClicked, signOutVercelClicked },
     state: { user, isLoadingVercel },
