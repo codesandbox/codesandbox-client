@@ -83,9 +83,10 @@ export const selectSandboxClicked: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const newSandboxShowcaseSelected: AsyncAction<{
-  id: string;
-}> = async ({ state, effects }, { id }) => {
+export const newSandboxShowcaseSelected: AsyncAction<string> = async (
+  { state, effects },
+  id
+) => {
   state.profile.showSelectSandboxModal = false;
   state.profile.profiles[
     state.profile.currentProfileId
