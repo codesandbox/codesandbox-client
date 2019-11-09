@@ -71,12 +71,12 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <a href="">Hiring</a>
+            <a href="/hiring">Hiring</a>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="">Onboarding</a>
+            <a href="/onboarding">Onboarding</a>
           </P>
         </li>
         <li>

@@ -8,7 +8,7 @@ SEOText:
   solutions, and work with code.
 slug: hiring
 tweetText: CodeSandbox is truly amazing
-tweetJob: Software Engineer Educator
+tweetJob: Head of Developer Experience, Netlify
 tweetName: Sarah Drasner
 tweetHandle: sarah_edo
 bgColor: F69935
