@@ -163,11 +163,15 @@ export default function initialize() {
               const reactDOMModule = manager.resolveModule('react-dom', '');
               const reactDOM = manager.evaluateModule(reactDOMModule);
 
-              reactDOM.unmountComponentAtNode(document.body);
+              if (!document.body._reactHasBeenPassedToCreateRootDEV) {
+                reactDOM.unmountComponentAtNode(document.body);
+              }
 
               for (let i = 0; i < children.length; i += 1) {
                 if (children[i].tagName === 'DIV') {
-                  reactDOM.unmountComponentAtNode(children[i]);
+                  if (!children[i]._reactHasBeenPassedToCreateRootDEV) {
+                    reactDOM.unmountComponentAtNode(children[i]);
+                  }
                 }
               }
             }
