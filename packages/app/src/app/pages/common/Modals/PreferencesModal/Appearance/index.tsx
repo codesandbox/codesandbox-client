@@ -1,40 +1,35 @@
-import { PreferenceText } from '@codesandbox/common/lib/components/Preference/PreferenceText';
-import themes from '@codesandbox/common/lib/themes';
+import React, { FunctionComponent } from 'react';
+
 import { useOvermind } from 'app/overmind';
-import React from 'react';
 
 import {
-  PaddedPreference,
-  PreferenceContainer,
-  Rule,
-  SubContainer,
-  SubDescription,
   Title,
+  SubContainer,
+  PreferenceContainer,
+  PaddedPreference,
+  SubDescription,
+  Rule,
 } from '../elements';
 import VSCodePlaceholder from '../VSCodePlaceholder';
-import { BigTitle } from './elements';
 
-export const Appearance: React.FC = () => {
+import { EditorTheme } from './EditorTheme';
+import { PreferenceText } from './elements';
+
+export const Appearance: FunctionComponent = () => {
   const {
-    state: {
-      preferences: { settings },
-    },
     actions: {
       preferences: { settingChanged },
     },
+    state: {
+      preferences: { settings },
+    },
   } = useOvermind();
 
-  const bindValue = (name: string, setUndefined?: boolean) => ({
-    value: setUndefined ? settings[name] || undefined : settings[name],
-    setValue: value =>
-      settingChanged({
-        name,
-        value,
-      }),
+  const bindValue = (name: string) => ({
+    setValue: value => settingChanged({ name, value }),
+    value: settings[name],
   });
-
   const fontOptions = ['Menlo', 'Dank Mono', 'Source Code Pro'];
-  const themeOptions = themes.map(t => t.name);
 
   return (
     <div>
@@ -48,14 +43,17 @@ export const Appearance: React.FC = () => {
               type="number"
               {...bindValue('fontSize')}
             />
+
             <Rule />
+
             <PaddedPreference
-              title="Font Family"
-              type="dropdown"
               options={['Custom'].concat(fontOptions)}
               placeholder="Source Code Pro"
+              title="Font Family"
+              type="dropdown"
               {...bindValue('fontFamily')}
             />
+
             <SubDescription>
               We use{' '}
               <a
@@ -67,20 +65,23 @@ export const Appearance: React.FC = () => {
               </a>{' '}
               as default font, you can also use locally installed fonts
             </SubDescription>
+
             {!fontOptions.includes(settings.fontFamily) && (
               <PreferenceText
-                style={{ marginTop: '1rem' }}
-                placeholder="Enter your custom font"
                 block
+                placeholder="Enter your custom font"
                 {...bindValue('fontFamily')}
               />
             )}
+
             <Rule />
+
             <PaddedPreference
               title="Font Ligatures"
               type="boolean"
               {...bindValue('enableLigatures')}
             />
+
             <SubDescription>
               Whether we should enable{' '}
               <a
@@ -92,93 +93,32 @@ export const Appearance: React.FC = () => {
               </a>
               .
             </SubDescription>
+
             <Rule />
+
             <PaddedPreference
-              title="Line Height"
-              type="number"
               placeholder="1.15"
               step="0.05"
+              title="Line Height"
+              type="number"
               {...bindValue('lineHeight')}
             />
+
             <Rule />
+
             <PaddedPreference
               title="Zen Mode"
               type="boolean"
               {...bindValue('zenMode')}
             />
+
             <SubDescription>
               Hide all distracting elements, perfect for lessons and
               presentations.
             </SubDescription>
           </VSCodePlaceholder>
 
-          {settings.experimentVSCode ? (
-            <div>
-              <BigTitle>Editor Theme</BigTitle>
-              <SubDescription>
-                You can select your editor theme by selecting File {'->'}{' '}
-                Preferences {'->'} Color Theme in the menu bar.
-              </SubDescription>
-              <Rule />
-
-              <SubDescription style={{ marginBottom: '1rem' }}>
-                Custom VSCode Theme
-              </SubDescription>
-
-              <SubDescription style={{ marginBottom: '1rem' }}>
-                After changing this setting you
-                {"'"}
-                ll have to reload the browser and select {'"'}
-                Custom
-                {'"'} as your color theme.
-              </SubDescription>
-
-              <PreferenceText
-                isTextArea
-                style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
-                block
-                rows={7}
-                placeholder={`You can use your own theme from VSCode directly:
-1. Open VSCode
-2. Press (CMD or CTRL) + SHIFT + P
-3. Enter: '> Developer: Generate Color Scheme From Current Settings'
-4. Copy the contents and paste them here!`}
-                {...bindValue('manualCustomVSCodeTheme', true)}
-              />
-            </div>
-          ) : (
-            <div>
-              <BigTitle>Editor Theme</BigTitle>
-
-              <PaddedPreference
-                title="VSCode Theme"
-                type="dropdown"
-                options={themeOptions}
-                {...bindValue('editorTheme')}
-              />
-              <SubDescription>
-                This will be overwritten if you enter a custom theme.
-              </SubDescription>
-              <Rule />
-
-              <SubDescription style={{ marginBottom: '1rem' }}>
-                Custom VSCode Theme
-              </SubDescription>
-
-              <PreferenceText
-                isTextArea
-                style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
-                block
-                rows={7}
-                placeholder={`You can use your own theme from VSCode directly:
-1. Open VSCode
-2. Press (CMD or CTRL) + SHIFT + P
-3. Enter: '> Developer: Generate Color Scheme From Current Settings'
-4. Copy the contents and paste them here!`}
-                {...bindValue('customVSCodeTheme', true)}
-              />
-            </div>
-          )}
+          <EditorTheme />
         </PreferenceContainer>
       </SubContainer>
     </div>
