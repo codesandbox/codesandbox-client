@@ -6,6 +6,7 @@ import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { EMBED_LIGHT_THEME } from '@codesandbox/common/lib/utils/feature-flags';
 import Title from './Title';
 
 import {
@@ -163,13 +164,15 @@ class ShareView extends React.Component {
                   value={view}
                   setValue={this.setView}
                 />
-                <PaddedPreference
-                  title="Theme"
-                  type="dropdown"
-                  options={THEME_OPTIONS}
-                  value={theme}
-                  setValue={this.setTheme}
-                />
+                {EMBED_LIGHT_THEME && (
+                  <PaddedPreference
+                    title="Theme"
+                    type="dropdown"
+                    options={THEME_OPTIONS}
+                    value={theme}
+                    setValue={this.setTheme}
+                  />
+                )}
                 <PaddedPreference
                   title="Auto resize"
                   type="boolean"
