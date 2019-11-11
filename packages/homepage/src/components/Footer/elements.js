@@ -10,10 +10,10 @@ export const FooterWrapper = styled.footer`
 
 export const Nav = styled.section`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   grid-gap: 3rem;
   max-width: 80%;
-  width: 1086px;
+  width: 1200px;
   margin: auto;
   margin-bottom: 4.5rem;
 
