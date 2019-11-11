@@ -263,7 +263,7 @@
       "name": "String Quoted",
       "scope": ["string.quoted", "variable.other.readwrite.js"],
       "settings": {
-        "foreground": "#ecc48d"
+        "foreground": "#A8A5F3"
       }
     },
     {
@@ -736,7 +736,7 @@
       ],
       "settings": {
         "foreground": "#6CC7F6",
-        "fontStyle": "italic"
+        "fontStyle": ""
       }
     },
     {
@@ -830,7 +830,7 @@
       "name": "Punctuation Section Embedded",
       "scope": "punctuation.section.embedded",
       "settings": {
-        "foreground": "#d3423e"
+        "foreground": "#ffffff"
       }
     },
     {
@@ -1242,7 +1242,7 @@
       "name": "Ruby Class",
       "scope": ["entity.name.type.class.ruby"],
       "settings": {
-        "foreground": "#ecc48d"
+        "foreground": "#A8A5F3"
       }
     },
     {
