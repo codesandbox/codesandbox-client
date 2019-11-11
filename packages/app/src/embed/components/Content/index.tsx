@@ -501,6 +501,7 @@ export default class Content extends React.PureComponent<Props, State> {
           openInNewWindow={this.openInNewWindow}
           toggleLike={toggleLike}
           initialEditorSize={editorSize}
+          hideDevTools={hideDevTools}
         >
           <>
             <Tabs>
