@@ -20,12 +20,12 @@ export default class HMR {
     }
   }
 
-  setAcceptCallback(callback?: Function) {
+  setAcceptCallback(callback?: () => void) {
     this.callback = callback;
     this.setSelfAccepted(false);
   }
 
-  setDisposeHandler(callback: Function) {
+  setDisposeHandler(callback: () => void) {
     this.disposeHandler = callback;
   }
 

@@ -411,7 +411,9 @@ export type PackageJSON = {
   devDependencies?: {
     [dep: string]: string;
   };
-  jest?: object;
+  jest?: {
+    setupFilesAfterEnv?: string[];
+  };
   resolutions?: { [dependency: string]: string };
 };
 

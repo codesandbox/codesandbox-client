@@ -141,9 +141,9 @@ type Compilation = {
   id: string;
   exports: any;
   hot: {
-    accept: Function | ((arg: string | string[], cb: Function) => void);
+    accept: (() => void) | ((arg: string | string[], cb: () => void) => void);
     decline: (path: string | Array<string>) => void;
-    dispose: (cb: Function) => void;
+    dispose: (cb: () => void) => void;
     data: Object;
     status: () => HMRStatus;
     addStatusHandler: (cb: (status: HMRStatus) => void) => void;
@@ -881,7 +881,7 @@ export default class TranspiledModule {
           }
           manager.enableWebpackHMR();
         },
-        dispose: (cb: Function) => {
+        dispose: (cb: () => void) => {
           this.hmrConfig = this.hmrConfig || new HMR();
 
           this.hmrConfig.setDisposeHandler(cb);
