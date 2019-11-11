@@ -75,6 +75,7 @@ type Props = {
   sidebarOpen: boolean;
   toggleSidebar: () => void;
   toggleLike: () => void;
+  editorSize: number;
 };
 
 type State = {
@@ -402,6 +403,7 @@ export default class Content extends React.PureComponent<Props, State> {
       sidebarOpen,
       toggleSidebar,
       toggleLike,
+      editorSize,
     } = this.props;
 
     const { isInProjectView } = this.state;
@@ -494,6 +496,7 @@ export default class Content extends React.PureComponent<Props, State> {
           refresh={this.refresh}
           openInNewWindow={this.openInNewWindow}
           toggleLike={toggleLike}
+          initialEditorSize={editorSize}
         >
           <>
             <Tabs>

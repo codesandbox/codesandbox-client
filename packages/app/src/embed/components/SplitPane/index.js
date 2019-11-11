@@ -14,6 +14,7 @@ export default function SplitView({
   openInNewWindow,
   sandbox,
   toggleLike,
+  initialEditorSize = 50, // in percent
   ...props
 }) {
   /* Things this component should do
@@ -32,7 +33,9 @@ export default function SplitView({
 
   // #1. set initial size based on props
   let initialSize = null;
-  if (showEditor && showPreview) initialSize = maxSize / 2;
+
+  if (showEditor && showPreview)
+    initialSize = (initialEditorSize / 100) * maxSize;
   else if (showEditor && !showPreview) initialSize = maxSize;
   else if (showPreview && !showEditor) initialSize = 0;
 
