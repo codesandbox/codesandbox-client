@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { HeartIconSVG, ReloadIconSVG, NewWindowIconSVG } from './icons';
 
-// TODO: Check if we still need previewVisible
 export const Container = styled.div(props =>
   css({
     position: 'absolute',

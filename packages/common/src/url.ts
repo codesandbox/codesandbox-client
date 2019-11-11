@@ -18,6 +18,7 @@ export interface SandboxOptions {
   enableEslint?: boolean;
   forceRefresh?: boolean;
   expandDevTools?: boolean;
+  hideDevTools?: boolean;
   verticalMode?: boolean;
   runOnClick?: boolean;
   previewWindow?: 'tests' | 'console';
@@ -99,6 +100,7 @@ export const getSandboxOptions = (url: string) => {
   result.enableEslint = url.includes('eslint=1');
   result.forceRefresh = url.includes('forcerefresh=1');
   result.expandDevTools = url.includes('expanddevtools=1');
+  result.hideDevTools = url.includes('hidedevtools=1');
   if (url.includes('verticallayout=')) {
     result.verticalMode = url.includes('verticallayout=1');
   }
