@@ -1,27 +1,7 @@
-<link href="/static/fonts/inter/inter.css" rel="stylesheet" />
-<style>
-  body {
-    color: #fff;
-    font-family: 'Inter UI', sans-serif;
-    background: #151515;
-  }
+import styled from 'styled-components';
 
-  .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-  }
-
-  .text {
-    margin-top: 24rem;
-    font-size: 1rem;
-    width: 100%;
-    max-width: 400px;
-    font-weight: 200;
-    text-align: center;
-  }
-
+// directly copied from app/src/sandbox/status-screen
+export const Container = styled.div`
   .cube,
   .cube * {
     position: absolute;
@@ -72,7 +52,8 @@
   .play {
     position: absolute;
     background-color: white;
-    text-align: left;
+    top: calc(50% - 0.5rem);
+    left: calc(50% - 0.5rem);
   }
   .play:before,
   .play:after {
@@ -99,26 +80,15 @@
   .play:after {
     transform: rotate(135deg) skewY(-45deg) scale(0.707, 1.414) translate(50%);
   }
-</style>
-<div class="container">
-  <div class="cube">
-    <div class="sides">
-      <div class="top"></div>
-      <div class="right"></div>
-      <div class="bottom"></div>
-      <div class="left"></div>
-      <div class="front"></div>
-      <div class="back"></div>
-    </div>
-  </div>
-  <div class="play"></div>
-  <div class="text">
-    <h1>Aw, Snap?</h1>
-    <div>
-      We noticed that the sandbox didn't complete its last run. This could be
-      because of some code that crashed the browser. We paused execution so you
-      can check the code.
-    </div>
-    <div>Click to continue execution</div>
-  </div>
-</div>
+`;
+
+export const Text = styled.div`
+  color: #fff;
+  font-family: 'Inter UI', 'Roboto', sans-serif;
+  margin-top: 10rem;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 400px;
+  font-weight: 500;
+  text-align: center;
+`;
