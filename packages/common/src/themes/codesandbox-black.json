@@ -149,14 +149,17 @@
     "tab.inactiveForeground": "#757575",
     "tab.unfocusedActiveForeground": "#ffffff",
     "tab.unfocusedInactiveForeground": "#757575",
+
     "activityBarBadge.background": "#E1270E",
-    "sideBarTitle.foreground": "#ffffff",
 
     "scrollbarSlider.activeBackground": "#fff",
     "scrollbarSlider.border": "#242424",
     "scrollbarSlider.background": null,
     "scrollbarSlider.hoverBackground": null,
+
+    "sideBarTitle.foreground": "#ffffff",
     "sideBar.background": "#151515",
+    "sideBar.dropBackground": "#242424",
     "sideBar.border": "#242424",
     "sideBar.foreground": "#ffffff",
     "sideBarSectionHeader.background": "#151515",
