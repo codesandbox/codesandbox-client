@@ -141,7 +141,6 @@ type Compilation = {
   id: string;
   exports: any;
   hot: {
-    enabled: () => boolean;
     accept: Function | ((arg: string | string[], cb: Function) => void);
     decline: (path: string | Array<string>) => void;
     dispose: (cb: Function) => void;

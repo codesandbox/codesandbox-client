@@ -401,15 +401,18 @@ export type Modal = {
 
 export type PackageJSON = {
   name: string;
-  description: string;
-  keywords: string[];
-  main: string;
-  dependencies: {
+  version: string;
+  description?: string;
+  keywords?: string[];
+  main?: string;
+  dependencies?: {
     [dep: string]: string;
   };
-  devDependencies: {
+  devDependencies?: {
     [dep: string]: string;
   };
+  jest?: object;
+  resolutions?: { [dependency: string]: string };
 };
 
 export type UploadFile = {
