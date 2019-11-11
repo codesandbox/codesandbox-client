@@ -2,6 +2,7 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 
 import styled from 'styled-components';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
+import { down } from 'styled-breakpoints';
 import { P, H3, H5 } from '../../components/Typography';
 
 import started from '../../assets/images/started.png';
@@ -11,6 +12,10 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: 1fr 642px;
   grid-gap: 30px;
+
+  ${down('md')} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Started = () => {
@@ -57,7 +62,6 @@ const Started = () => {
              left: auto;
              width: 30rem;
              margin-top: 10rem;
-             position: absolute;
              min-height: 20rem;
              background: #242424
 

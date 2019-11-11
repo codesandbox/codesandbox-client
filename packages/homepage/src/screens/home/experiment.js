@@ -2,6 +2,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
+import { down } from 'styled-breakpoints';
 import { H2, P } from '../../components/Typography';
 
 import frameworks from '../../assets/images/frameworks.png';
@@ -15,6 +16,10 @@ const Grid = styled.div`
   grid-gap: 2rem;
   position: relative;
   margin-top: 5rem;
+
+  ${down('md')} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Section = styled.section`
@@ -24,6 +29,12 @@ const Section = styled.section`
   margin-top: 12.5rem;
   position: relative;
   z-index: 2;
+
+  ${down('md')} {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    margin-top: 20rem;
+  }
 `;
 
 const White = styled.span`
@@ -35,7 +46,6 @@ const tweetStyle = `
   left: auto;
   width: 25rem;
   margin-top: 1rem;
-  position: absolute;
   height: 22rem;
   background: #151515
 `;

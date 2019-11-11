@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
 export const TweetsWrapper = styled.a`
   display: block;
@@ -11,6 +12,12 @@ export const TweetsWrapper = styled.a`
   margin-top: 5.5rem;
   left: -6rem;
   padding: 2.7rem 4.2rem;
+
+  ${down('md')} {
+    position: relative;
+    right: auto;
+    left: auto;
+  }
 
   ${props =>
     props.right &&

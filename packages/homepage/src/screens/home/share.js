@@ -3,8 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
 
+import { down } from 'styled-breakpoints';
 import { H2, P } from '../../components/Typography';
-
 import code from '../../assets/images/code.png';
 import bug from '../../assets/images/bug.png';
 import share from '../../assets/images/share.png';
@@ -15,6 +15,10 @@ const Grid = styled.div`
   grid-template-columns: 416px 1fr;
   grid-gap: 2.5rem;
   position: relative;
+
+  ${down('md')} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Section = styled.section`
@@ -25,6 +29,13 @@ const Section = styled.section`
   position: relative;
   z-index: 2;
   margin-left: 200px;
+
+  ${down('md')} {
+    grid-template-columns: 1fr;
+    margin-left: 0px;
+    margin-top: 30rem;
+    justify-items: center;
+  }
 `;
 
 const White = styled.span`

@@ -1,6 +1,8 @@
 import React from 'react';
 
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
+
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
 import HeroSmall from '../../assets/images/small-ide.png';
 import Button from '../../components/Button';
@@ -18,6 +20,10 @@ const JoinWrapper = styled.section`
   border-radius: 0.25rem;
   border: 1px solid #242424;
   overflow: hidden;
+
+  ${down('md')} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const IDE = styled.img`
@@ -25,6 +31,12 @@ const IDE = styled.img`
   margin-top: -6rem;
   right: 0;
   box-shadow: 0 0.24rem 0.5rem rgba(0, 0, 0, 0.24);
+
+  ${down('md')} {
+    position: relative;
+    margin: 0;
+    margin-top: 2rem;
+  }
 `;
 
 const Text = styled.h3`
@@ -36,6 +48,10 @@ const Text = styled.h3`
   max-width: 80%;
   margin: auto;
   margin-bottom: 2.5rem;
+
+  ${down('md')} {
+    margin-top: 2rem;
+  }
 `;
 
 const Join = ({ src, ...style }) => {
