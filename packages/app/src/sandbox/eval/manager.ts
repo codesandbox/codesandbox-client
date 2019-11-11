@@ -308,10 +308,10 @@ export default class Manager {
 
   evaluateModule(
     module: Module,
-    { force, testGlobals }: { force?: boolean; testGlobals?: boolean } = {
-      force: false,
-      testGlobals: false,
-    }
+    {
+      force = false,
+      testGlobals = false,
+    }: { force?: boolean; testGlobals?: boolean } = {}
   ) {
     if (this.hardReload && !this.isFirstLoad) {
       // Do a hard reload
@@ -783,9 +783,12 @@ export default class Manager {
     query: string = '',
     ignoredExtensions: Array<string> = this.preset.ignoredExtensions
   ): Promise<TranspiledModule> {
-    return fetchModule(path, currentTModule, this, ignoredExtensions).then(
-      module => this.getTranspiledModule(module, query)
-    );
+    return fetchModule(
+      path,
+      currentTModule,
+      this,
+      ignoredExtensions
+    ).then(module => this.getTranspiledModule(module, query));
   }
 
   updateModule(m: Module) {
@@ -1006,21 +1009,21 @@ export default class Manager {
       });
 
     debug(
-      `Generated update diff, updating ${
-        transpiledModulesToUpdate.length
-      } modules.`,
+      `Generated update diff, updating ${transpiledModulesToUpdate.length} modules.`,
       transpiledModulesToUpdate
     );
 
-    const transpilationResults = await Promise.all(transpiledModulesToUpdate
-      .map(tModule => {
-        if (tModule.shouldTranspile()) {
-          return tModule.transpile(this);
-        }
+    const transpilationResults = await Promise.all(
+      transpiledModulesToUpdate
+        .map(tModule => {
+          if (tModule.shouldTranspile()) {
+            return tModule.transpile(this);
+          }
 
-        return Promise.resolve(false);
-      })
-      .filter(Boolean) as Array<Promise<TranspiledModule>>);
+          return Promise.resolve(false);
+        })
+        .filter(Boolean) as Array<Promise<TranspiledModule>>
+    );
 
     return transpilationResults;
   }

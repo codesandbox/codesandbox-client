@@ -99,6 +99,7 @@ const WHITELISTED_DEV_DEPENDENCIES = [
   'react-addons-test-utils',
   'react-test-renderer',
   'identity-obj-proxy',
+  'react-refresh',
 ];
 
 const BABEL_DEPENDENCIES = [
@@ -313,7 +314,7 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
 async function updateManager(
   sandboxId: string,
   template: TemplateType,
-  managerModules,
+  managerModules: { [path: string]: Module },
   manifest: Manifest,
   configurations: ParsedConfigurationFiles,
   isNewCombination: boolean,
@@ -322,9 +323,14 @@ async function updateManager(
   let newManager = false;
   if (!manager || manager.id !== sandboxId) {
     newManager = true;
-    manager = new Manager(sandboxId, getPreset(template), managerModules, {
-      hasFileResolver,
-    });
+    manager = new Manager(
+      sandboxId,
+      getPreset(template, configurations.package.parsed),
+      managerModules,
+      {
+        hasFileResolver,
+      }
+    );
   }
 
   if (isNewCombination || newManager) {
@@ -456,9 +462,7 @@ async function compile({
 
     if (errors.length) {
       const e = new Error(
-        `We weren't able to parse: '${errors[0].path}': ${
-          errors[0].error.message
-        }`
+        `We weren't able to parse: '${errors[0].path}': ${errors[0].error.message}`
       );
 
       // @ts-ignore
@@ -519,9 +523,7 @@ async function compile({
 
     if (!foundMain) {
       throw new Error(
-        `Could not find entry file: ${
-          possibleEntries[0]
-        }. You can specify one in package.json by defining a \`main\` property.`
+        `Could not find entry file: ${possibleEntries[0]}. You can specify one in package.json by defining a \`main\` property.`
       );
     }
 
@@ -564,7 +566,7 @@ async function compile({
         /* no */
       }
 
-      manager.preset.preEvaluate(manager, updatedModules);
+      await manager.preset.preEvaluate(manager, updatedModules);
 
       if (!manager.webpackHMR) {
         const htmlModulePath = templateDefinition

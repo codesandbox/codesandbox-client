@@ -1,6 +1,6 @@
 async function fetchWithRetries(url: string) {
   let err: Error;
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 5; i++) {
     try {
       // eslint-disable-next-line
       return await fetch(url).then(x => {
@@ -20,14 +20,14 @@ async function fetchWithRetries(url: string) {
 
 async function fetchPackageJSON(dep: string, version: string) {
   try {
-    return await fetchWithRetries(
-      `https://unpkg.com/${dep}@${encodeURIComponent(version)}/package.json`
-    );
-  } catch (e) {
     return fetchWithRetries(
       `https://cdn.jsdelivr.net/npm/${dep}@${encodeURIComponent(
         version
       )}/package.json`
+    );
+  } catch (e) {
+    return fetchWithRetries(
+      `https://unpkg.com/${dep}@${encodeURIComponent(version)}/package.json`
     );
   }
 }

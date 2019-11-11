@@ -6,6 +6,7 @@ import {
 import configurations from './configuration';
 import { isServer } from './helpers/is-server';
 import { TemplateType } from '.';
+import { PackageJSON } from '../types';
 
 export type Options = {
   showOnHomePage?: boolean;
@@ -30,15 +31,7 @@ export type ConfigurationFiles = {
 export type Dependencies = { [name: string]: string };
 
 export type ParsedConfigurationFiles = {
-  package?: ParsedConfigurationFile<{
-    main: string;
-    dependencies?: Dependencies;
-    devDependencies: Dependencies;
-    resolutions?: {
-      [source: string]: string;
-    };
-    [otherProperties: string]: any | undefined;
-  }>;
+  package?: ParsedConfigurationFile<PackageJSON>;
   [path: string]: ParsedConfigurationFile<any> | undefined;
 };
 

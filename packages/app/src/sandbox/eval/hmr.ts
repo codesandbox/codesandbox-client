@@ -1,10 +1,8 @@
-// @flow
-
 export default class HMR {
-  callback: ?() => void;
-  disposeHandler: ?(data: Object) => void;
+  callback?: () => void;
+  disposeHandler?: (data: Object) => void;
   data: Object;
-  type: ?'accept' | 'decline';
+  type?: 'accept' | 'decline';
   dirty: boolean = false;
   selfAccepted: boolean = false;
 

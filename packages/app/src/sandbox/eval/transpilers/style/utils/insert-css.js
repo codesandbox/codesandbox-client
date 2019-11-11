@@ -1,4 +1,4 @@
-const wrapper = (id, css) => `
+const wrapper = (id, css, webpackHMREnabled = false) => `
 function createStyleNode(id, content) {
   var styleNode =
     document.getElementById(id) || document.createElement('style');
@@ -18,9 +18,11 @@ createStyleNode(
   ${JSON.stringify(id)},
   ${JSON.stringify(css)}
 );
+
+${webpackHMREnabled ? 'module.hot.accept()' : ''}
 `;
 
-export default function(id, css) {
-  const result = wrapper(id, css || '');
+export default function(id, css, webpackHMREnabled) {
+  const result = wrapper(id, css || '', webpackHMREnabled);
   return result;
 }

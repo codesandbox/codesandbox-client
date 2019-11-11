@@ -134,6 +134,7 @@ export type LoaderContext = {
   // Remaining loaders after current loader
   remainingRequests: string;
   template: string;
+  webpackHMREnabled: boolean;
 };
 /* eslint-enable */
 
@@ -141,6 +142,7 @@ type Compilation = {
   id: string;
   exports: any;
   hot: {
+    enabled: () => boolean;
     accept: Function | ((arg: string | string[], cb: Function) => void);
     decline: (path: string | Array<string>) => void;
     dispose: (cb: Function) => void;
@@ -458,7 +460,6 @@ export default class TranspiledModule {
           code,
         };
 
-        // $FlowIssue
         let transpiledModule: TranspiledModule;
         if (!overwrite) {
           try {
@@ -537,6 +538,7 @@ export default class TranspiledModule {
       path: this.module.path,
       template: manager.preset.name,
       remainingRequests: '', // will be filled during transpilation
+      webpackHMREnabled: manager.webpackHMR,
     };
   }
 
@@ -756,9 +758,7 @@ export default class TranspiledModule {
       if (this.module.path.startsWith('/node_modules')) {
         if (process.env.NODE_ENV === 'development') {
           console.warn(
-            `[WARN] Sandpack: loading an untranspiled module: ${
-              this.module.path
-            }`
+            `[WARN] Sandpack: loading an untranspiled module: ${this.module.path}`
           );
         }
         // This code is probably required as a dynamic require. Since we can
@@ -836,10 +836,12 @@ export default class TranspiledModule {
       id: this.getId(),
       exports: {},
       hot: {
+        enabled: () => manager.webpackHMR,
         accept: (path: string | Array<string>, cb) => {
           if (
             typeof path === 'undefined' ||
-            (typeof path !== 'string' || !Array.isArray(path))
+            typeof path !== 'string' ||
+            !Array.isArray(path)
           ) {
             // Self mark hot
             this.hmrConfig = this.hmrConfig || new HMR();
@@ -1054,9 +1056,9 @@ export default class TranspiledModule {
       childModules: this.childModules.map(m => m.getId()),
       dependencies: Array.from(this.dependencies).map(m => m.getId()),
       initiators: Array.from(this.initiators).map(m => m.getId()),
-      transpilationDependencies: Array.from(this.transpilationDependencies).map(
-        m => m.getId()
-      ),
+      transpilationDependencies: Array.from(
+        this.transpilationDependencies
+      ).map(m => m.getId()),
       transpilationInitiators: Array.from(this.transpilationInitiators).map(m =>
         m.getId()
       ),

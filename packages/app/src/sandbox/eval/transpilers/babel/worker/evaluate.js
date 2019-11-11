@@ -1,6 +1,7 @@
 import resolve from 'browser-resolve';
 import hashsum from 'hash-sum';
 import * as events from 'events';
+import * as crypto from 'crypto';
 import * as util from 'util';
 import { dirname, basename } from 'path';
 import type FSType from 'fs';
@@ -36,6 +37,10 @@ export default function evaluate(
 
     if (requirePath === 'assert') {
       return () => {};
+    }
+
+    if (requirePath === 'crypto') {
+      return crypto;
     }
 
     if (requirePath === 'stream') {
