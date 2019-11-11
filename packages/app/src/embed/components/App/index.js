@@ -92,6 +92,7 @@ export default class App extends React.PureComponent<
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
       theme = 'dark',
+      hideDevTools,
     } = props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
@@ -114,6 +115,7 @@ export default class App extends React.PureComponent<
       expandDevTools,
       tabs,
       theme,
+      hideDevTools,
       runOnClick:
         runOnClick === false
           ? false
@@ -385,6 +387,7 @@ export default class App extends React.PureComponent<
             editorSize={this.state.editorSize}
             highlightedLines={this.state.highlightedLines}
             forceRefresh={this.state.forceRefresh}
+            hideDevTools={this.state.hideDevTools}
             expandDevTools={this.state.expandDevTools}
             tabs={this.state.tabs}
             runOnClick={runOnClick}

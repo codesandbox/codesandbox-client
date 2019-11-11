@@ -72,6 +72,7 @@ type Props = {
   sidebarOpen: boolean;
   toggleSidebar: () => void;
   toggleLike: () => void;
+  hideDevTools: boolean;
 };
 
 type State = {
@@ -399,6 +400,7 @@ export default class Content extends React.PureComponent<Props, State> {
       sidebarOpen,
       toggleSidebar,
       toggleLike,
+      hideDevTools,
     } = this.props;
 
     const { isInProjectView } = this.state;
@@ -411,7 +413,7 @@ export default class Content extends React.PureComponent<Props, State> {
 
     const templateDefinition = getTemplate(sandbox.template);
     const parsedConfigurations = parseSandboxConfigurations(sandbox);
-    const views = getPreviewTabs(sandbox, parsedConfigurations);
+    let views = getPreviewTabs(sandbox, parsedConfigurations);
 
     const sandboxConfig = sandbox.modules.find(
       x => x.directoryShortid == null && x.title === 'sandbox.config.json'
@@ -426,6 +428,10 @@ export default class Content extends React.PureComponent<Props, State> {
       } catch (e) {
         /* swallow */
       }
+    }
+
+    if (hideDevTools) {
+      views = [views[0]]; // preview only
     }
 
     if (view !== 'browser') {
@@ -446,7 +452,7 @@ export default class Content extends React.PureComponent<Props, State> {
       If the user wants to override the default, they can
       do that by using the explicit flag.
     */
-    if (typeof expandDevTools !== 'undefined') {
+    if (typeof expandDevTools !== 'undefined' && views[1]) {
       views[1].open = expandDevTools;
     }
 

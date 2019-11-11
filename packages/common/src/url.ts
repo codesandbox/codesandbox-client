@@ -109,5 +109,7 @@ export const getSandboxOptions = (url: string) => {
     ? true
     : undefined;
 
+  result.hideDevTools = url.includes('hidedevtools=1');
+
   return result;
 };
