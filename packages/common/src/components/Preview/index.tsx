@@ -592,7 +592,7 @@ class BasePreview extends React.Component<Props, State> {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    top: 35,
+                    top: showNavigation ? 35 : 0,
                     zIndex: 0,
                   }}
                 >
@@ -602,9 +602,7 @@ class BasePreview extends React.Component<Props, State> {
                       height: '100%',
                       filter: `blur(2px)`,
                       transform: 'scale(1.025, 1.025)',
-                      backgroundImage: `url("${
-                        this.props.sandbox.screenshotUrl
-                      }")`,
+                      backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
                       backgroundRepeat: 'no-repeat',
                       backgroundPositionX: 'center',
                     }}
