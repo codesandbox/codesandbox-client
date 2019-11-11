@@ -48,7 +48,7 @@
     "editorGroup.border": "#e7e7e7",
     "editorGroup.dropBackground": "#3399ff2e",
     "editorGroupHeader.noTabsBackground": "#ffffff",
-    "editorGroupHeader.tabsBackground": "#f3f3f3",
+    "editorGroupHeader.tabsBackground": "#ffffff",
     "editorGutter.addedBackground": "#81b88b",
     "editorGutter.background": "#ffffff",
     "editorGutter.deletedBackground": "#ca4b51",
@@ -104,7 +104,7 @@
     "gitDecoration.modifiedResourceForeground": "#a76e12",
     "gitDecoration.submoduleResourceForeground": "#1258a7",
     "gitDecoration.untrackedResourceForeground": "#019001",
-    "input.background": "#ffffff",
+    "input.background": "#E6E6E6",
     "input.foreground": "#6c6c6c",
     "inputOption.activeBorder": "#007acc",
     "inputValidation.errorBackground": "#f2dede",
@@ -133,12 +133,14 @@
     "notificationLink.foreground": "#4080d0",
     "notifications.background": "#efeff2",
     "notifications.border": "#e2e2e7",
+
     "panel.background": "#ffffff",
     "panel.border": "#80808059",
     "panel.dropBackground": "#3399ff2e",
     "panelTitle.activeBorder": "#80808059",
     "panelTitle.activeForeground": "#424242",
     "panelTitle.inactiveForeground": "#424242bf",
+
     "peekView.border": "#007acc",
     "peekViewEditor.background": "#f2f8fc",
     "peekViewEditor.matchHighlightBackground": "#f5d802de",
@@ -168,7 +170,7 @@
     "sideBarSectionHeader.background": "#80808033",
     "sideBarTitle.foreground": "#6f6f6f",
 
-    "statusBar.background": "#007acc",
+    "statusBar.background": "#ffffff",
     "statusBar.debuggingBackground": "#cc6633",
     "statusBar.debuggingForeground": "#ffffff",
     "statusBar.foreground": "#ffffff",
@@ -214,10 +216,12 @@
     "textLink.foreground": "#4080d0",
     "textPreformat.foreground": "#a31515",
     "textSeparator.foreground": "#0000002e",
+
     "titleBar.activeBackground": "#dddddd",
     "titleBar.activeForeground": "#333333",
     "titleBar.inactiveBackground": "#dddddd99",
     "titleBar.inactiveForeground": "#33333399",
+
     "widget.shadow": "#a8a8a8"
   },
   "tokenColors": [

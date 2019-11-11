@@ -19,5 +19,7 @@ export function getTheme(variant) {
     vscodeTheme: embedTheme,
     // used for embed styles
     ...tokens,
+    // used by multiple components in common
+    light: variant === 'light',
   };
 }

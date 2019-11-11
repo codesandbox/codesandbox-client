@@ -181,6 +181,7 @@
     "statusBarItem.remoteForeground": "#e6e6e6",
     "statusBarItem.remoteBackground": "#BF5AF2",
     "statusBar.border": "#242424",
+
     "titleBar.background": "#151515",
     "titleBar.activeBackground": "#151515",
     "titleBar.activeForeground": "#fff",
