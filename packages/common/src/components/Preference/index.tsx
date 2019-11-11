@@ -1,42 +1,43 @@
-import React from 'react';
+import React, { ComponentProps, FunctionComponent } from 'react';
+
 import Tooltip from '../../components/Tooltip';
 
-import PreferenceSwitch, { Props as SwitchProps } from './PreferenceSwitch';
-import PreferenceDropdown, {
-  Props as DropdownProps,
-} from './PreferenceDropdown';
-import PreferenceNumber, { Props as NumberProps } from './PreferenceNumber';
-import PreferenceText, { Props as TextProps } from './PreferenceText';
-import PreferenceKeybinding, {
-  Props as KeybindingProps,
-} from './PreferenceKeybinding';
 import { Container } from './elements';
+import { PreferenceDropdown } from './PreferenceDropdown';
+import { PreferenceKeybinding } from './PreferenceKeybinding';
+import { PreferenceNumber } from './PreferenceNumber';
+import { PreferenceSwitch } from './PreferenceSwitch';
+import { PreferenceText } from './PreferenceText';
 
 type PreferenceType =
   | 'boolean'
-  | 'string'
   | 'dropdown'
   | 'keybinding'
-  | 'number';
+  | 'number'
+  | 'string';
 
 type PreferenceProps<TString extends PreferenceType> = {
-  type: TString;
-  title: string;
-  style?: React.CSSProperties;
   className?: string;
+  style?: React.CSSProperties;
+  title: string;
   tooltip?: string;
+  type: TString;
 };
 
-export type BooleanPreference = PreferenceProps<'boolean'> & SwitchProps;
+export type BooleanPreference = PreferenceProps<'boolean'> &
+  ComponentProps<typeof PreferenceSwitch>;
 
-export type StringPreference = PreferenceProps<'string'> & TextProps;
+export type StringPreference = PreferenceProps<'string'> &
+  ComponentProps<typeof PreferenceText>;
 
-export type DropdownPreference = PreferenceProps<'dropdown'> & DropdownProps;
+export type DropdownPreference = PreferenceProps<'dropdown'> &
+  ComponentProps<typeof PreferenceDropdown>;
 
 export type KeybindingPreference = PreferenceProps<'keybinding'> &
-  KeybindingProps;
+  ComponentProps<typeof PreferenceKeybinding>;
 
-export type NumberPreference = PreferenceProps<'number'> & NumberProps;
+export type NumberPreference = PreferenceProps<'number'> &
+  ComponentProps<typeof PreferenceNumber>;
 
 export type Props =
   | BooleanPreference
@@ -45,31 +46,32 @@ export type Props =
   | KeybindingPreference
   | NumberPreference;
 
-const Preference = (props: Props) => {
-  const { title, style, className, tooltip, ...contentProps } = props;
-
-  let content: React.ReactNode;
-  switch (
-    contentProps.type // need 'type' as discriminant of union type
-  ) {
-    case 'boolean':
-      content = <PreferenceSwitch {...contentProps} />;
-      break;
-    case 'string':
-      content = <PreferenceText {...contentProps} />;
-      break;
-    case 'dropdown':
-      content = <PreferenceDropdown {...contentProps} />;
-      break;
-    case 'keybinding':
-      content = <PreferenceKeybinding {...contentProps} />;
-      break;
-    default:
-      content = <PreferenceNumber {...contentProps} />;
-  }
+export const Preference: FunctionComponent<Props> = ({
+  className,
+  style,
+  title,
+  tooltip,
+  ...contentProps
+}) => {
+  const getContent = () => {
+    switch (
+      contentProps.type // need 'type' as discriminant of union type
+    ) {
+      case 'boolean':
+        return <PreferenceSwitch {...contentProps} />;
+      case 'string':
+        return <PreferenceText {...contentProps} />;
+      case 'dropdown':
+        return <PreferenceDropdown {...contentProps} />;
+      case 'keybinding':
+        return <PreferenceKeybinding {...contentProps} />;
+      default:
+        return <PreferenceNumber {...contentProps} />;
+    }
+  };
 
   const Title = tooltip ? (
-    <Tooltip placement="right" content={tooltip}>
+    <Tooltip content={tooltip} placement="right">
       {title}
     </Tooltip>
   ) : (
@@ -77,11 +79,10 @@ const Preference = (props: Props) => {
   );
 
   return (
-    <Container style={style} className={className}>
+    <Container className={className} style={style}>
       {Title}
-      <div>{content}</div>
+
+      <div>{getContent()}</div>
     </Container>
   );
 };
-
-export default Preference;

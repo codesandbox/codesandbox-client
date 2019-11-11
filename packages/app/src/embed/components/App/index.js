@@ -17,7 +17,6 @@ import Content from '../Content';
 import Sidebar from '../Sidebar';
 import { Container, Fullscreen, Moving } from './elements';
 import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
-
 import { getTheme } from '../../theme';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently

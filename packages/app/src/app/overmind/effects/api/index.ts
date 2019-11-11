@@ -68,6 +68,9 @@ export default {
   getCurrentUser(): Promise<CurrentUser> {
     return api.get('/users/current');
   },
+  markSurveySeen(): Promise<void> {
+    return api.post('/users/survey-seen', {});
+  },
   getDependency(name: string): Promise<Dependency> {
     return api.get(`/dependencies/${name}@latest`);
   },
@@ -431,6 +434,9 @@ export default {
   },
   signoutGithubIntegration(): Promise<void> {
     return api.delete(`/users/current_user/integrations/github`);
+  },
+  signoutZeit(): Promise<void> {
+    return api.delete(`/users/current_user/integrations/zeit`);
   },
   preloadTemplates() {
     client.query({ query: LIST_TEMPLATES, variables: { showAll: true } });

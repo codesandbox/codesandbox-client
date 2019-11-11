@@ -9,7 +9,7 @@ description: It's possible to deploy your app directly from CodeSandbox
 To deploy your app, you need to own the sandbox, so you'll have to fork a
 sandbox you don’t own.
 
-## Zeit
+## ZEIT
 
 To deploy to [Now](https://zeit.co/now), access the Preferences menu and select
 the Integrations tab. Log into your ZEIT account and it’s all set.
@@ -31,11 +31,10 @@ overview to delete your previous deploys or to visit the website.
 
 With [Netlify](https://netlify.com) you don't even need to connect to your
 account. This means you can create deployments to share and use even if you
-don't have a [Netlify](https://netlify.com) account so there is no friction.
+don't have a [Netlify](https://netlify.com) account.
 
-As to any services, some templates are better than others, but as of now, we
-have a good number of templates that support [Netlify](https://netlify.com)
-deployments:
+Some templates are better than others, but as of now, we have a number of
+templates that support [Netlify](https://netlify.com) deployments:
 
 - React
 - Vue
@@ -48,7 +47,7 @@ deployments:
 - Typescript Variants of React and Parcel
 - Gatsby
 
-We will work on making more and more templates available in the future.
+We will work on making more templates available in the future.
 
 ### Deploying
 
@@ -61,9 +60,9 @@ add it to your Netlify dashboard.
 
 ### More Features
 
-You don't need to sign in so if you want to add a sandbox deployment to your
+You don't need to sign in, so if you want to add a sandbox deployment to your
 account you can click the "Claim Site" button and the deployed sandbox will be
-added to your netlifly account.
+added to your Netlify account.
 
 ## UI
 
