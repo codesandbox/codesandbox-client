@@ -111,7 +111,7 @@ export const Button = styled.button(
 
 export const MenuIcon = styled(MenuIconSVG)(
   css({
-    color: 'grays.400',
+    color: 'tab.activeForeground',
     marginRight: 2,
     cursor: 'pointer',
     zIndex: 10,

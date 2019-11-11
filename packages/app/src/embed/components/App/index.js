@@ -17,6 +17,7 @@ import Content from '../Content';
 import Sidebar from '../Sidebar';
 import { Container, Fullscreen, Moving } from './elements';
 import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
+import { getTheme } from '../../theme';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently
 // that makes it think we havecore-js/es6/map available in embed, but we don't.
@@ -46,6 +47,7 @@ type State = {
   verticalMode: boolean,
   highlightedLines: Array<number>,
   tabs?: Array<number>,
+  theme: string,
 };
 
 const isSafari = () => {
@@ -88,6 +90,7 @@ export default class App extends React.PureComponent<
       runOnClick,
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
+      theme = 'dark',
     } = props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
@@ -109,6 +112,7 @@ export default class App extends React.PureComponent<
       forceRefresh,
       expandDevTools,
       tabs,
+      theme,
       runOnClick:
         runOnClick === false
           ? false
@@ -395,20 +399,23 @@ export default class App extends React.PureComponent<
 
   render() {
     const { sandbox } = this.state;
+    const theme = getTheme(this.state.theme);
 
     return (
-      <Fullscreen sidebarOpen={this.state.sidebarOpen}>
-        {sandbox && (
-          <>
-            <Sidebar
-              setCurrentModule={this.setCurrentModule}
-              currentModule={this.getCurrentModuleFromPath(sandbox).id}
-              sandbox={sandbox}
-            />
-          </>
-        )}
-        <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
-      </Fullscreen>
+      <ThemeProvider theme={theme}>
+        <Fullscreen sidebarOpen={this.state.sidebarOpen}>
+          {sandbox && (
+            <>
+              <Sidebar
+                setCurrentModule={this.setCurrentModule}
+                currentModule={this.getCurrentModuleFromPath(sandbox).id}
+                sandbox={sandbox}
+              />
+            </>
+          )}
+          <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
+        </Fullscreen>
+      </ThemeProvider>
     );
   }
 }

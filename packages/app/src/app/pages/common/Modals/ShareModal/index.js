@@ -22,6 +22,7 @@ import {
 import {
   BUTTON_URL,
   VIEW_OPTIONS,
+  THEME_OPTIONS,
   getIframeScript,
   getEditorUrl,
   getEmbedUrl,
@@ -32,6 +33,7 @@ import {
 class ShareView extends React.Component {
   state = {
     view: VIEW_OPTIONS[0],
+    theme: 'dark',
     testsView: false,
     defaultModule: null,
     autoResize: false,
@@ -108,6 +110,10 @@ class ShareView extends React.Component {
     this.setState({ view });
   };
 
+  setTheme = (theme: string) => {
+    this.setState({ theme });
+  };
+
   select = function select(event) {
     event.target.select();
   };
@@ -122,6 +128,7 @@ class ShareView extends React.Component {
 
     const {
       view,
+      theme,
       testsView,
       autoResize,
       hideNavigation,
@@ -155,6 +162,13 @@ class ShareView extends React.Component {
                   options={VIEW_OPTIONS}
                   value={view}
                   setValue={this.setView}
+                />
+                <PaddedPreference
+                  title="Theme"
+                  type="dropdown"
+                  options={THEME_OPTIONS}
+                  value={theme}
+                  setValue={this.setTheme}
                 />
                 <PaddedPreference
                   title="Auto resize"

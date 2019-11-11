@@ -11,6 +11,7 @@ export interface SandboxOptions {
   isTestPreviewWindow?: boolean;
   isConsolePreviewWindow?: boolean;
   hideNavigation?: boolean;
+  theme?: string;
   isInProjectView?: boolean;
   autoResize?: boolean;
   useCodeMirror?: boolean;
@@ -58,6 +59,9 @@ export const getSandboxOptions = (url: string) => {
   if (editorSizeMatch) {
     result.editorSize = +editorSizeMatch[3];
   }
+
+  const theme = url.match(/(\?|&)(theme)=([^&]+)/);
+  if (theme) result.theme = theme[3];
 
   result.isPreviewScreen = url.includes('view=preview');
   result.isEditorScreen = url.includes('view=editor');

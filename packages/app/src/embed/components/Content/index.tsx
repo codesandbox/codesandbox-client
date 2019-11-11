@@ -13,9 +13,6 @@ import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correc
 import { CodeEditor } from 'app/components/CodeEditor';
 import { Editor } from 'app/components/CodeEditor/types'; // eslint-disable-line
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
-import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-// eslint-disable-next-line import/extensions
-import getType from 'app/utils/get-type.ts';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
@@ -534,7 +531,6 @@ export default class Content extends React.PureComponent<Props, State> {
                     {({ hovering, closeTab }) => (
                       // TODO deduplicate this
                       <>
-                        <EntryIcons type={getType(module.title)} />
                         <TabTitle>{module.title}</TabTitle>
                         {dirName && (
                           <TabDir>
