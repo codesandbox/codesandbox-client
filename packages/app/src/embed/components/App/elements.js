@@ -1,19 +1,29 @@
 // @flow
 import styled from 'styled-components';
+import css from '@styled-system/css';
 
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100vw;
-  color: white;
-`;
+export const Container = styled.div(
+  css({
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    width: '100vw',
+  })
+);
 
-export const Fullscreen = styled.div`
-  width: 100vw;
-  height: 100%;
-  overflow: hidden;
-`;
+export const Fullscreen = styled.div(
+  css({
+    width: '100vw',
+    height: '100vh',
+    overflow: 'hidden',
+    backgroundColor: 'editor.background',
+    color: 'editor.foreground',
+    h1: {
+      // override common element which has hard coded color
+      color: 'editor.foreground',
+    },
+  })
+);
 
 export const Moving = styled.div`
   transition: 0.3s ease all;
