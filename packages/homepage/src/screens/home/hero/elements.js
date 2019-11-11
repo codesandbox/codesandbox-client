@@ -8,8 +8,8 @@ export const HeroWrapper = styled.section`
 `;
 
 export const SignUp = styled.p`
-  font-size: 11px;
-  line-height: 13px;
+  font-size: 0.6875rem;
+  line-height: 0.8125rem;
   text-align: center;
   margin-top: 0.5rem;
   color: ${props => props.theme.homepage.white};

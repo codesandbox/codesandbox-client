@@ -6,7 +6,7 @@ const styles = css`
   border-radius: 2px;
   border: none;
   font-family: ${props => props.theme.homepage.appleFont};
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 19px;
   text-align: center;
   padding: 4px 21px;

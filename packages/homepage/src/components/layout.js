@@ -10,6 +10,12 @@ import Footer from './Footer';
 
 const homepageTheme = {
   ...theme,
+  breakpoints: {
+    sm: '576px',
+    md: '768px',
+    lg: '992px',
+    xl: '1200px',
+  },
   homepage: {
     appleFont:
       "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue'",

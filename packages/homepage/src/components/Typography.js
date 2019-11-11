@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const H2 = styled.h2`
-  font-size: 48px;
+  font-size: 3rem;
   line-height: 57px;
   font-family: ${props => props.theme.homepage.appleFont};
 
@@ -13,7 +13,7 @@ export const H2 = styled.h2`
 
 export const P = styled.p`
   font-weight: normal;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1.3;
   color: ${props => props.theme.homepage.white};
   margin: 0;
@@ -22,13 +22,13 @@ export const P = styled.p`
   ${props =>
     props.small &&
     `
-    font-size: 14px;
+    font-size: 0.875rem;
   `}
 
     ${props =>
       props.big &&
       `
-    font-size: 23px;
+  font-size: 1.4375rem;
   `}
 
   ${props =>
@@ -40,7 +40,7 @@ export const P = styled.p`
 
 export const H3 = styled.h3`
   font-weight: bold;
-  font-size: 32px;
+  font-size: 2rem;
   line-height: 39px;
   margin: 0;
 
@@ -50,7 +50,7 @@ export const H3 = styled.h3`
 export const H5 = styled.h5`
   font-family: ${props => props.theme.homepage.appleFont};
   font-weight: 500;
-  font-size: 23px;
+  font-size: 1.4375rem;
   line-height: 27px;
   margin: 0;
 

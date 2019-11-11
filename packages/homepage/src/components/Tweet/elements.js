@@ -24,7 +24,7 @@ export const Quote = styled.blockquote`
   font-family: Roboto;
   font-style: italic;
   font-weight: normal;
-  font-size: 23px;
+  font-size: 1.4375rem;
   line-height: 32px;
 
   color: ${props => props.theme.homepage.white};

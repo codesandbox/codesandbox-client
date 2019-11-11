@@ -12,25 +12,23 @@ import six from '../../assets/images/explore/6.png';
 
 const ImageWrapper = styled.div`
   margin-top: 2rem;
-  position: absolute;
-  left: 0;
-  width: 100%;
-  margin-bottom: 100%;
-  overflow-y: hidden;
-  overflow-x: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100vw;
+
+  > section {
+    display: flex;
+    align-items: center;
+  }
 
   img {
     cursor: pointer;
+    max-width: initial;
   }
 
-  > div > div {
+  div > div {
     margin-bottom: 2rem;
   }
 
-  > div {
+  div {
     margin: 1rem;
   }
 `;
@@ -79,7 +77,11 @@ const Experiment = () => (
   // const y = useTransform(scrollY, [0, -100], [0, 5], { clamp: false });
 
   <>
-    <div>
+    <div
+      css={`
+        margin-top: 15rem;
+      `}
+    >
       <H2>Create Static Sites, Full-stack Web Apps, or Components</H2>
       <P
         muted
@@ -91,24 +93,22 @@ const Experiment = () => (
         creators
       </P>
     </div>
-    <div
-      css={`
-        height: 1000px;
-      `}
-    >
+    <div>
       <ImageWrapper>
-        <Sandbox id="j0y0vpz59" big image={one} />
-        <Sandbox id="m7q0r29nn9" big image={two} />
-        <div
-          css={`
-            width: 324px;
-          `}
-        >
-          <Sandbox id="variants-uotor" image={three} />
-          <Sandbox id="ppxnl191zx" image={four} />
-        </div>
-        <Sandbox id="732j6q4620" image={five} />
-        <Sandbox id="react-three-fiber-untitled-game-i2160" big image={six} />
+        <section>
+          <Sandbox id="j0y0vpz59" big image={one} />
+          <Sandbox id="m7q0r29nn9" big image={two} />
+          <div
+            css={`
+              width: 324px;
+            `}
+          >
+            <Sandbox id="variants-uotor" image={three} />
+            <Sandbox id="ppxnl191zx" image={four} />
+          </div>
+          <Sandbox id="732j6q4620" image={five} />
+          <Sandbox id="react-three-fiber-untitled-game-i2160" big image={six} />
+        </section>
       </ImageWrapper>
     </div>
   </>

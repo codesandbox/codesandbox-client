@@ -4,8 +4,8 @@ export const Title = styled.h1`
   ${({ theme, textCenter }) => css`
     font-family: ${theme.homepage.appleFont};
     font-weight: 500;
-    font-size: 40px;
-    line-height: 48px;
+    font-size: 2.5rem;
+    line-height: 3rem;
     color: ${theme.homepage.white};
     margin: 0.5rem 0;
 
@@ -30,7 +30,7 @@ export const Description = styled.h2`
     ${seoText &&
       css`
         margin-top: 1rem;
-        font-size: 32px;
+        font-size: 2rem;
         line-height: 24px;
         color: ${props => props.theme.homepage.muted};
       `}
@@ -68,7 +68,7 @@ export const SeoText = styled.p`
   color: ${props => props.theme.homepage.muted};
   font-style: normal;
   font-weight: 500;
-  font-size: 23px;
+  font-size: 1.4375rem;
   line-height: 37px;
 `;
 
@@ -78,13 +78,13 @@ export const ContentBlock = styled.div`
     grid-template-columns: repeat(${columns}, 1fr);
     grid-gap: 3rem 5rem;
     font-size: 1rem;
-    line-height: 23px;
+    line-height: 1.5rem;
     color: ${theme.homepage.muted};
 
     h3 {
       font-style: normal;
       font-weight: 500;
-      font-size: 23px;
+      font-size: 1.4375rem;
       line-height: 27px;
       color: ${theme.homepage.white};
       /* min-height: 54px; */
@@ -99,7 +99,7 @@ export const Tweet = styled.div`
     font-style: italic;
     font-weight: normal;
     color: ${theme.homepage.white};
-    font-size: 23px;
+    font-size: 1.4375rem;
     line-height: 32px;
     align-self: center;
   `};

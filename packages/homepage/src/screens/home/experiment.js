@@ -14,7 +14,7 @@ const Grid = styled.div`
   grid-template-columns: 1fr 304px;
   grid-gap: 2rem;
   position: relative;
-  margin-top: 15rem;
+  margin-top: 5rem;
 `;
 
 const Section = styled.section`

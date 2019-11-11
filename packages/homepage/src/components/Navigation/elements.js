@@ -68,7 +68,7 @@ export const Nav = styled.nav`
   height: 100%;
   align-items: center;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: 0.8125rem;
 `;
 
 export const Wrapper = styled.div`
@@ -89,7 +89,7 @@ export const LogoWrapper = styled(Link)`
   font-family: ${props => props.theme.homepage.appleFont};
   display: flex;
   align-items: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   margin-right: 4rem;
   color: white;
   text-decoration: none;
