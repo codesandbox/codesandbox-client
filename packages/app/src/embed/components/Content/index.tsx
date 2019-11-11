@@ -497,6 +497,7 @@ export default class Content extends React.PureComponent<Props, State> {
           refresh={this.refresh}
           openInNewWindow={this.openInNewWindow}
           toggleLike={toggleLike}
+          hideDevTools={hideDevTools}
         >
           <>
             <Tabs>

@@ -14,6 +14,7 @@ export default function SplitView({
   openInNewWindow,
   sandbox,
   toggleLike,
+  hideDevTools,
   ...props
 }) {
   /* Things this component should do
@@ -123,7 +124,7 @@ export default function SplitView({
       <GlobalActions
         sandbox={sandbox}
         toggleLike={toggleLike}
-        previewVisible={size < maxSize}
+        offsetBottom={!hideDevTools && size < maxSize}
         isDragging={isDragging}
       />
       <SplitPane
@@ -143,6 +144,7 @@ export default function SplitView({
               refresh={refresh}
               openInNewWindow={openInNewWindow}
               isDragging={isDragging}
+              offsetBottom={!hideDevTools && size < maxSize}
             />
           ) : null}
           {isDragging ? <PointerOverlay /> : null}
