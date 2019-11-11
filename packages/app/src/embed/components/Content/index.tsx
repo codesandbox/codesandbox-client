@@ -40,8 +40,10 @@ import {
 } from '@codesandbox/common/lib/sandbox/modules';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
-
-import { Container, Tabs, Split } from './elements';
+import SplitPane from '../SplitPane';
+import { Container, Tabs, MenuInTabs } from './elements';
+// borrow the menu icon from Header in case header is not shown
+import { MenuIcon } from '../legacy/Header/elements';
 
 type Props = {
   showEditor: boolean;
@@ -62,7 +64,6 @@ type Props = {
   setCurrentModule: (moduleId: string) => void;
   useCodeMirror: boolean;
   enableEslint: boolean;
-  editorSize: number;
   highlightedLines: number[];
   forceRefresh: boolean;
   expandDevTools: boolean;
@@ -71,6 +72,10 @@ type Props = {
   tabs?: string[];
   isNotSynced: boolean;
   tabCount: number;
+  sidebarOpen: boolean;
+  toggleSidebar: () => void;
+  toggleLike: () => void;
+  editorSize: number;
 };
 
 type State = {
@@ -363,6 +368,19 @@ export default class Content extends React.PureComponent<Props, State> {
     });
   };
 
+  refresh = () => {
+    if (this.preview && this.preview.handleRefresh) {
+      this.preview.handleRefresh();
+    }
+  };
+
+  openInNewWindow = () => {
+    // this is set in app/Preview
+    // i don't know why but I ain't complaining
+    // @ts-ignore
+    if (window.openNewWindow) window.openNewWindow();
+  };
+
   onPreviewInitialized = (preview: BasePreview) => {
     this.preview = preview;
     return () => {};
@@ -380,9 +398,12 @@ export default class Content extends React.PureComponent<Props, State> {
       previewWindow,
       currentModule,
       hideNavigation,
-      editorSize,
       expandDevTools,
       verticalMode,
+      sidebarOpen,
+      toggleSidebar,
+      toggleLike,
+      editorSize,
     } = this.props;
 
     const { isInProjectView } = this.state;
@@ -460,17 +481,30 @@ export default class Content extends React.PureComponent<Props, State> {
       actions: [],
     };
 
+    // TODO: we use verticalMode as a very very bad proxy
+    // for identifying mobile mode
+    // mobile isn't even vertical anymore!
+    // we should really rename it
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
-        {showEditor && (
-          // @ts-ignore
-          <Split
-            show={showEditor}
-            only={showEditor && !showPreview}
-            size={editorSize}
-            verticalMode={verticalMode}
-          >
+        <SplitPane
+          sandbox={sandbox}
+          showEditor={showEditor}
+          showPreview={showPreview}
+          isMobile={verticalMode}
+          sidebarOpen={sidebarOpen}
+          showNavigationActions={hideNavigation}
+          refresh={this.refresh}
+          openInNewWindow={this.openInNewWindow}
+          toggleLike={toggleLike}
+          initialEditorSize={editorSize}
+        >
+          <>
             <Tabs>
+              <MenuInTabs>
+                <MenuIcon onClick={toggleSidebar} />
+              </MenuInTabs>
+
               {this.state.tabs.map((module, i) => {
                 const tabsWithSameName = this.state.tabs.filter(
                   m => m.title === module.title
@@ -535,17 +569,8 @@ export default class Content extends React.PureComponent<Props, State> {
                 highlightedLines={this.props.highlightedLines}
               />
             </div>
-          </Split>
-        )}
-
-        {showPreview && (
-          // @ts-ignore
-          <Split
-            show={showPreview}
-            only={showPreview && !showEditor}
-            size={100 - editorSize}
-            verticalMode={verticalMode}
-          >
+          </>
+          <>
             {!this.state.running ? (
               <RunOnClick onClick={() => this.setState({ running: true })} />
             ) : (
@@ -582,8 +607,8 @@ export default class Content extends React.PureComponent<Props, State> {
                 ))}
               </div>
             )}
-          </Split>
-        )}
+          </>
+        </SplitPane>
       </Container>
     );
   }
