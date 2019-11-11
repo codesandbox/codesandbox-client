@@ -134,7 +134,6 @@ export type LoaderContext = {
   // Remaining loaders after current loader
   remainingRequests: string;
   template: string;
-  webpackHMREnabled: boolean;
 };
 /* eslint-enable */
 
@@ -538,7 +537,6 @@ export default class TranspiledModule {
       path: this.module.path,
       template: manager.preset.name,
       remainingRequests: '', // will be filled during transpilation
-      webpackHMREnabled: manager.webpackHMR,
     };
   }
 
@@ -836,7 +834,6 @@ export default class TranspiledModule {
       id: this.getId(),
       exports: {},
       hot: {
-        enabled: () => manager.webpackHMR,
         accept: (path: string | Array<string>, cb) => {
           if (
             typeof path === 'undefined' ||
