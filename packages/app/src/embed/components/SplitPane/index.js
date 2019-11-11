@@ -14,6 +14,7 @@ export default function SplitView({
   openInNewWindow,
   sandbox,
   toggleLike,
+  initialEditorSize = 50, // in percent
   ...props
 }) {
   /* Things this component should do
@@ -24,7 +25,7 @@ export default function SplitView({
     5. introduce the resizer element with animation
   */
 
-  const windowWidth = window.innerWidth;
+  const windowWidth = document.body.clientWidth;
   // TODO: pick this from the sidebar or ref instead of hardcoding
   const sidebarWidth = 250;
 
@@ -32,7 +33,9 @@ export default function SplitView({
 
   // #1. set initial size based on props
   let initialSize = null;
-  if (showEditor && showPreview) initialSize = maxSize / 2;
+
+  if (showEditor && showPreview)
+    initialSize = (initialEditorSize / 100) * maxSize;
   else if (showEditor && !showPreview) initialSize = maxSize;
   else if (showPreview && !showEditor) initialSize = 0;
 

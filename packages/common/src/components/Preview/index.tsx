@@ -49,6 +49,11 @@ export type Props = {
   delay?: number;
   className?: string;
   overlayMessage?: string;
+  /**
+   * Whether to show a screenshot in the preview as a "placeholder" while loading
+   * to reduce perceived loading time
+   */
+  showScreenshotOverlay?: boolean;
 };
 
 type State = {
@@ -90,7 +95,7 @@ class BasePreview extends React.Component<Props, State> {
       url: initialUrl,
       forward: false,
       back: false,
-      showScreenshot: true,
+      showScreenshot: props.showScreenshotOverlay,
       useFallbackDomain: false,
     };
 
@@ -104,7 +109,14 @@ class BasePreview extends React.Component<Props, State> {
         // Remove screenshot after specific time, so the loading container spinner can still show
         this.setState({ showScreenshot: false });
       }, 100);
+    } else {
+      setTimeout(() => {
+        if (this.state.showScreenshot) {
+          this.setState({ showScreenshot: false });
+        }
+      }, 800);
     }
+
     this.listener = listen(this.handleMessage);
 
     if (props.delay) {
@@ -114,12 +126,6 @@ class BasePreview extends React.Component<Props, State> {
     (window as any).openNewWindow = this.openNewWindow;
 
     this.testFallbackDomainIfNeeded();
-
-    setTimeout(() => {
-      if (this.state.showScreenshot) {
-        this.setState({ showScreenshot: false });
-      }
-    }, 800);
   }
 
   UNSAFE_componentWillUpdate(nextProps: Props, nextState: State) {
@@ -556,7 +562,7 @@ class BasePreview extends React.Component<Props, State> {
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
 
         <AnySpring
-          from={{ opacity: 0 }}
+          from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
           to={{
             opacity: this.state.showScreenshot ? 0 : 1,
           }}

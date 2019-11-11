@@ -10,11 +10,13 @@ import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/confi
 import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
 import setupConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
-import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
+import {
+  listenForPreviewSecret,
+  getPreviewSecret,
+} from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
-import { getPreviewSecret } from './utils/preview-secret';
 
 // Call this before importing React (or any other packages that might import React).
 initialize(window);

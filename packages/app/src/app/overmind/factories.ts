@@ -1,5 +1,6 @@
 import { Contributor } from '@codesandbox/common/lib/types';
-import { json, IState, IDerive } from 'overmind';
+import { IDerive, IState, json } from 'overmind';
+
 import { AsyncAction } from '.';
 
 export const withLoadApp = <T>(
@@ -30,6 +31,9 @@ export const withLoadApp = <T>(
       state.user = await effects.api.getCurrentUser();
       actions.internal.setPatronPrice();
       actions.internal.setSignedInCookie();
+      effects.analytics.identify('signed_in', true);
+      effects.analytics.setUserId(state.user.id);
+      actions.internal.showUserSurveyIfNeeded();
       effects.live.connect();
       actions.userNotifications.internal.initialize();
       effects.api.preloadTemplates();
@@ -38,9 +42,11 @@ export const withLoadApp = <T>(
         'Your session seems to be expired, please log in again...'
       );
       effects.jwt.reset();
+      effects.analytics.setAnonymousId();
     }
   } else {
     effects.jwt.reset();
+    effects.analytics.setAnonymousId();
   }
 
   if (continueAction) {
@@ -112,7 +118,7 @@ export const createModals = <
   state?: {
     current: keyof T;
   } & {
-    [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> }
+    [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> };
   };
   actions?: {
     [K in keyof T]: {
@@ -121,7 +127,7 @@ export const createModals = <
         T[K]['result']
       >;
       close: AsyncAction<T[K]['result']>;
-    }
+    };
   };
 } => {
   function createModal(name, modal) {

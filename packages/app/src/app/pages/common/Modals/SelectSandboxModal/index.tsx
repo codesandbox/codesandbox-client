@@ -7,19 +7,16 @@ import Sandbox from './Sandbox';
 export const SelectSandboxModal: FunctionComponent = () => {
   const {
     state: {
-      profile: {
-        isLoadingSandboxes,
-        showcasedSandbox,
-        userSandboxes
-      }
+      profile: { isLoadingSandboxes, showcasedSandbox, userSandboxes },
     },
     actions: {
-      profile: { newSandboxShowcaseSelected }
-    }
+      profile: { newSandboxShowcaseSelected },
+    },
   } = useOvermind();
 
-  if (isLoadingSandboxes)
+  if (isLoadingSandboxes) {
     return <Padding>Loading sandboxes...</Padding>;
+  }
 
   const currentShowcasedSandboxId = showcasedSandbox && showcasedSandbox.id;
 

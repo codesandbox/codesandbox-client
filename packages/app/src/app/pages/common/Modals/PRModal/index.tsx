@@ -33,4 +33,4 @@ const PRModal: FunctionComponent = () => {
   );
 };
 
-export default PRModal
+export default PRModal;

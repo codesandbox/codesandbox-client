@@ -11,6 +11,7 @@ export const Container = styled.div(
 export const Row = styled.div(
   css({
     display: 'flex',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     paddingY: 1,
   })

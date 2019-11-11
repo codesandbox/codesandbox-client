@@ -1,66 +1,124 @@
+<link href="/static/fonts/inter/inter.css" rel="stylesheet" />
 <style>
   body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #FFD399;
-
-    cursor: pointer;
+    color: #fff;
+    font-family: 'Inter UI', sans-serif;
+    background: #151515;
   }
 
-
   .container {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    margin: 0 auto;
-
-    width: 100vw;
-    height: 100vh;
+    flex-direction: row;
   }
 
   .text {
-    padding: 1rem;
-    color: #f27777;
-    font-size: 1.25rem;
-    max-width: 600px;
-    line-height: 1.4;
-    font-weight: 600;
+    margin-top: 24rem;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 400px;
+    font-weight: 200;
     text-align: center;
   }
+
+  .cube,
+  .cube * {
+    position: absolute;
+    width: 6rem;
+    height: 6rem;
+  }
+  .cube .sides * {
+    opacity: 0.1;
+    box-sizing: border-box;
+    border: 0.12rem solid white;
+    border-radius: 0.25rem;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .sides {
+    transform-style: preserve-3d;
+    transform: rotateX(-37.5deg) rotateY(45deg);
+  }
+
+  .cube .sides .top {
+    transform: rotateX(90deg) translateZ(48px);
+    transform-origin: 50% 50%;
+  }
+
+  .cube .sides .bottom {
+    transform: rotateX(-90deg) translateZ(48px);
+    transform-origin: 50% 50%;
+  }
+
+  .cube .sides .front {
+    transform: rotateY(0deg) translateZ(48px);
+    transform-origin: 50% 50%;
+  }
+
+  .cube .sides .back {
+    transform: rotateY(-180deg) translateZ(48px);
+    transform-origin: 50% 50%;
+  }
+  .cube .sides .left {
+    transform: rotateY(-90deg) translateZ(48px);
+    transform-origin: 50% 50%;
+  }
+
+  .cube .sides .right {
+    transform: rotateY(90deg) translateZ(48px);
+    transform-origin: 50% 50%;
+  }
+
+  .play {
+    position: absolute;
+    background-color: white;
+    text-align: left;
+  }
+  .play:before,
+  .play:after {
+    content: '';
+    position: absolute;
+    background-color: inherit;
+  }
+  .play,
+  .play:before,
+  .play:after {
+    width: 1rem;
+    height: 1rem;
+    border-top-right-radius: 30%;
+  }
+
+  .play {
+    transform: rotate(-90deg) skewX(-30deg) scale(1, 0.866);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.24);
+  }
+  .play:before {
+    transform: rotate(-135deg) skewX(-45deg) scale(1.414, 0.707)
+      translate(0, -50%);
+  }
+  .play:after {
+    transform: rotate(135deg) skewY(-45deg) scale(0.707, 1.414) translate(50%);
+  }
 </style>
-
-<div id="loading-screen" class="container">
-  <svg width="149" height="167" viewBox="0 0 447 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 50 (54983) - http://www.bohemiancoding.com/sketch -->
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-      <g id="Custom-Preset" transform="translate(-27.000000, 0.000000)">
-        <g id="play" transform="translate(27.000000, 0.000000)">
-          <polygon id="Path" fill="#6BAFDD" points="48.0363353 348.667139 223.440448 446.191204 398.963665 348.315773 398.963665 153.345936 223.526065 54.9352672 48.0363353 153.810752"></polygon>
-          <path d="M0,376.74889 L0,125.911037 L223.473937,0 L447,125.385604 L447,376.35757 L223.474645,501 L0,376.74889 Z M48.0363353,348.667139 L223.440448,446.191204 L398.963665,348.315773 L398.963665,153.345936 L223.526065,54.9352672 L48.0363353,153.810752 L48.0363353,348.667139 Z"
-            id="Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
-          <rect id="Rectangle" fill="#FFFFFF" x="130" y="170" width="60" height="161" rx="8"></rect>
-          <rect id="Rectangle-Copy" fill="#FFFFFF" x="258" y="170" width="60" height="161" rx="8"></rect>
-        </g>
-      </g>
-    </g>
-  </svg>
-
+<div class="container">
+  <div class="cube">
+    <div class="sides">
+      <div class="top"></div>
+      <div class="right"></div>
+      <div class="bottom"></div>
+      <div class="left"></div>
+      <div class="front"></div>
+      <div class="back"></div>
+    </div>
+  </div>
+  <div class="play"></div>
   <div class="text">
     <h1>Aw, Snap?</h1>
-    <div>We noticed that the sandbox didn't complete its last run. This could be because of some code that crashed the browser.
-      We paused execution so you can check the code.</div>
-
-    <h2>Click to continue execution</h2>
+    <div>
+      We noticed that the sandbox didn't complete its last run. This could be
+      because of some code that crashed the browser. We paused execution so you
+      can check the code.
+    </div>
+    <div>Click to continue execution</div>
   </div>
 </div>

@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import css from '@styled-system/css';
 import CommonStats from '@codesandbox/common/lib/components/Stats';
 import { CenteredText } from '@codesandbox/common/lib/components/Stats/Stat/elements';
+import css from '@styled-system/css';
+import styled from 'styled-components';
 
 export const Container = styled.div(
   css({
