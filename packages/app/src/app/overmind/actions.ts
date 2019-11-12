@@ -52,10 +52,6 @@ export const notificationRemoved: Action<{
   state.notifications.splice(notificationToRemoveIndex, 1);
 };
 
-export const forceRender: Action = ({ state }) => {
-  state.editor.forceRender++;
-};
-
 export const cliInstructionsMounted: AsyncAction = withLoadApp();
 
 export const githubPageMounted: AsyncAction = withLoadApp();

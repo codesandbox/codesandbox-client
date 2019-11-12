@@ -17,6 +17,7 @@ import {
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import { json } from 'overmind';
 
+import getTemplate from '@codesandbox/common/lib/templates';
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -43,6 +44,8 @@ export const addNpmDependency: AsyncAction<{
       version: newVersion,
       isDev: Boolean(isDev),
     });
+
+    actions.editor.internal.updatePreviewCode();
   }
 );
 
@@ -61,6 +64,8 @@ export const npmDependencyRemoved: AsyncAction<{
     moduleShortid: state.editor.currentPackageJSON.shortid,
     cbID: null,
   });
+
+  actions.editor.internal.updatePreviewCode();
 });
 
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
@@ -233,6 +238,12 @@ export const codeChanged: Action<{
     module,
     code,
   });
+
+  const { isServer } = getTemplate(state.editor.currentSandbox.template);
+
+  if (!isServer && state.preferences.settings.livePreviewEnabled) {
+    actions.editor.internal.updatePreviewCode();
+  }
 };
 
 export const saveClicked: AsyncAction = withOwnedSandbox(
@@ -256,6 +267,8 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
       ) {
         actions.git.internal.fetchGitChanges();
       }
+
+      effects.preview.executeCodeImmediately();
     } catch (error) {
       // Put back any unsaved modules taking into account that you
       // might have changed some modules waiting for saving
@@ -367,6 +380,10 @@ export const moduleSelected: Action<{
       }
 
       effects.live.sendUserCurrentModule(module.shortid);
+
+      if (!state.editor.isInProjectView) {
+        actions.editor.internal.updatePreviewCode();
+      }
     }
   } catch (error) {
     // Do nothing, it is most likely VSCode selecting a file
@@ -453,8 +470,9 @@ export const toggleStatusBar: Action = ({ state }) => {
   state.editor.statusBar = !state.editor.statusBar;
 };
 
-export const projectViewToggled: Action = ({ state }) => {
+export const projectViewToggled: Action = ({ state, actions }) => {
   state.editor.isInProjectView = !state.editor.isInProjectView;
+  actions.editor.internal.updatePreviewCode();
 };
 
 export const frozenUpdated: AsyncAction<{ frozen: boolean }> = async (
@@ -710,7 +728,6 @@ export const previewActionReceived: Action<{
       actions.editor.addNpmDependency({
         name,
       });
-      actions.forceRender();
       break;
     }
   }
@@ -719,37 +736,35 @@ export const previewActionReceived: Action<{
 export const renameModule: AsyncAction<{
   title: string;
   moduleShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, effects, actions }, { title, moduleShortid }) => {
-    const sandbox = state.editor.currentSandbox;
-    const module = sandbox.modules.find(
-      moduleItem => moduleItem.shortid === moduleShortid
+}> = withOwnedSandbox(async ({ state, effects }, { title, moduleShortid }) => {
+  const sandbox = state.editor.currentSandbox;
+  const module = sandbox.modules.find(
+    moduleItem => moduleItem.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  const oldTitle = module.title;
+
+  module.title = title;
+
+  try {
+    await effects.api.saveModuleTitle(
+      state.editor.currentId,
+      moduleShortid,
+      title
     );
 
-    if (!module) {
-      return;
+    if (state.live.isCurrentEditor) {
+      effects.live.sendModuleUpdate(module);
     }
-
-    const oldTitle = module.title;
-
-    module.title = title;
-
-    try {
-      await effects.api.saveModuleTitle(
-        state.editor.currentId,
-        moduleShortid,
-        title
-      );
-
-      if (state.live.isCurrentEditor) {
-        effects.live.sendModuleUpdate(module);
-      }
-    } catch (error) {
-      module.title = oldTitle;
-      effects.notificationToast.error('Could not rename file');
-    }
+  } catch (error) {
+    module.title = oldTitle;
+    effects.notificationToast.error('Could not rename file');
   }
-);
+});
 
 export const onDevToolsTabAdded: Action<{
   tab: any;

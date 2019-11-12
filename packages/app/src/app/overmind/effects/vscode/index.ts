@@ -265,8 +265,6 @@ export class VSCodeEffect {
       this.onFileChange,
       this.onOperationApplied
     );
-
-    this.fs.sync();
   }
 
   public async openModule(module: Module) {
@@ -476,7 +474,6 @@ export class VSCodeEffect {
       const extensionEnablementService = accessor.get(
         IExtensionEnablementService
       );
-      // const quickopenService = accessor.get(IQuickOpenService);
 
       this.commandService.resolve(commandService);
       this.extensionService.resolve(extensionService);
@@ -574,7 +571,7 @@ export class VSCodeEffect {
     });
   }
 
-  private provideDocumentFormattingEdits(model, _, token) {
+  private provideDocumentFormattingEdits = (model, _, token) =>
     prettify(
       model.uri.fsPath,
       () => model.getValue(),
@@ -587,7 +584,6 @@ export class VSCodeEffect {
         text: newCode,
       },
     ]);
-  }
 
   private changeSettings = (settings: Settings) => {
     this.settings = settings;

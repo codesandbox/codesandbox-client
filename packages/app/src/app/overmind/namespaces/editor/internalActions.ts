@@ -73,7 +73,7 @@ export const saveCode: AsyncAction<{
   code: string;
   moduleShortid: string;
   cbID?: string | null;
-}> = async ({ state, effects, actions }, { code, moduleShortid, cbID }) => {
+}> = async ({ state, effects, actions }, { moduleShortid, cbID }) => {
   effects.analytics.track('Save Code');
 
   const sandbox = state.editor.currentSandbox;
@@ -82,11 +82,6 @@ export const saveCode: AsyncAction<{
   if (!module) {
     return;
   }
-
-  await actions.editor.codeChanged({
-    code,
-    moduleShortid,
-  });
 
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
@@ -245,9 +240,7 @@ export const setModuleCode: Action<{
     state.editor.changedModuleShortids.push(module.shortid);
   }
 
-  if (state.preferences.settings.experimentVSCode) {
-    effects.vscode.runCommand('workbench.action.keepEditor');
-  }
+  effects.vscode.runCommand('workbench.action.keepEditor');
 
   const tabs = state.editor.tabs as ModuleTab[];
   const tab = tabs.find(tabItem => tabItem.moduleShortid === module.shortid);
@@ -315,7 +308,7 @@ export const forkSandbox: AsyncAction<{
   state.editor.isForkingSandbox = false;
 };
 
-export const setCurrentModule: Action<Module> = (
+export const setCurrentModule: AsyncAction<Module> = async (
   { state, effects },
   module
 ) => {
@@ -340,7 +333,9 @@ export const setCurrentModule: Action<Module> = (
   }
 
   state.editor.currentModuleShortid = module.shortid;
-  effects.vscode.openModule(module);
+  await effects.vscode.openModule(module);
+  effects.vscode.setErrors(state.editor.errors);
+  effects.vscode.setCorrections(state.editor.corrections);
 };
 
 export const updateSandboxPackageJson: AsyncAction = async ({
@@ -390,5 +385,13 @@ export const updateDevtools: AsyncAction<{
     }
   } else {
     state.editor.workspaceConfigCode = code;
+  }
+};
+
+export const updatePreviewCode: Action = ({ state, effects }) => {
+  if (state.preferences.settings.instantPreviewEnabled) {
+    effects.preview.executeCodeImmediately();
+  } else {
+    effects.preview.executeCode();
   }
 };

@@ -128,12 +128,14 @@ export const externalResourceAdded: AsyncAction<{
   const { externalResources } = state.editor.currentSandbox;
 
   externalResources.push(resource);
+  actions.editor.internal.updatePreviewCode();
 
   try {
     await effects.api.createResource(state.editor.currentId, resource);
   } catch (error) {
     externalResources.splice(externalResources.indexOf(resource), 1);
     effects.notificationToast.error('Could not save external resource');
+    actions.editor.internal.updatePreviewCode();
   }
 });
 
@@ -144,6 +146,7 @@ export const externalResourceRemoved: AsyncAction<{
   const resourceIndex = externalResources.indexOf(resource);
 
   externalResources.splice(resourceIndex, 1);
+  actions.editor.internal.updatePreviewCode();
 
   try {
     await effects.api.deleteResource(state.editor.currentId, resource);
@@ -152,6 +155,7 @@ export const externalResourceRemoved: AsyncAction<{
     effects.notificationToast.error(
       'Could not save removal of external resource'
     );
+    actions.editor.internal.updatePreviewCode();
   }
 });
 

@@ -94,7 +94,7 @@ export async function initializeBrowserFS({
               currentSandboxFs = evt.data.$data;
               break;
             }
-            case 'writeFile': {
+            case 'write-file': {
               const module = evt.data.$data;
               writeFile(currentSandboxFs, module);
               break;

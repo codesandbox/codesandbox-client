@@ -73,4 +73,6 @@ export const onInitialize: OnInitialize = async (
     getSignal: path =>
       path.split('.').reduce((aggr, key) => aggr[key], actions),
   });
+
+  effects.preview.initialize(overmindInstance.reaction);
 };

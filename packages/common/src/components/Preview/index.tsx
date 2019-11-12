@@ -7,7 +7,7 @@ import {
 } from 'codesandbox-api';
 import debounce from 'lodash/debounce';
 import React from 'react';
-
+import { Spring } from 'react-spring/renderprops.cjs';
 import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
@@ -222,12 +222,6 @@ class BasePreview extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.sandbox && this.props.sandbox) {
-      if (prevProps.sandbox.id !== this.props.sandbox.id) {
-        this.handleSandboxChange(this.props.sandbox);
-      }
-    }
-
     if (prevProps.privacy !== this.props.privacy) {
       this.handlePrivacyChange();
     }
@@ -527,6 +521,9 @@ class BasePreview extends React.Component<Props, State> {
       return null;
     }
 
+    // Weird TS typing bug
+    const AnySpring = Spring as any;
+
     return (
       <Container
         className={className}
@@ -554,53 +551,63 @@ class BasePreview extends React.Component<Props, State> {
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
 
-        <StyledFrame
-          sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-          allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
-          src={this.currentUrl()}
-          ref={this.setIframeElement}
-          title={getSandboxName(sandbox)}
-          id="sandbox-preview"
-          style={{
-            zIndex: 1,
-            backgroundColor: 'white',
-            pointerEvents:
-              dragging || inactive || this.props.isResizing
-                ? 'none'
-                : 'initial',
+        <AnySpring
+          from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
+          to={{
+            opacity: this.state.showScreenshot ? 0 : 1,
           }}
-        />
-
-        {this.props.sandbox.screenshotUrl &&
-          this.props.showScreenshotOverlay &&
-          this.state.showScreenshot && (
-            <div
-              style={{
-                overflow: 'hidden',
-                width: '100%',
-                position: 'absolute',
-                display: 'flex',
-                justifyContent: 'center',
-                left: 0,
-                right: 0,
-                bottom: 0,
-                top: showNavigation ? 35 : 0,
-                zIndex: 0,
-              }}
-            >
-              <div
+        >
+          {(style: { opacity: number }) => (
+            <>
+              <StyledFrame
+                sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
+                allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+                src={this.currentUrl()}
+                ref={this.setIframeElement}
+                title={getSandboxName(sandbox)}
+                id="sandbox-preview"
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  filter: `blur(2px)`,
-                  transform: 'scale(1.025, 1.025)',
-                  backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPositionX: 'center',
+                  ...style,
+                  zIndex: 1,
+                  backgroundColor: 'white',
+                  pointerEvents:
+                    dragging || inactive || this.props.isResizing
+                      ? 'none'
+                      : 'initial',
                 }}
               />
-            </div>
+
+              {this.props.sandbox.screenshotUrl && style.opacity !== 1 && (
+                <div
+                  style={{
+                    overflow: 'hidden',
+                    width: '100%',
+                    position: 'absolute',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    top: showNavigation ? 35 : 0,
+                    zIndex: 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      filter: `blur(2px)`,
+                      transform: 'scale(1.025, 1.025)',
+                      backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPositionX: 'center',
+                    }}
+                  />
+                </div>
+              )}
+            </>
           )}
+        </AnySpring>
       </Container>
     );
   }

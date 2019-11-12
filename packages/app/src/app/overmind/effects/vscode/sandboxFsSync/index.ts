@@ -114,21 +114,6 @@ class SandboxFsSync {
     });
   }
 
-  public async sync() {
-    await this.initializingWorkers.promise;
-
-    // eslint-disable-next-line
-    console.log('## SYNCING SANDBOX AND TYPINGS WITH WORKERS');
-    this.syncSandbox();
-
-    try {
-      await this.syncDependencyTypings();
-    } catch (error) {
-      // Might not be a filesystem ready yet
-      // console.log('ERROR SYNCING', error);
-    }
-  }
-
   public create(sandbox: Sandbox): SandboxFs {
     const sandboxFs = {};
 
@@ -153,6 +138,8 @@ class SandboxFsSync {
         sandboxFs[path] = { ...d, path, type: 'directory' };
       }
     });
+
+    this.sync();
 
     return sandboxFs;
   }
@@ -208,6 +195,8 @@ class SandboxFsSync {
   }
 
   private syncSandbox() {
+    // eslint-disable-next-line
+    console.log('## SYNCING SANDBOX AND TYPINGS WITH WORKERS');
     global.postMessage(
       {
         $broadcast: true,
@@ -216,6 +205,19 @@ class SandboxFsSync {
       },
       protocolAndHost()
     );
+  }
+
+  private async sync() {
+    await this.initializingWorkers.promise;
+
+    this.syncSandbox();
+
+    try {
+      await this.syncDependencyTypings();
+    } catch (error) {
+      // Might not be a filesystem ready yet
+      // console.log('ERROR SYNCING', error);
+    }
   }
 
   private send(type: string, data: any) {

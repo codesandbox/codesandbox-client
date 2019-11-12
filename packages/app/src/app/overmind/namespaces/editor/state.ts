@@ -42,7 +42,6 @@ type State = {
   errors: ModuleError[];
   corrections: ModuleCorrection[];
   isInProjectView: boolean;
-  forceRender: number;
   initialPath: string;
   highlightedLines: number[];
   isUpdatingPrivacy: boolean;
@@ -84,7 +83,6 @@ export const state: State = {
   sessionFrozen: true,
   corrections: [],
   isInProjectView: false,
-  forceRender: 0,
   initialPath: '/',
   highlightedLines: [],
   isUpdatingPrivacy: false,
