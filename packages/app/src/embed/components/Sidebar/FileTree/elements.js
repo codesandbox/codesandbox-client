@@ -8,10 +8,10 @@ export const FileContainer = styled.div(props =>
     fontSize: 3,
     lineHeight: '24px',
     paddingLeft: theme.space[3] * (props.depth + 1),
-    backgroundColor: props.isSelected ? 'grays.500' : 'transparent',
+    backgroundColor: props.isSelected ? 'sideBar.border' : 'transparent',
     ':hover': {
       cursor: 'pointer',
-      backgroundColor: 'grays.500',
+      backgroundColor: 'sideBar.border',
     },
   }))
 );
