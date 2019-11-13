@@ -1,6 +1,8 @@
+import { blocker } from 'app/utils/blocker';
+
 import { Reaction } from '..';
 
-let _preview;
+let _preview = blocker<any>();
 let _reaction: Reaction;
 
 export default {
@@ -8,7 +10,7 @@ export default {
     _reaction = reaction;
   },
   initializePreview(preview: any) {
-    _preview = preview;
+    _preview.resolve(preview);
 
     const dispose = _reaction(
       state => [
@@ -21,32 +23,30 @@ export default {
           isAllModulesSynced &&
           (template === 'static' || !livePreviewEnabled)
         ) {
-          _preview.handleRefresh();
+          preview.handleRefresh();
         }
       }
     );
 
     return () => {
-      _preview = null;
       dispose();
+      _preview = blocker<any>();
     };
   },
-  executeCodeImmediately(initialRender?: boolean) {
-    if (!_preview) {
-      return;
-    }
-    _preview.executeCodeImmediately(initialRender);
+  async executeCodeImmediately(initialRender?: boolean) {
+    const preview = await _preview.promise;
+    preview.executeCodeImmediately(initialRender);
   },
-  executeCode() {
-    if (!_preview) {
-      return;
-    }
-    _preview.executeCode();
+  async executeCode() {
+    const preview = await _preview.promise;
+    preview.executeCode();
   },
-  refresh() {
-    if (!_preview) {
-      return;
-    }
-    _preview.handleRefresh();
+  async refresh() {
+    const preview = await _preview.promise;
+    preview.handleRefresh();
+  },
+  async refreshUrl() {
+    const preview = await _preview.promise;
+    preview.refreshUrl();
   },
 };

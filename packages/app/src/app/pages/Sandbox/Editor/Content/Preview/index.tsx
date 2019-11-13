@@ -1,8 +1,8 @@
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import { useOvermind } from 'app/overmind';
 // @flow
 import React, { FC, useState } from 'react';
-import { useOvermind } from 'app/overmind';
 
 type Props = {
   hidden?: boolean;
@@ -43,7 +43,7 @@ const PreviewComponent: FC<Props> = props => {
 
   return running ? (
     <BasePreview
-      onInitialized={effects.preview.initializePreview}
+      onMount={effects.preview.initializePreview}
       sandbox={state.editor.currentSandbox}
       privacy={state.editor.currentSandbox.privacy}
       previewSecret={state.editor.currentSandbox.previewSecret}

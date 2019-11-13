@@ -73,7 +73,7 @@ export const saveCode: AsyncAction<{
   code: string;
   moduleShortid: string;
   cbID?: string | null;
-}> = async ({ state, effects, actions }, { moduleShortid, cbID }) => {
+}> = async ({ state, effects, actions }, { code, moduleShortid, cbID }) => {
   effects.analytics.track('Save Code');
 
   const sandbox = state.editor.currentSandbox;
@@ -82,6 +82,8 @@ export const saveCode: AsyncAction<{
   if (!module) {
     return;
   }
+
+  module.code = code;
 
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
@@ -296,10 +298,27 @@ export const forkSandbox: AsyncAction<{
       });
     }
 
-    await actions.internal.setCurrentSandbox(forkedSandbox);
-    state.editor.modulesByPath = effects.vscode.fs.create(forkedSandbox);
-    await effects.vscode.changeSandbox(forkedSandbox);
-    effects.vscode.openModule(state.editor.currentModule);
+    // When we have a server we want to set a brand new sandbox,
+    // as the preview also needs to be managed correctly
+    if (getTemplateDefinition(forkedSandbox.template).isServer) {
+      await effects.vscode.closeAllTabs();
+      actions.internal.setCurrentSandbox(forkedSandbox);
+      state.editor.modulesByPath = effects.vscode.fs.create(forkedSandbox);
+      await effects.vscode.changeSandbox(forkedSandbox);
+      effects.vscode.openModule(state.editor.currentModule);
+      effects.preview.executeCodeImmediately(true);
+
+      // When not server we "piggyback" the existing Sandbox to avoid any rerenders and need
+      // for new bundler. We do not reference the sandbox by `currentId` anywhere,
+      // so this should be safe. The url of the preview is updated
+    } else {
+      Object.assign(
+        state.editor.sandboxes[state.editor.currentId],
+        forkedSandbox
+      );
+      effects.preview.refreshUrl();
+    }
+
     effects.notificationToast.success('Forked sandbox!');
     effects.router.updateSandboxUrl(forkedSandbox);
   } catch (error) {

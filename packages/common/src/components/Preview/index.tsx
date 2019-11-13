@@ -8,6 +8,7 @@ import {
 import debounce from 'lodash/debounce';
 import React from 'react';
 import { Spring } from 'react-spring/renderprops.cjs';
+
 import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
@@ -44,6 +45,7 @@ export type Props = {
   alignDirection?: 'right' | 'bottom';
   delay?: number;
   className?: string;
+  onMount?: (preview: BasePreview) => () => void;
   overlayMessage?: string;
   /**
    * Whether to show a screenshot in the preview as a "placeholder" while loading
@@ -76,6 +78,7 @@ interface IModulesByPath {
 class BasePreview extends React.Component<Props, State> {
   serverPreview: boolean;
   element: HTMLIFrameElement;
+  onUnmount: () => void;
 
   constructor(props: Props) {
     super(props);
@@ -130,6 +133,12 @@ class BasePreview extends React.Component<Props, State> {
       nextState.frameInitialized
     ) {
       this.handleRefresh();
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.onMount) {
+      this.onUnmount = this.props.onMount(this);
     }
   }
 
@@ -219,11 +228,17 @@ class BasePreview extends React.Component<Props, State> {
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
+    if (this.onUnmount) {
+      this.onUnmount();
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.privacy !== this.props.privacy) {
       this.handlePrivacyChange();
+    }
+    if (prevProps.sandbox.id !== this.props.sandbox.id) {
+      this.handleSandboxChange();
     }
   }
 
@@ -246,8 +261,8 @@ class BasePreview extends React.Component<Props, State> {
     this.sendPreviewSecret();
   };
 
-  handleSandboxChange = (sandbox: Sandbox) => {
-    this.serverPreview = getTemplate(sandbox.template).isServer;
+  handleSandboxChange = () => {
+    this.serverPreview = getTemplate(this.props.sandbox.template).isServer;
 
     resetState();
 
@@ -270,6 +285,16 @@ class BasePreview extends React.Component<Props, State> {
       () => this.handleRefresh()
     );
   };
+
+  refreshUrl() {
+    const url = this.currentUrl();
+
+    this.setState({
+      urlInAddressBar: url,
+      url,
+      showScreenshot: false,
+    });
+  }
 
   handleDependenciesChange = () => {
     this.handleRefresh();

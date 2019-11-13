@@ -148,6 +148,10 @@ class SandboxFsSync {
     writeFile(fs, json(module));
 
     this.send('write-file', module);
+
+    if (module.title === 'package.json') {
+      this.syncDependencyTypings();
+    }
   }
 
   public rename(fs: SandboxFs, fromPath: string, toPath: string) {
