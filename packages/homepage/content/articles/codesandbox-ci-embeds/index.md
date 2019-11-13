@@ -22,7 +22,7 @@ After a successful private beta, CodeSandbox CI is already in use by projects li
 
 [![Framer tweet](./images/mattgperry_tweet_1181863225756934144.png)](https://twitter.com/mattgperry/status/1181863225756934144?s=20)
 
-Try it out for yourself by [installing the GitHub app(https://github.com/apps/codesandbox).
+Try it out for yourself by [installing the GitHub app](https://github.com/apps/codesandbox).
 
 ## A new look for Embeds
 CodeSandbox CI is the latest way maintainers can use CodeSandbox to save time and improve experiences for users and contributors. But more than 4000 open source projects already use CodeSandbox embeds in their docs, blog posts, and websites—providing visitors with working examples that help explain how to use their creations. 
