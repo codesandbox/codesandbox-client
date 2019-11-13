@@ -20,7 +20,7 @@ best use of their time. Today we're pleased to launch CodeSandbox CI: A free
 continuous integration service purpose-built for open source library
 maintainers.
 
-![](./images/CodeSandboxCI.gif)
+<iframe width="100%" height="500" src="https://www.youtube.com/embed/k_aR_4FeKlc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Here's how it works
 
@@ -69,7 +69,14 @@ on the UI and more on the content. We also wanted to give users more control and
 improve the embed experience on mobile.”_
 
 See the difference for yourself:
-[![Vanilla embed](./images/oldvsnew.png)](https://codesandbox.io/embed/vanilla)
+
+<iframe
+  src="https://codesandbox.io/embed/new?fontsize=14"
+  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+  title="new"
+  allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+></iframe>
 
 ## The next big design trend?
 
