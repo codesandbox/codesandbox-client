@@ -20,9 +20,9 @@ Whenever someone opens a new pull request, CodeSandbox CI builds a new version o
 ## Used by the biggest names in OSS
 After a successful private beta, CodeSandbox CI is already in use by projects like React, Babel, Framer, Material UI, and others. And it's proving to be a real time-saver.
 
-[![Framer tweet](./images/mattgperry_tweet_1181863225756934144.png)](https://twitter.com/mattgperry/status/1181863225756934144?s=20)
-
 **Try it out for yourself by [installing the GitHub app](https://github.com/apps/codesandbox)**.
+
+[![Framer tweet](./images/mattgperry_tweet_1181863225756934144.png)](https://twitter.com/mattgperry/status/1181863225756934144?s=20)
 
 ## A new look for Embeds
 CodeSandbox CI is the latest way maintainers can use CodeSandbox to save time and improve experiences for users and contributors. But more than 4000 open source projects already use CodeSandbox embeds in their docs, blog posts, and websites—providing visitors with working examples that help explain how to use their creations. 
@@ -33,7 +33,7 @@ We want you to be able to use embeds anywhere you want. So based on feedback fro
 
 Danny Ruchtie, Head of Design here at CodeSandbox, notes that with this release, _“we've focused on building something that would better blend in with its surroundings while maintaining all its powerful features. So there's less focus on the UI and more on the content. We also wanted to give users more control and improve the embed experience on mobile.”_
 
-Take a look:
+See the difference for yourself:
 [![Vanilla embed](./images/oldvsnew.png)](https://codesandbox.io/embed/vanilla)
 
 ## The next big design trend?
