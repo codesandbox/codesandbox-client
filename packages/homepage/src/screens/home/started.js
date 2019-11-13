@@ -1,39 +1,68 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { motion, useViewportScroll, useTransform } from 'framer-motion';
 import { down } from 'styled-breakpoints';
 import { P, H3, H5 } from '../../components/Typography';
 
 import started from '../../assets/images/started.png';
 import Tweet from '../../components/Tweet';
 
+const isBrowser = typeof window !== `undefined`;
+
+function getScrollPosition() {
+  return isBrowser
+    ? { x: window.pageXOffset, y: window.pageYOffset }
+    : { x: 0, y: 0 };
+}
+
+export function useScrollPosition() {
+  const [position, setScrollPosition] = useState(getScrollPosition());
+
+  useEffect(() => {
+    let requestRunning;
+    function handleScroll() {
+      if (isBrowser && requestRunning === null) {
+        requestRunning = window.requestAnimationFrame(() => {
+          setScrollPosition(getScrollPosition());
+          requestRunning = null;
+        });
+      }
+    }
+
+    if (isBrowser) {
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
+  }, [setScrollPosition]);
+
+  return position;
+}
+
+export function useScrollXPosition() {
+  const { x } = useScrollPosition();
+  return x;
+}
+
+export function useScrollYPosition() {
+  const { y } = useScrollPosition();
+  return y;
+}
+
 const Grid = styled.div`
   display: grid;
   grid-template-columns: 1fr 642px;
   grid-gap: 30px;
 
-  ${down('md')} {
+  ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
   }
 `;
 
 const Started = () => {
-  const [elementTop, setElementTop] = useState(0);
-  const ref = useRef(null);
-  const { scrollY } = useViewportScroll();
-
-  const y = useTransform(scrollY, [elementTop, elementTop + 1], [0, -0.1], {
-    clamp: false,
-  });
-
-  useLayoutEffect(() => {
-    const element = ref.current;
-    setElementTop(element.offsetTop);
-  }, [ref]);
+  const scrollY = useScrollYPosition();
 
   return (
     <>
+      {console.log(scrollY)}
       <Grid css="">
         <div
           css={`
@@ -53,30 +82,28 @@ const Started = () => {
           <P muted>Your app is updated as you type</P>
           <H5>Live preview </H5>
           <P muted>See changes as you make them</P>
-
-          <div ref={ref}>
-            <motion.div style={{ y }}>
-              <Tweet
-                style={`
+          <div>
+            <Tweet
+              style={`
              right: -6rem;
              left: auto;
              width: 30rem;
-             margin-top: 10rem;
+             margin-top: 2rem;
              min-height: 20rem;
              background: #242424
+             max-width: 100%;
 
            `}
-                tweet={{
-                  name: 'Peggy Rayzis',
-                  quote:
-                    "I'm obsessed with CodeSandbox's GitHub import feature!! 😍 One click and you can convert a repo to a sandbox that automatically stays up to date with the latest commits.",
-                  url:
-                    'https://twitter.com/peggyrayzis/status/976557689651236864?s=20',
-                  username: 'peggyrayzis',
-                  job: 'DX at Apollo',
-                }}
-              />
-            </motion.div>
+              tweet={{
+                name: 'Peggy Rayzis',
+                quote:
+                  "I'm obsessed with CodeSandbox's GitHub import feature!! 😍 One click and you can convert a repo to a sandbox that automatically stays up to date with the latest commits.",
+                url:
+                  'https://twitter.com/peggyrayzis/status/976557689651236864?s=20',
+                username: 'peggyrayzis',
+                job: 'DX at Apollo',
+              }}
+            />
           </div>
         </div>
 

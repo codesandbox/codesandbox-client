@@ -1479,6 +1479,14 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.3.tgz#dfa0c92efe44a1d1a7974fb49ffeb40ef2da5a27"
   integrity sha512-zVgvPwGK7c1aVdUVc9Qv7SqepOGRDrqCw7KZPSZziWGxSlbII3gmvGLPzLX4d0n0BMbamBacUrN22zOMyFFEkQ==
 
+"@essentials/request-timeout@^1.0.0", "@essentials/request-timeout@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@essentials/request-timeout/-/request-timeout-1.0.1.tgz#fd46f0d7ffdfc422229e5da7de89341fe434d1dd"
+  integrity sha512-31ronVRtN7bTKEwdMnh4/qvNT9pjHpKWt4HFTqNJAIbxeFlO2OLac1vSEH+c1deqkxK0h9wynMxmwRAmQinwwg==
+  dependencies:
+    performance-now "^2.1.0"
+    raf "^3.4.1"
+
 "@evocateur/libnpmaccess@^3.1.2":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@evocateur/libnpmaccess/-/libnpmaccess-3.1.2.tgz#ecf7f6ce6b004e9f942b098d92200be4a4b1c845"
@@ -2860,6 +2868,27 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
     warning "^3.0.0"
+
+"@react-hook/hover@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@react-hook/hover/-/hover-1.0.1.tgz#71c7236a703fc36714e76e8d3072ea04f28bf487"
+  integrity sha512-tXT1xJhGLbWhNkwQsYVx2KGn6wLkREi76Aw4lDqUwNEG5QDIK6W0yJU3TINE8dlrJf+KB0sTrrRMeB/7mQM3+A==
+
+"@react-hook/mouse-position@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@react-hook/mouse-position/-/mouse-position-1.0.3.tgz#d9a86db9e476874dbcda92caac95a1c91fa97618"
+  integrity sha512-z1bB+KTOrIedrZBfjl/wFcLAv3yW1DjBC5BQAf3CDdMLZIfw/17dkVQ9VHkBRWbizxYL7A0F2+OUQy7BoWeiRw==
+  dependencies:
+    "@essentials/request-timeout" "^1.0.0"
+    "@react-hook/hover" "^1.0.1"
+    "@react-hook/throttle" "^1.0.0"
+
+"@react-hook/throttle@^1.0.0":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@react-hook/throttle/-/throttle-1.0.5.tgz#f5b9bad8c6ccb80a309d86e072db5720dee30a0b"
+  integrity sha512-PhXhTsFbfdn+0FmkgVA8Qyrtsd4CDlg9oCgEqRyEAcLK2c0ShLI5xK76Q46TLhTysJi61Db4wg6BZ1+aFEvcCA==
+  dependencies:
+    "@essentials/request-timeout" "^1.0.1"
 
 "@samuelmeuli/font-manager@^1.2.0":
   version "1.2.0"
@@ -7984,7 +8013,7 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
 
 console-feed@CompuIves/console-feed#build2, console-feed@^2.8.5:
-  version "2.8.8"
+  version "2.8.9"
   resolved "https://codeload.github.com/CompuIves/console-feed/tar.gz/42f10eb3063f0f26ee9745c4c9e4542cb5591f46"
   dependencies:
     emotion "^9.1.1"
@@ -21041,6 +21070,13 @@ raf-schd@^4.0.0:
 raf@^3.1.0, raf@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.0.tgz#a28876881b4bc2ca9117d4138163ddb80f781575"
+  dependencies:
+    performance-now "^2.1.0"
+
+raf@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
+  integrity sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==
   dependencies:
     performance-now "^2.1.0"
 

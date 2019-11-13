@@ -12,6 +12,8 @@ import BlogIcon from '../../assets/icons/Blog';
 import EmbedIcon from '../../assets/icons/Embed';
 import CIIcon from '../../assets/icons/Ci';
 import TeamsIcon from '../../assets/icons/Teams';
+import SearchIcon from '../../assets/icons/Search';
+import HighlightedICon from '../../assets/icons/Highlighted';
 // import NewIcon from '../../assets/icons/New';
 import {
   Header,
@@ -24,6 +26,26 @@ import {
   LogIn,
 } from './elements';
 import SubNav from './SubNav';
+import MobileNav from './MobileNav';
+
+const DownButton = () => (
+  <svg
+    css={`
+      margin-left: 0.25rem;
+      top: -1px;
+      position: relative;
+    `}
+    width={6}
+    height={4}
+    fill="none"
+    viewBox="0 0 6 4"
+  >
+    <path
+      fill="#999"
+      d="M.471 0L0 .471 2.828 3.3 5.657.47 5.185 0 2.828 2.357.471 0z"
+    />
+  </svg>
+);
 
 const Navigation = () => {
   const [user, setUser] = useState(null);
@@ -74,6 +96,7 @@ const Navigation = () => {
                     type="button"
                   >
                     Features
+                    <DownButton />
                   </button>
                 </li>
                 <li>
@@ -86,6 +109,7 @@ const Navigation = () => {
                     type="button"
                   >
                     Resources
+                    <DownButton />
                   </button>
                 </li>
                 <li>
@@ -96,28 +120,44 @@ const Navigation = () => {
                     type="button"
                   >
                     Support
+                    <DownButton />
                   </button>
                 </li>
                 <li>
-                  <Link to="/explore">Explore</Link>
+                  <button
+                    onClick={() =>
+                      setOpenedNav(openedNav === 'explore' ? null : 'explore')
+                    }
+                    type="button"
+                  >
+                    Explore
+                    <DownButton />
+                  </button>
                 </li>
                 <li>
                   <Link to="/explore">Pricing</Link>
                 </li>
                 {!user && (
-                  <li>
+                  <li className="tablet-remove">
                     <a href="https://codesandbox.io/signin">Sign In</a>
                   </li>
                 )}
                 <LogIn>
-                  <Button href="/s">Create Sandbox</Button>
+                  <Button className="button" href="/s">
+                    Create Sandbox
+                  </Button>
                   {user && (
-                    <UserAvatar src={user.avatar_url} alt={user.username} />
+                    <UserAvatar
+                      className="tablet-remove"
+                      src={user.avatar_url}
+                      alt={user.username}
+                    />
                   )}
                 </LogIn>
               </List>
             </Wrapper>
           </Nav>
+          <MobileNav />
         </Header>
       </motion.div>
       <SubNav
@@ -233,6 +273,28 @@ const Navigation = () => {
           //   ),
           //   Label: () => <a>What’s New</a>,
           // },
+        ]}
+      />
+      <SubNav
+        openedNav={openedNav}
+        name="explore"
+        components={[
+          {
+            Icon: () => (
+              <Link to="/explore">
+                <HighlightedICon />
+              </Link>
+            ),
+            Label: () => <Link to="/explore">Highlighted Sandboxes</Link>,
+          },
+          {
+            Icon: () => (
+              <Link to="/search">
+                <SearchIcon />
+              </Link>
+            ),
+            Label: () => <Link to="/search">Search Sandboxes</Link>,
+          },
         ]}
       />
     </>

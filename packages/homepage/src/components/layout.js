@@ -8,13 +8,15 @@ import '../css/global.css';
 import Navigation from './Navigation/index';
 import Footer from './Footer';
 
+const text = number => `@media only screen and (max-width: ${number}px)`;
+
 const homepageTheme = {
   ...theme,
   breakpoints: {
-    sm: '576px',
-    md: '768px',
-    lg: '992px',
-    xl: '1200px',
+    sm: text(576),
+    md: text(768),
+    lg: text(992),
+    xl: text(1200),
   },
   homepage: {
     appleFont:

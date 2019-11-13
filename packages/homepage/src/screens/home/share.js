@@ -16,7 +16,7 @@ const Grid = styled.div`
   grid-gap: 2.5rem;
   position: relative;
 
-  ${down('md')} {
+  ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
   }
 `;
@@ -30,7 +30,7 @@ const Section = styled.section`
   z-index: 2;
   margin-left: 200px;
 
-  ${down('md')} {
+  ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
     margin-left: 0px;
     margin-top: 30rem;

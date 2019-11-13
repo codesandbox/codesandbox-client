@@ -21,7 +21,7 @@ const JoinWrapper = styled.section`
   border: 1px solid #242424;
   overflow: hidden;
 
-  ${down('md')} {
+  ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
   }
 `;
@@ -32,7 +32,7 @@ const IDE = styled.img`
   right: 0;
   box-shadow: 0 0.24rem 0.5rem rgba(0, 0, 0, 0.24);
 
-  ${down('md')} {
+  ${props => props.theme.breakpoints.md} {
     position: relative;
     margin: 0;
     margin-top: 2rem;
@@ -49,7 +49,7 @@ const Text = styled.h3`
   margin: auto;
   margin-bottom: 2.5rem;
 
-  ${down('md')} {
+  ${props => props.theme.breakpoints.md} {
     margin-top: 2rem;
   }
 `;

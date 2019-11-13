@@ -69,6 +69,16 @@ export const Nav = styled.nav`
   align-items: center;
   justify-content: space-between;
   font-size: 0.8125rem;
+
+  ${props => props.theme.breakpoints.md} {
+    display: none;
+  }
+
+  ${props => props.theme.breakpoints.lg} {
+    .tablet-remove {
+      display: none;
+    }
+  }
 `;
 
 export const Wrapper = styled.div`
@@ -111,7 +121,7 @@ export const List = styled.ul`
     margin: 0;
   }
 
-  a,
+  a:not(.button),
   button {
     background: transparent;
     border: none;
@@ -120,6 +130,7 @@ export const List = styled.ul`
     color: ${props => props.theme.homepage.muted};
     transition: all 200ms ease;
     outline: none;
+    padding: 0;
 
     &:hover {
       color: ${props => props.theme.homepage.white};
@@ -131,3 +142,85 @@ export const LogIn = styled.li`
   display: flex;
   align-items: center;
 `;
+
+export const MobileNav = styled.nav`
+  display: none;
+  width: 90%;
+  margin: auto;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  ${props => props.theme.breakpoints.md} {
+    display: flex;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
+  > div > svg {
+    cursor: pointer;
+  }
+
+  > div > a {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1rem;
+    text-decoration: none;
+    margin-right: 1rem;
+    color: ${props => props.theme.homepage.white};
+  }
+`;
+
+export const PopUpNav = styled.nav`
+  position: absolute;
+  height: calc(100vh - 48px);
+  top: 48px;
+  background: #151515;
+  padding-top: 1.5rem;
+  padding-bottom: 4rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: 100%;
+  z-index: 3;
+`;
+
+export const Headers = styled.h3`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  line-height: 16px;
+  margin-bottom: 0.5rem;
+
+  color: #757575;
+`;
+
+export const Items = styled.ul`
+         padding: 0;
+         list-style: none;
+         margin: 0;
+
+         li {
+           padding: 0.5rem 0;
+         }
+
+         li a {
+           display: flex;
+           text-decoration: none;
+         }
+
+         section {
+           width: 43px;
+         }
+
+         span {
+           font-style: normal;
+           font-weight: 500;
+           font-size: 1rem;
+
+           margin-left: 1rem;
+
+           color: ${props => props.theme.homepage.white};
+         }
+       `;
