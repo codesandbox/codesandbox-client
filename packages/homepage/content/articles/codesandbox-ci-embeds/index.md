@@ -78,7 +78,7 @@ See the difference for yourself:
   sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
 ></iframe>
 
-## The next big design trend?
+### The next big design trend?
 
 Ahead of the hipster crowd and the recent dark mode trend (we've had a default
 dark theme since we started!), we're pleased to introduce what's sure to be the
