@@ -100,3 +100,9 @@ to clone, install, and check things locally. There’s more info about how to
 configure CodeSandbox CI in [our docs](https://u2edh.csb.app/docs.html), and you
 can get started by
 [installing the GitHub app](https://github.com/apps/codesandbox).
+
+## Thanks
+
+Thanks goes to Bogdan Luca, Siddharth Kshetrapal, and Danny Ruchtie whose hard
+work made these updates possible. And also to our community for your thoughtful
+feedback and suggestions. We can't wait to see what you will build!
