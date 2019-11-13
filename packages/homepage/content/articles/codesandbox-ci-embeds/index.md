@@ -41,7 +41,7 @@ real time-saver.
 **Try it out for yourself by
 [installing the GitHub app](https://github.com/apps/codesandbox)**.
 
-https://twitter.com/mattgperry/status/1181863225756934144
+[![Framer tweet](./images/mattgperry_tweet_1181863225756934144.png)](https://twitter.com/mattgperry/status/1181863225756934144?s=20)
 
 ## A new look for Embeds
 
