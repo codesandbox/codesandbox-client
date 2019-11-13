@@ -217,7 +217,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     // if person added some files but no package.json
     if (
       filePath === 'package.json' &&
-      !apiData.files.find(f => f.name === 'package.json')
+      !apiData.files.find(f => f.file === 'package.json')
     ) {
       apiData.files.push({
         file: 'package.json',
