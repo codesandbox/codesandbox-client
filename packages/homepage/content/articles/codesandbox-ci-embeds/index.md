@@ -103,6 +103,8 @@ can get started by
 
 ## Thanks
 
-Thanks goes to Bogdan Luca, Siddharth Kshetrapal, and Danny Ruchtie whose hard
-work made these updates possible. And also to our community for your thoughtful
-feedback and suggestions. We can't wait to see what you will build!
+Thanks goes to [Bogdan Luca](https://twitter.com/lucabogdan),
+[Siddharth Kshetrapal](https://twitter.com/siddharthkp), and
+[Danny Ruchtie](https://twitter.com/druchtie) whose hard work made these updates
+possible. And also to our community for your thoughtful feedback and
+suggestions. We can't wait to see what you will build!
