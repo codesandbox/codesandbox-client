@@ -12,6 +12,31 @@ type Options = {
   getToken(): string;
 };
 
+interface Object {
+  [key: string]: string;
+}
+
+interface ApiData {
+  builds: Object[];
+  config?: Object;
+  deploymentType?: string;
+  env?: Object;
+  files: File[];
+  forceNew?: boolean;
+  name: string;
+  public: boolean;
+  regions: string[];
+  routes: Object[];
+  scope?: string;
+  version: number;
+}
+
+interface File {
+  data: string;
+  encoding?: string;
+  file: string;
+}
+
 export default (() => {
   let _options: Options;
 
@@ -133,7 +158,7 @@ export default (() => {
 async function getApiData(contents: any, sandbox: Sandbox) {
   const template = getTemplate(sandbox.template);
 
-  let apiData: any = {
+  let apiData: Partial<ApiData> = {
     files: [],
   };
   let packageJSON: any = {};
@@ -159,7 +184,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     nowJSON = packageJSON.now;
   }
 
-  const nowDefaults: any = {
+  const nowDefaults: Pick<ApiData, 'name' | 'public'> = {
     name: `csb-${sandbox.id}`,
     public: true,
   };
@@ -174,7 +199,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   packageJSON.name = nowJSON.name || nowDefaults.name;
 
   apiData.name = nowJSON.name || nowDefaults.name;
-  apiData.deploymentType = nowJSON.type || nowDefaults.type;
+  apiData.deploymentType = nowJSON.type;
   apiData.public = nowJSON.public || nowDefaults.public;
 
   // if now v2 we need to tell now the version, builds and routes
