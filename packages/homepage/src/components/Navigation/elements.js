@@ -145,11 +145,13 @@ export const LogIn = styled.li`
 
 export const MobileNav = styled.nav`
   display: none;
-  width: 90%;
+  padding-left: 1rem;
+  padding-right: 1rem;
   margin: auto;
   align-items: center;
   justify-content: space-between;
   height: 100%;
+
   ${props => props.theme.breakpoints.md} {
     display: flex;
   }
@@ -175,7 +177,7 @@ export const MobileNav = styled.nav`
 
 export const PopUpNav = styled.nav`
   position: absolute;
-  height: calc(100vh - 48px);
+  min-height: calc(100vh - 48px);
   top: 48px;
   background: #151515;
   padding-top: 1.5rem;
@@ -192,35 +194,53 @@ export const Headers = styled.h3`
   font-size: 0.8125rem;
   line-height: 16px;
   margin-bottom: 0.5rem;
+  margin-top: 1rem;
 
   color: #757575;
 `;
 
 export const Items = styled.ul`
-         padding: 0;
-         list-style: none;
-         margin: 0;
+  padding: 0;
+  list-style: none;
+  margin: 0;
 
-         li {
-           padding: 0.5rem 0;
-         }
+  li {
+    padding: 0.5rem 0;
+  }
 
-         li a {
-           display: flex;
-           text-decoration: none;
-         }
+  li a {
+    display: flex;
+    text-decoration: none;
+  }
 
-         section {
-           width: 43px;
-         }
+  section {
+    width: 43px;
+  }
 
-         span {
-           font-style: normal;
-           font-weight: 500;
-           font-size: 1rem;
+  span {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1rem;
 
-           margin-left: 1rem;
+    margin-left: 1rem;
 
-           color: ${props => props.theme.homepage.white};
-         }
-       `;
+    color: ${props => props.theme.homepage.white};
+  }
+`;
+
+export const Pricing = styled.a`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1rem;
+  margin-top: 2rem;
+
+  color: ${props => props.theme.homepage.white};
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+
+  section {
+    width: 43px;
+  }
+`;

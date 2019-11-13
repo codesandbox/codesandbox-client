@@ -8,9 +8,11 @@ import {
   PopUpNav,
   Headers,
   Items,
+  Pricing,
 } from './elements';
 import SupportIcon from '../../assets/icons/Support';
 import StatusIcon from '../../assets/icons/Status';
+import PricingIcon from '../../assets/icons/Pricing';
 // import LearnIcon from '../../assets/icons/Learn';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
@@ -20,6 +22,7 @@ import CIIcon from '../../assets/icons/Ci';
 import TeamsIcon from '../../assets/icons/Teams';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
+import Button from '../Button';
 // import NewIcon from '../../assets/icons/New';
 
 export default () => {
@@ -116,6 +119,66 @@ export default () => {
               </Link>
             </li>
           </Items>
+          <Headers>Resources</Headers>
+          <Items>
+            <li>
+              <Link to="/docs">
+                <section>
+                  <DocsIcon />
+                </section>
+                <span>Documentation</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/blog">
+                <section>
+                  <BlogIcon />
+                </section>
+                <span>Blog</span>
+              </Link>
+            </li>
+          </Items>
+          <Headers>Support</Headers>
+          <Items>
+            <li>
+              <a href="mailto:hello@codesandbox.io" title="Support">
+                <section>
+                  <SupportIcon />
+                </section>
+                <span>Contact Support</span>
+              </a>
+            </li>
+            <li>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://status.codesandbox.io"
+                title="Status"
+              >
+                <section>
+                  <StatusIcon />
+                </section>
+                <span>Status</span>
+              </a>
+            </li>
+            <Pricing>
+              <section>
+                <PricingIcon />
+              </section>
+              <span>Pricing</span>
+            </Pricing>
+          </Items>
+          <Button
+            css={`
+              margin-top: 4rem;
+              display: block;
+              padding: 6px 21px;
+            `}
+            className="button"
+            href="/s"
+          >
+            Create Sandbox
+          </Button>
         </PopUpNav>
       ) : null}
     </>
