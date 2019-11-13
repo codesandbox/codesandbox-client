@@ -26,18 +26,16 @@ export default {
       }
     );
 
-    _preview.executeCodeImmediately();
-
     return () => {
       _preview = null;
       dispose();
     };
   },
-  executeCodeImmediately() {
+  executeCodeImmediately(initialRender?: boolean) {
     if (!_preview) {
       return;
     }
-    _preview.executeCodeImmediately();
+    _preview.executeCodeImmediately(initialRender);
   },
   executeCode() {
     if (!_preview) {

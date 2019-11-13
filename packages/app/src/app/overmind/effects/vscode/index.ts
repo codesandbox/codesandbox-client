@@ -267,8 +267,22 @@ export class VSCodeEffect {
     );
   }
 
+  public async closeAllTabs() {
+    if (this.editorApi) {
+      const groupsToClose = this.editorApi.editorService.editorGroupService.getGroups();
+
+      await Promise.all([
+        ...groupsToClose.map(group => group.closeAllEditors()),
+        ...groupsToClose.map(group =>
+          this.editorApi.editorService.editorGroupService.removeGroup(group)
+        ),
+      ]);
+    }
+  }
+
   public async openModule(module: Module) {
     await this.initialized;
+
     try {
       const model = await this.modelsHandler.changeModule(module);
 

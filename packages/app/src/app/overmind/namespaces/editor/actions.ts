@@ -1,4 +1,5 @@
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import getTemplate from '@codesandbox/common/lib/templates';
 import {
   EnvironmentVariable,
   ModuleCorrection,
@@ -17,7 +18,6 @@ import {
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import { json } from 'overmind';
 
-import getTemplate from '@codesandbox/common/lib/templates';
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -93,7 +93,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     return;
   }
 
-  state.editor.isLoading = true;
+  state.editor.isLoading = !state.editor.currentId;
   state.editor.notFound = false;
 
   // Only reset changed modules if sandbox wasn't in memory, otherwise a fork
@@ -106,6 +106,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     if (state.editor.sandboxes[newId]) {
       actions.internal.updateCurrentSandbox(sandbox);
     } else {
+      await effects.vscode.closeAllTabs();
       actions.internal.setCurrentSandbox(sandbox);
     }
 
@@ -129,6 +130,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   await effects.vscode.changeSandbox(sandbox);
   effects.vscode.openModule(state.editor.currentModule);
+  effects.preview.executeCodeImmediately(true);
 
   state.editor.isLoading = false;
 });
