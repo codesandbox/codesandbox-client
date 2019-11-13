@@ -77,23 +77,18 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   newId = actions.editor.internal.ensureSandboxId(newId);
 
+  // This happens when we fork. This can be avoided with state first routing
+  if (state.editor.currentId === newId) {
+    return;
+  }
+
+  const hasExistingSandbox = Boolean(state.editor.currentId);
+
   if (state.live.isLive) {
     actions.live.internal.disconnect();
   }
 
-  if (state.editor.sandboxes[newId] && !state.editor.sandboxes[newId].team) {
-    const sandbox = await effects.api.getSandbox(newId);
-
-    actions.internal.updateCurrentSandbox(sandbox);
-    state.editor.currentId = newId;
-    state.editor.isLoading = false;
-
-    await actions.editor.internal.initializeLiveSandbox(sandbox);
-
-    return;
-  }
-
-  state.editor.isLoading = !state.editor.currentId;
+  state.editor.isLoading = !hasExistingSandbox;
   state.editor.notFound = false;
 
   // Only reset changed modules if sandbox wasn't in memory, otherwise a fork
@@ -103,12 +98,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   try {
     const sandbox = await effects.api.getSandbox(newId);
 
-    if (state.editor.sandboxes[newId]) {
-      actions.internal.updateCurrentSandbox(sandbox);
-    } else {
-      await effects.vscode.closeAllTabs();
-      actions.internal.setCurrentSandbox(sandbox);
-    }
+    await effects.vscode.closeAllTabs();
+
+    actions.internal.setCurrentSandbox(sandbox);
 
     state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
   } catch (error) {

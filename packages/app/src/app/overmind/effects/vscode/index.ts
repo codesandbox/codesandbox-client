@@ -432,6 +432,7 @@ export class VSCodeEffect {
       { IEditorService },
       { ICodeEditorService },
       { ITextFileService },
+
       { IEditorGroupsService },
       { IStatusbarService },
       { IExtensionService },
@@ -446,6 +447,7 @@ export class VSCodeEffect {
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
       r('vs/workbench/services/textfile/common/textfiles'),
+
       r('vs/workbench/services/editor/common/editorGroupsService'),
       r('vs/platform/statusbar/common/statusbar'),
       r('vs/workbench/services/extensions/common/extensions'),
@@ -491,6 +493,7 @@ export class VSCodeEffect {
 
       this.commandService.resolve(commandService);
       this.extensionService.resolve(extensionService);
+
       this.extensionEnablementService.resolve(extensionEnablementService);
 
       const editorPart = accessor.get(IEditorGroupsService);
