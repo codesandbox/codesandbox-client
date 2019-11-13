@@ -1,5 +1,5 @@
 ---
-banner: ./images/oldvsnew.png
+banner: ./images/banner.png
 slug: codesandbox-ci-embeds
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
