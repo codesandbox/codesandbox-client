@@ -91,8 +91,7 @@ With embeds, and now CodeSandbox CI, we're giving open-source project
 maintainers new ways to reduce their support overhead and get more done.
 Available now, CodeSandbox CI makes it possible to test fixes without the need
 to clone, install, and check things locally. There’s more info about how to
-configure CodeSandbox CI in [our docs](https://u2edh.csb.app/docs.html), and you
-can get started by
+configure CodeSandbox CI in [our docs](/docs/ci), and you can get started by
 [installing the GitHub app](https://github.com/apps/codesandbox).
 
 ## Thanks
