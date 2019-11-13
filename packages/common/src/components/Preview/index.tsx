@@ -480,8 +480,10 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleRefresh = () => {
+    // Changed this from prioritizing URL. This is to make "smooth forking" work,
+    // but would expect the addressbar url to decide what is refreshed anyways?
     const { urlInAddressBar, url } = this.state;
-    const urlToSet = url || urlInAddressBar;
+    const urlToSet = urlInAddressBar || url;
 
     if (this.element) {
       this.element.src = urlToSet || this.currentUrl();
