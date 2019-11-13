@@ -13,13 +13,13 @@ import {
 export function GlobalActions({
   sandbox,
   toggleLike,
-  previewVisible,
+  offsetBottom,
   isDragging,
 }) {
   return (
     <Container
       align="right"
-      previewVisible={previewVisible}
+      offsetBottom={offsetBottom}
       isDragging={isDragging}
     >
       {toggleLike ? (
@@ -46,9 +46,14 @@ export function GlobalActions({
   );
 }
 
-export function NavigationActions({ refresh, openInNewWindow, isDragging }) {
+export function NavigationActions({
+  refresh,
+  openInNewWindow,
+  offsetBottom,
+  isDragging,
+}) {
   return (
-    <Container align="left" previewVisible isDragging={isDragging}>
+    <Container align="left" offsetBottom={offsetBottom} isDragging={isDragging}>
       <Tooltip content="Refresh preview">
         <Button onClick={refresh} aria-label="Refresh preview">
           <ReloadIcon />

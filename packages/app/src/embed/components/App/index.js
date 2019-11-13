@@ -43,6 +43,7 @@ type State = {
   editorSize: number,
   forceRefresh: boolean,
   expandDevTools: boolean,
+  hideDevTools: boolean,
   runOnClick: boolean,
   verticalMode: boolean,
   highlightedLines: Array<number>,
@@ -87,6 +88,7 @@ export default class App extends React.PureComponent<
       highlightedLines,
       forceRefresh,
       expandDevTools,
+      hideDevTools,
       runOnClick,
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
@@ -111,6 +113,7 @@ export default class App extends React.PureComponent<
       editorSize,
       forceRefresh,
       expandDevTools,
+      hideDevTools,
       tabs,
       theme,
       runOnClick:
@@ -385,6 +388,7 @@ export default class App extends React.PureComponent<
             highlightedLines={this.state.highlightedLines}
             forceRefresh={this.state.forceRefresh}
             expandDevTools={this.state.expandDevTools}
+            hideDevTools={this.state.hideDevTools}
             tabs={this.state.tabs}
             runOnClick={runOnClick}
             verticalMode={verticalMode}

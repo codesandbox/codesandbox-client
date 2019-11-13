@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { HeartIconSVG, ReloadIconSVG, NewWindowIconSVG } from './icons';
 
-// TODO: Check if we still need previewVisible
 export const Container = styled.div(props =>
   css({
     position: 'absolute',
@@ -16,7 +15,7 @@ export const Container = styled.div(props =>
     },
 
     // 28 is the height of console
-    bottom: props.isDragging ? -32 : props.previewVisible ? 28 + 16 : 16,
+    bottom: props.isDragging ? -32 : props.offsetBottom ? 28 + 16 : 16,
     opacity: props.isDragging ? 0 : 1,
     transitionProperty: 'opacity, bottom',
     transitionDuration: theme =>
