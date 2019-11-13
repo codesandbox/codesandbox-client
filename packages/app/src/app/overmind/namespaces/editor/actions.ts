@@ -78,7 +78,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   newId = actions.editor.internal.ensureSandboxId(newId);
 
   // This happens when we fork. This can be avoided with state first routing
-  if (state.editor.currentId === newId) {
+  if (state.editor.isForkingSandbox) {
     return;
   }
 
@@ -304,7 +304,7 @@ export const forkSandboxClicked: AsyncAction = async ({
   }
 
   await actions.editor.internal.forkSandbox({
-    sandboxId: state.editor.currentId,
+    sandboxId: state.editor.currentSandbox.id,
   });
 };
 
@@ -475,7 +475,7 @@ export const frozenUpdated: AsyncAction<{ frozen: boolean }> = async (
 ) => {
   state.editor.currentSandbox.isFrozen = frozen;
 
-  await effects.api.saveFrozen(state.editor.currentId, frozen);
+  await effects.api.saveFrozen(state.editor.currentSandbox.id, frozen);
 };
 
 export const quickActionsOpened: Action = ({ state }) => {
@@ -531,7 +531,7 @@ export const fetchEnvironmentVariables: AsyncAction = async ({
   effects,
 }) => {
   state.editor.currentSandbox.environmentVariables = await effects.api.getEnvironmentVariables(
-    state.editor.currentId
+    state.editor.currentSandbox.id
   );
 };
 
@@ -539,7 +539,7 @@ export const updateEnvironmentVariables: AsyncAction<
   EnvironmentVariable
 > = async ({ state, effects }, environmentVariable) => {
   state.editor.currentSandbox.environmentVariables = await effects.api.saveEnvironmentVariable(
-    state.editor.currentId,
+    state.editor.currentSandbox.id,
     environmentVariable
   );
 
@@ -549,7 +549,7 @@ export const updateEnvironmentVariables: AsyncAction<
 export const deleteEnvironmentVariable: AsyncAction<{
   name: string;
 }> = async ({ state, effects }, { name }) => {
-  const id = state.editor.currentId;
+  const { id } = state.editor.currentSandbox;
 
   state.editor.currentSandbox.environmentVariables = await effects.api.deleteEnvironmentVariable(
     id,
@@ -745,11 +745,7 @@ export const renameModule: AsyncAction<{
   module.title = title;
 
   try {
-    await effects.api.saveModuleTitle(
-      state.editor.currentId,
-      moduleShortid,
-      title
-    );
+    await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
 
     if (state.live.isCurrentEditor) {
       effects.live.sendModuleUpdate(module);

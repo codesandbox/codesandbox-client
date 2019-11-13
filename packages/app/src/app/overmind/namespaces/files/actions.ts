@@ -225,10 +225,7 @@ export const directoryDeleted: AsyncAction<{
     effects.vscode.openModule(state.editor.currentModule);
     actions.editor.internal.updatePreviewCode();
     try {
-      await effects.api.deleteDirectory(
-        state.editor.currentId,
-        directoryShortid
-      );
+      await effects.api.deleteDirectory(sandbox.id, directoryShortid);
       effects.live.sendDirectoryDeleted(directoryShortid);
     } catch (error) {
       sandbox.directories.push(removedDirectory);
@@ -374,7 +371,7 @@ export const massCreateModules: AsyncAction<{
     { state, actions, effects },
     { modules, directories, directoryShortid, cbID }
   ) => {
-    const sandboxId = state.editor.currentId;
+    const sandboxId = state.editor.currentSandbox.id;
 
     try {
       const data = await effects.api.massCreateModules(
@@ -550,7 +547,7 @@ export const syncSandbox: AsyncAction<any[]> = async (
   { state, effects },
   updates
 ) => {
-  const id = state.editor.currentId;
+  const { id } = state.editor.currentSandbox;
 
   try {
     const newSandbox = await effects.api.getSandbox(id);

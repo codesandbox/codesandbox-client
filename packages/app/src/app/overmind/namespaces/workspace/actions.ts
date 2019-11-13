@@ -131,7 +131,7 @@ export const externalResourceAdded: AsyncAction<{
   actions.editor.internal.updatePreviewCode();
 
   try {
-    await effects.api.createResource(state.editor.currentId, resource);
+    await effects.api.createResource(state.editor.currentSandbox.id, resource);
   } catch (error) {
     externalResources.splice(externalResources.indexOf(resource), 1);
     effects.notificationToast.error('Could not save external resource');
@@ -149,7 +149,7 @@ export const externalResourceRemoved: AsyncAction<{
   actions.editor.internal.updatePreviewCode();
 
   try {
-    await effects.api.deleteResource(state.editor.currentId, resource);
+    await effects.api.deleteResource(state.editor.currentSandbox.id, resource);
   } catch (error) {
     externalResources.splice(resourceIndex, 0, resource);
     effects.notificationToast.error(
@@ -172,7 +172,7 @@ export const sandboxDeleted: AsyncAction = async ({
 }) => {
   actions.modalClosed();
 
-  await effects.api.deleteSandbox(state.editor.currentId);
+  await effects.api.deleteSandbox(state.editor.currentSandbox.id);
 
   // Not sure if this is in use?
   state.workspace.showDeleteSandboxModal = false;
@@ -186,7 +186,7 @@ export const sandboxPrivacyChanged: AsyncAction<{
 }> = async ({ state, effects, actions }, { privacy }) => {
   const oldPrivacy = state.editor.currentSandbox.privacy;
   const sandbox = await effects.api.updatePrivacy(
-    state.editor.currentId,
+    state.editor.currentSandbox.id,
     privacy
   );
   state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
@@ -225,7 +225,7 @@ export const deleteTemplate: AsyncAction = async ({
   effects,
 }) => {
   effects.analytics.track('Template - Removed', { source: 'editor' });
-  const sandboxId = state.editor.currentId;
+  const sandboxId = state.editor.currentSandbox.id;
   const templateId = state.editor.currentSandbox.customTemplate.id;
 
   try {
@@ -247,7 +247,7 @@ export const editTemplate: AsyncAction<CustomTemplate> = async (
 ) => {
   effects.analytics.track('Template - Edited', { source: 'editor' });
 
-  const sandboxId = state.editor.currentId;
+  const sandboxId = state.editor.currentSandbox.id;
 
   try {
     const updatedTemplate = await effects.api.updateTemplate(
@@ -270,7 +270,7 @@ export const addedTemplate: AsyncAction<{
 }> = async ({ state, actions, effects }, template) => {
   effects.analytics.track('Template - Created', { source: 'editor' });
 
-  const sandboxId = state.editor.currentId;
+  const sandboxId = state.editor.currentSandbox.id;
 
   try {
     const newTemplate = await effects.api.createTemplate(sandboxId, template);

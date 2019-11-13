@@ -171,9 +171,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   { state, effects, actions },
   sandbox
 ) => {
-  const oldSandboxId =
-    state.editor.currentId === sandbox.id ? null : state.editor.currentId;
-
   state.editor.sandboxes[sandbox.id] = sandbox;
   state.editor.currentId = sandbox.id;
 
@@ -288,13 +285,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   });
 
   effects.executor.setupExecutor();
-
-  /*
-    There seems to be a race condition here? Verify if this still happens with Overmind
-  */
-  if (oldSandboxId && oldSandboxId !== state.editor.currentId) {
-    delete state.editor.sandboxes[oldSandboxId];
-  }
 };
 
 export const updateCurrentSandbox: AsyncAction<Sandbox> = async (

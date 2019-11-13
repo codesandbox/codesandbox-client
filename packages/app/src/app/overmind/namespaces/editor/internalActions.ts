@@ -188,7 +188,10 @@ export const updateCurrentTemplate: AsyncAction = async ({
           getTemplateDefinition(newTemplate).isServer
       ) {
         state.editor.currentSandbox.template = newTemplate;
-        await effects.api.saveTemplate(state.editor.currentId, newTemplate);
+        await effects.api.saveTemplate(
+          state.editor.currentSandbox.id,
+          newTemplate
+        );
       }
     }
   } catch (e) {
@@ -223,7 +226,6 @@ export const setModuleCode: Action<{
   module: Module;
   code: string;
 }> = ({ state, effects }, { module, code }) => {
-  const { currentId } = state.editor;
   const { currentSandbox } = state.editor;
   const hasChangedModuleId = state.editor.changedModuleShortids.includes(
     module.shortid
@@ -253,7 +255,7 @@ export const setModuleCode: Action<{
 
   // Save the code to localStorage so we can recover in case of a crash
   effects.moduleRecover.save(
-    currentId,
+    currentSandbox.id,
     currentSandbox.version,
     module,
     code,
@@ -309,8 +311,7 @@ export const forkSandbox: AsyncAction<{
       effects.preview.executeCodeImmediately(true);
 
       // When not server we "piggyback" the existing Sandbox to avoid any rerenders and need
-      // for new bundler. We do not reference the sandbox by `currentId` anywhere,
-      // so this should be safe. The url of the preview is updated
+      // for new bundler. Preview updates its url though
     } else {
       Object.assign(
         state.editor.sandboxes[state.editor.currentId],
