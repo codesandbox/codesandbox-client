@@ -93,7 +93,7 @@ export const initialize: AsyncAction<string, Sandbox> = async (
 };
 
 export const initializeModuleState: Action<any> = (
-  { state, effects },
+  { state, actions, effects },
   moduleState
 ) => {
   Object.keys(moduleState).forEach(moduleShortid => {
@@ -114,6 +114,8 @@ export const initializeModuleState: Action<any> = (
       }
     }
   });
+
+  actions.editor.internal.updatePreviewCode();
 };
 
 export const getSelectionsForModule: Action<Module, EditorSelection[]> = (

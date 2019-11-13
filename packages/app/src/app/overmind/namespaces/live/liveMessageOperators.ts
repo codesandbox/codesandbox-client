@@ -132,6 +132,7 @@ export const onModuleSaved: Operator<
   });
 
   effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
+  actions.editor.internal.updatePreviewCode();
 });
 
 export const onModuleCreated: Operator<
@@ -151,7 +152,7 @@ export const onModuleMassCreated: Operator<
     modules: Module[];
     directories: Directory[];
   }>
-> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
@@ -165,6 +166,8 @@ export const onModuleMassCreated: Operator<
   state.editor.modulesByPath = effects.vscode.fs.create(
     state.editor.currentSandbox
   );
+
+  actions.editor.internal.updatePreviewCode();
 });
 
 export const onModuleUpdated: Operator<
@@ -172,7 +175,7 @@ export const onModuleUpdated: Operator<
     moduleShortid: string;
     module: Module;
   }>
-> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
@@ -190,6 +193,8 @@ export const onModuleUpdated: Operator<
     state.editor.modulesByPath,
     state.editor.sandboxes[sandbox.id].modules[moduleIndex]
   );
+
+  actions.editor.internal.updatePreviewCode();
 });
 
 export const onModuleDeleted: Operator<
