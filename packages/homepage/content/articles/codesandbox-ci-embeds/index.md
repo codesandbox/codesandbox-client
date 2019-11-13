@@ -70,13 +70,7 @@ improve the embed experience on mobile.”_
 
 See the difference for yourself:
 
-<iframe
-  src="https://codesandbox.io/embed/new?fontsize=14"
-  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-  title="new"
-  allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
-  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-></iframe>
+https://codesandbox.io/s/new?fontsize=14
 
 ### The next big design trend?
 
