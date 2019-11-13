@@ -74,7 +74,9 @@ These are all the configuration options you can set. They are all optional.
   // be installed in the fork of these sandboxes in the place of the library. So if
   // you have a sandbox with `lodash`, and you built `lodash` and `vue`, we will only
   // replace `lodash` with the built version.
-  "sandboxes": ["vanilla", "new", "github/reduxjs/redux/tree/master/examples/todomvc"]
+  // You can also set absolute paths to a directory in your repository. We will make sure
+  // to generate a sandbox from the contents of that directory.
+  "sandboxes": ["vanilla", "new", "/examples/todomvc"]
 }
 ```
 
@@ -90,6 +92,9 @@ Monorepos are quite common, here's an example configuration for a monorepo:
 
 This builds two libraries: `vue`, which is in the root of the repository, and
 `vue-template-compiler`, which resides in the `packages` folder.
+
+We automatically infer your packages from your lerna config or yarn workspaces
+config if `packages` is not set.
 
 We handle auto linking of these dependencies, this means that we rewrite the
 dependencies to the newly built versions of CodeSandbox CI. In this example,
