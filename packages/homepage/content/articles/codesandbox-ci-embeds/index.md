@@ -91,7 +91,7 @@ you can toggle on when creating an embed from the Share menu in the editor.
 The new design is already live, so check it out and take a look at
 [our docs](https://codesandbox.io/docs/embedding) for more info.
 
-## Get more done
+### Get more done
 
 With embeds, and now CodeSandbox CI, we're giving open-source project
 maintainers new ways to reduce their support overhead and get more done.
