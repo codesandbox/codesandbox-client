@@ -1,30 +1,32 @@
 import {
-  LiveMessageEvent,
   LiveMessage,
   Module,
   Directory,
   Selection,
+  LiveDisconnectReason,
 } from '@codesandbox/common/lib/types';
 import { mutate, json } from 'overmind';
 import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 
-export const onJoin: Operator<LiveMessage<LiveMessageEvent.JOIN>> = mutate(
-  ({ effects, state }) => {
-    effects.notificationToast.success(
-      state.live.isTeam ? 'Connected to Live Team!' : 'Connected to Live!'
-    );
+export const onJoin: Operator<
+  LiveMessage<{ status: 'connected'; live_user_id: string }>
+> = mutate(({ effects, state }, { data }) => {
+  state.live.liveUserId = data.live_user_id;
 
-    if (state.live.reconnecting) {
-      effects.live.getAllClients().forEach(client => {
-        client.serverReconnect();
-      });
-    }
+  effects.notificationToast.success(
+    state.live.isTeam ? 'Connected to Live Team!' : 'Connected to Live!'
+  );
 
-    state.live.reconnecting = false;
+  if (state.live.reconnecting) {
+    effects.live.getAllClients().forEach(client => {
+      client.serverReconnect();
+    });
   }
-);
+
+  state.live.reconnecting = false;
+});
 
 export const onModuleState: Operator<
   LiveMessage<{
@@ -64,10 +66,12 @@ export const onUserEntered: Operator<
 
   const user = data.users.find(u => u.id === data.joined_user_id);
 
-  effects.notificationToast.add({
-    message: `${user.username} joined the live session.`,
-    status: NotificationStatus.NOTICE,
-  });
+  if (!state.live.notificationsHidden) {
+    effects.notificationToast.add({
+      message: `${user.username} joined the live session.`,
+      status: NotificationStatus.NOTICE,
+    });
+  }
 });
 
 export const onUserLeft: Operator<
@@ -82,12 +86,14 @@ export const onUserLeft: Operator<
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
 
-    effects.notificationToast.add({
-      message: user
-        ? `${user.username} left the live session.`
-        : 'Someone left the live session',
-      status: NotificationStatus.NOTICE,
-    });
+    if (user.id !== state.live.liveUserId) {
+      effects.notificationToast.add({
+        message: user
+          ? `${user.username} left the live session.`
+          : 'Someone left the live session',
+        status: NotificationStatus.NOTICE,
+      });
+    }
   }
 
   actions.live.internal.clearUserSelections(data.left_user_id);
@@ -395,12 +401,9 @@ export const onConnectionLoss: Operator<LiveMessage> = mutate(
 );
 
 export const onDisconnect: Operator<
-  LiveMessage<{
-    reason: string;
-  }>
+  LiveMessage<{ reason: LiveDisconnectReason }>
 > = mutate(({ state, actions }, { data }) => {
   actions.live.internal.disconnect();
-
   state.editor.currentSandbox.owned = state.live.isOwner;
 
   actions.modalOpened({

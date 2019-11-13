@@ -1,4 +1,4 @@
-import { decorateSelector } from '@codesandbox/common/lib/theme';
+import { decorateSelector } from '@codesandbox/common/lib/utils/decorate-selector';
 import { Sandbox, Template } from '@codesandbox/common/lib/types';
 
 export const templateColor = (sandbox: Sandbox, templateDef: Template) => {

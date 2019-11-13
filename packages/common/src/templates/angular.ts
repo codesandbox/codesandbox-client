@@ -2,7 +2,7 @@ import { absolute, join } from '../utils/path';
 
 import Template, { ParsedConfigurationFiles } from './template';
 import configurations from './configuration';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 function getAngularCLIEntries(parsed) {
   const entries = [];

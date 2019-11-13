@@ -62,9 +62,9 @@ export default () => (
   <Background id="footer">
     <MaxWidth width={1280}>
       <>
-        <Container>
-          <Column>
-            <Title>CodeSandbox</Title>
+        <Container as="footer">
+          <Column as="nav" aria-labelledby="codesandbox-footer">
+            <Title id="codesandbox-footer">CodeSandbox</Title>
             <List>
               <li>
                 <a href="/s" target="_blank" rel="noopener noreferrer">
@@ -106,8 +106,8 @@ export default () => (
             </List>
           </Column>
 
-          <Column>
-            <Title>About</Title>
+          <Column as="nav" aria-labelledby="about-footer">
+            <Title id="about-footer">About</Title>
             <List>
               <li>
                 <a href="/blog" target="_blank" rel="noopener noreferrer">
@@ -135,8 +135,8 @@ export default () => (
             </List>
           </Column>
 
-          <Column>
-            <Title>Social</Title>
+          <Column as="nav" aria-labelledby="social-footer">
+            <Title id="social-footer">Social</Title>
             <List>
               <li>
                 <a

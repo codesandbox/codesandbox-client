@@ -1,6 +1,8 @@
 import resolve from 'browser-resolve';
 import hashsum from 'hash-sum';
-import { dirname } from 'path';
+import * as events from 'events';
+import * as util from 'util';
+import { dirname, basename } from 'path';
 import type FSType from 'fs';
 import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
 import evaluateCode from '../../../loaders/eval';
@@ -24,6 +26,14 @@ export default function evaluate(
   availablePresets
 ) {
   const require = (requirePath: string) => {
+    if (requirePath === 'events') {
+      return events;
+    }
+
+    if (requirePath === 'util') {
+      return util;
+    }
+
     if (requirePath === 'assert') {
       return () => {};
     }
@@ -42,12 +52,12 @@ export default function evaluate(
     }
 
     if (requirePath === 'require-from-string') {
-      return (newCode: string) =>
+      return (newCode: string, sourcePath: string) =>
         evaluate(
           fs,
           BFSRequire,
           newCode,
-          '/',
+          sourcePath,
           availablePlugins,
           availablePresets
         );
@@ -63,8 +73,9 @@ export default function evaluate(
       availablePlugins[requirePath] ||
       availablePlugins[requirePath.replace('babel-plugin-', '')] ||
       availablePlugins[requirePath.replace('@babel/plugin-', '')];
+
     if (plugin && requirePath !== 'react') {
-      return plugin.__esModule ? plugin.default : plugin;
+      return plugin;
     }
 
     const preset =
@@ -154,9 +165,15 @@ export default function evaluate(
     finalCode = transpiledCode;
   }
 
-  const exports = evaluateCode(finalCode, require, cache[id], {
-    VUE_CLI_BABEL_TRANSPILE_MODULES: true,
-  });
+  const exports = evaluateCode(
+    finalCode,
+    require,
+    cache[id],
+    {
+      VUE_CLI_BABEL_TRANSPILE_MODULES: true,
+    },
+    { __dirname: dirname(path), __filename: basename(path) }
+  );
 
   return exports;
 }

@@ -2,11 +2,11 @@ const isDev = process.env.NODE_ENV === 'development';
 const staticAssets = [
   {
     from: 'standalone-packages/vscode-editor/release/min/vs',
-    to: 'public/vscode22/vs',
+    to: 'public/vscode24/vs',
   },
   {
     from: 'standalone-packages/vscode-extensions/out',
-    to: 'public/vscode-extensions/v8',
+    to: 'public/vscode-extensions/v10',
   },
   {
     from: 'node_modules/onigasm/lib/onigasm.wasm',
@@ -33,9 +33,23 @@ const staticAssets = [
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs4',
+    to: 'static/browserfs6',
   },
   // For caching purposes
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs5',
+  },
+  // For caching purposes
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs4',
+  },
+  // For Monaco
   {
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'

@@ -1,29 +1,32 @@
-import React from 'react';
-import { hooksObserver, inject } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
+
+import { useOvermind } from 'app/overmind';
+
 import { ProgressButton, ForkIcon } from './elements';
 
-export const ForkButton = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      signals: {
-        editor: { forkSandboxClicked },
+export const ForkButton: FunctionComponent = () => {
+  const {
+    actions: {
+      editor: { forkSandboxClicked },
+    },
+    state: {
+      editor: {
+        isForkingSandbox,
+        currentSandbox: { owned },
       },
-      store: {
-        editor: {
-          isForkingSandbox,
-          currentSandbox: { owned },
-        },
-      },
-    }) => (
-      <ProgressButton
-        onClick={forkSandboxClicked}
-        secondary={owned}
-        loading={isForkingSandbox}
-        small
-      >
-        <ForkIcon />
-        {isForkingSandbox ? 'Forking...' : 'Fork'}
-      </ProgressButton>
-    )
-  )
-);
+    },
+  } = useOvermind();
+
+  return (
+    <ProgressButton
+      loading={isForkingSandbox}
+      onClick={forkSandboxClicked}
+      secondary={owned}
+      small
+    >
+      <ForkIcon />
+
+      {isForkingSandbox ? 'Forking...' : 'Fork'}
+    </ProgressButton>
+  );
+};

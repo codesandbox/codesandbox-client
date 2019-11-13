@@ -168,12 +168,6 @@ commands:
       - run:
           name: Build Application
           command: yarn build:prod
-      - run:
-          name: Mark Sentry release
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              node packages/app/scripts/sentry-create-release.js
-            fi
       - save_cache: *save_prod_build_cache
       - save_cache: *save_prod_result
       - run:
@@ -279,6 +273,7 @@ jobs:
       - build_prod
   test-integrations:
     executor: node-with-puppeteer
+    parallelism: 2
     steps:
       - checkout_with_cache
       - test_integrations
@@ -301,6 +296,34 @@ jobs:
     executor: docker_machine
     steps:
       - docker_cache
+  deploy-to-production:
+    executor: node
+    environment:
+      ENVIRONMENT: production
+    steps:
+      - checkout_with_cache
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
+      - run:
+          name: Mark Sentry release
+          command: node packages/app/scripts/sentry-create-release.js
+      - run:
+          name: Deploy Image
+          command: node packages/app/scripts/deploy.js
+      - run:
+          name: Deploy Sentry release
+          command: node packages/app/scripts/sentry-deploy-release.js
+  deploy-to-staging:
+    executor: node
+    environment:
+      ENVIRONMENT: staging
+    steps:
+      - checkout_with_cache
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
+      - run:
+          name: Deploy Image
+          command: node packages/app/scripts/deploy.js
 
 ################################
 # Workflows
@@ -333,3 +356,23 @@ workflows:
             - typecheck
             # - test-integrations
             - test-jest
+      - deploy-production-approval:
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+      - deploy-to-production:
+          requires:
+            - deploy-production-approval
+            - create-docker-image
+          filters:
+            branches:
+              only:
+                - master
+      - deploy-staging-approval:
+          type: approval
+      - deploy-to-staging:
+          requires:
+            - deploy-staging-approval
+            - create-docker-image

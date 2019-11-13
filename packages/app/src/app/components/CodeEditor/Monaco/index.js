@@ -18,10 +18,10 @@ import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
-/* eslint-disable import/no-webpack-loader-syntax */
+/* eslint-disable import/no-webpack-loader-syntax, import/default */
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./workers/linter';
 import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
-/* eslint-enable import/no-webpack-loader-syntax */
+/* eslint-enable import/no-webpack-loader-syntax, import/default */
 
 import eventToTransform from './event-to-transform';
 import MonacoEditorComponent from './MonacoReactComponent';
@@ -946,9 +946,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       ),
       options: {
         inlineClassName: classification.type
-          ? `${classification.kind} ${classification.type}-of-${
-              classification.parentKind
-            }`
+          ? `${classification.kind} ${classification.type}-of-${classification.parentKind}`
           : classification.kind,
       },
     }));

@@ -35,7 +35,7 @@ export const SandboxImageContainer = styled.div`
 `;
 
 export const SandboxImage = styled.div`
-  background-size: contain;
+  background-size: cover;
   background-position: 50%;
   background-repeat: no-repeat;
   width: 100%;

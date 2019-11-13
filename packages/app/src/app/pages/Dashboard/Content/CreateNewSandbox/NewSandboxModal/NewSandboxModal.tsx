@@ -1,5 +1,6 @@
 import { inject, hooksObserver } from 'app/componentConnectors';
-import React, { useState } from 'react';
+import React from 'react';
+import { useTabState, Tab as ReakitTab, TabList, TabPanel } from 'reakit/Tab';
 import track from '@codesandbox/common/lib/utils/analytics';
 import Template from '@codesandbox/common/lib/components/Template';
 import { ImportTab } from './ImportTab';
@@ -26,7 +27,7 @@ interface INewSandboxModalProps {
 
 interface ITab {
   name: string;
-  tabIndex: number;
+  tabIndex: string;
 }
 
 export const NewSandboxModal = inject('store', 'signals')(
@@ -37,7 +38,7 @@ export const NewSandboxModal = inject('store', 'signals')(
       createSandbox,
       store: { user },
     }: INewSandboxModalProps) => {
-      const [selectedTab, setSelectedTab] = useState(0);
+      const tabState = useTabState({ selectedId: '0' });
 
       const tabs: ITab[] = [
         'Overview',
@@ -48,15 +49,17 @@ export const NewSandboxModal = inject('store', 'signals')(
       ]
         .map((buttonName, index) => ({
           name: buttonName,
-          tabIndex: index,
+          tabIndex: String(index),
         }))
         .filter(({ name }) => Boolean(name));
 
-      const selectTab = (tab: ITab) => {
-        setSelectedTab(tab.tabIndex);
+      React.useEffect(() => {
+        const selectedTab = tabs[tabState.currentId];
 
-        track('New Sandbox Modal - Open Tab', { tabName: tab.name });
-      };
+        if (selectedTab) {
+          track('New Sandbox Modal - Open Tab', { tabName: selectedTab.name });
+        }
+      }, [tabs, tabState.currentId]);
 
       const selectTemplate = template => {
         track('New Sandbox Modal - Select Template', { template });
@@ -65,22 +68,28 @@ export const NewSandboxModal = inject('store', 'signals')(
 
       return (
         <Container closing={closing} forking={forking}>
-          <TabContainer forking={forking} closing={closing}>
+          <TabList
+            as={TabContainer}
+            {...tabState}
+            aria-label="new sandbox"
+            closing={closing}
+            forking={forking}
+          >
             {tabs.map(tab => (
-              <Button
+              <ReakitTab
+                as={Button}
+                {...tabState}
                 key={tab.name}
-                onClick={() => {
-                  selectTab(tab);
-                }}
-                selected={selectedTab === tab.tabIndex}
+                stopId={tab.tabIndex}
+                selected={tabState.currentId === tab.tabIndex}
               >
                 {tab.name}
-              </Button>
+              </ReakitTab>
             ))}
-          </TabContainer>
+          </TabList>
 
           <InnerContainer forking={forking} closing={closing}>
-            <Tab visible={selectedTab === 0}>
+            <TabPanel {...tabState} as={Tab} stopId="0">
               {user && <MyTemplates selectTemplate={selectTemplate} />}
               <Title>Popular Templates</Title>
               <Templates>
@@ -95,13 +104,13 @@ export const NewSandboxModal = inject('store', 'signals')(
                   ))
                 )}
               </Templates>
-            </Tab>
+            </TabPanel>
             {user && (
-              <Tab visible={selectedTab === 1}>
+              <TabPanel {...tabState} as={Tab} stopId="1">
                 <MyTemplatesTab selectTemplate={selectTemplate} />
-              </Tab>
+              </TabPanel>
             )}
-            <Tab visible={selectedTab === 2}>
+            <TabPanel {...tabState} as={Tab} stopId="2">
               <Title>Client Templates</Title>
               <Templates>
                 {client.map(template => (
@@ -113,8 +122,6 @@ export const NewSandboxModal = inject('store', 'signals')(
                   />
                 ))}
               </Templates>
-              {/* TODO: Find a fix for css props
-            // @ts-ignore */}
               <Title
                 css={`
                   margin-top: 1rem;
@@ -133,8 +140,8 @@ export const NewSandboxModal = inject('store', 'signals')(
                   />
                 ))}
               </Templates>
-            </Tab>
-            <Tab visible={selectedTab === 3}>
+            </TabPanel>
+            <TabPanel {...tabState} as={Tab} stopId="3">
               <Title>Container Templates</Title>
               <Templates>
                 {container.map(template => (
@@ -146,10 +153,10 @@ export const NewSandboxModal = inject('store', 'signals')(
                   />
                 ))}
               </Templates>
-            </Tab>
-            <Tab visible={selectedTab === 4}>
+            </TabPanel>
+            <TabPanel {...tabState} as={Tab} stopId="4">
               <ImportTab username={user ? user.username : undefined} />
-            </Tab>
+            </TabPanel>
           </InnerContainer>
         </Container>
       );

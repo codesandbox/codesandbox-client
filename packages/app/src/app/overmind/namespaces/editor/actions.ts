@@ -1,18 +1,22 @@
-import { Action, AsyncAction } from 'app/overmind';
-import { sortObjectByKeys } from 'app/overmind/utils/common';
-import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
-import { json } from 'overmind';
-import { clearCorrectionsFromAction } from 'app/utils/corrections';
+import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import {
-  WindowOrientation,
   EnvironmentVariable,
+  ModuleCorrection,
+  ModuleError,
   ModuleTab,
+  WindowOrientation,
 } from '@codesandbox/common/lib/types';
+import { Action, AsyncAction } from 'app/overmind';
+import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
+import { sortObjectByKeys } from 'app/overmind/utils/common';
 import {
   addDevToolsTab as addDevToolsTabUtil,
-  moveDevToolsTab as moveDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
+  moveDevToolsTab as moveDevToolsTabUtil,
 } from 'app/pages/Sandbox/Editor/Content/utils';
+import { clearCorrectionsFromAction } from 'app/utils/corrections';
+import { json } from 'overmind';
+
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -102,6 +106,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   } catch (error) {
     state.editor.notFound = true;
     state.editor.error = error.message;
+    state.editor.isLoading = false;
+    return;
   }
 
   const sandbox = state.editor.currentSandbox;
@@ -144,13 +150,18 @@ export const codeSaved: AsyncAction<{
   code: string;
   moduleShortid: string;
   cbID: string;
-}> = withOwnedSandbox(async ({ actions }, { code, moduleShortid, cbID }) => {
-  actions.editor.internal.saveCode({
-    code,
-    moduleShortid,
-    cbID,
-  });
-});
+}> = withOwnedSandbox(
+  async ({ actions }, { code, moduleShortid, cbID }) => {
+    actions.editor.internal.saveCode({
+      code,
+      moduleShortid,
+      cbID,
+    });
+  },
+  async ({ effects }, { cbID }) => {
+    effects.vscode.callCallbackError(cbID);
+  }
+);
 
 export const codeChanged: Action<{
   code: string;
@@ -217,6 +228,15 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
 
 export const createZipClicked: Action = ({ state, effects }) => {
   effects.zip.download(state.editor.currentSandbox);
+};
+
+export const forkExternalSandbox: AsyncAction<string> = async (
+  { actions },
+  sandboxId
+) => {
+  await actions.editor.internal.forkSandbox({
+    sandboxId,
+  });
 };
 
 export const forkSandboxClicked: AsyncAction = async ({
@@ -360,6 +380,19 @@ export const prettifyClicked: AsyncAction = async ({
 
 export const errorsCleared: Action = ({ state }) => {
   if (state.editor.errors.length) {
+    state.editor.errors.forEach(error => {
+      try {
+        const module = resolveModule(
+          error.path,
+          state.editor.currentSandbox.modules,
+          state.editor.currentSandbox.directories
+        );
+        module.errors = [];
+      } catch (e) {
+        // Module is probably somewhere in eg. /node_modules which is not
+        // in the store
+      }
+    });
     state.editor.errors = [];
   }
 };
@@ -415,8 +448,9 @@ export const discardModuleChanges: Action<{
     return;
   }
 
+  const code = module.savedCode === null ? module.code || '' : module.savedCode;
   actions.editor.codeChanged({
-    code: module.savedCode || module.code || '',
+    code,
     moduleShortid,
   });
 
@@ -481,8 +515,7 @@ export const previewActionReceived: Action<{
       });
       break;
     case 'show-error': {
-      const error = {
-        moduleId: action.module ? action.module.id : undefined,
+      const error: ModuleError = {
         column: action.column,
         line: action.line,
         columnEnd: action.columnEnd,
@@ -491,13 +524,25 @@ export const previewActionReceived: Action<{
         title: action.title,
         path: action.path,
         source: action.source,
+        severity: action.severity,
+        type: action.type,
       };
+      try {
+        const module = resolveModule(
+          error.path,
+          state.editor.currentSandbox.modules,
+          state.editor.currentSandbox.directories
+        );
 
-      state.editor.errors.push(error);
+        module.errors.push(json(error));
+        state.editor.errors.push(error);
+      } catch (e) {
+        /* ignore, this module can be in a node_modules for example */
+      }
       break;
     }
     case 'show-correction': {
-      const correction = {
+      const correction: ModuleCorrection = {
         path: action.path,
         column: action.column,
         line: action.line,
@@ -507,8 +552,18 @@ export const previewActionReceived: Action<{
         source: action.source,
         severity: action.severity,
       };
+      try {
+        const module = resolveModule(
+          correction.path,
+          state.editor.currentSandbox.modules,
+          state.editor.currentSandbox.directories
+        );
 
-      state.editor.corrections.push(correction);
+        state.editor.corrections.push(correction);
+        module.corrections.push(json(correction));
+      } catch (e) {
+        /* ignore, this module can be in a node_modules for example */
+      }
       break;
     }
     case 'clear-errors': {
@@ -517,6 +572,15 @@ export const previewActionReceived: Action<{
       const newErrors = clearCorrectionsFromAction(currentErrors, action);
 
       if (newErrors.length !== currentErrors.length) {
+        state.editor.errors.forEach(error => {
+          const module = resolveModule(
+            error.path,
+            state.editor.currentSandbox.modules,
+            state.editor.currentSandbox.directories
+          );
+
+          module.errors = [];
+        });
         state.editor.errors = newErrors;
       }
       break;
@@ -530,6 +594,20 @@ export const previewActionReceived: Action<{
       );
 
       if (newCorrections.length !== currentCorrections.length) {
+        state.editor.corrections.forEach(correction => {
+          try {
+            const module = resolveModule(
+              correction.path,
+              state.editor.currentSandbox.modules,
+              state.editor.currentSandbox.directories
+            );
+
+            module.corrections = [];
+          } catch (e) {
+            // Module is probably in node_modules or something, which is not in
+            // our store
+          }
+        });
         state.editor.corrections = newCorrections;
       }
       break;

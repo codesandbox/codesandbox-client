@@ -22,6 +22,7 @@ const SANDBOX_FRAGMENT = gql`
     updatedAt
     privacy
     screenshotUrl
+    screenshotOutdated
 
     source {
       template

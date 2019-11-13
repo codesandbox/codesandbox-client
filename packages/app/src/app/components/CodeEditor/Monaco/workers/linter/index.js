@@ -3,7 +3,7 @@ import Linter from 'eslint/lib/linter';
 import monkeypatch from './monkeypatch-babel-eslint';
 
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST}/static/browserfs4/browserfs.min.js`
+  `${process.env.CODESANDBOX_HOST}/static/browserfs6/browserfs.min.js`
 );
 
 /* eslint-disable global-require */

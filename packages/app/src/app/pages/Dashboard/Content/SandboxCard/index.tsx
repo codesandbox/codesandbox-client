@@ -17,6 +17,7 @@ import theme from '@codesandbox/common/lib/theme';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import { RENAME_SANDBOX_MUTATION } from '../../queries';
 
 import {
@@ -41,6 +42,7 @@ type Props = {
   template: TemplateType;
   customTemplate: { color: string } | null;
   screenshotUrl: string | undefined;
+  screenshotOutdated: boolean;
   setSandboxesSelected: (
     ids: string[],
     options?: { additive?: boolean; range?: boolean }
@@ -48,7 +50,7 @@ type Props = {
   selectedCount: number;
   collectionPath: string; // eslint-disable-line react/no-unused-prop-types
   collectionTeamId: string | undefined;
-  sandbox: Object;
+  sandbox: Sandbox;
   page: string | undefined;
   privacy: number;
   isPatron: boolean;
@@ -63,6 +65,7 @@ type Props = {
   permanentlyDeleteSandboxes: () => void;
   undeleteSandboxes: () => void;
   makeTemplates: (teamId?: string) => void;
+  forkSandbox: (id: string) => void;
 
   // React-DnD, lazy typings
   connectDragSource: any;
@@ -84,13 +87,18 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
 
   state: State = {
     renamingSandbox: false,
-    screenshotUrl: this.props.screenshotUrl,
+    screenshotUrl: null,
   };
 
-  requestScreenshot = () => {
-    this.setState({
-      screenshotUrl: `/api/v1/sandboxes/${this.props.id}/screenshot.png`,
-    });
+  requestScreenshot = async () => {
+    const url = `/api/v1/sandboxes/${this.props.id}/screenshot.png`;
+    try {
+      await fetch(url);
+    } finally {
+      this.setState({
+        screenshotUrl: url,
+      });
+    }
   };
 
   getPrivacyIcon = () => {
@@ -113,17 +121,21 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
   };
 
   checkScreenshot() {
-    if (!this.state.screenshotUrl && this.hasScreenshot()) {
-      // We only request the screenshot if the sandbox card is in view for > 1 second
-      this.screenshotTimeout = window.setTimeout(() => {
-        this.requestScreenshot();
-      }, 1000);
+    if (this.props.screenshotOutdated) {
+      if (this.hasScreenshot()) {
+        // We only request the screenshot if the sandbox card is in view for > 1 second
+        this.screenshotTimeout = window.setTimeout(() => {
+          this.requestScreenshot();
+        }, 1000);
+      }
+    } else {
+      this.setState({ screenshotUrl: this.props.screenshotUrl });
     }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.id !== this.props.id) {
-      this.setState({ screenshotUrl: nextProps.screenshotUrl }, () => {
+      window.requestAnimationFrame(() => {
         this.checkScreenshot();
       });
     }
@@ -258,9 +270,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
           action: () => {
             if (this.props.collectionTeamId) {
               history.push(
-                `/dashboard/teams/${this.props.collectionTeamId}/sandboxes${
-                  this.props.collectionPath
-                }`
+                `/dashboard/teams/${this.props.collectionTeamId}/sandboxes${this.props.collectionPath}`
               );
             } else {
               history.push(`/dashboard/sandboxes${this.props.collectionPath}`);
@@ -277,6 +287,13 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
           title: 'Open Sandbox in new tab',
           action: () => {
             this.openSandbox(true);
+            return true;
+          },
+        },
+        {
+          title: 'Fork Sandbox',
+          action: () => {
+            this.props.forkSandbox(this.props.sandbox.id);
             return true;
           },
         },
@@ -458,8 +475,6 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
       selected,
     } = this.props;
 
-    const { screenshotUrl } = this.state;
-
     const templateInfo = getTemplate(template);
 
     return (
@@ -508,7 +523,8 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
                   {this.hasScreenshot() && (
                     <SandboxImage
                       style={{
-                        backgroundImage: `url(${screenshotUrl})`,
+                        backgroundImage: `url(${this.state.screenshotUrl ||
+                          this.props.screenshotUrl})`,
                       }}
                     />
                   )}

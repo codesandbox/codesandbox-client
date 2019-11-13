@@ -73,6 +73,7 @@ class SortOptionsComponent extends React.Component {
                 transform: `rotate(${order === 'asc' ? -180 : 0}deg)`,
                 fontSize: '.875rem',
                 marginLeft: 4,
+                marginBottom: 2,
               }}
             />
           </Container>

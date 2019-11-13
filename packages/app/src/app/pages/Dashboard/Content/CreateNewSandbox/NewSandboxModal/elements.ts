@@ -38,7 +38,7 @@ export const Container = styled.main<{
         height: 100%;
         overflow: hidden;
       `};
-  `}
+  `};
 `;
 
 export const TabContainer = styled.div<{
@@ -59,7 +59,7 @@ export const TabContainer = styled.div<{
         overflow: hidden;
         ${delayOutEffect(0)};
       `};
-  `}
+  `};
 `;
 
 export const InnerContainer = styled.div<{
@@ -77,7 +77,7 @@ export const InnerContainer = styled.div<{
         padding: 0;
         ${delayOutEffect(0)};
       `};
-  `}
+  `};
 `;
 
 export const Templates = styled.div`
@@ -99,11 +99,9 @@ export const ImportChoices = styled.div`
   ${delayEffect(0.1)};
 `;
 
-export const Tab = styled.section<{ visible: boolean }>`
-  ${({ visible }) => css`
-    display: ${visible ? 'block' : 'none'};
-    transition: 0.15s ease opacity;
-  `}
+export const Tab = styled.section`
+  display: block;
+  transition: 0.15s ease opacity;
 `;
 
 export const ImportChoice = styled.a.attrs({
@@ -131,39 +129,37 @@ const activeStyles = css`
   ${({ theme }) => css`
     background: ${theme.background};
     color: white;
-  `}
+  `};
 `;
 
 export const Button = styled.button<{
-  selected: boolean;
+  selected?: boolean;
 }>`
-  ${({ selected, theme }) => css`
-    position: relative;
-    padding: 1rem 2rem;
-    margin: 0;
-    border: none;
-    background: ${theme.background2};
-    color: rgba(255, 255, 255, 0.5);
-    font-family: 'Roboto', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    transition: 0.15s ease all;
-    cursor: pointer;
+  position: relative;
+  padding: 1rem 2rem;
+  margin: 0;
+  border: none;
+  background: ${props => props.theme.background2};
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: 0.15s ease all;
+  cursor: pointer;
 
-    ${selected &&
-      css`
-        ${activeStyles};
-      `};
+  ${props =>
+    props.selected &&
+    css`
+      ${activeStyles};
+    `};
 
-    &:focus {
-      outline: none;
-      color: white;
-    }
-    &:hover {
-      color: white;
-    }
-  `}
+  &:focus {
+    color: white;
+  }
+  &:hover {
+    color: white;
+  }
 `;
 
 export const Title = styled.h2`

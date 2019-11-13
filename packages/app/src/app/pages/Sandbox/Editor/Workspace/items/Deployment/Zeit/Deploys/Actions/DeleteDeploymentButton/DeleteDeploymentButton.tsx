@@ -1,43 +1,41 @@
-import { inject, hooksObserver } from 'app/componentConnectors';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import TrashIcon from 'react-icons/lib/fa/trash';
+
+import { useOvermind } from 'app/overmind';
 
 import { Action } from '../../../../elements';
 
 type Props = {
   id: string;
-  store: any;
-  signals: any;
 };
-export const DeleteDeploymentButton = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      id,
-      signals: {
-        deployment: { setDeploymentToDelete },
-        modalOpened,
-      },
-      store: { deployment },
-    }: Props) => (
-      <Action
-        disabled={
-          deployment.deploysBeingDeleted
-            ? deployment.deploysBeingDeleted.includes(id)
-            : deployment[`${id}Deleting`]
-        }
-        onClick={() => {
-          setDeploymentToDelete({ id });
-          modalOpened({ modal: 'deleteDeployment' });
-        }}
-      >
-        {deployment[`${id}Deleting`] ? (
-          'Deleting'
-        ) : (
-          <>
-            <TrashIcon /> <span>Delete</span>
-          </>
-        )}
-      </Action>
-    )
-  )
-);
+export const DeleteDeploymentButton: FunctionComponent<Props> = ({ id }) => {
+  const {
+    actions: {
+      deployment: { setDeploymentToDelete },
+      modalOpened,
+    },
+    state: { deployment },
+  } = useOvermind();
+
+  return (
+    <Action
+      disabled={
+        deployment.deploysBeingDeleted
+          ? deployment.deploysBeingDeleted.includes(id)
+          : deployment[`${id}Deleting`]
+      }
+      onClick={() => {
+        setDeploymentToDelete({ id });
+        modalOpened({ modal: 'deleteDeployment' });
+      }}
+    >
+      {deployment[`${id}Deleting`] ? (
+        'Deleting'
+      ) : (
+        <>
+          <TrashIcon /> <span>Delete</span>
+        </>
+      )}
+    </Action>
+  );
+};

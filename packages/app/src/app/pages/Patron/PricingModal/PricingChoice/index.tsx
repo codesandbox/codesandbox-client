@@ -90,7 +90,7 @@ export const PricingChoice: React.FC<IPricingChoiceProps> = ({ badge }) => {
               <Notice>
                 You will be billed now and on the{' '}
                 <strong style={{ color: 'white' }}>
-                  {format(new Date(), 'Do')}
+                  {format(new Date(), 'do')}
                 </strong>{' '}
                 of each month thereafter. You can cancel or change your
                 subscription at any time.

@@ -19,7 +19,7 @@ function rejectionHandler(
   if (e == null || e.reason == null) {
     return callback(new Error('Unknown'));
   }
-  let { reason } = e;
+  const { reason } = e;
   if (reason instanceof Error) {
     return callback(reason);
   }

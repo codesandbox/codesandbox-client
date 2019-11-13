@@ -7,8 +7,11 @@ export const onInitialize: OnInitialize = (
   const provideJwtToken = () => state.jwt || effects.jwt.get();
 
   effects.fsSync.initialize({
-    getCurrentSandboxId() {
-      return state.editor.currentId;
+    onModulesByPathChange(cb: (modulesByPath: any) => void) {
+      overmindInstance.reaction(
+        ({ editor }) => editor.modulesByPath,
+        modulesByPath => cb(modulesByPath)
+      );
     },
     getModulesByPath() {
       return state.editor.modulesByPath;

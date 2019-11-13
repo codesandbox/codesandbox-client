@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   SynchronousFileSystem,
   FileSystem,
@@ -62,6 +63,14 @@ export interface IManager {
 
 const warn = console.warn;
 
+function getCode(savedCode: string | null | undefined, code: string | undefined) {
+  if (savedCode !== null) {
+    return savedCode || '';
+  }
+
+  return code || '';
+}
+
 class CodeSandboxFile extends PreloadFile<CodeSandboxEditorFS> implements File {
   constructor(
     _fs: CodeSandboxEditorFS,
@@ -123,7 +132,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
         if (opt) {
           cb();
         } else {
-          cb(new ApiError(ErrorCode.EINVAL, `Manager is invalid`));
+          cb(new ApiError(ErrorCode.EINVAL, 'Manager is invalid'));
         }
       },
     },
@@ -168,11 +177,11 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public empty(mainCb: BFSOneArgCallback): void {
-    throw new Error("Empty not supported");
+    throw new Error('Empty not supported');
   }
 
   public renameSync(oldPath: string, newPath: string) {
-    throw new Error("Rename not supported");
+    throw new Error('Rename not supported');
   }
 
   public statSync(p: string, isLstate: boolean): Stats {
@@ -199,11 +208,11 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
         +new Date(),
         +new Date(moduleInfo.updatedAt),
         +new Date(moduleInfo.insertedAt)
-      )
+      );
     } else {
       return new Stats(
         FileType.FILE,
-        (moduleInfo.savedCode || moduleInfo.code || '').length,
+        getCode(moduleInfo.savedCode, moduleInfo.code).length,
         undefined,
         +new Date(),
         +new Date(moduleInfo.updatedAt),
@@ -213,7 +222,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public createFileSync(p: string, flag: FileFlag, mode: number): File {
-    throw new Error("Create file not supported");
+    throw new Error('Create file not supported');
   }
 
   public open(p: string, flag: FileFlag, mode: number, cb: BFSCallback<File>): void {
@@ -228,10 +237,10 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
       const stats = new Stats(FileType.DIRECTORY, 4096, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
       cb(null, new CodeSandboxFile(this, p, flag, stats));
     } else {
-      const { isBinary, savedCode, code = '' } = moduleInfo;
+      const { isBinary, savedCode, code } = moduleInfo;
 
       if (isBinary) {
-        fetch(savedCode || code).then(x => x.blob()).then(blob => {
+        fetch(getCode(savedCode, code)).then(x => x.blob()).then(blob => {
           const stats = new Stats(FileType.FILE, blob.size, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
           blobToBuffer(blob, (err, r) => {
@@ -246,7 +255,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
         return;
       }
 
-      const buffer = Buffer.from(savedCode || code || '');
+      const buffer = Buffer.from(getCode(savedCode, code));
       const stats = new Stats(FileType.FILE, buffer.length, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
       cb(null, new CodeSandboxFile(this, p, flag, stats, buffer));
@@ -265,8 +274,8 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
 
       return new CodeSandboxFile(this, p, flag, stats);
     } else {
-      const { savedCode, code = '' } = moduleInfo;
-      const buffer = Buffer.from(savedCode || code || '');
+      const { savedCode, code } = moduleInfo;
+      const buffer = Buffer.from(getCode(savedCode, code));
       const stats = new Stats(FileType.FILE, buffer.length, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
       return new CodeSandboxFile(this, p, flag, stats, buffer);

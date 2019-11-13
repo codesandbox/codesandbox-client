@@ -1,6 +1,7 @@
 import {
   ServerStatus,
   ServerContainerStatus,
+  ServerPort,
 } from '@codesandbox/common/lib/types';
 
 type State = {
@@ -8,7 +9,7 @@ type State = {
   containerStatus: ServerContainerStatus;
   error: string;
   hasUnrecoverableError: false;
-  ports: any[];
+  ports: ServerPort[];
 };
 
 export const state: State = {

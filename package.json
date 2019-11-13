@@ -31,7 +31,6 @@
     ]
   },
   "scripts": {
-    "add-contributor": "all-contributors add",
     "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" yarn build:deps && yarn build:prod",
     "build:clean": "lerna run build:clean --scope app --scope homepage && rimraf www",
     "build:common": "lerna run build:dev --scope @codesandbox/common --stream",
@@ -40,7 +39,8 @@
     "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" lerna run build  --scope homepage --stream && lerna run build --scope app --stream && lerna run copy-assets --scope app --stream",
     "commit": "concurrently \"yarn typecheck\" \"yarn lint\" && git commit -m",
-    "generate": "all-contributors generate",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate",
     "postinstall": "yarn lerna run install-dependencies --scope vscode-textmate --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
     "lint": "lerna run lint --stream",
     "now-build": "yarn build:deps && lerna run build:storybook --scope @codesandbox/common",
@@ -56,10 +56,11 @@
     "start:test": "lerna run start:test --scope app --stream",
     "start:vscode": "cross-env VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
     "test": "lerna run test --ignore codesandbox-browserfs",
+    "test:pr": "node testpr-script",
     "test:ci": "lerna run test --ignore codesandbox-browserfs -- --ci --testResultsProcessor=\"jest-junit\" ",
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
-    "typecheck": "lerna run typecheck --scope app"
+    "typecheck": "lerna run typecheck"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^1.13.0",
@@ -67,7 +68,7 @@
     "opencollective": "^1.0.3"
   },
   "devDependencies": {
-    "all-contributors-cli": "^5.4.0",
+    "all-contributors-cli": "^6.9.2",
     "babel-eslint": "^10.0.2",
     "concurrently": "^4.1.0",
     "cross-env": "^6.0.0",
@@ -84,9 +85,10 @@
     "husky": "^2.2.0",
     "lerna": "^3.16.4",
     "lint-staged": "^9.2.5",
-    "prettier": "1.17.0",
+    "prettier": "1.18.2",
     "pretty-quick": "^1.10.0",
-    "typescript": "3.6.3"
+    "typescript": "3.7.1-rc",
+    "username": "^5.1.0"
   },
   "husky": {
     "hooks": {

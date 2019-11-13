@@ -1,11 +1,13 @@
 {
   "projectName": "codesandbox-client",
   "projectOwner": "codesandbox",
+  "repoType": "github",
+  "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
   "imageSize": 100,
-  "commit": true,
+  "commit": false,
   "contributors": [
     {
       "login": "CompuIves",
@@ -1347,9 +1349,108 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Shriram-Balaji",
+      "name": "Shriram Balaji",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/11358903?v=4",
+      "profile": "https://shriram-balaji.github.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "chinmay17",
+      "name": "Chinmay Chaudhary",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/7131231?v=4",
+      "profile": "https://github.com/chinmay17",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "sakthivel",
+      "name": "Sakthivel Sengodan Sapient",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/205201?v=4",
+      "profile": "https://github.com/Sakthivel",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "vanya829",
+      "name": "vanya829",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1397979?v=4",
+      "profile": "https://github.com/vanya829",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "hetpatel33",
+      "name": "Het Patel",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/13877514?v=4",
+      "profile": "http://hetpatel33.github.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Gobinath-Manokaran",
+      "name": "Gobinath-Manokaran",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6711914?v=4",
+      "profile": "https://github.com/Gobinath-Manokaran",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "armujahid",
+      "name": "Abdul Rauf",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/3725386?v=4",
+      "profile": "https://armujahid.me",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "milap1296",
+      "name": "milap1296",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/19545730?v=4",
+      "profile": "https://github.com/milap1296",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "yevhenorlov",
+      "name": "yevhen orlov",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/17388747?v=4",
+      "profile": "http://yevhenorlov.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "NileshPatel17",
+      "name": "Nilesh Patel",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/27020381?v=4",
+      "profile": "https://github.com/NileshPatel17",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "22PoojaGaur",
+      "name": "Pooja Gaur",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/43316760?v=4",
+      "profile": "https://github.com/22PoojaGaur",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "commitConvention": "none"
 }

@@ -1,133 +1,88 @@
-import React from 'react';
+import React, { ComponentProps, FunctionComponent } from 'react';
+
 import Tooltip from '../../components/Tooltip';
 
-import PreferenceSwitch from './PreferenceSwitch';
-import PreferenceDropdown, { NameMapper } from './PreferenceDropdown';
-import PreferenceNumber from './PreferenceNumber';
-import PreferenceText from './PreferenceText';
-import PreferenceKeybinding from './PreferenceKeybinding';
 import { Container } from './elements';
+import { PreferenceDropdown } from './PreferenceDropdown';
+import { PreferenceKeybinding } from './PreferenceKeybinding';
+import { PreferenceNumber } from './PreferenceNumber';
+import { PreferenceSwitch } from './PreferenceSwitch';
+import { PreferenceText } from './PreferenceText';
 
-export type Props = {
-  title: string;
-  style?: React.CSSProperties;
+type PreferenceType =
+  | 'boolean'
+  | 'dropdown'
+  | 'keybinding'
+  | 'number'
+  | 'string';
+
+type PreferenceProps<TString extends PreferenceType> = {
   className?: string;
+  style?: React.CSSProperties;
+  title: string;
   tooltip?: string;
-} & (
+  type: TString;
+};
+
+export type BooleanPreference = PreferenceProps<'boolean'> &
+  ComponentProps<typeof PreferenceSwitch>;
+
+export type StringPreference = PreferenceProps<'string'> &
+  ComponentProps<typeof PreferenceText>;
+
+export type DropdownPreference = PreferenceProps<'dropdown'> &
+  ComponentProps<typeof PreferenceDropdown>;
+
+export type KeybindingPreference = PreferenceProps<'keybinding'> &
+  ComponentProps<typeof PreferenceKeybinding>;
+
+export type NumberPreference = PreferenceProps<'number'> &
+  ComponentProps<typeof PreferenceNumber>;
+
+export type Props =
   | BooleanPreference
   | StringPreference
   | DropdownPreference
   | KeybindingPreference
-  | NumberPreference);
+  | NumberPreference;
 
-type SetValueT<T> = (value: T) => void;
-
-export type BooleanPreference = {
-  type: 'boolean';
-  value: boolean;
-  defaultValue?: boolean;
-  setValue: SetValueT<boolean>;
-};
-
-export type StringPreference = {
-  type: 'string';
-  value: string;
-  defaultValue?: string;
-  setValue: SetValueT<string>;
-};
-
-export type DropdownPreference = {
-  type: 'dropdown';
-  options: string[];
-  value: string;
-  defaultValue?: string;
-  setValue: SetValueT<string>;
-  mapName?: NameMapper;
-};
-
-export type KeybindingPreference = {
-  type: 'keybinding';
-  value: string[][];
-  defaultValue?: string[][];
-  setValue: SetValueT<string[][]>;
-};
-
-export type NumberPreference = {
-  type: 'number';
-  value: number;
-  defaultValue?: number;
-  setValue: SetValueT<number>;
-};
-
-export default class Preference extends React.Component<Props> {
-  getOptionComponent = () => {
-    const { props } = this;
-    if (props.type === 'boolean') {
-      return (
-        <PreferenceSwitch
-          {...props}
-          setValue={props.setValue}
-          value={props.value}
-        />
-      );
+export const Preference: FunctionComponent<Props> = ({
+  className,
+  style,
+  title,
+  tooltip,
+  ...contentProps
+}) => {
+  const getContent = () => {
+    switch (
+      contentProps.type // need 'type' as discriminant of union type
+    ) {
+      case 'boolean':
+        return <PreferenceSwitch {...contentProps} />;
+      case 'string':
+        return <PreferenceText {...contentProps} />;
+      case 'dropdown':
+        return <PreferenceDropdown {...contentProps} />;
+      case 'keybinding':
+        return <PreferenceKeybinding {...contentProps} />;
+      default:
+        return <PreferenceNumber {...contentProps} />;
     }
-
-    if (props.type === 'string') {
-      return (
-        <PreferenceText
-          {...props}
-          setValue={props.setValue}
-          value={props.value}
-        />
-      );
-    }
-
-    if (props.type === 'dropdown') {
-      return (
-        <PreferenceDropdown
-          {...props}
-          options={props.options}
-          setValue={props.setValue}
-          value={props.value}
-        />
-      );
-    }
-
-    if (props.type === 'keybinding') {
-      return (
-        <PreferenceKeybinding
-          {...props}
-          setValue={props.setValue}
-          value={props.value}
-        />
-      );
-    }
-
-    return (
-      <PreferenceNumber
-        {...props}
-        setValue={props.setValue}
-        value={props.value}
-      />
-    );
   };
 
-  render() {
-    const { title, style, className, tooltip } = this.props;
+  const Title = tooltip ? (
+    <Tooltip content={tooltip} placement="right">
+      {title}
+    </Tooltip>
+  ) : (
+    <span>{title}</span>
+  );
 
-    const Title = tooltip ? (
-      <Tooltip placement="right" content={tooltip}>
-        {title}
-      </Tooltip>
-    ) : (
-      <span>{title}</span>
-    );
+  return (
+    <Container className={className} style={style}>
+      {Title}
 
-    return (
-      <Container style={style} className={className}>
-        {Title}
-        <div>{this.getOptionComponent()}</div>
-      </Container>
-    );
-  }
-}
+      <div>{getContent()}</div>
+    </Container>
+  );
+};

@@ -16,17 +16,20 @@ export const HeaderSearchBar = () => {
   };
 
   return (
-    <Container>
-      <form onSubmit={handleFormSubmit}>
+    <form onSubmit={handleFormSubmit}>
+      <Container role="search">
         <Input
+          aria-label="Search sandboxes"
           placeholder="Search sandboxes"
           value={query}
           onChange={handleChange}
+          id="search-sandboxes"
+          type="text"
         />
-        <SearchButton>
+        <SearchButton type="submit" aria-labelledby="search-sandboxes">
           <SearchIcon />
         </SearchButton>
-      </form>
-    </Container>
+      </Container>
+    </form>
   );
 };

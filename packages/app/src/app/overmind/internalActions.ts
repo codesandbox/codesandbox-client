@@ -1,18 +1,19 @@
-import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
-import {
-  Sandbox,
-  NotificationButton,
-  TabType,
-  ModuleTab,
-  ServerStatus,
-  ServerContainerStatus,
-} from '@codesandbox/common/lib/types';
 import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-import { Action, AsyncAction } from '.';
-import { parseConfigurations } from './utils/parse-configurations';
-import { defaultOpenedModule, mainModule } from './utils/main-module';
-import getItems from './utils/items';
+import {
+  ModuleTab,
+  NotificationButton,
+  Sandbox,
+  ServerContainerStatus,
+  ServerStatus,
+  TabType,
+} from '@codesandbox/common/lib/types';
+import { NotificationStatus } from '@codesandbox/notifications';
+
 import { createOptimisticModule } from './utils/common';
+import getItems from './utils/items';
+import { defaultOpenedModule, mainModule } from './utils/main-module';
+import { parseConfigurations } from './utils/parse-configurations';
+import { Action, AsyncAction } from '.';
 
 export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
   { state, effects, actions },
@@ -26,6 +27,8 @@ export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
     state.user = await effects.api.getCurrentUser();
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
+    effects.analytics.identify('signed_in', true);
+    effects.analytics.setUserId(state.user.id);
     actions.internal.setStoredSettings();
     effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
@@ -63,8 +66,33 @@ export const setPatronPrice: Action = ({ state }) => {
 
 export const setSignedInCookie: Action = ({ state }) => {
   document.cookie = 'signedIn=true; Path=/;';
-  identify('signed_in', 'true');
-  setUserId(state.user.id);
+};
+
+export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
+  if (state.user.sendSurvey) {
+    // Let the server know that we've seen the survey
+    effects.api.markSurveySeen();
+
+    effects.notificationToast.add({
+      title: 'Help improve CodeSandbox',
+      message:
+        "We'd love to hear your thoughts, it's 7 questions and will only take 2 minutes.",
+      status: NotificationStatus.NOTICE,
+      sticky: true,
+      actions: {
+        primary: [
+          {
+            label: 'Open Survey',
+            run: () => {
+              actions.modalOpened({
+                modal: 'userSurvey',
+              });
+            },
+          },
+        ],
+      },
+    });
+  }
 };
 
 export const addNotification: Action<{
@@ -97,10 +125,12 @@ export const signInGithub: Action<
   { useExtraScopes: boolean },
   Promise<string>
 > = ({ effects }, options) => {
-  const popup = effects.browser.openPopup(
-    `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`,
-    'sign in'
-  );
+  const authPath =
+    process.env.LOCAL_SERVER || process.env.STAGING
+      ? '/auth/dev'
+      : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
+
+  const popup = effects.browser.openPopup(authPath, 'sign in');
 
   return effects.browser
     .waitForMessage<{ jwt: string }>('signin')
@@ -256,8 +286,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   });
 
   effects.executor.setupExecutor();
-
-  effects.fsSync.syncCurrentSandbox();
 
   /*
     There seems to be a race condition here? Verify if this still happens with Overmind

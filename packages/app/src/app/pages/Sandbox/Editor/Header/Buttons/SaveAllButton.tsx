@@ -1,25 +1,25 @@
-import React from 'react';
-import { hooksObserver, inject } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
 import SaveIcon from 'react-icons/lib/md/save';
+
+import { useOvermind } from 'app/overmind';
 import { saveAllModules } from 'app/store/modules/editor/utils';
+
 import { Action } from './Action';
 
-export const SaveAllButton = inject('store', 'signals')(
-  hooksObserver(({ store, signals }) => {
-    const {
-      editor: { isAllModulesSynced, changedModuleShortids },
-    } = store;
+const noop = () => undefined;
+export const SaveAllButton: FunctionComponent = () => {
+  const { actions, state } = useOvermind();
+  const {
+    editor: { isAllModulesSynced, changedModuleShortids },
+  } = state;
 
-    return (
-      <Action
-        onClick={
-          isAllModulesSynced ? null : () => saveAllModules(store, signals)
-        }
-        placeholder={isAllModulesSynced ? 'All modules are saved' : false}
-        blink={changedModuleShortids.length > 2}
-        title="Save"
-        Icon={SaveIcon}
-      />
-    );
-  })
-);
+  return (
+    <Action
+      onClick={isAllModulesSynced ? noop : () => saveAllModules(state, actions)}
+      placeholder={isAllModulesSynced ? 'All modules are saved' : false}
+      blink={changedModuleShortids.length > 2}
+      title="Save"
+      Icon={SaveIcon}
+    />
+  );
+};

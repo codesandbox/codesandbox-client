@@ -5,6 +5,8 @@ import macrosPlugin from 'babel-plugin-macros';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
+import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
+import { join } from '@codesandbox/common/lib/utils/path';
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
@@ -125,6 +127,41 @@ async function waitForFs() {
   }
 }
 
+/**
+ * Babel can transform the plugin name to a longer name (eg. styled-jsx -> babel-styled-jsx)
+ * We want to know this beforehand, this function will check which one it is
+ */
+async function resolveDependencyName(
+  name: string,
+  isV7: boolean,
+  isPreset = false
+) {
+  // styled-jsx/babel -> styled-jsx
+  // @babel/plugin-env/package.json -> @babel/plugin-env
+  const dependencyName = getDependencyName(name);
+  try {
+    await downloadPath(join(dependencyName, 'package.json'));
+
+    return name;
+  } catch (_e) {
+    const prefixedFunction = isPreset
+      ? getPrefixedPresetName
+      : getPrefixedPluginName;
+    // Get the prefixed path, try that
+    const prefixedName = prefixedFunction(dependencyName, isV7);
+
+    try {
+      await downloadPath(join(prefixedName, 'package.json'));
+    } catch (_er) {
+      throw new Error(
+        `Cannot find plugin '${dependencyName}' or '${prefixedName}'`
+      );
+    }
+
+    return prefixedName;
+  }
+}
+
 async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
   await waitForFs();
 
@@ -132,12 +169,14 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
 
   let evaluatedPlugin = null;
 
+  const pluginName = await resolveDependencyName(plugin, isV7);
+
   try {
-    await downloadPath(plugin);
+    await downloadPath(pluginName);
     evaluatedPlugin = evaluateFromPath(
       fs,
       BFSRequire,
-      plugin,
+      pluginName,
       currentPath,
       Babel.availablePlugins,
       Babel.availablePresets
@@ -146,47 +185,23 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
     console.warn('First time compiling ' + plugin + ' went wrong, got:');
     console.warn(firstError);
 
-    try {
-      /** We assume that the user has the shortcode
-          react = @babel/react or styled-components = babel-plugin-styled-components
-          and try to fetch the correct plugin for them
-       */
-
-      const prefixedName = getPrefixedPluginName(plugin, isV7);
-      evaluatedPlugin = evaluateFromPath(
-        fs,
-        BFSRequire,
-        prefixedName,
-        currentPath,
-        Babel.availablePlugins,
-        Babel.availablePresets
-      );
-
-      console.log('Second try succeeded');
-    } catch (secondError) {
-      console.warn('Long path also failed ' + plugin + ' went wrong, got:');
-      console.warn(secondError);
-
-      /** If we still didn't get it, this means plugin wasn't downloaded
-          and that's why it could not be resolved.
-
-          We can try to download it based on the first error
-      */
-
-      console.warn('Downloading ' + plugin);
-
-      evaluatedPlugin = await downloadFromError(firstError).then(() => {
-        console.warn('Downloaded ' + plugin);
-        resetCache();
-        return installPlugin(Babel, BFSRequire, plugin, currentPath, isV7);
-      });
-    }
+    /**
+     * We assume that a file is missing in the in-memory file system, and try to download it by
+     * parsing the error.
+     */
+    evaluatedPlugin = await downloadFromError(firstError).then(() => {
+      resetCache();
+      return installPlugin(Babel, BFSRequire, plugin, currentPath, isV7);
+    });
   }
 
   if (!evaluatedPlugin) {
     throw new Error(`Could not install plugin '${plugin}', it is undefined.`);
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('Downloaded ' + plugin);
+  }
   Babel.registerPlugin(
     plugin,
     evaluatedPlugin.default ? evaluatedPlugin.default : evaluatedPlugin
@@ -202,28 +217,35 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
 
   let evaluatedPreset = null;
 
-  try {
-    evaluatedPreset = evaluateFromPath(
-      fs,
-      BFSRequire,
-      preset,
-      currentPath,
-      Babel.availablePlugins,
-      Babel.availablePresets
-    );
-  } catch (e) {
-    const prefixedName = getPrefixedPresetName(preset, isV7);
+  const presetName = await resolveDependencyName(preset, isV7, true);
 
+  try {
+    await downloadPath(presetName);
     evaluatedPreset = evaluateFromPath(
       fs,
       BFSRequire,
-      prefixedName,
+      presetName,
       currentPath,
       Babel.availablePlugins,
       Babel.availablePresets
     );
+  } catch (firstError) {
+    console.warn('First time compiling ' + preset + ' went wrong, got:');
+    console.warn(firstError);
+
+    /**
+     * We assume that a file is missing in the in-memory file system, and try to download it by
+     * parsing the error.
+     */
+    evaluatedPreset = await downloadFromError(firstError).then(() => {
+      resetCache();
+      return installPreset(Babel, BFSRequire, preset, currentPath, isV7);
+    });
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('Downloaded ' + preset);
+  }
   if (!evaluatedPreset) {
     throw new Error(`Could not install preset '${preset}', it is undefined.`);
   }
@@ -232,6 +254,8 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
     preset,
     evaluatedPreset.default ? evaluatedPreset.default : evaluatedPreset
   );
+
+  return evaluatedPreset;
 }
 
 function stripParams(regexp) {
@@ -353,11 +377,17 @@ async function compile(code, customConfig, path, isV7) {
     if (isV7) {
       // Force push this dependency, there are cases where it isn't included out of our control.
       // https://twitter.com/vigs072/status/1103005932886343680
+      // TODO: look into this
       dependencies.push({
-        type: 'direct',
         path: '@babel/runtime/helpers/interopRequireDefault',
+        type: 'direct',
+      });
+      dependencies.push({
+        path: '@babel/runtime/helpers/interopRequireWildcard',
+        type: 'direct',
       });
     }
+
     dependencies.forEach(dependency => {
       self.postMessage({
         type: 'add-dependency',
@@ -394,7 +424,7 @@ async function compile(code, customConfig, path, isV7) {
 try {
   self.importScripts(
     process.env.NODE_ENV === 'development'
-      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
+      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.js`
       : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
   );
 } catch (e) {
@@ -558,23 +588,27 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&
+      (flattenedPlugins.indexOf('transform-vue-jsx') > -1 ||
+        flattenedPlugins.indexOf('babel-plugin-transform-vue-jsx') > -1) &&
       Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
     ) {
       const vuePlugin = await import(
         /* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx'
       );
       Babel.registerPlugin('transform-vue-jsx', vuePlugin);
+      Babel.registerPlugin('babel-plugin-transform-vue-jsx', vuePlugin);
     }
 
     if (
-      flattenedPlugins.indexOf('jsx-pragmatic') > -1 &&
+      (flattenedPlugins.indexOf('jsx-pragmatic') > -1 ||
+        flattenedPlugins.indexOf('babel-plugin-jsx-pragmatic') > -1) &&
       Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
     ) {
       const pragmaticPlugin = await import(
         /* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic'
       );
       Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+      Babel.registerPlugin('babel-plugin-jsx-pragmatic', pragmaticPlugin);
     }
 
     if (

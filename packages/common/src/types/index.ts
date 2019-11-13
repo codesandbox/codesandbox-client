@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import React from 'react';
+
 import { TemplateType } from '../templates';
 
 export type SSEContainerStatus =
@@ -20,8 +21,10 @@ export type ModuleError = {
   path: string;
   severity: 'error' | 'warning';
   type: 'compile' | 'dependency-not-found' | 'no-dom-change';
-  payload: Object;
   source: string | undefined;
+  payload?: Object;
+  columnEnd?: number;
+  lineEnd?: number;
 };
 
 export type Contributor = {
@@ -42,10 +45,12 @@ export type ModuleCorrection = {
 export type Module = {
   id?: string;
   title: string;
-  code: string | undefined;
-  savedCode: string | undefined;
+  code: string;
+  savedCode: string | null;
   shortid: string;
-  directoryShortid: string | undefined;
+  errors: ModuleError[];
+  corrections: ModuleCorrection[];
+  directoryShortid: string | null;
   isNotSynced: boolean;
   sourceId: string;
   isBinary: boolean;
@@ -53,14 +58,23 @@ export type Module = {
   updatedAt: string;
   path?: string;
   now?: any;
+  type: 'file';
+};
+
+export type Configuration = {
+  title: string;
+  moreInfoUrl: string;
+  type: string;
+  description: string;
 };
 
 export type Directory = {
   id: string;
   title: string;
-  directoryShortid: string | undefined;
+  directoryShortid: string | null;
   shortid: string;
   sourceId: string;
+  type: 'directory';
 };
 
 export type Template = {
@@ -71,7 +85,6 @@ export type Template = {
   main: boolean;
   color: string;
   backgroundColor: () => string | undefined;
-
   popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
@@ -90,19 +103,17 @@ export type Badge = {
 };
 
 export type CurrentUser = {
-  id: string | undefined;
-  email: string | undefined;
-  name: string | undefined;
+  id: string | null;
+  email: string | null;
+  name: string | null;
   username: string;
-  avatarUrl: string | undefined;
-  jwt: string | undefined;
-  subscription:
-    | {
-        since: string;
-        amount: number;
-        cancelAtPeriodEnd: boolean;
-      }
-    | undefined;
+  avatarUrl: string | null;
+  jwt: string | null;
+  subscription: {
+    since: string;
+    amount: number;
+    cancelAtPeriodEnd: boolean;
+  } | null;
   curatorAt: string;
   badges: Array<Badge>;
   integrations: {
@@ -114,13 +125,15 @@ export type CurrentUser = {
       email: string;
     };
   };
+  sendSurvey: boolean;
 };
 
 export type CustomTemplate = {
   color?: string;
-  title: string;
-  id: string;
   iconUrl?: string;
+  id: string;
+  published?: boolean;
+  title: string;
   url: string | null;
 };
 
@@ -135,8 +148,8 @@ export type GitInfo = {
 export type SmallSandbox = {
   id: string;
   alias: string | null;
+  title: string | null;
   customTemplate: CustomTemplate | null;
-  title: string;
   insertedAt: string;
   updatedAt: string;
   likeCount: number;
@@ -156,7 +169,8 @@ export type User = {
   username: string;
   name: string;
   avatarUrl: string;
-  showcasedSandboxShortid: string | undefined;
+  twitter: string | null;
+  showcasedSandboxShortid: string | null;
   sandboxCount: number;
   givenLikeCount: number;
   receivedLikeCount: number;
@@ -165,10 +179,10 @@ export type User = {
   forkedCount: number;
   sandboxes: PaginatedSandboxes;
   likedSandboxes: PaginatedSandboxes;
-  badges: Array<Badge>;
+  badges: Badge[];
+  topSandboxes: SmallSandbox[];
   subscriptionSince: string;
   selection: Selection | null;
-  color: any;
 };
 
 export type LiveUser = {
@@ -264,16 +278,18 @@ export type PickedSandboxDetails = {
 
 export type Sandbox = {
   id: string;
-  alias: string | undefined;
-  title: string | undefined;
-  description: string;
+  alias: string | null;
+  title: string | null;
+  description: string | null;
   viewCount: number;
   likeCount: number;
   forkCount: number;
   userLiked: boolean;
-  modules: Array<Module>;
-  directories: Array<Directory>;
-  collection: boolean;
+  modules: Module[];
+  directories: Directory[];
+  collection?: {
+    path: string;
+  };
   owned: boolean;
   npmDependencies: {
     [dep: string]: string;
@@ -283,15 +299,18 @@ export type Sandbox = {
   externalResources: string[];
   team: {
     id: string;
-  };
-  roomId: string;
+    name: string;
+  } | null;
+  roomId: string | null;
   privacy: 0 | 1 | 2;
-  author: User | undefined;
-  forkedFromSandbox: SmallSandbox | undefined;
-  git: GitInfo | undefined;
+  author: User | null;
+  forkedFromSandbox: SmallSandbox | null;
+  git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
-  environmentVariables: EnvironmentVariable[];
+  environmentVariables: {
+    [key: string]: string;
+  } | null;
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
@@ -303,18 +322,17 @@ export type Sandbox = {
   };
   template: TemplateType;
   entry: string;
-  originalGit: GitInfo | undefined;
-  originalGitCommitSha: string | undefined;
-  originalGitChanges:
-    | {
-        added: string[];
-        modified: string[];
-        deleted: string[];
-        rights: 'none' | 'read' | 'write' | 'admin';
-      }
-    | undefined;
+  originalGit: GitInfo | null;
+  originalGitCommitSha: string | null;
+  originalGitChanges: {
+    added: string[];
+    modified: string[];
+    deleted: string[];
+    rights: 'none' | 'read' | 'write' | 'admin';
+  } | null;
   version: number;
-  screenshotUrl: string | undefined;
+  screenshotUrl: string | null;
+  previewSecret: string | null;
 };
 
 export type PrettierConfig = {
@@ -419,28 +437,6 @@ export type EditorSelection = {
   color: number[] | null;
 };
 
-export type EditorError = {
-  column: number;
-  line: number;
-  columnEnd: number;
-  lineEnd: number;
-  message: string;
-  source: string;
-  title: string;
-  path: string;
-};
-
-export type EditorCorrection = {
-  column: number;
-  line: number;
-  columnEnd: number;
-  lineEnd: number;
-  message: string;
-  source: string;
-  path: string;
-  severity: string;
-};
-
 export enum WindowOrientation {
   VERTICAL = 'vertical',
   HORIZONTAL = 'horizontal',
@@ -483,6 +479,13 @@ export enum ServerContainerStatus {
   ERROR = 'error',
 }
 
+export type ServerPort = {
+  main: boolean;
+  port: number;
+  hostname: string;
+  name?: string;
+};
+
 export type ZeitUser = {
   uid: string;
   email: string;
@@ -522,15 +525,15 @@ export type ZeitAlias = {
 };
 
 export enum ZeitDeploymentState {
-  'DEPLOYING',
-  'INITIALIZING',
-  'DEPLOYMENT_ERROR',
-  'BOOTED',
-  'BUILDING',
-  'READY',
-  'BUILD_ERROR',
-  'FROZEN',
-  'ERROR',
+  DEPLOYING = 'DEPLOYING',
+  INITIALIZING = 'INITIALIZING',
+  DEPLOYMENT_ERROR = 'DEPLOYMENT_ERROR',
+  BOOTED = 'BOOTED',
+  BUILDING = 'BUILDING',
+  READY = 'READY',
+  BUILD_ERROR = 'BUILD_ERROR',
+  FROZEN = 'FROZEN',
+  ERROR = 'ERROR',
 }
 
 export enum ZeitDeploymentType {
@@ -620,6 +623,11 @@ export type SandboxUrlSourceData = {
   git?: GitInfo;
 };
 
+export type DevToolsTabPosition = {
+  devToolIndex: number;
+  tabPosition: number;
+};
+
 export type LiveMessage<data = unknown> = {
   event: LiveMessageEvent;
   data: data;
@@ -663,5 +671,7 @@ export enum PatronBadge {
   THREE = 'patron-3',
   FOURTH = 'patron-4',
 }
+
+export type LiveDisconnectReason = 'close' | 'inactivity';
 
 export type PatronTier = 1 | 2 | 3 | 4;
