@@ -26,15 +26,17 @@ import {
 // UNCOMMENT AT THE BOTTOM IF IT BREAKS
 // GATSBY DOES NOT LET YOU HAVE FIELDS THAT DON'T EXIST YET
 
-const Info = ({ author, date, mobile, photo, ...props }) => (
+const Info = ({ authors, date, mobile, photo, ...props }) => (
   <Aside mobile={mobile} {...props}>
     <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
 
-    <section>
-      <AuthorImage src={photo} alt={author} />
+    {authors.map(author => (
+      <section key={author.name}>
+        <AuthorImage src={photo} alt={author} />
 
-      <Author>{author}</Author>
-    </section>
+        <Author>{author}</Author>
+      </section>
+    ))}
   </Aside>
 );
 
@@ -62,7 +64,7 @@ const Blog = ({
       {blogPosts.map(
         ({
           node: {
-            fields: { author, date, description, photo, slug, title },
+            fields: { authors, date, description, photo, slug, title },
             frontmatter: {
               banner: { publicURL: banner },
             },
@@ -70,7 +72,7 @@ const Blog = ({
           },
         }) => (
           <Wrapper key={id}>
-            <Info author={author} date={date} photo={photo} />
+            <Info authors={authors} date={date} photo={photo} />
 
             <Posts>
               {banner && (
@@ -98,7 +100,7 @@ const Blog = ({
                 <Subtitle>{description}</Subtitle>
               </div>
 
-              <Info author={author} date={date} mobile photo={photo} />
+              <Info authors={authors} date={date} mobile photo={photo} />
             </Posts>
           </Wrapper>
         )
@@ -116,7 +118,7 @@ export const query = graphql`
       edges {
         node {
           fields {
-            author
+            authors
             date
             description
             photo

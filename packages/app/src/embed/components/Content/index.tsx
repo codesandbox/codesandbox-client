@@ -83,7 +83,7 @@ type State = {
   running: boolean;
   currentDevToolPosition: DevToolsTabPosition;
 };
-
+// eslint-disable-next-line import/no-default-export
 export default class Content extends React.PureComponent<Props, State> {
   state: State;
 
