@@ -20,7 +20,7 @@ best use of their time. Today we're pleased to launch CodeSandbox CI: A free
 continuous integration service purpose-built for open source library
 maintainers.
 
-<iframe width="100%" height="500" src="https://www.youtube.com/embed/k_aR_4FeKlc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://youtu.be/k_aR_4FeKlc
 
 ### Here's how it works
 
