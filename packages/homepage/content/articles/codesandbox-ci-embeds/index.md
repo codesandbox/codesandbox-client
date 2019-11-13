@@ -70,7 +70,7 @@ improve the embed experience on mobile.”_
 
 See the difference for yourself:
 
-https://codesandbox.io/s/new?fontsize=14
+https://codesandbox.io/s/new?fontsize=14&hidenavigation=1&hidedevtools=1
 
 ### The next big design trend?
 
