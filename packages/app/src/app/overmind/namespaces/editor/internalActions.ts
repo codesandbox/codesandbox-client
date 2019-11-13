@@ -316,6 +316,7 @@ export const forkSandbox: AsyncAction<{
         state.editor.sandboxes[state.editor.currentId],
         forkedSandbox
       );
+      state.editor.modulesByPath = effects.vscode.fs.create(forkedSandbox);
       effects.preview.updateAddressbarUrl();
     }
 
