@@ -286,13 +286,11 @@ class BasePreview extends React.Component<Props, State> {
     );
   };
 
-  refreshUrl() {
+  updateAddressbarUrl() {
     const url = this.currentUrl();
 
     this.setState({
       urlInAddressBar: url,
-      url,
-      showScreenshot: false,
     });
   }
 

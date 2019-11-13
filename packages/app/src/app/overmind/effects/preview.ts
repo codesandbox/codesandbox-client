@@ -45,8 +45,8 @@ export default {
     const preview = await _preview.promise;
     preview.handleRefresh();
   },
-  async refreshUrl() {
+  async updateAddressbarUrl() {
     const preview = await _preview.promise;
-    preview.refreshUrl();
+    preview.updateAddressbarUrl();
   },
 };

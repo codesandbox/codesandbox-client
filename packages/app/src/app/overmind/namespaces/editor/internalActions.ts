@@ -316,7 +316,7 @@ export const forkSandbox: AsyncAction<{
         state.editor.sandboxes[state.editor.currentId],
         forkedSandbox
       );
-      effects.preview.refreshUrl();
+      effects.preview.updateAddressbarUrl();
     }
 
     effects.notificationToast.success('Forked sandbox!');
