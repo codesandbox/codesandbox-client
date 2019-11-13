@@ -44,7 +44,10 @@ export const resetUserId = () => {
     debug('[Amplitude] Resetting User ID');
     identify('userId', null);
 
-    if (global.amplitude.getInstance().options.userId) {
+    if (
+      global.amplitude.getInstance().options &&
+      global.amplitude.getInstance().options.userId
+    ) {
       global.amplitude.getInstance().setUserId(null);
       global.amplitude.getInstance().regenerateDeviceId();
     }
