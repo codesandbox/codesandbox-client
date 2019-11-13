@@ -32,7 +32,7 @@ to npm⁠. Plus, if the original GitHub issue contains a link to a reproducible
 sandbox, then we'll automatically fork it using the new PR build. That means you
 can review it online with one click.
 
-## Used by the biggest names in OSS
+### Used by the biggest names in OSS
 
 After a successful private beta, CodeSandbox CI is already in use by projects
 like React, Babel, Framer, Material UI, and others. And it's proving to be a
