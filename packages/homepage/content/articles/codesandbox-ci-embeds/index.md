@@ -22,7 +22,7 @@ maintainers.
 
 <iframe width="100%" height="500" src="https://www.youtube.com/embed/k_aR_4FeKlc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-## Here's how it works
+### Here's how it works
 
 CodeSandbox CI is a GitHub app that auto-builds your library⁠ from pull
 requests. Whenever someone opens a new pull request, CodeSandbox CI builds a new
