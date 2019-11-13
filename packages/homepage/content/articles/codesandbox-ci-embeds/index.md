@@ -22,14 +22,16 @@ After a successful private beta, CodeSandbox CI is already in use by projects li
 
 [![Framer tweet](./images/mattgperry_tweet_1181863225756934144.png)](https://twitter.com/mattgperry/status/1181863225756934144?s=20)
 
-Try it out for yourself by [installing the GitHub app](https://github.com/apps/codesandbox).
+**Try it out for yourself by [installing the GitHub app](https://github.com/apps/codesandbox)**.
 
 ## A new look for Embeds
 CodeSandbox CI is the latest way maintainers can use CodeSandbox to save time and improve experiences for users and contributors. But more than 4000 open source projects already use CodeSandbox embeds in their docs, blog posts, and websites—providing visitors with working examples that help explain how to use their creations. 
 
 Embeds provide the ability to view a sandbox inline in your content, whether you want to show the code, the running app, or both at the same time. Our embeds use a specially designed version of CodeSandbox that's small in size but almost as powerful as the full thing, making for a great way to explain a coding concept or show off a demo.
 
-We want you to be able to use embeds anywhere you want. So based on feedback from our community, we've launched a new default look and feel for embeds that's minimal in design and looks great wherever you place it. With a subtle color palette and no branding, it doesn't take the focus away from your great content. Danny Ruchtie, Head of Design here at CodeSandbox, notes that with this release, _“we've focused on building something that would better blend in with its surroundings while maintaining all its powerful features. So there's less focus on the UI and more on the content. We also wanted to give users more control and improve the embed experience on mobile.”_
+We want you to be able to use embeds anywhere you want. So based on feedback from our community, we've launched a new default look and feel for embeds that's minimal in design and looks great wherever you place it. With a subtle color palette and no branding, it doesn't take the focus away from your great content.
+
+Danny Ruchtie, Head of Design here at CodeSandbox, notes that with this release, _“we've focused on building something that would better blend in with its surroundings while maintaining all its powerful features. So there's less focus on the UI and more on the content. We also wanted to give users more control and improve the embed experience on mobile.”_
 
 Take a look:
 [![Vanilla embed](./images/oldvsnew.png)](https://codesandbox.io/embed/vanilla)
