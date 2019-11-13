@@ -53,6 +53,12 @@ export async function initialize(dsn: string) {
             // We need to add sourcemaps
             return undefined;
           }
+
+          if (filename.includes('react-devtools-inline')) {
+            // Outside of our scope for now, but we definitely want to check this out.
+            // TODO: check what's happening here: https://sentry.io/organizations/codesandbox/issues/1239466583/?project=155188&query=is%3Aunresolved+release%3APROD-1573653062-4134efc0a
+            return undefined;
+          }
         }
 
         const customError = ((hint && (hint.originalException as any)) || {})
@@ -74,6 +80,8 @@ export async function initialize(dsn: string) {
           // A firefox error with error-polyfill, not critical. Referenced here: https://sentry.io/organizations/codesandbox/issues/1293236389/?project=155188&query=is%3Aunresolved
           return undefined;
         }
+
+
 
         return event;
       },
