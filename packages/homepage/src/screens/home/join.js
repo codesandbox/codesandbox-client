@@ -1,7 +1,6 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import { down } from 'styled-breakpoints';
 
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
 import HeroSmall from '../../assets/images/small-ide.png';

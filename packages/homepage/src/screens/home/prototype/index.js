@@ -56,7 +56,7 @@ const Prototype = () => {
     <>
       <H2>Prototype Quickly</H2>
       <P muted>Test your ideas early and often</P>
-      <Grid css="">
+      <Grid>
         <ImageWrapper ref={inViewRef}>
           <div
             css={`

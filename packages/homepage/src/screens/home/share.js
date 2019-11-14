@@ -3,7 +3,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
 
-import { down } from 'styled-breakpoints';
 import { H2, P } from '../../components/Typography';
 import code from '../../assets/images/code.png';
 import bug from '../../assets/images/bug.png';

@@ -2,7 +2,6 @@ import React from 'react';
 
 import styled from 'styled-components';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
-import { down } from 'styled-breakpoints';
 import { H2, P } from '../../components/Typography';
 
 import frameworks from '../../assets/images/frameworks.png';
