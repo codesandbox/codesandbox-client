@@ -135,7 +135,7 @@ const Navigation = () => {
                   </button>
                 </li>
                 <li>
-                  <Link to="/explore">Pricing</Link>
+                  <Link to="/pricing">Pricing</Link>
                 </li>
                 {!user && (
                   <li className="tablet-remove">

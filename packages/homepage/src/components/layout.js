@@ -25,6 +25,7 @@ const homepageTheme = {
     primary: '#0971f1',
     grey: '#242424',
     muted: '#999',
+    blue: '#0971F1',
   },
 };
 

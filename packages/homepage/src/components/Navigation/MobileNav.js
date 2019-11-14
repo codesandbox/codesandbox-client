@@ -175,10 +175,12 @@ export default () => {
                   </a>
                 </li>
                 <Pricing>
-                  <section>
-                    <PricingIcon />
-                  </section>
-                  <span>Pricing</span>
+                  <Link to="/pricing">
+                    <section>
+                      <PricingIcon />
+                    </section>
+                    <span>Pricing</span>
+                  </Link>
                 </Pricing>
               </Items>
               <Button
