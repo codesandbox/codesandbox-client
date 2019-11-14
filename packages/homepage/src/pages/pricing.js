@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
-
+import Join from '../screens/home/join';
 import { Title } from '../templates/_feature.elements';
 import { P } from '../components/Typography';
 
@@ -515,5 +515,253 @@ export default () => (
         <span>✓</span>
       </li>
     </FeaturesTable>
+
+    <FeaturesTableHeader inside>
+      <span>Collaboration</span>
+    </FeaturesTableHeader>
+    <FeaturesTable inside>
+      <li>
+        <div>
+          <FeatureTitle>Live Mode</FeatureTitle>
+          <P muted small>
+            Work on code and edit sandboxes with multiple people
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>In-editor Chat </FeatureTitle>
+          <P muted small>
+            Chat with collaborators about the code you're all working on
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Classroom Mode</FeatureTitle>
+          <P muted small>
+            Use Classroom Mode to control who can make edits or watch
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Shareable Links </FeatureTitle>
+          <P muted small>
+            Per sandbox URL with HTTPS support for secure project sharing
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+    </FeaturesTable>
+    <FeaturesTableHeader inside>
+      <span>Containers</span>
+    </FeaturesTableHeader>
+    <FeaturesTable inside>
+      <li>
+        <div>
+          <FeatureTitle>Server Sandboxes </FeatureTitle>
+          <P muted small>
+            (Create full-stack web apps and use Node packages)
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Terminal</FeatureTitle>
+          <P muted small>
+            Run scripts and commands from a terminal
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Server Control Panel</FeatureTitle>
+          <P muted small>
+            Restart the sandbox or server
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Multiple Ports </FeatureTitle>
+          <P muted small>
+            Container apps can listen on one or more ports simultaneously
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Secrets</FeatureTitle>
+          <P muted small>
+            Hide sensitive information in your application and access them via
+            environment variables
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+    </FeaturesTable>
+    <FeaturesTableHeader inside>
+      <span>Sandbox Config & Management</span>
+    </FeaturesTableHeader>
+    <FeaturesTable inside>
+      <li>
+        <div>
+          <FeatureTitle>Dashboard</FeatureTitle>
+          <P muted small>
+            Organize sandboxes and templates. Search, sort, or modify multiple
+            sandboxes at once
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Configuration UI </FeatureTitle>
+          <P muted small>
+            Edit config files for npm, Prettier, Netlify, Now, TypeScript,
+            JavaScript, and your sandbox
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Export Zip</FeatureTitle>
+          <P muted small>
+            Download your sandbox as a zip
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Import CLI </FeatureTitle>
+          <P muted small>
+            Import a local project to CodeSandbox easily
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Define API </FeatureTitle>
+          <P muted small>
+            Programmatically create sandboxes via an API
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Storage Management </FeatureTitle>
+          <P muted small>
+            View storage usage, and upload or delete files from one management
+            screen
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+    </FeaturesTable>
+    <FeaturesTableHeader inside>
+      <span>Community</span>
+    </FeaturesTableHeader>
+    <FeaturesTable inside>
+      <li>
+        <div>
+          <FeatureTitle>Public Profile</FeatureTitle>
+          <P muted small>
+            A personal portfolio page highlighting your best sandboxes
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Sandbox Search</FeatureTitle>
+          <P muted small>
+            Search public sandboxes and filter by dependency, environment, and
+            tag
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Explore </FeatureTitle>
+          <P muted small>
+            Hand-picked sandboxes highlighting the best recent community
+            creations
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+    </FeaturesTable>
+    <FeaturesTable
+      css={`
+        margin-top: 5.5rem;
+
+        li {
+          margin-top: 2rem;
+        }
+      `}
+    >
+      <li>
+        <div>
+          <FeatureTitle>Embeds</FeatureTitle>
+          <P muted small>
+            Embed sandboxes in docs, blog posts, and websites
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>CodeSandbox CI</FeatureTitle>
+          <P muted small>
+            A GitHub integration that auto-builds from pull requests
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Teams </FeatureTitle>
+          <P muted small>
+            View and edit sandboxes with all team members
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+    </FeaturesTable>
+    <Join />
   </Layout>
 );
