@@ -34,7 +34,7 @@ export function getCode(editor) {
   return activeEditor.getValue();
 }
 
-export function getModel(editor) {
+export function getCurrentModel(editor) {
   const activeEditor = editor.getActiveCodeEditor();
 
   return activeEditor && activeEditor.getModel();

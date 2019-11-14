@@ -10,7 +10,7 @@ import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
 import { TextOperation } from 'ot';
 
-import { getCurrentModelPath, getModel } from './utils';
+import { getCurrentModel, getCurrentModelPath } from './utils';
 
 // @ts-ignore
 const fadeIn = css.keyframes('fadeIn', {
@@ -45,8 +45,16 @@ export type OnFileChangeCallback = (data: OnFileChangeData) => void;
 
 export type OnOperationAppliedCallback = (data: OnOperationAppliedData) => void;
 
+export type ModuleModel = {
+  changeListener: { dispose: Function };
+  selections: any[];
+  path: string;
+  model: Promise<any>;
+};
+
 export class ModelsHandler {
   public isApplyingOperation: boolean = false;
+  private moduleModels: { [path: string]: ModuleModel } = {};
   private modelAddedListener: { dispose: Function };
   private modelRemovedListener: { dispose: Function };
   private onChangeCallback: OnFileChangeCallback;
@@ -56,15 +64,6 @@ export class ModelsHandler {
   private monaco;
   private userClassesGenerated = {};
   private userSelectionDecorations = {};
-  private modelListeners: {
-    [path: string]: {
-      moduleShortid: string;
-      model: any;
-      listener: {
-        dispose: Function;
-      };
-    };
-  } = {};
 
   constructor(
     editorApi,
@@ -84,21 +83,33 @@ export class ModelsHandler {
   public dispose(): null {
     this.modelAddedListener.dispose();
     this.modelRemovedListener.dispose();
-    Object.keys(this.modelListeners).forEach(p => {
-      this.modelListeners[p].listener.dispose();
+    Object.keys(this.moduleModels).forEach(path => {
+      if (this.moduleModels[path].changeListener) {
+        this.moduleModels[path].changeListener.dispose();
+      }
     });
-    this.modelListeners = {};
+    this.moduleModels = {};
 
     return null;
   }
 
   public changeModule = async (module: Module) => {
+    const moduleModel = this.getModuleModel(module);
+
     if (getCurrentModelPath(this.editorApi) !== module.path) {
       const file = await this.editorApi.openFile(module.path);
-      return file.getModel();
+      const model = file.getModel();
+
+      this.updateUserSelections(module, moduleModel.selections);
+
+      moduleModel.model = Promise.resolve(model);
+    } else {
+      const model = getCurrentModel(this.editorApi);
+
+      moduleModel.model = Promise.resolve(model);
     }
 
-    return Promise.resolve(getModel(this.editorApi));
+    return moduleModel.model;
   };
 
   public async applyOperation(moduleShortid: string, operation: any) {
@@ -108,43 +119,53 @@ export class ModelsHandler {
       return;
     }
 
-    const modulePath = '/sandbox' + module.path;
+    const moduleModel = this.getModuleModel(module);
 
     const modelEditor = this.editorApi.editorService.editors.find(
-      editor => editor.resource && editor.resource.path === modulePath
+      editor => editor.resource && editor.resource.path === moduleModel.path
     );
 
-    let model;
-
-    if (modelEditor) {
-      model = (await modelEditor.textModelReference).object;
-    } else {
-      model = await this.editorApi.textFileService.models.loadOrCreate(
-        this.monaco.Uri.file(modulePath)
-      );
+    // We keep a reference to the model on our own. We keep it as a
+    // promise, because there might be multiple operations fired before
+    // the model is actually resolved. This creates a "natural" queue
+    if (!moduleModel.model) {
+      if (modelEditor) {
+        moduleModel.model = modelEditor.textModelReference.then(
+          ref => ref.object.textEditorModel
+        );
+      } else {
+        moduleModel.model = this.editorApi.textFileService.models
+          .loadOrCreate(this.monaco.Uri.file(moduleModel.path))
+          .then(model => model.textEditorModel);
+      }
     }
 
+    const model = await moduleModel.model;
+
     this.isApplyingOperation = true;
-    this.applyOperationToModel(operation, false, model.textEditorModel);
+    this.applyOperationToModel(operation, false, model);
     this.isApplyingOperation = false;
     this.onOperationAppliedCallback({
-      code: model.textEditorModel.getValue(),
+      code: model.getValue(),
       moduleShortid: module.shortid,
       title: module.title,
-      model: model.textEditorModel,
+      model,
     });
   }
 
-  public updateUserSelections(
+  public async updateUserSelections(
     module,
     userSelections: Array<UserSelection | EditorSelection>
   ) {
-    const model = getModel(this.editorApi);
+    const moduleModel = this.getModuleModel(module);
 
-    if (!model) {
+    moduleModel.selections = userSelections;
+
+    if (!moduleModel.model) {
       return;
     }
 
+    const model = await moduleModel.model;
     const lines = model.getLinesContent() || [];
     const activeEditor = this.editorApi.getActiveCodeEditor();
 
@@ -394,41 +415,35 @@ export class ModelsHandler {
   private listenForChanges() {
     this.modelAddedListener = this.editorApi.textFileService.modelService.onModelAdded(
       model => {
-        if (this.modelListeners[model.uri.path] === undefined) {
-          let module: Module;
-          try {
-            module = resolveModule(
-              model.uri.path.replace(/^\/sandbox/, ''),
-              this.sandbox.modules,
-              this.sandbox.directories
-            );
-          } catch (e) {
-            return;
-          }
+        try {
+          const module = resolveModule(
+            model.uri.path.replace(/^\/sandbox/, ''),
+            this.sandbox.modules,
+            this.sandbox.directories
+          );
 
-          const listener = this.getModelContentChangeListener(
+          const moduleModel = this.getModuleModel(module);
+
+          moduleModel.model = model;
+          moduleModel.changeListener = this.getModelContentChangeListener(
             this.sandbox,
             model
           );
-
-          this.modelListeners[model.uri.path] = {
-            moduleShortid: module.shortid,
-            model,
-            listener,
-          };
+        } catch (e) {
+          return;
         }
       }
     );
 
     this.modelRemovedListener = this.editorApi.textFileService.modelService.onModelRemoved(
       model => {
-        if (this.modelListeners[model.uri.path]) {
-          this.modelListeners[model.uri.path].listener.dispose();
+        if (this.moduleModels[model.uri.path]) {
+          this.moduleModels[model.uri.path].changeListener.dispose();
 
           const csbPath = model.uri.path.replace('/sandbox', '');
           dispatch(actions.correction.clear(csbPath, 'eslint'));
 
-          delete this.modelListeners[model.uri.path];
+          delete this.moduleModels[model.uri.path];
         }
       }
     );
@@ -461,5 +476,17 @@ export class ModelsHandler {
         }
       }
     });
+  }
+
+  private getModuleModel(module: Module) {
+    const path = '/sandbox' + module.path;
+    this.moduleModels[path] = this.moduleModels[path] || {
+      changeListener: null,
+      model: null,
+      path,
+      selections: [],
+    };
+
+    return this.moduleModels[path];
   }
 }
