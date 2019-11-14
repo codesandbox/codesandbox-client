@@ -23,8 +23,16 @@ export async function initialize(dsn: string) {
         // Chrome extensions
         /extensions\//i,
         /^chrome:\/\//i,
+
+        // react devtools Outside of our scope for now, but we definitely want to check this out.
+        // TODO: check what's happening here: https://sentry.io/organizations/codesandbox/issues/1239466583/?project=155188&query=is%3Aunresolved+release%3APROD-1573653062-4134efc0a
+        /because a node with that id is already in the Store/,
+        /Node \d* was removed before its children\./,
+        /Cannot remove node \d* because no matching node was found in the Store\./,
+        /Cannot add child \d* to parent \d* because parent node was not found in the Store\./,
+        /Children cannot be added or removed during a reorder operation\./,
       ],
-      // whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
+      whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
       /**
        * Don't send messages from the sandbox, so don't send from eg.
        * new.codesandbox.io or new.csb.app
@@ -64,12 +72,6 @@ export async function initialize(dsn: string) {
             // This is the spammy event that doesn't do anything: https://sentry.io/organizations/codesandbox/issues/1054971728/?project=155188&query=is%3Aunresolved
             // Don't do anything with it right now, I can't seem to reproduce it for some reason.
             // We need to add sourcemaps
-            return null;
-          }
-
-          if (filename.includes('react-devtools-inline')) {
-            // Outside of our scope for now, but we definitely want to check this out.
-            // TODO: check what's happening here: https://sentry.io/organizations/codesandbox/issues/1239466583/?project=155188&query=is%3Aunresolved+release%3APROD-1573653062-4134efc0a
             return null;
           }
         }
