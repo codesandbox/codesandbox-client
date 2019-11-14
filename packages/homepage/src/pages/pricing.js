@@ -87,6 +87,12 @@ const FeaturesTableHeader = styled.div`
     `
     margin-left: 2.5rem;
   `}
+
+  ${props => props.theme.breakpoints.md} {
+    grid-template-columns: 1fr 90px 60px;
+    font-size: 16px;
+    margin-left: 0 !important;
+  }
 `;
 
 const FeaturesTable = styled.ul`
@@ -99,10 +105,18 @@ const FeaturesTable = styled.ul`
     margin-left: 2.5rem;
   `}
 
+  ${props => props.theme.breakpoints.md} {
+    margin-left: 0 !important;
+  }
+
   li {
     display: grid;
     grid-template-columns: 1fr 190px 190px;
     margin-bottom: 1rem;
+
+    ${props => props.theme.breakpoints.md} {
+      grid-template-columns: 1fr 60px 60px;
+    }
 
     span {
       width: 100%;
@@ -111,6 +125,10 @@ const FeaturesTable = styled.ul`
       font-weight: 500;
       font-size: 23px;
       line-height: 27px;
+
+      ${props => props.theme.breakpoints.md} {
+        font-size: 16px;
+      }
     }
   }
 `;
@@ -139,7 +157,7 @@ export default () => (
         justify-content: center;
 
         ${props => props.theme.breakpoints.lg} {
-          grid-template-columns: 26rem;
+          grid-template-columns: minmax(100%, 26rem);
         }
       `}
     >
@@ -247,7 +265,7 @@ export default () => (
           </P>
         </div>
         <span>50</span>
-        <span>Unlimited</span>
+        <span>∞</span>
       </li>
 
       <li>
