@@ -1,68 +1,89 @@
-import React, { useState } from 'react';
-import {
-  ALGOLIA_API_KEY,
-  ALGOLIA_APPLICATION_ID,
-  ALGOLIA_DEFAULT_INDEX, // eslint-disable-line
-} from '@codesandbox/common/lib/utils/config';
-import { InstantSearch, Configure, Stats } from 'react-instantsearch/dom';
-import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
-import { Header, SubHeader } from '../elements';
-import { Categories, Form, GlobalSearchStyles } from './elements';
-import { all } from '../availableTemplates';
-import { ExploreResults } from './Results';
-import { ExploreSearch } from './Search';
+import React, { useState, useEffect } from 'react';
+import { Header } from '../elements';
+import { SearchBox } from '../SearchBox';
+import { SearchResults } from './SearchResults';
+import { Loader } from '../Loader';
+import { ITemplateInfo, TemplateList } from '../TemplateList';
+
+interface IExploreTemplate {
+  title: string;
+  sandboxes: {
+    id: string;
+    title: string | null;
+    alias: string | null;
+    description: string | null;
+    inserted_at: string;
+    updated_at: string;
+    author: { username: string } | null;
+    custom_template: {
+      id: string;
+      icon_url: string;
+      color: string;
+    };
+  }[];
+}
+
+type ExploreResponse = IExploreTemplate[];
 
 export const Explore = () => {
-  const [category, setCategory] = useState('');
+  const [search, setSearch] = useState('');
+  const [exploreTemplates, setExploreTemplates] = useState<ExploreResponse>([]);
+  const [loading, setLoading] = useState(true);
 
-  const updateCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value !== '') {
-      return setCategory(`template: ${e.target.value}`);
-    }
+  useEffect(() => {
+    fetch('/api/v1/sandboxes/templates/explore')
+      .then(res => res.json())
+      .then(body => {
+        setExploreTemplates(body);
+        setLoading(false);
+      });
+  }, []);
 
-    return setCategory('');
-  };
+  const templateInfos: ITemplateInfo[] = exploreTemplates.map(
+    exploreTemplate => ({
+      key: exploreTemplate.title,
+      title: exploreTemplate.title,
+      templates: exploreTemplate.sandboxes.map(sandbox => ({
+        id: sandbox.custom_template.id,
+        color: sandbox.custom_template.color,
+        iconUrl: sandbox.custom_template.icon_url,
+        published: true,
+        sandbox: {
+          id: sandbox.id,
+          insertedAt: sandbox.inserted_at,
+          updatedAt: sandbox.updated_at,
+          alias: sandbox.alias,
+          title: sandbox.title,
+          author: sandbox.author,
+          description: sandbox.description,
+          source: {
+            template: 'create-react-app',
+          },
+        },
+      })),
+    })
+  );
 
   return (
     <>
-      <GlobalSearchStyles />
-      <InstantSearch
-        appId={ALGOLIA_APPLICATION_ID}
-        apiKey={ALGOLIA_API_KEY}
-        indexName={ALGOLIA_DEFAULT_INDEX}
-      >
-        <Configure
-          hitsPerPage={50}
-          facetFilters={['custom_template.published: true', category]}
-        />
-        <Header>
-          <span>Explore Templates</span>
-          <Form>
-            <ExploreSearch />
-
-            <Categories onChange={updateCategory}>
-              <option selected value="">
-                Categories
-              </option>
-              {all.map(template => (
-                <option value={template.name}>{template.niceName}</option>
-              ))}
-            </Categories>
-          </Form>
-        </Header>
-
-        <SubHeader>
-          <Stats
-            translations={{
-              stats: nbHits => `${nbHits.toLocaleString()} results found`,
-            }}
+      <Header>
+        <span>Explore Templates</span>
+        <div>
+          <SearchBox
+            onChange={evt => setSearch(evt.target.value)}
+            value={search}
+            placeholder="Search Published Templates"
           />
-        </SubHeader>
+        </div>
+      </Header>
 
-        <Scrollable>
-          <ExploreResults />
-        </Scrollable>
-      </InstantSearch>
+      {loading ? (
+        <Loader />
+      ) : search ? (
+        <SearchResults search={search} />
+      ) : (
+        <TemplateList templateInfos={templateInfos} />
+      )}
     </>
   );
 };

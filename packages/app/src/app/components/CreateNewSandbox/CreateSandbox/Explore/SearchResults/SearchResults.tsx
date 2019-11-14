@@ -1,0 +1,40 @@
+import React from 'react';
+import {
+  ALGOLIA_API_KEY,
+  ALGOLIA_APPLICATION_ID,
+  ALGOLIA_DEFAULT_INDEX, // eslint-disable-line
+} from '@codesandbox/common/lib/utils/config';
+import { InstantSearch, Configure, Stats } from 'react-instantsearch/dom';
+import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
+import { SubHeader } from '../../elements';
+import { GlobalSearchStyles } from './elements';
+import { ExploreResultList } from './ExploreResultList';
+
+export const SearchResults = ({ search }: { search: string }) => (
+  <>
+    <GlobalSearchStyles />
+    <InstantSearch
+      appId={ALGOLIA_APPLICATION_ID}
+      apiKey={ALGOLIA_API_KEY}
+      indexName={ALGOLIA_DEFAULT_INDEX}
+    >
+      <Configure
+        query={search}
+        hitsPerPage={50}
+        facetFilters={['custom_template.published: true']}
+      />
+
+      <SubHeader>
+        <Stats
+          translations={{
+            stats: nbHits => `${nbHits.toLocaleString()} results found`,
+          }}
+        />
+      </SubHeader>
+
+      <Scrollable>
+        <ExploreResultList />
+      </Scrollable>
+    </InstantSearch>
+  </>
+);

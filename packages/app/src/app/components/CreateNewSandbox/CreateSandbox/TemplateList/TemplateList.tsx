@@ -9,7 +9,7 @@ import { SandboxCard } from '../SandboxCard';
 import { SubHeader, Grid } from '../elements';
 
 export interface ITemplateInfo {
-  title: string;
+  title?: string;
   key: string;
   templates: TemplateFragment[];
 }
@@ -196,7 +196,7 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
 
         return (
           <div key={key} style={{ marginBottom: '1rem' }}>
-            <SubHeader>{title}</SubHeader>
+            {title !== undefined && <SubHeader>{title}</SubHeader>}
             <Grid columnCount={COLUMN_COUNT}>
               {templates.map((template, i) => {
                 const index = offset + i;

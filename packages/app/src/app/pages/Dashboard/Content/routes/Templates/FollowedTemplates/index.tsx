@@ -9,7 +9,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { ContextMenu } from 'app/components/ContextMenu';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { LIST_BOOKMARKED_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
+import { LIST_BOOKMARKED_TEMPLATES_QUERY } from 'app/components/CreateNewSandbox/queries';
 // @ts-ignore
 import {
   UnbookmarkTemplateFromDashboardMutation,
@@ -29,7 +29,7 @@ export const FollowedTemplates = props => {
   >();
 
   const { loading, error, data } = useQuery<ListFollowedTemplatesQuery>(
-    LIST_BOOKMARKED_TEMPLATES
+    LIST_BOOKMARKED_TEMPLATES_QUERY
   );
   const client = useApolloClient();
   const [unBookmark] = useMutation<
