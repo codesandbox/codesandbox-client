@@ -30,8 +30,7 @@ export type OnFileChangeData = {
   moduleShortid: string;
   title: string;
   code: string;
-  event?: any[];
-  model?: any;
+  model: any;
 };
 
 export type OnOperationAppliedData = {
@@ -446,7 +445,6 @@ export class ModelsHandler {
           moduleShortid: module.shortid,
           title: module.title,
           code: model.getValue(),
-          event: e,
           model,
         });
       } catch (err) {

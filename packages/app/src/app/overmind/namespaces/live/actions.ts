@@ -3,7 +3,6 @@ import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { filter, fork, pipe } from 'overmind';
 
-import eventToTransform from '../../utils/event-to-transform';
 import * as internalActions from './internalActions';
 import * as liveMessage from './liveMessageOperators';
 
@@ -67,34 +66,6 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
     [LiveMessageEvent.NOTIFICATION]: liveMessage.onNotification,
   })
 );
-
-export const onTransformMade: Action<{
-  event: any;
-  moduleShortid: string;
-  code: string;
-}> = ({ effects, state }, { event, moduleShortid, code }) => {
-  if (!state.live.isCurrentEditor) {
-    return;
-  }
-
-  const { operation } = eventToTransform(event, code);
-
-  if (!operation) {
-    return;
-  }
-
-  try {
-    effects.live.applyClient(moduleShortid, operation.toJSON());
-  } catch (e) {
-    // Something went wrong, probably a sync mismatch. Request new version
-    console.error(
-      'Something went wrong with applying OT operation',
-      moduleShortid,
-      operation
-    );
-    effects.live.sendModuleState();
-  }
-};
 
 export const applyTransformation: Action<{
   operation: any;

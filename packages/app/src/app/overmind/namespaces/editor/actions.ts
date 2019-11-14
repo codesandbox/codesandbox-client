@@ -188,31 +188,8 @@ export const onOperationApplied: Action<{
 export const codeChanged: Action<{
   moduleShortid: string;
   code: string;
-  event?: any;
-}> = ({ effects, state, actions }, { code, moduleShortid, event }) => {
+}> = ({ effects, state, actions }, { code, moduleShortid }) => {
   effects.analytics.trackOnce('Change Code');
-
-  if (
-    state.live.isLive &&
-    moduleShortid === state.editor.currentModuleShortid &&
-    event &&
-    event.changes
-  ) {
-    try {
-      actions.live.onTransformMade({
-        moduleShortid,
-        event,
-        code: state.editor.currentModule.code,
-      });
-    } catch (e) {
-      // Something went wrong while composing the operation, so we're opting for a full sync
-      console.error(e);
-
-      if (this.props.onModuleStateMismatch) {
-        this.props.onModuleStateMismatch();
-      }
-    }
-  }
 
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
@@ -223,9 +200,7 @@ export const codeChanged: Action<{
   }
 
   if (state.live.isLive) {
-    state.live.receivingCode = true;
-    effects.live.sendCodeUpdate(moduleShortid, module.code || '', code);
-    state.live.receivingCode = false;
+    effects.live.sendCodeUpdate(moduleShortid, module.code, code);
   }
 
   actions.editor.internal.setModuleCode({
