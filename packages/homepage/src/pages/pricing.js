@@ -80,11 +80,24 @@ const FeaturesTableHeader = styled.div`
   padding-bottom: 1rem;
   margin-bottom: 1rem;
   border-bottom: 1px solid #242424;
+  margin-top: 5rem;
+
+  ${props =>
+    props.inside &&
+    `
+    margin-left: 2.5rem;
+  `}
 `;
 
 const FeaturesTable = styled.ul`
   list-style: none;
   margin: 0;
+
+  ${props =>
+    props.inside &&
+    `
+    margin-left: 2.5rem;
+  `}
 
   li {
     display: grid;
@@ -181,7 +194,11 @@ export default () => (
     >
       Features
     </h3>
-    <FeaturesTableHeader>
+    <FeaturesTableHeader
+      css={`
+        margin-top: 0;
+      `}
+    >
       <span>Development & Prototyping</span>
       <span
         css={`
@@ -201,7 +218,7 @@ export default () => (
     <FeaturesTable>
       <li>
         <div>
-          <FeatureTitle>Templates</FeatureTitle>
+          <FeatureTitle>VS Code powered Editor </FeatureTitle>
           <P muted small>
             Start from an official template, or create your own
           </P>
@@ -252,6 +269,249 @@ export default () => (
           </P>
         </div>
         <span />
+        <span>✓</span>
+      </li>
+    </FeaturesTable>
+    <FeaturesTableHeader>
+      <span>Online IDE</span>
+    </FeaturesTableHeader>
+    <FeaturesTable>
+      <li>
+        <div>
+          <FeatureTitle>VS Code powered Editor</FeatureTitle>
+          <P muted small>
+            Leverage the power and familiarity of VS Code
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Hot Module Reloading </FeatureTitle>
+          <P muted small>
+            See changes as you make them
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Keybindings & Quick Actions </FeatureTitle>
+          <P muted small>
+            Perform everyday tasks speedily
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Console </FeatureTitle>
+          <P muted small>
+            View logging and console output to see loading progress and debug
+            issues
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Test Viewer</FeatureTitle>
+          <P muted small>
+            Showing test results alongside your code
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Problem Viewer </FeatureTitle>
+          <P muted small>
+            See errors clearly with our user-friendly overlay
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Zen Mode</FeatureTitle>
+          <P muted small>
+            Zen mode hides distracting editor elements for demos and screenshots
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Custom Themes </FeatureTitle>
+          <P muted small>
+            Tweak theme styles with support for all VS Code themes 
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Vim Mode </FeatureTitle>
+          <P muted small>
+            Vim emulation in the editor, powered by the VSCodeVim extension
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Type Acquisition </FeatureTitle>
+          <P muted small>
+            Typings automatically downloaded for every dependency
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>External Resources </FeatureTitle>
+          <P muted small>
+            Automatically include external resources, like CSS or JS files
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Session Restore </FeatureTitle>
+          <P muted small>
+            (Recover un-saved changes between sessions)
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>External Previews </FeatureTitle>
+          <P muted small>
+            (Open sandbox previews on a separate URL but with Hot Module
+            Reloading)
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+    </FeaturesTable>
+    <FeaturesTableHeader inside>
+      <span>Dev Tool Integrations</span>
+    </FeaturesTableHeader>
+    <FeaturesTable inside>
+      <li>
+        <div>
+          <FeatureTitle>NPM Packages</FeatureTitle>
+          <P muted small>
+            Add any of the 1M+ dependencies on npm directly from the editor
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>GitHub</FeatureTitle>
+          <P muted small>
+            Import and sync public repos, export a sandbox to a repo or create
+            commits and open PRs
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>ZEIT Now Deploy </FeatureTitle>
+          <P muted small>
+            Deploy a production version of your sandbox to ZEIT Now
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Netlify Deploy</FeatureTitle>
+          <P muted small>
+            Deploy a production version of your sandbox to Netlify
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Jest</FeatureTitle>
+          <P muted small>
+            Auto-detect and run Jest tests
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>React DevTools</FeatureTitle>
+          <P muted small>
+            Integration of React’s own DevTools into the editor
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Prettier</FeatureTitle>
+          <P muted small>
+            Code gets prettified on save according to preferences
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>ESLint</FeatureTitle>
+          <P muted small>
+            Code is linted automatically
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Emmet</FeatureTitle>
+          <P muted small>
+            Expand abbreviations with Emmet.io in all JS, HTML, and CSS files
+          </P>
+        </div>
+        <span>✓</span>
+        <span>✓</span>
+      </li>
+      <li>
+        <div>
+          <FeatureTitle>Stackbit</FeatureTitle>
+          <P muted small>
+            Import projects generated by Stackbit
+          </P>
+        </div>
+        <span>✓</span>
         <span>✓</span>
       </li>
     </FeaturesTable>
