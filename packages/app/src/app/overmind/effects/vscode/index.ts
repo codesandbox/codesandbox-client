@@ -215,11 +215,7 @@ export class VSCodeEffect {
     moduleShortid: string,
     operation: (string | number)[]
   ) {
-    try {
-      await this.modelsHandler.applyOperation(moduleShortid, operation);
-    } catch (error) {
-      throw error;
-    }
+    return this.modelsHandler.applyOperation(moduleShortid, operation);
   }
 
   public updateOptions(options: { readOnly: boolean }) {
