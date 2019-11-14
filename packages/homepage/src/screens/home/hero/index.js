@@ -15,7 +15,7 @@ export default () => (
         ease: 'easeOut',
       }}
     >
-      <H2 as="h1"> Web Development, Accelerated </H2>
+      <H2 as="h1">Web Development Made Faster</H2>
       <P
         small
         css={`

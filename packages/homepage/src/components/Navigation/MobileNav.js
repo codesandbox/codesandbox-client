@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'gatsby';
+import { motion, AnimatePresence } from 'framer-motion';
 import Logo from '../../assets/images/logo.svg';
 import {
   MobileNav,
@@ -71,116 +72,130 @@ export default () => {
           )}
         </div>
       </MobileNav>
-      {open ? (
-        <PopUpNav>
-          <Headers>Features</Headers>
-          <Items>
-            <li>
-              <Link to="/embeds">
-                <section>
-                  <EmbedIcon />
-                </section>
-                <span>Embed</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/ci">
-                <section>
-                  <CIIcon />
-                </section>
-                <span>CodeSandbox CI</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/teams">
-                <section>
-                  <TeamsIcon />
-                </section>
-                <span>Teams</span>
-              </Link>
-            </li>
-          </Items>
-          <Headers>Explore</Headers>
-          <Items>
-            <li>
-              <Link to="/explore">
-                <section>
-                  <HighlightedICon />
-                </section>
-                <span>Highlighted Sandboxes</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/search">
-                <section>
-                  <SearchIcon />
-                </section>
-                <span>Search Sandboxes</span>
-              </Link>
-            </li>
-          </Items>
-          <Headers>Resources</Headers>
-          <Items>
-            <li>
-              <Link to="/docs">
-                <section>
-                  <DocsIcon />
-                </section>
-                <span>Documentation</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/blog">
-                <section>
-                  <BlogIcon />
-                </section>
-                <span>Blog</span>
-              </Link>
-            </li>
-          </Items>
-          <Headers>Support</Headers>
-          <Items>
-            <li>
-              <a href="mailto:hello@codesandbox.io" title="Support">
-                <section>
-                  <SupportIcon />
-                </section>
-                <span>Contact Support</span>
-              </a>
-            </li>
-            <li>
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://status.codesandbox.io"
-                title="Status"
-              >
-                <section>
-                  <StatusIcon />
-                </section>
-                <span>Status</span>
-              </a>
-            </li>
-            <Pricing>
-              <section>
-                <PricingIcon />
-              </section>
-              <span>Pricing</span>
-            </Pricing>
-          </Items>
-          <Button
-            css={`
-              margin-top: 4rem;
-              display: block;
-              padding: 6px 21px;
-            `}
-            className="button"
-            href="/s"
+      <AnimatePresence>
+        {open ? (
+          <motion.div
+            animate={{ y: -48 }}
+            initial={{
+              y: '100vh',
+              position: 'absolute',
+              width: '100%',
+              zIndex: 2,
+            }}
+            exit={{ y: '-150vh' }}
+            transition={{ ease: 'easeOut', duration: 0.25 }}
           >
-            Create Sandbox
-          </Button>
-        </PopUpNav>
-      ) : null}
+            <PopUpNav>
+              <Headers>Features</Headers>
+              <Items>
+                <li>
+                  <Link to="/embeds">
+                    <section>
+                      <EmbedIcon />
+                    </section>
+                    <span>Embed</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/ci">
+                    <section>
+                      <CIIcon />
+                    </section>
+                    <span>CodeSandbox CI</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/teams">
+                    <section>
+                      <TeamsIcon />
+                    </section>
+                    <span>Teams</span>
+                  </Link>
+                </li>
+              </Items>
+              <Headers>Explore</Headers>
+              <Items>
+                <li>
+                  <Link to="/explore">
+                    <section>
+                      <HighlightedICon />
+                    </section>
+                    <span>Highlighted Sandboxes</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/search">
+                    <section>
+                      <SearchIcon />
+                    </section>
+                    <span>Search Sandboxes</span>
+                  </Link>
+                </li>
+              </Items>
+              <Headers>Resources</Headers>
+              <Items>
+                <li>
+                  <Link to="/docs">
+                    <section>
+                      <DocsIcon />
+                    </section>
+                    <span>Documentation</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/blog">
+                    <section>
+                      <BlogIcon />
+                    </section>
+                    <span>Blog</span>
+                  </Link>
+                </li>
+              </Items>
+              <Headers>Support</Headers>
+              <Items>
+                <li>
+                  <a href="mailto:hello@codesandbox.io" title="Support">
+                    <section>
+                      <SupportIcon />
+                    </section>
+                    <span>Contact Support</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://status.codesandbox.io"
+                    title="Status"
+                  >
+                    <section>
+                      <StatusIcon />
+                    </section>
+                    <span>Status</span>
+                  </a>
+                </li>
+                <Pricing>
+                  <section>
+                    <PricingIcon />
+                  </section>
+                  <span>Pricing</span>
+                </Pricing>
+              </Items>
+              <Button
+                css={`
+                  margin-top: 4rem;
+                  display: block;
+                  padding: 6px 21px;
+                `}
+                className="button"
+                href="/s"
+              >
+                Create Sandbox
+              </Button>
+            </PopUpNav>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </>
   );
 };

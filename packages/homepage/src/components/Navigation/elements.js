@@ -151,6 +151,9 @@ export const MobileNav = styled.nav`
   align-items: center;
   justify-content: space-between;
   height: 100%;
+  position: relative;
+  z-index: 3;
+  background: #040404;
 
   ${props => props.theme.breakpoints.md} {
     display: flex;

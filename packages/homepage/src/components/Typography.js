@@ -9,6 +9,11 @@ export const H2 = styled.h2`
   padding: 0;
   margin: 0;
   margin-bottom: 0.5rem;
+
+  ${props => props.theme.breakpoints.md} {
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
 `;
 
 export const P = styled.p`
