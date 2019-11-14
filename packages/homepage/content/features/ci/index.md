@@ -3,6 +3,8 @@ title: CI Built for Maintainers
 description:
   A GitHub integration that auto-builds your library⁠ from pull requests.
 slug: ci
+ctaText: Install GitHub App
+ctaLink: https://github.com/apps/codesandbox
 tweetText:
   This is going to save us so much time, and as a result I've just made a
   CodeSandbox reproduction mandatory for bug reports.

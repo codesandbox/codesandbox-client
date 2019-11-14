@@ -1,7 +1,7 @@
 import { graphql } from 'gatsby';
 import React from 'react';
 import { motion } from 'framer-motion';
-
+import styled from 'styled-components';
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
@@ -16,6 +16,13 @@ import {
   Avatar,
   Description,
 } from './_feature.elements';
+import Button from '../components/Button';
+
+const TitleWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 
 export default ({
   data: {
@@ -33,6 +40,8 @@ export default ({
         coverReversed,
         textCenter,
         coverSmaller,
+        ctaLink,
+        ctaText,
       },
       fields: { title },
       html,
@@ -84,7 +93,14 @@ export default ({
     <Layout>
       <TitleAndMetaTags title={`${title} - CodeSandbox`} />
       <PageContainer width={1086}>
-        <Title textCenter={textCenter}>{title}</Title>
+        <TitleWrapper>
+          <Title textCenter={textCenter}>{title}</Title>
+          {ctaLink && ctaText ? (
+            <Button target="_blank" href={ctaLink}>
+              {ctaText}
+            </Button>
+          ) : null}
+        </TitleWrapper>
         <Description seoText={SEOText}>{description}</Description>
         {SEOText ? <SeoText>{SEOText}</SeoText> : null}
         <Banner
@@ -124,6 +140,8 @@ export const pageQuery = graphql`
         description
         tweetText
         tweetJob
+        ctaText
+        ctaLink
         tweetName
         tweetHandle
         coverReversed
