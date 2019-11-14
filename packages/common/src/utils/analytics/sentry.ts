@@ -24,7 +24,7 @@ export async function initialize(dsn: string) {
         /extensions\//i,
         /^chrome:\/\//i,
       ],
-      whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
+      // whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
       /**
        * Don't send messages from the sandbox, so don't send from eg.
        * new.codesandbox.io or new.csb.app
@@ -35,13 +35,14 @@ export async function initialize(dsn: string) {
         /.*\.csb\.app/,
       ],
       beforeSend: (event, hint) => {
-        const filename =
-          event?.exception?.values?.[0]?.stacktrace?.frames?.[0]?.filename;
+        const exception = event?.exception?.values?.[0];
+        const exceptionFrame = exception?.stacktrace?.frames?.[0];
+        const filename = exceptionFrame?.filename;
 
         let errorMessage =
           typeof hint.originalException === 'string'
             ? hint.originalException
-            : hint.originalException.message;
+            : hint.originalException?.message || exception.value;
 
         if (typeof errorMessage !== 'string') {
           errorMessage = '';
@@ -78,7 +79,8 @@ export async function initialize(dsn: string) {
 
         if (
           customError &&
-          errorMessage.startsWith('Non-Error exception captured')
+          errorMessage.startsWith('Non-Error exception captured') &&
+          exception.mechanism.handled
         ) {
           // This is an error coming from the sandbox, return with no error.
           return null;
