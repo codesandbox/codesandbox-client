@@ -1,147 +1,23 @@
 import React from 'react';
-import styled from 'styled-components';
+
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Join from '../screens/home/join';
 import { Title } from '../templates/_feature.elements';
 import { P } from '../components/Typography';
-
-const Card = styled.div`
-  width: 100%;
-  height: 544px;
-
-  background: ${props => (props.dark ? '#151515' : '#0971F1')};
-  border-radius: 4px;
-  padding: 2.5rem;
-  text-align: center;
-  margin-top: 4rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const CardTitle = styled.h3`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 23px;
-  color: ${props => props.theme.homepage.white};
-`;
-
-const Price = styled.h6`
-  font-weight: 500;
-  font-size: 36px;
-  line-height: 43px;
-  text-align: center;
-
-  color: ${props => props.theme.homepage.white};
-`;
-
-const List = styled.ul`
-  list-style: none;
-  margin: 0;
-  font-style: normal;
-  font-size: 23px;
-  line-height: 27px;
-  text-align: center;
-  color: ${props => props.theme.homepage.muted};
-  margin-top: 3rem;
-`;
-
-const Button = styled.a`
-  height: 44px;
-  text-decoration: none;
-  background: ${props => props.theme.homepage.grey};
-  border-radius: 2px;
-  font-weight: 500;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: ${props => props.theme.homepage.white};
-
-  ${props =>
-    props.white &&
-    `
-    background: ${props.theme.homepage.white};
-    color: ${props.theme.homepage.blue};
-  `}
-`;
-
-const FeaturesTableHeader = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 190px 190px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 23px;
-  line-height: 27px;
-
-  color: ${props => props.theme.homepage.white};
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #242424;
-  margin-top: 5rem;
-
-  ${props =>
-    props.inside &&
-    `
-    margin-left: 2.5rem;
-  `}
-
-  ${props => props.theme.breakpoints.md} {
-    grid-template-columns: 1fr 90px 60px;
-    font-size: 16px;
-    margin-left: 0 !important;
-  }
-`;
-
-const FeaturesTable = styled.ul`
-  list-style: none;
-  margin: 0;
-
-  ${props =>
-    props.inside &&
-    `
-    margin-left: 2.5rem;
-  `}
-
-  ${props => props.theme.breakpoints.md} {
-    margin-left: 0 !important;
-  }
-
-  li {
-    display: grid;
-    grid-template-columns: 1fr 190px 190px;
-    margin-bottom: 1rem;
-
-    ${props => props.theme.breakpoints.md} {
-      grid-template-columns: 1fr 60px 60px;
-    }
-
-    span {
-      width: 100%;
-      display: block;
-      text-align: center;
-      font-weight: 500;
-      font-size: 23px;
-      line-height: 27px;
-
-      ${props => props.theme.breakpoints.md} {
-        font-size: 16px;
-      }
-    }
-  }
-`;
-
-const FeatureTitle = styled.span`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 23px;
-
-  color: ${props => props.theme.homepage.white};
-  text-align: left !important;
-  padding-bottom: 0.25rem;
-`;
+import {
+  Card,
+  CardTitle,
+  Price,
+  List,
+  Button,
+  FeaturesTableHeader,
+  FeaturesTable,
+  FeatureTitle,
+  CardContainer,
+  FeaturesTitle,
+} from './_pricing.elements';
 
 export default () => (
   <Layout>
@@ -149,18 +25,7 @@ export default () => (
     <PageContainer width={1086}>
       <Title textCenter>Pricing</Title>
     </PageContainer>
-    <div
-      css={`
-        display: grid;
-        grid-template-columns: 26rem 26rem;
-        grid-gap: 2rem;
-        justify-content: center;
-
-        ${props => props.theme.breakpoints.lg} {
-          grid-template-columns: minmax(100%, 26rem);
-        }
-      `}
-    >
+    <CardContainer>
       <Card dark>
         <div>
           <CardTitle>Community</CardTitle>
@@ -198,20 +63,8 @@ export default () => (
           Subscribe to Pro
         </Button>
       </Card>
-    </div>
-    <h3
-      css={`
-        font-weight: 500;
-        font-size: 36px;
-        line-height: 43px;
-
-        color: ${props => props.theme.homepage.white};
-        margin-bottom: 3.75rem;
-        margin-top: 6rem;
-      `}
-    >
-      Features
-    </h3>
+    </CardContainer>
+    <FeaturesTitle>Features</FeaturesTitle>
     <FeaturesTableHeader
       css={`
         margin-top: 0;
