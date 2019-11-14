@@ -179,8 +179,6 @@ export const MobileNav = styled.nav`
 `;
 
 export const PopUpNav = styled.nav`
-  position: absolute;
-  min-height: calc(100vh - 48px);
   top: 48px;
   background: #151515;
   padding-top: 1.5rem;

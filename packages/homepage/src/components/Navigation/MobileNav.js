@@ -75,14 +75,14 @@ export default () => {
       <AnimatePresence>
         {open ? (
           <motion.div
-            animate={{ y: -48 }}
+            animate={{ height: 'calc(100vh - 48px)' }}
             initial={{
-              y: '100vh',
-              position: 'absolute',
-              width: '100%',
-              zIndex: 2,
+              height: 0,
+              overflow: 'auto',
+              position: 'relative',
+              zIndex: 999,
             }}
-            exit={{ y: '-150vh' }}
+            exit={{ height: 0 }}
             transition={{ ease: 'easeOut', duration: 0.25 }}
           >
             <PopUpNav>
