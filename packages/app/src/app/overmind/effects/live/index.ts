@@ -6,12 +6,12 @@ import {
   Sandbox,
 } from '@codesandbox/common/lib/types';
 import _debug from '@codesandbox/common/lib/utils/debug';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { camelizeKeys } from 'humps';
 import { TextOperation } from 'ot';
 import { Socket } from 'phoenix';
 import uuid from 'uuid';
 
+import eventToTransform from '../../utils/event-to-transform';
 import { SandboxAPIResponse } from '../api/types';
 import { transformSandbox } from '../utils/sandbox';
 import clientsFactory from './clients';
@@ -183,12 +183,8 @@ export default {
       module: directory,
     });
   },
-  sendCodeUpdate(moduleShortid: string, currentCode: string, code: string) {
-    if (currentCode === code) {
-      return;
-    }
-
-    const operation = getTextOperation(currentCode, code);
+  sendCodeUpdate(moduleShortid: string, currentCode: string, event: any) {
+    const { operation } = eventToTransform(event, currentCode);
 
     if (!operation) {
       return;

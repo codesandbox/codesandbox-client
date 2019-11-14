@@ -1,4 +1,5 @@
 import { TextOperation } from 'ot';
+
 import { lineAndColumnToIndex } from './common';
 
 export default function convertChangeEventToOperation(

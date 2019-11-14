@@ -188,7 +188,8 @@ export const onOperationApplied: Action<{
 export const codeChanged: Action<{
   moduleShortid: string;
   code: string;
-}> = ({ effects, state, actions }, { code, moduleShortid }) => {
+  event?: any;
+}> = ({ effects, state, actions }, { code, event, moduleShortid }) => {
   effects.analytics.trackOnce('Change Code');
 
   const module = state.editor.currentSandbox.modules.find(
@@ -200,7 +201,7 @@ export const codeChanged: Action<{
   }
 
   if (state.live.isLive) {
-    effects.live.sendCodeUpdate(moduleShortid, module.code, code);
+    effects.live.sendCodeUpdate(moduleShortid, module.code, event);
   }
 
   actions.editor.internal.setModuleCode({
