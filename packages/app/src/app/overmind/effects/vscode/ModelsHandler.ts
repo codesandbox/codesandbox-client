@@ -45,6 +45,7 @@ export type OnFileChangeCallback = (data: OnFileChangeData) => void;
 export type OnOperationAppliedCallback = (data: OnOperationAppliedData) => void;
 
 export class ModelsHandler {
+  public isApplyingOperation: boolean = false;
   private modelAddedListener: { dispose: Function };
   private modelRemovedListener: { dispose: Function };
   private onChangeCallback: OnFileChangeCallback;
@@ -122,8 +123,9 @@ export class ModelsHandler {
       );
     }
 
+    this.isApplyingOperation = true;
     this.applyOperationToModel(operation, false, model.textEditorModel);
-
+    this.isApplyingOperation = false;
     this.onOperationAppliedCallback({
       code: model.textEditorModel.getValue(),
       moduleShortid: module.shortid,
@@ -433,6 +435,10 @@ export class ModelsHandler {
 
   private getModelContentChangeListener(sandbox: Sandbox, model) {
     return model.onDidChangeContent(e => {
+      if (this.isApplyingOperation) {
+        return;
+      }
+
       const { path } = model.uri;
       try {
         const module = resolveModule(

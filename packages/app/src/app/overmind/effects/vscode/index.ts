@@ -87,7 +87,7 @@ export class VSCodeEffect {
   private settings: Settings;
   private linter: Linter;
   private modelsHandler: ModelsHandler;
-  private isApplyingCode: boolean = false;
+  private isApplyingOperation: boolean = false;
   private modelSelectionListener: { dispose: Function };
   private readOnly: boolean;
   private elements = {
@@ -215,15 +215,11 @@ export class VSCodeEffect {
     moduleShortid: string,
     operation: (string | number)[]
   ) {
-    this.isApplyingCode = true;
-
     try {
       await this.modelsHandler.applyOperation(moduleShortid, operation);
     } catch (error) {
-      this.isApplyingCode = false;
       throw error;
     }
-    this.isApplyingCode = false;
   }
 
   public updateOptions(options: { readOnly: boolean }) {
@@ -231,6 +227,10 @@ export class VSCodeEffect {
   }
 
   public updateUserSelections(userSelections: EditorSelection[]) {
+    if (!this.modelsHandler) {
+      return;
+    }
+
     this.modelsHandler.updateUserSelections(
       this.options.getCurrentModule(),
       userSelections
@@ -676,14 +676,9 @@ export class VSCodeEffect {
         currentModule.code !== undefined &&
         activeEditor.getValue() !== currentModule.code
       ) {
-        // Don't send these changes over live, since these changes can also be made by someone else and
-        // we don't want to keep singing these changes
-        // TODO: a better long term solution would be to store the changes of someone else in a model, even if the
-        // model is not opened in an editor.
-
-        this.isApplyingCode = true;
         // This means that the file in Cerebral is dirty and has changed,
         // VSCode only gets saved contents. In this case we manually set the value correctly.
+        this.modelsHandler.isApplyingOperation = true;
         const model = activeEditor.getModel();
         model.applyEdits([
           {
@@ -691,7 +686,7 @@ export class VSCodeEffect {
             range: model.getFullModelRange(),
           },
         ]);
-        this.isApplyingCode = false;
+        this.modelsHandler.isApplyingOperation = false;
       }
 
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
