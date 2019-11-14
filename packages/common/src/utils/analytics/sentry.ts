@@ -35,13 +35,22 @@ export async function initialize(dsn: string) {
         /.*\.csb\.app/,
       ],
       beforeSend: (event, hint) => {
-        if (event?.stacktrace?.frames && event.stacktrace.frames[0]) {
-          const { filename } = event.stacktrace.frames[0];
+        const filename =
+          event?.exception?.values?.[0]?.stacktrace?.frames?.[0]?.filename;
 
+        let errorMessage =
+          typeof hint.originalException === 'string'
+            ? hint.originalException
+            : hint.originalException.message;
+
+        if (typeof errorMessage !== 'string') {
+          errorMessage = '';
+        }
+
+        if (filename) {
           if (
             filename.includes('typescript-worker') &&
-            event.message &&
-            event.message.includes('too much recursion')
+            errorMessage.includes('too much recursion')
           ) {
             // https://sentry.io/organizations/codesandbox/issues/1293123855/events/b01ee0feb7e3415a8bb81b6a9df19152/?project=155188&query=is%3Aunresolved&statsPeriod=14d
             return null;
@@ -69,17 +78,13 @@ export async function initialize(dsn: string) {
 
         if (
           customError &&
-          event.message &&
-          event.message.startsWith('Non-Error exception captured')
+          errorMessage.startsWith('Non-Error exception captured')
         ) {
           // This is an error coming from the sandbox, return with no error.
           return null;
         }
 
-        if (
-          event.message &&
-          event.message.includes('Unexpected frame by generating stack.')
-        ) {
+        if (errorMessage.includes('Unexpected frame by generating stack.')) {
           // A firefox error with error-polyfill, not critical. Referenced here: https://sentry.io/organizations/codesandbox/issues/1293236389/?project=155188&query=is%3Aunresolved
           return null;
         }
