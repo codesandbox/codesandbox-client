@@ -11,11 +11,13 @@ import { escapeHtml } from 'app/utils/escape';
 export const BUTTON_URL = `${process.env.CODESANDBOX_HOST}/static/img/play-codesandbox.svg`;
 
 export const VIEW_OPTIONS = ['Editor + Preview', 'Preview', 'Editor'];
+export const THEME_OPTIONS = ['Dark', 'Light'];
 
 const getOptionsUrl = (sandbox, mainModule, state) => {
   const {
     defaultModule,
     view,
+    theme,
     testsView,
     autoResize,
     hideNavigation,
@@ -29,6 +31,7 @@ const getOptionsUrl = (sandbox, mainModule, state) => {
 
   const options = {
     view: view !== VIEW_OPTIONS[0] ? view.toLowerCase() : null,
+    theme: theme !== THEME_OPTIONS[0] ? theme.toLowerCase() : null,
     previewwindow: testsView ? 'tests' : null,
     autoresize: autoResize ? 1 : null,
     hidenavigation: hideNavigation ? 1 : null,

@@ -44,7 +44,7 @@
     "@babel/polyfill": "^7.4.4",
     "@codesandbox/notifications": "^1.0.6",
     "@codesandbox/template-icons": "^1.0.1",
-    "@sentry/browser": "^5.6.2",
+    "@sentry/browser": "^5.9.0",
     "@tippy.js/react": "^2.1.1",
     "babel-plugin-preval": "^3.0.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
@@ -108,7 +108,7 @@
     "jest-styled-components": "^6.3.3",
     "jest-svg-transformer": "^1.0.0",
     "rimraf": "^2.6.3",
-    "typescript": "3.7.1-rc",
+    "typescript": "3.7.2",
     "yarn": "^1.17.3"
   }
 }

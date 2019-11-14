@@ -13,11 +13,11 @@ import {
 } from '@codesandbox/common/lib/sandbox/modules';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
-import Header from '../Header';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
-import EditorLink from '../EditorLink';
 import { Container, Fullscreen, Moving } from './elements';
+import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
+import { getTheme } from '../../theme';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently
 // that makes it think we havecore-js/es6/map available in embed, but we don't.
@@ -43,10 +43,12 @@ type State = {
   editorSize: number,
   forceRefresh: boolean,
   expandDevTools: boolean,
+  hideDevTools: boolean,
   runOnClick: boolean,
   verticalMode: boolean,
   highlightedLines: Array<number>,
   tabs?: Array<number>,
+  theme: string,
 };
 
 const isSafari = () => {
@@ -86,9 +88,11 @@ export default class App extends React.PureComponent<
       highlightedLines,
       forceRefresh,
       expandDevTools,
+      hideDevTools,
       runOnClick,
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
+      theme = 'dark',
     } = props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
@@ -101,7 +105,7 @@ export default class App extends React.PureComponent<
       isInProjectView,
       currentModule,
       initialPath,
-      sidebarOpen: false,
+      sidebarOpen: window.innerWidth > SIDEBAR_SHOW_SCREEN_SIZE,
       autoResize,
       hideNavigation,
       enableEslint,
@@ -109,7 +113,9 @@ export default class App extends React.PureComponent<
       editorSize,
       forceRefresh,
       expandDevTools,
+      hideDevTools,
       tabs,
+      theme,
       runOnClick:
         runOnClick === false
           ? false
@@ -194,6 +200,7 @@ export default class App extends React.PureComponent<
     }
   }
 
+  // TODO: See if this is still useful
   setEditorView = () => this.setState({ showEditor: true, showPreview: false });
   setPreviewView = () =>
     this.setState({ showEditor: false, showPreview: true });
@@ -359,20 +366,12 @@ export default class App extends React.PureComponent<
         }}
       >
         <Container>
-          <Header
+          <Content
             showEditor={showEditor}
             showPreview={showPreview}
             setEditorView={this.setEditorView}
             setPreviewView={this.setPreviewView}
             setMixedView={this.setMixedView}
-            sandbox={sandbox}
-            toggleSidebar={this.toggleSidebar}
-            toggleLike={this.jwt() && this.toggleLike}
-            liked={sandbox.userLiked}
-          />
-          <Content
-            showEditor={showEditor}
-            showPreview={showPreview}
             previewWindow={previewWindow}
             isInProjectView={isInProjectView}
             setProjectView={this.setProjectView}
@@ -389,9 +388,13 @@ export default class App extends React.PureComponent<
             highlightedLines={this.state.highlightedLines}
             forceRefresh={this.state.forceRefresh}
             expandDevTools={this.state.expandDevTools}
+            hideDevTools={this.state.hideDevTools}
             tabs={this.state.tabs}
             runOnClick={runOnClick}
             verticalMode={verticalMode}
+            sidebarOpen={this.state.sidebarOpen}
+            toggleSidebar={this.toggleSidebar}
+            toggleLike={this.jwt() && this.toggleLike}
           />
         </Container>
       </ThemeProvider>
@@ -400,24 +403,23 @@ export default class App extends React.PureComponent<
 
   render() {
     const { sandbox } = this.state;
+    const theme = getTheme(this.state.theme);
 
     return (
-      <Fullscreen sidebarOpen={this.state.sidebarOpen}>
-        {sandbox && (
-          <>
-            <Sidebar
-              setCurrentModule={this.setCurrentModule}
-              currentModule={this.getCurrentModuleFromPath(sandbox).id}
-              sandbox={sandbox}
-            />
-            <EditorLink
-              sandbox={sandbox}
-              previewVisible={this.state.showPreview}
-            />
-          </>
-        )}
-        <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
-      </Fullscreen>
+      <ThemeProvider theme={theme}>
+        <Fullscreen sidebarOpen={this.state.sidebarOpen}>
+          {sandbox && (
+            <>
+              <Sidebar
+                setCurrentModule={this.setCurrentModule}
+                currentModule={this.getCurrentModuleFromPath(sandbox).id}
+                sandbox={sandbox}
+              />
+            </>
+          )}
+          <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
+        </Fullscreen>
+      </ThemeProvider>
     );
   }
 }

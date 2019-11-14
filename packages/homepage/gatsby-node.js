@@ -14,7 +14,7 @@ const getBlogNodeInfo = ({
     frontmatter: { authors, date, description, photo },
   },
 }) => ({
-  author: authors[0],
+  authors,
   date,
   description,
   photo,
@@ -89,7 +89,7 @@ const createNodeFieldsFromNodeInfo = ({
 const createBlogNodeFields = ({ createNodeField, nodeInfo }) => {
   createNodeFieldsFromNodeInfo({
     createNodeField,
-    nodeFieldNames: ['author', 'date', 'description', 'photo'],
+    nodeFieldNames: ['authors', 'date', 'description', 'photo'],
     nodeInfo,
   });
 };

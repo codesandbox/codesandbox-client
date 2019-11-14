@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatVersion } from '@codesandbox/common/lib/utils/ci';
 import { Container, Row } from './elements';
 
 function Dependencies({ sandbox }) {
@@ -23,7 +24,7 @@ function Dependencies({ sandbox }) {
       {Object.keys(npmDependencies).map(dep => (
         <Row key={dep}>
           <span>{dep}</span>
-          <span>{npmDependencies[dep]}</span>
+          <span>{formatVersion(npmDependencies[dep])}</span>
         </Row>
       ))}
     </Container>

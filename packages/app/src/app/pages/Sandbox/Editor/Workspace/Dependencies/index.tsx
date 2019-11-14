@@ -115,6 +115,7 @@ export const Dependencies: FunctionComponent = () => {
                 resource,
               })
             }
+            addedResource={fonts}
           />
           {fonts.map(resource => (
             <ExternalFonts

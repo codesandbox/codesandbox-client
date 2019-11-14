@@ -91,5 +91,5 @@ export const MetaData = styled.aside`
 export const AuthorContainer = styled.div`
   align-items: center;
   display: flex;
-  flex: 1;
+  margin-bottom: 0.5rem;
 `;

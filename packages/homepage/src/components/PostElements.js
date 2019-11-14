@@ -28,6 +28,7 @@ export const AuthorImage = styled.img`
   width: 32px;
   height: 32px;
   border-radius: 4px;
+  margin-right: 1rem;
 `;
 
 export const Author = styled.h4`
@@ -35,7 +36,5 @@ export const Author = styled.h4`
   font-weight: 500;
   font-size: 18px;
   margin: 0;
-  margin-left: 1rem;
-
   color: #f2f2f2;
 `;

@@ -43,8 +43,8 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
     (settersByInputName[name] || noop)(value);
   };
 
-  const onSubmit = ({ preventDefault }: FormEvent<HTMLFormElement>) => {
-    preventDefault();
+  const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
 
     setLoading(true);
 
