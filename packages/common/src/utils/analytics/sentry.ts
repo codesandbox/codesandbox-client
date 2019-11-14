@@ -1,3 +1,4 @@
+import { Breadcrumb } from '@sentry/browser';
 import VERSION from '../../version';
 import { DO_NOT_TRACK_ENABLED } from './utils';
 
@@ -90,6 +91,12 @@ export async function initialize(dsn: string) {
 
   return Promise.resolve();
 }
+
+export const logBreadcrumb = (breadcrumb: Breadcrumb) => {
+  if (_Sentry) {
+    _Sentry.addBreadcrumb(breadcrumb);
+  }
+};
 
 export const captureException = err => {
   if (_Sentry) {

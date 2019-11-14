@@ -98,5 +98,9 @@ export default function track(eventName, secondArg: Object = {}) {
     amplitude.track(eventName, data);
     google.track(eventName, data);
     vero.track(eventName, data);
+    sentry.logBreadcrumb({
+      type: 'analytics',
+      message: eventName,
+    });
   }
 }
