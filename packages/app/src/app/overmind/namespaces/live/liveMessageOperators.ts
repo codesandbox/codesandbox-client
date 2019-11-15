@@ -201,14 +201,27 @@ export const onModuleDeleted: Operator<
   LiveMessage<{
     moduleShortid: string;
   }>
-> = mutate(({ actions }, { _isOwnMessage, data }) => {
+> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
-  // Do not think this really works? Cause this would fork the sandbox
-  actions.files.moduleDeleted({
-    moduleShortid: data.moduleShortid,
-  });
+  const removedModule = state.editor.currentSandbox.modules.find(
+    directory => directory.shortid === data.moduleShortid
+  );
+  const moduleIndex = state.editor.currentSandbox.modules.indexOf(
+    removedModule
+  );
+  const wasCurrentModule =
+    state.editor.currentModuleShortid === data.moduleShortid;
+
+  state.editor.currentSandbox.modules.splice(moduleIndex, 1);
+  effects.vscode.fs.unlink(state.editor.modulesByPath, removedModule);
+
+  if (wasCurrentModule) {
+    actions.editor.internal.setCurrentModule(state.editor.mainModule);
+  }
+
+  actions.editor.internal.updatePreviewCode();
 });
 
 export const onDirectoryCreated: Operator<
@@ -248,15 +261,33 @@ export const onDirectoryDeleted: Operator<
   LiveMessage<{
     directoryShortid: string;
   }>
-> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
+> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
-  state.editor.currentModuleShortid = state.editor.mainModule.shortid;
-  // Again, this does not work very well?
-  actions.files.directoryDeleted({
-    directoryShortid: data.directoryShortid,
-  });
+  const sandbox = state.editor.currentSandbox;
+  const directory = sandbox.directories.find(
+    directoryItem => directoryItem.shortid === data.directoryShortid
+  );
+
+  if (!directory) {
+    return;
+  }
+
+  const removedDirectory = sandbox.directories.splice(
+    sandbox.directories.indexOf(directory),
+    1
+  )[0];
+
+  // We need to recreate everything, as you might have deleted any number
+  // of nested directories or files
+  state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+
+  // We open the main module as we do not really know if you had opened
+  // any nested file of this directory. It would require complex logic
+  // to figure that out. This concept is soon removed anyways
+  effects.vscode.openModule(state.editor.mainModule);
+  actions.editor.internal.updatePreviewCode();
 });
 
 export const onUserSelection: Operator<

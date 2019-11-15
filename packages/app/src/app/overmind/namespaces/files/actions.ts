@@ -217,12 +217,14 @@ export const directoryDeleted: AsyncAction<{
       1
     )[0];
 
-    state.editor.currentModuleShortid = state.editor.mainModule.shortid;
-
-    // we need to recreate everything, as you might have deleted any number
+    // We need to recreate everything, as you might have deleted any number
     // of nested directories or files
     state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
-    effects.vscode.openModule(state.editor.currentModule);
+
+    // We open the main module as we do not really know if you had opened
+    // any nested file of this directory. It would require complex logic
+    // to figure that out. This concept is soon removed anyways
+    effects.vscode.openModule(state.editor.mainModule);
     actions.editor.internal.updatePreviewCode();
     try {
       await effects.api.deleteDirectory(sandbox.id, directoryShortid);

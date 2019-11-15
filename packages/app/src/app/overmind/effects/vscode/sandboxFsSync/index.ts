@@ -145,9 +145,10 @@ class SandboxFsSync {
   }
 
   public writeFile(fs: SandboxFs, module: Module) {
-    writeFile(fs, json(module));
+    const copy = json(module);
 
-    this.send('write-file', module);
+    writeFile(fs, copy);
+    this.send('write-file', copy);
 
     if (module.title === 'package.json') {
       this.syncDependencyTypings();
@@ -163,52 +164,30 @@ class SandboxFsSync {
   }
 
   public rmdir(fs: SandboxFs, directory: Directory) {
-    rmdir(fs, directory);
-    global.postMessage(
-      {
-        $broadcast: true,
-        $type: 'rmdir',
-        $data: directory,
-      },
-      protocolAndHost()
-    );
+    const copy = json(directory);
+
+    rmdir(fs, copy);
+    this.send('rmdir', copy);
   }
 
   public unlink(fs: SandboxFs, module: Module) {
-    unlink(fs, module);
-    global.postMessage(
-      {
-        $broadcast: true,
-        $type: 'unlink',
-        $data: module,
-      },
-      protocolAndHost()
-    );
+    const copy = json(module);
+
+    unlink(fs, copy);
+    this.send('unlink', copy);
   }
 
   public mkdir(fs: SandboxFs, directory: Directory) {
-    mkdir(fs, json(directory));
-    global.postMessage(
-      {
-        $broadcast: true,
-        $type: 'mkdir',
-        $data: directory,
-      },
-      protocolAndHost()
-    );
+    const copy = json(directory);
+
+    mkdir(fs, copy);
+    this.send('mkdir', copy);
   }
 
   private syncSandbox() {
     // eslint-disable-next-line
     console.log('## SYNCING SANDBOX AND TYPINGS WITH WORKERS');
-    global.postMessage(
-      {
-        $broadcast: true,
-        $type: 'sandbox-fs',
-        $data: json(this.options.getSandboxFs()),
-      },
-      protocolAndHost()
-    );
+    this.send('sandbox-fs', json(this.options.getSandboxFs()));
   }
 
   private async sync() {
@@ -229,7 +208,7 @@ class SandboxFsSync {
       {
         $broadcast: true,
         $type: type,
-        $data: json(data),
+        $data: data,
       },
       protocolAndHost()
     );
@@ -292,14 +271,7 @@ class SandboxFsSync {
   }
 
   private sendTypes() {
-    global.postMessage(
-      {
-        $broadcast: true,
-        $type: 'typings-sync',
-        $data: this.types,
-      },
-      protocolAndHost()
-    );
+    this.send('typings-sync', this.types);
   }
 
   /**
