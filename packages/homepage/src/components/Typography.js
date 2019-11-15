@@ -41,6 +41,12 @@ export const P = styled.p`
     `
   color: ${props.theme.homepage.muted}
   `}
+
+    ${props =>
+      props.center &&
+      `
+text-align: center;
+  `}
 `;
 
 export const H3 = styled.h3`
