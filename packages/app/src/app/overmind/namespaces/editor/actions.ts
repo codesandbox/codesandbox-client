@@ -471,9 +471,10 @@ export const fetchEnvironmentVariables: AsyncAction = async ({
   );
 };
 
-export const updateEnvironmentVariables: AsyncAction<
-  EnvironmentVariable
-> = async ({ state, effects }, environmentVariable) => {
+export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = async (
+  { state, effects },
+  environmentVariable
+) => {
   state.editor.currentSandbox.environmentVariables = await effects.api.saveEnvironmentVariable(
     state.editor.currentId,
     environmentVariable
@@ -573,13 +574,17 @@ export const previewActionReceived: Action<{
 
       if (newErrors.length !== currentErrors.length) {
         state.editor.errors.forEach(error => {
-          const module = resolveModule(
-            error.path,
-            state.editor.currentSandbox.modules,
-            state.editor.currentSandbox.directories
-          );
+          try {
+            const module = resolveModule(
+              error.path,
+              state.editor.currentSandbox.modules,
+              state.editor.currentSandbox.directories
+            );
 
-          module.errors = [];
+            module.errors = [];
+          } catch (e) {
+            // Module doesn't exist anymore
+          }
         });
         state.editor.errors = newErrors;
       }
