@@ -1,9 +1,10 @@
 import {
   getDirectoryPath,
   getModulePath,
+  getModulesAndDirectoriesInDirectory,
 } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
-import { Module } from '@codesandbox/common/lib/types';
+import { Directory, Module } from '@codesandbox/common/lib/types';
 import { AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import { createOptimisticModule } from 'app/overmind/utils/common';
@@ -75,14 +76,15 @@ export const directoryCreated: AsyncAction<{
       insertedAt: new Date().toString(),
       updatedAt: new Date().toString(),
       type: 'directory' as 'directory',
-      path: getDirectoryPath(
-        sandbox.modules,
-        sandbox.directories,
-        optimisticId
-      ),
+      path: null,
     };
 
-    sandbox.directories.push(optimisticDirectory);
+    sandbox.directories.push(optimisticDirectory as Directory);
+    optimisticDirectory.path = getDirectoryPath(
+      sandbox.modules,
+      sandbox.directories,
+      optimisticId
+    );
     effects.vscode.fs.mkdir(state.editor.modulesByPath, optimisticDirectory);
 
     try {
@@ -216,10 +218,26 @@ export const directoryDeleted: AsyncAction<{
       sandbox.directories.indexOf(directory),
       1
     )[0];
+    const {
+      removedModules,
+      removedDirectories,
+    } = getModulesAndDirectoriesInDirectory(
+      removedDirectory,
+      sandbox.modules,
+      sandbox.directories
+    );
 
-    // We need to recreate everything, as you might have deleted any number
-    // of nested directories or files
-    state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+    removedModules.forEach(removedModule => {
+      effects.vscode.fs.unlink(state.editor.modulesByPath, removedModule);
+      sandbox.modules.splice(sandbox.modules.indexOf(removedModule), 1);
+    });
+
+    removedDirectories.forEach(removedDirectoryItem => {
+      sandbox.directories.splice(
+        sandbox.directories.indexOf(removedDirectoryItem),
+        1
+      );
+    });
 
     // We open the main module as we do not really know if you had opened
     // any nested file of this directory. It would require complex logic
@@ -231,6 +249,12 @@ export const directoryDeleted: AsyncAction<{
       effects.live.sendDirectoryDeleted(directoryShortid);
     } catch (error) {
       sandbox.directories.push(removedDirectory);
+      removedModules.forEach(removedModule => {
+        sandbox.modules.push(removedModule);
+      });
+      removedDirectories.forEach(removedDirectoryItem => {
+        sandbox.directories.push(removedDirectoryItem);
+      });
       state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
       effects.notificationToast.error('Could not delete directory');
     }

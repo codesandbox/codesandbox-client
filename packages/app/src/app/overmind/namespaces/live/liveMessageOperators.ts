@@ -1,3 +1,4 @@
+import { getModulesAndDirectoriesInDirectory } from '@codesandbox/common/lib/sandbox/modules';
 import {
   Directory,
   LiveDisconnectReason,
@@ -274,9 +275,30 @@ export const onDirectoryDeleted: Operator<
     return;
   }
 
-  // We need to recreate everything, as you might have deleted any number
-  // of nested directories or files
-  state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+  const removedDirectory = sandbox.directories.splice(
+    sandbox.directories.indexOf(directory),
+    1
+  )[0];
+  const {
+    removedModules,
+    removedDirectories,
+  } = getModulesAndDirectoriesInDirectory(
+    removedDirectory,
+    sandbox.modules,
+    sandbox.directories
+  );
+
+  removedModules.forEach(removedModule => {
+    effects.vscode.fs.unlink(state.editor.modulesByPath, removedModule);
+    sandbox.modules.splice(sandbox.modules.indexOf(removedModule), 1);
+  });
+
+  removedDirectories.forEach(removedDirectoryItem => {
+    sandbox.directories.splice(
+      sandbox.directories.indexOf(removedDirectoryItem),
+      1
+    );
+  });
 
   // We open the main module as we do not really know if you had opened
   // any nested file of this directory. It would require complex logic

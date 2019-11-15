@@ -123,7 +123,6 @@ class SandboxFsSync {
         m.path = path;
         sandboxFs[path] = {
           ...m,
-          path,
           type: 'file',
         };
       }
@@ -132,10 +131,10 @@ class SandboxFsSync {
     sandbox.directories.forEach(d => {
       const path = getDirectoryPath(sandbox.modules, sandbox.directories, d.id);
 
+      d.path = path;
       // If this is a single directory with no children
       if (!Object.keys(sandboxFs).some(p => dirname(p) === path)) {
-        d.path = path;
-        sandboxFs[path] = { ...d, path, type: 'directory' };
+        sandboxFs[path] = { ...d, type: 'directory' };
       }
     });
 

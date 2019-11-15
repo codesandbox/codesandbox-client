@@ -76,6 +76,23 @@ export function resolveDirectory(
   return directories.find(d => d.shortid === foundDirectoryShortid);
 }
 
+export function getModulesAndDirectoriesInDirectory(
+  directory: Directory,
+  modules: Array<Module>,
+  directories: Array<Directory>
+) {
+  const { path } = directory;
+  return {
+    removedModules: modules.filter(moduleItem =>
+      moduleItem.path.startsWith(path)
+    ),
+    removedDirectories: directories.filter(
+      directoryItem =>
+        directoryItem.path.startsWith(path) && directoryItem !== directory
+    ),
+  };
+}
+
 export function getModulesInDirectory(
   _path: string | undefined,
   modules: Array<Module>,

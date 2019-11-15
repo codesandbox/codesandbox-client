@@ -101,8 +101,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     await effects.vscode.closeAllTabs();
 
     actions.internal.setCurrentSandbox(sandbox);
-
-    state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
   } catch (error) {
     state.editor.notFound = true;
     state.editor.error = error.message;
@@ -112,6 +110,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   const sandbox = state.editor.currentSandbox;
 
+  state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
   actions.internal.ensurePackageJSON();
 
   await actions.editor.internal.initializeLiveSandbox(sandbox);
