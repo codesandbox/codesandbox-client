@@ -29,6 +29,7 @@ export const MacBookWrapper = styled(HeroWrapper)`
   margin-top: 0;
   overflow: visible;
   margin-bottom: 8rem;
+  min-height: 60vh;
 `;
 
 export const Titles = styled.h3`

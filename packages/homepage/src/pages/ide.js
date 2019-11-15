@@ -40,6 +40,7 @@ export default () => (
             initial={{ opacity: 0, y: 140 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
+              delay: 1,
               duration: 1,
               ease: 'easeOut',
             }}
@@ -48,11 +49,10 @@ export default () => (
             <CreateSandbox href="/s">Create a Sandbox, it’s free</CreateSandbox>
           </motion.div>
           <motion.img
-            initial={{ opacity: 0, y: 120, boxShadow: '0 0 0 #040404' }}
+            initial={{ opacity: 1, y: 120, boxShadow: '0 0 0 #040404' }}
             animate={{ opacity: 0.4, y: 0, boxShadow: '0 -4px 20px #040404' }}
             transition={{
               duration: 1,
-              delay: 0.3,
               ease: 'easeOut',
             }}
             src={hero}
