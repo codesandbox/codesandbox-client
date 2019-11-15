@@ -556,10 +556,10 @@ export default () => (
         <span>✓</span>
       </li>
     </FeaturesTable>
-    <FeaturesTableHeader inside>
+    <FeaturesTableHeader>
       <span>Community</span>
     </FeaturesTableHeader>
-    <FeaturesTable inside>
+    <FeaturesTable>
       <li>
         <div>
           <FeatureTitle>Public Profile</FeatureTitle>
