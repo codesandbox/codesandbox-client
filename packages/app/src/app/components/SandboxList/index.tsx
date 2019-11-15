@@ -3,7 +3,7 @@ import { SmallSandbox } from '@codesandbox/common/lib/types';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { format } from 'date-fns';
-import * as React from 'react';
+import React, { FunctionComponent } from 'react';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 
 import { DeleteSandboxButton } from '../DeleteSandboxButton';
 import { PrivacyStatus } from '../PrivacyStatus';
+
 import {
   Body,
   DeleteBody,
@@ -22,13 +23,12 @@ import {
   Table,
 } from './elements';
 
-interface ISandboxListProps {
-  sandboxes: SmallSandbox[];
+type Props = {
   isCurrentUser: boolean;
   onDelete: (id: string) => void;
-}
-
-export const SandboxList: React.FC<ISandboxListProps> = ({
+  sandboxes: SmallSandbox[];
+};
+export const SandboxList: FunctionComponent<Props> = ({
   sandboxes,
   isCurrentUser,
   onDelete,
@@ -37,47 +37,62 @@ export const SandboxList: React.FC<ISandboxListProps> = ({
     <thead>
       <HeaderRow>
         <HeaderTitle>Title</HeaderTitle>
+
         <HeaderTitle>Created</HeaderTitle>
+
         <HeaderTitle>Updated</HeaderTitle>
+
         <StatTitle />
+
         <StatTitle>
           <FullHeartIcon />
         </StatTitle>
+
         <StatTitle>
           <EyeIcon />
         </StatTitle>
+
         <StatTitle>
           <ForkIcon />
         </StatTitle>
+
         {isCurrentUser && <HeaderTitle />}
       </HeaderRow>
     </thead>
+
     <Body>
-      {sandboxes.map((s, i) => {
+      {sandboxes.map((sandbox, i) => {
         // TODO: investigate type mismatch between SmallSandbox and getIcon
         // @ts-ignore
-        const Icon = getIcon(s.template);
+        const Icon = getIcon(sandbox.template);
 
         return (
-          <SandboxRow delay={i} key={s.id}>
+          <SandboxRow delay={i} key={sandbox.id}>
             <td>
               {/* We should probably use the Sandbox interface instead
                  * of SmallSandbox
                 // @ts-ignore */}
-              <Link to={sandboxUrl(s)}>{getSandboxName(s)}</Link>
-              <PrivacyStatus privacy={s.privacy} asIcon />
+              <Link to={sandboxUrl(sandbox)}>{getSandboxName(sandbox)}</Link>
+              <PrivacyStatus privacy={sandbox.privacy} asIcon />
             </td>
-            <td>{format(new Date(s.insertedAt), 'MMM dd, yyyy')}</td>
-            <td>{format(new Date(s.updatedAt), 'MMM dd, yyyy')}</td>
+
+            <td>{format(new Date(sandbox.insertedAt), 'MMM dd, yyyy')}</td>
+
+            <td>{format(new Date(sandbox.updatedAt), 'MMM dd, yyyy')}</td>
+
             <StatBody>
               <Icon width={30} height={30} />
             </StatBody>
-            <StatBody>{s.likeCount}</StatBody>
-            <StatBody>{s.viewCount}</StatBody>
-            <StatBody>{s.forkCount}</StatBody>
+
+            <StatBody>{sandbox.likeCount}</StatBody>
+
+            <StatBody>{sandbox.viewCount}</StatBody>
+
+            <StatBody>{sandbox.forkCount}</StatBody>
+
             {isCurrentUser && onDelete ? (
               <DeleteBody>
-                <DeleteSandboxButton id={s.id} onDelete={onDelete} />
+                <DeleteSandboxButton id={sandbox.id} onDelete={onDelete} />
               </DeleteBody>
             ) : null}
           </SandboxRow>
