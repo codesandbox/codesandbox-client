@@ -72,6 +72,16 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     }
     state.editor.currentId = sandbox.id;
 
+    await effects.vscode.closeAllTabs();
+
+    state.editor.modulesByPath = effects.vscode.fs.create(
+      state.editor.currentSandbox
+    );
+
+    await effects.vscode.changeSandbox(sandbox);
+    effects.vscode.openModule(state.editor.currentModule);
+    effects.preview.executeCodeImmediately(true);
+
     effects.analytics.track('Live Session Joined', {});
     effects.live.listen(actions.live.liveMessageReceived);
 

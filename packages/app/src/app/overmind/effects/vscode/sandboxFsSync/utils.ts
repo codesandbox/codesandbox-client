@@ -1,4 +1,4 @@
-import { Module, SandboxFs, Directory } from '@codesandbox/common/lib/types';
+import { Directory, Module, SandboxFs } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
 
 export const writeFile = (fs: SandboxFs, module: Module) => {

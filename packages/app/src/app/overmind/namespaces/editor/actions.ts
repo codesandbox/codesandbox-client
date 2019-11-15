@@ -182,6 +182,8 @@ export const onOperationApplied: Action<{
     module,
     code,
   });
+
+  actions.editor.internal.updatePreviewCode();
 };
 
 export const codeChanged: Action<{

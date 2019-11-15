@@ -184,16 +184,24 @@ export const onModuleUpdated: Operator<
   const moduleIndex = sandbox.modules.findIndex(
     moduleEntry => moduleEntry.shortid === data.moduleShortid
   );
+  const existingModule =
+    state.editor.sandboxes[sandbox.id].modules[moduleIndex];
 
-  Object.assign(
-    state.editor.sandboxes[sandbox.id].modules[moduleIndex],
-    data.module
-  );
+  if (existingModule.path !== data.module.path) {
+    effects.vscode.fs.rename(
+      state.editor.modulesByPath,
+      existingModule.path,
+      data.module.path
+    );
+  }
 
-  effects.vscode.fs.writeFile(
-    state.editor.modulesByPath,
-    state.editor.sandboxes[sandbox.id].modules[moduleIndex]
-  );
+  Object.assign(existingModule, data.module);
+
+  effects.vscode.fs.writeFile(state.editor.modulesByPath, existingModule);
+
+  if (state.editor.currentModuleShortid === data.moduleShortid) {
+    effects.vscode.openModule(existingModule);
+  }
 
   actions.editor.internal.updatePreviewCode();
 });
@@ -243,7 +251,7 @@ export const onDirectoryUpdated: Operator<
     directoryShortid: string;
     module: Directory; // Still very weird
   }>
-> = mutate(({ state }, { _isOwnMessage, data }) => {
+> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
   }
@@ -251,11 +259,22 @@ export const onDirectoryUpdated: Operator<
   const directoryIndex = sandbox.directories.findIndex(
     directoryEntry => directoryEntry.shortid === data.directoryShortid
   );
+  const existingDirectory =
+    state.editor.sandboxes[sandbox.id].directories[directoryIndex];
+  const hasChangedPath = existingDirectory.path !== data.module.path;
 
-  Object.assign(
-    state.editor.sandboxes[sandbox.id].directories[directoryIndex],
-    data.module
-  );
+  Object.assign(existingDirectory, data.module);
+
+  if (hasChangedPath) {
+    const prevCurrentModulePath = state.editor.currentModule.path;
+
+    state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+    actions.editor.internal.updatePreviewCode();
+
+    if (prevCurrentModulePath !== state.editor.currentModule.path) {
+      actions.editor.internal.setCurrentModule(state.editor.currentModule);
+    }
+  }
 });
 
 export const onDirectoryDeleted: Operator<
