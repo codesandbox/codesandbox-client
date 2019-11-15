@@ -31,7 +31,7 @@ const ContentSplit: React.FC = () => {
       colors: {},
       vscodeTheme: codesandbox,
     },
-    customVSCodeTheme: state.preferences.settings.customVSCodeTheme,
+    customVSCodeTheme: null,
   });
 
   useEffect(() => {

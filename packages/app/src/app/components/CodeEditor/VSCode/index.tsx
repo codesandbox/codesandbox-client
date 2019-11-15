@@ -1,3 +1,6 @@
+import './icon-theme.css';
+import './workbench-theme.css';
+
 import getTemplate from '@codesandbox/common/lib/templates';
 import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import theme from '@codesandbox/common/lib/theme';
@@ -9,9 +12,6 @@ import { ThemeProvider } from 'styled-components';
 
 import { Configuration } from './Configuration';
 import { Container, GlobalStyles } from './elements';
-
-import './icon-theme.css';
-import './workbench-theme.css';
 
 export const VSCode: React.FunctionComponent = () => {
   const { state, actions, effects } = useOvermind();
@@ -66,7 +66,7 @@ export const VSCode: React.FunctionComponent = () => {
   ]);
 
   return (
-    <Container ref={containerEl}>
+    <Container id="vscode-container" ref={containerEl}>
       <GlobalStyles />
     </Container>
   );
