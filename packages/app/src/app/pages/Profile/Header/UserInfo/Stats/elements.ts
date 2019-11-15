@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
+import styled from 'styled-components';
 
 export const Container = styled.div`
   float: right;
