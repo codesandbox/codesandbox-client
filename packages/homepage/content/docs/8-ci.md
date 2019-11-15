@@ -12,7 +12,7 @@ CodeSandbox CI is a [GitHub app](https://github.com/apps/codesandbox) that you
 can install in your repository. The app is responsible for building your
 library. Whenever a Pull Request is opened it builds a version of the library
 from that PR. This is published to our registry, so you can immediately test the
-library in CodeSandbox or locally without publishing to nom or elsewhere.
+library in CodeSandbox or locally without publishing to npm or elsewhere.
 
 ## Why do I want this?
 
