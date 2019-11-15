@@ -20,6 +20,7 @@ const { staticAssets } = require('../config/build');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
+const PROXY_DOMAIN = 'https://codesandbox.io';
 var compiler;
 var handleCompile;
 var compileStart;
@@ -214,6 +215,7 @@ function addMiddleware(devServer, index) {
       rewrites: [{ from: /\/embed/, to: '/embed.html' }],
     })
   );
+  let wsProxy;
   if (process.env.LOCAL_SERVER) {
     devServer.use(
       cors({
@@ -226,10 +228,21 @@ function addMiddleware(devServer, index) {
         credentials: true,
       })
     );
+    wsProxy = proxy({
+      target: PROXY_DOMAIN.replace('https', 'wss'),
+      changeOrigin: true,
+      ws: true,
+      autoRewrite: true,
+      protocolRewrite: true,
+      onProxyReqWs(proxyReq, req, socket, options, head) {
+        proxyReq.setHeader('Origin', PROXY_DOMAIN);
+      },
+    });
+    devServer.use('/socket', wsProxy);
     devServer.use(
       '/api',
       proxy({
-        target: 'https://codesandbox.io',
+        target: PROXY_DOMAIN,
         changeOrigin: true,
       })
     );
@@ -246,6 +259,8 @@ function addMiddleware(devServer, index) {
   // Finally, by now we have certainly resolved the URL.
   // It may be /index.html, so let the dev server try serving it again.
   devServer.use(devServer.middleware);
+
+  return { wsProxy };
 }
 
 function runDevServer(port, protocol, index) {
@@ -273,7 +288,7 @@ function runDevServer(port, protocol, index) {
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
-  addMiddleware(devServer, index);
+  const { wsProxy } = addMiddleware(devServer, index);
 
   // Launch WebpackDevServer.
   devServer.listen(port, err => {
@@ -285,6 +300,10 @@ function runDevServer(port, protocol, index) {
     console.log(chalk.cyan('Starting the development server...'));
     openBrowser(port, protocol);
   });
+
+  if (wsProxy) {
+    devServer.listeningApp.on('upgrade', wsProxy.upgrade);
+  }
 }
 
 function run(port) {
