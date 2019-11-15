@@ -274,11 +274,6 @@ export const onDirectoryDeleted: Operator<
     return;
   }
 
-  const removedDirectory = sandbox.directories.splice(
-    sandbox.directories.indexOf(directory),
-    1
-  )[0];
-
   // We need to recreate everything, as you might have deleted any number
   // of nested directories or files
   state.editor.modulesByPath = effects.vscode.fs.create(sandbox);

@@ -430,7 +430,7 @@ export class ModelsHandler {
             model
           );
         } catch (e) {
-          return;
+          // File does not exist anymore for some reason
         }
       }
     );
