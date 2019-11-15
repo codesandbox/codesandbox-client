@@ -26,7 +26,7 @@ steps:
       - yarn build
 
   - name: deploy
-    image: lbogdan/codesandbox-deploy-plugin:2
+    image: lbogdan/codesandbox-deploy-plugin:3
     settings:
       domain: &domain build.csb.dev
     volumes:
