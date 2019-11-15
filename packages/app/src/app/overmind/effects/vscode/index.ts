@@ -439,11 +439,11 @@ export class VSCodeEffect {
       { SyncDescriptor },
       { IInstantiationService },
       { IExtensionEnablementService },
+      { IContextViewService },
     ] = [
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
       r('vs/workbench/services/textfile/common/textfiles'),
-
       r('vs/workbench/services/editor/common/editorGroupsService'),
       r('vs/platform/statusbar/common/statusbar'),
       r('vs/workbench/services/extensions/common/extensions'),
@@ -456,6 +456,7 @@ export class VSCodeEffect {
       r('vs/platform/instantiation/common/descriptors'),
       r('vs/platform/instantiation/common/instantiation'),
       r('vs/platform/extensionManagement/common/extensionManagement'),
+      r('vs/platform/contextview/browser/contextView'),
     ];
 
     const { serviceCollection } = await new Promise<any>(resolve => {
@@ -497,6 +498,9 @@ export class VSCodeEffect {
       const codeEditorService = accessor.get(ICodeEditorService);
       const textFileService = accessor.get(ITextFileService);
       const editorService = accessor.get(IEditorService);
+      const contextViewService = accessor.get(IContextViewService);
+
+      contextViewService.setContainer(container);
 
       this.editorApi = {
         openFile(path) {

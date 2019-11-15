@@ -1,5 +1,6 @@
 /* eslint-disable global-require */
 import { EventEmitter } from 'events';
+
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 
 const ctx: any = self as any;
@@ -20,7 +21,7 @@ export const initializePolyfills = () => {
 
 export const loadBrowserFS = () => {
   ctx.importScripts(
-    `${process.env.CODESANDBOX_HOST}/static/browserfs6/browserfs.min.js`
+    `${process.env.CODESANDBOX_HOST}/static/browserfs7/browserfs.min.js`
   );
 };
 
