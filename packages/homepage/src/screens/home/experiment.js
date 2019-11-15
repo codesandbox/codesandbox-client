@@ -1,7 +1,7 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import { motion, useViewportScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { H2, P } from '../../components/Typography';
 
 import frameworks from '../../assets/images/frameworks.png';
@@ -25,7 +25,7 @@ const Section = styled.section`
   display: grid;
   grid-template-columns: repeat(3, 300px);
   grid-gap: 2rem;
-  margin-top: 12.5rem;
+  margin-top: 5rem;
   position: relative;
   z-index: 2;
 
@@ -49,58 +49,77 @@ const tweetStyle = `
   background: #151515
 `;
 
-const Experiment = ({ src, ...style }) => {
-  const { scrollY } = useViewportScroll();
-  const y = useTransform(scrollY, [0, -100], [0, 5], { clamp: false });
+const Experiment = () => (
+  <>
+    <Grid>
+      <div>
+        <H2>Experiment Easily</H2>
+        <P
+          muted
+          css={`
+            margin-bottom: 2rem;
+          `}
+        >
+          Try things out to see how they work in reality
+        </P>
+        <P muted>
+          <White>Learn new frameworks</White> and test your understanding{' '}
+        </P>
+        <P muted>
+          <White>Evaluate npm modules</White> to see what works for your project{' '}
+        </P>
+        <P muted>
+          <White>Test out components</White> and create functional examples
+        </P>
+      </div>
 
-  return (
-    <>
-      <Grid>
-        <div>
-          <H2>Experiment Easily</H2>
-          <P
-            muted
-            css={`
-              margin-bottom: 2rem;
-            `}
-          >
-            Try things out to see how they work in reality
-          </P>
-          <P muted>
-            <White>Learn new frameworks</White> and test your understanding{' '}
-          </P>
-          <P muted>
-            <White>Evaluate npm modules</White> to see what works for your
-            project{' '}
-          </P>
-          <P muted>
-            <White>Test out components</White> and create functional examples
-          </P>
-        </div>
+      <Tweet
+        style={tweetStyle}
+        tweet={{
+          username: 'gethackteam',
+          job: 'Frontend Developer Hackteam',
+          name: 'Roy Derks',
+          quote:
+            'I often use CodeSandbox to create demos or try out new JavaScript features or packages',
+          url:
+            'https://twitter.com/gethackteam/status/1173522963162959872?s=20',
+        }}
+      />
+    </Grid>
 
-        <Tweet
-          style={tweetStyle}
-          tweet={{
-            username: 'gethackteam',
-            job: 'Frontend Developer Hackteam',
-            name: 'Roy Derks',
-            quote:
-              'I often use CodeSandbox to create demos or try out new JavaScript features or packages',
-            url:
-              'https://twitter.com/gethackteam/status/1173522963162959872?s=20',
-          }}
-        />
-      </Grid>
-
-      <motion.div style={{ ...style, y }}>
-        <Section>
-          <img src={frameworks} alt="Frameworks" />
-          <img src={npm} alt="NPM Dependencies" />
-          <img src={things} alt="Experiment" />
-        </Section>
+    <Section>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          duration: 1,
+          ease: 'easeOut',
+        }}
+      >
+        <img src={frameworks} alt="Frameworks" />
       </motion.div>
-    </>
-  );
-};
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          duration: 1,
+          ease: 'easeOut',
+        }}
+      >
+        <img src={npm} alt="NPM Dependencies" />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          duration: 1,
+          ease: 'easeOut',
+        }}
+      >
+        <img src={things} alt="Experiment" />
+      </motion.div>
+    </Section>
+  </>
+);
 
 export default Experiment;

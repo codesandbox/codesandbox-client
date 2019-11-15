@@ -8,7 +8,7 @@ import StatusIcon from '../../assets/icons/Status';
 // import LearnIcon from '../../assets/icons/Learn';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
-// import IDEIcon from '../../assets/icons/Ide';
+import IDEIcon from '../../assets/icons/Ide';
 import EmbedIcon from '../../assets/icons/Embed';
 import CIIcon from '../../assets/icons/Ci';
 import TeamsIcon from '../../assets/icons/Teams';
@@ -233,14 +233,14 @@ const Navigation = () => {
         openedNav={openedNav}
         name="features"
         components={[
-          // {
-          //   Icon: () => (
-          //     <a>
-          //       <IDEIcon />
-          //     </a>
-          //   ),
-          //   Label: () => <a>IDE</a>,
-          // },
+          {
+            Icon: () => (
+              <a>
+                <IDEIcon />
+              </a>
+            ),
+            Label: () => <Link to="/ide">IDE</Link>,
+          },
           {
             Icon: () => (
               <Link to="/embeds">

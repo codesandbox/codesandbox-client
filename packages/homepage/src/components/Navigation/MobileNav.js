@@ -17,7 +17,7 @@ import PricingIcon from '../../assets/icons/Pricing';
 // import LearnIcon from '../../assets/icons/Learn';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
-// import IDEIcon from '../../assets/icons/Ide';
+import IDEIcon from '../../assets/icons/Ide';
 import EmbedIcon from '../../assets/icons/Embed';
 import CIIcon from '../../assets/icons/Ci';
 import TeamsIcon from '../../assets/icons/Teams';
@@ -88,6 +88,14 @@ export default () => {
             <PopUpNav>
               <Headers>Features</Headers>
               <Items>
+                <li>
+                  <Link to="/ide">
+                    <section>
+                      <IDEIcon />
+                    </section>
+                    <span>IDE</span>
+                  </Link>
+                </li>
                 <li>
                   <Link to="/embeds">
                     <section>

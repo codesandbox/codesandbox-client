@@ -1,8 +1,7 @@
-import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useInView } from 'react-hook-inview';
 
 import styled from 'styled-components';
-import { motion, useViewportScroll, useTransform } from 'framer-motion';
 import { TimelineLite } from 'gsap/TweenMax';
 import { H2, P, H3, H5 } from '../../../components/Typography';
 
@@ -28,21 +27,11 @@ const ImageWrapper = styled.div`
 `;
 
 const Prototype = () => {
-  const [elementTop, setElementTop] = useState(0);
   const [inViewRef, inView] = useInView();
   const ref = useRef(null);
-  const { scrollY } = useViewportScroll();
   const stars = useRef(null);
   const ideRef = useRef(null);
   const animation = new TimelineLite();
-
-  const y = useTransform(scrollY, [elementTop, elementTop + 1], [0, -0.1], {
-    clamp: false,
-  });
-  useLayoutEffect(() => {
-    const element = ref.current;
-    setElementTop(element.offsetTop);
-  }, [ref]);
 
   useEffect(() => {
     animation
@@ -102,23 +91,21 @@ const Prototype = () => {
           <H5>VS Code built-in </H5>
           <P muted>The editor’s full-featured, yet familiar</P>
 
-          <motion.div style={{ y }}>
-            <div ref={ref}>
-              <Tweet
-                style={`
+          <div ref={ref}>
+            <Tweet
+              style={`
               background: #242424
               `}
-                tweet={{
-                  name: 'Jonnie Hallman',
-                  username: 'destroytoday',
-                  job: 'Designer Developer, Stripe',
-                  quote: 'it feels much more like my local environment',
-                  url:
-                    'https://twitter.com/destroytoday/status/1173805935384350720',
-                }}
-              />
-            </div>
-          </motion.div>
+              tweet={{
+                name: 'Jonnie Hallman',
+                username: 'destroytoday',
+                job: 'Designer Developer, Stripe',
+                quote: 'it feels much more like my local environment',
+                url:
+                  'https://twitter.com/destroytoday/status/1173805935384350720',
+              }}
+            />
+          </div>
         </div>
       </Grid>
     </>
