@@ -235,9 +235,9 @@ const Navigation = () => {
         components={[
           {
             Icon: () => (
-              <a>
+              <Link to="/ide">
                 <IDEIcon />
-              </a>
+              </Link>
             ),
             Label: () => <Link to="/ide">IDE</Link>,
           },

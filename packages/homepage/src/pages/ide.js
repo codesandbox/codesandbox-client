@@ -7,6 +7,7 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import hero from '../assets/images/hero.png';
 import { ImageWrapper, Border } from '../screens/home/hero/elements';
 import { P } from '../components/Typography';
+import tweets from './_tweets';
 
 import {
   Titles,
@@ -169,7 +170,129 @@ export default () => (
     <Border />
     <div
       css={`
-        margin-top: calc(6.875rem * 2);
+        &:after {
+          background: linear-gradient(90deg, rgba(4, 4, 4, 0) 0%, #040404 100%);
+          width: 204px;
+          content: '';
+          height: 294px;
+          right: 0;
+          position: absolute;
+          margin-top: 2rem;
+          z-index: 10;
+        }
+
+        &:before {
+          background: linear-gradient(90deg, rgba(4, 4, 4, 0) 0%, #040404 100%);
+          transform: rotate(-180deg);
+          width: 204px;
+          content: '';
+          height: 294px;
+          left: 0;
+          position: absolute;
+          margin-top: 2rem;
+          z-index: 10;
+        }
+      `}
+    >
+      <ul
+        css={`
+          display: flex;
+          list-style: none;
+          margin: 0;
+          width: 98vw;
+          position: absolute;
+          left: 0;
+          margin-top: 2rem;
+          overflow-x: scroll;
+
+          &::-webkit-scrollbar {
+            width: 0.5em;
+            height: 0.5em;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+
+            &:hover {
+              background: rgba(255, 255, 255, 0.2);
+            }
+          }
+        `}
+      >
+        {tweets.map(tweet => (
+          <li
+            css={`
+              width: 442px;
+              padding: 2.125rem;
+              background: #151515;
+              border: 1px solid #242424;
+              box-sizing: border-box;
+              border-radius: 4px;
+              margin-right: 2rem;
+              flex-grow: 1;
+              flex-shrink: 0;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+            `}
+          >
+            <span
+              css={`
+                font-family: Roboto;
+                font-style: italic;
+                font-weight: normal;
+                font-size: 23px;
+                line-height: 32px;
+
+                color: ${props => props.theme.homepage.white};
+              `}
+            >
+              "{tweet.quote}"
+            </span>
+
+            <div
+              css={`
+                display: flex;
+                align-items: center;
+              `}
+            >
+              {' '}
+              <img
+                css={`
+                  width: 64px;
+                  border: 1px solid rgba(255, 255, 255, 0.1);
+                  border-radius: 50%;
+                `}
+                src={`https://avatars.io/twitter/${tweet.username}`}
+                alt={tweet.quote}
+              />
+              <span
+                css={`
+                  font-style: normal;
+                  font-weight: 500;
+                  font-size: 16px;
+                  line-height: 20px;
+                  margin-left: 1rem;
+
+                  color: #ffffff;
+                `}
+              >
+                {tweet.name}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <Border
+      css={`
+        margin-top: 23rem;
+      `}
+    />
+    <div
+      css={`
+        margin-top: calc(6.875rem * 6);
       `}
     >
       <Collaborate
