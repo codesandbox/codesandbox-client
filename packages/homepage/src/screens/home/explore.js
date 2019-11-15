@@ -12,7 +12,8 @@ import six from '../../assets/images/explore/6.png';
 
 const ImageWrapper = styled.div`
   margin-top: 2rem;
-  width: 100vw;
+  width: calc(100vw - ((100vw - 1200px) / 2) - 10px);
+  overflow: auto;
 
   > section {
     display: flex;
@@ -30,6 +31,20 @@ const ImageWrapper = styled.div`
 
   div {
     margin: 1rem;
+  }
+
+  &::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
   }
 `;
 
