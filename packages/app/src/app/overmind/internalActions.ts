@@ -12,7 +12,6 @@ import {
 import { NotificationStatus } from '@codesandbox/notifications';
 
 import { createOptimisticModule } from './utils/common';
-import getItems from './utils/items';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
@@ -259,11 +258,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   state.workspace.project.title = sandbox.title || '';
   state.workspace.project.description = sandbox.description || '';
   state.workspace.project.alias = sandbox.alias || '';
-
-  const items = getItems(state);
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
-
-  state.workspace.openedWorkspaceItem = defaultItem.id;
 
   await effects.executor.initializeExecutor(sandbox);
 

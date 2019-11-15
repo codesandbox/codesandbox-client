@@ -1,6 +1,7 @@
 import { LiveMessage, LiveMessageEvent } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
+import getItems from 'app/overmind/utils/items';
 import { filter, fork, pipe } from 'overmind';
 
 import * as internalActions from './internalActions';
@@ -19,10 +20,21 @@ export const roomJoined: AsyncAction<{
     state.currentModal = modal;
   }
 
-  actions.internal.setCurrentSandbox(sandbox);
-  state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+  await effects.vscode.closeAllTabs();
+  await actions.internal.setCurrentSandbox(sandbox);
+
+  const items = getItems(state);
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+
+  state.workspace.openedWorkspaceItem = defaultItem.id;
+
+  state.editor.modulesByPath = effects.vscode.fs.create(
+    state.editor.currentSandbox
+  );
+
   await effects.vscode.changeSandbox(sandbox);
   effects.vscode.openModule(state.editor.currentModule);
+  effects.preview.executeCodeImmediately(true);
   state.live.isLoading = false;
 });
 
@@ -31,8 +43,19 @@ export const createLiveClicked: AsyncAction<{
 }> = async ({ state, effects, actions }, { sandboxId }) => {
   effects.analytics.track('Create Live Session');
 
+  await effects.vscode.closeAllTabs();
+
   const roomId = await effects.api.createLiveRoom(sandboxId);
-  await actions.live.internal.initialize(roomId);
+  const sandbox = await actions.live.internal.initialize(roomId);
+  actions.internal.setCurrentSandbox(sandbox);
+
+  state.editor.modulesByPath = effects.vscode.fs.create(
+    state.editor.currentSandbox
+  );
+
+  await effects.vscode.changeSandbox(sandbox);
+  effects.vscode.openModule(state.editor.currentModule);
+  effects.preview.executeCodeImmediately(true);
 };
 
 export const liveMessageReceived: Operator<LiveMessage> = pipe(
