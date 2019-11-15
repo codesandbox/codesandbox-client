@@ -55,6 +55,11 @@ export default () => (
               duration: 1,
               ease: 'easeOut',
             }}
+            css={`
+              ${props => props.theme.breakpoints.md} {
+                display: none !important;
+              }
+            `}
             src={hero}
             alt="browser showing codesandbox running"
           />

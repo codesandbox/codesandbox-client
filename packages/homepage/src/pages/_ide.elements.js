@@ -15,6 +15,10 @@ export const CreateSandbox = styled(Button)`
   z-index: 2;
   margin: auto;
   padding: 8px 21px;
+
+  ${props => props.theme.breakpoints.md} {
+    top: 2.5rem;
+  }
 `;
 
 export const Title = styled(H2)`
@@ -23,6 +27,10 @@ export const Title = styled(H2)`
   z-index: 2;
   max-width: 547px;
   margin: auto;
+
+  ${props => props.theme.breakpoints.md} {
+    top: 0;
+  }
 `;
 
 export const MacBookWrapper = styled(HeroWrapper)`
@@ -30,6 +38,10 @@ export const MacBookWrapper = styled(HeroWrapper)`
   overflow: visible;
   margin-bottom: 8rem;
   min-height: 60vh;
+
+  ${props => props.theme.breakpoints.md} {
+    min-height: auto;
+  }
 `;
 
 export const Titles = styled.h3`
@@ -62,6 +74,10 @@ export const ArtWorkWrapper = styled.div`
   box-sizing: border-box;
   border-radius: 4px;
   margin: 2.5rem 0;
+
+  ${props => props.theme.breakpoints.md} {
+    height: 250px;
+  }
 `;
 
 export const Grid = styled.section`
@@ -69,6 +85,14 @@ export const Grid = styled.section`
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 3.75rem;
   margin-bottom: 6.875rem;
+
+  ${props => props.theme.breakpoints.lg} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  ${props => props.theme.breakpoints.md} {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `;
 
 export const IconWrapper = styled.div`
