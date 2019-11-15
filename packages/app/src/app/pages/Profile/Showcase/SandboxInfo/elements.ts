@@ -1,6 +1,7 @@
-import styled from 'styled-components';
 import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { LikeHeart } from 'app/pages/common/LikeHeart';
 
 export const Container = styled.div`
@@ -18,7 +19,6 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-weight: 400;
   margin: 0;
   padding: 0;
   box-sizing: border-box;

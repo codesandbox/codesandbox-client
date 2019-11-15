@@ -15,6 +15,7 @@ export default function SplitView({
   sandbox,
   toggleLike,
   initialEditorSize = 50, // in percent
+  hideDevTools,
   ...props
 }) {
   /* Things this component should do
@@ -128,6 +129,7 @@ export default function SplitView({
         toggleLike={toggleLike}
         previewVisible={size < maxSize}
         isDragging={isDragging}
+        offsetBottom={!hideDevTools && size < maxSize}
       />
       <SplitPane
         split="vertical"
@@ -146,6 +148,7 @@ export default function SplitView({
               refresh={refresh}
               openInNewWindow={openInNewWindow}
               isDragging={isDragging}
+              offsetBottom={!hideDevTools && size < maxSize}
             />
           ) : null}
           {isDragging ? <PointerOverlay /> : null}

@@ -33,9 +33,9 @@ export const Moving = styled.div`
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 0;
+  left: props.sidebarOpen ? 250 : 0;
   right: 0;
-  transform: translateX(${props => (props.sidebarOpen ? 250 : 0)}px);
+  width: ${props => (props.sidebarOpen ? 'calc(100% - 250px)' : '100%')};
   border: 1px solid;
   /* 8 digit hex code with last 2 for opacity */
   border-color: ${props => props.theme.colors.sideBar.border + '33'};
