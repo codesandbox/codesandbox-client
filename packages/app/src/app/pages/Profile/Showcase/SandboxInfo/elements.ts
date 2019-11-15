@@ -39,6 +39,10 @@ export const Description = styled.p`
   color: rgba(255, 255, 255, 0.8);
 `;
 
+export const DescriptionContainer = styled.div`
+  flex: 6;
+`;
+
 export const Stats = styled.div`
   position: relative;
   display: flex;
