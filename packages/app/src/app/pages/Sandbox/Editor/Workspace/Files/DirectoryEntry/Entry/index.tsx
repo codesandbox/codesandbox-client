@@ -26,7 +26,7 @@ interface IEntryProps {
   depth: number;
   type: string;
   active: boolean;
-  discardModuleChanges: (shortid: string) => void;
+  discardModuleChanges: (shortid: string, title: string) => void;
   setCurrentModule: (id: string) => void;
   connectDragSource: (node: JSX.Element) => JSX.Element;
   onCreateDirectoryClick: () => boolean | void;
@@ -96,7 +96,7 @@ const Entry: React.FC<IEntryProps> = ({
     deleteEntry ? deleteEntry(shortid, title) : false;
 
   const discardModuleChangesAction = () =>
-    discardModuleChanges ? discardModuleChanges(shortid) : false;
+    discardModuleChanges ? discardModuleChanges(shortid, title) : false;
 
   const handleRename = (newTitle: string, force: boolean = false) => {
     if (newTitle === title) {
