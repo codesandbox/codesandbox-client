@@ -17,10 +17,20 @@ import {
   CreateSandbox,
   Title,
   Grid,
+  Join,
   IconWrapper,
   H6,
   BigTitles,
   JoinTitle,
+  Wrapper,
+  TweetsWrapper,
+  Quote,
+  TweetAuthor,
+  TerminalIcon,
+  DebugIcon,
+  CollaborateIcon,
+  ManageIcon,
+  HeartIcon,
 } from './_ide.elements';
 import TemplateUniverse from '../assets/images/TemplateUniverse.png';
 import containers from '../assets/images/containers.png';
@@ -30,10 +40,6 @@ import debug from '../assets/images/debug.png';
 import Github from '../assets/icons/GithubLarge';
 import VSCode from '../assets/icons/VSCode';
 import Deploy from '../assets/icons/Deploy';
-import Collaborate from '../assets/icons/Collaborate';
-import Terminal from '../assets/icons/Terminal';
-import Debug from '../assets/icons/Debug';
-import Heart from '../assets/icons/Heart';
 
 export default () => (
   <Layout>
@@ -96,11 +102,7 @@ export default () => (
       </div>
     </Grid>
     <Border />
-    <div
-      css={`
-        margin-top: calc(6.875rem * 2);
-      `}
-    >
+    <Wrapper>
       <Titles>Use With Your Fave Dev Tools</Titles>
       <Description>
         We integrate with the tools you already use for a seamless development
@@ -113,7 +115,6 @@ export default () => (
           </IconWrapper>
           <BigTitles>Integrated with GitHub</BigTitles>
           <P muted center>
-            {' '}
             Paste your GitHub URL and get a sandbox that syncs. Or export your
             sandbox to a GitHub repo, create commits, or open PRs.
           </P>
@@ -124,7 +125,6 @@ export default () => (
           </IconWrapper>
           <BigTitles>Deploy to ZEIT or Netlify</BigTitles>
           <P muted center>
-            {' '}
             Deploy a production version of your sandbox with ZEIT Now or
             Netlify.
           </P>
@@ -135,19 +135,14 @@ export default () => (
           </IconWrapper>
           <BigTitles>Powered by VS Code</BigTitles>
           <P muted center>
-            {' '}
             Leverage the power and familiarity of VS Code. Use "Go to
             Definition," "Replace Occurrences," and set a custom theme.
           </P>
         </div>
       </Grid>
-    </div>
+    </Wrapper>
     <Border />
-    <div
-      css={`
-        margin-top: calc(6.875rem * 2);
-      `}
-    >
+    <Wrapper>
       <Titles>Prototype Rapidly</Titles>
       <ArtWorkWrapper bg="#535bcf">
         <img src={prototype} alt="Prototype Rapidly" />
@@ -172,125 +167,24 @@ export default () => (
           feedback.
         </div>
       </Grid>
-    </div>
+    </Wrapper>
     <Border />
-    <div
-      css={`
-        &:after {
-          background: linear-gradient(90deg, rgba(4, 4, 4, 0) 0%, #040404 100%);
-          width: 204px;
-          content: '';
-          height: 294px;
-          right: 0;
-          position: absolute;
-          margin-top: 2rem;
-          z-index: 10;
-        }
-
-        &:before {
-          background: linear-gradient(90deg, rgba(4, 4, 4, 0) 0%, #040404 100%);
-          transform: rotate(-180deg);
-          width: 204px;
-          content: '';
-          height: 294px;
-          left: 0;
-          position: absolute;
-          margin-top: 2rem;
-          z-index: 10;
-        }
-      `}
-    >
-      <ul
-        css={`
-          display: flex;
-          list-style: none;
-          margin: 0;
-          width: 98vw;
-          position: absolute;
-          left: 0;
-          margin-top: 2rem;
-          overflow-x: scroll;
-
-          &::-webkit-scrollbar {
-            width: 0.5em;
-            height: 0.5em;
-          }
-
-          &::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-
-            &:hover {
-              background: rgba(255, 255, 255, 0.2);
-            }
-          }
-        `}
-      >
+    <TweetsWrapper>
+      <ul>
         {tweets.map(tweet => (
-          <li
-            css={`
-              width: 442px;
-              padding: 2.125rem;
-              background: #151515;
-              border: 1px solid #242424;
-              box-sizing: border-box;
-              border-radius: 4px;
-              margin-right: 2rem;
-              flex-grow: 1;
-              flex-shrink: 0;
-              display: flex;
-              flex-direction: column;
-              justify-content: space-between;
-            `}
-          >
-            <span
-              css={`
-                font-family: Roboto;
-                font-style: italic;
-                font-weight: normal;
-                font-size: 23px;
-                line-height: 32px;
-
-                color: ${props => props.theme.homepage.white};
-              `}
-            >
-              "{tweet.quote}"
-            </span>
-
-            <div
-              css={`
-                display: flex;
-                align-items: center;
-              `}
-            >
-              {' '}
+          <li>
+            <Quote> "{tweet.quote}"</Quote>
+            <div>
               <img
-                css={`
-                  width: 64px;
-                  border: 1px solid rgba(255, 255, 255, 0.1);
-                  border-radius: 50%;
-                `}
                 src={`https://avatars.io/twitter/${tweet.username}`}
                 alt={tweet.quote}
               />
-              <span
-                css={`
-                  font-style: normal;
-                  font-weight: 500;
-                  font-size: 16px;
-                  line-height: 20px;
-                  margin-left: 1rem;
-
-                  color: #ffffff;
-                `}
-              >
-                {tweet.name}
-              </span>
+              <TweetAuthor>>{tweet.name}</TweetAuthor>
             </div>
           </li>
         ))}
       </ul>
-    </div>
+    </TweetsWrapper>
     <Border
       css={`
         margin-top: 23rem;
@@ -301,13 +195,7 @@ export default () => (
         margin-top: calc(6.875rem * 6);
       `}
     >
-      <Collaborate
-        css={`
-          margin: auto;
-          display: block;
-          margin-bottom: 1rem;
-        `}
-      />
+      <CollaborateIcon />
       <Titles>Collaborate on Code</Titles>
       <ArtWorkWrapper
         bg="#EB455A"
@@ -334,18 +222,8 @@ export default () => (
       </Grid>
     </div>
     <Border />
-    <div
-      css={`
-        margin-top: calc(6.875rem * 2);
-      `}
-    >
-      <Terminal
-        css={`
-          margin: auto;
-          display: block;
-          margin-bottom: 1rem;
-        `}
-      />
+    <Wrapper>
+      <TerminalIcon />
       <Titles>Work with Containers</Titles>
       <ArtWorkWrapper
         bg="#535BCF"
@@ -371,20 +249,10 @@ export default () => (
           editor.
         </div>
       </Grid>
-    </div>
+    </Wrapper>
     <Border />
-    <div
-      css={`
-        margin-top: calc(6.875rem * 2);
-      `}
-    >
-      <Debug
-        css={`
-          margin: auto;
-          display: block;
-          margin-bottom: 1rem;
-        `}
-      />
+    <Wrapper>
+      <DebugIcon />
       <Titles>Debug Like a Pro</Titles>
       <ArtWorkWrapper
         bg="#EB455A"
@@ -415,13 +283,10 @@ export default () => (
           Reloading.
         </div>
       </Grid>
-    </div>
+    </Wrapper>
     <Border />
-    <div
-      css={`
-        margin-top: calc(6.875rem * 2);
-      `}
-    >
+    <Wrapper>
+      <ManageIcon />
       <Titles
         css={`
           margin-bottom: 6rem;
@@ -451,20 +316,10 @@ export default () => (
           locally.
         </div>
       </Grid>
-    </div>
+    </Wrapper>
     <Border />
-    <div
-      css={`
-        margin-top: calc(6.875rem * 2);
-      `}
-    >
-      <Heart
-        css={`
-          margin: auto;
-          display: block;
-          margin-bottom: 1rem;
-        `}
-      />
+    <Wrapper>
+      <HeartIcon />
       <Titles
         css={`
           margin-bottom: 6rem;
@@ -502,26 +357,20 @@ export default () => (
           All code is linted automatically using the latest version of ESLint.
         </div>
       </Grid>
-    </div>
+    </Wrapper>
     <Border />
-    <div
-      css={`
-        margin-top: calc(6.875rem * 2);
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-      `}
-    >
+    <Join>
       <JoinTitle>Join millions of people prototyping what’s next</JoinTitle>
       <CreateSandbox
         css={`
           top: 0;
           margin-bottom: 12rem;
         `}
+        big
         href="/s"
       >
         Create a Sandbox, it’s free
       </CreateSandbox>
-    </div>
+    </Join>
   </Layout>
 );

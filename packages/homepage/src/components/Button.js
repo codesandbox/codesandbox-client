@@ -16,16 +16,22 @@ const styles = css`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   display: inline-block;
 
-  :disabled {
+  ${props =>
+    props.big &&
+    css`
+      padding: 8px 21px;
+    `}
+
+  &:disabled {
     opacity: 0.4;
   }
 
-  :hover {
+  &:hover {
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
     transform: scale(1.1);
   }
 
-  :focus {
+  &:focus {
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
     transform: scale(1);
   }

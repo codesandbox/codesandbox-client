@@ -33,7 +33,9 @@ export default () => (
           margin-bottom: 3rem;
         `}
       >
-        <Button href="/s">Create a Sandbox</Button>
+        <Button big href="/s">
+          Create a Sandbox
+        </Button>
       </div>
     </PageContainer>
   </Layout>

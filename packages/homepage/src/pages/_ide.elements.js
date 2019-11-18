@@ -1,7 +1,12 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { HeroWrapper } from '../screens/home/hero/elements';
 import { H2 } from '../components/Typography';
 import Button from '../components/Button';
+import Collaborate from '../assets/icons/Collaborate';
+import Terminal from '../assets/icons/Terminal';
+import Debug from '../assets/icons/Debug';
+import Heart from '../assets/icons/Heart';
+import Manage from '../assets/icons/Manage';
 
 export const H6 = styled.h6`
   font-size: 19px;
@@ -14,7 +19,6 @@ export const CreateSandbox = styled(Button)`
   top: 390px;
   z-index: 2;
   margin: auto;
-  padding: 8px 21px;
 
   ${props => props.theme.breakpoints.md} {
     top: 2.5rem;
@@ -121,4 +125,141 @@ export const JoinTitle = styled(H2)`
   margin-bottom: 2.5rem;
   font-size: 36px;
   line-height: 43px;
+`;
+
+export const Wrapper = styled.div`
+  margin-top: calc(6.875rem * 2);
+`;
+
+export const TweetsWrapper = styled.div`
+  &:after {
+    background: linear-gradient(90deg, rgba(4, 4, 4, 0) 0%, #040404 100%);
+    width: 204px;
+    content: '';
+    height: 294px;
+    right: 0;
+    position: absolute;
+    margin-top: 2rem;
+    z-index: 10;
+  }
+
+  &:before {
+    background: linear-gradient(90deg, rgba(4, 4, 4, 0) 0%, #040404 100%);
+    transform: rotate(-180deg);
+    width: 204px;
+    content: '';
+    height: 294px;
+    left: 0;
+    position: absolute;
+    margin-top: 2rem;
+    z-index: 10;
+  }
+
+  ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    width: 98vw;
+    position: absolute;
+    left: 0;
+    margin-top: 2rem;
+    overflow-x: scroll;
+
+    &::-webkit-scrollbar {
+      width: 0.5em;
+      height: 0.5em;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+    li {
+      width: 442px;
+      padding: 2.125rem;
+      background: #151515;
+      border: 1px solid #242424;
+      box-sizing: border-box;
+      border-radius: 4px;
+      margin-right: 2rem;
+      flex-grow: 1;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      div {
+        display: flex;
+        align-items: center;
+
+        img {
+          width: 64px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+`;
+
+export const Quote = styled.div`
+  font-family: Roboto;
+  font-style: italic;
+  font-weight: normal;
+  font-size: 23px;
+  line-height: 32px;
+
+  color: ${props => props.theme.homepage.white};
+`;
+
+export const TweetAuthor = styled.span`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 20px;
+  margin-left: 1rem;
+
+  color: ${props => props.theme.homepage.white};
+`;
+
+export const Join = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: calc(6.875rem * 2);
+
+  button {
+    top: 0;
+    margin-bottom: 12rem;
+  }
+`;
+
+const iconStyles = css`
+  margin: auto;
+  display: block;
+  margin-bottom: 1rem;
+`;
+
+export const CollaborateIcon = styled(Collaborate)`
+  ${iconStyles}
+`;
+
+export const TerminalIcon = styled(Terminal)`
+  ${iconStyles}
+`;
+
+export const DebugIcon = styled(Debug)`
+  ${iconStyles}
+`;
+
+export const HeartIcon = styled(Heart)`
+  ${iconStyles}
+`;
+
+export const ManageIcon = styled(Manage)`
+  ${iconStyles}
 `;
