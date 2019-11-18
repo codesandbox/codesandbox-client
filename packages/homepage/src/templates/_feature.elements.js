@@ -23,7 +23,7 @@ export const Description = styled.h2`
     font-style: normal;
     font-weight: 500;
     font-size: 1rem;
-    line-height: 19px;
+    line-height: 1.5;
 
     color: ${theme.homepage.white};
   `};
@@ -71,6 +71,7 @@ export const Banner = styled.div`
       }
 
       ${props => props.theme.breakpoints.md} {
+        transform: translateX(0);
         max-width: 100%;
       }
     }

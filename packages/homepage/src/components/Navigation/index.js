@@ -102,6 +102,17 @@ const Navigation = () => {
                 <li>
                   <button
                     onClick={() =>
+                      setOpenedNav(openedNav === 'explore' ? null : 'explore')
+                    }
+                    type="button"
+                  >
+                    Explore
+                    <DownButton />
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() =>
                       setOpenedNav(
                         openedNav === 'resources' ? null : 'resources'
                       )
@@ -123,17 +134,7 @@ const Navigation = () => {
                     <DownButton />
                   </button>
                 </li>
-                <li>
-                  <button
-                    onClick={() =>
-                      setOpenedNav(openedNav === 'explore' ? null : 'explore')
-                    }
-                    type="button"
-                  >
-                    Explore
-                    <DownButton />
-                  </button>
-                </li>
+
                 <li>
                   <Link to="/pricing">Pricing</Link>
                 </li>

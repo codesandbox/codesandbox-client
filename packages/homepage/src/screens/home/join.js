@@ -20,8 +20,9 @@ const JoinWrapper = styled.section`
   border: 1px solid #242424;
   overflow: hidden;
 
-  ${props => props.theme.breakpoints.md} {
-    grid-template-columns: 1fr;
+  ${props => props.theme.breakpoints.lg} {
+    display: flex;
+    min-height: 212px;
   }
 `;
 
@@ -29,12 +30,11 @@ const IDE = styled.img`
   position: absolute;
   margin-top: -6rem;
   right: 0;
+
   box-shadow: 0 0.24rem 0.5rem rgba(0, 0, 0, 0.24);
 
-  ${props => props.theme.breakpoints.md} {
-    position: relative;
-    margin: 0;
-    margin-top: 2rem;
+  ${props => props.theme.breakpoints.lg} {
+    display: none;
   }
 `;
 
@@ -47,10 +47,6 @@ const Text = styled.h3`
   max-width: 80%;
   margin: auto;
   margin-bottom: 2.5rem;
-
-  ${props => props.theme.breakpoints.md} {
-    margin-top: 2rem;
-  }
 `;
 
 const Join = ({ src, ...style }) => {

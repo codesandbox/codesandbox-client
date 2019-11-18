@@ -61,7 +61,7 @@ export default () => (
           >
             <li
               css={`
-                margin-bottom: 1rem;
+                margin-bottom: 2rem;
               `}
             >
               Everything in Community, plus:
