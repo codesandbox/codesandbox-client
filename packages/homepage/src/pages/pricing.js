@@ -70,7 +70,7 @@ export default () => (
             <li>+ Private GitHub Repos</li>
           </List>
         </div>
-        <Button white href="/patreon">
+        <Button white href="/patron">
           Subscribe to Pro
         </Button>
       </Card>
@@ -100,7 +100,7 @@ export default () => (
     <FeaturesTable>
       <li>
         <div>
-          <FeatureTitle>VS Code powered Editor </FeatureTitle>
+          <FeatureTitle>Templates</FeatureTitle>
           <P muted small>
             Start from an official template, or create your own
           </P>
@@ -124,7 +124,7 @@ export default () => (
         <div>
           <FeatureTitle>Public Sandboxes</FeatureTitle>
           <P muted small>
-            Sandboxes, both the preview and code, are available publicly by
+            Sandboxes, both the app and code, are available publicly by
             default
           </P>
         </div>
@@ -136,7 +136,7 @@ export default () => (
         <div>
           <FeatureTitle>Unlimited Private Sandboxes</FeatureTitle>
           <P muted small>
-            Set a sandbox as private or unlisted so others can't see the code
+            Set a sandbox as private or unlisted so others can't see the code or the app
           </P>
         </div>
         <span />
@@ -170,7 +170,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Hot Module Reloading </FeatureTitle>
+          <FeatureTitle>Hot Module Reloading</FeatureTitle>
           <P muted small>
             See changes as you make them
           </P>
@@ -180,9 +180,9 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Keybindings & Quick Actions </FeatureTitle>
+          <FeatureTitle>Keybindings & Quick Actions</FeatureTitle>
           <P muted small>
-            Perform everyday tasks speedily
+            Perform common tasks speedily
           </P>
         </div>
         <span>✓</span>
@@ -190,7 +190,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Console </FeatureTitle>
+          <FeatureTitle>Console</FeatureTitle>
           <P muted small>
             View logging and console output to see loading progress and debug
             issues
@@ -211,7 +211,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Problem Viewer </FeatureTitle>
+          <FeatureTitle>Problem Viewer</FeatureTitle>
           <P muted small>
             See errors clearly with our user-friendly overlay
           </P>
@@ -231,7 +231,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Custom Themes </FeatureTitle>
+          <FeatureTitle>Custom Themes</FeatureTitle>
           <P muted small>
             Tweak theme styles with support for all VS Code themes 
           </P>
@@ -241,7 +241,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Vim Mode </FeatureTitle>
+          <FeatureTitle>Vim Mode</FeatureTitle>
           <P muted small>
             Vim emulation in the editor, powered by the VSCodeVim extension
           </P>
@@ -251,7 +251,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Type Acquisition </FeatureTitle>
+          <FeatureTitle>Type Acquisition</FeatureTitle>
           <P muted small>
             Typings automatically downloaded for every dependency
           </P>
@@ -261,7 +261,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>External Resources </FeatureTitle>
+          <FeatureTitle>External Resources</FeatureTitle>
           <P muted small>
             Automatically include external resources, like CSS or JS files
           </P>
@@ -271,9 +271,9 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Session Restore </FeatureTitle>
+          <FeatureTitle>Session Restore</FeatureTitle>
           <P muted small>
-            (Recover un-saved changes between sessions)
+            Recover un-saved changes between sessions
           </P>
         </div>
         <span>✓</span>
@@ -281,10 +281,10 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>External Previews </FeatureTitle>
+          <FeatureTitle>External Previews</FeatureTitle>
           <P muted small>
-            (Open sandbox previews on a separate URL but with Hot Module
-            Reloading)
+            Open sandbox previews on a separate URL but with Hot Module
+            Reloading
           </P>
         </div>
         <span>✓</span>
@@ -318,7 +318,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>ZEIT Now Deploy </FeatureTitle>
+          <FeatureTitle>ZEIT Now Deploy</FeatureTitle>
           <P muted small>
             Deploy a production version of your sandbox to ZEIT Now
           </P>
@@ -414,7 +414,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>In-editor Chat </FeatureTitle>
+          <FeatureTitle>In-editor Chat</FeatureTitle>
           <P muted small>
             Chat with collaborators about the code you're all working on
           </P>
@@ -434,7 +434,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Shareable Links </FeatureTitle>
+          <FeatureTitle>Shareable Links</FeatureTitle>
           <P muted small>
             Per sandbox URL with HTTPS support for secure project sharing
           </P>
@@ -449,9 +449,9 @@ export default () => (
     <FeaturesTable inside>
       <li>
         <div>
-          <FeatureTitle>Server Sandboxes </FeatureTitle>
+          <FeatureTitle>Server Sandboxes</FeatureTitle>
           <P muted small>
-            (Create full-stack web apps and use Node packages)
+            Create full-stack web apps and use Node packages
           </P>
         </div>
         <span>✓</span>
@@ -479,7 +479,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Multiple Ports </FeatureTitle>
+          <FeatureTitle>Multiple Ports</FeatureTitle>
           <P muted small>
             Container apps can listen on one or more ports simultaneously
           </P>
@@ -491,7 +491,7 @@ export default () => (
         <div>
           <FeatureTitle>Secrets</FeatureTitle>
           <P muted small>
-            Hide sensitive information in your application and access them via
+            Hide sensitive information in your app and access them via
             environment variables
           </P>
         </div>
@@ -516,7 +516,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Configuration UI </FeatureTitle>
+          <FeatureTitle>Configuration UI</FeatureTitle>
           <P muted small>
             Edit config files for npm, Prettier, Netlify, Now, TypeScript,
             JavaScript, and your sandbox
@@ -559,7 +559,7 @@ export default () => (
         <div>
           <FeatureTitle>Storage Management </FeatureTitle>
           <P muted small>
-            View storage usage, and upload or delete files from one management
+            View storage usage and upload or delete files from one management
             screen
           </P>
         </div>
@@ -594,7 +594,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Explore </FeatureTitle>
+          <FeatureTitle>Explore</FeatureTitle>
           <P muted small>
             Hand-picked sandboxes highlighting the best recent community
             creations
@@ -635,7 +635,7 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Teams </FeatureTitle>
+          <FeatureTitle>Teams</FeatureTitle>
           <P muted small>
             View and edit sandboxes with all team members
           </P>
