@@ -189,21 +189,21 @@ export const Customizations = styled.ul`
   margin-bottom: 7.5rem;
 
   li {
-    button {
-      background: transparent;
-      border: none;
-      padding: 0;
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 24px;
-
-      color: #757575;
-      display: flex;
-      align-items: center;
-    }
-
     svg {
       margin-right: 1rem;
     }
   }
+`;
+
+export const Button = styled.button`
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: ${props => (props.active ? '#fff' : '#757575')};
+  display: flex;
+  align-items: center;
 `;

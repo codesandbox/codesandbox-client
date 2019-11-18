@@ -18,10 +18,14 @@ import {
   SwitchWrapper,
   CustomLightStyles,
   Customizations,
+  Button,
 } from './_embeds.elements';
 
 export default () => {
   const [theme, setTheme] = useState('dark');
+  const [devTools, setDevTools] = useState(1);
+  const [navigation, setNavigation] = useState(1);
+  const [preview, setPreview] = useState(null);
   return (
     <Layout>
       <CustomLightStyles light={theme === 'light'} />
@@ -68,29 +72,42 @@ export default () => {
         <Banner coverSmaller color="EB455A">
           <Iframe
             title="embed-example"
-            src={`https://codesandbox.io/embed/static-2lqup?fontsize=14&hidenavigation=1&theme=${theme}&view=preview&hideDevTools=true`}
+            src={`https://codesandbox.io/embed/static-2lqup?fontsize=14&hidenavigation=${navigation}&theme=${theme}${preview}&hidedevtools=${devTools}`}
           />
         </Banner>
         <Customizations>
           <li>
-            <button type="button">
+            <Button type="button">
               <ProjectViewIcon /> Project View
-            </button>
+            </Button>
           </li>
           <li>
-            <button type="button">
-              <NavigationIcon /> Navigation
-            </button>
+            <Button
+              type="button"
+              active={navigation === 0}
+              onClick={() => setNavigation(navigation === 1 ? 0 : 1)}
+            >
+              <NavigationIcon active={navigation === 0} /> Navigation
+            </Button>
           </li>
           <li>
-            <button type="button">
-              <PreviewModeIcon /> Preview Mode
-            </button>
+            <Button
+              type="button"
+              active={preview === '&view=preview'}
+              onClick={() => setPreview(preview ? null : '&view=preview')}
+            >
+              <PreviewModeIcon active={preview === '&view=preview'} /> Preview
+              Mode
+            </Button>
           </li>
           <li>
-            <button type="button">
-              <DevToolsIcon /> DevTools
-            </button>
+            <Button
+              type="button"
+              active={devTools === 0}
+              onClick={() => setDevTools(devTools === 1 ? 0 : 1)}
+            >
+              <DevToolsIcon active={devTools === 0} /> DevTools
+            </Button>
           </li>
         </Customizations>
         <ContentBlock columns={2}>
