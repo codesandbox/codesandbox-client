@@ -70,9 +70,9 @@ export default () => (
           />
         </ImageWrapper>
       </MacBookWrapper>
-      <Titles>Get Started</Titles>
+      <Titles>Get Started Quickly</Titles>
       <Description>
-        Quickly Use templates to kickstart new projects with no setup
+        Use templates to kickstart new projects with no setup
       </Description>
     </PageContainer>
     <ArtWorkWrapper bg="#535bcf">
@@ -85,7 +85,7 @@ export default () => (
         Angular, to Apollo, Gatsby, Next, and others.
       </div>
       <div>
-        <H6>Community-created Starting Points</H6>
+        <H6>Community-made Starting Points</H6>
         Use templates made by the community. Bookmark those you find useful to
         get started with one click.
       </div>
@@ -346,7 +346,7 @@ export default () => (
           margin-bottom: 1rem;
         `}
       />
-      <Titles>Work With Containers</Titles>
+      <Titles>Work with Containers</Titles>
       <ArtWorkWrapper
         bg="#535BCF"
         css={`
