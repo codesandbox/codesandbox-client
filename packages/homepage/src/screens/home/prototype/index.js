@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useInView } from 'react-hook-inview';
+import Rellax from 'rellax';
 
 import styled from 'styled-components';
 import { TimelineLite } from 'gsap/TweenMax';
@@ -28,15 +29,27 @@ const ImageWrapper = styled.div`
 
 const Prototype = () => {
   const [inViewRef, inView] = useInView();
-  const ref = useRef(null);
+  const parallaxRef = useRef(null);
   const stars = useRef(null);
   const ideRef = useRef(null);
   const animation = new TimelineLite();
 
   useEffect(() => {
+    // eslint-disable-next-line no-new
+    new Rellax(parallaxRef.current, {
+      speed: 1,
+      center: true,
+    });
+  }, []);
+
+  useEffect(() => {
     animation
       .to(stars.current, 1, { scale: 2, delay: 0 })
-      .to(ideRef.current, 1.5, { y: -400, opacity: 1, delay: 1 })
+      .to(ideRef.current, 1.5, {
+        y: -400,
+        opacity: 1,
+        delay: 1,
+      })
       .to(stars.current, 1, { scale: 1, y: 70, x: 60 }, '-=1');
     if (inView) animation.resume();
   }, [animation, inView]);
@@ -91,7 +104,7 @@ const Prototype = () => {
           <H5>VS Code built-in </H5>
           <P muted>The editor’s full-featured, yet familiar</P>
 
-          <div ref={ref}>
+          <div ref={parallaxRef}>
             <Tweet
               style={`
               background: #242424

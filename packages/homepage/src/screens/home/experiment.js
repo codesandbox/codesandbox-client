@@ -1,5 +1,5 @@
-import React from 'react';
-
+import React, { useRef, useEffect } from 'react';
+import Rellax from 'rellax';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { H2, P } from '../../components/Typography';
@@ -49,77 +49,89 @@ const tweetStyle = `
   background: #151515
 `;
 
-const Experiment = () => (
-  <>
-    <Grid>
-      <div>
-        <H2>Experiment Easily</H2>
-        <P
-          muted
-          css={`
-            margin-bottom: 2rem;
-          `}
+const Experiment = () => {
+  const parallaxRef = useRef(null);
+  useEffect(() => {
+    // eslint-disable-next-line no-new
+    new Rellax(parallaxRef.current, {
+      speed: 1,
+      center: true,
+    });
+  }, []);
+  return (
+    <>
+      <Grid>
+        <div>
+          <H2>Experiment Easily</H2>
+          <P
+            muted
+            css={`
+              margin-bottom: 2rem;
+            `}
+          >
+            Try things out to see how they work in reality
+          </P>
+          <P muted>
+            <White>Learn new frameworks</White> and test your understanding{' '}
+          </P>
+          <P muted>
+            <White>Evaluate npm modules</White> to see what works for your
+            project{' '}
+          </P>
+          <P muted>
+            <White>Test out components</White> and create functional examples
+          </P>
+        </div>
+        <div ref={parallaxRef}>
+          <Tweet
+            style={tweetStyle}
+            tweet={{
+              username: 'gethackteam',
+              job: 'Frontend Developer Hackteam',
+              name: 'Roy Derks',
+              quote:
+                'I often use CodeSandbox to create demos or try out new JavaScript features or packages',
+              url:
+                'https://twitter.com/gethackteam/status/1173522963162959872?s=20',
+            }}
+          />
+        </div>
+      </Grid>
+
+      <Section>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1,
+            ease: 'easeOut',
+          }}
         >
-          Try things out to see how they work in reality
-        </P>
-        <P muted>
-          <White>Learn new frameworks</White> and test your understanding{' '}
-        </P>
-        <P muted>
-          <White>Evaluate npm modules</White> to see what works for your project{' '}
-        </P>
-        <P muted>
-          <White>Test out components</White> and create functional examples
-        </P>
-      </div>
-
-      <Tweet
-        style={tweetStyle}
-        tweet={{
-          username: 'gethackteam',
-          job: 'Frontend Developer Hackteam',
-          name: 'Roy Derks',
-          quote:
-            'I often use CodeSandbox to create demos or try out new JavaScript features or packages',
-          url:
-            'https://twitter.com/gethackteam/status/1173522963162959872?s=20',
-        }}
-      />
-    </Grid>
-
-    <Section>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 1,
-          ease: 'easeOut',
-        }}
-      >
-        <img src={frameworks} alt="Frameworks" />
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 1,
-          ease: 'easeOut',
-        }}
-      >
-        <img src={npm} alt="NPM Dependencies" />
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 1,
-          ease: 'easeOut',
-        }}
-      >
-        <img src={things} alt="Experiment" />
-      </motion.div>
-    </Section>
-  </>
-);
+          <img src={frameworks} alt="Frameworks" />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1,
+            ease: 'easeOut',
+          }}
+        >
+          <img src={npm} alt="NPM Dependencies" />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1,
+            ease: 'easeOut',
+          }}
+        >
+          <img src={things} alt="Experiment" />
+        </motion.div>
+      </Section>
+    </>
+  );
+};
 
 export default Experiment;

@@ -70,6 +70,7 @@
     "react-router-dom": "^4.2.2",
     "react-spring": "^8.0.25",
     "react-text-loop": "^2.0.2",
+    "rellax": "^1.10.0",
     "styled-breakpoints": "^6.9.1",
     "styled-components": "^4.2.0",
     "typography": "^0.16.17"

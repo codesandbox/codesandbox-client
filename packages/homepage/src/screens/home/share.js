@@ -1,5 +1,5 @@
-import React from 'react';
-
+import React, { useRef, useEffect } from 'react';
+import Rellax from 'rellax';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
@@ -41,12 +41,22 @@ const White = styled.span`
   color: ${props => props.theme.homepage.white};
 `;
 
-const Share = () => (
-  <>
-    <Grid>
-      <div>
-        <Tweet
-          style={`
+const Share = () => {
+  const parallaxRef = useRef(null);
+  useEffect(() => {
+    // eslint-disable-next-line no-new
+    new Rellax(parallaxRef.current, {
+      speed: 1,
+      center: true,
+    });
+  }, []);
+
+  return (
+    <>
+      <Grid>
+        <div ref={parallaxRef}>
+          <Tweet
+            style={`
           right: auto;
           left: auto;
           width: 416px;
@@ -55,79 +65,80 @@ const Share = () => (
           position: absolute;
           background: #151515;
         `}
-          tweet={{
-            username: 'brian_d_vaughn',
-            job: 'Software Engineer, React Core Team',
-            name: 'Brian Vaughn',
-            quote:
-              "It's dramatically improved my experience of sharing ideas and responding to online questions",
-            url:
-              'https://twitter.com/brian_d_vaughn/status/987758237104594945?s=20',
+            tweet={{
+              username: 'brian_d_vaughn',
+              job: 'Software Engineer, React Core Team',
+              name: 'Brian Vaughn',
+              quote:
+                "It's dramatically improved my experience of sharing ideas and responding to online questions",
+              url:
+                'https://twitter.com/brian_d_vaughn/status/987758237104594945?s=20',
+            }}
+          />
+        </div>
+
+        <div>
+          <H2>Share with a Click</H2>
+          <P
+            muted
+            css={`
+              margin-bottom: 2rem;
+            `}
+          >
+            Every sandbox gets a secure URL, ready to share
+          </P>
+          <P muted>
+            <White>Share code snippets and creations </White> with friends,
+            colleagues, the world
+          </P>
+          <P muted>
+            <White>Provide reproducible bug reports</White> when creating GitHub
+            issues
+          </P>
+          <P muted>
+            <White>Ask or answer questions with code</White> on Stack Overflow
+            or Twitter
+          </P>
+        </div>
+      </Grid>
+
+      <Section>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1,
+            ease: 'easeOut',
           }}
-        />
-      </div>
-
-      <div>
-        <H2>Share with a Click</H2>
-        <P
-          muted
-          css={`
-            margin-bottom: 2rem;
-          `}
         >
-          Every sandbox gets a secure URL, ready to share
-        </P>
-        <P muted>
-          <White>Share code snippets and creations </White> with friends,
-          colleagues, the world
-        </P>
-        <P muted>
-          <White>Provide reproducible bug reports</White> when creating GitHub
-          issues
-        </P>
-        <P muted>
-          <White>Ask or answer questions with code</White> on Stack Overflow or
-          Twitter
-        </P>
-      </div>
-    </Grid>
+          <img src={share} alt="Share" />
+        </motion.div>
 
-    <Section>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 1,
-          ease: 'easeOut',
-        }}
-      >
-        <img src={share} alt="Share" />
-      </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1,
+            delay: 0.4,
+            ease: 'easeOut',
+          }}
+        >
+          <img src={code} alt="Speak Code" />
+        </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 1,
-          delay: 0.4,
-          ease: 'easeOut',
-        }}
-      >
-        <img src={code} alt="Speak Code" />
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 1,
-          delay: 0.3,
-          ease: 'easeIn',
-        }}
-      >
-        <img src={bug} alt="Track Bugs" />
-      </motion.div>
-    </Section>
-  </>
-);
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1,
+            delay: 0.3,
+            ease: 'easeIn',
+          }}
+        >
+          <img src={bug} alt="Track Bugs" />
+        </motion.div>
+      </Section>
+    </>
+  );
+};
 export default Share;

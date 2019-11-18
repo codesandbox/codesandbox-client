@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import Rellax from 'rellax';
 import styled from 'styled-components';
 import { P, H3, H5 } from '../../components/Typography';
 
@@ -15,30 +16,40 @@ const Grid = styled.div`
   }
 `;
 
-const Started = () => (
-  <>
-    <Grid>
-      <div
-        css={`
-          position: relative;
-        `}
-      >
-        <H3
+const Started = () => {
+  const parallaxRef = useRef(null);
+  useEffect(() => {
+    // eslint-disable-next-line no-new
+    new Rellax(parallaxRef.current, {
+      speed: 1,
+      center: true,
+    });
+  }, []);
+
+  return (
+    <>
+      <Grid>
+        <div
           css={`
-            margin-bottom: 1.5rem;
+            position: relative;
           `}
         >
-          Get started in an instant
-        </H3>
-        <H5>Start from a template, or GitHub</H5>
-        <P muted>React, Vue, Angular, whichever</P>
-        <H5>Hot reload and auto-deploy</H5>
-        <P muted>Your app is updated as you type</P>
-        <H5>Live preview </H5>
-        <P muted>See changes as you make them</P>
-        <div>
-          <Tweet
-            style={`
+          <H3
+            css={`
+              margin-bottom: 1.5rem;
+            `}
+          >
+            Get started in an instant
+          </H3>
+          <H5>Start from a template, or GitHub</H5>
+          <P muted>React, Vue, Angular, whichever</P>
+          <H5>Hot reload and auto-deploy</H5>
+          <P muted>Your app is updated as you type</P>
+          <H5>Live preview </H5>
+          <P muted>See changes as you make them</P>
+          <div ref={parallaxRef}>
+            <Tweet
+              style={`
              right: -6rem;
              left: auto;
              width: 30rem;
@@ -48,21 +59,22 @@ const Started = () => (
              max-width: 100%;
 
            `}
-            tweet={{
-              name: 'Peggy Rayzis',
-              quote:
-                "I'm obsessed with CodeSandbox's GitHub import feature!! 😍 One click and you can convert a repo to a sandbox that automatically stays up to date with the latest commits.",
-              url:
-                'https://twitter.com/peggyrayzis/status/976557689651236864?s=20',
-              username: 'peggyrayzis',
-              job: 'DX at Apollo',
-            }}
-          />
+              tweet={{
+                name: 'Peggy Rayzis',
+                quote:
+                  "I'm obsessed with CodeSandbox's GitHub import feature!! 😍 One click and you can convert a repo to a sandbox that automatically stays up to date with the latest commits.",
+                url:
+                  'https://twitter.com/peggyrayzis/status/976557689651236864?s=20',
+                username: 'peggyrayzis',
+                job: 'DX at Apollo',
+              }}
+            />
+          </div>
         </div>
-      </div>
 
-      <img src={started} alt="started" />
-    </Grid>
-  </>
-);
+        <img src={started} alt="started" />
+      </Grid>
+    </>
+  );
+};
 export default Started;
