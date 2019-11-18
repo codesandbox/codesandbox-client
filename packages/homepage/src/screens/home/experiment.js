@@ -79,7 +79,7 @@ const Experiment = () => {
             project{' '}
           </P>
           <P muted>
-            <White>Test out components</White> and create functional examples
+            <White>Test out components</White> by creating functional examples
           </P>
         </div>
         <div ref={parallaxRef}>
