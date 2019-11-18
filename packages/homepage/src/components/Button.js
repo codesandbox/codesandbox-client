@@ -12,6 +12,23 @@ const styles = css`
   padding: 4px 21px;
   text-decoration: none;
   color: ${props => props.theme.homepage.white} !important;
+  transition: all 200ms ease;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+
+  :disabled {
+    opacity: 0.4;
+  }
+
+  :hover {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+    transform: scale(1.1);
+  }
+
+  :focus {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+    transform: scale(1);
+  }
 `;
 
 const Button = styled.button`
