@@ -1,7 +1,6 @@
 import { graphql } from 'gatsby';
 import React from 'react';
 import { motion } from 'framer-motion';
-import styled from 'styled-components';
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
@@ -14,15 +13,10 @@ import {
   Tweet,
   User,
   Avatar,
+  TitleWrapper,
   Description,
 } from './_feature.elements';
 import Button from '../components/Button';
-
-const TitleWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
 
 export default ({
   data: {
@@ -85,22 +79,23 @@ export default ({
         ease: 'easeOut',
       }}
     >
-      <img src={coverImage.publicURL} alt={title} />
+      <img className="hero-image" src={coverImage.publicURL} alt={title} />
     </motion.div>
   );
   return (
     <Layout>
       <TitleAndMetaTags title={`${title} - CodeSandbox`} />
       <PageContainer width={1086}>
+        <Title>{title}</Title>
+
         <TitleWrapper>
-          <Title>{title}</Title>
+          <Description seoText={SEOText}>{description}</Description>
           {ctaLink && ctaText ? (
             <Button target="_blank" href={ctaLink}>
               {ctaText}
             </Button>
           ) : null}
         </TitleWrapper>
-        <Description seoText={SEOText}>{description}</Description>
         {SEOText ? <SeoText>{SEOText}</SeoText> : null}
         <Banner
           coverSmaller={coverSmaller}

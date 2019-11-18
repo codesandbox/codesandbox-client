@@ -15,7 +15,7 @@ const homepageTheme = {
   breakpoints: {
     sm: text(576),
     md: text(768),
-    lg: text(992),
+    lg: text(1024),
     xl: text(1200),
   },
   homepage: {

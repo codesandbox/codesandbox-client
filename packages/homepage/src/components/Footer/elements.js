@@ -1,21 +1,25 @@
 import styled from 'styled-components';
 
 export const FooterWrapper = styled.footer`
-  border-top: 1px solid ${props => props.theme.homepage.grey};
-  padding-top: 2.5rem;
   padding-bottom: 1rem;
   margin-top: 6rem;
   margin-bottom: 3rem;
 `;
 
 export const Nav = styled.section`
+  padding-top: 2.5rem;
+  border-top: 1px solid ${props => props.theme.homepage.grey};
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   grid-gap: 3rem;
   max-width: 80%;
   width: 1200px;
   margin: auto;
   margin-bottom: 4.5rem;
+
+  ${props => props.theme.breakpoints.sm} {
+    grid-template-columns: 1fr;
+  }
 
   a {
     color: inherit;

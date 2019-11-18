@@ -31,10 +31,21 @@ export default () => (
           <CardTitle>Community</CardTitle>
           <Price>Free</Price>
           <List>
-            <li>✓ Development & Prototyping</li> <li>✓ Online IDE </li>
-            <li>✓ Embeds </li>
-            <li>✓ CodeSandbox CI </li>
-            <li>✓ Teams</li>
+            <li>
+              <span>✓</span> Development & Prototyping
+            </li>{' '}
+            <li>
+              <span>✓</span> Online IDE{' '}
+            </li>
+            <li>
+              <span>✓</span> Embeds{' '}
+            </li>
+            <li>
+              <span>✓</span> CodeSandbox CI{' '}
+            </li>
+            <li>
+              <span>✓</span> Teams
+            </li>
           </List>
         </div>
         <Button href="/s">Create Sandbox, it’s free </Button>

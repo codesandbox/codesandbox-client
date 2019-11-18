@@ -37,6 +37,10 @@ export const List = styled.ul`
   text-align: center;
   color: ${props => props.theme.homepage.muted};
   margin-top: 3rem;
+
+  li span {
+    color: ${props => props.theme.homepage.white};
+  }
 `;
 
 export const Button = styled.a`

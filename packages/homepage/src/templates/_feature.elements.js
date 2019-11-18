@@ -19,21 +19,13 @@ export const Title = styled.h1`
 `;
 
 export const Description = styled.h2`
-  ${({ theme, seoText }) => css`
+  ${({ theme }) => css`
     font-style: normal;
     font-weight: 500;
     font-size: 1rem;
     line-height: 19px;
 
     color: ${theme.homepage.white};
-
-    ${seoText &&
-      css`
-        margin-top: 1rem;
-        font-size: 2rem;
-        line-height: 24px;
-        color: ${props => props.theme.homepage.muted};
-      `}
   `};
 `;
 
@@ -54,12 +46,33 @@ export const Banner = styled.div`
     flex-grow: 0;
     flex-shrink: 1;
     overflow: hidden;
-    grid-auto-flow: column-reverse;
 
-    img {
+    ${props => props.theme.breakpoints.lg} {
+      grid-template-columns: ${reverse ? '30% 1fr' : '1fr 30%'};
+    }
+
+    ${props => props.theme.breakpoints.md} {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+
+    .hero-image {
       display: block;
       filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.4));
-      maxw-width: 60%;
+
+      ${props => props.theme.breakpoints.lg} {
+        width: 230%;
+        ${reverse &&
+          css`
+            transform: translateX(-56%);
+          `};
+
+        max-width: initial;
+      }
+
+      ${props => props.theme.breakpoints.md} {
+        max-width: 100%;
+      }
     }
   `};
 `;
@@ -80,6 +93,10 @@ export const ContentBlock = styled.div`
     font-size: 1rem;
     line-height: 1.5rem;
     color: ${theme.homepage.muted};
+
+    ${props => props.theme.breakpoints.md} {
+      grid-template-columns: 1fr;
+    }
 
     h3 {
       font-style: normal;
@@ -102,6 +119,13 @@ export const Tweet = styled.div`
     font-size: 1.4375rem;
     line-height: 32px;
     align-self: center;
+
+    ${props => props.theme.breakpoints.md} {
+      ${reverse ? 'padding-bottom: 2rem;' : 'padding-top: 2rem;'};
+
+      max-width: 80%;
+      margin: auto;
+    }
   `};
 `;
 
@@ -129,4 +153,14 @@ export const Avatar = styled.img`
   height: 64px;
   margin-right: 1rem;
   border-radius: 50%;
+`;
+
+export const TitleWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  ${props => props.theme.breakpoints.md} {
+    display: block;
+  }
 `;

@@ -38,25 +38,23 @@ export const Title = styled.h1`
     text-align: center;
     max-width: 50%;
     margin: auto;
+
+    ${props => props.theme.breakpoints.md} {
+      font-size: 1.5rem;
+      line-height: 1.2;
+      max-width: 80%;
+    }
   `};
 `;
 
 export const Description = styled.h2`
-  ${({ theme, seoText }) => css`
+  ${({ theme }) => css`
     font-style: normal;
     font-weight: 500;
     font-size: 1rem;
     line-height: 1.1875rem;
 
     color: ${theme.homepage.white};
-
-    ${seoText &&
-      css`
-        margin-top: 1rem;
-        font-size: 2rem;
-        line-height: 1.5rem;
-        color: ${theme.homepage.muted};
-      `}
   `};
 `;
 
@@ -191,7 +189,15 @@ export const Customizations = styled.ul`
   list-style: none;
   margin-bottom: 7.5rem;
 
+  ${props => props.theme.breakpoints.md} {
+    justify-content: center;
+    margin-bottom: 3.5rem;
+  }
+
   li {
+    width: 160px;
+    margin-bottom: 1rem;
+
     svg {
       margin-right: 1rem;
     }

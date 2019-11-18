@@ -230,17 +230,19 @@ export const Items = styled.ul`
   }
 `;
 
-export const Pricing = styled.a`
+export const Pricing = styled.li`
   font-style: normal;
   font-weight: 500;
   font-size: 1rem;
   margin-top: 2rem;
 
-  color: ${props => props.theme.homepage.white};
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  text-decoration: none;
+  a {
+    display: flex;
+    align-items: center;
+    color: ${props => props.theme.homepage.white};
+    text-decoration: none;
+    text-decoration: none;
+  }
 
   section {
     width: 43px;

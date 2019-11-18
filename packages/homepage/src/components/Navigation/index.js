@@ -174,9 +174,9 @@ const Navigation = () => {
           // },
           {
             Icon: () => (
-              <a href="https://codesandbox.io/docs" title="Documentation">
+              <Link to="/docs" title="Documentation">
                 <DocsIcon />
-              </a>
+              </Link>
             ),
             Label: () => (
               <a href="https://codesandbox.io/docs">Documentation</a>
