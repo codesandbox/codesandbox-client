@@ -23,6 +23,10 @@ import {
   JoinTitle,
 } from './_ide.elements';
 import TemplateUniverse from '../assets/images/TemplateUniverse.png';
+import containers from '../assets/images/containers.png';
+import prototype from '../assets/images/prototype-rapid.png';
+import collaborate from '../assets/images/collaborate.png';
+import debug from '../assets/images/debug.png';
 import Github from '../assets/icons/GithubLarge';
 import VSCode from '../assets/icons/VSCode';
 import Deploy from '../assets/icons/Deploy';
@@ -145,7 +149,9 @@ export default () => (
       `}
     >
       <Titles>Prototype Rapidly</Titles>
-      <ArtWorkWrapper bg="#535bcf" />
+      <ArtWorkWrapper bg="#535bcf">
+        <img src={prototype} alt="Prototype Rapidly" />
+      </ArtWorkWrapper>
       <Grid>
         <div>
           <H6>NPM Support</H6>
@@ -303,7 +309,14 @@ export default () => (
         `}
       />
       <Titles>Collaborate on Code</Titles>
-      <ArtWorkWrapper bg="#EB455A" />
+      <ArtWorkWrapper
+        bg="#EB455A"
+        css={`
+          justify-content: flex-end;
+        `}
+      >
+        <img src={collaborate} alt="Collaborate on Code" />
+      </ArtWorkWrapper>
       <Grid>
         <div>
           <H6>Go Live</H6>
@@ -334,7 +347,14 @@ export default () => (
         `}
       />
       <Titles>Work With Containers</Titles>
-      <ArtWorkWrapper bg="#535BCF" />
+      <ArtWorkWrapper
+        bg="#535BCF"
+        css={`
+          justify-content: flex-start;
+        `}
+      >
+        <img src={containers} alt="Containers" />
+      </ArtWorkWrapper>
       <Grid>
         <div>
           <H6>Create Full-stack Web Apps</H6>
@@ -366,7 +386,14 @@ export default () => (
         `}
       />
       <Titles>Debug Like a Pro</Titles>
-      <ArtWorkWrapper bg="#EB455A" />
+      <ArtWorkWrapper
+        bg="#EB455A"
+        css={`
+          justify-content: flex-start;
+        `}
+      >
+        <img src={debug} alt="Debug Like a Pro" />
+      </ArtWorkWrapper>
       <Grid>
         <div>
           <H6>DevTools</H6>
