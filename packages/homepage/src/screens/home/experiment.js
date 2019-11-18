@@ -79,7 +79,7 @@ const Experiment = () => {
             project{' '}
           </P>
           <P muted>
-            <White>Test out components</White> and create functional examples
+            <White>Test out components</White> by creating functional examples
           </P>
         </div>
         <div ref={parallaxRef}>
@@ -87,7 +87,7 @@ const Experiment = () => {
             style={tweetStyle}
             tweet={{
               username: 'gethackteam',
-              job: 'Frontend Developer Hackteam',
+              job: 'Snr. Frontend Developer, Hackteam',
               name: 'Roy Derks',
               quote:
                 'I often use CodeSandbox to create demos or try out new JavaScript features or packages',
