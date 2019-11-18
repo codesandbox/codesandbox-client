@@ -14,11 +14,11 @@ const Footer = () => (
         <li>
           <P big>Product</P>
         </li>
-        {/* <li>
+        <li>
           <P small muted>
-            <a href="">Online IDE</a>
+            <a href="/ide">Online IDE</a>
           </P>
-        </li> */}
+        </li>
         <li>
           <P small muted>
             <a href="/embeds">Embed</a>
