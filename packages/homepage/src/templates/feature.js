@@ -38,7 +38,6 @@ export default ({
         tweetName,
         tweetHandle,
         coverReversed,
-        textCenter,
         coverSmaller,
         ctaLink,
         ctaText,
@@ -94,7 +93,7 @@ export default ({
       <TitleAndMetaTags title={`${title} - CodeSandbox`} />
       <PageContainer width={1086}>
         <TitleWrapper>
-          <Title textCenter={textCenter}>{title}</Title>
+          <Title>{title}</Title>
           {ctaLink && ctaText ? (
             <Button target="_blank" href={ctaLink}>
               {ctaText}
@@ -145,7 +144,6 @@ export const pageQuery = graphql`
         tweetName
         tweetHandle
         coverReversed
-        textCenter
         coverSmaller
         coverImage {
           publicURL
