@@ -66,7 +66,7 @@ const Started = () => {
                 url:
                   'https://twitter.com/peggyrayzis/status/976557689651236864?s=20',
                 username: 'peggyrayzis',
-                job: 'DX at Apollo',
+                job: 'Engineering Manager, Apollo GraphQL',
               }}
             />
           </div>
