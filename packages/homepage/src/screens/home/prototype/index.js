@@ -99,8 +99,8 @@ const Prototype = () => {
           </H3>
           <H5>On any device </H5>
           <P muted>You just need a web browser</P>
-          <H5>With no setup</H5>
-          <P muted>Go straight to coding</P>
+          <H5>No setup</H5>
+          <P muted>Go straight to coding with templates</P>
           <H5>VS Code built-in </H5>
           <P muted>The editor’s full-featured, yet familiar</P>
 
@@ -113,7 +113,7 @@ const Prototype = () => {
                 name: 'Jonnie Hallman',
                 username: 'destroytoday',
                 job: 'Designer Developer, Stripe',
-                quote: 'it feels much more like my local environment',
+                quote: 'It feels much more like my local environment',
                 url:
                   'https://twitter.com/destroytoday/status/1173805935384350720',
               }}
