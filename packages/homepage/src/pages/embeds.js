@@ -69,7 +69,7 @@ export default () => {
             Light Mode
           </span>
         </SwitchWrapper>
-        <Banner coverSmaller color="EB455A">
+        <Banner>
           <Iframe
             title="embed-example"
             src={`https://codesandbox.io/embed/static-2lqup?fontsize=14&hidenavigation=${navigation}&theme=${theme}${preview}&hidedevtools=${devTools}`}
@@ -110,10 +110,10 @@ export default () => {
             </Button>
           </li>
         </Customizations>
-        <ContentBlock columns={2}>
+        <ContentBlock>
           <div>
             <h3> Customize the look and feel</h3>
-            Show just the editor, the preview or both. Then enable
+            Show just the editor, the preview, or both. Then enable
             auto-resizing, the navigation bar, console, module view, or test
             results. Specify which file shows first in the editor, and the path
             the preview displays.

@@ -5,20 +5,20 @@ ${props =>
   props.light &&
   css`
     html {
-      background: #ffffff !important;
+      background: ${props.theme.homepage.white} !important;
       body {
-        background: #ffffff;
-        color: #000000;
+        background: ${props.theme.homepage.white};
+        color: ${props.theme.homepage.black};
       }
     }
 
     h1[class*='Title'],
     div[class*='ContentBlock'] h3 {
-      color: #000000;
+      color: ${props.theme.homepage.black};
     }
 
     section[class*='Nav'] ul li:first-child p {
-      color: #000000;
+      color: ${props.theme.homepage.black};
     }
 
     footer[class*='FooterWrapper'] {
@@ -46,7 +46,7 @@ export const Description = styled.h2`
     font-style: normal;
     font-weight: 500;
     font-size: 1rem;
-    line-height: 19px;
+    line-height: 1.1875rem;
 
     color: ${theme.homepage.white};
 
@@ -54,16 +54,16 @@ export const Description = styled.h2`
       css`
         margin-top: 1rem;
         font-size: 2rem;
-        line-height: 24px;
-        color: ${props => props.theme.homepage.muted};
+        line-height: 1.5rem;
+        color: ${theme.homepage.muted};
       `}
   `};
 `;
 
 export const Banner = styled.div`
-  height: 380px;
+  height: 23.75rem;
   width: 100%;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   margin-bottom: 7.5rem;
   margin-top: 3.75rem;
   position: relative;
@@ -71,21 +71,24 @@ export const Banner = styled.div`
 `;
 
 export const ContentBlock = styled.div`
-  ${({ theme, columns }) => css`
+  ${({ theme }) => css`
     display: grid;
-    grid-template-columns: repeat(${columns}, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     grid-gap: 3rem 5rem;
     font-size: 1rem;
     line-height: 1.5rem;
     color: ${theme.homepage.muted};
 
+    ${props => props.theme.breakpoints.md} {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
     h3 {
       font-style: normal;
       font-weight: 500;
       font-size: 1.4375rem;
-      line-height: 27px;
+      line-height: 1.6875rem;
       color: ${theme.homepage.white};
-      /* min-height: 54px; */
     }
   `};
 `;
@@ -104,7 +107,7 @@ export const Iframe = styled.iframe`
 
 export const Switch = styled.div`
   position: relative;
-  width: 48px;
+  width: 3rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -123,7 +126,7 @@ export const Switch = styled.div`
     display: block;
     overflow: hidden;
     cursor: pointer;
-    border-radius: 27px;
+    border-radius: 1.7rem;
   }
 
   .inner {
@@ -137,39 +140,39 @@ export const Switch = styled.div`
       display: block;
       float: left;
       width: 50%;
-      height: 24px;
+      height: 1.5rem;
       padding: 0;
-      line-height: 24px;
-      font-size: 13px;
+      line-height: 1.5rem;
+      font-size: 0.8125rem;
       color: white;
       font-weight: bold;
       box-sizing: border-box;
     }
     &:before {
       content: '';
-      padding-left: 10px;
-      background-color: #242424;
-      color: #ffffff;
+      padding-left: 0.625rem;
+      background-color: ${props => props.theme.homepage.grey};
+      color: ${props => props.theme.homepage.white};
     }
     &:after {
       content: '';
-      padding-right: 10px;
-      background-color: #242424;
-      color: #ffff;
+      padding-right: 0.625rem;
+      background-color: ${props => props.theme.homepage.grey};
+      color: ${props => props.theme.homepage.white};
       text-align: right;
     }
   }
 
   .switch {
     display: block;
-    width: 20px;
-    margin: 2px;
-    background: #ffffff;
+    width: 1.25rem;
+    margin: 0.125rem;
+    background: ${props => props.theme.homepage.white};
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 24px;
-    border-radius: 27px;
+    right: 1.5rem;
+    border-radius: 1.7rem;
     transition: all 0.3s ease-in 0s;
   }
 `;
@@ -200,10 +203,10 @@ export const Button = styled.button`
   border: none;
   padding: 0;
   font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 1rem;
+  line-height: 1.5rem;
 
-  color: ${props => (props.active ? '#fff' : '#757575')};
+  color: ${props => (props.active ? props.theme.homepage.white : '#757575')};
   display: flex;
   align-items: center;
 `;
