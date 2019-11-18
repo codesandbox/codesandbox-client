@@ -32,12 +32,18 @@ function loadScript() {
     const script = document.createElement('script');
     script.async = true;
     script.onload = resolve;
-    script.onerror = reject;
+    script.onerror = () => {
+      reject(new Error('Could not load script'));
+    };
     script.src = '//d3qxef4rp70elm.cloudfront.net/m.js';
     document.body.appendChild(script);
-  }).then(() => {
-    processArray();
-  });
+  })
+    .then(() => {
+      processArray();
+    })
+    .catch(() => {
+      /* ignore */
+    });
 }
 
 let _hasSetAnonymousUserId = false;

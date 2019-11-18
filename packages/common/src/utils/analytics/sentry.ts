@@ -1,3 +1,4 @@
+import { Breadcrumb } from '@sentry/browser';
 import VERSION from '../../version';
 import { DO_NOT_TRACK_ENABLED } from './utils';
 
@@ -22,6 +23,14 @@ export async function initialize(dsn: string) {
         // Chrome extensions
         /extensions\//i,
         /^chrome:\/\//i,
+
+        // react devtools Outside of our scope for now, but we definitely want to check this out.
+        // TODO: check what's happening here: https://sentry.io/organizations/codesandbox/issues/1239466583/?project=155188&query=is%3Aunresolved+release%3APROD-1573653062-4134efc0a
+        /because a node with that id is already in the Store/,
+        /Node \d* was removed before its children\./,
+        /Cannot remove node \d* because no matching node was found in the Store\./,
+        /Cannot add child \d* to parent \d* because parent node was not found in the Store\./,
+        /Children cannot be added or removed during a reorder operation\./,
       ],
       whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
       /**
@@ -34,13 +43,23 @@ export async function initialize(dsn: string) {
         /.*\.csb\.app/,
       ],
       beforeSend: (event, hint) => {
-        if (event?.stacktrace?.frames && event.stacktrace.frames[0]) {
-          const { filename } = event.stacktrace.frames[0];
+        const exception = event?.exception?.values?.[0];
+        const exceptionFrame = exception?.stacktrace?.frames?.[0];
+        const filename = exceptionFrame?.filename;
 
+        let errorMessage =
+          typeof hint.originalException === 'string'
+            ? hint.originalException
+            : hint.originalException?.message || exception.value;
+
+        if (typeof errorMessage !== 'string') {
+          errorMessage = '';
+        }
+
+        if (filename) {
           if (
             filename.includes('typescript-worker') &&
-            event.message &&
-            event.message.includes('too much recursion')
+            errorMessage.includes('too much recursion')
           ) {
             // https://sentry.io/organizations/codesandbox/issues/1293123855/events/b01ee0feb7e3415a8bb81b6a9df19152/?project=155188&query=is%3Aunresolved&statsPeriod=14d
             return null;
@@ -55,12 +74,6 @@ export async function initialize(dsn: string) {
             // We need to add sourcemaps
             return null;
           }
-
-          if (filename.includes('react-devtools-inline')) {
-            // Outside of our scope for now, but we definitely want to check this out.
-            // TODO: check what's happening here: https://sentry.io/organizations/codesandbox/issues/1239466583/?project=155188&query=is%3Aunresolved+release%3APROD-1573653062-4134efc0a
-            return null;
-          }
         }
 
         const customError = ((hint && (hint.originalException as any)) || {})
@@ -68,17 +81,14 @@ export async function initialize(dsn: string) {
 
         if (
           customError &&
-          event.message &&
-          event.message.startsWith('Non-Error exception captured')
+          errorMessage.startsWith('Non-Error exception captured') &&
+          exception.mechanism.handled
         ) {
           // This is an error coming from the sandbox, return with no error.
           return null;
         }
 
-        if (
-          event.message &&
-          event.message.includes('Unexpected frame by generating stack.')
-        ) {
+        if (errorMessage.includes('Unexpected frame by generating stack.')) {
           // A firefox error with error-polyfill, not critical. Referenced here: https://sentry.io/organizations/codesandbox/issues/1293236389/?project=155188&query=is%3Aunresolved
           return null;
         }
@@ -90,6 +100,12 @@ export async function initialize(dsn: string) {
 
   return Promise.resolve();
 }
+
+export const logBreadcrumb = (breadcrumb: Breadcrumb) => {
+  if (_Sentry) {
+    _Sentry.addBreadcrumb(breadcrumb);
+  }
+};
 
 export const captureException = err => {
   if (_Sentry) {
