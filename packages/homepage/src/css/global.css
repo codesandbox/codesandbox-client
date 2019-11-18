@@ -19,6 +19,10 @@ body {
   /* overflow-x: hidden; */
 }
 
+* {
+  transition: color, background-color 200ms ease;
+}
+
 input {
   -webkit-font-smoothing: antialiased;
   -moz-font-smoothing: antialiased;

@@ -1,7 +1,7 @@
 ---
 title: Embed CodeSandbox in Docs, Blog Posts, and Websites
 description:
-slug: embeds
+slug: embedss
 tweetText: I can embed working Ember examples into my Medium posts!
 tweetJob: Software Engineer, Ember
 tweetName: Jen Weber

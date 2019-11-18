@@ -5,6 +5,7 @@ export const Header = styled.header`
   box-shadow: 0px 1px 0px ${props => props.theme.homepage.grey};
   height: 48px;
   width: 100%;
+  background: #040404;
 `;
 
 export const SubNav = styled.div`
