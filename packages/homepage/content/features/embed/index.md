@@ -18,7 +18,7 @@ columns: 2
 
 ### Customize the look and feel
 
-Show just the editor, the preview or both. Then enable auto-resizing, the
+Show just the editor, the preview, or both. Then enable auto-resizing, the
 navigation bar, console, module view, or test results. Specify which file shows
 first in the editor, and the path the preview displays.
 
