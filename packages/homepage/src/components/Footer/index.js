@@ -1,7 +1,6 @@
 import React from 'react';
-
+import { Link } from 'gatsby';
 import { P } from '../Typography';
-
 import Github from '../../assets/icons/github';
 import Twitter from '../../assets/icons/twitter';
 import Spectrum from '../../assets/icons/spectrum';
@@ -16,22 +15,22 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <a href="/ide">Online IDE</a>
+            <Link to="/ide">Online IDE</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="/embeds">Embed</a>
+            <Link to="/embeds">Embed</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="/ci">CodeSandbox CI</a>
+            <Link to="/ci">CodeSandbox CI</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="/teams">Teams</a>
+            <Link to="/teams">Teams</Link>
           </P>
         </li>
         {/* <li>
@@ -46,12 +45,12 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <a href="/explore">Community Picks</a>
+            <Link to="/explore">Community Picks</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="/search">Search</a>
+            <Link to="/search">Search</Link>
           </P>
         </li>
       </ul>
@@ -61,37 +60,37 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <a href="/prototyping">Prototyping</a>
+            <Link to="/prototyping">Prototyping</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="/learning">Learning</a>
+            <Link to="/learning">Learning</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="/hiring">Hiring</a>
+            <Link to="/hiring">Hiring</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="/onboarding">Onboarding</a>
+            <Link to="/onboarding">Onboarding</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="/collaboration">Collaboration</a>
+            <Link to="/collaboration">Collaboration</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="/open-source">Open Source</a>
+            <Link to="/open-source">Open Source</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="/devrel">DevRel</a>
+            <Link to="/devrel">DevRel</Link>
           </P>
         </li>
       </ul>
@@ -100,14 +99,16 @@ const Footer = () => (
         <li>
           <P big>About</P>
         </li>
+        {
+          // <li>
+          //   <P small muted>
+          //     <Link to="">Company</Link>
+          //   </P>
+          // </li>
+        }
         <li>
           <P small muted>
-            <a href="">Company</a>
-          </P>
-        </li>
-        <li>
-          <P small muted>
-            <a href="/blog">Blog</a>
+            <Link to="/blog">Blog</Link>
           </P>
         </li>
       </ul>
@@ -118,7 +119,7 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <a href="/docs">Documentation</a>
+            <Link to="/docs">Documentation</Link>
           </P>
         </li>
         <li>

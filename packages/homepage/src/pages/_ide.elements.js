@@ -16,7 +16,7 @@ export const H6 = styled.h6`
 
 export const CreateSandbox = styled(Button)`
   position: relative;
-  top: 390px;
+  top: 220px;
   z-index: 2;
   margin: auto;
 
@@ -27,7 +27,7 @@ export const CreateSandbox = styled(Button)`
 
 export const Title = styled(H2)`
   position: relative;
-  top: 360px;
+  top: 180px;
   z-index: 2;
   max-width: 547px;
   margin: auto;

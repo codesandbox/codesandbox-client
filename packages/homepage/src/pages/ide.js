@@ -55,6 +55,9 @@ export default () => (
               duration: 1,
               ease: 'easeOut',
             }}
+            css={`
+              height: 0;
+            `}
           >
             <Title as="h1">An Online IDE for Rapid Web Development</Title>
             <CreateSandbox href="/s">Create a Sandbox, it’s free</CreateSandbox>
@@ -76,7 +79,14 @@ export default () => (
           />
         </ImageWrapper>
       </MacBookWrapper>
-      <Titles>Get Started Quickly</Titles>
+      <Border />
+      <Titles
+        css={`
+          padding-top: 6.875rem;
+        `}
+      >
+        Get Started Quickly
+      </Titles>
       <Description>
         Use templates to kickstart new projects with no setup
       </Description>
