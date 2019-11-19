@@ -286,7 +286,7 @@ const Navigation = () => {
                 <HighlightedICon />
               </Link>
             ),
-            Label: () => <Link to="/explore">Highlighted Sandboxes</Link>,
+            Label: () => <Link to="/explore">Featured Sandboxes</Link>,
           },
           {
             Icon: () => (
