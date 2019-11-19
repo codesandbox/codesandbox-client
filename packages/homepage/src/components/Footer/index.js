@@ -45,12 +45,12 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <Link to="/explore">Community Picks</Link>
+            <Link to="/explore">Featured Sandboxes</Link>
           </P>
         </li>
         <li>
           <P small muted>
-            <Link to="/search">Search</Link>
+            <Link to="/search">Search Sandboxes</Link>
           </P>
         </li>
       </ul>
