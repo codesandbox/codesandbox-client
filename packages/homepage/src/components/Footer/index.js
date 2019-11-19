@@ -30,7 +30,7 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <Link to="/teams">Teams</Link>
+            <Link to="/team">Teams</Link>
           </P>
         </li>
         {/* <li>
