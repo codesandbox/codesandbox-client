@@ -22,7 +22,7 @@ export default () => (
           margin-bottom: 2rem;
         `}
       >
-        An instant IDE and prototyping tool for rapid web development.
+        An instant IDE and prototyping tool for rapid web development
       </P>
       <Button href="/s">Create a Sandbox, it’s free</Button>
       <SignUp>No signup required</SignUp>
