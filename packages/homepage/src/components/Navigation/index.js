@@ -256,7 +256,7 @@ const Navigation = () => {
                 <CIIcon />
               </Link>
             ),
-            Label: () => <Link to="/ci">CodeSandbox CI</Link>,
+            Label: () => <Link to="/ci">CI</Link>,
           },
           {
             Icon: () => (
