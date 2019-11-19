@@ -62,7 +62,7 @@ const Started = () => {
               tweet={{
                 name: 'Peggy Rayzis',
                 quote:
-                  "I'm obsessed with CodeSandbox's GitHub import feature! One click and you can convert a repo to a sandbox that automatically stays up to date with the latest commits.",
+                  "I'm obsessed with CodeSandbox's GitHub import feature! One click and you can convert a repo to a sandbox that automatically stays up to date",
                 url:
                   'https://twitter.com/peggyrayzis/status/976557689651236864?s=20',
                 username: 'peggyrayzis',
