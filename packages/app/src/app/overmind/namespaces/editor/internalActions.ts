@@ -15,6 +15,10 @@ import {
   sandboxUrl,
   editorUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  captureException,
+  logBreadcrumb,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -63,9 +67,15 @@ export const setModuleSavedCode: Action<{
   );
 
   if (moduleIndex > -1) {
-    state.editor.sandboxes[sandbox.id].modules[
-      moduleIndex
-    ].savedCode = savedCode;
+    const module = state.editor.sandboxes[sandbox.id].modules[moduleIndex];
+
+    logBreadcrumb({
+      type: 'error',
+      message: `SETTING UNDEFINED SAVEDCODE FOR CODE: ${module.code}`,
+    });
+    captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
+
+    module.savedCode = savedCode;
   }
 };
 
