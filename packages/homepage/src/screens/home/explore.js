@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 import { H2, P } from '../../components/Typography';
-
+import SandboxCount from '../../components/SandboxCount';
 import one from '../../assets/images/explore/1.png';
 import two from '../../assets/images/explore/2.png';
 import three from '../../assets/images/explore/3.png';
@@ -104,8 +104,8 @@ const Experiment = () => (
           margin-bottom: 2rem;
         `}
       >
-        Explore some of the 2,817,838+ sandboxes crafted by our community of
-        creators
+        Explore some of the <SandboxCount />+ sandboxes crafted by our community
+        of creators
       </P>
     </div>
     <div>

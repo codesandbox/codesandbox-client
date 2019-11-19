@@ -16,6 +16,7 @@ export const SubNav = styled.div`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 999;
 
   color: ${props => props.theme.homepage.white};
 

@@ -22,6 +22,7 @@ export default ({ components, name, openedNav }) => {
             background: '#151515',
             overflow: 'hidden',
             borderBottom: '1px solid #242424',
+            zIndex: 99,
             boxShadow:
               '0, 8px, 1rem rgba(0, 0, 0, 0.12), 0, 4px, 2px rgba(0, 0, 0, 0.24)',
           }}
