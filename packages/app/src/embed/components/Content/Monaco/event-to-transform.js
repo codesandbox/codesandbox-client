@@ -1,5 +1,5 @@
+import { lineAndColumnToIndex } from 'app/utils/monaco-index-converter';
 import { TextOperation } from 'ot';
-import { lineAndColumnToIndex } from './monaco-index-converter';
 
 export default function convertChangeEventToOperation(
   changeEvent,

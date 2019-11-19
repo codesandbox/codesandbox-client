@@ -1,5 +1,5 @@
+import { indexToLineAndColumn } from 'app/utils/monaco-index-converter';
 import { css } from 'glamor';
-import { indexToLineAndColumn } from './monaco-index-converter';
 
 const fadeIn = css.keyframes('fadeIn', {
   // optional name

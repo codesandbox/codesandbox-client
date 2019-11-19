@@ -11,27 +11,27 @@ import type {
 } from '@codesandbox/common/lib/types';
 import delay from '@codesandbox/common/lib/utils/delay';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import FuzzySearch from 'app/components/CodeEditor/FuzzySearch';
+import type { Editor, Props } from 'app/components/CodeEditor/types';
+import {
+  indexToLineAndColumn,
+  lineAndColumnToIndex,
+} from 'app/utils/monaco-index-converter';
 import { actions, dispatch, listen } from 'codesandbox-api';
 import { debounce } from 'lodash-es';
 import { TextOperation } from 'ot';
 import * as React from 'react';
 import { withTheme } from 'styled-components';
 /* eslint-disable import/no-webpack-loader-syntax, import/default */
-import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./workers/linter';
+import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!app/overmind/effects/vscode/LinterWorker';
 import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
 
-import FuzzySearch from '../FuzzySearch';
-import type { Editor, Props } from '../types';
 import defineTheme from './define-theme';
 import { CodeContainer, Container } from './elements';
 import eventToTransform from './event-to-transform';
 import { liftOff } from './grammars/configure-tokenizer';
 import { updateUserSelections } from './live-decorations';
 import getMode from './mode';
-import {
-  indexToLineAndColumn,
-  lineAndColumnToIndex,
-} from './monaco-index-converter';
 import MonacoEditorComponent from './MonacoReactComponent';
 import getSettings from './settings';
 
@@ -1077,25 +1077,27 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       fileName: string,
       schema: Object,
       uri: string,
-    }> = (await Promise.all(
-      Object.keys(configurations).map(async p => {
-        const config = configurations[p];
+    }> = (
+      await Promise.all(
+        Object.keys(configurations).map(async p => {
+          const config = configurations[p];
 
-        if (this.fetchedSchemas[config.title]) {
-          return null;
-        }
-
-        if (config.schema) {
-          try {
-            const schema = await fetch(config.schema).then(x => x.json());
-            return { fileName: config.title, schema, uri: config.schema };
-          } catch (e) {
+          if (this.fetchedSchemas[config.title]) {
             return null;
           }
-        }
-        return null;
-      })
-    )).filter(x => x);
+
+          if (config.schema) {
+            try {
+              const schema = await fetch(config.schema).then(x => x.json());
+              return { fileName: config.title, schema, uri: config.schema };
+            } catch (e) {
+              return null;
+            }
+          }
+          return null;
+        })
+      )
+    ).filter(x => x);
 
     const monacoSchemas = schemas.map(data => {
       this.fetchedSchemas[data.fileName] = true;

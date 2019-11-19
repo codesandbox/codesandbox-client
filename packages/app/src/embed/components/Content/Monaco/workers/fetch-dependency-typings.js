@@ -240,9 +240,7 @@ async function fetchAndAddDependencies(dependencies) {
           loadedTypings.push(dep);
 
           const depVersion = await doFetch(
-            `https://data.jsdelivr.com/v1/package/resolve/npm/${dep}@${
-              dependencies[dep]
-            }`
+            `https://data.jsdelivr.com/v1/package/resolve/npm/${dep}@${dependencies[dep]}`
           )
             .then(x => JSON.parse(x))
             .then(x => x.version);

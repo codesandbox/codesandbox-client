@@ -1,12 +1,11 @@
+import { Editor, Settings } from 'app/components/CodeEditor/types';
 import React from 'react';
 
-import { Editor, Settings } from '../types';
-import MonacoReactComponent from '../Monaco/MonacoReactComponent';
 import defineTheme from '../Monaco/define-theme';
-
-import { Container, CodeContainer } from '../Monaco/elements';
-import getSettings from '../Monaco/settings';
+import { CodeContainer, Container } from '../Monaco/elements';
 import getMode from '../Monaco/mode';
+import MonacoReactComponent from '../Monaco/MonacoReactComponent';
+import getSettings from '../Monaco/settings';
 
 type Props = {
   originalCode: string,
