@@ -128,7 +128,7 @@ export default () => {
                     <section>
                       <HighlightedICon />
                     </section>
-                    <span>Highlighted Sandboxes</span>
+                    <span>Featured Sandboxes</span>
                   </Link>
                 </li>
                 <li>
