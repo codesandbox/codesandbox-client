@@ -109,7 +109,7 @@ export default () => {
                     <section>
                       <CIIcon />
                     </section>
-                    <span>CodeSandbox CI</span>
+                    <span>CI</span>
                   </Link>
                 </li>
                 <li>
