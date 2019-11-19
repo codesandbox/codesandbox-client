@@ -10,6 +10,7 @@
   "license": "MIT",
   "scripts": {
     "build": "cross-env NODE_ENV=production NODE_OPTIONS=\"--max-old-space-size=4096\"   node scripts/build.js",
+    "build:stats": "cross-env NODE_ENV=production NODE_OPTIONS=\"--max-old-space-size=4096\"   webpack --env production --config config/webpack.prod.js --json --profile --progress > stats.json && node scripts/stats",
     "build:clean": "rimraf www",
     "build:embed": "cross-env NODE_ENV=production webpack --config config/webpack.embed.js",
     "build:sandbox": "cross-env NODE_ENV=production SANDBOX_ONLY=true node scripts/build.js",
