@@ -1,7 +1,7 @@
 ---
 title: Code Together With Your Team
 description:
-  Create a team to view and edit sandboxes with all team members, in one place.
+  Create a team to view and edit sandboxes with all team members, in one place
 slug: team
 tweetText: Start building instantly online
 tweetJob: Senior Developer Programs Engineer, Google
