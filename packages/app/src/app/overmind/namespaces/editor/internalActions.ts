@@ -69,11 +69,13 @@ export const setModuleSavedCode: Action<{
   if (moduleIndex > -1) {
     const module = state.editor.sandboxes[sandbox.id].modules[moduleIndex];
 
-    logBreadcrumb({
-      type: 'error',
-      message: `SETTING UNDEFINED SAVEDCODE FOR CODE: ${module.code}`,
-    });
-    captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
+    if (savedCode === undefined) {
+      logBreadcrumb({
+        type: 'error',
+        message: `SETTING UNDEFINED SAVEDCODE FOR CODE: ${module.code}`,
+      });
+      captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
+    }
 
     module.savedCode = savedCode;
   }
@@ -120,8 +122,18 @@ export const saveCode: AsyncAction<{
 
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
-    module.savedCode =
+
+    const savedCode =
       updatedModule.code === module.code ? null : updatedModule.code;
+    if (savedCode === undefined) {
+      logBreadcrumb({
+        type: 'error',
+        message: `SETTING UNDEFINED SAVEDCODE FOR CODE: ${updatedModule.code}`,
+      });
+      captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
+    }
+
+    module.savedCode = savedCode;
 
     effects.moduleRecover.remove(sandbox.id, module);
 
