@@ -30,8 +30,8 @@ export const FontPicker = ({ activeFontFamily = 'Open Sans', onChange }) => {
       >
         {activeFontFamily}
       </SelectedFont>
-      {expanded && (
-        <Portal>
+      <Portal>
+        {expanded && (
           <div
             style={{
               position: 'fixed',
@@ -50,8 +50,8 @@ export const FontPicker = ({ activeFontFamily = 'Open Sans', onChange }) => {
               />
             </OutsideClickHandler>
           </div>
-        </Portal>
-      )}
+        )}
+      </Portal>
     </>
   );
 };

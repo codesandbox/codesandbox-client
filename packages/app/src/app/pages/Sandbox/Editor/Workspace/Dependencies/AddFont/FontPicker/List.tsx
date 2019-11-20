@@ -12,15 +12,16 @@ export const FontList: FunctionComponent<Props> = ({
   activeFontFamily,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const usedFonts = fonts.slice(0, 200);
 
   const updateSearch = (e: any) => setSearchTerm(e.target.value);
 
   const getFonts: string[] = useMemo(
     () =>
-      fonts.filter(f =>
+      usedFonts.filter(f =>
         f.toLowerCase().includes(searchTerm.trim().toLowerCase())
       ),
-    [searchTerm]
+    [searchTerm, usedFonts]
   );
   return (
     <>
