@@ -107,27 +107,33 @@ export const Dependencies: FunctionComponent = () => {
               }
             />
           ))}
-          <WorkspaceSubtitle>Google Fonts</WorkspaceSubtitle>
 
-          <AddFont
-            addResource={resource =>
-              workspace.externalResourceAdded({
-                resource,
-              })
-            }
-            addedResource={fonts}
-          />
-          {fonts.map(resource => (
-            <ExternalFonts
-              key={resource}
-              resource={resource}
-              removeResource={() =>
-                workspace.externalResourceRemoved({
-                  resource,
-                })
-              }
-            />
-          ))}
+          {/* Disable this until we have a way to not reach the Google API limit */}
+          {false && (
+            <>
+              <WorkspaceSubtitle>Google Fonts</WorkspaceSubtitle>
+
+              <AddFont
+                addResource={(resource: string) =>
+                  workspace.externalResourceAdded({
+                    resource,
+                  })
+                }
+                addedResource={fonts}
+              />
+              {fonts.map(resource => (
+                <ExternalFonts
+                  key={resource}
+                  resource={resource}
+                  removeResource={() =>
+                    workspace.externalResourceRemoved({
+                      resource,
+                    })
+                  }
+                />
+              ))}
+            </>
+          )}
         </div>
       )}
     </div>
