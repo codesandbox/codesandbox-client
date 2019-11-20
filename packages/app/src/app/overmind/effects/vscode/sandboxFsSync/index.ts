@@ -42,26 +42,15 @@ class SandboxFsSync {
   private types: any;
   private typesInfo: Promise<any>;
   private initializingWorkers = blocker<void>();
-  private workersInitializedCount = 0;
   public initialize(options: SandboxFsSyncOptions) {
     this.options = options;
     self.addEventListener('message', evt => {
-      // We do not want to send initial sandbox until
-      // all 3 filesystems are running
-      if (this.initializingWorkers.isResolved()) {
-        if (evt.data.$type === 'sync-types') {
-          this.syncDependencyTypings();
-        }
+      if (evt.data.$type === 'sync-types') {
+        this.syncDependencyTypings();
+      }
 
-        if (evt.data.$type === 'sync-sandbox') {
-          this.syncSandbox();
-        }
-      } else if (evt.data.$type === 'sync-sandbox') {
-        this.workersInitializedCount++;
-
-        if (this.workersInitializedCount === 3) {
-          this.initializingWorkers.resolve();
-        }
+      if (evt.data.$type === 'sync-sandbox') {
+        this.syncSandbox();
       }
     });
 
@@ -185,7 +174,7 @@ class SandboxFsSync {
 
   private syncSandbox() {
     // eslint-disable-next-line
-    console.log('## SYNCING SANDBOX AND TYPINGS WITH WORKERS');
+    console.log('## SYNCING SANDBOX WITH WORKERS');
     this.send('sandbox-fs', json(this.options.getSandboxFs()));
   }
 
@@ -221,6 +210,8 @@ class SandboxFsSync {
         syncDetails.packageJsonContent,
         syncDetails.autoInstall
       );
+      // eslint-disable-next-line
+      console.log('## SYNCING TYPES WITH WORKERS');
       this.sendTypes();
     }
   }

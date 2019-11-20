@@ -55,6 +55,7 @@ export async function initializeBrowserFS({
   syncTypes = false,
   extraMounts = {},
 } = {}) {
+  let hasInitialSync = false;
   return new Promise(resolve => {
     const config = { ...BROWSER_FS_CONFIG };
     let currentSandboxFs = {};
@@ -92,6 +93,10 @@ export async function initializeBrowserFS({
           switch (evt.data.$type) {
             case 'sandbox-fs': {
               currentSandboxFs = evt.data.$data;
+              if (!hasInitialSync) {
+                hasInitialSync = true;
+                resolve();
+              }
               break;
             }
             case 'write-file': {
@@ -127,9 +132,9 @@ export async function initializeBrowserFS({
           $type: 'sync-sandbox',
           $data: {},
         });
+      } else {
+        resolve();
       }
-
-      resolve();
 
       // BrowserFS is initialized and ready-to-use!
     });
