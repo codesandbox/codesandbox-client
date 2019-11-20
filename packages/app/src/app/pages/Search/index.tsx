@@ -40,7 +40,7 @@ const searchStateToUrl = (location, searchState) =>
   searchState ? `${location.pathname}${createURL(searchState)}` : '';
 
 type Props = RouteComponentProps;
-const Search: FunctionComponent<Props> = ({ history, location }) => {
+export const Search: FunctionComponent<Props> = ({ history, location }) => {
   const {
     actions: { searchMounted },
   } = useOvermind();
@@ -125,5 +125,3 @@ const Search: FunctionComponent<Props> = ({ history, location }) => {
     </Container>
   );
 };
-
-export default Search;

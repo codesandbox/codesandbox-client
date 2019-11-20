@@ -42,7 +42,9 @@ const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile')
 );
 const Search = Loadable(() =>
-  import(/* webpackChunkName: 'page-search' */ './Search')
+  import(/* webpackChunkName: 'page-search' */ './Search').then(module => ({
+    default: module.Search,
+  }))
 );
 const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
 
