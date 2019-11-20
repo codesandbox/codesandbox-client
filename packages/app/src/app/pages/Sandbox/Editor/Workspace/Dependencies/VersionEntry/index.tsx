@@ -6,7 +6,7 @@ import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
 import algoliasearch from 'algoliasearch/lite';
 import compareVersions from 'compare-versions';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
+import { formatVersion } from '@codesandbox/common/lib/utils/ci';
 
 import { EntryContainer, IconArea, Icon } from '../../elements';
 import { Link } from '../elements';
@@ -25,17 +25,6 @@ interface State {
   version: null | string;
   open: boolean;
   versions: string[];
-}
-
-function formatVersion(version: string) {
-  if (CSB_PKG_PROTOCOL.test(version)) {
-    const commitSha = version.match(/commit\/(.*)\//);
-    if (commitSha && commitSha[1]) {
-      return `csb:${commitSha[1]}`;
-    }
-  }
-
-  return version;
 }
 
 export class VersionEntry extends React.PureComponent<Props, State> {

@@ -7,7 +7,7 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
-import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
+import { NotificationStatus } from '@codesandbox/notifications';
 
 import { createOptimisticModule } from './utils/common';
 import getItems from './utils/items';
@@ -27,6 +27,8 @@ export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
     state.user = await effects.api.getCurrentUser();
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
+    effects.analytics.identify('signed_in', true);
+    effects.analytics.setUserId(state.user.id);
     actions.internal.setStoredSettings();
     effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
@@ -64,8 +66,33 @@ export const setPatronPrice: Action = ({ state }) => {
 
 export const setSignedInCookie: Action = ({ state }) => {
   document.cookie = 'signedIn=true; Path=/;';
-  identify('signed_in', true);
-  setUserId(state.user.id);
+};
+
+export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
+  if (state.user.sendSurvey) {
+    // Let the server know that we've seen the survey
+    effects.api.markSurveySeen();
+
+    effects.notificationToast.add({
+      title: 'Help improve CodeSandbox',
+      message:
+        "We'd love to hear your thoughts, it's 7 questions and will only take 2 minutes.",
+      status: NotificationStatus.NOTICE,
+      sticky: true,
+      actions: {
+        primary: [
+          {
+            label: 'Open Survey',
+            run: () => {
+              actions.modalOpened({
+                modal: 'userSurvey',
+              });
+            },
+          },
+        ],
+      },
+    });
+  }
 };
 
 export const addNotification: Action<{

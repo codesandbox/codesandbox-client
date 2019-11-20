@@ -43,8 +43,8 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
     (settersByInputName[name] || noop)(value);
   };
 
-  const onSubmit = ({ preventDefault }: FormEvent<HTMLFormElement>) => {
-    preventDefault();
+  const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
 
     setLoading(true);
 
@@ -126,7 +126,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
         </EmojiButton>
 
         <ButtonContainer>
-          <Button disabled={loading} small>
+          <Button disabled={loading || !feedback.trim()} small>
             {loading ? 'Sending...' : 'Submit'}
           </Button>
         </ButtonContainer>

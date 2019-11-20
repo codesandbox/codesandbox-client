@@ -54,6 +54,15 @@ export const GitHubImport = () => {
     }
   }, []);
 
+  const handleKey = useCallback(
+    ({ key }) => {
+      if (key === 'Enter' && !error) {
+        window.location.href = gitHubToSandboxUrl(url);
+      }
+    },
+    [error, url]
+  );
+
   return (
     <Section style={{ flex: 6 }}>
       <ImportHeader>
@@ -76,6 +85,7 @@ export const GitHubImport = () => {
         placeholder="GitHub Repository URL..."
         onChange={updateUrl}
         value={url}
+        onKeyDown={handleKey}
       />
 
       {transformedUrl ? (

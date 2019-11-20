@@ -74,7 +74,8 @@ export default {
   },
   connect() {
     if (!_socket) {
-      _socket = new Socket(`wss://${location.host}/socket`, {
+      const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
+      _socket = new Socket(`${protocol}://${location.host}/socket`, {
         params: {
           guardian_token: provideJwtToken(),
         },
@@ -131,7 +132,9 @@ export default {
     }) => {}
   ) {
     channel.onMessage = (event: any, data: any) => {
-      const disconnected = data == null && event === 'phx_error';
+      const disconnected =
+        (data == null || Object.keys(data).length === 0) &&
+        event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
 
       const _isOwnMessage = Boolean(

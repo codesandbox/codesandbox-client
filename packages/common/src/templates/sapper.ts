@@ -1,7 +1,7 @@
 import configurations from './configuration';
 
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 const extendedSandboxConfig = {
   ...configurations.sandboxConfig,
@@ -27,7 +27,6 @@ export default new Template(
     extraConfigurations: {
       '/sandbox.config.json': extendedSandboxConfig,
     },
-    isServer: true,
     netlify: false,
     mainFile: ['/src/routes/index.html'],
     showOnHomePage: true,
