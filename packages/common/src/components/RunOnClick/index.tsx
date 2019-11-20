@@ -2,28 +2,28 @@ import React from 'react';
 
 import Fullscreen from '../flex/Fullscreen';
 import Centered from '../flex/Centered';
-import theme from '../../theme';
-
-import playSVG from './play.svg';
+import { Container, Text } from './elements';
 
 const RunOnClick = ({ onClick }) => (
   <Fullscreen
-    style={{ backgroundColor: theme.primary(), cursor: 'pointer' }}
+    style={{ background: '#131313', cursor: 'pointer' }}
     onClick={onClick}
   >
     <Centered horizontal vertical>
-      <img width={170} height={170} src={playSVG} alt="Run Sandbox" />
-      <div
-        style={{
-          color: theme.red(),
-          fontSize: '2rem',
-          fontWeight: 700,
-          marginTop: 24,
-          textTransform: 'uppercase',
-        }}
-      >
-        Click to run
-      </div>
+      <Container>
+        <div className="cube">
+          <div className="sides">
+            <div className="top" />
+            <div className="right" />
+            <div className="bottom" />
+            <div className="left" />
+            <div className="front" />
+            <div className="back" />
+          </div>
+          <div className="play" />
+        </div>
+        <Text>Run on click</Text>
+      </Container>
     </Centered>
   </Fullscreen>
 );

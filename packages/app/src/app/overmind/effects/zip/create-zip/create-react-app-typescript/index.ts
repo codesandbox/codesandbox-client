@@ -45,7 +45,6 @@ export default function createZip(
     await Promise.all(
       modules
         .filter(x => x.directoryShortid == null)
-        .filter(x => x.title !== 'yarn.lock' && x.title !== 'package-lock.json')
         .map(x => {
           if (x.title === 'package.json' && x.directoryShortid == null) {
             return createFile(alterPackageJSON(x), src);

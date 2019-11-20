@@ -1,11 +1,13 @@
 import './styles.css';
 
-import { listen } from 'codesandbox-api';
+import { listen, dispatch } from 'codesandbox-api';
 import React from 'react';
 import PlusIcon from 'react-icons/lib/md/add';
 import { withTheme } from 'styled-components';
 import uuid from 'uuid';
 
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { Shell } from './Shell';
 import { TerminalComponent } from './Shell/Term';
 import { ShellTabs } from './ShellTabs';
@@ -36,6 +38,7 @@ class DevToolTerminal extends React.Component<
   listener: () => void;
   node?: HTMLElement;
   timeout?: number;
+  shownReadonlyNotification: boolean = false;
 
   componentDidMount() {
     createShell = this.createShell;
@@ -48,6 +51,32 @@ class DevToolTerminal extends React.Component<
 
     this.messageQueue.forEach(this.handleMessage);
     this.messageQueue.length = 0;
+
+    terminal.on('data', () => {
+      if (this.props.owned) {
+        if (!this.shownReadonlyNotification) {
+          notificationState.addNotification({
+            title: 'Terminal Read-Only',
+            message:
+              "The main terminal is read-only and runs what's defined in package.json#start, you can create a new terminal to input commands",
+            status: NotificationStatus.NOTICE,
+            actions: {
+              primary: [
+                {
+                  label: 'Create Terminal',
+                  run: () => {
+                    dispatch({
+                      type: 'codesandbox:create-shell',
+                    });
+                  },
+                },
+              ],
+            },
+          });
+        }
+        this.shownReadonlyNotification = true;
+      }
+    });
   };
 
   handleMessage = (data: any) => {
@@ -152,6 +181,7 @@ class DevToolTerminal extends React.Component<
         <div style={{ position: 'relative', flex: 'auto' }}>
           <TerminalComponent
             hidden={hidden || selectedShell !== undefined}
+            owned={this.props.owned}
             theme={theme}
             onTerminalInitialized={this.setTerminal}
           />
@@ -161,6 +191,7 @@ class DevToolTerminal extends React.Component<
               id={shell.id}
               script={shell.script}
               ended={shell.ended}
+              owned={this.props.owned}
               hidden={hidden || shell.id !== this.state.selectedShell}
               closeShell={() => this.closeShell(shell.id)}
               endShell={() => this.endShell(shell.id)}

@@ -1,8 +1,9 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { PreferenceText } from '@codesandbox/common/lib/components/Preference/PreferenceText';
 import themes from '@codesandbox/common/lib/themes';
+import React from 'react';
 
-import PreferenceText from '@codesandbox/common/lib/components/Preference/PreferenceText';
+import { useOvermind } from 'app/overmind';
+
 import {
   Title,
   SubContainer,

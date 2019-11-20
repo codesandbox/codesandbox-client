@@ -10,7 +10,7 @@ import {
   SplitViewIconSVG,
 } from './icons';
 
-import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
+import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../../util/constants';
 
 export const Container = styled.div`
   position: relative;
@@ -111,7 +111,7 @@ export const Button = styled.button(
 
 export const MenuIcon = styled(MenuIconSVG)(
   css({
-    color: 'grays.400',
+    color: 'tab.activeForeground',
     marginRight: 2,
     cursor: 'pointer',
     zIndex: 10,
@@ -146,7 +146,8 @@ const ModeStyleStyles = props =>
       color: 'white',
     },
     path: {
-      transition: theme => 'fill ' + theme.speed[2],
+      transitionProperty: 'fill',
+      transitionDuration: theme => theme.speed[2],
     },
   });
 

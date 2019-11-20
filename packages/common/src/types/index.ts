@@ -125,6 +125,7 @@ export type CurrentUser = {
       email: string;
     };
   };
+  sendSurvey: boolean;
 };
 
 export type CustomTemplate = {

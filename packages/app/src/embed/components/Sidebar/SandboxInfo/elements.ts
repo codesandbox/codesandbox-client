@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import css from '@styled-system/css';
 import CommonStats from '@codesandbox/common/lib/components/Stats';
 import { CenteredText } from '@codesandbox/common/lib/components/Stats/Stat/elements';
+import css from '@styled-system/css';
+import styled from 'styled-components';
 
 export const Container = styled.div(
   css({
@@ -21,7 +21,7 @@ export const Title = styled.h2(
 export const Description = styled.div(
   css({
     fontSize: 2,
-    color: 'grays.300',
+    color: 'sideBar.foreground',
     marginBottom: 4,
   })
 );

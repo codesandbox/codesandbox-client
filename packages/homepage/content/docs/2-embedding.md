@@ -49,6 +49,7 @@ find them here.
 | `runonclick`     | Only load the preview when the user says so.                                                                   | `0`/`1`                              | `0`                                  |
 | `verticallayout` | Whether to show the editor and preview vertically.                                                             | `0`/`1`                              | `0`                                  |
 | `view`           | Which view to open by default                                                                                  | `editor`/`split`/`preview`           | `split`, `preview` for small screens |
+| `theme`          | Which theme to show for the embed                                                                              | `dark`/`light`                       | `dark`                               |
 
 ## Example Embeds
 

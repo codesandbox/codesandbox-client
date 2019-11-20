@@ -5,12 +5,14 @@ import { ILambdaResponse } from './merge-dependency';
 import { downloadDependency } from '../eval/npm/fetch-npm-module';
 import { IParsedResolution } from './resolutions';
 
-function getPackageJSON(dep: string, version: string) {
-  return downloadDependency(dep, version, '/package.json').then(m => m.code);
+async function getPackageJSON(dep: string, version: string) {
+  const m = await downloadDependency(dep, version, '/package.json');
+  return m.code;
 }
 
-function getLatestVersionForSemver(dep: string, version: string) {
-  return getPackageJSON(dep, version).then(p => JSON.parse(p).version);
+async function getLatestVersionForSemver(dep: string, version: string) {
+  const p = await getPackageJSON(dep, version);
+  return JSON.parse(p).version;
 }
 
 interface IPeerDependencyResult {

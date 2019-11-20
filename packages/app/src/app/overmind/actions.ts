@@ -76,7 +76,8 @@ type ModalName =
   | 'preferences'
   | 'share'
   | 'searchDependencies'
-  | 'signInForTemplates';
+  | 'signInForTemplates'
+  | 'userSurvey';
 
 export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },
@@ -158,7 +159,7 @@ export const signInZeitClicked: AsyncAction = async ({
 };
 
 export const signOutZeitClicked: AsyncAction = async ({ state, effects }) => {
-  await effects.http.delete(`/users/current_user/integrations/zeit`);
+  await effects.api.signoutZeit();
   state.user.integrations.zeit = null;
 };
 

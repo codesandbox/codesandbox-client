@@ -74,7 +74,8 @@ export default {
   },
   connect() {
     if (!_socket) {
-      _socket = new Socket(`wss://${location.host}/socket`, {
+      const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
+      _socket = new Socket(`${protocol}://${location.host}/socket`, {
         params: {
           guardian_token: provideJwtToken(),
         },

@@ -11,9 +11,14 @@ export async function getDependencyVersions(
 ) {
   const parsedResolutions = parseResolutions(resolutions);
 
+  const depsWithNodeLibs = { 'node-libs-browser': '2.2.0', ...dependencies };
   const depInfos = await Promise.all(
-    Object.keys(dependencies).map(depName =>
-      resolveDependencyInfo(depName, dependencies[depName], parsedResolutions)
+    Object.keys(depsWithNodeLibs).map(depName =>
+      resolveDependencyInfo(
+        depName,
+        depsWithNodeLibs[depName],
+        parsedResolutions
+      )
     )
   );
 
