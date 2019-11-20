@@ -1,4 +1,3 @@
-// @flow
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
@@ -275,12 +274,12 @@ export default class App extends React.PureComponent<
         }),
       })
         .then(x => x.json())
-        .then(() => {
+        .then(res => {
           this.setState(s => ({
             sandbox: {
               ...s.sandbox,
               userLiked: false,
-              likeCount: s.sandbox.likeCount - 1,
+              likeCount: res.count,
             },
           }));
         })
