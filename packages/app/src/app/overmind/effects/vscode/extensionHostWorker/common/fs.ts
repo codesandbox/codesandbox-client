@@ -1,4 +1,7 @@
-import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
+import {
+  commonPostMessage,
+  getGlobal,
+} from '@codesandbox/common/lib/utils/global';
 
 import { FileSystemConfiguration } from '../../../../../../../../../standalone-packages/codesandbox-browserfs';
 import { EXTENSIONS_LOCATION } from '../../constants';
@@ -11,7 +14,7 @@ import {
 } from '../../sandboxFsSync/utils';
 import { getTypeFetcher } from './type-downloader';
 
-const global = self as any;
+const global = getGlobal();
 
 export const BROWSER_FS_CONFIG: FileSystemConfiguration = {
   fs: 'MountableFileSystem',
@@ -55,7 +58,7 @@ export async function initializeBrowserFS({
   syncTypes = false,
   extraMounts = {},
 } = {}) {
-  let hasInitialSync = false;
+  let isInitialSync = true;
   return new Promise(resolve => {
     const config = { ...BROWSER_FS_CONFIG };
     let currentSandboxFs = {};
@@ -91,10 +94,27 @@ export async function initializeBrowserFS({
       if (syncSandbox) {
         self.addEventListener('message', evt => {
           switch (evt.data.$type) {
+            case 'typings-sync': {
+              if (isInitialSync) {
+                commonPostMessage({
+                  $broadcast: true,
+                  $type: 'sync-sandbox',
+                  $data: {},
+                });
+              }
+              break;
+            }
             case 'sandbox-fs': {
               currentSandboxFs = evt.data.$data;
-              if (!hasInitialSync) {
-                hasInitialSync = true;
+              if (isInitialSync) {
+                isInitialSync = false;
+                global.BrowserFS.BFSRequire(
+                  'fs'
+                ).rename(
+                  '/sandbox/node_modules/@types',
+                  '/sandbox/node_modules/@types',
+                  () => {}
+                );
                 resolve();
               }
               break;
@@ -127,11 +147,19 @@ export async function initializeBrowserFS({
           }
         });
 
-        commonPostMessage({
-          $broadcast: true,
-          $type: 'sync-sandbox',
-          $data: {},
-        });
+        if (syncTypes) {
+          commonPostMessage({
+            $broadcast: true,
+            $type: 'sync-types',
+            $data: {},
+          });
+        } else {
+          commonPostMessage({
+            $broadcast: true,
+            $type: 'sync-sandbox',
+            $data: {},
+          });
+        }
       } else {
         resolve();
       }

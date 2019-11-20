@@ -39,7 +39,7 @@ type SandboxFsSyncOptions = {
 
 class SandboxFsSync {
   private options: SandboxFsSyncOptions;
-  private types: any;
+  private types: any = {};
   private typesInfo: Promise<any>;
   private initializingWorkers = blocker<void>();
   public initialize(options: SandboxFsSyncOptions) {
@@ -173,8 +173,6 @@ class SandboxFsSync {
   }
 
   private syncSandbox() {
-    // eslint-disable-next-line
-    console.log('## SYNCING SANDBOX WITH WORKERS');
     this.send('sandbox-fs', json(this.options.getSandboxFs()));
   }
 
@@ -206,14 +204,20 @@ class SandboxFsSync {
     const syncDetails = await this.getDependencyTypingsSyncDetails();
 
     if (syncDetails) {
-      this.types = await this.getDependencyTypings(
-        syncDetails.packageJsonContent,
-        syncDetails.autoInstall
-      );
-      // eslint-disable-next-line
-      console.log('## SYNCING TYPES WITH WORKERS');
-      this.sendTypes();
+      try {
+        this.types = await this.getDependencyTypings(
+          syncDetails.packageJsonContent,
+          syncDetails.autoInstall
+        );
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error(
+          'Unable to fetch dependency typings, please report it to us!'
+        );
+      }
     }
+
+    this.sendTypes();
   }
 
   private async getDependencyTypingsSyncDetails(): Promise<{
@@ -251,6 +255,8 @@ class SandboxFsSync {
                 );
               }
             );
+          } else {
+            resolve(null);
           }
         });
       } catch (e) {

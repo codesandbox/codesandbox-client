@@ -1,7 +1,4 @@
-import {
-  commonPostMessage,
-  getGlobal,
-} from '@codesandbox/common/lib/utils/global';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
 
 import {
   IManager,
@@ -41,12 +38,6 @@ export function getTypeFetcher() {
         () => {}
       );
     }
-  });
-
-  commonPostMessage({
-    $broadcast: true,
-    $type: 'sync-types',
-    $data: {},
   });
 
   return { options };
