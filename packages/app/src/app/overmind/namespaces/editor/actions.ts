@@ -359,12 +359,18 @@ export const likeSandboxToggled: AsyncAction<string> = async (
   state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
-export const moduleSelected: Action<{
-  // Path means it is coming from VSCode
-  path?: string;
-  // Id means it is coming from Explorer
-  id?: string;
-}> = ({ state, effects, actions }, { path, id }) => {
+export const moduleSelected: Action<
+  | {
+      // Id means it is coming from Explorer
+      id: string;
+      path?: undefined;
+    }
+  | {
+      // Path means it is coming from VSCode
+      id?: undefined;
+      path: string;
+    }
+> = ({ actions, effects, state }, { id, path }) => {
   effects.analytics.track('Open File');
 
   const sandbox = state.editor.currentSandbox;
@@ -374,17 +380,13 @@ export const moduleSelected: Action<{
   }
 
   try {
-    let module;
-
-    if (path) {
-      module = effects.utils.resolveModule(
-        path.replace(/^\/sandbox\//, ''),
-        sandbox.modules,
-        sandbox.directories
-      );
-    } else {
-      module = sandbox.modules.find(moduleItem => moduleItem.id === id);
-    }
+    const module = path
+      ? effects.utils.resolveModule(
+          path.replace(/^\/sandbox\//, ''),
+          sandbox.modules,
+          sandbox.directories
+        )
+      : sandbox.modules.find(moduleItem => moduleItem.id === id);
 
     if (module.shortid === state.editor.currentModuleShortid) {
       return;
@@ -587,7 +589,7 @@ export const fetchEnvironmentVariables: AsyncAction = async ({
 };
 
 export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = async (
-  { state, effects },
+  { effects, state },
   environmentVariable
 ) => {
   if (!state.editor.currentSandbox) {
