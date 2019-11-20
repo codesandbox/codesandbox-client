@@ -1,7 +1,19 @@
-import styled from 'styled-components';
 import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
+import styled from 'styled-components';
 
-export const getContainerStyles = props => {
+type ContainerStylesProps = {
+  theme?: any;
+  color?: string;
+  alternative?: boolean;
+  noTransition?: boolean;
+  depth?: number;
+  active?: boolean;
+  editing?: boolean;
+  nameValidationError?: string;
+  rightColors?: string[];
+};
+
+export const getContainerStyles = (props: ContainerStylesProps) => {
   const { theme } = props;
   const getSelectedColor = activeColor => {
     // some have active as full white and should never be
@@ -94,7 +106,7 @@ export const getContainerStyles = props => {
   return styles;
 };
 
-export const EntryContainer = styled.div`
+export const EntryContainer = styled.div<ContainerStylesProps>`
   ${props => getContainerStyles(props)};
 `;
 
@@ -152,7 +164,7 @@ export const IconArea = styled.div`
   ${fadeIn(0)};
 `;
 
-export const WorkspaceInputContainer = styled.div`
+export const WorkspaceInputContainer = styled.div<{ errorMessage?: string }>`
   display: inline-block;
   display: flex;
   overflow: visible;

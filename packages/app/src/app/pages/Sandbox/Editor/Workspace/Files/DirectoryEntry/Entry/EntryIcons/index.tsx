@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-
 import ErrorIcon from 'react-icons/lib/md/error';
 
 import { RedIcon, SVGIcon } from './elements';
 import getIconURL from './GetIconURL';
 
-class GetIcon extends Component {
+type Props = {
+  type: string;
+  width?: number;
+  height?: number;
+  error?: boolean;
+};
+
+class GetIcon extends Component<Props> {
   state = { icon: null };
 
   getIcon = async type => {
@@ -27,36 +33,29 @@ class GetIcon extends Component {
   }
 
   render() {
-    const { type, error, width, height } = this.props;
+    const { error, width, height } = this.props;
     const { icon } = this.state;
 
     if (error) {
       return (
-        <RedIcon>
+        <RedIcon width={width} height={height}>
           <ErrorIcon width={width} height={height} />
         </RedIcon>
       );
     }
-    return <SVGIcon url={icon} type={type} width={width} height={height} />;
+    return <SVGIcon url={icon} width={width} height={height} />;
   }
 }
 
-function EntryIcon({
+const EntryIcon: React.FC<Props> = ({
   type,
   width = 16,
   height = 16,
   error,
-}: {
-  type: string,
-  width?: number,
-  height?: number,
-  error?: boolean,
-}) {
-  return (
-    <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-      <GetIcon type={type} error={error} width={width} height={height} />
-    </div>
-  );
-}
+}) => (
+  <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+    <GetIcon type={type} error={error} width={width} height={height} />
+  </div>
+);
 
 export default EntryIcon;

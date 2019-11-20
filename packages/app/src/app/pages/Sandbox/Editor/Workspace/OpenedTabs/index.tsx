@@ -1,16 +1,16 @@
-import React from 'react';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { ModuleTab } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+import { saveAllModules } from 'app/store/modules/editor/utils';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { saveAllModules } from 'app/store/modules/editor/utils';
-
+import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 
-import WorkspaceItem from '../WorkspaceItem';
 import { EntryContainer } from '../elements';
-import { Title, Dir, CrossIconContainer } from './elements';
+import { WorkspaceItem } from '../WorkspaceItem';
+import { CrossIconContainer, Dir, Title } from './elements';
 import SaveIcon from './SaveIcon';
 
 const OpenedTabs = () => {
@@ -22,7 +22,7 @@ const OpenedTabs = () => {
     moduleObject[m.shortid] = m;
   });
 
-  const openModules = state.editor.tabs
+  const openModules = (state.editor.tabs as ModuleTab[])
     .map(t => moduleObject[t.moduleShortid])
     .filter(x => x);
 
@@ -51,7 +51,6 @@ const OpenedTabs = () => {
           key={m.id}
         >
           <EntryIcons
-            isNotSynced={m.isNotSynced}
             type={getType(m.title)}
             error={m.errors && m.errors.length > 0}
           />
@@ -69,7 +68,7 @@ const OpenedTabs = () => {
                   e.stopPropagation();
                 }
 
-                actions.editor.tabClosed({ tabIndex: i });
+                actions.editor.tabClosed(i);
               }}
             >
               <CrossIcon />

@@ -2,11 +2,11 @@ import React from 'react';
 import { Animate as ReactShow } from 'react-show';
 
 import {
+  Actions,
   ChildContainer,
+  ExpandIconContainer,
   ItemHeader,
   Title,
-  ExpandIconContainer,
-  Actions,
 } from './elements';
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
   keepState?: boolean;
   disabled?: boolean;
   defaultOpen?: boolean;
-  actions?: React.Component<any, any>;
+  actions?: React.ReactNode;
   style?: React.CSSProperties;
   showOverflow?: boolean;
 };
