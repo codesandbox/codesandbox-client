@@ -48,13 +48,15 @@ export const Content: React.FC = () => {
 
     preventGestureScroll(contentEl.current);
 
+    actions.editor.contentMounted();
+
     return () => {
       window.removeEventListener('resize', updateEditorSize);
       // clearInterval(this.interval);
       disposeResizeDetector();
       removeListener(contentNode);
     };
-  }, [effects.vscode, reaction, updateEditorSize]);
+  }, [actions.editor, effects.vscode, reaction, updateEditorSize]);
 
   const { currentModule } = state.editor;
   const notSynced = !state.editor.isAllModulesSynced;
