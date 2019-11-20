@@ -363,8 +363,8 @@ export const moduleSelected: Action<{
       }
     }
   } catch (error) {
-    // Do nothing, it is most likely VSCode selecting a file
-    // that is deleted... yeah... it does that
+    // You jumped to a file not in the Sandbox, for example typings
+    state.editor.currentModuleShortid = null;
   }
 };
 
@@ -518,9 +518,10 @@ export const fetchEnvironmentVariables: AsyncAction = async ({
   );
 };
 
-export const updateEnvironmentVariables: AsyncAction<
-  EnvironmentVariable
-> = async ({ state, effects }, environmentVariable) => {
+export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = async (
+  { state, effects },
+  environmentVariable
+) => {
   state.editor.currentSandbox.environmentVariables = await effects.api.saveEnvironmentVariable(
     state.editor.currentSandbox.id,
     environmentVariable
