@@ -21,10 +21,14 @@ ${props =>
       color: ${props.theme.homepage.black};
     }
 
-    footer[class*='FooterWrapper'] {
+    section[class*='elements__Nav'] {
       border-top: 1px solid #e6e6e6;
     }
   `}
+`;
+
+export const Wrapper = styled.div`
+  padding: 4.5rem 0rem 1rem 0rem;
 `;
 
 export const Title = styled.h1`
@@ -211,8 +215,10 @@ export const Button = styled.button`
   font-weight: 500;
   font-size: 1rem;
   line-height: 1.5rem;
-
-  color: ${props => (props.active ? props.theme.homepage.white : '#757575')};
   display: flex;
   align-items: center;
+  color: ${({ light, active, theme }) => {
+    if (light) return active ? '#242424' : '#999999';
+    return active ? theme.homepage.white : '#757575';
+  }};
 `;

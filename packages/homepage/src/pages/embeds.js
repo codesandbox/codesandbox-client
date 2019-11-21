@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Layout from '../components/layout';
-import PageContainer from '../components/PageContainer';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import DevToolsIcon from '../assets/icons/DevTools';
@@ -19,24 +18,21 @@ import {
   CustomLightStyles,
   Customizations,
   Button,
+  Wrapper,
 } from './_embeds.elements';
 
 export default () => {
   const [theme, setTheme] = useState('dark');
   const [devTools, setDevTools] = useState(1);
   const [navigation, setNavigation] = useState(1);
-  const [preview, setPreview] = useState(null);
+  const [preview, setPreview] = useState('');
   return (
     <Layout>
       <CustomLightStyles light={theme === 'light'} />
-      <TitleAndMetaTags
-        title={`${' Embed CodeSandbox in Docs, Blog Posts, and Websites'} - CodeSandbox`}
-      />
-      <PageContainer width={1086}>
+      <TitleAndMetaTags title="Embed CodeSandbox in Docs, Blog Posts, and Websites - CodeSandbox" />
+      <Wrapper>
         <TitleWrapper>
-          <Title>
-            {' Embed CodeSandbox in Docs, Blog Posts, and Websites'}
-          </Title>
+          <Title>Embed CodeSandbox in Docs, Blog Posts, and Websites</Title>
         </TitleWrapper>
         <SwitchWrapper>
           <span
@@ -77,36 +73,47 @@ export default () => {
         </Banner>
         <Customizations>
           <li>
-            <Button type="button">
-              <ProjectViewIcon /> Project View
+            <Button type="button" light={theme === 'light'}>
+              <ProjectViewIcon light={theme === 'light'} /> Project View
             </Button>
           </li>
           <li>
             <Button
               type="button"
+              light={theme === 'light'}
               active={navigation === 0}
               onClick={() => setNavigation(navigation === 1 ? 0 : 1)}
             >
-              <NavigationIcon active={navigation === 0} /> Navigation
+              <NavigationIcon
+                light={theme === 'light'}
+                active={navigation === 0}
+              />{' '}
+              Navigation
             </Button>
           </li>
           <li>
             <Button
               type="button"
+              light={theme === 'light'}
               active={preview === '&view=preview'}
               onClick={() => setPreview(preview ? null : '&view=preview')}
             >
-              <PreviewModeIcon active={preview === '&view=preview'} /> Preview
-              Mode
+              <PreviewModeIcon
+                light={theme === 'light'}
+                active={preview === '&view=preview'}
+              />{' '}
+              Preview Mode
             </Button>
           </li>
           <li>
             <Button
               type="button"
+              light={theme === 'light'}
               active={devTools === 0}
               onClick={() => setDevTools(devTools === 1 ? 0 : 1)}
             >
-              <DevToolsIcon active={devTools === 0} /> DevTools
+              <DevToolsIcon light={theme === 'light'} active={devTools === 0} />{' '}
+              DevTools
             </Button>
           </li>
         </Customizations>
@@ -133,7 +140,7 @@ export default () => {
             support, like Medium, Reddit, Trello, and Notion.
           </div>
         </ContentBlock>
-      </PageContainer>
+      </Wrapper>
     </Layout>
   );
 };
