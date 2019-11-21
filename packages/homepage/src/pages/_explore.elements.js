@@ -48,8 +48,8 @@ export const Dot = styled.button`
 `;
 
 export const Container = styled.div`
-  color: ${props => props.theme.new.title}
-
+  color: ${props => props.theme.new.title};
+  padding-top: 4rem;
   margin-bottom: 4rem;
 `;
 

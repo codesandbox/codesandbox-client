@@ -132,12 +132,12 @@ export default () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/search">
+                  <a href="/search">
                     <section>
                       <SearchIcon />
                     </section>
                     <span>Search Sandboxes</span>
-                  </Link>
+                  </a>
                 </li>
               </Items>
               <Headers>Resources</Headers>

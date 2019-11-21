@@ -290,11 +290,11 @@ const Navigation = () => {
           },
           {
             Icon: () => (
-              <Link to="/search">
+              <a href="/search">
                 <SearchIcon />
-              </Link>
+              </a>
             ),
-            Label: () => <Link to="/search">Search Sandboxes</Link>,
+            Label: () => <a href="/search">Search Sandboxes</a>,
           },
         ]}
       />

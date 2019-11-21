@@ -2,8 +2,8 @@ import styled, { css } from 'styled-components';
 
 import { UserWithAvatar } from '../UserWithAvatar';
 
-export const BG_COLOR = '#1C2022';
-export const BG_HOVER = '#212629';
+export const BG_COLOR = '#151515';
+export const BG_HOVER = '#242424';
 
 export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
   transition: 0.3s ease all;
@@ -21,9 +21,8 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
 
   margin-right: 0.5rem;
   margin-left: 0.5rem;
-
   background-color: ${BG_COLOR};
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
+  border: 1px solid ${BG_HOVER};
 
   ${props =>
     props.small &&
@@ -38,9 +37,12 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
     `};
 
   &:hover {
-    background-color: ${BG_HOVER};
-    transform: translateY(-5px);
-    box-shadow: 0 8px 4px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12), 0 4px 4px rgba(0, 0, 0, 0.24);
+  }
+
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12), 0 4px 2px rgba(0, 0, 0, 0.24);
   }
 
   &:last-child {
@@ -103,7 +105,7 @@ export const SandboxInfo = styled.div<{ noHeight?: boolean }>`
     props.noHeight &&
     css`
       height: auto;
-    `}: ;
+    `};
 `;
 
 export const TemplateIcon = styled.div`

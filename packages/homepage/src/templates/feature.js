@@ -2,7 +2,6 @@ import { graphql } from 'gatsby';
 import React from 'react';
 import { motion } from 'framer-motion';
 import Layout from '../components/layout';
-import PageContainer from '../components/PageContainer';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import {
@@ -15,6 +14,7 @@ import {
   Avatar,
   TitleWrapper,
   Description,
+  Wrapper,
 } from './_feature.elements';
 import Button from '../components/Button';
 
@@ -85,7 +85,7 @@ export default ({
   return (
     <Layout>
       <TitleAndMetaTags title={`${title} - CodeSandbox`} />
-      <PageContainer width={1086}>
+      <Wrapper>
         <Title>{title}</Title>
 
         <TitleWrapper>
@@ -119,7 +119,7 @@ export default ({
           columns={columns}
           dangerouslySetInnerHTML={{ __html: html }}
         />
-      </PageContainer>
+      </Wrapper>
     </Layout>
   );
 };

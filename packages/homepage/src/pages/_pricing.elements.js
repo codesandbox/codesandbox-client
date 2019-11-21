@@ -54,6 +54,7 @@ export const Button = styled.a`
   align-items: center;
   justify-content: center;
   color: ${props => props.theme.homepage.white};
+  transition: all 200ms ease;
 
   ${props =>
     props.white &&
@@ -61,6 +62,16 @@ export const Button = styled.a`
     background: ${props.theme.homepage.white};
     color: ${props.theme.homepage.blue};
   `}
+
+  &:hover {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+    transform: scale(1.05);
+  }
+
+  &:focus {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+    transform: scale(1);
+  }
 `;
 
 export const FeaturesTableHeader = styled.div`

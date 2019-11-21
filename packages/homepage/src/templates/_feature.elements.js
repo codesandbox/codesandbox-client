@@ -165,3 +165,7 @@ export const TitleWrapper = styled.div`
     display: block;
   }
 `;
+
+export const Wrapper = styled.div`
+  padding: 4.5rem 0rem 1rem 0rem;
+`;
