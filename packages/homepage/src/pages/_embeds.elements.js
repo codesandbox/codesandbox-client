@@ -70,6 +70,7 @@ export const Banner = styled.div`
   margin-top: 3.75rem;
   position: relative;
   overflow: hidden;
+  box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.12), 0px 4px 8px rgba(0, 0, 0, 0.12);
 `;
 
 export const ContentBlock = styled.div`
