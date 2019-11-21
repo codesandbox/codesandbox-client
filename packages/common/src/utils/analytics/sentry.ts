@@ -31,6 +31,8 @@ export async function initialize(dsn: string) {
         /Cannot remove node \d* because no matching node was found in the Store\./,
         /Cannot add child \d* to parent \d* because parent node was not found in the Store\./,
         /Children cannot be added or removed during a reorder operation\./,
+
+        "undefined is not an object (evaluating 'window.__pad.performLoop')", // Only happens on Safari, but spams our servers. Doesn't break anything
       ],
       whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
       /**

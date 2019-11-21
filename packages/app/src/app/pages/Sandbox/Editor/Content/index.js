@@ -428,7 +428,13 @@ class EditorPreview extends React.Component {
           ? `Browser (${options.title || `:${options.port}`})`
           : `Browser`,
       Content: ({ hidden, options }) => (
-        <Preview options={options} hidden={hidden} width="100%" height="100%" />
+        <Preview
+          runOnClick={store.preferences.runOnClick}
+          options={options}
+          hidden={hidden}
+          width="100%"
+          height="100%"
+        />
       ),
       actions: [],
     };
