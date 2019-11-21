@@ -125,7 +125,7 @@ export const onModuleSaved: Operator<LiveMessage<{
     savedCode: data.module.savedCode,
   });
 
-  effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
+  effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
   actions.editor.internal.updatePreviewCode();
 });
 
@@ -136,7 +136,10 @@ export const onModuleCreated: Operator<LiveMessage<{
     return;
   }
   state.editor.currentSandbox.modules.push(data.module);
-  effects.vscode.fs.writeFile(state.editor.modulesByPath, data.module);
+  effects.vscode.sandboxFsSync.writeFile(
+    state.editor.modulesByPath,
+    data.module
+  );
 });
 
 export const onModuleMassCreated: Operator<LiveMessage<{
@@ -153,7 +156,7 @@ export const onModuleMassCreated: Operator<LiveMessage<{
     data.directories
   );
 
-  state.editor.modulesByPath = effects.vscode.fs.create(
+  state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
     state.editor.currentSandbox
   );
 
@@ -175,7 +178,7 @@ export const onModuleUpdated: Operator<LiveMessage<{
     state.editor.sandboxes[sandbox.id].modules[moduleIndex];
 
   if (existingModule.path !== data.module.path) {
-    effects.vscode.fs.rename(
+    effects.vscode.sandboxFsSync.rename(
       state.editor.modulesByPath,
       existingModule.path,
       data.module.path
@@ -184,7 +187,10 @@ export const onModuleUpdated: Operator<LiveMessage<{
 
   Object.assign(existingModule, data.module);
 
-  effects.vscode.fs.writeFile(state.editor.modulesByPath, existingModule);
+  effects.vscode.sandboxFsSync.writeFile(
+    state.editor.modulesByPath,
+    existingModule
+  );
 
   if (state.editor.currentModuleShortid === data.moduleShortid) {
     effects.vscode.openModule(existingModule);
@@ -209,7 +215,10 @@ export const onModuleDeleted: Operator<LiveMessage<{
     state.editor.currentModuleShortid === data.moduleShortid;
 
   state.editor.currentSandbox.modules.splice(moduleIndex, 1);
-  effects.vscode.fs.unlink(state.editor.modulesByPath, removedModule);
+  effects.vscode.sandboxFsSync.unlink(
+    state.editor.modulesByPath,
+    removedModule
+  );
 
   if (wasCurrentModule) {
     actions.editor.internal.setCurrentModule(state.editor.mainModule);
@@ -226,7 +235,7 @@ export const onDirectoryCreated: Operator<LiveMessage<{
   }
   // Should this not be a directory?
   state.editor.currentSandbox.directories.push(data.module);
-  effects.vscode.fs.mkdir(state.editor.modulesByPath, data.module);
+  effects.vscode.sandboxFsSync.mkdir(state.editor.modulesByPath, data.module);
 });
 
 export const onDirectoryUpdated: Operator<LiveMessage<{
@@ -249,7 +258,7 @@ export const onDirectoryUpdated: Operator<LiveMessage<{
   if (hasChangedPath) {
     const prevCurrentModulePath = state.editor.currentModule.path;
 
-    state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+    state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
     actions.editor.internal.updatePreviewCode();
 
     if (prevCurrentModulePath !== state.editor.currentModule.path) {
@@ -287,7 +296,10 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
   );
 
   removedModules.forEach(removedModule => {
-    effects.vscode.fs.unlink(state.editor.modulesByPath, removedModule);
+    effects.vscode.sandboxFsSync.unlink(
+      state.editor.modulesByPath,
+      removedModule
+    );
     sandbox.modules.splice(sandbox.modules.indexOf(removedModule), 1);
   });
 

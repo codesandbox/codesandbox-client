@@ -13,12 +13,9 @@ import {
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-import { blocker } from 'app/utils/blocker';
 import { json } from 'overmind';
-
-import { EXTENSIONS_LOCATION } from '../constants';
-import { getTypeFetcher } from '../extensionHostWorker/common/type-downloader';
 import { mkdir, rename, rmdir, unlink, writeFile } from './utils';
+import { WAIT_INITIAL_TYPINGS_MS } from '../constants';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
@@ -40,67 +37,22 @@ type SandboxFsSyncOptions = {
 class SandboxFsSync {
   private options: SandboxFsSyncOptions;
   private types: any = {};
+  private deps: { [path: string]: string } = {};
+  private isDisposed = false;
+  private currentSyncId = 0;
   private typesInfo: Promise<any>;
-  private initializingWorkers = blocker<void>();
-  public initialize(options: SandboxFsSyncOptions) {
+  constructor(options: SandboxFsSyncOptions) {
     this.options = options;
-    self.addEventListener('message', evt => {
-      if (evt.data.$type === 'sync-types') {
-        this.syncDependencyTypings();
-      }
+    self.addEventListener('message', this.onWorkerMessage);
+  }
 
-      if (evt.data.$type === 'sync-sandbox') {
-        this.syncSandbox();
-      }
-    });
+  public getTypes() {
+    return this.types;
+  }
 
-    return new Promise((resolve, reject) => {
-      window.BrowserFS.configure(
-        {
-          fs: 'MountableFileSystem',
-          options: {
-            '/': { fs: 'InMemory', options: {} },
-            '/sandbox': {
-              fs: 'CodeSandboxEditorFS',
-              options: {
-                api: {
-                  getSandboxFs: options.getSandboxFs,
-                },
-              },
-            },
-            '/sandbox/node_modules': {
-              fs: 'CodeSandboxFS',
-              options: getTypeFetcher().options,
-            },
-            '/vscode': {
-              fs: 'LocalStorage',
-            },
-            '/home': {
-              fs: 'LocalStorage',
-            },
-            '/extensions': {
-              fs: 'BundledHTTPRequest',
-              options: {
-                index: EXTENSIONS_LOCATION + '/extensions/index.json',
-                baseUrl: EXTENSIONS_LOCATION + '/extensions',
-                bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
-                logReads: process.env.NODE_ENV === 'development',
-              },
-            },
-            '/extensions/custom-theme': {
-              fs: 'InMemory',
-            },
-          },
-        },
-        async e => {
-          if (e) {
-            reject(e);
-          } else {
-            resolve();
-          }
-        }
-      );
-    });
+  public dispose() {
+    this.isDisposed = true;
+    self.removeEventListener('message', this.onWorkerMessage);
   }
 
   public create(sandbox: Sandbox): SandboxFs {
@@ -127,7 +79,7 @@ class SandboxFsSync {
       }
     });
 
-    this.sync();
+    this.syncSandbox(sandboxFs);
 
     return sandboxFs;
   }
@@ -139,7 +91,7 @@ class SandboxFsSync {
     this.send('write-file', copy);
 
     if (module.title === 'package.json') {
-      this.syncDependencyTypings();
+      this.syncDependencyTypings(this.currentSyncId + 1);
     }
   }
 
@@ -172,21 +124,37 @@ class SandboxFsSync {
     this.send('mkdir', copy);
   }
 
-  private syncSandbox() {
-    this.send('sandbox-fs', json(this.options.getSandboxFs()));
+  public async syncTypings(cb: () => void) {
+    try {
+      await this.syncDependencyTypings(this.currentSyncId + 1);
+    } catch (error) {
+      // Do nothing
+    }
+
+    setTimeout(() => {
+      if (!this.isDisposed) {
+        cb();
+      }
+    }, WAIT_INITIAL_TYPINGS_MS);
   }
 
-  private async sync() {
-    await this.initializingWorkers.promise;
-
-    this.syncSandbox();
-
-    try {
-      await this.syncDependencyTypings();
-    } catch (error) {
-      // Might not be a filesystem ready yet
-      // console.log('ERROR SYNCING', error);
+  private onWorkerMessage = evt => {
+    if (evt.data.$type === 'sync-types') {
+      // We pass the current syncId as we want to latch on
+      // to the existing sync
+      this.syncDependencyTypings(this.currentSyncId);
     }
+
+    if (evt.data.$type === 'sync-sandbox') {
+      this.syncSandbox(this.options.getSandboxFs());
+    }
+  };
+
+  // We sync the FS whenever we create a new one, which happens in different
+  // scenarios. If a worker is requesting a sync we grab the existing FS from
+  // the state
+  private syncSandbox(sandboxFs) {
+    this.send('sandbox-fs', json(sandboxFs));
   }
 
   private send(type: string, data: any) {
@@ -200,24 +168,31 @@ class SandboxFsSync {
     );
   }
 
-  private async syncDependencyTypings() {
-    const syncDetails = await this.getDependencyTypingsSyncDetails();
+  // We pass in either existing or new syncId. This allows us to evaluate
+  // if we are just going to pass existing types or start up a new round
+  // to fetch types
+  private async syncDependencyTypings(syncId: number) {
+    if (syncId === this.currentSyncId) {
+      this.sendTypes();
+      return;
+    }
 
-    if (syncDetails) {
-      try {
-        this.types = await this.getDependencyTypings(
+    try {
+      this.currentSyncId = syncId;
+
+      const syncDetails = await this.getDependencyTypingsSyncDetails();
+
+      if (syncDetails) {
+        this.fetchDependencyTypings(
+          syncId,
           syncDetails.packageJsonContent,
           syncDetails.autoInstall
         );
-      } catch (error) {
-        // eslint-disable-next-line
-        console.error(
-          'Unable to fetch dependency typings, please report it to us!'
-        );
       }
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error(error);
     }
-
-    this.sendTypes();
   }
 
   private async getDependencyTypingsSyncDetails(): Promise<{
@@ -267,7 +242,11 @@ class SandboxFsSync {
   }
 
   private sendTypes() {
-    this.send('typings-sync', this.types);
+    this.send('types-sync', this.types);
+  }
+
+  private sendType(type: { [path: string]: any }) {
+    this.send('type-sync', type);
   }
 
   /**
@@ -285,7 +264,8 @@ class SandboxFsSync {
     return this.typesInfo;
   }
 
-  private async getDependencyTypings(
+  private async fetchDependencyTypings(
+    syncId: number,
     packageJSON: string,
     autoInstallTypes: boolean
   ) {
@@ -317,38 +297,34 @@ class SandboxFsSync {
         totalDependencies
       );
 
-      const filesList = await Promise.all(
-        Object.keys(absoluteDependencies).map(async depName => {
-          const depVersion = absoluteDependencies[depName];
+      Object.keys(absoluteDependencies).forEach(async depName => {
+        const depVersion = absoluteDependencies[depName];
 
-          try {
-            const fetchRequest = await fetch(
-              `${SERVICE_URL}/${depName}@${depVersion}.json`
-            );
+        try {
+          const fetchRequest = await fetch(
+            `${SERVICE_URL}/${depName}@${depVersion}.json`
+          );
 
-            if (!fetchRequest.ok) {
-              throw new Error('Fetch error');
-            }
-
-            const { files } = await fetchRequest.json();
-
-            return files;
-          } catch (e) {
-            if (process.env.NODE_ENV === 'development') {
-              console.warn('Trouble fetching types for ' + depName);
-            }
-
-            return {};
+          if (!fetchRequest.ok) {
+            throw new Error('Fetch error');
           }
-        })
-      );
 
-      return filesList.reduce((aggr, files) => ({ ...aggr, ...files }), {});
+          const { files } = await fetchRequest.json();
+
+          if (!this.isDisposed && this.currentSyncId === syncId) {
+            Object.assign(this.types, files);
+            this.sendType(files);
+          }
+        } catch (e) {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('Trouble fetching types for ' + depName);
+          }
+        }
+      });
     } catch (e) {
       /* ignore */
-      return Promise.resolve({});
     }
   }
 }
 
-export default new SandboxFsSync();
+export default SandboxFsSync;

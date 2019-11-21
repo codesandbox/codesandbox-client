@@ -115,7 +115,7 @@ export const saveCode: AsyncAction<{
 
     module.savedCode = savedCode;
 
-    effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
     effects.moduleRecover.remove(sandbox.id, module);
 
     state.editor.changedModuleShortids.splice(
@@ -327,8 +327,10 @@ export const forkSandbox: AsyncAction<{
     if (getTemplateDefinition(forkedSandbox.template).isServer) {
       await effects.vscode.closeAllTabs();
       actions.internal.setCurrentSandbox(forkedSandbox);
-      state.editor.modulesByPath = effects.vscode.fs.create(forkedSandbox);
-      await effects.vscode.changeSandbox(forkedSandbox);
+      state.editor.modulesByPath = await effects.vscode.changeSandbox(
+        forkedSandbox
+      );
+      effects.vscode.syncTypings();
       effects.vscode.openModule(state.editor.currentModule);
       effects.preview.executeCodeImmediately(true);
 
@@ -339,7 +341,9 @@ export const forkSandbox: AsyncAction<{
         state.editor.sandboxes[state.editor.currentId],
         forkedSandbox
       );
-      state.editor.modulesByPath = effects.vscode.fs.create(forkedSandbox);
+      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
+        forkedSandbox
+      );
       effects.preview.updateAddressbarUrl();
     }
 

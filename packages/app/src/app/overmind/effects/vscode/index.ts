@@ -18,7 +18,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import * as childProcess from 'node-services/lib/child_process';
 
-import { VIM_EXTENSION_ID } from './constants';
+import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
   initializeCustomTheme,
   initializeExtensionsFolder,
@@ -31,7 +31,7 @@ import {
   OnFileChangeData,
   OnOperationAppliedData,
 } from './ModelsHandler';
-import sandboxFsSync from './sandboxFsSync';
+import SandboxFsSync from './SandboxFsSync';
 import { getSelection } from './utils';
 import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
@@ -75,7 +75,9 @@ const context: any = window;
  */
 export class VSCodeEffect {
   public initialized: Promise<void>;
+  public sandboxFsSync: SandboxFsSync;
 
+  private isFirstTypingsSync = true;
   private monaco: any;
   private editorApi: any;
   private options: VsCodeOptions;
@@ -87,7 +89,6 @@ export class VSCodeEffect {
   private settings: Settings;
   private linter: Linter;
   private modelsHandler: ModelsHandler;
-  private isApplyingOperation: boolean = false;
   private modelSelectionListener: { dispose: Function };
   private readOnly: boolean;
   private elements = {
@@ -120,33 +121,27 @@ export class VSCodeEffect {
     // It will only load the editor once. We should probably call this
     const container = this.elements.editor;
 
-    this.initialized = sandboxFsSync
-      .initialize({
-        getSandboxFs: options.getSandboxFs,
-      })
-      .then(() => {
-        // We want to initialize before VSCode, but after browserFS is configured
-        // For first-timers initialize a theme in the cache so it doesn't jump colors
-        initializeExtensionsFolder();
-        initializeCustomTheme();
-        initializeThemeCache();
-        initializeSettings();
-        this.setVimExtensionEnabled(
-          localStorage.getItem('settings.vimmode') === 'true'
-        );
+    this.initialized = this.initializeFileSystem().then(() => {
+      // We want to initialize before VSCode, but after browserFS is configured
+      // For first-timers initialize a theme in the cache so it doesn't jump colors
+      initializeExtensionsFolder();
+      initializeCustomTheme();
+      initializeThemeCache();
+      initializeSettings();
+      this.setVimExtensionEnabled(
+        localStorage.getItem('settings.vimmode') === 'true'
+      );
 
-        return Promise.all([
-          new FontFaceObserver('dm').load(),
-          new Promise(resolve => {
-            loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
-          }),
-        ]).then(() => this.loadEditor(window.monaco, container));
-      });
+      return Promise.all([
+        new FontFaceObserver('dm').load(),
+        new Promise(resolve => {
+          loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
+        }),
+      ]).then(() => this.loadEditor(window.monaco, container));
+    });
 
     return this.initialized;
   }
-
-  public fs = sandboxFsSync;
 
   public getEditorElement(
     getCustomEditor: ICustomEditorApi['getCustomEditor']
@@ -254,6 +249,10 @@ export class VSCodeEffect {
       this.modelsHandler.dispose();
     }
 
+    if (this.sandboxFsSync) {
+      this.sandboxFsSync.dispose();
+    }
+
     this.modelsHandler = new ModelsHandler(
       this.editorApi,
       this.monaco,
@@ -261,6 +260,21 @@ export class VSCodeEffect {
       this.onFileChange,
       this.onOperationApplied
     );
+    this.sandboxFsSync = new SandboxFsSync(this.options);
+
+    return this.sandboxFsSync.create(sandbox);
+  }
+
+  public syncTypings() {
+    if (this.isFirstTypingsSync) {
+      this.isFirstTypingsSync = false;
+      this.sandboxFsSync.syncTypings(() => {});
+    } else {
+      this.editorApi.extensionService.stopExtensionHost();
+      this.sandboxFsSync.syncTypings(() => {
+        this.editorApi.extensionService.startExtensionHost();
+      });
+    }
   }
 
   public async closeAllTabs() {
@@ -396,6 +410,64 @@ export class VSCodeEffect {
     }
   }
 
+  private initializeFileSystem() {
+    return new Promise((resolve, reject) => {
+      window.BrowserFS.configure(
+        {
+          fs: 'MountableFileSystem',
+          options: {
+            '/': { fs: 'InMemory', options: {} },
+            '/sandbox': {
+              fs: 'CodeSandboxEditorFS',
+              options: {
+                api: {
+                  getSandboxFs: this.options.getSandboxFs,
+                },
+              },
+            },
+            '/sandbox/node_modules': {
+              fs: 'CodeSandboxFS',
+              options: {
+                manager: {
+                  getTranspiledModules: () => this.sandboxFsSync.getTypes(),
+                  addModule() {},
+                  removeModule() {},
+                  moveModule() {},
+                  updateModule() {},
+                },
+              },
+            },
+            '/vscode': {
+              fs: 'LocalStorage',
+            },
+            '/home': {
+              fs: 'LocalStorage',
+            },
+            '/extensions': {
+              fs: 'BundledHTTPRequest',
+              options: {
+                index: EXTENSIONS_LOCATION + '/extensions/index.json',
+                baseUrl: EXTENSIONS_LOCATION + '/extensions',
+                bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+                logReads: process.env.NODE_ENV === 'development',
+              },
+            },
+            '/extensions/custom-theme': {
+              fs: 'InMemory',
+            },
+          },
+        },
+        async e => {
+          if (e) {
+            reject(e);
+          } else {
+            resolve();
+          }
+        }
+      );
+    });
+  }
+
   private initializeReactions() {
     const { reaction } = this.options;
 
@@ -521,6 +593,7 @@ export class VSCodeEffect {
         editorPart,
         editorService,
         codeEditorService,
+        extensionService,
       };
 
       window.CSEditor = {

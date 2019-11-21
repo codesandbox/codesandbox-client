@@ -116,7 +116,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   const sandbox = state.editor.currentSandbox;
 
-  state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+  state.editor.modulesByPath = await effects.vscode.changeSandbox(sandbox);
+
+  effects.vscode.syncTypings();
+
   actions.internal.ensurePackageJSON();
 
   await actions.editor.internal.initializeLiveSandbox(sandbox);
@@ -125,7 +128,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.files.internal.recoverFiles();
   }
 
-  await effects.vscode.changeSandbox(sandbox);
   effects.vscode.openModule(state.editor.currentModule);
   effects.preview.executeCodeImmediately(true);
 

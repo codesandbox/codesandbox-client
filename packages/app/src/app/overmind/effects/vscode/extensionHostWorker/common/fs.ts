@@ -11,8 +11,9 @@ import {
   rmdir,
   unlink,
   writeFile,
-} from '../../sandboxFsSync/utils';
-import { getTypeFetcher } from './type-downloader';
+} from '../../SandboxFsSync/utils';
+
+import { IModule } from '../../../../../../../../../standalone-packages/codesandbox-browserfs/dist/node/backend/CodeSandboxFS';
 
 const global = getGlobal();
 
@@ -59,17 +60,29 @@ export async function initializeBrowserFS({
   extraMounts = {},
 } = {}) {
   let isInitialSync = true;
+  let types: {
+    [path: string]: {
+      module: IModule;
+    };
+  } = {};
+
   return new Promise(resolve => {
     const config = { ...BROWSER_FS_CONFIG };
     let currentSandboxFs = {};
 
     if (syncSandbox) {
       if (syncTypes) {
-        const { options } = getTypeFetcher();
-
         config.options['/sandbox/node_modules'] = {
           fs: 'CodeSandboxFS',
-          options,
+          options: {
+            manager: {
+              getTranspiledModules: () => types,
+              addModule(module: IModule) {},
+              removeModule(module: IModule) {},
+              moveModule(module: IModule, newPath) {},
+              updateModule(module: IModule) {},
+            },
+          },
         };
       }
 
@@ -85,6 +98,15 @@ export async function initializeBrowserFS({
 
     config.options = { ...config.options, ...extraMounts };
 
+    function touchFileSystem() {
+      // This forces the file watchers to emit, which causes typescript to reload
+      global.BrowserFS.BFSRequire('fs').rename(
+        '/sandbox/node_modules/@types',
+        '/sandbox/node_modules/@types',
+        () => {}
+      );
+    }
+
     global.BrowserFS.configure(config, e => {
       if (e) {
         console.error(e);
@@ -94,27 +116,27 @@ export async function initializeBrowserFS({
       if (syncSandbox) {
         self.addEventListener('message', evt => {
           switch (evt.data.$type) {
-            case 'typings-sync': {
-              if (isInitialSync) {
-                commonPostMessage({
-                  $broadcast: true,
-                  $type: 'sync-sandbox',
-                  $data: {},
-                });
-              }
+            case 'types-sync': {
+              types = evt.data.$data;
+              touchFileSystem();
+              break;
+            }
+            case 'type-sync': {
+              Object.assign(types, evt.data.$data);
+              touchFileSystem();
               break;
             }
             case 'sandbox-fs': {
               currentSandboxFs = evt.data.$data;
               if (isInitialSync) {
                 isInitialSync = false;
-                global.BrowserFS.BFSRequire(
-                  'fs'
-                ).rename(
-                  '/sandbox/node_modules/@types',
-                  '/sandbox/node_modules/@types',
-                  () => {}
-                );
+                commonPostMessage({
+                  $broadcast: true,
+                  $type: 'sync-types',
+                  $data: {},
+                });
+                resolve();
+              } else {
                 resolve();
               }
               break;
@@ -147,24 +169,14 @@ export async function initializeBrowserFS({
           }
         });
 
-        if (syncTypes) {
-          commonPostMessage({
-            $broadcast: true,
-            $type: 'sync-types',
-            $data: {},
-          });
-        } else {
-          commonPostMessage({
-            $broadcast: true,
-            $type: 'sync-sandbox',
-            $data: {},
-          });
-        }
+        commonPostMessage({
+          $broadcast: true,
+          $type: 'sync-sandbox',
+          $data: {},
+        });
       } else {
         resolve();
       }
-
-      // BrowserFS is initialized and ready-to-use!
     });
   });
 }
