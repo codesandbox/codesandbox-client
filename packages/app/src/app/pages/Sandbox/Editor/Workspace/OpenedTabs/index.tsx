@@ -7,13 +7,12 @@ import { saveAllModules } from 'app/store/modules/editor/utils';
 import getType from 'app/utils/get-type.ts';
 import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
-
 import { EntryContainer } from '../elements';
 import { WorkspaceItem } from '../WorkspaceItem';
 import { CrossIconContainer, Dir, Title } from './elements';
 import SaveIcon from './SaveIcon';
 
-const OpenedTabs = () => {
+export const OpenedTabs: React.FC = () => {
   const { state, actions } = useOvermind();
   const sandbox = state.editor.currentSandbox;
   const { currentModuleShortid } = state.editor;
@@ -79,5 +78,3 @@ const OpenedTabs = () => {
     </WorkspaceItem>
   );
 };
-
-export default OpenedTabs;
