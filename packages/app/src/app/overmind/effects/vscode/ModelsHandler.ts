@@ -112,6 +112,27 @@ export class ModelsHandler {
     return moduleModel.model;
   };
 
+  public async updateTabsPath(oldPath: string, newPath: string) {
+    const oldModelPath = '/sandbox' + oldPath;
+    const newModelPath = '/sandbox' + newPath;
+
+    return Promise.all(
+      Object.keys(this.moduleModels).map(async path => {
+        if (oldModelPath === path) {
+          const model = await this.moduleModels[path].model;
+
+          // This runs remove/add automatically
+          return this.editorApi.textFileService.move(
+            model.uri,
+            this.monaco.Uri.file(newModelPath)
+          );
+        }
+
+        return Promise.resolve();
+      })
+    );
+  }
+
   public async applyOperation(moduleShortid: string, operation: any) {
     const module = this.sandbox.modules.find(m => m.shortid === moduleShortid);
 

@@ -44,6 +44,13 @@ export const moduleRenamed: AsyncAction<{
     );
 
     effects.vscode.fs.rename(state.editor.modulesByPath, oldPath, module.path);
+
+    await effects.vscode.updateTabsPath(oldPath, module.path);
+
+    if (state.editor.currentModuleShortid === module.shortid) {
+      effects.vscode.openModule(module);
+    }
+
     actions.editor.internal.updatePreviewCode();
     try {
       await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
@@ -54,6 +61,11 @@ export const moduleRenamed: AsyncAction<{
     } catch (error) {
       module.title = oldTitle;
       state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+
+      if (state.editor.currentModuleShortid === module.shortid) {
+        effects.vscode.openModule(module);
+      }
+
       actions.editor.internal.updatePreviewCode();
       effects.notificationToast.error('Could not rename file');
     }

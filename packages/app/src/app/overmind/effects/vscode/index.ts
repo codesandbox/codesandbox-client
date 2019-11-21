@@ -267,13 +267,19 @@ export class VSCodeEffect {
     if (this.editorApi) {
       const groupsToClose = this.editorApi.editorService.editorGroupService.getGroups();
 
-      await Promise.all([
-        ...groupsToClose.map(group => group.closeAllEditors()),
-        ...groupsToClose.map(group =>
-          this.editorApi.editorService.editorGroupService.removeGroup(group)
-        ),
-      ]);
+      await Promise.all(
+        groupsToClose.map(group =>
+          Promise.all([
+            group.closeAllEditors(),
+            this.editorApi.editorService.editorGroupService.removeGroup(group),
+          ])
+        )
+      );
     }
+  }
+
+  public async updateTabsPath(oldPath: string, newPath: string) {
+    return this.modelsHandler.updateTabsPath(oldPath, newPath);
   }
 
   public async openModule(module: Module) {
@@ -402,9 +408,9 @@ export class VSCodeEffect {
   private async enableExtension(id: string) {
     const extensionEnablementService = await this.extensionEnablementService
       .promise;
-    const extensionIdentifier = (await extensionEnablementService.getDisabledExtensions()).find(
-      ext => ext.id === id
-    );
+    const extensionIdentifier = (
+      await extensionEnablementService.getDisabledExtensions()
+    ).find(ext => ext.id === id);
 
     if (extensionIdentifier) {
       // Sadly we have to call a private api for this. Might change this once we have extension management
