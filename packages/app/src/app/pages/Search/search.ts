@@ -352,7 +352,5 @@ const styles = css`
 `;
 
 export default createGlobalStyle`
-  body {
-    ${styles}
-  }
+  ${styles}
 `;
