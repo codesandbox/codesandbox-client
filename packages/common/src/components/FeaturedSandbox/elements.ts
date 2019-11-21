@@ -17,6 +17,7 @@ export const Container = styled.div<{ height?: number }>`
   box-shadow: 0 9px 14px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   z-index: 1;
+  border: 1px solid #242424;
 
   cursor: pointer;
 
