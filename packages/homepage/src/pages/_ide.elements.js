@@ -41,7 +41,6 @@ export const MacBookWrapper = styled(HeroWrapper)`
   margin-top: 0;
   overflow: visible;
   margin-bottom: 8rem;
-  min-height: 60vh;
 
   ${props => props.theme.breakpoints.md} {
     min-height: auto;
@@ -262,4 +261,14 @@ export const HeartIcon = styled(Heart)`
 
 export const ManageIcon = styled(Manage)`
   ${iconStyles}
+`;
+
+export const Border = styled.div`
+  position: absolute;
+  background: #242424;
+  width: 1200px;
+  max-width: 80%;
+  height: 1px;
+  left: 50%;
+  transform: translateX(-50%);
 `;

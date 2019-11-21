@@ -22,7 +22,7 @@ const RunOnClick = ({ onClick }) => (
           </div>
           <div className="play" />
         </div>
-        <Text>Run on click</Text>
+        <Text>Click to Run</Text>
       </Container>
     </Centered>
   </Fullscreen>

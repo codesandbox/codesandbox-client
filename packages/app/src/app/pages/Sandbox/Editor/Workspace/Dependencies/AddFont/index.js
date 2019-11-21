@@ -22,9 +22,8 @@ export const AddFont = ({ addResource, addedResource }) => {
     <>
       <Container>
         <FontPicker
-          apiKey="AIzaSyDQ9HOzvLFchvhfDG9MR0UeLpF8ScJshxU"
           activeFontFamily={activeFontFamily}
-          onChange={nextFont => setActiveFontFamily(nextFont.family)}
+          onChange={nextFont => setActiveFontFamily(nextFont)}
         />
       </Container>
       <Container>
