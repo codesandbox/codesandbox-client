@@ -43,24 +43,6 @@ const tweets = [
     username: 'auchenberg',
   },
   {
-    name: 'Kent C. Dodds',
-    quote: 'CodeSandbox is my life now',
-    URL: 'https://twitter.com/kentcdodds/status/888096596319023104?s=20',
-    username: 'kentcdodds',
-  },
-  {
-    name: 'Sarah Drasner',
-    quote: 'CodeSandbox is truly amazing 🥰',
-    URL: 'https://twitter.com/sarah_edo/status/1163874202807484416?s=20',
-    username: 'sarah_edo',
-  },
-  {
-    name: 'Henrik Joreteg',
-    quote: "I've gotta say, CodeSandbox is badass",
-    URL: 'https://twitter.com/HenrikJoreteg/status/981645693868589056?s=20',
-    username: 'HenrikJoreteg',
-  },
-  {
     name: 'Marvin Hagemeister',
     quote: 'CodeSandbox is the best thing that has happened to OSS maintainers',
     URL: 'https://twitter.com/marvinhagemeist/status/1103184579723173888?s=20',
@@ -71,19 +53,7 @@ const tweets = [
     quote: 'CodeSandbox continues to amaze me every day 😍',
     URL: 'https://twitter.com/peggyrayzis/status/976631190802386944?s=20',
     username: 'peggyrayzis',
-  },
-  {
-    name: 'Rob Eisenberg',
-    quote: 'This is a great way to prototype and share ideas',
-    URL: 'https://twitter.com/EisenbergEffect/status/1050437945344253952',
-    username: 'EisenbergEffect',
-  },
-  {
-    name: 'Stefan Judis',
-    quote: 'Okay – CodeSandbox you rock!!! 👏',
-    URL: 'https://twitter.com/stefanjudis/status/1173604221381435397',
-    username: 'stefanjudis',
-  },
+  }
 ];
 
 function shuffle(array) {
