@@ -119,7 +119,7 @@ const colors = {
     foreground: tokens.reds[300],
   },
   editorWhitespace: {
-    foreground: '#444',
+    foreground: tokens.grays[600],
   },
   editorWidget: {
     background: tokens.grays[700],
