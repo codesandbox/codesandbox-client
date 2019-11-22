@@ -58,6 +58,11 @@ export default () => (
             }}
             css={`
               height: 0;
+              position: relative;
+              z-index: 2;
+              ${props => props.theme.breakpoints.md} {
+                height: auto;
+              }
             `}
           >
             <Title as="h1">An Online IDE for Rapid Web Development</Title>
@@ -74,6 +79,8 @@ export default () => (
               ${props => props.theme.breakpoints.md} {
                 display: none !important;
               }
+              z-index: 0;
+              position: relative;
             `}
             src={hero}
             alt="browser showing codesandbox running"

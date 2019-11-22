@@ -16,6 +16,9 @@ export const Title = styled.h1`
         margin: auto;
       `}
   `};
+  ${props => props.theme.breakpoints.md} {
+    max-width: 80%;
+  }
 `;
 
 export const Description = styled.h2`

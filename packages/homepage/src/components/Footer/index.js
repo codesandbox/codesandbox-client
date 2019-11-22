@@ -111,6 +111,16 @@ const Footer = () => (
             <Link to="/blog">Blog</Link>
           </P>
         </li>
+        <li>
+          <P small muted>
+            <Link to="/jobs">Careers</Link>
+          </P>
+        </li>
+        <li>
+          <P small muted>
+            <Link to="/legal">Legal</Link>
+          </P>
+        </li>
       </ul>
 
       <ul>

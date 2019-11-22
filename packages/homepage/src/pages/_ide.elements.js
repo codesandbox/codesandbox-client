@@ -81,6 +81,10 @@ export const ArtWorkWrapper = styled.div`
   ${props => props.theme.breakpoints.md} {
     height: 250px;
   }
+
+  ${props => props.theme.breakpoints.sm} {
+    height: 150px;
+  }
 `;
 
 export const Grid = styled.section`
@@ -140,6 +144,10 @@ export const TweetsWrapper = styled.div`
     position: absolute;
     margin-top: 2rem;
     z-index: 10;
+
+    ${props => props.theme.breakpoints.sm} {
+      display: none;
+    }
   }
 
   &:before {
@@ -152,6 +160,10 @@ export const TweetsWrapper = styled.div`
     position: absolute;
     margin-top: 2rem;
     z-index: 10;
+
+    ${props => props.theme.breakpoints.sm} {
+      display: none;
+    }
   }
 
   ul {

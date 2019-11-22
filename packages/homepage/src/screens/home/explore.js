@@ -68,7 +68,7 @@ const Sandbox = ({ id, image, big }) => {
       {clicked ? (
         <iframe
           title={id}
-          src={`https://codesandbox.io/embed/${id}?fontsize=14&hidenavigation=1&view=preview`}
+          src={`https://codesandbox.io/embed/${id}?fontsize=14&hidenavigation=1&view=preview&hidedevtools=1`}
           style={{
             width: 324,
             height: big ? 548 : 420,

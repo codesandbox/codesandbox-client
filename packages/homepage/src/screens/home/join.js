@@ -24,6 +24,10 @@ const JoinWrapper = styled.section`
     display: flex;
     min-height: 212px;
   }
+
+  ${props => props.theme.breakpoints.md} {
+    padding: 2rem;
+  }
 `;
 
 const IDE = styled.img`
@@ -47,6 +51,11 @@ const Text = styled.h3`
   max-width: 80%;
   margin: auto;
   margin-bottom: 2.5rem;
+
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
 `;
 
 const Join = ({ src, ...style }) => {
