@@ -14,8 +14,7 @@ date: 2019-11-13
 ## CodeSandbox CI
 
 Maintaining open source projects, while enormously fulfilling, can be
-time-consuming and stressful. After a busy
-[#Hacktoberfest](https://hacktoberfest.digitalocean.com), we know from
+time-consuming and stressful. After a busy #Hacktoberfest, we know from
 first-hand experience what it's like, and we wanted to help library maintainers
 make the best use of their time. Today we're pleased to launch CodeSandbox CI: A
 free continuous integration service purpose-built for open source library
@@ -25,22 +24,19 @@ https://youtu.be/k_aR_4FeKlc
 
 ### Here's how it works
 
-CodeSandbox CI is a [GitHub](https://github.com) app that auto-builds your
-library⁠ from pull requests. Whenever someone opens a new pull request,
-CodeSandbox CI builds a new version of your library. Those builds get posted to
-our registry, so you can test it in [CodeSandbox](https://codesandbox.io) or
-locally, and all without having to publish the build to
-[npm](https://npmjs.com). Plus, if the original GitHub issue contains a link to
-a reproducible sandbox, then we'll automatically fork it using the new PR build.
-That means you can review it online with one click.
+CodeSandbox CI is a GitHub app that auto-builds your library⁠ from pull
+requests. Whenever someone opens a new pull request, CodeSandbox CI builds a new
+version of your library. Those builds get posted to our registry, so you can
+test it in CodeSandbox or locally, and all without having to publish the build
+to npm⁠. Plus, if the original GitHub issue contains a link to a reproducible
+sandbox, then we'll automatically fork it using the new PR build. That means you
+can review it online with one click.
 
 ### Used by the biggest names in OSS
 
 After a successful private beta, CodeSandbox CI is already in use by projects
-like [React](https://github.com/facebook/react),
-[Babel](https://github.com/babel/babel), [Framer](https://framer.com),
-[Material UI](https://github.com/mui-org/material-ui), and others. And it's
-proving to be a real time-saver.
+like React, Babel, Framer, Material UI, and others. And it's proving to be a
+real time-saver.
 
 **Try it out for yourself by
 [installing the GitHub app](https://github.com/apps/codesandbox)**.
