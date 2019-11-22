@@ -1,56 +1,46 @@
 import React, { FunctionComponent, useState, useMemo } from 'react';
-import { Font } from '@samuelmeuli/font-manager';
 import { List, SearchFonts, FontLI, FontFamily, Arrow } from './elements';
+import { fonts } from './fonts';
 
 type Props = {
-  fonts: Font[];
   onSelection: (e: any) => void;
   activeFontFamily: string;
-  expanded: boolean;
 };
 
 export const FontList: FunctionComponent<Props> = ({
-  fonts,
   onSelection,
   activeFontFamily,
-  expanded,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const usedFonts = fonts.slice(0, 200);
 
   const updateSearch = (e: any) => setSearchTerm(e.target.value);
 
-  const getFontId = (fontFamily: string): string =>
-    fontFamily.replace(/\s+/g, '-').toLowerCase();
-
-  const getFonts: Font[] = useMemo(
+  const getFonts: string[] = useMemo(
     () =>
-      fonts.filter(f =>
-        f.family.toLowerCase().includes(searchTerm.trim().toLowerCase())
+      usedFonts.filter(f =>
+        f.toLowerCase().includes(searchTerm.trim().toLowerCase())
       ),
-    [fonts, searchTerm]
+    [searchTerm, usedFonts]
   );
   return (
     <>
       <Arrow />
-      <List expanded={expanded}>
+      <List>
         <SearchFonts
           type="text"
           value={searchTerm}
           onChange={updateSearch}
           placeholder="Search Typefaces"
         />
-        {getFonts.map((font: Font) => (
+        {getFonts.map((font: string) => (
           <FontLI
-            key={font.family}
-            onClick={onSelection}
-            onKeyPress={onSelection}
+            key={font}
+            onClick={() => onSelection(font)}
+            onKeyPress={() => onSelection(font)}
           >
-            <FontFamily
-              type="button"
-              id={`font-button-${getFontId(font.family)}`}
-              active={font.family === activeFontFamily}
-            >
-              {font.family}
+            <FontFamily type="button" active={font === activeFontFamily}>
+              {font}
             </FontFamily>
           </FontLI>
         ))}

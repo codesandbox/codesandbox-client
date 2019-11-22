@@ -12,7 +12,7 @@ import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
-import Modals from './common/Modals';
+import { Modals } from './common/Modals';
 import Dashboard from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
@@ -43,7 +43,9 @@ const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile')
 );
 const Search = Loadable(() =>
-  import(/* webpackChunkName: 'page-search' */ './Search')
+  import(/* webpackChunkName: 'page-search' */ './Search').then(module => ({
+    default: module.Search,
+  }))
 );
 const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
 

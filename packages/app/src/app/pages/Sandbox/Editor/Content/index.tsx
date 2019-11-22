@@ -76,7 +76,11 @@ export const Content: React.FC = () => {
         ? `Browser (${options.title || `:${options.port}`})`
         : `Browser`,
     Content: ({ hidden, options }) => (
-      <Preview options={options} hidden={hidden} />
+      <Preview
+        options={options}
+        hidden={hidden}
+        runOnClick={state.preferences.runOnClick}
+      />
     ),
     actions: [],
   };

@@ -1,5 +1,10 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import Color from 'color';
+
+const svg = props =>
+  `data:image/svg+xml,%3Csvg width='7' height='4' viewBox='0 0 7 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.50007 4L1.27146e-07 1.35122e-07L7 -4.76837e-07L3.50007 4Z' fill='${
+    props.theme.light ? 'black' : 'white'
+  }'/%3E%3C/svg%3E%0A`;
 
 const makeDarker = ({ theme }) =>
   Color(theme['input.background'])
@@ -80,13 +85,8 @@ export const List = styled.ul<{ expanded?: boolean }>`
   background-color: ${props => makeLighter(props)};
   width: 240px;
   z-index: 10;
-
-  ${props =>
-    props.expanded &&
-    css`
-      max-height: 130px;
-      display: block;
-    `}
+  max-height: 130px;
+  display: block;
 `;
 
 export const SelectedFont = styled.button<{ done?: boolean }>`
@@ -105,23 +105,18 @@ export const SelectedFont = styled.button<{ done?: boolean }>`
   position: relative;
   box-sizing: border-box;
   outline: none;
+  cursor: pointer;
 
-  ${props =>
-    props.done &&
-    css`
-      :after {
-        content: '';
-        background-image: url("${`data:image/svg+xml,%3Csvg width='7' height='4' viewBox='0 0 7 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.50007 4L1.27146e-07 1.35122e-07L7 -4.76837e-07L3.50007 4Z' fill='${
-          props.theme.light ? 'black' : 'white'
-        }'/%3E%3C/svg%3E%0A`}");
-        width: 7px;
-        height: 4px;
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-      }
-    `}
+  :after {
+      content: '';
+      background-image: url("${props => svg(props)}");
+      width: 7px;
+      height: 4px;
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
 `;
 
 export const Arrow = styled.div`

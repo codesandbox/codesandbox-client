@@ -1,4 +1,5 @@
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import VERSION from '@codesandbox/common/lib/version';
 import { CurrentUser } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
 import pushToAirtable from 'app/overmind/utils/pushToAirtable';
@@ -53,6 +54,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
       emoji,
       username: (user || {}).username,
       email,
+      version: VERSION,
     })
       .then(() => {
         setEmoji(null);

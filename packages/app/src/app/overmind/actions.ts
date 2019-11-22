@@ -74,6 +74,7 @@ type ModalName =
   | 'searchDependencies'
   | 'signInForTemplates'
   | 'userSurvey';
+
 export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },
   { modal, message }
