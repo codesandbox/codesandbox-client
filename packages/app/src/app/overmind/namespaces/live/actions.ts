@@ -28,10 +28,10 @@ export const roomJoined: AsyncAction<{
 
   state.workspace.openedWorkspaceItem = defaultItem.id;
 
-  state.editor.modulesByPath = await effects.vscode.changeSandbox(
-    state.editor.currentSandbox
-  );
-  effects.vscode.syncTypings();
+  await effects.vscode.changeSandbox(state.editor.currentSandbox, fs => {
+    state.editor.modulesByPath = fs;
+  });
+
   effects.vscode.openModule(state.editor.currentModule);
   effects.preview.executeCodeImmediately(true);
   state.live.isLoading = false;
@@ -48,9 +48,9 @@ export const createLiveClicked: AsyncAction<{
   const sandbox = await actions.live.internal.initialize(roomId);
   actions.internal.setCurrentSandbox(sandbox);
 
-  state.editor.modulesByPath = await effects.vscode.changeSandbox(
-    state.editor.currentSandbox
-  );
+  await effects.vscode.changeSandbox(state.editor.currentSandbox, fs => {
+    state.editor.modulesByPath = fs;
+  });
 
   effects.vscode.openModule(state.editor.currentModule);
   effects.preview.executeCodeImmediately(true);

@@ -317,7 +317,7 @@ export const ensurePackageJSON: AsyncAction = async ({ state, effects }) => {
     // We grab the module from the state to continue working with it (proxy)
     const module = sandbox.modules[sandbox.modules.length - 1];
 
-    effects.vscode.fs.writeFile(state.editor.modulesByPath, module);
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
 
     try {
       const updatedModule = await effects.api.createModule(sandbox.id, module);
@@ -326,7 +326,7 @@ export const ensurePackageJSON: AsyncAction = async ({ state, effects }) => {
       module.shortid = updatedModule.shortid;
     } catch (error) {
       sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
-      state.editor.modulesByPath = effects.vscode.fs.create(sandbox);
+      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
     }
   }
 };
