@@ -177,6 +177,6 @@ trigger:
   branch: master
 ---
 kind: signature
-hmac: 015a8ddaa2fa145808e3c30ad05da71d03e3b8653b6bddb41547f13611397070
+hmac: e625eaf2e469b9b6763641d4cc1f089900ef8d8c41db32c6f6aacb27bee8c19c
 
 ...
