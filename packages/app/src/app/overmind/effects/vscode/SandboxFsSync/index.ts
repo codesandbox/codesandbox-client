@@ -10,10 +10,7 @@ import {
   Sandbox,
   SandboxFs,
 } from '@codesandbox/common/lib/types';
-import {
-  fetchPackageJSON,
-  isAbsoluteVersion,
-} from '@codesandbox/common/lib/utils/dependencies';
+import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { json } from 'overmind';
@@ -339,23 +336,22 @@ class SandboxFsSync {
         isAbsoluteVersion(dep.version)
       ) {
         const name = `@types/${dep.name}`;
-        fetchPackageJSON(name, dep.version).then(({ version }) => {
-          this.setAndSendPackageTypes(dep.name, {
-            [name]: version,
+        this.fetchDependencyTypingFiles(name, this.typesInfo[dep.name].latest)
+          .then(files => {
+            this.setAndSendPackageTypes(dep.name, files);
+          })
+          .catch(e => {
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('Trouble fetching types for ' + name);
+            }
           });
-        });
       }
 
       try {
-        const fetchRequest = await fetch(
-          `${SERVICE_URL}/${dep.name}@${dep.version}.json`
+        const files = await this.fetchDependencyTypingFiles(
+          dep.name,
+          dep.version
         );
-
-        if (!fetchRequest.ok) {
-          throw new Error('Fetch error');
-        }
-
-        const { files } = await fetchRequest.json();
 
         this.setAndSendPackageTypes(dep.name, files);
       } catch (e) {
@@ -366,6 +362,18 @@ class SandboxFsSync {
     } catch (e) {
       /* ignore */
     }
+  }
+
+  private async fetchDependencyTypingFiles(name: string, version: string) {
+    const fetchRequest = await fetch(`${SERVICE_URL}/${name}@${version}.json`);
+
+    if (!fetchRequest.ok) {
+      throw new Error('Fetch error');
+    }
+
+    const { files } = await fetchRequest.json();
+
+    return files;
   }
 }
 
