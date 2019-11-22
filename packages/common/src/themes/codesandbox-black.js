@@ -1,4 +1,5 @@
 import dot from 'dot-object';
+import { colors as tokens } from '../design-language/colors';
 
 /*
   we use dot to convert objects to vscode dot notation
@@ -7,33 +8,6 @@ import dot from 'dot-object';
   organising the file better, let's us lint the file and find
   duplicates / classhing styles.
 */
-
-const tokens = {
-  white: '#fff',
-  grays: {
-    100: '#fff9f9',
-    200: '#e6e6e6',
-    300: '#999999',
-    400: '#757575',
-    500: '#242424',
-    600: '#343434',
-    700: '#151515',
-    800: '#040404',
-  },
-  blues: {
-    300: '#6CC7F6', // Teal
-    600: '#0971f1', // Blue
-    700: '#535BCF', // Indigo
-  },
-  reds: {
-    200: '#EB455A', // Pink
-    300: '#FF453A', // Heart
-    500: '#E1270E', // Red
-  },
-  green: '#5BC266',
-  purple: '#BF5AF2',
-  yellow: '#FBCC43',
-};
 
 const colors = {
   contrastBorder: tokens.grays[500],
