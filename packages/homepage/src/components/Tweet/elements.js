@@ -12,20 +12,21 @@ export const TweetsWrapper = styled.a`
   left: -6rem;
   padding: 2.7rem 4.2rem;
 
-  ${props => props.theme.breakpoints.md} {
-    position: relative;
-    right: auto;
-    left: auto;
-    width: 90%;
-    padding: 2rem;
-  }
-
   ${props =>
     props.right &&
     `
     left: auto;
     right: -6.7rem;
   `}
+
+  ${props => props.theme.breakpoints.md} {
+    position: relative;
+    right: auto;
+    left: auto;
+    width: 100%;
+    padding: 2rem;
+    margin: 0;
+  }
 `;
 
 export const Quote = styled.blockquote`
@@ -41,7 +42,7 @@ export const Quote = styled.blockquote`
 
   ${props => props.theme.breakpoints.md} {
     font-size: 1.2rem;
-    line-height: 1.2;
+    line-height: 1.5;
   }
 `;
 
@@ -63,11 +64,17 @@ export const Avatar = styled.img`
   margin-right: 1rem;
 
   ${props => props.theme.breakpoints.md} {
-    display: none;
+    margin-bottom: 1rem;
+    margin-right: 0;
   }
 `;
 
 export const Author = styled.footer`
   display: flex;
   align-items: center;
+
+  ${props => props.theme.breakpoints.md} {
+    flex-direction: column;
+    text-align: center;
+  }
 `;

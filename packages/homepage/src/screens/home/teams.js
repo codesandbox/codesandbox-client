@@ -32,6 +32,8 @@ const List = styled.ul`
     }
     li {
       flex-shrink: 0;
+      width: 100%;
+      text-align: center;
     }
   }
 `;
