@@ -113,7 +113,7 @@ export default () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/teams">
+                  <Link to="/team">
                     <section>
                       <TeamsIcon />
                     </section>

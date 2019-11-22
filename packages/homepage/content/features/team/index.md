@@ -3,10 +3,10 @@ title: Code Together With Your Team
 description:
   Create a team to view and edit sandboxes with all team members, in one place
 slug: team
-tweetText: Start building instantly online
-tweetJob: Senior Developer Programs Engineer, Google
-tweetName: Jason Miller
-tweetHandle: _developit
+tweetText: CodeSandbox is easy to use and has amazing integrations
+tweetJob: UX Engineer, LogMeIn
+tweetName: Emma Wedekind
+tweetHandle: EmmaWedekind
 bgColor: EB455A
 coverImage: ./team.svg
 coverReversed: true
