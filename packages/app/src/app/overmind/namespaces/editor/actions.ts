@@ -68,6 +68,13 @@ export const npmDependencyRemoved: AsyncAction<{
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;
 }>(async ({ state, actions, effects }, { id }) => {
+  // This happens when we fork. This can be avoided with state first routing
+  if (state.editor.isForkingSandbox) {
+    effects.vscode.openModule(state.editor.currentModule);
+    state.editor.isForkingSandbox = false;
+    return;
+  }
+
   await effects.vscode.closeAllTabs();
 
   state.editor.error = null;
@@ -75,11 +82,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   let newId = id;
 
   newId = actions.editor.internal.ensureSandboxId(newId);
-
-  // This happens when we fork. This can be avoided with state first routing
-  if (state.editor.isForkingSandbox) {
-    return;
-  }
 
   const hasExistingSandbox = Boolean(state.editor.currentId);
 

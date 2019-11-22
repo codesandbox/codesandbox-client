@@ -331,7 +331,6 @@ export const forkSandbox: AsyncAction<{
         state.editor.modulesByPath = fs;
       });
 
-      effects.vscode.openModule(state.editor.currentModule);
       effects.preview.executeCodeImmediately(true);
 
       // When not server we "piggyback" the existing Sandbox to avoid any rerenders and need
@@ -353,8 +352,6 @@ export const forkSandbox: AsyncAction<{
     console.error(error);
     effects.notificationToast.error('Sorry, unable to fork this sandbox');
   }
-
-  state.editor.isForkingSandbox = false;
 };
 
 export const setCurrentModule: AsyncAction<Module> = async (
