@@ -32,7 +32,6 @@ const Section = styled.section`
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
     margin-left: 0px;
-    margin-top: 30rem;
     justify-items: center;
   }
 `;

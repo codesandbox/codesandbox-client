@@ -16,6 +16,8 @@ export const TweetsWrapper = styled.a`
     position: relative;
     right: auto;
     left: auto;
+    width: 90%;
+    padding: 2rem;
   }
 
   ${props =>
@@ -36,6 +38,11 @@ export const Quote = styled.blockquote`
   color: ${props => props.theme.homepage.white};
   margin: 0;
   margin-bottom: 2rem;
+
+  ${props => props.theme.breakpoints.md} {
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
 `;
 
 export const Info = styled.p`
@@ -54,6 +61,10 @@ export const Avatar = styled.img`
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   margin-right: 1rem;
+
+  ${props => props.theme.breakpoints.md} {
+    display: none;
+  }
 `;
 
 export const Author = styled.footer`

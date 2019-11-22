@@ -58,6 +58,10 @@ const Started = () => {
              background: #242424
              max-width: 100%;
 
+               ${props => props.theme.breakpoints.md} {
+    grid-template-columns: 1fr;
+  }
+
            `}
               tweet={{
                 name: 'Peggy Rayzis',
@@ -72,7 +76,15 @@ const Started = () => {
           </div>
         </div>
 
-        <img src={started} alt="started" />
+        <img
+          src={started}
+          css={`
+            ${props => props.theme.breakpoints.md} {
+              display: none;
+            }
+          `}
+          alt="started"
+        />
       </Grid>
     </>
   );

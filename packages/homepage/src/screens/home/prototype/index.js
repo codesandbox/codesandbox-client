@@ -17,6 +17,10 @@ const Grid = styled.div`
   grid-gap: 32px;
   margin-bottom: 14rem;
   margin-top: 4rem;
+
+  ${props => props.theme.breakpoints.md} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const ImageWrapper = styled.div`
@@ -25,6 +29,10 @@ const ImageWrapper = styled.div`
   min-height: 475px;
   position: relative;
   overflow: hidden;
+
+  ${props => props.theme.breakpoints.md} {
+    display: none;
+  }
 `;
 
 const Prototype = () => {

@@ -17,9 +17,22 @@ const List = styled.ul`
   padding: 0;
   margin-top: 2rem;
   margin-bottom: 12rem;
+  flex-wrap: wrap;
 
   li:not(:last-child) {
     margin-right: 5rem;
+  }
+
+  ${props => props.theme.breakpoints.md} {
+    justify-content: center;
+
+    li:not(:last-child) {
+      margin-right: 0;
+      margin-bottom: 2rem;
+    }
+    li {
+      flex-shrink: 0;
+    }
   }
 `;
 
