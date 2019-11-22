@@ -136,6 +136,10 @@ export const List = styled.ul`
 
     &:hover {
       color: ${props => props.theme.homepage.white};
+
+      svg path {
+        fill: ${props => props.theme.homepage.white};
+      }
     }
   }
 `;

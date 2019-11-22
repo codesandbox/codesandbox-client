@@ -71,7 +71,7 @@ const Navigation = () => {
   }, []);
 
   return (
-    <>
+    <div onMouseLeave={() => setOpenedNav(null)}>
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -90,9 +90,7 @@ const Navigation = () => {
               <List>
                 <li>
                   <button
-                    onClick={() =>
-                      setOpenedNav(openedNav === 'features' ? null : 'features')
-                    }
+                    onMouseEnter={() => setOpenedNav('features')}
                     type="button"
                   >
                     Features
@@ -101,9 +99,7 @@ const Navigation = () => {
                 </li>
                 <li>
                   <button
-                    onClick={() =>
-                      setOpenedNav(openedNav === 'explore' ? null : 'explore')
-                    }
+                    onMouseEnter={() => setOpenedNav('explore')}
                     type="button"
                   >
                     Explore
@@ -112,11 +108,7 @@ const Navigation = () => {
                 </li>
                 <li>
                   <button
-                    onClick={() =>
-                      setOpenedNav(
-                        openedNav === 'resources' ? null : 'resources'
-                      )
-                    }
+                    onMouseEnter={() => setOpenedNav('resources')}
                     type="button"
                   >
                     Resources
@@ -125,9 +117,7 @@ const Navigation = () => {
                 </li>
                 <li>
                   <button
-                    onClick={() =>
-                      setOpenedNav(openedNav === 'support' ? null : 'support')
-                    }
+                    onMouseEnter={() => setOpenedNav('support')}
                     type="button"
                   >
                     Support
@@ -136,14 +126,21 @@ const Navigation = () => {
                 </li>
 
                 <li>
-                  <Link to="/pricing">Pricing</Link>
+                  <Link to="/pricing" onMouseEnter={() => setOpenedNav(null)}>
+                    Pricing
+                  </Link>
                 </li>
                 {!user && (
                   <li className="tablet-remove">
-                    <a href="https://codesandbox.io/signin">Sign In</a>
+                    <a
+                      onMouseEnter={() => setOpenedNav(null)}
+                      href="https://codesandbox.io/signin"
+                    >
+                      Sign In
+                    </a>
                   </li>
                 )}
-                <LogIn>
+                <LogIn onMouseEnter={() => setOpenedNav(null)}>
                   <Button className="button" href="/s">
                     Create Sandbox
                   </Button>
@@ -298,7 +295,7 @@ const Navigation = () => {
           },
         ]}
       />
-    </>
+    </div>
   );
 };
 
