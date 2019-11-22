@@ -19,11 +19,14 @@ export const TweetsWrapper = styled.a`
     right: -6.7rem;
   `}
 
-  ${props => props.theme.breakpoints.md} {
+  ${props => props.theme.breakpoints.lg} {
     position: relative;
     right: auto;
     left: auto;
     width: 100%;
+  }
+
+  ${props => props.theme.breakpoints.md} {
     padding: 2rem;
     margin: 0;
   }

@@ -15,7 +15,7 @@ const ImageWrapper = styled.div`
   width: calc(100vw - ((100vw - 1200px) / 2) - 10px);
   overflow: auto;
 
-  ${props => props.theme.breakpoints.md} {
+  ${props => props.theme.breakpoints.lg} {
     max-width: 100%;
   }
 
