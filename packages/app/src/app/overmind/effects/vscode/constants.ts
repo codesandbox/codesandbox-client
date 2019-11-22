@@ -4,4 +4,4 @@ export const EXTENSIONS_LOCATION = process.env.VSCODE
 
 export const VIM_EXTENSION_ID = 'vscodevim.vim';
 
-export const WAIT_INITIAL_TYPINGS_MS = 2000;
+export const WAIT_INITIAL_TYPINGS_MS = 1000;

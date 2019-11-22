@@ -45,8 +45,6 @@ export const addNpmDependency: AsyncAction<{
       version: newVersion,
       isDev: Boolean(isDev),
     });
-
-    actions.editor.internal.updatePreviewCode();
   }
 );
 
@@ -65,8 +63,6 @@ export const npmDependencyRemoved: AsyncAction<{
     moduleShortid: state.editor.currentPackageJSON.shortid,
     cbID: null,
   });
-
-  actions.editor.internal.updatePreviewCode();
 });
 
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{

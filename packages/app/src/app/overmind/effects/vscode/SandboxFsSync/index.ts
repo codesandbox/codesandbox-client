@@ -10,12 +10,16 @@ import {
   Sandbox,
   SandboxFs,
 } from '@codesandbox/common/lib/types';
-import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
+import {
+  fetchPackageJSON,
+  isAbsoluteVersion,
+} from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { json } from 'overmind';
-import { mkdir, rename, rmdir, unlink, writeFile } from './utils';
+
 import { WAIT_INITIAL_TYPINGS_MS } from '../constants';
+import { mkdir, rename, rmdir, unlink, writeFile } from './utils';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
@@ -36,8 +40,16 @@ type SandboxFsSyncOptions = {
 
 class SandboxFsSync {
   private options: SandboxFsSyncOptions;
-  private types: any = {};
-  private deps: { [path: string]: string } = {};
+  private types: {
+    [packageName: string]: {
+      [typeName: string]: string;
+    };
+  } = {};
+
+  private deps: { [path: string]: string } = {
+    '@types/jest': 'latest',
+  };
+
   private isDisposed = false;
   private currentSyncId = 0;
   private typesInfo: Promise<any>;
@@ -47,7 +59,10 @@ class SandboxFsSync {
   }
 
   public getTypes() {
-    return this.types;
+    return Object.keys(this.types).reduce(
+      (aggr, key) => Object.assign(aggr, this.types[key]),
+      {}
+    );
   }
 
   public dispose() {
@@ -180,14 +195,34 @@ class SandboxFsSync {
     try {
       this.currentSyncId = syncId;
 
+      this.typesInfo = await this.getTypesInfo();
       const syncDetails = await this.getDependencyTypingsSyncDetails();
 
       if (syncDetails) {
-        this.fetchDependencyTypings(
-          syncId,
-          syncDetails.packageJsonContent,
-          syncDetails.autoInstall
-        );
+        const newDeps = syncDetails.dependencies;
+        const { added, removed } = this.getDepsChanges(newDeps);
+
+        this.deps = newDeps;
+
+        added.forEach(dep => {
+          this.fetchDependencyTyping(syncId, dep, syncDetails.autoInstall);
+        });
+
+        if (removed.length) {
+          const removedTypings = {};
+
+          // We go through removed deps to figure out what typings packages
+          // has been removed, then delete the from our types as well
+          removed.forEach(removedDep => {
+            const typings = this.types[removedDep.name] || {};
+
+            Object.assign(removedTypings, typings);
+
+            delete this.types[removedDep.name];
+          });
+
+          this.send('types-remove', removedTypings);
+        }
       }
     } catch (error) {
       // eslint-disable-next-line
@@ -195,8 +230,38 @@ class SandboxFsSync {
     }
   }
 
+  private getDepsChanges(newDeps) {
+    const added: Array<{ name: string; version: string }> = [];
+    const removed: Array<{ name: string; version: string }> = [];
+    const newDepsKeys = Object.keys(newDeps);
+    const currentDepsKeys = Object.keys(this.deps);
+
+    newDepsKeys.forEach(newDepKey => {
+      if (
+        !this.deps[newDepKey] ||
+        this.deps[newDepKey] !== newDeps[newDepKey]
+      ) {
+        added.push({
+          name: newDepKey,
+          version: newDeps[newDepKey],
+        });
+      }
+    });
+
+    currentDepsKeys.forEach(currentDepKey => {
+      if (currentDepKey !== '@types/jest' && !newDeps[currentDepKey]) {
+        removed.push({
+          name: currentDepKey,
+          version: this.deps[currentDepKey],
+        });
+      }
+    });
+
+    return { added, removed };
+  }
+
   private async getDependencyTypingsSyncDetails(): Promise<{
-    packageJsonContent: string;
+    dependencies: { [name: string]: string };
     autoInstall: boolean;
   }> {
     return new Promise((resolve, reject) => {
@@ -221,11 +286,21 @@ class SandboxFsSync {
                 browserFs.stat(
                   '/sandbox/tsconfig.json',
                   (tsConfigError, result) => {
-                    // If tsconfig exists we want to sync the types
-                    resolve({
-                      packageJsonContent: rv.toString(),
-                      autoInstall: Boolean(tsConfigError) || !result,
-                    });
+                    // If tsconfig exists we want to sync the typesp
+                    try {
+                      const packageJson = JSON.parse(rv.toString());
+                      resolve({
+                        dependencies: {
+                          ...packageJson.dependencies,
+                          ...packageJson.devDependencies,
+                        },
+                        autoInstall: Boolean(tsConfigError) || !result,
+                      });
+                    } catch (error) {
+                      reject(
+                        new Error('TYPINGS: Could not parse package.json')
+                      );
+                    }
                   }
                 );
               }
@@ -242,11 +317,11 @@ class SandboxFsSync {
   }
 
   private sendTypes() {
-    this.send('types-sync', this.types);
+    this.send('types-sync', this.getTypes());
   }
 
-  private sendType(type: { [path: string]: any }) {
-    this.send('type-sync', type);
+  private sendPackageTypes(types: { [path: string]: any }) {
+    this.send('package-types-sync', types);
   }
 
   /**
@@ -264,63 +339,62 @@ class SandboxFsSync {
     return this.typesInfo;
   }
 
-  private async fetchDependencyTypings(
+  private setAndSendPackageTypes(
+    name: string,
+    types: { [name: string]: string },
+    syncId: number
+  ) {
+    if (!this.isDisposed && this.currentSyncId === syncId) {
+      if (!this.types[name]) {
+        this.types[name] = {};
+      }
+
+      Object.assign(this.types[name], types);
+      this.sendPackageTypes(types);
+    }
+  }
+
+  private async fetchDependencyTyping(
     syncId: number,
-    packageJSON: string,
+    dep: { name: string; version: string },
     autoInstallTypes: boolean
   ) {
     try {
-      const { dependencies = {}, devDependencies = {} } = JSON.parse(
-        packageJSON
-      );
-
-      const totalDependencies = {
-        '@types/jest': 'latest',
-        ...dependencies,
-        ...devDependencies,
-      };
-
-      if (autoInstallTypes) {
-        const typeInfo = await this.getTypesInfo();
-        Object.keys(totalDependencies).forEach(async dep => {
-          if (
-            !dep.startsWith('@types/') &&
-            !totalDependencies[`@types/${dep}`] &&
-            typeInfo[dep]
-          ) {
-            totalDependencies[`@types/${dep}`] = typeInfo[dep].latest;
-          }
+      if (
+        autoInstallTypes &&
+        this.typesInfo[dep.name] &&
+        !dep.name.startsWith('@types/') &&
+        isAbsoluteVersion(dep.version)
+      ) {
+        const name = `@types/${dep.name}`;
+        fetchPackageJSON(name, dep.version).then(({ version }) => {
+          this.setAndSendPackageTypes(
+            dep.name,
+            {
+              [name]: version,
+            },
+            syncId
+          );
         });
       }
 
-      const absoluteDependencies = await getAbsoluteDependencies(
-        totalDependencies
-      );
+      try {
+        const fetchRequest = await fetch(
+          `${SERVICE_URL}/${dep.name}@${dep.version}.json`
+        );
 
-      Object.keys(absoluteDependencies).forEach(async depName => {
-        const depVersion = absoluteDependencies[depName];
-
-        try {
-          const fetchRequest = await fetch(
-            `${SERVICE_URL}/${depName}@${depVersion}.json`
-          );
-
-          if (!fetchRequest.ok) {
-            throw new Error('Fetch error');
-          }
-
-          const { files } = await fetchRequest.json();
-
-          if (!this.isDisposed && this.currentSyncId === syncId) {
-            Object.assign(this.types, files);
-            this.sendType(files);
-          }
-        } catch (e) {
-          if (process.env.NODE_ENV === 'development') {
-            console.warn('Trouble fetching types for ' + depName);
-          }
+        if (!fetchRequest.ok) {
+          throw new Error('Fetch error');
         }
-      });
+
+        const { files } = await fetchRequest.json();
+
+        this.setAndSendPackageTypes(dep.name, files, syncId);
+      } catch (e) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Trouble fetching types for ' + dep.name);
+        }
+      }
     } catch (e) {
       /* ignore */
     }

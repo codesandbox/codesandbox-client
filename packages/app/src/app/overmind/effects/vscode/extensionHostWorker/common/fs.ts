@@ -101,8 +101,8 @@ export async function initializeBrowserFS({
     function touchFileSystem() {
       // This forces the file watchers to emit, which causes typescript to reload
       global.BrowserFS.BFSRequire('fs').rename(
-        '/sandbox/node_modules/@types',
-        '/sandbox/node_modules/@types',
+        '/sandbox/node_modules',
+        '/sandbox/node_modules',
         () => {}
       );
     }
@@ -125,8 +125,17 @@ export async function initializeBrowserFS({
               }
               break;
             }
-            case 'type-sync': {
+            case 'package-types-sync': {
               Object.assign(types, evt.data.$data);
+              touchFileSystem();
+              break;
+            }
+            case 'types-remove': {
+              const deps = evt.data.$data;
+
+              Object.keys(deps).forEach(depKey => {
+                delete types[depKey];
+              });
               touchFileSystem();
               break;
             }
