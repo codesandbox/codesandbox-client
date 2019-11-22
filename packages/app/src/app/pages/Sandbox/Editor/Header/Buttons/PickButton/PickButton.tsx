@@ -17,19 +17,13 @@ export const PickButton: FunctionComponent = () => {
   } = useOvermind();
 
   const details = {
+    description,
     id,
     title,
-    description,
   };
 
   return (
-    <Button
-      onClick={() => {
-        pickSandboxModal({ details });
-      }}
-      secondary={owned}
-      small
-    >
+    <Button onClick={() => pickSandboxModal(details)} secondary={owned} small>
       Pick
     </Button>
   );

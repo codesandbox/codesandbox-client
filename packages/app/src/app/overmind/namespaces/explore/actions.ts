@@ -1,3 +1,4 @@
+import { PickedSandboxDetails } from '@codesandbox/common/lib/types';
 import { AsyncAction, Action } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 
@@ -43,11 +44,10 @@ export const pickSandbox: AsyncAction<{
   }
 };
 
-export const pickSandboxModal: Action<{
-  description: string;
-  id: string;
-  title: string;
-}> = ({ state }, details) => {
+export const pickSandboxModal: Action<PickedSandboxDetails> = (
+  { state },
+  details
+) => {
   state.explore.pickedSandboxDetails = details;
   state.currentModal = 'pickSandbox';
 };
