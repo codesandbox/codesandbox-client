@@ -327,10 +327,10 @@ export const forkSandbox: AsyncAction<{
     if (getTemplateDefinition(forkedSandbox.template).isServer) {
       await effects.vscode.closeAllTabs();
       actions.internal.setCurrentSandbox(forkedSandbox);
-      state.editor.modulesByPath = await effects.vscode.changeSandbox(
-        forkedSandbox
-      );
-      effects.vscode.syncTypings();
+      await effects.vscode.changeSandbox(forkedSandbox, fs => {
+        state.editor.modulesByPath = fs;
+      });
+
       effects.vscode.openModule(state.editor.currentModule);
       effects.preview.executeCodeImmediately(true);
 

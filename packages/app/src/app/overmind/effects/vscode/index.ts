@@ -77,7 +77,6 @@ export class VSCodeEffect {
   public initialized: Promise<void>;
   public sandboxFsSync: SandboxFsSync;
 
-  private isFirstTypingsSync = true;
   private monaco: any;
   private editorApi: any;
   private options: VsCodeOptions;
@@ -242,8 +241,15 @@ export class VSCodeEffect {
     }
   };
 
-  public async changeSandbox(sandbox: Sandbox) {
+  /*
+    We need to use a callback to set the sandbox-fs into the state of Overmind. The reason
+    is that we internally read from this state to get information about the files. It is really
+    messy, but we will move to a completely internal filesystem soon
+  */
+  public async changeSandbox(sandbox: Sandbox, setFs: (fs: SandboxFs) => void) {
     await this.initialized;
+
+    const isFirstSync = !this.sandboxFsSync;
 
     if (this.modelsHandler) {
       this.modelsHandler.dispose();
@@ -262,16 +268,14 @@ export class VSCodeEffect {
     );
     this.sandboxFsSync = new SandboxFsSync(this.options);
 
-    return this.sandboxFsSync.create(sandbox);
-  }
+    setFs(this.sandboxFsSync.create(sandbox));
 
-  public syncTypings() {
-    if (this.isFirstTypingsSync) {
-      this.isFirstTypingsSync = false;
-      this.sandboxFsSync.syncTypings(() => {});
+    // We do not stop the extension host on first sync
+    if (isFirstSync) {
+      this.sandboxFsSync.sync(() => {});
     } else {
       this.editorApi.extensionService.stopExtensionHost();
-      this.sandboxFsSync.syncTypings(() => {
+      this.sandboxFsSync.sync(() => {
         this.editorApi.extensionService.startExtensionHost();
       });
     }

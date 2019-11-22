@@ -26,8 +26,6 @@ const global = getGlobal() as Window & { BrowserFS: any };
 const browserFs = global.BrowserFS.BFSRequire('fs');
 const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
 
-let lastMTime = new Date(0);
-
 declare global {
   interface Window {
     BrowserFS: any;
@@ -50,12 +48,23 @@ class SandboxFsSync {
     '@types/jest': 'latest',
   };
 
+  private workerIds: string[] = [];
+
   private isDisposed = false;
-  private currentSyncId = 0;
   private typesInfo: Promise<any>;
   constructor(options: SandboxFsSyncOptions) {
     this.options = options;
     self.addEventListener('message', this.onWorkerMessage);
+  }
+
+  public sync(cb: () => void) {
+    this.send('reset', {});
+    this.syncDependencyTypings();
+    setTimeout(() => {
+      if (!this.isDisposed) {
+        cb();
+      }
+    }, WAIT_INITIAL_TYPINGS_MS);
   }
 
   public getTypes() {
@@ -94,8 +103,6 @@ class SandboxFsSync {
       }
     });
 
-    this.syncSandbox(sandboxFs);
-
     return sandboxFs;
   }
 
@@ -106,7 +113,7 @@ class SandboxFsSync {
     this.send('write-file', copy);
 
     if (module.title === 'package.json') {
-      this.syncDependencyTypings(this.currentSyncId + 1);
+      this.syncDependencyTypings();
     }
   }
 
@@ -139,43 +146,32 @@ class SandboxFsSync {
     this.send('mkdir', copy);
   }
 
-  public async syncTypings(cb: () => void) {
-    try {
-      await this.syncDependencyTypings(this.currentSyncId + 1);
-    } catch (error) {
-      // Do nothing
-    }
-
-    setTimeout(() => {
-      if (!this.isDisposed) {
-        cb();
-      }
-    }, WAIT_INITIAL_TYPINGS_MS);
-  }
-
   private onWorkerMessage = evt => {
-    if (evt.data.$type === 'sync-types') {
-      // We pass the current syncId as we want to latch on
-      // to the existing sync
-      this.syncDependencyTypings(this.currentSyncId);
+    if (evt.data.$fs_id && !this.workerIds.includes(evt.data.$fs_id)) {
+      this.workerIds.push(evt.data.$fs_id);
     }
 
     if (evt.data.$type === 'sync-sandbox') {
-      this.syncSandbox(this.options.getSandboxFs());
+      this.syncSandbox(this.options.getSandboxFs(), evt.data.$fs_id);
+    }
+
+    if (evt.data.$type === 'sync-types') {
+      this.send('types-sync', this.getTypes(), evt.data.$fs_id);
     }
   };
 
   // We sync the FS whenever we create a new one, which happens in different
   // scenarios. If a worker is requesting a sync we grab the existing FS from
   // the state
-  private syncSandbox(sandboxFs) {
-    this.send('sandbox-fs', json(sandboxFs));
+  private syncSandbox(sandboxFs, id?) {
+    this.send('sandbox-fs', json(sandboxFs), id);
   }
 
-  private send(type: string, data: any) {
+  private send(type: string, data: any, id?: string) {
     global.postMessage(
       {
         $broadcast: true,
+        $fs_ids: typeof id === 'undefined' ? this.workerIds : [id],
         $type: type,
         $data: data,
       },
@@ -186,15 +182,8 @@ class SandboxFsSync {
   // We pass in either existing or new syncId. This allows us to evaluate
   // if we are just going to pass existing types or start up a new round
   // to fetch types
-  private async syncDependencyTypings(syncId: number) {
-    if (syncId === this.currentSyncId) {
-      this.sendTypes();
-      return;
-    }
-
+  private async syncDependencyTypings(fsId?) {
     try {
-      this.currentSyncId = syncId;
-
       this.typesInfo = await this.getTypesInfo();
       const syncDetails = await this.getDependencyTypingsSyncDetails();
 
@@ -205,7 +194,7 @@ class SandboxFsSync {
         this.deps = newDeps;
 
         added.forEach(dep => {
-          this.fetchDependencyTyping(syncId, dep, syncDetails.autoInstall);
+          this.fetchDependencyTyping(dep, syncDetails.autoInstall);
         });
 
         if (removed.length) {
@@ -221,7 +210,7 @@ class SandboxFsSync {
             delete this.types[removedDep.name];
           });
 
-          this.send('types-remove', removedTypings);
+          this.send('types-remove', removedTypings, fsId);
         }
       }
     } catch (error) {
@@ -272,56 +261,40 @@ class SandboxFsSync {
             return;
           }
 
-          if (stat.mtime.toString() !== lastMTime.toString()) {
-            lastMTime = stat.mtime;
-
-            browserFs.readFile(
-              '/sandbox/package.json',
-              async (packageJsonReadError, rv) => {
-                if (packageJsonReadError) {
-                  reject(packageJsonReadError);
-                  return;
-                }
-
-                browserFs.stat(
-                  '/sandbox/tsconfig.json',
-                  (tsConfigError, result) => {
-                    // If tsconfig exists we want to sync the typesp
-                    try {
-                      const packageJson = JSON.parse(rv.toString());
-                      resolve({
-                        dependencies: {
-                          ...packageJson.dependencies,
-                          ...packageJson.devDependencies,
-                        },
-                        autoInstall: Boolean(tsConfigError) || !result,
-                      });
-                    } catch (error) {
-                      reject(
-                        new Error('TYPINGS: Could not parse package.json')
-                      );
-                    }
-                  }
-                );
+          browserFs.readFile(
+            '/sandbox/package.json',
+            async (packageJsonReadError, rv) => {
+              if (packageJsonReadError) {
+                reject(packageJsonReadError);
+                return;
               }
-            );
-          } else {
-            resolve(null);
-          }
+
+              browserFs.stat(
+                '/sandbox/tsconfig.json',
+                (tsConfigError, result) => {
+                  // If tsconfig exists we want to sync the typesp
+                  try {
+                    const packageJson = JSON.parse(rv.toString());
+                    resolve({
+                      dependencies: {
+                        ...packageJson.dependencies,
+                        ...packageJson.devDependencies,
+                      },
+                      autoInstall: Boolean(tsConfigError) || !result,
+                    });
+                  } catch (error) {
+                    reject(new Error('TYPINGS: Could not parse package.json'));
+                  }
+                }
+              );
+            }
+          );
         });
       } catch (e) {
         resolve(null);
         // Do nothing
       }
     });
-  }
-
-  private sendTypes() {
-    this.send('types-sync', this.getTypes());
-  }
-
-  private sendPackageTypes(types: { [path: string]: any }) {
-    this.send('package-types-sync', types);
   }
 
   /**
@@ -339,23 +312,22 @@ class SandboxFsSync {
     return this.typesInfo;
   }
 
+  // We send new packages to all registered workers
   private setAndSendPackageTypes(
     name: string,
-    types: { [name: string]: string },
-    syncId: number
+    types: { [name: string]: string }
   ) {
-    if (!this.isDisposed && this.currentSyncId === syncId) {
+    if (!this.isDisposed) {
       if (!this.types[name]) {
         this.types[name] = {};
       }
 
       Object.assign(this.types[name], types);
-      this.sendPackageTypes(types);
+      this.send('package-types-sync', types);
     }
   }
 
   private async fetchDependencyTyping(
-    syncId: number,
     dep: { name: string; version: string },
     autoInstallTypes: boolean
   ) {
@@ -368,13 +340,9 @@ class SandboxFsSync {
       ) {
         const name = `@types/${dep.name}`;
         fetchPackageJSON(name, dep.version).then(({ version }) => {
-          this.setAndSendPackageTypes(
-            dep.name,
-            {
-              [name]: version,
-            },
-            syncId
-          );
+          this.setAndSendPackageTypes(dep.name, {
+            [name]: version,
+          });
         });
       }
 
@@ -389,7 +357,7 @@ class SandboxFsSync {
 
         const { files } = await fetchRequest.json();
 
-        this.setAndSendPackageTypes(dep.name, files, syncId);
+        this.setAndSendPackageTypes(dep.name, files);
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {
           console.warn('Trouble fetching types for ' + dep.name);

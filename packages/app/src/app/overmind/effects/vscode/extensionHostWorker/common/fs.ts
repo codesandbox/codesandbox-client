@@ -2,6 +2,7 @@ import {
   commonPostMessage,
   getGlobal,
 } from '@codesandbox/common/lib/utils/global';
+import * as uuid from 'uuid';
 
 import { FileSystemConfiguration } from '../../../../../../../../../standalone-packages/codesandbox-browserfs';
 import { IModule } from '../../../../../../../../../standalone-packages/codesandbox-browserfs/dist/node/backend/CodeSandboxFS';
@@ -64,11 +65,12 @@ export async function initializeBrowserFS({
       module: IModule;
     };
   } = {};
-  let isResolved = false;
 
   return new Promise(resolve => {
     const config = { ...BROWSER_FS_CONFIG };
     let currentSandboxFs = {};
+
+    let fsId = uuid.v4();
 
     if (syncSandbox) {
       if (syncTypes) {
@@ -115,12 +117,30 @@ export async function initializeBrowserFS({
 
       if (syncSandbox) {
         self.addEventListener('message', evt => {
+          // Some messages are specific to this worker
+          if (!evt.data.$fs_ids || !evt.data.$fs_ids.includes(fsId)) {
+            return;
+          }
+
           switch (evt.data.$type) {
+            case 'reset': {
+              isInitialSync = true;
+              fsId = uuid.v4();
+              types = {};
+              currentSandboxFs = {};
+              commonPostMessage({
+                $broadcast: true,
+                $type: 'sync-sandbox',
+                $fs_id: fsId,
+                $data: {},
+              });
+              break;
+            }
             case 'types-sync': {
               types = evt.data.$data;
               touchFileSystem();
-              if (!isResolved) {
-                isResolved = true;
+              if (isInitialSync) {
+                isInitialSync = false;
                 resolve();
               }
               break;
@@ -142,10 +162,10 @@ export async function initializeBrowserFS({
             case 'sandbox-fs': {
               currentSandboxFs = evt.data.$data;
               if (isInitialSync) {
-                isInitialSync = false;
                 commonPostMessage({
                   $broadcast: true,
                   $type: 'sync-types',
+                  $fs_id: fsId,
                   $data: {},
                 });
               } else {
@@ -184,6 +204,7 @@ export async function initializeBrowserFS({
         commonPostMessage({
           $broadcast: true,
           $type: 'sync-sandbox',
+          $fs_id: fsId,
           $data: {},
         });
       } else {

@@ -68,6 +68,8 @@ export const npmDependencyRemoved: AsyncAction<{
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;
 }>(async ({ state, actions, effects }, { id }) => {
+  await effects.vscode.closeAllTabs();
+
   state.editor.error = null;
 
   let newId = id;
@@ -95,8 +97,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   try {
     const sandbox = await effects.api.getSandbox(newId);
 
-    await effects.vscode.closeAllTabs();
-
     actions.internal.setCurrentSandbox(sandbox);
 
     const items = getItems(state);
@@ -112,9 +112,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   const sandbox = state.editor.currentSandbox;
 
-  state.editor.modulesByPath = await effects.vscode.changeSandbox(sandbox);
-
-  effects.vscode.syncTypings();
+  await effects.vscode.changeSandbox(sandbox, fs => {
+    state.editor.modulesByPath = fs;
+  });
 
   actions.internal.ensurePackageJSON();
 
