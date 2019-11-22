@@ -4,6 +4,7 @@ import {
 } from '@codesandbox/common/lib/utils/global';
 
 import { FileSystemConfiguration } from '../../../../../../../../../standalone-packages/codesandbox-browserfs';
+import { IModule } from '../../../../../../../../../standalone-packages/codesandbox-browserfs/dist/node/backend/CodeSandboxFS';
 import { EXTENSIONS_LOCATION } from '../../constants';
 import {
   mkdir,
@@ -12,8 +13,6 @@ import {
   unlink,
   writeFile,
 } from '../../SandboxFsSync/utils';
-
-import { IModule } from '../../../../../../../../../standalone-packages/codesandbox-browserfs/dist/node/backend/CodeSandboxFS';
 
 const global = getGlobal();
 
@@ -65,6 +64,7 @@ export async function initializeBrowserFS({
       module: IModule;
     };
   } = {};
+  let isResolved = false;
 
   return new Promise(resolve => {
     const config = { ...BROWSER_FS_CONFIG };
@@ -119,6 +119,10 @@ export async function initializeBrowserFS({
             case 'types-sync': {
               types = evt.data.$data;
               touchFileSystem();
+              if (!isResolved) {
+                isResolved = true;
+                resolve();
+              }
               break;
             }
             case 'type-sync': {
@@ -135,7 +139,6 @@ export async function initializeBrowserFS({
                   $type: 'sync-types',
                   $data: {},
                 });
-                resolve();
               } else {
                 resolve();
               }

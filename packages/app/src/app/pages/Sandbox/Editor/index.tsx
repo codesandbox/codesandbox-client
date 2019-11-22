@@ -94,6 +94,7 @@ const ContentSplit: React.FC = () => {
               right: 0,
               bottom: bottomOffset,
               height: statusBar ? 'auto' : 'calc(100% - 3.5rem)',
+              zIndex: 999999,
             }}
           >
             <SplitPane
