@@ -16,6 +16,10 @@ const Grid = styled.div`
   position: relative;
   margin-top: 5rem;
 
+  ${props => props.theme.breakpoints.lg} {
+    grid-template-columns: 1fr 1fr;
+  }
+
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
   }
@@ -28,6 +32,10 @@ const Section = styled.section`
   margin-top: 5rem;
   position: relative;
   z-index: 2;
+
+  ${props => props.theme.breakpoints.lg} {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;

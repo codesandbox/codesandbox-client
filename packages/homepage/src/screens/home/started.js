@@ -11,7 +11,7 @@ const Grid = styled.div`
   grid-template-columns: 1fr 642px;
   grid-gap: 30px;
 
-  ${props => props.theme.breakpoints.md} {
+  ${props => props.theme.breakpoints.lg} {
     grid-template-columns: 1fr;
   }
 `;
@@ -79,7 +79,7 @@ const Started = () => {
         <img
           src={started}
           css={`
-            ${props => props.theme.breakpoints.md} {
+            ${props => props.theme.breakpoints.lg} {
               display: none;
             }
           `}

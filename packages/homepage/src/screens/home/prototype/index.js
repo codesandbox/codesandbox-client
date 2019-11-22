@@ -18,7 +18,7 @@ const Grid = styled.div`
   margin-bottom: 14rem;
   margin-top: 4rem;
 
-  ${props => props.theme.breakpoints.md} {
+  ${props => props.theme.breakpoints.lg} {
     grid-template-columns: 1fr;
   }
 `;
@@ -30,7 +30,7 @@ const ImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
 
-  ${props => props.theme.breakpoints.md} {
+  ${props => props.theme.breakpoints.lg} {
     display: none;
   }
 `;

@@ -29,9 +29,14 @@ const Section = styled.section`
   z-index: 2;
   margin-left: 200px;
 
+  ${props => props.theme.breakpoints.lg} {
+    margin-left: 0px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
-    margin-left: 0px;
+
     justify-items: center;
   }
 `;

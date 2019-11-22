@@ -23,9 +23,11 @@ const List = styled.ul`
     margin-right: 5rem;
   }
 
-  ${props => props.theme.breakpoints.md} {
+  ${props => props.theme.breakpoints.lg} {
     justify-content: center;
+  }
 
+  ${props => props.theme.breakpoints.md} {
     li:not(:last-child) {
       margin-right: 0;
       margin-bottom: 2rem;
