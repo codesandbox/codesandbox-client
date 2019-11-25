@@ -1,29 +1,30 @@
 /* eslint-disable */
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-const express = require('express');
-const cors = require('cors');
-const chalk = require('chalk');
-const webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
-const historyApiFallback = require('connect-history-api-fallback');
-const execSync = require('child_process').execSync;
-const opn = require('opn');
-const http = require('http');
-const proxy = require('http-proxy-middleware');
-const path = require('path');
-const httpProxy = require('http-proxy');
+var express = require('express');
+var cors = require('cors');
+var chalk = require('chalk');
+var webpack = require('webpack');
+var WebpackDevServer = require('webpack-dev-server');
+var historyApiFallback = require('connect-history-api-fallback');
+var execSync = require('child_process').execSync;
+var opn = require('opn');
+var http = require('http');
+var proxy = require('http-proxy-middleware');
+var path = require('path');
+var httpProxy = require('http-proxy');
 const { platform } = require('os');
-const config = require('../config/webpack.dev');
-const paths = require('../config/paths');
+var config = require('../config/webpack.dev');
+var paths = require('../config/paths');
 const { staticAssets } = require('../config/build');
 
 // Tools like Cloud9 rely on this.
-const DEFAULT_PORT = process.env.PORT || 3000;
-let compiler;
-let handleCompile;
-let compileStart;
-const shouldClearConsole =
+var DEFAULT_PORT = process.env.PORT || 3000;
+const PROXY_DOMAIN = 'https://codesandbox.stream';
+var compiler;
+var handleCompile;
+var compileStart;
+var shouldClearConsole =
   'CLEAR' in process.env
     ? ['1', 'true'].includes(process.env.CLEAR)
     : platform() !== 'win32';
@@ -31,7 +32,7 @@ const shouldClearConsole =
 // Some custom utilities to prettify Webpack output.
 // This is a little hacky.
 // It would be easier if webpack provided a rich error object.
-const friendlySyntaxErrorLabel = 'Syntax error:';
+var friendlySyntaxErrorLabel = 'Syntax error:';
 function isLikelyASyntaxError(message) {
   return message.indexOf(friendlySyntaxErrorLabel) !== -1;
 }
@@ -98,8 +99,8 @@ function setupCompiler(port, protocol) {
     // https://github.com/facebookincubator/create-react-app/issues/401#issuecomment-238291901
     if (stats.hasErrors()) {
       console.log(chalk.red(`Failed to compile after ${took / 1000}s.\n`));
-      const json = stats.toJson({}, true);
-      const formattedErrors = json.errors.map(
+      var json = stats.toJson({}, true);
+      var formattedErrors = json.errors.map(
         message => 'Error in ' + formatMessage(message)
       );
       if (formattedErrors.some(isLikelyASyntaxError)) {
@@ -214,6 +215,7 @@ function addMiddleware(devServer, index) {
       rewrites: [{ from: /\/embed/, to: '/embed.html' }],
     })
   );
+  let wsProxy;
   if (process.env.LOCAL_SERVER) {
     devServer.use(
       cors({
@@ -226,10 +228,21 @@ function addMiddleware(devServer, index) {
         credentials: true,
       })
     );
+    wsProxy = proxy({
+      target: PROXY_DOMAIN.replace('https', 'wss'),
+      changeOrigin: true,
+      ws: true,
+      autoRewrite: true,
+      protocolRewrite: true,
+      onProxyReqWs(proxyReq, req, socket, options, head) {
+        proxyReq.setHeader('Origin', PROXY_DOMAIN);
+      },
+    });
+    devServer.use('/socket', wsProxy);
     devServer.use(
       '/api',
       proxy({
-        target: 'https://codesandbox.stream',
+        target: PROXY_DOMAIN,
         changeOrigin: true,
       })
     );
@@ -246,10 +259,12 @@ function addMiddleware(devServer, index) {
   // Finally, by now we have certainly resolved the URL.
   // It may be /index.html, so let the dev server try serving it again.
   devServer.use(devServer.middleware);
+
+  return { wsProxy };
 }
 
 function runDevServer(port, protocol, index) {
-  const devServer = new WebpackDevServer(compiler, {
+  var devServer = new WebpackDevServer(compiler, {
     // It is important to tell WebpackDevServer to use the same "root" path
     // as we specified in the config. In development, we always serve from /.
     publicPath: config.output.publicPath,
@@ -273,7 +288,7 @@ function runDevServer(port, protocol, index) {
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
-  addMiddleware(devServer, index);
+  const { wsProxy } = addMiddleware(devServer, index);
 
   // Launch WebpackDevServer.
   devServer.listen(port, err => {
@@ -285,10 +300,14 @@ function runDevServer(port, protocol, index) {
     console.log(chalk.cyan('Starting the development server...'));
     openBrowser(port, protocol);
   });
+
+  if (wsProxy) {
+    devServer.listeningApp.on('upgrade', wsProxy.upgrade);
+  }
 }
 
 function run(port) {
-  const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
+  var protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
   setupCompiler(port, protocol);
   compileStart = Date.now();
   runDevServer(port, protocol, '/app.html');

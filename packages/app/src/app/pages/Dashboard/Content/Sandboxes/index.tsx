@@ -6,22 +6,26 @@ import { Filters } from './Filters';
 import { DashboardActions } from './Actions';
 import { ITemplate } from './types';
 
-interface Props {
+interface IContentProps {
   sandboxes: any[];
-  Header: React.ComponentType;
-  SubHeader: React.ComponentType;
-  ExtraElement: React.ComponentType;
+  Header: React.ComponentType | string;
+  SubHeader?: React.ComponentType;
+  ExtraElement: React.ComponentType<IExtraElementProps>;
 
-  possibleTemplates: ITemplate[];
+  possibleTemplates?: ITemplate[];
   isLoading?: boolean;
   hideOrder?: boolean;
   hideFilters?: boolean;
-  page?: number;
+  page?: number | string;
   actions?: any[];
 }
 
+interface IExtraElementProps {
+  style: React.CSSProperties;
+}
+
 // eslint-disable-next-line react/prefer-stateless-function
-export class Content extends React.Component<Props> {
+export class Content extends React.Component<IContentProps> {
   render() {
     const {
       sandboxes,
@@ -40,7 +44,7 @@ export class Content extends React.Component<Props> {
       <Container>
         <HeaderContainer>
           <HeaderTitle>
-            {Header}{' '}
+            {Header}
             {sandboxes && !isLoading && (
               <span
                 style={{

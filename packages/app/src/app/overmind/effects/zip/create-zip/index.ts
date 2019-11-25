@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import ignore from 'ignore';
 import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
 import {
   react,
@@ -8,7 +9,10 @@ import {
   preact,
   svelte,
 } from '@codesandbox/common/lib/templates/index';
-import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import {
+  resolveModule,
+  getModulePath,
+} from '@codesandbox/common/lib/sandbox/modules';
 
 export const BLOB_ID = 'blob-url://';
 
@@ -192,17 +196,42 @@ export async function createDirectoryWithFiles(
   );
 }
 
+const DEFAULT_IGNORE = ['yarn.lock', 'package-lock.json'];
+
 export async function createZip(
   sandbox: Sandbox,
   modules: Array<Module>,
   directories: Array<Directory>,
-  downloadBlobs: boolean = true
+  downloadBlobs: boolean = true,
+  useGitIgnore: boolean = false
 ) {
   const zip = new JSZip();
+  const ignorer = ignore().add(DEFAULT_IGNORE);
+
+  if (useGitIgnore) {
+    const gitIgnore = modules.find(
+      module =>
+        module.title === '.gitignore' && module.directoryShortid === null
+    );
+
+    ignorer.add(gitIgnore ? gitIgnore.code : '');
+  }
+
+  const filteredModules = modules.filter(module => {
+    // Relative path
+    const path = getModulePath(modules, directories, module.id).substring(1);
+    return !ignorer.ignores(path);
+  });
 
   const fullPromise = () =>
     import(/* webpackChunkName: 'full-zip' */ './full').then(generator =>
-      generator.default(zip, sandbox, modules, directories, downloadBlobs)
+      generator.default(
+        zip,
+        sandbox,
+        filteredModules,
+        directories,
+        downloadBlobs
+      )
     );
 
   let promise = null;
@@ -218,11 +247,15 @@ export async function createZip(
   } else if (sandbox.template === react.name) {
     promise = import(
       /* webpackChunkName: 'create-react-app-zip' */ './create-react-app'
-    ).then(generator => generator.default(zip, sandbox, modules, directories));
+    ).then(generator =>
+      generator.default(zip, sandbox, filteredModules, directories)
+    );
   } else if (sandbox.template === reactTs.name) {
     promise = import(
       /* webpackChunkName: 'create-react-app-typescript-zip' */ './create-react-app-typescript'
-    ).then(generator => generator.default(zip, sandbox, modules, directories));
+    ).then(generator =>
+      generator.default(zip, sandbox, filteredModules, directories)
+    );
   } else if (sandbox.template === vue.name) {
     try {
       const packageJSONModule = sandbox.modules.find(
@@ -237,31 +270,45 @@ export async function createZip(
         // For the new vue cli we want to use the full promise
         promise = fullPromise();
       } else {
-        promise = import(/* webpackChunkName: 'vue-zip' */ './vue-cli').then(
-          generator => generator.default(zip, sandbox, modules, directories)
+        promise = import(
+          /* webpackChunkName: 'vue-zip' */ './vue-cli'
+        ).then(generator =>
+          generator.default(zip, sandbox, filteredModules, directories)
         );
       }
     } catch (e) {
       promise = fullPromise();
     }
   } else if (sandbox.template === preact.name) {
-    promise = import(/* webpackChunkName: 'preact-zip' */ './preact-cli').then(
-      generator => generator.default(zip, sandbox, modules, directories)
+    promise = import(
+      /* webpackChunkName: 'preact-zip' */ './preact-cli'
+    ).then(generator =>
+      generator.default(zip, sandbox, filteredModules, directories)
     );
   } else if (sandbox.template === svelte.name) {
-    promise = import(/* webpackChunkName: 'svelte-zip' */ './svelte').then(
-      generator => generator.default(zip, sandbox, modules, directories)
+    promise = import(
+      /* webpackChunkName: 'svelte-zip' */ './svelte'
+    ).then(generator =>
+      generator.default(zip, sandbox, filteredModules, directories)
     );
   } else {
     // If no specific zip generator is found we will default to the full generator
-    promise = import(/* webpackChunkName: 'full-zip' */ './full').then(
-      generator =>
-        generator.default(zip, sandbox, modules, directories, downloadBlobs)
+    promise = import(
+      /* webpackChunkName: 'full-zip' */ './full'
+    ).then(generator =>
+      generator.default(
+        zip,
+        sandbox,
+        filteredModules,
+        directories,
+        downloadBlobs
+      )
     );
   }
 
   if (promise) {
     await promise;
+
     const file = await zip.generateAsync({ type: 'blob' });
 
     return file;

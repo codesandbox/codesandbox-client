@@ -4,14 +4,14 @@ import { DragDropContext } from 'react-dnd';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { Toasts, NotificationStatus } from '@codesandbox/notifications';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
+import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
 import theme from '@codesandbox/common/lib/theme';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Loadable from 'app/utils/Loadable';
 import { useOvermind } from 'app/overmind';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
-import Modals from './common/Modals';
+import { Modals } from './common/Modals';
 import Sandbox from './Sandbox';
 import { NewSandbox } from './NewSandbox';
 import Dashboard from './Dashboard';
@@ -42,7 +42,9 @@ const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile')
 );
 const Search = Loadable(() =>
-  import(/* webpackChunkName: 'page-search' */ './Search')
+  import(/* webpackChunkName: 'page-search' */ './Search').then(module => ({
+    default: module.Search,
+  }))
 );
 const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
 
@@ -79,16 +81,10 @@ const RoutesComponent: React.FC = () => {
         render={({ location }) => {
           if (process.env.NODE_ENV === 'production') {
             routeDebugger(
-              `Sending '${location.pathname + location.search}' to ga.`
+              `Sending '${location.pathname + location.search}' to analytics.`
             );
-            if (typeof (window as any).ga === 'function' && !DNT) {
-              (window as any).ga(
-                'set',
-                'page',
-                location.pathname + location.search
-              );
-
-              send('pageview', { path: location.pathname + location.search });
+            if (!DNT) {
+              trackPageview();
             }
           }
           return null;
