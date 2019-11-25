@@ -77,7 +77,7 @@ export const withOwnedSandbox = <T>(
 ): AsyncAction<T> => async (context, payload) => {
   const { state, actions } = context;
 
-  if (!state.editor.currentSandbox.owned) {
+  if (state.editor.currentSandbox && !state.editor.currentSandbox.owned) {
     if (state.editor.isForkingSandbox) {
       return cancelAction(context, payload);
     }
@@ -86,6 +86,7 @@ export const withOwnedSandbox = <T>(
       sandboxId: state.editor.currentId,
     });
   } else if (
+    state.editor.currentSandbox &&
     state.editor.currentSandbox.isFrozen &&
     state.editor.sessionFrozen
   ) {
