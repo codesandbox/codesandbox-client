@@ -15,8 +15,8 @@ import {
   Table,
 } from './elements';
 
-const someSelected = obj =>
-  Object.keys(obj).filter(key => obj[key] === true).length;
+const getSelectedFiles = obj =>
+  Object.keys(obj).filter(key => obj[key] === true);
 
 class FilesList extends Component {
   state = {};
@@ -44,20 +44,22 @@ class FilesList extends Component {
       deleteFiles,
       addFilesToSandbox,
     } = this.props;
+    const filesToRemove = getSelectedFiles(this.state);
+
     return (
       <div css={{ margin: '0 2rem' }}>
         <Buttons>
           <Button
-            disabled={!someSelected(this.state)}
+            disabled={!filesToRemove.length}
             small
             onClick={() => addFilesToSandbox(this.getSelection())}
           >
             Add all selected to project
           </Button>
           <Button
-            disabled={!someSelected(this.state)}
+            disabled={!filesToRemove.length}
             small
-            onClick={() => deleteFiles(Object.keys(this.state))}
+            onClick={() => deleteFiles(filesToRemove)}
           >
             Delete all selected
           </Button>
