@@ -6,11 +6,6 @@ export const Container = styled.div(
   css({
     display: 'flex',
     fontFamily: 'Inter, sans-serif',
-
-    button: { fontFamily: 'body' },
-    input: { fontFamily: 'body' },
-    textarea: { fontFamily: 'body' },
-    select: { fontFamily: 'body' },
   })
 );
 
@@ -21,8 +16,7 @@ export const Sidebar = styled.div(
     fontSize: 3,
 
     maxWidth: 300, // for development, remove this
-    height: '100%', // for development, remove this
-    // overflowY: 'scroll',
+    overflowY: 'auto',
   })
 );
 
@@ -113,7 +107,7 @@ export const Input = styled.input(props =>
     paddingX: 2,
 
     width: '100%',
-    boxSizing: 'border-box', //probably not right
+    boxSizing: 'border-box', // probably not right
     height: 32,
     lineHeight: '32px',
 
@@ -150,6 +144,7 @@ export const Button = styled.button(
     borderColor: 'blues.600',
     color: 'white',
     fontSize: 2,
+    fontFamily: 'body',
     height: 24,
     borderRadius: 'medium',
     cursor: 'pointer',
