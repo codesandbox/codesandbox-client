@@ -26,7 +26,7 @@ import PreferencesModal from './PreferencesModal';
 import PRModal from './PRModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
-import ShareModal from './ShareModal';
+import ShareModal from './ShareModal2';
 import SignInForTemplates from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
