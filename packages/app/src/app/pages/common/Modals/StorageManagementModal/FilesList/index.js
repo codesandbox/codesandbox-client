@@ -44,13 +44,14 @@ class FilesList extends Component {
       deleteFiles,
       addFilesToSandbox,
     } = this.props;
+    const canAddFile = Boolean(addFileToSandbox);
     const filesToRemove = getSelectedFiles(this.state);
 
     return (
       <div css={{ margin: '0 2rem' }}>
         <Buttons>
           <Button
-            disabled={!filesToRemove.length}
+            disabled={!filesToRemove.length || !canAddFile}
             small
             onClick={() => addFilesToSandbox(this.getSelection())}
           >
@@ -115,6 +116,7 @@ class FilesList extends Component {
                   `}
                 >
                   <AddFileToSandboxButton
+                    disabled={!canAddFile}
                     url={f.url}
                     name={f.name}
                     onAddFileToSandbox={addFileToSandbox}
