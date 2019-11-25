@@ -77,28 +77,30 @@ export const withOwnedSandbox = <T>(
 ): AsyncAction<T> => async (context, payload) => {
   const { state, actions } = context;
 
-  if (!state.editor.currentSandbox.owned) {
-    if (state.editor.isForkingSandbox) {
-      return cancelAction(context, payload);
-    }
+  if (state.editor.currentSandbox) {
+    if (!state.editor.currentSandbox.owned) {
+      if (state.editor.isForkingSandbox) {
+        return cancelAction(context, payload);
+      }
 
-    await actions.editor.internal.forkSandbox({
-      sandboxId: state.editor.currentId,
-    });
-  } else if (
-    state.editor.currentSandbox.isFrozen &&
-    state.editor.sessionFrozen
-  ) {
-    const modalResponse = await actions.modals.forkFrozenModal.open();
-
-    if (modalResponse === 'fork') {
       await actions.editor.internal.forkSandbox({
         sandboxId: state.editor.currentId,
       });
-    } else if (modalResponse === 'unfreeze') {
-      state.editor.sessionFrozen = false;
-    } else if (modalResponse === 'cancel') {
-      return cancelAction(context, payload);
+    } else if (
+      state.editor.currentSandbox.isFrozen &&
+      state.editor.sessionFrozen
+    ) {
+      const modalResponse = await actions.modals.forkFrozenModal.open();
+
+      if (modalResponse === 'fork') {
+        await actions.editor.internal.forkSandbox({
+          sandboxId: state.editor.currentId,
+        });
+      } else if (modalResponse === 'unfreeze') {
+        state.editor.sessionFrozen = false;
+      } else if (modalResponse === 'cancel') {
+        return cancelAction(context, payload);
+      }
     }
   }
 

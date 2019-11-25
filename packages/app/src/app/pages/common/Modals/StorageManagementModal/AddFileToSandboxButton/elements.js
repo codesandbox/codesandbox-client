@@ -4,7 +4,7 @@ import AddIcon from 'react-icons/lib/md/add';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 export const AddFileToSandboxButton = styled(props => (
-  <Tooltip content="Add file to sandbox">
+  <Tooltip content="Add file to sandbox" isEnabled={!props.disabled}>
     <button type="button" {...props}>
       <AddIcon />
     </button>
