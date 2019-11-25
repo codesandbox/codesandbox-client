@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   SynchronousFileSystem,
   FileSystem,
@@ -63,11 +64,11 @@ export interface IManager {
 const warn = console.warn;
 
 function getCode(savedCode: string | null | undefined, code: string | undefined) {
-  if (savedCode !== null) {
-    return savedCode || '';
+  if (savedCode === null) {
+    return code || '';
   }
 
-  return code || '';
+  return savedCode || '';
 }
 
 class CodeSandboxFile extends PreloadFile<CodeSandboxEditorFS> implements File {
