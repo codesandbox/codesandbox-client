@@ -27,9 +27,7 @@ export const onInitialize: OnInitialize = (
 
   effects.api.initialize({
     provideJwtToken,
-    onError(error) {
-      effects.notificationToast.error(error);
-    },
+    signIn: actions.internal.signIn,
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
     },
