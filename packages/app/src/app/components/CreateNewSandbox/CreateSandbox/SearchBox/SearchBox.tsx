@@ -1,5 +1,6 @@
 import React from 'react';
 import { useKey } from 'react-use';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { SearchElement, InputWrapper } from './elements';
 
 type SearchProps = {
@@ -23,15 +24,12 @@ export const SearchBox = ({
     }
   });
 
-  useKey('Escape', () => {
-    if (inputEl.current) {
-      const isFocused = document.activeElement === inputEl.current;
-
-      if (isFocused) {
-        inputEl.current.blur();
-      }
+  const handleEsc = (evt: React.KeyboardEvent<HTMLInputElement>) => {
+    if (evt.keyCode === ESC && inputEl.current) {
+      evt.stopPropagation();
+      inputEl.current.blur();
     }
-  });
+  };
 
   return (
     <form
@@ -48,6 +46,7 @@ export const SearchBox = ({
           ref={inputEl}
           value={value}
           onChange={onChange}
+          onKeyDown={handleEsc}
           type="search"
         />
       </InputWrapper>

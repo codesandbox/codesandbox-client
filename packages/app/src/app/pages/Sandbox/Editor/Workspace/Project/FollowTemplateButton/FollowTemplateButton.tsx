@@ -1,14 +1,11 @@
 import React, { useEffect } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/react-hooks';
 import { useOvermind } from 'app/overmind';
-import { SignInButton } from 'app/pages/common/SignInButton';
 import Checked from 'react-icons/lib/md/check-box';
 import Unchecked from 'react-icons/lib/md/check-box-outline-blank';
 import { MultiAction } from '@codesandbox/common/lib/components/MultiAction';
 import { ButtonContainer, ButtonIcon } from './elements';
-// @ts-ignore
 import { bookmarkTemplate, unbookmarkTemplate } from './mutations.gql';
-// @ts-ignore
 import { getSandboxInfo } from './queries.gql';
 
 interface IFollowTemplateButton {
@@ -35,12 +32,7 @@ export const FollowTemplateButton = ({ style }: IFollowTemplateButton) => {
     }
   }, [isLoggedIn, runQuery, sandboxId]);
 
-  const entities =
-    (data &&
-      data.sandbox &&
-      data.sandbox.customTemplate &&
-      data.sandbox.customTemplate.bookmarked) ||
-    [];
+  const entities = data?.sandbox?.customTemplate?.bookmarked || [];
 
   const config = (entity: number = 0) => {
     const bookmarked = entities;
@@ -90,41 +82,35 @@ export const FollowTemplateButton = ({ style }: IFollowTemplateButton) => {
   const handleToggleFollow = (i: number = 0) =>
     entities[i].isBookmarked ? unfollow(config(i)) : follow(config(i));
 
-  return customTemplate ? (
+  return (
     <ButtonContainer css={style}>
-      {!isLoggedIn ? (
-        <>
-          You need to be signed in to follow templates.
-          <SignInButton block />
-        </>
-      ) : (
-        <MultiAction
-          block
-          small
-          disabled={loading}
-          onPrimaryClick={() => handleToggleFollow()}
-          primaryActionLabel={
-            entities[0] && entities[0].isBookmarked
-              ? `Unfollow Template`
-              : `Follow Template`
-          }
-        >
-          {entities.map(({ entity: { name } }, i: number) => (
-            <button
-              type="button"
-              key={name}
-              onClick={() => handleToggleFollow(i)}
-            >
-              <ButtonIcon>
-                {entities[i].isBookmarked ? <Checked /> : <Unchecked />}
-              </ButtonIcon>
-              {`${entities[i].isBookmarked ? `Remove from` : `Add to`} ${
-                i ? name : `my`
-              } followed templates.`}
-            </button>
-          ))}
-        </MultiAction>
-      )}
+      <MultiAction
+        block
+        small
+        disabled={loading}
+        onPrimaryClick={() => handleToggleFollow()}
+        primaryActionLabel={
+          entities[0] && entities[0].isBookmarked
+            ? `Unbookmark Template`
+            : `Bookmark Template`
+        }
+      >
+        {entities.map(({ entity: { name } }, i: number) => (
+          <button
+            type="button"
+            key={name}
+            onClick={(e, menu) => {
+              handleToggleFollow(i);
+              menu.hide();
+            }}
+          >
+            <ButtonIcon>
+              {entities[i].isBookmarked ? <Checked /> : <Unchecked />}
+            </ButtonIcon>
+            {i === 0 ? 'My Bookmarks' : name}
+          </button>
+        ))}
+      </MultiAction>
     </ButtonContainer>
-  ) : null;
+  );
 };

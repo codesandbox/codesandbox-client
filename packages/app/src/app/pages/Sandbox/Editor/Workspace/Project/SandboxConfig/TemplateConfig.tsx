@@ -1,5 +1,4 @@
 import Switch from '@codesandbox/common/lib/components/Switch';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import * as templates from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
@@ -10,13 +9,7 @@ import { useOvermind } from 'app/overmind';
 
 import { WorkspaceItem } from '../../WorkspaceItem';
 
-import {
-  Explanation,
-  Icon as QuestionIcon,
-  Item,
-  PropertyName,
-  PropertyValue,
-} from '../elements';
+import { Explanation, Item, PropertyName, PropertyValue } from '../elements';
 
 import { PickColor, PickerContainer, PublicValue } from './elements';
 import { Icon } from './Icon';
@@ -100,16 +93,6 @@ export const TemplateConfig: FunctionComponent = () => {
       </Item>
 
       <Item>
-        <PropertyName>
-          Public
-          <Tooltip
-            boundary="viewport"
-            content="Whether this template will show in our upcoming templates page"
-          >
-            <QuestionIcon />
-          </Tooltip>
-        </PropertyName>
-
         <PublicValue>
           <Switch
             small

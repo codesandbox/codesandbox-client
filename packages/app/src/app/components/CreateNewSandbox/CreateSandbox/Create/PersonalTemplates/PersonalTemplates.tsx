@@ -15,17 +15,13 @@ interface IPersonalTemplatesProps {
 }
 
 export const PersonalTemplates = ({ filter }: IPersonalTemplatesProps) => {
-  const { data, error, loading } = useQuery<
+  const { data, error } = useQuery<
     ListPersonalTemplatesQuery,
     ListPersonalTemplatesQueryVariables
   >(LIST_PERSONAL_TEMPLATES, {
     variables: {},
     fetchPolicy: 'cache-and-network',
   });
-
-  if (loading) {
-    return <Loader />;
-  }
 
   if (error) {
     return (
@@ -34,6 +30,12 @@ export const PersonalTemplates = ({ filter }: IPersonalTemplatesProps) => {
         a minute.
       </CenteredMessage>
     );
+  }
+
+  // Instead of checking the loading var we check this. Apollo sets the loading
+  // var to true even if we still have cached data that we can use.
+  if (typeof data?.me === 'undefined') {
+    return <Loader />;
   }
 
   const allTemplateInfos: ITemplateInfo[] = [

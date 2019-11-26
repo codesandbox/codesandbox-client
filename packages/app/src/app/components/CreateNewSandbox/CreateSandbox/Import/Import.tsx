@@ -20,6 +20,10 @@ import {
   ButtonContainer,
   PlaceHolderLink,
   ImportChoices,
+  VerticalSeparator,
+  GitHubLink,
+  StyledInfoIcon,
+  IconLink,
 } from './elements';
 
 const getFullGitHubUrl = (url: string) =>
@@ -65,10 +69,13 @@ export const Import = () => {
         <span>Import Project</span>
       </Header>
       <Features>
-        <Column fullWidth={!state.user}>
+        <Column>
           <FeatureName>
-            <GitHubIcon />
-            Import from GitHub
+            <GitHubIcon style={{ marginRight: '1rem' }} />
+            Import from GitHub{' '}
+            <IconLink href="/docs/importing#import-from-github">
+              <StyledInfoIcon />
+            </IconLink>
           </FeatureName>
           <FeatureText>
             Enter the URL to your GitHub repository to generate a URL to your
@@ -85,15 +92,25 @@ export const Import = () => {
               type="text"
               placeholder="GitHub Repository URL..."
             />
-            {error ? (
+
+            {transformedUrl ? (
+              <GitHubLink
+                href={transformedUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {transformedUrl.replace(/^https?:\/\//, '')}
+              </GitHubLink>
+            ) : (
               <PlaceHolderLink error={error}>
                 {error || 'Enter a URL to see the generated URL'}
               </PlaceHolderLink>
-            ) : null}
+            )}
+
             <ButtonContainer>
               <Button
                 small
-                style={{ fontSize: 12 }}
+                style={{ fontSize: 11 }}
                 onClick={() => {
                   copyToClipboard(transformedUrl);
                 }}
@@ -103,7 +120,7 @@ export const Import = () => {
               </Button>
               <Button
                 small
-                style={{ fontSize: 12 }}
+                style={{ fontSize: 11 }}
                 disabled={!transformedUrl}
                 to={gitHubToSandboxUrl(url)}
               >
@@ -113,21 +130,31 @@ export const Import = () => {
           </form>
         </Column>
         {state.user && (
-          <Column>
-            <FeatureName>
-              <StackbitIcon />
-              Import from Stackbit
-            </FeatureName>
-            <FeatureText>
-              Create a project using Stackbit. This generates a project for you
-              that{"'"}s automatically set up with any Theme, Site Generator and
-              CMS.
-            </FeatureText>
-            <StackbitButton
-              style={{ fontSize: 12 }}
-              username={state.user.username}
-            />
-          </Column>
+          <>
+            <VerticalSeparator />
+            <Column>
+              <FeatureName>
+                <StackbitIcon style={{ marginRight: '1rem' }} />
+                Import from Stackbit
+              </FeatureName>
+              <FeatureText>
+                Create a project using{' '}
+                <a
+                  href="https://www.stackbit.com/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Stackbit
+                </a>
+                . This generates a project for you that{"'"}s automatically set
+                up with any Theme, Site Generator and CMS.
+              </FeatureText>
+              <StackbitButton
+                style={{ fontSize: 11 }}
+                username={state.user.username}
+              />
+            </Column>
+          </>
         )}
       </Features>
       <ImportChoices>

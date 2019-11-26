@@ -7,7 +7,6 @@ import getEnvironment, {
 } from '@codesandbox/common/lib/templates';
 
 import { useOvermind } from 'app/overmind';
-// import { ActionButtons } from './ActionButtons';
 
 import {
   Container,
@@ -22,7 +21,7 @@ import {
 
 interface ISandboxCardProps {
   title: string;
-  owner: string;
+  owner: string | undefined;
   iconUrl: string;
   environment: TemplateType;
   url: string;
@@ -39,13 +38,9 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
   title,
   iconUrl,
   environment,
-  owner,
   url,
   official,
   color,
-  mine,
-  templateId,
-  sandboxId,
   focused,
   detailText,
 }) => {
@@ -76,26 +71,15 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
     return actions.modalClosed();
   };
 
-  // const Open = () => (
-  //   <ActionButton
-  //     onClick={event => {
-  //       const cmd = event.ctrlKey || event.metaKey;
-  //       openSandbox(Boolean(cmd));
-  //     }}
-  //   >
-  //     Open
-  //   </ActionButton>
-  // );
-
   return (
     <>
       <Container
+        ref={elRef}
         to={url}
         onClick={event => {
           const cmd = event.ctrlKey || event.metaKey;
           openSandbox(Boolean(cmd));
         }}
-        ref={elRef}
         focused={focused}
         tabIndex={focused ? '0' : '-1'}
       >

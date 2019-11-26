@@ -1,7 +1,10 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Button as ReakitButton } from 'reakit/Button';
 import theme from '../../theme';
+import { IButtonProps } from '.';
+import { withoutProps } from '../../utils';
 
 export type OptionProps = {
   theme: any;
@@ -99,14 +102,7 @@ const getBorder = ({
   return '2px solid #66B9F4';
 };
 
-const styles = css<{
-  disabled?: boolean;
-  secondary?: boolean;
-  danger?: boolean;
-  red?: boolean;
-  block?: boolean;
-  small?: boolean;
-}>`
+export const styles = css<IButtonProps | any>`
   transition: 0.3s ease all;
   font-family: Poppins, Roboto, sans-serif;
 
@@ -138,29 +134,29 @@ const styles = css<{
           padding: 0.65em 2.25em;
         `};
 
-  /* svg {
-     font-size: 1.125em;
-  } */
-
   ${props =>
     !props.disabled &&
-    `
-  cursor: pointer;
-  `};
+    css`
+      cursor: pointer;
+    `};
 
   &:hover,
   &:focus {
     ${props => getBackgroundHoverColor(props)};
     ${props => getHoverColor(props)};
+
+    outline: 0 !important;
   }
 `;
 
-export const LinkButton = styled(Link)`
+// @ts-ignore
+export const LinkButton = styled(withoutProps(`small`)(Link))`
   ${styles};
 `;
-export const AButton = styled.a`
+// eslint-disable-next-line
+export const AButton = styled(withoutProps(`small`)(props => <a {...props} />))`
   ${styles};
 `;
-export const Button = styled(ReakitButton)`
-  ${styles};
+export const Button = styled(withoutProps(`small`)(ReakitButton))`
+  ${styles}
 `;

@@ -421,7 +421,6 @@ class EditorPreview extends React.Component {
 
     const views = store.editor.devToolTabs;
     const currentPosition = this.props.store.editor.currentDevToolsPosition;
-    const customTemplate = sandbox.customTemplate || {};
 
     const browserConfig = {
       id: 'codesandbox.browser',
@@ -518,8 +517,8 @@ class EditorPreview extends React.Component {
                 marginTop: 0,
               }}
             >
-              {customTemplate.published &&
-              !sandbox.owned &&
+              {!sandbox.owned &&
+              sandbox.customTemplate &&
               this.state.showBanner ? (
                 <TemplateBanner
                   sandbox={sandbox}
@@ -529,14 +528,7 @@ class EditorPreview extends React.Component {
               {!store.preferences.settings.experimentVSCode && <Tabs />}
               <CodeEditor
                 style={{
-                  top:
-                    customTemplate.published &&
-                    !sandbox.owned &&
-                    this.state.showBanner
-                      ? 66
-                      : store.preferences.settings.experimentVSCode
-                      ? 0
-                      : 35,
+                  top: store.preferences.settings.experimentVSCode ? 0 : 35,
                 }}
                 onInitialized={this.onInitialized}
                 sandbox={sandbox}

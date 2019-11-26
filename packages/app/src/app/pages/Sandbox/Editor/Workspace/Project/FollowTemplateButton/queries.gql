@@ -11,10 +11,6 @@ query getSandboxInfo($id: ID!) {
         isBookmarked
         entity {
           __typename
-          ... on User {
-            id
-            name: username
-          }
 
           ... on Team {
             id

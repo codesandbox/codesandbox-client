@@ -72,7 +72,7 @@ export const Explore = () => {
           <SearchBox
             onChange={evt => setSearch(evt.target.value)}
             value={search}
-            placeholder="Search Published Templates"
+            placeholder="Search Public Templates"
           />
         </div>
       </Header>

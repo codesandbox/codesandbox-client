@@ -1,8 +1,6 @@
 import React from 'react';
-import { LightIcons, DarkIcons } from '@codesandbox/template-icons';
+import { LightIcons } from '@codesandbox/template-icons';
 import getLightIcons from '@codesandbox/common/lib/templates/iconsLight';
-import getDarkIcons from '@codesandbox/common/lib/templates/iconsDark';
-import { getContrastYIQ } from '@codesandbox/common/lib/utils';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { Container, Title, Info, Side, Counts, Icon, Close } from './elements';
@@ -17,37 +15,27 @@ export const TemplateBanner = ({
   sandbox,
   hideBanner,
 }: ITemplateBannerProps) => {
-  const { customTemplate: template } = sandbox;
+  const { customTemplate } = sandbox;
   const environment = getTemplateDefinition(sandbox.template);
-  let UserIcon: React.FunctionComponent;
-  if (getContrastYIQ(template.color) >= 128) {
-    UserIcon =
-      template.iconUrl && DarkIcons[template.iconUrl]
-        ? DarkIcons[template.iconUrl]
-        : getDarkIcons(sandbox.template);
-  } else {
-    UserIcon =
-      template.iconUrl && LightIcons[template.iconUrl]
-        ? LightIcons[template.iconUrl]
-        : getLightIcons(sandbox.template);
-  }
+  const UserIcon: React.FunctionComponent =
+    LightIcons[customTemplate.iconUrl] || getLightIcons(customTemplate.iconUrl);
 
   return (
     <Container>
       <Side>
         {UserIcon ? (
-          <Icon color={template.color}>
+          <Icon color={customTemplate.color}>
             <UserIcon />
           </Icon>
         ) : null}
         <div>
-          <Title>{template.title}</Title>
+          <Title>{customTemplate.title}</Title>
           <Info>{environment.niceName}</Info>
-          <Info>By {sandbox.author.username}</Info>
+          {sandbox.author && <Info>By {sandbox.author.username}</Info>}
         </div>
       </Side>
       <Side>
-        <Counts color={template.color}>
+        <Counts color={customTemplate.color}>
           <li>
             <svg width="16" height="14" viewBox="0 0 16 14">
               <path d="M7.88822 14C21.8974 6.50193 14.9693 -3.70201 7.88823 1.35226C1.11292 -3.70201 -5.81528 6.50192 7.88822 14Z" />
@@ -88,20 +76,12 @@ export const TemplateBanner = ({
             {sandbox.forkCount}
           </li>
         </Counts>
-        <FollowTemplateButton
-          style={`
-            button, button:hover {
-              background-color: white;
-              border: none;
-              color: #0971f1;
-            }
-          `}
-        />
+        <FollowTemplateButton />
         <Close onClick={() => hideBanner()}>
           <svg width="8" height="8" viewBox="0 0 8 8">
             <path
               d="M8 0.727277L7.27273 4.98512e-06L4 3.27273L0.727273 0L0 0.727273L3.27273 4L0 7.27273L0.727272 8L4 4.72727L7.27273 8L8 7.27273L4.72727 4L8 0.727277Z"
-              fill="white"
+              fill="currentColor"
             />
           </svg>
         </Close>

@@ -1,17 +1,19 @@
 import styled, { css } from 'styled-components';
+import { InfoIcon } from '../Icons';
 
 export const Features = styled.section`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
   margin-top: 2rem;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
   padding: 0 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #242424;
 `;
 
 export const FeatureName = styled.h3`
-  font-family: Roboto;
-  font-weight: bold;
-  font-size: 13px;
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 16px;
   line-height: 16px;
   padding: 0;
   margin: 0;
@@ -19,10 +21,6 @@ export const FeatureName = styled.h3`
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
-
-  svg {
-    margin-right: 1rem;
-  }
 `;
 
 export const FeatureText = styled.p`
@@ -30,7 +28,7 @@ export const FeatureText = styled.p`
   font-size: 13px;
   line-height: 17px;
   margin-top: 0.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 
   color: #757575;
 
@@ -41,26 +39,30 @@ export const FeatureText = styled.p`
   }
 `;
 
-export const Column = styled.div<{ fullWidth?: boolean }>`
-  border-bottom: 1px solid #242424;
-  padding-bottom: 1.5rem;
-  ${props =>
-    !props.fullWidth &&
-    css`
-      &:first-of-type {
-        padding-right: 1.7rem;
-        border-right: 1px solid #242424;
-      }
+export const IconLink = styled.a.attrs({
+  target: '_blank',
+  rel: 'noreferrer noopener',
+})`
+  display: flex;
+  align-items: center;
+`;
 
-      &:last-of-type {
-        padding-left: 1.7rem;
-      }
-    `}
-  ${props =>
-    props.fullWidth &&
-    css`
-      grid-column: span 2;
-    `}
+export const StyledInfoIcon = styled(InfoIcon)`
+  font-size: 0.75em;
+  margin-left: 0.5rem;
+`;
+
+export const Column = styled.div``;
+
+export const VerticalSeparator = styled.hr`
+  height: auto;
+  width: 1px;
+  min-width: 1px;
+  margin: 0 1rem;
+  border: 0;
+  outline: 0;
+
+  background-color: #242424;
 `;
 
 export const Button = styled.button`
@@ -82,6 +84,8 @@ export const Button = styled.button`
 export const ButtonContainer = styled.div`
   display: flex;
   margin-top: 0.5rem;
+  float: right;
+  margin-bottom: 1rem;
 
   button:first-child {
     margin-right: 0.5rem;
@@ -89,11 +93,12 @@ export const ButtonContainer = styled.div`
 `;
 
 export const Input = styled.input`
-  padding: 0.5rem;
+  padding: 0.25rem 0.5rem;
   background: #222222;
   border: 0.957784px solid #040404;
   box-sizing: border-box;
   border-radius: 2px;
+  font-size: 13px;
   color: white;
   width: 100%;
 
@@ -111,7 +116,7 @@ export const Input = styled.input`
   }
 `;
 
-export const PlaceHolderLink = styled.span<{ error: string }>`
+const linkStyles = css`
   transition: 0.3s ease color;
 
   display: block;
@@ -122,12 +127,25 @@ export const PlaceHolderLink = styled.span<{ error: string }>`
   text-decoration: none;
 
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 13px;
+`;
+
+export const PlaceHolderLink = styled.span<{ error: string }>`
+  ${linkStyles};
+
   ${props =>
     props.error &&
     css`
       color: ${props.theme.red};
     `}
+`;
+
+export const GitHubLink = styled.a`
+  ${linkStyles};
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
 `;
 
 export const ImportChoices = styled.div`

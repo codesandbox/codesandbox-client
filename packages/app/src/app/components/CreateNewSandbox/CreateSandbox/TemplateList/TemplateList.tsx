@@ -5,6 +5,7 @@ import { useOvermind } from 'app/overmind';
 import { useKey } from 'react-use';
 import history from 'app/utils/history';
 import { isMac } from '@codesandbox/common/lib/utils/platform';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { SandboxCard } from '../SandboxCard';
 import { SubHeader, Grid } from '../elements';
 
@@ -19,7 +20,7 @@ interface ITemplateListProps {
 }
 
 const COLUMN_COUNT = 2;
-const MODIFIER_KEY = isMac ? '⌘' : '⇧';
+const MODIFIER_KEY = isMac ? 'Ctrl' : '⇧';
 
 const getNumber = (e: KeyboardEvent): number => {
   if (e.code && e.code.startsWith('Digit')) {
@@ -163,7 +164,7 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
   useKey(
     e => {
       const num = getNumber(e);
-      const modifierCheck = isMac ? e.metaKey : e.shiftKey;
+      const modifierCheck = isMac ? e.ctrlKey : e.shiftKey;
       return num > 0 && num < 10 && modifierCheck;
     },
     e => {
@@ -202,24 +203,26 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
                 const index = offset + i;
                 const focused = focusedTemplateIndex === offset + i;
 
-                const shortKey = index < 9 ? `${MODIFIER_KEY}${index + 1}` : '';
+                const shortKey =
+                  index < 9 ? `${MODIFIER_KEY}+${index + 1}` : '';
                 const detailText = focused ? '↵' : shortKey;
 
                 return (
                   <SandboxCard
                     key={template.id}
-                    title={template.sandbox.title}
+                    title={getSandboxName(template.sandbox)}
                     iconUrl={template.iconUrl}
                     // @ts-ignore
                     environment={template.sandbox.source.template}
                     url={sandboxUrl(template.sandbox)}
                     color={template.color}
-                    owner={template.sandbox.author.username}
+                    owner={template.sandbox.author?.username}
                     templateId={template.id}
                     sandboxId={template.sandbox.id}
                     mine={
+                      template.sandbox.author &&
                       template.sandbox.author.username ===
-                      (state.user && state.user.username)
+                        (state.user && state.user.username)
                     }
                     focused={focused}
                     detailText={detailText}

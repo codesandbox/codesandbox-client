@@ -1,5 +1,5 @@
 import React from 'react';
-import { LinkButton, AButton, Button } from './elements';
+import { LinkButton, AButton, Button, styles } from './elements';
 
 export interface IButtonProps {
   to?: string;
@@ -26,10 +26,12 @@ function ButtonComponent({ style = {}, ...props }: IButtonProps) {
   }
 
   if (props.href) {
+    // @ts-ignore
     return <AButton style={style} {...props} />;
   }
 
+  // @ts-ignore
   return <Button style={style} {...props} />;
 }
 
-export { ButtonComponent as Button };
+export { ButtonComponent as Button, styles as buttonStyles };

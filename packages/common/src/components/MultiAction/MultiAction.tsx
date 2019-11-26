@@ -1,8 +1,7 @@
 import React, { memo, cloneElement, Children } from 'react';
 import GoChevronDown from 'react-icons/lib/go/chevron-down';
 import GoChevronUp from 'react-icons/lib/go/chevron-up';
-import { useMenuState } from 'reakit/Menu';
-import { ButtonIcon } from '../Button';
+import { useMenuState, MenuStateReturn } from 'reakit/Menu';
 import {
   Container,
   PrimaryAction,
@@ -14,7 +13,7 @@ import {
 interface IMultiActionProps {
   Icon?: any;
   primaryActionLabel: string;
-  onPrimaryClick?: (event: React.MouseEvent) => void;
+  onPrimaryClick?: (event: React.MouseEvent, menu: MenuStateReturn) => void;
   disablePrimary?: boolean;
   small?: boolean;
   block?: boolean;
@@ -48,15 +47,11 @@ export const MultiAction: React.FC<IMultiActionProps> = memo(
         {/*
         // @ts-ignore */}
         <PrimaryAction
-          onClick={onPrimaryClick}
+          onClick={e => onPrimaryClick(e, menu)}
           {...buttonProps}
           disabled={disablePrimary || disabled}
         >
-          {Icon && (
-            <ButtonIcon>
-              <Icon />
-            </ButtonIcon>
-          )}
+          {Icon && <Icon />}
           {primaryActionLabel}
         </PrimaryAction>
         <ToggleActionsList {...menu} {...buttonProps}>
@@ -66,14 +61,23 @@ export const MultiAction: React.FC<IMultiActionProps> = memo(
           {children && (children as React.ReactElement[]).length
             ? /* eslint-disable react/no-array-index-key */
               (children as React.ReactElement[]).map((child, i) => (
-                <SecondaryAction key={i} {...menu} {...child.props || {}}>
+                <SecondaryAction
+                  key={i}
+                  {...menu}
+                  {...(child.props || {})}
+                  onClick={e => {
+                    if (child.props.onClick) {
+                      child.props.onClick(e, menu);
+                    }
+                  }}
+                >
                   {itemProps => cloneElement(Children.only(child), itemProps)}
                 </SecondaryAction>
               ))
             : !Array.isArray(children) && (
                 <SecondaryAction
                   {...menu}
-                  {...(children as React.ReactElement).props || {}}
+                  {...((children as React.ReactElement).props || {})}
                 >
                   {itemProps =>
                     cloneElement(Children.only(children), itemProps)

@@ -2,13 +2,17 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   box-sizing: border-box;
-  height: 66px;
+  height: 70px;
   width: 100%;
-  background: #0971f1;
+  background: ${props =>
+    props.theme['editor.background'] || props.theme.background2};
   padding: 16px 13px;
-  color: white;
+  color: ${props => props.theme['editor.foreground'] || 'white'};
   display: flex;
   justify-content: space-between;
+  z-index: 20;
+  border-bottom: 1px solid
+    ${props => props.theme['editorGroup.border'] || props.theme.background4};
 `;
 
 export const Side = styled.div`
@@ -52,7 +56,6 @@ export const Counts = styled.ul`
   list-style: none;
   padding: 0;
   align-items: center;
-  color: white;
   font-size: 10px;
   align-items: center;
   margin-right: 1rem;
@@ -68,7 +71,7 @@ export const Counts = styled.ul`
 
   svg {
     margin-right: 0.5rem;
-    fill: #fff;
+    fill: currentColor;
   }
 `;
 
@@ -77,4 +80,5 @@ export const Close = styled.button`
   background: transparent;
   margin-left: 1rem;
   cursor: pointer;
+  color: currentColor;
 `;

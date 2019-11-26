@@ -20,13 +20,15 @@ export const Create = () => {
       <Header>
         <span>Create Sandbox</span>
 
-        <div>
-          <SearchBox
-            onChange={evt => setFilter(evt.target.value)}
-            value={filter}
-            placeholder="Filter Templates"
-          />
-        </div>
+        {state.hasLogIn && (
+          <div>
+            <SearchBox
+              onChange={evt => setFilter(evt.target.value)}
+              value={filter}
+              placeholder="Filter Templates"
+            />
+          </div>
+        )}
       </Header>
       <Scrollable>
         {state.hasLogIn ? (
@@ -42,24 +44,28 @@ export const Create = () => {
           </CenteredMessage>
         )}
 
-        <SubHeader>Official Templates</SubHeader>
-        <Grid columnCount={2}>
-          {all.map(template => (
-            <SandboxCard
-              key={template.name}
-              title={template.niceName}
-              iconUrl={template.name}
-              environment={template.name}
-              owner="CodeSandbox"
-              url={sandboxUrl({ id: template.shortid, alias: null })}
-              official
-              color={template.color}
-              mine={false}
-              templateId="" // TODO
-              sandboxId={template.shortid}
-            />
-          ))}
-        </Grid>
+        {!filter && (
+          <>
+            <SubHeader>Official Templates</SubHeader>
+            <Grid columnCount={2}>
+              {all.map(template => (
+                <SandboxCard
+                  key={template.shortid}
+                  title={template.niceName}
+                  iconUrl={template.name}
+                  environment={template.name}
+                  owner="CodeSandbox"
+                  url={sandboxUrl({ id: template.shortid, alias: null })}
+                  official
+                  color={template.color()}
+                  mine={false}
+                  templateId="" // TODO
+                  sandboxId={template.shortid}
+                />
+              ))}
+            </Grid>
+          </>
+        )}
       </Scrollable>
     </>
   );

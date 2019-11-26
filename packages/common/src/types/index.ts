@@ -83,7 +83,7 @@ export type Template = {
   shortid: string;
   url: string;
   main: boolean;
-  color: string;
+  color: () => string;
   backgroundColor: () => string | undefined;
   popular: boolean;
   showOnHomePage: boolean;

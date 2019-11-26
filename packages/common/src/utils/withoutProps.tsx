@@ -27,9 +27,7 @@ export const withoutProps = (...omitProps: string[]) => {
     ));
 
     if (Component.displayName) {
-      componentWithoutProps.displayName = `${
-        Component.displayName
-      }WithoutProps`;
+      componentWithoutProps.displayName = `${Component.displayName}WithoutProps`;
     }
 
     return componentWithoutProps;
