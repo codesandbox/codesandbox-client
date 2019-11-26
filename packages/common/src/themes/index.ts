@@ -1,5 +1,5 @@
 import codesandbox from './codesandbox.json';
-import codesandboxBlack from './codesandbox-black.json';
+import codesandboxBlack from './codesandbox-black';
 import codesandboxLight from './codesandbox-light.json';
 
 export default [

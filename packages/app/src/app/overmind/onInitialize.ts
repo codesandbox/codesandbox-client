@@ -15,12 +15,10 @@ export const onInitialize: OnInitialize = async (
 
   effects.api.initialize({
     provideJwtToken,
-    onError(error) {
-      effects.notificationToast.error(error);
-    },
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
     },
+    onError: actions.internal.onApiError,
   });
 
   effects.notifications.initialize({

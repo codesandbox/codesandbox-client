@@ -1,5 +1,6 @@
 import track, {
   identify,
+  logError,
   setAnonymousId,
   setUserId,
 } from '@codesandbox/common/lib/utils/analytics';
@@ -16,6 +17,7 @@ export default (() => {
       trackedEvents[event] = true;
       track(event, data);
     },
+    logError,
     identify,
     setAnonymousId,
     setUserId,

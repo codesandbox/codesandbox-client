@@ -9,14 +9,17 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
+import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
+import values from 'lodash-es/values';
 
+import { ApiError } from './effects/api/apiFactory';
 import { createOptimisticModule } from './utils/common';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
 
-export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
+export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
   { state, effects, actions },
   options
 ) => {
@@ -123,7 +126,7 @@ export const authorize: AsyncAction = async ({ state, effects }) => {
 };
 
 export const signInGithub: Action<
-  { useExtraScopes: boolean },
+  { useExtraScopes?: boolean },
   Promise<string>
 > = ({ effects }, options) => {
   const authPath =
@@ -345,4 +348,115 @@ export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
   }
 
   state.editor.tabs.splice(tabIndex, 1);
+};
+
+export const onApiError: Action<ApiError> = (
+  { state, actions, effects },
+  error
+) => {
+  const { response } = error;
+
+  if (response.status === 401) {
+    // We need to implement a blocking modal to either sign in or refresh the browser to
+    // continue in an anonymous state
+  }
+
+  if (!response || response.status >= 500) {
+    effects.analytics.logError(error);
+  }
+
+  const result = response.data;
+
+  if (result) {
+    if ('errors' in result) {
+      const errors = values(result.errors)[0];
+      if (Array.isArray(errors)) {
+        if (errors[0]) {
+          error.message = errors[0]; // eslint-disable-line no-param-reassign,prefer-destructuring
+        }
+      } else {
+        error.message = errors; // eslint-disable-line no-param-reassign
+      }
+    } else if (result.error) {
+      error.message = result.error; // eslint-disable-line no-param-reassign
+    } else if (response.status === 413) {
+      error.message = 'File too large, upload limit is 5MB.';
+    }
+  }
+
+  if (error.message.startsWith('You need to sign in to create more than')) {
+    // Error for "You need to sign in to create more than 10 sandboxes"
+    effects.analytics.track('Anonymous Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
+
+    effects.notificationToast.add({
+      message: error.message,
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Sign in',
+            run: () => {
+              actions.internal.signIn({});
+            },
+          },
+        ],
+      },
+    });
+  } else if (error.message.startsWith('You reached the maximum of')) {
+    effects.analytics.track('Non-Patron Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
+
+    effects.notificationToast.add({
+      message: error.message,
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Open Patron Page',
+            run: () => {
+              window.open(patronUrl(), '_blank');
+            },
+          },
+        ],
+      },
+    });
+  } else if (
+    error.message.startsWith(
+      'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
+    )
+  ) {
+    effects.analytics.track('Non-Patron Server Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
+
+    effects.notificationToast.add({
+      message: error.message,
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Open Patron Page',
+            run: () => {
+              window.open(patronUrl(), '_blank');
+            },
+          },
+        ],
+      },
+    });
+  } else {
+    if (
+      error.message.startsWith(
+        'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
+      )
+    ) {
+      effects.analytics.track('Patron Server Sandbox Limit Reached', {
+        errorMessage: error.message,
+      });
+    }
+
+    effects.notificationToast.error(error.message);
+  }
 };
