@@ -16,9 +16,6 @@ module.exports = {
         avoidOptionals: true,
       },
     },
-    './src/app/graphql/globals.d.ts': {
-      plugins: [`typescript-graphql-files-modules`],
-    },
     './src/app/graphql/introspection-result.ts': {
       plugins: [`fragment-matcher`],
     },

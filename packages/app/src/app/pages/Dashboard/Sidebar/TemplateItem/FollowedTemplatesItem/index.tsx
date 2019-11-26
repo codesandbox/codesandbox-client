@@ -20,7 +20,7 @@ export const FollowedTemplatesItem = ({ currentPath, teamId }: Props) => {
         active={currentPath === url}
         path={url}
         Icon={TemplateIcon}
-        name={teamId ? 'Team Followed Templates' : 'Followed Templates'}
+        name={teamId ? 'Team Bookmarked Templates' : 'Bookmarked Templates'}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 # source: https://codesandbox.stream/api/graphql
-# timestamp: Tue Nov 26 2019 18:12:38 GMT+0000 (Coordinated Universal Time)
+# timestamp: Tue Nov 26 2019 18:42:09 GMT+0000 (Coordinated Universal Time)
 
 schema {
   query: RootQuery
@@ -11,7 +11,9 @@ type Bookmarked {
   isBookmarked: Boolean
 }
 
-"""A team or the current user"""
+"""
+A team or the current user
+"""
 union BookmarkEntity = Team | User
 
 type Collection {
@@ -57,79 +59,132 @@ input OrderBy {
 }
 
 type RootMutation {
-  """Accept an invitation to a team"""
+  """
+  Accept an invitation to a team
+  """
   acceptTeamInvitation(teamId: ID!): Team
 
-  """Add sandboxes to a collection"""
-  addToCollection(collectionPath: String!, sandboxIds: [ID]!, teamId: ID): Collection
+  """
+  Add sandboxes to a collection
+  """
+  addToCollection(
+    collectionPath: String!
+    sandboxIds: [ID]!
+    teamId: ID
+  ): Collection
 
-  """bookmark a template"""
+  """
+  bookmark a template
+  """
   bookmarkTemplate(teamId: ID, templateId: ID!): Template
 
-  """Clear notification unread count"""
+  """
+  Clear notification unread count
+  """
   clearNotificationCount: User
 
-  """Create a collection"""
+  """
+  Create a collection
+  """
   createCollection(path: String!, teamId: ID): Collection
 
-  """Create a team"""
+  """
+  Create a team
+  """
   createTeam(name: String!): Team
 
-  """Delete a collection and all subfolders"""
+  """
+  Delete a collection and all subfolders
+  """
   deleteCollection(path: String!, teamId: ID): [Collection]
 
-  """Delete sandboxes"""
+  """
+  Delete sandboxes
+  """
   deleteSandboxes(sandboxIds: [ID]!): [Sandbox]
 
-  """Invite someone to a team"""
+  """
+  Invite someone to a team
+  """
   inviteToTeam(teamId: ID!, username: String): Team
 
-  """Leave a team"""
+  """
+  Leave a team
+  """
   leaveTeam(teamId: ID!): String
 
-  """Make templates from sandboxes"""
+  """
+  Make templates from sandboxes
+  """
   makeSandboxesTemplates(sandboxIds: [ID]!): [Template]
   permanentlyDeleteSandboxes(sandboxIds: [ID]!): [Sandbox]
 
-  """Reject an invitation to a team"""
+  """
+  Reject an invitation to a team
+  """
   rejectTeamInvitation(teamId: ID!): String
 
-  """Remove someone from a team"""
+  """
+  Remove someone from a team
+  """
   removeFromTeam(teamId: ID!, userId: ID!): Team
 
-  """Rename a collection and all subfolders"""
-  renameCollection(newPath: String!, newTeamId: ID, path: String!, teamId: ID): [Collection]
+  """
+  Rename a collection and all subfolders
+  """
+  renameCollection(
+    newPath: String!
+    newTeamId: ID
+    path: String!
+    teamId: ID
+  ): [Collection]
   renameSandbox(id: ID!, title: String!): Sandbox
 
-  """Revoke an invitation to a team"""
+  """
+  Revoke an invitation to a team
+  """
   revokeTeamInvitation(teamId: ID!, userId: ID!): Team
   setSandboxesPrivacy(privacy: Int, sandboxIds: [ID]!): [Sandbox]
 
-  """Set the description of the team"""
+  """
+  Set the description of the team
+  """
   setTeamDescription(description: String!, teamId: ID!): Team
 
-  """Unbookmark a template"""
+  """
+  Unbookmark a template
+  """
   unbookmarkTemplate(teamId: ID, templateId: ID!): Template
 
-  """Convert templates back to sandboxes"""
+  """
+  Convert templates back to sandboxes
+  """
   unmakeSandboxesTemplates(sandboxIds: [ID]!): [Template]
 }
 
 type RootQuery {
-  """Get current user"""
+  """
+  Get current user
+  """
   me: CurrentUser
 
-  """Get a sandbox"""
+  """
+  Get a sandbox
+  """
   sandbox(sandboxId: ID!): Sandbox
 }
 
-"""A Sandbox"""
+"""
+A Sandbox
+"""
 type Sandbox {
   alias: String
   author: User
   collection: Collection
 
-  """If the sandbox is a template this will be set"""
+  """
+  If the sandbox is a template this will be set
+  """
   customTemplate: Template
   description: String
   forkedTemplate: Template
@@ -161,7 +216,9 @@ type Team {
   users: [User]
 }
 
-"""A Template"""
+"""
+A Template
+"""
 type Template {
   bookmarked: [Bookmarked]
   color: String
@@ -175,7 +232,9 @@ type Template {
   updatedAt: String
 }
 
-"""A CodeSandbox User"""
+"""
+A CodeSandbox User
+"""
 type User {
   avatarUrl: String
   email: String

@@ -55,7 +55,7 @@ export const FollowedTemplates = props => {
   useEffect(() => {
     document.title = `${
       teamId ? 'Team' : 'My'
-    } Followed Templates - CodeSandbox`;
+    } Bookmarked Templates - CodeSandbox`;
   }, [teamId]);
 
   useEffect(() => {
