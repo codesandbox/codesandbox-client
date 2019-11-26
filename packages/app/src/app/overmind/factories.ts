@@ -1,5 +1,6 @@
 import { Contributor } from '@codesandbox/common/lib/types';
 import { IDerive, IState, json } from 'overmind';
+import { AxiosError } from 'axios';
 
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
@@ -40,7 +41,7 @@ export const withLoadApp = <T>(
       actions.userNotifications.internal.initialize();
       effects.api.preloadTemplates();
     } catch (error) {
-      if (error.status === 401) {
+      if (error.isAxiosError && (error as AxiosError).response.status === 401) {
         // Reset existing sign in info
         effects.jwt.reset();
         effects.analytics.setAnonymousId();
