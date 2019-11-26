@@ -1,16 +1,13 @@
-/* eslint-disable camelcase */
-import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
-import track, { logError } from '@codesandbox/common/lib/utils/analytics';
-import { values } from 'lodash-es';
-import { camelizeKeys, decamelizeKeys } from 'humps';
 import { Module } from '@codesandbox/common/lib/types';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
-import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
+/* eslint-disable camelcase */
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { camelizeKeys, decamelizeKeys } from 'humps';
 
 export const API_ROOT = '/api/v1';
 
-type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> };
+export type ApiError = AxiosError<
+  { errors: string[] } | { error: string } | any
+>;
 
 export type Params = {
   [key: string]: string;
@@ -35,7 +32,7 @@ export type ApiConfig = {
     [path: string]: Module;
   };
   getParsedConfigurations: () => any;
-  signIn: (val: any) => Promise<void>;
+  onError: (error: ApiError) => void;
 };
 
 export default (config: ApiConfig) => {
@@ -46,126 +43,6 @@ export default (config: ApiConfig) => {
         }
       : {};
 
-  const showError = error => {
-    const errorMessage = getMessage(error);
-    showNotification(errorMessage);
-
-    error.apiMessage = errorMessage; // eslint-disable-line no-param-reassign
-  };
-
-  const showNotification = (errorMessage: string) => {
-    if (errorMessage.startsWith('You need to sign in to create more than')) {
-      // Error for "You need to sign in to create more than 10 sandboxes"
-      track('Anonymous Sandbox Limit Reached', { errorMessage });
-
-      notificationState.addNotification({
-        message: errorMessage,
-        status: NotificationStatus.ERROR,
-        actions: {
-          primary: [
-            {
-              label: 'Sign in',
-              run: () => {
-                config.signIn({});
-              },
-            },
-          ],
-        },
-      });
-    } else if (errorMessage.startsWith('You reached the maximum of')) {
-      track('Non-Patron Sandbox Limit Reached', { errorMessage });
-
-      notificationState.addNotification({
-        message: errorMessage,
-        status: NotificationStatus.ERROR,
-        actions: {
-          primary: [
-            {
-              label: 'Open Patron Page',
-              run: () => {
-                window.open(patronUrl(), '_blank');
-              },
-            },
-          ],
-        },
-      });
-    } else if (
-      errorMessage.startsWith(
-        'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
-      )
-    ) {
-      track('Non-Patron Server Sandbox Limit Reached', { errorMessage });
-
-      notificationState.addNotification({
-        message: errorMessage,
-        status: NotificationStatus.ERROR,
-        actions: {
-          primary: [
-            {
-              label: 'Open Patron Page',
-              run: () => {
-                window.open(patronUrl(), '_blank');
-              },
-            },
-          ],
-        },
-      });
-    } else {
-      if (
-        errorMessage.startsWith(
-          'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
-        )
-      ) {
-        track('Patron Server Sandbox Limit Reached', { errorMessage });
-      }
-
-      notificationState.addNotification({
-        message: errorMessage,
-        status: NotificationStatus.ERROR,
-      });
-    }
-  };
-
-  const getMessage = (
-    error: AxiosError<{ errors: string[] } | { error: string } | any>
-  ) => {
-    const { response } = error;
-
-    if (!response || response.status >= 500) {
-      logError(error);
-    }
-
-    const result = response.data;
-    if (result) {
-      if ('errors' in result) {
-        const errors = values(result.errors)[0];
-        if (Array.isArray(errors)) {
-          if (errors[0]) {
-            error.message = errors[0]; // eslint-disable-line no-param-reassign,prefer-destructuring
-          }
-        } else {
-          error.message = errors; // eslint-disable-line no-param-reassign
-        }
-      } else if (result.error) {
-        error.message = result.error; // eslint-disable-line no-param-reassign
-      } else if (response.status === 413) {
-        return 'File too large, upload limit is 5MB.';
-      }
-    }
-
-    return error.message;
-  };
-
-  const handleError = (error: AxiosError) => {
-    try {
-      showError(error);
-    } catch (e) {
-      console.error(e);
-    }
-
-    throw error;
-  };
-
   const api: Api = {
     get(path, params, options) {
       return axios
@@ -174,7 +51,10 @@ export default (config: ApiConfig) => {
           headers: createHeaders(config.provideJwtToken()),
         })
         .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .catch(e => {
+          config.onError(e);
+          return Promise.reject(e);
+        });
     },
     post(path, body, options) {
       return axios
@@ -182,7 +62,10 @@ export default (config: ApiConfig) => {
           headers: createHeaders(config.provideJwtToken()),
         })
         .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .catch(e => {
+          config.onError(e);
+          return Promise.reject(e);
+        });
     },
     patch(path, body, options) {
       return axios
@@ -190,7 +73,10 @@ export default (config: ApiConfig) => {
           headers: createHeaders(config.provideJwtToken()),
         })
         .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .catch(e => {
+          config.onError(e);
+          return Promise.reject(e);
+        });
     },
     put(path, body, options) {
       return axios
@@ -198,7 +84,10 @@ export default (config: ApiConfig) => {
           headers: createHeaders(config.provideJwtToken()),
         })
         .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .catch(e => {
+          config.onError(e);
+          return Promise.reject(e);
+        });
     },
     delete(path, params, options) {
       return axios
@@ -207,7 +96,10 @@ export default (config: ApiConfig) => {
           headers: createHeaders(config.provideJwtToken()),
         })
         .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .catch(e => {
+          config.onError(e);
+          return Promise.reject(e);
+        });
     },
     request(requestConfig, options) {
       return axios
@@ -219,7 +111,10 @@ export default (config: ApiConfig) => {
           })
         )
         .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .catch(e => {
+          config.onError(e);
+          return Promise.reject(e);
+        });
     },
   };
 

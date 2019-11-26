@@ -27,13 +27,13 @@ export const onInitialize: OnInitialize = (
 
   effects.api.initialize({
     provideJwtToken,
-    signIn: actions.internal.signIn,
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
     },
     getModulesByPath() {
       return state.editor.modulesByPath;
     },
+    onError: actions.internal.onApiError,
   });
 
   effects.notifications.initialize({
