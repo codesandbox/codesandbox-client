@@ -66,7 +66,7 @@ export default (config: ApiConfig) => {
             {
               label: 'Sign in',
               run: () => {
-                config.signIn();
+                config.signIn({});
               },
             },
           ],
