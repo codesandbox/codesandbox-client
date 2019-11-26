@@ -14,7 +14,7 @@ import { LIST_BOOKMARKED_TEMPLATES_QUERY } from 'app/components/CreateNewSandbox
 import {
   UnbookmarkTemplateFromDashboardMutation,
   UnbookmarkTemplateFromDashboardMutationVariables,
-  ListFollowedTemplatesQuery,
+  ListPersonalBookmarkedTemplatesQuery,
 } from 'app/graphql/types';
 import { unbookmarkTemplateFromDashboard } from './mutations.gql';
 import { ButtonContainer } from './elements';
@@ -25,12 +25,12 @@ import { Navigation } from '../Navigation';
 export const FollowedTemplates = props => {
   const { teamId } = props.match.params;
   const [sortedTemplates, setSortedTemplates] = useState<
-    ListFollowedTemplatesQuery['me']['bookmarkedTemplates']
+    ListPersonalBookmarkedTemplatesQuery['me']['bookmarkedTemplates']
   >();
 
-  const { loading, error, data } = useQuery<ListFollowedTemplatesQuery>(
-    LIST_BOOKMARKED_TEMPLATES_QUERY
-  );
+  const { loading, error, data } = useQuery<
+    ListPersonalBookmarkedTemplatesQuery
+  >(LIST_BOOKMARKED_TEMPLATES_QUERY);
   const client = useApolloClient();
   const [unBookmark] = useMutation<
     UnbookmarkTemplateFromDashboardMutation,

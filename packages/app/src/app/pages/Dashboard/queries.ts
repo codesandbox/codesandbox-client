@@ -1,6 +1,16 @@
 import gql from 'graphql-tag';
 import { client } from 'app/graphql/client';
 import immer from 'immer';
+import {
+  PathedSandboxesQuery,
+  DeleteSandboxesMutation,
+  DeleteSandboxesMutationVariables,
+  PermanentlyDeleteSandboxesMutation,
+  PermanentlyDeleteSandboxesMutationVariables,
+  DeletedSandboxesQuery,
+  AddToCollectionMutation,
+  AddToCollectionMutationVariables,
+} from 'app/graphql/types';
 
 const SIDEBAR_COLLECTION_FRAGMENT = gql`
   fragment SidebarCollection on Collection {
@@ -246,8 +256,15 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
-export function addSandboxesToFolder(selectedSandboxes, path, teamId) {
-  return client.mutate({
+export function addSandboxesToFolder(
+  selectedSandboxes,
+  path: string,
+  teamId?: string
+) {
+  return client.mutate<
+    AddToCollectionMutation,
+    AddToCollectionMutationVariables
+  >({
     mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
     variables: {
       sandboxIds: selectedSandboxes,
@@ -255,7 +272,7 @@ export function addSandboxesToFolder(selectedSandboxes, path, teamId) {
       collectionPath: path,
     },
     optimisticResponse: {
-      __typename: 'Mutation',
+      __typename: 'RootMutationType',
       addToCollection: {
         __typename: 'Collection',
         // We keep this empty, because it will be loaded later regardless. We
@@ -269,16 +286,17 @@ export function addSandboxesToFolder(selectedSandboxes, path, teamId) {
 }
 
 export function undeleteSandboxes(selectedSandboxes) {
-  client.mutate({
+  client.mutate<AddToCollectionMutation, AddToCollectionMutationVariables>({
     mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
     variables: {
       sandboxIds: selectedSandboxes.toJS
         ? selectedSandboxes.toJS()
         : selectedSandboxes,
       collectionPath: '/',
+      teamId: undefined,
     },
     optimisticResponse: {
-      __typename: 'Mutation',
+      __typename: 'RootMutationType',
       addToCollection: {
         __typename: 'Collection',
         // We keep this empty, because it will be loaded later regardless. We
@@ -292,7 +310,10 @@ export function undeleteSandboxes(selectedSandboxes) {
 }
 
 export function permanentlyDeleteSandboxes(selectedSandboxes) {
-  client.mutate({
+  client.mutate<
+    PermanentlyDeleteSandboxesMutation,
+    PermanentlyDeleteSandboxesMutationVariables
+  >({
     mutation: PERMANENTLY_DELETE_SANDBOXES_MUTATION,
     variables: {
       sandboxIds: selectedSandboxes.toJS
@@ -301,7 +322,7 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
     },
     update: cache => {
       try {
-        const oldDeleteCache = cache.readQuery({
+        const oldDeleteCache = cache.readQuery<DeletedSandboxesQuery>({
           query: DELETED_SANDBOXES_CONTENT_QUERY,
         });
 
@@ -327,7 +348,7 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
 }
 
 export function deleteSandboxes(selectedSandboxes, collections = []) {
-  client.mutate({
+  client.mutate<DeleteSandboxesMutation, DeleteSandboxesMutationVariables>({
     mutation: DELETE_SANDBOXES_MUTATION,
     variables: {
       sandboxIds: selectedSandboxes.toJS
@@ -344,13 +365,15 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
       if (collections) {
         collections.forEach(({ path, teamId }) => {
           try {
-            const variables = { path };
+            const variables: Partial<{ path: string; teamId?: string }> = {
+              path,
+            };
 
             if (teamId) {
               variables.teamId = teamId;
             }
 
-            const oldFolderCacheData = cache.readQuery({
+            const oldFolderCacheData = cache.readQuery<PathedSandboxesQuery>({
               query: PATHED_SANDBOXES_CONTENT_QUERY,
               variables,
             });
@@ -361,7 +384,7 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
               );
             });
 
-            cache.writeQuery({
+            cache.writeQuery<PathedSandboxesQuery>({
               query: PATHED_SANDBOXES_CONTENT_QUERY,
               variables,
               data,
