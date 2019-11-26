@@ -54,6 +54,8 @@ export class VersionEntry extends React.PureComponent<Props, State> {
       '00383ecd8441ead30b1b0ff981c426f5'
     );
     const index = client.initIndex('npm-search');
+
+    // @ts-ignore
     index.getObject(dependency, ['versions']).then(({ versions: results }) => {
       const versions = Object.keys(results).sort((a, b) => {
         try {

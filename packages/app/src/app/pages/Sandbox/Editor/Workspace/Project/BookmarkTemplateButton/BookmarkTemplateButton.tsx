@@ -133,7 +133,9 @@ export const BookmarkTemplateButton = ({ style }: IBookmarkTemplateButton) => {
           <button
             type="button"
             key={name}
+            // @ts-ignore
             onClick={(e, menu) => {
+              // TODO: find a way to pass menu so we can close it after handling our action
               handleToggleFollow(i);
               menu.hide();
             }}

@@ -49,7 +49,7 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
   const OfficialIcon: React.FunctionComponent = getColorIcons(environment);
   const parsedEnvironment = getEnvironment(environment);
 
-  const elRef = React.useRef<HTMLAnchorElement>();
+  const elRef = React.useRef<HTMLButtonElement>();
 
   React.useEffect(() => {
     const inputHasFocus =

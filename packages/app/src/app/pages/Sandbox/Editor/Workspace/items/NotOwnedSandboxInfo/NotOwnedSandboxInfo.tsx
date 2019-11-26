@@ -3,7 +3,7 @@ import { useOvermind } from 'app/overmind';
 import { Dependencies } from '../../Dependencies';
 import Files from '../../Files';
 import { Project } from '../../Project';
-import { FollowTemplateButton } from '../../Project/FollowTemplateButton';
+import { BookmarkTemplateButton } from '../../Project/BookmarkTemplateButton';
 import { WorkspaceItem } from '../../WorkspaceItem';
 
 export const NotOwnedSandboxInfo = () => {
@@ -16,10 +16,7 @@ export const NotOwnedSandboxInfo = () => {
   return (
     <div style={{ marginTop: '1rem' }}>
       <Project />
-      {editor.currentSandbox.customTemplate &&
-        editor.currentSandbox.customTemplate.published && (
-          <FollowTemplateButton />
-        )}
+      {editor.currentSandbox.customTemplate && <BookmarkTemplateButton />}
       <WorkspaceItem
         actions={editActions}
         defaultOpen

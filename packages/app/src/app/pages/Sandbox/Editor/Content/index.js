@@ -14,7 +14,6 @@ import { DevTools } from 'app/components/Preview/DevTools';
 import { Preview } from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
-import { TemplateBanner } from './TemplateBanner';
 
 const settings = store => ({
   fontFamily: store.preferences.settings.fontFamily,
@@ -35,7 +34,7 @@ const settings = store => ({
 });
 
 class EditorPreview extends React.Component {
-  state = { width: null, height: null, showBanner: true };
+  state = { width: null, height: null };
   interval;
   disposeEditorChange;
   el;
@@ -517,14 +516,6 @@ class EditorPreview extends React.Component {
                 marginTop: 0,
               }}
             >
-              {!sandbox.owned &&
-              sandbox.customTemplate &&
-              this.state.showBanner ? (
-                <TemplateBanner
-                  sandbox={sandbox}
-                  hideBanner={() => this.setState({ showBanner: false })}
-                />
-              ) : null}
               {!store.preferences.settings.experimentVSCode && <Tabs />}
               <CodeEditor
                 style={{
