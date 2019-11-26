@@ -104,7 +104,7 @@
     "jest": "^24.8.0",
     "jest-environment-enzyme": "^7.1.0",
     "jest-enzyme": "^7.1.0",
-    "jest-styled-components": "^6.3.3",
+    "jest-styled-components": "^6.3.4",
     "jest-svg-transformer": "^1.0.0",
     "rimraf": "^2.6.3",
     "typescript": "3.7.2",

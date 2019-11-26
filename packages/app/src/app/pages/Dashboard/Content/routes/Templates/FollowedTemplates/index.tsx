@@ -10,17 +10,16 @@ import { ContextMenu } from 'app/components/ContextMenu';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { LIST_BOOKMARKED_TEMPLATES_QUERY } from 'app/components/CreateNewSandbox/queries';
-// @ts-ignore
 import {
   UnbookmarkTemplateFromDashboardMutation,
   UnbookmarkTemplateFromDashboardMutationVariables,
   ListPersonalBookmarkedTemplatesQuery,
 } from 'app/graphql/types';
-import { unbookmarkTemplateFromDashboard } from './mutations.gql';
 import { ButtonContainer } from './elements';
 
 import { Container, Grid, EmptyTitle } from '../elements';
 import { Navigation } from '../Navigation';
+import { UNBOOKMARK_TEMPLATE_FROM_DASHBOARD } from './mutations';
 
 export const FollowedTemplates = props => {
   const { teamId } = props.match.params;
@@ -35,7 +34,7 @@ export const FollowedTemplates = props => {
   const [unBookmark] = useMutation<
     UnbookmarkTemplateFromDashboardMutation,
     UnbookmarkTemplateFromDashboardMutationVariables
-  >(unbookmarkTemplateFromDashboard, {
+  >(UNBOOKMARK_TEMPLATE_FROM_DASHBOARD, {
     onCompleted({ unbookmarkTemplate: unbookmarkMutation }) {
       const newTemplates = data.me.bookmarkedTemplates.filter(
         template => template.id !== unbookmarkMutation.id
