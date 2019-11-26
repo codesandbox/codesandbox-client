@@ -29,7 +29,7 @@ const track = ({ position = true } = {}) => css`
   width: ${position ? `1rem` : `calc(100% - 1rem)`};
   height: ${position ? `calc(100vh - 1rem)` : `1rem`};
   padding: 0.25rem;
-  background-color: rgba(255, 255, 255, 0.35);
+  background-color: transparent !important;
   cursor: pointer;
 `;
 
@@ -59,4 +59,10 @@ export const BaseThumbX = styled.span`
 
 export const BaseThumbY = styled.span`
   ${thumb({ position: true })}
+`;
+
+export const BaseWrapper = styled.span`
+  /* We want to overlay the scrollbar */
+  right: 0 !important;
+  bottom: 0 !important;
 `;

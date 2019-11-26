@@ -58,7 +58,6 @@ export const Create = () => {
                   url={sandboxUrl({ id: template.shortid, alias: null })}
                   official
                   color={template.color()}
-                  mine={false}
                   templateId="" // TODO
                   sandboxId={template.shortid}
                 />

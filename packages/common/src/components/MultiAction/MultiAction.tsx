@@ -22,7 +22,7 @@ interface IMultiActionProps {
   secondary?: boolean;
   red?: boolean;
   danger?: boolean;
-  children: React.ReactElement;
+  children: React.ReactElement | React.ReactElement[];
 }
 
 export const MultiAction: React.FC<IMultiActionProps> = memo(

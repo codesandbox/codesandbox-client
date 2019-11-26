@@ -1,24 +1,6 @@
 import styled, { css } from 'styled-components';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import { Link } from '@codesandbox/common/lib/components/Link';
 
-export const ActionButton = styled(Button)`
-  background: #151515;
-  border: 1px solid #0971f1;
-  box-sizing: border-box;
-  border-radius: 2px;
-  font-weight: 500;
-  font-size: 9px;
-  text-align: right;
-  padding: 0 0.125rem !important;
-  color: #0971f1;
-  position: relative;
-  z-index: 99;
-  transition: opacity 500ms ease;
-  opacity: 0;
-`;
-
-export const Container = styled(Link)<{ focused?: boolean }>`
+export const Container = styled.button<{ focused?: boolean }>`
   transition: 0.3s ease background-color;
   display: inline-flex;
   padding: 0.5rem;
@@ -30,22 +12,17 @@ export const Container = styled(Link)<{ focused?: boolean }>`
   text-decoration: none;
   border-radius: 2px;
 
+  &:focus {
+    background-color: #242424;
+    outline: 0;
+  }
+
   ${props =>
     props.focused &&
     css`
       background-color: #242424;
       outline: 0;
     `}
-
-  &:focus,
-  &:hover {
-    background-color: #242424;
-    outline: 0;
-
-    ${ActionButton} {
-      opacity: 1;
-    }
-  }
 `;
 
 export const Icon = styled.div<{ color: string }>`

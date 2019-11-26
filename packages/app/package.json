@@ -11,7 +11,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production NODE_OPTIONS=\"--max-old-space-size=4096\"   node scripts/build.js",
     "build:clean": "rimraf www",
-    "graphql:replace-schema": "sed -i '' 's/RootQueryType/RootQuery/g' ./src/app/graphql/schema.graphql && sed -i '' 's/RootMutationType/RootMutation/g' ./src/app/graphql/schema.graphql",
+    "graphql:replace-schema": "sed -i'' 's/RootQueryType/RootQuery/g' ./src/app/graphql/schema.graphql && sed -i'' 's/RootMutationType/RootMutation/g' ./src/app/graphql/schema.graphql",
     "generate:graphql": "graphql get-schema --project app && yarn graphql:replace-schema && graphql-codegen --config ./scripts/codegen.js",
     "generate:graphql:staging": "graphql get-schema -e staging --project app && yarn graphql:replace-schema && graphql-codegen --config ./scripts/codegen.js --staging",
     "build:embed": "cross-env NODE_ENV=production webpack --config config/webpack.embed.js",

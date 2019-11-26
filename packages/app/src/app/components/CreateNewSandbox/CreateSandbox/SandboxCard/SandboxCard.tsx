@@ -1,12 +1,9 @@
 import React from 'react';
 import { Icons } from '@codesandbox/template-icons';
-import history from 'app/utils/history';
 import getColorIcons from '@codesandbox/common/lib/templates/icons';
 import getEnvironment, {
   TemplateType,
 } from '@codesandbox/common/lib/templates';
-
-import { useOvermind } from 'app/overmind';
 
 import {
   Container,
@@ -16,7 +13,6 @@ import {
   Title,
   Environment,
   Author as Detail,
-  // ActionButton,
 } from './elements';
 
 interface ISandboxCardProps {
@@ -29,27 +25,29 @@ interface ISandboxCardProps {
   templateId: string;
   sandboxId: string;
   official?: boolean;
-  mine?: boolean;
   focused?: boolean;
   detailText?: string;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLButtonElement>) => void;
+  onKeyPress?: (e: React.KeyboardEvent<HTMLButtonElement>) => void;
 }
 
 export const SandboxCard: React.FC<ISandboxCardProps> = ({
   title,
   iconUrl,
   environment,
-  url,
   official,
   color,
   focused,
   detailText,
+  onClick,
+  onFocus,
+  onKeyPress,
 }) => {
   const UserIcon: React.FunctionComponent =
     iconUrl && Icons[iconUrl] ? Icons[iconUrl] : getColorIcons(environment);
   const OfficialIcon: React.FunctionComponent = getColorIcons(environment);
   const parsedEnvironment = getEnvironment(environment);
-
-  const { actions } = useOvermind();
 
   const elRef = React.useRef<HTMLAnchorElement>();
 
@@ -61,27 +59,19 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
     }
   }, [focused]);
 
-  const openSandbox = (openNewWindow = false) => {
-    if (openNewWindow === true) {
-      window.open(url, '_blank');
-    } else {
-      history.push(url);
-    }
-
-    return actions.modalClosed();
-  };
-
   return (
     <>
       <Container
         ref={elRef}
-        to={url}
-        onClick={event => {
-          const cmd = event.ctrlKey || event.metaKey;
-          openSandbox(Boolean(cmd));
+        onClick={onClick}
+        onMouseOver={() => {
+          // Set focus to current element
+          elRef.current.focus();
         }}
+        onFocus={onFocus}
+        onKeyPress={onKeyPress}
+        tabIndex={focused ? 0 : -1}
         focused={focused}
-        tabIndex={focused ? '0' : '-1'}
       >
         <Icon color={color}>
           {official && OfficialIcon ? <OfficialIcon /> : <UserIcon />}

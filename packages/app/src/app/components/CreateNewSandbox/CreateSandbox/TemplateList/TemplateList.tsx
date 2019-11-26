@@ -3,7 +3,6 @@ import { TemplateFragment } from 'app/graphql/types';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 import { useKey } from 'react-use';
-import history from 'app/utils/history';
 import { isMac } from '@codesandbox/common/lib/utils/platform';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { SandboxCard } from '../SandboxCard';
@@ -36,14 +35,12 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
 
   const openSandbox = (
     sandbox: TemplateFragment['sandbox'],
-    openNewWindow = false
+    openInNewWindow = false
   ) => {
-    const url = sandboxUrl(sandbox);
-    if (openNewWindow === true) {
-      window.open(url, '_blank');
-    } else {
-      history.push(url);
-    }
+    actions.editor.forkExternalSandbox({
+      sandboxId: sandbox.id,
+      openInNewWindow,
+    });
 
     return actions.modalClosed();
   };
@@ -175,14 +172,6 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
     }
   );
 
-  /**
-   * Our listener for Enter calls
-   */
-  useKey('Enter', e => {
-    const template = getTemplateByIndex(focusedTemplateIndex);
-    openSandbox(template.sandbox);
-  });
-
   let offset = 0;
   return (
     <>
@@ -224,6 +213,19 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
                       template.sandbox.author.username ===
                         (state.user && state.user.username)
                     }
+                    onFocus={() => {
+                      safeSetFocusedTemplate(() => index);
+                    }}
+                    onKeyPress={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        openSandbox(template.sandbox, e.metaKey || e.ctrlKey);
+                      }
+                    }}
+                    onClick={e => {
+                      e.preventDefault();
+                      openSandbox(template.sandbox, e.metaKey || e.ctrlKey);
+                    }}
                     focused={focused}
                     detailText={detailText}
                   />

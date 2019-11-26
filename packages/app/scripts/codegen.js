@@ -4,7 +4,7 @@ const URL = `https://codesandbox.${isStaging ? `stream` : `io`}/api/graphql`;
 
 module.exports = {
   schema: URL,
-  documents: [`./src/**/*.gql`, `./src/**/queries.ts`],
+  documents: [`./src/**/*.gql`, `./src/**/queries.ts`, `./src/**/mutations.ts`],
   overwrite: true,
   hooks: {
     afterAllFileWrite: [`prettier --write`],
