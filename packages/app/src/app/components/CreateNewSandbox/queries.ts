@@ -165,7 +165,7 @@ export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
           );
         });
 
-        cache.writeQuery({
+        cache.writeQuery<ListTemplatesQuery, ListTemplatesQueryVariables>({
           query: LIST_OWNED_TEMPLATES,
           variables,
           data,
