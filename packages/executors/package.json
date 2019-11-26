@@ -36,7 +36,7 @@
     "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.13",
+    "@types/jest": "24.0.13",
     "@types/socket.io-client": "^1.4.32",
     "husky": "^2.4.0",
     "pretty-quick": "^1.11.0",

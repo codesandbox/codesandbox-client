@@ -10,6 +10,8 @@ import {
   DeletedSandboxesQuery,
   AddToCollectionMutation,
   AddToCollectionMutationVariables,
+  PathedSandboxesQueryVariables,
+  DeletedSandboxesQueryVariables,
 } from 'app/graphql/types';
 
 const SIDEBAR_COLLECTION_FRAGMENT = gql`
@@ -322,7 +324,10 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
     },
     update: cache => {
       try {
-        const oldDeleteCache = cache.readQuery<DeletedSandboxesQuery>({
+        const oldDeleteCache = cache.readQuery<
+          DeletedSandboxesQuery,
+          DeletedSandboxesQueryVariables
+        >({
           query: DELETED_SANDBOXES_CONTENT_QUERY,
         });
 
@@ -365,15 +370,15 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
       if (collections) {
         collections.forEach(({ path, teamId }) => {
           try {
-            const variables: Partial<{ path: string; teamId?: string }> = {
+            const variables = {
               path,
+              teamId,
             };
 
-            if (teamId) {
-              variables.teamId = teamId;
-            }
-
-            const oldFolderCacheData = cache.readQuery<PathedSandboxesQuery>({
+            const oldFolderCacheData = cache.readQuery<
+              PathedSandboxesQuery,
+              PathedSandboxesQueryVariables
+            >({
               query: PATHED_SANDBOXES_CONTENT_QUERY,
               variables,
             });
@@ -384,7 +389,10 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
               );
             });
 
-            cache.writeQuery<PathedSandboxesQuery>({
+            cache.writeQuery<
+              PathedSandboxesQuery,
+              PathedSandboxesQueryVariables
+            >({
               query: PATHED_SANDBOXES_CONTENT_QUERY,
               variables,
               data,

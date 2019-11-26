@@ -15,6 +15,7 @@ import {
   ListTemplatesQuery,
   Collection,
   PathedSandboxesQuery,
+  PathedSandboxesFoldersQueryVariables,
 } from 'app/graphql/types';
 
 const TEMPLATE_FRAGMENT = gql`
@@ -145,13 +146,12 @@ export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
     ],
     update: cache => {
       try {
-        const variables: Partial<ListTemplatesQueryVariables> = {};
+        const variables: ListTemplatesQueryVariables = { teamId };
 
-        if (teamId) {
-          variables.teamId = teamId;
-        }
-
-        const oldTemplatesCache = cache.readQuery<ListTemplatesQuery>({
+        const oldTemplatesCache = cache.readQuery<
+          ListTemplatesQuery,
+          ListTemplatesQueryVariables
+        >({
           query: LIST_OWNED_TEMPLATES,
           variables,
         });
@@ -201,16 +201,11 @@ export function makeTemplates(
         ],
         update: cache => {
           if (collections) {
-            collections.forEach(({ path, teamId: cacheTeamId }) => {
+            collections.forEach(variables => {
               try {
-                const variables: { path: string; teamId?: string } = { path };
-
-                if (cacheTeamId) {
-                  variables.teamId = cacheTeamId;
-                }
-
                 const oldFolderCacheData = cache.readQuery<
-                  PathedSandboxesQuery
+                  PathedSandboxesQuery,
+                  PathedSandboxesFoldersQueryVariables
                 >({
                   query: PATHED_SANDBOXES_CONTENT_QUERY,
                   variables,
