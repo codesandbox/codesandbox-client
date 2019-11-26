@@ -33,11 +33,7 @@ export const onJoin: Operator<LiveMessage<{
 export const onModuleState: Operator<LiveMessage<{
   module_state: any;
 }>> = mutate(({ state, actions }, { data }) => {
-  // We get this when we notice that there is an out of sync
-  // Really no reason to set this state as everything runs sync
-  state.live.receivingCode = true;
   actions.live.internal.initializeModuleState(data.module_state);
-  state.live.receivingCode = false;
 });
 
 export const onUserEntered: Operator<LiveMessage<{

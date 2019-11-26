@@ -33,7 +33,7 @@ export const roomJoined: AsyncAction<{
   });
 
   effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately(true);
+  effects.preview.executeCodeImmediately({ initialRender: true });
   state.live.isLoading = false;
 });
 
@@ -53,7 +53,7 @@ export const createLiveClicked: AsyncAction<{
   });
 
   effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately(true);
+  effects.preview.executeCodeImmediately({ initialRender: true });
 };
 
 export const liveMessageReceived: Operator<LiveMessage> = pipe(
@@ -92,13 +92,7 @@ export const applyTransformation: Action<{
   operation: any;
   moduleShortid: string;
 }> = ({ state, effects }, { operation, moduleShortid }) => {
-  state.live.receivingCode = false;
-
   effects.vscode.applyOperation(moduleShortid, operation);
-};
-
-export const onCodeReceived: Action = ({ state }) => {
-  state.live.receivingCode = false;
 };
 
 export const onSelectionChanged: Action<any> = (

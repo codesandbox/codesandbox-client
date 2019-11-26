@@ -9,7 +9,6 @@ import {
 } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
-import { sortObjectByKeys } from 'app/overmind/utils/common';
 import getItems from 'app/overmind/utils/items';
 import {
   addDevToolsTab as addDevToolsTabUtil,
@@ -45,24 +44,19 @@ export const addNpmDependency: AsyncAction<{
       version: newVersion,
       isDev: Boolean(isDev),
     });
+
+    effects.preview.executeCodeImmediately();
   }
 );
 
 export const npmDependencyRemoved: AsyncAction<{
   name: string;
-}> = withOwnedSandbox(async ({ state, effects, actions }, { name }) => {
+}> = withOwnedSandbox(async ({ effects, actions }, { name }) => {
   effects.analytics.track('Remove NPM Dependency');
 
-  const { parsed } = state.editor.parsedConfigurations.package;
+  await actions.editor.internal.removeNpmDependencyFromPackageJson(name);
 
-  delete parsed.dependencies[name];
-  parsed.dependencies = sortObjectByKeys(parsed.dependencies);
-
-  await actions.editor.internal.saveCode({
-    code: JSON.stringify(parsed, null, 2),
-    moduleShortid: state.editor.currentPackageJSON.shortid,
-    cbID: null,
-  });
+  effects.preview.executeCodeImmediately();
 });
 
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
@@ -127,7 +121,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately(true);
+  effects.preview.executeCodeImmediately({ initialRender: true });
 
   state.editor.isLoading = false;
 });

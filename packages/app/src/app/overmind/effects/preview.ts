@@ -33,9 +33,12 @@ export default {
       _preview = blocker<any>();
     };
   },
-  async executeCodeImmediately(initialRender?: boolean) {
+  async executeCodeImmediately({
+    initialRender = false,
+    showFullScreen = false,
+  } = {}) {
     const preview = await _preview.promise;
-    preview.executeCodeImmediately(initialRender);
+    preview.executeCodeImmediately(initialRender, showFullScreen);
   },
   async executeCode() {
     const preview = await _preview.promise;

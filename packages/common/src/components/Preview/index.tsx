@@ -402,7 +402,10 @@ class BasePreview extends React.Component<Props, State> {
     return modulesToSend;
   };
 
-  executeCodeImmediately = (initialRender: boolean = false) => {
+  executeCodeImmediately = (
+    initialRender: boolean = false,
+    showScreen = true
+  ) => {
     // We cancel the existing calls with executeCode to prevent concurrent calls,
     // the only reason we do this is because executeCodeImmediately can be called
     // directly as well
@@ -442,6 +445,7 @@ class BasePreview extends React.Component<Props, State> {
           template: sandbox.template,
           hasActions: Boolean(this.props.onAction),
           previewSecret: sandbox.previewSecret,
+          showScreen,
         });
       }
     }

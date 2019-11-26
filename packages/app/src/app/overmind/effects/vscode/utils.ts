@@ -26,14 +26,6 @@ export function getCurrentModelPath(editor) {
   return model.uri.path.replace(/^\/sandbox/, '');
 }
 
-export function getCode(editor) {
-  const activeEditor = editor.getActiveCodeEditor();
-
-  if (!activeEditor) return '';
-
-  return activeEditor.getValue();
-}
-
 export function getCurrentModel(editor) {
   const activeEditor = editor.getActiveCodeEditor();
 

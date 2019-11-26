@@ -1,11 +1,10 @@
-import { actions, dispatch } from 'codesandbox-api';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
+import { actions, dispatch } from 'codesandbox-api';
 
-import dependenciesToQuery from './dependencies-to-query';
-
-import delay from '../utils/delay';
 import setScreen from '../status-screen';
+import delay from '../utils/delay';
+import dependenciesToQuery from './dependencies-to-query';
 
 type Dependencies = {
   [dependency: string]: string;
@@ -116,14 +115,19 @@ function removeSpacesFromDependencies(dependencies: Object) {
   return newDeps;
 }
 
-async function getDependencies(dependencies: Object) {
+async function getDependencies(dependencies: Object, showScreen: boolean) {
   const absoluteDependencies = await getAbsoluteDependencies(
     removeSpacesFromDependencies(dependencies)
   );
   const dependencyUrl = dependenciesToQuery(absoluteDependencies);
   const bucketDependencyUrl = dependenciesToBucketPath(absoluteDependencies);
 
-  setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
+  setScreen({
+    type: 'loading',
+    text: 'Downloading Dependencies...',
+    showScreen,
+  });
+
   warmupPackager(`${NEW_PACKAGER_URL}/${dependencyUrl}`, 'POST');
   try {
     const bucketManifest = await callApi(
@@ -131,7 +135,11 @@ async function getDependencies(dependencies: Object) {
     );
     return bucketManifest;
   } catch (e) {
-    setScreen({ type: 'loading', text: 'Resolving Dependencies...' });
+    setScreen({
+      type: 'loading',
+      text: 'Resolving Dependencies...',
+      showScreen,
+    });
 
     // The dep has not been generated yet...
     const { url } = await requestPackager(
@@ -139,7 +147,11 @@ async function getDependencies(dependencies: Object) {
       'POST'
     );
 
-    setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
+    setScreen({
+      type: 'loading',
+      text: 'Downloading Dependencies...',
+      showScreen,
+    });
 
     return requestPackager(`${BUCKET_URL}/${url}`);
   }
@@ -147,20 +159,22 @@ async function getDependencies(dependencies: Object) {
 
 export async function fetchDependencies(
   npmDependencies: Dependencies,
-  resolutions?: { [key: string]: string }
+  _: any,
+  showScreen: boolean
 ) {
   if (Object.keys(npmDependencies).length !== 0) {
     // New Packager flow
 
     try {
-      const result = await getDependencies(npmDependencies);
-      setScreen({ type: 'loading', text: 'Transpiling Modules...' });
+      const result = await getDependencies(npmDependencies, showScreen);
+
+      if (showScreen) {
+        setScreen({ type: 'loading', text: 'Transpiling Modules...' });
+      }
 
       return result;
     } catch (e) {
-      e.message = `Could not fetch dependencies, please try again in a couple seconds: ${
-        e.message
-      }`;
+      e.message = `Could not fetch dependencies, please try again in a couple seconds: ${e.message}`;
       dispatch(actions.notifications.show(e.message, 'error'));
 
       throw e;

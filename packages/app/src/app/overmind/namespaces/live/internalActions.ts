@@ -75,9 +75,8 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     effects.analytics.track('Live Session Joined', {});
     effects.live.listen(actions.live.liveMessageReceived);
 
-    state.live.receivingCode = true;
     actions.live.internal.initializeModuleState(moduleState);
-    state.live.receivingCode = false;
+
     state.live.isLive = true;
     state.live.error = null;
     effects.live.sendModuleState();

@@ -224,21 +224,36 @@ export const updateCurrentTemplate: AsyncAction = async ({
   }
 };
 
+export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
+  { state, actions },
+  name
+) => {
+  const packageJson = JSON.parse(state.editor.currentPackageJSONCode);
+
+  delete packageJson.dependencies[name];
+
+  await actions.editor.internal.saveCode({
+    code: JSON.stringify(packageJson, null, 2),
+    moduleShortid: state.editor.currentPackageJSON.shortid,
+    cbID: null,
+  });
+};
+
 export const addNpmDependencyToPackageJson: AsyncAction<{
   name: string;
   version?: string;
   isDev: boolean;
 }> = async ({ state, actions }, { name, isDev, version }) => {
-  const { parsed } = state.editor.parsedConfigurations.package;
+  const packageJson = JSON.parse(state.editor.currentPackageJSONCode);
 
   const type = isDev ? 'devDependencies' : 'dependencies';
 
-  parsed[type] = parsed[type] || {};
-  parsed[type][name] = version || 'latest';
-  parsed[type] = sortObjectByKeys(parsed[type]);
+  packageJson[type] = packageJson[type] || {};
+  packageJson[type][name] = version || 'latest';
+  packageJson[type] = sortObjectByKeys(packageJson[type]);
 
   await actions.editor.internal.saveCode({
-    code: JSON.stringify(parsed, null, 2),
+    code: JSON.stringify(packageJson, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
     cbID: null,
   });
@@ -322,29 +337,14 @@ export const forkSandbox: AsyncAction<{
       });
     }
 
-    // When we have a server we want to set a brand new sandbox,
-    // as the preview also needs to be managed correctly
-    if (getTemplateDefinition(forkedSandbox.template).isServer) {
-      await effects.vscode.closeAllTabs();
-      actions.internal.setCurrentSandbox(forkedSandbox);
-      await effects.vscode.changeSandbox(forkedSandbox, fs => {
-        state.editor.modulesByPath = fs;
-      });
-
-      effects.preview.executeCodeImmediately(true);
-
-      // When not server we "piggyback" the existing Sandbox to avoid any rerenders and need
-      // for new bundler. Preview updates its url though
-    } else {
-      Object.assign(
-        state.editor.sandboxes[state.editor.currentId],
-        forkedSandbox
-      );
-      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
-        forkedSandbox
-      );
-      effects.preview.updateAddressbarUrl();
-    }
+    Object.assign(
+      state.editor.sandboxes[state.editor.currentId],
+      forkedSandbox
+    );
+    state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
+      forkedSandbox
+    );
+    effects.preview.updateAddressbarUrl();
 
     effects.notificationToast.success('Forked sandbox!');
     effects.router.updateSandboxUrl(forkedSandbox);

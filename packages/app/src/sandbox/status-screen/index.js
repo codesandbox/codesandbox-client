@@ -1,3 +1,4 @@
+import indicatorHtml from '!raw-loader!./indicator-screen.html';
 // @flow
 // This is the loading screen
 import loadingHtml from '!raw-loader!./loading-screen.html';
@@ -7,6 +8,7 @@ import { createOverlay, resetOverlay } from './overlay-manager';
 type LoadingScreen = {
   type: 'loading',
   text: string,
+  showFullScreen: boolean,
 };
 
 type Screen = LoadingScreen;
@@ -42,7 +44,10 @@ export default function setScreen(screen: Screen) {
       // Give the illusion of faster loading by showing the loader screen later
       firstLoaded = setTimeout(async () => {
         if (!iframeReference && currentScreen) {
-          iframeReference = await createOverlay(loadingHtml);
+          iframeReference = await createOverlay(
+            screen.showFullScreen ? loadingHtml : indicatorHtml,
+            screen.showFullScreen
+          );
         }
 
         if (currentScreen) {
