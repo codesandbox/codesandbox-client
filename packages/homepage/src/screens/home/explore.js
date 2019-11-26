@@ -12,11 +12,15 @@ import six from '../../assets/images/explore/6.png';
 
 const ImageWrapper = styled.div`
   margin-top: 2rem;
-  width: calc(100vw - ((100vw - 1200px) / 2) - 10px);
+  width: calc(100vw - ((100vw - 1200px) / 2) - 20px);
   overflow: auto;
 
   ${props => props.theme.breakpoints.lg} {
     max-width: 100%;
+  }
+
+  ${props => props.theme.breakpoints.md} {
+    margin-top: 0;
   }
 
   > section {
@@ -64,10 +68,20 @@ const Sandbox = ({ id, image, big }) => {
 
   return (
     <div
-      style={{
-        width: 324,
-        height: big ? 548 : 420,
-      }}
+      css={`
+        width: 324px;
+        height: ${big ? '548px' : '420px'};
+
+        ${props => props.theme.breakpoints.md} {
+          width: ${324 * 0.7}px;
+          height: ${big ? 548 * 0.7 : 420 * 0.7}px;
+        }
+
+        ${props => props.theme.breakpoints.sm} {
+          width: ${324 * 0.5}px;
+          height: ${big ? 548 * 0.5 : 420 * 0.5}px;
+        }
+      `}
     >
       {clicked ? (
         <iframe
@@ -84,7 +98,21 @@ const Sandbox = ({ id, image, big }) => {
         />
       ) : (
         <Button type="button" onClick={setClicked}>
-          <img src={image} alt={id} />
+          <img
+            css={`
+              ${props => props.theme.breakpoints.md} {
+                width: ${324 * 0.7}px;
+                height: ${big ? 548 * 0.7 : 420 * 0.7}px;
+              }
+
+              ${props => props.theme.breakpoints.sm} {
+                width: ${324 * 0.5}px;
+                height: ${big ? 548 * 0.5 : 420 * 0.5}px;
+              }
+            `}
+            src={image}
+            alt={id}
+          />
         </Button>
       )}
     </div>

@@ -24,6 +24,7 @@ export const TweetsWrapper = styled.a`
     right: auto;
     left: auto;
     width: 100%;
+    height: auto;
   }
 
   ${props => props.theme.breakpoints.md} {

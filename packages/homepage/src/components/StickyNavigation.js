@@ -30,8 +30,8 @@ const Navigation = styled.nav`
 
   ${media.phone`
     padding-bottom: 1rem;
+    padding-top: 2rem;
     position: relative;
-    padding-top: 0;
     top: 0;
   `};
 

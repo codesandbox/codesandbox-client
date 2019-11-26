@@ -113,6 +113,11 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
+            <Link to="/pricing">Pricing</Link>
+          </P>
+        </li>
+        <li>
+          <P small muted>
             <Link to="/jobs">Careers</Link>
           </P>
         </li>

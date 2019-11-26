@@ -35,6 +35,10 @@ export const Title = styled(H2)`
   ${props => props.theme.breakpoints.md} {
     top: 0;
   }
+
+  @media only screen and (max-width: 340px) {
+    font-size: 1.7rem;
+  }
 `;
 
 export const MacBookWrapper = styled(HeroWrapper)`
@@ -191,6 +195,7 @@ export const TweetsWrapper = styled.div`
     }
     li {
       width: 442px;
+      max-width: 80%;
       padding: 2.125rem;
       background: #151515;
       border: 1px solid #242424;
