@@ -618,8 +618,8 @@ export type UploadedFilesInfo = {
 };
 
 export type SandboxUrlSourceData = {
-  id?: string;
-  alias?: string;
+  id: string;
+  alias: string | null;
   git?: GitInfo;
 };
 

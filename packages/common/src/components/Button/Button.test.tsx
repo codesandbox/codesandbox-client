@@ -1,7 +1,7 @@
 import 'jest-styled-components';
 import React from 'react';
 import mountWithTheme from '../../test/themeMount';
-import { Button } from '.';
+import { Button } from './Button';
 
 describe('<Button /> rendering', () => {
   it('no props', () => {
