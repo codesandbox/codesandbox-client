@@ -343,7 +343,7 @@ export const forkSandbox: AsyncAction<{
     effects.router.updateSandboxUrl(forkedSandbox);
   } catch (error) {
     console.error(error);
-    effects.notificationToast.error(error.message);
+    effects.notificationToast.error('We were unable to fork the sandbox');
   }
 
   state.editor.isForkingSandbox = false;
