@@ -3,6 +3,7 @@ import { CustomTemplate } from '@codesandbox/common/lib/types';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
+import getItems from 'app/overmind/utils/items';
 
 export const valueChanged: Action<{
   field: string;
@@ -284,4 +285,11 @@ export const addedTemplate: AsyncAction<{
       'Could not create template, please try again later'
     );
   }
+};
+
+export const openDefaultItem: Action = ({ state }) => {
+  const items = getItems(state);
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+
+  state.workspace.openedWorkspaceItem = defaultItem.id;
 };

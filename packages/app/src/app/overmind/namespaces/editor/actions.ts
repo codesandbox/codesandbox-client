@@ -9,7 +9,6 @@ import {
 } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
-import getItems from 'app/overmind/utils/items';
 import {
   addDevToolsTab as addDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
@@ -95,10 +94,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
     actions.internal.setCurrentSandbox(sandbox);
 
-    const items = getItems(state);
-    const defaultItem = items.find(i => i.defaultOpen) || items[0];
-
-    state.workspace.openedWorkspaceItem = defaultItem.id;
+    actions.workspace.openDefaultItem();
   } catch (error) {
     state.editor.notFound = true;
     state.editor.error = error.message;
