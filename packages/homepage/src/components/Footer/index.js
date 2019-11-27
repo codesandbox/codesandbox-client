@@ -99,13 +99,11 @@ const Footer = () => (
         <li>
           <P big>About</P>
         </li>
-        {
-          // <li>
-          //   <P small muted>
-          //     <Link to="">Company</Link>
-          //   </P>
-          // </li>
-        }
+        <li>
+          <P small muted>
+            <Link to="/company">Company</Link>
+          </P>
+        </li>
         <li>
           <P small muted>
             <Link to="/blog">Blog</Link>
