@@ -3,7 +3,7 @@ import {
   unstable_Form as Form,
   unstable_FormSubmitButton as FormSubmitButton,
 } from 'reakit/Form';
-import { Input as BaseInput } from '../Input';
+import { FormInput } from '../FormInput';
 
 export const SearchForm = styled(Form)`
   position: relative;
@@ -38,7 +38,7 @@ export const SearchButton = styled(FormSubmitButton)`
   }
 `;
 
-export const Input = styled(BaseInput)`
+export const Input = styled(FormInput)`
   position: relative;
   padding: 4px 6px 4px 32px;
 `;

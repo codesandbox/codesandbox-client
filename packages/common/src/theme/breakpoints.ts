@@ -1,4 +1,4 @@
-interface Bounds {
+export interface Bounds {
   min: number;
   max: number;
 }

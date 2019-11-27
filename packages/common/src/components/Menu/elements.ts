@@ -9,19 +9,17 @@ export const Container = styled.div`
 `;
 
 export const MenuButton = styled.button`
-  ${({ theme }) => css`
-    display: inline-flex;
-    padding: 0;
-    margin: 0;
-    border: none;
-    background: none;
-    box-sizing: border-box;
-    cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  box-sizing: border-box;
+  cursor: pointer;
 
-    &:focus {
-      outline: none;
-    }
-  `}
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const List = styled(Menu).attrs({
@@ -57,7 +55,9 @@ export const Separator = styled(MenuSeparator)`
   outline: 0px;
 `;
 
-export const Item = styled(withoutProps(`danger`)(MenuItem))`
+export const Item = styled(withoutProps(`danger`)(MenuItem))<{
+  danger?: boolean;
+}>`
   ${({ danger = false }) => css`
     display: flex;
     align-items: center;

@@ -45,8 +45,6 @@ export const MultiAction: React.FC<IMultiActionProps> = memo(
 
     return (
       <Container>
-        {/*
-        // @ts-ignore */}
         <PrimaryAction
           onClick={onPrimaryClick}
           {...buttonProps}

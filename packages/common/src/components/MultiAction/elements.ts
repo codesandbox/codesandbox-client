@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import { Group } from 'reakit/Group';
 import { Button } from 'reakit/Button';
 import { Menu, MenuItem, MenuDisclosure } from 'reakit/Menu';
-import { IBaseProps, buttonStyles } from '../Button';
+import { IBaseProps, IButtonProps, buttonStyles } from '../Button';
 import { withoutProps } from '../../utils';
 
 export const Container = styled(Group)`
@@ -12,7 +12,7 @@ export const Container = styled(Group)`
 
 export const PrimaryAction = styled(
   withoutProps(`block`, `secondary`, `danger`, `red`, `small`)(Button)
-)<IBaseProps>`
+)<IBaseProps & IButtonProps>`
   ${({ block }) => css`
     ${buttonStyles};
     justify-content: center;
@@ -62,7 +62,7 @@ export const ActionsList = styled(Menu).attrs({
 `;
 
 export const SecondaryAction = styled(MenuItem)<{ disabled?: boolean }>`
-  ${({ disabled, theme }) => css`
+  ${({ disabled }) => css`
     display: inline-flex;
     padding: 0.5rem 1rem;
     border: none;

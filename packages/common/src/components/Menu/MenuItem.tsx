@@ -1,4 +1,5 @@
 import React, { cloneElement, Children } from 'react';
+import { MenuItemProps } from 'reakit/Menu';
 import { Link } from '../Link';
 import { Item, MenuIcon } from './elements';
 
@@ -18,7 +19,7 @@ export const MenuItem: React.FC<IMenuItemProps> = ({
 }) =>
   to ? (
     <Item {...props}>
-      {itemProps =>
+      {(itemProps: MenuItemProps) =>
         cloneElement(
           Children.only(
             <Link to={to}>
