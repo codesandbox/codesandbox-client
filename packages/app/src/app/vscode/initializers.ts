@@ -3,12 +3,9 @@ import { vscode } from 'app/vscode';
 export function initializeThemeCache() {
   try {
     if (!localStorage.getItem('vs-global://colorThemeData')) {
-      localStorage.setItem('newUser', 'true');
       import('./theme-cache').then(rawTheme => {
         localStorage.setItem('vs-global://colorThemeData', rawTheme.default);
       });
-    } else {
-      localStorage.removeItem('newUser');
     }
   } catch (e) {
     console.error(e);
