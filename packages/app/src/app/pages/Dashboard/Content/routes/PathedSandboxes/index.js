@@ -3,7 +3,7 @@ import Helmet from 'react-helmet';
 import { Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import { basename } from 'path';
-import CreateNewSandbox from 'app/components/CreateNewSandbox';
+import { CreateNewSandboxButton } from 'app/components/CreateNewSandbox';
 import { Content as Sandboxes } from '../../Sandboxes';
 import { Navigation } from './Navigation';
 // import Folders from './Folders';
@@ -60,7 +60,7 @@ const PathedSandboxes = props => {
               return (
                 <Sandboxes
                   ExtraElement={({ style }) => (
-                    <CreateNewSandbox
+                    <CreateNewSandboxButton
                       collectionId={
                         data &&
                         data.me &&
