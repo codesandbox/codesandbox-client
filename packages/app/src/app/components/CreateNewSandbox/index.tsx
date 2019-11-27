@@ -8,7 +8,7 @@ import { ButtonsContainer, Container, ContainerLink } from './elements';
 
 interface ICreateNewSandboxProps {
   style: React.CSSProperties;
-  collectionId: string;
+  collectionId?: string;
   mostUsedSandboxTemplate: Template;
 }
 
