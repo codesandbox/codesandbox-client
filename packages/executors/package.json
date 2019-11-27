@@ -42,7 +42,7 @@
     "pretty-quick": "^1.11.0",
     "tsdx": "^0.6.1",
     "tslib": "^1.9.3",
-    "typescript": "3.7.1-rc"
+    "typescript": "3.7.2"
   },
   "peerDependencies": {}
 }
