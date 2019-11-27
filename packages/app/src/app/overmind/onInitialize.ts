@@ -33,7 +33,6 @@ export const onInitialize: OnInitialize = (
     getModulesByPath() {
       return state.editor.modulesByPath;
     },
-    onError: actions.internal.onApiError,
   });
 
   effects.notifications.initialize({

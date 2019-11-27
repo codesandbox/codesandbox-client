@@ -1,6 +1,10 @@
 import { AsyncAction } from 'app/overmind';
 
-export const getZeitUserDetails: AsyncAction = async ({ state, effects }) => {
+export const getZeitUserDetails: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
   if (
     state.user.integrations.zeit &&
     state.user.integrations.zeit.token &&
@@ -11,7 +15,8 @@ export const getZeitUserDetails: AsyncAction = async ({ state, effects }) => {
       const zeitDetails = await effects.zeit.getUser();
       state.user.integrations.zeit.email = zeitDetails.email;
     } catch (error) {
-      effects.notificationToast.error('Could not authorize with ZEIT');
+      error.message = 'Could not authorize with ZEIT';
+      actions.internal.handleError(error);
     }
     state.isLoadingZeit = false;
   }

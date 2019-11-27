@@ -1,9 +1,6 @@
 import { Contributor } from '@codesandbox/common/lib/types';
 import { IDerive, IState, json } from 'overmind';
-import { AxiosError } from 'axios';
 
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
 import { AsyncAction } from '.';
 
 export const withLoadApp = <T>(
@@ -41,31 +38,7 @@ export const withLoadApp = <T>(
       actions.userNotifications.internal.initialize();
       effects.api.preloadTemplates();
     } catch (error) {
-      if (error.isAxiosError && (error as AxiosError).response.status === 401) {
-        // Reset existing sign in info
-        effects.jwt.reset();
-        effects.analytics.setAnonymousId();
-
-        // Allow user to sign in again in notification
-        notificationState.addNotification({
-          message: 'Your session seems to be expired, please log in again...',
-          status: NotificationStatus.ERROR,
-          actions: {
-            primary: [
-              {
-                label: 'Sign in',
-                run: () => {
-                  actions.signInClicked({ useExtraScopes: false });
-                },
-              },
-            ],
-          },
-        });
-      } else {
-        effects.notificationToast.error(
-          "We weren't able to sign you in, this could be due to a flaky connection or something on our server. Please try again in a minute."
-        );
-      }
+      actions.internal.handleError(error);
     }
   } else {
     effects.jwt.reset();

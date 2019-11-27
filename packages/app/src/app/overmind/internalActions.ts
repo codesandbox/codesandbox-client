@@ -37,10 +37,8 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
     actions.refetchSandboxInfo();
   } catch (error) {
-    actions.internal.addNotification({
-      title: 'Github Authentication Error',
-      type: 'error',
-    });
+    error.message = 'Could not authenticate with Github';
+    actions.internal.handleError(error);
   }
 };
 
@@ -209,10 +207,9 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
       currentModuleShortid = resolvedModule
         ? resolvedModule.shortid
         : currentModuleShortid;
-    } catch (err) {
-      effects.notificationToast.warning(
-        `Could not find the module ${sandboxOptions.currentModule}`
-      );
+    } catch (error) {
+      error.message = `Could not find the module ${sandboxOptions.currentModule}`;
+      actions.internal.handleError(error);
     }
   }
 
@@ -309,7 +306,11 @@ export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
   state.editor.currentSandbox.title = sandbox.title;
 };
 
-export const ensurePackageJSON: AsyncAction = async ({ state, effects }) => {
+export const ensurePackageJSON: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
   const sandbox = state.editor.currentSandbox;
   const existingPackageJson = sandbox.modules.find(
     module => module.directoryShortid == null && module.title === 'package.json'
@@ -332,6 +333,8 @@ export const ensurePackageJSON: AsyncAction = async ({ state, effects }) => {
       optimisticModule.id = updatedModule.id;
       optimisticModule.shortid = updatedModule.shortid;
     } catch (error) {
+      error.message = 'Could not add package.json file';
+      actions.internal.handleError(error);
       sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1);
     }
   }
@@ -353,19 +356,41 @@ export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
   state.editor.tabs.splice(tabIndex, 1);
 };
 
-export const onApiError: Action<ApiError> = (
+export const handleError: Action<ApiError | Error> = (
   { state, actions, effects },
   error
 ) => {
+  if (!('response' in error) || error.response.status >= 500) {
+    effects.analytics.logError(error);
+    effects.notificationToast.error(error.message);
+
+    return;
+  }
+
   const { response } = error;
 
   if (response.status === 401) {
-    // We need to implement a blocking modal to either sign in or refresh the browser to
-    // continue in an anonymous state
-  }
+    // Reset existing sign in info
+    effects.jwt.reset();
+    effects.analytics.setAnonymousId();
 
-  if (!response || response.status >= 500) {
-    effects.analytics.logError(error);
+    // Allow user to sign in again in notification
+    effects.notificationToast.add({
+      message: 'Your session seems to be expired, please log in again...',
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Sign in',
+            run: () => {
+              actions.signInClicked({ useExtraScopes: false });
+            },
+          },
+        ],
+      },
+    });
+
+    return;
   }
 
   const result = response.data;
@@ -449,17 +474,14 @@ export const onApiError: Action<ApiError> = (
         ],
       },
     });
-  } else {
-    if (
-      error.message.startsWith(
-        'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
-      )
-    ) {
-      effects.analytics.track('Patron Server Sandbox Limit Reached', {
-        errorMessage: error.message,
-      });
-    }
-
+  } else if (
+    error.message.startsWith(
+      'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
+    )
+  ) {
+    effects.analytics.track('Patron Server Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
     effects.notificationToast.error(error.message);
   }
 };

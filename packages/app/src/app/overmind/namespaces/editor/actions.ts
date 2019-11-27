@@ -219,9 +219,8 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
           state.editor.changedModuleShortids.push(moduleShortid);
         }
       });
-      effects.notificationToast.error(
-        'Sorry, was not able to save, please try again'
-      );
+      error.message = 'Sorry, was not able to save, please try again';
+      actions.internal.handleError(error);
     }
   }
 );
@@ -471,9 +470,10 @@ export const fetchEnvironmentVariables: AsyncAction = async ({
   );
 };
 
-export const updateEnvironmentVariables: AsyncAction<
-  EnvironmentVariable
-> = async ({ state, effects }, environmentVariable) => {
+export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = async (
+  { state, effects },
+  environmentVariable
+) => {
   state.editor.currentSandbox.environmentVariables = await effects.api.saveEnvironmentVariable(
     state.editor.currentId,
     environmentVariable
@@ -672,7 +672,8 @@ export const renameModule: AsyncAction<{
       }
     } catch (error) {
       module.title = oldTitle;
-      effects.notificationToast.error('Could not rename file');
+      error.message = 'Could not rename file';
+      actions.internal.handleError(error);
     }
   }
 );

@@ -1,4 +1,5 @@
 import { Action, AsyncAction } from 'app/overmind';
+
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -31,9 +32,9 @@ export const deployWithNetlify: AsyncAction = async ({
     });
     effects.notificationToast.success('Sandbox Deployed');
   } catch (error) {
-    effects.notificationToast.error(
-      'An unknown error occurred when deploying your site'
-    );
+    error.message =
+      'An unknown error occurred when deploying your Netlify site';
+    actions.internal.handleError(error);
   }
   state.deployment.deploying = false;
   state.deployment.building = false;
@@ -52,7 +53,7 @@ export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const getDeploys: AsyncAction = async ({ state, effects }) => {
+export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
   if (!state.user.integrations.zeit) {
     return;
   }
@@ -67,9 +68,8 @@ export const getDeploys: AsyncAction = async ({ state, effects }) => {
       zeitConfig.name
     );
   } catch (error) {
-    effects.notificationToast.error(
-      'An unknown error occurred when connecting to ZEIT'
-    );
+    error.message = 'An unknown error occurred when connecting to ZEIT';
+    actions.internal.handleError(error);
   }
 
   state.deployment.gettingDeploys = false;
@@ -90,9 +90,8 @@ export const deployClicked: AsyncAction = async ({
       state.editor.currentSandbox
     );
   } catch (error) {
-    effects.notificationToast.error(
-      'An unknown error occurred when connecting to ZEIT'
-    );
+    error.message = 'An unknown error occurred when connecting to ZEIT';
+    actions.internal.handleError(error);
   }
 
   state.deployment.deploying = false;
@@ -100,7 +99,11 @@ export const deployClicked: AsyncAction = async ({
   actions.deployment.getDeploys();
 };
 
-export const deploySandboxClicked: AsyncAction = async ({ state, effects }) => {
+export const deploySandboxClicked: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
   state.currentModal = 'deployment';
 
   const zeitIntegration = state.user.integrations.zeit;
@@ -118,7 +121,8 @@ export const deploySandboxClicked: AsyncAction = async ({ state, effects }) => {
 
       state.user.integrations.zeit.email = user.email;
     } catch (error) {
-      effects.notificationToast.error('Could not authorize with ZEIT');
+      error.message = 'Could not authorize with ZEIT';
+      actions.internal.handleError(error);
     }
   }
 
@@ -147,9 +151,8 @@ export const deleteDeployment: AsyncAction = async ({
     effects.notificationToast.success('Deployment deleted');
     actions.deployment.getDeploys();
   } catch (error) {
-    effects.notificationToast.error(
-      'An unknown error occurred when deleting your deployment'
-    );
+    error.message = 'An unknown error occurred when deleting your deployment';
+    actions.internal.handleError(error);
   }
 
   state.deployment.deploysBeingDeleted.splice(
@@ -169,8 +172,7 @@ export const aliasDeployment: AsyncAction<{
     effects.notificationToast.success(`Deployed to ${url}`);
     actions.deployment.getDeploys();
   } catch (error) {
-    effects.notificationToast.error(
-      'An unknown error occurred when aliasing your deployment'
-    );
+    error.message = 'An unknown error occurred when aliasing your deployment';
+    actions.internal.handleError(error);
   }
 };

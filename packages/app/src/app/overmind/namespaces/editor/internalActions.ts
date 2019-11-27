@@ -1,24 +1,24 @@
-import { mapValues } from 'lodash-es';
-import { Action, AsyncAction } from 'app/overmind';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import {
   Module,
   ModuleTab,
-  TabType,
-  ServerContainerStatus,
   Sandbox,
+  ServerContainerStatus,
+  TabType,
 } from '@codesandbox/common/lib/types';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
-import { sortObjectByKeys } from 'app/overmind/utils/common';
-import slugify from '@codesandbox/common/lib/utils/slugify';
-import {
-  sandboxUrl,
-  editorUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
 import {
   captureException,
   logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
+import slugify from '@codesandbox/common/lib/utils/slugify';
+import {
+  editorUrl,
+  sandboxUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
+import { Action, AsyncAction } from 'app/overmind';
+import { sortObjectByKeys } from 'app/overmind/utils/common';
+import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
+import { mapValues } from 'lodash-es';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -111,9 +111,9 @@ export const saveCode: AsyncAction<{
 
       actions.editor.internal.setModuleCode({ module, code: prettifiedCode });
     } catch (error) {
-      effects.notificationToast.error(
-        'Could not prettify code, probably invalid JSON in sandbox .prettierrc file'
-      );
+      error.message =
+        'Could not prettify code, probably invalid JSON in sandbox .prettierrc file';
+      actions.internal.handleError(error);
     }
   }
 
@@ -185,7 +185,7 @@ export const saveCode: AsyncAction<{
       tab.dirty = false;
     }
   } catch (error) {
-    effects.notificationToast.warning(error.message);
+    actions.internal.handleError(error);
 
     if (cbID) {
       effects.vscode.callCallbackError(cbID, error.message);
@@ -343,7 +343,8 @@ export const forkSandbox: AsyncAction<{
     effects.router.updateSandboxUrl(forkedSandbox);
   } catch (error) {
     console.error(error);
-    effects.notificationToast.error('We were unable to fork the sandbox');
+    error.message = 'We were unable to fork the sandbox';
+    actions.internal.handleError(error);
   }
 
   state.editor.isForkingSandbox = false;

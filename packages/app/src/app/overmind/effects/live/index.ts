@@ -1,19 +1,20 @@
-import { Socket } from 'phoenix';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import uuid from 'uuid';
-import { TextOperation } from 'ot';
-import { camelizeKeys } from 'humps';
 import {
-  Module,
   Directory,
-  RoomInfo,
   LiveMessageEvent,
+  Module,
+  RoomInfo,
   Sandbox,
 } from '@codesandbox/common/lib/types';
+import _debug from '@codesandbox/common/lib/utils/debug';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import clientsFactory from './clients';
-import { transformSandbox } from '../utils/sandbox';
+import { camelizeKeys } from 'humps';
+import { TextOperation } from 'ot';
+import { Socket } from 'phoenix';
+import uuid from 'uuid';
+
 import { SandboxAPIResponse } from '../api/types';
+import { transformSandbox } from '../utils/sandbox';
+import clientsFactory from './clients';
 
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
@@ -198,11 +199,6 @@ export default {
       clients.get(moduleShortid).applyClient(operation);
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
-      console.error(
-        'Something went wrong with applying OT operation',
-        moduleShortid,
-        operation
-      );
       this.send('live:module_state', {});
     }
   },

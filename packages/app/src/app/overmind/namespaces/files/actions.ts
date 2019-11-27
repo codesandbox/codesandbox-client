@@ -41,7 +41,8 @@ export const moduleRenamed: AsyncAction<{
       }
     } catch (error) {
       module.title = oldTitle;
-      effects.notificationToast.error('Could not rename file');
+      error.message = 'Could not rename file';
+      actions.internal.handleError(error);
     }
   }
 );
@@ -87,7 +88,8 @@ export const directoryCreated: AsyncAction<{
       );
 
       sandbox.directories.splice(directoryIndex, 1);
-      effects.notificationToast.error('Unable to save new directory');
+      error.message = 'Unable to save new directory';
+      actions.internal.handleError(error);
     }
   }
 );
@@ -119,8 +121,8 @@ export const moduleMovedToDirectory: AsyncAction<{
       effects.live.sendModuleUpdate(module);
     } catch (error) {
       module.directoryShortid = currentDirectoryShortid;
-
-      effects.notificationToast.error('Could not save new module location');
+      error.message = 'Could not save new module location';
+      actions.internal.handleError(error);
     }
   }
 );
@@ -150,7 +152,8 @@ export const directoryMovedToDirectory: AsyncAction<{
       effects.live.sendDirectoryUpdate(directoryToMove);
     } catch (error) {
       directoryToMove.directoryShortid = shortid;
-      effects.notificationToast.error('Could not save new directory location');
+      error.message = 'Could not save new directory location';
+      actions.internal.handleError(error);
     }
   }
 );
@@ -183,7 +186,8 @@ export const directoryDeleted: AsyncAction<{
       effects.live.sendDirectoryDeleted(directoryShortid);
     } catch (error) {
       sandbox.directories.push(removedDirectory);
-      effects.notificationToast.error('Could not delete directory');
+      error.messsage = 'Could not delete directory';
+      actions.internal.handleError(error);
     }
   }
 );
@@ -192,7 +196,7 @@ export const directoryRenamed: AsyncAction<{
   title: string;
   directoryShortid: string;
 }> = withOwnedSandbox(
-  async ({ effects, state }, { title, directoryShortid }) => {
+  async ({ effects, actions, state }, { title, directoryShortid }) => {
     const sandbox = state.editor.currentSandbox;
     const directory = sandbox.directories.find(
       directoryEntry => directoryEntry.shortid === directoryShortid
@@ -214,13 +218,14 @@ export const directoryRenamed: AsyncAction<{
       }
     } catch (error) {
       directory.title = oldTitle;
-      effects.notificationToast.error('Could not rename directory');
+      error.message = 'Could not rename directory';
+      actions.internal.handleError(error);
     }
   }
 );
 
 export const gotUploadedFiles: AsyncAction<string> = async (
-  { state, effects },
+  { state, actions, effects },
   message
 ) => {
   const modal = 'storageManagement';
@@ -235,7 +240,8 @@ export const gotUploadedFiles: AsyncAction<string> = async (
     state.maxStorage = uploadedFilesInfo.maxSize;
     state.usedStorage = uploadedFilesInfo.currentSize;
   } catch (error) {
-    effects.notificationToast.error('Unable to get uploaded files information');
+    error.message = 'Unable to get uploaded files information';
+    actions.internal.handleError(error);
   }
 };
 
@@ -254,7 +260,7 @@ export const addedFileToSandbox: AsyncAction<{
 
 export const deletedUploadedFile: AsyncAction<{
   id: string;
-}> = withOwnedSandbox(async ({ state, effects }, { id }) => {
+}> = withOwnedSandbox(async ({ state, actions, effects }, { id }) => {
   const index = state.uploadedFiles.findIndex(file => file.id === id);
   const removedFiles = state.uploadedFiles.splice(index, 1);
 
@@ -262,7 +268,8 @@ export const deletedUploadedFile: AsyncAction<{
     await effects.api.deleteUploadedFile(id);
   } catch (error) {
     state.uploadedFiles.splice(index, 0, ...removedFiles);
-    effects.notificationToast.error('Unable to delete uploaded file');
+    error.message = 'Unable to delete uploaded file';
+    actions.internal.handleError(error);
   }
 });
 
@@ -294,7 +301,7 @@ export const filesUploaded: AsyncAction<{
       if (error.message.indexOf('413') !== -1) {
         return;
       }
-      effects.notificationToast.error(error.message);
+      actions.internal.handleError(error);
     }
 
     actions.internal.closeModals(false);
@@ -308,7 +315,7 @@ export const massCreateModules: AsyncAction<{
   cbID?: string;
 }> = withOwnedSandbox(
   async (
-    { state, effects },
+    { state, actions, effects },
     { modules, directories, directoryShortid, cbID }
   ) => {
     const sandboxId = state.editor.currentId;
@@ -339,7 +346,8 @@ export const massCreateModules: AsyncAction<{
       if (cbID) {
         effects.vscode.callCallbackError(cbID, error.message);
       }
-      effects.notificationToast.error('Unable to create new files');
+      error.message = 'Unable to create new files';
+      actions.internal.handleError(error);
     }
   }
 );
@@ -408,7 +416,8 @@ export const moduleCreated: AsyncAction<{
     } catch (error) {
       sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
       actions.editor.internal.setCurrentModule(state.editor.mainModule);
-      effects.notificationToast.error('Unable to save new file');
+      error.message = 'Unable to save new file';
+      actions.internal.handleError(error);
     }
   }
 );
@@ -432,7 +441,8 @@ export const moduleDeleted: AsyncAction<{
     }
   } catch (error) {
     sandbox.modules.push(removedModule);
-    effects.notificationToast.error('Could not delete file');
+    error.message = 'Could not delete file';
+    actions.internal.handleError(error);
   }
 };
 
@@ -453,7 +463,7 @@ export const createModulesByPath: AsyncAction<{
 };
 
 export const syncSandbox: AsyncAction<any[]> = async (
-  { state, effects },
+  { state, actions, effects },
   updates
 ) => {
   const id = state.editor.currentId;
@@ -518,9 +528,9 @@ export const syncSandbox: AsyncAction<any[]> = async (
     if (error.response.status === 404) {
       return;
     }
-    effects.notificationToast.error(
-      "We weren't able to retrieve the latest files of the sandbox, please refresh"
-    );
+    error.message =
+      "We weren't able to retrieve the latest files of the sandbox, please refresh";
+    actions.internal.handleError(error);
   }
 };
 

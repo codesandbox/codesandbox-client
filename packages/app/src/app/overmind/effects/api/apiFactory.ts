@@ -32,7 +32,6 @@ export type ApiConfig = {
     [path: string]: Module;
   };
   getParsedConfigurations: () => any;
-  onError: (error: ApiError) => void;
 };
 
 export default (config: ApiConfig) => {
@@ -50,44 +49,28 @@ export default (config: ApiConfig) => {
           params,
           headers: createHeaders(config.provideJwtToken()),
         })
-        .then(response => handleResponse(response, options))
-        .catch(e => {
-          config.onError(e);
-          return Promise.reject(e);
-        });
+        .then(response => handleResponse(response, options));
     },
     post(path, body, options) {
       return axios
         .post(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken()),
         })
-        .then(response => handleResponse(response, options))
-        .catch(e => {
-          config.onError(e);
-          return Promise.reject(e);
-        });
+        .then(response => handleResponse(response, options));
     },
     patch(path, body, options) {
       return axios
         .patch(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken()),
         })
-        .then(response => handleResponse(response, options))
-        .catch(e => {
-          config.onError(e);
-          return Promise.reject(e);
-        });
+        .then(response => handleResponse(response, options));
     },
     put(path, body, options) {
       return axios
         .put(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken()),
         })
-        .then(response => handleResponse(response, options))
-        .catch(e => {
-          config.onError(e);
-          return Promise.reject(e);
-        });
+        .then(response => handleResponse(response, options));
     },
     delete(path, params, options) {
       return axios
@@ -95,11 +78,7 @@ export default (config: ApiConfig) => {
           params,
           headers: createHeaders(config.provideJwtToken()),
         })
-        .then(response => handleResponse(response, options))
-        .catch(e => {
-          config.onError(e);
-          return Promise.reject(e);
-        });
+        .then(response => handleResponse(response, options));
     },
     request(requestConfig, options) {
       return axios
@@ -110,11 +89,7 @@ export default (config: ApiConfig) => {
             headers: createHeaders(config.provideJwtToken()),
           })
         )
-        .then(response => handleResponse(response, options))
-        .catch(e => {
-          config.onError(e);
-          return Promise.reject(e);
-        });
+        .then(response => handleResponse(response, options));
     },
   };
 
