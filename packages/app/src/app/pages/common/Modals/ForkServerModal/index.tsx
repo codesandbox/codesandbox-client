@@ -42,7 +42,7 @@ export const ForkServerModal: React.FC = () => {
         sandbox.
       </Explanation>
 
-      <SignInButton style={{ marginTop: 12 }} />
+      <SignInButton css="margin-top: 12" />
     </Container>
   );
 };

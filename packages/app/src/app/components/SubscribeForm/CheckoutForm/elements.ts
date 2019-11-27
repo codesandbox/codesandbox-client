@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Input from '@codesandbox/common/lib/components/Input';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 export const CardContainer = styled.div`
   padding: 0.5rem;
@@ -27,4 +28,11 @@ export const ErrorText = styled.div`
 export const Label = styled.label`
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.5);
+`;
+
+export const Submit = styled(Button).attrs({
+  type: 'submit',
+})`
+  width: 300;
+  margin-top: 1rem;
 `;

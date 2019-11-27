@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 export const Container = styled.div`
   background-color: ${props => props.theme.background};
@@ -15,4 +16,8 @@ export const Heading = styled.h2`
 export const Explanation = styled.p`
   line-height: 1.3;
   margin-bottom: 2rem;
+`;
+
+export const Close = styled(Button)`
+  margin-right: 0.5rem;
 `;

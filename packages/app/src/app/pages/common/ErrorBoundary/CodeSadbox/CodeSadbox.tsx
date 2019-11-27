@@ -63,12 +63,7 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = ({
             </Button>
           )}
 
-          <Button
-            small
-            target="_blank"
-            rel="noopener"
-            href={buildCrashReport({ error, trace })}
-          >
+          <Button small href={buildCrashReport({ error, trace })}>
             <ButtonIcon>
               <GoIssueOpened />
             </ButtonIcon>

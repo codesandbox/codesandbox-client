@@ -72,7 +72,7 @@ const MoveSandboxFolderModal = () => {
 
         <Button
           onClick={handleMove}
-          style={{ display: 'inline-flex', alignItems: 'center' }}
+          css="display: inline-flex; align-items: center"
           small
           disabled={loading}
         >

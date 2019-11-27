@@ -5,7 +5,7 @@ import { gitHubToSandboxUrl } from '@codesandbox/common/lib/utils/url-generator'
 
 window.addEventListener('message', receiveMessage, false);
 
-function receiveMessage(event) {
+function receiveMessage(event: MessageEvent) {
   if (event.origin === 'https://app.stackbit.com' && event.data) {
     const data = JSON.parse(event.data);
 
@@ -32,13 +32,18 @@ function openStackbit(username: string) {
   );
 }
 
-interface Props {
+interface IStackbitButtonProps {
   username: string;
-  style?: React.CSSProperties;
 }
 
-export const StackbitButton = ({ username, style }: Props) => (
-  <Button style={style} small onClick={() => openStackbit(username)}>
+export const StackbitButton: React.FC<IStackbitButtonProps> = ({
+  username,
+}) => (
+  <Button
+    css="margin-top: 1rem; float: right;"
+    small
+    onClick={() => openStackbit(username)}
+  >
     Generate Sandbox
   </Button>
 );

@@ -4,10 +4,14 @@ import {
   CardElement,
   ReactStripeElements,
 } from 'react-stripe-elements';
-import { Button } from '@codesandbox/common/lib/components/Button';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
-
-import { CardContainer, StripeInput, ErrorText, Label } from './elements';
+import {
+  CardContainer,
+  StripeInput,
+  ErrorText,
+  Label,
+  Submit,
+} from './elements';
 
 interface Props {
   name: string;
@@ -146,13 +150,7 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
           </>
         )}
 
-        <Button
-          type="submit"
-          disabled={loading}
-          style={{ marginTop: '1rem', width: 300 }}
-        >
-          {loading ? loadingText : buttonName}
-        </Button>
+        <Submit disabled={loading}>{loading ? loadingText : buttonName}</Submit>
       </form>
     );
   }

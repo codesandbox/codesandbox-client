@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-
 import { useOvermind } from 'app/overmind';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
@@ -36,12 +35,7 @@ const SignIn = () => {
           <LoggedInContainer>
             <OffsettedLogo />
             <LoggedInTitle>Sign in to CodeSandbox</LoggedInTitle>
-
-            <SignInButton
-              redirectTo={redirectTo}
-              big
-              style={{ fontSize: '1rem' }}
-            />
+            <SignInButton redirectTo={redirectTo} css="font-size: 1rem;" />
           </LoggedInContainer>
         </Centered>
       </Container>

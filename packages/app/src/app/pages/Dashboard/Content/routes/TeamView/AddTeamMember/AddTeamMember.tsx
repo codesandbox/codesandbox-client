@@ -1,22 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
-
 import { useMutation } from '@apollo/react-hooks';
-
 import Input from '@codesandbox/common/lib/components/Input';
-import { Button } from '@codesandbox/common/lib/components/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
-
 import { useOvermind } from 'app/overmind';
 import { INVITE_TO_TEAM } from '../../../../queries';
 import { IAddTeamMemberProps, IMutationVariables } from './types';
-
-const ErrorMessage = styled.div`
-  color: ${props => props.theme.red};
-  font-weight: 600;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
-`;
+import { ErrorMessage, AddUserForm, AddButton } from './elements';
 
 export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
   const { actions } = useOvermind();
@@ -62,7 +51,7 @@ export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
   return (
     <>
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-      <form style={{ display: 'flex' }} onSubmit={loading ? undefined : submit}>
+      <AddUserForm onSubmit={loading ? undefined : submit}>
         <Input
           ref={node => {
             input = node;
@@ -70,10 +59,10 @@ export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
           placeholder="Add member by username"
           block
         />
-        <Button disabled={loading} style={{ width: 200 }} small>
+        <AddButton disabled={loading}>
           {loading ? 'Adding Member...' : 'Add Member'}
-        </Button>
-      </form>
+        </AddButton>
+      </AddUserForm>
     </>
   );
 };

@@ -1,11 +1,9 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
+import { Container, Heading, Explanation, Close } from './elements';
 
-import { Container, Heading, Explanation } from './elements';
-
-export const ZenModeIntroduction: FunctionComponent = () => {
+export const ZenModeIntroduction: React.FC = () => {
   const {
     actions: { modalClosed },
   } = useOvermind();
@@ -21,9 +19,7 @@ export const ZenModeIntroduction: FunctionComponent = () => {
       </Explanation>
 
       <Row justifyContent="space-around">
-        <Button style={{ marginRight: '.5rem' }} onClick={() => modalClosed()}>
-          Close
-        </Button>
+        <Close onClick={() => modalClosed()}>Close</Close>
       </Row>
     </Container>
   );

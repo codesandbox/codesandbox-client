@@ -2,11 +2,13 @@ import React from 'react';
 import { ImportHeader, ImportDescription, Section } from './elements';
 import { StackbitButton } from './StackbitButton';
 
-interface Props {
+interface IStackbitImportProps {
   username: string;
 }
 
-export const StackbitImport = ({ username }: Props) => (
+export const StackbitImport: React.FC<IStackbitImportProps> = ({
+  username,
+}) => (
   <Section style={{ flex: 4 }}>
     <ImportHeader>Import from Stackbit</ImportHeader>
     <ImportDescription>
@@ -16,10 +18,7 @@ export const StackbitImport = ({ username }: Props) => (
       </a>
       . This generates a project for you that&#39;s automatically set up with
       any Theme, Site Generator and CMS.
-      <StackbitButton
-        style={{ marginTop: '1rem', float: 'right' }}
-        username={username}
-      />
+      <StackbitButton username={username} />
     </ImportDescription>
   </Section>
 );
