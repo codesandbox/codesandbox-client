@@ -68,6 +68,9 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
     return templateInfo.templates[indexInTemplateInfo];
   };
 
+  const getColumnCountInLastRow = (templateInfo: ITemplateInfo) =>
+    templateInfo.templates.length % COLUMN_COUNT || COLUMN_COUNT;
+
   const getTotalTemplateCount = React.useCallback(
     () =>
       templateInfos.reduce(
@@ -129,10 +132,36 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
     'ArrowDown',
     evt => {
       evt.preventDefault();
-      const { templateInfo } = getTemplateInfoByIndex(focusedTemplateIndex);
+      const { templateInfo, offset } = getTemplateInfoByIndex(
+        focusedTemplateIndex
+      );
+      const indexInTemplateInfo = focusedTemplateIndex - offset;
 
-      safeSetFocusedTemplate(
-        i => i + Math.min(COLUMN_COUNT, templateInfo.templates.length)
+      const totalRowCount = Math.ceil(
+        templateInfo.templates.length / COLUMN_COUNT
+      );
+      const currentRow = Math.floor(indexInTemplateInfo / COLUMN_COUNT);
+      const isLastRow = totalRowCount === currentRow + 1;
+      const columnsInLastRow = getColumnCountInLastRow(templateInfo);
+
+      safeSetFocusedTemplate(i =>
+        Math.min(
+          /**
+           * This min is to ensure that when navigating in this scenario:
+           * | 0 | 1 |
+           * | 2 |
+           * | 3 | 4 |
+           *
+           * Where you're on 1, that you go to 2 instead of 3.
+           *
+           */
+          isLastRow ? Infinity : offset + templateInfo.templates.length - 1,
+          i +
+            Math.min(
+              isLastRow ? columnsInLastRow : COLUMN_COUNT,
+              templateInfo.templates.length
+            )
+        )
       );
     },
     {},
@@ -143,12 +172,27 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
     'ArrowUp',
     evt => {
       evt.preventDefault();
-      const { templateInfo } = getTemplateInfoByIndex(focusedTemplateIndex);
+      const { templateInfo, offset } = getTemplateInfoByIndex(
+        focusedTemplateIndex
+      );
       const previousTemplateInfo =
         templateInfos[templateInfos.indexOf(templateInfo) - 1] || templateInfo;
+      const indexInTemplateInfo = focusedTemplateIndex - offset;
+      const isFirstItem = indexInTemplateInfo === 0;
+      const columnsInLastRowForPreviousTemplateInfo = getColumnCountInLastRow(
+        previousTemplateInfo
+      );
 
       safeSetFocusedTemplate(
-        i => i - Math.min(COLUMN_COUNT, previousTemplateInfo.templates.length)
+        i =>
+          i -
+          Math.min(
+            isFirstItem
+              ? columnsInLastRowForPreviousTemplateInfo
+              : COLUMN_COUNT,
+
+            previousTemplateInfo.templates.length
+          )
       );
     },
     {},
