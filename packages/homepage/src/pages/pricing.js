@@ -53,7 +53,7 @@ export default () => (
       <Card>
         <div>
           <CardTitle>Pro</CardTitle>
-          <Price>From $5/month</Price>
+          <Price>From $12/month</Price>
           <List
             css={`
               color: white;
@@ -124,8 +124,7 @@ export default () => (
         <div>
           <FeatureTitle>Public Sandboxes</FeatureTitle>
           <P muted small>
-            Sandboxes, both the app and code, are available publicly by
-            default
+            Sandboxes, both the app and code, are available publicly by default
           </P>
         </div>
         <span>50</span>
@@ -136,7 +135,8 @@ export default () => (
         <div>
           <FeatureTitle>Unlimited Private Sandboxes</FeatureTitle>
           <P muted small>
-            Set a sandbox as private or unlisted so others can't see the code or the app
+            Set a sandbox as private or unlisted so others can't see the code or
+            the app
           </P>
         </div>
         <span />
