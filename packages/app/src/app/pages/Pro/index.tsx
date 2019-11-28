@@ -7,21 +7,27 @@ import { useOvermind } from 'app/overmind';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import { Navigation } from 'app/pages/common/Navigation';
-
+import { SignInButton } from 'app/pages/common/SignInButton';
+import { SubscribeForm } from 'app/components/SubscribeForm';
 import { Content } from './elements';
 
 const Pro: React.FC = () => {
-  const { actions } = useOvermind();
+  const {
+    state: { isLoggedIn, user, patron },
+    actions: {
+      patron: { createSubscriptionClicked, patronMounted },
+    },
+  } = useOvermind();
 
   useEffect(() => {
-    actions.patron.patronMounted();
-  }, [actions]);
+    patronMounted();
+  }, [patronMounted]);
 
   return (
     <MaxWidth>
       <>
         <Helmet>
-          <title>Patron - CodeSandbox</title>
+          <title>Pro - CodeSandbox</title>
         </Helmet>
         <Margin vertical={1.5} horizontal={1.5}>
           <Navigation title="CodeSandbox Pro" />
@@ -31,7 +37,21 @@ const Pro: React.FC = () => {
                 <Title>CodeSandbox Pro</Title>
                 <SubTitle>$12/month</SubTitle>
 
-                <Centered horizontal>hi</Centered>
+                <Centered horizontal>
+                  {isLoggedIn ? (
+                    <SubscribeForm
+                      subscribe={({ token, coupon }) =>
+                        createSubscriptionClicked({ token, coupon })
+                      }
+                      isLoading={patron.isUpdatingSubscription}
+                      hasCoupon
+                      name={user.name}
+                      error={patron.error}
+                    />
+                  ) : (
+                    <SignInButton />
+                  )}
+                </Centered>
               </>
             </MaxWidth>
           </Content>
