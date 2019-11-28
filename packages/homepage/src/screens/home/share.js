@@ -35,9 +35,12 @@ const Section = styled.section`
   }
 
   ${props => props.theme.breakpoints.md} {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1rem;
 
-    justify-items: center;
+    img {
+      max-width: 100%;
+    }
   }
 `;
 

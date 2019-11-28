@@ -38,8 +38,12 @@ const Section = styled.section`
   }
 
   ${props => props.theme.breakpoints.md} {
-    grid-template-columns: 1fr;
-    justify-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1rem;
+
+    img {
+      max-width: 100%;
+    }
   }
 `;
 
