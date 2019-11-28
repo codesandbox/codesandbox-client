@@ -53,7 +53,7 @@ export default () => (
       <Card>
         <div>
           <CardTitle>Pro</CardTitle>
-          <Price>From $12/month</Price>
+          <Price>$12/month</Price>
           <List
             css={`
               color: white;
@@ -127,7 +127,7 @@ export default () => (
             Sandboxes, both the app and code, are available publicly by default
           </P>
         </div>
-        <span>50</span>
+        <span>∞</span>
         <span>∞</span>
       </li>
 
