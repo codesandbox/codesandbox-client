@@ -30,7 +30,7 @@ export const Container = styled.div<{ zenMode: boolean }>`
 export const Left = styled.div`
   display: flex;
   height: 100%;
-  z-index: 1;
+  z-index: 999999999999;
 `;
 
 export const Right = styled.div`
