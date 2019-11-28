@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import DevToolsIcon from '../assets/icons/DevTools';
 import NavigationIcon from '../assets/icons/Navigation';
 import PreviewModeIcon from '../assets/icons/PreviewMode';
-import ProjectViewIcon from '../assets/icons/ProjectView';
+// import ProjectViewIcon from '../assets/icons/ProjectView';
 
 import {
   ContentBlock,
@@ -26,6 +26,10 @@ export default () => {
   const [devTools, setDevTools] = useState(1);
   const [navigation, setNavigation] = useState(1);
   const [preview, setPreview] = useState('');
+
+  // set theme back to dark when getting out of the page
+  useEffect(() => setTheme('dark'), []);
+
   return (
     <Layout>
       <CustomLightStyles light={theme === 'light'} />
@@ -72,11 +76,13 @@ export default () => {
           />
         </Banner>
         <Customizations>
-          <li>
-            <Button type="button" light={theme === 'light'}>
-              <ProjectViewIcon light={theme === 'light'} /> Project View
-            </Button>
-          </li>
+          {
+            // <li>
+            //   <Button type="button" light={theme === 'light'}>
+            //     <ProjectViewIcon light={theme === 'light'} /> Project View
+            //   </Button>
+            // </li>
+          }
           <li>
             <Button
               type="button"

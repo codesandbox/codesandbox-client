@@ -218,6 +218,7 @@ export const Button = styled.button`
   line-height: 1.5rem;
   display: flex;
   align-items: center;
+  cursor: pointer;
   color: ${({ light, active, theme }) => {
     if (light) return active ? '#242424' : '#999999';
     return active ? theme.homepage.white : '#757575';
