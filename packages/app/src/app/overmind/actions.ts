@@ -216,8 +216,8 @@ export const refetchSandboxInfo: AsyncAction = async ({
   effects,
   actions,
 }) => {
-  if (state.editor.currentId) {
-    const sandbox = state.editor.currentSandbox;
+  const sandbox = state.editor.currentSandbox;
+  if (sandbox && sandbox.id) {
     const updatedSandbox = await effects.api.getSandbox(sandbox.id);
 
     sandbox.collection = updatedSandbox.collection;

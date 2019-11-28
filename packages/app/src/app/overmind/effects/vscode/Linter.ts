@@ -14,7 +14,6 @@ export class Linter {
   private editor;
   private monaco;
   private isDisposed: boolean = false;
-  // Can the template change during session of sandbox?
   constructor(editor, monaco) {
     this.editor = editor;
     this.monaco = monaco;

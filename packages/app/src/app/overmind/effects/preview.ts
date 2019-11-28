@@ -1,8 +1,9 @@
 import { blocker } from 'app/utils/blocker';
+import BasePreview from '@codesandbox/common/lib/components/Preview';
 
 import { Reaction } from '..';
 
-let _preview = blocker<any>();
+let _preview = blocker<BasePreview>();
 let _reaction: Reaction;
 
 export default {
