@@ -76,8 +76,7 @@ export const Curator: FunctionComponent = () => {
         </SubTitle>
 
         <Buttons>
-          <span>Most popular sandboxes in the:</span>
-
+          Most popular sandboxes in the:
           <Button
             onClick={() =>
               fetchPopularSandboxes(getTime(subWeeks(new Date(), 1)))
@@ -86,7 +85,6 @@ export const Curator: FunctionComponent = () => {
           >
             Last Week
           </Button>
-
           <Button
             onClick={() =>
               fetchPopularSandboxes(getTime(subMonths(new Date(), 1)))
@@ -95,7 +93,6 @@ export const Curator: FunctionComponent = () => {
           >
             Last Month
           </Button>
-
           <Button
             onClick={() =>
               fetchPopularSandboxes(getTime(subMonths(new Date(), 6)))
@@ -104,13 +101,11 @@ export const Curator: FunctionComponent = () => {
           >
             Last 6 Months
           </Button>
-
           <Button onClick={() => setShowPicker(show => !show)} small>
             {selectedDate
               ? format(new Date(selectedDate), 'dd/MM/yyyy')
               : 'Custom'}
           </Button>
-
           {showPicker ? (
             <PickerWrapper>
               <DayPicker
