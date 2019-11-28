@@ -141,7 +141,7 @@ export const buttonStyles = ({
   justify-content: center;
   align-items: center;
   width: ${block ? '100%' : 'inherit'};
-  padding: ${small ? `2px 6px` : `0.65rem 2.25rem`};
+  padding: ${small ? `0.5em 0.7em` : `0.65em 2.25em`};
   border: ${getBorder};
   border-radius: 4px;
   ${getBackgroundColor};
