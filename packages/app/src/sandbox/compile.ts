@@ -482,7 +482,7 @@ async function compile({
       {
         disableExternalConnection: disableDependencyPreprocessing,
         resolutions: parsedPackageJSON.resolutions,
-        showFullScreen,
+        showFullScreen: firstLoad,
       }
     );
 

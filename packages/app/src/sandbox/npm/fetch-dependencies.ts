@@ -115,7 +115,10 @@ function removeSpacesFromDependencies(dependencies: Object) {
   return newDeps;
 }
 
-async function getDependencies(dependencies: Object, showScreen: boolean) {
+async function getDependencies(
+  dependencies: Object,
+  showLoadingFullScreen: boolean
+) {
   const absoluteDependencies = await getAbsoluteDependencies(
     removeSpacesFromDependencies(dependencies)
   );
@@ -125,7 +128,7 @@ async function getDependencies(dependencies: Object, showScreen: boolean) {
   setScreen({
     type: 'loading',
     text: 'Downloading Dependencies...',
-    showScreen,
+    showFullScreen: showLoadingFullScreen,
   });
 
   warmupPackager(`${NEW_PACKAGER_URL}/${dependencyUrl}`, 'POST');
@@ -138,7 +141,7 @@ async function getDependencies(dependencies: Object, showScreen: boolean) {
     setScreen({
       type: 'loading',
       text: 'Resolving Dependencies...',
-      showScreen,
+      showFullScreen: showLoadingFullScreen,
     });
 
     // The dep has not been generated yet...
@@ -150,7 +153,7 @@ async function getDependencies(dependencies: Object, showScreen: boolean) {
     setScreen({
       type: 'loading',
       text: 'Downloading Dependencies...',
-      showScreen,
+      showFullScreen: showLoadingFullScreen,
     });
 
     return requestPackager(`${BUCKET_URL}/${url}`);
@@ -160,16 +163,23 @@ async function getDependencies(dependencies: Object, showScreen: boolean) {
 export async function fetchDependencies(
   npmDependencies: Dependencies,
   _: any,
-  showScreen: boolean
+  showLoaderFullScreen: boolean
 ) {
   if (Object.keys(npmDependencies).length !== 0) {
     // New Packager flow
 
     try {
-      const result = await getDependencies(npmDependencies, showScreen);
+      const result = await getDependencies(
+        npmDependencies,
+        showLoaderFullScreen
+      );
 
-      if (showScreen) {
-        setScreen({ type: 'loading', text: 'Transpiling Modules...' });
+      if (showLoaderFullScreen) {
+        setScreen({
+          type: 'loading',
+          text: 'Transpiling Modules...',
+          showFullScreen: showLoaderFullScreen,
+        });
       }
 
       return result;

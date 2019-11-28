@@ -3,7 +3,8 @@
   body {
     color: #fff;
     font-family: 'Inter UI', sans-serif;
-    background: #151515;
+    background: transparent;
+    -webkit-font-smoothing: antialiased;
   }
 
   .container {
@@ -15,9 +16,102 @@
   .text {
     font-size: 0.8rem;
     width: 100%;
-    font-weight: 200;
+    font-weight: 400;
+    margin-left: 1rem;
   }
+
+  .cube {
+    transform: translate(-34px, 15px) scale(0.25, 0.25);
+  }
+
+  .cube,
+  .cube * {
+    position: absolute;
+    width: 6rem;
+    height: 6rem;
+  }
+  .cube .sides * {
+    box-sizing: border-box;
+    border: 10px solid rgba(0,0,0,0.7);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotateX(-25.5deg) rotateY(45deg);
+    }
+
+    100% {
+      transform: rotateX(-25.5deg) rotateY(405deg);
+    }
+  }
+
+  .sides {
+    animation: rotate 0.8s linear infinite;
+    animation-fill-mode: forwards;
+    transform-style: preserve-3d;
+    transform: rotateX(-25.5deg) rotateY(45deg);
+  }
+
+  .cube .sides .top {
+    animation: top-animation 3s ease infinite;
+    animation-delay: 0ms;
+    transform: rotateX(90deg) translateZ(44px);
+    animation-fill-mode: forwards;
+    transform-origin: 50% 50%;
+  }
+
+  .cube .sides .bottom {
+    animation: bottom-animation 3s ease infinite;
+    animation-delay: 0ms;
+    transform: rotateX(-90deg) translateZ(44px);
+    animation-fill-mode: forwards;
+    transform-origin: 50% 50%;
+  }
+
+  .cube .sides .front {
+    animation: front-animation 3s ease infinite;
+    animation-delay: 100ms;
+    transform: rotateY(0deg) translateZ(44px);
+    animation-fill-mode: forwards;
+    transform-origin: 50% 50%;
+  }
+
+  .cube .sides .back {
+    animation: back-animation 3s ease infinite;
+    animation-delay: 100ms;
+    transform: rotateY(-180deg) translateZ(44px);
+    animation-fill-mode: forwards;
+    transform-origin: 50% 50%;
+  }
+
+  .cube .sides .left {
+    animation: left-animation 3s ease infinite;
+    animation-delay: 100ms;
+    transform: rotateY(-90deg) translateZ(44px);
+    animation-fill-mode: forwards;
+    transform-origin: 50% 50%;
+  }
+
+  .cube .sides .right {
+    animation: right-animation 3s ease infinite;
+    animation-delay: 100ms;
+    transform: rotateY(90deg) translateZ(44px);
+    animation-fill-mode: forwards;
+    transform-origin: 50% 50%;
+  }
+
 </style>
 <div class="container">
-  <div class="text">Dowloading dependencies</div>
+  <div class="cube">
+    <div class="sides">
+      <div class="top"></div>
+      <div class="right"></div>
+      <div class="bottom"></div>
+      <div class="left"></div>
+      <div class="front"></div>
+      <div class="back"></div>
+    </div>
+  </div>
 </div>
