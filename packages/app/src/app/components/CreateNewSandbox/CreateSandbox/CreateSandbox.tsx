@@ -33,16 +33,40 @@ export const CreateSandbox: React.FC = props => {
         </Tab>
       </Tabs>
       <TabContent {...tab} stopId="Welcome">
-        <Welcome goToTab={() => tab.select('Create')} />
+        {rProps =>
+          !rProps.hidden && (
+            <div {...rProps}>
+              <Welcome goToTab={() => tab.select('Create')} />
+            </div>
+          )
+        }
       </TabContent>
       <TabContent {...tab} stopId="Create">
-        <Create />
+        {rProps =>
+          !rProps.hidden && (
+            <div {...rProps}>
+              <Create />
+            </div>
+          )
+        }
       </TabContent>
       <TabContent {...tab} stopId="Explore">
-        <Explore />
+        {rProps =>
+          !rProps.hidden && (
+            <div {...rProps}>
+              <Explore />
+            </div>
+          )
+        }
       </TabContent>
       <TabContent {...tab} stopId="Import">
-        <Import />
+        {rProps =>
+          !rProps.hidden && (
+            <div {...rProps}>
+              <Import />
+            </div>
+          )
+        }
       </TabContent>
     </Container>
   );

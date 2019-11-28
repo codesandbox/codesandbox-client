@@ -10,7 +10,7 @@ import MdEditIcon from 'react-icons/lib/md/edit';
 
 import { SandboxCard } from '../SandboxCard';
 import { SubHeader, Grid } from '../elements';
-import { EditIcon } from './elements';
+import { EditIcon, TemplateInfoContainer } from './elements';
 
 export interface ITemplateInfo {
   title?: string;
@@ -74,12 +74,15 @@ export const TemplateList = ({
     [templateInfos]
   );
 
-  const getTemplateByIndex = (index: number) => {
-    const { templateInfo, offset } = getTemplateInfoByIndex(index);
+  const getTemplateByIndex = React.useCallback(
+    (index: number) => {
+      const { templateInfo, offset } = getTemplateInfoByIndex(index);
 
-    const indexInTemplateInfo = index - offset;
-    return templateInfo.templates[indexInTemplateInfo];
-  };
+      const indexInTemplateInfo = index - offset;
+      return templateInfo.templates[indexInTemplateInfo];
+    },
+    [getTemplateInfoByIndex]
+  );
 
   const getColumnCountInLastRow = (templateInfo: ITemplateInfo) =>
     templateInfo.templates.length % columnCount || columnCount;
@@ -174,7 +177,12 @@ export const TemplateList = ({
       );
     },
     {},
-    [focusedTemplateIndex, getTemplateInfoByIndex, safeSetFocusedTemplate]
+    [
+      focusedTemplateIndex,
+      getTemplateInfoByIndex,
+      safeSetFocusedTemplate,
+      templateInfos,
+    ]
   );
 
   useKey(
@@ -203,7 +211,12 @@ export const TemplateList = ({
       );
     },
     {},
-    [focusedTemplateIndex, getTemplateInfoByIndex, safeSetFocusedTemplate]
+    [
+      focusedTemplateIndex,
+      getTemplateInfoByIndex,
+      safeSetFocusedTemplate,
+      templateInfos,
+    ]
   );
 
   /**
@@ -220,7 +233,29 @@ export const TemplateList = ({
 
       const template = getTemplateByIndex(num - 1);
       openSandbox(template.sandbox);
-    }
+    },
+    {},
+    [focusedTemplateIndex, getTemplateByIndex, openSandbox]
+  );
+
+  /**
+   * We have this one to listen to any opening when focus is on an input
+   */
+  useKey(
+    'Enter',
+    e => {
+      if (
+        !e.defaultPrevented &&
+        document.activeElement &&
+        document.activeElement.tagName === 'INPUT'
+      ) {
+        e.preventDefault();
+        const currentTemplate = getTemplateByIndex(focusedTemplateIndex);
+        openSandbox(currentTemplate.sandbox, isMac ? e.metaKey : e.ctrlKey);
+      }
+    },
+    {},
+    [focusedTemplateIndex, getTemplateByIndex, openSandbox]
   );
 
   let offset = 0;
@@ -236,7 +271,7 @@ export const TemplateList = ({
         }
 
         return (
-          <div key={key} style={{ marginBottom: '2rem' }}>
+          <TemplateInfoContainer key={key}>
             {title !== undefined && <SubHeader>{title}</SubHeader>}
             <Grid columnCount={columnCount}>
               {templates.map((template: TemplateFragment, i) => {
@@ -261,12 +296,18 @@ export const TemplateList = ({
                     onKeyPress={e => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
-                        openSandbox(template.sandbox, e.metaKey || e.ctrlKey);
+                        openSandbox(
+                          template.sandbox,
+                          isMac ? e.metaKey : e.ctrlKey
+                        );
                       }
                     }}
                     onClick={e => {
                       e.preventDefault();
-                      openSandbox(template.sandbox, e.metaKey || e.ctrlKey);
+                      openSandbox(
+                        template.sandbox,
+                        isMac ? e.metaKey : e.ctrlKey
+                      );
                     }}
                     focused={focused}
                     detailText={detailText}
@@ -289,7 +330,7 @@ export const TemplateList = ({
                 );
               })}
             </Grid>
-          </div>
+          </TemplateInfoContainer>
         );
       })}
     </>
