@@ -13,7 +13,7 @@ import { Content } from './elements';
 
 const Pro: React.FC = () => {
   const {
-    state: { isLoggedIn, user, patron },
+    state: { isLoggedIn, user, patron, isPatron },
     actions: {
       patron: { createSubscriptionClicked, patronMounted },
     },
@@ -22,6 +22,10 @@ const Pro: React.FC = () => {
   useEffect(() => {
     patronMounted();
   }, [patronMounted]);
+
+  // if you're already a patron, you shouldn't
+  // try to get pro.
+  if (isPatron) location.href = '/patron';
 
   return (
     <MaxWidth>
