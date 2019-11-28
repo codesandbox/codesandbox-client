@@ -87,7 +87,7 @@ export const newSandboxShowcaseSelected: AsyncAction<string> = async (
   { state, effects },
   id
 ) => {
-  state.profile.showSelectSandboxModal = false;
+  state.currentModal = null;
   state.profile.profiles[
     state.profile.currentProfileId
   ].showcasedSandboxShortid = id;
