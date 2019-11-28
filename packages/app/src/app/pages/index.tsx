@@ -61,6 +61,7 @@ const CliInstructions = Loadable(() =>
 const Patron = Loadable(() =>
   import(/* webpackChunkName: 'page-patron' */ './Patron')
 );
+const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator')
 );
@@ -116,6 +117,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
+            <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
