@@ -5,7 +5,7 @@ import {
   FunctionComponent,
 } from 'react';
 
-import Input, { TextArea } from '../Input';
+import { Input, TextArea } from './elements';
 
 type Props = {
   block?: boolean;
@@ -15,7 +15,6 @@ type Props = {
   setValue: (value: string) => void;
   value: string;
 } & Pick<ComponentProps<typeof Input>, 'style'>;
-
 export const PreferenceText: FunctionComponent<Props> = ({
   isTextArea,
   placeholder,
@@ -28,10 +27,9 @@ export const PreferenceText: FunctionComponent<Props> = ({
   };
 
   return createElement(isTextArea ? TextArea : Input, {
-    style: { width: '9rem' },
-    value,
-    placeholder,
     onChange: handleChange,
+    placeholder,
+    value,
     ...props,
   });
 };

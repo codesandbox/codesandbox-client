@@ -3,12 +3,12 @@ import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 
 import {
-  Title,
-  SubContainer,
-  PreferenceContainer,
   PaddedPreference,
-  SubDescription,
+  PreferenceContainer,
   Rule,
+  SubContainer,
+  SubDescription,
+  Title,
 } from '../elements';
 import VSCodePlaceholder from '../VSCodePlaceholder';
 

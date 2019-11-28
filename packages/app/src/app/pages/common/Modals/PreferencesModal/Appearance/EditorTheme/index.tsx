@@ -3,8 +3,7 @@ import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { PaddedPreference, SubDescription, Rule } from '../../elements';
-
+import { PaddedPreference, Rule, SubDescription } from '../../elements';
 import { BigTitle, PreferenceText } from './elements';
 
 export const EditorTheme: FunctionComponent = () => {

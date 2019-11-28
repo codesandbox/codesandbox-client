@@ -12,4 +12,5 @@ export const BigTitle = styled.h2`
 export const PreferenceText = styled(PreferenceTextBase)`
   font-family: 'Source Code Pro';
   font-size: 0.8rem;
+  width: 100%;
 `;
