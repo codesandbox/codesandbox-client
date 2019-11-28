@@ -13,7 +13,7 @@ export const AnimatedChevron = styled(ChevronRight)<{ open?: boolean }>`
 `;
 
 export const Container = styled(
-  withoutProps(`active`, `openByDefault`)(NavLink)
+  withoutProps(`active`, `openByDefault`)(NavLink as any)
 )<{
   active?: boolean;
 }>`
