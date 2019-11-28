@@ -15,7 +15,7 @@ export const NetlifyLogs: FunctionComponent = () => {
       deployment: { netlifyLogs: netlifyLogsUrl },
     },
   } = useOvermind();
-  const [logs, setLogs] = useState(['Contacting Netlify']);
+  const [logs, setLogs] = useState(['Waiting for build to start...']);
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -23,7 +23,9 @@ export const NetlifyLogs: FunctionComponent = () => {
         data.json()
       );
 
-      setLogs(fetchedLogs);
+      if (fetchedLogs.length > 0) {
+        setLogs(fetchedLogs);
+      }
     }, 2000);
 
     return () => clearInterval(interval);
