@@ -9,12 +9,14 @@ export function resetOverlay() {
     const delay = Date.now() - iframeRenderedAt > 1000 ? 0 : 1000;
 
     setTimeout(() => {
-      iframeReference.style.opacity = '0';
-      setTimeout(() => {
-        if (iframeReference.parentNode) {
-          document.body.removeChild(iframeReference);
-        }
-      }, 500);
+      if (iframeReference) {
+        iframeReference.style.opacity = '0';
+        setTimeout(() => {
+          if (iframeReference.parentNode) {
+            document.body.removeChild(iframeReference);
+          }
+        }, 500);
+      }
     }, delay);
   } catch (e) {
     /* nothing */

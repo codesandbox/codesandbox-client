@@ -41,9 +41,7 @@ class SandboxFsSync {
     };
   } = {};
 
-  private deps: { [path: string]: string } = {
-    '@types/jest': 'latest',
-  };
+  private deps: { [path: string]: string } = {};
 
   private workerIds: string[] = [];
 
@@ -221,6 +219,13 @@ class SandboxFsSync {
     const removed: Array<{ name: string; version: string }> = [];
     const newDepsKeys = Object.keys(newDeps);
     const currentDepsKeys = Object.keys(this.deps);
+
+    if (currentDepsKeys.length === 0) {
+      added.push({
+        name: '@types/jest',
+        version: 'latest',
+      });
+    }
 
     newDepsKeys.forEach(newDepKey => {
       if (
