@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
 import { Header } from '../elements';
 import { SearchBox } from '../SearchBox';
 import { SearchResults } from './SearchResults';
@@ -77,13 +78,15 @@ export const Explore = () => {
         </div>
       </Header>
 
-      {loading ? (
-        <Loader />
-      ) : search ? (
-        <SearchResults search={search} />
-      ) : (
-        <TemplateList templateInfos={templateInfos} />
-      )}
+      <Scrollable>
+        {loading ? (
+          <Loader />
+        ) : search ? (
+          <SearchResults search={search} />
+        ) : (
+          <TemplateList forkOnOpen={false} templateInfos={templateInfos} />
+        )}
+      </Scrollable>
     </>
   );
 };

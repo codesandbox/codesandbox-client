@@ -57,6 +57,10 @@ export const BookmarkTemplateButton = ({ style }: IBookmarkTemplateButton) => {
   > => {
     const bookmarkInfo = bookmarkInfos[entityIndex];
 
+    if (!bookmarkInfo) {
+      return {};
+    }
+
     return {
       variables: {
         template: customTemplate.id,
@@ -81,25 +85,6 @@ export const BookmarkTemplateButton = ({ style }: IBookmarkTemplateButton) => {
             };
           }),
         },
-      },
-      update: (proxy, { data: { template } }) => {
-        const result = proxy.readQuery<BookmarkedSandboxInfoQuery>({
-          query: BOOKMARKED_SANDBOX_INFO,
-          variables: { id: sandboxId },
-        });
-        proxy.writeQuery({
-          query: BOOKMARKED_SANDBOX_INFO,
-          variables: { id: sandboxId },
-          data: {
-            sandbox: {
-              ...result.sandbox,
-              customTemplate: {
-                ...result.sandbox.customTemplate,
-                bookmarked: template.bookmarked,
-              },
-            },
-          },
-        });
       },
     };
   };

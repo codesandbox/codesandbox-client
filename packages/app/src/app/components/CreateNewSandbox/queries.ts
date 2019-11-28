@@ -52,6 +52,17 @@ export const LIST_PERSONAL_TEMPLATES = gql`
 
       recentlyUsedTemplates {
         ...Template
+
+        sandbox {
+          git {
+            id
+            username
+            commitSha
+            path
+            repo
+            branch
+          }
+        }
       }
 
       bookmarkedTemplates {

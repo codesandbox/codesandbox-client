@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
 import { Dependencies } from '../../Dependencies';
 import Files from '../../Files';
-import { Project } from '../../Project';
+import { SandboxInfo } from './SandboxInfo';
 import { BookmarkTemplateButton } from '../../Project/BookmarkTemplateButton';
 import { WorkspaceItem } from '../../WorkspaceItem';
 
@@ -15,8 +15,9 @@ export const NotOwnedSandboxInfo = () => {
 
   return (
     <div style={{ marginTop: '1rem' }}>
-      <Project />
+      <SandboxInfo sandbox={editor.currentSandbox} />
       {editor.currentSandbox.customTemplate && <BookmarkTemplateButton />}
+
       <WorkspaceItem
         actions={editActions}
         defaultOpen

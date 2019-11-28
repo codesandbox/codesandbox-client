@@ -73,9 +73,24 @@ export const PersonalTemplates = ({ filter }: IPersonalTemplatesProps) => {
       })),
   ];
 
+  const hasNoTemplates =
+    data.me.templates.length === 0 && data.me.bookmarkedTemplates.length === 0;
+
+  if (hasNoTemplates) {
+    return (
+      <CenteredMessage>
+        You don{"'"}t have any templates yet, go on and create or bookmark some!
+      </CenteredMessage>
+    );
+  }
+
   return filter ? (
-    <FilteredTemplates query={filter} templateInfos={allTemplateInfos} />
+    <FilteredTemplates
+      forkOnOpen
+      query={filter}
+      templateInfos={allTemplateInfos}
+    />
   ) : (
-    <TemplateList templateInfos={allTemplateInfos} />
+    <TemplateList forkOnOpen templateInfos={allTemplateInfos} />
   );
 };

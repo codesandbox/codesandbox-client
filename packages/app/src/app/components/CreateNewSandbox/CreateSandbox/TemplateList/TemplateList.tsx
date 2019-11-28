@@ -5,8 +5,12 @@ import { useOvermind } from 'app/overmind';
 import { useKey } from 'react-use';
 import { isMac } from '@codesandbox/common/lib/utils/platform';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import history from 'app/utils/history';
+import MdEditIcon from 'react-icons/lib/md/edit';
+
 import { SandboxCard } from '../SandboxCard';
 import { SubHeader, Grid } from '../elements';
+import { EditIcon } from './elements';
 
 export interface ITemplateInfo {
   title?: string;
@@ -16,6 +20,7 @@ export interface ITemplateInfo {
 
 interface ITemplateListProps {
   templateInfos: ITemplateInfo[];
+  forkOnOpen?: boolean;
 }
 
 const COLUMN_COUNT = 2;
@@ -29,18 +34,25 @@ const getNumber = (e: KeyboardEvent): number => {
   return NaN;
 };
 
-export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
-  const { state, actions } = useOvermind();
+export const TemplateList = ({
+  templateInfos,
+  forkOnOpen,
+}: ITemplateListProps) => {
+  const { actions } = useOvermind();
   const [focusedTemplateIndex, setFocusedTemplate] = React.useState(0);
 
   const openSandbox = (
     sandbox: TemplateFragment['sandbox'],
     openInNewWindow = false
   ) => {
-    actions.editor.forkExternalSandbox({
-      sandboxId: sandbox.id,
-      openInNewWindow,
-    });
+    if (forkOnOpen) {
+      actions.editor.forkExternalSandbox({
+        sandboxId: sandbox.id,
+        openInNewWindow,
+      });
+    } else {
+      history.push(sandboxUrl(sandbox));
+    }
 
     return actions.modalClosed();
   };
@@ -232,7 +244,7 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
           <div key={key} style={{ marginBottom: '1rem' }}>
             {title !== undefined && <SubHeader>{title}</SubHeader>}
             <Grid columnCount={COLUMN_COUNT}>
-              {templates.map((template, i) => {
+              {templates.map((template: TemplateFragment, i) => {
                 const index = offset + i;
                 const focused = focusedTemplateIndex === offset + i;
 
@@ -247,16 +259,7 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
                     iconUrl={template.iconUrl}
                     // @ts-ignore
                     environment={template.sandbox.source.template}
-                    url={sandboxUrl(template.sandbox)}
                     color={template.color}
-                    owner={template.sandbox.author?.username}
-                    templateId={template.id}
-                    sandboxId={template.sandbox.id}
-                    mine={
-                      template.sandbox.author &&
-                      template.sandbox.author.username ===
-                        (state.user && state.user.username)
-                    }
                     onFocus={() => {
                       safeSetFocusedTemplate(() => index);
                     }}
@@ -272,6 +275,21 @@ export const TemplateList = ({ templateInfos }: ITemplateListProps) => {
                     }}
                     focused={focused}
                     detailText={detailText}
+                    DetailedComponent={
+                      forkOnOpen
+                        ? () => (
+                            <EditIcon
+                              onClick={evt => {
+                                evt.stopPropagation();
+                                actions.modalClosed();
+                              }}
+                              to={sandboxUrl(template.sandbox)}
+                            >
+                              <MdEditIcon />
+                            </EditIcon>
+                          )
+                        : undefined
+                    }
                   />
                 );
               })}

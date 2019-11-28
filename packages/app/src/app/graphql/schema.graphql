@@ -1,5 +1,5 @@
 # source: https://codesandbox.stream/api/graphql
-# timestamp: Tue Nov 26 2019 18:42:09 GMT+0000 (Coordinated Universal Time)
+# timestamp: Thu Nov 28 2019 18:35:35 GMT+0000 (Coordinated Universal Time)
 
 schema {
   query: RootQuery

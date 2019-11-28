@@ -3,6 +3,7 @@ import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
 import { useOvermind } from 'app/overmind';
 import { LinkButton } from 'app/components/LinkButton';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import history from 'app/utils/history';
 import { SandboxCard } from '../SandboxCard';
 import { Header, SubHeader, Grid } from '../elements';
 import { CenteredMessage } from './elements';
@@ -45,6 +46,7 @@ export const Create = () => {
         )}
 
         {!filter && (
+          // TODO: redo all of this once we have move our templates over to the new system
           <>
             <SubHeader>Official Templates</SubHeader>
             <Grid columnCount={2}>
@@ -54,12 +56,13 @@ export const Create = () => {
                   title={template.niceName}
                   iconUrl={template.name}
                   environment={template.name}
-                  owner="CodeSandbox"
-                  url={sandboxUrl({ id: template.shortid, alias: null })}
-                  official
+                  detailText="CodeSandbox"
                   color={template.color()}
-                  templateId="" // TODO
-                  sandboxId={template.shortid}
+                  onClick={() => {
+                    history.push(
+                      sandboxUrl({ id: template.shortid, alias: null })
+                    );
+                  }}
                 />
               ))}
             </Grid>

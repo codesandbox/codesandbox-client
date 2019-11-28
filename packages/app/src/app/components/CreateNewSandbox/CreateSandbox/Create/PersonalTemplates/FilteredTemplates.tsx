@@ -7,11 +7,13 @@ import { ITemplateInfo, TemplateList } from '../../TemplateList';
 interface IFilteredTemplateProps {
   templateInfos: ITemplateInfo[];
   query: string;
+  forkOnOpen: boolean;
 }
 
 export const FilteredTemplates = ({
   query,
   templateInfos,
+  forkOnOpen,
 }: IFilteredTemplateProps) => {
   const searchIndex = React.useMemo(
     () =>
@@ -41,5 +43,10 @@ export const FilteredTemplates = ({
     },
   ];
 
-  return <TemplateList templateInfos={filteredTemplateInfos} />;
+  return (
+    <TemplateList
+      forkOnOpen={forkOnOpen}
+      templateInfos={filteredTemplateInfos}
+    />
+  );
 };

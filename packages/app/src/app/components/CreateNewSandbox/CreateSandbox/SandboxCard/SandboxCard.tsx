@@ -17,19 +17,16 @@ import {
 
 interface ISandboxCardProps {
   title: string;
-  owner: string | undefined;
   iconUrl: string;
   environment: TemplateType;
-  url: string;
   color: string;
-  templateId: string;
-  sandboxId: string;
   official?: boolean;
   focused?: boolean;
   detailText?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   onFocus?: (e: React.FocusEvent<HTMLButtonElement>) => void;
   onKeyPress?: (e: React.KeyboardEvent<HTMLButtonElement>) => void;
+  DetailedComponent?: React.FunctionComponent;
 }
 
 export const SandboxCard: React.FC<ISandboxCardProps> = ({
@@ -43,6 +40,7 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
   onClick,
   onFocus,
   onKeyPress,
+  DetailedComponent,
 }) => {
   const UserIcon: React.FunctionComponent =
     iconUrl && Icons[iconUrl] ? Icons[iconUrl] : getColorIcons(environment);
@@ -79,9 +77,12 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
         <Details>
           <Row>
             <Title>{title}</Title>
+
+            {focused && DetailedComponent && <DetailedComponent />}
           </Row>
           <Row>
             <Environment>{parsedEnvironment.name}</Environment>
+
             {detailText && <Detail>{detailText}</Detail>}
           </Row>
         </Details>
