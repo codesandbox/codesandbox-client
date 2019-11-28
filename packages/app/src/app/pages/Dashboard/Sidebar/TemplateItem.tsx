@@ -30,13 +30,17 @@ const TemplateItemComponent: FunctionComponent<Props> = ({
     : `/dashboard/templates`;
 
   return connectDropTarget(
-    <Item
-      active={currentPath === path}
-      Icon={TemplateIcon}
-      name={teamId ? 'Team Templates' : 'My Templates'}
-      path={path}
-      style={isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}}
-    />
+    <div>
+      <Item
+        active={currentPath === path}
+        Icon={TemplateIcon}
+        name={teamId ? 'Team Templates' : 'My Templates'}
+        path={path}
+        style={
+          isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}
+        }
+      />
+    </div>
   );
 };
 
@@ -57,15 +61,15 @@ const entryTarget: DropTargetSpec<ComponentProps> = {
 };
 
 const collectTarget: DropTargetCollector<CollectedProps> = (
-  { dropTarget },
-  { canDrop, isOver }
+  connect,
+  monitor
 ) => ({
-  canDrop: canDrop(),
+  canDrop: monitor.canDrop(),
   // Call this function inside render()
   // to let React DnD handle the drag events:
-  connectDropTarget: dropTarget(),
+  connectDropTarget: connect.dropTarget(),
   // You can ask the monitor about the current drag state:
-  isOver: isOver({ shallow: true }),
+  isOver: monitor.isOver({ shallow: true }),
 });
 
 type CollectedProps = {
