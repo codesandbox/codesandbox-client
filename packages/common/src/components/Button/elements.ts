@@ -171,7 +171,7 @@ export const buttonStyles = ({
 `;
 
 export const Base = styled(
-  withoutProps(`block`, `secondary`, `danger`, `red`, `large`)(Button)
+  withoutProps(`block`, `secondary`, `danger`, `red`, `small`)(Button)
 )<IBaseProps>`
   ${buttonStyles}
 `;

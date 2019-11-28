@@ -135,12 +135,7 @@ class Sidebar extends React.Component {
         </Route>
 
         <div style={{ margin: '2rem', fontSize: '.875rem' }}>
-          <Button
-            style={{ display: 'block' }}
-            to="/dashboard/teams/new"
-            small
-            block
-          >
+          <Button to="/dashboard/teams/new" small block>
             Create Team
           </Button>
         </div>
