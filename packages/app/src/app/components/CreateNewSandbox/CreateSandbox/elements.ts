@@ -2,8 +2,7 @@ import styled from 'styled-components';
 import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
 
 export const Container = styled.div`
-  display: grid;
-  grid-template-columns: 176px minmax(640px, 976px);
+  display: flex;
   min-width: 870px;
   max-width: 1200px;
   height: 496px;
@@ -21,6 +20,8 @@ export const Tabs = styled(TabList)`
   flex-direction: column;
   background: #242424;
   padding: 1rem 0;
+  width: 176px;
+  min-width: 176px;
 `;
 
 export const Tab = styled(BaseTab)`
@@ -54,6 +55,7 @@ export const TabContent = styled(TabPanel)`
   grid-template-rows: min-content auto;
   background: #151515;
   max-height: 496px;
+  width: 100%;
   border-left: 1px solid #040404;
 
   outline: none;

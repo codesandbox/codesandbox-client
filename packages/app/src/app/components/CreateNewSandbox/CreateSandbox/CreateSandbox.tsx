@@ -7,6 +7,8 @@ import { Explore } from './Explore';
 import { Import } from './Import';
 import { Container, Tabs, Tab, TabContent } from './elements';
 
+export const COLUMN_MEDIA_THRESHOLD = 1600;
+
 export const CreateSandbox: React.FC = props => {
   const tab = useTabState({ orientation: 'vertical', selectedId: 'Create' });
 

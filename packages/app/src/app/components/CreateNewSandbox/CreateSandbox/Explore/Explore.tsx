@@ -4,7 +4,8 @@ import { Header } from '../elements';
 import { SearchBox } from '../SearchBox';
 import { SearchResults } from './SearchResults';
 import { Loader } from '../Loader';
-import { ITemplateInfo, TemplateList } from '../TemplateList';
+import { ITemplateInfo } from '../TemplateList';
+import { DynamicWidthTemplateList } from '../DynamicWidthTemplateList';
 
 interface IExploreTemplate {
   title: string;
@@ -84,7 +85,10 @@ export const Explore = () => {
         ) : search ? (
           <SearchResults search={search} />
         ) : (
-          <TemplateList forkOnOpen={false} templateInfos={templateInfos} />
+          <DynamicWidthTemplateList
+            forkOnOpen={false}
+            templateInfos={templateInfos}
+          />
         )}
       </Scrollable>
     </>

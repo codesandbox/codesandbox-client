@@ -49,7 +49,7 @@ export const Create = () => {
           // TODO: redo all of this once we have move our templates over to the new system
           <>
             <SubHeader>Official Templates</SubHeader>
-            <Grid columnCount={2}>
+            <Grid columnCount={3}>
               {all.map(template => (
                 <SandboxCard
                   key={template.shortid}

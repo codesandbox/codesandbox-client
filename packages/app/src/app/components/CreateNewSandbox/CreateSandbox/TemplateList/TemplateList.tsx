@@ -18,12 +18,12 @@ export interface ITemplateInfo {
   templates: TemplateFragment[];
 }
 
-interface ITemplateListProps {
+export interface ITemplateListProps {
   templateInfos: ITemplateInfo[];
   forkOnOpen?: boolean;
+  columnCount?: number;
 }
 
-const COLUMN_COUNT = 2;
 const MODIFIER_KEY = isMac ? 'Ctrl' : '⇧';
 
 const getNumber = (e: KeyboardEvent): number => {
@@ -37,6 +37,7 @@ const getNumber = (e: KeyboardEvent): number => {
 export const TemplateList = ({
   templateInfos,
   forkOnOpen,
+  columnCount = 2,
 }: ITemplateListProps) => {
   const { actions } = useOvermind();
   const [focusedTemplateIndex, setFocusedTemplate] = React.useState(0);
@@ -81,7 +82,7 @@ export const TemplateList = ({
   };
 
   const getColumnCountInLastRow = (templateInfo: ITemplateInfo) =>
-    templateInfo.templates.length % COLUMN_COUNT || COLUMN_COUNT;
+    templateInfo.templates.length % columnCount || columnCount;
 
   const getTotalTemplateCount = React.useCallback(
     () =>
@@ -148,32 +149,28 @@ export const TemplateList = ({
         focusedTemplateIndex
       );
       const indexInTemplateInfo = focusedTemplateIndex - offset;
-
       const totalRowCount = Math.ceil(
-        templateInfo.templates.length / COLUMN_COUNT
+        templateInfo.templates.length / columnCount
       );
-      const currentRow = Math.floor(indexInTemplateInfo / COLUMN_COUNT);
+      const currentRow = Math.floor(indexInTemplateInfo / columnCount);
       const isLastRow = totalRowCount === currentRow + 1;
-      const columnsInLastRow = getColumnCountInLastRow(templateInfo);
+      const nextTemplateInfo =
+        templateInfos[templateInfos.indexOf(templateInfo) + 1] || templateInfo;
 
-      safeSetFocusedTemplate(i =>
-        Math.min(
-          /**
-           * This min is to ensure that when navigating in this scenario:
-           * | 0 | 1 |
-           * | 2 |
-           * | 3 | 4 |
-           *
-           * Where you're on 1, that you go to 2 instead of 3.
-           *
-           */
-          isLastRow ? Infinity : offset + templateInfo.templates.length - 1,
+      const { templateInfo: templateInfoUnder } = getTemplateInfoByIndex(
+        focusedTemplateIndex + columnCount
+      );
+      const hasItemUnder = !isLastRow || templateInfoUnder === nextTemplateInfo;
+      const itemsAfterCurrentItem =
+        templateInfo.templates.length - 1 - indexInTemplateInfo;
+
+      safeSetFocusedTemplate(
+        i =>
           i +
-            Math.min(
-              isLastRow ? columnsInLastRow : COLUMN_COUNT,
-              templateInfo.templates.length
-            )
-        )
+          Math.min(
+            hasItemUnder ? columnCount : itemsAfterCurrentItem + 1,
+            templateInfo.templates.length
+          )
       );
     },
     {},
@@ -199,9 +196,7 @@ export const TemplateList = ({
         i =>
           i -
           Math.min(
-            isFirstItem
-              ? columnsInLastRowForPreviousTemplateInfo
-              : COLUMN_COUNT,
+            isFirstItem ? columnsInLastRowForPreviousTemplateInfo : columnCount,
 
             previousTemplateInfo.templates.length
           )
@@ -241,9 +236,9 @@ export const TemplateList = ({
         }
 
         return (
-          <div key={key} style={{ marginBottom: '1rem' }}>
+          <div key={key} style={{ marginBottom: '2rem' }}>
             {title !== undefined && <SubHeader>{title}</SubHeader>}
-            <Grid columnCount={COLUMN_COUNT}>
+            <Grid columnCount={columnCount}>
               {templates.map((template: TemplateFragment, i) => {
                 const index = offset + i;
                 const focused = focusedTemplateIndex === offset + i;

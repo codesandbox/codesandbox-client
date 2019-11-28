@@ -2,7 +2,8 @@ import React from 'react';
 import Fuse from 'fuse.js';
 
 import { uniqBy, flatten } from 'lodash-es';
-import { ITemplateInfo, TemplateList } from '../../TemplateList';
+import { ITemplateInfo } from '../../TemplateList';
+import { DynamicWidthTemplateList } from '../../DynamicWidthTemplateList';
 
 interface IFilteredTemplateProps {
   templateInfos: ITemplateInfo[];
@@ -44,7 +45,7 @@ export const FilteredTemplates = ({
   ];
 
   return (
-    <TemplateList
+    <DynamicWidthTemplateList
       forkOnOpen={forkOnOpen}
       templateInfos={filteredTemplateInfos}
     />

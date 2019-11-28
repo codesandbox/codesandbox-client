@@ -6,9 +6,10 @@ import {
 } from 'app/graphql/types';
 import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 import { Loader } from '../../Loader/index';
-import { TemplateList, ITemplateInfo } from '../../TemplateList';
+import { ITemplateInfo } from '../../TemplateList';
 import { CenteredMessage } from '../elements';
 import { FilteredTemplates } from './FilteredTemplates';
+import { DynamicWidthTemplateList } from '../../DynamicWidthTemplateList';
 
 interface IPersonalTemplatesProps {
   filter: string;
@@ -91,6 +92,6 @@ export const PersonalTemplates = ({ filter }: IPersonalTemplatesProps) => {
       templateInfos={allTemplateInfos}
     />
   ) : (
-    <TemplateList forkOnOpen templateInfos={allTemplateInfos} />
+    <DynamicWidthTemplateList forkOnOpen templateInfos={allTemplateInfos} />
   );
 };

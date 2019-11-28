@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { connectInfiniteHits } from 'react-instantsearch-dom';
 import { InfiniteHitsProvided } from 'react-instantsearch-core';
 import { AlgoliaSandboxHit } from '@codesandbox/common/lib/types/algolia';
-import { ITemplateInfo, TemplateList } from '../../TemplateList';
+import { ITemplateInfo } from '../../TemplateList';
+import { DynamicWidthTemplateList } from '../../DynamicWidthTemplateList';
 
 type ResultsProps = InfiniteHitsProvided<AlgoliaSandboxHit> & {};
 
@@ -59,7 +60,7 @@ const Results = (props: ResultsProps) => {
 
   return (
     <>
-      <TemplateList templateInfos={[searchTemplateInfo]} />
+      <DynamicWidthTemplateList templateInfos={[searchTemplateInfo]} />
 
       <div
         style={{ height: 10, width: 1, backgroundColor: 'transparent' }}
