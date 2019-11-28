@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+
 import Layout from '../../components/layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 import {
@@ -18,61 +18,14 @@ import Netlify from './images/netlify.svg';
 import Zeit from './images/zeit.svg';
 import Sourcegraph from './images/sourcegraph.svg';
 
-const Title = styled.h1`
-  ${({ theme }) => css`
-    font-family: ${theme.homepage.appleFont};
-    font-weight: 500;
-    font-size: 2.5rem;
-    line-height: 3rem;
-    color: ${theme.homepage.white};
-    margin: 0.5rem 0;
-
-    ${theme.breakpoints.md} {
-      font-size: 1.5rem;
-      line-height: 1.2;
-      max-width: 80%;
-    }
-  `};
-`;
-
-const SeoText = styled.p`
-  color: ${props => props.theme.homepage.muted};
-  font-style: normal;
-  font-weight: 500;
-  font-size: 1.4375rem;
-  line-height: 37px;
-`;
-
-const Border = styled.div`
-  height: 1px;
-  width: 100%;
-  background: #242424;
-  margin: 5rem 0;
-`;
-
-const AngelInvestors = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 255px);
-  grid-gap: 1.5rem;
-  justify-content: center;
-  margin-top: 1.5rem;
-
-  > div {
-    background: #151515;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2.45rem 0;
-
-    img {
-      margin-bottom: 1.625rem;
-    }
-
-    b {
-      padding-bottom: 0.5rem;
-    }
-  }
-`;
+import {
+  Title,
+  SeoText,
+  Border,
+  Investors,
+  AngelInvestors,
+  HiringLink,
+} from './_elements';
 
 export default () => (
   <Layout>
@@ -117,6 +70,14 @@ export default () => (
       >
         Investors and Advisors
       </H2>
+      <Investors>
+        <div>
+          <img src={KP} alt="KP" />
+        </div>
+        <div>
+          <img src={ArchesCapital} alt="ArchesCapital" />
+        </div>
+      </Investors>
       <AngelInvestors>
         <div>
           <img src={Framer} alt="Framer" />
@@ -195,6 +156,7 @@ export default () => (
         We're proudly open-source with more than 150 contributors and counting.
         They work in tandem with our growing, remote-first team.
       </SeoText>
+      <HiringLink to="/jobs"> We’re Hiring!</HiringLink>
     </Wrapper>
   </Layout>
 );
