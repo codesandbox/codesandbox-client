@@ -7,6 +7,7 @@ import {
   ModuleTab,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
 import {
@@ -17,6 +18,7 @@ import {
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import { json } from 'overmind';
 
+import eventToTransform from '../../utils/event-to-transform';
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -198,7 +200,11 @@ export const codeChanged: Action<{
   }
 
   if (state.live.isLive) {
-    effects.live.sendCodeUpdate(moduleShortid, module.code, event);
+    const operation = event
+      ? eventToTransform(event, module.code).operation
+      : getTextOperation(module.code, code);
+
+    effects.live.sendCodeUpdate(moduleShortid, operation);
   }
 
   actions.editor.internal.setModuleCode({
@@ -492,6 +498,8 @@ export const discardModuleChanges: Action<{
   });
 
   module.updatedAt = new Date().toString();
+
+  effects.vscode.revertModule(module);
 
   state.editor.changedModuleShortids.splice(
     state.editor.changedModuleShortids.indexOf(moduleShortid),

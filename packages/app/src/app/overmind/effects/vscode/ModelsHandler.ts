@@ -93,6 +93,17 @@ export class ModelsHandler {
     return null;
   }
 
+  public async revertModule(module: Module) {
+    const fileModel = this.editorApi.textFileService
+      .getFileModels()
+      .find(
+        fileModelItem =>
+          fileModelItem.resource.path === '/sandbox' + module.path
+      );
+
+    fileModel.revert();
+  }
+
   public changeModule = async (module: Module) => {
     const moduleModel = this.getModuleModel(module);
 

@@ -11,7 +11,6 @@ import { TextOperation } from 'ot';
 import { Socket } from 'phoenix';
 import uuid from 'uuid';
 
-import eventToTransform from '../../utils/event-to-transform';
 import { SandboxAPIResponse } from '../api/types';
 import { transformSandbox } from '../utils/sandbox';
 import clientsFactory from './clients';
@@ -184,9 +183,7 @@ export default {
       module: directory,
     });
   },
-  sendCodeUpdate(moduleShortid: string, currentCode: string, event: any) {
-    const { operation } = eventToTransform(event, currentCode);
-
+  sendCodeUpdate(moduleShortid: string, operation: any) {
     if (!operation) {
       return;
     }

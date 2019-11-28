@@ -205,6 +205,10 @@ export class VSCodeEffect {
     }
   }
 
+  public revertModule(module: Module) {
+    this.modelsHandler.revertModule(module);
+  }
+
   public async applyOperation(
     moduleShortid: string,
     operation: (string | number)[]
