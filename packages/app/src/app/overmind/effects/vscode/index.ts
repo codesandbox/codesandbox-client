@@ -303,19 +303,16 @@ export class VSCodeEffect {
   public async openModule(module: Module) {
     await this.initialized;
 
-    // We open this on the next tick to allow a UI update to occur first
-    setTimeout(async () => {
-      try {
-        const model = await this.modelsHandler.changeModule(module);
+    try {
+      const model = await this.modelsHandler.changeModule(module);
 
-        this.lint(module.title, model);
-      } catch (error) {
-        // We might try to open a module that is not actually opened in the editor,
-        // but the configuration wizard.. currently this throws an error as there
-        // is really no good way to identify when it happen. This needs to be
-        // improved in next version
-      }
-    });
+      this.lint(module.title, model);
+    } catch (error) {
+      // We might try to open a module that is not actually opened in the editor,
+      // but the configuration wizard.. currently this throws an error as there
+      // is really no good way to identify when it happen. This needs to be
+      // improved in next version
+    }
   }
 
   setErrors = (errors: ModuleError[]) => {
