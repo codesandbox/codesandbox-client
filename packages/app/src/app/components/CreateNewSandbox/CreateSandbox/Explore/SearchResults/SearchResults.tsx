@@ -21,7 +21,12 @@ export const SearchResults = ({ search }: { search: string }) => (
       <Configure
         query={search}
         hitsPerPage={50}
-        facetFilters={['custom_template.published: true']}
+        facetFilters={[
+          [
+            'custom_template.published: true',
+            'custom_template.published: false',
+          ],
+        ]}
       />
 
       <SubHeader>

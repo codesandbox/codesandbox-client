@@ -1,9 +1,9 @@
+import React from 'react';
+import { LikeHeart } from 'app/pages/common/LikeHeart';
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { observer } from 'app/componentConnectors';
-import React from 'react';
-import ForkIcon from 'react-icons/lib/go/repo-forked';
 
-import { LikeHeart } from 'app/pages/common/LikeHeart';
+import { ForkIcon } from './ForkIcon';
 import { EyeIcon } from './EyeIcon';
 
 import { Stats as StatsWrapper } from './elements';
