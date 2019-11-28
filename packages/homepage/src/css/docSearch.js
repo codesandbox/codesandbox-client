@@ -62,14 +62,12 @@ export default createGlobalStyle`
 
       .algolia-docsearch-suggestion--title,
       .algolia-docsearch-suggestion--category-header {
-        font-family: 'Poppins', sans-serif;
         font-weight: 600;
         font-size: 0.875rem;
       }
 
       .ds-dropdown-menu {
         width: 500px;
-        font-family: 'Open Sans', Segoe UI, sans-serif;
         font-size: 0.875rem;
         margin-top: 0.8125rem;
 

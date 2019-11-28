@@ -22,12 +22,6 @@ export const PostContainer = styled.div`
       font-weight: 800;
     }
 
-    h1,
-    h2,
-    h3 {
-      font-family: 'Poppins', sans-serif;
-    }
-
     h2 {
       margin-top: 3rem;
       font-size: 28px;
@@ -58,7 +52,6 @@ export const PostContainer = styled.div`
 
     p,
     li {
-      font-family: 'Open Sans', sans-serif;
       color: rgba(255, 255, 255, 0.8);
     }
 

@@ -2,13 +2,11 @@ import styled from 'styled-components';
 
 export const PageTitle = styled.h1`
   font-weight: 600;
-  font-family: 'Poppins', sans-serif;
   font-size: 36px;
   color: ${props => props.theme.white};
 `;
 
 export const PageSubtitle = styled.h2`
-  font-family: 'Open Sans', sans-serif;
   font-weight: 600;
   font-size: 24px;
   line-height: 1.5;
@@ -16,7 +14,6 @@ export const PageSubtitle = styled.h2`
 `;
 
 export const TitleDescription = styled.p`
-  font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 1.5;
@@ -26,7 +23,6 @@ export const TitleDescription = styled.p`
 
 export const Job = styled.li`
   list-style: none;
-  font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 33px;
@@ -53,7 +49,6 @@ export const Jobs = styled.ul`
 export const OtherJobs = styled.div`
   display: flex;
   color: ${props => props.theme.lightText};
-  font-family: 'Open Sans', sans-serif;
   font-size: 14px;
   margin-top: 12px;
   justify-content: space-between;

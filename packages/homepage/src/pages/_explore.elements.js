@@ -72,7 +72,6 @@ export const Sandboxes = styled.div`
 
 export const ShowMore = styled.button`
   transition: 0.3s ease all;
-  font-family: 'Poppins', sans-serif;
 
   width: 100%;
   background-color: rgba(255, 255, 255, 0.1);
@@ -154,7 +153,6 @@ export const StyledLeftArrow = styled(LeftArrow)`
 
 export const PickedQuestion = styled(Link)`
   transition: 0.3s ease color;
-  font-family: Poppins;
   color: ${props => props.theme.new.description};
   text-decoration: none;
 

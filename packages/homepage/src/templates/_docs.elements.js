@@ -54,7 +54,6 @@ export const DocumentationContent = styled.div`
     }
 
     h2 {
-      font-family: 'Poppins', sans-serif;
       margin: 1.5rem 0;
       font-weight: 400;
       color: ${props => props.theme.homepage.white};
@@ -199,7 +198,6 @@ export const Heading = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-family: 'Poppins', sans-serif;
   font-size: 2rem;
   font-weight: 500;
 `;
