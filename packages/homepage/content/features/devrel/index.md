@@ -1,13 +1,13 @@
 ---
 title: DevRel
-description: Grow and engage with your developer community
+description: Grow and engage with your developer community.
 SEOText:
   Removing friction from getting started with and using your product is key to
   the success of any developer relations program. With CodeSandbox you can skip
   the setup steps and boilerplate code, delivering better experiences for
   developers that will grow your community.
 slug: devrel
-tweetText: Loving CodeSandbox and all it's magic
+tweetText: Loving CodeSandbox and all it's magic.
 tweetJob: Developer Advocate, Stripe
 tweetName: Chris Traganos
 tweetHandle: ctraganos
