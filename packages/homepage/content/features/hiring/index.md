@@ -1,13 +1,13 @@
 ---
 title: Hiring
-description: Run better, more efficient coding interviews and challenges
+description: Run better, more efficient coding interviews and challenges.
 SEOText:
   Whiteboard exercises don’t get to the core skills you're looking for in a
   candidate. With CodeSandbox, you can run remote technical interviews and set
   coding challenges that let you see how candidates assess problems, approach
   solutions, and work with code.
 slug: hiring
-tweetText: CodeSandbox is truly amazing
+tweetText: CodeSandbox is truly amazing.
 tweetJob: Head of Developer Experience, Netlify
 tweetName: Sarah Drasner
 tweetHandle: sarah_edo
