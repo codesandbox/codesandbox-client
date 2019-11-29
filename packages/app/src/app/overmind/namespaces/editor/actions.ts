@@ -23,14 +23,14 @@ import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
-export const onNavigateAway: Action = () => { };
+export const onNavigateAway: Action = () => {};
 
 export const addNpmDependency: AsyncAction<{
   name: string;
   version?: string;
   isDev?: boolean;
 }> = withOwnedSandbox(
-  async ({ effects, actions, state }, { name, version, isDev }) => {
+  async ({ actions, effects, state }, { name, version, isDev }) => {
     effects.analytics.track('Add NPM Dependency');
     state.currentModal = null;
     let newVersion = version;
@@ -465,7 +465,7 @@ export const quickActionsClosed: Action = ({ state }) => {
   state.editor.quickActionsOpen = false;
 };
 
-export const setPreviewContent: Action = () => { };
+export const setPreviewContent: Action = () => {};
 
 export const togglePreviewContent: Action = ({ state }) => {
   state.editor.previewWindowVisible = !state.editor.previewWindowVisible;

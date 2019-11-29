@@ -1,6 +1,6 @@
-import styled, { css, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { animated } from 'react-spring/renderprops';
+import styled, { css, keyframes } from 'styled-components';
 
 const fadeIn = keyframes`
   0%   { opacity: 0; }
@@ -17,6 +17,7 @@ export const DarkBG = styled.div<{ closing: boolean }>`
     background-color: black;
     opacity: 0;
     transition: 0.3s ease opacity;
+
     ${!closing &&
       css`
         animation: ${fadeIn} 0.3s;
@@ -52,7 +53,11 @@ export const Container = styled.div<{ hide?: boolean }>`
     cursor: pointer;
     user-select: none;
     transition: 0.3s ease background-color;
-    ${hide && 'opacity: 0'};
+
+    ${hide &&
+      css`
+        opacity: 0;
+      `};
 
     &:first-child {
       border-bottom: 0;
@@ -79,24 +84,5 @@ export const AnimatedModalContainer = styled(animated.div)<{
     css`
       position: fixed;
       transition: 0.15s ease all;
-    `}
-`;
-
-export const FullsizeContainer = styled.div`
-  position: fixed;
-  top: 25vh;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  opacity: 0;
-  z-index: 0;
-  width: 950px;
-  height: auto;
-  margin: 0 auto 15vh;
-  pointer-events: none;
-`;
-
-export const MeasureContainer = styled.div`
-  width: 100%;
-  height: 100%;
+    `};
 `;

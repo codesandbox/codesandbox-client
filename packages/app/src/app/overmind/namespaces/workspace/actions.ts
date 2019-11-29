@@ -123,42 +123,48 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
   }
 );
 
-export const externalResourceAdded: AsyncAction<{
-  resource: string;
-}> = withOwnedSandbox(async ({ state, effects, actions }, { resource }) => {
-  const { externalResources } = state.editor.currentSandbox;
+export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
+  async ({ effects, state, actions }, resource) => {
+    const { externalResources } = state.editor.currentSandbox;
 
-  externalResources.push(resource);
-  actions.editor.internal.updatePreviewCode();
-
-  try {
-    await effects.api.createResource(state.editor.currentSandbox.id, resource);
-  } catch (error) {
-    externalResources.splice(externalResources.indexOf(resource), 1);
-    effects.notificationToast.error('Could not save external resource');
+    externalResources.push(resource);
     actions.editor.internal.updatePreviewCode();
+
+    try {
+      await effects.api.createResource(
+        state.editor.currentSandbox.id,
+        resource
+      );
+    } catch (error) {
+      externalResources.splice(externalResources.indexOf(resource), 1);
+      effects.notificationToast.error('Could not save external resource');
+      actions.editor.internal.updatePreviewCode();
+    }
   }
-});
+);
 
-export const externalResourceRemoved: AsyncAction<{
-  resource: string;
-}> = withOwnedSandbox(async ({ state, effects, actions }, { resource }) => {
-  const { externalResources } = state.editor.currentSandbox;
-  const resourceIndex = externalResources.indexOf(resource);
+export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
+  async ({ effects, state, actions }, resource) => {
+    const { externalResources } = state.editor.currentSandbox;
+    const resourceIndex = externalResources.indexOf(resource);
 
-  externalResources.splice(resourceIndex, 1);
-  actions.editor.internal.updatePreviewCode();
-
-  try {
-    await effects.api.deleteResource(state.editor.currentSandbox.id, resource);
-  } catch (error) {
-    externalResources.splice(resourceIndex, 0, resource);
-    effects.notificationToast.error(
-      'Could not save removal of external resource'
-    );
+    externalResources.splice(resourceIndex, 1);
     actions.editor.internal.updatePreviewCode();
+
+    try {
+      await effects.api.deleteResource(
+        state.editor.currentSandbox.id,
+        resource
+      );
+    } catch (error) {
+      externalResources.splice(resourceIndex, 0, resource);
+      effects.notificationToast.error(
+        'Could not save removal of external resource'
+      );
+      actions.editor.internal.updatePreviewCode();
+    }
   }
-});
+);
 
 export const integrationsOpened: Action = ({ state }) => {
   state.preferences.itemId = 'integrations';

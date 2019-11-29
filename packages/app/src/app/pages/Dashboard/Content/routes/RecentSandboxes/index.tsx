@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { useOvermind } from 'app/overmind';
 import getMostUsedTemplate from '../../../utils/get-most-used-template';
 import { Content as Sandboxes } from '../../Sandboxes';
-import CreateNewSandbox from '../../CreateNewSandbox';
+import { CreateNewSandbox } from '../../CreateNewSandbox';
 import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
 export const RecentSandboxes = () => {

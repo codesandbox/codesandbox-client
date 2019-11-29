@@ -1,5 +1,7 @@
-import { Action, AsyncAction } from 'app/overmind';
+import { Badge } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
+
+import { Action, AsyncAction } from 'app/overmind';
 
 export const viewModeChanged: Action<{
   showEditor: boolean;
@@ -58,13 +60,11 @@ export const settingChanged: Action<{
   });
 };
 
-export const setBadgeVisibility: AsyncAction<{
-  id: string;
-  visible: boolean;
-}> = async ({ state, effects }, { id, visible }) => {
-  const { badges } = state.user;
-
-  badges.forEach((badge, index) => {
+export const setBadgeVisibility: AsyncAction<Pick<
+  Badge,
+  'id' | 'visible'
+>> = async ({ effects, state }, { id, visible }) => {
+  state.user.badges.forEach((badge, index) => {
     if (badge.id === id) {
       state.user.badges[index].visible = visible;
     }
