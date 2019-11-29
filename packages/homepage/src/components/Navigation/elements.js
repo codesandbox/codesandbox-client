@@ -117,6 +117,7 @@ export const List = styled.ul`
   padding: 0;
   display: flex;
   justify-content: space-around;
+  align-items: center;
   width: 100%;
 
   li {
@@ -189,7 +190,6 @@ export const PopUpNav = styled.nav`
   background: #151515;
   padding-top: 1.5rem;
   padding-bottom: 4rem;
-  padding-left: 1rem;
   padding-right: 1rem;
   width: 100%;
   z-index: 3;
@@ -201,7 +201,8 @@ export const Headers = styled.h3`
   font-size: 0.8125rem;
   line-height: 16px;
   margin-bottom: 0.5rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
+  padding-left: 1rem;
 
   color: #757575;
 `;
@@ -213,6 +214,11 @@ export const Items = styled.ul`
 
   li {
     padding: 0.5rem 0;
+    padding-left: 1rem;
+
+    &:hover {
+      background: #242424;
+    }
   }
 
   li a {

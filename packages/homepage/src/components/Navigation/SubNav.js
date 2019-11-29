@@ -21,12 +21,12 @@ export default ({ components, name, openedNav, hasOpened }) => {
                 <li key={i}>
                   <motion.div
                     initial={{
-                      opacity: hasOpened ? 1 : 0,
+                      opacity: 0,
                       scale: hasOpened ? 1 : 0,
                     }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{
-                      delay: (i + 1) * 0.05,
+                      delay: hasOpened ? 0 : (i + 1) * 0.05,
                       duration: 0.25,
                       type: 'spring',
                     }}

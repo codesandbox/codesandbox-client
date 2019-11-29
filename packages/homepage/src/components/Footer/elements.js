@@ -17,10 +17,6 @@ export const Nav = styled.section`
   margin: auto;
   margin-bottom: 4.5rem;
 
-  ${props => props.theme.breakpoints.sm} {
-    grid-template-columns: 1fr;
-  }
-
   a {
     color: inherit;
     text-decoration: none;
