@@ -48,6 +48,7 @@ export default ({
       style={{
         height: '100%',
         display: 'flex',
+        gridRow: '1',
       }}
       transition={{
         duration: 1,

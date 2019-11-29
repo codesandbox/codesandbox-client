@@ -75,7 +75,9 @@ export const Banner = styled.div`
 
       ${props => props.theme.breakpoints.md} {
         transform: translateX(0);
+        filter: none;
         max-width: 100%;
+        width: 100%;
       }
     }
   `};
@@ -86,7 +88,7 @@ export const SeoText = styled.p`
   font-style: normal;
   font-weight: 500;
   font-size: 1.4375rem;
-  line-height: 37px;
+  line-height: 2rem;
 `;
 
 export const ContentBlock = styled.div`
@@ -125,7 +127,7 @@ export const Tweet = styled.div`
     align-self: center;
 
     ${props => props.theme.breakpoints.md} {
-      ${reverse ? 'padding-bottom: 2rem;' : 'padding-top: 2rem;'};
+      padding-top: 2rem;
 
       max-width: 80%;
       margin: auto;

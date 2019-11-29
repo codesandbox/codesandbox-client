@@ -23,7 +23,7 @@ export const SeoText = styled.p`
   font-style: normal;
   font-weight: 500;
   font-size: 1.4375rem;
-  line-height: 37px;
+  line-height: 2rem;
 `;
 
 export const Border = styled.div`
@@ -71,6 +71,7 @@ export const AngelInvestors = styled.div`
     align-items: center;
     align-items: center;
     padding: 2.45rem 0;
+    color: #b8b9ba;
 
     img {
       margin-bottom: 1.625rem;
@@ -78,6 +79,8 @@ export const AngelInvestors = styled.div`
 
     b {
       padding-bottom: 0.5rem;
+      font-size: 1.5rem;
+      color: ${props => props.theme.homepage.white};
     }
   }
 `;
