@@ -65,7 +65,7 @@ const Prototype = () => {
   return (
     <>
       <H2>Prototype Quickly</H2>
-      <P muted>Test your ideas early and often</P>
+      <P muted>Test your ideas early and often.</P>
       <Grid>
         <ImageWrapper ref={inViewRef}>
           <div
@@ -106,11 +106,11 @@ const Prototype = () => {
             Code from anywhere
           </H3>
           <H5>On any device </H5>
-          <P muted>You just need a web browser</P>
+          <P muted>You just need a web browser.</P>
           <H5>No setup</H5>
-          <P muted>Go straight to coding with templates</P>
+          <P muted>Go straight to coding with templates.</P>
           <H5>VS Code built-in </H5>
-          <P muted>The editor’s full-featured, yet familiar</P>
+          <P muted>The editor’s full-featured, yet familiar.</P>
 
           <div ref={parallaxRef}>
             <Tweet
@@ -121,7 +121,7 @@ const Prototype = () => {
                 name: 'Jonnie Hallman',
                 username: 'destroytoday',
                 job: 'Designer Developer, Stripe',
-                quote: 'It feels much more like my local environment',
+                quote: 'It feels much more like my local environment.',
                 url:
                   'https://twitter.com/destroytoday/status/1173805935384350720',
               }}
