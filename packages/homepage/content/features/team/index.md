@@ -1,9 +1,9 @@
 ---
 title: Code Together With Your Team
 description:
-  Create a team to view and edit sandboxes with all team members, in one place
+  Create a team to view and edit sandboxes with all team members, in one place.
 slug: team
-tweetText: CodeSandbox is easy to use and has amazing integrations
+tweetText: CodeSandbox is easy to use and has amazing integrations.
 tweetJob: UX Engineer, LogMeIn
 tweetName: Emma Wedekind
 tweetHandle: EmmaWedekind
