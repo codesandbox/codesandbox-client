@@ -77,7 +77,7 @@ const Share = () => {
               job: 'Software Engineer, React Core Team',
               name: 'Brian Vaughn',
               quote:
-                "It's dramatically improved my experience of sharing ideas and responding to online questions",
+                "It's dramatically improved my experience of sharing ideas and responding to online questions.",
               url:
                 'https://twitter.com/brian_d_vaughn/status/987758237104594945?s=20',
             }}
@@ -92,19 +92,19 @@ const Share = () => {
               margin-bottom: 2rem;
             `}
           >
-            Every sandbox gets a secure URL, ready to share
+            Every sandbox gets a secure URL, ready to share.
           </P>
           <P muted>
             <White>Share code snippets and creations </White> with friends,
-            colleagues, the world
+            colleagues, or the world.
           </P>
           <P muted>
             <White>Provide reproducible bug reports</White> when creating GitHub
-            issues
+            issues.
           </P>
           <P muted>
             <White>Ask or answer questions with code</White> on Stack Overflow
-            or Twitter
+            or Twitter.
           </P>
         </div>
       </Grid>
