@@ -153,8 +153,8 @@ export default () => (
           text-align: center;
         `}
       >
-        We're proudly open-source with more than 150 contributors and counting.
-        They work in tandem with our growing, remote-first team.
+        We're proudly open-source with more than 200 contributors and counting.
+        They collaborate with our growing, remote-first team.
       </SeoText>
       <HiringLink to="/jobs"> We’re Hiring!</HiringLink>
     </Wrapper>
