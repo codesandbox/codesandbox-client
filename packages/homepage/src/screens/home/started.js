@@ -42,11 +42,11 @@ const Started = () => {
             Get started in an instant
           </H3>
           <H5>Start from a template, or GitHub</H5>
-          <P muted>React, Vue, Angular, whichever</P>
+          <P muted>React, Vue, Angular, whichever.</P>
           <H5>Hot reload and auto-deploy</H5>
-          <P muted>Your app is updated as you type</P>
+          <P muted>Your app is updated as you type.</P>
           <H5>Live preview </H5>
-          <P muted>See changes as you make them</P>
+          <P muted>See changes as you make them.</P>
           <div ref={parallaxRef}>
             <Tweet
               style={`
@@ -66,7 +66,7 @@ const Started = () => {
               tweet={{
                 name: 'Peggy Rayzis',
                 quote:
-                  "I'm obsessed with CodeSandbox's GitHub import feature! One click and you can convert a repo to a sandbox that automatically stays up to date",
+                  "I'm obsessed with CodeSandbox's GitHub import feature! One click and you can convert a repo to a sandbox that automatically stays up to date.",
                 url:
                   'https://twitter.com/peggyrayzis/status/976557689651236864?s=20',
                 username: 'peggyrayzis',
