@@ -1,13 +1,13 @@
 ---
 title: Prototyping
-description: The fastest way to test ideas and get feedback
+description: The fastest way to test ideas and get feedback.
 SEOText:
   An idea can sound great on paper, but will it work in reality? With
   CodeSandbox you can try ideas, experiment with code, and produce proof of
   concepts with an instant IDE that's purpose-built for rapid web development
   and sharing. Validate your ideas and get feedback faster.
 slug: prototyping
-tweetText: This is a great way to prototype and share ideas
+tweetText: This is a great way to prototype and share ideas.
 tweetJob: Software Architect, Universal Audio
 tweetName: Rob Eisenberg
 tweetHandle: EisenbergEffect
