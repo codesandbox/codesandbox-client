@@ -22,6 +22,7 @@ export const SubNav = styled.div`
 
   > nav {
     width: 1081px;
+    max-width: 100%;
     margin: auto;
     display: flex;
     align-items: center;
@@ -65,6 +66,7 @@ export const SubNav = styled.div`
 
 export const Nav = styled.nav`
   width: 1081px;
+  max-width: 90%;
   margin: auto;
   display: flex;
   height: 100%;
@@ -87,6 +89,7 @@ export const Wrapper = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+  justify-content: space-between;
 `;
 
 export const UserAvatar = styled.img`
@@ -116,12 +119,14 @@ export const List = styled.ul`
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  width: 100%;
 
   li {
     margin: 0;
+
+    &:not(:last-child) {
+      margin-right: 3rem;
+    }
   }
 
   a:not(.button),

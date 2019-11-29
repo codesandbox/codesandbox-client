@@ -149,6 +149,8 @@ const Navigation = () => {
                         Pricing
                       </Link>
                     </li>
+                  </List>
+                  <List>
                     {!user && (
                       <li className="tablet-remove">
                         <a
@@ -205,14 +207,6 @@ const Navigation = () => {
                   hasOpened={hasOpened}
                   name="resources"
                   components={[
-                    // {
-                    //   Icon: () => (
-                    //     <a>
-                    //       <LearnIcon />
-                    //     </a>
-                    //   ),
-                    //   Label: () => <a>Learn</a>,
-                    // },
                     {
                       Icon: () => (
                         <Link to="/docs" title="Documentation">
