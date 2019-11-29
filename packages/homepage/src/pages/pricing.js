@@ -102,7 +102,7 @@ export default () => (
         <div>
           <FeatureTitle>Templates</FeatureTitle>
           <P muted small>
-            Start from an official template, or create your own
+            Start from an official template, or create your own.
           </P>
         </div>
         <span>✓</span>
@@ -113,7 +113,7 @@ export default () => (
         <div>
           <FeatureTitle>Static File Hosting</FeatureTitle>
           <P muted small>
-            All static files served via CDN
+            All static files served via CDN.
           </P>
         </div>
         <span>✓</span>
@@ -124,7 +124,7 @@ export default () => (
         <div>
           <FeatureTitle>Public Sandboxes</FeatureTitle>
           <P muted small>
-            Sandboxes, both the app and code, are available publicly by default
+            Sandboxes, both the app and code, are available publicly by default.
           </P>
         </div>
         <span>∞</span>
@@ -136,7 +136,7 @@ export default () => (
           <FeatureTitle>Unlimited Private Sandboxes</FeatureTitle>
           <P muted small>
             Set a sandbox as private or unlisted so others can't see the code or
-            the app
+            the app.
           </P>
         </div>
         <span />
@@ -147,7 +147,7 @@ export default () => (
         <div>
           <FeatureTitle>Private GitHub Repos</FeatureTitle>
           <P muted small>
-            Import and sync repos which are private on GitHub to CodeSandbox
+            Import and sync repos which are private on GitHub to CodeSandbox.
           </P>
         </div>
         <span />
@@ -162,7 +162,7 @@ export default () => (
         <div>
           <FeatureTitle>VS Code powered Editor</FeatureTitle>
           <P muted small>
-            Leverage the power and familiarity of VS Code
+            Leverage the power and familiarity of VS Code.
           </P>
         </div>
         <span>✓</span>
@@ -172,7 +172,7 @@ export default () => (
         <div>
           <FeatureTitle>Hot Module Reloading</FeatureTitle>
           <P muted small>
-            See changes as you make them
+            See changes as you make them.
           </P>
         </div>
         <span>✓</span>
@@ -182,7 +182,7 @@ export default () => (
         <div>
           <FeatureTitle>Keybindings & Quick Actions</FeatureTitle>
           <P muted small>
-            Perform common tasks speedily
+            Perform common tasks speedily.
           </P>
         </div>
         <span>✓</span>
@@ -193,7 +193,7 @@ export default () => (
           <FeatureTitle>Console</FeatureTitle>
           <P muted small>
             View logging and console output to see loading progress and debug
-            issues
+            issues.
           </P>
         </div>
         <span>✓</span>
@@ -203,7 +203,7 @@ export default () => (
         <div>
           <FeatureTitle>Test Viewer</FeatureTitle>
           <P muted small>
-            Showing test results alongside your code
+            Showing test results alongside your code.
           </P>
         </div>
         <span>✓</span>
@@ -213,7 +213,7 @@ export default () => (
         <div>
           <FeatureTitle>Problem Viewer</FeatureTitle>
           <P muted small>
-            See errors clearly with our user-friendly overlay
+            See errors clearly with our user-friendly overlay.
           </P>
         </div>
         <span>✓</span>
@@ -223,7 +223,7 @@ export default () => (
         <div>
           <FeatureTitle>Zen Mode</FeatureTitle>
           <P muted small>
-            Zen mode hides distracting editor elements for demos and screenshots
+            Zen mode hides distracting editor elements for demos and screenshots.
           </P>
         </div>
         <span>✓</span>
@@ -233,7 +233,7 @@ export default () => (
         <div>
           <FeatureTitle>Custom Themes</FeatureTitle>
           <P muted small>
-            Tweak theme styles with support for all VS Code themes 
+            Tweak theme styles with support for all VS Code themes.
           </P>
         </div>
         <span>✓</span>
@@ -243,7 +243,7 @@ export default () => (
         <div>
           <FeatureTitle>Vim Mode</FeatureTitle>
           <P muted small>
-            Vim emulation in the editor, powered by the VSCodeVim extension
+            Vim emulation in the editor, powered by the VSCodeVim extension.
           </P>
         </div>
         <span>✓</span>
@@ -253,7 +253,7 @@ export default () => (
         <div>
           <FeatureTitle>Type Acquisition</FeatureTitle>
           <P muted small>
-            Typings automatically downloaded for every dependency
+            Typings automatically downloaded for every dependency.
           </P>
         </div>
         <span>✓</span>
@@ -263,7 +263,7 @@ export default () => (
         <div>
           <FeatureTitle>External Resources</FeatureTitle>
           <P muted small>
-            Automatically include external resources, like CSS or JS files
+            Automatically include external resources, like CSS or JS files.
           </P>
         </div>
         <span>✓</span>
@@ -273,7 +273,7 @@ export default () => (
         <div>
           <FeatureTitle>Session Restore</FeatureTitle>
           <P muted small>
-            Recover un-saved changes between sessions
+            Recover un-saved changes between sessions.
           </P>
         </div>
         <span>✓</span>
@@ -284,7 +284,7 @@ export default () => (
           <FeatureTitle>External Previews</FeatureTitle>
           <P muted small>
             Open sandbox previews on a separate URL but with Hot Module
-            Reloading
+            Reloading.
           </P>
         </div>
         <span>✓</span>
@@ -299,7 +299,7 @@ export default () => (
         <div>
           <FeatureTitle>NPM Packages</FeatureTitle>
           <P muted small>
-            Add any of the 1M+ dependencies on npm directly from the editor
+            Add any of the 1M+ dependencies on npm directly from the editor.
           </P>
         </div>
         <span>✓</span>
@@ -310,7 +310,7 @@ export default () => (
           <FeatureTitle>GitHub</FeatureTitle>
           <P muted small>
             Import and sync public repos, export a sandbox to a repo or create
-            commits and open PRs
+            commits and open PRs.
           </P>
         </div>
         <span>✓</span>
@@ -320,7 +320,7 @@ export default () => (
         <div>
           <FeatureTitle>ZEIT Now Deploy</FeatureTitle>
           <P muted small>
-            Deploy a production version of your sandbox to ZEIT Now
+            Deploy a production version of your sandbox to ZEIT Now.
           </P>
         </div>
         <span>✓</span>
@@ -330,7 +330,7 @@ export default () => (
         <div>
           <FeatureTitle>Netlify Deploy</FeatureTitle>
           <P muted small>
-            Deploy a production version of your sandbox to Netlify
+            Deploy a production version of your sandbox to Netlify.
           </P>
         </div>
         <span>✓</span>
@@ -340,7 +340,7 @@ export default () => (
         <div>
           <FeatureTitle>Jest</FeatureTitle>
           <P muted small>
-            Auto-detect and run Jest tests
+            Auto-detect and run Jest tests.
           </P>
         </div>
         <span>✓</span>
@@ -350,7 +350,7 @@ export default () => (
         <div>
           <FeatureTitle>React DevTools</FeatureTitle>
           <P muted small>
-            Integration of React’s own DevTools into the editor
+            Integration of React’s own DevTools into the editor.
           </P>
         </div>
         <span>✓</span>
@@ -360,7 +360,7 @@ export default () => (
         <div>
           <FeatureTitle>Prettier</FeatureTitle>
           <P muted small>
-            Code gets prettified on save according to preferences
+            Code gets prettified on save according to preferences.
           </P>
         </div>
         <span>✓</span>
@@ -370,7 +370,7 @@ export default () => (
         <div>
           <FeatureTitle>ESLint</FeatureTitle>
           <P muted small>
-            Code is linted automatically
+            Code is linted automatically.
           </P>
         </div>
         <span>✓</span>
@@ -380,7 +380,7 @@ export default () => (
         <div>
           <FeatureTitle>Emmet</FeatureTitle>
           <P muted small>
-            Expand abbreviations with Emmet.io in all JS, HTML, and CSS files
+            Expand abbreviations with Emmet.io in all JS, HTML, and CSS files.
           </P>
         </div>
         <span>✓</span>
@@ -390,7 +390,7 @@ export default () => (
         <div>
           <FeatureTitle>Stackbit</FeatureTitle>
           <P muted small>
-            Import projects generated by Stackbit
+            Import projects generated by Stackbit.
           </P>
         </div>
         <span>✓</span>
@@ -406,7 +406,7 @@ export default () => (
         <div>
           <FeatureTitle>Live Mode</FeatureTitle>
           <P muted small>
-            Work on code and edit sandboxes with multiple people
+            Work on code and edit sandboxes with multiple people.
           </P>
         </div>
         <span>✓</span>
@@ -416,7 +416,7 @@ export default () => (
         <div>
           <FeatureTitle>In-editor Chat</FeatureTitle>
           <P muted small>
-            Chat with collaborators about the code you're all working on
+            Chat with collaborators about the code you're all working on.
           </P>
         </div>
         <span>✓</span>
@@ -426,7 +426,7 @@ export default () => (
         <div>
           <FeatureTitle>Classroom Mode</FeatureTitle>
           <P muted small>
-            Use Classroom Mode to control who can make edits or watch
+            Use Classroom Mode to control who can make edits or watch.
           </P>
         </div>
         <span>✓</span>
@@ -436,7 +436,7 @@ export default () => (
         <div>
           <FeatureTitle>Shareable Links</FeatureTitle>
           <P muted small>
-            Per sandbox URL with HTTPS support for secure project sharing
+            Per sandbox URL with HTTPS support for secure project sharing.
           </P>
         </div>
         <span>✓</span>
@@ -451,7 +451,7 @@ export default () => (
         <div>
           <FeatureTitle>Server Sandboxes</FeatureTitle>
           <P muted small>
-            Create full-stack web apps and use Node packages
+            Create full-stack web apps and use Node packages.
           </P>
         </div>
         <span>✓</span>
@@ -461,7 +461,7 @@ export default () => (
         <div>
           <FeatureTitle>Terminal</FeatureTitle>
           <P muted small>
-            Run scripts and commands from a terminal
+            Run scripts and commands from a terminal.
           </P>
         </div>
         <span>✓</span>
@@ -471,7 +471,7 @@ export default () => (
         <div>
           <FeatureTitle>Server Control Panel</FeatureTitle>
           <P muted small>
-            Restart the sandbox or server
+            Restart the sandbox or server.
           </P>
         </div>
         <span>✓</span>
@@ -481,7 +481,7 @@ export default () => (
         <div>
           <FeatureTitle>Multiple Ports</FeatureTitle>
           <P muted small>
-            Container apps can listen on one or more ports simultaneously
+            Container apps can listen on one or more ports simultaneously.
           </P>
         </div>
         <span>✓</span>
@@ -492,7 +492,7 @@ export default () => (
           <FeatureTitle>Secrets</FeatureTitle>
           <P muted small>
             Hide sensitive information in your app and access them via
-            environment variables
+            environment variables.
           </P>
         </div>
         <span>✓</span>
@@ -508,7 +508,7 @@ export default () => (
           <FeatureTitle>Dashboard</FeatureTitle>
           <P muted small>
             Organize sandboxes and templates. Search, sort, or modify multiple
-            sandboxes at once
+            sandboxes at once.
           </P>
         </div>
         <span>✓</span>
@@ -519,7 +519,7 @@ export default () => (
           <FeatureTitle>Configuration UI</FeatureTitle>
           <P muted small>
             Edit config files for npm, Prettier, Netlify, Now, TypeScript,
-            JavaScript, and your sandbox
+            JavaScript, and your sandbox.
           </P>
         </div>
         <span>✓</span>
@@ -529,7 +529,7 @@ export default () => (
         <div>
           <FeatureTitle>Export Zip</FeatureTitle>
           <P muted small>
-            Download your sandbox as a zip
+            Download your sandbox as a zip.
           </P>
         </div>
         <span>✓</span>
@@ -539,7 +539,7 @@ export default () => (
         <div>
           <FeatureTitle>Import CLI </FeatureTitle>
           <P muted small>
-            Import a local project to CodeSandbox easily
+            Import a local project to CodeSandbox easily.
           </P>
         </div>
         <span>✓</span>
@@ -549,7 +549,7 @@ export default () => (
         <div>
           <FeatureTitle>Define API </FeatureTitle>
           <P muted small>
-            Programmatically create sandboxes via an API
+            Programmatically create sandboxes via an API.
           </P>
         </div>
         <span>✓</span>
@@ -560,7 +560,7 @@ export default () => (
           <FeatureTitle>Storage Management </FeatureTitle>
           <P muted small>
             View storage usage and upload or delete files from one management
-            screen
+            screen.
           </P>
         </div>
         <span>✓</span>
@@ -575,7 +575,7 @@ export default () => (
         <div>
           <FeatureTitle>Public Profile</FeatureTitle>
           <P muted small>
-            A personal portfolio page highlighting your best sandboxes
+            A personal portfolio page highlighting your best sandboxes.
           </P>
         </div>
         <span>✓</span>
@@ -586,7 +586,7 @@ export default () => (
           <FeatureTitle>Sandbox Search</FeatureTitle>
           <P muted small>
             Search public sandboxes and filter by dependency, environment, and
-            tag
+            tag.
           </P>
         </div>
         <span>✓</span>
@@ -597,7 +597,7 @@ export default () => (
           <FeatureTitle>Explore</FeatureTitle>
           <P muted small>
             Hand-picked sandboxes highlighting the best recent community
-            creations
+            creations.
           </P>
         </div>
         <span>✓</span>
@@ -617,7 +617,7 @@ export default () => (
         <div>
           <FeatureTitle>Embeds</FeatureTitle>
           <P muted small>
-            Embed sandboxes in docs, blog posts, and websites
+            Embed sandboxes in docs, blog posts, and websites.
           </P>
         </div>
         <span>✓</span>
@@ -627,7 +627,7 @@ export default () => (
         <div>
           <FeatureTitle>CodeSandbox CI</FeatureTitle>
           <P muted small>
-            A GitHub integration that auto-builds from pull requests
+            A GitHub integration that auto-builds from pull requests.
           </P>
         </div>
         <span>✓</span>
@@ -637,7 +637,7 @@ export default () => (
         <div>
           <FeatureTitle>Teams</FeatureTitle>
           <P muted small>
-            View and edit sandboxes with all team members
+            View and edit sandboxes with all team members.
           </P>
         </div>
         <span>✓</span>
