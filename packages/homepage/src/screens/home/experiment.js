@@ -43,6 +43,7 @@ const Section = styled.section`
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 1rem;
+    margin-top: 2.5rem;
 
     img {
       max-width: 100%;
@@ -54,14 +55,38 @@ const White = styled.span`
   color: white;
 `;
 
-const tweetStyle = `
+const shared = `
   right: 1rem;
   left: auto;
   width: 25rem;
   margin-top: 1rem;
   height: 22rem;
-  background: #151515
+  background: #151515;
 `;
+
+const tweetStyle = `
+  ${shared}
+  ${props => props.theme.breakpoints.md} {
+    display: none;
+  }
+`;
+
+const tweetStyleMobile = `
+  ${shared}
+  display: none;
+  margin-top: 3.5rem !important;
+  ${props => props.theme.breakpoints.md} {
+    display: block;
+  }
+`;
+
+const tweet = {
+  username: 'dan_abramov',
+  job: 'Software Engineer, React Core Team',
+  name: 'Dan Abramov',
+  quote: 'Wow, https://codesandbox.io/ is cool. Lets you add npm dependencies.',
+  url: 'https://twitter.com/dan_abramov/status/852555473551273984',
+};
 
 const Experiment = () => {
   const parallaxRef = useRef(null);
@@ -97,17 +122,7 @@ const Experiment = () => {
           </P>
         </div>
         <div ref={parallaxRef}>
-          <Tweet
-            style={tweetStyle}
-            tweet={{
-              username: 'dan_abramov',
-              job: 'Software Engineer, React Core Team',
-              name: 'Dan Abramov',
-              quote:
-                'Wow, https://codesandbox.io/ is cool. Lets you add npm dependencies.',
-              url: 'https://twitter.com/dan_abramov/status/852555473551273984',
-            }}
-          />
+          <Tweet style={tweetStyle} tweet={tweet} />
         </div>
       </Grid>
 
@@ -155,6 +170,7 @@ const Experiment = () => {
           />
         </motion.div>
       </Section>
+      <Tweet style={tweetStyleMobile} tweet={tweet} />
     </>
   );
 };

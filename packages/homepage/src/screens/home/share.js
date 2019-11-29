@@ -39,6 +39,7 @@ const Section = styled.section`
 
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: repeat(3, 1fr);
+    margin-top: 2.5rem;
     grid-gap: 1rem;
 
     img {
@@ -50,6 +51,41 @@ const Section = styled.section`
 const White = styled.span`
   color: ${props => props.theme.homepage.white};
 `;
+
+const shared = `
+  right: auto;
+  left: auto;
+  width: 416px;
+  margin-top: 0rem;
+  height: 22rem;
+  position: absolute;
+  background: #151515;
+`;
+
+const tweetStyle = `
+  ${shared}
+  ${props => props.theme.breakpoints.md} {
+    display: none;
+  }
+`;
+
+const tweetStyleMobile = `
+  ${shared}
+  display: none;
+  margin-top: 3.5rem !important;
+  ${props => props.theme.breakpoints.md} {
+    display: block;
+  }
+`;
+
+const tweet = {
+  username: 'brian_d_vaughn',
+  job: 'Software Engineer, React Core Team',
+  name: 'Brian Vaughn',
+  quote:
+    "It's dramatically improved my experience of sharing ideas and responding to online questions.",
+  url: 'https://twitter.com/brian_d_vaughn/status/987758237104594945?s=20',
+};
 
 const Share = () => {
   const parallaxRef = useRef(null);
@@ -65,26 +101,7 @@ const Share = () => {
     <>
       <Grid>
         <div ref={parallaxRef}>
-          <Tweet
-            style={`
-              right: auto;
-              left: auto;
-              width: 416px;
-              margin-top: 0rem;
-              height: 22rem;
-              position: absolute;
-              background: #151515;
-        `}
-            tweet={{
-              username: 'brian_d_vaughn',
-              job: 'Software Engineer, React Core Team',
-              name: 'Brian Vaughn',
-              quote:
-                "It's dramatically improved my experience of sharing ideas and responding to online questions.",
-              url:
-                'https://twitter.com/brian_d_vaughn/status/987758237104594945?s=20',
-            }}
-          />
+          <Tweet style={tweetStyle} tweet={tweet} />
         </div>
 
         <div>
@@ -153,6 +170,9 @@ const Share = () => {
           />
         </motion.div>
       </Section>
+      <div ref={parallaxRef}>
+        <Tweet style={tweetStyleMobile} tweet={tweet} />
+      </div>
     </>
   );
 };

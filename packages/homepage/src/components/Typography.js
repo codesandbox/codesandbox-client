@@ -40,7 +40,7 @@ export const P = styled.p`
   ${props =>
     props.muted &&
     `
-  color: ${props.theme.homepage.muted}
+  color: ${props.theme.homepage.muted};
   `}
 
     ${props =>
