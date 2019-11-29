@@ -8,6 +8,7 @@ import { FileSystemConfiguration } from '../../../../../../../../../standalone-p
 import { IModule } from '../../../../../../../../../standalone-packages/codesandbox-browserfs/dist/node/backend/CodeSandboxFS';
 import { EXTENSIONS_LOCATION } from '../../constants';
 import {
+  appendFile,
   mkdir,
   rename,
   rmdir,
@@ -171,6 +172,11 @@ export async function initializeBrowserFS({
               } else {
                 resolve();
               }
+              break;
+            }
+            case 'append-file': {
+              const module = evt.data.$data;
+              appendFile(currentSandboxFs, module);
               break;
             }
             case 'write-file': {

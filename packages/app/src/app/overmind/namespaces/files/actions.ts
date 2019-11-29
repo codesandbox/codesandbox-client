@@ -520,7 +520,7 @@ export const moduleCreated: AsyncAction<{
       }
     }
 
-    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
+    effects.vscode.sandboxFsSync.appendFile(state.editor.modulesByPath, module);
     actions.editor.internal.setCurrentModule(module);
 
     try {

@@ -503,9 +503,8 @@ export class ModelsHandler {
           model,
         });
       } catch (err) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('caught', err);
-        }
+        // This can throw when a file is deleted and you add new code to it. When
+        // saving it a new file is created
       }
     });
   }

@@ -1,6 +1,6 @@
+import browserFs from 'fs';
 import { dirname, join } from 'path';
 
-import browserFs from 'fs';
 import {
   getDirectoryPath,
   getModulePath,
@@ -17,7 +17,7 @@ import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { json } from 'overmind';
 
 import { WAIT_INITIAL_TYPINGS_MS } from '../constants';
-import { mkdir, rename, rmdir, unlink, writeFile } from './utils';
+import { appendFile, mkdir, rename, rmdir, unlink, writeFile } from './utils';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
@@ -86,7 +86,7 @@ class SandboxFsSync {
         sandboxFs[path] = { ...d, type: 'directory' };
       }
 
-      browserFs.mkdirSync(join('/sandbox', path));
+      browserFs.mkdir(join('/sandbox', path), () => {});
     });
 
     sandbox.modules.forEach(m => {
@@ -98,11 +98,19 @@ class SandboxFsSync {
           type: 'file',
         };
 
-        browserFs.writeFileSync(join('/sandbox', path), m.code);
+        browserFs.writeFile(join('/sandbox', path), m.code, () => {});
       }
     });
 
     return sandboxFs;
+  }
+
+  public appendFile(fs: SandboxFs, module: Module) {
+    const copy = json(module);
+
+    appendFile(fs, copy);
+    this.send('append-file', copy);
+    browserFs.appendFile(join('/sandbox', module.path), module.code, () => {});
   }
 
   public writeFile(fs: SandboxFs, module: Module) {
@@ -110,11 +118,7 @@ class SandboxFsSync {
 
     writeFile(fs, copy);
     this.send('write-file', copy);
-    browserFs.writeFileSync(
-      join('/sandbox', module.path),
-      module.code,
-      () => {}
-    );
+    browserFs.writeFile(join('/sandbox', module.path), module.code, () => {});
 
     if (module.title === 'package.json') {
       this.syncDependencyTypings();

@@ -634,7 +634,7 @@ export default class FS {
       }
       setImmediate(() => {
         this.stat(filename, (err, stat) => {
-          this.fileWatcher.triggerWatch(filename, 'change', stat);
+          this.fileWatcher.triggerWatch(filename, 'rename', stat);
         });
       });
       assertRoot(this.root).appendFile(normalizePath(filename), data, options.encoding, flag, options.mode, newCb);
