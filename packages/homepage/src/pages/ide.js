@@ -123,8 +123,8 @@ export default () => (
     <Wrapper>
       <Titles>Use With Your Fave Dev Tools</Titles>
       <Description>
-        We integrate with the tools you already use for a seamless development.
-        experience
+        We integrate with the tools you already use for a seamless development
+        experience.
       </Description>
       <Grid>
         <div>
