@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, Location } from '@reach/router';
+import { useTheme } from 'styled-components';
 import Button from '../Button';
 import Logo from '../../assets/images/logo.svg';
 import SupportIcon from '../../assets/icons/Support';
@@ -28,29 +29,30 @@ import {
 import SubNav from './SubNav';
 import MobileNav from './MobileNav';
 
-const DownButton = () => (
-  <svg
-    css={`
-      margin-left: 0.25rem;
-      top: -1px;
-      position: relative;
-    `}
-    width={6}
-    height={4}
-    fill="none"
-    viewBox="0 0 6 4"
-  >
-    <path
-      fill="#999"
-      d="M.471 0L0 .471 2.828 3.3 5.657.47 5.185 0 2.828 2.357.471 0z"
-    />
-  </svg>
-);
-
 const Navigation = () => {
   const [user, setUser] = useState(null);
   const [openedNav, setOpenedNav] = useState();
   const [hasOpened, setHasOpened] = useState(false);
+  const muted = useTheme().homepage.muted;
+
+  const DownButton = () => (
+    <svg
+      css={`
+        margin-left: 0.25rem;
+        top: -1px;
+        position: relative;
+      `}
+      width={6}
+      height={4}
+      fill="none"
+      viewBox="0 0 6 4"
+    >
+      <path
+        fill={muted}
+        d="M.471 0L0 .471 2.828 3.3 5.657.47 5.185 0 2.828 2.357.471 0z"
+      />
+    </svg>
+  );
 
   const fetchCurrentUser = async () => {
     const jwt = JSON.parse(localStorage.getItem('jwt'));
@@ -181,18 +183,18 @@ const Navigation = () => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 109 }}
                 exit={{ opacity: 0, height: 0 }}
-                style={{
-                  position: 'absolute',
-                  width: '100%',
-                  background: '#151515',
-                  overflow: 'hidden',
-                  borderBottom: '1px solid #242424',
-                  zIndex: 99,
-                  boxShadow:
-                    '0, 8px, 1rem rgba(0, 0, 0, 0.12), 0, 4px, 2px rgba(0, 0, 0, 0.24)',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
+                css={`
+                  position: absolute;
+                  width: 100%;
+                  background: #151515;
+                  overflow: hidden;
+                  border-bottom: 1px solid ${props => props.theme.homepage.grey};
+                  z-index: 99;
+                  box-shadow: 0, 8px, 1rem rgba(0, 0, 0, 0.12), 0, 4px,
+                    2px rgba(0, 0, 0, 0.24);
+                  display: flex;
+                  align-items: center;
+                `}
                 transition={{
                   duration: 0.2,
                   ease: 'easeIn',

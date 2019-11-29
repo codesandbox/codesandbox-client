@@ -11,13 +11,13 @@ import FeaturedSandbox from '@codesandbox/common/lib/components/FeaturedSandbox'
 import WideSandbox from '@codesandbox/common/lib/components/WideSandbox';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
-import PageContainer from '../components/PageContainer';
-import { Heading2 } from '../components/headings';
-import Layout from '../components/layout';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import PageContainer from '../../components/PageContainer';
+import { Heading2 } from '../../components/headings';
+import Layout from '../../components/layout';
 
-import SandboxModal from '../screens/explore/SandboxModal';
-import featuredSandboxes from '../utils/featuredSandboxes';
+import SandboxModal from '../../screens/explore/SandboxModal';
+import featuredSandboxes from '../../utils/featuredSandboxes';
 import {
   Container,
   Dots,
@@ -29,7 +29,7 @@ import {
   StyledLeftArrow,
   Navigation,
   PickedQuestion,
-} from './_explore.elements';
+} from './_elements';
 
 export default class Explore extends React.PureComponent {
   state = {

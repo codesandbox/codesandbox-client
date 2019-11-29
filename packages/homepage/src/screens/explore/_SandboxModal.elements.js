@@ -3,7 +3,6 @@ import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvata
 
 import RightArrow from 'react-icons/lib/md/keyboard-arrow-right';
 import LeftArrow from 'react-icons/lib/md/keyboard-arrow-left';
-import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
 import Stats from '@codesandbox/common/lib/components/Stats';
 
 export const Container = styled.div`
@@ -97,7 +96,6 @@ export const Footer = styled.footer`
 `;
 
 export const FooterInfo = styled.div`
-  ${fadeIn(0)};
   display: flex;
   justify-content: space-between;
   position: relative;

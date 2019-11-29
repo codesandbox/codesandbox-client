@@ -16,7 +16,7 @@ const JoinWrapper = styled.section`
   position: relative;
   align-items: center;
   border-radius: 0.25rem;
-  border: 1px solid #242424;
+  border: 1px solid ${props => props.theme.homepage.greyDark};
   overflow: hidden;
 
   ${props => props.theme.breakpoints.lg} {

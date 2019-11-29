@@ -22,8 +22,11 @@ const homepageTheme = {
     appleFont:
       "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue'",
     white: '#fff',
+    whiteDark: '#e6e6e6',
     primary: '#0971f1',
+    greyLight: '#757575',
     grey: '#242424',
+    greyDark: '#040404',
     muted: '#999',
     blue: '#0971F1',
     black: '#000',

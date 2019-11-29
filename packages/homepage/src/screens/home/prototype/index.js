@@ -115,7 +115,7 @@ const Prototype = () => {
           <div ref={parallaxRef}>
             <Tweet
               style={`
-              background: #242424
+                background: #242424
               `}
               tweet={{
                 name: 'Jonnie Hallman',

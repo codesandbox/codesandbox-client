@@ -25,7 +25,7 @@ export const ImageWrapper = styled.div`
 
 export const Border = styled.div`
   position: absolute;
-  background: #242424;
+  background: ${props => props.theme.homepage.grey};
   left: 0;
   width: 100%;
   height: 1px;

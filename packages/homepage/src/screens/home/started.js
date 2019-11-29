@@ -50,17 +50,16 @@ const Started = () => {
           <div ref={parallaxRef}>
             <Tweet
               style={`
-             right: -6rem;
-             left: auto;
-             width: 30rem;
-             margin-top: 2rem;
-             min-height: 20rem;
-             background: #242424
+                right: -6rem;
+                left: auto;
+                width: 30rem;
+                margin-top: 2rem;
+                min-height: 20rem;
+                background: #242424
 
                 ${props => props.theme.breakpoints.md} {
-      grid-template-columns: 1fr;
-    }
-
+                  grid-template-columns: 1fr;
+                }
            `}
               tweet={{
                 name: 'Peggy Rayzis',

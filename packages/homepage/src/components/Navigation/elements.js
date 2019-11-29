@@ -5,7 +5,7 @@ export const Header = styled.header`
   box-shadow: 0px 1px 0px ${props => props.theme.homepage.grey};
   height: 48px;
   width: 100%;
-  background: #040404;
+  background: ${props => props.theme.homepage.greyDark};
 `;
 
 export const SubNav = styled.div`
@@ -160,7 +160,7 @@ export const MobileNav = styled.nav`
   height: 100%;
   position: relative;
   z-index: 3;
-  background: #040404;
+  background: ${props => props.theme.homepage.greyDark};
 
   ${props => props.theme.breakpoints.md} {
     display: flex;
@@ -204,7 +204,7 @@ export const Headers = styled.h3`
   margin-top: 2rem;
   padding-left: 1rem;
 
-  color: #757575;
+  color: ${props => props.theme.greyLight};
 `;
 
 export const Items = styled.ul`
@@ -217,7 +217,7 @@ export const Items = styled.ul`
     padding-left: 1rem;
 
     &:hover {
-      background: #242424;
+      background: ${props => props.theme.homepage.grey};
     }
   }
 

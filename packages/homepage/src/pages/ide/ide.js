@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { motion } from 'framer-motion';
-import Layout from '../components/layout';
-import PageContainer from '../components/PageContainer';
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
-import hero from '../assets/images/hero.png';
-import { ImageWrapper } from '../screens/home/hero/elements';
-import { P } from '../components/Typography';
+import Layout from '../../components/layout';
+import PageContainer from '../../components/PageContainer';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import hero from '../../assets/images/hero.png';
+import { ImageWrapper } from '../../screens/home/hero/elements';
+import { P } from '../../components/Typography';
 import tweets from './_tweets';
 
 import {
@@ -32,15 +32,15 @@ import {
   ManageIcon,
   HeartIcon,
   Border,
-} from './_ide.elements';
-import TemplateUniverse from '../assets/images/TemplateUniverse.png';
-import containers from '../assets/images/containers.png';
-import prototype from '../assets/images/prototype-rapid.png';
-import collaborate from '../assets/images/collaborate.png';
-import debug from '../assets/images/debug.png';
-import Github from '../assets/icons/GithubLarge';
-import VSCode from '../assets/icons/VSCode';
-import Deploy from '../assets/icons/Deploy';
+} from './_elements';
+import TemplateUniverse from '../../assets/images/TemplateUniverse.png';
+import containers from '../../assets/images/containers.png';
+import prototype from '../../assets/images/prototype-rapid.png';
+import collaborate from '../../assets/images/collaborate.png';
+import debug from '../../assets/images/debug.png';
+import Github from '../../assets/icons/GithubLarge';
+import VSCode from '../../assets/icons/VSCode';
+import Deploy from '../../assets/icons/Deploy';
 
 export default () => (
   <Layout>

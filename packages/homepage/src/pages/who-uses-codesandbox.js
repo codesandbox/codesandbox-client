@@ -5,7 +5,7 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 import { Heading2 } from '../components/headings';
 import Layout from '../components/layout';
-import { Container } from './_explore.elements';
+import { Container } from './explore/_elements';
 
 import Companies from '../components/Companies';
 

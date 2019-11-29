@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/layout';
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
+import Layout from '../../components/layout';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
-import DevToolsIcon from '../assets/icons/DevTools';
-import NavigationIcon from '../assets/icons/Navigation';
-import PreviewModeIcon from '../assets/icons/PreviewMode';
-// import ProjectViewIcon from '../assets/icons/ProjectView';
+import DevToolsIcon from '../../assets/icons/DevTools';
+import NavigationIcon from '../../assets/icons/Navigation';
+import PreviewModeIcon from '../../assets/icons/PreviewMode';
+// import ProjectViewIcon from '../../assets/icons/ProjectView';
 
 import {
   ContentBlock,
@@ -19,7 +19,7 @@ import {
   Customizations,
   Button,
   Wrapper,
-} from './_embeds.elements';
+} from './_elements';
 
 export default () => {
   const [theme, setTheme] = useState('dark');

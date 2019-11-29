@@ -41,7 +41,7 @@
     "commit": "concurrently \"yarn typecheck\" \"yarn lint\" && git commit -m",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "postinstall": "yarn lerna run install-dependencies --scope vscode-textmate --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
+    "postinstall": "yarn lerna run install-dependencies --scope vscode-textmate --scope codesandbox-browserfs --scope sse-loading-screen --stream",
     "lint": "lerna run lint --stream",
     "now-build": "yarn build:deps && lerna run build:storybook --scope @codesandbox/common",
     "start": "yarn build:deps && lerna run start --scope @codesandbox/common --scope app --parallel",

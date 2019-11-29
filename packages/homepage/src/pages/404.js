@@ -4,7 +4,7 @@ import PageContainer from '../components/PageContainer';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Sadbox from '../components/Sadbox';
 
-import { Title, TitleWrapper } from './_embeds.elements';
+import { Title, TitleWrapper } from './embeds/_elements';
 import Button from '../components/Button';
 
 export default () => (

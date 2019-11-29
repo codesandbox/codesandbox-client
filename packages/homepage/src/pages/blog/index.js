@@ -2,15 +2,15 @@ import { format } from 'date-fns';
 import { graphql, Link } from 'gatsby';
 import React from 'react';
 
-import Layout from '../components/layout';
-import PageContainer from '../components/PageContainer';
+import Layout from '../../components/layout';
+import PageContainer from '../../components/PageContainer';
 import {
   Author,
   AuthorImage,
   PostDate,
   Title,
-} from '../components/PostElements';
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
+} from '../../components/PostElements';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
 import {
   Posts,
@@ -21,10 +21,7 @@ import {
   Header,
   PageTitle,
   PageSubtitle,
-} from './_blog.elements';
-
-// UNCOMMENT AT THE BOTTOM IF IT BREAKS
-// GATSBY DOES NOT LET YOU HAVE FIELDS THAT DON'T EXIST YET
+} from './_elements';
 
 const Info = ({ authors, date, mobile, photo, ...props }) => (
   <Aside mobile={mobile} {...props}>

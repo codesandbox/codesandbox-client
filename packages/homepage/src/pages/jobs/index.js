@@ -2,9 +2,9 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import { graphql, Link } from 'gatsby';
 import React from 'react';
 
-import Layout from '../components/layout';
-import PageContainer from '../components/PageContainer';
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
+import Layout from '../../components/layout';
+import PageContainer from '../../components/PageContainer';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
 import {
   PageTitle,
@@ -13,7 +13,7 @@ import {
   Job,
   Jobs,
   OtherJobs,
-} from './_jobs.elements';
+} from './_elements';
 
 const Careers = ({
   data: {

@@ -1,12 +1,12 @@
 import styled, { css } from 'styled-components';
-import { HeroWrapper } from '../screens/home/hero/elements';
-import { H2 } from '../components/Typography';
-import Button from '../components/Button';
-import Collaborate from '../assets/icons/Collaborate';
-import Terminal from '../assets/icons/Terminal';
-import Debug from '../assets/icons/Debug';
-import Heart from '../assets/icons/Heart';
-import Manage from '../assets/icons/Manage';
+import { HeroWrapper } from '../../screens/home/hero/elements';
+import { H2 } from '../../components/Typography';
+import Button from '../../components/Button';
+import Collaborate from '../../assets/icons/Collaborate';
+import Terminal from '../../assets/icons/Terminal';
+import Debug from '../../assets/icons/Debug';
+import Heart from '../../assets/icons/Heart';
+import Manage from '../../assets/icons/Manage';
 
 export const H6 = styled.h6`
   font-size: 19px;
@@ -77,7 +77,7 @@ export const ArtWorkWrapper = styled.div`
   align-items: flex-end;
   justify-content: center;
   background: ${props => props.bg};
-  border: 1px solid #242424;
+  border: 1px solid ${props => props.theme.homepage.grey};
   box-sizing: border-box;
   border-radius: 4px;
   margin: 2.5rem 0;
@@ -203,7 +203,7 @@ export const TweetsWrapper = styled.div`
       max-width: 80%;
       padding: 2.125rem;
       background: #151515;
-      border: 1px solid #242424;
+      border: 1px solid ${props => props.theme.homepage.grey};
       box-sizing: border-box;
       border-radius: 4px;
       margin-right: 2rem;
@@ -287,7 +287,7 @@ export const ManageIcon = styled(Manage)`
 
 export const Border = styled.div`
   position: absolute;
-  background: #242424;
+  background: ${props => props.theme.homepage.grey};
   width: 1200px;
   max-width: 80%;
   height: 1px;

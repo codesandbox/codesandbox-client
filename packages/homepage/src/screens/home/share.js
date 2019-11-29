@@ -67,13 +67,13 @@ const Share = () => {
         <div ref={parallaxRef}>
           <Tweet
             style={`
-          right: auto;
-          left: auto;
-          width: 416px;
-          margin-top: 0rem;
-          height: 22rem;
-          position: absolute;
-          background: #151515;
+              right: auto;
+              left: auto;
+              width: 416px;
+              margin-top: 0rem;
+              height: 22rem;
+              position: absolute;
+              background: #151515;
         `}
             tweet={{
               username: 'brian_d_vaughn',

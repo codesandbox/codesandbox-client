@@ -7,7 +7,7 @@ import {
   Banner,
   TitleWrapper,
   Wrapper,
-} from '../_embeds.elements';
+} from '../embeds/_elements';
 import { H2 } from '../../components/Typography';
 
 import KP from './images/kp.svg';

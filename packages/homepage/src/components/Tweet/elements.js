@@ -41,7 +41,7 @@ export const Quote = styled.blockquote`
   font-size: 1.4375rem;
   line-height: 32px;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${props => props.theme.homepage.muted};
   margin: 0;
   margin-bottom: 2rem;
 

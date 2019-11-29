@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Layout from '../components/layout';
-import PageContainer from '../components/PageContainer';
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
-import Join from '../screens/home/join';
-import { Title } from '../templates/_feature.elements';
-import { P } from '../components/Typography';
+import Layout from '../../components/layout';
+import PageContainer from '../../components/PageContainer';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import Join from '../../screens/home/join';
+import { Title } from '../../templates/_feature.elements';
+import { P } from '../../components/Typography';
 import {
   Card,
   CardTitle,
@@ -17,7 +17,7 @@ import {
   FeatureTitle,
   CardContainer,
   FeaturesTitle,
-} from './_pricing.elements';
+} from './_elements';
 
 export default () => (
   <Layout>
@@ -223,7 +223,8 @@ export default () => (
         <div>
           <FeatureTitle>Zen Mode</FeatureTitle>
           <P muted small>
-            Zen mode hides distracting editor elements for demos and screenshots.
+            Zen mode hides distracting editor elements for demos and
+            screenshots.
           </P>
         </div>
         <span>✓</span>

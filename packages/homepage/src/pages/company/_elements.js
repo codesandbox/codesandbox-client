@@ -29,7 +29,7 @@ export const SeoText = styled.p`
 export const Border = styled.div`
   height: 1px;
   width: 100%;
-  background: #242424;
+  background: ${props => props.theme.homepage.grey};
   margin: 5rem 0;
 `;
 

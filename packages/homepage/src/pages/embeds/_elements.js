@@ -22,7 +22,7 @@ ${props =>
     }
 
     section[class*='elements__Nav'] {
-      border-top: 1px solid #e6e6e6;
+      border-top: 1px solid ${props.theme.homepage.whiteDark};
     }
   `}
 `;
@@ -223,8 +223,8 @@ export const Button = styled.button`
   display: flex;
   align-items: center;
   cursor: pointer;
-  color: ${({ light, active, theme }) => {
-    if (light) return active ? '#242424' : '#999999';
-    return active ? theme.homepage.white : '#757575';
+  color: ${({ light, active, theme: { homepage } }) => {
+    if (light) return active ? homepage.grey : homepage.muted;
+    return active ? homepage.white : homepage.greyLight;
   }};
 `;
