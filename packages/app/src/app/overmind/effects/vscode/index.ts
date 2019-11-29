@@ -310,16 +310,24 @@ export class VSCodeEffect {
   public async openModule(module: Module) {
     await this.initialized;
 
-    try {
-      const model = await this.modelsHandler.changeModule(module);
+    // We use an animation frame here, because we want the rest of the logic to finish running,
+    // allowing for a paint, like selections in explorer. For this to work we have to ensure
+    // that we are actually indeed still trying to open this file, as we might have changed
+    // the file
+    requestAnimationFrame(async () => {
+      if (module.id === this.options.getCurrentModule().id) {
+        try {
+          const model = await this.modelsHandler.changeModule(module);
 
-      this.lint(module.title, model);
-    } catch (error) {
-      // We might try to open a module that is not actually opened in the editor,
-      // but the configuration wizard.. currently this throws an error as there
-      // is really no good way to identify when it happen. This needs to be
-      // improved in next version
-    }
+          this.lint(module.title, model);
+        } catch (error) {
+          // We might try to open a module that is not actually opened in the editor,
+          // but the configuration wizard.. currently this throws an error as there
+          // is really no good way to identify when it happen. This needs to be
+          // improved in next version
+        }
+      }
+    });
   }
 
   setErrors = (errors: ModuleError[]) => {
