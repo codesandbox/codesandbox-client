@@ -96,7 +96,7 @@ export default () => (
         Get Started Quickly
       </Titles>
       <Description>
-        Use templates to kickstart new projects with no setup
+        Use templates to kickstart new projects with no setup.
       </Description>
     </PageContainer>
     <ArtWorkWrapper bg="#535bcf">
@@ -124,7 +124,7 @@ export default () => (
       <Titles>Use With Your Fave Dev Tools</Titles>
       <Description>
         We integrate with the tools you already use for a seamless development
-        experience
+        experience.
       </Description>
       <Grid>
         <div>

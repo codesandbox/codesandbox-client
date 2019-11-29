@@ -1,6 +1,6 @@
 ---
 title: Learning
-description: Take a hands-on approach to learning new tech
+description: Take a hands-on approach to learning new tech.
 
 SEOText:
   As new web technologies emerge and evolve, it can be challenging to keep your
@@ -8,7 +8,7 @@ SEOText:
   approach to learn new libraries and frameworks by making it easy to try things
   out and understand how things really work.
 slug: learning
-tweetText: CodeSandbox is my life now
+tweetText: CodeSandbox is my life now.
 tweetJob: Software Engineer Educator
 tweetName: Kent C. Dodds
 tweetHandle: kentcdodds

@@ -1,7 +1,7 @@
 const tweets = [
   {
     name: 'Addy Osmani',
-    quote: 'CodeSandbox is a constant joy to use.',
+    quote: 'CodeSandbox is a constant joy to use',
     URL: 'https://twitter.com/addyosmani/status/1164360161114218496?s=20',
     username: 'addyosmani',
   },

@@ -1,6 +1,6 @@
 ---
 title: Onboarding
-description: Get hires from new and excited to productive and happy
+description: Get hires from new and excited to productive and happy.
 SEOText:
   You've hired new dev talent; now you need to get them on board and up to
   speed. CodeSandbox can help by making onboarding documentation interactive and
