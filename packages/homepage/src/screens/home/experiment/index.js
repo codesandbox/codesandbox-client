@@ -1,84 +1,16 @@
 import React, { useRef, useEffect } from 'react';
 import Rellax from 'rellax';
-import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { H2, P } from '../../components/Typography';
+import { H2, P } from '../../../components/Typography';
 
-import frameworks from '../../assets/images/frameworks.png';
-import frameworks2x from '../../assets/images/frameworks@2x.png';
-import things from '../../assets/images/things.png';
-import things2x from '../../assets/images/things@2x.png';
-import npm from '../../assets/images/npm.png';
-import npm2x from '../../assets/images/npm@2x.png';
-import Tweet from '../../components/Tweet';
-
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 304px;
-  grid-gap: 2rem;
-  position: relative;
-  margin-top: 5rem;
-
-  ${props => props.theme.breakpoints.lg} {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  ${props => props.theme.breakpoints.md} {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const Section = styled.section`
-  display: grid;
-  grid-template-columns: repeat(3, 300px);
-  grid-gap: 2rem;
-  margin-top: 5rem;
-  position: relative;
-  z-index: 2;
-
-  ${props => props.theme.breakpoints.lg} {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  ${props => props.theme.breakpoints.md} {
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 1rem;
-    margin-top: 2.5rem;
-
-    img {
-      max-width: 100%;
-    }
-  }
-`;
-
-const White = styled.span`
-  color: white;
-`;
-
-const shared = `
-  right: 1rem;
-  left: auto;
-  width: 25rem;
-  margin-top: 1rem;
-  height: 22rem;
-  background: #151515;
-`;
-
-const tweetStyle = `
-  ${shared}
-  ${props => props.theme.breakpoints.md} {
-    display: none;
-  }
-`;
-
-const tweetStyleMobile = `
-  ${shared}
-  display: none;
-  margin-top: 3.5rem !important;
-  ${props => props.theme.breakpoints.md} {
-    display: block;
-  }
-`;
+import frameworks from '../../../assets/images/frameworks.png';
+import frameworks2x from '../../../assets/images/frameworks@2x.png';
+import things from '../../../assets/images/things.png';
+import things2x from '../../../assets/images/things@2x.png';
+import npm from '../../../assets/images/npm.png';
+import npm2x from '../../../assets/images/npm@2x.png';
+import Tweet from '../../../components/Tweet';
+import { Grid, Section, White, tweetStyle, tweetStyleMobile } from './elements';
 
 const tweet = {
   username: 'dan_abramov',
@@ -170,7 +102,9 @@ const Experiment = () => {
           />
         </motion.div>
       </Section>
-      <Tweet style={tweetStyleMobile} tweet={tweet} />
+      <div ref={parallaxRef}>
+        <Tweet style={tweetStyleMobile} tweet={tweet} />
+      </div>
     </>
   );
 };

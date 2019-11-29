@@ -1,82 +1,18 @@
 import React, { useRef, useEffect } from 'react';
 import Rellax from 'rellax';
-import styled from 'styled-components';
+
 import { motion } from 'framer-motion';
 
-import { H2, P } from '../../components/Typography';
-import code from '../../assets/images/code.png';
-import bug from '../../assets/images/bug.png';
-import share from '../../assets/images/share.png';
-import code2x from '../../assets/images/code@2x.png';
-import bug2x from '../../assets/images/bugs@2x.png';
-import share2x from '../../assets/images/share@2x.png';
-import Tweet from '../../components/Tweet';
+import { H2, P } from '../../../components/Typography';
+import code from '../../../assets/images/code.png';
+import bug from '../../../assets/images/bug.png';
+import share from '../../../assets/images/share.png';
+import code2x from '../../../assets/images/code@2x.png';
+import bug2x from '../../../assets/images/bugs@2x.png';
+import share2x from '../../../assets/images/share@2x.png';
+import Tweet from '../../../components/Tweet';
 
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: 416px 1fr;
-  grid-gap: 2.5rem;
-  position: relative;
-
-  ${props => props.theme.breakpoints.md} {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const Section = styled.section`
-  display: grid;
-  grid-template-columns: repeat(3, 300px);
-  grid-gap: 2rem;
-  margin-top: 5rem;
-  position: relative;
-  z-index: 2;
-  margin-left: 200px;
-
-  ${props => props.theme.breakpoints.lg} {
-    margin-left: 0px;
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  ${props => props.theme.breakpoints.md} {
-    grid-template-columns: repeat(3, 1fr);
-    margin-top: 2.5rem;
-    grid-gap: 1rem;
-
-    img {
-      max-width: 100%;
-    }
-  }
-`;
-
-const White = styled.span`
-  color: ${props => props.theme.homepage.white};
-`;
-
-const shared = `
-  right: auto;
-  left: auto;
-  width: 416px;
-  margin-top: 0rem;
-  height: 22rem;
-  position: absolute;
-  background: #151515;
-`;
-
-const tweetStyle = `
-  ${shared}
-  ${props => props.theme.breakpoints.md} {
-    display: none;
-  }
-`;
-
-const tweetStyleMobile = `
-  ${shared}
-  display: none;
-  margin-top: 3.5rem !important;
-  ${props => props.theme.breakpoints.md} {
-    display: block;
-  }
-`;
+import { Grid, Section, White, tweetStyle, tweetStyleMobile } from './elements';
 
 const tweet = {
   username: 'brian_d_vaughn',
@@ -162,7 +98,6 @@ const Share = () => {
             ease: 'easeIn',
           }}
         >
-          {' '}
           <img
             src={code}
             srcSet={`${code} 1x, ${code2x} 2x`}

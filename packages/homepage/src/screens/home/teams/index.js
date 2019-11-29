@@ -1,41 +1,13 @@
 import React from 'react';
-import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-import { P } from '../../components/Typography';
+import zendesk from '../../../assets/images/zendesk.svg';
+import gitlab from '../../../assets/images/gitlab.svg';
+import atlassian from '../../../assets/images/atlassian.svg';
+import shopify from '../../../assets/images/shopify.svg';
+import algolia from '../../../assets/images/Algolia.svg';
 
-import zendesk from '../../assets/images/zendesk.svg';
-import gitlab from '../../assets/images/gitlab.svg';
-import atlassian from '../../assets/images/atlassian.svg';
-import shopify from '../../assets/images/shopify.svg';
-import algolia from '../../assets/images/Algolia.svg';
-
-const List = styled.ul`
-  list-style: none;
-  display: flex;
-  margin: 0;
-  padding: 0;
-  margin-top: 2rem;
-  margin-bottom: 12rem;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  li:not(:last-child) {
-    margin-right: 5rem;
-  }
-
-  ${props => props.theme.breakpoints.md} {
-    li:not(:last-child) {
-      margin-right: 0;
-      margin-bottom: 2rem;
-    }
-    li {
-      flex-shrink: 0;
-      width: 100%;
-      text-align: center;
-    }
-  }
-`;
+import { List, Title } from './elements';
 
 const Teams = () => (
   <>
@@ -47,16 +19,9 @@ const Teams = () => (
         ease: 'easeIn',
       }}
     >
-      <P
-        muted
-        css={`
-          text-align: center;
-          margin-top: 12rem;
-        `}
-      >
+      <Title muted>
         Accelerating the most creative developers and product teams
-      </P>
-
+      </Title>
       <List>
         <li>
           <a

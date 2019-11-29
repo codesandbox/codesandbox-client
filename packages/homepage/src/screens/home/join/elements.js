@@ -1,12 +1,6 @@
-import React from 'react';
-
 import styled from 'styled-components';
 
-import { motion, useViewportScroll, useTransform } from 'framer-motion';
-import HeroSmall from '../../assets/images/small-ide.png';
-import Button from '../../components/Button';
-
-const JoinWrapper = styled.section`
+export const JoinWrapper = styled.section`
   margin-top: 13.5rem;
   display: flex;
   width: 100%;
@@ -29,7 +23,7 @@ const JoinWrapper = styled.section`
   }
 `;
 
-const IDE = styled.img`
+export const IDE = styled.img`
   box-shadow: 0 0.24rem 0.5rem rgba(0, 0, 0, 0.24);
 
   ${props => props.theme.breakpoints.lg} {
@@ -37,7 +31,7 @@ const IDE = styled.img`
   }
 `;
 
-const Text = styled.h3`
+export const Text = styled.h3`
   font-weight: 500;
   font-size: 36px;
   line-height: 43px;
@@ -52,29 +46,3 @@ const Text = styled.h3`
     line-height: 1.2;
   }
 `;
-
-const Join = ({ src, ...style }) => {
-  const { scrollY } = useViewportScroll();
-  const y = useTransform(scrollY, [0, 20], [0, 5], { clamp: true });
-
-  return (
-    <>
-      <JoinWrapper>
-        <div>
-          <Text>Join millions of people prototyping what’s next</Text>
-          <Button href="/s">Create Sandbox, it’s free</Button>
-        </div>
-        <motion.div
-          css={`
-            align-self: flex-end;
-          `}
-          style={{ ...style, y }}
-        >
-          <IDE src={HeroSmall} alt="safari with codesandbox" />
-        </motion.div>
-      </JoinWrapper>
-    </>
-  );
-};
-
-export default Join;
