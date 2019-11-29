@@ -245,7 +245,6 @@ export const Pricing = styled.li`
   font-style: normal;
   font-weight: 500;
   font-size: 1rem;
-  margin-top: 2rem;
 
   a {
     display: flex;

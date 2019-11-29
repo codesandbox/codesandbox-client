@@ -182,6 +182,7 @@ export default () => {
                     <span>Status</span>
                   </a>
                 </li>
+                <Headers>Pricing</Headers>
                 <Pricing>
                   <Link to="/pricing">
                     <section>

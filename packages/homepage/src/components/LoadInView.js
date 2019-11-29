@@ -3,7 +3,7 @@ import { useInView } from 'react-hook-inview';
 import { motion } from 'framer-motion';
 
 const LoadInView = ({ children }) => {
-  const [ref, inView] = useInView();
+  const [ref, inView] = useInView({ unobserveOnEnter: true });
   const [animations, setAnimations] = useState(true);
 
   useEffect(() => {

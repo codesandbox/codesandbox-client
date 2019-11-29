@@ -65,7 +65,7 @@ const Experiment = () => {
   useEffect(() => {
     // eslint-disable-next-line no-new
     new Rellax(parallaxRef.current, {
-      speed: 1,
+      speed: 1.2,
       center: true,
     });
   }, []);
