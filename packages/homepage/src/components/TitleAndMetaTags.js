@@ -2,8 +2,8 @@ import React from 'react';
 import Helmet from 'react-helmet';
 
 export default ({
-  title = 'CodeSandbox: Online Code Editor Tailored for Web Application Development',
-  description = 'CodeSandbox is an online code editor with a focus on creating and sharing web application projects',
+  title = 'CodeSandbox: Online IDE for Rapid Web Development',
+  description = 'CodeSandbox is an online code editor and prototyping tool that makes creating and sharing web apps faster',
   image = 'https://codesandbox.io/static/img/banner.png',
 }) => (
   <Helmet
@@ -18,7 +18,7 @@ export default ({
       {
         name: 'keywords',
         content:
-          'react, codesandbox, editor, code, javascript, playground, sharing, spa, single, page, application, web, application, frontend, front, end',
+          'react, codesandbox, editor, vue, angular, ide, code, javascript, playground, sharing, spa, single, page, application, web, application, frontend, front, end',
       },
 
       { name: 'referrer', content: 'origin' },
