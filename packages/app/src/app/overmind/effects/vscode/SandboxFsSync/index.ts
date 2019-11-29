@@ -1,5 +1,6 @@
-import { dirname } from 'path';
+import { dirname, join } from 'path';
 
+import browserFs from 'fs';
 import {
   getDirectoryPath,
   getModulePath,
@@ -20,7 +21,6 @@ import { mkdir, rename, rmdir, unlink, writeFile } from './utils';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
-const browserFs = global.BrowserFS.BFSRequire('fs');
 const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
 
 declare global {
@@ -77,6 +77,18 @@ class SandboxFsSync {
   public create(sandbox: Sandbox): SandboxFs {
     const sandboxFs = {};
 
+    sandbox.directories.forEach(d => {
+      const path = getDirectoryPath(sandbox.modules, sandbox.directories, d.id);
+
+      d.path = path;
+      // If this is a single directory with no children
+      if (!Object.keys(sandboxFs).some(p => dirname(p) === path)) {
+        sandboxFs[path] = { ...d, type: 'directory' };
+      }
+
+      browserFs.mkdirSync(join('/sandbox', path));
+    });
+
     sandbox.modules.forEach(m => {
       const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
       if (path) {
@@ -85,16 +97,8 @@ class SandboxFsSync {
           ...m,
           type: 'file',
         };
-      }
-    });
 
-    sandbox.directories.forEach(d => {
-      const path = getDirectoryPath(sandbox.modules, sandbox.directories, d.id);
-
-      d.path = path;
-      // If this is a single directory with no children
-      if (!Object.keys(sandboxFs).some(p => dirname(p) === path)) {
-        sandboxFs[path] = { ...d, type: 'directory' };
+        browserFs.writeFileSync(join('/sandbox', path), m.code);
       }
     });
 
@@ -106,6 +110,11 @@ class SandboxFsSync {
 
     writeFile(fs, copy);
     this.send('write-file', copy);
+    browserFs.writeFileSync(
+      join('/sandbox', module.path),
+      module.code,
+      () => {}
+    );
 
     if (module.title === 'package.json') {
       this.syncDependencyTypings();
@@ -118,6 +127,11 @@ class SandboxFsSync {
       fromPath,
       toPath,
     });
+    browserFs.rename(
+      join('/sandbox', fromPath),
+      join('/sandbox', toPath),
+      () => {}
+    );
   }
 
   public rmdir(fs: SandboxFs, directory: Directory) {
@@ -125,6 +139,7 @@ class SandboxFsSync {
 
     rmdir(fs, copy);
     this.send('rmdir', copy);
+    browserFs.rmdir(join('/sandbox', directory.path), () => {});
   }
 
   public unlink(fs: SandboxFs, module: Module) {
@@ -132,6 +147,7 @@ class SandboxFsSync {
 
     unlink(fs, copy);
     this.send('unlink', copy);
+    browserFs.unlink(join('/sandbox', module.path), () => {});
   }
 
   public mkdir(fs: SandboxFs, directory: Directory) {
@@ -139,6 +155,7 @@ class SandboxFsSync {
 
     mkdir(fs, copy);
     this.send('mkdir', copy);
+    browserFs.mkdir(join('/sandbox', directory.path), () => {});
   }
 
   private onWorkerMessage = evt => {

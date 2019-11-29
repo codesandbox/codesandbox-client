@@ -247,7 +247,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
               return;
             }
 
-            cb(undefined, new CodeSandboxFile(this, p, flag, stats, r))  ;
+            cb(undefined, new CodeSandboxFile(this, p, flag, stats, r));
           });
         });
         return;
@@ -322,6 +322,8 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
 
   public _sync(p: string, data: Buffer, cb: BFSCallback<Stats>): void {
     warn('Sync not supported');
+
+    cb(null, undefined);
   }
 
   public _syncSync(p: string, data: Buffer): void {

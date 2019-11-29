@@ -23,7 +23,7 @@ import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
-export const onNavigateAway: Action = () => {};
+export const onNavigateAway: Action = () => { };
 
 export const addNpmDependency: AsyncAction<{
   name: string;
@@ -316,7 +316,7 @@ export const moduleSelected: Action<{
 
     if (path) {
       module = effects.utils.resolveModule(
-        path.replace(/^\//, ''),
+        path.replace(/^\/sandbox\//, ''),
         sandbox.modules,
         sandbox.directories
       );
@@ -465,7 +465,7 @@ export const quickActionsClosed: Action = ({ state }) => {
   state.editor.quickActionsOpen = false;
 };
 
-export const setPreviewContent: Action = () => {};
+export const setPreviewContent: Action = () => { };
 
 export const togglePreviewContent: Action = ({ state }) => {
   state.editor.previewWindowVisible = !state.editor.previewWindowVisible;
