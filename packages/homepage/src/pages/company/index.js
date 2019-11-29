@@ -17,6 +17,8 @@ import Framer from './images/framer.svg';
 import Netlify from './images/netlify.svg';
 import Zeit from './images/zeit.svg';
 import Sourcegraph from './images/sourcegraph.svg';
+import company from '../../assets/images/company.png';
+import company2x from '../../assets/images/company@2x.png';
 
 import {
   Title,
@@ -40,7 +42,17 @@ export default () => (
         developers to be more productive. And by simplifying collaboration we
         make it easier for teams to work on code together.
       </SeoText>
-      <Banner />
+      <Banner
+        css={`
+          height: auto;
+        `}
+      >
+        <img
+          src={company}
+          srcSet={`${company} 1x, ${company2x} 2x`}
+          alt="Company"
+        />
+      </Banner>
 
       <ContentBlock>
         <div>

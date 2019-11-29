@@ -49,7 +49,7 @@ export const Button = styled.a`
   background: ${props => props.theme.homepage.grey};
   border-radius: 0.125rem;
   font-weight: 500;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;

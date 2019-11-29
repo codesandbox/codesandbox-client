@@ -8,8 +8,7 @@ import Button from '../../components/Button';
 
 const JoinWrapper = styled.section`
   margin-top: 13.5rem;
-  display: grid;
-  grid-template-columns: 1fr 615px;
+  display: flex;
   width: 100%;
   text-align: center;
   background: #151515;
@@ -31,10 +30,6 @@ const JoinWrapper = styled.section`
 `;
 
 const IDE = styled.img`
-  position: absolute;
-  margin-top: -6rem;
-  right: 0;
-
   box-shadow: 0 0.24rem 0.5rem rgba(0, 0, 0, 0.24);
 
   ${props => props.theme.breakpoints.lg} {
@@ -69,7 +64,12 @@ const Join = ({ src, ...style }) => {
           <Text>Join millions of people prototyping what’s next</Text>
           <Button href="/s">Create Sandbox, it’s free</Button>
         </div>
-        <motion.div style={{ ...style, y }}>
+        <motion.div
+          css={`
+            align-self: flex-end;
+          `}
+          style={{ ...style, y }}
+        >
           <IDE src={HeroSmall} alt="safari with codesandbox" />
         </motion.div>
       </JoinWrapper>

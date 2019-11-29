@@ -100,13 +100,12 @@ const Experiment = () => {
           <Tweet
             style={tweetStyle}
             tweet={{
-              username: 'gethackteam',
-              job: 'Snr. Frontend Developer, Hackteam',
-              name: 'Roy Derks',
+              username: 'dan_abramov',
+              job: 'Software Engineer, React Core Team',
+              name: 'Dan Abramov',
               quote:
-                'I often use CodeSandbox to create demos or try out new JavaScript features or packages.',
-              url:
-                'https://twitter.com/gethackteam/status/1173522963162959872?s=20',
+                'Wow, https://codesandbox.io/ is cool. Lets you add npm dependencies.',
+              url: 'https://twitter.com/dan_abramov/status/852555473551273984',
             }}
           />
         </div>
