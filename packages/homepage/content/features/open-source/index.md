@@ -1,6 +1,6 @@
 ---
 title: Open Source
-description: Reclaim your time and improve developer experiences
+description: Reclaim your time and improve developer experiences.
 SEOText:
   Maintaining open source projects can be enormously fulfilling, yet
   time-consuming and stressful. CodeSandbox gives open source maintainers the
