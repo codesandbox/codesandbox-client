@@ -40,7 +40,7 @@ export const Title = styled.h1`
     color: ${theme.homepage.white};
     margin: 0.5rem 0;
     text-align: center;
-    max-width: 50%;
+    max-width: 60%;
     margin: auto;
 
     ${props => props.theme.breakpoints.md} {
@@ -188,7 +188,7 @@ export const SwitchWrapper = styled.div`
 
 export const Customizations = styled.ul`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin: 0;
   flex-wrap: wrap;
   list-style: none;
@@ -202,6 +202,10 @@ export const Customizations = styled.ul`
   li {
     width: 160px;
     margin-bottom: 1rem;
+
+    &:not(:last-child) {
+      margin-right: 3rem;
+    }
 
     svg {
       margin-right: 1rem;

@@ -7,6 +7,9 @@ import { H2, P } from '../../components/Typography';
 import code from '../../assets/images/code.png';
 import bug from '../../assets/images/bug.png';
 import share from '../../assets/images/share.png';
+import code2x from '../../assets/images/code@2x.png';
+import bug2x from '../../assets/images/bugs@2x.png';
+import share2x from '../../assets/images/share@2x.png';
 import Tweet from '../../components/Tweet';
 
 const Grid = styled.div`
@@ -118,7 +121,7 @@ const Share = () => {
             ease: 'easeOut',
           }}
         >
-          <img src={share} alt="Share" />
+          <img src={share} srcSet={`${share} 1x, ${share2x} 2x`} alt="Share" />
         </motion.div>
 
         <motion.div
@@ -130,7 +133,7 @@ const Share = () => {
             ease: 'easeOut',
           }}
         >
-          <img src={code} alt="Speak Code" />
+          <img src={bug} srcSet={`${bug} 1x, ${bug2x} 2x`} alt="Track Bugs" />
         </motion.div>
 
         <motion.div
@@ -142,7 +145,12 @@ const Share = () => {
             ease: 'easeIn',
           }}
         >
-          <img src={bug} alt="Track Bugs" />
+          {' '}
+          <img
+            src={code}
+            srcSet={`${code} 1x, ${code2x} 2x`}
+            alt="Speak Code"
+          />
         </motion.div>
       </Section>
     </>

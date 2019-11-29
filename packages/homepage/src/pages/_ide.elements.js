@@ -82,6 +82,10 @@ export const ArtWorkWrapper = styled.div`
   border-radius: 4px;
   margin: 2.5rem 0;
 
+  img {
+    max-height: 100%;
+  }
+
   ${props => props.theme.breakpoints.md} {
     height: 250px;
   }
@@ -96,6 +100,7 @@ export const Grid = styled.section`
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 3.75rem;
   margin-bottom: 6.875rem;
+  line-height: 1.5rem;
 
   ${props => props.theme.breakpoints.lg} {
     grid-template-columns: repeat(2, 1fr);

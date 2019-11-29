@@ -36,7 +36,10 @@ export default () => {
       <TitleAndMetaTags title="Embed CodeSandbox in Docs, Blog Posts, and Websites - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Embed CodeSandbox in Docs, Blog Posts, and Websites</Title>
+          <Title>
+            Embed CodeSandbox
+            <br /> in Docs, Blog Posts, and Websites
+          </Title>
         </TitleWrapper>
         <SwitchWrapper>
           <span

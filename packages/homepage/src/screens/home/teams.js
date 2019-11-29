@@ -18,13 +18,10 @@ const List = styled.ul`
   margin-top: 2rem;
   margin-bottom: 12rem;
   flex-wrap: wrap;
+  justify-content: center;
 
   li:not(:last-child) {
     margin-right: 5rem;
-  }
-
-  ${props => props.theme.breakpoints.lg} {
-    justify-content: center;
   }
 
   ${props => props.theme.breakpoints.md} {

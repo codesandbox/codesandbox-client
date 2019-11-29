@@ -28,7 +28,8 @@ export const TweetsWrapper = styled.a`
   }
 
   ${props => props.theme.breakpoints.md} {
-    padding: 2rem;
+    background: transparent;
+    padding: 0;
     margin: 0;
   }
 `;

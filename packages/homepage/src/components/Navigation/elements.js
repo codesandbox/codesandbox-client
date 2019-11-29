@@ -21,7 +21,7 @@ export const SubNav = styled.div`
   color: ${props => props.theme.homepage.white};
 
   > nav {
-    width: 866px;
+    width: 1081px;
     margin: auto;
     display: flex;
     align-items: center;
@@ -64,7 +64,7 @@ export const SubNav = styled.div`
 `;
 
 export const Nav = styled.nav`
-  width: 866px;
+  width: 1081px;
   margin: auto;
   display: flex;
   height: 100%;

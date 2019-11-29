@@ -56,11 +56,10 @@ const Started = () => {
              margin-top: 2rem;
              min-height: 20rem;
              background: #242424
-             max-width: 100%;
 
-               ${props => props.theme.breakpoints.md} {
-    grid-template-columns: 1fr;
-  }
+                ${props => props.theme.breakpoints.md} {
+      grid-template-columns: 1fr;
+    }
 
            `}
               tweet={{

@@ -9,6 +9,7 @@ export const H2 = styled.h2`
   padding: 0;
   margin: 0;
   margin-bottom: 0.5rem;
+  font-weight: 500;
 
   ${props => props.theme.breakpoints.md} {
     font-size: 1.8rem;

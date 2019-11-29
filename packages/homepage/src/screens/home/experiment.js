@@ -5,8 +5,11 @@ import { motion } from 'framer-motion';
 import { H2, P } from '../../components/Typography';
 
 import frameworks from '../../assets/images/frameworks.png';
+import frameworks2x from '../../assets/images/frameworks@2x.png';
 import things from '../../assets/images/things.png';
+import things2x from '../../assets/images/things@2x.png';
 import npm from '../../assets/images/npm.png';
+import npm2x from '../../assets/images/npm@2x.png';
 import Tweet from '../../components/Tweet';
 
 const Grid = styled.div`
@@ -118,7 +121,11 @@ const Experiment = () => {
             ease: 'easeOut',
           }}
         >
-          <img src={frameworks} alt="Frameworks" />
+          <img
+            src={frameworks}
+            srcSet={`${frameworks} 1x, ${frameworks2x} 2x`}
+            alt="Frameworks"
+          />
         </motion.div>
         <motion.div
           initial={{ opacity: 0 }}
@@ -128,7 +135,11 @@ const Experiment = () => {
             ease: 'easeOut',
           }}
         >
-          <img src={npm} alt="NPM Dependencies" />
+          <img
+            src={npm}
+            srcSet={`${npm} 1x, ${npm2x} 2x`}
+            alt="NPM Dependencies"
+          />
         </motion.div>
         <motion.div
           initial={{ opacity: 0 }}
@@ -138,7 +149,11 @@ const Experiment = () => {
             ease: 'easeOut',
           }}
         >
-          <img src={things} alt="Experiment" />
+          <img
+            src={things}
+            srcSet={`${things} 1x, ${things2x} 2x`}
+            alt="Frameworks"
+          />
         </motion.div>
       </Section>
     </>
