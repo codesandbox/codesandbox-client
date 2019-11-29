@@ -1,6 +1,6 @@
 ---
 title: Collaboration
-description: Come together to create collaboratively
+description: Come together to create collaboratively.
 SEOText:
   Collaborative coding environments can be tricky to set up. CodeSandbox Live
   helps break down the barriers to building together by making it easy for two
@@ -8,7 +8,7 @@ SEOText:
   of a team.
 
 slug: collaboration
-tweetText: CodeSandbox is one of the best things to ever happen to the internet
+tweetText: CodeSandbox is one of the best things to ever happen to the internet.
 tweetJob: Co-founder, Egghead
 tweetName: John Lindquist
 tweetHandle: johnlindquist
