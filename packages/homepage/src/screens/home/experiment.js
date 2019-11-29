@@ -80,17 +80,17 @@ const Experiment = () => {
               margin-bottom: 2rem;
             `}
           >
-            Try things out to see how they work in reality
+            Try things out to see how they work in reality.
           </P>
           <P muted>
-            <White>Learn new frameworks</White> and test your understanding{' '}
+            <White>Learn new frameworks</White> and test your understanding.{' '}
           </P>
           <P muted>
             <White>Evaluate npm modules</White> to see what works for your
-            project{' '}
+            project.{' '}
           </P>
           <P muted>
-            <White>Test out components</White> by creating functional examples
+            <White>Test out components</White> by creating functional examples.
           </P>
         </div>
         <div ref={parallaxRef}>
@@ -101,7 +101,7 @@ const Experiment = () => {
               job: 'Snr. Frontend Developer, Hackteam',
               name: 'Roy Derks',
               quote:
-                'I often use CodeSandbox to create demos or try out new JavaScript features or packages',
+                'I often use CodeSandbox to create demos or try out new JavaScript features or packages.',
               url:
                 'https://twitter.com/gethackteam/status/1173522963162959872?s=20',
             }}

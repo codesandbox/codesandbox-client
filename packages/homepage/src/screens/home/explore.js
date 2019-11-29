@@ -137,7 +137,7 @@ const Experiment = () => (
         `}
       >
         Explore some of the <SandboxCount />+ sandboxes crafted by our community
-        of creators
+        of creators.
       </P>
     </div>
     <div>
