@@ -5,7 +5,10 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Navigation } from 'app/pages/common/Navigation';
 import { useOvermind } from 'app/overmind';
 
-import { CreateSandbox } from 'app/components/CreateNewSandbox/CreateSandbox';
+import {
+  CreateSandbox,
+  COLUMN_MEDIA_THRESHOLD,
+} from 'app/components/CreateNewSandbox/CreateSandbox';
 
 export const NewSandbox: React.FC = () => {
   const {
@@ -26,7 +29,13 @@ export const NewSandbox: React.FC = () => {
         <Navigation title="New Sandbox" />
         <Margin top={5}>
           <Centered horizontal vertical>
-            <Margin style={{ maxWidth: '100%', width: 900 }} top={2}>
+            <Margin
+              style={{
+                maxWidth: '100%',
+                width: COLUMN_MEDIA_THRESHOLD ? 1200 : 900,
+              }}
+              top={2}
+            >
               <CreateSandbox />
             </Margin>
           </Centered>

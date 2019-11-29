@@ -26,8 +26,7 @@ const track = ({ position = true } = {}) => css`
   ${position ? `right` : `left`}: 0;
   display: flex;
   ${position ? `justify-content` : `align-items`}: center;
-  width: ${position ? `1rem` : `calc(100% - 1rem)`};
-  height: ${position ? `calc(100vh - 1rem)` : `1rem`};
+  ${position ? `width: 0.5rem !important` : `height: 0.5rem !important`};
   padding: 0.25rem;
   background-color: transparent !important;
   cursor: pointer;
