@@ -157,21 +157,44 @@ export const TemplateList = ({
       );
       const currentRow = Math.floor(indexInTemplateInfo / columnCount);
       const isLastRow = totalRowCount === currentRow + 1;
+      const isSecondToLastRow = totalRowCount === currentRow + 2;
       const nextTemplateInfo =
         templateInfos[templateInfos.indexOf(templateInfo) + 1] || templateInfo;
-
       const { templateInfo: templateInfoUnder } = getTemplateInfoByIndex(
         focusedTemplateIndex + columnCount
       );
-      const hasItemUnder = !isLastRow || templateInfoUnder === nextTemplateInfo;
-      const itemsAfterCurrentItem =
-        templateInfo.templates.length - 1 - indexInTemplateInfo;
+      const columnCountInLastRow = getColumnCountInLastRow(templateInfo);
+
+      const indexInRow = indexInTemplateInfo % columnCount;
+      const hasItemUnder =
+        (!isLastRow &&
+          (!isSecondToLastRow || indexInRow < columnCountInLastRow)) ||
+        (!isSecondToLastRow && templateInfoUnder === nextTemplateInfo);
+
+      const itemsAfterCurrentItemInRow =
+        (isLastRow ? columnCountInLastRow : columnCount) - 1 - indexInRow;
 
       safeSetFocusedTemplate(
         i =>
           i +
           Math.min(
-            hasItemUnder ? columnCount : itemsAfterCurrentItem + 1,
+            hasItemUnder
+              ? // index + leftover items
+                // example:
+                // 1 | 2
+                // 3 | 4 | 5
+                // in case of 2, to get to 4 we would do
+                // currentPos + (itemsAfter) + 1 + (indexInRow) = 2 + 0 + 1 + 1 = 4
+                // second example:
+                // 1 | 2 | 3
+                // 4 | 5
+                // from 2 to 5 is
+                // currentPos + (itemsAfter) + 1 + (indexInRow) = 2 + 1 + 1 + 1 = 5
+                Math.min(
+                  itemsAfterCurrentItemInRow + 1 + indexInRow,
+                  columnCount
+                )
+              : itemsAfterCurrentItemInRow + 1,
             templateInfo.templates.length
           )
       );
@@ -195,17 +218,25 @@ export const TemplateList = ({
       const previousTemplateInfo =
         templateInfos[templateInfos.indexOf(templateInfo) - 1] || templateInfo;
       const indexInTemplateInfo = focusedTemplateIndex - offset;
-      const isFirstItem = indexInTemplateInfo === 0;
-      const columnsInLastRowForPreviousTemplateInfo = getColumnCountInLastRow(
-        previousTemplateInfo
+      const isFirstRow = indexInTemplateInfo < columnCount;
+
+      const { templateInfo: templateInfoAbove } = getTemplateInfoByIndex(
+        focusedTemplateIndex - columnCount
       );
+      const columnCountInPreviousRow = isFirstRow
+        ? getColumnCountInLastRow(previousTemplateInfo)
+        : columnCount;
+      const indexInRow = indexInTemplateInfo % columnCount;
+      const hasItemAbove =
+        !isFirstRow ||
+        (templateInfoAbove === previousTemplateInfo &&
+          columnCountInPreviousRow > indexInRow);
 
       safeSetFocusedTemplate(
         i =>
           i -
           Math.min(
-            isFirstItem ? columnsInLastRowForPreviousTemplateInfo : columnCount,
-
+            hasItemAbove ? columnCountInPreviousRow : indexInRow + 1,
             previousTemplateInfo.templates.length
           )
       );
