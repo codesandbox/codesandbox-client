@@ -7,7 +7,7 @@ const staticAssets = [
   },
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-extensions/out',
-    to: 'public/vscode-extensions/v10',
+    to: 'public/vscode-extensions/v11',
   },
   !SANDBOX_ONLY && {
     from: 'node_modules/onigasm/lib/onigasm.wasm',
