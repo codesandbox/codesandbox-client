@@ -2,15 +2,15 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
-const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const threadLoader = require('thread-loader');
-const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('@codesandbox/common/lib/config/env');
 const getHost = require('@codesandbox/common/lib/utils/host');
 const postcssNormalize = require('postcss-normalize');
+const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
+const paths = require('./paths');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
@@ -431,7 +431,7 @@ module.exports = {
           new HtmlWebpackPlugin({
             inject: true,
             chunks: ['sandbox-startup', 'vendors~sandbox', 'sandbox'],
-            filename: 'frame.html',
+            filename: 'index.html',
             template: paths.sandboxHtml,
             minify: __PROD__ && {
               removeComments: true,

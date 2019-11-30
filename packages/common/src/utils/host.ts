@@ -1,6 +1,10 @@
 const IS_LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 
 export default () => {
+  if ('SANDPACK' in process.env) {
+    return '';
+  }
+
   if (IS_LOCAL_SERVER) {
     return 'http://localhost:3000';
   }
