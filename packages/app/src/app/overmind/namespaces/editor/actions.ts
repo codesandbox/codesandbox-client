@@ -261,13 +261,17 @@ export const createZipClicked: Action = ({ state, effects }) => {
   effects.zip.download(state.editor.currentSandbox);
 };
 
-export const forkExternalSandbox: AsyncAction<string> = async (
-  { actions },
-  sandboxId
-) => {
-  await actions.editor.internal.forkSandbox({
-    sandboxId,
-  });
+export const forkExternalSandbox: AsyncAction<{
+  sandboxId: string;
+  openInNewWindow?: boolean;
+  body?: { collectionId: string };
+}> = async ({ effects, state }, { sandboxId, openInNewWindow, body }) => {
+  effects.analytics.track('Fork Sandbox', { type: 'external' });
+
+  const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
+
+  state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
+  effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
 };
 
 export const forkSandboxClicked: AsyncAction = async ({
