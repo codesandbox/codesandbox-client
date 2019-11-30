@@ -47,8 +47,9 @@ export const Live: FunctionComponent = () => {
       isLoggedIn,
     },
   } = useOvermind();
+  const showPlaceHolder = (!isLive && !owned) || !isLoggedIn;
 
-  if ((!isLive && !owned) || !isLoggedIn) {
+  if (showPlaceHolder) {
     const message = isLoggedIn ? (
       <>
         You need to own this sandbox to open a live session to collaborate with
