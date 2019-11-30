@@ -22,7 +22,7 @@
     "lint:sandbox": "cross-env LINT=1 eslint --ext .js,.ts,.tsx src/sandbox",
     "start": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 NODE_OPTIONS=\"--max-old-space-size=4096\" node scripts/start.js",
     "start:dev_api": "node scripts/start.js",
-    "start:sandbox": "cross-env SANDBOX_ONLY=true node scripts/start.js",
+    "start:sandbox": "cross-env SANDBOX_ONLY=true LOCAL_SERVER=1 node scripts/start.js",
     "start:sandpack-sandbox": "cross-env SANDPACK=true LOCAL_SERVER=1 SANDBOX_ONLY=true node scripts/start.js",
     "start:test": "cross-env LOCAL_SERVER=1 SANDBOX_ONLY=true node scripts/start.js",
     "test": "jest --env=jsdom",
