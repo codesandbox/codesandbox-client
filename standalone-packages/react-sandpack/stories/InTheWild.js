@@ -61,6 +61,45 @@ stories.addWithJSX('one file', () => (
   </SandpackProvider>
 ));
 
+stories.addWithJSX('custom bundler url', () => (
+  <SandpackProvider
+    files={{
+      '/index.js': {
+        code: `document.body.innerHTML = \`<div>$\{require('uuid')()}</div>\``,
+      },
+    }}
+    dependencies={{ uuid: 'latest' }}
+    entry="/index.js"
+    bundlerURL="https://sandpack.ives.now.sh"
+  >
+    <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
+      <FileExplorer style={{ width: 300 }} />
+      <CodeEditor
+        style={{
+          width: '33%',
+          overflow: 'hidden',
+        }}
+      />
+      <BrowserPreview
+        style={{
+          width: '33%',
+          overflow: 'hidden',
+        }}
+      />
+      <TranspiledCodeView
+        style={{
+          width: '33%',
+          overflow: 'hidden',
+        }}
+      />
+
+      <SandpackConsumer>
+        {sandpack => console.log(sandpack) || <div />}
+      </SandpackConsumer>
+    </div>
+  </SandpackProvider>
+));
+
 stories.addWithJSX('subdirectories', () => (
   <SandpackProvider
     files={{

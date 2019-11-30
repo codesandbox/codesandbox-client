@@ -624,13 +624,17 @@ export const previewActionReceived: Action<{
 
       if (newErrors.length !== currentErrors.length) {
         state.editor.errors.forEach(error => {
-          const module = resolveModule(
-            error.path,
-            state.editor.currentSandbox.modules,
-            state.editor.currentSandbox.directories
-          );
+          try {
+            const module = resolveModule(
+              error.path,
+              state.editor.currentSandbox.modules,
+              state.editor.currentSandbox.directories
+            );
 
-          module.errors = [];
+            module.errors = [];
+          } catch (e) {
+            // Module doesn't exist anymore
+          }
         });
         newErrors.forEach(error => {
           const module = resolveModule(

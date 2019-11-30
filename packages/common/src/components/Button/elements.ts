@@ -126,6 +126,9 @@ const styles = css<{
 
   user-select: none;
   text-decoration: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   ${props =>
     props.small
