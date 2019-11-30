@@ -28,7 +28,7 @@ export const addNpmDependency: AsyncAction<{
   version?: string;
   isDev?: boolean;
 }> = withOwnedSandbox(
-  async ({ effects, actions, state }, { name, version, isDev }) => {
+  async ({ actions, effects, state }, { name, version, isDev }) => {
     effects.analytics.track('Add NPM Dependency');
     state.currentModal = null;
     let newVersion = version;
@@ -46,22 +46,22 @@ export const addNpmDependency: AsyncAction<{
   }
 );
 
-export const npmDependencyRemoved: AsyncAction<{
-  name: string;
-}> = withOwnedSandbox(async ({ state, effects, actions }, { name }) => {
-  effects.analytics.track('Remove NPM Dependency');
+export const npmDependencyRemoved: AsyncAction<string> = withOwnedSandbox(
+  async ({ actions, effects, state }, name) => {
+    effects.analytics.track('Remove NPM Dependency');
 
-  const { parsed } = state.editor.parsedConfigurations.package;
+    const { parsed } = state.editor.parsedConfigurations.package;
 
-  delete parsed.dependencies[name];
-  parsed.dependencies = sortObjectByKeys(parsed.dependencies);
+    delete parsed.dependencies[name];
+    parsed.dependencies = sortObjectByKeys(parsed.dependencies);
 
-  await actions.editor.internal.saveCode({
-    code: JSON.stringify(parsed, null, 2),
-    moduleShortid: state.editor.currentPackageJSON.shortid,
-    cbID: null,
-  });
-});
+    await actions.editor.internal.saveCode({
+      code: JSON.stringify(parsed, null, 2),
+      moduleShortid: state.editor.currentPackageJSON.shortid,
+      cbID: null,
+    });
+  }
+);
 
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;
@@ -121,8 +121,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   state.editor.isLoading = false;
-
-  effects.chameleon.loadTour(state.user && state.user.id);
 });
 
 export const contentMounted: Action = ({ state, effects }) => {
@@ -473,9 +471,10 @@ export const fetchEnvironmentVariables: AsyncAction = async ({
   );
 };
 
-export const updateEnvironmentVariables: AsyncAction<
-  EnvironmentVariable
-> = async ({ state, effects }, environmentVariable) => {
+export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = async (
+  { state, effects },
+  environmentVariable
+) => {
   state.editor.currentSandbox.environmentVariables = await effects.api.saveEnvironmentVariable(
     state.editor.currentId,
     environmentVariable
@@ -529,14 +528,18 @@ export const previewActionReceived: Action<{
         severity: action.severity,
         type: action.type,
       };
-      const module = resolveModule(
-        error.path,
-        state.editor.currentSandbox.modules,
-        state.editor.currentSandbox.directories
-      );
+      try {
+        const module = resolveModule(
+          error.path,
+          state.editor.currentSandbox.modules,
+          state.editor.currentSandbox.directories
+        );
 
-      module.errors.push(json(error));
-      state.editor.errors.push(error);
+        module.errors.push(json(error));
+        state.editor.errors.push(error);
+      } catch (e) {
+        /* ignore, this module can be in a node_modules for example */
+      }
       break;
     }
     case 'show-correction': {
@@ -550,14 +553,18 @@ export const previewActionReceived: Action<{
         source: action.source,
         severity: action.severity,
       };
-      const module = resolveModule(
-        correction.path,
-        state.editor.currentSandbox.modules,
-        state.editor.currentSandbox.directories
-      );
+      try {
+        const module = resolveModule(
+          correction.path,
+          state.editor.currentSandbox.modules,
+          state.editor.currentSandbox.directories
+        );
 
-      state.editor.corrections.push(correction);
-      module.corrections.push(json(correction));
+        state.editor.corrections.push(correction);
+        module.corrections.push(json(correction));
+      } catch (e) {
+        /* ignore, this module can be in a node_modules for example */
+      }
       break;
     }
     case 'clear-errors': {
@@ -567,13 +574,17 @@ export const previewActionReceived: Action<{
 
       if (newErrors.length !== currentErrors.length) {
         state.editor.errors.forEach(error => {
-          const module = resolveModule(
-            error.path,
-            state.editor.currentSandbox.modules,
-            state.editor.currentSandbox.directories
-          );
+          try {
+            const module = resolveModule(
+              error.path,
+              state.editor.currentSandbox.modules,
+              state.editor.currentSandbox.directories
+            );
 
-          module.errors = [];
+            module.errors = [];
+          } catch (e) {
+            // Module doesn't exist anymore
+          }
         });
         state.editor.errors = newErrors;
       }

@@ -9,7 +9,7 @@ export const onInitialize: OnInitialize = (
   effects.fsSync.initialize({
     onModulesByPathChange(cb: (modulesByPath: any) => void) {
       overmindInstance.reaction(
-        ({ editor }) => editor.modulePaths,
+        ({ editor }) => editor.modulesByPath,
         modulesByPath => cb(modulesByPath)
       );
     },
@@ -27,15 +27,13 @@ export const onInitialize: OnInitialize = (
 
   effects.api.initialize({
     provideJwtToken,
-    onError(error) {
-      effects.notificationToast.error(error);
-    },
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
     },
     getModulesByPath() {
       return state.editor.modulesByPath;
     },
+    onError: actions.internal.onApiError,
   });
 
   effects.notifications.initialize({

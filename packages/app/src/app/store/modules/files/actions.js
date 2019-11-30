@@ -335,15 +335,11 @@ export function moveDirectoryToDirectory({ state, props }) {
     directory => directory.shortid === props.shortid
   );
   const currentDirectoryShortid = state.get(
-    `editor.sandboxes.${
-      sandbox.id
-    }.directories.${directoryIndex}.directoryShortid`
+    `editor.sandboxes.${sandbox.id}.directories.${directoryIndex}.directoryShortid`
   );
 
   state.set(
-    `editor.sandboxes.${
-      sandbox.id
-    }.directories.${directoryIndex}.directoryShortid`,
+    `editor.sandboxes.${sandbox.id}.directories.${directoryIndex}.directoryShortid`,
     props.directoryShortid
   );
 
@@ -357,9 +353,7 @@ export function revertMoveDirectoryToDirectory({ state, props }) {
   );
 
   state.set(
-    `editor.sandboxes.${
-      sandbox.id
-    }.directories.${directoryIndex}.directoryShortid`,
+    `editor.sandboxes.${sandbox.id}.directories.${directoryIndex}.directoryShortid`,
     props.currentDirectoryShortid
   );
 }
@@ -658,14 +652,15 @@ export function recoverFiles({ recover, controller, state }) {
       return false;
     })
     .filter(Boolean);
+  const numRecoveredFiles = recoveredList.length;
 
-  if (recoveredList.length > 0) {
-    track('Files Recovered', { fileCount: recoveredList.length });
+  if (numRecoveredFiles > 0) {
+    track('Files Recovered', { fileCount: numRecoveredFiles });
 
     notificationState.addNotification({
-      message: `We recovered ${
-        recoveredList.length
-      } unsaved files from a previous session`,
+      message: `We recovered ${numRecoveredFiles} unsaved ${
+        numRecoveredFiles > 1 ? 'files' : 'file'
+      } from a previous session`,
       status: NotificationStatus.NOTICE,
     });
   }

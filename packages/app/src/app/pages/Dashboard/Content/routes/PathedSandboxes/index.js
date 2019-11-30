@@ -6,7 +6,7 @@ import { basename } from 'path';
 import { Content as Sandboxes } from '../../Sandboxes';
 import { Navigation } from './Navigation';
 // import Folders from './Folders';
-import CreateNewSandbox from '../../CreateNewSandbox';
+import { CreateNewSandbox } from '../../CreateNewSandbox';
 import getMostUsedTemplate from '../../../utils/get-most-used-template';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
@@ -33,7 +33,7 @@ const PathedSandboxes = props => {
               }
 
               const sandboxes =
-                loading || !data.me.collection
+                loading || !data.me || !data.me.collection
                   ? []
                   : data.me.collection.sandboxes;
 

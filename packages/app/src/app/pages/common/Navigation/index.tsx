@@ -1,162 +1,89 @@
-import * as React from 'react';
-import { inject, hooksObserver, Observer } from 'app/componentConnectors';
-import { Link } from 'react-router-dom';
-import Media from 'react-media';
-import {
-  patronUrl,
-  searchUrl,
-  exploreUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+import React, { FunctionComponent } from 'react';
 
-import SearchIcon from 'react-icons/lib/go/search';
-import PlusIcon from 'react-icons/lib/go/plus';
-import BellIcon from 'react-icons/lib/md/notifications';
-import FlameIcon from 'react-icons/lib/go/flame';
-import Row from '@codesandbox/common/lib/components/flex/Row';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { HeaderSearchBar } from 'app/components/HeaderSearchBar';
 import { Overlay } from 'app/components/Overlay';
-// @ts-ignore
-import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
-import { Notifications } from './Notifications';
+import { useOvermind } from 'app/overmind';
 
 import { SignInButton } from '../SignInButton';
 import { UserMenu } from '../UserMenu';
+
 import {
-  LogoWithBorder,
-  Border,
-  Title,
+  ExploreAction,
+  NewSandboxAction,
+  PatronAction,
+  SearchAction,
+  ShowNotificationsAction,
+} from './Actions';
+import {
   Actions,
-  Action,
-  UnreadIcon,
+  Border,
+  LogoWithBorder,
+  Row,
+  Title,
   TitleWrapper,
   Wrapper,
 } from './elements';
+import { Notifications } from './Notifications';
 
-interface Props {
-  title: string;
+type Props = {
+  float?: boolean;
   searchNoInput?: boolean;
-  store: any;
-  signals: any;
-}
+  title: string;
+};
+export const Navigation: FunctionComponent<Props> = ({
+  float = false,
+  searchNoInput,
+  title,
+}) => {
+  const {
+    actions: {
+      userNotifications: { notificationsClosed, notificationsOpened },
+    },
+    state: {
+      isLoggedIn,
+      isPatron,
+      user,
+      userNotifications: { notificationsOpened: notificationsMenuOpened },
+    },
+  } = useOvermind();
 
-export const Navigation = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      title,
-      searchNoInput,
-      store: { isLoggedIn, isPatron, user, userNotifications },
-      signals: { modalOpened, userNotifications: userNotificationsSignals },
-    }: Props) => (
-      <Row justifyContent="space-between">
-        <TitleWrapper>
-          <a href="/?from-app=1">
-            <LogoWithBorder height={35} width={35} />
-          </a>
-          <Border role="presentation" />
-          <Title>{title}</Title>
-        </TitleWrapper>
-        <Wrapper>
-          <Actions>
-            <Action>
-              <Media query="(max-width: 920px)">
-                {matches =>
-                  matches || searchNoInput ? (
-                    <Tooltip placement="bottom" content="Search All Sandboxes">
-                      <Link
-                        style={{ color: 'white' }}
-                        to={searchUrl()}
-                        aria-label="Search All Sandboxes"
-                      >
-                        <SearchIcon height={35} />
-                      </Link>
-                    </Tooltip>
-                  ) : (
-                    <HeaderSearchBar />
-                  )
-                }
-              </Media>
-            </Action>
+  return (
+    <Row justifyContent="space-between" float={float}>
+      <TitleWrapper>
+        <a href="/?from-app=1">
+          <LogoWithBorder height={35} width={35} />
+        </a>
 
-            <Action>
-              <Tooltip placement="bottom" content="Explore Sandboxes">
-                <a style={{ color: 'white' }} href={exploreUrl()}>
-                  <FlameIcon height={35} />
-                </a>
-              </Tooltip>
-            </Action>
+        <Border role="presentation" />
 
-            {!isPatron && (
-              <Action>
-                <Tooltip placement="bottom" content="Support CodeSandbox">
-                  <Link to={patronUrl()}>
-                    <PatronBadge width={40} height={40} />
-                  </Link>
-                </Tooltip>
-              </Action>
-            )}
+        <Title>{title}</Title>
+      </TitleWrapper>
 
-            {user && (
-              <Overlay
-                isOpen={userNotifications.notificationsOpened}
-                content={Notifications}
-                onOpen={userNotificationsSignals.notificationsOpened}
-                onClose={userNotificationsSignals.notificationsClosed}
-                event="Notifications"
-                noHeightAnimation
-              >
-                {open => (
-                  <Observer>
-                    {({ store }) => (
-                      <Action
-                        as="button"
-                        style={{ position: 'relative', fontSize: '1.25rem' }}
-                        onClick={open}
-                        aria-label={
-                          store.userNotifications.unreadCount > 0
-                            ? 'Show Notifications'
-                            : 'No Notifications'
-                        }
-                      >
-                        <Tooltip
-                          placement="bottom"
-                          content={
-                            store.userNotifications.unreadCount > 0
-                              ? 'Show Notifications'
-                              : 'No Notifications'
-                          }
-                        >
-                          <BellIcon height={35} />
-                          {store.userNotifications.unreadCount > 0 && (
-                            <UnreadIcon />
-                          )}
-                        </Tooltip>
-                      </Action>
-                    )}
-                  </Observer>
-                )}
-              </Overlay>
-            )}
+      <Wrapper>
+        <Actions>
+          <SearchAction searchNoInput={searchNoInput} />
 
-            <Action
-              as="button"
-              style={{ fontSize: '1.125rem' }}
-              onClick={() =>
-                modalOpened({
-                  modal: 'newSandbox',
-                })
-              }
-              aria-label="New Sandbox"
+          <ExploreAction />
+
+          {!isPatron && <PatronAction />}
+
+          {user && (
+            <Overlay
+              content={Notifications}
+              event="Notifications"
+              isOpen={notificationsMenuOpened}
+              noHeightAnimation
+              onClose={notificationsClosed}
+              onOpen={notificationsOpened}
             >
-              <Tooltip placement="bottom" content="New Sandbox">
-                <PlusIcon height={35} />
-              </Tooltip>
-            </Action>
-          </Actions>
+              {open => <ShowNotificationsAction openNotifications={open} />}
+            </Overlay>
+          )}
 
-          {isLoggedIn ? <UserMenu /> : <SignInButton />}
-        </Wrapper>
-      </Row>
-    )
-  )
-);
+          <NewSandboxAction />
+        </Actions>
+
+        {isLoggedIn ? <UserMenu /> : <SignInButton />}
+      </Wrapper>
+    </Row>
+  );
+};

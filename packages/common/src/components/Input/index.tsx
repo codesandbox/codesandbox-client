@@ -1,10 +1,12 @@
 import styled, { css } from 'styled-components';
 
-export const styles = css<{
+export interface IInputProps {
   block?: boolean;
   fullWidth?: boolean;
   error?: boolean;
-}>`
+}
+
+export const styles = css<IInputProps>`
   transition: 0.3s ease border-color;
   background-color: ${props =>
     props.theme['input.background'] || 'rgba(0, 0, 0, 0.3)'};
@@ -27,11 +29,11 @@ export const styles = css<{
   }
 `;
 
-const Input = styled.input`
+const Input = styled.input<IInputProps>`
   ${styles};
 `;
 
-export const TextArea = styled.textarea`
+export const TextArea = styled.textarea<IInputProps>`
   ${styles};
 `;
 

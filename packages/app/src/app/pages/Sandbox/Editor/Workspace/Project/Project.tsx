@@ -54,7 +54,6 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
   } = useOvermind();
 
   const template = getTemplateDefinition(sandbox.template);
-  const { isServer } = template;
 
   return (
     <Container>
@@ -83,6 +82,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
             username={sandbox.git.username}
             repo={sandbox.git.repo}
             branch={sandbox.git.branch}
+            commitSha={sandbox.git.commitSha}
           />
         </Item>
       )}
@@ -115,9 +115,7 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
                         Unlisted (only available by url)
                       </option>
                     )}
-                    {!isServer && isPatron && (
-                      <option value={2}>Private</option>
-                    )}
+                    {isPatron && <option value={2}>Private</option>}
                   </PrivacySelect>
                 </>
               ) : (

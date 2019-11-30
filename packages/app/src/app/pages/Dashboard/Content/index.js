@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
-import RecentSandboxes from './routes/RecentSandboxes';
+import { RecentSandboxes } from './routes/RecentSandboxes';
 import PathedSandboxes from './routes/PathedSandboxes';
 import { Templates } from './routes/Templates';
 import DeletedSandboxes from './routes/DeletedSandboxes';

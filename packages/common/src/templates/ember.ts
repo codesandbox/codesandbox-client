@@ -1,5 +1,5 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 export default new Template(
   'ember',
@@ -23,7 +23,6 @@ export default new Template(
   'github/mike-north/ember-new-output',
   decorateSelector(() => '#E04E39'),
   {
-    isServer: true,
     showOnHomePage: true,
     main: false,
     netlify: false,

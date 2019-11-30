@@ -25,6 +25,8 @@ import { Settings } from './types';
 
 export type Props = {
   sandbox: Sandbox;
+  privacy?: number;
+  previewSecret?: string;
   settings: Settings;
   onInitialized?: (preview: BasePreview) => () => void; // eslint-disable-line no-use-before-define
   extraModules?: { [path: string]: { code: string; path: string } };
@@ -47,6 +49,11 @@ export type Props = {
   delay?: number;
   className?: string;
   overlayMessage?: string;
+  /**
+   * Whether to show a screenshot in the preview as a "placeholder" while loading
+   * to reduce perceived loading time
+   */
+  showScreenshotOverlay?: boolean;
 };
 
 type State = {
@@ -88,7 +95,7 @@ class BasePreview extends React.Component<Props, State> {
       url: initialUrl,
       forward: false,
       back: false,
-      showScreenshot: true,
+      showScreenshot: props.showScreenshotOverlay,
       useFallbackDomain: false,
     };
 
@@ -102,7 +109,14 @@ class BasePreview extends React.Component<Props, State> {
         // Remove screenshot after specific time, so the loading container spinner can still show
         this.setState({ showScreenshot: false });
       }, 100);
+    } else {
+      setTimeout(() => {
+        if (this.state.showScreenshot) {
+          this.setState({ showScreenshot: false });
+        }
+      }, 800);
     }
+
     this.listener = listen(this.handleMessage);
 
     if (props.delay) {
@@ -112,12 +126,6 @@ class BasePreview extends React.Component<Props, State> {
     (window as any).openNewWindow = this.openNewWindow;
 
     this.testFallbackDomainIfNeeded();
-
-    setTimeout(() => {
-      if (this.state.showScreenshot) {
-        this.setState({ showScreenshot: false });
-      }
-    }, 800);
   }
 
   UNSAFE_componentWillUpdate(nextProps: Props, nextState: State) {
@@ -146,7 +154,7 @@ class BasePreview extends React.Component<Props, State> {
     const fallbackUrl = frameUrl(
       this.props.sandbox,
       this.props.initialPath || '',
-      true
+      { useFallbackDomain: true }
     );
 
     const setFallbackDomain = () => {
@@ -156,7 +164,7 @@ class BasePreview extends React.Component<Props, State> {
           urlInAddressBar: frameUrl(
             this.props.sandbox,
             this.props.initialPath || '',
-            true
+            { useFallbackDomain: true }
           ),
         },
         () => {
@@ -194,11 +202,9 @@ class BasePreview extends React.Component<Props, State> {
 
     return this.serverPreview
       ? getSSEUrl(sandbox, initialPath)
-      : frameUrl(
-          sandbox,
-          initialPath,
-          this.state && this.state.useFallbackDomain
-        );
+      : frameUrl(sandbox, initialPath, {
+          useFallbackDomain: this.state && this.state.useFallbackDomain,
+        });
   };
 
   static defaultProps = {
@@ -220,12 +226,14 @@ class BasePreview extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (
-      prevProps.sandbox &&
-      this.props.sandbox &&
-      prevProps.sandbox.id !== this.props.sandbox.id
-    ) {
-      this.handleSandboxChange(this.props.sandbox);
+    if (prevProps.sandbox && this.props.sandbox) {
+      if (prevProps.sandbox.id !== this.props.sandbox.id) {
+        this.handleSandboxChange(this.props.sandbox);
+      }
+    }
+
+    if (prevProps.privacy !== this.props.privacy) {
+      this.handlePrivacyChange();
     }
   }
 
@@ -235,6 +243,17 @@ class BasePreview extends React.Component<Props, State> {
     }
 
     window.open(this.state.urlInAddressBar, '_blank');
+  };
+
+  sendPreviewSecret = () => {
+    dispatch({
+      $type: 'preview-secret',
+      previewSecret: this.props.previewSecret,
+    });
+  };
+
+  handlePrivacyChange = () => {
+    this.sendPreviewSecret();
   };
 
   handleSandboxChange = (sandbox: Sandbox) => {
@@ -274,6 +293,8 @@ class BasePreview extends React.Component<Props, State> {
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
         }
+
+        this.sendPreviewSecret();
 
         setTimeout(
           () => {
@@ -407,6 +428,7 @@ class BasePreview extends React.Component<Props, State> {
           isModuleView: !this.props.isInProjectView,
           template: sandbox.template,
           hasActions: Boolean(this.props.onAction),
+          previewSecret: sandbox.previewSecret,
         });
       }
     }
@@ -540,7 +562,7 @@ class BasePreview extends React.Component<Props, State> {
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
 
         <AnySpring
-          from={{ opacity: 0 }}
+          from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
           to={{
             opacity: this.state.showScreenshot ? 0 : 1,
           }}
@@ -576,7 +598,7 @@ class BasePreview extends React.Component<Props, State> {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    top: 35,
+                    top: showNavigation ? 35 : 0,
                     zIndex: 0,
                   }}
                 >
@@ -586,9 +608,7 @@ class BasePreview extends React.Component<Props, State> {
                       height: '100%',
                       filter: `blur(2px)`,
                       transform: 'scale(1.025, 1.025)',
-                      backgroundImage: `url("${
-                        this.props.sandbox.screenshotUrl
-                      }")`,
+                      backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
                       backgroundRepeat: 'no-repeat',
                       backgroundPositionX: 'center',
                     }}

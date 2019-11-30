@@ -26,10 +26,10 @@ export const SandboxConfig: FunctionComponent = () => {
     },
   } = useOvermind();
 
-  const onCreateTemplate = ({
-    preventDefault,
-  }: MouseEvent<HTMLButtonElement>) => {
-    preventDefault();
+  const onCreateTemplate = (e?: MouseEvent<HTMLButtonElement>) => {
+    if (e) {
+      e.preventDefault();
+    }
 
     if (!user) {
       modalOpened({ modal: 'signInForTemplates' });
@@ -44,8 +44,10 @@ export const SandboxConfig: FunctionComponent = () => {
     });
   };
 
-  const onDelete = ({ preventDefault }: MouseEvent<HTMLButtonElement>) => {
-    preventDefault();
+  const onDelete = (e?: MouseEvent<HTMLButtonElement>) => {
+    if (e) {
+      e.preventDefault();
+    }
 
     if (customTemplate) {
       deleteTemplate();

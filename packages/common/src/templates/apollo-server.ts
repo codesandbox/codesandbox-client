@@ -1,5 +1,5 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 export default new Template(
   'apollo',
@@ -8,7 +8,6 @@ export default new Template(
   'apollo-server',
   decorateSelector(() => '#c4198b'),
   {
-    isServer: true,
     netlify: false,
     mainFile: ['/src/index.js'],
     showOnHomePage: true,

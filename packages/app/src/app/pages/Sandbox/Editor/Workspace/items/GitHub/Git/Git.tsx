@@ -68,6 +68,7 @@ export const Git: FunctionComponent = () => {
           repo={originalGit.repo}
           url={githubRepoUrl(originalGit)}
           username={originalGit.username}
+          commitSha={originalGit.commitSha}
         />
       </Margin>
 

@@ -7,16 +7,17 @@ import DeleteIcon from 'react-icons/lib/go/trashcan';
 import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import UploadFileIcon from 'react-icons/lib/md/file-upload';
 import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
+import UndoIcon from 'react-icons/lib/md/undo';
 
 import { EntryContainer } from '../../../elements';
 import EditIcons from './EditIcons';
 import { NotSyncedIconWithMargin, Right } from './elements';
 import EntryIcons from './EntryIcons';
 import EntryTitle from './EntryTitle';
-import EntryTitleInput from './EntryTitleInput';
+import { EntryTitleInput } from './EntryTitleInput';
 
 interface IEntryProps {
-  renameValidator: (id: string, title: string) => boolean;
+  renameValidator: (id: string, title: string) => string;
   shortid: string;
   id: string;
   title: string;
@@ -25,7 +26,7 @@ interface IEntryProps {
   depth: number;
   type: string;
   active: boolean;
-  discardModuleChanges: (shortid: string) => void;
+  discardModuleChanges: (shortid: string, title: string) => void;
   setCurrentModule: (id: string) => void;
   connectDragSource: (node: JSX.Element) => JSX.Element;
   onCreateDirectoryClick: () => boolean | void;
@@ -67,7 +68,7 @@ const Entry: React.FC<IEntryProps> = ({
   state: incomingState = '',
 }) => {
   const [state, setState] = useState(incomingState);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [hovering, setHovering] = useState(false);
 
   const resetState = () => {
@@ -76,7 +77,7 @@ const Entry: React.FC<IEntryProps> = ({
     }
 
     setState('');
-    setError(false);
+    setError(null);
   };
 
   const handleValidateTitle = (titleToValidate: string) => {
@@ -95,9 +96,9 @@ const Entry: React.FC<IEntryProps> = ({
     deleteEntry ? deleteEntry(shortid, title) : false;
 
   const discardModuleChangesAction = () =>
-    discardModuleChanges ? discardModuleChanges(shortid) : false;
+    discardModuleChanges ? discardModuleChanges(shortid, title) : false;
 
-  const handleRename = (newTitle: string, force: boolean) => {
+  const handleRename = (newTitle: string, force: boolean = false) => {
     if (newTitle === title) {
       resetState();
       return;
@@ -123,6 +124,7 @@ const Entry: React.FC<IEntryProps> = ({
       isNotSynced && {
         title: 'Discard Changes',
         action: discardModuleChangesAction,
+        icon: UndoIcon,
       },
     ].filter(Boolean),
     [
@@ -174,10 +176,12 @@ const Entry: React.FC<IEntryProps> = ({
           <EntryIcons type={type} error={moduleHasError} />
           {state === 'editing' ? (
             <EntryTitleInput
+              id={id}
               title={title}
               onChange={handleValidateTitle}
               onCancel={resetState}
               onCommit={handleRename}
+              error={error}
             />
           ) : (
             <EntryTitle title={title} />
@@ -203,6 +207,7 @@ const Entry: React.FC<IEntryProps> = ({
                 onCreateFile={onCreateModuleClick}
                 onCreateDirectory={onCreateDirectoryClick}
                 onUploadFile={onUploadFileClick}
+                onDiscardChanges={isNotSynced && discardModuleChangesAction}
                 onDelete={deleteEntry && deleteAction}
                 onEdit={rename && renameAction}
                 active={active}
