@@ -28,7 +28,7 @@ export const addNpmDependency: AsyncAction<{
   version?: string;
   isDev?: boolean;
 }> = withOwnedSandbox(
-  async ({ effects, actions, state }, { name, version, isDev }) => {
+  async ({ actions, effects, state }, { name, version, isDev }) => {
     effects.analytics.track('Add NPM Dependency');
     state.currentModal = null;
     let newVersion = version;
@@ -46,22 +46,22 @@ export const addNpmDependency: AsyncAction<{
   }
 );
 
-export const npmDependencyRemoved: AsyncAction<{
-  name: string;
-}> = withOwnedSandbox(async ({ state, effects, actions }, { name }) => {
-  effects.analytics.track('Remove NPM Dependency');
+export const npmDependencyRemoved: AsyncAction<string> = withOwnedSandbox(
+  async ({ actions, effects, state }, name) => {
+    effects.analytics.track('Remove NPM Dependency');
 
-  const { parsed } = state.editor.parsedConfigurations.package;
+    const { parsed } = state.editor.parsedConfigurations.package;
 
-  delete parsed.dependencies[name];
-  parsed.dependencies = sortObjectByKeys(parsed.dependencies);
+    delete parsed.dependencies[name];
+    parsed.dependencies = sortObjectByKeys(parsed.dependencies);
 
-  await actions.editor.internal.saveCode({
-    code: JSON.stringify(parsed, null, 2),
-    moduleShortid: state.editor.currentPackageJSON.shortid,
-    cbID: null,
-  });
-});
+    await actions.editor.internal.saveCode({
+      code: JSON.stringify(parsed, null, 2),
+      moduleShortid: state.editor.currentPackageJSON.shortid,
+      cbID: null,
+    });
+  }
+);
 
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;
@@ -575,13 +575,17 @@ export const previewActionReceived: Action<{
 
       if (newErrors.length !== currentErrors.length) {
         state.editor.errors.forEach(error => {
-          const module = resolveModule(
-            error.path,
-            state.editor.currentSandbox.modules,
-            state.editor.currentSandbox.directories
-          );
+          try {
+            const module = resolveModule(
+              error.path,
+              state.editor.currentSandbox.modules,
+              state.editor.currentSandbox.directories
+            );
 
-          module.errors = [];
+            module.errors = [];
+          } catch (e) {
+            // Module doesn't exist anymore
+          }
         });
         state.editor.errors = newErrors;
       }

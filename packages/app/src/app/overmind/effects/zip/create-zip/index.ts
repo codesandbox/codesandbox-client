@@ -196,8 +196,6 @@ export async function createDirectoryWithFiles(
   );
 }
 
-const DEFAULT_IGNORE = ['yarn.lock', 'package-lock.json'];
-
 export async function createZip(
   sandbox: Sandbox,
   modules: Array<Module>,
@@ -206,7 +204,7 @@ export async function createZip(
   useGitIgnore: boolean = false
 ) {
   const zip = new JSZip();
-  const ignorer = ignore().add(DEFAULT_IGNORE);
+  const ignorer = ignore();
 
   if (useGitIgnore) {
     const gitIgnore = modules.find(

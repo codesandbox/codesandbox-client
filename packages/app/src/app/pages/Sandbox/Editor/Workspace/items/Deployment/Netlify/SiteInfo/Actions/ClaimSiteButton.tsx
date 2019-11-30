@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { Link } from '../../../../elements';
+import { Link } from '../../../elements';
 
 export const ClaimSiteButton: FunctionComponent = () => {
   const {

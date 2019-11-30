@@ -8,37 +8,35 @@ import { Title } from '../elements';
 
 export const Badges: FunctionComponent = () => {
   const {
-    state: {
-      user: { badges },
-    },
     actions: {
       preferences: { setBadgeVisibility },
     },
+    state: {
+      user: { badges },
+    },
   } = useOvermind();
-  const badgesCount = badges.length;
 
   return (
     <div>
       <Title>Badges</Title>
+
       <strong>
-        You currently have {badgesCount} badge
-        {badgesCount === 1 ? '' : 's'}. You can click on the badges to toggle
+        You currently have {badges.length} badge
+        {badges.length === 1 ? '' : 's'}. You can click on the badges to toggle
         visibility.
       </strong>
+
       <Margin top={2}>
         {badges.map(badge => (
           <Badge
-            key={badge.id}
-            tooltip={false}
-            onClick={b =>
-              setBadgeVisibility({
-                ...b,
-                visible: !b.visible,
-              })
-            }
             badge={badge}
-            visible={badge.visible}
+            onClick={({ id, visible }) =>
+              setBadgeVisibility({ id, visible: !visible })
+            }
+            key={badge.id}
             size={128}
+            tooltip={false}
+            visible={badge.visible}
           />
         ))}
       </Margin>

@@ -123,6 +123,9 @@ export const styles = css<IButtonProps | any>`
 
   user-select: none;
   text-decoration: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   ${props =>
     props.small
