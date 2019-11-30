@@ -50,15 +50,6 @@ type State = {
   theme: string,
 };
 
-const isSafari = () => {
-  const ua = navigator.userAgent.toLowerCase();
-  if (ua.includes('safari')) {
-    return !ua.includes('chrome');
-  }
-
-  return false;
-};
-
 export default class App extends React.PureComponent<
   {
     id?: string,
@@ -115,13 +106,7 @@ export default class App extends React.PureComponent<
       hideDevTools,
       tabs,
       theme,
-      runOnClick:
-        runOnClick === false
-          ? false
-          : runOnClick ||
-            navigator.appVersion.includes('X11') ||
-            navigator.appVersion.includes('Linux') ||
-            isSafari(),
+      runOnClick,
       verticalMode,
       highlightedLines: highlightedLines || [],
     };
