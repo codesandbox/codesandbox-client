@@ -91,7 +91,7 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
 export const applyTransformation: Action<{
   operation: any;
   moduleShortid: string;
-}> = ({ state, effects }, { operation, moduleShortid }) => {
+}> = ({ effects }, { operation, moduleShortid }) => {
   effects.vscode.applyOperation(moduleShortid, operation);
 };
 
