@@ -285,11 +285,11 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public rmdirSync(p: string) {
-    warn('rmDirSync not supported');
+    // Stubbed
   }
 
   public mkdirSync(p: string) {
-    warn('rmDirSync not supported');
+    // Stubbed
   }
 
   public readdirSync(path: string): string[] {
@@ -321,12 +321,12 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public _sync(p: string, data: Buffer, cb: BFSCallback<Stats>): void {
-    warn('Sync not supported');
+    // Stubbed
 
     cb(null, undefined);
   }
 
   public _syncSync(p: string, data: Buffer): void {
-    warn('Sync not supported');
+    // Stubbed
   }
 }
