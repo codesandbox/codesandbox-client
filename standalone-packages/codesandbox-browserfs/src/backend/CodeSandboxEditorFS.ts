@@ -1,16 +1,16 @@
-/* eslint-disable */
-import {
-  SynchronousFileSystem,
-  FileSystem,
-  BFSOneArgCallback,
-  BFSCallback,
-  FileSystemOptions,
-} from '../core/file_system';
+import { ApiError, ErrorCode } from '../core/api_error';
 import { File } from '../core/file';
 import { FileFlag } from '../core/file_flag';
-import { default as Stats, FileType } from '../core/node_fs_stats';
+/* eslint-disable */
+import {
+  BFSCallback,
+  BFSOneArgCallback,
+  FileSystem,
+  FileSystemOptions,
+  SynchronousFileSystem,
+} from '../core/file_system';
+import { FileType, default as Stats } from '../core/node_fs_stats';
 import PreloadFile from '../generic/preload_file';
-import { ErrorCode, ApiError } from '../core/api_error';
 
 function blobToBuffer(blob: Blob, cb: (err: any | undefined | null, result?: Buffer) => void) {
   if (typeof Blob === 'undefined' || !(blob instanceof Blob)) {
@@ -59,7 +59,6 @@ export interface IManager {
   };
 }
 
-const warn = console.warn;
 
 function getCode(savedCode: string | null | undefined, code: string | undefined) {
   if (savedCode === null) {
