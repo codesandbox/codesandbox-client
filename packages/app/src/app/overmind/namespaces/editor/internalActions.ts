@@ -77,7 +77,7 @@ export const setModuleSavedCode: Action<{
       captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
     }
 
-    module.savedCode = savedCode;
+    module.savedCode = module.code === savedCode ? null : savedCode;
   }
 };
 
