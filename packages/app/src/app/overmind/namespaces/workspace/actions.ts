@@ -220,10 +220,11 @@ export const toggleCurrentWorkspaceItem: Action = ({ state }) => {
 };
 
 export const setWorkspaceHidden: Action<{ hidden: boolean }> = (
-  { state },
+  { state, effects },
   { hidden }
 ) => {
   state.workspace.workspaceHidden = hidden;
+  effects.vscode.resetLayout();
 };
 
 export const deleteTemplate: AsyncAction = async ({
