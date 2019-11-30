@@ -11,114 +11,95 @@ export type OptionProps = {
 };
 
 const getBackgroundColor = ({
-  theme,
-  disabled,
-  red,
-  secondary,
-  danger,
+  disabled = false,
+  secondary = false,
+  red = false,
+  danger = false,
+  theme = {},
 }: OptionProps) => {
-  if (disabled)
-    return css`
-      background-color: ${theme.light
+  switch (true) {
+    case disabled:
+      return theme.light
         ? css`rgba(0, 0, 0, 0.4)`
-        : theme.background2.darken(0.3)()};
-    `;
-  if (danger) {
-    return css`
-      background-color: ${theme.dangerBackground()};
-    `;
+        : theme.background2.darken(0.3)();
+    case danger:
+      return theme.dangerBackground();
+    case secondary:
+      return css`transparent`;
+    case red:
+      return theme.red.darken(0.2)();
+    case theme[`button.background`]:
+      return theme[`button.background`];
+    default:
+      return css`#40a9f3;`;
   }
-  if (secondary) {
-    return css`
-      background-color: transparent;
-    `;
-  }
-  if (red) {
-    return css`
-      background-color: ${theme.red.darken(0.2)()};
-    `;
-  }
-  if (theme[`button.background`]) {
-    return css`
-      background-color: ${theme[`button.background`]};
-    `;
-  }
-  return css`
-    background-color: #40a9f3;
-  `;
 };
 
 const getBackgroundHoverColor = ({
-  theme,
-  disabled,
-  red,
-  secondary,
-  danger,
+  disabled = false,
+  secondary = false,
+  red = false,
+  danger = false,
+  theme = {},
 }: OptionProps) => {
-  if (disabled)
-    return css`
-      background-color: ${theme.light
+  switch (true) {
+    case disabled:
+      return theme.light
         ? css`rgba(0, 0, 0, 0.4)`
-        : theme.background2.darken(0.3)()};
-    `;
-  if (danger) {
-    return css`
-      background-color: #e25d6a;
-    `;
+        : theme.background2.darken(0.3)();
+    case danger:
+      return css` #e25d6a;`;
+    case secondary:
+      return css`#66b9f4;`;
+    case red:
+      return css`#f27777; `;
+    case theme[`button.background`]:
+      return theme[`button.hoverBackground`];
+    default:
+      return css`#66b9f4;`;
   }
-  if (secondary) {
-    return css`
-      background-color: #66b9f4;
-    `;
-  }
-  if (red) {
-    return css`
-      background-color: #f27777;
-    `;
-  }
-  if (theme[`button.hoverBackground`]) {
-    return css`
-      background-color: ${theme[`button.hoverBackground`]};
-    `;
-  }
-  return css`
-    background-color: #66b9f4;
-  `;
 };
 
-const getColor = ({ disabled, secondary, theme }: OptionProps) => {
-  if (disabled) {
-    return theme.background2.lighten(1.5)();
+const getColor = ({
+  disabled = false,
+  secondary = false,
+  theme = {},
+}: OptionProps) => {
+  switch (true) {
+    case disabled:
+      return theme.background2.lighten(1.5)();
+    case secondary:
+      return theme.light
+        ? css`rgba(0, 0, 0, 0.75)`
+        : css`rgba(255, 255, 255, 0.75)`;
+    default:
+      return css`white`;
   }
-  if (secondary) {
-    return theme.light ? `rgba(0, 0, 0, 0.75)` : `rgba(255, 255, 255, 0.75)`;
-  }
-  return `white`;
 };
 
 const getBorder = ({
-  theme,
-  secondary,
-  danger,
-  red,
-  disabled,
+  disabled = false,
+  secondary = false,
+  red = false,
+  danger = false,
+  theme = {},
 }: OptionProps) => {
-  if (disabled) {
-    return theme.light ? `2px solid rgba(0, 0, 0, 0.3)` : `2px solid #161A1C`;
+  switch (true) {
+    case disabled:
+      return theme.light
+        ? css`2px solid rgba(0, 0, 0, 0.3)`
+        : css`2px solid #161A1C`;
+    case secondary:
+      return css`2px solid #66B9F4`;
+    case red:
+      return css`2px solid #F27777`;
+    case danger:
+      return css`2px solid #E25D6A`;
+    case theme[`button.hoverBackground`]:
+      return css`2px solid ${theme[`button.hoverBackground`]}`;
+    default:
+      return css`2px solid #66B9F4`;
   }
-  if (secondary) {
-    return `2px solid #66B9F4`;
-  }
-  if (red) {
-    return `2px solid #F27777`;
-  }
-  if (danger) {
-    return `2px solid #E25D6A`;
-  }
-  if (theme && theme[`button.hoverBackground`]) {
-    return `2px solid ${theme[`button.hoverBackground`]}`;
-  }
-  return `2px solid #66B9F4`;
 };
 
 export interface IBaseProps {
@@ -137,27 +118,33 @@ export const buttonStyles = ({
   block = false,
   small = false,
 }) => css`
-  display: inline-flex;
+  display: ${block ? css`flex` : css`inline-flex`};
   justify-content: center;
   align-items: center;
-  width: ${block ? '100%' : 'inherit'};
-  padding: ${small ? `0.5em 0.7em` : `0.65em 2.25em`};
+  width: ${block ? css`100%` : css`inherit`};
+  padding: ${small ? css`0.5em 0.7em` : css`0.65em 2.25em`};
   border: ${getBorder};
   border-radius: 4px;
-  ${getBackgroundColor};
+  background-color: ${getBackgroundColor};
   box-sizing: border-box;
+  overflow: hidden;
   color: ${getColor};
   font-family: Poppins, Roboto, sans-serif;
   font-weight: 600;
   font-size: ${small ? css`0.875em` : css`1.125em`};
-  line-height: 24px;
+  white-space: nowrap;
   text-align: center;
   text-decoration: none;
-  white-space: nowrap;
+  text-overflow: ellipsis;
   transition: 0.3s ease all;
   user-select: none;
   outline: none;
-  ${!disabled && `cursor: pointer;`};
+  ${!disabled &&
+    css`
+      cursor: pointer;
+    `};
+
+  -webkit-appearance: inherit !important;
 
   &:focus {
     outline: none;
@@ -165,8 +152,12 @@ export const buttonStyles = ({
 
   &:hover,
   &:focus {
-    ${getBackgroundHoverColor};
-    ${secondary ? `color: white` : ``};
+    background-color: ${getBackgroundHoverColor};
+    ${secondary
+      ? css`
+          color: white;
+        `
+      : ``};
   }
 `;
 
