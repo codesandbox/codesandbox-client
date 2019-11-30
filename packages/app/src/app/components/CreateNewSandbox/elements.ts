@@ -1,30 +1,4 @@
-import { Link } from 'react-router-dom';
-import { animated } from 'react-spring/renderprops';
-import styled, { css, keyframes } from 'styled-components';
-
-const fadeIn = keyframes`
-  0%   { opacity: 0; }
-  100% { opacity: 0.5; }
-`;
-
-export const DarkBG = styled.div<{ closing: boolean }>`
-  ${({ closing }) => css`
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-color: black;
-    opacity: 0;
-    transition: 0.3s ease opacity;
-
-    ${!closing &&
-      css`
-        animation: ${fadeIn} 0.3s;
-        animation-fill-mode: forwards;
-      `};
-  `}
-`;
+import styled, { css } from 'styled-components';
 
 export const ButtonsContainer = styled.div`
   display: flex;
@@ -72,17 +46,4 @@ export const Container = styled.div<{ hide?: boolean; color?: any }>`
       background-color: ${(color || theme.secondary).clearer(0.8)};
     }
   `}
-`;
-
-export const ContainerLink = Container.withComponent(Link);
-
-export const AnimatedModalContainer = styled(animated.div)<{
-  forking: boolean;
-}>`
-  ${({ forking }) =>
-    forking &&
-    css`
-      position: fixed;
-      transition: 0.15s ease all;
-    `};
 `;
