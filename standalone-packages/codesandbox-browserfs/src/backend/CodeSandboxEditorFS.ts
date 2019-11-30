@@ -291,6 +291,10 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
     // Stubbed
   }
 
+  public unlinkSync(p: string) {
+    // Stubbed
+  }
+
   public readdirSync(path: string): string[] {
     const paths = Object.keys(this.api.getSandboxFs());
 

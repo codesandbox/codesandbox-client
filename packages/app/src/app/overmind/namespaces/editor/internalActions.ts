@@ -345,7 +345,11 @@ export const forkSandbox: AsyncAction<{
       forkedSandbox
     );
     effects.preview.updateAddressbarUrl();
-    actions.workspace.openDefaultItem();
+
+    if (state.workspace.openedWorkspaceItem === 'project-summary') {
+      actions.workspace.openDefaultItem();
+    }
+
     effects.notificationToast.success('Forked sandbox!');
     effects.router.updateSandboxUrl(forkedSandbox);
   } catch (error) {

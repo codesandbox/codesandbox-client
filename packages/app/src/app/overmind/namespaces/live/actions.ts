@@ -42,18 +42,20 @@ export const createLiveClicked: AsyncAction<{
 }> = async ({ state, effects, actions }, { sandboxId }) => {
   effects.analytics.track('Create Live Session');
 
-  await effects.vscode.closeAllTabs();
-
   const roomId = await effects.api.createLiveRoom(sandboxId);
   const sandbox = await actions.live.internal.initialize(roomId);
-  actions.internal.setCurrentSandbox(sandbox);
 
-  await effects.vscode.changeSandbox(state.editor.currentSandbox, fs => {
-    state.editor.modulesByPath = fs;
+  Object.assign(sandbox, {
+    modules: sandbox.modules.map(module => ({
+      ...module,
+      code: state.editor.currentSandbox.modules.find(
+        currentSandboxModule => currentSandboxModule.shortid === module.shortid
+      ).code,
+    })),
   });
 
-  effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately({ initialRender: true });
+  Object.assign(state.editor.sandboxes[state.editor.currentId], sandbox);
+  state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
 };
 
 export const liveMessageReceived: Operator<LiveMessage> = pipe(

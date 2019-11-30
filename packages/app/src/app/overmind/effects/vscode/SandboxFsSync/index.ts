@@ -72,6 +72,7 @@ class SandboxFsSync {
   public dispose() {
     this.isDisposed = true;
     self.removeEventListener('message', this.onWorkerMessage);
+    this.clearSandboxFiles();
   }
 
   public create(sandbox: Sandbox): SandboxFs {
@@ -400,6 +401,29 @@ class SandboxFsSync {
     const { files } = await fetchRequest.json();
 
     return files;
+  }
+
+  private clearSandboxFiles(dir = '/sandbox') {
+    if (dir === '/sandbox/node_modules') {
+      return;
+    }
+
+    const kids = browserFs.readdirSync(dir);
+
+    kids.forEach(kid => {
+      const path = join(dir, kid);
+      const lstat = browserFs.lstatSync(path);
+
+      if (lstat.isDirectory()) {
+        this.clearSandboxFiles(path);
+      } else {
+        browserFs.unlinkSync(path);
+      }
+    });
+
+    if (dir !== '/sandbox') {
+      browserFs.rmdirSync(dir);
+    }
   }
 }
 
