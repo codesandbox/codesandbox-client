@@ -37,6 +37,9 @@
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest",
       "^.+\\.svg$": "jest-svg-transformer"
+    },
+    "moduleNameMapper": {
+      "\\.css$": "<rootDir>/__mocks__/styleMock.js"
     }
   },
   "dependencies": {
