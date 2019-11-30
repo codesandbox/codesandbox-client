@@ -67,10 +67,13 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     state.live.roomInfo = roomInfo;
     state.live.liveUserId = liveUserId;
 
-    if (!state.editor.sandboxes[sandbox.id]) {
+    if (
+      !state.editor.currentSandbox ||
+      state.editor.currentSandbox.id !== sandbox.id
+    ) {
       state.editor.sandboxes[sandbox.id] = sandbox;
+      state.editor.currentId = sandbox.id;
     }
-    state.editor.currentId = sandbox.id;
 
     effects.analytics.track('Live Session Joined', {});
     effects.live.listen(actions.live.liveMessageReceived);
