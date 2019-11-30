@@ -173,7 +173,7 @@ class SandboxGridComponent extends React.Component<*, State> {
   };
 
   forkSandbox = id => {
-    this.props.signals.editor.forkExternalSandbox(id);
+    this.props.signals.editor.forkExternalSandbox({ sandboxId: id });
   };
 
   onMouseDown = (event: MouseEvent) => {
@@ -248,9 +248,12 @@ class SandboxGridComponent extends React.Component<*, State> {
         }
       }
 
-      this.setSandboxesSelected(selectedSandboxes.map(el => el.id), {
-        additive: event.metaKey,
-      });
+      this.setSandboxesSelected(
+        selectedSandboxes.map(el => el.id),
+        {
+          additive: event.metaKey,
+        }
+      );
     }
   };
 
@@ -463,6 +466,7 @@ class SandboxGridComponent extends React.Component<*, State> {
   }
 }
 
-export const SandboxGrid = inject('store', 'signals')(
-  observer(SandboxGridComponent)
-);
+export const SandboxGrid = inject(
+  'store',
+  'signals'
+)(observer(SandboxGridComponent));
