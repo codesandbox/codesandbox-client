@@ -5,7 +5,6 @@ import {
   ALGOLIA_DEFAULT_INDEX, // eslint-disable-line
 } from '@codesandbox/common/lib/utils/config';
 import { InstantSearch, Configure, Stats } from 'react-instantsearch/dom';
-import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
 import { SubHeader } from '../../elements';
 import { GlobalSearchStyles } from './elements';
 import { ExploreResultList } from './ExploreResultList';
@@ -37,9 +36,7 @@ export const SearchResults = ({ search }: { search: string }) => (
         />
       </SubHeader>
 
-      <Scrollable>
-        <ExploreResultList />
-      </Scrollable>
+      <ExploreResultList />
     </InstantSearch>
   </>
 );

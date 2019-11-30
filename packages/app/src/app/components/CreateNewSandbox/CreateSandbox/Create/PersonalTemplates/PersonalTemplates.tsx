@@ -64,7 +64,7 @@ export const PersonalTemplates = ({ filter }: IPersonalTemplatesProps) => {
       templates: data.me.bookmarkedTemplates,
     },
     ...data.me.teams
-      .filter(t => t.templates.length > 0)
+      .filter(t => t.bookmarkedTemplates.length > 0)
       .map(team => ({
         key: `${team.id}-bookmarked-templates`,
         title: `${team.name}${

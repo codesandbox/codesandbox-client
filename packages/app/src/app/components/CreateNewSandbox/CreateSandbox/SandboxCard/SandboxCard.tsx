@@ -26,7 +26,7 @@ interface ISandboxCardProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   onFocus?: (e: React.FocusEvent<HTMLButtonElement>) => void;
   onKeyPress?: (e: React.KeyboardEvent<HTMLButtonElement>) => void;
-  DetailedComponent?: React.FunctionComponent;
+  DetailComponent?: React.FunctionComponent;
 }
 
 export const SandboxCard: React.FC<ISandboxCardProps> = ({
@@ -40,7 +40,7 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
   onClick,
   onFocus,
   onKeyPress,
-  DetailedComponent,
+  DetailComponent,
 }) => {
   const UserIcon: React.FunctionComponent =
     iconUrl && Icons[iconUrl] ? Icons[iconUrl] : getColorIcons(environment);
@@ -58,35 +58,33 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
   }, [focused]);
 
   return (
-    <>
-      <Container
-        ref={elRef}
-        onClick={onClick}
-        onMouseOver={() => {
-          // Set focus to current element
-          elRef.current.focus();
-        }}
-        onFocus={onFocus}
-        onKeyPress={onKeyPress}
-        tabIndex={focused ? 0 : -1}
-        focused={focused}
-      >
-        <Icon color={color}>
-          {official && OfficialIcon ? <OfficialIcon /> : <UserIcon />}
-        </Icon>
-        <Details>
-          <Row>
-            <Title>{title}</Title>
+    <Container
+      ref={elRef}
+      onClick={onClick}
+      onMouseOver={() => {
+        // Set focus to current element
+        elRef.current.focus();
+      }}
+      onFocus={onFocus}
+      onKeyPress={onKeyPress}
+      tabIndex={focused ? 0 : -1}
+      focused={focused}
+    >
+      <Icon color={color}>
+        {official && OfficialIcon ? <OfficialIcon /> : <UserIcon />}
+      </Icon>
+      <Details>
+        <Row>
+          <Title>{title}</Title>
 
-            {focused && DetailedComponent && <DetailedComponent />}
-          </Row>
-          <Row>
-            <Environment>{parsedEnvironment.name}</Environment>
+          {focused && DetailComponent && <DetailComponent />}
+        </Row>
+        <Row>
+          <Environment>{parsedEnvironment.name}</Environment>
 
-            {detailText && <Detail>{detailText}</Detail>}
-          </Row>
-        </Details>
-      </Container>
-    </>
+          {detailText && <Detail>{detailText}</Detail>}
+        </Row>
+      </Details>
+    </Container>
   );
 };

@@ -8,6 +8,7 @@ import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import history from 'app/utils/history';
 import MdEditIcon from 'react-icons/lib/md/edit';
 
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { SandboxCard } from '../SandboxCard';
 import { SubHeader, Grid } from '../elements';
 import { EditIcon, TemplateInfoContainer } from './elements';
@@ -342,18 +343,20 @@ export const TemplateList = ({
                     }}
                     focused={focused}
                     detailText={detailText}
-                    DetailedComponent={
+                    DetailComponent={
                       forkOnOpen
                         ? () => (
-                            <EditIcon
-                              onClick={evt => {
-                                evt.stopPropagation();
-                                actions.modalClosed();
-                              }}
-                              to={sandboxUrl(template.sandbox)}
-                            >
-                              <MdEditIcon />
-                            </EditIcon>
+                            <Tooltip content="Edit Template">
+                              <EditIcon
+                                onClick={evt => {
+                                  evt.stopPropagation();
+                                  actions.modalClosed();
+                                }}
+                                to={sandboxUrl(template.sandbox)}
+                              >
+                                <MdEditIcon />
+                              </EditIcon>
+                            </Tooltip>
                           )
                         : undefined
                     }

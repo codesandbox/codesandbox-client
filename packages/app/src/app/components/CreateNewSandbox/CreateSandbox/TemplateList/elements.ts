@@ -10,6 +10,7 @@ export const EditIcon = styled(Link)`
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
+  width: 1rem;
 
   &:hover,
   &:focus {

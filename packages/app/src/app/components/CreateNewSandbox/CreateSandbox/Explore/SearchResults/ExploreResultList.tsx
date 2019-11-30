@@ -63,7 +63,7 @@ const Results = (props: ResultsProps) => {
       <DynamicWidthTemplateList templateInfos={[searchTemplateInfo]} />
 
       <div
-        style={{ height: 10, width: 1, backgroundColor: 'transparent' }}
+        style={{ minHeight: 10, width: 1, backgroundColor: 'transparent' }}
         ref={bottomDetectionEl}
         id="bottom-detection-element"
       />

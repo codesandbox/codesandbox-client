@@ -59,7 +59,7 @@ export const Title = styled.span`
   margin-bottom: 0.125rem;
   font-size: 13px;
   line-height: 1rem;
-  max-width: 155px;
+  max-width: 200px;
   text-align: left;
   max-height: 16px;
   white-space: nowrap;
