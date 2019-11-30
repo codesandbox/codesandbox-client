@@ -1,7 +1,6 @@
-import React, { FunctionComponent } from 'react';
-
 import { useOvermind } from 'app/overmind';
 import Loadable from 'app/utils/Loadable';
+import React, { FunctionComponent } from 'react';
 
 import { Container, Heading } from '../elements';
 
@@ -12,7 +11,7 @@ const Feedback = Loadable(() =>
 export const FeedbackModal: FunctionComponent = () => {
   const {
     state: {
-      editor: { currentId },
+      editor: { currentSandbox },
       user,
     },
   } = useOvermind();
@@ -21,7 +20,7 @@ export const FeedbackModal: FunctionComponent = () => {
     <Container>
       <Heading>Submit Feedback</Heading>
 
-      <Feedback user={user} id={currentId} />
+      <Feedback user={user} id={currentSandbox.id} />
     </Container>
   );
 };

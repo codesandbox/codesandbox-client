@@ -1,24 +1,17 @@
-import React, { useEffect, useRef } from 'react';
-import { vscode } from 'app/vscode';
 import './titlebar.css';
+
 import track from '@codesandbox/common/lib/utils/analytics';
+import { useOvermind } from 'app/overmind';
+import React, { useEffect, useRef } from 'react';
 
 export const MenuBar = () => {
+  const { effects } = useOvermind();
   const menuBarEl = useRef(null);
 
   useEffect(() => {
     // Get the menu bar part from vscode and mount it
-    vscode.getMenubarPart().then(part => {
-      part.create(menuBarEl.current);
-    });
-
-    return () => {
-      // Don't dispose, it kills listeners that are not remounted
-      // vscode.getMenubarPart().then(part => {
-      //   part.dispose();
-      // });
-    };
-  }, []);
+    menuBarEl.current.appendChild(effects.vscode.getMenubarElement());
+  }, [effects.vscode]);
 
   return (
     // Explicitly use inline styles here to override the vscode styles

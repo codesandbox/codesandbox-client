@@ -3,7 +3,7 @@ const { SANDBOX_ONLY } = process.env;
 const staticAssets = [
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-editor/release/min/vs',
-    to: 'public/vscode24/vs',
+    to: 'public/vscode25/vs',
   },
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-extensions/out',
@@ -30,6 +30,13 @@ const staticAssets = [
     from: 'packages/app/static',
     to: 'static',
   },
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs7',
+  },
+  // For caching purposes
   {
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'

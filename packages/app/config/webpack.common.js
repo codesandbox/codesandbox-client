@@ -384,6 +384,7 @@ module.exports = {
       /browserfs\.min\.js/,
       /standalone-packages\/codesandbox-browserfs/,
       /standalone-packages\/vscode\//,
+      /fontfaceobserver\.standalone\.js/,
     ],
   },
 

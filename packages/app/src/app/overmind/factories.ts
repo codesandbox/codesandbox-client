@@ -1,9 +1,9 @@
 import { Contributor } from '@codesandbox/common/lib/types';
-import { IDerive, IState, json } from 'overmind';
-import { AxiosError } from 'axios';
-
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { AxiosError } from 'axios';
+import { IDerive, IState, json } from 'overmind';
+
 import { AsyncAction } from '.';
 
 export const withLoadApp = <T>(
@@ -107,7 +107,7 @@ export const withOwnedSandbox = <T>(
       }
 
       await actions.editor.internal.forkSandbox({
-        sandboxId: state.editor.currentId,
+        sandboxId: state.editor.currentSandbox.id,
       });
     } else if (
       state.editor.currentSandbox.isFrozen &&
