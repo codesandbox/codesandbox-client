@@ -371,7 +371,9 @@ export const onApiError: Action<ApiError> = (
   const result = response.data;
 
   if (result) {
-    if ('errors' in result) {
+    if (typeof result === 'string') {
+      error.message = result;
+    } else if ('errors' in result) {
       const errors = values(result.errors)[0];
       if (Array.isArray(errors)) {
         if (errors[0]) {
