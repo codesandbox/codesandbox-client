@@ -248,6 +248,23 @@ export class VSCodeEffect {
     }
   };
 
+  public resetLayout() {
+    if (this.editorApi) {
+      // We have to wait for the layout to actually update in the DOM
+      requestAnimationFrame(() => {
+        const rootEl = document.querySelector('#vscode-container');
+        if (rootEl) {
+          const boundingRect = rootEl.getBoundingClientRect();
+
+          this.editorApi.editorPart.layout(
+            boundingRect.width,
+            boundingRect.height
+          );
+        }
+      });
+    }
+  }
+
   /*
     We need to use a callback to set the sandbox-fs into the state of Overmind. The reason
     is that we internally read from this state to get information about the files. It is really

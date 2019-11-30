@@ -467,8 +467,9 @@ export const quickActionsClosed: Action = ({ state }) => {
 
 export const setPreviewContent: Action = () => {};
 
-export const togglePreviewContent: Action = ({ state }) => {
+export const togglePreviewContent: Action = ({ state, effects }) => {
   state.editor.previewWindowVisible = !state.editor.previewWindowVisible;
+  effects.vscode.resetLayout();
 };
 
 export const currentTabChanged: Action<{
@@ -540,13 +541,15 @@ export const deleteEnvironmentVariable: AsyncAction<{
   effects.codesandboxApi.restartSandbox();
 };
 
-export const toggleEditorPreviewLayout: Action = ({ state }) => {
+export const toggleEditorPreviewLayout: Action = ({ state, effects }) => {
   const currentOrientation = state.editor.previewWindowOrientation;
 
   state.editor.previewWindowOrientation =
     currentOrientation === WindowOrientation.VERTICAL
       ? WindowOrientation.HORIZONTAL
       : WindowOrientation.VERTICAL;
+
+  effects.vscode.resetLayout();
 };
 
 export const previewActionReceived: Action<{
