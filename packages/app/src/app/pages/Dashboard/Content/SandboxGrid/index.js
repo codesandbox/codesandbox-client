@@ -14,7 +14,7 @@ import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
 import Table from 'react-virtualized/dist/commonjs/Table';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import downloadZip from 'app/store/providers/Utils/create-zip';
+import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { makeTemplates } from 'app/components/CreateNewSandbox/queries';
 import 'react-virtualized/styles.css';

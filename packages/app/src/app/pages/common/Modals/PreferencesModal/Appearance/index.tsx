@@ -1,19 +1,18 @@
 import { PreferenceText } from '@codesandbox/common/lib/components/Preference/PreferenceText';
 import themes from '@codesandbox/common/lib/themes';
+import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-import { useOvermind } from 'app/overmind';
-
 import {
-  Title,
-  SubContainer,
-  PreferenceContainer,
   PaddedPreference,
-  SubDescription,
+  PreferenceContainer,
   Rule,
+  SubContainer,
+  SubDescription,
+  Title,
 } from '../elements';
-import { BigTitle } from './elements';
 import VSCodePlaceholder from '../VSCodePlaceholder';
+import { BigTitle } from './elements';
 
 export const Appearance: React.FC = () => {
   const {

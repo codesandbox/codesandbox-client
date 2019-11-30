@@ -1,8 +1,9 @@
-import { LiveMessageEvent, LiveMessage } from '@codesandbox/common/lib/types';
-import { fork, pipe, filter } from 'overmind';
-import { AsyncAction, Action, Operator } from 'app/overmind';
+import { LiveMessage, LiveMessageEvent } from '@codesandbox/common/lib/types';
+import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-import { TextOperation } from 'ot';
+import getItems from 'app/overmind/utils/items';
+import { filter, fork, pipe } from 'overmind';
+
 import * as internalActions from './internalActions';
 import * as liveMessage from './liveMessageOperators';
 
@@ -19,7 +20,20 @@ export const roomJoined: AsyncAction<{
     state.currentModal = modal;
   }
 
-  actions.internal.setCurrentSandbox(sandbox);
+  await effects.vscode.closeAllTabs();
+  await actions.internal.setCurrentSandbox(sandbox);
+
+  const items = getItems(state);
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+
+  state.workspace.openedWorkspaceItem = defaultItem.id;
+
+  await effects.vscode.changeSandbox(state.editor.currentSandbox, fs => {
+    state.editor.modulesByPath = fs;
+  });
+
+  effects.vscode.openModule(state.editor.currentModule);
+  effects.preview.executeCodeImmediately({ initialRender: true });
   state.live.isLoading = false;
 });
 
@@ -29,7 +43,19 @@ export const createLiveClicked: AsyncAction<{
   effects.analytics.track('Create Live Session');
 
   const roomId = await effects.api.createLiveRoom(sandboxId);
-  await actions.live.internal.initialize(roomId);
+  const sandbox = await actions.live.internal.initialize(roomId);
+
+  Object.assign(sandbox, {
+    modules: sandbox.modules.map(module => ({
+      ...module,
+      code: state.editor.currentSandbox.modules.find(
+        currentSandboxModule => currentSandboxModule.shortid === module.shortid
+      ).code,
+    })),
+  });
+
+  Object.assign(state.editor.sandboxes[state.editor.currentId], sandbox);
+  state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
 };
 
 export const liveMessageReceived: Operator<LiveMessage> = pipe(
@@ -64,68 +90,20 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
   })
 );
 
-export const onTransformMade: Action<{
-  operation: any;
-  moduleShortid: string;
-}> = ({ effects, state }, { operation, moduleShortid }) => {
-  if (!state.live.isCurrentEditor) {
-    return;
-  }
-
-  if (!operation) {
-    return;
-  }
-
-  try {
-    effects.live.applyClient(moduleShortid, operation);
-  } catch (e) {
-    // Something went wrong, probably a sync mismatch. Request new version
-    console.error(
-      'Something went wrong with applying OT operation',
-      moduleShortid,
-      operation
-    );
-    effects.live.sendModuleState();
-  }
-};
-
 export const applyTransformation: Action<{
   operation: any;
   moduleShortid: string;
-}> = ({ state }, { operation, moduleShortid }) => {
-  let pendingOperation;
-
-  const existingPendingOperation =
-    state.editor.pendingOperations[moduleShortid];
-
-  if (existingPendingOperation) {
-    pendingOperation = TextOperation.fromJSON(existingPendingOperation)
-      .compose(operation)
-      .toJSON();
-  } else {
-    pendingOperation = operation.toJSON();
-  }
-
-  state.editor.pendingOperations[moduleShortid] = pendingOperation;
-  state.live.receivingCode = false;
+}> = ({ effects }, { operation, moduleShortid }) => {
+  effects.vscode.applyOperation(moduleShortid, operation);
 };
 
-export const onCodeReceived: Action = ({ state }) => {
-  state.live.receivingCode = false;
-};
-
-export const onOperationApplied: Action = ({ state }) => {
-  if (Object.keys(state.editor.pendingOperations).length) {
-    state.editor.pendingOperations = {};
-  }
-};
-
-export const onSelectionChanged: Action<{
-  selection: any;
-  moduleShortid: string;
-}> = ({ state, effects }, { selection, moduleShortid }) => {
+export const onSelectionChanged: Action<any> = (
+  { state, effects },
+  selection
+) => {
   if (state.live.isCurrentEditor) {
     const { liveUserId } = state.live;
+    const moduleShortid = state.editor.currentModuleShortid;
     const userIndex = state.live.roomInfo.users.findIndex(
       u => u.id === liveUserId
     );
@@ -141,14 +119,6 @@ export const onSelectionChanged: Action<{
         effects.live.sendUserSelection(moduleShortid, liveUserId, selection);
       }
     }
-  }
-};
-
-export const onSelectionDecorationsApplied: Action = ({ state }) => {
-  // We only clear it out if we actually need to. There is a reaction
-  // running that reacts to any change here
-  if (state.editor.pendingUserSelections.length) {
-    state.editor.pendingUserSelections = [];
   }
 };
 

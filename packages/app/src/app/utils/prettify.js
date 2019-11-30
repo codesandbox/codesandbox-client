@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
+
 import {
-  lineAndColumnToIndex,
   indexToLineAndColumn,
-} from '../components/CodeEditor/Monaco/monaco-index-converter';
+  lineAndColumnToIndex,
+} from './monaco-index-converter';
 
 function getMode(title: string) {
   if (/\.jsx?$/.test(title)) {

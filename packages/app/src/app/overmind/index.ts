@@ -4,6 +4,7 @@ import {
   IDerive,
   IOnInitialize,
   IOperator,
+  IReaction,
   IState,
 } from 'overmind';
 import { createHook } from 'overmind-react';
@@ -70,6 +71,8 @@ export interface Operator<Input = void, Output = Input>
 
 export interface Derive<Parent extends IState, Output>
   extends IDerive<Config, Parent, Output> {}
+
+export interface Reaction extends IReaction<Config> {}
 
 export const connect = createConnect<typeof config>();
 

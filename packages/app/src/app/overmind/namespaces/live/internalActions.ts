@@ -1,24 +1,29 @@
-import { Action, AsyncAction } from 'app/overmind';
 import {
-  Module,
   EditorSelection,
+  Module,
   Sandbox,
 } from '@codesandbox/common/lib/types';
+import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 
-export const clearUserSelections: Action<any> = ({ state }, live_user_id) => {
+export const clearUserSelections: Action<any> = (
+  { state, effects },
+  live_user_id
+) => {
   const clearSelections = userId => {
     const userIndex = state.live.roomInfo.users.findIndex(u => u.id === userId);
 
     if (userIndex > -1) {
       if (state.live.roomInfo.users[userIndex]) {
         state.live.roomInfo.users[userIndex].selection = null;
-        state.editor.pendingUserSelections.push({
-          userId,
-          selection: null,
-          name: null,
-          color: null,
-        });
+        effects.vscode.updateUserSelections([
+          {
+            userId,
+            selection: null,
+            name: null,
+            color: null,
+          },
+        ]);
       }
     }
   };
@@ -62,17 +67,19 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     state.live.roomInfo = roomInfo;
     state.live.liveUserId = liveUserId;
 
-    if (!state.editor.sandboxes[sandbox.id]) {
+    if (
+      !state.editor.currentSandbox ||
+      state.editor.currentSandbox.id !== sandbox.id
+    ) {
       state.editor.sandboxes[sandbox.id] = sandbox;
+      state.editor.currentId = sandbox.id;
     }
-    state.editor.currentId = sandbox.id;
 
     effects.analytics.track('Live Session Joined', {});
     effects.live.listen(actions.live.liveMessageReceived);
 
-    state.live.receivingCode = true;
     actions.live.internal.initializeModuleState(moduleState);
-    state.live.receivingCode = false;
+
     state.live.isLive = true;
     state.live.error = null;
     effects.live.sendModuleState();
@@ -88,7 +95,7 @@ export const initialize: AsyncAction<string, Sandbox> = async (
 };
 
 export const initializeModuleState: Action<any> = (
-  { state, effects },
+  { state, actions, effects },
   moduleState
 ) => {
   Object.keys(moduleState).forEach(moduleShortid => {
@@ -101,14 +108,26 @@ export const initializeModuleState: Action<any> = (
     );
 
     if (index > -1) {
-      if (moduleInfo.code != null) {
-        state.editor.currentSandbox.modules[index].code = moduleInfo.code;
+      if (moduleInfo.code === null) {
+        return;
       }
-      if (!moduleInfo.synced) {
-        state.editor.changedModuleShortids.push(moduleShortid);
+
+      // If we are getting code that has not been saved, we want to update the actual saved code
+      // so that we properly detect "changed files" in the explorer. But we only do this if the
+      // savedCode is not set, as we might get multiple initializeModuleState
+      if (
+        !moduleInfo.synced &&
+        state.editor.currentSandbox.modules[index].savedCode == null
+      ) {
+        state.editor.currentSandbox.modules[index].savedCode =
+          state.editor.currentSandbox.modules[index].code;
       }
+
+      state.editor.currentSandbox.modules[index].code = moduleInfo.code;
     }
   });
+
+  actions.editor.internal.updatePreviewCode();
 };
 
 export const getSelectionsForModule: Action<Module, EditorSelection[]> = (

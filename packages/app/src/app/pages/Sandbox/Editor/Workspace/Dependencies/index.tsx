@@ -1,11 +1,9 @@
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
-
 import { WorkspaceSubtitle } from '../elements';
-
 import { AddFont } from './AddFont';
 import { AddResource } from './AddResource';
 import { AddVersion } from './AddVersion';
@@ -60,7 +58,7 @@ export const Dependencies: FunctionComponent = () => {
               dependency={dependency}
               key={dependency}
               onRefresh={(name, version) => addNpmDependency({ name, version })}
-              onRemove={npmDependencyRemoved}
+              onRemove={name => npmDependencyRemoved({ name })}
             />
           ))}
 

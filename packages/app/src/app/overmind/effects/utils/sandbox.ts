@@ -1,8 +1,9 @@
-import { Module, Directory } from '@codesandbox/common/lib/types';
+import { Directory, Module } from '@codesandbox/common/lib/types';
+
 import {
+  IDirectoryAPIResponse,
   IModuleAPIResponse,
   SandboxAPIResponse,
-  IDirectoryAPIResponse,
 } from '../api/types';
 
 export function transformModule(module: IModuleAPIResponse): Module {
@@ -14,6 +15,7 @@ export function transformModule(module: IModuleAPIResponse): Module {
     errors: [],
     corrections: [],
     type: 'file' as 'file',
+    path: null,
   };
 }
 
@@ -23,6 +25,7 @@ export function transformDirectory(
   return {
     ...directory,
     type: 'directory' as 'directory',
+    path: null,
   };
 }
 

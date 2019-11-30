@@ -1,14 +1,11 @@
-// @flow
-import type { Module } from '../eval/entities/module';
-
 import { getCurrentManager } from '../compile';
 
 let cachedBoilerplates = [];
 
-export async function evalBoilerplates(boilerplates: Array<any>) {
+export async function evalBoilerplates(boilerplates) {
   cachedBoilerplates = await Promise.all(
     boilerplates.map(async boilerplate => {
-      const fakeModule: Module = {
+      const fakeModule = {
         path: `/boilerplate-${boilerplate.condition}${boilerplate.extension}`,
         code: boilerplate.code,
       };
@@ -23,11 +20,11 @@ export async function evalBoilerplates(boilerplates: Array<any>) {
   );
 }
 
-export function getBoilerplates(): Array<any> {
+export function getBoilerplates() {
   return cachedBoilerplates;
 }
 
-export function findBoilerplate(module: Module): any {
+export function findBoilerplate(module) {
   const boilerplates = getBoilerplates();
   const boilerplate = boilerplates.find(b => {
     const regex = new RegExp(b.condition);
@@ -36,9 +33,7 @@ export function findBoilerplate(module: Module): any {
 
   if (boilerplate == null) {
     throw new Error(
-      `No boilerplate found for ${
-        module.path
-      }, you can create one in the future`
+      `No boilerplate found for ${module.path}, you can create one in the future`
     );
   }
 
