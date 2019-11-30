@@ -446,6 +446,17 @@ export const massCreateModules: AsyncAction<{
 
       actions.editor.internal.updatePreviewCode();
 
+      // This can happen if you have selected a deleted file in VSCode and try to save it,
+      // we want to select it again
+      if (!state.editor.currentModuleShortid) {
+        const lastAddedModule =
+          state.editor.currentSandbox.modules[
+            state.editor.currentSandbox.modules.length - 1
+          ];
+
+        actions.editor.internal.setCurrentModule(lastAddedModule);
+      }
+
       if (state.live.isCurrentEditor) {
         effects.live.sendMassCreatedModules(data.modules, data.directories);
       }
