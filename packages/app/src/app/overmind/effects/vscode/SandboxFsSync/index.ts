@@ -16,6 +16,7 @@ import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { json } from 'overmind';
 
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { WAIT_INITIAL_TYPINGS_MS } from '../constants';
 import { appendFile, mkdir, rename, rmdir, unlink, writeFile } from './utils';
 
@@ -111,7 +112,9 @@ class SandboxFsSync {
 
     appendFile(fs, copy);
     this.send('append-file', copy);
-    browserFs.appendFile(join('/sandbox', module.path), module.code, () => {});
+
+    const savedCode = getSavedCode(module.code, module.savedCode);
+    browserFs.appendFile(join('/sandbox', module.path), savedCode, () => {});
   }
 
   public writeFile(fs: SandboxFs, module: Module) {
@@ -119,7 +122,9 @@ class SandboxFsSync {
 
     writeFile(fs, copy);
     this.send('write-file', copy);
-    browserFs.writeFile(join('/sandbox', module.path), module.code, () => {});
+
+    const savedCode = getSavedCode(module.code, module.savedCode);
+    browserFs.writeFile(join('/sandbox', module.path), savedCode, () => {});
 
     if (module.title === 'package.json') {
       this.syncDependencyTypings();
