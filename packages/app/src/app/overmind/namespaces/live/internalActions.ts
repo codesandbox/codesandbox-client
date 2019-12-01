@@ -57,12 +57,9 @@ export const initialize: AsyncAction<string, Sandbox> = async (
   state.live.isLoading = true;
 
   try {
-    const {
-      roomInfo,
-      liveUserId,
-      sandbox,
-      moduleState,
-    } = await effects.live.joinChannel(id);
+    const { roomInfo, liveUserId, sandbox } = await effects.live.joinChannel(
+      id
+    );
 
     state.live.roomInfo = roomInfo;
     state.live.liveUserId = liveUserId;
@@ -78,11 +75,8 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     effects.analytics.track('Live Session Joined', {});
     effects.live.listen(actions.live.liveMessageReceived);
 
-    actions.live.internal.initializeModuleState(moduleState);
-
     state.live.isLive = true;
     state.live.error = null;
-    effects.live.sendModuleState();
 
     return sandbox;
   } catch (error) {
@@ -103,32 +97,35 @@ export const initializeModuleState: Action<any> = (
     effects.live.createClient(moduleShortid, moduleInfo.revision);
 
     // Module has not been saved, so is different
-    const index = state.editor.currentSandbox.modules.findIndex(
+    const module = state.editor.currentSandbox.modules.find(
       m => m.shortid === moduleShortid
     );
 
-    if (index > -1) {
+    if (module) {
       if (moduleInfo.code === null) {
         return;
       }
 
-      const module = state.editor.currentSandbox.modules[index];
-
       // If we are getting code that has not been saved, we want to update the actual saved code
       // so that we properly detect "changed files" in the explorer. But we only do this if the
       // savedCode is not set, as we might get multiple initializeModuleState
-      if (!moduleInfo.synced && module.savedCode == null) {
+      if (!moduleInfo.synced && module.savedCode !== moduleInfo) {
         module.savedCode = module.code;
-      }
+        module.code = moduleInfo.code;
 
-      module.code = moduleInfo.code;
-      effects.vscode.sandboxFsSync.writeFile(
-        state.editor.modulesByPath,
-        module
-      );
+        effects.vscode.setModuleCode(module);
+      } else if (!moduleInfo.synced) {
+        module.code = moduleInfo.code;
+        effects.vscode.setModuleCode(module);
+      } else {
+        module.code = moduleInfo.code;
+        effects.vscode.sandboxFsSync.writeFile(
+          state.editor.modulesByPath,
+          module
+        );
+      }
     }
   });
-
   actions.editor.internal.updatePreviewCode();
 };
 
