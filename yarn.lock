@@ -7814,17 +7814,17 @@ codemirror@^5.27.4:
   version "5.38.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.38.0.tgz#26a9551446e51dbdde36aabe60f72469724fd332"
 
-codesandbox-import-util-types@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-2.1.2.tgz#2d0b7e977eadd4c0b5baeeaaae0b79c7e6c6900a"
-  integrity sha512-/6kk/qbV9n+2+vH5aVUNlskyNlhhxGBzzUvt7Ne2MGWkSRv42QMFxuZgMd+bjmXBENUZjrJPGXPK7HxxD1Q67w==
+codesandbox-import-util-types@^2.1.9:
+  version "2.1.9"
+  resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-2.1.9.tgz#24ba5ec3d966f51f18b78c48d32e6411da90aa74"
+  integrity sha512-Vc4qh+neVfHtS3RG+7wvaErMoEKdNTnLFnyj4Dcbn3NV7v9nlPj/z6MGhHp9S+vAjegWorFzxg9lKB1WGHTt5Q==
 
-codesandbox-import-utils@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-2.1.2.tgz#30613e28e79db681a555df70e5a916a7797f5c5d"
-  integrity sha512-cbvNa+dzYw2R3ofUkj51LsT8DX1GIoWVeDaJdSMJgZQSxXptjrf6zsLogcJtY8ihOURjED8CWEbQvpbHTM94EA==
+codesandbox-import-utils@^2.1.11:
+  version "2.1.11"
+  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-2.1.11.tgz#171ce53a77b8dcd196fdcfaf0f6bc52b1206444a"
+  integrity sha512-vkA0drdzO2ArMUzl8/AhEuzaW6qX3ic1SXPmruVS7bo/3K1P8H+S9CbuUNPo67X54/LzHwMnAZgZMXwN8vrw7Q==
   dependencies:
-    codesandbox-import-util-types "^2.1.2"
+    codesandbox-import-util-types "^2.1.9"
     istextorbinary "^2.2.1"
     lz-string "^1.4.4"
 

@@ -1,4 +1,6 @@
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import getTemplateDefinition, {
+  TemplateType,
+} from '@codesandbox/common/lib/templates';
 import {
   Module,
   ModuleTab,
@@ -189,7 +191,7 @@ export const updateCurrentTemplate: AsyncAction = async ({
       templateDefinition.isServer ||
       state.editor.parsedConfigurations.sandbox.parsed.template
     ) {
-      const { parsed } = state.editor.parsedConfigurations!.package!;
+      const { parsed = {} } = state.editor.parsedConfigurations!.package!;
 
       const modulesByPath = mapValues(state.editor.modulesByPath, module => ({
         // No idea why this typing fails!
@@ -201,8 +203,8 @@ export const updateCurrentTemplate: AsyncAction = async ({
 
       // TODO: What is a template really? Two different kinds of templates here, need to fix the types
       // Talk to Ives and Bogdan
-      const newTemplate =
-        computeTemplate(parsed!, modulesByPath) || ('node' as any);
+      const newTemplate = (computeTemplate(parsed, modulesByPath) ||
+        'node') as TemplateType;
 
       if (
         newTemplate !== currentTemplate &&
