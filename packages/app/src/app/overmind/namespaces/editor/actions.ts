@@ -506,14 +506,7 @@ export const discardModuleChanges: Action<{
     return;
   }
 
-  const code = module.savedCode === null ? module.code || '' : module.savedCode;
-  actions.editor.codeChanged({
-    code,
-    moduleShortid,
-  });
-
   module.updatedAt = new Date().toString();
-
   effects.vscode.revertModule(module);
 
   state.editor.changedModuleShortids.splice(
