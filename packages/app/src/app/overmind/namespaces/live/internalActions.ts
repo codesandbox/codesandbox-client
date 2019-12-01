@@ -94,11 +94,11 @@ export const initialize: AsyncAction<string, Sandbox> = async (
   return null;
 };
 
-export const initializeModuleState: Action<any> = (
+export const initializeModuleState: AsyncAction<any> = (
   { state, actions, effects },
   moduleState
 ) => {
-  Object.keys(moduleState).forEach(moduleShortid => {
+  Object.keys(moduleState).forEach(async moduleShortid => {
     const moduleInfo = moduleState[moduleShortid];
     effects.live.createClient(moduleShortid, moduleInfo.revision);
 
@@ -112,18 +112,23 @@ export const initializeModuleState: Action<any> = (
         return;
       }
 
-      // If we are getting code that has not been saved, we want to update the actual saved code
-      // so that we properly detect "changed files" in the explorer. But we only do this if the
-      // savedCode is not set, as we might get multiple initializeModuleState
-      if (
-        !moduleInfo.synced &&
-        state.editor.currentSandbox.modules[index].savedCode == null
-      ) {
-        state.editor.currentSandbox.modules[index].savedCode =
-          state.editor.currentSandbox.modules[index].code;
-      }
+      const module = state.editor.currentSandbox.modules[index];
 
-      state.editor.currentSandbox.modules[index].code = moduleInfo.code;
+      if (module) {
+        // If we are getting code that has not been saved, we want to update the actual saved code
+        // so that we properly detect "changed files" in the explorer. But we only do this if the
+        // savedCode is not set, as we might get multiple initializeModuleState
+        if (!moduleInfo.synced && module.savedCode == null) {
+          module.savedCode = module.code;
+        }
+
+        module.code = moduleInfo.code;
+        if (moduleInfo.synced) {
+          effects.vscode.revertModule(module);
+        } else {
+          await effects.vscode.setCode(module, moduleInfo.code);
+        }
+      }
     }
   });
 

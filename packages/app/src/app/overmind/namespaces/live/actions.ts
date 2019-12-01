@@ -90,11 +90,15 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
   })
 );
 
-export const applyTransformation: Action<{
+export const applyTransformation: AsyncAction<{
   operation: any;
   moduleShortid: string;
-}> = ({ effects }, { operation, moduleShortid }) => {
-  effects.vscode.applyOperation(moduleShortid, operation);
+}> = async ({ effects }, { operation, moduleShortid }) => {
+  try {
+    await effects.vscode.applyOperation(moduleShortid, operation);
+  } catch (e) {
+    effects.live.send('live:module_state', {});
+  }
 };
 
 export const onSelectionChanged: Action<any> = (

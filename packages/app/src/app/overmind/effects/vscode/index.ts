@@ -209,14 +209,57 @@ export class VSCodeEffect {
   }
 
   public revertModule(module: Module) {
+    if (!this.modelsHandler) {
+      return;
+    }
     this.modelsHandler.revertModule(module);
   }
+
+  public async setCode(module: Module, code: string) {
+    if (!this.modelsHandler) {
+      return;
+    }
+    await this.modelsHandler.setModelCode(module, code);
+  }
+
+  operationQueue: {
+    [moduleId: string]: {
+      queue: any[];
+      applying: boolean;
+    };
+  } = {};
 
   public async applyOperation(
     moduleShortid: string,
     operation: (string | number)[]
   ) {
-    return this.modelsHandler.applyOperation(moduleShortid, operation);
+    this.operationQueue[moduleShortid] = this.operationQueue[moduleShortid] || {
+      queue: [],
+      applying: false,
+    };
+    this.operationQueue[moduleShortid].queue.push(operation);
+
+    if (!this.modelsHandler || this.operationQueue[moduleShortid].applying) {
+      return;
+    }
+
+    // We use a queue and allow only one instance to run at once. This is to
+    // ensure that live operations are not applied simultaneously.
+    this.operationQueue[moduleShortid].applying = true;
+    const { queue } = this.operationQueue[moduleShortid];
+
+    try {
+      if (queue) {
+        // eslint-disable-next-line
+        for (const op of queue) {
+          // eslint-disable-next-line
+          await this.modelsHandler.applyOperation(moduleShortid, op);
+        }
+      }
+    } finally {
+      this.operationQueue[moduleShortid].queue = [];
+      this.operationQueue[moduleShortid].applying = false;
+    }
   }
 
   public updateOptions(options: { readOnly: boolean }) {
@@ -528,139 +571,143 @@ export class VSCodeEffect {
   }
 
   private async loadEditor(monaco: any, container: HTMLElement) {
-    this.monaco = monaco;
-    this.workbench = new Workbench(monaco, this.controller, this.runCommand);
+    return new Promise(async vscodeResolved => {
+      this.monaco = monaco;
+      this.workbench = new Workbench(monaco, this.controller, this.runCommand);
 
-    if (localStorage.getItem('settings.vimmode') === 'true') {
-      this.enableExtension(VIM_EXTENSION_ID);
-    }
-
-    this.workbench.addWorkbenchActions();
-
-    const r = window.require;
-    const [
-      { IEditorService },
-      { ICodeEditorService },
-      { ITextFileService },
-
-      { IEditorGroupsService },
-      { IStatusbarService },
-      { IExtensionService },
-      { CodeSandboxService },
-      { CodeSandboxConfigurationUIService },
-      { ICodeSandboxEditorConnectorService },
-      { ICommandService },
-      { SyncDescriptor },
-      { IInstantiationService },
-      { IExtensionEnablementService },
-      { IContextViewService },
-    ] = [
-      r('vs/workbench/services/editor/common/editorService'),
-      r('vs/editor/browser/services/codeEditorService'),
-      r('vs/workbench/services/textfile/common/textfiles'),
-      r('vs/workbench/services/editor/common/editorGroupsService'),
-      r('vs/platform/statusbar/common/statusbar'),
-      r('vs/workbench/services/extensions/common/extensions'),
-      r('vs/codesandbox/services/codesandbox/browser/codesandboxService'),
-      r('vs/codesandbox/services/codesandbox/configurationUIService'),
-      r(
-        'vs/codesandbox/services/codesandbox/common/codesandboxEditorConnector'
-      ),
-      r('vs/platform/commands/common/commands'),
-      r('vs/platform/instantiation/common/descriptors'),
-      r('vs/platform/instantiation/common/instantiation'),
-      r('vs/platform/extensionManagement/common/extensionManagement'),
-      r('vs/platform/contextview/browser/contextView'),
-    ];
-
-    const { serviceCollection } = await new Promise<any>(resolve => {
-      monaco.editor.create(
-        container,
-        {
-          codesandboxService: i =>
-            new SyncDescriptor(CodeSandboxService, [this.controller, this]),
-          codesandboxConfigurationUIService: i =>
-            new SyncDescriptor(CodeSandboxConfigurationUIService, [
-              this.customEditorApi,
-            ]),
-        },
-        resolve
-      );
-    });
-
-    // It has to run the accessor within the callback
-    serviceCollection.get(IInstantiationService).invokeFunction(accessor => {
-      // Initialize these services
-      accessor.get(CodeSandboxConfigurationUIService);
-      accessor.get(ICodeSandboxEditorConnectorService);
-
-      const statusbarPart = accessor.get(IStatusbarService);
-      const menubarPart = accessor.get('menubar');
-      const commandService = accessor.get(ICommandService);
-      const extensionService = accessor.get(IExtensionService);
-      const extensionEnablementService = accessor.get(
-        IExtensionEnablementService
-      );
-
-      this.commandService.resolve(commandService);
-      this.extensionService.resolve(extensionService);
-
-      this.extensionEnablementService.resolve(extensionEnablementService);
-
-      const editorPart = accessor.get(IEditorGroupsService);
-
-      const codeEditorService = accessor.get(ICodeEditorService);
-      const textFileService = accessor.get(ITextFileService);
-      const editorService = accessor.get(IEditorService);
-      const contextViewService = accessor.get(IContextViewService);
-
-      contextViewService.setContainer(container);
-
-      this.editorApi = {
-        openFile(path) {
-          return codeEditorService.openCodeEditor({
-            resource: monaco.Uri.file('/sandbox' + path),
-          });
-        },
-        getActiveCodeEditor() {
-          return codeEditorService.getActiveCodeEditor();
-        },
-        textFileService,
-        editorPart,
-        editorService,
-        codeEditorService,
-        extensionService,
-      };
-
-      window.CSEditor = {
-        editor: this.editorApi,
-        monaco,
-      };
-
-      if (process.env.NODE_ENV === 'development') {
-        // eslint-disable-next-line
-        console.log(accessor);
+      if (localStorage.getItem('settings.vimmode') === 'true') {
+        this.enableExtension(VIM_EXTENSION_ID);
       }
 
-      statusbarPart.create(this.elements.statusbar);
-      menubarPart.create(this.elements.menubar);
-      editorPart.create(this.elements.editorPart);
-      editorPart.layout(container.offsetWidth, container.offsetHeight);
+      this.workbench.addWorkbenchActions();
 
-      editorPart.parent = container;
+      const r = window.require;
+      const [
+        { IEditorService },
+        { ICodeEditorService },
+        { ITextFileService },
 
-      container.appendChild(this.elements.editorPart);
+        { IEditorGroupsService },
+        { IStatusbarService },
+        { IExtensionService },
+        { CodeSandboxService },
+        { CodeSandboxConfigurationUIService },
+        { ICodeSandboxEditorConnectorService },
+        { ICommandService },
+        { SyncDescriptor },
+        { IInstantiationService },
+        { IExtensionEnablementService },
+        { IContextViewService },
+      ] = [
+        r('vs/workbench/services/editor/common/editorService'),
+        r('vs/editor/browser/services/codeEditorService'),
+        r('vs/workbench/services/textfile/common/textfiles'),
+        r('vs/workbench/services/editor/common/editorGroupsService'),
+        r('vs/platform/statusbar/common/statusbar'),
+        r('vs/workbench/services/extensions/common/extensions'),
+        r('vs/codesandbox/services/codesandbox/browser/codesandboxService'),
+        r('vs/codesandbox/services/codesandbox/configurationUIService'),
+        r(
+          'vs/codesandbox/services/codesandbox/common/codesandboxEditorConnector'
+        ),
+        r('vs/platform/commands/common/commands'),
+        r('vs/platform/instantiation/common/descriptors'),
+        r('vs/platform/instantiation/common/instantiation'),
+        r('vs/platform/extensionManagement/common/extensionManagement'),
+        r('vs/platform/contextview/browser/contextView'),
+      ];
 
-      this.initializeReactions();
+      const { serviceCollection } = await new Promise<any>(resolve => {
+        monaco.editor.create(
+          container,
+          {
+            codesandboxService: i =>
+              new SyncDescriptor(CodeSandboxService, [this.controller, this]),
+            codesandboxConfigurationUIService: i =>
+              new SyncDescriptor(CodeSandboxConfigurationUIService, [
+                this.customEditorApi,
+              ]),
+          },
+          resolve
+        );
+      });
 
-      this.configureMonacoLanguages(monaco);
+      // It has to run the accessor within the callback
+      serviceCollection.get(IInstantiationService).invokeFunction(accessor => {
+        // Initialize these services
+        accessor.get(CodeSandboxConfigurationUIService);
+        accessor.get(ICodeSandboxEditorConnectorService);
 
-      editorService.onDidActiveEditorChange(this.onActiveEditorChange);
-      this.initializeCodeSandboxAPIListener();
+        const statusbarPart = accessor.get(IStatusbarService);
+        const menubarPart = accessor.get('menubar');
+        const commandService = accessor.get(ICommandService);
+        const extensionService = accessor.get(IExtensionService);
+        const extensionEnablementService = accessor.get(
+          IExtensionEnablementService
+        );
 
-      if (this.settings.lintEnabled) {
-        this.createLinter();
-      }
+        this.commandService.resolve(commandService);
+        this.extensionService.resolve(extensionService);
+
+        this.extensionEnablementService.resolve(extensionEnablementService);
+
+        const editorPart = accessor.get(IEditorGroupsService);
+
+        const codeEditorService = accessor.get(ICodeEditorService);
+        const textFileService = accessor.get(ITextFileService);
+        const editorService = accessor.get(IEditorService);
+        const contextViewService = accessor.get(IContextViewService);
+
+        contextViewService.setContainer(container);
+
+        this.editorApi = {
+          openFile(path) {
+            return codeEditorService.openCodeEditor({
+              resource: monaco.Uri.file('/sandbox' + path),
+            });
+          },
+          getActiveCodeEditor() {
+            return codeEditorService.getActiveCodeEditor();
+          },
+          textFileService,
+          editorPart,
+          editorService,
+          codeEditorService,
+          extensionService,
+        };
+
+        window.CSEditor = {
+          editor: this.editorApi,
+          monaco,
+        };
+
+        if (process.env.NODE_ENV === 'development') {
+          // eslint-disable-next-line
+          console.log(accessor);
+        }
+
+        statusbarPart.create(this.elements.statusbar);
+        menubarPart.create(this.elements.menubar);
+        editorPart.create(this.elements.editorPart);
+        editorPart.layout(container.offsetWidth, container.offsetHeight);
+
+        editorPart.parent = container;
+
+        container.appendChild(this.elements.editorPart);
+
+        this.initializeReactions();
+
+        this.configureMonacoLanguages(monaco);
+
+        editorService.onDidActiveEditorChange(this.onActiveEditorChange);
+        this.initializeCodeSandboxAPIListener();
+
+        if (this.settings.lintEnabled) {
+          this.createLinter();
+        }
+
+        vscodeResolved();
+      });
     });
   }
 

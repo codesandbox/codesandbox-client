@@ -123,6 +123,17 @@ export class ModelsHandler {
     return moduleModel.model;
   };
 
+  public async setModelCode(module: Module, code: string) {
+    const moduleModel = this.getModuleModel(module);
+
+    if (moduleModel && moduleModel.model) {
+      const model = await moduleModel.model;
+      this.isApplyingOperation = true;
+      model.setValue(code);
+      this.isApplyingOperation = false;
+    }
+  }
+
   public async updateTabsPath(oldPath: string, newPath: string) {
     const oldModelPath = '/sandbox' + oldPath;
     const newModelPath = '/sandbox' + newPath;
@@ -161,7 +172,7 @@ export class ModelsHandler {
     // promise, because there might be multiple operations fired before
     // the model is actually resolved. This creates a "natural" queue
     if (!moduleModel.model) {
-      if (modelEditor) {
+      if (modelEditor && modelEditor.textModelReference) {
         moduleModel.model = modelEditor.textModelReference.then(
           ref => ref.object.textEditorModel
         );
@@ -384,15 +395,19 @@ export class ModelsHandler {
     let index = 0;
     const currentEOLLength = model.getEOL().length;
     let eolChanged = false;
+    const modelCode = model.getValue();
+    const modelLines = modelCode.split(/\n/) || [];
+
+    if (operation.baseLength !== modelCode.length) {
+      throw new Error('Length mismatch');
+    }
+
     for (let i = 0; i < operation.ops.length; i++) {
       const op = operation.ops[i];
       if (TextOperation.isRetain(op)) {
         index += op;
       } else if (TextOperation.isInsert(op)) {
-        const { lineNumber, column } = indexToLineAndColumn(
-          model.getValue().split(/\n/) || [],
-          index
-        );
+        const { lineNumber, column } = indexToLineAndColumn(modelLines, index);
         const range = new this.monaco.Range(
           lineNumber,
           column,
@@ -416,9 +431,8 @@ export class ModelsHandler {
           forceMoveMarkers: true,
         });
       } else if (TextOperation.isDelete(op)) {
-        const lines = model.getValue().split(/\n/) || [];
-        const from = indexToLineAndColumn(lines, index);
-        const to = indexToLineAndColumn(lines, index - op);
+        const from = indexToLineAndColumn(modelLines, index);
+        const to = indexToLineAndColumn(modelLines, index - op);
         results.push({
           range: new this.monaco.Range(
             from.lineNumber,
