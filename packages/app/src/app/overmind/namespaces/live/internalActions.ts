@@ -105,20 +105,12 @@ export const initializeModuleState: Action<any> = (
       if (moduleInfo.code === null) {
         return;
       }
+      module.savedCode = moduleInfo.save_code;
+      module.code = moduleInfo.code;
 
-      // If we are getting code that has not been saved, we want to update the actual saved code
-      // so that we properly detect "changed files" in the explorer. But we only do this if the
-      // savedCode is not set, as we might get multiple initializeModuleState
-      if (!moduleInfo.synced && module.savedCode !== moduleInfo) {
-        module.savedCode = module.code;
-        module.code = moduleInfo.code;
+      effects.vscode.setModuleCode(module);
 
-        effects.vscode.setModuleCode(module);
-      } else if (!moduleInfo.synced) {
-        module.code = moduleInfo.code;
-        effects.vscode.setModuleCode(module);
-      } else {
-        module.code = moduleInfo.code;
+      if (moduleInfo.synced) {
         effects.vscode.sandboxFsSync.writeFile(
           state.editor.modulesByPath,
           module
