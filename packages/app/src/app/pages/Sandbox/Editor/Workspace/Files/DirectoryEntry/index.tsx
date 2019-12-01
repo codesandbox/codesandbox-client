@@ -2,14 +2,13 @@ import React from 'react';
 import { DropTarget, DropTargetMonitor } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
 import { useOvermind } from 'app/overmind';
-import { Alert } from 'app/components/Alert';
-import Modal from 'app/components/Modal';
 import {
   getChildren as calculateChildren,
   inDirectory,
 } from '@codesandbox/common/lib/sandbox/modules';
 
 import DirectoryChildren from './DirectoryChildren';
+import DirectoryEntryModal from './DirectoryEntryModal';
 import { EntryContainer, Opener, Overlay } from './elements';
 import Entry from './Entry';
 import validateTitle from './validateTitle';
@@ -43,11 +42,12 @@ const getFiles = async (files: File[] | FileList): Promise<parsedFiles> => {
 };
 
 type ItemTypes = 'module' | 'directory';
-interface DeleteModal {
-  type: ItemTypes;
+
+type Modal = {
   title: string;
-  shortid: string;
-}
+  body: React.ReactNode;
+  onConfirm: () => void;
+};
 
 interface Props {
   id: string;
@@ -97,9 +97,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
 
   const [creating, setCreating] = React.useState<ItemTypes>(null);
   const [open, setOpen] = React.useState(root || shouldDirectoryBeOpen(id));
-  const [deleteModal, setDeleteModal] = React.useState<DeleteModal | null>(
-    null
-  );
+  const [modalConfirm, setModalConfirm] = React.useState<Modal | null>(null);
 
   React.useEffect(() => {
     if (initializeProperties) {
@@ -151,11 +149,30 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     moduleRenamed({ moduleShortid, title });
   };
 
-  const deleteModule = (moduleId: string, title: string) => {
-    setDeleteModal({
-      type: 'module',
-      shortid: moduleId,
-      title,
+  const confirmDeleteModule = (moduleShortid: string, moduleName: string) => {
+    setModalConfirm({
+      title: 'Delete File',
+      body: (
+        <span>
+          Are you sure you want to delete{' '}
+          <b
+            css={`
+              word-break: break-all;
+            `}
+          >
+            {moduleName}
+          </b>
+          ?
+          <br />
+          The file will be permanently removed.
+        </span>
+      ),
+      onConfirm: () => {
+        closeModals();
+        moduleDeleted({
+          moduleShortid,
+        });
+      },
     });
   };
 
@@ -196,14 +213,45 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   };
 
   const closeModals = () => {
-    setDeleteModal(null);
+    setModalConfirm(null);
   };
 
-  const deleteDirectory = () => {
-    setDeleteModal({
-      type: 'directory',
-      title,
-      shortid,
+  const confirmDeleteDirectory = (
+    directoryShortid: string,
+    directoryName: string
+  ) => {
+    setModalConfirm({
+      title: 'Delete Directory',
+      body: (
+        <span>
+          Are you sure you want to delete <b>{directoryName}</b>?
+          <br />
+          The directory will be permanently removed.
+        </span>
+      ),
+      onConfirm: () => {
+        closeModals();
+        directoryDeleted({
+          directoryShortid,
+        });
+      },
+    });
+  };
+
+  const confirmDiscardChanges = (moduleShortid: string, moduleName: string) => {
+    setModalConfirm({
+      title: 'Discard Changes',
+      body: (
+        <span>
+          Are you sure you want to discard changes on <b>{moduleName}</b>?
+        </span>
+      ),
+      onConfirm: () => {
+        closeModals();
+        discardModuleChanges({
+          moduleShortid,
+        });
+      },
     });
   };
 
@@ -230,12 +278,6 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     moduleDoubleClicked();
   };
 
-  const discardChanges = (moduleShortid: string) => {
-    discardModuleChanges({ moduleShortid });
-
-    return true;
-  };
-
   const title = root ? 'Project' : directories.find(m => m.id === id).title;
 
   return connectDropTarget(
@@ -253,39 +295,16 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
             isOpen={open}
             onClick={toggleOpen}
             renameValidator={validateDirectoryTitle}
-            discardModuleChanges={discardChanges}
+            discardModuleChanges={confirmDiscardChanges}
             rename={!root && renameDirectory}
             onCreateModuleClick={onCreateModuleClick}
             onCreateDirectoryClick={onCreateDirectoryClick}
             onUploadFileClick={isLoggedIn && privacy === 0 && onUploadFileClick}
-            deleteEntry={!root && deleteDirectory}
+            deleteEntry={!root && confirmDeleteDirectory}
             hasChildren={getChildren().length > 0}
             closeTree={closeTree}
             getModulePath={getModulePath}
           />
-          {deleteModal && deleteModal.type === 'directory' && (
-            <Modal isOpen onClose={closeModals} width={400}>
-              <Alert
-                title="Delete Directory"
-                body={
-                  <span>
-                    Are you sure you want to delete <b>{deleteModal.title}</b>
-                    ?
-                    <br />
-                    The directory will be permanently removed.
-                  </span>
-                }
-                onCancel={closeModals}
-                onConfirm={() => {
-                  directoryDeleted({
-                    directoryShortid: deleteModal.shortid,
-                  });
-
-                  setDeleteModal(null);
-                }}
-              />
-            </Modal>
-          )}
         </EntryContainer>
       )}
       <Opener open={open}>
@@ -306,50 +325,17 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
           renameModule={renameModule}
           parentShortid={shortid}
           renameValidator={validateModuleTitle}
-          deleteEntry={deleteModule}
+          deleteEntry={confirmDeleteModule}
           setCurrentModule={setCurrentModule}
           markTabsNotDirty={markTabsNotDirty}
-          discardModuleChanges={discardChanges}
+          discardModuleChanges={confirmDiscardChanges}
           getModulePath={getModulePath}
         />
-        {deleteModal && deleteModal.type === 'module' && (
-          <Modal isOpen onClose={closeModals} width={400}>
-            <Alert
-              css={`
-                background-color: ${props =>
-                  props.theme['sideBar.background'] || 'auto'};
-                color: ${props =>
-                  props.theme.light
-                    ? 'rgba(0,0,0,0.9)'
-                    : 'rgba(255,255,255,0.9)'};
-              `}
-              title="Delete File"
-              body={
-                <span>
-                  Are you sure you want to delete{' '}
-                  <b
-                    css={`
-                      word-break: break-all;
-                    `}
-                  >
-                    {deleteModal.title}
-                  </b>
-                  ?
-                  <br />
-                  The file will be permanently removed.
-                </span>
-              }
-              onCancel={closeModals}
-              onConfirm={() => {
-                moduleDeleted({
-                  moduleShortid: deleteModal.shortid,
-                });
-
-                setDeleteModal(null);
-              }}
-            />
-          </Modal>
-        )}
+        <DirectoryEntryModal
+          isOpen={Boolean(modalConfirm)}
+          onClose={closeModals}
+          {...modalConfirm}
+        />
         {creating === 'module' && (
           <Entry
             id=""
