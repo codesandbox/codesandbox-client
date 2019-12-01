@@ -33,8 +33,7 @@ export const roomJoined: AsyncAction<{
     state.editor.modulesByPath = fs;
   });
 
-  effects.live.sendModuleState();
-
+  effects.live.sendModuleStateSyncRequest();
   effects.vscode.openModule(state.editor.currentModule);
   effects.preview.executeCodeImmediately({ initialRender: true });
   state.live.isLoading = false;
@@ -60,7 +59,7 @@ export const createLiveClicked: AsyncAction<{
   Object.assign(state.editor.sandboxes[state.editor.currentId], sandbox);
   state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
 
-  effects.live.sendModuleState();
+  effects.live.sendModuleStateSyncRequest();
 };
 
 export const liveMessageReceived: Operator<LiveMessage> = pipe(
@@ -104,7 +103,7 @@ export const applyTransformation: AsyncAction<{
   } catch (error) {
     // Do not care about the error, but something went wrong and we
     // need a full sync
-    effects.live.sendModuleState();
+    effects.live.sendModuleStateSyncRequest();
   }
 };
 
@@ -215,8 +214,4 @@ export const onFollow: Action<{
       id: module ? module.id : undefined,
     });
   }
-};
-
-export const onModuleStateMismatch: Action = ({ effects }) => {
-  effects.live.sendModuleUpdateRequest();
 };

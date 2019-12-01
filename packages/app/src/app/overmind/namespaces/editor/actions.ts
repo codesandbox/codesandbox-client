@@ -116,6 +116,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   if (sandbox.owned && !state.live.isLive) {
     actions.files.internal.recoverFiles();
+  } else if (state.live.isLive) {
+    effects.live.sendModuleStateSyncRequest();
   }
 
   effects.vscode.openModule(state.editor.currentModule);
@@ -504,14 +506,7 @@ export const discardModuleChanges: Action<{
     return;
   }
 
-  const code = module.savedCode === null ? module.code || '' : module.savedCode;
-  actions.editor.codeChanged({
-    code,
-    moduleShortid,
-  });
-
   module.updatedAt = new Date().toString();
-
   effects.vscode.revertModule(module);
 
   state.editor.changedModuleShortids.splice(

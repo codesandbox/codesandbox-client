@@ -21,6 +21,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import * as childProcess from 'node-services/lib/child_process';
 
+import { debounce } from 'lodash-es';
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
   initializeCustomTheme,
@@ -77,7 +78,7 @@ const context: any = window;
  * parts.
  */
 export class VSCodeEffect {
-  public initialized: Promise<void>;
+  public initialized: Promise<unknown>;
   public sandboxFsSync: SandboxFsSync;
 
   private monaco: any;
@@ -104,12 +105,17 @@ export class VSCodeEffect {
     getCustomEditor: () => null,
   };
 
+  onSelectionChangeDebounced: VsCodeOptions['onSelectionChange'] & {
+    cancel(): void;
+  };
+
   public initialize(options: VsCodeOptions) {
     this.options = options;
     this.controller = {
       getState: options.getState,
       getSignal: options.getSignal,
     };
+    this.onSelectionChangeDebounced = debounce(options.onSelectionChange, 500);
 
     this.prepareElements();
 
@@ -829,7 +835,19 @@ export class VSCodeEffect {
             ),
           };
 
-          this.options.onSelectionChange(data);
+          if (
+            selectionChange.reason === 3 ||
+            /* alt + shift + arrow keys */ selectionChange.source ===
+              'moveWordCommand' ||
+            /* click inside a selection */ selectionChange.source === 'api'
+          ) {
+            this.onSelectionChangeDebounced.cancel();
+            this.options.onSelectionChange(data);
+          } else {
+            // This is just on typing, we send a debounced selection update as a
+            // safeguard to make sure we are in sync
+            this.onSelectionChangeDebounced(data);
+          }
         }
       );
     }
