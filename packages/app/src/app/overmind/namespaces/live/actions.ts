@@ -58,6 +58,8 @@ export const createLiveClicked: AsyncAction<{
 
   Object.assign(state.editor.sandboxes[state.editor.currentId], sandbox);
   state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
+
+  effects.live.sendModuleStateSyncRequest();
 };
 
 export const liveMessageReceived: Operator<LiveMessage> = pipe(

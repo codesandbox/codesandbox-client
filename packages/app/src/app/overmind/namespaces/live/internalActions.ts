@@ -80,8 +80,6 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     state.live.isLive = true;
     state.live.error = null;
 
-    effects.live.sendModuleStateSyncRequest();
-
     return sandbox;
   } catch (error) {
     state.live.error = error.reason;
