@@ -6,6 +6,8 @@ import {
 import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 
+import { getSavedCode } from '../../utils/sandbox';
+
 export const clearUserSelections: Action<any> = (
   { state, effects },
   live_user_id
@@ -78,6 +80,8 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     state.live.isLive = true;
     state.live.error = null;
 
+    effects.live.sendModuleStateSyncRequest();
+
     return sandbox;
   } catch (error) {
     state.live.error = error.reason;
@@ -106,16 +110,28 @@ export const initializeModuleState: Action<any> = (
         return;
       }
 
-      module.savedCode = moduleInfo.saved_code;
-      module.code = moduleInfo.code;
+      const savedCodeChanged =
+        getSavedCode(moduleInfo.code, moduleInfo.saved_code) !==
+        getSavedCode(module.code, module.savedCode);
+      const moduleChanged =
+        moduleInfo.code !== module.code ||
+        moduleInfo.saved_code !== module.savedCode;
 
-      if (moduleInfo.synced) {
-        effects.vscode.sandboxFsSync.writeFile(
-          state.editor.modulesByPath,
-          module
-        );
-      } else {
-        effects.vscode.setModuleCode(module);
+      if (moduleChanged) {
+        module.savedCode = moduleInfo.saved_code;
+        module.code = moduleInfo.code;
+
+        if (savedCodeChanged) {
+          effects.vscode.sandboxFsSync.writeFile(
+            state.editor.modulesByPath,
+            module
+          );
+        }
+        if (moduleInfo.synced) {
+          effects.vscode.revertModule(module);
+        } else {
+          effects.vscode.setModuleCode(module);
+        }
       }
     }
   });
