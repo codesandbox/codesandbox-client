@@ -109,7 +109,7 @@ export const initializeModuleState: Action<any> = (
       // If we are getting code that has not been saved, we want to update the actual saved code
       // so that we properly detect "changed files" in the explorer. But we only do this if the
       // savedCode is not set, as we might get multiple initializeModuleState
-      if (!moduleInfo.synced && module.savedCode !== moduleInfo) {
+      if (!moduleInfo.synced && module.savedCode === null) {
         module.savedCode = module.code;
         module.code = moduleInfo.code;
 
