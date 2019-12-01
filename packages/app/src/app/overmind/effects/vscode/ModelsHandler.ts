@@ -111,9 +111,9 @@ export class ModelsHandler {
       const file = await this.editorApi.openFile(module.path);
       const model = file.getModel();
 
-      this.updateUserSelections(module, moduleModel.selections);
-
       moduleModel.model = Promise.resolve(model);
+
+      this.updateUserSelections(module, moduleModel.selections);
     } else {
       const model = getCurrentModel(this.editorApi);
 
