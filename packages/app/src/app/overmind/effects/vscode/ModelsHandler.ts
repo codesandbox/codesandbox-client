@@ -400,7 +400,7 @@ export class ModelsHandler {
     const modelCode = model.getValue();
 
     if (operation.baseLength !== modelCode.length) {
-      throw new Error('Length mismatch');
+      throw new Error("The base length of the operation doesn't match the length of the code");
     }
 
     for (let i = 0; i < operation.ops.length; i++) {
