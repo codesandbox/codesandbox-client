@@ -112,18 +112,20 @@ export const initializeModuleState: Action<any> = (
         return;
       }
 
+      const module = state.editor.currentSandbox.modules[index];
+
       // If we are getting code that has not been saved, we want to update the actual saved code
       // so that we properly detect "changed files" in the explorer. But we only do this if the
       // savedCode is not set, as we might get multiple initializeModuleState
-      if (
-        !moduleInfo.synced &&
-        state.editor.currentSandbox.modules[index].savedCode == null
-      ) {
-        state.editor.currentSandbox.modules[index].savedCode =
-          state.editor.currentSandbox.modules[index].code;
+      if (!moduleInfo.synced && module.savedCode == null) {
+        module.savedCode = module.code;
       }
 
-      state.editor.currentSandbox.modules[index].code = moduleInfo.code;
+      module.code = moduleInfo.code;
+      effects.vscode.sandboxFsSync.writeFile(
+        state.editor.modulesByPath,
+        module
+      );
     }
   });
 
