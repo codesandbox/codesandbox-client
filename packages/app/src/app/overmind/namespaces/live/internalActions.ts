@@ -105,16 +105,17 @@ export const initializeModuleState: Action<any> = (
       if (moduleInfo.code === null) {
         return;
       }
-      module.savedCode = moduleInfo.save_code;
-      module.code = moduleInfo.code;
 
-      effects.vscode.setModuleCode(module);
+      module.savedCode = moduleInfo.saved_code;
+      module.code = moduleInfo.code;
 
       if (moduleInfo.synced) {
         effects.vscode.sandboxFsSync.writeFile(
           state.editor.modulesByPath,
           module
         );
+      } else {
+        effects.vscode.setModuleCode(module);
       }
     }
   });

@@ -167,7 +167,7 @@ export const codeSaved: AsyncAction<{
 export const onOperationApplied: Action<{
   moduleShortid: string;
   code: string;
-}> = ({ state, actions }, { code, moduleShortid }) => {
+}> = ({ state, effects, actions }, { code, moduleShortid }) => {
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
   );
@@ -182,6 +182,10 @@ export const onOperationApplied: Action<{
   });
 
   actions.editor.internal.updatePreviewCode();
+
+  if (module.savedCode !== null && module.code === module.savedCode) {
+    effects.vscode.revertModule(module);
+  }
 };
 
 export const codeChanged: Action<{
@@ -216,6 +220,10 @@ export const codeChanged: Action<{
 
   if (!isServer && state.preferences.settings.livePreviewEnabled) {
     actions.editor.internal.updatePreviewCode();
+  }
+
+  if (module.savedCode !== null && module.code === module.savedCode) {
+    effects.vscode.revertModule(module);
   }
 };
 
