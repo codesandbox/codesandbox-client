@@ -27,7 +27,7 @@ const Pro: React.FC = () => {
 
   // if you're already a patron, you shouldn't
   // try to get pro.
-  // if (isPatron) location.href = '/patron';
+  if (isPatron) location.href = '/patron';
 
   return (
     <ThemeProvider theme={theme}>
