@@ -23,8 +23,8 @@ columns: 2
 
 ### Quickly try out frameworks and libraries
 
-Start from a ready-made template of any popular framework, from React and Vue to
-Svelte, or others. There’s no setup or boilerplate code to write—go straight to
+Start from a ready-made template for any popular framework, including React, Vue, Angular, 
+or others. There’s no setup or boilerplate code to write—go straight to
 experimenting with code and concepts.
 
 </div>
@@ -33,7 +33,7 @@ experimenting with code and concepts.
 
 ### Code anywhere, on any device
 
-You can use CodeSandbox on any device with a web browser. So you can take your
+You can use CodeSandbox on any device with a web browser. Take your
 code with you and work learning into your life—whether that’s coding on the go,
 at school, at work, or from home.
 
@@ -57,7 +57,7 @@ With Live, you can work on code with friends or colleagues in real-time, just
 like in a Google Doc.
 
 Pair up and share knowledge by walking through code. Or send a sandbox link to
-someone to get help or share a solution.
+someone to get help or provide a solution.
 
 </div>
 
