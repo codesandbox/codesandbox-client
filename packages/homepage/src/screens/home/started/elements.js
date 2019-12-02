@@ -17,11 +17,13 @@ export const Wrapper = styled.div`
 
 export const tweetStyle = css`
   right: -6rem;
-  left: auto;
-  width: 30rem;
   margin-top: 2rem;
   min-height: 20rem;
   background: #242424;
+
+  @media screen and (max-width: 1260px) {
+    right: auto;
+  }
 
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;

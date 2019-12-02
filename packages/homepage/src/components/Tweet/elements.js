@@ -4,13 +4,17 @@ export const TweetsWrapper = styled.a`
   display: block;
   text-decoration: none;
   position: absolute;
-  max-width: 520px;
+  width: 520px;
   background: ${props => props.theme.homepage.grey};
   box-shadow: 0px 1rem 1rem rgba(4, 4, 4, 0.25);
   border-radius: 4px;
   margin-top: 5.5rem;
-  left: -6rem;
+  right: 7rem;
   padding: 2.7rem 4.2rem;
+
+  @media screen and (max-width: 1260px) {
+    right: 0;
+  }
 
   ${props =>
     props.right &&

@@ -20,6 +20,10 @@ export const Nav = styled.section`
   a {
     color: inherit;
     text-decoration: none;
+
+    &:hover {
+      color: ${props => props.theme.homepage.white};
+    }
   }
 
   ul {
