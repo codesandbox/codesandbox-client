@@ -97,7 +97,7 @@ export function Toasts({
         return newNotifs;
       }
 
-      if (notifToHide.notification.onHide) {
+      if (notifToHide && notifToHide.notification.onHide) {
         notifToHide.notification.onHide();
       }
 

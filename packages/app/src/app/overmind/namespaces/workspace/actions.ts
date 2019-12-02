@@ -3,6 +3,7 @@ import { CustomTemplate } from '@codesandbox/common/lib/types';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
+import getItems from 'app/overmind/utils/items';
 
 export const valueChanged: Action<{
   field: string;
@@ -122,38 +123,48 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
   }
 );
 
-export const externalResourceAdded: AsyncAction<{
-  resource: string;
-}> = withOwnedSandbox(async ({ state, effects, actions }, { resource }) => {
-  const { externalResources } = state.editor.currentSandbox;
+export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
+  async ({ effects, state, actions }, resource) => {
+    const { externalResources } = state.editor.currentSandbox;
 
-  externalResources.push(resource);
+    externalResources.push(resource);
+    actions.editor.internal.updatePreviewCode();
 
-  try {
-    await effects.api.createResource(state.editor.currentId, resource);
-  } catch (error) {
-    externalResources.splice(externalResources.indexOf(resource), 1);
-    effects.notificationToast.error('Could not save external resource');
+    try {
+      await effects.api.createResource(
+        state.editor.currentSandbox.id,
+        resource
+      );
+    } catch (error) {
+      externalResources.splice(externalResources.indexOf(resource), 1);
+      effects.notificationToast.error('Could not save external resource');
+      actions.editor.internal.updatePreviewCode();
+    }
   }
-});
+);
 
-export const externalResourceRemoved: AsyncAction<{
-  resource: string;
-}> = withOwnedSandbox(async ({ state, effects, actions }, { resource }) => {
-  const { externalResources } = state.editor.currentSandbox;
-  const resourceIndex = externalResources.indexOf(resource);
+export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
+  async ({ effects, state, actions }, resource) => {
+    const { externalResources } = state.editor.currentSandbox;
+    const resourceIndex = externalResources.indexOf(resource);
 
-  externalResources.splice(resourceIndex, 1);
+    externalResources.splice(resourceIndex, 1);
+    actions.editor.internal.updatePreviewCode();
 
-  try {
-    await effects.api.deleteResource(state.editor.currentId, resource);
-  } catch (error) {
-    externalResources.splice(resourceIndex, 0, resource);
-    effects.notificationToast.error(
-      'Could not save removal of external resource'
-    );
+    try {
+      await effects.api.deleteResource(
+        state.editor.currentSandbox.id,
+        resource
+      );
+    } catch (error) {
+      externalResources.splice(resourceIndex, 0, resource);
+      effects.notificationToast.error(
+        'Could not save removal of external resource'
+      );
+      actions.editor.internal.updatePreviewCode();
+    }
   }
-});
+);
 
 export const integrationsOpened: Action = ({ state }) => {
   state.preferences.itemId = 'integrations';
@@ -168,7 +179,7 @@ export const sandboxDeleted: AsyncAction = async ({
 }) => {
   actions.modalClosed();
 
-  await effects.api.deleteSandbox(state.editor.currentId);
+  await effects.api.deleteSandbox(state.editor.currentSandbox.id);
 
   // Not sure if this is in use?
   state.workspace.showDeleteSandboxModal = false;
@@ -182,7 +193,7 @@ export const sandboxPrivacyChanged: AsyncAction<{
 }> = async ({ state, effects, actions }, { privacy }) => {
   const oldPrivacy = state.editor.currentSandbox.privacy;
   const sandbox = await effects.api.updatePrivacy(
-    state.editor.currentId,
+    state.editor.currentSandbox.id,
     privacy
   );
   state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
@@ -209,10 +220,11 @@ export const toggleCurrentWorkspaceItem: Action = ({ state }) => {
 };
 
 export const setWorkspaceHidden: Action<{ hidden: boolean }> = (
-  { state },
+  { state, effects },
   { hidden }
 ) => {
   state.workspace.workspaceHidden = hidden;
+  effects.vscode.resetLayout();
 };
 
 export const deleteTemplate: AsyncAction = async ({
@@ -221,7 +233,7 @@ export const deleteTemplate: AsyncAction = async ({
   effects,
 }) => {
   effects.analytics.track('Template - Removed', { source: 'editor' });
-  const sandboxId = state.editor.currentId;
+  const sandboxId = state.editor.currentSandbox.id;
   const templateId = state.editor.currentSandbox.customTemplate.id;
 
   try {
@@ -243,7 +255,7 @@ export const editTemplate: AsyncAction<CustomTemplate> = async (
 ) => {
   effects.analytics.track('Template - Edited', { source: 'editor' });
 
-  const sandboxId = state.editor.currentId;
+  const sandboxId = state.editor.currentSandbox.id;
 
   try {
     const updatedTemplate = await effects.api.updateTemplate(
@@ -266,7 +278,7 @@ export const addedTemplate: AsyncAction<{
 }> = async ({ state, actions, effects }, template) => {
   effects.analytics.track('Template - Created', { source: 'editor' });
 
-  const sandboxId = state.editor.currentId;
+  const sandboxId = state.editor.currentSandbox.id;
 
   try {
     const newTemplate = await effects.api.createTemplate(sandboxId, template);
@@ -280,4 +292,11 @@ export const addedTemplate: AsyncAction<{
       'Could not create template, please try again later'
     );
   }
+};
+
+export const openDefaultItem: Action = ({ state }) => {
+  const items = getItems(state);
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+
+  state.workspace.openedWorkspaceItem = defaultItem.id;
 };

@@ -173,7 +173,7 @@ export default class Template {
    */
   getEntries(configurationFiles: ParsedConfigurationFiles): string[] {
     return [
-      configurationFiles.package &&
+      configurationFiles.package?.parsed &&
         this.getMainFromPackage(configurationFiles.package.parsed),
       ...(this.mainFile || []),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),

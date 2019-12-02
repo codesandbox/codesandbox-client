@@ -1,132 +1,103 @@
-// @flow
-
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import getDefinition from '@codesandbox/common/lib/templates';
-import React, { FunctionComponent } from 'react';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+
 import { WorkspaceSubtitle } from '../elements';
-
-import { AddVersion } from './AddVersion';
-import { VersionEntry } from './VersionEntry';
-import { AddResource } from './AddResource';
 import { AddFont } from './AddFont';
-import { ExternalResource } from './ExternalResource';
-import { ExternalFonts } from './ExternalFonts';
-
+import { AddResource } from './AddResource';
+import { AddVersion } from './AddVersion';
 import { ErrorMessage } from './elements';
+import { ExternalFonts } from './ExternalFonts';
+import { ExternalResource } from './ExternalResource';
+import { VersionEntry } from './VersionEntry';
 
 export const Dependencies: FunctionComponent = () => {
   const {
-    state: { editor },
-    actions: { workspace, editor: editorSignals },
+    actions: {
+      workspace: { externalResourceAdded },
+      editor: { addNpmDependency, npmDependencyRemoved },
+    },
+    state: {
+      editor: {
+        currentSandbox: { externalResources, template },
+        parsedConfigurations,
+      },
+    },
   } = useOvermind();
+  const fonts = externalResources.filter(resource =>
+    resource.includes('fonts.googleapis.com/css')
+  );
+  const otherResources = externalResources.filter(
+    resource => !resource.includes('fonts.googleapis.com/css')
+  );
 
-  const sandbox = editor.currentSandbox;
-
-  if (!editor.parsedConfigurations.package) {
+  if (!parsedConfigurations.package) {
     return <ErrorMessage>Unable to find package.json</ErrorMessage>;
   }
 
-  const { parsed, error } = editor.parsedConfigurations.package;
-
+  const { parsed, error } = parsedConfigurations.package;
   if (error) {
     return (
       <ErrorMessage>We weren{"'"}t able to parse the package.json</ErrorMessage>
     );
   }
 
+  const { externalResourcesEnabled } = getTemplateDefinition(template);
+
   const dependencies = parsed.dependencies || {};
-  // const devDependencies = parsed.devDependencies || {};
-
-  const templateDefinition = getDefinition(sandbox.template);
-  const fonts = sandbox.externalResources.filter(resource =>
-    resource.includes('fonts.googleapis.com/css')
-  );
-  const otherResources = sandbox.externalResources.filter(
-    resource => !resource.includes('fonts.googleapis.com/css')
-  );
-
   return (
     <div>
       <Margin bottom={0}>
         {Object.keys(dependencies)
           .sort()
-          .map(dep => (
+          .map(dependency => (
             <VersionEntry
-              key={dep}
               dependencies={dependencies}
-              dependency={dep}
-              onRemove={name => editorSignals.npmDependencyRemoved({ name })}
-              onRefresh={(name, version) =>
-                editorSignals.addNpmDependency({
-                  name,
-                  version,
-                })
-              }
+              dependency={dependency}
+              key={dependency}
+              onRefresh={(name, version) => addNpmDependency({ name, version })}
+              onRemove={name => npmDependencyRemoved({ name })}
             />
           ))}
+
         {/* {Object.keys(devDependencies).length > 0 && (
           <WorkspaceSubtitle>Development Dependencies</WorkspaceSubtitle>
         )}
+
         {Object.keys(devDependencies)
           .sort()
-          .map(dep => (
+          .map(dependency => (
             <VersionEntry
-              key={dep}
               dependencies={devDependencies}
-              dependency={dep}
-              onRemove={name => signals.editor.npmDependencyRemoved({ name })}
-              onRefresh={(name, version) =>
-                signals.editor.addNpmDependency({
-                  name,
-                  version,
-                })
-              }
+              dependency={dependency}
+              key={dependency}
+              onRefresh={(name, version) => addNpmDependency({ name, version })}
+              onRemove={npmDependencyRemoved}
             />
           ))} */}
+
         <AddVersion>Add Dependency</AddVersion>
       </Margin>
-      {templateDefinition.externalResourcesEnabled && (
+
+      {externalResourcesEnabled && (
         <div>
           <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
+
           <AddResource
-            addResource={resource =>
-              workspace.externalResourceAdded({
-                resource,
-              })
-            }
+            addResource={resource => externalResourceAdded(resource)}
           />
+
           {otherResources.map(resource => (
-            <ExternalResource
-              key={resource}
-              resource={resource}
-              removeResource={() =>
-                workspace.externalResourceRemoved({
-                  resource,
-                })
-              }
-            />
+            <ExternalResource key={resource} resource={resource} />
           ))}
+
           <WorkspaceSubtitle>Google Fonts</WorkspaceSubtitle>
 
-          <AddFont
-            addResource={resource =>
-              workspace.externalResourceAdded({
-                resource,
-              })
-            }
-            addedResource={fonts}
-          />
+          <AddFont addedFonts={fonts} />
+
           {fonts.map(resource => (
-            <ExternalFonts
-              key={resource}
-              resource={resource}
-              removeResource={() =>
-                workspace.externalResourceRemoved({
-                  resource,
-                })
-              }
-            />
+            <ExternalFonts key={resource} resource={resource} />
           ))}
         </div>
       )}

@@ -82,25 +82,29 @@ export const CreateNewSandbox: FunctionComponent<Props> = ({
     setCreating(true);
   };
 
-  const buttonName = `Create ${mostUsedSandboxTemplate.niceName} Sandbox`;
-  const mostUsedSandboxComponent = collectionId ? (
-    <Container
-      color={mostUsedSandboxTemplate.color}
-      onClick={() => createSandbox(mostUsedSandboxTemplate)}
-      ref={ref}
-      role="button"
-      tabIndex={0}
-    >
-      {buttonName}
-    </Container>
-  ) : (
-    <ContainerLink
-      color={mostUsedSandboxTemplate.color}
-      to={sandboxUrl({ id: mostUsedSandboxTemplate.shortid })}
-    >
-      {buttonName}
-    </ContainerLink>
-  );
+  let mostUsedSandboxComponent = null;
+
+  if (mostUsedSandboxTemplate) {
+    const buttonName = `Create ${mostUsedSandboxTemplate.niceName} Sandbox`;
+    mostUsedSandboxComponent = collectionId ? (
+      <Container
+        color={mostUsedSandboxTemplate.color}
+        onClick={() => createSandbox(mostUsedSandboxTemplate)}
+        ref={ref}
+        role="button"
+        tabIndex={0}
+      >
+        {buttonName}
+      </Container>
+    ) : (
+      <ContainerLink
+        color={mostUsedSandboxTemplate.color}
+        to={sandboxUrl({ id: mostUsedSandboxTemplate.shortid })}
+      >
+        {buttonName}
+      </ContainerLink>
+    );
+  }
 
   const fromRectDOM = ref.current
     ? ref.current.getBoundingClientRect()
