@@ -11,12 +11,17 @@ import { Navigation } from 'app/pages/common/Navigation';
 import theme from '@codesandbox/common/lib/design-language/theme';
 import { SubscribeForm } from './subscribe-form';
 import {
+  Page,
   Content,
+  Avatar,
+  Badge,
+  Button,
   Heading,
-  SubHeading,
-  SignInModal,
+  HelpText,
   ModalBackdrop,
+  SignInModal,
   SignInButton,
+  SubHeading,
 } from './elements';
 
 const Pro: React.FC = () => {
@@ -29,17 +34,17 @@ const Pro: React.FC = () => {
 
   const checkoutDisabled = !hasLoadedApp || !isLoggedIn;
 
+  let subscriptionType: string;
+  if (isPatron) subscriptionType = 'patron';
+  else subscriptionType = user && user.subscription && user.subscription.type;
+
   useEffect(() => {
     patronMounted();
   }, [patronMounted]);
 
-  // if you're already a patron, you shouldn't
-  // try to get pro.
-  if (isPatron) location.href = '/patron';
-
   return (
     <ThemeProvider theme={theme}>
-      <Content>
+      <Page>
         <Helmet>
           <title>Pro - CodeSandbox</title>
         </Helmet>
@@ -49,34 +54,87 @@ const Pro: React.FC = () => {
 
           <MaxWidth width={1024}>
             <>
-              <Heading>CodeSandbox Pro</Heading>
-              <SubHeading>$12/month</SubHeading>
+              {hasLoadedApp && !isLoggedIn && (
+                <>
+                  <ModalBackdrop />
+                  <SignInModal>
+                    <p>Sign in to continue</p>
+                    <SignInButton />
+                  </SignInModal>
+                </>
+              )}
 
-              <Centered horizontal>
-                <SubscribeForm
-                  subscribe={({ token, coupon }) =>
-                    createSubscriptionClicked({ token, coupon })
-                  }
-                  isLoading={patron.isUpdatingSubscription}
-                  hasCoupon
-                  name={user && user.name}
-                  error={patron.error}
-                  disabled={checkoutDisabled}
-                />
-                {hasLoadedApp && !isLoggedIn && (
+              <Content>
+                {subscriptionType ? (
+                  <MaxWidth width={400}>
+                    <Centered horizontal>
+                      {subscriptionType && (
+                        <>
+                          <Avatar src={user.avatarUrl} />
+                          <Badge type={subscriptionType}>
+                            {subscriptionType}
+                          </Badge>
+                          <Heading>You&apos;re a Pro!</Heading>
+                        </>
+                      )}
+
+                      {subscriptionType === 'pro' ? (
+                        <>
+                          <Button as="a" href="/s/" style={{ marginTop: 30 }}>
+                            Create a sandbox
+                          </Button>
+
+                          <HelpText>
+                            You will be billed on the <b>30th</b> of each month.
+                            You can <a href="">cancel your subscription</a> or{' '}
+                            <a href="">update your payment details</a> at any
+                            time.
+                          </HelpText>
+                        </>
+                      ) : (
+                        <>
+                          <SubHeading>
+                            Thank you for being an early supporter of
+                            CodeSandbox. As a patron, you can access all Pro
+                            features.
+                          </SubHeading>
+                          <Button as="a" href="/s/">
+                            Create a sandbox
+                          </Button>
+
+                          <HelpText>
+                            You will be billed on the <b>30th</b> of each month.
+                            You can{' '}
+                            <a href="/patron">modify your contribution</a> at
+                            any time.
+                          </HelpText>
+                        </>
+                      )}
+                    </Centered>
+                  </MaxWidth>
+                ) : (
                   <>
-                    <ModalBackdrop />
-                    <SignInModal>
-                      <p>Sign in to continue</p>
-                      <SignInButton />
-                    </SignInModal>
+                    <Heading>CodeSandbox Pro</Heading>
+                    <SubHeading>$12/month</SubHeading>
+                    <Centered horizontal>
+                      <SubscribeForm
+                        subscribe={({ token, coupon }) =>
+                          createSubscriptionClicked({ token, coupon })
+                        }
+                        isLoading={patron.isUpdatingSubscription}
+                        hasCoupon
+                        name={user && user.name}
+                        error={patron.error}
+                        disabled={checkoutDisabled}
+                      />
+                    </Centered>
                   </>
                 )}
-              </Centered>
+              </Content>
             </>
           </MaxWidth>
         </Margin>
-      </Content>
+      </Page>
     </ThemeProvider>
   );
 };

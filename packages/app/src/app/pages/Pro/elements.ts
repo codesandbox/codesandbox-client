@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { SignInButton as CommonSignInButton } from 'app/pages/common/SignInButton';
 
-export const Content = styled.div(
+export const Page = styled.div(
   css({
     backgroundColor: 'grays.800',
     color: 'white',
@@ -15,12 +15,17 @@ export const Content = styled.div(
   })
 );
 
+export const Content = styled.div(
+  css({
+    marginTop: '100px',
+  })
+);
+
 export const Heading = styled.h1(
   css({
     margin: 0,
     textAlign: 'center',
     // marketing pages have a lot of whitespace, more than our scale
-    marginTop: '100px',
     fontSize: '32px',
   })
 );
@@ -44,12 +49,6 @@ export const Form = styled.form(props =>
       fontSize: 3,
       height: 32,
       width: '100%',
-    },
-    button: {
-      fontSize: 4,
-      lineHeight: '32px',
-      width: '100%',
-      marginBottom: 10,
     },
     transition: 'opacity',
     transitionDuration: theme => theme.speeds[2],
@@ -104,8 +103,16 @@ export const Input = styled.input(
 export const Button = styled.button(
   css({
     display: 'block',
+    fontSize: 4,
+    lineHeight: '32px',
+    width: '100%',
+    marginBottom: 10,
     backgroundColor: 'blues.600',
     color: 'white',
+
+    textDecoration: 'none',
+    textAlign: 'center',
+
     border: 'none',
     borderRadius: 'medium',
     boxSizing: 'border-box',
@@ -128,6 +135,9 @@ export const HelpText = styled.p(
     textAlign: 'center',
     b: {
       color: 'white',
+    },
+    a: {
+      color: 'grays.300',
     },
   })
 );
@@ -210,5 +220,33 @@ export const SignInButton = styled(CommonSignInButton)(
     '> div': {
       justifyContent: 'center',
     },
+  })
+);
+
+export const Avatar = styled.img(
+  css({
+    width: 100,
+    height: 100,
+    border: '1px solid',
+    borderColor: 'grays.500',
+    borderRadius: 'medium',
+  })
+);
+
+export const Badge = styled.span(props =>
+  css({
+    backgroundColor: props.type === 'pro' ? 'blues.700' : 'green',
+    color: props.type === 'pro' ? 'white' : 'grays.800',
+    paddingY: 1,
+    paddingX: 2,
+    fontWeight: 'bold',
+    fontSize: 3,
+    textTransform: 'capitalize',
+    position: 'relative',
+    top: -20,
+    right: props.type === 'pro' ? -40 : -30,
+    border: '1px solid',
+    borderColor: 'grays.500',
+    borderRadius: 'medium',
   })
 );
