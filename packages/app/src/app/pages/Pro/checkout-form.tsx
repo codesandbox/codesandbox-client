@@ -131,26 +131,25 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
       <Form onSubmit={this.handleSubmit}>
         <FormField>
           <Label for="cardholder-name">Cardholder Name</Label>
+          <Input
+            id="cardholder-name"
+            value={this.state.name}
+            onChange={this.setName}
+            placeholder="Please enter your name"
+          />
           {errors.name != null && <ErrorText>{errors.name}</ErrorText>}
-          <div>
-            <Input
-              id="cardholder-name"
-              value={this.state.name}
-              onChange={this.setName}
-              placeholder="Please enter your name"
-            />
-          </div>
         </FormField>
 
         <FormField>
           <Label for="card-number">Card</Label>
-          {stripeError != null && <ErrorText>{stripeError}</ErrorText>}
+
           <CardContainer>
             <CardElement
               id="card-number"
               style={{ base: { color: 'white', fontWeight: '500' } }}
             />
           </CardContainer>
+          {stripeError != null && <ErrorText>{stripeError}</ErrorText>}
         </FormField>
 
         {hasCoupon && (

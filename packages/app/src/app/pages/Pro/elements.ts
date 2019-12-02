@@ -55,7 +55,12 @@ export const Form = styled.form(
 
 export const FormField = styled.div(
   css({
-    marginBottom: 7,
+    // we choose to use minHeight to decide height
+    // over margin so that when elements load dynamically
+    // like stripe card input and error messages,
+    // the form fields don't jump around
+    minHeight: '88px',
+    marginBottom: 2,
   })
 );
 
@@ -131,14 +136,7 @@ export const CardContainer = styled.div(
       padding: 2,
       boxSizing: 'border-box',
       borderRadius: 'medium',
-      // color: 'white',
-
-      // height: 32,
-      // display: 'flex',
-      // alignItems: 'center',
-
-      // transition: 'border',
-      // transitionDuration: theme => theme.speeds[2],
+      minHeight: 32,
 
       ':hover': {
         backgroundColor: 'grays.700',
@@ -153,6 +151,9 @@ export const CardContainer = styled.div(
   })
 );
 
-export const StripeInput = styled.div(css({}));
-export const ErrorText = styled.div(css({}));
-export const Container = styled.div(css({}));
+export const ErrorText = styled.div(
+  css({
+    color: 'reds.500',
+    marginTop: 2,
+  })
+);
