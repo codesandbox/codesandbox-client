@@ -4,7 +4,7 @@ description: Reclaim your time and improve developer experiences.
 SEOText:
   Maintaining open source projects can be enormously fulfilling, yet
   time-consuming and stressful. CodeSandbox gives open source maintainers the
-  tools to improve documentation, handle bug reports. and test more efficiently.
+  tools to improve documentation, handle bug reports, and test more efficiently.
   So you can get some of your time back.
 slug: open-source
 tweetText: CodeSandbox is the best thing that has happened to OSS maintainers.
@@ -47,7 +47,7 @@ understand the real problem faster.
 ### Use CI built with maintainers in mind
 
 CodeSandbox CI integrates with GitHub to automatically build PRs and create
-sandboxes using them. Making it possible to test fixes without the need to
+sandboxes using them. This makes it possible to test fixes without the need to
 clone, install, and check things locally.
 
 </div>
