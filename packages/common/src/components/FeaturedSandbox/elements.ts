@@ -22,7 +22,7 @@ export const Container = styled.div<{ height?: number }>`
   cursor: pointer;
 
   &:hover {
-    background-color: ${props => props.theme.new.bg.lighten(0.2)};
+    background-color: ${theme.new.bg.lighten(0.2)};
   }
 
   @media screen and (max-width: ${VERTICAL_BREAKPOINT}px) {

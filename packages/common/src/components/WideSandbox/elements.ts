@@ -69,7 +69,7 @@ export const SandboxTitle = styled.h2`
 
 export const SandboxDescription = styled.p`
   font-size: 0.8rem;
-  color: ${props => props.theme.new.description};
+  color: #777788;
   font-weight: 500;
   line-height: 1.3;
   margin-top: 8px;
@@ -124,5 +124,5 @@ export const Author = styled(UserWithAvatar)`
   bottom: 0.75rem;
   left: 0.75rem;
   text-decoration: none;
-  color: ${props => props.theme.new.description};
+  color: #777788;
 `;
