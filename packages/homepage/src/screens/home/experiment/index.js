@@ -16,7 +16,7 @@ const tweet = {
   username: 'dan_abramov',
   job: 'Software Engineer, React Core Team',
   name: 'Dan Abramov',
-  quote: 'Wow, https://codesandbox.io/ is cool. Lets you add npm dependencies.',
+  quote: 'CodeSandbox is cool. Lets you add npm dependencies.',
   url: 'https://twitter.com/dan_abramov/status/852555473551273984',
 };
 
