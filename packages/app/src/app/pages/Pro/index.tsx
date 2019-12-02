@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+import { ThemeProvider } from 'styled-components';
+
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import { useOvermind } from 'app/overmind';
-import { Title } from 'app/components/Title';
-import { SubTitle } from 'app/components/SubTitle';
 import { Navigation } from 'app/pages/common/Navigation';
 import { SignInButton } from 'app/pages/common/SignInButton';
-import { SubscribeForm } from 'app/components/SubscribeForm';
-import { Content } from './elements';
+
+import theme from '@codesandbox/common/lib/design-language/theme';
+import { SubscribeForm } from './subscribe-form';
+import { Content, Heading, SubHeading } from './elements';
 
 const Pro: React.FC = () => {
   const {
@@ -25,43 +27,43 @@ const Pro: React.FC = () => {
 
   // if you're already a patron, you shouldn't
   // try to get pro.
-  if (isPatron) location.href = '/patron';
+  // if (isPatron) location.href = '/patron';
 
   return (
-    <MaxWidth>
-      <>
+    <ThemeProvider theme={theme}>
+      <Content>
         <Helmet>
           <title>Pro - CodeSandbox</title>
         </Helmet>
+
         <Margin vertical={1.5} horizontal={1.5}>
           <Navigation title="CodeSandbox Pro" />
-          <Content>
-            <MaxWidth width={1024}>
-              <>
-                <Title>CodeSandbox Pro</Title>
-                <SubTitle>$12/month</SubTitle>
 
-                <Centered horizontal>
-                  {isLoggedIn ? (
-                    <SubscribeForm
-                      subscribe={({ token, coupon }) =>
-                        createSubscriptionClicked({ token, coupon })
-                      }
-                      isLoading={patron.isUpdatingSubscription}
-                      hasCoupon
-                      name={user.name}
-                      error={patron.error}
-                    />
-                  ) : (
-                    <SignInButton />
-                  )}
-                </Centered>
-              </>
-            </MaxWidth>
-          </Content>
+          <MaxWidth width={1024}>
+            <>
+              <Heading>CodeSandbox Pro</Heading>
+              <SubHeading>$12/month</SubHeading>
+
+              <Centered horizontal>
+                {isLoggedIn ? (
+                  <SubscribeForm
+                    subscribe={({ token, coupon }) =>
+                      createSubscriptionClicked({ token, coupon })
+                    }
+                    isLoading={patron.isUpdatingSubscription}
+                    hasCoupon
+                    name={user.name}
+                    error={patron.error}
+                  />
+                ) : (
+                  <SignInButton />
+                )}
+              </Centered>
+            </>
+          </MaxWidth>
         </Margin>
-      </>
-    </MaxWidth>
+      </Content>
+    </ThemeProvider>
   );
 };
 
