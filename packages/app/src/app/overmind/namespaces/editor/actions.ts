@@ -264,11 +264,14 @@ export const createZipClicked: Action = ({ state, effects }) => {
 export const forkExternalSandbox: AsyncAction<{
   sandboxId: string;
   openInNewWindow?: boolean;
-}> = async ({ actions }, { sandboxId, openInNewWindow }) => {
-  await actions.editor.internal.forkSandbox({
-    sandboxId,
-    openInNewWindow,
-  });
+  body?: { collectionId: string };
+}> = async ({ effects, state }, { sandboxId, openInNewWindow, body }) => {
+  effects.analytics.track('Fork Sandbox', { type: 'external' });
+
+  const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
+
+  state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
+  effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
 };
 
 export const forkSandboxClicked: AsyncAction = async ({
