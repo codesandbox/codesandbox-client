@@ -39,7 +39,7 @@ export default () => (
       <SeoText>
         Founded in 2017 by Ives van Hoorne and Bas Buursma, our mission is to
         make web development faster. By removing complexity we enable web
-        developers to be more productive. And by simplifying collaboration we
+        developers to be more productive. By simplifying collaboration we
         make it easier for teams to work on code together.
       </SeoText>
       <Banner
@@ -70,7 +70,7 @@ export default () => (
         <div>
           <h3>Work like local</h3>
           We equip developers with a local editor experience that’s familiar and
-          integrated with popular dev tools so the process of creation is
+          integrated with popular developer tools so the process of creation is
           seamless.
         </div>
       </ContentBlock>
@@ -80,7 +80,7 @@ export default () => (
           text-align: center;
         `}
       >
-        Investors and Advisors
+        Our Investors and Advisors
       </H2>
       <Investors>
         <div>
