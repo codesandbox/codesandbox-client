@@ -310,7 +310,7 @@ export default () => (
         <div>
           <FeatureTitle>GitHub</FeatureTitle>
           <P muted small>
-            Import and sync public repos, export a sandbox to a repo or create
+            Import and sync public repos, export a sandbox to a repo, or create
             commits and open PRs.
           </P>
         </div>
