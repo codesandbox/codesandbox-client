@@ -222,7 +222,7 @@ export const TemplateList = ({
       const isFirstRow = indexInTemplateInfo < columnCount;
 
       const { templateInfo: templateInfoAbove } = getTemplateInfoByIndex(
-        focusedTemplateIndex - columnCount
+        Math.max(0, focusedTemplateIndex - columnCount)
       );
       const columnCountInPreviousRow = isFirstRow
         ? getColumnCountInLastRow(previousTemplateInfo)
