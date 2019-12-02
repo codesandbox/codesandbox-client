@@ -7,6 +7,7 @@ import ForkIcon from 'react-icons/lib/go/repo-forked';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import getIcon from '@codesandbox/common/lib/templates/icons';
 import { SmallSandbox } from '@codesandbox/common/lib/types';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { DeleteSandboxButton } from '../DeleteSandboxButton';
 import { PrivacyStatus } from '../PrivacyStatus';
 import {
@@ -62,7 +63,7 @@ export const SandboxList: React.FC<ISandboxListProps> = ({
               {/* We should probably use the Sandbox interface instead
                  * of SmallSandbox
                 // @ts-ignore */}
-              <Link to={sandboxUrl(s)}>{s.title || s.id}</Link>
+              <Link to={sandboxUrl(s)}>{getSandboxName(s)}</Link>
               <PrivacyStatus privacy={s.privacy} asIcon />
             </td>
             <td>{format(new Date(s.insertedAt), 'MMM dd, yyyy')}</td>
