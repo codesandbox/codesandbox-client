@@ -36,6 +36,12 @@ function getV3Code(code, version, path) {
       });
     });
 
+    if (!js.map.toUrl) {
+      js.map.toUrl = () =>
+        'data:application/json;charset=utf-8;base64,' +
+        btoa(JSON.stringify(js.map));
+    }
+
     return js;
   } catch (e) {
     return self.postMessage({
