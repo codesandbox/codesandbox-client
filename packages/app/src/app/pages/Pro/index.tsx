@@ -7,19 +7,27 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
-import { SignInButton } from 'app/pages/common/SignInButton';
 
 import theme from '@codesandbox/common/lib/design-language/theme';
 import { SubscribeForm } from './subscribe-form';
-import { Content, Heading, SubHeading } from './elements';
+import {
+  Content,
+  Heading,
+  SubHeading,
+  SignInModal,
+  ModalBackdrop,
+  SignInButton,
+} from './elements';
 
 const Pro: React.FC = () => {
   const {
-    state: { isLoggedIn, user, patron, isPatron },
+    state: { isLoggedIn, user, hasLoadedApp, patron, isPatron },
     actions: {
       patron: { createSubscriptionClicked, patronMounted },
     },
   } = useOvermind();
+
+  const checkoutDisabled = !hasLoadedApp || !isLoggedIn;
 
   useEffect(() => {
     patronMounted();
@@ -45,18 +53,24 @@ const Pro: React.FC = () => {
               <SubHeading>$12/month</SubHeading>
 
               <Centered horizontal>
-                {isLoggedIn ? (
-                  <SubscribeForm
-                    subscribe={({ token, coupon }) =>
-                      createSubscriptionClicked({ token, coupon })
-                    }
-                    isLoading={patron.isUpdatingSubscription}
-                    hasCoupon
-                    name={user.name}
-                    error={patron.error}
-                  />
-                ) : (
-                  <SignInButton />
+                <SubscribeForm
+                  subscribe={({ token, coupon }) =>
+                    createSubscriptionClicked({ token, coupon })
+                  }
+                  isLoading={patron.isUpdatingSubscription}
+                  hasCoupon
+                  name={user && user.name}
+                  error={patron.error}
+                  disabled={checkoutDisabled}
+                />
+                {hasLoadedApp && !isLoggedIn && (
+                  <>
+                    <ModalBackdrop />
+                    <SignInModal>
+                      <p>Sign in to continue</p>
+                      <SignInButton />
+                    </SignInModal>
+                  </>
                 )}
               </Centered>
             </>

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import css from '@styled-system/css';
+import { SignInButton as CommonSignInButton } from 'app/pages/common/SignInButton';
 
 export const Content = styled.div(
   css({
@@ -34,7 +35,7 @@ export const SubHeading = styled.span(
   })
 );
 
-export const Form = styled.form(
+export const Form = styled.form(props =>
   css({
     fontSize: 3,
     width: 300,
@@ -50,6 +51,9 @@ export const Form = styled.form(
       width: '100%',
       marginBottom: 10,
     },
+    transition: 'opacity',
+    transitionDuration: theme => theme.speeds[2],
+    opacity: props.disabled ? 0.5 : 1,
   })
 );
 
@@ -89,7 +93,6 @@ export const Input = styled.input(
       backgroundColor: 'grays.700',
       borderColor: 'grays.600',
     },
-
     ':focus': {
       outline: 'none',
       backgroundColor: 'grays.800',
@@ -105,14 +108,16 @@ export const Button = styled.button(
     color: 'white',
     border: 'none',
     borderRadius: 'medium',
-    cursor: 'pointer',
     boxSizing: 'border-box',
-
+    cursor: 'pointer',
     transition: 'backgroundColor',
     transitionDuration: theme => theme.speeds[2],
 
     ':hover': {
       backgroundColor: 'blues.500',
+    },
+    ':disabled': {
+      backgroundColor: 'blues.600',
     },
   })
 );
@@ -155,5 +160,55 @@ export const ErrorText = styled.div(
   css({
     color: 'reds.500',
     marginTop: 2,
+  })
+);
+
+export const ModalBackdrop = styled.div(
+  css({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'grays.700',
+    opacity: 0.8,
+  })
+);
+
+export const SignInModal = styled.div(
+  css({
+    width: 400,
+    position: 'absolute',
+    boxSizing: 'border-box',
+    top: 'calc(50% - 150px)',
+    left: 'calc(50% - 200px)',
+    backgroundColor: 'grays.500',
+    borderRadius: 'medium',
+    padding: 10,
+    textAlign: 'center',
+
+    p: {
+      fontSize: '20px',
+      fontWeight: 'medium',
+      margin: 0,
+      marginBottom: 4,
+    },
+  })
+);
+
+export const SignInButton = styled(CommonSignInButton)(
+  css({
+    width: '100%',
+    backgroundColor: 'blues.600',
+    borderColor: 'blues.600',
+
+    ':hover': {
+      backgroundColor: 'blues.500',
+      borderColor: 'blues.500',
+    },
+
+    '> div': {
+      justifyContent: 'center',
+    },
   })
 );

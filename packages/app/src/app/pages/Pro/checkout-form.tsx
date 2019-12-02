@@ -25,13 +25,12 @@ import {
 
 interface Props {
   name: string;
-  buttonName: string;
-  loadingText: string;
   isLoading: boolean;
   subscribe: (params: { token: string; coupon: string }) => void;
   stripe?: ReactStripeElements.StripeProps;
   error?: Error | string;
   hasCoupon?: boolean;
+  disabled?: boolean;
 }
 
 interface State {
@@ -114,13 +113,7 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
   };
 
   render() {
-    const {
-      buttonName,
-      loadingText,
-      isLoading,
-      error,
-      hasCoupon = false,
-    } = this.props;
+    const { isLoading, error, hasCoupon = false, disabled } = this.props;
     const { errors, loading: stateLoading } = this.state;
 
     const loading = isLoading || stateLoading;
@@ -128,25 +121,27 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
     const stripeError = errors.stripe || error;
 
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form onSubmit={this.handleSubmit} disabled={disabled}>
         <FormField>
-          <Label for="cardholder-name">Cardholder Name</Label>
+          <Label htmlFor="cardholder-name">Cardholder Name</Label>
           <Input
             id="cardholder-name"
             value={this.state.name}
             onChange={this.setName}
             placeholder="Please enter your name"
+            disabled={disabled}
           />
           {errors.name != null && <ErrorText>{errors.name}</ErrorText>}
         </FormField>
 
         <FormField>
-          <Label for="card-number">Card</Label>
+          <Label htmlFor="card-number">Card</Label>
 
           <CardContainer>
             <CardElement
               id="card-number"
               style={{ base: { color: 'white', fontWeight: '500' } }}
+              disabled={disabled}
             />
           </CardContainer>
           {stripeError != null && <ErrorText>{stripeError}</ErrorText>}
@@ -154,13 +149,14 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
 
         {hasCoupon && (
           <FormField>
-            <Label for="coupon">Coupon</Label>
+            <Label htmlFor="coupon">Coupon</Label>
             <div>
               <Input
                 id="coupon"
                 value={this.state.coupon}
                 onChange={this.setCoupon}
                 placeholder="Coupon or Discount Code"
+                disabled={disabled}
               />
             </div>
           </FormField>
@@ -168,10 +164,10 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
 
         <Button
           type="submit"
-          disabled={loading}
+          disabled={loading || disabled}
           style={{ marginTop: '1rem', width: 300 }}
         >
-          {loading ? loadingText : buttonName}
+          {loading ? 'Creating Subscription...' : 'Subscribe to Pro'}
         </Button>
 
         <HelpText>
