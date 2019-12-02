@@ -36,10 +36,7 @@ export const Dependencies: FunctionComponent = () => {
     return <ErrorMessage>Unable to find package.json</ErrorMessage>;
   }
 
-  const {
-    parsed: { dependencies = {} /* devDependencies = {} */ },
-    error,
-  } = parsedConfigurations.package;
+  const { parsed, error } = parsedConfigurations.package;
   if (error) {
     return (
       <ErrorMessage>We weren{"'"}t able to parse the package.json</ErrorMessage>
@@ -50,11 +47,11 @@ export const Dependencies: FunctionComponent = () => {
   return (
     <div>
       <Margin bottom={0}>
-        {Object.keys(dependencies)
+        {Object.keys(parsed.dependencies)
           .sort()
           .map(dependency => (
             <VersionEntry
-              dependencies={dependencies}
+              dependencies={parsed.dependencies}
               dependency={dependency}
               key={dependency}
               onRefresh={(name, version) => addNpmDependency({ name, version })}

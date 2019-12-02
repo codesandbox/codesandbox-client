@@ -68,4 +68,4 @@ export const createSandboxClicked: AsyncAction<{
   body: { collectionId: string };
   sandboxId: string;
 }> = ({ actions }, { body, sandboxId }) =>
-  actions.editor.internal.forkSandbox({ body, sandboxId });
+  actions.editor.forkExternalSandbox({ body, sandboxId });
