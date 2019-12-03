@@ -6,6 +6,8 @@ import {
 import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 
+import { getSavedCode } from '../../utils/sandbox';
+
 export const clearUserSelections: Action<any> = (
   { state, effects },
   live_user_id
@@ -57,12 +59,9 @@ export const initialize: AsyncAction<string, Sandbox> = async (
   state.live.isLoading = true;
 
   try {
-    const {
-      roomInfo,
-      liveUserId,
-      sandbox,
-      moduleState,
-    } = await effects.live.joinChannel(id);
+    const { roomInfo, liveUserId, sandbox } = await effects.live.joinChannel(
+      id
+    );
 
     state.live.roomInfo = roomInfo;
     state.live.liveUserId = liveUserId;
@@ -78,11 +77,8 @@ export const initialize: AsyncAction<string, Sandbox> = async (
     effects.analytics.track('Live Session Joined', {});
     effects.live.listen(actions.live.liveMessageReceived);
 
-    actions.live.internal.initializeModuleState(moduleState);
-
     state.live.isLive = true;
     state.live.error = null;
-    effects.live.sendModuleState();
 
     return sandbox;
   } catch (error) {
@@ -103,30 +99,40 @@ export const initializeModuleState: Action<any> = (
     effects.live.createClient(moduleShortid, moduleInfo.revision);
 
     // Module has not been saved, so is different
-    const index = state.editor.currentSandbox.modules.findIndex(
+    const module = state.editor.currentSandbox.modules.find(
       m => m.shortid === moduleShortid
     );
 
-    if (index > -1) {
+    if (module) {
       if (moduleInfo.code === null) {
         return;
       }
 
-      // If we are getting code that has not been saved, we want to update the actual saved code
-      // so that we properly detect "changed files" in the explorer. But we only do this if the
-      // savedCode is not set, as we might get multiple initializeModuleState
-      if (
-        !moduleInfo.synced &&
-        state.editor.currentSandbox.modules[index].savedCode == null
-      ) {
-        state.editor.currentSandbox.modules[index].savedCode =
-          state.editor.currentSandbox.modules[index].code;
-      }
+      const savedCodeChanged =
+        getSavedCode(moduleInfo.code, moduleInfo.saved_code) !==
+        getSavedCode(module.code, module.savedCode);
+      const moduleChanged =
+        moduleInfo.code !== module.code ||
+        moduleInfo.saved_code !== module.savedCode;
 
-      state.editor.currentSandbox.modules[index].code = moduleInfo.code;
+      if (moduleChanged) {
+        module.savedCode = moduleInfo.saved_code;
+        module.code = moduleInfo.code;
+
+        if (savedCodeChanged) {
+          effects.vscode.sandboxFsSync.writeFile(
+            state.editor.modulesByPath,
+            module
+          );
+        }
+        if (moduleInfo.synced) {
+          effects.vscode.revertModule(module);
+        } else {
+          effects.vscode.setModuleCode(module);
+        }
+      }
     }
   });
-
   actions.editor.internal.updatePreviewCode();
 };
 

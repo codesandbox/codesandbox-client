@@ -12,6 +12,8 @@ export const internal = internalActions;
 export const roomJoined: AsyncAction<{
   roomId: string;
 }> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
+  await effects.vscode.initialize;
+  await effects.vscode.closeAllTabs();
   const sandbox = await actions.live.internal.initialize(roomId);
 
   if (state.updateStatus === 'available') {
@@ -20,7 +22,6 @@ export const roomJoined: AsyncAction<{
     state.currentModal = modal;
   }
 
-  await effects.vscode.closeAllTabs();
   await actions.internal.setCurrentSandbox(sandbox);
 
   const items = getItems(state);
@@ -32,6 +33,7 @@ export const roomJoined: AsyncAction<{
     state.editor.modulesByPath = fs;
   });
 
+  effects.live.sendModuleStateSyncRequest();
   effects.vscode.openModule(state.editor.currentModule);
   effects.preview.executeCodeImmediately({ initialRender: true });
   state.live.isLoading = false;
@@ -56,6 +58,8 @@ export const createLiveClicked: AsyncAction<{
 
   Object.assign(state.editor.sandboxes[state.editor.currentId], sandbox);
   state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
+
+  effects.live.sendModuleStateSyncRequest();
 };
 
 export const liveMessageReceived: Operator<LiveMessage> = pipe(
@@ -90,11 +94,17 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
   })
 );
 
-export const applyTransformation: Action<{
+export const applyTransformation: AsyncAction<{
   operation: any;
   moduleShortid: string;
-}> = ({ effects }, { operation, moduleShortid }) => {
-  effects.vscode.applyOperation(moduleShortid, operation);
+}> = async ({ effects }, { operation, moduleShortid }) => {
+  try {
+    await effects.vscode.applyOperation(moduleShortid, operation);
+  } catch (error) {
+    // Do not care about the error, but something went wrong and we
+    // need a full sync
+    effects.live.sendModuleStateSyncRequest();
+  }
 };
 
 export const onSelectionChanged: Action<any> = (
@@ -204,8 +214,4 @@ export const onFollow: Action<{
       id: module ? module.id : undefined,
     });
   }
-};
-
-export const onModuleStateMismatch: Action = ({ effects }) => {
-  effects.live.sendModuleUpdateRequest();
 };

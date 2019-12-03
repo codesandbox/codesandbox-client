@@ -44,14 +44,16 @@ export const Dependencies: FunctionComponent = () => {
   }
 
   const { externalResourcesEnabled } = getTemplateDefinition(template);
+
+  const dependencies = parsed.dependencies || {};
   return (
     <div>
       <Margin bottom={0}>
-        {Object.keys(parsed.dependencies)
+        {Object.keys(dependencies)
           .sort()
           .map(dependency => (
             <VersionEntry
-              dependencies={parsed.dependencies}
+              dependencies={dependencies}
               dependency={dependency}
               key={dependency}
               onRefresh={(name, version) => addNpmDependency({ name, version })}

@@ -259,9 +259,6 @@ export default {
       message,
     });
   },
-  sendModuleState() {
-    return this.send('live:module_state', {});
-  },
   sendModuleSaved(module: Module) {
     return this.send('module:saved', {
       type: 'module',
@@ -272,7 +269,7 @@ export default {
   sendChatEnabled(enabled: boolean) {
     return this.send('live:chat_enabled', { enabled });
   },
-  sendModuleUpdateRequest() {
+  sendModuleStateSyncRequest() {
     return this.send('live:module_state', {});
   },
   sendUserSelection(moduleShortid: string, liveUserId: string, selection: any) {

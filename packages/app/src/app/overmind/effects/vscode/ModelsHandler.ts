@@ -111,9 +111,9 @@ export class ModelsHandler {
       const file = await this.editorApi.openFile(module.path);
       const model = file.getModel();
 
-      this.updateUserSelections(module, moduleModel.selections);
-
       moduleModel.model = Promise.resolve(model);
+
+      this.updateUserSelections(module, moduleModel.selections);
     } else {
       const model = getCurrentModel(this.editorApi);
 
@@ -183,6 +183,19 @@ export class ModelsHandler {
       title: module.title,
       model,
     });
+  }
+
+  public async setModuleCode(module: Module) {
+    const moduleModel = this.getModuleModel(module);
+    const model = await moduleModel.model;
+
+    if (!model) {
+      return;
+    }
+
+    this.isApplyingOperation = true;
+    await model.setValue(module.code);
+    this.isApplyingOperation = false;
   }
 
   public async updateUserSelections(
@@ -384,6 +397,14 @@ export class ModelsHandler {
     let index = 0;
     const currentEOLLength = model.getEOL().length;
     let eolChanged = false;
+    const modelCode = model.getValue();
+
+    if (operation.baseLength !== modelCode.length) {
+      throw new Error(
+        "The base length of the operation doesn't match the length of the code"
+      );
+    }
+
     for (let i = 0; i < operation.ops.length; i++) {
       const op = operation.ops[i];
       if (TextOperation.isRetain(op)) {
