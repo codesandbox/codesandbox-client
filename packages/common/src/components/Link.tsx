@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 export interface ILinkProps {
   to?: any;
+  alt?: string;
   external?: boolean;
   onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 }

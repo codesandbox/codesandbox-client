@@ -39,7 +39,9 @@ const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound')
 );
 const Profile = Loadable(() =>
-  import(/* webpackChunkName: 'page-profile' */ './Profile')
+  import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
+    default: module.Profile,
+  }))
 );
 const Search = Loadable(() =>
   import(/* webpackChunkName: 'page-search' */ './Search').then(module => ({

@@ -172,6 +172,7 @@
     "react": "^16.9.0",
     "react-addons-css-transition-group": "^15.6.0",
     "react-apollo": "^2.5.6",
+    "react-autosize-textarea": "^7.0.0",
     "react-color": "^2.17.3",
     "react-day-picker": "^7.2.4",
     "react-devtools-inline": "^4.0.0",
@@ -215,7 +216,8 @@
     "vue-hot-reload-api": "^2.3.3",
     "vue-template-compiler": "^2.6.10",
     "vue-template-es2015-compiler": "^1.9.1",
-    "xterm": "3.7.0"
+    "xterm": "3.7.0",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.4",

@@ -1,6 +1,6 @@
 import dot from 'dot-object';
 import applicationTheme from '@codesandbox/common/lib/theme';
-import codesandboxBlack from '@codesandbox/common/lib/themes/codesandbox-black';
+import codesandboxBlack from '@codesandbox/common/lib/themes/codesandbox-black.json';
 import codesandboxLight from '@codesandbox/common/lib/themes/codesandbox-light.json';
 import tokens from './tokens';
 
