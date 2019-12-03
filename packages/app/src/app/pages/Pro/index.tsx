@@ -96,7 +96,10 @@ const Pro: React.FC = () => {
                             <LinkButton
                               onClick={e => {
                                 e.preventDefault();
-                                modalOpened({ modal: 'preferences' });
+                                modalOpened({
+                                  modal: 'preferences',
+                                  itemId: 'paymentInfo',
+                                });
                               }}
                             >
                               update your payment details

@@ -30,7 +30,7 @@ const PreferencesModal: React.FC = () => {
     state: {
       isPatron,
       isLoggedIn,
-      preferences: { itemId },
+      preferences: { itemId = 'appearance' },
     },
     actions: {
       preferences: { itemIdChanged },

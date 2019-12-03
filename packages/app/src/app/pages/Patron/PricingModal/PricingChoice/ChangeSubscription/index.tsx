@@ -101,7 +101,7 @@ export const ChangeSubscription: React.FC<IChangeSubscriptionProps> = ({
         <LinkButton
           onClick={e => {
             e.preventDefault();
-            modalOpened({ modal: 'preferences' });
+            modalOpened({ modal: 'preferences', itemId: 'paymentInfo' });
           }}
         >
           user preferences
