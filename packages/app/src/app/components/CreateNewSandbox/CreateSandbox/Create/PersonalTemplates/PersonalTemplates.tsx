@@ -9,19 +9,26 @@ import { Loader } from '../../Loader/index';
 import { ITemplateInfo } from '../../TemplateList';
 import { CenteredMessage } from '../elements';
 import { FilteredTemplates } from './FilteredTemplates';
-import { DynamicWidthTemplateList } from '../../DynamicWidthTemplateList';
+import { DynamicWidthTemplateList } from '../../TemplateList/DynamicWidthTemplateList';
 
 interface IPersonalTemplatesProps {
   filter: string;
+  officialTemplateInfos: ITemplateInfo[];
+  hasLogIn: boolean;
 }
 
-export const PersonalTemplates = ({ filter }: IPersonalTemplatesProps) => {
+export const PersonalTemplates = ({
+  filter,
+  officialTemplateInfos,
+  hasLogIn,
+}: IPersonalTemplatesProps) => {
   const { data, error } = useQuery<
     ListPersonalTemplatesQuery,
     ListPersonalTemplatesQueryVariables
   >(LIST_PERSONAL_TEMPLATES, {
     variables: {},
     fetchPolicy: 'cache-and-network',
+    skip: !hasLogIn,
   });
 
   if (error) {
@@ -35,47 +42,58 @@ export const PersonalTemplates = ({ filter }: IPersonalTemplatesProps) => {
 
   // Instead of checking the loading var we check this. Apollo sets the loading
   // var to true even if we still have cached data that we can use.
-  if (typeof data?.me === 'undefined') {
+  if (hasLogIn && typeof data?.me === 'undefined') {
     return <Loader />;
   }
 
-  const allTemplateInfos: ITemplateInfo[] = [
-    {
-      title: 'Recently Used Templates',
-      key: 'recently-used-templates',
-      templates: data.me.recentlyUsedTemplates,
-    },
-    {
-      title: 'My Templates',
-      key: 'my-templates',
-      templates: data.me.templates,
-    },
-    ...data.me.teams
-      .filter(t => t.templates.length > 0)
-      .map(team => ({
-        key: `${team.id}-templates`,
-        title: `${team.name}${team.name.endsWith('s') ? "'" : "'s"} Templates`,
-        templates: team.templates,
-      })),
+  const personalTemplateInfos = hasLogIn
+    ? [
+        {
+          title: 'Recently Used Templates',
+          key: 'recently-used-templates',
+          templates: data.me.recentlyUsedTemplates,
+        },
+        {
+          title: 'My Templates',
+          key: 'my-templates',
+          templates: data.me.templates,
+        },
+        ...data.me.teams
+          .filter(t => t.templates.length > 0)
+          .map(team => ({
+            key: `${team.id}-templates`,
+            title: `${team.name}${
+              team.name.endsWith('s') ? "'" : "'s"
+            } Templates`,
+            templates: team.templates,
+          })),
 
-    {
-      title: 'My Bookmarked Templates',
-      key: 'my-bookmarked-templates',
-      templates: data.me.bookmarkedTemplates,
-    },
-    ...data.me.teams
-      .filter(t => t.bookmarkedTemplates.length > 0)
-      .map(team => ({
-        key: `${team.id}-bookmarked-templates`,
-        title: `${team.name}${
-          team.name.endsWith('s') ? "'" : "'s"
-        } Bookmarked Templates`,
-        templates: team.bookmarkedTemplates,
-      })),
+        {
+          title: 'My Bookmarked Templates',
+          key: 'my-bookmarked-templates',
+          templates: data.me.bookmarkedTemplates,
+        },
+        ...data.me.teams
+          .filter(t => t.bookmarkedTemplates.length > 0)
+          .map(team => ({
+            key: `${team.id}-bookmarked-templates`,
+            title: `${team.name}${
+              team.name.endsWith('s') ? "'" : "'s"
+            } Bookmarked Templates`,
+            templates: team.bookmarkedTemplates,
+          })),
+      ]
+    : [];
+
+  const allTemplateInfos: ITemplateInfo[] = [
+    ...personalTemplateInfos,
+    ...officialTemplateInfos,
   ];
 
   const hasNoTemplates =
-    data.me.templates.length === 0 && data.me.bookmarkedTemplates.length === 0;
+    hasLogIn &&
+    data.me.templates.length === 0 &&
+    data.me.bookmarkedTemplates.length === 0;
 
   if (hasNoTemplates) {
     return (

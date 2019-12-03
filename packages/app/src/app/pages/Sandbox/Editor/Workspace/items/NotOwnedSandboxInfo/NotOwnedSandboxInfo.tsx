@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Dependencies } from '../../Dependencies';
 import Files from '../../Files';
 import { SandboxInfo } from './SandboxInfo';
@@ -15,8 +16,10 @@ export const NotOwnedSandboxInfo = () => {
 
   return (
     <div style={{ marginTop: '1rem' }}>
-      <SandboxInfo sandbox={editor.currentSandbox} />
-      {editor.currentSandbox.customTemplate && <BookmarkTemplateButton />}
+      <Margin bottom={1.5}>
+        <SandboxInfo sandbox={editor.currentSandbox} />
+        {editor.currentSandbox.customTemplate && <BookmarkTemplateButton />}
+      </Margin>
 
       <WorkspaceItem
         actions={editActions}

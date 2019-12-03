@@ -25,7 +25,7 @@ export const Environment = styled.div`
 
 export const Description = styled.p`
   font-weight: 300;
-  font-size: 11px;
+  font-size: 13px;
   color: ${props => props.theme['editor.foreground']};
 `;
 

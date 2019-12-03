@@ -3,7 +3,7 @@ import Fuse from 'fuse.js';
 
 import { uniqBy, flatten } from 'lodash-es';
 import { ITemplateInfo } from '../../TemplateList';
-import { DynamicWidthTemplateList } from '../../DynamicWidthTemplateList';
+import { DynamicWidthTemplateList } from '../../TemplateList/DynamicWidthTemplateList';
 
 interface IFilteredTemplateProps {
   templateInfos: ITemplateInfo[];

@@ -3,7 +3,7 @@ import { connectInfiniteHits } from 'react-instantsearch-dom';
 import { InfiniteHitsProvided } from 'react-instantsearch-core';
 import { AlgoliaSandboxHit } from '@codesandbox/common/lib/types/algolia';
 import { ITemplateInfo } from '../../TemplateList';
-import { DynamicWidthTemplateList } from '../../DynamicWidthTemplateList';
+import { DynamicWidthTemplateList } from '../../TemplateList/DynamicWidthTemplateList';
 
 type ResultsProps = InfiniteHitsProvided<AlgoliaSandboxHit> & {};
 

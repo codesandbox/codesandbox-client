@@ -42,6 +42,7 @@ export const TemplateList = ({
 }: ITemplateListProps) => {
   const { actions } = useOvermind();
   const [focusedTemplateIndex, setFocusedTemplate] = React.useState(0);
+  const lastMouseMoveEventAt = React.useRef<number>(Date.now());
 
   const openSandbox = (
     sandbox: TemplateFragment['sandbox'],
@@ -58,6 +59,18 @@ export const TemplateList = ({
 
     return actions.modalClosed();
   };
+
+  React.useEffect(() => {
+    const listener = () => {
+      lastMouseMoveEventAt.current = Date.now();
+    };
+
+    window.addEventListener('mousemove', listener);
+
+    return () => {
+      window.removeEventListener('mousemove', listener);
+    };
+  }, []);
 
   const getTemplateInfoByIndex = React.useCallback(
     (index: number) => {
@@ -221,25 +234,20 @@ export const TemplateList = ({
       const indexInTemplateInfo = focusedTemplateIndex - offset;
       const isFirstRow = indexInTemplateInfo < columnCount;
 
+      const indexInRow = indexInTemplateInfo % columnCount;
       const { templateInfo: templateInfoAbove } = getTemplateInfoByIndex(
-        Math.max(0, focusedTemplateIndex - columnCount)
+        Math.max(0, focusedTemplateIndex - (indexInRow + 1))
       );
       const columnCountInPreviousRow = isFirstRow
         ? getColumnCountInLastRow(previousTemplateInfo)
         : columnCount;
-      const indexInRow = indexInTemplateInfo % columnCount;
       const hasItemAbove =
         !isFirstRow ||
         (templateInfoAbove === previousTemplateInfo &&
           columnCountInPreviousRow > indexInRow);
 
       safeSetFocusedTemplate(
-        i =>
-          i -
-          Math.min(
-            hasItemAbove ? columnCountInPreviousRow : indexInRow + 1,
-            previousTemplateInfo.templates.length
-          )
+        i => i - (hasItemAbove ? columnCountInPreviousRow : indexInRow + 1)
       );
     },
     {},
@@ -325,6 +333,12 @@ export const TemplateList = ({
                     onFocus={() => {
                       safeSetFocusedTemplate(() => index);
                     }}
+                    onMouseOver={() => {
+                      // This is to prevent selecting with your mouse on scroll move
+                      if (Date.now() - lastMouseMoveEventAt.current < 500) {
+                        safeSetFocusedTemplate(() => index);
+                      }
+                    }}
                     onKeyPress={e => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
@@ -336,6 +350,7 @@ export const TemplateList = ({
                     }}
                     onClick={e => {
                       e.preventDefault();
+
                       openSandbox(
                         template.sandbox,
                         isMac ? e.metaKey : e.ctrlKey

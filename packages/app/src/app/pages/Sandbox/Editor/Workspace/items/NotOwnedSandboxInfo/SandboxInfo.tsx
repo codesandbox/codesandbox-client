@@ -10,6 +10,8 @@ import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvata
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
 import { Stats } from 'app/pages/common/Stats';
+import { PrivacyStatus } from 'app/components/PrivacyStatus';
+
 import {
   Container,
   Title,
@@ -54,7 +56,14 @@ export const SandboxInfo = ({ sandbox }: ISandboxInfoProps) => {
           />
         )}
         <div>
-          <Title>{getSandboxName(sandbox)}</Title>
+          <Title>
+            {getSandboxName(sandbox)}{' '}
+            <PrivacyStatus
+              style={{ marginLeft: '0.25rem' }}
+              asIcon
+              privacy={sandbox.privacy}
+            />
+          </Title>
           <Environment>{environment.niceName}</Environment>
         </div>
       </HeaderInfo>

@@ -5,6 +5,13 @@ export const Container = styled(Scrollbar)`
   flex: 1 1 auto;
 `;
 
+export const BaseScroller = styled.span`
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+`;
+
 const thumb = ({ position = true } = {}) => css`
   ${position ? `width` : `height`}: 0.8rem;
   border-radius: 50px;

@@ -1,8 +1,7 @@
 import React from 'react';
 import Media from 'react-media';
 import { COLUMN_MEDIA_THRESHOLD } from '../CreateSandbox';
-import { TemplateList } from '../TemplateList';
-import { ITemplateListProps } from '../TemplateList/TemplateList';
+import { TemplateList, ITemplateListProps } from './TemplateList';
 
 /**
  * TemplateList that automatically switches between 3 and 2 columns

@@ -26,6 +26,7 @@ interface ISandboxCardProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   onFocus?: (e: React.FocusEvent<HTMLButtonElement>) => void;
   onKeyPress?: (e: React.KeyboardEvent<HTMLButtonElement>) => void;
+  onMouseOver?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   DetailComponent?: React.FunctionComponent;
 }
 
@@ -40,6 +41,7 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
   onClick,
   onFocus,
   onKeyPress,
+  onMouseOver,
   DetailComponent,
 }) => {
   const UserIcon: React.FunctionComponent =
@@ -61,10 +63,7 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
     <Container
       ref={elRef}
       onClick={onClick}
-      onMouseOver={() => {
-        // Set focus to current element
-        elRef.current.focus();
-      }}
+      onMouseOver={onMouseOver}
       onFocus={onFocus}
       onKeyPress={onKeyPress}
       tabIndex={focused ? 0 : -1}

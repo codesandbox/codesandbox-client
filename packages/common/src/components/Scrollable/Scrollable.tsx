@@ -6,6 +6,7 @@ import {
   BaseThumbX,
   BaseThumbY,
   BaseWrapper,
+  BaseScroller,
 } from './elements';
 
 interface IScrollableProps {
@@ -14,6 +15,7 @@ interface IScrollableProps {
   ThumbX?: React.ElementType;
   ThumbY?: React.ElementType;
   Wrapper?: React.ElementType;
+  Scroller?: React.ElementType;
 }
 
 export const Scrollable: React.FC<IScrollableProps> = ({
@@ -22,6 +24,7 @@ export const Scrollable: React.FC<IScrollableProps> = ({
   ThumbX = BaseThumbX,
   ThumbY = BaseThumbY,
   Wrapper = BaseWrapper,
+  Scroller = BaseScroller,
   ...props
 }) => (
   <Container
@@ -49,6 +52,11 @@ export const Scrollable: React.FC<IScrollableProps> = ({
     wrapperProps={{
       renderer: ({ elementRef, ...itemProps }) => (
         <Wrapper ref={elementRef} {...itemProps} />
+      ),
+    }}
+    scrollerProps={{
+      renderer: ({ elementRef, ...itemProps }) => (
+        <Scroller ref={elementRef} {...itemProps} />
       ),
     }}
   />

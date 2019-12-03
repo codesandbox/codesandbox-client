@@ -1,37 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
-import { TemplateType } from '@codesandbox/common/lib/templates';
 import { Header } from '../elements';
 import { SearchBox } from '../SearchBox';
 import { SearchResults } from './SearchResults';
 import { Loader } from '../Loader';
 import { ITemplateInfo } from '../TemplateList';
-import { DynamicWidthTemplateList } from '../DynamicWidthTemplateList';
-
-interface IExploreTemplate {
-  title: string;
-  sandboxes: {
-    id: string;
-    title: string | null;
-    alias: string | null;
-    description: string | null;
-    inserted_at: string;
-    updated_at: string;
-    author: { username: string } | null;
-    environment: TemplateType;
-    custom_template: {
-      id: string;
-      icon_url: string;
-      color: string;
-    };
-  }[];
-}
-
-type ExploreResponse = IExploreTemplate[];
+import { DynamicWidthTemplateList } from '../TemplateList/DynamicWidthTemplateList';
+import { getTemplateInfosFromAPI } from '../utils/api';
 
 export const Explore = () => {
   const [search, setSearch] = useState('');
-  const [exploreTemplates, setExploreTemplates] = useState<ExploreResponse>([]);
+  const [exploreTemplates, setExploreTemplates] = useState<ITemplateInfo[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -45,44 +24,19 @@ export const Explore = () => {
       }
     }, 600);
 
-    fetch('/api/v1/sandboxes/templates/explore')
-      .then(res => res.json())
-      .then(body => {
+    getTemplateInfosFromAPI('/api/v1/sandboxes/templates/explore').then(
+      body => {
         setExploreTemplates(body);
         setLoading(false);
 
         loaded = true;
-      });
+      }
+    );
 
     return () => {
       clearTimeout(timeout);
     };
   }, []);
-
-  const templateInfos: ITemplateInfo[] = exploreTemplates.map(
-    exploreTemplate => ({
-      key: exploreTemplate.title,
-      title: exploreTemplate.title,
-      templates: exploreTemplate.sandboxes.map(sandbox => ({
-        id: sandbox.custom_template.id,
-        color: sandbox.custom_template.color,
-        iconUrl: sandbox.custom_template.icon_url,
-        published: true,
-        sandbox: {
-          id: sandbox.id,
-          insertedAt: sandbox.inserted_at,
-          updatedAt: sandbox.updated_at,
-          alias: sandbox.alias,
-          title: sandbox.title,
-          author: sandbox.author,
-          description: sandbox.description,
-          source: {
-            template: sandbox.environment,
-          },
-        },
-      })),
-    })
-  );
 
   return (
     <>
@@ -105,7 +59,7 @@ export const Explore = () => {
         ) : (
           <DynamicWidthTemplateList
             forkOnOpen={false}
-            templateInfos={templateInfos}
+            templateInfos={exploreTemplates}
           />
         )}
       </Scrollable>
