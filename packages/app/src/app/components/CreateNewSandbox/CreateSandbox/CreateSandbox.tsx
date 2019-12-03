@@ -1,16 +1,22 @@
+import { useOvermind } from 'app/overmind';
 import React from 'react';
 import { useTabState } from 'reakit/Tab';
-import { CodeSandboxIcon, PlusIcon, StarIcon, UploadIcon } from './Icons';
-import { Welcome } from './Welcome';
+
 import { Create } from './Create';
+import { Container, Tab, TabContent, Tabs } from './elements';
 import { Explore } from './Explore';
+import { CodeSandboxIcon, PlusIcon, StarIcon, UploadIcon } from './Icons';
 import { Import } from './Import';
-import { Container, Tabs, Tab, TabContent } from './elements';
+import { Welcome } from './Welcome';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
 export const CreateSandbox: React.FC = props => {
-  const tab = useTabState({ orientation: 'vertical', selectedId: 'Create' });
+  const { state } = useOvermind();
+  const tab = useTabState({
+    orientation: 'vertical',
+    selectedId: state.isFirstVisit ? 'Welcome' : 'Create',
+  });
 
   return (
     <Container {...props}>
