@@ -22,6 +22,7 @@ interface IMultiActionProps {
   secondary?: boolean;
   red?: boolean;
   danger?: boolean;
+  className?: string;
   children: React.ReactElement | React.ReactElement[];
 }
 
@@ -38,6 +39,7 @@ export const MultiAction: React.FC<IMultiActionProps> = memo(
     red = false,
     danger = false,
     children,
+    className,
   }) => {
     const menu = useMenuState();
     const buttonProps = { small, block, disabled, secondary, red, danger };
@@ -48,13 +50,14 @@ export const MultiAction: React.FC<IMultiActionProps> = memo(
         // @ts-ignore */}
         <PrimaryAction
           onClick={e => onPrimaryClick(e, menu)}
+          className={className}
           {...buttonProps}
           disabled={disablePrimary || disabled}
         >
           {Icon && <Icon />}
           {primaryActionLabel}
         </PrimaryAction>
-        <ToggleActionsList {...menu} {...buttonProps}>
+        <ToggleActionsList {...menu} {...buttonProps} className={className}>
           {menu.visible ? <GoChevronUp /> : <GoChevronDown />}
         </ToggleActionsList>
         <ActionsList {...menu} aria-label="Additional Options">

@@ -1,6 +1,8 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { Link } from 'react-router-dom';
 import { basename } from 'path';
 import React, {
   ChangeEvent,
@@ -20,6 +22,7 @@ import {
   Name,
   NameInput,
   Main,
+  TemplateBadge,
 } from './elements';
 
 const noop = () => undefined;
@@ -128,6 +131,25 @@ export const SandboxName: FunctionComponent = () => {
             {sandboxName}
           </Name>
         )}
+
+        {currentSandbox.customTemplate ? (
+          <Tooltip
+            content={
+              <>
+                This sandbox is a template, you can learn about templates in the{' '}
+                <Link target="_blank" to="/docs/templates">
+                  docs
+                </Link>
+                .
+              </>
+            }
+            delay={0}
+            interactive
+            placement="bottom"
+          >
+            <TemplateBadge color={customTemplate.color}>Template</TemplateBadge>
+          </Tooltip>
+        ) : null}
       </Container>
     </Main>
   );

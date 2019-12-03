@@ -74,3 +74,18 @@ export const Main = styled.div`
     display: block;
   }
 `;
+
+export const TemplateBadge = styled.div<{ color: string }>`
+  background: ${props => props.theme['activityBarBadge.background']};
+  color: ${props => props.theme['activityBarBadge.foreground']};
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  padding: 0px 8px;
+  border-radius: 4px;
+  margin-left: 1rem;
+  height: 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+`;
