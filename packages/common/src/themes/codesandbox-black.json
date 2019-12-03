@@ -50,7 +50,7 @@
     "tab.activeBackground": "#282A36",
     "tab.activeForeground": "#F8F8F2",
     "editor.background": "#151515",
-    "editor.foreground": "#ffffff",
+    "editor.foreground": "#999",
     "editor.hoverHighlightBackground": "#333",
     "editor.inactiveSelectionBackground": "#333",
 
@@ -158,7 +158,7 @@
     "scrollbarSlider.hoverBackground": null,
     "sideBar.background": "#151515",
     "sideBar.border": "#242424",
-    "sideBar.foreground": "#ffffff",
+    "sideBar.foreground": "#999",
     "sideBarSectionHeader.background": "#151515",
     "sideBarSectionHeader.foreground": "#ffffff",
     "sideBarSectionHeader.border": "#242424",

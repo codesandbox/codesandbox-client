@@ -24,17 +24,12 @@ export const NotOwnedSandboxInfo = () => {
       <WorkspaceItem
         actions={editActions}
         defaultOpen
-        style={{ marginTop: '.5rem' }}
         title="Files"
       >
         <Files setEditActions={setEditActions} />
       </WorkspaceItem>
       {!staticTemplate ? (
-        <WorkspaceItem
-          defaultOpen
-          style={{ marginTop: '.5rem' }}
-          title="Dependencies"
-        >
+        <WorkspaceItem defaultOpen title="Dependencies">
           <Dependencies />
         </WorkspaceItem>
       ) : null}
