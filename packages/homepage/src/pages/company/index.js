@@ -39,8 +39,8 @@ export default () => (
       <SeoText>
         Founded in 2017 by Ives van Hoorne and Bas Buursma, our mission is to
         make web development faster. By removing complexity we enable web
-        developers to be more productive. By simplifying collaboration we
-        make it easier for teams to work on code together.
+        developers to be more productive. By simplifying collaboration we make
+        it easier for teams to work on code together.
       </SeoText>
       <Banner
         css={`
