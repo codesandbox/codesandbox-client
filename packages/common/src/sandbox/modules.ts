@@ -1,7 +1,8 @@
 import memoize from 'lodash/memoize';
-import { Module, Directory, Sandbox } from '../types';
+
 import getTemplateDefinition from '../templates';
 import parse from '../templates/configuration/parse';
+import { Directory, Module, Sandbox } from '../types';
 
 const compareTitle = (
   original: string,
@@ -73,6 +74,23 @@ export function resolveDirectory(
   );
 
   return directories.find(d => d.shortid === foundDirectoryShortid);
+}
+
+export function getModulesAndDirectoriesInDirectory(
+  directory: Directory,
+  modules: Array<Module>,
+  directories: Array<Directory>
+) {
+  const { path } = directory;
+  return {
+    removedModules: modules.filter(moduleItem =>
+      moduleItem.path.startsWith(path)
+    ),
+    removedDirectories: directories.filter(
+      directoryItem =>
+        directoryItem.path.startsWith(path) && directoryItem !== directory
+    ),
+  };
 }
 
 export function getModulesInDirectory(
@@ -228,16 +246,17 @@ const memoizeFunction = (modules, directories, id) =>
   modules.map(m => m.id + m.title + m.directoryShortid).join(',') +
   directories.map(d => d.id + d.title + d.directoryShortid).join(',');
 
-export const getModulePath = memoize(
-  (modules: Array<Module>, directories: Array<Directory>, id: string) =>
-    getPath(modules, modules, directories, id),
-  memoizeFunction
-);
-export const getDirectoryPath = memoize(
-  (modules: Array<Module>, directories: Array<Directory>, id: string) =>
-    getPath(directories, modules, directories, id),
-  memoizeFunction
-);
+export const getModulePath = (
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  id: string
+) => getPath(modules, modules, directories, id);
+
+export const getDirectoryPath = (
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  id: string
+) => getPath(directories, modules, directories, id);
 
 export const getChildren = memoize(
   (

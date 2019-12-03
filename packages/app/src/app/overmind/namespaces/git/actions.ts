@@ -1,4 +1,5 @@
 import { Action, AsyncAction } from 'app/overmind';
+
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -50,7 +51,7 @@ export const gitMounted: AsyncAction = ({ actions }) =>
 
 export const createCommitClicked: AsyncAction = async ({ state, effects }) => {
   const { git } = state;
-  const id = state.editor.currentId;
+  const { id } = state.editor.currentSandbox;
 
   git.commit = null;
   git.isCommitting = true;
@@ -91,7 +92,7 @@ export const createPrClicked: AsyncAction = async ({ state, effects }) => {
   state.git.isCreatingPr = true;
   state.currentModal = 'pr';
 
-  const id = state.editor.currentId;
+  const { id } = state.editor.currentSandbox;
   const pr = await effects.api.createGitPr(
     id,
     `${state.git.subject}${
@@ -104,9 +105,7 @@ export const createPrClicked: AsyncAction = async ({ state, effects }) => {
 
   const { user } = state;
   const git = state.editor.currentSandbox.originalGit;
-  const url = `https://github.com/${git.username}/${git.repo}/compare/${
-    git.branch
-  }...${user.username}:${pr.newBranch}?expand=1`;
+  const url = `https://github.com/${git.username}/${git.repo}/compare/${git.branch}...${user.username}:${pr.newBranch}?expand=1`;
 
   state.git.pr.prURL = url;
 

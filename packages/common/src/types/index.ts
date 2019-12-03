@@ -56,7 +56,7 @@ export type Module = {
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path?: string;
+  path: string;
   now?: any;
   type: 'file';
 };
@@ -73,6 +73,7 @@ export type Directory = {
   title: string;
   directoryShortid: string | null;
   shortid: string;
+  path: string;
   sourceId: string;
   type: 'directory';
 };
@@ -676,3 +677,7 @@ export enum PatronBadge {
 export type LiveDisconnectReason = 'close' | 'inactivity';
 
 export type PatronTier = 1 | 2 | 3 | 4;
+
+export type SandboxFs = {
+  [path: string]: Module | Directory;
+};
