@@ -15,7 +15,7 @@ import {
   Content,
   Avatar,
   Badge,
-  Button,
+  ButtonAsLink,
   Heading,
   HelpText,
   LinkButton,
@@ -86,9 +86,9 @@ const Pro: React.FC = () => {
 
                       {subscriptionType === 'pro' ? (
                         <>
-                          <Button as="a" href="/s/" style={{ marginTop: 30 }}>
+                          <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
                             Create a sandbox
-                          </Button>
+                          </ButtonAsLink>
 
                           <HelpText>
                             You will be billed on the <b>30th</b> of each month.
@@ -123,9 +123,9 @@ const Pro: React.FC = () => {
                             CodeSandbox. As a patron, you can access all Pro
                             features.
                           </SubHeading>
-                          <Button as="a" href="/s/">
+                          <ButtonAsLink href="/s/">
                             Create a sandbox
-                          </Button>
+                          </ButtonAsLink>
 
                           <HelpText>
                             You will be billed on the <b>29th</b> of each month.

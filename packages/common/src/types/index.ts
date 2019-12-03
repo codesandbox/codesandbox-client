@@ -113,6 +113,7 @@ export type CurrentUser = {
     since: string;
     amount: number;
     cancelAtPeriodEnd: boolean;
+    type?: 'pro' | 'patron';
   } | null;
   curatorAt: string;
   badges: Array<Badge>;

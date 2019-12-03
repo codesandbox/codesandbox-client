@@ -41,7 +41,7 @@ export const SubHeading = styled.span(
   })
 );
 
-export const Form = styled.form(props =>
+export const Form = styled.form<{ disabled: boolean }>(props =>
   css({
     fontSize: 3,
     width: 300,
@@ -129,6 +129,17 @@ export const Button = styled.button(
     },
   })
 );
+
+/* this component exists only to make typecheck happy
+  the alternate <Button as="a"> isn't strictly typed
+  and typescript doesn't like that
+
+  "deep sigh"
+        — Sara Vieira
+  
+*/
+
+export const ButtonAsLink = Button.withComponent('a');
 
 export const HelpText = styled.p(
   css({
@@ -240,7 +251,7 @@ export const Avatar = styled.img(
   })
 );
 
-export const Badge = styled.span(props =>
+export const Badge = styled.span<{ type: string }>(props =>
   css({
     backgroundColor: props.type === 'pro' ? 'blues.700' : 'green',
     color: props.type === 'pro' ? 'white' : 'grays.800',
