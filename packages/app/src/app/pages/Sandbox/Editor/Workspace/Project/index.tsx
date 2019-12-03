@@ -7,12 +7,11 @@ import {
   patronUrl,
   sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { PrivacyStatus } from 'app/components/PrivacyStatus';
-import { Stats } from 'app/pages/common/Stats';
 import React, { ChangeEvent, FunctionComponent } from 'react';
-import TeamIcon from 'react-icons/lib/md/people';
 
+import { PrivacyStatus } from 'app/components/PrivacyStatus';
 import { useOvermind } from 'app/overmind';
+import { Stats } from 'app/pages/common/Stats';
 
 // import { Alias } from './Alias';
 import { Author } from './Author';
@@ -35,12 +34,13 @@ import {
 import { Frozen } from './Frozen';
 import { Keywords } from './Keywords';
 import { SandboxConfig } from './SandboxConfig';
+import { Team } from './Team';
 import { Title } from './Title';
 
 type Props = {
   editable?: boolean;
 };
-export const Project: FunctionComponent<Props> = ({ editable }) => {
+export const Project: FunctionComponent<Props> = ({ editable = false }) => {
   const {
     actions: {
       workspace: { sandboxPrivacyChanged },
@@ -76,15 +76,7 @@ export const Project: FunctionComponent<Props> = ({ editable }) => {
 
       {!team && author && <Author />}
 
-      {team && (
-        <Tooltip appendTo="parent" content="This sandbox is owned by this team">
-          <Item style={{ color: 'white', display: 'flex' }}>
-            <TeamIcon style={{ fontSize: '1.125em', marginRight: '.5rem' }} />
-
-            <div>{team.name}</div>
-          </Item>
-        </Tooltip>
-      )}
+      {team && <Team/>}
 
       {git && (
         <Item>
