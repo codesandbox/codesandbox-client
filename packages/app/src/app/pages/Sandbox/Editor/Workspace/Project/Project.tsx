@@ -137,25 +137,24 @@ export const Project: React.FunctionComponent<IProjectProps> = ({
 
         {editable && <Frozen />}
 
-        {sandbox.forkedFromSandbox ||
-          (sandbox.forkedTemplateSandbox && (
-            <Item>
-              <PropertyName>
-                {sandbox.forkedTemplateSandbox ? 'Template' : 'Forked From'}
-              </PropertyName>
-              <PropertyValue>
-                <TemplateStyledLink
-                  to={sandboxUrl(
-                    sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox
-                  )}
-                >
-                  {getSandboxName(
-                    sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox
-                  )}
-                </TemplateStyledLink>
-              </PropertyValue>
-            </Item>
-          ))}
+        {(sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox) && (
+          <Item>
+            <PropertyName>
+              {sandbox.forkedTemplateSandbox ? 'Template' : 'Forked From'}
+            </PropertyName>
+            <PropertyValue>
+              <TemplateStyledLink
+                to={sandboxUrl(
+                  sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox
+                )}
+              >
+                {getSandboxName(
+                  sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox
+                )}
+              </TemplateStyledLink>
+            </PropertyValue>
+          </Item>
+        )}
 
         <Item>
           <PropertyName>

@@ -92,11 +92,13 @@ body #vscode-editor * {
   -webkit-font-smoothing: auto;
 }
 
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  /* On Retina the pixel density is so high that we can do anti-aliasing instead of 
-    subpixel anti-aliasing and it will look more beautiful (star)
-  */
+/* On Retina the pixel density is so high that we can do anti-aliasing instead of 
+  subpixel anti-aliasing and it will look more beautiful (star)
+
+  Disabled now because other is more beautiful
+*/
+/* @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   body #vscode-editor * {
     -webkit-font-smoothing: antialiased;
   }
-}
+} */

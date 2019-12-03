@@ -32,13 +32,11 @@ export const PrivacyStatus: React.FC<IPrivacyStatusProps> = ({
   ];
 
   if (asIcon) {
-    return (
-      PRIVACY_MESSAGES[privacy].icon && (
-        <Tooltip content={PRIVACY_MESSAGES[privacy].tooltip}>
-          {PRIVACY_MESSAGES[privacy].icon}
-        </Tooltip>
-      )
-    );
+    return PRIVACY_MESSAGES[privacy].icon ? (
+      <Tooltip content={PRIVACY_MESSAGES[privacy].tooltip}>
+        {PRIVACY_MESSAGES[privacy].icon}
+      </Tooltip>
+    ) : null;
   }
 
   return (

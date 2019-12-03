@@ -12,6 +12,13 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Stats } from 'app/pages/common/Stats';
 import { PrivacyStatus } from 'app/components/PrivacyStatus';
 
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import {
+  sandboxUrl,
+  githubRepoUrl,
+  profileUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
+import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import {
   Container,
   Title,
@@ -19,6 +26,11 @@ import {
   HeaderInfo,
   TemplateIconContainer,
   Environment,
+  Item,
+  PropertyName,
+  PropertyValue,
+  Group,
+  StyledLink,
 } from './elements';
 
 export interface ISandboxInfoProps {
@@ -64,23 +76,76 @@ export const SandboxInfo = ({ sandbox }: ISandboxInfoProps) => {
               privacy={sandbox.privacy}
             />
           </Title>
-          <Environment>{environment.niceName}</Environment>
+          <Tooltip
+            boundary="viewport"
+            interactive
+            content={
+              <>
+                The environment determines how a sandbox is executed, you can
+                find more info{' '}
+                <a target="_blank" href="/docs/environment">
+                  here
+                </a>
+                .
+              </>
+            }
+          >
+            <Environment
+              href={environment.url}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              {environment.name}
+            </Environment>
+          </Tooltip>
         </div>
       </HeaderInfo>
 
       {sandbox.description && <Description>{sandbox.description}</Description>}
-      <Margin top={1.5}>
+      <Margin style={{ fontSize: 11 }} top={2}>
         {sandbox.author && (
-          <UserWithAvatar
-            username={sandbox.author.username}
-            subscriptionSince={sandbox.author.subscriptionSince}
-            avatarUrl={sandbox.author.avatarUrl}
+          <StyledLink to={profileUrl(sandbox.author.username)}>
+            <UserWithAvatar
+              username={sandbox.author.username}
+              subscriptionSince={sandbox.author.subscriptionSince}
+              avatarUrl={sandbox.author.avatarUrl}
+            />
+          </StyledLink>
+        )}
+        {sandbox.git && (
+          <GithubBadge
+            branch={sandbox.git.branch}
+            repo={sandbox.git.repo}
+            url={githubRepoUrl(sandbox.git)}
+            username={sandbox.git.username}
+            commitSha={sandbox.git.commitSha}
           />
         )}
       </Margin>
-      <Margin top={1}>
+      <Margin top={1.5}>
         <Stats sandbox={sandbox} />
       </Margin>
+
+      <Group>
+        {(sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox) && (
+          <Item>
+            <PropertyName>
+              {sandbox.forkedTemplateSandbox ? 'Based On' : 'Forked From'}
+            </PropertyName>
+            <PropertyValue>
+              <StyledLink
+                to={sandboxUrl(
+                  sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox
+                )}
+              >
+                {getSandboxName(
+                  sandbox.forkedFromSandbox || sandbox.forkedTemplateSandbox
+                )}
+              </StyledLink>
+            </PropertyValue>
+          </Item>
+        )}
+      </Group>
     </Container>
   );
 };
