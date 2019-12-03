@@ -103,7 +103,7 @@ export const initializeModuleState: Action<any> = (
     );
 
     if (module) {
-      if (moduleInfo.code === null || !('code' in moduleInfo)) {
+      if (!('code' in moduleInfo)) {
         return;
       }
       effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
