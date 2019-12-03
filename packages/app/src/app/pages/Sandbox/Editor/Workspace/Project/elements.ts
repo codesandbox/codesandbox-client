@@ -1,6 +1,5 @@
 import Question from 'react-icons/lib/go/question';
 import EditPenIcon from 'react-icons/lib/md/create';
-import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
@@ -80,12 +79,6 @@ export const Icon = styled(Question)`
   opacity: 0.5;
   margin-left: 0.5em;
   cursor: pointer;
-`;
-
-export const TemplateStyledLink = styled(Link)`
-  ${({ theme }) => css`
-    color: ${theme.templateColor} !important;
-  `}
 `;
 
 export const BundlerLink = styled.a.attrs({

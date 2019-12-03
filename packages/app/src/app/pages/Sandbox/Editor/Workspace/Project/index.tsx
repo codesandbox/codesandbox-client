@@ -1,7 +1,5 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
@@ -20,8 +18,8 @@ import {
   PropertyName,
   PropertyValue,
   StatsContainer,
-  TemplateStyledLink,
 } from './elements';
+import { ForkedFrom } from './ForkedFrom';
 import { Frozen } from './Frozen';
 import { Git } from './Git';
 import { Keywords } from './Keywords';
@@ -83,21 +81,7 @@ export const Project: FunctionComponent<Props> = ({ editable = false }) => {
 
         {editable && <Frozen />}
 
-        {(forkedFromSandbox || forkedTemplateSandbox) && (
-          <Item>
-            <PropertyName>
-              {forkedTemplateSandbox ? 'Template' : 'Forked From'}
-            </PropertyName>
-
-            <PropertyValue>
-              <TemplateStyledLink
-                to={sandboxUrl(forkedFromSandbox || forkedTemplateSandbox)}
-              >
-                {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
-              </TemplateStyledLink>
-            </PropertyValue>
-          </Item>
-        )}
+        {(forkedFromSandbox || forkedTemplateSandbox) && <ForkedFrom />}
 
         <Item>
           <PropertyName>
