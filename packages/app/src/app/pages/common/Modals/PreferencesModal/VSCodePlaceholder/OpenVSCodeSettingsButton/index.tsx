@@ -2,13 +2,13 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
-import { vscode } from 'app/vscode';
 
 import { Container } from './elements';
 
 export const OpenVSCodeSettingsButton: FunctionComponent = () => {
   const {
     actions: { modalClosed },
+    effects: { vscode },
   } = useOvermind();
 
   const openCommand = () => {
