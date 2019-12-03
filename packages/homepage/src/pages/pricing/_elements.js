@@ -34,9 +34,10 @@ export const List = styled.ul`
   margin: 0;
   font-style: normal;
   font-size: 1.4rem;
-  text-align: center;
+  text-align: left;
   color: ${props => props.theme.homepage.muted};
   margin-top: 3rem;
+  margin-left: 1rem;
 
   li span {
     color: ${props => props.theme.homepage.white};
@@ -150,11 +151,18 @@ export const FeatureTitle = styled.span`
 export const CardContainer = styled.div`
   display: grid;
   grid-template-columns: 26rem 26rem;
+  grid-template-areas:
+    'free pro'
+    'team team';
   grid-gap: 2rem;
   justify-content: center;
 
   ${props => props.theme.breakpoints.lg} {
     grid-template-columns: minmax(100%, 26rem);
+    grid-template-areas:
+      'free'
+      'pro'
+      'team';
   }
 `;
 
