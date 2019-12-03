@@ -78,6 +78,16 @@ export enum Direction {
   Desc = 'DESC',
 }
 
+export type Git = {
+  __typename?: 'Git';
+  branch: Maybe<Scalars['String']>;
+  commitSha: Maybe<Scalars['String']>;
+  id: Maybe<Scalars['ID']>;
+  path: Maybe<Scalars['String']>;
+  repo: Maybe<Scalars['String']>;
+  username: Maybe<Scalars['String']>;
+};
+
 export type Notification = {
   __typename?: 'Notification';
   data: Maybe<Scalars['String']>;
@@ -251,6 +261,8 @@ export type Sandbox = {
   customTemplate: Maybe<Template>;
   description: Maybe<Scalars['String']>;
   forkedTemplate: Maybe<Template>;
+  /** If the sandbox has a git repo tied to it this will be set */
+  git: Maybe<Git>;
   id: Maybe<Scalars['ID']>;
   insertedAt: Maybe<Scalars['String']>;
   privacy: Maybe<Scalars['Int']>;
@@ -332,7 +344,27 @@ export type ListPersonalTemplatesQuery = { __typename?: 'RootQueryType' } & {
         Array<Maybe<{ __typename?: 'Template' } & TemplateFragment>>
       >;
       recentlyUsedTemplates: Maybe<
-        Array<Maybe<{ __typename?: 'Template' } & TemplateFragment>>
+        Array<
+          Maybe<
+            { __typename?: 'Template' } & {
+              sandbox: Maybe<
+                { __typename?: 'Sandbox' } & {
+                  git: Maybe<
+                    { __typename?: 'Git' } & Pick<
+                      Git,
+                      | 'id'
+                      | 'username'
+                      | 'commitSha'
+                      | 'path'
+                      | 'repo'
+                      | 'branch'
+                    >
+                  >;
+                }
+              >;
+            } & TemplateFragment
+          >
+        >
       >;
       bookmarkedTemplates: Maybe<
         Array<Maybe<{ __typename?: 'Template' } & TemplateFragment>>
@@ -837,12 +869,4 @@ export type BookmarkedSandboxInfoQuery = { __typename?: 'RootQueryType' } & {
         >;
       }
   >;
-};
-
-export type ClearNotificationCountMutationVariables = {};
-
-export type ClearNotificationCountMutation = {
-  __typename?: 'RootMutationType';
-} & {
-  clearNotificationCount: Maybe<{ __typename?: 'User' } & Pick<User, 'id'>>;
 };

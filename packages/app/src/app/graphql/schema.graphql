@@ -1,5 +1,5 @@
 # source: https://codesandbox.stream/api/graphql
-# timestamp: Thu Nov 28 2019 18:35:35 GMT+0000 (Coordinated Universal Time)
+# timestamp: Tue Dec 03 2019 21:41:27 GMT+0100 (Central European Standard Time)
 
 schema {
   query: RootQuery
@@ -44,6 +44,15 @@ type CurrentUser {
 enum Direction {
   ASC
   DESC
+}
+
+type Git {
+  branch: String
+  commitSha: String
+  id: ID
+  path: String
+  repo: String
+  username: String
 }
 
 type Notification {
@@ -188,6 +197,11 @@ type Sandbox {
   customTemplate: Template
   description: String
   forkedTemplate: Template
+
+  """
+  If the sandbox has a git repo tied to it this will be set
+  """
+  git: Git
   id: ID
   insertedAt: String
   privacy: Int

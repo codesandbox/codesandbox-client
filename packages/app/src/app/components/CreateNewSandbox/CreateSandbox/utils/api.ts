@@ -17,6 +17,14 @@ interface IExploreTemplate {
       icon_url: string;
       color: string;
     };
+    git: {
+      id: string;
+      username: string;
+      commit_sha: string;
+      path: string;
+      repo: string;
+      branch: string;
+    };
   }[];
 }
 
@@ -40,6 +48,14 @@ const mapAPIResponseToTemplateInfo = (
       description: sandbox.description,
       source: {
         template: sandbox.environment,
+      },
+      git: sandbox.git && {
+        id: sandbox.git.id,
+        username: sandbox.git.username,
+        commitSha: sandbox.git.commit_sha,
+        path: sandbox.git.path,
+        repo: sandbox.git.repo,
+        branch: sandbox.git.branch,
       },
     },
   })),
