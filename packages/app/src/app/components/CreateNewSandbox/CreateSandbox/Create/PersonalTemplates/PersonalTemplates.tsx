@@ -46,7 +46,7 @@ export const PersonalTemplates = ({
     return <Loader />;
   }
 
-  const personalTemplateInfos = hasLogIn
+  const personalTemplateInfos: ITemplateInfo[] = hasLogIn
     ? [
         {
           title: 'Recently Used Templates',
@@ -57,6 +57,7 @@ export const PersonalTemplates = ({
           title: 'My Templates',
           key: 'my-templates',
           templates: data.me.templates,
+          isOwned: true,
         },
         ...data.me.teams
           .filter(t => t.templates.length > 0)
@@ -66,6 +67,7 @@ export const PersonalTemplates = ({
               team.name.endsWith('s') ? "'" : "'s"
             } Templates`,
             templates: team.templates,
+            isOwned: true,
           })),
 
         {
@@ -110,6 +112,10 @@ export const PersonalTemplates = ({
       templateInfos={allTemplateInfos}
     />
   ) : (
-    <DynamicWidthTemplateList forkOnOpen templateInfos={allTemplateInfos} />
+    <DynamicWidthTemplateList
+      showSecondaryShortcuts
+      forkOnOpen
+      templateInfos={allTemplateInfos}
+    />
   );
 };

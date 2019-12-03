@@ -17,12 +17,14 @@ export interface ITemplateInfo {
   title?: string;
   key: string;
   templates: TemplateFragment[];
+  isOwned?: boolean;
 }
 
 export interface ITemplateListProps {
   templateInfos: ITemplateInfo[];
   forkOnOpen?: boolean;
   columnCount?: number;
+  showSecondaryShortcuts?: boolean;
 }
 
 const MODIFIER_KEY = isMac ? 'Ctrl' : '⇧';
@@ -38,6 +40,7 @@ const getNumber = (e: KeyboardEvent): number => {
 export const TemplateList = ({
   templateInfos,
   forkOnOpen,
+  showSecondaryShortcuts,
   columnCount = 2,
 }: ITemplateListProps) => {
   const { actions } = useOvermind();
@@ -269,10 +272,12 @@ export const TemplateList = ({
       return num > 0 && num < 10 && modifierCheck;
     },
     e => {
-      const num = getNumber(e);
+      if (showSecondaryShortcuts) {
+        const num = getNumber(e);
 
-      const template = getTemplateByIndex(num - 1);
-      openSandbox(template.sandbox);
+        const template = getTemplateByIndex(num - 1);
+        openSandbox(template.sandbox);
+      }
     },
     {},
     [focusedTemplateIndex, getTemplateByIndex, openSandbox]
@@ -301,87 +306,92 @@ export const TemplateList = ({
   let offset = 0;
   return (
     <>
-      {templateInfos.map(({ templates, title, key }, templateInfoIndex) => {
-        if (templateInfoIndex > 0) {
-          offset += templateInfos[templateInfoIndex - 1].templates.length;
-        }
+      {templateInfos.map(
+        ({ templates, title, key, isOwned }, templateInfoIndex) => {
+          if (templateInfoIndex > 0) {
+            offset += templateInfos[templateInfoIndex - 1].templates.length;
+          }
 
-        if (templates.length === 0) {
-          return null;
-        }
+          if (templates.length === 0) {
+            return null;
+          }
 
-        return (
-          <TemplateInfoContainer key={key}>
-            {title !== undefined && <SubHeader>{title}</SubHeader>}
-            <Grid columnCount={columnCount}>
-              {templates.map((template: TemplateFragment, i) => {
-                const index = offset + i;
-                const focused = focusedTemplateIndex === offset + i;
+          return (
+            <TemplateInfoContainer key={key}>
+              {title !== undefined && <SubHeader>{title}</SubHeader>}
+              <Grid columnCount={columnCount}>
+                {templates.map((template: TemplateFragment, i) => {
+                  const index = offset + i;
+                  const focused = focusedTemplateIndex === offset + i;
 
-                const shortKey =
-                  index < 9 ? `${MODIFIER_KEY}+${index + 1}` : '';
-                const detailText = focused ? '↵' : shortKey;
+                  const shortKey = showSecondaryShortcuts
+                    ? index < 9
+                      ? `${MODIFIER_KEY}+${index + 1}`
+                      : ''
+                    : '';
+                  const detailText = focused ? '↵' : shortKey;
 
-                return (
-                  <SandboxCard
-                    key={template.id}
-                    title={getSandboxName(template.sandbox)}
-                    iconUrl={template.iconUrl}
-                    // @ts-ignore
-                    environment={template.sandbox.source.template}
-                    color={template.color}
-                    onFocus={() => {
-                      safeSetFocusedTemplate(() => index);
-                    }}
-                    onMouseOver={() => {
-                      // This is to prevent selecting with your mouse on scroll move
-                      if (Date.now() - lastMouseMoveEventAt.current < 500) {
+                  return (
+                    <SandboxCard
+                      key={template.id}
+                      title={getSandboxName(template.sandbox)}
+                      iconUrl={template.iconUrl}
+                      // @ts-ignore
+                      environment={template.sandbox.source.template}
+                      color={template.color}
+                      onFocus={() => {
                         safeSetFocusedTemplate(() => index);
-                      }
-                    }}
-                    onKeyPress={e => {
-                      if (e.key === 'Enter') {
+                      }}
+                      onMouseOver={() => {
+                        // This is to prevent selecting with your mouse on scroll move
+                        if (Date.now() - lastMouseMoveEventAt.current < 500) {
+                          safeSetFocusedTemplate(() => index);
+                        }
+                      }}
+                      onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          openSandbox(
+                            template.sandbox,
+                            isMac ? e.metaKey : e.ctrlKey
+                          );
+                        }
+                      }}
+                      onClick={e => {
                         e.preventDefault();
+
                         openSandbox(
                           template.sandbox,
                           isMac ? e.metaKey : e.ctrlKey
                         );
+                      }}
+                      focused={focused}
+                      detailText={detailText}
+                      DetailComponent={
+                        isOwned
+                          ? () => (
+                              <Tooltip content="Edit Template">
+                                <EditIcon
+                                  onClick={evt => {
+                                    evt.stopPropagation();
+                                    actions.modalClosed();
+                                  }}
+                                  to={sandboxUrl(template.sandbox)}
+                                >
+                                  <MdEditIcon />
+                                </EditIcon>
+                              </Tooltip>
+                            )
+                          : undefined
                       }
-                    }}
-                    onClick={e => {
-                      e.preventDefault();
-
-                      openSandbox(
-                        template.sandbox,
-                        isMac ? e.metaKey : e.ctrlKey
-                      );
-                    }}
-                    focused={focused}
-                    detailText={detailText}
-                    DetailComponent={
-                      forkOnOpen
-                        ? () => (
-                            <Tooltip content="Edit Template">
-                              <EditIcon
-                                onClick={evt => {
-                                  evt.stopPropagation();
-                                  actions.modalClosed();
-                                }}
-                                to={sandboxUrl(template.sandbox)}
-                              >
-                                <MdEditIcon />
-                              </EditIcon>
-                            </Tooltip>
-                          )
-                        : undefined
-                    }
-                  />
-                );
-              })}
-            </Grid>
-          </TemplateInfoContainer>
-        );
-      })}
+                    />
+                  );
+                })}
+              </Grid>
+            </TemplateInfoContainer>
+          );
+        }
+      )}
     </>
   );
 };
