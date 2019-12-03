@@ -48,6 +48,9 @@ export default () => (
         `}
       >
         <img
+          css={`
+            width: 100%;
+          `}
           src={company}
           srcSet={`${company} 1x, ${company2x} 2x`}
           alt="Company"
@@ -166,6 +169,7 @@ export default () => (
         `}
       >
         We're proudly open-source with more than 200 contributors and counting.
+        <br />
         They collaborate with our growing, remote-first team.
       </SeoText>
       <HiringLink to="/jobs"> We’re Hiring!</HiringLink>

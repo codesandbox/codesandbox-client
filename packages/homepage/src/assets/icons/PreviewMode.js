@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from 'styled-components';
 
 const PreviewMode = props => {
-  const { white, grey, whiteDark, greyLight } = useTheme().homepage.white;
+  const { white, grey, whiteDark, greyLight } = useTheme().homepage;
 
   const getFill = () => {
     if (props.light) {
