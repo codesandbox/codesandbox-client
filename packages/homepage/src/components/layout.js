@@ -33,7 +33,13 @@ const homepageTheme = {
   },
 };
 
-const TemplateWrapper = ({ children }) => (
+export const WRAPPER_STYLING = {
+  maxWidth: '80%',
+  width: '1200px',
+  margin: 'auto',
+};
+
+const TemplateWrapper = ({ children, noWrapperStyling }) => (
   <ThemeProvider theme={homepageTheme}>
     <div>
       <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 10 }}>
@@ -44,11 +50,7 @@ const TemplateWrapper = ({ children }) => (
       <Navigation />
 
       <main
-        style={{
-          maxWidth: '80%',
-          width: '1200px',
-          margin: 'auto',
-        }}
+        style={noWrapperStyling ? {} : WRAPPER_STYLING}
         id="main"
         aria-label="main content"
       >

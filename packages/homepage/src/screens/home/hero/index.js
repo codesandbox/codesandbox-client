@@ -1,13 +1,29 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import { useTheme } from 'styled-components';
+import theme from '@codesandbox/common/lib/theme';
 import Button from '../../../components/Button';
-import hero from '../../../assets/images/hero.png';
 import { H2, P } from '../../../components/Typography';
-import { HeroWrapper, SignUp, ImageWrapper, Border } from './elements';
+import Cube from '../../../components/Cube';
+import {
+  HeroWrapper,
+  SignUp,
+  ImageWrapper,
+  Border,
+  EditorElement,
+} from './elements';
+
+import heroActivityBar from '../../../assets/images/hero/activitybar.png';
+import heroSidebar from '../../../assets/images/hero/sidebar.png';
+import heroNavbar from '../../../assets/images/hero/navbar.png';
+import heroChrome from '../../../assets/images/hero/chrome.png';
+import heroEditor from '../../../assets/images/hero/editor.png';
+import heroPreview from '../../../assets/images/hero/preview.png';
 
 export default () => {
   const greyDark = useTheme().homepage.greyDark;
+
+  const translate = useMotionValue(0);
   return (
     <HeroWrapper>
       <motion.div
@@ -31,20 +47,28 @@ export default () => {
         <SignUp>No signup required</SignUp>
       </motion.div>
 
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          zIndex: 200,
+          perspective: 750,
+          transform: 'translateZ(200px)',
+        }}
+      >
+        <Cube noAnimation color={theme.secondary} speed={5} />
+      </div>
+
       <ImageWrapper>
-        <motion.img
-          initial={{ opacity: 0, y: 120, boxShadow: `0 0 0 ${greyDark}` }}
-          animate={{ opacity: 1, y: 0, boxShadow: `0 -4px 20px ${greyDark}` }}
-          transition={{
-            duration: 1,
-            delay: 0.3,
-            ease: 'easeOut',
-          }}
-          src={hero}
-          alt="browser showing codesandbox running"
-        />
-        <Border />
+        <EditorElement i={4} src={heroNavbar} />
+        <div style={{ display: 'flex' }}>
+          <EditorElement i={3} src={heroActivityBar} />
+          <EditorElement i={2} src={heroSidebar} />
+          <EditorElement i={1} src={heroEditor} />
+          <EditorElement i={0} src={heroPreview} />
+        </div>
       </ImageWrapper>
+      <Border />
     </HeroWrapper>
   );
 };
