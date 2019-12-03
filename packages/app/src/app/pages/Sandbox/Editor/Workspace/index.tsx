@@ -1,20 +1,17 @@
 import VERSION from '@codesandbox/common/lib/version';
+import { SocialInfo } from 'app/components/SocialInfo';
+import { useOvermind } from 'app/overmind';
+import getWorkspaceItems, { getDisabledItems } from 'app/overmind/utils/items';
 import React, { FunctionComponent } from 'react';
 //  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
 import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
-
-import { SocialInfo } from 'app/components/SocialInfo';
-import { useOvermind } from 'app/overmind';
-import getWorkspaceItems, {
-  getDisabledItems,
-} from 'app/store/modules/workspace/items';
 
 import { Advertisement } from './Advertisement';
 import { Chat } from './Chat';
 import { ConnectionNotice } from './ConnectionNotice';
 import {
-  Container,
   ContactContainer,
+  Container,
   ItemTitle,
   VersionContainer,
 } from './elements';

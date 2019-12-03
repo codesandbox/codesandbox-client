@@ -6,6 +6,7 @@ import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { EMBED_LIGHT_THEME } from '@codesandbox/common/lib/utils/feature-flags';
 import Title from './Title';
 
 import {
@@ -22,6 +23,7 @@ import {
 import {
   BUTTON_URL,
   VIEW_OPTIONS,
+  THEME_OPTIONS,
   getIframeScript,
   getEditorUrl,
   getEmbedUrl,
@@ -32,10 +34,11 @@ import {
 class ShareView extends React.Component {
   state = {
     view: VIEW_OPTIONS[0],
+    theme: 'dark',
     testsView: false,
     defaultModule: null,
     autoResize: false,
-    hideNavigation: false,
+    hideNavigation: true,
     isCurrentModuleView: false,
     fontSize: 14,
     initialPath: '',
@@ -108,6 +111,10 @@ class ShareView extends React.Component {
     this.setState({ view });
   };
 
+  setTheme = (theme: string) => {
+    this.setState({ theme });
+  };
+
   select = function select(event) {
     event.target.select();
   };
@@ -122,6 +129,7 @@ class ShareView extends React.Component {
 
     const {
       view,
+      theme,
       testsView,
       autoResize,
       hideNavigation,
@@ -156,6 +164,15 @@ class ShareView extends React.Component {
                   value={view}
                   setValue={this.setView}
                 />
+                {EMBED_LIGHT_THEME && (
+                  <PaddedPreference
+                    title="Theme"
+                    type="dropdown"
+                    options={THEME_OPTIONS}
+                    value={theme}
+                    setValue={this.setTheme}
+                  />
+                )}
                 <PaddedPreference
                   title="Auto resize"
                   type="boolean"

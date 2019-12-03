@@ -1,6 +1,6 @@
 const fetch = require('cross-fetch');
 
-fetch('https://deployment-api.lbogdan.ro/image', {
+fetch('https://deploy-api.ops.csb.dev/image', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',

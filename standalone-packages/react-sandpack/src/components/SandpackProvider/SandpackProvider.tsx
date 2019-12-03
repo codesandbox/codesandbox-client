@@ -91,9 +91,9 @@ export default class SandpackProvider extends React.PureComponent<
       this.setState({ status: m.status });
     } else if (m.type === 'action' && m.action === 'show-error') {
       const { title, path, message, line, column } = m;
-      this.setState({
-        errors: [...this.state.errors, { title, path, message, line, column }],
-      });
+      this.setState(state => ({
+        errors: [...state.errors, { title, path, message, line, column }],
+      }));
     }
   };
 
@@ -135,13 +135,11 @@ export default class SandpackProvider extends React.PureComponent<
     return newFiles;
   }
 
-  getOptions = () => {
-    return {
+  getOptions = () => ({
       bundlerURL: this.props.bundlerURL,
       fileResolver: this.props.fileResolver,
       skipEval: this.props.skipEval,
-    };
-  };
+    });
 
   setupFrame = (el: HTMLIFrameElement) => {
     if (el) {
@@ -242,6 +240,7 @@ export default class SandpackProvider extends React.PureComponent<
     return {
       files,
       openedPath,
+      browserPath,
       errors,
       managerState,
       managerStatus: status,
@@ -255,16 +254,17 @@ export default class SandpackProvider extends React.PureComponent<
 
   render() {
     const { children, className, style } = this.props;
-    const { iframe, files, browserPath, openedPath, managerState } = this.state;
+    const { iframe } = this.state;
 
     return (
       <Broadcast channel="sandpack" value={this._getSandpackState()}>
-        <div style={style} className={`${className ? className : ''} sandpack`}>
+        <div style={style} className={`${className || ''} sandpack`}>
           {/* We create a hidden iframe, the bundler will live in this.
             We expose this iframe to the Consumer, so other components can show the full
             iframe for preview. An implementation can be found in `Preview` component. */}
           <iframe
             ref={this.setupFrame}
+            title="sandpack-sandbox"
             style={{
               width: 0,
               height: 0,

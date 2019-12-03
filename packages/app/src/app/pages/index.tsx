@@ -1,22 +1,23 @@
-import React, { useEffect } from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import { DragDropContext } from 'react-dnd';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { Toasts, NotificationStatus } from '@codesandbox/notifications';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
-import theme from '@codesandbox/common/lib/theme';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import Loadable from 'app/utils/Loadable';
+import theme from '@codesandbox/common/lib/theme';
+import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus, Toasts } from '@codesandbox/notifications';
 import { useOvermind } from 'app/overmind';
+import Loadable from 'app/utils/Loadable';
+import React, { useEffect } from 'react';
+import { DragDropContext } from 'react-dnd';
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+
 import { ErrorBoundary } from './common/ErrorBoundary';
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
-import Modals from './common/Modals';
-import Sandbox from './Sandbox';
-import { NewSandbox } from './NewSandbox';
+import { Modals } from './common/Modals';
 import Dashboard from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
+import { NewSandbox } from './NewSandbox';
+import Sandbox from './Sandbox';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -42,7 +43,9 @@ const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile')
 );
 const Search = Loadable(() =>
-  import(/* webpackChunkName: 'page-search' */ './Search')
+  import(/* webpackChunkName: 'page-search' */ './Search').then(module => ({
+    default: module.Search,
+  }))
 );
 const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
 

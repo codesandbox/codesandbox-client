@@ -1,56 +1,56 @@
-import React, { FunctionComponent, useState, useMemo } from 'react';
-import { Font } from '@samuelmeuli/font-manager';
+import React, {
+  ChangeEvent,
+  FunctionComponent,
+  useMemo,
+  useState,
+} from 'react';
+
 import { List, SearchFonts, FontLI, FontFamily, Arrow } from './elements';
+import { fonts } from './fonts';
 
 type Props = {
-  fonts: Font[];
-  onSelection: (e: any) => void;
   activeFontFamily: string;
-  expanded: boolean;
+  onSelection: (font: string) => void;
 };
-
 export const FontList: FunctionComponent<Props> = ({
-  fonts,
-  onSelection,
   activeFontFamily,
-  expanded,
+  onSelection,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const updateSearch = (e: any) => setSearchTerm(e.target.value);
-
-  const getFontId = (fontFamily: string): string =>
-    fontFamily.replace(/\s+/g, '-').toLowerCase();
-
-  const getFonts: Font[] = useMemo(
+  const getFonts = useMemo(
     () =>
-      fonts.filter(f =>
-        f.family.toLowerCase().includes(searchTerm.trim().toLowerCase())
-      ),
-    [fonts, searchTerm]
+      fonts
+        .slice(0, 200)
+        .filter(font =>
+          font.toLowerCase().includes(searchTerm.trim().toLowerCase())
+        ),
+    [searchTerm]
   );
+
+  const updateSearch = ({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
+    setSearchTerm(value);
+
   return (
     <>
       <Arrow />
-      <List expanded={expanded}>
+
+      <List>
         <SearchFonts
           type="text"
           value={searchTerm}
           onChange={updateSearch}
           placeholder="Search Typefaces"
         />
-        {getFonts.map((font: Font) => (
+
+        {getFonts.map(font => (
           <FontLI
-            key={font.family}
-            onClick={onSelection}
-            onKeyPress={onSelection}
+            key={font}
+            onClick={() => onSelection(font)}
+            onKeyPress={() => onSelection(font)}
           >
-            <FontFamily
-              type="button"
-              id={`font-button-${getFontId(font.family)}`}
-              active={font.family === activeFontFamily}
-            >
-              {font.family}
+            <FontFamily active={font === activeFontFamily} type="button">
+              {font}
             </FontFamily>
           </FontLI>
         ))}

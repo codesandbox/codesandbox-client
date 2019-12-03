@@ -65,7 +65,7 @@ function pageLoaded(page) {
 }
 
 function sandboxUrl(sandboxId) {
-  return `http://localhost:3002/#github/${SANDBOXES_REPO}/tree/master/${sandboxId}`;
+  return `http://localhost:3000/#github/${SANDBOXES_REPO}/tree/master/${sandboxId}`;
 }
 
 function loadSandbox(page, sandboxId, timeout) {

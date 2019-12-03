@@ -1,38 +1,32 @@
-import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
-import { flatten } from 'lodash';
-import { absolute } from '@codesandbox/common/lib/utils/path';
-import _debug from '@codesandbox/common/lib/utils/debug';
 import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
-import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
-import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
-import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import getDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates/index';
-
-import getPreset from './eval';
-import Manager, { Manifest } from './eval/manager';
-
-import { resetScreen } from './status-screen';
-
-import createCodeSandboxOverlay from './codesandbox-overlay';
-import handleExternalResources from './external-resources';
-
-import defaultBoilerplates from './boilerplates/default-boilerplates';
+import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
+import { absolute } from '@codesandbox/common/lib/utils/path';
+import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
+import { flatten } from 'lodash';
+import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
+import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 
 import {
-  getBoilerplates,
   evalBoilerplates,
   findBoilerplate,
-} from './boilerplates'; // eslint-disable-line
-
-import { loadDependencies } from './npm';
-import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
-
-import { showRunOnClick } from './status-screen/run-on-click';
+  getBoilerplates,
+} from './boilerplates';
+import defaultBoilerplates from './boilerplates/default-boilerplates';
+import createCodeSandboxOverlay from './codesandbox-overlay';
+import getPreset from './eval';
+import { consumeCache, deleteAPICache, saveCache } from './eval/cache';
 import { Module } from './eval/entities/module';
+import Manager, { Manifest } from './eval/manager';
 import TranspiledModule from './eval/transpiled-module';
+import handleExternalResources from './external-resources';
+import { loadDependencies } from './npm';
+import { resetScreen } from './status-screen';
+import { showRunOnClick } from './status-screen/run-on-click';
 
 let initializedResizeListener = false;
 let manager: Manager | null = null;
@@ -408,6 +402,7 @@ interface CompileOptions {
   skipEval?: boolean;
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
+  showFullScreen?: boolean;
 }
 
 async function compile({
@@ -422,6 +417,7 @@ async function compile({
   skipEval = false,
   hasFileResolver = false,
   disableDependencyPreprocessing = false,
+  showFullScreen = false,
 }: CompileOptions) {
   dispatch({
     type: 'start',
@@ -456,9 +452,7 @@ async function compile({
 
     if (errors.length) {
       const e = new Error(
-        `We weren't able to parse: '${errors[0].path}': ${
-          errors[0].error.message
-        }`
+        `We weren't able to parse: '${errors[0].path}': ${errors[0].error.message}`
       );
 
       // @ts-ignore
@@ -488,6 +482,7 @@ async function compile({
       {
         disableExternalConnection: disableDependencyPreprocessing,
         resolutions: parsedPackageJSON.resolutions,
+        showFullScreen: firstLoad,
       }
     );
 
@@ -519,9 +514,7 @@ async function compile({
 
     if (!foundMain) {
       throw new Error(
-        `Could not find entry file: ${
-          possibleEntries[0]
-        }. You can specify one in package.json by defining a \`main\` property.`
+        `Could not find entry file: ${possibleEntries[0]}. You can specify one in package.json by defining a \`main\` property.`
       );
     }
 
