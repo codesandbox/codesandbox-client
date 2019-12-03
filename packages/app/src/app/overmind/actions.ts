@@ -83,7 +83,9 @@ export const modalOpened: Action<{
   effects.analytics.track('Open Modal', { modal });
   state.currentModalMessage = message;
   state.currentModal = modal;
-  state.preferences.itemId = itemId;
+  if (state.currentModal === 'preferences') {
+    state.preferences.itemId = itemId;
+  }
 };
 
 export const modalClosed: Action = ({ state, effects }) => {
