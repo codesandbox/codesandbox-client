@@ -4,7 +4,7 @@ import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { Icon, Item, PropertyName, PropertyValue } from '../elements';
+import { Item, PropertyName, PropertyValue, QuestionIcon } from '../elements';
 
 import { BundlerLink } from './elements';
 
@@ -36,7 +36,7 @@ export const Environment: FunctionComponent = () => {
           }
           interactive
         >
-          <Icon />
+          <QuestionIcon />
         </Tooltip>
       </PropertyName>
 

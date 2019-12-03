@@ -9,7 +9,7 @@ import React, {
 
 import { useOvermind } from 'app/overmind';
 
-import { EditPen } from '../elements';
+import { EditPenIcon } from '../elements';
 
 import { SandboxTitle, WorkspaceInputContainer } from './elements';
 
@@ -65,7 +65,7 @@ export const Title: FunctionComponent<Props> = ({ editable }) => {
       {getSandboxName(currentSandbox)}
 
       {editable && (
-        <EditPen
+        <EditPenIcon
           onClick={() => {
             valueChanged({
               field: 'title',

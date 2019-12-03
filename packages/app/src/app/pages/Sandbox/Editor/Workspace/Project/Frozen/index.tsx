@@ -4,7 +4,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { Icon, Item, PropertyName, PropertyValue } from '../elements';
+import { Item, PropertyName, PropertyValue, QuestionIcon } from '../elements';
 
 import { FreezeContainer, FrozenWarning } from './elements';
 
@@ -45,7 +45,7 @@ export const Frozen: FunctionComponent = () => {
             boundary="viewport"
             content="Whether we should fork the sandbox on edits"
           >
-            <Icon />
+            <QuestionIcon />
           </Tooltip>
         </PropertyName>
 

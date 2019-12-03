@@ -10,7 +10,7 @@ import { useOvermind } from 'app/overmind';
 
 import { WorkspaceInputContainer } from '../../elements';
 
-import { EditPen } from '../elements';
+import { EditPenIcon } from '../elements';
 
 import { SandboxAlias } from './elements';
 
@@ -63,7 +63,7 @@ export const Alias: FunctionComponent<Props> = ({ editable }) => {
     <SandboxAlias>
       {alias}
 
-      {editable && <EditPen onClick={() => setEditing(true)} />}
+      {editable && <EditPenIcon onClick={() => setEditing(true)} />}
     </SandboxAlias>
   );
 };

@@ -8,7 +8,7 @@ import React, {
 
 import { useOvermind } from 'app/overmind';
 
-import { EditPen } from '../elements';
+import { EditPenIcon } from '../elements';
 
 import { SandboxDescription, WorkspaceInputContainer } from './elements';
 
@@ -65,7 +65,7 @@ export const Description: FunctionComponent<Props> = ({ editable }) => {
     <SandboxDescription empty={Boolean(description)}>
       {description || (editable ? 'No description, create one!' : '')}
 
-      {editable && <EditPen onClick={() => setEditing(true)} />}
+      {editable && <EditPenIcon onClick={() => setEditing(true)} />}
     </SandboxDescription>
   );
 };

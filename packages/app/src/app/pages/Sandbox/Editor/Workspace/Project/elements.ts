@@ -1,5 +1,5 @@
 import Question from 'react-icons/lib/go/question';
-import EditPenIcon from 'react-icons/lib/md/create';
+import EditPen from 'react-icons/lib/md/create';
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
@@ -30,7 +30,7 @@ export const PropertyName = styled.span`
     flex: 0 0 110px;
     width: 110px;
     margin-right: 0.5rem;
-    color: ${theme.light ? css`#6c6c6c` : css`rgba(255, 255, 255, 0.4)`};
+    color: ${theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.4)'};
     font-weight: 600;
     text-transform: uppercase;
   `}
@@ -51,29 +51,25 @@ export const StatsContainer = styled(Item)`
     height: 1.5rem;
     margin-left: 1rem;
     box-sizing: border-box;
-    color: ${theme.light
-      ? css`rgba(0, 0, 0, 0.8)`
-      : css`rgba(255, 255, 255, 0.8)`};
+    color: ${theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
     font-size: 0.875rem;
   `}
 `;
 
-export const EditPen = styled(EditPenIcon)`
+export const EditPenIcon = styled(EditPen)`
   ${({ theme }) => css`
     margin-left: 0.5rem;
-    color: ${theme.light
-      ? css`rgba(0, 0, 0, 0.5)`
-      : css`rgba(255, 255, 255, 0.5)`};
+    color: ${theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
     transition: 0.3s ease color;
     cursor: pointer;
 
     &:hover {
-      color: ${theme.light ? css`#636363` : css`white`};
+      color: ${theme.light ? '#636363' : '#FFFFFF'};
     }
   `}
 `;
 
-export const Icon = styled(Question)`
+export const QuestionIcon = styled(Question)`
   display: flex;
   font-size: 0.75rem;
   opacity: 0.5;
@@ -86,9 +82,7 @@ export const Explanation = styled.span`
     display: block;
     padding-top: 5px;
     margin: -20px 1rem 1rem;
-    color: ${theme.light
-      ? css`rgba(0, 0, 0, 0.4)`
-      : css`rgba(255, 255, 255, 0.4)`};
+    color: ${theme.light ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.4)'};
     font-size: 12px;
   `}
 `;

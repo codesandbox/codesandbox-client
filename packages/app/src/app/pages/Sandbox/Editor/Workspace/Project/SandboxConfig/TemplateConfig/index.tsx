@@ -65,7 +65,7 @@ export const TemplateConfig: FunctionComponent = () => {
                 color={selectedColor}
                 disableAlpha
                 id="color"
-                onChangeComplete={color => setSelectedColor(color.hex)}
+                onChangeComplete={({ hex }) => setSelectedColor(hex)}
                 presetColors={[...new Set(colors)]}
               />
             </PickerContainer>
