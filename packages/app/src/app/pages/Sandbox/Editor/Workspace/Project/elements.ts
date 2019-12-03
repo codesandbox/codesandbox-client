@@ -81,15 +81,6 @@ export const Icon = styled(Question)`
   cursor: pointer;
 `;
 
-export const BundlerLink = styled.a.attrs({
-  target: '_blank',
-  rel: 'noreferrer noopener',
-})`
-  ${({ theme }) => css`
-    color: ${theme.templateColor} !important;
-  `}
-`;
-
 export const Explanation = styled.span`
   ${({ theme }) => css`
     display: block;

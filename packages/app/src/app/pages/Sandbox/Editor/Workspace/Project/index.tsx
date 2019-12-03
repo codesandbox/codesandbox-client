@@ -1,5 +1,3 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
@@ -8,17 +6,8 @@ import { Stats } from 'app/pages/common/Stats';
 // import { Alias } from './Alias';
 import { Author } from './Author';
 import { Description } from './Description';
-import {
-  BasicInfo,
-  BundlerLink,
-  Container,
-  Group,
-  Icon,
-  Item,
-  PropertyName,
-  PropertyValue,
-  StatsContainer,
-} from './elements';
+import { BasicInfo, Container, Group, StatsContainer } from './elements';
+import { Environment } from './Environment';
 import { ForkedFrom } from './ForkedFrom';
 import { Frozen } from './Frozen';
 import { Git } from './Git';
@@ -43,13 +32,11 @@ export const Project: FunctionComponent<Props> = ({ editable = false }) => {
           forkedTemplateSandbox,
           git,
           team,
-          template,
         },
       },
       isPatron,
     },
   } = useOvermind();
-  const { url } = getTemplateDefinition(template);
 
   return (
     <Container>
@@ -83,31 +70,7 @@ export const Project: FunctionComponent<Props> = ({ editable = false }) => {
 
         {(forkedFromSandbox || forkedTemplateSandbox) && <ForkedFrom />}
 
-        <Item>
-          <PropertyName>
-            Environment{' '}
-            <Tooltip
-              boundary="viewport"
-              content={
-                <>
-                  The environment determines how a sandbox is executed, you can
-                  find more info{' '}
-                  <a href="/docs/environment" target="_blank">
-                    here
-                  </a>
-                  .
-                </>
-              }
-              interactive
-            >
-              <Icon />
-            </Tooltip>
-          </PropertyName>
-
-          <PropertyValue>
-            <BundlerLink href={url}>{template}</BundlerLink>
-          </PropertyValue>
-        </Item>
+        <Environment />
       </Group>
 
       {editable && <SandboxConfig />}
