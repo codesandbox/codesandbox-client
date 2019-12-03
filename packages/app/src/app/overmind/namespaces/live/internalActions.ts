@@ -96,7 +96,7 @@ export const initializeModuleState: Action<any> = (
 ) => {
   Object.keys(moduleState).forEach(moduleShortid => {
     const moduleInfo = moduleState[moduleShortid];
-    effects.live.createClient(moduleShortid, moduleInfo.revision);
+    effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
 
     // Module has not been saved, so is different
     const module = state.editor.currentSandbox.modules.find(
@@ -104,7 +104,7 @@ export const initializeModuleState: Action<any> = (
     );
 
     if (module) {
-      if (moduleInfo.code === null) {
+      if (moduleInfo.code === null || !('code' in moduleInfo)) {
         return;
       }
 
