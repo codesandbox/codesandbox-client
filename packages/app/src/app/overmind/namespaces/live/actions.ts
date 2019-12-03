@@ -40,7 +40,7 @@ export const roomJoined: AsyncAction<{
 });
 
 export const createLiveClicked: AsyncAction<string> = async (
-  { actions, effects },
+  { actions, effects, state },
   sandboxId
 ) => {
   effects.analytics.track('Create Live Session');
