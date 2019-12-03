@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Media from 'react-media';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
@@ -29,15 +30,19 @@ export const NewSandbox: React.FC = () => {
         <Navigation title="New Sandbox" />
         <Margin top={5}>
           <Centered horizontal vertical>
-            <Margin
-              style={{
-                maxWidth: '100%',
-                width: COLUMN_MEDIA_THRESHOLD ? 1200 : 900,
-              }}
-              top={2}
-            >
-              <CreateSandbox />
-            </Margin>
+            <Media query={`(min-width: ${COLUMN_MEDIA_THRESHOLD}px)`}>
+              {matches => (
+                <Margin
+                  style={{
+                    maxWidth: '100%',
+                    width: matches ? 1200 : 900,
+                  }}
+                  top={2}
+                >
+                  <CreateSandbox />
+                </Margin>
+              )}
+            </Media>
           </Centered>
         </Margin>
       </Margin>
