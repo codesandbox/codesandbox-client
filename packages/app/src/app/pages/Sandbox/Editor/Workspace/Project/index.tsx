@@ -1,9 +1,7 @@
-import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
-  githubRepoUrl,
   patronUrl,
   sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
@@ -32,6 +30,7 @@ import {
   TemplateStyledLink,
 } from './elements';
 import { Frozen } from './Frozen';
+import { Git } from './Git';
 import { Keywords } from './Keywords';
 import { SandboxConfig } from './SandboxConfig';
 import { Team } from './Team';
@@ -78,17 +77,7 @@ export const Project: FunctionComponent<Props> = ({ editable = false }) => {
 
       {team && <Team/>}
 
-      {git && (
-        <Item>
-          <GithubBadge
-            branch={git.branch}
-            commitSha={git.commitSha}
-            repo={git.repo}
-            url={githubRepoUrl(git)}
-            username={git.username}
-          />
-        </Item>
-      )}
+      {git && <Git />}
 
       <StatsContainer>
         <Stats sandbox={currentSandbox} />
