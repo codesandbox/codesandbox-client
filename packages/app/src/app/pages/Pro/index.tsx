@@ -18,6 +18,7 @@ import {
   Button,
   Heading,
   HelpText,
+  LinkButton,
   ModalBackdrop,
   SignInModal,
   SignInButton,
@@ -28,7 +29,12 @@ const Pro: React.FC = () => {
   const {
     state: { isLoggedIn, user, hasLoadedApp, patron, isPatron },
     actions: {
-      patron: { createSubscriptionClicked, patronMounted },
+      modalOpened,
+      patron: {
+        createSubscriptionClicked,
+        cancelSubscriptionClicked,
+        patronMounted,
+      },
     },
   } = useOvermind();
 
@@ -86,9 +92,25 @@ const Pro: React.FC = () => {
 
                           <HelpText>
                             You will be billed on the <b>30th</b> of each month.
-                            You can <a href="">cancel your subscription</a> or{' '}
-                            <a href="">update your payment details</a> at any
-                            time.
+                            You can{' '}
+                            <LinkButton
+                              onClick={e => {
+                                e.preventDefault();
+                                modalOpened({ modal: 'preferences' });
+                              }}
+                            >
+                              update your payment details
+                            </LinkButton>{' '}
+                            or{' '}
+                            <LinkButton
+                              onClick={e => {
+                                e.preventDefault();
+                                cancelSubscriptionClicked();
+                              }}
+                            >
+                              cancel your subscription
+                            </LinkButton>{' '}
+                            at any time.
                           </HelpText>
                         </>
                       ) : (
@@ -103,7 +125,7 @@ const Pro: React.FC = () => {
                           </Button>
 
                           <HelpText>
-                            You will be billed on the <b>30th</b> of each month.
+                            You will be billed on the <b>29th</b> of each month.
                             You can{' '}
                             <a href="/patron">modify your contribution</a> at
                             any time.

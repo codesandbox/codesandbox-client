@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { SignInButton as CommonSignInButton } from 'app/pages/common/SignInButton';
+import { LinkButton as AppLinkButton } from 'app/components/LinkButton';
 
 export const Page = styled.div(
   css({
@@ -139,6 +140,12 @@ export const HelpText = styled.p(
     a: {
       color: 'grays.300',
     },
+  })
+);
+
+export const LinkButton = styled(AppLinkButton)(
+  css({
+    color: 'grays.300',
   })
 );
 
