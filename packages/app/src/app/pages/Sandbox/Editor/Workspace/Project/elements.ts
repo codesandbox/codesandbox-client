@@ -47,25 +47,6 @@ export const PropertyValue = styled.span<{ relative?: boolean }>`
   `}
 `;
 
-export const PrivacySelect = styled.select`
-  ${({ theme }) => css`
-    width: 100%;
-    /* Same size as other items */
-    height: 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: ${theme[`dropdown.background`] ||
-      css`rgba(0, 0, 0, 0.3)`};
-    box-sizing: border-box;
-    color: ${theme[`dropdown.foreground`] ||
-      (theme.light ? css`rgba(0, 0, 0, 0.8)` : css`rgba(255, 255, 255, 0.8)`)};
-
-    &:disabled {
-      opacity: 0.5;
-    }
-  `}
-`;
-
 export const StatsContainer = styled(Item)`
   ${({ theme }) => css`
     height: 1.5rem;
@@ -74,14 +55,6 @@ export const StatsContainer = styled(Item)`
     color: ${theme.light
       ? css`rgba(0, 0, 0, 0.8)`
       : css`rgba(255, 255, 255, 0.8)`};
-    font-size: 0.875rem;
-  `}
-`;
-
-export const PrivacyContainer = styled.span`
-  ${({ theme }) => css`
-    margin-bottom: 1rem;
-    color: ${theme.templateColor};
     font-size: 0.875rem;
   `}
 `;

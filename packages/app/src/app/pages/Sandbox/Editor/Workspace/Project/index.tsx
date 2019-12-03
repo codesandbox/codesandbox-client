@@ -5,9 +5,8 @@ import {
   patronUrl,
   sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import React, { ChangeEvent, FunctionComponent } from 'react';
+import React, { FunctionComponent } from 'react';
 
-import { PrivacyStatus } from 'app/components/PrivacyStatus';
 import { useOvermind } from 'app/overmind';
 import { Stats } from 'app/pages/common/Stats';
 
@@ -22,8 +21,6 @@ import {
   Group,
   Icon,
   Item,
-  PrivacyContainer,
-  PrivacySelect,
   PropertyName,
   PropertyValue,
   StatsContainer,
@@ -32,6 +29,7 @@ import {
 import { Frozen } from './Frozen';
 import { Git } from './Git';
 import { Keywords } from './Keywords';
+import { Privacy } from './Privacy';
 import { SandboxConfig } from './SandboxConfig';
 import { Team } from './Team';
 import { Title } from './Title';
@@ -41,9 +39,6 @@ type Props = {
 };
 export const Project: FunctionComponent<Props> = ({ editable = false }) => {
   const {
-    actions: {
-      workspace: { sandboxPrivacyChanged },
-    },
     state: {
       editor: {
         currentSandbox,
@@ -52,7 +47,6 @@ export const Project: FunctionComponent<Props> = ({ editable = false }) => {
           forkedFromSandbox,
           forkedTemplateSandbox,
           git,
-          privacy,
           team,
           template,
         },
@@ -86,35 +80,7 @@ export const Project: FunctionComponent<Props> = ({ editable = false }) => {
       <Keywords editable={editable} />
 
       <Group>
-        <Item>
-          <PropertyName>Privacy</PropertyName>
-
-          <PropertyValue>
-            <PrivacyContainer>
-              {editable ? (
-                <PrivacySelect
-                  disabled={!isPatron}
-                  onChange={({
-                    target: { value },
-                  }: ChangeEvent<HTMLSelectElement>) =>
-                    sandboxPrivacyChanged(Number(value) as 0 | 1 | 2)
-                  }
-                  value={privacy}
-                >
-                  <option value={0}>Public</option>
-
-                  {isPatron && (
-                    <option value={1}>Unlisted (only available by url)</option>
-                  )}
-
-                  {isPatron && <option value={2}>Private</option>}
-                </PrivacySelect>
-              ) : (
-                <PrivacyStatus privacy={privacy} />
-              )}
-            </PrivacyContainer>
-          </PropertyValue>
-        </Item>
+        <Privacy editable={editable} />
 
         {!isPatron && (
           <Explanation style={{ marginTop: '-1rem' }}>
