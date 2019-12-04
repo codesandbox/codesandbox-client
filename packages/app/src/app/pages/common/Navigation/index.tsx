@@ -39,6 +39,7 @@ export const Navigation: FunctionComponent<Props> = ({
     },
     state: {
       isLoggedIn,
+      isPatron,
       user,
       userNotifications: { notificationsOpened: notificationsMenuOpened },
     },
@@ -78,7 +79,7 @@ export const Navigation: FunctionComponent<Props> = ({
           <NewSandboxAction />
         </Actions>
 
-        {isLoggedIn ? <UserMenu /> : <SignInButton />}
+        {isLoggedIn ? <UserMenu isPatron={isPatron} /> : <SignInButton />}
       </Wrapper>
     </Row>
   );
