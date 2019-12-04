@@ -89,7 +89,7 @@ export default () => (
           background: transparent;
           border: 1px solid;
           border-color: ${props.theme.homepage.grey};
-          height: 18rem;
+          height: auto;
         `}
       >
         <div>
