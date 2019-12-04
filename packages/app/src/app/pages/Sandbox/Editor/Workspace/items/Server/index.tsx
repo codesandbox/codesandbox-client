@@ -67,12 +67,7 @@ export const Server: FunctionComponent = () => {
         <SubTitle>Run Scripts</SubTitle>
         <Margin top={0.5}>
           <TasksContainer disconnected={disconnected}>
-            <Tasks
-              package={
-                parsedConfigurations.package &&
-                parsedConfigurations.package.parsed
-              }
-            />
+            <Tasks package={parsedConfigurations?.package?.parsed} />
           </TasksContainer>
         </Margin>
       </Margin>

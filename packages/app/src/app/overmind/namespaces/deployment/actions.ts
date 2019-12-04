@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import { get } from 'lodash-es';
 import { Action, AsyncAction } from 'app/overmind';
+
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -51,10 +52,10 @@ export const deployWithNetlify: AsyncAction = async ({
 export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
   try {
     state.deployment.netlifyClaimUrl = await effects.netlify.claimSite(
-      state.editor.currentId
+      state.editor.currentSandbox.id
     );
     state.deployment.netlifySite = await effects.netlify.getDeployments(
-      state.editor.currentId
+      state.editor.currentSandbox.id
     );
   } catch (error) {
     state.deployment.netlifySite = null;

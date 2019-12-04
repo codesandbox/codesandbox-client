@@ -1,36 +1,34 @@
-import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
-
-import { formatDistanceToNow } from 'date-fns';
-import { zonedTimeToUtc } from 'date-fns-tz';
-import { uniq } from 'lodash-es';
-import { basename } from 'path';
-import { camelizeKeys } from 'humps';
-
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-import track from '@codesandbox/common/lib/utils/analytics';
-
-import Grid from 'react-virtualized/dist/commonjs/Grid';
-import Column from 'react-virtualized/dist/commonjs/Table/Column';
-import Table from 'react-virtualized/dist/commonjs/Table';
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import downloadZip from 'app/store/providers/Utils/create-zip';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import 'react-virtualized/styles.css';
 
-import { SandboxItem } from '../SandboxCard';
-import { PADDING } from '../SandboxCard/elements';
-import { getBounds, Selection } from '../Selection';
-import { Content, StyledRow } from './elements';
-import { DragLayer } from '../DragLayer';
+import { basename } from 'path';
+
+import track from '@codesandbox/common/lib/utils/analytics';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { inject, observer } from 'app/componentConnectors';
+import downloadZip from 'app/overmind/effects/zip/create-zip';
+import { formatDistanceToNow } from 'date-fns';
+import { zonedTimeToUtc } from 'date-fns-tz';
+import { camelizeKeys } from 'humps';
+import { uniq } from 'lodash-es';
+import React from 'react';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import Grid from 'react-virtualized/dist/commonjs/Grid';
+import Table from 'react-virtualized/dist/commonjs/Table';
+import Column from 'react-virtualized/dist/commonjs/Table/Column';
 
 import {
   deleteSandboxes,
+  makeTemplates,
   permanentlyDeleteSandboxes,
   setSandboxesPrivacy,
   undeleteSandboxes,
-  makeTemplates,
 } from '../../queries';
+import { DragLayer } from '../DragLayer';
+import { SandboxItem } from '../SandboxCard';
+import { PADDING } from '../SandboxCard/elements';
+import { Selection, getBounds } from '../Selection';
+import { Content, StyledRow } from './elements';
 
 type State = {
   selection: ?{
@@ -175,7 +173,7 @@ class SandboxGridComponent extends React.Component<*, State> {
   };
 
   forkSandbox = id => {
-    this.props.signals.editor.forkExternalSandbox(id);
+    this.props.signals.editor.forkExternalSandbox({ sandboxId: id });
   };
 
   onMouseDown = (event: MouseEvent) => {
@@ -250,9 +248,12 @@ class SandboxGridComponent extends React.Component<*, State> {
         }
       }
 
-      this.setSandboxesSelected(selectedSandboxes.map(el => el.id), {
-        additive: event.metaKey,
-      });
+      this.setSandboxesSelected(
+        selectedSandboxes.map(el => el.id),
+        {
+          additive: event.metaKey,
+        }
+      );
     }
   };
 
@@ -465,6 +466,7 @@ class SandboxGridComponent extends React.Component<*, State> {
   }
 }
 
-export const SandboxGrid = inject('store', 'signals')(
-  observer(SandboxGridComponent)
-);
+export const SandboxGrid = inject(
+  'store',
+  'signals'
+)(observer(SandboxGridComponent));

@@ -1,28 +1,24 @@
 // @flow
 
-import * as React from 'react';
-import CodeMirror from 'codemirror';
-import { withTheme } from 'styled-components';
-
-import type { ModuleError, Module } from '@codesandbox/common/lib/types';
-import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
-import { getCodeMirror } from 'app/utils/codemirror';
-
-import { listen } from 'codesandbox-api';
-
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 import 'codemirror/addon/lint/lint.css';
 import 'codemirror/addon/lint/lint';
 
-import FuzzySearch from '../FuzzySearch';
-import { Container, CodeContainer } from './elements';
-
+import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import type { Module, ModuleError } from '@codesandbox/common/lib/types';
+import { getCodeMirror } from 'app/utils/codemirror';
+import CodeMirror from 'codemirror';
+import { listen } from 'codesandbox-api';
+import * as React from 'react';
+import { withTheme } from 'styled-components';
 // eslint-disable-next-line
-import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
+import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!app/overmind/effects/vscode/LinterWorker/index';
 
-import type { Props, Editor } from '../types';
+import FuzzySearch from '../FuzzySearch';
+import type { Editor, Props } from '../types';
+import { CodeContainer, Container } from './elements';
 
 type State = { fuzzySearchEnabled: boolean };
 

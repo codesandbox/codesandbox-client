@@ -1,5 +1,7 @@
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import {
+  Module,
   ModuleTab,
   NotificationButton,
   Sandbox,
@@ -13,7 +15,6 @@ import values from 'lodash-es/values';
 
 import { ApiError } from './effects/api/apiFactory';
 import { createOptimisticModule } from './utils/common';
-import getItems from './utils/items';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
@@ -172,9 +173,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   { state, effects, actions },
   sandbox
 ) => {
-  const oldSandboxId =
-    state.editor.currentId === sandbox.id ? null : state.editor.currentId;
-
   state.editor.sandboxes[sandbox.id] = sandbox;
   state.editor.currentId = sandbox.id;
 
@@ -264,11 +262,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   state.workspace.project.description = sandbox.description || '';
   state.workspace.project.alias = sandbox.alias || '';
 
-  const items = getItems(state);
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
-
-  state.workspace.openedWorkspaceItem = defaultItem.id;
-
   await effects.executor.initializeExecutor(sandbox);
 
   [
@@ -289,13 +282,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   });
 
   effects.executor.setupExecutor();
-
-  /*
-    There seems to be a race condition here? Verify if this still happens with Overmind
-  */
-  if (oldSandboxId !== state.editor.currentId) {
-    delete state.editor.sandboxes[oldSandboxId];
-  }
 };
 
 export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
@@ -316,23 +302,34 @@ export const ensurePackageJSON: AsyncAction = async ({ state, effects }) => {
   );
 
   if (sandbox.owned && !existingPackageJson) {
+    const optimisticId = effects.utils.createOptimisticId();
     const optimisticModule = createOptimisticModule({
+      id: optimisticId,
       title: 'package.json',
       code: generatePackageJsonFromSandbox(sandbox),
+      path: '/package.json',
     });
 
-    state.editor.currentSandbox.modules.push(optimisticModule);
+    state.editor.currentSandbox.modules.push(optimisticModule as Module);
+    optimisticModule.path = getModulePath(
+      sandbox.modules,
+      sandbox.directories,
+      optimisticId
+    );
+
+    // We grab the module from the state to continue working with it (proxy)
+    const module = sandbox.modules[sandbox.modules.length - 1];
+
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
 
     try {
-      const updatedModule = await effects.api.createModule(
-        sandbox.id,
-        optimisticModule
-      );
+      const updatedModule = await effects.api.createModule(sandbox.id, module);
 
-      optimisticModule.id = updatedModule.id;
-      optimisticModule.shortid = updatedModule.shortid;
+      module.id = updatedModule.id;
+      module.shortid = updatedModule.shortid;
     } catch (error) {
-      sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1);
+      sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
+      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
     }
   }
 };

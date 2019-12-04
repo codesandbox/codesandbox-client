@@ -1,24 +1,31 @@
-import { Action, AsyncAction } from 'app/overmind';
 import {
-  Module,
   EditorSelection,
+  Module,
   Sandbox,
 } from '@codesandbox/common/lib/types';
+import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 
-export const clearUserSelections: Action<any> = ({ state }, live_user_id) => {
+import { getSavedCode } from '../../utils/sandbox';
+
+export const clearUserSelections: Action<any> = (
+  { state, effects },
+  live_user_id
+) => {
   const clearSelections = userId => {
     const userIndex = state.live.roomInfo.users.findIndex(u => u.id === userId);
 
     if (userIndex > -1) {
       if (state.live.roomInfo.users[userIndex]) {
         state.live.roomInfo.users[userIndex].selection = null;
-        state.editor.pendingUserSelections.push({
-          userId,
-          selection: null,
-          name: null,
-          color: null,
-        });
+        effects.vscode.updateUserSelections([
+          {
+            userId,
+            selection: null,
+            name: null,
+            color: null,
+          },
+        ]);
       }
     }
   };
@@ -52,30 +59,26 @@ export const initialize: AsyncAction<string, Sandbox> = async (
   state.live.isLoading = true;
 
   try {
-    const {
-      roomInfo,
-      liveUserId,
-      sandbox,
-      moduleState,
-    } = await effects.live.joinChannel(id);
+    const { roomInfo, liveUserId, sandbox } = await effects.live.joinChannel(
+      id
+    );
 
     state.live.roomInfo = roomInfo;
     state.live.liveUserId = liveUserId;
 
-    if (!state.editor.sandboxes[sandbox.id]) {
+    if (
+      !state.editor.currentSandbox ||
+      state.editor.currentSandbox.id !== sandbox.id
+    ) {
       state.editor.sandboxes[sandbox.id] = sandbox;
+      state.editor.currentId = sandbox.id;
     }
-    state.editor.currentId = sandbox.id;
 
     effects.analytics.track('Live Session Joined', {});
     effects.live.listen(actions.live.liveMessageReceived);
 
-    state.live.receivingCode = true;
-    actions.live.internal.initializeModuleState(moduleState);
-    state.live.receivingCode = false;
     state.live.isLive = true;
     state.live.error = null;
-    effects.live.sendModuleState();
 
     return sandbox;
   } catch (error) {
@@ -88,27 +91,49 @@ export const initialize: AsyncAction<string, Sandbox> = async (
 };
 
 export const initializeModuleState: Action<any> = (
-  { state, effects },
+  { state, actions, effects },
   moduleState
 ) => {
   Object.keys(moduleState).forEach(moduleShortid => {
     const moduleInfo = moduleState[moduleShortid];
-    effects.live.createClient(moduleShortid, moduleInfo.revision);
 
     // Module has not been saved, so is different
-    const index = state.editor.currentSandbox.modules.findIndex(
+    const module = state.editor.currentSandbox.modules.find(
       m => m.shortid === moduleShortid
     );
 
-    if (index > -1) {
-      if (moduleInfo.code != null) {
-        state.editor.currentSandbox.modules[index].code = moduleInfo.code;
+    if (module) {
+      if (!('code' in moduleInfo)) {
+        return;
       }
-      if (!moduleInfo.synced) {
-        state.editor.changedModuleShortids.push(moduleShortid);
+      effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
+
+      const savedCodeChanged =
+        getSavedCode(moduleInfo.code, moduleInfo.saved_code) !==
+        getSavedCode(module.code, module.savedCode);
+      const moduleChanged =
+        moduleInfo.code !== module.code ||
+        moduleInfo.saved_code !== module.savedCode;
+
+      if (moduleChanged) {
+        module.savedCode = moduleInfo.saved_code;
+        module.code = moduleInfo.code;
+
+        if (savedCodeChanged) {
+          effects.vscode.sandboxFsSync.writeFile(
+            state.editor.modulesByPath,
+            module
+          );
+        }
+        if (moduleInfo.synced) {
+          effects.vscode.revertModule(module);
+        } else {
+          effects.vscode.setModuleCode(module);
+        }
       }
     }
   });
+  actions.editor.internal.updatePreviewCode();
 };
 
 export const getSelectionsForModule: Action<Module, EditorSelection[]> = (

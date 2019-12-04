@@ -1,17 +1,17 @@
-import {File} from './file';
-import {ApiError, ErrorCode} from './api_error';
-import {FileSystem, BFSOneArgCallback, BFSCallback, BFSThreeArgCallback} from './file_system';
-import {FileFlag} from './file_flag';
 import * as path from 'path';
+import * as _fs from 'fs';
+import { File } from './file';
+import { ApiError, ErrorCode } from './api_error';
+import { FileSystem, BFSOneArgCallback, BFSCallback, BFSThreeArgCallback } from './file_system';
+import { FileFlag } from './file_flag';
 import Stats, { FileType } from './node_fs_stats';
 import setImmediate from '../generic/setImmediate';
 
 // Typing info only.
-import * as _fs from 'fs';
 import { FileWatcher } from './file_watcher';
 
 /** Used for unit testing. Defaults to a NOP. */
-let wrapCbHook = function<T>(cb: T, numArgs: number): T {
+let wrapCbHook = function <T>(cb: T, numArgs: number): T {
   return cb;
 };
 
@@ -89,11 +89,11 @@ function normalizeMode(mode: number | string | null | undefined, def: number): n
 function normalizeTime(time: number | Date): Date {
   if (time instanceof Date) {
     return time;
-  } else if (typeof time === 'number') {
+  } if (typeof time === 'number') {
     return new Date(time * 1000);
-  } else {
-    throw new ApiError(ErrorCode.EINVAL, `Invalid time.`);
   }
+  throw new ApiError(ErrorCode.EINVAL, `Invalid time.`);
+
 }
 
 /**
@@ -112,14 +112,14 @@ function normalizePath(p: string): string {
 /**
  * @hidden
  */
-function normalizeOptions(options: any, defEnc: string | null, defFlag: string, defMode: number | null): {encoding: string; flag: string; mode: number} {
+function normalizeOptions(options: any, defEnc: string | null, defFlag: string, defMode: number | null): { encoding: string; flag: string; mode: number } {
   // typeof null === 'object' so special-case handing is needed.
   switch (options === null ? 'null' : typeof options) {
     case 'object':
       return {
-        encoding: typeof options['encoding'] !== 'undefined' ? options['encoding'] : defEnc,
-        flag: typeof options['flag'] !== 'undefined' ? options['flag'] : defFlag,
-        mode: normalizeMode(options['mode'], defMode!)
+        encoding: typeof options.encoding !== 'undefined' ? options.encoding : defEnc,
+        flag: typeof options.flag !== 'undefined' ? options.flag : defFlag,
+        mode: normalizeMode(options.mode, defMode!)
       };
     case 'string':
       return {
@@ -174,7 +174,7 @@ export default class FS {
   public static X_OK: number = 1;
 
   private root: FileSystem | null = null;
-  private fdMap: {[fd: number]: File} = {};
+  private fdMap: { [fd: number]: File } = {};
   private nextFd = 100;
 
   private fileWatcher: FileWatcher = new FileWatcher();
@@ -193,7 +193,7 @@ export default class FS {
   public _toUnixTimestamp(time: Date | number): number {
     if (typeof time === 'number') {
       return time;
-    } else if (time instanceof Date) {
+    } if (time instanceof Date) {
       return time.getTime() / 1000;
     }
     throw new Error("Cannot parse time: " + time);
@@ -207,9 +207,9 @@ export default class FS {
   public getRootFS(): FileSystem | null {
     if (this.root) {
       return this.root;
-    } else {
-      return null;
     }
+    return null;
+
   }
 
   // FILE OR DIRECTORY METHODS
@@ -445,7 +445,7 @@ export default class FS {
    * @param callback
    */
   public open(path: string, flag: string, cb?: BFSCallback<number>): void;
-  public open(path: string, flag: string, mode: number|string, cb?: BFSCallback<number>): void;
+  public open(path: string, flag: string, mode: number | string, cb?: BFSCallback<number>): void;
   public open(path: string, flag: string, arg2?: any, cb: BFSCallback<number> = nopCb): void {
     const mode = normalizeMode(arg2, 0x1a4);
     cb = typeof arg2 === 'function' ? arg2 : cb;
@@ -471,7 +471,7 @@ export default class FS {
    * @param mode defaults to `0644`
    * @return [BrowserFS.File]
    */
-  public openSync(path: string, flag: string, mode: number|string = 0x1a4): number {
+  public openSync(path: string, flag: string, mode: number | string = 0x1a4): number {
     return this.getFdForFile(
       assertRoot(this.root).openSync(normalizePath(path), FileFlag.getFileFlag(flag), normalizeMode(mode, 0x1a4)));
   }
@@ -498,7 +498,7 @@ export default class FS {
     cb = typeof arg2 === 'function' ? arg2 : cb;
     const newCb = wrapCb(cb, 2);
     try {
-      const flag = FileFlag.getFileFlag(options['flag']);
+      const flag = FileFlag.getFileFlag(options.flag);
       if (!flag.isReadable()) {
         return newCb(new ApiError(ErrorCode.EINVAL, 'Flag passed to readFile must allow for reading.'));
       }
@@ -560,12 +560,16 @@ export default class FS {
         return newCb(new ApiError(ErrorCode.EINVAL, 'Flag passed to writeFile must allow for writing.'));
       }
 
-      setImmediate(() => {
-        this.stat(filename, (err, stat) => {
-          this.fileWatcher.triggerWatch(filename, 'change', stat);
+      assertRoot(this.root).writeFile(normalizePath(filename), data, options.encoding, flag, options.mode, (...args) => {
+        setImmediate(() => {
+          this.stat(filename, (_err, stat) => {
+            this.fileWatcher.triggerWatch(filename, 'change', stat);
+          });
         });
+
+        newCb(...args);
       });
-      return assertRoot(this.root).writeFile(normalizePath(filename), data, options.encoding, flag, options.mode, newCb);
+
     } catch (e) {
       return newCb(e);
     }
@@ -617,7 +621,7 @@ export default class FS {
    * @param callback
    */
   public appendFile(filename: string, data: any, cb?: BFSOneArgCallback): void;
-  public appendFile(filename: string, data: any, options?: { encoding?: string; mode?: number|string; flag?: string; }, cb?: BFSOneArgCallback): void;
+  public appendFile(filename: string, data: any, options?: { encoding?: string; mode?: number | string; flag?: string; }, cb?: BFSOneArgCallback): void;
   public appendFile(filename: string, data: any, encoding?: string, cb?: BFSOneArgCallback): void;
   public appendFile(filename: string, data: any, arg3?: any, cb: BFSOneArgCallback = nopCb): void {
     const options = normalizeOptions(arg3, 'utf8', 'a', 0x1a4);
@@ -630,7 +634,7 @@ export default class FS {
       }
       setImmediate(() => {
         this.stat(filename, (err, stat) => {
-          this.fileWatcher.triggerWatch(filename, 'change', stat);
+          this.fileWatcher.triggerWatch(filename, 'rename', stat);
         });
       });
       assertRoot(this.root).appendFile(normalizePath(filename), data, options.encoding, flag, options.mode, newCb);
@@ -829,7 +833,7 @@ export default class FS {
   public write(fd: number, data: any, position: number | null, cb?: BFSThreeArgCallback<number, string>): void;
   public write(fd: number, data: any, position: number | null, encoding: string, cb?: BFSThreeArgCallback<number, string>): void;
   public write(fd: number, arg2: any, arg3?: any, arg4?: any, arg5?: any, cb: BFSThreeArgCallback<number, any> = nopCb): void {
-    let buffer: Buffer, offset: number, length: number, position: number | null = null;
+    let buffer: Buffer; let offset: number; let length: number; let position: number | null = null;
     if (typeof arg2 === 'string') {
       // Signature 1: (fd, string, [position?, [encoding?]], cb?)
       let encoding = 'utf8';
@@ -889,7 +893,7 @@ export default class FS {
   public writeSync(fd: number, buffer: Buffer, offset: number, length: number, position?: number | null): number;
   public writeSync(fd: number, data: string, position?: number | null, encoding?: string): number;
   public writeSync(fd: number, arg2: any, arg3?: any, arg4?: any, arg5?: any): number {
-    let buffer: Buffer, offset: number = 0, length: number, position: number | null;
+    let buffer: Buffer; let offset: number = 0; let length: number; let position: number | null;
     if (typeof arg2 === 'string') {
       // Signature 1: (fd, string, [position?, [encoding?]])
       position = typeof arg3 === 'number' ? arg3 : null;
@@ -927,7 +931,7 @@ export default class FS {
   public read(fd: number, length: number, position: number | null, encoding: string, cb?: BFSThreeArgCallback<string, number>): void;
   public read(fd: number, buffer: Buffer, offset: number, length: number, position: number | null, cb?: BFSThreeArgCallback<number, Buffer>): void;
   public read(fd: number, arg2: any, arg3: any, arg4: any, arg5?: any, cb: BFSThreeArgCallback<string, number> | BFSThreeArgCallback<number, Buffer> = nopCb): void {
-    let position: number | null, offset: number, length: number, buffer: Buffer, newCb: BFSThreeArgCallback<number, Buffer>;
+    let position: number | null; let offset: number; let length: number; let buffer: Buffer; let newCb: BFSThreeArgCallback<number, Buffer>;
     if (typeof arg2 === 'number') {
       // legacy interface
       // (fd, length, position, encoding, callback)
@@ -982,7 +986,7 @@ export default class FS {
   public readSync(fd: number, buffer: Buffer, offset: number, length: number, position: number): number;
   public readSync(fd: number, arg2: any, arg3: any, arg4: any, arg5?: any): any {
     let shenanigans = false;
-    let buffer: Buffer, offset: number, length: number, position: number, encoding: string = 'utf8';
+    let buffer: Buffer; let offset: number; let length: number; let position: number; let encoding: string = 'utf8';
     if (typeof arg2 === 'number') {
       length = arg2;
       position = arg3;
@@ -1004,9 +1008,9 @@ export default class FS {
     const rv = file.readSync(buffer, offset, length, position);
     if (!shenanigans) {
       return rv;
-    } else {
-      return [buffer.toString(encoding), rv];
     }
+    return [buffer.toString(encoding), rv];
+
   }
 
   /**
@@ -1456,10 +1460,10 @@ export default class FS {
    * @param callback
    */
   public realpath(path: string, cb?: BFSCallback<string>): void;
-  public realpath(path: string, cache: {[path: string]: string}, cb: BFSCallback<string>): void;
+  public realpath(path: string, cache: { [path: string]: string }, cb: BFSCallback<string>): void;
   public realpath(path: string, arg2?: any, cb: BFSCallback<string> = nopCb): void {
-    const cache = typeof(arg2) === 'object' ? arg2 : {};
-    cb = typeof(arg2) === 'function' ? arg2 : nopCb;
+    const cache = typeof (arg2) === 'object' ? arg2 : {};
+    cb = typeof (arg2) === 'function' ? arg2 : nopCb;
     const newCb = <(err: ApiError, resolvedPath?: string) => any> wrapCb(cb, 2);
     try {
       path = normalizePath(path);
@@ -1477,7 +1481,7 @@ export default class FS {
    *   known real paths.
    * @return [String]
    */
-  public realpathSync(path: string, cache: {[path: string]: string} = {}): string {
+  public realpathSync(path: string, cache: { [path: string]: string } = {}): string {
     path = normalizePath(path);
     return assertRoot(this.root).realpathSync(path, cache);
   }
@@ -1488,7 +1492,7 @@ export default class FS {
     this.stat(filename, (err, stat) => {
       let usedStat = stat;
       if (err) {
-        usedStat = new Stats(FileType.FILE, 0, undefined, 0,  0, 0, 0)
+        usedStat = new Stats(FileType.FILE, 0, undefined, 0, 0, 0, 0)
       }
 
       this.fileWatcher.watchFile(usedStat!, filename, arg2, listener);
@@ -1516,21 +1520,21 @@ export default class FS {
   }
 
   public createReadStream(path: string, options?: {
-        flags?: string;
-        encoding?: string;
-        fd?: number;
-        mode?: number;
-        autoClose?: boolean;
-    }): _fs.ReadStream {
+    flags?: string;
+    encoding?: string;
+    fd?: number;
+    mode?: number;
+    autoClose?: boolean;
+  }): _fs.ReadStream {
     throw new ApiError(ErrorCode.ENOTSUP);
   }
 
   public createWriteStream(path: string, options?: {
-        flags?: string;
-        encoding?: string;
-        fd?: number;
-        mode?: number;
-    }): _fs.WriteStream {
+    flags?: string;
+    encoding?: string;
+    fd?: number;
+    mode?: number;
+  }): _fs.WriteStream {
     throw new ApiError(ErrorCode.ENOTSUP);
   }
 
@@ -1546,14 +1550,16 @@ export default class FS {
     this.fdMap[fd] = file;
     return fd;
   }
+
   private fd2file(fd: number): File {
     const rv = this.fdMap[fd];
     if (rv) {
       return rv;
-    } else {
-      throw new ApiError(ErrorCode.EBADF, 'Invalid file descriptor.');
     }
+    throw new ApiError(ErrorCode.EBADF, 'Invalid file descriptor.');
+
   }
+
   private closeFd(fd: number): void {
     delete this.fdMap[fd];
   }

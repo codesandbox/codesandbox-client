@@ -1,4 +1,3 @@
-import { Module } from '@codesandbox/common/lib/types';
 /* eslint-disable camelcase */
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { camelizeKeys, decamelizeKeys } from 'humps';
@@ -28,9 +27,6 @@ export type Api = {
 
 export type ApiConfig = {
   provideJwtToken: () => string;
-  getModulesByPath: () => {
-    [path: string]: Module;
-  };
   getParsedConfigurations: () => any;
   onError: (error: ApiError) => void;
 };

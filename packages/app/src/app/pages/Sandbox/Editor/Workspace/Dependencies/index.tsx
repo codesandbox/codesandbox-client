@@ -1,11 +1,9 @@
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
-
 import { WorkspaceSubtitle } from '../elements';
-
 import { AddFont } from './AddFont';
 import { AddResource } from './AddResource';
 import { AddVersion } from './AddVersion';
@@ -34,20 +32,18 @@ export const Dependencies: FunctionComponent = () => {
     resource => !resource.includes('fonts.googleapis.com/css')
   );
 
-  if (!parsedConfigurations.package) {
+  if (!parsedConfigurations?.package) {
     return <ErrorMessage>Unable to find package.json</ErrorMessage>;
   }
 
-  const {
-    parsed: { dependencies = {} /* devDependencies = {} */ },
-    error,
-  } = parsedConfigurations.package;
+  const { error, parsed } = parsedConfigurations.package;
   if (error) {
     return (
       <ErrorMessage>We weren{"'"}t able to parse the package.json</ErrorMessage>
     );
   }
 
+  const { dependencies = {} /* devDependencies = {} */ } = parsed;
   const { externalResourcesEnabled } = getTemplateDefinition(template);
   return (
     <div>
@@ -60,7 +56,7 @@ export const Dependencies: FunctionComponent = () => {
               dependency={dependency}
               key={dependency}
               onRefresh={(name, version) => addNpmDependency({ name, version })}
-              onRemove={npmDependencyRemoved}
+              onRemove={name => npmDependencyRemoved({ name })}
             />
           ))}
 

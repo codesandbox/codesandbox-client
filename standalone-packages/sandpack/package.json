@@ -1,6 +1,6 @@
 {
   "name": "smooshpack",
-  "version": "0.0.54",
+  "version": "0.0.61",
   "description": "",
   "keywords": [],
   "repository": {
@@ -24,12 +24,13 @@
     "commit": "git-cz",
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prepublishOnly": "yarn build && lerna run build:sandbox --scope app --stream && rimraf sandpack && gulp copy-sandbox",
+    "prepublishOnly": "yarn build && lerna run build:sandpack-sandbox --scope app --stream && rimraf sandpack && gulp copy-sandbox",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "start": "rollup -c rollup.config.ts -w",
-    "test:prod": "npm run lint && npm run test -- --coverage --no-cache"
+    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+    "install-dependencies": "yarn"
   },
   "config": {
     "commitizen": {
@@ -64,7 +65,7 @@
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
   "dependencies": {
-    "codesandbox-api": "^0.0.20",
+    "codesandbox-api": "0.0.23",
     "codesandbox-import-utils": "^1.2.3",
     "lodash.isequal": "^4.5.0"
   },
