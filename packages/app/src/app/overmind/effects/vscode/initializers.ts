@@ -1,4 +1,4 @@
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black.json';
+import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 import codeSandboxTheme from '@codesandbox/common/lib/themes/codesandbox.json';
 
 export function initializeThemeCache() {
@@ -46,8 +46,7 @@ export function initializeSettings() {
 }
 
 export function initializeCodeSandboxTheme() {
-  // @ts-ignore
-  const fs = BrowserFS.BFSRequire('fs');
+  const fs = window.BrowserFS.BFSRequire('fs');
 
   fs.writeFileSync(
     '/extensions/ngryman.codesandbox-theme-0.0.1/themes/CodeSandbox-color-theme.json',
@@ -90,8 +89,7 @@ export function installCustomTheme(id: string, name: string, theme: string) {
     },
   };
 
-  // @ts-ignore
-  const fs = BrowserFS.BFSRequire('fs');
+  const fs = window.BrowserFS.BFSRequire('fs');
   const extName = `${id}-theme`;
   fs.mkdirSync(`/extensions/${extName}`);
   fs.writeFileSync(
