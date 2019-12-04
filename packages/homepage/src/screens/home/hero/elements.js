@@ -41,20 +41,23 @@ export const EditorElement = styled.img`
 `;
 
 export const HeroWrapper = styled.section`
-  margin-top: 6rem;
+  position: relative;
+
   text-align: center;
   overflow: hidden;
   padding: 0 2rem;
+
+  height: 1200px;
 
   perspective: 1000;
 `;
 
 export const SignUp = styled.p`
-  font-size: 0.6875rem;
+  font-size: 13px;
   line-height: 0.8125rem;
   text-align: center;
   margin-top: 0.5rem;
-  color: ${props => props.theme.homepage.white};
+  color: #999;
   margin-bottom: 2.5rem;
 `;
 

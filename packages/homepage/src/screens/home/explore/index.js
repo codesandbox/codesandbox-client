@@ -37,6 +37,7 @@ const Sandbox = ({
   shouldAnimate,
   randomizeHeight = true,
   wrapperWidth,
+  onOpenIframe,
 }) => {
   const [clicked, setClicked] = useState(null);
   const topOffset = React.useRef(
@@ -99,7 +100,13 @@ const Sandbox = ({
           sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
         />
       ) : (
-        <Button type="button" onClick={setClicked}>
+        <Button
+          type="button"
+          onClick={() => {
+            setClicked(true);
+            onOpenIframe();
+          }}
+        >
           <Image big={big} src={image} alt={id} />
         </Button>
       )}
@@ -138,6 +145,9 @@ const Experiment = () => {
         >
           <section>
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={0}
               x={(itemWidth + 16) * 0}
@@ -147,6 +157,9 @@ const Experiment = () => {
               wrapperWidth={imageWrapperWidth}
             />
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={1}
               x={(itemWidth + 16) * 1}
@@ -157,6 +170,9 @@ const Experiment = () => {
             />
 
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={2}
               x={(itemWidth + 16) * 2}
@@ -166,6 +182,9 @@ const Experiment = () => {
               wrapperWidth={imageWrapperWidth}
             />
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={2}
               x={(itemWidth + 16) * 2}
@@ -177,6 +196,9 @@ const Experiment = () => {
             />
 
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={4}
               x={(itemWidth + 16) * 3}
@@ -185,6 +207,9 @@ const Experiment = () => {
               wrapperWidth={imageWrapperWidth}
             />
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={5}
               x={(itemWidth + 16) * 4}
@@ -195,6 +220,9 @@ const Experiment = () => {
             />
 
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={6}
               x={(itemWidth + 16) * 5}
@@ -205,6 +233,9 @@ const Experiment = () => {
             />
 
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={7}
               x={(itemWidth + 16) * 6}
@@ -215,6 +246,9 @@ const Experiment = () => {
             />
 
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={8}
               x={(itemWidth + 16) * 7}
@@ -225,6 +259,9 @@ const Experiment = () => {
             />
 
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={9}
               x={(itemWidth + 16) * 8}
@@ -235,6 +272,9 @@ const Experiment = () => {
             />
 
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={10}
               x={(itemWidth + 16) * 9}
@@ -245,6 +285,9 @@ const Experiment = () => {
             />
 
             <Sandbox
+              onOpenIframe={() => {
+                setMouseOver(true);
+              }}
               shouldAnimate={!hasMouseOver}
               index={11}
               x={(itemWidth + 16) * 10}
