@@ -177,8 +177,8 @@ export const saveCode: AsyncAction<{
 };
 
 export const updateCurrentTemplate: AsyncAction = async ({
-  state,
   effects,
+  state,
 }) => {
   try {
     const currentTemplate = state.editor.currentSandbox.template;
@@ -189,9 +189,9 @@ export const updateCurrentTemplate: AsyncAction = async ({
     // in the sandbox configuration.
     if (
       templateDefinition.isServer ||
-      state.editor.parsedConfigurations.sandbox.parsed.template
+      state.editor.parsedConfigurations?.sandbox?.parsed?.template
     ) {
-      const { parsed = {} } = state.editor.parsedConfigurations!.package!;
+      const { parsed = {} } = state.editor.parsedConfigurations?.package || {};
 
       const modulesByPath = mapValues(state.editor.modulesByPath, module => ({
         // No idea why this typing fails!
