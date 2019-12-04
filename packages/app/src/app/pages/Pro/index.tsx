@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import { format } from 'date-fns';
 import { Helmet } from 'react-helmet';
+import React, { useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
@@ -27,7 +28,7 @@ import {
 
 const Pro: React.FC = () => {
   const {
-    state: { isLoggedIn, user, hasLoadedApp, patron, isPatron },
+    state: { hasLoadedApp, isLoggedIn, user, patron },
     actions: {
       modalOpened,
       patron: {
@@ -40,9 +41,8 @@ const Pro: React.FC = () => {
 
   const checkoutDisabled = !hasLoadedApp || !isLoggedIn;
 
-  let subscriptionType: string;
-  if (isPatron) subscriptionType = 'patron';
-  else subscriptionType = user && user.subscription && user.subscription.plan;
+  const subscriptionType: string =
+    user && user.subscription && user.subscription.plan;
 
   useEffect(() => {
     patronMounted();
@@ -91,8 +91,11 @@ const Pro: React.FC = () => {
                           </ButtonAsLink>
 
                           <HelpText>
-                            You will be billed on the <b>30th</b> of each month.
-                            You can{' '}
+                            You will be billed on the{' '}
+                            <b>
+                              {format(new Date(user.subscription.since), 'do')}
+                            </b>{' '}
+                            of each month. You can{' '}
                             <LinkButton
                               onClick={e => {
                                 e.preventDefault();

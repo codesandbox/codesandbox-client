@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { format } from 'date-fns';
 import {
   injectStripe,
   CardElement,
@@ -171,8 +172,9 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
         </Button>
 
         <HelpText>
-          You will be billed now and on the <b>30th</b> of each month
-          thereafter. You can cancel or change your subscription at any time.
+          You will be billed now and on the <b>{format(new Date(), 'do')}</b> of
+          each month thereafter. You can cancel or change your subscription at
+          any time.
         </HelpText>
       </Form>
     );

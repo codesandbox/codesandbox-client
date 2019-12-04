@@ -214,6 +214,7 @@ export const SignInModal = styled.div(
     borderRadius: 'medium',
     padding: 10,
     textAlign: 'center',
+    zIndex: 2,
 
     p: {
       fontSize: '20px',
