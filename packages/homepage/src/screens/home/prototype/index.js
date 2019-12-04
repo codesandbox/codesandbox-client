@@ -65,7 +65,9 @@ const Prototype = () => {
   return (
     <>
       <H2>Prototype Quickly</H2>
-      <P muted>Test your ideas early and often.</P>
+      <P big muted>
+        Test your ideas early and often.
+      </P>
       <Grid>
         <ImageWrapper ref={inViewRef}>
           <div

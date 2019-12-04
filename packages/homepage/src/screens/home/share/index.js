@@ -44,6 +44,7 @@ const Share = () => {
           <H2>Share with a Click</H2>
           <P
             muted
+            big
             css={`
               margin-bottom: 2rem;
             `}

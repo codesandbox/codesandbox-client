@@ -36,6 +36,7 @@ const Experiment = () => {
           <H2>Experiment Easily</H2>
           <P
             muted
+            big
             css={`
               margin-bottom: 2rem;
             `}

@@ -30,9 +30,11 @@ const Homepage = () => (
       <LoadInView>
         <Started />
       </LoadInView>
-      <LoadInView>
-        <Explore />
-      </LoadInView>
+    </div>
+    <LoadInView>
+      <Explore />
+    </LoadInView>
+    <div style={WRAPPER_STYLING}>
       <LoadInView>
         <Experiment />
       </LoadInView>

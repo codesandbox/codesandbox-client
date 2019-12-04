@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const H2 = styled.h2`
-  font-size: 3rem;
+  font-size: 2.5rem;
   line-height: 57px;
   font-family: ${props => props.theme.homepage.appleFont};
 
@@ -48,6 +48,8 @@ export const P = styled.p`
       `
 text-align: center;
   `}
+
+  ${props => props.big && 'font-size: 1.5rem'};
 `;
 
 export const H3 = styled.h3`

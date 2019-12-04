@@ -1,9 +1,18 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+export const itemWidth = 324;
+export const smallItemHeight = 420;
+export const bigItemHeight = 548;
+export const viewPortMargin = 60;
 
 export const ImageWrapper = styled.div`
+  position: relative;
   margin-top: 2rem;
-  width: calc(100vw - ((100vw - 1200px) / 2) - 20px);
-  overflow: auto;
+  height: 900px;
+  width: calc(100vw + ${itemWidth + viewPortMargin}px);
+  overflow: hidden;
+
+  margin-left: -${itemWidth + viewPortMargin}px;
 
   ${props => props.theme.breakpoints.lg} {
     max-width: 100%;
@@ -53,36 +62,64 @@ export const Button = styled.button`
   margin: 0;
 `;
 
+const floatAnimation = keyframes`
+  0% {
+    transform: translateY(10px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(10px);
+  }
+`;
+
 export const Wrapper = styled.div`
-  width: 324px;
-  height: ${props => (props.big ? '548px' : '420px')};
+  animation: 7s ${floatAnimation} infinite;
+  animation-delay: ${props => (props.index || 0) * 500}ms;
+  animation-timing-function: ease;
+
+  position: absolute;
+  left: ${props => props.index * 334}px;
+  top: 0;
+
+  width: ${itemWidth}px;
+  height: ${props =>
+    props.big ? bigItemHeight + 'px' : smallItemHeight + 'px'};
 
   ${props => props.theme.breakpoints.md} {
-    width: ${324 * 0.7}px;
-    height: ${props => (props.big ? 548 * 0.7 : 420 * 0.7)}px;
+    width: ${itemWidth * 0.7}px;
+    height: ${props =>
+      props.big ? bigItemHeight * 0.7 : smallItemHeight * 0.7}px;
   }
 
   ${props => props.theme.breakpoints.sm} {
-    width: ${324 * 0.5}px;
-    height: ${props => (props.big ? 548 * 0.5 : 420 * 0.5)}px;
+    width: ${itemWidth * 0.5}px;
+    height: ${props =>
+      props.big ? bigItemHeight * 0.5 : smallItemHeight * 0.5}px;
   }
 `;
 
 export const Image = styled.img`
   ${props => props.theme.breakpoints.md} {
-    width: ${324 * 0.7}px;
-    height: ${props => (props.big ? 548 * 0.7 : 420 * 0.7)}px;
+    width: ${itemWidth * 0.7}px;
+    height: ${props =>
+      props.big ? bigItemHeight * 0.7 : smallItemHeight * 0.7}px;
   }
 
   ${props => props.theme.breakpoints.sm} {
-    width: ${324 * 0.5}px;
-    height: ${props => (props.big ? 548 * 0.5 : 420 * 0.5)}px;
+    width: ${itemWidth * 0.5}px;
+    height: ${props =>
+      props.big ? bigItemHeight * 0.5 : smallItemHeight * 0.5}px;
   }
 `;
 
 export const Iframe = styled.iframe`
-  width: 324px;
-  height: ${props => (props.big ? '548px' : '420px')};
+  width: ${itemWidth}px;
+  height: ${props =>
+    props.big ? bigItemHeight + 'px' : smallItemHeight + 'px'};
   border: 0;
   border-radius: 4;
   overflow: hidden;
