@@ -1,13 +1,13 @@
-import { resolveDependencyInfo } from './resolve-dependency';
 import { mergeDependencies } from './merge-dependency';
-
 import { parseResolutions } from './resolutions';
+import { resolveDependencyInfo } from './resolve-dependency';
 
 export async function getDependencyVersions(
   dependencies: {
     [depName: string]: string;
   },
-  resolutions?: { [startGlob: string]: string }
+  resolutions: { [startGlob: string]: string },
+  _: boolean
 ) {
   const parsedResolutions = parseResolutions(resolutions);
 

@@ -180,7 +180,7 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /\/vscode24/,
+          urlPattern: /\/vscode25/,
           handler: 'cacheFirst',
           options: {
             cache: {
@@ -227,7 +227,9 @@ module.exports = merge(commonConfig, {
       minify: true,
       // For unknown URLs, fallback to the index page
       navigateFallback: 'https://new.codesandbox.io/frame.html',
-      staticFileGlobs: ['www/frame.html'],
+      staticFileGlobs: process.env.SANDBOX_ONLY
+        ? ['www/index.html']
+        : ['www/frame.html'],
       stripPrefix: 'www/',
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
