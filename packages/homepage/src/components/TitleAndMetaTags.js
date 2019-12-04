@@ -24,7 +24,7 @@ export default ({
       { name: 'referrer', content: 'origin' },
       { property: 'og:type', content: 'website' },
       { property: 'og:author', content: 'https://codesandbox.io' },
-      { name: 'theme-color', content: '#6CAEDD' },
+      { name: 'theme-color', content: '#040404' },
       { property: 'og:image:width', content: '1200' },
       { property: 'og:image:height', content: '630' },
       { property: 'twitter:card', content: 'summary_large_image' },
