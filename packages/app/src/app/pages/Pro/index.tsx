@@ -26,7 +26,7 @@ import {
   SubHeading,
 } from './elements';
 
-const Pro: React.FC = () => {
+const ProPage: React.FC = () => {
   const {
     state: { hasLoadedApp, isLoggedIn, user, patron },
     actions: {
@@ -60,103 +60,31 @@ const Pro: React.FC = () => {
 
           <MaxWidth width={1024}>
             <>
-              {hasLoadedApp && !isLoggedIn && (
-                <>
-                  <ModalBackdrop />
-                  <SignInModal>
-                    <p>Sign in to continue</p>
-                    <SignInButton />
-                  </SignInModal>
-                </>
-              )}
+              {hasLoadedApp && !isLoggedIn && <LoggedOut />}
 
               <Content>
                 {subscriptionType ? (
                   <MaxWidth width={400}>
                     <Centered horizontal>
-                      {subscriptionType && (
-                        <>
-                          <Avatar src={user.avatarUrl} />
-                          <Badge type={subscriptionType}>
-                            {subscriptionType}
-                          </Badge>
-                          <Heading>You&apos;re a Pro!</Heading>
-                        </>
-                      )}
-
                       {subscriptionType === 'pro' ? (
-                        <>
-                          <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
-                            Create a sandbox
-                          </ButtonAsLink>
-
-                          <HelpText>
-                            You will be billed on the{' '}
-                            <b>
-                              {format(new Date(user.subscription.since), 'do')}
-                            </b>{' '}
-                            of each month. You can{' '}
-                            <LinkButton
-                              onClick={e => {
-                                e.preventDefault();
-                                modalOpened({
-                                  modal: 'preferences',
-                                  itemId: 'paymentInfo',
-                                });
-                              }}
-                            >
-                              update your payment details
-                            </LinkButton>{' '}
-                            or{' '}
-                            <LinkButton
-                              onClick={e => {
-                                e.preventDefault();
-                                cancelSubscriptionClicked();
-                              }}
-                            >
-                              cancel your subscription
-                            </LinkButton>{' '}
-                            at any time.
-                          </HelpText>
-                        </>
+                        <Pro
+                          user={user}
+                          modalOpened={modalOpened}
+                          cancelSubscriptionClicked={cancelSubscriptionClicked}
+                          subscriptionType={subscriptionType}
+                        />
                       ) : (
-                        <>
-                          <SubHeading>
-                            Thank you for being an early supporter of
-                            CodeSandbox. As a patron, you can access all Pro
-                            features.
-                          </SubHeading>
-                          <ButtonAsLink href="/s/">
-                            Create a sandbox
-                          </ButtonAsLink>
-
-                          <HelpText>
-                            You will be billed on the <b>29th</b> of each month.
-                            You can{' '}
-                            <a href="/patron">modify your contribution</a> at
-                            any time.
-                          </HelpText>
-                        </>
+                        <Patron user={user} />
                       )}
                     </Centered>
                   </MaxWidth>
                 ) : (
-                  <>
-                    <Heading>CodeSandbox Pro</Heading>
-                    <SubHeading>$12/month</SubHeading>
-                    <Centered horizontal>
-                      <SubscribeForm
-                        subscribe={({ token, coupon }) =>
-                          createSubscriptionClicked({ token, coupon })
-                        }
-                        isLoading={patron.isUpdatingSubscription}
-                        hasCoupon
-                        name={user && user.name}
-                        error={patron.error}
-                        disabled={checkoutDisabled}
-                      />
-                    </Centered>
-                  </>
+                  <NotPro
+                    createSubscriptionClicked={createSubscriptionClicked}
+                    user={user}
+                    patron={patron}
+                    checkoutDisabled={checkoutDisabled}
+                  />
                 )}
               </Content>
             </>
@@ -167,4 +95,97 @@ const Pro: React.FC = () => {
   );
 };
 
-export default Pro;
+const LoggedOut = () => (
+  <>
+    <ModalBackdrop />
+    <SignInModal>
+      <p>Sign in to continue</p>
+      <SignInButton />
+    </SignInModal>
+  </>
+);
+
+const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => (
+  <>
+    <Avatar src={user.avatarUrl} />
+    <Badge type="pro">Pro</Badge>
+    <Heading>You&apos;re a Pro!</Heading>
+
+    <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
+      Create a sandbox
+    </ButtonAsLink>
+
+    <HelpText>
+      You will be billed on the{' '}
+      <b>{format(new Date(user.subscription.since), 'do')}</b> of each month.
+      You can{' '}
+      <LinkButton
+        onClick={e => {
+          e.preventDefault();
+          modalOpened({
+            modal: 'preferences',
+            itemId: 'paymentInfo',
+          });
+        }}
+      >
+        update your payment details
+      </LinkButton>{' '}
+      or{' '}
+      <LinkButton
+        onClick={e => {
+          e.preventDefault();
+          cancelSubscriptionClicked();
+        }}
+      >
+        cancel your subscription
+      </LinkButton>{' '}
+      at any time.
+    </HelpText>
+  </>
+);
+
+const Patron = ({ user }) => (
+  <>
+    <Avatar src={user.avatarUrl} />
+    <Badge type="patron">Patron</Badge>
+    <Heading>You&apos;re a Pro!</Heading>
+
+    <SubHeading>
+      Thank you for being an early supporter of CodeSandbox. As a patron, you
+      can access all Pro features.
+    </SubHeading>
+    <ButtonAsLink href="/s/">Create a sandbox</ButtonAsLink>
+
+    <HelpText>
+      You will be billed on the{' '}
+      <b>{format(new Date(user.subscription.since), 'do')}</b> of each month.
+      You can <a href="/patron">modify your contribution</a> at any time.
+    </HelpText>
+  </>
+);
+
+const NotPro = ({
+  createSubscriptionClicked,
+  user,
+  patron,
+  checkoutDisabled,
+}) => (
+  <>
+    <Heading>CodeSandbox Pro</Heading>
+    <SubHeading>$12/month</SubHeading>
+    <Centered horizontal>
+      <SubscribeForm
+        subscribe={({ token, coupon }) =>
+          createSubscriptionClicked({ token, coupon })
+        }
+        isLoading={patron.isUpdatingSubscription}
+        hasCoupon
+        name={user && user.name}
+        error={patron.error}
+        disabled={checkoutDisabled}
+      />
+    </Centered>
+  </>
+);
+
+export default ProPage;
