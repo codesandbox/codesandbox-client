@@ -43,8 +43,10 @@ function Box({ position }) {
 
   const fn = React.useCallback(
     body => {
-      body.addShape(new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)));
+      body.addShape(new CANNON.Box(new CANNON.Vec3(1, 1, 1)));
       body.position.set(...position);
+
+      body.sleep();
 
       bodyRef.current = body;
     },
@@ -52,7 +54,7 @@ function Box({ position }) {
   );
 
   // Register box as a physics body with mass
-  const ref = useCannon({ mass: 1000 }, fn, []);
+  const ref = useCannon({ mass: 100 }, fn, []);
 
   useEffect(() => {
     if (dragging) {
@@ -76,6 +78,7 @@ function Box({ position }) {
       } else {
         setDragging(false);
       }
+
       bodyRef.current.velocity.x = vx * 5;
       bodyRef.current.velocity.y = -vy * 5;
     },
@@ -84,46 +87,13 @@ function Box({ position }) {
 
   return (
     <mesh {...bindDrag()} ref={ref} castShadow receiveShadow>
-      <boxGeometry attach="geometry" args={[1, 1, 1]} />
+      <boxGeometry attach="geometry" args={[2, 2, 2]} />
       <meshStandardMaterial attach="material" />
     </mesh>
   );
 }
 
-export default function App() {
-  const [boxes, setBoxes] = useState([]);
-
-  useEffect(() => {
-    let timeout = null;
-    const createBox = () => {
-      setBoxes(b => {
-        const newBoxes = [
-          ...b,
-          {
-            key: Math.floor(Math.random() * 1000) + '',
-            position: [-5 + Math.random() * 10, -2.5 + Math.random() * 5, 15],
-          },
-        ];
-
-        if (newBoxes.length > 20) {
-          newBoxes.length = 20;
-        }
-
-        return newBoxes;
-      });
-
-      timeout = setTimeout(createBox, 2500);
-    };
-
-    createBox();
-
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    };
-  }, [setBoxes]);
-
+export default function App({ boxes, showPlane }) {
   return (
     <div
       style={{
@@ -152,7 +122,7 @@ export default function App() {
         />
 
         <Provider>
-          <Plane position={[0, 0, 0]} />
+          {showPlane && <Plane position={[0, 0, 0]} />}
 
           {boxes.map(pos => (
             <Box key={pos.key} position={pos.position} />

@@ -47,7 +47,7 @@ export const HeroWrapper = styled.section`
   overflow: hidden;
   padding: 0 2rem;
 
-  height: 1200px;
+  height: calc(100vh - 48px);
 
   perspective: 1000;
 `;
@@ -102,4 +102,29 @@ export const Border = styled.div`
   left: 0;
   width: 100%;
   height: 1px;
+`;
+
+export const StyledEditorLink = styled.a`
+  transition: 0.3s ease opacity;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  padding-top: 150px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition: 0.3 ease all;
+  border-radius: 4px;
+  font-size: 1.25rem;
+  text-decoration: none;
+
+  color: white;
+  font-weight: 400;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+
+  &:hover {
+    opacity: 1;
+  }
 `;
