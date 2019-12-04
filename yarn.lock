@@ -429,13 +429,13 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-syntax-optional-catch-binding" "^7.2.0"
 
-"@babel/plugin-proposal-optional-chaining@^7.6.0":
-  version "7.6.0"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-optional-chaining/-/plugin-proposal-optional-chaining-7.6.0.tgz#e9bf1f9b9ba10c77c033082da75f068389041af8"
-  integrity sha512-kj4gkZ6qUggkprRq3Uh5KP8XnE1MdIO0J7MhdDX8+rAbB6dJ2UrensGIS+0NPZAaaJ1Vr0PN6oLUgXMU1uMcSg==
+"@babel/plugin-proposal-optional-chaining@^7.6.0", "@babel/plugin-proposal-optional-chaining@^7.7.4":
+  version "7.7.4"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-optional-chaining/-/plugin-proposal-optional-chaining-7.7.4.tgz#3f04c2de1a942cbd3008324df8144b9cbc0ca0ba"
+  integrity sha512-JmgaS+ygAWDR/STPe3/7y0lNlHgS+19qZ9aC06nYLwQ/XB7c0q5Xs+ksFU3EDnp9EiEsO0dnRAOKeyLHTZuW3A==
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
-    "@babel/plugin-syntax-optional-chaining" "^7.2.0"
+    "@babel/plugin-syntax-optional-chaining" "^7.7.4"
 
 "@babel/plugin-proposal-unicode-property-regex@^7.0.0", "@babel/plugin-proposal-unicode-property-regex@^7.4.0", "@babel/plugin-proposal-unicode-property-regex@^7.4.4":
   version "7.4.4"
@@ -513,10 +513,10 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
-"@babel/plugin-syntax-optional-chaining@^7.2.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-optional-chaining/-/plugin-syntax-optional-chaining-7.2.0.tgz#a59d6ae8c167e7608eaa443fda9fa8fa6bf21dff"
-  integrity sha512-HtGCtvp5Uq/jH/WNUPkK6b7rufnCPLLlDAFN7cmACoIjaOOiXxUt3SswU5loHqrhtqTsa/WoLQ1OQ1AGuZqaWA==
+"@babel/plugin-syntax-optional-chaining@^7.7.4":
+  version "7.7.4"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-optional-chaining/-/plugin-syntax-optional-chaining-7.7.4.tgz#c91fdde6de85d2eb8906daea7b21944c3610c901"
+  integrity sha512-2MqYD5WjZSbJdUagnJvIdSfkb/ucOC9/1fRJxm7GAxY6YQLWlUvkfxoNbUPcPLHJyetKUDQ4+yyuUyAoc0HriA==
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
@@ -8399,17 +8399,17 @@ codemirror@^5.27.4:
   version "5.38.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.38.0.tgz#26a9551446e51dbdde36aabe60f72469724fd332"
 
-codesandbox-import-util-types@^2.1.2, codesandbox-import-util-types@^2.1.9:
+codesandbox-import-util-types@^2.1.9:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-2.1.9.tgz#24ba5ec3d966f51f18b78c48d32e6411da90aa74"
   integrity sha512-Vc4qh+neVfHtS3RG+7wvaErMoEKdNTnLFnyj4Dcbn3NV7v9nlPj/z6MGhHp9S+vAjegWorFzxg9lKB1WGHTt5Q==
 
-codesandbox-import-utils@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-2.1.2.tgz#30613e28e79db681a555df70e5a916a7797f5c5d"
-  integrity sha512-cbvNa+dzYw2R3ofUkj51LsT8DX1GIoWVeDaJdSMJgZQSxXptjrf6zsLogcJtY8ihOURjED8CWEbQvpbHTM94EA==
+codesandbox-import-utils@^2.1.11:
+  version "2.1.11"
+  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-2.1.11.tgz#171ce53a77b8dcd196fdcfaf0f6bc52b1206444a"
+  integrity sha512-vkA0drdzO2ArMUzl8/AhEuzaW6qX3ic1SXPmruVS7bo/3K1P8H+S9CbuUNPo67X54/LzHwMnAZgZMXwN8vrw7Q==
   dependencies:
-    codesandbox-import-util-types "^2.1.2"
+    codesandbox-import-util-types "^2.1.9"
     istextorbinary "^2.2.1"
     lz-string "^1.4.4"
 

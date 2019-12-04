@@ -1,4 +1,4 @@
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black.json';
+import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 import codeSandboxTheme from '@codesandbox/common/lib/themes/codesandbox.json';
 
 export function initializeThemeCache() {
