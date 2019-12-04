@@ -34,7 +34,7 @@ We've already had templates contributed for Ember, Nest, CxJS, Dojo, Quasar, Ado
 ## No sandbox limits
 Oh, and we've removed sandbox creation limits. Previously, unless you were a subscriber, you could only create up to 50 client-side sandboxes and 15 container sandboxes. Now, there are no limits. Everyone can create as many public sandboxes as they need for free.
 
-Templates are a great way to boost your productivity, and you can now create sandboxes without limits. Start a new sandbox with [Template Universe](https://codesandbox.io/s/), or read about how to create your own [custom templates](https://codesandbox.io/docs/templates).
+Templates are a great way to boost your productivity, and you can now create sandboxes without limits. Start a new sandbox with [Template Universe](https://codesandbox.io/s), or read about how to create your own [custom templates](/docs/templates).
 
 ## Thanks
 Thanks goes to [Drake Costa](https://twitter.com/saeris) and [Danny Ruchtie](https://twitter.com/druchtie) for their hard work on this update.
