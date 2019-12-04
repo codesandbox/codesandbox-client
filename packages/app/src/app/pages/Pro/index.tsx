@@ -16,6 +16,7 @@ import {
   Content,
   Avatar,
   Badge,
+  Button,
   ButtonAsLink,
   Heading,
   HelpText,
@@ -34,6 +35,7 @@ const ProPage: React.FC = () => {
       patron: {
         createSubscriptionClicked,
         cancelSubscriptionClicked,
+        updateSubscriptionClicked,
         patronMounted,
       },
     },
@@ -65,13 +67,11 @@ const ProPage: React.FC = () => {
       return (
         <Expiring
           user={user}
-          cancelSubscriptionClicked={cancelSubscriptionClicked}
+          updateSubscriptionClicked={updateSubscriptionClicked}
+          isUpdatingSubscription={patron.isUpdatingSubscription}
         />
       );
     }
-
-    // expiring
-    // expired
 
     if (user.subscription.plan === 'pro') {
       return (
@@ -204,7 +204,11 @@ const NotPro = ({
   </>
 );
 
-const Expiring = ({ user, cancelSubscriptionClicked }) => (
+const Expiring = ({
+  user,
+  updateSubscriptionClicked,
+  isUpdatingSubscription,
+}) => (
   <MaxWidth width={500}>
     <Centered horizontal>
       <Avatar src={user.avatarUrl} />
@@ -219,9 +223,15 @@ const Expiring = ({ user, cancelSubscriptionClicked }) => (
         private sandboxes will remain available and private.
       </HelpText>
 
-      <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
-        Reactivate subscription
-      </ButtonAsLink>
+      {isUpdatingSubscription ? (
+        <Button style={{ marginTop: 30, opacity: 0.5 }}>
+          Creating subscription...
+        </Button>
+      ) : (
+        <Button onClick={updateSubscriptionClicked} style={{ marginTop: 30 }}>
+          Reactivate subscription
+        </Button>
+      )}
     </Centered>
   </MaxWidth>
 );
