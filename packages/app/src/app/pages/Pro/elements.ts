@@ -127,6 +127,7 @@ export const Button = styled.button(
     },
     ':disabled': {
       backgroundColor: 'blues.600',
+      opacity: 0.5,
     },
   })
 );

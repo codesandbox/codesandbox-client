@@ -224,7 +224,7 @@ const Expiring = ({
       </HelpText>
 
       {isUpdatingSubscription ? (
-        <Button style={{ marginTop: 30, opacity: 0.5 }}>
+        <Button disabled style={{ marginTop: 30 }}>
           Creating subscription...
         </Button>
       ) : (
