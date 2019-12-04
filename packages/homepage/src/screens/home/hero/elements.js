@@ -109,7 +109,8 @@ export const StyledEditorLink = styled.a`
   transition: 0.3s ease opacity;
   position: absolute;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   padding-top: 150px;
   top: 0;
   bottom: 0;
@@ -150,25 +151,21 @@ export const HeroBottom = styled.div`
 export const CountText = styled.div`
   font-size: 1.25rem;
   color: #757575;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
   ${props => props.theme.breakpoints.sm} {
     font-size: 0.875rem;
   }
 `;
 
-export const InspiredText = styled.a`
+export const InspiredText = styled.span`
   transition: 0.3s ease color;
   font-size: 1rem;
   color: #757575;
-  margin-bottom: 1.5rem;
+  margin-top: 1rem;
   text-decoration: none;
 
   ${props => props.theme.breakpoints.sm} {
     font-size: 0.875rem;
-  }
-
-  &:hover {
-    color: white;
   }
 `;
 

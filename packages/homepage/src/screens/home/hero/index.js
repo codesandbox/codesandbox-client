@@ -134,13 +134,6 @@ export default () => {
           {sandboxesCreatedCount === 1 ? 'sandbox' : 'sandboxes'} created since
           you've opened this page
         </CountText>
-        <InspiredText
-          href="/u/drcmda"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          Inspired by the sandboxes created by drcmda
-        </InspiredText>
 
         <div style={{ position: 'relative' }}>
           <StyledEditorLink
@@ -149,7 +142,11 @@ export default () => {
             rel="noreferrer noopener"
           >
             Open Project in CodeSandbox
+            <InspiredText>
+              Inspired by the sandboxes created by drcmda
+            </InspiredText>
           </StyledEditorLink>
+
           <HeroImage
             alt="editor with project open"
             src={hero}
