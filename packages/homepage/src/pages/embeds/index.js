@@ -23,9 +23,9 @@ import {
 
 export default () => {
   const [theme, setTheme] = useState('dark');
-  const [devTools, setDevTools] = useState(1);
+  const [devToolsHidden, setDevToolsHidden] = useState(1);
   const [navigation, setNavigation] = useState(1);
-  const [preview, setPreview] = useState('');
+  const [view, setView] = useState('split');
 
   // set theme back to dark when getting out of the page
   useEffect(() => setTheme('dark'), []);
@@ -75,7 +75,7 @@ export default () => {
         <Banner>
           <Iframe
             title="embed-example"
-            src={`https://codesandbox.io/embed/static-2lqup?fontsize=14&hidenavigation=${navigation}&theme=${theme}${preview}&hidedevtools=${devTools}`}
+            src={`https://codesandbox.io/embed/static-2lqup?fontsize=14&theme=${theme}&hidenavigation=${navigation}&view=${view}&hidedevtools=${devToolsHidden}`}
           />
         </Banner>
         <Customizations>
@@ -90,26 +90,12 @@ export default () => {
             <Button
               type="button"
               light={theme === 'light'}
-              active={navigation === 0}
-              onClick={() => setNavigation(navigation === 1 ? 0 : 1)}
-            >
-              <NavigationIcon
-                light={theme === 'light'}
-                active={navigation === 0}
-              />{' '}
-              Navigation
-            </Button>
-          </li>
-          <li>
-            <Button
-              type="button"
-              light={theme === 'light'}
-              active={preview === '&view=preview'}
-              onClick={() => setPreview(preview ? null : '&view=preview')}
+              active={view === 'preview'}
+              onClick={() => setView(view === 'preview' ? 'split' : 'preview')}
             >
               <PreviewModeIcon
                 light={theme === 'light'}
-                active={preview === '&view=preview'}
+                active={view === 'preview'}
               />{' '}
               Preview Mode
             </Button>
@@ -118,11 +104,28 @@ export default () => {
             <Button
               type="button"
               light={theme === 'light'}
-              active={devTools === 0}
-              onClick={() => setDevTools(devTools === 1 ? 0 : 1)}
+              active={devToolsHidden === 0}
+              onClick={() => setDevToolsHidden(devToolsHidden === 1 ? 0 : 1)}
             >
-              <DevToolsIcon light={theme === 'light'} active={devTools === 0} />{' '}
+              <DevToolsIcon
+                light={theme === 'light'}
+                active={devToolsHidden === 0}
+              />{' '}
               DevTools
+            </Button>
+          </li>
+          <li>
+            <Button
+              type="button"
+              light={theme === 'light'}
+              active={navigation === 0}
+              onClick={() => setNavigation(navigation === 1 ? 0 : 1)}
+            >
+              <NavigationIcon
+                light={theme === 'light'}
+                active={navigation === 0}
+              />{' '}
+              Navigation
             </Button>
           </li>
         </Customizations>
@@ -145,7 +148,7 @@ export default () => {
 
           <div>
             <h3> Embed everywhere</h3>
-            You can place embeds with an iFrame or anywhere with Embedly
+            You can place embeds with an iframe or anywhere with Embedly
             support, like Medium, Reddit, Trello, and Notion.
           </div>
         </ContentBlock>
