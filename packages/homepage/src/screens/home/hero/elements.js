@@ -5,7 +5,7 @@ const dropIn = (offset = 100) => keyframes`
     transform: translateY(${offset}px) translateZ(200px);
     filter: blur(20px);
     opacity: 0;
-    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.7);
   }
 
   70% {
@@ -133,7 +133,7 @@ export const StyledEditorLink = styled.a`
 
 export const HeroBottom = styled.div`
   position: absolute;
-  bottom: -30%;
+  bottom: -20%;
   left: 0;
   right: 0;
   display: flex;
