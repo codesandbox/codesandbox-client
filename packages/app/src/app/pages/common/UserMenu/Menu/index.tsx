@@ -38,7 +38,7 @@ interface Props {
   openFeedback: () => void;
   signOut: () => void;
   menuProps: MenuStateReturn;
-  isPatron: boolean;
+  showPatron: boolean;
 }
 
 export const Menu = ({
@@ -49,7 +49,7 @@ export const Menu = ({
   openFeedback,
   signOut,
   menuProps,
-  isPatron,
+  showPatron,
 }: Props) => {
   useEffect(() => {
     if (menuProps.visible) {
@@ -101,7 +101,7 @@ export const Menu = ({
           </MenuItem>
         )}
 
-        {isPatron && (
+        {showPatron && (
           <MenuItem {...menuProps} to={patronUrl()} as={ItemLink}>
             <Icon>
               <PatronBadge

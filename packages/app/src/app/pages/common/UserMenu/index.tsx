@@ -43,6 +43,7 @@ export const UserMenu: FunctionComponent = () => {
         curator={user.curatorAt}
         openFeedback={() => modalOpened({ modal: 'feedback' })}
         menuProps={menu}
+        showPatron={user.subscription.plan === 'patron'}
       />
     </Relative>
   );
