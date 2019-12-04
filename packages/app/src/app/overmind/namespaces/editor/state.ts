@@ -1,7 +1,10 @@
 import getTemplate from '@codesandbox/common/lib/templates';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
-import { ViewConfig } from '@codesandbox/common/lib/templates/template';
+import {
+  ParsedConfigurationFiles,
+  ViewConfig,
+} from '@codesandbox/common/lib/templates/template';
 import {
   DevToolsTabPosition,
   DiffTab,
@@ -56,7 +59,7 @@ type State = {
   mainModule: Derive<State, Module>;
   currentPackageJSON: Derive<State, Module>;
   currentPackageJSONCode: Derive<State, string>;
-  parsedConfigurations: Derive<State, any>;
+  parsedConfigurations: Derive<State, ParsedConfigurationFiles> | null;
   currentTab: Derive<State, ModuleTab | DiffTab>;
   modulesByPath: SandboxFs;
   isAdvancedEditor: Derive<State, boolean>;
