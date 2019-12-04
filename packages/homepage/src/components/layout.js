@@ -39,6 +39,8 @@ export const WRAPPER_STYLING = {
   margin: 'auto',
 };
 
+export const useTheme = () => homepageTheme;
+
 const TemplateWrapper = ({ children, noWrapperStyling }) => (
   <ThemeProvider theme={homepageTheme}>
     <div>

@@ -77,7 +77,7 @@
     "react-use-gesture": "^6.0.14",
     "rellax": "^1.10.0",
     "styled-breakpoints": "^6.9.1",
-    "styled-components": "^5.0.0-rc.2",
+    "styled-components": "^4.4.1",
     "three": "^0.111.0",
     "typography": "^0.16.17"
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from 'styled-components';
+import { useTheme } from '../../components/layout';
 
 const DevTools = props => {
   const { white, grey, greyLight, whiteDark } = useTheme().homepage;

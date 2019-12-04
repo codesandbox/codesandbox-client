@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from 'styled-components';
+import { useTheme } from '../../components/layout';
 
 const Debug = props => {
   const white = useTheme().homepage.white;

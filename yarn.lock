@@ -24796,7 +24796,7 @@ styled-breakpoints@^6.9.1:
   resolved "https://registry.yarnpkg.com/styled-breakpoints/-/styled-breakpoints-6.9.1.tgz#16e2e18235683ad0e7350a919fffb68d0c873ec6"
   integrity sha512-S6zyFMFuQ90uBtqj99Oos4QtScCx7GBSW+123DS/ZMVSPB6YAQFzuA0lWh1jm8+7IUkoqUmyWvllb04Tit3A+g==
 
-styled-components@^4.2.0, styled-components@^4.3.2:
+styled-components@^4.2.0, styled-components@^4.3.2, styled-components@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-4.4.1.tgz#e0631e889f01db67df4de576fedaca463f05c2f2"
   integrity sha512-RNqj14kYzw++6Sr38n7197xG33ipEOktGElty4I70IKzQF1jzaD1U4xQ+Ny/i03UUhHlC5NWEO+d8olRCDji6g==
