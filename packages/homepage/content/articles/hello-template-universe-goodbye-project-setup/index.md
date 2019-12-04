@@ -21,7 +21,7 @@ Templates in CodeSandbox provide a quick starting point for projects that are co
 
 Today we're excited to announce Template Universe, which takes custom templates a step further. Template Universe enables you to share and use templates created by the community and makes it possible for the maintainers of frameworks and libraries to add official ones too.
 
-https://www.youtube.com/watch?v=TPOY3HAmpMA
+https://youtu.be/TPOY3HAmpMA
 
 ### One-click and you're ready to code
 When you code on CodeSandbox, you're coding with a community of creators. We're all trying things out and learning new frameworks by forking sandboxes and using dependencies to see what works. Template Universe brings this code-sharing collaboration to templates, so you can leverage the best community-created templates to kickstart something new.
