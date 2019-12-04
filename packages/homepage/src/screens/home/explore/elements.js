@@ -93,7 +93,7 @@ const floatAnimation = keyframes`
 
 export const Wrapper = styled.div`
   animation: 7s ${floatAnimation} infinite;
-  animation-delay: ${props => (props.index || 0) * 500}ms;
+  animation-delay: ${props => (props.index || 0) * 250}ms;
   will-change: transform;
   animation-fill-mode: backwards;
   animation-timing-function: ease;

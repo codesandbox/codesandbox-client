@@ -16,6 +16,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Canvas, useThree } from 'react-three-fiber';
 import { useDrag } from 'react-use-gesture';
 import { useSpring, a } from 'react-spring/three';
+import ResizeObserver from '@juggle/resize-observer';
 
 import { useCannon, Provider } from './useCannon';
 
@@ -130,6 +131,7 @@ export default function App({ boxes, showPlane }) {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
         }}
+        resize={{ polyfill: ResizeObserver }}
       >
         <ambientLight intensity={0.5} />
 

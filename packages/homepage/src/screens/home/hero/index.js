@@ -90,7 +90,7 @@ export default () => {
       <motion.div
         initial={{ opacity: 0, y: 140 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: 'easeOut' }}
+        transition={{ duration: 1, ease: 'easeOut', staggerChildren: 0.5 }}
         style={{
           zIndex: 20,
           position: 'absolute',
@@ -108,13 +108,19 @@ export default () => {
         >
           An instant IDE and prototyping tool for rapid web development.
         </SubTitle>
-        <Button
-          style={{ padding: '.75rem 2rem', marginBottom: '.5rem' }}
-          href="/s"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut', delay: 0.5 }}
         >
-          Create a Sandbox, it’s free
-        </Button>
-        <SignUp>No signup required</SignUp>
+          <Button
+            style={{ padding: '.75rem 2rem', marginBottom: '.5rem' }}
+            href="/s"
+          >
+            Create a Sandbox, it’s free
+          </Button>
+          <SignUp>No signup required</SignUp>
+        </motion.div>
       </motion.div>
 
       <HeroBottom>

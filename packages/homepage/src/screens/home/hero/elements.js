@@ -161,10 +161,11 @@ export const InspiredText = styled.a`
   font-size: 1rem;
   color: #757575;
   margin-bottom: 1.5rem;
+  text-decoration: none;
+
   ${props => props.theme.breakpoints.sm} {
     font-size: 0.875rem;
   }
-  text-decoration: none;
 
   &:hover {
     color: white;

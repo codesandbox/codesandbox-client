@@ -29,6 +29,7 @@
   "dependencies": {
     "@babel/preset-flow": "^7.0.0",
     "@codesandbox/common": "^1.0.8",
+    "@juggle/resize-observer": "^2.5.0",
     "@react-hook/mouse-position": "^1.0.3",
     "@sindresorhus/slugify": "^0.9.1",
     "algoliasearch": "^3.24.5",
