@@ -9,7 +9,6 @@ import { UserMenu } from '../UserMenu';
 import {
   ExploreAction,
   NewSandboxAction,
-  PatronAction,
   SearchAction,
   ShowNotificationsAction,
 } from './Actions';
@@ -40,7 +39,6 @@ export const Navigation: FunctionComponent<Props> = ({
     },
     state: {
       isLoggedIn,
-      isPatron,
       user,
       userNotifications: { notificationsOpened: notificationsMenuOpened },
     },
@@ -63,8 +61,6 @@ export const Navigation: FunctionComponent<Props> = ({
           <SearchAction searchNoInput={searchNoInput} />
 
           <ExploreAction />
-
-          {!isPatron && <PatronAction />}
 
           {user && (
             <Overlay
