@@ -150,9 +150,24 @@ export const HeroBottom = styled.div`
 export const CountText = styled.div`
   font-size: 1.25rem;
   color: #757575;
+  margin-bottom: 0.75rem;
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 0.875rem;
+  }
+`;
+
+export const InspiredText = styled.a`
+  transition: 0.3s ease color;
+  font-size: 1rem;
+  color: #757575;
   margin-bottom: 1.5rem;
   ${props => props.theme.breakpoints.sm} {
     font-size: 0.875rem;
+  }
+  text-decoration: none;
+
+  &:hover {
+    color: white;
   }
 `;
 
