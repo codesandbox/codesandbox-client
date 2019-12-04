@@ -1,25 +1,25 @@
-import React from 'react';
-import { observer } from 'mobx-react-lite';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import noop from 'lodash/noop';
+import { useOvermind } from 'app/overmind';
+import React from 'react';
 // @ts-ignore
 import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 // @ts-ignore
 import FullHeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-
 import { Container } from './elements';
-import { Sandbox } from '@codesandbox/common/lib/types';
-import { useStore, useSignals } from 'app/store';
 
 const MaybeTooltip = ({ loggedIn, disableTooltip, title, children }) =>
   loggedIn && !disableTooltip ? (
-    <Tooltip content={title} children={children} style={{ display: 'flex' }} />
+    <Tooltip content={title} style={{ display: 'flex' }}>
+      {children}
+    </Tooltip>
   ) : (
     children
   );
 
-interface Props {
+interface ILikeHeartProps {
   sandbox: Sandbox;
   className?: string;
   colorless?: boolean;
@@ -29,7 +29,7 @@ interface Props {
   highlightHover?: boolean;
 }
 
-function LikeHeart({
+export const LikeHeart: React.FC<ILikeHeartProps> = ({
   sandbox,
   className,
   colorless,
@@ -37,10 +37,11 @@ function LikeHeart({
   style,
   disableTooltip,
   highlightHover,
-}: Props) {
-  const { isLoggedIn } = useStore();
-  const { editor } = useSignals();
-
+}) => {
+  const {
+    state: { isLoggedIn },
+    actions: { editor },
+  } = useOvermind();
   return (
     <Container
       style={style}
@@ -68,6 +69,4 @@ function LikeHeart({
       </MaybeTooltip>
     </Container>
   );
-}
-
-export default observer(LikeHeart);
+};

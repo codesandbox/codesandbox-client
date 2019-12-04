@@ -1,37 +1,13 @@
-// @flow
 import * as React from 'react';
-
 import type { Sandbox } from '@codesandbox/common/lib/types';
 
-import Padding from '@codesandbox/common/lib/components/spacing/Padding';
-import { EntryContainer } from 'app/pages/Sandbox/Editor/Workspace/elements';
+import Section from './Section';
+import { SandboxInfo } from './SandboxInfo';
+import FileTree from './FileTree';
+import Dependencies from './Dependencies';
+import ExternalResources from './ExternalResources';
 
-import EditorLink from '../EditorLink';
-import Files from '../Files';
-
-import {
-  Container,
-  Title,
-  Subtitle,
-  Description,
-  Item,
-  Version,
-  Author,
-} from './elements';
-
-const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
-
-function getName(resource: string) {
-  if (resource.endsWith('.css') || resource.endsWith('.js')) {
-    const match = resource.match(/.*\/(.*)/);
-    if (match && match[1]) {
-      return match[1];
-    }
-  }
-
-  // Add trailing / but no double one
-  return getNormalizedUrl(resource);
-}
+import { Container } from './elements';
 
 type Props = {
   sandbox: Sandbox,
@@ -40,85 +16,27 @@ type Props = {
 };
 
 function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
-  const packageJSON = sandbox.modules.find(
-    m => m.title === 'package.json' && m.directoryShortid == null
-  );
-
-  let npmDependencies = sandbox.npmDependencies;
-
-  if (packageJSON) {
-    try {
-      npmDependencies = JSON.parse(packageJSON.code).dependencies;
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  npmDependencies = npmDependencies || {};
-
-  const sandboxTitle = sandbox.title || sandbox.id;
-
   return (
     <Container>
-      <Item>
-        <Title title={sandboxTitle}>{sandboxTitle}</Title>
-        {sandbox.author && (
-          <Author>
-            Made by <strong>{sandbox.author.username}</strong>
-          </Author>
-        )}
-        {sandbox.description && (
-          <Description>{sandbox.description}</Description>
-        )}
-      </Item>
-
-      <Item>
-        <Title>Files</Title>
-        <Files
-          modules={sandbox.modules}
-          directories={sandbox.directories}
-          directoryId={null}
-          setCurrentModule={setCurrentModule}
-          currentModule={currentModule}
-          template={sandbox.template}
-          entry={sandbox.entry}
+      <Section title="CodeSandbox" openByDefault>
+        <SandboxInfo sandbox={sandbox} />
+      </Section>
+      <Section title="Files" openByDefault>
+        <FileTree
+          sandbox={sandbox}
+          currentModuleId={currentModule}
+          setCurrentModuleId={setCurrentModule}
         />
-      </Item>
-
-      <Item>
-        <Title>Dependencies</Title>
-
-        <Subtitle>npm dependencies</Subtitle>
-        {Object.keys(npmDependencies).map(dep => (
-          <EntryContainer key={dep}>
-            {dep}
-            <Version>{npmDependencies[dep]}</Version>
-          </EntryContainer>
-        ))}
-
-        {sandbox.externalResources.length > 0 && (
-          <React.Fragment>
-            <Subtitle>External Resources</Subtitle>
-            {sandbox.externalResources.map(dep => (
-              <EntryContainer key={dep}>
-                <a
-                  href={dep}
-                  rel="nofollow noopener noreferrer"
-                  target="_blank"
-                >
-                  {getName(dep)}
-                </a>
-              </EntryContainer>
-            ))}
-          </React.Fragment>
-        )}
-      </Item>
-
-      <Item hover>
-        <Padding margin={1}>
-          <EditorLink sandbox={sandbox} />
-        </Padding>
-      </Item>
+      </Section>
+      <Section title="Dependencies">
+        <Dependencies sandbox={sandbox} />
+      </Section>
+      <Section
+        title="External Resources"
+        hidden={sandbox.externalResources.length === 0}
+      >
+        <ExternalResources sandbox={sandbox} />
+      </Section>
     </Container>
   );
 }

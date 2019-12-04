@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import { canPrettify } from 'app/utils/prettify';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
@@ -21,20 +21,20 @@ import ModuleTab from './ModuleTab';
 class EditorTabs extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.currentModuleId !== prevProps.currentModuleId) {
+      const currentTab = this.tabEls[this.props.currentModuleId];
+
       // We need to scroll to the tab
-      if (this.tabEls[this.props.currentModuleId]) {
+      if (currentTab && this.container) {
         const { width } = this.container.getBoundingClientRect();
         const scroll = this.container.scrollLeft;
-        const { left } = this.tabEls[
-          this.props.currentModuleId
-        ].getBoundingClientRect();
+        const { left } = currentTab.getBoundingClientRect();
 
         if (left > scroll && left < scroll + width) {
           // if it's already in view
           return;
         }
 
-        this.tabEls[this.props.currentModuleId].scrollIntoView(false);
+        currentTab.scrollIntoView(false);
       }
     }
   }
@@ -101,8 +101,8 @@ class EditorTabs extends React.Component {
         tabNamesObject[module.title].push(module.shortid);
       });
 
-    const currentTab = store.editor.currentTab;
-    const currentModule = store.editor.currentModule;
+    const { currentTab } = store.editor;
+    const { currentModule } = store.editor;
 
     const previewVisible = store.editor.previewWindowVisible;
 
@@ -123,7 +123,7 @@ class EditorTabs extends React.Component {
 
                 const { module } = tab;
                 const modulesWithName = tabNamesObject[module.title];
-                const id = tab.module.id;
+                const { id } = tab.module;
                 let dirName = null;
 
                 if (
@@ -172,7 +172,8 @@ class EditorTabs extends React.Component {
                     }}
                   />
                 );
-              } else if (tab.type === 'DIFF') {
+              }
+              if (tab.type === 'DIFF') {
                 return (
                   <TabContainer
                     active={currentTab && currentTab.id === tab.id}

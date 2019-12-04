@@ -1,0 +1,77 @@
+{
+	"name": "vscode-styled-components",
+	"displayName": "vscode-styled-components",
+	"description": "Syntax highlighting for styled-components",
+	"version": "0.0.26",
+	"publisher": "jpoissonnier",
+	"icon": "logo.png",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/styled-components/vscode-styled-components.git"
+	},
+	"engines": {
+		"vscode": "^1.5.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"scripts": {
+		"format": "prettier --write '**/*.{js,jsx,md,json,css}'",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"test": "node ./node_modules/vscode/bin/test ./test"
+	},
+	"contributes": {
+		"languages": [
+			{
+				"id": "source.css.styled",
+				"aliases": [
+					"CSS (Styled Components)"
+				],
+				"configuration": "./css.styled.configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "source.css.styled",
+				"scopeName": "source.css.styled",
+				"path": "./syntaxes/css.styled.json"
+			},
+			{
+				"injectTo": [
+					"source.js",
+					"source.ts",
+					"source.jsx",
+					"source.js.jsx",
+					"source.tsx",
+					"source.vue"
+				],
+				"scopeName": "styled",
+				"path": "./syntaxes/styled-components.json",
+				"embeddedLanguages": {
+					"source.css.scss": "css",
+					"meta.embedded.line.ts": "typescript"
+				}
+			}
+		],
+		"typescriptServerPlugins": [
+			{
+				"name": "typescript-styled-plugin",
+				"enableForWorkspaceTypeScriptVersions": true
+			}
+		]
+	},
+	"dependencies": {
+		"typescript-styled-plugin": "0.14.0"
+	},
+	"devDependencies": {
+		"prettier": "^1.14.3",
+		"prettier-cli": "^0.1.0",
+		"vscode": "^1.1.26"
+	},
+	"__metadata": {
+		"id": "06cc3e44-aedb-41b8-a4ea-29ebf3c491fd",
+		"publisherId": "dc4b8887-5c2d-49b0-a25f-724384a16ec3",
+		"publisherDisplayName": "Julien Poissonnier"
+	}
+}

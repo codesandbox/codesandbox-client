@@ -1,10 +1,8 @@
 import TestRunner, { messages } from './jest-lite';
 
-jest.mock('sandbox-hooks/react-error-overlay/utils/mapper', () => {
-  return {
-    map: jest.fn(),
-  };
-});
+jest.mock('sandbox-hooks/react-error-overlay/utils/mapper', () => ({
+  map: jest.fn(),
+}));
 
 jest.mock('codesandbox-api');
 const api = require('codesandbox-api');
@@ -166,11 +164,11 @@ describe('TestRunner class', () => {
   });
 
   describe('transpileTests', () => {
-    it('todo');
+    // it('todo');
   });
 
   describe('runTests', () => {
-    it('todo');
+    // it('todo');
   });
 
   // deprecated
@@ -316,8 +314,8 @@ describe('TestRunner class', () => {
       testRunner.setCurrentDescribe('foo');
       testRunner.addResult({ status: 'fail', name: 'bar' });
 
-      let results = testRunner.reportResults();
-      let { failedMessages } = results;
+      const results = testRunner.reportResults();
+      const { failedMessages } = results;
 
       expect(results).not.toEqual(null);
       expect(failedMessages[0]).toMatch(/FAIL/);

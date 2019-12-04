@@ -1,38 +1,36 @@
 import VERSION from '@codesandbox/common/lib/version';
-import { observer } from 'mobx-react-lite';
-import React from 'react';
-
-import SocialInfo from 'app/components/SocialInfo';
-import { useStore } from 'app/store';
-import getWorkspaceItems from 'app/store/modules/workspace/items';
-
-import Files from './items/Files';
-import ProjectInfo from './items/ProjectInfo';
-import { GitHub } from './items/GitHub';
-import Server from './items/Server';
-import Live from './items/Live';
-import { More } from './items/More';
-import Deployment from './items/Deployment';
-import ConfigurationFiles from './items/ConfigurationFiles';
-import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
+import { SocialInfo } from 'app/components/SocialInfo';
+import { useOvermind } from 'app/overmind';
+import getWorkspaceItems, { getDisabledItems } from 'app/overmind/utils/items';
+import React, { FunctionComponent } from 'react';
+//  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
+import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 
 import { Advertisement } from './Advertisement';
-import Chat from './Chat';
+import { Chat } from './Chat';
 import { ConnectionNotice } from './ConnectionNotice';
-import { SSEDownNotice } from './SSEDownNotice';
-import WorkspaceItem from './WorkspaceItem';
-
 import {
-  Container,
   ContactContainer,
+  Container,
   ItemTitle,
   VersionContainer,
 } from './elements';
+import ConfigurationFiles from './items/ConfigurationFiles';
+import { Deployment } from './items/Deployment';
+import { FilesItem } from './items/Files';
+import { GitHub } from './items/GitHub';
+import { Live } from './items/Live';
+import { More } from './items/More';
+import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
+import { ProjectInfo } from './items/ProjectInfo';
+import { Server } from './items/Server';
+import { SSEDownNotice } from './SSEDownNotice';
+import { WorkspaceItem } from './WorkspaceItem';
 
 const workspaceTabs = {
   project: ProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
-  files: Files,
+  files: FilesItem,
   github: GitHub,
   deploy: Deployment,
   config: ConfigurationFiles,
@@ -41,8 +39,8 @@ const workspaceTabs = {
   more: More,
 };
 
-const Workspace = () => {
-  const store = useStore();
+export const Workspace: FunctionComponent = () => {
+  const { state } = useOvermind();
   const {
     editor: {
       currentSandbox: { owned },
@@ -53,18 +51,21 @@ const Workspace = () => {
       settings: { zenMode },
     },
     workspace: { openedWorkspaceItem: activeTab },
-  } = store;
+  } = state;
 
   if (!activeTab) {
     return null;
   }
 
   const Component = workspaceTabs[activeTab];
-  const item = getWorkspaceItems(store).find(({ id }) => id === activeTab);
+  const item =
+    getWorkspaceItems(state).find(({ id }) => id === activeTab) ||
+    getDisabledItems(state).find(({ id }) => id === activeTab);
 
   return (
     <Container>
       {item && !item.hasCustomHeader && <ItemTitle>{item.name}</ItemTitle>}
+
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <Component />
       </div>
@@ -95,5 +96,3 @@ const Workspace = () => {
     </Container>
   );
 };
-
-export default observer(Workspace);

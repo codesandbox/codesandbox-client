@@ -2,9 +2,17 @@
   "settings": {
     "import/resolver": {
       "webpack": {
-        "config": "config/webpack.common.js"
+        "config": "config/webpack.lint.js"
       }
     },
     "import/external-module-folders": ["src", "node_modules"]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "import/no-default-export": 1
+      }
+    }
+  ]
 }

@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import React from 'react';
 import styled from 'styled-components';
 
@@ -70,7 +71,6 @@ export default class Cubes extends React.Component {
           offset: OFFSETS[i],
         };
       }),
-      canvas: null,
     };
   }
 
@@ -135,7 +135,7 @@ export default class Cubes extends React.Component {
     }
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const nextTemplate = nextProps.template;
     const { templates } = this.state;
     const currentTemplate =
@@ -231,7 +231,7 @@ export default class Cubes extends React.Component {
     }
 
     return (
-      <Container>
+      <Container aria-hidden>
         {this.state.templates.map((t, i) => {
           const selected = template === t.template;
 

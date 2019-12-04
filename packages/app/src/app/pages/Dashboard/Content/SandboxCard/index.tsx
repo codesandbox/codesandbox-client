@@ -17,6 +17,7 @@ import theme from '@codesandbox/common/lib/theme';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import { RENAME_SANDBOX_MUTATION } from '../../queries';
 
 import {
@@ -37,28 +38,34 @@ type Props = {
   title: string;
   details: string;
   selected: boolean;
+  color?: string;
   template: TemplateType;
+  customTemplate: { color: string } | null;
   screenshotUrl: string | undefined;
+  screenshotOutdated: boolean;
   setSandboxesSelected: (
     ids: string[],
     options?: { additive?: boolean; range?: boolean }
   ) => void;
   selectedCount: number;
-  deleteSandboxes: () => void;
-  exportSandboxes: () => void;
-  permanentlyDeleteSandboxes: () => void;
   collectionPath: string; // eslint-disable-line react/no-unused-prop-types
   collectionTeamId: string | undefined;
-  sandbox: Object;
+  sandbox: Sandbox;
   page: string | undefined;
   privacy: number;
   isPatron: boolean;
-  setSandboxesPrivacy: (privacy: 0 | 1 | 2) => void;
   isScrolling: () => boolean;
-  undeleteSandboxes: () => void;
   removedAt?: number;
   style?: React.CSSProperties;
   alias: string | undefined;
+
+  setSandboxesPrivacy: (privacy: 0 | 1 | 2) => void;
+  deleteSandboxes: () => void;
+  exportSandboxes: () => void;
+  permanentlyDeleteSandboxes: () => void;
+  undeleteSandboxes: () => void;
+  makeTemplates: (teamId?: string) => void;
+  forkSandbox: (id: string) => void;
 
   // React-DnD, lazy typings
   connectDragSource: any;
@@ -71,19 +78,27 @@ type State = {
   screenshotUrl: string | undefined;
 };
 
-class SandboxItem extends React.PureComponent<Props, State> {
+export const DELETE_SANDBOX_DROP_KEY = 'delete';
+export const MAKE_TEMPLATE_DROP_KEY = 'makeTemplate';
+
+class SandboxItemComponent extends React.PureComponent<Props, State> {
   el: HTMLDivElement;
   screenshotTimeout: number;
 
   state: State = {
     renamingSandbox: false,
-    screenshotUrl: this.props.screenshotUrl,
+    screenshotUrl: null,
   };
 
-  requestScreenshot = () => {
-    this.setState({
-      screenshotUrl: `/api/v1/sandboxes/${this.props.id}/screenshot.png`,
-    });
+  requestScreenshot = async () => {
+    const url = `/api/v1/sandboxes/${this.props.id}/screenshot.png`;
+    try {
+      await fetch(url);
+    } finally {
+      this.setState({
+        screenshotUrl: url,
+      });
+    }
   };
 
   getPrivacyIcon = () => {
@@ -93,7 +108,8 @@ class SandboxItem extends React.PureComponent<Props, State> {
           <Unlisted />
         </PrivacyIconContainer>
       );
-    } else if (this.props.privacy === 2) {
+    }
+    if (this.props.privacy === 2) {
       return (
         <PrivacyIconContainer content="Private Sandbox">
           <Private />
@@ -105,17 +121,21 @@ class SandboxItem extends React.PureComponent<Props, State> {
   };
 
   checkScreenshot() {
-    if (!this.state.screenshotUrl && this.hasScreenshot()) {
-      // We only request the screenshot if the sandbox card is in view for > 1 second
-      this.screenshotTimeout = window.setTimeout(() => {
-        this.requestScreenshot();
-      }, 1000);
+    if (this.props.screenshotOutdated) {
+      if (this.hasScreenshot()) {
+        // We only request the screenshot if the sandbox card is in view for > 1 second
+        this.screenshotTimeout = window.setTimeout(() => {
+          this.requestScreenshot();
+        }, 1000);
+      }
+    } else {
+      this.setState({ screenshotUrl: this.props.screenshotUrl });
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.id !== this.props.id) {
-      this.setState({ screenshotUrl: nextProps.screenshotUrl }, () => {
+      window.requestAnimationFrame(() => {
         this.checkScreenshot();
       });
     }
@@ -220,6 +240,17 @@ class SandboxItem extends React.PureComponent<Props, State> {
           },
         ],
         [
+          selectedCount < 50 && {
+            title: `Make ${selectedCount} Sandboxes a Template`,
+            action: () => {
+              track('Template - Created', {
+                source: 'Context Menu',
+                count: selectedCount,
+              });
+              this.props.makeTemplates();
+              return true;
+            },
+          },
           {
             title: `Move ${selectedCount} Sandboxes To Trash`,
             action: () => {
@@ -229,7 +260,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
             color: theme.red.darken(0.2)(),
           },
         ],
-      ];
+      ].filter(Boolean);
     }
 
     return [
@@ -239,9 +270,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
           action: () => {
             if (this.props.collectionTeamId) {
               history.push(
-                `/dashboard/teams/${this.props.collectionTeamId}/sandboxes${
-                  this.props.collectionPath
-                }`
+                `/dashboard/teams/${this.props.collectionTeamId}/sandboxes${this.props.collectionPath}`
               );
             } else {
               history.push(`/dashboard/sandboxes${this.props.collectionPath}`);
@@ -258,6 +287,13 @@ class SandboxItem extends React.PureComponent<Props, State> {
           title: 'Open Sandbox in new tab',
           action: () => {
             this.openSandbox(true);
+            return true;
+          },
+        },
+        {
+          title: 'Fork Sandbox',
+          action: () => {
+            this.props.forkSandbox(this.props.sandbox.id);
             return true;
           },
         },
@@ -298,6 +334,17 @@ class SandboxItem extends React.PureComponent<Props, State> {
           title: `Rename Sandbox`,
           action: () => {
             this.setState({ renamingSandbox: true });
+            return true;
+          },
+        },
+        {
+          title: `Make Sandbox a Template`,
+          action: () => {
+            track('Template - Created', {
+              source: 'Context Menu',
+              count: 1,
+            });
+            this.props.makeTemplates();
             return true;
           },
         },
@@ -421,13 +468,12 @@ class SandboxItem extends React.PureComponent<Props, State> {
       id,
       title,
       details,
+      color,
       template,
       connectDragSource,
       isDraggingItem,
       selected,
     } = this.props;
-
-    const { screenshotUrl } = this.state;
 
     const templateInfo = getTemplate(template);
 
@@ -477,7 +523,8 @@ class SandboxItem extends React.PureComponent<Props, State> {
                   {this.hasScreenshot() && (
                     <SandboxImage
                       style={{
-                        backgroundImage: `url(${screenshotUrl})`,
+                        backgroundImage: `url(${this.state.screenshotUrl ||
+                          this.props.screenshotUrl})`,
                       }}
                     />
                   )}
@@ -491,7 +538,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
                       left: 0,
                       width: 2,
                       height: '100%',
-                      backgroundColor: templateInfo.color(),
+                      backgroundColor: color || templateInfo.color(),
                     }}
                   />
                   <div style={{ flex: 1 }}>
@@ -592,8 +639,16 @@ const cardSource = {
 
     const result = monitor.getDropResult();
 
-    if (result && result.delete) {
+    if (result && result[DELETE_SANDBOX_DROP_KEY]) {
       props.deleteSandboxes();
+    }
+
+    if (result && result[MAKE_TEMPLATE_DROP_KEY]) {
+      track('Template - Created', {
+        source: 'Dragging',
+        team: !!result.teamId,
+      });
+      props.makeTemplates(result.teamId);
     }
   },
 };
@@ -608,4 +663,6 @@ function collect(connect) {
   };
 }
 
-export default DragSource('SANDBOX', cardSource, collect)(SandboxItem);
+export const SandboxItem = DragSource('SANDBOX', cardSource, collect)(
+  SandboxItemComponent
+);

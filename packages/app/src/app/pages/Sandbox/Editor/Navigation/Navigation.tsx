@@ -1,23 +1,32 @@
-import React from 'react';
-import { observer } from 'mobx-react-lite';
+import { useOvermind } from 'app/overmind';
+import getWorkspaceItems, {
+  INavigationItem,
+  getDisabledItems,
+} from 'app/overmind/utils/items';
+import React, { FunctionComponent } from 'react';
 import PlusIcon from 'react-icons/lib/go/plus';
-import ServerIcon from 'react-icons/lib/go/server';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
 // @ts-ignore
-import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
-// @ts-ignore
-import GitHubIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/github.svg';
-// @ts-ignore
-import LiveIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/live.svg';
-// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
 import FilesIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/file.svg';
 // @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import GitHubIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/github.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import LiveIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/live.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
 import RocketIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/rocket.svg';
 // @ts-ignore
-import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
-import getWorkspaceItems from 'app/store/modules/workspace/items';
-import { useSignals, useStore } from 'app/store';
-import { Container, IconContainer } from './elements';
+// eslint-disable-next-line import/no-unresolved
+import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+
+import { Container, IconContainer, Separator } from './elements';
+import ServerIcon from './ServerIcon';
 
 const IDS_TO_ICONS = {
   project: InfoIcon,
@@ -31,48 +40,70 @@ const IDS_TO_ICONS = {
   server: ServerIcon,
 };
 
-export const Navigation = observer(
-  ({
-    topOffset,
-    bottomOffset,
-  }: {
-    topOffset: number;
-    bottomOffset: number;
-  }) => {
-    const {
+type IconProps = {
+  item: INavigationItem;
+  isDisabled?: boolean;
+};
+const IconComponent: FunctionComponent<IconProps> = ({
+  item: { id, name },
+  isDisabled,
+}) => {
+  const {
+    actions: {
       workspace: { setWorkspaceHidden, setWorkspaceItem },
-    } = useSignals();
-    const store = useStore();
+    },
+    state: {
+      workspace: { openedWorkspaceItem, workspaceHidden },
+    },
+  } = useOvermind();
 
-    return (
-      <Container topOffset={topOffset} bottomOffset={bottomOffset}>
-        {getWorkspaceItems(store)
-          .filter(w => !w.show || w.show(store))
-          .map(item => {
-            const { id, name } = item;
-            const Icon = IDS_TO_ICONS[id];
-            const selected =
-              !store.workspace.workspaceHidden &&
-              id === store.workspace.openedWorkspaceItem;
-            return (
-              <Tooltip key={id} placement="right" content={name}>
-                <IconContainer
-                  selected={selected}
-                  onClick={() => {
-                    if (selected) {
-                      setWorkspaceHidden({ hidden: true });
-                    } else {
-                      setWorkspaceHidden({ hidden: false });
-                      setWorkspaceItem({ item: id });
-                    }
-                  }}
-                >
-                  <Icon />
-                </IconContainer>
-              </Tooltip>
-            );
-          })}
-      </Container>
-    );
-  }
-);
+  const Icon = IDS_TO_ICONS[id];
+  const selected = !workspaceHidden && id === openedWorkspaceItem;
+
+  return (
+    <Tooltip placement="right" content={name}>
+      <IconContainer
+        isDisabled={isDisabled}
+        selected={selected}
+        onClick={() => {
+          if (selected) {
+            setWorkspaceHidden({ hidden: true });
+          } else {
+            setWorkspaceHidden({ hidden: false });
+            setWorkspaceItem({ item: id });
+          }
+        }}
+      >
+        <Icon />
+      </IconContainer>
+    </Tooltip>
+  );
+};
+
+type Props = {
+  topOffset: number;
+  bottomOffset: number;
+};
+export const Navigation: FunctionComponent<Props> = ({
+  topOffset,
+  bottomOffset,
+}) => {
+  const { state } = useOvermind();
+
+  const shownItems = getWorkspaceItems(state);
+  const disabledItems = getDisabledItems(state);
+
+  return (
+    <Container topOffset={topOffset} bottomOffset={bottomOffset}>
+      {shownItems.map(item => (
+        <IconComponent key={item.id} item={item} />
+      ))}
+
+      {disabledItems.length > 0 && <Separator />}
+
+      {disabledItems.map(item => (
+        <IconComponent key={item.id} item={item} isDisabled />
+      ))}
+    </Container>
+  );
+};

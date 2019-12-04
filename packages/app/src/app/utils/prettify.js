@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
+
 import {
-  lineAndColumnToIndex,
   indexToLineAndColumn,
-} from '../components/CodeEditor/Monaco/monaco-index-converter';
+  lineAndColumnToIndex,
+} from './monaco-index-converter';
 
 function getMode(title: string) {
   if (/\.jsx?$/.test(title)) {
@@ -64,7 +65,7 @@ export function canPrettify(title) {
 
 function getEditorInfo(prettierConfig) {
   const newConfig = { ...prettierConfig };
-  const fluid = newConfig.fluid;
+  const { fluid } = newConfig;
   delete newConfig.fluid;
 
   if (fluid && window.CSEditor && window.CSEditor.editor) {
@@ -179,6 +180,7 @@ export default function prettify(
     if (!cancellationToken) {
       timeout = setTimeout(() => {
         // If worker doesn't respond in time
+        // eslint-disable-next-line prefer-promise-reject-errors
         reject({ error: 'Prettify timeout' });
         timeout = null;
         worker.removeEventListener('message', handler);
@@ -199,6 +201,7 @@ export default function prettify(
 
         if (error) {
           console.error(error);
+          // eslint-disable-next-line prefer-promise-reject-errors
           reject({ error });
         }
 

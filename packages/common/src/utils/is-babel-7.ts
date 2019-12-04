@@ -26,12 +26,12 @@ export function isBabel7(
     return true;
   }
 
-  if (devDependencies['@babel/core']) {
+  if (devDependencies['@babel/core'] || dependencies['@babel/core']) {
     return true;
   }
 
-  if (dependencies['svelte'] || devDependencies['svelte']) {
-    const ver = dependencies['svelte'] || devDependencies['svelte'];
+  if (dependencies.svelte || devDependencies.svelte) {
+    const ver = dependencies.svelte || devDependencies.svelte;
     const [maj] = ver.split('.');
 
     if (maj) {

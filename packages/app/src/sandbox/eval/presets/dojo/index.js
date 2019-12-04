@@ -1,5 +1,5 @@
 import { join, absolute } from '@codesandbox/common/lib/utils/path';
-import Preset from '../';
+import Preset from '..';
 
 import typescriptTranspiler from '../../transpilers/typescript';
 import rawTranspiler from '../../transpilers/raw';
@@ -41,7 +41,17 @@ export default function initialize() {
   ]);
 
   preset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
-    { transpiler: babelTranspiler },
+    {
+      transpiler: babelTranspiler,
+      options: {
+        isV7: true,
+        config: {
+          parserOpts: {
+            plugins: ['objectRestSpread'],
+          },
+        },
+      },
+    },
   ]);
 
   preset.registerTranspiler(module => /\.json$/.test(module.path), [

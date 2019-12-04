@@ -1,10 +1,12 @@
+/* eslint-disable import/default */
 // @ts-ignore
-import TypeScriptWorker from 'worker-loader?publicPath=/&name=typescript-transpiler.[hash:8].worker.js!./typescript-worker.js';
+import TypeScriptWorker from 'worker-loader?publicPath=/&name=typescript-transpiler.[hash:8].worker.js!./typescript-worker';
+/* eslint-enable import/default */
+import { getDependenciesFromConfig } from 'sandbox/eval/utils/get-dependencies';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { LoaderContext } from '../../transpiled-module';
 import { TranspilerResult } from '..';
-import { getDependenciesFromConfig } from 'sandbox/eval/utils/get-dependencies';
 
 class TypeScriptTranspiler extends WorkerTranspiler {
   worker: Worker;
@@ -18,7 +20,7 @@ class TypeScriptTranspiler extends WorkerTranspiler {
     loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
     return new Promise((resolve, reject) => {
-      const path = loaderContext.path;
+      const { path } = loaderContext;
 
       let foundConfig = null;
       let typescriptVersion = '3.4.1';

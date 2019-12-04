@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
-
-import { Button } from '@codesandbox/common/lib/components/Button';
-import SandboxList from 'app/components/SandboxList';
-import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Link } from 'react-router-dom';
-
+import { Button } from '@codesandbox/common/lib/components/Button';
+import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { inject, observer } from 'app/componentConnectors';
+import { SandboxList } from 'app/components/SandboxList';
 import { Navigation, Notice, NoSandboxes } from './elements';
 
 const PER_PAGE_COUNT = 15;
@@ -15,6 +13,13 @@ class Sandboxes extends React.Component {
     page: 1,
   };
 
+  getPage(source, page) {
+    if (!source) {
+      return undefined;
+    }
+    return source.get ? source.get(page) : source[page];
+  }
+
   fetch(force = false) {
     const { signals, source, store, page } = this.props;
 
@@ -22,7 +27,11 @@ class Sandboxes extends React.Component {
       return;
     }
 
-    if (force || !store.profile[source] || !store.profile[source].get(page)) {
+    if (
+      force ||
+      !store.profile[source] ||
+      !this.getPage(store.profile[source], page)
+    ) {
       switch (source) {
         case 'currentSandboxes':
           signals.profile.sandboxesPageChanged({ page });
@@ -48,6 +57,10 @@ class Sandboxes extends React.Component {
     }
   }
 
+  getSandboxesByPage(sandboxes, page) {
+    return sandboxes.get ? sandboxes.get(page) : sandboxes[page];
+  }
+
   getLastPage = () => {
     if (this.props.source === 'currentSandboxes') {
       const { sandboxCount } = this.props.store.profile.current;
@@ -66,14 +79,19 @@ class Sandboxes extends React.Component {
 
   render() {
     const { store, source, page, baseUrl } = this.props;
-    const isProfileCurrentUser = store.profile.isProfileCurrentUser;
-    const isLoadingSandboxes = store.profile.isLoadingSandboxes;
+    const { isProfileCurrentUser } = store.profile;
+    const { isLoadingSandboxes } = store.profile;
     const sandboxes = store.profile[source];
 
-    if (isLoadingSandboxes || !sandboxes || !sandboxes.get(page))
+    if (
+      isLoadingSandboxes ||
+      !sandboxes ||
+      !this.getSandboxesByPage(sandboxes, page)
+    ) {
       return <div />;
+    }
 
-    const sandboxesPage = sandboxes.get(page);
+    const sandboxesPage = this.getSandboxesByPage(sandboxes, page);
 
     if (sandboxesPage.length === 0)
       return (

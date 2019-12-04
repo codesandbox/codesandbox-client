@@ -3,10 +3,6 @@ import React from 'react';
 import { TimelineMax, TweenMax } from 'gsap';
 
 export default class RollingText extends React.Component {
-  state = {
-    oldChildren: null,
-  };
-
   shouldComponentUpdate(nextProps) {
     return (
       !this.props.updateCheck ||
@@ -44,7 +40,7 @@ export default class RollingText extends React.Component {
 
   render() {
     const { children, className, style } = this.props;
-    const oldChildren = this.oldChildren;
+    const { oldChildren } = this;
 
     return (
       <div
@@ -52,10 +48,11 @@ export default class RollingText extends React.Component {
         style={{ display: 'inline-block', position: 'relative', ...style }}
       >
         <div
-          style={{ position: 'absolute', left: 0 }}
+          style={{ position: 'absolute', left: 0, width: 'inherit' }}
           ref={el => {
             this.fadeout = el;
           }}
+          aria-hidden
         >
           {oldChildren}
         </div>

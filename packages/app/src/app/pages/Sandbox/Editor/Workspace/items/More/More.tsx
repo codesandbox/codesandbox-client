@@ -1,38 +1,41 @@
-import ProgressButton from '@codesandbox/common/lib/components/ProgressButton';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import ProgressButton from '@codesandbox/common/lib/components/ProgressButton';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { observer } from 'mobx-react-lite';
-import React, { useEffect } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 
-import SignInButton from 'app/pages/common/SignInButton';
-import { useSignals, useStore } from 'app/store';
+import { useOvermind } from 'app/overmind';
+import { SignInButton } from 'app/pages/common/SignInButton';
 
 import { Description } from '../../elements';
 
-const NOT_OWNED_MESSAGE = `Fork this sandbox to make deployments, commit to GitHub, create live sessions with others and more!`;
-const NOT_SIGNED_IN_MESSAGE = `Sign in to be able to organize your sandboxes with a dashboard, make deployments, collaborate live with others, make commits to GitHub and more!`;
+interface Props {
+  id: string;
+  message: string | JSX.Element;
+}
 
-export const More = observer(() => {
+export const More: FunctionComponent<Props> = ({ id, message }) => {
   const {
-    editor: { forkSandboxClicked },
-  } = useSignals();
-  const {
-    editor: {
-      currentSandbox: { owned },
-      isForkingSandbox,
+    actions: {
+      editor: { forkSandboxClicked },
     },
-  } = useStore();
+    state: {
+      isLoggedIn,
+      editor: { isForkingSandbox },
+    },
+  } = useOvermind();
 
-  useEffect(() => track('Workspace - More Opened'), []);
-
-  const message = !owned ? NOT_OWNED_MESSAGE : NOT_SIGNED_IN_MESSAGE;
+  useEffect(() => {
+    track('Workspace - More Opened', { id });
+  }, [id]);
 
   return (
     <div>
       <Description>{message}</Description>
 
       <Margin margin={1}>
-        {!owned ? (
+        {!isLoggedIn ? (
+          <SignInButton block />
+        ) : (
           <ProgressButton
             block
             loading={isForkingSandbox}
@@ -41,10 +44,8 @@ export const More = observer(() => {
           >
             {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}
           </ProgressButton>
-        ) : (
-          <SignInButton block />
         )}
       </Margin>
     </div>
   );
-});
+};

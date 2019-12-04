@@ -1,9 +1,8 @@
+import { inject, observer } from 'app/componentConnectors';
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 
-import DirectoryEntry from './DirectoryEntry/index';
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
+import DirectoryEntry from './DirectoryEntry/index';
 
 class Files extends React.Component {
   createModule = () => {
@@ -25,17 +24,17 @@ class Files extends React.Component {
     this.props.signals.editor.createZipClicked();
   };
 
-  getModulePath = (moduleId: string) => {
+  getModulePath = moduleId => {
     try {
       const sandbox = this.props.store.editor.currentSandbox;
-      return getModulePath(sandbox.modules, sandbox.directories, moduleId);
+      return sandbox.modules.find(module => module.id === moduleId).path;
     } catch (e) {
       return '';
     }
   };
 
   render() {
-    const store = this.props.store;
+    const { store } = this.props;
     const sandbox = store.editor.currentSandbox;
 
     return (
@@ -43,6 +42,10 @@ class Files extends React.Component {
         root
         getModulePath={this.getModulePath}
         title={sandbox.title || 'Project'}
+        signals={
+          this.props
+            .signals /* TODO: Just pass what is needed by the DragDrop */
+        }
         initializeProperties={({
           onCreateModuleClick,
           onCreateDirectoryClick,

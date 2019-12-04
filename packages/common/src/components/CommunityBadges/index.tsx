@@ -1,10 +1,10 @@
 import React from 'react';
 import IconBase from 'react-icons/lib/IconBase';
-import Tooltip from '../Tooltip';
-import getIcon from '../../templates/icons';
-import getDefinition from '../../templates/';
 import Color from 'color';
 import styled from 'styled-components';
+import Tooltip from '../Tooltip';
+import getIcon from '../../templates/icons';
+import getDefinition from '../../templates';
 
 const IconContainer = styled.div`
   max-width: 30%;

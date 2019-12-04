@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 import { sortBy } from 'lodash-es';
 
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
@@ -174,20 +174,17 @@ class LiveInfo extends React.Component {
       followingUserId,
     } = this.props;
 
-    const owners = roomInfo.users.filter(u => ownerIds.indexOf(u.id) > -1);
+    const owners = roomInfo.users.filter(u => ownerIds.includes(u.id));
 
     const editors = sortBy(
       roomInfo.users.filter(
-        u =>
-          roomInfo.editorIds.indexOf(u.id) > -1 && ownerIds.indexOf(u.id) === -1
+        u => roomInfo.editorIds.includes(u.id) && !ownerIds.includes(u.id)
       ),
       'username'
     );
     const otherUsers = sortBy(
       roomInfo.users.filter(
-        u =>
-          ownerIds.indexOf(u.id) === -1 &&
-          roomInfo.editorIds.indexOf(u.id) === -1
+        u => !ownerIds.includes(u.id) && !roomInfo.editorIds.includes(u.id)
       ),
       'username'
     );
@@ -218,9 +215,9 @@ class LiveInfo extends React.Component {
             {reconnecting ? (
               'Reconnecting...'
             ) : (
-              <React.Fragment>
+              <>
                 <RecordIcon /> {liveMessage}
-              </React.Fragment>
+              </>
             )}
           </div>
           <div>
@@ -347,7 +344,7 @@ class LiveInfo extends React.Component {
                   roomInfo={roomInfo}
                   type="Editor"
                   sideView={
-                    <React.Fragment>
+                    <>
                       {user.id !== currentUserId && (
                         <IconContainer>
                           {followingUserId === user.id ? (
@@ -371,7 +368,7 @@ class LiveInfo extends React.Component {
                       )}
                       {isOwner && roomInfo.mode === 'classroom' && (
                         <IconContainer style={{ marginLeft: '0.25rem' }}>
-                          <Tooltip content={'Make spectator'}>
+                          <Tooltip content="Make spectator">
                             <RemoveIcon
                               onClick={() =>
                                 removeEditor({ liveUserId: user.id })
@@ -380,7 +377,7 @@ class LiveInfo extends React.Component {
                           </Tooltip>
                         </IconContainer>
                       )}
-                    </React.Fragment>
+                    </>
                   }
                 />
               ))}
@@ -401,7 +398,7 @@ class LiveInfo extends React.Component {
                   roomInfo={roomInfo}
                   type="Spectator"
                   sideView={
-                    <React.Fragment>
+                    <>
                       {roomInfo.mode !== 'classroom' &&
                         user.id !== currentUserId && (
                           <IconContainer>
@@ -426,14 +423,14 @@ class LiveInfo extends React.Component {
                         )}
                       {isOwner && roomInfo.mode === 'classroom' && (
                         <IconContainer style={{ marginLeft: '0.25rem' }}>
-                          <Tooltip content={'Make editor'}>
+                          <Tooltip content="Make editor">
                             <AddIcon
                               onClick={() => addEditor({ liveUserId: user.id })}
                             />
                           </Tooltip>
                         </IconContainer>
                       )}
-                    </React.Fragment>
+                    </>
                   }
                 />
               ))

@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import { EventEmitter } from 'events';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
@@ -10,7 +11,7 @@ const isSafari =
   /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 let DefaultWorker: false | (() => Worker);
-let workerMap: Map<string, false | (() => Worker)> = new Map();
+const workerMap: Map<string, false | (() => Worker)> = new Map();
 
 function addDefaultForkHandler(worker: false | (() => Worker)) {
   DefaultWorker = worker;
@@ -34,15 +35,15 @@ class Stream extends EventEmitter {
     super();
   }
 
-  setEncoding(encoding: string) {}
+  setEncoding() {}
 
-  write(message: string, encoding: string) {
+  write(message: string) {
     this.worker.postMessage({ $type: 'input-write', $data: message });
   }
 }
 
 class NullStream extends EventEmitter {
-  setEncoding(encoding: string) {}
+  setEncoding() {}
 }
 
 class NullChildProcess extends EventEmitter {
@@ -69,7 +70,7 @@ class ChildProcess extends EventEmitter {
     this.listen();
   }
 
-  public send(message: any, _a: any, _b: any, callback: Function) {
+  public send(message: any, _a: any, _b: any, callback: (arg: any) => void) {
     if (this.destroyed) {
       callback(new Error('This connection has been killed'));
       return;
@@ -141,7 +142,7 @@ function getWorker(path: string) {
   const worker = WorkerConstructor();
 
   // Register file system that syncs with filesystem in manager
-  BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
+  // BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
 
   return worker;
 }
@@ -153,18 +154,14 @@ function getWorkerFromCache(path: string, isDefaultWorker: boolean) {
     if (cachedDefaultWorker) {
       return cachedDefaultWorker;
     }
-  } else {
-    if (cachedWorkers[path]) {
-      const worker = cachedWorkers[path].pop();
-
-      return worker;
-    }
+  } else if (cachedWorkers[path]) {
+    return cachedWorkers[path].pop();
   }
 
   return undefined;
 }
 
-let sentBroadcasts: Map<string, Array<number>> = new Map();
+const sentBroadcasts: Map<string, number[]> = new Map();
 /**
  * Broadcasts a message if it hasn't been sent by this worker/window before
  */
@@ -183,7 +180,7 @@ function handleBroadcast(
     return;
   }
 
-  data.$id = data.$id || Math.random() * 1000000;
+  data.$id = data.$id || Math.floor(Math.random() * 100000000);
 
   if (sentBroadcastsForPath.length > 100) {
     sentBroadcastsForPath.shift();

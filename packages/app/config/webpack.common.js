@@ -1,14 +1,16 @@
+/* eslint-disable global-require */
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
-const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HappyPack = require('happypack');
-const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
+const threadLoader = require('thread-loader');
 const env = require('@codesandbox/common/lib/config/env');
 const getHost = require('@codesandbox/common/lib/utils/host');
+const postcssNormalize = require('postcss-normalize');
+const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
+const paths = require('./paths');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
@@ -19,20 +21,65 @@ const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ && !SANDBOX_ONLY ? babelDev : babelProd;
-
 const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
+const isLint = 'LINT' in process.env;
 
-let threads = 1;
-
-try {
-  if (process.env.CIRCLECI) {
-    threads = 2;
-  } else {
-    threads = Math.max(1, require('os').cpus().length - 1);
+// common function to get style loaders
+const getStyleLoaders = (cssOptions, preProcessor) => {
+  const loaders = [
+    __DEV__ && require.resolve('style-loader'),
+    __PROD__ && {
+      loader: MiniCssExtractPlugin.loader,
+      options: {},
+    },
+    {
+      loader: require.resolve('css-loader'),
+      options: cssOptions,
+    },
+    {
+      // Options for PostCSS as we reference these options twice
+      // Adds vendor prefixing based on your specified browser support in
+      // package.json
+      loader: require.resolve('postcss-loader'),
+      options: {
+        // Necessary for external CSS imports to work
+        // https://github.com/facebook/create-react-app/issues/2677
+        ident: 'postcss',
+        plugins: () => [
+          require('postcss-flexbugs-fixes'),
+          require('postcss-preset-env')({
+            autoprefixer: {
+              flexbox: 'no-2009',
+            },
+            stage: 3,
+          }),
+          // Adds PostCSS Normalize as the reset css with default options,
+          // so that it honors browserslist config in package.json
+          // which in turn let's users customize the target behavior as per their needs.
+          postcssNormalize(),
+        ],
+        sourceMap: __PROD__,
+      },
+    },
+  ].filter(Boolean);
+  if (preProcessor) {
+    loaders.push(
+      {
+        loader: require.resolve('resolve-url-loader'),
+        options: {
+          sourceMap: __PROD__,
+        },
+      },
+      {
+        loader: require.resolve(preProcessor),
+        options: {
+          sourceMap: true,
+        },
+      }
+    );
   }
-} catch (e) {
-  threads = 3;
-}
+  return loaders;
+};
 
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
@@ -62,6 +109,14 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
 }`;
 
 const sepRe = `\\${path.sep}`; // path separator regex
+
+const threadPoolConfig = {
+  workers: 2,
+};
+
+if (!isLint) {
+  threadLoader.warmup(threadPoolConfig, ['babel-loader']);
+}
 
 module.exports = {
   entry: SANDBOX_ONLY
@@ -101,6 +156,8 @@ module.exports = {
     publicPath,
     globalObject: 'this',
     jsonpFunction: 'csbJsonP', // So we don't conflict with webpack generated libraries in the sandbox
+    pathinfo: false,
+    futureEmitAssets: true,
   },
 
   module: {
@@ -112,11 +169,18 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: [
-          'style-loader', // creates style nodes from JS strings
-          'css-loader', // translates CSS into CommonJS
-          'sass-loader', // compiles Sass to CSS, using Node Sass by default
-        ],
+        use: getStyleLoaders(
+          {
+            importLoaders: 2,
+            sourceMap: true,
+          },
+          'sass-loader'
+        ),
+        // Don't consider CSS imports dead code even if the
+        // containing package claims to have no side effects.
+        // Remove this when webpack adds a warning or an error for this.
+        // See https://github.com/webpack/webpack/issues/6571
+        sideEffects: true,
       },
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
@@ -172,13 +236,18 @@ module.exports = {
           /typescriptServices\.js$/,
           /\.no-webpack\./,
         ],
-        loader: 'happypack/loader',
-      },
-
-      {
-        test: /\.tsx?$/,
-        exclude: [/node_modules/],
-        loader: 'happypack/loader',
+        use: [
+          !isLint
+            ? {
+                loader: 'thread-loader',
+                options: threadPoolConfig,
+              }
+            : false,
+          {
+            loader: 'babel-loader',
+            options: babelConfig,
+          },
+        ].filter(Boolean),
       },
 
       // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
@@ -249,7 +318,15 @@ module.exports = {
       // in development "style" loader enables hot editing of CSS.
       {
         test: /\.css$/,
-        loaders: ['style-loader', 'css-loader'],
+        loaders: getStyleLoaders({
+          importLoaders: 1,
+          sourceMap: true,
+        }),
+        // Don't consider CSS imports dead code even if the
+        // containing package claims to have no side effects.
+        // Remove this when webpack adds a warning or an error for this.
+        // See https://github.com/webpack/webpack/issues/6571
+        sideEffects: true,
       },
       // For importing README.md
       {
@@ -260,7 +337,19 @@ module.exports = {
       // When you `import` an asset, you get its (virtual) filename.
       // In production, they would get copied to the `build` folder.
       {
-        test: /\.(ico|jpg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
+        test: /\.(svg)(\?.*)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'static/media/[name].[hash:8].[ext]',
+            },
+          },
+          { loader: 'svgo-loader' },
+        ],
+      },
+      {
+        test: /\.(ico|jpg|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
         exclude: [/\/favicon.ico$/],
         loader: 'file-loader',
         options: {
@@ -295,11 +384,11 @@ module.exports = {
       /browserfs\.min\.js/,
       /standalone-packages\/codesandbox-browserfs/,
       /standalone-packages\/vscode\//,
+      /fontfaceobserver\.standalone\.js/,
     ],
   },
 
-  // To make jsonlint work
-  externals: ['file', 'system', 'jsdom', 'prettier', 'cosmiconfig'],
+  externals: ['jsdom', 'prettier', 'cosmiconfig'],
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
@@ -333,21 +422,12 @@ module.exports = {
   },
 
   plugins: [
-    new HappyPack({
-      loaders: [
-        {
-          path: 'babel-loader',
-          query: babelConfig,
-        },
-      ],
-      threads,
-    }),
     ...(SANDBOX_ONLY
       ? [
           new HtmlWebpackPlugin({
             inject: true,
             chunks: ['sandbox-startup', 'vendors~sandbox', 'sandbox'],
-            filename: 'frame.html',
+            filename: 'index.html',
             template: paths.sandboxHtml,
             minify: __PROD__ && {
               removeComments: true,
@@ -462,51 +542,13 @@ module.exports = {
     // makes the discovery automatic so you don't have to restart.
     // See https://github.com/facebookincubator/create-react-app/issues/186
     new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-    // Make the monaco editor work
-    new CopyWebpackPlugin(
-      [
-        {
-          from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode22/vs',
-          force: true,
-        },
-        {
-          from: '../../standalone-packages/vscode-extensions/out',
-          to: 'public/vscode-extensions/v8',
-          force: true,
-        },
-        {
-          from: '../../node_modules/onigasm/lib/onigasm.wasm',
-          to: 'public/onigasm/2.2.1/onigasm.wasm',
-        },
-        {
-          from:
-            '../../standalone-packages/vscode-textmate/node_modules/onigasm/lib/onigasm.wasm',
-          to: 'public/onigasm/2.1.0/onigasm.wasm',
-        },
-        {
-          from: '../../node_modules/monaco-vue/release/min',
-          to: 'public/14/vs/language/vue',
-        },
-        {
-          from: '../../standalone-packages/monaco-editor/release/min/vs',
-          to: 'public/14/vs',
-        },
-        {
-          from: '../sse-hooks/dist',
-          to: 'public/sse-hooks',
-        },
-        {
-          from: 'static',
-          to: 'static',
-        },
-        {
-          from: __DEV__
-            ? '../../standalone-packages/codesandbox-browserfs/build'
-            : '../../standalone-packages/codesandbox-browserfs/dist',
-          to: 'static/browserfs3',
-        },
-      ].filter(x => x)
-    ),
+
+    __PROD__ &&
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: 'static/css/[name].[contenthash:8].css',
+        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+      }),
   ].filter(Boolean),
 };

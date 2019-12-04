@@ -4,11 +4,13 @@ const listeners = new Map();
 
 export default {
   addListener(listener: (connected: boolean) => void) {
-    const disposer = addListener(listener ? listener : () => {});
+    const disposer = addListener(listener);
     listeners.set(listener, disposer);
   },
   removeListener(listener: (connected: boolean) => void) {
-    listeners.get(listener)();
-    listeners.delete(listener);
+    if (listeners.has(listener)) {
+      listeners.get(listener)();
+      listeners.delete(listener);
+    }
   },
 };

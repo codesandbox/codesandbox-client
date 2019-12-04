@@ -5,12 +5,12 @@ import { join } from 'path';
 import { Container } from './elements';
 import NavigationLink from './NavigationLink';
 
-export default ({ path, teamId }) => {
+export const Navigation = ({ path, teamId }) => {
   const splittedPath = path === '/' ? [''] : path.split('/');
 
   const paths = splittedPath.reduce((bases, next) => {
     if (next === '') {
-      return [{ url: '/', name: teamId ? 'Our Sandboxes' : 'My Sandboxes' }];
+      return [{ url: '/', name: teamId ? 'Team Sandboxes' : 'My Sandboxes' }];
     }
 
     const baseUrl = bases[bases.length - 1].url;

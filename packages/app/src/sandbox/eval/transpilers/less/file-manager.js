@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable func-names */
 export default function(loaderContext, files) {
   return {
-    install: function(less, pluginManager) {
+    install(less, pluginManager) {
       function CSBFileManager() {}
 
       CSBFileManager.prototype = new less.FileManager();

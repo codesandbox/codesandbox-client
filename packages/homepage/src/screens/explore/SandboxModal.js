@@ -41,6 +41,7 @@ export default class SandboxModal extends React.PureComponent {
     sandbox: undefined,
     showFrame: false,
   };
+
   loadedSandboxes = {};
 
   getSandbox = sandboxId => {
@@ -112,7 +113,7 @@ export default class SandboxModal extends React.PureComponent {
     }
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.setState({
         sandbox: undefined,
@@ -226,7 +227,7 @@ export default class SandboxModal extends React.PureComponent {
             {sandbox ? (
               <FooterInfo>
                 {sandbox.author || sandbox.git ? (
-                  <React.Fragment>
+                  <>
                     {sandbox.author && (
                       <a
                         href={profileUrl(sandbox.author.username)}
@@ -248,10 +249,11 @@ export default class SandboxModal extends React.PureComponent {
                         username={sandbox.git.username}
                         repo={sandbox.git.repo}
                         branch={sandbox.git.branch}
+                        commitSha={sandbox.git.commitSha}
                         url={githubRepoUrl(sandbox.git)}
                       />
                     )}
-                  </React.Fragment>
+                  </>
                 ) : (
                   <div />
                 )}

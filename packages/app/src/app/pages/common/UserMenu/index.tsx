@@ -1,47 +1,49 @@
-import * as React from 'react';
-import { observer } from 'mobx-react-lite';
-
-import HoverMenu from 'app/components/HoverMenu';
 import Relative from '@codesandbox/common/lib/components/Relative';
-import { useSignals, useStore } from 'app/store';
+import React, { FunctionComponent } from 'react';
 
-import Menu from './Menu';
+import { useMenuState, MenuDisclosure } from 'reakit/Menu';
+import { useOvermind } from 'app/overmind';
+
 import { ClickableContainer, ProfileImage } from './elements';
+import { Menu } from './Menu';
 
-function UserMenu() {
-  const { user, userMenuOpen } = useStore();
+export const UserMenu: FunctionComponent = () => {
   const {
-    userMenuClosed,
-    modalOpened,
-    signOutClicked,
-    userMenuOpened,
-    files,
-  } = useSignals();
+    actions: {
+      modalOpened,
+      signOutClicked,
+      files: { gotUploadedFiles },
+    },
+    state: { user },
+  } = useOvermind();
+  const menu = useMenuState({
+    placement: 'bottom-end',
+  });
 
   return (
     <Relative>
-      <ClickableContainer onClick={userMenuOpened}>
+      <MenuDisclosure
+        as={ClickableContainer}
+        {...menu}
+        aria-label="profile menu"
+      >
         <ProfileImage
           alt={user.username}
           width={30}
           height={30}
           src={user.avatarUrl}
         />
-      </ClickableContainer>
-      {userMenuOpen && (
-        <HoverMenu onClose={() => userMenuClosed()}>
-          <Menu
-            openPreferences={() => modalOpened({ modal: 'preferences' })}
-            openStorageManagement={files.gotUploadedFiles}
-            signOut={signOutClicked}
-            username={user.username}
-            curator={user.curatorAt}
-            openFeedback={() => modalOpened({ modal: 'feedback' })}
-          />
-        </HoverMenu>
-      )}
+      </MenuDisclosure>
+
+      <Menu
+        openPreferences={() => modalOpened({ modal: 'preferences' })}
+        openStorageManagement={() => gotUploadedFiles(null)}
+        signOut={() => signOutClicked()}
+        username={user.username}
+        curator={user.curatorAt}
+        openFeedback={() => modalOpened({ modal: 'feedback' })}
+        menuProps={menu}
+      />
     </Relative>
   );
-}
-
-export default observer(UserMenu);
+};

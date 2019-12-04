@@ -9,6 +9,7 @@ import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-e
  */
 export default function getDependency(dependencyPath: string) {
   if (dependencyPath === 'codesandbox-api') {
+    // eslint-disable-next-line
     return require('codesandbox-api');
   }
 

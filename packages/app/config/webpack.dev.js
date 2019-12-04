@@ -1,5 +1,6 @@
 const merge = require('webpack-merge');
 // const webpack = require('webpack');
+const WebpackBar = require('webpackbar');
 const commonConfig = require('./webpack.common');
 
 const devEntries = [
@@ -19,15 +20,19 @@ module.exports = merge(
   commonConfig,
   {
     devtool: 'eval',
+    mode: 'development',
     output: {
       filename: 'static/js/[name].js',
-      pathinfo: false,
+      pathinfo: true,
     },
     optimization: {
       removeAvailableModules: false,
       removeEmptyChunks: false,
       splitChunks: false,
     },
-    // plugins: [new webpack.HotModuleReplacementPlugin()],
+    plugins: [
+      new WebpackBar(),
+      // new webpack.HotModuleReplacementPlugin(),
+    ],
   }
 );

@@ -1,7 +1,6 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
-import OverlayComponent from 'app/components/Overlay';
-
+import { inject, observer } from 'app/componentConnectors';
+import { Overlay as OverlayComponent } from 'app/components/Overlay';
 import Option from './Option';
 import { Container, Arrow, OrderName, OverlayContainer } from './elements';
 
@@ -11,11 +10,11 @@ const FIELD_TO_NAME = {
   title: 'Name',
 };
 
-class SortOptions extends React.Component {
+class SortOptionsComponent extends React.Component {
   toggleSort = e => {
     e.preventDefault();
-    const orderBy = this.props.store.dashboard.orderBy;
-    const orderByChanged = this.props.signals.dashboard.orderByChanged;
+    const { orderBy } = this.props.store.dashboard;
+    const { orderByChanged } = this.props.signals.dashboard;
     orderByChanged({
       orderBy: {
         order: orderBy.order === 'asc' ? 'desc' : 'asc',
@@ -25,8 +24,8 @@ class SortOptions extends React.Component {
   };
 
   setField = (field: string) => {
-    const orderBy = this.props.store.dashboard.orderBy;
-    const orderByChanged = this.props.signals.dashboard.orderByChanged;
+    const { orderBy } = this.props.store.dashboard;
+    const { orderByChanged } = this.props.signals.dashboard;
     orderByChanged({
       orderBy: {
         order: orderBy.order,
@@ -63,7 +62,7 @@ class SortOptions extends React.Component {
     );
 
     return (
-      <OverlayComponent event="Dashboard - Order By" Overlay={Overlay}>
+      <OverlayComponent event="Dashboard - Order By" content={Overlay}>
         {open => (
           <Container hideOrder={hideOrder}>
             Sort by{' '}
@@ -74,6 +73,7 @@ class SortOptions extends React.Component {
                 transform: `rotate(${order === 'asc' ? -180 : 0}deg)`,
                 fontSize: '.875rem',
                 marginLeft: 4,
+                marginBottom: 2,
               }}
             />
           </Container>
@@ -83,4 +83,6 @@ class SortOptions extends React.Component {
   }
 }
 
-export default inject('store', 'signals')(observer(SortOptions));
+export const SortOptions = inject('store', 'signals')(
+  observer(SortOptionsComponent)
+);

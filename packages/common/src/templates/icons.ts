@@ -22,8 +22,9 @@ import {
   GridsomeIcon,
   QuasarIcon,
   SapperIcon,
-  ParcelIcon,
+  JavaScriptIcon,
   VuePressIcon,
+  UnibitIcon,
 } from '@codesandbox/template-icons';
 
 import {
@@ -53,18 +54,11 @@ import {
   vuepress,
   mdxDeck,
   quasar,
-} from './';
+  unibit,
+  TemplateType,
+} from '.';
 
-import { TemplateType } from './';
-
-export type ReturnedIcon = React.SFC<{
-  width?: number;
-  height?: number;
-  className?: string;
-  style?: React.CSSProperties;
-}>;
-
-export default function getIcon(theme: TemplateType): ReturnedIcon {
+export default function getIcon(theme: TemplateType) {
   switch (theme) {
     case adonis.name:
       return AdonisIcon;
@@ -81,7 +75,7 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
     case angular.name:
       return AngularIcon;
     case parcel.name:
-      return ParcelIcon;
+      return JavaScriptIcon;
     case dojo.name:
       return DojoIcon;
     case ember.name:
@@ -118,6 +112,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return MDXDeckIcon;
     case quasar.name:
       return QuasarIcon;
+    case unibit.name:
+      return UnibitIcon;
     default:
       return ReactIcon;
   }

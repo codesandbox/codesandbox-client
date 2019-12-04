@@ -1,11 +1,23 @@
 {
   "name": "node-services",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/node-services"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:dev": "yarn build",
+    "start": "tsc --watch -p ./tsconfig.json"
+  },
   "dependencies": {
+    "@codesandbox/common": "^1.0.8",
     "constants-browserify": "^1.0.0",
     "events": "^3.0.0",
     "resolve": "^1.10.0",
-    "util": "0.11.1",
+    "string_decoder": "^1.3.0",
+    "util": "^0.12.1",
     "ws": "^6.1.0"
   },
   "devDependencies": {
@@ -13,11 +25,6 @@
     "@types/node": "^11.10.5",
     "@types/resolve": "^0.0.8",
     "@types/ws": "^6.0.1",
-    "typescript": "3.3.4000"
-  },
-  "scripts": {
-    "build": "tsc",
-    "build:dev": "yarn build",
-    "start": "tsc --watch -p ./tsconfig.json"
+    "typescript": "3.6.3"
   }
 }

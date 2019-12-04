@@ -1,47 +1,37 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { ThemeProvider } from 'styled-components';
-import { Router } from 'react-router-dom';
-import { ApolloProvider } from 'react-apollo';
-import { Provider } from 'mobx-react';
-import _debug from '@codesandbox/common/lib/utils/debug';
+import '@codesandbox/common/lib/global.css';
+import 'normalize.css';
+
+import './split-pane.css';
+
+import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
+import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
+import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
+import theme from '@codesandbox/common/lib/theme';
 import {
   initializeSentry,
   logError,
 } from '@codesandbox/common/lib/utils/analytics';
-import '@codesandbox/common/lib/global.css';
-
-import { Signals, Store } from 'app/store';
-import history from 'app/utils/history';
-import { client } from 'app/graphql/client';
-import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
-import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import _debug from '@codesandbox/common/lib/utils/debug';
 import {
-  notificationState,
   convertTypeToStatus,
+  notificationState,
 } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
-import 'normalize.css';
-import theme from '@codesandbox/common/lib/theme';
 import { isSafari } from '@codesandbox/common/lib/utils/platform';
+import { Severity } from '@sentry/browser';
+import { client } from 'app/graphql/client';
+import history from 'app/utils/history';
+import { createOvermind } from 'overmind';
+import { Provider as ActualOvermindProvider } from 'overmind-react';
+import React from 'react';
+import { ApolloProvider } from 'react-apollo';
+import { render } from 'react-dom';
+import { Router } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
 
-// eslint-disable-next-line
-import * as child_process from 'node-services/lib/child_process';
-
-import controller from './controller';
-import App from './pages/index';
-import './split-pane.css';
-import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
-
-import vscode from './vscode';
-import {
-  initializeThemeCache,
-  initializeSettings,
-  initializeExtensionsFolder,
-  initializeCustomTheme,
-  setVimExtensionEnabled,
-} from './vscode/initializers';
-import { EXTENSIONS_LOCATION } from './vscode/constants';
+import { config } from './overmind';
+import { Provider as OvermindProvider } from './overmind/Provider';
+import { Routes as App } from './pages';
 
 const debug = _debug('cs:app');
 
@@ -54,36 +44,75 @@ window.addEventListener('unhandledrejection', e => {
     e.preventDefault();
   }
 });
-/*
-  OVERMIND REFACTOR
-*/
-if (process.env.NODE_ENV === 'development') {
-  Promise.all([import('overmind'), import('./overmind')]).then(modules => {
-    const createOvermind = modules[0].createOvermind;
-    const config = modules[1].config;
 
-    createOvermind(config);
-  });
-}
+window.__isTouch = !matchMedia('(pointer:fine)').matches;
+
+const overmind = createOvermind(config, {
+  devtools:
+    (window.opener && window.opener !== window) || !window.chrome
+      ? false
+      : 'localhost:3031',
+  name:
+    'CodeSandbox - ' +
+    (navigator.userAgent.indexOf('Chrome/76') > 0 ? 'Chrome' : 'Canary'),
+  logProxies: true,
+});
 
 if (process.env.NODE_ENV === 'production') {
+  const ignoredOvermindActions = [
+    'onInitialize',
+    'server.onCodeSandboxAPIMessage',
+    'track',
+    'editor.previewActionReceived',
+    'live.onSelectionChanged',
+  ];
+
   try {
     initializeSentry(
       'https://3943f94c73b44cf5bb2302a72d52e7b8@sentry.io/155188'
     );
+
+    overmind.eventHub.on('action:start', event => {
+      if (ignoredOvermindActions.includes(event.actionName)) {
+        return;
+      }
+
+      // We try as the payload might cause a stringify error
+      try {
+        logBreadcrumb({
+          category: 'overmind-action',
+          message: event.actionName,
+          level: Severity.Info,
+          data: {
+            value: JSON.stringify(event.value),
+          },
+        });
+      } catch (e) {
+        logBreadcrumb({
+          category: 'overmind-action',
+          message: event.actionName,
+          level: Severity.Info,
+        });
+      }
+    });
   } catch (error) {
     console.error(error);
   }
 }
 
-window.__isTouch = !matchMedia('(pointer:fine)').matches;
+/*
+  Temporary global functions to grab state and actions, related to old
+  Cerebral implementation
+*/
+window.getState = path =>
+  path
+    ? path.split('.').reduce((aggr, key) => aggr[key], overmind.state)
+    : overmind.state;
+window.getSignal = path =>
+  path.split('.').reduce((aggr, key) => aggr[key], overmind.actions);
 
-function boot() {
+overmind.initialized.then(() => {
   requirePolyfills().then(() => {
-    if (process.env.NODE_ENV === 'development') {
-      window.controller = controller;
-    }
-
     if (isSafari) {
       import('subworkers');
     }
@@ -102,23 +131,8 @@ function boot() {
     registerServiceWorker('/service-worker.js', {
       onUpdated: () => {
         debug('Updated SW');
-        controller.getSignal('setUpdateStatus')({ status: 'available' });
 
-        notificationState.addNotification({
-          title: 'CodeSandbox Update Available',
-          message:
-            'We just installed a new version of CodeSandbox, refresh to update!',
-          status: NotificationStatus.SUCCESS,
-          sticky: true,
-          actions: {
-            primary: [
-              {
-                run: () => document.location.reload(),
-                label: 'Reload Page',
-              },
-            ],
-          },
-        });
+        window.getSignal('setUpdateStatus')({ status: 'available' });
       },
       onInstalled: () => {
         debug('Installed SW');
@@ -131,125 +145,24 @@ function boot() {
     });
 
     try {
-      const { signals, store } = controller.provide();
       render(
-        <Signals.Provider value={signals}>
-          <Store.Provider value={store}>
-            <Provider {...{ signals, store }}>
-              <ApolloProvider client={client}>
+        <ApolloProvider client={client}>
+          <ActualOvermindProvider value={overmind}>
+            <OvermindProvider value={overmind}>
+              <HooksProvider client={client}>
                 <ThemeProvider theme={theme}>
                   <Router history={history}>
                     <App />
                   </Router>
                 </ThemeProvider>
-              </ApolloProvider>
-            </Provider>
-          </Store.Provider>
-        </Signals.Provider>,
+              </HooksProvider>
+            </OvermindProvider>
+          </ActualOvermindProvider>
+        </ApolloProvider>,
         rootEl
       );
     } catch (e) {
       logError(e);
     }
   });
-}
-
-// Configures BrowserFS to use the LocalStorage file system.
-window.BrowserFS.configure(
-  {
-    fs: 'MountableFileSystem',
-    options: {
-      '/': { fs: 'InMemory', options: {} },
-      '/sandbox': {
-        fs: 'CodeSandboxEditorFS',
-        options: {
-          api: {
-            getState: () => ({
-              modulesByPath: controller.getState().editor.currentSandbox
-                ? controller.getState().editor.modulesByPath
-                : {},
-            }),
-          },
-        },
-      },
-      '/sandbox/node_modules': {
-        fs: 'CodeSandboxFS',
-        options: getTypeFetcher().options,
-      },
-      '/vscode': {
-        fs: 'LocalStorage',
-      },
-      '/home': {
-        fs: 'LocalStorage',
-      },
-      '/extensions': {
-        fs: 'BundledHTTPRequest',
-        options: {
-          index: EXTENSIONS_LOCATION + '/extensions/index.json',
-          baseUrl: EXTENSIONS_LOCATION + '/extensions',
-          bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
-          logReads: process.env.NODE_ENV === 'development',
-        },
-      },
-      '/extensions/custom-theme': {
-        fs: 'InMemory',
-      },
-    },
-  },
-  async e => {
-    if (e) {
-      console.error('Problems initializing FS', e);
-      // An error happened!
-      throw e;
-    }
-
-    const isVSCode = controller.getState().preferences.settings
-      .experimentVSCode;
-
-    if (isVSCode) {
-      // For first-timers initialize a theme in the cache so it doesn't jump colors
-      initializeExtensionsFolder();
-      initializeCustomTheme();
-      initializeThemeCache();
-      initializeSettings();
-      setVimExtensionEnabled(
-        localStorage.getItem('settings.vimmode') === 'true'
-      );
-    }
-
-    // eslint-disable-next-line global-require
-    vscode.loadScript(
-      [
-        isVSCode
-          ? 'vs/editor/codesandbox.editor.main'
-          : 'vs/editor/editor.main',
-      ],
-      isVSCode,
-      () => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Loaded Monaco'); // eslint-disable-line
-        }
-        if (isVSCode) {
-          vscode.acquireController(controller);
-
-          import(
-            'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host'
-          ).then(ExtHostWorkerLoader => {
-            child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
-            // child_process.preloadWorker('/vs/bootstrap-fork');
-          });
-
-          // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
-          //   SearchServiceWorker => {
-          //     child_process.addForkHandler(
-          //       'csb:search-service',
-          //       SearchServiceWorker.default
-          //     );
-          //   }
-          // );
-        }
-        boot();
-      }
-    );
-  }
-);
+});

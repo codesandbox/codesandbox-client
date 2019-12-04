@@ -1,7 +1,9 @@
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
+import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
+import delay from 'sandbox/utils/delay';
 import { Module } from '../entities/module';
 import Manager from '../manager';
 
@@ -27,20 +29,11 @@ type MetaFiles = Array<{
 }>;
 
 const metas: Metas = {};
-export let combinedMetas: Meta = {};
+export let combinedMetas: Meta = {}; // eslint-disable-line
 const normalizedMetas: { [key: string]: Meta } = {};
 const packages: Packages = {};
 
-export function setCombinedMetas(givenCombinedMetas: Meta) {
-  combinedMetas = givenCombinedMetas;
-}
-
-function normalize(
-  depName: string,
-  files: MetaFiles,
-  fileObject: Meta = {},
-  rootPath: string
-) {
+function normalize(files: MetaFiles, fileObject: Meta = {}, rootPath: string) {
   for (let i = 0; i < files.length; i += 1) {
     if (files[i].type === 'file') {
       const absolutePath = rootPath + files[i].path;
@@ -48,19 +41,14 @@ function normalize(
     }
 
     if (files[i].files) {
-      normalize(depName, files[i].files, fileObject, rootPath);
+      normalize(files[i].files, fileObject, rootPath);
     }
   }
 
   return fileObject;
 }
 
-function normalizeJSDelivr(
-  depName: string,
-  files: any,
-  fileObject: Meta = {},
-  rootPath
-) {
+function normalizeJSDelivr(files: any, fileObject: Meta = {}, rootPath) {
   for (let i = 0; i < files.length; i += 1) {
     const absolutePath = pathUtils.join(rootPath, files[i].name);
     fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
@@ -69,43 +57,156 @@ function normalizeJSDelivr(
   return fileObject;
 }
 
-const TEMP_USE_JSDELIVR = false;
+/**
+ * Converts urls like "https://github.com/user/repo.git" to "user/repo".
+ */
+const convertGitHubURLToVersion = (version: string) => {
+  const result = version.match(/https:\/\/github\.com\/(.*)$/);
+  if (result && result[1]) {
+    const repo = result[1];
+    return repo.replace(/\.git$/, '');
+  }
+
+  return version;
+};
+
+const urlProtocols = {
+  csbGH: {
+    file: async (name: string, version: string, path: string) =>
+      `${version.replace(/\/_pkg.tgz$/, '')}${path}`,
+    meta: async (name: string, version: string) =>
+      `${version.replace(/\/\.pkg.tgz$/, '')}/_csb-meta.json`,
+    normalizeMeta: normalize,
+  },
+  unpkg: {
+    file: async (name: string, version: string, path: string) =>
+      `https://unpkg.com/${name}@${version}${path}`,
+    meta: async (name: string, version: string) =>
+      `https://unpkg.com/${name}@${version}/?meta`,
+    normalizeMeta: normalize,
+  },
+  jsDelivrNPM: {
+    file: async (name: string, version: string, path: string) =>
+      `https://cdn.jsdelivr.net/npm/${name}@${version}${path}`,
+    meta: async (name: string, version: string) => {
+      // if it's a tag it won't work, so we fetch latest version otherwise
+      const latestVersion = /^\d/.test(version)
+        ? version
+        : JSON.parse(
+            (await downloadDependency(name, version, '/package.json')).code
+          ).version;
+
+      return `https://data.jsdelivr.com/v1/package/npm/${name}@${latestVersion}/flat`;
+    },
+    normalizeMeta: normalizeJSDelivr,
+  },
+  jsDelivrGH: {
+    file: async (name: string, version: string, path: string) =>
+      `https://cdn.jsdelivr.net/gh/${convertGitHubURLToVersion(
+        version
+      )}${path}`,
+    meta: async (name: string, version: string) => {
+      // First get latest sha from GitHub API
+      const sha = await fetch(
+        `https://api.github.com/repos/${convertGitHubURLToVersion(
+          version
+        )}/commits/master`
+      )
+        .then(x => x.json())
+        .then(x => x.sha);
+
+      return `https://data.jsdelivr.com/v1/package/gh/${convertGitHubURLToVersion(
+        version
+      )}@${sha}/flat`;
+    },
+    normalizeMeta: normalizeJSDelivr,
+  },
+};
+
+async function fetchWithRetries(url: string, retries = 6): Promise<Response> {
+  const doFetch = () =>
+    window.fetch(url).then(x => {
+      if (x.ok) {
+        return x;
+      }
+
+      throw new Error(`Could not fetch ${url}`);
+    });
+
+  let lastTryTime = 0;
+  for (let i = 0; i < retries; i++) {
+    if (Date.now() - lastTryTime < 3000) {
+      // Ensure that we at least wait 3s before retrying a request to prevent rate limits
+      // eslint-disable-next-line
+      await delay(3000 - (Date.now() - lastTryTime));
+    }
+    try {
+      lastTryTime = Date.now();
+      // eslint-disable-next-line
+      return await doFetch();
+    } catch (e) {
+      console.error(e);
+      if (i === retries - 1) {
+        throw e;
+      }
+    }
+  }
+
+  throw new Error('Could not fetch');
+}
+
+export function setCombinedMetas(givenCombinedMetas: Meta) {
+  combinedMetas = givenCombinedMetas;
+}
+
+const getFetchProtocol = (depVersion: string, useFallback = false) => {
+  const isDraftProtocol = CSB_PKG_PROTOCOL.test(depVersion);
+
+  if (isDraftProtocol) {
+    return urlProtocols.csbGH;
+  }
+
+  const isGitHub = /\//.test(depVersion);
+
+  if (isGitHub) {
+    return urlProtocols.jsDelivrGH;
+  }
+
+  return useFallback ? urlProtocols.unpkg : urlProtocols.jsDelivrNPM;
+};
+
 // Strips the version of a path, eg. test/1.3.0 -> test
 const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 
-function getUnpkgUrl(name: string, version: string, forceJsDelivr?: boolean) {
+async function getMeta(
+  name: string,
+  packageJSONPath: string | null,
+  version: string
+) {
   const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
-
-  return TEMP_USE_JSDELIVR || forceJsDelivr
-    ? `https://unpkg.com/${nameWithoutAlias}@${version}`
-    : `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`;
-}
-
-function getMeta(name: string, packageJSONPath: string, version: string) {
-  const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
-  const id = `${packageJSONPath}@${version}`;
+  const id = `${packageJSONPath || name}@${version}`;
   if (metas[id]) {
     return metas[id];
   }
 
-  metas[id] = window
-    .fetch(
-      TEMP_USE_JSDELIVR
-        ? `https://data.jsdelivr.com/v1/package/npm/${nameWithoutAlias}@${version}/flat`
-        : `https://unpkg.com/${nameWithoutAlias}@${version}/?meta`
-    )
+  const protocol = getFetchProtocol(version);
+
+  metas[id] = protocol
+    .meta(nameWithoutAlias, version)
+    .then(fetchWithRetries)
     .then(x => x.json());
 
   return metas[id];
 }
 
-function downloadDependency(
+export async function downloadDependency(
   depName: string,
   depVersion: string,
   path: string
 ): Promise<Module> {
-  if (packages[path]) {
-    return packages[path];
+  const id = depName + depVersion + path;
+  if (packages[id]) {
+    return packages[id];
   }
 
   const relativePath = path
@@ -116,36 +217,23 @@ function downloadDependency(
       ''
     )
     .replace(/#/g, '%23');
-  const isGitHub = /\//.test(depVersion);
 
-  const url = isGitHub
-    ? `https://cdn.jsdelivr.net/gh/${depVersion}${relativePath}`
-    : `${getUnpkgUrl(depName, depVersion)}${relativePath}`;
+  const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
+  const protocol = getFetchProtocol(depVersion);
 
-  packages[path] = window
-    .fetch(url)
-    .then(x => {
-      if (x.ok) {
-        return x.text();
-      }
+  packages[id] = protocol
+    .file(nameWithoutAlias, depVersion, relativePath)
+    .then(fetchWithRetries)
+    .then(x => x.text())
+    .catch(async () => {
+      const fallbackProtocol = getFetchProtocol(depVersion, true);
+      const fallbackUrl = await fallbackProtocol.file(
+        nameWithoutAlias,
+        depVersion,
+        relativePath
+      );
 
-      throw new Error(`Could not find module ${path}`);
-    })
-    .catch(err => {
-      if (!isGitHub) {
-        // Fallback to jsdelivr
-        return fetch(
-          `${getUnpkgUrl(depName, depVersion, true)}${relativePath}`
-        ).then(x2 => {
-          if (x2.ok) {
-            return x2.text();
-          }
-
-          throw new Error(`Could not find module ${path}`);
-        });
-      }
-
-      throw err;
+      return fetchWithRetries(fallbackUrl).then(x => x.text());
     })
     .then(x => ({
       path,
@@ -153,7 +241,7 @@ function downloadDependency(
       downloaded: true,
     }));
 
-  return packages[path];
+  return packages[id];
 }
 
 function resolvePath(
@@ -205,7 +293,7 @@ function resolvePath(
             }
 
             // eslint-disable-next-line
-            const subDepVersionVersionInfo = await findDependencyVersion(
+            const subDepVersionVersionInfo = await getDependencyVersion(
               currentTModule,
               manager,
               defaultExtensions,
@@ -251,13 +339,28 @@ function resolvePath(
   });
 }
 
-async function findDependencyVersion(
+type DependencyVersionResult =
+  | {
+      version: string;
+      packageJSONPath: string;
+    }
+  | {
+      version: string;
+      packageJSONPath: null;
+    }
+  | {
+      version: string;
+      name: string | null;
+      packageJSONPath: null;
+    };
+
+async function getDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json'],
+  defaultExtensions: string[] = ['js', 'jsx', 'json'],
   dependencyName: string
-) {
-  const manifest = manager.manifest;
+): Promise<DependencyVersionResult | null> {
+  const { manifest } = manager;
 
   try {
     const foundPackageJSONPath = await resolvePath(
@@ -267,13 +370,46 @@ async function findDependencyVersion(
       defaultExtensions
     );
 
+    // If the dependency is in the root we get it from the manifest, as the manifest
+    // contains all the versions that we really wanted to resolve in the first place.
+    // An example of this is csb.dev packages, the package.json version doesn't say the
+    // actual version, but the semver it relates to. In this case we really want to have
+    // the actual url
+    if (
+      foundPackageJSONPath ===
+      pathUtils.join('/node_modules', dependencyName, 'package.json')
+    ) {
+      const rootDependency = manifest.dependencies.find(
+        dep => dep.name === dependencyName
+      );
+      if (rootDependency) {
+        return {
+          packageJSONPath: foundPackageJSONPath,
+          version: rootDependency.version,
+        };
+      }
+    }
+
     const packageJSON =
       manager.transpiledModules[foundPackageJSONPath] &&
       manager.transpiledModules[foundPackageJSONPath].module.code;
-    const { version, name } = JSON.parse(packageJSON);
+    const { version } = JSON.parse(packageJSON);
+
+    const savedDepDep = manifest.dependencyDependencies[dependencyName];
+
+    if (
+      savedDepDep &&
+      savedDepDep.resolved === version &&
+      savedDepDep.semver.startsWith('https://')
+    ) {
+      return {
+        packageJSONPath: foundPackageJSONPath,
+        version: savedDepDep.semver,
+      };
+    }
 
     if (packageJSON !== '//empty.js') {
-      return { packageJSONPath: foundPackageJSONPath, version, name };
+      return { packageJSONPath: foundPackageJSONPath, version };
     }
   } catch (e) {
     /* do nothing */
@@ -282,11 +418,20 @@ async function findDependencyVersion(
   let version = null;
 
   if (manifest.dependencyDependencies[dependencyName]) {
-    version = manifest.dependencyDependencies[dependencyName].resolved;
+    if (
+      manifest.dependencyDependencies[dependencyName].semver.startsWith(
+        'https://'
+      )
+    ) {
+      version = manifest.dependencyDependencies[dependencyName].semver;
+    } else {
+      version = manifest.dependencyDependencies[dependencyName].resolved;
+    }
   } else {
     const dep = manifest.dependencies.find(m => m.name === dependencyName);
 
     if (dep) {
+      // eslint-disable-next-line
       version = dep.version;
     }
   }
@@ -312,14 +457,14 @@ export default async function fetchModule(
     path.replace(/.*\/node_modules\//, '')
   );
 
-  const versionInfo = await findDependencyVersion(
+  const versionInfo = await getDependencyVersion(
     currentTModule,
     manager,
     defaultExtensions,
     dependencyName
   );
 
-  if (!versionInfo) {
+  if (versionInfo === null) {
     throw new DependencyNotFoundError(path);
   }
 
@@ -327,14 +472,14 @@ export default async function fetchModule(
 
   const meta = await getMeta(dependencyName, packageJSONPath, version);
 
-  const normalizeFunction = TEMP_USE_JSDELIVR ? normalizeJSDelivr : normalize;
+  const normalizeFunction = getFetchProtocol(version).normalizeMeta;
   const rootPath = packageJSONPath
     ? pathUtils.dirname(packageJSONPath)
     : pathUtils.join('/node_modules', dependencyName);
   const normalizedCacheKey = dependencyName + rootPath;
   const normalizedMeta =
     normalizedMetas[normalizedCacheKey] ||
-    normalizeFunction(dependencyName, meta.files, {}, rootPath);
+    normalizeFunction(meta.files, {}, rootPath);
   normalizedMetas[normalizedCacheKey] = normalizedMeta;
   combinedMetas = { ...combinedMetas, ...normalizedMeta };
 

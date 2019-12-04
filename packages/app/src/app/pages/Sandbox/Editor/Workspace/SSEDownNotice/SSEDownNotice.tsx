@@ -1,20 +1,25 @@
 import getTemplate from '@codesandbox/common/lib/templates';
-import { observer } from 'mobx-react-lite';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
-import { useStore } from 'app/store';
+import { useOvermind } from 'app/overmind';
 
 import { Container } from './elements';
 
-export const SSEDownNotice = observer(() => {
-  const store = useStore();
+export const SSEDownNotice: FunctionComponent = () => {
+  const {
+    state: {
+      editor: {
+        currentSandbox: { template },
+      },
+      server: { status },
+    },
+  } = useOvermind();
 
-  const templateDef = getTemplate(store.editor.currentSandbox.template);
-  if (!templateDef.isServer) {
+  if (!getTemplate(template).isServer) {
     return null;
   }
 
-  if (store.server.status !== 'disconnected') {
+  if (status !== 'disconnected') {
     return null;
   }
 
@@ -50,4 +55,4 @@ export const SSEDownNotice = observer(() => {
       </p>
     </Container>
   );
-});
+};

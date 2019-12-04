@@ -2,7 +2,7 @@ import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';
 
-import Preset from '../';
+import Preset from '..';
 
 export default function initialize() {
   const babelPreset = new Preset(

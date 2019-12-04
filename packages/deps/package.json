@@ -1,0 +1,28 @@
+{
+  "name": "codesandbox-deps",
+  "version": "0.1.1",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/deps"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "yarn build:clean && yarn build:rollup",
+    "build:dev": "yarn build",
+    "build:clean": "rimraf dist",
+    "build:rollup": "rollup -c"
+  },
+  "dependencies": {
+    "tern": "^0.21.0"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.3",
+    "rollup": "^1.16.2",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.0.4"
+  }
+}

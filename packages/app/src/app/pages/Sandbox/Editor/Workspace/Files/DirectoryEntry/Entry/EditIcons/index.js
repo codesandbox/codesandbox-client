@@ -6,6 +6,7 @@ import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
 import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import UploadFileIcon from 'react-icons/lib/md/file-upload';
 import DownloadIcon from 'react-icons/lib/md/file-download';
+import UndoIcon from 'react-icons/lib/md/undo';
 
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
@@ -19,15 +20,16 @@ const handleClick = func => e => {
 };
 
 function EditIcons({
-  className,
+  className = undefined,
   hovering,
   onDelete,
+  onDiscardChanges,
   onEdit,
   onCreateFile,
   onCreateDirectory,
   active,
   onUploadFile,
-  onDownload,
+  onDownload = undefined,
   forceShow,
 }) {
   // Phones need double click if we show elements on click, that's why we only want
@@ -51,6 +53,13 @@ function EditIcons({
             <Tooltip content="Upload Files">
               <Icon onClick={handleClick(onUploadFile)}>
                 <UploadFileIcon />
+              </Icon>
+            </Tooltip>
+          )}
+          {onDiscardChanges && (
+            <Tooltip content="Discard Changes">
+              <Icon onClick={handleClick(onDiscardChanges)}>
+                <UndoIcon />
               </Icon>
             </Tooltip>
           )}

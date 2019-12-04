@@ -1,33 +1,36 @@
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Input from '@codesandbox/common/lib/components/Input';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { observer } from 'mobx-react-lite';
-import React from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
+import React, { ChangeEvent, FunctionComponent, HTMLAttributes } from 'react';
 
+import { useOvermind } from 'app/overmind';
 import {
   WorkspaceSubtitle,
   WorkspaceInputContainer,
 } from 'app/pages/Sandbox/Editor/Workspace/elements';
-import { useSignals, useStore } from 'app/store';
 
 import { Error } from './elements';
 
-type Props = {
-  style?: React.CSSProperties;
-};
-export const CreateRepo = observer(({ style }: Props) => {
+type Props = Pick<HTMLAttributes<HTMLDivElement>, 'style'>;
+export const CreateRepo: FunctionComponent<Props> = ({ style }) => {
   const {
-    git: { repoTitleChanged, createRepoClicked },
-  } = useSignals();
-  const {
-    editor: { isAllModulesSynced },
-    git: { repoTitle, error },
-  } = useStore();
+    actions: {
+      git: { createRepoClicked, repoTitleChanged },
+    },
+    state: {
+      editor: { isAllModulesSynced },
+      git: { error, repoTitle },
+    },
+  } = useOvermind();
 
   const updateRepoTitle = ({
     target: { value: title },
-  }: React.ChangeEvent<HTMLInputElement>) => repoTitleChanged({ title });
-  const createRepo = () => createRepoClicked();
+  }: ChangeEvent<HTMLInputElement>) => repoTitleChanged({ title });
+  const createRepo = () => {
+    track('Export to GitHub Clicked');
+    createRepoClicked();
+  };
 
   return (
     <div style={style}>
@@ -46,7 +49,7 @@ export const CreateRepo = observer(({ style }: Props) => {
       <Margin horizontal={1} bottom={1}>
         <Button
           block
-          disabled={error || !repoTitle || !isAllModulesSynced}
+          disabled={Boolean(error) || !repoTitle || !isAllModulesSynced}
           onClick={createRepo}
           small
         >
@@ -55,4 +58,4 @@ export const CreateRepo = observer(({ style }: Props) => {
       </Margin>
     </div>
   );
-});
+};

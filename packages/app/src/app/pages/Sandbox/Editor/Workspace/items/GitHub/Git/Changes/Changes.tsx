@@ -5,17 +5,20 @@ import { ChangeContainer, Entry } from './elements';
 
 export const Changes = ({ changes, color, hideColor, Icon, title }) => (
   <>
-    {changes.sort().map(change => (
-      <ChangeContainer color={color} key={change}>
-        <Entry color={color} hideColor={hideColor}>
-          <Tooltip content={title}>
-            <Icon />
-          </Tooltip>
+    {changes
+      .slice()
+      .sort()
+      .map(change => (
+        <ChangeContainer color={color} key={change}>
+          <Entry color={color} hideColor={hideColor}>
+            <Tooltip content={title}>
+              <Icon />
+            </Tooltip>
 
-          {change}
-        </Entry>
-      </ChangeContainer>
-    ))}
+            {change}
+          </Entry>
+        </ChangeContainer>
+      ))}
   </>
 );
 

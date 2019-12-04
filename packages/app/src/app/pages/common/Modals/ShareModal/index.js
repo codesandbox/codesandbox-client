@@ -1,11 +1,12 @@
-import React, { Fragment } from 'react';
-import { inject, observer } from 'mobx-react';
-import Files from 'embed/components/Files';
+import React from 'react';
+import { inject, observer } from 'app/componentConnectors';
+import Files from 'embed/components/legacy/Files';
 import QRCode from 'qrcode.react';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { EMBED_LIGHT_THEME } from '@codesandbox/common/lib/utils/feature-flags';
 import Title from './Title';
 
 import {
@@ -22,6 +23,7 @@ import {
 import {
   BUTTON_URL,
   VIEW_OPTIONS,
+  THEME_OPTIONS,
   getIframeScript,
   getEditorUrl,
   getEmbedUrl,
@@ -32,10 +34,11 @@ import {
 class ShareView extends React.Component {
   state = {
     view: VIEW_OPTIONS[0],
+    theme: 'dark',
     testsView: false,
     defaultModule: null,
     autoResize: false,
-    hideNavigation: false,
+    hideNavigation: true,
     isCurrentModuleView: false,
     fontSize: 14,
     initialPath: '',
@@ -59,8 +62,10 @@ class ShareView extends React.Component {
   };
 
   setEditorView = () => this.setState({ showEditor: true, showPreview: false });
+
   setPreviewView = () =>
     this.setState({ showEditor: false, showPreview: true });
+
   setMixedView = () => this.setState({ showEditor: true, showPreview: true });
 
   setDefaultModule = id => this.setState({ defaultModule: id });
@@ -106,20 +111,25 @@ class ShareView extends React.Component {
     this.setState({ view });
   };
 
+  setTheme = (theme: string) => {
+    this.setState({ theme });
+  };
+
   select = function select(event) {
     event.target.select();
   };
 
   toggle = (key: string) => {
-    this.setState({ [key]: !this.state[key] });
+    this.setState(state => ({ [key]: !state[key] }));
   };
 
   render() {
     const sandbox = this.props.store.editor.currentSandbox;
-    const mainModule = this.props.store.editor.mainModule;
+    const { mainModule } = this.props.store.editor;
 
     const {
       view,
+      theme,
       testsView,
       autoResize,
       hideNavigation,
@@ -134,7 +144,7 @@ class ShareView extends React.Component {
     const defaultModule = this.state.defaultModule || mainModule.id;
 
     return (
-      <Fragment>
+      <>
         <header
           // eslint-disable-next-line
           dangerouslySetInnerHTML={{
@@ -154,6 +164,15 @@ class ShareView extends React.Component {
                   value={view}
                   setValue={this.setView}
                 />
+                {EMBED_LIGHT_THEME && (
+                  <PaddedPreference
+                    title="Theme"
+                    type="dropdown"
+                    options={THEME_OPTIONS}
+                    value={theme}
+                    setValue={this.setTheme}
+                  />
+                )}
                 <PaddedPreference
                   title="Auto resize"
                   type="boolean"
@@ -290,7 +309,7 @@ class ShareView extends React.Component {
                 <Inputs>
                   <QRCode
                     value={getEmbedUrl(sandbox, mainModule, this.state)}
-                    size={'100%'}
+                    size="100%"
                     renderAs="svg"
                   />
                 </Inputs>
@@ -331,7 +350,7 @@ class ShareView extends React.Component {
             </section>
           </Wrapper>
         </ShareOptions>
-      </Fragment>
+      </>
     );
   }
 }

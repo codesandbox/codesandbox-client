@@ -1,8 +1,7 @@
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import { StaticQuery, graphql } from 'gatsby';
 import React from 'react';
 import styled from 'styled-components';
-import { StaticQuery, graphql } from 'gatsby';
-
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 
 import media from '../../../utils/media';
 
@@ -78,10 +77,12 @@ const Image = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;
 
-const PublicationItem = ({ title, image, url, description }) => (
+const PublicationItem = ({ description, image, title, url }) => (
   <Item href={url} target="_blank" rel="noopener noreferrer">
-    <Image bg={image} aria-label={title} />
+    <Image aria-label={title} bg={image} />
+
     <PublicationTitle>{title}</PublicationTitle>
+
     <PublicationDescription>{description}</PublicationDescription>
   </Item>
 );
@@ -90,51 +91,67 @@ export default () => (
   <StaticQuery
     query={graphql`
       query {
-        allMediumPost(limit: 3, sort: { fields: [createdAt], order: DESC }) {
+        allBlogPosts: allMarkdownRemark(
+          filter: { fileAbsolutePath: { regex: "/articles/" } }
+          limit: 3
+          sort: { fields: [fields___date], order: [DESC] }
+        ) {
           edges {
             node {
-              id
-              title
-              uniqueSlug
-              virtuals {
-                subtitle
-                previewImage {
-                  imageId
+              fields {
+                description
+                slug
+                title
+              }
+              frontmatter {
+                banner {
+                  publicURL
                 }
               }
+              id
             }
           }
         }
       }
     `}
-    render={({ allMediumPost: { edges } }) => (
-      <Container>
+    render={({ allBlogPosts: { edges: blogPosts } }) => (
+      <Container as="section" aria-labelledby="recent-publications">
         <MaxWidth width={1280}>
-          <Title>Recent Publications</Title>
-          <SubTitle>
+          <Title id="recent-publications">Recent Publications</Title>
+
+          <SubTitle aria-label="You can follow our blog to stay up to date with new publications.">
             You can follow{' '}
             <a
-              href="https://medium.com/@compuives/"
-              target="_blank"
+              href="/blog"
               rel="noreferrer noopener"
               style={{ textDecoration: 'none' }}
+              target="_blank"
             >
               our blog
             </a>{' '}
             to stay up to date with new publications.
           </SubTitle>
-          <Items style={{ marginBottom: '2rem' }}>
-            {edges.map(post => (
-              <PublicationItem
-                key={post.node.id}
-                title={post.node.title}
-                description={post.node.virtuals.subtitle}
-                url={`https://medium.com/@compuives/${post.node.uniqueSlug}`}
-                image={`https://cdn-images-1.medium.com/max/2000/${
-                  post.node.virtuals.previewImage.imageId
-                }`}
-              />
-            ))}
+
+          <Items as="ul" style={{ marginBottom: '2rem' }}>
+            {blogPosts.map(
+              ({
+                node: {
+                  fields: { description, slug, title },
+                  frontmatter: {
+                    banner: { publicURL: banner },
+                  },
+                  id,
+                },
+              }) => (
+                <PublicationItem
+                  description={description}
+                  image={banner}
+                  key={id}
+                  title={title}
+                  url={`/post/${slug}`}
+                />
+              )
+            )}
           </Items>
         </MaxWidth>
       </Container>

@@ -1,16 +1,16 @@
+import React, { useEffect } from 'react';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import React, { useEffect } from 'react';
-
-import Navigation from 'app/pages/common/Navigation';
-import SubTitle from 'app/components/SubTitle';
-import Title from 'app/components/Title';
-import { useSignals } from 'app/store';
-
+import { useOvermind } from 'app/overmind';
+import { Title } from 'app/components/Title';
+import { SubTitle } from 'app/components/SubTitle';
+import { Navigation } from 'app/pages/common/Navigation';
 import { Container, Content, Code } from './elements';
 
-const CLIInstructions = () => {
-  const { cliInstructionsMounted } = useSignals();
+export const CLIInstructions: React.FC = () => {
+  const {
+    actions: { cliInstructionsMounted },
+  } = useOvermind();
 
   useEffect(() => {
     cliInstructionsMounted();
@@ -42,5 +42,3 @@ const CLIInstructions = () => {
     </MaxWidth>
   );
 };
-
-export default CLIInstructions;

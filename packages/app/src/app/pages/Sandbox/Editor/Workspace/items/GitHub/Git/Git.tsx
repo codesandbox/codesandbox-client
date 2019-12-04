@@ -4,50 +4,49 @@ import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
 import Notice from '@codesandbox/common/lib/components/Notice';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { observer } from 'mobx-react-lite';
-import React, { useEffect } from 'react';
+import React, { ChangeEvent, FunctionComponent, useEffect } from 'react';
 
-import { useSignals, useStore } from 'app/store';
+import { useOvermind } from 'app/overmind';
 
-import { WorkspaceSubtitle, WorkspaceInputContainer } from '../../../elements';
+import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../../elements';
 
 import { Container, Buttons, ErrorMessage, NoChanges } from './elements';
 import { TotalChanges } from './TotalChanges';
 
-function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
-  return rights === 'write' || rights === 'admin';
-}
+const hasWriteAccess = (rights: string) => ['admin', 'write'].includes(rights);
 
-export const Git = observer(() => {
+export const Git: FunctionComponent = () => {
   const {
-    git: {
-      createCommitClicked,
-      createPrClicked,
-      descriptionChanged,
-      gitMounted,
-      subjectChanged,
+    actions: {
+      git: {
+        createCommitClicked,
+        createPrClicked,
+        descriptionChanged,
+        gitMounted,
+        subjectChanged,
+      },
     },
-  } = useSignals();
-  const {
-    editor: {
-      currentSandbox: { originalGit },
-      isAllModulesSynced,
+    state: {
+      editor: {
+        currentSandbox: { originalGit },
+        isAllModulesSynced,
+      },
+      git: { description, isFetching, originalGitChanges: gitChanges, subject },
     },
-    git: { description, isFetching, originalGitChanges: gitChanges, subject },
-  } = useStore();
+  } = useOvermind();
 
   useEffect(() => {
     gitMounted();
-  }, []); // eslint-disable-line
+  }, [gitMounted]);
 
   const createCommit = () => createCommitClicked();
   const createPR = () => createPrClicked();
   const changeSubject = ({
     target: { value },
-  }: React.ChangeEvent<HTMLInputElement>) => subjectChanged({ subject: value });
+  }: ChangeEvent<HTMLInputElement>) => subjectChanged({ subject: value });
   const changeDescription = ({
     target: { value },
-  }: React.ChangeEvent<HTMLTextAreaElement>) =>
+  }: ChangeEvent<HTMLTextAreaElement>) =>
     descriptionChanged({ description: value });
 
   const modulesNotSaved = !isAllModulesSynced;
@@ -69,6 +68,7 @@ export const Git = observer(() => {
           repo={originalGit.repo}
           url={githubRepoUrl(originalGit)}
           username={originalGit.username}
+          commitSha={originalGit.commitSha}
         />
       </Margin>
 
@@ -153,4 +153,4 @@ export const Git = observer(() => {
       </Margin>
     </Container>
   );
-});
+};

@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
 
-import ContextMenu from 'app/components/ContextMenu';
+import { ContextMenu } from 'app/components/ContextMenu';
 import { Container, TabTitle, StyledCloseIcon } from './elements';
 
 class Tab extends React.Component {
@@ -40,7 +39,7 @@ class Tab extends React.Component {
     const { hovering } = this.state;
 
     if (hovering && tabCount > 1) {
-      return <StyledCloseIcon onClick={this.closeTab} show={'true'} />;
+      return <StyledCloseIcon onClick={this.closeTab} show="true" />;
     }
 
     return <StyledCloseIcon onClick={this.closeTab} show={undefined} />;
@@ -72,10 +71,10 @@ class Tab extends React.Component {
           onMouseLeave={this.handleMouseLeave}
         >
           {title ? (
-            <React.Fragment>
+            <>
               <TabTitle>{title}</TabTitle>
               {this.renderTabStatus()}
-            </React.Fragment>
+            </>
           ) : (
             children({ hovering, closeTab: this.closeTab })
           )}
@@ -85,4 +84,4 @@ class Tab extends React.Component {
   }
 }
 
-export default observer(Tab);
+export default Tab;

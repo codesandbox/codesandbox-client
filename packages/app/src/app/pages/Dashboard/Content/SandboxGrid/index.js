@@ -1,33 +1,34 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
-
-import moment from 'moment';
-import { uniq } from 'lodash-es';
-import { basename } from 'path';
-import { camelizeKeys } from 'humps';
-
-import track from '@codesandbox/common/lib/utils/analytics';
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-import Grid from 'react-virtualized/dist/commonjs/Grid';
-import Column from 'react-virtualized/dist/commonjs/Table/Column';
-import Table from 'react-virtualized/dist/commonjs/Table';
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import downloadZip from 'app/store/providers/Utils/create-zip';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import 'react-virtualized/styles.css';
 
-import SandboxItem from '../SandboxCard';
-import { PADDING } from '../SandboxCard/elements';
-import Selection, { getBounds } from '../Selection';
-import { Content, StyledRow } from './elements';
-import DragLayer from '../DragLayer';
+import { basename } from 'path';
+
+import track from '@codesandbox/common/lib/utils/analytics';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { inject, observer } from 'app/componentConnectors';
+import downloadZip from 'app/overmind/effects/zip/create-zip';
+import { formatDistanceToNow } from 'date-fns';
+import { zonedTimeToUtc } from 'date-fns-tz';
+import { camelizeKeys } from 'humps';
+import { uniq } from 'lodash-es';
+import React from 'react';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import Grid from 'react-virtualized/dist/commonjs/Grid';
+import Table from 'react-virtualized/dist/commonjs/Table';
+import Column from 'react-virtualized/dist/commonjs/Table/Column';
 
 import {
   deleteSandboxes,
+  makeTemplates,
   permanentlyDeleteSandboxes,
   setSandboxesPrivacy,
   undeleteSandboxes,
 } from '../../queries';
+import { DragLayer } from '../DragLayer';
+import { SandboxItem } from '../SandboxCard';
+import { PADDING } from '../SandboxCard/elements';
+import { Selection, getBounds } from '../Selection';
+import { Content, StyledRow } from './elements';
 
 type State = {
   selection: ?{
@@ -43,8 +44,10 @@ const BASE_HEIGHT = 242;
 const IS_TABLE = false;
 
 const diff = (a, b) => (a > b ? a - b : b - a);
+const distanceInWordsToNow = date =>
+  formatDistanceToNow(zonedTimeToUtc(date, 'Etc/UTC'));
 
-class SandboxGrid extends React.Component<*, State> {
+class SandboxGridComponent extends React.Component<*, State> {
   state = {
     selection: undefined,
   };
@@ -53,14 +56,14 @@ class SandboxGrid extends React.Component<*, State> {
 
   setSandboxesSelected = (ids, { additive = false, range = false } = {}) => {
     const { store, sandboxes, signals } = this.props;
-    const selectedSandboxes = store.dashboard.selectedSandboxes;
+    const { selectedSandboxes } = store.dashboard;
     if (range === true) {
       track('Dashboard - Sandbox Shift Selection');
       const indexedSandboxes = sandboxes.map((sandbox, i) => ({ sandbox, i }));
 
       // We need to select a range
-      const firstIndexInfo = indexedSandboxes.find(
-        ({ sandbox }) => selectedSandboxes.indexOf(sandbox.id) > -1
+      const firstIndexInfo = indexedSandboxes.find(({ sandbox }) =>
+        selectedSandboxes.includes(sandbox.id)
       );
 
       const [id] = ids;
@@ -87,10 +90,10 @@ class SandboxGrid extends React.Component<*, State> {
     if (additive) {
       track('Dashboard - Sandbox Additive Selection');
       sandboxIds = store.dashboard.selectedSandboxes.filter(
-        id => ids.indexOf(id) === -1
+        id => !ids.includes(id)
       );
       const additiveIds = ids.filter(
-        id => store.dashboard.selectedSandboxes.indexOf(id) === -1
+        id => !store.dashboard.selectedSandboxes.includes(id)
       );
 
       sandboxIds = uniq([...sandboxIds, ...additiveIds]);
@@ -99,6 +102,20 @@ class SandboxGrid extends React.Component<*, State> {
     signals.dashboard.sandboxesSelected({
       sandboxIds,
     });
+  };
+
+  makeTemplates = (teamId?: string) => {
+    const collections = uniq(
+      this.props.sandboxes
+        .filter(sandbox => this.selectedSandboxesObject[sandbox.id])
+        .map(s => s.collection)
+    );
+
+    makeTemplates(
+      this.props.store.dashboard.selectedSandboxes,
+      teamId,
+      collections
+    );
   };
 
   deleteSandboxes = () => {
@@ -155,6 +172,10 @@ class SandboxGrid extends React.Component<*, State> {
     );
   };
 
+  forkSandbox = id => {
+    this.props.signals.editor.forkExternalSandbox({ sandboxId: id });
+  };
+
   onMouseDown = (event: MouseEvent) => {
     this.setState({
       selection: {
@@ -196,9 +217,10 @@ class SandboxGrid extends React.Component<*, State> {
         endX: event.clientX,
         endY: event.clientY,
       };
-      this.setState({
+      // eslint-disable-next-line
+      this.setState(state => ({
         selection: newSelection,
-      });
+      }));
 
       const sandboxes = document.querySelectorAll('.sandbox-item');
       const selectedSandboxes = [];
@@ -226,11 +248,15 @@ class SandboxGrid extends React.Component<*, State> {
         }
       }
 
-      this.setSandboxesSelected(selectedSandboxes.map(el => el.id), {
-        additive: event.metaKey,
-      });
+      this.setSandboxesSelected(
+        selectedSandboxes.map(el => el.id),
+        {
+          additive: event.metaKey,
+        }
+      );
     }
   };
+
   isScrolling = () => this.scrolling;
 
   cellRenderer = ({ rowIndex, columnIndex, key, style, isScrolling }) => {
@@ -255,15 +281,15 @@ class SandboxGrid extends React.Component<*, State> {
 
     const getOrder = () => {
       if (item.removedAt) {
-        return `Deleted ${moment.utc(item.removedAt).fromNow()}`;
+        return `Deleted ${distanceInWordsToNow(item.removedAt)} ago`;
       }
 
       const orderField = this.props.store.dashboard.orderBy.field;
       if (orderField === 'insertedAt') {
-        return `Created ${moment.utc(item.insertedAt).fromNow()}`;
+        return `Created ${distanceInWordsToNow(item.insertedAt)} ago`;
       }
 
-      return `Edited ${moment.utc(item.updatedAt).fromNow()}`;
+      return `Edited ${distanceInWordsToNow(item.updatedAt)} ago`;
     };
 
     let editedSince = getOrder();
@@ -271,7 +297,7 @@ class SandboxGrid extends React.Component<*, State> {
     if (this.props.page === 'search' || this.props.page === 'recent') {
       const dir =
         basename(item.collection.path) ||
-        (item.collection.teamId ? 'Our Sandboxes' : 'My Sandboxes');
+        (item.collection.teamId ? 'Team Sandboxes' : 'My Sandboxes');
 
       if (dir) {
         editedSince += ` in ${dir}`;
@@ -284,6 +310,7 @@ class SandboxGrid extends React.Component<*, State> {
         id={item.id}
         title={getSandboxName(item)}
         alias={item.alias}
+        color={item.forkedTemplate ? item.forkedTemplate.color : undefined}
         details={editedSince}
         style={style}
         key={key}
@@ -299,15 +326,18 @@ class SandboxGrid extends React.Component<*, State> {
         }
         collectionPath={item.collection.path}
         collectionTeamId={item.collection.teamId}
+        forkSandbox={this.forkSandbox}
         deleteSandboxes={this.deleteSandboxes}
         undeleteSandboxes={this.undeleteSandboxes}
         permanentlyDeleteSandboxes={this.permanentlyDeleteSandboxes}
         exportSandboxes={this.exportSandboxes}
         setSandboxesPrivacy={this.setSandboxesPrivacy}
+        makeTemplates={this.makeTemplates}
         page={this.props.page}
         privacy={item.privacy}
         isPatron={this.props.store.isPatron}
         screenshotUrl={item.screenshotUrl}
+        screenshotOutdated={item.screenshotOutdated}
       />
     );
   };
@@ -392,7 +422,7 @@ class SandboxGrid extends React.Component<*, State> {
                     label="Last Updated"
                     dataKey="updatedAt"
                     cellDataGetter={({ rowData }) =>
-                      moment.utc(rowData.updatedAt).fromNow()
+                      distanceInWordsToNow(rowData.updatedAt) + ' ago'
                     }
                     width={150}
                   />
@@ -400,7 +430,7 @@ class SandboxGrid extends React.Component<*, State> {
                     label="Created"
                     dataKey="insertedAt"
                     cellDataGetter={({ rowData }) =>
-                      moment.utc(rowData.insertedAt).fromNow()
+                      distanceInWordsToNow(rowData.insertedAt) + ' ago'
                     }
                     width={150}
                   />
@@ -436,4 +466,7 @@ class SandboxGrid extends React.Component<*, State> {
   }
 }
 
-export default inject('store', 'signals')(observer(SandboxGrid));
+export const SandboxGrid = inject(
+  'store',
+  'signals'
+)(observer(SandboxGridComponent));

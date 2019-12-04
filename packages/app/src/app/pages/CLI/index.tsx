@@ -1,15 +1,18 @@
-import { observer } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
-
-import Navigation from 'app/pages/common/Navigation';
-import { useSignals, useStore } from 'app/store';
-
+import { Navigation } from 'app/pages/common/Navigation';
+import { useOvermind } from 'app/overmind';
 import { Container } from './elements';
-import Prompt from './Prompt';
+import { Prompt } from './Prompt';
 
-const CLI = () => {
-  const { cliMounted, signInCliClicked } = useSignals();
-  const { user, authToken, isLoadingCLI, error } = useStore();
+interface CliProps {
+  small: boolean;
+}
+
+const CLI: React.FunctionComponent<CliProps> = ({ small }) => {
+  const {
+    state: { user, authToken, isLoadingCLI, error },
+    actions: { cliMounted, signInCliClicked },
+  } = useOvermind();
 
   useEffect(() => {
     cliMounted();
@@ -30,4 +33,5 @@ const CLI = () => {
   );
 };
 
-export default observer(CLI);
+// eslint-disable-next-line import/no-default-export
+export default CLI;

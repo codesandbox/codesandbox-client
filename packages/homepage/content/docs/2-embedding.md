@@ -1,7 +1,7 @@
 ---
-title: 'Embedding'
+title: Embedding
 authors: ['CompuIves']
-description: "It's possible to embed a sandbox on Medium and other websites."
+description: It's possible to embed a sandbox on Medium and other websites.
 ---
 
 ## What is an Embed?
@@ -9,8 +9,8 @@ description: "It's possible to embed a sandbox on Medium and other websites."
 CodeSandbox has a separate application for the embed. This application is
 specifically built to be as small as possible. If you replace `s` in the URL of
 a sandbox to `embed` you have the embed version of the sandbox. Example:
-https://codesandbox.io/s/new => https://codesandbox.io/embed/new. Notice
-that the embed doesn't have all features of the full editor.
+https://codesandbox.io/s/new => https://codesandbox.io/embed/new. Notice that
+the embed doesn't have all features of the full editor.
 
 ## Generate a URL
 
@@ -38,6 +38,7 @@ find them here.
 | `editorsize`     | Size in percentage of editor.                                                                                  | number                               | `50`                                 |
 | `eslint`         | Use eslint (increases embed size significantly).                                                               | `0`/`1`                              | `0`                                  |
 | `expanddevtools` | Start with the devtools (console) open.                                                                        | `0`/`1`                              | `0`                                  |
+| `hidedevtools`   | Hide the DevTools bar of the preview.                                                                          | `0`/`1`                              | `0`                                  |
 | `fontsize`       | Font size of editor                                                                                            | number (in px)                       | `14`                                 |
 | `forcerefresh`   | Force a full refresh of frame after every edit.                                                                | `0`/`1`                              | `0`                                  |
 | `hidenavigation` | Hide the navigation bar of the preview.                                                                        | `0`/`1`                              | `0`                                  |
@@ -49,6 +50,7 @@ find them here.
 | `runonclick`     | Only load the preview when the user says so.                                                                   | `0`/`1`                              | `0`                                  |
 | `verticallayout` | Whether to show the editor and preview vertically.                                                             | `0`/`1`                              | `0`                                  |
 | `view`           | Which view to open by default                                                                                  | `editor`/`split`/`preview`           | `split`, `preview` for small screens |
+| `theme`          | Which theme to show for the embed                                                                              | `dark`/`light`                       | `dark`                               |
 
 ## Example Embeds
 
@@ -62,11 +64,18 @@ This embed is focused on being as light as possible:
 
 Use this code to embed:
 
-`<iframe src="https://codesandbox.io/embed/new?codemirror=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`
+```html
+<iframe
+  src="https://codesandbox.io/embed/new?codemirror=1"
+  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+  allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+></iframe>
+```
 
 That will give to a result like this:
 
-<iframe src="https://codesandbox.io/embed/new?codemirror=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/new?codemirror=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 ### Code Example Embed
 
@@ -77,8 +86,15 @@ is only supported with the CodeMirror editor currently:
 
 Use this code to embed:
 
-`<iframe src="https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`
+```html
+<iframe
+  src="https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14"
+  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+  allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+></iframe>
+```
 
 That will give to a result like this:
 
-<iframe src="https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>

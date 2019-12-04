@@ -26,7 +26,7 @@ export default class Module {
   filename: string | null;
   loaded: boolean;
   static _extensions: {
-    [ext: string]: Function;
+    [ext: string]: (module: Module, filename: string) => void;
   } = {
     ['.js']: function(module: Module, filename: string) {
       const fs = BrowserFS.BFSRequire('fs');
@@ -99,7 +99,7 @@ export default class Module {
     };
 
     const global: any = {
-      require: require,
+      require,
       exports: _self.exports,
       __filename: filename,
       __dirname: path.dirname(filename),
@@ -152,6 +152,10 @@ export default class Module {
 
     if (request === 'assert') {
       return require('assert');
+    }
+
+    if (request === 'string_decoder') {
+      return require('string_decoder');
     }
 
     if (request === 'diagnostics') {
@@ -221,7 +225,7 @@ export default class Module {
     }
 
     if (request === 'util') {
-      // Direct import to get the right version
+      // Direct import to get the right version for VIM extensions
       return require('../node_modules/util');
     }
 

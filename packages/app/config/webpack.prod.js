@@ -1,40 +1,87 @@
+/* eslint-disable global-require */
+
+// const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin;
-const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
-  .normalizeName;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { normalizeName } = require('webpack/lib/optimize/SplitChunksPlugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
-const childProcess = require('child_process');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const VERSION = require('@codesandbox/common/lib/version').default;
+// const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
 
 const publicPath = '/';
-
-const COMMIT_COUNT = childProcess
-  .execSync('git rev-list --count HEAD')
-  .toString();
-
-const COMMIT_HASH = childProcess
-  .execSync('git rev-parse --short HEAD')
-  .toString();
-const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
+// const isMaster =
+//   childProcess
+//     .execSync(`git branch | grep \\* | cut -d ' ' -f2`)
+//     .toString()
+//     .trim() === 'master';
 
 const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
 
 module.exports = merge(commonConfig, {
   devtool: 'source-map',
   output: {
-    filename: 'static/js/[name].[chunkhash:8].js',
-    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
-    sourceMapFilename: '[file].map', // Default
+    filename: 'static/js/[name].[contenthash:8].js',
+    chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
   },
   mode: 'production',
   stats: 'verbose',
+  // optimization: {
+  //   minimize: false,
+  // },
 
   optimization: {
-    minimizer: [new TerserJSPlugin({ parallel: true })],
+    minimize: true,
+    minimizer: [
+      new TerserJSPlugin({
+        terserOptions: {
+          parse: {
+            // We want terser to parse ecma 8 code. However, we don't want it
+            // to apply any minification steps that turns valid ecma 5 code
+            // into invalid ecma 5 code. This is why the 'compress' and 'output'
+            // sections only apply transformations that are ecma 5 safe
+            // https://github.com/facebook/create-react-app/pull/4234
+            ecma: 8,
+          },
+          compress: {
+            ecma: 5,
+            warnings: false,
+            // Disabled because of an issue with Uglify breaking seemingly valid code:
+            // https://github.com/facebook/create-react-app/issues/2376
+            // Pending further investigation:
+            // https://github.com/mishoo/UglifyJS2/issues/2011
+            comparisons: false,
+            // Disabled because of an issue with Terser breaking valid code:
+            // https://github.com/facebook/create-react-app/issues/5250
+            // Pending further investigation:
+            // https://github.com/terser-js/terser/issues/120
+            inline: 2,
+          },
+          mangle: {
+            safari10: true,
+          },
+          output: {
+            ecma: 5,
+            comments: false,
+            // Turned on because emoji and regex is not minified properly using default
+            // https://github.com/facebook/create-react-app/issues/2488
+            ascii_only: true,
+          },
+        },
+        // Use multi-process parallel running to improve the build speed
+        // Default number of concurrent runs: os.cpus().length - 1
+        // Disabled on WSL (Windows Subsystem for Linux) due to an issue with Terser
+        // https://github.com/webpack-contrib/terser-webpack-plugin/issues/21
+        parallel: 2,
+        cache: true,
+        sourceMap: true,
+      }),
+    ],
     concatenateModules: true, // ModuleConcatenationPlugin
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
@@ -62,10 +109,6 @@ module.exports = merge(commonConfig, {
   plugins: [
     process.env.ANALYZE && new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
-      debug: false,
-    }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
     new SWPrecacheWebpackPlugin({
@@ -86,6 +129,7 @@ module.exports = merge(commonConfig, {
           // https://github.com/facebookincubator/create-react-app/issues/2612
           return;
         }
+        // eslint-disable-next-line no-console
         console.log(message);
       },
       minify: true,
@@ -136,7 +180,7 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /\/vscode22/,
+          urlPattern: /\/vscode25/,
           handler: 'cacheFirst',
           options: {
             cache: {
@@ -177,12 +221,15 @@ module.exports = merge(commonConfig, {
           // https://github.com/facebookincubator/create-react-app/issues/2612
           return;
         }
+        // eslint-disable-next-line no-console
         console.log(message);
       },
       minify: true,
       // For unknown URLs, fallback to the index page
       navigateFallback: 'https://new.codesandbox.io/frame.html',
-      staticFileGlobs: ['www/frame.html'],
+      staticFileGlobs: process.env.SANDBOX_ONLY
+        ? ['www/index.html']
+        : ['www/frame.html'],
       stripPrefix: 'www/',
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
@@ -301,5 +348,22 @@ module.exports = merge(commonConfig, {
       fileName: 'file-manifest.json',
       publicPath: commonConfig.output.publicPath,
     }),
+    new CopyWebpackPlugin([
+      {
+        from: '../sse-hooks/dist',
+        to: 'public/sse-hooks',
+      },
+    ]),
+    new ImageminPlugin({
+      pngquant: {
+        quality: '95-100',
+      },
+    }),
+    // isMaster &&
+    //   new SentryWebpackPlugin({
+    //     include: 'src',
+    //     ignore: ['node_modules', 'webpack.config.js'],
+    //     release: VERSION,
+    //   }),
   ].filter(Boolean),
 });

@@ -8,7 +8,6 @@ export const BG_HOVER = '#212629';
 export const Overlay = styled.div`
   position: absolute;
   background: rgba(28, 32, 34, 0.9);
-  border-radius: 4px 4px 0px 0px;
   top: 0;
   left: 0;
   width: 100%;

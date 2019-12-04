@@ -1,33 +1,31 @@
-import * as React from 'react';
+import React, { ChangeEvent, FunctionComponent } from 'react';
+
 import Select from '../Select';
 
-export type NameMapper = (param: string) => string;
-
-export type Props = {
+type Props = {
+  mapName?: (param: string) => string;
+  options: string[];
   setValue: (value: string) => void;
   value: string;
-  options: string[];
-  mapName?: NameMapper;
 };
 
-export default class PreferenceInput extends React.PureComponent<Props> {
-  handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-
-    this.props.setValue(value);
+export const PreferenceDropdown: FunctionComponent<Props> = ({
+  mapName,
+  options,
+  setValue,
+  value,
+}) => {
+  const handleChange = ({ target }: ChangeEvent<HTMLSelectElement>) => {
+    setValue(target.value);
   };
 
-  render() {
-    const { value, options, mapName } = this.props;
-
-    return (
-      <Select onChange={this.handleChange} value={value}>
-        {options.map(op => (
-          <option key={op} value={op}>
-            {mapName ? mapName(op) : op}
-          </option>
-        ))}
-      </Select>
-    );
-  }
-}
+  return (
+    <Select onChange={handleChange} value={value}>
+      {options.map(option => (
+        <option key={option} value={option}>
+          {mapName ? mapName(option) : option}
+        </option>
+      ))}
+    </Select>
+  );
+};

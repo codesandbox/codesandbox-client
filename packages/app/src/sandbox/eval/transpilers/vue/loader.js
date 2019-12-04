@@ -104,7 +104,7 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   const defaultLoaders = {
     html: templateCompilerPath + templateCompilerOptions,
-    css: styleLoaderPath + '!' + 'css-loader' + cssLoaderOptions,
+    css: styleLoaderPath + '!css-loader' + cssLoaderOptions,
     js: 'babel-loader',
   };
 
@@ -142,7 +142,7 @@ export default function(content: string, loaderContext: LoaderContext) {
         : getRequire('styles', style, i, style.scoped);
 
       const hasStyleLoader = requireString.indexOf('style-loader') > -1;
-      const hasVueStyleLoader = requireString.indexOf('vue-style-loader') > -1;
+      // const hasVueStyleLoader = requireString.indexOf('vue-style-loader') > -1;
 
       const invokeStyle = c => `  ${c}\n`;
 
@@ -233,7 +233,7 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   // <script>
   output += '  /* script */\n  ';
-  const script = parts.script;
+  const { script } = parts;
   if (script) {
     if (options.esModule) {
       output += script.src
@@ -262,7 +262,7 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   // <template>
   output += '/* template */\n';
-  const template = parts.template;
+  const { template } = parts;
   if (template) {
     if (options.esModule) {
       output +=

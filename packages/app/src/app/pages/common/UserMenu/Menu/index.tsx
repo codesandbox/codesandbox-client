@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 import UserIcon from 'react-icons/lib/ti/user';
 import ExitIcon from 'react-icons/lib/md/exit-to-app';
 import FolderIcon from 'react-icons/lib/md/folder';
 import SettingsIcon from 'react-icons/lib/md/settings';
+import SearchIcon from 'react-icons/lib/go/search';
 import BookIcon from 'react-icons/lib/md/library-books';
 
 import {
@@ -12,118 +12,138 @@ import {
   patronUrl,
   curatorUrl,
   dashboardUrl,
+  searchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import PatronBadge from '@codesandbox/common/lib/utils/badges/PatronBadge';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { MenuItem, Menu as ReakitMenu, MenuStateReturn } from 'reakit/Menu';
 // @ts-ignore
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
-import track from '@codesandbox/common/lib/utils/analytics';
 
-import { Container, Item, Icon, Separator } from './elements';
-import FeedbackIcon from './FeedbackIcon';
+import {
+  Container,
+  Icon,
+  Separator,
+  ItemLink,
+  ItemA,
+  ItemButton,
+} from './elements';
+import { FeedbackIcon } from './FeedbackIcon';
 
 interface Props {
   username: string;
-  curator: boolean;
-  openPreferences: (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => void;
-  openStorageManagement: (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => void;
-  openFeedback: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  signOut: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  curator: string;
+  openPreferences: () => void;
+  openStorageManagement: () => void;
+  openFeedback: () => void;
+  signOut: () => void;
+  menuProps: MenuStateReturn;
 }
 
-const Menu = ({
+export const Menu = ({
   username,
   curator,
   openPreferences,
   openStorageManagement,
   openFeedback,
   signOut,
+  menuProps,
 }: Props) => {
   useEffect(() => {
-    track('User Menu Open');
-  }, []);
+    if (menuProps.visible) {
+      track('User Menu Open');
+    }
+  }, [menuProps.visible]);
 
   return (
-    <Container>
-      <Item as={Link} to={profileUrl(username)}>
-        <Icon>
-          <UserIcon />
-        </Icon>
-        My Profile
-      </Item>
-
-      <Separator />
-
-      <Item as={Link} to={dashboardUrl()}>
-        <Icon>
-          <InfoIcon />
-        </Icon>
-        Dashboard
-      </Item>
-
-      <Item as="a" href="/docs">
-        <Icon>
-          <BookIcon />
-        </Icon>
-        Documentation
-      </Item>
-
-      {curator && (
-        <Item as={Link} to={curatorUrl()}>
+    <ReakitMenu {...menuProps} style={{ outline: 0 }} aria-label="user options">
+      <Container>
+        <MenuItem {...menuProps} to={profileUrl(username)} as={ItemLink}>
           <Icon>
-            <span style={{ width: 14 }} role="img" aria-label="Star">
-              ✨
-            </span>
+            <UserIcon />
           </Icon>
-          Curator Dashboard
-        </Item>
-      )}
+          My Profile
+        </MenuItem>
 
-      <Item as={Link} to={patronUrl()}>
-        <Icon>
-          <PatronBadge style={{ width: 24, margin: '-6px -5px' }} size={24} />
-        </Icon>
-        Patron Page
-      </Item>
+        <Separator {...menuProps} />
 
-      <Separator />
+        <MenuItem {...menuProps} to={dashboardUrl()} as={ItemLink}>
+          <Icon>
+            <InfoIcon />
+          </Icon>
+          Dashboard
+        </MenuItem>
 
-      <Item onClick={openStorageManagement}>
-        <Icon>
-          <FolderIcon />
-        </Icon>
-        Storage Management
-      </Item>
+        <MenuItem {...menuProps} href="/docs" as={ItemA}>
+          <Icon>
+            <BookIcon />
+          </Icon>
+          Documentation
+        </MenuItem>
 
-      <Item onClick={openPreferences}>
-        <Icon>
-          <SettingsIcon />
-        </Icon>
-        Preferences
-      </Item>
+        <MenuItem {...menuProps} to={searchUrl()} as={ItemLink}>
+          <Icon>
+            <SearchIcon />
+          </Icon>
+          Search Sandboxes
+        </MenuItem>
 
-      <Separator />
+        {curator && (
+          <MenuItem {...menuProps} to={curatorUrl()} as={ItemLink}>
+            <Icon>
+              <span style={{ width: 14 }} role="img" aria-label="Star">
+                ✨
+              </span>
+            </Icon>
+            Curator Dashboard
+          </MenuItem>
+        )}
 
-      <Item onClick={openFeedback}>
-        <Icon>
-          <FeedbackIcon />
-        </Icon>
-        Submit Feedback
-      </Item>
+        <MenuItem {...menuProps} to={patronUrl()} as={ItemLink}>
+          <Icon>
+            <PatronBadge style={{ width: 24, margin: '-6px -5px' }} size={24} />
+          </Icon>
+          Patron Page
+        </MenuItem>
 
-      <Separator />
+        <Separator {...menuProps} />
 
-      <Item onClick={signOut}>
-        <Icon>
-          <ExitIcon />
-        </Icon>
-        Sign out
-      </Item>
-    </Container>
+        <MenuItem
+          {...menuProps}
+          as={ItemButton}
+          onClick={openStorageManagement}
+        >
+          <Icon>
+            <FolderIcon />
+          </Icon>
+          Storage Management
+        </MenuItem>
+
+        <MenuItem {...menuProps} as={ItemButton} onClick={openPreferences}>
+          <Icon>
+            <SettingsIcon />
+          </Icon>
+          Preferences
+        </MenuItem>
+
+        <Separator {...menuProps} />
+
+        <MenuItem {...menuProps} as={ItemButton} onClick={openFeedback}>
+          <Icon>
+            <FeedbackIcon />
+          </Icon>
+          Submit Feedback
+        </MenuItem>
+
+        <Separator {...menuProps} />
+
+        <MenuItem {...menuProps} as={ItemButton} onClick={signOut}>
+          <Icon>
+            <ExitIcon />
+          </Icon>
+          Sign out
+        </MenuItem>
+      </Container>
+    </ReakitMenu>
   );
 };
-
-export default Menu;

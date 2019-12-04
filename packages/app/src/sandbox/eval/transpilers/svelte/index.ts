@@ -1,5 +1,7 @@
+/* eslint-disable import/default */
 // @ts-ignore
-import SvelteWorker from 'worker-loader?publicPath=/&name=svelte-transpiler.[hash:8].worker.js!./svelte-worker.js';
+import SvelteWorker from 'worker-loader?publicPath=/&name=svelte-transpiler.[hash:8].worker.js!./svelte-worker';
+/* eslint-enable import/default */
 
 import semver from 'semver';
 
@@ -25,7 +27,7 @@ class SvelteTranspiler extends WorkerTranspiler {
       semver.coerce(packageJSON.parsed.dependencies.svelte);
 
     return new Promise<TranspilerResult>((resolve, reject) => {
-      const path = loaderContext.path;
+      const { path } = loaderContext;
 
       this.queueTask(
         {

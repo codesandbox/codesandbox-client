@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'app/componentConnectors';
 
 import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 import {
@@ -12,11 +12,11 @@ import {
 import { Rule, ErrorMessage } from './elements';
 import VSCodePlaceholder from '../VSCodePlaceholder';
 
-class KeyMapping extends React.Component {
+class KeyMappingComponent extends React.Component {
   state = { error: null };
 
   getUserBindings = () => {
-    const keybindings = this.props.store.preferences.settings.keybindings;
+    const { keybindings } = this.props.store.preferences.settings;
 
     return keybindings.reduce(
       (bindings, binding) => ({
@@ -112,4 +112,6 @@ class KeyMapping extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(observer(KeyMapping));
+export const KeyMapping = inject('signals', 'store')(
+  observer(KeyMappingComponent)
+);

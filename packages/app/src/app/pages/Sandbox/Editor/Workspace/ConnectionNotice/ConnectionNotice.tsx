@@ -1,12 +1,13 @@
-import { observer } from 'mobx-react-lite';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
-import { useStore } from 'app/store';
+import { useOvermind } from 'app/overmind';
 
 import { Container } from './elements';
 
-export const ConnectionNotice = observer(() => {
-  const { connected } = useStore();
+export const ConnectionNotice: FunctionComponent = () => {
+  const {
+    state: { connected },
+  } = useOvermind();
 
   return (
     !connected && (
@@ -17,4 +18,4 @@ export const ConnectionNotice = observer(() => {
       </Container>
     )
   );
-});
+};

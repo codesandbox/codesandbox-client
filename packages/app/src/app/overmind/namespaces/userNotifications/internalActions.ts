@@ -1,6 +1,6 @@
-import { Action } from 'app/overmind';
+import { Action, AsyncAction } from 'app/overmind';
 
-export const initialize: Action = async ({ state, effects, actions }) => {
+export const initialize: AsyncAction = async ({ state, effects, actions }) => {
   const { unread } = await effects.notifications.joinChannel(state.user.id);
 
   state.userNotifications.connected = true;

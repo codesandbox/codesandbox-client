@@ -1,5 +1,9 @@
 import gql from 'graphql-tag';
 import { client } from 'app/graphql/client';
+import immer from 'immer';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { NotificationStatus } from '@codesandbox/notifications';
 
 const SIDEBAR_COLLECTION_FRAGMENT = gql`
   fragment SidebarCollection on Collection {
@@ -18,9 +22,19 @@ const SANDBOX_FRAGMENT = gql`
     updatedAt
     privacy
     screenshotUrl
+    screenshotOutdated
 
     source {
       template
+    }
+
+    customTemplate {
+      id
+    }
+
+    forkedTemplate {
+      id
+      color
     }
 
     collection {
@@ -140,10 +154,45 @@ export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
+export const LIST_TEMPLATES = gql`
+  query ListTemplates($teamId: ID, $showAll: Boolean) {
+    me {
+      templates(teamId: $teamId, showAll: $showAll) {
+        color
+        iconUrl
+        id
+        published
+        sandbox {
+          ...Sandbox
+        }
+      }
+    }
+  }
+
+  ${SANDBOX_FRAGMENT}
+`;
+
 export const DELETE_SANDBOXES_MUTATION = gql`
   mutation DeleteSandboxes($sandboxIds: [ID]!) {
     deleteSandboxes(sandboxIds: $sandboxIds) {
       ...Sandbox
+    }
+  }
+  ${SANDBOX_FRAGMENT}
+`;
+
+export const MAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
+  mutation MakeSandboxesTemplate($sandboxIds: [ID]!) {
+    makeSandboxesTemplates(sandboxIds: $sandboxIds) {
+      id
+    }
+  }
+`;
+
+export const UNMAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
+  mutation UnmakeSandboxesTemplate($sandboxIds: [ID]!) {
+    unmakeSandboxesTemplates(sandboxIds: $sandboxIds) {
+      id
     }
   }
   ${SANDBOX_FRAGMENT}
@@ -257,11 +306,136 @@ export function addSandboxesToFolder(selectedSandboxes, path, teamId) {
   });
 }
 
+export function unmakeTemplates(selectedSandboxes, teamId) {
+  return client.mutate({
+    mutation: UNMAKE_SANDBOXES_TEMPLATE_MUTATION,
+    variables: {
+      sandboxIds: selectedSandboxes,
+    },
+    refetchQueries: [
+      'DeletedSandboxes',
+      'PathedSandboxes',
+      'RecentSandboxes',
+      'SearchSandboxes',
+      'ListTemplates',
+    ],
+    update: cache => {
+      try {
+        const variables = {};
+
+        if (teamId) {
+          variables.teamId = teamId;
+        }
+
+        const oldTemplatesCache = cache.readQuery({
+          query: LIST_TEMPLATES,
+          variables,
+        });
+
+        const data = immer(oldTemplatesCache, draft => {
+          draft.me.templates = draft.me.templates.filter(
+            x => !selectedSandboxes.includes(x.sandbox.id)
+          );
+        });
+
+        cache.writeQuery({
+          query: LIST_TEMPLATES,
+          variables,
+          data,
+        });
+      } catch (e) {
+        // cache doesn't exist, no biggie!
+      }
+    },
+  });
+}
+
+export function makeTemplates(selectedSandboxes, teamId, collections) {
+  return Promise.all([
+    addSandboxesToFolder(selectedSandboxes, '/', teamId),
+    client
+      .mutate({
+        mutation: MAKE_SANDBOXES_TEMPLATE_MUTATION,
+        variables: {
+          sandboxIds: selectedSandboxes.toJS
+            ? selectedSandboxes.toJS()
+            : selectedSandboxes,
+        },
+        refetchQueries: [
+          'DeletedSandboxes',
+          'PathedSandboxes',
+          'RecentSandboxes',
+          'SearchSandboxes',
+          'ListTemplates',
+        ],
+        update: cache => {
+          if (collections) {
+            collections.forEach(({ path, teamId: cacheTeamId }) => {
+              try {
+                const variables = { path };
+
+                if (cacheTeamId) {
+                  variables.teamId = cacheTeamId;
+                }
+
+                const oldFolderCacheData = cache.readQuery({
+                  query: PATHED_SANDBOXES_CONTENT_QUERY,
+                  variables,
+                });
+
+                const data = immer(oldFolderCacheData, draft => {
+                  draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
+                    x => !selectedSandboxes.includes(x.id)
+                  );
+                });
+
+                cache.writeQuery({
+                  query: PATHED_SANDBOXES_CONTENT_QUERY,
+                  variables,
+                  data,
+                });
+              } catch (e) {
+                // cache doesn't exist, no biggie!
+              }
+            });
+          }
+        },
+      })
+      .then(() => {
+        notificationState.addNotification({
+          title: `Successfully created ${selectedSandboxes.length} template${
+            selectedSandboxes.length === 1 ? '' : 's'
+          }`,
+          status: NotificationStatus.SUCCESS,
+          actions: {
+            primary: [
+              {
+                label: 'Undo',
+                run: () => {
+                  track('Template - Removed', {
+                    source: 'Undo',
+                  });
+                  unmakeTemplates(
+                    selectedSandboxes.toJS
+                      ? selectedSandboxes.toJS()
+                      : selectedSandboxes
+                  );
+                },
+              },
+            ],
+          },
+        });
+      }),
+  ]);
+}
+
 export function undeleteSandboxes(selectedSandboxes) {
   client.mutate({
     mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: selectedSandboxes.toJS
+        ? selectedSandboxes.toJS()
+        : selectedSandboxes,
       collectionPath: '/',
     },
     optimisticResponse: {
@@ -282,7 +456,9 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
   client.mutate({
     mutation: PERMANENTLY_DELETE_SANDBOXES_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: selectedSandboxes.toJS
+        ? selectedSandboxes.toJS()
+        : selectedSandboxes,
     },
     update: cache => {
       try {
@@ -295,7 +471,7 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
           me: {
             ...oldDeleteCache.me,
             sandboxes: oldDeleteCache.me.sandboxes.filter(
-              x => selectedSandboxes.indexOf(x.id) === -1
+              x => !selectedSandboxes.includes(x.id)
             ),
           },
         };
@@ -315,7 +491,9 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
   client.mutate({
     mutation: DELETE_SANDBOXES_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: selectedSandboxes.toJS
+        ? selectedSandboxes.toJS()
+        : selectedSandboxes,
     },
     refetchQueries: [
       'DeletedSandboxes',
@@ -327,19 +505,27 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
       if (collections) {
         collections.forEach(({ path, teamId }) => {
           try {
+            const variables = { path };
+
+            if (teamId) {
+              variables.teamId = teamId;
+            }
+
             const oldFolderCacheData = cache.readQuery({
               query: PATHED_SANDBOXES_CONTENT_QUERY,
-              variables: { path, teamId },
+              variables,
             });
 
-            oldFolderCacheData.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-              x => selectedSandboxes.indexOf(x.id) === -1
-            );
+            const data = immer(oldFolderCacheData, draft => {
+              draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
+                x => !selectedSandboxes.includes(x.id)
+              );
+            });
 
             cache.writeQuery({
               query: PATHED_SANDBOXES_CONTENT_QUERY,
-              variables: { path, teamId },
-              data: oldFolderCacheData,
+              variables,
+              data,
             });
           } catch (e) {
             // cache doesn't exist, no biggie!
@@ -354,7 +540,9 @@ export function setSandboxesPrivacy(selectedSandboxes, privacy) {
   client.mutate({
     mutation: SET_SANDBOXES_PRIVACY_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: selectedSandboxes.toJS
+        ? selectedSandboxes.toJS()
+        : selectedSandboxes,
       privacy,
     },
   });

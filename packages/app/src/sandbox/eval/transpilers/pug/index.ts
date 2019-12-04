@@ -1,5 +1,7 @@
+/* eslint-disable import/default */
 // @ts-ignore
-import PugWorker from 'worker-loader?publicPath=/&name=pug-transpiler.[hash:8].worker.js!./pug-worker.js';
+import PugWorker from 'worker-loader?publicPath=/&name=pug-transpiler.[hash:8].worker.js!./pug-worker';
+/* eslint-enable import/default */
 
 import WorkerTranspiler from '../worker-transpiler';
 import { LoaderContext } from '../../transpiled-module';
@@ -19,7 +21,7 @@ class PugTranspiler extends WorkerTranspiler {
     loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
     return new Promise((resolve, reject) => {
-      const path = loaderContext.path;
+      const { path } = loaderContext;
 
       this.queueTask(
         {

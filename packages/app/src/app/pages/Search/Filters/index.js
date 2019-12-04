@@ -12,7 +12,6 @@ const Filters = () => (
       defaultRefinement={ALGOLIA_DEFAULT_INDEX}
       items={[
         { value: ALGOLIA_DEFAULT_INDEX, label: 'Views' },
-        { value: `${ALGOLIA_DEFAULT_INDEX}_likes`, label: 'Likes' },
         { value: `${ALGOLIA_DEFAULT_INDEX}_date`, label: 'Date' },
       ]}
       title="Sort By"
@@ -21,7 +20,7 @@ const Filters = () => (
     <Filter
       attributeName="template"
       operator="or"
-      title="Templates"
+      title="Enviroment"
       transformItems={items =>
         items.map(({ label, ...item }) => {
           const { name, niceName } = getTemplate(label);

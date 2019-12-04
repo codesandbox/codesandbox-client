@@ -1,34 +1,48 @@
-import { json } from 'overmind';
-import { Action } from '.';
-import track, {
-  identify,
-  setUserId,
-} from '@codesandbox/common/lib/utils/analytics';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import {
-  Sandbox,
-  User,
-  CurrentUser,
+  Module,
+  ModuleTab,
   NotificationButton,
-  Contributor,
+  Sandbox,
+  ServerContainerStatus,
+  ServerStatus,
+  TabType,
 } from '@codesandbox/common/lib/types';
-import { AxiosError } from 'axios';
+import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationStatus } from '@codesandbox/notifications';
+import values from 'lodash-es/values';
 
-export const setKeybindings: Action = ({ state, effects }) => {
-  effects.keybindingManager.set(
-    json(state.preferences.settings.keybindings || [])
-  );
-};
+import { ApiError } from './effects/api/apiFactory';
+import { createOptimisticModule } from './utils/common';
+import { defaultOpenedModule, mainModule } from './utils/main-module';
+import { parseConfigurations } from './utils/parse-configurations';
+import { Action, AsyncAction } from '.';
 
-export const setJwtFromStorage: Action = ({ effects, state }) => {
-  state.jwt = effects.jwt.get() || null;
-};
-
-export const listenToConnectionChange: Action = ({ effects, actions }) => {
-  effects.connection.addListener(actions.internal.onConnectionChange);
-};
-
-export const onConnectionChange: Action<boolean> = ({ state }, connected) => {
-  state.connected = connected;
+export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
+  { state, effects, actions },
+  options
+) => {
+  state.isAuthenticating = true;
+  effects.analytics.track('Sign In', {});
+  try {
+    const jwt = await actions.internal.signInGithub(options);
+    actions.internal.setJwt(jwt);
+    state.user = await effects.api.getCurrentUser();
+    actions.internal.setPatronPrice();
+    actions.internal.setSignedInCookie();
+    effects.analytics.identify('signed_in', true);
+    effects.analytics.setUserId(state.user.id);
+    actions.internal.setStoredSettings();
+    effects.live.connect();
+    actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
+    actions.refetchSandboxInfo();
+  } catch (error) {
+    actions.internal.addNotification({
+      title: 'Github Authentication Error',
+      type: 'error',
+    });
+  }
 };
 
 export const setStoredSettings: Action = ({ state, effects }) => {
@@ -46,24 +60,6 @@ export const setStoredSettings: Action = ({ state, effects }) => {
   }
 
   Object.assign(state.preferences.settings, settings);
-  // state.merge('preferences.settings', settings);
-};
-
-export const startKeybindings: Action = ({ effects }) => {
-  effects.keybindingManager.start(event => {
-    // Copy code from keybindingmanager
-  });
-};
-
-export const getUser: Action<void, Promise<CurrentUser>> = ({ effects }) => {
-  return effects.api.get('/users/current');
-};
-
-export const getSandbox: Action<string, Promise<Sandbox>> = (
-  { effects },
-  id
-) => {
-  return effects.api.get(`/sandboxes/${id}`);
 };
 
 export const setPatronPrice: Action = ({ state }) => {
@@ -74,12 +70,33 @@ export const setPatronPrice: Action = ({ state }) => {
 
 export const setSignedInCookie: Action = ({ state }) => {
   document.cookie = 'signedIn=true; Path=/;';
-  identify('signed_in', 'true');
-  setUserId(state.user.id);
 };
 
-export const connectWebsocket: Action = ({ effects }) => {
-  effects.socket.connect();
+export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
+  if (state.user.sendSurvey) {
+    // Let the server know that we've seen the survey
+    effects.api.markSurveySeen();
+
+    effects.notificationToast.add({
+      title: 'Help improve CodeSandbox',
+      message:
+        "We'd love to hear your thoughts, it's 7 questions and will only take 2 minutes.",
+      status: NotificationStatus.NOTICE,
+      sticky: true,
+      actions: {
+        primary: [
+          {
+            label: 'Open Survey',
+            run: () => {
+              actions.modalOpened({
+                modal: 'userSurvey',
+              });
+            },
+          },
+        ],
+      },
+    });
+  }
 };
 
 export const addNotification: Action<{
@@ -96,350 +113,352 @@ export const addNotification: Action<{
     title,
     type,
     buttons,
-    endTime: now + (timeAlive ? timeAlive : timeAliveDefault) * 1000,
+    endTime: now + (timeAlive || timeAliveDefault) * 1000,
   });
 };
 
-export const removeJwtFromStorage: Action = ({ effects }) => {
-  effects.jwt.reset();
-};
-
-export const getContributors: Action = async ({ state, effects }) => {
+export const authorize: AsyncAction = async ({ state, effects }) => {
   try {
-    const response = await effects.http.get<{ contributors: Contributor[] }>(
-      'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
-    );
-
-    state.contributors = response.contributors.map(
-      contributor => contributor.login
-    );
-  } catch (error) {}
+    state.authToken = await effects.api.getAuthToken();
+  } catch (error) {
+    state.editor.error = error.message;
+  }
 };
 
-/*import axios from 'axios';
+export const signInGithub: Action<
+  { useExtraScopes?: boolean },
+  Promise<string>
+> = ({ effects }, options) => {
+  const authPath =
+    process.env.LOCAL_SERVER || process.env.STAGING
+      ? '/auth/dev'
+      : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
 
-import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+  const popup = effects.browser.openPopup(authPath, 'sign in');
 
+  return effects.browser
+    .waitForMessage<{ jwt: string }>('signin')
+    .then(data => {
+      const { jwt } = data;
 
-import { parseConfigurations } from './utils/parse-configurations';
-import { mainModule, defaultOpenedModule } from './utils/main-module';
-import getItems from './modules/workspace/items';
-*/
+      popup.close();
 
-/*
-export function callVSCodeCallback({ props }) {
-  const { cbID } = props;
-  if (cbID) {
-    if (window.cbs && window.cbs[cbID]) {
-      window.cbs[cbID](undefined, undefined);
-      delete window.cbs[cbID];
-    }
-  }
-}
-
-export function callVSCodeCallbackError({ props }) {
-  const { cbID } = props;
-  if (cbID) {
-    if (window.cbs && window.cbs[cbID]) {
-      const errorMessage =
-        props.message || 'Something went wrong while saving the file.';
-      window.cbs[cbID](new Error(errorMessage), undefined);
-      delete window.cbs[cbID];
-    }
-  }
-}
-
-export function setWorkspace({ controller, state, props }) {
-  state.set('workspace.project.title', props.sandbox.title || '');
-  state.set('workspace.project.description', props.sandbox.description || '');
-
-  const items = getItems(controller.getState());
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
-  state.set(`workspace.openedWorkspaceItem`, defaultItem.id);
-}
-
-export function setUrlOptions({ state, router, utils }) {
-  const options = router.getSandboxOptions();
-
-  if (options.currentModule) {
-    const sandbox = state.get('editor.currentSandbox');
-
-    try {
-      const module = utils.resolveModule(
-        options.currentModule,
-        sandbox.modules,
-        sandbox.directories,
-        options.currentModule.directoryShortid
-      );
-
-      if (module) {
-        state.push('editor.tabs', {
-          type: 'MODULE',
-          moduleShortid: module.shortid,
-          dirty: false,
-        });
-        state.set('editor.currentModuleShortid', module.shortid);
+      if (jwt) {
+        return jwt;
       }
-    } catch (err) {
-      const now = Date.now();
-      const title = `Could not find the module ${options.currentModule}`;
 
-      state.push('notifications', {
-        title,
-        id: now,
-        notificationType: 'warning',
-        endTime: now + 2000,
-        buttons: [],
-      });
-    }
+      throw new Error('Could not get sign in token');
+    });
+};
+
+export const setJwt: Action<string> = ({ state, effects }, jwt) => {
+  effects.jwt.set(jwt);
+  state.jwt = jwt;
+};
+
+export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
+  if (
+    state.currentModal === 'preferences' &&
+    state.preferences.itemId === 'keybindings' &&
+    isKeyDown
+  ) {
+    return;
   }
 
-  state.set(
-    'preferences.showPreview',
-    options.isPreviewScreen || options.isSplitScreen
-  );
-  state.set(
-    'preferences.showEditor',
-    options.isEditorScreen || options.isSplitScreen
-  );
+  state.currentModal = null;
+  effects.keybindingManager.start();
+};
 
-  if (options.initialPath) state.set('editor.initialPath', options.initialPath);
-  if (options.fontSize)
-    state.set('preferences.settings.fontSize', options.fontSize);
-  if (options.highlightedLines)
-    state.set('editor.highlightedLines', options.highlightedLines);
-  if (options.hideNavigation)
-    state.set('preferences.hideNavigation', options.hideNavigation);
-  if (options.isInProjectView)
-    state.set('editor.isInProjectView', options.isInProjectView);
-  if (options.autoResize)
-    state.set('preferences.settings.autoResize', options.autoResize);
-  if (options.useCodeMirror)
-    state.set('preferences.settings.useCodeMirror', options.useCodeMirror);
-  if (options.enableEslint)
-    state.set('preferences.settings.enableEslint', options.enableEslint);
-  if (options.forceRefresh)
-    state.set('preferences.settings.forceRefresh', options.forceRefresh);
-  if (options.expandDevTools)
-    state.set('preferences.showDevtools', options.expandDevTools);
-  if (options.runOnClick)
-    state.set(`preferences.runOnClick`, options.runOnClick);
-}
+export const setCurrentSandbox: AsyncAction<Sandbox> = async (
+  { state, effects, actions },
+  sandbox
+) => {
+  state.editor.sandboxes[sandbox.id] = sandbox;
+  state.editor.currentId = sandbox.id;
 
-export function setCurrentModuleShortid({ props, state }) {
-  const currentModuleShortid = state.get('editor.currentModuleShortid');
-  const sandbox = props.sandbox;
+  let { currentModuleShortid } = state.editor;
+  const parsedConfigs = parseConfigurations(sandbox);
+  const main = mainModule(sandbox, parsedConfigs);
+
+  state.editor.mainModuleShortid = main.shortid;
 
   // Only change the module shortid if it doesn't exist in the new sandbox
+  // What is the scenario here?
   if (
-    sandbox.modules.map(m => m.shortid).indexOf(currentModuleShortid) === -1
+    !sandbox.modules.find(module => module.shortid === currentModuleShortid)
   ) {
-    const parsedConfigs = parseConfigurations(sandbox);
-    const module = defaultOpenedModule(sandbox, parsedConfigs);
+    const defaultModule = defaultOpenedModule(sandbox, parsedConfigs);
 
-    state.set('editor.currentModuleShortid', module.shortid);
+    currentModuleShortid = defaultModule.shortid;
   }
-}
 
-export function setMainModuleShortid({ props, state }) {
-  const sandbox = props.sandbox;
-  const parsedConfigs = parseConfigurations(sandbox);
-  const module = mainModule(sandbox, parsedConfigs);
+  const sandboxOptions = effects.router.getSandboxOptions();
 
-  state.set('editor.mainModuleShortid', module.shortid);
-}
+  if (sandboxOptions.currentModule) {
+    try {
+      const resolvedModule = effects.utils.resolveModule(
+        sandboxOptions.currentModule,
+        sandbox.modules,
+        sandbox.directories,
+        // currentModule is a string... something wrong here?
+        // @ts-ignore
+        sandboxOptions.currentModule.directoryShortid
+      );
+      currentModuleShortid = resolvedModule
+        ? resolvedModule.shortid
+        : currentModuleShortid;
+    } catch (err) {
+      effects.notificationToast.warning(
+        `Could not find the module ${sandboxOptions.currentModule}`
+      );
+    }
+  }
 
-export function setInitialTab({ state }) {
-  const currentModule = state.get('editor.currentModule');
-  const newTab = {
-    type: 'MODULE',
-    moduleShortid: currentModule.shortid,
+  state.editor.currentModuleShortid = currentModuleShortid;
+  state.editor.workspaceConfigCode = '';
+
+  state.server.status = ServerStatus.INITIALIZING;
+  state.server.containerStatus = ServerContainerStatus.INITIALIZING;
+  state.server.error = null;
+  state.server.hasUnrecoverableError = false;
+  state.server.ports = [];
+
+  const newTab: ModuleTab = {
+    type: TabType.MODULE,
+    moduleShortid: currentModuleShortid,
     dirty: true,
   };
 
-  state.set('editor.tabs', [newTab]);
-}
+  state.editor.tabs = [newTab];
 
-export function getGitChanges({ api, state }) {
-  const id = state.get('editor.currentId');
+  state.preferences.showPreview =
+    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen;
 
-  return api
-    .get(`/sandboxes/${id}/git/diff`)
-    .then(gitChanges => ({ gitChanges }));
-}
+  state.preferences.showEditor =
+    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen;
 
-export function forkSandbox({ state, props, api }) {
-  const sandboxId = props.sandboxId || state.get('editor.currentId');
-  const url = sandboxId.includes('/')
-    ? `/sandboxes/fork/${sandboxId}`
-    : `/sandboxes/${sandboxId}/fork`;
+  if (sandboxOptions.initialPath)
+    state.editor.initialPath = sandboxOptions.initialPath;
+  if (sandboxOptions.fontSize)
+    state.preferences.settings.fontSize = sandboxOptions.fontSize;
+  if (sandboxOptions.highlightedLines)
+    state.editor.highlightedLines = sandboxOptions.highlightedLines;
+  if (sandboxOptions.hideNavigation)
+    state.preferences.hideNavigation = sandboxOptions.hideNavigation;
+  if (sandboxOptions.isInProjectView)
+    state.editor.isInProjectView = sandboxOptions.isInProjectView;
+  if (sandboxOptions.autoResize)
+    state.preferences.settings.autoResize = sandboxOptions.autoResize;
+  if (sandboxOptions.enableEslint)
+    state.preferences.settings.enableEslint = sandboxOptions.enableEslint;
+  if (sandboxOptions.forceRefresh)
+    state.preferences.settings.forceRefresh = sandboxOptions.forceRefresh;
+  if (sandboxOptions.expandDevTools)
+    state.preferences.showDevtools = sandboxOptions.expandDevTools;
+  if (sandboxOptions.runOnClick)
+    state.preferences.runOnClick = sandboxOptions.runOnClick;
 
-  return api
-    .post(url, props.body || {})
-    .then(data => ({ forkedSandbox: data }));
-}
+  state.workspace.project.title = sandbox.title || '';
+  state.workspace.project.description = sandbox.description || '';
+  state.workspace.project.alias = sandbox.alias || '';
 
-export function moveModuleContent({ props, state }) {
-  const currentSandbox = state.get('editor.currentSandbox');
+  await effects.executor.initializeExecutor(sandbox);
 
-  if (currentSandbox) {
-    return {
-      sandbox: Object.assign({}, props.forkedSandbox, {
-        modules: props.forkedSandbox.modules.map(module =>
-          Object.assign(module, {
-            code: currentSandbox.modules.find(
-              currentSandboxModule =>
-                currentSandboxModule.shortid === module.shortid
-            ).code,
-          })
-        ),
-      }),
-    };
+  [
+    'connect',
+    'disconnect',
+    'sandbox:status',
+    'sandbox:start',
+    'sandbox:stop',
+    'sandbox:error',
+    'sandbox:log',
+    'sandbox:hibernate',
+    'sandbox:update',
+    'sandbox:port',
+    'shell:out',
+    'shell:exit',
+  ].forEach(message => {
+    effects.executor.listen(message, actions.server.onSSEMessage);
+  });
+
+  effects.executor.setupExecutor();
+};
+
+export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
+  { state },
+  sandbox
+) => {
+  state.editor.currentSandbox.team = sandbox.team || null;
+  state.editor.currentSandbox.collection = sandbox.collection;
+  state.editor.currentSandbox.owned = sandbox.owned;
+  state.editor.currentSandbox.userLiked = sandbox.userLiked;
+  state.editor.currentSandbox.title = sandbox.title;
+};
+
+export const ensurePackageJSON: AsyncAction = async ({ state, effects }) => {
+  const sandbox = state.editor.currentSandbox;
+  const existingPackageJson = sandbox.modules.find(
+    module => module.directoryShortid == null && module.title === 'package.json'
+  );
+
+  if (sandbox.owned && !existingPackageJson) {
+    const optimisticId = effects.utils.createOptimisticId();
+    const optimisticModule = createOptimisticModule({
+      id: optimisticId,
+      title: 'package.json',
+      code: generatePackageJsonFromSandbox(sandbox),
+      path: '/package.json',
+    });
+
+    state.editor.currentSandbox.modules.push(optimisticModule as Module);
+    optimisticModule.path = getModulePath(
+      sandbox.modules,
+      sandbox.directories,
+      optimisticId
+    );
+
+    // We grab the module from the state to continue working with it (proxy)
+    const module = sandbox.modules[sandbox.modules.length - 1];
+
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
+
+    try {
+      const updatedModule = await effects.api.createModule(sandbox.id, module);
+
+      module.id = updatedModule.id;
+      module.shortid = updatedModule.shortid;
+    } catch (error) {
+      sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
+      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
+    }
   }
+};
 
-  return { sandbox: props.forkedSandbox };
-}
-
-export function closeTabByIndex({ state, props }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const currentModule = state.get('editor.currentModule');
-  const tabs = state.get('editor.tabs');
-  const tabModuleId = tabs[props.tabIndex].moduleId;
-  const isActiveTab = currentModule.id === tabModuleId;
+export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
+  const { currentModule } = state.editor;
+  const tabs = state.editor.tabs as ModuleTab[];
+  const isActiveTab = currentModule.shortid === tabs[tabIndex].moduleShortid;
 
   if (isActiveTab) {
-    const newTab =
-      props.tabIndex > 0 ? tabs[props.tabIndex - 1] : tabs[props.tabIndex + 1];
+    const newTab = tabIndex > 0 ? tabs[tabIndex - 1] : tabs[tabIndex + 1];
 
     if (newTab) {
-      const newModule = sandbox.modules.find(
-        module => module.id === newTab.moduleId
-      );
-
-      state.set('editor.currentModuleShortid', newModule.shortid);
+      state.editor.currentModuleShortid = newTab.moduleShortid;
     }
   }
 
-  state.splice('editor.tabs', props.tabIndex, 1);
-}
+  state.editor.tabs.splice(tabIndex, 1);
+};
 
-export function signInGithub({ browser, path, props }) {
-  const { useExtraScopes } = props;
-  const popup = browser.openPopup(
-    `/auth/github${useExtraScopes ? '?scope=user:email,repo' : ''}`,
-    'sign in'
-  );
+export const onApiError: Action<ApiError> = (
+  { state, actions, effects },
+  error
+) => {
+  const { response } = error;
 
-  return browser.waitForMessage('signin').then(data => {
-    const jwt = data.jwt;
+  if (response.status === 401) {
+    // We need to implement a blocking modal to either sign in or refresh the browser to
+    // continue in an anonymous state
+  }
 
-    popup.close();
+  if (!response || response.status >= 500) {
+    effects.analytics.logError(error);
+  }
 
-    if (jwt) {
-      return path.success({ jwt });
+  const result = response.data;
+
+  if (result) {
+    if (typeof result === 'string') {
+      error.message = result;
+    } else if ('errors' in result) {
+      const errors = values(result.errors)[0];
+      if (Array.isArray(errors)) {
+        if (errors[0]) {
+          error.message = errors[0]; // eslint-disable-line no-param-reassign,prefer-destructuring
+        }
+      } else {
+        error.message = errors; // eslint-disable-line no-param-reassign
+      }
+    } else if (result.error) {
+      error.message = result.error; // eslint-disable-line no-param-reassign
+    } else if (response.status === 413) {
+      error.message = 'File too large, upload limit is 5MB.';
     }
+  }
 
-    return path.error();
-  });
-}
+  if (error.message.startsWith('You need to sign in to create more than')) {
+    // Error for "You need to sign in to create more than 10 sandboxes"
+    effects.analytics.track('Anonymous Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
 
-export function signOut({ api }) {
-  api.delete(`/users/signout`);
-}
-
-export function getAuthToken({ api, path }) {
-  return api
-    .get('/auth/auth-token')
-    .then(({ token }) => path.success({ token }))
-    .catch(error => path.error({ error }));
-}
-
-export function setModal({ state, props }) {
-  track('Open Modal', { modal: props.modal });
-  state.set('currentModalMessage', props.message);
-  state.set('currentModal', props.modal);
-}
-
-export function removeNotification({ state, props }) {
-  const notifications = state.get('notifications');
-  const notificationToRemoveIndex = notifications.findIndex(
-    notification => notification.id === props.id
-  );
-
-  state.splice('notifications', notificationToRemoveIndex, 1);
-}
-
-export function setJwtFromProps({ jwt, state, props }) {
-  jwt.set(props.jwt);
-  state.set('jwt', props.jwt);
-}
-
-
-
-
-
-
-export function stopListeningToConnectionChange({ connection }) {
-  connection.removeListener('connectionChanged');
-}
-
-
-
-export function signInZeit({ browser, path }) {
-  const popup = browser.openPopup('/auth/zeit', 'sign in');
-  return browser.waitForMessage('signin').then(data => {
-    popup.close();
-
-    if (data && data.code) {
-      return path.success({ code: data.code });
-    }
-
-    return path.error();
-  });
-}
-
-export function updateUserZeitDetails({ api, path, props }) {
-  const { code } = props;
-
-  return api
-    .post(`/users/current_user/integrations/zeit`, {
-      code,
-    })
-    .then(data => path.success({ user: data }))
-    .catch(error => path.error({ error }));
-}
-
-export function getZeitIntegrationDetails({ state, path }) {
-  const token = state.get(`user.integrations.zeit.token`);
-
-  return axios
-    .get('https://api.zeit.co/www/user', {
-      headers: {
-        Authorization: `bearer ${token}`,
+    effects.notificationToast.add({
+      message: error.message,
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Sign in',
+            run: () => {
+              actions.internal.signIn({});
+            },
+          },
+        ],
       },
-    })
-    .then(response => path.success({ response: response.data }))
-    .catch(error => path.error({ error }));
-}
+    });
+  } else if (error.message.startsWith('You reached the maximum of')) {
+    effects.analytics.track('Non-Patron Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
 
-export function signOutZeit({ api }) {
-  return api.delete(`/users/current_user/integrations/zeit`).then(() => {});
-}
+    effects.notificationToast.add({
+      message: error.message,
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Open Patron Page',
+            run: () => {
+              window.open(patronUrl(), '_blank');
+            },
+          },
+        ],
+      },
+    });
+  } else if (
+    error.message.startsWith(
+      'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
+    )
+  ) {
+    effects.analytics.track('Non-Patron Server Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
 
-export function signOutGithubIntegration({ api }) {
-  return api.delete(`/users/current_user/integrations/github`).then(() => {});
-}
+    effects.notificationToast.add({
+      message: error.message,
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Open Patron Page',
+            run: () => {
+              window.open(patronUrl(), '_blank');
+            },
+          },
+        ],
+      },
+    });
+  } else {
+    if (
+      error.message.startsWith(
+        'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
+      )
+    ) {
+      effects.analytics.track('Patron Server Sandbox Limit Reached', {
+        errorMessage: error.message,
+      });
+    }
 
-export function createPackageJSON({ props }) {
-  const { sandbox } = props;
-
-  const code = generateFileFromSandbox(sandbox);
-
-  return {
-    title: 'package.json',
-    newCode: code,
-  };
-}
-
-
-*/
+    effects.notificationToast.error(error.message);
+  }
+};

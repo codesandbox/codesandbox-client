@@ -1,28 +1,25 @@
-// @flow
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
-
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { Module, Sandbox } from '@codesandbox/common/lib/types';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Title from 'app/components/Title';
-import SubTitle from 'app/components/SubTitle';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
-
 import {
   findCurrentModule,
   findMainModule,
 } from '@codesandbox/common/lib/sandbox/modules';
-
-import Header from '../Header';
+import { Title } from 'app/components/Title';
+import { SubTitle } from 'app/components/SubTitle';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
-
 import { Container, Fullscreen, Moving } from './elements';
+import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
+import { getTheme } from '../../theme';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently
-// that makes it think we have core-js/es6/map available in embed, but we don't.
+// that makes it think we havecore-js/es6/map available in embed, but we don't.
 // So we explicitly make sure that we have `core-js/es6/map` available by declaring
 // new Map.
 new Map(); // eslint-disable-line
@@ -45,19 +42,12 @@ type State = {
   editorSize: number,
   forceRefresh: boolean,
   expandDevTools: boolean,
+  hideDevTools: boolean,
   runOnClick: boolean,
   verticalMode: boolean,
   highlightedLines: Array<number>,
   tabs?: Array<number>,
-};
-
-const isSafari = () => {
-  const ua = navigator.userAgent.toLowerCase();
-  if (ua.indexOf('safari') !== -1) {
-    return ua.indexOf('chrome') === -1;
-  }
-
-  return false;
+  theme: string,
 };
 
 export default class App extends React.PureComponent<
@@ -88,9 +78,11 @@ export default class App extends React.PureComponent<
       highlightedLines,
       forceRefresh,
       expandDevTools,
+      hideDevTools,
       runOnClick,
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
+      theme = 'dark',
     } = props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
@@ -103,7 +95,7 @@ export default class App extends React.PureComponent<
       isInProjectView,
       currentModule,
       initialPath,
-      sidebarOpen: false,
+      sidebarOpen: window.innerWidth > SIDEBAR_SHOW_SCREEN_SIZE,
       autoResize,
       hideNavigation,
       enableEslint,
@@ -111,14 +103,10 @@ export default class App extends React.PureComponent<
       editorSize,
       forceRefresh,
       expandDevTools,
+      hideDevTools,
       tabs,
-      runOnClick:
-        runOnClick === false
-          ? false
-          : runOnClick ||
-            navigator.appVersion.indexOf('X11') !== -1 ||
-            navigator.appVersion.indexOf('Linux') !== -1 ||
-            isSafari(),
+      theme,
+      runOnClick,
       verticalMode,
       highlightedLines: highlightedLines || [],
     };
@@ -181,7 +169,7 @@ export default class App extends React.PureComponent<
     }
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (window.__SANDBOX_DATA__) {
       this.setState({ sandbox: camelizeKeys(window.__SANDBOX_DATA__) });
     } else {
@@ -196,9 +184,11 @@ export default class App extends React.PureComponent<
     }
   }
 
+  // TODO: See if this is still useful
   setEditorView = () => this.setState({ showEditor: true, showPreview: false });
   setPreviewView = () =>
     this.setState({ showEditor: false, showPreview: true });
+
   setMixedView = () => this.setState({ showEditor: true, showPreview: true });
 
   setCurrentModule = (id: string) => {
@@ -219,7 +209,8 @@ export default class App extends React.PureComponent<
     this.setState(newState);
   };
 
-  toggleSidebar = () => this.setState({ sidebarOpen: !this.state.sidebarOpen });
+  toggleSidebar = () =>
+    this.setState(state => ({ sidebarOpen: !state.sidebarOpen }));
 
   // eslint-disable-next-line
   setProjectView = (sandboxId?: ?string, isOpen: boolean, cb: Function) => {
@@ -229,13 +220,11 @@ export default class App extends React.PureComponent<
   getCurrentModuleFromPath = (sandbox: Sandbox): Module => {
     const { currentModule: currentModulePath } = this.state;
 
-    return (
-      findCurrentModule(
-        sandbox.modules,
-        sandbox.directories,
-        currentModulePath,
-        findMainModule(sandbox.modules, sandbox.directories, sandbox.entry)
-      ) || sandbox.modules[0]
+    return findCurrentModule(
+      sandbox.modules,
+      sandbox.directories,
+      currentModulePath,
+      findMainModule(sandbox)
     );
   };
 
@@ -249,6 +238,7 @@ export default class App extends React.PureComponent<
 
   toggleLike = () => {
     const jwt = this.jwt();
+    track('Embed - Toggle Like');
 
     if (this.state.sandbox.userLiked && jwt) {
       this.setState(s => ({
@@ -269,12 +259,12 @@ export default class App extends React.PureComponent<
         }),
       })
         .then(x => x.json())
-        .then(() => {
+        .then(res => {
           this.setState(s => ({
             sandbox: {
               ...s.sandbox,
               userLiked: false,
-              likeCount: s.sandbox.likeCount - 1,
+              likeCount: res.count,
             },
           }));
         })
@@ -334,7 +324,7 @@ export default class App extends React.PureComponent<
       );
     }
 
-    const sandbox = this.state.sandbox;
+    const { sandbox } = this.state;
 
     if (!sandbox) {
       return (
@@ -360,20 +350,12 @@ export default class App extends React.PureComponent<
         }}
       >
         <Container>
-          <Header
+          <Content
             showEditor={showEditor}
             showPreview={showPreview}
             setEditorView={this.setEditorView}
             setPreviewView={this.setPreviewView}
             setMixedView={this.setMixedView}
-            sandbox={sandbox}
-            toggleSidebar={this.toggleSidebar}
-            toggleLike={this.jwt() && this.toggleLike}
-            liked={sandbox.userLiked}
-          />
-          <Content
-            showEditor={showEditor}
-            showPreview={showPreview}
             previewWindow={previewWindow}
             isInProjectView={isInProjectView}
             setProjectView={this.setProjectView}
@@ -390,9 +372,13 @@ export default class App extends React.PureComponent<
             highlightedLines={this.state.highlightedLines}
             forceRefresh={this.state.forceRefresh}
             expandDevTools={this.state.expandDevTools}
+            hideDevTools={this.state.hideDevTools}
             tabs={this.state.tabs}
             runOnClick={runOnClick}
             verticalMode={verticalMode}
+            sidebarOpen={this.state.sidebarOpen}
+            toggleSidebar={this.toggleSidebar}
+            toggleLike={this.jwt() && this.toggleLike}
           />
         </Container>
       </ThemeProvider>
@@ -400,19 +386,24 @@ export default class App extends React.PureComponent<
   };
 
   render() {
-    const sandbox = this.state.sandbox;
+    const { sandbox } = this.state;
+    const theme = getTheme(this.state.theme);
 
     return (
-      <Fullscreen sidebarOpen={this.state.sidebarOpen}>
-        {sandbox && (
-          <Sidebar
-            setCurrentModule={this.setCurrentModule}
-            currentModule={this.getCurrentModuleFromPath(sandbox).id}
-            sandbox={sandbox}
-          />
-        )}
-        <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
-      </Fullscreen>
+      <ThemeProvider theme={theme}>
+        <Fullscreen sidebarOpen={this.state.sidebarOpen}>
+          {sandbox && (
+            <>
+              <Sidebar
+                setCurrentModule={this.setCurrentModule}
+                currentModule={this.getCurrentModuleFromPath(sandbox).id}
+                sandbox={sandbox}
+              />
+            </>
+          )}
+          <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
+        </Fullscreen>
+      </ThemeProvider>
     );
   }
 }

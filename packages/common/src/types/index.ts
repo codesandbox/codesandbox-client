@@ -1,4 +1,6 @@
-import * as React from 'react';
+/* eslint-disable camelcase */
+import React from 'react';
+
 import { TemplateType } from '../templates';
 
 export type SSEContainerStatus =
@@ -8,6 +10,7 @@ export type SSEContainerStatus =
   | 'stopped'
   | 'hibernated'
   | 'error';
+
 export type SSEManagerStatus = 'connected' | 'disconnected' | 'initializing';
 
 export type ModuleError = {
@@ -18,8 +21,10 @@ export type ModuleError = {
   path: string;
   severity: 'error' | 'warning';
   type: 'compile' | 'dependency-not-found' | 'no-dom-change';
-  payload: Object;
   source: string | undefined;
+  payload?: Object;
+  columnEnd?: number;
+  lineEnd?: number;
 };
 
 export type Contributor = {
@@ -38,23 +43,58 @@ export type ModuleCorrection = {
 };
 
 export type Module = {
-  id: string;
+  id?: string;
   title: string;
-  code: string | undefined;
+  code: string;
+  savedCode: string | null;
   shortid: string;
-  directoryShortid: string | undefined;
+  errors: ModuleError[];
+  corrections: ModuleCorrection[];
+  directoryShortid: string | null;
   isNotSynced: boolean;
   sourceId: string;
   isBinary: boolean;
-  path?: string;
+  insertedAt: string;
+  updatedAt: string;
+  path: string;
+  now?: any;
+  type: 'file';
+};
+
+export type Configuration = {
+  title: string;
+  moreInfoUrl: string;
+  type: string;
+  description: string;
 };
 
 export type Directory = {
   id: string;
   title: string;
-  directoryShortid: string | undefined;
+  directoryShortid: string | null;
   shortid: string;
+  path: string;
   sourceId: string;
+  type: 'directory';
+};
+
+export type Template = {
+  name: TemplateType;
+  niceName: string;
+  shortid: string;
+  url: string;
+  main: boolean;
+  color: string;
+  backgroundColor: () => string | undefined;
+  popular: boolean;
+  showOnHomePage: boolean;
+  distDir: string;
+  netlify: boolean;
+  isTypescript: boolean;
+  externalResourcesEnabled: boolean;
+  showCube: boolean;
+  isServer: boolean;
+  mainFile: undefined | string[];
 };
 
 export type Badge = {
@@ -64,34 +104,53 @@ export type Badge = {
 };
 
 export type CurrentUser = {
-  id: string | undefined;
-  email: string | undefined;
-  name: string | undefined;
+  id: string | null;
+  email: string | null;
+  name: string | null;
   username: string;
-  avatarUrl: string | undefined;
-  jwt: string | undefined;
-  subscription:
-    | {
-        since: string;
-        amount: string;
-      }
-    | undefined;
+  avatarUrl: string | null;
+  jwt: string | null;
+  subscription: {
+    since: string;
+    amount: number;
+    cancelAtPeriodEnd: boolean;
+  } | null;
   curatorAt: string;
   badges: Array<Badge>;
   integrations: {
     zeit?: {
       token: string;
-      email: string | undefined;
+      email?: string;
     };
     github?: {
       email: string;
     };
   };
+  sendSurvey: boolean;
+};
+
+export type CustomTemplate = {
+  color?: string;
+  iconUrl?: string;
+  id: string;
+  published?: boolean;
+  title: string;
+  url: string | null;
+};
+
+export type GitInfo = {
+  repo: string;
+  username: string;
+  path: string;
+  branch: string;
+  commitSha: string;
 };
 
 export type SmallSandbox = {
   id: string;
-  title: string | undefined;
+  alias: string | null;
+  title: string | null;
+  customTemplate: CustomTemplate | null;
   insertedAt: string;
   updatedAt: string;
   likeCount: number;
@@ -99,6 +158,7 @@ export type SmallSandbox = {
   forkCount: number;
   template: string;
   privacy: 0 | 1 | 2;
+  git: GitInfo | null;
 };
 
 export type PaginatedSandboxes = {
@@ -110,67 +170,170 @@ export type User = {
   username: string;
   name: string;
   avatarUrl: string;
-  showcasedSandboxShortid: string | undefined;
+  twitter: string | null;
+  showcasedSandboxShortid: string | null;
   sandboxCount: number;
   givenLikeCount: number;
   receivedLikeCount: number;
+  currentModuleShortid: string;
   viewCount: number;
   forkedCount: number;
   sandboxes: PaginatedSandboxes;
   likedSandboxes: PaginatedSandboxes;
-  badges: Array<Badge>;
+  badges: Badge[];
+  topSandboxes: SmallSandbox[];
   subscriptionSince: string;
+  selection: Selection | null;
 };
 
-export type GitInfo = {
-  repo: string;
+export type LiveUser = {
   username: string;
-  path: string;
-  branch: string;
-  commitSha: string;
+  selection: Selection;
+  id: string;
+  currentModuleShortid: string | null;
+  color: [number, number, number];
+  avatarUrl: string;
+};
+
+export type RoomInfo = {
+  startTime: number;
+  ownerIds: string[];
+  roomId: string;
+  mode: string;
+  chatEnabled: boolean;
+  sandboxId: string;
+  editorIds: string[];
+  users: LiveUser[];
+  chat: {
+    messages: Array<{
+      userId: string;
+      date: number;
+      message: string;
+    }>;
+    // We keep a separate map of user_id -> username for the case when
+    // a user disconnects. We still need to keep track of the name.
+    users: {
+      [id: string]: string;
+    };
+  };
+};
+
+export type PaymentDetails = {
+  brand: string;
+  expMonth: number;
+  expYear: number;
+  last4: string;
+  name: string;
+};
+
+export type SandboxPick = {
+  title: string;
+  description: string;
+  id: string;
+  insertedAt: string;
+};
+
+export type MiniSandbox = {
+  viewCount: number;
+  title: string;
+  template: string;
+  id: string;
+  picks: SandboxPick[];
+  description: string;
+  git: GitInfo;
+  author: User;
+};
+
+export type GitCommit = {
+  git: GitInfo;
+  merge: boolean;
+  newBranch: string;
+  sha: string;
+  url: string;
+};
+
+export type GitPr = {
+  git: GitInfo;
+  newBranch: string;
+  sha: string;
+  url: string;
+  prURL: string;
+};
+
+export type PopularSandboxes = {
+  startDate: string;
+  sandboxes: MiniSandbox[];
+  endDate: string;
+};
+
+export type PickedSandboxes = {
+  sandboxes: MiniSandbox[];
+  page: number;
+};
+
+export type PickedSandboxDetails = {
+  title: string;
+  id: string;
+  description: string;
 };
 
 export type Sandbox = {
   id: string;
-  alias: string | undefined;
-  title: string | undefined;
-  description: string;
+  alias: string | null;
+  title: string | null;
+  description: string | null;
   viewCount: number;
   likeCount: number;
   forkCount: number;
   userLiked: boolean;
-  modules: Array<Module>;
-  directories: Array<Directory>;
+  modules: Module[];
+  directories: Directory[];
+  collection?: {
+    path: string;
+  };
   owned: boolean;
   npmDependencies: {
     [dep: string]: string;
   };
-  externalResources: Array<string>;
+  customTemplate: CustomTemplate | null;
+  forkedTemplate: CustomTemplate | null;
+  externalResources: string[];
+  team: {
+    id: string;
+    name: string;
+  } | null;
+  roomId: string | null;
   privacy: 0 | 1 | 2;
-  author: User | undefined;
-  forkedFromSandbox: { title: string; id: string } | undefined;
-  git: GitInfo | undefined;
-  tags: Array<string>;
+  author: User | null;
+  forkedFromSandbox: SmallSandbox | null;
+  git: GitInfo | null;
+  tags: string[];
+  isFrozen: boolean;
+  environmentVariables: {
+    [key: string]: string;
+  } | null;
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
    * @type {string}
    */
   sourceId: string;
+  source?: {
+    template: string;
+  };
   template: TemplateType;
   entry: string;
-  originalGit: GitInfo | undefined;
-  originalGitCommitSha: string | undefined;
-  originalGitChanges:
-    | {
-        added: Array<string>;
-        modified: Array<string>;
-        deleted: Array<string>;
-        rights: 'none' | 'read' | 'write' | 'admin';
-      }
-    | undefined;
+  originalGit: GitInfo | null;
+  originalGitCommitSha: string | null;
+  originalGitChanges: {
+    added: string[];
+    modified: string[];
+    deleted: string[];
+    rights: 'none' | 'read' | 'write' | 'admin';
+  } | null;
   version: number;
-  screenshotUrl: string | undefined;
+  screenshotUrl: string | null;
+  previewSecret: string | null;
 };
 
 export type PrettierConfig = {
@@ -185,7 +348,12 @@ export type PrettierConfig = {
   jsxBracketSameLine: boolean;
 };
 
-export type Preferences = {
+export type Settings = {
+  autoResize: boolean;
+  enableEslint: boolean;
+  forceRefresh: boolean;
+  codeMirror: boolean;
+  lineHeight: number;
   autoCompleteEnabled: boolean | undefined;
   vimMode: boolean | undefined;
   livePreviewEnabled: boolean | undefined;
@@ -200,6 +368,17 @@ export type Preferences = {
   newPackagerExperiment: boolean | undefined;
   zenMode: boolean | undefined;
   keybindings: any[];
+  jsxBracketSameLine: boolean;
+  printWidth: number;
+  semi: boolean;
+  singleQuote: boolean;
+  tabWidth: number;
+  trailingComma: string;
+  useTabs: boolean;
+  enableLigatures: boolean;
+  customVSCodeTheme: string;
+  manualCustomVSCodeTheme: string;
+  experimentVSCode: boolean;
 };
 
 export type NotificationButton = {
@@ -224,7 +403,7 @@ export type Modal = {
 export type PackageJSON = {
   name: string;
   description: string;
-  keywords: Array<string>;
+  keywords: string[];
   main: string;
   dependencies: {
     [dep: string]: string;
@@ -240,4 +419,264 @@ export type UploadFile = {
   objectSize: number;
   name: string;
   path: string;
+};
+
+export type Selection = {
+  selection: number[];
+  cursorPosition: number;
+};
+
+export type UserSelection = {
+  primary: Selection;
+  secondary: Selection[];
+};
+
+export type EditorSelection = {
+  userId: string;
+  name: string | null;
+  selection: Selection | null;
+  color: number[] | null;
+};
+
+export enum WindowOrientation {
+  VERTICAL = 'vertical',
+  HORIZONTAL = 'horizontal',
+}
+
+export type Profile = {
+  viewCount: number;
+  username: string;
+  subscriptionSince: string;
+  showcasedSandboxShortid: string;
+  sandboxCount: number;
+  receivedLikeCount: number;
+  name: string;
+  id: string;
+  givenLikeCount: number;
+  forkedCount: number;
+  badges: Badge[];
+  avatarUrl: string;
+};
+
+export type UserSandbox = {
+  id: string;
+  title: string;
+  insertedAt: string;
+  updatedAt: string;
+};
+
+export enum ServerStatus {
+  INITIALIZING = 'initializing',
+  CONNECTED = 'connected',
+  DISCONNECTED = 'disconnected',
+}
+
+export enum ServerContainerStatus {
+  INITIALIZING = 'initializing',
+  CONTAINER_STARTED = 'container-started',
+  SANDBOX_STARTED = 'sandbox-started',
+  STOPPED = 'stopped',
+  HIBERNATED = 'hibernated',
+  ERROR = 'error',
+}
+
+export type ServerPort = {
+  main: boolean;
+  port: number;
+  hostname: string;
+  name?: string;
+};
+
+export type ZeitUser = {
+  uid: string;
+  email: string;
+  name: string;
+  username: string;
+  avatar: string;
+  platformVersion: number;
+  billing: {
+    plan: string;
+    period: string;
+    trial: string;
+    cancelation: string;
+    addons: string;
+  };
+  bio: string;
+  website: string;
+  profiles: Array<{
+    service: string;
+    link: string;
+  }>;
+};
+
+export type ZeitCreator = {
+  uid: string;
+};
+
+export type ZeitScale = {
+  current: number;
+  min: number;
+  max: number;
+};
+
+export type ZeitAlias = {
+  alias: string;
+  created: string;
+  uid: string;
+};
+
+export enum ZeitDeploymentState {
+  DEPLOYING = 'DEPLOYING',
+  INITIALIZING = 'INITIALIZING',
+  DEPLOYMENT_ERROR = 'DEPLOYMENT_ERROR',
+  BOOTED = 'BOOTED',
+  BUILDING = 'BUILDING',
+  READY = 'READY',
+  BUILD_ERROR = 'BUILD_ERROR',
+  FROZEN = 'FROZEN',
+  ERROR = 'ERROR',
+}
+
+export enum ZeitDeploymentType {
+  'NPM',
+  'DOCKER',
+  'STATIC',
+  'LAMBDAS',
+}
+
+export type ZeitDeployment = {
+  uid: string;
+  name: string;
+  url: string;
+  created: number;
+  state: ZeitDeploymentState;
+  instanceCount: number;
+  alias: ZeitAlias[];
+  scale: ZeitScale;
+  createor: ZeitCreator;
+  type: ZeitDeploymentType;
+};
+
+export type ZeitConfig = {
+  name?: string;
+  alias?: string;
+};
+
+export type NetlifySite = {
+  id: string;
+  site_id: string;
+  name: string;
+  url: string;
+  state: string;
+  screenshot_url: string;
+  sandboxId: string;
+};
+
+export type Dependency = {
+  name: string;
+  version: string;
+};
+
+export enum TabType {
+  MODULE = 'MODULE',
+  DIFF = 'DIFF',
+}
+
+export type ModuleTab = {
+  type: TabType.MODULE;
+  moduleShortid: string;
+  dirty: boolean;
+};
+
+export type DiffTab = {
+  id: string;
+  type: TabType.DIFF;
+  codeA: string;
+  codeB: string;
+  titleA: string;
+  titleB: string;
+  fileTitle?: string;
+};
+
+export type Tabs = Array<ModuleTab | DiffTab>;
+
+export type GitChanges = {
+  added: string[];
+  deleted: string[];
+  modified: string[];
+  rights: string;
+};
+
+export type EnvironmentVariable = {
+  name: string;
+  value: any;
+};
+
+export type UploadedFilesInfo = {
+  uploads: UploadFile[];
+  maxSize: number;
+  currentSize: number;
+};
+
+export type SandboxUrlSourceData = {
+  id?: string;
+  alias?: string;
+  git?: GitInfo;
+};
+
+export type DevToolsTabPosition = {
+  devToolIndex: number;
+  tabPosition: number;
+};
+
+export type LiveMessage<data = unknown> = {
+  event: LiveMessageEvent;
+  data: data;
+  _isOwnMessage: boolean;
+};
+
+export enum LiveMessageEvent {
+  JOIN = 'join',
+  MODULE_STATE = 'module_state',
+  USER_ENTERED = 'user:entered',
+  USER_LEFT = 'user:left',
+  MODULE_SAVED = 'module:saved',
+  MODULE_CREATED = 'module:created',
+  MODULE_MASS_CREATED = 'module:mass-created',
+  MODULE_UPDATED = 'module:updated',
+  MODULE_DELETED = 'module:deleted',
+  DIRECTORY_CREATED = 'directory:created',
+  DIRECTORY_UPDATED = 'directory:updated',
+  DIRECTORY_DELETED = 'directory:deleted',
+  USER_SELECTION = 'user:selection',
+  USER_CURRENT_MODULE = 'user:current-module',
+  LIVE_MODE = 'live:mode',
+  LIVE_CHAT_ENABLED = 'live:chat_enabled',
+  LIVE_ADD_EDITOR = 'live:add-editor',
+  LIVE_REMOVE_EDITOR = 'live:remove-editor',
+  OPERATION = 'operation',
+  CONNECTION_LOSS = 'connection-loss',
+  DISCONNECT = 'disconnect',
+  OWNER_LEFT = 'owner_left',
+  CHAT = 'chat',
+  NOTIFICATION = 'notification',
+}
+
+export enum StripeErrorCode {
+  REQUIRES_ACTION = 'requires_action',
+}
+
+export enum PatronBadge {
+  ONE = 'patron-1',
+  TWO = 'patron-2',
+  THREE = 'patron-3',
+  FOURTH = 'patron-4',
+}
+
+export type LiveDisconnectReason = 'close' | 'inactivity';
+
+export type PatronTier = 1 | 2 | 3 | 4;
+
+export type SandboxFs = {
+  [path: string]: Module | Directory;
 };

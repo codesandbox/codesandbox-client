@@ -14,10 +14,6 @@ export default function HTML(props) {
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css"
-        />
         {props.headComponents}
       </head>
       <body {...props.bodyAttributes}>
@@ -26,13 +22,13 @@ export default function HTML(props) {
           This app works best with JavaScript enabled.
         </noscript>
         <div
-          key={`body`}
+          key="body"
           id="___gatsby"
           dangerouslySetInnerHTML={{ __html: props.body }}
         />
         {props.postBodyComponents}
         {JS_NPM_URLS.map(url => (
-          <script key={url} src={url} />
+          <script key={url} src={url} defer />
         ))}
       </body>
     </html>

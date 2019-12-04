@@ -5,7 +5,7 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 export const DeleteFileButton = styled(props => (
   <Tooltip content="Delete File">
-    <button {...props}>
+    <button type="button" {...props}>
       <DeleteIcon />
     </button>
   </Tooltip>

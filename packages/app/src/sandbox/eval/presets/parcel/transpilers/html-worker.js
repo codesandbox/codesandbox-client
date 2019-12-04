@@ -1,3 +1,5 @@
+/* eslint-disable no-continue */
+/* eslint-disable no-inner-declarations */
 import parse from 'posthtml-parser';
 import api from 'posthtml/lib/api';
 
@@ -119,37 +121,39 @@ self.addEventListener('message', async event => {
         /* eslint-disable no-param-reassign no-continue */
         // eslint-disable-next-line no-restricted-syntax
         for (const attr in node.attrs) {
-          if (node.tag === 'img' && attr === 'srcset') {
-            node.attrs[attr] = addSrcSetDependencies(node.attrs[attr]);
-            continue;
-          }
-          const elements = ATTRS[attr];
-          // Check for virtual paths
-          if (
-            (node.tag === 'a' && node.attrs[attr].lastIndexOf('.') < 1) ||
-            node.attrs[attr].endsWith('.html')
-          ) {
-            continue;
-          }
+          if (Object.prototype.hasOwnProperty.call(node.attrs, attr)) {
+            if (node.tag === 'img' && attr === 'srcset') {
+              node.attrs[attr] = addSrcSetDependencies(node.attrs[attr]);
+              continue;
+            }
+            const elements = ATTRS[attr];
+            // Check for virtual paths
+            if (
+              (node.tag === 'a' && node.attrs[attr].lastIndexOf('.') < 1) ||
+              node.attrs[attr].endsWith('.html')
+            ) {
+              continue;
+            }
 
-          if (
-            node.tag === 'html' &&
-            node.attrs[attr].endsWith('.html') &&
-            attr === 'href'
-          ) {
-            // Another HTML file, we'll compile it when the user goes to it
-            continue;
-          }
+            if (
+              node.tag === 'html' &&
+              node.attrs[attr].endsWith('.html') &&
+              attr === 'href'
+            ) {
+              // Another HTML file, we'll compile it when the user goes to it
+              continue;
+            }
 
-          if (elements && elements.includes(node.tag)) {
-            const result = addDependency(node.attrs[attr]);
+            if (elements && elements.includes(node.tag)) {
+              const result = addDependency(node.attrs[attr]);
 
-            if (result) {
-              if (node.tag === 'link' || node.tag === 'script') {
-                node.tag = false;
-                node.content = [];
-              } else {
-                node.attrs[attr] = result;
+              if (result) {
+                if (node.tag === 'link' || node.tag === 'script') {
+                  node.tag = false;
+                  node.content = [];
+                } else {
+                  node.attrs[attr] = result;
+                }
               }
             }
           }

@@ -70,6 +70,7 @@ export default class Step extends React.PureComponent {
         }}
         onClick={this.selectStep}
         selected={selected}
+        as="li"
       >
         <IconContainer>
           <Icon />

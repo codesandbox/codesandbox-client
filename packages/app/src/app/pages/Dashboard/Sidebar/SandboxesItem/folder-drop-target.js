@@ -1,23 +1,22 @@
+import { basename, join } from 'path';
+
 import { client } from 'app/graphql/client';
-import { join, basename } from 'path';
 
 import {
   ADD_SANDBOXES_TO_FOLDER_MUTATION,
-  RENAME_FOLDER_MUTATION,
   PATHED_SANDBOXES_CONTENT_QUERY,
+  RENAME_FOLDER_MUTATION,
 } from '../../queries';
 
 function addSandboxesToCollection(props, item) {
-  const { path, teamId, store } = props;
-
-  const selectedSandboxes = store.dashboard.selectedSandboxes;
+  const { path, teamId, selectedSandboxes } = props;
 
   client.mutate({
     mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
     variables: {
       collectionPath: path || '/',
       teamId,
-      sandboxIds: selectedSandboxes.toJS(),
+      sandboxIds: selectedSandboxes,
     },
     optimisticResponse: {
       __typename: 'Mutation',
@@ -59,7 +58,7 @@ function addSandboxesToCollection(props, item) {
 
       if (!item.removedAt) {
         // Update old folders
-        const collectionPath = item.collectionPath;
+        const { collectionPath } = item;
 
         const variables = { path: collectionPath };
 
@@ -73,7 +72,7 @@ function addSandboxesToCollection(props, item) {
         });
 
         oldFolderCacheData.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-          x => selectedSandboxes.indexOf(x.id) === -1
+          x => !selectedSandboxes.includes(x.id)
         );
 
         cache.writeQuery({

@@ -7,11 +7,11 @@ const config: ConfigurationFile = {
   type: 'prettier',
   description: 'Defines how all files will be prettified by Prettier.',
   moreInfoUrl: 'https://prettier.io/docs/en/configuration.html',
-  generateFileFromState: state =>
+  generateFileFromState: prettierConfig =>
     JSON.stringify(
       {
         ...DEFAULT_PRETTIER_CONFIG,
-        ...(state.get('preferences.settings.prettierConfig') || {}),
+        ...(prettierConfig || {}),
       },
       null,
       2

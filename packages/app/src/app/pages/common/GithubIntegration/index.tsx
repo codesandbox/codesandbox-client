@@ -1,35 +1,36 @@
-import { observer } from 'mobx-react-lite';
-import React from 'react';
-import GithubLogo from 'react-icons/lib/go/mark-github';
+import React, { FunctionComponent } from 'react';
+import GitHubLogo from 'react-icons/lib/go/mark-github';
 
-import Integration from 'app/components/Integration';
-import { useSignals, useStore } from 'app/store';
+import { Integration } from 'app/components/Integration';
+import { useOvermind } from 'app/overmind';
 
 type Props = {
   small?: boolean;
 };
-const GithubIntegration = ({ small = false }: Props) => {
-  const { signInGithubClicked, signOutGithubIntegration } = useSignals();
+export const GithubIntegration: FunctionComponent<Props> = ({
+  small = false,
+}) => {
   const {
-    isLoadingGithub,
-    user: {
-      integrations: { github },
+    actions: { signInGithubClicked, signOutGithubIntegration },
+    state: {
+      isLoadingGithub,
+      user: {
+        integrations: { github },
+      },
     },
-  } = useStore();
+  } = useOvermind();
 
   return (
     <Integration
-      color="#4078c0"
+      bgColor="#4078c0"
       description={small ? 'Commits & PRs' : 'Committing & Pull Requests'}
-      Icon={GithubLogo}
+      Icon={GitHubLogo}
       loading={isLoadingGithub}
       name="GitHub"
-      signIn={() => signInGithubClicked({ useExtraScopes: true })}
-      signOut={signOutGithubIntegration}
+      onSignIn={() => signInGithubClicked()}
+      onSignOut={() => signOutGithubIntegration()}
       small={small}
       userInfo={github}
     />
   );
 };
-
-export default observer(GithubIntegration);

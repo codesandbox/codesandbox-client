@@ -12,14 +12,14 @@ const DotContainer = styled.div`
   }
 `;
 
-export default class BlinkingDot extends React.PureComponent {
+export class BlinkingDot extends React.PureComponent {
   state = {
     showing: true,
   };
 
   componentDidMount() {
     this.timer = setInterval(() => {
-      this.setState({ showing: !this.state.showing });
+      this.setState(state => ({ showing: !state.showing }));
     }, 1000);
   }
 

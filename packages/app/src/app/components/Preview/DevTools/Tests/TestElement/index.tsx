@@ -6,7 +6,7 @@ import FileIcon from 'react-icons/lib/md/insert-drive-file';
 import ExpandTestsIcon from 'react-icons/lib/fa/expand';
 import CollapseTestsIcon from 'react-icons/lib/fa/minus';
 
-import { File, Status } from '../';
+import { File, Status } from '..';
 
 import {
   Container,
@@ -33,7 +33,7 @@ type Props = {
   onFileExpandToggle: (file: File) => void;
 };
 
-class TestElement extends React.Component<Props> {
+export class TestElement extends React.Component<Props> {
   selectFile = () => {
     this.props.selectFile(this.props.file);
   };
@@ -120,5 +120,3 @@ class TestElement extends React.Component<Props> {
     );
   }
 }
-
-export default TestElement;

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { DragLayer } from 'react-dnd';
+import { DragLayer as DNDDragLayer } from 'react-dnd';
 
-import SelectedSandboxItems from './SelectedSandboxItems';
+import { SelectedSandboxItems } from './SelectedSandboxItems';
 
 const layerStyles = {
   position: 'fixed',
@@ -22,13 +22,11 @@ function getItemCoords(props) {
   return {
     x,
     y,
-    left: props.item.left,
-    top: props.item.top,
   };
 }
 
 class CustomDragLayer extends React.Component {
-  renderItem(type, item, isOverPossibleTargets, { x, y, left, top }) {
+  renderItem(type, item, isOverPossibleTargets, { x, y }) {
     if (type !== 'SANDBOX') {
       return null;
     }
@@ -37,8 +35,6 @@ class CustomDragLayer extends React.Component {
         isOverPossibleTargets={isOverPossibleTargets}
         x={x}
         y={y}
-        left={left}
-        top={top}
         id={item.id}
       />
     );
@@ -83,4 +79,4 @@ function collect(monitor) {
   };
 }
 
-export default DragLayer(collect)(CustomDragLayer);
+export const DragLayer = DNDDragLayer(collect)(CustomDragLayer);

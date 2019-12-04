@@ -1,21 +1,28 @@
 {
   "name": "@codesandbox/notifications",
-  "version": "1.0.3",
-  "main": "lib/index.js",
+  "version": "1.0.6",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/notifications"
+  },
   "license": "MIT",
+  "main": "lib/index.js",
   "scripts": {
-    "start": "tsc --watch",
     "build": "rimraf lib && tsc",
-    "build:dev": "yarn build"
+    "build:dev": "yarn build",
+    "prepublish": "yarn build",
+    "start": "tsc --watch"
   },
   "dependencies": {
-    "@codesandbox/common": "^1.0.5",
-    "react": "^16.8.6",
-    "react-spring": "^8.0.19",
+    "react-spring": "^8.0.25",
     "styled-components": "^4.2.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
     "rimraf": "^2.6.3"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0"
   }
 }

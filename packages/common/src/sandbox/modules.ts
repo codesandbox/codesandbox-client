@@ -1,5 +1,8 @@
-import { Module, Directory } from '../types';
 import memoize from 'lodash/memoize';
+
+import getTemplateDefinition from '../templates';
+import parse from '../templates/configuration/parse';
+import { Directory, Module, Sandbox } from '../types';
 
 const compareTitle = (
   original: string,
@@ -21,7 +24,9 @@ export function resolveDirectory(
   directories: Array<Directory>,
   _startdirectoryShortid: string | undefined = undefined
 ) {
-  if (!_path) return throwError('');
+  if (!_path) {
+    return throwError('');
+  }
 
   let path = _path;
   let startdirectoryShortid = _startdirectoryShortid;
@@ -40,7 +45,9 @@ export function resolveDirectory(
   const foundDirectoryShortid = splitPath.reduce(
     (dirId: string | undefined, pathPart: string, i: number) => {
       // Meaning this is the last argument, so the directory
-      if (i === splitPath.length) return dirId;
+      if (i === splitPath.length) {
+        return dirId;
+      }
 
       if (pathPart === '..') {
         // Find the parent
@@ -67,6 +74,23 @@ export function resolveDirectory(
   );
 
   return directories.find(d => d.shortid === foundDirectoryShortid);
+}
+
+export function getModulesAndDirectoriesInDirectory(
+  directory: Directory,
+  modules: Array<Module>,
+  directories: Array<Directory>
+) {
+  const { path } = directory;
+  return {
+    removedModules: modules.filter(moduleItem =>
+      moduleItem.path.startsWith(path)
+    ),
+    removedDirectories: directories.filter(
+      directoryItem =>
+        directoryItem.path.startsWith(path) && directoryItem !== directory
+    ),
+  };
 }
 
 export function getModulesInDirectory(
@@ -222,14 +246,27 @@ const memoizeFunction = (modules, directories, id) =>
   modules.map(m => m.id + m.title + m.directoryShortid).join(',') +
   directories.map(d => d.id + d.title + d.directoryShortid).join(',');
 
-export const getModulePath = memoize(
-  (modules: Array<Module>, directories: Array<Directory>, id: string) =>
-    getPath(modules, modules, directories, id),
-  memoizeFunction
-);
-export const getDirectoryPath = memoize(
-  (modules: Array<Module>, directories: Array<Directory>, id: string) =>
-    getPath(directories, modules, directories, id),
+export const getModulePath = (
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  id: string
+) => getPath(modules, modules, directories, id);
+
+export const getDirectoryPath = (
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  id: string
+) => getPath(directories, modules, directories, id);
+
+export const getChildren = memoize(
+  (
+    modules: Array<Module> = [],
+    directories: Array<Directory> = [],
+    id: string
+  ) => [
+    ...directories.filter(d => d.directoryShortid === id),
+    ...modules.filter(m => m.directoryShortid === id),
+  ],
   memoizeFunction
 );
 
@@ -244,18 +281,40 @@ export const isMainModule = (
   return path.replace('/', '') === entry;
 };
 
-export const findMainModule = (
-  modules: Module[],
-  directories: Directory[],
-  entry: string = 'index.js'
-) => {
-  try {
-    const module = resolveModule(entry, modules, directories);
+export const findMainModule = (sandbox?: Sandbox) => {
+  const resolve = resolveModuleWrapped(sandbox);
 
-    return module;
-  } catch (e) {
-    return modules[0];
+  // first attempt: try loading the entry file if it exists
+  const entryModule = resolve(sandbox.entry);
+  if (entryModule) {
+    return entryModule;
   }
+
+  // second attempt: try loading the first file that exists from
+  // the list of possible defaults in the template defination
+  const templateDefinition = getTemplateDefinition(sandbox.template);
+
+  const parsedConfigs = parse(
+    sandbox.template,
+    templateDefinition.configurationFiles,
+    resolve,
+    sandbox
+  );
+
+  const defaultOpenedFiles = templateDefinition.getDefaultOpenedFiles(
+    parsedConfigs
+  );
+
+  const defaultOpenModule = defaultOpenedFiles
+    .map(path => resolve(path))
+    .find(module => Boolean(module));
+
+  if (defaultOpenModule) {
+    return defaultOpenModule;
+  }
+
+  // third attempt: give up and load the first file in the list
+  return sandbox.modules[0];
 };
 
 export const findCurrentModule = (
@@ -279,4 +338,20 @@ export const findCurrentModule = (
     modules.find(m => m.shortid === modulePath) || // deep-links requires this
     mainModule
   );
+};
+
+export const resolveModuleWrapped = sandbox => (path: string) => {
+  try {
+    return resolveModule(path, sandbox.modules, sandbox.directories);
+  } catch (e) {
+    return undefined;
+  }
+};
+
+export const resolveDirectoryWrapped = sandbox => (path: string) => {
+  try {
+    return resolveDirectory(path, sandbox.modules, sandbox.directories);
+  } catch (e) {
+    return undefined;
+  }
 };

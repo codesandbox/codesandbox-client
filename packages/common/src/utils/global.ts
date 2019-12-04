@@ -2,7 +2,7 @@ import { protocolAndHost } from './url-generator';
 
 export function getGlobal() {
   if (typeof window !== 'undefined') {
-    return window as Window & { BrowserFS: any };
+    return (window as unknown) as Window & { BrowserFS: any };
   }
 
   if (typeof self !== 'undefined') {

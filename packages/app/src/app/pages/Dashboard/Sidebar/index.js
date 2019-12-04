@@ -1,20 +1,22 @@
 import React from 'react';
 import history from 'app/utils/history';
-import { inject, observer } from 'mobx-react';
+import { inject, observer, Observer } from 'app/componentConnectors';
 import { Route, withRouter } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import TimeIcon from 'react-icons/lib/md/access-time';
 import PeopleIcon from 'react-icons/lib/md/people';
 
+// @ts-ignore
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
+import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
-import Item from './Item';
-import SandboxesItem from './SandboxesItem';
-import TrashItem from './TrashItem';
+import { Item } from './Item';
+import { SandboxesItem } from './SandboxesItem';
+import { TrashItem } from './TrashItem';
 import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
 import { TEAMS_QUERY } from '../queries';
+import { TemplateItem } from './TemplateItem';
 
 class Sidebar extends React.Component {
   handleSearchFocus = () => {
@@ -56,54 +58,78 @@ class Sidebar extends React.Component {
               : undefined;
 
             return (
-              <React.Fragment>
-                <Items style={{ marginBottom: '1rem' }}>
-                  <Item
-                    Icon={TimeIcon}
-                    path="/dashboard/recent"
-                    name="Recent"
-                  />
+              <Observer>
+                {({ store: innerStore }) => (
+                  <>
+                    <Items style={{ marginBottom: '1rem' }}>
+                      <Item
+                        Icon={DashboardIcon}
+                        path="/dashboard/recent"
+                        name="Overview"
+                      />
 
-                  <SandboxesItem
-                    currentPath={path}
-                    currentTeamId={currentTeamId}
-                    openByDefault
-                  />
-                  <TrashItem currentPath={path} />
-                </Items>
+                      <SandboxesItem
+                        selectedSandboxes={
+                          innerStore.dashboard.selectedSandboxes
+                        }
+                        currentPath={path}
+                        currentTeamId={currentTeamId}
+                        openByDefault
+                      />
 
-                <Query query={TEAMS_QUERY}>
-                  {({ loading, data, error }) => {
-                    if (loading) {
-                      return null;
-                    }
+                      <TemplateItem currentPath={path} />
 
-                    if (error) {
-                      return null;
-                    }
+                      <TrashItem currentPath={path} />
+                    </Items>
 
-                    const teams = data.me.teams;
+                    <Query query={TEAMS_QUERY}>
+                      {({ loading, data, error }) => {
+                        if (loading) {
+                          return null;
+                        }
 
-                    return teams.map(team => (
-                      <div key={team.id}>
-                        <Items>
-                          <CategoryHeader>{team.name}</CategoryHeader>
-                          <Item
-                            Icon={PeopleIcon}
-                            path={teamOverviewUrl(team.id)}
-                            name="Team Overview"
-                          />
-                          <SandboxesItem
-                            currentPath={path}
-                            currentTeamId={currentTeamId}
-                            teamId={team.id}
-                          />
-                        </Items>
-                      </div>
-                    ));
-                  }}
-                </Query>
-              </React.Fragment>
+                        if (error || !data.me) {
+                          return null;
+                        }
+
+                        if (!(data && data.me)) {
+                          return null;
+                        }
+
+                        const { teams = [] } = data.me;
+
+                        return teams.map(team => (
+                          <div key={team.id}>
+                            <Items>
+                              <CategoryHeader>{team.name}</CategoryHeader>
+                              <Item
+                                Icon={PeopleIcon}
+                                path={teamOverviewUrl(team.id)}
+                                name="Team Overview"
+                              />
+
+                              <SandboxesItem
+                                whatTheFuck
+                                selectedSandboxes={
+                                  store.dashboard.selectedSandboxes
+                                }
+                                currentPath={path}
+                                currentTeamId={currentTeamId}
+                                teamId={team.id}
+                              />
+
+                              <TemplateItem
+                                currentPath={path}
+                                teamId={team.id}
+                              />
+                            </Items>
+                          </div>
+                        ));
+                      }}
+                    </Query>
+                  </>
+                )}
+              </Observer>
             );
           }}
         </Route>

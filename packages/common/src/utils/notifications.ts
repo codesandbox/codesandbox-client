@@ -5,7 +5,7 @@ import {
 
 export const notificationState = new NotificationState();
 
-type NotificationType = 'notice' | 'success' | 'warning' | 'error';
+export type NotificationType = 'notice' | 'success' | 'warning' | 'error';
 
 export function convertTypeToStatus(
   type: NotificationType

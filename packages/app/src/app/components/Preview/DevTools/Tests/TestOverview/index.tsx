@@ -1,20 +1,20 @@
 import * as React from 'react';
 
-import { Test } from '../';
+import { Test } from '..';
 import { Tests } from '../elements';
 
 import { Container, HappyMessage, Item, ItemTitle } from './elements';
 
-import TestSummaryText from '../TestSummaryText';
-import TestProgressBar from '../TestProgressBar';
-import TestBlock from '../TestDetails/TestBlock';
+import { TestSummaryText } from '../TestSummaryText';
+import { TestProgressBar } from '../TestProgressBar';
+import { TestBlock } from '../TestDetails/TestBlock';
 
 type Props = {
   tests: Array<Test>;
   openFile: (path: string) => void;
 };
 
-export default ({ tests, openFile }: Props) => {
+export const TestOverview = ({ tests, openFile }: Props) => {
   const failedTests = tests.filter(t => t.status === 'fail');
 
   const testPassCount = tests.filter(t => t.status === 'pass').length;

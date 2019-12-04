@@ -1,103 +1,88 @@
+import { format } from 'date-fns';
+import { graphql } from 'gatsby';
 import React from 'react';
 
-import { graphql } from 'gatsby';
-import { format } from 'date-fns';
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
-import { mainStyle, Image } from './_post.elements';
+import {
+  Author,
+  AuthorImage,
+  Container,
+  PostDate,
+  Title,
+} from '../components/PostElements';
+import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import {
-  Container,
-  Title,
-  PostDate,
-  AuthorImage,
-  Author,
-} from '../components/PostElements';
-import { makePost } from '../utils/makePosts';
+  AuthorContainer,
+  Image,
+  MetaData,
+  PostContainer,
+} from './_post.elements';
 
-export default ({ data: { feedMediumBlog, markdownRemark } }) => {
-  const {
-    creator,
-    title,
-    content,
-    date,
-    photo,
-    featuredImage,
-    description,
-  } = makePost(markdownRemark, feedMediumBlog);
+export default ({
+  data: {
+    blogPost: {
+      fields: { authors, date, description, photo, title },
+      frontmatter: {
+        banner: { publicURL: banner },
+      },
+      html,
+    },
+  },
+}) => (
+  <Layout>
+    <Container style={{ overflowX: 'auto' }}>
+      <TitleAndMetaTags
+        description={description}
+        image={banner}
+        title={`${title} - CodeSandbox Blog`}
+      />
 
-  const featuredImageUrl = (featuredImage || '').includes('http')
-    ? featuredImage
-    : `https://codesandbox.io${featuredImage}`;
-  return (
-    <Layout>
-      <Container style={{ overflowX: 'auto' }}>
-        <TitleAndMetaTags
-          title={`${title} - CodeSandbox Blog`}
-          image={featuredImageUrl}
-          description={description}
-        />
-        <PageContainer width={800}>
-          <Title>{title}</Title>
-          <aside
-            css={`
-              display: flex;
-              align-items: center;
-            `}
-          >
-            <div
-              css={`
-                display: flex;
-                align-items: center;
-                flex: 1;
-              `}
-            >
-              <AuthorImage src={photo} alt={creator} />
-              <Author>{creator}</Author>
-            </div>
-            <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
-          </aside>
-          {featuredImage ? <Image src={featuredImage} alt={title} /> : null}
-          <div
-            css={mainStyle}
-            dangerouslySetInnerHTML={{
-              __html: content,
-            }}
-          />
-        </PageContainer>
-      </Container>
-    </Layout>
-  );
-};
+      <PageContainer width={800}>
+        <Title>{title}</Title>
+
+        <MetaData>
+          <div style={{ flex: 1 }}>
+            {authors.map(author => (
+              <AuthorContainer key={author}>
+                {authors.length === 1 && (
+                  <AuthorImage alt={author} src={photo} />
+                )}
+
+                <Author>{author}</Author>
+              </AuthorContainer>
+            ))}
+          </div>
+
+          <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
+        </MetaData>
+
+        <Image alt={title} src={banner} />
+
+        <PostContainer dangerouslySetInnerHTML={{ __html: html }} />
+      </PageContainer>
+    </Container>
+  </Layout>
+);
 
 export const pageQuery = graphql`
   query Post($id: String) {
-    feedMediumBlog(id: { eq: $id }) {
-      id
-      categories
-      creator
-      link
-      title
-      pubDate
-      isoDate
-      content {
-        encoded
+    blogPost: markdownRemark(id: { eq: $id }) {
+      fields {
+        authors
+        date
+        description
+        photo
+        slug
+        title
       }
-    }
-    markdownRemark(id: { eq: $id }) {
-      html
       frontmatter {
-        featuredImage {
+        banner {
           publicURL
         }
-        slug
-        authors
-        photo
-        title
-        description
-        date
       }
+      html
     }
   }
 `;

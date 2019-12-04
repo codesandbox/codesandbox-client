@@ -1,31 +1,29 @@
-import React from 'react';
-import { observer } from 'mobx-react-lite';
+import React, { FunctionComponent } from 'react';
 
-import ZeitLogo from 'app/components/ZeitLogo';
-import Integration from 'app/components/Integration';
-import { useStore, useSignals } from 'app/store';
+import { Integration } from 'app/components/Integration';
+import { ZeitLogo } from 'app/components/ZeitLogo';
+import { useOvermind } from 'app/overmind';
 
-interface Props {
+type Props = {
   small: boolean;
-}
-
-const ZeitIntegration = ({ small }: Props) => {
-  const { user, isLoadingZeit } = useStore();
-  const { signInZeitClicked, signOutZeitClicked } = useSignals();
+};
+export const ZeitIntegration: FunctionComponent<Props> = ({ small }) => {
+  const {
+    actions: { signInZeitClicked, signOutZeitClicked },
+    state: { user, isLoadingZeit },
+  } = useOvermind();
 
   return (
     <Integration
       name="ZEIT"
       small={small}
-      color="black"
+      bgColor="black"
       description="Deployments"
       Icon={ZeitLogo}
       userInfo={user.integrations.zeit}
-      signIn={signInZeitClicked}
-      signOut={signOutZeitClicked}
+      onSignIn={signInZeitClicked}
+      onSignOut={signOutZeitClicked}
       loading={isLoadingZeit}
     />
   );
 };
-
-export default observer(ZeitIntegration);

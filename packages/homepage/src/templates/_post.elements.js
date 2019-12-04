@@ -1,82 +1,95 @@
 import styled, { css } from 'styled-components';
 
-export const mainStyle = css`
-  margin: auto;
-  color: white;
-  overflow: hidden;
-  line-height: 1.7;
-
-  font-weight: 500;
-  font-size: 18px;
-
-  color: rgba(255, 255, 255, 0.9);
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+export const PostContainer = styled.div`
+  ${({ theme }) => css`
+    margin: auto;
     color: white;
-    font-weight: 800;
-  }
+    overflow: hidden;
+    line-height: 1.7;
 
-  h1,
-  h2,
-  h3 {
-    font-family: 'Poppins', sans-serif;
-  }
+    font-weight: 500;
+    font-size: 18px;
 
-  h2 {
-    margin-top: 3rem;
-    font-size: 28px;
-  }
+    color: rgba(255, 255, 255, 0.9);
 
-  h3 {
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
-    font-size: 26px;
-  }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: white;
+      font-weight: 800;
+    }
 
-  h4 {
-    margin-top: 2rem;
-    margin-bottom: 0.5rem;
-    font-size: 20px;
-    font-weight: 600;
-  }
+    h1,
+    h2,
+    h3 {
+      font-family: 'Poppins', sans-serif;
+    }
 
-  ul,
-  ol {
-    margin-bottom: 28px;
-  }
+    h2 {
+      margin-top: 3rem;
+      font-size: 28px;
+    }
 
-  p {
-    margin-bottom: 28px;
-    word-break: break-word;
-  }
+    h3 {
+      margin-top: 3.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 26px;
+    }
 
-  p,
-  li {
-    font-family: 'Open Sans', sans-serif;
-    color: rgba(255, 255, 255, 0.8);
-  }
+    h4 {
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+      font-size: 20px;
+      font-weight: 600;
+    }
 
-  img {
-    display: block;
-    margin: 20px auto;
-  }
+    ul,
+    ol {
+      margin-bottom: 28px;
+    }
 
-  figcaption {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.6);
-  }
+    p {
+      margin-bottom: 28px;
+      word-break: break-word;
+    }
 
-  a {
-    color: ${props => props.theme.shySecondary};
-  }
+    p,
+    li {
+      font-family: 'Open Sans', sans-serif;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    img {
+      display: block;
+      margin: 20px auto;
+    }
+
+    figcaption {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    a {
+      color: ${theme.shySecondary};
+    }
+  `};
 `;
 
 export const Image = styled.img`
   display: block;
   margin: 20px auto;
+`;
+
+export const MetaData = styled.aside`
+  align-items: center;
+  display: flex;
+`;
+
+export const AuthorContainer = styled.div`
+  align-items: center;
+  display: flex;
+  margin-bottom: 0.5rem;
 `;

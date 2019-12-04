@@ -1,13 +1,12 @@
-import React from 'react';
-
 import Preview from '@codesandbox/common/lib/components/Preview';
-import { parseConfigurations } from 'app/store/utils/parse-configurations';
-import { mainModule } from 'app/store/utils/main-module';
+import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
+import { mainModule } from 'app/overmind/utils/main-module';
+import React from 'react';
 
 import { Container } from './elements';
 
 const ShowcasePreview = ({ settings, sandbox }) => {
-  const parsedConfigs = parseConfigurations(sandbox);
+  const parsedConfigs = parseSandboxConfigurations(sandbox);
   const module = mainModule(sandbox, parsedConfigs);
 
   return (

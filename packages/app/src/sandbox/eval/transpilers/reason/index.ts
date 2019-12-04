@@ -1,7 +1,7 @@
 import { basename, dirname, join } from 'path';
 import stripANSI from 'strip-ansi';
 
-import Transpiler from '../';
+import Transpiler from '..';
 import { LoaderContext } from '../../transpiled-module';
 import { Module } from '../../entities/module';
 
@@ -126,7 +126,7 @@ class ReasonTranspiler extends Transpiler {
           ? x.code
           : global.printRE(global.parseML(x.code));
 
-        const moduleName = x.moduleName;
+        const { moduleName } = x;
 
         const typesPath = join(
           dirname(x.path),
@@ -153,6 +153,7 @@ ${usedCode}
       .join('\n\n');
 
     const {
+      // eslint-disable-next-line camelcase
       js_code,
       js_error_msg: errorMessage,
       row,

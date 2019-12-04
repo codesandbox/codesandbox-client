@@ -1,19 +1,17 @@
-import React from 'react';
-import { listen, dispatch } from 'codesandbox-api';
-import { withTheme } from 'styled-components';
-import { debounce } from 'lodash-es';
-import update from 'immutability-helper';
-import styled from 'styled-components';
-
-import ClearIcon from 'react-icons/lib/md/block';
-import { Decode, Console as ConsoleFeed } from 'console-feed';
-
 import Select from '@codesandbox/common/lib/components/Select';
-import Input from './Input';
+import theme from '@codesandbox/common/lib/theme';
+import { listen, dispatch } from 'codesandbox-api';
+import { Decode, Console as ConsoleFeed } from 'console-feed';
+import update from 'immutability-helper';
+import { debounce } from 'lodash-es';
+import React from 'react';
+import ClearIcon from 'react-icons/lib/md/block';
+import styled, { withTheme } from 'styled-components';
+
+import { DevToolProps } from '..';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
-import { DevToolProps } from '..';
-import theme from '@codesandbox/common/lib/theme';
+import { ConsoleInput } from './Input';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -29,10 +27,9 @@ const StyledClearIcon = styled(ClearIcon)`
   font-size: 0.8em;
 `;
 
-class Console extends React.Component<StyledProps> {
+class ConsoleComponent extends React.Component<StyledProps> {
   state = {
     messages: [],
-    scrollToBottom: true,
     initialClear: true,
     filter: [],
     searchKeywords: '',
@@ -145,7 +142,7 @@ class Console extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
-    if (this.props.updateStatus) {
+    if (this.props.updateStatus && this.props.hidden) {
       this.props.updateStatus(this.getType(method));
     }
 
@@ -165,7 +162,7 @@ class Console extends React.Component<StyledProps> {
 
   list;
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.clearConsole(true);
     }
@@ -183,7 +180,11 @@ class Console extends React.Component<StyledProps> {
             method: 'log',
             data: [
               '%cConsole was cleared',
-              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+              `font-style: italic; color: ${
+                this.props.theme.vscodeTheme.type === 'light'
+                  ? 'rgba(0, 0, 0, 0.3)'
+                  : 'rgba(255, 255, 255, 0.3)'
+              }`,
             ],
           },
         ];
@@ -193,7 +194,10 @@ class Console extends React.Component<StyledProps> {
     });
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: StyledProps) {
+    if (prevProps.hidden && !this.props.hidden) {
+      this.props.updateStatus('clear');
+    }
     this.scrollToBottom();
   }
 
@@ -216,6 +220,15 @@ class Console extends React.Component<StyledProps> {
     }
 
     const { messages, filter, searchKeywords } = this.state;
+
+    let searchKeywordsHasError = false;
+
+    try {
+      new RegExp(searchKeywords); // eslint-disable-line
+    } catch (e) {
+      searchKeywordsHasError = true;
+    }
+
     return (
       <Container>
         <Messages
@@ -228,10 +241,10 @@ class Console extends React.Component<StyledProps> {
             variant={this.props.theme.light ? 'light' : 'dark'}
             styles={inspectorTheme(this.props.theme)}
             filter={filter}
-            searchKeywords={searchKeywords}
+            searchKeywords={searchKeywordsHasError ? '' : searchKeywords}
           />
         </Messages>
-        <Input evaluateConsole={this.evaluateConsole} />
+        <ConsoleInput evaluateConsole={this.evaluateConsole} />
       </Container>
     );
   }
@@ -277,11 +290,11 @@ const ConsoleFilterSelect = props => {
   );
 };
 
-export default {
+export const console = {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
-  Content: withTheme<StyledProps>(Console),
+  Content: withTheme<StyledProps>(ConsoleComponent),
   actions: [
     {
       title: 'Clear Console',

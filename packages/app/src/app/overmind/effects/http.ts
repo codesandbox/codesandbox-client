@@ -1,5 +1,10 @@
+import axios from 'axios';
+
 export default {
-  get<T>(url: string): Promise<T> {
-    return window.fetch(url).then(response => response.json());
-  },
+  get: axios.get,
+  post: axios.post,
+  path: axios.patch,
+  delete: axios.delete,
+  put: axios.put,
+  request: axios.request,
 };

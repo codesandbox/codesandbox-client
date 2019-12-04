@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Route } from 'react-router-dom';
 import { Animate } from 'react-show';
-import ContextMenu from 'app/components/ContextMenu';
+import { ContextMenu } from 'app/components/ContextMenu';
 import {
   AnimatedChevron,
   Container,
@@ -21,7 +21,7 @@ const getContainer = contextItems => {
   return Container;
 };
 
-export default class Item extends React.Component {
+export class Item extends React.Component {
   state = {
     open: this.props.openByDefault,
   };
@@ -31,7 +31,7 @@ export default class Item extends React.Component {
     this.setState(state => ({ open: !state.open }));
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.openByDefault === true && !this.props.openByDefault) {
       this.setState({ open: true });
     }
@@ -66,7 +66,7 @@ export default class Item extends React.Component {
             this.setState({ open: true });
           }
           return (
-            <Fragment>
+            <>
               <UsedContainer
                 style={style}
                 to={path}
@@ -105,7 +105,7 @@ export default class Item extends React.Component {
                   {children}
                 </Animate>
               )}
-            </Fragment>
+            </>
           );
         }}
       </Route>

@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { Test } from '../../../';
+import { Test } from '../../..';
 
 import { StatusElements } from '../../../elements';
-import { Block, TestName } from './elements';
+import { Block, TestName as Name } from './elements';
 
 type Props = {
   test: Test;
 };
 
-export default ({ test }: Props) => {
+export const TestName = ({ test }: Props) => {
   const StatusElement = StatusElements[test.status];
 
   const testParts = [...test.testName];
@@ -22,7 +22,7 @@ export default ({ test }: Props) => {
           <span style={{ zIndex: 10 }}>{part}</span>
         </Block>
       ))}
-      <TestName>{testName}</TestName>
+      <Name>{testName}</Name>
     </div>
   );
 };

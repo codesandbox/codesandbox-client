@@ -1,28 +1,24 @@
 // @flow
 
-import * as React from 'react';
-import CodeMirror from 'codemirror';
-import { withTheme } from 'styled-components';
-
-import type { ModuleError, Module } from '@codesandbox/common/lib/types';
-import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
-import { getCodeMirror } from 'app/utils/codemirror';
-
-import { listen } from 'codesandbox-api';
-
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 import 'codemirror/addon/lint/lint.css';
 import 'codemirror/addon/lint/lint';
 
-import FuzzySearch from '../FuzzySearch';
-import { Container, CodeContainer } from './elements';
-
+import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import type { Module, ModuleError } from '@codesandbox/common/lib/types';
+import { getCodeMirror } from 'app/utils/codemirror';
+import CodeMirror from 'codemirror';
+import { listen } from 'codesandbox-api';
+import * as React from 'react';
+import { withTheme } from 'styled-components';
 // eslint-disable-next-line
-import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
+import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!app/overmind/effects/vscode/LinterWorker/index';
 
-import type { Props, Editor } from '../types';
+import FuzzySearch from '../FuzzySearch';
+import type { Editor, Props } from '../types';
+import { CodeContainer, Container } from './elements';
 
 type State = { fuzzySearchEnabled: boolean };
 
@@ -39,6 +35,7 @@ const highlightLines = (
 
 class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   codemirror: typeof CodeMirror;
+
   codemirrorElement: ?HTMLDivElement;
   server: $PropertyType<CodeMirror, 'TernServer'>;
   sandbox: $PropertyType<Props, 'sandbox'>;
@@ -143,7 +140,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
       return;
     }
 
-    const linterWorker = this.linterWorker;
+    const { linterWorker } = this;
     if (linterWorker) {
       linterWorker.postMessage({
         code,
@@ -196,7 +193,13 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     const showAutoComplete = cm => {
       if (this.server) {
         const filter = new RegExp('[.a-z_$]', 'i');
+
+        // TODO: look why one of these values is undefined
         if (
+          cm &&
+          cm.display &&
+          cm.display.input &&
+          cm.display.input.textarea &&
           cm.display.input.textarea.value &&
           cm.display.input.textarea.value.slice(-1).match(filter)
         ) {
@@ -227,16 +230,13 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
     if (settings.autoCompleteEnabled) {
       const tern = await import(
-        /* webpackChunkName: 'codemirror-tern' */ 'tern'
-      ).then(x => x.default);
-      const defs = await import(
-        /* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json'
+        /* webpackChunkName: 'codemirror-tern' */ 'codesandbox-deps/dist/tern'
       );
-      window.tern = tern;
+      window.tern = tern.tern;
       this.server =
         this.server ||
         new CodeMirror.TernServer({
-          defs: [defs],
+          defs: [tern.ecmascriptJson],
         });
       this.codemirror.on('cursorActivity', updateArgHints);
       this.codemirror.on('inputRead', showAutoComplete);
@@ -316,7 +316,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   changeModule = async (newModule: Module) => {
     this.currentModule = newModule;
 
-    const currentModule = this.currentModule;
+    const { currentModule } = this;
 
     if (!documentCache[currentModule.id]) {
       const mode = (await this.getMode(currentModule.title)) || 'typescript';
@@ -361,7 +361,8 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
           return 'text/x-scss';
         }
         return 'css';
-      } else if (kind[1] === 'html' || kind[1] === 'vue') {
+      }
+      if (kind[1] === 'html' || kind[1] === 'vue') {
         await import(
           /* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed'
         );
@@ -388,19 +389,23 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
         }
 
         return 'htmlmixed';
-      } else if (kind[1] === 'md') {
+      }
+      if (kind[1] === 'md') {
         await import(
           /* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown'
         );
         return 'markdown';
-      } else if (kind[1] === 'json') {
+      }
+      if (kind[1] === 'json') {
         return 'application/json';
-      } else if (kind[1] === 'sass') {
+      }
+      if (kind[1] === 'sass') {
         await import(
           /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'
         );
         return 'sass';
-      } else if (kind[1] === 'styl') {
+      }
+      if (kind[1] === 'styl') {
         await import(
           /* webpackChunkName: 'codemirror-stylus' */ 'codemirror/mode/stylus/stylus'
         );
@@ -444,7 +449,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   getCode = () => this.codemirror.getValue();
 
   handleSaveCode = async () => {
-    const onSave = this.props.onSave;
+    const { onSave } = this.props;
     if (onSave) {
       onSave(this.codemirror.getValue());
     }

@@ -4,14 +4,18 @@ import resolve from 'browser-resolve';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
 import { Module } from './entities/module';
-import TranspiledModule, { ChildModule } from './transpiled-module';
-import { SerializedTranspiledModule } from './transpiled-module';
+import TranspiledModule, {
+  ChildModule,
+  SerializedTranspiledModule,
+} from './transpiled-module';
 import Preset from './presets';
-import { SCRIPT_VERSION } from '../';
+import { SCRIPT_VERSION } from '..';
 import fetchModule, {
   setCombinedMetas,
   combinedMetas,
@@ -24,11 +28,9 @@ import { packageFilter } from './utils/resolve-utils';
 
 import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
 import { shouldTranspile } from './transpilers/babel/check';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import { splitQueryFromPath } from './utils/query-path';
 
-declare var BrowserFS: any;
+declare const BrowserFS: any;
 
 type Externals = {
   [name: string]: string;
@@ -104,6 +106,7 @@ export default class Manager {
       };
     };
   };
+
   envVariables: { [envName: string]: string } = {};
   preset: Preset;
   externals: Externals;
@@ -158,6 +161,7 @@ export default class Manager {
 
     getGlobal().manager = this;
     if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
       console.log(this);
     }
 
@@ -244,10 +248,11 @@ export default class Manager {
     const hasCallback = typeof callback === 'function';
 
     if (this.transpiledModules[p]) {
-      const code = this.transpiledModules[p].module.code;
+      const { code } = this.transpiledModules[p].module;
 
       return hasCallback ? callback(null, code) : code;
-    } else if (hasCallback && this.fileResolver) {
+    }
+    if (hasCallback && this.fileResolver) {
       return this.fileResolver.readFile(p).then(code => {
         this.addModule({ code, path: p });
 
@@ -335,8 +340,6 @@ export default class Manager {
       this.setHmrStatus('idle');
 
       return exports;
-    } catch (e) {
-      throw e;
     } finally {
       // Run post evaluate
       this.getTranspiledModules().forEach(t => t.postEvaluate(this));
@@ -557,6 +560,23 @@ export default class Manager {
       .replace(/.*\{\{sandboxRoot\}\}/, '');
   }
 
+  getModuleDirectories() {
+    const baseTSCompilerConfig = [
+      this.configurations.typescript,
+      this.configurations.jsconfig,
+    ].find(config => config && config.generated !== true);
+
+    const baseUrl =
+      baseTSCompilerConfig &&
+      baseTSCompilerConfig.parsed &&
+      baseTSCompilerConfig.parsed.compilerOptions &&
+      baseTSCompilerConfig.parsed.compilerOptions.baseUrl;
+
+    return ['node_modules', baseUrl, this.envVariables.NODE_PATH].filter(
+      Boolean
+    );
+  }
+
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
   async resolveModuleAsync(
     path: string,
@@ -586,7 +606,8 @@ export default class Manager {
 
         if (NODE_LIBS.indexOf(shimmedPath) > -1) {
           this.cachedPaths[dirredPath][path] = shimmedPath;
-          return getShimmedModuleFromPath(currentPath, path);
+          promiseResolve(getShimmedModuleFromPath(currentPath, path));
+          return;
         }
 
         try {
@@ -598,10 +619,7 @@ export default class Manager {
               isFile: this.isFile,
               readFileSync: this.readFileSync,
               packageFilter,
-              moduleDirectory: [
-                'node_modules',
-                this.envVariables.NODE_PATH,
-              ].filter(Boolean),
+              moduleDirectory: this.getModuleDirectories(),
             },
             (err, foundPath) => {
               if (err) {
@@ -702,9 +720,7 @@ export default class Manager {
           isFile: this.isFile,
           readFileSync: this.readFileSync,
           packageFilter,
-          moduleDirectory: ['node_modules', this.envVariables.NODE_PATH].filter(
-            Boolean
-          ),
+          moduleDirectory: this.getModuleDirectories(),
         });
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
@@ -838,12 +854,14 @@ export default class Manager {
     ignoredExtensions: string[],
     async: true
   ): Promise<TranspiledModule>;
+
   resolveTranspiledModule(
     path: string,
     currentPath: string,
     ignoredExtensions?: string[],
     async?: false
   ): TranspiledModule;
+
   resolveTranspiledModule(
     path: string,
     currentPath: string,
@@ -1112,13 +1130,13 @@ export default class Manager {
           version === SCRIPT_VERSION &&
           dependenciesQuery === this.getDependencyQuery()
         ) {
-          const combinedMetas = {};
+          const newCombinedMetas = {};
           Object.keys(meta).forEach(dir => {
             meta[dir].forEach(file => {
-              combinedMetas[`/node_modules` + dir + '/' + file] = true;
+              newCombinedMetas[`/node_modules` + dir + '/' + file] = true;
             });
           });
-          setCombinedMetas(combinedMetas);
+          setCombinedMetas(newCombinedMetas);
 
           this.cachedPaths = cachedPaths;
           this.configurations = configurations;

@@ -1,8 +1,14 @@
-import { Sandbox } from '../types';
+import { Sandbox, SandboxUrlSourceData } from '../types';
+import { isServer } from '../templates/helpers/is-server';
 
 export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
 const dotGit = /(\.git)$/;
+
+const sandboxHost = {
+  'https://codesandbox.io': 'https://csb.app',
+  'https://codesandbox.stream': 'https://codesandbox.dev',
+};
 
 const buildEncodedUri = (
   strings: TemplateStringsArray,
@@ -51,17 +57,17 @@ const sandboxGitUrl = (git: {
 
 export const editorUrl = () => `/s/`;
 
-export const sandboxUrl = (sandbox: Sandbox) => {
-  if (sandbox.git) {
-    const { git } = sandbox;
+export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
+  if (sandboxDetails.git) {
+    const { git } = sandboxDetails;
     return `${editorUrl()}${sandboxGitUrl(git)}`;
   }
 
-  if (sandbox.alias) {
-    return `${editorUrl()}${sandbox.alias}`;
+  if (sandboxDetails.alias) {
+    return `${editorUrl()}${sandboxDetails.alias}`;
   }
 
-  return `${editorUrl()}${sandbox.id}`;
+  return `${editorUrl()}${sandboxDetails.id}`;
 };
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
@@ -88,8 +94,17 @@ const stagingFrameUrl = (shortid: string, path: string) => {
   )}/${path}`;
 };
 
-export const frameUrl = (sandbox: Sandbox, append: string = '') => {
+export const frameUrl = (
+  sandbox: Sandbox,
+  append: string = '',
+  {
+    useFallbackDomain = false,
+    port = undefined,
+  }: { useFallbackDomain?: boolean; port?: number } = {}
+) => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
+
+  const templateIsServer = isServer(sandbox.template);
 
   if (process.env.LOCAL_SERVER) {
     return `http://localhost:3002/${path}`;
@@ -99,11 +114,31 @@ export const frameUrl = (sandbox: Sandbox, append: string = '') => {
     return stagingFrameUrl(sandbox.id, path);
   }
 
-  return `${location.protocol}//${sandbox.id}.${host()}/${path}`;
+  let sHost = host();
+  if (
+    `https://${sHost}` in sandboxHost &&
+    !useFallbackDomain &&
+    !templateIsServer
+  ) {
+    sHost = sandboxHost[`https://${sHost}`].split('//')[1];
+  }
+  return `${location.protocol}//${sandbox.id}${port ? `-${port}` : ''}.${
+    templateIsServer ? 'sse.' : ''
+  }${sHost}/${path}`;
 };
 
 export const forkSandboxUrl = (sandbox: Sandbox) =>
   `${sandboxUrl(sandbox)}/fork`;
+
+export const signInPageUrl = (redirectTo?: string) => {
+  let url = `/signin`;
+
+  if (redirectTo) {
+    url += '?continue=' + redirectTo;
+  }
+
+  return url;
+};
 
 export const signInUrl = (extraScopes: boolean = false) =>
   '/auth/github' + (extraScopes ? '?scope=user:email,public_repo' : '');
@@ -153,3 +188,34 @@ export const patronUrl = () => `/patron`;
 export const curatorUrl = () => `/curator`;
 export const tosUrl = () => `/legal/terms`;
 export const privacyUrl = () => `/legal/privacy`;
+
+export function getSandboxId() {
+  const csbHost = process.env.CODESANDBOX_HOST;
+
+  if (process.env.LOCAL_SERVER) {
+    return document.location.hash.replace('#', '');
+  }
+
+  if (process.env.STAGING) {
+    const segments = csbHost.split('//')[1].split('.');
+    const first = segments.shift();
+    const re = RegExp(`${first}-(.*)\\.${segments.join('\\.')}`);
+    return document.location.host.match(re)[1];
+  }
+
+  let result: string;
+  [csbHost, sandboxHost[csbHost]].filter(Boolean).forEach(tryHost => {
+    const hostRegex = tryHost.replace(/https?:\/\//, '').replace(/\./g, '\\.');
+    const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
+    const matches = document.location.host.match(sandboxRegex);
+    if (matches) {
+      result = matches[1];
+    }
+  });
+
+  if (!result) {
+    throw new Error(`Can't detect sandbox ID from the current URL`);
+  }
+
+  return result;
+}
