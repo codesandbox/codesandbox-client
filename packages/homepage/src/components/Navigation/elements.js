@@ -108,6 +108,10 @@ export const LogoWrapper = styled(Link)`
   margin-right: 4rem;
   color: white;
   text-decoration: none;
+
+  @media screen and (max-width: 900px) {
+    margin-right: 2rem;
+  }
 `;
 
 export const LogoImage = styled.img`
@@ -126,6 +130,10 @@ export const List = styled.ul`
 
     &:not(:last-child) {
       margin-right: 3rem;
+
+      @media screen and (max-width: 900px) {
+        margin-right: 1.5rem;
+      }
     }
   }
 

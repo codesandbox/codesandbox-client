@@ -27,7 +27,7 @@ quickly—helping them avoid writing boilerplate code while encouraging best
 practices.
 
 Expand upon these starting points with more advanced demos—show off individual
-features, and common use-cases of your product with code examples.
+features and common use-cases of your product with code examples.
 
 </div>
 
@@ -77,8 +77,8 @@ continue with them at home. And with Live, you can collaborate on code with
 attendees or help those that get stuck along the way.
 
 With support for back-end as well as front-end development, you can kickstart
-projects at Hackathons. Give attendees a template to start from, or import from
-GitHub. They can then add any package on npm, or fork from and re-use code from
+projects at Hackathons. Give attendees a template to start from or repo to import from
+GitHub. They can then add any package on npm or fork and re-use code from
 our 3M+ community-created sandboxes.
 
 </div>

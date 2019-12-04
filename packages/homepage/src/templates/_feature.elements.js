@@ -19,6 +19,10 @@ export const Title = styled.h1`
   ${props => props.theme.breakpoints.md} {
     max-width: 80%;
   }
+
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 2.1rem;
+  }
 `;
 
 export const Description = styled.h2`

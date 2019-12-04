@@ -324,7 +324,7 @@ export default () => (
           template.
         </div>
         <div>
-          <H6>Public, Private or Unlisted</H6>
+          <H6>Public, Private, or Unlisted</H6>
           Share sandboxes with the world, or set a sandbox to be private or
           unlisted to hide it from others.
         </div>

@@ -131,7 +131,7 @@ export default () => {
             <h3> Customize the look and feel</h3>
             Show just the editor, the preview, or both. Then enable
             auto-resizing, the navigation bar, console, module view, or test
-            results. Specify which file shows first in the editor, and the path
+            results. Specify which file shows first in the editor and the path
             the preview displays.
           </div>
 
@@ -145,7 +145,7 @@ export default () => {
 
           <div>
             <h3> Embed everywhere</h3>
-            You can place embeds with an iFrame, or anywhere with Embedly
+            You can place embeds with an iFrame or anywhere with Embedly
             support, like Medium, Reddit, Trello, and Notion.
           </div>
         </ContentBlock>

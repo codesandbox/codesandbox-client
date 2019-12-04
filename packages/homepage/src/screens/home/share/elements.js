@@ -13,7 +13,7 @@ export const Grid = styled.div`
 
 export const Section = styled.section`
   display: grid;
-  grid-template-columns: repeat(3, 300px);
+  grid-template-columns: repeat(3, minmax(25%, 300px));
   grid-gap: 2rem;
   margin-top: 5rem;
   position: relative;
@@ -54,6 +54,10 @@ export const tweetStyle = css`
   ${shared}
   ${props => props.theme.breakpoints.md} {
     display: none;
+  }
+
+  @media screen and (max-width: 1260px) {
+    right: auto;
   }
 `;
 

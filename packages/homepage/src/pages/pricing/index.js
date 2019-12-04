@@ -26,7 +26,12 @@ export default () => (
       <Title textCenter>Pricing</Title>
     </PageContainer>
     <CardContainer>
-      <Card dark>
+      <Card
+        dark
+        css={`
+          grid-area: free;
+        `}
+      >
         <div>
           <CardTitle>Community</CardTitle>
           <Price>Free</Price>
@@ -50,7 +55,11 @@ export default () => (
         </div>
         <Button href="/s">Create Sandbox, it’s free </Button>
       </Card>
-      <Card>
+      <Card
+        css={`
+          grid-area: pro;
+        `}
+      >
         <div>
           <CardTitle>Pro</CardTitle>
           <Price>$12/month</Price>
@@ -70,11 +79,48 @@ export default () => (
             <li>+ Private GitHub Repos</li>
           </List>
         </div>
-        <Button white href="/patron">
+        <Button white href="/pro">
           Subscribe to Pro
         </Button>
       </Card>
+      <Card
+        css={props => `
+          grid-area: team;
+          background: transparent;
+          border: 1px solid;
+          border-color: ${props.theme.homepage.grey};
+          height: 18rem;
+        `}
+      >
+        <div>
+          <CardTitle>Team Pro</CardTitle>
+          <Price>Coming soon</Price>
+
+          <div
+            css={props => `
+              font-size: 1.4rem;
+              margin-bottom: 2rem;
+              color: ${props.theme.homepage.greyLight};
+            `}
+          >
+            Use CodeSandbox with your team
+          </div>
+        </div>
+        <div>
+          <Button
+            white
+            href="https://airtable.com/shrlgLSJWiX8rYqyG"
+            css={`
+              max-width: 20rem;
+              margin: 0 auto;
+            `}
+          >
+            Get early access
+          </Button>
+        </div>
+      </Card>
     </CardContainer>
+
     <FeaturesTitle>Features</FeaturesTitle>
     <FeaturesTableHeader
       css={`
@@ -310,7 +356,7 @@ export default () => (
         <div>
           <FeatureTitle>GitHub</FeatureTitle>
           <P muted small>
-            Import and sync public repos, export a sandbox to a repo or create
+            Import and sync public repos, export a sandbox to a repo, or create
             commits and open PRs.
           </P>
         </div>

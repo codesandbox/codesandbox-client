@@ -45,10 +45,14 @@ export default ({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      css={`
+        ${props => props.theme.breakpoints.md} {
+          grid-row: 1;
+        }
+      `}
       style={{
         height: '100%',
         display: 'flex',
-        gridRow: '1',
       }}
       transition={{
         duration: 1,

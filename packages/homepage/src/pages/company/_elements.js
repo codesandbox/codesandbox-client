@@ -40,6 +40,10 @@ export const Investors = styled.div`
   justify-content: center;
   margin-top: 4rem;
 
+  ${props => props.theme.breakpoints.md} {
+    grid-template-columns: 1fr;
+  }
+
   > div {
     background: #151515;
     display: flex;
