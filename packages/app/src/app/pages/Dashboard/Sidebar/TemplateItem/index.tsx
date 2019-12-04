@@ -1,1 +1,0 @@
-export { TemplateItem } from './TemplateItem';
