@@ -252,7 +252,7 @@ const Experiment = () => {
               shouldAnimate={!hasMouseOver}
               index={8}
               x={(itemWidth + 16) * 7}
-              id="2wyzx"
+              id="2wvzx"
               big
               image={nine}
               wrapperWidth={imageWrapperWidth}

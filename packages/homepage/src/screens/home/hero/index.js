@@ -71,7 +71,10 @@ export default () => {
       const channel = socket.channel('sandbox-created', {});
       channel.join();
       channel.on('new-sandbox', () => {
-        createBox();
+        if (document.hasFocus()) {
+          createBox();
+        }
+
         setSandboxesCreatedCount(i => i + 1);
       });
 
