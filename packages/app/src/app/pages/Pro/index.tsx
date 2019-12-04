@@ -42,7 +42,7 @@ const Pro: React.FC = () => {
 
   let subscriptionType: string;
   if (isPatron) subscriptionType = 'patron';
-  else subscriptionType = user && user.subscription && user.subscription.type;
+  else subscriptionType = user && user.subscription && user.subscription.plan;
 
   useEffect(() => {
     patronMounted();
