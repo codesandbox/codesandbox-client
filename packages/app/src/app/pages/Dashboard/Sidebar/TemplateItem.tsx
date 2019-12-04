@@ -45,10 +45,10 @@ const TemplateItemComponent: FunctionComponent<Props> = ({
 };
 
 const entryTarget: DropTargetSpec<ComponentProps> = {
-  canDrop: (_props, { getItem }) => getItem() !== null,
-  drop: ({ teamId }, { isOver }) => {
+  canDrop: (_props, monitor) => monitor.getItem() !== null,
+  drop: ({ teamId }, monitor) => {
     // Check if only child is selected:
-    if (!isOver({ shallow: true })) {
+    if (!monitor.isOver({ shallow: true })) {
       return {};
     }
 
