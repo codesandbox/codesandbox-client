@@ -48,6 +48,7 @@ export const HeroWrapper = styled.section`
   padding: 0 2rem;
 
   height: calc(100vh - 48px);
+  min-height: 800px;
 
   perspective: 1000;
 `;
@@ -126,5 +127,77 @@ export const StyledEditorLink = styled.a`
 
   &:hover {
     opacity: 1;
+  }
+`;
+
+export const HeroBottom = styled.div`
+  position: absolute;
+  bottom: -30%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  ${props => props.theme.breakpoints.sm} {
+    padding: 0 0.5rem;
+    line-height: 1.4;
+    bottom: -50px;
+  }
+`;
+
+export const CountText = styled.div`
+  font-size: 1.25rem;
+  color: #757575;
+  margin-bottom: 1.5rem;
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 0.875rem;
+  }
+`;
+
+export const HeroImage = styled.img`
+  max-width: 1200px;
+  min-width: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
+
+  ${props => props.theme.breakpoints.md} {
+    width: 120vw;
+  }
+`;
+
+export const Title = styled.h1`
+  font-size: 2.5rem;
+  line-height: 57px;
+  font-family: ${props => props.theme.homepage.appleFont};
+
+  color: ${props => props.theme.homepage.white};
+  padding: 0;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+
+  ${props => props.theme.breakpoints.md} {
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 1.4rem;
+  }
+`;
+
+export const SubTitle = styled.h2`
+  font-weight: normal;
+  font-size: 1.125rem;
+  line-height: 1.3;
+  color: ${props => props.theme.homepage.white};
+  margin: 0;
+  margin-bottom: 1rem;
+
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 0.875rem;
   }
 `;

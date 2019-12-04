@@ -12,21 +12,28 @@
 
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Canvas, useThree } from 'react-three-fiber';
 import { useDrag } from 'react-use-gesture';
+import { useSpring, a } from 'react-spring/three';
+
 import { useCannon, Provider } from './useCannon';
 
 function Plane({ position }) {
+  const bodyRef = useRef();
+
   const fn = React.useCallback(
     body => {
       body.addShape(new CANNON.Plane());
       body.position.set(...position);
+
+      bodyRef.current = body;
     },
     [position]
   );
   // Register plane as a physics body with zero mass
   const ref = useCannon({ mass: 0 }, fn, []);
+
   return (
     <mesh ref={ref} receiveShadow>
       <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
@@ -45,8 +52,6 @@ function Box({ position }) {
     body => {
       body.addShape(new CANNON.Box(new CANNON.Vec3(1, 1, 1)));
       body.position.set(...position);
-
-      body.sleep();
 
       bodyRef.current = body;
     },
@@ -94,6 +99,20 @@ function Box({ position }) {
 }
 
 export default function App({ boxes, showPlane }) {
+  const [prop, set] = useSpring(() => ({ intensity: 0.6, color: '#fff' }));
+
+  useEffect(() => {
+    if (!boxes.length) {
+      return;
+    }
+
+    set({ intensity: 1 });
+
+    setTimeout(() => {
+      set({ intensity: 0.6 });
+    }, 300);
+  }, [boxes, set]);
+
   return (
     <div
       style={{
@@ -113,9 +132,10 @@ export default function App({ boxes, showPlane }) {
         }}
       >
         <ambientLight intensity={0.5} />
-        <spotLight
-          intensity={0.6}
-          position={[30, 30, 50]}
+
+        <a.spotLight
+          {...prop}
+          position={[-80, 60, 50]}
           angle={0.2}
           penumbra={1}
           castShadow

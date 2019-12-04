@@ -2,13 +2,25 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Socket } from 'phoenix';
 
+import * as templates from '@codesandbox/common/lib/templates/index';
 import Button from '../../../components/Button';
-import { H2, P } from '../../../components/Typography';
-import { HeroWrapper, SignUp, Border, StyledEditorLink } from './elements';
+import {
+  HeroWrapper,
+  SignUp,
+  Border,
+  StyledEditorLink,
+  HeroImage,
+  HeroBottom,
+  CountText,
+  Title,
+  SubTitle,
+} from './elements';
 
 import hero from '../../../assets/images/hero-ide-home.png';
 
 import BoxAnimation from './BoxAnimation';
+
+const templateKeys = Object.keys(templates).filter(x => x !== 'default');
 
 export default () => {
   const [boxes, setBoxes] = useState([]);
@@ -33,6 +45,9 @@ export default () => {
         {
           key: Math.floor(Math.random() * 10000) + '',
           position: [-5 + Math.random() * 10, -2.5 + Math.random() * 5, 15],
+          color: templates[
+            templateKeys[Math.floor(Math.random() * templateKeys.length)]
+          ].color(),
         },
         ...b,
       ];
@@ -41,23 +56,31 @@ export default () => {
     });
   }, [setBoxes]);
 
-  const socketRef = useRef(new Socket('/anon-socket'));
+  const socketRef = useRef(
+    typeof window === 'undefined'
+      ? undefined
+      : new Socket('wss://codesandbox.io/anon-socket')
+  );
 
   useEffect(() => {
     const socket = socketRef.current;
-    socket.connect();
+    if (socket) {
+      socket.connect();
 
-    const channel = socket.channel('sandbox-created', {});
-    channel.join();
-    channel.on('new-sandbox', () => {
-      createBox();
-      setSandboxesCreatedCount(i => i + 1);
-    });
+      const channel = socket.channel('sandbox-created', {});
+      channel.join();
+      channel.on('new-sandbox', () => {
+        createBox();
+        setSandboxesCreatedCount(i => i + 1);
+      });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [createBox, socketRef]);
+      return () => {
+        channel.leave();
+        socket.disconnect();
+      };
+    }
+    return () => {};
+  }, [createBox]);
 
   return (
     <HeroWrapper>
@@ -76,15 +99,14 @@ export default () => {
           textAlign: 'center',
         }}
       >
-        <H2 as="h1">Web Development Made Faster</H2>
-        <P
-          small
+        <Title>Web Development Made Faster</Title>
+        <SubTitle
           css={`
             margin-bottom: 2rem;
           `}
         >
           An instant IDE and prototyping tool for rapid web development.
-        </P>
+        </SubTitle>
         <Button
           style={{ padding: '.75rem 2rem', marginBottom: '.5rem' }}
           href="/s"
@@ -94,25 +116,14 @@ export default () => {
         <SignUp>No signup required</SignUp>
       </motion.div>
 
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '-30%',
-          left: 0,
-          right: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <div
-          style={{ fontSize: '1.25rem', color: '#ccc', marginBottom: '1rem' }}
-        >
-          {sandboxesCreatedCount}{' '}
+      <HeroBottom>
+        <CountText>
+          <span style={{ fontWeight: 600, color: 'white' }}>
+            {sandboxesCreatedCount}{' '}
+          </span>
           {sandboxesCreatedCount === 1 ? 'sandbox' : 'sandboxes'} created since
-          you opened this page
-        </div>
+          you've opened this page
+        </CountText>
 
         <div style={{ position: 'relative' }}>
           <StyledEditorLink
@@ -122,18 +133,19 @@ export default () => {
           >
             Open Project in CodeSandbox
           </StyledEditorLink>
-          <img
+          <HeroImage
             alt="editor with project open"
             src={hero}
             style={{
               maxWidth: 1200,
+              minWidth: '100%',
               overflow: 'hidden',
               borderRadius: 4,
               boxShadow: '0 10px 10px rgba(0, 0, 0, 0.5)',
             }}
           />
         </div>
-      </div>
+      </HeroBottom>
 
       <Border />
     </HeroWrapper>

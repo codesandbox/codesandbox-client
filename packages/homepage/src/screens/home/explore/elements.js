@@ -18,7 +18,7 @@ export const Container = styled.div`
   ${props => props.theme.breakpoints.sm} {
     transform: scale(0.5, 0.5);
     transform-origin: 100% 0%;
-    height: 300px;
+    height: 340px;
   }
 `;
 
