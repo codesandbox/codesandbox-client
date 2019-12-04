@@ -61,6 +61,18 @@ const ProPage: React.FC = () => {
       );
     }
 
+    if (user.subscription.cancelAtPeriodEnd) {
+      return (
+        <Expiring
+          user={user}
+          cancelSubscriptionClicked={cancelSubscriptionClicked}
+        />
+      );
+    }
+
+    // expiring
+    // expired
+
     if (user.subscription.plan === 'pro') {
       return (
         <Pro
@@ -190,6 +202,28 @@ const NotPro = ({
       />
     </Centered>
   </>
+);
+
+const Expiring = ({ user, cancelSubscriptionClicked }) => (
+  <MaxWidth width={500}>
+    <Centered horizontal>
+      <Avatar src={user.avatarUrl} />
+      <Badge type="pro" style={{ opacity: 0.8 }}>
+        Pro
+      </Badge>
+      <Heading>Your subscription is expiring</Heading>
+
+      <HelpText>
+        Your subscription will be automatically cancelled on your next billing
+        date ({format(new Date(user.subscription.since), 'do MMM')}). All your
+        private sandboxes will remain available and private.
+      </HelpText>
+
+      <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
+        Reactivate subscription
+      </ButtonAsLink>
+    </Centered>
+  </MaxWidth>
 );
 
 export default ProPage;

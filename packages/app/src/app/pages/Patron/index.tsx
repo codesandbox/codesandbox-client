@@ -16,10 +16,9 @@ const Patron: React.FC = () => {
     actions,
   } = useOvermind();
 
-  const subscriptionType: string =
-    user && user.subscription && user.subscription.plan;
-
-  if (subscriptionType === 'pro') location.href = '/pro';
+  if (user && user.subscription && user.subscription.plan === 'pro') {
+    location.href = '/pro';
+  }
 
   useEffect(() => {
     actions.patron.patronMounted();

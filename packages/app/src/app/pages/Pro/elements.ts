@@ -107,6 +107,7 @@ export const Button = styled.button(
     fontSize: 4,
     lineHeight: '32px',
     width: '100%',
+    minWidth: 200,
     marginBottom: 10,
     backgroundColor: 'blues.600',
     color: 'white',
@@ -252,9 +253,14 @@ export const Avatar = styled.img(
   })
 );
 
+const badgeBackground = {
+  pro: 'blues.700',
+  patron: 'green',
+};
+
 export const Badge = styled.span<{ type: string }>(props =>
   css({
-    backgroundColor: props.type === 'pro' ? 'blues.700' : 'green',
+    backgroundColor: badgeBackground[props.type],
     color: props.type === 'pro' ? 'white' : 'grays.800',
     paddingY: 1,
     paddingX: 2,
