@@ -48,6 +48,11 @@ const ProPage: React.FC = () => {
   }, [patronMounted]);
 
   const getContent = () => {
+    /**
+     * Proceed with caution
+     * There is logic baked in the order of
+     * the conditions.
+     */
     if (!hasLoadedApp) return null;
 
     if (!isLoggedIn) return <LoggedOut />;
@@ -62,6 +67,10 @@ const ProPage: React.FC = () => {
         />
       );
     }
+
+    if (user.subscription.plan === 'patron') return <Patron user={user} />;
+
+    /** Pro subscriptions land ⬇️ */
 
     if (user.subscription.cancelAtPeriodEnd) {
       return (
@@ -82,8 +91,6 @@ const ProPage: React.FC = () => {
         />
       );
     }
-
-    if (user.subscription.plan === 'patron') return <Patron user={user} />;
 
     return null;
   };
