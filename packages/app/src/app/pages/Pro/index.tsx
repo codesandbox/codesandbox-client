@@ -41,12 +41,40 @@ const ProPage: React.FC = () => {
 
   const checkoutDisabled = !hasLoadedApp || !isLoggedIn;
 
-  const subscriptionType: string =
-    user && user.subscription && user.subscription.plan;
-
   useEffect(() => {
     patronMounted();
   }, [patronMounted]);
+
+  const getContent = () => {
+    if (!hasLoadedApp) return null;
+
+    if (!isLoggedIn) return <LoggedOut />;
+
+    if (!user.subscription) {
+      return (
+        <NotPro
+          createSubscriptionClicked={createSubscriptionClicked}
+          user={user}
+          patron={patron}
+          checkoutDisabled={checkoutDisabled}
+        />
+      );
+    }
+
+    if (user.subscription.plan === 'pro') {
+      return (
+        <Pro
+          user={user}
+          modalOpened={modalOpened}
+          cancelSubscriptionClicked={cancelSubscriptionClicked}
+        />
+      );
+    }
+
+    if (user.subscription.plan === 'patron') return <Patron user={user} />;
+
+    return null;
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -59,35 +87,7 @@ const ProPage: React.FC = () => {
           <Navigation title="CodeSandbox Pro" />
 
           <MaxWidth width={1024}>
-            <>
-              {hasLoadedApp && !isLoggedIn && <LoggedOut />}
-
-              <Content>
-                {subscriptionType ? (
-                  <MaxWidth width={400}>
-                    <Centered horizontal>
-                      {subscriptionType === 'pro' ? (
-                        <Pro
-                          user={user}
-                          modalOpened={modalOpened}
-                          cancelSubscriptionClicked={cancelSubscriptionClicked}
-                          subscriptionType={subscriptionType}
-                        />
-                      ) : (
-                        <Patron user={user} />
-                      )}
-                    </Centered>
-                  </MaxWidth>
-                ) : (
-                  <NotPro
-                    createSubscriptionClicked={createSubscriptionClicked}
-                    user={user}
-                    patron={patron}
-                    checkoutDisabled={checkoutDisabled}
-                  />
-                )}
-              </Content>
-            </>
+            <Content>{getContent()}</Content>
           </MaxWidth>
         </Margin>
       </Page>
@@ -106,62 +106,66 @@ const LoggedOut = () => (
 );
 
 const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => (
-  <>
-    <Avatar src={user.avatarUrl} />
-    <Badge type="pro">Pro</Badge>
-    <Heading>You&apos;re a Pro!</Heading>
+  <MaxWidth width={400}>
+    <Centered horizontal>
+      <Avatar src={user.avatarUrl} />
+      <Badge type="pro">Pro</Badge>
+      <Heading>You&apos;re a Pro!</Heading>
 
-    <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
-      Create a sandbox
-    </ButtonAsLink>
+      <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
+        Create a sandbox
+      </ButtonAsLink>
 
-    <HelpText>
-      You will be billed on the{' '}
-      <b>{format(new Date(user.subscription.since), 'do')}</b> of each month.
-      You can{' '}
-      <LinkButton
-        onClick={e => {
-          e.preventDefault();
-          modalOpened({
-            modal: 'preferences',
-            itemId: 'paymentInfo',
-          });
-        }}
-      >
-        update your payment details
-      </LinkButton>{' '}
-      or{' '}
-      <LinkButton
-        onClick={e => {
-          e.preventDefault();
-          cancelSubscriptionClicked();
-        }}
-      >
-        cancel your subscription
-      </LinkButton>{' '}
-      at any time.
-    </HelpText>
-  </>
+      <HelpText>
+        You will be billed on the{' '}
+        <b>{format(new Date(user.subscription.since), 'do')}</b> of each month.
+        You can{' '}
+        <LinkButton
+          onClick={e => {
+            e.preventDefault();
+            modalOpened({
+              modal: 'preferences',
+              itemId: 'paymentInfo',
+            });
+          }}
+        >
+          update your payment details
+        </LinkButton>{' '}
+        or{' '}
+        <LinkButton
+          onClick={e => {
+            e.preventDefault();
+            cancelSubscriptionClicked();
+          }}
+        >
+          cancel your subscription
+        </LinkButton>{' '}
+        at any time.
+      </HelpText>
+    </Centered>
+  </MaxWidth>
 );
 
 const Patron = ({ user }) => (
-  <>
-    <Avatar src={user.avatarUrl} />
-    <Badge type="patron">Patron</Badge>
-    <Heading>You&apos;re a Pro!</Heading>
+  <MaxWidth width={400}>
+    <Centered horizontal>
+      <Avatar src={user.avatarUrl} />
+      <Badge type="patron">Patron</Badge>
+      <Heading>You&apos;re a Pro!</Heading>
 
-    <SubHeading>
-      Thank you for being an early supporter of CodeSandbox. As a patron, you
-      can access all Pro features.
-    </SubHeading>
-    <ButtonAsLink href="/s/">Create a sandbox</ButtonAsLink>
+      <SubHeading>
+        Thank you for being an early supporter of CodeSandbox. As a patron, you
+        can access all Pro features.
+      </SubHeading>
+      <ButtonAsLink href="/s/">Create a sandbox</ButtonAsLink>
 
-    <HelpText>
-      You will be billed on the{' '}
-      <b>{format(new Date(user.subscription.since), 'do')}</b> of each month.
-      You can <a href="/patron">modify your contribution</a> at any time.
-    </HelpText>
-  </>
+      <HelpText>
+        You will be billed on the{' '}
+        <b>{format(new Date(user.subscription.since), 'do')}</b> of each month.
+        You can <a href="/patron">modify your contribution</a> at any time.
+      </HelpText>
+    </Centered>
+  </MaxWidth>
 );
 
 const NotPro = ({
