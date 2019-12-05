@@ -99,7 +99,7 @@ export default () => (
           <div
             css={props => `
               font-size: 1.4rem;
-              margin-bottom: 2rem;
+              margin-bottom: 1rem;
               color: ${props.theme.homepage.greyLight};
             `}
           >

@@ -2,13 +2,13 @@ import styled from 'styled-components';
 
 export const Card = styled.div`
   width: 100%;
-  height: 34rem;
+  height: 30rem;
 
   background: ${props => (props.dark ? '#151515' : props.theme.homepage.blue)};
   border-radius: 0.25rem;
   padding: 2.5rem;
   text-align: center;
-  margin-top: 4rem;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -156,6 +156,7 @@ export const CardContainer = styled.div`
     'team team';
   grid-gap: 2rem;
   justify-content: center;
+  margin-top: 4rem;
 
   ${props => props.theme.breakpoints.lg} {
     grid-template-columns: minmax(100%, 26rem);
