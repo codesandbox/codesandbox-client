@@ -15,6 +15,7 @@ import {
   UnbookmarkTemplateFromDashboardMutationVariables,
   ListPersonalBookmarkedTemplatesQuery,
 } from 'app/graphql/types';
+import { useOvermind } from 'app/overmind';
 import { ButtonContainer } from './elements';
 
 import { Container, Grid, EmptyTitle } from '../elements';
@@ -26,6 +27,8 @@ export const FollowedTemplates = props => {
   const [sortedTemplates, setSortedTemplates] = useState<
     ListPersonalBookmarkedTemplatesQuery['me']['bookmarkedTemplates']
   >();
+
+  const { actions } = useOvermind();
 
   const { loading, error, data } = useQuery<
     ListPersonalBookmarkedTemplatesQuery
@@ -106,7 +109,14 @@ export const FollowedTemplates = props => {
               <Button small href="/docs/templates" secondary>
                 Learn more
               </Button>
-              <Button small href="/explore">
+              <Button
+                small
+                onClick={() => {
+                  actions.modalOpened({
+                    modal: 'newSandbox',
+                  });
+                }}
+              >
                 Explore
               </Button>
             </ButtonContainer>
