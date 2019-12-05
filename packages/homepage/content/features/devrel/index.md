@@ -77,9 +77,9 @@ continue with them at home. And with Live, you can collaborate on code with
 attendees or help those that get stuck along the way.
 
 With support for back-end as well as front-end development, you can kickstart
-projects at Hackathons. Give attendees a template to start from or repo to import from
-GitHub. They can then add any package on npm or fork and re-use code from
-our 3M+ community-created sandboxes.
+projects at Hackathons. Give attendees a template to start from or repo to
+import from GitHub. They can then add any package on npm or fork and re-use code
+from our 3M+ community-created sandboxes.
 
 </div>
 

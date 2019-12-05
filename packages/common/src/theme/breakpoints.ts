@@ -6,9 +6,7 @@ export const media = {
       }px) and (max-width: ${upperBound.min - 1}px)`;
     if (upperBound.max === Infinity)
       return `@media (min-width: lowerBound.min}px)`;
-    return `@media (min-width: lowerBound.min}px) and (max-width: ${
-      upperBound.max
-    }px)`;
+    return `@media (min-width: lowerBound.min}px) and (max-width: ${upperBound.max}px)`;
   },
 
   greaterThan(size) {

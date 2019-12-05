@@ -11,7 +11,14 @@ import { PricingModal } from './PricingModal';
 import { Content } from './elements';
 
 const Patron: React.FC = () => {
-  const { actions } = useOvermind();
+  const {
+    state: { user },
+    actions,
+  } = useOvermind();
+
+  if (user && user.subscription && user.subscription.plan === 'pro') {
+    location.href = '/pro';
+  }
 
   useEffect(() => {
     actions.patron.patronMounted();

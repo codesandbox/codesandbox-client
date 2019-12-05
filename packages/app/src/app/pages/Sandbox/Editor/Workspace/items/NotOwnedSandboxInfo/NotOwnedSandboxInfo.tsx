@@ -21,11 +21,7 @@ export const NotOwnedSandboxInfo = () => {
         {editor.currentSandbox.customTemplate && <BookmarkTemplateButton />}
       </Margin>
 
-      <WorkspaceItem
-        actions={editActions}
-        defaultOpen
-        title="Files"
-      >
+      <WorkspaceItem actions={editActions} defaultOpen title="Files">
         <Files setEditActions={setEditActions} />
       </WorkspaceItem>
       {!staticTemplate ? (
