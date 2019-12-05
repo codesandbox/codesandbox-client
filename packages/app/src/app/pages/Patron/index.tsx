@@ -12,12 +12,21 @@ import { Content } from './elements';
 
 const Patron: React.FC = () => {
   const {
-    state: { user },
+    state: { hasLoadedApp, isLoggedIn, user },
     actions,
   } = useOvermind();
 
-  if (user && user.subscription && user.subscription.plan === 'pro') {
+  if (!isLoggedIn) {
     location.href = '/pro';
+  }
+  // don't send them away before authentication
+  if (hasLoadedApp && user) {
+    if (
+      !user.subscription || // if no subscription, get pro
+      user.subscription.plan !== 'patron' // if subscription but not patron, go to pro
+    ) {
+      location.href = '/pro';
+    }
   }
 
   useEffect(() => {
