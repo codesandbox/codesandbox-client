@@ -1,4 +1,4 @@
-import { trackPageview } from '@codesandbox/common/lib/utils/analytics';
+const { trackPageview } = require('@codesandbox/common/lib/utils/analytics');
 
 exports.onClientEntry = () => {
   (function addDocSearch() {
