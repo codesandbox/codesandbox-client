@@ -16,14 +16,15 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Table from 'react-virtualized/dist/commonjs/Table';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
+import { makeTemplates } from 'app/components/CreateNewSandbox/queries';
 
 import {
   deleteSandboxes,
-  makeTemplates,
   permanentlyDeleteSandboxes,
   setSandboxesPrivacy,
   undeleteSandboxes,
 } from '../../queries';
+
 import { DragLayer } from '../DragLayer';
 import { SandboxItem } from '../SandboxCard';
 import { PADDING } from '../SandboxCard/elements';
