@@ -515,7 +515,6 @@ class BasePreview extends React.Component<Props, State> {
   commitUrl = (url: string, back: boolean, forward: boolean) => {
     this.setState({
       urlInAddressBar: url,
-      url,
       back,
       forward,
     });
