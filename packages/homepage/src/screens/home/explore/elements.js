@@ -70,11 +70,12 @@ export const ImageWrapper = styled.div`
   }
 `;
 
-export const Button = styled.button`
+export const Button = styled.a`
   border: 0;
   background: transparent;
   padding: 0;
   margin: 0;
+  text-decoration: none;
 `;
 
 const floatAnimation = keyframes`
@@ -92,6 +93,8 @@ const floatAnimation = keyframes`
 `;
 
 export const Wrapper = styled.div`
+  transition: 0.3s ease opacity;
+
   animation: 7s ${floatAnimation} infinite;
   animation-delay: ${props => (props.index || 0) * 250}ms;
 
@@ -110,6 +113,10 @@ export const Wrapper = styled.div`
   width: ${itemWidth}px;
   height: ${props =>
     props.big ? bigItemHeight + 'px' : smallItemHeight + 'px'};
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 export const Image = styled.img``;

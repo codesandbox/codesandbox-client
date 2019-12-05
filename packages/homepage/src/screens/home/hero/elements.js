@@ -48,7 +48,7 @@ export const HeroWrapper = styled.section`
   padding: 0 2rem;
 
   height: calc(100vh - 48px);
-  min-height: 1200px;
+  min-height: calc(1080px - 48px);
 
   perspective: 1000;
 
@@ -137,7 +137,7 @@ export const StyledEditorLink = styled.a`
 
 export const HeroBottom = styled.div`
   position: absolute;
-  bottom: -20%;
+  bottom: -12%;
   left: 0;
   right: 0;
   display: flex;
@@ -178,7 +178,7 @@ export const HeroImage = styled.img`
   min-width: 100%;
   overflow: hidden;
   border-radius: 4px;
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: rgba(0, 0, 0, 0.3) 20px 14px 47px 0px;
 
   ${props => props.theme.breakpoints.md} {
     width: 120vw;

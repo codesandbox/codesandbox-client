@@ -43,7 +43,7 @@ function Plane({ position }) {
   );
 }
 
-function Box({ position }) {
+function Box({ position, rotation }) {
   const { size, viewport } = useThree();
   const [dragging, setDragging] = useState(false);
   const aspect = size.width / viewport.width;
@@ -53,10 +53,11 @@ function Box({ position }) {
     body => {
       body.addShape(new CANNON.Box(new CANNON.Vec3(1, 1, 1)));
       body.position.set(...position);
+      body.angularVelocity.set(...rotation);
 
       bodyRef.current = body;
     },
-    [position]
+    [position, rotation]
   );
 
   // Register box as a physics body with mass
@@ -72,11 +73,14 @@ function Box({ position }) {
 
   const bindDrag = useDrag(
     // eslint-disable-next-line
-    ({ delta: [x, y], vxvy: [vx, vy], dragging }) => {
+    ({ delta: [x, y], vxvy: [vx, vy], dragging, event }) => {
+      event.nativeEvent.preventDefault();
+      event.nativeEvent.stopPropagation();
+
       bodyRef.current.position.set(
         bodyRef.current.position.x + x / aspect,
         bodyRef.current.position.y + -y / aspect,
-        1
+        bodyRef.current.position.z
       );
 
       if (dragging) {
@@ -147,7 +151,11 @@ export default function App({ boxes, showPlane }) {
           {showPlane && <Plane position={[0, 0, 0]} />}
 
           {boxes.map(pos => (
-            <Box key={pos.key} position={pos.position} />
+            <Box
+              key={pos.key}
+              position={pos.position}
+              rotation={pos.rotation}
+            />
           ))}
         </Provider>
       </Canvas>

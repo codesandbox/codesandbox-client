@@ -59,6 +59,10 @@ export const H3 = styled.h3`
   margin: 0;
 
   color: ${props => props.theme.homepage.white};
+
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 1.75rem;
+  }
 `;
 
 export const H5 = styled.h5`
@@ -69,4 +73,8 @@ export const H5 = styled.h5`
   margin: 0;
 
   color: ${props => props.theme.homepage.white};
+
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 1.25rem;
+  }
 `;

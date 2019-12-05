@@ -37,9 +37,8 @@ const Sandbox = ({
   shouldAnimate,
   randomizeHeight = true,
   wrapperWidth,
-  onOpenIframe,
 }) => {
-  const [clicked, setClicked] = useState(null);
+  const [clicked] = useState(null);
   const topOffset = React.useRef(
     y + (randomizeHeight ? Math.random() * 120 : 0)
   );
@@ -100,13 +99,7 @@ const Sandbox = ({
           sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
         />
       ) : (
-        <Button
-          type="button"
-          onClick={() => {
-            setClicked(true);
-            onOpenIframe();
-          }}
-        >
+        <Button href={`https://codesandbox.io/s/${id}`} target="_blank">
           <Image big={big} src={image} alt={id} />
         </Button>
       )}

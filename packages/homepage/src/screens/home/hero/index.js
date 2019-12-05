@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Socket } from 'phoenix';
 
-import * as templates from '@codesandbox/common/lib/templates/index';
 import Button from '../../../components/Button';
 import {
   HeroWrapper,
@@ -20,12 +19,13 @@ import {
 import hero from '../../../assets/images/hero-ide-home.png';
 
 import BoxAnimation from './BoxAnimation';
-
-const templateKeys = Object.keys(templates).filter(x => x !== 'default');
+import { applyParallax } from '../../../utils/parallax';
 
 export default () => {
-  const [boxes, setBoxes] = useState([]);
-  const [sandboxesCreatedCount, setSandboxesCreatedCount] = useState(0);
+  const [boxes, setBoxes] = useState([
+    { position: [0, 0, 10], rotation: [1.2, 0, 0], key: 'initial' },
+  ]);
+  const [sandboxesCreatedCount, setSandboxesCreatedCount] = useState(1);
   const [showPlane, setShowPlane] = useState(true);
 
   const createBox = React.useCallback(() => {
@@ -45,10 +45,8 @@ export default () => {
       const newBoxes = [
         {
           key: Math.floor(Math.random() * 10000) + '',
-          position: [-5 + Math.random() * 10, -2.5 + Math.random() * 5, 15],
-          color: templates[
-            templateKeys[Math.floor(Math.random() * templateKeys.length)]
-          ].color(),
+          position: [-5 + Math.random() * 10, 0 + Math.random() * 2.5, 15],
+          rotation: [Math.random() * 1, Math.random() * 1, Math.random() * 1],
         },
         ...b,
       ];
@@ -85,6 +83,15 @@ export default () => {
     }
     return () => {};
   }, [createBox]);
+
+  const ideRef = useRef();
+
+  useEffect(() => {
+    applyParallax(ideRef.current, {
+      speed: 2,
+      center: true,
+    });
+  }, []);
 
   return (
     <HeroWrapper>
@@ -127,37 +134,29 @@ export default () => {
       </motion.div>
 
       <HeroBottom>
-        <CountText>
-          <span style={{ fontWeight: 600, color: 'white' }}>
-            {sandboxesCreatedCount}{' '}
-          </span>
-          {sandboxesCreatedCount === 1 ? 'sandbox' : 'sandboxes'} created since
-          you've opened this page
-        </CountText>
+        <div ref={ideRef}>
+          <CountText>
+            <span style={{ fontWeight: 600, color: 'white' }}>
+              {sandboxesCreatedCount}{' '}
+            </span>
+            {sandboxesCreatedCount === 1 ? 'sandbox' : 'sandboxes'} created
+            since you've opened this page
+          </CountText>
 
-        <div style={{ position: 'relative' }}>
-          <StyledEditorLink
-            href="/s/m7q0r29nn9"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            <InspiredText>
-              Inspired by the sandboxes created by drcmda
-            </InspiredText>
-            Open Sandbox
-          </StyledEditorLink>
+          <div style={{ position: 'relative' }}>
+            <StyledEditorLink
+              href="/s/m7q0r29nn9"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              <InspiredText>
+                Inspired by the sandboxes created by drcmda
+              </InspiredText>
+              Open Sandbox
+            </StyledEditorLink>
 
-          <HeroImage
-            alt="editor with project open"
-            src={hero}
-            style={{
-              maxWidth: 1200,
-              minWidth: '100%',
-              overflow: 'hidden',
-              borderRadius: 4,
-              boxShadow: '0 10px 10px rgba(0, 0, 0, 0.5)',
-            }}
-          />
+            <HeroImage alt="editor with project open" src={hero} />
+          </div>
         </div>
       </HeroBottom>
 

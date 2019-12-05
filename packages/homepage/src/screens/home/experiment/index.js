@@ -13,11 +13,12 @@ import { Grid, Section, White, tweetStyle, tweetStyleMobile } from './elements';
 import { applyParallax } from '../../../utils/parallax';
 
 const tweet = {
-  username: 'dan_abramov',
-  job: 'Software Engineer, React Core Team',
-  name: 'Dan Abramov',
-  quote: 'CodeSandbox is cool. Lets you add npm dependencies.',
-  url: 'https://twitter.com/dan_abramov/status/852555473551273984',
+  username: 'gethackteam',
+  job: 'Snr. Frontend Developer Hackteam',
+  name: 'Roy Derks',
+  quote:
+    'I often use CodeSandbox to create demos or try out new JavaScript features or packages. You can find my profile here',
+  url: 'https://twitter.com/gethackteam/status/1173522963162959872',
 };
 
 const Experiment = () => {
