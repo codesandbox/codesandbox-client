@@ -33,6 +33,7 @@ const ProPage: React.FC = () => {
     actions: {
       modalOpened,
       patron: {
+        priceChanged,
         createSubscriptionClicked,
         cancelSubscriptionClicked,
         updateSubscriptionClicked,
@@ -42,6 +43,9 @@ const ProPage: React.FC = () => {
   } = useOvermind();
 
   const checkoutDisabled = !hasLoadedApp || !isLoggedIn;
+
+  // silly hack to allow cached versions to keep working
+  priceChanged({ price: 12 });
 
   useEffect(() => {
     patronMounted();
