@@ -7,9 +7,8 @@ import {
   PreferenceContainer,
   PaddedPreference,
   SubDescription,
-  Rule,
 } from '../../elements';
-import VSCodePlaceholder from '../../VSCodePlaceholder';
+import { VSCodePlaceholder } from '../../VSCodePlaceholder';
 
 const isSafari: boolean = /^((?!chrome|android).)*safari/i.test(
   navigator.userAgent
@@ -36,50 +35,8 @@ export const EditorSettings: React.FC = () => {
       <Title>Editor</Title>
 
       <SubContainer>
-        <VSCodePlaceholder>
-          <PreferenceContainer>
-            <PaddedPreference
-              title="Use CodeMirror"
-              type="boolean"
-              {...bindValue('codeMirror')}
-            />
-            <SubDescription>
-              Use CodeMirror instead of Monaco editor.
-            </SubDescription>
-            <Rule />
-            <PaddedPreference
-              title="Automatic Type Acquisition"
-              type="boolean"
-              {...bindValue('autoDownloadTypes')}
-            />
-            <SubDescription>
-              Automatically download type definitions for dependencies.
-            </SubDescription>
-            <Rule />
-            <PaddedPreference
-              title="ESLint"
-              type="boolean"
-              tooltip="Made possible by ESLint"
-              {...bindValue('lintEnabled')}
-            />
-            <SubDescription>
-              Whether linting as you type should be enabled.
-            </SubDescription>
-            <Rule />
-            <VSCodePlaceholder hideTitle>
-              <PaddedPreference
-                title="Prettify On Save"
-                type="boolean"
-                tooltip="Made possible by Prettier"
-                {...bindValue('prettifyOnSaveEnabled')}
-              />
-              <SubDescription>
-                Format all code on save with prettier.
-              </SubDescription>
-              <Rule />
-            </VSCodePlaceholder>
-          </PreferenceContainer>
-        </VSCodePlaceholder>
+        <VSCodePlaceholder />
+
         {/* {Vim mode does not work on FF or Safari */}
         <PreferenceContainer disabled={isSafari || isFF}>
           <PaddedPreference

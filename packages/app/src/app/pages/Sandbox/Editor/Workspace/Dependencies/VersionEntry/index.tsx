@@ -54,6 +54,8 @@ export class VersionEntry extends React.PureComponent<Props, State> {
       '00383ecd8441ead30b1b0ff981c426f5'
     );
     const index = client.initIndex('npm-search');
+
+    // @ts-ignore
     index.getObject(dependency, ['versions']).then(({ versions: results }) => {
       const versions = Object.keys(results).sort((a, b) => {
         try {
@@ -119,15 +121,14 @@ export class VersionEntry extends React.PureComponent<Props, State> {
           </Link>
           <VersionSelect
             hovering={hovering}
+            defaultValue={versions.find(v => v === dependencies[dependency])}
             onChange={e => {
               this.props.onRefresh(dependency, e.target.value);
               this.setState({ hovering: false });
             }}
           >
             {versions.map(a => (
-              <option key={a} selected={a === dependencies[dependency]}>
-                {a}
-              </option>
+              <option key={a}>{a}</option>
             ))}
           </VersionSelect>
           <Version hovering={hovering}>

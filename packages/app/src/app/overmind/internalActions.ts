@@ -23,7 +23,6 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
   { state, effects, actions },
   options
 ) => {
-  state.isAuthenticating = true;
   effects.analytics.track('Sign In', {});
   try {
     const jwt = await actions.internal.signInGithub(options);

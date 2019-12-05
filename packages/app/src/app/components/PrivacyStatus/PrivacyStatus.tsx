@@ -5,11 +5,13 @@ import { StyledUnlisted, StyledPrivate, Icon } from './elements';
 interface IPrivacyStatusProps {
   privacy: number;
   asIcon?: boolean;
+  style?: React.CSSProperties;
 }
 
 export const PrivacyStatus: React.FC<IPrivacyStatusProps> = ({
   privacy,
   asIcon = false,
+  style = {},
 }) => {
   const PRIVACY_MESSAGES = [
     {
@@ -20,27 +22,27 @@ export const PrivacyStatus: React.FC<IPrivacyStatusProps> = ({
     {
       title: 'Unlisted',
       tooltip: 'Only users with the url can see the sandbox',
-      icon: <StyledUnlisted />,
+      icon: <StyledUnlisted style={style} />,
     },
     {
       title: 'Private',
       tooltip: 'Only you can see the sandbox',
-      icon: <StyledPrivate />,
+      icon: <StyledPrivate style={style} />,
     },
   ];
 
   if (asIcon) {
-    return (
+    return PRIVACY_MESSAGES[privacy].icon ? (
       <Tooltip content={PRIVACY_MESSAGES[privacy].tooltip}>
         {PRIVACY_MESSAGES[privacy].icon}
       </Tooltip>
-    );
+    ) : null;
   }
 
   return (
     <Tooltip content={PRIVACY_MESSAGES[privacy].tooltip}>
       {PRIVACY_MESSAGES[privacy].title}
-      <Icon />
+      <Icon style={style} />
     </Tooltip>
   );
 };

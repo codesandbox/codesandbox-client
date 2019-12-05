@@ -20,7 +20,7 @@ interface IContentProps {
   actions?: any[];
 }
 
-interface IExtraElementProps {
+export interface IExtraElementProps {
   style: React.CSSProperties;
 }
 

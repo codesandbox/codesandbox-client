@@ -40,7 +40,9 @@ export const SandboxInfo: FunctionComponent<Props> = ({ sandbox }) => {
         </div>
 
         <Stats>
-          <PlayButtonContainer to={sandboxUrl({ id: sandbox.id })}>
+          <PlayButtonContainer
+            to={sandboxUrl({ id: sandbox.id, alias: sandbox.alias })}
+          >
             <img alt="edit" src={SvgButton} />
           </PlayButtonContainer>
 
