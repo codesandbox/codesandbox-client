@@ -371,9 +371,10 @@ export const onApiError: Action<ApiError> = (
       error.message = result;
     } else if ('errors' in result) {
       const errors = values(result.errors)[0];
+      const fields = Object.keys(result.errors[0]);
       if (Array.isArray(errors)) {
         if (errors[0]) {
-          error.message = errors[0]; // eslint-disable-line no-param-reassign,prefer-destructuring
+          error.message = `${fields[0]}: ${errors[0]}`; // eslint-disable-line no-param-reassign,prefer-destructuring
         }
       } else {
         error.message = errors; // eslint-disable-line no-param-reassign
