@@ -10,13 +10,18 @@ import Footer from './Footer';
 
 const text = number => `@media only screen and (max-width: ${number}px)`;
 
+export const SMALL_BREAKPOINT = 576;
+export const MEDIUM_BREAKPOINT = 768;
+export const LARGE_BREAKPOINT = 1024;
+export const EXTRA_LARGE_BREAKPOINT = 1200;
+
 const homepageTheme = {
   ...theme,
   breakpoints: {
-    sm: text(576),
-    md: text(768),
-    lg: text(1024),
-    xl: text(1200),
+    sm: text(SMALL_BREAKPOINT),
+    md: text(MEDIUM_BREAKPOINT),
+    lg: text(LARGE_BREAKPOINT),
+    xl: text(EXTRA_LARGE_BREAKPOINT),
   },
   homepage: {
     appleFont:
@@ -33,7 +38,15 @@ const homepageTheme = {
   },
 };
 
-const TemplateWrapper = ({ children }) => (
+export const WRAPPER_STYLING = {
+  maxWidth: '80%',
+  width: '1200px',
+  margin: 'auto',
+};
+
+export const useTheme = () => homepageTheme;
+
+const TemplateWrapper = ({ children, noWrapperStyling }) => (
   <ThemeProvider theme={homepageTheme}>
     <div>
       <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 10 }}>
@@ -44,11 +57,7 @@ const TemplateWrapper = ({ children }) => (
       <Navigation />
 
       <main
-        style={{
-          maxWidth: '80%',
-          width: '1200px',
-          margin: 'auto',
-        }}
+        style={noWrapperStyling ? {} : WRAPPER_STYLING}
         id="main"
         aria-label="main content"
       >

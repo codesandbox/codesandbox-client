@@ -6,6 +6,10 @@ export const Grid = styled.div`
   grid-template-columns: 1fr 642px;
   grid-gap: 30px;
 
+  ${props => props.theme.breakpoints.md} {
+    margin-bottom: 200px;
+  }
+
   ${props => props.theme.breakpoints.lg} {
     grid-template-columns: 1fr;
   }

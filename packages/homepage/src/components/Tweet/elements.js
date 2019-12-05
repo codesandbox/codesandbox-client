@@ -35,6 +35,7 @@ export const TweetsWrapper = styled.a`
     background: transparent;
     padding: 0;
     margin: 0;
+    margin-top: 4rem;
   }
 `;
 

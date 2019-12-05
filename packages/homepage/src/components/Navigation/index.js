@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, Location } from '@reach/router';
-import { useTheme } from 'styled-components';
+import { useTheme } from '../layout';
 import Button from '../Button';
 import Logo from '../../assets/images/logo.svg';
 import SupportIcon from '../../assets/icons/Support';

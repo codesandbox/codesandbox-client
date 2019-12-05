@@ -66,7 +66,7 @@ export const Banner = styled.div`
   height: 23.75rem;
   width: 100%;
   border-radius: 0.25rem;
-  margin-bottom: 7.5rem;
+  margin-bottom: 5rem;
   margin-top: 3.75rem;
   position: relative;
   overflow: hidden;
@@ -199,12 +199,23 @@ export const Customizations = styled.ul`
     margin-bottom: 3.5rem;
   }
 
+  ${props => props.theme.breakpoints.sm} {
+    flex-direction: column;
+    align-items: center;
+  }
+
   li {
     width: 160px;
     margin-bottom: 1rem;
 
     &:not(:last-child) {
       margin-right: 3rem;
+    }
+
+    ${props => props.theme.breakpoints.sm} {
+      &:not(:last-child) {
+        margin-right: initial;
+      }
     }
 
     svg {

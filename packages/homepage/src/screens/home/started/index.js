@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import Rellax from 'rellax';
 
 import { P, H5 } from '../../../components/Typography';
 
@@ -7,6 +6,7 @@ import started from '../../../assets/images/started.png';
 import Tweet from '../../../components/Tweet';
 
 import { Grid, Wrapper, tweetStyle, Img, Title } from './elements';
+import { applyParallax } from '../../../utils/parallax';
 
 const tweet = {
   name: 'Peggy Rayzis',
@@ -20,12 +20,11 @@ const tweet = {
 const Started = () => {
   const parallaxRef = useRef(null);
   useEffect(() => {
-    // eslint-disable-next-line no-new
-    new Rellax(parallaxRef.current, {
+    applyParallax(parallaxRef.current, {
       speed: 1.2,
       center: true,
     });
-  }, []);
+  }, [parallaxRef]);
 
   return (
     <>

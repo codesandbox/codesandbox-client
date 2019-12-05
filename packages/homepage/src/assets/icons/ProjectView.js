@@ -1,8 +1,8 @@
 import React from 'react';
-import { useTheme } from 'styled-components';
+import { useTheme } from '../../components/layout';
 
 const ProjectView = props => {
-  const { white, grey, whiteDark, greyLight } = useTheme().homepage.white;
+  const { white, grey, whiteDark, greyLight } = useTheme().homepage;
 
   const getFill = () => {
     if (props.light) {

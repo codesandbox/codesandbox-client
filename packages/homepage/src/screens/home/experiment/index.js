@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import Rellax from 'rellax';
 import { motion } from 'framer-motion';
 import { H2, P } from '../../../components/Typography';
 
@@ -11,24 +10,26 @@ import npm from '../../../assets/images/npm.png';
 import npm2x from '../../../assets/images/npm@2x.png';
 import Tweet from '../../../components/Tweet';
 import { Grid, Section, White, tweetStyle, tweetStyleMobile } from './elements';
+import { applyParallax } from '../../../utils/parallax';
 
 const tweet = {
-  username: 'dan_abramov',
-  job: 'Software Engineer, React Core Team',
-  name: 'Dan Abramov',
-  quote: 'CodeSandbox is cool. Lets you add npm dependencies.',
-  url: 'https://twitter.com/dan_abramov/status/852555473551273984',
+  username: 'gethackteam',
+  job: 'Snr. Frontend Developer Hackteam',
+  name: 'Roy Derks',
+  quote:
+    'I often use CodeSandbox to create demos or try out new JavaScript features or packages. You can find my profile here',
+  url: 'https://twitter.com/gethackteam/status/1173522963162959872',
 };
 
 const Experiment = () => {
   const parallaxRef = useRef(null);
   useEffect(() => {
-    // eslint-disable-next-line no-new
-    new Rellax(parallaxRef.current, {
+    applyParallax(parallaxRef.current, {
       speed: 1.2,
       center: true,
     });
-  }, []);
+  }, [parallaxRef]);
+
   return (
     <>
       <Grid>
@@ -36,6 +37,7 @@ const Experiment = () => {
           <H2>Experiment Easily</H2>
           <P
             muted
+            big
             css={`
               margin-bottom: 2rem;
             `}
