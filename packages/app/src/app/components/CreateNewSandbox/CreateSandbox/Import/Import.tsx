@@ -6,6 +6,7 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { useOvermind } from 'app/overmind';
+import { SignInButton } from 'app/pages/common/SignInButton';
 import { TerminalIcon } from '../Icons/TerminalIcon';
 import { DownloadIcon } from '../Icons/DownloadIcon';
 import { GitHubIcon, StackbitIcon } from '../Icons';
@@ -129,33 +130,36 @@ export const Import = () => {
             </ButtonContainer>
           </form>
         </Column>
-        {state.user && (
-          <>
-            <VerticalSeparator />
-            <Column>
-              <FeatureName>
-                <StackbitIcon style={{ marginRight: '1rem' }} />
-                Import from Stackbit
-              </FeatureName>
-              <FeatureText>
-                Create a project using{' '}
-                <a
-                  href="https://www.stackbit.com/"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  Stackbit
-                </a>
-                . This generates a project for you that{"'"}s automatically set
-                up with any Theme, Site Generator and CMS.
-              </FeatureText>
+
+        <>
+          <VerticalSeparator />
+          <Column>
+            <FeatureName>
+              <StackbitIcon style={{ marginRight: '1rem' }} />
+              Import from Stackbit
+            </FeatureName>
+            <FeatureText>
+              Create a project using{' '}
+              <a
+                href="https://www.stackbit.com/"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Stackbit
+              </a>
+              . This generates a project for you that{"'"}s automatically set up
+              with any Theme, Site Generator and CMS.
+            </FeatureText>
+            {!state.user ? (
+              <SignInButton />
+            ) : (
               <StackbitButton
                 style={{ fontSize: 11 }}
                 username={state.user.username}
               />
-            </Column>
-          </>
-        )}
+            )}
+          </Column>
+        </>
       </Features>
       <ImportChoices>
         <a href="/docs/importing#export-with-cli">
