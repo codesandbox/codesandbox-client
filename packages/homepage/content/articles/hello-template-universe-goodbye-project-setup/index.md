@@ -17,7 +17,7 @@ There's setting up your dev environment, configuring a server, and then all the 
 Thankfully, with CodeSandbox, you can skip most of that. When you create a new sandbox, everything's already up and running. But what about the project setup stuff? Well, that's where templates come in.
 
 ### Start from a working project
-Templates in CodeSandbox provide a quick starting point for projects that are configured and ready to go. They're forkable projects with the dependencies, file structure, and config already sorted. More than 3M sandboxes have been created using one. We've official templates for popular libraries like React, Vue, Angular, and others. Or you can create your own. So if we don't have an official template for the setup you want to use, or we do, but it doesn't work exactly how you want it to, then you can make one that's perfect for you.
+Templates in CodeSandbox provide a quick starting point for projects that are configured and ready to go. They're forkable projects with the dependencies, file structure, and config already sorted. More than 3M sandboxes have been created using one. You can find official templates for popular libraries like React, Vue, Angular and others. You can also create your own template from scratch or fork an existing template with your own adjustments. The perfect start for your next project!
 
 Today we're excited to announce Template Universe, which takes custom templates a step further. Template Universe enables you to share and use templates created by the community and makes it possible for the maintainers of frameworks and libraries to add official ones too.
 
