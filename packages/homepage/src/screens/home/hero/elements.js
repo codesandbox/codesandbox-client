@@ -48,9 +48,13 @@ export const HeroWrapper = styled.section`
   padding: 0 2rem;
 
   height: calc(100vh - 48px);
-  min-height: 800px;
+  min-height: 1200px;
 
   perspective: 1000;
+
+  ${props => props.theme.breakpoints.sm} {
+    min-height: 800px;
+  }
 `;
 
 export const SignUp = styled.p`
