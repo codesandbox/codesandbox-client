@@ -7,7 +7,6 @@ import { UserMenu } from 'app/pages/common/UserMenu';
 import {
   SaveAllButton,
   RefreshButton,
-  PatronButton,
   PreferencesButton,
   NewSandboxButton,
   LikeButton,
@@ -37,7 +36,6 @@ export const Header: React.FC<IHeaderProps> = ({ zenMode }) => {
       preferences: {
         settings: { experimentVSCode: vscode },
       },
-      isPatron,
       updateStatus,
       hasLogIn,
       isLoggedIn,
@@ -65,7 +63,6 @@ export const Header: React.FC<IHeaderProps> = ({ zenMode }) => {
 
       <Right>
         {updateStatus === 'available' && <RefreshButton />}
-        {!isLoggedIn || (!isPatron && <PatronButton />)}
         {!isLoggedIn && <PreferencesButton />}
         <NewSandboxButton />
         {isLoggedIn && <LikeButton />}
