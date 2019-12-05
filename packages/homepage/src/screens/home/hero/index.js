@@ -141,10 +141,10 @@ export default () => {
             target="_blank"
             rel="noreferrer noopener"
           >
-            Open Project in CodeSandbox
             <InspiredText>
               Inspired by the sandboxes created by drcmda
             </InspiredText>
+            Open Sandbox
           </StyledEditorLink>
 
           <HeroImage

@@ -12,6 +12,11 @@ import Share from '../screens/home/share';
 import Join from '../screens/home/join';
 import Explore from '../screens/home/explore';
 
+// eslint-disable-next-line
+console.log(
+  'Hi, We love curious people that dive in to see how things are working! We are always looking for talented, hard working people. Drop us a line and show us your work We are hiring!'
+);
+
 const Homepage = () => (
   <Layout noWrapperStyling>
     <TitleAndMetaTags />

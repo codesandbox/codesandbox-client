@@ -111,7 +111,7 @@ const Prototype = () => {
           <H5>No setup</H5>
           <P muted>Go straight to coding with templates.</P>
           <H5>VS Code built-in </H5>
-          <P muted>The editor’s full-featured, yet familiar.</P>
+          <P muted>The editor is full-featured, yet familiar.</P>
 
           <div ref={parallaxRef}>
             <Tweet

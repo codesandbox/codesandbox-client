@@ -161,7 +161,7 @@ export const InspiredText = styled.span`
   transition: 0.3s ease color;
   font-size: 1rem;
   color: #757575;
-  margin-top: 1rem;
+  margin-bottom: 1rem;
   text-decoration: none;
 
   ${props => props.theme.breakpoints.sm} {
