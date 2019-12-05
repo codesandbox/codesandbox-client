@@ -468,6 +468,8 @@ Object {
     "colors": Object {
       "activityBar.background": "#1C2022",
       "activityBar.border": "#111518",
+      "activityBarBadge.background": "#C0C0C0",
+      "activityBarBadge.foreground": "#1C2022",
       "badge.background": "#374140",
       "button.background": "#40A9F3",
       "button.hoverBackground": "#66B9F4",
