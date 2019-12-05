@@ -268,33 +268,39 @@ export async function createZip(
         // For the new vue cli we want to use the full promise
         promise = fullPromise();
       } else {
-        promise = import(/* webpackChunkName: 'vue-zip' */ './vue-cli').then(
-          generator =>
-            generator.default(zip, sandbox, filteredModules, directories)
+        promise = import(
+          /* webpackChunkName: 'vue-zip' */ './vue-cli'
+        ).then(generator =>
+          generator.default(zip, sandbox, filteredModules, directories)
         );
       }
     } catch (e) {
       promise = fullPromise();
     }
   } else if (sandbox.template === preact.name) {
-    promise = import(/* webpackChunkName: 'preact-zip' */ './preact-cli').then(
-      generator => generator.default(zip, sandbox, filteredModules, directories)
+    promise = import(
+      /* webpackChunkName: 'preact-zip' */ './preact-cli'
+    ).then(generator =>
+      generator.default(zip, sandbox, filteredModules, directories)
     );
   } else if (sandbox.template === svelte.name) {
-    promise = import(/* webpackChunkName: 'svelte-zip' */ './svelte').then(
-      generator => generator.default(zip, sandbox, filteredModules, directories)
+    promise = import(
+      /* webpackChunkName: 'svelte-zip' */ './svelte'
+    ).then(generator =>
+      generator.default(zip, sandbox, filteredModules, directories)
     );
   } else {
     // If no specific zip generator is found we will default to the full generator
-    promise = import(/* webpackChunkName: 'full-zip' */ './full').then(
-      generator =>
-        generator.default(
-          zip,
-          sandbox,
-          filteredModules,
-          directories,
-          downloadBlobs
-        )
+    promise = import(
+      /* webpackChunkName: 'full-zip' */ './full'
+    ).then(generator =>
+      generator.default(
+        zip,
+        sandbox,
+        filteredModules,
+        directories,
+        downloadBlobs
+      )
     );
   }
 

@@ -1,51 +1,59 @@
 import React from 'react';
 
-import Animation from '../screens/home/Animation';
-import NPMFeature from '../screens/home/NPMFeature';
-import CycleFeature from '../screens/home/CycleFeature';
-import ExtraFeatures from '../screens/home/ExtraFeatures';
-import RecentPublications from '../screens/home/RecentPublications';
-import Patron from '../screens/home/Patron';
-import Users from '../screens/home/Users';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
-import Layout from '../components/layout';
+import Layout, { WRAPPER_STYLING } from '../components/layout';
+import Hero from '../screens/home/hero';
+import Prototype from '../screens/home/prototype';
+import Started from '../screens/home/started';
+import LoadInView from '../components/LoadInView';
+import Experiment from '../screens/home/experiment';
+import Teams from '../screens/home/teams';
+import Share from '../screens/home/share';
+import Join from '../screens/home/join';
+import Explore from '../screens/home/explore';
 
-export default class HomePage extends React.Component {
-  componentDidMount() {
-    window.addEventListener('scroll', this.scrollCheck, false);
-  }
+// eslint-disable-next-line
+console.log(
+  'Hi, We love curious people that dive in to see how things are working! We are always looking for talented, hard working people. Drop us a line and show us your work We are hiring!'
+);
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.scrollCheck);
-  }
+const Homepage = () => (
+  <Layout noWrapperStyling>
+    <TitleAndMetaTags />
+    <section
+      css={`
+        margin-bottom: 8rem;
+      `}
+    >
+      <Hero />
+    </section>
 
-  scrollCheck = () => {
-    clearTimeout(this.timer);
-    if (!document.body.classList.contains('disable-hover')) {
-      document.body.classList.add('disable-hover');
-      window.scrolling = true;
-    }
+    <div style={WRAPPER_STYLING}>
+      <LoadInView>
+        <Prototype />
+      </LoadInView>
+      <LoadInView>
+        <Started />
+      </LoadInView>
+    </div>
+    <LoadInView>
+      <Explore />
+    </LoadInView>
+    <div style={WRAPPER_STYLING}>
+      <LoadInView>
+        <Experiment />
+      </LoadInView>
+      <LoadInView>
+        <Teams />
+      </LoadInView>
+      <LoadInView>
+        <Share />
+      </LoadInView>
+      <LoadInView>
+        <Join />
+      </LoadInView>
+    </div>
+  </Layout>
+);
 
-    this.timer = setTimeout(() => {
-      document.body.classList.remove('disable-hover');
-      window.scrolling = false;
-    }, 500);
-  };
-
-  render() {
-    return (
-      <Layout>
-        <TitleAndMetaTags />
-        <header role="banner" aria-label="codesandbox">
-          <Animation />
-        </header>
-        <NPMFeature />
-        <CycleFeature />
-        <ExtraFeatures />
-        <RecentPublications />
-        <Patron />
-        <Users />
-      </Layout>
-    );
-  }
-}
+export default Homepage;

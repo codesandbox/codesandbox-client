@@ -62,9 +62,7 @@ export const Chat: React.FC = () => {
           sortBy(takeRight(messages, 100), 'date').map((message, i) => {
             const metadata = roomInfoUsers.find(u => u.id === message.userId);
             const color = metadata
-              ? `rgb(${metadata.color[0]}, ${metadata.color[1]}, ${
-                  metadata.color[2]
-                })`
+              ? `rgb(${metadata.color[0]}, ${metadata.color[1]}, ${metadata.color[2]})`
               : '#636363';
             const name = users[message.userId];
             return (

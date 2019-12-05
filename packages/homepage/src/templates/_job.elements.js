@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 export const Title = styled.h1`
   ${({ theme }) => css`
     font-weight: 600;
-    font-family: 'Poppins', sans-serif;
     font-size: 36px;
     margin-bottom: 2em;
     margin-top: 1em;
@@ -17,13 +16,11 @@ export const ContentBlock = styled.div`
   ${({ theme }) => css`
     h2 {
       font-weight: 600;
-      font-family: 'Poppins', sans-serif;
       font-size: 24px;
       margin-top: 36px;
       color: ${theme.lightText};
     }
 
-    font-family: 'Open Sans', sans-serif;
     font-weight: 400;
     font-size: 18px;
     line-height: 1.5;

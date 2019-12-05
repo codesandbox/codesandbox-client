@@ -40,11 +40,13 @@ const theme = {
   }),
   vscodeTheme: codesandbox,
 
-  new: createTheme({
-    title: '#EEEEFF',
-    description: '#777788',
-    bg: '#2B2E41',
-  }),
+  new: {
+    ...createTheme({
+      title: '#EEEEFF',
+      description: '#777788',
+      bg: '#2B2E41',
+    }),
+  },
 };
 
 export default theme;

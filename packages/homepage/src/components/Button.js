@@ -1,35 +1,53 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-const getGradient = color => css`linear-gradient(
-  45deg,
-  ${color},
-  ${color.darken(0.2)}
-)`;
-
-export default styled.a`
-  position: relative;
-  background: ${({ color, secondary }) =>
-    secondary ? '' : getGradient(color)};
+const styles = css`
+  background: ${props => props.theme.homepage.primary};
+  border-radius: 0.25rem;
   border: none;
-  outline: none;
-  padding: 0.75em 1.5em;
-  font-weight: 400;
-  border-radius: 4px;
-  color: white;
+  font-family: ${props => props.theme.homepage.appleFont};
+  font-size: 0.8125rem;
+  line-height: 19px;
   text-align: center;
-  box-shadow: 0 0 100px ${props => props.color.clearer(0.3)};
-  text-transform: uppercase;
-
-  ${({ color, secondary }) =>
-    secondary &&
-    css`
-      color: ${color};
-      text-shadow: 0 0 50px ${props => props.color.clearer(0.3)};
-      box-shadow: none;
-    `};
-
+  padding: 4px 21px;
+  font-weight: 500;
   text-decoration: none;
-`.withComponent(({ color, secondary, children, ...rest }) => (
-  <a {...rest}>{children}</a>
-));
+  color: ${props => props.theme.homepage.white} !important;
+  transition: all 200ms ease;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+
+  ${props =>
+    props.big &&
+    css`
+      padding: 8px 21px;
+    `}
+
+  &:disabled {
+    opacity: 0.4;
+  }
+
+  &:hover {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+    transform: scale(1.05);
+  }
+
+  &:focus {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+    transform: scale(1);
+  }
+`;
+
+const Button = styled.button`
+  ${styles}
+`;
+const Link = styled.a`
+  ${styles}
+`;
+
+export default ({ children, ...props }) =>
+  props.href ? (
+    <Link {...props}>{children}</Link>
+  ) : (
+    <Button {...props}>{children}</Button>
+  );
