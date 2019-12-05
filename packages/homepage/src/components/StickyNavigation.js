@@ -7,7 +7,6 @@ import { Router } from '@reach/router';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 
 import media from '../utils/media';
-import getScrollPos from '../utils/scroll';
 
 const Navigation = styled.nav`
   padding-top: 2rem;
@@ -17,7 +16,7 @@ const Navigation = styled.nav`
   ${props =>
     props.fixed &&
     css`
-      position: fixed;
+      position: sticky;
       top: 0;
       height: 100vh;
     `};
@@ -31,8 +30,8 @@ const Navigation = styled.nav`
 
   ${media.phone`
     padding-bottom: 1rem;
+    padding-top: 2rem;
     position: relative;
-    padding-top: 0;
     top: 0;
   `};
 
@@ -61,7 +60,7 @@ const PrimaryNavigationLink = styled(Link)`
   font-weight: 500;
 
   &:hover {
-    color: white;
+    color: ${props => props.theme.homepage.white};
   }
 `;
 
@@ -73,7 +72,7 @@ const SecondaryNavigationLink = styled(Link)`
   margin-left: 1rem;
 
   &:hover {
-    color: white;
+    color: ${props => props.theme.homepage.white};
   }
 `;
 
@@ -85,21 +84,9 @@ const MissingNotice = styled.a`
   font-size: 0.875rem;
 
   &:hover {
-    color: white;
+    color: ${props => props.theme.homepage.white};
   }
 `;
-
-type Props = {
-  docs: Array<{
-    frontmatter: {
-      title: string,
-    },
-    fields: {
-      url: string,
-    },
-    headings: Array<{ value: string }>,
-  }>,
-};
 
 const SubLink = ({
   node: {
@@ -118,46 +105,9 @@ const SubLink = ({
   </ul>
 );
 
-export default class StickyNavigation extends React.PureComponent<Props> {
+export default class StickyNavigation extends React.PureComponent {
   state = {
     fixed: false,
-  };
-
-  componentDidMount() {
-    // To prevent jumping
-    setTimeout(() => {
-      window.addEventListener('scroll', this.handleScroll);
-      this.handleScroll();
-    }, 500);
-    const { y } = getScrollPos(Date.now(), false);
-
-    const { top, height } = document
-      .getElementById('navigation')
-      .getBoundingClientRect();
-
-    this.top = y + top;
-    this.height = height;
-    this.footerTop =
-      y + document.getElementById('footer').getBoundingClientRect().top;
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
-  }
-
-  handleScroll = () => {
-    const { y } = getScrollPos(Date.now(), false);
-
-    if (y + this.height + 32 > this.footerTop) {
-      this.setState({
-        absoluteTop: this.footerTop - 32 - this.height,
-        fixed: false,
-      });
-    } else if (y > this.top && !this.state.fixed) {
-      this.setState({ fixed: true, absoluteTop: null });
-    } else if (y < this.top && this.state.fixed) {
-      this.setState({ fixed: false, absoluteTop: null });
-    }
   };
 
   render() {
