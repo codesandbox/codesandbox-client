@@ -1,7 +1,7 @@
 import React from 'react';
-import { LinkButton, AButton, Button } from './elements';
+import { LinkButton, AButton, Button, styles } from './elements';
 
-export type Props = {
+export interface IButtonProps {
   to?: string;
   href?: string;
   big?: boolean;
@@ -17,19 +17,21 @@ export type Props = {
   red?: boolean;
   target?: string;
   rel?: string;
-};
+}
 
-function ButtonComponent({ style = {}, ...props }: Props) {
+function ButtonComponent({ style = {}, ...props }: IButtonProps) {
   // Link
-  if (props.to) {
-    return <LinkButton style={style} {...props} />;
+  if (typeof props.to === 'string') {
+    return <LinkButton style={style} to={props.to} {...props} />;
   }
 
   if (props.href) {
+    // @ts-ignore
     return <AButton style={style} {...props} />;
   }
 
+  // @ts-ignore
   return <Button style={style} {...props} />;
 }
 
-export { ButtonComponent as Button };
+export { ButtonComponent as Button, styles as buttonStyles };

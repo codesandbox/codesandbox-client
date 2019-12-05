@@ -1,6 +1,6 @@
 export const EXTENSIONS_LOCATION = process.env.VSCODE
   ? '/vscode/extensions-bundle'
-  : '/public/vscode-extensions/v11';
+  : '/public/vscode-extensions/v12';
 
 export const VIM_EXTENSION_ID = 'vscodevim.vim';
 

@@ -400,8 +400,13 @@ function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export default inject('signals', 'store')(
-  DropTarget(['ENTRY', NativeTypes.FILE], entryTarget, collectTarget)(
-    observer(DirectoryEntry)
-  )
+export default inject(
+  'signals',
+  'store'
+)(
+  DropTarget(
+    ['ENTRY', NativeTypes.FILE],
+    entryTarget,
+    collectTarget
+  )(observer(DirectoryEntry))
 );

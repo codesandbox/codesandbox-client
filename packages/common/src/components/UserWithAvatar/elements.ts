@@ -38,5 +38,6 @@ export const Username = styled.div<{ hasTwoNames?: boolean }>`
 export const Image = styled.img`
   width: 1.75em;
   height: 1.75em;
-  border-radius: 8px;
+  border-radius: 2px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
 `;

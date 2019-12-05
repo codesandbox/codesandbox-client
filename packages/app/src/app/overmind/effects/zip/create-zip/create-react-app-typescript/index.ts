@@ -24,7 +24,8 @@ function alterPackageJSON(module: Module) {
     if (
       !parsed.dependencies ||
       !parsed.dependencies['react-scripts-ts'] ||
-      !parsed.devDependencies || !parsed.devDependencies['react-scripts-ts']
+      !parsed.devDependencies ||
+      !parsed.devDependencies['react-scripts-ts']
     ) {
       parsed.dependencies['react-scripts-ts'] = '^2.13.0';
     }

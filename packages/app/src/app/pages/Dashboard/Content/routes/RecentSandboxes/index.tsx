@@ -3,9 +3,9 @@ import { Helmet } from 'react-helmet';
 import { useQuery } from '@apollo/react-hooks';
 
 import { useOvermind } from 'app/overmind';
+import { CreateNewSandboxButton } from 'app/components/CreateNewSandbox';
 import getMostUsedTemplate from '../../../utils/get-most-used-template';
 import { Content as Sandboxes } from '../../Sandboxes';
-import { CreateNewSandbox } from '../../CreateNewSandbox';
 import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
 export const RecentSandboxes = () => {
@@ -42,7 +42,7 @@ export const RecentSandboxes = () => {
         isLoading={loading}
         Header="Recent Sandboxes"
         ExtraElement={({ style }) => (
-          <CreateNewSandbox
+          <CreateNewSandboxButton
             mostUsedSandboxTemplate={mostUsedTemplate}
             style={style}
           />

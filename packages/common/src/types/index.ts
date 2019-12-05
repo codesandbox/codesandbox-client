@@ -84,7 +84,7 @@ export type Template = {
   shortid: string;
   url: string;
   main: boolean;
-  color: string;
+  color: () => string;
   backgroundColor: () => string | undefined;
   popular: boolean;
   showOnHomePage: boolean;
@@ -296,7 +296,14 @@ export type Sandbox = {
     [dep: string]: string;
   };
   customTemplate: CustomTemplate | null;
+  /**
+   * Which template this sandbox is based on
+   */
   forkedTemplate: CustomTemplate | null;
+  /**
+   * Sandbox the forked template is from
+   */
+  forkedTemplateSandbox: SmallSandbox | null;
   externalResources: string[];
   team: {
     id: string;
@@ -619,8 +626,8 @@ export type UploadedFilesInfo = {
 };
 
 export type SandboxUrlSourceData = {
-  id?: string;
-  alias?: string;
+  id: string;
+  alias: string | null;
   git?: GitInfo;
 };
 
