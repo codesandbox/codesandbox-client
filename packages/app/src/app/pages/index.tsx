@@ -109,6 +109,7 @@ const RoutesComponent: React.FC = () => {
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
+            <Route exact path="/s2" component={NewSandbox} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />

@@ -7,7 +7,7 @@ const StyledInput = styled(Input)`
   border: 1px solid ${props => props.theme.background2.lighten(0.3)};
   transition: all 300ms ease;
   box-sizing: border-box;
-  padding-left: 8px;
+  padding-left: 0.5rem;
   border-radius: 4px;
   padding-right: 30px;
   box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.25);

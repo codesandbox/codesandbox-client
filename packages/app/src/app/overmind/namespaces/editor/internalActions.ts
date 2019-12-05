@@ -1,4 +1,6 @@
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import getTemplateDefinition, {
+  TemplateType,
+} from '@codesandbox/common/lib/templates';
 import {
   Module,
   ModuleTab,
@@ -175,8 +177,8 @@ export const saveCode: AsyncAction<{
 };
 
 export const updateCurrentTemplate: AsyncAction = async ({
-  state,
   effects,
+  state,
 }) => {
   try {
     const currentTemplate = state.editor.currentSandbox.template;
@@ -187,9 +189,9 @@ export const updateCurrentTemplate: AsyncAction = async ({
     // in the sandbox configuration.
     if (
       templateDefinition.isServer ||
-      state.editor.parsedConfigurations.sandbox.parsed.template
+      state.editor.parsedConfigurations?.sandbox?.parsed?.template
     ) {
-      const { parsed } = state.editor.parsedConfigurations.package;
+      const { parsed = {} } = state.editor.parsedConfigurations?.package || {};
 
       const modulesByPath = mapValues(state.editor.modulesByPath, module => ({
         // No idea why this typing fails!
@@ -199,10 +201,10 @@ export const updateCurrentTemplate: AsyncAction = async ({
         isBinary: module.isBinary,
       }));
 
-      // TODO: What is a templat really? Two different kinds of templates here, need to fix the types
+      // TODO: What is a template really? Two different kinds of templates here, need to fix the types
       // Talk to Ives and Bogdan
-      const newTemplate =
-        computeTemplate(parsed, modulesByPath) || ('node' as any);
+      const newTemplate = (computeTemplate(parsed, modulesByPath) ||
+        'node') as TemplateType;
 
       if (
         newTemplate !== currentTemplate &&
@@ -305,7 +307,11 @@ export const setModuleCode: Action<{
 export const forkSandbox: AsyncAction<{
   sandboxId: string;
   body?: { collectionId: string | undefined };
-}> = async ({ state, effects, actions }, { sandboxId: id, body }) => {
+  openInNewWindow?: boolean;
+}> = async (
+  { state, effects, actions },
+  { sandboxId: id, body, openInNewWindow = false }
+) => {
   const templateDefinition = getTemplateDefinition(
     state.editor.currentSandbox ? state.editor.currentSandbox.template : null
   );
@@ -327,13 +333,21 @@ export const forkSandbox: AsyncAction<{
     // Copy over any unsaved code
     if (state.editor.currentSandbox) {
       Object.assign(forkedSandbox, {
-        modules: forkedSandbox.modules.map(module => ({
-          ...module,
-          code: state.editor.currentSandbox.modules.find(
+        modules: forkedSandbox.modules.map(module => {
+          const foundEquivalentModule = state.editor.currentSandbox.modules.find(
             currentSandboxModule =>
               currentSandboxModule.shortid === module.shortid
-          ).code,
-        })),
+          );
+
+          if (!foundEquivalentModule) {
+            return module;
+          }
+
+          return {
+            ...module,
+            code: foundEquivalentModule.code,
+          };
+        }),
       });
     }
 
@@ -351,7 +365,8 @@ export const forkSandbox: AsyncAction<{
     }
 
     effects.notificationToast.success('Forked sandbox!');
-    effects.router.updateSandboxUrl(forkedSandbox);
+
+    effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
   } catch (error) {
     console.error(error);
     effects.notificationToast.error('We were unable to fork the sandbox');

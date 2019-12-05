@@ -4,8 +4,11 @@ import ExpandIcon from 'react-icons/lib/md/keyboard-arrow-down';
 export const ChildContainer = styled.div<{ disabled?: boolean }>`
   position: relative;
   margin: 0;
-  padding: 0;
+  padding-top: 0.5rem;
+  padding-bottom: 1.75rem;
   height: 100%;
+  border-top: 1px solid
+    ${props => props.theme['sideBar.border'] || props.theme.background};
 
   ${({ disabled }) =>
     disabled &&
@@ -34,13 +37,15 @@ export const ItemHeader = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  padding: 0.25rem 0.75rem;
+
+  border-top: 1px solid ${props =>
+    props.theme['sideBar.border'] || props.theme.background};
+  padding: 0.5rem 0.75rem;
   box-sizing: border-box;
   vertical-align: middle;
   height: 2rem;
   margin: 0;
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 13px;
   color: ${props => (props.theme.light ? '#636363' : props.theme.white)};
   cursor: pointer;
 

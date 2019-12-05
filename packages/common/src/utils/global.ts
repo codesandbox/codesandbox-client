@@ -1,17 +1,21 @@
 import { protocolAndHost } from './url-generator';
 
 export function getGlobal() {
-  if (typeof window !== 'undefined') {
-    return (window as unknown) as Window & { BrowserFS: any };
-  }
+  try {
+    if (typeof window !== 'undefined') {
+      return (window as unknown) as Window & { BrowserFS: any };
+    }
 
-  if (typeof self !== 'undefined') {
-    const returnedGlobal: unknown = self;
-    return returnedGlobal as Worker & { BrowserFS: any };
-  }
+    if (typeof self !== 'undefined') {
+      const returnedGlobal: unknown = self;
+      return returnedGlobal as Worker & { BrowserFS: any };
+    }
 
-  if (typeof global !== 'undefined') {
-    return global;
+    if (typeof global !== 'undefined') {
+      return global;
+    }
+  } catch (e) {
+    /* Couldn't find anything */
   }
 
   return {};

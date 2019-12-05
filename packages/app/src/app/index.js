@@ -11,12 +11,14 @@ import {
   initializeSentry,
   logError,
 } from '@codesandbox/common/lib/utils/analytics';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import {
   convertTypeToStatus,
   notificationState,
 } from '@codesandbox/common/lib/utils/notifications';
 import { isSafari } from '@codesandbox/common/lib/utils/platform';
+import { Severity } from '@sentry/browser';
 import { client } from 'app/graphql/client';
 import history from 'app/utils/history';
 import { createOvermind } from 'overmind';
@@ -43,16 +45,6 @@ window.addEventListener('unhandledrejection', e => {
   }
 });
 
-if (process.env.NODE_ENV === 'production') {
-  try {
-    initializeSentry(
-      'https://3943f94c73b44cf5bb2302a72d52e7b8@sentry.io/155188'
-    );
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 window.__isTouch = !matchMedia('(pointer:fine)').matches;
 
 const overmind = createOvermind(config, {
@@ -65,6 +57,48 @@ const overmind = createOvermind(config, {
     (navigator.userAgent.indexOf('Chrome/76') > 0 ? 'Chrome' : 'Canary'),
   logProxies: true,
 });
+
+if (process.env.NODE_ENV === 'production') {
+  const ignoredOvermindActions = [
+    'onInitialize',
+    'server.onCodeSandboxAPIMessage',
+    'track',
+    'editor.previewActionReceived',
+    'live.onSelectionChanged',
+  ];
+
+  try {
+    initializeSentry(
+      'https://3943f94c73b44cf5bb2302a72d52e7b8@sentry.io/155188'
+    );
+
+    overmind.eventHub.on('action:start', event => {
+      if (ignoredOvermindActions.includes(event.actionName)) {
+        return;
+      }
+
+      // We try as the payload might cause a stringify error
+      try {
+        logBreadcrumb({
+          category: 'overmind-action',
+          message: event.actionName,
+          level: Severity.Info,
+          data: {
+            value: JSON.stringify(event.value),
+          },
+        });
+      } catch (e) {
+        logBreadcrumb({
+          category: 'overmind-action',
+          message: event.actionName,
+          level: Severity.Info,
+        });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 /*
   Temporary global functions to grab state and actions, related to old

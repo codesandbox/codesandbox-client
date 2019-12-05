@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import AutosizeInput from 'react-input-autosize';
-import Color from 'color';
 
 export const Container = styled.div`
   display: flex;
@@ -68,29 +67,26 @@ export const Name = styled.span<{ owned?: boolean }>`
   `}
 `;
 
-export const TemplateBadge = styled.div<{ color: string }>`
-  background: ${props => props.color};
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  font-size: 11px;
-  padding: 0px 8px;
-  border-radius: 4px;
-  margin-left: 1rem;
-  height: 19px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  /* Check for contrast */
-  color: ${props =>
-    Color(props.color).contrast(Color(props.theme.white)) > 4.5
-      ? props.theme.background5
-      : '#fff'};
-`;
-
 export const Main = styled.div`
   display: none;
 
   @media screen and (min-width: 826px) {
     display: block;
   }
+`;
+
+export const TemplateBadge = styled.label`
+  background: ${props => props.theme['activityBarBadge.background']};
+  color: ${props => props.theme['activityBarBadge.foreground']};
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  padding: 0px 8px;
+  border-radius: 2px;
+  margin-left: 1rem;
+  height: 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  cursor: default;
 `;

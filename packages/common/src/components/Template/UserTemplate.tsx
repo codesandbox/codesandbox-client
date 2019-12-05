@@ -1,6 +1,5 @@
 import React from 'react';
 import { ColorIcons as Icons } from '@codesandbox/template-icons';
-import color from 'color';
 import { Template } from '../../types/index';
 import getIcon from '../../templates/icons';
 import { ENTER } from '../../utils/keycodes';
@@ -47,7 +46,7 @@ export const UserTemplate = ({
   return (
     <Button
       onClick={select}
-      color={color(template.color)}
+      color={template.color}
       custom
       onKeyDown={e => {
         if (e.keyCode === ENTER) {

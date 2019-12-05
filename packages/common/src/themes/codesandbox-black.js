@@ -35,7 +35,7 @@ const colors = {
   },
   editor: {
     background: tokens.grays[700],
-    foreground: tokens.white,
+    foreground: tokens.grays[300],
     hoverHighlightBackground: tokens.grays[600],
     inactiveSelectionBackground: tokens.grays[600],
     lineHighlightBackground: tokens.grays[500],
@@ -208,7 +208,7 @@ const colors = {
     background: tokens.grays[700],
     hoverBackground: tokens.green,
     border: tokens.grays[500],
-    foreground: tokens.white,
+    foreground: tokens.grays[300],
   },
   sideBarSectionHeader: {
     background: tokens.grays[700],

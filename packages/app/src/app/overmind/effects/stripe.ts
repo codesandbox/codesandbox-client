@@ -1,5 +1,7 @@
 import { STRIPE_API_KEY } from '@codesandbox/common/lib/utils/config';
 
+declare let Stripe: any;
+
 function loadScript(path: string) {
   return new Promise(resolve => {
     if (typeof document !== 'undefined') {
@@ -13,8 +15,8 @@ function loadScript(path: string) {
   });
 }
 
-let localStripeVar: stripe.Stripe;
-const getStripe = async (): Promise<stripe.Stripe> => {
+let localStripeVar;
+const getStripe = async (): Promise<any> => {
   if (typeof Stripe === 'undefined') {
     await loadScript('https://js.stripe.com/v3/');
   }

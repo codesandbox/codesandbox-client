@@ -25,6 +25,7 @@ import { debounce } from 'lodash-es';
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
   initializeCustomTheme,
+  initializeCodeSandboxTheme,
   initializeExtensionsFolder,
   initializeSettings,
   initializeThemeCache,
@@ -133,6 +134,7 @@ export class VSCodeEffect {
       // We want to initialize before VSCode, but after browserFS is configured
       // For first-timers initialize a theme in the cache so it doesn't jump colors
       initializeExtensionsFolder();
+      initializeCodeSandboxTheme();
       initializeCustomTheme();
       initializeThemeCache();
       initializeSettings();
@@ -498,12 +500,18 @@ export class VSCodeEffect {
               fs: 'LocalStorage',
             },
             '/extensions': {
-              fs: 'BundledHTTPRequest',
+              fs: 'OverlayFS',
               options: {
-                index: EXTENSIONS_LOCATION + '/extensions/index.json',
-                baseUrl: EXTENSIONS_LOCATION + '/extensions',
-                bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
-                logReads: process.env.NODE_ENV === 'development',
+                writable: { fs: 'InMemory' },
+                readable: {
+                  fs: 'BundledHTTPRequest',
+                  options: {
+                    index: EXTENSIONS_LOCATION + '/extensions/index.json',
+                    baseUrl: EXTENSIONS_LOCATION + '/extensions',
+                    bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+                    logReads: process.env.NODE_ENV === 'development',
+                  },
+                },
               },
             },
             '/extensions/custom-theme': {

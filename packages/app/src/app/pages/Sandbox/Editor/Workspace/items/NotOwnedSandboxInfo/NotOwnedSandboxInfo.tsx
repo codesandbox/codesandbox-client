@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Dependencies } from '../../Dependencies';
 import Files from '../../Files';
-import { Project } from '../../Project';
+import { SandboxInfo } from './SandboxInfo';
+import { BookmarkTemplateButton } from '../../Project/BookmarkTemplateButton';
 import { WorkspaceItem } from '../../WorkspaceItem';
 
 export const NotOwnedSandboxInfo = () => {
@@ -14,21 +16,16 @@ export const NotOwnedSandboxInfo = () => {
 
   return (
     <div style={{ marginTop: '1rem' }}>
-      <Project />
-      <WorkspaceItem
-        actions={editActions}
-        defaultOpen
-        style={{ marginTop: '.5rem' }}
-        title="Files"
-      >
+      <Margin bottom={1.5}>
+        <SandboxInfo sandbox={editor.currentSandbox} />
+        {editor.currentSandbox.customTemplate && <BookmarkTemplateButton />}
+      </Margin>
+
+      <WorkspaceItem actions={editActions} defaultOpen title="Files">
         <Files setEditActions={setEditActions} />
       </WorkspaceItem>
       {!staticTemplate ? (
-        <WorkspaceItem
-          defaultOpen
-          style={{ marginTop: '.5rem' }}
-          title="Dependencies"
-        >
+        <WorkspaceItem defaultOpen title="Dependencies">
           <Dependencies />
         </WorkspaceItem>
       ) : null}
