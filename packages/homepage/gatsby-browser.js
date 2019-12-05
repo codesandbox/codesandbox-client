@@ -1,3 +1,5 @@
+import { trackPageview } from '@codesandbox/common/lib/utils/analytics';
+
 exports.onClientEntry = () => {
   (function addDocSearch() {
     const path = `https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css`;
@@ -7,4 +9,8 @@ exports.onClientEntry = () => {
     link.setAttribute(`href`, path);
     document.head.appendChild(link);
   })();
+};
+
+exports.onRouteUpdate = () => {
+  trackPageview();
 };
