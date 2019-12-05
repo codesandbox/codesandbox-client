@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   gitHubToSandboxUrl,
   protocolAndHost,
@@ -7,6 +7,7 @@ import {
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { useOvermind } from 'app/overmind';
 import { SignInButton } from 'app/pages/common/SignInButton';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { TerminalIcon } from '../Icons/TerminalIcon';
 import { DownloadIcon } from '../Icons/DownloadIcon';
 import { GitHubIcon, StackbitIcon } from '../Icons';
@@ -47,6 +48,10 @@ export const Import = () => {
   const [error, setError] = useState(null);
   const [transformedUrl, setTransformedUrl] = useState('');
   const [url, setUrl] = useState('');
+
+  useEffect(() => {
+    track('Create Sandbox Tab Open', { tab: 'import' });
+  }, []);
 
   const updateUrl = useCallback(({ target: { value: newUrl } }) => {
     if (!newUrl) {

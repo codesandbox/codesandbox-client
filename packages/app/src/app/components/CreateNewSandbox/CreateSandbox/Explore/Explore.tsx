@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from '../elements';
 import { SearchBox } from '../SearchBox';
 import { SearchResults } from './SearchResults';
@@ -12,6 +13,10 @@ export const Explore = () => {
   const [search, setSearch] = useState('');
   const [exploreTemplates, setExploreTemplates] = useState<ITemplateInfo[]>([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    track('Create Sandbox Tab Open', { tab: 'explore' });
+  }, []);
 
   useEffect(() => {
     let loaded = false;

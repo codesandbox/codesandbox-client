@@ -27,9 +27,9 @@ export const PreferenceText: FunctionComponent<Props> = ({
   };
 
   return createElement(isTextArea ? TextArea : Input, {
+    ...props,
     onChange: handleChange,
     placeholder,
     value,
-    ...props,
   });
 };
