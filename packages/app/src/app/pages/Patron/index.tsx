@@ -12,11 +12,11 @@ import { Content } from './elements';
 
 const Patron: React.FC = () => {
   const {
-    state: { hasLoadedApp, isLoggedIn, user },
+    state: { hasLoadedApp, hasLogIn, user },
     actions,
   } = useOvermind();
 
-  if (!isLoggedIn) {
+  if (!hasLogIn) {
     location.href = '/pro';
   }
   // don't send them away before authentication
