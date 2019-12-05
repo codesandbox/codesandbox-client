@@ -5,7 +5,6 @@ import Layout from '../../components/layout';
 import PageContainer from '../../components/PageContainer';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 import hero from '../../assets/images/hero.png';
-import { ImageWrapper } from '../../screens/home/hero/elements';
 import { P } from '../../components/Typography';
 import tweets from './_tweets';
 
@@ -32,6 +31,7 @@ import {
   ManageIcon,
   HeartIcon,
   Border,
+  ImageWrapper,
 } from './_elements';
 import TemplateUniverse from '../../assets/images/TemplateUniverse.png';
 import containers from '../../assets/images/containers.png';

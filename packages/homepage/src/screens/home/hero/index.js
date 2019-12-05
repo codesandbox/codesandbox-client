@@ -22,38 +22,58 @@ import BoxAnimation from './BoxAnimation';
 import { applyParallax } from '../../../utils/parallax';
 
 export default () => {
-  const [boxes, setBoxes] = useState([
-    { position: [0, 0, 10], rotation: [1.2, 0, 0], key: 'initial' },
-  ]);
-  const [sandboxesCreatedCount, setSandboxesCreatedCount] = useState(1);
+  const [boxes, setBoxes] = useState([]);
+  const [sandboxesCreatedCount, setSandboxesCreatedCount] = useState(0);
   const [showPlane, setShowPlane] = useState(true);
 
-  const createBox = React.useCallback(() => {
-    setBoxes(b => {
-      if (b.length > 10) {
-        setShowPlane(false);
-        setTimeout(() => {
-          setShowPlane(true);
+  const createBox = React.useCallback(
+    ({ position, rotation } = {}) => {
+      setBoxes(b => {
+        if (b.length > 10) {
+          setShowPlane(false);
+          setTimeout(() => {
+            setShowPlane(true);
 
-          setBoxes(bb => {
-            const newBoxes = [...bb];
-            newBoxes.length = 1;
-            return newBoxes;
-          });
-        }, 1000);
-      }
-      const newBoxes = [
-        {
-          key: Math.floor(Math.random() * 10000) + '',
-          position: [-5 + Math.random() * 10, 0 + Math.random() * 2.5, 15],
-          rotation: [Math.random() * 1, Math.random() * 1, Math.random() * 1],
-        },
-        ...b,
-      ];
+            setBoxes(bb => {
+              const newBoxes = [...bb];
+              newBoxes.length = 1;
+              return newBoxes;
+            });
+          }, 1000);
+        }
+        const newBoxes = [
+          {
+            key: Math.floor(Math.random() * 10000) + '',
+            position: position || [
+              -5 + Math.random() * 10,
+              0 + Math.random() * 2.5,
+              15,
+            ],
+            rotation: rotation || [
+              Math.random() * 1,
+              Math.random() * 1,
+              Math.random() * 1,
+            ],
+          },
+          ...b,
+        ];
 
-      return newBoxes;
-    });
-  }, [setBoxes]);
+        return newBoxes;
+      });
+    },
+    [setBoxes]
+  );
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      createBox({ position: [0, 0, 10], rotation: [1.2, 0, 0] });
+      setSandboxesCreatedCount(i => i + 1);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [createBox]);
 
   const socketRef = useRef(
     typeof window === 'undefined'
