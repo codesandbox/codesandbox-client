@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import { useInView } from 'react-hook-inview';
-import Rellax from 'rellax';
 
 import styled from 'styled-components';
 import { TimelineLite } from 'gsap/TweenMax';
@@ -10,6 +9,7 @@ import Tweet from '../../../components/Tweet';
 
 import Stars from './stars.svg';
 import IDE from './ide.svg';
+import { applyParallax } from '../../../utils/parallax';
 
 const Grid = styled.div`
   display: grid;
@@ -43,12 +43,11 @@ const Prototype = () => {
   const animation = new TimelineLite();
 
   useEffect(() => {
-    // eslint-disable-next-line no-new
-    new Rellax(parallaxRef.current, {
+    applyParallax(parallaxRef.current, {
       speed: 1.2,
       center: true,
     });
-  }, []);
+  }, [parallaxRef]);
 
   useEffect(() => {
     animation

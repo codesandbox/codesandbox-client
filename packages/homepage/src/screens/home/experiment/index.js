@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import Rellax from 'rellax';
 import { motion } from 'framer-motion';
 import { H2, P } from '../../../components/Typography';
 
@@ -11,6 +10,7 @@ import npm from '../../../assets/images/npm.png';
 import npm2x from '../../../assets/images/npm@2x.png';
 import Tweet from '../../../components/Tweet';
 import { Grid, Section, White, tweetStyle, tweetStyleMobile } from './elements';
+import { applyParallax } from '../../../utils/parallax';
 
 const tweet = {
   username: 'dan_abramov',
@@ -23,12 +23,12 @@ const tweet = {
 const Experiment = () => {
   const parallaxRef = useRef(null);
   useEffect(() => {
-    // eslint-disable-next-line no-new
-    new Rellax(parallaxRef.current, {
+    applyParallax(parallaxRef.current, {
       speed: 1.2,
       center: true,
     });
-  }, []);
+  }, [parallaxRef]);
+
   return (
     <>
       <Grid>

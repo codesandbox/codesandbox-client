@@ -174,7 +174,7 @@ const Footer = () => (
         text-align: center;
       `}
     >
-      Copyright © {new Date().getFullYear()} CodeSandbox
+      Copyright © {new Date().getFullYear()} CodeSandbox BV
     </P>
   </FooterWrapper>
 );
