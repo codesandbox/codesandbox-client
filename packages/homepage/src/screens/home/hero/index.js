@@ -68,7 +68,7 @@ export default () => {
     const timeout = setTimeout(() => {
       createBox({ position: [0, 0, 10], rotation: [1.2, 0, 0] });
       setSandboxesCreatedCount(i => i + 1);
-    }, 1000);
+    }, 1000 + Math.random() * 500);
 
     return () => {
       clearTimeout(timeout);
