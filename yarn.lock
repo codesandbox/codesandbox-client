@@ -4409,6 +4409,13 @@
     "@types/react-native" "*"
     csstype "^2.2.0"
 
+"@types/styled-system__css@^5.0.4":
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/@types/styled-system__css/-/styled-system__css-5.0.4.tgz#df83b015cf377ab39ecf33ea31339c05eeb9230a"
+  integrity sha512-SHHoNh9cCRTG9hcmCD2ua0NeYUrLmLXoMJ7g0U/e0FjrzcwNQtM5wjjEJVCVZymU632xA1PdPEykrtoSHTIecA==
+  dependencies:
+    csstype "^2.6.6"
+
 "@types/svgo@*":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@types/svgo/-/svgo-1.2.1.tgz#7b7f2f7966c8301001e955c8d488c9eb7e868b16"
@@ -9500,6 +9507,11 @@ csstype@^2.2.0, csstype@^2.5.2, csstype@^2.5.5, csstype@^2.5.7:
   version "2.6.6"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.6.tgz#c34f8226a94bbb10c32cc0d714afdf942291fc41"
   integrity sha512-RpFbQGUE74iyPgvr46U9t1xoQBM8T4BL8SxrN66Le2xYAPSaDJJKeztV3awugusb3g3G9iL8StmkBBXhcbbXhg==
+
+csstype@^2.6.6:
+  version "2.6.7"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.7.tgz#20b0024c20b6718f4eda3853a1f5a1cce7f5e4a5"
+  integrity sha512-9Mcn9sFbGBAdmimWb2gLVDtFJzeKtDGIr76TUqmjZrw9LFXBMSU70lcs+C0/7fyCd6iBDqmksUcCOUIkisPHsQ==
 
 cucumber-html-reporter@^3.0.4:
   version "3.0.4"
