@@ -97,14 +97,6 @@ export const PersonalTemplates = ({
     data.me.templates.length === 0 &&
     data.me.bookmarkedTemplates.length === 0;
 
-  if (hasNoTemplates) {
-    return (
-      <CenteredMessage>
-        You don{"'"}t have any templates yet, go on and create or bookmark some!
-      </CenteredMessage>
-    );
-  }
-
   return filter ? (
     <FilteredTemplates
       forkOnOpen
@@ -112,10 +104,18 @@ export const PersonalTemplates = ({
       templateInfos={allTemplateInfos}
     />
   ) : (
-    <DynamicWidthTemplateList
-      showSecondaryShortcuts
-      forkOnOpen
-      templateInfos={allTemplateInfos}
-    />
+    <>
+      {hasNoTemplates && (
+        <CenteredMessage>
+          You don{"'"}t have any templates yet, go on and create or bookmark
+          some!
+        </CenteredMessage>
+      )}
+      <DynamicWidthTemplateList
+        showSecondaryShortcuts
+        forkOnOpen
+        templateInfos={allTemplateInfos}
+      />
+    </>
   );
 };
