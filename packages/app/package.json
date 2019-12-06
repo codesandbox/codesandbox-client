@@ -252,7 +252,7 @@
     "@types/phoenix": "^1.4.0",
     "@types/prop-types": "^15.7.0",
     "@types/react": "^16.8.12",
-    "@types/react-color": "^3.0.1",
+    "@types/react-color": "^2.17.2",
     "@types/react-dom": "^16.8.3",
     "@types/react-helmet": "^5.0.11",
     "@types/react-icons": "2.2.7",
