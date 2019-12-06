@@ -6,10 +6,10 @@ const styles = css`
   border-radius: 0.25rem;
   border: none;
   font-family: ${props => props.theme.homepage.appleFont};
-  font-size: 0.8125rem;
+  font-size: 0.8125em;
   line-height: 19px;
   text-align: center;
-  padding: 4px 21px;
+  padding: 2px 21px;
   font-weight: 500;
   text-decoration: none;
   color: ${props => props.theme.homepage.white} !important;

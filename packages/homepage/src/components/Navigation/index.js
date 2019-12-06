@@ -166,11 +166,13 @@ const Navigation = () => {
                         Create Sandbox
                       </Button>
                       {user && (
-                        <UserAvatar
-                          className="tablet-remove"
-                          src={user.avatar_url}
-                          alt={user.username}
-                        />
+                        <a style={{ display: 'flex' }} href="/dashboard">
+                          <UserAvatar
+                            className="tablet-remove"
+                            src={user.avatar_url}
+                            alt={user.username}
+                          />
+                        </a>
                       )}
                     </LogIn>
                   </List>
