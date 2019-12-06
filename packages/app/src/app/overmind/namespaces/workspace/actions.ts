@@ -282,12 +282,16 @@ export const addedTemplate: AsyncAction<{
 
   try {
     const newTemplate = await effects.api.createTemplate(sandboxId, template);
-    const sandbox = state.editor.sandboxes[sandboxId];
+    const sandbox = state.editor.currentSandbox;
     sandbox.isFrozen = true;
     sandbox.customTemplate = newTemplate;
     actions.modalClosed();
-    effects.notificationToast.success('Templated Created');
+    effects.notificationToast.success('Successfully created the template');
   } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error(error);
+    }
+
     effects.notificationToast.error(
       'Could not create template, please try again later'
     );

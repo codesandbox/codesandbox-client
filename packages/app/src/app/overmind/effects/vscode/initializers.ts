@@ -93,7 +93,12 @@ export function installCustomTheme(id: string, name: string, theme: string) {
   // @ts-ignore
   const fs = window.BrowserFS.BFSRequire('fs');
   const extName = `${id}-theme`;
-  fs.mkdirSync(`/extensions/${extName}`);
+
+  const folder = `/extensions/${extName}`;
+  const folderExists = fs.existsSync(folder);
+  if (!folderExists) {
+    fs.mkdirSync(folder);
+  }
   fs.writeFileSync(
     `/extensions/${extName}/package.json`,
     JSON.stringify(packageJSON)

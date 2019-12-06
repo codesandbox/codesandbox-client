@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
 import { useOvermind } from 'app/overmind';
 import { LinkButton } from 'app/components/LinkButton';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from '../elements';
 import { CenteredMessage } from './elements';
 
@@ -13,6 +14,10 @@ export const Create = () => {
   const { state, actions } = useOvermind();
   const [filter, setFilter] = React.useState('');
   const [officialTemplateInfos, setOfficialTemplates] = React.useState([]);
+
+  useEffect(() => {
+    track('Create Sandbox Tab Open', { tab: 'create' });
+  }, []);
 
   useEffect(() => {
     getTemplateInfosFromAPI('/api/v1/sandboxes/templates/official').then(x => {

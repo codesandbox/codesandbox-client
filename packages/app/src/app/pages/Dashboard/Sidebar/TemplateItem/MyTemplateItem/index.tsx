@@ -14,9 +14,14 @@ interface ITemplateItemProps {
   connectDropTarget?: any;
 }
 
-const TemplateItemComponent: React.FC<
-  ITemplateItemProps & RouteComponentProps
-> = ({ currentPath, isOver, canDrop, connectDropTarget, teamId }) => {
+const TemplateItemComponent: React.FC<ITemplateItemProps &
+  RouteComponentProps> = ({
+  currentPath,
+  isOver,
+  canDrop,
+  connectDropTarget,
+  teamId,
+}) => {
   const url = teamId
     ? `/dashboard/teams/${teamId}/templates`
     : `/dashboard/templates`;

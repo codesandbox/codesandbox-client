@@ -43,7 +43,7 @@ function Plane({ position }) {
   );
 }
 
-function Box({ position, rotation }) {
+function Box({ position, rotation, onDrag, onDragStop }) {
   const { size, viewport } = useThree();
   const [dragging, setDragging] = useState(false);
   const aspect = size.width / viewport.width;
@@ -69,7 +69,7 @@ function Box({ position, rotation }) {
     } else {
       bodyRef.current.wakeUp();
     }
-  }, [dragging]);
+  }, [dragging, onDrag, onDragStop]);
 
   const bindDrag = useDrag(
     // eslint-disable-next-line
@@ -84,8 +84,10 @@ function Box({ position, rotation }) {
       );
 
       if (dragging) {
+        onDrag();
         setDragging(true);
       } else {
+        onDragStop();
         setDragging(false);
       }
 
@@ -105,6 +107,15 @@ function Box({ position, rotation }) {
 
 export default function App({ boxes, showPlane }) {
   const [prop, set] = useSpring(() => ({ intensity: 0.6, color: '#fff' }));
+  const [dragging, setDragging] = React.useState(false);
+
+  const setDraggingTrue = React.useCallback(() => {
+    setDragging(true);
+  }, []);
+
+  const setDraggingFalse = React.useCallback(() => {
+    setDragging(false);
+  }, []);
 
   useEffect(() => {
     if (!boxes.length) {
@@ -127,6 +138,7 @@ export default function App({ boxes, showPlane }) {
         right: 0,
         bottom: 0,
         zIndex: 0,
+        touchAction: dragging ? 'none' : 'initial',
       }}
     >
       <Canvas
@@ -152,6 +164,8 @@ export default function App({ boxes, showPlane }) {
 
           {boxes.map(pos => (
             <Box
+              onDrag={setDraggingTrue}
+              onDragStop={setDraggingFalse}
               key={pos.key}
               position={pos.position}
               rotation={pos.rotation}

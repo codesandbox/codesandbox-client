@@ -23,9 +23,9 @@ columns: 2
 
 ### Quickly try out frameworks and libraries
 
-Start from a ready-made template for any popular framework, including React, Vue, Angular, 
-or others. There’s no setup or boilerplate code to write—go straight to
-experimenting with code and concepts.
+Start from a ready-made template for any popular framework, including React,
+Vue, Angular, or others. There’s no setup or boilerplate code to write—go
+straight to experimenting with code and concepts.
 
 </div>
 
@@ -33,9 +33,9 @@ experimenting with code and concepts.
 
 ### Code anywhere, on any device
 
-You can use CodeSandbox on any device with a web browser. Take your
-code with you and work learning into your life—whether that’s coding on the go,
-at school, at work, or from home.
+You can use CodeSandbox on any device with a web browser. Take your code with
+you and work learning into your life—whether that’s coding on the go, at school,
+at work, or from home.
 
 </div>
 

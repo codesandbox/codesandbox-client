@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { HeroWrapper } from '../../screens/home/hero/elements';
 import { H2 } from '../../components/Typography';
 import Button from '../../components/Button';
 import Collaborate from '../../assets/icons/Collaborate';
@@ -41,7 +40,9 @@ export const Title = styled(H2)`
   }
 `;
 
-export const MacBookWrapper = styled(HeroWrapper)`
+export const MacBookWrapper = styled.div`
+  text-align: center;
+
   margin-top: 0;
   overflow: visible;
   margin-bottom: 8rem;
@@ -293,4 +294,11 @@ export const Border = styled.div`
   height: 1px;
   left: 50%;
   transform: translateX(-50%);
+`;
+
+export const ImageWrapper = styled.div`
+  img {
+    display: block;
+    box-shadow: 0 -8px 120px #1d1d1d;
+  }
 `;

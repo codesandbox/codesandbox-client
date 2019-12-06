@@ -1,12 +1,14 @@
-import React from 'react';
+import { Alert } from 'app/components/Alert';
+import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
+import React from 'react';
 
 import {
-  Title,
-  SubContainer,
-  PreferenceContainer,
   PaddedPreference,
+  PreferenceContainer,
+  SubContainer,
   SubDescription,
+  Title,
 } from '../../elements';
 import { VSCodePlaceholder } from '../../VSCodePlaceholder';
 
@@ -16,6 +18,8 @@ const isSafari: boolean = /^((?!chrome|android).)*safari/i.test(
 const isFF: boolean = navigator.userAgent.toLowerCase().includes('firefox');
 
 export const EditorSettings: React.FC = () => {
+  const [showModal, setShowModal] = React.useState(false);
+
   const {
     state: {
       preferences: { settings },
@@ -27,7 +31,10 @@ export const EditorSettings: React.FC = () => {
 
   const bindValue = (name: string) => ({
     value: settings[name],
-    setValue: (value: any) => settingChanged({ name, value }),
+    setValue: (value: any) => {
+      settingChanged({ name, value });
+      setShowModal(true);
+    },
   });
 
   return (
@@ -40,13 +47,13 @@ export const EditorSettings: React.FC = () => {
         {/* {Vim mode does not work on FF or Safari */}
         <PreferenceContainer disabled={isSafari || isFF}>
           <PaddedPreference
-            title="VIM Mode"
+            title="Enable VIM extension"
             type="boolean"
             {...bindValue('vimMode')}
           />
           <SubDescription>
-            This will enable the VSCodeVim extension, you need to reload the
-            page to see the effects
+            Toggling the VIM extension will require a refresh. When enabled, use
+            the command palette to control VIM
           </SubDescription>
         </PreferenceContainer>
         {isSafari || isFF ? (
@@ -58,6 +65,20 @@ export const EditorSettings: React.FC = () => {
             The VIM extension currently only works on Chrome and Microsoft Edge.
           </SubDescription>
         ) : null}
+        <Modal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          width={400}
+        >
+          <Alert
+            title="Toggle VIM extension"
+            body="You need to refresh the browser for this to take effect, do you want to do that now?"
+            onCancel={() => setShowModal(false)}
+            onConfirm={() => {
+              location.reload(true);
+            }}
+          />
+        </Modal>
       </SubContainer>
     </div>
   );
