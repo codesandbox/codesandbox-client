@@ -66,7 +66,7 @@ These are all the configuration options you can set. They are all optional.
   // where the contents of the built dependency are. These files will be uploaded
   // to our registry
   "publishDirectory": {
-    "react": "build/node_modules/react"
+    "react": "build/node_modules/react",
     "react-dom": "build/node_modules/react-dom"
   },
   // a list of sandboxes that you want generated for a PR, if this list
