@@ -33,7 +33,7 @@ export const Templates = (props: TemplatesProps) => {
     },
   } = useOvermind();
   const { teamId } = props.match.params;
-  const { loading, error, data } = useQuery<
+  const { loading, error, data, refetch } = useQuery<
     ListTemplatesQuery,
     ListTemplatesQueryVariables
   >(LIST_OWNED_TEMPLATES, {
@@ -102,12 +102,12 @@ export const Templates = (props: TemplatesProps) => {
                 },
               ],
               {
-                title: `Delete template`,
+                title: `Delete Template`,
                 action: () => {
                   deleteTemplate({
                     sandboxId: template.sandbox.id,
                     templateId: template.id,
-                  });
+                  }).then(() => refetch());
                   return true;
                 },
                 color: theme.red.darken(0.2)(),
