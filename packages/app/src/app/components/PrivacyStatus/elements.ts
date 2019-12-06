@@ -1,15 +1,13 @@
 import styled, { css } from 'styled-components';
 import Question from 'react-icons/lib/go/question';
-import Unlisted from 'react-icons/lib/md/insert-link';
 import Private from 'react-icons/lib/md/lock';
+import { UnlistedIcon } from './UnlistedIcon';
 
 const iconStyles = css`
-  margin-left: 0.5em;
-  margin-bottom: 0.2rem;
-  opacity: 0.5;
+  opacity: 0.75;
 `;
 
-export const StyledUnlisted = styled(Unlisted)`
+export const StyledUnlisted = styled(UnlistedIcon)`
   ${iconStyles}
 `;
 export const StyledPrivate = styled(Private)`

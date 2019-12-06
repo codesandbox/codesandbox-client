@@ -46,6 +46,7 @@ export function initializeSettings() {
 }
 
 export function initializeCodeSandboxTheme() {
+  // @ts-ignore
   const fs = window.BrowserFS.BFSRequire('fs');
 
   fs.writeFileSync(
@@ -89,9 +90,15 @@ export function installCustomTheme(id: string, name: string, theme: string) {
     },
   };
 
+  // @ts-ignore
   const fs = window.BrowserFS.BFSRequire('fs');
   const extName = `${id}-theme`;
-  fs.mkdirSync(`/extensions/${extName}`);
+
+  const folder = `/extensions/${extName}`;
+  const folderExists = fs.existsSync(folder);
+  if (!folderExists) {
+    fs.mkdirSync(folder);
+  }
   fs.writeFileSync(
     `/extensions/${extName}/package.json`,
     JSON.stringify(packageJSON)
@@ -116,7 +123,7 @@ export function initializeCustomTheme() {
   }
 
   installCustomTheme(
-    'codesandbox-black',
+    'codesandbox-black-0.0.1',
     'CodeSandbox Black',
     JSON.stringify(codeSandboxBlackTheme)
   );

@@ -3,11 +3,11 @@ const { SANDBOX_ONLY } = process.env;
 const staticAssets = [
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-editor/release/min/vs',
-    to: 'public/vscode25/vs',
+    to: 'public/vscode26/vs',
   },
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-extensions/out',
-    to: 'public/vscode-extensions/v11',
+    to: 'public/vscode-extensions/v12',
   },
   !SANDBOX_ONLY && {
     from: 'node_modules/onigasm/lib/onigasm.wasm',

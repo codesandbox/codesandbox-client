@@ -8,6 +8,10 @@ import React, { useReducer, useEffect, useCallback } from 'react';
 import { useOvermind } from 'app/overmind';
 import { ThemeProvider } from 'styled-components';
 
+import {
+  CreateSandbox,
+  COLUMN_MEDIA_THRESHOLD,
+} from 'app/components/CreateNewSandbox/CreateSandbox';
 import CommitModal from './CommitModal';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
@@ -20,7 +24,6 @@ import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import NetlifyLogs from './NetlifyLogs';
-import NewSandbox from './NewSandbox';
 import { PickSandboxModal } from './PickSandboxModal';
 import PreferencesModal from './PreferencesModal';
 import PRModal from './PRModal';
@@ -42,8 +45,8 @@ const modals = {
     width: 900,
   },
   newSandbox: {
-    Component: NewSandbox,
-    width: 925,
+    Component: CreateSandbox,
+    width: () => (window.outerWidth > COLUMN_MEDIA_THRESHOLD ? 1200 : 950),
   },
   share: {
     Component: ShareModal,
@@ -189,7 +192,10 @@ const Modals: React.FC = () => {
     >
       <Modal
         isOpen={Boolean(modal)}
-        width={modal && modal.width}
+        width={
+          modal &&
+          (typeof modal.width === 'function' ? modal.width() : modal.width)
+        }
         onClose={isKeyDown => actions.modalClosed()}
       >
         {modal

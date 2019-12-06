@@ -27,11 +27,13 @@ export const theme = {
     placeholder: '#B8B9BA',
   }),
   vscodeTheme: codesandbox,
-  new: createTheme({
-    title: '#EEEEFF',
-    description: '#777788',
-    bg: '#2B2E41',
-  }),
+  new: {
+    ...createTheme({
+      title: '#EEEEFF',
+      description: '#777788',
+      bg: '#2B2E41',
+    }),
+  },
   fonts,
   media,
   sizes,

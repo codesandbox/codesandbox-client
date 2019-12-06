@@ -25,6 +25,10 @@ import {
   ESC,
 } from '@codesandbox/common/lib/utils/keycodes';
 
+import {
+  PathedSandboxesFoldersQuery,
+  PathedSandboxesFoldersQueryVariables,
+} from 'app/graphql/types';
 import { Container, AnimatedChevron, IconContainer } from './elements';
 
 import getDirectChildren from '../../../utils/get-direct-children';
@@ -173,12 +177,14 @@ class FolderEntry extends React.Component<Props, State> {
               },
             ],
             update: (cache, { data: { deleteCollection } }) => {
-              const variables: { teamId?: string } = {};
-              if (teamId) {
-                variables.teamId = teamId;
-              }
+              const variables: PathedSandboxesFoldersQueryVariables = {
+                teamId,
+              };
 
-              const cacheData = cache.readQuery({
+              const cacheData = cache.readQuery<
+                PathedSandboxesFoldersQuery,
+                PathedSandboxesFoldersQueryVariables
+              >({
                 query: PATHED_SANDBOXES_FOLDER_QUERY,
                 variables,
               });
@@ -407,9 +413,11 @@ const collectSource = (connect, monitor) => ({
 
 DropFolderEntry = (withRouter(
   // @ts-ignore Don't know how to mix dnd and react-router with right typings
-  DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
-    DragSource('FOLDER', entrySource, collectSource)(FolderEntry)
-  )
+  DropTarget(
+    ['SANDBOX', 'FOLDER'],
+    entryTarget,
+    collectTarget
+  )(DragSource('FOLDER', entrySource, collectSource)(FolderEntry))
 ) as unknown) as React.ComponentClass<Props, State>;
 
 export { DropFolderEntry };

@@ -101,7 +101,6 @@ export const directoryCreated: AsyncAction<{
       sandbox.directories,
       optimisticId
     );
-
     effects.vscode.sandboxFsSync.mkdir(
       state.editor.modulesByPath,
       optimisticDirectory

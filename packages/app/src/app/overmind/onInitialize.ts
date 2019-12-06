@@ -6,6 +6,12 @@ export const onInitialize: OnInitialize = async (
 ) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
 
+  state.isFirstVisit = Boolean(
+    !effects.jwt.get() && !effects.browser.storage.get('hasVisited')
+  );
+
+  effects.browser.storage.set('hasVisited', true);
+
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,

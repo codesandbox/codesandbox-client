@@ -170,7 +170,7 @@ exports.createPages = async ({ graphql, actions }) => {
   const docsTemplate = resolve(__dirname, './src/templates/docs.js');
   const blogTemplate = resolve(__dirname, './src/templates/post.js');
   const jobTemplate = resolve(__dirname, './src/templates/job.js');
-
+  const featureTemplate = resolve(__dirname, './src/templates/feature.js');
   // Redirect /index.html to root.
   createRedirect({
     fromPath: '/index.html',
@@ -264,28 +264,35 @@ exports.createPages = async ({ graphql, actions }) => {
       });
     });
   }
-};
 
-exports.onCreateWebpackConfig = ({
-  stage,
-  getConfig,
-  loaders,
-  actions,
-  plugins,
-}) => {
-  if (stage === 'build-html') {
-    actions.setWebpackConfig({
-      module: {
-        rules: [
-          {
-            test: /gsap/,
-            use: loaders.null(),
-          },
-        ],
-      },
+  // FEATURES
+
+  const allFeatures = await graphql(`
+    {
+      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/features/" } }) {
+        edges {
+          node {
+            id
+            frontmatter {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (allFeatures.data) {
+    allFeatures.data.allMarkdownRemark.edges.forEach(edge => {
+      createPage({
+        path: edge.node.frontmatter.slug,
+        component: featureTemplate,
+        context: { id: edge.node.id },
+      });
     });
   }
+};
 
+exports.onCreateWebpackConfig = ({ getConfig, loaders, actions, plugins }) => {
   actions.setWebpackConfig({
     plugins: [plugins.define(env.default)],
   });

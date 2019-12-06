@@ -1,5 +1,3 @@
-import Switch from '@codesandbox/common/lib/components/Switch';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import * as templates from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
@@ -10,15 +8,9 @@ import { useOvermind } from 'app/overmind';
 
 import { WorkspaceItem } from '../../WorkspaceItem';
 
-import {
-  Explanation,
-  Icon as QuestionIcon,
-  Item,
-  PropertyName,
-  PropertyValue,
-} from '../elements';
+import { Explanation, Item, PropertyName, PropertyValue } from '../elements';
 
-import { PickColor, PickerContainer, PublicValue } from './elements';
+import { PickColor, PickerContainer } from './elements';
 import { Icon } from './Icon';
 
 export const TemplateConfig: FunctionComponent = () => {
@@ -34,9 +26,6 @@ export const TemplateConfig: FunctionComponent = () => {
   } = useOvermind();
   const picker = useRef(null);
   const [showPicker, setShowPicker] = useState(false);
-  const [publicTemplate, setPublic] = useState(
-    customTemplate.published || false
-  );
   const [selectedColor, setSelectedColor] = useState(
     () => customTemplate.color || templates.default(template).color()
   );
@@ -54,15 +43,6 @@ export const TemplateConfig: FunctionComponent = () => {
       color: selectedColor,
     });
   });
-
-  const togglePublic = () => {
-    editTemplate({
-      ...customTemplate,
-      published: !publicTemplate,
-    });
-
-    setPublic(!publicTemplate);
-  };
 
   return (
     <WorkspaceItem showOverflow defaultOpen title="Template">
@@ -97,28 +77,6 @@ export const TemplateConfig: FunctionComponent = () => {
             </PickerContainer>
           )}
         </PropertyValue>
-      </Item>
-
-      <Item>
-        <PropertyName>
-          Public
-          <Tooltip
-            boundary="viewport"
-            content="Whether this template will show in our upcoming templates page"
-          >
-            <QuestionIcon />
-          </Tooltip>
-        </PropertyName>
-
-        <PublicValue>
-          <Switch
-            small
-            onClick={togglePublic}
-            right={publicTemplate}
-            offMode
-            secondary
-          />
-        </PublicValue>
       </Item>
 
       <Icon />

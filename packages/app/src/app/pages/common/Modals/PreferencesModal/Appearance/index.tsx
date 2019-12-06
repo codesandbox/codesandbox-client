@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 
 import { PreferenceContainer, SubContainer, Title } from '../elements';
-import VSCodePlaceholder from '../VSCodePlaceholder';
+import { VSCodePlaceholder } from '../VSCodePlaceholder';
 
 import { EditorTheme } from './EditorTheme';
 

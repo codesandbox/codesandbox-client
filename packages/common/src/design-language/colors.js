@@ -12,6 +12,7 @@ export const colors = {
   },
   blues: {
     300: '#6CC7F6', // Teal
+    500: '#3793E0', // sid added this
     600: '#0971f1', // Blue
     700: '#535BCF', // Indigo
   },

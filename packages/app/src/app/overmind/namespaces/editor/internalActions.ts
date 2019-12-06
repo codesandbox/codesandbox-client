@@ -307,7 +307,11 @@ export const setModuleCode: Action<{
 export const forkSandbox: AsyncAction<{
   sandboxId: string;
   body?: { collectionId: string | undefined };
-}> = async ({ state, effects, actions }, { sandboxId: id, body }) => {
+  openInNewWindow?: boolean;
+}> = async (
+  { state, effects, actions },
+  { sandboxId: id, body, openInNewWindow = false }
+) => {
   const templateDefinition = getTemplateDefinition(
     state.editor.currentSandbox ? state.editor.currentSandbox.template : null
   );
@@ -329,13 +333,21 @@ export const forkSandbox: AsyncAction<{
     // Copy over any unsaved code
     if (state.editor.currentSandbox) {
       Object.assign(forkedSandbox, {
-        modules: forkedSandbox.modules.map(module => ({
-          ...module,
-          code: state.editor.currentSandbox.modules.find(
+        modules: forkedSandbox.modules.map(module => {
+          const foundEquivalentModule = state.editor.currentSandbox.modules.find(
             currentSandboxModule =>
               currentSandboxModule.shortid === module.shortid
-          ).code,
-        })),
+          );
+
+          if (!foundEquivalentModule) {
+            return module;
+          }
+
+          return {
+            ...module,
+            code: foundEquivalentModule.code,
+          };
+        }),
       });
     }
 
@@ -353,7 +365,8 @@ export const forkSandbox: AsyncAction<{
     }
 
     effects.notificationToast.success('Forked sandbox!');
-    effects.router.updateSandboxUrl(forkedSandbox);
+
+    effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
   } catch (error) {
     console.error(error);
     effects.notificationToast.error('We were unable to fork the sandbox');

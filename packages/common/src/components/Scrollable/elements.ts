@@ -5,6 +5,13 @@ export const Container = styled(Scrollbar)`
   flex: 1 1 auto;
 `;
 
+export const BaseScroller = styled.span`
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+`;
+
 const thumb = ({ position = true } = {}) => css`
   ${position ? `width` : `height`}: 0.8rem;
   border-radius: 50px;
@@ -26,10 +33,9 @@ const track = ({ position = true } = {}) => css`
   ${position ? `right` : `left`}: 0;
   display: flex;
   ${position ? `justify-content` : `align-items`}: center;
-  width: ${position ? `1rem` : `calc(100% - 1rem)`};
-  height: ${position ? `calc(100vh - 1rem)` : `1rem`};
+  ${position ? `width: 0.5rem !important` : `height: 0.5rem !important`};
   padding: 0.25rem;
-  background-color: rgba(255, 255, 255, 0.35);
+  background-color: transparent !important;
   cursor: pointer;
 `;
 
@@ -59,4 +65,10 @@ export const BaseThumbX = styled.span`
 
 export const BaseThumbY = styled.span`
   ${thumb({ position: true })}
+`;
+
+export const BaseWrapper = styled.span`
+  /* We want to overlay the scrollbar */
+  right: 0 !important;
+  bottom: 0 !important;
 `;

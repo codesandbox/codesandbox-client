@@ -74,13 +74,18 @@ type ModalName =
   | 'share'
   | 'signInForTemplates'
   | 'userSurvey';
-export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
-  { state, effects },
-  { modal, message }
-) => {
+
+export const modalOpened: Action<{
+  modal: ModalName;
+  message?: string;
+  itemId?: string;
+}> = ({ state, effects }, { modal, message, itemId }) => {
   effects.analytics.track('Open Modal', { modal });
   state.currentModalMessage = message;
   state.currentModal = modal;
+  if (state.currentModal === 'preferences') {
+    state.preferences.itemId = itemId;
+  }
 };
 
 export const modalClosed: Action = ({ state, effects }) => {
