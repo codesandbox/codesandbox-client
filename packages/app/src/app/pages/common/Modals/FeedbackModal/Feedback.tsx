@@ -127,7 +127,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
         </EmojiButton>
 
         <ButtonContainer>
-          <Button disabled={loading || !feedback.trim()} small>
+          <Button type="submit" disabled={loading || !feedback.trim()} small>
             {loading ? 'Sending...' : 'Submit'}
           </Button>
         </ButtonContainer>
