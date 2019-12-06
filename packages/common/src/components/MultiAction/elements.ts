@@ -1,17 +1,15 @@
 import styled, { css } from 'styled-components';
 import { Group } from 'reakit/Group';
-import { Button } from 'reakit/Button';
 import { Menu, MenuItem, MenuDisclosure } from 'reakit/Menu';
-import { IButtonProps, buttonStyles } from '../Button';
+import { Button, IBaseProps } from '../Button';
 
 export const Container = styled(Group)`
   position: relative;
   display: flex;
 `;
 
-export const PrimaryAction = styled(Button)<IButtonProps>`
+export const PrimaryAction = styled(Button)<IBaseProps>`
   ${({ block }) => css`
-    ${buttonStyles};
     justify-content: center;
     width: ${block ? '100%' : 'inherit'};
     border-radius: 0;
@@ -21,8 +19,9 @@ export const PrimaryAction = styled(Button)<IButtonProps>`
   `}
 `;
 
-export const ToggleActionsList = styled(MenuDisclosure)<IButtonProps>`
-  ${buttonStyles};
+export const ToggleActionsList = styled(Button).attrs({
+  as: MenuDisclosure,
+})`
   justify-content: center;
   width: 32px;
   height: 32px;

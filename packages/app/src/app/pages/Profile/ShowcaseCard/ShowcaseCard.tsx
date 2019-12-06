@@ -1,7 +1,9 @@
 import React from 'react';
 import { LightIcons } from '@codesandbox/template-icons';
-import { GoHeart, GoEye, GoRepoForked } from 'react-icons/go';
-import { MdMoreHoriz } from 'react-icons/md';
+import GoHeart from 'react-icons/go/heart';
+import GoEye from 'react-icons/go/eye';
+import GoRepoForked from 'react-icons/go/repo-forked';
+import MdMoreHoriz from 'react-icons/md/more-horiz';
 import { Link, MenuItem, Separator } from '@codesandbox/common/lib/components';
 import { abbreviateNumber } from './abbreviateNumber';
 import {

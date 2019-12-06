@@ -1,5 +1,6 @@
 import React from 'react';
-import { MdAdd, MdClose } from 'react-icons/md';
+import MdAdd from 'react-icons/md/add';
+import MdClose from 'react-icons/md/close';
 import {
   unstable_Form as Form,
   unstable_useFormState as useFormState,

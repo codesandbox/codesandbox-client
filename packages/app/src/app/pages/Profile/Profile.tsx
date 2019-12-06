@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import {
-  Main,
-  PageContent,
-  Navigation,
+  Layout,
   Pagination,
   SearchInput,
 } from '@codesandbox/common/lib/components';
@@ -41,71 +39,68 @@ export const Profile: React.FC<RouteComponentProps> = () => {
   // - Add drag and drop support for grids
 
   return (
-    <Main>
-      <Navigation />
-      <PageContent>
-        <Content>
-          <UserInfo
-            canEdit
-            isEditing={isEditing}
-            toggleEditing={() => setIsEditing(!isEditing)}
-            onEdit={({ bio, socialLinks }) => {
-              setData({
-                ...data,
-                user: {
-                  ...data.user,
-                  bio,
-                  socialLinks,
-                },
-              });
-            }}
-            {...data.user}
-          />
-          {data.user.featured && <FeaturedSandbox {...data.user.featured} />}
-          <SearchRow>
-            <SearchInput />
-            <SandboxCount>
-              <em>{data.user.totalSandboxes}</em>
-              Sandboxes
-            </SandboxCount>
-          </SearchRow>
-          {isEditing && !data.user.pinned.length ? (
-            <PinnedPlaceholder>
-              Drag your Sandbox here to pin them to your profile
-            </PinnedPlaceholder>
-          ) : isEditing && data.user.pinned.length ? (
+    <Layout>
+      <Content>
+        <UserInfo
+          canEdit
+          isEditing={isEditing}
+          toggleEditing={() => setIsEditing(!isEditing)}
+          onEdit={({ bio, socialLinks }) => {
+            setData({
+              ...data,
+              user: {
+                ...data.user,
+                bio,
+                socialLinks,
+              },
+            });
+          }}
+          {...data.user}
+        />
+        {data.user.featured && <FeaturedSandbox {...data.user.featured} />}
+        <SearchRow>
+          <SearchInput />
+          <SandboxCount>
+            <em>{data.user.totalSandboxes}</em>
+            Sandboxes
+          </SandboxCount>
+        </SearchRow>
+        {isEditing && !data.user.pinned.length ? (
+          <PinnedPlaceholder>
+            Drag your Sandbox here to pin them to your profile
+          </PinnedPlaceholder>
+        ) : isEditing && data.user.pinned.length ? (
+          <PinnedGrid>
+            {data.user.pinned.map(sandbox => (
+              <ShowcaseCard key={sandbox.id} {...sandbox} />
+            ))}
+            <DropPlaceholder>Drag Sandbox to pin</DropPlaceholder>
+          </PinnedGrid>
+        ) : (
+          data.user.pinned && (
             <PinnedGrid>
               {data.user.pinned.map(sandbox => (
                 <ShowcaseCard key={sandbox.id} {...sandbox} />
               ))}
-              <DropPlaceholder>Drag Sandbox to pin</DropPlaceholder>
             </PinnedGrid>
-          ) : (
-            data.user.pinned && (
-              <PinnedGrid>
-                {data.user.pinned.map(sandbox => (
-                  <ShowcaseCard key={sandbox.id} {...sandbox} />
-                ))}
-              </PinnedGrid>
-            )
-          )}
-          {data.user.sandboxes && (
-            <>
-              <TitleRow>
-                <SectionTitle>All Sandboxes</SectionTitle>
-              </TitleRow>
-              <ShowcaseGrid>
-                {data.user.sandboxes.map(sandbox => (
-                  <ShowcaseCard key={sandbox.id} {...sandbox} />
-                ))}
-              </ShowcaseGrid>
-              <PageNav>
-                <Pagination pages={10} />
-              </PageNav>
-            </>
-          )}
-        </Content>
-      </PageContent>
-    </Main>
+          )
+        )}
+        {data.user.sandboxes && (
+          <>
+            <TitleRow>
+              <SectionTitle>All Sandboxes</SectionTitle>
+            </TitleRow>
+            <ShowcaseGrid>
+              {data.user.sandboxes.map(sandbox => (
+                <ShowcaseCard key={sandbox.id} {...sandbox} />
+              ))}
+            </ShowcaseGrid>
+            <PageNav>
+              <Pagination pages={10} />
+            </PageNav>
+          </>
+        )}
+      </Content>
+    </Layout>
   );
 };

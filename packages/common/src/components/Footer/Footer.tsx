@@ -1,10 +1,14 @@
 import React from 'react';
-import { Link } from 'gatsby';
+import { Link as BaseLink } from '../Link';
 import { P } from '../Typography';
 import { GitHub, Spectrum, Twitter } from '../icons';
 import { Container, Nav, Social } from './elements';
 
-export const Footer = () => (
+interface IFooterProps {
+  Link?: React.ElementType;
+}
+
+export const Footer: React.FC<IFooterProps> = ({ Link = BaseLink }) => (
   <Container>
     <Nav>
       <ul>

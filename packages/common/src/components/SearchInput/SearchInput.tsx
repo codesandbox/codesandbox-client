@@ -1,6 +1,6 @@
 import React from 'react';
 import { unstable_useFormState as useFormState } from 'reakit/Form';
-import { GoSearch } from 'react-icons/go';
+import GoSearch from 'react-icons/go/search';
 import { SearchForm, SearchButton, Input } from './elements';
 
 export const SearchInput: React.FC = props => {
