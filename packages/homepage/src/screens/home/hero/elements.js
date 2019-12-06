@@ -32,6 +32,8 @@ export const EditorElement = styled.img`
 
 export const HeroWrapper = styled.section`
   position: relative;
+  display: flex;
+  justify-content: center;
 
   text-align: center;
   overflow: hidden;
@@ -53,7 +55,6 @@ export const SignUp = styled.p`
   text-align: center;
   margin-top: 0.5rem;
   color: #999;
-  margin-bottom: 2.5rem;
 `;
 
 export const Border = styled.div`
