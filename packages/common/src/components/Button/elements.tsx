@@ -1,10 +1,12 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
+import React, { ComponentProps } from 'react';
 import { Link } from 'react-router-dom';
-import { Button as ReakitButton } from 'reakit/Button';
+import { Button as ReakitButtonBase } from 'reakit/Button';
+import styled, { css } from 'styled-components';
+
 import theme from '../../theme';
-import { IButtonProps } from '.';
 import { withoutProps } from '../../utils';
+
+import { Button } from '.';
 
 export type OptionProps = {
   theme: any;
@@ -102,7 +104,7 @@ const getBorder = ({
   return '2px solid #66B9F4';
 };
 
-export const styles = css<IButtonProps | any>`
+export const styles = css<ComponentProps<typeof Button> | any>`
   transition: 0.3s ease all;
   font-family: Poppins, Roboto, sans-serif;
 
@@ -160,6 +162,6 @@ export const LinkButton = styled(withoutProps(`small`)(Link))`
 export const AButton = styled(withoutProps(`small`)(props => <a {...props} />))`
   ${styles};
 `;
-export const Button = styled(withoutProps(`small`)(ReakitButton))`
+export const ReakitButton = styled(withoutProps(`small`)(ReakitButtonBase))`
   ${styles}
 `;

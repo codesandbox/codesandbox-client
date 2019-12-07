@@ -1,15 +1,19 @@
-import styled, { css } from 'styled-components';
+import { ComponentProps } from 'react';
+import { Button as ReakitButton } from 'reakit/Button';
 import { Group } from 'reakit/Group';
-import { Button } from 'reakit/Button';
 import { Menu, MenuItem, MenuDisclosure } from 'reakit/Menu';
-import { IButtonProps, buttonStyles } from '../Button';
+import styled, { css } from 'styled-components';
+
+import { Button, buttonStyles } from '../Button';
 
 export const Container = styled(Group)`
   position: relative;
   display: flex;
 `;
 
-export const PrimaryAction = styled(Button)<IButtonProps>`
+export const PrimaryAction = styled(ReakitButton)<
+  ComponentProps<typeof Button>
+>`
   ${({ block }) => css`
     ${buttonStyles};
     justify-content: center;
@@ -21,7 +25,9 @@ export const PrimaryAction = styled(Button)<IButtonProps>`
   `}
 `;
 
-export const ToggleActionsList = styled(MenuDisclosure)<IButtonProps>`
+export const ToggleActionsList = styled(MenuDisclosure)<
+  ComponentProps<typeof Button>
+>`
   ${buttonStyles};
   justify-content: center;
   width: 32px;

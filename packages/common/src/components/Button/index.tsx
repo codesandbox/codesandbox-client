@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { LinkButton, AButton, Button as ButtonBase, styles } from './elements';
+import { LinkButton, AButton, ReakitButton, styles } from './elements';
 
 type Props = {
   to?: string;
@@ -28,7 +28,7 @@ const Button: FunctionComponent<Props> = ({ style = {}, ...props }) => {
     return <AButton {...props} style={style} />;
   }
 
-  return <ButtonBase {...props} style={style} />;
+  return <ReakitButton {...props} style={style} />;
 };
 
 export { Button, styles as buttonStyles };
