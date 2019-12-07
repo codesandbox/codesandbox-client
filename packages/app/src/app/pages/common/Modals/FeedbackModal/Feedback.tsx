@@ -19,7 +19,7 @@ import {
 } from './elements';
 
 type Props = {
-  id: string;
+  id?: string;
   user?: CurrentUser;
 };
 const Feedback: FunctionComponent<Props> = ({ id, user }) => {
@@ -49,7 +49,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
     setLoading(true);
 
     pushToAirtable({
-      sandboxId: id,
+      sandboxId: id || '',
       feedback,
       emoji,
       username: (user || {}).username,
