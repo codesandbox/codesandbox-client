@@ -19,13 +19,13 @@ import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
+import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 
-import { debounce } from 'lodash-es';
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
-  initializeCustomTheme,
   initializeCodeSandboxTheme,
+  initializeCustomTheme,
   initializeExtensionsFolder,
   initializeSettings,
   initializeThemeCache,
@@ -119,6 +119,13 @@ export class VSCodeEffect {
     this.onSelectionChangeDebounced = debounce(options.onSelectionChange, 500);
 
     this.prepareElements();
+
+    // We instantly create a sandbox sync, as we want our
+    // extension host to get its messages handled to initialize
+    // correctly
+    this.sandboxFsSync = new SandboxFsSync({
+      getSandboxFs: () => ({}),
+    });
 
     import(
       // @ts-ignore
@@ -285,8 +292,6 @@ export class VSCodeEffect {
   public async changeSandbox(sandbox: Sandbox, setFs: (fs: SandboxFs) => void) {
     await this.initialized;
 
-    const isFirstSync = !this.sandboxFsSync;
-
     if (this.modelsHandler) {
       this.modelsHandler.dispose();
     }
@@ -306,15 +311,10 @@ export class VSCodeEffect {
 
     setFs(this.sandboxFsSync.create(sandbox));
 
-    // We do not stop the extension host on first sync
-    if (isFirstSync) {
-      this.sandboxFsSync.sync(() => {});
-    } else {
-      this.editorApi.extensionService.stopExtensionHost();
-      this.sandboxFsSync.sync(() => {
-        this.editorApi.extensionService.startExtensionHost();
-      });
-    }
+    this.editorApi.extensionService.stopExtensionHost();
+    this.sandboxFsSync.sync(() => {
+      this.editorApi.extensionService.startExtensionHost();
+    });
   }
 
   public async setModuleCode(module: Module) {
