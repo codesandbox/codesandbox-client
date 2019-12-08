@@ -1,17 +1,14 @@
-import React, { useEffect } from 'react';
-import { Navigation } from 'app/pages/common/Navigation';
+import React, { FunctionComponent, useEffect } from 'react';
+
 import { useOvermind } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
+
 import { Container } from './elements';
 import { Prompt } from './Prompt';
 
-interface CliProps {
-  small: boolean;
-}
-
-const CLI: React.FunctionComponent<CliProps> = ({ small }) => {
+export const CLI: FunctionComponent = () => {
   const {
-    state: { user, authToken, isLoadingCLI, error },
-    actions: { cliMounted, signInCliClicked },
+    actions: { cliMounted },
   } = useOvermind();
 
   useEffect(() => {
@@ -22,16 +19,7 @@ const CLI: React.FunctionComponent<CliProps> = ({ small }) => {
     <Container>
       <Navigation title="CLI Authorization" />
 
-      <Prompt
-        error={error}
-        loading={isLoadingCLI}
-        signIn={signInCliClicked}
-        token={authToken}
-        username={user && user.username}
-      />
+      <Prompt />
     </Container>
   );
 };
-
-// eslint-disable-next-line import/no-default-export
-export default CLI;
