@@ -17,7 +17,7 @@ export const PaymentInfo: FunctionComponent = () => {
       preferences: {
         isLoadingPaymentDetails,
         paymentDetailError,
-        paymentDetails: { brand, last4, name },
+        paymentDetails,
       },
     },
   } = useOvermind();
@@ -43,14 +43,14 @@ export const PaymentInfo: FunctionComponent = () => {
       <div>
         <Subheading>Current card</Subheading>
 
-        <Card brand={brand} last4={last4} name={name} />
+        <Card brand={paymentDetails.brand} last4={paymentDetails.last4} name={paymentDetails.name} />
 
         <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
 
         <SubscribeForm
           buttonName="Update"
           loadingText="Updating Card Info..."
-          name={name}
+          name={paymentDetails.name}
           subscribe={updatePaymentDetails}
         />
       </div>
