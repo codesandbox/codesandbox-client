@@ -1,18 +1,19 @@
-import React from 'react';
+import Row from '@codesandbox/common/lib/components/flex/Row';
+import React, { FunctionComponent } from 'react';
+
 import { useOvermind } from 'app/overmind';
 
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Row from '@codesandbox/common/lib/components/flex/Row';
+import { Button, Container, Explanation, Heading } from './elements';
 
-import { Container, Heading, Explanation } from './elements';
-
-export const SignOutNotice = () => {
+export const SignOutNoticeModal: FunctionComponent = () => {
   const {
     actions: { modalClosed, signInClicked },
   } = useOvermind();
+
   return (
     <Container>
       <Heading>You have been signed out</Heading>
+
       <Explanation>
         CodeSandbox has migrated to a system where authorization tokens can be
         managed and revoked, and we had to sign everyone out for this.
@@ -23,21 +24,11 @@ export const SignOutNotice = () => {
       </Explanation>
 
       <Row justifyContent="space-around">
-        <Button
-          block
-          style={{ marginRight: '.5rem' }}
-          red
-          onClick={() => {
-            modalClosed();
-          }}
-        >
+        <Button block onClick={() => modalClosed()} red>
           Close
         </Button>
-        <Button
-          block
-          style={{ marginLeft: '.5rem' }}
-          onClick={() => signInClicked({ useExtraScopes: false })}
-        >
+
+        <Button block onClick={() => signInClicked({ useExtraScopes: false })}>
           Sign in
         </Button>
       </Row>
