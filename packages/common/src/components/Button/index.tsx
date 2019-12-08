@@ -1,7 +1,8 @@
-import React from 'react';
-import { LinkButton, AButton, Button, styles } from './elements';
+import React, { FunctionComponent } from 'react';
 
-export interface IButtonProps {
+import { LinkButton, AButton, ReakitButton, styles } from './elements';
+
+type Props = {
   to?: string;
   href?: string;
   big?: boolean;
@@ -9,7 +10,6 @@ export interface IButtonProps {
   style?: React.CSSProperties;
   block?: boolean;
   onClick?: (event: React.MouseEvent) => void;
-  children?: React.ReactNode;
   disabled?: boolean;
   type?: 'button' | 'reset' | 'submit';
   danger?: boolean;
@@ -17,21 +17,18 @@ export interface IButtonProps {
   red?: boolean;
   target?: string;
   rel?: string;
-}
-
-function ButtonComponent({ style = {}, ...props }: IButtonProps) {
+};
+const Button: FunctionComponent<Props> = ({ style = {}, ...props }) => {
   // Link
   if (typeof props.to === 'string') {
-    return <LinkButton style={style} to={props.to} {...props} />;
+    return <LinkButton {...props} style={style} to={props.to} />;
   }
 
   if (props.href) {
-    // @ts-ignore
-    return <AButton style={style} {...props} />;
+    return <AButton {...props} style={style} />;
   }
 
-  // @ts-ignore
-  return <Button style={style} {...props} />;
-}
+  return <ReakitButton {...props} style={style} />;
+};
 
-export { ButtonComponent as Button, styles as buttonStyles };
+export { Button, styles as buttonStyles };
