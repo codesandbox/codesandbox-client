@@ -14,9 +14,9 @@ import {
 import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { json } from 'overmind';
 
-import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { WAIT_INITIAL_TYPINGS_MS } from '../constants';
 import { appendFile, mkdir, rename, rmdir, unlink, writeFile } from './utils';
 
@@ -286,7 +286,7 @@ class SandboxFsSync {
       try {
         browserFs.stat('/sandbox/package.json', (packageJsonError, stat) => {
           if (packageJsonError) {
-            reject(packageJsonError);
+            resolve(null);
             return;
           }
 
@@ -294,7 +294,7 @@ class SandboxFsSync {
             '/sandbox/package.json',
             async (packageJsonReadError, rv) => {
               if (packageJsonReadError) {
-                reject(packageJsonReadError);
+                resolve(null);
                 return;
               }
 
@@ -417,12 +417,17 @@ class SandboxFsSync {
 
     kids.forEach(kid => {
       const path = join(dir, kid);
-      const lstat = browserFs.lstatSync(path);
 
-      if (lstat.isDirectory()) {
-        this.clearSandboxFiles(path);
-      } else {
-        browserFs.unlinkSync(path);
+      try {
+        const lstat = browserFs.lstatSync(path);
+
+        if (lstat.isDirectory()) {
+          this.clearSandboxFiles(path);
+        } else {
+          browserFs.unlinkSync(path);
+        }
+      } catch {
+        // Do nothing
       }
     });
 
