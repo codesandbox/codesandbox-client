@@ -1,13 +1,11 @@
 import React from 'react';
 import history from 'app/utils/history';
 import { useOvermind } from 'app/overmind';
-import { Route } from 'react-router-dom';
+import { withRouter, Route } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import PeopleIcon from 'react-icons/lib/md/people';
-
-// @ts-ignore
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
@@ -18,7 +16,7 @@ import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
 import { TEAMS_QUERY } from '../queries';
 import { TemplateItem } from './TemplateItem';
 
-const Sidebar = () => {
+const SidebarComponent = () => {
   const {
     state: { dashboard: dashboardState },
     actions: { dashboard: dashboardAction },
@@ -59,71 +57,56 @@ const Sidebar = () => {
 
           return (
             <>
-              {({ store: innerStore }) => (
-                <>
-                  <Items style={{ marginBottom: '1rem' }}>
-                    <Item
-                      Icon={DashboardIcon}
-                      path="/dashboard/recent"
-                      name="Overview"
-                    />
+              <Items style={{ marginBottom: '1rem' }}>
+                <Item
+                  Icon={DashboardIcon}
+                  path="/dashboard/recent"
+                  name="Overview"
+                />
 
-                    <SandboxesItem
-                      selectedSandboxes={innerStore.dashboard.selectedSandboxes}
-                      currentPath={path}
-                      currentTeamId={currentTeamId}
-                      openByDefault
-                    />
+                <SandboxesItem
+                  selectedSandboxes={dashboardState.selectedSandboxes}
+                  currentPath={path}
+                  currentTeamId={currentTeamId}
+                  openByDefault
+                />
 
-                    <TemplateItem currentPath={path} />
+                <TemplateItem currentPath={path} />
 
-                    <TrashItem currentPath={path} />
-                  </Items>
+                <TrashItem currentPath={path} />
+              </Items>
 
-                  <Query query={TEAMS_QUERY}>
-                    {({ loading, data, error }) => {
-                      if (loading) {
-                        return null;
-                      }
+              <Query query={TEAMS_QUERY}>
+                {({ loading, data, error }) => {
+                  if (loading || error || !data.me || !(data && data.me)) {
+                    return null;
+                  }
 
-                      if (error || !data.me) {
-                        return null;
-                      }
+                  const { teams = [] } = data.me;
 
-                      if (!(data && data.me)) {
-                        return null;
-                      }
+                  return teams.map(({ id, name }) => (
+                    <div key={id}>
+                      <Items>
+                        <CategoryHeader>{name}</CategoryHeader>
+                        <Item
+                          Icon={PeopleIcon}
+                          path={teamOverviewUrl(id)}
+                          name="Team Overview"
+                        />
 
-                      const { teams = [] } = data.me;
+                        <SandboxesItem
+                          selectedSandboxes={dashboardState.selectedSandboxes}
+                          currentPath={path}
+                          currentTeamId={currentTeamId}
+                          teamId={id}
+                        />
 
-                      return teams.map(({ id, name }) => (
-                        <div key={id}>
-                          <Items>
-                            <CategoryHeader>{name}</CategoryHeader>
-                            <Item
-                              Icon={PeopleIcon}
-                              path={teamOverviewUrl(id)}
-                              name="Team Overview"
-                            />
-
-                            <SandboxesItem
-                              whatTheFuck
-                              selectedSandboxes={
-                                dashboardState.selectedSandboxes
-                              }
-                              currentPath={path}
-                              currentTeamId={currentTeamId}
-                              teamId={id}
-                            />
-
-                            <TemplateItem currentPath={path} teamId={id} />
-                          </Items>
-                        </div>
-                      ));
-                    }}
-                  </Query>
-                </>
-              )}
+                        <TemplateItem currentPath={path} teamId={id} />
+                      </Items>
+                    </div>
+                  ));
+                }}
+              </Query>
             </>
           );
         }}
@@ -142,5 +125,4 @@ const Sidebar = () => {
     </SidebarStyled>
   );
 };
-
-export default Sidebar;
+export const Sidebar = withRouter(SidebarComponent);
