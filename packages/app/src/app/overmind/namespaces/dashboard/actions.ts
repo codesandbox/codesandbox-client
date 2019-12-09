@@ -75,7 +75,7 @@ export const deleteTemplate: AsyncAction<{
   templateId: string;
 }> = async ({ actions, effects }, { sandboxId, templateId }) => {
   try {
-    effects.analytics.track('Template - Removed', { source: 'editor' });
+    effects.analytics.track('Template - Removed', { source: 'Context Menu' });
     await effects.api.deleteTemplate(sandboxId, templateId);
     actions.modalClosed();
     effects.notificationToast.success('Template Deleted');
