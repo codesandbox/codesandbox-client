@@ -1,8 +1,7 @@
 import styled, { css } from 'styled-components';
 import { Group } from 'reakit/Group';
-import { Button } from 'reakit/Button';
 import { Menu, MenuItem, MenuDisclosure } from 'reakit/Menu';
-import { IButtonProps, buttonStyles } from '../Button';
+import { Button, IButtonProps } from '../Button';
 
 export const Container = styled(Group)`
   position: relative;
@@ -11,7 +10,6 @@ export const Container = styled(Group)`
 
 export const PrimaryAction = styled(Button)<IButtonProps>`
   ${({ block }) => css`
-    ${buttonStyles};
     justify-content: center;
     width: ${block ? '100%' : 'inherit'};
     border-radius: 0;
@@ -21,8 +19,9 @@ export const PrimaryAction = styled(Button)<IButtonProps>`
   `}
 `;
 
-export const ToggleActionsList = styled(MenuDisclosure)<IButtonProps>`
-  ${buttonStyles};
+export const ToggleActionsList = styled(Button).attrs({
+  as: MenuDisclosure,
+})<IButtonProps>`
   justify-content: center;
   width: 32px;
   height: 32px;
@@ -46,19 +45,20 @@ export const ActionsList = styled(Menu).attrs({
     transform: 'none',
   },
 })`
-  display: flex;
-  flex-direction: column;
-  width: max-content;
-  min-width: 100%;
-  margin-top: -2px;
-  border-radius: 2px;
-  background-color: ${props =>
-    props.theme['menu.background'] || props.theme.background4};
-  box-shadow: rgba(0, 0, 0, 0.75) 0px 3px 8px;
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    min-width: 100%;
+    margin-top: -2px;
+    border-radius: 2px;
+    background-color: ${theme['menu.background'] || theme.background4};
+    box-shadow: rgba(0, 0, 0, 0.75) 0px 3px 8px;
 
-  &:focus {
-    outline: none !important;
-  }
+    &:focus {
+      outline: none !important;
+    }
+  `}
 `;
 
 export const SecondaryAction = styled(MenuItem)<{ disabled?: boolean }>`

@@ -114,12 +114,12 @@ export const BookmarkTemplateButton = ({ style }: IBookmarkTemplateButton) => {
             : `Bookmark Template`
         }
       >
-        {bookmarkInfos.map(({ entity: { name } }, i: number) => (
+        {(bookmarkInfos as any).map(({ entity: { name } }, i: number) => (
           <button
             type="button"
             key={name}
             // @ts-ignore
-            onClick={(e, menu) => {
+            onClick={(e: React.MouseEventHandler, menu) => {
               // TODO: find a way to pass menu so we can close it after handling our action
               handleToggleFollow(i);
               menu.hide();

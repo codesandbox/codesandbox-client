@@ -116,7 +116,7 @@ export const Import = () => {
             <ButtonContainer>
               <Button
                 small
-                style={{ fontSize: 11 }}
+                css="font-size: 11"
                 onClick={() => {
                   copyToClipboard(transformedUrl);
                 }}
@@ -126,7 +126,7 @@ export const Import = () => {
               </Button>
               <Button
                 small
-                style={{ fontSize: 11 }}
+                css="font-size: 11"
                 disabled={!transformedUrl}
                 to={gitHubToSandboxUrl(url)}
               >
@@ -159,7 +159,7 @@ export const Import = () => {
               <SignInButton />
             ) : (
               <StackbitButton
-                style={{ fontSize: 11 }}
+                css="font-size: 11"
                 username={state.user.username}
               />
             )}
