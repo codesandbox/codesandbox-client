@@ -65,18 +65,10 @@ export class WorkspaceItem extends React.Component<Props, State> {
         <ReactShow
           style={{
             height: 'auto',
-            overflow: showOverflow ? 'initial' : 'hidden',
+            overflow: showOverflow ? 'auto' : 'hidden',
           }}
           transitionOnMount
-          start={
-            open
-              ? null
-              : {
-                  height: 0, // The starting style for the component.
-
-                  // If the 'leave' prop isn't defined, 'start' is reused!
-                }
-          }
+          start={open ? null : { height: 0 }}
           show={open}
           duration={250}
           stayMounted={keepState}

@@ -14,6 +14,8 @@ export const Button = styled(PopoverDisclosure)<{ color: string }>`
 export const IconWrapper = styled(Popover)`
   padding: 10px;
   background: ${props => props.theme['sideBar.background']};
+  /* because of reakit i have to override :( */
+  transform: translateX(-86%) translateY(-104%) !important;
   border: 1px solid
     ${({ theme }) =>
       theme['sideBar.foreground'] ||

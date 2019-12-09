@@ -46,6 +46,6 @@ export const PickColor = styled.button.attrs<{ color: string }>({
 
 export const PickerContainer = styled.div`
   position: absolute;
-  right: 0;
+  transform: translateX(calc(-100% + 40px));
   bottom: calc(100% + 8px);
 `;

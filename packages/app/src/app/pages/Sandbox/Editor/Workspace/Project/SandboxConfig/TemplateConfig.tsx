@@ -1,5 +1,6 @@
 import * as templates from '@codesandbox/common/lib/templates';
-import React, { FunctionComponent, useRef, useState } from 'react';
+import React, { FunctionComponent, useRef, useState, useEffect } from 'react';
+import { Portal } from 'reakit';
 import { SketchPicker } from 'react-color';
 import { Link } from 'react-router-dom';
 import { useClickAway } from 'react-use';
@@ -29,6 +30,18 @@ export const TemplateConfig: FunctionComponent = () => {
   const [selectedColor, setSelectedColor] = useState(
     () => customTemplate.color || templates.default(template).color()
   );
+  const [style, setStyle] = useState({ x: 0, y: 0 });
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (ref && ref.current) {
+      const styles = ref.current.getBoundingClientRect();
+      setStyle({
+        x: styles.x,
+        y: styles.y,
+      });
+    }
+  }, [ref]);
 
   const colors = Object.keys(templates)
     .filter(x => x !== 'default')
@@ -59,23 +72,34 @@ export const TemplateConfig: FunctionComponent = () => {
 
         <PropertyValue relative>
           <PickColor
-            onClick={() => setShowPicker(true)}
+            onClick={() => setShowPicker(!showPicker)}
             color={selectedColor}
+            ref={ref}
           />
-
-          {showPicker && (
-            <PickerContainer ref={picker}>
-              <SketchPicker
-                disableAlpha
-                id="color"
-                onChangeComplete={(color: { hex: string }) =>
-                  setSelectedColor(color.hex)
-                }
-                color={selectedColor}
-                presetColors={[...new Set(colors)]}
-              />
-            </PickerContainer>
-          )}
+          <Portal>
+            {showPicker && (
+              <div
+                style={{
+                  position: 'fixed',
+                  zIndex: 11,
+                  top: style.y,
+                  left: style.x,
+                }}
+              >
+                <PickerContainer ref={picker}>
+                  <SketchPicker
+                    disableAlpha
+                    id="color"
+                    onChangeComplete={(color: { hex: string }) =>
+                      setSelectedColor(color.hex)
+                    }
+                    color={selectedColor}
+                    presetColors={[...new Set(colors)]}
+                  />
+                </PickerContainer>
+              </div>
+            )}
+          </Portal>
         </PropertyValue>
       </Item>
 
