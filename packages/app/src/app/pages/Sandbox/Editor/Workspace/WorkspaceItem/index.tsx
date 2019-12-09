@@ -65,7 +65,7 @@ export class WorkspaceItem extends React.Component<Props, State> {
         <ReactShow
           style={{
             height: 'auto',
-            overflow: showOverflow ? 'initial' : 'hidden',
+            overflow: showOverflow && open ? 'initial' : 'hidden',
           }}
           transitionOnMount
           start={
