@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import Input from '@codesandbox/common/lib/components/Input';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import InputBase from '@codesandbox/common/lib/components/Input';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   height: 100%;
@@ -10,7 +10,7 @@ export const Container = styled.div`
 
 export const Content = styled(Centered)`
   max-width: 50em;
-  margin: auto;
+  margin: 5rem auto auto;
 `;
 
 export const Wrapper = styled.div`
@@ -28,12 +28,14 @@ export const Description = styled.div`
   margin-bottom: 1rem;
 `;
 
-export const StyledInput = styled(Input)`
+export const Input = styled(InputBase)`
   font-size: 1.25rem;
   margin-bottom: 2rem;
 `;
 
 export const ErrorMessage = styled.div`
-  color: ${props => props.theme.red};
-  margin-bottom: 2rem;
+  ${({ theme }) => css`
+    color: ${theme.red};
+    margin-bottom: 2rem;
+  `};
 `;
