@@ -1377,6 +1377,14 @@
         "code"
       ]
     },
+    {      "login": "NabeelahY",
+      "name": "Nabeelah",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/35764602?v=4",
+      "profile": "https://github.com/NabeelahY",
+            "contributions": [
+        "code"
+      ]
+      },
     {
       "login": "vanya829",
       "name": "vanya829",
@@ -1461,5 +1469,6 @@
     }
   ],
   "contributorsPerLine": 7,
-  "commitConvention": "none"
+  "commitConvention": "none",
+  "skipCi": true
 }
