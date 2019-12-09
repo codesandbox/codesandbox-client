@@ -5,8 +5,10 @@ import { useQuery } from '@apollo/react-hooks';
 
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import { ContextMenu } from 'app/components/ContextMenu';
+import { useOvermind } from 'app/overmind';
 import history from 'app/utils/history';
 import track from '@codesandbox/common/lib/utils/analytics';
+import theme from '@codesandbox/common/lib/theme';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
@@ -25,8 +27,13 @@ import { Navigation } from '../Navigation';
 type TemplatesProps = RouteComponentProps<{ teamId: string }> & {};
 
 export const Templates = (props: TemplatesProps) => {
+  const {
+    actions: {
+      dashboard: { deleteTemplate },
+    },
+  } = useOvermind();
   const { teamId } = props.match.params;
-  const { loading, error, data } = useQuery<
+  const { loading, error, data, refetch } = useQuery<
     ListTemplatesQuery,
     ListTemplatesQueryVariables
   >(LIST_OWNED_TEMPLATES, {
@@ -84,13 +91,26 @@ export const Templates = (props: TemplatesProps) => {
         {sortedTemplates.map((template, i) => (
           <ContextMenu
             items={[
+              [
+                {
+                  title: 'Convert to Sandbox',
+                  action: () => {
+                    track('Template - Removed', { source: 'Context Menu' });
+                    unmakeTemplates([template.sandbox.id], teamId);
+                    return true;
+                  },
+                },
+              ],
               {
-                title: 'Convert to Sandbox',
+                title: `Delete Template`,
                 action: () => {
-                  track('Template - Removed', { source: 'Context Menu' });
-                  unmakeTemplates([template.sandbox.id], teamId);
+                  deleteTemplate({
+                    sandboxId: template.sandbox.id,
+                    templateId: template.id,
+                  }).then(() => refetch());
                   return true;
                 },
+                color: theme.red.darken(0.2)(),
               },
             ]}
             key={template.id}
