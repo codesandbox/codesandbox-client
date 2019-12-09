@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Dependencies } from '../../Dependencies';
-import Files from '../../Files';
 import { SandboxInfo } from './SandboxInfo';
 import { BookmarkTemplateButton } from '../../Project/BookmarkTemplateButton';
+import { Files } from '../../Files';
 import { WorkspaceItem } from '../../WorkspaceItem';
 
 export const NotOwnedSandboxInfo = () => {
