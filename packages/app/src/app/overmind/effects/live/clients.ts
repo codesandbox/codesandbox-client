@@ -47,10 +47,6 @@ class CodeSandboxOTClient extends Client {
     this.onApplyOperation(operation);
   }
 
-  serverReconnect() {
-    super.serverReconnect();
-  }
-
   serverAck() {
     super.serverAck();
   }
@@ -61,6 +57,10 @@ class CodeSandboxOTClient extends Client {
 
   applyServer(operation: any) {
     super.applyServer(operation);
+  }
+
+  serverReconnect() {
+    super.serverReconnect();
   }
 }
 

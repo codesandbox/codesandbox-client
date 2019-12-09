@@ -91,22 +91,22 @@ export const ActionA = styled.a<OptionProps>`
 export const ActionTooltip = styled(Tooltip)<
   OptionProps & { disabledAction?: boolean }
 >`
-  ${({ disabledAction, theme }) => css`
-    ${styles};
-    ${disabledAction &&
-      css`
-        color: ${theme.light
-          ? css`rgba(0,0,0,0.3)`
-          : css`rgba(255,255,255,0.3)`};
-        cursor: default;
+  ${styles};
 
-        &:hover {
-          color: ${theme.light
-            ? css`rgba(0,0,0,0.4)`
-            : css`rgba(255,255,255,0.4)`};
-        }
-      `};
-  `}
+  ${props =>
+    props.disabledAction &&
+    css`
+      color: ${props.theme.light
+        ? css`rgba(0,0,0,0.3)`
+        : css`rgba(255,255,255,0.3)`};
+      cursor: default;
+
+      &:hover {
+        color: ${props.theme.light
+          ? css`rgba(0,0,0,0.4)`
+          : css`rgba(255,255,255,0.4)`};
+      }
+    `};
 `;
 
 export const IconContainer = styled.div`

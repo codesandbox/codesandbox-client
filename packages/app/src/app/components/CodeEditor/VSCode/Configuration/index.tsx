@@ -2,15 +2,13 @@ import { ConfigurationFile } from '@codesandbox/common/lib/templates/configurati
 import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import theme from '@codesandbox/common/lib/theme';
 import { Module } from '@codesandbox/common/lib/types';
+import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+import getType from 'app/utils/get-type';
 import { TextOperation } from 'ot';
 import React from 'react';
 
-import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/utils/get-type';
-
-import { Props as EditorProps, Editor } from '../../types'; // eslint-disable-line
-
-import { Container, Title, Description } from './elements';
+import { Editor, Props as EditorProps } from '../../types'; // eslint-disable-line
+import { Container, Description, Title } from './elements';
 
 type Disposable = {
   dispose: () => void;
@@ -18,6 +16,7 @@ type Disposable = {
 
 type Props = EditorProps & {
   config: ConfigurationFile;
+  onChange: (code: string, moduleShortid: string) => void;
   toggleConfigUI: () => void;
   onDidChangeDirty: (cb: () => void) => Disposable;
   getCode: () => string;

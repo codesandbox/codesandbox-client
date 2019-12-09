@@ -18,7 +18,7 @@ async function fetchWithRetries(url: string) {
   throw err;
 }
 
-async function fetchPackageJSON(dep: string, version: string) {
+export async function fetchPackageJSON(dep: string, version: string) {
   try {
     return await fetchWithRetries(
       `https://unpkg.com/${dep}@${encodeURIComponent(version)}/package.json`
@@ -32,14 +32,16 @@ async function fetchPackageJSON(dep: string, version: string) {
   }
 }
 
+export function isAbsoluteVersion(version: string) {
+  const isAbsolute = /^\d+\.\d+\.\d+$/.test(version);
+
+  return isAbsolute || /\//.test(version);
+}
+
 export async function getAbsoluteDependencies(dependencies: Object) {
-  const nonAbsoluteDependencies = Object.keys(dependencies).filter(dep => {
-    const version = dependencies[dep];
-
-    const isAbsolute = /^\d+\.\d+\.\d+$/.test(version);
-
-    return !isAbsolute && !/\//.test(version);
-  });
+  const nonAbsoluteDependencies = Object.keys(dependencies).filter(
+    dep => !isAbsoluteVersion(dependencies[dep])
+  );
 
   const newDependencies = { ...dependencies };
 

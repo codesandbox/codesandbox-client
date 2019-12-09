@@ -11,34 +11,32 @@ interface Props {
   toggleTemplate: (name: string, selected: boolean) => void;
 }
 
-export const Option = React.forwardRef<HTMLDivElement, Props>(
-  ({ color, id, style, niceName, selected, toggleTemplate, ...props }, ref) => {
-    const checkBoxName = `${id}-checkbox`;
-    return (
-      <Container
-        as="li"
-        {...props}
-        ref={ref}
-        selected={selected}
-        onClick={e => {
-          e.preventDefault();
-          toggleTemplate(id, !selected);
-        }}
-        style={style}
-        aria-label={`${checkBoxName} ${selected ? 'selected' : ''}`}
-      >
-        <CheckBox
-          tabIndex={0}
-          aria-checked={selected}
-          role="checkbox"
-          id={checkBoxName}
-          color={color}
-          selected={selected}
-        />
-        <OptionName htmlFor={checkBoxName} style={{ fontWeight: 500 }}>
-          {niceName}
-        </OptionName>
-      </Container>
-    );
-  }
-);
+export const Option = ({
+  color,
+  id,
+  style,
+  niceName,
+  selected,
+  toggleTemplate,
+}: Props) => {
+  const checkBoxName = `${id}-checkbox`;
+  return (
+    <Container
+      selected={selected}
+      onClick={e => {
+        e.preventDefault();
+        toggleTemplate(id, !selected);
+      }}
+      onMouseDown={e => {
+        e.preventDefault();
+      }}
+      style={style}
+    >
+      <label htmlFor={checkBoxName} style={{ display: 'none' }}>
+        {checkBoxName}
+      </label>
+      <CheckBox id={checkBoxName} color={color} selected={selected} />
+      <OptionName style={{ fontWeight: 500 }}>{niceName}</OptionName>
+    </Container>
+  );
+};

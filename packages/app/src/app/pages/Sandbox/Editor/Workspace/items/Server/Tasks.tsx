@@ -37,13 +37,11 @@ const Task = styled.button`
 `;
 
 type Props = {
-  package:
-    | {
-        scripts: {
-          [command: string]: string;
-        };
-      }
-    | undefined;
+  package?: {
+    scripts?: {
+      [command: string]: string;
+    };
+  };
 };
 
 // These scripts are only supposed to run on the main thread.
@@ -73,7 +71,7 @@ export class Tasks extends React.PureComponent<Props> {
   };
 
   render() {
-    if (!this.props.package || !this.props.package.scripts) {
+    if (!this.props.package?.scripts) {
       return null;
     }
 

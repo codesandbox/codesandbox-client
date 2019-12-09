@@ -1,8 +1,7 @@
+import { useOvermind } from 'app/overmind';
+import saveAllModules from 'app/overmind/utils/saveAllModules';
 import React, { FunctionComponent } from 'react';
 import SaveIcon from 'react-icons/lib/md/save';
-
-import { useOvermind } from 'app/overmind';
-import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import { Action } from './Action';
 

@@ -1,9 +1,11 @@
 import 'jest-styled-components';
 import React from 'react';
+
 import { noop } from '../../test/mocks';
 import mountWithTheme from '../../test/themeMount';
-import Preference from '.';
 import { KEYBINDINGS } from '../../utils/keybindings';
+
+import { Preference } from '.';
 
 const keyBindingKeys = Object.keys(KEYBINDINGS);
 

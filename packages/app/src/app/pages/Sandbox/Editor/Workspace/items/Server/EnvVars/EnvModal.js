@@ -64,6 +64,7 @@ export const EnvModal = props => {
         )}
 
         <Button
+          onClick={onSubmit}
           style={{ flex: 1, marginLeft: props.onCancel ? '.25rem' : 0 }}
           block
           disabled={!name || !value || errorMessage}

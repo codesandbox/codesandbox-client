@@ -20,9 +20,7 @@ export const Container = styled.div<{ hideFilters: boolean }>`
 export const TemplatesName = styled.span`
   transition: 0.3s ease color;
   color: rgba(255, 255, 255, 0.8);
-  appearance: none !important;
-  background: none;
-  border: none;
+
   cursor: pointer;
 
   &:hover {
@@ -48,13 +46,12 @@ export const OverlayContainer = styled.div`
   background-color: ${props => props.theme.background};
 `;
 
-export const OptionName = styled.label`
+export const OptionName = styled.span`
   font-weight: 600;
   cursor: pointer;
 `;
 
 export const Option = styled.div<{ selected: boolean }>`
-  list-style: none;
   transition: 0.3s ease color;
   cursor: pointer;
   color: ${props =>

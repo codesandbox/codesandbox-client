@@ -31,7 +31,7 @@ From there they can accept or refuse the invitation.
 As a team you have a sidebar item called "Our Sandboxes" with directories, just
 like your personal sandboxes. You can create new sandboxes directly from here,
 or you can drag your own sandboxes from 'My Sandboxes' to 'Our Sandboxes'. All
-sandboxes in a team can be seen and edited by all team member. We still keep
+sandboxes in a team can be seen and edited by all team members. We still keep
 track of who originally created the sandbox though, this means that only the
 original creator of the sandbox can actually delete it.
 

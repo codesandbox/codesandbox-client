@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import SyncIcon from 'react-icons/lib/go/sync';
 
 export const Container = styled.div`
@@ -49,13 +49,9 @@ export const TestData = styled.div`
 `;
 
 export const SyncIconStyled = styled(SyncIcon)<{ watching: boolean }>`
-  opacity: 0.7;
-  color: ${props => props.theme['button.hoverBackground']};
-  ${props =>
-    props.watching &&
-    css`
-      opacity: 1;
-    `}
+  && {
+    opacity: ${props => (props.watching ? 1 : undefined)};
+  }
 `;
 
 export const Actions = styled.div`
@@ -69,7 +65,6 @@ export const Actions = styled.div`
     cursor: pointer;
     opacity: 0.8;
     color: ${props => props.theme['button.hoverBackground']};
-
     margin-left: 0.5rem;
 
     &:hover {

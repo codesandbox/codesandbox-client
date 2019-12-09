@@ -1,18 +1,19 @@
-import { Socket } from 'phoenix';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import uuid from 'uuid';
-import { TextOperation } from 'ot';
-import { camelizeKeys } from 'humps';
 import {
-  Module,
   Directory,
+  LiveMessageEvent,
+  Module,
   RoomInfo,
   Sandbox,
-  LiveMessageEvent,
 } from '@codesandbox/common/lib/types';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import clientsFactory from './clients';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import { camelizeKeys } from 'humps';
+import { TextOperation } from 'ot';
+import { Socket } from 'phoenix';
+import uuid from 'uuid';
+
+import { SandboxAPIResponse } from '../api/types';
 import { transformSandbox } from '../utils/sandbox';
+import clientsFactory from './clients';
 
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
@@ -21,10 +22,14 @@ type Options = {
 
 type JoinChannelResponse = {
   sandboxId: string;
-  sandbox: Sandbox;
+  sandbox: SandboxAPIResponse;
   moduleState: object;
   liveUserId: string;
   roomInfo: RoomInfo;
+};
+
+type JoinChannelTransformedResponse = JoinChannelResponse & {
+  sandbox: Sandbox;
 };
 
 declare global {
@@ -69,7 +74,8 @@ export default {
   },
   connect() {
     if (!_socket) {
-      _socket = new Socket(`wss://${location.host}/socket`, {
+      const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
+      _socket = new Socket(`${protocol}://${location.host}/socket`, {
         params: {
           guardian_token: provideJwtToken(),
         },
@@ -102,7 +108,7 @@ export default {
         .receive('error', resp => reject(resp));
     });
   },
-  joinChannel(roomId: string): Promise<JoinChannelResponse> {
+  joinChannel(roomId: string): Promise<JoinChannelTransformedResponse> {
     channel = this.getSocket().channel(`live:${roomId}`, {});
 
     return new Promise((resolve, reject) => {
@@ -110,8 +116,9 @@ export default {
         .join()
         .receive('ok', resp => {
           const result = camelizeKeys(resp) as JoinChannelResponse;
+          // @ts-ignore
           result.sandbox = transformSandbox(result.sandbox);
-          resolve(result);
+          resolve(result as JoinChannelTransformedResponse);
         })
         .receive('error', resp => reject(camelizeKeys(resp)));
     });
@@ -125,7 +132,9 @@ export default {
     }) => {}
   ) {
     channel.onMessage = (event: any, data: any) => {
-      const disconnected = data == null && event === 'phx_error';
+      const disconnected =
+        (data == null || Object.keys(data).length === 0) &&
+        event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
 
       const _isOwnMessage = Boolean(
@@ -174,13 +183,7 @@ export default {
       module: directory,
     });
   },
-  sendCodeUpdate(moduleShortid: string, currentCode: string, code: string) {
-    if (currentCode === code) {
-      return;
-    }
-
-    const operation = getTextOperation(currentCode, code);
-
+  sendCodeUpdate(moduleShortid: string, operation: any) {
     if (!operation) {
       return;
     }
@@ -256,9 +259,6 @@ export default {
       message,
     });
   },
-  sendModuleState() {
-    return this.send('live:module_state', {});
-  },
   sendModuleSaved(module: Module) {
     return this.send('module:saved', {
       type: 'module',
@@ -269,7 +269,7 @@ export default {
   sendChatEnabled(enabled: boolean) {
     return this.send('live:chat_enabled', { enabled });
   },
-  sendModuleUpdateRequest() {
+  sendModuleStateSyncRequest() {
     return this.send('live:module_state', {});
   },
   sendUserSelection(moduleShortid: string, liveUserId: string, selection: any) {

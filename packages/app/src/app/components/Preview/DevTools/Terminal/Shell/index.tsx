@@ -10,6 +10,7 @@ import { TerminalComponent } from './Term';
 type Props = {
   id: string;
   theme: VSTheme;
+  owned: boolean;
   script?: string;
   closeShell: () => void;
   endShell: () => void;
@@ -107,9 +108,10 @@ class ShellComponent extends React.PureComponent<Props> {
   }
 
   render() {
-    const { hidden, theme } = this.props;
+    const { hidden, theme, owned } = this.props;
     return (
       <TerminalComponent
+        owned={owned}
         hidden={hidden}
         theme={theme}
         onTerminalInitialized={this.initializeTerminal}

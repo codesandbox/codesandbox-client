@@ -27,19 +27,7 @@
     "import/no-cycle": "warn",
     "react/prop-types": 0,
     "arrow-parens": 0,
-    "prefer-destructuring": [
-      "error",
-      {
-        "VariableDeclarator": {
-          "array": false,
-          "object": true
-        },
-        "AssignmentExpression": {
-          "array": false,
-          "object": false
-        }
-      }
-    ],
+    "prefer-destructuring": 0,
     "no-async-promise-executor": "warn",
     "import/prefer-default-export": 0,
     "class-methods-use-this": 0,
@@ -61,6 +49,7 @@
         "js": "never"
       }
     ],
+    "import/default": "error",
     "no-param-reassign": ["error", { "props": false }],
     "camelcase": 0,
     "react-hooks/rules-of-hooks": "error",

@@ -11,7 +11,7 @@ import Layout from '../components/layout';
 import SandboxModal from '../screens/explore/SandboxModal';
 import ShuffleWords from './_shuffleWords';
 
-import { Container, Sandboxes } from './_explore.elements';
+import { Container, Sandboxes } from './explore/_elements';
 
 export default class extends React.PureComponent {
   state = {

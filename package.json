@@ -13,8 +13,6 @@
       "packages/homepage",
       "packages/common",
       "packages/codesandbox-api",
-      "packages/sandpack",
-      "packages/react-sandpack",
       "packages/node-services",
       "packages/sandbox-hooks",
       "packages/sse-hooks",
@@ -39,14 +37,14 @@
     "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" lerna run build  --scope homepage --stream && lerna run build --scope app --stream && lerna run copy-assets --scope app --stream",
     "commit": "concurrently \"yarn typecheck\" \"yarn lint\" && git commit -m",
+    "postinstall": "yarn lerna run install-dependencies --stream --concurrency 1 --ignore smooshpack --ignore react-smooshpack && opencollective postinstall",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "postinstall": "yarn lerna run install-dependencies --scope vscode-textmate --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
     "lint": "lerna run lint --stream",
     "now-build": "yarn build:deps && lerna run build:storybook --scope @codesandbox/common",
     "start": "yarn build:deps && lerna run start --scope @codesandbox/common --scope app --parallel",
     "start:common": "lerna run start --scope @codesandbox/common --stream",
-    "start:dev_api": "lerna run start:dev_api --scope app --stream",
+    "start:dev_api": "concurrently --raw \"cd packages/app && yarn start:dev_api\" \"cd packages/common && yarn start\"",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
     "start:fast": "concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\"",
     "start:home": "yarn build:deps && yarn start:home:fast",
@@ -56,10 +54,11 @@
     "start:test": "lerna run start:test --scope app --stream",
     "start:vscode": "cross-env VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
     "test": "lerna run test --ignore codesandbox-browserfs",
+    "test:pr": "node testpr-script",
     "test:ci": "lerna run test --ignore codesandbox-browserfs -- --ci --testResultsProcessor=\"jest-junit\" ",
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
-    "typecheck": "lerna run typecheck --scope app"
+    "typecheck": "lerna run typecheck"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^1.13.0",
@@ -67,7 +66,7 @@
     "opencollective": "^1.0.3"
   },
   "devDependencies": {
-    "all-contributors-cli": "^6.9.1",
+    "all-contributors-cli": "^6.9.2",
     "babel-eslint": "^10.0.2",
     "concurrently": "^4.1.0",
     "cross-env": "^6.0.0",
@@ -84,9 +83,10 @@
     "husky": "^2.2.0",
     "lerna": "^3.16.4",
     "lint-staged": "^9.2.5",
-    "prettier": "1.17.0",
-    "pretty-quick": "^1.10.0",
-    "typescript": "3.6.3"
+    "prettier": "1.19.1",
+    "pretty-quick": "^2.0.1",
+    "typescript": "3.7.2",
+    "username": "^5.1.0"
   },
   "husky": {
     "hooks": {

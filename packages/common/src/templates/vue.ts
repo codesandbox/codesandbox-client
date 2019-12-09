@@ -1,5 +1,5 @@
 import Template, { ParsedConfigurationFiles } from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 import configurations from './configuration';
 
 class VueTemplate extends Template {

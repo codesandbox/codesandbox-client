@@ -1,7 +1,15 @@
+import { Module } from '@codesandbox/common/lib/types';
+
 const getKey = (id, moduleShortid) => `recover:${id}:${moduleShortid}:code`;
 
 export default {
-  save(currentId, version, module, code, savedCode) {
+  save(
+    currentId: string,
+    version: number,
+    module: Module,
+    code: string,
+    savedCode: string | null
+  ) {
     try {
       localStorage.setItem(
         getKey(currentId, module.shortid),
@@ -18,7 +26,7 @@ export default {
     }
   },
 
-  remove(currentId, module) {
+  remove(currentId: string, module: Module) {
     try {
       localStorage.removeItem(getKey(currentId, module.shortid));
     } catch (e) {
@@ -26,7 +34,7 @@ export default {
     }
   },
 
-  clearSandbox(currentId) {
+  clearSandbox(currentId: string) {
     try {
       Object.keys(localStorage)
         .filter(key => key.startsWith(`recover:${currentId}`))
@@ -38,7 +46,7 @@ export default {
     }
   },
 
-  getRecoverList(currentId, modules) {
+  getRecoverList(currentId: string, modules: Module[]) {
     const localKeys = Object.keys(localStorage).filter(key =>
       key.startsWith(`recover:${currentId}`)
     );

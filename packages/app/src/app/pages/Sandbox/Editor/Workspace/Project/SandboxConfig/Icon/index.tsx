@@ -28,22 +28,22 @@ export const Icon: FunctionComponent = () => {
     },
   } = useOvermind();
   const popover = usePopoverState();
-
-  const [selectedIcon, setSelectedIcon] = useState(customTemplate.iconUrl);
+  const [selectedIcon, setSelectedIcon] = useState(
+    customTemplate.iconUrl || ''
+  );
 
   const DefaultIcon = getIcon(template);
   const defaultColor =
-    (customTemplate && customTemplate.color) ||
-    templates.default(template).color();
+    customTemplate.color || templates.default(template).color();
 
   const setIcon = (key: string) => {
     setSelectedIcon(key);
+
     popover.hide();
+
     editTemplate({
-      template: {
-        ...customTemplate,
-        iconUrl: key,
-      },
+      ...customTemplate,
+      iconUrl: key,
     });
   };
   const TemplateIcon = Icons[selectedIcon];

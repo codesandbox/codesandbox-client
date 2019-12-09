@@ -14,10 +14,12 @@ const Container = styled.div<{ unread: number; status: StatusType }>`
   height: 16px;
   width: 16px;
   color: ${({ unread }) =>
-    unread === 0 ? `rgba(255, 255, 255, 0.4)` : 'white'};
+    unread === 0 ? 'rgba(255, 255, 255, 0.4)' : 'white'};
   background-color: ${({ status, unread, theme }) => {
     if (unread === 0) {
-      return 'rgba(255, 255, 255, 0.2)';
+      return theme.vscodeTheme.type === 'dark'
+        ? 'rgba(255, 255, 255, 0.2)'
+        : 'rgba(0, 0, 0, 0.2)';
     }
     if (status === 'info') {
       return theme.secondary();

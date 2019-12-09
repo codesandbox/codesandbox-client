@@ -11,7 +11,7 @@ import { REMOVE_FROM_TEAM, LEAVE_TEAM } from '../../../../queries';
 
 import { StyledCrossIcon } from '../elements';
 
-export default ({
+export const RemoveTeamMember = ({
   creatorId,
   currentUserId,
   userId,

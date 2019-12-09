@@ -1,5 +1,5 @@
 import Template, { ViewConfig } from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 class GridsomeTemplate extends Template {
   getViews(): ViewConfig[] {
@@ -39,7 +39,6 @@ export default new GridsomeTemplate(
   decorateSelector(() => '#00a672'),
   {
     distDir: 'dist',
-    isServer: true,
     mainFile: ['/src/pages/Index.vue'],
     showOnHomePage: true,
     main: true,

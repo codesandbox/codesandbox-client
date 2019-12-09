@@ -2,7 +2,7 @@ import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { OrderBy } from './state';
 
-export const dashboardMounted = withLoadApp();
+export const dashboardMounted: AsyncAction = withLoadApp();
 
 export const sandboxesSelected: Action<{
   sandboxIds: string[];
@@ -65,7 +65,21 @@ export const searchChanged: Action<{ search: string }> = (
 };
 
 export const createSandboxClicked: AsyncAction<{
+  body: { collectionId: string };
   sandboxId: string;
-  body: { collectionId: string | undefined };
-}> = ({ actions }, { sandboxId, body }) =>
-  actions.editor.internal.forkSandbox({ sandboxId, body });
+}> = ({ actions }, { body, sandboxId }) =>
+  actions.editor.forkExternalSandbox({ body, sandboxId });
+
+export const deleteTemplate: AsyncAction<{
+  sandboxId: string;
+  templateId: string;
+}> = async ({ actions, effects }, { sandboxId, templateId }) => {
+  try {
+    effects.analytics.track('Template - Removed', { source: 'Context Menu' });
+    await effects.api.deleteTemplate(sandboxId, templateId);
+    actions.modalClosed();
+    effects.notificationToast.success('Template Deleted');
+  } catch (error) {
+    effects.notificationToast.error('Could not delete custom template');
+  }
+};

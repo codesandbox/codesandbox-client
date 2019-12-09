@@ -125,7 +125,7 @@ export const Author = styled(UserWithAvatar)`
   font-size: 0.75rem;
   font-weight: 600;
   text-decoration: none;
-  color: ${props => props.theme.new.description};
+  color: #777788;
 `;
 
 export const Stats = styled.ul`

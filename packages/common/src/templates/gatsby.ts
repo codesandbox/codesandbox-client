@@ -1,5 +1,5 @@
 import Template, { ViewConfig } from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 import configurations from './configuration';
 
 class GatsbyTemplate extends Template {
@@ -43,7 +43,6 @@ export default new GatsbyTemplate(
       '/.babelrc': configurations.babelrc,
     },
     distDir: 'public',
-    isServer: true,
     mainFile: ['/src/pages/index.js'],
     showOnHomePage: true,
     main: true,

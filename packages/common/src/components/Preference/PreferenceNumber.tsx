@@ -1,33 +1,32 @@
-import React from 'react';
-import { StyledInput } from './elements';
+import React, { ChangeEvent, ComponentProps, FunctionComponent } from 'react';
 
-export type Props = {
+import { Input } from './elements';
+
+type Props = {
   setValue: (value: number) => void;
-  value: number;
   step?: number;
-  style?: React.CSSProperties;
-};
+  value: number;
+} & Pick<ComponentProps<typeof Input>, 'style'>;
 
-export default class PreferenceInput extends React.PureComponent<Props> {
-  handleChange = e => {
-    const { value } = e.target;
-
-    if (!Number.isNaN(+value)) {
-      this.props.setValue(+value);
+export const PreferenceNumber: FunctionComponent<Props> = ({
+  setValue,
+  step,
+  style,
+  value,
+}) => {
+  const handleChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    if (!Number.isNaN(+target.value)) {
+      setValue(+target.value);
     }
   };
 
-  render() {
-    const { value, style, step } = this.props;
-
-    return (
-      <StyledInput
-        step={step}
-        style={{ width: '3rem', ...style }}
-        type="number"
-        value={value}
-        onChange={this.handleChange}
-      />
-    );
-  }
-}
+  return (
+    <Input
+      onChange={handleChange}
+      step={step}
+      style={{ width: '3rem', ...style }}
+      type="number"
+      value={value}
+    />
+  );
+};

@@ -1,5 +1,5 @@
-import store from 'store/dist/store.modern';
 import { identify, resetUserId } from '@codesandbox/common/lib/utils/analytics';
+import store from 'store/dist/store.modern';
 
 export default {
   get() {
@@ -16,7 +16,7 @@ export default {
     document.cookie = `signedIn=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
     document.cookie = `jwt=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
 
-    identify('signed_in', 'false');
+    identify('signed_in', false);
     resetUserId();
 
     return store.set('jwt', null);
