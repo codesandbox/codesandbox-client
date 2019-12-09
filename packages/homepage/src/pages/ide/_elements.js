@@ -18,6 +18,8 @@ export const CreateSandbox = styled(Button)`
   top: 220px;
   z-index: 2;
   margin: auto;
+  font-size: 0.875rem;
+  padding: 10px 25px;
 
   ${props => props.theme.breakpoints.md} {
     top: 2.5rem;

@@ -45,6 +45,7 @@
     "@codesandbox/notifications": "^1.0.6",
     "@codesandbox/template-icons": "^1.0.2",
     "@sentry/browser": "^5.9.0",
+    "@styled-system/css": "^5.0.23",
     "@tippy.js/react": "^2.1.1",
     "babel-plugin-preval": "^3.0.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",

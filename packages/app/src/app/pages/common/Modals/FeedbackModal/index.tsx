@@ -20,7 +20,7 @@ export const FeedbackModal: FunctionComponent = () => {
     <Container>
       <Heading>Submit Feedback</Heading>
 
-      <Feedback user={user} id={currentSandbox.id} />
+      <Feedback user={user} id={currentSandbox?.id} />
     </Container>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import {
   useDialogState,
   DialogDisclosure,
@@ -6,10 +6,10 @@ import {
   Dialog,
 } from 'reakit/Dialog';
 import { Portal } from 'reakit/Portal';
-import { Button, IButtonProps } from '../Button';
+import { Button } from '../Button';
 import { Backdrop, Container } from './elements';
 
-export interface IModalProps extends IButtonProps {
+export interface IModalProps extends ComponentProps<typeof Button> {
   label?: string;
   button?: React.ElementType;
   backdrop?: React.ElementType;

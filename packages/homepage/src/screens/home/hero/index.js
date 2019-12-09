@@ -125,8 +125,6 @@ export default () => {
           zIndex: 20,
           position: 'absolute',
           top: '15%',
-          left: 0,
-          right: 0,
           textAlign: 'center',
         }}
       >

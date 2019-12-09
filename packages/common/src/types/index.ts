@@ -273,9 +273,9 @@ export type PickedSandboxes = {
 };
 
 export type PickedSandboxDetails = {
-  title: string;
-  id: string;
   description: string;
+  id: string;
+  title: string;
 };
 
 export type Sandbox = {
