@@ -663,6 +663,8 @@ function collect(connect) {
   };
 }
 
-export const SandboxItem = DragSource('SANDBOX', cardSource, collect)(
-  SandboxItemComponent
-);
+export const SandboxItem = DragSource(
+  'SANDBOX',
+  cardSource,
+  collect
+)(SandboxItemComponent);
