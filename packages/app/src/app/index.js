@@ -28,10 +28,12 @@ import { ApolloProvider } from 'react-apollo';
 import { render } from 'react-dom';
 import { Router } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
+import { DndProvider } from 'react-dnd';
 
 import { config } from './overmind';
 import { Provider as OvermindProvider } from './overmind/Provider';
 import { Routes as App } from './pages';
+import HTML5Backend from './pages/common/HTML5BackendWithFolderSupport';
 
 const debug = _debug('cs:app');
 
@@ -151,9 +153,11 @@ overmind.initialized.then(() => {
             <OvermindProvider value={overmind}>
               <HooksProvider client={client}>
                 <ThemeProvider theme={theme}>
-                  <Router history={history}>
-                    <App />
-                  </Router>
+                  <DndProvider backend={HTML5Backend}>
+                    <Router history={history}>
+                      <App />
+                    </Router>
+                  </DndProvider>
                 </ThemeProvider>
               </HooksProvider>
             </OvermindProvider>
