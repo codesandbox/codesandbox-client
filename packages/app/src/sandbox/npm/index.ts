@@ -1,10 +1,9 @@
 import { pickBy } from 'lodash-es';
 
-import { fetchDependencies } from './fetch-dependencies';
+import setScreen from '../status-screen';
 import { getDependencyVersions } from '../version-resolving';
 import dependenciesToQuery from './dependencies-to-query';
-
-import setScreen from '../status-screen';
+import { fetchDependencies } from './fetch-dependencies';
 
 let loadedDependencyCombination: string | null = null;
 let manifest = null;
@@ -31,7 +30,11 @@ function shouldFetchDynamically(dependencies: NPMDependencies) {
  */
 export async function loadDependencies(
   dependencies: NPMDependencies,
-  { disableExternalConnection = false, resolutions = undefined } = {}
+  {
+    disableExternalConnection = false,
+    resolutions = undefined,
+    showFullScreen = false,
+  } = {}
 ) {
   let isNewCombination = false;
   if (Object.keys(dependencies).length !== 0) {
@@ -54,13 +57,21 @@ export async function loadDependencies(
         ? getDependencyVersions
         : fetchDependencies;
 
-      const data = await fetchFunction(dependenciesWithoutTypings, resolutions);
+      const data = await fetchFunction(
+        dependenciesWithoutTypings,
+        resolutions,
+        showFullScreen
+      );
 
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;
       manifest = data;
 
-      setScreen({ type: 'loading', text: 'Transpiling Modules...' });
+      setScreen({
+        type: 'loading',
+        text: 'Transpiling Modules...',
+        showFullScreen,
+      });
     }
   } else {
     manifest = null;

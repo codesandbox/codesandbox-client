@@ -1,4 +1,5 @@
 import { Breadcrumb } from '@sentry/browser';
+
 import VERSION from '../../version';
 import { DO_NOT_TRACK_ENABLED } from './utils';
 
@@ -35,6 +36,7 @@ export async function initialize(dsn: string) {
         "undefined is not an object (evaluating 'window.__pad.performLoop')", // Only happens on Safari, but spams our servers. Doesn't break anything
       ],
       whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
+      maxBreadcrumbs: 20,
       /**
        * Don't send messages from the sandbox, so don't send from eg.
        * new.codesandbox.io or new.csb.app

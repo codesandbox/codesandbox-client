@@ -1,16 +1,15 @@
-import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
-
-import LiveInfo from './LiveInfo';
-import LiveButton from './LiveButton';
+import React, { FunctionComponent } from 'react';
 
 import {
   Description,
+  ErrorDescription,
   WorkspaceInputContainer,
   WorkspaceSubtitle,
-  ErrorDescription,
 } from '../../elements';
 import { More } from '../More';
+import LiveButton from './LiveButton';
+import LiveInfo from './LiveInfo';
 
 export const Live: FunctionComponent = () => {
   const {
@@ -29,8 +28,7 @@ export const Live: FunctionComponent = () => {
       },
       editor: {
         isAllModulesSynced,
-        currentSandbox: { owned },
-        currentId,
+        currentSandbox: { owned, id },
       },
     },
     actions: {
@@ -112,7 +110,7 @@ export const Live: FunctionComponent = () => {
               <LiveButton
                 onClick={() => {
                   createLiveClicked({
-                    sandboxId: currentId,
+                    sandboxId: id,
                   });
                 }}
                 isLoading={isLoading}

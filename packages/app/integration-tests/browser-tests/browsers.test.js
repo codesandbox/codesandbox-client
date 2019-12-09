@@ -36,7 +36,7 @@ function testPageWitCapabilities(capabilities) {
   // Test if a sandbox can be loaded on IE11
   return driver
     .get(
-      'http://localhost:3002/#github/codesandbox/integration-sandboxes/tree/master/new'
+      'http://localhost:3000/#github/codesandbox/integration-sandboxes/tree/master/new'
     )
     .then(async () => {
       const element = webdriver.By.css('h1');

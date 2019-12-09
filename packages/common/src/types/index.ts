@@ -56,7 +56,7 @@ export type Module = {
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path?: string;
+  path: string;
   now?: any;
   type: 'file';
 };
@@ -73,6 +73,7 @@ export type Directory = {
   title: string;
   directoryShortid: string | null;
   shortid: string;
+  path: string;
   sourceId: string;
   type: 'directory';
 };
@@ -83,7 +84,7 @@ export type Template = {
   shortid: string;
   url: string;
   main: boolean;
-  color: string;
+  color: () => string;
   backgroundColor: () => string | undefined;
   popular: boolean;
   showOnHomePage: boolean;
@@ -113,6 +114,7 @@ export type CurrentUser = {
     since: string;
     amount: number;
     cancelAtPeriodEnd: boolean;
+    plan?: 'pro' | 'patron';
   } | null;
   curatorAt: string;
   badges: Array<Badge>;
@@ -271,9 +273,9 @@ export type PickedSandboxes = {
 };
 
 export type PickedSandboxDetails = {
-  title: string;
-  id: string;
   description: string;
+  id: string;
+  title: string;
 };
 
 export type Sandbox = {
@@ -295,7 +297,14 @@ export type Sandbox = {
     [dep: string]: string;
   };
   customTemplate: CustomTemplate | null;
+  /**
+   * Which template this sandbox is based on
+   */
   forkedTemplate: CustomTemplate | null;
+  /**
+   * Sandbox the forked template is from
+   */
+  forkedTemplateSandbox: SmallSandbox | null;
   externalResources: string[];
   team: {
     id: string;
@@ -618,8 +627,8 @@ export type UploadedFilesInfo = {
 };
 
 export type SandboxUrlSourceData = {
-  id?: string;
-  alias?: string;
+  id: string;
+  alias: string | null;
   git?: GitInfo;
 };
 
@@ -675,3 +684,7 @@ export enum PatronBadge {
 export type LiveDisconnectReason = 'close' | 'inactivity';
 
 export type PatronTier = 1 | 2 | 3 | 4;
+
+export type SandboxFs = {
+  [path: string]: Module | Directory;
+};

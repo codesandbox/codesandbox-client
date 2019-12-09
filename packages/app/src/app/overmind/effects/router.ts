@@ -15,22 +15,29 @@ export default {
   }) {
     window.history.replaceState({}, null, sandboxUrl({ id, alias, git }));
   },
-  updateSandboxUrl({
-    id,
-    alias,
-    git,
-  }: {
-    id?: string;
-    alias?: string;
-    git?: GitInfo;
-  }) {
-    history.push(
-      sandboxUrl({
-        id,
-        alias,
-        git,
-      })
-    );
+  updateSandboxUrl(
+    {
+      id,
+      alias,
+      git,
+    }: {
+      id?: string;
+      alias?: string;
+      git?: GitInfo;
+    },
+    { openInNewWindow = false }: { openInNewWindow?: boolean } = {}
+  ) {
+    const url = sandboxUrl({
+      id,
+      alias,
+      git,
+    });
+
+    if (openInNewWindow) {
+      window.open(url, '_blank');
+    } else {
+      history.push(url);
+    }
   },
   redirectToNewSandbox() {
     history.push('/s/new');

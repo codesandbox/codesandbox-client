@@ -1,17 +1,15 @@
-import React from 'react';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { inject, observer } from 'app/componentConnectors';
-
+import saveAllModules from 'app/overmind/utils/saveAllModules';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { saveAllModules } from 'app/store/modules/editor/utils';
-
+import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 
-import WorkspaceItem from '../WorkspaceItem';
 import { EntryContainer } from '../elements';
-import { Title, Dir, CrossIconContainer } from './elements';
+import WorkspaceItem from '../WorkspaceItem';
+import { CrossIconContainer, Dir, Title } from './elements';
 import SaveIcon from './SaveIcon';
 
 const OpenedTabs = ({ store, signals }) => {

@@ -1,11 +1,11 @@
 import {
-  Module,
-  Sandbox,
-  ModuleError,
-  ModuleCorrection,
-  Settings,
-  ModuleTab,
   DiffTab,
+  Module,
+  ModuleCorrection,
+  ModuleError,
+  ModuleTab,
+  Sandbox,
+  Settings,
 } from '@codesandbox/common/lib/types';
 
 export interface Editor {
@@ -51,8 +51,8 @@ export type Props = {
   onNpmDependencyAdded?: (name: string) => void;
   onSave?: (code: string) => void;
   settings: Settings;
-  height?: string;
-  width?: string;
+  height?: number;
+  width?: number;
   hideNavigation?: boolean;
   dependencies?: { [name: string]: string };
   highlightedLines?: Array<number>;

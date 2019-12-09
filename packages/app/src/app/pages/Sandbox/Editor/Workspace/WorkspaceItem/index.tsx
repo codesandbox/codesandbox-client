@@ -2,11 +2,11 @@ import React from 'react';
 import { Animate as ReactShow } from 'react-show';
 
 import {
+  Actions,
   ChildContainer,
+  ExpandIconContainer,
   ItemHeader,
   Title,
-  ExpandIconContainer,
-  Actions,
 } from './elements';
 
 type Props = {
@@ -68,11 +68,15 @@ export class WorkspaceItem extends React.Component<Props, State> {
             overflow: showOverflow ? 'initial' : 'hidden',
           }}
           transitionOnMount
-          start={{
-            height: 0, // The starting style for the component.
+          start={
+            open
+              ? null
+              : {
+                  height: 0, // The starting style for the component.
 
-            // If the 'leave' prop isn't defined, 'start' is reused!
-          }}
+                  // If the 'leave' prop isn't defined, 'start' is reused!
+                }
+          }
           show={open}
           duration={250}
           stayMounted={keepState}

@@ -43,12 +43,6 @@ const StyledMenu = styled(Link)<{ href?: string; to?: string }>`
       background-color: ${theme.secondary.clearer(0.9)};
       outline: 0;
     }
-
-    &:hover {
-      border-color: ${theme.secondary};
-      color: white;
-      background-color: ${theme.secondary.clearer(0.9)};
-    }
   `};
 `;
 

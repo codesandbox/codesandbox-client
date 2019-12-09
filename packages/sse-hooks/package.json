@@ -13,7 +13,7 @@
     "build:dev": "rollup -c rollup.config.js"
   },
   "dependencies": {
-    "codesandbox-api": "^0.0.22"
+    "codesandbox-api": "0.0.23"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

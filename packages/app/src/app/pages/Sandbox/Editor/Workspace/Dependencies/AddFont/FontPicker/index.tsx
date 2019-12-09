@@ -1,10 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { Portal } from 'reakit';
+
 import { SelectedFont } from './elements';
 import { FontList } from './List';
 
-export const FontPicker = ({ activeFontFamily = 'Open Sans', onChange }) => {
+type Props = {
+  activeFontFamily?: string;
+  onChange: (font: string) => void;
+};
+export const FontPicker: FunctionComponent<Props> = ({
+  activeFontFamily = 'Open Sans',
+  onChange,
+}) => {
   const [expanded, setExpanded] = useState(false);
   const [style, setStyle] = useState({ x: 0, y: 0 });
   const ref = useRef(null);
@@ -20,16 +28,18 @@ export const FontPicker = ({ activeFontFamily = 'Open Sans', onChange }) => {
   }, [ref]);
 
   const toggleExpanded = () => setExpanded(exp => !exp);
+
   return (
     <>
       <SelectedFont
-        ref={ref}
-        type="button"
         onClick={toggleExpanded}
         onKeyPress={toggleExpanded}
+        ref={ref}
+        type="button"
       >
         {activeFontFamily}
       </SelectedFont>
+
       <Portal>
         {expanded && (
           <div
@@ -42,11 +52,12 @@ export const FontPicker = ({ activeFontFamily = 'Open Sans', onChange }) => {
           >
             <OutsideClickHandler onOutsideClick={() => setExpanded(false)}>
               <FontList
+                activeFontFamily={activeFontFamily}
                 onSelection={font => {
                   onChange(font);
+
                   setExpanded(false);
                 }}
-                activeFontFamily={activeFontFamily}
               />
             </OutsideClickHandler>
           </div>

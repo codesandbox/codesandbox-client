@@ -17,6 +17,7 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     width: 3.5rem;
+    border-right: 1px solid ${theme['activityBar.border'] || 'transparent'};
     flex: 0 0 3.5rem;
     height: 100%;
     color: ${theme[`activityBar.inactiveForeground`] ||

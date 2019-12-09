@@ -117,11 +117,7 @@ class SandboxPage extends React.Component {
       return <NotFound />;
     }
 
-    if (
-      store.editor.isLoading ||
-      (store.live.isTeam && store.live.isLoading) ||
-      store.editor.currentSandbox == null
-    ) {
+    if (store.editor.isLoading || !store.editor.currentSandbox) {
       return (
         <>
           <Skeleton

@@ -7,6 +7,7 @@ import DeleteIcon from 'react-icons/lib/go/trashcan';
 import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import UploadFileIcon from 'react-icons/lib/md/file-upload';
 import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
+import UndoIcon from 'react-icons/lib/md/undo';
 
 import { EntryContainer } from '../../../elements';
 import EditIcons from './EditIcons';
@@ -25,7 +26,7 @@ interface IEntryProps {
   depth: number;
   type: string;
   active: boolean;
-  discardModuleChanges: (shortid: string) => void;
+  discardModuleChanges: (shortid: string, title: string) => void;
   setCurrentModule: (id: string) => void;
   connectDragSource: (node: JSX.Element) => JSX.Element;
   onCreateDirectoryClick: () => boolean | void;
@@ -95,7 +96,7 @@ const Entry: React.FC<IEntryProps> = ({
     deleteEntry ? deleteEntry(shortid, title) : false;
 
   const discardModuleChangesAction = () =>
-    discardModuleChanges ? discardModuleChanges(shortid) : false;
+    discardModuleChanges ? discardModuleChanges(shortid, title) : false;
 
   const handleRename = (newTitle: string, force: boolean = false) => {
     if (newTitle === title) {
@@ -123,6 +124,7 @@ const Entry: React.FC<IEntryProps> = ({
       isNotSynced && {
         title: 'Discard Changes',
         action: discardModuleChangesAction,
+        icon: UndoIcon,
       },
     ].filter(Boolean),
     [
@@ -205,6 +207,7 @@ const Entry: React.FC<IEntryProps> = ({
                 onCreateFile={onCreateModuleClick}
                 onCreateDirectory={onCreateDirectoryClick}
                 onUploadFile={onUploadFileClick}
+                onDiscardChanges={isNotSynced && discardModuleChangesAction}
                 onDelete={deleteEntry && deleteAction}
                 onEdit={rename && renameAction}
                 active={active}

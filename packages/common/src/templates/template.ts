@@ -33,10 +33,9 @@ export type ParsedConfigurationFiles = {
   package?: ParsedConfigurationFile<{
     main: string;
     dependencies?: Dependencies;
-    devDependencies: Dependencies;
-    resolutions?: {
-      [source: string]: string;
-    };
+    devDependencies?: Dependencies;
+    resolutions?: { [source: string]: string };
+    scripts?: { [script: string]: string };
     [otherProperties: string]: any | undefined;
   }>;
   [path: string]: ParsedConfigurationFile<any> | undefined;
@@ -173,7 +172,7 @@ export default class Template {
    */
   getEntries(configurationFiles: ParsedConfigurationFiles): string[] {
     return [
-      configurationFiles.package &&
+      configurationFiles.package?.parsed &&
         this.getMainFromPackage(configurationFiles.package.parsed),
       ...(this.mainFile || []),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),

@@ -1,11 +1,10 @@
-import { RoomInfo, LiveUser } from '@codesandbox/common/lib/types';
+import { LiveUser, RoomInfo } from '@codesandbox/common/lib/types';
 import { Derive } from 'app/overmind';
 
 type State = {
   isLive: boolean;
   isTeam: boolean;
   isLoading: boolean;
-  receivingCode: boolean;
   error: string;
   reconnecting: boolean;
   notificationsHidden: boolean;
@@ -28,7 +27,6 @@ export const state: State = {
   isLive: false,
   isTeam: false,
   isLoading: false,
-  receivingCode: false,
   reconnecting: false,
   notificationsHidden: false,
   followingUserId: null,

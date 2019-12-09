@@ -14,10 +14,10 @@ export const LikeButton: FunctionComponent = () => {
   return (
     <LikeHeart
       colorless
-      text={String(currentSandbox.likeCount)}
-      sandbox={currentSandbox}
       disableTooltip
       highlightHover
+      sandbox={currentSandbox}
+      text={currentSandbox.likeCount}
     />
   );
 };

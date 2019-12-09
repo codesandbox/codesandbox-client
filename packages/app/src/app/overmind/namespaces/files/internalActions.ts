@@ -42,16 +42,17 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
       return false;
     })
     .filter(Boolean);
+  const numRecoveredFiles = recoveredList.length;
 
-  if (recoveredList.length > 0) {
+  if (numRecoveredFiles > 0) {
     effects.analytics.track('Files Recovered', {
-      fileCount: recoveredList.length,
+      fileCount: numRecoveredFiles,
     });
 
     effects.notificationToast.add({
-      message: `We recovered ${
-        recoveredList.length
-      } unsaved files from a previous session`,
+      message: `We recovered ${numRecoveredFiles} unsaved ${
+        numRecoveredFiles > 1 ? 'files' : 'file'
+      } from a previous session`,
       status: NotificationStatus.NOTICE,
     });
   }

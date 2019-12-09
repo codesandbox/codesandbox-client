@@ -1,4 +1,7 @@
 import { Contributor } from '@codesandbox/common/lib/types';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
+import { AxiosError } from 'axios';
 import { IDerive, IState, json } from 'overmind';
 
 import { AsyncAction } from '.';
@@ -38,11 +41,31 @@ export const withLoadApp = <T>(
       actions.userNotifications.internal.initialize();
       effects.api.preloadTemplates();
     } catch (error) {
-      effects.notificationToast.error(
-        'Your session seems to be expired, please log in again...'
-      );
-      effects.jwt.reset();
-      effects.analytics.setAnonymousId();
+      if (error.isAxiosError && (error as AxiosError).response.status === 401) {
+        // Reset existing sign in info
+        effects.jwt.reset();
+        effects.analytics.setAnonymousId();
+
+        // Allow user to sign in again in notification
+        notificationState.addNotification({
+          message: 'Your session seems to be expired, please log in again...',
+          status: NotificationStatus.ERROR,
+          actions: {
+            primary: [
+              {
+                label: 'Sign in',
+                run: () => {
+                  actions.signInClicked({ useExtraScopes: false });
+                },
+              },
+            ],
+          },
+        });
+      } else {
+        effects.notificationToast.error(
+          "We weren't able to sign you in, this could be due to a flaky connection or something on our server. Please try again in a minute."
+        );
+      }
     }
   } else {
     effects.jwt.reset();
@@ -84,7 +107,7 @@ export const withOwnedSandbox = <T>(
       }
 
       await actions.editor.internal.forkSandbox({
-        sandboxId: state.editor.currentId,
+        sandboxId: state.editor.currentSandbox.id,
       });
     } else if (
       state.editor.currentSandbox.isFrozen &&
