@@ -6,8 +6,8 @@ import {
   DropTargetMonitor,
   DropTargetConnector,
 } from 'react-dnd';
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 
-import { ITabPosition } from '..';
 import { PREVIEW_TAB_ID } from '../Tab';
 
 const DropZone = styled.div<{ isOver: boolean }>`
@@ -26,7 +26,10 @@ const DropZone = styled.div<{ isOver: boolean }>`
 `;
 
 export interface TabDropZoneProps {
-  moveTab: (currentPosition: ITabPosition, nextPosition: ITabPosition) => void;
+  moveTab: (
+    currentPosition: DevToolsTabPosition,
+    nextPosition: DevToolsTabPosition
+  ) => void;
   index: number;
   devToolIndex: number;
 }
@@ -37,15 +40,14 @@ interface DragProps {
   itemType: string;
 }
 
-const TabDropZone = ({
+const TabDropZoneComponent = ({
   connectDropTarget,
   isOver,
 }: TabDropZoneProps & DragProps) =>
   connectDropTarget(
     <div
       style={{
-        height: '100%',
-        width: '100%',
+        flex: 'auto',
       }}
     >
       <DropZone isOver={isOver} />
@@ -62,7 +64,7 @@ const entryTarget = {
       return;
     }
 
-    const previousPosition: ITabPosition = {
+    const previousPosition: DevToolsTabPosition = {
       tabPosition: sourceItem.index,
       devToolIndex: sourceItem.devToolIndex,
     };
@@ -88,18 +90,18 @@ const entryTarget = {
 const collectTarget = (
   connectMonitor: DropTargetConnector,
   monitor: DropTargetMonitor
-) => {
-  return {
-    // Call this function inside render()
-    // to let React DnD handle the drag events:
-    connectDropTarget: connectMonitor.dropTarget(),
-    // You can ask the monitor about the current drag state:
-    isOver: monitor.isOver({ shallow: true }),
-    canDrop: monitor.canDrop(),
-    itemType: monitor.getItemType(),
-  };
-};
+) => ({
+  // Call this function inside render()
+  // to let React DnD handle the drag events:
+  connectDropTarget: connectMonitor.dropTarget(),
+  // You can ask the monitor about the current drag state:
+  isOver: monitor.isOver({ shallow: true }),
+  canDrop: monitor.canDrop(),
+  itemType: monitor.getItemType(),
+});
 
-export default DropTarget(PREVIEW_TAB_ID, entryTarget, collectTarget)(
-  TabDropZone
-);
+export const TabDropZone = DropTarget(
+  PREVIEW_TAB_ID,
+  entryTarget,
+  collectTarget
+)(TabDropZoneComponent);

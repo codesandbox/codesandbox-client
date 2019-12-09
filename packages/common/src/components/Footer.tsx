@@ -61,10 +61,10 @@ const Background = styled.div`
 export default () => (
   <Background id="footer">
     <MaxWidth width={1280}>
-      <React.Fragment>
-        <Container>
-          <Column>
-            <Title>CodeSandbox</Title>
+      <>
+        <Container as="footer">
+          <Column as="nav" aria-labelledby="codesandbox-footer">
+            <Title id="codesandbox-footer">CodeSandbox</Title>
             <List>
               <li>
                 <a href="/s" target="_blank" rel="noopener noreferrer">
@@ -77,6 +77,11 @@ export default () => (
                 </a>
               </li>
               <li>
+                <a href="/explore" target="_blank" rel="noopener noreferrer">
+                  Explore
+                </a>
+              </li>
+              <li>
                 <a href="/docs">Documentation</a>
               </li>
               <li>
@@ -84,18 +89,28 @@ export default () => (
                   Patron
                 </a>
               </li>
-            </List>
-          </Column>
-
-          <Column>
-            <Title>About</Title>
-            <List>
               <li>
                 <a
-                  href="https://medium.com/@compuives"
+                  href="https://status.codesandbox.io"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
+                  Status
+                </a>
+              </li>
+              <li>
+                <a href="/signin" target="_blank" rel="noopener noreferrer">
+                  Sign In
+                </a>
+              </li>
+            </List>
+          </Column>
+
+          <Column as="nav" aria-labelledby="about-footer">
+            <Title id="about-footer">About</Title>
+            <List>
+              <li>
+                <a href="/blog" target="_blank" rel="noopener noreferrer">
                   Blog
                 </a>
               </li>
@@ -109,6 +124,9 @@ export default () => (
                 </a>
               </li>
               <li>
+                <a href="/jobs">Careers</a>
+              </li>
+              <li>
                 <a href="/legal">Legal</a>
               </li>
               <li>
@@ -117,8 +135,8 @@ export default () => (
             </List>
           </Column>
 
-          <Column>
-            <Title>Social</Title>
+          <Column as="nav" aria-labelledby="social-footer">
+            <Title id="social-footer">Social</Title>
             <List>
               <li>
                 <a
@@ -141,7 +159,7 @@ export default () => (
             </List>
           </Column>
         </Container>
-      </React.Fragment>
+      </>
     </MaxWidth>
   </Background>
 );

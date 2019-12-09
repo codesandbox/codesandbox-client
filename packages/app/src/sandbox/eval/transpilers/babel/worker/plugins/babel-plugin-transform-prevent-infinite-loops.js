@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  * Copyright (c) 2017, Amjad Masad

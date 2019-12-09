@@ -1,16 +1,16 @@
 /* eslint-disable */
 
-let chalk = require('chalk');
-let fs = require('fs');
-let path = require('path');
-let filesize = require('filesize');
-let gzipSize = require('gzip-size').sync;
-let rimrafSync = require('rimraf').sync;
-let webpack = require('webpack');
-let config = require('../config/webpack.prod');
-let paths = require('../config/paths');
-let recursive = require('recursive-readdir');
-let stripAnsi = require('strip-ansi');
+const chalk = require('chalk');
+const fs = require('fs');
+const path = require('path');
+const filesize = require('filesize');
+const gzipSize = require('gzip-size').sync;
+const rimrafSync = require('rimraf').sync;
+const webpack = require('webpack');
+const config = require('../config/webpack.prod');
+const paths = require('../config/paths');
+const recursive = require('recursive-readdir');
+const stripAnsi = require('strip-ansi');
 
 // Input: /User/dan/app/build/static/js/main.82be8.js
 // Output: /static/js/main.js
@@ -23,9 +23,9 @@ function removeFileNameHash(fileName) {
 // Input: 1024, 2048
 // Output: "(+1 KB)"
 function getDifferenceLabel(currentSize, previousSize) {
-  let FIFTY_KILOBYTES = 1024 * 50;
-  let difference = currentSize - previousSize;
-  let fileSize = !Number.isNaN(difference) ? filesize(difference) : 0;
+  const FIFTY_KILOBYTES = 1024 * 50;
+  const difference = currentSize - previousSize;
+  const fileSize = !Number.isNaN(difference) ? filesize(difference) : 0;
   if (difference >= FIFTY_KILOBYTES) {
     return chalk.red(`+${fileSize}`);
   } else if (difference < FIFTY_KILOBYTES && difference > 0) {
@@ -40,11 +40,11 @@ function getDifferenceLabel(currentSize, previousSize) {
 // First, read the current file sizes in build directory.
 // This lets us display how much they changed later.
 recursive(paths.appBuild, (err, fileNames) => {
-  let previousSizeMap = (fileNames || [])
+  const previousSizeMap = (fileNames || [])
     .filter(fileName => /\.(js|css)$/.test(fileName))
     .reduce((memo, fileName) => {
-      let contents = fs.readFileSync(fileName);
-      let key = removeFileNameHash(fileName);
+      const contents = fs.readFileSync(fileName);
+      const key = removeFileNameHash(fileName);
       memo[key] = gzipSize(contents);
       return memo;
     }, {});
@@ -59,15 +59,15 @@ recursive(paths.appBuild, (err, fileNames) => {
 
 // Print a detailed summary of build files.
 function printFileSizes(stats, previousSizeMap) {
-  let assets = stats
+  const assets = stats
     .toJson()
     .assets.filter(asset => /\.(js|css)$/.test(asset.name))
     .map(asset => {
       try {
-        let fileContents = fs.readFileSync(`${paths.appBuild}/${asset.name}`);
-        let size = gzipSize(fileContents);
-        let previousSize = previousSizeMap[removeFileNameHash(asset.name)];
-        let difference = getDifferenceLabel(size, previousSize);
+        const fileContents = fs.readFileSync(`${paths.appBuild}/${asset.name}`);
+        const size = gzipSize(fileContents);
+        const previousSize = previousSizeMap[removeFileNameHash(asset.name)];
+        const difference = getDifferenceLabel(size, previousSize);
         return {
           folder: path.join('build', path.dirname(asset.name)),
           name: path.basename(asset.name),
@@ -89,9 +89,9 @@ function printFileSizes(stats, previousSizeMap) {
   );
   assets.forEach(asset => {
     let sizeLabel = asset.sizeLabel;
-    let sizeLength = stripAnsi(sizeLabel).length;
+    const sizeLength = stripAnsi(sizeLabel).length;
     if (sizeLength < longestSizeLabelLength) {
-      let rightPadding = ' '.repeat(longestSizeLabelLength - sizeLength);
+      const rightPadding = ' '.repeat(longestSizeLabelLength - sizeLength);
       sizeLabel += rightPadding;
     }
 
@@ -119,15 +119,39 @@ function build(previousSizeMap) {
     } build...`
   );
   let compiler = webpack(config);
+  const start = Date.now();
   compiler.run((err, stats) => {
     if (err) {
-      console.error('Failed to create a production build. Reason:');
+      console.error('Error creating a production build:');
       console.error(err.message || err);
       console.error(err.stack);
       process.exit(1);
     }
 
-    console.log(chalk.green('Compiled successfully.'));
+    const info = stats.toJson();
+
+    if (stats.hasErrors()) {
+      console.error('Error creating a production build:');
+      console.error(info.errors);
+      ls - a;
+      process.exit(1);
+    }
+
+    if (stats.hasWarnings()) {
+      console.warn(chalk.yellow('Build warnings:'));
+      stats.compilation.warnings.forEach(({ name, message }) => {
+        console.warn(chalk.yellow(`${name}: ${message}\n`));
+      });
+    }
+
+    const took = Date.now() - start;
+
+    console.log(
+      chalk.green(
+        `Built ${stats.hasWarnings() ? 'with warnings ' : ''}in ${took /
+          1000}s.`
+      )
+    );
     console.log();
 
     // console.log('File sizes after gzip:');
@@ -227,7 +251,7 @@ function build(previousSizeMap) {
         );
         console.log();
       }
-      console.log(`The ${chalk.cyan('build')} folder is ready to be deployed.`);
+      console.log(`The ${chalk.cyan('www')} folder is ready to be deployed.`);
       console.log('You may also serve it locally with a static server:');
       console.log();
       console.log(`  ${chalk.cyan('npm')} install -g pushstate-server`);

@@ -16,19 +16,19 @@ export default class ModuleTab extends React.PureComponent {
     const { isNotSynced, tabCount } = this.props;
 
     if (hovering && isNotSynced && tabCount === 1) {
-      return <StyledNotSyncedIcon show={'true'} />;
+      return <StyledNotSyncedIcon show="true" />;
     }
     if (hovering && isNotSynced && tabCount > 1) {
-      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+      return <StyledCloseIcon onClick={closeTab} show="true" />;
     }
     if (hovering && tabCount === 1) {
       return <StyledCloseIcon onClick={closeTab} show={undefined} />;
     }
     if (hovering && tabCount > 1) {
-      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+      return <StyledCloseIcon onClick={closeTab} show="true" />;
     }
     if (!hovering && isNotSynced) {
-      return <StyledNotSyncedIcon show={'true'} />;
+      return <StyledNotSyncedIcon show="true" />;
     }
     if (!hovering && !isNotSynced) {
       return <StyledNotSyncedIcon show={undefined} />;
@@ -59,7 +59,7 @@ export default class ModuleTab extends React.PureComponent {
         {...props}
       >
         {({ hovering, closeTab }) => (
-          <React.Fragment>
+          <>
             <EntryIcons
               isNotSynced={isNotSynced}
               type={getType(module.title)}
@@ -69,7 +69,7 @@ export default class ModuleTab extends React.PureComponent {
             {dirName && <TabDir>../{dirName}</TabDir>}
 
             {this.renderTabStatus(hovering, closeTab)}
-          </React.Fragment>
+          </>
         )}
       </TabContainer>
     );

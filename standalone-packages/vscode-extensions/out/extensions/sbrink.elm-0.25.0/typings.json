@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "ws": "registry:dt/ws#0.0.0+20170307231658"
+  }
+}

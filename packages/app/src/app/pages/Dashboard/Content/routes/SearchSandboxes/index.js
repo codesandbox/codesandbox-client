@@ -1,26 +1,27 @@
 import React from 'react';
-import { inject, Observer } from 'mobx-react';
-import { uniq } from 'lodash-es';
+import Helmet from 'react-helmet';
+import { Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import Fuse from 'fuse.js';
 
-import Sandboxes from '../../Sandboxes';
+import { Content as Sandboxes } from '../../Sandboxes';
 
 import { SEARCH_SANDBOXES_QUERY } from '../../../queries';
+import { getPossibleTemplates } from '../../Sandboxes/utils';
 
 let lastSandboxes = null;
 let searchIndex = null;
 
-const SearchSandboxes = ({ store }) => (
+const SearchSandboxes = () => (
   <Query query={SEARCH_SANDBOXES_QUERY}>
     {({ loading, error, data }) => (
       <Observer>
-        {() => {
+        {({ store }) => {
           if (error) {
             return <div>Error!</div>;
           }
 
-          const search = store.dashboard.filters.search;
+          const { search } = store.dashboard.filters;
           let sandboxes = data && data.me && data.me.sandboxes;
           if (
             sandboxes &&
@@ -32,6 +33,7 @@ const SearchSandboxes = ({ store }) => (
               keys: [
                 { name: 'title', weight: 0.5 },
                 { name: 'description', weight: 0.3 },
+                { name: 'alias', weight: 0.2 },
                 { name: 'source.template', weight: 0.1 },
                 { name: 'id', weight: 0.1 },
               ],
@@ -49,28 +51,33 @@ const SearchSandboxes = ({ store }) => (
               ? `${sandboxes.length} search results for '${search}'`
               : 'Search results for all sandboxes';
 
-          if (search) {
-            document.title = `Search: '${search}' - CodeSandbox`;
-          } else {
-            document.title = `Search - CodeSandbox`;
-          }
-
           let possibleTemplates = [];
           if (sandboxes) {
-            possibleTemplates = uniq(sandboxes.map(x => x.source.template));
+            possibleTemplates = getPossibleTemplates(sandboxes);
 
-            sandboxes = store.dashboard.getFilteredSandboxes(sandboxes);
+            sandboxes = store.dashboard
+              .getFilteredSandboxes(sandboxes)
+              .filter(x => !x.customTemplate);
           }
 
           return (
-            <Sandboxes
-              isLoading={loading}
-              Header={Header}
-              page="search"
-              hideOrder={Boolean(search)}
-              sandboxes={loading ? [] : sandboxes}
-              possibleTemplates={possibleTemplates}
-            />
+            <>
+              <Helmet>
+                <title>
+                  {search
+                    ? `Search: '${search}' - CodeSandbox`
+                    : 'Search - CodeSandbox'}
+                </title>
+              </Helmet>
+              <Sandboxes
+                isLoading={loading}
+                Header={Header}
+                page="search"
+                hideOrder={Boolean(search)}
+                sandboxes={loading ? [] : sandboxes}
+                possibleTemplates={possibleTemplates}
+              />
+            </>
           );
         }}
       </Observer>
@@ -78,4 +85,4 @@ const SearchSandboxes = ({ store }) => (
   </Query>
 );
 
-export default inject('signals', 'store')(SearchSandboxes);
+export default SearchSandboxes;

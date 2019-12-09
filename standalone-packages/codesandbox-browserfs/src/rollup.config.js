@@ -25,8 +25,7 @@ export default {
       dropbox_bridge: join(outBase, 'ts', 'generic', 'dropbox_bridge_actual.js')
     }),
     nodeResolve({
-      main: true,
-      jsnext: true,
+      mainFields: ['main', 'jsnext:main'],
       preferBuiltins: true
     }),
     sourcemaps(),

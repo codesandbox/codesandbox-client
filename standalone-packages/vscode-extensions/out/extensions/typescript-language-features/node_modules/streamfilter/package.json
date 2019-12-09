@@ -1,0 +1,39 @@
+{
+  "name": "streamfilter",
+  "version": "1.0.7",
+  "description": "Filtering streams.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha tests/*.mocha.js",
+    "coveralls": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- tests/*.mocha.js -R spec -t 5000 && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
+    "cover": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report html -- tests/*.mocha.js -R spec -t 5000",
+    "lint": "eslint **/*.s",
+    "cli": "env NPM_RUN_CLI=1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nfroidure/streamfilter.git"
+  },
+  "keywords": [
+    "assert",
+    "deepEqual",
+    "neat"
+  ],
+  "author": "Nicolas Froidure",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nfroidure/streamfilter/issues"
+  },
+  "homepage": "https://github.com/nfroidure/streamfilter",
+  "devDependencies": {
+    "coveralls": "^2.11.3",
+    "eslint": "^1.0.0",
+    "istanbul": "^0.3.17",
+    "mocha": "^2.2.5",
+    "sf-lint": "^1.0.2",
+    "streamtest": "^1.2.1"
+  },
+  "dependencies": {
+    "readable-stream": "^2.0.2"
+  }
+}

@@ -9,9 +9,9 @@ import {
 } from 'react-dnd';
 import CrossIcon from 'react-icons/lib/md/clear';
 
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 import { Tab, CloseTab } from './elements';
 import { IViewType, Status } from '../..';
-import { ITabPosition } from '..';
 import { UnreadDevToolsCount } from './UnreadDevToolsCount';
 
 export interface TabProps {
@@ -19,11 +19,16 @@ export interface TabProps {
   pane: IViewType;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
-  moveTab: (currentPosition: ITabPosition, nextPosition: ITabPosition) => void;
+  moveTab?: (
+    currentPosition: DevToolsTabPosition,
+    nextPosition: DevToolsTabPosition
+  ) => void;
+  closeTab?: (pos: DevToolsTabPosition) => void;
   index: number;
   devToolIndex: number;
   canDrag: boolean;
   status: Status | undefined;
+  options: object;
 }
 
 interface DragProps {
@@ -89,11 +94,16 @@ export const PaneTab = ({
   isDragging,
   devToolIndex,
   status,
+  closeTab,
+  index,
+  options,
 }: TabProps & DragProps) => {
   useGlobalDim(isDragging);
 
+  const title =
+    typeof pane.title === 'function' ? pane.title(options) : pane.title;
   const component = (
-    <div style={{ height: '100%' }}>
+    <div>
       <Tab
         active={active}
         onClick={onClick}
@@ -101,17 +111,23 @@ export const PaneTab = ({
         key={pane.id}
         isOver={isOver && !isDragging}
       >
-        {pane.title}
+        <div style={{ flex: 1 }}>{title}</div>
 
         {devToolIndex !== 0 && status && (
           <UnreadDevToolsCount status={status.type} unread={status.unread} />
         )}
-        {false &&
-        active && ( // This will be enabled later on
-            <CloseTab>
-              <CrossIcon />
-            </CloseTab>
-          )}
+        {closeTab && (
+          <CloseTab
+            onClick={() =>
+              closeTab({
+                tabPosition: index,
+                devToolIndex,
+              })
+            }
+          >
+            <CrossIcon />
+          </CloseTab>
+        )}
       </Tab>
     </div>
   );
@@ -133,11 +149,11 @@ const entryTarget = {
       return;
     }
 
-    const previousPosition: ITabPosition = {
+    const previousPosition: DevToolsTabPosition = {
       tabPosition: sourceItem.index,
       devToolIndex: sourceItem.devToolIndex,
     };
-    const nextPosition = {
+    const nextPosition: DevToolsTabPosition = {
       tabPosition: props.index,
       devToolIndex: props.devToolIndex,
     };
@@ -159,17 +175,15 @@ const entryTarget = {
 const collectTarget = (
   connectMonitor: DropTargetConnector,
   monitor: DropTargetMonitor
-) => {
-  return {
-    // Call this function inside render()
-    // to let React DnD handle the drag events:
-    connectDropTarget: connectMonitor.dropTarget(),
-    // You can ask the monitor about the current drag state:
-    isOver: monitor.isOver({ shallow: true }),
-    canDrop: monitor.canDrop(),
-    itemType: monitor.getItemType(),
-  };
-};
+) => ({
+  // Call this function inside render()
+  // to let React DnD handle the drag events:
+  connectDropTarget: connectMonitor.dropTarget(),
+  // You can ask the monitor about the current drag state:
+  isOver: monitor.isOver({ shallow: true }),
+  canDrop: monitor.canDrop(),
+  itemType: monitor.getItemType(),
+});
 
 const entrySource = {
   canDrag: (props: TabProps) => props.canDrag,
@@ -186,6 +200,8 @@ const collectSource = (connect, monitor) => ({
 
 export const PREVIEW_TAB_ID = 'PREVIEW_TAB';
 
-export default DropTarget(PREVIEW_TAB_ID, entryTarget, collectTarget)(
-  DragSource(PREVIEW_TAB_ID, entrySource, collectSource)(PaneTab)
-);
+export const DraggableTab = DropTarget(
+  PREVIEW_TAB_ID,
+  entryTarget,
+  collectTarget
+)(DragSource(PREVIEW_TAB_ID, entrySource, collectSource)(PaneTab));

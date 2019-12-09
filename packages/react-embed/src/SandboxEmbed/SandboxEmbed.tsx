@@ -202,7 +202,7 @@ export default class SandboxEmbed extends React.PureComponent<Props> {
     }
   };
 
-  componentWillUpdate(nextProps) {
+  UNSAFE_componentWillUpdate(nextProps) {
     if (nextProps.sandboxOptions !== this.props.sandboxOptions) {
       // This will help smoothen the transition between two sandboxes
 

@@ -19,6 +19,16 @@
   box-sizing: border-box;
 }
 
+.monaco-workbench
+  .part.editor
+  > .content
+  .editor-group-container
+  > .title
+  .tabs-container
+  > .tab.sizing-fit {
+  min-width: -moz-fit-content;
+}
+
 .monaco-font-aliasing-antialiased {
   -webkit-font-smoothing: antialiased;
 }

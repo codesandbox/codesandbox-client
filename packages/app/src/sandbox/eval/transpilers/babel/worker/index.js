@@ -3,13 +3,13 @@ import loadPolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 require('app/config/polyfills');
 
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST}/static/browserfs3/browserfs.min.js`
+  `${process.env.CODESANDBOX_HOST}/static/browserfs7/browserfs.min.js`
 );
 
-self.BrowserFS = BrowserFS;
-self.process = BrowserFS.BFSRequire('process');
-self.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+self.process = self.BrowserFS.BFSRequire('process');
+self.Buffer = self.BrowserFS.BFSRequire('buffer').Buffer;
 
 loadPolyfills().then(() => {
+  // eslint-disable-next-line global-require
   require('./babel-worker');
 });

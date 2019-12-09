@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 import EyeIcon from 'react-icons/lib/go/eye';
 import LikeIcon from 'react-icons/lib/go/heart';
@@ -20,14 +20,14 @@ import {
   SandboxImage,
   SandboxInfo,
   TemplateIcon,
-  Author,
 } from './elements';
 import Tags from '../Tags';
 
 const getScreenshot = (id: string) =>
   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
 
-type Sandbox = {
+/* eslint-disable camelcase */
+export interface Sandbox {
   title: string;
   description: string;
   tags: string[];
@@ -41,16 +41,16 @@ type Sandbox = {
     username: string;
     avatar_url: string;
   };
-};
-
-export type Props = {
+}
+/* eslint-enable */
+export interface Props {
   sandbox: Sandbox;
   small?: boolean;
   noHeight?: boolean;
   defaultHeight?: number;
   noMargin?: boolean;
   selectSandbox: (params: Sandbox) => void;
-};
+}
 
 const kFormatter = (num: number): number | string => {
   if (num > 999999) {
@@ -65,10 +65,6 @@ const kFormatter = (num: number): number | string => {
 };
 
 export default class SandboxCard extends React.PureComponent<Props> {
-  state = {
-    imageLoaded: false,
-  };
-
   toggleOpen = () => {
     this.props.selectSandbox({ ...this.props.sandbox });
   };
@@ -113,19 +109,11 @@ export default class SandboxCard extends React.PureComponent<Props> {
             src={sandbox.screenshot_url || getScreenshot(sandbox.id)}
             color={template.color()}
             style={{ height: defaultHeight }}
-            ref={img => {
-              if (img && img.complete) {
-                this.setState({ imageLoaded: true });
-              }
-            }}
-            onLoad={() => {
-              this.setState({ imageLoaded: true });
-            }}
           />
 
           <Overlay>
             <SandboxDescription>{sandbox.description}</SandboxDescription>
-            <Tags tags={sandbox.tags} />
+            {sandbox.tags && <Tags tags={sandbox.tags} />}
           </Overlay>
         </Image>
         <SandboxInfo noHeight={noHeight}>

@@ -27,6 +27,7 @@ import vuepress from './vuepress';
 import mdxDeck from './mdx-deck';
 import razzle from './razzle';
 import quasar from './quasar';
+import unibit from './unibit';
 
 export {
   adonis,
@@ -57,7 +58,8 @@ export {
   vuepress,
   mdxDeck,
   razzle,
-  quasar
+  quasar,
+  unibit,
 };
 
 export type TemplateType =
@@ -85,9 +87,14 @@ export type TemplateType =
   | 'gridsome'
   | 'vuepress'
   | 'mdx-deck'
-  | 'quasar';
+  | 'quasar-framework'
+  | 'unibit'
+  | 'node'
+  | 'ember'
+  | 'custom'
+  | 'babel-repl';
 
-export default function getDefinition(theme: TemplateType) {
+export default function getDefinition(theme?: TemplateType) {
   switch (theme) {
     case adonis.name:
       return adonis;
@@ -147,6 +154,8 @@ export default function getDefinition(theme: TemplateType) {
       return vuepress;
     case quasar.name:
       return quasar;
+    case unibit.name:
+      return unibit;
     default:
       return react;
   }

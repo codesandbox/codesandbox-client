@@ -1,4 +1,4 @@
-import Transpiler from '../';
+import Transpiler from '..';
 
 class NoopTranspiler extends Transpiler {
   constructor() {

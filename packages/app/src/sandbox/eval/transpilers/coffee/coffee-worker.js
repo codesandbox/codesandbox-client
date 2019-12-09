@@ -9,7 +9,7 @@ self.addEventListener('message', event => {
   const { code, path } = event.data;
 
   try {
-    const compiled = CoffeeScript.compile(code, {
+    const compiled = self.CoffeeScript.compile(code, {
       filename: path,
       sourceFiles: [path],
       bare: true,

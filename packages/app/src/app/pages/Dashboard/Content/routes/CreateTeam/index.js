@@ -110,7 +110,7 @@ export default class CreateTeam extends React.PureComponent {
                     <QuestionHeader>
                       What if I{"'"}m a{' '}
                       <a target="_blank" href="/patron">
-                        Patron
+                        <span>Patron</span>
                       </a>
                       ?
                     </QuestionHeader>
@@ -152,6 +152,7 @@ export default class CreateTeam extends React.PureComponent {
                 </ComingSoon>
 
                 <Button
+                  type="submit"
                   disabled={this.state.inputValue === ''}
                   style={{ float: 'right', marginBottom: '1rem' }}
                 >

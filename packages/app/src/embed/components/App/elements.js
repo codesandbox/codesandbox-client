@@ -1,20 +1,29 @@
 // @flow
 import styled from 'styled-components';
-import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
+import css from '@styled-system/css';
 
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100vw;
-  color: white;
-`;
+export const Container = styled.div(
+  css({
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    width: '100vw',
+  })
+);
 
-export const Fullscreen = styled.div`
-  width: 100vw;
-  height: 100%;
-  overflow: hidden;
-`;
+export const Fullscreen = styled.div(
+  css({
+    width: '100vw',
+    height: '100vh',
+    overflow: 'hidden',
+    backgroundColor: 'editor.background',
+    color: 'editor.foreground',
+    h1: {
+      // override common element which has hard coded color
+      color: 'editor.foreground',
+    },
+  })
+);
 
 export const Moving = styled.div`
   transition: 0.3s ease all;
@@ -24,15 +33,10 @@ export const Moving = styled.div`
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 0;
+  left: props.sidebarOpen ? 250 : 0;
   right: 0;
-  transform: translateX(${props => (props.sidebarOpen ? 250 : 0)}px);
-  box-shadow: -3px 3px 3px rgba(0, 0, 0, 0.5);
-
-  @media (min-width: ${SIDEBAR_SHOW_SCREEN_SIZE}px) {
-    left: 250px;
-    transform: inherit;
-    box-shadow: none;
-    border-left: 1px solid ${props => props.theme.background4};
-  }
+  width: ${props => (props.sidebarOpen ? 'calc(100% - 250px)' : '100%')};
+  border: 1px solid;
+  /* 8 digit hex code with last 2 for opacity */
+  border-color: ${props => props.theme.colors.sideBar.border + '33'};
 `;

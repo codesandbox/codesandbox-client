@@ -7,6 +7,8 @@ export const AutoCompleteInput = styled.input`
   outline: none;
   background-color: ${props => props.theme['sideBar.background']};
   font-weight: 600;
+  font-family: inherit;
+  letter-spacing: 0.45px;
 
   color: ${props =>
     props.theme.light ? props.theme.black : props.theme.white};
@@ -23,5 +25,4 @@ export const SuggestionInput = styled(AutoCompleteInput)`
   background-color: transparent;
   z-index: 1;
   pointer-events: none;
-  letter-spacing: 0.45px;
 `;

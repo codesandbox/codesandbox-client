@@ -1,5 +1,4 @@
 import React from 'react';
-import { inject } from 'mobx-react';
 
 import { Container, Heading, Explanation } from '../elements';
 
@@ -20,4 +19,4 @@ function LiveVersionMismatch() {
   );
 }
 
-export default inject('store')(LiveVersionMismatch);
+export default LiveVersionMismatch;

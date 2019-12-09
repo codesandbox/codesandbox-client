@@ -23,11 +23,14 @@ export const Container = styled.div<Props>`
 
     if (status === 'info') {
       return theme.secondary();
-    } else if (status === 'warning') {
+    }
+    if (status === 'warning') {
       return theme.primary.darken(0.3)();
-    } else if (status === 'error') {
+    }
+    if (status === 'error') {
       return theme.red();
-    } else if (status === 'success') {
+    }
+    if (status === 'success') {
       return theme.green();
     }
 

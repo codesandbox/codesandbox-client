@@ -1,22 +1,18 @@
 import React from 'react';
-
-import Stat from 'app/components/Stat';
-
+import { Stat } from 'app/components/Stat';
 import Badges from './Badges';
-import { Container, Stats } from './elements';
+import { Container, Stats as StatsWrapper } from './elements';
 
-function StatsComponent({ viewCount, likeCount, forkCount, username, badges }) {
+export function Stats({ viewCount, likeCount, forkCount, username, badges }) {
   return (
     <Container>
       <Badges username={username} badges={badges} />
 
-      <Stats>
+      <StatsWrapper>
         <Stat name="Likes" count={likeCount} />
         <Stat name="Views" count={viewCount} />
         <Stat name="Forked" count={forkCount} />
-      </Stats>
+      </StatsWrapper>
     </Container>
   );
 }
-
-export default StatsComponent;

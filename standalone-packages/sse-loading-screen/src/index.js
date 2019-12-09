@@ -12,9 +12,14 @@ import { Power3 } from 'gsap/EasePack';
 import TweenLite from 'gsap/TweenLite';
 import TimelineLite from 'gsap/TimelineLite';
 
+import { isStandalone } from 'codesandbox-api'
 import getTemplate from '@codesandbox/common/lib/templates';
+import { show404 } from 'sandbox-hooks/not-found-screen';
+import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
 
 import Cube from './Cube';
+
+const SECOND = 1000; // ms
 
 // without this line, CSSPlugin and AttrPlugin may get dropped by your bundler...
 // eslint-disable-next-line
@@ -30,14 +35,22 @@ if (process.env.NODE_ENV === 'development') {
 }
 const rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
 const domain = `sse.${rootDomain}`;
-const sandbox = hostParts[0];
+// parses sandboxid[-port]
+const sandbox = hostParts[0].replace(/-\d+/, '');
+const port = hostParts[0].replace(/^\w+-?/, '');
 const lastLoadedAt = parseInt(localStorage.getItem('last_loaded_at'), 10);
 const now = Date.now();
 let isLoop = false;
+let reloadTimeout = null;
+
+if (!isStandalone) {
+  // Editor can send a preview secret
+  listenForPreviewSecret()
+}
 
 if (lastLoadedAt) {
   const timeDiff = now - lastLoadedAt;
-  if (timeDiff <= 5000) {
+  if (timeDiff <= 5 * SECOND) {
     isLoop = true;
   }
 }
@@ -214,6 +227,12 @@ async function start() {
 
   socket.on('sandbox:log', ({ data }) => {
     term.write(data);
+    if (reloadTimeout) {
+      clearTimeout(reloadTimeout);
+    }
+    reloadTimeout = setTimeout(() => {
+      window.location.reload(true);
+    }, 10 * SECOND);
   });
 
   socket.on('sandbox:error', ({ message, unrecoverable }) => {
@@ -261,12 +280,18 @@ async function start() {
     updateStatus(data.progress.current, data.progress.total, data.status);
   });
 
+  socket.on('sandbox:port', portList => {
+    portList.forEach(({ hostname, port: newPort }) => {
+      if (hostname === window.location.hostname || newPort.toString() === port) {
+        setTimeout(() => {
+          window.location.reload(true);
+        }, SECOND);
+      }
+    })
+  });
+
   socket.on('sandbox:start', () => {
     updateStatus(4, 3, 'started');
-
-    setTimeout(() => {
-      window.location.reload(true);
-    }, 100);
   });
 
   window.addEventListener('resize', () => term.fit());
@@ -283,7 +308,10 @@ if (isLoop) {
     fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
       .then(res => {
         if (res.status === 404) {
-          window.location.replace(`https://${rootDomain}/s/${sandbox}`);
+          if (isStandalone) {
+            show404(sandbox);
+          }
+
           return {};
         }
 

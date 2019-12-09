@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Badge from './Badge';
 
 const DEFAULT_BADGE = {
@@ -7,6 +7,13 @@ const DEFAULT_BADGE = {
   visible: true,
 };
 
-export default ({ size, ...props }: { size: number }) => (
+interface Props {
+  size: number;
+  style?: React.CSSProperties;
+}
+
+const PatronBadge = ({ size, ...props }: Props) => (
   <Badge {...props} badge={DEFAULT_BADGE} size={size} />
 );
+
+export default PatronBadge;

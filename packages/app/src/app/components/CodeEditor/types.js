@@ -58,6 +58,7 @@ export interface Editor {
   ) => any;
   changeCode?: (code: string, moduleId?: string) => any;
   currentModule?: Module;
+  sandbox?: Sandbox;
   setTSConfig?: (tsConfig: Object) => void;
   setReceivingCode?: (receivingCode: boolean) => void;
   applyOperations?: (operations: { [moduleShortid: string]: any }) => void;

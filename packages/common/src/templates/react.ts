@@ -1,5 +1,7 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
+
+import configurations from './configuration';
 
 export default new Template(
   'create-react-app',
@@ -12,5 +14,9 @@ export default new Template(
     popular: true,
     main: true,
     mainFile: ['/src/index.js', '/src/index.tsx', '/src/index.ts'],
+    extraConfigurations: {
+      '/jsconfig.json': configurations.jsconfig,
+      '/tsconfig.json': configurations.tsconfig,
+    },
   }
 );

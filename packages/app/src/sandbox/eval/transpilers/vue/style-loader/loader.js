@@ -83,4 +83,6 @@ export default function(content: string, loaderContext) {
     }
     return shared.concat(code).join('\n');
   }
+
+  return undefined;
 }

@@ -1,9 +1,8 @@
 import styled from 'styled-components';
+import Color from 'color';
 import Select from '@codesandbox/common/lib/components/Select';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
-import Color from 'color';
-
-import GitHubLogo from 'app/components/GitHubLogo';
+import { GitHubLogo } from 'app/components/GitHubLogo';
 
 export const GitHubLogoStyled = styled(GitHubLogo)`
   color: ${props =>

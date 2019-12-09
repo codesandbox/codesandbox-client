@@ -11,14 +11,23 @@ var execSync = require('child_process').execSync;
 var opn = require('opn');
 var http = require('http');
 var proxy = require('http-proxy-middleware');
+var path = require('path');
 var httpProxy = require('http-proxy');
+const { platform } = require('os');
 var config = require('../config/webpack.dev');
 var paths = require('../config/paths');
+const { staticAssets } = require('../config/build');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
+const PROXY_DOMAIN = 'https://codesandbox.io';
 var compiler;
 var handleCompile;
+var compileStart;
+var shouldClearConsole =
+  'CLEAR' in process.env
+    ? ['1', 'true'].includes(process.env.CLEAR)
+    : platform() !== 'win32';
 
 // Some custom utilities to prettify Webpack output.
 // This is a little hacky.
@@ -51,7 +60,9 @@ function formatMessage(message) {
 function clearConsole() {
   // This seems to work best on Windows and other systems.
   // The intention is to clear the output so you can focus on most recent build.
-  process.stdout.write('\x1bc');
+  if (shouldClearConsole) {
+    process.stdout.write('\x1bc');
+  }
 }
 
 function setupCompiler(port, protocol) {
@@ -60,10 +71,8 @@ function setupCompiler(port, protocol) {
   try {
     compiler = webpack(config, handleCompile);
   } catch (err) {
-    console.log(chalk.red('Failed to compile.'));
-    console.log();
-    console.log(err.message || err);
-    console.log();
+    console.log(chalk.red('Failed to compile.\n'));
+    console.log(`${err.message || err}\n`);
     process.exit(1);
   }
 
@@ -71,47 +80,29 @@ function setupCompiler(port, protocol) {
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
   // bundle, so if you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.hooks.invalid.tap('invalid', function() {
+  compiler.hooks.invalid.tap('invalid', function(module) {
     clearConsole();
-    console.log('Compiling...');
+    compileStart = Date.now();
+    console.log(`Module ${chalk.yellow(module)} updated, re-compiling...`);
   });
 
   // "done" event fires when Webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
   compiler.hooks.done.tap('done', stats => {
     clearConsole();
-    const hasErrors = stats.hasErrors();
-    const hasWarnings = stats.hasWarnings();
-    if (!hasErrors && !hasWarnings) {
-      console.log(chalk.green('Compiled successfully!'));
-      console.log();
-      console.log('The app is running at:');
-      console.log();
-      console.log('  ' + chalk.cyan(protocol + '://localhost:' + port + '/'));
-      console.log();
-      console.log('Note that the development build is not optimized.');
-      console.log(
-        'To create a production build, use ' + chalk.cyan('npm run build') + '.'
-      );
-      console.log();
-      return;
-    }
+    const took = new Date() - compileStart;
 
     // We have switched off the default Webpack output in WebpackDevServer
     // options so we are going to "massage" the warnings and errors and present
     // them in a readable focused way.
     // We use stats.toJson({}, true) to make output more compact and readable:
     // https://github.com/facebookincubator/create-react-app/issues/401#issuecomment-238291901
-    var json = stats.toJson({}, true);
-    var formattedErrors = json.errors.map(
-      message => 'Error in ' + formatMessage(message)
-    );
-    var formattedWarnings = json.warnings.map(
-      message => 'Warning in ' + formatMessage(message)
-    );
-    if (hasErrors) {
-      console.log(chalk.red('Failed to compile.'));
-      console.log();
+    if (stats.hasErrors()) {
+      console.log(chalk.red(`Failed to compile after ${took / 1000}s.\n`));
+      var json = stats.toJson({}, true);
+      var formattedErrors = json.errors.map(
+        message => 'Error in ' + formatMessage(message)
+      );
       if (formattedErrors.some(isLikelyASyntaxError)) {
         // If there are any syntax errors, show just them.
         // This prevents a confusing ESLint parsing error
@@ -119,18 +110,31 @@ function setupCompiler(port, protocol) {
         formattedErrors = formattedErrors.filter(isLikelyASyntaxError);
       }
       formattedErrors.forEach(message => {
-        console.log(message);
-        console.log();
+        console.log(`${message}\n`);
       });
       // If errors exist, ignore warnings.
       return;
     }
+
+    // filter known warnings:
+    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+    //   in ./node_modules/typescript/lib/typescript.js
+    // CriticalDependencyWarning: Critical dependency: require function is used in a way in which dependencies cannot be statically extracted
+    //   in ./packages/app/node_modules/babel-plugin-macros/dist/index.js
+    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+    //   in ./packages/app/node_modules/cosmiconfig/dist/loaders.js
+    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+    //   in ./packages/app/src/app/components/CodeEditor/CodeMirror/index.js
+    const warnings = stats.compilation.warnings
+      .concat(...stats.compilation.children.map(child => child.warnings))
+      .filter(warning => warning.error.name !== 'CriticalDependencyWarning');
+    const hasWarnings = warnings.length > 0;
     if (hasWarnings) {
-      console.log(chalk.yellow('Compiled with warnings.'));
-      console.log();
-      formattedWarnings.forEach(message => {
-        console.log(message);
-        console.log();
+      console.log(chalk.yellow(`Compiled with warnings in ${took / 1000}s.\n`));
+      warnings.forEach(({ error, module }) => {
+        console.log(
+          `${error.name}: ${error.message}\n  in ${module.resource}\n`
+        );
       });
       // Teach some ESLint tricks.
       console.log('You may use special comments to disable some warnings.');
@@ -142,9 +146,20 @@ function setupCompiler(port, protocol) {
       console.log(
         'Use ' +
           chalk.yellow('/* eslint-disable */') +
-          ' to ignore all warnings in a file.'
+          ' to ignore all warnings in a file.\n'
       );
     }
+
+    if (!hasWarnings) {
+      console.log(chalk.green(`Compiled successfully in ${took / 1000}s!\n`));
+    }
+
+    console.log('The app is running at:\n');
+    console.log(`  ${chalk.cyan(`${protocol}://localhost:${port}/`)}\n`);
+    console.log('Note that the development build is not optimized.');
+    console.log(
+      `To create a production build, use ${chalk.cyan('yarn build')}.\n`
+    );
   });
 }
 
@@ -177,6 +192,13 @@ function addMiddleware(devServer, index) {
     next();
   });
   devServer.use('/homepage', express.static(paths.homepageSrc));
+
+  const rootPath = path.resolve(__dirname, '../../..');
+  staticAssets.forEach(({ from, to }) => {
+    const fromPath = path.resolve(rootPath, from);
+    devServer.use(`/${to}`, express.static(fromPath));
+  });
+
   devServer.use(
     historyApiFallback({
       // Allow paths with dots in them to be loaded, reference issue #387
@@ -193,6 +215,7 @@ function addMiddleware(devServer, index) {
       rewrites: [{ from: /\/embed/, to: '/embed.html' }],
     })
   );
+  let wsProxy;
   if (process.env.LOCAL_SERVER) {
     devServer.use(
       cors({
@@ -205,10 +228,21 @@ function addMiddleware(devServer, index) {
         credentials: true,
       })
     );
+    wsProxy = proxy({
+      target: PROXY_DOMAIN.replace('https', 'wss'),
+      changeOrigin: true,
+      ws: true,
+      autoRewrite: true,
+      protocolRewrite: true,
+      onProxyReqWs(proxyReq, req, socket, options, head) {
+        proxyReq.setHeader('Origin', PROXY_DOMAIN);
+      },
+    });
+    devServer.use('/socket', wsProxy);
     devServer.use(
       '/api',
       proxy({
-        target: 'https://codesandbox.io',
+        target: PROXY_DOMAIN,
         changeOrigin: true,
       })
     );
@@ -225,16 +259,12 @@ function addMiddleware(devServer, index) {
   // Finally, by now we have certainly resolved the URL.
   // It may be /index.html, so let the dev server try serving it again.
   devServer.use(devServer.middleware);
+
+  return { wsProxy };
 }
 
 function runDevServer(port, protocol, index) {
   var devServer = new WebpackDevServer(compiler, {
-    // Enable hot reloading server. It will provide /sockjs-node/ endpoint
-    // for the WebpackDevServer client so it can learn when the files were
-    // updated. The WebpackDevServer client is included as an entry point
-    // in the Webpack development configuration. Note that only changes
-    // to CSS are currently hot reloaded. JS changes will refresh the browser.
-    hot: true,
     // It is important to tell WebpackDevServer to use the same "root" path
     // as we specified in the config. In development, we always serve from /.
     publicPath: config.output.publicPath,
@@ -254,26 +284,14 @@ function runDevServer(port, protocol, index) {
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,
-    proxy: {
-      '/public/vscode-extensions/**': {
-        target: `${protocol}://${
-          process.env.LOCAL_SERVER ? 'localhost:3000' : 'codesandbox.test'
-        }`,
-        bypass: req => {
-          if (req.method === 'HEAD') {
-            // A hack to support HEAD calls for BrowserFS
-            req.method = 'GET';
-          }
-        },
-      },
-    },
+    inline: false,
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
-  addMiddleware(devServer, index);
+  const { wsProxy } = addMiddleware(devServer, index);
 
   // Launch WebpackDevServer.
-  devServer.listen(port, (err, result) => {
+  devServer.listen(port, err => {
     if (err) {
       return console.log(err);
     }
@@ -282,14 +300,20 @@ function runDevServer(port, protocol, index) {
     console.log(chalk.cyan('Starting the development server...'));
     openBrowser(port, protocol);
   });
+
+  if (wsProxy) {
+    devServer.listeningApp.on('upgrade', wsProxy.upgrade);
+  }
 }
 
 function run(port) {
   var protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
   setupCompiler(port, protocol);
+  compileStart = Date.now();
   runDevServer(port, protocol, '/app.html');
 
   if (process.env.LOCAL_SERVER) {
+    // Sandbox server
     const proxy = httpProxy.createProxyServer({});
     http
       .createServer(function(req, res) {

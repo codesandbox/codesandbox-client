@@ -1,2 +1,30 @@
-*
-!www
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+# we use yarn
+package-lock.json
+
+/integration-tests/**/__diff_output__
+
+# testing
+coverage
+
+# production
+build
+www
+.deliver
+
+# misc
+.DS_Store
+npm-debug.log
+yarn-error.log
+.idea
+jest
+
+lerna-debug.log
+
+standalone-packages/monaco-editor-core
+
+.next
+.cache-loader

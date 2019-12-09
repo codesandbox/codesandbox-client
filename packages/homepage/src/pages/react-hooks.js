@@ -11,7 +11,7 @@ import Layout from '../components/layout';
 import SandboxModal from '../screens/explore/SandboxModal';
 import ShuffleWords from './_shuffleWords';
 
-import { Container, Sandboxes } from './_explore.elements';
+import { Container, Sandboxes } from './explore/_elements';
 
 export default class extends React.PureComponent {
   state = {
@@ -31,16 +31,17 @@ export default class extends React.PureComponent {
   }
 
   openSandbox = index => {
-    const sandbox = this.state.sandboxes[index];
-    const { id, title, description } = sandbox;
-
-    this.setState({
-      selectedSandbox: {
-        id,
-        title,
-        description,
-        screenshotUrl: sandbox.screenshot_url,
-      },
+    this.setState(state => {
+      const sandbox = state.sandboxes[index];
+      const { id, title, description } = sandbox;
+      return {
+        selectedSandbox: {
+          id,
+          title,
+          description,
+          screenshotUrl: sandbox.screenshot_url,
+        },
+      };
     });
   };
 

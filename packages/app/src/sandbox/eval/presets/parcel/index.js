@@ -17,7 +17,7 @@ import pugTranspiler from '../../transpilers/pug';
 import coffeeTranspiler from '../../transpilers/coffee';
 import noopTranspiler from '../../transpilers/noop';
 
-import Preset from '../';
+import Preset from '..';
 
 export default function initialize() {
   const parcelPreset = new Preset(
@@ -64,6 +64,12 @@ export default function initialize() {
 
   parcelPreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: tsTranspiler },
+    {
+      transpiler: babelTranspiler,
+      options: {
+        dynamicCSSModules: true,
+      },
+    },
   ]);
 
   parcelPreset.registerTranspiler(module => /\.pug$/.test(module.path), [

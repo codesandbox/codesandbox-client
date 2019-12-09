@@ -1,4 +1,11 @@
-export default async ({ feedback, emoji, sandboxId, username, email }) => {
+export default async ({
+  feedback,
+  emoji,
+  sandboxId,
+  username,
+  email,
+  version,
+}) => {
   const Airtable = await import(
     /* webpackChunkName: 'airtable' */ './setAirtable'
   );
@@ -13,6 +20,7 @@ export default async ({ feedback, emoji, sandboxId, username, email }) => {
         username,
         email,
         url: window.location.pathname,
+        version,
       },
       err => {
         if (err) {

@@ -1,0 +1,56 @@
+{
+	"name": "rest",
+	"version": "1.3.2",
+	"description": "RESTful HTTP client library",
+	"keywords": ["rest", "http", "client", "rest-template", "spring", "cujojs"],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cujojs/rest.git"
+	},
+	"bugs": "https://github.com/cujojs/rest/issues",
+	"maintainers": [
+		{
+			"name": "Scott Andrews",
+			"email": "scothis@gmail.com",
+			"web": "http://twitter.com/scothis"
+		}
+	],
+	"contributors": [
+		{
+			"name": "Jeremy Grelle",
+			"email": "jeremy.grelle@gmail.com"
+		},
+		{
+			"name": "John Hann",
+			"web": "http://unscriptable.com"
+		},
+		{
+			"name": "Michael Jackson",
+			"web": "https://github.com/mjackson"
+		}
+	],
+	"dependencies": {
+		"when": "~3"
+	},
+	"devDependencies": {
+		"wire": "~0.9",
+		"test-support": "~0.4",
+		"curl": "https://github.com/cujojs/curl/tarball/0.7.3",
+		"poly": "https://github.com/cujojs/poly/tarball/0.5.1"
+	},
+	"main": "./node",
+	"browser": "./browser",
+	"jspm": {
+		"registry": "npm",
+		"main": "./browser"
+	},
+	"scripts": {
+		"test": "npm run-script lint && npm run-script buster",
+		"start": "buster static -e browser",
+		"tunnel": "sauceme -m",
+		"lint": "jshint .",
+		"buster": "buster test --node",
+		"sauceme": "sauceme"
+	}
+}

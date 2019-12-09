@@ -1,0 +1,13 @@
+{
+	"name": "rest",
+	"version": "1.3.2",
+	"main": "./browser.js",
+	"moduleType": ["amd", "node"],
+	"dependencies": {
+		"when": "~3"
+	},
+	"ignore": [
+		"docs",
+		"test"
+	]
+}

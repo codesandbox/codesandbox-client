@@ -26,7 +26,7 @@ export default function(
   globals: Object = {},
   { asUMD = false }: { asUMD: boolean } = {}
 ) {
-  const exports = module.exports;
+  const { exports } = module;
 
   const global = g;
   const process = buildProcess(env);

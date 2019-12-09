@@ -11,7 +11,7 @@ function Navigation({ username, sandboxCount, likeCount }) {
           color: 'white',
         }}
         exact
-        border={`border-right: 1px solid rgba(255, 255, 255, 0.2)`}
+        border="border-right: 1px solid rgba(255, 255, 255, 0.2)"
       >
         SHOWCASE
       </NavigationLink>
@@ -20,7 +20,7 @@ function Navigation({ username, sandboxCount, likeCount }) {
         activeStyle={{
           color: 'white',
         }}
-        border={`border-right: 1px solid rgba(255, 255, 255, 0.2)`}
+        border="border-right: 1px solid rgba(255, 255, 255, 0.2)"
       >
         SANDBOXES ({sandboxCount})
       </NavigationLink>

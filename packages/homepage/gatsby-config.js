@@ -6,6 +6,8 @@ module.exports = {
     siteUrl: 'https://codesandbox.io',
   },
   plugins: [
+    'gatsby-transformer-sharp',
+    'gatsby-plugin-sharp',
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -24,28 +26,29 @@ module.exports = {
     {
       resolve: `gatsby-transformer-remark`,
       options: {
+        pedantic: false,
         plugins: [
+          `gatsby-remark-copy-linked-files`,
           {
             resolve: `gatsby-remark-images`,
             options: {
               maxWidth: 740,
               linkImagesToOriginal: true,
-              sizeByPixelDensity: true,
             },
           },
-          {
-            resolve: require.resolve(`./plugins/remark-sections`),
-          },
+          { resolve: require.resolve(`./plugins/remark-sections`) },
           'gatsby-remark-autolink-headers',
           `gatsby-remark-prismjs`,
-          {
-            resolve: 'gatsby-remark-embed-youtube',
-            options: {
-              width: 740,
-              height: 370,
-            },
-          },
+          `gatsby-remark-embedder`,
         ],
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-react-svg',
+      options: {
+        rule: {
+          include: /screens/, // See below to configure properly
+        },
       },
     },
     {
@@ -54,6 +57,7 @@ module.exports = {
         color: '#40A9F3',
       },
     },
+    `gatsby-plugin-twitter`,
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-remove-trailing-slashes`,
@@ -65,27 +69,10 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-source-medium`,
-      options: {
-        username: `@compuives`,
-        limit: 200,
-      },
-    },
-    {
-      resolve: `gatsby-source-rss-feed`,
-      options: {
-        url: `https://medium.com/feed/@compuives`,
-        name: `MediumBlog`,
-      },
-    },
-    {
       resolve: `gatsby-plugin-google-fonts`,
       options: {
-        fonts: [
-          `Poppins:600,700,800`,
-          `source sans pro:300,400,500,600,700`,
-          'open sans:300,400',
-        ],
+        fonts: ['open sans:400', 'roboto:400i,400'],
+        display: 'swap',
       },
     },
     {

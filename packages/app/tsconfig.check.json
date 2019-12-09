@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "exclude": ["codesandbox-browserfs/*"],
   "compilerOptions": {
-    "allowJs": false
+    "allowJs": false,
+    "skipLibCheck": true
   }
 }

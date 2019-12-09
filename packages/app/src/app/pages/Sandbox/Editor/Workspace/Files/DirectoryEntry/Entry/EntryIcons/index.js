@@ -59,8 +59,4 @@ function EntryIcon({
   );
 }
 
-EntryIcon.defaultProps = {
-  isOpen: false,
-};
-
 export default EntryIcon;

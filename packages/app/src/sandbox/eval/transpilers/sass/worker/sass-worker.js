@@ -4,9 +4,7 @@ import { extname } from 'path';
 import delay from '@codesandbox/common/lib/utils/delay';
 
 self.importScripts([
-  process.env.NODE_ENV === 'production'
-    ? 'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.10.13/sass.sync.min.js'
-    : 'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.10.13/sass.sync.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.11.0/sass.sync.js',
 ]);
 
 self.postMessage('ready');
@@ -58,7 +56,8 @@ const existsPromise = (fs, file) =>
     fs.stat(file, async (err, stats) => {
       if (err || stats.isDirectory()) {
         if (stats && stats.isDirectory()) {
-          return r(false);
+          r(false);
+          return;
         }
         // We try to download it
         try {
@@ -69,7 +68,8 @@ const existsPromise = (fs, file) =>
           const ext = extname(path).substr(1);
 
           if (SUPPORTED_EXTS.indexOf(ext) === -1) {
-            return r(false);
+            r(false);
+            return;
           }
 
           r(path);
@@ -77,7 +77,7 @@ const existsPromise = (fs, file) =>
           r(false);
         }
       } else {
-        return r(file);
+        r(file);
       }
     });
   });

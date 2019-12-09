@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
@@ -7,14 +7,24 @@ import Stat from './Stat';
 
 import { Stats } from './elements';
 
+type StatsComponentProps = {
+  viewCount: number;
+  likeCount: number;
+  forkCount: number;
+  vertical?: boolean;
+  text?: boolean;
+  style?: React.CSSProperties;
+};
+
 function StatsComponent({
   viewCount,
   likeCount,
   forkCount,
-  vertical,
-  text,
+  vertical = false,
+  text = false,
+  style,
   ...props
-}) {
+}: StatsComponentProps) {
   return (
     <Stats vertical={vertical} {...props}>
       <Stat

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.18.0
+
+### Minor
+
+- Add support for `statusBarItem.remoteBackground` (currently available in insiders) #105
+
 ## 2.17.0
 
 ### Minor

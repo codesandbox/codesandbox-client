@@ -5,7 +5,7 @@ import { type LoaderContext } from '../../../transpiled-module';
 
 export default function(code: string, loaderContext: LoaderContext) {
   const query = loaderContext.options;
-  const context = query.context;
+  const { context } = query;
   let filename = path.basename(loaderContext.path);
   filename =
     filename.substring(0, filename.lastIndexOf(path.extname(filename))) +

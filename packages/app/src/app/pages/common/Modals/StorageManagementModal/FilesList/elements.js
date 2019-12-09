@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components';
 import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
+import styled, { css } from 'styled-components';
 
 export const HeaderTitle = styled.th`
   font-weight: 400;
@@ -11,10 +11,7 @@ export const HeaderTitle = styled.th`
 export const Buttons = styled.div`
   margin: 0.5rem 0;
   display: flex;
-
-  > *:not(:last-child) {
-    margin-right: 0.5rem;
-  }
+  justify-content: space-between;
 `;
 
 export const Table = styled.table`

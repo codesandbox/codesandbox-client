@@ -23,7 +23,7 @@ export default class FuzzySearch extends React.PureComponent {
   // This is a precached map of paths to module
   paths = {};
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { modules, directories } = this.props;
     const modulePathData = modules.map(m => {
       const path = getModulePath(modules, directories, m.id);

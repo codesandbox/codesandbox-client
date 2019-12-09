@@ -1,5 +1,7 @@
+/* eslint-disable import/default */
 // @ts-ignore
-import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index.js';
+import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index';
+/* eslint-enable import/default */
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 
 import regexGetRequireStatements from './worker/simple-get-require-statements';
@@ -43,7 +45,7 @@ class BabelTranspiler extends WorkerTranspiler {
     loaderContext: LoaderContext
   ): Promise<{ transpiledCode: string }> {
     return new Promise((resolve, reject) => {
-      const path = loaderContext.path;
+      const { path } = loaderContext;
 
       // When we find a node_module that already is commonjs we will just get the
       // dependencies from the file and return the same code. We get the dependencies

@@ -1,3 +1,4 @@
+/* eslint-disable */
 // vue compiler module for transforming `img:srcset` to a number of `require`s
 
 export default function() {

@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import theme from '@codesandbox/common/lib/theme';
 import ansiHTML from 'ansi-html';
 
-import { TestError } from '../../';
+import { escapeHtml } from 'app/utils/escape';
+
+import { TestError } from '../..';
 
 const Container = styled.div`
   font-family: Menlo, Source Code Pro, monospace;
@@ -21,15 +23,6 @@ const Container = styled.div`
     border-bottom: none;
   }
 `;
-
-function escapeHtml(unsafe) {
-  return unsafe
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
 
 const formatDiffMessage = (error: TestError, path: string) => {
   let finalMessage: string = '';
@@ -92,7 +85,7 @@ const formatDiffMessage = (error: TestError, path: string) => {
             ? `<span style="color:${theme.red()};">></span> `
             : '') +
           newMargin.join('') +
-          code.lineNumber +
+          escapeHtml('' + code.lineNumber) +
           ' | ' +
           escapeHtml(code.content) +
           '</div>';
@@ -103,7 +96,13 @@ const formatDiffMessage = (error: TestError, path: string) => {
   return finalMessage.replace(/(?:\r\n|\r|\n)/g, '<br />');
 };
 
-export default ({ error, path }: { error: TestError; path: string }) => (
+export const ErrorDetails = ({
+  error,
+  path,
+}: {
+  error: TestError;
+  path: string;
+}) => (
   <Container
     dangerouslySetInnerHTML={{
       __html: formatDiffMessage(error, path),

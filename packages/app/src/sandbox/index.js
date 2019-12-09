@@ -1,16 +1,25 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
-
+import { activate, initialize } from 'react-devtools-inline/backend';
 import _debug from '@codesandbox/common/lib/utils/debug';
 
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
 import setupConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
+import {
+  listenForPreviewSecret,
+  getPreviewSecret,
+} from 'sandbox-hooks/preview-secret';
+import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
+
+// Call this before importing React (or any other packages that might import React).
+initialize(window);
 
 const host = process.env.CODESANDBOX_HOST;
 const debug = _debug('cs:sandbox');
@@ -19,23 +28,6 @@ export const SCRIPT_VERSION =
   document.currentScript && document.currentScript.src;
 
 debug('Booting sandbox');
-
-function getId() {
-  if (process.env.LOCAL_SERVER) {
-    return document.location.hash.replace('#', '');
-  }
-
-  if (process.env.STAGING) {
-    const segments = host.split('//')[1].split('.');
-    const first = segments.shift();
-    const re = RegExp(`${first}-(.*)\\.${segments.join('\\.')}`);
-    return document.location.host.match(re)[1];
-  }
-
-  const hostRegex = host.replace(/https?:\/\//, '').replace(/\./g, '\\.');
-  const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
-  return document.location.host.match(sandboxRegex)[1];
-}
 
 requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js', {});
@@ -47,12 +39,7 @@ requirePolyfills().then(() => {
   async function handleMessage(data, source) {
     if (source) {
       if (data.type === 'compile') {
-        if (data.version === 3) {
-          compile(data);
-        } else {
-          const compileOld = await import('./compile-old').then(x => x.default);
-          compileOld(data);
-        }
+        compile(data);
       } else if (data.type === 'get-transpiler-context') {
         const manager = getCurrentManager();
 
@@ -81,17 +68,37 @@ requirePolyfills().then(() => {
       // Means we're in the editor
       setupHistoryListeners();
       setupConsole();
+      listenForPreviewSecret();
+      window.addEventListener('message', ({ data }) => {
+        switch (data.type) {
+          case 'activate':
+            activate(window);
+            break;
+          default:
+            break;
+        }
+      });
     }
   }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
-    const id = getId();
+    const id = getSandboxId();
     window
       .fetch(host + `/api/v1/sandboxes/${id}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Basic ${getPreviewSecret()}`,
+        },
         credentials: 'include',
+        mode: 'cors',
       })
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 404) {
+          show404(id);
+        }
+        return res.json();
+      })
       .then(res => {
         const camelized = camelizeKeys(res);
         camelized.data.npmDependencies = res.data.npm_dependencies;
@@ -126,6 +133,9 @@ requirePolyfills().then(() => {
           hasActions: false,
           template: x.data.template,
           version: 3,
+          disableDependencyPreprocessing: document.location.search.includes(
+            'csb-dynamic-download'
+          ),
         };
 
         compile(data);

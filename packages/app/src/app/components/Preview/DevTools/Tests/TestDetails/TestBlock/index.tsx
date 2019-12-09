@@ -2,18 +2,18 @@ import * as React from 'react';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Test } from '../../';
+import { Test } from '../..';
 
 import { BlockHeader, Container, Actions } from './elements';
-import TestName from './TestName';
-import ErrorDetails from '../ErrorDetails';
+import { TestName } from './TestName';
+import { ErrorDetails } from '../ErrorDetails';
 
 type Props = {
   test: Test;
   openFile?: (path: string) => void;
 };
 
-export default ({ test, openFile }: Props) => (
+export const TestBlock = ({ test, openFile }: Props) => (
   <Container>
     <BlockHeader>
       <TestName test={test} />

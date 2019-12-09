@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JSON schema for elm-package.json configuration files",
+  "definitions": {
+    "rangeDependency": {
+      "description": "Dependencies are specified by [author name]/[package name]: [exact version or range]. Range versions look like: [1.0.0 <= v < 2.0.0].",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "repository": {
+      "description": "The project's github url.",
+      "type": "string"
+    },
+    "source-directories": {
+      "description": "A list of directories that will be used to build your project.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "license": {
+      "description": "A license for your package.",
+      "type": "string"
+    },
+    "summary": {
+      "description": "A helpful summary of your package, less than 80 characters",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 79
+    },
+    "version": {
+      "description": "Your package's version in semantic versioning format.",
+      "type": "string",
+      "pattern": "\\d+\\.\\d+\\.\\d+"
+    },
+    "elm-version": {
+      "description": "The version of elm your package is targeting",
+      "type": "string"
+    },
+    "exposed-modules": {
+      "description": "All modules that your project will make available to end users.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dependencies": {
+      "description": "A list of elm dependencies that your package needs.",
+      "$ref": "#/definitions/rangeDependency"
+    }
+  },
+  "required": [ "repository", "source-directories", "license", "summary", "version", "elm-version", "exposed-modules","dependencies" ],
+  "additionalProperties": true
+}

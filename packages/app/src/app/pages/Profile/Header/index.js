@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Navigation from 'app/pages/common/Navigation';
+import { Navigation } from 'app/pages/common/Navigation';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 
 import UserInfo from './UserInfo';

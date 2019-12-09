@@ -7,6 +7,8 @@ export const Container = styled.div`
   position: relative;
 `;
 
+// TODO: Use withoutProps utility from common once Follow Templates is merged
+//       to remove the DOM error for teamId prop
 export const NavigationLink = styled(Link)`
   transition: 0.3s ease color;
   margin-right: 0.5rem;

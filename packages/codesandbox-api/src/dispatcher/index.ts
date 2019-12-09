@@ -18,6 +18,7 @@ function checkIsStandalone() {
 // Whether the tab has a connection with the editor
 export const isStandalone = checkIsStandalone();
 
+// Field used by a "child" frame to determine its parent origin
 let parentOrigin: string | null = null;
 
 const parentOriginListener = (e: MessageEvent) => {

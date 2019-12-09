@@ -7,7 +7,11 @@ type Props = {
   idleCount: number;
 };
 
-export default ({ failedCount, passedCount, idleCount }: Props) => (
+export const TestProgressBar = ({
+  failedCount,
+  passedCount,
+  idleCount,
+}: Props) => (
   <ProgressBar>
     <FailedBar count={failedCount} />
     <SuccessBar count={passedCount} />

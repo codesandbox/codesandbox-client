@@ -1,56 +1,24 @@
 import {
+  DiffTab,
   Module,
-  Sandbox,
-  ModuleError,
   ModuleCorrection,
+  ModuleError,
+  ModuleTab,
+  Sandbox,
+  Settings,
 } from '@codesandbox/common/lib/types';
-
-export type Settings = {
-  autoCompleteEnabled: boolean;
-  autoDownloadTypes: boolean;
-  codeMirror: boolean;
-  clearConsoleEnabled: boolean;
-  fontFamily?: string;
-  fontSize: number;
-  lineHeight: number;
-  lintEnabled: boolean;
-  vimMode: boolean;
-  tabWidth: number;
-  enableLigatures: boolean;
-  forceRefresh: boolean;
-  experimentVSCode: boolean;
-  prettierConfig: Object;
-  zenMode: boolean;
-};
-
-type ModuleTab = {
-  type: 'MODULE';
-  moduleShortid: string;
-  dirty: boolean;
-};
-
-type DiffTab = {
-  type: 'DIFF';
-  codeA: string;
-  codeB: string;
-  titleA: string;
-  titleB: string;
-  fileTitle?: string;
-};
-
-export type Tab = ModuleTab | DiffTab;
 
 export interface Editor {
   changeSandbox?: (
     sandbox: Sandbox,
     newCurrentModule: Module,
-    dependencies: Object
+    dependencies: { [name: string]: string }
   ) => Promise<any>;
   setErrors?: (errors: Array<ModuleError>) => any;
   setCorrections?: (corrections: Array<ModuleCorrection>) => any;
   updateModules?: () => any;
   changeSettings?: (settings: Settings) => any;
-  changeDependencies?: (deps: Object) => any;
+  changeDependencies?: (deps: { [name: string]: string }) => any;
   changeModule?: (
     module: Module,
     errors?: Array<ModuleError>,
@@ -58,6 +26,7 @@ export interface Editor {
   ) => any;
   changeCode?: (code: string, moduleId?: string) => any;
   currentModule?: Module;
+  sandbox?: Sandbox;
   setTSConfig?: (tsConfig: Object) => void;
   setReceivingCode?: (receivingCode: boolean) => void;
   applyOperations?: (operations: { [moduleShortid: string]: any }) => void;
@@ -68,10 +37,10 @@ export interface Editor {
 
 export type Props = {
   currentModule: Module;
-  currentTab: Tab | undefined;
+  currentTab?: ModuleTab | DiffTab;
   sandbox: Sandbox;
   isModuleSynced: (shortid: string) => boolean;
-  customEditorAPI: {
+  customEditorAPI?: {
     getCustomEditor: (
       path: string
     ) => (container: HTMLElement, extraProps: object) => void;
@@ -82,18 +51,18 @@ export type Props = {
   onNpmDependencyAdded?: (name: string) => void;
   onSave?: (code: string) => void;
   settings: Settings;
-  height?: string;
-  width?: string;
+  height?: number;
+  width?: number;
   hideNavigation?: boolean;
   dependencies?: { [name: string]: string };
   highlightedLines?: Array<number>;
   tsconfig?: Object;
   readOnly?: boolean;
-  isLive: boolean;
+  isLive?: boolean;
   sendTransforms?: (transform: any) => void;
   receivingCode?: boolean;
   onCodeReceived?: () => void;
-  onSelectionChanged: (d: { selection: any; moduleShortid: string }) => void;
+  onSelectionChanged?: (d: { selection: any; moduleShortid: string }) => void;
   onModuleStateMismatch?: () => void;
-  theme: any;
+  theme?: any;
 };

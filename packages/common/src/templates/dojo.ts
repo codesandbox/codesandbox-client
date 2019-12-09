@@ -1,5 +1,5 @@
 import Template, { ParsedConfigurationFiles } from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 import configurations from './configuration';
 
 export class DojoTemplate extends Template {
@@ -24,7 +24,7 @@ export default new DojoTemplate(
   {
     showOnHomePage: true,
     showCube: false,
-    netlify: false,
+    distDir: 'output/dist',
     isTypescript: true,
     extraConfigurations: {
       '/tsconfig.json': configurations.tsconfig,

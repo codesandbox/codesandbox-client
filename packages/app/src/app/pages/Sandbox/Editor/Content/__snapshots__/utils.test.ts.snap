@@ -1,5 +1,53 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`addDevToolsTab can add a tab 1`] = `
+Object {
+  "devTools": Array [
+    Object {
+      "views": Array [
+        Object {
+          "id": "codesandbox.browser",
+        },
+        Object {
+          "id": "codesandbox.tests",
+        },
+        Object {
+          "id": "codesandbox.browser",
+        },
+      ],
+    },
+  ],
+  "position": Object {
+    "devToolIndex": 0,
+    "tabPosition": 2,
+  },
+}
+`;
+
+exports[`addDevToolsTab can add a tab on specific position 1`] = `
+Object {
+  "devTools": Array [
+    Object {
+      "views": Array [
+        Object {
+          "id": "codesandbox.tests",
+        },
+        Object {
+          "id": "codesandbox.browser",
+        },
+        Object {
+          "id": "codesandbox.tests",
+        },
+      ],
+    },
+  ],
+  "position": Object {
+    "devToolIndex": 0,
+    "tabPosition": 0,
+  },
+}
+`;
+
 exports[`moveDevToolsTab can move a tab from one devtools to the other 1`] = `
 Array [
   Object {

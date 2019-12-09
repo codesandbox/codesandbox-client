@@ -1,4 +1,4 @@
-import Transpiler from '../../';
+import Transpiler from '../..';
 import { LoaderContext } from '../../../transpiled-module';
 
 class VueStyleCompiler extends Transpiler {
@@ -7,9 +7,9 @@ class VueStyleCompiler extends Transpiler {
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
-    return import(/* webpackChunkName: 'vue-style-compiler' */ './loader').then(
-      loader => loader.default(code, loaderContext)
-    );
+    return import(
+      /* webpackChunkName: 'vue-style-compiler' */ './loader'
+    ).then(loader => loader.default(code, loaderContext));
   }
 }
 

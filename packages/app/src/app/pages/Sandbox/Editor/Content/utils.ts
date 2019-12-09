@@ -1,15 +1,38 @@
 import immer from 'immer';
-import { ViewConfig } from '@codesandbox/common/lib/templates/template';
-import { ITabPosition } from 'app/components/Preview/DevTools/Tabs';
+import {
+  ViewConfig,
+  ViewTab,
+} from '@codesandbox/common/lib/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 
-const isEqual = (prevPos: ITabPosition, nextPos: ITabPosition) =>
+const isEqual = (prevPos: DevToolsTabPosition, nextPos: DevToolsTabPosition) =>
   prevPos.devToolIndex === nextPos.devToolIndex &&
   prevPos.tabPosition === nextPos.tabPosition;
 
+export function addDevToolsTab(
+  tabs: ViewConfig[],
+  newTab: ViewTab,
+  position?: DevToolsTabPosition
+) {
+  const positionToAdd: DevToolsTabPosition = position || {
+    devToolIndex: 0,
+    tabPosition: tabs[0].views.length,
+  };
+
+  return {
+    devTools: immer(tabs, draft => {
+      const devTools = draft[positionToAdd.devToolIndex];
+
+      devTools.views.splice(positionToAdd.tabPosition, 0, newTab);
+    }),
+    position: { ...positionToAdd, tabPosition: positionToAdd.tabPosition },
+  };
+}
+
 export function moveDevToolsTab(
   tabs: ViewConfig[],
-  prevPos: ITabPosition,
-  nextPos: ITabPosition
+  prevPos: DevToolsTabPosition,
+  nextPos: DevToolsTabPosition
 ) {
   if (isEqual(prevPos, nextPos)) {
     return tabs;
@@ -30,11 +53,25 @@ export function moveDevToolsTab(
     draft.map((t, i) => {
       if (i === prevPos.devToolIndex) {
         return prevDevTools;
-      } else if (i === nextPos.devToolIndex) {
+      }
+
+      if (i === nextPos.devToolIndex) {
         return nextDevTools;
       }
 
       return t;
     });
+  });
+}
+
+export function closeDevToolsTab(
+  tabs: ViewConfig[],
+  closePos: DevToolsTabPosition
+) {
+  // We want to do this immutable, to prevent conflicts while the file is changing
+  return immer(tabs, draft => {
+    const devTools = draft[closePos.devToolIndex];
+
+    devTools.views.splice(closePos.tabPosition, 1);
   });
 }

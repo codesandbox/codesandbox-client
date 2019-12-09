@@ -28,7 +28,7 @@ export default class ContributorsBadge extends React.Component<Props, State> {
     this.updateContributorStatus();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.updateContributorStatus(nextProps);
   }
 

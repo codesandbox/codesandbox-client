@@ -1,4 +1,4 @@
-import Transpiler from '../';
+import Transpiler from '..';
 import { LoaderContext } from '../../transpiled-module';
 
 // This is the most advanced compiler, I wanted to get it working in sync first,
@@ -8,6 +8,7 @@ class VueTranspiler extends Transpiler {
   constructor() {
     super('vue-loader');
   }
+
   doTranspilation(code: string, loaderContext: LoaderContext) {
     return import(/* webpackChunkName: 'vue-loader' */ './loader').then(
       loader => {

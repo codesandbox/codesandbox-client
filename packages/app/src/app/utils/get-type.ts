@@ -12,6 +12,7 @@ type regexCasesMap = {
   javascript: RegExp;
   typescript: RegExp;
   console: RegExp;
+  prisma: RegExp;
   git: RegExp;
   flow: RegExp;
 };
@@ -22,7 +23,8 @@ const specialCasesMap = {
   'package.json': 'npm',
   'sandbox.config.json': 'codesandbox',
   'now.json': 'now',
-  'netlify.toml': 'settings',
+  prisma: 'prisma',
+  'netlify.toml': 'netlify',
   'readme.md': 'readme',
   'contributing.md': 'contributing',
   'tsconfig.json': 'typescript',
@@ -40,6 +42,7 @@ const regexCasesMap = {
   javascript: /\.m?js$/,
   typescript: /\.tsx?$/,
   console: /\.sh$/,
+  prisma: /\.prisma$/,
   // STARTS WITH
   git: /^.git/i,
   flow: /^.flow/i,

@@ -1,0 +1,15 @@
+{
+    "version": "0.1.0",
+    "summary": "Query for information about values in elm source files.",
+    "repository": "https://github.com/ElmCast/elm-oracle.git",
+    "license": "BSD3",
+    "source-directories": [
+        "."
+    ],
+    "exposed-modules": [],
+    "native-modules": true,
+    "dependencies": {
+        "elm-lang/core": "2.1.0 <= v < 3.0.0"
+    },
+    "elm-version": "0.15.1 <= v < 0.16.0"
+}

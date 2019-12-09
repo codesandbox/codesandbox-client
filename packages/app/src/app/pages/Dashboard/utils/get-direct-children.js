@@ -9,7 +9,7 @@ function addSlash(path: string) {
 export default function getDirectChildren(
   currentPath: string,
   children: Array<{ path: string }>
-) {
+): Set<string> {
   const usedChildren = new Set();
 
   children.forEach(c => {

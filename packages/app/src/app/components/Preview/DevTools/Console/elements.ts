@@ -7,8 +7,7 @@ export const Container = styled.div`
   color: ${props =>
     props.theme['editor.foreground'] ||
     (props.theme.light ? '#636363' : 'rgba(255, 255, 255, 0.8)')};
-  width: 100%;
-  height: 100%;
+  flex: auto;
   display: flex;
   flex-direction: column;
   border-color: ${props => props.theme['statusBar.border'] || '#191C1D'};
@@ -52,8 +51,7 @@ export const FilterInput = styled.input`
 
   &:focus {
     width: 8em;
-    border-color: ${props =>
-      props.theme['focusBorder'] || props.theme.secondary};
+    border-color: ${props => props.theme.focusBorder || props.theme.secondary};
   }
 `;
 
