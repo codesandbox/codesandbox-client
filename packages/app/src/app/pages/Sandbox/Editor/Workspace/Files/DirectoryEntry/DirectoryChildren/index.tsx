@@ -20,7 +20,7 @@ interface IDirectoryChildrenProps {
     directories: Directory[],
     id: string
   ) => string;
-  renameValidator: (id: string, title: string) => boolean;
+  renameValidator: (id: string, title: string) => string | false | null;
 }
 
 const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({

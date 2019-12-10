@@ -19,7 +19,7 @@ interface IModuleEntryProps {
     directories: Directory[],
     id: string
   ) => string;
-  renameValidator: (id: string, title: string) => string;
+  renameValidator: (id: string, title: string) => string | false | null;
 }
 
 const ModuleEntry: React.FC<IModuleEntryProps> = ({
