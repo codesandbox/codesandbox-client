@@ -1,4 +1,5 @@
 import { debug, global } from './utils';
+import delay from '../delay';
 
 // After 30min no event we mark a session
 const NEW_SESSION_TIME = 1000 * 60 * 30;
@@ -17,7 +18,21 @@ const markLastTimeEventSent = () => {
   localStorage.setItem('csb-last-event-sent', Date.now().toString());
 };
 
-export const identify = (key: string, value: any) => {
+const amplitudePromise = async () => {
+  for (let i = 0; i < 10; i++) {
+    if (typeof global.amplitude !== 'undefined') {
+      return true;
+    }
+
+    // eslint-disable-next-line no-await-in-loop
+    await delay(1000);
+  }
+
+  return false;
+};
+
+export const identify = async (key: string, value: any) => {
+  await amplitudePromise();
   if (typeof global.amplitude !== 'undefined') {
     const identity = new global.amplitude.Identify();
     identity.set(key, value);
@@ -28,7 +43,8 @@ export const identify = (key: string, value: any) => {
   }
 };
 
-export const setUserId = (userId: string) => {
+export const setUserId = async (userId: string) => {
+  await amplitudePromise();
   if (typeof global.amplitude !== 'undefined') {
     debug('[Amplitude] Setting User ID', userId);
     identify('userId', userId);
@@ -39,7 +55,8 @@ export const setUserId = (userId: string) => {
   }
 };
 
-export const resetUserId = () => {
+export const resetUserId = async () => {
+  await amplitudePromise();
   if (typeof global.amplitude !== 'undefined') {
     debug('[Amplitude] Resetting User ID');
     identify('userId', null);
@@ -56,7 +73,8 @@ export const resetUserId = () => {
   }
 };
 
-export const track = (eventName: string, data: any) => {
+export const track = async (eventName: string, data: any) => {
+  await amplitudePromise();
   if (typeof global.amplitude !== 'undefined') {
     const currentTime = Date.now();
     if (currentTime - getLastTimeEventSent() > NEW_SESSION_TIME) {
