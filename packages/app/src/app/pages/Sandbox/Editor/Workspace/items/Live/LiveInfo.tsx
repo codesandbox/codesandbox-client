@@ -157,7 +157,7 @@ const IconContainer = styled.div`
 interface IRoomInfo {
   users: Array<any>;
   editorIds: Array<any>;
-  startTime: string;
+  startTime: number;
   roomId: string;
   mode: string;
 }
