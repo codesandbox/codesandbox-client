@@ -18,7 +18,7 @@ import EntryTitle from './EntryTitle';
 import { EntryTitleInput } from './EntryTitleInput';
 
 interface IEntryProps {
-  renameValidator: (id: string, title: string) => string;
+  renameValidator: (id: string, title: string) => string | false | null;
   shortid: string;
   id: string;
   title: string;
@@ -74,7 +74,7 @@ const Entry: React.FC<IEntryProps> = ({
   state: incomingState = '',
 }) => {
   const [state, setState] = useState(incomingState);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | false | null>(null);
   const [hovering, setHovering] = useState(false);
 
   const resetState = () => {
