@@ -1,12 +1,29 @@
 import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
-import { inject, observer } from 'app/componentConnectors';
+import { Module, Directory } from '@codesandbox/common/lib/types';
+import { useOvermind } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import * as React from 'react';
-
-import ModuleEntry from './ModuleEntry';
 import DirectoryEntry from '..';
+import ModuleEntry from './ModuleEntry';
 
-const DirectoryChildren = ({
+interface IDirectoryChildrenProps {
+  depth: number;
+  renameModule: (title: string, moduleShortid: string) => void;
+  setCurrentModule: (id: string) => void;
+  parentShortid: string;
+  deleteEntry: (shortid: string, title: string) => void;
+  isInProjectView: boolean;
+  markTabsNotDirty: () => void;
+  discardModuleChanges: (shortid: string) => void;
+  getModulePath: (
+    modules: Module[],
+    directories: Directory[],
+    id: string
+  ) => string;
+  renameValidator: (id: string, title: string) => boolean;
+}
+
+const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   depth = 0,
   renameModule,
   setCurrentModule,
@@ -14,20 +31,23 @@ const DirectoryChildren = ({
   deleteEntry,
   isInProjectView,
   markTabsNotDirty,
-  store,
   discardModuleChanges,
   getModulePath,
-  signals,
   renameValidator,
 }) => {
+  const {
+    state: {
+      editor: { currentSandbox, mainModule, currentModuleShortid },
+    },
+    actions: { files, editor },
+  } = useOvermind();
+
   const {
     id: sandboxId,
     modules,
     directories,
     template: sandboxTemplate,
-  } = store.editor.currentSandbox;
-  const { mainModule, currentModuleShortid } = store.editor;
-  const mainModuleId = mainModule.id;
+  } = currentSandbox;
 
   return (
     <div>
@@ -44,15 +64,13 @@ const DirectoryChildren = ({
             key={dir.id}
             siblings={[...directories, ...modules]}
             depth={depth + 1}
-            signals={
-              signals /* TODO: Just pass what is needed by the DragDrop */
-            }
+            signals={{ files, editor }}
             id={dir.id}
             shortid={dir.shortid}
             title={dir.title}
             sandboxId={sandboxId}
             sandboxTemplate={sandboxTemplate}
-            mainModuleId={mainModuleId}
+            mainModuleId={mainModule.id}
             modules={modules}
             directories={directories}
             currentModuleShortid={currentModuleShortid}
@@ -82,4 +100,4 @@ const DirectoryChildren = ({
   );
 };
 
-export default inject('store', 'signals')(observer(DirectoryChildren));
+export default DirectoryChildren;
