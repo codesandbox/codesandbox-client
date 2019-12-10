@@ -20,7 +20,10 @@ const markLastTimeEventSent = () => {
 
 const amplitudePromise = async () => {
   for (let i = 0; i < 10; i++) {
-    if (typeof global.amplitude !== 'undefined') {
+    if (
+      typeof global.amplitude !== 'undefined' &&
+      global.amplitude.getInstance()._storageSuffix
+    ) {
       return true;
     }
 
