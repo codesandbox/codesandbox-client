@@ -3,20 +3,17 @@ import { inject, observer } from 'app/componentConnectors';
 import { sortBy } from 'lodash-es';
 import * as React from 'react';
 
-import ModuleEntry from './ModuleEntry';
 import DirectoryEntry from '..';
+
+import { ModuleEntry } from './ModuleEntry';
 
 const DirectoryChildren = ({
   depth = 0,
-  renameModule,
-  setCurrentModule,
   parentShortid,
   deleteEntry,
   isInProjectView,
-  markTabsNotDirty,
   store,
   discardModuleChanges,
-  getModulePath,
   signals,
   renameValidator,
 }) => {
@@ -57,8 +54,6 @@ const DirectoryChildren = ({
             directories={directories}
             currentModuleShortid={currentModuleShortid}
             isInProjectView={isInProjectView}
-            markTabsNotDirty={markTabsNotDirty}
-            getModulePath={getModulePath}
           />
         ))}
       {sortBy(
@@ -69,12 +64,8 @@ const DirectoryChildren = ({
           key={m.id}
           module={m}
           depth={depth}
-          setCurrentModule={setCurrentModule}
-          markTabsNotDirty={markTabsNotDirty}
-          renameModule={renameModule}
           deleteEntry={deleteEntry}
           discardModuleChanges={discardModuleChanges}
-          getModulePath={getModulePath}
           renameValidator={renameValidator}
         />
       ))}

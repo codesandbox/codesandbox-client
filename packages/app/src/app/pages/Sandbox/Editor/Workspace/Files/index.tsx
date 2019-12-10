@@ -1,4 +1,3 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
@@ -20,18 +19,9 @@ export const Files: React.FC<IFilesProps> = ({ setEditActions }) => {
     },
   } = useOvermind();
 
-  const _getModulePath = moduleId => {
-    try {
-      return getModulePath(sandbox.modules, sandbox.directories, moduleId);
-    } catch (e) {
-      return '';
-    }
-  };
-
   return (
     <DirectoryEntry
       root
-      getModulePath={_getModulePath}
       title={sandbox.title || 'Project'}
       initializeProperties={({
         onCreateModuleClick,

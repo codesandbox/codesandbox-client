@@ -3,7 +3,10 @@ import { reaction } from 'mobx';
 import React from 'react';
 import { DropTarget } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
-import { getChildren } from '@codesandbox/common/lib/sandbox/modules';
+import {
+  getChildren,
+  getModulePath as getModulePathBase,
+} from '@codesandbox/common/lib/sandbox/modules';
 
 import DirectoryChildren from './DirectoryChildren';
 import DirectoryEntryModal from './DirectoryEntryModal';
@@ -95,10 +98,6 @@ class DirectoryEntry extends React.PureComponent {
       directoryShortid: shortid,
     });
     this.resetState();
-  };
-
-  renameModule = (moduleShortid, title) => {
-    this.props.signals.files.moduleRenamed({ moduleShortid, title });
   };
 
   confirmDeleteModule = (shortid, moduleName) => {
@@ -225,14 +224,6 @@ class DirectoryEntry extends React.PureComponent {
     return getChildren(modules, directories, shortid);
   };
 
-  setCurrentModule = moduleId => {
-    this.props.signals.editor.moduleSelected({ id: moduleId });
-  };
-
-  markTabsNotDirty = () => {
-    this.props.signals.editor.moduleDoubleClicked();
-  };
-
   confirmDiscardChanges = (shortid, moduleName) => {
     this.setState({
       isModalOpen: true,
@@ -262,10 +253,16 @@ class DirectoryEntry extends React.PureComponent {
       depth = 0,
       root,
       store,
-      getModulePath,
     } = this.props;
     const { creating, isModalOpen, modalConfig, open } = this.state;
     const { currentSandbox } = store.editor;
+
+    const getModulePath = moduleId =>
+      getModulePathBase(
+        currentSandbox.modules,
+        currentSandbox.directories,
+        moduleId
+      );
 
     const title = root
       ? 'Project'
@@ -317,12 +314,9 @@ class DirectoryEntry extends React.PureComponent {
           )}
           <DirectoryChildren
             depth={depth}
-            renameModule={this.renameModule}
             parentShortid={shortid}
             renameValidator={this.validateModuleTitle}
             deleteEntry={this.confirmDeleteModule}
-            setCurrentModule={this.setCurrentModule}
-            markTabsNotDirty={this.markTabsNotDirty}
             discardModuleChanges={this.confirmDiscardChanges}
             getModulePath={getModulePath}
           />
