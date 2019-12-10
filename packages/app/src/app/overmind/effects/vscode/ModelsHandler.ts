@@ -206,11 +206,12 @@ export class ModelsHandler {
 
     moduleModel.selections = userSelections;
 
-    if (!moduleModel.model) {
+    const model = await moduleModel.model;
+
+    if (!model) {
       return;
     }
 
-    const model = await moduleModel.model;
     const lines = model.getLinesContent() || [];
     const activeEditor = this.editorApi.getActiveCodeEditor();
 

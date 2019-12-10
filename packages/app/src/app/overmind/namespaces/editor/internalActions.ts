@@ -331,6 +331,7 @@ export const forkSandbox: AsyncAction<{
     const forkedSandbox = await effects.api.forkSandbox(id, body);
 
     // Copy over any unsaved code
+
     if (state.editor.currentSandbox) {
       Object.assign(forkedSandbox, {
         modules: forkedSandbox.modules.map(module => {
@@ -351,17 +352,26 @@ export const forkSandbox: AsyncAction<{
       });
     }
 
-    Object.assign(
-      state.editor.sandboxes[state.editor.currentId],
-      forkedSandbox
-    );
-    state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
-      forkedSandbox
-    );
-    effects.preview.updateAddressbarUrl();
+    if (templateDefinition.isServer) {
+      await effects.vscode.closeAllTabs();
+      actions.internal.setCurrentSandbox(forkedSandbox);
+      await effects.vscode.changeSandbox(forkedSandbox, fs => {
+        state.editor.modulesByPath = fs;
+      });
+      effects.vscode.openModule(state.editor.currentModule);
+    } else {
+      Object.assign(
+        state.editor.sandboxes[state.editor.currentId],
+        forkedSandbox
+      );
+      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
+        forkedSandbox
+      );
+      effects.preview.updateAddressbarUrl();
 
-    if (state.workspace.openedWorkspaceItem === 'project-summary') {
-      actions.workspace.openDefaultItem();
+      if (state.workspace.openedWorkspaceItem === 'project-summary') {
+        actions.workspace.openDefaultItem();
+      }
     }
 
     effects.notificationToast.success('Forked sandbox!');
