@@ -21,6 +21,8 @@ import ResizeObserver from '@juggle/resize-observer';
 import fallback from '../../../../assets/images/hero-fallback.png';
 import { useCannon, Provider } from './useCannon';
 
+import { AnimationContainer, FallbackImageBackground } from './elements';
+
 function Plane({ position, disableAnimation }) {
   const bodyRef = useRef();
   const fpsBelow10 = useRef(0);
@@ -152,39 +154,18 @@ export default function App({ boxes, showPlane }) {
 
   if (animationDisabled) {
     return (
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 0,
-        }}
-      >
-        <div
-          style={{
-            backgroundImage: `url(${fallback}`,
-            width: '100%',
-            height: '100%',
-            backgroundSize: 'cover',
-            backgroundPosition: '50% 50%',
-          }}
+      <AnimationContainer>
+        <FallbackImageBackground
+          fallback={fallback}
           alt="boxes falling on the ground"
         />
-      </div>
+      </AnimationContainer>
     );
   }
 
   return (
-    <div
+    <AnimationContainer
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 0,
         touchAction: dragging ? 'none' : 'initial',
       }}
     >
@@ -227,6 +208,6 @@ export default function App({ boxes, showPlane }) {
           ))}
         </Provider>
       </Canvas>
-    </div>
+    </AnimationContainer>
   );
 }
