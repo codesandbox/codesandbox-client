@@ -46,6 +46,7 @@ async function test(prId) {
     )
     .then(() => spawnPromise('git', ['checkout', branchName]))
     .then(() => spawnPromise('git', ['merge', 'master']))
+    .then(() => spawnPromise('yarn', ['install']))
     .then(() => spawnPromise('yarn', ['build:deps']))
     .catch(() => {
       console.error(
