@@ -9,7 +9,7 @@ type ContainerStylesProps = {
   depth?: number;
   active?: boolean;
   editing?: boolean;
-  nameValidationError?: string;
+  nameValidationError?: string | null | false;
   rightColors?: string[];
 };
 

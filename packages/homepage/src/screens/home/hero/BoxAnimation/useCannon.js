@@ -42,7 +42,7 @@ export function useCannon({ ...props }, fn) {
 
   useRender(() => {
     const { current } = ref;
-    if (current !== undefined) {
+    if (current != null && body != null) {
       // Transport cannon physics into the referenced threejs object
       current.position.copy(body.position);
       current.quaternion.copy(body.quaternion);
