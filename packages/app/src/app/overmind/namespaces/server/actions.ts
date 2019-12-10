@@ -1,12 +1,13 @@
-import { Action } from 'app/overmind';
+import { ViewTab } from '@codesandbox/common/lib/templates/template';
 import {
-  ServerStatus,
+  Sandbox,
   ServerContainerStatus,
   ServerPort,
+  ServerStatus,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { Action, AsyncAction } from 'app/overmind';
 import { getDevToolsTabPosition } from 'app/overmind/utils/server';
-import { ViewTab } from '@codesandbox/common/lib/templates/template';
 
 export const restartSandbox: Action = ({ effects }) => {
   effects.executor.emit('sandbox:restart');
@@ -221,4 +222,30 @@ export const onBrowserFromPortOpened: Action<{
       },
     });
   }
+};
+
+export const startContainer: AsyncAction<Sandbox> = async (
+  { effects, actions },
+  sandbox
+) => {
+  await effects.executor.initializeExecutor(sandbox);
+
+  [
+    'connect',
+    'disconnect',
+    'sandbox:status',
+    'sandbox:start',
+    'sandbox:stop',
+    'sandbox:error',
+    'sandbox:log',
+    'sandbox:hibernate',
+    'sandbox:update',
+    'sandbox:port',
+    'shell:out',
+    'shell:exit',
+  ].forEach(message => {
+    effects.executor.listen(message, actions.server.onSSEMessage);
+  });
+
+  await effects.executor.setupExecutor();
 };
