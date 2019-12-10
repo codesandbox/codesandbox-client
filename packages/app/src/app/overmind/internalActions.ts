@@ -34,7 +34,7 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     effects.analytics.setUserId(state.user.id);
     actions.internal.setStoredSettings();
     effects.live.connect();
-    actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
+    actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
     actions.refetchSandboxInfo();
   } catch (error) {
     actions.internal.addNotification({

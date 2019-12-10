@@ -19,7 +19,7 @@ interface IModuleEntryProps {
     directories: Directory[],
     id: string
   ) => string;
-  renameValidator: (id: string, title: string) => boolean;
+  renameValidator: (id: string, title: string) => string;
 }
 
 const ModuleEntry: React.FC<IModuleEntryProps> = ({
@@ -42,12 +42,13 @@ const ModuleEntry: React.FC<IModuleEntryProps> = ({
   const isActive = module.shortid === currentModuleShortid;
   const isMainModule = module.id === mainModule.id;
   const type = getType(module.title);
-  const hasError = module.errors.length;
+  const hasError = module.errors.length > 0;
   const liveUsers = live.liveUsersByModule[module.shortid] || [];
 
   const isNotSynced = module.savedCode && module.code !== module.savedCode;
 
   return (
+    // @ts-ignore
     <Entry
       id={module.id}
       shortid={module.shortid}
