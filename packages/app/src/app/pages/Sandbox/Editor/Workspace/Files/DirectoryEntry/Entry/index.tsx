@@ -1,5 +1,6 @@
 import theme from '@codesandbox/common/lib/theme';
 import { ContextMenu, Item } from 'app/components/ContextMenu';
+import { Module, Directory } from '@codesandbox/common/lib/types';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
 import EditIcon from 'react-icons/lib/go/pencil';
@@ -35,6 +36,11 @@ interface IEntryProps {
   onClick: () => void;
   markTabsNotDirty: () => void;
   onRenameCancel?: () => void;
+  getModulePath: (
+    modules: Module[],
+    directories: Directory[],
+    id: string
+  ) => string;
   isNotSynced: boolean;
   isMainModule: boolean;
   moduleHasError: boolean;
@@ -163,6 +169,8 @@ const Entry: React.FC<IEntryProps> = ({
         <EntryContainer
           onClick={setCurrentModule ? setCurrentModuleAction : onClick}
           onDoubleClick={markTabsNotDirty}
+          //  The elements file is still in js
+          //  @ts-ignore
           depth={depth}
           nameValidationError={error}
           active={active}
