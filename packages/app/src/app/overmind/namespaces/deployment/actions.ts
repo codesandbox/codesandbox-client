@@ -1,8 +1,17 @@
 import { Action, AsyncAction } from 'app/overmind';
+import { AxiosError } from 'axios';
+import { get } from 'lodash-es';
 
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
+
+const getZeitErrorMessage = (error: AxiosError) =>
+  get(
+    error,
+    'response.data.error.message',
+    'An unknown error occurred when connecting to ZEIT'
+  );
 
 export const deployWithNetlify: AsyncAction = async ({
   effects,
@@ -43,10 +52,10 @@ export const deployWithNetlify: AsyncAction = async ({
 export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
   try {
     state.deployment.netlifyClaimUrl = await effects.netlify.claimSite(
-      state.editor.currentId
+      state.editor.currentSandbox.id
     );
     state.deployment.netlifySite = await effects.netlify.getDeployments(
-      state.editor.currentId
+      state.editor.currentSandbox.id
     );
   } catch (error) {
     state.deployment.netlifySite = null;
@@ -68,7 +77,7 @@ export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
       zeitConfig.name
     );
   } catch (error) {
-    error.message = 'An unknown error occurred when connecting to ZEIT';
+    error.message = getZeitErrorMessage(error);
     actions.internal.handleError(error);
   }
 
@@ -80,17 +89,16 @@ export const deployClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
-  state.deployment.deploying = true;
-  const zip = await effects.zip.create(state.editor.currentSandbox);
-  const contents = await effects.jsZip.loadAsync(zip.file);
-
   try {
+    state.deployment.deploying = true;
+    const zip = await effects.zip.create(state.editor.currentSandbox);
+    const contents = await effects.jsZip.loadAsync(zip.file);
     state.deployment.url = await effects.zeit.deploy(
       contents,
       state.editor.currentSandbox
     );
   } catch (error) {
-    error.message = 'An unknown error occurred when connecting to ZEIT';
+    error.message = getZeitErrorMessage(error);
     actions.internal.handleError(error);
   }
 
@@ -161,9 +169,10 @@ export const deleteDeployment: AsyncAction = async ({
   );
 };
 
-export const aliasDeployment: AsyncAction<{
-  id: string;
-}> = async ({ state, effects, actions }, { id }) => {
+export const aliasDeployment: AsyncAction<string> = async (
+  { state, effects, actions },
+  id
+) => {
   const zeitConfig = effects.zeit.getConfig(state.editor.currentSandbox);
 
   try {

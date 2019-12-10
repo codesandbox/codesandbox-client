@@ -3,7 +3,9 @@
 	"isCodeSandbox": true,
 	"type": "dark",
 	"colors": {
-	  "activityBar.background": "#1C2022",
+		"activityBar.background": "#1C2022",
+		"activityBarBadge.background": "#242424",
+		"activityBarBadge.foreground": "#ffffff",
 	  "badge.background": "#374140",
 	  "button.background": "#40A9F3",
 	  "button.hoverBackground": "#66B9F4",

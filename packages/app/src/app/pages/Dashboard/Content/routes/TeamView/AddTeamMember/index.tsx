@@ -70,7 +70,7 @@ export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
           placeholder="Add member by username"
           block
         />
-        <Button disabled={loading} style={{ width: 200 }} small>
+        <Button type="submit" disabled={loading} style={{ width: 200 }} small>
           {loading ? 'Adding Member...' : 'Add Member'}
         </Button>
       </form>

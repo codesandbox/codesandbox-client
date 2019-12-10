@@ -80,7 +80,7 @@ export const withOwnedSandbox = <T>(
       }
 
       await actions.editor.internal.forkSandbox({
-        sandboxId: state.editor.currentId,
+        sandboxId: state.editor.currentSandbox.id,
       });
     } else if (
       state.editor.currentSandbox.isFrozen &&

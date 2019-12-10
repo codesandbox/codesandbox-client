@@ -1,22 +1,21 @@
-import React, { useEffect } from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import { DragDropContext } from 'react-dnd';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { Toasts, NotificationStatus } from '@codesandbox/notifications';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
-import theme from '@codesandbox/common/lib/theme';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import Loadable from 'app/utils/Loadable';
+import theme from '@codesandbox/common/lib/theme';
+import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus, Toasts } from '@codesandbox/notifications';
 import { useOvermind } from 'app/overmind';
+import Loadable from 'app/utils/Loadable';
+import React, { useEffect } from 'react';
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+
 import { ErrorBoundary } from './common/ErrorBoundary';
-import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 import { Modals } from './common/Modals';
-import Sandbox from './Sandbox';
-import { NewSandbox } from './NewSandbox';
 import Dashboard from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
+import { NewSandbox } from './NewSandbox';
+import Sandbox from './Sandbox';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -46,7 +45,11 @@ const Search = Loadable(() =>
     default: module.Search,
   }))
 );
-const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
+const CLI = Loadable(() =>
+  import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
+    default: module.CLI,
+  }))
+);
 
 const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub').then(module => ({
@@ -61,8 +64,11 @@ const CliInstructions = Loadable(() =>
 const Patron = Loadable(() =>
   import(/* webpackChunkName: 'page-patron' */ './Patron')
 );
+const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
-  import(/* webpackChunkName: 'page-curator' */ './Curator')
+  import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
+    default: module.Curator,
+  }))
 );
 const CodeSadbox = () => this[`💥`].kaboom();
 
@@ -107,6 +113,7 @@ const RoutesComponent: React.FC = () => {
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
+            <Route exact path="/s2" component={NewSandbox} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
@@ -116,6 +123,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
+            <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
@@ -134,6 +142,4 @@ const RoutesComponent: React.FC = () => {
   );
 };
 
-export const Routes = DragDropContext(HTML5Backend)(
-  withRouter(RoutesComponent)
-);
+export const Routes = withRouter(RoutesComponent);

@@ -1,6 +1,7 @@
+import { Button as ReakitButton } from 'reakit';
 import styled, { css } from 'styled-components';
 
-export const LinkButton = styled.button`
+export const LinkButton = styled(ReakitButton)`
   ${({ theme }) => css`
     display: inline-block;
     padding: 0;
@@ -9,12 +10,12 @@ export const LinkButton = styled.button`
     background-color: transparent;
     color: ${theme.secondary};
     outline: none;
-    text-decoration: underline;
     transition: 0.3s ease color;
     cursor: pointer;
 
-    &:hover {
-      color: ${theme.secondary.lighten(0.1)};
+    &:hover,
+    &:focus {
+      color: ${theme.secondary.lighten(0.2)};
     }
   `}
 `;

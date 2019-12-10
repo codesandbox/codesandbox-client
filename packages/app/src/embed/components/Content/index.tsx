@@ -1,46 +1,43 @@
-// @flow
-import * as React from 'react';
-import {
-  Sandbox,
-  Module,
-  ModuleError,
-  ModuleCorrection,
-  Settings,
-  DevToolsTabPosition,
-} from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
-import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
-import { CodeEditor } from 'app/components/CodeEditor';
-import { Editor } from 'app/components/CodeEditor/types'; // eslint-disable-line
-import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
-
+import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import {
+  findMainModule,
+  resolveModule,
+} from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
-
-import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
+import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import {
-  TabTitle,
-  TabDir,
-  StyledCloseIcon,
-} from 'app/pages/Sandbox/Editor/Content/Tabs/Tab/elements';
-
+  DevToolsTabPosition,
+  Module,
+  ModuleCorrection,
+  ModuleError,
+  Sandbox,
+  Settings,
+} from '@codesandbox/common/lib/types';
+import { Editor } from 'app/components/CodeEditor/types'; // eslint-disable-line
 import {
+  DevToolProps,
   DevTools,
   IViewType,
-  DevToolProps,
 } from 'app/components/Preview/DevTools';
-import { clearCorrectionsFromAction } from 'app/utils/corrections';
-
+import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
+import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import {
-  resolveModule,
-  findMainModule,
-} from '@codesandbox/common/lib/sandbox/modules';
-import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
-import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
-import SplitPane from '../SplitPane';
-import { Container, Tabs, MenuInTabs } from './elements';
+  StyledCloseIcon,
+  TabDir,
+  TabTitle,
+} from 'app/pages/Sandbox/Editor/Content/Tabs/Tab/elements';
+import { clearCorrectionsFromAction } from 'app/utils/corrections';
+import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
+// @flow
+import * as React from 'react';
+
 // borrow the menu icon from Header in case header is not shown
 import { MenuIcon } from '../legacy/Header/elements';
+import SplitPane from '../SplitPane';
+import { CodeEditor } from './CodeEditor';
+import { Container, MenuInTabs, Tabs } from './elements';
 
 type Props = {
   showEditor: boolean;

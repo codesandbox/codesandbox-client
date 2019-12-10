@@ -3,6 +3,7 @@ import { CustomTemplate } from '@codesandbox/common/lib/types';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
+import getItems from 'app/overmind/utils/items';
 
 export const valueChanged: Action<{
   field: string;
@@ -131,13 +132,18 @@ export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
     const { externalResources } = state.editor.currentSandbox;
 
     externalResources.push(resource);
+    actions.editor.internal.updatePreviewCode();
 
     try {
-      await effects.api.createResource(state.editor.currentId, resource);
+      await effects.api.createResource(
+        state.editor.currentSandbox.id,
+        resource
+      );
     } catch (error) {
       externalResources.splice(externalResources.indexOf(resource), 1);
       effects.notificationToast.error('Could not save external resource');
       actions.internal.handleError(error);
+      actions.editor.internal.updatePreviewCode();
     }
   }
 );
@@ -148,15 +154,20 @@ export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
     const resourceIndex = externalResources.indexOf(resource);
 
     externalResources.splice(resourceIndex, 1);
+    actions.editor.internal.updatePreviewCode();
 
     try {
-      await effects.api.deleteResource(state.editor.currentId, resource);
+      await effects.api.deleteResource(
+        state.editor.currentSandbox.id,
+        resource
+      );
     } catch (error) {
       externalResources.splice(resourceIndex, 0, resource);
       effects.notificationToast.error(
         'Could not save removal of external resource'
       );
       actions.internal.handleError(error);
+      actions.editor.internal.updatePreviewCode();
     }
   }
 );
@@ -174,7 +185,7 @@ export const sandboxDeleted: AsyncAction = async ({
 }) => {
   actions.modalClosed();
 
-  await effects.api.deleteSandbox(state.editor.currentId);
+  await effects.api.deleteSandbox(state.editor.currentSandbox.id);
 
   // Not sure if this is in use?
   state.workspace.showDeleteSandboxModal = false;
@@ -188,7 +199,7 @@ export const sandboxPrivacyChanged: AsyncAction<{
 }> = async ({ state, effects, actions }, { privacy }) => {
   const oldPrivacy = state.editor.currentSandbox.privacy;
   const sandbox = await effects.api.updatePrivacy(
-    state.editor.currentId,
+    state.editor.currentSandbox.id,
     privacy
   );
   state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
@@ -215,10 +226,11 @@ export const toggleCurrentWorkspaceItem: Action = ({ state }) => {
 };
 
 export const setWorkspaceHidden: Action<{ hidden: boolean }> = (
-  { state },
+  { state, effects },
   { hidden }
 ) => {
   state.workspace.workspaceHidden = hidden;
+  effects.vscode.resetLayout();
 };
 
 export const deleteTemplate: AsyncAction = async ({
@@ -227,7 +239,7 @@ export const deleteTemplate: AsyncAction = async ({
   effects,
 }) => {
   effects.analytics.track('Template - Removed', { source: 'editor' });
-  const sandboxId = state.editor.currentId;
+  const sandboxId = state.editor.currentSandbox.id;
   const templateId = state.editor.currentSandbox.customTemplate.id;
 
   try {
@@ -250,7 +262,7 @@ export const editTemplate: AsyncAction<CustomTemplate> = async (
 ) => {
   effects.analytics.track('Template - Edited', { source: 'editor' });
 
-  const sandboxId = state.editor.currentId;
+  const sandboxId = state.editor.currentSandbox.id;
 
   try {
     const updatedTemplate = await effects.api.updateTemplate(
@@ -274,17 +286,27 @@ export const addedTemplate: AsyncAction<{
 }> = async ({ state, actions, effects }, template) => {
   effects.analytics.track('Template - Created', { source: 'editor' });
 
-  const sandboxId = state.editor.currentId;
+  const sandboxId = state.editor.currentSandbox.id;
 
   try {
     const newTemplate = await effects.api.createTemplate(sandboxId, template);
-    const sandbox = state.editor.sandboxes[sandboxId];
+    const sandbox = state.editor.currentSandbox;
     sandbox.isFrozen = true;
     sandbox.customTemplate = newTemplate;
     actions.modalClosed();
-    effects.notificationToast.success('Templated Created');
+    effects.notificationToast.success('Successfully created the template');
   } catch (error) {
     error.message = 'Could not create template, please try again later';
     actions.internal.handleError(error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error(error);
+    }
   }
+};
+
+export const openDefaultItem: Action = ({ state }) => {
+  const items = getItems(state);
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+
+  state.workspace.openedWorkspaceItem = defaultItem.id;
 };

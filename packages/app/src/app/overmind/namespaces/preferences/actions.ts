@@ -2,7 +2,6 @@ import { Badge } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
 
 import { Action, AsyncAction } from 'app/overmind';
-import { setVimExtensionEnabled } from 'app/vscode/initializers';
 
 export const viewModeChanged: Action<{
   showEditor: boolean;
@@ -50,7 +49,7 @@ export const settingChanged: Action<{
   settingsTarget[lastKey] = value;
 
   if (name === 'vimMode') {
-    setVimExtensionEnabled(value);
+    effects.vscode.setVimExtensionEnabled(Boolean(value));
   }
 
   effects.settingsStore.set(firstKey, state.preferences.settings[firstKey]);

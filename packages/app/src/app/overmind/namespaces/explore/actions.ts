@@ -1,18 +1,19 @@
+import { PickedSandboxDetails } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 
-export const popularSandboxesMounted: AsyncAction<{
-  date: string;
-}> = withLoadApp(async ({ state, actions, effects }, { date }) => {
-  try {
-    state.explore.popularSandboxes = await effects.api.getPopularSandboxes(
-      date
-    );
-  } catch (error) {
-    error.message = 'There has been a problem getting the sandboxes';
-    actions.internal.handleError(error);
+export const popularSandboxesMounted: AsyncAction<string> = withLoadApp(
+  async ({ state, actions, effects }, date) => {
+    try {
+      state.explore.popularSandboxes = await effects.api.getPopularSandboxes(
+        date
+      );
+    } catch (error) {
+      error.message = 'There has been a problem getting the sandboxes';
+      actions.internal.handleError(error);
+    }
   }
-});
+);
 
 export const pickSandbox: AsyncAction<{
   id: string;
@@ -41,13 +42,10 @@ export const pickSandbox: AsyncAction<{
   }
 };
 
-export const pickSandboxModal: Action<{
-  details: {
-    id: string;
-    title: string;
-    description: string;
-  };
-}> = ({ state }, { details }) => {
+export const pickSandboxModal: Action<PickedSandboxDetails> = (
+  { state },
+  details
+) => {
   state.explore.pickedSandboxDetails = details;
   state.currentModal = 'pickSandbox';
 };

@@ -7,14 +7,19 @@ import {
   TemplateSubTitle,
   MyTemplate,
 } from './elements';
-import { Sandbox } from '../../types';
 import { getSandboxName } from '../../utils/get-sandbox-name';
 
 interface Props {
   template?: {
     id: string;
     color: string;
-    sandbox: Sandbox;
+    sandbox: {
+      id: string;
+      title: string;
+      alias: string;
+      description: string;
+      tags?: string[];
+    };
   };
   i: number;
   onClick?: () => void;

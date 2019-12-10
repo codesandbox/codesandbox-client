@@ -66,6 +66,8 @@ export function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export const TrashItem = DropTarget(['SANDBOX'], entryTarget, collectTarget)(
-  withRouter(TrashItemComponent)
-);
+export const TrashItem = DropTarget(
+  ['SANDBOX'],
+  entryTarget,
+  collectTarget
+)(withRouter(TrashItemComponent));

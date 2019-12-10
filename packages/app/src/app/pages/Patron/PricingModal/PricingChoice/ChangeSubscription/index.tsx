@@ -1,51 +1,50 @@
-import React, { useState } from 'react';
-import { useOvermind } from 'app/overmind';
 import { format } from 'date-fns';
+import React, {
+  ChangeEvent,
+  FunctionComponent,
+  MouseEvent,
+  useState,
+} from 'react';
+
 import { LinkButton } from 'app/components/LinkButton';
+import { useOvermind } from 'app/overmind';
 
 import {
-  SmallText,
+  Button,
   Buttons,
-  StyledButton,
-  StripeInput,
   CancelText,
   Centered,
+  SmallText,
+  StripeInput,
+  StripeInputContainer,
 } from './elements';
 
-interface IChangeSubscriptionProps {
-  date: string;
-  markedAsCancelled: boolean;
-  cancelSubscription: () => void;
-  updateSubscription: (params: { coupon: string }) => void;
-}
-
-export const ChangeSubscription: React.FC<IChangeSubscriptionProps> = ({
-  date,
-  markedAsCancelled,
-  cancelSubscription,
-  updateSubscription,
-}) => {
+export const ChangeSubscription: FunctionComponent = () => {
   const {
-    state: {
-      patron: { isUpdatingSubscription, error },
-    },
     actions: {
       modalOpened,
-      patron: { tryAgainClicked },
+      patron: {
+        cancelSubscriptionClicked,
+        tryAgainClicked,
+        updateSubscriptionClicked,
+      },
+    },
+    state: {
+      patron: { error, isUpdatingSubscription },
+      user: { subscription },
     },
   } = useOvermind();
-
   const [coupon, setCoupon] = useState('');
 
   if (error) {
     return (
       <div>
-        There was a problem updating this subscription.
+        <span>There was a problem updating this subscription.</span>
+
         <SmallText>{error}</SmallText>
+
         <Buttons>
-          <StyledButton onClick={() => tryAgainClicked()}>
-            Try again
-          </StyledButton>
+          <Button onClick={() => tryAgainClicked()}>Try again</Button>
         </Buttons>
       </div>
     );
@@ -53,32 +52,36 @@ export const ChangeSubscription: React.FC<IChangeSubscriptionProps> = ({
 
   let buttons = (
     <>
-      <div style={{ margin: '0 5rem', marginTop: '2rem' }}>
+      <StripeInputContainer>
         <StripeInput
-          onChange={e => setCoupon(e.target.value)}
-          value={coupon}
+          onChange={({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
+            setCoupon(value)
+          }
           placeholder="Apply Coupon Code"
+          value={coupon}
         />
-      </div>
+      </StripeInputContainer>
+
       <Buttons>
-        <StyledButton onClick={() => updateSubscription({ coupon })}>
+        <Button onClick={() => updateSubscriptionClicked(coupon)}>
           Update
-        </StyledButton>
+        </Button>
       </Buttons>
+
       <Centered>
-        <CancelText onClick={() => cancelSubscription()}>
+        <CancelText onClick={() => cancelSubscriptionClicked()}>
           Cancel my subscription
         </CancelText>
       </Centered>
     </>
   );
 
-  if (markedAsCancelled) {
+  if (subscription.cancelAtPeriodEnd) {
     buttons = (
       <Buttons>
-        <StyledButton onClick={() => updateSubscription({ coupon: '' })}>
+        <Button onClick={() => updateSubscriptionClicked('')}>
           Reactivate Subscription
-        </StyledButton>
+        </Button>
       </Buttons>
     );
   }
@@ -86,7 +89,7 @@ export const ChangeSubscription: React.FC<IChangeSubscriptionProps> = ({
   if (isUpdatingSubscription) {
     buttons = (
       <Buttons>
-        <StyledButton disabled>Processing...</StyledButton>
+        <Button disabled>Processing...</Button>
       </Buttons>
     );
   }
@@ -94,14 +97,17 @@ export const ChangeSubscription: React.FC<IChangeSubscriptionProps> = ({
   return (
     <div>
       {buttons}
+
       <SmallText>
-        You will be billed every <strong>{format(new Date(date), 'do')}</strong>{' '}
-        of the month, you can change or cancel your subscription at any time.
-        You can change your payment method in{' '}
+        You will be billed every{' '}
+        <strong>{format(new Date(subscription.since), 'do')}</strong> of the
+        month, you can change or cancel your subscription at any time. You can
+        change your payment method in{' '}
         <LinkButton
-          onClick={e => {
-            e.preventDefault();
-            modalOpened({ modal: 'preferences' });
+          onClick={(event: MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+
+            modalOpened({ modal: 'preferences', itemId: 'paymentInfo' });
           }}
         >
           user preferences

@@ -32,6 +32,10 @@ async function test(prId) {
 
   Promise.resolve()
     .then(() => spawnPromise('git', ['checkout', 'master']))
+    .then(() => spawnPromise('git', ['branch', '-D', branchName]))
+    .catch(() => {
+      /* Do not care if this fails */
+    })
     .then(() => spawnPromise('git', ['pull']))
     .then(() =>
       spawnPromise('git', [

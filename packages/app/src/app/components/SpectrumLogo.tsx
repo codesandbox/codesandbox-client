@@ -1,9 +1,9 @@
 import React from 'react';
 import IconBase from 'react-icons/lib/IconBase';
 
-export const SpectrumLogo: React.FC<
-  React.SVGAttributes<SVGElement>
-> = props => (
+export const SpectrumLogo: React.FC<React.SVGAttributes<
+  SVGElement
+>> = props => (
   <IconBase
     width="1em"
     height="1em"

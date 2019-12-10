@@ -4,4 +4,5 @@ export const getSandboxName = ({
   alias,
   id,
   title,
-}: Pick<Sandbox, 'alias' | 'id' | 'title'>) => title || alias || id;
+}: Partial<Pick<Sandbox, 'alias'>> & Pick<Sandbox, 'id' | 'title'>) =>
+  title || alias || id;

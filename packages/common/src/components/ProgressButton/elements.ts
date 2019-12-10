@@ -7,6 +7,8 @@ const loaderAnimation = keyframes`
   50%, 100% { background-color: ${theme.secondary.lighten(0.5)()}; }
 `;
 
+export const Wrapper = styled.div``;
+
 export const RelativeButton = styled(Button)`
   position: relative;
 `;

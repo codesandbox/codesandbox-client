@@ -38,7 +38,7 @@ find them here.
 | `editorsize`     | Size in percentage of editor.                                                                                  | number                               | `50`                                 |
 | `eslint`         | Use eslint (increases embed size significantly).                                                               | `0`/`1`                              | `0`                                  |
 | `expanddevtools` | Start with the devtools (console) open.                                                                        | `0`/`1`                              | `0`                                  |
-| `hidedevtools` | Hide the DevTools bar of the preview.                                                                            | `0`/`1`                              | `0`                                  |
+| `hidedevtools`   | Hide the DevTools bar of the preview.                                                                          | `0`/`1`                              | `0`                                  |
 | `fontsize`       | Font size of editor                                                                                            | number (in px)                       | `14`                                 |
 | `forcerefresh`   | Force a full refresh of frame after every edit.                                                                | `0`/`1`                              | `0`                                  |
 | `hidenavigation` | Hide the navigation bar of the preview.                                                                        | `0`/`1`                              | `0`                                  |

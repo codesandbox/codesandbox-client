@@ -18,12 +18,10 @@ export type ConfigurationFile = {
 };
 
 export type ParsedConfigurationFile<T> = {
-  parsed?: T;
   code: string;
   generated: boolean;
-  error?: Error;
   path: string;
-};
+} & ({ error: Error; parsed?: undefined } | { error?: undefined; parsed: T });
 
 export type ConfigurationUIProps = {
   file: string;

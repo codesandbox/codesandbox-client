@@ -1,8 +1,8 @@
+import React, { FunctionComponent } from 'react';
+import { useOvermind } from 'app/overmind';
+
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Badge from '@codesandbox/common/lib/utils/badges/Badge';
-import React, { FunctionComponent } from 'react';
-
-import { useOvermind } from 'app/overmind';
 
 import { Title } from '../elements';
 

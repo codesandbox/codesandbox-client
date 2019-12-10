@@ -1,22 +1,16 @@
 import { OnInitialize } from '.';
 
-export const onInitialize: OnInitialize = (
+export const onInitialize: OnInitialize = async (
   { state, effects, actions },
   overmindInstance
 ) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
 
-  effects.fsSync.initialize({
-    onModulesByPathChange(cb: (modulesByPath: any) => void) {
-      overmindInstance.reaction(
-        ({ editor }) => editor.modulesByPath,
-        modulesByPath => cb(modulesByPath)
-      );
-    },
-    getModulesByPath() {
-      return state.editor.modulesByPath;
-    },
-  });
+  state.isFirstVisit = Boolean(
+    !effects.jwt.get() && !effects.browser.storage.get('hasVisited')
+  );
+
+  effects.browser.storage.set('hasVisited', true);
 
   effects.live.initialize({
     provideJwtToken,
@@ -29,9 +23,6 @@ export const onInitialize: OnInitialize = (
     provideJwtToken,
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
-    },
-    getModulesByPath() {
-      return state.editor.modulesByPath;
     },
   });
 
@@ -71,4 +62,20 @@ export const onInitialize: OnInitialize = (
       return config;
     },
   });
+
+  effects.vscode.initialize({
+    getCurrentSandbox: () => state.editor.currentSandbox,
+    getCurrentModule: () => state.editor.currentModule,
+    getSandboxFs: () => state.editor.modulesByPath,
+    onOperationApplied: actions.editor.onOperationApplied,
+    onCodeChange: actions.editor.codeChanged,
+    onSelectionChange: actions.live.onSelectionChanged,
+    reaction: overmindInstance.reaction,
+    getState: path =>
+      path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,
+    getSignal: path =>
+      path.split('.').reduce((aggr, key) => aggr[key], actions),
+  });
+
+  effects.preview.initialize(overmindInstance.reaction);
 };

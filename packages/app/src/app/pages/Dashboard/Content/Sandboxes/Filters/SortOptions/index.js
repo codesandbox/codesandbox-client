@@ -83,6 +83,7 @@ class SortOptionsComponent extends React.Component {
   }
 }
 
-export const SortOptions = inject('store', 'signals')(
-  observer(SortOptionsComponent)
-);
+export const SortOptions = inject(
+  'store',
+  'signals'
+)(observer(SortOptionsComponent));

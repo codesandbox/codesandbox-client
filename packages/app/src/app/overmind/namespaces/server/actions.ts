@@ -111,9 +111,7 @@ export const onSSEMessage: Action<{
         if (!port.main && openedPorts.indexOf(port.port) === -1) {
           effects.notificationToast.add({
             title: `Port ${port.port} Opened`,
-            message: `The server is listening on port ${
-              port.port
-            }, do you want to open it?`,
+            message: `The server is listening on port ${port.port}, do you want to open it?`,
             status: NotificationStatus.NOTICE,
             actions: {
               primary: [
@@ -178,7 +176,8 @@ type BrowserOptions = { title?: string; url?: string } & (
   | {
       port: number;
     }
-  | { url: string });
+  | { url: string }
+);
 
 export const onBrowserTabOpened: Action<{
   closeable?: boolean;

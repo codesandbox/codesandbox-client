@@ -1,16 +1,14 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
-import { Padding } from './elements';
 
-import Sandbox from './Sandbox';
+import { useOvermind } from 'app/overmind';
+
+import { Padding } from './elements';
+import { Sandbox } from './Sandbox';
 
 export const SelectSandboxModal: FunctionComponent = () => {
   const {
     state: {
-      profile: { isLoadingSandboxes, showcasedSandbox, userSandboxes },
-    },
-    actions: {
-      profile: { newSandboxShowcaseSelected },
+      profile: { isLoadingSandboxes, userSandboxes },
     },
   } = useOvermind();
 
@@ -18,20 +16,11 @@ export const SelectSandboxModal: FunctionComponent = () => {
     return <Padding>Loading sandboxes...</Padding>;
   }
 
-  const currentShowcasedSandboxId = showcasedSandbox && showcasedSandbox.id;
-
   return (
     <div>
-      {userSandboxes
-        .filter(x => x)
-        .map(sandbox => (
-          <Sandbox
-            active={sandbox.id === currentShowcasedSandboxId}
-            key={sandbox.id}
-            sandbox={sandbox}
-            setShowcasedSandbox={id => newSandboxShowcaseSelected({ id })}
-          />
-        ))}
+      {userSandboxes.filter(Boolean).map(sandbox => (
+        <Sandbox key={sandbox.id} sandbox={sandbox} />
+      ))}
     </div>
   );
 };

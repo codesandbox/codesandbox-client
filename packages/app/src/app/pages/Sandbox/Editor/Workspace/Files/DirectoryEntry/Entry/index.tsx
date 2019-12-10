@@ -1,5 +1,6 @@
 import theme from '@codesandbox/common/lib/theme';
 import { ContextMenu, Item } from 'app/components/ContextMenu';
+import { Module, Directory } from '@codesandbox/common/lib/types';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
 import EditIcon from 'react-icons/lib/go/pencil';
@@ -7,6 +8,7 @@ import DeleteIcon from 'react-icons/lib/go/trashcan';
 import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import UploadFileIcon from 'react-icons/lib/md/file-upload';
 import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
+import UndoIcon from 'react-icons/lib/md/undo';
 
 import { EntryContainer } from '../../../elements';
 import EditIcons from './EditIcons';
@@ -25,7 +27,7 @@ interface IEntryProps {
   depth: number;
   type: string;
   active: boolean;
-  discardModuleChanges: (shortid: string) => void;
+  discardModuleChanges: (shortid: string, title: string) => void;
   setCurrentModule: (id: string) => void;
   connectDragSource: (node: JSX.Element) => JSX.Element;
   onCreateDirectoryClick: () => boolean | void;
@@ -34,6 +36,11 @@ interface IEntryProps {
   onClick: () => void;
   markTabsNotDirty: () => void;
   onRenameCancel?: () => void;
+  getModulePath: (
+    modules: Module[],
+    directories: Directory[],
+    id: string
+  ) => string;
   isNotSynced: boolean;
   isMainModule: boolean;
   moduleHasError: boolean;
@@ -95,7 +102,7 @@ const Entry: React.FC<IEntryProps> = ({
     deleteEntry ? deleteEntry(shortid, title) : false;
 
   const discardModuleChangesAction = () =>
-    discardModuleChanges ? discardModuleChanges(shortid) : false;
+    discardModuleChanges ? discardModuleChanges(shortid, title) : false;
 
   const handleRename = (newTitle: string, force: boolean = false) => {
     if (newTitle === title) {
@@ -123,6 +130,7 @@ const Entry: React.FC<IEntryProps> = ({
       isNotSynced && {
         title: 'Discard Changes',
         action: discardModuleChangesAction,
+        icon: UndoIcon,
       },
     ].filter(Boolean),
     [
@@ -161,6 +169,8 @@ const Entry: React.FC<IEntryProps> = ({
         <EntryContainer
           onClick={setCurrentModule ? setCurrentModuleAction : onClick}
           onDoubleClick={markTabsNotDirty}
+          //  The elements file is still in js
+          //  @ts-ignore
           depth={depth}
           nameValidationError={error}
           active={active}
@@ -205,6 +215,7 @@ const Entry: React.FC<IEntryProps> = ({
                 onCreateFile={onCreateModuleClick}
                 onCreateDirectory={onCreateDirectoryClick}
                 onUploadFile={onUploadFileClick}
+                onDiscardChanges={isNotSynced && discardModuleChangesAction}
                 onDelete={deleteEntry && deleteAction}
                 onEdit={rename && renameAction}
                 active={active}

@@ -64,9 +64,7 @@ const Profile = ({ profile, liked, showcased }) =>
             <More>
               <Link
                 prefetch
-                href={`/user-sandboxes?username=${
-                  profile.username
-                }&page=sandboxes`}
+                href={`/user-sandboxes?username=${profile.username}&page=sandboxes`}
                 as={`/profile/${profile.username}/sandboxes`}
               >
                 <a>See all sandboxes</a>
@@ -96,9 +94,7 @@ const Profile = ({ profile, liked, showcased }) =>
               <More>
                 <Link
                   prefetch
-                  href={`/user-sandboxes?username=${
-                    profile.username
-                  }&page=liked`}
+                  href={`/user-sandboxes?username=${profile.username}&page=liked`}
                   as={`/profile/${profile.username}/liked`}
                 >
                   <a>See all liked sandboxes</a>
