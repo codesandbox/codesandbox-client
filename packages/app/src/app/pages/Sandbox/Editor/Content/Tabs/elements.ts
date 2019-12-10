@@ -33,6 +33,9 @@ export const TabsContainer = styled.div`
   }
 `;
 
+interface IStyledPrettierIconProps {
+  disabled?: boolean;
+}
 export const StyledPrettierIcon = styled(PrettierIcon)`
   transition: 0.3s ease opacity;
   width: 1.125rem;
@@ -47,7 +50,7 @@ export const StyledPrettierIcon = styled(PrettierIcon)`
     opacity: 1;
   }
 
-  ${props =>
+  ${(props: IStyledPrettierIconProps) =>
     props.disabled &&
     css`
       opacity: 0;
@@ -71,6 +74,11 @@ export const Line = styled.div`
     props.theme['editorGroupHeader.tabsBorder'] || 'rgba(255, 255, 255, 0.3)'};
 `;
 
+interface IIconWrapperProps {
+  active?: boolean;
+  disabled?: boolean;
+  theme: any;
+}
 export const IconWrapper = styled.div`
   svg {
     transition: 0.3s ease opacity;
@@ -86,7 +94,7 @@ export const IconWrapper = styled.div`
       opacity: 1;
     }
 
-    ${props =>
+    ${(props: IIconWrapperProps) =>
       props.active &&
       css`
         opacity: 1;
