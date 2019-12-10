@@ -440,7 +440,7 @@ async function compile({
 
   hadError = false;
 
-  actionsEnabled = !!hasActions;
+  actionsEnabled = Boolean(hasActions);
   let managerModuleToTranspile: Module | undefined;
 
   try {
