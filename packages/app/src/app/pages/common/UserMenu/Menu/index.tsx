@@ -29,6 +29,7 @@ import {
   ItemButton,
 } from './elements';
 import { FeedbackIcon } from './FeedbackIcon';
+import { ProIcon } from './ProIcon';
 
 interface Props {
   username: string;
@@ -39,6 +40,8 @@ interface Props {
   signOut: () => void;
   menuProps: MenuStateReturn;
   showPatron: boolean;
+  showManageSubscription: boolean;
+  showBecomePro: boolean;
 }
 
 export const Menu = ({
@@ -50,6 +53,8 @@ export const Menu = ({
   signOut,
   menuProps,
   showPatron,
+  showManageSubscription,
+  showBecomePro,
 }: Props) => {
   useEffect(() => {
     if (menuProps.visible) {
@@ -113,7 +118,25 @@ export const Menu = ({
           </MenuItem>
         )}
 
+        {showBecomePro && (
+          <MenuItem {...menuProps} as={ItemA} href="/pricing">
+            <Icon>
+              <ProIcon style={{ width: 24, margin: '-6px -5px' }} />
+            </Icon>
+            Upgrade to Pro
+          </MenuItem>
+        )}
+
         <Separator {...menuProps} />
+
+        {showManageSubscription && (
+          <MenuItem {...menuProps} as={ItemA} href="/pro">
+            <Icon>
+              <ProIcon style={{ width: 24, margin: '-6px -5px' }} />
+            </Icon>
+            Manage Subscription
+          </MenuItem>
+        )}
 
         <MenuItem
           {...menuProps}
