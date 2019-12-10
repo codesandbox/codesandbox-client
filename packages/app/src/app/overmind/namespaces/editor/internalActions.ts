@@ -360,6 +360,11 @@ export const forkSandbox: AsyncAction<{
     );
     effects.preview.updateAddressbarUrl();
 
+    if (templateDefinition.isServer) {
+      effects.preview.refresh();
+      actions.server.startContainer(forkedSandbox);
+    }
+
     if (state.workspace.openedWorkspaceItem === 'project-summary') {
       actions.workspace.openDefaultItem();
     }
