@@ -1,9 +1,8 @@
-import styled, { css } from 'styled-components';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import styled from 'styled-components';
 
 export const Container = styled.div`
-  margin: 1rem;
-  margin-top: 5px;
+  margin: 5px 1rem 1rem;
 `;
 
 export const CenteredText = styled.div`
@@ -27,25 +26,4 @@ export const Action = styled(Button).attrs({
   &:not(:first-child) {
     margin-top: 1rem;
   }
-`;
-
-export const PickColor = styled.button.attrs<{ color: string }>({
-  type: 'button',
-})`
-  ${({ color }) => css`
-    position: relative;
-    width: 24px;
-    height: 24px;
-    border: none;
-    border-radius: 4px;
-    background: ${color};
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0;
-    cursor: pointer;
-  `}
-`;
-
-export const PickerContainer = styled.div`
-  position: absolute;
-  right: 0;
-  bottom: calc(100% + 8px);
 `;

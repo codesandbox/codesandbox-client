@@ -6,7 +6,7 @@ import { useOvermind } from 'app/overmind';
 
 import { Group } from '../elements';
 
-import { Container, CenteredText, Action } from './elements';
+import { Action, CenteredText, Container } from './elements';
 import { TemplateConfig } from './TemplateConfig';
 
 export const SandboxConfig: FunctionComponent = () => {
@@ -26,10 +26,8 @@ export const SandboxConfig: FunctionComponent = () => {
     },
   } = useOvermind();
 
-  const onCreateTemplate = (e?: MouseEvent<HTMLButtonElement>) => {
-    if (e) {
-      e.preventDefault();
-    }
+  const onCreateTemplate = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
 
     if (!user) {
       modalOpened({ modal: 'signInForTemplates' });
@@ -44,10 +42,8 @@ export const SandboxConfig: FunctionComponent = () => {
     });
   };
 
-  const onDelete = (e?: MouseEvent<HTMLButtonElement>) => {
-    if (e) {
-      e.preventDefault();
-    }
+  const onDelete = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
 
     if (customTemplate) {
       deleteTemplate();

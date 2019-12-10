@@ -6,11 +6,11 @@ import { useClickAway } from 'react-use';
 
 import { useOvermind } from 'app/overmind';
 
-import { WorkspaceItem } from '../../WorkspaceItem';
+import { WorkspaceItem } from '../../../WorkspaceItem';
 
-import { Explanation, Item, PropertyName, PropertyValue } from '../elements';
+import { PropertyName, PropertyValue } from '../../elements';
 
-import { PickColor, PickerContainer } from './elements';
+import { Explanation, Item, PickColor, PickerContainer } from './elements';
 import { Icon } from './Icon';
 
 export const TemplateConfig: FunctionComponent = () => {
@@ -29,7 +29,6 @@ export const TemplateConfig: FunctionComponent = () => {
   const [selectedColor, setSelectedColor] = useState(
     () => customTemplate.color || templates.default(template).color()
   );
-
   const colors = Object.keys(templates)
     .filter(x => x !== 'default')
     .map(t => templates[t])
@@ -38,15 +37,12 @@ export const TemplateConfig: FunctionComponent = () => {
   useClickAway(picker, () => {
     setShowPicker(false);
 
-    editTemplate({
-      ...customTemplate,
-      color: selectedColor,
-    });
+    editTemplate({ ...customTemplate, color: selectedColor });
   });
 
   return (
-    <WorkspaceItem showOverflow defaultOpen title="Template">
-      <Explanation style={{ marginTop: 0, marginBottom: '.5rem' }}>
+    <WorkspaceItem defaultOpen showOverflow title="Template">
+      <Explanation>
         This is a template, you can find more info about templates{' '}
         <Link target="_blank" to="/docs/templates">
           here
@@ -54,24 +50,22 @@ export const TemplateConfig: FunctionComponent = () => {
         .
       </Explanation>
 
-      <Item style={{ marginTop: '0.5rem' }}>
+      <Item>
         <PropertyName>Color</PropertyName>
 
         <PropertyValue relative>
           <PickColor
-            onClick={() => setShowPicker(true)}
             color={selectedColor}
+            onClick={() => setShowPicker(true)}
           />
 
           {showPicker && (
             <PickerContainer ref={picker}>
               <SketchPicker
+                color={selectedColor}
                 disableAlpha
                 id="color"
-                onChangeComplete={(color: { hex: string }) =>
-                  setSelectedColor(color.hex)
-                }
-                color={selectedColor}
+                onChangeComplete={({ hex }) => setSelectedColor(hex)}
                 presetColors={[...new Set(colors)]}
               />
             </PickerContainer>
