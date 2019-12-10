@@ -10,7 +10,7 @@ import { WorkspaceItem } from '../../WorkspaceItem';
 export const NotOwnedSandboxInfo = () => {
   const [editActions, setEditActions] = useState(null);
   const {
-    state: { editor },
+    state: { editor, hasLogIn },
   } = useOvermind();
   const staticTemplate = editor.currentSandbox.template === 'static';
 
@@ -18,7 +18,9 @@ export const NotOwnedSandboxInfo = () => {
     <div style={{ marginTop: '1rem' }}>
       <Margin bottom={1.5}>
         <SandboxInfo sandbox={editor.currentSandbox} />
-        {editor.currentSandbox.customTemplate && <BookmarkTemplateButton />}
+        {editor.currentSandbox.customTemplate && hasLogIn && (
+          <BookmarkTemplateButton />
+        )}
       </Margin>
 
       <WorkspaceItem actions={editActions} defaultOpen title="Files">
