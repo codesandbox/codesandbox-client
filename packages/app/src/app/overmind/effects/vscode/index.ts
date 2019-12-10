@@ -292,7 +292,7 @@ export class VSCodeEffect {
   public async changeSandbox(sandbox: Sandbox, setFs: (fs: SandboxFs) => void) {
     await this.initialized;
 
-    const isFirstLoad = !!this.modelsHandler;
+    const isFirstLoad = !this.modelsHandler;
 
     if (this.modelsHandler) {
       this.modelsHandler.dispose();
@@ -314,12 +314,12 @@ export class VSCodeEffect {
     setFs(this.sandboxFsSync.create(sandbox));
 
     if (isFirstLoad) {
+      this.sandboxFsSync.sync(() => {});
+    } else {
       this.editorApi.extensionService.stopExtensionHost();
       this.sandboxFsSync.sync(() => {
         this.editorApi.extensionService.startExtensionHost();
       });
-    } else {
-      this.sandboxFsSync.sync(() => {});
     }
   }
 
