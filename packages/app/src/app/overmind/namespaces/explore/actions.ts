@@ -84,7 +84,7 @@ export const pickedSandboxesMounted: AsyncAction = async ({
     state.explore.pickedSandboxes = pickedSandboxes;
   } catch (error) {
     actions.internal.handleError({
-      message: 'There has been a problem getting the sandboxes',
+      message: 'A problem occurred while fetching the sandboxes',
       error,
     });
   }
