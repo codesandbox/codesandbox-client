@@ -261,7 +261,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
         }
       });
       actions.internal.handleError({
-        message: 'Sorry, was not able to save, please try again',
+        message: 'There was a problem with saving the files, please try again',
         error,
       });
     }
