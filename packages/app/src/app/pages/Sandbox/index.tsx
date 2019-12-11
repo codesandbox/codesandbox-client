@@ -10,7 +10,7 @@ import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Navigation } from 'app/pages/common/Navigation';
 import { NotFound } from 'app/pages/common/NotFound';
 import { QuickActions } from 'app/pages/Sandbox/QuickActions';
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
@@ -26,22 +26,8 @@ interface Props {
 
 export const Sandbox: React.FC<Props> = ({ match }) => {
   const { state, actions } = useOvermind();
-  const disconnectLive = useCallback(
-    function disconnectLive() {
-      if (state.live.isLive) {
-        actions.live.onNavigateAway();
-      }
-    },
-    [actions.live, state.live.isLive]
-  );
 
   useEffect(() => {
-    function fetchSandbox() {
-      const { id } = match.params;
-
-      actions.editor.sandboxChanged({ id });
-    }
-
     if (window.screen.availWidth < 800) {
       if (!document.location.search.includes('from-embed')) {
         const addedSign = document.location.search ? '&' : '?';
@@ -54,16 +40,15 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
       }
     }
 
-    fetchSandbox();
+    actions.editor.sandboxChanged({ id: match.params.id });
+  }, [actions.editor, actions.preferences, match.params, match.params.id]);
 
-    return () => disconnectLive();
-  }, [
-    actions.editor,
-    actions.preferences,
-    disconnectLive,
-    match.params,
-    match.params.id,
-  ]);
+  useEffect(
+    () => () => {
+      actions.live.onNavigateAway();
+    },
+    [actions.live]
+  );
 
   function getContent() {
     const { hasLogIn } = state;

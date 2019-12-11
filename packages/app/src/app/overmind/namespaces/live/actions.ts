@@ -171,9 +171,11 @@ export const onSessionCloseClicked: Action = ({ actions, effects }) => {
   actions.live.internal.reset();
 };
 
-export const onNavigateAway: Action = ({ actions }) => {
-  actions.live.internal.disconnect();
-  actions.live.internal.reset();
+export const onNavigateAway: Action = ({ actions, state }) => {
+  if (state.live.isLive) {
+    actions.live.internal.disconnect();
+    actions.live.internal.reset();
+  }
 };
 
 export const onToggleNotificationsHidden: Action = ({ state }) => {
