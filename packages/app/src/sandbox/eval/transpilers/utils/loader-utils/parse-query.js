@@ -1,3 +1,4 @@
+/* eslint-disable */
 const specialValues = {
   null: null,
   true: true,

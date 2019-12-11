@@ -1,3 +1,4 @@
+/* eslint-disable */
 const compiler = require('vue-template-compiler');
 const cache = require('lru-cache')(100);
 const hash = require('hash-sum');

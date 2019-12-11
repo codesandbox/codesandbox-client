@@ -1,31 +1,29 @@
-import * as React from 'react';
-import { Sandbox, Module } from '../../types';
 import {
-  listen,
-  dispatch,
   actions,
+  dispatch,
+  listen,
   registerFrame,
   resetState,
 } from 'codesandbox-api';
 import debounce from 'lodash/debounce';
-
-import { frameUrl, host } from '../../utils/url-generator';
-import { getModulePath } from '../../sandbox/modules';
-import getTemplate from '../../templates';
-
+import React from 'react';
 import { Spring } from 'react-spring/renderprops.cjs';
 
+import { getModulePath } from '../../sandbox/modules';
+import getTemplate from '../../templates';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
-
-import { getSandboxName } from '../../utils/get-sandbox-name';
+import { Module, Sandbox } from '../../types';
 import track from '../../utils/analytics';
-
+import { getSandboxName } from '../../utils/get-sandbox-name';
+import { frameUrl, host } from '../../utils/url-generator';
+import { Container, Loading, StyledFrame } from './elements';
 import Navigator from './Navigator';
-import { Container, StyledFrame, Loading } from './elements';
 import { Settings } from './types';
 
 export type Props = {
   sandbox: Sandbox;
+  privacy?: number;
+  previewSecret?: string;
   settings: Settings;
   onInitialized?: (preview: BasePreview) => () => void; // eslint-disable-line no-use-before-define
   extraModules?: { [path: string]: { code: string; path: string } };
@@ -47,15 +45,21 @@ export type Props = {
   alignDirection?: 'right' | 'bottom';
   delay?: number;
   className?: string;
+  onMount?: (preview: BasePreview) => () => void;
   overlayMessage?: string;
+  /**
+   * Whether to show a screenshot in the preview as a "placeholder" while loading
+   * to reduce perceived loading time
+   */
+  showScreenshotOverlay?: boolean;
 };
 
 type State = {
   frameInitialized: boolean;
-  history: string[];
-  historyPosition: number;
+  url: string;
   urlInAddressBar: string;
-  url: string | undefined;
+  back: boolean;
+  forward: boolean;
   showScreenshot: boolean;
   useFallbackDomain: boolean;
 };
@@ -74,6 +78,7 @@ interface IModulesByPath {
 class BasePreview extends React.Component<Props, State> {
   serverPreview: boolean;
   element: HTMLIFrameElement;
+  onUnmount: () => void;
 
   constructor(props: Props) {
     super(props);
@@ -81,13 +86,15 @@ class BasePreview extends React.Component<Props, State> {
     // templates that are executed in a docker container.
     this.serverPreview = getTemplate(props.sandbox.template).isServer;
 
+    const initialUrl = this.currentUrl();
+
     this.state = {
       frameInitialized: false,
-      history: [],
-      historyPosition: 0,
-      urlInAddressBar: this.currentUrl(),
-      url: null,
-      showScreenshot: true,
+      urlInAddressBar: initialUrl,
+      url: initialUrl,
+      forward: false,
+      back: false,
+      showScreenshot: props.showScreenshotOverlay,
       useFallbackDomain: false,
     };
 
@@ -101,7 +108,14 @@ class BasePreview extends React.Component<Props, State> {
         // Remove screenshot after specific time, so the loading container spinner can still show
         this.setState({ showScreenshot: false });
       }, 100);
+    } else {
+      setTimeout(() => {
+        if (this.state.showScreenshot) {
+          this.setState({ showScreenshot: false });
+        }
+      }, 800);
     }
+
     this.listener = listen(this.handleMessage);
 
     if (props.delay) {
@@ -111,12 +125,6 @@ class BasePreview extends React.Component<Props, State> {
     (window as any).openNewWindow = this.openNewWindow;
 
     this.testFallbackDomainIfNeeded();
-
-    setTimeout(() => {
-      if (this.state.showScreenshot) {
-        this.setState({ showScreenshot: false });
-      }
-    }, 800);
   }
 
   UNSAFE_componentWillUpdate(nextProps: Props, nextState: State) {
@@ -125,6 +133,12 @@ class BasePreview extends React.Component<Props, State> {
       nextState.frameInitialized
     ) {
       this.handleRefresh();
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.onMount) {
+      this.onUnmount = this.props.onMount(this);
     }
   }
 
@@ -145,7 +159,7 @@ class BasePreview extends React.Component<Props, State> {
     const fallbackUrl = frameUrl(
       this.props.sandbox,
       this.props.initialPath || '',
-      true
+      { useFallbackDomain: true }
     );
 
     const setFallbackDomain = () => {
@@ -155,7 +169,7 @@ class BasePreview extends React.Component<Props, State> {
           urlInAddressBar: frameUrl(
             this.props.sandbox,
             this.props.initialPath || '',
-            true
+            { useFallbackDomain: true }
           ),
         },
         () => {
@@ -181,15 +195,22 @@ class BasePreview extends React.Component<Props, State> {
     }
   };
 
-  currentUrl = () =>
-    this.props.url ||
-    (this.serverPreview
-      ? getSSEUrl(this.props.sandbox, this.props.initialPath)
-      : frameUrl(
-          this.props.sandbox,
-          this.props.initialPath || '',
-          this.state && this.state.useFallbackDomain
-        ));
+  currentUrl = () => {
+    const { url, sandbox } = this.props;
+    if (url && !url.startsWith('/')) {
+      // An absolute url is given, just return that
+      return url;
+    }
+
+    // url may be a relative path (/test), so start with that
+    const initialPath = url || this.props.initialPath || '';
+
+    return this.serverPreview
+      ? getSSEUrl(sandbox, initialPath)
+      : frameUrl(sandbox, initialPath, {
+          useFallbackDomain: this.state && this.state.useFallbackDomain,
+        });
+  };
 
   static defaultProps = {
     showNavigation: true,
@@ -207,15 +228,17 @@ class BasePreview extends React.Component<Props, State> {
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
+    if (this.onUnmount) {
+      this.onUnmount();
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (
-      prevProps.sandbox &&
-      this.props.sandbox &&
-      prevProps.sandbox.id !== this.props.sandbox.id
-    ) {
-      this.handleSandboxChange(this.props.sandbox);
+    if (prevProps.privacy !== this.props.privacy) {
+      this.handlePrivacyChange();
+    }
+    if (prevProps.sandbox.id !== this.props.sandbox.id) {
+      this.handleSandboxChange();
     }
   }
 
@@ -227,12 +250,24 @@ class BasePreview extends React.Component<Props, State> {
     window.open(this.state.urlInAddressBar, '_blank');
   };
 
-  handleSandboxChange = (sandbox: Sandbox) => {
-    this.serverPreview = getTemplate(sandbox.template).isServer;
+  sendPreviewSecret = () => {
+    dispatch({
+      $type: 'preview-secret',
+      previewSecret: this.props.previewSecret,
+    });
+  };
+
+  handlePrivacyChange = () => {
+    this.sendPreviewSecret();
+  };
+
+  handleSandboxChange = () => {
+    this.serverPreview = getTemplate(this.props.sandbox.template).isServer;
 
     resetState();
 
     const url = this.currentUrl();
+    dispatch({ type: 'clear-console' });
 
     if (this.serverPreview) {
       setTimeout(() => {
@@ -241,13 +276,23 @@ class BasePreview extends React.Component<Props, State> {
       }, 800);
     }
 
-    this.setState({
-      history: [url],
-      historyPosition: 0,
-      urlInAddressBar: url,
-      showScreenshot: true,
-    });
+    this.setState(
+      {
+        urlInAddressBar: url,
+        url,
+        showScreenshot: true,
+      },
+      () => this.handleRefresh()
+    );
   };
+
+  updateAddressbarUrl() {
+    const url = this.currentUrl();
+
+    this.setState({
+      urlInAddressBar: url,
+    });
+  }
 
   handleDependenciesChange = () => {
     this.handleRefresh();
@@ -261,6 +306,8 @@ class BasePreview extends React.Component<Props, State> {
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
         }
+
+        this.sendPreviewSecret();
 
         setTimeout(
           () => {
@@ -281,7 +328,7 @@ class BasePreview extends React.Component<Props, State> {
             break;
           }
           case 'urlchange': {
-            this.commitUrl(data.url, data.action, data.diff);
+            this.commitUrl(data.url, data.back, data.forward);
             break;
           }
           case 'resize': {
@@ -328,7 +375,7 @@ class BasePreview extends React.Component<Props, State> {
 
   getModulesToSend = (): IModulesByPath => {
     const modulesObject: IModulesByPath = {};
-    const sandbox = this.props.sandbox;
+    const { sandbox } = this.props;
 
     sandbox.modules.forEach(m => {
       const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
@@ -355,9 +402,17 @@ class BasePreview extends React.Component<Props, State> {
     return modulesToSend;
   };
 
-  executeCodeImmediately = (initialRender: boolean = false) => {
-    const settings = this.props.settings;
-    const sandbox = this.props.sandbox;
+  executeCodeImmediately = (
+    initialRender: boolean = false,
+    showScreen = true
+  ) => {
+    // We cancel the existing calls with executeCode to prevent concurrent calls,
+    // the only reason we do this is because executeCodeImmediately can be called
+    // directly as well
+    // @ts-ignore
+    this.executeCode.cancel();
+    const { settings } = this.props;
+    const { sandbox } = this.props;
 
     if (settings.clearConsoleEnabled && !this.serverPreview) {
       // @ts-ignore Chrome behaviour
@@ -389,6 +444,8 @@ class BasePreview extends React.Component<Props, State> {
           isModuleView: !this.props.isInProjectView,
           template: sandbox.template,
           hasActions: Boolean(this.props.onAction),
+          previewSecret: sandbox.previewSecret,
+          showScreen,
         });
       }
     }
@@ -401,6 +458,7 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   clearErrors = () => {
+    // @ts-ignore
     dispatch(actions.error.clear('*', 'browser'));
     if (this.props.onClearErrors) {
       this.props.onClearErrors();
@@ -418,25 +476,27 @@ class BasePreview extends React.Component<Props, State> {
       this.element.src = urlInAddressBar;
 
       this.setState({
-        history: [urlInAddressBar],
-        historyPosition: 0,
-        urlInAddressBar,
+        url: urlInAddressBar,
+        back: false,
+        forward: false,
       });
     }
   };
 
   handleRefresh = () => {
-    const { history, historyPosition, urlInAddressBar } = this.state;
-    const url = history[historyPosition] || urlInAddressBar;
+    // Changed this from prioritizing URL. This is to make "smooth forking" work,
+    // but would expect the addressbar url to decide what is refreshed anyways?
+    const { urlInAddressBar, url } = this.state;
+    const urlToSet = urlInAddressBar || url;
 
     if (this.element) {
-      this.element.src = url || this.currentUrl();
+      this.element.src = urlToSet || this.currentUrl();
     }
 
     this.setState({
-      history: [url],
-      historyPosition: 0,
-      urlInAddressBar: url,
+      urlInAddressBar: urlToSet,
+      back: false,
+      forward: false,
     });
   };
 
@@ -452,36 +512,12 @@ class BasePreview extends React.Component<Props, State> {
     });
   };
 
-  commitUrl = (url: string, action: string, diff: number) => {
-    const { history, historyPosition } = this.state;
-
-    switch (action) {
-      case 'POP':
-        this.setState(prevState => {
-          const newPosition = prevState.historyPosition + diff;
-          return {
-            historyPosition: newPosition,
-            urlInAddressBar: url,
-          };
-        });
-        break;
-      case 'REPLACE':
-        this.setState(prevState => ({
-          history: [
-            ...prevState.history.slice(0, historyPosition),
-            url,
-            ...prevState.history.slice(historyPosition + 1),
-          ],
-          urlInAddressBar: url,
-        }));
-        break;
-      default:
-        this.setState({
-          history: [...history.slice(0, historyPosition + 1), url],
-          historyPosition: historyPosition + 1,
-          urlInAddressBar: url,
-        });
-    }
+  commitUrl = (url: string, back: boolean, forward: boolean) => {
+    this.setState({
+      urlInAddressBar: url,
+      back,
+      forward,
+    });
   };
 
   toggleProjectView = () => {
@@ -504,7 +540,7 @@ class BasePreview extends React.Component<Props, State> {
       overlayMessage,
     } = this.props;
 
-    const { historyPosition, history, urlInAddressBar } = this.state;
+    const { urlInAddressBar, back, forward } = this.state;
 
     const url = urlInAddressBar || this.currentUrl();
 
@@ -527,13 +563,11 @@ class BasePreview extends React.Component<Props, State> {
       >
         {showNavigation && (
           <Navigator
-            url={decodeURIComponent(url)}
+            url={url}
             onChange={this.updateUrl}
             onConfirm={this.sendUrl}
-            onBack={historyPosition > 0 ? this.handleBack : null}
-            onForward={
-              historyPosition < history.length - 1 ? this.handleForward : null
-            }
+            onBack={back ? this.handleBack : null}
+            onForward={forward ? this.handleForward : null}
             onRefresh={this.handleRefresh}
             isProjectView={isInProjectView}
             toggleProjectView={
@@ -546,19 +580,20 @@ class BasePreview extends React.Component<Props, State> {
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
 
         <AnySpring
-          from={{ opacity: 0 }}
+          from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
           to={{
             opacity: this.state.showScreenshot ? 0 : 1,
           }}
         >
           {(style: { opacity: number }) => (
-            <React.Fragment>
+            <>
               <StyledFrame
                 sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-                allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media"
-                src={this.currentUrl()}
+                allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+                src={this.state.url}
                 ref={this.setIframeElement}
                 title={getSandboxName(sandbox)}
+                id="sandbox-preview"
                 style={{
                   ...style,
                   zIndex: 1,
@@ -581,7 +616,7 @@ class BasePreview extends React.Component<Props, State> {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    top: 35,
+                    top: showNavigation ? 35 : 0,
                     zIndex: 0,
                   }}
                 >
@@ -598,7 +633,7 @@ class BasePreview extends React.Component<Props, State> {
                   />
                 </div>
               )}
-            </React.Fragment>
+            </>
           )}
         </AnySpring>
       </Container>

@@ -6,9 +6,7 @@ const config: ConfigurationFile = {
   description: 'Configuration for the Babel REPL.',
   moreInfoUrl: 'https://eslint.org/docs/user-guide/configuring',
 
-  getDefaultCode: () => {
-    return '{}';
-  },
+  getDefaultCode: () => '{}',
 };
 
 export default config;

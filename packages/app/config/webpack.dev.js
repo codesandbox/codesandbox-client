@@ -20,9 +20,10 @@ module.exports = merge(
   commonConfig,
   {
     devtool: 'eval',
+    mode: 'development',
     output: {
       filename: 'static/js/[name].js',
-      pathinfo: false,
+      pathinfo: true,
     },
     optimization: {
       removeAvailableModules: false,

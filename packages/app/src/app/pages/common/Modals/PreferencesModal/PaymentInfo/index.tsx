@@ -1,65 +1,64 @@
-import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React, { ComponentProps, FunctionComponent, useEffect } from 'react';
 
-import SubscribeForm from 'app/components/SubscribeForm';
+import { SubscribeForm } from 'app/components/SubscribeForm';
+import { useOvermind } from 'app/overmind';
 
-import Card from './Card';
 import { Title, Subheading } from '../elements';
+
+import { Card } from './Card';
 import { Container } from './elements';
 
-interface Props {
-  store: any;
-  signals: any;
-}
+export const PaymentInfo: FunctionComponent = () => {
+  const {
+    actions: {
+      preferences: { paymentDetailsRequested, paymentDetailsUpdated },
+    },
+    state: {
+      preferences: {
+        isLoadingPaymentDetails,
+        paymentDetailError,
+        paymentDetails,
+      },
+    },
+  } = useOvermind();
 
-class PaymentInfo extends React.Component<Props> {
-  componentDidMount() {
-    this.props.signals.preferences.paymentDetailsRequested();
-  }
+  useEffect(() => {
+    paymentDetailsRequested();
+  }, [paymentDetailsRequested]);
 
-  updatePaymentDetails = ({ token }) => {
-    this.props.signals.preferences.paymentDetailsUpdated({ token });
-  };
+  const updatePaymentDetails: ComponentProps<
+    typeof SubscribeForm
+  >['subscribe'] = ({ token }) => paymentDetailsUpdated(token);
 
-  paymentDetails = () => {
-    const { preferences } = this.props.store;
+  const Body = () => {
+    const { brand, last4, name } = paymentDetails || {};
+    if (isLoadingPaymentDetails) {
+      return <div>Loading payment details...</div>;
+    }
 
-    if (preferences.paymentDetailError)
-      return <div>An error occurred: {preferences.paymentDetailError}</div>;
+    if (paymentDetailError) {
+      return <div>An error occurred: {paymentDetailError}</div>;
+    }
 
     return (
       <div>
         <Subheading>Current card</Subheading>
-        <Card
-          last4={preferences.paymentDetails.last4}
-          name={preferences.paymentDetails.name}
-          brand={preferences.paymentDetails.brand}
-        />
-
+        <Card brand={brand} last4={last4} name={name} />
         <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
         <SubscribeForm
           buttonName="Update"
           loadingText="Updating Card Info..."
-          name={preferences.paymentDetails.name}
-          subscribe={this.updatePaymentDetails}
+          name={name}
+          subscribe={updatePaymentDetails}
         />
       </div>
     );
   };
 
-  render() {
-    const { preferences } = this.props.store;
-    return (
-      <Container>
-        <Title>Payment Info</Title>
-        {preferences.isLoadingPaymentDetails ? (
-          <div>Loading payment details...</div>
-        ) : (
-          this.paymentDetails()
-        )}
-      </Container>
-    );
-  }
-}
-
-export default inject('store', 'signals')(observer(PaymentInfo));
+  return (
+    <Container>
+      <Title>Payment Info</Title>
+      <Body />
+    </Container>
+  );
+};

@@ -56,7 +56,8 @@ const existsPromise = (fs, file) =>
     fs.stat(file, async (err, stats) => {
       if (err || stats.isDirectory()) {
         if (stats && stats.isDirectory()) {
-          return r(false);
+          r(false);
+          return;
         }
         // We try to download it
         try {
@@ -67,7 +68,8 @@ const existsPromise = (fs, file) =>
           const ext = extname(path).substr(1);
 
           if (SUPPORTED_EXTS.indexOf(ext) === -1) {
-            return r(false);
+            r(false);
+            return;
           }
 
           r(path);
@@ -75,7 +77,7 @@ const existsPromise = (fs, file) =>
           r(false);
         }
       } else {
-        return r(file);
+        r(file);
       }
     });
   });

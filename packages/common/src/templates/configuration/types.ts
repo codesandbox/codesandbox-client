@@ -8,7 +8,7 @@ export type ConfigurationFile = {
 
   getDefaultCode?: (
     template: string,
-    resolveModule: (path: string) => { code: string } | undefined
+    resolveModule: (path: string) => { code: string | null } | undefined
   ) => string;
   generateFileFromState?: (state: any) => string;
   generateFileFromSandbox?: (sandbox: Sandbox) => string;
@@ -18,12 +18,10 @@ export type ConfigurationFile = {
 };
 
 export type ParsedConfigurationFile<T> = {
-  parsed?: T;
   code: string;
   generated: boolean;
-  error?: Error;
   path: string;
-};
+} & ({ error: Error; parsed?: undefined } | { error?: undefined; parsed: T });
 
 export type ConfigurationUIProps = {
   file: string;

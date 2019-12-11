@@ -5,7 +5,7 @@ import ansiHTML from 'ansi-html';
 
 import { escapeHtml } from 'app/utils/escape';
 
-import { TestError } from '../../';
+import { TestError } from '../..';
 
 const Container = styled.div`
   font-family: Menlo, Source Code Pro, monospace;
@@ -96,7 +96,13 @@ const formatDiffMessage = (error: TestError, path: string) => {
   return finalMessage.replace(/(?:\r\n|\r|\n)/g, '<br />');
 };
 
-export default ({ error, path }: { error: TestError; path: string }) => (
+export const ErrorDetails = ({
+  error,
+  path,
+}: {
+  error: TestError;
+  path: string;
+}) => (
   <Container
     dangerouslySetInnerHTML={{
       __html: formatDiffMessage(error, path),

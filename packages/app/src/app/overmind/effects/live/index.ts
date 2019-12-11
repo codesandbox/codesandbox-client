@@ -1,15 +1,35 @@
-import { Socket } from 'phoenix';
+import {
+  Directory,
+  LiveMessageEvent,
+  Module,
+  RoomInfo,
+  Sandbox,
+} from '@codesandbox/common/lib/types';
 import _debug from '@codesandbox/common/lib/utils/debug';
-import uuid from 'uuid';
-import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
-import { Module, Directory } from '@codesandbox/common/lib/types';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { TextOperation } from 'ot';
+import { Socket } from 'phoenix';
+import uuid from 'uuid';
+
+import { SandboxAPIResponse } from '../api/types';
+import { transformSandbox } from '../utils/sandbox';
 import clientsFactory from './clients';
 
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
   provideJwtToken(): string;
+};
+
+type JoinChannelResponse = {
+  sandboxId: string;
+  sandbox: SandboxAPIResponse;
+  moduleState: object;
+  liveUserId: string;
+  roomInfo: RoomInfo;
+};
+
+type JoinChannelTransformedResponse = JoinChannelResponse & {
+  sandbox: Sandbox;
 };
 
 declare global {
@@ -50,11 +70,12 @@ export default {
     provideJwtToken = options.provideJwtToken;
   },
   getSocket() {
-    return _socket;
+    return _socket || this.connect();
   },
   connect() {
     if (!_socket) {
-      _socket = new Socket(`wss://${location.host}/socket`, {
+      const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
+      _socket = new Socket(`${protocol}://${location.host}/socket`, {
         params: {
           guardian_token: provideJwtToken(),
         },
@@ -64,8 +85,14 @@ export default {
       window.socket = _socket;
       debug('Connecting to socket', _socket);
     }
+
+    return _socket;
   },
   disconnect() {
+    if (!channel) {
+      return Promise.resolve({});
+    }
+
     return new Promise((resolve, reject) => {
       channel
         .leave()
@@ -77,33 +104,44 @@ export default {
 
           return resolve(resp);
         })
+        // eslint-disable-next-line prefer-promise-reject-errors
         .receive('error', resp => reject(resp));
     });
   },
-  joinChannel<T>(roomId: string): Promise<T> {
-    const { socket } = this.context;
-
-    channel = socket.getSocket().channel(`live:${roomId}`, {});
+  joinChannel(roomId: string): Promise<JoinChannelTransformedResponse> {
+    channel = this.getSocket().channel(`live:${roomId}`, {});
 
     return new Promise((resolve, reject) => {
       channel
         .join()
-        .receive('ok', resp => resolve(camelizeKeys(resp) as T))
+        .receive('ok', resp => {
+          const result = camelizeKeys(resp) as JoinChannelResponse;
+          // @ts-ignore
+          result.sandbox = transformSandbox(result.sandbox);
+          resolve(result as JoinChannelTransformedResponse);
+        })
         .receive('error', resp => reject(camelizeKeys(resp)));
     });
   },
   // TODO: Need to take an action here
-  listen(signalPath) {
-    const signal = this.context.controller.getSignal(signalPath);
+  listen(
+    action: (payload: {
+      event: LiveMessageEvent;
+      _isOwnMessage: boolean;
+      data: object;
+    }) => {}
+  ) {
     channel.onMessage = (event: any, data: any) => {
-      const disconnected = data == null && event === 'phx_error';
+      const disconnected =
+        (data == null || Object.keys(data).length === 0) &&
+        event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
 
       const _isOwnMessage = Boolean(
         data && data._messageId && sentMessages.delete(data._messageId)
       );
 
-      signal({
+      action({
         event: alteredEvent,
         _isOwnMessage,
         data: data == null ? {} : data,
@@ -125,119 +163,112 @@ export default {
           .receive('ok', resolve)
           .receive('error', reject);
       } else {
-        reject('Channel is not defined');
+        // we might try to send messages even when not on live, just
+        // ignore it
+        resolve();
       }
     });
   },
-  sendModuleUpdate(moduleShortid: string, module?: Module) {
-    return this.send('module:saved', {
+  sendModuleUpdate(module: Module) {
+    return this.send('module:updated', {
       type: 'module',
-      moduleShortid,
+      moduleShortid: module.shortid,
       module,
     });
   },
-  sendDirectoryUpdate(directoryShortid: string) {
-    return this.send('module:saved', {
-      type: 'module',
-      directoryShortid,
+  sendDirectoryUpdate(directory: Directory) {
+    return this.send('directory:updated', {
+      type: 'directory',
+      directoryShortid: directory.shortid,
+      module: directory,
     });
   },
-  sendCodeUpdate(moduleShortid: string, currentCode: string, code: string) {
-    const operation = getTextOperation(currentCode, code);
-
+  sendCodeUpdate(moduleShortid: string, operation: any) {
     if (!operation) {
       return;
     }
 
     try {
-      clients.get(moduleShortid).applyClient(TextOperation.fromJSON(operation));
+      clients.get(moduleShortid).applyClient(operation);
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
-      console.error(
-        'Something went wrong with applying OT operation',
-        moduleShortid,
-        operation
-      );
       this.send('live:module_state', {});
     }
   },
   sendUserCurrentModule(moduleShortid: string) {
-    this.send('user:current-module', {
+    return this.send('user:current-module', {
       moduleShortid,
     });
   },
-  sendDirectoryCreated(directoryShortid: string) {
-    this.send('directory:created', {
+  sendDirectoryCreated(directory: Directory) {
+    return this.send('directory:created', {
+      type: 'directory',
+      module: directory,
+    });
+  },
+  sendDirectoryDeleted(directoryShortid: string) {
+    this.send('directory:deleted', {
       type: 'directory',
       directoryShortid,
     });
   },
-  sendDirectoryDeleted(directoryShortid: string) {
-    this.send(
-      'directory:deleted',
-      {
-        type: 'directory',
-        directoryShortid,
-      }
-      // When should we send module? Should we pass it when we should send it? Probably yeah
-      // { sendModule: false }
-    );
-  },
-  sendModuleCreated(moduleShortid: string) {
-    this.send('module:created', {
+  sendModuleCreated(module: Module) {
+    return this.send('module:created', {
       type: 'module',
-      moduleShortid,
+      moduleShortid: module.shortid,
+      module,
     });
   },
   sendModuleDeleted(moduleShortid: string) {
-    this.send('module:deleted', {
+    return this.send('module:deleted', {
       type: 'module',
       moduleShortid,
     });
   },
   sendMassCreatedModules(modules: Module[], directories: Directory[]) {
-    this.send('module:mass-created', {
+    return this.send('module:mass-created', {
       directories,
       modules,
     });
   },
   sendLiveMode(mode: string) {
-    this.send('live:mode', {
+    return this.send('live:mode', {
       mode,
     });
   },
   sendEditorAdded(liveUserId: string) {
-    this.send('live:add-editor', {
+    return this.send('live:add-editor', {
       editor_user_id: liveUserId,
     });
   },
   sendEditorRemoved(liveUserId: string) {
-    this.send('live:remove-editor', {
+    return this.send('live:remove-editor', {
       editor_user_id: liveUserId,
     });
   },
   sendClosed() {
-    this.send('live:close', {});
+    return this.send('live:close', {});
   },
   sendChat(message: string) {
-    this.send('chat', {
+    return this.send('chat', {
       message,
     });
   },
-  sendModuleSaved(moduleShortid: string) {
-    this.send('module:saved', {
+  sendModuleSaved(module: Module) {
+    return this.send('module:saved', {
       type: 'module',
-      moduleShortid,
+      module,
+      moduleShortid: module.shortid,
     });
   },
   sendChatEnabled(enabled: boolean) {
-    this.send('live:chat_enabled', { enabled });
+    return this.send('live:chat_enabled', { enabled });
   },
-  sendModuleUpdateRequest() {
-    this.send('live:module_state', {});
+  sendModuleStateSyncRequest() {
+    return this.send('live:module_state', {});
   },
   sendUserSelection(moduleShortid: string, liveUserId: string, selection: any) {
-    this.send('user:selection', {
+    return this.send('user:selection', {
       liveUserId,
       moduleShortid,
       selection,
@@ -246,8 +277,18 @@ export default {
   getAllClients() {
     return clients.getAll();
   },
-  getClient(moduleShortid: string) {
-    return clients.get(moduleShortid);
+  applyClient(moduleShortid: string, operation: any) {
+    return clients
+      .get(moduleShortid)
+      .applyClient(TextOperation.fromJSON(operation));
+  },
+  applyServer(moduleShortid: string, operation: any) {
+    return clients
+      .get(moduleShortid)
+      .applyServer(TextOperation.fromJSON(operation));
+  },
+  serverAck(moduleShortid: string) {
+    return clients.get(moduleShortid).serverAck();
   },
   createClient(moduleShortid: string, revision: number) {
     return clients.create(moduleShortid, revision);

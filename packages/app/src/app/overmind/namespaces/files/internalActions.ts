@@ -42,14 +42,17 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
       return false;
     })
     .filter(Boolean);
+  const numRecoveredFiles = recoveredList.length;
 
-  if (recoveredList.length > 0) {
+  if (numRecoveredFiles > 0) {
     effects.analytics.track('Files Recovered', {
-      fileCount: recoveredList.length,
+      fileCount: numRecoveredFiles,
     });
 
     effects.notificationToast.add({
-      message: `We recovered ${recoveredList.length} unsaved files from a previous session`,
+      message: `We recovered ${numRecoveredFiles} unsaved ${
+        numRecoveredFiles > 1 ? 'files' : 'file'
+      } from a previous session`,
       status: NotificationStatus.NOTICE,
     });
   }
@@ -78,7 +81,7 @@ export const uploadFiles: AsyncAction<
     await Promise.all(
       filePathsChunk.map(async filePath => {
         const file = files[filePath];
-        const dataURI = file.dataURI;
+        const { dataURI } = file;
 
         if (
           (/\.(j|t)sx?$/.test(filePath) ||
@@ -91,11 +94,13 @@ export const uploadFiles: AsyncAction<
             /\.haml$/.test(filePath) ||
             /\.pug$/.test(filePath) ||
             /\.svg$/.test(filePath) ||
+            /\.md$/.test(filePath) ||
+            /\.svelte$/.test(filePath) ||
             file.type.startsWith('text/') ||
             file.type === 'application/json') &&
           dataURI.length < MAX_FILE_SIZE
         ) {
-          const text = atob(dataURI.replace(/^.*base64,/, ''));
+          const text = dataURI ? atob(dataURI.replace(/^.*base64,/, '')) : '';
           parsedFiles[filePath] = {
             content: text,
             isBinary: false,
@@ -127,7 +132,7 @@ export const uploadFiles: AsyncAction<
     if (dir.directoryShortid == null) {
       return {
         ...dir,
-        directoryShortid: directoryShortid,
+        directoryShortid,
       };
     }
 
@@ -138,7 +143,7 @@ export const uploadFiles: AsyncAction<
     if (m.directoryShortid == null) {
       return {
         ...m,
-        directoryShortid: directoryShortid,
+        directoryShortid,
       };
     }
 

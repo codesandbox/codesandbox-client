@@ -1,35 +1,29 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
 
-import ZeitLogo from 'app/components/ZeitLogo';
-import Integration from 'app/components/Integration';
+import { Integration } from 'app/components/Integration';
+import { ZeitLogo } from 'app/components/ZeitLogo';
+import { useOvermind } from 'app/overmind';
 
-interface Props {
+type Props = {
   small: boolean;
-  store: any;
-  signals: any;
-}
+};
+export const ZeitIntegration: FunctionComponent<Props> = ({ small }) => {
+  const {
+    actions: { signInZeitClicked, signOutZeitClicked },
+    state: { user, isLoadingZeit },
+  } = useOvermind();
 
-const ZeitIntegration = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      small,
-      signals: { signInZeitClicked, signOutZeitClicked },
-      store: { user, isLoadingZeit },
-    }: Props) => (
-      <Integration
-        name="ZEIT"
-        small={small}
-        color="black"
-        description="Deployments"
-        Icon={ZeitLogo}
-        userInfo={user.integrations.zeit}
-        signIn={signInZeitClicked}
-        signOut={signOutZeitClicked}
-        loading={isLoadingZeit}
-      />
-    )
-  )
-);
-
-export default ZeitIntegration;
+  return (
+    <Integration
+      name="ZEIT"
+      small={small}
+      bgColor="black"
+      description="Deployments"
+      Icon={ZeitLogo}
+      userInfo={user.integrations.zeit}
+      onSignIn={signInZeitClicked}
+      onSignOut={signOutZeitClicked}
+      loading={isLoadingZeit}
+    />
+  );
+};

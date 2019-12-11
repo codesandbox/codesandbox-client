@@ -1,7 +1,7 @@
 import React from 'react';
+import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 // @ts-ignore
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
-import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Action } from './Action';
 
 export const PatronButton = () => (

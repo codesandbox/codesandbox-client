@@ -22,7 +22,7 @@ import base64Transpiler from '../../transpilers/base64';
 import pugTranspiler from '../../transpilers/pug';
 import coffeeTranspiler from '../../transpilers/coffee';
 
-import Preset from '../';
+import Preset from '..';
 
 const getFileNameFromVm = vm => {
   if (vm) {
@@ -35,6 +35,7 @@ const getFileNameFromVm = vm => {
 
     return options.__file;
   }
+  return undefined;
 };
 
 export default function initialize() {

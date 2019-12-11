@@ -8,10 +8,10 @@ import React from 'react';
 import ClearIcon from 'react-icons/lib/md/block';
 import styled, { withTheme } from 'styled-components';
 
-import { DevToolProps } from '../';
+import { DevToolProps } from '..';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
-import Input from './Input';
+import { ConsoleInput } from './Input';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -27,10 +27,9 @@ const StyledClearIcon = styled(ClearIcon)`
   font-size: 0.8em;
 `;
 
-class Console extends React.Component<StyledProps> {
+class ConsoleComponent extends React.Component<StyledProps> {
   state = {
     messages: [],
-    scrollToBottom: true,
     initialClear: true,
     filter: [],
     searchKeywords: '',
@@ -143,7 +142,7 @@ class Console extends React.Component<StyledProps> {
   };
 
   addMessage(method, data) {
-    if (this.props.updateStatus) {
+    if (this.props.updateStatus && this.props.hidden) {
       this.props.updateStatus(this.getType(method));
     }
 
@@ -181,7 +180,11 @@ class Console extends React.Component<StyledProps> {
             method: 'log',
             data: [
               '%cConsole was cleared',
-              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+              `font-style: italic; color: ${
+                this.props.theme.vscodeTheme.type === 'light'
+                  ? 'rgba(0, 0, 0, 0.3)'
+                  : 'rgba(255, 255, 255, 0.3)'
+              }`,
             ],
           },
         ];
@@ -191,7 +194,10 @@ class Console extends React.Component<StyledProps> {
     });
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: StyledProps) {
+    if (prevProps.hidden && !this.props.hidden) {
+      this.props.updateStatus('clear');
+    }
     this.scrollToBottom();
   }
 
@@ -238,7 +244,7 @@ class Console extends React.Component<StyledProps> {
             searchKeywords={searchKeywordsHasError ? '' : searchKeywords}
           />
         </Messages>
-        <Input evaluateConsole={this.evaluateConsole} />
+        <ConsoleInput evaluateConsole={this.evaluateConsole} />
       </Container>
     );
   }
@@ -284,11 +290,11 @@ const ConsoleFilterSelect = props => {
   );
 };
 
-export default {
+export const console = {
   id: 'codesandbox.console',
   title: 'Console',
   // @ts-ignore  TODO: fix this
-  Content: withTheme<StyledProps>(Console),
+  Content: withTheme<StyledProps>(ConsoleComponent),
   actions: [
     {
       title: 'Clear Console',

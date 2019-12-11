@@ -76,8 +76,8 @@ export const state: State = {
   showPreview: true,
   showDevtools: false,
   runOnClick: false,
-  keybindings: state => {
-    const userBindings = state.settings.keybindings;
+  keybindings: currentState => {
+    const userBindings = currentState.settings.keybindings;
     const userBindingsMap = userBindings.reduce(
       (bindings, binding) => ({
         ...bindings,

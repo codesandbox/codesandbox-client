@@ -14,21 +14,6 @@ describe('get-require-statements', () => {
     expect(getRequireStatements(sourceFile, ts)).toMatchSnapshot();
   }
 
-  function testRegex(code) {
-    const results = [];
-
-    code.split('\n').forEach(line => {
-      const regex = /import\s.*['|"|`](.*)['|"|`]|require\((.*)\)|import\((.*)\)/;
-
-      const [, ...results] = line.match(regex);
-
-      const path = results.find(Boolean);
-      results.push({ type: 'direct', path });
-    });
-
-    return results;
-  }
-
   it('can find simple requires', () => {
     const code = `
       import React from 'react';

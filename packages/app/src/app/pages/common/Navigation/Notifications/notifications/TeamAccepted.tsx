@@ -10,7 +10,12 @@ interface Props {
   userAvatar: string;
 }
 
-const TeamInvite = ({ read, teamName, userName, userAvatar }: Props) => (
+export const TeamAccepted = ({
+  read,
+  teamName,
+  userName,
+  userAvatar,
+}: Props) => (
   <div>
     <Container success read={read}>
       <Image src={userAvatar} />
@@ -20,5 +25,3 @@ const TeamInvite = ({ read, teamName, userName, userAvatar }: Props) => (
     </Container>
   </div>
 );
-
-export default TeamInvite;

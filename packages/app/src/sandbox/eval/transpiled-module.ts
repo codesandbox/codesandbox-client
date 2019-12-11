@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
@@ -21,7 +22,7 @@ import Manager, { HMRStatus } from './manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 
-declare var BrowserFS: any;
+declare const BrowserFS: any;
 
 const debug = _debug('cs:compiler:transpiled-module');
 
@@ -158,6 +159,7 @@ export default class TranspiledModule {
   assets: {
     [name: string]: ModuleSource;
   };
+
   isEntry: boolean;
   childModules: Array<TranspiledModule>;
   errors: Array<ModuleError>;
@@ -364,6 +366,7 @@ export default class TranspiledModule {
         // mark the dependency as having missing deps.
         if (manager.fileResolver) {
           this.asyncDependencies.push(
+            // eslint-disable-next-line
             new Promise(async resolve => {
               try {
                 const tModule = await manager.resolveTranspiledModule(
@@ -597,7 +600,7 @@ export default class TranspiledModule {
     let code = this.module.code || '';
     let finalSourceMap = null;
 
-    const requires = this.module.requires;
+    const { requires } = this.module;
     if (requires != null && this.query === '') {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
@@ -611,6 +614,7 @@ export default class TranspiledModule {
         }
       });
 
+      // eslint-disable-next-line
       code = this.module.code;
     } else {
       const transpilers = manager.preset.getLoaders(this.module, this.query);
@@ -833,12 +837,13 @@ export default class TranspiledModule {
         accept: (path: string | Array<string>, cb) => {
           if (
             typeof path === 'undefined' ||
-            (typeof path !== 'string' || !Array.isArray(path))
+            typeof path !== 'string' ||
+            !Array.isArray(path)
           ) {
             // Self mark hot
             this.hmrConfig = this.hmrConfig || new HMR();
             if (this.hmrConfig) {
-              const hmrConfig = this.hmrConfig;
+              const { hmrConfig } = this;
               hmrConfig.setType('accept');
               hmrConfig.setSelfAccepted(true);
             }
@@ -852,7 +857,7 @@ export default class TranspiledModule {
               );
 
               tModule.hmrConfig = tModule.hmrConfig || new HMR();
-              const hmrConfig = tModule.hmrConfig;
+              const { hmrConfig } = tModule;
               hmrConfig.setType('accept');
               hmrConfig.setAcceptCallback(cb);
             });
@@ -982,7 +987,7 @@ export default class TranspiledModule {
 
       /* eslint-disable no-param-reassign */
       manager.setHmrStatus('apply');
-      const hmrConfig = this.hmrConfig;
+      const { hmrConfig } = this;
       if (hmrConfig && hmrConfig.isHot()) {
         hmrConfig.setDirty(false);
         hmrConfig.callAcceptCallback();
@@ -1044,13 +1049,13 @@ export default class TranspiledModule {
       isEntry: this.isEntry,
       isTestFile: this.isTestFile,
 
-      sourceEqualsCompiled: sourceEqualsCompiled,
+      sourceEqualsCompiled,
       childModules: this.childModules.map(m => m.getId()),
       dependencies: Array.from(this.dependencies).map(m => m.getId()),
       initiators: Array.from(this.initiators).map(m => m.getId()),
-      transpilationDependencies: Array.from(this.transpilationDependencies).map(
-        m => m.getId()
-      ),
+      transpilationDependencies: Array.from(
+        this.transpilationDependencies
+      ).map(m => m.getId()),
       transpilationInitiators: Array.from(this.transpilationInitiators).map(m =>
         m.getId()
       ),
@@ -1098,7 +1103,7 @@ export default class TranspiledModule {
       const [path, ...queryParts] = depId.split(':');
       const query = queryParts.join(':');
 
-      const module = manager.transpiledModules[path].module;
+      const { module } = manager.transpiledModules[path];
       return manager.getTranspiledModule(module, query);
     };
 
@@ -1115,12 +1120,10 @@ export default class TranspiledModule {
         } else {
           tModule.dependencies.add(this);
         }
+      } else if (transpilation) {
+        tModule.transpilationInitiators.add(this);
       } else {
-        if (transpilation) {
-          tModule.transpilationInitiators.add(this);
-        } else {
-          tModule.initiators.add(this);
-        }
+        tModule.initiators.add(this);
       }
 
       return tModule;

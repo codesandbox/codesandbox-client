@@ -87,7 +87,7 @@ function getManagerStatusMessageAndColor(managerStatus: SSEManagerStatus) {
   }
 }
 
-export default ({ containerStatus, managerStatus }: Props) => {
+export const Status = ({ containerStatus, managerStatus }: Props) => {
   const { color, message } =
     getManagerStatusMessageAndColor(managerStatus) ||
     getContainerStatusMessageAndColor(containerStatus);

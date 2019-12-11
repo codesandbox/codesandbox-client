@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import Input from '../Input';
+
+import InputBase from '../Input';
 
 export const Container = styled.div`
   display: flex;
@@ -7,6 +8,6 @@ export const Container = styled.div`
   align-items: center;
 `;
 
-export const StyledInput = styled(Input)`
+export const Input = styled(InputBase)`
   text-align: center;
 `;

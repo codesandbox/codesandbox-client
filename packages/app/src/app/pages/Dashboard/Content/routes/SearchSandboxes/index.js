@@ -1,9 +1,10 @@
 import React from 'react';
+import Helmet from 'react-helmet';
 import { Observer } from 'app/componentConnectors';
 import { Query } from 'react-apollo';
 import Fuse from 'fuse.js';
 
-import Sandboxes from '../../Sandboxes';
+import { Content as Sandboxes } from '../../Sandboxes';
 
 import { SEARCH_SANDBOXES_QUERY } from '../../../queries';
 import { getPossibleTemplates } from '../../Sandboxes/utils';
@@ -20,7 +21,7 @@ const SearchSandboxes = () => (
             return <div>Error!</div>;
           }
 
-          const search = store.dashboard.filters.search;
+          const { search } = store.dashboard.filters;
           let sandboxes = data && data.me && data.me.sandboxes;
           if (
             sandboxes &&
@@ -50,12 +51,6 @@ const SearchSandboxes = () => (
               ? `${sandboxes.length} search results for '${search}'`
               : 'Search results for all sandboxes';
 
-          if (search) {
-            document.title = `Search: '${search}' - CodeSandbox`;
-          } else {
-            document.title = `Search - CodeSandbox`;
-          }
-
           let possibleTemplates = [];
           if (sandboxes) {
             possibleTemplates = getPossibleTemplates(sandboxes);
@@ -66,14 +61,23 @@ const SearchSandboxes = () => (
           }
 
           return (
-            <Sandboxes
-              isLoading={loading}
-              Header={Header}
-              page="search"
-              hideOrder={Boolean(search)}
-              sandboxes={loading ? [] : sandboxes}
-              possibleTemplates={possibleTemplates}
-            />
+            <>
+              <Helmet>
+                <title>
+                  {search
+                    ? `Search: '${search}' - CodeSandbox`
+                    : 'Search - CodeSandbox'}
+                </title>
+              </Helmet>
+              <Sandboxes
+                isLoading={loading}
+                Header={Header}
+                page="search"
+                hideOrder={Boolean(search)}
+                sandboxes={loading ? [] : sandboxes}
+                possibleTemplates={possibleTemplates}
+              />
+            </>
           );
         }}
       </Observer>

@@ -1,20 +1,18 @@
 import { dispatch, isStandalone, listen } from 'codesandbox-api';
 
-function sendUrlChange(url: string, action?: string, diff?: number) {
-  dispatch({
-    type: 'urlchange',
-    url,
-    diff,
-    action,
-  });
-}
-
-/* eslint-disable no-console */
-
 const origHistoryProto = window.history.__proto__; // eslint-disable-line no-proto
 const historyList = [];
 let historyPosition = -1;
 let disableNextHashChange = false;
+
+function sendUrlChange(url) {
+  dispatch({
+    type: 'urlchange',
+    url,
+    back: historyPosition > 0,
+    forward: historyPosition < historyList.length - 1,
+  });
+}
 
 function pushHistory(url, state) {
   // remove "future" locations
@@ -49,7 +47,7 @@ export default function setupHistoryListeners() {
           const oldURL = document.location.href;
           origHistoryProto.replaceState.call(window.history, state, '', url);
           const newURL = document.location.href;
-          sendUrlChange(newURL, 'POP', delta);
+          sendUrlChange(newURL);
           if (newURL.indexOf('#') === -1) {
             window.dispatchEvent(new PopStateEvent('popstate', { state }));
           } else {
@@ -78,7 +76,7 @@ export default function setupHistoryListeners() {
       replaceState(state, title, url) {
         origHistoryProto.replaceState.call(window.history, state, title, url);
         historyList[historyPosition] = { state, url };
-        sendUrlChange(document.location.href, 'REPLACE');
+        sendUrlChange(document.location.href);
       },
     });
 
@@ -138,7 +136,7 @@ export default function setupHistoryListeners() {
     pushHistory(pathWithHash(document.location), null);
 
     setTimeout(() => {
-      sendUrlChange(document.location.href, 'REPLACE');
+      sendUrlChange(document.location.href);
     });
   }
   return listen(handleMessage);

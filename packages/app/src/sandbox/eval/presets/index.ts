@@ -34,6 +34,7 @@ export default class Preset {
     test: (module: Module) => boolean;
     transpilers: Array<TranspilerDefinition>;
   }>;
+
   transpilers: Set<Transpiler>;
   name: string;
   ignoredExtensions: Array<string>;
@@ -115,7 +116,8 @@ export default class Preset {
   getAliasedPath(path: string): string {
     if (this.aliasedPathCache[path] === null) {
       return path;
-    } else if (this.aliasedPathCache[path]) {
+    }
+    if (this.aliasedPathCache[path]) {
       return this.aliasedPathCache[path];
     }
 

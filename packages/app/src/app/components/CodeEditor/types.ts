@@ -1,24 +1,24 @@
 import {
-  Module,
-  Sandbox,
-  ModuleError,
-  ModuleCorrection,
-  Settings,
-  ModuleTab,
   DiffTab,
+  Module,
+  ModuleCorrection,
+  ModuleError,
+  ModuleTab,
+  Sandbox,
+  Settings,
 } from '@codesandbox/common/lib/types';
 
 export interface Editor {
   changeSandbox?: (
     sandbox: Sandbox,
     newCurrentModule: Module,
-    dependencies: Object
+    dependencies: { [name: string]: string }
   ) => Promise<any>;
   setErrors?: (errors: Array<ModuleError>) => any;
   setCorrections?: (corrections: Array<ModuleCorrection>) => any;
   updateModules?: () => any;
   changeSettings?: (settings: Settings) => any;
-  changeDependencies?: (deps: Object) => any;
+  changeDependencies?: (deps: { [name: string]: string }) => any;
   changeModule?: (
     module: Module,
     errors?: Array<ModuleError>,
@@ -51,8 +51,8 @@ export type Props = {
   onNpmDependencyAdded?: (name: string) => void;
   onSave?: (code: string) => void;
   settings: Settings;
-  height?: string;
-  width?: string;
+  height?: number;
+  width?: number;
   hideNavigation?: boolean;
   dependencies?: { [name: string]: string };
   highlightedLines?: Array<number>;

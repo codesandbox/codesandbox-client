@@ -84,10 +84,14 @@ export type TemplateType =
   | 'gridsome'
   | 'vuepress'
   | 'mdx-deck'
-  | 'quasar'
-  | 'unibit';
+  | 'quasar-framework'
+  | 'unibit'
+  | 'node'
+  | 'ember'
+  | 'custom'
+  | 'babel-repl';
 
-export default function getDefinition(theme: TemplateType) {
+export default function getDefinition(theme?: TemplateType) {
   switch (theme) {
     case adonis.name:
       return adonis;

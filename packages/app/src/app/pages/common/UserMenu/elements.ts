@@ -3,6 +3,9 @@ import Row from '@codesandbox/common/lib/components/flex/Row';
 
 export const ClickableContainer = styled(Row)`
   cursor: pointer;
+  background: transparent;
+  border: none;
+  appearance: none !important;
 `;
 
 export const ProfileImage = styled.img`

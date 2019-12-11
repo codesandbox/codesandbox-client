@@ -1,17 +1,13 @@
 import React from 'react';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { ViewTab } from '@codesandbox/common/lib/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 
 import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';
-import DraggableTab, { PaneTab, TabProps } from './Tab';
-import TabDropZone, { TabDropZoneProps } from './TabDropZone';
+import { DraggableTab, PaneTab, TabProps } from './Tab';
+import { TabDropZone, TabDropZoneProps } from './TabDropZone';
 // import { AddTab } from './AddTab';
-
-export interface ITabPosition {
-  devToolIndex: number;
-  tabPosition: number;
-}
 
 export interface Props {
   hidden: boolean;
@@ -19,15 +15,15 @@ export interface Props {
   owned: boolean;
   setPane: (i: number) => void;
   devToolIndex: number;
-  moveTab?: (prevPos: ITabPosition, newPos: ITabPosition) => void;
-  closeTab?: (pos: ITabPosition) => void;
+  moveTab?: (prevPos: DevToolsTabPosition, newPos: DevToolsTabPosition) => void;
+  closeTab?: (pos: DevToolsTabPosition) => void;
   status?: { [title: string]: Status | undefined };
 
   panes: ViewTab[];
   views: IViews;
 }
 
-const DevToolTabs = ({
+export const DevToolTabs = ({
   panes,
   views,
   hidden,
@@ -114,6 +110,7 @@ const DevToolTabs = ({
           >
             <Icon
               style={{
+                // eslint-disable-next-line  no-nested-ternary
                 opacity: hidden ? 0 : disabled ? 0.5 : 1,
                 pointerEvents: disabled ? 'none' : 'initial',
               }}
@@ -126,5 +123,3 @@ const DevToolTabs = ({
     </Container>
   );
 };
-
-export default DevToolTabs;

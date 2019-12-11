@@ -1,5 +1,5 @@
 ---
-featuredImage: ./images/banner.png
+banner: ./images/banner.png
 slug: how-we-make-npm-packages-work-in-the-browser
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4

@@ -1,35 +1,25 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import React, { FunctionComponent, useEffect } from 'react';
 
-import ZeitLogo from 'app/components/ZeitLogo';
-import Integration from 'app/components/Integration';
+import { useOvermind } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
 
-interface Props {
-  small: boolean;
-  store: any;
-  signals: any;
-}
+import { Container } from './elements';
+import { Prompt } from './Prompt';
 
-const ZeitIntegration = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      small,
-      signals: { signInZeitClicked, signOutZeitClicked },
-      store: { user, isLoadingZeit },
-    }: Props) => (
-      <Integration
-        name="ZEIT"
-        small={small}
-        color="black"
-        description="Deployments"
-        Icon={ZeitLogo}
-        userInfo={user.integrations.zeit}
-        signIn={signInZeitClicked}
-        signOut={signOutZeitClicked}
-        loading={isLoadingZeit}
-      />
-    )
-  )
-);
+export const CLI: FunctionComponent = () => {
+  const {
+    actions: { cliMounted },
+  } = useOvermind();
 
-export default ZeitIntegration;
+  useEffect(() => {
+    cliMounted();
+  }, [cliMounted]);
+
+  return (
+    <Container>
+      <Navigation title="CLI Authorization" />
+
+      <Prompt />
+    </Container>
+  );
+};

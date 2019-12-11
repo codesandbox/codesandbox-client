@@ -2,7 +2,8 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import TeamInvite from './notifications/TeamInvite';
+import { TeamInvite } from './notifications/TeamInvite';
+import { TeamAccepted } from './notifications/TeamAccepted';
 
 import {
   Container,
@@ -11,7 +12,6 @@ import {
   Loading,
   Title,
 } from './elements';
-import TeamAccepted from './notifications/TeamAccepted';
 
 export const VIEW_QUERY = gql`
   query RecentNotifications {
@@ -42,7 +42,8 @@ const getNotificationComponent = (type, data, read) => {
         inviterAvatar={parsedData.inviter_avatar}
       />
     );
-  } else if (type === 'team_accepted') {
+  }
+  if (type === 'team_accepted') {
     return (
       <TeamAccepted
         read={read}
@@ -56,7 +57,7 @@ const getNotificationComponent = (type, data, read) => {
   return <div />;
 };
 
-export default props => (
+export const Notifications = props => (
   <Container {...props}>
     <Title>Notifications</Title>
     <NotificationsContainer>

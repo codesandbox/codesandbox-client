@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default () => (
+export const FeedbackIcon = () => (
   <svg
     xmlnsXlink="http://www.w3.org/1999/xlink"
     version="1.1"

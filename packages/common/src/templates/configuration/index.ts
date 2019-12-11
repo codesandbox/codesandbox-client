@@ -7,6 +7,7 @@ import netlifyConfig from './netlify';
 import angularCli from './angular-cli';
 import angularJSON from './angular-json';
 import tsconfig from './tsconfig';
+import jsconfig from './jsconfig';
 import babelTranspiler from './babel-transpiler';
 import customCodeSandbox from './custom-codesandbox';
 
@@ -22,6 +23,7 @@ const configs = {
   customCodeSandbox,
   nowConfig,
   netlifyConfig,
+  jsconfig,
 };
 
 export default configs;

@@ -1,27 +1,22 @@
 import React from 'react';
-import { injectStripe, CardElement } from 'react-stripe-elements';
+import {
+  injectStripe,
+  CardElement,
+  ReactStripeElements,
+} from 'react-stripe-elements';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
 
 import { CardContainer, StripeInput, ErrorText, Label } from './elements';
 
-interface IStripe {
-  createToken: (params: {
-    name: string;
-  }) => Promise<{
-    token: { id: string };
-    error?: Error;
-  }>;
-}
-
 interface Props {
   name: string;
-  stripe: IStripe;
   buttonName: string;
   loadingText: string;
   isLoading: boolean;
-  error?: Error;
   subscribe: (params: { token: string; coupon: string }) => void;
+  stripe?: ReactStripeElements.StripeProps;
+  error?: Error | string;
   hasCoupon?: boolean;
 }
 
@@ -35,7 +30,7 @@ interface State {
   loading: boolean;
 }
 
-class CheckoutForm extends React.PureComponent<Props, State> {
+class CheckoutFormComponent extends React.PureComponent<Props, State> {
   state: State = {
     errors: {},
     name: this.props.name || '',
@@ -126,7 +121,6 @@ class CheckoutForm extends React.PureComponent<Props, State> {
           <StripeInput
             value={this.state.name}
             onChange={this.setName}
-            error={!!errors.name}
             placeholder="Please enter your name"
           />
         </div>
@@ -164,4 +158,4 @@ class CheckoutForm extends React.PureComponent<Props, State> {
   }
 }
 
-export default injectStripe(CheckoutForm);
+export const CheckoutForm = injectStripe(CheckoutFormComponent);

@@ -12,6 +12,31 @@ type Options = {
   getToken(): string;
 };
 
+interface Object {
+  [key: string]: string;
+}
+
+interface ApiData {
+  builds: Object[];
+  config?: Object;
+  deploymentType?: string;
+  env?: Object;
+  files: File[];
+  forceNew?: boolean;
+  name: string;
+  public: boolean;
+  regions: string[];
+  routes: Object[];
+  scope?: string;
+  version: number;
+}
+
+interface File {
+  data: string;
+  encoding?: string;
+  file: string;
+}
+
 export default (() => {
   let _options: Options;
 
@@ -25,6 +50,22 @@ export default (() => {
     return {
       Authorization: `bearer ${token}`,
     };
+  }
+
+  async function deploysByID(id) {
+    try {
+      const response = await axios.get(
+        `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
   }
 
   return {
@@ -46,55 +87,70 @@ export default (() => {
       return nowData;
     },
     async getDeployments(name: string): Promise<ZeitDeployment[]> {
-      const response = await axios.get<ZeitDeployment[]>(
+      const response = await axios.get<{ deployments: ZeitDeployment[] }>(
         'https://api.zeit.co/v4/now/deployments',
         {
           headers: getDefaultHeaders(),
         }
       );
 
-      return response.data
-        .filter(deployment => deployment.name === name)
-        .sort((deploymentA, deploymentB) =>
-          deploymentA.created < deploymentB.created ? 1 : -1
-        );
+      const deploysNoAlias = response.data.deployments
+        .filter(d => d.name === name)
+        .sort((a, b) => (a.created < b.created ? 1 : -1));
+
+      const assignAlias = async d => {
+        const alias = await deploysByID(d.uid);
+        if (alias) {
+          // eslint-disable-next-line
+          d.alias = alias.aliases;
+        } else {
+          d.alias = [];
+        }
+        return d;
+      };
+
+      return Promise.all(deploysNoAlias.map(assignAlias));
     },
     async getUser(): Promise<ZeitUser> {
       const response = await axios.get('https://api.zeit.co/www/user', {
         headers: getDefaultHeaders(),
       });
 
-      return response.data;
+      return response.data.user;
     },
-    async deleteDeployment(id: string) {
-      return axios.request({
-        url: `https://api.zeit.co/v2/now/deployments/${id}`,
-        method: 'DELETE',
-        headers: getDefaultHeaders(),
-      });
+    async deleteDeployment(id: string): Promise<ZeitDeployment[]> {
+      const response = await axios.delete(
+        `https://api.zeit.co/v9/now/deployments/${id}`,
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
+      return response.data.deployments;
     },
     async deploy(contents: any, sandbox: Sandbox): Promise<string> {
       const apiData = await getApiData(contents, sandbox);
-      const deploymentVersion = apiData.version === 2 ? 'v6' : 'v3';
+      const deploymentVersion = apiData.version === 2 ? 'v9' : 'v3';
 
-      const response = await axios.request({
-        url: `https://api.zeit.co/${deploymentVersion}/now/deployments?forceNew=1`,
-        data: apiData,
-        method: 'POST',
-        headers: getDefaultHeaders(),
-      });
+      const response = await axios.post(
+        `https://api.zeit.co/${deploymentVersion}/now/deployments?forceNew=1`,
+        apiData,
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
 
-      return `https://${response.data.result.url}`;
+      return `https://${response.data.url}`;
     },
     async aliasDeployment(id: string, zeitConfig: ZeitConfig): Promise<string> {
-      const response = await axios.request({
-        url: `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
-        data: { alias: zeitConfig.alias },
-        method: 'POST',
-        headers: getDefaultHeaders(),
-      });
+      const response = await axios.post(
+        `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
+        { alias: zeitConfig.alias },
+        {
+          headers: getDefaultHeaders(),
+        }
+      );
 
-      return `https://${response.data.result.alias}`;
+      return `https://${response.data.alias}`;
     },
   };
 })();
@@ -102,7 +158,7 @@ export default (() => {
 async function getApiData(contents: any, sandbox: Sandbox) {
   const template = getTemplate(sandbox.template);
 
-  let apiData: any = {
+  let apiData: Partial<ApiData> = {
     files: [],
   };
   let packageJSON: any = {};
@@ -128,7 +184,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     nowJSON = packageJSON.now;
   }
 
-  const nowDefaults: any = {
+  const nowDefaults: Pick<ApiData, 'name' | 'public'> = {
     name: `csb-${sandbox.id}`,
     public: true,
   };
@@ -143,11 +199,20 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   packageJSON.name = nowJSON.name || nowDefaults.name;
 
   apiData.name = nowJSON.name || nowDefaults.name;
-  apiData.deploymentType = nowJSON.type || nowDefaults.type;
+  apiData.deploymentType = nowJSON.type;
   apiData.public = nowJSON.public || nowDefaults.public;
 
   // if now v2 we need to tell now the version, builds and routes
-  if (nowJSON.version === 2) {
+  if (nowJSON.version === 1) {
+    apiData.config = omit(nowJSON, [
+      'public',
+      'type',
+      'name',
+      'files',
+      'version',
+    ]);
+    apiData.forceNew = true;
+  } else {
     apiData.version = 2;
     apiData.builds = nowJSON.builds;
     apiData.routes = nowJSON.routes;
@@ -155,9 +220,6 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     apiData.scope = nowJSON.scope;
     apiData['build.env'] = nowJSON['build.env'];
     apiData.regions = nowJSON.regions;
-  } else {
-    apiData.config = omit(nowJSON, ['public', 'type', 'name', 'files']);
-    apiData.forceNew = true;
   }
 
   if (!nowJSON.files) {
@@ -180,7 +242,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     // if person added some files but no package.json
     if (
       filePath === 'package.json' &&
-      !apiData.files.filter(f => f.name === 'package.json')
+      !apiData.files.find(f => f.file === 'package.json')
     ) {
       apiData.files.push({
         file: 'package.json',

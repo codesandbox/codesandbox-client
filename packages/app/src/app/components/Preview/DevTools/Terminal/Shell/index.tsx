@@ -10,6 +10,7 @@ import { TerminalComponent } from './Term';
 type Props = {
   id: string;
   theme: VSTheme;
+  owned: boolean;
   script?: string;
   closeShell: () => void;
   endShell: () => void;
@@ -18,7 +19,7 @@ type Props = {
   updateStatus?: (type: string, count?: number) => void;
 };
 
-class Shell extends React.PureComponent<Props> {
+class ShellComponent extends React.PureComponent<Props> {
   listener: Function;
   term: TerminalWithFit;
   node?: HTMLDivElement;
@@ -107,9 +108,10 @@ class Shell extends React.PureComponent<Props> {
   }
 
   render() {
-    const { hidden, theme } = this.props;
+    const { hidden, theme, owned } = this.props;
     return (
       <TerminalComponent
+        owned={owned}
         hidden={hidden}
         theme={theme}
         onTerminalInitialized={this.initializeTerminal}
@@ -118,4 +120,4 @@ class Shell extends React.PureComponent<Props> {
   }
 }
 
-export default withTheme(Shell);
+export const Shell = withTheme(ShellComponent);

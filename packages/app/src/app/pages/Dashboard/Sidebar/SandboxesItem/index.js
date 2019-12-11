@@ -2,17 +2,13 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
-import { inject, observer } from 'app/componentConnectors';
-
 import { Query } from 'react-apollo';
+import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
-import DelayedAnimation from 'app/components/DelayedAnimation';
-
-import Item from '../Item';
-
+import { Item } from '../Item';
 import { Container } from './elements';
-import FolderEntry from './FolderEntry';
-import CreateFolderEntry from './FolderEntry/CreateFolderEntry';
+import { DropFolderEntry } from './FolderEntry';
+import { CreateFolderEntry } from './FolderEntry/CreateFolderEntry';
 
 import { entryTarget, collectTarget } from './folder-drop-target';
 
@@ -20,7 +16,7 @@ import getChildCollections from '../../utils/get-child-collections';
 
 import { PATHED_SANDBOXES_FOLDER_QUERY } from '../../queries';
 
-class SandboxesItem extends React.Component {
+class SandboxesItemComponent extends React.Component {
   state = {
     creatingDirectory: false,
   };
@@ -43,6 +39,7 @@ class SandboxesItem extends React.Component {
       onSelect,
       currentPath,
       currentTeamId,
+      selectedSandboxes,
     } = this.props;
 
     const basePath = teamId
@@ -67,7 +64,7 @@ class SandboxesItem extends React.Component {
               title: 'Create Folder',
               icon: AddFolderIcon,
               action: () => {
-                this.setState({ creatingDirectory: true, open: true });
+                this.setState({ creatingDirectory: true });
                 return true;
               },
             },
@@ -90,7 +87,7 @@ class SandboxesItem extends React.Component {
                 );
               }
 
-              if (error) {
+              if (error || !data.me) {
                 return <div>Error!</div>;
               }
               const { children, folders, foldersByPath } = getChildCollections(
@@ -105,8 +102,9 @@ class SandboxesItem extends React.Component {
                       const path = '/' + name;
                       const url = basePath + '/' + encodeURIComponent(name);
                       return (
-                        <FolderEntry
+                        <DropFolderEntry
                           key={path}
+                          selectedSandboxes={selectedSandboxes}
                           basePath={basePath}
                           teamId={teamId}
                           path={path}
@@ -144,8 +142,8 @@ class SandboxesItem extends React.Component {
   }
 }
 
-export default inject('store', 'signals')(
-  DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
-    withRouter(observer(SandboxesItem))
-  )
-);
+export const SandboxesItem = DropTarget(
+  ['SANDBOX', 'FOLDER'],
+  entryTarget,
+  collectTarget
+)(withRouter(SandboxesItemComponent));

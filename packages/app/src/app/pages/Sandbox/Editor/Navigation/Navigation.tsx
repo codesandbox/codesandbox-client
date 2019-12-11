@@ -1,23 +1,33 @@
-import React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
+import React, { FunctionComponent } from 'react';
 import PlusIcon from 'react-icons/lib/go/plus';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { useOvermind } from 'app/overmind';
+import getWorkspaceItems, {
+  INavigationItem,
+  getDisabledItems,
+} from 'app/overmind/utils/items';
+import Tooltip, {
+  SingletonTooltip,
+} from '@codesandbox/common/lib/components/Tooltip';
+import { TippyProps } from '@tippy.js/react';
+import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
 // @ts-ignore
-import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
-// @ts-ignore
-import GitHubIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/github.svg';
-// @ts-ignore
-import LiveIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/live.svg';
-// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
 import FilesIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/file.svg';
 // @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import GitHubIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/github.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import LiveIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/live.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
 import RocketIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/rocket.svg';
 // @ts-ignore
-import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
-import getWorkspaceItems, {
-  getDisabledItems,
-  INavigationItem,
-} from 'app/store/modules/workspace/items';
+// eslint-disable-next-line import/no-unresolved
+import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+
 import { Container, IconContainer, Separator } from './elements';
 import ServerIcon from './ServerIcon';
 
@@ -33,78 +43,90 @@ const IDS_TO_ICONS = {
   server: ServerIcon,
 };
 
-interface IconProps {
+type IconProps = {
   item: INavigationItem;
   isDisabled?: boolean;
-  store: any;
-  signals: any;
-}
+  singleton: TippyProps['singleton'];
+};
+const IconComponent: FunctionComponent<IconProps> = ({
+  item: { id, name },
+  isDisabled,
+  singleton,
+}) => {
+  const {
+    actions: {
+      workspace: { setWorkspaceHidden, setWorkspaceItem },
+    },
+    state: {
+      workspace: { openedWorkspaceItem, workspaceHidden },
+    },
+  } = useOvermind();
 
-const IconComponent = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      item,
-      isDisabled,
-      store,
-      signals: {
-        workspace: { setWorkspaceHidden, setWorkspaceItem },
-      },
-    }: IconProps) => {
-      const { id, name } = item;
+  const Icon = IDS_TO_ICONS[id];
+  const selected = !workspaceHidden && id === openedWorkspaceItem;
 
-      const Icon = IDS_TO_ICONS[id];
-      const selected =
-        !store.workspace.workspaceHidden &&
-        id === store.workspace.openedWorkspaceItem;
-      return (
-        <Tooltip key={id} placement="right" content={name}>
-          <IconContainer
-            isDisabled={isDisabled}
-            selected={selected}
-            onClick={() => {
-              if (selected) {
-                setWorkspaceHidden({ hidden: true });
-              } else {
-                setWorkspaceHidden({ hidden: false });
-                setWorkspaceItem({ item: id });
-              }
-            }}
-          >
-            <Icon />
-          </IconContainer>
-        </Tooltip>
-      );
-    }
-  )
-);
+  return (
+    <Tooltip content={name} singleton={singleton}>
+      <IconContainer
+        isDisabled={isDisabled}
+        selected={selected}
+        as="button"
+        aria-label={name}
+        onClick={() => {
+          if (selected) {
+            setWorkspaceHidden({ hidden: true });
+          } else {
+            setWorkspaceHidden({ hidden: false });
+            setWorkspaceItem({ item: id });
+          }
+        }}
+      >
+        <Icon aria-hidden />
+      </IconContainer>
+    </Tooltip>
+  );
+};
 
-export const Navigation = inject('store')(
-  hooksObserver(
-    ({
-      topOffset,
-      bottomOffset,
-      store,
-    }: {
-      topOffset: number;
-      bottomOffset: number;
-      store: any;
-    }) => {
-      const shownItems = getWorkspaceItems(store);
-      const disabledItems = getDisabledItems(store);
+type Props = {
+  topOffset: number;
+  bottomOffset: number;
+};
+export const Navigation: FunctionComponent<Props> = ({
+  topOffset,
+  bottomOffset,
+}) => {
+  const { state } = useOvermind();
 
-      return (
-        <Container topOffset={topOffset} bottomOffset={bottomOffset}>
-          {shownItems.map(item => (
-            <IconComponent key={item.id} item={item} />
-          ))}
+  const shownItems = getWorkspaceItems(state);
+  const disabledItems = getDisabledItems(state);
 
-          {disabledItems.length > 0 && <Separator />}
+  return (
+    <Container
+      topOffset={topOffset}
+      bottomOffset={bottomOffset}
+      as="nav"
+      aria-label="Sandbox Navigation"
+    >
+      <SingletonTooltip placement="right">
+        {singleton => (
+          <>
+            {shownItems.map(item => (
+              <IconComponent key={item.id} item={item} singleton={singleton} />
+            ))}
 
-          {disabledItems.map(item => (
-            <IconComponent key={item.id} item={item} isDisabled />
-          ))}
-        </Container>
-      );
-    }
-  )
-);
+            {disabledItems.length > 0 && <Separator />}
+
+            {disabledItems.map(item => (
+              <IconComponent
+                key={item.id}
+                item={item}
+                singleton={singleton}
+                isDisabled
+              />
+            ))}
+          </>
+        )}
+      </SingletonTooltip>
+    </Container>
+  );
+};

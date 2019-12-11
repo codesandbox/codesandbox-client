@@ -1,11 +1,20 @@
+import { ZeitDeploymentState } from '@codesandbox/common/lib/types';
 import styled, { css } from 'styled-components';
 
 import { WorkspaceInputContainer } from '../../elements';
 
-const mapColorToState = (state: string, theme: any) => {
-  const STARTING = ['DEPLOYING', 'BUILDING', 'INITIALIZING'];
-  const ERROR = ['DEPLOYMENT_ERROR', 'BUILD_ERROR', 'ERROR'];
-  const STARTED = ['BOOTED', 'READY'];
+const mapColorToState = (state: ZeitDeploymentState, theme: any) => {
+  const STARTING = [
+    ZeitDeploymentState.BUILDING,
+    ZeitDeploymentState.DEPLOYING,
+    ZeitDeploymentState.INITIALIZING,
+  ];
+  const ERROR = [
+    ZeitDeploymentState.BUILD_ERROR,
+    ZeitDeploymentState.DEPLOYMENT_ERROR,
+    ZeitDeploymentState.ERROR,
+  ];
+  const STARTED = [ZeitDeploymentState.BOOTED, ZeitDeploymentState.READY];
 
   if (STARTING.includes(state)) {
     return '#FCCB7E';
@@ -16,14 +25,14 @@ const mapColorToState = (state: string, theme: any) => {
   if (STARTED.includes(state)) {
     return theme.green;
   }
-  if (state === 'FROZEN') {
+  if (state === ZeitDeploymentState.FROZEN) {
     return theme.blue;
   }
 
   return theme.gray;
 };
 
-export const State = styled.span<{ state: string }>`
+export const State = styled.span<{ state: ZeitDeploymentState }>`
   ${({ state, theme }) => css`
     align-items: center;
     display: flex;

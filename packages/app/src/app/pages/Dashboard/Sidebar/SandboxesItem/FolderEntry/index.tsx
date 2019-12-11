@@ -1,4 +1,3 @@
-// @ts-check
 import React from 'react';
 
 import FolderIcon from 'react-icons/lib/md/folder';
@@ -7,8 +6,9 @@ import RenameIcon from 'react-icons/lib/md/mode-edit';
 import TrashIcon from 'react-icons/lib/md/delete';
 import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
-import { inject, observer } from 'app/componentConnectors';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { withRouter } from 'react-router-dom';
+import { History } from 'history';
 import { client } from 'app/graphql/client';
 
 import { Animate as ReactShow } from 'react-show';
@@ -16,7 +16,7 @@ import { join, dirname } from 'path';
 
 import theme from '@codesandbox/common/lib/theme';
 
-import ContextMenu from 'app/components/ContextMenu';
+import { ContextMenu } from 'app/components/ContextMenu';
 
 import Input from '@codesandbox/common/lib/components/Input';
 import {
@@ -25,12 +25,16 @@ import {
   ESC,
 } from '@codesandbox/common/lib/utils/keycodes';
 
+import {
+  PathedSandboxesFoldersQuery,
+  PathedSandboxesFoldersQueryVariables,
+} from 'app/graphql/types';
 import { Container, AnimatedChevron, IconContainer } from './elements';
 
 import getDirectChildren from '../../../utils/get-direct-children';
 import { entryTarget, collectTarget } from '../folder-drop-target';
 
-import CreateFolderEntry from './CreateFolderEntry';
+import { CreateFolderEntry } from './CreateFolderEntry';
 
 import {
   PATHED_SANDBOXES_FOLDER_QUERY,
@@ -45,6 +49,7 @@ type Props = {
   url: string;
   folders: { path: string }[];
   foldersByPath: { [path: string]: string };
+  selectedSandboxes: string[];
   depth: number;
   toToggle?: boolean;
   allowCreate?: boolean;
@@ -61,6 +66,8 @@ type Props = {
   isDragging?: boolean;
   connectDropTarget?: any;
   connectDragSource?: any;
+
+  history?: History;
 };
 
 type State = {
@@ -124,6 +131,7 @@ class FolderEntry extends React.Component<Props, State> {
       path,
       url,
       folders,
+      selectedSandboxes,
       foldersByPath,
       depth,
       isOver,
@@ -138,6 +146,7 @@ class FolderEntry extends React.Component<Props, State> {
       onSelect,
       currentPath,
       currentTeamId,
+      history,
     } = this.props;
 
     const children = getDirectChildren(path, folders);
@@ -168,12 +177,14 @@ class FolderEntry extends React.Component<Props, State> {
               },
             ],
             update: (cache, { data: { deleteCollection } }) => {
-              const variables: { teamId?: string } = {};
-              if (teamId) {
-                variables.teamId = teamId;
-              }
+              const variables: PathedSandboxesFoldersQueryVariables = {
+                teamId,
+              };
 
-              const cacheData = cache.readQuery({
+              const cacheData = cache.readQuery<
+                PathedSandboxesFoldersQuery,
+                PathedSandboxesFoldersQueryVariables
+              >({
                 query: PATHED_SANDBOXES_FOLDER_QUERY,
                 variables,
               });
@@ -184,6 +195,7 @@ class FolderEntry extends React.Component<Props, State> {
                 data: {
                   ...cacheData,
                   me: {
+                    // @ts-ignore
                     ...cacheData.me,
                     collections: deleteCollection,
                   },
@@ -282,6 +294,14 @@ class FolderEntry extends React.Component<Props, State> {
                             },
                             variables,
                           });
+                          const modifiedPath = path
+                            .split('/')
+                            .slice(0, -1)
+                            .join('/');
+
+                          history.replace(
+                            `${basePath}${modifiedPath}/${input.value}`
+                          );
                         },
                       });
 
@@ -344,6 +364,7 @@ class FolderEntry extends React.Component<Props, State> {
                 return (
                   <DropFolderEntry
                     path={childPath}
+                    selectedSandboxes={selectedSandboxes}
                     url={childUrl}
                     basePath={basePath}
                     teamId={teamId}
@@ -390,10 +411,13 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-DropFolderEntry = inject('store', 'signals')(
-  DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
-    DragSource('FOLDER', entrySource, collectSource)(observer(FolderEntry))
-  )
-) as any;
+DropFolderEntry = (withRouter(
+  // @ts-ignore Don't know how to mix dnd and react-router with right typings
+  DropTarget(
+    ['SANDBOX', 'FOLDER'],
+    entryTarget,
+    collectTarget
+  )(DragSource('FOLDER', entrySource, collectSource)(FolderEntry))
+) as unknown) as React.ComponentClass<Props, State>;
 
-export default DropFolderEntry;
+export { DropFolderEntry };

@@ -25,12 +25,12 @@ aliases:
 
   - &restore_deps_cache
     keys:
-      - v24-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v24-dependency-cache-{{ .Branch }}
-      - v24-dependency-cache
+      - v30-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v30-dependency-cache-{{ .Branch }}
+      - v30-dependency-cache
 
   - &save_deps_cache
-    key: v24-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v30-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
@@ -38,51 +38,67 @@ aliases:
       - packages/codesandbox-api/node_modules
       - packages/common/node_modules
       - packages/dynamic-pages/node_modules
+      - packages/deps/node_modules
+      - packages/executors/node_modules
       - packages/homepage/node_modules
       - packages/node-services/node_modules
       - packages/notifications/node_modules
       - packages/react-embed/node_modules
-      - packages/react-sandpack/node_modules
       - packages/sandbox-hooks/node_modules
-      - packages/sandpack/node_modules
       - packages/sse-hooks/node_modules
 
   - &restore_standalone_deps_cache
     keys:
-      - v24-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      - v30-standalone-dependency-cache-{{ .Branch }}-{{ checksum
         "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v24-standalone-dependency-cache-{{ .Branch }}
-      - v24-standalone-dependency-cache
+      - v30-standalone-dependency-cache-{{ .Branch }}
+      - v30-standalone-dependency-cache
 
   - &save_standalone_deps_cache
     key:
-      v24-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      v30-standalone-dependency-cache-{{ .Branch }}-{{ checksum
       "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
   - &restore_prod_homepage_cache
-    key: v24-prod-homepage-build-cache-master
+    key: v30-prod-homepage-build-cache-master
 
-  - &restore_prod_cache
+  - &restore_prod_result
     key:
-      v24-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
-      .Environment.CIRCLE_SHA1 }}
+      v30-prod-build-result-{{ .Environment.CIRCLE_BRANCH
+      }}-{{.Environment.CIRCLE_SHA1 }}
+
+  - &save_prod_build_cache
+    key:
+      v30-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      }}-{{.Environment.CIRCLE_SHA1 }}
+    paths:
+      - packages/app/node_modules/.cache
+
+  - &restore_prod_build_cache
+    keys:
+      - v30-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+        }}-{{.Environment.CIRCLE_SHA1 }}
+      - v30-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
+      - v30-prod-build-cache-master-
 
   # To persist the images built by sharp
   - &save_prod_homepage_cache
     key:
-      v24-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v30-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/homepage/public
 
-  - &save_prod_cache
+  - &save_prod_result
     key:
-      v24-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v30-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
+      - ./.git
+      - ./Dockerfile
 
   - &store_test_results
     path: /tmp/test-results
@@ -113,6 +129,21 @@ executors:
 ################################
 
 commands:
+  checkout_with_cache:
+    description: 'Checkout git with a cache'
+    steps:
+      - restore_cache:
+          keys:
+            - v30-source-cache-{{ .Branch }}-{{ .Revision }}
+            - v30-source-cache-{{ .Branch }}-
+            - v30-source-cache-
+
+      - checkout
+
+      - save_cache:
+          key: v30-source-cache-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - '.git'
   build_deps:
     description: 'Install Dependencies with `yarn install`'
     steps:
@@ -130,20 +161,15 @@ commands:
   build_prod:
     description: 'Build the Application with `yarn build:prod`'
     steps:
-      - checkout
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - restore_cache: *restore_prod_homepage_cache
+      - restore_cache: *restore_prod_build_cache
       - run:
           name: Build Application
           command: yarn build:prod
-      - run:
-          name: Mark Sentry release
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              node packages/app/scripts/sentry-create-release.js
-            fi
-      - save_cache: *save_prod_cache
+      - save_cache: *save_prod_build_cache
+      - save_cache: *save_prod_result
       - run:
           name: Remove non-images from public
           command: |
@@ -155,7 +181,6 @@ commands:
     description:
       "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
-      - checkout
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
@@ -181,18 +206,16 @@ commands:
   test_jest:
     description: 'Test with `yarn test`'
     steps:
-      - checkout
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
           name: Test
-          command: yarn test --ci --testResultsProcessor="jest-junit"
+          command: yarn test:ci
           environment:
             JEST_JUNIT_OUTPUT: 'reports/junit/js-tests-results.xml'
   yarn_lint:
     description: 'Lint with `yarn lint`'
     steps:
-      - checkout
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
@@ -201,7 +224,6 @@ commands:
   yarn_typecheck:
     description: 'Lint with `yarn typecheck`'
     steps:
-      - checkout
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
@@ -217,12 +239,15 @@ commands:
         type: string
         default: '$DOCKER_PWD'
     steps:
-      - restore_cache: *restore_prod_cache
+      - restore_cache: *restore_prod_result
       - run:
           name: Docker Sign In
           command:
             '[ -n "<< parameters.user >>" ] && echo << parameters.password >> |
             docker login -u << parameters.user >> --password-stdin || true'
+      - run:
+          name: Create DockerIgnore
+          command: echo '**\n!www' > .dockerignore
       - run:
           name: Create Image
           command:
@@ -242,38 +267,66 @@ jobs:
   build-deps:
     executor: node
     steps:
-      - checkout
+      - checkout_with_cache
       - build_deps
   build-prod:
     executor: node
     steps:
-      - checkout
+      - checkout_with_cache
       - build_prod
   test-integrations:
     executor: node-with-puppeteer
+    parallelism: 2
     steps:
-      - checkout
+      - checkout_with_cache
       - test_integrations
   test-jest:
     executor: node
     steps:
-      - checkout
+      - checkout_with_cache
       - test_jest
   lint:
     executor: node
     steps:
-      - checkout
+      - checkout_with_cache
       - yarn_lint
   typecheck:
     executor: node
     steps:
-      - checkout
+      - checkout_with_cache
       - yarn_typecheck
   create-docker-image:
     executor: docker_machine
     steps:
-      - checkout
       - docker_cache
+  deploy-to-production:
+    executor: node
+    environment:
+      ENVIRONMENT: production
+    steps:
+      - checkout_with_cache
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
+      - run:
+          name: Mark Sentry release
+          command: node packages/app/scripts/sentry-create-release.js
+      - run:
+          name: Deploy Image
+          command: node packages/app/scripts/deploy.js
+      - run:
+          name: Deploy Sentry release
+          command: node packages/app/scripts/sentry-deploy-release.js
+  deploy-to-staging:
+    executor: node
+    environment:
+      ENVIRONMENT: staging
+    steps:
+      - checkout_with_cache
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
+      - run:
+          name: Deploy Image
+          command: node packages/app/scripts/deploy.js
 
 ################################
 # Workflows
@@ -306,3 +359,23 @@ workflows:
             - typecheck
             # - test-integrations
             - test-jest
+      - deploy-production-approval:
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+      - deploy-to-production:
+          requires:
+            - deploy-production-approval
+            - create-docker-image
+          filters:
+            branches:
+              only:
+                - master
+      - deploy-staging-approval:
+          type: approval
+      - deploy-to-staging:
+          requires:
+            - deploy-staging-approval
+            - create-docker-image

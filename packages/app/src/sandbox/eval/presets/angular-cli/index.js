@@ -1,6 +1,6 @@
 // @flow
 import { join, absolute } from '@codesandbox/common/lib/utils/path';
-import Preset from '../';
+import Preset from '..';
 
 import angular2Transpiler from '../../transpilers/angular2-template';
 import typescriptTranspiler from '../../transpilers/typescript';
@@ -17,9 +17,9 @@ let polyfillsLoaded = false;
 async function addAngularJSONPolyfills(manager) {
   const { parsed } = manager.configurations['angular-config'];
 
-  const defaultProject = parsed.defaultProject;
+  const { defaultProject } = parsed;
   const project = parsed.projects[defaultProject];
-  const build = project.architect.build;
+  const { build } = project.architect;
 
   if (build.options) {
     if (project.root && build.options.polyfill) {
@@ -52,9 +52,9 @@ async function addAngularCLIPolyfills(manager) {
 async function addAngularJSONResources(manager) {
   const { parsed } = manager.configurations['angular-config'];
 
-  const defaultProject = parsed.defaultProject;
+  const { defaultProject } = parsed;
   const project = parsed.projects[defaultProject];
-  const build = project.architect.build;
+  const { build } = project.architect;
 
   if (build.options) {
     const { styles = [], scripts = [] } = build.options;

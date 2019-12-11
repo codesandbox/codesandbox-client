@@ -10,12 +10,13 @@ import { TerminalWithFit } from '../types';
 
 type Props = {
   theme: VSTheme;
+  owned: boolean;
   hidden: boolean;
   onTerminalInitialized: (term: TerminalWithFit) => void;
 };
 
 Terminal.applyAddon(fit);
-export class TerminalComponent extends React.PureComponent<Props> {
+export class TerminalComponentNoTheme extends React.PureComponent<Props> {
   term: TerminalWithFit;
   node?: HTMLDivElement;
   timeout?: number;
@@ -114,4 +115,4 @@ export class TerminalComponent extends React.PureComponent<Props> {
   }
 }
 
-export default withTheme(TerminalComponent);
+export const TerminalComponent = withTheme(TerminalComponentNoTheme);

@@ -1,9 +1,8 @@
-// @ts-check
 import styled from 'styled-components';
 import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import ContextMenu from 'app/components/ContextMenu';
-import MoreInfoIcon from './KebabIcon';
+import { ContextMenu } from 'app/components/ContextMenu';
+import { KebabIcon as MoreInfoIcon } from './KebabIcon';
 
 export const PADDING = 32;
 
@@ -36,7 +35,7 @@ export const SandboxImageContainer = styled.div`
 `;
 
 export const SandboxImage = styled.div`
-  background-size: contain;
+  background-size: cover;
   background-position: 50%;
   background-repeat: no-repeat;
   width: 100%;

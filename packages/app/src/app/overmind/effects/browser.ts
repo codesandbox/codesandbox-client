@@ -27,7 +27,7 @@ export default {
     return alert(message); // eslint-disable-line no-alert
   },
   confirm(message) {
-    return confirm(message); // eslint-disable-line no-alert
+    return confirm(message); // eslint-disable-line no-alert,no-restricted-globals
   },
   onUnload(cb) {
     window.onbeforeunload = cb;
@@ -54,5 +54,22 @@ export default {
         }
       });
     });
+  },
+  reload() {
+    location.reload(true);
+  },
+  storage: {
+    get(key: string) {
+      const value = localStorage.getItem(key);
+
+      if (value) {
+        return JSON.parse(value);
+      }
+
+      return null;
+    },
+    set(key: string, value: any) {
+      localStorage.setItem(key, JSON.stringify(value));
+    },
   },
 };

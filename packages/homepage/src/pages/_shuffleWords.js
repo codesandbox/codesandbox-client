@@ -3,7 +3,7 @@ import TextLoop from 'react-text-loop';
 import styled from 'styled-components';
 
 const ShuffleWords = styled.section`
-  color: white;
+  color: ${props => props.theme.homepage.white};
   font-size: 2em;
   font-family: 'dank mono', 'dm', monospace;
   text-align: center;

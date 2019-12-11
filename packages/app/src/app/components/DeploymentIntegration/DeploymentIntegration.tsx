@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { DetailInfo } from './DetailInfo';
 import {
   Container,
@@ -10,20 +9,32 @@ import {
   Up,
 } from './elements';
 
-export const DeploymentIntegration = ({
-  beta = false,
-  children,
-  color,
-  deploy,
-  Icon,
-  light = false,
+interface IDeploymentIntegrationProps {
+  light?: boolean;
+  loading?: boolean;
+  bgColor: string;
+  Icon: React.ComponentType;
+  name: string;
+  beta?: boolean;
+  open: boolean;
+  onToggle: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onDeploy: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+export const DeploymentIntegration: React.FC<IDeploymentIntegrationProps> = ({
+  light,
   loading = false,
+  bgColor,
+  Icon,
   name,
+  beta = false,
   open = true,
-  toggle,
+  onToggle,
+  onDeploy,
+  children,
 }) => (
   <Container>
-    <IntegrationBlock bgColor={color} onClick={toggle}>
+    <IntegrationBlock bgColor={bgColor} onClick={onToggle}>
       <div>
         <Icon />
 
@@ -37,12 +48,13 @@ export const DeploymentIntegration = ({
 
     {open ? (
       <DetailInfo
-        bgColor={color}
-        deploy={deploy}
-        info={children}
+        bgColor={bgColor}
+        onDeploy={onDeploy}
         light={light}
         loading={loading}
-      />
+      >
+        {children}
+      </DetailInfo>
     ) : null}
   </Container>
 );

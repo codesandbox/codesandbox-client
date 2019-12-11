@@ -1,39 +1,36 @@
-import { inject, hooksObserver } from 'app/componentConnectors';
-import React from 'react';
-import GithubLogo from 'react-icons/lib/go/mark-github';
+import React, { FunctionComponent } from 'react';
+import GitHubLogo from 'react-icons/lib/go/mark-github';
 
-import Integration from 'app/components/Integration';
+import { Integration } from 'app/components/Integration';
+import { useOvermind } from 'app/overmind';
 
 type Props = {
   small?: boolean;
-  store: any;
-  signals: any;
 };
-const GithubIntegration = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      small = false,
-      signals: { signInGithubClicked, signOutGithubIntegration },
-      store: {
-        isLoadingGithub,
-        user: {
-          integrations: { github },
-        },
+export const GithubIntegration: FunctionComponent<Props> = ({
+  small = false,
+}) => {
+  const {
+    actions: { signInGithubClicked, signOutGithubIntegration },
+    state: {
+      isLoadingGithub,
+      user: {
+        integrations: { github },
       },
-    }: Props) => (
-      <Integration
-        color="#4078c0"
-        description={small ? 'Commits & PRs' : 'Committing & Pull Requests'}
-        Icon={GithubLogo}
-        loading={isLoadingGithub}
-        name="GitHub"
-        signIn={() => signInGithubClicked({ useExtraScopes: true })}
-        signOut={signOutGithubIntegration}
-        small={small}
-        userInfo={github}
-      />
-    )
-  )
-);
+    },
+  } = useOvermind();
 
-export default GithubIntegration;
+  return (
+    <Integration
+      bgColor="#4078c0"
+      description={small ? 'Commits & PRs' : 'Committing & Pull Requests'}
+      Icon={GitHubLogo}
+      loading={isLoadingGithub}
+      name="GitHub"
+      onSignIn={() => signInGithubClicked()}
+      onSignOut={() => signOutGithubIntegration()}
+      small={small}
+      userInfo={github}
+    />
+  );
+};

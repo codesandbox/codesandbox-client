@@ -1,27 +1,38 @@
-import apiFactory, { Api, ApiConfig } from './apiFactory';
+import { TemplateType } from '@codesandbox/common/lib/templates';
 import {
   CurrentUser,
+  CustomTemplate,
   Dependency,
-  Sandbox,
-  Module,
-  GitChanges,
-  EnvironmentVariable,
-  PopularSandboxes,
-  SandboxPick,
-  PickedSandboxes,
-  UploadedFilesInfo,
   Directory,
-  GitInfo,
+  EnvironmentVariable,
+  GitChanges,
   GitCommit,
+  GitInfo,
   GitPr,
-  RoomInfo,
+  Module,
   PaymentDetails,
+  PickedSandboxes,
+  PopularSandboxes,
   Profile,
+  Sandbox,
+  SandboxPick,
+  UploadedFilesInfo,
   UserSandbox,
 } from '@codesandbox/common/lib/types';
-import { TemplateType } from '@codesandbox/common/lib/templates';
 import { client } from 'app/graphql/client';
-import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
+import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
+
+import {
+  transformDirectory,
+  transformModule,
+  transformSandbox,
+} from '../utils/sandbox';
+import apiFactory, { Api, ApiConfig } from './apiFactory';
+import {
+  IDirectoryAPIResponse,
+  IModuleAPIResponse,
+  SandboxAPIResponse,
+} from './types';
 
 let api: Api;
 
@@ -34,18 +45,20 @@ export default {
 
     return response.token;
   },
-  createPatronSubscription(token: string, amount: number) {
+  createPatronSubscription(token: string, amount: number, coupon: string) {
     return api.post<CurrentUser>('/users/current_user/subscription', {
       subscription: {
-        amount: String(amount),
+        amount,
+        coupon,
         token,
       },
     });
   },
-  updatePatronSubscription(amount: number) {
+  updatePatronSubscription(amount: number, coupon: string) {
     return api.patch<CurrentUser>('/users/current_user/subscription', {
       subscription: {
-        amount: String(amount),
+        amount,
+        coupon,
       },
     });
   },
@@ -55,36 +68,53 @@ export default {
   getCurrentUser(): Promise<CurrentUser> {
     return api.get('/users/current');
   },
+  markSurveySeen(): Promise<void> {
+    return api.post('/users/survey-seen', {});
+  },
   getDependency(name: string): Promise<Dependency> {
     return api.get(`/dependencies/${name}@latest`);
   },
-  getSandbox(id: string): Promise<Sandbox> {
-    return api.get(`/sandboxes/${id}`);
+  async getSandbox(id: string): Promise<Sandbox> {
+    const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
+
+    // We need to add client side properties for tracking
+    return transformSandbox(sandbox);
   },
-  forkSandbox(id: string): Promise<Sandbox> {
+  async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
     const url = id.includes('/')
       ? `/sandboxes/fork/${id}`
       : `/sandboxes/${id}/fork`;
 
-    return api.post(url, {});
+    const sandbox = await api.post<SandboxAPIResponse>(url, body || {});
+
+    return transformSandbox(sandbox);
   },
   createModule(sandboxId: string, module: Module): Promise<Module> {
-    return api.post(`/sandboxes/${sandboxId}/modules`, {
-      module: {
-        title: module.title,
-        directoryShortid: module.directoryShortid,
-        code: module.code,
-        isBinary: module.isBinary === undefined ? false : module.isBinary,
-      },
-    });
+    return api
+      .post<IModuleAPIResponse>(`/sandboxes/${sandboxId}/modules`, {
+        module: {
+          title: module.title,
+          directoryShortid: module.directoryShortid,
+          code: module.code,
+          isBinary: module.isBinary === undefined ? false : module.isBinary,
+        },
+      })
+      .then(transformModule);
   },
-  deleteModule(sandboxId: string, moduleShortid: string): Promise<void> {
-    return api.delete(`/sandboxes/${sandboxId}/modules/${moduleShortid}`);
+  async deleteModule(sandboxId: string, moduleShortid: string): Promise<void> {
+    await api.delete<IModuleAPIResponse>(
+      `/sandboxes/${sandboxId}/modules/${moduleShortid}`
+    );
   },
   saveModuleCode(sandboxId: string, module: Module): Promise<Module> {
-    return api.put(`/sandboxes/${sandboxId}/modules/${module.shortid}`, {
-      module: { code: module.code },
-    });
+    return api
+      .put<IModuleAPIResponse>(
+        `/sandboxes/${sandboxId}/modules/${module.shortid}`,
+        {
+          module: { code: module.code },
+        }
+      )
+      .then(transformModule);
   },
   saveModules(sandboxId: string, modules: Module[]) {
     return api.put(`/sandboxes/${sandboxId}/modules/mupdate`, {
@@ -114,20 +144,22 @@ export default {
     });
   },
   savePrivacy(sandboxId: string, privacy: 0 | 1 | 2) {
-    return api.patch(`/sandboxes/${sandboxId}/privacy`, {
+    return api.patch<SandboxAPIResponse>(`/sandboxes/${sandboxId}/privacy`, {
       sandbox: {
         privacy,
       },
     });
   },
   saveFrozen(sandboxId: string, isFrozen: boolean) {
-    return api.put(`/sandboxes/${sandboxId}`, {
+    return api.put<SandboxAPIResponse>(`/sandboxes/${sandboxId}`, {
       sandbox: {
         is_frozen: isFrozen,
       },
     });
   },
-  getEnvironmentVariables(sandboxId: string): Promise<EnvironmentVariable[]> {
+  getEnvironmentVariables(
+    sandboxId: string
+  ): Promise<{ [key: string]: string }> {
     return api.get(
       `/sandboxes/${sandboxId}/env`,
       {},
@@ -137,7 +169,7 @@ export default {
   saveEnvironmentVariable(
     sandboxId: string,
     environmentVariable: EnvironmentVariable
-  ): Promise<EnvironmentVariable[]> {
+  ): Promise<{ [key: string]: string }> {
     return api.post(
       `/sandboxes/${sandboxId}/env`,
       {
@@ -151,7 +183,7 @@ export default {
   deleteEnvironmentVariable(
     sandboxId: string,
     name: string
-  ): Promise<EnvironmentVariable[]> {
+  ): Promise<{ [key: string]: string }> {
     return api.delete(
       `/sandboxes/${sandboxId}/env/${name}`,
       {},
@@ -159,9 +191,12 @@ export default {
     );
   },
   saveModuleTitle(sandboxId: string, moduleShortid: string, title: string) {
-    return api.put(`/sandboxes/${sandboxId}/modules/${moduleShortid}`, {
-      module: { title },
-    });
+    return api.put<IModuleAPIResponse>(
+      `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
+      {
+        module: { title },
+      }
+    );
   },
   getPopularSandboxes(date: string): Promise<PopularSandboxes> {
     return api.get(`/sandboxes/popular?start_date=${date}`);
@@ -179,28 +214,38 @@ export default {
   getPickedSandboxes(): Promise<PickedSandboxes> {
     return api.get(`/sandboxes/picked`);
   },
-  createDirectory(sandboxId: string, title: string): Promise<Directory> {
-    return api.post(`/sandboxes/${sandboxId}/directories`, {
-      directory: {
-        title,
-      },
-    });
+  createDirectory(
+    sandboxId: string,
+    directoryShortid: string,
+    title: string
+  ): Promise<Directory> {
+    return api
+      .post<IDirectoryAPIResponse>(`/sandboxes/${sandboxId}/directories`, {
+        directory: {
+          title,
+          directoryShortid,
+        },
+      })
+      .then(transformDirectory);
   },
   saveModuleDirectory(
     sandboxId: string,
     moduleShortid: string,
     directoryShortid: string
   ) {
-    return api.put(`/sandboxes/${sandboxId}/modules/${moduleShortid}`, {
-      module: { directoryShortid },
-    });
+    return api.put<IDirectoryAPIResponse>(
+      `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
+      {
+        module: { directoryShortid },
+      }
+    );
   },
   saveDirectoryDirectory(
     sandboxId: string,
     sourceDirectoryShortid: string,
     targetDirectoryShortId: string
   ) {
-    return api.put(
+    return api.put<IDirectoryAPIResponse>(
       `/sandboxes/${sandboxId}/directories/${sourceDirectoryShortid}`,
       {
         directory: { directoryShortid: targetDirectoryShortId },
@@ -217,9 +262,12 @@ export default {
     directoryShortid: string,
     title: string
   ) {
-    return api.put(`/sandboxes/${sandboxId}/directories/${directoryShortid}`, {
-      directory: { title },
-    });
+    return api.put<IDirectoryAPIResponse>(
+      `/sandboxes/${sandboxId}/directories/${directoryShortid}`,
+      {
+        directory: { title },
+      }
+    );
   },
   getUploads(): Promise<UploadedFilesInfo> {
     return api.get('/users/current_user/uploads');
@@ -233,20 +281,28 @@ export default {
       name,
     });
   },
-  massCreateModules(
+  async massCreateModules(
     sandboxId: string,
-    directoryShortid: string,
+    directoryShortid: string | null,
     modules: Module[],
     directories: Directory[]
   ): Promise<{
     modules: Module[];
     directories: Directory[];
   }> {
-    return api.post(`/sandboxes/${sandboxId}/modules/mcreate`, {
+    const data = (await api.post(`/sandboxes/${sandboxId}/modules/mcreate`, {
       directoryShortid,
       modules,
       directories,
-    });
+    })) as {
+      modules: IModuleAPIResponse[];
+      directories: IDirectoryAPIResponse[];
+    };
+
+    return {
+      modules: data.modules.map(transformModule),
+      directories: data.directories.map(transformDirectory),
+    };
   },
   createGit(
     sandboxId: string,
@@ -267,10 +323,14 @@ export default {
       message,
     });
   },
-  createLiveRoom(sandboxId: string): Promise<RoomInfo> {
-    return api.post(`/sandboxes/${sandboxId}/live`, {
+  async createLiveRoom(sandboxId: string): Promise<string> {
+    const data = await api.post<{
+      id: string;
+    }>(`/sandboxes/${sandboxId}/live`, {
       id: sandboxId,
     });
+
+    return data.id;
   },
   updateBadge(badgeId: string, visible: boolean): Promise<void> {
     return api.patch(`/users/current_user/badges/${badgeId}`, {
@@ -354,7 +414,10 @@ export default {
       },
     });
   },
-  updatePrivacy(sandboxId: string, privacy: 0 | 1 | 2): Promise<void> {
+  updatePrivacy(
+    sandboxId: string,
+    privacy: 0 | 1 | 2
+  ): Promise<SandboxAPIResponse> {
     return api.patch(`/sandboxes/${sandboxId}/privacy`, {
       sandbox: {
         privacy,
@@ -372,7 +435,39 @@ export default {
   signoutGithubIntegration(): Promise<void> {
     return api.delete(`/users/current_user/integrations/github`);
   },
+  signoutZeit(): Promise<void> {
+    return api.delete(`/users/current_user/integrations/zeit`);
+  },
   preloadTemplates() {
-    client.query({ query: LIST_TEMPLATES, variables: { showAll: true } });
+    client.query({ query: LIST_PERSONAL_TEMPLATES, variables: {} });
+  },
+  deleteTemplate(
+    sandboxId: string,
+    templateId: string
+  ): Promise<CustomTemplate> {
+    return api.delete(`/sandboxes/${sandboxId}/templates/${templateId}`);
+  },
+  updateTemplate(
+    sandboxId: string,
+    template: CustomTemplate
+  ): Promise<CustomTemplate> {
+    return api
+      .put<{ template: CustomTemplate }>(
+        `/sandboxes/${sandboxId}/templates/${template.id}`,
+        {
+          template,
+        }
+      )
+      .then(data => data.template);
+  },
+  createTemplate(
+    sandboxId: string,
+    template: { color: string; description: string; title: string }
+  ): Promise<CustomTemplate> {
+    return api
+      .post<{ template: CustomTemplate }>(`/sandboxes/${sandboxId}/templates`, {
+        template,
+      })
+      .then(data => data.template);
   },
 };

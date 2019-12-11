@@ -1,37 +1,33 @@
-import { inject, hooksObserver } from 'app/componentConnectors';
-import React from 'react';
+import { Module } from '@codesandbox/common/lib/types';
+import React, { FunctionComponent } from 'react';
 import LightningIcon from 'react-icons/lib/md/flash-on';
+
+import { useOvermind } from 'app/overmind';
+
 import { Link } from '../../../../elements';
 
 type Props = {
-  function: {
-    title: string;
-  };
-  store: any;
+  function: Module;
 };
-export const Function = inject('store')(
-  hooksObserver(
-    ({
-      function: { title },
-      store: {
-        deployment: {
-          building,
-          netlifySite: { url: siteUrl },
-        },
+export const Function: FunctionComponent<Props> = ({ function: { title } }) => {
+  const {
+    state: {
+      deployment: {
+        building,
+        netlifySite: { url: siteUrl },
       },
-    }: Props) => {
-      const functionName = title.split('.js')[0];
+    },
+  } = useOvermind();
+  const functionName = title.split('.js')[0];
 
-      return (
-        <Link
-          disabled={building}
-          href={`${siteUrl}/.netlify/functions/${functionName}`}
-        >
-          <LightningIcon />
+  return (
+    <Link
+      disabled={building}
+      href={`${siteUrl}/.netlify/functions/${functionName}`}
+    >
+      <LightningIcon />
 
-          {functionName}
-        </Link>
-      );
-    }
-  )
-);
+      {functionName}
+    </Link>
+  );
+};

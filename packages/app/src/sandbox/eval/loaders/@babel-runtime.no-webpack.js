@@ -1,3 +1,4 @@
+/* eslint-disable */
 var e,
   r =
     (e = require('path')) && 'object' == typeof e && 'default' in e

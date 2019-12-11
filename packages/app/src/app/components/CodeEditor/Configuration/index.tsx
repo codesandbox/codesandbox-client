@@ -9,7 +9,7 @@ import { ConfigurationFile } from '@codesandbox/common/lib/templates/configurati
 
 import CodeIcon from 'react-icons/lib/md/code';
 
-import { Props as EditorProps, Editor } from '../types';
+import { Props as EditorProps, Editor } from '../types'; // eslint-disable-line
 import { Container, Icon, Title, Description } from './elements';
 
 type Props = EditorProps & {
@@ -17,7 +17,7 @@ type Props = EditorProps & {
   toggleConfigUI: () => void;
 };
 
-export default class Configuration extends React.PureComponent<Props>
+export class Configuration extends React.PureComponent<Props>
   implements Editor {
   disposeInitializer?: Function;
 
@@ -86,7 +86,7 @@ export default class Configuration extends React.PureComponent<Props>
 
   render() {
     const { config, width, height, sandbox } = this.props;
-    const currentModule = this.currentModule;
+    const { currentModule } = this;
 
     const { ConfigWizard } = getUI(config.type);
 

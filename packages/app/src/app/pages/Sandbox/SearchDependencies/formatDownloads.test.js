@@ -18,4 +18,8 @@ describe('formatDownloads', () => {
     expect(formatDownloads(1100000)).toBe('1.1M');
     expect(formatDownloads(999999999)).toBe('999.9M');
   });
+
+  it('defaults to zero when an argument is not provided', () => {
+    expect(formatDownloads()).toBe('0');
+  });
 });

@@ -1,6 +1,6 @@
 import { AsyncAction, Action } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-import { CurrentUser } from '@codesandbox/common/lib/types';
+import { StripeErrorCode } from '@codesandbox/common/lib/types';
 
 export const patronMounted: AsyncAction = withLoadApp();
 
@@ -11,34 +11,52 @@ export const priceChanged: Action<{ price: number }> = (
   state.patron.price = price;
 };
 
-export const createSubscriptionClicked: AsyncAction<string> = async (
-  { state, effects },
-  token
-) => {
+export const createSubscriptionClicked: AsyncAction<{
+  token: string;
+  coupon: string;
+}> = async ({ state, effects }, { token, coupon }) => {
   effects.analytics.track('Create Patron Subscription');
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
   try {
     state.user = await effects.api.createPatronSubscription(
       token,
-      state.patron.price
+      state.patron.price,
+      coupon
     );
-    effects.notificationToast.error('Thank you very much for your support!');
+    effects.notificationToast.success('Thank you very much for your support!');
   } catch (error) {
-    state.patron.error = error.message;
+    if (
+      error.error_code &&
+      error.error_code === StripeErrorCode.REQUIRES_ACTION
+    ) {
+      try {
+        await effects.stripe.handleCardPayment(error.data.client_secret);
+
+        state.user = await effects.api.getCurrentUser();
+        state.patron.error = null;
+      } catch (e) {
+        state.patron.error = e.message;
+      }
+    } else {
+      state.patron.error = error.message;
+    }
   }
   state.patron.isUpdatingSubscription = false;
 };
 
-export const updateSubscriptionClicked: AsyncAction<CurrentUser> = async ({
-  state,
-  effects,
-}) => {
+export const updateSubscriptionClicked: AsyncAction<string> = async (
+  { state, effects },
+  coupon
+) => {
   effects.analytics.track('Update Patron Subscription');
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
   try {
-    state.user = await effects.api.updatePatronSubscription(state.patron.price);
+    state.user = await effects.api.updatePatronSubscription(
+      state.patron.price,
+      coupon
+    );
     effects.notificationToast.success(
       'Subscription updated, thanks for helping out!'
     );
@@ -66,7 +84,9 @@ export const cancelSubscriptionClicked: AsyncAction = async ({
       effects.notificationToast.success(
         'Sorry to see you go, but thanks a bunch for the support this far!'
       );
-    } catch (error) {}
+    } catch (error) {
+      /* ignore */
+    }
 
     state.patron.isUpdatingSubscription = false;
   }

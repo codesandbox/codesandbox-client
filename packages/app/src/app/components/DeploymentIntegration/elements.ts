@@ -1,43 +1,33 @@
-import BaseNotice from '@codesandbox/common/lib/components/Notice';
-import BaseDown from 'react-icons/lib/fa/angle-down';
-import BaseUp from 'react-icons/lib/fa/angle-up';
 import styled, { css } from 'styled-components';
+import BaseNotice from '@codesandbox/common/lib/components/Notice';
+import BaseUp from 'react-icons/lib/fa/angle-up';
+import BaseDown from 'react-icons/lib/fa/angle-down';
 
 export const Container = styled.div`
   ${({ theme }) => css`
     display: inline-flex;
-    border-radius: 4px;
-    overflow: hidden;
-    width: 100%;
     flex-direction: column;
-    font-size: 0.875rem;
-
+    width: 100%;
+    border-radius: 4px;
     color: ${theme.light ? '#000000' : '#ffffff'};
-  `}
-`;
-
-export const Down = styled(BaseDown)<{ light: boolean }>`
-  ${({ light }) => css`
-    fill: ${light ? '#000000' : '#ffffff'};
-    cursor: pointer;
-    width: 1.5rem;
-    height: auto;
+    font-size: 0.875rem;
+    overflow: hidden;
   `}
 `;
 
 export const IntegrationBlock = styled.div<{ bgColor: string }>`
   ${({ bgColor }) => css`
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    box-sizing: border-box;
-    background-color: ${bgColor};
     flex: 1;
-    color: white;
-    padding: 0.75em 0.75em;
-    min-height: 45px;
-    font-size: 1em;
+    display: inline-flex;
     justify-content: space-between;
+    align-items: center;
+    min-height: 45px;
+    padding: 0.75em 0.75em;
+    background-color: ${bgColor};
+    color: white;
+    font-size: 1em;
+    box-sizing: border-box;
+    cursor: pointer;
 
     > div {
       display: flex;
@@ -49,8 +39,8 @@ export const IntegrationBlock = styled.div<{ bgColor: string }>`
 export const Name = styled.span<{ light: boolean }>`
   ${({ light }) => css`
     margin-left: 0.75em;
-    font-size: 1.375em;
     color: ${light ? '#000000' : '#ffffff'};
+    font-size: 1.375em;
   `}
 `;
 
@@ -58,11 +48,17 @@ export const Notice = styled(BaseNotice)`
   margin-left: 0.7rem;
 `;
 
-export const Up = styled(BaseUp)<{ light: boolean }>`
-  ${({ light }) => css`
-    fill: ${light ? '#000000' : '#ffffff'};
-    cursor: pointer;
-    width: 1.5rem;
-    height: auto;
-  `}
+const iconStyles = ({ light }: { light: boolean }) => css`
+  width: 1.5rem;
+  height: auto;
+  fill: ${light ? '#000' : '#fff'};
+  cursor: pointer;
+`;
+
+export const Up = styled(BaseUp)`
+  ${iconStyles}
+`;
+
+export const Down = styled(BaseDown)`
+  ${iconStyles}
 `;

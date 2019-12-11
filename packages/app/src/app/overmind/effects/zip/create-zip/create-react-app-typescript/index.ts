@@ -1,7 +1,7 @@
 import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
 // @ts-ignore
 import files from 'buffer-loader!./files.zip'; // eslint-disable-line import/no-webpack-loader-syntax
-import { createFile, createDirectoryWithFiles } from '../';
+import { createFile, createDirectoryWithFiles } from '..';
 
 /**
  * Add necessary scripts to package.json if they don't exist
@@ -24,7 +24,8 @@ function alterPackageJSON(module: Module) {
     if (
       !parsed.dependencies ||
       !parsed.dependencies['react-scripts-ts'] ||
-      (!parsed.devDependencies || !parsed.devDependencies['react-scripts-ts'])
+      !parsed.devDependencies ||
+      !parsed.devDependencies['react-scripts-ts']
     ) {
       parsed.dependencies['react-scripts-ts'] = '^2.13.0';
     }
@@ -45,7 +46,6 @@ export default function createZip(
     await Promise.all(
       modules
         .filter(x => x.directoryShortid == null)
-        .filter(x => x.title !== 'yarn.lock' && x.title !== 'package-lock.json')
         .map(x => {
           if (x.title === 'package.json' && x.directoryShortid == null) {
             return createFile(alterPackageJSON(x), src);

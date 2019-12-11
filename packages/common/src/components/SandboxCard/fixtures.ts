@@ -1,4 +1,4 @@
-import { Sandbox } from './';
+import { Sandbox } from '.';
 import { TemplateType } from '../../templates';
 
 export const sandbox = (config: Partial<Sandbox> = {}): Sandbox => ({
@@ -148,7 +148,7 @@ export const templates: TemplateType[] = [
   'gridsome',
   'vuepress',
   'mdx-deck',
-  'quasar',
+  'quasar-framework',
   'unibit',
 ];
 

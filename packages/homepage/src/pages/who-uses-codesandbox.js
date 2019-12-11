@@ -5,13 +5,13 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 import { Heading2 } from '../components/headings';
 import Layout from '../components/layout';
-import { Container } from './_explore.elements';
+import { Container } from './explore/_elements';
 
 import Companies from '../components/Companies';
 
 const Button = styled.a`
   transition: 0.3s ease all;
-  color: white;
+  color: ${props => props.theme.homepage.white};
   background-color: ${props => props.theme.secondary};
   text-decoration: none;
   padding: 0.5rem 12px;
@@ -52,7 +52,7 @@ export default ({
         <p
           css={`
             text-align: center;
-            color: white;
+            color: ${props => props.theme.homepage.white};
           `}
         >
           Some amazing companies and projects using CodeSandbox
@@ -62,7 +62,7 @@ export default ({
           css={`
             margin-top: 4rem;
             text-align: center;
-            color: white;
+            color: ${props => props.theme.homepage.white};
           `}
         >
           Are you using CodeSandbox?

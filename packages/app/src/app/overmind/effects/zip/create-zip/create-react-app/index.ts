@@ -7,7 +7,7 @@ import {
   createPackageJSON,
   createFile,
   createDirectoryWithFiles,
-} from '../';
+} from '..';
 
 const getHTML = (modules, resources) =>
   `<!doctype html>

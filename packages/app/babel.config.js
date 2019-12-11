@@ -18,6 +18,7 @@ module.exports = {
         'babel-plugin-system-import-transformer',
         'babel-plugin-macros',
         'babel-plugin-styled-components',
+        '@babel/plugin-transform-react-display-name',
       ],
     },
   },

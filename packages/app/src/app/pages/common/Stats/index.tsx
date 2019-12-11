@@ -1,28 +1,33 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
-import { observer } from 'app/componentConnectors';
+import { useOvermind } from 'app/overmind';
+import { LikeHeart } from 'app/pages/common/LikeHeart';
 import React from 'react';
-import EyeIcon from 'react-icons/lib/fa/eye';
-import ForkIcon from 'react-icons/lib/go/repo-forked';
 
-import LikeHeart from 'app/pages/common/LikeHeart';
-
-import { Stats } from './elements';
-import Stat from './Stat';
+import { Stats as StatsWrapper } from './elements';
+import { EyeIcon } from './EyeIcon';
+import { ForkIcon } from './ForkIcon';
+import { Stat } from './Stat';
 
 interface Props {
   sandbox: Sandbox;
 }
 
-const StatsComponent = ({ sandbox }: Props) => (
-  <Stats>
-    <Stat Icon={<EyeIcon />} count={sandbox.viewCount} />
-    <Stat
-      Icon={<LikeHeart sandbox={sandbox} colorless />}
-      count={sandbox.likeCount}
-    />
+const StatsComponent: React.FC<Props> = ({ sandbox }) => {
+  // We want to observe the sandbox
+  useOvermind();
 
-    <Stat Icon={<ForkIcon />} count={sandbox.forkCount} />
-  </Stats>
-);
+  return (
+    <StatsWrapper>
+      <Stat
+        Icon={<LikeHeart sandbox={sandbox} colorless />}
+        count={sandbox.likeCount}
+      />
 
-export default observer(StatsComponent);
+      <Stat Icon={<EyeIcon />} count={sandbox.viewCount} />
+
+      <Stat Icon={<ForkIcon />} count={sandbox.forkCount} />
+    </StatsWrapper>
+  );
+};
+
+export const Stats = StatsComponent;

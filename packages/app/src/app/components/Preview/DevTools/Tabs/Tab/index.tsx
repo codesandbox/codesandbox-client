@@ -9,9 +9,9 @@ import {
 } from 'react-dnd';
 import CrossIcon from 'react-icons/lib/md/clear';
 
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 import { Tab, CloseTab } from './elements';
 import { IViewType, Status } from '../..';
-import { ITabPosition } from '..';
 import { UnreadDevToolsCount } from './UnreadDevToolsCount';
 
 export interface TabProps {
@@ -19,8 +19,11 @@ export interface TabProps {
   pane: IViewType;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
-  moveTab?: (currentPosition: ITabPosition, nextPosition: ITabPosition) => void;
-  closeTab?: (pos: ITabPosition) => void;
+  moveTab?: (
+    currentPosition: DevToolsTabPosition,
+    nextPosition: DevToolsTabPosition
+  ) => void;
+  closeTab?: (pos: DevToolsTabPosition) => void;
   index: number;
   devToolIndex: number;
   canDrag: boolean;
@@ -146,11 +149,11 @@ const entryTarget = {
       return;
     }
 
-    const previousPosition: ITabPosition = {
+    const previousPosition: DevToolsTabPosition = {
       tabPosition: sourceItem.index,
       devToolIndex: sourceItem.devToolIndex,
     };
-    const nextPosition: ITabPosition = {
+    const nextPosition: DevToolsTabPosition = {
       tabPosition: props.index,
       devToolIndex: props.devToolIndex,
     };
@@ -197,6 +200,8 @@ const collectSource = (connect, monitor) => ({
 
 export const PREVIEW_TAB_ID = 'PREVIEW_TAB';
 
-export default DropTarget(PREVIEW_TAB_ID, entryTarget, collectTarget)(
-  DragSource(PREVIEW_TAB_ID, entrySource, collectSource)(PaneTab)
-);
+export const DraggableTab = DropTarget(
+  PREVIEW_TAB_ID,
+  entryTarget,
+  collectTarget
+)(DragSource(PREVIEW_TAB_ID, entrySource, collectSource)(PaneTab));

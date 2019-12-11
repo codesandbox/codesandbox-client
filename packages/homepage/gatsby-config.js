@@ -34,7 +34,6 @@ module.exports = {
             options: {
               maxWidth: 740,
               linkImagesToOriginal: true,
-              sizeByPixelDensity: true,
             },
           },
           { resolve: require.resolve(`./plugins/remark-sections`) },
@@ -42,6 +41,14 @@ module.exports = {
           `gatsby-remark-prismjs`,
           `gatsby-remark-embedder`,
         ],
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-react-svg',
+      options: {
+        rule: {
+          include: /screens/, // See below to configure properly
+        },
       },
     },
     {
@@ -64,11 +71,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-google-fonts`,
       options: {
-        fonts: [
-          `Poppins:600,700,800`,
-          `source sans pro:300,400,500,600,700`,
-          'open sans:300,400',
-        ],
+        fonts: ['open sans:400', 'roboto:400i,400'],
+        display: 'swap',
       },
     },
     {

@@ -1,14 +1,15 @@
-import * as internalActions from './internalActions';
 import { AsyncAction, Action } from 'app/overmind';
 import { client } from 'app/graphql/client';
 import gql from 'graphql-tag';
+import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
-export const notificationsOpened: AsyncAction = async ({ state, effects }) => {
+export const notificationsOpened: AsyncAction = async ({ state }) => {
   state.userNotifications.notificationsOpened = true;
   state.userNotifications.unreadCount = 0;
-  client.mutate({
+
+  await client.mutate({
     mutation: gql`
       mutation ClearNotificationCount {
         clearNotificationCount {

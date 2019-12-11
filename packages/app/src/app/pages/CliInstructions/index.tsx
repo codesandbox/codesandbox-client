@@ -1,46 +1,46 @@
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import React, { useEffect } from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
-import Navigation from 'app/pages/common/Navigation';
-import SubTitle from 'app/components/SubTitle';
-import Title from 'app/components/Title';
+import React, { FunctionComponent, useEffect } from 'react';
 
-import { Container, Content, Code } from './elements';
+import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
+import { useOvermind } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
 
-const CLIInstructions = inject('signals')(
-  hooksObserver(({ signals: { cliInstructionsMounted } }) => {
-    useEffect(() => {
-      cliInstructionsMounted();
-    }, [cliInstructionsMounted]);
+import { Code, Container, Content } from './elements';
 
-    return (
-      <MaxWidth>
-        <Margin vertical={1.5} horizontal={1.5}>
-          <Container>
-            <Navigation title="CLI Import" />
+export const CLIInstructions: FunctionComponent = () => {
+  const {
+    actions: { cliInstructionsMounted },
+  } = useOvermind();
 
-            <Content vertical>
-              <Title>Import from CLI</Title>
+  useEffect(() => {
+    cliInstructionsMounted();
+  }, [cliInstructionsMounted]);
 
-              <SubTitle>
-                1. Install the CLI <Code>npm i -g codesandbox</Code>
-              </SubTitle>
+  return (
+    <MaxWidth>
+      <Margin horizontal={1.5} vertical={1.5}>
+        <Container>
+          <Navigation title="CLI Import" />
 
-              <SubTitle>
-                2. Go to your project <Code>cd path-of-your-project</Code>
-              </SubTitle>
+          <Content vertical>
+            <Title>Import from CLI</Title>
 
-              <SubTitle>
-                3. Deploy your project to CodeSandbox{' '}
-                <Code>codesandbox ./</Code>
-              </SubTitle>
-            </Content>
-          </Container>
-        </Margin>
-      </MaxWidth>
-    );
-  })
-);
+            <SubTitle>
+              1. Install the CLI <Code>npm i -g codesandbox</Code>
+            </SubTitle>
 
-export default CLIInstructions;
+            <SubTitle>
+              2. Go to your project <Code>cd path-of-your-project</Code>
+            </SubTitle>
+
+            <SubTitle>
+              3. Deploy your project to CodeSandbox <Code>codesandbox ./</Code>
+            </SubTitle>
+          </Content>
+        </Container>
+      </Margin>
+    </MaxWidth>
+  );
+};

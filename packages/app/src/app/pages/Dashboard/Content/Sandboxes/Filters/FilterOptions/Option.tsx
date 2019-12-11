@@ -11,7 +11,7 @@ interface Props {
   toggleTemplate: (name: string, selected: boolean) => void;
 }
 
-export default ({
+export const Option = ({
   color,
   id,
   style,
@@ -32,7 +32,9 @@ export default ({
       }}
       style={style}
     >
-      <label htmlFor={checkBoxName} style={{ display: 'none' }} />
+      <label htmlFor={checkBoxName} style={{ display: 'none' }}>
+        {checkBoxName}
+      </label>
       <CheckBox id={checkBoxName} color={color} selected={selected} />
       <OptionName style={{ fontWeight: 500 }}>{niceName}</OptionName>
     </Container>

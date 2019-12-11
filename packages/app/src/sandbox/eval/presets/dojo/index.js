@@ -1,5 +1,5 @@
 import { join, absolute } from '@codesandbox/common/lib/utils/path';
-import Preset from '../';
+import Preset from '..';
 
 import typescriptTranspiler from '../../transpilers/typescript';
 import rawTranspiler from '../../transpilers/raw';

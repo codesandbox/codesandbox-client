@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = function(listener, name, options) {
   return function detective(babel) {
     // Babel 6

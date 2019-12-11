@@ -3,18 +3,18 @@ import {
   ViewConfig,
   ViewTab,
 } from '@codesandbox/common/lib/templates/template';
-import { ITabPosition } from 'app/components/Preview/DevTools/Tabs';
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 
-const isEqual = (prevPos: ITabPosition, nextPos: ITabPosition) =>
+const isEqual = (prevPos: DevToolsTabPosition, nextPos: DevToolsTabPosition) =>
   prevPos.devToolIndex === nextPos.devToolIndex &&
   prevPos.tabPosition === nextPos.tabPosition;
 
 export function addDevToolsTab(
   tabs: ViewConfig[],
   newTab: ViewTab,
-  position?: ITabPosition
+  position?: DevToolsTabPosition
 ) {
-  const positionToAdd: ITabPosition = position || {
+  const positionToAdd: DevToolsTabPosition = position || {
     devToolIndex: 0,
     tabPosition: tabs[0].views.length,
   };
@@ -31,8 +31,8 @@ export function addDevToolsTab(
 
 export function moveDevToolsTab(
   tabs: ViewConfig[],
-  prevPos: ITabPosition,
-  nextPos: ITabPosition
+  prevPos: DevToolsTabPosition,
+  nextPos: DevToolsTabPosition
 ) {
   if (isEqual(prevPos, nextPos)) {
     return tabs;
@@ -53,7 +53,9 @@ export function moveDevToolsTab(
     draft.map((t, i) => {
       if (i === prevPos.devToolIndex) {
         return prevDevTools;
-      } else if (i === nextPos.devToolIndex) {
+      }
+
+      if (i === nextPos.devToolIndex) {
         return nextDevTools;
       }
 
@@ -62,7 +64,10 @@ export function moveDevToolsTab(
   });
 }
 
-export function closeDevToolsTab(tabs: ViewConfig[], closePos: ITabPosition) {
+export function closeDevToolsTab(
+  tabs: ViewConfig[],
+  closePos: DevToolsTabPosition
+) {
   // We want to do this immutable, to prevent conflicts while the file is changing
   return immer(tabs, draft => {
     const devTools = draft[closePos.devToolIndex];

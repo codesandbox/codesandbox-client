@@ -14,7 +14,8 @@ module.exports = ({ markdownAST }) => {
       });
 
       return;
-    } else if (child.type === 'heading' && child.depth === 2) {
+    }
+    if (child.type === 'heading' && child.depth === 2) {
       if (headingMode) {
         markdownAST.children.splice(i, 0, {
           type: 'html',

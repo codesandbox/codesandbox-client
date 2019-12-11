@@ -162,39 +162,38 @@ const config: ConfigurationFile = {
           null,
           2
         );
-      } else {
-        return JSON.stringify(
-          {
-            presets: [
-              [
-                'env',
-                {
-                  targets: {
-                    chrome: 50,
-                    ie: 11,
-                    ff: 30,
-                    edge: 12,
-                    safari: 9,
-                  },
-                  modules: false,
-                  loose: true,
-                  useBuiltIns: true,
-                },
-              ],
-              'stage-2',
-            ],
-            plugins: [
-              ['transform-cx-jsx'],
-              ['transform-react-jsx', { pragma: 'VDOM.createElement' }],
-              'transform-function-bind',
-              'transform-runtime',
-              'transform-regenerator',
-            ],
-          },
-          null,
-          2
-        );
       }
+      return JSON.stringify(
+        {
+          presets: [
+            [
+              'env',
+              {
+                targets: {
+                  chrome: 50,
+                  ie: 11,
+                  ff: 30,
+                  edge: 12,
+                  safari: 9,
+                },
+                modules: false,
+                loose: true,
+                useBuiltIns: true,
+              },
+            ],
+            'stage-2',
+          ],
+          plugins: [
+            ['transform-cx-jsx'],
+            ['transform-react-jsx', { pragma: 'VDOM.createElement' }],
+            'transform-function-bind',
+            'transform-runtime',
+            'transform-regenerator',
+          ],
+        },
+        null,
+        2
+      );
     }
 
     return JSON.stringify({ presets: [], plugins: [] }, null, 2);

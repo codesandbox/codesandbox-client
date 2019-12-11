@@ -1,4 +1,5 @@
 import React from 'react';
+import Helmet from 'react-helmet';
 import { Query, Mutation } from 'react-apollo';
 import { Observer } from 'app/componentConnectors';
 import { sortBy } from 'lodash-es';
@@ -23,8 +24,8 @@ import {
   SET_TEAM_DESCRIPTION,
 } from '../../../queries';
 
-import AddTeamMember from './AddTeamMember';
-import RemoveTeamMember from './RemoveTeamMember';
+import { AddTeamMember } from './AddTeamMember';
+import { RemoveTeamMember } from './RemoveTeamMember';
 
 const User = ({ user, rightElement }) => (
   <div
@@ -69,14 +70,15 @@ class TeamView extends React.PureComponent {
                   return null;
                 }
 
-                document.title = `${data.me.team.name} - CodeSandbox`;
-
                 const description =
                   data.me.team.description ||
                   `This is a description for your team. You can change this description and invite people to the team so they can edit the sandboxes of this team.`;
 
                 return (
                   <TeamContainer>
+                    <Helmet>
+                      <title>{data.me.team.name} - CodeSandbox</title>
+                    </Helmet>
                     <Section>
                       <HeaderContainer>{data.me.team.name}</HeaderContainer>
                       <Description>
@@ -199,7 +201,7 @@ class TeamView extends React.PureComponent {
 
                         {data.me.team.invitees &&
                           data.me.team.invitees.length > 0 && (
-                            <React.Fragment>
+                            <>
                               <MemberHeader>Invited Members</MemberHeader>
 
                               {data.me.team.invitees.map(user => (
@@ -244,7 +246,7 @@ class TeamView extends React.PureComponent {
                                   }}
                                 </Mutation>
                               ))}
-                            </React.Fragment>
+                            </>
                           )}
 
                         <Margin top={1}>

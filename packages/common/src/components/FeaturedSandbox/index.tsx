@@ -77,6 +77,7 @@ export default class FeaturedSandbox extends React.PureComponent<
     sandbox: undefined,
     showPreview: false,
   };
+
   fetchedSandboxes = {};
 
   fetchSandbox = (id: string) => {
@@ -250,6 +251,7 @@ export default class FeaturedSandbox extends React.PureComponent<
                           zenMode: true,
                         }}
                         isInProjectView
+                        showNavigation={false}
                       />
                     </animated.div>
                   )

@@ -1,5 +1,5 @@
-import Transpiler from '../';
-import { LoaderContext } from '../../../eval/transpiled-module';
+import Transpiler from '..';
+import { LoaderContext } from '../../transpiled-module';
 
 class SVGRTranspiler extends Transpiler {
   async doTranspilation(code: string, loaderContext: LoaderContext) {

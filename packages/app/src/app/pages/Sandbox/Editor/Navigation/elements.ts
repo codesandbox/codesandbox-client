@@ -17,6 +17,7 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     width: 3.5rem;
+    border-right: 1px solid ${theme['activityBar.border'] || 'transparent'};
     flex: 0 0 3.5rem;
     height: 100%;
     color: ${theme[`activityBar.inactiveForeground`] ||
@@ -42,6 +43,10 @@ export const IconContainer = styled.div<{
     props.theme[`activityBar.inactiveForeground`] ||
     css`rgba(255, 255, 255, 0.5)`};
   cursor: pointer;
+  background: transparent;
+  border: 0;
+  appearance: none;
+  outline: 0;
 
   &:hover {
     color: ${props => props.theme[`activityBar.foreground`] || css`white`};

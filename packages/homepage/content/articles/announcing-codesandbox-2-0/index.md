@@ -1,5 +1,5 @@
 ---
-featuredImage: ./images/banner.png
+banner: ./images/banner.png
 slug: announcing-codesandbox-2-0
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4

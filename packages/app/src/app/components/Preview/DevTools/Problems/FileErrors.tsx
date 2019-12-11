@@ -5,7 +5,7 @@ import React from 'react';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 import { Animate } from 'react-show';
 
-import { MessageType } from './';
+import { MessageType } from '.';
 import { File, Path, FileName, Actions, AnimatedChevron } from './elements';
 import { ProblemMessage } from './Message';
 

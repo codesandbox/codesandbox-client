@@ -32,13 +32,12 @@ export const state: State = {
     blacklistedTemplates: [],
     search: '',
   },
-  isTemplateSelected: state => templateName => {
-    return state.filters.blacklistedTemplates.indexOf(templateName) === -1;
-  },
-  getFilteredSandboxes: state => sandboxes => {
-    const orderField = state.orderBy.field;
-    const orderOrder = state.orderBy.order;
-    const blacklistedTemplates = state.filters.blacklistedTemplates;
+  isTemplateSelected: ({ filters }) => templateName =>
+    !filters.blacklistedTemplates.includes(templateName),
+  getFilteredSandboxes: ({ orderBy, filters }) => sandboxes => {
+    const orderField = orderBy.field;
+    const orderOrder = orderBy.order;
+    const { blacklistedTemplates } = filters;
 
     const isDateField =
       orderField === 'insertedAt' || orderField === 'updatedAt';

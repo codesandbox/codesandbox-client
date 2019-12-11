@@ -1,5 +1,5 @@
 import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
-import { createFile, createDirectoryWithFiles } from '../';
+import { createFile, createDirectoryWithFiles } from '..';
 
 export default async function createZip(
   zip,
@@ -11,7 +11,6 @@ export default async function createZip(
   await Promise.all(
     modules
       .filter(x => x.directoryShortid == null)
-      .filter(x => x.title !== 'yarn.lock' && x.title !== 'package-lock.json')
       .map(x => createFile(x, zip, downloadBlobs))
   );
 

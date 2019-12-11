@@ -1,48 +1,50 @@
-import * as React from 'react';
-import { inject, hooksObserver } from 'app/componentConnectors';
-
-import HoverMenu from 'app/components/HoverMenu';
 import Relative from '@codesandbox/common/lib/components/Relative';
+import React, { FunctionComponent } from 'react';
 
-import Menu from './Menu';
+import { useMenuState, MenuDisclosure } from 'reakit/Menu';
+import { useOvermind } from 'app/overmind';
+
 import { ClickableContainer, ProfileImage } from './elements';
+import { Menu } from './Menu';
 
-const UserMenu = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      store: { user, userMenuOpen },
-      signals: {
-        userMenuClosed,
-        modalOpened,
-        signOutClicked,
-        userMenuOpened,
-        files,
-      },
-    }) => (
-      <Relative>
-        <ClickableContainer onClick={userMenuOpened}>
-          <ProfileImage
-            alt={user.username}
-            width={30}
-            height={30}
-            src={user.avatarUrl}
-          />
-        </ClickableContainer>
-        {userMenuOpen && (
-          <HoverMenu onClose={() => userMenuClosed()}>
-            <Menu
-              openPreferences={() => modalOpened({ modal: 'preferences' })}
-              openStorageManagement={files.gotUploadedFiles}
-              signOut={signOutClicked}
-              username={user.username}
-              curator={user.curatorAt}
-              openFeedback={() => modalOpened({ modal: 'feedback' })}
-            />
-          </HoverMenu>
-        )}
-      </Relative>
-    )
-  )
-);
+export const UserMenu: FunctionComponent = () => {
+  const {
+    actions: {
+      modalOpened,
+      signOutClicked,
+      files: { gotUploadedFiles },
+    },
+    state: { user },
+  } = useOvermind();
+  const menu = useMenuState({
+    placement: 'bottom-end',
+  });
 
-export default UserMenu;
+  return (
+    <Relative>
+      <MenuDisclosure
+        as={ClickableContainer}
+        {...menu}
+        aria-label="profile menu"
+      >
+        <ProfileImage
+          alt={user.username}
+          width={30}
+          height={30}
+          src={user.avatarUrl}
+        />
+      </MenuDisclosure>
+
+      <Menu
+        openPreferences={() => modalOpened({ modal: 'preferences' })}
+        openStorageManagement={() => gotUploadedFiles(null)}
+        signOut={() => signOutClicked()}
+        username={user.username}
+        curator={user.curatorAt}
+        openFeedback={() => modalOpened({ modal: 'feedback' })}
+        menuProps={menu}
+        showPatron={user.subscription && user.subscription.plan === 'patron'}
+      />
+    </Relative>
+  );
+};

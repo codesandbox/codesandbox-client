@@ -2,11 +2,11 @@ import React from 'react';
 import { Animate as ReactShow } from 'react-show';
 
 import {
+  Actions,
   ChildContainer,
+  ExpandIconContainer,
   ItemHeader,
   Title,
-  ExpandIconContainer,
-  Actions,
 } from './elements';
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
   keepState?: boolean;
   disabled?: boolean;
   defaultOpen?: boolean;
-  actions?: React.Component<any, any>;
+  actions?: React.ReactNode;
   style?: React.CSSProperties;
   showOverflow?: boolean;
 };
@@ -24,7 +24,7 @@ type State = {
   open: boolean;
 };
 
-export default class WorkspaceItem extends React.Component<Props, State> {
+export class WorkspaceItem extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -40,7 +40,7 @@ export default class WorkspaceItem extends React.Component<Props, State> {
     );
   }
 
-  toggleOpen = () => this.setState({ open: !this.state.open });
+  toggleOpen = () => this.setState(state => ({ open: !state.open }));
 
   render() {
     const {
@@ -65,13 +65,18 @@ export default class WorkspaceItem extends React.Component<Props, State> {
         <ReactShow
           style={{
             height: 'auto',
-            overflow: showOverflow ? 'initial' : 'hidden',
+            overflow: showOverflow && open ? 'initial' : 'hidden',
           }}
           transitionOnMount
-          start={{
-            height: 0, // The starting style for the component.
-            // If the 'leave' prop isn't defined, 'start' is reused!
-          }}
+          start={
+            open
+              ? null
+              : {
+                  height: 0, // The starting style for the component.
+
+                  // If the 'leave' prop isn't defined, 'start' is reused!
+                }
+          }
           show={open}
           duration={250}
           stayMounted={keepState}

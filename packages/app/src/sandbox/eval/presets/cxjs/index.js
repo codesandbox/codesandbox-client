@@ -7,7 +7,7 @@ import stylusTranspiler from '../../transpilers/stylus';
 import lessTranspiler from '../../transpilers/less';
 import tsTranspiler from '../../transpilers/typescript';
 
-import Preset from '../';
+import Preset from '..';
 
 export default function initialize() {
   const cxjsPreset = new Preset(

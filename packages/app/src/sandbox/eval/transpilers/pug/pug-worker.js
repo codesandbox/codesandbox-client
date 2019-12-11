@@ -10,7 +10,7 @@ self.addEventListener('message', event => {
   const { code, path } = event.data;
 
   // register a custom importer callback
-  pug.render(code, { filename: path }, (err, html) => {
+  self.pug.render(code, { filename: path }, (err, html) => {
     if (err) {
       return self.postMessage({
         type: 'error',

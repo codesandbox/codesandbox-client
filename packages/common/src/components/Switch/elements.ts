@@ -6,15 +6,24 @@ export type ColorProps = {
   right?: boolean;
   offMode?: boolean;
   secondary?: boolean;
-  theme: (typeof theme) & { templateColor: string };
+  theme: typeof theme & { templateColor: string };
 };
 
-const getColor = ({ right, offMode, secondary, theme }: ColorProps) => {
+const getColor = ({
+  right,
+  offMode,
+  secondary,
+  theme: givenTheme,
+}: ColorProps) => {
   if (right) {
-    return secondary ? theme.templateColor || theme.secondary : theme.primary;
+    return secondary
+      ? givenTheme.templateColor || givenTheme.secondary
+      : givenTheme.primary;
   }
   if (offMode) return `rgba(0, 0, 0, 0.3)`;
-  return secondary ? theme.primary : theme.templateColor || theme.secondary;
+  return secondary
+    ? givenTheme.primary
+    : givenTheme.templateColor || givenTheme.secondary;
 };
 
 export const Container = styled.div<ColorProps>`

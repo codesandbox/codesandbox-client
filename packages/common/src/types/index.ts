@@ -1,4 +1,6 @@
-import * as React from 'react';
+/* eslint-disable camelcase */
+import React from 'react';
+
 import { TemplateType } from '../templates';
 
 export type SSEContainerStatus =
@@ -19,8 +21,10 @@ export type ModuleError = {
   path: string;
   severity: 'error' | 'warning';
   type: 'compile' | 'dependency-not-found' | 'no-dom-change';
-  payload: Object;
   source: string | undefined;
+  payload?: Object;
+  columnEnd?: number;
+  lineEnd?: number;
 };
 
 export type Contributor = {
@@ -41,25 +45,37 @@ export type ModuleCorrection = {
 export type Module = {
   id?: string;
   title: string;
-  code: string | undefined;
-  savedCode: string | undefined;
+  code: string;
+  savedCode: string | null;
   shortid: string;
-  directoryShortid: string | undefined;
+  errors: ModuleError[];
+  corrections: ModuleCorrection[];
+  directoryShortid: string | null;
   isNotSynced: boolean;
   sourceId: string;
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path?: string;
+  path: string;
   now?: any;
+  type: 'file';
+};
+
+export type Configuration = {
+  title: string;
+  moreInfoUrl: string;
+  type: string;
+  description: string;
 };
 
 export type Directory = {
   id: string;
   title: string;
-  directoryShortid: string | undefined;
+  directoryShortid: string | null;
   shortid: string;
+  path: string;
   sourceId: string;
+  type: 'directory';
 };
 
 export type Template = {
@@ -68,9 +84,8 @@ export type Template = {
   shortid: string;
   url: string;
   main: boolean;
-  color: string;
+  color: () => string;
   backgroundColor: () => string | undefined;
-
   popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
@@ -89,20 +104,20 @@ export type Badge = {
 };
 
 export type CurrentUser = {
-  id: string | undefined;
-  email: string | undefined;
-  name: string | undefined;
+  id: string | null;
+  email: string | null;
+  name: string | null;
   username: string;
-  avatarUrl: string | undefined;
-  jwt: string | undefined;
-  subscription:
-    | {
-        since: string;
-        amount: string;
-      }
-    | undefined;
+  avatarUrl: string | null;
+  jwt: string | null;
+  subscription: {
+    since: string;
+    amount: number;
+    cancelAtPeriodEnd: boolean;
+    plan?: 'pro' | 'patron';
+  } | null;
   curatorAt: string;
-  badges: Array<Badge>;
+  badges: Badge[];
   integrations: {
     zeit?: {
       token: string;
@@ -112,13 +127,15 @@ export type CurrentUser = {
       email: string;
     };
   };
+  sendSurvey: boolean;
 };
 
 export type CustomTemplate = {
   color?: string;
-  title: string;
-  id: string;
   iconUrl?: string;
+  id: string;
+  published?: boolean;
+  title: string;
   url: string | null;
 };
 
@@ -133,13 +150,25 @@ export type GitInfo = {
 export type SmallSandbox = {
   id: string;
   alias: string | null;
+  title: string | null;
   customTemplate: CustomTemplate | null;
-  title: string;
   insertedAt: string;
   updatedAt: string;
   likeCount: number;
   viewCount: number;
   forkCount: number;
+  template: string;
+  privacy: 0 | 1 | 2;
+  git: GitInfo | null;
+};
+
+export type ForkedSandbox = {
+  id: string;
+  alias: string | null;
+  title: string | null;
+  customTemplate: CustomTemplate | null;
+  insertedAt: string;
+  updatedAt: string;
   template: string;
   privacy: 0 | 1 | 2;
   git: GitInfo | null;
@@ -154,7 +183,8 @@ export type User = {
   username: string;
   name: string;
   avatarUrl: string;
-  showcasedSandboxShortid: string | undefined;
+  twitter: string | null;
+  showcasedSandboxShortid: string | null;
   sandboxCount: number;
   givenLikeCount: number;
   receivedLikeCount: number;
@@ -163,10 +193,19 @@ export type User = {
   forkedCount: number;
   sandboxes: PaginatedSandboxes;
   likedSandboxes: PaginatedSandboxes;
-  badges: Array<Badge>;
+  badges: Badge[];
+  topSandboxes: SmallSandbox[];
   subscriptionSince: string;
+  selection: Selection | null;
+};
+
+export type LiveUser = {
+  username: string;
   selection: Selection;
-  color: any;
+  id: string;
+  currentModuleShortid: string | null;
+  color: [number, number, number];
+  avatarUrl: string;
 };
 
 export type RoomInfo = {
@@ -177,7 +216,7 @@ export type RoomInfo = {
   chatEnabled: boolean;
   sandboxId: string;
   editorIds: string[];
-  users: User[];
+  users: LiveUser[];
   chat: {
     messages: Array<{
       userId: string;
@@ -216,6 +255,7 @@ export type MiniSandbox = {
   description: string;
   git: GitInfo;
   author: User;
+  screenshotUrl: string;
 };
 
 export type GitCommit = {
@@ -246,41 +286,53 @@ export type PickedSandboxes = {
 };
 
 export type PickedSandboxDetails = {
-  title: string;
-  id: string;
   description: string;
+  id: string;
+  title: string;
 };
 
 export type Sandbox = {
   id: string;
-  alias: string | undefined;
-  title: string | undefined;
-  description: string;
+  alias: string | null;
+  title: string | null;
+  description: string | null;
   viewCount: number;
   likeCount: number;
   forkCount: number;
   userLiked: boolean;
-  modules: Array<Module>;
-  directories: Array<Directory>;
-  collection: boolean;
+  modules: Module[];
+  directories: Directory[];
+  collection?: {
+    path: string;
+  };
   owned: boolean;
   npmDependencies: {
     [dep: string]: string;
   };
   customTemplate: CustomTemplate | null;
+  /**
+   * Which template this sandbox is based on
+   */
   forkedTemplate: CustomTemplate | null;
+  /**
+   * Sandbox the forked template is from
+   */
+  forkedTemplateSandbox: ForkedSandbox | null;
   externalResources: string[];
   team: {
     id: string;
-  };
-  roomId: string;
+    name: string;
+  } | null;
+  roomId: string | null;
   privacy: 0 | 1 | 2;
-  author: User | undefined;
-  forkedFromSandbox: SmallSandbox | undefined;
-  git: GitInfo | undefined;
+  author: User | null;
+  forkedFromSandbox: ForkedSandbox | null;
+  git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
-  environmentVariables: EnvironmentVariable[];
+  environmentVariables: {
+    [key: string]: string;
+  } | null;
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
@@ -292,18 +344,17 @@ export type Sandbox = {
   };
   template: TemplateType;
   entry: string;
-  originalGit: GitInfo | undefined;
-  originalGitCommitSha: string | undefined;
-  originalGitChanges:
-    | {
-        added: string[];
-        modified: string[];
-        deleted: string[];
-        rights: 'none' | 'read' | 'write' | 'admin';
-      }
-    | undefined;
+  originalGit: GitInfo | null;
+  originalGitCommitSha: string | null;
+  originalGitChanges: {
+    added: string[];
+    modified: string[];
+    deleted: string[];
+    rights: 'none' | 'read' | 'write' | 'admin';
+  } | null;
   version: number;
-  screenshotUrl: string | undefined;
+  screenshotUrl: string | null;
+  previewSecret: string | null;
 };
 
 export type PrettierConfig = {
@@ -403,36 +454,14 @@ export type UserSelection = {
 
 export type EditorSelection = {
   userId: string;
-  name: string;
-  selection: UserSelection;
-  color: number[];
-};
-
-export type EditorError = {
-  column: number;
-  line: number;
-  columnEnd: number;
-  lineEnd: number;
-  message: string;
-  source: string;
-  title: string;
-  path: string;
-};
-
-export type EditorCorrection = {
-  column: number;
-  line: number;
-  columnEnd: number;
-  lineEnd: number;
-  message: string;
-  source: string;
-  path: string;
-  severity: string;
+  name: string | null;
+  selection: Selection | null;
+  color: number[] | null;
 };
 
 export enum WindowOrientation {
-  VERTICAL = 'VERTICAL',
-  HORIZONTAL = 'HORIZONTAL',
+  VERTICAL = 'vertical',
+  HORIZONTAL = 'horizontal',
 }
 
 export type Profile = {
@@ -471,6 +500,13 @@ export enum ServerContainerStatus {
   HIBERNATED = 'hibernated',
   ERROR = 'error',
 }
+
+export type ServerPort = {
+  main: boolean;
+  port: number;
+  hostname: string;
+  name?: string;
+};
 
 export type ZeitUser = {
   uid: string;
@@ -511,15 +547,15 @@ export type ZeitAlias = {
 };
 
 export enum ZeitDeploymentState {
-  'DEPLOYING',
-  'INITIALIZING',
-  'DEPLOYMENT_ERROR',
-  'BOOTED',
-  'BUILDING',
-  'READY',
-  'BUILD_ERROR',
-  'FROZEN',
-  'ERROR',
+  DEPLOYING = 'DEPLOYING',
+  INITIALIZING = 'INITIALIZING',
+  DEPLOYMENT_ERROR = 'DEPLOYMENT_ERROR',
+  BOOTED = 'BOOTED',
+  BUILDING = 'BUILDING',
+  READY = 'READY',
+  BUILD_ERROR = 'BUILD_ERROR',
+  FROZEN = 'FROZEN',
+  ERROR = 'ERROR',
 }
 
 export enum ZeitDeploymentType {
@@ -604,7 +640,64 @@ export type UploadedFilesInfo = {
 };
 
 export type SandboxUrlSourceData = {
-  id?: string;
-  alias?: string;
+  id: string;
+  alias: string | null;
   git?: GitInfo;
+};
+
+export type DevToolsTabPosition = {
+  devToolIndex: number;
+  tabPosition: number;
+};
+
+export type LiveMessage<data = unknown> = {
+  event: LiveMessageEvent;
+  data: data;
+  _isOwnMessage: boolean;
+};
+
+export enum LiveMessageEvent {
+  JOIN = 'join',
+  MODULE_STATE = 'module_state',
+  USER_ENTERED = 'user:entered',
+  USER_LEFT = 'user:left',
+  MODULE_SAVED = 'module:saved',
+  MODULE_CREATED = 'module:created',
+  MODULE_MASS_CREATED = 'module:mass-created',
+  MODULE_UPDATED = 'module:updated',
+  MODULE_DELETED = 'module:deleted',
+  DIRECTORY_CREATED = 'directory:created',
+  DIRECTORY_UPDATED = 'directory:updated',
+  DIRECTORY_DELETED = 'directory:deleted',
+  USER_SELECTION = 'user:selection',
+  USER_CURRENT_MODULE = 'user:current-module',
+  LIVE_MODE = 'live:mode',
+  LIVE_CHAT_ENABLED = 'live:chat_enabled',
+  LIVE_ADD_EDITOR = 'live:add-editor',
+  LIVE_REMOVE_EDITOR = 'live:remove-editor',
+  OPERATION = 'operation',
+  CONNECTION_LOSS = 'connection-loss',
+  DISCONNECT = 'disconnect',
+  OWNER_LEFT = 'owner_left',
+  CHAT = 'chat',
+  NOTIFICATION = 'notification',
+}
+
+export enum StripeErrorCode {
+  REQUIRES_ACTION = 'requires_action',
+}
+
+export enum PatronBadge {
+  ONE = 'patron-1',
+  TWO = 'patron-2',
+  THREE = 'patron-3',
+  FOURTH = 'patron-4',
+}
+
+export type LiveDisconnectReason = 'close' | 'inactivity';
+
+export type PatronTier = 1 | 2 | 3 | 4;
+
+export type SandboxFs = {
+  [path: string]: Module | Directory;
 };

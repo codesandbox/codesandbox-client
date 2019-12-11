@@ -1,6 +1,7 @@
-import { Action, AsyncAction } from 'app/overmind';
-import { setVimExtensionEnabled } from 'app/vscode/initializers';
+import { Badge } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
+
+import { Action, AsyncAction } from 'app/overmind';
 
 export const viewModeChanged: Action<{
   showEditor: boolean;
@@ -18,11 +19,11 @@ export const setDevtoolsOpen: Action<boolean> = ({ state }, isOpen) => {
   state.preferences.showDevtools = isOpen;
 };
 
-export const itemIdChanged: AsyncAction<string> = async (
-  { state, actions, effects },
-  itemId
-) => {
+export const itemIdChanged: AsyncAction<{
+  itemId: string;
+}> = async ({ state, actions, effects }, { itemId }) => {
   state.preferences.itemId = itemId;
+
   if (itemId === 'keybindings') {
     effects.keybindingManager.pause();
   } else {
@@ -38,19 +39,20 @@ export const settingChanged: Action<{
   value: any;
   name: string;
 }> = ({ state, effects }, { name, value }) => {
-  state.preferences.settings[name] = value;
+  const path = name.split('.');
+  const firstKey = path[0];
+  const lastKey = path.pop();
+  const settingsTarget = path.reduce(
+    (aggr, pathKey) => aggr[pathKey],
+    state.preferences.settings
+  );
+  settingsTarget[lastKey] = value;
+
   if (name === 'vimMode') {
-    setVimExtensionEnabled(value);
+    effects.vscode.setVimExtensionEnabled(Boolean(value));
   }
 
-  if (name.split('.').length > 1) {
-    const prop = name.split('.')[0];
-    const value = state.preferences.settings[prop];
-
-    effects.settingsStore.set(prop, value);
-  } else {
-    effects.settingsStore.set(name, value);
-  }
+  effects.settingsStore.set(firstKey, state.preferences.settings[firstKey]);
 
   effects.analytics.track('Change Settings', {
     name,
@@ -58,13 +60,11 @@ export const settingChanged: Action<{
   });
 };
 
-export const setBadgeVisibility: AsyncAction<{
-  id: string;
-  visible: boolean;
-}> = async ({ state, effects }, { id, visible }) => {
-  const badges = state.user.badges;
-
-  badges.forEach((badge, index) => {
+export const setBadgeVisibility: AsyncAction<Pick<
+  Badge,
+  'id' | 'visible'
+>> = async ({ effects, state }, { id, visible }) => {
+  state.user.badges.forEach((badge, index) => {
     if (badge.id === id) {
       state.user.badges[index].visible = visible;
     }
@@ -87,7 +87,7 @@ export const paymentDetailsRequested: AsyncAction = async ({
 };
 
 export const paymentDetailsUpdated: AsyncAction<string> = async (
-  { state, effects },
+  { effects, state },
   token
 ) => {
   state.preferences.isLoadingPaymentDetails = true;
@@ -101,7 +101,7 @@ export const keybindingChanged: Action<{
   name: string;
   value: any;
 }> = ({ state, effects }, { name, value }) => {
-  const keybindings = state.preferences.settings.keybindings;
+  const { keybindings } = state.preferences.settings;
   const currentIndex = keybindings.findIndex(binding => binding.key === name);
   const newBinding = {
     key: name,
@@ -129,4 +129,8 @@ export const keybindingChanged: Action<{
 
 export const zenModeToggled: Action = ({ state }) => {
   state.preferences.settings.zenMode = !state.preferences.settings.zenMode;
+};
+
+export const codeMirrorForced: Action = ({ state }) => {
+  state.preferences.settings.codeMirror = true;
 };

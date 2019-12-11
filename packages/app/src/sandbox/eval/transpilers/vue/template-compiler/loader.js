@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import transpile from 'vue-template-es2015-compiler';
 import * as compiler from 'vue-template-compiler';
 import vueHotReloadAPIRaw from '!raw-loader!vue-hot-reload-api';
@@ -17,7 +18,7 @@ export default function(html: string, loaderContext: LoaderContext) {
     false
   );
 
-  const options = loaderContext.options;
+  const { options } = loaderContext;
   const vueOptions = options.vueOptions || {};
   const needsHotReload = true;
 
@@ -67,7 +68,7 @@ export default function(html: string, loaderContext: LoaderContext) {
   } else {
     const bubleOptions = options.buble;
     const stripWith = bubleOptions.transforms.stripWith !== false;
-    const stripWithFunctional = bubleOptions.transforms.stripWithFunctional;
+    const { stripWithFunctional } = bubleOptions.transforms;
 
     const staticRenderFns = compiled.staticRenderFns.map(fn =>
       toFunction(fn, stripWithFunctional)

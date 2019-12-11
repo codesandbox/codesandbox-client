@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import PlusIcon from 'react-icons/lib/go/plus';
-import ContextMenu from 'app/components/ContextMenu';
+import { ContextMenu } from 'app/components/ContextMenu';
 
 const Container = styled.button`
   transition: 0.3s ease color;

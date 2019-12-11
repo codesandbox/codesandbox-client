@@ -73,14 +73,13 @@ class ModalComponent extends React.Component {
       right: 0,
       margin: `0 auto ${top}vh`,
       border: 'none',
-      borderRadius: '8px',
+      borderRadius: '4px',
     },
   });
 
   render() {
     const {
       isOpen,
-
       width,
       top,
       onClose,
@@ -89,12 +88,18 @@ class ModalComponent extends React.Component {
       ...props
     } = this.props;
 
+    if (!isOpen) {
+      return null;
+    }
+
     return (
-      <React.Fragment>
+      <>
         <GlobalStyles />
         <Modal
           isOpen={isOpen}
-          onRequestClose={e => onClose(e.type === 'keydown')}
+          onRequestClose={e => {
+            onClose(e.type === 'keydown');
+          }}
           contentLabel={title || 'Modal'}
           style={this.getStyles(width, top)}
           closeTimeoutMS={CLOSE_TIMEOUT_MS}
@@ -106,7 +111,7 @@ class ModalComponent extends React.Component {
             <ModalBody>{children}</ModalBody>
           </BaseModal>
         </Modal>
-      </React.Fragment>
+      </>
     );
   }
 }

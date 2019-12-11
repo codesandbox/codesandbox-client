@@ -7,7 +7,7 @@ import {
   createPackageJSON,
   createDirectoryWithFiles,
   createFile,
-} from '../';
+} from '..';
 
 /* eslint-disable no-useless-escape */
 const getHTML = (modules, resources) =>

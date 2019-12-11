@@ -25,7 +25,13 @@ interface Props {
   noFocus?: boolean;
 }
 
-export default ({ basePath, teamId, noFocus, close, depth }: Props) => {
+export const CreateFolderEntry = ({
+  basePath,
+  teamId,
+  noFocus,
+  close,
+  depth,
+}: Props) => {
   let input;
   return (
     <Mutation mutation={CREATE_FOLDER_MUTATION}>
