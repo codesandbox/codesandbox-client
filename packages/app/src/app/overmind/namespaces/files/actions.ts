@@ -72,8 +72,7 @@ export const moduleRenamed: AsyncAction<{
 
       actions.editor.internal.updatePreviewCode();
 
-      error.message = 'Could not rename file';
-      actions.internal.handleError(error);
+      actions.internal.handleError({ message: 'Could not rename file', error });
     }
   }
 );
@@ -131,8 +130,10 @@ export const directoryCreated: AsyncAction<{
 
       sandbox.directories.splice(directoryIndex, 1);
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      error.message = 'Unable to save new directory';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Unable to save new directory',
+        error,
+      });
     }
   }
 );
@@ -179,8 +180,10 @@ export const moduleMovedToDirectory: AsyncAction<{
       module.directoryShortid = currentDirectoryShortid;
       module.path = oldPath;
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      error.message = 'Could not save new module location';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Could not save new module location',
+        error,
+      });
     }
   }
 );
@@ -223,8 +226,10 @@ export const directoryMovedToDirectory: AsyncAction<{
       directoryToMove.directoryShortid = shortid;
       directoryToMove.path = oldPath;
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      error.message = 'Could not save new directory location';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Could not save new directory location',
+        error,
+      });
     }
   }
 );
@@ -288,8 +293,10 @@ export const directoryDeleted: AsyncAction<{
         sandbox.directories.push(removedDirectoryItem);
       });
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      error.messsage = 'Could not delete directory';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Could not delete directory',
+        error,
+      });
     }
   }
 );
@@ -333,8 +340,10 @@ export const directoryRenamed: AsyncAction<{
     } catch (error) {
       directory.title = oldTitle;
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      error.message = 'Could not rename directory';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Could not rename directory',
+        error,
+      });
     }
   }
 );
@@ -355,8 +364,10 @@ export const gotUploadedFiles: AsyncAction<string> = async (
     state.maxStorage = uploadedFilesInfo.maxSize;
     state.usedStorage = uploadedFilesInfo.currentSize;
   } catch (error) {
-    error.message = 'Unable to get uploaded files information';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'Unable to get uploaded files information',
+      error,
+    });
   }
 };
 
@@ -383,8 +394,10 @@ export const deletedUploadedFile: AsyncAction<{
     await effects.api.deleteUploadedFile(id);
   } catch (error) {
     state.uploadedFiles.splice(index, 0, ...removedFiles);
-    error.message = 'Unable to delete uploaded file';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'Unable to delete uploaded file',
+      error,
+    });
   }
 });
 
@@ -416,7 +429,10 @@ export const filesUploaded: AsyncAction<{
       if (error.message.indexOf('413') !== -1) {
         return;
       }
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Unable to upload files',
+        error,
+      });
     }
 
     actions.internal.closeModals(false);
@@ -479,8 +495,10 @@ export const massCreateModules: AsyncAction<{
         effects.vscode.callCallbackError(cbID, error.message);
       }
 
-      error.message = 'Unable to create new files';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Unable to create new files',
+        error,
+      });
     }
   }
 );
@@ -566,8 +584,10 @@ export const moduleCreated: AsyncAction<{
 
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
 
-      error.message = 'Unable to save new file';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Unable to save new file',
+        error,
+      });
     }
   }
 );
@@ -604,8 +624,7 @@ export const moduleDeleted: AsyncAction<{
     } catch (error) {
       sandbox.modules.push(removedModule);
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      error.message = 'Could not delete file';
-      actions.internal.handleError(error);
+      actions.internal.handleError({ message: 'Could not delete file', error });
     }
   }
 );
@@ -692,9 +711,12 @@ export const syncSandbox: AsyncAction<any[]> = async (
     if (error.response.status === 404) {
       return;
     }
-    error.message =
-      "We weren't able to retrieve the latest files of the sandbox, please refresh";
-    actions.internal.handleError(error);
+
+    actions.internal.handleError({
+      message:
+        "We weren't able to retrieve the latest files of the sandbox, please refresh",
+      error,
+    });
   }
 
   // No matter if error or not we resync the whole shabang!

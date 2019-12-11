@@ -1,9 +1,19 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { executorsManager } from 'app/utils/executor-manager';
 
+let _isInitialized = false;
+
 export default {
-  initializeExecutor(sandbox: Sandbox) {
-    return executorsManager.initializeExecutor(sandbox);
+  async initializeExecutor(sandbox: Sandbox) {
+    if (_isInitialized) {
+      await this.closeExecutor();
+    }
+
+    const result = await executorsManager.initializeExecutor(sandbox);
+
+    _isInitialized = true;
+
+    return result;
   },
   setupExecutor() {
     return executorsManager.setupExecutor();

@@ -15,8 +15,10 @@ export const getZeitUserDetails: AsyncAction = async ({
       const zeitDetails = await effects.zeit.getUser();
       state.user.integrations.zeit.email = zeitDetails.email;
     } catch (error) {
-      error.message = 'Could not authorize with ZEIT';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Could not authorize with ZEIT',
+        error,
+      });
     }
     state.isLoadingZeit = false;
   }

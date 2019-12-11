@@ -260,8 +260,10 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
           state.editor.changedModuleShortids.push(moduleShortid);
         }
       });
-      error.message = 'Sorry, was not able to save, please try again';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Sorry, was not able to save, please try again',
+        error,
+      });
     }
   }
 );
@@ -749,8 +751,8 @@ export const renameModule: AsyncAction<{
       }
     } catch (error) {
       module.title = oldTitle;
-      error.message = 'Could not rename file';
-      actions.internal.handleError(error);
+
+      actions.internal.handleError({ message: 'Could not rename file', error });
     }
   }
 );

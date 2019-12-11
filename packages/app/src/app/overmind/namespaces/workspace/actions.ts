@@ -30,8 +30,7 @@ export const tagAdded: AsyncAction = withOwnedSandbox(
     } catch (error) {
       const index = sandbox.tags.indexOf(tagName);
       sandbox.tags.splice(index, 1);
-      error.message = 'Unable to add tag';
-      actions.internal.handleError(error);
+      actions.internal.handleError({ message: 'Unable to add tag', error });
     }
   }
 );
@@ -63,8 +62,7 @@ export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
       });
     } catch (error) {
       sandbox.tags.splice(tagIndex, 0, tag);
-      error.message = 'Unable to remove tag';
-      actions.internal.handleError(error);
+      actions.internal.handleError({ message: 'Unable to remove tag', error });
     }
   }
 );
@@ -141,8 +139,10 @@ export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
       );
     } catch (error) {
       externalResources.splice(externalResources.indexOf(resource), 1);
-      effects.notificationToast.error('Could not save external resource');
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Could not save external resource',
+        error,
+      });
       actions.editor.internal.updatePreviewCode();
     }
   }
@@ -163,10 +163,11 @@ export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
       );
     } catch (error) {
       externalResources.splice(resourceIndex, 0, resource);
-      effects.notificationToast.error(
-        'Could not save removal of external resource'
-      );
-      actions.internal.handleError(error);
+
+      actions.internal.handleError({
+        message: 'Could not save removal of external resource',
+        error,
+      });
       actions.editor.internal.updatePreviewCode();
     }
   }
@@ -251,8 +252,10 @@ export const deleteTemplate: AsyncAction = async ({
     actions.modalClosed();
     effects.notificationToast.success('Template Deleted');
   } catch (error) {
-    error.message = 'Could not delete custom template';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'Could not delete custom template',
+      error,
+    });
   }
 };
 
@@ -274,8 +277,10 @@ export const editTemplate: AsyncAction<CustomTemplate> = async (
     state.editor.currentSandbox.customTemplate = updatedTemplate;
     effects.notificationToast.success('Template Edited');
   } catch (error) {
-    error.message = 'Could not edit custom template';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'Could not edit custom template',
+      error,
+    });
   }
 };
 
@@ -296,8 +301,10 @@ export const addedTemplate: AsyncAction<{
     actions.modalClosed();
     effects.notificationToast.success('Successfully created the template');
   } catch (error) {
-    error.message = 'Could not create template, please try again later';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'Could not create template, please try again later',
+      error,
+    });
     if (process.env.NODE_ENV === 'development') {
       console.error(error);
     }

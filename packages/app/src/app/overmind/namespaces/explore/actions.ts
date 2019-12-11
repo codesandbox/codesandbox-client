@@ -9,8 +9,10 @@ export const popularSandboxesMounted: AsyncAction<string> = withLoadApp(
         date
       );
     } catch (error) {
-      error.message = 'There has been a problem getting the sandboxes';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'There has been a problem getting the sandboxes',
+        error,
+      });
     }
   }
 );
@@ -37,8 +39,10 @@ export const pickSandbox: AsyncAction<{
     effects.notificationToast.success('Sandbox picked');
     state.currentModal = null;
   } catch (error) {
-    error.message = 'There has been a problem picking the sandbox';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'There has been a problem picking the sandbox',
+      error,
+    });
   }
 };
 
@@ -57,8 +61,10 @@ export const getSandbox: AsyncAction<string> = async (
   try {
     state.explore.selectedSandbox = await effects.api.getSandbox(id);
   } catch (error) {
-    error.message = 'There has been a problem getting the sandbox';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'There has been a problem getting the sandbox',
+      error,
+    });
   }
 };
 
@@ -77,8 +83,10 @@ export const pickedSandboxesMounted: AsyncAction = async ({
     );
     state.explore.pickedSandboxes = pickedSandboxes;
   } catch (error) {
-    error.message = 'There has been a problem getting the sandboxes';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'There has been a problem getting the sandboxes',
+      error,
+    });
   }
   state.explore.pickedSandboxesLoading = false;
 };

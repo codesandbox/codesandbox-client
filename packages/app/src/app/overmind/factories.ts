@@ -38,7 +38,10 @@ export const withLoadApp = <T>(
       actions.userNotifications.internal.initialize();
       effects.api.preloadTemplates();
     } catch (error) {
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Could not authorize user',
+        error,
+      });
     }
   } else {
     effects.jwt.reset();

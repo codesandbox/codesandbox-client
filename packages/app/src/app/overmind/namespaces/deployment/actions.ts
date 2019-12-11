@@ -41,9 +41,10 @@ export const deployWithNetlify: AsyncAction = async ({
     });
     effects.notificationToast.success('Sandbox Deployed');
   } catch (error) {
-    error.message =
-      'An unknown error occurred when deploying your Netlify site';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'An unknown error occurred when deploying your Netlify site',
+      error,
+    });
   }
   state.deployment.deploying = false;
   state.deployment.building = false;
@@ -77,8 +78,10 @@ export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
       zeitConfig.name
     );
   } catch (error) {
-    error.message = getZeitErrorMessage(error);
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: getZeitErrorMessage(error),
+      error,
+    });
   }
 
   state.deployment.gettingDeploys = false;
@@ -98,8 +101,10 @@ export const deployClicked: AsyncAction = async ({
       state.editor.currentSandbox
     );
   } catch (error) {
-    error.message = getZeitErrorMessage(error);
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: getZeitErrorMessage(error),
+      error,
+    });
   }
 
   state.deployment.deploying = false;
@@ -129,8 +134,10 @@ export const deploySandboxClicked: AsyncAction = async ({
 
       state.user.integrations.zeit.email = user.email;
     } catch (error) {
-      error.message = 'Could not authorize with ZEIT';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Could not authorize with ZEIT',
+        error,
+      });
     }
   }
 
@@ -159,8 +166,10 @@ export const deleteDeployment: AsyncAction = async ({
     effects.notificationToast.success('Deployment deleted');
     actions.deployment.getDeploys();
   } catch (error) {
-    error.message = 'An unknown error occurred when deleting your deployment';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'An unknown error occurred when deleting your deployment',
+      error,
+    });
   }
 
   state.deployment.deploysBeingDeleted.splice(
@@ -181,7 +190,9 @@ export const aliasDeployment: AsyncAction<string> = async (
     effects.notificationToast.success(`Deployed to ${url}`);
     actions.deployment.getDeploys();
   } catch (error) {
-    error.message = 'An unknown error occurred when aliasing your deployment';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'An unknown error occurred when aliasing your deployment',
+      error,
+    });
   }
 };

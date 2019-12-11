@@ -37,8 +37,10 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
     actions.refetchSandboxInfo();
   } catch (error) {
-    error.message = 'Could not authenticate with Github';
-    actions.internal.handleError(error);
+    actions.internal.handleError({
+      message: 'Could not authenticate with Github',
+      error,
+    });
   }
 };
 
@@ -205,8 +207,10 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
         ? resolvedModule.shortid
         : currentModuleShortid;
     } catch (error) {
-      error.message = `Could not find the module ${sandboxOptions.currentModule}`;
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: `Could not find module ${sandboxOptions.currentModule}`,
+        error,
+      });
     }
   }
 
@@ -330,8 +334,10 @@ export const ensurePackageJSON: AsyncAction = async ({
     } catch (error) {
       sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      error.message = 'Could not add package.json file';
-      actions.internal.handleError(error);
+      actions.internal.handleError({
+        message: 'Could not add package.json file',
+        error,
+      });
     }
   }
 };
@@ -352,18 +358,24 @@ export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
   state.editor.tabs.splice(tabIndex, 1);
 };
 
-export const handleError: Action<ApiError | Error> = (
-  { state, actions, effects },
-  error
-) => {
-  if (!('response' in error) || error.response.status >= 500) {
+export const handleError: Action<{
+  message: string;
+  error: ApiError | Error;
+}> = ({ actions, effects }, { message, error }) => {
+  const isGenericError = !('response' in error) || error.response.status >= 500;
+
+  if (isGenericError) {
     effects.analytics.logError(error);
-    effects.notificationToast.error(error.message);
+    effects.notificationToast.add({
+      title: message,
+      message: error.message,
+      status: NotificationStatus.ERROR,
+    });
 
     return;
   }
 
-  const { response } = error;
+  const { response } = error as ApiError;
 
   if (response.status === 401) {
     // Reset existing sign in info
@@ -389,6 +401,9 @@ export const handleError: Action<ApiError | Error> = (
     return;
   }
 
+  /*
+    Update error message with what is coming from the server
+  */
   const result = response.data;
 
   if (result) {
@@ -411,24 +426,20 @@ export const handleError: Action<ApiError | Error> = (
     }
   }
 
+  const notificationActions = {
+    primary: [],
+  };
+
   if (error.message.startsWith('You need to sign in to create more than')) {
     // Error for "You need to sign in to create more than 10 sandboxes"
     effects.analytics.track('Anonymous Sandbox Limit Reached', {
       errorMessage: error.message,
     });
 
-    effects.notificationToast.add({
-      message: error.message,
-      status: NotificationStatus.ERROR,
-      actions: {
-        primary: [
-          {
-            label: 'Sign in',
-            run: () => {
-              actions.internal.signIn({});
-            },
-          },
-        ],
+    notificationActions.primary.push({
+      label: 'Sign in',
+      run: () => {
+        actions.internal.signIn({});
       },
     });
   } else if (error.message.startsWith('You reached the maximum of')) {
@@ -436,18 +447,10 @@ export const handleError: Action<ApiError | Error> = (
       errorMessage: error.message,
     });
 
-    effects.notificationToast.add({
-      message: error.message,
-      status: NotificationStatus.ERROR,
-      actions: {
-        primary: [
-          {
-            label: 'Open Patron Page',
-            run: () => {
-              window.open(patronUrl(), '_blank');
-            },
-          },
-        ],
+    notificationActions.primary.push({
+      label: 'Open Patron Page',
+      run: () => {
+        window.open(patronUrl(), '_blank');
       },
     });
   } else if (
@@ -459,18 +462,10 @@ export const handleError: Action<ApiError | Error> = (
       errorMessage: error.message,
     });
 
-    effects.notificationToast.add({
-      message: error.message,
-      status: NotificationStatus.ERROR,
-      actions: {
-        primary: [
-          {
-            label: 'Open Patron Page',
-            run: () => {
-              window.open(patronUrl(), '_blank');
-            },
-          },
-        ],
+    notificationActions.primary.push({
+      label: 'Open Patron Page',
+      run: () => {
+        window.open(patronUrl(), '_blank');
       },
     });
   } else if (
@@ -481,6 +476,14 @@ export const handleError: Action<ApiError | Error> = (
     effects.analytics.track('Patron Server Sandbox Limit Reached', {
       errorMessage: error.message,
     });
-    effects.notificationToast.error(error.message);
   }
+
+  effects.notificationToast.add({
+    title: message,
+    message: error.message,
+    status: NotificationStatus.ERROR,
+    ...(notificationActions.primary.length
+      ? { actions: notificationActions }
+      : {}),
+  });
 };
