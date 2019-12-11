@@ -3,16 +3,11 @@ import { executorsManager } from 'app/utils/executor-manager';
 
 
 export default {
-  async initializeExecutor(sandbox: Sandbox) {
-    if (_isInitialized) {
-      await this.closeExecutor();
-    }
+  initializeExecutor(sandbox: Sandbox) {
 
-    const result = await executorsManager.initializeExecutor(sandbox);
+  return executorsManager.initializeExecutor(sandbox);
 
-    _isInitialized = true;
 
-    return result;
   },
   setupExecutor() {
     return executorsManager.setupExecutor();
