@@ -29,8 +29,6 @@ import dojoPreset from './presets/dojo';
 import customPreset from './presets/custom';
 
 export default function getPreset(template: string) {
-  return stencilPreset();
-
   switch (template) {
     case react.name:
       return reactPreset();
