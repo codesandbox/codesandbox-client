@@ -340,9 +340,9 @@ export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
 };
 
 export const handleError: Action<{
-  /**
-  * The message that will show as title of the notification
-  ** /
+  /*
+    The message that will show as title of the notification
+  */
   message: string;
   error: ApiError | Error;
 }> = ({ actions, effects }, { message, error }) => {
