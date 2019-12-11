@@ -99,6 +99,7 @@ export const UserInfo: React.FC<IUserInfoProps> = ({
   canEdit = true,
   toggleEditing,
   onEdit,
+  children,
 }) => {
   const initialValues = { bio, socialLinks };
   const form = useFormState({
@@ -139,7 +140,10 @@ export const UserInfo: React.FC<IUserInfoProps> = ({
               .bio.length || 0} / 280`}</InputCounter>
           </Bio>
         ) : (
-          <Bio>{bio}</Bio>
+          <>
+            <Bio>{bio}</Bio>
+            {children}
+          </>
         )}
       </AboutUser>
       {associations.length && (

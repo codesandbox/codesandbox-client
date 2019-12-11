@@ -27,7 +27,8 @@ export const AboutUser = styled.div`
   grid-template-areas:
     'avatar name'
     'avatar username'
-    'bio bio';
+    'bio bio'
+    'tabs tabs';
   grid-template-columns: min-content;
   padding: 1rem;
 
