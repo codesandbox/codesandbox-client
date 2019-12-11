@@ -3,7 +3,7 @@ import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';
 import stencilTranspiler from '../../transpilers/stencil';
 
-import Preset from '../';
+import Preset from '..';
 
 const babelOptions = {
   isV7: true,
