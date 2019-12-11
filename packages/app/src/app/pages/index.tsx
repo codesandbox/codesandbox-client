@@ -15,7 +15,7 @@ import Dashboard from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { NewSandbox } from './NewSandbox';
-import Sandbox from './Sandbox';
+import { Sandbox } from './Sandbox';
 
 const routeDebugger = _debug('cs:app:router');
 
