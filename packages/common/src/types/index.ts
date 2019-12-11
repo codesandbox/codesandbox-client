@@ -255,6 +255,7 @@ export type MiniSandbox = {
   description: string;
   git: GitInfo;
   author: User;
+  screenshotUrl: string;
 };
 
 export type GitCommit = {
