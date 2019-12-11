@@ -1,0 +1,9 @@
+export { CLIIcon } from './CLIIcon';
+export { CodeSandboxIcon } from './CodeSandboxIcon';
+export { GiftIcon } from './GiftIcon';
+export { GitHubIcon } from './GitHubIcon';
+export { PlusIcon } from './PlusIcon';
+export { InfoIcon } from './InfoIcon';
+export { StackbitIcon } from './StackbitIcon';
+export { StarIcon } from './StarIcon';
+export { UploadIcon } from './UploadIcon';

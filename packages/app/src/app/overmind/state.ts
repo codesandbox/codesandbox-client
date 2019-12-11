@@ -1,15 +1,16 @@
-import store from 'store/dist/store.modern';
-
 import {
   CurrentUser,
   Notification,
   Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
+import store from 'store/dist/store.modern';
+
 import { Derive } from '.';
 
 type State = {
   isPatron: Derive<State, boolean>;
+  isFirstVisit: boolean;
   isLoggedIn: Derive<State, boolean>;
   hasLogIn: Derive<State, boolean>;
   popularSandboxes: Sandbox[];
@@ -41,6 +42,7 @@ type State = {
 };
 
 export const state: State = {
+  isFirstVisit: false,
   isPatron: ({ user }) =>
     Boolean(user && user.subscription && user.subscription.since),
   isLoggedIn: ({ jwt, user }) => Boolean(jwt) && Boolean(user),

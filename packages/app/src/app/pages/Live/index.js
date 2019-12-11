@@ -1,18 +1,19 @@
-import * as React from 'react';
-import { Link } from 'react-router-dom';
-import Helmet from 'react-helmet';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import Padding from '@codesandbox/common/lib/components/spacing/Padding';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { inject, observer } from 'app/componentConnectors';
-import { Title } from 'app/components/Title';
-import { SubTitle } from 'app/components/SubTitle';
 import { Skeleton } from 'app/components/Skeleton';
+import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
 import { Navigation } from 'app/pages/common/Navigation';
 import { SignInButton } from 'app/pages/common/SignInButton';
 import { QuickActions } from 'app/pages/Sandbox/QuickActions';
 import { hasAuthToken } from 'app/utils/user';
+import * as React from 'react';
+import Helmet from 'react-helmet';
+import { Link } from 'react-router-dom';
+
 import Editor from '../Sandbox/Editor';
 import { BlinkingDot } from './BlinkingDot';
 
@@ -115,7 +116,7 @@ class LivePage extends React.Component {
       );
     }
 
-    if (store.live.isLoading || !store.editor.currentSandbox) {
+    if (!store.editor.currentSandbox) {
       return (
         <>
           <Skeleton

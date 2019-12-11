@@ -54,9 +54,7 @@ export const SortOptions: React.FC<{ hideOrder: boolean }> = ({
           <Container hideOrder={hideOrder}>
             <span aria-hidden>Sort by </span>
             <OrderName
-              aria-label={`Select short sandboxes by, current ${
-                FIELD_TO_NAME[field]
-              } `}
+              aria-label={`Select short sandboxes by, current ${FIELD_TO_NAME[field]} `}
               {...buttonProps}
             >
               {FIELD_TO_NAME[field]}{' '}

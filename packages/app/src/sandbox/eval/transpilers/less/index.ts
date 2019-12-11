@@ -1,5 +1,7 @@
+/* eslint-disable import/default */
 // @ts-ignore
 import LessWorker from 'worker-loader?publicPath=/&name=less-transpiler.[hash:8].worker.js!./less-worker';
+/* eslint-enable import/default */
 
 import WorkerTranspiler from '../worker-transpiler';
 import { LoaderContext } from '../../transpiled-module';

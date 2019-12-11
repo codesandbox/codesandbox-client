@@ -1,14 +1,12 @@
-import styled, { css } from 'styled-components';
-import { Link } from 'react-router-dom';
-import { SignInButton as BaseSignInButton } from 'app/pages/common/SignInButton';
 // @ts-ignore
+import { SignInButton as BaseSignInButton } from 'app/pages/common/SignInButton';
+import { Link } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
 export const Container = styled.div<{ zenMode: boolean }>`
   ${({ theme, zenMode }) => css`
     display: ${zenMode ? 'none' : 'flex'};
-    position: fixed;
-    z-index: 5;
     justify-content: space-between;
     align-items: center;
     background-color: ${theme['titleBar.activeBackground'] ||
@@ -32,14 +30,14 @@ export const Container = styled.div<{ zenMode: boolean }>`
 export const Left = styled.div`
   display: flex;
   height: 100%;
-  z-index: 1;
+  z-index: 999999999999;
 `;
 
 export const Right = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
-  z-index: 1;
+  z-index: 99999999999999;
 `;
 
 export const Centered = styled.div`
@@ -89,6 +87,8 @@ export const AccountContainer = styled.div`
 `;
 
 export const UserMenuContainer = styled.div`
+  display: absolute;
+  z-index: 999999999999;
   margin: 5px 0;
   margin-right: 0;
   font-size: 0.8rem;

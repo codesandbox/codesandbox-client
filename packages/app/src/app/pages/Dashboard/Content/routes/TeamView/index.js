@@ -24,8 +24,8 @@ import {
   SET_TEAM_DESCRIPTION,
 } from '../../../queries';
 
-import AddTeamMember from './AddTeamMember';
-import RemoveTeamMember from './RemoveTeamMember';
+import { AddTeamMember } from './AddTeamMember';
+import { RemoveTeamMember } from './RemoveTeamMember';
 
 const User = ({ user, rightElement }) => (
   <div

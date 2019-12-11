@@ -1,40 +1,44 @@
-import { debounce } from 'lodash-es';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useInView } from 'react-hook-inview';
+import { motion } from 'framer-motion';
 
-import getScrollPos from '../utils/scroll';
-
-const LoadInView = ({ children, style, ...props }) => {
-  const [show, setShow] = useState(false);
-  const el = useRef(null);
-  const elPos = useRef(null);
+const LoadInView = ({ children }) => {
+  const [ref, inView] = useInView({ unobserveOnEnter: true });
+  const [animations, setAnimations] = useState(true);
 
   useEffect(() => {
-    elPos.current = el.current.getBoundingClientRect().top;
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    if (mediaQuery.matches) setAnimations(false);
   }, []);
 
-  const listenFn = useCallback(() => {
-    if (!show && elPos.current && getScrollPos().y + 600 > elPos.current) {
-      requestAnimationFrame(() => {
-        setShow(true);
-      });
-    }
-  }, [show]);
-
-  useEffect(() => {
-    const listen = debounce(listenFn, 50);
-
-    window.addEventListener('scroll', listen);
-
-    return () => window.removeEventListener('scroll', listen);
-  }, [listenFn]);
+  if (!animations) return children;
 
   return (
-    <div
-      ref={el}
-      style={{ display: 'inline-block', width: '100%', ...style }}
-      {...props}
-    >
-      {show && children}
+    <div ref={ref}>
+      {inView ? (
+        <motion.section
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.4,
+            ease: 'easeInOut',
+          }}
+          css={`
+            margin-bottom: 8rem;
+          `}
+        >
+          {children}
+        </motion.section>
+      ) : (
+        <div
+          css={`
+            visibility: hidden;
+          `}
+        >
+          {children}
+        </div>
+      )}
     </div>
   );
 };

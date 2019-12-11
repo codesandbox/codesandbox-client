@@ -1,46 +1,46 @@
-import React, { useEffect } from 'react';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { inject, hooksObserver } from 'app/componentConnectors';
-import { Title } from 'app/components/Title';
+import React, { FunctionComponent, useEffect } from 'react';
+
 import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
+import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
-import { Container, Content, Code } from './elements';
 
-const CLIInstructions = inject('signals')(
-  hooksObserver(({ signals: { cliInstructionsMounted } }) => {
-    useEffect(() => {
-      cliInstructionsMounted();
-    }, [cliInstructionsMounted]);
+import { Code, Container, Content } from './elements';
 
-    return (
-      <MaxWidth>
-        <Margin vertical={1.5} horizontal={1.5}>
-          <Container>
-            <Navigation title="CLI Import" />
+export const CLIInstructions: FunctionComponent = () => {
+  const {
+    actions: { cliInstructionsMounted },
+  } = useOvermind();
 
-            <Content vertical>
-              <Title>Import from CLI</Title>
+  useEffect(() => {
+    cliInstructionsMounted();
+  }, [cliInstructionsMounted]);
 
-              <SubTitle>
-                1. Install the CLI <Code>npm i -g codesandbox</Code>
-              </SubTitle>
+  return (
+    <MaxWidth>
+      <Margin horizontal={1.5} vertical={1.5}>
+        <Container>
+          <Navigation title="CLI Import" />
 
-              <SubTitle>
-                2. Go to your project <Code>cd path-of-your-project</Code>
-              </SubTitle>
+          <Content vertical>
+            <Title>Import from CLI</Title>
 
-              <SubTitle>
-                3. Deploy your project to CodeSandbox{' '}
-                <Code>codesandbox ./</Code>
-              </SubTitle>
-            </Content>
-          </Container>
-        </Margin>
-      </MaxWidth>
-    );
-  })
-);
+            <SubTitle>
+              1. Install the CLI <Code>npm i -g codesandbox</Code>
+            </SubTitle>
 
-// eslint-disable-next-line import/no-default-export
-export default CLIInstructions;
+            <SubTitle>
+              2. Go to your project <Code>cd path-of-your-project</Code>
+            </SubTitle>
+
+            <SubTitle>
+              3. Deploy your project to CodeSandbox <Code>codesandbox ./</Code>
+            </SubTitle>
+          </Content>
+        </Container>
+      </Margin>
+    </MaxWidth>
+  );
+};

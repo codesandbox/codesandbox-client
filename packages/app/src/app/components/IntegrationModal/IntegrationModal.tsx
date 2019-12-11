@@ -13,7 +13,7 @@ import {
 
 interface IIntegrationModalProps {
   title: string;
-  subtitle: string;
+  subtitle: string | React.ReactNode;
   signedIn: boolean;
   Integration: React.ComponentType;
   name: string;

@@ -1,16 +1,16 @@
 import React from 'react';
 import {
   Container,
-  DeployAnimationContainer,
-  GitHubLogo,
   Cube,
-  OpaqueLogo,
+  DeployAnimationContainer,
   DeployText,
+  GitHubLogo,
+  OpaqueLogo,
   Result,
 } from './elements';
 
 interface IGitProgressProps {
-  result: string;
+  result: string | null;
   message: string;
 }
 

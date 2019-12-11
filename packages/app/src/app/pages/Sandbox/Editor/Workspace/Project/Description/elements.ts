@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
 
+import { WorkspaceInputContainer as WorkspaceInputContainerBase } from '../../elements';
+
 export const SandboxDescription = styled.div<{ empty: boolean }>`
   ${({ empty, theme }) => css`
     margin-top: 0.5rem;
@@ -9,4 +11,8 @@ export const SandboxDescription = styled.div<{ empty: boolean }>`
     font-size: 0.875rem;
     font-style: ${empty ? 'normal' : 'italic'};
   `}
+`;
+
+export const WorkspaceInputContainer = styled(WorkspaceInputContainerBase)`
+  margin: 0 -0.25rem;
 `;

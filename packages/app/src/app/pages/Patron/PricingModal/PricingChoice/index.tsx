@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { format } from 'date-fns';
 import { PatronBadge } from '@codesandbox/common/lib/types';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
@@ -20,27 +20,22 @@ import {
   StyledSignInButton,
 } from './elements';
 
-interface IPricingChoiceProps {
+type Props = {
   badge: PatronBadge;
-}
-
-export const PricingChoice: React.FC<IPricingChoiceProps> = ({ badge }) => {
+};
+export const PricingChoice: FunctionComponent<Props> = ({ badge }) => {
   const {
-    state: { isLoggedIn, isPatron, user, patron },
     actions: {
-      patron: {
-        priceChanged,
-        createSubscriptionClicked,
-        updateSubscriptionClicked,
-        cancelSubscriptionClicked,
-      },
+      patron: { priceChanged, createSubscriptionClicked },
     },
+    state: { isLoggedIn, isPatron, user, patron },
   } = useOvermind();
 
   return (
     <Container>
       <Centered horizontal vertical={false}>
         <Title>Pay what you want</Title>
+
         {isPatron && (
           <ThankYou
             price={user.subscription.amount}
@@ -48,6 +43,7 @@ export const PricingChoice: React.FC<IPricingChoiceProps> = ({ badge }) => {
             markedAsCancelled={user.subscription.cancelAtPeriodEnd}
           />
         )}
+
         <Relative>
           <Currency>$</Currency>
           <PriceInput
@@ -58,6 +54,7 @@ export const PricingChoice: React.FC<IPricingChoiceProps> = ({ badge }) => {
           />
           <Month>/month</Month>
         </Relative>
+
         <RangeContainer>
           <Range
             onChange={value => priceChanged({ price: Number(value) })}
@@ -68,14 +65,10 @@ export const PricingChoice: React.FC<IPricingChoiceProps> = ({ badge }) => {
             color={badges[badge].colors[0]}
           />
         </RangeContainer>
+
         {isLoggedIn ? ( // eslint-disable-line no-nested-ternary
           isPatron ? (
-            <ChangeSubscription
-              updateSubscription={props => updateSubscriptionClicked(props)}
-              cancelSubscription={() => cancelSubscriptionClicked()}
-              date={user.subscription.since}
-              markedAsCancelled={user.subscription.cancelAtPeriodEnd}
-            />
+            <ChangeSubscription />
           ) : (
             <Centered style={{ marginTop: '2rem' }} horizontal>
               <SubscribeForm
@@ -90,7 +83,7 @@ export const PricingChoice: React.FC<IPricingChoiceProps> = ({ badge }) => {
               <Notice>
                 You will be billed now and on the{' '}
                 <strong style={{ color: 'white' }}>
-                  {format(new Date(), 'Do')}
+                  {format(new Date(), 'do')}
                 </strong>{' '}
                 of each month thereafter. You can cancel or change your
                 subscription at any time.

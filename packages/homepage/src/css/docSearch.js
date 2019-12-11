@@ -62,16 +62,14 @@ export default createGlobalStyle`
 
       .algolia-docsearch-suggestion--title,
       .algolia-docsearch-suggestion--category-header {
-        font-family: 'Poppins', sans-serif;
         font-weight: 600;
-        font-size: 14px;
+        font-size: 0.875rem;
       }
 
       .ds-dropdown-menu {
         width: 500px;
-        font-family: 'Open Sans', Segoe UI, sans-serif;
-        font-size: 14px;
-        margin-top: 13px;
+        font-size: 0.875rem;
+        margin-top: 0.8125rem;
 
         color: ${props => props.theme.lightText};
       }
@@ -88,14 +86,14 @@ export default createGlobalStyle`
         font-size: 18px;
         border: none;
         border-left: 8px solid #0d7bc9;
-        padding-left: 16px;
+        padding-left: 1rem;
         margin-bottom: 8px;
       }
 
       .algolia-docsearch-suggestion--subcategory-column,
       .algolia-docsearch-suggestion--title,
       .algolia-docsearch-suggestion--text {
-        font-size: 14px;
+        font-size: 0.875rem;
         color: ${props => props.theme.lightText};
         max-width: 90%;
       }

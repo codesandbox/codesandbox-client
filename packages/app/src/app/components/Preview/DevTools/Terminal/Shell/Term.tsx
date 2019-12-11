@@ -10,6 +10,7 @@ import { TerminalWithFit } from '../types';
 
 type Props = {
   theme: VSTheme;
+  owned: boolean;
   hidden: boolean;
   onTerminalInitialized: (term: TerminalWithFit) => void;
 };

@@ -87,7 +87,7 @@ class SandboxesItemComponent extends React.Component {
                 );
               }
 
-              if (error) {
+              if (error || !data.me) {
                 return <div>Error!</div>;
               }
               const { children, folders, foldersByPath } = getChildCollections(

@@ -1,27 +1,29 @@
-import React, { Component } from 'react';
-import { sortBy, isEmpty } from 'lodash-es';
-import filesize from 'filesize';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import DeleteFileButton from '../DeleteFileButton';
+import filesize from 'filesize';
+import { sortBy } from 'lodash-es';
+import React, { Component } from 'react';
+
 import AddFileToSandboxButton from '../AddFileToSandboxButton';
+import DeleteFileButton from '../DeleteFileButton';
 import {
-  HeaderTitle,
-  Table,
-  StatBody,
   Body,
-  FileRow,
-  CheckBox,
   Buttons,
+  CheckBox,
+  FileRow,
+  HeaderTitle,
+  StatBody,
+  Table,
 } from './elements';
 
-const someSelected = obj =>
-  Object.keys(obj).filter(key => obj[key] === true) && !isEmpty(obj);
+const getSelectedFiles = obj =>
+  Object.keys(obj).filter(key => obj[key] === true);
 
 class FilesList extends Component {
   state = {};
 
   toggleCheckbox = (e, id) => {
     this.setState(state => ({
+      ...state,
       [id]: !state[id],
     }));
   };
@@ -42,21 +44,27 @@ class FilesList extends Component {
       deleteFiles,
       addFilesToSandbox,
     } = this.props;
+    const canAddFile = Boolean(addFileToSandbox);
+    const filesToRemove = getSelectedFiles(this.state);
+
     return (
       <div css={{ margin: '0 2rem' }}>
-        {someSelected(this.state) ? (
-          <Buttons>
-            <Button small onClick={() => deleteFiles(Object.keys(this.state))}>
-              Delete all selected
-            </Button>
-            <Button
-              small
-              onClick={() => addFilesToSandbox(this.getSelection())}
-            >
-              Add all selected to project
-            </Button>
-          </Buttons>
-        ) : null}
+        <Buttons>
+          <Button
+            disabled={!filesToRemove.length || !canAddFile}
+            small
+            onClick={() => addFilesToSandbox(this.getSelection())}
+          >
+            Add all selected to project
+          </Button>
+          <Button
+            disabled={!filesToRemove.length}
+            small
+            onClick={() => deleteFiles(filesToRemove)}
+          >
+            Delete all selected
+          </Button>
+        </Buttons>
         <Table>
           <thead>
             <tr
@@ -108,6 +116,7 @@ class FilesList extends Component {
                   `}
                 >
                   <AddFileToSandboxButton
+                    disabled={!canAddFile}
                     url={f.url}
                     name={f.name}
                     onAddFileToSandbox={addFileToSandbox}

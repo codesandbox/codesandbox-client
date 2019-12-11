@@ -17,7 +17,10 @@ export const Observer = isOvermind
   ? connect(({ store, signals, reaction, children }: any) =>
       children({ store, signals, reaction })
     )
-  : inject('store', 'signals')(
+  : inject(
+      'store',
+      'signals'
+    )(
       observer(({ store, signals, reaction, children }: any) =>
         children({ store, signals, reaction })
       )

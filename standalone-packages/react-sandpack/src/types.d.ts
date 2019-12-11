@@ -58,6 +58,7 @@ export interface ISandpackContext {
   managerStatus: ManagerStatus;
   managerState: IManagerState | undefined;
   bundlerURL: string | undefined;
+  browserPath: string;
   openedPath: string;
   errors: Array<IModuleError>;
   files: IFiles;

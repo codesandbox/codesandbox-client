@@ -1,13 +1,12 @@
 /* eslint-disable camelcase */
-import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
-import { logError } from '@codesandbox/common/lib/utils/analytics';
-import { values } from 'lodash-es';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { camelizeKeys, decamelizeKeys } from 'humps';
-import { Module } from '@codesandbox/common/lib/types';
 
 export const API_ROOT = '/api/v1';
 
-type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> };
+export type ApiError = AxiosError<
+  { errors: string[] } | { error: string } | any
+>;
 
 export type Params = {
   [key: string]: string;
@@ -28,39 +27,16 @@ export type Api = {
 
 export type ApiConfig = {
   provideJwtToken: () => string;
-  getModulesByPath: () => {
-    [path: string]: Module;
-  };
   getParsedConfigurations: () => any;
-  onError: (error: string) => void;
 };
 
-export default (config: {
-  provideJwtToken: () => string;
-  onError: (error: string) => void;
-}) => {
+export default (config: ApiConfig) => {
   const createHeaders = (jwt: string) =>
     jwt
       ? {
           Authorization: `Bearer ${jwt}`,
         }
       : {};
-
-  const showError = error => {
-    config.onError(error.message);
-    error.apiMessage = error.message; // eslint-disable-line no-param-reassign
-  };
-
-  const handleError = error => {
-    const newError = convertError(error);
-    try {
-      showError(newError);
-    } catch (e) {
-      console.error(e);
-    }
-
-    throw newError;
-  };
 
   const api: Api = {
     get(path, params, options) {
@@ -69,32 +45,28 @@ export default (config: {
           params,
           headers: createHeaders(config.provideJwtToken()),
         })
-        .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .then(response => handleResponse(response, options));
     },
     post(path, body, options) {
       return axios
         .post(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken()),
         })
-        .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .then(response => handleResponse(response, options));
     },
     patch(path, body, options) {
       return axios
         .patch(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken()),
         })
-        .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .then(response => handleResponse(response, options));
     },
     put(path, body, options) {
       return axios
         .put(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken()),
         })
-        .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .then(response => handleResponse(response, options));
     },
     delete(path, params, options) {
       return axios
@@ -102,8 +74,7 @@ export default (config: {
           params,
           headers: createHeaders(config.provideJwtToken()),
         })
-        .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .then(response => handleResponse(response, options));
     },
     request(requestConfig, options) {
       return axios
@@ -114,49 +85,12 @@ export default (config: {
             headers: createHeaders(config.provideJwtToken()),
           })
         )
-        .then(response => handleResponse(response, options))
-        .catch(e => handleError(e));
+        .then(response => handleResponse(response, options));
     },
   };
 
   return api;
 };
-
-function convertError(error: AxiosError) {
-  const { response } = error;
-
-  if (!response || response.status >= 500) {
-    logError(error);
-  }
-
-  if (response && response.data) {
-    if (response.data.errors) {
-      const errors = values(response.data.errors)[0];
-      if (Array.isArray(errors)) {
-        if (errors[0]) {
-          error.message = errors[0]; // eslint-disable-line no-param-reassign,prefer-destructuring
-        }
-      } else {
-        error.message = errors; // eslint-disable-line no-param-reassign
-      }
-    } else if (response.data.error) {
-      const { error_code, message, ...data } = response.data.error as {
-        message: string;
-        error_code: string;
-        [k: string]: any;
-      };
-      // @ts-ignore
-      error.error_code = error_code; // eslint-disable-line no-param-reassign
-      error.message = message; // eslint-disable-line no-param-reassign
-      // @ts-ignore
-      error.data = data; // eslint-disable-line no-param-reassign
-    } else if (response.status === 413) {
-      return 'File too large, upload limit is 5MB.';
-    }
-  }
-
-  return error;
-}
 
 export function handleResponse(
   response: AxiosResponse,

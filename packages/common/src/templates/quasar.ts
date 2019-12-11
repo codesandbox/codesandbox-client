@@ -1,5 +1,5 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 export default new Template(
   'quasar-framework',
@@ -8,9 +8,8 @@ export default new Template(
   'github/quasarframework/quasar-codesandbox',
   decorateSelector(() => '#43A4F2'),
   {
-    isServer: true,
     mainFile: ['/src/pages/Index.vue'],
     showOnHomePage: true,
-    netlify: false
+    netlify: false,
   }
 );

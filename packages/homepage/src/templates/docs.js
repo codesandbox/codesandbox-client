@@ -30,7 +30,7 @@ const Docs = ({
   },
 }) => (
   <Layout>
-    <Container style={{ overflowX: 'auto' }}>
+    <Container>
       <TitleAndMetaTags
         description={description}
         title={`${title} - CodeSandbox Documentation`}

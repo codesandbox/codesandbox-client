@@ -4,6 +4,7 @@ export const Container = styled.div`
   display: flex;
   flex: auto;
   margin-right: 1rem;
+  overflow-x: auto;
 `;
 
 export const Tabs = styled.div`

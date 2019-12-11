@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components';
 import ArrowDown from 'react-icons/lib/md/arrow-downward';
+import styled, { css } from 'styled-components';
 
 export const OptionContainer = styled.a<{ selected: boolean }>`
   transition: 0.3s ease color;

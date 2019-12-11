@@ -1,12 +1,12 @@
 import { inject, observer } from 'app/componentConnectors';
-import { Alert } from 'app/components/Alert';
-import Modal from 'app/components/Modal';
 import { reaction } from 'mobx';
 import React from 'react';
 import { DropTarget } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
+import { getChildren } from '@codesandbox/common/lib/sandbox/modules';
 
 import DirectoryChildren from './DirectoryChildren';
+import DirectoryEntryModal from './DirectoryEntryModal';
 import { EntryContainer, Opener, Overlay } from './elements';
 import Entry from './Entry';
 import validateTitle from './validateTitle';
@@ -45,10 +45,8 @@ class DirectoryEntry extends React.PureComponent {
     this.state = {
       creating: '',
       open: props.root || store.editor.shouldDirectoryBeOpen(id),
-      showDeleteDirectoryModal: false,
-      showDeleteModuleModal: false,
-      moduleToDeleteTitle: null,
-      moduleToDeleteShortid: null,
+      modalConfig: {},
+      isModalOpen: false,
     };
   }
 
@@ -103,11 +101,33 @@ class DirectoryEntry extends React.PureComponent {
     this.props.signals.files.moduleRenamed({ moduleShortid, title });
   };
 
-  deleteModule = (shortid, title) => {
+  confirmDeleteModule = (shortid, moduleName) => {
     this.setState({
-      showDeleteModuleModal: true,
-      moduleToDeleteShortid: shortid,
-      moduleToDeleteTitle: title,
+      isModalOpen: true,
+      modalConfig: {
+        title: 'Delete File',
+        body: (
+          <span>
+            Are you sure you want to delete{' '}
+            <b
+              css={`
+                word-break: break-all;
+              `}
+            >
+              {moduleName}
+            </b>
+            ?
+            <br />
+            The file will be permanently removed.
+          </span>
+        ),
+        onConfirm: () => {
+          this.closeModal();
+          this.props.signals.files.moduleDeleted({
+            moduleShortid: shortid,
+          });
+        },
+      },
     });
   };
 
@@ -148,16 +168,31 @@ class DirectoryEntry extends React.PureComponent {
     this.props.signals.files.directoryRenamed({ title, directoryShortid });
   };
 
-  closeModals = () => {
+  closeModal = () => {
     this.setState({
-      showDeleteDirectoryModal: false,
-      showDeleteModuleModal: false,
+      isModalOpen: false,
     });
   };
 
-  deleteDirectory = () => {
+  confirmDeleteDirectory = (shortid, directoryName) => {
     this.setState({
-      showDeleteDirectoryModal: true,
+      isModalOpen: true,
+      modalConfig: {
+        title: 'Delete Directory',
+        body: (
+          <span>
+            Are you sure you want to delete <b>{directoryName}</b>?
+            <br />
+            The directory will be permanently removed.
+          </span>
+        ),
+        onConfirm: () => {
+          this.closeModal();
+          this.props.signals.files.directoryDeleted({
+            directoryShortid: shortid,
+          });
+        },
+      },
     });
   };
 
@@ -167,30 +202,27 @@ class DirectoryEntry extends React.PureComponent {
 
   setOpen = open => this.setState({ open });
 
-  validateModuleTitle = (_, title) => {
-    const { store, id } = this.props;
-    const { directories, modules } = store.editor.currentSandbox;
-    return validateTitle(id, title, [...directories, ...modules]);
-  };
+  validateModuleTitle = (id, title) =>
+    validateTitle(id, title, this.getChildren());
 
   validateDirectoryTitle = (id, title) => {
-    const { root, siblings } = this.props;
+    const { root } = this.props;
     if (root) return false;
 
-    return validateTitle(id, title, siblings);
+    return validateTitle(id, title, this.getChildren());
   };
 
   getChildren = () => {
-    const { shortid } = this.props;
+    const {
+      shortid,
+      store: {
+        editor: {
+          currentSandbox: { modules, directories },
+        },
+      },
+    } = this.props;
 
-    return [
-      ...this.props.store.editor.currentSandbox.modules.filter(
-        m => m.directoryShortid === shortid
-      ),
-      ...this.props.store.editor.currentSandbox.directories.filter(
-        d => d.directoryShortid === shortid
-      ),
-    ];
+    return getChildren(modules, directories, shortid);
   };
 
   setCurrentModule = moduleId => {
@@ -201,10 +233,24 @@ class DirectoryEntry extends React.PureComponent {
     this.props.signals.editor.moduleDoubleClicked();
   };
 
-  discardChanges = moduleShortid => {
-    this.props.signals.editor.discardModuleChanges({ moduleShortid });
-
-    return true;
+  confirmDiscardChanges = (shortid, moduleName) => {
+    this.setState({
+      isModalOpen: true,
+      modalConfig: {
+        title: 'Discard Changes',
+        body: (
+          <span>
+            Are you sure you want to discard changes on <b>{moduleName}</b>?
+          </span>
+        ),
+        onConfirm: () => {
+          this.closeModal();
+          this.props.signals.editor.discardModuleChanges({
+            moduleShortid: shortid,
+          });
+        },
+      },
+    });
   };
 
   render() {
@@ -218,7 +264,7 @@ class DirectoryEntry extends React.PureComponent {
       store,
       getModulePath,
     } = this.props;
-    const { creating, open } = this.state;
+    const { creating, isModalOpen, modalConfig, open } = this.state;
     const { currentSandbox } = store.editor;
 
     const title = root
@@ -240,7 +286,7 @@ class DirectoryEntry extends React.PureComponent {
               isOpen={open}
               onClick={this.toggleOpen}
               renameValidator={this.validateDirectoryTitle}
-              discardModuleChanges={this.discardChanges}
+              discardModuleChanges={this.confirmDiscardChanges}
               rename={!root && this.renameDirectory}
               onCreateModuleClick={this.onCreateModuleClick}
               onCreateDirectoryClick={this.onCreateDirectoryClick}
@@ -249,38 +295,11 @@ class DirectoryEntry extends React.PureComponent {
                 currentSandbox.privacy === 0 &&
                 this.onUploadFileClick
               }
-              deleteEntry={!root && this.deleteDirectory}
+              deleteEntry={!root && this.confirmDeleteDirectory}
               hasChildren={this.getChildren().length > 0}
               closeTree={this.closeTree}
               getModulePath={getModulePath}
             />
-            {this.state.showDeleteDirectoryModal && (
-              <Modal
-                isOpen={this.state.showDeleteDirectoryModal}
-                onClose={this.closeModals}
-                width={400}
-              >
-                <Alert
-                  title="Delete Directory"
-                  body={
-                    <span>
-                      Are you sure you want to delete <b>{title}</b>?
-                      <br />
-                      The directory will be permanently removed.
-                    </span>
-                  }
-                  onCancel={this.closeModals}
-                  onConfirm={() => {
-                    this.setState({
-                      showDeleteDirectoryModal: false,
-                    });
-                    this.props.signals.files.directoryDeleted({
-                      directoryShortid: shortid,
-                    });
-                  }}
-                />
-              </Modal>
-            )}
           </EntryContainer>
         )}
         <Opener open={open}>
@@ -300,55 +319,18 @@ class DirectoryEntry extends React.PureComponent {
             depth={depth}
             renameModule={this.renameModule}
             parentShortid={shortid}
-            deleteEntry={this.deleteModule}
+            renameValidator={this.validateModuleTitle}
+            deleteEntry={this.confirmDeleteModule}
             setCurrentModule={this.setCurrentModule}
             markTabsNotDirty={this.markTabsNotDirty}
-            discardModuleChanges={this.discardChanges}
+            discardModuleChanges={this.confirmDiscardChanges}
             getModulePath={getModulePath}
           />
-          {this.state.showDeleteModuleModal && (
-            <Modal
-              isOpen={this.state.showDeleteModuleModal}
-              onClose={this.closeModals}
-              width={400}
-            >
-              <Alert
-                css={`
-                  background-color: ${props =>
-                    props.theme['sideBar.background'] || 'auto'};
-                  color: ${props =>
-                    props.theme.light
-                      ? 'rgba(0,0,0,0.9)'
-                      : 'rgba(255,255,255,0.9)'};
-                `}
-                title="Delete File"
-                body={
-                  <span>
-                    Are you sure you want to delete{' '}
-                    <b
-                      css={`
-                        word-break: break-all;
-                      `}
-                    >
-                      {this.state.moduleToDeleteTitle}
-                    </b>
-                    ?
-                    <br />
-                    The file will be permanently removed.
-                  </span>
-                }
-                onCancel={this.closeModals}
-                onConfirm={() => {
-                  this.setState({
-                    showDeleteModuleModal: false,
-                  });
-                  this.props.signals.files.moduleDeleted({
-                    moduleShortid: this.state.moduleToDeleteShortid,
-                  });
-                }}
-              />
-            </Modal>
-          )}
+          <DirectoryEntryModal
+            isOpen={isModalOpen}
+            onClose={this.closeModal}
+            {...modalConfig}
+          />
           {creating === 'module' && (
             <Entry
               id=""
@@ -418,8 +400,13 @@ function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export default inject('signals', 'store')(
-  DropTarget(['ENTRY', NativeTypes.FILE], entryTarget, collectTarget)(
-    observer(DirectoryEntry)
-  )
+export default inject(
+  'signals',
+  'store'
+)(
+  DropTarget(
+    ['ENTRY', NativeTypes.FILE],
+    entryTarget,
+    collectTarget
+  )(observer(DirectoryEntry))
 );

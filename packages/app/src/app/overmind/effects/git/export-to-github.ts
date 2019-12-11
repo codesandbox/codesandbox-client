@@ -9,7 +9,8 @@ export default async function deploy(sandbox: Sandbox) {
     sandbox,
     sandbox.modules,
     sandbox.directories,
-    false
+    false,
+    true
   );
 
   if (!zipFile) {

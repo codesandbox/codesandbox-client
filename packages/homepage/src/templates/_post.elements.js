@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 export const PostContainer = styled.div`
   ${({ theme }) => css`
     margin: auto;
-    color: white;
+    color: ${props => props.theme.homepage.white};
     overflow: hidden;
     line-height: 1.7;
 
@@ -18,14 +18,8 @@ export const PostContainer = styled.div`
     h4,
     h5,
     h6 {
-      color: white;
+      color: ${props => props.theme.homepage.white};
       font-weight: 800;
-    }
-
-    h1,
-    h2,
-    h3 {
-      font-family: 'Poppins', sans-serif;
     }
 
     h2 {
@@ -58,7 +52,6 @@ export const PostContainer = styled.div`
 
     p,
     li {
-      font-family: 'Open Sans', sans-serif;
       color: rgba(255, 255, 255, 0.8);
     }
 
@@ -91,5 +84,5 @@ export const MetaData = styled.aside`
 export const AuthorContainer = styled.div`
   align-items: center;
   display: flex;
-  flex: 1;
+  margin-bottom: 0.5rem;
 `;

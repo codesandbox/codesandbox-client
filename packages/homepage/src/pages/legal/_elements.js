@@ -44,7 +44,7 @@ export const NavigationLink = styled(Link)`
 
   &.active,
   &:hover {
-    color: white;
+    color: ${props => props.theme.homepage.white};
 
     &:after {
       width: 110%;

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
@@ -11,7 +11,23 @@ import { PricingModal } from './PricingModal';
 import { Content } from './elements';
 
 const Patron: React.FC = () => {
-  const { actions } = useOvermind();
+  const {
+    state: { hasLoadedApp, hasLogIn, user },
+    actions,
+  } = useOvermind();
+
+  if (!hasLogIn) {
+    location.href = '/pro';
+  }
+  // don't send them away before authentication
+  if (hasLoadedApp && user) {
+    if (
+      !user.subscription || // if no subscription, get pro
+      user.subscription.plan !== 'patron' // if subscription but not patron, go to pro
+    ) {
+      location.href = '/pro';
+    }
+  }
 
   useEffect(() => {
     actions.patron.patronMounted();
