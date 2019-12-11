@@ -3,8 +3,8 @@ import { LightIcons } from '@codesandbox/template-icons';
 import GoHeart from 'react-icons/go/heart';
 import GoEye from 'react-icons/go/eye';
 import GoRepoForked from 'react-icons/go/repo-forked';
-import MdMoreHoriz from 'react-icons/md/more-horiz';
-import { Link, MenuItem, Separator } from '@codesandbox/common/lib/components';
+import { Link } from '@codesandbox/common/lib/components';
+import { SandboxOptionsMenu } from '../SandboxOptionsMenu';
 import { abbreviateNumber } from './abbreviateNumber';
 import {
   Container,
@@ -12,7 +12,6 @@ import {
   SandboxInfo,
   TitleRow,
   Title,
-  Menu,
   Description,
   Statistics,
   Action,
@@ -48,7 +47,6 @@ export const ShowcaseCard: React.FC<IShowcaseCardProps> = ({
 }) => {
   // TODO:
   // - Add handler for Liking/Unliking the sandbox.
-  // - Add handles for all options menu buttons (Pin, Open, Fork, Hide, Trash)
   return (
     <Container>
       <Link to={`/s/${id}`}>
@@ -57,17 +55,7 @@ export const ShowcaseCard: React.FC<IShowcaseCardProps> = ({
       <SandboxInfo>
         <TitleRow>
           <Title>{title}</Title>
-          <Menu label={<MdMoreHoriz />} aria-label="Sandbox Options">
-            <MenuItem>Pin Sandbox</MenuItem>
-            <Separator />
-            <MenuItem>Open Sandbox</MenuItem>
-            <Separator />
-            <MenuItem>Fork Sandbox</MenuItem>
-            <Separator />
-            <MenuItem disabled>Hide Sandbox</MenuItem>
-            <Separator />
-            <MenuItem danger>Move to Trash</MenuItem>
-          </Menu>
+          <SandboxOptionsMenu />
         </TitleRow>
         <Description>{description}</Description>
         <Statistics>

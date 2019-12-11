@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Button } from 'reakit/Button';
-import { Link, Menu as BaseMenu } from '@codesandbox/common/lib/components';
+import { Link } from '@codesandbox/common/lib/components';
 
 export const Container = styled.div`
   min-width: 303px;
@@ -28,20 +28,6 @@ export const Title = styled.h1`
   font-family: Inter;
   font-size: 14px;
   font-weight: 500;
-`;
-
-export const Menu = styled(BaseMenu)`
-  flex: 0 0 auto;
-
-  svg {
-    color: #757575;
-    font-size: 32px;
-
-    &:hover,
-    &:focus {
-      color: #fff;
-    }
-  }
 `;
 
 export const Description = styled.p`
