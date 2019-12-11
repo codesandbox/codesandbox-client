@@ -8,6 +8,12 @@ export const Container = styled.div`
   color: ${props =>
     props.theme['editor.foreground'] || 'rgba(255, 255, 255, 0.8)'};
 
+  /* do not show button because it doesn't work */
+  button[class^='ToggleOff___'],
+  button[class^='ToggleOff___'] + div {
+    display: none;
+  }
+
   * {
     box-sizing: border-box;
     -webkit-font-smoothing: var(--font-smoothing);

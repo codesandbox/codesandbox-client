@@ -1,9 +1,9 @@
-import Template from './template';
 import { decorateSelector } from '../utils/decorate-selector';
 
 import configurations from './configuration';
+import { ReactTemplate } from './helpers/react-template';
 
-export default new Template(
+export default new ReactTemplate(
   'create-react-app',
   'React',
   'https://github.com/facebookincubator/create-react-app',
