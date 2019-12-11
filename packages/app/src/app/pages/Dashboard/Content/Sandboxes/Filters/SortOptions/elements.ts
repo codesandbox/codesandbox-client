@@ -1,7 +1,9 @@
-import styled, { css } from 'styled-components';
 import ArrowDown from 'react-icons/lib/md/arrow-downward';
+import styled, { css } from 'styled-components';
 
-export const OptionContainer = styled.a`
+export const OptionContainer = styled.a<{
+  selected: boolean;
+}>`
   transition: 0.3s ease color;
   display: flex;
   vertical-align: middle;
@@ -33,7 +35,9 @@ export const IconContainer = styled.div`
   margin-right: 0.5rem;
 `;
 
-export const Container = styled.div`
+export const Container = styled.div<{
+  hideOrder: boolean;
+}>`
   transition: 0.3s ease opacity;
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.875rem;
