@@ -169,7 +169,7 @@ export const saveCode: AsyncAction<{
     }
   } catch (error) {
     actions.internal.handleError({
-      message: 'Unable to save the code',
+      message: 'There was a problem with saving the code, please try again',
       error,
     });
 
