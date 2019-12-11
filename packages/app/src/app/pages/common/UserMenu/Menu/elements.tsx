@@ -66,6 +66,12 @@ export const Icon = styled.span`
   margin-right: 0.75rem;
   display: inline-flex;
   align-items: center;
+  width: 24px;
+  height: 24px;
+  svg {
+    width: 24px;
+    height: auto;
+  }
 `;
 
 export const Separator = styled(MenuSeparator)`

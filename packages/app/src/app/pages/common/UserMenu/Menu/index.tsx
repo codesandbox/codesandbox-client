@@ -1,12 +1,5 @@
 import React, { useEffect } from 'react';
 
-import UserIcon from 'react-icons/lib/ti/user';
-import ExitIcon from 'react-icons/lib/md/exit-to-app';
-import FolderIcon from 'react-icons/lib/md/folder';
-import SettingsIcon from 'react-icons/lib/md/settings';
-import SearchIcon from 'react-icons/lib/go/search';
-import BookIcon from 'react-icons/lib/md/library-books';
-
 import {
   profileUrl,
   patronUrl,
@@ -17,8 +10,14 @@ import {
 import PatronBadge from '@codesandbox/common/lib/utils/badges/PatronBadge';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { MenuItem, Menu as ReakitMenu, MenuStateReturn } from 'reakit/Menu';
-// @ts-ignore
-import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
+import { DocumentationIcon } from '@codesandbox/common/lib/components/icons/Documentation';
+import { SearchIcon } from '@codesandbox/common/lib/components/icons/Search';
+import { FolderIcon } from '@codesandbox/common/lib/components/icons/Folder';
+import { CogIcon } from '@codesandbox/common/lib/components/icons/Cog';
+import { UserIcon } from '@codesandbox/common/lib/components/icons/User';
+import { ExitIcon } from '@codesandbox/common/lib/components/icons/Exit';
+import { ChatIcon } from '@codesandbox/common/lib/components/icons/Chat';
+import { DashboardIcon } from '@codesandbox/common/lib/components/icons/Dashboard';
 
 import {
   Container,
@@ -28,7 +27,6 @@ import {
   ItemA,
   ItemButton,
 } from './elements';
-import { FeedbackIcon } from './FeedbackIcon';
 import { ProIcon } from './ProIcon';
 
 interface Props {
@@ -76,14 +74,14 @@ export const Menu = ({
 
         <MenuItem {...menuProps} to={dashboardUrl()} as={ItemLink}>
           <Icon>
-            <InfoIcon />
+            <DashboardIcon />
           </Icon>
           Dashboard
         </MenuItem>
 
         <MenuItem {...menuProps} href="/docs" as={ItemA}>
           <Icon>
-            <BookIcon />
+            <DocumentationIcon />
           </Icon>
           Documentation
         </MenuItem>
@@ -151,7 +149,7 @@ export const Menu = ({
 
         <MenuItem {...menuProps} as={ItemButton} onClick={openPreferences}>
           <Icon>
-            <SettingsIcon />
+            <CogIcon />
           </Icon>
           Preferences
         </MenuItem>
@@ -160,7 +158,7 @@ export const Menu = ({
 
         <MenuItem {...menuProps} as={ItemButton} onClick={openFeedback}>
           <Icon>
-            <FeedbackIcon />
+            <ChatIcon />
           </Icon>
           Submit Feedback
         </MenuItem>
