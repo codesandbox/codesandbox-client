@@ -98,29 +98,37 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
       hasChangedTitle || hasChangedDescription || hasChangedAlias;
 
     if (hasChanged) {
-      let event = 'Alias';
+      try {
+        let event = 'Alias';
 
-      if (hasChangedTitle) {
-        event = 'Title';
-      } else if (hasChangedDescription) {
-        event = 'Description';
+        if (hasChangedTitle) {
+          event = 'Title';
+        } else if (hasChangedDescription) {
+          event = 'Description';
+        }
+
+        effects.analytics.track(`Sandbox - Update ${event}`);
+
+        sandbox.title = project.title;
+        sandbox.description = project.description;
+        sandbox.alias = project.alias;
+
+        const updatedSandbox = await effects.api.updateSandbox(sandbox.id, {
+          title: project.title,
+          description: project.description,
+          alias: project.alias,
+        });
+
+        effects.router.replaceSandboxUrl(updatedSandbox);
+
+        await actions.editor.internal.updateSandboxPackageJson();
+      } catch (error) {
+        actions.internal.handleError({
+          message:
+            'We were not able to save your sandbox updates, please try again',
+          error,
+        });
       }
-
-      effects.analytics.track(`Sandbox - Update ${event}`);
-
-      sandbox.title = project.title;
-      sandbox.description = project.description;
-      sandbox.alias = project.alias;
-
-      const updatedSandbox = await effects.api.updateSandbox(sandbox.id, {
-        title: project.title,
-        description: project.description,
-        alias: project.alias,
-      });
-
-      effects.router.replaceSandboxUrl(updatedSandbox);
-
-      await actions.editor.internal.updateSandboxPackageJson();
     }
   }
 );
