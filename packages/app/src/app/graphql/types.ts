@@ -506,6 +506,7 @@ export type SandboxFragment = { __typename?: 'Sandbox' } & Pick<
   | 'description'
   | 'insertedAt'
   | 'updatedAt'
+  | 'removedAt'
   | 'privacy'
   | 'screenshotUrl'
   | 'screenshotOutdated'
@@ -730,12 +731,7 @@ export type DeletedSandboxesQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       sandboxes: Maybe<
-        Array<
-          Maybe<
-            { __typename?: 'Sandbox' } & Pick<Sandbox, 'removedAt'> &
-              SandboxFragment
-          >
-        >
+        Array<Maybe<{ __typename?: 'Sandbox' } & SandboxFragment>>
       >;
     }
   >;

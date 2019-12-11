@@ -2,6 +2,7 @@ import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
+import { SandboxFragment } from 'app/graphql/types';
 import { Container, HeaderContainer, HeaderTitle } from '../elements';
 import { SandboxGrid } from '../SandboxGrid';
 import { DashboardActions } from './Actions';
@@ -9,7 +10,7 @@ import { Filters } from './Filters';
 import { ITemplate } from './types';
 
 interface IContentProps {
-  sandboxes: any[];
+  sandboxes: SandboxFragment[];
   Header: React.ComponentType | string;
   SubHeader?: React.ComponentType;
   ExtraElement: React.ComponentType<IExtraElementProps>;
@@ -18,12 +19,12 @@ interface IContentProps {
   isLoading?: boolean;
   hideOrder?: boolean;
   hideFilters?: boolean;
-  page?: number | string;
+  page?: 'search' | 'recent';
   actions?: any[];
 }
 
 export interface IExtraElementProps {
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 }
 
 export const Content: React.FC<IContentProps> = ({
