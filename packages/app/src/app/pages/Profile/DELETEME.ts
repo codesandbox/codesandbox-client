@@ -1,4 +1,47 @@
-const sandboxes = [
+type Sandbox = {
+  id: string;
+  preview: string;
+  title: string;
+  description: string;
+  likes: number;
+  views: number;
+  forks: number;
+  environment: string;
+};
+
+type InitialState = {
+  user: {
+    id: string; // User/Team ID
+    avatar: string; // User/Team Avatar Image URL
+    isContributor: boolean;
+    isPro: boolean;
+    isTeam: boolean;
+    name: string;
+    username: string;
+    bio: string;
+    totalSandboxes: number; // Number of Sandboxes belonging to the User/Team
+    totalTemplates: number; // Number of Templates belonging to the User/Team
+    totalLikes: number; // Number of Sandboxes Liked by the User
+    // A User's Teams, or a Team's Members
+    associations: {
+      thumbnail: string; // GitHub Profile Image URL
+      url: string; // URL to user or team profile
+      entityName: string; // Name of User or Team
+    }[];
+    socialLinks: string[]; // List of URLs
+    // Featured Sandbox
+    featured: {
+      id: string; // Sandbox ID
+      heroImage: string; // URL
+    };
+    pinned: Sandbox[]; // Possibly Paginated?
+    sandboxes: Sandbox[]; // Paginated List
+    templates: Sandbox[]; // Paginated List
+    likes: Sandbox[]; // Paginated List
+  };
+};
+
+const sandboxes: Sandbox[] = [
   {
     id: '123',
     preview: `https://i.imgur.com/NOzyPxz.png`,
@@ -61,10 +104,11 @@ const sandboxes = [
   },
 ];
 
-export const initialState = {
+export const initialState: InitialState = {
   user: {
     id: `userID`,
     avatar: `https://avatars2.githubusercontent.com/u/42876?s=200&v=4`,
+    isContributor: false,
     isPro: false,
     isTeam: true,
     name: `Framer`,
