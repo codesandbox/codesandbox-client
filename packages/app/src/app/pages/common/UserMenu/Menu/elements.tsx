@@ -6,12 +6,15 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   ${({ theme }) => css`
-    background-color: ${theme.background4};
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.75);
+    background-color: #151515;
+    box-shadow: 0px 8px 4px rgba(0, 0, 0, 0.12),
+      0px 8px 16px rgba(0, 0, 0, 0.24);
 
     ${delayEffect(0)};
 
-    min-width: 200px;
+    min-width: 225px;
+    padding: 1rem 0;
+    border-radius: 4px;
 
     z-index: 20;
   `};
@@ -19,28 +22,32 @@ export const Container = styled.div`
 
 const StyledMenu = styled(Link)<{ href?: string; to?: string }>`
   ${({ theme }) => css`
+    font-family: 'Inter', 'Roboto', sans-serif;
+    font-weight: 400;
     transition: 0.3s ease all;
     display: flex;
     align-items: center;
-    font-size: 0.875rem;
-    padding: 0.5rem 1rem;
+    font-size: 13px;
+    padding: 0.25rem 1rem;
 
     text-decoration: none;
 
-    color: rgba(255, 255, 255, 0.8);
+    color: #999;
     border: 0;
     outline: 0 !important;
     box-sizing: border-box;
-    border-left: 2px solid transparent;
     background-color: transparent;
     width: 100%;
 
     cursor: pointer;
 
-    &:focus {
-      border-color: ${theme.secondary};
+    svg {
       color: white;
-      background-color: ${theme.secondary.clearer(0.9)};
+    }
+
+    &:focus {
+      color: white;
+      background-color: #242424;
       outline: 0;
     }
   `};
@@ -66,13 +73,16 @@ export const Icon = styled.span`
   margin-right: 0.75rem;
   display: inline-flex;
   align-items: center;
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
 `;
 
 export const Separator = styled(MenuSeparator)`
   ${({ theme }) => css`
     height: 1px;
     width: 100%;
-    margin: 0.5rem 0;
+    margin: 0.25rem 0;
 
     background-color: ${theme.background};
     border: 0;
