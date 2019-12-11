@@ -87,7 +87,7 @@ export const Content: React.FC<IContentProps> = ({
           orderByField={state.dashboard.orderBy.field}
           isDragging={state.dashboard.isDragging}
           isPatron={state.isPatron}
-          sandboxSelected={actions.dashboard.sandboxesSelected}
+          sandboxesSelected={actions.dashboard.sandboxesSelected}
           forkExternalSandbox={actions.editor.forkExternalSandbox}
           dragChanged={actions.dashboard.dragChanged}
         />

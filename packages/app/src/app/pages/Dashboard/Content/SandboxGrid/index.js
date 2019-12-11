@@ -49,12 +49,56 @@ const distanceInWordsToNow = date =>
 class SandboxGridComponent extends React.Component<*, State> {
   state = {
     selection: undefined,
+    localSandboxesSelected: null,
   };
 
   loadedSandboxes = {};
 
-  setSandboxesSelected = (ids, { additive = false, range = false } = {}) => {
-    const { selectedSandboxes, sandboxes } = this.props;
+  getSelectedSandboxIds = () => {
+    const { selectedSandboxes: selectedSandboxesFromState } = this.props;
+    const { localSandboxesSelected } = this.state;
+
+    return localSandboxesSelected === null
+      ? selectedSandboxesFromState
+      : localSandboxesSelected;
+  };
+
+  commitSandboxesSelected = () => {
+    this.props.sandboxesSelected({
+      sandboxIds: this.state.localSandboxesSelected || [],
+    });
+    this.setState({
+      localSandboxesSelected: null,
+    });
+  };
+
+  setSandboxesSelected = (
+    ids,
+    { additive = false, range = false, delay = false } = {}
+  ) => {
+    const { sandboxes } = this.props;
+
+    const selectedSandboxes = this.getSelectedSandboxIds();
+
+    const setSelected = (sandboxIds: string[]) => {
+      /**
+       * If delay is true we don't commit to the store yet, but we keep it in this component.
+       * This is for performance reasons when having a selection. On mouseup we commit the selection
+       * to the store.
+       */
+      if (delay) {
+        this.setState({
+          localSandboxesSelected: sandboxIds,
+        });
+      } else {
+        this.props.sandboxesSelected({
+          sandboxIds,
+        });
+        this.setState({
+          localSandboxesSelected: null,
+        });
+      }
+    };
 
     if (range === true) {
       track('Dashboard - Sandbox Shift Selection');
@@ -77,9 +121,7 @@ class SandboxGridComponent extends React.Component<*, State> {
           .map(({ sandbox }) => sandbox.id)
           .slice(indexes[0], indexes[1] + 1);
 
-        this.props.sandboxesSelected({
-          sandboxIds,
-        });
+        setSelected(sandboxIds);
         return;
       }
     }
@@ -94,9 +136,7 @@ class SandboxGridComponent extends React.Component<*, State> {
       sandboxIds = uniq([...sandboxIds, ...additiveIds]);
     }
 
-    this.props.sandboxesSelected({
-      sandboxIds,
-    });
+    setSelected(sandboxIds);
   };
 
   makeTemplates = (teamId?: string) => {
@@ -196,9 +236,14 @@ class SandboxGridComponent extends React.Component<*, State> {
 
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
-    this.setState({
-      selection: undefined,
-    });
+    this.setState(
+      {
+        selection: undefined,
+      },
+      () => {
+        this.commitSandboxesSelected();
+      }
+    );
   };
 
   onMouseMove = event => {
@@ -243,6 +288,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         selectedSandboxes.map(el => el.id),
         {
           additive: event.metaKey,
+          delay: true,
         }
       );
     }
@@ -295,6 +341,8 @@ class SandboxGridComponent extends React.Component<*, State> {
       }
     }
 
+    const itemInSelection = this.selectedSandboxesObject[item.id];
+
     return (
       <SandboxItem
         isScrolling={this.isScrolling}
@@ -308,13 +356,11 @@ class SandboxGridComponent extends React.Component<*, State> {
         sandbox={item}
         template={item.source.template}
         removedAt={item.removedAt}
-        selected={this.selectedSandboxesObject[item.id]}
+        selected={itemInSelection}
         selectedCount={this.props.selectedSandboxes.length}
         setSandboxesSelected={this.setSandboxesSelected}
         setDragging={this.props.dragChanged}
-        isDraggingItem={
-          this.isDragging && this.selectedSandboxesObject[item.id]
-        }
+        isDraggingItem={this.isDragging && itemInSelection}
         collectionPath={item.collection.path}
         collectionTeamId={item.collection.teamId}
         forkSandbox={this.forkSandbox}
@@ -348,14 +394,14 @@ class SandboxGridComponent extends React.Component<*, State> {
 
   render() {
     const { selection } = this.state;
-    const { sandboxes, selectedSandboxes, isDragging } = this.props;
+    const { sandboxes, isDragging } = this.props;
 
     let sandboxCount = sandboxes.length;
 
     this.isDragging = isDragging;
     this.selectedSandboxesObject = {};
     // Create an object to make it O(1)
-    selectedSandboxes.forEach(id => {
+    this.getSelectedSandboxIds().forEach(id => {
       this.selectedSandboxesObject[id] = true;
     });
 
