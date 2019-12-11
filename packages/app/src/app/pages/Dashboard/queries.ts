@@ -29,6 +29,7 @@ export const SANDBOX_FRAGMENT = gql`
     description
     insertedAt
     updatedAt
+    removedAt
     privacy
     screenshotUrl
     screenshotOutdated
@@ -251,7 +252,6 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
         orderBy: { field: "updated_at", direction: DESC }
       ) {
         ...Sandbox
-        removedAt
       }
     }
   }

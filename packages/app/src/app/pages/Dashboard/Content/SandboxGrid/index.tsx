@@ -5,7 +5,7 @@ import { basename } from 'path';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-import { inject, observer } from 'app/componentConnectors';
+import { makeTemplates } from 'app/components/CreateNewSandbox/queries';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { formatDistanceToNow } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -16,15 +16,15 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Table from 'react-virtualized/dist/commonjs/Table';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
-import { makeTemplates } from 'app/components/CreateNewSandbox/queries';
 
+import { SandboxFragment } from 'app/graphql/types';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import {
   deleteSandboxes,
   permanentlyDeleteSandboxes,
   setSandboxesPrivacy,
   undeleteSandboxes,
 } from '../../queries';
-
 import { DragLayer } from '../DragLayer';
 import { SandboxItem } from '../SandboxCard';
 import { PADDING } from '../SandboxCard/elements';
@@ -32,12 +32,15 @@ import { Selection, getBounds } from '../Selection';
 import { Content, StyledRow } from './elements';
 
 type State = {
-  selection: ?{
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
-  },
+  selection:
+    | {
+        startX: number;
+        startY: number;
+        endX: number;
+        endY: number;
+      }
+    | undefined;
+  localSandboxesSelected: string[] | null;
 };
 
 const BASE_WIDTH = 300;
@@ -48,18 +51,84 @@ const diff = (a, b) => (a > b ? a - b : b - a);
 const distanceInWordsToNow = date =>
   formatDistanceToNow(zonedTimeToUtc(date, 'Etc/UTC'));
 
-class SandboxGridComponent extends React.Component<*, State> {
+interface ISandboxGridComponentProps {
+  page?: 'search' | 'recent';
+  ExtraElement: React.ComponentType<{ style?: React.CSSProperties }>;
+  sandboxes: SandboxFragment[];
+  selectedSandboxes: string[];
+  orderByField: string;
+  isDragging: boolean;
+  isPatron: boolean;
+  sandboxesSelected: (params: { sandboxIds: string[] }) => void;
+  forkExternalSandbox: (params: { sandboxId: string }) => void;
+  dragChanged: (params: { isDragging: boolean }) => void;
+}
+
+class SandboxGridComponent extends React.Component<
+  ISandboxGridComponentProps,
+  State
+> {
   state = {
     selection: undefined,
+    localSandboxesSelected: null,
   };
 
-  loadedSandboxes = {};
+  selectedSandboxesObject: { [id: string]: true };
+  loadedSandboxes: { [id: string]: Sandbox } = {};
+  scrolling: boolean;
+  isDragging: boolean;
+  columnCount: number;
 
-  setSandboxesSelected = (ids, { additive = false, range = false } = {}) => {
-    const { store, sandboxes, signals } = this.props;
-    const { selectedSandboxes } = store.dashboard;
+  getSelectedSandboxIds = () => {
+    const { selectedSandboxes: selectedSandboxesFromState } = this.props;
+    const { localSandboxesSelected } = this.state;
+
+    return localSandboxesSelected === null
+      ? selectedSandboxesFromState
+      : localSandboxesSelected;
+  };
+
+  commitSandboxesSelected = () => {
+    this.props.sandboxesSelected({
+      sandboxIds: this.state.localSandboxesSelected || [],
+    });
+    this.setState({
+      localSandboxesSelected: null,
+    });
+  };
+
+  setSandboxesSelected = (
+    ids,
+    { additive = false, range = false, delay = false } = {}
+  ) => {
+    const { sandboxes } = this.props;
+
+    const selectedSandboxes = this.getSelectedSandboxIds();
+
+    const setSelected = (sandboxIds: string[]) => {
+      /**
+       * If delay is true we don't commit to the store yet, but we keep it in this component.
+       * This is for performance reasons when having a selection. On mouseup we commit the selection
+       * to the store.
+       */
+      if (delay) {
+        this.setState({
+          localSandboxesSelected: sandboxIds,
+        });
+      } else {
+        this.props.sandboxesSelected({
+          sandboxIds,
+        });
+        this.setState({
+          localSandboxesSelected: null,
+        });
+      }
+    };
+
     if (range === true) {
-      track('Dashboard - Sandbox Shift Selection');
+      if (!delay) {
+        track('Dashboard - Sandbox Shift Selection');
+      }
       const indexedSandboxes = sandboxes.map((sandbox, i) => ({ sandbox, i }));
 
       // We need to select a range
@@ -79,9 +148,7 @@ class SandboxGridComponent extends React.Component<*, State> {
           .map(({ sandbox }) => sandbox.id)
           .slice(indexes[0], indexes[1] + 1);
 
-        signals.dashboard.sandboxesSelected({
-          sandboxIds,
-        });
+        setSelected(sandboxIds);
         return;
       }
     }
@@ -89,20 +156,16 @@ class SandboxGridComponent extends React.Component<*, State> {
     let sandboxIds = ids;
 
     if (additive) {
-      track('Dashboard - Sandbox Additive Selection');
-      sandboxIds = store.dashboard.selectedSandboxes.filter(
-        id => !ids.includes(id)
-      );
-      const additiveIds = ids.filter(
-        id => !store.dashboard.selectedSandboxes.includes(id)
-      );
+      if (!delay) {
+        track('Dashboard - Sandbox Additive Selection');
+      }
+      sandboxIds = selectedSandboxes.filter(id => !ids.includes(id));
+      const additiveIds = ids.filter(id => !selectedSandboxes.includes(id));
 
       sandboxIds = uniq([...sandboxIds, ...additiveIds]);
     }
 
-    signals.dashboard.sandboxesSelected({
-      sandboxIds,
-    });
+    setSelected(sandboxIds);
   };
 
   makeTemplates = (teamId?: string) => {
@@ -112,11 +175,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         .map(s => s.collection)
     );
 
-    makeTemplates(
-      this.props.store.dashboard.selectedSandboxes,
-      teamId,
-      collections
-    );
+    makeTemplates(this.props.selectedSandboxes, teamId, collections);
   };
 
   deleteSandboxes = () => {
@@ -125,19 +184,19 @@ class SandboxGridComponent extends React.Component<*, State> {
         .filter(sandbox => this.selectedSandboxesObject[sandbox.id])
         .map(s => s.collection)
     );
-    deleteSandboxes(this.props.store.dashboard.selectedSandboxes, collections);
+    deleteSandboxes(this.props.selectedSandboxes, collections);
   };
 
   undeleteSandboxes = () => {
-    undeleteSandboxes(this.props.store.dashboard.selectedSandboxes);
+    undeleteSandboxes(this.props.selectedSandboxes);
   };
 
   permanentlyDeleteSandboxes = () => {
-    permanentlyDeleteSandboxes(this.props.store.dashboard.selectedSandboxes);
+    permanentlyDeleteSandboxes(this.props.selectedSandboxes);
   };
 
   setSandboxesPrivacy = (privacy: number) => {
-    setSandboxesPrivacy(this.props.store.dashboard.selectedSandboxes, privacy);
+    setSandboxesPrivacy(this.props.selectedSandboxes, privacy);
   };
 
   getSandbox = async sandboxId => {
@@ -153,7 +212,7 @@ class SandboxGridComponent extends React.Component<*, State> {
     })
       .then(x => x.json())
       .then(x => {
-        const data = camelizeKeys(x.data);
+        const data = camelizeKeys(x.data) as Sandbox;
         this.loadedSandboxes[data.id] = data;
         return data;
       });
@@ -174,10 +233,10 @@ class SandboxGridComponent extends React.Component<*, State> {
   };
 
   forkSandbox = id => {
-    this.props.signals.editor.forkExternalSandbox({ sandboxId: id });
+    this.props.forkExternalSandbox({ sandboxId: id });
   };
 
-  onMouseDown = (event: MouseEvent) => {
+  onMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
     this.setState({
       selection: {
         startX: event.clientX,
@@ -206,9 +265,14 @@ class SandboxGridComponent extends React.Component<*, State> {
 
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
-    this.setState({
-      selection: undefined,
-    });
+    this.setState(
+      {
+        selection: undefined,
+      },
+      () => {
+        this.commitSandboxesSelected();
+      }
+    );
   };
 
   onMouseMove = event => {
@@ -232,7 +296,8 @@ class SandboxGridComponent extends React.Component<*, State> {
         newSelection.endY
       );
 
-      // eslint-disable-next-line no-restricted-syntax
+      /* eslint-disable no-restricted-syntax */
+      // @ts-ignore
       for (const sandbox of sandboxes) {
         const { top, height, left, width } = sandbox.getBoundingClientRect();
         const padding = IS_TABLE ? 0 : PADDING;
@@ -248,11 +313,13 @@ class SandboxGridComponent extends React.Component<*, State> {
           selectedSandboxes.push(sandbox);
         }
       }
+      /* eslint-enable */
 
       this.setSandboxesSelected(
         selectedSandboxes.map(el => el.id),
         {
           additive: event.metaKey,
+          delay: true,
         }
       );
     }
@@ -264,7 +331,7 @@ class SandboxGridComponent extends React.Component<*, State> {
     this.scrolling = isScrolling;
 
     let index = rowIndex * this.columnCount + columnIndex;
-    const { sandboxes, signals } = this.props;
+    const { sandboxes } = this.props;
 
     if (this.props.ExtraElement) {
       if (index === 0) {
@@ -285,7 +352,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         return `Deleted ${distanceInWordsToNow(item.removedAt)} ago`;
       }
 
-      const orderField = this.props.store.dashboard.orderBy.field;
+      const orderField = this.props.orderByField;
       if (orderField === 'insertedAt') {
         return `Created ${distanceInWordsToNow(item.insertedAt)} ago`;
       }
@@ -305,6 +372,8 @@ class SandboxGridComponent extends React.Component<*, State> {
       }
     }
 
+    const itemInSelection = this.selectedSandboxesObject[item.id];
+
     return (
       <SandboxItem
         isScrolling={this.isScrolling}
@@ -316,15 +385,14 @@ class SandboxGridComponent extends React.Component<*, State> {
         style={style}
         key={key}
         sandbox={item}
+        // @ts-ignore
         template={item.source.template}
         removedAt={item.removedAt}
-        selected={this.selectedSandboxesObject[item.id]}
-        selectedCount={this.props.store.dashboard.selectedSandboxes.length}
+        selected={itemInSelection}
+        selectedCount={this.props.selectedSandboxes.length}
         setSandboxesSelected={this.setSandboxesSelected}
-        setDragging={signals.dashboard.dragChanged}
-        isDraggingItem={
-          this.isDragging && this.selectedSandboxesObject[item.id]
-        }
+        setDragging={this.props.dragChanged}
+        isDraggingItem={this.isDragging && itemInSelection}
         collectionPath={item.collection.path}
         collectionTeamId={item.collection.teamId}
         forkSandbox={this.forkSandbox}
@@ -336,7 +404,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         makeTemplates={this.makeTemplates}
         page={this.props.page}
         privacy={item.privacy}
-        isPatron={this.props.store.isPatron}
+        isPatron={this.props.isPatron}
         screenshotUrl={item.screenshotUrl}
         screenshotOutdated={item.screenshotOutdated}
       />
@@ -358,15 +426,14 @@ class SandboxGridComponent extends React.Component<*, State> {
 
   render() {
     const { selection } = this.state;
-    const { sandboxes, store } = this.props;
+    const { sandboxes, isDragging } = this.props;
 
-    const { selectedSandboxes } = this.props.store.dashboard;
     let sandboxCount = sandboxes.length;
 
-    this.isDragging = store.dashboard.isDragging;
+    this.isDragging = isDragging;
     this.selectedSandboxesObject = {};
     // Create an object to make it O(1)
-    selectedSandboxes.forEach(id => {
+    this.getSelectedSandboxIds().forEach(id => {
       this.selectedSandboxesObject[id] = true;
     });
 
@@ -467,7 +534,4 @@ class SandboxGridComponent extends React.Component<*, State> {
   }
 }
 
-export const SandboxGrid = inject(
-  'store',
-  'signals'
-)(observer(SandboxGridComponent));
+export const SandboxGrid = SandboxGridComponent;
