@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
@@ -9,7 +9,7 @@ export const Container = styled.div`
 
 // TODO: Use withoutProps utility from common once Follow Templates is merged
 //       to remove the DOM error for teamId prop
-export const NavigationLink = styled(Link)`
+export const NavigationLink = styled(Link)<{ first?: string; last?: string }>`
   transition: 0.3s ease color;
   margin-right: 0.5rem;
   text-decoration: none;
@@ -23,19 +23,24 @@ export const NavigationLink = styled(Link)`
     margin-right: 0;
   }
 
-  margin-left: 0.5rem;
-  &:first-of-type {
-    margin-left: 0;
-  }
+  ${props =>
+    props.first
+      ? css`
+          margin-left: 0;
+        `
+      : css`
+          margin-left: 0.5rem;
+        `};
 
-  &:last-of-type {
-    color: white;
-  }
-
-  &::after {
-    content: '›';
-  }
-  &:last-of-type::after {
-    content: none;
-  }
+  ${props =>
+    props.last
+      ? css`
+          color: white;
+        `
+      : css`
+          &::after {
+            content: '›';
+            margin-left: 0.5rem;
+          }
+        `};
 `;

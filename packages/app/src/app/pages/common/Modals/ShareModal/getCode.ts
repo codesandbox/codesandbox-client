@@ -1,10 +1,10 @@
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
+  embedUrl,
   optionsToParameterizedUrl,
   protocolAndHost,
   sandboxUrl,
-  embedUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { escapeHtml } from 'app/utils/escape';
 
@@ -50,6 +50,7 @@ const getOptionsUrl = (sandbox, mainModule, state) => {
       sandbox.directories,
       defaultModule
     );
+    // @ts-ignore
     options.module = modulePath;
   }
 

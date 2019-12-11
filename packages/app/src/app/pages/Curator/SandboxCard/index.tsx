@@ -1,36 +1,40 @@
 import getTemplate from '@codesandbox/common/lib/templates';
+import { GitInfo, User } from '@codesandbox/common/lib/types';
 import {
-  sandboxUrl,
   profileUrl,
+  sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { observer } from 'app/componentConnectors';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import GithubIcon from 'react-icons/lib/fa/github';
 
 import {
-  Container,
-  SandboxImageContainer,
-  SandboxImage,
-  SandboxInfo,
-  ImageMessage,
-  SandboxTitle,
   Avatar,
+  Container,
   Details,
   FlexCenter,
+  ImageMessage,
   Pick,
+  SandboxImage,
+  SandboxImageContainer,
+  SandboxInfo,
+  SandboxTitle,
 } from './elements';
 
-type Props = {
-  author: object,
-  description: string,
-  git: object,
-  id: string,
-  title: string,
-  viewCount: number,
-};
+interface Props {
+  author: User;
+  description: string;
+  git: GitInfo;
+  id: string;
+  title: string;
+  viewCount: number;
+  picks: any[];
+  pickSandbox: (id: string, title: string, description: string) => void;
+  screenshotUrl: string;
+  template: any;
+}
 
-const SandboxCard = ({
+export const SandboxCard: React.FC<Props> = ({
   author,
   description,
   git,
@@ -41,7 +45,7 @@ const SandboxCard = ({
   template,
   title,
   viewCount,
-}: Props) => {
+}) => {
   const [screenShotURL, setScreenShotURL] = useState(screenshotUrl);
   const screenShotTimeout = useRef(null);
 
@@ -67,7 +71,7 @@ const SandboxCard = ({
   }, [checkScreenShot]);
 
   const openSandbox = useCallback(() => {
-    const url = sandboxUrl({ id });
+    const url = sandboxUrl({ id, alias: null });
 
     window.open(url, '_blank');
   }, [id]);
@@ -168,5 +172,3 @@ const SandboxCard = ({
     </div>
   );
 };
-
-export default observer(SandboxCard);
