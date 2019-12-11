@@ -4,7 +4,6 @@ import { executorsManager } from 'app/utils/executor-manager';
 
 export default {
   initializeExecutor(sandbox: Sandbox) {
-
     return executorsManager.initializeExecutor(sandbox);
   },
   setupExecutor() {
