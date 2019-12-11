@@ -39,7 +39,7 @@ export const withLoadApp = <T>(
       effects.api.preloadTemplates();
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize user',
+        message: 'We had trouble with signing you in',
         error,
       });
     }
