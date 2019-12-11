@@ -1,7 +1,6 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { executorsManager } from 'app/utils/executor-manager';
 
-let _isInitialized = false;
 
 export default {
   async initializeExecutor(sandbox: Sandbox) {
