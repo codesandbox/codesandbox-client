@@ -1,10 +1,18 @@
 import React from 'react';
-
+import styled from 'styled-components';
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
-import { DotContainer } from './elements';
 
-export class BlinkingDot extends React.PureComponent<{}, { showing: boolean }> {
-  timer: NodeJS.Timeout;
+const DotContainer = styled.div`
+  font-size: 4rem;
+  display: block;
+  color: rgb(253, 36, 57);
+
+  svg {
+    transition: 0.3s ease opacity;
+  }
+`;
+
+export class BlinkingDot extends React.PureComponent {
   state = {
     showing: true,
   };
