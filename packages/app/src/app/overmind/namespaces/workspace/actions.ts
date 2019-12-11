@@ -106,31 +106,15 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
 
       effects.analytics.track(`Sandbox - Update ${event}`);
 
-      const payload: {
-        title?: string;
-        description?: string;
-        alias?: string;
-      } = {};
+      sandbox.title = project.title;
+      sandbox.description = project.description;
+      sandbox.alias = project.alias;
 
-      if (hasChangedTitle) {
-        payload.title = project.title;
-        sandbox.title = project.title;
-      }
-
-      if (hasChangedDescription) {
-        payload.description = project.description;
-        sandbox.description = project.description;
-      }
-
-      if (hasChangedAlias) {
-        payload.alias = project.alias;
-        sandbox.alias = project.alias;
-      }
-
-      const updatedSandbox = await effects.api.updateSandbox(
-        sandbox.id,
-        payload
-      );
+      const updatedSandbox = await effects.api.updateSandbox(sandbox.id, {
+        title: project.title,
+        description: project.description,
+        alias: project.alias,
+      });
 
       effects.router.replaceSandboxUrl(updatedSandbox);
 
