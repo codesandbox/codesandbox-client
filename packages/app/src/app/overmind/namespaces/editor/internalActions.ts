@@ -351,6 +351,10 @@ export const forkSandbox: AsyncAction<{
       });
     }
 
+    state.workspace.project.title = forkedSandbox.title;
+    state.workspace.project.alias = forkedSandbox.alias;
+    state.workspace.project.description = forkedSandbox.description;
+
     Object.assign(
       state.editor.sandboxes[state.editor.currentId],
       forkedSandbox
