@@ -5,7 +5,7 @@ import { basename } from 'path';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-import { inject, observer } from 'app/componentConnectors';
+import { makeTemplates } from 'app/components/CreateNewSandbox/queries';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { formatDistanceToNow } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -16,7 +16,6 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Table from 'react-virtualized/dist/commonjs/Table';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
-import { makeTemplates } from 'app/components/CreateNewSandbox/queries';
 
 import {
   deleteSandboxes,
@@ -24,7 +23,6 @@ import {
   setSandboxesPrivacy,
   undeleteSandboxes,
 } from '../../queries';
-
 import { DragLayer } from '../DragLayer';
 import { SandboxItem } from '../SandboxCard';
 import { PADDING } from '../SandboxCard/elements';
@@ -56,8 +54,8 @@ class SandboxGridComponent extends React.Component<*, State> {
   loadedSandboxes = {};
 
   setSandboxesSelected = (ids, { additive = false, range = false } = {}) => {
-    const { store, sandboxes, signals } = this.props;
-    const { selectedSandboxes } = store.dashboard;
+    const { selectedSandboxes, sandboxes } = this.props;
+
     if (range === true) {
       track('Dashboard - Sandbox Shift Selection');
       const indexedSandboxes = sandboxes.map((sandbox, i) => ({ sandbox, i }));
@@ -79,7 +77,7 @@ class SandboxGridComponent extends React.Component<*, State> {
           .map(({ sandbox }) => sandbox.id)
           .slice(indexes[0], indexes[1] + 1);
 
-        signals.dashboard.sandboxesSelected({
+        this.props.sandboxesSelected({
           sandboxIds,
         });
         return;
@@ -90,17 +88,13 @@ class SandboxGridComponent extends React.Component<*, State> {
 
     if (additive) {
       track('Dashboard - Sandbox Additive Selection');
-      sandboxIds = store.dashboard.selectedSandboxes.filter(
-        id => !ids.includes(id)
-      );
-      const additiveIds = ids.filter(
-        id => !store.dashboard.selectedSandboxes.includes(id)
-      );
+      sandboxIds = selectedSandboxes.filter(id => !ids.includes(id));
+      const additiveIds = ids.filter(id => !selectedSandboxes.includes(id));
 
       sandboxIds = uniq([...sandboxIds, ...additiveIds]);
     }
 
-    signals.dashboard.sandboxesSelected({
+    this.props.sandboxesSelected({
       sandboxIds,
     });
   };
@@ -112,11 +106,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         .map(s => s.collection)
     );
 
-    makeTemplates(
-      this.props.store.dashboard.selectedSandboxes,
-      teamId,
-      collections
-    );
+    makeTemplates(this.props.selectedSandboxes, teamId, collections);
   };
 
   deleteSandboxes = () => {
@@ -125,19 +115,19 @@ class SandboxGridComponent extends React.Component<*, State> {
         .filter(sandbox => this.selectedSandboxesObject[sandbox.id])
         .map(s => s.collection)
     );
-    deleteSandboxes(this.props.store.dashboard.selectedSandboxes, collections);
+    deleteSandboxes(this.props.selectedSandboxes, collections);
   };
 
   undeleteSandboxes = () => {
-    undeleteSandboxes(this.props.store.dashboard.selectedSandboxes);
+    undeleteSandboxes(this.props.selectedSandboxes);
   };
 
   permanentlyDeleteSandboxes = () => {
-    permanentlyDeleteSandboxes(this.props.store.dashboard.selectedSandboxes);
+    permanentlyDeleteSandboxes(this.props.selectedSandboxes);
   };
 
   setSandboxesPrivacy = (privacy: number) => {
-    setSandboxesPrivacy(this.props.store.dashboard.selectedSandboxes, privacy);
+    setSandboxesPrivacy(this.props.selectedSandboxes, privacy);
   };
 
   getSandbox = async sandboxId => {
@@ -174,7 +164,7 @@ class SandboxGridComponent extends React.Component<*, State> {
   };
 
   forkSandbox = id => {
-    this.props.signals.editor.forkExternalSandbox({ sandboxId: id });
+    this.props.forkExternalSandbox({ sandboxId: id });
   };
 
   onMouseDown = (event: MouseEvent) => {
@@ -264,7 +254,7 @@ class SandboxGridComponent extends React.Component<*, State> {
     this.scrolling = isScrolling;
 
     let index = rowIndex * this.columnCount + columnIndex;
-    const { sandboxes, signals } = this.props;
+    const { sandboxes } = this.props;
 
     if (this.props.ExtraElement) {
       if (index === 0) {
@@ -285,7 +275,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         return `Deleted ${distanceInWordsToNow(item.removedAt)} ago`;
       }
 
-      const orderField = this.props.store.dashboard.orderBy.field;
+      const orderField = this.props.orderByField;
       if (orderField === 'insertedAt') {
         return `Created ${distanceInWordsToNow(item.insertedAt)} ago`;
       }
@@ -319,9 +309,9 @@ class SandboxGridComponent extends React.Component<*, State> {
         template={item.source.template}
         removedAt={item.removedAt}
         selected={this.selectedSandboxesObject[item.id]}
-        selectedCount={this.props.store.dashboard.selectedSandboxes.length}
+        selectedCount={this.props.selectedSandboxes.length}
         setSandboxesSelected={this.setSandboxesSelected}
-        setDragging={signals.dashboard.dragChanged}
+        setDragging={this.props.dragChanged}
         isDraggingItem={
           this.isDragging && this.selectedSandboxesObject[item.id]
         }
@@ -336,7 +326,7 @@ class SandboxGridComponent extends React.Component<*, State> {
         makeTemplates={this.makeTemplates}
         page={this.props.page}
         privacy={item.privacy}
-        isPatron={this.props.store.isPatron}
+        isPatron={this.props.isPatron}
         screenshotUrl={item.screenshotUrl}
         screenshotOutdated={item.screenshotOutdated}
       />
@@ -358,12 +348,11 @@ class SandboxGridComponent extends React.Component<*, State> {
 
   render() {
     const { selection } = this.state;
-    const { sandboxes, store } = this.props;
+    const { sandboxes, selectedSandboxes, isDragging } = this.props;
 
-    const { selectedSandboxes } = this.props.store.dashboard;
     let sandboxCount = sandboxes.length;
 
-    this.isDragging = store.dashboard.isDragging;
+    this.isDragging = isDragging;
     this.selectedSandboxesObject = {};
     // Create an object to make it O(1)
     selectedSandboxes.forEach(id => {
@@ -467,7 +456,4 @@ class SandboxGridComponent extends React.Component<*, State> {
   }
 }
 
-export const SandboxGrid = inject(
-  'store',
-  'signals'
-)(observer(SandboxGridComponent));
+export const SandboxGrid = SandboxGridComponent;
