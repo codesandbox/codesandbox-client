@@ -65,7 +65,6 @@
     "memoize-one": "^3.1.1",
     "ot": "^0.0.15",
     "react": "^16.8.6",
-    "react-icon-base": "^2.1.2",
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.2.1",
     "react-router-dom": "^5.0.1",
