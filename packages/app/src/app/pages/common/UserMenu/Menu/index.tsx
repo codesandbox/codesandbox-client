@@ -113,12 +113,14 @@ export const Menu = ({
           </MenuItem>
         )}
 
-        <MenuItem {...menuProps} as={ItemA} href="/pricing">
-          <Icon>
-            <ProIcon />
-          </Icon>
-          Upgrade to Pro
-        </MenuItem>
+        {showBecomePro && (
+          <MenuItem {...menuProps} as={ItemA} href="/pricing">
+            <Icon>
+              <ProIcon />
+            </Icon>
+            Upgrade to Pro
+          </MenuItem>
+        )}
 
         <Separator {...menuProps} />
 

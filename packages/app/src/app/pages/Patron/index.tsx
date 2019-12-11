@@ -21,8 +21,9 @@ const Patron: React.FC = () => {
   }
   // don't send them away before authentication
   if (hasLoadedApp && user) {
-    if (
-      !user.subscription || // if no subscription, get pro
+    if (!user.subscription) {
+      location.href = '/pricing'; // if no subscription, to pricing with you!
+    } else if (
       user.subscription.plan !== 'patron' // if subscription but not patron, go to pro
     ) {
       location.href = '/pro';
