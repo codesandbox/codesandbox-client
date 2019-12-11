@@ -62,7 +62,7 @@ export const getSandbox: AsyncAction<string> = async (
     state.explore.selectedSandbox = await effects.api.getSandbox(id);
   } catch (error) {
     actions.internal.handleError({
-      message: 'There has been a problem getting the sandbox',
+      message: 'A problem occurred while fetching the sandbox',
       error,
     });
   }
