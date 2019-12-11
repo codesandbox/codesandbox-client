@@ -260,9 +260,10 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
           state.editor.changedModuleShortids.push(moduleShortid);
         }
       });
-      effects.notificationToast.error(
-        'Sorry, was not able to save, please try again'
-      );
+      actions.internal.handleError({
+        message: 'There was a problem with saving the files, please try again',
+        error,
+      });
     }
   }
 );
@@ -727,31 +728,34 @@ export const previewActionReceived: Action<{
 export const renameModule: AsyncAction<{
   title: string;
   moduleShortid: string;
-}> = withOwnedSandbox(async ({ state, effects }, { title, moduleShortid }) => {
-  const sandbox = state.editor.currentSandbox;
-  const module = sandbox.modules.find(
-    moduleItem => moduleItem.shortid === moduleShortid
-  );
+}> = withOwnedSandbox(
+  async ({ state, actions, effects }, { title, moduleShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    const module = sandbox.modules.find(
+      moduleItem => moduleItem.shortid === moduleShortid
+    );
 
-  if (!module) {
-    return;
-  }
-
-  const oldTitle = module.title;
-
-  module.title = title;
-
-  try {
-    await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
-
-    if (state.live.isCurrentEditor) {
-      effects.live.sendModuleUpdate(module);
+    if (!module) {
+      return;
     }
-  } catch (error) {
-    module.title = oldTitle;
-    effects.notificationToast.error('Could not rename file');
+
+    const oldTitle = module.title;
+
+    module.title = title;
+
+    try {
+      await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
+
+      if (state.live.isCurrentEditor) {
+        effects.live.sendModuleUpdate(module);
+      }
+    } catch (error) {
+      module.title = oldTitle;
+
+      actions.internal.handleError({ message: 'Could not rename file', error });
+    }
   }
-});
+);
 
 export const onDevToolsTabAdded: Action<{
   tab: any;

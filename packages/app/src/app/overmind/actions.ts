@@ -149,7 +149,10 @@ export const signInZeitClicked: AsyncAction = async ({
       state.user = await api.createZeitIntegration(data.code);
       await actions.deployment.internal.getZeitUserDetails();
     } catch (error) {
-      notificationToast.error('Could not authorize with ZEIT');
+      actions.internal.handleError({
+        message: 'Could not authorize with ZEIT',
+        error,
+      });
     }
   } else {
     notificationToast.error('Could not authorize with ZEIT');

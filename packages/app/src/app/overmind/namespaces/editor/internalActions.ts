@@ -168,7 +168,10 @@ export const saveCode: AsyncAction<{
       tab.dirty = false;
     }
   } catch (error) {
-    effects.notificationToast.warning(error.message);
+    actions.internal.handleError({
+      message: 'There was a problem with saving the code, please try again',
+      error,
+    });
 
     if (cbID) {
       effects.vscode.callCallbackError(cbID, error.message);
@@ -378,7 +381,10 @@ export const forkSandbox: AsyncAction<{
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
   } catch (error) {
     console.error(error);
-    effects.notificationToast.error('We were unable to fork the sandbox');
+    actions.internal.handleError({
+      message: 'We were unable to fork the sandbox',
+      error,
+    });
   }
 };
 
