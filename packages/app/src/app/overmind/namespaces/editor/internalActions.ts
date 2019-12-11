@@ -351,9 +351,9 @@ export const forkSandbox: AsyncAction<{
       });
     }
 
-    state.workspace.project.title = forkedSandbox.title;
-    state.workspace.project.alias = forkedSandbox.alias;
-    state.workspace.project.description = forkedSandbox.description;
+    state.workspace.project.title = forkedSandbox.title || '';
+    state.workspace.project.description = forkedSandbox.description || '';
+    state.workspace.project.alias = forkedSandbox.alias || '';
 
     Object.assign(
       state.editor.sandboxes[state.editor.currentId],
