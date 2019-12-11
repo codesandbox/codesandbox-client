@@ -1,76 +1,66 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { Sandbox } from '@codesandbox/common/lib/types';
-import noop from 'lodash/noop';
-import { inject, hooksObserver } from 'app/componentConnectors';
-import React from 'react';
+import React, { ComponentProps, FunctionComponent } from 'react';
+
+import { useOvermind } from 'app/overmind';
+
 // @ts-ignore
 import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 // @ts-ignore
 import FullHeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
 import { Container } from './elements';
+import { MaybeTooltip } from './MaybeTooltip';
 
-const MaybeTooltip = ({ loggedIn, disableTooltip, title, children }) =>
-  loggedIn && !disableTooltip ? (
-    <Tooltip content={title} style={{ display: 'flex' }}>
-      {children}
-    </Tooltip>
-  ) : (
-    children
-  );
+const noop = () => undefined;
 
-interface Props {
-  sandbox: Sandbox;
-  className?: string;
+type Props = {
   colorless?: boolean;
-  text?: string;
-  style?: React.CSSProperties;
-  disableTooltip?: boolean;
-  highlightHover?: boolean;
-  store: any;
-  signals: any;
-}
+  sandbox: Sandbox;
+  text?: number;
+} & Partial<Pick<ComponentProps<typeof MaybeTooltip>, 'disableTooltip'>> &
+  Pick<
+    ComponentProps<typeof Container>,
+    'className' | 'highlightHover' | 'style'
+  >;
+export const LikeHeart: FunctionComponent<Props> = ({
+  className,
+  colorless,
+  disableTooltip,
+  highlightHover = false,
+  sandbox: { id, userLiked },
+  style,
+  text,
+}) => {
+  const {
+    actions: {
+      editor: { likeSandboxToggled },
+    },
+    state: { isLoggedIn },
+  } = useOvermind();
 
-export const LikeHeart = inject('store', 'signals')(
-  hooksObserver(
-    ({
-      sandbox,
-      className,
-      colorless,
-      text,
-      style,
-      disableTooltip,
-      highlightHover,
-      store: { isLoggedIn },
-      signals: { editor },
-    }: Props) => (
-      <Container
-        style={style}
-        hasText={text !== undefined}
+  return (
+    <Container
+      className={className}
+      hasText={text !== undefined}
+      highlightHover={highlightHover}
+      liked={userLiked}
+      loggedIn={isLoggedIn}
+      onClick={isLoggedIn ? () => likeSandboxToggled(id) : noop}
+      style={style}
+    >
+      <MaybeTooltip
+        disableTooltip={disableTooltip}
         loggedIn={isLoggedIn}
-        liked={sandbox.userLiked}
-        className={className}
-        highlightHover={highlightHover}
-        onClick={
-          isLoggedIn
-            ? () => editor.likeSandboxToggled({ id: sandbox.id })
-            : noop
-        }
+        title={userLiked ? 'Undo like' : 'Like'}
       >
-        <MaybeTooltip
-          loggedIn={isLoggedIn}
-          disableTooltip={disableTooltip}
-          title={sandbox.userLiked ? 'Undo like' : 'Like'}
-        >
-          {sandbox.userLiked ? (
-            <FullHeartIcon style={colorless ? null : { color: '#E01F4E' }} />
-          ) : (
-            <HeartIcon />
-          )}
+        {userLiked ? (
+          <FullHeartIcon style={colorless ? {} : { color: '#E01F4E' }} />
+        ) : (
+          <HeartIcon />
+        )}
 
-          {text && <span>{text}</span>}
-        </MaybeTooltip>
-      </Container>
-    )
-  )
-);
+        {text && <span>{text}</span>}
+      </MaybeTooltip>
+    </Container>
+  );
+};

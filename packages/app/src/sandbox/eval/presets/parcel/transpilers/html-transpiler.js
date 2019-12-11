@@ -1,5 +1,5 @@
 // @flow
-
+// eslint-disable-next-line
 import HTMLWorker from 'worker-loader?publicPath=/&name=parcel-html-transpiler.[hash:8].worker.js!./html-worker';
 import type { LoaderContext } from '../../../transpiled-module';
 import WorkerTranspiler from '../../../transpilers/worker-transpiler';

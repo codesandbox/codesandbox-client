@@ -5,10 +5,11 @@ import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
-export const notificationsOpened: AsyncAction = async ({ state, effects }) => {
+export const notificationsOpened: AsyncAction = async ({ state }) => {
   state.userNotifications.notificationsOpened = true;
   state.userNotifications.unreadCount = 0;
-  client.mutate({
+
+  await client.mutate({
     mutation: gql`
       mutation ClearNotificationCount {
         clearNotificationCount {

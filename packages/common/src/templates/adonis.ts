@@ -1,5 +1,5 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 export default new Template(
   'adonis',
@@ -8,7 +8,6 @@ export default new Template(
   'github/adonisjs/adonis-starter-codesandbox',
   decorateSelector(() => '#fff'),
   {
-    isServer: true,
     mainFile: ['/start/routes.js'],
     showOnHomePage: true,
     netlify: false,

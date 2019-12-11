@@ -77,7 +77,7 @@ export interface ISandboxInfo {
 
 const BUNDLER_URL =
   process.env.CODESANDBOX_ENV === 'development'
-    ? 'http://localhost:3001'
+    ? 'http://localhost:3002'
     : `https://sandpack-${version.replace(/\./g, '-')}.codesandbox.io`;
 
 export default class PreviewManager {
@@ -126,7 +126,7 @@ export default class PreviewManager {
         case 'initialized': {
           if (this.iframe) {
             if (this.iframe.contentWindow) {
-              registerFrame(this.iframe.contentWindow, BUNDLER_URL);
+              registerFrame(this.iframe.contentWindow, this.bundlerURL);
 
               if (this.options.fileResolver) {
                 this.fileResolverProtocol = new Protocol(
@@ -134,9 +134,9 @@ export default class PreviewManager {
                   async (data: { m: 'isFile' | 'readFile'; p: string }) => {
                     if (data.m === 'isFile') {
                       return this.options.fileResolver!.isFile(data.p);
-                    } else {
-                      return this.options.fileResolver!.readFile(data.p);
                     }
+
+                    return this.options.fileResolver!.readFile(data.p);
                   },
                   this.iframe.contentWindow
                 );

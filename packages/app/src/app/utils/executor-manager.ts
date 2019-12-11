@@ -6,7 +6,6 @@ import {
 import { IFiles } from '@codesandbox/executors/dist/executor';
 import { Sandbox } from '@codesandbox/common/lib/types';
 import getDefinition from '@codesandbox/common/lib/templates';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 
 function getExecutorType(isServer: boolean) {
@@ -21,7 +20,7 @@ function getModulesToSend(sandbox: Sandbox): IFiles {
   const modulesObject: IFiles = {};
 
   sandbox.modules.forEach(m => {
-    const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
+    const { path } = m;
     if (path) {
       modulesObject[path] = {
         code: m.code,

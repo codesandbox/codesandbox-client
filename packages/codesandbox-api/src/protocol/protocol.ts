@@ -2,9 +2,18 @@ const generateId = () =>
   // Such a random ID
   Math.floor(Math.random() * 1000000 + Math.random() * 1000000);
 
+const getConstructorName = (x: any) => {
+  try {
+    return x.constructor.name;
+  } catch(e) {
+    return '';
+  }
+};
+
 export default class Protocol {
   private outgoingMessages: Set<number> = new Set();
   private internalId: number;
+  private isWorker: boolean;
 
   constructor(
     private type: string,
@@ -13,6 +22,7 @@ export default class Protocol {
   ) {
     this.createConnection();
     this.internalId = generateId();
+    this.isWorker = getConstructorName(target) === 'Worker';
   }
 
   getTypeId() {
@@ -91,11 +101,11 @@ export default class Protocol {
 
   private _postMessage(m: any) {
     if (
-      this.target.constructor.name === 'Worker' ||
+      this.isWorker ||
       // @ts-ignore Unknown to TS
       (typeof DedicatedWorkerGlobalScope !== 'undefined' &&
         // @ts-ignore Unknown to TS
-        target instanceof DedicatedWorkerGlobalScope)
+        this.target instanceof DedicatedWorkerGlobalScope)
     ) {
       // @ts-ignore
       this.target.postMessage(m);

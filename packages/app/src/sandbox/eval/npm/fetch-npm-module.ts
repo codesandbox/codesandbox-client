@@ -3,6 +3,7 @@ import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
+import delay from 'sandbox/utils/delay';
 import { Module } from '../entities/module';
 import Manager from '../manager';
 
@@ -87,8 +88,16 @@ const urlProtocols = {
   jsDelivrNPM: {
     file: async (name: string, version: string, path: string) =>
       `https://cdn.jsdelivr.net/npm/${name}@${version}${path}`,
-    meta: async (name: string, version: string) =>
-      `https://data.jsdelivr.com/v1/package/npm/${name}@${version}/flat`,
+    meta: async (name: string, version: string) => {
+      // if it's a tag it won't work, so we fetch latest version otherwise
+      const latestVersion = /^\d/.test(version)
+        ? version
+        : JSON.parse(
+            (await downloadDependency(name, version, '/package.json')).code
+          ).version;
+
+      return `https://data.jsdelivr.com/v1/package/npm/${name}@${latestVersion}/flat`;
+    },
     normalizeMeta: normalizeJSDelivr,
   },
   jsDelivrGH: {
@@ -114,7 +123,7 @@ const urlProtocols = {
   },
 };
 
-async function fetchWithRetries(url: string, retries = 3): Promise<Response> {
+async function fetchWithRetries(url: string, retries = 6): Promise<Response> {
   const doFetch = () =>
     window.fetch(url).then(x => {
       if (x.ok) {
@@ -124,8 +133,15 @@ async function fetchWithRetries(url: string, retries = 3): Promise<Response> {
       throw new Error(`Could not fetch ${url}`);
     });
 
+  let lastTryTime = 0;
   for (let i = 0; i < retries; i++) {
+    if (Date.now() - lastTryTime < 3000) {
+      // Ensure that we at least wait 3s before retrying a request to prevent rate limits
+      // eslint-disable-next-line
+      await delay(3000 - (Date.now() - lastTryTime));
+    }
     try {
+      lastTryTime = Date.now();
       // eslint-disable-next-line
       return await doFetch();
     } catch (e) {
@@ -156,7 +172,7 @@ const getFetchProtocol = (depVersion: string, useFallback = false) => {
     return urlProtocols.jsDelivrGH;
   }
 
-  return useFallback ? urlProtocols.jsDelivrNPM : urlProtocols.unpkg;
+  return useFallback ? urlProtocols.unpkg : urlProtocols.jsDelivrNPM;
 };
 
 // Strips the version of a path, eg. test/1.3.0 -> test
@@ -174,9 +190,11 @@ async function getMeta(
   }
 
   const protocol = getFetchProtocol(version);
-  const metaUrl = await protocol.meta(nameWithoutAlias, version);
 
-  metas[id] = fetchWithRetries(metaUrl).then(x => x.json());
+  metas[id] = protocol
+    .meta(nameWithoutAlias, version)
+    .then(fetchWithRetries)
+    .then(x => x.json());
 
   return metas[id];
 }
@@ -202,9 +220,10 @@ export async function downloadDependency(
 
   const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
   const protocol = getFetchProtocol(depVersion);
-  const url = await protocol.file(nameWithoutAlias, depVersion, relativePath);
 
-  packages[id] = fetchWithRetries(url)
+  packages[id] = protocol
+    .file(nameWithoutAlias, depVersion, relativePath)
+    .then(fetchWithRetries)
     .then(x => x.text())
     .catch(async () => {
       const fallbackProtocol = getFetchProtocol(depVersion, true);
@@ -274,7 +293,7 @@ function resolvePath(
             }
 
             // eslint-disable-next-line
-            const subDepVersionVersionInfo = await findDependencyVersion(
+            const subDepVersionVersionInfo = await getDependencyVersion(
               currentTModule,
               manager,
               defaultExtensions,
@@ -335,10 +354,10 @@ type DependencyVersionResult =
       packageJSONPath: null;
     };
 
-async function findDependencyVersion(
+async function getDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json'],
+  defaultExtensions: string[] = ['js', 'jsx', 'json'],
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
@@ -376,6 +395,19 @@ async function findDependencyVersion(
       manager.transpiledModules[foundPackageJSONPath].module.code;
     const { version } = JSON.parse(packageJSON);
 
+    const savedDepDep = manifest.dependencyDependencies[dependencyName];
+
+    if (
+      savedDepDep &&
+      savedDepDep.resolved === version &&
+      savedDepDep.semver.startsWith('https://')
+    ) {
+      return {
+        packageJSONPath: foundPackageJSONPath,
+        version: savedDepDep.semver,
+      };
+    }
+
     if (packageJSON !== '//empty.js') {
       return { packageJSONPath: foundPackageJSONPath, version };
     }
@@ -386,7 +418,15 @@ async function findDependencyVersion(
   let version = null;
 
   if (manifest.dependencyDependencies[dependencyName]) {
-    version = manifest.dependencyDependencies[dependencyName].resolved;
+    if (
+      manifest.dependencyDependencies[dependencyName].semver.startsWith(
+        'https://'
+      )
+    ) {
+      version = manifest.dependencyDependencies[dependencyName].semver;
+    } else {
+      version = manifest.dependencyDependencies[dependencyName].resolved;
+    }
   } else {
     const dep = manifest.dependencies.find(m => m.name === dependencyName);
 
@@ -417,7 +457,7 @@ export default async function fetchModule(
     path.replace(/.*\/node_modules\//, '')
   );
 
-  const versionInfo = await findDependencyVersion(
+  const versionInfo = await getDependencyVersion(
     currentTModule,
     manager,
     defaultExtensions,

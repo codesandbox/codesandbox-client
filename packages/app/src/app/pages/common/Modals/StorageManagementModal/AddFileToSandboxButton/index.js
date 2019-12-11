@@ -8,6 +8,11 @@ export default class AddFileToSandboxButtonContainer extends React.PureComponent
   };
 
   render() {
-    return <AddFileToSandboxButton onClick={this.addFileToSandbox} />;
+    return (
+      <AddFileToSandboxButton
+        disabled={this.props.disabled}
+        onClick={this.addFileToSandbox}
+      />
+    );
   }
 }

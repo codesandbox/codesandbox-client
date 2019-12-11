@@ -1,26 +1,19 @@
-import React from 'react';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import { Title } from 'app/components/Title';
+import React, { FunctionComponent, useRef } from 'react';
+
 import { SubTitle } from 'app/components/SubTitle';
-import { Container, Buttons, TokenContainer } from './elements';
+import { Title } from 'app/components/Title';
+import { useOvermind } from 'app/overmind';
 
-interface IPromptProps {
-  error: string;
-  token: string;
-  loading: boolean;
-  username: string;
-  signIn: () => void;
-}
+import { Buttons, Container, TokenInput } from './elements';
 
-const select = ({ target }: { target: any }) => target.select();
+export const Prompt: FunctionComponent = () => {
+  const {
+    actions: { signInCliClicked },
+    state: { authToken, error, isLoadingCLI, user },
+  } = useOvermind();
+  const tokenInputRef = useRef<HTMLInputElement>(null);
 
-export const Prompt: React.FC<IPromptProps> = ({
-  error,
-  token,
-  loading,
-  username,
-  signIn,
-}) => {
   if (error) {
     return (
       <Container>
@@ -35,7 +28,7 @@ export const Prompt: React.FC<IPromptProps> = ({
     );
   }
 
-  if (!username) {
+  if (!user?.username) {
     return (
       <Container>
         <Title>Welcome to CodeSandbox!</Title>
@@ -45,13 +38,15 @@ export const Prompt: React.FC<IPromptProps> = ({
         </SubTitle>
 
         <Buttons>
-          <Button onClick={signIn}>Sign in with GitHub</Button>
+          <Button onClick={() => signInCliClicked()}>
+            Sign in with GitHub
+          </Button>
         </Buttons>
       </Container>
     );
   }
 
-  if (loading) {
+  if (isLoadingCLI) {
     return (
       <Container>
         <Title>Fetching authorization key...</Title>
@@ -61,7 +56,7 @@ export const Prompt: React.FC<IPromptProps> = ({
 
   return (
     <Container>
-      <Title>Hello {username}!</Title>
+      <Title>Hello {user.username}!</Title>
 
       <SubTitle>
         The CLI needs authorization to work.
@@ -69,7 +64,11 @@ export const Prompt: React.FC<IPromptProps> = ({
         Please paste the following code in the CLI:
       </SubTitle>
 
-      <TokenContainer onClick={select} value={token} />
+      <TokenInput
+        onClick={() => tokenInputRef.current.select()}
+        ref={tokenInputRef}
+        value={authToken}
+      />
     </Container>
   );
 };

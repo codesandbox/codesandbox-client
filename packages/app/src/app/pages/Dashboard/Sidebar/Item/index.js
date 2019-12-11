@@ -46,6 +46,7 @@ export class Item extends React.Component {
       children,
       style,
       active,
+      noActive,
       ...props
     } = this.props;
 
@@ -54,7 +55,8 @@ export class Item extends React.Component {
     return (
       <Route path={path}>
         {res => {
-          const isActive = (res.match && res.match.isExact) || active;
+          const isActive =
+            (!noActive && res.match && res.match.isExact) || active;
           const isOpen =
             this.state.open === undefined ? isActive : this.state.open;
 

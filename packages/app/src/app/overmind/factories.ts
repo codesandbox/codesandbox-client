@@ -1,5 +1,6 @@
 import { Contributor } from '@codesandbox/common/lib/types';
-import { json, IState, IDerive } from 'overmind';
+import { IDerive, IState, json } from 'overmind';
+
 import { AsyncAction } from '.';
 
 export const withLoadApp = <T>(
@@ -30,17 +31,21 @@ export const withLoadApp = <T>(
       state.user = await effects.api.getCurrentUser();
       actions.internal.setPatronPrice();
       actions.internal.setSignedInCookie();
+      effects.analytics.identify('signed_in', true);
+      effects.analytics.setUserId(state.user.id);
+      actions.internal.showUserSurveyIfNeeded();
       effects.live.connect();
       actions.userNotifications.internal.initialize();
       effects.api.preloadTemplates();
     } catch (error) {
-      effects.notificationToast.error(
-        'Your session seems to be expired, please log in again...'
-      );
-      effects.jwt.reset();
+      actions.internal.handleError({
+        message: 'We had trouble with signing you in',
+        error,
+      });
     }
   } else {
     effects.jwt.reset();
+    effects.analytics.setAnonymousId();
   }
 
   if (continueAction) {
@@ -66,32 +71,38 @@ export const withLoadApp = <T>(
 };
 
 export const withOwnedSandbox = <T>(
-  continueAction: AsyncAction<T>
+  continueAction: AsyncAction<T>,
+  cancelAction: AsyncAction<T> = () => Promise.resolve()
 ): AsyncAction<T> => async (context, payload) => {
   const { state, actions } = context;
 
-  if (!state.editor.currentSandbox.owned) {
-    await actions.editor.internal.forkSandbox({
-      sandboxId: state.editor.currentId,
-    });
-  } else if (
-    state.editor.currentSandbox.isFrozen &&
-    state.editor.sessionFrozen
-  ) {
-    const modalResponse = await actions.modals.forkFrozenModal.open();
+  if (state.editor.currentSandbox) {
+    if (!state.editor.currentSandbox.owned) {
+      if (state.editor.isForkingSandbox) {
+        return cancelAction(context, payload);
+      }
 
-    if (modalResponse === 'fork') {
       await actions.editor.internal.forkSandbox({
-        sandboxId: state.editor.currentId,
+        sandboxId: state.editor.currentSandbox.id,
       });
-    } else if (modalResponse === 'unfreeze') {
-      state.editor.sessionFrozen = false;
-    } else if (modalResponse === 'cancel') {
-      return;
+    } else if (
+      state.editor.currentSandbox.isFrozen &&
+      state.editor.sessionFrozen
+    ) {
+      const modalResponse = await actions.modals.forkFrozenModal.open();
+
+      if (modalResponse === 'fork') {
+        await actions.editor.internal.forkSandbox({
+          sandboxId: state.editor.currentId,
+        });
+      } else if (modalResponse === 'unfreeze') {
+        state.editor.sessionFrozen = false;
+      } else if (modalResponse === 'cancel') {
+        return cancelAction(context, payload);
+      }
     }
   }
 
-  // eslint-disable-next-line consistent-return
   return continueAction(context, payload);
 };
 
@@ -108,7 +119,7 @@ export const createModals = <
   state?: {
     current: keyof T;
   } & {
-    [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> }
+    [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> };
   };
   actions?: {
     [K in keyof T]: {
@@ -117,7 +128,7 @@ export const createModals = <
         T[K]['result']
       >;
       close: AsyncAction<T[K]['result']>;
-    }
+    };
   };
 } => {
   function createModal(name, modal) {

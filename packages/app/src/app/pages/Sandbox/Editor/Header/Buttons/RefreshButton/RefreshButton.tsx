@@ -4,7 +4,7 @@ import { UpdateFound } from './UpdateFound';
 
 export const RefreshButton = () => (
   <Action
-    onClick={document.location.reload}
+    onClick={() => document.location.reload()}
     Icon={UpdateFound}
     tooltip="Update Available! Click to Refresh."
   />

@@ -3,10 +3,10 @@
     "node_modules",
     "./**/*.test.ts",
     "./**/*.test.tsx",
-    "./**/*.stories.tsx"
+    "./**/*.stories.tsx",
+    "lib/"
   ],
   "include": ["./src/**/*"],
-
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES6",

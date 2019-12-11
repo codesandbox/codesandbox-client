@@ -1,10 +1,13 @@
-import { Action } from 'app/overmind';
+import { ViewTab } from '@codesandbox/common/lib/templates/template';
 import {
-  ServerStatus,
+  Sandbox,
   ServerContainerStatus,
   ServerPort,
+  ServerStatus,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { Action, AsyncAction } from 'app/overmind';
+import { getDevToolsTabPosition } from 'app/overmind/utils/server';
 
 export const restartSandbox: Action = ({ effects }) => {
   effects.executor.emit('sandbox:restart');
@@ -109,9 +112,7 @@ export const onSSEMessage: Action<{
         if (!port.main && openedPorts.indexOf(port.port) === -1) {
           effects.notificationToast.add({
             title: `Port ${port.port} Opened`,
-            message: `The server is listening on port ${
-              port.port
-            }, do you want to open it?`,
+            message: `The server is listening on port ${port.port}, do you want to open it?`,
             status: NotificationStatus.NOTICE,
             actions: {
               primary: [
@@ -176,33 +177,75 @@ type BrowserOptions = { title?: string; url?: string } & (
   | {
       port: number;
     }
-  | { url: string });
+  | { url: string }
+);
 
 export const onBrowserTabOpened: Action<{
-  options: BrowserOptions;
-}> = ({ actions }, { options }) => {
-  actions.editor.onDevToolsTabAdded({
-    tab: {
-      id: 'codesandbox.browser',
-      closeable: true,
-      options,
-    },
+  closeable?: boolean;
+  options?: BrowserOptions;
+}> = ({ actions, state }, { options, closeable }) => {
+  const tab: ViewTab = {
+    id: 'codesandbox.browser',
+  };
+
+  if (typeof options !== 'undefined') {
+    tab.options = options;
+  }
+
+  if (typeof closeable !== 'undefined') {
+    tab.closeable = closeable;
+  }
+
+  const position = getDevToolsTabPosition({
+    tabs: state.editor.devToolTabs,
+    tab,
   });
+
+  if (position) {
+    actions.editor.onDevToolsPositionChanged({ position });
+  } else {
+    actions.editor.onDevToolsTabAdded({ tab });
+  }
 };
 
 export const onBrowserFromPortOpened: Action<{
   port: ServerPort;
 }> = ({ actions }, { port }) => {
-  actions.editor.onDevToolsTabAdded({
-    tab: port.main
-      ? { id: 'codesandbox.browser' }
-      : {
-          id: 'codesandbox.browser',
-          closeable: true,
-          options: {
-            port: port.port,
-            url: `https://${port.hostname}`,
-          },
-        },
+  if (port.main) {
+    actions.server.onBrowserTabOpened({});
+  } else {
+    actions.server.onBrowserTabOpened({
+      closeable: true,
+      options: {
+        port: port.port,
+        url: `https://${port.hostname}`,
+      },
+    });
+  }
+};
+
+export const startContainer: AsyncAction<Sandbox> = async (
+  { effects, actions },
+  sandbox
+) => {
+  await effects.executor.initializeExecutor(sandbox);
+
+  [
+    'connect',
+    'disconnect',
+    'sandbox:status',
+    'sandbox:start',
+    'sandbox:stop',
+    'sandbox:error',
+    'sandbox:log',
+    'sandbox:hibernate',
+    'sandbox:update',
+    'sandbox:port',
+    'shell:out',
+    'shell:exit',
+  ].forEach(message => {
+    effects.executor.listen(message, actions.server.onSSEMessage);
   });
+
+  await effects.executor.setupExecutor();
 };

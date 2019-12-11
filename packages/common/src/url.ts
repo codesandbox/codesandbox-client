@@ -11,12 +11,14 @@ export interface SandboxOptions {
   isTestPreviewWindow?: boolean;
   isConsolePreviewWindow?: boolean;
   hideNavigation?: boolean;
+  theme?: string;
   isInProjectView?: boolean;
   autoResize?: boolean;
   useCodeMirror?: boolean;
   enableEslint?: boolean;
   forceRefresh?: boolean;
   expandDevTools?: boolean;
+  hideDevTools?: boolean;
   verticalMode?: boolean;
   runOnClick?: boolean;
   previewWindow?: 'tests' | 'console';
@@ -59,6 +61,9 @@ export const getSandboxOptions = (url: string) => {
     result.editorSize = +editorSizeMatch[3];
   }
 
+  const theme = url.match(/(\?|&)(theme)=([^&]+)/);
+  if (theme) result.theme = theme[3];
+
   result.isPreviewScreen = url.includes('view=preview');
   result.isEditorScreen = url.includes('view=editor');
   result.isSplitScreen = url.includes('view=split');
@@ -95,6 +100,7 @@ export const getSandboxOptions = (url: string) => {
   result.enableEslint = url.includes('eslint=1');
   result.forceRefresh = url.includes('forcerefresh=1');
   result.expandDevTools = url.includes('expanddevtools=1');
+  result.hideDevTools = url.includes('hidedevtools=1');
   if (url.includes('verticallayout=')) {
     result.verticalMode = url.includes('verticallayout=1');
   }

@@ -1,5 +1,5 @@
 import Template from './template';
-import { decorateSelector } from '../theme';
+import { decorateSelector } from '../utils/decorate-selector';
 
 export class VuePressTemplate extends Template {
   // The file to open by the editor
@@ -16,7 +16,6 @@ export default new VuePressTemplate(
   {
     mainFile: [], // 🤔
     distDir: '.vuepress/dist',
-    isServer: true,
     showOnHomePage: true,
   }
 );

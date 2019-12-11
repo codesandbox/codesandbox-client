@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { useOvermind } from 'app/overmind';
-import Files from '../../Files';
+import { Files } from '../../Files';
 import { Dependencies } from '../../Dependencies';
 import { WorkspaceItem } from '../../WorkspaceItem';
 import { ItemTitle } from '../../elements';
@@ -19,7 +19,9 @@ export const FilesItem = () => {
         <span style={{ display: 'inline-block', width: '100%' }}>Explorer</span>{' '}
         {editActions}
       </ItemTitle>
-      <Files setEditActions={setEditActions} />
+      <div style={{ paddingBottom: '1.75rem' }}>
+        <Files setEditActions={setEditActions} />
+      </div>
       {!staticTemplate ? (
         <WorkspaceItem defaultOpen title="Dependencies">
           <Dependencies />

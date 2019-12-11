@@ -1,15 +1,11 @@
-import { decorateSelector } from '@codesandbox/common/lib/theme';
 import { Sandbox, Template } from '@codesandbox/common/lib/types';
+import TemplateClass from '@codesandbox/common/lib/templates/template';
 
-export const templateColor = (sandbox: Sandbox, templateDef: Template) => {
-  if (sandbox && sandbox.customTemplate) {
-    return decorateSelector(() => sandbox.customTemplate.color);
-  }
-
-  if (sandbox && sandbox.forkedTemplate) {
-    return decorateSelector(() => sandbox.forkedTemplate.color);
-  }
-
+// TODO: change all calls to this to not use sandbox anymore
+export const templateColor = (
+  sandbox: Sandbox,
+  templateDef: Template | TemplateClass
+) => {
   if (templateDef) {
     return templateDef.color;
   }

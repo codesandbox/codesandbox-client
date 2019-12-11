@@ -36,6 +36,14 @@ function getV3Code(code, version, path) {
       });
     });
 
+    // Fallback to generate sourcemaps on Svelte 3.13+
+    // See https://github.com/codesandbox/codesandbox-client/pull/3114
+    if (!js.map.toUrl) {
+      js.map.toUrl = () =>
+        'data:application/json;charset=utf-8;base64,' +
+        btoa(JSON.stringify(js.map));
+    }
+
     return js;
   } catch (e) {
     return self.postMessage({

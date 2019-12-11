@@ -45,27 +45,35 @@ export type ModuleCorrection = {
 export type Module = {
   id?: string;
   title: string;
-  code: string | undefined;
-  savedCode: string | undefined;
+  code: string;
+  savedCode: string | null;
   shortid: string;
   errors: ModuleError[];
   corrections: ModuleCorrection[];
-  directoryShortid: string | undefined;
+  directoryShortid: string | null;
   isNotSynced: boolean;
   sourceId: string;
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path?: string;
+  path: string;
   now?: any;
   type: 'file';
+};
+
+export type Configuration = {
+  title: string;
+  moreInfoUrl: string;
+  type: string;
+  description: string;
 };
 
 export type Directory = {
   id: string;
   title: string;
-  directoryShortid: string | undefined;
+  directoryShortid: string | null;
   shortid: string;
+  path: string;
   sourceId: string;
   type: 'directory';
 };
@@ -76,9 +84,8 @@ export type Template = {
   shortid: string;
   url: string;
   main: boolean;
-  color: string;
+  color: () => string;
   backgroundColor: () => string | undefined;
-
   popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
@@ -97,21 +104,20 @@ export type Badge = {
 };
 
 export type CurrentUser = {
-  id: string | undefined;
-  email: string | undefined;
-  name: string | undefined;
+  id: string | null;
+  email: string | null;
+  name: string | null;
   username: string;
-  avatarUrl: string | undefined;
-  jwt: string | undefined;
-  subscription:
-    | {
-        since: string;
-        amount: number;
-        cancelAtPeriodEnd: boolean;
-      }
-    | undefined;
+  avatarUrl: string | null;
+  jwt: string | null;
+  subscription: {
+    since: string;
+    amount: number;
+    cancelAtPeriodEnd: boolean;
+    plan?: 'pro' | 'patron';
+  } | null;
   curatorAt: string;
-  badges: Array<Badge>;
+  badges: Badge[];
   integrations: {
     zeit?: {
       token: string;
@@ -121,13 +127,15 @@ export type CurrentUser = {
       email: string;
     };
   };
+  sendSurvey: boolean;
 };
 
 export type CustomTemplate = {
   color?: string;
-  title: string;
-  id: string;
   iconUrl?: string;
+  id: string;
+  published?: boolean;
+  title: string;
   url: string | null;
 };
 
@@ -142,13 +150,25 @@ export type GitInfo = {
 export type SmallSandbox = {
   id: string;
   alias: string | null;
+  title: string | null;
   customTemplate: CustomTemplate | null;
-  title: string;
   insertedAt: string;
   updatedAt: string;
   likeCount: number;
   viewCount: number;
   forkCount: number;
+  template: string;
+  privacy: 0 | 1 | 2;
+  git: GitInfo | null;
+};
+
+export type ForkedSandbox = {
+  id: string;
+  alias: string | null;
+  title: string | null;
+  customTemplate: CustomTemplate | null;
+  insertedAt: string;
+  updatedAt: string;
   template: string;
   privacy: 0 | 1 | 2;
   git: GitInfo | null;
@@ -163,7 +183,8 @@ export type User = {
   username: string;
   name: string;
   avatarUrl: string;
-  showcasedSandboxShortid: string | undefined;
+  twitter: string | null;
+  showcasedSandboxShortid: string | null;
   sandboxCount: number;
   givenLikeCount: number;
   receivedLikeCount: number;
@@ -172,10 +193,10 @@ export type User = {
   forkedCount: number;
   sandboxes: PaginatedSandboxes;
   likedSandboxes: PaginatedSandboxes;
-  badges: Array<Badge>;
+  badges: Badge[];
+  topSandboxes: SmallSandbox[];
   subscriptionSince: string;
   selection: Selection | null;
-  color: any;
 };
 
 export type LiveUser = {
@@ -264,16 +285,16 @@ export type PickedSandboxes = {
 };
 
 export type PickedSandboxDetails = {
-  title: string;
-  id: string;
   description: string;
+  id: string;
+  title: string;
 };
 
 export type Sandbox = {
   id: string;
-  alias: string | undefined;
-  title: string | undefined;
-  description: string;
+  alias: string | null;
+  title: string | null;
+  description: string | null;
   viewCount: number;
   likeCount: number;
   forkCount: number;
@@ -288,20 +309,29 @@ export type Sandbox = {
     [dep: string]: string;
   };
   customTemplate: CustomTemplate | null;
+  /**
+   * Which template this sandbox is based on
+   */
   forkedTemplate: CustomTemplate | null;
+  /**
+   * Sandbox the forked template is from
+   */
+  forkedTemplateSandbox: ForkedSandbox | null;
   externalResources: string[];
-  team?: {
+  team: {
     id: string;
     name: string;
-  };
-  roomId: string;
+  } | null;
+  roomId: string | null;
   privacy: 0 | 1 | 2;
-  author: User | undefined;
-  forkedFromSandbox: SmallSandbox | undefined;
-  git: GitInfo | undefined;
+  author: User | null;
+  forkedFromSandbox: ForkedSandbox | null;
+  git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
-  environmentVariables: EnvironmentVariable[];
+  environmentVariables: {
+    [key: string]: string;
+  } | null;
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
@@ -313,18 +343,17 @@ export type Sandbox = {
   };
   template: TemplateType;
   entry: string;
-  originalGit: GitInfo | undefined;
-  originalGitCommitSha: string | undefined;
-  originalGitChanges:
-    | {
-        added: string[];
-        modified: string[];
-        deleted: string[];
-        rights: 'none' | 'read' | 'write' | 'admin';
-      }
-    | undefined;
+  originalGit: GitInfo | null;
+  originalGitCommitSha: string | null;
+  originalGitChanges: {
+    added: string[];
+    modified: string[];
+    deleted: string[];
+    rights: 'none' | 'read' | 'write' | 'admin';
+  } | null;
   version: number;
-  screenshotUrl: string | undefined;
+  screenshotUrl: string | null;
+  previewSecret: string | null;
 };
 
 export type PrettierConfig = {
@@ -610,9 +639,14 @@ export type UploadedFilesInfo = {
 };
 
 export type SandboxUrlSourceData = {
-  id?: string;
-  alias?: string;
+  id: string;
+  alias: string | null;
   git?: GitInfo;
+};
+
+export type DevToolsTabPosition = {
+  devToolIndex: number;
+  tabPosition: number;
 };
 
 export type LiveMessage<data = unknown> = {
@@ -659,4 +693,10 @@ export enum PatronBadge {
   FOURTH = 'patron-4',
 }
 
+export type LiveDisconnectReason = 'close' | 'inactivity';
+
 export type PatronTier = 1 | 2 | 3 | 4;
+
+export type SandboxFs = {
+  [path: string]: Module | Directory;
+};

@@ -421,9 +421,9 @@ export default class TestRunner {
 
         if (test.errors) {
           test.errors.forEach(err => {
-            if (err.mappedErrors) {
+            if (err.mappedErrors && err.mappedErrors.length) {
               const { mappedErrors } = err;
-              const mappedError = mappedErrors[0];
+              const [mappedError] = mappedErrors;
 
               dispatch(
                 actions.error.show(err.name || 'Jest Error', err.message, {

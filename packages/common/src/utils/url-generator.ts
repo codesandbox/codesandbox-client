@@ -1,4 +1,5 @@
 import { Sandbox, SandboxUrlSourceData } from '../types';
+import { isServer } from '../templates/helpers/is-server';
 
 export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
@@ -96,9 +97,14 @@ const stagingFrameUrl = (shortid: string, path: string) => {
 export const frameUrl = (
   sandbox: Sandbox,
   append: string = '',
-  useFallbackDomain = false
+  {
+    useFallbackDomain = false,
+    port = undefined,
+  }: { useFallbackDomain?: boolean; port?: number } = {}
 ) => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
+
+  const templateIsServer = isServer(sandbox.template);
 
   if (process.env.LOCAL_SERVER) {
     return `http://localhost:3002/${path}`;
@@ -109,14 +115,30 @@ export const frameUrl = (
   }
 
   let sHost = host();
-  if (`https://${sHost}` in sandboxHost && !useFallbackDomain) {
+  if (
+    `https://${sHost}` in sandboxHost &&
+    !useFallbackDomain &&
+    !templateIsServer
+  ) {
     sHost = sandboxHost[`https://${sHost}`].split('//')[1];
   }
-  return `${location.protocol}//${sandbox.id}.${sHost}/${path}`;
+  return `${location.protocol}//${sandbox.id}${port ? `-${port}` : ''}.${
+    templateIsServer ? 'sse.' : ''
+  }${sHost}/${path}`;
 };
 
 export const forkSandboxUrl = (sandbox: Sandbox) =>
   `${sandboxUrl(sandbox)}/fork`;
+
+export const signInPageUrl = (redirectTo?: string) => {
+  let url = `/signin`;
+
+  if (redirectTo) {
+    url += '?continue=' + redirectTo;
+  }
+
+  return url;
+};
 
 export const signInUrl = (extraScopes: boolean = false) =>
   '/auth/github' + (extraScopes ? '?scope=user:email,public_repo' : '');
