@@ -384,6 +384,10 @@ class Tests extends React.Component<DevToolProps, State> {
 
           this.setState(oldState =>
             immer(oldState, state => {
+              if (!state.files[test.path]) {
+                return;
+              }
+
               const existingTest =
                 state.files[test.path].tests[testName.join('||||')];
 
@@ -486,7 +490,9 @@ class Tests extends React.Component<DevToolProps, State> {
     this.setState(
       oldState =>
         immer(oldState, state => {
-          state.files[file.fileName].tests = {};
+          if (state.files[file.fileName]) {
+            state.files[file.fileName].tests = {};
+          }
         }),
       () => {
         dispatch({

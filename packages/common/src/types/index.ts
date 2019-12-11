@@ -162,6 +162,18 @@ export type SmallSandbox = {
   git: GitInfo | null;
 };
 
+export type ForkedSandbox = {
+  id: string;
+  alias: string | null;
+  title: string | null;
+  customTemplate: CustomTemplate | null;
+  insertedAt: string;
+  updatedAt: string;
+  template: string;
+  privacy: 0 | 1 | 2;
+  git: GitInfo | null;
+};
+
 export type PaginatedSandboxes = {
   [page: number]: Array<SmallSandbox>;
 };
@@ -304,7 +316,7 @@ export type Sandbox = {
   /**
    * Sandbox the forked template is from
    */
-  forkedTemplateSandbox: SmallSandbox | null;
+  forkedTemplateSandbox: ForkedSandbox | null;
   externalResources: string[];
   team: {
     id: string;
@@ -313,7 +325,7 @@ export type Sandbox = {
   roomId: string | null;
   privacy: 0 | 1 | 2;
   author: User | null;
-  forkedFromSandbox: SmallSandbox | null;
+  forkedFromSandbox: ForkedSandbox | null;
   git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;

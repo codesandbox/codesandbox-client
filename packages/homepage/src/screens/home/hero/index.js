@@ -158,7 +158,7 @@ export default () => {
               {sandboxesCreatedCount}{' '}
             </span>
             {sandboxesCreatedCount === 1 ? 'sandbox' : 'sandboxes'} created
-            since you've opened this page
+            since you opened this page
           </CountText>
 
           <div style={{ position: 'relative' }}>

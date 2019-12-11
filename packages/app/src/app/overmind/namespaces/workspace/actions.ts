@@ -195,9 +195,10 @@ export const sandboxDeleted: AsyncAction = async ({
   effects.router.redirectToSandboxWizard();
 };
 
-export const sandboxPrivacyChanged: AsyncAction<{
-  privacy: 0 | 1 | 2;
-}> = async ({ state, effects, actions }, { privacy }) => {
+export const sandboxPrivacyChanged: AsyncAction<0 | 1 | 2> = async (
+  { actions, effects, state },
+  privacy
+) => {
   const oldPrivacy = state.editor.currentSandbox.privacy;
   const sandbox = await effects.api.updatePrivacy(
     state.editor.currentSandbox.id,

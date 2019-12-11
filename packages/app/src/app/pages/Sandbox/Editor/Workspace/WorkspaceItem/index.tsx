@@ -15,7 +15,7 @@ type Props = {
   keepState?: boolean;
   disabled?: boolean;
   defaultOpen?: boolean;
-  actions?: React.Component<any, any>;
+  actions?: React.ReactNode;
   style?: React.CSSProperties;
   showOverflow?: boolean;
 };

@@ -13,15 +13,37 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import React, { useEffect, useState, useRef } from 'react';
-import { Canvas, useThree } from 'react-three-fiber';
+import { Canvas, useThree, useFrame } from 'react-three-fiber';
 import { useDrag } from 'react-use-gesture';
 import { useSpring, a } from 'react-spring/three';
 import ResizeObserver from '@juggle/resize-observer';
 
+import fallback from '../../../../assets/images/hero-fallback.png';
 import { useCannon, Provider } from './useCannon';
 
-function Plane({ position }) {
+import { AnimationContainer, FallbackImageBackground } from './elements';
+
+function Plane({ position, disableAnimation }) {
   const bodyRef = useRef();
+  const fpsBelow10 = useRef(0);
+  const lastCall = useRef(Date.now());
+
+  // If we have 3 consecutive frames that are below 5fps it's most likely that
+  // hardware acceleration has been disabled and we'll disable the whole animation
+  useFrame(() => {
+    const currentTime = Date.now();
+    const delta = currentTime - lastCall.current;
+    lastCall.current = currentTime;
+    if (delta > (1 / 5) * 1000 && document.hasFocus()) {
+      fpsBelow10.current++;
+
+      if (fpsBelow10.current > 3) {
+        disableAnimation();
+      }
+    } else {
+      fpsBelow10.current = 0;
+    }
+  });
 
   const fn = React.useCallback(
     body => {
@@ -107,6 +129,7 @@ function Box({ position, rotation, onDrag, onDragStop }) {
 
 export default function App({ boxes, showPlane }) {
   const [prop, set] = useSpring(() => ({ intensity: 0.6, color: '#fff' }));
+  const [animationDisabled, setAnimationDisabled] = React.useState(false);
   const [dragging, setDragging] = React.useState(false);
 
   const setDraggingTrue = React.useCallback(() => {
@@ -129,15 +152,20 @@ export default function App({ boxes, showPlane }) {
     }, 300);
   }, [boxes, set]);
 
+  if (animationDisabled) {
+    return (
+      <AnimationContainer>
+        <FallbackImageBackground
+          fallback={fallback}
+          alt="boxes falling on the ground"
+        />
+      </AnimationContainer>
+    );
+  }
+
   return (
-    <div
+    <AnimationContainer
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 0,
         touchAction: dragging ? 'none' : 'initial',
       }}
     >
@@ -160,7 +188,14 @@ export default function App({ boxes, showPlane }) {
         />
 
         <Provider>
-          {showPlane && <Plane position={[0, 0, 0]} />}
+          {showPlane && (
+            <Plane
+              disableAnimation={() => {
+                setAnimationDisabled(true);
+              }}
+              position={[0, 0, 0]}
+            />
+          )}
 
           {boxes.map(pos => (
             <Box
@@ -173,6 +208,6 @@ export default function App({ boxes, showPlane }) {
           ))}
         </Provider>
       </Canvas>
-    </div>
+    </AnimationContainer>
   );
 }

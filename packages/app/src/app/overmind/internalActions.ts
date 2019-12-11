@@ -262,26 +262,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   state.workspace.project.description = sandbox.description || '';
   state.workspace.project.alias = sandbox.alias || '';
 
-  await effects.executor.initializeExecutor(sandbox);
-
-  [
-    'connect',
-    'disconnect',
-    'sandbox:status',
-    'sandbox:start',
-    'sandbox:stop',
-    'sandbox:error',
-    'sandbox:log',
-    'sandbox:hibernate',
-    'sandbox:update',
-    'sandbox:port',
-    'shell:out',
-    'shell:exit',
-  ].forEach(message => {
-    effects.executor.listen(message, actions.server.onSSEMessage);
-  });
-
-  effects.executor.setupExecutor();
+  actions.server.startContainer(sandbox);
 };
 
 export const updateCurrentSandbox: AsyncAction<Sandbox> = async (

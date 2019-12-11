@@ -354,6 +354,10 @@ export const forkSandbox: AsyncAction<{
       });
     }
 
+    state.workspace.project.title = forkedSandbox.title || '';
+    state.workspace.project.description = forkedSandbox.description || '';
+    state.workspace.project.alias = forkedSandbox.alias || '';
+
     Object.assign(
       state.editor.sandboxes[state.editor.currentId],
       forkedSandbox
@@ -362,6 +366,11 @@ export const forkSandbox: AsyncAction<{
       forkedSandbox
     );
     effects.preview.updateAddressbarUrl();
+
+    if (templateDefinition.isServer) {
+      effects.preview.refresh();
+      actions.server.startContainer(forkedSandbox);
+    }
 
     if (state.workspace.openedWorkspaceItem === 'project-summary') {
       actions.workspace.openDefaultItem();
