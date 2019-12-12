@@ -1,50 +1,13 @@
-import { RoomInfo, User as UserType } from '@codesandbox/common/lib/types';
-import delay from '@codesandbox/common/lib/utils/animation/delay-effect';
+import { LiveUser, RoomInfo } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
-import styled from 'styled-components';
 
-const Status = styled.div`
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.6);
-`;
-
-const UserContainer = styled.div<{ isCurrentUser: boolean }>`
-  ${delay()};
-  display: flex;
-  align-items: center;
-  margin: 0.5rem 0;
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
-  ${props =>
-    props.isCurrentUser &&
-    `
-    color: white;
-  `};
-
-  &:first-child {
-    margin-top: 0;
-  }
-`;
-
-const ProfileImage = styled.img<{ borderColor: string }>`
-  width: 26px;
-  height: 26px;
-  border-radius: 2px;
-  border-left: 2px solid ${({ borderColor }) => borderColor};
-
-  margin-right: 0.5rem;
-`;
-
-const UserName = styled.div`
-  font-weight: 600;
-  font-size: 0.875rem;
-`;
+import { ProfileImage, Status, UserContainer, UserName } from './elements';
 
 interface Props {
-  user: UserType;
+  user: LiveUser;
   type: string;
-  sideView: boolean;
+  sideView: React.ReactNode;
   roomInfo: RoomInfo;
   currentUserId: string;
 }
