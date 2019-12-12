@@ -1,25 +1,21 @@
-import React from 'react';
-import styled from 'styled-components';
-import { sortBy } from 'lodash-es';
-
-import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
 import Input from '@codesandbox/common/lib/components/Input';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import delay from '@codesandbox/common/lib/utils/animation/delay-effect';
 import Switch from '@codesandbox/common/lib/components/Switch';
-
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-
-import AddIcon from 'react-icons/lib/md/add';
-import RemoveIcon from 'react-icons/lib/md/remove';
+import delay from '@codesandbox/common/lib/utils/animation/delay-effect';
+import { sortBy } from 'lodash-es';
+import React from 'react';
 import FollowIcon from 'react-icons/lib/io/eye';
 import UnFollowIcon from 'react-icons/lib/io/eye-disabled';
-
-import User from './User';
-import Countdown from './Countdown';
-import LiveButton from './LiveButton';
+import AddIcon from 'react-icons/lib/md/add';
+import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
+import RemoveIcon from 'react-icons/lib/md/remove';
+import styled from 'styled-components';
 
 import { Description, WorkspaceInputContainer } from '../../elements';
+import Countdown from './Countdown';
+import LiveButton from './LiveButton';
+import { User } from './User';
 
 const Container = styled.div`
   ${delay()};
