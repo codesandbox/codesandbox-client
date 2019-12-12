@@ -1367,7 +1367,7 @@
       "contributions": [
         "code"
       ]
-     },
+    },
     {
       "login": "chinmay17",
       "name": "Chinmay Chaudhary",
@@ -1386,14 +1386,15 @@
         "code"
       ]
     },
-    {      "login": "NabeelahY",
+    {
+      "login": "NabeelahY",
       "name": "Nabeelah",
       "avatar_url": "https://avatars1.githubusercontent.com/u/35764602?v=4",
       "profile": "https://github.com/NabeelahY",
-            "contributions": [
+      "contributions": [
         "code"
       ]
-      },
+    },
     {
       "login": "vanya829",
       "name": "vanya829",
@@ -1408,10 +1409,10 @@
       "name": "Tane Morgan",
       "avatar_url": "https://avatars3.githubusercontent.com/u/464864?v=4",
       "profile": "https://github.com/tanem",
-       "contributions": [
+      "contributions": [
         "code"
-       ]
-     },
+      ]
+    },
     {
       "login": "hetpatel33",
       "name": "Het Patel",
@@ -1422,14 +1423,14 @@
       ]
     },
     {
-    "login": "ivandevp",
+      "login": "ivandevp",
       "name": "Ivan Medina",
       "avatar_url": "https://avatars3.githubusercontent.com/u/9284690?v=4",
       "profile": "https://twitter.com/ivandevp",
-            "contributions": [
+      "contributions": [
         "code"
       ]
-      },
+    },
     {
       "login": "Gobinath-Manokaran",
       "name": "Gobinath-Manokaran",
@@ -1492,6 +1493,15 @@
       "profile": "https://github.com/sajadhsm",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "carloslfu",
+      "name": "Carlos Galarza",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5993168?v=4",
+      "profile": "https://carloslfu.github.io",
+      "contributions": [
+        "doc"
       ]
     }
   ],
