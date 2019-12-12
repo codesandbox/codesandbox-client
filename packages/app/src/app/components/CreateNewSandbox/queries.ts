@@ -174,11 +174,12 @@ export function unmakeTemplates(selectedSandboxes: string[]) {
             x => selectedSandboxes.indexOf(x.sandbox.id) === -1
           );
 
-          draft.me.teams = draft.me.teams.map(t =>
-            t.templates.filter(
+          draft.me.teams = draft.me.teams.map(t => ({
+            ...t,
+            templates: t.templates.filter(
               x => selectedSandboxes.indexOf(x.sandbox.id) === -1
-            )
-          );
+            ),
+          }));
         });
 
         cache.writeQuery<ListTemplatesQuery, ListTemplatesQueryVariables>({
