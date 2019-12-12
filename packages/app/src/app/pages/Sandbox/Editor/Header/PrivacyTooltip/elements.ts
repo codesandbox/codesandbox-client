@@ -61,5 +61,12 @@ export const Select = styled(Element).attrs({ as: 'select' })(({ theme }) =>
     ':hover': {
       backgroundColor: 'grays.700',
     },
+    ':disabled': {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+      ':hover': {
+        backgroundColor: 'grays.800',
+      },
+    },
   })
 );

@@ -6,44 +6,34 @@ import theme from '@codesandbox/common/lib/design-language/theme';
 import { Container, Text, Link, Select } from './elements';
 import * as Icons from './icons';
 
-const config = {
-  0: {
-    label: 'Public',
-    title: (
-      <>
-        You can change privacy of a sandbox as a Pro.
-        <br />
-        <Link href="/pricing">Upgrade to Pro</Link>
-      </>
-    ),
-    description: 'Everyone can see this Sandbox',
-    icon: <Icons.Public />,
-  },
-  1: {
-    label: 'Unlisted',
-    title: 'Adjust privacy settings.',
-    description: 'Only people with a private link are able to see this Sandbox',
-    icon: <Icons.Unlisted />,
-  },
-  2: {
-    value: 'Private',
-    title: 'Adjust privacy settings.',
-    description: 'Only you can see this Sandbox.',
-    icon: <Icons.Private />,
-  },
-};
-
 export const PrivacyTooltip = () => {
   const {
     actions: {
       workspace: { sandboxPrivacyChanged },
     },
     state: {
+      user: { subscription },
       editor: {
         currentSandbox: { privacy },
       },
     },
   } = useOvermind();
+
+  const config = {
+    0: {
+      description: 'Everyone can see this Sandbox',
+      icon: <Icons.Public />,
+    },
+    1: {
+      description:
+        'Only people with a private link are able to see this Sandbox',
+      icon: <Icons.Unlisted />,
+    },
+    2: {
+      description: 'Only you can see this Sandbox.',
+      icon: <Icons.Private />,
+    },
+  };
 
   const onChange = event => {
     const value = event.target.value;
@@ -59,10 +49,23 @@ export const PrivacyTooltip = () => {
           content={
             <>
               <Text size="3" marginBottom={4}>
-                {config[privacy].title}
+                {subscription ? (
+                  'Adjust privacy settings.'
+                ) : (
+                  <>
+                    You can change privacy of a sandbox as a Pro.
+                    <br />
+                    <Link href="/pricing">Upgrade to Pro</Link>
+                  </>
+                )}
               </Text>
 
-              <Select marginBottom={2} value={privacy} onChange={onChange}>
+              <Select
+                marginBottom={2}
+                value={privacy}
+                onChange={onChange}
+                disabled={!subscription}
+              >
                 <option value={0}>Public</option>
                 <option value={1}>Unlisted</option>
                 <option value={2}>Private</option>
