@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { AnyStyledComponent } from 'styled-components';
-import { storiesOf, RenderFunction } from '@storybook/react';
+import { storiesOf } from '@storybook/react';
 import { color, boolean, number, select } from '@storybook/addon-knobs';
 import Centered from './Centered';
 import Fullscreen from './Fullscreen';
@@ -17,7 +17,7 @@ const Background = styled.div`
   right: 0;
 `;
 
-const withBackground = (fn: RenderFunction) => <Background>{fn()}</Background>;
+const withBackground = (fn: any) => <Background>{fn()}</Background>;
 
 const makeBorderedContainer = (
   name: string,
@@ -72,7 +72,7 @@ const makeContent = () => {
 
 const CenteredBordered = makeBorderedContainer('Centered', Centered, 'yellow');
 
-const withCenteredBordered = (fn: RenderFunction) => (
+const withCenteredBordered = (fn: any) => (
   <CenteredBordered
     horizontal={boolean('horizontal', false, 'Centered Props')}
     vertical={boolean('vertical', false, 'Centered Props')}
@@ -87,13 +87,13 @@ const FullscreenBordered = makeBorderedContainer(
   'red'
 );
 
-const withFullscreenBordered = (fn: RenderFunction) => (
+const withFullscreenBordered = (fn: any) => (
   <FullscreenBordered>{fn()}</FullscreenBordered>
 );
 
 const ColumnBordered = makeBorderedContainer('Column', Column, 'purple');
 
-const withColumnBordered = (fn: RenderFunction) => (
+const withColumnBordered = (fn: any) => (
   <ColumnBordered
     flex={boolean('flex', false, 'Column Props')}
     alignItems={select('alignItems', alignItemsOptions, null, 'Column Props')}
@@ -110,7 +110,7 @@ const withColumnBordered = (fn: RenderFunction) => (
 
 const RowBordered = makeBorderedContainer('Row', Row, 'orange');
 
-const withRowBordered = (fn: RenderFunction) => (
+const withRowBordered = (fn: any) => (
   <RowBordered
     alignItems={select('alignItems', alignItemsOptions, null, 'Row Props')}
     justifyContent={select(
@@ -130,7 +130,7 @@ const MaxWidthBordered = makeBorderedContainer(
   'blue'
 );
 
-const withMaxWidthBordered = (fn: RenderFunction) => (
+const withMaxWidthBordered = (fn: any) => (
   <MaxWidthBordered
     responsive={boolean('responsive', undefined, 'MaxWidth props')}
     width={number('width', undefined, {}, 'MaxWidth props')}
@@ -139,7 +139,7 @@ const withMaxWidthBordered = (fn: RenderFunction) => (
   </MaxWidthBordered>
 );
 
-const repeat = (name: string, fn: RenderFunction) => () => {
+const repeat = (name: string, fn: any) => () => {
   const times = number(`Repeat ${name}`, 1, {}, 'other');
   const content: JSX.Element[] = [];
 

@@ -20,7 +20,7 @@ import {
   UserSandbox,
 } from '@codesandbox/common/lib/types';
 import { client } from 'app/graphql/client';
-import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
+import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 
 import {
   transformDirectory,
@@ -439,7 +439,7 @@ export default {
     return api.delete(`/users/current_user/integrations/zeit`);
   },
   preloadTemplates() {
-    client.query({ query: LIST_TEMPLATES, variables: { showAll: true } });
+    client.query({ query: LIST_PERSONAL_TEMPLATES, variables: {} });
   },
   deleteTemplate(
     sandboxId: string,

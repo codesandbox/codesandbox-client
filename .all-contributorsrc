@@ -1360,6 +1360,15 @@
       ]
     },
     {
+      "login": "HTMLGhozt",
+      "name": "Thomas Dillard",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/12449668?v=4",
+      "profile": "http://ThomasDillard.com",
+      "contributions": [
+        "code"
+      ]
+     },
+    {
       "login": "chinmay17",
       "name": "Chinmay Chaudhary",
       "avatar_url": "https://avatars2.githubusercontent.com/u/7131231?v=4",
@@ -1377,6 +1386,14 @@
         "code"
       ]
     },
+    {      "login": "NabeelahY",
+      "name": "Nabeelah",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/35764602?v=4",
+      "profile": "https://github.com/NabeelahY",
+            "contributions": [
+        "code"
+      ]
+      },
     {
       "login": "vanya829",
       "name": "vanya829",
@@ -1387,6 +1404,15 @@
       ]
     },
     {
+      "login": "tanem",
+      "name": "Tane Morgan",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/464864?v=4",
+      "profile": "https://github.com/tanem",
+       "contributions": [
+        "code"
+       ]
+     },
+    {
       "login": "hetpatel33",
       "name": "Het Patel",
       "avatar_url": "https://avatars0.githubusercontent.com/u/13877514?v=4",
@@ -1395,6 +1421,15 @@
         "code"
       ]
     },
+    {
+    "login": "ivandevp",
+      "name": "Ivan Medina",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/9284690?v=4",
+      "profile": "https://twitter.com/ivandevp",
+            "contributions": [
+        "code"
+      ]
+      },
     {
       "login": "Gobinath-Manokaran",
       "name": "Gobinath-Manokaran",
@@ -1449,8 +1484,18 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "sajadhsm",
+      "name": "Sajad Hashemian",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20022818?v=4",
+      "profile": "https://github.com/sajadhsm",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
-  "commitConvention": "none"
+  "commitConvention": "none",
+  "skipCi": true
 }

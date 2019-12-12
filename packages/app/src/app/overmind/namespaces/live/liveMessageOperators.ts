@@ -445,7 +445,7 @@ export const onOperation: Operator<LiveMessage<{
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
       console.error('Something went wrong with applying OT operation');
-      effects.live.sendModuleUpdateRequest();
+      effects.live.sendModuleStateSyncRequest();
     }
   }
 });

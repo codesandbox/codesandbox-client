@@ -1,1 +1,0 @@
-export { MyTemplatesTab } from './MyTemplatesTab';

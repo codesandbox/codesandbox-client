@@ -1,22 +1,19 @@
-import React from 'react';
-import { Props as ButtonProps } from '../Button';
-import { Loader, RelativeButton } from './elements';
+import React, { ComponentProps, FunctionComponent } from 'react';
+import { Button } from '../Button';
+import { Wrapper, Loader } from './elements';
 
-type Props = ButtonProps & {
+type Props = ComponentProps<typeof Button> & {
   loading?: boolean;
 };
-
-function ProgressButton({
-  loading = false,
+const ProgressButton: FunctionComponent<Props> = ({
   disabled = false,
+  loading = false,
   ...props
-}: Props) {
-  return (
-    <RelativeButton disabled={disabled || loading} {...props}>
-      {props.children}
-      {loading && <Loader />}
-    </RelativeButton>
-  );
-}
+}) => (
+  <Wrapper>
+    <Button disabled={disabled || loading} {...props} />
+    {loading && <Loader />}
+  </Wrapper>
+);
 
 export default ProgressButton;

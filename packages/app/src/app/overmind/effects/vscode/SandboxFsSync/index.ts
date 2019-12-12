@@ -14,6 +14,7 @@ import {
 import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { json } from 'overmind';
 
 import { WAIT_INITIAL_TYPINGS_MS } from '../constants';
@@ -111,7 +112,9 @@ class SandboxFsSync {
 
     appendFile(fs, copy);
     this.send('append-file', copy);
-    browserFs.appendFile(join('/sandbox', module.path), module.code, () => {});
+
+    const savedCode = getSavedCode(module.code, module.savedCode);
+    browserFs.appendFile(join('/sandbox', module.path), savedCode, () => {});
   }
 
   public writeFile(fs: SandboxFs, module: Module) {
@@ -119,7 +122,9 @@ class SandboxFsSync {
 
     writeFile(fs, copy);
     this.send('write-file', copy);
-    browserFs.writeFile(join('/sandbox', module.path), module.code, () => {});
+
+    const savedCode = getSavedCode(module.code, module.savedCode);
+    browserFs.writeFile(join('/sandbox', module.path), savedCode, () => {});
 
     if (module.title === 'package.json') {
       this.syncDependencyTypings();
@@ -281,7 +286,7 @@ class SandboxFsSync {
       try {
         browserFs.stat('/sandbox/package.json', (packageJsonError, stat) => {
           if (packageJsonError) {
-            reject(packageJsonError);
+            resolve(null);
             return;
           }
 
@@ -289,7 +294,7 @@ class SandboxFsSync {
             '/sandbox/package.json',
             async (packageJsonReadError, rv) => {
               if (packageJsonReadError) {
-                reject(packageJsonReadError);
+                resolve(null);
                 return;
               }
 
@@ -412,12 +417,17 @@ class SandboxFsSync {
 
     kids.forEach(kid => {
       const path = join(dir, kid);
-      const lstat = browserFs.lstatSync(path);
 
-      if (lstat.isDirectory()) {
-        this.clearSandboxFiles(path);
-      } else {
-        browserFs.unlinkSync(path);
+      try {
+        const lstat = browserFs.lstatSync(path);
+
+        if (lstat.isDirectory()) {
+          this.clearSandboxFiles(path);
+        } else {
+          browserFs.unlinkSync(path);
+        }
+      } catch {
+        // Do nothing
       }
     });
 

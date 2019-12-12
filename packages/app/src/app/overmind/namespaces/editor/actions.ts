@@ -116,6 +116,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   if (sandbox.owned && !state.live.isLive) {
     actions.files.internal.recoverFiles();
+  } else if (state.live.isLive) {
+    effects.live.sendModuleStateSyncRequest();
   }
 
   effects.vscode.openModule(state.editor.currentModule);
@@ -167,7 +169,7 @@ export const codeSaved: AsyncAction<{
 export const onOperationApplied: Action<{
   moduleShortid: string;
   code: string;
-}> = ({ state, actions }, { code, moduleShortid }) => {
+}> = ({ state, effects, actions }, { code, moduleShortid }) => {
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
   );
@@ -182,6 +184,10 @@ export const onOperationApplied: Action<{
   });
 
   actions.editor.internal.updatePreviewCode();
+
+  if (module.savedCode !== null && module.code === module.savedCode) {
+    effects.vscode.revertModule(module);
+  }
 };
 
 export const codeChanged: Action<{
@@ -217,6 +223,10 @@ export const codeChanged: Action<{
   if (!isServer && state.preferences.settings.livePreviewEnabled) {
     actions.editor.internal.updatePreviewCode();
   }
+
+  if (module.savedCode !== null && module.code === module.savedCode) {
+    effects.vscode.revertModule(module);
+  }
 };
 
 export const saveClicked: AsyncAction = withOwnedSandbox(
@@ -250,9 +260,10 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
           state.editor.changedModuleShortids.push(moduleShortid);
         }
       });
-      effects.notificationToast.error(
-        'Sorry, was not able to save, please try again'
-      );
+      actions.internal.handleError({
+        message: 'There was a problem with saving the files, please try again',
+        error,
+      });
     }
   }
 );
@@ -291,9 +302,10 @@ export const forkSandboxClicked: AsyncAction = async ({
   });
 };
 
-export const likeSandboxToggled: AsyncAction<{
-  id: string;
-}> = async ({ state, effects }, { id }) => {
+export const likeSandboxToggled: AsyncAction<string> = async (
+  { state, effects },
+  id
+) => {
   if (state.editor.sandboxes[id].userLiked) {
     state.editor.sandboxes[id].likeCount--;
     await effects.api.unlikeSandbox(id);
@@ -496,14 +508,7 @@ export const discardModuleChanges: Action<{
     return;
   }
 
-  const code = module.savedCode === null ? module.code || '' : module.savedCode;
-  actions.editor.codeChanged({
-    code,
-    moduleShortid,
-  });
-
   module.updatedAt = new Date().toString();
-
   effects.vscode.revertModule(module);
 
   state.editor.changedModuleShortids.splice(
@@ -723,31 +728,34 @@ export const previewActionReceived: Action<{
 export const renameModule: AsyncAction<{
   title: string;
   moduleShortid: string;
-}> = withOwnedSandbox(async ({ state, effects }, { title, moduleShortid }) => {
-  const sandbox = state.editor.currentSandbox;
-  const module = sandbox.modules.find(
-    moduleItem => moduleItem.shortid === moduleShortid
-  );
+}> = withOwnedSandbox(
+  async ({ state, actions, effects }, { title, moduleShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    const module = sandbox.modules.find(
+      moduleItem => moduleItem.shortid === moduleShortid
+    );
 
-  if (!module) {
-    return;
-  }
-
-  const oldTitle = module.title;
-
-  module.title = title;
-
-  try {
-    await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
-
-    if (state.live.isCurrentEditor) {
-      effects.live.sendModuleUpdate(module);
+    if (!module) {
+      return;
     }
-  } catch (error) {
-    module.title = oldTitle;
-    effects.notificationToast.error('Could not rename file');
+
+    const oldTitle = module.title;
+
+    module.title = title;
+
+    try {
+      await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
+
+      if (state.live.isCurrentEditor) {
+        effects.live.sendModuleUpdate(module);
+      }
+    } catch (error) {
+      module.title = oldTitle;
+
+      actions.internal.handleError({ message: 'Could not rename file', error });
+    }
   }
-});
+);
 
 export const onDevToolsTabAdded: Action<{
   tab: any;

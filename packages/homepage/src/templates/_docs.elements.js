@@ -54,10 +54,9 @@ export const DocumentationContent = styled.div`
     }
 
     h2 {
-      font-family: 'Poppins', sans-serif;
       margin: 1.5rem 0;
       font-weight: 400;
-      color: white;
+      color: ${props => props.theme.homepage.white};
 
       &:first-child {
         margin-top: 0;
@@ -67,7 +66,7 @@ export const DocumentationContent = styled.div`
     h3 {
       font-weight: 400;
       font-size: 1.25rem;
-      color: white;
+      color: ${props => props.theme.homepage.white};
       margin-top: 2rem;
     }
 
@@ -179,7 +178,7 @@ export const Edit = styled.a`
   }
 
   &:hover {
-    color: white;
+    color: ${props => props.theme.homepage.white};
   }
 `;
 
@@ -194,12 +193,11 @@ export const Heading = styled.div`
       ${theme.secondary.darken(0.3)()} 100%
     );
     padding: 2rem 2rem;
-    color: white;
+    color: ${props => props.theme.homepage.white};
   `};
 `;
 
 export const Title = styled.h1`
-  font-family: 'Poppins', sans-serif;
   font-size: 2rem;
   font-weight: 500;
 `;

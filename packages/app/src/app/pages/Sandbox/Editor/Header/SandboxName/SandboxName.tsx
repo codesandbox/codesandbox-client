@@ -1,7 +1,8 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { Link } from 'react-router-dom';
 import { basename } from 'path';
 import React, {
   ChangeEvent,
@@ -9,7 +10,6 @@ import React, {
   KeyboardEvent,
   useState,
 } from 'react';
-import { Link } from 'react-router-dom';
 import { useSpring, animated } from 'react-spring';
 
 import { useOvermind } from 'app/overmind';
@@ -21,8 +21,8 @@ import {
   Form,
   Name,
   NameInput,
-  TemplateBadge,
   Main,
+  TemplateBadge,
 } from './elements';
 
 const noop = () => undefined;
@@ -84,7 +84,6 @@ export const SandboxName: FunctionComponent = () => {
       (currentSandbox.team ? currentSandbox.team.name : 'My Sandboxes')
     : 'My Sandboxes';
 
-  const template = currentSandbox.customTemplate && !updatingName;
   const spring = useSpring({
     opacity: updatingName ? 0 : 1,
     pointerEvents: updatingName ? 'none' : 'initial',
@@ -106,7 +105,7 @@ export const SandboxName: FunctionComponent = () => {
               ) : (
                 'Anonymous '
               )}
-              /{' '}
+              <span role="presentation">/ </span>
             </Folder>
           </animated.div>
         )}
@@ -125,15 +124,23 @@ export const SandboxName: FunctionComponent = () => {
               onKeyUp={handleKeyUp}
               placeholder={name}
               value={value}
+              arial-label="sandbox name"
             />
           </Form>
         ) : (
-          <Name onClick={owned ? handleNameClick : noop} owned={owned}>
+          <Name
+            as={owned ? 'button' : 'span'}
+            onClick={owned ? handleNameClick : noop}
+            owned={owned}
+            aria-label={
+              owned ? `${sandboxName}, change sandbox name` : sandboxName
+            }
+          >
             {sandboxName}
           </Name>
         )}
 
-        {template ? (
+        {currentSandbox.customTemplate ? (
           <Tooltip
             content={
               <>

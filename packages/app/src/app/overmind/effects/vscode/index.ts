@@ -19,10 +19,12 @@ import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
+import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
+  initializeCodeSandboxTheme,
   initializeCustomTheme,
   initializeExtensionsFolder,
   initializeSettings,
@@ -77,7 +79,7 @@ const context: any = window;
  * parts.
  */
 export class VSCodeEffect {
-  public initialized: Promise<void>;
+  public initialized: Promise<unknown>;
   public sandboxFsSync: SandboxFsSync;
 
   private monaco: any;
@@ -104,14 +106,26 @@ export class VSCodeEffect {
     getCustomEditor: () => null,
   };
 
+  onSelectionChangeDebounced: VsCodeOptions['onSelectionChange'] & {
+    cancel(): void;
+  };
+
   public initialize(options: VsCodeOptions) {
     this.options = options;
     this.controller = {
       getState: options.getState,
       getSignal: options.getSignal,
     };
+    this.onSelectionChangeDebounced = debounce(options.onSelectionChange, 500);
 
     this.prepareElements();
+
+    // We instantly create a sandbox sync, as we want our
+    // extension host to get its messages handled to initialize
+    // correctly
+    this.sandboxFsSync = new SandboxFsSync({
+      getSandboxFs: () => ({}),
+    });
 
     import(
       // @ts-ignore
@@ -127,6 +141,7 @@ export class VSCodeEffect {
       // We want to initialize before VSCode, but after browserFS is configured
       // For first-timers initialize a theme in the cache so it doesn't jump colors
       initializeExtensionsFolder();
+      initializeCodeSandboxTheme();
       initializeCustomTheme();
       initializeThemeCache();
       initializeSettings();
@@ -216,7 +231,11 @@ export class VSCodeEffect {
     moduleShortid: string,
     operation: (string | number)[]
   ) {
-    return this.modelsHandler.applyOperation(moduleShortid, operation);
+    if (!this.modelsHandler) {
+      return;
+    }
+
+    await this.modelsHandler.applyOperation(moduleShortid, operation);
   }
 
   public updateOptions(options: { readOnly: boolean }) {
@@ -273,7 +292,7 @@ export class VSCodeEffect {
   public async changeSandbox(sandbox: Sandbox, setFs: (fs: SandboxFs) => void) {
     await this.initialized;
 
-    const isFirstSync = !this.sandboxFsSync;
+    const isFirstLoad = !this.modelsHandler;
 
     if (this.modelsHandler) {
       this.modelsHandler.dispose();
@@ -294,8 +313,7 @@ export class VSCodeEffect {
 
     setFs(this.sandboxFsSync.create(sandbox));
 
-    // We do not stop the extension host on first sync
-    if (isFirstSync) {
+    if (isFirstLoad) {
       this.sandboxFsSync.sync(() => {});
     } else {
       this.editorApi.extensionService.stopExtensionHost();
@@ -303,6 +321,14 @@ export class VSCodeEffect {
         this.editorApi.extensionService.startExtensionHost();
       });
     }
+  }
+
+  public async setModuleCode(module: Module) {
+    if (!this.modelsHandler) {
+      return;
+    }
+
+    await this.modelsHandler.setModuleCode(module);
   }
 
   public async closeAllTabs() {
@@ -480,12 +506,18 @@ export class VSCodeEffect {
               fs: 'LocalStorage',
             },
             '/extensions': {
-              fs: 'BundledHTTPRequest',
+              fs: 'OverlayFS',
               options: {
-                index: EXTENSIONS_LOCATION + '/extensions/index.json',
-                baseUrl: EXTENSIONS_LOCATION + '/extensions',
-                bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
-                logReads: process.env.NODE_ENV === 'development',
+                writable: { fs: 'InMemory' },
+                readable: {
+                  fs: 'BundledHTTPRequest',
+                  options: {
+                    index: EXTENSIONS_LOCATION + '/extensions/index.json',
+                    baseUrl: EXTENSIONS_LOCATION + '/extensions',
+                    bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+                    logReads: process.env.NODE_ENV === 'development',
+                  },
+                },
               },
             },
             '/extensions/custom-theme': {
@@ -588,79 +620,82 @@ export class VSCodeEffect {
       );
     });
 
-    // It has to run the accessor within the callback
-    serviceCollection.get(IInstantiationService).invokeFunction(accessor => {
-      // Initialize these services
-      accessor.get(CodeSandboxConfigurationUIService);
-      accessor.get(ICodeSandboxEditorConnectorService);
+    return new Promise(resolve => {
+      // It has to run the accessor within the callback
+      serviceCollection.get(IInstantiationService).invokeFunction(accessor => {
+        // Initialize these services
+        accessor.get(CodeSandboxConfigurationUIService);
+        accessor.get(ICodeSandboxEditorConnectorService);
 
-      const statusbarPart = accessor.get(IStatusbarService);
-      const menubarPart = accessor.get('menubar');
-      const commandService = accessor.get(ICommandService);
-      const extensionService = accessor.get(IExtensionService);
-      const extensionEnablementService = accessor.get(
-        IExtensionEnablementService
-      );
+        const statusbarPart = accessor.get(IStatusbarService);
+        const menubarPart = accessor.get('menubar');
+        const commandService = accessor.get(ICommandService);
+        const extensionService = accessor.get(IExtensionService);
+        const extensionEnablementService = accessor.get(
+          IExtensionEnablementService
+        );
 
-      this.commandService.resolve(commandService);
-      this.extensionService.resolve(extensionService);
+        this.commandService.resolve(commandService);
+        this.extensionService.resolve(extensionService);
 
-      this.extensionEnablementService.resolve(extensionEnablementService);
+        this.extensionEnablementService.resolve(extensionEnablementService);
 
-      const editorPart = accessor.get(IEditorGroupsService);
+        const editorPart = accessor.get(IEditorGroupsService);
 
-      const codeEditorService = accessor.get(ICodeEditorService);
-      const textFileService = accessor.get(ITextFileService);
-      const editorService = accessor.get(IEditorService);
-      const contextViewService = accessor.get(IContextViewService);
+        const codeEditorService = accessor.get(ICodeEditorService);
+        const textFileService = accessor.get(ITextFileService);
+        const editorService = accessor.get(IEditorService);
+        const contextViewService = accessor.get(IContextViewService);
 
-      contextViewService.setContainer(container);
+        contextViewService.setContainer(container);
 
-      this.editorApi = {
-        openFile(path) {
-          return codeEditorService.openCodeEditor({
-            resource: monaco.Uri.file('/sandbox' + path),
-          });
-        },
-        getActiveCodeEditor() {
-          return codeEditorService.getActiveCodeEditor();
-        },
-        textFileService,
-        editorPart,
-        editorService,
-        codeEditorService,
-        extensionService,
-      };
+        this.editorApi = {
+          openFile(path) {
+            return codeEditorService.openCodeEditor({
+              resource: monaco.Uri.file('/sandbox' + path),
+            });
+          },
+          getActiveCodeEditor() {
+            return codeEditorService.getActiveCodeEditor();
+          },
+          textFileService,
+          editorPart,
+          editorService,
+          codeEditorService,
+          extensionService,
+        };
 
-      window.CSEditor = {
-        editor: this.editorApi,
-        monaco,
-      };
+        window.CSEditor = {
+          editor: this.editorApi,
+          monaco,
+        };
 
-      if (process.env.NODE_ENV === 'development') {
-        // eslint-disable-next-line
-        console.log(accessor);
-      }
+        if (process.env.NODE_ENV === 'development') {
+          // eslint-disable-next-line
+          console.log(accessor);
+        }
 
-      statusbarPart.create(this.elements.statusbar);
-      menubarPart.create(this.elements.menubar);
-      editorPart.create(this.elements.editorPart);
-      editorPart.layout(container.offsetWidth, container.offsetHeight);
+        statusbarPart.create(this.elements.statusbar);
+        menubarPart.create(this.elements.menubar);
+        editorPart.create(this.elements.editorPart);
+        editorPart.layout(container.offsetWidth, container.offsetHeight);
 
-      editorPart.parent = container;
+        editorPart.parent = container;
 
-      container.appendChild(this.elements.editorPart);
+        container.appendChild(this.elements.editorPart);
 
-      this.initializeReactions();
+        this.initializeReactions();
 
-      this.configureMonacoLanguages(monaco);
+        this.configureMonacoLanguages(monaco);
 
-      editorService.onDidActiveEditorChange(this.onActiveEditorChange);
-      this.initializeCodeSandboxAPIListener();
+        editorService.onDidActiveEditorChange(this.onActiveEditorChange);
+        this.initializeCodeSandboxAPIListener();
 
-      if (this.settings.lintEnabled) {
-        this.createLinter();
-      }
+        if (this.settings.lintEnabled) {
+          this.createLinter();
+        }
+        resolve();
+      });
     });
   }
 
@@ -814,7 +849,19 @@ export class VSCodeEffect {
             ),
           };
 
-          this.options.onSelectionChange(data);
+          if (
+            selectionChange.reason === 3 ||
+            /* alt + shift + arrow keys */ selectionChange.source ===
+              'moveWordCommand' ||
+            /* click inside a selection */ selectionChange.source === 'api'
+          ) {
+            this.onSelectionChangeDebounced.cancel();
+            this.options.onSelectionChange(data);
+          } else {
+            // This is just on typing, we send a debounced selection update as a
+            // safeguard to make sure we are in sync
+            this.onSelectionChangeDebounced(data);
+          }
         }
       );
     }

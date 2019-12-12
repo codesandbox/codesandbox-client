@@ -16,7 +16,7 @@ export const Buttons = styled.div`
   }
 `;
 
-export const TokenContainer = styled.input`
+export const TokenInput = styled.input`
   color: white;
 
   width: 100%;

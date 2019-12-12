@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button as ButtonBase } from '@codesandbox/common/lib/components/Button';
 import Input from '@codesandbox/common/lib/components/Input';
+import styled from 'styled-components';
 
 export const SmallText = styled.div`
   text-align: center;
@@ -17,7 +17,7 @@ export const Buttons = styled.div`
   margin-top: 1rem;
 `;
 
-export const StyledButton = styled(Button)`
+export const Button = styled(ButtonBase)`
   margin: 1rem;
 `;
 
@@ -28,6 +28,10 @@ export const StripeInput = styled(Input)`
   margin-top: 0.25rem;
   margin-bottom: 0.5rem;
   height: 32.8px;
+`;
+
+export const StripeInputContainer = styled.div`
+  margin: 2rem 5rem 0;
 `;
 
 export const Centered = styled.div`

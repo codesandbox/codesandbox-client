@@ -1,15 +1,12 @@
-import React, { FunctionComponent } from 'react';
-
 import { Overlay } from 'app/components/Overlay';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
 
 import { SignInButton } from '../SignInButton';
 import { UserMenu } from '../UserMenu';
-
 import {
   ExploreAction,
   NewSandboxAction,
-  PatronAction,
   SearchAction,
   ShowNotificationsAction,
 } from './Actions';
@@ -40,7 +37,7 @@ export const Navigation: FunctionComponent<Props> = ({
     },
     state: {
       isLoggedIn,
-      isPatron,
+      isAuthenticating,
       user,
       userNotifications: { notificationsOpened: notificationsMenuOpened },
     },
@@ -58,32 +55,32 @@ export const Navigation: FunctionComponent<Props> = ({
         <Title>{title}</Title>
       </TitleWrapper>
 
-      <Wrapper>
-        <Actions>
-          <SearchAction searchNoInput={searchNoInput} />
+      {isAuthenticating ? null : (
+        <Wrapper>
+          <Actions>
+            <SearchAction searchNoInput={searchNoInput} />
 
-          <ExploreAction />
+            <ExploreAction />
 
-          {!isPatron && <PatronAction />}
+            {user && (
+              <Overlay
+                content={Notifications}
+                event="Notifications"
+                isOpen={notificationsMenuOpened}
+                noHeightAnimation
+                onClose={notificationsClosed}
+                onOpen={notificationsOpened}
+              >
+                {open => <ShowNotificationsAction openNotifications={open} />}
+              </Overlay>
+            )}
 
-          {user && (
-            <Overlay
-              content={Notifications}
-              event="Notifications"
-              isOpen={notificationsMenuOpened}
-              noHeightAnimation
-              onClose={notificationsClosed}
-              onOpen={notificationsOpened}
-            >
-              {open => <ShowNotificationsAction openNotifications={open} />}
-            </Overlay>
-          )}
+            <NewSandboxAction />
+          </Actions>
 
-          <NewSandboxAction />
-        </Actions>
-
-        {isLoggedIn ? <UserMenu /> : <SignInButton />}
-      </Wrapper>
+          {isLoggedIn ? <UserMenu /> : <SignInButton />}
+        </Wrapper>
+      )}
     </Row>
   );
 };

@@ -19,7 +19,7 @@ import {
 } from './elements';
 
 type Props = {
-  id: string;
+  id?: string;
   user?: CurrentUser;
 };
 const Feedback: FunctionComponent<Props> = ({ id, user }) => {
@@ -49,7 +49,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
     setLoading(true);
 
     pushToAirtable({
-      sandboxId: id,
+      sandboxId: id || '',
       feedback,
       emoji,
       username: (user || {}).username,
@@ -127,7 +127,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
         </EmojiButton>
 
         <ButtonContainer>
-          <Button disabled={loading || !feedback.trim()} small>
+          <Button type="submit" disabled={loading || !feedback.trim()} small>
             {loading ? 'Sending...' : 'Submit'}
           </Button>
         </ButtonContainer>

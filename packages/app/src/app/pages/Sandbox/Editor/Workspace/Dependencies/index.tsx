@@ -32,20 +32,18 @@ export const Dependencies: FunctionComponent = () => {
     resource => !resource.includes('fonts.googleapis.com/css')
   );
 
-  if (!parsedConfigurations.package) {
+  if (!parsedConfigurations?.package) {
     return <ErrorMessage>Unable to find package.json</ErrorMessage>;
   }
 
-  const {
-    parsed: { dependencies = {} /* devDependencies = {} */ },
-    error,
-  } = parsedConfigurations.package;
+  const { error, parsed } = parsedConfigurations.package;
   if (error) {
     return (
       <ErrorMessage>We weren{"'"}t able to parse the package.json</ErrorMessage>
     );
   }
 
+  const { dependencies = {} /* devDependencies = {} */ } = parsed;
   const { externalResourcesEnabled } = getTemplateDefinition(template);
   return (
     <div>

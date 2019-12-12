@@ -71,7 +71,8 @@ export const moduleRenamed: AsyncAction<{
       }
 
       actions.editor.internal.updatePreviewCode();
-      effects.notificationToast.error('Could not rename file');
+
+      actions.internal.handleError({ message: 'Could not rename file', error });
     }
   }
 );
@@ -80,7 +81,7 @@ export const directoryCreated: AsyncAction<{
   title: string;
   directoryShortid: string;
 }> = withOwnedSandbox(
-  async ({ state, effects }, { title, directoryShortid }) => {
+  async ({ state, effects, actions }, { title, directoryShortid }) => {
     const sandbox = state.editor.currentSandbox;
     const optimisticId = effects.utils.createOptimisticId();
     const optimisticDirectory = {
@@ -101,7 +102,6 @@ export const directoryCreated: AsyncAction<{
       sandbox.directories,
       optimisticId
     );
-
     effects.vscode.sandboxFsSync.mkdir(
       state.editor.modulesByPath,
       optimisticDirectory
@@ -130,7 +130,10 @@ export const directoryCreated: AsyncAction<{
 
       sandbox.directories.splice(directoryIndex, 1);
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      effects.notificationToast.error('Unable to save new directory');
+      actions.internal.handleError({
+        message: 'Unable to save new directory',
+        error,
+      });
     }
   }
 );
@@ -177,7 +180,10 @@ export const moduleMovedToDirectory: AsyncAction<{
       module.directoryShortid = currentDirectoryShortid;
       module.path = oldPath;
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      effects.notificationToast.error('Could not save new module location');
+      actions.internal.handleError({
+        message: 'Could not save new module location',
+        error,
+      });
     }
   }
 );
@@ -220,7 +226,10 @@ export const directoryMovedToDirectory: AsyncAction<{
       directoryToMove.directoryShortid = shortid;
       directoryToMove.path = oldPath;
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      effects.notificationToast.error('Could not save new directory location');
+      actions.internal.handleError({
+        message: 'Could not save new directory location',
+        error,
+      });
     }
   }
 );
@@ -276,6 +285,7 @@ export const directoryDeleted: AsyncAction<{
       effects.live.sendDirectoryDeleted(directoryShortid);
     } catch (error) {
       sandbox.directories.push(removedDirectory);
+
       removedModules.forEach(removedModule => {
         sandbox.modules.push(removedModule);
       });
@@ -283,7 +293,10 @@ export const directoryDeleted: AsyncAction<{
         sandbox.directories.push(removedDirectoryItem);
       });
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      effects.notificationToast.error('Could not delete directory');
+      actions.internal.handleError({
+        message: 'Could not delete directory',
+        error,
+      });
     }
   }
 );
@@ -327,13 +340,16 @@ export const directoryRenamed: AsyncAction<{
     } catch (error) {
       directory.title = oldTitle;
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      effects.notificationToast.error('Could not rename directory');
+      actions.internal.handleError({
+        message: 'Could not rename directory',
+        error,
+      });
     }
   }
 );
 
 export const gotUploadedFiles: AsyncAction<string> = async (
-  { state, effects },
+  { state, actions, effects },
   message
 ) => {
   const modal = 'storageManagement';
@@ -348,7 +364,10 @@ export const gotUploadedFiles: AsyncAction<string> = async (
     state.maxStorage = uploadedFilesInfo.maxSize;
     state.usedStorage = uploadedFilesInfo.currentSize;
   } catch (error) {
-    effects.notificationToast.error('Unable to get uploaded files information');
+    actions.internal.handleError({
+      message: 'Unable to get uploaded files information',
+      error,
+    });
   }
 };
 
@@ -367,7 +386,7 @@ export const addedFileToSandbox: AsyncAction<{
 
 export const deletedUploadedFile: AsyncAction<{
   id: string;
-}> = withOwnedSandbox(async ({ state, effects }, { id }) => {
+}> = withOwnedSandbox(async ({ state, actions, effects }, { id }) => {
   const index = state.uploadedFiles.findIndex(file => file.id === id);
   const removedFiles = state.uploadedFiles.splice(index, 1);
 
@@ -375,7 +394,10 @@ export const deletedUploadedFile: AsyncAction<{
     await effects.api.deleteUploadedFile(id);
   } catch (error) {
     state.uploadedFiles.splice(index, 0, ...removedFiles);
-    effects.notificationToast.error('Unable to delete uploaded file');
+    actions.internal.handleError({
+      message: 'Unable to delete uploaded file',
+      error,
+    });
   }
 });
 
@@ -407,7 +429,10 @@ export const filesUploaded: AsyncAction<{
       if (error.message.indexOf('413') !== -1) {
         return;
       }
-      effects.notificationToast.error(error.message);
+      actions.internal.handleError({
+        message: 'Unable to upload files',
+        error,
+      });
     }
 
     actions.internal.closeModals(false);
@@ -470,7 +495,10 @@ export const massCreateModules: AsyncAction<{
         effects.vscode.callCallbackError(cbID, error.message);
       }
 
-      effects.notificationToast.error('Unable to create new files');
+      actions.internal.handleError({
+        message: 'Unable to create new files',
+        error,
+      });
     }
   }
 );
@@ -553,9 +581,13 @@ export const moduleCreated: AsyncAction<{
     } catch (error) {
       sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
       actions.editor.internal.setCurrentModule(state.editor.mainModule);
+
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
 
-      effects.notificationToast.error('Unable to save new file');
+      actions.internal.handleError({
+        message: 'Unable to save new file',
+        error,
+      });
     }
   }
 );
@@ -592,7 +624,7 @@ export const moduleDeleted: AsyncAction<{
     } catch (error) {
       sandbox.modules.push(removedModule);
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      effects.notificationToast.error('Could not delete file');
+      actions.internal.handleError({ message: 'Could not delete file', error });
     }
   }
 );
@@ -614,7 +646,7 @@ export const createModulesByPath: AsyncAction<{
 };
 
 export const syncSandbox: AsyncAction<any[]> = async (
-  { state, effects },
+  { state, actions, effects },
   updates
 ) => {
   const { id } = state.editor.currentSandbox;
@@ -680,9 +712,11 @@ export const syncSandbox: AsyncAction<any[]> = async (
       return;
     }
 
-    effects.notificationToast.error(
-      "We weren't able to retrieve the latest files of the sandbox, please refresh"
-    );
+    actions.internal.handleError({
+      message:
+        "We weren't able to retrieve the latest files of the sandbox, please refresh",
+      error,
+    });
   }
 
   // No matter if error or not we resync the whole shabang!
