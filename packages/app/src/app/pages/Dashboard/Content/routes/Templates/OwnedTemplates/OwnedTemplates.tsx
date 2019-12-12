@@ -95,7 +95,7 @@ export const OwnedTemplates = (props: OwnedTemplatesProps) => {
                   title: 'Convert to Sandbox',
                   action: () => {
                     track('Template - Removed', { source: 'Context Menu' });
-                    unmakeTemplates([template.sandbox.id], teamId);
+                    unmakeTemplates([template.sandbox.id]);
                     return true;
                   },
                 },

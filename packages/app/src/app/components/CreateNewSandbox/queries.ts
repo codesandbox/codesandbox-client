@@ -139,7 +139,7 @@ export const UNMAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
   }
 `;
 
-export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
+export function unmakeTemplates(selectedSandboxes: string[]) {
   return client.mutate<
     UnmakeSandboxesTemplateMutation,
     UnmakeSandboxesTemplateMutationVariables
@@ -172,6 +172,12 @@ export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
         const data = immer(oldTemplatesCache, draft => {
           draft.me.templates = draft.me.templates.filter(
             x => selectedSandboxes.indexOf(x.sandbox.id) === -1
+          );
+
+          draft.me.teams = draft.me.teams.map(t =>
+            t.templates.filter(
+              x => selectedSandboxes.indexOf(x.sandbox.id) === -1
+            )
           );
         });
 
