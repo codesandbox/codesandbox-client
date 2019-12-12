@@ -36,6 +36,7 @@ export const OwnedTemplates = (props: OwnedTemplatesProps) => {
     ListTemplatesQueryVariables
   >(LIST_OWNED_TEMPLATES, {
     variables: { teamId, showAll: false },
+    fetchPolicy: 'cache-and-network',
   });
 
   if (error) {

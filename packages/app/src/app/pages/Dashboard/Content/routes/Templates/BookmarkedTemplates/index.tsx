@@ -34,7 +34,9 @@ export const BookmarkedTemplates = (props: BookmarkedTemplatesProps) => {
 
   const { loading, error, data } = useQuery<
     ListPersonalBookmarkedTemplatesQuery
-  >(LIST_BOOKMARKED_TEMPLATES_QUERY);
+  >(LIST_BOOKMARKED_TEMPLATES_QUERY, {
+    fetchPolicy: 'cache-and-network',
+  });
   const client = useApolloClient();
   const [unBookmark] = useMutation<
     UnbookmarkTemplateFromDashboardMutation,
