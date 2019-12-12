@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import { Query } from 'react-apollo';
-import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 import { Item } from '../Item';
 import { Container } from './elements';
@@ -73,18 +72,7 @@ class SandboxesItemComponent extends React.Component {
           <Query variables={{ teamId }} query={PATHED_SANDBOXES_FOLDER_QUERY}>
             {({ data, loading, error }) => {
               if (loading) {
-                return (
-                  <DelayedAnimation
-                    style={{
-                      margin: '1rem',
-                      fontWeight: 600,
-                      color: 'rgba(255, 255, 255, 0.6)',
-                    }}
-                    delay={0.6}
-                  >
-                    Loading...
-                  </DelayedAnimation>
-                );
+                return <div />;
               }
 
               if (error || !data.me) {

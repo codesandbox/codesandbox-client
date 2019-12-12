@@ -1,5 +1,4 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { sortBy } from 'lodash-es';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -20,19 +19,18 @@ import {
   ListTemplatesQuery,
   ListTemplatesQueryVariables,
 } from 'app/graphql/types';
-import { RouteComponentProps } from 'react-router';
-import { Container, Grid, EmptyTitle } from '../elements';
+import { Grid, EmptyTitle } from '../elements';
 import { Navigation } from '../Navigation';
 
-type TemplatesProps = RouteComponentProps<{ teamId: string }> & {};
+type OwnedTemplatesProps = { teamId?: string };
 
-export const Templates = (props: TemplatesProps) => {
+export const OwnedTemplates = (props: OwnedTemplatesProps) => {
   const {
     actions: {
       dashboard: { deleteTemplate },
     },
   } = useOvermind();
-  const { teamId } = props.match.params;
+  const { teamId } = props;
   const { loading, error, data, refetch } = useQuery<
     ListTemplatesQuery,
     ListTemplatesQueryVariables
@@ -56,7 +54,7 @@ export const Templates = (props: TemplatesProps) => {
           color: 'rgba(255, 255, 255, 0.5)',
         }}
       >
-        Fetching Sandboxes...
+        Fetching Templates...
       </DelayedAnimation>
     );
   }
@@ -66,10 +64,7 @@ export const Templates = (props: TemplatesProps) => {
   );
 
   return (
-    <Container>
-      <Helmet>
-        <title>{teamId ? 'Team' : 'My'} Templates - CodeSandbox</title>
-      </Helmet>
+    <>
       <Navigation teamId={teamId} number={sortedTemplates.length} />
       {!sortedTemplates.length && (
         <div>
@@ -123,6 +118,6 @@ export const Templates = (props: TemplatesProps) => {
           </ContextMenu>
         ))}
       </Grid>
-    </Container>
+    </>
   );
 };

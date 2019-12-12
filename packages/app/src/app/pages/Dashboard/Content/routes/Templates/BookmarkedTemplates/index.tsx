@@ -18,12 +18,14 @@ import {
 import { useOvermind } from 'app/overmind';
 import { ButtonContainer } from './elements';
 
-import { Container, Grid, EmptyTitle } from '../elements';
+import { Grid, EmptyTitle } from '../elements';
 import { Navigation } from '../Navigation';
 import { UNBOOKMARK_TEMPLATE_FROM_DASHBOARD } from './mutations';
 
-export const FollowedTemplates = props => {
-  const { teamId } = props.match.params;
+type BookmarkedTemplatesProps = { teamId?: string };
+
+export const BookmarkedTemplates = (props: BookmarkedTemplatesProps) => {
+  const { teamId } = props;
   const [sortedTemplates, setSortedTemplates] = useState<
     ListPersonalBookmarkedTemplatesQuery['me']['bookmarkedTemplates']
   >();
@@ -87,7 +89,7 @@ export const FollowedTemplates = props => {
           color: 'rgba(255, 255, 255, 0.5)',
         }}
       >
-        Fetching Sandboxes...
+        Fetching Templates...
       </DelayedAnimation>
     );
   }
@@ -96,7 +98,7 @@ export const FollowedTemplates = props => {
   );
 
   return (
-    <Container>
+    <>
       <Navigation bookmarked teamId={teamId} number={orderedTemplates.length} />
       {!orderedTemplates.length && (
         <div>
@@ -157,6 +159,6 @@ export const FollowedTemplates = props => {
           </ContextMenu>
         ))}
       </Grid>
-    </Container>
+    </>
   );
 };
