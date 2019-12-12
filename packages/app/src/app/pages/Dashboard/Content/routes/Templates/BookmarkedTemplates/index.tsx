@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { sortBy } from 'lodash-es';
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
@@ -26,17 +26,12 @@ type BookmarkedTemplatesProps = { teamId?: string };
 
 export const BookmarkedTemplates = (props: BookmarkedTemplatesProps) => {
   const { teamId } = props;
-  const [sortedTemplates, setSortedTemplates] = useState<
-    ListPersonalBookmarkedTemplatesQuery['me']['bookmarkedTemplates']
-  >();
 
   const { actions } = useOvermind();
 
   const { loading, error, data } = useQuery<
     ListPersonalBookmarkedTemplatesQuery
-  >(LIST_BOOKMARKED_TEMPLATES_QUERY, {
-    fetchPolicy: 'cache-and-network',
-  });
+  >(LIST_BOOKMARKED_TEMPLATES_QUERY);
   const client = useApolloClient();
   const [unBookmark] = useMutation<
     UnbookmarkTemplateFromDashboardMutation,
@@ -64,15 +59,17 @@ export const BookmarkedTemplates = (props: BookmarkedTemplatesProps) => {
     } Bookmarked Templates - CodeSandbox`;
   }, [teamId]);
 
-  useEffect(() => {
+  const sortedTemplates = React.useMemo(() => {
     if (data && data.me) {
       if (teamId) {
         const team = data.me.teams.find(t => t.id === teamId);
-        setSortedTemplates(team.bookmarkedTemplates);
-      } else {
-        setSortedTemplates(data.me.bookmarkedTemplates);
+        return team.bookmarkedTemplates;
       }
+
+      return data.me.bookmarkedTemplates;
     }
+
+    return undefined;
   }, [teamId, data]);
 
   if (error) {

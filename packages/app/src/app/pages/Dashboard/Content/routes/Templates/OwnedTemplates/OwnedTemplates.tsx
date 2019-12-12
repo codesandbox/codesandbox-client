@@ -35,8 +35,7 @@ export const OwnedTemplates = (props: OwnedTemplatesProps) => {
     ListTemplatesQuery,
     ListTemplatesQueryVariables
   >(LIST_OWNED_TEMPLATES, {
-    variables: { teamId, showAll: false },
-    fetchPolicy: 'cache-and-network',
+    variables: { showAll: false },
   });
 
   if (error) {
@@ -60,7 +59,11 @@ export const OwnedTemplates = (props: OwnedTemplatesProps) => {
     );
   }
 
-  const sortedTemplates = sortBy(data.me.templates, template =>
+  const templatesToUse = teamId
+    ? data.me.teams.find(t => t.id === teamId)?.templates
+    : data.me.templates;
+
+  const sortedTemplates = sortBy(templatesToUse, template =>
     getSandboxName(template.sandbox).toLowerCase()
   );
 

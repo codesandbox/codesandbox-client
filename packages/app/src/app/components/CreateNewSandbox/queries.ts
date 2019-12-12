@@ -85,13 +85,14 @@ export const LIST_PERSONAL_TEMPLATES = gql`
 `;
 
 export const LIST_OWNED_TEMPLATES = gql`
-  query ListTemplates($teamId: ID, $showAll: Boolean) {
+  query ListTemplates($showAll: Boolean) {
     me {
-      templates(teamId: $teamId, showAll: $showAll) {
+      templates(showAll: $showAll) {
         ...Template
       }
 
       teams {
+        id
         name
         templates {
           ...Template
