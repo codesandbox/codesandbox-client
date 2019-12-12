@@ -1,11 +1,12 @@
-import React from 'react';
-import { DropTarget, DropTargetMonitor } from 'react-dnd';
-import { NativeTypes } from 'react-dnd-html5-backend';
-import { useOvermind } from 'app/overmind';
 import {
   getChildren as calculateChildren,
   inDirectory,
 } from '@codesandbox/common/lib/sandbox/modules';
+import { Directory, Module } from '@codesandbox/common/lib/types';
+import { useOvermind } from 'app/overmind';
+import React from 'react';
+import { DropTarget, DropTargetMonitor } from 'react-dnd';
+import { NativeTypes } from 'react-dnd-html5-backend';
 
 import DirectoryChildren from './DirectoryChildren';
 import DirectoryEntryModal from './DirectoryEntryModal';
@@ -51,14 +52,29 @@ type Modal = {
 
 interface Props {
   id: string;
-  root: boolean;
-  initializeProperties: Function;
-  shortid: string;
-  connectDropTarget: Function;
-  isOver: boolean;
-  canDrop: boolean;
-  depth: number;
-  getModulePath: Function;
+  root?: boolean;
+  initializeProperties?: Function;
+  shortid?: string;
+  connectDropTarget?: Function;
+  isOver?: boolean;
+  canDrop?: boolean;
+  siblings?: any;
+  signals?: any;
+  title?: string;
+  sandboxId?: string;
+  sandboxTemplate?: any;
+  mainModuleId?: string;
+  modules?: any[];
+  directories?: any[];
+  currentModuleShortid?: string;
+  isInProjectView?: boolean;
+  markTabsNotDirty?: () => void;
+  depth?: number;
+  getModulePath?: (
+    modules: Module[],
+    directories: Directory[],
+    id: string
+  ) => string;
 }
 
 const DirectoryEntry: React.FunctionComponent<Props> = ({
