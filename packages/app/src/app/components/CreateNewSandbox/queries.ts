@@ -158,7 +158,6 @@ export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
     update: cache => {
       try {
         const variables: ListTemplatesQueryVariables = {
-          teamId,
           showAll: false,
         };
 
