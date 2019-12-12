@@ -12,7 +12,7 @@ export const PrivacyTooltip = () => {
       workspace: { sandboxPrivacyChanged },
     },
     state: {
-      user: { subscription },
+      user,
       editor: {
         currentSandbox: { privacy },
       },
@@ -49,7 +49,7 @@ export const PrivacyTooltip = () => {
           content={
             <>
               <Text size="3" marginBottom={4}>
-                {subscription ? (
+                {!user || !user.subscription ? (
                   'Adjust privacy settings.'
                 ) : (
                   <>
@@ -64,7 +64,7 @@ export const PrivacyTooltip = () => {
                 marginBottom={2}
                 value={privacy}
                 onChange={onChange}
-                disabled={!subscription}
+                disabled={!user || !user.subscription}
               >
                 <option value={0}>Public</option>
                 <option value={1}>Unlisted</option>
