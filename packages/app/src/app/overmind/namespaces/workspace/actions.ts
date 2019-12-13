@@ -4,6 +4,7 @@ import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 export const valueChanged: Action<{
   field: string;
@@ -203,10 +204,15 @@ export const sandboxDeleted: AsyncAction = async ({
   effects.router.redirectToSandboxWizard();
 };
 
-export const sandboxPrivacyChanged: AsyncAction<0 | 1 | 2> = async (
-  { actions, effects, state },
-  privacy
-) => {
+export const sandboxPrivacyChanged: AsyncAction<{
+  privacy: 0 | 1 | 2;
+  source?: string;
+}> = async ({ actions, effects, state }, { privacy, source = 'generic' }) => {
+  track('Sandbox - Update Privacy', {
+    privacy,
+    source,
+  });
+
   const oldPrivacy = state.editor.currentSandbox.privacy;
   state.editor.currentSandbox.privacy = privacy;
 
