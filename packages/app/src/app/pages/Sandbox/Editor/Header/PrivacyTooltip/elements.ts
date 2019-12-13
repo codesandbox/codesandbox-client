@@ -49,17 +49,26 @@ export const Link = styled.a(
   })
 );
 
+const caret =
+  'data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMTAgMjQiIHdpZHRoPSIxMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNzU3NTc1Ij48cGF0aCBkPSJtNS4wMDAwNiAxNy0zLjAwMDA2LTRoNnoiLz48cGF0aCBkPSJtNC45OTk5NCA3IDMuMDAwMDYgNGgtNnoiLz48L2c+PC9zdmc+';
+
 export const Select = styled(Element).attrs({ as: 'select' })(({ theme }) =>
   css({
+    appearance: 'none',
+    backgroundImage: `url(${caret})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: '96% 50%',
     width: '100%',
     backgroundColor: 'grays.800',
     color: 'white',
+    border: '1px solid',
     borderColor: 'grays.600',
-    padding: 2,
+    borderRadius: 'medium',
+    paddingX: 2,
     height: 24,
     boxSizing: 'border-box',
     fontFamily: 'body',
-    transition: 'background',
+    transition: 'backgroundColor',
     transitionDuration: theme.speeds[2],
     ':hover': {
       backgroundColor: 'grays.700',
