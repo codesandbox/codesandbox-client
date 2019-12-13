@@ -95,8 +95,13 @@ export const SandboxDescription = styled.p<{ overlay?: boolean }>`
   margin-bottom: 16px;
   font-size: 12px;
   overflow: hidden;
-  white-space: pre-wrap;
-  height: 100%;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  max-height: 100%;
+
+  word-break: break-all;
 `;
 
 export const SandboxImage = styled.img`
