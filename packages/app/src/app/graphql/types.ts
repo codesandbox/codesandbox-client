@@ -388,7 +388,6 @@ export type ListPersonalTemplatesQuery = { __typename?: 'RootQueryType' } & {
 };
 
 export type ListTemplatesQueryVariables = {
-  teamId: Maybe<Scalars['ID']>;
   showAll: Maybe<Scalars['Boolean']>;
 };
 
@@ -401,7 +400,7 @@ export type ListTemplatesQuery = { __typename?: 'RootQueryType' } & {
       teams: Maybe<
         Array<
           Maybe<
-            { __typename?: 'Team' } & Pick<Team, 'name'> & {
+            { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
                 templates: Maybe<
                   Array<Maybe<{ __typename?: 'Template' } & TemplateFragment>>
                 >;

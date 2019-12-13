@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, NavigationLink, Number } from './elements';
+import { Container, NavigationTitle, Number } from './elements';
 
 interface INavigationProps {
   teamId?: string;
@@ -14,27 +14,15 @@ export const Navigation = ({
 }: INavigationProps) => (
   <Container>
     {bookmarked ? (
-      <NavigationLink
-        to={
-          teamId
-            ? `/dashboard/teams/${teamId}/templates/bookmarked`
-            : `/dashboard/templates/bookmarked`
-        }
-      >
-        {teamId ? 'Team Bookmarked Templates' : 'Bookmarked Templates'}
-      </NavigationLink>
+      <NavigationTitle>
+        {teamId ? 'Bookmarked Templates' : 'Bookmarked Templates'}
+      </NavigationTitle>
     ) : (
-      <NavigationLink
-        to={
-          teamId
-            ? `/dashboard/teams/${teamId}/templates`
-            : `/dashboard/templates`
-        }
-      >
+      <NavigationTitle>
         {teamId ? 'Team Templates' : 'My Templates'}
-      </NavigationLink>
+      </NavigationTitle>
     )}
 
-    {number == null && <Number>{number}</Number>}
+    {number != null && <Number>{number}</Number>}
   </Container>
 );
