@@ -1,6 +1,6 @@
 import { LiveMessage, LiveMessageEvent } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
-import { withLoadApp } from 'app/overmind/factories';
+import { withLoadApp, withUser } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
 import { filter, fork, pipe } from 'overmind';
 
@@ -11,33 +11,44 @@ export const internal = internalActions;
 
 export const roomJoined: AsyncAction<{
   roomId: string;
-}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
-  await effects.vscode.initialize;
-  await effects.vscode.closeAllTabs();
-  const sandbox = await actions.live.internal.initialize(roomId);
+}> = withUser(
+  withLoadApp(async ({ state, effects, actions }, { roomId }) => {
+    await effects.vscode.initialize;
+    await effects.vscode.closeAllTabs();
 
-  if (state.updateStatus === 'available') {
-    const modal = 'liveVersionMismatch';
-    effects.analytics.track('Open Modal', { modal });
-    state.currentModal = modal;
-  }
+    if (state.live.isLive) {
+      actions.live.internal.disconnect();
+    }
 
-  await actions.internal.setCurrentSandbox(sandbox);
+    const sandbox = await actions.live.internal.initialize(roomId);
 
-  const items = getItems(state);
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+    if (!sandbox) {
+      return;
+    }
 
-  state.workspace.openedWorkspaceItem = defaultItem.id;
+    if (state.updateStatus === 'available') {
+      const modal = 'liveVersionMismatch';
+      effects.analytics.track('Open Modal', { modal });
+      state.currentModal = modal;
+    }
 
-  await effects.vscode.changeSandbox(state.editor.currentSandbox, fs => {
-    state.editor.modulesByPath = fs;
-  });
+    await actions.internal.setCurrentSandbox(sandbox);
 
-  effects.live.sendModuleStateSyncRequest();
-  effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately({ initialRender: true });
-  state.live.isLoading = false;
-});
+    const items = getItems(state);
+    const defaultItem = items.find(i => i.defaultOpen) || items[0];
+
+    state.workspace.openedWorkspaceItem = defaultItem.id;
+
+    await effects.vscode.changeSandbox(state.editor.currentSandbox, fs => {
+      state.editor.modulesByPath = fs;
+    });
+
+    effects.live.sendModuleStateSyncRequest();
+    effects.vscode.openModule(state.editor.currentModule);
+    effects.preview.executeCodeImmediately({ initialRender: true });
+    state.editor.isLoading = false;
+  })
+);
 
 export const createLiveClicked: AsyncAction<string> = async (
   { actions, effects, state },

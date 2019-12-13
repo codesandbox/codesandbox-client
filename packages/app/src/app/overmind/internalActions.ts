@@ -36,6 +36,7 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
     actions.refetchSandboxInfo();
+    state.isAuthenticating = false;
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not authenticate with Github',

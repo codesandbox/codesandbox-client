@@ -1,29 +1,28 @@
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
+import { UserMenu } from 'app/pages/common/UserMenu';
 import React from 'react';
 
-import { UserMenu } from 'app/pages/common/UserMenu';
-
 import {
-  SaveAllButton,
-  RefreshButton,
-  PreferencesButton,
-  NewSandboxButton,
-  LikeButton,
-  PickButton,
-  ShareButton,
   ForkButton,
+  LikeButton,
+  NewSandboxButton,
+  PickButton,
+  PreferencesButton,
+  RefreshButton,
+  SaveAllButton,
+  ShareButton,
 } from './Buttons';
 import {
-  Container,
-  Right,
-  Left,
+  AccountContainer,
   Centered,
+  Container,
   DashboardIcon,
   DashboardLink,
-  AccountContainer,
-  UserMenuContainer,
+  Left,
+  Right,
   SignInButton,
+  UserMenuContainer,
 } from './elements';
 import { Logo } from './Logo';
 import { MenuBar } from './MenuBar';

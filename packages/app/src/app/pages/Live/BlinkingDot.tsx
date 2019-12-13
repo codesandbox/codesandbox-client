@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
+import styled from 'styled-components';
 
 const DotContainer = styled.div`
   font-size: 4rem;
@@ -12,7 +12,8 @@ const DotContainer = styled.div`
   }
 `;
 
-export class BlinkingDot extends React.PureComponent {
+export class BlinkingDot extends React.PureComponent<{}, { showing: boolean }> {
+  timer: NodeJS.Timer;
   state = {
     showing: true,
   };
