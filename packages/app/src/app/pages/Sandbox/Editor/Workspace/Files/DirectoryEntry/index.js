@@ -1,4 +1,3 @@
-import { inject, observer } from 'app/componentConnectors';
 import { reaction } from 'mobx';
 import React from 'react';
 import { DropTarget } from 'react-dnd';
@@ -400,13 +399,8 @@ function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export default inject(
-  'signals',
-  'store'
-)(
-  DropTarget(
-    ['ENTRY', NativeTypes.FILE],
-    entryTarget,
-    collectTarget
-  )(observer(DirectoryEntry))
-);
+export default DropTarget(
+  ['ENTRY', NativeTypes.FILE],
+  entryTarget,
+  collectTarget
+)(DirectoryEntry);

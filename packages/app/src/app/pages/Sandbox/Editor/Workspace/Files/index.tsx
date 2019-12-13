@@ -11,14 +11,11 @@ interface IFilesProps {
 
 export const Files: React.FC<IFilesProps> = ({ setEditActions }) => {
   const {
-    state: {
-      editor: { currentSandbox: sandbox },
-      isLoggedIn,
-    },
-    actions: {
-      editor: { createZipClicked },
-    },
+    state: { editor: editorState, isLoggedIn },
+    actions: { editor, files },
   } = useOvermind();
+
+  const { currentSandbox: sandbox } = editorState;
 
   const _getModulePath = moduleId => {
     try {
@@ -33,6 +30,8 @@ export const Files: React.FC<IFilesProps> = ({ setEditActions }) => {
       root
       getModulePath={_getModulePath}
       title={sandbox.title || 'Project'}
+      signals={{ files, editor }}
+      store={{ editor: editorState, isLoggedIn }}
       initializeProperties={({
         onCreateModuleClick,
         onCreateDirectoryClick,
@@ -46,7 +45,7 @@ export const Files: React.FC<IFilesProps> = ({ setEditActions }) => {
               forceShow={window.__isTouch}
               onCreateFile={onCreateModuleClick}
               onCreateDirectory={onCreateDirectoryClick}
-              onDownload={createZipClicked}
+              onDownload={editor.createZipClicked}
               onUploadFile={
                 isLoggedIn && sandbox.privacy === 0
                   ? onUploadFileClick
