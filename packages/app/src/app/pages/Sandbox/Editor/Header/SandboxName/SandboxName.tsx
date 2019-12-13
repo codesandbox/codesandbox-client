@@ -11,8 +11,8 @@ import React, {
   useState,
 } from 'react';
 import { useSpring, animated } from 'react-spring';
+
 import { useOvermind } from 'app/overmind';
-import { PrivacyTooltip } from '../PrivacyTooltip';
 
 import {
   Container,
@@ -109,6 +109,7 @@ export const SandboxName: FunctionComponent = () => {
             </Folder>
           </animated.div>
         )}
+
         {updatingName ? (
           <Form onSubmit={submitNameChange}>
             <NameInput
@@ -138,8 +139,6 @@ export const SandboxName: FunctionComponent = () => {
             {sandboxName}
           </Name>
         )}
-
-        {owned && !updatingName ? <PrivacyTooltip /> : null}
 
         {currentSandbox.customTemplate ? (
           <Tooltip

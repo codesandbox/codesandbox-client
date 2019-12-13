@@ -47,7 +47,6 @@ export const Centered = styled.div`
   display: flex;
   justify-content: center;
   z-index: 0; /* So pointer events on left and right continue */
-  z-index: 10; /* override: this probably breaks something, not sure what */
   margin: 0 3rem;
 `;
 
