@@ -1,4 +1,7 @@
-import styled from 'styled-components';
+import styled, {
+  StyledComponent,
+  StyledComponentInnerOtherProps,
+} from 'styled-components';
 import css from '@styled-system/css';
 
 export const Container = styled.div(
@@ -69,4 +72,8 @@ export const Select = styled(Element).attrs({ as: 'select' })(({ theme }) =>
       },
     },
   })
-);
+) as StyledComponent<
+  'select',
+  any,
+  StyledComponentInnerOtherProps<typeof Element>
+>;
