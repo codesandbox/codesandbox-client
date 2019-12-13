@@ -7,9 +7,9 @@ class VueSelector extends Transpiler {
   }
 
   doTranspilation(content: string, loaderContext: LoaderContext) {
-    return import(/* webpackChunkName: 'vue-selector' */ './loader').then(
-      loader => loader.default(content, loaderContext)
-    );
+    return import(
+      /* webpackChunkName: 'vue-selector' */ './loader'
+    ).then(loader => loader.default(content, loaderContext));
   }
 }
 

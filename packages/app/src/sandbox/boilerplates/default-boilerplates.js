@@ -24,4 +24,19 @@ export default function(module) {
 `,
 };
 
-export default [JS, HTML];
+export const TS = {
+  id: 'ts',
+  extension: '.ts',
+  condition: '.tsx?$',
+  code: `
+import * as React from 'react';
+import { render } from 'react-dom';
+export default function(module) {
+  const node = document.createElement('div');
+  document.body.appendChild(node);
+  render(React.createElement(module.default), node);
+}
+`,
+};
+
+export default [JS, HTML, TS];

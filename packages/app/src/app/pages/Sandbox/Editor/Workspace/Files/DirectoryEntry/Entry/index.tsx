@@ -1,5 +1,6 @@
 import theme from '@codesandbox/common/lib/theme';
 import { ContextMenu, Item } from 'app/components/ContextMenu';
+import { Module, Directory } from '@codesandbox/common/lib/types';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
 import EditIcon from 'react-icons/lib/go/pencil';
@@ -17,7 +18,7 @@ import EntryTitle from './EntryTitle';
 import { EntryTitleInput } from './EntryTitleInput';
 
 interface IEntryProps {
-  renameValidator: (id: string, title: string) => string;
+  renameValidator: (id: string, title: string) => string | false | null;
   shortid: string;
   id: string;
   title: string;
@@ -35,6 +36,11 @@ interface IEntryProps {
   onClick: () => void;
   markTabsNotDirty: () => void;
   onRenameCancel?: () => void;
+  getModulePath: (
+    modules: Module[],
+    directories: Directory[],
+    id: string
+  ) => string;
   isNotSynced: boolean;
   isMainModule: boolean;
   moduleHasError: boolean;
@@ -68,7 +74,7 @@ const Entry: React.FC<IEntryProps> = ({
   state: incomingState = '',
 }) => {
   const [state, setState] = useState(incomingState);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | false | null>(null);
   const [hovering, setHovering] = useState(false);
 
   const resetState = () => {
@@ -163,6 +169,8 @@ const Entry: React.FC<IEntryProps> = ({
         <EntryContainer
           onClick={setCurrentModule ? setCurrentModuleAction : onClick}
           onDoubleClick={markTabsNotDirty}
+          //  The elements file is still in js
+          //  @ts-ignore
           depth={depth}
           nameValidationError={error}
           active={active}

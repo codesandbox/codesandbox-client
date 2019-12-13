@@ -15,7 +15,7 @@ type Props = {
   keepState?: boolean;
   disabled?: boolean;
   defaultOpen?: boolean;
-  actions?: React.Component<any, any>;
+  actions?: React.ReactNode;
   style?: React.CSSProperties;
   showOverflow?: boolean;
 };
@@ -65,7 +65,7 @@ export class WorkspaceItem extends React.Component<Props, State> {
         <ReactShow
           style={{
             height: 'auto',
-            overflow: showOverflow ? 'initial' : 'hidden',
+            overflow: showOverflow && open ? 'initial' : 'hidden',
           }}
           transitionOnMount
           start={

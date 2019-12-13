@@ -83,8 +83,8 @@
     "husky": "^2.2.0",
     "lerna": "^3.16.4",
     "lint-staged": "^9.2.5",
-    "prettier": "1.19.0",
-    "pretty-quick": "^1.10.0",
+    "prettier": "1.19.1",
+    "pretty-quick": "^2.0.1",
     "typescript": "3.7.2",
     "username": "^5.1.0"
   },

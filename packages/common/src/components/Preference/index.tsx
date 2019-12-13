@@ -1,7 +1,6 @@
 import React, { ComponentProps, FunctionComponent } from 'react';
 
 import Tooltip from '../../components/Tooltip';
-
 import { Container } from './elements';
 import { PreferenceDropdown } from './PreferenceDropdown';
 import { PreferenceKeybinding } from './PreferenceKeybinding';
@@ -21,6 +20,7 @@ type PreferenceProps<TString extends PreferenceType> = {
   style?: React.CSSProperties;
   title: string;
   tooltip?: string;
+  options?: any[];
   type: TString;
 };
 

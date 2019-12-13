@@ -44,6 +44,10 @@ export const UserMenu: FunctionComponent = () => {
         openFeedback={() => modalOpened({ modal: 'feedback' })}
         menuProps={menu}
         showPatron={user.subscription && user.subscription.plan === 'patron'}
+        showManageSubscription={
+          user.subscription && user.subscription.plan === 'pro'
+        }
+        showBecomePro={!user.subscription}
       />
     </Relative>
   );

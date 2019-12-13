@@ -1,69 +1,48 @@
-import React from 'react';
-import history from 'app/utils/history';
+import Template from '@codesandbox/common/lib/templates/template';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import React, {
+  ComponentProps,
+  FunctionComponent,
+  HTMLAttributes,
+  KeyboardEvent,
+} from 'react';
+
 import { useOvermind } from 'app/overmind';
-import Template from '@codesandbox/common/lib/templates/template';
-import { ButtonsContainer, Container, ContainerLink } from './elements';
+import history from 'app/utils/history';
 
-interface ICreateNewSandboxProps {
-  style: React.CSSProperties;
+import { ButtonsContainer, Container } from './elements';
+import { MostUsedSandbox } from './MostUsedSandbox';
+
+type Props = {
   collectionId?: string;
-  mostUsedSandboxTemplate: Template;
-}
-
-export const CreateNewSandboxButton = ({
-  style,
+  mostUsedSandboxTemplate: ComponentProps<typeof MostUsedSandbox>['template'];
+} & Pick<HTMLAttributes<HTMLDivElement>, 'style'>;
+export const CreateNewSandboxButton: FunctionComponent<Props> = ({
   collectionId,
   mostUsedSandboxTemplate,
-}: ICreateNewSandboxProps) => {
-  const { actions } = useOvermind();
+  style,
+}) => {
+  const {
+    actions: {
+      dashboard: { createSandboxClicked },
+      modalOpened,
+    },
+  } = useOvermind();
 
-  const createSandbox = (template: Template) => {
-    if (!collectionId) {
-      setTimeout(() => {
-        history.push(sandboxUrl({ id: template.shortid, alias: null }));
-      }, 300);
+  const createSandbox = ({ shortid }: Pick<Template, 'shortid'>) => {
+    if (collectionId) {
+      createSandboxClicked({ body: { collectionId }, sandboxId: shortid });
     } else {
-      actions.dashboard.createSandboxClicked({
-        sandboxId: template.shortid,
-        body: {
-          collectionId,
-        },
-      });
+      setTimeout(() => {
+        history.push(sandboxUrl({ alias: null, id: shortid }));
+      }, 300);
     }
   };
 
   const handleClick = () => {
-    actions.modalOpened({ modal: 'newSandbox' });
+    modalOpened({ modal: 'newSandbox' });
   };
-
-  let mostUsedSandboxComponent;
-
-  if (mostUsedSandboxTemplate) {
-    const buttonName = `Create ${mostUsedSandboxTemplate.niceName} Sandbox`;
-    if (collectionId) {
-      mostUsedSandboxComponent = (
-        <Container
-          onClick={() => createSandbox(mostUsedSandboxTemplate)}
-          color={mostUsedSandboxTemplate.color}
-          tabIndex={0}
-          role="button"
-        >
-          {buttonName}
-        </Container>
-      );
-    } else {
-      mostUsedSandboxComponent = (
-        <ContainerLink
-          to={sandboxUrl({ id: mostUsedSandboxTemplate.shortid, alias: null })}
-          color={mostUsedSandboxTemplate.color}
-        >
-          {buttonName}
-        </ContainerLink>
-      );
-    }
-  }
 
   return (
     <div style={style}>
@@ -72,15 +51,19 @@ export const CreateNewSandboxButton = ({
           onClick={handleClick}
           tabIndex={0}
           role="button"
-          onKeyDown={e => {
-            if (e.keyCode === ENTER) {
+          onKeyDown={({ keyCode }: KeyboardEvent) => {
+            if (keyCode === ENTER) {
               handleClick();
             }
           }}
         >
           Create Sandbox
         </Container>
-        {mostUsedSandboxComponent}
+
+        <MostUsedSandbox
+          createSandbox={createSandbox}
+          template={mostUsedSandboxTemplate}
+        />
       </ButtonsContainer>
     </div>
   );

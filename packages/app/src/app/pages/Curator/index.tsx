@@ -1,6 +1,11 @@
+import 'react-day-picker/lib/style.css';
+
 import { Button } from '@codesandbox/common/lib/components/Button';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { SubTitle } from 'app/components/SubTitle';
+import { useOvermind } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
 import { format, getTime, subMonths, subWeeks } from 'date-fns';
 import React, {
   FunctionComponent,
@@ -9,20 +14,15 @@ import React, {
   useState,
 } from 'react';
 import DayPicker from 'react-day-picker';
-import 'react-day-picker/lib/style.css';
-
-import { useOvermind } from 'app/overmind';
-import { SubTitle } from 'app/components/SubTitle';
-import { Navigation } from 'app/pages/common/Navigation';
 
 import {
-  Container,
   Buttons,
+  Container,
   DelayedAnimation,
   Heading,
   PickerWrapper,
 } from './elements';
-import SandboxCard from './SandboxCard';
+import { SandboxCard } from './SandboxCard';
 
 export const Curator: FunctionComponent = () => {
   const {

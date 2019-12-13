@@ -13,7 +13,6 @@ import {
   UnmakeSandboxesTemplateMutationVariables,
   ListTemplatesQueryVariables,
   ListTemplatesQuery,
-  Collection,
   PathedSandboxesQuery,
   PathedSandboxesFoldersQueryVariables,
 } from 'app/graphql/types';
@@ -191,7 +190,7 @@ export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
 export function makeTemplates(
   selectedSandboxes: string[],
   teamId?: string,
-  collections?: Collection[]
+  collections?: { teamId: string | null }[]
 ) {
   const unpackedSelectedSandboxes: string[] =
     // @ts-ignore

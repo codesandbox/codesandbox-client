@@ -6,7 +6,7 @@ export type ColorProps = {
   right?: boolean;
   offMode?: boolean;
   secondary?: boolean;
-  theme: (typeof theme) & { templateColor: string };
+  theme: typeof theme & { templateColor: string };
 };
 
 const getColor = ({
