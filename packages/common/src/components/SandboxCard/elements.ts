@@ -86,7 +86,7 @@ export const SandboxTitle = styled.h2`
   word-break: break-all;
 `;
 
-export const SandboxDescription = styled.p<{ overlay?: boolean }>`
+export const SandboxDescription = styled.p`
   font-size: 0.8rem;
   color: ${props => props.theme.lightText};
   font-weight: 500;
