@@ -192,11 +192,6 @@ export default {
       clients.get(moduleShortid).applyClient(operation);
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
-      console.error(
-        'Something went wrong with applying OT operation',
-        moduleShortid,
-        operation
-      );
       this.send('live:module_state', {});
     }
   },

@@ -117,6 +117,17 @@ export async function initializeBrowserFS({
       }
 
       if (syncSandbox) {
+        // Resolve after 3s, if it doesn't resolve, vscode won't be able to resolve the ext host
+        // and it won't try to reconnect.
+        const timeout = setTimeout(() => {
+          resolve();
+        }, 3000);
+
+        const callResolve = () => {
+          clearTimeout(timeout);
+          resolve();
+        };
+
         self.addEventListener('message', evt => {
           // Some messages are specific to this worker
           if (!evt.data.$fs_ids || !evt.data.$fs_ids.includes(fsId)) {
@@ -142,7 +153,7 @@ export async function initializeBrowserFS({
               touchFileSystem();
               if (isInitialSync) {
                 isInitialSync = false;
-                resolve();
+                callResolve();
               }
               break;
             }
@@ -170,7 +181,7 @@ export async function initializeBrowserFS({
                   $data: {},
                 });
               } else {
-                resolve();
+                callResolve();
               }
               break;
             }

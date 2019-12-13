@@ -117,7 +117,7 @@ export type CurrentUser = {
     plan?: 'pro' | 'patron';
   } | null;
   curatorAt: string;
-  badges: Array<Badge>;
+  badges: Badge[];
   integrations: {
     zeit?: {
       token: string;
@@ -157,6 +157,18 @@ export type SmallSandbox = {
   likeCount: number;
   viewCount: number;
   forkCount: number;
+  template: string;
+  privacy: 0 | 1 | 2;
+  git: GitInfo | null;
+};
+
+export type ForkedSandbox = {
+  id: string;
+  alias: string | null;
+  title: string | null;
+  customTemplate: CustomTemplate | null;
+  insertedAt: string;
+  updatedAt: string;
   template: string;
   privacy: 0 | 1 | 2;
   git: GitInfo | null;
@@ -243,6 +255,7 @@ export type MiniSandbox = {
   description: string;
   git: GitInfo;
   author: User;
+  screenshotUrl: string;
 };
 
 export type GitCommit = {
@@ -273,9 +286,9 @@ export type PickedSandboxes = {
 };
 
 export type PickedSandboxDetails = {
-  title: string;
-  id: string;
   description: string;
+  id: string;
+  title: string;
 };
 
 export type Sandbox = {
@@ -304,7 +317,7 @@ export type Sandbox = {
   /**
    * Sandbox the forked template is from
    */
-  forkedTemplateSandbox: SmallSandbox | null;
+  forkedTemplateSandbox: ForkedSandbox | null;
   externalResources: string[];
   team: {
     id: string;
@@ -313,7 +326,7 @@ export type Sandbox = {
   roomId: string | null;
   privacy: 0 | 1 | 2;
   author: User | null;
-  forkedFromSandbox: SmallSandbox | null;
+  forkedFromSandbox: ForkedSandbox | null;
   git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;

@@ -7,11 +7,9 @@ import { NotificationStatus, Toasts } from '@codesandbox/notifications';
 import { useOvermind } from 'app/overmind';
 import Loadable from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
-import { DragDropContext } from 'react-dnd';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
-import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 import { Modals } from './common/Modals';
 import Dashboard from './Dashboard';
 import { DevAuthPage } from './DevAuth';
@@ -49,7 +47,11 @@ const Search = Loadable(() =>
     default: module.Search,
   }))
 );
-const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
+const CLI = Loadable(() =>
+  import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
+    default: module.CLI,
+  }))
+);
 
 const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub').then(module => ({
@@ -66,7 +68,9 @@ const Patron = Loadable(() =>
 );
 const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
-  import(/* webpackChunkName: 'page-curator' */ './Curator')
+  import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
+    default: module.Curator,
+  }))
 );
 const CodeSadbox = () => this[`💥`].kaboom();
 
@@ -140,6 +144,4 @@ const RoutesComponent: React.FC = () => {
   );
 };
 
-export const Routes = DragDropContext(HTML5Backend)(
-  withRouter(RoutesComponent)
-);
+export const Routes = withRouter(RoutesComponent);

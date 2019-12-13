@@ -1,42 +1,50 @@
-import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import {
   gitHubToSandboxUrl,
-  protocolAndHost,
   gitHubRepoPattern,
+  protocolAndHost,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { useOvermind } from 'app/overmind';
-import { Title } from 'app/components/Title';
+import React, {
+  ChangeEvent,
+  FunctionComponent,
+  useEffect,
+  useState,
+} from 'react';
+
 import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
+import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
+
 import {
   Container,
   Content,
   Description,
   ErrorMessage,
+  Input,
   Label,
-  StyledInput,
 } from './elements';
 
-const getFullGitHubUrl = url =>
+const getFullGitHubUrl = (url: string) =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
-export const GitHub = () => {
-  const [error, setError] = useState(null);
-  const [transformedUrl, setTransformedUrl] = useState('');
-  const [url, setUrl] = useState('');
-
+export const GitHub: FunctionComponent = () => {
   const {
     actions: { githubPageMounted },
   } = useOvermind();
+  const [error, setError] = useState(null);
+  const [transformedUrl, setTransformedUrl] = useState('');
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
     githubPageMounted();
   }, [githubPageMounted]);
 
-  const updateUrl = useCallback(({ target: { value: newUrl } }) => {
+  const updateUrl = ({
+    target: { value: newUrl },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (!newUrl) {
       setError(null);
       setTransformedUrl('');
@@ -50,7 +58,7 @@ export const GitHub = () => {
       setTransformedUrl(getFullGitHubUrl(newUrl.trim()));
       setUrl(newUrl);
     }
-  }, []);
+  };
 
   return (
     <MaxWidth>
@@ -58,13 +66,7 @@ export const GitHub = () => {
         <Container>
           <Navigation title="GitHub Import" />
 
-          <Content
-            vertical
-            horizontal
-            css={`
-              margin-top: 5rem;
-            `}
-          >
+          <Content horizontal vertical>
             <Description>
               <Title>Import from GitHub</Title>
 
@@ -87,7 +89,7 @@ export const GitHub = () => {
               URL to GitHub Repository (supports branches and paths too)
             </Label>
 
-            <StyledInput
+            <Input
               name="githuburl"
               onChange={updateUrl}
               placeholder="Insert GitHub URL..."
@@ -98,7 +100,7 @@ export const GitHub = () => {
 
             <Label htmlFor="sandboxurl">Converted Sandbox URL</Label>
 
-            <StyledInput
+            <Input
               name="sandboxurl"
               placeholder="The Sandbox URL"
               value={transformedUrl}

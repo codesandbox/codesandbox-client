@@ -125,8 +125,6 @@ export default () => {
           zIndex: 20,
           position: 'absolute',
           top: '15%',
-          left: 0,
-          right: 0,
           textAlign: 'center',
         }}
       >
@@ -160,7 +158,7 @@ export default () => {
               {sandboxesCreatedCount}{' '}
             </span>
             {sandboxesCreatedCount === 1 ? 'sandbox' : 'sandboxes'} created
-            since you've opened this page
+            since you opened this page
           </CountText>
 
           <div style={{ position: 'relative' }}>

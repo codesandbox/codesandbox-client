@@ -46,7 +46,10 @@ async function test(prId) {
     )
     .then(() => spawnPromise('git', ['checkout', branchName]))
     .then(() => spawnPromise('git', ['merge', 'master']))
+    .then(() => spawnPromise('yarn', ['install']))
     .then(() => spawnPromise('yarn', ['build:deps']))
+    .then(() => spawnPromise('yarn', ['typecheck']))
+    .then(() => spawnPromise('yarn', ['lint']))
     .catch(() => {
       console.error(
         'Something wrong happened building the deps, maybe missing a new package added. Please install and run build:deps manually before continuing'

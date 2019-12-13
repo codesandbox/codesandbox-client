@@ -1,11 +1,14 @@
+import React, { FunctionComponent } from 'react';
+import PlusIcon from 'react-icons/lib/go/plus';
 import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, {
   INavigationItem,
   getDisabledItems,
 } from 'app/overmind/utils/items';
-import React, { FunctionComponent } from 'react';
-import PlusIcon from 'react-icons/lib/go/plus';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Tooltip, {
+  SingletonTooltip,
+} from '@codesandbox/common/lib/components/Tooltip';
+import { TippyProps } from '@tippy.js/react';
 import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
@@ -43,10 +46,12 @@ const IDS_TO_ICONS = {
 type IconProps = {
   item: INavigationItem;
   isDisabled?: boolean;
+  singleton: TippyProps['singleton'];
 };
 const IconComponent: FunctionComponent<IconProps> = ({
   item: { id, name },
   isDisabled,
+  singleton,
 }) => {
   const {
     actions: {
@@ -61,10 +66,12 @@ const IconComponent: FunctionComponent<IconProps> = ({
   const selected = !workspaceHidden && id === openedWorkspaceItem;
 
   return (
-    <Tooltip placement="right" content={name}>
+    <Tooltip content={name} singleton={singleton}>
       <IconContainer
         isDisabled={isDisabled}
         selected={selected}
+        as="button"
+        aria-label={name}
         onClick={() => {
           if (selected) {
             setWorkspaceHidden({ hidden: true });
@@ -74,7 +81,7 @@ const IconComponent: FunctionComponent<IconProps> = ({
           }
         }}
       >
-        <Icon />
+        <Icon aria-hidden />
       </IconContainer>
     </Tooltip>
   );
@@ -94,16 +101,32 @@ export const Navigation: FunctionComponent<Props> = ({
   const disabledItems = getDisabledItems(state);
 
   return (
-    <Container topOffset={topOffset} bottomOffset={bottomOffset}>
-      {shownItems.map(item => (
-        <IconComponent key={item.id} item={item} />
-      ))}
+    <Container
+      topOffset={topOffset}
+      bottomOffset={bottomOffset}
+      as="nav"
+      aria-label="Sandbox Navigation"
+    >
+      <SingletonTooltip placement="right">
+        {singleton => (
+          <>
+            {shownItems.map(item => (
+              <IconComponent key={item.id} item={item} singleton={singleton} />
+            ))}
 
-      {disabledItems.length > 0 && <Separator />}
+            {disabledItems.length > 0 && <Separator />}
 
-      {disabledItems.map(item => (
-        <IconComponent key={item.id} item={item} isDisabled />
-      ))}
+            {disabledItems.map(item => (
+              <IconComponent
+                key={item.id}
+                item={item}
+                singleton={singleton}
+                isDisabled
+              />
+            ))}
+          </>
+        )}
+      </SingletonTooltip>
     </Container>
   );
 };

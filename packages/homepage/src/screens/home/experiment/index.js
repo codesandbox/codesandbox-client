@@ -14,10 +14,10 @@ import { applyParallax } from '../../../utils/parallax';
 
 const tweet = {
   username: 'gethackteam',
-  job: 'Snr. Frontend Developer Hackteam',
+  job: 'Snr. Frontend Developer, Hackteam',
   name: 'Roy Derks',
   quote:
-    'I often use CodeSandbox to create demos or try out new JavaScript features or packages. You can find my profile here',
+    'I often use CodeSandbox to create demos or try out new JavaScript features or packages.',
   url: 'https://twitter.com/gethackteam/status/1173522963162959872',
 };
 

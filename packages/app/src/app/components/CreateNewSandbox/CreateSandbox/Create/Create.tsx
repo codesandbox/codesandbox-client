@@ -44,7 +44,7 @@ export const Create = () => {
               <LinkButton onClick={actions.signInGithubClicked}>
                 Sign in
               </LinkButton>{' '}
-              to create templates or bookmark templates for later use.
+              to create and bookmark templates for later use.
             </div>
           </CenteredMessage>
         )}

@@ -3,46 +3,48 @@ import history from 'app/utils/history';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { gitHubToSandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-window.addEventListener('message', receiveMessage, false);
-
-function receiveMessage(event: MessageEvent) {
-  if (event.origin === 'https://app.stackbit.com' && event.data) {
-    const data = JSON.parse(event.data);
-
-    if (
-      data.type === 'project-update' &&
-      data.project &&
-      data.project.repository &&
-      data.project.repository.url
-    ) {
-      // @ts-ignore
-      window.stackbitWindow.close();
-
-      history.push(gitHubToSandboxUrl(data.project.repository.url));
-    }
-  }
-}
-
-function openStackbit(username: string) {
-  // @ts-ignore
-  window.stackbitWindow = window.open(
+function openStackbit(username: string, closeModal: () => void) {
+  const stackbitWindow = window.open(
     `https://app.stackbit.com/wizard?ref=codesandbox&githubUser=${username}&ssgExclusive=1&ssg=gatsby&cmsExclusive=netlifycms,forestry,nocms`,
     '_blank',
     'width=1210,height=800'
   );
+
+  window.addEventListener('message', receiveMessage, false);
+
+  function receiveMessage(event) {
+    if (event.origin === 'https://app.stackbit.com' && event.data) {
+      const data = JSON.parse(event.data);
+
+      if (
+        data.type === 'project-update' &&
+        data.project &&
+        data.project.repository &&
+        data.project.repository.url
+      ) {
+        stackbitWindow.close();
+
+        closeModal();
+        history.push(gitHubToSandboxUrl(data.project.repository.url));
+        window.removeEventListener('message', receiveMessage, false);
+      }
+    }
+  }
 }
 
 interface IStackbitButtonProps {
   username: string;
+  closeModal: () => void;
 }
 
 export const StackbitButton: React.FC<IStackbitButtonProps> = ({
   username,
+  closeModal
 }) => (
   <Button
     css="margin-top: 1rem; float: right;"
     small
-    onClick={() => openStackbit(username)}
+    onClick={() => openStackbit(username, closeModal)}
   >
     Generate Sandbox
   </Button>

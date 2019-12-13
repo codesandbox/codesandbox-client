@@ -14,10 +14,10 @@ date: 2019-11-13
 ## CodeSandbox CI
 
 Maintaining open source projects, while enormously fulfilling, can be
-time-consuming and stressful. After a busy Hacktober, we know from first-hand
-experience what it's like, and we wanted to help library maintainers make the
-best use of their time. Today we're pleased to launch CodeSandbox CI: A free
-continuous integration service purpose-built for open source library
+time-consuming and stressful. After a busy #Hacktoberfest, we know from
+first-hand experience what it's like, and we wanted to help library maintainers
+make the best use of their time. Today we're pleased to launch CodeSandbox CI: A
+free continuous integration service purpose-built for open source library
 maintainers.
 
 https://youtu.be/k_aR_4FeKlc
@@ -41,7 +41,7 @@ real time-saver.
 **Try it out for yourself by
 [installing the GitHub app](https://github.com/apps/codesandbox)**.
 
-[![Framer tweet](./images/mattgperry_tweet_1181863225756934144.png)](https://twitter.com/mattgperry/status/1181863225756934144?s=20)
+https://twitter.com/mattgperry/status/1181863225756934144
 
 ## A new look for Embeds
 

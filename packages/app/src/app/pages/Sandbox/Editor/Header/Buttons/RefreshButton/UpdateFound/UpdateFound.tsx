@@ -23,8 +23,8 @@ const useInterval = (callback = () => {}, delay: number) => {
 };
 
 export const UpdateFound = (props: any) => {
-  const [isVisible, setVisibility] = useState(true);
-  useInterval(() => setVisibility(false), isVisible ? 60000 : null);
+  const [visible, setVisibility] = useState(true);
+  useInterval(() => setVisibility(false), visible ? 60000 : null);
 
   return (
     <UpdateContainer {...props}>
@@ -36,8 +36,8 @@ export const UpdateFound = (props: any) => {
             onClick={() => document.location.reload()}
           />
         }
-        isVisible={isVisible}
-        trigger={isVisible ? 'manual' : 'mouseenter focus'}
+        visible={visible}
+        trigger={visible ? 'manual' : 'mouseenter focus'}
         arrow
         distance={15}
       >

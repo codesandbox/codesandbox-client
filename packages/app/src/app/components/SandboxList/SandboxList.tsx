@@ -1,30 +1,31 @@
-import * as React from 'react';
-import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
-import FullHeartIcon from 'react-icons/lib/fa/heart';
-import EyeIcon from 'react-icons/lib/fa/eye';
-import ForkIcon from 'react-icons/lib/go/repo-forked';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import getIcon from '@codesandbox/common/lib/templates/icons';
 import { SmallSandbox } from '@codesandbox/common/lib/types';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { format } from 'date-fns';
+import * as React from 'react';
+import EyeIcon from 'react-icons/lib/fa/eye';
+import FullHeartIcon from 'react-icons/lib/fa/heart';
+import ForkIcon from 'react-icons/lib/go/repo-forked';
+import { Link } from 'react-router-dom';
+
 import { DeleteSandboxButton } from '../DeleteSandboxButton';
 import { PrivacyStatus } from '../PrivacyStatus';
 import {
+  Body,
+  DeleteBody,
   HeaderRow,
   HeaderTitle,
-  Table,
-  StatTitle,
-  StatBody,
-  DeleteBody,
-  Body,
   SandboxRow,
+  StatBody,
+  StatTitle,
+  Table,
 } from './elements';
 
 interface ISandboxListProps {
   sandboxes: SmallSandbox[];
   isCurrentUser: boolean;
-  onDelete: () => void;
+  onDelete: (id: string) => void;
 }
 
 export const SandboxList: React.FC<ISandboxListProps> = ({

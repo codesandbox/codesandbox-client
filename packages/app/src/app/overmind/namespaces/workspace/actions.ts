@@ -30,6 +30,7 @@ export const tagAdded: AsyncAction = withOwnedSandbox(
     } catch (error) {
       const index = sandbox.tags.indexOf(tagName);
       sandbox.tags.splice(index, 1);
+      actions.internal.handleError({ message: 'Unable to add tag', error });
     }
   }
 );
@@ -61,6 +62,7 @@ export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
       });
     } catch (error) {
       sandbox.tags.splice(tagIndex, 0, tag);
+      actions.internal.handleError({ message: 'Unable to remove tag', error });
     }
   }
 );
@@ -96,29 +98,37 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
       hasChangedTitle || hasChangedDescription || hasChangedAlias;
 
     if (hasChanged) {
-      let event = 'Alias';
+      try {
+        let event = 'Alias';
 
-      if (hasChangedTitle) {
-        event = 'Title';
-      } else if (hasChangedDescription) {
-        event = 'Description';
+        if (hasChangedTitle) {
+          event = 'Title';
+        } else if (hasChangedDescription) {
+          event = 'Description';
+        }
+
+        effects.analytics.track(`Sandbox - Update ${event}`);
+
+        sandbox.title = project.title;
+        sandbox.description = project.description;
+        sandbox.alias = project.alias;
+
+        const updatedSandbox = await effects.api.updateSandbox(sandbox.id, {
+          title: project.title,
+          description: project.description,
+          alias: project.alias,
+        });
+
+        effects.router.replaceSandboxUrl(updatedSandbox);
+
+        await actions.editor.internal.updateSandboxPackageJson();
+      } catch (error) {
+        actions.internal.handleError({
+          message:
+            'We were not able to save your sandbox updates, please try again',
+          error,
+        });
       }
-
-      effects.analytics.track(`Sandbox - Update ${event}`);
-
-      sandbox.title = project.title;
-      sandbox.description = project.description;
-      sandbox.alias = project.alias;
-
-      const updatedSandbox = await effects.api.updateSandbox(sandbox.id, {
-        title: project.title,
-        description: project.description,
-        alias: project.alias,
-      });
-
-      effects.router.replaceSandboxUrl(updatedSandbox);
-
-      await actions.editor.internal.updateSandboxPackageJson();
     }
   }
 );
@@ -137,7 +147,10 @@ export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
       );
     } catch (error) {
       externalResources.splice(externalResources.indexOf(resource), 1);
-      effects.notificationToast.error('Could not save external resource');
+      actions.internal.handleError({
+        message: 'Could not save external resource',
+        error,
+      });
       actions.editor.internal.updatePreviewCode();
     }
   }
@@ -158,9 +171,11 @@ export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
       );
     } catch (error) {
       externalResources.splice(resourceIndex, 0, resource);
-      effects.notificationToast.error(
-        'Could not save removal of external resource'
-      );
+
+      actions.internal.handleError({
+        message: 'Could not save removal of external resource',
+        error,
+      });
       actions.editor.internal.updatePreviewCode();
     }
   }
@@ -188,9 +203,10 @@ export const sandboxDeleted: AsyncAction = async ({
   effects.router.redirectToSandboxWizard();
 };
 
-export const sandboxPrivacyChanged: AsyncAction<{
-  privacy: 0 | 1 | 2;
-}> = async ({ state, effects, actions }, { privacy }) => {
+export const sandboxPrivacyChanged: AsyncAction<0 | 1 | 2> = async (
+  { actions, effects, state },
+  privacy
+) => {
   const oldPrivacy = state.editor.currentSandbox.privacy;
   const sandbox = await effects.api.updatePrivacy(
     state.editor.currentSandbox.id,
@@ -245,7 +261,10 @@ export const deleteTemplate: AsyncAction = async ({
     actions.modalClosed();
     effects.notificationToast.success('Template Deleted');
   } catch (error) {
-    effects.notificationToast.error('Could not delete custom template');
+    actions.internal.handleError({
+      message: 'Could not delete custom template',
+      error,
+    });
   }
 };
 
@@ -267,7 +286,10 @@ export const editTemplate: AsyncAction<CustomTemplate> = async (
     state.editor.currentSandbox.customTemplate = updatedTemplate;
     effects.notificationToast.success('Template Edited');
   } catch (error) {
-    effects.notificationToast.error('Could not edit custom template');
+    actions.internal.handleError({
+      message: 'Could not edit custom template',
+      error,
+    });
   }
 };
 
@@ -288,13 +310,13 @@ export const addedTemplate: AsyncAction<{
     actions.modalClosed();
     effects.notificationToast.success('Successfully created the template');
   } catch (error) {
+    actions.internal.handleError({
+      message: 'Could not create template, please try again later',
+      error,
+    });
     if (process.env.NODE_ENV === 'development') {
       console.error(error);
     }
-
-    effects.notificationToast.error(
-      'Could not create template, please try again later'
-    );
   }
 };
 

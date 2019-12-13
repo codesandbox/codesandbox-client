@@ -1,6 +1,6 @@
-import { withLoadApp } from 'app/overmind/factories';
-import { AsyncAction, Action } from 'app/overmind';
 import { Sandbox } from '@codesandbox/common/lib/types';
+import { Action, AsyncAction } from 'app/overmind';
+import { withLoadApp } from 'app/overmind/factories';
 
 export const profileMounted: AsyncAction<{
   username: string;
@@ -27,7 +27,7 @@ export const profileMounted: AsyncAction<{
 
 export const sandboxesPageChanged: AsyncAction<{
   page: number;
-  force: boolean;
+  force?: boolean;
 }> = async ({ state, effects }, { page, force }) => {
   state.profile.isLoadingSandboxes = true;
   state.profile.currentSandboxesPage = page;

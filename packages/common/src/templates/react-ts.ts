@@ -1,9 +1,9 @@
+import { decorateSelector } from '../utils/decorate-selector';
+import { ReactTemplate } from './helpers/react-template';
+
 import configurations from './configuration';
 
-import Template from './template';
-import { decorateSelector } from '../utils/decorate-selector';
-
-export default new Template(
+export default new ReactTemplate(
   'create-react-app-typescript',
   'React + TS',
   'https://github.com/wmonk/create-react-app-typescript',

@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { useOvermind } from 'app/overmind';
-import { Title } from 'app/components/Title';
-import { SubTitle } from 'app/components/SubTitle';
-import { Navigation } from 'app/pages/common/Navigation';
-import { Container, Content, Code } from './elements';
+import React, { FunctionComponent, useEffect } from 'react';
 
-export const CLIInstructions: React.FC = () => {
+import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
+import { useOvermind } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
+
+import { Code, Container, Content } from './elements';
+
+export const CLIInstructions: FunctionComponent = () => {
   const {
     actions: { cliInstructionsMounted },
   } = useOvermind();
@@ -18,7 +20,7 @@ export const CLIInstructions: React.FC = () => {
 
   return (
     <MaxWidth>
-      <Margin vertical={1.5} horizontal={1.5}>
+      <Margin horizontal={1.5} vertical={1.5}>
         <Container>
           <Navigation title="CLI Import" />
 

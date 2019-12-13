@@ -1,14 +1,13 @@
-import React from 'react';
-import { Button, IButtonProps } from '../Button';
+import React, { ComponentProps, FunctionComponent } from 'react';
+import { Button } from '../Button';
 import { Wrapper, Loader } from './elements';
 
-interface IProgressButtonProps extends IButtonProps {
+type Props = ComponentProps<typeof Button> & {
   loading?: boolean;
-}
-
-const ProgressButton: React.FC<IProgressButtonProps> = ({
-  loading = false,
+};
+const ProgressButton: FunctionComponent<Props> = ({
   disabled = false,
+  loading = false,
   ...props
 }) => (
   <Wrapper>

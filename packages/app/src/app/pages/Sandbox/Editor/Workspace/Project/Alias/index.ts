@@ -1,1 +1,0 @@
-export { Alias } from './Alias';

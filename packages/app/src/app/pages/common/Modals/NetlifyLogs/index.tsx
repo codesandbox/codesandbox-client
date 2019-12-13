@@ -1,50 +1,53 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Button } from '@codesandbox/common/lib/components/Button';
+
 import { useOvermind } from 'app/overmind';
 
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Explanation, Heading } from '../elements';
 import { Container } from '../LiveSessionEnded/elements';
-import { Heading, Explanation } from '../elements';
 
-import { List, Item } from './elements';
+import { Item, List } from './elements';
 
-const NetlifyLogs: FunctionComponent = () => {
-  const [logs, setLogs] = useState(['Contacting Netlify']);
+export const NetlifyLogs: FunctionComponent = () => {
   const {
-    state: {
-      deployment: { netlifyLogs: url },
-    },
     actions: { modalClosed },
+    state: {
+      deployment: { netlifyLogs: netlifyLogsUrl },
+    },
   } = useOvermind();
+  const [logs, setLogs] = useState(['Waiting for build to start...']);
 
   useEffect(() => {
-    const getLogs = async apiUrl => {
-      const data = await fetch(apiUrl);
-      const { logs: newLogs } = await data.json();
-      setLogs(newLogs);
-    };
-    const interval = setInterval(() => getLogs(url), 2000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [url]);
+    const interval = setInterval(async () => {
+      const { logs: fetchedLogs } = await fetch(netlifyLogsUrl).then(data =>
+        data.json()
+      );
+
+      if (fetchedLogs.length > 0) {
+        setLogs(fetchedLogs);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [netlifyLogsUrl]);
 
   return (
     <Container>
       <Heading>Sandbox Site Logs</Heading>
+
       <Explanation>
         Builds typically take a minute or two to complete
       </Explanation>
+
       <List>
-        {logs.map((log, i) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <Item key={i}>{log}</Item>
+        {logs.map(log => (
+          <Item key={log}>{log}</Item>
         ))}
       </List>
-      <Button small onClick={() => modalClosed()}>
+
+      <Button onClick={() => modalClosed()} small>
         Close
       </Button>
     </Container>
   );
 };
-
-export default NetlifyLogs;

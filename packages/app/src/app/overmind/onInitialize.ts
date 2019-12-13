@@ -24,7 +24,6 @@ export const onInitialize: OnInitialize = async (
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
     },
-    onError: actions.internal.onApiError,
   });
 
   effects.notifications.initialize({

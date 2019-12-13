@@ -285,6 +285,7 @@ function runDevServer(port, protocol, index) {
     clientLogLevel: 'warning',
     overlay: true,
     inline: false,
+    liveReload: process.env['DISABLE_REFRESH'] ? false : true,
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.

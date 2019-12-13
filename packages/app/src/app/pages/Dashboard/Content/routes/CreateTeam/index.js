@@ -152,6 +152,7 @@ export default class CreateTeam extends React.PureComponent {
                 </ComingSoon>
 
                 <Button
+                  type="submit"
                   disabled={this.state.inputValue === ''}
                   style={{ float: 'right', marginBottom: '1rem' }}
                 >

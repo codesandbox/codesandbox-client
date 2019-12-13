@@ -1,6 +1,6 @@
-import styled from 'styled-components';
 import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
+import styled from 'styled-components';
 
-export const DelayedAnimation = styled.div<{ delay: number }>`
-  ${({ delay }) => delayEffect(delay || 0)};
+export const DelayedAnimation = styled.div<{ delay?: number }>`
+  ${({ delay = 0 }) => delayEffect(delay)};
 `;
