@@ -22,7 +22,7 @@ const globalOptions = {
   fontSize: 14,
   highlightLines: null,
   initialPath: '/',
-  useCodemirror: false,
+  useCodeMirror: false,
   enableEslint: false,
   defaultFile: null,
   showNavigation: false,
@@ -31,7 +31,6 @@ const globalOptions = {
 const presets = {
   'split-view': {
     showEditor: true,
-    showTabbarSidebar: true,
     showPreview: true,
     showNavigation: false,
     expandDevtools: false,
@@ -46,18 +45,46 @@ const presets = {
   },
   'code-only': {
     showEditor: true,
-    showTabbarSidebar: false,
     showPreview: false,
   },
   'code-with-tests': {
     showEditor: true,
-    showTabbarSidebar: true,
     showPreview: true,
     showNavigation: false,
     expandDevtools: true,
     showTests: true,
   },
 };
+
+function getUrl(settings, darkMode) {
+  const flags = {
+    hidenavigation: settings.showNavigation ? 0 : 1,
+    theme: darkMode ? 'dark' : 'light',
+    fontsize: settings.fontSize || 14,
+    expanddevtools: settings.expandDevTools ? 1 : null,
+    hidedevtools: settings.expandDevTools ? 0 : 1,
+    view:
+      settings.showEditor && settings.showPreview
+        ? 'split'
+        : settings.showEditor
+        ? 'editor'
+        : 'preview',
+    previewwindow: settings.showTests ? 'tests' : null,
+    codemirror: settings.useCodeMirror ? 1 : null,
+    highlights: settings.highlightLines || null,
+    eslint: settings.enableESLint ? 1 : null,
+    initialpath: settings.initialPath || null,
+  };
+
+  const stringified = queryString.stringify(flags, {
+    encode: false,
+    skipNull: true,
+  });
+  const url =
+    `https://codesandbox.io/embed/dark-magic-variant-5pj49?` + stringified;
+
+  return url;
+}
 
 function ShareSheet() {
   const [settings, setSettings] = React.useState({
@@ -119,33 +146,12 @@ function ShareSheet() {
               />
             </Option>
             <Option disabled={!settings.showEditor}>
-              <span style={{ textDecoration: 'line-through' }}>
-                Tabbar + Sidebar
-              </span>
-              <Switch
-                on={settings.showEditorControls}
-                disabled={!settings.showEditor}
-                onChange={() => toggle('showEditorControls')}
-              />
-            </Option>
-            <Option disabled={!settings.showEditor}>
               Font-size
               <Input
                 type="number"
                 defaultValue={settings.fontSize}
                 disabled={!settings.showEditor}
                 onChange={event => change({ fontSize: event.target.value })}
-              />
-            </Option>
-            <Option disabled={!settings.showEditor}>
-              Highlight lines (with CodeMirror)
-              <Input
-                type="text"
-                defaultValue={settings.highlightLines}
-                onChange={event =>
-                  change({ highlightLines: event.target.value })
-                }
-                disabled={!settings.showEditor}
               />
             </Option>
           </Section>
@@ -182,18 +188,44 @@ function ShareSheet() {
               />
             </Option>
           </Section>
-          <Section title="Advanced Options">
+          <Section title="Advanced Options" disabled={!settings.showEditor}>
             <Option>
               Use CodeMirror insted of Monaco
-              <Switch on />
+              <Switch
+                on={settings.useCodeMirror}
+                onChange={() => toggle('useCodeMirror')}
+                disabled={!settings.showEditor}
+              />
+            </Option>
+            <Option disabled={!settings.useCodeMirror}>
+              Highlight lines (with CodeMirror)
+              <Input
+                type="text"
+                defaultValue={settings.highlightLines}
+                placeholder="1,2,3"
+                onChange={event =>
+                  change({ highlightLines: event.target.value })
+                }
+                disabled={!settings.useCodeMirror}
+              />
             </Option>
             <Option>
-              Enable eslint (bigger bundle size)
-              <Switch />
+              Enable ESLint (bigger bundle size)
+              <Switch
+                on={settings.enableESLint}
+                onChange={() => toggle('enableESLint')}
+              />
             </Option>
             <Option multiline>
               Project Initial Path
-              <Input placeholder="e.g. /home" />
+              <Input
+                placeholder="e.g. /home"
+                onChange={event =>
+                  change({
+                    initialPath: event.target.value,
+                  })
+                }
+              />
             </Option>
           </Section>
           <Section.Body>
@@ -202,7 +234,7 @@ function ShareSheet() {
               code
               rows="5"
               readOnly
-              value={`<iframe src="https://codesandbox.io/embed/portfolio-danny-ruchtie-4q2i9?autoresize=1&fontsize=14" title="Portfolio Danny Ruchtie"`}
+              value={getUrl(settings, darkMode)}
             />
             <Button>Copy Embed Code</Button>
             <Option multiline>
@@ -222,29 +254,6 @@ function ShareSheet() {
       </Container>
     </ThemeProvider>
   );
-}
-
-function getUrl(settings, darkMode) {
-  const flags = {
-    hidenavigation: settings.showNavigation ? 0 : 1,
-    theme: darkMode ? 'dark' : 'light',
-    fontsize: 14,
-    expanddevtools: settings.expandDevTools ? 1 : null,
-    hidedevtools: settings.expandDevTools ? 0 : 1,
-    view:
-      settings.showEditor && settings.showPreview
-        ? 'split'
-        : settings.showEditor
-        ? 'editor'
-        : 'preview',
-    previewwindow: settings.showTests ? 'tests' : null,
-  };
-
-  const stringified = queryString.stringify(flags, { skipNull: true });
-  const url =
-    `https://codesandbox.io/embed/dark-magic-variant-5pj49?` + stringified;
-
-  return url;
 }
 
 export default ShareSheet;
