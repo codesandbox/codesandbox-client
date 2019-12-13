@@ -24,9 +24,7 @@ export const Header = styled.div<{ primary: boolean; open: boolean }>`
   font-size: 0.75rem;
   flex: 0 0 ${props => (props.primary ? 35 : 28)}px;
   background-color: ${props =>
-    props.theme['editorGroupHeader.tabsBackground'] ||
-    props.theme['editor.background'] ||
-    props.theme.background4};
+    props.theme['editor.background'] || props.theme.background()};
 
   ${props =>
     !props.primary &&

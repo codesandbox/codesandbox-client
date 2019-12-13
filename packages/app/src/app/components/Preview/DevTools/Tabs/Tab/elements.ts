@@ -33,9 +33,9 @@ export const Tab = styled.div<{ active: boolean; isOver: boolean }>`
   ${props =>
     props.active
       ? css`
-          background-color: ${props.theme['tab.activeBackground'] ||
-            props.theme['editor.background'] ||
-            'transparent'};
+          background-color: ${props.theme['input.background'] ||
+            props.theme.background4};
+
           color: ${props.theme['tab.activeForeground'] ||
             (props.theme.light ? '#000000' : '#FFFFFF')};
         `
