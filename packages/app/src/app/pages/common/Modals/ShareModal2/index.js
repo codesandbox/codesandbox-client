@@ -1,3 +1,16 @@
+/** TODO:
+- convert to typescript
+- add default module to show
+- check what initial path does
+- visual polish
+	- overflow-x
+	- multiline
+	- style more info in brackets
+	- total height of the container is beyond preview
+- add postMessage to embed for smoother embed modal
+- include darkMode in settings
+*/
+
 import React from 'react';
 import queryString from 'query-string';
 import { ThemeProvider } from 'styled-components';
@@ -80,6 +93,7 @@ function getUrl(settings, darkMode) {
     encode: false,
     skipNull: true,
   });
+
   const url =
     `https://codesandbox.io/embed/dark-magic-variant-5pj49?` + stringified;
 
@@ -105,6 +119,18 @@ function ShareSheet() {
 
   const applyPreset = name => {
     setSettings({ ...settings, preset: name, ...presets[name] });
+  };
+
+  /** Copy Embed code */
+  const urlContainer = React.createRef();
+  const [copied, setCopied] = React.useState(false);
+
+  const copyEmbedCode = () => {
+    const copyText = urlContainer.current;
+    copyText.select();
+    document.execCommand('copy');
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -235,11 +261,18 @@ function ShareSheet() {
               rows="5"
               readOnly
               value={getUrl(settings, darkMode)}
+              ref={urlContainer}
             />
-            <Button>Copy Embed Code</Button>
+            <Button onClick={copyEmbedCode}>
+              {copied ? 'Copied!' : 'Copy Embed Code'}
+            </Button>
             <Option multiline>
               Editor url (also works on Medium)
-              <Input code readOnly value="https://codesandbox.io/s/xoj79" />
+              <Input
+                code
+                readOnly
+                value={getUrl(settings, darkMode).replace('embed', 's')}
+              />
             </Option>
           </Section.Body>
         </Sidebar>

@@ -157,8 +157,6 @@ export const Button = styled.button(
       backgroundColor: 'blues.600',
       borderColor: 'blues.500',
     },
-
-    textDecoration: 'line-through',
   })
 );
 
