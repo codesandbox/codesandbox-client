@@ -208,20 +208,31 @@ export const sandboxPrivacyChanged: AsyncAction<0 | 1 | 2> = async (
   privacy
 ) => {
   const oldPrivacy = state.editor.currentSandbox.privacy;
-  const sandbox = await effects.api.updatePrivacy(
-    state.editor.currentSandbox.id,
-    privacy
-  );
-  state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
   state.editor.currentSandbox.privacy = privacy;
 
-  if (
-    getTemplate(state.editor.currentSandbox.template).isServer &&
-    ((oldPrivacy !== 2 && privacy === 2) || (oldPrivacy === 2 && privacy !== 2))
-  ) {
-    // Privacy changed from private to unlisted/public or other way around, restart
-    // the sandbox to notify containers
-    actions.server.restartContainer();
+  try {
+    const sandbox = await effects.api.updatePrivacy(
+      state.editor.currentSandbox.id,
+      privacy
+    );
+    state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
+    state.editor.currentSandbox.privacy = privacy;
+
+    if (
+      getTemplate(state.editor.currentSandbox.template).isServer &&
+      ((oldPrivacy !== 2 && privacy === 2) ||
+        (oldPrivacy === 2 && privacy !== 2))
+    ) {
+      // Privacy changed from private to unlisted/public or other way around, restart
+      // the sandbox to notify containers
+      actions.server.restartContainer();
+    }
+  } catch (error) {
+    state.editor.currentSandbox.privacy = oldPrivacy;
+    actions.internal.handleError({
+      message: "We weren't able to update the sandbox privacy",
+      error,
+    });
   }
 };
 
