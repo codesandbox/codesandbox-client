@@ -49,7 +49,7 @@ export const PrivacyTooltip = () => {
           content={
             <>
               <Text size="3" marginBottom={4}>
-                {!user || !user.subscription ? (
+                {user?.subscription ? (
                   'Adjust privacy settings.'
                 ) : (
                   <>
