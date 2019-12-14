@@ -4,7 +4,19 @@ import styled, {
 } from 'styled-components';
 import css from '@styled-system/css';
 
-export const Container = styled.div(
+export const Element = styled.div<{
+  margin?: number;
+  marginX?: number;
+  marginBottom?: number;
+}>(props =>
+  css({
+    margin: props.margin || null,
+    marginX: props.marginX || null,
+    marginBottom: props.marginBottom || null,
+  })
+);
+
+export const Container = styled(Element)(
   css({
     '.tippy-content': {
       width: '200px',
@@ -15,18 +27,6 @@ export const Container = styled.div(
       borderRadius: 'medium',
       whiteSpace: 'normal',
     },
-  })
-);
-
-export const Element = styled.div<{
-  margin?: number;
-  marginX?: number;
-  marginBottom?: number;
-}>(props =>
-  css({
-    margin: props.margin || null,
-    marginX: props.marginX || null,
-    marginBottom: props.marginBottom || null,
   })
 );
 

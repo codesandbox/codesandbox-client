@@ -15,7 +15,7 @@ export const PrivacyTooltip = () => {
     state: {
       user,
       editor: {
-        currentSandbox: { privacy },
+        currentSandbox: { owned, privacy },
       },
     },
   } = useOvermind();
@@ -57,14 +57,20 @@ export const PrivacyTooltip = () => {
           content={
             <>
               <Text size="3" marginBottom={4}>
-                {user && user.subscription ? (
-                  'Adjust privacy settings.'
-                ) : (
+                {owned ? (
                   <>
-                    You can change privacy of a sandbox as a Pro.
-                    <br />
-                    <Link href="/pricing">Upgrade to Pro</Link>
+                    {user && user.subscription ? (
+                      'Adjust privacy settings.'
+                    ) : (
+                      <>
+                        You can change privacy of a sandbox as a Pro.
+                        <br />
+                        <Link href="/pricing">Upgrade to Pro</Link>
+                      </>
+                    )}
                   </>
+                ) : (
+                  'The author has set privacy to'
                 )}
               </Text>
 
@@ -72,7 +78,7 @@ export const PrivacyTooltip = () => {
                 marginBottom={2}
                 value={privacy}
                 onChange={onChange}
-                disabled={!user || !user.subscription}
+                disabled={!user || !user.subscription || !owned}
               >
                 <option value={0}>Public</option>
                 <option value={1}>Unlisted</option>

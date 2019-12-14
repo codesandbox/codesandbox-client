@@ -139,7 +139,7 @@ export const SandboxName: FunctionComponent = () => {
           </Name>
         )}
 
-        {owned && !updatingName ? <PrivacyTooltip /> : null}
+        {!updatingName ? <PrivacyTooltip /> : null}
 
         {currentSandbox.customTemplate ? (
           <Tooltip
