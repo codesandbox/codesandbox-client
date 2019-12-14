@@ -70,7 +70,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     return;
   }
 
-  // await effects.vscode.closeAllTabs();
+  await effects.vscode.closeAllTabs();
 
   state.editor.error = null;
 

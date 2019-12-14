@@ -1,6 +1,6 @@
 import { LiveMessage, LiveMessageEvent } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
-import { withLoadApp, withUser } from 'app/overmind/factories';
+import { withLoadApp } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
 import { filter, fork, pipe } from 'overmind';
 
@@ -9,46 +9,60 @@ import * as liveMessage from './liveMessageOperators';
 
 export const internal = internalActions;
 
+export const signInToRoom: AsyncAction<{
+  roomId: string;
+}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
+  await actions.internal.signIn({});
+
+  if (state.isLoggedIn) {
+    await actions.live.roomJoined({
+      roomId,
+    });
+  }
+});
+
 export const roomJoined: AsyncAction<{
   roomId: string;
-}> = withUser(
-  withLoadApp(async ({ state, effects, actions }, { roomId }) => {
-    await effects.vscode.initialize;
-    await effects.vscode.closeAllTabs();
+}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
+  if (!state.isLoggedIn) {
+    return;
+  }
 
-    if (state.live.isLive) {
-      actions.live.internal.disconnect();
-    }
+  await effects.vscode.initialize;
+  await effects.vscode.closeAllTabs();
 
-    const sandbox = await actions.live.internal.initialize(roomId);
+  if (state.live.isLive) {
+    actions.live.internal.disconnect();
+  }
 
-    if (!sandbox) {
-      return;
-    }
+  const sandbox = await actions.live.internal.initialize(roomId);
 
-    if (state.updateStatus === 'available') {
-      const modal = 'liveVersionMismatch';
-      effects.analytics.track('Open Modal', { modal });
-      state.currentModal = modal;
-    }
+  if (!sandbox) {
+    return;
+  }
 
-    await actions.internal.setCurrentSandbox(sandbox);
+  if (state.updateStatus === 'available') {
+    const modal = 'liveVersionMismatch';
+    effects.analytics.track('Open Modal', { modal });
+    state.currentModal = modal;
+  }
 
-    const items = getItems(state);
-    const defaultItem = items.find(i => i.defaultOpen) || items[0];
+  await actions.internal.setCurrentSandbox(sandbox);
 
-    state.workspace.openedWorkspaceItem = defaultItem.id;
+  const items = getItems(state);
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
 
-    await effects.vscode.changeSandbox(state.editor.currentSandbox, fs => {
-      state.editor.modulesByPath = fs;
-    });
+  state.workspace.openedWorkspaceItem = defaultItem.id;
 
-    effects.live.sendModuleStateSyncRequest();
-    effects.vscode.openModule(state.editor.currentModule);
-    effects.preview.executeCodeImmediately({ initialRender: true });
-    state.editor.isLoading = false;
-  })
-);
+  await effects.vscode.changeSandbox(state.editor.currentSandbox, fs => {
+    state.editor.modulesByPath = fs;
+  });
+
+  effects.live.sendModuleStateSyncRequest();
+  effects.vscode.openModule(state.editor.currentModule);
+  effects.preview.executeCodeImmediately({ initialRender: true });
+  state.editor.isLoading = false;
+});
 
 export const createLiveClicked: AsyncAction<string> = async (
   { actions, effects, state },
