@@ -6,6 +6,15 @@ const darker = (light, color) =>
     .darken(light ? 0.2 : 0.7)
     .hexString();
 
+const getColor = (light, color) =>
+  light
+    ? Color(color)
+        .darken(0.2)
+        .hexString()
+    : Color(color)
+        .lighten(0.2)
+        .hexString();
+
 export const Container = styled.div`
   position: relative;
   color: ${props => props.theme.gray.darken(0.2)()};
@@ -33,6 +42,11 @@ export const InputContainer = styled.div`
           props.theme['editor.background'] || props.theme.background()
         )};
     background-color: ${props =>
-      props.theme['editor.background'] || props.theme.background()};
+      getColor(
+        props.theme.light,
+        props.theme['editor.background'] ||
+          props.theme['input.background'] ||
+          props.theme.background4
+      )};
   }
 `;

@@ -57,13 +57,13 @@ function Navigator({
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
       {!zenMode && toggleProjectView && (
-        <Icon bg onClick={toggleProjectView} moduleView>
+        <Icon bg onClick={toggleProjectView} moduleView={!isProjectView}>
           <Tooltip
             delay={0}
             content={isProjectView ? 'Project View' : 'Current Module View'}
             placement="left"
           >
-            {false ? <ProjectViewIcon /> : <ModuleViewIcon />}
+            {isProjectView ? <ProjectViewIcon /> : <ModuleViewIcon />}
           </Tooltip>
         </Icon>
       )}
