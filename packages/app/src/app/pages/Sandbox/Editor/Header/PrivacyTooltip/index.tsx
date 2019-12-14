@@ -21,8 +21,8 @@ export const PrivacyTooltip = () => {
   } = useOvermind();
 
   useEffect(() => {
-    track('Open Sandbox Privacy Tooltip');
-  }, []);
+    track('Open Sandbox Privacy Tooltip', { owned });
+  }, [owned]);
 
   const config = {
     0: {
