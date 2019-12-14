@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import Color from 'color';
 
-const darker = (light, color) =>
+export const darker = (light: boolean, color: string) =>
   Color(color)
     .darken(light ? 0.3 : 0.7)
     .hexString();
@@ -24,7 +24,7 @@ export const Icons = styled.div`
   display: flex;
 `;
 
-export const Icon = styled.button`
+export const Icon = styled.button<{ bg?: boolean; moduleView?: boolean }>`
   display: inline-block;
   border: none;
   background-color: transparent;
@@ -37,50 +37,46 @@ export const Icon = styled.button`
   outline: none;
   cursor: pointer;
 
-${props =>
-  props.bg &&
+${({ bg, theme }) =>
+  bg &&
   css`
     border-radius: 2px;
-    background-color: ${props.theme['editor.background'] ||
-      props.theme.background()};
+    background-color: ${theme['editor.background'] || theme.background()};
     border: 1px solid
-      ${darker(
-        props.theme.light,
-        props.theme['editor.background'] || props.theme.background()
-      )};
+      ${darker(theme.light, theme['editor.background'] || theme.background())};
   `}
 
-${props =>
-  !props.moduleView &&
+${({ moduleView, theme }) =>
+  !moduleView &&
   css`
     &:hover svg path,
     &:hover svg rect {
-      fill: ${props.theme.light ? 'black' : 'white'};
+      fill: ${theme.light ? 'black' : 'white'};
     }
   `}
 
   /* // TODO: Replace with new theme */
-  ${props =>
-    props.moduleView &&
-    css`
-      ${props.theme.light
-        ? css`
-            svg rect[fill='#E6E6E6'] {
-              fill: #343434;
-            }
-            svg rect[fill='#343434'] {
-              fill: #e6e6e6;
-            }
-            &:hover svg rect {
-              fill: black;
-            }
-          `
-        : css`
-            &:hover svg rect:not([fill='#E6E6E6']) {
-              fill: #757575;
-            }
-          `}
-    `}
+${({ moduleView, theme }) =>
+  moduleView &&
+  css`
+    ${theme.light
+      ? css`
+          svg rect[fill='#E6E6E6'] {
+            fill: #343434;
+          }
+          svg rect[fill='#343434'] {
+            fill: #e6e6e6;
+          }
+          &:hover svg rect {
+            fill: black;
+          }
+        `
+      : css`
+          &:hover svg rect:not([fill='#E6E6E6']) {
+            fill: #757575;
+          }
+        `}
+  `}
 `;
 
 export const AddressBarContainer = styled.div`

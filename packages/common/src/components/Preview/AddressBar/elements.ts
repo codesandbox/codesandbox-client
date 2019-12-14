@@ -1,12 +1,8 @@
 import styled from 'styled-components';
 import Color from 'color';
+import { darker } from '../Navigator/elements';
 
-const darker = (light, color) =>
-  Color(color)
-    .darken(light ? 0.3 : 0.7)
-    .hexString();
-
-const getColor = (light, color) =>
+const getColor = (light: boolean, color: string) =>
   light
     ? Color(color)
         .darken(0.2)
