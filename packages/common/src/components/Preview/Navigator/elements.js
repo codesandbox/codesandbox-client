@@ -3,7 +3,7 @@ import Color from 'color';
 
 const darker = (light, color) =>
   Color(color)
-    .darken(light ? 0.2 : 0.7)
+    .darken(light ? 0.3 : 0.7)
     .hexString();
 
 export const Container = styled.div`
