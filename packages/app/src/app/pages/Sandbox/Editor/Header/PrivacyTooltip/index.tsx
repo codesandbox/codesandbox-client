@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { ThemeProvider } from 'styled-components';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
@@ -19,10 +19,6 @@ export const PrivacyTooltip = () => {
       },
     },
   } = useOvermind();
-
-  useEffect(() => {
-    track('Open Sandbox Privacy Tooltip', { owned });
-  }, [owned]);
 
   const config = {
     0: {
@@ -54,6 +50,9 @@ export const PrivacyTooltip = () => {
         <Tooltip
           delay={0}
           interactive
+          onShown={() => {
+            track('Open Sandbox Privacy Tooltip', { owned });
+          }}
           content={
             <>
               <Text size="3" marginBottom={4}>
