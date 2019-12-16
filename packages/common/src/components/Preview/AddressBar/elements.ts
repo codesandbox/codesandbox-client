@@ -40,8 +40,8 @@ export const InputContainer = styled.div`
     background-color: ${props =>
       getColor(
         props.theme.light,
-        props.theme['editor.background'] ||
-          props.theme['input.background'] ||
+        props.theme['input.background'] ||
+          props.theme['editor.background'] ||
           props.theme.background4
       )};
   }

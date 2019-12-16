@@ -9,7 +9,7 @@ export const darker = (light: boolean, color: string) =>
 export const Container = styled.div`
   display: flex;
   background-color: ${props =>
-    props.theme['input.background'] || props.theme.background4};
+    props.theme['tab.activeBackground'] || props.theme.background4};
   padding: 0.25rem;
   align-items: center;
   line-height: 1;
