@@ -188,15 +188,13 @@ export type User = {
   sandboxCount: number;
   givenLikeCount: number;
   receivedLikeCount: number;
-  currentModuleShortid: string;
   viewCount: number;
   forkedCount: number;
   sandboxes: PaginatedSandboxes;
   likedSandboxes: PaginatedSandboxes;
   badges: Badge[];
   topSandboxes: SmallSandbox[];
-  subscriptionSince: string;
-  selection: Selection | null;
+  subscriptionSince: string | null;
 };
 
 export type LiveUser = {
@@ -291,6 +289,15 @@ export type PickedSandboxDetails = {
   title: string;
 };
 
+export type SandboxAuthor = {
+  id: string;
+  username: string;
+  name: string;
+  avatarUrl: string;
+  badges: Badge[];
+  subscriptionSince: string | null;
+};
+
 export type Sandbox = {
   id: string;
   alias: string | null;
@@ -325,7 +332,7 @@ export type Sandbox = {
   } | null;
   roomId: string | null;
   privacy: 0 | 1 | 2;
-  author: User | null;
+  author: SandboxAuthor | null;
   forkedFromSandbox: ForkedSandbox | null;
   git: GitInfo | null;
   tags: string[];
