@@ -51,7 +51,7 @@ export const PrivacyTooltip = () => {
           delay={0}
           interactive
           onShown={() => {
-            track('Open Sandbox Privacy Tooltip', { owned });
+            track('Sandbox - Open Privacy Tooltip', { owned });
           }}
           content={
             <>
