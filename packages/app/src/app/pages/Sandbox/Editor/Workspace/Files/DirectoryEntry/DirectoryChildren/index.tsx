@@ -15,7 +15,7 @@ interface IDirectoryChildrenProps {
   deleteEntry?: (shortid: string, title: string) => void;
   isInProjectView?: boolean;
   markTabsNotDirty?: () => void;
-  discardModuleChanges: (shortid: string, title: string) => void;
+  discardModuleChanges: (shortid: string) => void;
   getModulePath?: (
     modules: Module[],
     directories: Directory[],
@@ -37,10 +37,10 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   renameValidator,
 }) => {
   const {
-    state: { isLoggedIn, editor: editorState },
-    actions: { files, editor },
+    state: {
+      editor: { currentSandbox, mainModule, currentModuleShortid },
+    },
   } = useOvermind();
-  const { currentSandbox, mainModule, currentModuleShortid } = editorState;
 
   const {
     id: sandboxId,
@@ -64,8 +64,6 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
             key={dir.id}
             siblings={[...directories, ...modules]}
             depth={depth + 1}
-            signals={{ files, editor }}
-            store={{ editor: editorState, isLoggedIn }}
             id={dir.id}
             shortid={dir.shortid}
             title={dir.title}
