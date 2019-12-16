@@ -4,15 +4,23 @@ import { useQuery } from '@apollo/react-hooks';
 
 import { useOvermind } from 'app/overmind';
 import { CreateNewSandboxButton } from 'app/components/CreateNewSandbox';
+import {
+  RecentSandboxesQuery,
+  RecentSandboxesQueryVariables,
+} from 'app/graphql/types';
 import getMostUsedTemplate from '../../../utils/get-most-used-template';
 import { Content as Sandboxes } from '../../Sandboxes';
 import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
 export const RecentSandboxes = () => {
   const { state } = useOvermind();
-  const { loading, error, data } = useQuery(RECENT_SANDBOXES_CONTENT_QUERY, {
+  const { loading, error, data } = useQuery<
+    RecentSandboxesQuery,
+    RecentSandboxesQueryVariables
+  >(RECENT_SANDBOXES_CONTENT_QUERY, {
     variables: {
       orderField: state.dashboard.orderBy.field,
+      // @ts-ignore
       orderDirection: state.dashboard.orderBy.order.toUpperCase(),
     },
   });

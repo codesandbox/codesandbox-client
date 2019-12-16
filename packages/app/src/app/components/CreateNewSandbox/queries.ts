@@ -13,7 +13,6 @@ import {
   UnmakeSandboxesTemplateMutationVariables,
   ListTemplatesQueryVariables,
   ListTemplatesQuery,
-  Collection,
   PathedSandboxesQuery,
   PathedSandboxesFoldersQueryVariables,
 } from 'app/graphql/types';
@@ -86,13 +85,14 @@ export const LIST_PERSONAL_TEMPLATES = gql`
 `;
 
 export const LIST_OWNED_TEMPLATES = gql`
-  query ListTemplates($teamId: ID, $showAll: Boolean) {
+  query ListTemplates($showAll: Boolean) {
     me {
-      templates(teamId: $teamId, showAll: $showAll) {
+      templates(showAll: $showAll) {
         ...Template
       }
 
       teams {
+        id
         name
         templates {
           ...Template
@@ -139,7 +139,7 @@ export const UNMAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
   }
 `;
 
-export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
+export function unmakeTemplates(selectedSandboxes: string[]) {
   return client.mutate<
     UnmakeSandboxesTemplateMutation,
     UnmakeSandboxesTemplateMutationVariables
@@ -158,7 +158,6 @@ export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
     update: cache => {
       try {
         const variables: ListTemplatesQueryVariables = {
-          teamId,
           showAll: false,
         };
 
@@ -174,6 +173,13 @@ export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
           draft.me.templates = draft.me.templates.filter(
             x => selectedSandboxes.indexOf(x.sandbox.id) === -1
           );
+
+          draft.me.teams = draft.me.teams.map(t => ({
+            ...t,
+            templates: t.templates.filter(
+              x => selectedSandboxes.indexOf(x.sandbox.id) === -1
+            ),
+          }));
         });
 
         cache.writeQuery<ListTemplatesQuery, ListTemplatesQueryVariables>({
@@ -191,7 +197,7 @@ export function unmakeTemplates(selectedSandboxes: string[], teamId?: string) {
 export function makeTemplates(
   selectedSandboxes: string[],
   teamId?: string,
-  collections?: Collection[]
+  collections?: { teamId: string | null }[]
 ) {
   const unpackedSelectedSandboxes: string[] =
     // @ts-ignore

@@ -756,9 +756,7 @@ export default class TranspiledModule {
       if (this.module.path.startsWith('/node_modules')) {
         if (process.env.NODE_ENV === 'development') {
           console.warn(
-            `[WARN] Sandpack: loading an untranspiled module: ${
-              this.module.path
-            }`
+            `[WARN] Sandpack: loading an untranspiled module: ${this.module.path}`
           );
         }
         // This code is probably required as a dynamic require. Since we can
@@ -839,7 +837,8 @@ export default class TranspiledModule {
         accept: (path: string | Array<string>, cb) => {
           if (
             typeof path === 'undefined' ||
-            (typeof path !== 'string' || !Array.isArray(path))
+            typeof path !== 'string' ||
+            !Array.isArray(path)
           ) {
             // Self mark hot
             this.hmrConfig = this.hmrConfig || new HMR();
@@ -1054,9 +1053,9 @@ export default class TranspiledModule {
       childModules: this.childModules.map(m => m.getId()),
       dependencies: Array.from(this.dependencies).map(m => m.getId()),
       initiators: Array.from(this.initiators).map(m => m.getId()),
-      transpilationDependencies: Array.from(this.transpilationDependencies).map(
-        m => m.getId()
-      ),
+      transpilationDependencies: Array.from(
+        this.transpilationDependencies
+      ).map(m => m.getId()),
       transpilationInitiators: Array.from(this.transpilationInitiators).map(m =>
         m.getId()
       ),

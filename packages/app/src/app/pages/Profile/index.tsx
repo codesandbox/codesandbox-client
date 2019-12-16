@@ -1,19 +1,20 @@
-import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
-import { Route, Switch } from 'react-router-dom';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import {
-  profileSandboxesUrl,
   profileLikesUrl,
+  profileSandboxesUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { NotFound } from 'app/pages/common/NotFound';
 import { useOvermind } from 'app/overmind';
+import { NotFound } from 'app/pages/common/NotFound';
+import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { Route, Switch } from 'react-router-dom';
+
+import { Container, Content } from './elements';
 import Header from './Header';
 import Navigation from './Navigation';
+import { Sandboxes } from './Sandboxes';
 import { Showcase } from './Showcase';
-import Sandboxes from './Sandboxes';
-import { Container, Content } from './elements';
 
 interface IProfileProps {
   match: {

@@ -100,7 +100,7 @@ function getUrl(settings, darkMode) {
   return url;
 }
 
-function ShareSheet() {
+function ShareModal() {
   const [settings, setSettings] = React.useState({
     preset: 'split-view',
     ...globalOptions,
@@ -289,4 +289,4 @@ function ShareSheet() {
   );
 }
 
-export default ShareSheet;
+export { ShareModal };

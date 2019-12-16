@@ -69,3 +69,17 @@ export const createSandboxClicked: AsyncAction<{
   sandboxId: string;
 }> = ({ actions }, { body, sandboxId }) =>
   actions.editor.forkExternalSandbox({ body, sandboxId });
+
+export const deleteTemplate: AsyncAction<{
+  sandboxId: string;
+  templateId: string;
+}> = async ({ actions, effects }, { sandboxId, templateId }) => {
+  try {
+    effects.analytics.track('Template - Removed', { source: 'Context Menu' });
+    await effects.api.deleteTemplate(sandboxId, templateId);
+    actions.modalClosed();
+    effects.notificationToast.success('Template Deleted');
+  } catch (error) {
+    effects.notificationToast.error('Could not delete custom template');
+  }
+};

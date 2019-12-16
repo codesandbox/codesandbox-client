@@ -5,7 +5,8 @@
 [![available in the chrome store](https://developer.chrome.com/webstore/images/ChromeWebStore_Badge_v2_206x58.png)](https://chrome.google.com/webstore/detail/jkhbnhagngalpojoeijaleemepfpefmp)
 [Download for firefox](https://addons.mozilla.org/en-US/firefox/addon/open-in-codesandbox/)
 
-This extension adds a button to all github repos that will open that repo in CodeSandbox in a new window
+This extension adds a button to all github repos that will open that repo in
+CodeSandbox in a new window
 
 ## How to run in Chrome
 
@@ -23,4 +24,6 @@ This extension adds a button to all github repos that will open that repo in Cod
 
 ## How to publish
 
-Unfortunately there is a need for a key to in order to update apps so as soon as something gets merged pls ping me at @SaraVieira in the PR and I will create a new version
+Unfortunately there is a need for a key to in order to update apps so as soon as
+something gets merged pls ping me at @SaraVieira in the PR and I will create a
+new version

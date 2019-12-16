@@ -17,7 +17,7 @@ import theme from '@codesandbox/common/lib/theme';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { SandboxFragment } from 'app/graphql/types';
 import { RENAME_SANDBOX_MUTATION } from '../../queries';
 
 import {
@@ -50,12 +50,12 @@ type Props = {
   selectedCount: number;
   collectionPath: string; // eslint-disable-line react/no-unused-prop-types
   collectionTeamId: string | undefined;
-  sandbox: Sandbox;
+  sandbox: SandboxFragment;
   page: string | undefined;
   privacy: number;
   isPatron: boolean;
   isScrolling: () => boolean;
-  removedAt?: number;
+  removedAt?: string;
   style?: React.CSSProperties;
   alias: string | undefined;
 
@@ -293,7 +293,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
         {
           title: 'Fork Sandbox',
           action: () => {
-            this.props.forkSandbox(this.props.sandbox.id);
+            this.props.forkSandbox(this.props.id);
             return true;
           },
         },
@@ -663,6 +663,8 @@ function collect(connect) {
   };
 }
 
-export const SandboxItem = DragSource('SANDBOX', cardSource, collect)(
-  SandboxItemComponent
-);
+export const SandboxItem = DragSource(
+  'SANDBOX',
+  cardSource,
+  collect
+)(SandboxItemComponent);

@@ -62,9 +62,7 @@ const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
 
             <Link
               prefetch
-              href={`/user-sandboxes?username=${
-                profile.username
-              }&page=sandboxes`}
+              href={`/user-sandboxes?username=${profile.username}&page=sandboxes`}
               as={`/profile/${profile.username}/sandboxes`}
             >
               <div

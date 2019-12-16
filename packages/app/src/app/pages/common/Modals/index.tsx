@@ -1,35 +1,35 @@
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import {
+  COLUMN_MEDIA_THRESHOLD,
+  CreateSandbox,
+} from 'app/components/CreateNewSandbox/CreateSandbox';
 import Modal from 'app/components/Modal';
+import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import Loadable from 'app/utils/Loadable';
 import { templateColor } from 'app/utils/template-color';
-import React, { useReducer, useEffect, useCallback } from 'react';
-import { useOvermind } from 'app/overmind';
+import React, { useCallback, useEffect, useReducer } from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import {
-  CreateSandbox,
-  COLUMN_MEDIA_THRESHOLD,
-} from 'app/components/CreateNewSandbox/CreateSandbox';
 import CommitModal from './CommitModal';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
-import DeploymentModal from './DeploymentModal';
+import { DeploymentModal } from './DeploymentModal';
 import { EmptyTrash } from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
-import {NetlifyLogs} from './NetlifyLogs';
+import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import PreferencesModal from './PreferencesModal';
 import PRModal from './PRModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
-import ShareModal from './ShareModal2';
+import { ShareModal } from './ShareModal2';
 import SignInForTemplates from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
