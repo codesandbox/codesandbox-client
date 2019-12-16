@@ -1,33 +1,80 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { DropTarget } from 'react-dnd';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 // @ts-ignore
 import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
-import { FollowedTemplatesItem } from './FollowedTemplatesItem';
-import { MyTemplateItem } from './MyTemplateItem';
 import { Item } from '../Item';
+import { MAKE_TEMPLATE_DROP_KEY } from '../../Content/SandboxCard';
 
-interface Props {
+interface ITemplateItemProps {
   currentPath: string;
   teamId?: string;
+  canDrop?: boolean;
+  isOver?: boolean;
+  connectDropTarget?: any;
 }
 
-export const TemplateItem = (props: Props) => {
-  const [open, setOpen] = useState(false);
+const TemplateItemComponent: React.FC<ITemplateItemProps &
+  RouteComponentProps> = ({
+  currentPath,
+  isOver,
+  canDrop,
+  connectDropTarget,
+  teamId,
+}) => {
+  const url = teamId
+    ? `/dashboard/teams/${teamId}/templates`
+    : `/dashboard/templates`;
 
-  return (
-    <Item
-      noActive
-      path={
-        props.teamId
-          ? `/dashboard/teams/${props.teamId}/templates`
-          : `/dashboard/templates`
-      }
-      Icon={TemplateIcon}
-      name="Templates"
-      onClick={() => setOpen(!open)}
-      openByDefault={open}
-    >
-      <MyTemplateItem {...props} />
-      <FollowedTemplatesItem {...props} />
-    </Item>
+  return connectDropTarget(
+    <div>
+      <Item
+        active={currentPath === url}
+        path={url}
+        Icon={TemplateIcon}
+        name="Templates"
+        style={
+          isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}
+        }
+      />
+    </div>
   );
 };
+
+export const entryTarget = {
+  drop: (props, monitor) => {
+    if (monitor == null) return {};
+
+    // Check if only child is selected:
+    if (!monitor.isOver({ shallow: true })) return {};
+
+    // Used in SandboxCard
+    return { [MAKE_TEMPLATE_DROP_KEY]: true, teamId: props.teamId };
+  },
+
+  canDrop: (props, monitor) => {
+    if (monitor == null) return false;
+    const source = monitor.getItem();
+    if (source == null) return false;
+
+    return !props.removedAt;
+  },
+};
+
+export function collectTarget(connectMonitor, monitor) {
+  return {
+    // Call this function inside render()
+    // to let React DnD handle the drag events:
+    connectDropTarget: connectMonitor.dropTarget(),
+    // You can ask the monitor about the current drag state:
+    isOver: monitor.isOver({ shallow: true }),
+    canDrop: monitor.canDrop(),
+    itemType: monitor.getItemType(),
+  };
+}
+
+export const TemplateItem = DropTarget(
+  ['SANDBOX'],
+  entryTarget,
+  collectTarget
+)(withRouter(TemplateItemComponent));

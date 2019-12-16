@@ -3,21 +3,31 @@ import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { inject, observer } from 'app/componentConnectors';
 import { Skeleton } from 'app/components/Skeleton';
 import { Title } from 'app/components/Title';
+import { useOvermind } from 'app/overmind';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Navigation } from 'app/pages/common/Navigation';
 import { NotFound } from 'app/pages/common/NotFound';
 import { QuickActions } from 'app/pages/Sandbox/QuickActions';
-import React from 'react';
-import Helmet from 'react-helmet';
+import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import Editor from './Editor';
 
-class SandboxPage extends React.Component {
-  UNSAFE_componentWillMount() {
+interface Props {
+  match: {
+    params: {
+      id: string;
+    };
+  };
+}
+
+export const Sandbox: React.FC<Props> = ({ match }) => {
+  const { state, actions } = useOvermind();
+
+  useEffect(() => {
     if (window.screen.availWidth < 800) {
       if (!document.location.search.includes('from-embed')) {
         const addedSign = document.location.search ? '&' : '?';
@@ -26,45 +36,26 @@ class SandboxPage extends React.Component {
           addedSign +
           'codemirror=1';
       } else {
-        this.props.signals.preferences.codeMirrorForced();
+        actions.preferences.codeMirrorForced();
       }
     }
 
-    this.fetchSandbox();
-  }
+    actions.editor.sandboxChanged({ id: match.params.id });
+  }, [actions.editor, actions.preferences, match.params, match.params.id]);
 
-  disconnectLive() {
-    if (this.props.store.live.isLive) {
-      this.props.signals.live.onNavigateAway({});
-    }
-  }
+  useEffect(
+    () => () => {
+      actions.live.onNavigateAway();
+    },
+    [actions.live]
+  );
 
-  componentWillUnmount() {
-    this.disconnectLive();
-    this.props.signals.editor.onNavigateAway({});
-  }
+  function getContent() {
+    const { hasLogIn } = state;
 
-  fetchSandbox = () => {
-    const { id } = this.props.match.params;
-
-    this.props.signals.editor.sandboxChanged({ id });
-  };
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.match.params.id !== this.props.match.params.id) {
-      this.disconnectLive();
-      this.fetchSandbox();
-    }
-  }
-
-  getContent() {
-    const { store } = this.props;
-
-    const { hasLogIn } = store;
-
-    if (store.editor.error) {
-      const isGithub = this.props.match.params.id.includes('github');
-      const hasPrivateAccess = store.user && store.user.integrations.github;
+    if (state.editor.error) {
+      const isGithub = match.params.id.includes('github');
+      const hasPrivateAccess = state.user && state.user.integrations.github;
 
       return (
         <>
@@ -79,7 +70,7 @@ class SandboxPage extends React.Component {
             Something went wrong
           </div>
           <Title style={{ fontSize: '1.25rem', marginBottom: 0 }}>
-            {store.editor.error}
+            {state.editor.error}
           </Title>
           <br />
           <div style={{ display: 'flex', maxWidth: 400, width: '100%' }}>
@@ -113,11 +104,11 @@ class SandboxPage extends React.Component {
       );
     }
 
-    if (store.editor.notFound) {
+    if (state.editor.notFound) {
       return <NotFound />;
     }
 
-    if (store.editor.isLoading || !store.editor.currentSandbox) {
+    if (state.editor.isLoading || !state.editor.currentSandbox) {
       return (
         <>
           <Skeleton
@@ -139,50 +130,44 @@ class SandboxPage extends React.Component {
     return null;
   }
 
-  render() {
-    const { match, store } = this.props;
+  const content = getContent();
 
-    const content = this.getContent();
-
-    if (content) {
-      return (
-        <Fullscreen>
-          <Padding
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100vw',
-              height: '100vh',
-            }}
-            margin={1}
-          >
-            {store.editor.isLoading ? null : (
-              <Navigation title="Sandbox Editor" />
-            )}
-            <Centered
-              style={{ flex: 1, width: '100%', height: '100%' }}
-              horizontal
-              vertical
-            >
-              {content}
-            </Centered>
-          </Padding>
-        </Fullscreen>
-      );
-    }
-
-    const sandbox = store.editor.currentSandbox;
-
+  if (content) {
     return (
-      <>
-        <Helmet>
-          <title>{getSandboxName(sandbox)} - CodeSandbox</title>
-        </Helmet>
-        <Editor match={match} />
-        <QuickActions />
-      </>
+      <Fullscreen>
+        <Padding
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100vw',
+            height: '100vh',
+          }}
+          margin={1}
+        >
+          {state.editor.isLoading ? null : (
+            <Navigation title="Sandbox Editor" />
+          )}
+          <Centered
+            style={{ flex: 1, width: '100%', height: '100%' }}
+            horizontal
+            vertical
+          >
+            {content}
+          </Centered>
+        </Padding>
+      </Fullscreen>
     );
   }
-}
 
-export default inject('signals', 'store')(observer(SandboxPage));
+  const sandbox = state.editor.currentSandbox;
+
+  return (
+    <>
+      <Helmet>
+        <title>{getSandboxName(sandbox)} - CodeSandbox</title>
+      </Helmet>
+      <Editor />
+      <QuickActions />
+    </>
+  );
+};

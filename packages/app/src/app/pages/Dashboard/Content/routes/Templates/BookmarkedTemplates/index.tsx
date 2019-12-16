@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { sortBy } from 'lodash-es';
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
@@ -18,15 +18,14 @@ import {
 import { useOvermind } from 'app/overmind';
 import { ButtonContainer } from './elements';
 
-import { Container, Grid, EmptyTitle } from '../elements';
+import { Grid, EmptyTitle } from '../elements';
 import { Navigation } from '../Navigation';
 import { UNBOOKMARK_TEMPLATE_FROM_DASHBOARD } from './mutations';
 
-export const FollowedTemplates = props => {
-  const { teamId } = props.match.params;
-  const [sortedTemplates, setSortedTemplates] = useState<
-    ListPersonalBookmarkedTemplatesQuery['me']['bookmarkedTemplates']
-  >();
+type BookmarkedTemplatesProps = { teamId?: string };
+
+export const BookmarkedTemplates = (props: BookmarkedTemplatesProps) => {
+  const { teamId } = props;
 
   const { actions } = useOvermind();
 
@@ -60,15 +59,17 @@ export const FollowedTemplates = props => {
     } Bookmarked Templates - CodeSandbox`;
   }, [teamId]);
 
-  useEffect(() => {
+  const sortedTemplates = React.useMemo(() => {
     if (data && data.me) {
       if (teamId) {
         const team = data.me.teams.find(t => t.id === teamId);
-        setSortedTemplates(team.bookmarkedTemplates);
-      } else {
-        setSortedTemplates(data.me.bookmarkedTemplates);
+        return team.bookmarkedTemplates;
       }
+
+      return data.me.bookmarkedTemplates;
     }
+
+    return undefined;
   }, [teamId, data]);
 
   if (error) {
@@ -87,7 +88,7 @@ export const FollowedTemplates = props => {
           color: 'rgba(255, 255, 255, 0.5)',
         }}
       >
-        Fetching Sandboxes...
+        Fetching Templates...
       </DelayedAnimation>
     );
   }
@@ -96,7 +97,7 @@ export const FollowedTemplates = props => {
   );
 
   return (
-    <Container>
+    <>
       <Navigation bookmarked teamId={teamId} number={orderedTemplates.length} />
       {!orderedTemplates.length && (
         <div>
@@ -157,6 +158,6 @@ export const FollowedTemplates = props => {
           </ContextMenu>
         ))}
       </Grid>
-    </Container>
+    </>
   );
 };

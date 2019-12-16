@@ -37,11 +37,10 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   renameValidator,
 }) => {
   const {
-    state: {
-      editor: { currentSandbox, mainModule, currentModuleShortid },
-    },
+    state: { isLoggedIn, editor: editorState },
     actions: { files, editor },
   } = useOvermind();
+  const { currentSandbox, mainModule, currentModuleShortid } = editorState;
 
   const {
     id: sandboxId,
@@ -66,6 +65,7 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
             siblings={[...directories, ...modules]}
             depth={depth + 1}
             signals={{ files, editor }}
+            store={{ editor: editorState, isLoggedIn }}
             id={dir.id}
             shortid={dir.shortid}
             title={dir.title}

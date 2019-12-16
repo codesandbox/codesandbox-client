@@ -196,6 +196,10 @@ class SandboxGridComponent extends React.Component<
   };
 
   setSandboxesPrivacy = (privacy: number) => {
+    track('Sandbox - Update Privacy', {
+      privacy,
+      source: 'dashboard',
+    });
     setSandboxesPrivacy(this.props.selectedSandboxes, privacy);
   };
 

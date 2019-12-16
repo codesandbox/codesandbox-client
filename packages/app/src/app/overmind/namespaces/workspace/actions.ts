@@ -4,6 +4,7 @@ import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 export const valueChanged: Action<{
   field: string;
@@ -203,25 +204,41 @@ export const sandboxDeleted: AsyncAction = async ({
   effects.router.redirectToSandboxWizard();
 };
 
-export const sandboxPrivacyChanged: AsyncAction<0 | 1 | 2> = async (
-  { actions, effects, state },
-  privacy
-) => {
+export const sandboxPrivacyChanged: AsyncAction<{
+  privacy: 0 | 1 | 2;
+  source?: string;
+}> = async ({ actions, effects, state }, { privacy, source = 'generic' }) => {
+  track('Sandbox - Update Privacy', {
+    privacy,
+    source,
+  });
+
   const oldPrivacy = state.editor.currentSandbox.privacy;
-  const sandbox = await effects.api.updatePrivacy(
-    state.editor.currentSandbox.id,
-    privacy
-  );
-  state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
   state.editor.currentSandbox.privacy = privacy;
 
-  if (
-    getTemplate(state.editor.currentSandbox.template).isServer &&
-    ((oldPrivacy !== 2 && privacy === 2) || (oldPrivacy === 2 && privacy !== 2))
-  ) {
-    // Privacy changed from private to unlisted/public or other way around, restart
-    // the sandbox to notify containers
-    actions.server.restartContainer();
+  try {
+    const sandbox = await effects.api.updatePrivacy(
+      state.editor.currentSandbox.id,
+      privacy
+    );
+    state.editor.currentSandbox.previewSecret = sandbox.previewSecret;
+    state.editor.currentSandbox.privacy = privacy;
+
+    if (
+      getTemplate(state.editor.currentSandbox.template).isServer &&
+      ((oldPrivacy !== 2 && privacy === 2) ||
+        (oldPrivacy === 2 && privacy !== 2))
+    ) {
+      // Privacy changed from private to unlisted/public or other way around, restart
+      // the sandbox to notify containers
+      actions.server.restartContainer();
+    }
+  } catch (error) {
+    state.editor.currentSandbox.privacy = oldPrivacy;
+    actions.internal.handleError({
+      message: "We weren't able to update the sandbox privacy",
+      error,
+    });
   }
 };
 
