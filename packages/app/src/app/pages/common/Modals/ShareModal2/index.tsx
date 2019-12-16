@@ -122,7 +122,7 @@ function ShareModal() {
   };
 
   /** Copy Embed code */
-  const urlContainer = React.useRef();
+  const urlContainer = React.useRef<HTMLInputElement | null>(null);
   const [copied, setCopied] = React.useState(false);
 
   const copyEmbedCode = () => {
@@ -256,9 +256,8 @@ function ShareModal() {
           </Section>
           <SectionBody>
             <TextArea
-              as="textarea"
               code
-              rows="5"
+              rows={5}
               readOnly
               value={getUrl(settings, darkMode)}
               ref={urlContainer}
