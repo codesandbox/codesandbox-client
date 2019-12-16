@@ -23,14 +23,14 @@ type Props = {
     'hideFilters' | 'hideOrder' | 'possibleTemplates'
   >;
 export const Content: FunctionComponent<Props> = ({
-  actions: dashboardActions = [],
+  actions: dashboardActions,
   ExtraElement,
   Header,
   hideFilters,
   hideOrder,
   isLoading = false,
   page,
-  possibleTemplates = [],
+  possibleTemplates,
   sandboxes,
   SubHeader,
 }) => {

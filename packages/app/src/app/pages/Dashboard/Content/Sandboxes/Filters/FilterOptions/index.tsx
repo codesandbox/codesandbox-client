@@ -14,11 +14,11 @@ type Template = {
   niceName: string;
 };
 type Props = {
-  possibleTemplates: Template[];
+  possibleTemplates?: Template[];
   hideFilters?: boolean;
 };
 export const FilterOptions: FunctionComponent<Props> = ({
-  possibleTemplates,
+  possibleTemplates = [],
   hideFilters = false,
 }) => {
   const {
