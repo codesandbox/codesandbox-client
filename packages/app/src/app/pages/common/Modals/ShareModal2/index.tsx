@@ -16,17 +16,17 @@ import queryString from 'query-string';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@codesandbox/common/lib/design-language';
 
+import { Section, SectionBody, Switch } from './components';
+
 import {
   Container,
   Sidebar,
-  Section,
   Heading,
   Description,
   Option,
   Input,
   TextArea,
   Button,
-  Switch,
   Preview,
 } from './elements';
 
@@ -122,7 +122,7 @@ function ShareModal() {
   };
 
   /** Copy Embed code */
-  const urlContainer = React.createRef();
+  const urlContainer = React.useRef();
   const [copied, setCopied] = React.useState(false);
 
   const copyEmbedCode = () => {
@@ -137,7 +137,7 @@ function ShareModal() {
     <ThemeProvider theme={theme}>
       <Container>
         <Sidebar>
-          <Section.Body css={{ paddingBottom: 0 }}>
+          <SectionBody style={{ paddingBottom: 0 }}>
             <Heading>Embed</Heading>
             <Description>
               Customize the embed to better intergrate with your website, blog
@@ -161,7 +161,7 @@ function ShareModal() {
               Dark theme
               <Switch on={darkMode} onChange={() => setDarkMode(!darkMode)} />
             </Option>
-          </Section.Body>
+          </SectionBody>
 
           <Section title="Editor">
             <Option>
@@ -175,7 +175,7 @@ function ShareModal() {
               Font-size
               <Input
                 type="number"
-                defaultValue={settings.fontSize}
+                defaultValue={String(settings.fontSize)}
                 disabled={!settings.showEditor}
                 onChange={event => change({ fontSize: event.target.value })}
               />
@@ -214,7 +214,7 @@ function ShareModal() {
               />
             </Option>
           </Section>
-          <Section title="Advanced Options" disabled={!settings.showEditor}>
+          <Section title="Advanced Options">
             <Option>
               Use CodeMirror insted of Monaco
               <Switch
@@ -254,7 +254,7 @@ function ShareModal() {
               />
             </Option>
           </Section>
-          <Section.Body>
+          <SectionBody>
             <TextArea
               as="textarea"
               code
@@ -274,7 +274,7 @@ function ShareModal() {
                 value={getUrl(settings, darkMode).replace('embed', 's')}
               />
             </Option>
-          </Section.Body>
+          </SectionBody>
         </Sidebar>
         <Preview>
           <iframe

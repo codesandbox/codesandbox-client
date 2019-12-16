@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 
@@ -34,7 +33,7 @@ export const Description = styled.p(
   })
 );
 
-const SectionHeader = styled.button(props =>
+export const SectionHeader = styled.button<{ open?: Boolean }>(({ open }) =>
   css({
     display: 'flex',
     width: '100%',
@@ -60,43 +59,26 @@ const SectionHeader = styled.button(props =>
     },
     svg: {
       marginRight: 2,
-      transform: props.open ? null : 'rotate(-90deg)',
+      transform: open ? null : 'rotate(-90deg)',
       transition: 'transform ease-in',
       transitionDuration: theme => theme.speeds[3],
     },
   })
 );
 
-const SectionBody = styled.div(props =>
+export const SectionBody = styled.div(
   css({
     paddingX: 4,
     paddingTop: 4,
     paddingBottom: 8,
     borderBottom: '1px solid',
     borderColor: 'grays.800',
-    ...props.css,
   })
 );
 
 export const OptionDescription = styled.p(css({}));
 
-export const Section = ({ title, children, defaultOpen, ...props }) => {
-  const [open, isOpen] = React.useState(title ? defaultOpen : true);
-
-  return (
-    <section {...props}>
-      <SectionHeader open={open} onClick={() => isOpen(!open)}>
-        <ToggleIcon />
-        {title}
-      </SectionHeader>
-      {open ? <SectionBody>{children}</SectionBody> : null}
-    </section>
-  );
-};
-
-Section.Body = SectionBody;
-
-export const Input = styled.input(props =>
+export const Input = styled.input<{ code?: boolean }>(({ code }) =>
   css({
     backgroundColor: 'grays.700',
     border: '1px solid',
@@ -111,7 +93,7 @@ export const Input = styled.input(props =>
     height: 32,
     lineHeight: '32px',
 
-    fontFamily: props.code ? 'code' : 'body',
+    fontFamily: code ? 'code' : 'body',
 
     ':hover': {
       backgroundColor: 'grays.800',
@@ -160,7 +142,10 @@ export const Button = styled.button(
   })
 );
 
-export const Option = styled.label(props =>
+export const Option = styled.label<{
+  multiline?: boolean;
+  disabled?: boolean;
+}>(({ multiline, disabled }) =>
   css({
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -168,46 +153,16 @@ export const Option = styled.label(props =>
     lineHeight: 1.6,
     marginY: 2,
 
-    display: props.multiline ? 'block' : 'flex',
+    display: multiline ? 'block' : 'flex',
     input: {
-      width: props.multiline ? '100%' : 48,
+      width: multiline ? '100%' : 48,
     },
 
-    opacity: props.disabled ? 0.25 : 1,
+    opacity: disabled ? 0.25 : 1,
   })
 );
 
-const ToggleIcon = props => (
-  <svg
-    width="10"
-    height="6"
-    viewBox="0 0 10 6"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path
-      d="M4.50498 6L0.00488229 1.26364e-06L9.00488 4.76837e-07L4.50498 6Z"
-      fill="currentcolor"
-    />
-  </svg>
-);
-
-export const Switch = props => (
-  <SwitchLabel>
-    <input
-      type="checkbox"
-      disabled={props.disabled}
-      checked={props.on}
-      onChange={props.onChange}
-    />
-    <SwitchBase>
-      <SwitchToggle />
-    </SwitchBase>
-  </SwitchLabel>
-);
-
-const SwitchBase = styled.span(
+export const SwitchBase = styled.span(
   css({
     display: 'flex',
     alignItems: 'center',
@@ -219,7 +174,7 @@ const SwitchBase = styled.span(
   })
 );
 
-const SwitchToggle = styled.span(
+export const SwitchToggle = styled.span(
   css(theme => ({
     background: 'white',
     width: 14,
@@ -232,7 +187,7 @@ const SwitchToggle = styled.span(
   }))
 );
 
-const SwitchLabel = styled.label(
+export const SwitchLabel = styled.label(
   css({
     cursor: 'pointer',
 
