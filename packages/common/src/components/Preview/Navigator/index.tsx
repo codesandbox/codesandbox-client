@@ -9,7 +9,13 @@ import { ReloadIcon } from '../../icons/Reload';
 import Tooltip from '../../Tooltip';
 
 import AddressBar from '../AddressBar';
-import { Container, Icons, Icon, AddressBarContainer } from './elements';
+import {
+  Container,
+  Icons,
+  Icon,
+  AddressBarContainer,
+  IconWithBackground,
+} from './elements';
 
 export interface NavigatorProps {
   url: string;
@@ -57,7 +63,10 @@ function Navigator({
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
       {!zenMode && toggleProjectView && (
-        <Icon bg onClick={toggleProjectView} moduleView={!isProjectView}>
+        <IconWithBackground
+          onClick={toggleProjectView}
+          moduleView={!isProjectView}
+        >
           <Tooltip
             delay={0}
             content={isProjectView ? 'Project View' : 'Current Module View'}
@@ -65,14 +74,14 @@ function Navigator({
           >
             {isProjectView ? <ProjectViewIcon /> : <ModuleViewIcon />}
           </Tooltip>
-        </Icon>
+        </IconWithBackground>
       )}
       {openNewWindow && (
-        <Icon bg onClick={openNewWindow}>
+        <IconWithBackground onClick={openNewWindow}>
           <Tooltip delay={0} content="Open In New Window">
             <NewWindowIcon />
           </Tooltip>
-        </Icon>
+        </IconWithBackground>
       )}
     </Container>
   );

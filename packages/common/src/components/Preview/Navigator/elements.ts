@@ -24,7 +24,7 @@ export const Icons = styled.div`
   display: flex;
 `;
 
-export const Icon = styled.button<{ bg?: boolean; moduleView?: boolean }>`
+export const Icon = styled.button<{ moduleView?: boolean }>`
   display: inline-block;
   border: none;
   background-color: transparent;
@@ -36,15 +36,6 @@ export const Icon = styled.button<{ bg?: boolean; moduleView?: boolean }>`
   padding: 0;
   outline: none;
   cursor: pointer;
-
-${({ bg, theme }) =>
-  bg &&
-  css`
-    border-radius: 2px;
-    background-color: ${theme['editor.background'] || theme.background()};
-    border: 1px solid
-      ${darker(theme.light, theme['editor.background'] || theme.background())};
-  `}
 
 ${({ moduleView, theme }) =>
   !moduleView &&
@@ -77,6 +68,15 @@ ${({ moduleView, theme }) =>
           }
         `}
   `}
+`;
+
+export const IconWithBackground = styled(Icon)`
+  border-radius: 2px;
+  background-color: ${({ theme }) =>
+    theme['editor.background'] || theme.background()};
+  border: 1px solid
+    ${({ theme }) =>
+      darker(theme.light, theme['editor.background'] || theme.background())};
 `;
 
 export const AddressBarContainer = styled.div`
