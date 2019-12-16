@@ -11,7 +11,6 @@ import {
   PickButton,
   PreferencesButton,
   RefreshButton,
-  SaveAllButton,
   ShareButton,
 } from './Buttons';
 import {
