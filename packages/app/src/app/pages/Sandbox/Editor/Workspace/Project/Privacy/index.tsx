@@ -35,7 +35,10 @@ export const Privacy: FunctionComponent<Props> = ({ editable }) => {
               onChange={({
                 target: { value },
               }: ChangeEvent<HTMLSelectElement>) =>
-                sandboxPrivacyChanged(Number(value) as 0 | 1 | 2)
+                sandboxPrivacyChanged({
+                  privacy: Number(value) as 0 | 1 | 2,
+                  source: 'sidebar',
+                })
               }
               value={privacy}
             >
