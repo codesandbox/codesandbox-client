@@ -3,7 +3,6 @@ import { isStandalone, listen, dispatch } from 'codesandbox-api';
 import { activate, initialize } from 'react-devtools-inline/backend';
 import _debug from '@codesandbox/common/lib/utils/debug';
 
-import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
@@ -30,8 +29,6 @@ export const SCRIPT_VERSION =
 debug('Booting sandbox');
 
 requirePolyfills().then(() => {
-  registerServiceWorker('/sandbox-service-worker.js', {});
-
   function sendReady() {
     dispatch({ type: 'initialized' });
   }

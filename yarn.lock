@@ -29064,6 +29064,11 @@ webpack-merge@^4.1.0:
   dependencies:
     lodash "^4.17.5"
 
+webpack-remove-serviceworker-plugin@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/webpack-remove-serviceworker-plugin/-/webpack-remove-serviceworker-plugin-1.0.0.tgz#63a7604da9a7fd9bae8f9eef87d274a2470dcaa7"
+  integrity sha1-Y6dgTamn/Zuuj57vh9J0okcNyqc=
+
 webpack-sources@1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-1.3.0.tgz#2a28dcb9f1f45fe960d8f1493252b5ee6530fa85"
