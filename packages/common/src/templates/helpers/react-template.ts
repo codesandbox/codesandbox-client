@@ -7,7 +7,6 @@ export class ReactTemplate extends Template {
         views: [{ id: 'codesandbox.browser' }, { id: 'codesandbox.tests' }],
       },
       {
-        open: true,
         views: [
           { id: 'codesandbox.console' },
           { id: 'codesandbox.problems' },

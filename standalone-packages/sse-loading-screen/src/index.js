@@ -20,12 +20,14 @@ import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
 import Cube from './Cube';
 
 const SECOND = 1000; // ms
+const ERROR_COLOR = '#dc143c';
 
 // without this line, CSSPlugin and AttrPlugin may get dropped by your bundler...
 // eslint-disable-next-line
 const plugins = [CSSPlugin, AttrPlugin];
 
 let color;
+let error = false;
 
 let hostParts;
 if (process.env.NODE_ENV === 'development') {
@@ -70,27 +72,37 @@ const createMainCube = () => {
 
   const cubeTl = new TimelineLite({
     onComplete() {
-      const clearerColor = color && color.clearer(0.4);
+      let normalColor;
+      let clearerColor;
+      if (error) {
+        normalColor = ERROR_COLOR;
+        clearerColor = ERROR_COLOR;
+      } else {
+        normalColor = color && color();
+        clearerColor = color && color.clearer(0.4)();
+      }
       TweenLite.to(
         '.side',
         0.5,
         clearerColor
           ? {
-              boxShadow: `0 0 150px ${clearerColor()}`,
-              backgroundColor: clearerColor(),
+              boxShadow: `0 0 150px ${clearerColor}`,
+              backgroundColor: clearerColor,
             }
           : {}
       );
       TweenLite.to(
         '#loading-progress',
         0.5,
-        color
+        normalColor
           ? {
-              backgroundColor: color(),
+              backgroundColor: normalColor,
             }
           : {}
       );
-      this.restart();
+      if (!error) {
+        this.restart();
+      }
     },
   });
 
@@ -177,6 +189,15 @@ const createMainCube = () => {
   // TweenLite.to('#fourth', 0.5, { x: 0, y: -66 });
 };
 
+function updateStatusError(message) {
+  error = true;
+  const barTl = new TimelineLite();
+  barTl
+    .to('#loading-progress', 0.5, { width: '100%' })
+  document.getElementById('loading-text').textContent = message;
+  console.error(message);
+}
+
 setTimeout(createMainCube, 500);
 
 const NICE_TITLES = {
@@ -217,7 +238,9 @@ async function start() {
 
   const socket = io(`https://${domain}`, {
     autoConnect: false,
-    transports: ['websocket', 'polling'],
+    transports: ['websocket'],
+    reconnectionAttempts: 5,
+    reconnectionDelayMax: 32000,
   });
 
   socket.on('connect', () => {
@@ -237,7 +260,7 @@ async function start() {
 
   socket.on('sandbox:error', ({ message, unrecoverable }) => {
     if (unrecoverable) {
-      document.getElementById('loading-text').textContent = message;
+      updateStatusError(message);
       socket.close();
     }
   });
@@ -296,11 +319,21 @@ async function start() {
 
   window.addEventListener('resize', () => term.fit());
 
+  socket.on('reconnect_attempt', (attemptNumber) => {
+    if (attemptNumber === 3) {
+      socket.io.opts.transports = ['polling', 'websocket'];
+    }
+  });
+
+  socket.on('reconnect_failed', () => {
+    updateStatusError('Failed to connect to containers service, please try again later');
+  });
+
   socket.connect();
 }
 
 if (isLoop) {
-  document.getElementById('loading-text').textContent = 'Error: Reloading too fast.';
+  updateStatusError('Reloading too fast');
 } else {
   localStorage.setItem('last_loaded_at', now);
 

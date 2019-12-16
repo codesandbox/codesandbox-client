@@ -46,7 +46,7 @@ export const Explore = () => {
   return (
     <>
       <Header>
-        <span>Explore Templates</span>
+        <span>Template Universe</span>
         <div>
           <SearchBox
             onChange={evt => setSearch(evt.target.value)}

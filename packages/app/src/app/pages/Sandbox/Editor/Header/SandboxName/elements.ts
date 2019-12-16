@@ -62,6 +62,7 @@ export const Name = styled.span<{ owned?: boolean }>`
   ${({ theme, owned }) => css`
     color: ${theme.light ? 'black' : 'white'};
     margin-left: 0.25rem;
+    margin-right: ${owned ? 0 : '0.5rem'};
     cursor: ${owned ? 'pointer' : 'initial'};
     text-overflow: ellipsis;
     appearance: ${owned ? 'none' : 'initial'};
