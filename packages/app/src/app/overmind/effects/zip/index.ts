@@ -1,22 +1,24 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
+import axios from 'axios';
+import store from 'store/dist/store.modern';
+import { fileDownload } from './fileDownload';
+
+const getFile = async (id: string) => {
+  const jwt =
+    store.get('jwt') || (document.cookie.match(/[; ]?jwt=([^\s;]*)/) || [])[1];
+  const file = await axios.get(`http://localhost:8000/${id}`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+  return file.data;
+};
 
 export default {
-  create(sandbox: Sandbox) {
-    return import(
-      /* webpackChunkName: 'create-zip' */ './create-zip'
-    ).then(module =>
-      module
-        .getZip(sandbox, sandbox.modules, sandbox.directories)
-        .then(result => ({ file: result.file }))
-    );
+  create({ id }, { id: string }) {
+    return getFile(id);
   },
-  download(sandbox: Sandbox) {
-    return import(
-      /* webpackChunkName: 'create-zip' */ './create-zip'
-    ).then(module =>
-      module
-        .default(sandbox, sandbox.modules, sandbox.directories)
-        .then(file => ({ file }))
-    );
+  async download({ title, id }: { title: string; id: string }) {
+    const file = await getFile(id);
+    fileDownload(file.data, title || id);
   },
 };
