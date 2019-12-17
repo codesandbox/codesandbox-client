@@ -37,9 +37,15 @@ export const createSubscriptionClicked: AsyncAction<{
         state.patron.error = null;
       } catch (e) {
         state.patron.error = e.message;
+        effects.analytics.track('Create Subscription Error', {
+          error: e.message,
+        });
       }
     } else {
       state.patron.error = error.message;
+      effects.analytics.track('Create Subscription Error', {
+        error: error.message,
+      });
     }
   }
   state.patron.isUpdatingSubscription = false;
