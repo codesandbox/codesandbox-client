@@ -1,4 +1,14 @@
 import styled, { css } from 'styled-components';
+import Color from 'color';
+
+const getColor = (light, color) =>
+  light
+    ? Color(color)
+        .darken(0.2)
+        .hexString()
+    : Color(color)
+        .lighten(0.2)
+        .hexString();
 
 const getCursor = ({ primary, open }) => {
   if (primary) {
@@ -24,9 +34,12 @@ export const Header = styled.div<{ primary: boolean; open: boolean }>`
   font-size: 0.75rem;
   flex: 0 0 ${props => (props.primary ? 35 : 28)}px;
   background-color: ${props =>
-    props.theme['editorGroupHeader.tabsBackground'] ||
-    props.theme['editor.background'] ||
-    props.theme.background4};
+    getColor(
+      props.theme.light,
+      props.theme['editor.background'] ||
+        props.theme['input.background'] ||
+        props.theme.background4
+    )};
 
   ${props =>
     !props.primary &&
