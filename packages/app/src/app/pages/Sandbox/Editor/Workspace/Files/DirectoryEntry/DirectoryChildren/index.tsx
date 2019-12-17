@@ -15,7 +15,7 @@ interface IDirectoryChildrenProps {
   deleteEntry?: (shortid: string, title: string) => void;
   isInProjectView?: boolean;
   markTabsNotDirty?: () => void;
-  discardModuleChanges: (shortid: string) => void;
+  discardModuleChanges: (moduleShortid: string, moduleName: string) => void;
   getModulePath?: (
     modules: Module[],
     directories: Directory[],
