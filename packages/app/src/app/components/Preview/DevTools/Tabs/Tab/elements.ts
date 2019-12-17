@@ -33,7 +33,7 @@ export const Tab = styled.div<{ active: boolean; isOver: boolean }>`
   ${props =>
     props.active
       ? css`
-          background-color: ${props.theme['input.background'] ||
+          background-color: ${props.theme['tab.activeBackground'] ||
             props.theme.background4};
 
           color: ${props.theme['tab.activeForeground'] ||
