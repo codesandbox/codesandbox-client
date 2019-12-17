@@ -1,15 +1,9 @@
 import styled, { css } from 'styled-components';
-import Color from 'color';
-
-export const darker = (light: boolean, color: string) =>
-  Color(color)
-    .darken(light ? 0.3 : 0.7)
-    .hexString();
 
 export const Container = styled.div`
   display: flex;
   background-color: ${props =>
-    props.theme['tab.activeBackground'] || props.theme.background4};
+    props.theme['editor.background'] || props.theme.background()};
   padding: 0.25rem;
   align-items: center;
   line-height: 1;
@@ -73,10 +67,7 @@ ${({ moduleView, theme }) =>
 export const IconWithBackground = styled(Icon)`
   border-radius: 2px;
   background-color: ${({ theme }) =>
-    theme['editor.background'] || theme.background()};
-  border: 1px solid
-    ${({ theme }) =>
-      darker(theme.light, theme['editor.background'] || theme.background())};
+    theme['input.background'] || theme.background()};
 `;
 
 export const AddressBarContainer = styled.div`
