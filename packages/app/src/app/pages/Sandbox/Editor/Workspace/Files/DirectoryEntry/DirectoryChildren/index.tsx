@@ -1,27 +1,26 @@
 import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
-import { Directory, Module } from '@codesandbox/common/lib/types';
+import { Module, Directory } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import * as React from 'react';
-
-import ModuleEntry from './ModuleEntry';
 import DirectoryEntry from '..';
+import ModuleEntry from './ModuleEntry';
 
 interface IDirectoryChildrenProps {
-  depth?: number;
-  renameModule?: (title: string, moduleShortid: string) => void;
-  setCurrentModule?: (id: string) => void;
-  parentShortid?: string;
-  deleteEntry?: (shortid: string, title: string) => void;
-  isInProjectView?: boolean;
-  markTabsNotDirty?: () => void;
-  discardModuleChanges: (moduleShortid: string, moduleName: string) => void;
-  getModulePath?: (
+  depth: number;
+  renameModule: (title: string, moduleShortid: string) => void;
+  setCurrentModule: (id: string) => void;
+  parentShortid: string;
+  deleteEntry: (shortid: string, title: string) => void;
+  isInProjectView: boolean;
+  markTabsNotDirty: () => void;
+  discardModuleChanges: (shortid: string) => void;
+  getModulePath: (
     modules: Module[],
     directories: Directory[],
     id: string
   ) => string;
-  renameValidator?: (id: string, title: string) => string | false | null;
+  renameValidator: (id: string, title: string) => string | false | null;
 }
 
 const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
@@ -37,10 +36,10 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   renameValidator,
 }) => {
   const {
-    state: {
-      editor: { currentSandbox, mainModule, currentModuleShortid },
-    },
+    state: { isLoggedIn, editor: editorState },
+    actions: { files, editor },
   } = useOvermind();
+  const { currentSandbox, mainModule, currentModuleShortid } = editorState;
 
   const {
     id: sandboxId,
@@ -64,6 +63,8 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
             key={dir.id}
             siblings={[...directories, ...modules]}
             depth={depth + 1}
+            signals={{ files, editor }}
+            store={{ editor: editorState, isLoggedIn }}
             id={dir.id}
             shortid={dir.shortid}
             title={dir.title}

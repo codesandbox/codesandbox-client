@@ -1,4 +1,4 @@
-import { Directory, Module } from '@codesandbox/common/lib/types';
+import { Module, Directory } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
@@ -8,18 +8,18 @@ import Entry from '../Entry';
 
 interface IModuleEntryProps {
   module: Module;
-  setCurrentModule?: (id: string) => void;
-  markTabsNotDirty?: () => void;
-  depth?: number;
-  renameModule?: (title: string, moduleShortid: string) => void;
-  deleteEntry?: (shortid: string, title: string) => void;
-  discardModuleChanges?: (shortid: string, title: string) => void;
-  getModulePath?: (
+  setCurrentModule: (id: string) => void;
+  markTabsNotDirty: () => void;
+  depth: number;
+  renameModule: (title: string, moduleShortid: string) => void;
+  deleteEntry: (shortid: string, title: string) => void;
+  discardModuleChanges: (shortid: string) => void;
+  getModulePath: (
     modules: Module[],
     directories: Directory[],
     id: string
   ) => string;
-  renameValidator?: (id: string, title: string) => string | false | null;
+  renameValidator: (id: string, title: string) => string | false | null;
 }
 
 const ModuleEntry: React.FC<IModuleEntryProps> = ({

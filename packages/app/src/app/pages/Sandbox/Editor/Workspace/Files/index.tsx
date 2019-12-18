@@ -12,7 +12,7 @@ interface IFilesProps {
 export const Files: React.FC<IFilesProps> = ({ setEditActions }) => {
   const {
     state: { editor: editorState, isLoggedIn },
-    actions: { editor },
+    actions: { editor, files },
   } = useOvermind();
 
   const { currentSandbox: sandbox } = editorState;
@@ -30,6 +30,8 @@ export const Files: React.FC<IFilesProps> = ({ setEditActions }) => {
       root
       getModulePath={_getModulePath}
       title={sandbox.title || 'Project'}
+      signals={{ files, editor }}
+      store={{ editor: editorState, isLoggedIn }}
       initializeProperties={({
         onCreateModuleClick,
         onCreateDirectoryClick,

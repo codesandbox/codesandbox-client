@@ -402,7 +402,7 @@ export const deletedUploadedFile: AsyncAction<{
 });
 
 export const filesUploaded: AsyncAction<{
-  files: { [k: string]: { dataURI: string; type: string } };
+  files: any[];
   directoryShortid: string;
 }> = withOwnedSandbox(
   async ({ state, effects, actions }, { files, directoryShortid }) => {
@@ -420,7 +420,7 @@ export const filesUploaded: AsyncAction<{
         }
       );
 
-      await actions.files.massCreateModules({
+      actions.files.massCreateModules({
         modules,
         directories,
         directoryShortid,

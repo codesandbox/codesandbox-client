@@ -355,25 +355,3 @@ export const resolveDirectoryWrapped = sandbox => (path: string) => {
     return undefined;
   }
 };
-
-const inDirectoryMemoize = (directories, sourceShortid, destinationShortid) =>
-  sourceShortid +
-  destinationShortid +
-  directories.map(d => d.id + d.title + d.directoryShortid).join(',');
-
-export const inDirectory = memoize(
-  (directories: Directory[], rootShortid: string, shortid: string) => {
-    let directory = findByShortid(directories, shortid);
-
-    while (directory) {
-      if (directory.directoryShortid === rootShortid) {
-        return true;
-      }
-
-      directory = findByShortid(directories, directory.directoryShortid);
-    }
-
-    return false;
-  },
-  inDirectoryMemoize
-);
