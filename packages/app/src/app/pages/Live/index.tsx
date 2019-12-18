@@ -41,7 +41,7 @@ export const LivePage: React.FC<Props> = ({ match }) => {
   );
 
   function getContent() {
-    if (!state.user) {
+    if (!state.isAuthenticating && !state.user) {
       return (
         <>
           <div
