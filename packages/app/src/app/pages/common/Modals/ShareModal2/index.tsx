@@ -2,22 +2,27 @@
 Done: 
 - convert to typescript
 - include darkMode in settings
-TODO:
-- add default module to show
 - check what initial path does
+- add default module to show
+TODO:
 - visual polish
 	- overflow-x
 	- multiline
 	- style more info in brackets
 	- total height of the container is beyond preview
-- bonus: add postMessage to embed for smoother embed modal
+BONUS:
+- add postMessage to embed for smoother embed modal
 */
 
 import React from 'react';
 import queryString from 'query-string';
+import { useOvermind } from 'app/overmind';
 import { ThemeProvider } from 'styled-components';
-import { theme } from '@codesandbox/common/lib/design-language';
 
+import { theme } from '@codesandbox/common/lib/design-language';
+import { Sandbox } from '@codesandbox/common/lib/types';
+
+import FileTree from 'embed/components/Sidebar/FileTree';
 import { Section, SectionBody, Switch } from './components';
 
 import {
@@ -42,6 +47,7 @@ const globalOptions = {
   enableESLint: false,
   defaultFile: null,
   showNavigation: false,
+  currentModuleId: null,
 };
 
 const presets = {
@@ -78,7 +84,18 @@ function getView({ showEditor, showPreview }) {
   return 'preview';
 }
 
-function getUrl(settings) {
+const getModulePath = ({
+  sandbox,
+  moduleId,
+}: {
+  sandbox: Sandbox;
+  moduleId: string;
+}): string => {
+  const selectedModule = sandbox.modules.find(module => module.id === moduleId);
+  return selectedModule.path;
+};
+
+function getUrl({ settings, sandbox }) {
   const flags = {
     hidenavigation: settings.showNavigation ? 0 : 1,
     theme: settings.darkMode ? 'dark' : 'light',
@@ -91,6 +108,9 @@ function getUrl(settings) {
     highlights: settings.highlightLines || null,
     eslint: settings.enableESLint ? 1 : null,
     initialpath: settings.initialPath || null,
+    module: settings.currentModuleId
+      ? getModulePath({ sandbox, moduleId: settings.currentModuleId })
+      : null,
   };
 
   const stringified = queryString.stringify(flags, {
@@ -98,13 +118,18 @@ function getUrl(settings) {
     skipNull: true,
   });
 
-  const url =
-    `https://codesandbox.io/embed/dark-magic-variant-5pj49?` + stringified;
+  const url = `https://codesandbox.io/embed/${sandbox.alias}?` + stringified;
 
   return url;
 }
 
 function ShareModal() {
+  const {
+    state: {
+      editor: { currentSandbox: sandbox, mainModule },
+    },
+  } = useOvermind();
+
   const [settings, setSettings] = React.useState({
     preset: 'split-view',
     ...globalOptions,
@@ -270,13 +295,31 @@ function ShareModal() {
                 }
               />
             </Option>
+            <Option multiline>
+              Default file to show
+              <ThemeProvider
+                theme={{
+                  // we borrow this component from embed, so we have to pass
+                  // it the required theme token
+                  colors: { sideBar: { border: theme.colors.grays[700] } },
+                }}
+              >
+                <FileTree
+                  sandbox={sandbox}
+                  currentModuleId={settings.currentModuleId || mainModule.id}
+                  setCurrentModuleId={value =>
+                    change({ currentModuleId: value })
+                  }
+                />
+              </ThemeProvider>
+            </Option>
           </Section>
           <SectionBody>
             <TextArea
               code
               rows={5}
               readOnly
-              value={getUrl(settings)}
+              value={getUrl({ settings, sandbox })}
               ref={urlContainer}
             />
             <Button onClick={copyEmbedCode}>
@@ -287,14 +330,14 @@ function ShareModal() {
               <Input
                 code
                 readOnly
-                value={getUrl(settings).replace('embed', 's')}
+                value={getUrl({ settings, sandbox }).replace('embed', 's')}
               />
             </Option>
           </SectionBody>
         </Sidebar>
         <Preview>
           <iframe
-            src={getUrl(settings)}
+            src={getUrl({ settings, sandbox })}
             title="Dark Magic Variant"
             allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
             sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
