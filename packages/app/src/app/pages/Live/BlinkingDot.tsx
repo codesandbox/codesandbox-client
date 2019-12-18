@@ -13,13 +13,13 @@ const DotContainer = styled.div`
 `;
 
 export class BlinkingDot extends React.PureComponent<{}, { showing: boolean }> {
-  timer: NodeJS.Timer;
+  timer: number;
   state = {
     showing: true,
   };
 
   componentDidMount() {
-    this.timer = setInterval(() => {
+    this.timer = window.setInterval(() => {
       this.setState(state => ({ showing: !state.showing }));
     }, 1000);
   }
