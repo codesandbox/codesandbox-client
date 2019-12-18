@@ -25,10 +25,10 @@ import { createOvermind } from 'overmind';
 import { Provider as ActualOvermindProvider } from 'overmind-react';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
+import { DndProvider } from 'react-dnd';
 import { render } from 'react-dom';
 import { Router } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import { DndProvider } from 'react-dnd';
 
 import { config } from './overmind';
 import { Provider as OvermindProvider } from './overmind/Provider';

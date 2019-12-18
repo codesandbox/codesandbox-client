@@ -3,6 +3,10 @@ import { IDerive, IState, json } from 'overmind';
 
 import { AsyncAction } from '.';
 
+/*
+  Ensures that we have loaded the app with the initial user
+  and settings
+*/
 export const withLoadApp = <T>(
   continueAction?: AsyncAction<T>
 ): AsyncAction<T> => async (context, value) => {
@@ -18,6 +22,7 @@ export const withLoadApp = <T>(
 
   state.isAuthenticating = true;
   state.jwt = effects.jwt.get() || null;
+
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
   effects.keybindingManager.set(

@@ -19,8 +19,8 @@ import {
   UploadedFilesInfo,
   UserSandbox,
 } from '@codesandbox/common/lib/types';
-import { client } from 'app/graphql/client';
 import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
+import { client } from 'app/graphql/client';
 
 import {
   transformDirectory,
@@ -116,10 +116,12 @@ export default {
       )
       .then(transformModule);
   },
-  saveModules(sandboxId: string, modules: Module[]) {
-    return api.put(`/sandboxes/${sandboxId}/modules/mupdate`, {
-      modules,
-    });
+  saveModules(sandboxId: string, modules: Module[]): Promise<Module[]> {
+    return api
+      .put<IModuleAPIResponse[]>(`/sandboxes/${sandboxId}/modules/mupdate`, {
+        modules,
+      })
+      .then(modulesResult => modulesResult.map(transformModule));
   },
   getGitChanges(sandboxId: string): Promise<GitChanges> {
     return api.get(`/sandboxes/${sandboxId}/git/diff`);
