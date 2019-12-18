@@ -118,7 +118,10 @@ function ShareModal() {
 
       // if the property is part of a preset options (not global options),
       // then change preset to custom
-      if (!(property in globalOptions)) newSettings.preset = 'custom';
+      const propertyName = Object.keys(property)[0];
+      if (Object.prototype.hasOwnProperty.call(globalOptions, propertyName)) {
+        newSettings.preset = 'custom';
+      }
 
       return newSettings;
     });
