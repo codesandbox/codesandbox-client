@@ -1,5 +1,8 @@
-/** TODO:
+/**
+Done: 
 - convert to typescript
+- include darkMode in settings
+TODO:
 - add default module to show
 - check what initial path does
 - visual polish
@@ -7,8 +10,7 @@
 	- multiline
 	- style more info in brackets
 	- total height of the container is beyond preview
-- add postMessage to embed for smoother embed modal
-- include darkMode in settings
+- bonus: add postMessage to embed for smoother embed modal
 */
 
 import React from 'react';
@@ -32,6 +34,7 @@ import {
 
 // outside of presets
 const globalOptions = {
+  darkMode: true,
   fontSize: 14,
   highlightLines: null,
   initialPath: '/',
@@ -75,10 +78,10 @@ function getView({ showEditor, showPreview }) {
   return 'preview';
 }
 
-function getUrl(settings, darkMode) {
+function getUrl(settings) {
   const flags = {
     hidenavigation: settings.showNavigation ? 0 : 1,
-    theme: darkMode ? 'dark' : 'light',
+    theme: settings.darkMode ? 'dark' : 'light',
     fontsize: settings.fontSize || 14,
     expanddevtools: settings.expandDevTools ? 1 : null,
     hidedevtools: settings.expandDevTools ? 0 : 1,
@@ -107,8 +110,6 @@ function ShareModal() {
     ...globalOptions,
     ...presets['split-view'],
   });
-
-  const [darkMode, setDarkMode] = React.useState<boolean>(true);
 
   const change = property => {
     setSettings({ ...settings, preset: 'custom', ...property });
@@ -160,7 +161,10 @@ function ShareModal() {
             </Option>
             <Option>
               Dark theme
-              <Switch on={darkMode} onChange={() => setDarkMode(!darkMode)} />
+              <Switch
+                on={settings.darkMode}
+                onChange={() => toggle('darkMode')}
+              />
             </Option>
           </SectionBody>
 
@@ -260,7 +264,7 @@ function ShareModal() {
               code
               rows={5}
               readOnly
-              value={getUrl(settings, darkMode)}
+              value={getUrl(settings)}
               ref={urlContainer}
             />
             <Button onClick={copyEmbedCode}>
@@ -271,14 +275,14 @@ function ShareModal() {
               <Input
                 code
                 readOnly
-                value={getUrl(settings, darkMode).replace('embed', 's')}
+                value={getUrl(settings).replace('embed', 's')}
               />
             </Option>
           </SectionBody>
         </Sidebar>
         <Preview>
           <iframe
-            src={getUrl(settings, darkMode)}
+            src={getUrl(settings)}
             title="Dark Magic Variant"
             allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
             sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
