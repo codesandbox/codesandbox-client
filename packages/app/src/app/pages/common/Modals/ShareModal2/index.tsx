@@ -36,7 +36,7 @@ const globalOptions = {
   highlightLines: null,
   initialPath: '/',
   useCodeMirror: false,
-  enableEslint: false,
+  enableESLint: false,
   defaultFile: null,
   showNavigation: false,
 };
@@ -69,6 +69,12 @@ const presets = {
   },
 };
 
+function getView({ showEditor, showPreview }) {
+  if (showEditor && showPreview) return 'split';
+  if (showEditor) return 'editor';
+  return 'preview';
+}
+
 function getUrl(settings, darkMode) {
   const flags = {
     hidenavigation: settings.showNavigation ? 0 : 1,
@@ -76,12 +82,7 @@ function getUrl(settings, darkMode) {
     fontsize: settings.fontSize || 14,
     expanddevtools: settings.expandDevTools ? 1 : null,
     hidedevtools: settings.expandDevTools ? 0 : 1,
-    view:
-      settings.showEditor && settings.showPreview
-        ? 'split'
-        : settings.showEditor
-        ? 'editor'
-        : 'preview',
+    view: getView(settings),
     previewwindow: settings.showTests ? 'tests' : null,
     codemirror: settings.useCodeMirror ? 1 : null,
     highlights: settings.highlightLines || null,
@@ -107,7 +108,7 @@ function ShareModal() {
     ...presets['split-view'],
   });
 
-  const [darkMode, setDarkMode] = React.useState(true);
+  const [darkMode, setDarkMode] = React.useState<boolean>(true);
 
   const change = property => {
     setSettings({ ...settings, preset: 'custom', ...property });
@@ -122,7 +123,7 @@ function ShareModal() {
   };
 
   /** Copy Embed code */
-  const urlContainer = React.useRef<HTMLInputElement | null>(null);
+  const urlContainer = React.useRef<HTMLTextAreaElement | null>(null);
   const [copied, setCopied] = React.useState(false);
 
   const copyEmbedCode = () => {
