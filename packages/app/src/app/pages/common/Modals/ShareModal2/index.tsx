@@ -112,7 +112,16 @@ function ShareModal() {
   });
 
   const change = property => {
-    setSettings({ ...settings, preset: 'custom', ...property });
+    setSettings(currentSettings => {
+      // set new property in settings
+      const newSettings = { ...currentSettings, ...property };
+
+      // if the property is part of a preset options (not global options),
+      // then change preset to custom
+      if (!(property in globalOptions)) newSettings.preset = 'custom';
+
+      return newSettings;
+    });
   };
 
   const toggle = property => {
