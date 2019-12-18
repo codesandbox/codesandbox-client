@@ -4276,6 +4276,13 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-color@^2.17.3":
+  version "2.17.3"
+  resolved "https://registry.yarnpkg.com/@types/react-color/-/react-color-2.17.3.tgz#92a67b2dc5783a9220bc52804f8fade93696a1fe"
+  integrity sha512-ewFUB9mNXuqT2UMbiYNqXiUWt857VinGaElhX0Gk+kT1BrXel0imzRp1FeWntHpr+uHkKAnJbr5e4Yc4vP1BRg==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-dom@^16.8.3":
   version "16.8.3"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.3.tgz#6131b7b6158bc7ed1925a3374b88b7c00481f0cb"
