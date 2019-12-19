@@ -93,7 +93,7 @@ export const StyledEditorLink = styled.a`
 
 export const HeroBottom = styled.div`
   position: absolute;
-  bottom: -12%;
+  bottom: -20%;
   left: 0;
   right: 0;
   display: flex;
