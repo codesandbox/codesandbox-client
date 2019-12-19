@@ -71,7 +71,7 @@ export const StyledEditorLink = styled.a`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 150px;
+  padding-top: 110px;
   top: 0;
   bottom: 0;
   left: 0;
@@ -93,7 +93,7 @@ export const StyledEditorLink = styled.a`
 
 export const HeroBottom = styled.div`
   position: absolute;
-  bottom: -20%;
+  bottom: -30%;
   left: 0;
   right: 0;
   display: flex;
