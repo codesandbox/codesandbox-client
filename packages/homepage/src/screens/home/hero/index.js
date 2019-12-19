@@ -19,7 +19,6 @@ import {
 import hero from '../../../assets/images/hero-ide-home.png';
 
 import BoxAnimation from './BoxAnimation';
-import { applyParallax } from '../../../utils/parallax';
 
 export default () => {
   const [boxes, setBoxes] = useState([]);
@@ -106,13 +105,6 @@ export default () => {
 
   const ideRef = useRef();
 
-  useEffect(() => {
-    applyParallax(ideRef.current, {
-      speed: 2,
-      center: true,
-    });
-  }, []);
-
   return (
     <HeroWrapper>
       <BoxAnimation boxes={boxes} showPlane={showPlane} />
@@ -151,32 +143,41 @@ export default () => {
         </motion.div>
       </motion.div>
 
-      <HeroBottom>
-        <div ref={ideRef}>
-          <CountText>
-            <span style={{ fontWeight: 600, color: 'white' }}>
-              {sandboxesCreatedCount}{' '}
-            </span>
-            {sandboxesCreatedCount === 1 ? 'sandbox' : 'sandboxes'} created
-            since you opened this page
-          </CountText>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.5,
+          delay: 0.3,
+        }}
+      >
+        <HeroBottom>
+          <div ref={ideRef}>
+            <CountText>
+              <span style={{ fontWeight: 600, color: 'white' }}>
+                {sandboxesCreatedCount}{' '}
+              </span>
+              {sandboxesCreatedCount === 1 ? 'sandbox' : 'sandboxes'} created
+              since you opened this page
+            </CountText>
 
-          <div style={{ position: 'relative' }}>
-            <StyledEditorLink
-              href="/s/m7q0r29nn9"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              <InspiredText>
-                Inspired by the sandboxes created by drcmda
-              </InspiredText>
-              Open Sandbox
-            </StyledEditorLink>
+            <div style={{ position: 'relative' }}>
+              <StyledEditorLink
+                href="/s/m7q0r29nn9"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                <InspiredText>
+                  Inspired by the sandboxes created by drcmda
+                </InspiredText>
+                Open Sandbox
+              </StyledEditorLink>
 
-            <HeroImage alt="editor with project open" src={hero} />
+              <HeroImage alt="editor with project open" src={hero} />
+            </div>
           </div>
-        </div>
-      </HeroBottom>
+        </HeroBottom>
+      </motion.div>
 
       <Border />
     </HeroWrapper>
