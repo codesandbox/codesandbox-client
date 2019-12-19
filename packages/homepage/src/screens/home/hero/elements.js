@@ -39,8 +39,8 @@ export const HeroWrapper = styled.section`
   overflow: hidden;
   padding: 0 2rem;
 
-  height: calc(100vh - 48px);
-  min-height: calc(1080px - 48px);
+  height: 100vh;
+  min-height: 1080px;
 
   perspective: 1000;
 
