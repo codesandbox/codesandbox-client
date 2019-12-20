@@ -123,6 +123,17 @@ function getUrl({ settings, sandbox }) {
   return url;
 }
 
+function getIframeCode({ settings, sandbox }) {
+  const url = getUrl({ settings, sandbox });
+
+  return `<iframe src=${url}
+  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+  title=${sandbox.title}
+  allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+></iframe>`;
+}
+
 function ShareModal() {
   const {
     state: {
@@ -319,7 +330,7 @@ function ShareModal() {
               code
               rows={5}
               readOnly
-              value={getUrl({ settings, sandbox })}
+              value={getIframeCode({ settings, sandbox })}
               ref={urlContainer}
             />
             <Button onClick={copyEmbedCode}>
@@ -338,7 +349,7 @@ function ShareModal() {
         <Preview>
           <iframe
             src={getUrl({ settings, sandbox })}
-            title="Dark Magic Variant"
+            title={sandbox.title}
             allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
             sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
           />
