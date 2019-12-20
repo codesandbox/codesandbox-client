@@ -128,6 +128,7 @@ export const TextArea = styled(Input).attrs({ as: 'textarea' })(
     height: 'auto', // let rows attr take care of height
     lineHeight: 1.6,
     marginBottom: 2,
+    resize: 'none',
   })
 ) as StyledComponent<
   'textarea',
