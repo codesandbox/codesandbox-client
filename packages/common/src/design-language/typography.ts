@@ -1,3 +1,8 @@
+export const fonts = {
+  body: 'Inter, sans-serif',
+  code: 'Source Code Pro, monospace',
+};
+
 export const fontSizes = [
   0,
   9, // not used yet.

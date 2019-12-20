@@ -1,13 +1,19 @@
+// this theme follows the System UI Theme Specification
+// Ref: https://system-ui.com/theme
+
 import { colors } from './colors';
-import { fontSizes, fontWeights } from './typography';
+import { fonts, fontSizes, fontWeights } from './typography';
 
 const theme = {
   colors,
+
+  fonts,
   fontSizes,
   fontWeights,
 
   // we use a 4 point grid
-  space: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40],
+  space: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40], // for margin + padding
+  sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40], // for width + height
 
   // transition speeds in ms
   speeds: [0, '75ms', '100ms', '150ms', '200ms', '300ms', '500ms'],

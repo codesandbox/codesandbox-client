@@ -19,7 +19,7 @@ import queryString from 'query-string';
 import { useOvermind } from 'app/overmind';
 import { ThemeProvider } from 'styled-components';
 
-import { theme } from '@codesandbox/common/lib/design-language';
+import theme from '@codesandbox/common/lib/design-language/theme';
 import { Sandbox } from '@codesandbox/common/lib/types';
 
 import FileTree from 'embed/components/Sidebar/FileTree';
