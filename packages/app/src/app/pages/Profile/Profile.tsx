@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { useTabState } from 'reakit/Tab';
+import { useOvermind } from 'app/overmind';
+import { NotFound } from 'app/pages/common/NotFound';
 import {
   Layout,
   Pagination,
@@ -30,7 +32,19 @@ import {
 } from './elements';
 import { initialState } from './DELETEME';
 
-export const Profile: React.FC<RouteComponentProps> = () => {
+interface IProfileProps extends RouteComponentProps {
+  match: {
+    params: { username: string };
+    url: string;
+  };
+}
+
+export const Profile: React.FC<IProfileProps> = ({
+  match: {
+    params: { username },
+    url,
+  },
+}) => {
   // Replace with API
   const [data, setData] = useState(initialState);
   const [query, setQuery] = useState(``);
@@ -40,6 +54,25 @@ export const Profile: React.FC<RouteComponentProps> = () => {
     orientation: 'vertical',
     selectedId: 'Sandboxes',
   });
+
+  const {
+    state: {
+      profile: { current: user, notFound },
+    },
+    actions: {
+      profile: { profileMounted },
+    },
+  } = useOvermind();
+
+  useEffect(() => {
+    profileMounted({ username });
+  }, [profileMounted, username]);
+
+  if (notFound) {
+    return <NotFound />;
+  }
+
+  console.log(user); // eslint-disable-line
 
   // TODO:
   // - Add Query to retrieve user data
@@ -105,7 +138,7 @@ export const Profile: React.FC<RouteComponentProps> = () => {
           </Tabs>
         </UserInfo>
 
-        {query.length && (
+        {query.length ? (
           <TabContent {...tabs} stopId="Search">
             <SearchRow>
               <SandboxCount>
@@ -123,7 +156,7 @@ export const Profile: React.FC<RouteComponentProps> = () => {
               <Pagination pages={10} />
             </PageNav>
           </TabContent>
-        )}
+        ) : null}
 
         <TabContent {...tabs} stopId="Sandboxes">
           {data.user.featured && <FeaturedSandbox {...data.user.featured} />}

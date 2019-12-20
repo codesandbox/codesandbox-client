@@ -1,3 +1,14 @@
+export { ChatIcon } from './Chat';
+export { CogIcon } from './Cog';
+export { CuratorIcon } from './Curator';
+export { DashboardIcon } from './Dashboard';
+export { DocumentationIcon } from "./Documentation";
+export { ExitIcon } from './Exit';
+export { FolderIcon } from './Folder';
 export { GitHub } from './GitHub';
+export { PatronIcon } from './Patron';
+export { ProIcon } from './Pro';
+export { SearchIcon } from './Search';
 export { Spectrum } from './Spectrum';
 export { Twitter } from './Twitter';
+export { UserIcon } from './User';

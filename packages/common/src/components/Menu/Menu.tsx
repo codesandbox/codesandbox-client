@@ -1,31 +1,38 @@
-import React, { cloneElement, Children } from 'react';
+import React, { useEffect, cloneElement, Children } from 'react';
 import { MenuDisclosure, useMenuState } from 'reakit/Menu';
 import { Container, MenuButton, List } from './elements';
 
-interface IMenuProps {
-  onToggle?: React.MouseEventHandler;
+export interface IMenuProps {
   label?: React.ReactNode;
-  button?: React.ReactType;
+  as?: React.ElementType;
   disabled?: boolean;
+  onOpen?: () => void;
+  onClose?: () => void;
+  onToggle?: React.MouseEventHandler;
 }
 
 export const Menu: React.FC<IMenuProps> = ({
-  onToggle = () => {},
   label,
-  button = MenuButton,
+  as = MenuButton,
   disabled = false,
+  onOpen = () => {},
+  onClose = () => {},
+  onToggle = () => {},
   children,
   ...props
 }) => {
   const menu = useMenuState();
+  useEffect(() => {
+    if (menu.visible) {
+      onOpen();
+    } else {
+      onClose();
+    }
+  }, [onOpen, onClose, menu.visible]);
+
   return (
     <Container {...props}>
-      <MenuDisclosure
-        as={button}
-        {...menu}
-        onClick={onToggle}
-        disabled={disabled}
-      >
+      <MenuDisclosure as={as} {...menu} onClick={onToggle} disabled={disabled}>
         {label}
       </MenuDisclosure>
       <List {...menu} aria-label={props[`aria-label`]}>

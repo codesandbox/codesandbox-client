@@ -1,3 +1,4 @@
+export { Avatar } from './Avatar';
 export { Button, ButtonIcon, IButtonProps } from './Button';
 export { Footer } from './Footer';
 export { Menu, MenuItem, Separator } from './Menu';
@@ -8,4 +9,5 @@ export { SearchInput } from './SearchInput';
 export { FormInput } from './FormInput';
 export { Layout } from './Layout';
 export { Link } from './Link';
+export { default as Logo } from './Logo';
 export { H2, H3, H5, P } from './Typography';

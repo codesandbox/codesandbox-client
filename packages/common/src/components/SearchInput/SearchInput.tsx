@@ -8,7 +8,7 @@ import { SearchForm, SearchButton, Input } from './elements';
 
 type V = Record<any, any>;
 
-interface ISearchInputProps
+export interface ISearchInputProps
   extends Omit<React.ComponentProps<typeof SearchForm>, 'baseId' | 'submit'> {
   name?: string;
   placeholder?: string;

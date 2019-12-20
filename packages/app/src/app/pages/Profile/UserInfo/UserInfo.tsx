@@ -7,15 +7,11 @@ import {
 } from 'reakit/Form';
 import { object, string, array, InferType, ValidationError } from 'yup';
 import set from 'lodash/set';
-import { Link } from '@codesandbox/common/lib/components';
+import { Avatar, Link } from '@codesandbox/common/lib/components';
 import { Icons } from './Icons';
 import {
   Container,
   AboutUser,
-  ProfilePicture,
-  Avatar,
-  ProBadge,
-  TeamBadge,
   Name,
   Username,
   BioInput,
@@ -126,11 +122,7 @@ export const UserInfo: React.FC<IUserInfoProps> = ({
       {...(isEditing ? { ...form, autoComplete: 'off' } : {})}
     >
       <AboutUser>
-        <ProfilePicture>
-          <Avatar src={avatar} />
-          {(isPro && <ProBadge>Pro</ProBadge>) ||
-            (isTeam && <TeamBadge>Team</TeamBadge>)}
-        </ProfilePicture>
+        <Avatar name={name} img={avatar} isPro={isPro} isTeam={isTeam} isPatron={false} isContributor={false} />
         <Name>{name}</Name>
         <Username>{username}</Username>
         {isEditing ? (

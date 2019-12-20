@@ -4,7 +4,7 @@ import { Link } from '../Link';
 import { Item, MenuIcon } from './elements';
 
 interface IMenuItemProps {
-  icon?: React.ComponentClass;
+  icon?: React.ElementType;
   to?: string;
   onClick?: React.MouseEventHandler;
   danger?: boolean;
