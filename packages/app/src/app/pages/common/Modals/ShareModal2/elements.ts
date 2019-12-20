@@ -17,7 +17,7 @@ export const Sidebar = styled.div(
     color: 'white',
     fontSize: 3,
 
-    maxWidth: 300, // for development, remove this
+    width: 272, // hard coded in pixels
     overflowY: 'auto',
   })
 );
@@ -218,7 +218,7 @@ export const SwitchLabel = styled.label(
 export const Preview = styled.div(
   css({
     padding: 8,
-    width: '100%',
+    width: 'calc(100% - 272px - 64px)', // remove sidebar and padding
     background: 'white',
     iframe: {
       width: '100%',
