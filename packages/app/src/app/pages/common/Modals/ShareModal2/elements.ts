@@ -84,7 +84,7 @@ export const SectionHeader = styled.button<{ open?: Boolean }>(({ open }) =>
 export const SectionBody = styled.div(
   css({
     paddingX: 4,
-    paddingTop: 2,
+    paddingTop: 4,
     paddingBottom: 8,
     borderBottom: '1px solid',
     borderColor: 'grays.800',
@@ -145,7 +145,7 @@ export const Select = styled(Input).attrs({ as: 'select' })(
     backgroundImage: `url(${caret})`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: '96% 50%',
-    height: 32,
+    height: 24,
   })
 ) as StyledComponent<
   'select',
@@ -186,9 +186,8 @@ export const Option = styled.label<{
   css({
     justifyContent: 'space-between',
     alignItems: 'center',
-    minHeight: 24,
+    minHeight: 32,
     lineHeight: 1.6,
-    marginY: 2,
 
     display: multiline ? 'block' : 'flex',
     input: {
