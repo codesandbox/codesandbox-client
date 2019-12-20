@@ -163,6 +163,7 @@ export const Button = styled.button(
     color: 'white',
     fontSize: 2,
     fontFamily: 'body',
+    fontWeight: 'semibold',
     height: 24,
     borderRadius: 'medium',
     cursor: 'pointer',
