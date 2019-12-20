@@ -236,7 +236,7 @@ export const Preview = styled.div(
       width: '100%',
       height: 500,
       border: 0,
-      borderRadius: 2,
+      borderRadius: 'medium',
       overflow: 'hidden',
     },
   })
