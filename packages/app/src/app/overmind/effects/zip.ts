@@ -1,6 +1,6 @@
 import axios from 'axios';
 import store from 'store/dist/store.modern';
-import { fileDownload } from './fileDownload';
+import { saveAs } from 'file-saver';
 
 const getFile = async (id: string) => {
   const jwt =
@@ -9,7 +9,9 @@ const getFile = async (id: string) => {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
+    responseType: 'arraybuffer',
   });
+
   return file.data;
 };
 
@@ -19,6 +21,9 @@ export default {
   },
   async download({ title, id }: { title: string; id: string }) {
     const file = await getFile(id);
-    fileDownload(file.data, title || id);
+    const blob = new Blob([file], {
+      type: 'application/zip',
+    });
+    saveAs(blob, `${title || id}.zip`);
   },
 };
