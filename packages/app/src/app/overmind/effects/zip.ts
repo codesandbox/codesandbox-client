@@ -12,18 +12,19 @@ const getFile = async (id: string) => {
     responseType: 'arraybuffer',
   });
 
-  return file.data;
+  const blob = new Blob([file.data], {
+    type: 'application/zip',
+  });
+
+  return blob;
 };
 
 export default {
-  create({ id }, { id: string }) {
+  create({ id }: { id: string }) {
     return getFile(id);
   },
   async download({ title, id }: { title: string; id: string }) {
     const file = await getFile(id);
-    const blob = new Blob([file], {
-      type: 'application/zip',
-    });
-    saveAs(blob, `${title || id}.zip`);
+    saveAs(file, `${title || id}.zip`);
   },
 };

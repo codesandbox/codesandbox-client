@@ -6,7 +6,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { makeTemplates } from 'app/components/CreateNewSandbox/queries';
-import downloadZip from 'app/overmind/effects/zip/create-zip';
+import zip from 'app/overmind/effects/zip';
 import { formatDistanceToNow } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import { camelizeKeys } from 'humps';
@@ -231,9 +231,7 @@ class SandboxGridComponent extends React.Component<
     const sandboxes = await Promise.all(
       sandboxIds.map(s => this.getSandbox(s))
     );
-    return Promise.all(
-      sandboxes.map(s => downloadZip(s, s.modules, s.directories))
-    );
+    return Promise.all(sandboxes.map(s => zip.download(s)));
   };
 
   forkSandbox = id => {

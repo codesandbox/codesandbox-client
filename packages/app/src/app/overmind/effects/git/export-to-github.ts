@@ -1,29 +1,23 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
 import JSZip from 'jszip';
-import { createZip, BLOB_ID } from '../zip/create-zip';
+import zip from '../zip';
 
+const BLOB_ID = 'blob-url://';
 export default async function deploy(sandbox: Sandbox) {
   // We first get the zip file, this is what we essentially need to have deployed.
   // So we convert it to an API request that ZEIT will understand
-  const zipFile = await createZip(
-    sandbox,
-    sandbox.modules,
-    sandbox.directories,
-    false,
-    true
-  );
+  const zipFile = await zip.create(sandbox);
 
   if (!zipFile) {
     return null;
   }
 
   const contents = await JSZip.loadAsync(zipFile);
-
   const apiData = { sandbox: [] };
-  const filePaths = Object.keys(contents.files);
+  const filePaths = Object.keys(contents);
   for (let i = 0; i < filePaths.length; i += 1) {
     const filePath = filePaths[i];
-    const file = contents.files[filePath];
+    const file = contents[filePath];
 
     if (!file.dir) {
       let content = await file.async('text'); // eslint-disable-line no-await-in-loop

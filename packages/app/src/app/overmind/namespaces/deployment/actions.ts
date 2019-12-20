@@ -24,10 +24,7 @@ export const deployWithNetlify: AsyncAction = async ({
   const zip = await effects.zip.create(state.editor.currentSandbox);
 
   try {
-    const id = await effects.netlify.deploy(
-      zip.file,
-      state.editor.currentSandbox
-    );
+    const id = await effects.netlify.deploy(zip, state.editor.currentSandbox);
     state.deployment.deploying = false;
 
     await actions.deployment.getNetlifyDeploys();
@@ -95,7 +92,7 @@ export const deployClicked: AsyncAction = async ({
   try {
     state.deployment.deploying = true;
     const zip = await effects.zip.create(state.editor.currentSandbox);
-    const contents = await effects.jsZip.loadAsync(zip.file);
+    const contents = await effects.jsZip.loadAsync(zip);
     state.deployment.url = await effects.zeit.deploy(
       contents,
       state.editor.currentSandbox
