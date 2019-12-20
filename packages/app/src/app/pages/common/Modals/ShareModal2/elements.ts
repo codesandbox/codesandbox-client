@@ -95,9 +95,9 @@ export const OptionDescription = styled.p(css({}));
 
 export const Input = styled.input<{ code?: boolean }>(({ code }) =>
   css({
-    backgroundColor: 'grays.700',
+    backgroundColor: 'grays.800',
     border: '1px solid',
-    borderColor: 'grays.800',
+    borderColor: 'grays.600',
     color: 'white',
     fontSize: 3,
     borderRadius: 'small',
@@ -110,7 +110,7 @@ export const Input = styled.input<{ code?: boolean }>(({ code }) =>
     fontFamily: code ? 'code' : 'body',
 
     ':hover': {
-      backgroundColor: 'grays.800',
+      backgroundColor: 'grays.700',
     },
     ':focus': {
       backgroundColor: 'grays.800',
@@ -118,7 +118,7 @@ export const Input = styled.input<{ code?: boolean }>(({ code }) =>
       outline: 'none',
     },
     ':disabled:hover': {
-      backgroundColor: 'grays.700',
+      backgroundColor: 'grays.800',
     },
   })
 );
@@ -206,7 +206,8 @@ export const SwitchBase = styled.span(
     width: 28,
     height: 14,
     borderRadius: 'large',
-    background: '#040404',
+    backgroundColor: 'grays.800',
+    // TODO: add a focus state for switch
   })
 );
 

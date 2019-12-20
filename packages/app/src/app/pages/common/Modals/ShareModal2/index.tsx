@@ -332,7 +332,7 @@ function ShareModal() {
               value={getIframeCode({ settings, sandbox })}
               ref={urlContainer}
             />
-            <Button onClick={copyEmbedCode}>
+            <Button onClick={copyEmbedCode} style={{ marginBottom: 8 }}>
               {copied ? 'Copied!' : 'Copy Embed Code'}
             </Button>
             <Option multiline>
