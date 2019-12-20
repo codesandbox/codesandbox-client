@@ -4,6 +4,9 @@ import styled, {
 } from 'styled-components';
 import css from '@styled-system/css';
 
+// hard coded for desktop, not responsive yet
+const SIDEBAR_WIDTH = '272px';
+
 export const Container = styled.div(
   css({
     display: 'flex',
@@ -11,6 +14,11 @@ export const Container = styled.div(
     // this should ideally be defined by the modal
     // not the contents inside it
     height: 600,
+
+    // we use box-sizing: initial on the body
+    '*': {
+      boxSizing: 'border-box',
+    },
   })
 );
 
@@ -20,7 +28,7 @@ export const Sidebar = styled.div(
     color: 'white',
     fontSize: 3,
 
-    width: 272, // hard coded in pixels
+    width: SIDEBAR_WIDTH,
     overflowY: 'auto',
   })
 );
@@ -221,7 +229,7 @@ export const SwitchLabel = styled.label(
 export const Preview = styled.div(
   css({
     padding: 8,
-    width: 'calc(100% - 272px - 64px)', // remove sidebar and padding
+    width: `calc(100% - ${SIDEBAR_WIDTH})`,
     background: 'white',
     iframe: {
       width: '100%',

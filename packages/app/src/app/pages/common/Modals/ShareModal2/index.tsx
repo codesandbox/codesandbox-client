@@ -314,7 +314,7 @@ function ShareModal() {
               </ThemeProvider>
             </Option>
           </Section>
-          <SectionBody>
+          <SectionBody style={{ borderBottom: 'none' }}>
             <TextArea
               code
               rows={5}
