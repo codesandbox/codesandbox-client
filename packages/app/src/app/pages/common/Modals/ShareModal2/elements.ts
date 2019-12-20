@@ -8,6 +8,9 @@ export const Container = styled.div(
   css({
     display: 'flex',
     fontFamily: 'Inter, sans-serif',
+    // this should ideally be defined by the modal
+    // not the contents inside it
+    height: 600,
   })
 );
 
