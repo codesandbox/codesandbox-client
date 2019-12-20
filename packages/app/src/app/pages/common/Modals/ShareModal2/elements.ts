@@ -105,7 +105,6 @@ export const Input = styled.input<{ code?: boolean }>(({ code }) =>
     width: '100%',
     boxSizing: 'border-box', // probably not right
     height: 32,
-    lineHeight: '32px',
 
     fontFamily: code ? 'code' : 'body',
 
@@ -132,6 +131,22 @@ export const TextArea = styled(Input).attrs({ as: 'textarea' })(
   })
 ) as StyledComponent<
   'textarea',
+  any,
+  StyledComponentInnerOtherProps<typeof Input>
+>;
+
+const caret =
+  'data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMTAgMjQiIHdpZHRoPSIxMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNzU3NTc1Ij48cGF0aCBkPSJtNS4wMDAwNiAxNy0zLjAwMDA2LTRoNnoiLz48cGF0aCBkPSJtNC45OTk5NCA3IDMuMDAwMDYgNGgtNnoiLz48L2c+PC9zdmc+';
+
+export const Select = styled(Input).attrs({ as: 'select' })(
+  css({
+    appearance: 'none',
+    backgroundImage: `url(${caret})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: '96% 50%',
+  })
+) as StyledComponent<
+  'select',
   any,
   StyledComponentInnerOtherProps<typeof Input>
 >;

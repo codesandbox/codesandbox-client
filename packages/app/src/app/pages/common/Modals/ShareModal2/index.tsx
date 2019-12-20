@@ -32,6 +32,7 @@ import {
   Description,
   Option,
   Input,
+  Select,
   TextArea,
   Button,
   Preview,
@@ -194,9 +195,7 @@ function ShareModal() {
               or documentation
             </Description>
             <Option>
-              <Input
-                as="select"
-                placeholder="Select an preset"
+              <Select
                 onChange={event => applyPreset(event.target.value)}
                 value={settings.preset}
               >
@@ -205,7 +204,7 @@ function ShareModal() {
                 <option value="code-only">Code only</option>
                 <option value="code-with-tests">Code with tests</option>
                 <option value="custom">Custom</option>
-              </Input>
+              </Select>
             </Option>
             <Option>
               Dark theme
