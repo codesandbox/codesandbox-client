@@ -188,7 +188,7 @@ function ShareModal() {
     <ThemeProvider theme={theme}>
       <Container>
         <Sidebar>
-          <SectionBody style={{ paddingBottom: 0 }}>
+          <SectionBody>
             <Heading>Embed</Heading>
             <Description>
               Customize the embed to better intergrate with your website, blog

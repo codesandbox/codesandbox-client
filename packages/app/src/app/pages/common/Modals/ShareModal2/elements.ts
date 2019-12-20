@@ -50,15 +50,16 @@ export const Description = styled.p(
 export const SectionHeader = styled.button<{ open?: Boolean }>(({ open }) =>
   css({
     display: 'flex',
-    width: '100%',
     alignItems: 'center',
 
-    color: '#fff',
+    width: '100%',
+    height: 32,
+    paddingY: 0,
+
     fontSize: 3,
     fontWeight: 'medium',
-    paddingY: 4,
-    paddingX: 2,
     background: 'transparent',
+    color: '#fff',
 
     border: 'none',
     borderBottom: '1px solid',
@@ -83,7 +84,7 @@ export const SectionHeader = styled.button<{ open?: Boolean }>(({ open }) =>
 export const SectionBody = styled.div(
   css({
     paddingX: 4,
-    paddingTop: 4,
+    paddingTop: 2,
     paddingBottom: 8,
     borderBottom: '1px solid',
     borderColor: 'grays.800',
@@ -104,7 +105,7 @@ export const Input = styled.input<{ code?: boolean }>(({ code }) =>
 
     width: '100%',
     boxSizing: 'border-box', // probably not right
-    height: 32,
+    height: 24,
 
     fontFamily: code ? 'code' : 'body',
 
@@ -144,6 +145,7 @@ export const Select = styled(Input).attrs({ as: 'select' })(
     backgroundImage: `url(${caret})`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: '96% 50%',
+    height: 32,
   })
 ) as StyledComponent<
   'select',
@@ -183,7 +185,7 @@ export const Option = styled.label<{
   css({
     justifyContent: 'space-between',
     alignItems: 'center',
-    minHeight: 32,
+    minHeight: 24,
     lineHeight: 1.6,
     marginY: 2,
 
