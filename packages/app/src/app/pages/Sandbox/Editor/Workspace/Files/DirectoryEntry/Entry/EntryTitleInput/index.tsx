@@ -63,6 +63,7 @@ export const EntryTitleInput: FunctionComponent<Props> = ({
         onBlur={() => onCommit(currentValue, true)}
         onKeyUp={handleKeyUp}
         ref={select}
+        autoComplete="new-directory"
         value={currentValue}
         id={`input-${id}`}
         aria-invalid={Boolean(error)}
