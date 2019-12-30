@@ -7,17 +7,13 @@ import { Child, Container } from './elements';
 import './titlebar.css';
 
 export const MenuBar: FunctionComponent = () => {
-  const {
-    effects: {
-      vscode: { getMenubarElement },
-    },
-  } = useOvermind();
+  const { effects } = useOvermind();
   const menuBarEl = useRef(null);
 
   useEffect(() => {
     // Get the menu bar part from vscode and mount it
-    menuBarEl.current.appendChild(getMenubarElement());
-  }, [getMenubarElement]);
+    menuBarEl.current.appendChild(effects.vscode.getMenubarElement());
+  }, [effects.vscode]);
 
   return (
     // Explicitly use inline styles here to override the vscode styles
