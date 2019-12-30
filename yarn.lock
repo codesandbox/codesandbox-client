@@ -1187,11 +1187,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/template-icons@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-1.0.2.tgz#9471002b5d05b3782f893138e0fc6ee5469dd879"
-  integrity sha512-pYN5g2U6QygS168qDrgKbCFPa9ITBUACt1zpdmTZHktJi14o+pLqy1CJct41UQP6ovdL1XFL00hpPpp0qfJ0gw==
-
 "@codesandbox/template-icons@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-1.1.0.tgz#ef37b97dc6057b63a500c6710fbca5f9c7a9730d"
