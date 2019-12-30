@@ -51,7 +51,7 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
   );
 
   function getContent() {
-    const { hasLogIn } = state;
+    const { hasLogIn, isLoggedIn } = state;
 
     if (state.editor.error) {
       const isGithub = match.params.id.includes('github');
@@ -81,7 +81,7 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
               {hasLogIn ? 'Dashboard' : 'Homepage'}
             </Button>
           </div>
-          {hasLogIn && isGithub && !hasPrivateAccess && (
+          {isLoggedIn && isGithub && !hasPrivateAccess && (
             <div style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}>
               <div
                 style={{

@@ -46,7 +46,7 @@
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@babel/polyfill": "^7.4.4",
     "@codesandbox/notifications": "^1.0.6",
-    "@codesandbox/template-icons": "^1.0.2",
+    "@codesandbox/template-icons": "^1.1.0",
     "@sentry/browser": "^5.9.0",
     "@styled-system/css": "^5.0.23",
     "@tippy.js/react": "^3.1.1",

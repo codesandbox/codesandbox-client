@@ -1,9 +1,7 @@
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { ComponentProps, FunctionComponent } from 'react';
-
 import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
-
 import {
   ForkButton,
   LikeButton,
@@ -44,29 +42,20 @@ export const Header: FunctionComponent<Props> = ({ zenMode }) => {
         ) : (
           <Logo />
         )}
-
         <MenuBar />
       </Left>
-
       <Centered>
         <SandboxName />
       </Centered>
 
       <Right>
         {updateStatus === 'available' && <RefreshButton />}
-
         {!isLoggedIn && <PreferencesButton />}
-
         <NewSandboxButton />
-
         {isLoggedIn && <LikeButton />}
-
         {user?.curatorAt && <PickButton />}
-
         <ShareButton />
-
         <ForkButton />
-
         <AccountContainer>
           {isLoggedIn ? (
             <UserMenuContainer>
