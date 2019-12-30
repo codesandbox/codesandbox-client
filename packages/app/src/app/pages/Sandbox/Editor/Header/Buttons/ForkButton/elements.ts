@@ -1,8 +1,8 @@
-import styled from 'styled-components';
-import { default as BaseProgressButton } from '@codesandbox/common/lib/components/ProgressButton';
+import { default as ProgressButtonBase } from '@codesandbox/common/lib/components/ProgressButton';
 import BaseForkIcon from 'react-icons/lib/go/repo-forked';
+import styled from 'styled-components';
 
-export const ProgressButton = styled(BaseProgressButton)`
+export const ProgressButton = styled(ProgressButtonBase)`
   font-size: 0.75rem;
 `;
 

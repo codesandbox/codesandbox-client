@@ -1,10 +1,12 @@
+import track from '@codesandbox/common/lib/utils/analytics';
+import React, { FunctionComponent, useEffect, useRef } from 'react';
+
+import { useOvermind } from 'app/overmind';
+
+import { Child, Container } from './elements';
 import './titlebar.css';
 
-import track from '@codesandbox/common/lib/utils/analytics';
-import { useOvermind } from 'app/overmind';
-import React, { useEffect, useRef } from 'react';
-
-export const MenuBar = () => {
+export const MenuBar: FunctionComponent = () => {
   const { effects } = useOvermind();
   const menuBarEl = useRef(null);
 
@@ -16,26 +18,11 @@ export const MenuBar = () => {
   return (
     // Explicitly use inline styles here to override the vscode styles
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        marginLeft: ' 0.5rem',
-      }}
+    <Container
       className="part titlebar"
-      onClick={() => {
-        track('Editor - Click Menubar');
-      }}
+      onClick={() => track('Editor - Click Menubar')}
     >
-      <div
-        style={{
-          alignItems: 'center',
-          height: 38,
-          fontSize: '0.875rem',
-        }}
-        className="menubar"
-        ref={menuBarEl}
-      />
-    </div>
+      <Child className="menubar" ref={menuBarEl} />
+    </Container>
   );
 };

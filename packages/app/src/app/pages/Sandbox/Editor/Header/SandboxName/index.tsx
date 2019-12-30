@@ -1,9 +1,9 @@
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Link } from 'react-router-dom';
 import { basename } from 'path';
+import { Link } from 'react-router-dom';
 import React, {
   ChangeEvent,
   FunctionComponent,
@@ -11,7 +11,9 @@ import React, {
   useState,
 } from 'react';
 import { useSpring, animated } from 'react-spring';
+
 import { useOvermind } from 'app/overmind';
+
 import { PrivacyTooltip } from '../PrivacyTooltip';
 
 import {
@@ -44,17 +46,21 @@ export const SandboxName: FunctionComponent = () => {
 
   const updateSandboxInfo = () => {
     sandboxInfoUpdated();
+
     setUpdatingName(false);
   };
 
-  const submitNameChange = (e: ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const submitNameChange = (event: ChangeEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     updateSandboxInfo();
+
     track('Change Sandbox Name From Header');
   };
 
   const handleNameClick = () => {
     setUpdatingName(true);
+
     setName(sandboxName);
   };
 
@@ -105,10 +111,12 @@ export const SandboxName: FunctionComponent = () => {
               ) : (
                 'Anonymous '
               )}
+
               <span role="presentation">/ </span>
             </Folder>
           </animated.div>
         )}
+
         {updatingName ? (
           <Form onSubmit={submitNameChange}>
             <NameInput

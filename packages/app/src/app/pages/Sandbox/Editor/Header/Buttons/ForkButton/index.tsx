@@ -11,8 +11,8 @@ export const ForkButton: FunctionComponent = () => {
     },
     state: {
       editor: {
-        isForkingSandbox,
         currentSandbox: { owned },
+        isForkingSandbox,
       },
     },
   } = useOvermind();
