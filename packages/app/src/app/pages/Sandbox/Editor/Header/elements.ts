@@ -1,7 +1,8 @@
-// @ts-ignore
-import { SignInButton as BaseSignInButton } from 'app/pages/common/SignInButton';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+
+import { SignInButton as SignInButtonBase } from 'app/pages/common/SignInButton';
+
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
 export const Container = styled.div<{ zenMode: boolean }>`
@@ -69,7 +70,6 @@ export const DashboardIcon = styled(Dashboard)`
   align-items: center;
   vertical-align: middle;
   height: 3rem;
-  margin-right: 1rem;
   margin: 0 calc(0.8rem + 2px);
   box-sizing: border-box;
   overflow: hidden;
@@ -91,10 +91,9 @@ export const UserMenuContainer = styled.div`
   display: absolute;
   z-index: 999999999999;
   margin: 5px 0;
-  margin-right: 0;
   font-size: 0.8rem;
 `;
 
-export const SignInButton = styled(BaseSignInButton)`
+export const SignInButton = styled(SignInButtonBase)`
   font-size: 0.75rem;
 `;
