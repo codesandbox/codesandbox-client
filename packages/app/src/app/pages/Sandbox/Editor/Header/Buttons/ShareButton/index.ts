@@ -1,1 +1,0 @@
-export { ShareButton } from './ShareButton';

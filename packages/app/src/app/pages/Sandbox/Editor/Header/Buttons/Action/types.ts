@@ -1,4 +1,4 @@
-import React from 'react';
+import { ComponentType } from 'react';
 
 export type OptionProps = {
   blink?: boolean;
@@ -20,6 +20,5 @@ export interface ActionProps {
   href?: string;
   a?: boolean;
   onClick?: () => void;
-  children?: React.ReactNode;
-  Icon: React.ComponentType;
+  Icon: ComponentType;
 }

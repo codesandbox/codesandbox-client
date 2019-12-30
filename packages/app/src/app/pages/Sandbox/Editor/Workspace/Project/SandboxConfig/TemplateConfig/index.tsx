@@ -64,7 +64,6 @@ export const TemplateConfig: FunctionComponent = () => {
               <SketchPicker
                 color={selectedColor}
                 disableAlpha
-                id="color"
                 onChangeComplete={({ hex }) => setSelectedColor(hex)}
                 presetColors={[...new Set(colors)]}
               />

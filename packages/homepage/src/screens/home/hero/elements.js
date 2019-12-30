@@ -39,8 +39,8 @@ export const HeroWrapper = styled.section`
   overflow: hidden;
   padding: 0 2rem;
 
-  height: calc(100vh - 48px);
-  min-height: calc(1080px - 48px);
+  height: 100vh;
+  min-height: 1080px;
 
   perspective: 1000;
 
@@ -71,7 +71,7 @@ export const StyledEditorLink = styled.a`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 150px;
+  padding-top: 110px;
   top: 0;
   bottom: 0;
   left: 0;
@@ -93,7 +93,7 @@ export const StyledEditorLink = styled.a`
 
 export const HeroBottom = styled.div`
   position: absolute;
-  bottom: -12%;
+  bottom: -30%;
   left: 0;
   right: 0;
   display: flex;

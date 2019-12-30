@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
+import styled from 'styled-components';
 
 const DotContainer = styled.div`
   font-size: 4rem;
@@ -12,13 +12,14 @@ const DotContainer = styled.div`
   }
 `;
 
-export class BlinkingDot extends React.PureComponent {
+export class BlinkingDot extends React.PureComponent<{}, { showing: boolean }> {
+  timer: number;
   state = {
     showing: true,
   };
 
   componentDidMount() {
-    this.timer = setInterval(() => {
+    this.timer = window.setInterval(() => {
       this.setState(state => ({ showing: !state.showing }));
     }, 1000);
   }

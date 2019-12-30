@@ -87,10 +87,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   state.editor.isLoading = !hasExistingSandbox;
   state.editor.notFound = false;
 
-  // Only reset changed modules if sandbox wasn't in memory, otherwise a fork
-  // can mark real changed modules as unchanged
-  state.editor.changedModuleShortids = [];
-
   try {
     const sandbox = await effects.api.getSandbox(newId);
 
@@ -232,17 +228,42 @@ export const codeChanged: Action<{
 export const saveClicked: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {
     const sandbox = state.editor.currentSandbox;
-    const currentlyChangedModuleShortids = state.editor.changedModuleShortids.slice();
 
     try {
       const changedModules = sandbox.modules.filter(module =>
         state.editor.changedModuleShortids.includes(module.shortid)
       );
 
-      state.editor.changedModuleShortids = [];
+      const updatedModules = await effects.api.saveModules(
+        sandbox.id,
+        changedModules
+      );
 
-      await effects.api.saveModules(sandbox.id, changedModules);
-      effects.moduleRecover.clearSandbox(sandbox.id);
+      updatedModules.forEach(updatedModule => {
+        const module = sandbox.modules.find(
+          moduleItem => moduleItem.shortid === updatedModule.shortid
+        );
+
+        if (module) {
+          module.insertedAt = updatedModule.insertedAt;
+          module.updatedAt = updatedModule.updatedAt;
+
+          module.savedCode =
+            updatedModule.code === module.code ? null : updatedModule.code;
+
+          effects.vscode.sandboxFsSync.writeFile(
+            state.editor.modulesByPath,
+            module
+          );
+          effects.moduleRecover.remove(sandbox.id, module);
+        } else {
+          // We might not have the module, as it was created by the server. In
+          // this case we put it in. There is an edge case here where the user
+          // might delete the module while it is being updated, but it will very
+          // likely not happen
+          sandbox.modules.push(updatedModule);
+        }
+      });
 
       if (
         state.editor.currentSandbox.originalGit &&
@@ -253,13 +274,6 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
 
       effects.preview.executeCodeImmediately();
     } catch (error) {
-      // Put back any unsaved modules taking into account that you
-      // might have changed some modules waiting for saving
-      currentlyChangedModuleShortids.forEach(moduleShortid => {
-        if (!state.editor.changedModuleShortids.includes(moduleShortid)) {
-          state.editor.changedModuleShortids.push(moduleShortid);
-        }
-      });
       actions.internal.handleError({
         message: 'There was a problem with saving the files, please try again',
         error,
@@ -292,6 +306,7 @@ export const forkSandboxClicked: AsyncAction = async ({
 }) => {
   if (
     state.editor.currentSandbox.owned &&
+    !state.editor.currentSandbox.customTemplate &&
     !effects.browser.confirm('Do you want to fork your own sandbox?')
   ) {
     return;
@@ -510,11 +525,6 @@ export const discardModuleChanges: Action<{
 
   module.updatedAt = new Date().toString();
   effects.vscode.revertModule(module);
-
-  state.editor.changedModuleShortids.splice(
-    state.editor.changedModuleShortids.indexOf(moduleShortid),
-    1
-  );
 };
 
 export const fetchEnvironmentVariables: AsyncAction = async ({

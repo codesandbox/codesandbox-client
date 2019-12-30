@@ -14,7 +14,7 @@ export const priceChanged: Action<{ price: number }> = (
 export const createSubscriptionClicked: AsyncAction<{
   token: string;
   coupon: string;
-}> = async ({ state, effects }, { token, coupon }) => {
+}> = async ({ state, effects, actions }, { token, coupon }) => {
   effects.analytics.track('Create Patron Subscription');
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
@@ -32,14 +32,31 @@ export const createSubscriptionClicked: AsyncAction<{
     ) {
       try {
         await effects.stripe.handleCardPayment(error.data.client_secret);
-
         state.user = await effects.api.getCurrentUser();
         state.patron.error = null;
       } catch (e) {
+        actions.internal.handleError({
+          message: 'Could not create subscription',
+          error: e,
+        });
+
         state.patron.error = e.message;
+
+        effects.analytics.track('Create Subscription Error', {
+          error: e.message,
+        });
       }
     } else {
+      actions.internal.handleError({
+        message: 'Could not create subscription',
+        error,
+      });
+
       state.patron.error = error.message;
+
+      effects.analytics.track('Create Subscription Error', {
+        error: error.message,
+      });
     }
   }
   state.patron.isUpdatingSubscription = false;

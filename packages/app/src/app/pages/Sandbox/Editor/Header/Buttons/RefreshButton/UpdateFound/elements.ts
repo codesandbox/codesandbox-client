@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const UpdateMessage = styled.div`
+export const Message = styled.div`
   color: white;
   border-radius: 2px;
   font-size: 0.75rem;
@@ -21,7 +21,7 @@ export const UpdateMessage = styled.div`
   }
 `;
 
-export const UpdateContainer = styled.div`
+export const Container = styled.div`
   cursor: pointer;
 
   &:hover {

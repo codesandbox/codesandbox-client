@@ -128,7 +128,7 @@ function Box({ position, rotation, onDrag, onDragStop }) {
 }
 
 export default function App({ boxes, showPlane }) {
-  const [prop, set] = useSpring(() => ({ intensity: 0.6, color: '#fff' }));
+  const [prop, set] = useSpring(() => ({ intensity: 0, color: '#fff' }));
   const [animationDisabled, setAnimationDisabled] = React.useState(false);
   const [dragging, setDragging] = React.useState(false);
 
@@ -141,16 +141,8 @@ export default function App({ boxes, showPlane }) {
   }, []);
 
   useEffect(() => {
-    if (!boxes.length) {
-      return;
-    }
-
-    set({ intensity: 1 });
-
-    setTimeout(() => {
-      set({ intensity: 0.6 });
-    }, 300);
-  }, [boxes, set]);
+    set({ intensity: 0.6 });
+  }, [set]);
 
   if (animationDisabled) {
     return (
@@ -177,7 +169,7 @@ export default function App({ boxes, showPlane }) {
         }}
         resize={{ polyfill: ResizeObserver }}
       >
-        <ambientLight intensity={0.5} />
+        <a.ambientLight {...prop} />
 
         <a.spotLight
           {...prop}

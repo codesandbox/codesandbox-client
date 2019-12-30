@@ -1,21 +1,24 @@
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
-import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
-import { Explanation, Heading } from '../elements';
-import { Container } from './elements';
+
+import { useOvermind } from 'app/overmind';
+
+import { Heading } from '../elements';
+
+import { Container, Explanation } from './elements';
 
 export const LiveSessionEnded: FunctionComponent = () => {
   const {
+    actions: {
+      editor: { forkSandboxClicked },
+      modalClosed,
+    },
     state: {
+      currentModalMessage,
       editor: {
         currentSandbox: { owned },
       },
-      currentModalMessage,
-    },
-    actions: {
-      modalClosed,
-      editor: { forkSandboxClicked },
     },
   } = useOvermind();
 
@@ -26,32 +29,29 @@ export const LiveSessionEnded: FunctionComponent = () => {
   return (
     <Container>
       <Heading>The live session has ended</Heading>
-      <Explanation style={{ marginBottom: '1rem' }}>
+
+      <Explanation>
         {currentModalMessage || 'The session has ended due to inactivity'},{' '}
         {suggestion}
       </Explanation>
 
       <Row justifyContent="space-around">
-        <Button small href="/s">
+        <Button href="/s" small>
           Create Sandbox
         </Button>
 
         {owned ? (
-          <Button
-            small
-            onClick={() => {
-              modalClosed();
-            }}
-          >
+          <Button onClick={() => modalClosed()} small>
             Close Modal
           </Button>
         ) : (
           <Button
-            small
             onClick={() => {
               forkSandboxClicked();
+
               modalClosed();
             }}
+            small
           >
             Fork Sandbox
           </Button>
