@@ -402,7 +402,7 @@ export const deletedUploadedFile: AsyncAction<{
 });
 
 export const filesUploaded: AsyncAction<{
-  files: any[];
+  files: { [k: string]: { dataURI: string; type: string } };
   directoryShortid: string;
 }> = withOwnedSandbox(
   async ({ state, effects, actions }, { files, directoryShortid }) => {
