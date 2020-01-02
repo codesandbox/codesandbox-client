@@ -1,19 +1,3 @@
-/**
-Done: 
-- convert to typescript
-- include darkMode in settings
-- check what initial path does
-- add default module to show
-TODO:
-- visual polish
-	- overflow-x
-	- multiline
-	- style more info in brackets
-	- total height of the container is beyond preview
-BONUS:
-- add postMessage to embed for smoother embed modal
-*/
-
 import React from 'react';
 import queryString from 'query-string';
 import { useOvermind } from 'app/overmind';
