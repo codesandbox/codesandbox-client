@@ -1,8 +1,11 @@
 export default (id, title, siblings = []) => {
   if (title.length === 0) return 'Title cannot be empty';
-  if (/^[09azAZ_.]+$/.test(title)) {
+  if (title.includes(' ')) {
     // It has whitespaces
-    return 'Title cannot have whitespaces or special characters';
+    return 'Title cannot have whitespaces';
+  }
+  if (/[!@#$%^&*(),.?":{}|<>]/g.test(title)) {
+    return 'Title cannot have special characters';
   }
 
   if (title.length > 32) {
