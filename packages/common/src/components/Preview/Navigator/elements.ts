@@ -18,7 +18,7 @@ export const Icons = styled.div`
   display: flex;
 `;
 
-export const Icon = styled.button<{ moduleView?: boolean }>`
+export const Icon = styled.button<{ moduleView?: boolean; disabled?: boolean }>`
   display: inline-block;
   border: none;
   background-color: transparent;
@@ -31,14 +31,24 @@ export const Icon = styled.button<{ moduleView?: boolean }>`
   outline: none;
   cursor: pointer;
 
-${({ moduleView, theme }) =>
+  svg path,
+  svg rect {
+    transition: 0.2s ease fill;
+  }
+
+${({ moduleView, disabled, theme }) =>
   !moduleView &&
-  css`
-    &:hover svg path,
-    &:hover svg rect {
-      fill: ${theme.light ? 'black' : 'white'};
-    }
-  `}
+  (disabled
+    ? css`
+        cursor: default;
+        opacity: 0.6;
+      `
+    : css`
+        &:hover svg path,
+        &:hover svg rect {
+          fill: ${theme.light ? 'black' : 'white'};
+        }
+      `)}
 
   /* // TODO: Replace with new theme */
 ${({ moduleView, theme }) =>
