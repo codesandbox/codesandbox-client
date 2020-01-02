@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components';
 import AutosizeInput from 'react-input-autosize';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -24,13 +24,12 @@ export const FolderName = styled.button`
   cursor: pointer;
   transition: 0.3s ease color;
   padding: 0;
-  margin: 0;
+  margin: 0 0.25rem 0 0;
   outline: 0;
   border: 0;
   background-color: transparent;
   color: inherit;
 
-  margin-right: 0.25rem;
   &:hover {
     color: white;
   }
@@ -81,17 +80,19 @@ export const Main = styled.div`
 `;
 
 export const TemplateBadge = styled.label`
-  background: ${props => props.theme['activityBarBadge.background']};
-  color: ${props => props.theme['activityBarBadge.foreground']};
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 11px;
-  padding: 0px 8px;
-  border-radius: 2px;
-  margin-left: 1rem;
-  height: 1.5rem;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  cursor: default;
+  ${({ theme }) => css`
+    background: ${theme['activityBarBadge.background']};
+    color: ${theme['activityBarBadge.foreground']};
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    padding: 0 8px;
+    border-radius: 2px;
+    margin-left: 1rem;
+    height: 1.5rem;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    cursor: default;
+  `};
 `;

@@ -1,10 +1,9 @@
-import { AsyncAction, Action } from 'app/overmind';
+import { DiffTab, TabType } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-
-import { chunk } from 'lodash-es';
+import { Action, AsyncAction } from 'app/overmind';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
-import { DiffTab, TabType } from '@codesandbox/common/lib/types';
+import { chunk } from 'lodash-es';
 
 export const recoverFiles: Action = ({ effects, actions, state }) => {
   const sandbox = state.editor.currentSandbox;
@@ -60,7 +59,7 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
 
 export const uploadFiles: AsyncAction<
   {
-    files: any[];
+    files: { [k: string]: { dataURI: string; type: string } };
     directoryShortid: string;
   },
   {

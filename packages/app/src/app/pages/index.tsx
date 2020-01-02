@@ -26,7 +26,9 @@ const SignIn = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
 );
 const Live = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './Live')
+  import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
+    default: module.LivePage,
+  }))
 );
 const ZeitSignIn = Loadable(() =>
   import(/* webpackChunkName: 'page-zeit' */ './ZeitAuth')

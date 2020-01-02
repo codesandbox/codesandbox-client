@@ -18,13 +18,17 @@ const markLastTimeEventSent = () => {
   localStorage.setItem('csb-last-event-sent', Date.now().toString());
 };
 
-const amplitudePromise = async () => {
+const getAmplitude = async (): Promise<any | false> => {
+  if (process.env.NODE_ENV !== 'production') {
+    return false;
+  }
+
   for (let i = 0; i < 10; i++) {
     if (
       typeof global.amplitude !== 'undefined' &&
       global.amplitude.getInstance()._storageSuffix
     ) {
-      return true;
+      return global.amplitude;
     }
 
     // eslint-disable-next-line no-await-in-loop
@@ -35,11 +39,11 @@ const amplitudePromise = async () => {
 };
 
 export const identify = async (key: string, value: any) => {
-  await amplitudePromise();
-  if (typeof global.amplitude !== 'undefined') {
-    const identity = new global.amplitude.Identify();
+  const amplitude = await getAmplitude();
+  if (amplitude) {
+    const identity = new amplitude.Identify();
     identity.set(key, value);
-    global.amplitude.identify(identity);
+    amplitude.identify(identity);
     debug('[Amplitude] Identifying', key, value);
   } else {
     debug('[Amplitude] NOT identifying because Amplitude is not loaded');
@@ -47,29 +51,29 @@ export const identify = async (key: string, value: any) => {
 };
 
 export const setUserId = async (userId: string) => {
-  await amplitudePromise();
-  if (typeof global.amplitude !== 'undefined') {
+  const amplitude = await getAmplitude();
+  if (amplitude) {
     debug('[Amplitude] Setting User ID', userId);
     identify('userId', userId);
 
-    global.amplitude.getInstance().setUserId(userId);
+    amplitude.getInstance().setUserId(userId);
   } else {
     debug('[Amplitude] NOT setting userid because Amplitude is not loaded');
   }
 };
 
 export const resetUserId = async () => {
-  await amplitudePromise();
-  if (typeof global.amplitude !== 'undefined') {
+  const amplitude = await getAmplitude();
+  if (amplitude) {
     debug('[Amplitude] Resetting User ID');
     identify('userId', null);
 
     if (
-      global.amplitude.getInstance().options &&
-      global.amplitude.getInstance().options.userId
+      amplitude.getInstance().options &&
+      amplitude.getInstance().options.userId
     ) {
-      global.amplitude.getInstance().setUserId(null);
-      global.amplitude.getInstance().regenerateDeviceId();
+      amplitude.getInstance().setUserId(null);
+      amplitude.getInstance().regenerateDeviceId();
     }
   } else {
     debug('[Amplitude] NOT resetting user id because Amplitude is not loaded');
@@ -77,17 +81,17 @@ export const resetUserId = async () => {
 };
 
 export const track = async (eventName: string, data: any) => {
-  await amplitudePromise();
-  if (typeof global.amplitude !== 'undefined') {
+  const amplitude = await getAmplitude();
+  if (amplitude) {
     const currentTime = Date.now();
     if (currentTime - getLastTimeEventSent() > NEW_SESSION_TIME) {
       // We send a separate New Session event if people have been inactive for a while
-      global.amplitude.logEvent('New Session');
+      amplitude.logEvent('New Session');
     }
     markLastTimeEventSent();
 
     debug('[Amplitude] Tracking', eventName, data);
-    global.amplitude.logEvent(eventName, data);
+    amplitude.logEvent(eventName, data);
   } else {
     debug(
       '[Amplitude] NOT tracking because Amplitude is not loaded',

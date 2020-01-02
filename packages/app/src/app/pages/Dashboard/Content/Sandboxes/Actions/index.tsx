@@ -9,10 +9,10 @@ export interface IAction {
 }
 
 interface Props {
-  actions: IAction[];
+  actions?: IAction[];
 }
 
-export function DashboardActions({ actions }: Props) {
+export function DashboardActions({ actions = [] }: Props) {
   return (
     <Container>
       {actions.map(action => (

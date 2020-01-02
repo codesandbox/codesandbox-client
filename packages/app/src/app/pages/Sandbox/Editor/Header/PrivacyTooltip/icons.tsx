@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
-export const Public = () => (
+export const Public: FunctionComponent = () => (
   <svg
     width="10"
     height="10"
@@ -15,7 +15,7 @@ export const Public = () => (
   </svg>
 );
 
-export const Unlisted = () => (
+export const Unlisted: FunctionComponent = () => (
   <svg
     width="12"
     height="12"
@@ -30,7 +30,7 @@ export const Unlisted = () => (
   </svg>
 );
 
-export const Private = () => (
+export const Private: FunctionComponent = () => (
   <svg
     width="9"
     height="14"

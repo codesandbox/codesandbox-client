@@ -111,11 +111,6 @@ export const onModuleSaved: Operator<LiveMessage<{
   );
   module.isNotSynced = false;
 
-  state.editor.changedModuleShortids.splice(
-    state.editor.changedModuleShortids.indexOf(module.shortid),
-    1
-  );
-
   actions.editor.internal.setModuleSavedCode({
     moduleShortid: data.moduleShortid,
     savedCode: data.module.savedCode,

@@ -1,26 +1,27 @@
 import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
-import { Module, Directory } from '@codesandbox/common/lib/types';
+import { Directory, Module } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import * as React from 'react';
-import DirectoryEntry from '..';
+
 import ModuleEntry from './ModuleEntry';
+import DirectoryEntry from '..';
 
 interface IDirectoryChildrenProps {
-  depth: number;
-  renameModule: (title: string, moduleShortid: string) => void;
-  setCurrentModule: (id: string) => void;
-  parentShortid: string;
-  deleteEntry: (shortid: string, title: string) => void;
-  isInProjectView: boolean;
-  markTabsNotDirty: () => void;
-  discardModuleChanges: (shortid: string) => void;
-  getModulePath: (
+  depth?: number;
+  renameModule?: (title: string, moduleShortid: string) => void;
+  setCurrentModule?: (id: string) => void;
+  parentShortid?: string;
+  deleteEntry?: (shortid: string, title: string) => void;
+  isInProjectView?: boolean;
+  markTabsNotDirty?: () => void;
+  discardModuleChanges?: (shortid: string, title: string) => void;
+  getModulePath?: (
     modules: Module[],
     directories: Directory[],
     id: string
   ) => string;
-  renameValidator: (id: string, title: string) => string | false | null;
+  renameValidator?: (id: string, title: string) => string | false | null;
 }
 
 const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
