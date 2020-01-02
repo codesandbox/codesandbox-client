@@ -60,6 +60,7 @@ export default function initialize() {
             config: {
               plugins: [
                 '@babel/plugin-transform-react-jsx-source',
+                '@babel/plugin-proposal-optional-chaining',
                 'transform-flow-strip-types',
                 'transform-destructuring',
                 'babel-plugin-macros',
