@@ -414,7 +414,11 @@ class BasePreview extends React.Component<Props, State> {
     const { settings } = this.props;
     const { sandbox } = this.props;
 
-    if (settings.clearConsoleEnabled && !this.serverPreview) {
+    if (
+      process.env.NODE_ENV !== 'development' &&
+      settings.clearConsoleEnabled &&
+      !this.serverPreview
+    ) {
       // @ts-ignore Chrome behaviour
       console.clear('__internal__'); // eslint-disable-line no-console
       dispatch({ type: 'clear-console' });
