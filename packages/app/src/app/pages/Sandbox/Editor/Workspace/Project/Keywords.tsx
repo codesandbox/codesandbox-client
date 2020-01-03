@@ -1,10 +1,9 @@
-import React, { FunctionComponent } from 'react';
 import Tags from '@codesandbox/common/lib/components/Tags';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-
-import { clone } from 'app/componentConnectors';
 import { EditableTags } from 'app/components/EditableTags';
 import { useOvermind } from 'app/overmind';
+import { json } from 'overmind';
+import React, { FunctionComponent } from 'react';
 
 import { Item } from './elements';
 
@@ -46,7 +45,7 @@ export const Keywords: FunctionComponent<Props> = ({ editable }) => {
             tags.length !== 5 ? <input type="text" {...props} /> : null
           }
           template={getTemplateDefinition(template)}
-          value={clone(tags)}
+          value={json(tags)}
         />
       ) : (
         <Tags style={{ fontSize: 13 }} tags={tags} />
