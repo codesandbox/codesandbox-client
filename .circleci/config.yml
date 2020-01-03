@@ -13,6 +13,7 @@ aliases:
     paths:
       - packages/codesandbox-api/dist
       - packages/common/lib
+      - packages/components/lib
       - packages/deps/dist
       - packages/executors/dist
       - packages/node-services/lib
@@ -36,6 +37,7 @@ aliases:
       - packages/app/node_modules
       - packages/chrome-extension/node_modules
       - packages/codesandbox-api/node_modules
+      - packages/components/node_modules
       - packages/common/node_modules
       - packages/dynamic-pages/node_modules
       - packages/deps/node_modules
@@ -194,6 +196,8 @@ commands:
             ./packages/app/integration-tests/BrowserStackLocal --key
             $BROWSER_STACK_KEY || true'
           background: true
+      - run:
+          command: npm run chromatic
       - run:
           name: Test Integrations
           command: |
