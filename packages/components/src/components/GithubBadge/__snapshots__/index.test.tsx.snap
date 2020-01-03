@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`<GithubBadge /> rendering master 1`] = `ReactWrapper {}`;
-
-exports[`<GithubBadge /> rendering other branch 1`] = `ReactWrapper {}`;

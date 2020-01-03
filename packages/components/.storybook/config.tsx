@@ -4,12 +4,9 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withA11y } from '@storybook/addon-a11y';
 import { addDecorator, addParameters, configure } from '@storybook/react';
 import { themes } from '@storybook/theming';
-
 import { ThemeDecorator } from '../src/stories/decorators';
-
 import { createGlobalStyle } from 'styled-components';
-
-import global from '../src/global.css';
+import global from '@codesandbox/common/lib/global.css';
 
 const viewports = {
   mobile: {
