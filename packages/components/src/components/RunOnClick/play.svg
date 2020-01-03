@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29px" height="32px" viewBox="0 0 29 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: #FFD498;">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Artboard</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard">
+            <g id="Layer_2" transform="translate(2.000000, 2.000000)">
+                <polygon id="Shape" stroke="#FFFFFF" stroke-width="3" fill="#6BAFDD" points="0 21.0228944 12.4555325 27.9766451 24.9163677 20.9996075 24.9163677 7.01712217 12.4581839 0 0 7.04817138"></polygon>
+                <path d="M9.17647059,10.5086837 C9.17647059,9.40231159 9.95693847,8.95078053 10.9089803,9.49404703 L17.3902406,13.1924682 C18.3470793,13.738472 18.3422824,14.6264562 17.3902406,15.1697227 L10.9089803,18.8681439 C9.9521416,19.4141476 9.17647059,18.9660496 9.17647059,17.8535072 L9.17647059,10.5086837 Z" id="Rectangle-2" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

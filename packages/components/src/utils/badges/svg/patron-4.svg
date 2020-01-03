@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="301px" height="275px" viewBox="0 0 301 275" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 45.2 (43514) - http://www.bohemiancoding.com/sketch -->
+    <title>patron-4</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Stage-4" transform="translate(0.000000, -1.000000)" fill-rule="nonzero">
+            <g id="Laag_4">
+                <polygon id="Shape" fill="#72B8EA" points="120.754 50.941 101.953 36.782 150 0.97 150 29.289"></polygon>
+                <polygon id="Shape" fill="#6CAEDD" points="198.047 36.699 179.279 50.941 179.631 224.758 198.625 239.088"></polygon>
+                <polygon id="Shape" fill="#6CAEDD" points="120.402 224.758 101.375 239.088 150 275.331 149.85 246.56"></polygon>
+                <polygon id="Shape" fill="#609AC3" points="179.631 224.758 149.85 246.56 150 275.331 198.625 239.088"></polygon>
+                <polygon id="Shape" fill="#72B8EA" opacity="0.9" points="150 0.97 198.047 36.699 179.279 50.941 150 29.289"></polygon>
+                <polygon id="Shape" fill="#609AC3" points="101.953 36.782 120.754 50.941 120.402 224.758 101.375 239.088"></polygon>
+                <polyline id="Shape" fill="#609AC3" opacity="0.9" points="120.754 50.941 150 29.289 179.279 50.941 179.631 224.758 149.85 246.56 120.402 224.758"></polyline>
+                <polygon id="Shape" fill="#FFFFFF" opacity="0.5" points="166.51 41.498 176.166 48.64 194.355 33.935 184.763 26.821"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" opacity="0.5" points="161.245 37.647 165.13 40.52 183.485 25.895 179.769 23.162"></polygon>
+                <polygon id="Shape" fill="#FFFFFF" opacity="0.5" points="179.279 59.039 198 44.875 198 50 179.305 63.96"></polygon>
+                <polygon id="Shape" fill="#E3BE7B" opacity="0.9" points="182 120.065 214 96.38 246 120.065 246 167.435 214 191.12 182 167.435"></polygon>
+                <polygon id="Shape" fill="#FDD389" points="182.314 120.065 161.945 104.576 214 65.402 214 96.38"></polygon>
+                <polygon id="Shape" fill="#E3BE7B" points="266 104.486 246 120.065 246 167.435 266 182.924"></polygon>
+                <polygon id="Shape" fill="#BD9E66" points="182.314 167.435 161.945 182.924 214 222.098 213.839 191"></polygon>
+                <polygon id="Shape" fill="#BD9E66" opacity="0.9" points="246 167.435 213.839 191 214 222.098 266.055 182.924"></polygon>
+                <polygon id="Shape" fill="#FDD389" opacity="0.9" points="214 65.402 266.055 104.486 246 120.065 214 96.38"></polygon>
+                <polygon id="Shape" fill="#1DC47F" points="162 104.486 182 120.065 182 167.435 162 182.924"></polygon>
+                <polygon id="Shape" fill="#C54040" opacity="0.9" points="54 120.065 86 96.38 118 120.065 118 167.435 86 191.12 54 167.435"></polygon>
+                <polygon id="Shape" fill="#E56868" opacity="0.9" points="54 120.065 33.945 104.576 86 65.402 86 96.38"></polygon>
+                <polygon id="Shape" fill="#6ED69A" points="138 104.486 118 120.065 118 167.435 138 182.924"></polygon>
+                <polygon id="Shape" fill="#BE3535" opacity="0.9" points="54.314 167.435 33.945 182.924 86 222.098 85.839 191"></polygon>
+                <polygon id="Shape" fill="#BE3535" points="117.721 167.435 85.839 191 86 222.098 138.055 182.924"></polygon>
+                <polygon id="Shape" fill="#E56868" points="86 65.402 138.055 104.486 117.721 120.065 86 96.38"></polygon>
+                <polygon id="Shape" fill="#C54040" points="34 104.486 54 120.065 54 167.435 34 182.924"></polygon>
+                <path d="M229.786,157.803 C230.431,158.671 229.689,160.314 228.129,161.474 L192.818,187.718 C191.258,188.878 189.47,189.114 188.826,188.247 L187.95,187.069 C187.305,186.201 188.047,184.558 189.607,183.398 L224.918,157.154 C226.478,155.994 228.266,155.758 228.91,156.625 L229.786,157.803 Z" id="Shape" fill="#FCF7DE"></path>
+                <polygon id="Shape" fill="#FCF7DE" points="223.094 103.111 233.612 110.896 253.355 94.935 243.25 87.42"></polygon>
+                <polygon id="Shape" fill="#FCF7DE" points="236.416 112.869 241.226 116.429 261.355 100.935 256.695 97.458"></polygon>
+                <polygon id="Shape" fill="#FCF7DE" points="246 128.25 266 112.875 266 118 246 133.188"></polygon>
+                <polygon id="Shape" fill="#FCF7DE" points="246 167.435 246 155.435 214 179.12 214 191.12"></polygon>
+                <polygon id="Shape" fill="#1BB978" points="111 116.159 150 87.318 189 116.159 189 173.841 150 202.682 111 173.841"></polygon>
+                <path d="M207.143,154.629 C208.853,156.93 207.74,160.652 204.657,162.944 L134.879,214.805 C131.796,217.096 127.911,217.089 126.201,214.788 L123.879,211.664 C122.169,209.363 123.282,205.641 126.365,203.349 L196.143,151.488 C199.226,149.197 203.111,149.204 204.821,151.505 L207.143,154.629 Z" id="Shape" fill="#DBFFDD"></path>
+                <path d="M201.626,134.624 C202.517,135.823 200.74,138.652 197.657,140.943 L127.879,192.804 C124.796,195.095 121.575,195.981 120.684,194.783 L119.474,193.155 C118.583,191.956 120.36,189.127 123.443,186.836 L193.221,134.975 C196.304,132.684 199.525,131.798 200.416,132.996 L201.626,134.624 Z" id="Shape" fill="#DBFFDD"></path>
+                <path d="M145.786,115.803 C146.431,116.671 145.689,118.314 144.129,119.474 L108.818,145.718 C107.258,146.878 105.47,147.114 104.826,146.247 L103.95,145.069 C103.305,144.201 104.047,142.558 105.607,141.398 L140.918,115.154 C142.478,113.994 144.266,113.758 144.91,114.625 L145.786,115.803 Z" id="Shape" fill="#DBFFDD"></path>
+                <polygon id="Shape" fill="#6ED69A" points="111.043 116.159 86 97.298 150 49.596 150 87.318"></polygon>
+                <polygon id="Shape" fill="#6ED69A" points="214 97.188 189 116.159 189 173.841 214 192.702"></polygon>
+                <polygon id="Shape" fill="#1BB978" points="111.043 173.841 86 192.702 150 240.404 149.802 202.536"></polygon>
+                <polygon id="Shape" fill="#1DC47F" points="189 173.841 149.802 202.536 150 240.404 214 192.702"></polygon>
+                <polygon id="Shape" fill="#B9F4BC" points="150 49.596 214 97.188 189 116.159 150 87.318"></polygon>
+                <polygon id="Shape" fill="#1DC47F" points="86 97.188 111 116.159 111 173.841 86 192.702"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="172.931 104.237 183.457 112.022 208.355 92.935 198.25 85.42"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="163.931 97.237 168.457 101.022 193.355 81.935 188.761 78.42"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="189 125.25 214 105.875 214 111 189 130.188"></polygon>
+                <polygon id="Shape" fill="#1DC47F" points="12.202 145.017 29.059 162.021 58.62 145.017 29.083 128.207"></polygon>
+                <polygon id="Shape" fill="#6ED69A" points="27.206 118.293 29.083 128.194 12.218 145 0.443 145"></polygon>
+                <polygon id="Shape" fill="#1BB978" points="29.059 162.012 27.171 171.952 0.443 145 12.202 145"></polygon>
+                <polygon id="Shape" fill="#6ED69A" points="58.62 145 74.093 145 27.171 171.956 29.059 162.008"></polygon>
+                <polygon id="Shape" fill="#B9F4BC" points="29.083 128.198 58.62 145 74.093 145 27.206 118.288"></polygon>
+                <polygon id="Shape" fill="#1DC47F" points="288.333 145.017 271.476 162.021 241.916 145.017 271.453 128.207"></polygon>
+                <path d="M276.043,143.996 C276.601,144.592 276.571,145.528 275.975,146.086 L262.077,159.104 C261.481,159.662 260.545,159.632 259.987,159.036 L259.958,159.005 C259.4,158.409 259.43,157.473 260.026,156.915 L273.924,143.897 C274.52,143.339 275.456,143.369 276.014,143.965 L276.043,143.996 Z" id="Shape" fill="#DBFFDD"></path>
+                <polygon id="Shape" fill="#B9F4BC" points="273.33 118.293 271.453 128.194 288.317 145 300.093 145"></polygon>
+                <polygon id="Shape" fill="#6ED69A" points="271.476 162.012 273.365 171.952 300.093 145 288.333 145"></polygon>
+                <polygon id="Shape" fill="#1BB978" points="241.916 145 226.443 145 273.365 171.956 271.476 162.008"></polygon>
+                <polygon id="Shape" fill="#6ED69A" points="271.453 128.198 241.916 145 226.443 145 273.33 118.288"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="266.298 159.033 284.483 141.183 288.333 145.017 271.476 162.021"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="277.292 133.989 283.349 128.276 281.065 125.997 275.094 131.844"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="280.292 136.989 286.349 131.276 285.063 129.993 278.845 135.577"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="39.091 133.873 45.542 128.723 43.185 127.38 36.779 132.558"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="36.085 132.163 42.422 126.957 41.161 126.227 35.091 131.598"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

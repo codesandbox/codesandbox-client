@@ -1,0 +1,104 @@
+html,
+body {
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: auto;
+  -moz-font-smoothing: auto;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: auto;
+  text-rendering: optimizeLegibility;
+  font-smooth: always;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+  height: 100%;
+  background: #1c2022;
+  color: #cccccc;
+  font-size: 16px !important;
+
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+input {
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-smooth: always;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+input:focus {
+  outline: -webkit-focus-ring-color auto 0px;
+  outline-offset: 0;
+}
+
+#root {
+}
+
+a {
+  color: #40a9f3;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  transition: 0.3s ease all;
+  border-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
+  z-index: 40;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  transition: 0.3s ease all;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.react-console::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.react-console::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/**
+* The React DevTools has a file called root.css with the rule
+*
+*  * {
+*   box-sizing: content-box;
+*   -webkit-font-smoothing: antialiased;
+*  }
+*
+* which changes the styles in all CodeSandbox elements. This is our current
+* hack to fix it, we have a bit more specificity so we get our stylings back until
+* the issue has been fixed.
+**/
+body * {
+  box-sizing: initial;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* For the vscode editor we want the code to not be anti-aliased on non-retina,
+   this looks much nicer. UI on dark screens should still be anti-aliased.
+*/
+body #vscode-editor * {
+  -webkit-font-smoothing: auto;
+}
+
+/* On Retina the pixel density is so high that we can do anti-aliasing instead of 
+  subpixel anti-aliasing and it will look more beautiful (star)
+
+  Disabled now because other is more beautiful
+*/
+/* @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body #vscode-editor * {
+    -webkit-font-smoothing: antialiased;
+  }
+} */

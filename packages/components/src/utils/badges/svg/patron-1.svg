@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="301px" height="275px" viewBox="0 0 301 275" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 45.2 (43514) - http://www.bohemiancoding.com/sketch -->
+    <title>patron-1</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Stage1" fill-rule="nonzero">
+            <g id="Rupee__x28_Stage_1_x29_" transform="translate(86.000000, 41.000000)">
+                <polygon id="Shape" fill="#1BB978" points="25 67.159 64 38.318 103 67.159 103 124.841 64 153.682 25 124.841"></polygon>
+                <path d="M121.143,105.629 C122.853,107.93 121.74,111.652 118.657,113.944 L48.879,165.805 C45.796,168.096 41.911,168.089 40.201,165.788 L37.879,162.664 C36.169,160.363 37.282,156.641 40.365,154.349 L110.143,102.488 C113.226,100.197 117.111,100.204 118.821,102.505 L121.143,105.629 Z" id="Shape" fill="#DBFFDD"></path>
+                <path d="M115.626,85.624 C116.517,86.823 114.74,89.652 111.657,91.943 L41.879,143.804 C38.796,146.095 35.575,146.981 34.684,145.783 L33.474,144.155 C32.583,142.956 34.36,140.127 37.443,137.836 L107.221,85.975 C110.304,83.684 113.525,82.798 114.416,83.996 L115.626,85.624 Z" id="Shape" fill="#DBFFDD"></path>
+                <path d="M59.786,66.803 C60.431,67.671 59.689,69.314 58.129,70.474 L22.818,96.718 C21.258,97.878 19.47,98.114 18.826,97.247 L17.95,96.069 C17.305,95.201 18.047,93.558 19.607,92.398 L54.918,66.154 C56.478,64.994 58.266,64.758 58.91,65.625 L59.786,66.803 Z" id="Shape" fill="#DBFFDD"></path>
+                <polygon id="Shape" fill="#6ED69A" points="25.043 67.159 0 48.298 64 0.596 64 38.318"></polygon>
+                <polygon id="Shape" fill="#6ED69A" points="128 48.188 103 67.159 103 124.841 128 143.702"></polygon>
+                <polygon id="Shape" fill="#1BB978" points="25.043 124.841 0 143.702 64 191.404 63.802 153.536"></polygon>
+                <polygon id="Shape" fill="#1DC47F" points="103 124.841 63.802 153.536 64 191.404 128 143.702"></polygon>
+                <polygon id="Shape" fill="#B9F4BC" points="64 0.596 128 48.188 103 67.159 64 38.318"></polygon>
+                <polygon id="Shape" fill="#1DC47F" points="0 48.188 25 67.159 25 124.841 0 143.702"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="86.931 55.237 97.457 63.022 122.355 43.935 112.25 36.42"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="77.931 48.237 82.457 52.022 107.355 32.935 102.761 29.42"></polygon>
+                <polygon id="Shape" fill="#DBFFDD" points="103 76.25 128 56.875 128 62 103 81.188"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

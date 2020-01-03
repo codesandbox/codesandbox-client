@@ -1,0 +1,21 @@
+{
+  "exclude": [
+    "node_modules",
+    "./**/*.test.ts",
+    "./**/*.test.tsx",
+    "./**/*.stories.tsx",
+    "lib/"
+  ],
+  "include": ["./src/**/*"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES6",
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "lib": ["es2015", "dom"],
+    "outDir": "lib",
+    "declaration": true,
+    "allowJs": false,
+    "esModuleInterop": true
+  }
+}
