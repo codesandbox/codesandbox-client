@@ -1,30 +1,28 @@
-import React from 'react';
-import Helmet from 'react-helmet';
-import { Query, Mutation } from 'react-apollo';
-import { Observer } from 'app/componentConnectors';
-import { sortBy } from 'lodash-es';
-
-import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
-import { Button } from '@codesandbox/common/lib/components/Button';
 import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { Observer } from 'app/overmind';
+import { sortBy } from 'lodash-es';
+import React from 'react';
+import { Mutation, Query } from 'react-apollo';
+import Helmet from 'react-helmet';
 
-import { Container, HeaderContainer, Description } from '../../elements';
 import {
-  TeamContainer,
-  Section,
-  Members,
-  MemberHeader,
-  StyledEditIcon,
-} from './elements';
-import {
-  TEAM_QUERY,
   REVOKE_TEAM_INVITATION,
   SET_TEAM_DESCRIPTION,
+  TEAM_QUERY,
 } from '../../../queries';
-
+import { Container, Description, HeaderContainer } from '../../elements';
 import { AddTeamMember } from './AddTeamMember';
+import {
+  MemberHeader,
+  Members,
+  Section,
+  StyledEditIcon,
+  TeamContainer,
+} from './elements';
 import { RemoveTeamMember } from './RemoveTeamMember';
 
 const User = ({ user, rightElement }) => (
@@ -64,8 +62,8 @@ class TeamView extends React.PureComponent {
         <Query query={TEAM_QUERY} variables={{ id: teamId }}>
           {({ data, loading, error }) => (
             <Observer>
-              {({ store }) => {
-                const currentUser = store.user;
+              {({ state }) => {
+                const currentUser = state.user;
                 if (loading || error) {
                   return null;
                 }
@@ -163,8 +161,8 @@ class TeamView extends React.PureComponent {
 
                             <StyledEditIcon
                               onClick={() => {
-                                this.setState(state => ({
-                                  editingDescription: !state.editingDescription,
+                                this.setState(currentState => ({
+                                  editingDescription: !currentState.editingDescription,
                                 }));
                               }}
                             />
