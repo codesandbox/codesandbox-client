@@ -20,7 +20,7 @@ const colors = {
     border: tokens.grays[600],
   },
   activityBarBadge: {
-    background: tokens.reds[500],
+    background: tokens.grays[500],
   },
   button: {
     background: tokens.blues[600],
