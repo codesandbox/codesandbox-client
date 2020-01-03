@@ -80,7 +80,7 @@ export const Input = styled.input(
   css({
     backgroundColor: 'grays.700',
     border: '1px solid',
-    borderColor: 'grays.500',
+    borderColor: 'grays.600',
     boxSizing: 'border-box',
     color: 'white',
 
@@ -167,7 +167,7 @@ export const CardContainer = styled.div(
     '.StripeElement': {
       backgroundColor: 'grays.700',
       border: '1px solid',
-      borderColor: 'grays.500',
+      borderColor: 'grays.600',
       padding: 2,
       boxSizing: 'border-box',
       borderRadius: 'medium',
@@ -212,7 +212,7 @@ export const SignInModal = styled.div(
     boxSizing: 'border-box',
     top: 'calc(50% - 150px)',
     left: 'calc(50% - 200px)',
-    backgroundColor: 'grays.500',
+    backgroundColor: 'grays.600',
     borderRadius: 'medium',
     padding: 10,
     textAlign: 'center',
@@ -249,7 +249,7 @@ export const Avatar = styled.img(
     width: 100,
     height: 100,
     border: '1px solid',
-    borderColor: 'grays.500',
+    borderColor: 'grays.600',
     borderRadius: 'medium',
   })
 );
@@ -272,7 +272,7 @@ export const Badge = styled.span<{ type: string }>(props =>
     top: -20,
     right: props.type === 'pro' ? -40 : -30,
     border: '1px solid',
-    borderColor: 'grays.500',
+    borderColor: 'grays.600',
     borderRadius: 'medium',
   })
 );
