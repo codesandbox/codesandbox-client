@@ -21,7 +21,6 @@
     "start": "(yarn tsc --watch & yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib --watch)",
     "start:storybook": "start-storybook",
     "typecheck": "tsc --noEmit",
-    "prepush": "npm run chromatic",
     "chromatic": "CHROMATIC_APP_CODE=nffds42ndde chromatic --build-script-name=build:storybook"
   },
   "dependencies": {
