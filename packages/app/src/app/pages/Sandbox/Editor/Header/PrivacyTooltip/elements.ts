@@ -20,7 +20,7 @@ export const Container = styled(Element)(
   css({
     '.tippy-content': {
       width: '200px',
-      backgroundColor: 'grays.601',
+      backgroundColor: 'grays.600',
       border: '1px solid',
       borderColor: 'grays.500',
       padding: 4,

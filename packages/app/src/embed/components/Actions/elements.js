@@ -35,7 +35,7 @@ export const Button = styled.button(
     fontSize: 3,
     fontWeight: 'medium',
     border: '1px solid',
-    borderColor: 'grays.601',
+    borderColor: 'grays.600',
     color: 'white',
     backgroundColor: 'grays.700',
     borderRadius: 4,
@@ -43,7 +43,7 @@ export const Button = styled.button(
     cursor: 'pointer',
 
     ':hover': {
-      backgroundColor: 'grays.601',
+      backgroundColor: 'grays.600',
     },
   })
 );

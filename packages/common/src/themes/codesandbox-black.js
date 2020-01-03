@@ -10,14 +10,14 @@ import { colors as tokens } from '../design-language/colors';
 */
 
 const colors = {
-  contrastBorder: tokens.grays[601],
+  contrastBorder: tokens.grays[600],
   contrastActiveBorder: null,
   errorForeground: tokens.reds[500],
-  focusBorder: tokens.grays[601],
+  focusBorder: tokens.grays[600],
   foreground: tokens.grays[300],
   activityBar: {
     background: tokens.grays[700],
-    border: tokens.grays[601],
+    border: tokens.grays[600],
   },
   activityBarBadge: {
     background: tokens.reds[500],
@@ -30,7 +30,7 @@ const colors = {
   },
   dropdown: {
     background: tokens.grays[700],
-    border: tokens.grays[601],
+    border: tokens.grays[600],
     foreground: tokens.white,
   },
   editor: {
@@ -38,38 +38,38 @@ const colors = {
     foreground: tokens.grays[300],
     hoverHighlightBackground: tokens.grays[500],
     inactiveSelectionBackground: tokens.grays[500],
-    lineHighlightBackground: tokens.grays[601],
-    lineHighlightBorder: tokens.grays[601],
-    rangeHighlightBackground: tokens.grays[601],
-    selectionBackground: tokens.grays[601],
-    selectionHighlightBackground: tokens.grays[601],
-    wordHighlightStrongBackground: tokens.grays[601],
-    wordHighlightBackground: tokens.grays[601],
+    lineHighlightBackground: tokens.grays[600],
+    lineHighlightBorder: tokens.grays[600],
+    rangeHighlightBackground: tokens.grays[600],
+    selectionBackground: tokens.grays[600],
+    selectionHighlightBackground: tokens.grays[600],
+    wordHighlightStrongBackground: tokens.grays[600],
+    wordHighlightBackground: tokens.grays[600],
   },
   editorBracketMatch: {
-    background: tokens.grays[601],
-    border: tokens.grays[601],
+    background: tokens.grays[600],
+    border: tokens.grays[600],
   },
   editorCodeLens: {
-    foreground: tokens.grays[601],
+    foreground: tokens.grays[600],
   },
   editorCursor: {
     background: tokens.grays[700],
     foreground: tokens.white,
   },
   editorError: {
-    border: tokens.grays[601],
+    border: tokens.grays[600],
     foreground: tokens.reds[500],
   },
   editorGroup: {
     background: tokens.grays[700],
-    border: tokens.grays[601],
+    border: tokens.grays[600],
     dropBackground: tokens.grays[700],
   },
   editorGroupHeader: {
     noTabsBackground: null,
     tabsBackground: tokens.grays[700],
-    tabsBorder: tokens.grays[601],
+    tabsBorder: tokens.grays[600],
   },
   editorGutter: {
     background: tokens.grays[700],
@@ -78,7 +78,7 @@ const colors = {
   },
   editorHoverWidget: {
     background: tokens.grays[700],
-    border: tokens.grays[601],
+    border: tokens.grays[600],
   },
   editorIndentGuide: {
     background: tokens.grays[700],
@@ -87,7 +87,7 @@ const colors = {
     activeForeground: tokens.grays[300],
   },
   editorLineNumber: {
-    foreground: tokens.grays[601],
+    foreground: tokens.grays[600],
     activeForeground: tokens.grays[400],
   },
   editorRuler: {
@@ -97,25 +97,25 @@ const colors = {
     background: tokens.grays[700],
   },
   editorMarkerNavigationWarning: {
-    background: tokens.grays[601],
+    background: tokens.grays[600],
   },
   editorMarkerNavigationError: {
     background: tokens.grays[700],
   },
   editorOverviewRuler: {
-    border: tokens.grays[601],
-    commonContentForeground: tokens.grays[601],
+    border: tokens.grays[600],
+    commonContentForeground: tokens.grays[600],
     currentContentForeground: tokens.reds[500],
     incomingContentForeground: tokens.green,
   },
   editorSuggestWidget: {
     background: tokens.grays[700],
-    border: tokens.grays[601],
+    border: tokens.grays[600],
     foreground: tokens.grays[300],
-    selectedBackground: tokens.grays[601],
+    selectedBackground: tokens.grays[600],
   },
   editorWarning: {
-    border: tokens.grays[601],
+    border: tokens.grays[600],
     foreground: tokens.reds[300],
   },
   editorWhitespace: {
@@ -123,15 +123,15 @@ const colors = {
   },
   editorWidget: {
     background: tokens.grays[700],
-    border: tokens.grays[601],
+    border: tokens.grays[600],
   },
   extensionButton: {
-    prominentBackground: tokens.grays[601],
+    prominentBackground: tokens.grays[600],
     prominentForeground: tokens.white,
-    prominentHoverBackground: tokens.grays[601],
+    prominentHoverBackground: tokens.grays[600],
   },
   input: {
-    background: tokens.grays[601],
+    background: tokens.grays[600],
     foreground: tokens.white,
     border: tokens.grays[900],
     placeholderForeground: tokens.grays[300],
@@ -153,11 +153,11 @@ const colors = {
   list: {
     dropBackground: tokens.grays[700],
     highlightForeground: tokens.blues[300],
-    hoverBackground: tokens.grays[601],
-    focusBackground: tokens.grays[601],
-    activeSelectionBackground: tokens.grays[601],
+    hoverBackground: tokens.grays[600],
+    focusBackground: tokens.grays[600],
+    activeSelectionBackground: tokens.grays[600],
     activeSelectionForeground: tokens.white,
-    inactiveSelectionBackground: tokens.grays[601],
+    inactiveSelectionBackground: tokens.grays[600],
     inactiveSelectionForeground: tokens.white,
     warningForeground: tokens.yellow,
     errorForeground: tokens.reds[500],
@@ -166,28 +166,28 @@ const colors = {
   },
   menu: {
     background: tokens.grays[700],
-    selectionBackground: tokens.grays[601],
+    selectionBackground: tokens.grays[600],
   },
   peekView: {
     border: tokens.grays[500],
   },
   peekViewEditor: {
-    background: tokens.grays[601],
+    background: tokens.grays[600],
     matchHighlightBackground: tokens.blues[300],
   },
   peekViewEditorGutter: {
     background: null,
   },
   peekViewResult: {
-    background: tokens.grays[601],
+    background: tokens.grays[600],
     fileForeground: tokens.white,
     lineForeground: tokens.white,
     matchHighlightBackground: tokens.blues[300],
-    selectionBackground: tokens.grays[601],
+    selectionBackground: tokens.grays[600],
     selectionForeground: tokens.white,
   },
   peekViewTitle: {
-    background: tokens.grays[601],
+    background: tokens.grays[600],
   },
   peekViewTitleDescription: {
     foreground: tokens.blues[700],
@@ -197,7 +197,7 @@ const colors = {
   },
   scrollbarSlider: {
     activeBackground: tokens.white,
-    border: tokens.grays[601],
+    border: tokens.grays[600],
     background: null,
     hoverBackground: null,
   },
@@ -207,25 +207,25 @@ const colors = {
   sideBar: {
     background: tokens.grays[700],
     hoverBackground: tokens.green,
-    border: tokens.grays[601],
+    border: tokens.grays[600],
     foreground: tokens.grays[300],
   },
   sideBarSectionHeader: {
     background: tokens.grays[700],
     foreground: tokens.white,
-    border: tokens.grays[601],
+    border: tokens.grays[600],
   },
   sideBarTitle: {
     foreground: tokens.white,
   },
   statusBar: {
-    background: tokens.grays[601],
+    background: tokens.grays[600],
     foreground: tokens.white,
     debuggingBackground: tokens.reds[500],
-    debuggingForeground: tokens.grays[601],
-    noFolderBackground: tokens.grays[601],
+    debuggingForeground: tokens.grays[600],
+    noFolderBackground: tokens.grays[600],
     noFolderForeground: tokens.white,
-    border: tokens.grays[601],
+    border: tokens.grays[600],
   },
   statusBarItem: {
     activeBackground: null,
@@ -238,7 +238,7 @@ const colors = {
   tab: {
     activeBackground: tokens.grays[700],
     activeForeground: tokens.white,
-    border: tokens.grays[601],
+    border: tokens.grays[600],
     activeBorder: tokens.blues[300],
     unfocusedActiveBorder: null,
     inactiveBackground: tokens.grays[700],
@@ -253,7 +253,7 @@ const colors = {
     ansiBrightRed: tokens.reds[500],
     ansiBrightGreen: tokens.green,
     ansiBrightYellow: tokens.yellow,
-    ansiBlack: tokens.grays[601],
+    ansiBlack: tokens.grays[600],
     ansiRed: tokens.reds[500],
     ansiGreen: tokens.green,
     ansiYellow: tokens.yellow,
@@ -266,7 +266,7 @@ const colors = {
     background: tokens.grays[700],
     activeBackground: tokens.grays[700],
     activeForeground: tokens.white,
-    border: tokens.grays[601],
+    border: tokens.grays[600],
     inactiveBackground: tokens.grays[700],
     inactiveForeground: tokens.grays[300],
   },
