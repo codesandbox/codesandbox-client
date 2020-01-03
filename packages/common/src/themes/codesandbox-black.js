@@ -36,8 +36,8 @@ const colors = {
   editor: {
     background: tokens.grays[700],
     foreground: tokens.grays[300],
-    hoverHighlightBackground: tokens.grays[600],
-    inactiveSelectionBackground: tokens.grays[600],
+    hoverHighlightBackground: tokens.grays[500],
+    inactiveSelectionBackground: tokens.grays[500],
     lineHighlightBackground: tokens.grays[601],
     lineHighlightBorder: tokens.grays[601],
     rangeHighlightBackground: tokens.grays[601],
@@ -119,7 +119,7 @@ const colors = {
     foreground: tokens.reds[300],
   },
   editorWhitespace: {
-    foreground: tokens.grays[600],
+    foreground: tokens.grays[500],
   },
   editorWidget: {
     background: tokens.grays[700],
@@ -169,7 +169,7 @@ const colors = {
     selectionBackground: tokens.grays[601],
   },
   peekView: {
-    border: tokens.grays[600],
+    border: tokens.grays[500],
   },
   peekViewEditor: {
     background: tokens.grays[601],
