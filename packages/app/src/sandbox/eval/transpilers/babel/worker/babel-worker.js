@@ -623,7 +623,6 @@ self.addEventListener('message', async event => {
       Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
     }
 
-    console.log(flattenedPlugins);
     if (
       (flattenedPlugins.indexOf('proposal-optional-chaining') > -1 ||
         flattenedPlugins.indexOf('@babel/plugin-proposal-optional-chaining') >

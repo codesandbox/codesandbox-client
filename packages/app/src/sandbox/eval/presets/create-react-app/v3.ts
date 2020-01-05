@@ -1,3 +1,5 @@
+import _debug from '@codesandbox/common/lib/utils/debug';
+
 import Manager from 'sandbox/eval/manager';
 import Preset from '..';
 
@@ -14,6 +16,8 @@ import {
   cleanUsingUnmount,
   isMinimalReactVersion,
 } from './utils';
+
+const debug = _debug('cs:compiler:cra');
 
 /**
  * When using React Refresh we need to evaluate some code before 'react-dom' is initialized
@@ -89,112 +93,127 @@ const BABEL7_CONFIG = {
 };
 
 export default function initialize() {
+  let initialized = false;
+  let refreshInitialized = false;
   const preset = new Preset(
     'create-react-app-v3',
     ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx'],
     aliases,
     {
       hasDotEnv: true,
+      processDependencies: async dependencies => {
+        if (
+          dependencies['react-dom'] &&
+          isMinimalReactVersion(dependencies['react-dom'], '16.9.0')
+        ) {
+          return { ...dependencies, 'react-refresh': '0.7.1' };
+        }
+
+        return dependencies;
+      },
       setup: async manager => {
-        preset.resetTranspilers();
-        const { configurations } = manager;
+        const dependencies = manager.manifest.dependencies;
+        const isRefresh = await hasRefresh(dependencies);
 
-        const { dependencies, devDependencies } =
-          configurations?.package?.parsed || {};
+        if (!initialized || refreshInitialized !== isRefresh) {
+          initialized = true;
+          refreshInitialized = isRefresh;
+          preset.resetTranspilers();
 
-        const isRefresh = await hasRefresh(dependencies, devDependencies);
+          if (isRefresh) {
+            debug('Refresh is enabled, registering additional transpiler');
+            // Add react refresh babel plugin for non-node_modules
 
-        if (isRefresh) {
-          // Add react refresh babel plugin for non-node_modules
+            preset.registerTranspiler(
+              module =>
+                !module.path.startsWith('/node_modules') &&
+                /\.(t|j)sx?$/.test(module.path) &&
+                !module.path.endsWith('.d.ts'),
+              [
+                {
+                  transpiler: babelTranspiler,
+                  options: {
+                    ...BABEL7_CONFIG,
+                    config: {
+                      ...BABEL7_CONFIG.config,
+                      plugins: [
+                        ...BABEL7_CONFIG.config.plugins,
+                        'react-refresh/babel',
+                      ],
+                    },
+                  },
+                },
+                { transpiler: refreshTranspiler },
+              ]
+            );
+          } else {
+            debug('Refresh is disabled');
+          }
 
           preset.registerTranspiler(
             module =>
-              !module.path.startsWith('/node_modules') &&
-              /\.(t|j)sx?$/.test(module.path) &&
-              !module.path.endsWith('.d.ts'),
-            [
-              {
-                transpiler: babelTranspiler,
-                options: {
-                  ...BABEL7_CONFIG,
-                  config: {
-                    ...BABEL7_CONFIG.config,
-                    plugins: [
-                      ...BABEL7_CONFIG.config.plugins,
-                      'react-refresh/babel',
-                    ],
-                  },
-                },
-              },
-              { transpiler: refreshTranspiler },
-            ]
+              /\.(t|j)sx?$/.test(module.path) && !module.path.endsWith('.d.ts'),
+            [{ transpiler: babelTranspiler, options: BABEL7_CONFIG }]
           );
-        }
 
-        preset.registerTranspiler(
-          module =>
-            /\.(t|j)sx?$/.test(module.path) && !module.path.endsWith('.d.ts'),
-          [{ transpiler: babelTranspiler, options: BABEL7_CONFIG }]
-        );
-
-        preset.registerTranspiler(module => /\.svg$/.test(module.path), [
-          { transpiler: svgrTranspiler },
-          { transpiler: babelTranspiler, options: BABEL7_CONFIG },
-        ]);
-        preset.registerTranspiler(module => /\.css$/.test(module.path), [
-          {
-            transpiler: stylesTranspiler,
-            options: { hmrEnabled: isRefresh },
-          },
-        ]);
-        preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
-          { transpiler: sassTranspiler },
-          {
-            transpiler: stylesTranspiler,
-            options: { hmrEnabled: isRefresh },
-          },
-        ]);
-        preset.registerTranspiler(
-          module => /\.module\.s[c|a]ss$/.test(module.path),
-          [
+          preset.registerTranspiler(module => /\.svg$/.test(module.path), [
+            { transpiler: svgrTranspiler },
+            { transpiler: babelTranspiler, options: BABEL7_CONFIG },
+          ]);
+          preset.registerTranspiler(module => /\.css$/.test(module.path), [
+            {
+              transpiler: stylesTranspiler,
+              options: { hmrEnabled: isRefresh },
+            },
+          ]);
+          preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
             { transpiler: sassTranspiler },
             {
               transpiler: stylesTranspiler,
-              options: { module: true, hmrEnabled: isRefresh },
+              options: { hmrEnabled: isRefresh },
             },
-          ]
-        );
-        preset.registerTranspiler(
-          module => /\.module\.css$/.test(module.path),
-          [
-            {
-              transpiler: stylesTranspiler,
-              options: { module: true, hmrEnabled: isRefresh },
-            },
-          ]
-        );
+          ]);
+          preset.registerTranspiler(
+            module => /\.module\.s[c|a]ss$/.test(module.path),
+            [
+              { transpiler: sassTranspiler },
+              {
+                transpiler: stylesTranspiler,
+                options: { module: true, hmrEnabled: isRefresh },
+              },
+            ]
+          );
+          preset.registerTranspiler(
+            module => /\.module\.css$/.test(module.path),
+            [
+              {
+                transpiler: stylesTranspiler,
+                options: { module: true, hmrEnabled: isRefresh },
+              },
+            ]
+          );
 
-        preset.registerTranspiler(module => /\.json$/.test(module.path), [
-          { transpiler: jsonTranspiler },
-        ]);
+          preset.registerTranspiler(module => /\.json$/.test(module.path), [
+            { transpiler: jsonTranspiler },
+          ]);
 
-        preset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
+          preset.registerTranspiler(() => true, [
+            { transpiler: rawTranspiler },
+          ]);
+        }
       },
       preEvaluate: async manager => {
-        const { dependencies, devDependencies } =
-          manager.configurations?.package?.parsed || {};
-
-        if (await hasRefresh(dependencies, devDependencies)) {
+        if (await hasRefresh(manager.manifest.dependencies)) {
           await createRefreshEntry(manager);
         }
 
+        const reactDom = manager.manifest.dependencies.find(
+          n => n.name === 'react-dom'
+        );
         if (
+          reactDom &&
           !manager.webpackHMR &&
-          !(await isMinimalReactVersion(
-            dependencies,
-            devDependencies,
-            '16.8.0'
-          ))
+          !(await isMinimalReactVersion(reactDom.version, '16.8.0'))
         ) {
           cleanUsingUnmount(manager);
         }

@@ -3,15 +3,12 @@ import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependenc
 import Manager from 'sandbox/eval/manager';
 
 export async function isMinimalReactVersion(
-  dependencies: object = {},
-  devDependencies: object = {},
+  version: string,
   minimalVersion: string
 ) {
-  const allDependencies = { ...dependencies, ...devDependencies };
-
-  if (allDependencies['react-dom']) {
+  if (version) {
     const absoluteDependencies = await getAbsoluteDependencies({
-      'react-dom': allDependencies['react-dom'],
+      'react-dom': version,
     });
 
     return (
@@ -23,14 +20,19 @@ export async function isMinimalReactVersion(
   return false;
 }
 
+/**
+ * Decide whether React Refresh hot module reloading strategy is supported by React
+ */
 export async function hasRefresh(
-  dependencies: object = {},
-  devDependencies: object = {}
+  dependencies: { name: string; version: string }[]
 ) {
-  const allDependencies = { ...dependencies, ...devDependencies };
+  const hasReactRefresh = dependencies.find(n => n.name === 'react-refresh');
+  if (hasReactRefresh) {
+    const reactDom = dependencies.find(dep => dep.name === 'react-dom');
 
-  if (allDependencies['react-refresh']) {
-    return isMinimalReactVersion(dependencies, devDependencies, '16.9.0');
+    if (reactDom) {
+      return isMinimalReactVersion(reactDom.version, '16.9.0');
+    }
   }
 
   return false;
