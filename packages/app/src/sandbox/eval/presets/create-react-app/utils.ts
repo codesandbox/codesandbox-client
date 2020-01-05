@@ -5,7 +5,7 @@ import Manager from 'sandbox/eval/manager';
 export async function isMinimalReactVersion(
   version: string,
   minimalVersion: string
-) {
+): Promise<boolean> {
   if (version) {
     const absoluteDependencies = await getAbsoluteDependencies({
       'react-dom': version,
