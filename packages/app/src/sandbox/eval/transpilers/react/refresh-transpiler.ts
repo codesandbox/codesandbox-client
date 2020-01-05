@@ -107,7 +107,18 @@ class RefreshTranspiler extends Transpiler {
     loaderContext.addDependency('react-refresh/runtime');
     loaderContext.emitModule(HELPER_PATH, HELPER_CODE, '/', false, false);
 
-    const newCode = getWrapperCode(code);
+    const isRootModule = loaderContext._module.isEntry;
+    let newCode = code;
+    /**
+     * We want to explicitly add module.hot.accept to the root module, because there is often a component there
+     * that's not exported. We don't want the window to refresh every time the entry changes. This is the most
+     * used file in CodeSandbox.
+     */
+    if (isRootModule) {
+      newCode += '\nmodule.hot.accept();';
+    } else {
+      newCode = getWrapperCode(code);
+    }
 
     return Promise.resolve({
       transpiledCode: newCode || '',
