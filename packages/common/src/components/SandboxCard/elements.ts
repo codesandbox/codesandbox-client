@@ -94,6 +94,14 @@ export const SandboxDescription = styled.p`
   margin: 0;
   margin-bottom: 16px;
   font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  max-height: 100%;
+
+  word-break: break-all;
 `;
 
 export const SandboxImage = styled.img`
@@ -125,7 +133,7 @@ export const Author = styled(UserWithAvatar)`
   font-size: 0.75rem;
   font-weight: 600;
   text-decoration: none;
-  color: ${props => props.theme.new.description};
+  color: #777788;
 `;
 
 export const Stats = styled.ul`

@@ -7,12 +7,12 @@ import { Navigation } from 'app/pages/common/Navigation';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { client } from 'app/graphql/client';
 
-import SidebarContents from './Sidebar';
+import { Sidebar } from './Sidebar';
 import Content from './Content';
 import {
   Container,
   Content as ContentContainer,
-  Sidebar,
+  Sidebar as SidebarStyled,
   ShowSidebarButton,
 } from './elements';
 
@@ -52,8 +52,8 @@ const Dashboard = props => {
 
   const DashboardContent = (
     <>
-      <Sidebar active={showSidebar}>
-        <SidebarContents />
+      <SidebarStyled active={showSidebar}>
+        <Sidebar />
         <ShowSidebarButton onClick={toggleSidebar}>
           {showSidebar ? (
             <LeftIcon style={{ color: 'white' }} />
@@ -61,7 +61,7 @@ const Dashboard = props => {
             <RightIcon style={{ color: 'white' }} />
           )}
         </ShowSidebarButton>
-      </Sidebar>
+      </SidebarStyled>
 
       <ContentContainer>
         <Content />

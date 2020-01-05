@@ -1,4 +1,5 @@
 import { debug, global } from './utils';
+import delay from '../delay';
 
 // After 30min no event we mark a session
 const NEW_SESSION_TIME = 1000 * 60 * 30;
@@ -17,53 +18,80 @@ const markLastTimeEventSent = () => {
   localStorage.setItem('csb-last-event-sent', Date.now().toString());
 };
 
-export const identify = (key: string, value: any) => {
-  if (typeof global.amplitude !== 'undefined') {
-    const identity = new global.amplitude.Identify();
+const getAmplitude = async (): Promise<any | false> => {
+  if (process.env.NODE_ENV !== 'production') {
+    return false;
+  }
+
+  for (let i = 0; i < 10; i++) {
+    if (
+      typeof global.amplitude !== 'undefined' &&
+      global.amplitude.getInstance()._storageSuffix
+    ) {
+      return global.amplitude;
+    }
+
+    // eslint-disable-next-line no-await-in-loop
+    await delay(1000);
+  }
+
+  return false;
+};
+
+export const identify = async (key: string, value: any) => {
+  const amplitude = await getAmplitude();
+  if (amplitude) {
+    const identity = new amplitude.Identify();
     identity.set(key, value);
-    global.amplitude.identify(identity);
+    amplitude.identify(identity);
     debug('[Amplitude] Identifying', key, value);
   } else {
     debug('[Amplitude] NOT identifying because Amplitude is not loaded');
   }
 };
 
-export const setUserId = (userId: string) => {
-  if (typeof global.amplitude !== 'undefined') {
+export const setUserId = async (userId: string) => {
+  const amplitude = await getAmplitude();
+  if (amplitude) {
     debug('[Amplitude] Setting User ID', userId);
     identify('userId', userId);
 
-    global.amplitude.getInstance().setUserId(userId);
+    amplitude.getInstance().setUserId(userId);
   } else {
     debug('[Amplitude] NOT setting userid because Amplitude is not loaded');
   }
 };
 
-export const resetUserId = () => {
-  if (typeof global.amplitude !== 'undefined') {
+export const resetUserId = async () => {
+  const amplitude = await getAmplitude();
+  if (amplitude) {
     debug('[Amplitude] Resetting User ID');
     identify('userId', null);
 
-    if (global.amplitude.getInstance().options.userId) {
-      global.amplitude.getInstance().setUserId(null);
-      global.amplitude.getInstance().regenerateDeviceId();
+    if (
+      amplitude.getInstance().options &&
+      amplitude.getInstance().options.userId
+    ) {
+      amplitude.getInstance().setUserId(null);
+      amplitude.getInstance().regenerateDeviceId();
     }
   } else {
     debug('[Amplitude] NOT resetting user id because Amplitude is not loaded');
   }
 };
 
-export const track = (eventName: string, data: any) => {
-  if (typeof global.amplitude !== 'undefined') {
+export const track = async (eventName: string, data: any) => {
+  const amplitude = await getAmplitude();
+  if (amplitude) {
     const currentTime = Date.now();
     if (currentTime - getLastTimeEventSent() > NEW_SESSION_TIME) {
       // We send a separate New Session event if people have been inactive for a while
-      global.amplitude.logEvent('New Session');
+      amplitude.logEvent('New Session');
     }
     markLastTimeEventSent();
 
     debug('[Amplitude] Tracking', eventName, data);
-    global.amplitude.logEvent(eventName, data);
+    amplitude.logEvent(eventName, data);
   } else {
     debug(
       '[Amplitude] NOT tracking because Amplitude is not loaded',

@@ -1,4 +1,5 @@
 import theme from '@codesandbox/common/lib/theme';
+import { Directory, Module } from '@codesandbox/common/lib/types';
 import { ContextMenu, Item } from 'app/components/ContextMenu';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
@@ -7,6 +8,7 @@ import DeleteIcon from 'react-icons/lib/go/trashcan';
 import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import UploadFileIcon from 'react-icons/lib/md/file-upload';
 import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
+import UndoIcon from 'react-icons/lib/md/undo';
 
 import { EntryContainer } from '../../../elements';
 import EditIcons from './EditIcons';
@@ -16,28 +18,37 @@ import EntryTitle from './EntryTitle';
 import { EntryTitleInput } from './EntryTitleInput';
 
 interface IEntryProps {
-  renameValidator: (id: string, title: string) => string;
-  shortid: string;
+  renameValidator?: (id: string, title: string) => string | false | null;
+  shortid?: string;
   id: string;
-  title: string;
+  title?: string;
+  root?: boolean;
+  isOpen?: boolean;
+  hasChildren?: boolean;
+  closeTree?: any;
   rename?: (shortid: string, title: string) => void;
-  deleteEntry: (shortid: string, title: string) => void;
-  depth: number;
-  type: string;
-  active: boolean;
-  discardModuleChanges: (shortid: string) => void;
-  setCurrentModule: (id: string) => void;
-  connectDragSource: (node: JSX.Element) => JSX.Element;
-  onCreateDirectoryClick: () => boolean | void;
-  onCreateModuleClick: () => boolean | void;
-  onUploadFileClick: () => boolean | void;
-  onClick: () => void;
-  markTabsNotDirty: () => void;
+  deleteEntry?: (shortid: string, title: string) => void;
+  depth?: number;
+  type?: string;
+  active?: boolean;
+  discardModuleChanges?: (shortid: string, title: string) => void;
+  setCurrentModule?: (id: string) => void;
+  connectDragSource?: (node: JSX.Element) => JSX.Element;
+  onCreateDirectoryClick?: () => boolean | void;
+  onCreateModuleClick?: () => boolean | void;
+  onUploadFileClick?: () => boolean | void;
+  onClick?: () => void;
+  markTabsNotDirty?: () => void;
   onRenameCancel?: () => void;
-  isNotSynced: boolean;
-  isMainModule: boolean;
-  moduleHasError: boolean;
-  rightColors: string[];
+  getModulePath?: (
+    modules: Module[],
+    directories: Directory[],
+    id: string
+  ) => string;
+  isNotSynced?: boolean;
+  isMainModule?: boolean;
+  moduleHasError?: boolean;
+  rightColors?: string[];
   state?: string;
 }
 
@@ -67,7 +78,7 @@ const Entry: React.FC<IEntryProps> = ({
   state: incomingState = '',
 }) => {
   const [state, setState] = useState(incomingState);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | false | null>(null);
   const [hovering, setHovering] = useState(false);
 
   const resetState = () => {
@@ -95,7 +106,7 @@ const Entry: React.FC<IEntryProps> = ({
     deleteEntry ? deleteEntry(shortid, title) : false;
 
   const discardModuleChangesAction = () =>
-    discardModuleChanges ? discardModuleChanges(shortid) : false;
+    discardModuleChanges ? discardModuleChanges(shortid, title) : false;
 
   const handleRename = (newTitle: string, force: boolean = false) => {
     if (newTitle === title) {
@@ -123,6 +134,7 @@ const Entry: React.FC<IEntryProps> = ({
       isNotSynced && {
         title: 'Discard Changes',
         action: discardModuleChangesAction,
+        icon: UndoIcon,
       },
     ].filter(Boolean),
     [
@@ -161,6 +173,8 @@ const Entry: React.FC<IEntryProps> = ({
         <EntryContainer
           onClick={setCurrentModule ? setCurrentModuleAction : onClick}
           onDoubleClick={markTabsNotDirty}
+          //  The elements file is still in js
+          //  @ts-ignore
           depth={depth}
           nameValidationError={error}
           active={active}
@@ -205,6 +219,7 @@ const Entry: React.FC<IEntryProps> = ({
                 onCreateFile={onCreateModuleClick}
                 onCreateDirectory={onCreateDirectoryClick}
                 onUploadFile={onUploadFileClick}
+                onDiscardChanges={isNotSynced && discardModuleChangesAction}
                 onDelete={deleteEntry && deleteAction}
                 onEdit={rename && renameAction}
                 active={active}

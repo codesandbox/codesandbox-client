@@ -1,6 +1,7 @@
-import { Action, AsyncAction } from 'app/overmind';
-import { setVimExtensionEnabled } from 'app/vscode/initializers';
+import { Badge } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
+
+import { Action, AsyncAction } from 'app/overmind';
 
 export const viewModeChanged: Action<{
   showEditor: boolean;
@@ -48,7 +49,7 @@ export const settingChanged: Action<{
   settingsTarget[lastKey] = value;
 
   if (name === 'vimMode') {
-    setVimExtensionEnabled(value);
+    effects.vscode.setVimExtensionEnabled(Boolean(value));
   }
 
   effects.settingsStore.set(firstKey, state.preferences.settings[firstKey]);
@@ -59,13 +60,11 @@ export const settingChanged: Action<{
   });
 };
 
-export const setBadgeVisibility: AsyncAction<{
-  id: string;
-  visible: boolean;
-}> = async ({ state, effects }, { id, visible }) => {
-  const { badges } = state.user;
-
-  badges.forEach((badge, index) => {
+export const setBadgeVisibility: AsyncAction<Pick<
+  Badge,
+  'id' | 'visible'
+>> = async ({ effects, state }, { id, visible }) => {
+  state.user.badges.forEach((badge, index) => {
     if (badge.id === id) {
       state.user.badges[index].visible = visible;
     }
@@ -87,9 +86,9 @@ export const paymentDetailsRequested: AsyncAction = async ({
   state.preferences.isLoadingPaymentDetails = false;
 };
 
-export const paymentDetailsUpdated: AsyncAction<{ token: string }> = async (
-  { state, effects },
-  { token }
+export const paymentDetailsUpdated: AsyncAction<string> = async (
+  { effects, state },
+  token
 ) => {
   state.preferences.isLoadingPaymentDetails = true;
   state.preferences.paymentDetails = await effects.api.updatePaymentDetails(

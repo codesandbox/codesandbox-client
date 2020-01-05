@@ -52,10 +52,6 @@ export const notificationRemoved: Action<{
   state.notifications.splice(notificationToRemoveIndex, 1);
 };
 
-export const forceRender: Action = ({ state }) => {
-  state.editor.forceRender++;
-};
-
 export const cliInstructionsMounted: AsyncAction = withLoadApp();
 
 export const githubPageMounted: AsyncAction = withLoadApp();
@@ -74,17 +70,22 @@ type ModalName =
   | 'netlifyLogs'
   | 'newSandbox'
   | 'preferences'
-  | 'share'
   | 'searchDependencies'
+  | 'share'
   | 'signInForTemplates'
   | 'userSurvey';
-export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
-  { state, effects },
-  { modal, message }
-) => {
+
+export const modalOpened: Action<{
+  modal: ModalName;
+  message?: string;
+  itemId?: string;
+}> = ({ state, effects }, { modal, message, itemId }) => {
   effects.analytics.track('Open Modal', { modal });
   state.currentModalMessage = message;
   state.currentModal = modal;
+  if (state.currentModal === 'preferences') {
+    state.preferences.itemId = itemId;
+  }
 };
 
 export const modalClosed: Action = ({ state, effects }) => {
@@ -148,7 +149,10 @@ export const signInZeitClicked: AsyncAction = async ({
       state.user = await api.createZeitIntegration(data.code);
       await actions.deployment.internal.getZeitUserDetails();
     } catch (error) {
-      notificationToast.error('Could not authorize with ZEIT');
+      actions.internal.handleError({
+        message: 'Could not authorize with ZEIT',
+        error,
+      });
     }
   } else {
     notificationToast.error('Could not authorize with ZEIT');
@@ -219,10 +223,9 @@ export const refetchSandboxInfo: AsyncAction = async ({
   effects,
   actions,
 }) => {
-  if (state.editor.currentId) {
-    const id = state.editor.currentId;
-    const sandbox = state.editor.currentSandbox;
-    const updatedSandbox = await effects.api.getSandbox(id);
+  const sandbox = state.editor.currentSandbox;
+  if (sandbox && sandbox.id) {
+    const updatedSandbox = await effects.api.getSandbox(sandbox.id);
 
     sandbox.collection = updatedSandbox.collection;
     sandbox.owned = updatedSandbox.owned;

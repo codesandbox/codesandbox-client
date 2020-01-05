@@ -2,7 +2,6 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
-import Notice from '@codesandbox/common/lib/components/Notice';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { ChangeEvent, FunctionComponent, useEffect } from 'react';
 
@@ -58,8 +57,6 @@ export const Git: FunctionComponent = () => {
 
   return (
     <Container>
-      <Notice>beta</Notice>
-
       <WorkspaceSubtitle>GitHub Repository</WorkspaceSubtitle>
 
       <Margin margin={1}>

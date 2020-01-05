@@ -30,16 +30,16 @@ export const orderByChanged: Action<{ orderBy: OrderBy }> = (
   state.dashboard.orderBy = orderBy;
 };
 
-export const blacklistedTemplateAdded: Action<{ template: string }> = (
+export const blacklistedTemplateAdded: Action<string> = (
   { state },
-  { template }
+  template
 ) => {
   state.dashboard.filters.blacklistedTemplates.push(template);
 };
 
-export const blacklistedTemplateRemoved: Action<{ template: string }> = (
+export const blacklistedTemplateRemoved: Action<string> = (
   { state },
-  { template }
+  template
 ) => {
   state.dashboard.filters.blacklistedTemplates = state.dashboard.filters.blacklistedTemplates.filter(
     currentTemplate => currentTemplate !== template
@@ -50,9 +50,9 @@ export const blacklistedTemplatesCleared: Action = ({ state }) => {
   state.dashboard.filters.blacklistedTemplates = [];
 };
 
-export const blacklistedTemplatesChanged: Action<{ templates: string[] }> = (
+export const blacklistedTemplatesChanged: Action<string[]> = (
   { state },
-  { templates }
+  templates
 ) => {
   state.dashboard.filters.blacklistedTemplates = templates;
 };
@@ -65,7 +65,21 @@ export const searchChanged: Action<{ search: string }> = (
 };
 
 export const createSandboxClicked: AsyncAction<{
+  body: { collectionId: string };
   sandboxId: string;
-  body: { collectionId: string | undefined };
-}> = ({ actions }, { sandboxId, body }) =>
-  actions.editor.internal.forkSandbox({ sandboxId, body });
+}> = ({ actions }, { body, sandboxId }) =>
+  actions.editor.forkExternalSandbox({ body, sandboxId });
+
+export const deleteTemplate: AsyncAction<{
+  sandboxId: string;
+  templateId: string;
+}> = async ({ actions, effects }, { sandboxId, templateId }) => {
+  try {
+    effects.analytics.track('Template - Removed', { source: 'Context Menu' });
+    await effects.api.deleteTemplate(sandboxId, templateId);
+    actions.modalClosed();
+    effects.notificationToast.success('Template Deleted');
+  } catch (error) {
+    effects.notificationToast.error('Could not delete custom template');
+  }
+};

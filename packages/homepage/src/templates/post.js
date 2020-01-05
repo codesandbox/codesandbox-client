@@ -23,7 +23,7 @@ import {
 export default ({
   data: {
     blogPost: {
-      fields: { author, date, description, photo, title },
+      fields: { authors, date, description, photo, title },
       frontmatter: {
         banner: { publicURL: banner },
       },
@@ -43,11 +43,17 @@ export default ({
         <Title>{title}</Title>
 
         <MetaData>
-          <AuthorContainer>
-            <AuthorImage alt={author} src={photo} />
+          <div style={{ flex: 1 }}>
+            {authors.map(author => (
+              <AuthorContainer key={author}>
+                {authors.length === 1 && (
+                  <AuthorImage alt={author} src={photo} />
+                )}
 
-            <Author>{author}</Author>
-          </AuthorContainer>
+                <Author>{author}</Author>
+              </AuthorContainer>
+            ))}
+          </div>
 
           <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
         </MetaData>
@@ -64,7 +70,7 @@ export const pageQuery = graphql`
   query Post($id: String) {
     blogPost: markdownRemark(id: { eq: $id }) {
       fields {
-        author
+        authors
         date
         description
         photo

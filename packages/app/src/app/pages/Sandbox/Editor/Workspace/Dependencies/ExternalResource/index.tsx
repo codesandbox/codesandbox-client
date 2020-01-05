@@ -1,44 +1,46 @@
-import React from 'react';
-
+import React, { FunctionComponent } from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 
-import { EntryContainer, IconArea, Icon } from '../../elements';
-import { Link } from '../elements';
+import { useOvermind } from 'app/overmind';
 
-interface IExternalResource {
-  removeResource: (a: any) => void;
-  resource: any;
-}
+import { EntryContainer, IconArea, Icon } from '../../elements';
+
+import { Link } from '../elements';
 
 const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
 
-function getName(resource: string) {
+const getName = (resource: string) => {
   if (resource.endsWith('.css') || resource.endsWith('.js')) {
     const match = resource.match(/.*\/(.*)/);
 
-    if (match && match[1]) return match[1];
+    if (match && match[1]) {
+      return match[1];
+    }
   }
 
   // Add trailing / but no double one
   return getNormalizedUrl(resource);
-}
+};
 
-export class ExternalResource extends React.PureComponent<IExternalResource> {
-  removeResource = () => {
-    this.props.removeResource(this.props.resource);
-  };
+type Props = {
+  resource: string;
+};
+export const ExternalResource: FunctionComponent<Props> = ({ resource }) => {
+  const {
+    actions: {
+      workspace: { externalResourceRemoved },
+    },
+  } = useOvermind();
 
-  render() {
-    const { resource } = this.props;
-    return (
-      <EntryContainer as="li">
-        <Link href={resource}>{getName(resource)}</Link>
-        <IconArea>
-          <Icon onClick={this.removeResource}>
-            <CrossIcon />
-          </Icon>
-        </IconArea>
-      </EntryContainer>
-    );
-  }
-}
+  return (
+    <EntryContainer as="li">
+      <Link href={resource}>{getName(resource)}</Link>
+
+      <IconArea>
+        <Icon onClick={() => externalResourceRemoved(resource)}>
+          <CrossIcon />
+        </Icon>
+      </IconArea>
+    </EntryContainer>
+  );
+};

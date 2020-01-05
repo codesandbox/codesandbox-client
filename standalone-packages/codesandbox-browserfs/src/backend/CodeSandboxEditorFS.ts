@@ -1,15 +1,16 @@
-import {
-  SynchronousFileSystem,
-  FileSystem,
-  BFSOneArgCallback,
-  BFSCallback,
-  FileSystemOptions,
-} from '../core/file_system';
+import { ApiError, ErrorCode } from '../core/api_error';
 import { File } from '../core/file';
 import { FileFlag } from '../core/file_flag';
-import { default as Stats, FileType } from '../core/node_fs_stats';
+/* eslint-disable */
+import {
+  BFSCallback,
+  BFSOneArgCallback,
+  FileSystem,
+  FileSystemOptions,
+  SynchronousFileSystem,
+} from '../core/file_system';
+import { FileType, default as Stats } from '../core/node_fs_stats';
 import PreloadFile from '../generic/preload_file';
-import { ErrorCode, ApiError } from '../core/api_error';
 
 function blobToBuffer(blob: Blob, cb: (err: any | undefined | null, result?: Buffer) => void) {
   if (typeof Blob === 'undefined' || !(blob instanceof Blob)) {
@@ -53,21 +54,18 @@ export type IDirectory = IModule & {
 }
 
 export interface IManager {
-  getState: () => {
-      modulesByPath: {
-        [path: string]: IFile | IDirectory;
-      }
+  getSandboxFs: () => {
+    [path: string]: IFile | IDirectory;
   };
 }
 
-const warn = console.warn;
 
 function getCode(savedCode: string | null | undefined, code: string | undefined) {
-  if (savedCode !== null) {
-    return savedCode || '';
+  if (savedCode === null) {
+    return code || '';
   }
 
-  return code || '';
+  return savedCode || '';
 }
 
 class CodeSandboxFile extends PreloadFile<CodeSandboxEditorFS> implements File {
@@ -184,7 +182,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public statSync(p: string, isLstate: boolean): Stats {
-    const modules = this.api.getState().modulesByPath;
+    const modules = this.api.getSandboxFs();
     const moduleInfo = modules[p];
 
     if (!moduleInfo) {
@@ -225,7 +223,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public open(p: string, flag: FileFlag, mode: number, cb: BFSCallback<File>): void {
-    const moduleInfo = this.api.getState().modulesByPath[p];
+    const moduleInfo = this.api.getSandboxFs()[p];
 
     if (!moduleInfo) {
       cb(ApiError.ENOENT(p));
@@ -248,7 +246,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
               return;
             }
 
-            cb(undefined, new CodeSandboxFile(this, p, flag, stats, r))  ;
+            cb(undefined, new CodeSandboxFile(this, p, flag, stats, r));
           });
         });
         return;
@@ -262,7 +260,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public openFileSync(p: string, flag: FileFlag, mode: number): File {
-    const moduleInfo = this.api.getState().modulesByPath[p];
+    const moduleInfo = this.api.getSandboxFs()[p];
 
     if (!moduleInfo) {
       throw ApiError.ENOENT(p);
@@ -286,15 +284,19 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public rmdirSync(p: string) {
-    warn('rmDirSync not supported');
+    // Stubbed
   }
 
   public mkdirSync(p: string) {
-    warn('rmDirSync not supported');
+    // Stubbed
+  }
+
+  public unlinkSync(p: string) {
+    // Stubbed
   }
 
   public readdirSync(path: string): string[] {
-    const paths = Object.keys(this.api.getState().modulesByPath);
+    const paths = Object.keys(this.api.getSandboxFs());
 
     const p = path.endsWith('/') ? path : path + '/';
 
@@ -322,10 +324,12 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public _sync(p: string, data: Buffer, cb: BFSCallback<Stats>): void {
-    warn('Sync not supported');
+    // Stubbed
+
+    cb(null, undefined);
   }
 
   public _syncSync(p: string, data: Buffer): void {
-    warn('Sync not supported');
+    // Stubbed
   }
 }

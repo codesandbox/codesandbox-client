@@ -1,21 +1,28 @@
 import React from 'react';
-import { Container, NavigationLink, Number } from './elements';
+import { Container, NavigationTitle, Number } from './elements';
 
 interface INavigationProps {
   teamId?: string;
   number?: number;
+  bookmarked?: boolean;
 }
 
-export const Navigation = ({ teamId, number }: INavigationProps) => (
+export const Navigation = ({
+  teamId,
+  number,
+  bookmarked,
+}: INavigationProps) => (
   <Container>
-    <NavigationLink
-      to={
-        teamId ? `/dashboard/teams/${teamId}/templates` : `/dashboard/templates`
-      }
-    >
-      {teamId ? 'Team Templates' : 'My Templates'}
-    </NavigationLink>
+    {bookmarked ? (
+      <NavigationTitle>
+        {teamId ? 'Bookmarked Templates' : 'Bookmarked Templates'}
+      </NavigationTitle>
+    ) : (
+      <NavigationTitle>
+        {teamId ? 'Team Templates' : 'My Templates'}
+      </NavigationTitle>
+    )}
 
-    {number == null && <Number>{number}</Number>}
+    {number != null && <Number>{number}</Number>}
   </Container>
 );

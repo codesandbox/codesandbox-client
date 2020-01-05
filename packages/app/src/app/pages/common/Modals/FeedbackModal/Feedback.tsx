@@ -1,14 +1,14 @@
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import VERSION from '@codesandbox/common/lib/version';
 import { CurrentUser } from '@codesandbox/common/lib/types';
+import { useOvermind } from 'app/overmind';
+import pushToAirtable from 'app/overmind/utils/pushToAirtable';
 import React, {
   ChangeEvent,
   FormEvent,
   FunctionComponent,
   useState,
 } from 'react';
-
-import { useOvermind } from 'app/overmind';
-import pushToAirtable from 'app/store/utils/pushToAirtable';
 
 import {
   AutosizeTextArea,
@@ -19,7 +19,7 @@ import {
 } from './elements';
 
 type Props = {
-  id: string;
+  id?: string;
   user?: CurrentUser;
 };
 const Feedback: FunctionComponent<Props> = ({ id, user }) => {
@@ -49,11 +49,12 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
     setLoading(true);
 
     pushToAirtable({
-      sandboxId: id,
+      sandboxId: id || '',
       feedback,
       emoji,
       username: (user || {}).username,
       email,
+      version: VERSION,
     })
       .then(() => {
         setEmoji(null);
@@ -126,7 +127,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
         </EmojiButton>
 
         <ButtonContainer>
-          <Button disabled={loading || !feedback.trim()} small>
+          <Button type="submit" disabled={loading || !feedback.trim()} small>
             {loading ? 'Sending...' : 'Submit'}
           </Button>
         </ButtonContainer>

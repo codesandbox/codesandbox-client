@@ -13,11 +13,12 @@ interface IOverlayProps {
   noHeightAnimation?: boolean;
 }
 
+const noop = () => undefined;
 export const Overlay: React.FC<IOverlayProps> = ({
   event,
   isOpen,
-  onOpen = () => {},
-  onClose = () => {},
+  onOpen = noop,
+  onClose = noop,
   children,
   content: Content,
   noHeightAnimation = true,

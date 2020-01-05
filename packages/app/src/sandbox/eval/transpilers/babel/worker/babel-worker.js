@@ -2,6 +2,7 @@
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
 import macrosPlugin from 'babel-plugin-macros';
+import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
@@ -620,6 +621,18 @@ self.addEventListener('message', async event => {
       }
 
       Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
+    }
+
+    console.log(flattenedPlugins);
+    if (
+      (flattenedPlugins.indexOf('proposal-optional-chaining') > -1 ||
+        flattenedPlugins.indexOf('@babel/plugin-proposal-optional-chaining') >
+          -1) &&
+      Object.keys(Babel.availablePlugins).indexOf(
+        'proposal-optional-chaining'
+      ) === -1
+    ) {
+      Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
     }
 
     if (

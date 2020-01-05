@@ -56,7 +56,7 @@ export type Module = {
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path?: string;
+  path: string;
   now?: any;
   type: 'file';
 };
@@ -73,6 +73,7 @@ export type Directory = {
   title: string;
   directoryShortid: string | null;
   shortid: string;
+  path: string;
   sourceId: string;
   type: 'directory';
 };
@@ -83,7 +84,7 @@ export type Template = {
   shortid: string;
   url: string;
   main: boolean;
-  color: string;
+  color: () => string;
   backgroundColor: () => string | undefined;
   popular: boolean;
   showOnHomePage: boolean;
@@ -113,9 +114,10 @@ export type CurrentUser = {
     since: string;
     amount: number;
     cancelAtPeriodEnd: boolean;
+    plan?: 'pro' | 'patron';
   } | null;
   curatorAt: string;
-  badges: Array<Badge>;
+  badges: Badge[];
   integrations: {
     zeit?: {
       token: string;
@@ -160,6 +162,18 @@ export type SmallSandbox = {
   git: GitInfo | null;
 };
 
+export type ForkedSandbox = {
+  id: string;
+  alias: string | null;
+  title: string | null;
+  customTemplate: CustomTemplate | null;
+  insertedAt: string;
+  updatedAt: string;
+  template: string;
+  privacy: 0 | 1 | 2;
+  git: GitInfo | null;
+};
+
 export type PaginatedSandboxes = {
   [page: number]: Array<SmallSandbox>;
 };
@@ -174,15 +188,13 @@ export type User = {
   sandboxCount: number;
   givenLikeCount: number;
   receivedLikeCount: number;
-  currentModuleShortid: string;
   viewCount: number;
   forkedCount: number;
   sandboxes: PaginatedSandboxes;
   likedSandboxes: PaginatedSandboxes;
   badges: Badge[];
   topSandboxes: SmallSandbox[];
-  subscriptionSince: string;
-  selection: Selection | null;
+  subscriptionSince: string | null;
 };
 
 export type LiveUser = {
@@ -241,6 +253,7 @@ export type MiniSandbox = {
   description: string;
   git: GitInfo;
   author: User;
+  screenshotUrl: string;
 };
 
 export type GitCommit = {
@@ -271,9 +284,18 @@ export type PickedSandboxes = {
 };
 
 export type PickedSandboxDetails = {
-  title: string;
-  id: string;
   description: string;
+  id: string;
+  title: string;
+};
+
+export type SandboxAuthor = {
+  id: string;
+  username: string;
+  name: string;
+  avatarUrl: string;
+  badges: Badge[];
+  subscriptionSince: string | null;
 };
 
 export type Sandbox = {
@@ -295,7 +317,14 @@ export type Sandbox = {
     [dep: string]: string;
   };
   customTemplate: CustomTemplate | null;
+  /**
+   * Which template this sandbox is based on
+   */
   forkedTemplate: CustomTemplate | null;
+  /**
+   * Sandbox the forked template is from
+   */
+  forkedTemplateSandbox: ForkedSandbox | null;
   externalResources: string[];
   team: {
     id: string;
@@ -303,8 +332,8 @@ export type Sandbox = {
   } | null;
   roomId: string | null;
   privacy: 0 | 1 | 2;
-  author: User | null;
-  forkedFromSandbox: SmallSandbox | null;
+  author: SandboxAuthor | null;
+  forkedFromSandbox: ForkedSandbox | null;
   git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
@@ -623,8 +652,8 @@ export type UploadedFilesInfo = {
 };
 
 export type SandboxUrlSourceData = {
-  id?: string;
-  alias?: string;
+  id: string;
+  alias: string | null;
   git?: GitInfo;
 };
 
@@ -680,3 +709,7 @@ export enum PatronBadge {
 export type LiveDisconnectReason = 'close' | 'inactivity';
 
 export type PatronTier = 1 | 2 | 3 | 4;
+
+export type SandboxFs = {
+  [path: string]: Module | Directory;
+};

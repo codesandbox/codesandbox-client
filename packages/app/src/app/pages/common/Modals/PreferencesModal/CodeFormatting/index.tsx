@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from 'react';
 
-import Question from 'react-icons/lib/go/question';
-
-import { Prettier } from './Prettier';
 import { Title } from '../elements';
+
+import { Question } from './elements';
+import { Prettier } from './Prettier';
 
 export const CodeFormatting: FunctionComponent = () => (
   <div>
@@ -14,7 +14,7 @@ export const CodeFormatting: FunctionComponent = () => (
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Question style={{ marginBottom: '3px' }} />
+        <Question />
       </a>
     </Title>
 

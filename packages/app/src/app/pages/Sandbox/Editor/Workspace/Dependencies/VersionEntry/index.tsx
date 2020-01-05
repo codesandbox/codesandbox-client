@@ -5,7 +5,9 @@ import ArrowDropDown from 'react-icons/lib/md/keyboard-arrow-down';
 import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
 import algoliasearch from 'algoliasearch/lite';
 import compareVersions from 'compare-versions';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Tooltip, {
+  SingletonTooltip,
+} from '@codesandbox/common/lib/components/Tooltip';
 import { formatVersion } from '@codesandbox/common/lib/utils/ci';
 
 import { EntryContainer, IconArea, Icon } from '../../elements';
@@ -54,6 +56,8 @@ export class VersionEntry extends React.PureComponent<Props, State> {
       '00383ecd8441ead30b1b0ff981c426f5'
     );
     const index = client.initIndex('npm-search');
+
+    // @ts-ignore
     index.getObject(dependency, ['versions']).then(({ versions: results }) => {
       const versions = Object.keys(results).sort((a, b) => {
         try {
@@ -119,15 +123,14 @@ export class VersionEntry extends React.PureComponent<Props, State> {
           </Link>
           <VersionSelect
             hovering={hovering}
+            defaultValue={versions.find(v => v === dependencies[dependency])}
             onChange={e => {
               this.props.onRefresh(dependency, e.target.value);
               this.setState({ hovering: false });
             }}
           >
             {versions.map(a => (
-              <option key={a} selected={a === dependencies[dependency]}>
-                {a}
-              </option>
+              <option key={a}>{a}</option>
             ))}
           </VersionSelect>
           <Version hovering={hovering}>
@@ -137,24 +140,39 @@ export class VersionEntry extends React.PureComponent<Props, State> {
 
           {hovering && (
             <IconArea>
-              <Tooltip
-                content={open ? 'Hide sizes' : 'Show sizes'}
-                style={{ outline: 'none' }}
-              >
-                <Icon onClick={this.handleOpen}>
-                  {open ? <ArrowDropUp /> : <ArrowDropDown />}
-                </Icon>
-              </Tooltip>
-              <Tooltip content="Update to latest" style={{ outline: 'none' }}>
-                <Icon onClick={this.handleRefresh}>
-                  <RefreshIcon />
-                </Icon>
-              </Tooltip>
-              <Tooltip content="Remove" style={{ outline: 'none' }}>
-                <Icon onClick={this.handleRemove}>
-                  <CrossIcon />
-                </Icon>
-              </Tooltip>
+              <SingletonTooltip>
+                {singleton => (
+                  <>
+                    <Tooltip
+                      content={open ? 'Hide sizes' : 'Show sizes'}
+                      style={{ outline: 'none' }}
+                      singleton={singleton}
+                    >
+                      <Icon onClick={this.handleOpen}>
+                        {open ? <ArrowDropUp /> : <ArrowDropDown />}
+                      </Icon>
+                    </Tooltip>
+                    <Tooltip
+                      content="Update to latest"
+                      style={{ outline: 'none' }}
+                      singleton={singleton}
+                    >
+                      <Icon onClick={this.handleRefresh}>
+                        <RefreshIcon />
+                      </Icon>
+                    </Tooltip>
+                    <Tooltip
+                      content="Remove"
+                      style={{ outline: 'none' }}
+                      singleton={singleton}
+                    >
+                      <Icon onClick={this.handleRemove}>
+                        <CrossIcon />
+                      </Icon>
+                    </Tooltip>
+                  </>
+                )}
+              </SingletonTooltip>
             </IconArea>
           )}
         </EntryContainer>

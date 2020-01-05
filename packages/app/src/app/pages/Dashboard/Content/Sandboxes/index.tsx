@@ -1,87 +1,98 @@
-import React from 'react';
+import React, { ComponentProps, ComponentType, FunctionComponent } from 'react';
+
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
+import { useOvermind } from 'app/overmind';
+
 import { Container, HeaderContainer, HeaderTitle } from '../elements';
 import { SandboxGrid } from '../SandboxGrid';
-import { Filters } from './Filters';
+
 import { DashboardActions } from './Actions';
-import { ITemplate } from './types';
+import { Filters } from './Filters';
 
-interface Props {
-  sandboxes: any[];
-  Header: React.ComponentType;
-  SubHeader: React.ComponentType;
-  ExtraElement: React.ComponentType;
-
-  possibleTemplates: ITemplate[];
+type Props = {
+  Header: ComponentType | string;
   isLoading?: boolean;
-  hideOrder?: boolean;
-  hideFilters?: boolean;
-  page?: number;
-  actions?: any[];
-}
+  SubHeader?: ComponentType;
+} & Pick<ComponentProps<typeof DashboardActions>, 'actions'> &
+  Pick<
+    ComponentProps<typeof SandboxGrid>,
+    'ExtraElement' | 'page' | 'sandboxes'
+  > &
+  Pick<
+    ComponentProps<typeof Filters>,
+    'hideFilters' | 'hideOrder' | 'possibleTemplates'
+  >;
+export const Content: FunctionComponent<Props> = ({
+  actions: dashboardActions,
+  ExtraElement,
+  Header,
+  hideFilters,
+  hideOrder,
+  isLoading = false,
+  page,
+  possibleTemplates,
+  sandboxes,
+  SubHeader,
+}) => {
+  const { state, actions } = useOvermind();
 
-// eslint-disable-next-line react/prefer-stateless-function
-export class Content extends React.Component<Props> {
-  render() {
-    const {
-      sandboxes,
-      Header,
-      SubHeader,
-      isLoading,
-      ExtraElement,
-      hideOrder,
-      hideFilters,
-      possibleTemplates = [],
-      page,
-      actions = [],
-    } = this.props;
+  return (
+    <Container>
+      <HeaderContainer>
+        <HeaderTitle>
+          {Header}
 
-    return (
-      <Container>
-        <HeaderContainer>
-          <HeaderTitle>
-            {Header}{' '}
-            {sandboxes && !isLoading && (
-              <span
-                style={{
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  color: 'rgba(255, 255, 255, 0.6',
-                  marginLeft: '.5rem',
-                }}
-              >
-                {sandboxes.length}
-              </span>
-            )}
-          </HeaderTitle>
-          <DashboardActions actions={actions} />
-          <Filters
-            hideOrder={hideOrder}
-            hideFilters={hideFilters}
-            possibleTemplates={possibleTemplates}
-          />
-        </HeaderContainer>
-        {SubHeader}
-        {isLoading ? (
-          <DelayedAnimation
-            delay={0.6}
-            style={{
-              textAlign: 'center',
-              marginTop: '2rem',
-              fontWeight: 600,
-              color: 'rgba(255, 255, 255, 0.5)',
-            }}
-          >
-            Fetching Sandboxes...
-          </DelayedAnimation>
-        ) : (
-          <SandboxGrid
-            page={page}
-            ExtraElement={ExtraElement}
-            sandboxes={sandboxes}
-          />
-        )}
-      </Container>
-    );
-  }
-}
+          {sandboxes && !isLoading && (
+            <span
+              style={{
+                fontSize: '1rem',
+                fontWeight: 600,
+                color: 'rgba(255, 255, 255, 0.6',
+                marginLeft: '.5rem',
+              }}
+            >
+              {sandboxes.length}
+            </span>
+          )}
+        </HeaderTitle>
+
+        <DashboardActions actions={dashboardActions} />
+
+        <Filters
+          hideFilters={hideFilters}
+          hideOrder={hideOrder}
+          possibleTemplates={possibleTemplates}
+        />
+      </HeaderContainer>
+
+      {SubHeader}
+
+      {isLoading ? (
+        <DelayedAnimation
+          delay={0.6}
+          style={{
+            textAlign: 'center',
+            marginTop: '2rem',
+            fontWeight: 600,
+            color: 'rgba(255, 255, 255, 0.5)',
+          }}
+        >
+          Fetching Sandboxes...
+        </DelayedAnimation>
+      ) : (
+        <SandboxGrid
+          page={page}
+          ExtraElement={ExtraElement}
+          sandboxes={sandboxes}
+          selectedSandboxes={state.dashboard.selectedSandboxes}
+          orderByField={state.dashboard.orderBy.field}
+          isDragging={state.dashboard.isDragging}
+          isPatron={state.isPatron}
+          sandboxesSelected={actions.dashboard.sandboxesSelected}
+          forkExternalSandbox={actions.editor.forkExternalSandbox}
+          dragChanged={actions.dashboard.dragChanged}
+        />
+      )}
+    </Container>
+  );
+};

@@ -1,6 +1,5 @@
-import styled, { css } from 'styled-components';
 import AutosizeInput from 'react-input-autosize';
-import Color from 'color';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -25,13 +24,12 @@ export const FolderName = styled.button`
   cursor: pointer;
   transition: 0.3s ease color;
   padding: 0;
-  margin: 0;
+  margin: 0 0.25rem 0 0;
   outline: 0;
   border: 0;
   background-color: transparent;
   color: inherit;
 
-  margin-right: 0.25rem;
   &:hover {
     color: white;
   }
@@ -63,28 +61,14 @@ export const Name = styled.span<{ owned?: boolean }>`
   ${({ theme, owned }) => css`
     color: ${theme.light ? 'black' : 'white'};
     margin-left: 0.25rem;
+    margin-right: ${owned ? 0 : '0.5rem'};
     cursor: ${owned ? 'pointer' : 'initial'};
     text-overflow: ellipsis;
+    appearance: ${owned ? 'none' : 'initial'};
+    background: none;
+    border: 0;
+    outline: 0;
   `}
-`;
-
-export const TemplateBadge = styled.div<{ color: string }>`
-  background: ${props => props.color};
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  font-size: 11px;
-  padding: 0px 8px;
-  border-radius: 4px;
-  margin-left: 1rem;
-  height: 19px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  /* Check for contrast */
-  color: ${props =>
-    Color(props.color).contrast(Color(props.theme.white)) > 4.5
-      ? props.theme.background5
-      : '#fff'};
 `;
 
 export const Main = styled.div`
@@ -93,4 +77,22 @@ export const Main = styled.div`
   @media screen and (min-width: 826px) {
     display: block;
   }
+`;
+
+export const TemplateBadge = styled.label`
+  ${({ theme }) => css`
+    background: ${theme['activityBarBadge.background']};
+    color: ${theme['activityBarBadge.foreground']};
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    padding: 0 8px;
+    border-radius: 2px;
+    margin-left: 1rem;
+    height: 1.5rem;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    cursor: default;
+  `};
 `;

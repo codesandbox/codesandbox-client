@@ -17,7 +17,7 @@ import { Appearance } from './Appearance';
 import { EditorSettings } from './EditorPageSettings/EditorSettings';
 import { PreviewSettings } from './EditorPageSettings/PreviewSettings';
 import { CodeFormatting } from './CodeFormatting';
-import PaymentInfo from './PaymentInfo';
+import { PaymentInfo } from './PaymentInfo';
 import { Integrations } from './Integrations';
 import { Badges } from './Badges';
 import { Experiments } from './Experiments';
@@ -30,7 +30,7 @@ const PreferencesModal: React.FC = () => {
     state: {
       isPatron,
       isLoggedIn,
-      preferences: { itemId },
+      preferences: { itemId = 'appearance' },
     },
     actions: {
       preferences: { itemIdChanged },

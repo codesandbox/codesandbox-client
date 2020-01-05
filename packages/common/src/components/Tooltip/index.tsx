@@ -1,28 +1,61 @@
 import React from 'react';
-import { createGlobalStyle } from 'styled-components';
-import Tippy from '@tippy.js/react';
+import styled from 'styled-components';
+import Tippy, { useSingleton } from '@tippy.js/react';
+import { animateFill, Props } from 'tippy.js';
 import theme from '../../theme';
 
-const GlobalStyle = createGlobalStyle`
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/dist/backdrop.css';
+import 'tippy.js/animations/shift-away.css';
+
+const defaultProps: Partial<Props> = {
+  delay: [500, 100],
+  boundary: 'window',
+  animateFill: true,
+  plugins: [animateFill],
+};
+
+const mainStyles = `
+  background-color: rgb(21, 24, 25);
+
   .tippy-backdrop {
     background-color: rgb(21, 24, 25);
   }
+`;
 
-  .tippy-tooltip.update-theme {
-    background-color: ${theme.green()};
-    border-radius: 2px;
-    padding: 0;
+const MainTippy = styled(Tippy)`
+  ${mainStyles}
+`;
 
-    .tippy-arrow {
-      border-bottom-color: ${theme.green()};
-    }
+const UpdateTippy = styled(Tippy)`
+  background-color: ${theme.green()};
+  border-radius: 2px;
+  padding: 0;
+
+  .tippy-arrow {
+    border-bottom-color: ${theme.green()};
   }
 `;
 
-const Tooltip = ({ children, style = {}, content, ...props }) => (
-  <>
-    <GlobalStyle />
-    <Tippy delay={[500, 0]} content={content} {...props}>
+export const SingletonTooltip = styled(
+  ({ children, style = {}, content, ...props }) => {
+    const singleton = useSingleton({
+      ...defaultProps,
+      updateDuration: 250,
+      ...props,
+    });
+
+    return children(singleton);
+  }
+)`
+  ${mainStyles}
+`;
+
+const Tooltip = ({ children, style = {}, content, ...props }) => {
+  const TippyComponent = props.theme === 'update' ? UpdateTippy : MainTippy;
+
+  return (
+    <TippyComponent content={content} {...defaultProps} {...props}>
       <span
         style={{
           outlineColor: 'transparent',
@@ -31,8 +64,8 @@ const Tooltip = ({ children, style = {}, content, ...props }) => (
       >
         {children}
       </span>
-    </Tippy>
-  </>
-);
+    </TippyComponent>
+  );
+};
 
 export default Tooltip;

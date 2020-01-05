@@ -1,6 +1,5 @@
 import React from 'react';
 import sortBy from 'lodash/sortBy';
-
 import * as templates from '../../../templates';
 import Template from '../../../templates/template';
 
@@ -12,15 +11,18 @@ import {
 } from '../elements';
 import { ConfigurationUIProps } from '../types';
 
-export class ConfigWizard extends React.Component<ConfigurationUIProps> {
-  bindValue = (
+export const ConfigWizard = (props: ConfigurationUIProps) => {
+  const bindValue = (
     file: Object,
     property: string,
     defaultValue?: any
-  ): { value: any; setValue: (p: any) => void } => ({
+  ): {
+    value: any;
+    setValue: (p: any) => void;
+  } => ({
     value: file[property] || defaultValue,
     setValue: (value: any) => {
-      const code = JSON.stringify(
+      let code = JSON.stringify(
         {
           ...file,
           [property]: value,
@@ -28,87 +30,99 @@ export class ConfigWizard extends React.Component<ConfigurationUIProps> {
         null,
         2
       );
-      this.props.updateFile(code);
+      if (property.includes('.')) {
+        const children = property.split('.');
+        code = JSON.stringify(
+          {
+            ...file,
+            [children[0]]: {
+              [children[1]]: value,
+            },
+          },
+          null,
+          2
+        );
+      }
+
+      return props.updateFile(code);
     },
   });
 
-  render() {
-    const { file, sandbox } = this.props;
+  const { file, sandbox } = props;
 
-    let parsedFile;
-    let error;
-    try {
-      parsedFile = JSON.parse(file);
-    } catch (e) {
-      error = e;
-    }
+  let parsedFile;
+  let error;
+  try {
+    parsedFile = JSON.parse(file);
+  } catch (e) {
+    error = e;
+  }
 
-    if (error) {
-      return <div>Problem parsing sandbox.config.json: {error.message}</div>;
-    }
+  if (error) {
+    return <div>Problem parsing sandbox.config.json: {error.message}</div>;
+  }
 
-    if (!parsedFile) {
-      return <div>Could not parse sandbox.config.json</div>;
-    }
+  if (!parsedFile) {
+    return <div>Could not parse sandbox.config.json</div>;
+  }
 
-    const currentTemplate = templates.default(sandbox.template);
+  const currentTemplate = templates.default(sandbox.template);
 
-    // $FlowIssue: Can't detect difference between filter/no-filter
-    const possibleTemplates: Array<Template> = Object.keys(templates)
-      .filter(t => t !== 'default')
-      .map(n => templates[n]);
+  const possibleTemplates: Array<Template> = Object.keys(templates)
+    .filter(t => t !== 'default')
+    .map(n => templates[n]);
 
-    const templateOptions = sortBy(
-      possibleTemplates.filter(
-        template =>
-          template.isServer === currentTemplate.isServer &&
-          template.showOnHomePage
-      ),
-      template => template.niceName
-    ).map(template => template.name);
+  const templateOptions = sortBy(
+    possibleTemplates.filter(
+      template =>
+        template.isServer === currentTemplate.isServer &&
+        template.showOnHomePage
+    ),
+    template => template.niceName
+  ).map(template => template.name);
 
-    const templateNameMap = {};
-    possibleTemplates.forEach(template => {
-      templateNameMap[template.name] = template.niceName;
-    });
+  const templateNameMap = {};
+  possibleTemplates.forEach(template => {
+    templateNameMap[template.name] = template.niceName;
+  });
 
-    return (
-      <div>
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Infinite Loop Protection"
-              type="boolean"
-              {...this.bindValue(parsedFile, 'infiniteLoopProtection')}
-            />
-          </ConfigItem>
-          <ConfigDescription>
-            Whether we should stop execution of the code when we detect an
-            infinite loop.
-          </ConfigDescription>
-        </PaddedConfig>
+  return (
+    <div>
+      <PaddedConfig>
+        <ConfigItem>
+          <PaddedPreference
+            title="Infinite Loop Protection"
+            type="boolean"
+            {...bindValue(parsedFile, 'infiniteLoopProtection')}
+          />
+        </ConfigItem>
+        <ConfigDescription>
+          Whether we should stop execution of the code when we detect an
+          infinite loop.
+        </ConfigDescription>
+      </PaddedConfig>
 
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Hard Reload on Change"
-              type="boolean"
-              {...this.bindValue(parsedFile, 'hardReloadOnChange')}
-            />
-          </ConfigItem>
-          <ConfigDescription>
-            Force refresh the sandbox for a change. This is helpful for
-            sandboxes with global state, like intervals.
-          </ConfigDescription>
-        </PaddedConfig>
+      <PaddedConfig>
+        <ConfigItem>
+          <PaddedPreference
+            title="Hard Reload on Change"
+            type="boolean"
+            {...bindValue(parsedFile, 'hardReloadOnChange')}
+          />
+        </ConfigItem>
+        <ConfigDescription>
+          Force refresh the sandbox for a change. This is helpful for sandboxes
+          with global state, like intervals.
+        </ConfigDescription>
+      </PaddedConfig>
 
-        {/* <PaddedConfig>
+      {/* <PaddedConfig>
           <ConfigItem>
             <PaddedPreference
               title="Default View"
               type="dropdown"
               options={['browser', 'console', 'tests']}
-              {...this.bindValue(parsedFile, 'view')}
+              {...bindValue(parsedFile, 'view')}
             />
           </ConfigItem>
           <ConfigDescription>
@@ -116,24 +130,35 @@ export class ConfigWizard extends React.Component<ConfigurationUIProps> {
           </ConfigDescription>
         </PaddedConfig> */}
 
+      <PaddedConfig>
+        <ConfigItem>
+          <PaddedPreference
+            title="Template"
+            type="dropdown"
+            options={templateOptions}
+            mapName={name => templateNameMap[name]}
+            {...bindValue(parsedFile, 'template', currentTemplate.name)}
+          />
+        </ConfigItem>
+        <ConfigDescription>
+          Which template to use for this sandbox.
+        </ConfigDescription>
+      </PaddedConfig>
+      {currentTemplate.isServer ? (
         <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Template"
-              type="dropdown"
-              options={templateOptions}
-              mapName={name => templateNameMap[name]}
-              {...this.bindValue(parsedFile, 'template', currentTemplate.name)}
-            />
-          </ConfigItem>
+          <PaddedPreference
+            title="Port"
+            type="number"
+            {...bindValue(parsedFile, 'container.port')}
+          />
           <ConfigDescription>
-            Which template to use for this sandbox.
+            What is the main port of your application. Values from 1024 to 65535
           </ConfigDescription>
         </PaddedConfig>
-      </div>
-    );
-  }
-}
+      ) : null}
+    </div>
+  );
+};
 
 export default {
   ConfigWizard,

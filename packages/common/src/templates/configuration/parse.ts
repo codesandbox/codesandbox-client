@@ -17,7 +17,8 @@ type PossibleModule = {
     }
   | {
       path: string;
-    });
+    }
+);
 
 function getCode(
   template: TemplateType,

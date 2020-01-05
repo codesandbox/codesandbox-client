@@ -41,20 +41,22 @@ export async function identify(key: string, value: any) {
 }
 
 export async function setAnonymousId() {
-  let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
+  if (!DO_NOT_TRACK_ENABLED) {
+    let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
 
-  if (!anonymousUid) {
-    anonymousUid = String(
-      Math.random()
-        .toString(36)
-        .substring(2)
-    );
+    if (!anonymousUid) {
+      anonymousUid = String(
+        Math.random()
+          .toString(36)
+          .substring(2)
+      );
 
-    localStorage.setItem(ANONYMOUS_UID_KEY, anonymousUid);
+      localStorage.setItem(ANONYMOUS_UID_KEY, anonymousUid);
+    }
+
+    chameleon.setAnonymousUserId(anonymousUid);
+    vero.setAnonymousUserId(anonymousUid);
   }
-
-  chameleon.setAnonymousUserId(anonymousUid);
-  vero.setAnonymousUserId(anonymousUid);
 }
 
 export async function setUserId(userId: string) {
@@ -98,5 +100,9 @@ export default function track(eventName, secondArg: Object = {}) {
     amplitude.track(eventName, data);
     google.track(eventName, data);
     vero.track(eventName, data);
+    sentry.logBreadcrumb({
+      type: 'analytics',
+      message: eventName,
+    });
   }
 }

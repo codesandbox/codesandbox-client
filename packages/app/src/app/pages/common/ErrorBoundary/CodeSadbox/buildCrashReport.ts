@@ -1,4 +1,5 @@
 import browser from 'browser-detect';
+import VERSION from '@codesandbox/common/lib/version';
 
 interface IbuildCrashReport {
   error?: Error;
@@ -29,9 +30,9 @@ export const buildCrashReport = ({
   <details>
   <summary>Environment</summary>
 
-  | Browser |  Version  | Operating System |
-  | ------- | --------- | ---------------- |
-  | ${name} | ${version} | ${os}           |
+  | Browser |  Version  | Operating System | CodeSandbox Version |
+  | ------- | --------- | ---------------- | ------------------- |
+  | ${name} | ${version} | ${os}           | ${VERSION}          |
 
   **Route:**
   ${window.location.href}

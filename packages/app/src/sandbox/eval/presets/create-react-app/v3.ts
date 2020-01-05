@@ -47,6 +47,7 @@ const BABEL7_CONFIG = {
     plugins: [
       ['proposal-decorators', { legacy: true }],
       '@babel/plugin-transform-react-jsx-source',
+      '@babel/plugin-proposal-optional-chaining',
       'transform-flow-strip-types',
       'transform-destructuring',
       'babel-plugin-macros',

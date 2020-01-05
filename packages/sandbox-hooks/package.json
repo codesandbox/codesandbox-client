@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
-    "codesandbox-api": "^0.0.22",
+    "codesandbox-api": "0.0.23",
     "console-feed": "^2.8.5",
     "react-dev-utils": "3.1.1"
   },

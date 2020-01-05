@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 
 import Column from '@codesandbox/common/lib/components/flex/Column';
@@ -6,18 +6,17 @@ import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
 
-import SandboxInfo from './SandboxInfo';
+import { SandboxInfo } from './SandboxInfo';
 import ShowcasePreview from '../../common/ShowcasePreview';
 
 import { ErrorTitle } from './elements';
 
-export const Showcase: React.FC<{}> = () => {
+export const Showcase: FunctionComponent = () => {
   const {
     state: {
       profile,
       profile: { isLoadingProfile },
       preferences: { settings },
-      isLoggedIn,
     },
     actions: {
       profile: { selectSandboxClicked },
@@ -62,13 +61,15 @@ export const Showcase: React.FC<{}> = () => {
           </Button>
         )}
       </Margin>
+
       <Margin top={2} style={{ width: '100%' }}>
         <Column alignItems="initial">
           <div style={{ flex: 2 }}>
             <ShowcasePreview sandbox={sandbox} settings={settings} />
           </div>
+
           <div style={{ flex: 1 }}>
-            <SandboxInfo sandbox={sandbox} isLoggedIn={isLoggedIn} />
+            <SandboxInfo sandbox={sandbox} />
           </div>
         </Column>
       </Margin>

@@ -75,7 +75,8 @@ export const DO_NOT_TRACK_ENABLED =
       // @ts-ignore
       global.navigator.doNotTrack === '1' ||
       // @ts-ignore
-      global.navigator.msDoNotTrack === '1'
+      global.navigator.msDoNotTrack === '1' ||
+      localStorage.getItem('DO_NOT_TRACK_ENABLED')
   );
 
 export const isAllowedEvent = (eventName, secondArg) => {

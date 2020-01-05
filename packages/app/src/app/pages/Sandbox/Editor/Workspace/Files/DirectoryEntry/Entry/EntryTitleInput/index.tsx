@@ -21,7 +21,7 @@ interface Props {
   onCommit: (value: string, force?: boolean) => void;
   onChange: (value: string) => void;
   onCancel: () => void;
-  error: string | null;
+  error: string | false | null;
   id: string;
 }
 
@@ -63,6 +63,7 @@ export const EntryTitleInput: FunctionComponent<Props> = ({
         onBlur={() => onCommit(currentValue, true)}
         onKeyUp={handleKeyUp}
         ref={select}
+        autoComplete="new-directory"
         value={currentValue}
         id={`input-${id}`}
         aria-invalid={Boolean(error)}

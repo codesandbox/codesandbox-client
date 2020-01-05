@@ -1,14 +1,13 @@
-import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { SignInButton as BaseSignInButton } from 'app/pages/common/SignInButton';
-// @ts-ignore
+import styled, { css } from 'styled-components';
+
+import { SignInButton as SignInButtonBase } from 'app/pages/common/SignInButton';
+
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
 export const Container = styled.div<{ zenMode: boolean }>`
   ${({ theme, zenMode }) => css`
     display: ${zenMode ? 'none' : 'flex'};
-    position: fixed;
-    z-index: 5;
     justify-content: space-between;
     align-items: center;
     background-color: ${theme['titleBar.activeBackground'] ||
@@ -32,14 +31,14 @@ export const Container = styled.div<{ zenMode: boolean }>`
 export const Left = styled.div`
   display: flex;
   height: 100%;
-  z-index: 1;
+  z-index: 999999999999;
 `;
 
 export const Right = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
-  z-index: 1;
+  z-index: 99999999999999;
 `;
 
 export const Centered = styled.div`
@@ -49,6 +48,7 @@ export const Centered = styled.div`
   display: flex;
   justify-content: center;
   z-index: 0; /* So pointer events on left and right continue */
+  z-index: 10; /* override: this probably breaks something, not sure what */
   margin: 0 3rem;
 `;
 
@@ -70,7 +70,6 @@ export const DashboardIcon = styled(Dashboard)`
   align-items: center;
   vertical-align: middle;
   height: 3rem;
-  margin-right: 1rem;
   margin: 0 calc(0.8rem + 2px);
   box-sizing: border-box;
   overflow: hidden;
@@ -89,11 +88,12 @@ export const AccountContainer = styled.div`
 `;
 
 export const UserMenuContainer = styled.div`
+  display: absolute;
+  z-index: 999999999999;
   margin: 5px 0;
-  margin-right: 0;
   font-size: 0.8rem;
 `;
 
-export const SignInButton = styled(BaseSignInButton)`
+export const SignInButton = styled(SignInButtonBase)`
   font-size: 0.75rem;
 `;

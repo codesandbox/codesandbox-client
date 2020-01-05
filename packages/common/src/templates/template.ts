@@ -63,12 +63,6 @@ const CLIENT_VIEWS: ViewConfig[] = [
   },
 ];
 
-// React sandboxes have an additional devtool on top of CLIENT_VIEWS
-const REACT_CLIENT_VIEWS: ViewConfig[] = JSON.parse(
-  JSON.stringify(CLIENT_VIEWS)
-);
-REACT_CLIENT_VIEWS[1].views.push({ id: 'codesandbox.react-devtools' });
-
 const SERVER_VIEWS: ViewConfig[] = [
   {
     views: [{ id: 'codesandbox.browser' }],
@@ -166,7 +160,7 @@ export default class Template {
    */
   getEntries(configurationFiles: ParsedConfigurationFiles): string[] {
     return [
-      configurationFiles.package &&
+      configurationFiles.package?.parsed &&
         this.getMainFromPackage(configurationFiles.package.parsed),
       ...(this.mainFile || []),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
@@ -200,16 +194,6 @@ export default class Template {
     if (this.isServer) {
       return SERVER_VIEWS;
     }
-
-    const dependencies =
-      configurationFiles.package &&
-      configurationFiles.package.parsed &&
-      configurationFiles.package.parsed.dependencies;
-
-    if (dependencies && dependencies.react) {
-      return REACT_CLIENT_VIEWS;
-    }
-
     return CLIENT_VIEWS;
   }
 

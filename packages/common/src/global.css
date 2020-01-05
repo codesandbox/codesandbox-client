@@ -82,14 +82,23 @@ a {
 **/
 body * {
   box-sizing: initial;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* For the vscode editor we want the code to not be anti-aliased on non-retina,
+   this looks much nicer. UI on dark screens should still be anti-aliased.
+*/
+body #vscode-editor * {
   -webkit-font-smoothing: auto;
 }
 
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  /* On Retina the pixel density is so high that we can do anti-aliasing instead of 
-    subpixel anti-aliasing and it will look more beautiful (star)
-  */
-  body * {
+/* On Retina the pixel density is so high that we can do anti-aliasing instead of 
+  subpixel anti-aliasing and it will look more beautiful (star)
+
+  Disabled now because other is more beautiful
+*/
+/* @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body #vscode-editor * {
     -webkit-font-smoothing: antialiased;
   }
-}
+} */

@@ -21,7 +21,7 @@ export const Title = styled.h2(
 export const Description = styled.div(
   css({
     fontSize: 2,
-    color: 'grays.300',
+    color: 'sideBar.foreground',
     marginBottom: 4,
   })
 );

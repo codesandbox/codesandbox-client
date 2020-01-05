@@ -17,7 +17,12 @@ import FilesList from './FilesList';
 
 export const StorageManagementModal: FunctionComponent = () => {
   const {
-    state: { usedStorage, maxStorage, uploadedFiles },
+    state: {
+      editor: { currentSandbox },
+      usedStorage,
+      maxStorage,
+      uploadedFiles,
+    },
     actions: {
       files: { deletedUploadedFile, addedFileToSandbox },
     },
@@ -50,7 +55,7 @@ export const StorageManagementModal: FunctionComponent = () => {
           deleteFile={deletedUploadedFile}
           deleteFiles={files => files.map(id => deletedUploadedFile({ id }))}
           addFilesToSandbox={files => files.map(addedFileToSandbox)}
-          addFileToSandbox={addedFileToSandbox}
+          addFileToSandbox={currentSandbox ? addedFileToSandbox : undefined}
         />
       )}
 

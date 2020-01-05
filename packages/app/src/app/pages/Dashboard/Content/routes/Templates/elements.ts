@@ -1,9 +1,6 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -18,6 +15,8 @@ export const Grid = styled.section`
 
   height: auto;
   overflow-y: auto;
+
+  margin-bottom: 2rem;
 `;
 
 export const EmptyTitle = styled.h2`

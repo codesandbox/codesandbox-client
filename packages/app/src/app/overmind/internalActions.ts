@@ -1,5 +1,7 @@
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import {
+  Module,
   ModuleTab,
   NotificationButton,
   Sandbox,
@@ -7,19 +9,20 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
+import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
+import values from 'lodash-es/values';
 
+import { ApiError } from './effects/api/apiFactory';
 import { createOptimisticModule } from './utils/common';
-import getItems from './utils/items';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
 
-export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
+export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
   { state, effects, actions },
   options
 ) => {
-  state.isAuthenticating = true;
   effects.analytics.track('Sign In', {});
   try {
     const jwt = await actions.internal.signInGithub(options);
@@ -31,12 +34,13 @@ export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
     effects.analytics.setUserId(state.user.id);
     actions.internal.setStoredSettings();
     effects.live.connect();
-    actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
+    actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
     actions.refetchSandboxInfo();
+    state.isAuthenticating = false;
   } catch (error) {
-    actions.internal.addNotification({
-      title: 'Github Authentication Error',
-      type: 'error',
+    actions.internal.handleError({
+      message: 'Could not authenticate with Github',
+      error,
     });
   }
 };
@@ -122,7 +126,7 @@ export const authorize: AsyncAction = async ({ state, effects }) => {
 };
 
 export const signInGithub: Action<
-  { useExtraScopes: boolean },
+  { useExtraScopes?: boolean },
   Promise<string>
 > = ({ effects }, options) => {
   const authPath =
@@ -169,9 +173,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   { state, effects, actions },
   sandbox
 ) => {
-  const oldSandboxId =
-    state.editor.currentId === sandbox.id ? null : state.editor.currentId;
-
   state.editor.sandboxes[sandbox.id] = sandbox;
   state.editor.currentId = sandbox.id;
 
@@ -206,10 +207,11 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
       currentModuleShortid = resolvedModule
         ? resolvedModule.shortid
         : currentModuleShortid;
-    } catch (err) {
-      effects.notificationToast.warning(
-        `Could not find the module ${sandboxOptions.currentModule}`
-      );
+    } catch (error) {
+      actions.internal.handleError({
+        message: `Could not find module ${sandboxOptions.currentModule}`,
+        error,
+      });
     }
   }
 
@@ -261,38 +263,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   state.workspace.project.description = sandbox.description || '';
   state.workspace.project.alias = sandbox.alias || '';
 
-  const items = getItems(state);
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
-
-  state.workspace.openedWorkspaceItem = defaultItem.id;
-
-  await effects.executor.initializeExecutor(sandbox);
-
-  [
-    'connect',
-    'disconnect',
-    'sandbox:status',
-    'sandbox:start',
-    'sandbox:stop',
-    'sandbox:error',
-    'sandbox:log',
-    'sandbox:hibernate',
-    'sandbox:update',
-    'sandbox:port',
-    'shell:out',
-    'shell:exit',
-  ].forEach(message => {
-    effects.executor.listen(message, actions.server.onSSEMessage);
-  });
-
-  effects.executor.setupExecutor();
-
-  /*
-    There seems to be a race condition here? Verify if this still happens with Overmind
-  */
-  if (oldSandboxId !== state.editor.currentId) {
-    delete state.editor.sandboxes[oldSandboxId];
-  }
+  actions.server.startContainer(sandbox);
 };
 
 export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
@@ -308,8 +279,8 @@ export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
 
 export const ensurePackageJSON: AsyncAction = async ({
   state,
-  effects,
   actions,
+  effects,
 }) => {
   const sandbox = state.editor.currentSandbox;
   const existingPackageJson = sandbox.modules.find(
@@ -317,23 +288,38 @@ export const ensurePackageJSON: AsyncAction = async ({
   );
 
   if (sandbox.owned && !existingPackageJson) {
+    const optimisticId = effects.utils.createOptimisticId();
     const optimisticModule = createOptimisticModule({
+      id: optimisticId,
       title: 'package.json',
       code: generatePackageJsonFromSandbox(sandbox),
+      path: '/package.json',
     });
 
-    state.editor.currentSandbox.modules.push(optimisticModule);
+    state.editor.currentSandbox.modules.push(optimisticModule as Module);
+    optimisticModule.path = getModulePath(
+      sandbox.modules,
+      sandbox.directories,
+      optimisticId
+    );
+
+    // We grab the module from the state to continue working with it (proxy)
+    const module = sandbox.modules[sandbox.modules.length - 1];
+
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
 
     try {
-      const updatedModule = await effects.api.createModule(
-        sandbox.id,
-        optimisticModule
-      );
+      const updatedModule = await effects.api.createModule(sandbox.id, module);
 
-      optimisticModule.id = updatedModule.id;
-      optimisticModule.shortid = updatedModule.shortid;
+      module.id = updatedModule.id;
+      module.shortid = updatedModule.shortid;
     } catch (error) {
-      sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1);
+      sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
+      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
+      actions.internal.handleError({
+        message: 'Could not add package.json file',
+        error,
+      });
     }
   }
 };
@@ -352,4 +338,154 @@ export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
   }
 
   state.editor.tabs.splice(tabIndex, 1);
+};
+
+export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
+  context,
+  { error }
+) => {
+  const isGenericError = !('response' in error) || error.response.status >= 500;
+
+  if (isGenericError) {
+    return error.message;
+  }
+
+  const { response } = error as ApiError;
+  /*
+    Update error message with what is coming from the server
+  */
+  const result = response.data;
+
+  if (result) {
+    if (typeof result === 'string') {
+      return result;
+    }
+    if ('errors' in result) {
+      const errors = values(result.errors)[0];
+      const fields = Object.keys(result.errors);
+      if (Array.isArray(errors)) {
+        if (errors[0]) {
+          return `${fields[0]}: ${errors[0]}`; // eslint-disable-line no-param-reassign,prefer-destructuring
+        }
+      } else {
+        return errors; // eslint-disable-line no-param-reassign
+      }
+    } else if (result.error) {
+      return result.error; // eslint-disable-line no-param-reassign
+    } else if (response.status === 413) {
+      return 'File too large, upload limit is 5MB.';
+    }
+  }
+
+  return error.message;
+};
+
+export const handleError: Action<{
+  /*
+    The message that will show as title of the notification
+  */
+  message: string;
+  error: ApiError | Error;
+}> = ({ actions, effects }, { message, error }) => {
+  const isGenericError = !('response' in error) || error.response.status >= 500;
+
+  if (isGenericError) {
+    effects.analytics.logError(error);
+    effects.notificationToast.add({
+      title: message,
+      message: error.message,
+      status: NotificationStatus.ERROR,
+    });
+
+    return;
+  }
+
+  const { response } = error as ApiError;
+
+  if (response.status === 401) {
+    // Reset existing sign in info
+    effects.jwt.reset();
+    effects.analytics.setAnonymousId();
+
+    // Allow user to sign in again in notification
+    effects.notificationToast.add({
+      message: 'Your session seems to be expired, please log in again...',
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Sign in',
+            run: () => {
+              actions.signInClicked({ useExtraScopes: false });
+            },
+          },
+        ],
+      },
+    });
+
+    return;
+  }
+
+  error.message = actions.internal.getErrorMessage({ error });
+
+  const notificationActions = {
+    primary: [],
+  };
+
+  if (error.message.startsWith('You need to sign in to create more than')) {
+    // Error for "You need to sign in to create more than 10 sandboxes"
+    effects.analytics.track('Anonymous Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
+
+    notificationActions.primary.push({
+      label: 'Sign in',
+      run: () => {
+        actions.internal.signIn({});
+      },
+    });
+  } else if (error.message.startsWith('You reached the maximum of')) {
+    effects.analytics.track('Non-Patron Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
+
+    notificationActions.primary.push({
+      label: 'Open Patron Page',
+      run: () => {
+        window.open(patronUrl(), '_blank');
+      },
+    });
+  } else if (
+    error.message.startsWith(
+      'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
+    )
+  ) {
+    effects.analytics.track('Non-Patron Server Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
+
+    notificationActions.primary.push({
+      label: 'Open Patron Page',
+      run: () => {
+        window.open(patronUrl(), '_blank');
+      },
+    });
+  } else if (
+    error.message.startsWith(
+      'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
+    )
+  ) {
+    effects.analytics.track('Patron Server Sandbox Limit Reached', {
+      errorMessage: error.message,
+    });
+  }
+
+  effects.notificationToast.add({
+    title: message,
+    message: error.message,
+    status: NotificationStatus.ERROR,
+    ...(notificationActions.primary.length
+      ? { actions: notificationActions }
+      : {}),
+  });
 };

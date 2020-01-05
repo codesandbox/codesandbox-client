@@ -1,33 +1,44 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { getTime, subMonths, subWeeks, format } from 'date-fns';
-import DayPicker from 'react-day-picker';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import { useOvermind } from 'app/overmind';
-import { SubTitle } from 'app/components/SubTitle';
-import { DelayedAnimation } from 'app/components/DelayedAnimation';
-import { Navigation } from 'app/pages/common/Navigation';
 import 'react-day-picker/lib/style.css';
-import { Container, Buttons, Heading, PickerWrapper } from './elements';
-import SandboxCard from './SandboxCard';
 
-const Curator: React.FC = () => {
+import { Button } from '@codesandbox/common/lib/components/Button';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { SubTitle } from 'app/components/SubTitle';
+import { useOvermind } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
+import { format, getTime, subMonths, subWeeks } from 'date-fns';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+import DayPicker from 'react-day-picker';
+
+import {
+  Buttons,
+  Container,
+  DelayedAnimation,
+  Heading,
+  PickerWrapper,
+} from './elements';
+import { SandboxCard } from './SandboxCard';
+
+export const Curator: FunctionComponent = () => {
   const {
-    state: {
-      explore: { popularSandboxes },
-    },
     actions: {
       explore: { pickSandboxModal, popularSandboxesMounted },
     },
+    state: {
+      explore: { popularSandboxes },
+    },
   } = useOvermind();
-
   const [selectedDate, setSelectedDate] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
 
   const fetchPopularSandboxes = useCallback(
     date => {
-      popularSandboxesMounted({ date });
+      popularSandboxesMounted(date);
     },
     [popularSandboxesMounted]
   );
@@ -38,7 +49,7 @@ const Curator: React.FC = () => {
 
   const pickSandbox = useCallback(
     (id, title, description) => {
-      pickSandboxModal({ details: { description, id, title } });
+      pickSandboxModal({ description, id, title });
     },
     [pickSandboxModal]
   );
@@ -116,21 +127,9 @@ const Curator: React.FC = () => {
             ))}
           </Container>
         ) : (
-          <DelayedAnimation
-            style={{
-              color: 'rgba(255, 255, 255, 0.5)',
-              fontWeight: 600,
-              marginTop: '2rem',
-              textAlign: 'center',
-            }}
-            delay={0}
-          >
-            Fetching Sandboxes...
-          </DelayedAnimation>
+          <DelayedAnimation>Fetching Sandboxes...</DelayedAnimation>
         )}
       </Margin>
     </MaxWidth>
   );
 };
-
-export default Curator;

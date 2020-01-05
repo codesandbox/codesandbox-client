@@ -11,7 +11,24 @@ import { PricingModal } from './PricingModal';
 import { Content } from './elements';
 
 const Patron: React.FC = () => {
-  const { actions } = useOvermind();
+  const {
+    state: { hasLoadedApp, hasLogIn, user },
+    actions,
+  } = useOvermind();
+
+  if (!hasLogIn) {
+    location.href = '/pro';
+  }
+  // don't send them away before authentication
+  if (hasLoadedApp && user) {
+    if (!user.subscription) {
+      location.href = '/pricing'; // if no subscription, to pricing with you!
+    } else if (
+      user.subscription.plan !== 'patron' // if subscription but not patron, go to pro
+    ) {
+      location.href = '/pro';
+    }
+  }
 
   useEffect(() => {
     actions.patron.patronMounted();

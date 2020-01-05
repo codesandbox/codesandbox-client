@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const childProcess = require('child_process');
 const VERSION = require('@codesandbox/common/lib/version').default;
 

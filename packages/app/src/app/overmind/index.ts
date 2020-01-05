@@ -4,7 +4,9 @@ import {
   IDerive,
   IOnInitialize,
   IOperator,
+  IReaction,
   IState,
+  Overmind,
 } from 'overmind';
 import { createHook } from 'overmind-react';
 import { merge, namespaced } from 'overmind/config';
@@ -71,6 +73,19 @@ export interface Operator<Input = void, Output = Input>
 export interface Derive<Parent extends IState, Output>
   extends IDerive<Config, Parent, Output> {}
 
+export interface Reaction extends IReaction<Config> {}
+
 export const connect = createConnect<typeof config>();
 
 export const useOvermind = createHook<typeof config>();
+
+export const Observer: React.FC<{
+  children: <T>(overmind: {
+    state: Overmind<Config>['state'];
+    actions: Overmind<Config>['actions'];
+  }) => T;
+}> = ({ children }) => {
+  const overmind = useOvermind();
+
+  return children(overmind);
+};

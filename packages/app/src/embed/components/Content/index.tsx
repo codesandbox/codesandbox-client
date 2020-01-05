@@ -1,47 +1,43 @@
-// @flow
-import * as React from 'react';
-import {
-  Sandbox,
-  Module,
-  ModuleError,
-  ModuleCorrection,
-  Settings,
-  DevToolsTabPosition,
-} from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
-import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
-import { CodeEditor } from 'app/components/CodeEditor';
-import { Editor } from 'app/components/CodeEditor/types'; // eslint-disable-line
-import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
-import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-// eslint-disable-next-line import/extensions
-import getType from 'app/utils/get-type.ts';
-
+import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import {
+  findMainModule,
+  resolveModule,
+} from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
-
-import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
+import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import {
-  TabTitle,
-  TabDir,
-  StyledCloseIcon,
-} from 'app/pages/Sandbox/Editor/Content/Tabs/Tab/elements';
-
+  DevToolsTabPosition,
+  Module,
+  ModuleCorrection,
+  ModuleError,
+  Sandbox,
+  Settings,
+} from '@codesandbox/common/lib/types';
+import { Editor } from 'app/components/CodeEditor/types'; // eslint-disable-line
 import {
+  DevToolProps,
   DevTools,
   IViewType,
-  DevToolProps,
 } from 'app/components/Preview/DevTools';
-import { clearCorrectionsFromAction } from 'app/utils/corrections';
-
+import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
+import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import {
-  resolveModule,
-  findMainModule,
-} from '@codesandbox/common/lib/sandbox/modules';
-import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
-import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
+  StyledCloseIcon,
+  TabDir,
+  TabTitle,
+} from 'app/pages/Sandbox/Editor/Content/Tabs/Tab/elements';
+import { clearCorrectionsFromAction } from 'app/utils/corrections';
+import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
+// @flow
+import * as React from 'react';
 
-import { Container, Tabs, Split } from './elements';
+// borrow the menu icon from Header in case header is not shown
+import { MenuIcon } from '../legacy/Header/elements';
+import SplitPane from '../SplitPane';
+import { CodeEditor } from './CodeEditor';
+import { Container, MenuInTabs, Tabs } from './elements';
 
 type Props = {
   showEditor: boolean;
@@ -62,15 +58,19 @@ type Props = {
   setCurrentModule: (moduleId: string) => void;
   useCodeMirror: boolean;
   enableEslint: boolean;
-  editorSize: number;
   highlightedLines: number[];
   forceRefresh: boolean;
   expandDevTools: boolean;
+  hideDevTools: boolean;
   runOnClick: boolean;
   verticalMode: boolean;
   tabs?: string[];
   isNotSynced: boolean;
   tabCount: number;
+  sidebarOpen: boolean;
+  toggleSidebar: () => void;
+  toggleLike: () => void;
+  editorSize: number;
 };
 
 type State = {
@@ -80,7 +80,7 @@ type State = {
   running: boolean;
   currentDevToolPosition: DevToolsTabPosition;
 };
-
+// eslint-disable-next-line import/no-default-export
 export default class Content extends React.PureComponent<Props, State> {
   state: State;
 
@@ -363,6 +363,19 @@ export default class Content extends React.PureComponent<Props, State> {
     });
   };
 
+  refresh = () => {
+    if (this.preview && this.preview.handleRefresh) {
+      this.preview.handleRefresh();
+    }
+  };
+
+  openInNewWindow = () => {
+    // this is set in app/Preview
+    // i don't know why but I ain't complaining
+    // @ts-ignore
+    if (window.openNewWindow) window.openNewWindow();
+  };
+
   onPreviewInitialized = (preview: BasePreview) => {
     this.preview = preview;
     return () => {};
@@ -380,9 +393,13 @@ export default class Content extends React.PureComponent<Props, State> {
       previewWindow,
       currentModule,
       hideNavigation,
-      editorSize,
       expandDevTools,
+      hideDevTools,
       verticalMode,
+      sidebarOpen,
+      toggleSidebar,
+      toggleLike,
+      editorSize,
     } = this.props;
 
     const { isInProjectView } = this.state;
@@ -395,7 +412,7 @@ export default class Content extends React.PureComponent<Props, State> {
 
     const templateDefinition = getTemplate(sandbox.template);
     const parsedConfigurations = parseSandboxConfigurations(sandbox);
-    const views = getPreviewTabs(sandbox, parsedConfigurations);
+    let views = getPreviewTabs(sandbox, parsedConfigurations);
 
     const sandboxConfig = sandbox.modules.find(
       x => x.directoryShortid == null && x.title === 'sandbox.config.json'
@@ -410,6 +427,10 @@ export default class Content extends React.PureComponent<Props, State> {
       } catch (e) {
         /* swallow */
       }
+    }
+
+    if (hideDevTools) {
+      views = [views[0]]; // show preview only
     }
 
     if (view !== 'browser') {
@@ -430,7 +451,7 @@ export default class Content extends React.PureComponent<Props, State> {
       If the user wants to override the default, they can
       do that by using the explicit flag.
     */
-    if (typeof expandDevTools !== 'undefined') {
+    if (typeof expandDevTools !== 'undefined' && views[1]) {
       views[1].open = expandDevTools;
     }
 
@@ -460,17 +481,31 @@ export default class Content extends React.PureComponent<Props, State> {
       actions: [],
     };
 
+    // TODO: we use verticalMode as a very very bad proxy
+    // for identifying mobile mode
+    // mobile isn't even vertical anymore!
+    // we should really rename it
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
-        {showEditor && (
-          // @ts-ignore
-          <Split
-            show={showEditor}
-            only={showEditor && !showPreview}
-            size={editorSize}
-            verticalMode={verticalMode}
-          >
+        <SplitPane
+          sandbox={sandbox}
+          showEditor={showEditor}
+          showPreview={showPreview}
+          isMobile={verticalMode}
+          sidebarOpen={sidebarOpen}
+          showNavigationActions={hideNavigation}
+          refresh={this.refresh}
+          openInNewWindow={this.openInNewWindow}
+          toggleLike={toggleLike}
+          initialEditorSize={editorSize}
+          hideDevTools={hideDevTools}
+        >
+          <>
             <Tabs>
+              <MenuInTabs>
+                <MenuIcon onClick={toggleSidebar} />
+              </MenuInTabs>
+
               {this.state.tabs.map((module, i) => {
                 const tabsWithSameName = this.state.tabs.filter(
                   m => m.title === module.title
@@ -500,7 +535,6 @@ export default class Content extends React.PureComponent<Props, State> {
                     {({ hovering, closeTab }) => (
                       // TODO deduplicate this
                       <>
-                        <EntryIcons type={getType(module.title)} />
                         <TabTitle>{module.title}</TabTitle>
                         {dirName && (
                           <TabDir>
@@ -535,17 +569,8 @@ export default class Content extends React.PureComponent<Props, State> {
                 highlightedLines={this.props.highlightedLines}
               />
             </div>
-          </Split>
-        )}
-
-        {showPreview && (
-          // @ts-ignore
-          <Split
-            show={showPreview}
-            only={showPreview && !showEditor}
-            size={100 - editorSize}
-            verticalMode={verticalMode}
-          >
+          </>
+          <>
             {!this.state.running ? (
               <RunOnClick onClick={() => this.setState({ running: true })} />
             ) : (
@@ -582,8 +607,8 @@ export default class Content extends React.PureComponent<Props, State> {
                 ))}
               </div>
             )}
-          </Split>
-        )}
+          </>
+        </SplitPane>
       </Container>
     );
   }
