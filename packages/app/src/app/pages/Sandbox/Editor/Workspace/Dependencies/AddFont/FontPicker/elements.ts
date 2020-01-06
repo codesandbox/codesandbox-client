@@ -9,14 +9,12 @@ const svg = ({ theme }) =>
 const makeDarker = ({ theme }) =>
   Color(theme['input.background'])
     .darken(theme.light ? 0.1 : 0.3)
-    .rgb()
-    .toString();
+    .rgbString();
 
 const makeLighter = ({ theme }) =>
   Color(theme['sideBar.background'])
     .lighten(0.3)
-    .rgb()
-    .toString();
+    .rgbString();
 
 export const SearchFonts = styled.input`
   ${({ theme }) => css`
