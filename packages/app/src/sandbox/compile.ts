@@ -543,21 +543,6 @@ async function compile({
 
     debug(`Transpilation time ${Date.now() - t}ms`);
 
-    // Save the resulting cache from the transpilation. In evaluation we can sometimes refresh,
-    // which would cause the cache to go wasted
-    saveCache(
-      sandboxId,
-      managerModuleToTranspile,
-      manager,
-      changedModuleCount,
-      firstLoad
-    ).catch(e => {
-      console.error(
-        'Something went wrong while saving the cache, this is not critical'
-      );
-      console.error(e);
-    });
-
     dispatch({ type: 'status', status: 'evaluating' });
     manager.setStage('evaluation');
 
@@ -680,6 +665,14 @@ async function compile({
     dispatch({
       type: 'success',
     });
+
+    saveCache(
+      sandboxId,
+      managerModuleToTranspile,
+      manager,
+      changedModuleCount,
+      firstLoad
+    );
 
     setTimeout(() => {
       try {
