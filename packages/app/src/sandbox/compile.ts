@@ -743,15 +743,13 @@ async function compile({
 }
 
 const tasks: CompileOptions[] = [];
-let runningTask = false;
+let runningTask = null;
 
 async function executeTaskIfAvailable() {
   if (tasks.length) {
-    const task = tasks.pop();
-
-    runningTask = true;
-    await compile(task);
-    runningTask = false;
+    runningTask = tasks.pop();
+    await compile(runningTask);
+    runningTask = null;
 
     executeTaskIfAvailable();
   }
@@ -764,6 +762,11 @@ async function executeTaskIfAvailable() {
  * latest version.
  */
 export default function queueTask(data: CompileOptions) {
+  // If same task is running, ignore it.
+  if (runningTask && JSON.stringify(runningTask) === JSON.stringify(data)) {
+    return;
+  }
+
   tasks[0] = data;
 
   if (!runningTask) {
