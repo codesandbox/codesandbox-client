@@ -21,7 +21,14 @@ function debounce(func, wait, immediate) {
 	};
 };
 
-const enqueueUpdate = debounce(Refresh.performReactRefresh, 30);
+const enqueueUpdate = () => {
+  try {
+    Refresh.performReactRefresh()
+  } catch (e) {
+    module.hot.decline();
+    throw e;
+  }
+}
 
 function isReactRefreshBoundary(moduleExports) {
   if (Object.keys(Refresh).length === 0) {
@@ -56,7 +63,7 @@ function isReactRefreshBoundary(moduleExports) {
 };
 
 module.exports = {
-  enqueueUpdate,
+  enqueueUpdate: debounce(enqueueUpdate, 30),
   isReactRefreshBoundary
 };
 `.trim();

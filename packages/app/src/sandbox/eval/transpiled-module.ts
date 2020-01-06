@@ -867,6 +867,7 @@ export default class TranspiledModule {
           if (typeof path === 'undefined') {
             this.hmrConfig = this.hmrConfig || new HMR();
             this.hmrConfig.setType('decline');
+            this.resetCompilation();
           } else {
             const paths = typeof path === 'string' ? [path] : path;
 
@@ -877,6 +878,7 @@ export default class TranspiledModule {
               );
               tModule.hmrConfig = tModule.hmrConfig || new HMR();
               tModule.hmrConfig.setType('decline');
+              tModule.resetCompilation();
             });
           }
           manager.enableWebpackHMR();
