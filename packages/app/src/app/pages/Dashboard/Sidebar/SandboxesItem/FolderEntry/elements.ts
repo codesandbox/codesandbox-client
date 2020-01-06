@@ -4,13 +4,6 @@ import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 export const Container = styled(NavLink)<{
   depth?: number;
-  as?: any;
-  onClick?: any;
-  exact?: any;
-  to?: any;
-  onKeyDown?: any;
-  tabIndex?: any;
-  style?: any;
 }>`
   transition: 0.25s ease all;
   display: flex;
