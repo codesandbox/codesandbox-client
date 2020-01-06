@@ -3,6 +3,7 @@ import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
 import macrosPlugin from 'babel-plugin-macros';
 import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
+import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
@@ -34,7 +35,7 @@ const { BrowserFS } = self;
 BrowserFS.configure({ fs: 'InMemory' }, () => {});
 
 self.process = {
-  env: { NODE_ENV: 'production' },
+  env: { NODE_ENV: 'development', BABEL_ENV: 'development' },
   platform: 'linux',
   argv: [],
   stderr: {},
@@ -632,6 +633,23 @@ self.addEventListener('message', async event => {
       ) === -1
     ) {
       Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
+    }
+
+    const coalescingInPlugins =
+      flattenedPlugins.indexOf('proposal-nullish-coalescing-operator') > -1 ||
+      flattenedPlugins.indexOf(
+        '@babel/plugin-proposal-nullish-coalescing-operator'
+      ) > -1;
+    if (
+      coalescingInPlugins &&
+      Object.keys(Babel.availablePlugins).indexOf(
+        'proposal-nullish-coalescing-operator'
+      ) === -1
+    ) {
+      Babel.registerPlugin(
+        'proposal-nullish-coalescing-operator',
+        coalescingPlugin
+      );
     }
 
     if (

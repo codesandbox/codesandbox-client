@@ -6,7 +6,7 @@ import insertCss from './utils/insert-css';
 import toDefinition from './utils/to-definition';
 import getModules from './get-modules';
 
-const getStyleId = id => id + '-css'; // eslint-disable-line
+const getStyleId = (id: string) => id + '-css'; // eslint-disable-line
 
 class StyleTranspiler extends Transpiler {
   constructor() {
@@ -29,7 +29,7 @@ class StyleTranspiler extends Transpiler {
 
     if (loaderContext.options.module) {
       return getModules(code, loaderContext).then(({ css, exportTokens }) => {
-        let result = insertCss(id, css);
+        let result = insertCss(id, css, loaderContext.options.hmrEnabled);
         result += `\nmodule.exports=${JSON.stringify(exportTokens)};`;
 
         dispatch({
@@ -41,7 +41,7 @@ class StyleTranspiler extends Transpiler {
       });
     }
 
-    const result = insertCss(id, code);
+    const result = insertCss(id, code, loaderContext.options.hmrEnabled);
     return Promise.resolve({ transpiledCode: result });
   }
 }

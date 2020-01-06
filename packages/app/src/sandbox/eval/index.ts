@@ -1,4 +1,4 @@
-// @ts-check
+/* eslint-disable import/no-named-as-default-member, import/default, import/no-named-as-default */
 import {
   react,
   vue,
@@ -14,7 +14,9 @@ import {
   reason,
 } from '@codesandbox/common/lib/templates';
 
-import reactPreset from './presets/create-react-app';
+import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
+import { PackageJSON } from '@codesandbox/common/lib/types';
+import { reactPresetV1, reactPresetV3 } from './presets/create-react-app';
 import reactTsPreset from './presets/create-react-app-typescript';
 import vuePreset from './presets/vue-cli';
 import preactPreset from './presets/preact-cli';
@@ -27,10 +29,15 @@ import reasonPreset from './presets/reason';
 import dojoPreset from './presets/dojo';
 import customPreset from './presets/custom';
 
-export default function getPreset(template: string) {
+export default function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
     case react.name:
-      return reactPreset();
+      if (isBabel7(pkg.dependencies, pkg.devDependencies)) {
+        return reactPresetV3();
+      }
+
+      return reactPresetV1();
+
     case reactTs.name:
       return reactTsPreset();
     case reason.name:
@@ -54,6 +61,6 @@ export default function getPreset(template: string) {
     case custom.name:
       return customPreset();
     default:
-      return reactPreset();
+      return reactPresetV3();
   }
 }

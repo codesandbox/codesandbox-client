@@ -141,9 +141,9 @@ type Compilation = {
   id: string;
   exports: any;
   hot: {
-    accept: Function | ((arg: string | string[], cb: Function) => void);
+    accept: (() => void) | ((arg: string | string[], cb: () => void) => void);
     decline: (path: string | Array<string>) => void;
-    dispose: (cb: Function) => void;
+    dispose: (cb: () => void) => void;
     data: Object;
     status: () => HMRStatus;
     addStatusHandler: (cb: (status: HMRStatus) => void) => void;
@@ -458,7 +458,6 @@ export default class TranspiledModule {
           code,
         };
 
-        // $FlowIssue
         let transpiledModule: TranspiledModule;
         if (!overwrite) {
           try {
@@ -792,7 +791,7 @@ export default class TranspiledModule {
     if (manager.webpackHMR) {
       if (!this.compilation) {
         const shouldReloadPage = this.hmrConfig
-          ? this.hmrConfig.isDeclined(this.isEntry)
+          ? this.hmrConfig.isDeclined(this.isEntry) && !manager.isFirstLoad
           : this.isEntry && !this.isTestFile;
 
         if (shouldReloadPage) {
@@ -868,6 +867,7 @@ export default class TranspiledModule {
           if (typeof path === 'undefined') {
             this.hmrConfig = this.hmrConfig || new HMR();
             this.hmrConfig.setType('decline');
+            this.resetCompilation();
           } else {
             const paths = typeof path === 'string' ? [path] : path;
 
@@ -878,11 +878,12 @@ export default class TranspiledModule {
               );
               tModule.hmrConfig = tModule.hmrConfig || new HMR();
               tModule.hmrConfig.setType('decline');
+              tModule.resetCompilation();
             });
           }
           manager.enableWebpackHMR();
         },
-        dispose: (cb: Function) => {
+        dispose: (cb: () => void) => {
           this.hmrConfig = this.hmrConfig || new HMR();
 
           this.hmrConfig.setDisposeHandler(cb);
