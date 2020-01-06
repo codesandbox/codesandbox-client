@@ -1,10 +1,8 @@
-// @flow
-
 export default class HMR {
-  callback: ?() => void;
-  disposeHandler: ?(data: Object) => void;
+  callback?: () => void;
+  disposeHandler?: (data: Object) => void;
   data: Object;
-  type: ?'accept' | 'decline';
+  type?: 'accept' | 'decline';
   dirty: boolean = false;
   selfAccepted: boolean = false;
 
@@ -22,12 +20,12 @@ export default class HMR {
     }
   }
 
-  setAcceptCallback(callback?: Function) {
+  setAcceptCallback(callback?: () => void) {
     this.callback = callback;
     this.setSelfAccepted(false);
   }
 
-  setDisposeHandler(callback: Function) {
+  setDisposeHandler(callback: () => void) {
     this.disposeHandler = callback;
   }
 
