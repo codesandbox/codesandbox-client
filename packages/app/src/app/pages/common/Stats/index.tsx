@@ -19,6 +19,7 @@ const StatsComponent: React.FC<Props> = ({ sandbox }) => {
   return (
     <StatsWrapper>
       <Stat
+        // @ts-ignore
         Icon={<LikeHeart sandbox={sandbox} colorless />}
         count={sandbox.likeCount}
       />

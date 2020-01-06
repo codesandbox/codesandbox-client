@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 
 import FolderIcon from 'react-icons/lib/md/folder';
