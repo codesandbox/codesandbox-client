@@ -30,10 +30,7 @@ export const SandboxInfo: FunctionComponent<Props> = ({ sandbox }) => {
       <Row alignItems="center">
         <Title>
           {getSandboxName(sandbox)} {}
-          {isLoggedIn ? (
-            // @ts-ignore
-            <Like sandbox={sandbox} />
-          ) : null}
+          {isLoggedIn ? <Like sandbox={sandbox} /> : null}
         </Title>
       </Row>
 

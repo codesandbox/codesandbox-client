@@ -80,7 +80,6 @@
     "@styled-system/css": "^5.0.23",
     "@svgr/core": "^2.4.1",
     "@typeform/embed": "^0.12.0",
-    "@types/jest-diff": "^24.3.0",
     "@types/rc-slider": "^8.6.5",
     "@vue/babel-preset-app": "^3.2.0",
     "airtable": "^0.5.8",
