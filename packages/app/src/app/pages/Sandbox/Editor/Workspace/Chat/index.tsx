@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { sortBy, takeRight } from 'lodash-es';
@@ -113,6 +112,7 @@ export const Chat: React.FC = () => {
       <AutosizeTextArea
         useCacheForDOMMeasurements
         value={value}
+        // @ts-ignore
         onChange={handleChange}
         placeholder="Send a message..."
         style={{
@@ -120,7 +120,9 @@ export const Chat: React.FC = () => {
           minHeight: height,
           marginTop: '0.5rem',
         }}
+        // @ts-ignore
         onKeyDown={handleKeyDown}
+        // @ts-ignore
         onHeightChange={setHeight}
       />
     </Container>

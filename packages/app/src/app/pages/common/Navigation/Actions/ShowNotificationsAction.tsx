@@ -19,7 +19,6 @@ export const ShowNotificationsAction: FunctionComponent<Props> = ({
   } = useOvermind();
 
   return (
-    // @ts-ignore
     <Action
       aria-label={unreadCount > 0 ? 'Show Notifications' : 'No Notifications'}
       as="button"

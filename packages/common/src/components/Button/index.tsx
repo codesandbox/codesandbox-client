@@ -25,11 +25,9 @@ const Button: FunctionComponent<Props> = ({ style = {}, ...props }) => {
   }
 
   if (props.href) {
-    // @ts-ignore
     return <AButton {...props} style={style} />;
   }
 
-  // @ts-ignore
   return <ReakitButton {...props} style={style} />;
 };
 
