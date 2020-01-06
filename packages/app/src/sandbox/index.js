@@ -27,7 +27,7 @@ const debug = _debug('cs:sandbox');
 export const SCRIPT_VERSION =
   document.currentScript && document.currentScript.src;
 
-debug('Booting sandbox');
+debug('Booting sandbox v2');
 
 requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js', {});
