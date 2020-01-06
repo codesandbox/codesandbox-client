@@ -1,16 +1,17 @@
-import React from 'react';
-import Helmet from 'react-helmet';
-import { Observer } from 'app/componentConnectors';
-import { Query } from 'react-apollo';
 import { basename } from 'path';
+
 import { CreateNewSandboxButton } from 'app/components/CreateNewSandbox';
-import { Content as Sandboxes } from '../../Sandboxes';
-import { Navigation } from './Navigation';
-// import Folders from './Folders';
-import getMostUsedTemplate from '../../../utils/get-most-used-template';
+import { Observer } from 'app/overmind';
+import React from 'react';
+import { Query } from 'react-apollo';
+import Helmet from 'react-helmet';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
+// import Folders from './Folders';
+import getMostUsedTemplate from '../../../utils/get-most-used-template';
+import { Content as Sandboxes } from '../../Sandboxes';
 import { getPossibleTemplates } from '../../Sandboxes/utils';
+import { Navigation } from './Navigation';
 
 const PathedSandboxes = props => {
   const path = '/' + decodeURIComponent(props.match.params.path || '');
@@ -26,7 +27,7 @@ const PathedSandboxes = props => {
       >
         {({ loading, error, data }) => (
           <Observer>
-            {({ store }) => {
+            {({ state }) => {
               if (error) {
                 console.error(error);
                 return <div>Error!</div>;
@@ -44,7 +45,7 @@ const PathedSandboxes = props => {
               const noTemplateSandboxes = sandboxes.filter(
                 s => !s.customTemplate
               );
-              const orderedSandboxes = store.dashboard.getFilteredSandboxes(
+              const orderedSandboxes = state.dashboard.getFilteredSandboxes(
                 noTemplateSandboxes
               );
 
