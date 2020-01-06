@@ -791,7 +791,7 @@ export default class TranspiledModule {
     if (manager.webpackHMR) {
       if (!this.compilation) {
         const shouldReloadPage = this.hmrConfig
-          ? this.hmrConfig.isDeclined(this.isEntry) && !manager.isFirstLoad
+          ? this.hmrConfig.isDeclined(this.isEntry)
           : this.isEntry && !this.isTestFile;
 
         if (shouldReloadPage) {
