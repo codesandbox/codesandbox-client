@@ -52,6 +52,7 @@ const BABEL7_CONFIG = {
       ['proposal-decorators', { legacy: true }],
       '@babel/plugin-transform-react-jsx-source',
       '@babel/plugin-proposal-optional-chaining',
+      '@babel/plugin-proposal-nullish-coalescing-operator',
       'transform-flow-strip-types',
       'transform-destructuring',
       'babel-plugin-macros',
