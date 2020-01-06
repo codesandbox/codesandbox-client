@@ -183,7 +183,8 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   state.editor.mainModuleShortid = main.shortid;
 
   // Only change the module shortid if it doesn't exist in the new sandbox
-  // What is the scenario here?
+  // This can happen when a sandbox is opened that's different from the current
+  // sandbox, with completely different files
   if (
     !sandbox.modules.find(module => module.shortid === currentModuleShortid)
   ) {
