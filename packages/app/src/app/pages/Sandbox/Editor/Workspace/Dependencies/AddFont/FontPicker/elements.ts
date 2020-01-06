@@ -9,12 +9,14 @@ const svg = ({ theme }) =>
 const makeDarker = ({ theme }) =>
   Color(theme['input.background'])
     .darken(theme.light ? 0.1 : 0.3)
-    .rgbString();
+    .rgb()
+    .toString();
 
 const makeLighter = ({ theme }) =>
   Color(theme['sideBar.background'])
     .lighten(0.3)
-    .rgbString();
+    .rgb()
+    .toString();
 
 export const SearchFonts = styled.input`
   ${({ theme }) => css`
@@ -108,7 +110,7 @@ background-color: ${theme['input.background'] || 'rgba(0, 0, 0, 0.3)'};
       top: 50%;
       transform: translateY(-50%);
     }
-`};æ
+`};
 `;
 
 export const Arrow = styled.div`

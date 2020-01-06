@@ -12,7 +12,8 @@ export const BlockHeader = styled.div`
   background-color: ${props =>
     Color(props.theme['sideBar.background'])
       .darken(props.theme.light ? 0.1 : 0.3)
-      .rgbString()};
+      .rgb()
+      .toString()};
 `;
 
 export const Container = styled.div`
