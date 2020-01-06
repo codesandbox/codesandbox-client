@@ -1,4 +1,4 @@
-import Template, { ViewConfig } from '../template';
+import Template, { ViewConfig, ParsedConfigurationFiles } from '../template';
 
 export class ReactTemplate extends Template {
   getViews(): ViewConfig[] {
@@ -16,5 +16,15 @@ export class ReactTemplate extends Template {
     ];
 
     return REACT_VIEWS;
+  }
+
+  getDefaultOpenedFiles(configurationFiles: ParsedConfigurationFiles) {
+    let entries = [];
+
+    entries.push('/src/App.js');
+    entries.push('/src/App.tsx');
+    entries = entries.concat(this.getEntries(configurationFiles));
+
+    return entries;
   }
 }

@@ -13,13 +13,7 @@ export default new ReactTemplate(
     showOnHomePage: true,
     popular: true,
     main: true,
-    mainFile: [
-      '/src/App.js',
-      '/src/App.tsx',
-      '/src/index.js',
-      '/src/index.tsx',
-      '/src/index.ts',
-    ],
+    mainFile: ['/src/index.js', '/src/index.tsx', '/src/index.ts'],
     extraConfigurations: {
       '/jsconfig.json': configurations.jsconfig,
       '/tsconfig.json': configurations.tsconfig,
