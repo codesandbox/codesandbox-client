@@ -499,6 +499,7 @@ export default class Content extends React.PureComponent<Props, State> {
           toggleLike={toggleLike}
           initialEditorSize={editorSize}
           hideDevTools={hideDevTools}
+          setDragging={this.setDragging}
         >
           <>
             <Tabs>

@@ -1,7 +1,7 @@
 import React from 'react';
 import SplitPane from 'react-split-pane';
 import { GlobalActions, NavigationActions } from '../Actions';
-import { Container, PaneContainer, PointerOverlay } from './elements';
+import { Container, PaneContainer, RESIZER_WIDTH } from './elements';
 
 export default function SplitView({
   showEditor,
@@ -16,6 +16,7 @@ export default function SplitView({
   toggleLike,
   initialEditorSize = 50, // in percent
   hideDevTools,
+  setDragging: setDraggingProp,
   ...props
 }) {
   /* Things this component should do
@@ -30,7 +31,8 @@ export default function SplitView({
   // TODO: pick this from the sidebar or ref instead of hardcoding
   const sidebarWidth = 250;
 
-  const maxSize = sidebarOpen ? windowWidth - sidebarWidth : windowWidth;
+  const maxSize =
+    (sidebarOpen ? windowWidth - sidebarWidth : windowWidth) - RESIZER_WIDTH;
 
   // #1. set initial size based on props
   let initialSize = null;
@@ -76,10 +78,14 @@ export default function SplitView({
     }
   };
 
-  const onDragStarted = () => setDragging(true);
+  const onDragStarted = () => {
+    setDragging(true);
+    setDraggingProp(true);
+  };
 
   const onDragFinished = newSize => {
     setDragging(false);
+    setDraggingProp(false);
 
     // react-split-pane doesn't set newSize until
     // the end of the first drag, that breaks the click case
@@ -151,7 +157,6 @@ export default function SplitView({
               offsetBottom={!hideDevTools && size < maxSize}
             />
           ) : null}
-          {isDragging ? <PointerOverlay /> : null}
           {children[1]}
         </PaneContainer>
       </SplitPane>
