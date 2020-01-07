@@ -28,8 +28,6 @@ const viewports = {
   },
 };
 
-console.log(theme);
-
 // new globals based on theme?
 // using sidebar as the styles for body for now 🤷
 const GlobalStyle = createGlobalStyle`

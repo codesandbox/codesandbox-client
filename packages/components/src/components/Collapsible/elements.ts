@@ -17,13 +17,14 @@ export const Header = styled.div(
     height: '32px',
     paddingX: 3,
     borderBottom: '1px solid',
+    // Note: sideBarSectionHeader exists but we dont use it because it is rarely implemented
+    // in themes, so intentionally ignoring the declaration and using sidebar colors makes sense.
     borderColor: 'sideBar.border',
     cursor: 'pointer',
     ':hover': {
-      // TODO: this should come from a token which we name - Sidebar.hoverBackground?
-      backgroundColor: 'sideBar.border',
+      backgroundColor: 'sideBar.hoverBackground',
       svg: {
-        // TODO: this should come from somewhere else - text muted?
+        // TODO: this should come from somewhere else - text muted maybe?
         color: 'grays.300',
       },
     },
