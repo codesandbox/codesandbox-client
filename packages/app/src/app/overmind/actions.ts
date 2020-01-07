@@ -90,12 +90,7 @@ export const modalOpened: Action<{
   }
 };
 
-export const modalClosed: Action = ({ state, effects }) => {
-  // We just start it whenever it closes, if already started nothing happens
-  if (state.currentModal === 'preferences') {
-    effects.keybindingManager.start();
-  }
-
+export const modalClosed: Action = ({ state }) => {
   state.currentModal = null;
 };
 
