@@ -20,10 +20,7 @@ export const Grid = styled.div<{ columnGap?: number; rowGap?: number }>(
 // start | start + end | start + span | span
 // span + end is also possible but not implemented here
 export const Column = styled.div<{
-  start?: number | Array<number | string>;
-  end?: number | Array<number>;
-  span?: number | Array<number>;
-}>(({ start, end, span }) => {
+({ start, end, span }) => {
   const styles: {
     gridColumnStart?: number | Array<number | string>;
     gridColumnEnd?: number | string | Array<number> | Array<string>;

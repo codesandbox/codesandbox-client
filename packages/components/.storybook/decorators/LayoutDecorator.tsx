@@ -1,3 +1,4 @@
+import { DecoratorFunction } from '@storybook/addons';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -28,6 +29,6 @@ const ColoredChildren = styled.div`
   }
 `;
 
-export const LayoutDecorator = story => (
+export const LayoutDecorator: DecoratorFunction = story => (
   <ColoredChildren>{story()}</ColoredChildren>
 );
