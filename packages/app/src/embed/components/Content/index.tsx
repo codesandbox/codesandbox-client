@@ -79,6 +79,7 @@ type State = {
   dragging: boolean;
   running: boolean;
   currentDevToolPosition: DevToolsTabPosition;
+  editorSize: number;
 };
 // eslint-disable-next-line import/no-default-export
 export default class Content extends React.PureComponent<Props, State> {
@@ -98,6 +99,7 @@ export default class Content extends React.PureComponent<Props, State> {
         devToolIndex: 0,
         tabPosition: 0,
       },
+      editorSize: this.props.editorSize,
     };
 
     this.errors = [];
@@ -369,6 +371,12 @@ export default class Content extends React.PureComponent<Props, State> {
     }
   };
 
+  setEditorSize = editorSize => {
+    this.setState({
+      editorSize,
+    });
+  };
+
   openInNewWindow = () => {
     // this is set in app/Preview
     // i don't know why but I ain't complaining
@@ -491,14 +499,16 @@ export default class Content extends React.PureComponent<Props, State> {
           sandbox={sandbox}
           showEditor={showEditor}
           showPreview={showPreview}
-          isMobile={verticalMode}
+          isSmallScreen={verticalMode}
           sidebarOpen={sidebarOpen}
           showNavigationActions={hideNavigation}
           refresh={this.refresh}
           openInNewWindow={this.openInNewWindow}
           toggleLike={toggleLike}
           initialEditorSize={editorSize}
+          setEditorSize={this.setEditorSize}
           hideDevTools={hideDevTools}
+          setDragging={this.setDragging}
         >
           <>
             <Tabs>
@@ -567,6 +577,7 @@ export default class Content extends React.PureComponent<Props, State> {
                 onChange={this.setCode}
                 onModuleChange={this.setCurrentModule}
                 highlightedLines={this.props.highlightedLines}
+                width={this.state.editorSize}
               />
             </div>
           </>

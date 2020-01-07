@@ -9,7 +9,7 @@ const colors = {
     300: '#999999', // danny's gray-1
     400: '#757575', // danny's gray-2
     500: '#242424', // danny's dark-3
-    600: 'pink', // doesn't exist yet
+    600: '#343434', // danny's dark-?
     700: '#151515', // danny's dark-2
     800: '#040404', // danny's dark-1
     900: '#111111', // danny's dark-0

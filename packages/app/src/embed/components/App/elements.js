@@ -33,7 +33,7 @@ export const Moving = styled.div`
   position: absolute;
   top: 0;
   bottom: 0;
-  left: props.sidebarOpen ? 250 : 0;
+  left: ${props => (props.sidebarOpen ? 250 : 0)}px;
   right: 0;
   width: ${props => (props.sidebarOpen ? 'calc(100% - 250px)' : '100%')};
   border: 1px solid;
