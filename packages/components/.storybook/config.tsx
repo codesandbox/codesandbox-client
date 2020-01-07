@@ -4,7 +4,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withA11y } from '@storybook/addon-a11y';
 import { addDecorator, addParameters, configure } from '@storybook/react';
 import { themes } from '@storybook/theming';
-import { ThemeDecorator } from '../src/stories/decorators';
+import { ThemeDecorator } from './decorators';
 import { createGlobalStyle } from 'styled-components';
 import global from '@codesandbox/common/lib/global.css';
 
@@ -40,12 +40,9 @@ const viewports = {
 };
 
 const GlobalStyle = createGlobalStyle`
-  ${global}
-
-  /* new globals */
+  /* new globals? */
   body {
     font-family: 'Inter', sans-serif;
-    background: #151515;
   }
 `;
 
