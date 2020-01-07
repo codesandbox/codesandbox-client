@@ -17,10 +17,6 @@ type Props = {
   colorless?: boolean;
   sandbox: Sandbox;
   text?: number;
-  className?: string;
-  style?: React.CSSProperties;
-  highlightHover?: boolean;
-  disableTooltip?: boolean;
 } & Partial<Pick<ComponentProps<typeof MaybeTooltip>, 'disableTooltip'>> &
   Pick<
     ComponentProps<typeof Container>,
