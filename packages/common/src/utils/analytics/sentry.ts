@@ -78,6 +78,11 @@ export async function initialize(dsn: string) {
             // We need to add sourcemaps
             return null;
           }
+
+          if (filename.includes('tsserver.js')) {
+            // We don't have control over this
+            return null;
+          }
         }
 
         const customError = ((hint && (hint.originalException as any)) || {})
