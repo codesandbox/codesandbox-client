@@ -19,7 +19,7 @@ export const onInitialize: OnInitialize = async (
 
   effects.flows.initialize(overmindInstance.reaction);
 
-  effects.keybindingManager.initialize(overmindInstance);
+  effects.keybindingManager.initialize();
 
   effects.api.initialize({
     provideJwtToken,
