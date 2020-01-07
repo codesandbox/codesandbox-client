@@ -35,7 +35,7 @@ export const Header = styled.div(
 export const Title = styled.div(
   css({
     fontSize: 3,
-    fontWeight: 'medium',
+    fontWeight: 'semibold',
   })
 );
 
