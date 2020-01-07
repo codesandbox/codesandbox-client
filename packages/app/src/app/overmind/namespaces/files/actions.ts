@@ -427,12 +427,16 @@ export const filesUploaded: AsyncAction<{
       });
     } catch (error) {
       if (error.message.indexOf('413') !== -1) {
-        return;
+        actions.internal.handleError({
+          message: `The uploaded file is bigger than 7MB, contact hello@codesandbox.io if you want to raise this limit`,
+          error,
+        });
+      } else {
+        actions.internal.handleError({
+          message: 'Unable to upload files',
+          error,
+        });
       }
-      actions.internal.handleError({
-        message: 'Unable to upload files',
-        error,
-      });
     }
 
     actions.internal.closeModals(false);
