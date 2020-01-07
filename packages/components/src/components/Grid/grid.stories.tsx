@@ -1,13 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Grid, Column, Row } from '.';
+import { LayoutDecorator } from '../../../.storybook/decorators';
 
-const DebugDecorator = story => <Debugger>{story()}</Debugger>;
+import { Grid, Column, Row } from '.';
 
 export default {
   title: 'components/Grid',
   component: Grid,
-  decorators: [DebugDecorator],
+  decorators: [LayoutDecorator],
 };
 
 // replace the text inside with Text variants when available
@@ -134,30 +133,3 @@ export const ImageGallery = () => (
     ))}
   </Grid>
 );
-
-// debug utility for story
-const Debugger = styled.div`
-  & > div > * {
-    --color: rgb(103, 126, 208);
-    background: var(--color);
-    min-height: 4em;
-  }
-  & > div > *:nth-child(6n + 2) {
-    --color: rgb(217, 103, 219);
-  }
-  & > div > *:nth-child(6n + 3) {
-    --color: rgb(77, 214, 115);
-  }
-  & > div > *:nth-child(6n + 4) {
-    --color: rgb(248, 110, 91);
-  }
-  & > div > *:nth-child(6n + 5) {
-    --color: rgb(94, 204, 211);
-  }
-  & > div > *:nth-child(6n + 6) {
-    --color: rgb(0, 35, 208);
-  }
-  & > div > *:nth-child(6n + 7) {
-    --color: rgb(224, 174, 72);
-  }
-`;
