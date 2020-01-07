@@ -19,3 +19,25 @@ export const Container = styled.div(
     height: isIOS ? '100%' : '100vh',
   })
 );
+
+export const Button = styled.a(
+  css({
+    transition: '0.3s ease background-color',
+    backgroundColor: theme => (theme.light ? 'grays.200' : 'grays.500'),
+    padding: '0.5rem',
+    display: 'block',
+    color: theme => (theme.light ? 'grays.800' : 'white'),
+    border: 'none',
+    outline: 'none',
+    borderRadius: 2,
+    width: '100%',
+    fontSize: 14,
+    boxSizing: 'border-box',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    textAlign: 'center',
+    ':hover': {
+      backgroundColor: theme => (theme.light ? 'grays.300' : 'grays.600'),
+    },
+  })
+);

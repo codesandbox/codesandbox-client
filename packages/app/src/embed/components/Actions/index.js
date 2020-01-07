@@ -31,6 +31,8 @@ export function GlobalActions({
     </IconButton>
   );
 
+  const isEmbedded = window.parent !== window;
+
   return (
     <Container
       align="right"
@@ -49,12 +51,13 @@ export function GlobalActions({
           </Button>
         </Tooltip>
       ) : (
-        smallTouchScreen && (
+        smallTouchScreen &&
+        isEmbedded && (
           <IconButton
             as="a"
             target="_blank"
             rel="noopener noreferrer"
-            href={`${sandboxUrl(sandbox)}`}
+            href={sandboxUrl(sandbox)}
           >
             <CodeSandboxIcon />
           </IconButton>
