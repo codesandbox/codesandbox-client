@@ -30,8 +30,10 @@ const viewports = {
 
 console.log(theme);
 
+// new globals based on theme?
+// using sidebar as the styles for body for now 🤷
 const GlobalStyle = createGlobalStyle`
-  /* new globals? */
+  ${global};
   body {
     font-family: 'Inter', sans-serif;
     background-color: ${theme.colors.sideBar.background};
