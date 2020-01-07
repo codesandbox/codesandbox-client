@@ -12,6 +12,9 @@ const theme = {
   // transition speeds in ms
   speeds: [0, '75ms', '100ms', '150ms', '200ms', '300ms', '500ms'],
 
+  // mobile first
+  breakpoints: ['576px', '768px', '992px'],
+
   radii: {
     small: 2,
     medium: 4,
