@@ -169,8 +169,8 @@ function build(previousSizeMap) {
     //   }
     // );
 
-    console.log(`Writing version '${version}' to version.txt`);
-    fs.writeFile(paths.appBuild + '/version.txt', version);
+    console.log(`Writing version '${version.default}' to version.txt`);
+    fs.writeFileSync(paths.appBuild + '/version.txt', version.default);
     console.log();
 
     let openCommand = process.platform === 'win32' ? 'start' : 'open';
