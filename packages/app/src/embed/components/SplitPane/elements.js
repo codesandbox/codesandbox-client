@@ -6,7 +6,7 @@ export const KNOB_WIDTH = 4;
  * We leave a bit more room for the user to grab around the resize area, this defines
  * how much room that actually is
  */
-export const RESIZER_GRAB_EXTRA_WIDTH = 6;
+export const RESIZER_GRAB_EXTRA_WIDTH = 4;
 
 export const Container = styled.div`
   width: 100%;
@@ -26,6 +26,7 @@ export const Container = styled.div`
     display: block;
     height: 100%;
     cursor: ew-resize;
+    z-index: 50;
   }
 
   .Resizer::after {
@@ -49,6 +50,7 @@ export const Container = styled.div`
     bottom: 0;
     margin-left: -${RESIZER_GRAB_EXTRA_WIDTH}px;
     width: ${RESIZER_WIDTH + RESIZER_GRAB_EXTRA_WIDTH * 2}px;
+    z-index: 50;
   }
 
   .Pane {
