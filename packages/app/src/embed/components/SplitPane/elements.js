@@ -13,7 +13,6 @@ export const Container = styled.div`
   height: 100%;
 
   .Resizer {
-    z-index: 99;
     /* Safari, sigh.
       Quote: We recently encountered this and discovered that promoting the
       affected element to a composite layer with translateZ in CSS fixed
@@ -62,11 +61,4 @@ export const PaneContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-`;
-
-export const PointerOverlay = styled.div`
-  position: relative;
-  width: 300px;
-  height: 100%;
-  z-index: 99;
 `;
