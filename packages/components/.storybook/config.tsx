@@ -41,6 +41,12 @@ const viewports = {
 
 const GlobalStyle = createGlobalStyle`
   ${global}
+
+  /* new globals */
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #151515;
+  }
 `;
 
 export const withGlobal = cb => (
