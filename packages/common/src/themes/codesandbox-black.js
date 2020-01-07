@@ -134,7 +134,7 @@ const colors = {
     background: tokens.grays[500],
     foreground: tokens.white,
     border: tokens.grays[800],
-    placeholderForeground: tokens.grays[300],
+    placeholderForeground: tokens.grays[400],
   },
   inputOption: {
     activeBorder: tokens.blues[300],
