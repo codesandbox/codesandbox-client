@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FunctionComponent, ComponentProps } from 'react';
+import React, { ChangeEvent, FunctionComponent } from 'react';
 
 import { Input } from './elements';
 
@@ -6,7 +6,8 @@ type Props = {
   setValue: (value: number) => void;
   step?: number;
   value: number;
-} & Pick<ComponentProps<typeof Input>, 'style'>;
+  style?: React.CSSProperties;
+};
 
 export const PreferenceNumber: FunctionComponent<Props> = ({
   setValue,
