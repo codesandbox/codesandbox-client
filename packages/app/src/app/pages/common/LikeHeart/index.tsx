@@ -1,5 +1,5 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ComponentProps } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
@@ -21,7 +21,12 @@ type Props = {
   style?: React.CSSProperties;
   highlightHover?: boolean;
   disableTooltip?: boolean;
-};
+} & Partial<Pick<ComponentProps<typeof MaybeTooltip>, 'disableTooltip'>> &
+  Pick<
+    ComponentProps<typeof Container>,
+    'className' | 'highlightHover' | 'style'
+  >;
+
 export const LikeHeart: FunctionComponent<Props> = ({
   className,
   colorless,
