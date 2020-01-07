@@ -7,42 +7,35 @@ import { themes } from '@storybook/theming';
 import { ThemeDecorator } from './decorators';
 import { createGlobalStyle } from 'styled-components';
 import global from '@codesandbox/common/lib/global.css';
+import theme from './theme';
 
 const viewports = {
   mobile: {
     name: 'Mobile',
-    styles: {
-      width: '375px',
-      height: '667px',
-    },
+    styles: { width: '375px', height: '667px' },
   },
   tablet: {
     name: 'Tablet',
-    styles: {
-      width: '768px',
-      height: '1024px',
-    },
+    styles: { width: '768px', height: '1024px' },
   },
   laptop: {
     name: 'Laptop',
-    styles: {
-      width: '1366px',
-      height: '768px',
-    },
+    styles: { width: '1366px', height: '768px' },
   },
   desktop: {
     name: 'Desktop',
-    styles: {
-      width: '1920px',
-      height: '1080px',
-    },
+    styles: { width: '1920px', height: '1080px' },
   },
 };
+
+console.log(theme);
 
 const GlobalStyle = createGlobalStyle`
   /* new globals? */
   body {
     font-family: 'Inter', sans-serif;
+    background-color: ${theme.colors.sideBar.background};
+    color: ${theme.colors.sideBar.foreground};
   }
 `;
 
@@ -57,18 +50,10 @@ addDecorator(withA11y);
 addDecorator(withKnobs);
 addDecorator(withGlobal);
 addDecorator(ThemeDecorator);
-addParameters({
-  viewport: {
-    viewports,
-  },
-});
+addParameters({ viewport: { viewports } });
 
 // Option defaults.
-addParameters({
-  options: {
-    theme: themes.dark,
-  },
-});
+addParameters({ options: { theme: themes.dark } });
 
 // automatically import all files ending in *.stories.js
 configure(require.context('../src', true, /\.stories\.tsx$/), module);
