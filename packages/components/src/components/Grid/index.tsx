@@ -4,16 +4,15 @@ import css from '@styled-system/css';
 const fontSize = 1; // rem = 16px
 const lineHeight = fontSize * 1.5;
 
-export const Grid = styled.div.attrs({
-  className: 'debug',
-})<{ columnGap?: number; rowGap?: number }>(({ columnGap, rowGap }) =>
-  css({
-    display: 'grid',
-    gridTemplateColumns: 'repeat(12, 1fr)', // always 12 columns
-    gridColumnGap:
-      (typeof columnGap !== 'undefined' ? columnGap : lineHeight * 2) + 'rem',
-    gridRowGap: (typeof rowGap !== 'undefined' ? rowGap : lineHeight) + 'rem',
-  })
+export const Grid = styled.div<{ columnGap?: number; rowGap?: number }>(
+  ({ columnGap, rowGap }) =>
+    css({
+      display: 'grid',
+      gridTemplateColumns: 'repeat(12, 1fr)', // always 12 columns
+      gridColumnGap:
+        (typeof columnGap !== 'undefined' ? columnGap : lineHeight * 2) + 'rem',
+      gridRowGap: (typeof rowGap !== 'undefined' ? rowGap : lineHeight) + 'rem',
+    })
 );
 
 // todo: end and span cant be together
