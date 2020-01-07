@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const threadLoader = require('thread-loader');
@@ -447,6 +448,13 @@ module.exports = {
               minifyURLs: true,
             },
           }),
+          new ScriptExtHtmlWebpackPlugin({
+            custom: {
+              test: 'sandbox',
+              attribute: 'crossorigin',
+              value: 'anonymous',
+            },
+          }),
         ]
       : [
           // Generates an `index.html` file with the <script> injected.
@@ -493,6 +501,13 @@ module.exports = {
               minifyJS: true,
               minifyCSS: true,
               minifyURLs: true,
+            },
+          }),
+          new ScriptExtHtmlWebpackPlugin({
+            custom: {
+              test: 'sandbox',
+              attribute: 'crossorigin',
+              value: 'anonymous',
             },
           }),
           new HtmlWebpackPlugin({

@@ -320,6 +320,7 @@
     "rimraf": "^2.6.1",
     "run-sequence": "^1.2.2",
     "sass-loader": "^7.1.0",
+    "script-ext-html-webpack-plugin": "^2.1.4",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "strip-ansi": "3.0.1",
     "style-loader": "^0.21.0",
