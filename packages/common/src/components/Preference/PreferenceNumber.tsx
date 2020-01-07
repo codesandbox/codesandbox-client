@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ComponentProps, FunctionComponent } from 'react';
+import React, { ChangeEvent, FunctionComponent, ComponentProps } from 'react';
 
 import { Input } from './elements';
 

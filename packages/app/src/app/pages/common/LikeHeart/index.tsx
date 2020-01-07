@@ -1,5 +1,5 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
-import React, { ComponentProps, FunctionComponent } from 'react';
+import React, { FunctionComponent, ComponentProps } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
@@ -22,6 +22,7 @@ type Props = {
     ComponentProps<typeof Container>,
     'className' | 'highlightHover' | 'style'
   >;
+
 export const LikeHeart: FunctionComponent<Props> = ({
   className,
   colorless,

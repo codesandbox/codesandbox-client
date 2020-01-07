@@ -108,7 +108,7 @@ background-color: ${theme['input.background'] || 'rgba(0, 0, 0, 0.3)'};
       top: 50%;
       transform: translateY(-50%);
     }
-`};æ
+`};
 `;
 
 export const Arrow = styled.div`
