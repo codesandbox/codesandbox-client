@@ -27343,6 +27343,13 @@ screenfull@^4.1.0:
   resolved "https://registry.yarnpkg.com/screenfull/-/screenfull-4.2.0.tgz#d5252a5a0f56504719abbed9ebbcd9208115da03"
   integrity sha512-qpyI9XbwuMJElWRP5vTgxkFAl4k7HpyhIqBFOZEwX9QBXn0MAuRSpn7LOc6/4CeSwoz61oBu1VPV+2fbIWC+5Q==
 
+script-ext-html-webpack-plugin@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/script-ext-html-webpack-plugin/-/script-ext-html-webpack-plugin-2.1.4.tgz#7c309354e310bf78523e1b84ca96fd374ceb9880"
+  integrity sha512-7MAv3paAMfh9y2Rg+yQKp9jEGC5cEcmdge4EomRqri10qoczmliYEVPVNz0/5e9QQ202e05qDll9B8zZlY9N1g==
+  dependencies:
+    debug "^4.1.1"
+
 scroll-behavior@^0.9.9:
   version "0.9.10"
   resolved "https://registry.yarnpkg.com/scroll-behavior/-/scroll-behavior-0.9.10.tgz#c8953adeeb3586060b903328d860aa8346d62861"

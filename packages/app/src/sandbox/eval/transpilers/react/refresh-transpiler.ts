@@ -89,7 +89,7 @@ try {
 
 const _csbRefreshUtils = require('${HELPER_PATH}');
 
-if (_csbRefreshUtils.isReactRefreshBoundary(module.exports)) {
+if (_csbRefreshUtils.isReactRefreshBoundary && _csbRefreshUtils.isReactRefreshBoundary(module.exports)) {
   module.hot.accept();
   _csbRefreshUtils.enqueueUpdate();
 }
@@ -102,7 +102,7 @@ if (_csbRefreshUtils.isReactRefreshBoundary(module.exports)) {
  */
 const getWrapperCode = (sourceCode: string) =>
   `var prevRefreshReg=window.$RefreshReg$,prevRefreshSig=window.$RefreshSig$,RefreshRuntime=require("react-refresh/runtime");window.$RefreshReg$=(a,b)=>{const c=module.id+" "+b;RefreshRuntime.register(a,c)},window.$RefreshSig$=RefreshRuntime.createSignatureFunctionForTransform;try{${sourceCode}
-}finally{window.$RefreshReg$=prevRefreshReg,window.$RefreshSig$=prevRefreshSig}const _csbRefreshUtils=require("${HELPER_PATH}");_csbRefreshUtils.isReactRefreshBoundary(module.exports)&&(module.hot.accept(),_csbRefreshUtils.enqueueUpdate());
+}finally{window.$RefreshReg$=prevRefreshReg,window.$RefreshSig$=prevRefreshSig}const _csbRefreshUtils=require("${HELPER_PATH}");_csbRefreshUtils.isReactRefreshBoundary&&_csbRefreshUtils.isReactRefreshBoundary(module.exports)&&(module.hot.accept(),_csbRefreshUtils.enqueueUpdate());
 `.trim();
 
 class RefreshTranspiler extends Transpiler {
