@@ -15,6 +15,7 @@ export const AvatarImage = styled.img(
     height: 8,
     borderRadius: 'small',
     border: '1px solid rgba(255, 255, 255, 0.46)',
+    backgroundColor: 'rgba(255, 255, 255, 0.46)', // fallback for loading image
   })
 );
 
