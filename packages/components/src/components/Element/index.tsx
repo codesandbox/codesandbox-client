@@ -6,11 +6,13 @@ export const Element = styled.div<{
   marginX?: number;
   marginY?: number;
   marginBottom?: number;
+  marginTop?: number; // prefer margin bottom to top
 }>(props =>
   css({
     margin: props.margin || null,
     marginX: props.marginX || null,
-    marginY: props.marginX || null,
+    marginY: props.marginY || null,
     marginBottom: props.marginBottom || null,
+    marginTop: props.marginTop || null,
   })
 );
