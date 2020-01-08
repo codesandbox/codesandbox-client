@@ -8,6 +8,7 @@ const theme = {
 
   // we use a 4 point grid
   space: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40],
+  sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40],
 
   // transition speeds in ms
   speeds: [0, '75ms', '100ms', '150ms', '200ms', '300ms', '500ms'],
