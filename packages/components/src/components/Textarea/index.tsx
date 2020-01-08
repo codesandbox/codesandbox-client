@@ -5,13 +5,16 @@ import VisuallyHidden from '@reach/visually-hidden';
 import { uniqueId } from 'lodash-es';
 import { Text } from '../Text';
 import { Stack } from '../Stack';
+import { Input } from '../Input';
 
 const placeholderStyles = {
   color: 'input.placeholderForeground',
   fontSize: 3,
 };
 
-export const TextareaComponent = styled.textarea(
+export const TextareaComponent = styled(Input).attrs({
+  as: 'textarea',
+})(
   css({
     height: 64,
     width: '100%',
@@ -95,7 +98,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
           size={2}
           marginBottom={2}
           htmlFor={id}
-          css={{ display: 'block' }}
+          style={{ display: 'block' }}
         >
           {label}
         </Text>

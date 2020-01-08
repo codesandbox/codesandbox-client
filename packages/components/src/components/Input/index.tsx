@@ -49,7 +49,7 @@ export const Input: React.FC<IInputProps> = ({
         size={2}
         marginBottom={2}
         htmlFor={id}
-        css={{ display: 'block' }}
+        style={{ display: 'block' }}
       >
         {label}
       </Text>
