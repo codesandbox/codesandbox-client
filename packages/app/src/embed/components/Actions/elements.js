@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import css from '@styled-system/css';
+import { CodeSandboxIcon as CodeSandboxIconBase } from '@codesandbox/common/lib/components/icons/CodeSandbox';
+import { PreviewIcon as PreviewIconBase } from '@codesandbox/common/lib/components/icons/Preview';
 import { HeartIconSVG, ReloadIconSVG, NewWindowIconSVG } from './icons';
 
 export const Container = styled.div(props =>
@@ -54,6 +56,21 @@ export const HeartIcon = styled(HeartIconSVG)(props =>
       stroke: props.liked ? 'reds.300' : 'white',
       fill: props.liked ? 'reds.300' : 'none',
     },
+  })
+);
+
+export const IconButton = styled(Button)`
+  padding: 0 3px;
+`;
+
+export const CodeSandboxIcon = styled(CodeSandboxIconBase)(() =>
+  css({
+    fontSize: 28,
+  })
+);
+export const PreviewIcon = styled(PreviewIconBase)(() =>
+  css({
+    fontSize: 28,
   })
 );
 

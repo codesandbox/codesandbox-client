@@ -204,6 +204,10 @@ const colors = {
   selection: {
     background: tokens.blues[700],
   },
+  separator: {
+    background: tokens.grays[800],
+    foreground: tokens.white,
+  },
   sideBar: {
     background: tokens.grays[700],
     border: tokens.grays[500],
