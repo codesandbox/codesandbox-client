@@ -21,6 +21,7 @@ export const TextareaComponent: any = styled(InputComponent).attrs({
 })(
   css({
     height: 64,
+    padding: 2,
     width: '100%',
     resize: 'none',
   })
