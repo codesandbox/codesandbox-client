@@ -43,6 +43,8 @@ const Count = styled.div<{ limit: boolean }>(({ limit }) =>
 export const Textarea: React.FC<ITextareaProps> = ({
   label,
   maxLength,
+  onChange,
+  onKeyPress,
   ...props
 }) => {
   const id = props.id || uniqueId('form_');
@@ -57,7 +59,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
 
   // eslint-disable-next-line consistent-return
   const update = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (props.onChange) props.onChange(e);
+    if (onChange) onChange(e);
     if (maxLength) {
       const trimmedText = e.target.value.substring(0, maxLength);
       setValue(trimmedText);
@@ -68,7 +70,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
   };
 
   const keyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (props.onKeyPress) props.onKeyPress(e);
+    if (onKeyPress) onKeyPress(e);
     if (maxLength) {
       if (maxLength <= wordCount) {
         return false;
