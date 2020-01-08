@@ -14,11 +14,6 @@ export const Basic = () => (
     <Textarea />
   </Wrapper>
 );
-export const InvisibleLabel = () => (
-  <Wrapper>
-    <Textarea invisibleLabel="Fill your name" />
-  </Wrapper>
-);
 export const Placeholder = () => (
   <Wrapper>
     <Textarea placeholder="Your name" />

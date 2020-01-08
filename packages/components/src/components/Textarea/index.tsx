@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { uniqueId } from 'lodash-es';
+import { Text } from '../Text';
+import { Stack } from '../Stack';
 
 const placeholderStyles = {
   color: 'input.placeholderForeground',
@@ -14,6 +16,7 @@ export const TextareaComponent = styled.textarea(
     height: 64,
     width: '100%',
     padding: 2,
+    fontSize: 3,
     resize: 'none',
     backgroundColor: 'input.background',
     borderBottom: '1px solid',
@@ -26,19 +29,10 @@ export const TextareaComponent = styled.textarea(
   })
 );
 
-const Label = styled.label(
+const Label = styled(Text)(
   css({
-    fontSize: 11,
-    paddingBottom: 2,
-    color: 'sidebar.foreground',
+    marginBottom: 2,
     display: 'block',
-  })
-);
-
-const MaxLengthWrapper = styled.div(
-  css({
-    display: 'flex',
-    flexDirection: 'column',
   })
 );
 
@@ -53,13 +47,11 @@ const Count = styled.div<{ limit: boolean }>(({ limit }) =>
 
 interface ITextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  invisibleLabel?: string;
   label?: string;
   maxLength?: number;
 }
 
 export const Textarea: React.FC<ITextareaProps> = ({
-  invisibleLabel,
   label,
   maxLength,
   ...props
@@ -70,7 +62,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
 
   const Wrapper = useCallback(
     ({ children }) =>
-      maxLength ? <MaxLengthWrapper>{children}</MaxLengthWrapper> : children,
+      maxLength ? <Stack direction="vertical">{children}</Stack> : children,
     [maxLength]
   );
 
@@ -78,9 +70,6 @@ export const Textarea: React.FC<ITextareaProps> = ({
   const update = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (props.onChange) props.onChange(e);
     if (maxLength) {
-      if (maxLength <= wordCount) {
-        return false;
-      }
       const trimmedText = e.target.value.substring(0, maxLength);
       setValue(trimmedText);
       setWordCount(trimmedText.length);
@@ -89,16 +78,37 @@ export const Textarea: React.FC<ITextareaProps> = ({
     }
   };
 
+  const keyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (props.onKeyPress) props.onKeyPress(e);
+    if (maxLength) {
+      if (maxLength <= wordCount) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   return (
     <>
-      {invisibleLabel ? (
+      {props.placeholder && !label ? (
         <VisuallyHidden>
-          <label htmlFor={id}>{invisibleLabel}</label>
+          <label htmlFor={id}>{props.placeholder}</label>
         </VisuallyHidden>
       ) : null}
-      {label ? <Label htmlFor={id}>{label}</Label> : null}
+      {label ? (
+        <Label size={2} as="label" htmlFor={id}>
+          {label}
+        </Label>
+      ) : null}
       <Wrapper>
-        <TextareaComponent value={value} onChange={update} id={id} {...props} />
+        <TextareaComponent
+          value={value}
+          onChange={update}
+          onKeyPress={keyPress}
+          id={id}
+          {...props}
+        />
         {maxLength ? (
           <Count limit={maxLength <= wordCount}>
             {wordCount}/{maxLength}

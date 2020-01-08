@@ -32,7 +32,7 @@ const viewports = {
 // using sidebar as the styles for body for now 🤷
 const GlobalStyle = createGlobalStyle`
   ${global};
-  body {
+  html body {
     font-family: 'Inter', sans-serif;
     background-color: ${theme.colors.sideBar.background};
     color: ${theme.colors.sideBar.foreground};
