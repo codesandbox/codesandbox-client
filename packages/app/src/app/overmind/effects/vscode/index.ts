@@ -142,6 +142,7 @@ export class VSCodeEffect {
       'worker-loader?publicPath=/&name=container-ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/container-ext-host'
     ).then(ExtHostWorkerLoader => {
       this.containerExtensionHost = ExtHostWorkerLoader.default;
+      childProcess.addDefaultForkHandler(this.containerExtensionHost);
     });
 
     // It will only load the editor once. We should probably call this
@@ -326,7 +327,7 @@ export class VSCodeEffect {
     const { isServer } = getTemplate(sandbox.template);
 
     if (isServer) {
-      childProcess.addDefaultForkHandler(this.containerExtensionHost);
+      // childProcess.addDefaultForkHandler(this.containerExtensionHost);
     } else {
       childProcess.addDefaultForkHandler(this.clientExtensionHost);
     }

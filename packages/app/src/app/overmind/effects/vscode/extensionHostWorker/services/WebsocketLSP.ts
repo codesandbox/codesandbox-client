@@ -10,7 +10,7 @@ export class WebsocketLSP implements IForkHandler {
     EventListenerOrEventListenerObject
   >();
 
-  messagesQueue: any[];
+  messagesQueue: any[] = [];
 
   constructor(endpoint: string) {
     this.ws = new WebSocket(endpoint);
@@ -22,9 +22,9 @@ export class WebsocketLSP implements IForkHandler {
   }
 
   postMessage(message) {
-    if (this.ws.readyState === 1) {
-      this.ws.send(JSON.stringify(message));
-    } else {
+    if (this.ws.readyState === 1 && message.$data) {
+      this.ws.send(message.$data);
+    } else if (message.$data) {
       this.messagesQueue.push(message);
     }
   }
