@@ -1,5 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import styled from 'styled-components';
+import styled, {
+  StyledComponent,
+  StyledComponentInnerOtherProps,
+} from 'styled-components';
 import css from '@styled-system/css';
 import VisuallyHidden from '@reach/visually-hidden';
 import { uniqueId } from 'lodash-es';
@@ -21,7 +24,11 @@ export const TextareaComponent: any = styled(InputComponent).attrs({
     width: '100%',
     resize: 'none',
   })
-);
+) as StyledComponent<
+  'textarea',
+  any,
+  StyledComponentInnerOtherProps<typeof InputComponent>
+>;
 
 const Count = styled.div<{ limit: boolean }>(({ limit }) =>
   css({
