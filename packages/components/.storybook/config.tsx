@@ -36,6 +36,12 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Inter', sans-serif;
     background-color: ${theme.colors.sideBar.background};
     color: ${theme.colors.sideBar.foreground};
+    margin: 0;
+    padding: 20px;
+
+    * {
+      box-sizing: border-box;
+    }
   }
 `;
 
