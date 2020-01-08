@@ -64,10 +64,14 @@ type State = {
   useFallbackDomain: boolean;
 };
 
+const sseDomain = process.env.STAGING_STREAM
+  ? 'codesandbox.stream'
+  : 'codesandbox.io';
+
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
   `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
     process.env.NODE_ENV === 'development' || process.env.STAGING
-      ? 'codesandbox.stream'
+      ? sseDomain
       : host()
   }${initialPath}`;
 

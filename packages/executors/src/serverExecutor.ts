@@ -63,6 +63,7 @@ export class ServerExecutor implements IExecutor {
   socket: SocketIOClient.Socket;
   connectTimeout: number | null = null;
   token: Promise<string | undefined>;
+  host?: string;
   sandboxId?: string;
   lastSent?: IFiles;
 
@@ -72,17 +73,21 @@ export class ServerExecutor implements IExecutor {
   }
 
   private initializeSocket() {
-    return io(`https://sse.codesandbox.stream`, {
+    const usedHost = this.host || 'https://codesandbox.io';
+    const sseHost = usedHost.replace('https://', 'https://sse.');
+
+    return io(sseHost, {
       autoConnect: false,
       transports: ['websocket', 'polling'],
     });
   }
 
-  async initialize({ sandboxId, files }: ISetupParams) {
+  async initialize({ sandboxId, files, host }: ISetupParams) {
     if (this.sandboxId === sandboxId && this.socket.connected) {
       return;
     }
 
+    this.host = host;
     this.sandboxId = sandboxId;
     this.lastSent = files;
 
