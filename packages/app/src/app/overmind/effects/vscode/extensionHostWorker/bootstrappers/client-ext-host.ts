@@ -11,6 +11,7 @@ import VueWorker from 'worker-loader?publicPath=/&name=vue-worker.[hash:8].worke
 import { initializeAll } from '../common/global';
 
 childProcess.addDefaultForkHandler(DefaultWorkLoader);
+
 childProcess.addForkHandler(
   '/extensions/node_modules/typescript/lib/tsserver.js',
   TSWorker
@@ -31,5 +32,5 @@ initializeAll().then(() => {
   );
 
   // eslint-disable-next-line
-  require('../workers/ext-host-worker');
+  import('../workers/ext-host-worker');
 });

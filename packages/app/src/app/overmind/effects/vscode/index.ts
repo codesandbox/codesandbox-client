@@ -1,5 +1,6 @@
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import getTemplate from '@codesandbox/common/lib/templates';
 import {
   EditorSelection,
   Module,
@@ -84,6 +85,8 @@ export class VSCodeEffect {
 
   private monaco: any;
   private editorApi: any;
+  private clientExtensionHost: any;
+  private containerExtensionHost: any;
   private options: VsCodeOptions;
   private controller: any;
   private commandService = blocker<any>();
@@ -129,9 +132,16 @@ export class VSCodeEffect {
 
     import(
       // @ts-ignore
-      'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/ext-host'
+      'worker-loader?publicPath=/&name=client-ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/client-ext-host'
     ).then(ExtHostWorkerLoader => {
-      childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
+      this.clientExtensionHost = ExtHostWorkerLoader.default;
+    });
+
+    import(
+      // @ts-ignore
+      'worker-loader?publicPath=/&name=container-ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/container-ext-host'
+    ).then(ExtHostWorkerLoader => {
+      this.containerExtensionHost = ExtHostWorkerLoader.default;
     });
 
     // It will only load the editor once. We should probably call this
@@ -312,6 +322,14 @@ export class VSCodeEffect {
     this.sandboxFsSync = new SandboxFsSync(this.options);
 
     setFs(this.sandboxFsSync.create(sandbox));
+
+    const { isServer } = getTemplate(sandbox.template);
+
+    if (isServer) {
+      childProcess.addDefaultForkHandler(this.containerExtensionHost);
+    } else {
+      childProcess.addDefaultForkHandler(this.clientExtensionHost);
+    }
 
     if (isFirstLoad) {
       this.sandboxFsSync.sync(() => {});
