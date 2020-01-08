@@ -3,25 +3,28 @@ import React from 'react';
 import styled from 'styled-components';
 
 const ColoredChildren = styled.div`
-  & > div > * {
+  & > *:first-child {
+    background: #343434;
+  }
+  & > * > * {
     --color: rgb(103, 126, 208);
     background: var(--color);
     min-height: 4em;
     min-width: 4em;
   }
-  & > div > *:nth-child(6n + 2) {
+  & > * > *:nth-child(6n + 2) {
     --color: rgb(217, 103, 219);
   }
-  & > div > *:nth-child(6n + 3) {
+  & > * > *:nth-child(6n + 3) {
     --color: rgb(77, 214, 115);
   }
-  & > div > *:nth-child(6n + 4) {
+  & > * > *:nth-child(6n + 4) {
     --color: rgb(248, 110, 91);
   }
-  & > div > *:nth-child(6n + 5) {
+  & > * > *:nth-child(6n + 5) {
     --color: rgb(94, 204, 211);
   }
-  & > div > *:nth-child(6n + 6) {
+  & > * > *:nth-child(6n + 6) {
     --color: rgb(0, 35, 208);
   }
   & > div > *:nth-child(6n + 7) {
