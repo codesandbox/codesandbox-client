@@ -33,9 +33,13 @@ const GlobalStyle = createGlobalStyle`
   ${global};
   html body {
     font-family: 'Inter', sans-serif;
+
     background-color: ${props =>
+      // @ts-ignore
       props.theme.colors.sideBar.background} !important;
-    color: ${props => props.theme.colors.sideBar.foreground} !important;
+    color: ${props =>
+      // @ts-ignore
+      props.theme.colors.sideBar.foreground} !important;
     margin: 0;
 
     * {
