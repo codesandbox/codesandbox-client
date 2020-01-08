@@ -7,9 +7,15 @@ import { Text } from '../Text';
 import { Stack } from '../Stack';
 import { InputComponent } from '../Input';
 
+interface ITextareaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  label?: string;
+  maxLength?: number;
+}
+
 export const TextareaComponent = styled(InputComponent).attrs({
   as: 'textarea',
-})(
+})<ITextareaProps>(
   css({
     height: 64,
     width: '100%',
