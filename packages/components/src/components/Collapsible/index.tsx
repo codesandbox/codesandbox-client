@@ -2,12 +2,19 @@ import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Element } from '../Element';
+import { Text } from '../Text';
+
+export const Section = styled(Element).attrs({ as: 'section' })(
+  css({
+    fontSize: 3,
+  })
+);
 
 export const Header = styled.div(
   css({
     display: 'flex',
     alignItems: 'center',
-    height: '32px',
+    height: 32, // replace with 6
     paddingX: 3,
     borderBottom: '1px solid',
     // Note: sideBarSectionHeader exists but we dont use it because it is rarely implemented
@@ -21,14 +28,6 @@ export const Header = styled.div(
         color: 'grays.300',
       },
     },
-  })
-);
-
-// temporary: replace with <Text variant="strong">
-export const Title = styled.div(
-  css({
-    fontSize: 3,
-    fontWeight: 'semibold',
   })
 );
 
@@ -82,12 +81,12 @@ export const Collapsible: React.FC<ICollapsibleProps> = ({
   const toggle = () => setOpen(!open);
 
   return (
-    <Element as="section" {...props}>
+    <Section {...props}>
       <Header onClick={toggle}>
         <ToggleIcon open={open} />
-        <Title>{title}</Title>
+        <Text weight="medium">{title}</Text>
       </Header>
       {open ? <Body>{children}</Body> : null}
-    </Element>
+    </Section>
   );
 };
