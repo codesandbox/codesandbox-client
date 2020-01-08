@@ -14,6 +14,7 @@ import deepmerge from 'deepmerge';
 // In that case, we should check if it exists before overriding it
 const polyfillTheme = vsCodeTheme =>
   deepmerge(vsCodeTheme, {
+    mutedForeground: vsCodeTheme.foreground, // todo: find a way to fill this value
     sideBar: {
       hoverBackground: vsCodeTheme.sideBar.border,
     },
