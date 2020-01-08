@@ -26,13 +26,6 @@ export const InputComponent = styled.input(
   })
 );
 
-const Label = styled(Text)(
-  css({
-    marginBottom: 2,
-    display: 'block',
-  })
-);
-
 interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
 }
@@ -51,9 +44,15 @@ export const Input: React.FC<IInputProps> = ({
           <label htmlFor={id}>{props.placeholder}</label>
         </VisuallyHidden>
       ) : null}
-      <Label size={2} as="label" htmlFor={id}>
+      <Text
+        as="label"
+        size={2}
+        marginBottom={2}
+        htmlFor={id}
+        css={{ display: 'block' }}
+      >
         {label}
-      </Label>
+      </Text>
       <InputComponent id={id} {...props} />
     </>
   );

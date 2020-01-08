@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { VisuallyHidden } from 'reakit/VisuallyHidden';
+import VisuallyHidden from '@reach/visually-hidden';
 import { uniqueId } from 'lodash-es';
 import { Text } from '../Text';
 import { Stack } from '../Stack';
@@ -26,13 +26,6 @@ export const TextareaComponent = styled.textarea(
     '::-webkit-input-placeholder': placeholderStyles,
     '::-ms-input-placeholder': placeholderStyles,
     '::placeholder': placeholderStyles,
-  })
-);
-
-const Label = styled(Text)(
-  css({
-    marginBottom: 2,
-    display: 'block',
   })
 );
 
@@ -97,9 +90,15 @@ export const Textarea: React.FC<ITextareaProps> = ({
         </VisuallyHidden>
       ) : null}
       {label ? (
-        <Label size={2} as="label" htmlFor={id}>
+        <Text
+          as="label"
+          size={2}
+          marginBottom={2}
+          htmlFor={id}
+          css={{ display: 'block' }}
+        >
           {label}
-        </Label>
+        </Text>
       ) : null}
       <Wrapper>
         <TextareaComponent
