@@ -4,6 +4,11 @@ export const fontSizes = [
   11,
   13,
   16,
+  19,
+  24,
+  28,
+  33,
+  40,
 ];
 
 export const fontWeights = {
