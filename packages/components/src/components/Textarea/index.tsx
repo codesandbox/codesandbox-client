@@ -8,7 +8,7 @@ import { Stack } from '../Stack';
 
 const placeholderStyles = {
   color: 'input.placeholderForeground',
-  fontSize: 13,
+  fontSize: 3,
 };
 
 export const TextareaComponent = styled.textarea(
