@@ -7,6 +7,10 @@
  */
 
 import deepmerge from 'deepmerge';
+import designLanguage from '@codesandbox/common/lib/design-language';
+
+// TODO: these polyfills are built for codesandbox Black and need to
+// checked for other themes as well.
 
 // TODO: For themes that we officially support, we have the option
 // to modify the theme and add our custom keys
@@ -14,9 +18,14 @@ import deepmerge from 'deepmerge';
 // In that case, we should check if it exists before overriding it
 const polyfillTheme = vsCodeTheme =>
   deepmerge(vsCodeTheme, {
-    mutedForeground: vsCodeTheme.foreground, // todo: find a way to fill this value
+    mutedForeground: vsCodeTheme.foreground,
     sideBar: {
       hoverBackground: vsCodeTheme.sideBar.border,
+    },
+    switch: {
+      background: designLanguage.colors.grays[800],
+      foregroundOff: designLanguage.colors.white,
+      foregroundOn: designLanguage.colors.green,
     },
   });
 
