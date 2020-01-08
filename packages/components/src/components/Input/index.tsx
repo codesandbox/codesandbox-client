@@ -17,7 +17,7 @@ export const InputComponent = styled.input(
     fontSize: 3,
     borderRadius: 'small',
     backgroundColor: 'input.background',
-    borderBottom: '1px solid',
+    border: '1px solid',
     borderColor: 'input.border',
     color: 'input.foreground',
     '::-webkit-input-placeholder': placeholderStyles,

@@ -5,30 +5,15 @@ import VisuallyHidden from '@reach/visually-hidden';
 import { uniqueId } from 'lodash-es';
 import { Text } from '../Text';
 import { Stack } from '../Stack';
-import { Input } from '../Input';
+import { InputComponent } from '../Input';
 
-const placeholderStyles = {
-  color: 'input.placeholderForeground',
-  fontSize: 3,
-};
-
-export const TextareaComponent = styled(Input).attrs({
+export const TextareaComponent = styled(InputComponent).attrs({
   as: 'textarea',
 })(
   css({
     height: 64,
     width: '100%',
-    padding: 2,
-    fontSize: 3,
     resize: 'none',
-    backgroundColor: 'input.background',
-    borderBottom: '1px solid',
-    borderColor: 'input.border',
-    color: 'input.foreground',
-    borderRadius: 'small',
-    '::-webkit-input-placeholder': placeholderStyles,
-    '::-ms-input-placeholder': placeholderStyles,
-    '::placeholder': placeholderStyles,
   })
 );
 
@@ -40,12 +25,6 @@ const Count = styled.div<{ limit: boolean }>(({ limit }) =>
     alignSelf: 'flex-end',
   })
 );
-
-interface ITextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  label?: string;
-  maxLength?: number;
-}
 
 export const Textarea: React.FC<ITextareaProps> = ({
   label,
