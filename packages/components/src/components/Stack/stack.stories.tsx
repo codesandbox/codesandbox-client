@@ -11,14 +11,14 @@ export default {
 
 // replace the text inside with Text variants when available
 export const Defaults = () => (
-  <Stack style={{ height: 100, background: '#343434' }}>
+  <Stack style={{ height: 100 }}>
     <div />
     <div />
   </Stack>
 );
 
 export const WithGap = () => (
-  <Stack gap={4} style={{ height: 100, background: '#343434' }}>
+  <Stack gap={4} style={{ height: 100 }}>
     <div />
     <div>spacing token as gap</div>
     <div />
@@ -26,14 +26,14 @@ export const WithGap = () => (
 );
 
 export const Justify = () => (
-  <Stack justify="space-around" style={{ height: 100, background: '#343434' }}>
+  <Stack justify="space-around" style={{ height: 100 }}>
     <div />
     <div />
   </Stack>
 );
 
 export const Align = () => (
-  <Stack align="center" style={{ height: 100, background: '#343434' }}>
+  <Stack align="center" style={{ height: 100 }}>
     <div />
     <div />
   </Stack>

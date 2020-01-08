@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
+import { Element } from '../Element';
 
 export const Header = styled.div(
   css({
@@ -81,12 +82,12 @@ export const Collapsible: React.FC<ICollapsibleProps> = ({
   const toggle = () => setOpen(!open);
 
   return (
-    <section {...props}>
+    <Element as="section" {...props}>
       <Header onClick={toggle}>
         <ToggleIcon open={open} />
         <Title>{title}</Title>
       </Header>
       {open ? <Body>{children}</Body> : null}
-    </section>
+    </Element>
   );
 };
