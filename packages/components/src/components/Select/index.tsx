@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import VisuallyHidden from '@reach/visually-hidden';
 import { uniqueId } from 'lodash-es';
 import { Text } from '../Text';
+import { Element } from '../Element';
 
 // Svg used for the icon
 const svg = (hover: boolean) =>
@@ -13,11 +14,12 @@ const svg = (hover: boolean) =>
     hover ? 'white' : '%23757575'
   }'/%3E%3C/svg%3E%0A"`;
 
-export const SelectComponent = styled.select(
+export const SelectComponent = styled.select<{ icon?: boolean }>(props =>
   css({
     width: '100%',
     height: 6,
     paddingX: 2,
+    paddingLeft: props.icon ? 6 : 2,
     fontSize: 3,
     borderRadius: 'small',
     backgroundColor: 'input.background',
@@ -36,15 +38,46 @@ export const SelectComponent = styled.select(
   })
 );
 
+const IconWrapper = styled(Element)(
+  css({
+    position: 'absolute',
+    left: '8px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+  })
+);
+
+const WrapperWithIcon = styled(Element)(
+  css({
+    ':hover svg path': {
+      fill: 'input.foreground',
+    },
+  })
+);
+
 interface ISelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
+  icon?: any;
 }
 
 export const Select: React.FC<ISelectProps> = ({
   label,
   children,
+  icon,
   ...props
 }) => {
+  const Wrapper = useCallback(
+    p =>
+      icon ? (
+        <WrapperWithIcon style={{ position: 'relative' }}>
+          {p.children}
+        </WrapperWithIcon>
+      ) : (
+        p.children
+      ),
+    [icon]
+  );
+
   const id = props.id || uniqueId('form_');
 
   return (
@@ -63,14 +96,17 @@ export const Select: React.FC<ISelectProps> = ({
       >
         {label}
       </Text>
-      <SelectComponent id={id} {...props}>
-        {props.placeholder ? (
-          <option value="" disabled selected>
-            {props.placeholder}
-          </option>
-        ) : null}
-        {children}
-      </SelectComponent>
+      <Wrapper>
+        {icon ? <IconWrapper>{icon()}</IconWrapper> : null}
+        <SelectComponent icon={Boolean(icon)} id={id} {...props}>
+          {props.placeholder ? (
+            <option value="" disabled selected>
+              {props.placeholder}
+            </option>
+          ) : null}
+          {children}
+        </SelectComponent>
+      </Wrapper>
     </>
   );
 };
