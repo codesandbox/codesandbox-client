@@ -22,7 +22,7 @@ export const AvatarImage = styled.img(
 export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   css({
     backgroundColor: 'blues.700',
-    color: 'sideBarTitle.foreground',
+    color: 'white',
     borderRadius: 'small',
     paddingX: 2,
     paddingY: '2px', // no 2 in spaces
