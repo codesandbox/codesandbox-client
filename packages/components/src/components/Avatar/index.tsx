@@ -15,8 +15,8 @@ export const AvatarImage = styled.img(
     height: 8,
     borderRadius: 'small',
     border: '1px solid',
-    borderColor: 'sideBar.border',
-    backgroundColor: 'sideBar.border', // fallback for loading image
+    borderColor: 'avatar.border',
+    backgroundColor: 'avatar.border', // fallback for loading image
   })
 );
 
@@ -28,7 +28,7 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
     paddingX: 2,
     paddingY: '2px', // no 2 in spaces
     border: '1px solid',
-    borderColor: 'sideBar.border',
+    borderColor: 'avatar.border',
     transform: 'translateX(-50%) translateY(-100%);',
     position: 'absolute',
     top: '100%',
