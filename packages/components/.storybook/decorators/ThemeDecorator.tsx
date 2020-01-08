@@ -1,7 +1,11 @@
 import React from 'react';
-import theme from '../theme';
-import { ThemeProvider } from 'styled-components';
+
+// black is the default, it would be helpful to use storybook-addon-themes
+// to test our components across multiple themes
+import vsCodeTheme from '@codesandbox/common/lib/themes/codesandbox-black';
+
+import { ThemeProvider } from '../../src/components/ThemeProvider';
 
 export const ThemeDecorator = (fn: () => JSX.Element) => (
-  <ThemeProvider theme={theme}>{fn()}</ThemeProvider>
+  <ThemeProvider vsCodeTheme={vsCodeTheme}>{fn()}</ThemeProvider>
 );
