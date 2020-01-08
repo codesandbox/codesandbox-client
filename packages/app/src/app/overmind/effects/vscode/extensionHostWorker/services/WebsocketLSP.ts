@@ -32,7 +32,12 @@ export class WebsocketLSP implements IForkHandler {
   addEventListener(eventName: string, callback: IForkHandlerCallback) {
     const listener = event => {
       if ('data' in event) {
-        callback(event);
+        callback({
+          data: {
+            $data: event.data,
+            $type: 'stdout',
+          },
+        });
       }
     };
     this.ws.addEventListener(eventName, listener);
