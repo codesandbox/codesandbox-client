@@ -166,6 +166,9 @@
     "scrollbarSlider.hoverBackground": "#646464b3",
     "settings.modifiedItemForeground": "#019001",
 
+    "separator.background": "#dddddd",
+    "separator.foreground": "#757575",
+
     "sideBar.background": "#ffffff",
     "sideBar.dropBackground": "#e6e6e6",
     "sideBar.foreground": "#151515",
