@@ -3,8 +3,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 const ColoredChildren = styled.div`
-  & > *:first-child {
+  & > * {
     background: #343434;
+    min-height: 4em;
   }
   & > * > * {
     --color: rgb(103, 126, 208);
