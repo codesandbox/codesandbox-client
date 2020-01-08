@@ -2,6 +2,7 @@
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
 import macrosPlugin from 'babel-plugin-macros';
+import refreshBabelPlugin from 'react-refresh/babel';
 import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
 import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
 
@@ -633,6 +634,13 @@ self.addEventListener('message', async event => {
       ) === -1
     ) {
       Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
+    }
+
+    if (
+      flattenedPlugins.indexOf('react-refresh/babel') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('react-refresh/babel') === -1
+    ) {
+      Babel.registerPlugin('react-refresh/babel', refreshBabelPlugin);
     }
 
     const coalescingInPlugins =

@@ -25433,6 +25433,11 @@ react-redux@^7.0.2:
     prop-types "^15.7.2"
     react-is "^16.8.6"
 
+react-refresh@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.7.1.tgz#b9605e4cd0e5366b9cc21705ebe6ee5bda8ccf85"
+  integrity sha512-tFM1EmOxub/hMKtXilOslJTEt7ANDMwtjD8psJAFSe1oQl7anmGEQONxSR+hAYePgHGI1eVhRVdprBruXu3wfw==
+
 react-resize-detector@^4.0.5:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/react-resize-detector/-/react-resize-detector-4.2.0.tgz#b87aee6b37c9e8a52daca8736b3230cf6a2a8647"

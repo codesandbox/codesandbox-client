@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { withKnobs } from '@storybook/addon-knobs';
 import { withA11y } from '@storybook/addon-a11y';
@@ -31,22 +31,24 @@ const viewports = {
 // using sidebar as the styles for body for now 🤷
 const GlobalStyle = createGlobalStyle`
   ${global};
-  body {
+  html body {
+    font-family: 'Inter', sans-serif;
+    background-color: ${theme.colors.sideBar.background};
+    color: ${theme.colors.sideBar.foreground};
     margin: 0;
-    background-color: ${props =>
-      props.theme.colors.sideBar.background} !important;
-    color: ${props => props.theme.colors.sideBar.foreground} !important;
-  }
-  * {
-    box-sizing: border-box;
+    padding: 20px;
+
+    * {
+      box-sizing: border-box;
+    }
   }
 `;
 
 export const withGlobal = cb => (
-  <Fragment>
+  <>
     <GlobalStyle />
     {cb()}
-  </Fragment>
+  </>
 );
 
 addDecorator(withA11y);

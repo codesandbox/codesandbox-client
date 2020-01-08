@@ -161,19 +161,7 @@ export default function initialize() {
             { transpiler: svgrTranspiler },
             { transpiler: babelTranspiler, options: BABEL7_CONFIG },
           ]);
-          preset.registerTranspiler(module => /\.css$/.test(module.path), [
-            {
-              transpiler: stylesTranspiler,
-              options: { hmrEnabled: isRefresh },
-            },
-          ]);
-          preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
-            { transpiler: sassTranspiler },
-            {
-              transpiler: stylesTranspiler,
-              options: { hmrEnabled: isRefresh },
-            },
-          ]);
+
           preset.registerTranspiler(
             module => /\.module\.s[c|a]ss$/.test(module.path),
             [
@@ -193,6 +181,20 @@ export default function initialize() {
               },
             ]
           );
+
+          preset.registerTranspiler(module => /\.css$/.test(module.path), [
+            {
+              transpiler: stylesTranspiler,
+              options: { hmrEnabled: isRefresh },
+            },
+          ]);
+          preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
+            { transpiler: sassTranspiler },
+            {
+              transpiler: stylesTranspiler,
+              options: { hmrEnabled: isRefresh },
+            },
+          ]);
 
           preset.registerTranspiler(module => /\.json$/.test(module.path), [
             { transpiler: jsonTranspiler },
