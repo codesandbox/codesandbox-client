@@ -4,16 +4,17 @@ import DefaultWorkLoader from 'worker-loader?publicPath=/&name=dynamic-worker.[h
 // @ts-ignore
 import SvelteWorker from 'worker-loader?publicPath=/&name=svelte-worker.[hash:8].worker.js!./svelte-worker';
 // @ts-ignore
-import TSWorker from 'worker-loader?publicPath=/&name=typescript-worker.[hash:8].worker.js!./ts-extension';
-// @ts-ignore
 import VueWorker from 'worker-loader?publicPath=/&name=vue-worker.[hash:8].worker.js!./vue-worker';
 
 import { initializeAll } from '../common/global';
+import { WebsocketLSP } from '../services/WebsocketLSP';
 
 childProcess.addDefaultForkHandler(DefaultWorkLoader);
+
 childProcess.addForkHandler(
   '/extensions/node_modules/typescript/lib/tsserver.js',
-  TSWorker
+  // Should just use : () => new WebsocketLSP(urlToConnectTo)
+  () => new WebsocketLSP('wss://4iycu.sse.codesandbox.stream/lsp')
 );
 childProcess.addForkHandler(
   '/extensions/octref.vetur.0.16.2/server/dist/vueServerMain.js',
@@ -26,7 +27,7 @@ childProcess.addForkHandler(
 
 initializeAll().then(() => {
   // Preload the TS worker for fast init
-  childProcess.preloadWorker(
+  childProcess.preloadForkHandler(
     '/extensions/node_modules/typescript/lib/tsserver.js'
   );
 

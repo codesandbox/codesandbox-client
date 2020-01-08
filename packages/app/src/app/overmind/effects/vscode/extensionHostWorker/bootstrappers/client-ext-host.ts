@@ -27,7 +27,7 @@ childProcess.addForkHandler(
 
 initializeAll().then(() => {
   // Preload the TS worker for fast init
-  childProcess.preloadWorker(
+  childProcess.preloadForkHandler(
     '/extensions/node_modules/typescript/lib/tsserver.js'
   );
 
