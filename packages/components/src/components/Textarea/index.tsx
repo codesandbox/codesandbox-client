@@ -13,9 +13,9 @@ interface ITextareaProps
   maxLength?: number;
 }
 
-export const TextareaComponent = styled(InputComponent).attrs({
+export const TextareaComponent: any = styled(InputComponent).attrs({
   as: 'textarea',
-})<ITextareaProps>(
+})(
   css({
     height: 64,
     width: '100%',
