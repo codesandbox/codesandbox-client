@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { withKnobs } from '@storybook/addon-knobs';
 import { withA11y } from '@storybook/addon-a11y';
@@ -46,10 +46,10 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export const withGlobal = cb => (
-  <Fragment>
+  <>
     <GlobalStyle />
     {cb()}
-  </Fragment>
+  </>
 );
 
 addDecorator(withA11y);
