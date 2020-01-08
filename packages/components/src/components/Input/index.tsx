@@ -47,7 +47,7 @@ export const Input: React.FC<IInputProps> = ({
 
   return (
     <>
-      {props.placeholder ? (
+      {props.placeholder && !label ? (
         <VisuallyHidden>
           <label htmlFor={id}>{props.placeholder}</label>
         </VisuallyHidden>
