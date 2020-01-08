@@ -10,12 +10,12 @@ export default {
 
 export const Basic = () => (
   <Collapsible title="Sandbox Info">
-    <Text weight="medium" marginX={2} marginBottom={2}>
-      The move from Cerebral
-    </Text>
-    <Text variant="muted" marginX={2}>
-      This is a static template with no bundling
-    </Text>
+    <Element marginX={2}>
+      <Text weight="medium" marginBottom={2}>
+        The move from Cerebral
+      </Text>
+      <Text variant="muted">This is a static template with no bundling</Text>
+    </Element>
   </Collapsible>
 );
 
