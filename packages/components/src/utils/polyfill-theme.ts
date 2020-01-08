@@ -23,8 +23,11 @@ const polyfillTheme = vsCodeTheme =>
       hoverBackground: vsCodeTheme.sideBar.border,
     },
     switch: {
+      // @ts-ignore
       background: designLanguage.colors.grays[800],
+      // @ts-ignore
       foregroundOff: designLanguage.colors.white,
+      // @ts-ignore
       foregroundOn: designLanguage.colors.green,
     },
   });
