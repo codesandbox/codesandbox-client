@@ -1,15 +1,12 @@
-import React from 'react';
-import css from '@styled-system/css';
 import { User } from '@codesandbox/common/lib/types';
+import css from '@styled-system/css';
+import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
+
 import { Element } from '../Element';
 import { Text } from '../Text';
 
-interface IAvatarProps {
-  user: User;
-}
-
-export const AvatarImage = styled.img(
+const AvatarImage = styled.img(
   css({
     width: 8,
     height: 8,
@@ -37,9 +34,15 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   })
 );
 
-export const Avatar = ({ user }: IAvatarProps) => (
+type Props = {
+  user: Pick<User, 'avatarUrl' | 'subscriptionSince' | 'username'>;
+};
+export const Avatar: FunctionComponent<Props> = ({
+  user: { avatarUrl, subscriptionSince, username },
+}) => (
   <Element as="span" style={{ position: 'relative' }}>
-    <AvatarImage src={user.avatarUrl} alt={user.username} />
-    {user.subscriptionSince ? <Pro>Pro</Pro> : null}
+    <AvatarImage alt={username} src={avatarUrl} />
+
+    {subscriptionSince ? <Pro>Pro</Pro> : null}
   </Element>
 );

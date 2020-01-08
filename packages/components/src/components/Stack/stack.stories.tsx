@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { LayoutDecorator } from '../../../.storybook/decorators';
 
 import { Stack } from '.';

@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import css from '@styled-system/css';
-import VisuallyHidden from '@reach/visually-hidden';
 import { useId } from '@reach/auto-id';
+import VisuallyHidden from '@reach/visually-hidden';
+import css from '@styled-system/css';
+import React, { FunctionComponent, InputHTMLAttributes } from 'react';
+import styled from 'styled-components';
 import { Text } from '../Text';
 import { InputComponent } from '../Input';
 import { Element } from '../Element';
@@ -17,7 +17,7 @@ const SearchIconBase = props => (
   </svg>
 );
 
-export const SearchInputComponent = styled(InputComponent)(
+const SearchInputComponent = styled(InputComponent)(
   css({
     paddingLeft: 5,
 
@@ -33,7 +33,7 @@ export const SearchInputComponent = styled(InputComponent)(
   })
 );
 
-export const SearchIcon = styled(SearchIconBase)(
+const SearchIcon = styled(SearchIconBase)(
   css({
     position: 'absolute',
     top: '50%',
@@ -46,31 +46,37 @@ export const SearchIcon = styled(SearchIconBase)(
   })
 );
 
-interface ISearchProps extends React.InputHTMLAttributes<HTMLInputElement> {
+type Props = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
-}
-
-export const SearchInput: React.FC<ISearchProps> = ({ label, ...props }) => {
+};
+export const SearchInput: FunctionComponent<Props> = ({
+  label,
+  placeholder,
+  ...props
+}) => {
   const id = useId(props.id);
 
   return (
     <>
-      {props.placeholder && !label ? (
+      {placeholder && !label ? (
         <VisuallyHidden>
-          <label htmlFor={id}>{props.placeholder}</label>
+          <label htmlFor={id}>{placeholder}</label>
         </VisuallyHidden>
       ) : null}
+
       <Text
         as="label"
-        size={2}
-        marginBottom={2}
         htmlFor={id}
+        marginBottom={2}
+        size={2}
         style={{ display: 'block' }}
       >
         {label}
       </Text>
+
       <Element style={{ position: 'relative' }}>
         <SearchIcon />
+
         <SearchInputComponent id={id} {...props} type="search" />
       </Element>
     </>

@@ -12,9 +12,8 @@
 // to modify the theme and add our custom keys
 // which we can use when the polyfill is a bad alternate.
 // In that case, we should check if it exists before overriding it
-
-import deepmerge from 'deepmerge';
 import designLanguage from '@codesandbox/common/lib/design-language';
+import deepmerge from 'deepmerge';
 
 const polyfillTheme = vsCodeTheme =>
   deepmerge(vsCodeTheme, {

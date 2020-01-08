@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Collapsible } from '.';
 import { Text } from '../Text';
 import { Element } from '../Element';

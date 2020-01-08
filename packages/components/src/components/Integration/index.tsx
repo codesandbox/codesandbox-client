@@ -1,11 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Element } from '../Element';
-import { Text } from '../Text';
-import { Stack } from '../Stack';
+import React, { ComponentType, FunctionComponent } from 'react';
+import styled from 'styled-components';
 
-export const Header = styled(Stack)(
+import { Element } from '../Element';
+import { Stack } from '../Stack';
+import { Text } from '../Text';
+
+const Header = styled(Stack)(
   css({
     height: 6,
     paddingX: 4,
@@ -19,7 +20,7 @@ export const Header = styled(Stack)(
   })
 );
 
-export const Content = styled(Element)(
+const Content = styled(Element)(
   css({
     display: 'grid',
     gridTemplateColumns: '1fr 50px',
@@ -36,12 +37,22 @@ export const Content = styled(Element)(
   })
 );
 
-export const Integration = ({ icon, title, children }) => (
+type Props = {
+  Icon: ComponentType;
+  title: string;
+};
+export const Integration: FunctionComponent<Props> = ({
+  children,
+  Icon,
+  title,
+}) => (
   <div>
-    <Header gap={1} align="center">
-      {icon()}
+    <Header align="center" gap={1}>
+      <Icon />
+
       <Text weight="medium">{title}</Text>
     </Header>
+
     <Content>{children}</Content>
   </div>
 );

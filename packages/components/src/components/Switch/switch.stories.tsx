@@ -1,5 +1,6 @@
-import React from 'react';
 import { action } from '@storybook/addon-actions';
+import React from 'react';
+
 import { Switch } from '.';
 
 export default {
@@ -11,5 +12,4 @@ export const Basic = () => <Switch />;
 
 export const defaultOn = () => <Switch defaultOn />;
 
-/* eslint-disable no-console */
 export const onChange = () => <Switch onChange={action('changed')} />;

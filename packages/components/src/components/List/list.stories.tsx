@@ -1,6 +1,7 @@
-import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { List, ListItem, ListAction } from '.';
+import React from 'react';
+
+import { List, ListAction, ListItem } from '.';
 
 export default {
   title: 'components/List',

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Text } from '.';
 
 export default {
@@ -23,7 +24,7 @@ export const Variants = () => (
     </Text>
     <br />
     <br />
-    <Text variant="danger">Now, we really want your atttention, hello!</Text>
+    <Text variant="danger">Now, we really want your attention, hello!</Text>
   </>
 );
 

@@ -1,13 +1,13 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
+import styled from 'styled-components';
 
 export const Element = styled.div<{
+  css?: Object;
   margin?: number;
-  marginX?: number;
-  marginY?: number;
   marginBottom?: number;
   marginTop?: number; // prefer margin bottom to top
-  css?: Object;
+  marginX?: number;
+  marginY?: number;
 }>(props =>
   css({
     margin: props.margin || null,

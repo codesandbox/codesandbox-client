@@ -1,6 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
 import css from '@styled-system/css';
+import React, { ChangeEvent, FunctionComponent } from 'react';
+import styled from 'styled-components';
+
 import { Element } from '../Element';
 
 const SwitchBackground = styled.div(
@@ -39,24 +40,24 @@ const SwitchContainer = styled(Element)(
     'input:checked + [data-component=SwitchBackground]': {
       backgroundColor: 'switch.foregroundOn',
     },
+
     'input:checked + [data-component=SwitchBackground] [data-component=SwitchToggle]': {
       left: theme => theme.space[4] - 3,
     },
   })
 );
 
-interface ISwitchProps {
+type Props = {
+  defaultOn?: boolean;
   id: string;
   on?: boolean;
-  defaultOn?: boolean;
-  onChange?: (event: any) => void;
-}
-
-export const Switch: React.FC<ISwitchProps> = ({
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+};
+export const Switch: FunctionComponent<Props> = ({
+  defaultOn = false,
   id,
-  on,
-  defaultOn,
-  ...props
+  on = false,
+  onChange,
 }) => {
   if (!id) {
     console.warn('Please pass a id corresponding to the htmlFor of its label');
@@ -65,12 +66,13 @@ export const Switch: React.FC<ISwitchProps> = ({
   return (
     <SwitchContainer as="label">
       <SwitchInput
-        type="checkbox"
-        id={id}
         checked={on}
         defaultChecked={defaultOn}
-        {...props}
+        id={id}
+        onChange={onChange}
+        type="checkbox"
       />
+
       <SwitchBackground data-component="SwitchBackground">
         <SwitchToggle data-component="SwitchToggle" />
       </SwitchBackground>

@@ -1,5 +1,6 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
+import styled from 'styled-components';
+
 import { Element } from '../Element';
 
 const fontSize = 1; // rem = 16px
@@ -16,28 +17,36 @@ export const Grid = styled(Element)<{ columnGap?: number; rowGap?: number }>(
     })
 );
 
-// todo: end and span cant be together
-// valid combinations are
+// Valid combinations are:
 // start | start + end | start + span | span
 // span + end is also possible but not implemented here
 export const Column = styled(Element)<{
-  start?: number | Array<number>;
-  end?: number | Array<number>;
-  span?: number | Array<number>;
-}>(({ start, end, span }) => {
+  end?: number | number[];
+  span?: number | number[];
+  start?: number | Array<number | string>;
+}>(({ end, span, start }) => {
   const styles: {
     gridColumnStart?: number | Array<number | string>;
-    gridColumnEnd?: number | string | Array<number> | Array<string>;
+    gridColumnEnd?: number | string | number[] | string[];
   } = {};
 
-  if (Array.isArray(start)) styles.gridColumnStart = start.map(s => s);
-  else if (start) styles.gridColumnStart = start;
+  if (Array.isArray(start)) {
+    styles.gridColumnStart = start.map(s => s);
+  } else if (start) {
+    styles.gridColumnStart = start;
+  }
 
-  if (Array.isArray(end)) styles.gridColumnEnd = end.map(s => s + 1);
-  else if (end) styles.gridColumnEnd = end + 1;
+  if (Array.isArray(end)) {
+    styles.gridColumnEnd = end.map(s => s + 1);
+  } else if (end) {
+    styles.gridColumnEnd = end + 1;
+  }
 
-  if (Array.isArray(span)) styles.gridColumnEnd = span.map(s => 'span  ' + s);
-  else if (span) styles.gridColumnEnd = 'span ' + span;
+  if (Array.isArray(span)) {
+    styles.gridColumnEnd = span.map(s => 'span  ' + s);
+  } else if (span) {
+    styles.gridColumnEnd = 'span ' + span;
+  }
 
   return css(styles);
 });

@@ -1,8 +1,9 @@
-import React from 'react';
 import { action } from '@storybook/addon-actions';
+import React from 'react';
+
+import { Element } from '../Element';
 
 import { Select } from '.';
-import { Element } from '../Element';
 
 const Icon = props => (
   <svg width={10} height={10} fill="none" viewBox="0 0 10 10" {...props}>

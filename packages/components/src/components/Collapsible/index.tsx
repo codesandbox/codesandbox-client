@@ -1,6 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
 import css from '@styled-system/css';
+import React, { FunctionComponent, useState } from 'react';
+import styled from 'styled-components';
+
 import { Element } from '../Element';
 import { Text } from '../Text';
 
@@ -66,26 +67,26 @@ const ToggleIcon = props => (
   </Icon>
 );
 
-interface ICollapsibleProps {
+type Props = {
   defaultOpen?: boolean;
   title: string;
-}
-
-export const Collapsible: React.FC<ICollapsibleProps> = ({
-  defaultOpen,
+};
+export const Collapsible: FunctionComponent<Props> = ({
+  defaultOpen = false,
   title,
   children,
   ...props
 }) => {
-  const [open, setOpen] = React.useState(defaultOpen || false);
-  const toggle = () => setOpen(!open);
+  const [open, setOpen] = useState(defaultOpen);
 
   return (
     <Section {...props}>
-      <Header onClick={toggle}>
+      <Header onClick={() => setOpen(show => !show)}>
         <ToggleIcon open={open} />
+
         <Text weight="medium">{title}</Text>
       </Header>
+
       {open ? <Body>{children}</Body> : null}
     </Section>
   );

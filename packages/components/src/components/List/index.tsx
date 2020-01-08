@@ -26,6 +26,7 @@ export const ListAction = styled(ListItem)(
       cursor: 'pointer',
       backgroundColor: 'sideBar.hoverBackground',
     },
+
     ':focus-within': {
       backgroundColor: 'sideBar.hoverBackground',
     },

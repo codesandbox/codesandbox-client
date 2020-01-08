@@ -1,10 +1,15 @@
-import React, { useCallback } from 'react';
-import styled from 'styled-components';
-import css from '@styled-system/css';
-import VisuallyHidden from '@reach/visually-hidden';
 import { useId } from '@reach/auto-id';
-import { Text } from '../Text';
+import VisuallyHidden from '@reach/visually-hidden';
+import css from '@styled-system/css';
+import React, {
+  FunctionComponent,
+  SelectHTMLAttributes,
+  useCallback,
+} from 'react';
+import styled from 'styled-components';
+
 import { Element } from '../Element';
+import { Text } from '../Text';
 
 // Svg used for the icon
 const svg = color =>
@@ -14,12 +19,12 @@ const svg = color =>
     color.split('#')[1]
   }'/%3E%3C/svg%3E%0A"`;
 
-export const SelectComponent = styled.select<{ icon?: boolean }>(props =>
+const SelectComponent = styled.select<{ icon?: boolean }>(({ icon }) =>
   css({
     width: '100%',
     height: 6,
     paddingX: 2,
-    paddingLeft: props.icon ? 6 : 2,
+    paddingLeft: icon ? 6 : 2,
     fontSize: 3,
     borderRadius: 'small',
     backgroundColor: 'input.background',
@@ -57,15 +62,15 @@ const WrapperWithIcon = styled(Element)(
   })
 );
 
-interface ISelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+type Props = SelectHTMLAttributes<HTMLSelectElement> & {
   label?: string;
   icon?: any;
-}
-
-export const Select: React.FC<ISelectProps> = ({
-  label,
+};
+export const Select: FunctionComponent<Props> = ({
   children,
   icon,
+  label,
+  placeholder,
   ...props
 }) => {
   const Wrapper = useCallback(
@@ -79,33 +84,36 @@ export const Select: React.FC<ISelectProps> = ({
       ),
     [icon]
   );
-
   const id = useId(props.id);
 
   return (
     <>
-      {props.placeholder && !label ? (
+      {placeholder && !label ? (
         <VisuallyHidden>
-          <label htmlFor={id}>{props.placeholder}</label>
+          <label htmlFor={id}>{placeholder}</label>
         </VisuallyHidden>
       ) : null}
+
       <Text
         as="label"
-        size={2}
-        marginBottom={2}
         htmlFor={id}
+        marginBottom={2}
+        size={2}
         style={{ display: 'block' }}
       >
         {label}
       </Text>
+
       <Wrapper>
         {icon ? <IconWrapper>{icon()}</IconWrapper> : null}
+
         <SelectComponent icon={Boolean(icon)} id={id} {...props}>
-          {props.placeholder ? (
+          {placeholder ? (
             <option value="" selected>
-              {props.placeholder}
+              {placeholder}
             </option>
           ) : null}
+
           {children}
         </SelectComponent>
       </Wrapper>

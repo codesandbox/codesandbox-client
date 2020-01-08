@@ -1,6 +1,7 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
 import deepmerge from 'deepmerge';
+import styled from 'styled-components';
+
 import { Element } from '../Element';
 
 // totally custom button shadow, same across themes
@@ -13,6 +14,7 @@ const variantStyles = {
   primary: {
     backgroundColor: 'button.background',
     color: 'button.foreground',
+
     ':hover': {
       // hoverBackground is polyfilled and uses a gradient
       // so we use background and not backgroundColor
@@ -23,12 +25,14 @@ const variantStyles = {
       background: theme => theme.colors.button.hoverBackground,
       boxShadow: interactionShadows.hover,
     },
+
     ':focus': {
       // we use the same colors for hover and focus
       // but we add an active state to give
       background: theme => theme.colors.button.hoverBackground,
       boxShadow: interactionShadows.focus,
     },
+
     ':disabled:hover': {
       background: 'transparent', // override hover
       backgroundColor: 'button.background',
@@ -37,15 +41,18 @@ const variantStyles = {
   secondary: {
     backgroundColor: 'secondaryButton.background',
     color: 'secondaryButton.foreground',
+
     // same technique as primary
     ':hover': {
       background: theme => theme.colors.secondaryButton.hoverBackground,
       boxShadow: interactionShadows.hover,
     },
+
     ':focus': {
       background: theme => theme.colors.secondaryButton.hoverBackground,
       boxShadow: interactionShadows.focus,
     },
+
     ':disabled:hover': {
       background: 'transparent', // override hover
       backgroundColor: 'secondaryButton.background',
@@ -54,10 +61,12 @@ const variantStyles = {
   link: {
     backgroundColor: 'transparent',
     color: 'mutedForeground',
+
     // same technique as primary
     ':hover': {
       color: 'foreground',
     },
+
     ':focus': {
       color: 'foreground',
     },
@@ -65,11 +74,13 @@ const variantStyles = {
   danger: {
     backgroundColor: 'dangerButton.background',
     color: 'dangerButton.foreground',
+
     // same technique as primary
     ':hover': {
       background: theme => theme.colors.dangerButton.hoverBackground,
       boxShadow: interactionShadows.hover,
     },
+
     ':focus': {
       background: theme => theme.colors.dangerButton.hoverBackground,
       boxShadow: interactionShadows.focus,
@@ -83,7 +94,7 @@ const variantStyles = {
 };
 
 export const Button = styled(Element).attrs({ as: 'button' })<{
-  variant?: 'primary' | 'secondary' | 'link' | 'danger';
+  variant?: keyof typeof variantStyles;
 }>(({ variant = 'primary', ...props }) =>
   css(
     deepmerge(
@@ -108,13 +119,16 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
         ':focus': {
           outline: 'none',
         },
+
         ':active': {
           transform: 'scale(0.98)',
         },
+
         ':disabled': {
           opacity: '0.4',
           cursor: 'not-allowed',
         },
+
         ...props.css,
       }
     )
