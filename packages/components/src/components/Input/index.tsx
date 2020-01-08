@@ -1,18 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { VisuallyHidden } from 'reakit/VisuallyHidden';
+import VisuallyHidden from '@reach/visually-hidden';
 import { uniqueId } from 'lodash-es';
 
 const placeholderStyles = {
   color: 'input.placeholderForeground',
-  fontSize: 13,
+  fontSize: 3,
 };
 
 export const InputComponent = styled.input(
   css({
     height: 6,
     paddingX: 2,
+    fontSize: 3,
+    borderRadius: 'small',
     backgroundColor: 'input.background',
     borderBottom: '1px solid',
     borderColor: 'input.border',
@@ -25,7 +27,7 @@ export const InputComponent = styled.input(
 
 const Label = styled.label(
   css({
-    fontSize: 11,
+    fontSize: 2,
     paddingBottom: 2,
     color: 'sidebar.foreground',
     display: 'block',
@@ -33,13 +35,11 @@ const Label = styled.label(
 );
 
 interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  invisibleLabel?: string;
   label?: string;
 }
 
 export const Input: React.FC<IInputProps> = ({
   type = 'text',
-  invisibleLabel,
   label,
   ...props
 }) => {
@@ -47,9 +47,9 @@ export const Input: React.FC<IInputProps> = ({
 
   return (
     <>
-      {invisibleLabel ? (
+      {props.placeholder ? (
         <VisuallyHidden>
-          <label htmlFor={id}>{invisibleLabel}</label>
+          <label htmlFor={id}>{props.placeholder}</label>
         </VisuallyHidden>
       ) : null}
       {label ? <Label htmlFor={id}>{label}</Label> : null}
