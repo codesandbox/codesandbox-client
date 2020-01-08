@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import css from '@styled-system/css';
+import { Element } from '../Element';
 
 const fontSize = 1; // rem = 16px
 const lineHeight = fontSize * 1.5;
 
-export const Grid = styled.div<{ columnGap?: number; rowGap?: number }>(
+export const Grid = styled(Element)<{ columnGap?: number; rowGap?: number }>(
   ({ columnGap, rowGap }) =>
     css({
       display: 'grid',
@@ -19,7 +20,7 @@ export const Grid = styled.div<{ columnGap?: number; rowGap?: number }>(
 // valid combinations are
 // start | start + end | start + span | span
 // span + end is also possible but not implemented here
-export const Column = styled.div<{
+export const Column = styled(Element)<{
   start?: number;
   end?: number;
   span?: number;

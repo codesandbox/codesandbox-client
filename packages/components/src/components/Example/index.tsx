@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Element } from '../Element';
 
-const H1 = styled.h1`
+const H1 = styled(Element).attrs({ as: 'h1' })`
   color: red;
 `;
 
