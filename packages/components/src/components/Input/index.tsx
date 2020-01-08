@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import VisuallyHidden from '@reach/visually-hidden';
 import { uniqueId } from 'lodash-es';
+import { Text } from '../Text';
 
 const placeholderStyles = {
   color: 'input.placeholderForeground',
@@ -16,21 +17,12 @@ export const InputComponent = styled.input(
     fontSize: 3,
     borderRadius: 'small',
     backgroundColor: 'input.background',
-    borderBottom: '1px solid',
+    border: '1px solid',
     borderColor: 'input.border',
     color: 'input.foreground',
     '::-webkit-input-placeholder': placeholderStyles,
     '::-ms-input-placeholder': placeholderStyles,
     '::placeholder': placeholderStyles,
-  })
-);
-
-const Label = styled.label(
-  css({
-    fontSize: 2,
-    paddingBottom: 2,
-    color: 'sidebar.foreground',
-    display: 'block',
   })
 );
 
@@ -52,7 +44,15 @@ export const Input: React.FC<IInputProps> = ({
           <label htmlFor={id}>{props.placeholder}</label>
         </VisuallyHidden>
       ) : null}
-      {label ? <Label htmlFor={id}>{label}</Label> : null}
+      <Text
+        as="label"
+        size={2}
+        marginBottom={2}
+        htmlFor={id}
+        style={{ display: 'block' }}
+      >
+        {label}
+      </Text>
       <InputComponent id={id} {...props} />
     </>
   );
