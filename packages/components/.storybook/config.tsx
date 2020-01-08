@@ -7,7 +7,6 @@ import { themes } from '@storybook/theming';
 import { ThemeDecorator } from './decorators';
 import { createGlobalStyle } from 'styled-components';
 import global from '@codesandbox/common/lib/global.css';
-import theme from './theme';
 
 const viewports = {
   mobile: {
