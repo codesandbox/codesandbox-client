@@ -18,17 +18,6 @@ import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
 
-Object.defineProperty(window, 'localStorage', {
-  get() {
-    return {};
-  },
-});
-Object.defineProperty(window, 'indexedDB', {
-  get() {
-    return {};
-  },
-});
-
 // Call this before importing React (or any other packages that might import React).
 initialize(window);
 
