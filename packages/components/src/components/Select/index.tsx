@@ -7,12 +7,8 @@ import { Text } from '../Text';
 import { Element } from '../Element';
 
 // Svg used for the icon
-const svg = (hover: boolean) =>
-  `"data:image/svg+xml,%3Csvg width='8' height='24' viewBox='0 0 8 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.00006 17L1 13L7 13L4.00006 17Z' fill='${
-    hover ? 'white' : '%23757575'
-  }'/%3E%3Cpath d='M3.99994 7L7 11H1L3.99994 7Z' fill='${
-    hover ? 'white' : '%23757575'
-  }'/%3E%3C/svg%3E%0A"`;
+const svg = () =>
+  `"data:image/svg+xml,%3Csvg width='8' height='24' viewBox='0 0 8 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.00006 17L1 13L7 13L4.00006 17Z' fill='currentColor'/%3E%3Cpath d='M3.99994 7L7 11H1L3.99994 7Z' fill='currentColor'/%3E%3C/svg%3E%0A"`;
 
 export const SelectComponent = styled.select<{ icon?: boolean }>(props =>
   css({
@@ -27,12 +23,12 @@ export const SelectComponent = styled.select<{ icon?: boolean }>(props =>
     borderColor: 'input.border',
     color: 'input.placeholderForeground',
     appearance: 'none',
-    backgroundImage: `url(${svg(false)})`,
+    backgroundImage: `url(${svg})`,
     backgroundPosition: 'calc(100% - 8px) center',
     backgroundRepeat: 'no-repeat',
 
     ':hover': {
-      backgroundImage: `url(${svg(true)})`,
+      backgroundImage: `url(${svg})`,
       color: 'input.foreground',
     },
   })
@@ -41,7 +37,7 @@ export const SelectComponent = styled.select<{ icon?: boolean }>(props =>
 const IconWrapper = styled(Element)(
   css({
     position: 'absolute',
-    left: '8px',
+    left: 2,
     top: '50%',
     transform: 'translateY(-50%)',
   })
