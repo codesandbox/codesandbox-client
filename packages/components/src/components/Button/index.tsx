@@ -101,6 +101,11 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
           cursor: 'not-allowed',
         },
       },
+      // @ts-ignore deepmerge allows functions as values
+      // it overrides instead of merging, which is what we want
+      // but it's types don't like it. so we're going to ignore that
+      // TODO: raise a pull request for deepmerge or pick a different
+      // library to deep merge objects
       variantStyles[variant]
     )
   )

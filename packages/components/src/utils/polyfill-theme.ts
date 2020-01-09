@@ -21,8 +21,12 @@ const polyfillTheme = vsCodeTheme =>
     sideBar: {
       hoverBackground: vsCodeTheme.sideBar.border,
     },
-    // this works for codesandbox-black but nothing else
-    mutedForeground: vsCodeTheme.editor.foreground,
+    // this works for codesandbox-black but I doubt other themes define this
+    mutedForeground: vsCodeTheme.input.placeholderForeground,
+    // putting this here so that we remember to polyfill it
+    input: {
+      placeholderForeground: vsCodeTheme.input.placeholderForeground,
+    },
     avatar: {
       border: vsCodeTheme.sideBar.border,
     },
@@ -40,6 +44,7 @@ const polyfillTheme = vsCodeTheme =>
       // @ts-ignore: The colors totally exist, our typings are incorrect
       background: designLanguage.colors.reds[300],
       foreground: '#fff',
+      // @ts-ignore: The colors totally exist, our typings are incorrect
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`,
     },
   });
