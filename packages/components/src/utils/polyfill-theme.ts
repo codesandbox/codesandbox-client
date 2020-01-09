@@ -18,6 +18,9 @@ const polyfillTheme = vsCodeTheme =>
     sideBar: {
       hoverBackground: vsCodeTheme.sideBar.border,
     },
+    avatar: {
+      border: vsCodeTheme.sideBar.border,
+    },
   });
 
 export default polyfillTheme;
