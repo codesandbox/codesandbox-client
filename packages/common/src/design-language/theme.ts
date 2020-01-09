@@ -24,6 +24,11 @@ const theme = {
   },
 
   shadows: {
+    // based on elevation levels
+    0: 'none',
+    1: '0px 8px 4px rgba(0, 0, 0, 0.12), 0px 8px 16px rgba(0, 0, 0, 0.24)',
+    2: '0px 4px 4px rgba(0, 0, 0, 0.12), 0px 16px 32px rgba(0, 0, 0, 0.24)',
+
     // this part is ugly, this can be improved.
     // bonus: these are terrible names
     active: `inset 0px -2px 0px ${colors.blues[300]}`,
