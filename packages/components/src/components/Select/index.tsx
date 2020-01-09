@@ -96,7 +96,7 @@ export const Select: React.FC<ISelectProps> = ({
         {icon ? <IconWrapper>{icon()}</IconWrapper> : null}
         <SelectComponent icon={Boolean(icon)} id={id} {...props}>
           {props.placeholder ? (
-            <option value="" disabled selected>
+            <option value="" selected>
               {props.placeholder}
             </option>
           ) : null}
