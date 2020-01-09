@@ -41,8 +41,32 @@ const variantStyles = {
       backgroundColor: 'secondaryButton.background',
     },
   },
-  link: {},
-  danger: {},
+  link: {
+    backgroundColor: 'transparent',
+    color: 'mutedForeground',
+    // same technique as primary
+    ':hover': {
+      color: 'foreground',
+    },
+    ':focus': {
+      color: 'foreground',
+    },
+  },
+  danger: {
+    backgroundColor: 'dangerButton.background',
+    color: 'dangerButton.foreground',
+    // same technique as primary
+    ':hover': {
+      background: theme => theme.colors.dangerButton.hoverBackground,
+    },
+    ':focus': {
+      background: theme => theme.colors.dangerButton.hoverBackground,
+    },
+    ':disabled:hover': {
+      background: 'transparent', // override hover
+      backgroundColor: 'dangerButton.background',
+    },
+  },
 };
 
 export const Button = styled(Element).attrs({ as: 'button' })<{

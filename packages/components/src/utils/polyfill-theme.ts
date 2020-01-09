@@ -14,13 +14,15 @@
 // In that case, we should check if it exists before overriding it
 
 import deepmerge from 'deepmerge';
+import designLanguage from '@codesandbox/common/lib/design-language';
 
 const polyfillTheme = vsCodeTheme =>
   deepmerge(vsCodeTheme, {
-    mutedForeground: vsCodeTheme.foreground, // todo: find a way to fill this value
     sideBar: {
       hoverBackground: vsCodeTheme.sideBar.border,
     },
+    // this works for codesandbox-black but nothing else
+    mutedForeground: vsCodeTheme.editor.foreground,
     avatar: {
       border: vsCodeTheme.sideBar.border,
     },
@@ -33,6 +35,12 @@ const polyfillTheme = vsCodeTheme =>
       background: vsCodeTheme.input.background,
       foreground: vsCodeTheme.input.foreground,
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${vsCodeTheme.input.background}`,
+    },
+    dangerButton: {
+      // @ts-ignore: The colors totally exist, our typings are incorrect
+      background: designLanguage.colors.reds[300],
+      foreground: '#fff',
+      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`,
     },
   });
 
