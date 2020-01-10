@@ -14,16 +14,21 @@ interface ITextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   maxLength?: number;
+  autosize?: boolean;
 }
 
 export const TextareaComponent: any = styled(InputComponent).attrs({
   as: 'textarea',
-})(
+})(props =>
   css({
-    height: 64,
     padding: 2,
     width: '100%',
     resize: 'none',
+    minHeight: 64,
+    // no transition because it breaks autoshrink :(
+    // leaving this comment here to save time of the brave
+    // soul who tries this again
+    // transition: 'height 150ms',
   })
 ) as StyledComponent<
   'textarea',
@@ -45,6 +50,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
   maxLength,
   onChange,
   onKeyPress,
+  autosize,
   ...props
 }) => {
   const id = props.id || uniqueId('form_');
@@ -67,6 +73,8 @@ export const Textarea: React.FC<ITextareaProps> = ({
     } else {
       setValue(e.target.value);
     }
+
+    if (autosize) resize(e.target as HTMLTextAreaElement);
   };
 
   const keyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -78,6 +86,12 @@ export const Textarea: React.FC<ITextareaProps> = ({
     }
 
     return true;
+  };
+
+  const resize = (element: HTMLTextAreaElement) => {
+    const offset = 2; // for borders on both sides
+    element.style.height = ''; // reset before setting again
+    element.style.height = element.scrollHeight + offset + 'px';
   };
 
   return (
