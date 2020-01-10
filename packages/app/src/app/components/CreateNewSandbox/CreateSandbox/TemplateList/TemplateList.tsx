@@ -1,6 +1,7 @@
 import React from 'react';
 import { TemplateFragment } from 'app/graphql/types';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { useOvermind } from 'app/overmind';
 import { useKey } from 'react-use';
 import { isMac } from '@codesandbox/common/lib/utils/platform';
@@ -43,7 +44,7 @@ export const TemplateList = ({
   showSecondaryShortcuts,
   columnCount = 2,
 }: ITemplateListProps) => {
-  const { actions } = useOvermind();
+  const { actions, state } = useOvermind();
   const [focusedTemplateIndex, setFocusedTemplate] = React.useState(0);
   const lastMouseMoveEventAt = React.useRef<number>(Date.now());
 
@@ -51,7 +52,11 @@ export const TemplateList = ({
     sandbox: TemplateFragment['sandbox'],
     openInNewWindow = false
   ) => {
-    if (forkOnOpen) {
+    // We can't fork a sandbox that's server and if you're signed in, so then we just go to it
+    const templateDefinition = getTemplateDefinition(sandbox.source.template);
+    const cannotFork = templateDefinition.isServer && !state.isLoggedIn;
+
+    if (forkOnOpen && !cannotFork) {
       actions.editor.forkExternalSandbox({
         sandboxId: sandbox.id,
         openInNewWindow,
