@@ -13,8 +13,7 @@ childProcess.addDefaultForkHandler(DefaultWorkLoader);
 
 childProcess.addForkHandler(
   '/extensions/node_modules/typescript/lib/tsserver.js',
-  // Should just use : () => new WebsocketLSP(urlToConnectTo)
-  () => new WebsocketLSP('wss://4iycu.sse.codesandbox.stream/lsp')
+  () => new WebsocketLSP('ws://localhost:1023') // wss://4iycu.sse.codesandbox.stream/lsp
 );
 childProcess.addForkHandler(
   '/extensions/octref.vetur.0.16.2/server/dist/vueServerMain.js',

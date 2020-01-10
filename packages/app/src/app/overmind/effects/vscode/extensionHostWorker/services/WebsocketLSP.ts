@@ -3,6 +3,10 @@ import {
   IForkHandlerCallback,
 } from 'node-services/lib/child_process';
 
+// This PID should later be created in a way that makes it 100%
+// consistent across clients
+let pid = 0;
+
 export class WebsocketLSP implements IForkHandler {
   ws: WebSocket;
   listeners = new Map<
@@ -13,7 +17,7 @@ export class WebsocketLSP implements IForkHandler {
   messagesQueue: any[] = [];
 
   constructor(endpoint: string) {
-    this.ws = new WebSocket(endpoint);
+    this.ws = new WebSocket(endpoint + `?pid=${pid++}`);
     this.ws.onopen = () => {
       this.messagesQueue.forEach(message => {
         this.postMessage(message);
@@ -23,6 +27,7 @@ export class WebsocketLSP implements IForkHandler {
 
   postMessage(message) {
     if (this.ws.readyState === 1 && message.$data) {
+      // console.log('REQUEST', message.$data);
       this.ws.send(message.$data);
     } else if (message.$data) {
       this.messagesQueue.push(message);
@@ -32,6 +37,7 @@ export class WebsocketLSP implements IForkHandler {
   addEventListener(eventName: string, callback: IForkHandlerCallback) {
     const listener = event => {
       if ('data' in event) {
+        // console.log('RESPONSE', event.data);
         callback({
           data: {
             $data: event.data,
