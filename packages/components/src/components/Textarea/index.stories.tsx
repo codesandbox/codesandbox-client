@@ -1,4 +1,5 @@
 import React from 'react';
+import { action } from '@storybook/addon-actions';
 import { Textarea } from '.';
 
 export default {
@@ -28,5 +29,22 @@ export const Label = () => (
 export const MaxLength = () => (
   <Wrapper>
     <Textarea maxLength={10} label="Your full name" placeholder="John Doe" />
+  </Wrapper>
+);
+
+export const onChange = () => (
+  <Wrapper>
+    <Textarea
+      maxLength={10}
+      label="Your full name"
+      placeholder="John Doe"
+      onChange={action('textarea change')}
+    />
+  </Wrapper>
+);
+
+export const autoResize = () => (
+  <Wrapper>
+    <Textarea autosize placeholder="Write a lot of lines here" />
   </Wrapper>
 );
