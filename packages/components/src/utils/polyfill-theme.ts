@@ -16,10 +16,10 @@ const polyfillTheme = vsCodeTheme =>
   deepmerge(vsCodeTheme, {
     mutedForeground: vsCodeTheme.foreground, // todo: find a way to fill this value
     sideBar: {
-      hoverBackground: vsCodeTheme.sideBar.border,
+      hoverBackground: (vsCodeTheme.sideBar || {}).border || 'red',
     },
     avatar: {
-      border: vsCodeTheme.sideBar.border,
+      border: (vsCodeTheme.sideBar || {}).border || 'red',
     },
   });
 

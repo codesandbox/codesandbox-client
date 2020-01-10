@@ -4,9 +4,11 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withA11y } from '@storybook/addon-a11y';
 import { addDecorator, addParameters, configure } from '@storybook/react';
 import { themes } from '@storybook/theming';
-import { ThemeDecorator } from './decorators';
 import { createGlobalStyle } from 'styled-components';
+// @ts-ignore
 import global from '@codesandbox/common/lib/global.css';
+import { makeTheme, getThemes } from '../src/components/ThemeProvider';
+import { withThemesProvider } from 'storybook-addon-styled-component-theme';
 
 const viewports = {
   mobile: {
@@ -33,35 +35,47 @@ const GlobalStyle = createGlobalStyle`
   ${global};
   html body {
     font-family: 'Inter', sans-serif;
+    margin: 0;
     background-color: ${props =>
       // @ts-ignore
       props.theme.colors.sideBar.background} !important;
     color: ${props =>
       // @ts-ignore
       props.theme.colors.sideBar.foreground} !important;
-    margin: 0;
-
     * {
       box-sizing: border-box;
     }
+
   }
 `;
 
-export const withGlobal = cb => (
+export const withGlobal = (cb: any) => (
   <>
     <GlobalStyle />
     {cb()}
   </>
 );
 
-addDecorator(withA11y);
-addDecorator(withKnobs);
-addDecorator(withGlobal);
-addDecorator(ThemeDecorator);
-addParameters({ viewport: { viewports } });
+export const getAllThemes = async () => {
+  const allThemes = await getThemes();
+  return allThemes.map(b => makeTheme(b, b.name));
+};
 
-// Option defaults.
-addParameters({ options: { theme: themes.dark } });
+getAllThemes().then((themes: any) => {
+  const blackCodesandbox = themes.find(
+    theme => theme.name === 'CodeSandbox Black'
+  );
 
-// automatically import all files ending in *.stories.js
-configure(require.context('../src', true, /\.stories\.tsx$/), module);
+  const rest = themes.filter(theme => theme.name !== 'CodeSandbox Black');
+  addDecorator(withGlobal);
+  addDecorator(withThemesProvider([blackCodesandbox, ...rest]));
+  addDecorator(withA11y);
+  addDecorator(withKnobs);
+  addParameters({ viewport: { viewports } });
+
+  // Option defaults.
+  addParameters({ options: { theme: themes.dark } });
+
+  // automatically import all files ending in *.stories.js
+  configure(require.context('../src', true, /\.stories\.tsx$/), module);
+});
