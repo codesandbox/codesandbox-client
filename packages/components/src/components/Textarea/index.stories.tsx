@@ -42,3 +42,9 @@ export const onChange = () => (
     />
   </Wrapper>
 );
+
+export const autoResize = () => (
+  <Wrapper>
+    <Textarea autosize placeholder="Write a lot of lines here" />
+  </Wrapper>
+);
