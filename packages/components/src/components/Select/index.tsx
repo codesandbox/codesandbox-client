@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import VisuallyHidden from '@reach/visually-hidden';
-import { uniqueId } from 'lodash-es';
+import { useId } from '@reach/auto-id';
 import { Text } from '../Text';
 import { Element } from '../Element';
 
@@ -74,7 +74,7 @@ export const Select: React.FC<ISelectProps> = ({
     [icon]
   );
 
-  const id = props.id || uniqueId('select_');
+  const id = useId(props.id);
 
   return (
     <>

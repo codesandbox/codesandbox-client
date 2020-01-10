@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled, {
   StyledComponent,
   StyledComponentInnerOtherProps,
 } from 'styled-components';
 import css from '@styled-system/css';
 import VisuallyHidden from '@reach/visually-hidden';
-import { uniqueId } from 'lodash-es';
+import { useId } from '@reach/auto-id';
 import { Text } from '../Text';
 import { Stack } from '../Stack';
 import { InputComponent } from '../Input';
@@ -55,11 +55,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
 }) => {
   const [wordCount, setWordCount] = useState(0);
   const [value, setValue] = useState('');
-  const [id, setID] = useState('textarea_0');
-
-  useEffect(() => {
-    setID(uniqueId('textarea_'));
-  }, []);
+  const id = useId(props.id);
 
   const Wrapper = useCallback(
     ({ children }) =>

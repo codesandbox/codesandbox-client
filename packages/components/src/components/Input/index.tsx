@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import VisuallyHidden from '@reach/visually-hidden';
-import { uniqueId } from 'lodash-es';
+import { useId } from '@reach/auto-id';
 import { Text } from '../Text';
 
 const placeholderStyles = {
@@ -35,7 +35,7 @@ export const Input: React.FC<IInputProps> = ({
   label,
   ...props
 }) => {
-  const id = props.id || uniqueId('input_');
+  const id = useId(props.id);
   return (
     <>
       {props.placeholder && !label ? (
