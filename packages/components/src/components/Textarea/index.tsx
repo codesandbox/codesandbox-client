@@ -19,12 +19,12 @@ interface ITextareaProps
 
 export const TextareaComponent: any = styled(InputComponent).attrs({
   as: 'textarea',
-})(props =>
+})(
   css({
+    minHeight: 64,
     padding: 2,
     width: '100%',
     resize: 'none',
-    minHeight: 64,
     // no transition because it breaks autoshrink :(
     // leaving this comment here to save time of the brave
     // soul who tries this again
