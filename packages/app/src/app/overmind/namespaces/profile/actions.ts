@@ -1,6 +1,7 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
+import { Profile } from '@codesandbox/common/lib/types';
 
 export const profileMounted: AsyncAction<{
   username: string;
@@ -8,22 +9,43 @@ export const profileMounted: AsyncAction<{
   state.profile.isLoadingProfile = true;
   state.profile.notFound = false;
 
-  const profile = await effects.api.getProfile(username);
+  const { avatarUrl: avatar, featuredSandboxes: pinnedSandboxes, showcasedSandboxShortid: featuredSandbox, ...profile } = await effects.api.getProfile(username);
 
-  state.profile.profiles[profile.id] = profile;
+  state.profile.profiles[profile.id] = {
+    ...profile,
+    avatar,
+    isContributor: state.contributors[profile.username],
+    isPro: !!profile.subscriptionSince,
+    // TODO: This needs to be replaced once Team Profiles can be supported!
+    associations: [],
+    pinnedSandboxes,
+    featuredSandbox,
+    // TODO: These properties are likely going to be supplied by Algolia
+    sandboxes: [],
+    templates: [],
+    likes: [],
+  };
   state.profile.currentProfileId = profile.id;
 
   if (
-    profile.showcasedSandboxShortid &&
-    !state.editor.sandboxes[profile.showcasedSandboxShortid]
+    featuredSandbox &&
+    !state.editor.sandboxes[featuredSandbox]
   ) {
     state.editor.sandboxes[
-      profile.showcasedSandboxShortid
-    ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+      featuredSandbox
+    ] = await effects.api.getSandbox(featuredSandbox);
   }
 
   state.profile.isLoadingProfile = false;
 });
+
+export const editProfile: AsyncAction<Profile> = async ({ state, effects }, changes) => {
+  state.profile.isLoadingSandboxes = true;
+
+  state.profile.profiles[changes.id] = changes
+
+  state.profile.isLoadingProfile = false;
+}
 
 export const sandboxesPageChanged: AsyncAction<{
   page: number;
@@ -73,16 +95,6 @@ export const likedSandboxesPageChanged: AsyncAction<{
   state.profile.isLoadingSandboxes = false;
 };
 
-export const selectSandboxClicked: AsyncAction = async ({ state, effects }) => {
-  state.currentModal = 'selectSandbox';
-
-  if (!state.profile.userSandboxes.length) {
-    state.profile.isLoadingSandboxes = true;
-    state.profile.userSandboxes = await effects.api.getSandboxes();
-    state.profile.isLoadingSandboxes = false;
-  }
-};
-
 export const newSandboxShowcaseSelected: AsyncAction<string> = async (
   { state, effects },
   id
@@ -106,7 +118,7 @@ export const newSandboxShowcaseSelected: AsyncAction<string> = async (
 };
 
 export const deleteSandboxClicked: Action<{
-  id;
+  id: string;
 }> = ({ state }, { id }) => {
   state.profile.sandboxToDeleteId = id;
   state.currentModal = 'deleteProfileSandbox';

@@ -1,8 +1,10 @@
 import React from 'react';
 import { LightIcons } from '@codesandbox/template-icons';
+import { SmallSandbox } from '@codesandbox/common/lib/types/SmallSandbox';
 import GoHeart from 'react-icons/go/heart';
 import GoEye from 'react-icons/go/eye';
 import GoRepoForked from 'react-icons/go/repo-forked';
+import { useOvermind } from 'app/overmind';
 import { Link } from '@codesandbox/common/lib/components';
 import { SandboxOptionsMenu } from '../SandboxOptionsMenu';
 import { abbreviateNumber } from './abbreviateNumber';
@@ -23,34 +25,27 @@ const environments = {
   React: <LightIcons.ReactIconLight />,
 };
 
-interface IShowcaseCardProps {
-  id: string;
-  preview: string;
-  title: string;
-  description: string;
-  likes: number;
-  views: number;
-  forks: number;
-  environment: string;
-}
-
-export const ShowcaseCard: React.FC<IShowcaseCardProps> = ({
+export const ShowcaseCard: React.FC<SmallSandbox> = ({
   id,
-  preview,
   title,
   description,
-  likes,
-  views,
-  forks,
-  environment,
+  likeCount,
+  viewCount,
+  forkCount,
+  template,
   // eslint-disable-next-line
 }) => {
-  // TODO:
-  // - Add handler for Liking/Unliking the sandbox.
+  const {
+    actions: {
+      editor: { likeSandboxToggled },
+    },
+    state: { isLoggedIn },
+  } = useOvermind();
+
   return (
     <Container>
       <Link to={`/s/${id}`}>
-        <Preview src={preview} />
+        <Preview src={`/api/v1/sandboxes/${id}/screenshot.png`} />
       </Link>
       <SandboxInfo>
         <TitleRow>
@@ -59,19 +54,26 @@ export const ShowcaseCard: React.FC<IShowcaseCardProps> = ({
         </TitleRow>
         <Description>{description}</Description>
         <Statistics>
-          <Action>
+          <Action
+            liked
+            onClick={() => {
+              if (isLoggedIn) {
+                likeSandboxToggled(id);
+              }
+            }}
+          >
             <GoHeart />
-            {abbreviateNumber(likes, { decimalPlaces: 1 })}
+            {abbreviateNumber(likeCount, { decimalPlaces: 1 })}
           </Action>
           <Stat>
             <GoEye />
-            {abbreviateNumber(views, { decimalPlaces: 1 })}
+            {abbreviateNumber(viewCount, { decimalPlaces: 1 })}
           </Stat>
           <Stat>
             <GoRepoForked />
-            {abbreviateNumber(forks, { decimalPlaces: 1 })}
+            {abbreviateNumber(forkCount, { decimalPlaces: 1 })}
           </Stat>
-          <Environment to="">{environments[environment]}</Environment>
+          <Environment to="">{environments[template]}</Environment>
         </Statistics>
       </SandboxInfo>
     </Container>

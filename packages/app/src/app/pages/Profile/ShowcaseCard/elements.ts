@@ -70,14 +70,20 @@ const stat = css`
   }
 `;
 
-export const Action = styled(Button)`
+export const Action = styled(Button)<{ liked: boolean }>`
+  ${({ liked }) => css`
   ${stat}
   ${iconButton}
+
+  svg {
+    color: ${liked ?  css`#fff` : `inherit`}
+  }
 
   &:hover,
   &:focus {
     color: #fff;
   }
+  `}
 `;
 
 export const Stat = styled.span`

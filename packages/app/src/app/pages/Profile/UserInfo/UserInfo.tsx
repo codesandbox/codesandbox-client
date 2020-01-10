@@ -69,13 +69,13 @@ interface IUserInfoProps {
   isTeam: boolean;
   name: string;
   username: string;
-  bio: string;
+  bio?: string;
   associations: {
     thumbnail: string;
     url: string;
     entityName: string;
   }[];
-  socialLinks: string[];
+  socialLinks?: string[];
   isEditing: boolean;
   canEdit: boolean;
   toggleEditing: () => void;
@@ -88,22 +88,23 @@ export const UserInfo: React.FC<IUserInfoProps> = ({
   isTeam,
   name,
   username,
-  bio,
+  bio = "",
   associations,
-  socialLinks,
+  socialLinks = [],
   isEditing = false,
   canEdit = true,
   toggleEditing,
   onEdit,
   children,
 }) => {
-  const initialValues = { bio, socialLinks };
+  const initialValues = { bio, socialLinks  };
   const form = useFormState({
     values: initialValues,
     onValidate: validateWithYup,
     onSubmit: (values: Values) => {
       values.socialLinks = values.socialLinks.filter((link: string) => link);
-      // onEdit(values)
+      console.log(values)
+      onEdit(values)
       toggleEditing();
     },
   });
@@ -138,7 +139,7 @@ export const UserInfo: React.FC<IUserInfoProps> = ({
           </>
         )}
       </AboutUser>
-      {associations.length && (
+      {associations?.length ? (
         <Associations>
           <SubHeader>{isTeam ? `Team Members` : `Teams`}</SubHeader>
           <Grid>
@@ -149,8 +150,8 @@ export const UserInfo: React.FC<IUserInfoProps> = ({
             ))}
           </Grid>
         </Associations>
-      )}
-      {(isEditing || socialLinks.length) && (
+      ) : null}
+      {(isEditing || socialLinks?.length) ? (
         <SocialMedia>
           <SubHeader>Other Places</SubHeader>
           <Places>
@@ -193,7 +194,7 @@ export const UserInfo: React.FC<IUserInfoProps> = ({
             </AddSite>
           )}
         </SocialMedia>
-      )}
+      ) : null}
       {isEditing && canEdit ? (
         <>
           <Save {...form}>Save Changes</Save>

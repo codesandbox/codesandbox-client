@@ -62,6 +62,10 @@ export const TabContent = styled(TabPanel)`
     'sandboxes'
     'pagination';
   width: 100%;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const row = css`

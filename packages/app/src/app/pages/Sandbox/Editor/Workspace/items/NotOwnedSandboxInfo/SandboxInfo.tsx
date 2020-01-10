@@ -2,16 +2,13 @@ import React from 'react';
 import { Sandbox, Template } from '@codesandbox/common/lib/types';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-
 import { Icons } from '@codesandbox/template-icons';
 import getIcon from '@codesandbox/common/lib/templates/icons';
-
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-
+import { useOvermind } from 'app/overmind';
 import { Stats } from 'app/pages/common/Stats';
 import { PrivacyStatus } from 'app/components/PrivacyStatus';
-
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import {
   sandboxUrl,
@@ -57,6 +54,12 @@ const TemplateIcon = ({
 export const SandboxInfo = ({ sandbox }: ISandboxInfoProps) => {
   const environment = getTemplateDefinition(sandbox.template);
   const customTemplate = sandbox.customTemplate;
+  const {
+    state: {
+      contributors,
+    },
+  } = useOvermind();
+  const isContributor = contributors[sandbox.author.username]
 
   return (
     <Container>
@@ -106,6 +109,7 @@ export const SandboxInfo = ({ sandbox }: ISandboxInfoProps) => {
         {sandbox.author && (
           <StyledLink to={profileUrl(sandbox.author.username)}>
             <UserWithAvatar
+              hideBadge={!isContributor}
               username={sandbox.author.username}
               subscriptionSince={sandbox.author.subscriptionSince}
               avatarUrl={sandbox.author.avatarUrl}

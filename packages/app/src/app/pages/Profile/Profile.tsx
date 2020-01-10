@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { useTabState } from 'reakit/Tab';
+import { InstantSearch, Configure } from 'react-instantsearch/dom';
+import { connectSearchBox, connectHits } from 'react-instantsearch-dom';
 import { useOvermind } from 'app/overmind';
 import { NotFound } from 'app/pages/common/NotFound';
 import {
@@ -8,6 +10,11 @@ import {
   Pagination,
   SearchInput,
 } from '@codesandbox/common/lib/components';
+import {
+  ALGOLIA_API_KEY,
+  ALGOLIA_APPLICATION_ID,
+  ALGOLIA_DEFAULT_INDEX, // eslint-disable-line
+} from '@codesandbox/common/lib/utils/config';
 import {
   DropPlaceholder,
   // PlaceholderHeader
@@ -30,7 +37,6 @@ import {
   SandboxGrid,
   PageNav,
 } from './elements';
-import { initialState } from './DELETEME';
 
 interface IProfileProps extends RouteComponentProps {
   match: {
@@ -39,15 +45,24 @@ interface IProfileProps extends RouteComponentProps {
   };
 }
 
+const SearchSandboxes: React.ComponentClass = connectSearchBox(({ refine }) => (
+  <SearchInput
+    onChange={({ query }) => {
+      refine(query);
+    }}
+  />
+));
+
+const Results = connectHits(({ hits, children }) =>
+  // @ts-ignore
+  children({ hits })
+);
+
 export const Profile: React.FC<IProfileProps> = ({
   match: {
     params: { username },
-    url,
   },
 }) => {
-  // Replace with API
-  const [data, setData] = useState(initialState);
-  const [query, setQuery] = useState(``);
   const [isEditing, setIsEditing] = useState(false);
   const tabs = useTabState({
     manual: true,
@@ -58,11 +73,15 @@ export const Profile: React.FC<IProfileProps> = ({
   const {
     state: {
       profile: { current: user, notFound },
+      user: currentUser,
+      isLoggedIn,
     },
     actions: {
-      profile: { profileMounted },
+      profile: { profileMounted, editProfile },
     },
   } = useOvermind();
+
+  const canEdit = isLoggedIn && user?.id === currentUser?.id;
 
   useEffect(() => {
     profileMounted({ username });
@@ -72,10 +91,7 @@ export const Profile: React.FC<IProfileProps> = ({
     return <NotFound />;
   }
 
-  console.log(user); // eslint-disable-line
-
   // TODO:
-  // - Add Query to retrieve user data
   // - Add page navigation handler to load additional sandboxes
   // - Add search input handler to filter on all sandboxes
   // - Add Edit toggle for logged-in user
@@ -88,167 +104,163 @@ export const Profile: React.FC<IProfileProps> = ({
     setIsEditing(!isEditing);
   };
 
-  const handleSearch: React.ComponentProps<
-    typeof SearchInput
-  >['onSubmit'] = values => {
-    console.log(values); // eslint-disable-line
-    setQuery(values.query);
-  };
-
-  const results = [];
-
   return (
     <Layout>
-      <Content>
-        <UserInfo
-          canEdit
-          isEditing={isEditing}
-          toggleEditing={toggleEditing}
-          onEdit={({ bio, socialLinks }) => {
-            setData({
-              ...data,
-              user: {
-                ...data.user,
+      <InstantSearch
+        appId={ALGOLIA_APPLICATION_ID}
+        apiKey={ALGOLIA_API_KEY}
+        indexName={ALGOLIA_DEFAULT_INDEX}
+      >
+        <Configure hitsPerPage={20} />
+        <Content>
+          <UserInfo
+            canEdit={canEdit}
+            isEditing={isEditing}
+            toggleEditing={toggleEditing}
+            onEdit={({ bio, socialLinks }) => {
+              editProfile({
+                ...user,
                 bio,
                 socialLinks,
-              },
-            });
-          }}
-          {...data.user}
-        >
-          <Tabs {...tabs}>
-            {data.user.sandboxes.length && (
-              <Tab
-                {...tabs}
-                stopId="Sandboxes"
-              >{`${data.user.sandboxes.length} Sandboxes`}</Tab>
-            )}
-            {data.user.templates.length && (
-              <Tab
-                {...tabs}
-                stopId="Templates"
-              >{`${data.user.templates.length} Templates`}</Tab>
-            )}
-            {data.user.likes.length && (
-              <Tab
-                {...tabs}
-                stopId="Likes"
-              >{`${data.user.likes.length} Likes`}</Tab>
-            )}
-          </Tabs>
-        </UserInfo>
+              });
+            }}
+            {...user}
+          >
+            <Tabs {...tabs}>
+              {user?.sandboxCount ? (
+                <Tab
+                  {...tabs}
+                  stopId="Sandboxes"
+                >{`${user.sandboxCount} Sandboxes`}</Tab>
+              ) : null}
+              {user?.templateCount ? (
+                <Tab
+                  {...tabs}
+                  stopId="Templates"
+                >{`${user.templateCount} Templates`}</Tab>
+              ) : null}
+              {user?.givenLikeCount ? (
+                <Tab
+                  {...tabs}
+                  stopId="Likes"
+                >{`${user.givenLikeCount} Likes`}</Tab>
+              ) : null}
+            </Tabs>
+          </UserInfo>
 
-        {query.length ? (
-          <TabContent {...tabs} stopId="Search">
+          <Results>
+            {({ hits }) =>
+              hits.length ? (
+                <TabContent {...tabs} stopId="Search">
+                  <SearchRow>
+                    <SandboxCount>
+                      <em>{user?.templateCount}</em>
+                      Results
+                    </SandboxCount>
+                    <SearchSandboxes />
+                  </SearchRow>
+                  <SandboxGrid>
+                    {hits.map(sandbox => (
+                      <ShowcaseCard key={sandbox.id} {...sandbox} />
+                    ))}
+                  </SandboxGrid>
+                  <PageNav>
+                    <Pagination pages={10} />
+                  </PageNav>
+                </TabContent>
+              ) : null
+            }
+          </Results>
+
+          <TabContent {...tabs} stopId="Sandboxes">
+            {user?.featuredSandbox ? (
+              <FeaturedSandbox id={user.featuredSandbox} />
+            ) : null}
             <SearchRow>
               <SandboxCount>
-                <em>{data.user.totalTemplates}</em>
-                Results
+                <em>{user?.sandboxCount || 0}</em>
+                Sandboxes
               </SandboxCount>
-              <SearchInput onSubmit={handleSearch} />
+              <SearchSandboxes />
             </SearchRow>
-            <SandboxGrid>
-              {results.map(sandbox => (
-                <ShowcaseCard key={sandbox.id} {...sandbox} />
-              ))}
-            </SandboxGrid>
-            <PageNav>
-              <Pagination pages={10} />
-            </PageNav>
-          </TabContent>
-        ) : null}
-
-        <TabContent {...tabs} stopId="Sandboxes">
-          {data.user.featured && <FeaturedSandbox {...data.user.featured} />}
-          <SearchRow>
-            <SandboxCount>
-              <em>{data.user.totalSandboxes}</em>
-              Sandboxes
-            </SandboxCount>
-            <SearchInput
-              onSubmit={handleSearch}
-              onChange={values => {
-                console.log(values); // eslint-disable-line
-              }}
-            />
-          </SearchRow>
-          {isEditing && !data.user.pinned.length ? (
-            <PinnedPlaceholder>
-              Drag your Sandbox here to pin them to your profile
-            </PinnedPlaceholder>
-          ) : isEditing && data.user.pinned.length ? (
-            <PinnedGrid>
-              {data.user.pinned.map(sandbox => (
-                <ShowcaseCard key={sandbox.id} {...sandbox} />
-              ))}
-              <DropPlaceholder>Drag Sandbox to pin</DropPlaceholder>
-            </PinnedGrid>
-          ) : (
-            data.user.pinned && (
+            {isEditing && !user?.pinnedSandboxes.length ? (
+              <PinnedPlaceholder>
+                Drag your Sandbox here to pin them to your profile
+              </PinnedPlaceholder>
+            ) : isEditing && user?.pinnedSandboxes.length ? (
               <PinnedGrid>
-                {data.user.pinned.map(sandbox => (
+                {user?.pinnedSandboxes.map(sandbox => (
                   <ShowcaseCard key={sandbox.id} {...sandbox} />
                 ))}
+                <DropPlaceholder>Drag Sandbox to pin</DropPlaceholder>
               </PinnedGrid>
-            )
-          )}
-          {data.user.sandboxes && (
-            <>
-              <TitleRow>
-                <SectionTitle>All Sandboxes</SectionTitle>
-              </TitleRow>
+            ) : (
+              user?.pinnedSandboxes && (
+                <PinnedGrid>
+                  {user.pinnedSandboxes.map(sandbox => (
+                    <ShowcaseCard key={sandbox.id} {...sandbox} />
+                  ))}
+                </PinnedGrid>
+              )
+            )}
+            {user?.sandboxes && (
+              <>
+                <TitleRow>
+                  <SectionTitle>All Sandboxes</SectionTitle>
+                </TitleRow>
+                <SandboxGrid>
+                  {user.sandboxes.map(sandbox => (
+                    <ShowcaseCard key={sandbox.id} {...sandbox} />
+                  ))}
+                </SandboxGrid>
+                <PageNav>
+                  <Pagination pages={10} />
+                </PageNav>
+              </>
+            )}
+          </TabContent>
+
+          {user?.templateCount && (
+            <TabContent {...tabs} stopId="Templates">
+              <SearchRow>
+                <SandboxCount>
+                  <em>{user.templateCount}</em>
+                  Templates
+                </SandboxCount>
+                <SearchSandboxes />
+              </SearchRow>
               <SandboxGrid>
-                {data.user.sandboxes.map(sandbox => (
+                {user.templates.map(sandbox => (
                   <ShowcaseCard key={sandbox.id} {...sandbox} />
                 ))}
               </SandboxGrid>
               <PageNav>
                 <Pagination pages={10} />
               </PageNav>
-            </>
+            </TabContent>
           )}
-        </TabContent>
 
-        {data.user.totalTemplates && (
-          <TabContent {...tabs} stopId="Templates">
-            <SearchRow>
-              <SandboxCount>
-                <em>{data.user.totalTemplates}</em>
-                Templates
-              </SandboxCount>
-              <SearchInput onSubmit={handleSearch} />
-            </SearchRow>
-            <SandboxGrid>
-              {data.user.templates.map(sandbox => (
-                <ShowcaseCard key={sandbox.id} {...sandbox} />
-              ))}
-            </SandboxGrid>
-            <PageNav>
-              <Pagination pages={10} />
-            </PageNav>
-          </TabContent>
-        )}
-
-        {data.user.totalLikes && (
-          <TabContent {...tabs} stopId="Likes">
-            <SearchRow>
-              <SandboxCount>
-                <em>{data.user.totalLikes}</em>
-                Liked Sandboxes
-              </SandboxCount>
-              <SearchInput onSubmit={handleSearch} />
-            </SearchRow>
-            <SandboxGrid>
-              {data.user.likes.map(sandbox => (
-                <ShowcaseCard key={sandbox.id} {...sandbox} />
-              ))}
-            </SandboxGrid>
-            <PageNav>
-              <Pagination pages={10} />
-            </PageNav>
-          </TabContent>
-        )}
-      </Content>
+          {user?.givenLikeCount && (
+            <TabContent {...tabs} stopId="Likes">
+              <SearchRow>
+                <SandboxCount>
+                  <em>{user.givenLikeCount}</em>
+                  Liked Sandboxes
+                </SandboxCount>
+                <SearchSandboxes />
+              </SearchRow>
+              <SandboxGrid>
+                {user.likes.map(sandbox => (
+                  <ShowcaseCard key={sandbox.id} {...sandbox} />
+                ))}
+              </SandboxGrid>
+              <PageNav>
+                <Pagination pages={10} />
+              </PageNav>
+            </TabContent>
+          )}
+        </Content>
+      </InstantSearch>
     </Layout>
   );
 };

@@ -349,7 +349,16 @@ export default {
       },
     });
   },
-  getProfile(username: string): Promise<Profile> {
+  getProfile(
+    username: string
+  ): Promise<
+    Profile & {
+      avatarUrl: Profile['avatar'];
+      showcasedSandboxShortid: Profile['featuredSandbox'];
+      featuredSandboxes: Profile['pinnedSandboxes'];
+      subscriptionSince: string | null;
+    }
+  > {
     return api.get(`/users/${username}`);
   },
   getUserSandboxes(

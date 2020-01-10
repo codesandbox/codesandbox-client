@@ -3,18 +3,18 @@ import React from 'react';
 import { Container, HeroImage } from './elements';
 
 interface IFeaturedSandboxProps {
-  heroImage: string;
+  id: string;
 }
 
 export const FeaturedSandbox: React.FC<IFeaturedSandboxProps> = ({
-  heroImage,
+  id,
 }) => {
   // eslint-disable-line
   // TODO:
   // - Make Hero Image a Live Sandbox Preview?
   return (
     <Container>
-      <HeroImage src={heroImage} />
+      <HeroImage src={`/api/v1/sandboxes/${id}/screenshot.png`} />
     </Container>
   );
 };
