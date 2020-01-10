@@ -8,7 +8,7 @@ export default {
   decorators: [LayoutDecorator],
 };
 
-export const Basic = () => <Element>content</Element>;
+export const Basic = () => <Element css={{ color: 'pink' }}>content</Element>;
 
 export const AsProp = () => <Element as="span">content</Element>;
 
