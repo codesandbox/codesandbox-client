@@ -51,7 +51,7 @@ interface ISearchProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const SearchInput: React.FC<ISearchProps> = ({ label, ...props }) => {
-  const id = props.id || uniqueId('form_');
+  const id = props.id || uniqueId('SearchInput_');
 
   return (
     <>

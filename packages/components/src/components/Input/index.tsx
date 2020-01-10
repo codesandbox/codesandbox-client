@@ -35,8 +35,7 @@ export const Input: React.FC<IInputProps> = ({
   label,
   ...props
 }) => {
-  const id = props.id || uniqueId('form_');
-
+  const id = props.id || uniqueId('input_');
   return (
     <>
       {props.placeholder && !label ? (

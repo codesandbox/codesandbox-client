@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled, {
   StyledComponent,
   StyledComponentInnerOtherProps,
@@ -53,9 +53,13 @@ export const Textarea: React.FC<ITextareaProps> = ({
   autosize,
   ...props
 }) => {
-  const id = props.id || uniqueId('form_');
   const [wordCount, setWordCount] = useState(0);
   const [value, setValue] = useState('');
+  const [id, setID] = useState('textarea_0');
+
+  useEffect(() => {
+    setID(uniqueId('textarea_'));
+  }, []);
 
   const Wrapper = useCallback(
     ({ children }) =>
@@ -98,7 +102,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
     <>
       {props.placeholder && !label ? (
         <VisuallyHidden>
-          <label htmlFor={id}>{props.placeholder}</label>
+          <label htmlFor={props.id || id}>{props.placeholder}</label>
         </VisuallyHidden>
       ) : null}
       {label ? (
@@ -106,7 +110,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
           as="label"
           size={2}
           marginBottom={2}
-          htmlFor={id}
+          htmlFor={props.id || id}
           style={{ display: 'block' }}
         >
           {label}
@@ -117,7 +121,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
           value={value}
           onChange={update}
           onKeyPress={keyPress}
-          id={id}
+          id={props.id || id}
           {...props}
         />
         {maxLength ? (

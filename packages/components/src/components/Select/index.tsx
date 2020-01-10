@@ -74,7 +74,7 @@ export const Select: React.FC<ISelectProps> = ({
     [icon]
   );
 
-  const id = props.id || uniqueId('form_');
+  const id = props.id || uniqueId('select_');
 
   return (
     <>
