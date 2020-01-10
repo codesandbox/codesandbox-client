@@ -79,6 +79,8 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
       this.props.width !== nextProps.width ||
       this.props.height !== nextProps.height
     ) {
+      // eslint-disable-next-line no-unused-expressions
+      this.codemirror?.refresh();
       return true;
     }
 
