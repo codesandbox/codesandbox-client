@@ -1,6 +1,5 @@
-export function packageFilter(p: Object) {
-  if (!p.main && p.module) {
-    // eslint-disable-next-line
+export function packageFilter(p) {
+  if (p.module) {
     p.main = p.module;
   }
 
