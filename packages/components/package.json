@@ -9,6 +9,7 @@
   "files": [
     "lib"
   ],
+  "main": "lib/index",
   "source": true,
   "scripts": {
     "build": "yarn build:lib",

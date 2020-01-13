@@ -4,12 +4,13 @@ export * from './components/ThemeProvider';
 
 // atoms
 export * from './components/Avatar';
+export * from './components/Button';
 export * from './components/Input';
 export * from './components/SearchInput';
 export * from './components/Select';
+export * from './components/Switch';
 export * from './components/Text';
 export * from './components/Textarea';
-export * from './components/Button';
 
 // molecules
 export * from './components/Collapsible';
