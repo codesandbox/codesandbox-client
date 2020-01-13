@@ -26,12 +26,14 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
     color: 'white',
     borderRadius: 'small',
     paddingX: 2,
-    paddingY: '2px', // no 2 in spaces
     border: '1px solid',
     borderColor: 'avatar.border',
-    transform: 'translateX(-50%) translateY(-100%);',
+
     position: 'absolute',
-    top: '100%',
+    height: 3,
+    lineHeight: '10px', // same as height + border
+    top: 'calc(100% - 12px)', // position it snugly in the corner
+    right: '-4px',
   })
 );
 
