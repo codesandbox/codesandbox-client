@@ -11,7 +11,7 @@ export const Header = styled(Stack)(
     paddingX: 4,
     border: '1px solid',
     borderColor: 'sideBar.border',
-    borderBottom: '0px',
+    borderBottom: 0,
     cursor: 'pointer',
     borderTopLeftRadius: 'small',
     borderTopRightRadius: 'small',
@@ -42,8 +42,6 @@ export const Integration = ({ icon, title, children }) => (
       {icon()}
       <Text weight="medium">{title}</Text>
     </Header>
-    <Content align="center" justify="space-between">
-      {children}
-    </Content>
+    <Content>{children}</Content>
   </div>
 );
