@@ -80,7 +80,7 @@ export default function evaluate(
       availablePlugins[requirePath.replace('@babel/plugin-', '')];
 
     if (plugin && requirePath !== 'react') {
-      return plugin;
+      return { __esModule: true, default: plugin };
     }
 
     const preset =
@@ -88,7 +88,7 @@ export default function evaluate(
       availablePresets[requirePath.replace('babel-preset-', '')] ||
       availablePresets[requirePath.replace('@babel/preset-', '')];
     if (preset && requirePath !== 'react') {
-      return preset;
+      return { __esModule: true, default: preset };
     }
 
     const dirName = dirname(path);
