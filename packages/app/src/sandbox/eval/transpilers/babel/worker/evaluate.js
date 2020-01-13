@@ -80,7 +80,11 @@ export default function evaluate(
       availablePlugins[requirePath.replace('@babel/plugin-', '')];
 
     if (plugin && requirePath !== 'react') {
-      return { __esModule: true, default: plugin };
+      // Babel has exports as esmodule, but the plugins are not registered that way sadly
+      if (requirePath.startsWith('@babel/plugin')) {
+        return { __esModule: true, default: plugin };
+      }
+      return plugin;
     }
 
     const preset =
@@ -88,7 +92,11 @@ export default function evaluate(
       availablePresets[requirePath.replace('babel-preset-', '')] ||
       availablePresets[requirePath.replace('@babel/preset-', '')];
     if (preset && requirePath !== 'react') {
-      return { __esModule: true, default: preset };
+      // Babel has exports as esmodule, but the plugins are not registered that way sadly
+      if (requirePath.startsWith('@babel/preset')) {
+        return { __esModule: true, default: plugin };
+      }
+      return preset;
     }
 
     const dirName = dirname(path);
