@@ -205,7 +205,7 @@ commands:
             JEST_JUNIT_OUTPUT: '/tmp/test-results/js-test-results.xml'
       - store_test_results: *store_test_results
       - store_artifacts: *store_artifacts
-  test_chromatic:
+  test_visual_regressions:
     description: "Test Chromatic with 'yarn chromatic'"
     steps:
       - restore_cache: *restore_deps_cache
@@ -289,11 +289,11 @@ jobs:
     steps:
       - checkout_with_cache
       - test_integrations
-  test-chromatic:
+  test-visual-regressions:
     executor: node
     steps:
       - checkout_with_cache
-      - test_chromatic
+      - test_visual_regressions
   test-jest:
     executor: node
     steps:
@@ -354,7 +354,7 @@ workflows:
       - test-integrations:
           requires:
             - build-deps
-      - test-chromatic:
+      - test-visual-regressions:
           requires:
             - build-deps
       - typecheck:
