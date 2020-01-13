@@ -19,6 +19,7 @@ export const ListItems = () => (
 export const withJustify = () => (
   <List style={{ width: 300, border: '1px solid white' }}>
     <ListItem justify="space-between">
+      {/* eslint-disable-next-line */}
       <label htmlFor="frozen">Frozen</label>
       <input type="checkbox" id="frozen" />
     </ListItem>

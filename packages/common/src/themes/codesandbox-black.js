@@ -14,7 +14,7 @@ const colors = {
   contrastActiveBorder: null,
   errorForeground: tokens.reds[500],
   focusBorder: tokens.grays[500],
-  foreground: tokens.grays[300],
+  foreground: tokens.grays[200],
   activityBar: {
     background: tokens.grays[700],
     border: tokens.grays[500],

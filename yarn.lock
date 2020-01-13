@@ -3850,6 +3850,11 @@
     hey-listen "^1.0.8"
     style-value-types "^3.1.6"
 
+"@reach/auto-id@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@reach/auto-id/-/auto-id-0.7.1.tgz#68ff4345b12c5ead6d0374a574480090b18a1b31"
+  integrity sha512-7bE/tCFc6KBMKkSfquJFpeZic+OHe+RAE2OHCN66felnleVwm6hr128d2UAp5vb1H12F6fm1kCUV9s3xNqSwMQ==
+
 "@reach/router@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@reach/router/-/router-1.2.1.tgz#34ae3541a5ac44fa7796e5506a5d7274a162be4e"
@@ -25448,10 +25453,10 @@ react-redux@^7.0.2:
     prop-types "^15.7.2"
     react-is "^16.8.6"
 
-react-refresh@^0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.7.1.tgz#b9605e4cd0e5366b9cc21705ebe6ee5bda8ccf85"
-  integrity sha512-tFM1EmOxub/hMKtXilOslJTEt7ANDMwtjD8psJAFSe1oQl7anmGEQONxSR+hAYePgHGI1eVhRVdprBruXu3wfw==
+react-refresh@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.7.2.tgz#f30978d21eb8cac6e2f2fde056a7d04f6844dd50"
+  integrity sha512-u5l7fhAJXecWUJzVxzMRU2Zvw8m4QmDNHlTrT5uo3KBlYBhmChd7syAakBoay1yIiVhx/8Fi7a6v6kQZfsw81Q==
 
 react-resize-detector@^4.0.5:
   version "4.2.0"
