@@ -57,6 +57,7 @@
     "if-env": "^1.0.4",
     "np": "^5.2.1",
     "rimraf": "^3.0.0",
+    "storybook-addon-styled-component-theme": "^1.3.0",
     "storybook-chromatic": "^3.4.1",
     "typescript": "3.7.4",
     "yarn": "^1.21.1"

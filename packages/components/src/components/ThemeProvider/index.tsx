@@ -5,24 +5,21 @@
  * vscode theme - color tokens
  * polyfill - color tokens missing from vscode
  */
-import React from 'react';
 import dot from 'dot-object';
 import deepmerge from 'deepmerge';
-import css from '@styled-system/css';
-import styled, { ThemeProvider as StyledProvider } from 'styled-components';
 import designLanguage from '@codesandbox/common/lib/design-language';
+import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
 
-const ThemeBoundary = styled.div(
-  css({
-    fontFamily: 'Inter, sans-serif',
-    'input, textarea, button': {
-      fontFamily: 'Inter, sans-serif',
-    },
-  })
-);
+export const getThemes = () => {
+  const results = VSCodeThemes.map(theme => ({
+    name: theme.name,
+    ...theme.content,
+  }));
 
-export const ThemeProvider = ({ vsCodeTheme = { colors: {} }, children }) => {
+  return results.filter(a => a);
+};
+export const makeTheme = (vsCodeTheme = { colors: {} }, name: string) => {
   // black is the default, it would be helpful to use storybook-addon-themes
   // to test our components across multiple themes
   // convert vscode colors to dot notation so that we can use them in tokens
@@ -36,9 +33,8 @@ export const ThemeProvider = ({ vsCodeTheme = { colors: {} }, children }) => {
   // merge the design language and vscode theme
   const theme = deepmerge(designLanguage, { colors: polyfilledVSCodeColors });
 
-  return (
-    <StyledProvider theme={theme}>
-      <ThemeBoundary>{children}</ThemeBoundary>
-    </StyledProvider>
-  );
+  return {
+    name,
+    ...theme,
+  };
 };
