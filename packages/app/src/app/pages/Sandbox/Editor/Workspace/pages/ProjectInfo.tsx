@@ -8,12 +8,9 @@ import {
   List,
   ListItem,
   Select,
-} from '../index';
-import { sara as user } from '../components/Avatar/stubs';
+} from '@codesandbox/components';
 
-export default {
-  title: 'examples/SidebarInfo',
-};
+import { sara as user } from '@codesandbox/components/lib/components/Avatar/stubs';
 
 const Switch = props => <input type="checkbox" {...props} />;
 const Link = props => <Text variant="muted" {...props} />;
@@ -27,20 +24,11 @@ const GlobeIcon = props => (
   </svg>
 );
 
-export const Basic = () => (
-  <Element
-    as="aside"
-    css={{
-      width: '200px',
-      height: '100vh',
-      borderRight: '1px solid',
-      borderColor: 'sideBar.border',
-      position: 'relative', // for absolute delete button
-    }}
-  >
+export const ProjectInfo = () => (
+  <>
     <Collapsible title="Sandbox Info" defaultOpen>
       <Stack direction="vertical" gap={6}>
-        <Element as="div" css={{ paddingX: 2 }}>
+        <Element css={{ paddingX: 2 }}>
           <Text as="div" marginBottom={2}>
             The move from Cerebral
           </Text>
@@ -92,5 +80,5 @@ export const Basic = () => (
     >
       <button type="button">Delete sandbox</button>
     </Stack>
-  </Element>
+  </>
 );

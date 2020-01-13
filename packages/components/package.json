@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/components",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
@@ -37,9 +37,7 @@
     "color": "3.1.2",
     "date-fns": "^2.8.1",
     "react-router-dom": "^5.1.2",
-    "styled-components": "^4.4.1",
-    "typeface-inter": "^3.11.2",
-    "yarn": "^1.21.1"
+    "typeface-inter": "^3.11.2"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^5.2.8",
@@ -57,10 +55,14 @@
     "rimraf": "^3.0.0",
     "storybook-chromatic": "^3.4.1",
     "typescript": "3.7.4",
-    "yarn": "^1.21.1"
+    "yarn": "^1.21.1",
+    "styled-components": "^4.3.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   },
   "peerDependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "styled-components": "^4.3.2"
   }
 }

@@ -5,6 +5,11 @@ import getWorkspaceItems, { getDisabledItems } from 'app/overmind/utils/items';
 import React, { FunctionComponent } from 'react';
 //  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
 import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
+import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
+import { ThemeProvider } from '@codesandbox/components';
+
+// TODO: get this theme based on settings
+import codesandboxBlackVSCodeTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 
 import { Advertisement } from './Advertisement';
 import { Chat } from './Chat';
@@ -22,13 +27,14 @@ import { GitHub } from './items/GitHub';
 import { Live } from './items/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
-import { ProjectInfo } from './items/ProjectInfo';
+import { ProjectInfo as LegacyProjectInfo } from './items/ProjectInfo';
+import { ProjectInfo as RedesignedProjectInfo } from './pages/ProjectInfo';
 import { Server } from './items/Server';
 import { SSEDownNotice } from './SSEDownNotice';
 import { WorkspaceItem } from './WorkspaceItem';
 
 const workspaceTabs = {
-  project: ProjectInfo,
+  project: REDESIGNED_SIDEBAR ? RedesignedProjectInfo : LegacyProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
   files: FilesItem,
   github: GitHub,
@@ -39,8 +45,11 @@ const workspaceTabs = {
   more: More,
 };
 
+const WorkspaceWrapper = REDESIGNED_SIDEBAR ? ThemeProvider : React.Fragment;
+
 export const Workspace: FunctionComponent = () => {
   const { state } = useOvermind();
+
   const {
     editor: {
       currentSandbox: { owned },
@@ -67,7 +76,9 @@ export const Workspace: FunctionComponent = () => {
       {item && !item.hasCustomHeader && <ItemTitle>{item.name}</ItemTitle>}
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
-        <Component />
+        <WorkspaceWrapper vsCodeTheme={codesandboxBlackVSCodeTheme}>
+          <Component />
+        </WorkspaceWrapper>
       </div>
 
       {isLive && roomInfo.chatEnabled && (
