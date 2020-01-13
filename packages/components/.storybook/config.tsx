@@ -8,7 +8,7 @@ import { createGlobalStyle, ThemeProvider } from 'styled-components';
 // @ts-ignore
 import global from '@codesandbox/common/lib/global.css';
 import { makeTheme, getThemes } from '../src/components/ThemeProvider';
-import { withThemesProvider } from 'storybook-addon-styled-component-theme';
+import { withThemesProvider } from './storybook-addon-styled-component-theme';
 
 const viewports = {
   mobile: {
