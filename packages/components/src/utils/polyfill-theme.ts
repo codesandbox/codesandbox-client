@@ -47,6 +47,14 @@ const polyfillTheme = vsCodeTheme =>
       // @ts-ignore: The colors totally exist, our typings are incorrect
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`,
     },
+    switch: {
+      // @ts-ignore
+      background: designLanguage.colors.grays[800],
+      // @ts-ignore
+      foregroundOff: designLanguage.colors.white,
+      // @ts-ignore
+      foregroundOn: designLanguage.colors.green,
+    },
   });
 
 export default polyfillTheme;
