@@ -55,13 +55,13 @@ const sandboxesToTest = SANDBOXES.slice(
 );
 
 function pageLoaded(page) {
-  return new Promise(async resolve => {
-    await page.exposeFunction('__puppeteer__', () => {
+  return new Promise(resolve =>
+    page.exposeFunction('__puppeteer__', () => {
       if (resolve) {
         resolve();
       }
-    });
-  });
+    })
+  );
 }
 
 function sandboxUrl(sandboxId) {

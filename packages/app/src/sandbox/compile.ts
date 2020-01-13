@@ -738,7 +738,10 @@ async function compile({
   dispatch({ type: 'done', compilatonError: hadError });
 
   if (typeof (window as any).__puppeteer__ === 'function') {
-    (window as any).__puppeteer__('done');
+    setTimeout(() => {
+      // Give everything some time to evaluate
+      (window as any).__puppeteer__('done');
+    }, 100);
   }
 }
 
