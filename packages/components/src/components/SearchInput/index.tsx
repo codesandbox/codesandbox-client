@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import VisuallyHidden from '@reach/visually-hidden';
-import { uniqueId } from 'lodash-es';
+import { useId } from '@reach/auto-id';
 import { Text } from '../Text';
 import { InputComponent } from '../Input';
 import { Element } from '../Element';
@@ -51,7 +51,7 @@ interface ISearchProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const SearchInput: React.FC<ISearchProps> = ({ label, ...props }) => {
-  const id = props.id || uniqueId('form_');
+  const id = useId(props.id);
 
   return (
     <>

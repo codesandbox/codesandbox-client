@@ -19,7 +19,7 @@ import designLanguage from '@codesandbox/common/lib/design-language';
 const polyfillTheme = vsCodeTheme =>
   deepmerge(vsCodeTheme, {
     sideBar: {
-      hoverBackground: vsCodeTheme.sideBar.border,
+      hoverBackground: (vsCodeTheme.sideBar || {}).border || 'red',
     },
     // this works for codesandbox-black but I doubt other themes define this
     mutedForeground: vsCodeTheme.input.placeholderForeground,
@@ -28,7 +28,7 @@ const polyfillTheme = vsCodeTheme =>
       placeholderForeground: vsCodeTheme.input.placeholderForeground,
     },
     avatar: {
-      border: vsCodeTheme.sideBar.border,
+      border: (vsCodeTheme.sideBar || {}).border || 'red',
     },
     button: {
       // this key is can defined by vscode, but not always present
@@ -46,6 +46,14 @@ const polyfillTheme = vsCodeTheme =>
       foreground: '#fff',
       // @ts-ignore: The colors totally exist, our typings are incorrect
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`,
+    },
+    switch: {
+      // @ts-ignore
+      background: designLanguage.colors.grays[800],
+      // @ts-ignore
+      foregroundOff: designLanguage.colors.white,
+      // @ts-ignore
+      foregroundOn: designLanguage.colors.green,
     },
   });
 

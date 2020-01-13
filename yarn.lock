@@ -3850,6 +3850,11 @@
     hey-listen "^1.0.8"
     style-value-types "^3.1.6"
 
+"@reach/auto-id@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@reach/auto-id/-/auto-id-0.7.1.tgz#68ff4345b12c5ead6d0374a574480090b18a1b31"
+  integrity sha512-7bE/tCFc6KBMKkSfquJFpeZic+OHe+RAE2OHCN66felnleVwm6hr128d2UAp5vb1H12F6fm1kCUV9s3xNqSwMQ==
+
 "@reach/router@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@reach/router/-/router-1.2.1.tgz#34ae3541a5ac44fa7796e5506a5d7274a162be4e"
@@ -16687,6 +16692,11 @@ immutability-helper@^2.6.6, immutability-helper@^2.7.1:
   dependencies:
     invariant "^2.2.0"
 
+immutable@^3.8.2:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
+  integrity sha1-wkOZUUVbs5kT2vKBN28VMOEErfM=
+
 immutable@~3.7.6:
   version "3.7.6"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.7.6.tgz#13b4d3cb12befa15482a26fe1b2ebae640071e4b"
@@ -25458,10 +25468,10 @@ react-redux@^7.0.2:
     prop-types "^15.7.2"
     react-is "^16.8.6"
 
-react-refresh@^0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.7.1.tgz#b9605e4cd0e5366b9cc21705ebe6ee5bda8ccf85"
-  integrity sha512-tFM1EmOxub/hMKtXilOslJTEt7ANDMwtjD8psJAFSe1oQl7anmGEQONxSR+hAYePgHGI1eVhRVdprBruXu3wfw==
+react-refresh@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.7.2.tgz#f30978d21eb8cac6e2f2fde056a7d04f6844dd50"
+  integrity sha512-u5l7fhAJXecWUJzVxzMRU2Zvw8m4QmDNHlTrT5uo3KBlYBhmChd7syAakBoay1yIiVhx/8Fi7a6v6kQZfsw81Q==
 
 react-resize-detector@^4.0.5:
   version "4.2.0"
@@ -26068,6 +26078,18 @@ rechoir@^0.6.2:
   resolved "https://registry.yarnpkg.com/rechoir/-/rechoir-0.6.2.tgz#85204b54dba82d5742e28c96756ef43af50e3384"
   dependencies:
     resolve "^1.1.6"
+
+recompose@^0.27.1:
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/recompose/-/recompose-0.27.1.tgz#1a49e931f183634516633bbb4f4edbfd3f38a7ba"
+  integrity sha512-p7xsyi/rfNjHfdP7vPU02uSFa+Q1eHhjKrvO+3+kRP4Ortj+MxEmpmd+UQtBGM2D2iNAjzNI5rCyBKp9Ob5McA==
+  dependencies:
+    babel-runtime "^6.26.0"
+    change-emitter "^0.1.2"
+    fbjs "^0.8.1"
+    hoist-non-react-statics "^2.3.1"
+    react-lifecycles-compat "^3.0.2"
+    symbol-observable "^1.0.4"
 
 recompose@^0.30.0:
   version "0.30.0"
@@ -28507,6 +28529,14 @@ store2@^2.7.1:
 store@^2.0.12:
   version "2.0.12"
   resolved "https://registry.yarnpkg.com/store/-/store-2.0.12.tgz#8c534e2a0b831f72b75fc5f1119857c44ef5d593"
+
+storybook-addon-styled-component-theme@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/storybook-addon-styled-component-theme/-/storybook-addon-styled-component-theme-1.3.0.tgz#2a3b5963978a4ca14ae6d12b2571a8150a129b5b"
+  integrity sha512-H2HwHrqFKbmPtF7Cy9rJPnOb8RykI6A9kHXXxWfwWmusWhsIxq3K45s+6UmDrItQZhkDT4e3dpWQYTdopUYBzA==
+  dependencies:
+    immutable "^3.8.2"
+    recompose "^0.27.1"
 
 storybook-chromatic@^3.4.1:
   version "3.4.1"
