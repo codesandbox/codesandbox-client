@@ -9,6 +9,7 @@
   "files": [
     "lib"
   ],
+  "main": "lib/index.js",
   "source": true,
   "scripts": {
     "build": "yarn build:lib",
@@ -35,8 +36,6 @@
     "codesandbox-api": "0.0.23",
     "color": "3.1.2",
     "date-fns": "^2.8.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
     "styled-components": "^4.4.1",
     "typeface-inter": "^3.11.2",
@@ -59,5 +58,9 @@
     "storybook-chromatic": "^3.4.1",
     "typescript": "3.7.4",
     "yarn": "^1.21.1"
+  },
+  "peerDependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
   }
 }
