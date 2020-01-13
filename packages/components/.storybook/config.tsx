@@ -32,9 +32,13 @@ const viewports = {
 const GlobalStyle = createGlobalStyle`
   ${global};
   html body {
-    // these values are temporary and will be removed soon
-    background-color: #151515;
-    color: #e6e6e6;
+    font-family: 'Inter', sans-serif;
+    background-color: ${props =>
+      // @ts-ignore
+      props.theme.colors.sideBar.background} !important;
+    color: ${props =>
+      // @ts-ignore
+      props.theme.colors.sideBar.foreground} !important;
     margin: 0;
 
     * {

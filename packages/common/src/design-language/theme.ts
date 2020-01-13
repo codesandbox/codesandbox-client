@@ -7,6 +7,16 @@ const theme = {
   fontWeights,
 
   // we use a 4 point grid
+  // 0 - 0
+  // 1 - 4
+  // 2 - 8
+  // 3 - 12
+  // 4 - 16
+  // 5 - 24
+  // 6 - 28
+  // 7 - 32
+  // 8 - 36
+  // 9 - 40
   space: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40],
   sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40],
 
@@ -24,6 +34,11 @@ const theme = {
   },
 
   shadows: {
+    // based on elevation levels
+    0: 'none',
+    1: '0px 8px 4px rgba(0, 0, 0, 0.12), 0px 8px 16px rgba(0, 0, 0, 0.24)',
+    2: '0px 4px 4px rgba(0, 0, 0, 0.12), 0px 16px 32px rgba(0, 0, 0, 0.24)',
+
     // this part is ugly, this can be improved.
     // bonus: these are terrible names
     active: `inset 0px -2px 0px ${colors.blues[300]}`,

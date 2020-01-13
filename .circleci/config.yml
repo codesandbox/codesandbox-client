@@ -197,7 +197,7 @@ commands:
             $BROWSER_STACK_KEY || true'
           background: true
       - run:
-          command: npm run chromatic --exit-zero-on-changes
+          command: yarn chromatic
       - run:
           name: Test Integrations
           command: |

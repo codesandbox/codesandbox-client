@@ -571,9 +571,10 @@ export const toggleEditorPreviewLayout: Action = ({ state, effects }) => {
   effects.vscode.resetLayout();
 };
 
-export const previewActionReceived: Action<{
-  action: any;
-}> = ({ state, effects, actions }, { action }) => {
+export const previewActionReceived: Action<any> = (
+  { actions, effects, state },
+  action
+) => {
   switch (action.action) {
     case 'notification':
       effects.notificationToast.add({
