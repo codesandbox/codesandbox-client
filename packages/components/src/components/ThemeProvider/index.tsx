@@ -8,41 +8,16 @@
 import dot from 'dot-object';
 import deepmerge from 'deepmerge';
 import designLanguage from '@codesandbox/common/lib/design-language';
-import VSCodeThemes from '@codesandbox/common/lib/themes/';
+import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
 
-export const getThemes = async () => {
-  // eslint-disable-next-line consistent-return
-  const results = VSCodeThemes.map(async theme => {
-    if (theme.content) {
-      return {
-        name: theme.name,
-        ...theme.content,
-      };
-    }
-    if (theme.get) {
-      const t = await theme.get();
-      return {
-        name: theme.name,
-        ...t,
-      };
-    }
-    if (theme.url) {
-      try {
-        const t = await fetch(theme.url).then(a => a.json());
-        return {
-          name: theme.name,
-          ...t,
-        };
-      } catch {
-        return null;
-      }
-    }
-  });
+export const getThemes = () => {
+  const results = VSCodeThemes.map(theme => ({
+    name: theme.name,
+    ...theme.content,
+  }));
 
-  const values = await Promise.all(results);
-
-  return values.filter(a => a);
+  return results.filter(a => a);
 };
 export const makeTheme = (vsCodeTheme = { colors: {} }, name: string) => {
   // black is the default, it would be helpful to use storybook-addon-themes

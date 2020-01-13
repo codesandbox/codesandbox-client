@@ -56,26 +56,21 @@ export const withGlobal = (cb: any) => (
   </>
 );
 
-export const getAllThemes = async () => {
-  const allThemes = await getThemes();
-  return allThemes.map(b => makeTheme(b, b.name));
-};
+const allThemes = getThemes();
+const vsCodeThemes = allThemes.map(b => makeTheme(b, b.name));
+const blackCodesandbox = vsCodeThemes.find(
+  theme => theme.name === 'CodeSandbox Black'
+);
 
-getAllThemes().then((themes: any) => {
-  const blackCodesandbox = themes.find(
-    theme => theme.name === 'CodeSandbox Black'
-  );
+const rest = vsCodeThemes.filter(theme => theme.name !== 'CodeSandbox Black');
+addDecorator(withGlobal);
+addDecorator(withThemesProvider([blackCodesandbox, ...rest]));
+addDecorator(withA11y);
+addDecorator(withKnobs);
+addParameters({ viewport: { viewports } });
 
-  const rest = themes.filter(theme => theme.name !== 'CodeSandbox Black');
-  addDecorator(withGlobal);
-  addDecorator(withThemesProvider([blackCodesandbox, ...rest]));
-  addDecorator(withA11y);
-  addDecorator(withKnobs);
-  addParameters({ viewport: { viewports } });
+// Option defaults.
+addParameters({ options: { theme: themes.dark } });
 
-  // Option defaults.
-  addParameters({ options: { theme: themes.dark } });
-
-  // automatically import all files ending in *.stories.js
-  configure(require.context('../src', true, /\.stories\.tsx$/), module);
-});
+// automatically import all files ending in *.stories.js
+configure(require.context('../src', true, /\.stories\.tsx$/), module);
