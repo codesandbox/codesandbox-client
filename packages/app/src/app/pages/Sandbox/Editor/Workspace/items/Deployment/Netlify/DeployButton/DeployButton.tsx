@@ -24,7 +24,6 @@ export const DeployButton: FunctionComponent<Props> = ({ isOpen, toggle }) => {
   return (
     <DeployButtonContainer>
       <DeploymentIntegration
-        beta
         bgColor="#FFFFFF"
         onDeploy={() => {
           track('Deploy Clicked', { provider: 'netlify' });

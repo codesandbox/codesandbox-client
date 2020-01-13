@@ -8,5 +8,9 @@ export const Avatar = styled(BaseAvatar)(
     height: 28px;
     border-radius: 4px;
     border: 2px solid ${theme.secondary};
+
+    img {
+      border: none;
+    }
   `
 );

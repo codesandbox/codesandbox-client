@@ -20,7 +20,7 @@
     "prepublish": "yarn build",
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib --watch)",
     "start:storybook": "start-storybook",
-    "test": "cross-env NODE_ENV=test jest",
+    "test": "cross-env NODE_ENV=test jest --maxWorkers 2",
     "typecheck": "tsc --noEmit"
   },
   "jest": {
@@ -46,7 +46,7 @@
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@babel/polyfill": "^7.7.0",
     "@codesandbox/notifications": "^1.0.6",
-    "@codesandbox/template-icons": "^1.0.2",
+    "@codesandbox/template-icons": "^1.1.0",
     "@sentry/browser": "^5.9.0",
     "@styled-system/css": "^5.0.23",
     "@tippy.js/react": "^3.1.1",
@@ -66,7 +66,7 @@
     "ot": "^0.0.15",
     "react": "^16.8.6",
     "react-icons": "^2.2.7",
-    "react-input-autosize": "^2.2.1",
+    "react-input-autosize": "2.2.1",
     "react-router-dom": "^5.0.1",
     "react-scrollbars-custom": "^4.0.21",
     "react-spring": "^8.0.25",

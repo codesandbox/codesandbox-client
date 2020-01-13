@@ -1,12 +1,11 @@
-import React from 'react';
-import Helmet from 'react-helmet';
-import { Observer } from 'app/componentConnectors';
-import { Query } from 'react-apollo';
+import { Observer } from 'app/overmind';
 import Fuse from 'fuse.js';
-
-import { Content as Sandboxes } from '../../Sandboxes';
+import React from 'react';
+import { Query } from 'react-apollo';
+import Helmet from 'react-helmet';
 
 import { SEARCH_SANDBOXES_QUERY } from '../../../queries';
+import { Content as Sandboxes } from '../../Sandboxes';
 import { getPossibleTemplates } from '../../Sandboxes/utils';
 
 let lastSandboxes = null;
@@ -16,12 +15,12 @@ const SearchSandboxes = () => (
   <Query query={SEARCH_SANDBOXES_QUERY}>
     {({ loading, error, data }) => (
       <Observer>
-        {({ store }) => {
+        {({ state }) => {
           if (error) {
             return <div>Error!</div>;
           }
 
-          const { search } = store.dashboard.filters;
+          const { search } = state.dashboard.filters;
           let sandboxes = data && data.me && data.me.sandboxes;
           if (
             sandboxes &&
@@ -55,7 +54,7 @@ const SearchSandboxes = () => (
           if (sandboxes) {
             possibleTemplates = getPossibleTemplates(sandboxes);
 
-            sandboxes = store.dashboard
+            sandboxes = state.dashboard
               .getFilteredSandboxes(sandboxes)
               .filter(x => !x.customTemplate);
           }

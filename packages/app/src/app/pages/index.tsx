@@ -15,7 +15,7 @@ import Dashboard from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { NewSandbox } from './NewSandbox';
-import Sandbox from './Sandbox';
+import { Sandbox } from './Sandbox';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -26,7 +26,9 @@ const SignIn = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
 );
 const Live = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './Live')
+  import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
+    default: module.LivePage,
+  }))
 );
 const ZeitSignIn = Loadable(() =>
   import(/* webpackChunkName: 'page-zeit' */ './ZeitAuth')

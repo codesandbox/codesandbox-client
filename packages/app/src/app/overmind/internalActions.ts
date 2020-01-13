@@ -36,6 +36,7 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
     actions.refetchSandboxInfo();
+    state.isAuthenticating = false;
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not authenticate with Github',
@@ -182,7 +183,8 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   state.editor.mainModuleShortid = main.shortid;
 
   // Only change the module shortid if it doesn't exist in the new sandbox
-  // What is the scenario here?
+  // This can happen when a sandbox is opened that's different from the current
+  // sandbox, with completely different files
   if (
     !sandbox.modules.find(module => module.shortid === currentModuleShortid)
   ) {
@@ -339,6 +341,46 @@ export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
   state.editor.tabs.splice(tabIndex, 1);
 };
 
+export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
+  context,
+  { error }
+) => {
+  const isGenericError = !('response' in error) || error.response.status >= 500;
+
+  if (isGenericError) {
+    return error.message;
+  }
+
+  const { response } = error as ApiError;
+  /*
+    Update error message with what is coming from the server
+  */
+  const result = response.data;
+
+  if (result) {
+    if (typeof result === 'string') {
+      return result;
+    }
+    if ('errors' in result) {
+      const errors = values(result.errors)[0];
+      const fields = Object.keys(result.errors);
+      if (Array.isArray(errors)) {
+        if (errors[0]) {
+          return `${fields[0]}: ${errors[0]}`; // eslint-disable-line no-param-reassign,prefer-destructuring
+        }
+      } else {
+        return errors; // eslint-disable-line no-param-reassign
+      }
+    } else if (result.error) {
+      return result.error; // eslint-disable-line no-param-reassign
+    } else if (response.status === 413) {
+      return 'File too large, upload limit is 5MB.';
+    }
+  }
+
+  return error.message;
+};
+
 export const handleError: Action<{
   /*
     The message that will show as title of the notification
@@ -385,30 +427,7 @@ export const handleError: Action<{
     return;
   }
 
-  /*
-    Update error message with what is coming from the server
-  */
-  const result = response.data;
-
-  if (result) {
-    if (typeof result === 'string') {
-      error.message = result;
-    } else if ('errors' in result) {
-      const errors = values(result.errors)[0];
-      const fields = Object.keys(result.errors);
-      if (Array.isArray(errors)) {
-        if (errors[0]) {
-          error.message = `${fields[0]}: ${errors[0]}`; // eslint-disable-line no-param-reassign,prefer-destructuring
-        }
-      } else {
-        error.message = errors; // eslint-disable-line no-param-reassign
-      }
-    } else if (result.error) {
-      error.message = result.error; // eslint-disable-line no-param-reassign
-    } else if (response.status === 413) {
-      error.message = 'File too large, upload limit is 5MB.';
-    }
-  }
+  error.message = actions.internal.getErrorMessage({ error });
 
   const notificationActions = {
     primary: [],

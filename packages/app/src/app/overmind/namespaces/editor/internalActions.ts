@@ -120,11 +120,6 @@ export const saveCode: AsyncAction<{
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
     effects.moduleRecover.remove(sandbox.id, module);
 
-    state.editor.changedModuleShortids.splice(
-      state.editor.changedModuleShortids.indexOf(module.shortid),
-      1
-    );
-
     if (cbID) {
       effects.vscode.callCallback(cbID);
     }
@@ -269,21 +264,9 @@ export const setModuleCode: Action<{
   code: string;
 }> = ({ state, effects }, { module, code }) => {
   const { currentSandbox } = state.editor;
-  const hasChangedModuleId = state.editor.changedModuleShortids.includes(
-    module.shortid
-  );
 
   if (module.savedCode === null) {
     module.savedCode = module.code;
-  }
-
-  if (hasChangedModuleId && module.savedCode === code) {
-    state.editor.changedModuleShortids.splice(
-      state.editor.changedModuleShortids.indexOf(module.shortid),
-      1
-    );
-  } else if (!hasChangedModuleId && module.savedCode !== code) {
-    state.editor.changedModuleShortids.push(module.shortid);
   }
 
   effects.vscode.runCommand('workbench.action.keepEditor');

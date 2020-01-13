@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import { Button } from 'reakit/Button';
 import { Link } from '@codesandbox/common/lib/components';
+import { withoutProps } from '@codesandbox/common/lib/utils';
 
 export const Container = styled.div`
   min-width: 303px;
@@ -70,19 +71,23 @@ const stat = css`
   }
 `;
 
-export const Action = styled(Button)<{ liked: boolean }>`
+export const Action = styled(withoutProps(`liked`)(Button))<{
+  liked: boolean;
+  onClick?: React.MouseEventHandler;
+  children?: React.ReactNode;
+}>`
   ${({ liked }) => css`
-  ${stat}
-  ${iconButton}
+    ${stat}
+    ${iconButton}
 
   svg {
-    color: ${liked ?  css`#fff` : `inherit`}
-  }
+      color: ${liked ? css`#fff` : `inherit`};
+    }
 
-  &:hover,
-  &:focus {
-    color: #fff;
-  }
+    &:hover,
+    &:focus {
+      color: #fff;
+    }
   `}
 `;
 

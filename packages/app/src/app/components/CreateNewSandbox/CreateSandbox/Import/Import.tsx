@@ -129,6 +129,9 @@ export const Import = () => {
                 css="font-size: 11"
                 disabled={!transformedUrl}
                 to={gitHubToSandboxUrl(url)}
+                onClick={() => {
+                  actions.modalClosed();
+                }}
               >
                 Generate Sandbox
               </Button>

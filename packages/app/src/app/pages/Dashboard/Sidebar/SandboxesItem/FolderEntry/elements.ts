@@ -2,7 +2,9 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 
-export const Container = styled(NavLink)<{ depth?: number }>`
+export const Container = styled(NavLink)<{
+  depth?: number;
+}>`
   transition: 0.25s ease all;
   display: flex;
   align-items: center;

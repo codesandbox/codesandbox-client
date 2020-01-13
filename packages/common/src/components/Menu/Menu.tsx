@@ -38,9 +38,11 @@ export const Menu: React.FC<IMenuProps> = ({
       <List {...menu} aria-label={props[`aria-label`]}>
         {children && (children as React.ReactElement[]).length
           ? /* eslint-disable react/no-array-index-key */
-            (children as React.ReactElement[]).map((child, i) =>
-              cloneElement(Children.only(child), { ...menu, key: i })
-            )
+            (children as React.ReactElement[])
+              .filter(child => child)
+              .map((child, i) =>
+                cloneElement(Children.only(child), { ...menu, key: i })
+              )
           : !Array.isArray(children) &&
             cloneElement(Children.only(children as React.ReactElement), menu)}
       </List>

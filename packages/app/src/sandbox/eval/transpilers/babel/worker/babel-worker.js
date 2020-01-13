@@ -2,6 +2,9 @@
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
 import macrosPlugin from 'babel-plugin-macros';
+import refreshBabelPlugin from 'react-refresh/babel';
+import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
+import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
@@ -33,7 +36,7 @@ const { BrowserFS } = self;
 BrowserFS.configure({ fs: 'InMemory' }, () => {});
 
 self.process = {
-  env: { NODE_ENV: 'production' },
+  env: { NODE_ENV: 'development', BABEL_ENV: 'development' },
   platform: 'linux',
   argv: [],
   stderr: {},
@@ -620,6 +623,41 @@ self.addEventListener('message', async event => {
       }
 
       Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
+    }
+
+    if (
+      (flattenedPlugins.indexOf('proposal-optional-chaining') > -1 ||
+        flattenedPlugins.indexOf('@babel/plugin-proposal-optional-chaining') >
+          -1) &&
+      Object.keys(Babel.availablePlugins).indexOf(
+        'proposal-optional-chaining'
+      ) === -1
+    ) {
+      Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
+    }
+
+    if (
+      flattenedPlugins.indexOf('react-refresh/babel') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('react-refresh/babel') === -1
+    ) {
+      Babel.registerPlugin('react-refresh/babel', refreshBabelPlugin);
+    }
+
+    const coalescingInPlugins =
+      flattenedPlugins.indexOf('proposal-nullish-coalescing-operator') > -1 ||
+      flattenedPlugins.indexOf(
+        '@babel/plugin-proposal-nullish-coalescing-operator'
+      ) > -1;
+    if (
+      coalescingInPlugins &&
+      Object.keys(Babel.availablePlugins).indexOf(
+        'proposal-nullish-coalescing-operator'
+      ) === -1
+    ) {
+      Babel.registerPlugin(
+        'proposal-nullish-coalescing-operator',
+        coalescingPlugin
+      );
     }
 
     if (

@@ -13,7 +13,11 @@ import {
   SearchIcon,
   UserIcon,
 } from '@codesandbox/common/lib/components/icons';
-import { Menu, MenuItem, Separator } from '@codesandbox/common/lib/components/Menu';
+import {
+  Menu,
+  MenuItem,
+  Separator,
+} from '@codesandbox/common/lib/components/Menu';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
   profileUrl,
@@ -37,12 +41,10 @@ export const UserMenu: React.FC<IUserMenuProps> = () => {
   } = useOvermind();
 
   return (
-    <Avatar
-      as={Menu}
+    <Menu
+      label={<Avatar name={user.username} img={user.avatarUrl} />}
       aria-label="User Menu"
-      name={user.username}
-      img={user.avatarUrl}
-      onOpen={track('User Menu Open')}
+      onOpen={() => track('User Menu Open')}
     >
       <MenuItem icon={UserIcon} to={profileUrl(user.username)}>
         My Profile
@@ -98,6 +100,6 @@ export const UserMenu: React.FC<IUserMenuProps> = () => {
       <MenuItem icon={ExitIcon} onClick={() => signOutClicked()}>
         Sign Out
       </MenuItem>
-    </Avatar>
+    </Menu>
   );
 };

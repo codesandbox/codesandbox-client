@@ -3,7 +3,7 @@ import BaseQuestion from 'react-icons/lib/go/question';
 import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
-  font-family: Inter;
+  font-family: 'Inter', sans-serif;
   margin: 0 1rem;
   margin-bottom: 1rem;
 `;
@@ -30,7 +30,7 @@ export const Environment = styled.a`
   }
 `;
 
-export const Description = styled.p`
+export const Description = styled.h2`
   font-weight: 300;
   font-size: 13px;
   color: ${props => props.theme['editor.foreground']};

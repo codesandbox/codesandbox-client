@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
-import { Logo } from '@codesandbox/common/lib/components/Logo';
+import { Logo } from '@codesandbox/common/lib/components';
 import { UserMenu } from '../UserMenu';
 import {
   Container,
@@ -26,11 +26,8 @@ export const PageHeader: React.FC<IPageHeaderProps> = ({
   children,
 }) => {
   const {
-		actions: { signInClicked },
-    state: {
-      isLoggedIn,
-      isAuthenticating,
-    },
+    actions: { signInClicked },
+    state: { isLoggedIn, isAuthenticating },
   } = useOvermind();
 
   const handleSignIn = async () => {
@@ -48,14 +45,12 @@ export const PageHeader: React.FC<IPageHeaderProps> = ({
             <Logo width={38} height={38} />
           </Home>
           <Separator />
-          {children.left}
         </Left>
         <Right>
-          {children.right}
           {isLoggedIn ? (
             <UserMenu />
           ) : (
-            <Button block onClick={handleSignIn}>
+            <Button block onClick={handleSignIn} disabled={isAuthenticating}>
               Sign In
             </Button>
           )}

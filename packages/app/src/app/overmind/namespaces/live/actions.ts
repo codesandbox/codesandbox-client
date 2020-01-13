@@ -9,12 +9,37 @@ import * as liveMessage from './liveMessageOperators';
 
 export const internal = internalActions;
 
+export const signInToRoom: AsyncAction<{
+  roomId: string;
+}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
+  await actions.internal.signIn({});
+
+  if (state.isLoggedIn) {
+    await actions.live.roomJoined({
+      roomId,
+    });
+  }
+});
+
 export const roomJoined: AsyncAction<{
   roomId: string;
 }> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
+  if (!state.isLoggedIn) {
+    return;
+  }
+
   await effects.vscode.initialize;
   await effects.vscode.closeAllTabs();
+
+  if (state.live.isLive) {
+    actions.live.internal.disconnect();
+  }
+
   const sandbox = await actions.live.internal.initialize(roomId);
+
+  if (!sandbox) {
+    return;
+  }
 
   if (state.updateStatus === 'available') {
     const modal = 'liveVersionMismatch';
@@ -36,7 +61,7 @@ export const roomJoined: AsyncAction<{
   effects.live.sendModuleStateSyncRequest();
   effects.vscode.openModule(state.editor.currentModule);
   effects.preview.executeCodeImmediately({ initialRender: true });
-  state.live.isLoading = false;
+  state.editor.isLoading = false;
 });
 
 export const createLiveClicked: AsyncAction<string> = async (
@@ -171,9 +196,11 @@ export const onSessionCloseClicked: Action = ({ actions, effects }) => {
   actions.live.internal.reset();
 };
 
-export const onNavigateAway: Action = ({ actions }) => {
-  actions.live.internal.disconnect();
-  actions.live.internal.reset();
+export const onNavigateAway: Action = ({ actions, state }) => {
+  if (state.live.isLive) {
+    actions.live.internal.disconnect();
+    actions.live.internal.reset();
+  }
 };
 
 export const onToggleNotificationsHidden: Action = ({ state }) => {

@@ -8,7 +8,7 @@ import { fetchDependencies } from './fetch-dependencies';
 let loadedDependencyCombination: string | null = null;
 let manifest = null;
 
-type NPMDependencies = {
+export type NPMDependencies = {
   [dependency: string]: string;
 };
 

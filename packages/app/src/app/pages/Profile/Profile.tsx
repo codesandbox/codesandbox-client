@@ -5,11 +5,8 @@ import { InstantSearch, Configure } from 'react-instantsearch/dom';
 import { connectSearchBox, connectHits } from 'react-instantsearch-dom';
 import { useOvermind } from 'app/overmind';
 import { NotFound } from 'app/pages/common/NotFound';
-import {
-  Layout,
-  Pagination,
-  SearchInput,
-} from '@codesandbox/common/lib/components';
+import { Layout } from 'app/components/Layout';
+import { Pagination, SearchInput } from '@codesandbox/common/lib/components';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
@@ -53,9 +50,11 @@ const SearchSandboxes: React.ComponentClass = connectSearchBox(({ refine }) => (
   />
 ));
 
-const Results = connectHits(({ hits, children }) =>
-  // @ts-ignore
-  children({ hits })
+const Results = connectHits(
+  ({ hits, children }) =>
+    console.log(hits) ||
+    // @ts-ignore
+    children({ hits })
 );
 
 export const Profile: React.FC<IProfileProps> = ({
@@ -105,7 +104,7 @@ export const Profile: React.FC<IProfileProps> = ({
   };
 
   return (
-    <Layout>
+    <Layout title={user ? `Profile - ${user.name}` : `Profile`}>
       <InstantSearch
         appId={ALGOLIA_APPLICATION_ID}
         apiKey={ALGOLIA_API_KEY}

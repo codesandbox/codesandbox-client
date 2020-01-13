@@ -8,19 +8,22 @@ import Sort from './Filter/Sort';
 
 const Filters = () => (
   <Container>
-    <Sort
-      defaultRefinement={ALGOLIA_DEFAULT_INDEX}
-      items={[
-        { value: ALGOLIA_DEFAULT_INDEX, label: 'Views' },
-        { value: `${ALGOLIA_DEFAULT_INDEX}_date`, label: 'Date' },
-      ]}
-      title="Sort By"
-    />
+    {/* Enable once our index is back online */}
+    {false && (
+      <Sort
+        defaultRefinement={ALGOLIA_DEFAULT_INDEX}
+        items={[
+          { value: ALGOLIA_DEFAULT_INDEX, label: 'Views' },
+          { value: `${ALGOLIA_DEFAULT_INDEX}_date`, label: 'Date' },
+        ]}
+        title="Sort By"
+      />
+    )}
 
     <Filter
       attributeName="template"
       operator="or"
-      title="Enviroment"
+      title="Environment"
       transformItems={items =>
         items.map(({ label, ...item }) => {
           const { name, niceName } = getTemplate(label);

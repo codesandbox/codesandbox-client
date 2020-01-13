@@ -14,12 +14,14 @@ export const ProfilePicture = styled.img`
   position: absolute;
   top: 0;
   left: 0;
-  width: 64px;
-  height: 64px;
+  width: 100%;
+  height: 100%;
+  max-width: 64px;
+  max-height: 64px;
   border: 1px #242424 solid;
   border-radius: 4px;
-
-	transition: filter 0.1s linear;
+  box-sizing: border-box;
+  transition: filter 0.1s linear;
 
   &:hover {
     filter: brightness(120%);

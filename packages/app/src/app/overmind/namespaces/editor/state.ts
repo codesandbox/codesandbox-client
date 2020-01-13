@@ -39,7 +39,7 @@ type State = {
   notFound: boolean;
   error: string | null;
   isResizing: boolean;
-  changedModuleShortids: string[];
+  changedModuleShortids: Derive<State, string[]>;
   currentTabId: string;
   tabs: Tabs;
   errors: ModuleError[];
@@ -79,7 +79,19 @@ export const state: State = {
   error: null,
   isResizing: false,
   modulesByPath: {},
-  changedModuleShortids: [],
+  changedModuleShortids: ({ currentSandbox }) => {
+    if (!currentSandbox) {
+      return [];
+    }
+
+    return currentSandbox.modules.reduce((aggr, module) => {
+      if (module.savedCode !== null && module.savedCode !== module.code) {
+        return aggr.concat(module.shortid);
+      }
+
+      return aggr;
+    }, []);
+  },
   currentTabId: null,
   tabs: [],
   errors: [],

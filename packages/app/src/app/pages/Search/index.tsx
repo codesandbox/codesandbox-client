@@ -83,6 +83,7 @@ export const Search: FunctionComponent<Props> = ({ history, location }) => {
     <Container>
       <Helmet>
         <title>Search - CodeSandbox</title>
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <Styles />

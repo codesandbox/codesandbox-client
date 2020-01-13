@@ -284,13 +284,7 @@ export const isMainModule = (
 export const findMainModule = (sandbox?: Sandbox) => {
   const resolve = resolveModuleWrapped(sandbox);
 
-  // first attempt: try loading the entry file if it exists
-  const entryModule = resolve(sandbox.entry);
-  if (entryModule) {
-    return entryModule;
-  }
-
-  // second attempt: try loading the first file that exists from
+  // first attempt: try loading the first file that exists from
   // the list of possible defaults in the template defination
   const templateDefinition = getTemplateDefinition(sandbox.template);
 
@@ -311,6 +305,12 @@ export const findMainModule = (sandbox?: Sandbox) => {
 
   if (defaultOpenModule) {
     return defaultOpenModule;
+  }
+
+  // second attempt: try loading the entry file if it exists
+  const entryModule = resolve(sandbox.entry);
+  if (entryModule) {
+    return entryModule;
   }
 
   // third attempt: give up and load the first file in the list
@@ -355,3 +355,25 @@ export const resolveDirectoryWrapped = sandbox => (path: string) => {
     return undefined;
   }
 };
+
+const inDirectoryMemoize = (directories, sourceShortid, destinationShortid) =>
+  sourceShortid +
+  destinationShortid +
+  directories.map(d => d.id + d.title + d.directoryShortid).join(',');
+
+export const inDirectory = memoize(
+  (directories: Directory[], rootShortid: string, shortid: string) => {
+    let directory = findByShortid(directories, shortid);
+
+    while (directory) {
+      if (directory.directoryShortid === rootShortid) {
+        return true;
+      }
+
+      directory = findByShortid(directories, directory.directoryShortid);
+    }
+
+    return false;
+  },
+  inDirectoryMemoize
+);

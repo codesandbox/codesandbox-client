@@ -1,13 +1,6 @@
 import React from 'react';
 import { DetailInfo } from './DetailInfo';
-import {
-  Container,
-  Down,
-  IntegrationBlock,
-  Name,
-  Notice,
-  Up,
-} from './elements';
+import { Container, Down, IntegrationBlock, Name, Up } from './elements';
 
 interface IDeploymentIntegrationProps {
   light?: boolean;
@@ -15,7 +8,6 @@ interface IDeploymentIntegrationProps {
   bgColor: string;
   Icon: React.ComponentType;
   name: string;
-  beta?: boolean;
   open: boolean;
   onToggle: (event: React.MouseEvent<HTMLDivElement>) => void;
   onDeploy: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -27,7 +19,6 @@ export const DeploymentIntegration: React.FC<IDeploymentIntegrationProps> = ({
   bgColor,
   Icon,
   name,
-  beta = false,
   open = true,
   onToggle,
   onDeploy,
@@ -39,8 +30,6 @@ export const DeploymentIntegration: React.FC<IDeploymentIntegrationProps> = ({
         <Icon />
 
         <Name light={light}>{name}</Name>
-
-        {beta && <Notice>Beta</Notice>}
       </div>
 
       {open ? <Up light={light} /> : <Down light={light} />}

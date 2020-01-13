@@ -308,10 +308,10 @@ export default class Manager {
 
   evaluateModule(
     module: Module,
-    { force, testGlobals }: { force?: boolean; testGlobals?: boolean } = {
-      force: false,
-      testGlobals: false,
-    }
+    {
+      force = false,
+      testGlobals = false,
+    }: { force?: boolean; testGlobals?: boolean } = {}
   ) {
     if (this.hardReload && !this.isFirstLoad) {
       // Do a hard reload

@@ -31,11 +31,13 @@ export class ParcelTemplate extends Template {
    * The file to open by the editor
    */
   getDefaultOpenedFiles(configFiles) {
-    const entries = [];
+    let entries = [];
 
     entries.push('/index.js');
     entries.push('/src/index.js');
-    entries.concat(this.getEntries(configFiles));
+    entries.push('/index.ts');
+    entries.push('/src/index.ts');
+    entries = entries.concat(this.getEntries(configFiles));
 
     return entries;
   }
