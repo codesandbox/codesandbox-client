@@ -35,6 +35,7 @@ export const Basic = () => (
       height: '100vh',
       borderRight: '1px solid',
       borderColor: 'sideBar.border',
+      position: 'relative', // for absolute delete button
     }}
   >
     <Collapsible title="Sandbox Info" defaultOpen>
@@ -84,5 +85,12 @@ export const Basic = () => (
     <Element marginX={2} marginY={4}>
       <button type="button">Save as template</button>
     </Element>
+
+    <Stack
+      justify="center"
+      css={{ position: 'absolute', width: '100%', bottom: 8 }}
+    >
+      <button type="button">Delete sandbox</button>
+    </Stack>
   </Element>
 );
