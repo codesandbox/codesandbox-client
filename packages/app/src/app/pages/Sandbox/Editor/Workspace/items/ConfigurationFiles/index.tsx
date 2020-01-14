@@ -12,7 +12,15 @@ import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 
 import { useOvermind } from 'app/overmind';
 import styled, { withTheme } from 'styled-components';
-import { NetlifyIcon, PrettierIcon, NPMIcon, ZeitIcon } from './Icons';
+import { TypescriptIcon } from 'app/components/TypescriptIcon';
+import {
+  NetlifyIcon,
+  PrettierIcon,
+  NPMIcon,
+  ZeitIcon,
+  JSIcon,
+  CodeSandboxIcon,
+} from './Icons';
 
 const getIcon = name => {
   const icons = {
@@ -20,9 +28,12 @@ const getIcon = name => {
     'package.json': NPMIcon,
     'now.json': ZeitIcon,
     '.prettierrc': PrettierIcon,
+    'jsconfig.json': JSIcon,
+    'tsconfig.json': TypescriptIcon,
+    'sandbox.config.json': CodeSandboxIcon,
   };
 
-  return icons[name] || NPMIcon;
+  return icons[name] || JSIcon;
 };
 
 const Grid = styled(BaseGrid)`
