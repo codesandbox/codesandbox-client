@@ -1,9 +1,4 @@
-import {
-  ChangeEvent,
-  createElement,
-  FunctionComponent,
-  ComponentProps,
-} from 'react';
+import { ChangeEvent, createElement, FunctionComponent } from 'react';
 
 import { Input, TextArea } from './elements';
 
@@ -14,7 +9,7 @@ type Props = {
   rows?: number;
   setValue: (value: string) => void;
   value: string;
-} & Pick<ComponentProps<typeof Input>, 'style'>;
+};
 
 export const PreferenceText: FunctionComponent<Props> = ({
   isTextArea,
