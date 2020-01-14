@@ -43,12 +43,10 @@ export const SandboxInfo = () => (
     <Collapsible title="Sandbox Info" defaultOpen>
       <Stack direction="vertical" gap={6}>
         <Element css={{ paddingX: 2 }}>
-          <Text as="div" marginBottom={2}>
+          <Text block marginBottom={2}>
             The move from Cerebral
           </Text>
-          <Text as="div" variant="muted">
-            This is a from react template
-          </Text>
+          <Text variant="muted">This is a from react template</Text>
         </Element>
         <Stack gap={2} align="center" css={{ paddingX: 2 }}>
           <Avatar user={user} /> <Text>{user.name}</Text>
