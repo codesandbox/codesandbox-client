@@ -160,6 +160,7 @@ export class VSCodeEffect {
     options.reaction(
       state =>
         !state.live.isLive ||
+        state.live.roomInfo?.mode === 'open' ||
         (state.live.roomInfo?.mode === 'classroom' &&
           state.live.isCurrentEditor),
       canEdit => {
