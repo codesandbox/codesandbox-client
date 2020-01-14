@@ -78,6 +78,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   newId = actions.editor.internal.ensureSandboxId(newId);
 
+  effects.browser.storage.set('currentSandboxId', newId);
+
   const hasExistingSandbox = Boolean(state.editor.currentId);
 
   if (state.live.isLive) {
