@@ -1,5 +1,5 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import React, { FunctionComponent, MouseEvent } from 'react';
+import React, { FunctionComponent } from 'react';
 import BellIcon from 'react-icons/lib/md/notifications';
 
 import { useOvermind } from 'app/overmind';
@@ -7,7 +7,9 @@ import { useOvermind } from 'app/overmind';
 import { Action, UnreadIcon } from '../elements';
 
 type Props = {
-  openNotifications: (event: MouseEvent<HTMLDivElement>) => void;
+  openNotifications: (
+    event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>
+  ) => void;
 };
 export const ShowNotificationsAction: FunctionComponent<Props> = ({
   openNotifications,
