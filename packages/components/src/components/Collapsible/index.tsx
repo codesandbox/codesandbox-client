@@ -14,7 +14,7 @@ export const Header = styled.div(
   css({
     display: 'flex',
     alignItems: 'center',
-    height: 6,
+    height: 8,
     paddingX: 3,
     borderBottom: '1px solid',
     // Note: sideBarSectionHeader exists but we dont use it because it is rarely implemented

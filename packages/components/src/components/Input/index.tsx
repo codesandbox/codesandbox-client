@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import VisuallyHidden from '@reach/visually-hidden';
 import { useId } from '@reach/auto-id';
+import { Element } from '../Element';
 import { Text } from '../Text';
 
 const placeholderStyles = {
@@ -10,9 +11,10 @@ const placeholderStyles = {
   fontSize: 3,
 };
 
-export const InputComponent = styled.input(
+export const InputComponent = styled(Element).attrs({ as: 'input' })(
   css({
     height: 6,
+    width: '100%',
     paddingX: 2,
     fontSize: 3,
     borderRadius: 'small',
