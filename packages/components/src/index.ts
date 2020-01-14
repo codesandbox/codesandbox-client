@@ -14,6 +14,7 @@ export * from './components/Textarea';
 
 // molecules
 export * from './components/Collapsible';
+export * from './components/Integration';
 export * from './components/List';
 
 // layout

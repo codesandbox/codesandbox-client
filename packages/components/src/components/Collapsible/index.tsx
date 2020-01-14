@@ -4,13 +4,13 @@ import css from '@styled-system/css';
 import { Element } from '../Element';
 import { Text } from '../Text';
 
-export const Section = styled(Element).attrs({ as: 'section' })(
+const Section = styled(Element).attrs({ as: 'section' })(
   css({
     fontSize: 3,
   })
 );
 
-export const Header = styled.div(
+const Header = styled.div(
   css({
     display: 'flex',
     alignItems: 'center',
@@ -32,7 +32,7 @@ export const Header = styled.div(
 );
 
 // temporary: replace with <Icon name="triangle/toggle">
-export const Icon = styled.svg<{
+const Icon = styled.svg<{
   open?: boolean;
 }>(props =>
   css({
@@ -42,7 +42,7 @@ export const Icon = styled.svg<{
   })
 );
 
-export const Body = styled.div(
+const Body = styled.div(
   css({
     borderBottom: '1px solid',
     borderColor: 'sideBar.border',
