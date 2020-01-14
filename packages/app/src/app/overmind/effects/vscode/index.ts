@@ -157,6 +157,16 @@ export class VSCodeEffect {
       ]).then(() => this.loadEditor(window.monaco, container));
     });
 
+    options.reaction(
+      state =>
+        !state.live.isLive ||
+        (state.live.roomInfo?.mode === 'classroom' &&
+          state.live.isCurrentEditor),
+      canEdit => {
+        this.setReadOnly(!canEdit);
+      }
+    );
+
     return this.initialized;
   }
 
