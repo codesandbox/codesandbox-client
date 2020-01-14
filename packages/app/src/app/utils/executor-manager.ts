@@ -74,7 +74,7 @@ export class ExecutorsManager {
       this.executor = new ExecutorType();
     }
 
-    const sseHost = process.env.STAGING_STREAM
+    const sseHost = process.env.STAGING_API
       ? 'https://codesandbox.stream'
       : 'https://codesandbox.io';
 
