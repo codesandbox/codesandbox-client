@@ -22,14 +22,16 @@ export const tagAdded: AsyncAction = withOwnedSandbox(
     const { tagName } = state.workspace.tags;
     const sandbox = state.editor.currentSandbox;
 
-    sandbox.tags.push(tagName);
+    const cleanTag = tagName.replace(/#/g, '');
+
+    sandbox.tags.push(cleanTag);
 
     try {
-      sandbox.tags = await effects.api.createTag(sandbox.id, tagName);
+      sandbox.tags = await effects.api.createTag(sandbox.id, cleanTag);
 
       await actions.editor.internal.updateSandboxPackageJson();
     } catch (error) {
-      const index = sandbox.tags.indexOf(tagName);
+      const index = sandbox.tags.indexOf(cleanTag);
       sandbox.tags.splice(index, 1);
       actions.internal.handleError({ message: 'Unable to add tag', error });
     }
