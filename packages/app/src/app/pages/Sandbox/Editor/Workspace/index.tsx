@@ -4,10 +4,10 @@ import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, { getDisabledItems } from 'app/overmind/utils/items';
 import React from 'react';
 import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
-import { makeTheme } from '@codesandbox/components/lib/';
+import { ThemeProvider } from '@codesandbox/components/lib/';
 //  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
 import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
-import { withTheme, ThemeProvider } from 'styled-components';
+import { withTheme } from 'styled-components';
 import { Advertisement } from './Advertisement';
 import { Chat } from './Chat';
 import { ConnectionNotice } from './ConnectionNotice';
@@ -74,7 +74,7 @@ export const WorkspaceComponent = ({ theme }) => {
       )}
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
-        <WorkspaceWrapper theme={makeTheme(theme.vscodeTheme, '')}>
+        <WorkspaceWrapper theme={theme.vscodeTheme}>
           <Component />
         </WorkspaceWrapper>
       </div>

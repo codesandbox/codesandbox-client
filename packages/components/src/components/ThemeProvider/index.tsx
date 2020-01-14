@@ -5,9 +5,11 @@
  * vscode theme - color tokens
  * polyfill - color tokens missing from vscode
  */
+import React from 'react';
 import dot from 'dot-object';
 import deepmerge from 'deepmerge';
 import designLanguage from '@codesandbox/common/lib/design-language';
+import { ThemeProvider as BaseThemeProvider } from 'styled-components';
 import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
 
@@ -19,7 +21,7 @@ export const getThemes = () => {
 
   return results.filter(a => a);
 };
-export const makeTheme = (vsCodeTheme = { colors: {} }, name: string) => {
+export const makeTheme = (vsCodeTheme = { colors: {} }, name?: string) => {
   // black is the default, it would be helpful to use storybook-addon-themes
   // to test our components across multiple themes
   // convert vscode colors to dot notation so that we can use them in tokens
@@ -33,8 +35,17 @@ export const makeTheme = (vsCodeTheme = { colors: {} }, name: string) => {
   // merge the design language and vscode theme
   const theme = deepmerge(designLanguage, { colors: polyfilledVSCodeColors });
 
-  return {
-    name,
-    ...theme,
-  };
+  if (name) {
+    return {
+      name,
+      ...theme,
+    };
+  }
+  return theme;
+};
+
+export const ThemeProvider = ({ theme, children }) => {
+  const usableTheme = makeTheme(theme);
+
+  return <BaseThemeProvider theme={usableTheme}>{children}</BaseThemeProvider>;
 };
