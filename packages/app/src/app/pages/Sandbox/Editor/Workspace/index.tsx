@@ -15,7 +15,7 @@ import {
   ItemTitle,
   VersionContainer,
 } from './elements';
-import ConfigurationFiles from './items/ConfigurationFiles';
+import { ConfigurationFiles } from './items/ConfigurationFiles';
 import { ConfigurationFiles as ConfigurationFilesNew } from './screens/ConfigurationFiles';
 import { Deployment } from './items/Deployment';
 import { FilesItem } from './items/Files';

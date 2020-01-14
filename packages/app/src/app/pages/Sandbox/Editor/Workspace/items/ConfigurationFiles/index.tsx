@@ -83,7 +83,7 @@ const FileConfig = ({
   );
 };
 
-const ConfigurationFiles = () => {
+export const ConfigurationFiles = () => {
   const {
     state,
     actions: { files, editor },
@@ -157,5 +157,3 @@ const ConfigurationFiles = () => {
     </div>
   );
 };
-
-export default ConfigurationFiles;
