@@ -90,7 +90,7 @@
     "@types/codemirror": "0.0.55",
     "@types/jest": "^22.0.0",
     "@types/node": "^9.4.6",
-    "@types/react": "^16.8.12",
+    "@types/react": "^16.9.17",
     "@types/react-broadcast": "^0.6.1",
     "awesome-typescript-loader": "^3.5.0",
     "babel-core": "^6.26.3",
@@ -127,7 +127,7 @@
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",
     "typedoc": "^0.10.0",
-    "typescript": "3.7.2",
+    "typescript": "3.7.4",
     "validate-commit-msg": "^2.12.2"
   },
   "peerDependencies": {

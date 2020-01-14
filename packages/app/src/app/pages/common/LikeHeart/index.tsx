@@ -1,5 +1,6 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
 import React, { FunctionComponent, ComponentProps } from 'react';
+import { StyledComponentInnerOtherProps } from 'styled-components';
 
 import { useOvermind } from 'app/overmind';
 
@@ -17,11 +18,10 @@ type Props = {
   colorless?: boolean;
   sandbox: Sandbox;
   text?: number;
+  className?: string;
+  style?: React.CSSProperties;
 } & Partial<Pick<ComponentProps<typeof MaybeTooltip>, 'disableTooltip'>> &
-  Pick<
-    ComponentProps<typeof Container>,
-    'className' | 'highlightHover' | 'style'
-  >;
+  Pick<StyledComponentInnerOtherProps<typeof Container>, 'highlightHover'>;
 
 export const LikeHeart: FunctionComponent<Props> = ({
   className,
