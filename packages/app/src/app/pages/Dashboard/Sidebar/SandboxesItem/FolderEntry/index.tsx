@@ -219,11 +219,14 @@ class FolderEntry extends React.Component<Props, State> {
       });
     }
 
+    // TODO: fix the typings of this container and make sure it works with `as`
+    const TypedContainer = Container as any;
+
     return connectDropTarget(
       connectDragSource(
         <div>
           <ContextMenu items={menuItems}>
-            <Container
+            <TypedContainer
               as={onSelect ? 'div' : undefined}
               onClick={onSelect ? this.handleSelect : undefined}
               style={{
@@ -336,7 +339,7 @@ class FolderEntry extends React.Component<Props, State> {
               ) : (
                 name
               )}
-            </Container>
+            </TypedContainer>
           </ContextMenu>
 
           <ReactShow
