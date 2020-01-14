@@ -7,8 +7,12 @@ import { Text } from '../Text';
 import { Element } from '../Element';
 
 // Svg used for the icon
-const svg = () =>
-  `"data:image/svg+xml,%3Csvg width='8' height='24' viewBox='0 0 8 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.00006 17L1 13L7 13L4.00006 17Z' fill='currentColor'/%3E%3Cpath d='M3.99994 7L7 11H1L3.99994 7Z' fill='currentColor'/%3E%3C/svg%3E%0A"`;
+const svg = color =>
+  `"data:image/svg+xml,%3Csvg width='8' height='24' viewBox='0 0 8 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.00006 17L1 13L7 13L4.00006 17Z' fill='%23${
+    color.split('#')[1]
+  }'/%3E%3Cpath d='M3.99994 7L7 11H1L3.99994 7Z' fill='%23${
+    color.split('#')[1]
+  }'/%3E%3C/svg%3E%0A"`;
 
 export const SelectComponent = styled.select<{ icon?: boolean }>(props =>
   css({
@@ -23,13 +27,15 @@ export const SelectComponent = styled.select<{ icon?: boolean }>(props =>
     borderColor: 'input.border',
     color: 'input.placeholderForeground',
     appearance: 'none',
-    backgroundImage: `url(${svg})`,
+    backgroundImage: `url(${svg(
+      props.theme.colors.input.placeholderForeground
+    )})`,
     backgroundPosition: 'calc(100% - 8px) center',
     backgroundRepeat: 'no-repeat',
 
     ':hover': {
-      backgroundImage: `url(${svg})`,
       color: 'input.foreground',
+      backgroundImage: `url(${svg(props.theme.colors.input.foreground)})`,
     },
   })
 );
