@@ -11,7 +11,7 @@ import getDefinition from '@codesandbox/common/lib/templates';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 
 import { useOvermind } from 'app/overmind';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 import { NetlifyIcon, PrettierIcon, NPMIcon, ZeitIcon } from './Icons';
 
 const getIcon = name => {
@@ -27,10 +27,10 @@ const getIcon = name => {
 
 const Grid = styled(BaseGrid)`
   grid-template-columns: 1fr 100px;
-  grid-gap: 16px;
+  grid-gap: ${({ theme }) => theme.space[4]}px;
 `;
 
-export const ConfigurationFiles = () => {
+export const ConfigurationFilesComponent = ({ theme }) => {
   const {
     state: {
       editor: { currentSandbox },
@@ -68,7 +68,11 @@ export const ConfigurationFiles = () => {
   return (
     <>
       <Collapsible title="Configuration Files" defaultOpen>
-        <Stack direction="vertical" gap={6} style={{ padding: '0 8px' }}>
+        <Stack
+          direction="vertical"
+          gap={6}
+          style={{ padding: `0 ${theme.space[3]}px` }}
+        >
           <Element>
             <Text as="div" marginBottom={2}>
               Configuration your Sandbox
@@ -107,7 +111,11 @@ export const ConfigurationFiles = () => {
         </Stack>
       </Collapsible>
       <Collapsible title="Other Configuration" defaultOpen>
-        <Stack direction="vertical" gap={4} style={{ padding: '0 8px' }}>
+        <Stack
+          direction="vertical"
+          gap={4}
+          style={{ padding: `0 ${theme.space[3]}px` }}
+        >
           {Object.keys(restPaths).map(path => {
             const { config } = restPaths[path];
             const Icon = getIcon(config.title);
@@ -142,3 +150,5 @@ export const ConfigurationFiles = () => {
     </>
   );
 };
+
+export const ConfigurationFiles = withTheme(ConfigurationFilesComponent);
