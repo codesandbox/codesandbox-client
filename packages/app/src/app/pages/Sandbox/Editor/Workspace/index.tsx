@@ -5,8 +5,6 @@ import getWorkspaceItems, { getDisabledItems } from 'app/overmind/utils/items';
 import React from 'react';
 import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import { ThemeProvider } from '@codesandbox/components/lib/';
-//  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
-import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 import { withTheme } from 'styled-components';
 import { Advertisement } from './Advertisement';
 import { Chat } from './Chat';
@@ -79,13 +77,13 @@ export const WorkspaceComponent = ({ theme }) => {
         </WorkspaceWrapper>
       </div>
 
-      {isLive && roomInfo.chatEnabled && (
+      {isLive && roomInfo.chatEnabled && !REDESIGNED_SIDEBAR && (
         <WorkspaceItem defaultOpen title="Chat">
           <Chat />
         </WorkspaceItem>
       )}
 
-      {!zenMode && (
+      {!zenMode && !REDESIGNED_SIDEBAR && (
         <>
           {!(isPatron || owned) && <Advertisement />}
 
