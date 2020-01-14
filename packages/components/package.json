@@ -32,6 +32,7 @@
     "@codesandbox/template-icons": "^1.1.0",
     "@reach/auto-id": "^0.7.1",
     "@reach/visually-hidden": "^0.7.0",
+    "@storybook/csf": "^0.0.1",
     "@styled-system/css": "^5.1.4",
     "add": "^2.0.6",
     "codesandbox-api": "0.0.23",
