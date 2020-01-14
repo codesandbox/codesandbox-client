@@ -45,12 +45,12 @@
     "yarn": "^1.21.1"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^5.3.2",
-    "@storybook/addon-actions": "^5.3.2",
-    "@storybook/addon-knobs": "^5.3.2",
-    "@storybook/addon-storysource": "^5.3.2",
-    "@storybook/addon-viewport": "^5.3.2",
-    "@storybook/react": "^5.3.2",
+    "@storybook/addon-a11y": "^5.2.8",
+    "@storybook/addon-actions": "^5.2.8",
+    "@storybook/addon-knobs": "^5.2.8",
+    "@storybook/addon-storysource": "^5.2.8",
+    "@storybook/addon-viewport": "^5.2.8",
+    "@storybook/react": "^5.2.8",
     "@types/color": "3.0.1",
     "@types/lodash": "^4.14.149",
     "@types/styled-components": "^4.4.1",
