@@ -1,5 +1,5 @@
 import React from 'react';
-import { Element, Collapsible, Text, Button, Stack } from '../..';
+import { Element, Collapsible, Text, Button, Stack } from '..';
 
 export default {
   title: 'examples/SidebarConfig',
@@ -126,54 +126,52 @@ export const Basic = () => (
   >
     <Collapsible title="Configuration Files" defaultOpen>
       <Stack direction="vertical" gap={6}>
-        <Element as="div" css={{ paddingX: 2 }}>
+        <Element css={{ paddingX: 2 }}>
           <Text as="div" marginBottom={2}>
             Configuration your Sandbox
           </Text>
           <Text variant="muted">
-            Codesandbox supports serveral config giles per template, you van see
+            Codesandbox supports several config giles per template, you van see
             and edit all supported files for the current sandbox here.
           </Text>
         </Element>
-        <Element as="div" css={{ paddingX: 2 }}>
-          <Stack>
-            <Element css={{ paddingRight: 2 }} marginBottom={2}>
+        <Stack direction="vertical" gap={4} css={{ paddingX: 2 }}>
+          <Element>
+            <Stack gap={2} marginBottom={2}>
               <NPMIcon />
-            </Element>
-            <Text size={2}>package.json</Text>
-          </Stack>
-          <Stack gap={4} align="flex-end" justify="space-between">
-            <Text size={2} variant="muted">
-              Describes the overall configuration of your project.
-            </Text>
-            <Button style={{ width: 100 }} variant="secondary">
-              Edit
-            </Button>
-          </Stack>
-          <Stack marginTop={4}>
-            <Element css={{ paddingRight: 2 }} marginBottom={2}>
+              <Text size={2}>package.json</Text>
+            </Stack>
+            <Stack gap={4} align="flex-end" justify="space-between">
+              <Text size={2} variant="muted">
+                Describes the overall configuration of your project.
+              </Text>
+              <Button style={{ width: 100 }} variant="secondary">
+                Edit
+              </Button>
+            </Stack>
+          </Element>
+          <Element>
+            <Stack gap={2} marginBottom={2}>
               <NPMIcon />
-            </Element>
-            <Text size={2}>sandbox.config.json</Text>
-          </Stack>
-          <Stack gap={4} align="flex-end" justify="space-between">
-            <Text size={2} variant="muted">
-              Describes the overall configuration of your project.
-            </Text>
-            <Button style={{ width: 100 }} variant="secondary">
-              Edit
-            </Button>
-          </Stack>
-        </Element>
+              <Text size={2}>sandbox.config.json</Text>
+            </Stack>
+            <Stack gap={4} align="flex-end" justify="space-between">
+              <Text size={2} variant="muted">
+                Describes the overall configuration of your project.
+              </Text>
+              <Button style={{ width: 100 }} variant="secondary">
+                Edit
+              </Button>
+            </Stack>
+          </Element>
+        </Stack>
       </Stack>
     </Collapsible>
     <Collapsible title="Other Configuration">
-      <Stack direction="vertical" gap={6}>
-        <Element as="div" css={{ paddingX: 2 }}>
-          <Stack>
-            <Element css={{ paddingRight: 2 }} marginBottom={2}>
-              <PrettierIcon />
-            </Element>
+      <Stack direction="vertical" gap={4} css={{ paddingX: 2 }}>
+        <Element>
+          <Stack gap={2} marginBottom={2}>
+            <PrettierIcon />
             <Text size={2}>.prettierc</Text>
           </Stack>
           <Stack gap={4} align="flex-end" justify="space-between">
@@ -184,10 +182,10 @@ export const Basic = () => (
               Edit
             </Button>
           </Stack>
-          <Stack marginTop={4}>
-            <Element css={{ paddingRight: 2 }} marginBottom={2}>
-              <NetlifyIcon />
-            </Element>
+        </Element>
+        <Element>
+          <Stack gap={2} marginBottom={2}>
+            <NetlifyIcon />
             <Text size={2}>netlify.toml</Text>
           </Stack>
           <Stack gap={4} align="flex-end" justify="space-between">
@@ -198,10 +196,10 @@ export const Basic = () => (
               Edit
             </Button>
           </Stack>
-          <Stack marginTop={4}>
-            <Element css={{ paddingRight: 2 }} marginBottom={2}>
-              <ZeitIcon />
-            </Element>
+        </Element>
+        <Element>
+          <Stack gap={2} marginBottom={2}>
+            <ZeitIcon />
             <Text size={2}>now.json</Text>
           </Stack>
           <Stack gap={4} align="flex-end" justify="space-between">
