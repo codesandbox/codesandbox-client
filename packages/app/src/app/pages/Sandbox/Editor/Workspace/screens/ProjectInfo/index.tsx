@@ -141,6 +141,7 @@ export const ProjectInfo = () => {
         css={{ position: 'absolute', width: '100%', bottom: 8 }}
       >
         <Button
+          // @ts-ignore
           onClick={onDelete}
           variant="link"
           css={{ ':hover, :focus': { color: 'dangerButton.background' } }}
