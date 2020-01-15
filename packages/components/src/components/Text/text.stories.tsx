@@ -7,22 +7,23 @@ export default {
 };
 
 // replace the text inside with Text variants when available
-export const Basic = () => (
-  <Text>This is a static template with no bundling</Text>
+export const Basic = () => <Text>Plan old boring text</Text>;
+
+export const Block = () => (
+  <Text block marginX={2}>
+    Sometimes a block needs to stand on its own block, especially when it needs
+    margins
+  </Text>
 );
 
 export const Variants = () => (
   <>
-    <Text variant="body">
+    <Text variant="body" block marginBottom={4}>
       body is the default variant which inherits color from it&apos;s container
     </Text>
-    <br />
-    <br />
-    <Text variant="muted">
+    <Text variant="muted" block marginBottom={4}>
       Use muted when you don&apos;t want to ask for too much attention
     </Text>
-    <br />
-    <br />
     <Text variant="danger">Now, we really want your atttention, hello!</Text>
   </>
 );
@@ -63,7 +64,7 @@ export const Size = () => (
 );
 
 export const Align = () => (
-  <Text as="div" align="right">
+  <Text block align="right">
     sometimes, just sometimes you need to align right
   </Text>
 );
