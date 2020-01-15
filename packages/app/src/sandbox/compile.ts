@@ -20,7 +20,7 @@ import defaultBoilerplates from './boilerplates/default-boilerplates';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import getPreset from './eval';
 import { consumeCache, deleteAPICache, saveCache } from './eval/cache';
-import { Module } from './eval/entities/module';
+import { Module } from './eval/types/module';
 import Manager from './eval/manager';
 import TranspiledModule from './eval/transpiled-module';
 import handleExternalResources from './external-resources';

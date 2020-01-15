@@ -9,7 +9,7 @@ import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/temp
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
-import { Module } from './entities/module';
+import { Module } from './types/module';
 import TranspiledModule, {
   ChildModule,
   SerializedTranspiledModule,
@@ -984,7 +984,7 @@ export default class Manager {
       this.hardReload = this.configurations.sandbox.parsed.hardReloadOnChange;
     }
 
-    const modulesWithWErrors = this.getTranspiledModules().filter(t => {
+    const modulesWithErrors = this.getTranspiledModules().filter(t => {
       if (t.hasMissingDependencies) {
         t.resetTranspilation();
       }
@@ -992,7 +992,7 @@ export default class Manager {
     });
     const flattenedTModulesToUpdate = (flattenDeep([
       tModulesToUpdate,
-      modulesWithWErrors,
+      modulesWithErrors,
     ]) as unknown) as TranspiledModule[];
 
     const allModulesToUpdate = uniq(flattenedTModulesToUpdate);

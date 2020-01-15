@@ -28,7 +28,7 @@ import { map } from 'sandbox-hooks/react-error-overlay/utils/mapper';
 import run from './run-circus';
 
 import Manager from '../manager';
-import { Module } from '../entities/module';
+import { Module } from '../types/module';
 import { Event, TestEntry, DescribeBlock, TestName, TestFn } from './types';
 
 export { messages };
