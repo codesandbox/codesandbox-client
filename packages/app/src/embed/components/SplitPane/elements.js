@@ -8,6 +8,13 @@ export const KNOB_WIDTH = 4;
  */
 export const RESIZER_GRAB_EXTRA_WIDTH = 4;
 
+const getKnobSizeKey = props => (props.verticalMode ? 'height' : 'width');
+const getKnobHeightKey = props => (props.verticalMode ? 'width' : 'height');
+const getContainerSizeKey = props => (props.verticalMode ? 'width' : 'height');
+const getKnobOffsetKey = props => (props.verticalMode ? 'left' : 'top');
+const getKnobMarginKey = props =>
+  props.verticalMode ? 'margin-top' : 'margin-left';
+
 export const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -22,10 +29,10 @@ export const Container = styled.div`
     transform: translateZ(0);
 
     background-color: ${props => props.theme.colors.separator.background};
-    width: ${RESIZER_WIDTH}px;
+    ${getKnobSizeKey}: ${RESIZER_WIDTH}px;
     display: block;
-    height: 100%;
-    cursor: ew-resize;
+    ${getContainerSizeKey}: 100%;
+    cursor: ${props => (props.verticalMode ? 'ns-resize' : 'ew-resize')};
     z-index: 50;
   }
 
@@ -36,10 +43,10 @@ export const Container = styled.div`
     border-radius: 50px;
     position: absolute;
 
-    width: ${KNOB_WIDTH}px;
-    height: 41px;
-    top: calc(50% - 20px);
-    margin-left: ${Math.floor(RESIZER_WIDTH / 2 - KNOB_WIDTH / 2)}px;
+    ${getKnobSizeKey}: ${KNOB_WIDTH}px;
+    ${getKnobHeightKey}: 41px;
+    ${getKnobOffsetKey}: calc(50% - 20px);
+    ${getKnobMarginKey}: ${Math.floor(RESIZER_WIDTH / 2 - KNOB_WIDTH / 2)}px;
     opacity: 1;
   }
 
@@ -48,13 +55,18 @@ export const Container = styled.div`
     position: absolute;
     top: 0;
     bottom: 0;
-    margin-left: -${RESIZER_GRAB_EXTRA_WIDTH}px;
-    width: ${RESIZER_WIDTH + RESIZER_GRAB_EXTRA_WIDTH * 2}px;
+    left: 0;
+    right: 0;
+    ${getKnobMarginKey}: -${RESIZER_GRAB_EXTRA_WIDTH}px;
+    ${getKnobSizeKey}: ${RESIZER_WIDTH + RESIZER_GRAB_EXTRA_WIDTH * 2}px;
     z-index: 50;
   }
 
   .Pane {
-    transition: ${props => (props.isDragging ? null : 'width 200ms ease')};
+    transition: ${props =>
+      props.isDragging
+        ? null
+        : `${props.verticalMode ? 'height' : 'width'} 200ms ease`};
     overflow: hidden;
   }
 `;
@@ -63,4 +75,5 @@ export const PaneContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
 `;

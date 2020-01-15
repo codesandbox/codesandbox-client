@@ -1,9 +1,13 @@
 const isTouch = !matchMedia('(pointer:fine)').matches;
 
-export function isSmallMobileScreen() {
+export function isSmallScreen() {
   if (typeof screen === 'undefined') {
     return false;
   }
 
-  return screen.width < 800 && isTouch;
+  return screen.width < 800;
+}
+
+export function isSmallMobileScreen() {
+  return isSmallScreen() && isTouch;
 }

@@ -38,6 +38,7 @@ import { MenuIcon } from '../legacy/Header/elements';
 import SplitPane from '../SplitPane';
 import { CodeEditor } from './CodeEditor';
 import { Container, MenuInTabs, Tabs } from './elements';
+import { isSmallScreen } from '../../util/mobile';
 
 type Props = {
   showEditor: boolean;
@@ -407,10 +408,9 @@ export default class Content extends React.PureComponent<Props, State> {
       sidebarOpen,
       toggleSidebar,
       toggleLike,
-      editorSize,
     } = this.props;
 
-    const { isInProjectView } = this.state;
+    const { isInProjectView, editorSize } = this.state;
 
     const mainModule = isInProjectView
       ? findMainModule(sandbox)
@@ -489,17 +489,13 @@ export default class Content extends React.PureComponent<Props, State> {
       actions: [],
     };
 
-    // TODO: we use verticalMode as a very very bad proxy
-    // for identifying mobile mode
-    // mobile isn't even vertical anymore!
-    // we should really rename it
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
         <SplitPane
           sandbox={sandbox}
           showEditor={showEditor}
           showPreview={showPreview}
-          isSmallScreen={verticalMode}
+          isSmallScreen={isSmallScreen()}
           sidebarOpen={sidebarOpen}
           showNavigationActions={hideNavigation}
           refresh={this.refresh}
@@ -509,6 +505,7 @@ export default class Content extends React.PureComponent<Props, State> {
           setEditorSize={this.setEditorSize}
           hideDevTools={hideDevTools}
           setDragging={this.setDragging}
+          verticalMode={verticalMode}
         >
           <>
             <Tabs>
@@ -577,7 +574,9 @@ export default class Content extends React.PureComponent<Props, State> {
                 onChange={this.setCode}
                 onModuleChange={this.setCurrentModule}
                 highlightedLines={this.props.highlightedLines}
-                width={this.state.editorSize}
+                {...(verticalMode
+                  ? { height: editorSize }
+                  : { width: editorSize })}
               />
             </div>
           </>

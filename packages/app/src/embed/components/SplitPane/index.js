@@ -18,6 +18,7 @@ export default function SplitView({
   initialEditorSize = 50, // in percent
   hideDevTools,
   setEditorSize,
+  verticalMode,
   setDragging: setDraggingProp,
   ...props
 }) {
@@ -29,12 +30,14 @@ export default function SplitView({
     5. introduce the resizer element with animation
   */
 
-  const windowWidth = document.body.clientWidth;
+  const windowSize = verticalMode
+    ? document.body.clientHeight
+    : document.body.clientWidth;
   // TODO: pick this from the sidebar or ref instead of hardcoding
-  const sidebarWidth = 250;
+  const sidebarWidth = verticalMode ? 0 : 250;
 
   const maxSize =
-    (sidebarOpen ? windowWidth - sidebarWidth : windowWidth) - RESIZER_WIDTH;
+    (sidebarOpen ? windowSize - sidebarWidth : windowSize) - RESIZER_WIDTH;
 
   // #1. set initial size based on props
   let initialSize = null;
@@ -131,6 +134,7 @@ export default function SplitView({
       size={size}
       maxSize={maxSize}
       fullSize={size === maxSize}
+      verticalMode={verticalMode}
     >
       <GlobalActions
         sandbox={sandbox}
@@ -143,7 +147,7 @@ export default function SplitView({
         smallTouchScreen={smallTouchScreen}
       />
       <SplitPane
-        split="vertical"
+        split={verticalMode ? 'horizontal' : 'vertical'}
         onDragStarted={onDragStarted}
         onDragFinished={onDragFinished}
         minSize="0%"
