@@ -51,6 +51,7 @@ const IconWrapper = styled(Element)(
 
 const WrapperWithIcon = styled(Element)(
   css({
+    width: '100%',
     ':hover svg path': {
       fill: 'input.foreground',
     },
