@@ -10,6 +10,7 @@ import {
   Stack,
   Switch,
   Text,
+  SidebarRow,
 } from '../index';
 
 import { sara as user } from '../components/Avatar/stubs';
@@ -33,7 +34,7 @@ export const SandboxInfo = () => (
   <Element
     as="aside"
     css={{
-      width: '250px',
+      width: '200px',
       height: '100vh',
       borderRight: '1px solid',
       borderColor: 'sideBar.border',
@@ -43,13 +44,12 @@ export const SandboxInfo = () => (
     <Collapsible title="Sandbox Info" defaultOpen>
       <Stack direction="vertical" gap={6}>
         <Element css={{ paddingX: 2 }}>
-          <Text as="div" marginBottom={2}>
-            The move from Cerebral
-          </Text>
-          <Text as="div" variant="muted">
+          <SidebarRow>The move from Cerebral</SidebarRow>
+          <Text block variant="muted">
             This is a from react template
           </Text>
         </Element>
+
         <Stack gap={2} align="center" css={{ paddingX: 2 }}>
           <Avatar user={user} /> <Text>{user.name}</Text>
         </Stack>
@@ -73,11 +73,17 @@ export const SandboxInfo = () => (
     </Collapsible>
     <Collapsible title="Privacy" defaultOpen>
       <Stack direction="vertical" gap={4} css={{ paddingX: 2 }}>
-        <Select icon={GlobeIcon} placeholder="Please select an option">
-          <option>Public</option>
-          <option>Private</option>
-          <option>Unlisted</option>
-        </Select>
+        <SidebarRow>
+          <Select
+            icon={GlobeIcon}
+            placeholder="Please select an option"
+            defaultValue="Public"
+          >
+            <option>Public</option>
+            <option>Private</option>
+            <option>Unlisted</option>
+          </Select>
+        </SidebarRow>
         <Text variant="muted" size={2}>
           You an change privacy of a sandbox as a Pro. Becomes a Pro.
         </Text>

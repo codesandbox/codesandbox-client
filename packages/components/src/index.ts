@@ -19,3 +19,4 @@ export * from './components/List';
 // layout
 export * from './components/Grid';
 export * from './components/Stack';
+export * from './components/SidebarRow';
