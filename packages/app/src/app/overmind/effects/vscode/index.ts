@@ -250,7 +250,11 @@ export class VSCodeEffect {
   }
 
   public updateOptions(options: { readOnly: boolean }) {
-    this.editorApi.getActiveCodeEditor().updateOptions(options);
+    const editor = this.editorApi.getActiveCodeEditor();
+
+    if (editor) {
+      editor.updateOptions(options);
+    }
   }
 
   public updateUserSelections(userSelections: EditorSelection[]) {
@@ -267,9 +271,7 @@ export class VSCodeEffect {
   public setReadOnly(enabled: boolean) {
     this.readOnly = enabled;
 
-    const activeEditor = this.editorApi.getActiveCodeEditor();
-
-    activeEditor.updateOptions({ readOnly: enabled });
+    this.updateOptions({ readOnly: enabled });
   }
 
   public updateLayout = (width: number, height: number) => {
