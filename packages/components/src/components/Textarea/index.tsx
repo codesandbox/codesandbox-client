@@ -15,6 +15,7 @@ interface ITextareaProps
   label?: string;
   maxLength?: number;
   autosize?: boolean;
+  ref?: any;
 }
 
 export const TextareaComponent: any = styled(InputComponent).attrs({

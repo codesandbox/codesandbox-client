@@ -23,7 +23,11 @@ import { GitHub } from './items/GitHub';
 import { Live } from './items/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
-import { ProjectInfo } from './items/ProjectInfo';
+import {
+  ProjectInfo,
+  ProjectInfo as ProjectInfoNew,
+} from './screens/ProjectInfo';
+
 import { Server } from './items/Server';
 import { SSEDownNotice } from './SSEDownNotice';
 import { WorkspaceItem } from './WorkspaceItem';
@@ -31,7 +35,7 @@ import { WorkspaceItem } from './WorkspaceItem';
 const WorkspaceWrapper = REDESIGNED_SIDEBAR ? ThemeProvider : React.Fragment;
 
 const workspaceTabs = {
-  project: ProjectInfo,
+  project: REDESIGNED_SIDEBAR ? ProjectInfoNew : ProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
   files: FilesItem,
   github: GitHub,
@@ -66,7 +70,7 @@ export const WorkspaceComponent = ({ theme }) => {
     getDisabledItems(state).find(({ id }) => id === activeTab);
 
   return (
-    <Container>
+    <Container REDESIGNED_SIDEBAR={REDESIGNED_SIDEBAR}>
       {item && !item.hasCustomHeader && !REDESIGNED_SIDEBAR && (
         <ItemTitle>{item.name}</ItemTitle>
       )}

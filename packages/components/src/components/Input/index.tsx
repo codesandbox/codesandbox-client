@@ -28,6 +28,7 @@ export const InputComponent = styled.input(
 
 interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  ref?: any;
 }
 
 export const Input: React.FC<IInputProps> = ({
