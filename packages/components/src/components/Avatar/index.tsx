@@ -22,7 +22,7 @@ export const AvatarImage = styled.img(
     borderRadius: 'small',
     border: '1px solid',
     borderColor: 'avatar.border',
-    backgroundColor: 'avatar.border', // fallback for loading image
+    backgroundColor: 'avatar.border', // fallback for loading image,
   })
 );
 

@@ -12,7 +12,7 @@ import { colors as tokens } from '../design-language/colors';
 const colors = {
   contrastBorder: tokens.grays[500],
   contrastActiveBorder: null,
-  errorForeground: tokens.reds[500],
+  errorForeground: tokens.reds[300],
   focusBorder: tokens.grays[500],
   foreground: tokens.grays[200],
   activityBar: {

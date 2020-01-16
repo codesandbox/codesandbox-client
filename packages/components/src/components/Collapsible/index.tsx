@@ -5,7 +5,7 @@ import { Element } from '../Element';
 import { Text } from '../Text';
 import { SidebarRow } from '../SidebarRow';
 
-export const Section = styled(Element).attrs({ as: 'section' })(
+const Section = styled(Element).attrs({ as: 'section' })(
   css({
     fontSize: 3,
   })
@@ -30,7 +30,7 @@ export const Header = styled(SidebarRow).attrs({ gap: 2 })(
 );
 
 // temporary: replace with <Icon name="triangle/toggle">
-export const Icon = styled.svg<{
+const Icon = styled.svg<{
   open?: boolean;
 }>(props =>
   css({
