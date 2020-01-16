@@ -1,12 +1,10 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import VisuallyHidden from '@reach/visually-hidden';
-import { useId } from '@reach/auto-id';
-import { Text } from '../Text';
+import { Input } from '../Input';
 import { Element } from '../Element';
 
-// Svg used for the icon
+// caret icon
 const svg = color =>
   `"data:image/svg+xml,%3Csvg width='8' height='24' viewBox='0 0 8 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.00006 17L1 13L7 13L4.00006 17Z' fill='%23${
     color.split('#')[1]
@@ -14,102 +12,68 @@ const svg = color =>
     color.split('#')[1]
   }'/%3E%3C/svg%3E%0A"`;
 
-export const SelectComponent = styled.select<{ icon?: boolean }>(props =>
+const SelectComponent = styled(Input).attrs({ as: 'select' })(
   css({
-    width: '100%',
-    height: 6,
-    paddingX: 2,
-    paddingLeft: props.icon ? 6 : 2,
-    fontSize: 3,
-    borderRadius: 'small',
-    backgroundColor: 'input.background',
-    border: '1px solid',
-    borderColor: 'input.border',
-    color: 'input.placeholderForeground',
     appearance: 'none',
-    backgroundImage: `url(${svg(
-      props.theme.colors.input.placeholderForeground
-    )})`,
+    color: 'input.placeholderForeground',
+
+    backgroundImage: theme =>
+      `url(${svg(theme.colors.input.placeholderForeground)})`,
     backgroundPosition: 'calc(100% - 8px) center',
     backgroundRepeat: 'no-repeat',
 
-    ':hover': {
+    ':hover, :focus': {
       color: 'input.foreground',
-      backgroundImage: `url(${svg(props.theme.colors.input.foreground)})`,
+      backgroundImage: theme => `url(${svg(theme.colors.input.foreground)})`,
     },
   })
 );
 
-const IconWrapper = styled(Element)(
+const SelectWithIcon = styled(Element)(
   css({
-    position: 'absolute',
-    left: 2,
-    top: '50%',
-    transform: 'translateY(-50%)',
-  })
-);
+    position: 'relative',
+    color: 'input.placeholderForeground',
 
-const WrapperWithIcon = styled(Element)(
-  css({
-    width: '100%',
-    ':hover svg path': {
-      fill: 'input.foreground',
+    select: {
+      paddingLeft: 6,
+    },
+    svg: {
+      position: 'absolute',
+      left: 2,
+      top: '50%',
+      transform: 'translateY(-50%)',
+    },
+
+    // hover anywhere on the component should make all elements change
+    ':hover, :focus-within': {
+      // the svg takes currentcolor
+      color: 'input.foreground',
+      select: {
+        color: 'input.foreground',
+        backgroundImage: theme => `url(${svg(theme.colors.input.foreground)})`,
+      },
     },
   })
 );
 
-interface ISelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  label?: string;
+interface ISelectProps {
   icon?: any;
+  placeholder?: string;
 }
 
-export const Select: React.FC<ISelectProps> = ({
-  label,
-  children,
-  icon,
-  ...props
-}) => {
-  const Wrapper = useCallback(
-    p =>
-      icon ? (
-        <WrapperWithIcon style={{ position: 'relative' }}>
-          {p.children}
-        </WrapperWithIcon>
-      ) : (
-        p.children
-      ),
-    [icon]
-  );
-
-  const id = useId(props.id);
+export const Select = ({ icon = null, placeholder = null, ...props }) => {
+  const PrefixIcon = icon || React.Fragment;
+  const SelectContainer = icon ? SelectWithIcon : React.Fragment;
 
   return (
     <>
-      {props.placeholder && !label ? (
-        <VisuallyHidden>
-          <label htmlFor={id}>{props.placeholder}</label>
-        </VisuallyHidden>
-      ) : null}
-      <Text
-        as="label"
-        size={2}
-        marginBottom={2}
-        htmlFor={id}
-        style={{ display: 'block' }}
-      >
-        {label}
-      </Text>
-      <Wrapper>
-        {icon ? <IconWrapper>{icon()}</IconWrapper> : null}
-        <SelectComponent icon={Boolean(icon)} id={id} {...props}>
-          {props.placeholder ? (
-            <option value="" selected>
-              {props.placeholder}
-            </option>
-          ) : null}
-          {children}
+      <SelectContainer>
+        <PrefixIcon />
+        <SelectComponent {...props}>
+          {placeholder ? <option value="">{placeholder}</option> : null}
+          {props.children}
         </SelectComponent>
-      </Wrapper>
+      </SelectContainer>
     </>
   );
 };

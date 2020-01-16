@@ -46,7 +46,7 @@ const SwitchContainer = styled(Element)(
 );
 
 interface ISwitchProps {
-  id: string;
+  id?: string;
   on?: boolean;
   defaultOn?: boolean;
   onChange?: (event: any) => void;
