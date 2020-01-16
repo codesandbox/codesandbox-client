@@ -10,6 +10,7 @@ import {
   Stack,
   Switch,
   Text,
+  Label,
   SidebarRow,
 } from '../index';
 
@@ -55,9 +56,7 @@ export const SandboxInfo = () => (
         </Stack>
         <List>
           <ListItem justify="space-between">
-            <Text as="label" htmlFor="frozen">
-              Frozen
-            </Text>
+            <Label htmlFor="frozen">Frozen</Label>
             <Switch id="frozen" />
           </ListItem>
           <ListItem justify="space-between">
