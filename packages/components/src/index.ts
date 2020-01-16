@@ -9,6 +9,7 @@ export * from './components/Input';
 export * from './components/Label';
 export * from './components/SearchInput';
 export * from './components/Select';
+export * from './components/Stats';
 export * from './components/Switch';
 export * from './components/Text';
 export * from './components/Textarea';

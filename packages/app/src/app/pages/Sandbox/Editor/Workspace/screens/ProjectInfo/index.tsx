@@ -9,6 +9,7 @@ import {
   ListItem,
   Button,
   Switch,
+  Stats,
 } from '@codesandbox/components/lib';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { useOvermind } from 'app/overmind';
@@ -16,7 +17,6 @@ import styled, { withTheme } from 'styled-components';
 
 import { Title } from './Title';
 import { Description } from './Description';
-import { Stats } from './Stats';
 import { Privacy } from './Privacy';
 
 const DeleteButton = styled(Button)`

@@ -10,6 +10,13 @@ import { useOvermind } from 'app/overmind';
 import { Textarea, SidebarRow, Text, FormField } from '@codesandbox/components';
 import { PenIcon } from './icons';
 
+const DescriptionTrimmed = styled(Text)`
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
 const Icon = styled(PenIcon)`
   cursor: pointer;
   display: none;
@@ -82,9 +89,9 @@ export const Description: FunctionComponent<Props> = ({ editable }) => {
     </FormField>
   ) : (
     <SandboxDescription gap={4} empty={Boolean(description)}>
-      <Text>
+      <DescriptionTrimmed>
         {description || (editable ? 'No description, create one!' : '')}
-      </Text>
+      </DescriptionTrimmed>
       {editable && <Icon onClick={() => setEditing(true)} />}
     </SandboxDescription>
   );
