@@ -89,7 +89,7 @@ export const ProjectInfoComponent = ({ theme }) => {
             marginBottom={4}
             style={{ padding: `0 ${theme.space[3]}` }}
           >
-            <Avatar user={author} /> <Text>{author.username}</Text>
+            <Avatar user={author} /> <Text>{author.username || 'Anon'}</Text>
           </Stack>
           <Stats sandbox={currentSandbox} />
           <List>

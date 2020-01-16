@@ -23,10 +23,8 @@ import { GitHub } from './items/GitHub';
 import { Live } from './items/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
-import {
-  ProjectInfo,
-  ProjectInfo as ProjectInfoNew,
-} from './screens/ProjectInfo';
+import { ProjectInfo } from './items/ProjectInfo';
+import { ProjectInfo as ProjectInfoNew } from './screens/ProjectInfo';
 
 import { Server } from './items/Server';
 import { SSEDownNotice } from './SSEDownNotice';

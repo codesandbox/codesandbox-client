@@ -43,9 +43,10 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   })
 );
 
-export const Avatar = ({ user }: IAvatarProps) => (
-  <Element as="span" style={{ position: 'relative' }}>
-    <AvatarImage src={user.avatarUrl} alt={user.username} />
-    {user.subscriptionSince ? <Pro>Pro</Pro> : null}
-  </Element>
-);
+export const Avatar = ({ user }: IAvatarProps) =>
+  user && (
+    <Element as="span" style={{ position: 'relative' }}>
+      <AvatarImage src={user.avatarUrl} alt={user.username} />
+      {user.subscriptionSince ? <Pro>Pro</Pro> : null}
+    </Element>
+  );
