@@ -81,14 +81,16 @@ export const ProjectInfoComponent = ({ theme }) => {
             <Title editable />
             <Description editable />
           </Element>
-          <Stack
-            gap={2}
-            align="center"
-            marginBottom={4}
-            style={{ padding: `0 ${theme.space[3]}px` }}
-          >
-            <Avatar user={author} /> <Text>{author.username || 'Anon'}</Text>
-          </Stack>
+          {author ? (
+            <Stack
+              gap={2}
+              align="center"
+              marginBottom={4}
+              style={{ padding: `0 ${theme.space[3]}px` }}
+            >
+              <Avatar user={author} /> <Text>{author.username}</Text>
+            </Stack>
+          ) : null}
           <Stats sandbox={currentSandbox} />
           <List>
             <ListItem justify="space-between">
