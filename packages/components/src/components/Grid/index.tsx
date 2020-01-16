@@ -11,8 +11,8 @@ export const Grid = styled(Element)<{ columnGap?: number; rowGap?: number }>(
       display: 'grid',
       gridTemplateColumns: 'repeat(12, 1fr)', // always 12 columns
       gridColumnGap:
-        (typeof columnGap !== 'undefined' ? columnGap : lineHeight * 2) + 'rem',
-      gridRowGap: (typeof rowGap !== 'undefined' ? rowGap : lineHeight) + 'rem',
+        typeof columnGap !== 'undefined' ? columnGap : lineHeight * 2 + 'rem',
+      gridRowGap: typeof rowGap !== 'undefined' ? rowGap : lineHeight + 'rem',
     })
 );
 
