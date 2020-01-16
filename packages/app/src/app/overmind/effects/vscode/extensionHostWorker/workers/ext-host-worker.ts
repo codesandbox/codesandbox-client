@@ -17,6 +17,7 @@ const ctx: any = self;
 
 self.addEventListener('message', async e => {
   const { data } = e;
+
   if (data.$type === 'worker-manager') {
     if (data.$event === 'init') {
       debug('Initializing BrowserFS');

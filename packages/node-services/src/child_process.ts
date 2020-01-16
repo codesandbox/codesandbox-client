@@ -240,6 +240,10 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
         $data: data,
       };
 
+      if (data.$data) {
+        // console.log('IN', JSON.stringify(JSON.parse(data.$data), null, 2));
+      }
+
       forkHandler.postMessage(newData);
     }
   }) as EventListener);
@@ -257,6 +261,28 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
         $sang: true,
         $data: data,
       };
+
+      if (data.$data && data.$data) {
+        /*
+        try {
+          const output =
+            typeof data.$data === 'string'
+              ? data.$data
+              : new TextDecoder('utf-8').decode(data.$data) || '';
+          const json = output.split('\n').find(line => line[0] === '{');
+          console.log('OUT', JSON.stringify(JSON.parse(json || '{}'), null, 2));
+        } catch (error) {
+          try {
+            console.log(
+              'OUT NO CONTENT LENGTH',
+              JSON.stringify(JSON.parse(data.$data), null, 2)
+            );
+          } catch (error) {
+            console.log('OUT ERROR', data.$data);
+          }
+        }
+        */
+      }
 
       commonPostMessage(newData);
     }

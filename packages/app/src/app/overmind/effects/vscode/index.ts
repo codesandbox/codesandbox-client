@@ -142,11 +142,7 @@ export class VSCodeEffect {
       'worker-loader?publicPath=/&name=container-ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/container-ext-host'
     ).then(ExtHostWorkerLoader => {
       this.containerExtensionHost = ExtHostWorkerLoader.default;
-      childProcess.addDefaultForkHandler(this.containerExtensionHost);
     });
-
-    // It will only load the editor once. We should probably call this
-    const container = this.elements.editor;
 
     this.initialized = this.initializeFileSystem().then(() => {
       // We want to initialize before VSCode, but after browserFS is configured
@@ -160,12 +156,7 @@ export class VSCodeEffect {
         localStorage.getItem('settings.vimmode') === 'true'
       );
 
-      return Promise.all([
-        new FontFaceObserver('dm').load(),
-        new Promise(resolve => {
-          loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
-        }),
-      ]).then(() => this.loadEditor(window.monaco, container));
+      return new FontFaceObserver('dm').load();
     });
 
     options.reaction(
@@ -318,11 +309,24 @@ export class VSCodeEffect {
 
     const isFirstLoad = !this.modelsHandler;
 
-    if (this.modelsHandler) {
-      this.modelsHandler.dispose();
+    const { isServer } = getTemplate(sandbox.template);
+
+    if (isServer) {
+      childProcess.addDefaultForkHandler(this.createContainerForkHandler());
+    } else {
+      childProcess.addDefaultForkHandler(this.clientExtensionHost);
     }
 
-    if (this.sandboxFsSync) {
+    if (isFirstLoad) {
+      const container = this.elements.editor;
+
+      await new Promise(resolve => {
+        loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
+      }).then(() => this.loadEditor(window.monaco, container));
+    }
+
+    if (!isFirstLoad) {
+      this.modelsHandler.dispose();
       this.sandboxFsSync.dispose();
     }
 
@@ -336,14 +340,6 @@ export class VSCodeEffect {
     this.sandboxFsSync = new SandboxFsSync(this.options);
 
     setFs(this.sandboxFsSync.create(sandbox));
-
-    const { isServer } = getTemplate(sandbox.template);
-
-    if (isServer) {
-      // childProcess.addDefaultForkHandler(this.containerExtensionHost);
-    } else {
-      childProcess.addDefaultForkHandler(this.clientExtensionHost);
-    }
 
     if (isFirstLoad) {
       this.sandboxFsSync.sync(() => {});
@@ -405,7 +401,7 @@ export class VSCodeEffect {
     });
   }
 
-  setErrors = (errors: ModuleError[]) => {
+  public setErrors = (errors: ModuleError[]) => {
     const activeEditor = this.editorApi.getActiveCodeEditor();
 
     if (activeEditor) {
@@ -446,7 +442,7 @@ export class VSCodeEffect {
     }
   };
 
-  setCorrections = (corrections: ModuleCorrection[]) => {
+  public setCorrections = (corrections: ModuleCorrection[]) => {
     const activeEditor = this.editorApi.getActiveCodeEditor();
     if (activeEditor) {
       if (corrections.length > 0) {
@@ -487,6 +483,26 @@ export class VSCodeEffect {
       }
     }
   };
+
+  // Communicates the endpoint for the WebsocketLSP
+  private createContainerForkHandler() {
+    return () => {
+      const host = this.containerExtensionHost();
+      host.addEventListener('message', event => {
+        if (event.data.$type === 'request_lsp_endpoint') {
+          event.target.postMessage({
+            $type: 'respond_lsp_endpoint',
+            $data: `wss://${
+              this.options.getCurrentSandbox().id
+            }.sse.codesandbox.${
+              process.env.STAGING_API ? 'stream' : 'io'
+            }/lsp/`,
+          });
+        }
+      });
+      return host;
+    };
+  }
 
   private async disableExtension(id: string) {
     const extensionService = await this.extensionService.promise;
