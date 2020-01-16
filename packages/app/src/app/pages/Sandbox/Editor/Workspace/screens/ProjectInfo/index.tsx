@@ -8,16 +8,16 @@ import {
   List,
   ListItem,
   Button,
-  Select,
   Switch,
 } from '@codesandbox/components/lib';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { useOvermind } from 'app/overmind';
 import styled, { withTheme } from 'styled-components';
-import { GlobeIcon } from './icons';
+
 import { Title } from './Title';
 import { Description } from './Description';
 import { Stats } from './Stats';
+import { Privacy } from './Privacy';
 
 const DeleteButton = styled(Button)`
   &:hover,
@@ -33,11 +33,10 @@ export const ProjectInfoComponent = ({ theme }) => {
     actions: {
       modalOpened,
       editor: { frozenUpdated, sessionFreezeOverride },
-      workspace: { sandboxPrivacyChanged, deleteTemplate },
+      workspace: { deleteTemplate },
     },
     state: {
       editor: { currentSandbox, sessionFrozen },
-      isPatron,
     },
   } = useOvermind();
   const {
@@ -47,7 +46,6 @@ export const ProjectInfoComponent = ({ theme }) => {
     template,
     forkedFromSandbox,
     forkedTemplateSandbox,
-    privacy,
   } = currentSandbox;
 
   useEffect(() => {
@@ -99,7 +97,7 @@ export const ProjectInfoComponent = ({ theme }) => {
               </Text>
               <Switch
                 id="frozen"
-                onClick={updateFrozenState}
+                onChange={updateFrozenState}
                 on={customTemplate ? sessionFrozen : isFrozen}
               />
             </ListItem>
@@ -116,40 +114,7 @@ export const ProjectInfoComponent = ({ theme }) => {
           </List>
         </Stack>
       </Collapsible>
-      <Collapsible title="Privacy" defaultOpen>
-        <Stack
-          direction="vertical"
-          gap={4}
-          style={{ padding: `0 ${theme.space[3]}px` }}
-        >
-          <Select
-            disabled={!isPatron}
-            icon={GlobeIcon}
-            onChange={({ target: { value } }) =>
-              sandboxPrivacyChanged({
-                privacy: Number(value) as 0 | 1 | 2,
-                source: 'sidebar',
-              })
-            }
-            value={privacy}
-          >
-            <option value={0}>Public</option>
-
-            {isPatron && (
-              <option value={1}>Unlisted (only available by url)</option>
-            )}
-
-            {isPatron && <option value={2}>Private</option>}
-          </Select>
-          {!isPatron ? (
-            <Text variant="muted" size={2}>
-              You an change privacy of a sandbox as a Pro.
-              <br />
-              Become a Pro.
-            </Text>
-          ) : null}
-        </Stack>
-      </Collapsible>
+      <Privacy />
 
       <Element marginX={2} marginY={4}>
         <Button variant="secondary">Save as template</Button>

@@ -14,6 +14,7 @@ interface IFormFieldProps {
   // for this purpose, we visually hide the label but still  keep in the
   // elements tree.
   hideLabel?: boolean;
+  noPadding?: boolean;
   direction?: 'horizontal' | 'vertical';
 }
 
@@ -22,6 +23,7 @@ export const FormField: React.FC<IFormFieldProps> = ({
   id,
   hideLabel = false,
   direction = 'horizontal',
+  noPadding,
   ...props
 }) => {
   const inputId = useId(id);
@@ -40,7 +42,7 @@ export const FormField: React.FC<IFormFieldProps> = ({
           direction="horizontal"
           justify="space-between"
           align="center"
-          css={{ height: 8, paddingX: 2 }}
+          css={{ height: 8, paddingX: noPadding ? 0 : 2 }}
           {...props}
         >
           <LabelWrapper>
@@ -57,7 +59,7 @@ export const FormField: React.FC<IFormFieldProps> = ({
   return (
     <Element
       css={{
-        paddingX: 2,
+        paddingX: noPadding ? 0 : 2,
       }}
       {...props}
     >

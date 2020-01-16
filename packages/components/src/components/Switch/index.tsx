@@ -50,7 +50,6 @@ interface ISwitchProps {
   on?: boolean;
   defaultOn?: boolean;
   onChange?: (event: any) => void;
-  onClick?: (event: any) => void;
 }
 
 export const Switch: React.FC<ISwitchProps> = ({ on, defaultOn, ...props }) => (

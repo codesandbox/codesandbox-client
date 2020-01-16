@@ -6,9 +6,7 @@ import React, {
   useState,
 } from 'react';
 import styled from 'styled-components';
-
 import { useOvermind } from 'app/overmind';
-
 import { Textarea, SidebarRow, Text, FormField } from '@codesandbox/components';
 import { PenIcon } from './icons';
 
@@ -46,36 +44,38 @@ export const Description: FunctionComponent<Props> = ({ editable }) => {
 
   const [editing, setEditing] = useState(false);
 
-  const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.keyCode === ENTER && !event.shiftKey) {
-      event.preventDefault();
-      event.stopPropagation();
-
+  const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.keyCode === ENTER && !e.shiftKey) {
+      e.preventDefault();
+      e.stopPropagation();
       sandboxInfoUpdated();
-
       setEditing(false);
     }
   };
 
+  const onChange = ({
+    target: { value },
+  }: ChangeEvent<HTMLTextAreaElement>) => {
+    valueChanged({ field: 'description', value });
+  };
+
   return editing ? (
-    <FormField label="Sandbox Description" hideLabel>
+    <FormField
+      noPadding
+      direction="vertical"
+      label="Sandbox Description"
+      hideLabel
+    >
       <Textarea
         onBlur={() => {
           sandboxInfoUpdated();
-
           setEditing(false);
         }}
-        onChange={({ target: { value } }: ChangeEvent<HTMLTextAreaElement>) => {
-          valueChanged({ field: 'description', value });
-        }}
+        onChange={onChange}
         onKeyDown={onKeyDown}
         placeholder="Description"
         maxLength={280}
-        ref={el => {
-          if (el) {
-            el.focus();
-          }
-        }}
+        ref={el => el && el.focus()}
         rows={2}
         value={description}
       />
