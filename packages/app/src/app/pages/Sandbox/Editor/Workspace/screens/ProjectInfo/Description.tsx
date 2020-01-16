@@ -19,6 +19,8 @@ const Icon = styled(PenIcon)`
 
 const Name = styled(Stack)<{ empty: boolean }>`
   font-style: ${props => (props.empty ? 'normal' : 'italic')};
+  flex-wrap: wrap;
+  word-break: break-all;
   :hover {
     svg {
       display: block;

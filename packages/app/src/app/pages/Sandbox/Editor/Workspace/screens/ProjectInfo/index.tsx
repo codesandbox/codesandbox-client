@@ -13,9 +13,18 @@ import {
 } from '@codesandbox/components/lib';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { useOvermind } from 'app/overmind';
+import styled from 'styled-components';
 import { GlobeIcon } from './icons';
 import { Title } from './Title';
 import { Description } from './Description';
+import { Stats } from './Stats';
+
+const DeleteButton = styled(Button)`
+  &:hover,
+  &:focus {
+    color: ${props => props.theme.colors.dangerButton.background};
+  }
+`;
 
 const Link = props => <Text variant="muted" {...props} />;
 
@@ -74,9 +83,15 @@ export const ProjectInfo = () => {
             <Title editable />
             <Description editable />
           </Element>
-          <Stack gap={2} align="center" style={{ padding: '0 8px' }}>
+          <Stack
+            gap={2}
+            align="center"
+            marginBottom={4}
+            style={{ padding: '0 8px' }}
+          >
             <Avatar user={author} /> <Text>{author.username}</Text>
           </Stack>
+          <Stats sandbox={currentSandbox} />
           <List>
             <ListItem justify="space-between">
               <Text as="label" htmlFor="frozen">
@@ -138,16 +153,15 @@ export const ProjectInfo = () => {
 
       <Stack
         justify="center"
-        css={{ position: 'absolute', width: '100%', bottom: 8 }}
+        style={{ position: 'absolute', width: '100%', bottom: 8 }}
       >
-        <Button
+        <DeleteButton
           // @ts-ignore
           onClick={onDelete}
           variant="link"
-          css={{ ':hover, :focus': { color: 'dangerButton.background' } }}
         >
           {`Delete ${customTemplate ? `Template` : `Sandbox`}`}
-        </Button>
+        </DeleteButton>
       </Stack>
     </>
   );
