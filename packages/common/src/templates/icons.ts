@@ -6,7 +6,7 @@ import {
   ReasonIcon,
   EmberIcon,
   PreactIcon,
-  RaxIcon,
+  // RaxIcon,
   VueIcon,
   SvelteIcon,
   DojoIcon,
@@ -70,8 +70,8 @@ export default function getIcon(theme: TemplateType) {
       return VueIcon;
     case preact.name:
       return PreactIcon;
-    case rax.name:
-      return RaxIcon;  
+    // case rax.name:
+    //   return RaxIcon;  
     case reactTs.name:
       return ReactIcon;
     case svelte.name:
