@@ -34,7 +34,7 @@ import {
   ember,
   vue,
   preact,
-  rax,
+  // rax,
   reactTs,
   svelte,
   angular,
