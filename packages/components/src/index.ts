@@ -6,6 +6,7 @@ export * from './components/ThemeProvider';
 export * from './components/Avatar';
 export * from './components/Button';
 export * from './components/Input';
+export * from './components/Label';
 export * from './components/SearchInput';
 export * from './components/Select';
 export * from './components/Switch';
@@ -19,3 +20,4 @@ export * from './components/List';
 // layout
 export * from './components/Grid';
 export * from './components/Stack';
+export * from './components/SidebarRow';
