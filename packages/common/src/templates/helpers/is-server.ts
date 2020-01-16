@@ -13,6 +13,7 @@ const SERVER_TEMPLATE_NAMES = [
   'node',
   'nuxt',
   'quasar-framework',
+  'rax-cli',
   'sapper',
   'styleguidist',
   'unibit',
