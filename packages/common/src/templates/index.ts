@@ -67,7 +67,7 @@ export type TemplateType =
   | 'create-react-app'
   | 'vue-cli'
   | 'preact-cli'
-  | 'rax-cli'
+  | 'rax'
   | 'svelte'
   | 'create-react-app-typescript'
   | 'angular-cli'
@@ -105,7 +105,7 @@ export default function getDefinition(theme?: TemplateType) {
     case preact.name:
       return preact;
     case rax.name:
-      return rax;  
+      return rax;
     case reactTs.name:
       return reactTs;
     case svelte.name:
