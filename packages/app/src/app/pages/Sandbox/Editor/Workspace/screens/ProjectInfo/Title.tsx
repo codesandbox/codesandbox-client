@@ -4,7 +4,12 @@ import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { Text, Input, Stack } from '@codesandbox/components/lib';
+import {
+  Text,
+  Input,
+  SidebarRow,
+  FormField,
+} from '@codesandbox/components/lib';
 import styled from 'styled-components';
 import { PenIcon } from './icons';
 
@@ -13,7 +18,7 @@ const Icon = styled(PenIcon)`
   display: none;
 `;
 
-const Name = styled(Stack)`
+const SandboxNameWrapper = styled(SidebarRow)`
   :hover {
     svg {
       display: block;
@@ -64,7 +69,7 @@ export const Title = ({ editable }) => {
   };
 
   return editing ? (
-    <Stack>
+    <FormField label="Sandbox Name" hideLabel>
       <Input
         onBlur={onBlur}
         onChange={onChange}
@@ -76,11 +81,11 @@ export const Title = ({ editable }) => {
         // @ts-ignore
         value={title}
       />
-    </Stack>
+    </FormField>
   ) : (
-    <Name marginBottom={2} gap={4}>
+    <SandboxNameWrapper gap={4}>
       <Text>{getSandboxName(currentSandbox)}</Text>
       {editable && <Icon onClick={edit} />}
-    </Name>
+    </SandboxNameWrapper>
   );
 };

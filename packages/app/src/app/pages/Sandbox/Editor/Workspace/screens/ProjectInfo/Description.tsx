@@ -9,7 +9,7 @@ import styled from 'styled-components';
 
 import { useOvermind } from 'app/overmind';
 
-import { Textarea, Stack } from '@codesandbox/components';
+import { Textarea, SidebarRow, Text, FormField } from '@codesandbox/components';
 import { PenIcon } from './icons';
 
 const Icon = styled(PenIcon)`
@@ -17,7 +17,7 @@ const Icon = styled(PenIcon)`
   display: none;
 `;
 
-const Name = styled(Stack)<{ empty: boolean }>`
+const SandboxDescription = styled(SidebarRow)<{ empty: boolean }>`
   font-style: ${props => (props.empty ? 'normal' : 'italic')};
   flex-wrap: wrap;
   word-break: break-all;
@@ -58,31 +58,34 @@ export const Description: FunctionComponent<Props> = ({ editable }) => {
   };
 
   return editing ? (
-    <Textarea
-      onBlur={() => {
-        sandboxInfoUpdated();
+    <FormField label="Sandbox Description" hideLabel>
+      <Textarea
+        onBlur={() => {
+          sandboxInfoUpdated();
 
-        setEditing(false);
-      }}
-      onChange={({ target: { value } }: ChangeEvent<HTMLTextAreaElement>) => {
-        valueChanged({ field: 'description', value });
-      }}
-      onKeyDown={onKeyDown}
-      placeholder="Description"
-      maxLength={280}
-      ref={el => {
-        if (el) {
-          el.focus();
-        }
-      }}
-      rows={2}
-      value={description}
-    />
+          setEditing(false);
+        }}
+        onChange={({ target: { value } }: ChangeEvent<HTMLTextAreaElement>) => {
+          valueChanged({ field: 'description', value });
+        }}
+        onKeyDown={onKeyDown}
+        placeholder="Description"
+        maxLength={280}
+        ref={el => {
+          if (el) {
+            el.focus();
+          }
+        }}
+        rows={2}
+        value={description}
+      />
+    </FormField>
   ) : (
-    <Name gap={4} empty={Boolean(description)}>
-      {description || (editable ? 'No description, create one!' : '')}
-
+    <SandboxDescription gap={4} empty={Boolean(description)}>
+      <Text>
+        {description || (editable ? 'No description, create one!' : '')}
+      </Text>
       {editable && <Icon onClick={() => setEditing(true)} />}
-    </Name>
+    </SandboxDescription>
   );
 };

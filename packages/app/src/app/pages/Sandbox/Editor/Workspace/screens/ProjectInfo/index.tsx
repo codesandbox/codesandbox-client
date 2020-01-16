@@ -79,7 +79,7 @@ export const ProjectInfoComponent = ({ theme }) => {
     <>
       <Collapsible title="Sandbox Info" defaultOpen>
         <Stack direction="vertical" gap={6}>
-          <Element style={{ padding: `0 ${theme.space[3]}` }}>
+          <Element style={{ padding: `0 ${theme.space[3]}px` }}>
             <Title editable />
             <Description editable />
           </Element>
@@ -87,7 +87,7 @@ export const ProjectInfoComponent = ({ theme }) => {
             gap={2}
             align="center"
             marginBottom={4}
-            style={{ padding: `0 ${theme.space[3]}` }}
+            style={{ padding: `0 ${theme.space[3]}px` }}
           >
             <Avatar user={author} /> <Text>{author.username || 'Anon'}</Text>
           </Stack>
@@ -120,7 +120,7 @@ export const ProjectInfoComponent = ({ theme }) => {
         <Stack
           direction="vertical"
           gap={4}
-          style={{ padding: `0 ${theme.space[3]}` }}
+          style={{ padding: `0 ${theme.space[3]}px` }}
         >
           <Select
             disabled={!isPatron}
