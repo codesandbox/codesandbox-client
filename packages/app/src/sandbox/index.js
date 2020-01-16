@@ -8,12 +8,7 @@ import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
-import setupConsole from 'sandbox-hooks/console';
-import setupHistoryListeners from 'sandbox-hooks/url-listeners';
-import {
-  listenForPreviewSecret,
-  getPreviewSecret,
-} from 'sandbox-hooks/preview-secret';
+import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
@@ -65,10 +60,6 @@ requirePolyfills().then(() => {
     sendReady();
 
     if (!window.opener) {
-      // Means we're in the editor
-      setupHistoryListeners();
-      setupConsole();
-      listenForPreviewSecret();
       window.addEventListener('message', ({ data }) => {
         switch (data.type) {
           case 'activate':
