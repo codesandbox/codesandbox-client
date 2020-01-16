@@ -494,9 +494,9 @@ export class VSCodeEffect {
             $type: 'respond_lsp_endpoint',
             $data: `wss://${
               this.options.getCurrentSandbox().id
-            }.sse.codesandbox.${
+            }-lsp.sse.codesandbox.${
               process.env.STAGING_API ? 'stream' : 'io'
-            }/lsp/`,
+            }/`,
           });
         }
       });
