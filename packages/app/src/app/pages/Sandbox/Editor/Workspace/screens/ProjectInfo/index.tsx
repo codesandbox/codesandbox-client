@@ -10,7 +10,7 @@ import {
   Button,
   Switch,
   Stats,
-} from '@codesandbox/components/lib';
+} from '@codesandbox/components';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { useOvermind } from 'app/overmind';
 import styled, { withTheme } from 'styled-components';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { withTheme } from 'styled-components';
-import { Collapsible, Text, Stack, Select } from '@codesandbox/components/lib';
+import { Collapsible, Text, Stack, Select } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { GlobeIcon } from './icons';
 

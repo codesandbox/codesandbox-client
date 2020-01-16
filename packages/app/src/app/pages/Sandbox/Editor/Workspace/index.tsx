@@ -4,7 +4,7 @@ import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, { getDisabledItems } from 'app/overmind/utils/items';
 import React from 'react';
 import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
-import { ThemeProvider } from '@codesandbox/components/lib/';
+import { ThemeProvider } from '@codesandbox/components';
 import { withTheme } from 'styled-components';
 import { Advertisement } from './Advertisement';
 import { Chat } from './Chat';

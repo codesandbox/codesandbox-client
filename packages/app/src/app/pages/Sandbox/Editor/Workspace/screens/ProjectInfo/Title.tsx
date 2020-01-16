@@ -4,12 +4,7 @@ import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import {
-  Text,
-  Input,
-  SidebarRow,
-  FormField,
-} from '@codesandbox/components/lib';
+import { Text, Input, SidebarRow, FormField } from '@codesandbox/components';
 import styled from 'styled-components';
 import { PenIcon } from './icons';
 

@@ -6,7 +6,7 @@ import {
   Button,
   Stack,
   Grid as BaseGrid,
-} from '@codesandbox/components/lib/';
+} from '@codesandbox/components';
 import getDefinition from '@codesandbox/common/lib/templates';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 
