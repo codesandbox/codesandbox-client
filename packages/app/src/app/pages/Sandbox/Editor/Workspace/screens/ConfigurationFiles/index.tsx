@@ -85,7 +85,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
           style={{ padding: `0 ${theme.space[3]}px` }}
         >
           <Element>
-            <Text as="div" marginBottom={2}>
+            <Text block marginBottom={2}>
               Configuration your Sandbox
             </Text>
             <Text variant="muted">

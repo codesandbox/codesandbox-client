@@ -13,7 +13,7 @@ import {
 } from '@codesandbox/components/lib';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { useOvermind } from 'app/overmind';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 import { GlobeIcon } from './icons';
 import { Title } from './Title';
 import { Description } from './Description';
@@ -28,7 +28,7 @@ const DeleteButton = styled(Button)`
 
 const Link = props => <Text variant="muted" {...props} />;
 
-export const ProjectInfo = () => {
+export const ProjectInfoComponent = ({ theme }) => {
   const {
     actions: {
       modalOpened,
@@ -79,7 +79,7 @@ export const ProjectInfo = () => {
     <>
       <Collapsible title="Sandbox Info" defaultOpen>
         <Stack direction="vertical" gap={6}>
-          <Element style={{ padding: '0 8px' }}>
+          <Element style={{ padding: `0 ${theme.space[3]}` }}>
             <Title editable />
             <Description editable />
           </Element>
@@ -87,7 +87,7 @@ export const ProjectInfo = () => {
             gap={2}
             align="center"
             marginBottom={4}
-            style={{ padding: '0 8px' }}
+            style={{ padding: `0 ${theme.space[3]}` }}
           >
             <Avatar user={author} /> <Text>{author.username}</Text>
           </Stack>
@@ -117,7 +117,11 @@ export const ProjectInfo = () => {
         </Stack>
       </Collapsible>
       <Collapsible title="Privacy" defaultOpen>
-        <Stack direction="vertical" gap={4} style={{ padding: '0 8px' }}>
+        <Stack
+          direction="vertical"
+          gap={4}
+          style={{ padding: `0 ${theme.space[3]}` }}
+        >
           <Select
             disabled={!isPatron}
             icon={GlobeIcon}
@@ -153,7 +157,7 @@ export const ProjectInfo = () => {
 
       <Stack
         justify="center"
-        style={{ position: 'absolute', width: '100%', bottom: 8 }}
+        style={{ position: 'absolute', width: '100%', bottom: theme.space[3] }}
       >
         <DeleteButton
           // @ts-ignore
@@ -166,3 +170,5 @@ export const ProjectInfo = () => {
     </>
   );
 };
+
+export const ProjectInfo = withTheme(ProjectInfoComponent);
