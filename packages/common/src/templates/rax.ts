@@ -15,7 +15,7 @@ export default new RaxTemplate(
   'rax-cli',
   'Rax',
   'https://github.com/raxjs/rax-scripts/tree/master/packages/rax-cli',
-  'rax',
+  'github/raxjs/rax-codesandbox-template',
   decorateSelector(() => '#FFB006'),
   {
     showOnHomePage: true,
