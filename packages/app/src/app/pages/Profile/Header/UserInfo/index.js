@@ -12,7 +12,7 @@ function UserInfo({ user }) {
         username={user.username}
         name={user.name}
         avatarUrl={user.avatarUrl}
-        subscriptionSince={user.subscription && user.subscription.since}
+        subscriptionSince={user.subscriptionSince}
       />
       <Stats
         likeCount={user.receivedLikeCount}

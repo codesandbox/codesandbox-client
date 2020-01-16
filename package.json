@@ -50,6 +50,7 @@
     "start:dev_api": "concurrently --raw \"cd packages/app && yarn start:dev_api\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
     "start:fast": "concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:fast:stream": "cross-env STAGING_API=1 concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:home": "yarn build:deps && yarn start:home:fast",
     "start:home:fast": "cd packages/homepage && yarn start",
     "start:overmind": "yarn build:deps && concurrently \"lerna run start --scope app --stream\" \"overmind-devtools\"",
@@ -89,7 +90,7 @@
     "lint-staged": "^9.2.5",
     "prettier": "1.19.1",
     "pretty-quick": "^2.0.1",
-    "typescript": "3.7.2",
+    "typescript": "3.7.4",
     "username": "^5.1.0"
   },
   "husky": {

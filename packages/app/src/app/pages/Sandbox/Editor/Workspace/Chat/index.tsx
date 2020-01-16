@@ -24,7 +24,7 @@ const Messages = styled.div`
 
 export const Chat: React.FC = () => {
   const [value, setValue] = useState('');
-  const [height, setHeight] = useState('');
+  const [height, setHeight] = useState<number>(null);
   const { state, actions } = useOvermind();
   const messagesRef = useRef(null);
   const scrollDown = () => {
@@ -34,7 +34,7 @@ export const Chat: React.FC = () => {
   };
   useEffect(scrollDown);
 
-  const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.keyCode === ENTER && !e.shiftKey) {
       e.preventDefault();
       e.stopPropagation();
@@ -47,7 +47,9 @@ export const Chat: React.FC = () => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setValue(e.target.value);
   };
 
@@ -112,7 +114,6 @@ export const Chat: React.FC = () => {
       <AutosizeTextArea
         useCacheForDOMMeasurements
         value={value}
-        // @ts-ignore
         onChange={handleChange}
         placeholder="Send a message..."
         style={{
@@ -120,9 +121,7 @@ export const Chat: React.FC = () => {
           minHeight: height,
           marginTop: '0.5rem',
         }}
-        // @ts-ignore
         onKeyDown={handleKeyDown}
-        // @ts-ignore
         onHeightChange={setHeight}
       />
     </Container>

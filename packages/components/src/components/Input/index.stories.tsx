@@ -8,15 +8,7 @@ export default {
 };
 
 // replace the text inside with Text variants when available
-export const Basic = () => <Input />;
-export const Placeholder = () => <Input placeholder="Your name" />;
-export const Label = () => (
-  <Input label="Your full name" placeholder="John Doe" />
-);
+export const Placeholder = () => <Input placeholder="Your name" marginX={4} />;
 export const onChange = () => (
-  <Input
-    label="Your full name"
-    placeholder="John Doe"
-    onChange={action('input change')}
-  />
+  <Input placeholder="John Doe" onChange={action('input change')} />
 );

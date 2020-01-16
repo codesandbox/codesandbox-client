@@ -17,9 +17,9 @@ export const Text = styled(Element).attrs({ as: 'span' })<{
 }>(({ size, align, weight, block, variant = 'body', ...props }) =>
   css({
     fontSize: size || 'inherit', // from theme.fontSizes
+    textAlign: align || 'left',
     fontWeight: weight || null, // from theme.fontWeights
     display: block ? 'block' : 'inline',
     color: variants[variant],
-    textAlign: align || 'left',
   })
 );

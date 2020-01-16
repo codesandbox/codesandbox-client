@@ -1,17 +1,13 @@
-import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import VisuallyHidden from '@reach/visually-hidden';
-import { useId } from '@reach/auto-id';
 import { Element } from '../Element';
-import { Text } from '../Text';
 
 const placeholderStyles = {
   color: 'input.placeholderForeground',
   fontSize: 3,
 };
 
-export const InputComponent = styled(Element).attrs({ as: 'input' })(
+export const Input = styled(Element).attrs({ as: 'input' })(
   css({
     height: 6,
     width: '100%',
@@ -27,34 +23,3 @@ export const InputComponent = styled(Element).attrs({ as: 'input' })(
     '::placeholder': placeholderStyles,
   })
 );
-
-interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-}
-
-export const Input: React.FC<IInputProps> = ({
-  type = 'text',
-  label,
-  ...props
-}) => {
-  const id = useId(props.id);
-  return (
-    <>
-      {props.placeholder && !label ? (
-        <VisuallyHidden>
-          <label htmlFor={id}>{props.placeholder}</label>
-        </VisuallyHidden>
-      ) : null}
-      <Text
-        as="label"
-        size={2}
-        marginBottom={2}
-        htmlFor={id}
-        style={{ display: 'block' }}
-      >
-        {label}
-      </Text>
-      <InputComponent id={id} {...props} />
-    </>
-  );
-};

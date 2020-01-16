@@ -44,22 +44,22 @@ export const DevAuthPage = () => {
       });
   };
 
+  const baseSignInDomain = process.env.STAGING_API
+    ? 'https://codesandbox.stream'
+    : 'https://codesandbox.io';
+  const cliLoginUrl = `${baseSignInDomain}/cli/login`;
   return (
     <Container>
       <Title>Developer Sign In</Title>
       <SubTitle style={{ width: 800 }}>
         Please enter the token you get from{' '}
         <a
-          href="https://codesandbox.io/cli/login"
+          href={cliLoginUrl}
           target="popup"
           rel="noreferrer noopener"
           onClick={e => {
             e.preventDefault();
-            window.open(
-              'https://codesandbox.io/cli/login',
-              'popup',
-              'width=600,height=600'
-            );
+            window.open(cliLoginUrl, 'popup', 'width=600,height=600');
             return false;
           }}
         >

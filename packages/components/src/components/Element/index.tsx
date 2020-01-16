@@ -1,14 +1,16 @@
 import styled from 'styled-components';
 import css from '@styled-system/css';
 
-export const Element = styled.div<{
+export interface IElementProps {
   margin?: number;
   marginX?: number;
   marginY?: number;
   marginBottom?: number;
   marginTop?: number; // prefer margin bottom to top
   css?: Object;
-}>(props =>
+}
+
+export const Element = styled.div<IElementProps>(props =>
   css({
     margin: props.margin || null,
     marginX: props.marginX || null,
