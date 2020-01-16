@@ -495,7 +495,8 @@ export class VSCodeEffect {
             $data: `wss://${
               this.options.getCurrentSandbox().id
             }-lsp.sse.codesandbox.${
-              process.env.STAGING_API || process.env.STAGING ? 'stream' : 'io'
+              'stream'
+              // process.env.STAGING_API || process.env.STAGING ? 'stream' : 'io'
             }/`,
           });
         }
