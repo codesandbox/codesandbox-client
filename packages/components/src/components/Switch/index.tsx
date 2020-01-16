@@ -52,28 +52,16 @@ interface ISwitchProps {
   onChange?: (event: any) => void;
 }
 
-export const Switch: React.FC<ISwitchProps> = ({
-  id,
-  on,
-  defaultOn,
-  ...props
-}) => {
-  if (!id) {
-    console.warn('Please pass a id corresponding to the htmlFor of its label');
-  }
-
-  return (
-    <SwitchContainer as="label">
-      <SwitchInput
-        type="checkbox"
-        id={id}
-        checked={on}
-        defaultChecked={defaultOn}
-        {...props}
-      />
-      <SwitchBackground data-component="SwitchBackground">
-        <SwitchToggle data-component="SwitchToggle" />
-      </SwitchBackground>
-    </SwitchContainer>
-  );
-};
+export const Switch: React.FC<ISwitchProps> = ({ on, defaultOn, ...props }) => (
+  <SwitchContainer as="label">
+    <SwitchInput
+      type="checkbox"
+      checked={on}
+      defaultChecked={defaultOn}
+      {...props}
+    />
+    <SwitchBackground data-component="SwitchBackground">
+      <SwitchToggle data-component="SwitchToggle" />
+    </SwitchBackground>
+  </SwitchContainer>
+);

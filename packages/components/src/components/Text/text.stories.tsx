@@ -6,7 +6,6 @@ export default {
   component: Text,
 };
 
-// replace the text inside with Text variants when available
 export const Basic = () => <Text>Plan old boring text</Text>;
 
 export const Block = () => (

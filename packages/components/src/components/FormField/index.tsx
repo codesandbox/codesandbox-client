@@ -1,7 +1,7 @@
 import React from 'react';
 import VisuallyHidden from '@reach/visually-hidden';
 import { useId } from '@reach/auto-id';
-import { Element, Stack, Text } from '../../index';
+import { Element, Stack, Label } from '../../index';
 
 interface IFormFieldProps {
   id?: string;
@@ -44,9 +44,9 @@ export const FormField: React.FC<IFormFieldProps> = ({
           {...props}
         >
           <LabelWrapper>
-            <Text as="label" htmlFor={inputId} size={3}>
+            <Label htmlFor={inputId} size={3}>
               {label}
-            </Text>
+            </Label>
           </LabelWrapper>
           {InputElement}
         </Stack>
@@ -62,9 +62,9 @@ export const FormField: React.FC<IFormFieldProps> = ({
       {...props}
     >
       <LabelWrapper>
-        <Text as="label" htmlFor={inputId} size={3} block>
+        <Label htmlFor={inputId} size={3} block>
           {label}
-        </Text>
+        </Label>
       </LabelWrapper>
       <Stack direction="horizontal" align="center" css={{ minHeight: 8 }}>
         {props.children}
