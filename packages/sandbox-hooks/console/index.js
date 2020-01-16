@@ -4,7 +4,7 @@ import { Encode } from 'console-feed/lib/Transform';
 
 export default function setupConsole() {
   Hook(window.console, async log => {
-    await intializedPromise();
+    await intializedPromise;
     dispatch({
       type: 'console',
       log,
