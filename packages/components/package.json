@@ -9,6 +9,7 @@
   "files": [
     "lib"
   ],
+  "main": "lib/index",
   "source": true,
   "scripts": {
     "build": "yarn build:lib",
@@ -21,13 +22,18 @@
     "start": "(yarn tsc --watch & yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib --watch)",
     "start:storybook": "start-storybook",
     "typecheck": "tsc --noEmit",
-    "chromatic": "CHROMATIC_APP_CODE=nffds42ndde ./node_modules/.bin/chromatic --build-script-name=build:storybook",
+    "chromatic": "if-env CIRCLE_BRANCH=master && yarn chromatic:master || yarn chromatic:branch",
+    "chromatic:master": "CHROMATIC_APP_CODE=nffds42ndde ./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --auto-accept-changes",
+    "chromatic:branch": "CHROMATIC_APP_CODE=nffds42ndde ./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes",
     "publish": "np"
   },
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
     "@codesandbox/template-icons": "^1.1.0",
+    "@reach/auto-id": "^0.7.1",
+    "@reach/visually-hidden": "^0.7.0",
     "@styled-system/css": "^5.1.4",
+    "add": "^2.0.6",
     "codesandbox-api": "0.0.23",
     "color": "3.1.2",
     "date-fns": "^2.8.1",
@@ -35,7 +41,8 @@
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
     "styled-components": "^4.4.1",
-    "typeface-inter": "^3.11.2"
+    "typeface-inter": "^3.11.2",
+    "yarn": "^1.21.1"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^5.2.8",
@@ -43,13 +50,16 @@
     "@storybook/addon-knobs": "^5.2.8",
     "@storybook/addon-storysource": "^5.2.8",
     "@storybook/addon-viewport": "^5.2.8",
+    "@storybook/csf": "^0.0.1",
     "@storybook/react": "^5.2.8",
     "@types/color": "3.0.1",
     "@types/lodash": "^4.14.149",
     "@types/styled-components": "^4.4.1",
     "cpx": "^1.5.0",
+    "if-env": "^1.0.4",
     "np": "^5.2.1",
     "rimraf": "^3.0.0",
+    "storybook-addon-styled-component-theme": "^1.3.0",
     "storybook-chromatic": "^3.4.1",
     "typescript": "3.7.4",
     "yarn": "^1.21.1"

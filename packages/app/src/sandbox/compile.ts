@@ -708,14 +708,14 @@ async function compile({
 
     hadError = true;
   } finally {
-    try {
-      setTimeout(() => {
+    setTimeout(() => {
+      try {
         // Set a timeout so there's a chance that we also catch runtime errors
         localStorage.removeItem('running');
-      }, 600);
-    } catch (e) {
-      /* no */
-    }
+      } catch (e) {
+        /* no */
+      }
+    }, 600);
 
     if (manager) {
       const managerState = {
@@ -738,7 +738,10 @@ async function compile({
   dispatch({ type: 'done', compilatonError: hadError });
 
   if (typeof (window as any).__puppeteer__ === 'function') {
-    (window as any).__puppeteer__('done');
+    setTimeout(() => {
+      // Give everything some time to evaluate
+      (window as any).__puppeteer__('done');
+    }, 100);
   }
 }
 

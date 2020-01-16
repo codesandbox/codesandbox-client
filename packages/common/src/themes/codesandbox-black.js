@@ -14,7 +14,7 @@ const colors = {
   contrastActiveBorder: null,
   errorForeground: tokens.reds[500],
   focusBorder: tokens.grays[500],
-  foreground: tokens.grays[300],
+  foreground: tokens.grays[200],
   activityBar: {
     background: tokens.grays[700],
     border: tokens.grays[500],
@@ -134,7 +134,7 @@ const colors = {
     background: tokens.grays[500],
     foreground: tokens.white,
     border: tokens.grays[800],
-    placeholderForeground: tokens.grays[300],
+    placeholderForeground: tokens.grays[400],
   },
   inputOption: {
     activeBorder: tokens.blues[300],

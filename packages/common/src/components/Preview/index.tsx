@@ -64,7 +64,7 @@ type State = {
   useFallbackDomain: boolean;
 };
 
-const sseDomain = process.env.STAGING_STREAM
+const sseDomain = process.env.STAGING_API
   ? 'codesandbox.stream'
   : 'codesandbox.io';
 

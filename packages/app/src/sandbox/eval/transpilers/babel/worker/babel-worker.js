@@ -2,6 +2,7 @@
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
 import macrosPlugin from 'babel-plugin-macros';
+import refreshBabelPlugin from 'react-refresh/babel';
 import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
 import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
 
@@ -424,10 +425,14 @@ async function compile(code, customConfig, path, isV7) {
 }
 
 try {
+  // Rollup globals hardcoded in Babel
+  self.path$2 = BrowserFS.BFSRequire('path');
+  self.fs$1 = BrowserFS.BFSRequire('fs');
+
   self.importScripts(
     process.env.NODE_ENV === 'development'
-      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.js`
-      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
+      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.8.1.js`
+      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.8.1.min.js`
   );
 } catch (e) {
   console.error(e);
@@ -578,7 +583,6 @@ self.addEventListener('message', async event => {
 
     if (
       version === 7 &&
-      Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
       (flattenedPresets.indexOf('env') > -1 ||
         flattenedPresets.indexOf('@babel/preset-env') > -1 ||
         flattenedPresets.indexOf('@vue/app') > -1)
@@ -586,7 +590,9 @@ self.addEventListener('message', async event => {
       const envPreset = await import(
         /* webpackChunkName: 'babel-preset-env' */ '@babel/preset-env'
       );
-      Babel.registerPreset('env', envPreset);
+
+      // Hardcode, since we want to override env
+      Babel.availablePresets.env = envPreset;
     }
 
     if (
@@ -633,6 +639,13 @@ self.addEventListener('message', async event => {
       ) === -1
     ) {
       Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
+    }
+
+    if (
+      flattenedPlugins.indexOf('react-refresh/babel') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('react-refresh/babel') === -1
+    ) {
+      Babel.registerPlugin('react-refresh/babel', refreshBabelPlugin);
     }
 
     const coalescingInPlugins =

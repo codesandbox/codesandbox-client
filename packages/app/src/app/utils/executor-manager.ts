@@ -1,12 +1,12 @@
-import {
-  IExecutor,
-  ServerExecutor,
-  SandboxExecutor,
-} from '@codesandbox/executors';
-import { IFiles } from '@codesandbox/executors/dist/executor';
-import { Sandbox } from '@codesandbox/common/lib/types';
 import getDefinition from '@codesandbox/common/lib/templates';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { Sandbox } from '@codesandbox/common/lib/types';
+import {
+  IExecutor,
+  SandboxExecutor,
+  ServerExecutor,
+} from '@codesandbox/executors';
+import { IFiles } from '@codesandbox/executors/dist/executor';
 
 function getExecutorType(isServer: boolean) {
   if (isServer) {
@@ -74,7 +74,7 @@ export class ExecutorsManager {
       this.executor = new ExecutorType();
     }
 
-    const sseHost = process.env.STAGING_STREAM
+    const sseHost = process.env.STAGING_API
       ? 'https://codesandbox.stream'
       : 'https://codesandbox.io';
 

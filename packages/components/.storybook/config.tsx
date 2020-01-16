@@ -1,13 +1,14 @@
-import React, { Fragment } from 'react';
-
+import React from 'react';
+import isChromatic from 'storybook-chromatic/isChromatic';
 import { withKnobs } from '@storybook/addon-knobs';
 import { withA11y } from '@storybook/addon-a11y';
 import { addDecorator, addParameters, configure } from '@storybook/react';
 import { themes } from '@storybook/theming';
-import { ThemeDecorator } from './decorators';
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
+// @ts-ignore
 import global from '@codesandbox/common/lib/global.css';
-import theme from './theme';
+import { makeTheme, getThemes } from '../src/components/ThemeProvider';
+import { withThemesProvider } from './storybook-addon-styled-component-theme';
 
 const viewports = {
   mobile: {
@@ -32,24 +33,51 @@ const viewports = {
 // using sidebar as the styles for body for now 🤷
 const GlobalStyle = createGlobalStyle`
   ${global};
-  body {
+  html body {
     font-family: 'Inter', sans-serif;
-    background-color: ${theme.colors.sideBar.background};
-    color: ${theme.colors.sideBar.foreground};
+    margin: 0;
+    background-color: ${props =>
+      // @ts-ignore
+      props.theme.colors.sideBar.background} !important;
+    color: ${props =>
+      // @ts-ignore
+      props.theme.colors.sideBar.foreground} !important;
+    * {
+      box-sizing: border-box;
+    }
+
   }
 `;
+const allThemes = getThemes();
+const vsCodeThemes = allThemes.map(b => makeTheme(b, b.name));
 
-export const withGlobal = cb => (
-  <Fragment>
-    <GlobalStyle />
-    {cb()}
-  </Fragment>
+const blackCodesandbox = vsCodeThemes.find(
+  theme => theme.name === 'CodeSandbox Black'
 );
+console.log(isChromatic());
+if (!isChromatic()) {
+  const withGlobal = (cb: any) => (
+    <>
+      <GlobalStyle />
+      {cb()}
+    </>
+  );
 
+  const rest = vsCodeThemes.filter(theme => theme.name !== 'CodeSandbox Black');
+  addDecorator(withGlobal);
+  addDecorator(withThemesProvider([blackCodesandbox, ...rest]));
+} else {
+  const withGlobal = (cb: any) => (
+    <ThemeProvider theme={makeTheme(blackCodesandbox, 'default')}>
+      <GlobalStyle />
+      {cb()}
+    </ThemeProvider>
+  );
+
+  addDecorator(withGlobal);
+}
 addDecorator(withA11y);
 addDecorator(withKnobs);
-addDecorator(withGlobal);
-addDecorator(ThemeDecorator);
 addParameters({ viewport: { viewports } });
 
 // Option defaults.

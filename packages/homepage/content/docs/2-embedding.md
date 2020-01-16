@@ -48,7 +48,6 @@ find them here.
 | `moduleview`     | Evaluate the file that is open in the editor.                                                                  | `0`/`1`                              | `0`                                  |
 | `previewwindow`  | Which preview window to open by default                                                                        | `console`/`tests`/`browser`          | `browser`                            |
 | `runonclick`     | Only load the preview when the user says so.                                                                   | `0`/`1`                              | `0`                                  |
-| `verticallayout` | Whether to show the editor and preview vertically.                                                             | `0`/`1`                              | `0`                                  |
 | `view`           | Which view to open by default                                                                                  | `editor`/`split`/`preview`           | `split`, `preview` for small screens |
 | `theme`          | Which theme to show for the embed                                                                              | `dark`/`light`                       | `dark`                               |
 

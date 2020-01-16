@@ -21,9 +21,9 @@ export const Grid = styled(Element)<{ columnGap?: number; rowGap?: number }>(
 // start | start + end | start + span | span
 // span + end is also possible but not implemented here
 export const Column = styled(Element)<{
-  start?: number;
-  end?: number;
-  span?: number;
+  start?: number | Array<number>;
+  end?: number | Array<number>;
+  span?: number | Array<number>;
 }>(({ start, end, span }) => {
   const styles: {
     gridColumnStart?: number | Array<number | string>;

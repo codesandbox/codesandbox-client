@@ -51,8 +51,6 @@ const BABEL7_CONFIG = {
     plugins: [
       ['proposal-decorators', { legacy: true }],
       '@babel/plugin-transform-react-jsx-source',
-      '@babel/plugin-proposal-optional-chaining',
-      '@babel/plugin-proposal-nullish-coalescing-operator',
       'transform-flow-strip-types',
       'transform-destructuring',
       'babel-plugin-macros',
@@ -66,6 +64,8 @@ const BABEL7_CONFIG = {
           regenerator: true,
         },
       ],
+      '@babel/plugin-proposal-optional-chaining',
+      '@babel/plugin-proposal-nullish-coalescing-operator',
       'syntax-dynamic-import',
     ],
     presets: [
@@ -107,7 +107,7 @@ export default function initialize() {
           dependencies['react-dom'] &&
           isMinimalReactVersion(dependencies['react-dom'], '16.9.0')
         ) {
-          return { ...dependencies, 'react-refresh': '0.7.1' };
+          return { ...dependencies, 'react-refresh': '0.7.2' };
         }
 
         return dependencies;
@@ -161,19 +161,7 @@ export default function initialize() {
             { transpiler: svgrTranspiler },
             { transpiler: babelTranspiler, options: BABEL7_CONFIG },
           ]);
-          preset.registerTranspiler(module => /\.css$/.test(module.path), [
-            {
-              transpiler: stylesTranspiler,
-              options: { hmrEnabled: isRefresh },
-            },
-          ]);
-          preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
-            { transpiler: sassTranspiler },
-            {
-              transpiler: stylesTranspiler,
-              options: { hmrEnabled: isRefresh },
-            },
-          ]);
+
           preset.registerTranspiler(
             module => /\.module\.s[c|a]ss$/.test(module.path),
             [
@@ -193,6 +181,20 @@ export default function initialize() {
               },
             ]
           );
+
+          preset.registerTranspiler(module => /\.css$/.test(module.path), [
+            {
+              transpiler: stylesTranspiler,
+              options: { hmrEnabled: isRefresh },
+            },
+          ]);
+          preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
+            { transpiler: sassTranspiler },
+            {
+              transpiler: stylesTranspiler,
+              options: { hmrEnabled: isRefresh },
+            },
+          ]);
 
           preset.registerTranspiler(module => /\.json$/.test(module.path), [
             { transpiler: jsonTranspiler },

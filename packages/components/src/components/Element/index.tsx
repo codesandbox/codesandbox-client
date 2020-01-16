@@ -7,6 +7,7 @@ export const Element = styled.div<{
   marginY?: number;
   marginBottom?: number;
   marginTop?: number; // prefer margin bottom to top
+  css?: Object;
 }>(props =>
   css({
     margin: props.margin || null,
@@ -14,5 +15,6 @@ export const Element = styled.div<{
     marginY: props.marginY || null,
     marginBottom: props.marginBottom || null,
     marginTop: props.marginTop || null,
+    ...(props.css || {}),
   })
 );

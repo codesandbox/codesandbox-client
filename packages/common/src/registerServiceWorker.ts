@@ -76,7 +76,7 @@ function registerValidSW(
           } else if (installingWorker.state === 'redundant') {
             if ('storage' in navigator && 'estimate' in navigator.storage) {
               navigator.storage.estimate().then(results => {
-                const percentUsed = (results.usage / results.quota) * 100;
+                const percentUsed = results.usage / results.quota;
                 // Let's assume that if we're using 95% of our quota, then this failure
                 // was due to quota exceeded errors.
                 // TODO: Hardcoding a threshold stinks.

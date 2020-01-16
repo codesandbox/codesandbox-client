@@ -93,6 +93,16 @@ async function addAngularJSONResources(manager) {
   }
 }
 
+const getPathFromResource = (root, p) => {
+  const nodeModuleRegex = /(^\.\/)?node_modules\//;
+  if (/(^\.\/)?node_modules/.test(p)) {
+    // If starts with node_modules or ./node_modules
+    return p.replace(nodeModuleRegex, '');
+  }
+
+  return absolute(join(root || 'src', p));
+};
+
 async function addAngularCLIResources(manager) {
   const { parsed } = manager.configurations['angular-cli'];
   if (parsed.apps && parsed.apps[0]) {
@@ -103,7 +113,7 @@ async function addAngularCLIResources(manager) {
     /* eslint-disable no-await-in-loop */
     for (let i = 0; i < styles.length; i++) {
       const p = styles[i];
-      const finalPath = absolute(join(app.root || 'src', p.input || p));
+      const finalPath = getPathFromResource(app.root, p.input || p);
 
       const tModule = await manager.resolveTranspiledModuleAsync(
         finalPath,
@@ -118,7 +128,7 @@ async function addAngularCLIResources(manager) {
 
     const scriptTModules = await Promise.all(
       scripts.map(async p => {
-        const finalPath = absolute(join(app.root || 'src', p));
+        const finalPath = getPathFromResource(app.root, p);
         const tModule = await manager.resolveTranspiledModuleAsync(
           finalPath,
           null
