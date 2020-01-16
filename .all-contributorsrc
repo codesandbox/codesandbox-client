@@ -318,6 +318,15 @@
       ]
     },
     {
+      "login": "rax-public",
+      "name": "Rax Team",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/59947214?v=4",
+      "profile": "https://github.com/rax-public",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "tomkuehl",
       "name": "Tom Kühl",
       "avatar_url": "https://avatars2.githubusercontent.com/u/14299145?v=4",
