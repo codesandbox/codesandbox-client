@@ -17,14 +17,14 @@ const SelectComponent = styled(Input).attrs({ as: 'select' })(
     appearance: 'none',
     color: 'input.placeholderForeground',
 
-    backgroundImage: ({ theme }) =>
+    backgroundImage: theme =>
       theme && `url(${svg(theme.colors.input.placeholderForeground)})`,
     backgroundPosition: 'calc(100% - 8px) center',
     backgroundRepeat: 'no-repeat',
 
     ':hover, :focus': {
       color: 'input.foreground',
-      backgroundImage: ({ theme }) =>
+      backgroundImage: theme =>
         theme && `url(${svg(theme.colors.input.foreground)})`,
     },
   })

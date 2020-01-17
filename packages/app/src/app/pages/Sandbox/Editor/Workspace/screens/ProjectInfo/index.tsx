@@ -12,8 +12,8 @@ import {
 } from '@codesandbox/components';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { useOvermind } from 'app/overmind';
-import { withTheme } from 'styled-components';
 
+import { css } from '@styled-system/css';
 import { Title } from './Title';
 import { Description } from './Description';
 import { Privacy } from './Privacy';
@@ -21,7 +21,7 @@ import { Config } from './Config';
 
 const Link = props => <Text variant="muted" {...props} />;
 
-export const ProjectInfoComponent = ({ theme }) => {
+export const ProjectInfo = () => {
   const {
     actions: {
       editor: { frozenUpdated, sessionFreezeOverride },
@@ -58,7 +58,7 @@ export const ProjectInfoComponent = ({ theme }) => {
     <>
       <Collapsible title="Sandbox Info" defaultOpen>
         <Stack direction="vertical" gap={6}>
-          <Element style={{ padding: `0 ${theme.space[3]}px` }}>
+          <Element css={css({ paddingX: 2 })}>
             <Title editable />
             <Description editable />
           </Element>
@@ -67,7 +67,7 @@ export const ProjectInfoComponent = ({ theme }) => {
               gap={2}
               align="center"
               marginBottom={4}
-              style={{ padding: `0 ${theme.space[3]}px` }}
+              css={css({ paddingX: 2 })}
             >
               <Avatar user={author} /> <Text>{author.username}</Text>
             </Stack>
@@ -102,5 +102,3 @@ export const ProjectInfoComponent = ({ theme }) => {
     </>
   );
 };
-
-export const ProjectInfo = withTheme(ProjectInfoComponent);

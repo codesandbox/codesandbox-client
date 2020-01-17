@@ -25,9 +25,9 @@ const PickColor = styled(PopoverDisclosure)`
   ${({ theme, color }) => css`
     width: ${theme.space[5]}px;
     height: ${theme.space[4]}px;
-    border: 1px solid ${theme['sideBarTitle.foreground']};
+    border: 1px solid inherit;
     background: ${color};
-    border-radius: 2px;
+    border-radius: ${theme.radii.small}px;
   `}
 `;
 
@@ -45,7 +45,7 @@ export const IconButton = styled.button`
 export const IconWrapper = styled(Popover)`
   ${({ theme }) => css`
     padding: ${theme.space[3]}px;
-    background: ${theme['sideBar.background']};
+    background: ${theme.colors.sideBar.background};
   `};
 `;
 

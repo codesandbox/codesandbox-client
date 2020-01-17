@@ -1,19 +1,12 @@
 import React, { MouseEvent } from 'react';
-import styled, { withTheme } from 'styled-components';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { useOvermind } from 'app/overmind';
+import { css } from '@styled-system/css';
 import { Button, Element, Stack } from '@codesandbox/components';
 
 import { TemplateConfig } from './TemplateConfig';
 
-const DeleteButton = styled(Button)`
-  &:hover,
-  &:focus {
-    color: ${props => props.theme.colors.dangerButton.background};
-  }
-`;
-
-const ConfigComponent = ({ theme }) => {
+export const Config = () => {
   const {
     actions: {
       modalOpened,
@@ -61,7 +54,11 @@ const ConfigComponent = ({ theme }) => {
       {customTemplate && <TemplateConfig />}
       {!customTemplate && (
         <Element marginX={2} marginY={4}>
-          <Button onClick={onCreateTemplate} variant="secondary">
+          <Button
+            // @ts-ignore
+            onClick={onCreateTemplate}
+            variant="secondary"
+          >
             Save as template
           </Button>
         </Element>
@@ -69,18 +66,23 @@ const ConfigComponent = ({ theme }) => {
 
       <Stack
         justify="center"
-        style={{ position: 'absolute', width: '100%', bottom: theme.space[3] }}
+        css={css({
+          bottom: 3,
+          position: 'absolute',
+          width: '100%',
+        })}
       >
-        <DeleteButton
+        <Button
           // @ts-ignore
           onClick={onDelete}
           variant="link"
+          css={css({
+            ':hover,:focus': { color: 'dangerButton.background' },
+          })}
         >
           {`Delete ${customTemplate ? `Template` : `Sandbox`}`}
-        </DeleteButton>
+        </Button>
       </Stack>
     </>
   );
 };
-
-export const Config = withTheme(ConfigComponent);
