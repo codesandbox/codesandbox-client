@@ -6,6 +6,7 @@ import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/temp
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 import { absolute } from '@codesandbox/common/lib/utils/path';
+import VERSION from '@codesandbox/common/lib/version';
 import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
@@ -485,6 +486,7 @@ async function compile({
 
     dependencies = await manager.preset.processDependencies(dependencies);
 
+    metrics.measure('dependencies');
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       {
@@ -493,6 +495,7 @@ async function compile({
         showFullScreen: firstLoad,
       }
     );
+    metrics.endMeasure('dependencies', 'Dependencies');
 
     const shouldReloadManager =
       (isNewCombination && !firstLoad) || manager.id !== sandboxId;
@@ -741,8 +744,9 @@ async function compile({
     if (firstLoad) {
       metrics.persistMeasurements({
         sandboxId,
-        usedCache,
+        cacheUsed: usedCache,
         browser: navigator.userAgent,
+        version: VERSION,
       });
     }
   }

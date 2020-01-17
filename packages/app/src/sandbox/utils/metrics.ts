@@ -38,8 +38,9 @@ const MEASUREMENT_API = `https://30vlq6h5qc.execute-api.eu-west-1.amazonaws.com/
 
 export function persistMeasurements(data: {
   sandboxId: string;
-  usedCache: boolean;
+  cacheUsed: boolean;
   browser: string;
+  version: string;
 }) {
   if (process.env.NODE_ENV === 'development') {
     return Promise.resolve();
