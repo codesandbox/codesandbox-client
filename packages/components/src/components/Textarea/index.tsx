@@ -56,7 +56,9 @@ export const Textarea: React.FC<ITextareaProps> = ({
   };
 
   useEffect(() => {
-    updateValues(props.value);
+    if (props.value) {
+      updateValues(props.value);
+    }
     // eslint-disable-next-line
   }, []);
 
