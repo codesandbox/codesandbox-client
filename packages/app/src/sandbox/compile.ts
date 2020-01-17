@@ -27,6 +27,7 @@ import handleExternalResources from './external-resources';
 import { loadDependencies, NPMDependencies } from './npm';
 import { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
+import * as metrics from './utils/metrics';
 
 let initializedResizeListener = false;
 let manager: Manager | null = null;
@@ -78,6 +79,7 @@ let lastHeadHTML = null;
 let lastBodyHTML = null;
 let lastHeight = 0;
 let changedModuleCount = 0;
+let usedCache = false;
 
 const DEPENDENCY_ALIASES = {
   '@vue/cli-plugin-babel': '@vue/babel-preset-app',
@@ -419,6 +421,7 @@ async function compile({
   dispatch({
     type: 'start',
   });
+  metrics.measure('compilation');
 
   const startTime = Date.now();
   try {
@@ -513,10 +516,10 @@ async function compile({
       manager.setManifest(manifest);
       // We save the state of transpiled modules, and load it here again. Gives
       // faster initial loads.
-      await consumeCache(manager);
+      usedCache = await consumeCache(manager);
     }
 
-    const t = Date.now();
+    metrics.measure('transpilation');
 
     const updatedModules = (await updateManager(modules, configurations)) || [];
 
@@ -541,7 +544,7 @@ async function compile({
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
 
-    debug(`Transpilation time ${Date.now() - t}ms`);
+    metrics.endMeasure('transpilation', 'Transpilation');
 
     dispatch({ type: 'status', status: 'evaluating' });
     manager.setStage('evaluation');
@@ -604,16 +607,17 @@ async function compile({
         lastHeadHTML = head;
       }
 
-      const extDate = Date.now();
+      metrics.measure('external-resources');
       await handleExternalResources(externalResources);
-      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
+      metrics.endMeasure('external-resources', 'External Resources');
 
-      const tt = Date.now();
       const oldHTML = document.body.innerHTML;
+      metrics.measure('evaluation');
       const evalled = manager.evaluateModule(managerModuleToTranspile, {
         force: isModuleView,
       });
-      debug(`Evaluation time: ${Date.now() - tt}ms`);
+      metrics.endMeasure('evaluation', 'Evaluation');
+
       const domChanged =
         !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
 
@@ -662,6 +666,8 @@ async function compile({
 
     debug(`Total time: ${Date.now() - startTime}ms`);
 
+    metrics.endMeasure('compilation', 'Compilation');
+    metrics.endMeasure('total', 'Total', { lastTime: 0 });
     dispatch({
       type: 'success',
     });
@@ -729,6 +735,14 @@ async function compile({
       dispatch({
         type: 'state',
         state: managerState,
+      });
+    }
+
+    if (firstLoad) {
+      metrics.persistMeasurements({
+        sandboxId,
+        usedCache,
+        browser: navigator.userAgent,
       });
     }
   }

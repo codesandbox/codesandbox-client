@@ -17,6 +17,7 @@ import {
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
+import { endMeasure } from './utils/metrics';
 
 // Call this before importing React (or any other packages that might import React).
 initialize(window);
@@ -28,6 +29,8 @@ export const SCRIPT_VERSION =
   document.currentScript && document.currentScript.src;
 
 debug('Booting sandbox v2');
+
+endMeasure('boot', 'Boot', { lastTime: 0 });
 
 requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js', {});
