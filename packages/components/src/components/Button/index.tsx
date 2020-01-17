@@ -83,6 +83,7 @@ const variantStyles = {
 };
 
 export const Button = styled(Element).attrs({ as: 'button' })<{
+  type?: 'submit' | 'button' | 'reset';
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
 }>(({ variant = 'primary', ...props }) =>
   css(

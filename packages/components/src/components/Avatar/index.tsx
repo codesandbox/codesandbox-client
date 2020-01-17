@@ -1,12 +1,18 @@
 import React from 'react';
 import css from '@styled-system/css';
-import { User } from '@codesandbox/common/lib/types';
 import styled from 'styled-components';
 import { Element } from '../Element';
 import { Text } from '../Text';
 
 interface IAvatarProps {
-  user: User;
+  user: {
+    id: string;
+    username: string;
+    name: string;
+    avatarUrl: string;
+    badges: any[];
+    subscriptionSince: string | null;
+  };
 }
 
 export const AvatarImage = styled.img(
@@ -16,7 +22,7 @@ export const AvatarImage = styled.img(
     borderRadius: 'small',
     border: '1px solid',
     borderColor: 'avatar.border',
-    backgroundColor: 'avatar.border', // fallback for loading image
+    backgroundColor: 'avatar.border', // fallback for loading image,
   })
 );
 
@@ -37,9 +43,10 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   })
 );
 
-export const Avatar = ({ user }: IAvatarProps) => (
-  <Element as="span" style={{ position: 'relative' }}>
-    <AvatarImage src={user.avatarUrl} alt={user.username} />
-    {user.subscriptionSince ? <Pro>Pro</Pro> : null}
-  </Element>
-);
+export const Avatar = ({ user }: IAvatarProps) =>
+  user && (
+    <Element as="span" style={{ position: 'relative' }}>
+      <AvatarImage src={user.avatarUrl} alt={user.username} />
+      {user.subscriptionSince ? <Pro>Pro</Pro> : null}
+    </Element>
+  );

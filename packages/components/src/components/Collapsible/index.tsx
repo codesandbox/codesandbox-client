@@ -3,18 +3,16 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Element } from '../Element';
 import { Text } from '../Text';
+import { SidebarRow } from '../SidebarRow';
 
-export const Section = styled(Element).attrs({ as: 'section' })(
+const Section = styled(Element).attrs({ as: 'section' })(
   css({
     fontSize: 3,
   })
 );
 
-export const Header = styled.div(
+export const Header = styled(SidebarRow).attrs({ gap: 2 })(
   css({
-    display: 'flex',
-    alignItems: 'center',
-    height: 6,
     paddingX: 3,
     borderBottom: '1px solid',
     // Note: sideBarSectionHeader exists but we dont use it because it is rarely implemented
@@ -32,22 +30,30 @@ export const Header = styled.div(
 );
 
 // temporary: replace with <Icon name="triangle/toggle">
-export const Icon = styled.svg<{
+const Icon = styled.svg<{
   open?: boolean;
 }>(props =>
   css({
-    marginRight: 2,
     transform: props.open ? 'rotate(0)' : 'rotate(-90deg)',
+    transition: 'transform',
+    transitionDuration: theme => theme.speeds[1],
     color: 'grays.400',
   })
 );
 
-export const Body = styled.div(
+export const Body = styled(Element)<{
+  open?: boolean;
+}>(props =>
   css({
     borderBottom: '1px solid',
     borderColor: 'sideBar.border',
-    paddingTop: 4,
-    paddingBottom: 8,
+    maxHeight: props.open ? '1000px' : 0,
+    overflow: props.open ? 'auto' : 'hidden',
+    paddingTop: props.open ? 4 : 0,
+    paddingBottom: props.open ? 8 : 0,
+    opacity: props.open ? 1 : 0,
+    transition: 'all',
+    transitionDuration: theme => theme.speeds[4],
   })
 );
 
@@ -86,7 +92,8 @@ export const Collapsible: React.FC<ICollapsibleProps> = ({
         <ToggleIcon open={open} />
         <Text weight="medium">{title}</Text>
       </Header>
-      {open ? <Body>{children}</Body> : null}
+
+      <Body open={open}>{children}</Body>
     </Section>
   );
 };
