@@ -1,3 +1,4 @@
+import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 import {
   getChildren as calculateChildren,
   inDirectory,

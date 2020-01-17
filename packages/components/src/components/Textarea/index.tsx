@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Stack, Input } from '../..';
@@ -7,6 +7,8 @@ interface ITextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   maxLength?: number;
   autosize?: boolean;
+  ref?: any;
+  value?: string;
 }
 
 export const TextareaComponent: any = styled(Input).attrs({
@@ -43,6 +45,23 @@ export const Textarea: React.FC<ITextareaProps> = ({
   const [wordCount, setWordCount] = useState(0);
   const [value, setValue] = useState('');
 
+  const updateValues = v => {
+    if (maxLength) {
+      const trimmedText = v.substring(0, maxLength);
+      setValue(trimmedText);
+      setWordCount(trimmedText.length);
+    } else {
+      setValue(v);
+    }
+  };
+
+  useEffect(() => {
+    if (props.value) {
+      updateValues(props.value);
+    }
+    // eslint-disable-next-line
+  }, []);
+
   const Wrapper = useCallback(
     ({ children }) =>
       maxLength ? <Stack direction="vertical">{children}</Stack> : children,
@@ -52,14 +71,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
   // eslint-disable-next-line consistent-return
   const update = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (onChange) onChange(e);
-    if (maxLength) {
-      const trimmedText = e.target.value.substring(0, maxLength);
-      setValue(trimmedText);
-      setWordCount(trimmedText.length);
-    } else {
-      setValue(e.target.value);
-    }
-
+    updateValues(e.target.value);
     if (autosize) resize(e.target as HTMLTextAreaElement);
   };
 
