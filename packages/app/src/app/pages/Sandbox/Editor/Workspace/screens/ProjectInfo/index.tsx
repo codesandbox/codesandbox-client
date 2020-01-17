@@ -1,4 +1,4 @@
-import React, { useEffect, MouseEvent } from 'react';
+import React, { useEffect } from 'react';
 import {
   Element,
   Collapsible,
@@ -7,33 +7,24 @@ import {
   Stack,
   List,
   ListItem,
-  Button,
   Switch,
   Stats,
 } from '@codesandbox/components';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { useOvermind } from 'app/overmind';
-import styled, { withTheme } from 'styled-components';
+import { withTheme } from 'styled-components';
 
 import { Title } from './Title';
 import { Description } from './Description';
 import { Privacy } from './Privacy';
-
-const DeleteButton = styled(Button)`
-  &:hover,
-  &:focus {
-    color: ${props => props.theme.colors.dangerButton.background};
-  }
-`;
+import { Config } from './Config';
 
 const Link = props => <Text variant="muted" {...props} />;
 
 export const ProjectInfoComponent = ({ theme }) => {
   const {
     actions: {
-      modalOpened,
       editor: { frozenUpdated, sessionFreezeOverride },
-      workspace: { deleteTemplate },
     },
     state: {
       editor: { currentSandbox, sessionFrozen },
@@ -61,16 +52,6 @@ export const ProjectInfoComponent = ({ theme }) => {
     }
 
     return frozenUpdated({ frozen: !isFrozen });
-  };
-
-  const onDelete = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-
-    if (customTemplate) {
-      deleteTemplate();
-    } else {
-      modalOpened({ modal: 'deleteSandbox' });
-    }
   };
 
   return (
@@ -117,23 +98,7 @@ export const ProjectInfoComponent = ({ theme }) => {
         </Stack>
       </Collapsible>
       <Privacy />
-
-      <Element marginX={2} marginY={4}>
-        <Button variant="secondary">Save as template</Button>
-      </Element>
-
-      <Stack
-        justify="center"
-        style={{ position: 'absolute', width: '100%', bottom: theme.space[3] }}
-      >
-        <DeleteButton
-          // @ts-ignore
-          onClick={onDelete}
-          variant="link"
-        >
-          {`Delete ${customTemplate ? `Template` : `Sandbox`}`}
-        </DeleteButton>
-      </Stack>
+      <Config />
     </>
   );
 };
