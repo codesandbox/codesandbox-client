@@ -34,16 +34,16 @@ export function endMeasure(
   runningMeasurements.delete(key);
 }
 
-const MEASUREMENT_API = `https://mij9yockq9.execute-api.us-east-1.amazonaws.com/prod/metrics`;
+const MEASUREMENT_API = `https://30vlq6h5qc.execute-api.eu-west-1.amazonaws.com/prod/metrics`;
 
 export function persistMeasurements(data: {
   sandboxId: string;
   usedCache: boolean;
   browser: string;
 }) {
-  // if (process.env.NODE_ENV === 'development') {
-  //   return Promise.resolve();
-  // }
+  if (process.env.NODE_ENV === 'development') {
+    return Promise.resolve();
+  }
 
   const finalData = { ...data, ...measurements };
 
