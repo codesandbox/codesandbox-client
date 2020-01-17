@@ -3,6 +3,7 @@ import {
   IForkHandler,
   IForkHandlerCallback,
 } from 'node-services/lib/child_process';
+import io from 'socket.io-client';
 
 // We want to make sure that our pids are consistent.
 // By counting pids based on endpoint we should consistently
@@ -15,8 +16,9 @@ const pidCountByEndpoint: {
 } = {};
 
 export class WebsocketLSP implements IForkHandler {
-  ws: WebSocket;
+  io: typeof io.Socket;
   listeners = new Set<IForkHandlerCallback>();
+
   messagesQueue: any[] = [];
   endpoint: string;
 
@@ -39,39 +41,43 @@ export class WebsocketLSP implements IForkHandler {
     }
 
     this.endpoint = endpoint;
-    this.ws = new WebSocket(
-      endpoint + `?pid=${pidCountByEndpoint[endpoint]++}`
-    );
-    this.ws.onopen = () => {
+    this.io = io(endpoint + `?pid=${pidCountByEndpoint[endpoint]++}`);
+    this.io.on('connect', () => {
       this.messagesQueue.forEach(message => {
         this.postMessage(message);
       });
-    };
-    this.ws.addEventListener('message', event => {
-      if ('data' in event) {
-        /*
+    });
+    this.io.on('connect_error', error => {
+      // eslint-disable-next-line
+      console.log('WEBSOCKET_LSP - ERROR', error);
+    });
+    this.io.on('disconnect', reason => {
+      console.error('WEBSOCKET_LSP - CLOSE', reason);
+    });
+
+    this.io.on('lsp', data => {
+      /*
         const json = event.data.split('\n').find(line => line[0] === '{');
         console.log('OUT', JSON.stringify(JSON.parse(json), null, 2));
         */
-        this.listeners.forEach(listener => {
-          listener({
-            data: {
-              $data: event.data,
-              $type: 'stdout',
-            },
-          });
+      this.listeners.forEach(listener => {
+        listener({
+          data: {
+            $data: `Content-Length: ${data.length + 1}\r\n\r\n${data}\n`,
+            $type: 'stdout',
+          },
         });
-      }
+      });
     });
   }
 
   postMessage(message) {
     if (message.$type === 'input-write') {
-      if (this.ws.readyState === 1 && message.$data) {
+      if (this.io.connected && message.$data) {
         /*
         console.log('IN', JSON.stringify(JSON.parse(message.$data), null, 2));
         */
-        this.ws.send(message.$data);
+        this.io.emit('lsp', message.$data);
       } else if (message.$data) {
         this.messagesQueue.push(message);
       }
@@ -89,7 +95,9 @@ export class WebsocketLSP implements IForkHandler {
   }
 
   terminate() {
+    // eslint-disable-next-line
+    console.log('WEBSOCKET_LSP - TERMINATE');
     pidCountByEndpoint[this.endpoint]--;
-    this.ws.close();
+    this.io.close();
   }
 }
