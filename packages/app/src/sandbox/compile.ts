@@ -730,6 +730,8 @@ async function compile({
         type: 'state',
         state: managerState,
       });
+
+      manager.isFirstLoad = false;
     }
   }
   firstLoad = false;

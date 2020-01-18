@@ -933,7 +933,6 @@ export default class Manager {
   }): Promise<Array<TranspiledModule>> {
     this.transpileJobs = {};
     this.hardReload = false;
-    this.isFirstLoad = false;
 
     this.modules = modules;
 

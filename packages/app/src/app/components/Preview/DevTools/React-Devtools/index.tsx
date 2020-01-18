@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import delay from '@codesandbox/common/lib/utils/delay';
 import { initialize } from 'react-devtools-inline/frontend';
-import { dispatch, actions } from 'codesandbox-api';
+import { dispatch, actions, listen } from 'codesandbox-api';
 import { ThemeContext } from 'styled-components';
 
 import { Container } from './elements';
@@ -28,15 +28,11 @@ const DevTools = (props: DevToolProps) => {
     if (iframe) {
       const { contentWindow } = iframe;
 
-      setDevTools(initialize(contentWindow));
-      iframe.onload = () => {
-        contentWindow.postMessage(
-          {
-            type: 'activate',
-          },
-          '*'
-        );
-      };
+      listen((message: { type: string | 'activate-react-devtools' }) => {
+        if (message.type === 'activate-react-devtools') {
+          setDevTools(initialize(contentWindow));
+        }
+      });
     }
   }, []);
 
