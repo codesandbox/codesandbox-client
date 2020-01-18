@@ -74,9 +74,16 @@ export class ExecutorsManager {
       this.executor = new ExecutorType();
     }
 
+    const sseHost = process.env.STAGING_API
+      ? 'https://codesandbox.stream'
+      : 'https://codesandbox.io';
+
     await this.executor.initialize({
       sandboxId: sandbox.id,
       files: getModulesToSend(sandbox),
+      // this is in the type idk what is wrong
+      // @ts-ignore
+      host: sseHost,
     });
 
     return this.executor;

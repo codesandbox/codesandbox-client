@@ -5,7 +5,7 @@ import { Element } from '../Element';
 import { Text } from '../Text';
 import { Stack } from '../Stack';
 
-export const Header = styled(Stack)(
+const Header = styled(Stack)(
   css({
     height: 6,
     paddingX: 4,
@@ -19,7 +19,7 @@ export const Header = styled(Stack)(
   })
 );
 
-export const Content = styled(Element)(
+const Content = styled(Element)(
   css({
     display: 'grid',
     gridTemplateColumns: '1fr 50px',

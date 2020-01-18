@@ -11,6 +11,7 @@ import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
+import { endMeasure } from './utils/metrics';
 
 const host = process.env.CODESANDBOX_HOST;
 const debug = _debug('cs:sandbox');
@@ -19,6 +20,8 @@ export const SCRIPT_VERSION =
   document.currentScript && document.currentScript.src;
 
 debug('Booting sandbox v2');
+
+endMeasure('boot', 'Boot', { lastTime: 0 });
 
 requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js', {});

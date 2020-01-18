@@ -8,6 +8,10 @@ export interface IFiles {
 }
 
 export interface ISetupParams {
+  /**
+   * Eg. https://codesandbox.io
+   */
+  host: string;
   files: IFiles;
   sandboxId: string;
 }
