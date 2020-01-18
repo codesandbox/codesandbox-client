@@ -6,6 +6,8 @@ const ErrorClass = Error;
 	Author Tobias Koppers @sokra
 */
 export default class ModuleError extends ErrorClass {
+  path: string;
+  error: Error;
   constructor(module, err) {
     super();
 

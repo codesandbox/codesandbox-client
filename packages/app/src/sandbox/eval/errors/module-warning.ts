@@ -30,9 +30,8 @@ export default class ModuleWarning extends Error {
   path: string;
   message: string;
   warning: string;
-  message: string;
   severity: 'notice' | 'warning';
-  source: ?string;
-  lineNumber: ?number;
-  columnNumber: ?number;
+  source?: string;
+  lineNumber?: number;
+  columnNumber?: number;
 }

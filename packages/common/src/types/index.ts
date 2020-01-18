@@ -434,6 +434,7 @@ export type PackageJSON = {
   description?: string;
   keywords?: string[];
   main?: string;
+  module?: string;
   scripts?: {
     [command: string]: string;
   };
