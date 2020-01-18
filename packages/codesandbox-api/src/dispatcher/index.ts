@@ -18,6 +18,14 @@ function checkIsStandalone() {
 // Whether the tab has a connection with the editor
 export const isStandalone = checkIsStandalone();
 
+let initializeResolved: () => void;
+/**
+ * Resolves when the handshake between the frame and the editor has succeeded
+ */
+export const intializedPromise = new Promise(resolve => {
+  initializeResolved = resolve;
+});
+
 // Field used by a "child" frame to determine its parent origin
 let parentOrigin: string | null = null;
 
@@ -25,6 +33,9 @@ const parentOriginListener = (e: MessageEvent) => {
   if (e.data.type === 'register-frame') {
     parentOrigin = e.data.origin;
 
+    if (initializeResolved) {
+      initializeResolved();
+    }
     self.removeEventListener('message', parentOriginListener);
   }
 };
