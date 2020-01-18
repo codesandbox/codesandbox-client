@@ -435,18 +435,10 @@ export type PackageJSON = {
   keywords?: string[];
   main?: string;
   module?: string;
-  scripts?: {
-    [command: string]: string;
-  };
-  dependencies?: {
-    [dep: string]: string;
-  };
-  devDependencies?: {
-    [dep: string]: string;
-  };
-  jest?: {
-    setupFilesAfterEnv?: string[];
-  };
+  scripts?: { [command: string]: string; };
+  dependencies?: { [dependency: string]: string; };
+  devDependencies?: { [dependency: string]: string; };
+  jest?: { setupFilesAfterEnv?: string[]; };
   resolutions?: { [dependency: string]: string };
 };
 

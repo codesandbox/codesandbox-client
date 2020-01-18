@@ -50,15 +50,15 @@ export const addNpmDependency: AsyncAction<{
   }
 );
 
-export const npmDependencyRemoved: AsyncAction<{
-  name: string;
-}> = withOwnedSandbox(async ({ effects, actions }, { name }) => {
-  effects.analytics.track('Remove NPM Dependency');
+export const npmDependencyRemoved: AsyncAction<string> = withOwnedSandbox(
+  async ({ actions, effects }, name) => {
+    effects.analytics.track('Remove NPM Dependency');
 
-  await actions.editor.internal.removeNpmDependencyFromPackageJson(name);
+    await actions.editor.internal.removeNpmDependencyFromPackageJson(name);
 
-  effects.preview.executeCodeImmediately();
-});
+    effects.preview.executeCodeImmediately();
+  }
+);
 
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;

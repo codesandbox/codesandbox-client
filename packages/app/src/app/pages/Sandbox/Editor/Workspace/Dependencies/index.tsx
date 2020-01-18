@@ -15,7 +15,6 @@ import { VersionEntry } from './VersionEntry';
 export const Dependencies: FunctionComponent = () => {
   const {
     actions: {
-      workspace: { externalResourceAdded },
       editor: { addNpmDependency, npmDependencyRemoved },
     },
     state: {
@@ -56,7 +55,7 @@ export const Dependencies: FunctionComponent = () => {
               dependency={dependency}
               key={dependency}
               onRefresh={(name, version) => addNpmDependency({ name, version })}
-              onRemove={name => npmDependencyRemoved({ name })}
+              onRemove={name => npmDependencyRemoved(name)}
             />
           ))}
 
@@ -72,7 +71,7 @@ export const Dependencies: FunctionComponent = () => {
               dependency={dependency}
               key={dependency}
               onRefresh={(name, version) => addNpmDependency({ name, version })}
-              onRemove={npmDependencyRemoved}
+              onRemove={name => npmDependencyRemoved(name)}
             />
           ))} */}
 
@@ -83,9 +82,7 @@ export const Dependencies: FunctionComponent = () => {
         <div>
           <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
 
-          <AddResource
-            addResource={resource => externalResourceAdded(resource)}
-          />
+          <AddResource />
 
           {otherResources.map(resource => (
             <ExternalResource key={resource} resource={resource} />
