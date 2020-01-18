@@ -25,13 +25,13 @@ async function initializeReactDevTools() {
     const { initialize: initializeDevTools, activate } = await import(
       /* webpackChunkName: 'react-devtools-backend' */ 'react-devtools-inline/backend'
     );
+    // The dispatch needs to happen before initializing, so that the backend can already listen
+    dispatch({ type: 'activate-react-devtools' });
     // @ts-ignore We need to make sure that the existing chrome extension doesn't interfere
     delete window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
     // Call this before importing React (or any other packages that might import React).
     initializeDevTools(window);
     activate(window);
-
-    dispatch({ type: 'activate-react-devtools' });
   }
 }
 
@@ -222,6 +222,10 @@ export default function initialize() {
         }
       },
       preEvaluate: async manager => {
+        if (manager.isFirstLoad) {
+          await initializeReactDevTools();
+        }
+
         if (await hasRefresh(manager.manifest.dependencies)) {
           await createRefreshEntry(manager);
         }
@@ -235,10 +239,6 @@ export default function initialize() {
           !(await isMinimalReactVersion(reactDom.version, '16.8.0'))
         ) {
           cleanUsingUnmount(manager);
-        }
-
-        if (manager.isFirstLoad) {
-          await initializeReactDevTools();
         }
       },
     }

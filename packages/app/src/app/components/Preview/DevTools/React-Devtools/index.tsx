@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import delay from '@codesandbox/common/lib/utils/delay';
-import { initialize } from 'react-devtools-inline/frontend';
+import * as reactDevtools from 'react-devtools-inline/frontend';
 import { dispatch, actions, listen } from 'codesandbox-api';
 import { ThemeContext } from 'styled-components';
 
@@ -30,7 +30,7 @@ const DevTools = (props: DevToolProps) => {
 
       listen((message: { type: string | 'activate-react-devtools' }) => {
         if (message.type === 'activate-react-devtools') {
-          setDevTools(initialize(contentWindow));
+          setDevTools(reactDevtools.initialize(contentWindow));
         }
       });
     }
