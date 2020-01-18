@@ -683,8 +683,9 @@ async function compile({
       firstLoad
     );
 
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
+        await manager.initializeTestRunner();
         sendTestCount(manager, modules);
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {

@@ -753,8 +753,8 @@ export default class TranspiledModule {
     {
       asUMD = false,
       force = false,
-      testGlobals = false,
-    }: { asUMD?: boolean; force?: boolean; testGlobals?: boolean } = {},
+      globals = {},
+    }: { asUMD?: boolean; force?: boolean; globals?: any } = {},
     initiator?: TranspiledModule
   ) {
     if (this.source == null) {
@@ -968,7 +968,7 @@ export default class TranspiledModule {
           : manager.evaluateTranspiledModule(
               requiredTranspiledModule,
               transpiledModule,
-              { force, testGlobals }
+              { force, globals }
             );
       }
 
@@ -978,11 +978,6 @@ export default class TranspiledModule {
 
         return foundModule.path;
       };
-
-      const globals =
-        this.isTestFile || testGlobals
-          ? manager.testRunner.testGlobals(this.module)
-          : {};
 
       globals.__dirname = pathUtils.dirname(this.module.path);
       globals.__filename = this.module.path;
