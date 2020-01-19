@@ -120,7 +120,25 @@ export const state: State = {
     devToolIndex: 0,
     tabPosition: 0,
   },
-  currentSandbox: ({ sandboxes, currentId }) => sandboxes[currentId],
+  currentSandbox: ({ sandboxes, currentId }) => {
+    if (!currentId) {
+      return undefined;
+    }
+
+    if (sandboxes[currentId]) {
+      return sandboxes[currentId];
+    }
+
+    return {
+      id: currentId,
+      alias: '',
+      title: '',
+      description: '',
+      modules: [],
+      directories: [],
+      privacy: 0,
+    };
+  },
   isAllModulesSynced: ({ changedModuleShortids }) =>
     !changedModuleShortids.length,
   currentModule: ({ currentSandbox, currentModuleShortid }) =>

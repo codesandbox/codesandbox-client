@@ -115,7 +115,7 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
       return <NotFound />;
     }
 
-    if (state.editor.isLoading || !state.editor.currentSandbox) {
+    if (!state.editor.currentId) {
       return (
         <>
           <Skeleton

@@ -86,6 +86,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   state.editor.isLoading = !hasExistingSandbox;
   state.editor.notFound = false;
+  state.editor.currentId = newId;
 
   try {
     const sandbox = await effects.api.getSandbox(newId);
