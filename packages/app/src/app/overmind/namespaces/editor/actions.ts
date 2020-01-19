@@ -88,7 +88,27 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   state.editor.notFound = false;
   state.editor.currentId = newId;
 
+  effects.vscode.changeSandbox(
+    {
+      modules: [
+        {
+          id: 'optimistic',
+          shortid: 'optimistic',
+          code: 'Loading Sandbox...',
+          title: 'Untitled',
+          directoryShortid: null,
+        },
+      ],
+      directories: [],
+    },
+    fs => {
+      state.editor.modulesByPath = fs;
+    }
+  );
+
   try {
+    actions.workspace.openDefaultItem();
+
     const sandbox = await effects.api.getSandbox(newId);
 
     actions.internal.setCurrentSandbox(sandbox);

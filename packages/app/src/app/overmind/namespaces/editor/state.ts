@@ -137,6 +137,10 @@ export const state: State = {
       modules: [],
       directories: [],
       privacy: 0,
+      forkCount: 0,
+      likeCount: 0,
+      viewCount: 0,
+      externalResources: [],
     };
   },
   isAllModulesSynced: ({ changedModuleShortids }) =>
