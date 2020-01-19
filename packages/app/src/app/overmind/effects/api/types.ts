@@ -26,3 +26,7 @@ export type SandboxAPIResponse = Omit<Sandbox, 'environmentVariables'> & {
   modules: IModuleAPIResponse[];
   directories: IDirectoryAPIResponse[];
 };
+
+export type SandboxExpensiveDataAPIResponse = {
+  forkCount: number;
+};

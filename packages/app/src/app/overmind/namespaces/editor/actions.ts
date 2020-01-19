@@ -90,6 +90,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   try {
     const sandbox = await effects.api.getSandbox(newId);
 
+    effects.api.getSandboxExpensiveData(newId).then(x => {
+      if (state.editor.currentSandbox.id === newId) {
+        state.editor.currentSandbox.forkCount = x.forkCount;
+      }
+    });
+
     actions.internal.setCurrentSandbox(sandbox);
 
     actions.workspace.openDefaultItem();

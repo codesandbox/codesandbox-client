@@ -32,6 +32,7 @@ import {
   IDirectoryAPIResponse,
   IModuleAPIResponse,
   SandboxAPIResponse,
+  SandboxExpensiveDataAPIResponse,
 } from './types';
 
 let api: Api;
@@ -79,6 +80,15 @@ export default {
 
     // We need to add client side properties for tracking
     return transformSandbox(sandbox);
+  },
+  async getSandboxExpensiveData(
+    id: string
+  ): Promise<SandboxExpensiveDataAPIResponse> {
+    const sandboxData = await api.get<SandboxExpensiveDataAPIResponse>(
+      `/sandboxes/${id}/expensive-data`
+    );
+
+    return sandboxData;
   },
   async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
     const url = id.includes('/')
