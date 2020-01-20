@@ -1,7 +1,7 @@
 import { orderBy } from 'lodash-es';
 import querystring from 'querystring';
 import { NPMDependencies } from 'sandbox/npm';
-import { Module } from '../entities/module';
+import { Module } from '../types/module';
 
 import Manager from '../manager';
 import Transpiler from '../transpilers';

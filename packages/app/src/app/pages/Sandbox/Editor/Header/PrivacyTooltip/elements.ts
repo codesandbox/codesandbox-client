@@ -20,9 +20,9 @@ export const Container = styled(Element)(
   css({
     '.tippy-content': {
       width: '200px',
-      backgroundColor: 'grays.500',
+      backgroundColor: 'grays.600',
       border: '1px solid',
-      borderColor: 'grays.600',
+      borderColor: 'grays.500',
       padding: 4,
       borderRadius: 'medium',
       whiteSpace: 'normal',
@@ -59,10 +59,10 @@ export const Select = styled(Element).attrs({ as: 'select' })(({ theme }) =>
     backgroundRepeat: 'no-repeat',
     backgroundPosition: '96% 50%',
     width: '100%',
-    backgroundColor: 'grays.800',
+    backgroundColor: 'grays.900',
     color: 'white',
     border: '1px solid',
-    borderColor: 'grays.600',
+    borderColor: 'grays.500',
     borderRadius: 'medium',
     paddingX: 2,
     height: 24,
@@ -77,7 +77,7 @@ export const Select = styled(Element).attrs({ as: 'select' })(({ theme }) =>
       opacity: 0.5,
       cursor: 'not-allowed',
       ':hover': {
-        backgroundColor: 'grays.800',
+        backgroundColor: 'grays.900',
       },
     },
   })

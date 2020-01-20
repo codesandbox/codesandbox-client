@@ -1,9 +1,10 @@
-import { dispatch, listen } from 'codesandbox-api';
+import { dispatch, listen, intializedPromise } from 'codesandbox-api';
 import Hook from 'console-feed/lib/Hook';
 import { Encode } from 'console-feed/lib/Transform';
 
 export default function setupConsole() {
-  Hook(window.console, log => {
+  Hook(window.console, async log => {
+    await intializedPromise;
     dispatch({
       type: 'console',
       log,
@@ -23,6 +24,7 @@ export default function setupConsole() {
             try {
               const wrapped = `(${data.command})`;
               // `new Function` is used to validate Javascript syntax
+              // eslint-disable-next-line
               const validate = new Function(wrapped);
               data.command = wrapped;
             } catch (e) {

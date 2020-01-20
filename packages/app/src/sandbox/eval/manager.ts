@@ -9,7 +9,7 @@ import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/temp
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
-import { Module } from './entities/module';
+import { Module } from './types/module';
 import TranspiledModule, {
   ChildModule,
   SerializedTranspiledModule,
@@ -22,7 +22,6 @@ import fetchModule, {
 } from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
-import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
 import { packageFilter } from './utils/resolve-utils';
 
@@ -117,7 +116,7 @@ export default class Manager {
   hardReload: boolean;
   hmrStatus: HMRStatus = 'idle';
   hmrStatusChangeListeners: Set<(status: HMRStatus) => void>;
-  testRunner: TestRunner;
+  testRunner: import('./tests/jest-lite').default;
   isFirstLoad: boolean;
 
   fileResolver: IFileResolver | undefined;
@@ -157,7 +156,6 @@ export default class Manager {
 
     this.modules = modules;
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
-    this.testRunner = new TestRunner(this);
 
     getGlobal().manager = this;
     if (process.env.NODE_ENV === 'development') {
@@ -182,6 +180,18 @@ export default class Manager {
     if (options.hasFileResolver) {
       this.setupFileResolver();
     }
+  }
+
+  async initializeTestRunner() {
+    if (this.testRunner) {
+      return this.testRunner;
+    }
+
+    this.testRunner = await import(
+      /* webpackChunkName: 'jest-lite' */ './tests/jest-lite'
+    ).then(({ default: TestRunner }) => new TestRunner(this));
+
+    return this.testRunner;
   }
 
   setupFileResolver() {
@@ -308,10 +318,7 @@ export default class Manager {
 
   evaluateModule(
     module: Module,
-    {
-      force = false,
-      testGlobals = false,
-    }: { force?: boolean; testGlobals?: boolean } = {}
+    { force = false, globals = {} }: { force?: boolean; globals?: object } = {}
   ) {
     if (this.hardReload && !this.isFirstLoad) {
       // Do a hard reload
@@ -334,7 +341,7 @@ export default class Manager {
       const exports = this.evaluateTranspiledModule(
         transpiledModule,
         undefined,
-        { force, testGlobals }
+        { force, globals }
       );
 
       this.setHmrStatus('idle');
@@ -349,16 +356,13 @@ export default class Manager {
   evaluateTranspiledModule(
     transpiledModule: TranspiledModule,
     initiator?: TranspiledModule,
-    {
-      force = false,
-      testGlobals = false,
-    }: { force?: boolean; testGlobals?: boolean } = {}
+    { force = false, globals = {} }: { force?: boolean; globals?: object } = {}
   ) {
     if (force && transpiledModule.compilation) {
       transpiledModule.compilation = null;
     }
 
-    return transpiledModule.evaluate(this, { force, testGlobals }, initiator);
+    return transpiledModule.evaluate(this, { force, globals }, initiator);
   }
 
   addModule(module: Module) {
@@ -933,7 +937,6 @@ export default class Manager {
   }): Promise<Array<TranspiledModule>> {
     this.transpileJobs = {};
     this.hardReload = false;
-    this.isFirstLoad = false;
 
     this.modules = modules;
 
@@ -984,7 +987,7 @@ export default class Manager {
       this.hardReload = this.configurations.sandbox.parsed.hardReloadOnChange;
     }
 
-    const modulesWithWErrors = this.getTranspiledModules().filter(t => {
+    const modulesWithErrors = this.getTranspiledModules().filter(t => {
       if (t.hasMissingDependencies) {
         t.resetTranspilation();
       }
@@ -992,7 +995,7 @@ export default class Manager {
     });
     const flattenedTModulesToUpdate = (flattenDeep([
       tModulesToUpdate,
-      modulesWithWErrors,
+      modulesWithErrors,
     ]) as unknown) as TranspiledModule[];
 
     const allModulesToUpdate = uniq(flattenedTModulesToUpdate);

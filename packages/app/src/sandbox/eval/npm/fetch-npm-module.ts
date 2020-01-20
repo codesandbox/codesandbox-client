@@ -4,7 +4,7 @@ import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
 import delay from 'sandbox/utils/delay';
-import { Module } from '../entities/module';
+import { Module } from '../types/module';
 import Manager from '../manager';
 
 import getDependencyName from '../utils/get-dependency-name';
