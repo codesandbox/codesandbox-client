@@ -11,7 +11,7 @@ export const Privacy = () => {
     },
     state: {
       editor: { currentSandbox },
-      isPatron,
+      user,
     },
   } = useOvermind();
 
@@ -19,7 +19,7 @@ export const Privacy = () => {
     <Collapsible title="Privacy" defaultOpen>
       <Stack direction="vertical" gap={4} css={css({ paddingX: 3 })}>
         <Select
-          disabled={!isPatron}
+          disabled={!user?.subscription}
           icon={GlobeIcon}
           onChange={({ target: { value } }) =>
             sandboxPrivacyChanged({
@@ -30,18 +30,14 @@ export const Privacy = () => {
           value={currentSandbox.privacy}
         >
           <option value={0}>Public</option>
-
-          {isPatron && (
-            <option value={1}>Unlisted (only available by url)</option>
-          )}
-
-          {isPatron && <option value={2}>Private</option>}
+          <option value={1}>Unlisted (only available by url)</option>
+          <option value={2}>Private</option>
         </Select>
-        {!isPatron ? (
+        {!user?.subscription ? (
           <Text variant="muted" size={2}>
             You an change privacy of a sandbox as a Pro.
             <br />
-            Become a Pro.
+            Become a Pro
           </Text>
         ) : null}
       </Stack>
