@@ -60,9 +60,14 @@ const SelectWithIcon = styled(Element)(
 interface ISelectProps {
   icon?: any;
   placeholder?: string;
+  children?: any;
 }
 
-export const Select = ({ icon = null, placeholder = null, ...props }) => {
+export const Select = ({
+  icon = null,
+  placeholder = null,
+  ...props
+}: ISelectProps) => {
   const PrefixIcon = icon || React.Fragment;
   const SelectContainer = icon ? SelectWithIcon : React.Fragment;
 

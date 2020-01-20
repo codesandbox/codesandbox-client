@@ -13,7 +13,7 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
   onChange?: any;
   onKeyUp?: any;
   placeholder?: string;
-  ref: any;
+  ref?: any;
   value?: string | number;
 }>(
   css({
