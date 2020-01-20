@@ -20,7 +20,7 @@
     "prepublish": "yarn build",
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib --watch)",
     "start:storybook": "start-storybook",
-    "test": "cross-env NODE_ENV=test jest",
+    "test": "cross-env NODE_ENV=test jest --maxWorkers 2",
     "typecheck": "tsc --noEmit"
   },
   "jest": {
@@ -52,7 +52,7 @@
     "@tippy.js/react": "^3.1.1",
     "babel-plugin-preval": "^3.0.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "codesandbox-api": "0.0.23",
+    "codesandbox-api": "0.0.24",
     "color": "0.11.4",
     "date-fns": "^2.0.0",
     "dot-object": "1.9.0",
@@ -66,7 +66,7 @@
     "ot": "^0.0.15",
     "react": "^16.8.6",
     "react-icons": "^2.2.7",
-    "react-input-autosize": "^2.2.1",
+    "react-input-autosize": "2.2.1",
     "react-router-dom": "^5.0.1",
     "react-spring": "^8.0.25",
     "react-textarea-autosize": "^6.1.0",
@@ -93,7 +93,7 @@
     "@types/color": "0.12.1",
     "@types/humps": "^1.1.2",
     "@types/lodash": "^4.14.123",
-    "@types/react": "^16.8.12",
+    "@types/react": "^16.9.17",
     "@types/react-icons": "^2.2.7",
     "@types/storybook__addon-actions": "^3.4.3",
     "@types/styled-components": "^4.1.13",
@@ -112,7 +112,7 @@
     "jest-styled-components": "^6.3.4",
     "jest-svg-transformer": "^1.0.0",
     "rimraf": "^2.6.3",
-    "typescript": "3.7.2",
+    "typescript": "3.7.4",
     "yarn": "^1.17.3"
   }
 }

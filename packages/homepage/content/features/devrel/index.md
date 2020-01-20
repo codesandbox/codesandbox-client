@@ -7,10 +7,10 @@ SEOText:
   the setup steps and boilerplate code, delivering better experiences for
   developers that will grow your community.
 slug: devrel
-tweetText: Loving CodeSandbox and all it's magic.
-tweetJob: Developer Advocate, Stripe
-tweetName: Chris Traganos
-tweetHandle: ctraganos
+tweetText: CodeSandbox continues to amaze me every day.
+tweetJob: Developer Experience, Apollo
+tweetName: Peggy Rayzis
+tweetHandle: peggyrayzis
 bgColor: 0971F1
 coverImage: ./hiring.svg
 coverReversed: true

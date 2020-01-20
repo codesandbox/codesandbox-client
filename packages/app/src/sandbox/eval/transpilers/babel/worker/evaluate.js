@@ -1,6 +1,7 @@
 import resolve from 'browser-resolve';
 import hashsum from 'hash-sum';
 import * as events from 'events';
+import * as crypto from 'crypto';
 import * as util from 'util';
 import { dirname, basename } from 'path';
 import type FSType from 'fs';
@@ -36,6 +37,10 @@ export default function evaluate(
 
     if (requirePath === 'assert') {
       return () => {};
+    }
+
+    if (requirePath === 'crypto') {
+      return crypto;
     }
 
     if (requirePath === 'stream') {
@@ -75,6 +80,10 @@ export default function evaluate(
       availablePlugins[requirePath.replace('@babel/plugin-', '')];
 
     if (plugin && requirePath !== 'react') {
+      // Babel has exports as esmodule, but the plugins are not registered that way sadly
+      if (requirePath.startsWith('@babel/plugin')) {
+        return { __esModule: true, default: plugin };
+      }
       return plugin;
     }
 
@@ -83,6 +92,15 @@ export default function evaluate(
       availablePresets[requirePath.replace('babel-preset-', '')] ||
       availablePresets[requirePath.replace('@babel/preset-', '')];
     if (preset && requirePath !== 'react') {
+      // Babel has exports as esmodule, but the plugins are not registered that way sadly. However, we register
+      // @babel/preset-env ourselves, so in that case we need to ignore that. We register @babel/preset-env to
+      // also export helper functions of the preset, to support vue.
+      if (
+        requirePath.startsWith('@babel/preset') &&
+        requirePath !== '@babel/preset-env'
+      ) {
+        return { __esModule: true, default: plugin };
+      }
       return preset;
     }
 

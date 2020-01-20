@@ -1,6 +1,5 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
-import { activate, initialize } from 'react-devtools-inline/backend';
 import _debug from '@codesandbox/common/lib/utils/debug';
 
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
@@ -8,18 +7,11 @@ import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
-import setupConsole from 'sandbox-hooks/console';
-import setupHistoryListeners from 'sandbox-hooks/url-listeners';
-import {
-  listenForPreviewSecret,
-  getPreviewSecret,
-} from 'sandbox-hooks/preview-secret';
+import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
-
-// Call this before importing React (or any other packages that might import React).
-initialize(window);
+import { endMeasure } from './utils/metrics';
 
 const host = process.env.CODESANDBOX_HOST;
 const debug = _debug('cs:sandbox');
@@ -27,7 +19,9 @@ const debug = _debug('cs:sandbox');
 export const SCRIPT_VERSION =
   document.currentScript && document.currentScript.src;
 
-debug('Booting sandbox');
+debug('Booting sandbox v2');
+
+endMeasure('boot', 'Boot', { lastTime: 0 });
 
 requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js', {});
@@ -63,22 +57,6 @@ requirePolyfills().then(() => {
     listen(handleMessage);
 
     sendReady();
-
-    if (!window.opener) {
-      // Means we're in the editor
-      setupHistoryListeners();
-      setupConsole();
-      listenForPreviewSecret();
-      window.addEventListener('message', ({ data }) => {
-        switch (data.type) {
-          case 'activate':
-            activate(window);
-            break;
-          default:
-            break;
-        }
-      });
-    }
   }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {

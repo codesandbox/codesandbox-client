@@ -1,32 +1,55 @@
+import { ServerContainerStatus } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import React, { FunctionComponent, useState } from 'react';
+
 import { useOvermind } from 'app/overmind';
-// @flow
-import React, { FC, useState } from 'react';
 
 type Props = {
   hidden?: boolean;
+  options: {
+    url?: string;
+  };
   runOnClick?: boolean;
-  options: { url?: string };
 };
-
-const PreviewComponent: FC<Props> = props => {
-  const { state, actions, effects } = useOvermind();
-  const [running, setRunning] = useState(!props.runOnClick);
+export const Preview: FunctionComponent<Props> = ({
+  hidden,
+  options,
+  runOnClick,
+}) => {
+  const {
+    actions: {
+      editor: { errorsCleared, previewActionReceived, projectViewToggled },
+    },
+    effects: {
+      preview: { initializePreview },
+    },
+    state: {
+      editor: {
+        currentModule,
+        currentSandbox,
+        initialPath,
+        isInProjectView,
+        isResizing,
+        previewWindowVisible,
+      },
+      preferences: { settings },
+      server: { containerStatus, error, hasUnrecoverableError },
+    },
+  } = useOvermind();
+  const [running, setRunning] = useState(!runOnClick);
 
   /**
    * Responsible for showing a message when something is happening with SSE. Only used
    * for server sandboxes right now, but we can extend it in the future. It would require
    * a better design if we want to use it for more though.
    */
-  function getOverlayMessage() {
-    const { containerStatus, error, hasUnrecoverableError } = state.server;
-
-    if (containerStatus === 'hibernated') {
+  const getOverlayMessage = () => {
+    if (containerStatus === ServerContainerStatus.HIBERNATED) {
       return 'The container has been hibernated because of inactivity, you can start it by refreshing the browser.';
     }
 
-    if (containerStatus === 'stopped') {
+    if (containerStatus === ServerContainerStatus.STOPPED) {
       return 'Restarting the sandbox...';
     }
 
@@ -35,37 +58,28 @@ const PreviewComponent: FC<Props> = props => {
     }
 
     return undefined;
-  }
-
-  const { options } = props;
-
-  const completelyHidden = !state.editor.previewWindowVisible;
+  };
 
   return running ? (
     <BasePreview
-      onMount={effects.preview.initializePreview}
-      sandbox={state.editor.currentSandbox}
-      privacy={state.editor.currentSandbox.privacy}
-      previewSecret={state.editor.currentSandbox.previewSecret}
-      currentModule={state.editor.currentModule}
-      settings={state.preferences.settings}
-      initialPath={state.editor.initialPath}
-      url={options.url}
-      isInProjectView={state.editor.isInProjectView}
-      onClearErrors={() => actions.editor.errorsCleared()}
-      onAction={action => actions.editor.previewActionReceived({ action })}
-      hide={props.hidden}
-      noPreview={completelyHidden}
-      onToggleProjectView={() => actions.editor.projectViewToggled()}
-      isResizing={state.editor.isResizing}
+      currentModule={currentModule}
+      hide={hidden}
+      initialPath={initialPath}
+      isInProjectView={isInProjectView}
+      isResizing={isResizing}
+      onAction={action => previewActionReceived(action)}
+      onClearErrors={() => errorsCleared()}
+      onMount={initializePreview}
+      noPreview={!previewWindowVisible}
+      onToggleProjectView={() => projectViewToggled()}
       overlayMessage={getOverlayMessage()}
+      previewSecret={currentSandbox.previewSecret}
+      privacy={currentSandbox.privacy}
+      sandbox={currentSandbox}
+      settings={settings}
+      url={options.url}
     />
   ) : (
-    <RunOnClick
-      onClick={() => {
-        setRunning(true);
-      }}
-    />
+    <RunOnClick onClick={() => setRunning(true)} />
   );
 };
-export const Preview = PreviewComponent;

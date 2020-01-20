@@ -3,12 +3,12 @@ import global from '../core/global';
 /**
  * @hidden
  */
-let bfsSetImmediate: (cb: Function) => any;
+let bfsSetImmediate: (cb: Function, ...args: any[]) => any;
 if (typeof(setImmediate) !== "undefined") {
   bfsSetImmediate = setImmediate;
 } else {
   const gScope = global;
-  const timeouts: (() => void)[] = [];
+  const timeouts: ({ fn: (...args: any[]) => void, args: any[] })[] = [];
   const messageName = "zero-timeout-message";
   const canUsePostMessage = function() {
     if (typeof gScope.importScripts !== 'undefined' || !gScope.postMessage) {
@@ -24,8 +24,8 @@ if (typeof(setImmediate) !== "undefined") {
     return postMessageIsAsync;
   };
   if (canUsePostMessage()) {
-    bfsSetImmediate = function(fn: () => void) {
-      timeouts.push(fn);
+    bfsSetImmediate = function(fn: () => void, ...args: any[]) {
+      timeouts.push({ fn, args });
       gScope.postMessage(messageName, "*");
     };
     const handleMessage = function(event: MessageEvent) {
@@ -36,8 +36,8 @@ if (typeof(setImmediate) !== "undefined") {
           event.cancelBubble = true;
         }
         if (timeouts.length > 0) {
-          const fn = timeouts.shift()!;
-          return fn();
+          const { fn, args } = timeouts.shift()!;
+          return fn(...args);
         }
       }
     };
@@ -51,16 +51,17 @@ if (typeof(setImmediate) !== "undefined") {
     const channel = new gScope.MessageChannel();
     channel.port1.onmessage = (event: any) => {
       if (timeouts.length > 0) {
-        return timeouts.shift()!();
+        const { fn, args } = timeouts.shift()!;
+        return fn(...args);
       }
     };
-    bfsSetImmediate = (fn: () => void) => {
-      timeouts.push(fn);
+    bfsSetImmediate = (fn: () => void, ...args: any[]) => {
+      timeouts.push({ fn, args });
       channel.port2.postMessage('');
     };
   } else {
-    bfsSetImmediate = function(fn: () => void) {
-      return setTimeout(fn, 0);
+    bfsSetImmediate = function(fn: () => void, ...args: any[]) {
+      return setTimeout(fn, 0, ...args);
     };
   }
 }

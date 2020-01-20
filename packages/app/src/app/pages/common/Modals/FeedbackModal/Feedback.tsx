@@ -85,6 +85,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
       <AutosizeTextArea
         minRows={3}
         name="feedback"
+        // @ts-ignore
         onChange={onChange}
         placeholder="What are your thoughts?"
         required

@@ -8,6 +8,9 @@ import {
   HeartIcon,
   ReloadIcon,
   NewWindowIcon,
+  CodeSandboxIcon,
+  PreviewIcon,
+  IconButton,
 } from './elements';
 
 export function GlobalActions({
@@ -15,7 +18,21 @@ export function GlobalActions({
   toggleLike,
   offsetBottom,
   isDragging,
+  openEditor,
+  openPreview,
+  smallTouchScreen,
+  previewVisible,
 }) {
+  const smallTouchScreenButton = previewVisible ? (
+    <Button onClick={openEditor}>View Source</Button>
+  ) : (
+    <IconButton onClick={openPreview}>
+      <PreviewIcon />
+    </IconButton>
+  );
+
+  const isEmbedded = window.parent !== window;
+
   return (
     <Container
       align="right"
@@ -33,15 +50,31 @@ export function GlobalActions({
             <HeartIcon liked={sandbox.userLiked} />
           </Button>
         </Tooltip>
-      ) : null}
-      <Button
-        as="a"
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`${sandboxUrl(sandbox)}?from-embed`}
-      >
-        Open Sandbox
-      </Button>
+      ) : (
+        smallTouchScreen &&
+        isEmbedded && (
+          <IconButton
+            as="a"
+            target="_blank"
+            rel="noopener noreferrer"
+            href={sandboxUrl(sandbox)}
+          >
+            <CodeSandboxIcon />
+          </IconButton>
+        )
+      )}
+      {smallTouchScreen ? (
+        smallTouchScreenButton
+      ) : (
+        <Button
+          as="a"
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${sandboxUrl(sandbox)}?from-embed`}
+        >
+          Open Sandbox
+        </Button>
+      )}
     </Container>
   );
 }

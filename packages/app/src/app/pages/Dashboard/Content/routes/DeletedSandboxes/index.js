@@ -1,12 +1,11 @@
+import { Observer } from 'app/overmind';
 import React from 'react';
-import { Observer } from 'app/componentConnectors';
-import Helmet from 'react-helmet';
 import { Query } from 'react-apollo';
+import Helmet from 'react-helmet';
 import RemoveIcon from 'react-icons/lib/md/highlight-remove';
 
-import { Content as Sandboxes } from '../../Sandboxes';
-
 import { DELETED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
+import { Content as Sandboxes } from '../../Sandboxes';
 import { getPossibleTemplates } from '../../Sandboxes/utils';
 
 const DeletedSandboxes = () => (
@@ -20,7 +19,7 @@ const DeletedSandboxes = () => (
     >
       {({ loading, error, data }) => (
         <Observer>
-          {({ store, signals }) => {
+          {({ state, actions }) => {
             if (error) {
               return <div>Error!</div>;
             }
@@ -31,10 +30,10 @@ const DeletedSandboxes = () => (
 
             const possibleTemplates = getPossibleTemplates(sandboxes);
 
-            const orderedSandboxes = store.dashboard.getFilteredSandboxes(
+            const orderedSandboxes = state.dashboard.getFilteredSandboxes(
               sandboxes
             );
-            signals.dashboard.setTrashSandboxes({
+            actions.dashboard.setTrashSandboxes({
               sandboxIds: orderedSandboxes.map(i => i.id),
             });
 
@@ -51,7 +50,7 @@ const DeletedSandboxes = () => (
                           name: 'Empty Trash',
                           Icon: <RemoveIcon />,
                           run: () => {
-                            signals.modalOpened({
+                            actions.modalOpened({
                               modal: 'emptyTrash',
                             });
                           },

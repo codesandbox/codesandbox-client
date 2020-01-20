@@ -14,14 +14,7 @@ function ProfileInfo({ username, subscriptionSince, name, avatarUrl }) {
       <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />
       <Margin bottom={3}>
         <Column justifyContent="space-between">
-          {name && (
-            <Name>
-              {name}
-              {subscriptionSince && (
-                <PatronStar subscriptionSince={subscriptionSince} />
-              )}
-            </Name>
-          )}
+          {name && <Name>{name}</Name>}
           <Username main={!name}>
             {username}
             <a
@@ -31,6 +24,9 @@ function ProfileInfo({ username, subscriptionSince, name, avatarUrl }) {
             >
               <IconWrapper />
             </a>
+            {subscriptionSince && (
+              <PatronStar subscriptionSince={subscriptionSince} />
+            )}
           </Username>
         </Column>
       </Margin>

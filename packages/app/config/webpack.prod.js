@@ -26,8 +26,8 @@ const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
 module.exports = merge(commonConfig, {
   devtool: 'source-map',
   output: {
-    filename: 'static/js/[name].[contenthash:8].js',
-    chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
+    filename: 'static/js/[name].[contenthash:9].js',
+    chunkFilename: 'static/js/[name].[contenthash:9].chunk.js',
   },
   mode: 'production',
   stats: 'verbose',

@@ -11,6 +11,7 @@ const config = require('../config/webpack.prod');
 const paths = require('../config/paths');
 const recursive = require('recursive-readdir');
 const stripAnsi = require('strip-ansi');
+const version = require('@codesandbox/common/lib/version');
 
 // Input: /User/dan/app/build/static/js/main.82be8.js
 // Output: /static/js/main.js
@@ -168,6 +169,8 @@ function build(previousSizeMap) {
     //   }
     // );
 
+    console.log(`Writing version '${version.default}' to version.txt`);
+    fs.writeFileSync(paths.appBuild + '/version.txt', version.default);
     console.log();
 
     let openCommand = process.platform === 'win32' ? 'start' : 'open';

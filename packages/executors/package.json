@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
-    "codesandbox-api": "0.0.23",
+    "codesandbox-api": "0.0.24",
     "debug": "^4.1.1",
     "socket.io-client": "^2.2.0"
   },
@@ -29,6 +29,6 @@
     "@types/socket.io-client": "^1.4.32",
     "tsdx": "^0.6.1",
     "tslib": "^1.9.3",
-    "typescript": "3.7.2"
+    "typescript": "3.7.4"
   }
 }

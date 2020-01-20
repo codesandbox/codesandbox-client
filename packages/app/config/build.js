@@ -34,6 +34,13 @@ const staticAssets = [
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs8',
+  },
+  // For caching purposes
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs7',
   },
   // For caching purposes

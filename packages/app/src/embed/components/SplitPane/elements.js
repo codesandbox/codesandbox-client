@@ -1,74 +1,18 @@
-import styled, { css, keyframes } from 'styled-components';
+import styled from 'styled-components';
 
-const introduction = {
-  slideFromLeft: keyframes(css`
-    0% {
-      margin-left: -12px;
-      background: #fff;
-      opacity: 1;
-    }
-    50% {
-      margin-left: 12px;
-      background: #fff;
-      opacity: 1;
-    }
-    100% {
-      margin-left: 4px;
-      background: #fff;
-      opacity: 1;
-    }
-  `),
-  slideFromRight: keyframes(css`
-    0% {
-      margin-left: 4px;
-      background: #fff;
-      opacity: 1;
-    }
-    50% {
-      margin-left: -20px;
-      background: #fff;
-      opacity: 1;
-    }
-    100% {
-      margin-left: -12px;
-      background: #fff;
-      opacity: 1;
-    }
-  `),
-  fade: keyframes(css`
-    0% {
-      opacity: 1;
-      background: #fff;
-    }
-    100% {
-      opacity: 0.6;
-      background: #242424;
-    }
-  `),
-};
-
-const notIntroducedYetStyles = css`
-  margin-left: ${props => (props.fullSize ? 4 : -12)}px;
-  background: #fff;
-  opacity: 1;
-`;
-
-const introductionAnimation = css`
-  animation: ${props =>
-        props.fullSize
-          ? introduction.slideFromRight
-          : introduction.slideFromLeft}
-      1s,
-    ${introduction.fade} 1s 1s;
-  animation-fill-mode: forwards, forwards;
-`;
+export const RESIZER_WIDTH = 16;
+export const KNOB_WIDTH = 4;
+/**
+ * We leave a bit more room for the user to grab around the resize area, this defines
+ * how much room that actually is
+ */
+export const RESIZER_GRAB_EXTRA_WIDTH = 4;
 
 export const Container = styled.div`
   width: 100%;
   height: 100%;
 
   .Resizer {
-    z-index: 99;
     /* Safari, sigh.
       Quote: We recently encountered this and discovered that promoting the
       affected element to a composite layer with translateZ in CSS fixed
@@ -76,47 +20,37 @@ export const Container = styled.div`
       — https://stackoverflow.com/a/21947628/1501871
     */
     transform: translateZ(0);
+
+    background-color: ${props => props.theme.colors.separator.background};
+    width: ${RESIZER_WIDTH}px;
+    display: block;
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 50;
   }
 
   .Resizer::after {
     content: '';
-    background: #242424;
+    display: flex;
+    background: ${props => props.theme.colors.separator.foreground};
     border-radius: 50px;
-    border: 1px solid #fff;
-    transition: margin 500ms, height 150ms, top 150ms ease;
     position: absolute;
 
-    width: 5px;
-    height: ${props => (props.isDragging ? 32 : 40)}px;
-    top: ${props =>
-      props.isDragging ? `calc(50% - 16px)` : `calc(50% - 20px)`};
-    margin-left: ${props => (props.fullSize ? -12 : 4)}px;
-    opacity: ${props => (props.isDragging ? 0.6 : 0.4)};
-
-    /* intro animations */
-    ${props => {
-      if (props.hasBeenIntroduced) return null;
-      if (props.hasAttention) return introductionAnimation;
-      return notIntroducedYetStyles;
-    }}
+    width: ${KNOB_WIDTH}px;
+    height: 41px;
+    top: calc(50% - 20px);
+    margin-left: ${Math.floor(RESIZER_WIDTH / 2 - KNOB_WIDTH / 2)}px;
+    opacity: 1;
   }
 
-  .Resizer:hover::after {
-    opacity: 0.6;
-  }
-
-  /* Big tap area - 48*2 by 48*/
   .Resizer::before {
     content: '';
     position: absolute;
-    width: calc(48px * 2);
-    height: 64px;
-    top: calc(50% - 32px);
-    left: -48px;
-  }
-
-  .Resizer {
-    cursor: ew-resize;
+    top: 0;
+    bottom: 0;
+    margin-left: -${RESIZER_GRAB_EXTRA_WIDTH}px;
+    width: ${RESIZER_WIDTH + RESIZER_GRAB_EXTRA_WIDTH * 2}px;
+    z-index: 50;
   }
 
   .Pane {
@@ -129,13 +63,4 @@ export const PaneContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-`;
-
-export const PointerOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 99;
 `;

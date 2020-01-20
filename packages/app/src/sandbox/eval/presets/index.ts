@@ -1,6 +1,7 @@
 import { orderBy } from 'lodash-es';
 import querystring from 'querystring';
-import { Module } from '../entities/module';
+import { NPMDependencies } from 'sandbox/npm';
+import { Module } from '../types/module';
 
 import Manager from '../manager';
 import Transpiler from '../transpilers';
@@ -12,6 +13,9 @@ type TranspilerDefinition = {
 };
 
 type SetupFunction = (manager: Manager) => void | Promise<any>;
+type ProcessDependenciesFunction = (
+  dependencies: NPMDependencies
+) => Promise<NPMDependencies>;
 
 type LifeCycleFunction = (
   manager: Manager,
@@ -45,14 +49,17 @@ export default class Preset {
   hasDotEnv: boolean;
 
   /**
+   * Add or remove dependencies to the existing list (or just look at them for some config changes)
+   */
+  processDependencies: ProcessDependenciesFunction;
+  /**
    * Code to run before evaluating and transpiling entry
    */
   setup: SetupFunction;
   /**
-   * Code to run after done
+   * Code to run after evaluation and transpilation
    */
   teardown: LifeCycleFunction;
-
   /**
    * Code to run before evaluation
    */
@@ -64,12 +71,14 @@ export default class Preset {
     alias?: { [path: string]: string },
     {
       hasDotEnv,
+      processDependencies,
       setup,
       teardown,
       htmlDisabled,
       preEvaluate,
     }: {
       hasDotEnv?: boolean;
+      processDependencies?: ProcessDependenciesFunction;
       setup?: SetupFunction;
       preEvaluate?: LifeCycleFunction;
       teardown?: LifeCycleFunction;
@@ -87,6 +96,7 @@ export default class Preset {
     this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json'];
 
     const noop = () => {};
+    this.processDependencies = processDependencies || (async deps => deps);
     this.setup = setup || noop;
     this.teardown = teardown || noop;
     this.preEvaluate = preEvaluate || noop;

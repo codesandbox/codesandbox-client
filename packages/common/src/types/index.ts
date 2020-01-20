@@ -430,15 +430,24 @@ export type Modal = {
 
 export type PackageJSON = {
   name: string;
-  description: string;
-  keywords: string[];
-  main: string;
-  dependencies: {
+  version: string;
+  description?: string;
+  keywords?: string[];
+  main?: string;
+  module?: string;
+  scripts?: {
+    [command: string]: string;
+  };
+  dependencies?: {
     [dep: string]: string;
   };
-  devDependencies: {
+  devDependencies?: {
     [dep: string]: string;
   };
+  jest?: {
+    setupFilesAfterEnv?: string[];
+  };
+  resolutions?: { [dependency: string]: string };
 };
 
 export type UploadFile = {
