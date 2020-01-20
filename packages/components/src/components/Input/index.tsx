@@ -21,5 +21,8 @@ export const Input = styled(Element).attrs({ as: 'input' })(
     '::-webkit-input-placeholder': placeholderStyles,
     '::-ms-input-placeholder': placeholderStyles,
     '::placeholder': placeholderStyles,
+    ':hover, :focus': {
+      borderColor: 'inputOption.activeBorder',
+    },
   })
 );

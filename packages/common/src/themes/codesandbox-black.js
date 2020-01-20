@@ -137,7 +137,7 @@ const colors = {
     placeholderForeground: tokens.grays[300],
   },
   inputOption: {
-    activeBorder: tokens.blues[300],
+    activeBorder: tokens.grays[300],
   },
   inputValidation: {
     infoForeground: null,
