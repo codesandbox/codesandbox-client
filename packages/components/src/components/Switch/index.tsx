@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
+import VisuallyHidden from '@reach/visually-hidden';
 import { Element } from '../Element';
 
 const SwitchBackground = styled.div(
@@ -26,13 +27,13 @@ const SwitchToggle = styled.span(
   })
 );
 
-const SwitchInput = styled.input(
-  css({
-    width: 0,
-    opacity: 0,
-    position: 'absolute',
-  })
-);
+// const SwitchInput = styled.input(
+//   css({
+//     width: 0,
+//     opacity: 0,
+//     position: 'absolute',
+//   })
+// );
 
 const SwitchContainer = styled(Element)(
   css({
@@ -54,12 +55,14 @@ interface ISwitchProps {
 
 export const Switch: React.FC<ISwitchProps> = ({ on, defaultOn, ...props }) => (
   <SwitchContainer as="label">
-    <SwitchInput
-      type="checkbox"
-      checked={on}
-      defaultChecked={defaultOn}
-      {...props}
-    />
+    <VisuallyHidden>
+      <input
+        type="checkbox"
+        checked={on}
+        defaultChecked={defaultOn}
+        {...props}
+      />
+    </VisuallyHidden>
     <SwitchBackground data-component="SwitchBackground">
       <SwitchToggle data-component="SwitchToggle" />
     </SwitchBackground>
