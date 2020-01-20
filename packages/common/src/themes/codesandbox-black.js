@@ -212,7 +212,7 @@ const colors = {
     background: tokens.grays[700],
     hoverBackground: tokens.green,
     border: tokens.grays[600],
-    foreground: tokens.grays[300],
+    foreground: tokens.grays[200],
   },
   sideBarSectionHeader: {
     background: tokens.grays[700],
