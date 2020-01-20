@@ -3,6 +3,7 @@ import {
   Element,
   Collapsible,
   Text,
+  Label,
   Avatar,
   Stack,
   List,
@@ -54,6 +55,8 @@ export const ProjectInfo = () => {
     return frozenUpdated({ frozen: !isFrozen });
   };
 
+  const isForked = forkedFromSandbox || forkedTemplateSandbox;
+
   return (
     <>
       <Collapsible title="Sandbox Info" defaultOpen>
@@ -75,21 +78,23 @@ export const ProjectInfo = () => {
           <Stats sandbox={currentSandbox} />
           <List>
             <ListItem justify="space-between">
-              <Text as="label" htmlFor="frozen">
-                Frozen
-              </Text>
+              <Label htmlFor="frozen">Frozen</Label>
               <Switch
                 id="frozen"
                 onChange={updateFrozenState}
                 on={customTemplate ? sessionFrozen : isFrozen}
               />
             </ListItem>
-            <ListItem justify="space-between">
-              <Text> {forkedTemplateSandbox ? 'Template' : 'Forked From'}</Text>
-              <Link>
-                {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
-              </Link>
-            </ListItem>
+            {isForked ? (
+              <ListItem justify="space-between">
+                <Text>
+                  {forkedTemplateSandbox ? 'Template' : 'Forked From'}
+                </Text>
+                <Link>
+                  {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
+                </Link>
+              </ListItem>
+            ) : null}
             <ListItem justify="space-between">
               <Text>Environment</Text>
               <Link>{template}</Link>

@@ -6,29 +6,35 @@ import React, {
   useState,
 } from 'react';
 import styled from 'styled-components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { Textarea, SidebarRow, Text, FormField } from '@codesandbox/components';
+import {
+  Element,
+  Textarea,
+  SidebarRow,
+  Text,
+  FormField,
+} from '@codesandbox/components';
 import { PenIcon } from './icons';
 
 const DescriptionTrimmed = styled(Text)`
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  flex-wrap: wrap;
+  word-break: break-word;
   overflow: hidden;
 `;
 
 const Icon = styled(PenIcon)`
   cursor: pointer;
-  display: none;
+  opacity: 0;
 `;
 
-const SandboxDescription = styled(SidebarRow)<{ empty: boolean }>`
-  font-style: ${props => (props.empty ? 'normal' : 'italic')};
-  flex-wrap: wrap;
-  word-break: break-all;
+const SandboxDescription = styled(SidebarRow)`
   :hover {
     svg {
-      display: block;
+      opacity: 1;
     }
   }
 `;
@@ -68,10 +74,10 @@ export const Description: FunctionComponent<Props> = ({ editable }) => {
 
   return editing ? (
     <FormField
-      noPadding
       direction="vertical"
       label="Sandbox Description"
       hideLabel
+      css={css({ paddingX: 0 })}
     >
       <Textarea
         onBlur={() => {
@@ -88,11 +94,18 @@ export const Description: FunctionComponent<Props> = ({ editable }) => {
       />
     </FormField>
   ) : (
-    <SandboxDescription gap={4} empty={Boolean(description)}>
+    <SandboxDescription>
       <DescriptionTrimmed>
-        {description || (editable ? 'No description, create one!' : '')}
+        {description ||
+          (editable ? (
+            <Text variant="muted">No description, create one!</Text>
+          ) : null)}
+        {editable && (
+          <Element as="span" marginX={2}>
+            <Icon onClick={() => setEditing(true)} />
+          </Element>
+        )}
       </DescriptionTrimmed>
-      {editable && <Icon onClick={() => setEditing(true)} />}
     </SandboxDescription>
   );
 };

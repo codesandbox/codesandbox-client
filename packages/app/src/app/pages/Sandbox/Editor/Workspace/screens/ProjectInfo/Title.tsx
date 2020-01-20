@@ -6,6 +6,7 @@ import { useOvermind } from 'app/overmind';
 
 import { Text, Input, SidebarRow, FormField } from '@codesandbox/components';
 import styled from 'styled-components';
+import css from '@styled-system/css';
 import { PenIcon } from './icons';
 
 const Icon = styled(PenIcon)`
@@ -64,7 +65,7 @@ export const Title = ({ editable }) => {
   };
 
   return editing ? (
-    <FormField label="Sandbox Name" hideLabel>
+    <FormField label="Sandbox Name" hideLabel css={css({ paddingX: 0 })}>
       <Input
         onBlur={onBlur}
         onChange={onChange}
@@ -78,7 +79,7 @@ export const Title = ({ editable }) => {
       />
     </FormField>
   ) : (
-    <SandboxNameWrapper gap={4}>
+    <SandboxNameWrapper gap={2}>
       <Text>{getSandboxName(currentSandbox)}</Text>
       {editable && <Icon onClick={edit} />}
     </SandboxNameWrapper>
