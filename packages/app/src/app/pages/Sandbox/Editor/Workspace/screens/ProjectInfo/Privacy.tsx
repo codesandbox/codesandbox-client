@@ -1,10 +1,10 @@
 import React from 'react';
-import { withTheme } from 'styled-components';
 import { Collapsible, Text, Stack, Select } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import { css } from '@styled-system/css';
 import { GlobeIcon } from './icons';
 
-export const PrivacyComponent = ({ theme }) => {
+export const Privacy = () => {
   const {
     actions: {
       workspace: { sandboxPrivacyChanged },
@@ -17,11 +17,7 @@ export const PrivacyComponent = ({ theme }) => {
 
   return (
     <Collapsible title="Privacy" defaultOpen>
-      <Stack
-        direction="vertical"
-        gap={4}
-        style={{ padding: `0 ${theme.space[3]}px` }}
-      >
+      <Stack direction="vertical" gap={4} css={css({ paddingX: 3 })}>
         <Select
           disabled={!isPatron}
           icon={GlobeIcon}
@@ -52,5 +48,3 @@ export const PrivacyComponent = ({ theme }) => {
     </Collapsible>
   );
 };
-
-export const Privacy = withTheme(PrivacyComponent);
