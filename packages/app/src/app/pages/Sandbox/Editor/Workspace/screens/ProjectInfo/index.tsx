@@ -3,6 +3,7 @@ import {
   Element,
   Collapsible,
   Text,
+  Link,
   Label,
   Avatar,
   Stack,
@@ -11,7 +12,10 @@ import {
   Switch,
   Stats,
 } from '@codesandbox/components';
+
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { useOvermind } from 'app/overmind';
 
 import { css } from '@styled-system/css';
@@ -19,8 +23,6 @@ import { Title } from './Title';
 import { Description } from './Description';
 import { Privacy } from './Privacy';
 import { Config } from './Config';
-
-const Link = props => <Text variant="muted" {...props} />;
 
 export const ProjectInfo = () => {
   const {
@@ -56,6 +58,7 @@ export const ProjectInfo = () => {
   };
 
   const isForked = forkedFromSandbox || forkedTemplateSandbox;
+  const { url: templateUrl } = getTemplateDefinition(template);
 
   return (
     <>
@@ -89,14 +92,19 @@ export const ProjectInfo = () => {
                 <Text>
                   {forkedTemplateSandbox ? 'Template' : 'Forked From'}
                 </Text>
-                <Link>
+                <Link
+                  href={sandboxUrl(forkedFromSandbox || forkedTemplateSandbox)}
+                  target="_blank"
+                >
                   {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
                 </Link>
               </ListItem>
             ) : null}
             <ListItem justify="space-between">
               <Text>Environment</Text>
-              <Link>{template}</Link>
+              <Link href={templateUrl} target="_blank">
+                {template}
+              </Link>
             </ListItem>
           </List>
         </Stack>
