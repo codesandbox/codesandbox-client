@@ -95,11 +95,8 @@ export const Description: FunctionComponent<Props> = ({ editable }) => {
     </FormField>
   ) : (
     <SandboxDescription>
-      <DescriptionTrimmed>
-        {description ||
-          (editable ? (
-            <Text variant="muted">No description, create one!</Text>
-          ) : null)}
+      <DescriptionTrimmed variant="muted">
+        {description || (editable ? 'No description, create one!' : null)}
         {editable && (
           <Element as="span" marginX={2}>
             <Icon onClick={() => setEditing(true)} />
