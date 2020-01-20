@@ -4,6 +4,7 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 /* eslint-enable import/default */
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 
+import isESModule from 'sandbox/eval/utils/is-es-module';
 import regexGetRequireStatements from './worker/simple-get-require-statements';
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
@@ -12,6 +13,7 @@ import Manager from '../../manager';
 
 import delay from '../../../utils/delay';
 import { shouldTranspile } from './check';
+import { convertEsModule } from './convert-esmodule';
 
 const global = window as any;
 
@@ -46,6 +48,10 @@ class BabelTranspiler extends WorkerTranspiler {
   ): Promise<{ transpiledCode: string }> {
     return new Promise((resolve, reject) => {
       const { path } = loaderContext;
+
+      if (isESModule(code) && path.indexOf('/node_modules') > -1) {
+        code = convertEsModule(path, code);
+      }
 
       // When we find a node_module that already is commonjs we will just get the
       // dependencies from the file and return the same code. We get the dependencies
