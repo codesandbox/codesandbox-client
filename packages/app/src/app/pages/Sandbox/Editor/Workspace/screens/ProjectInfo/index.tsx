@@ -14,7 +14,10 @@ import {
 } from '@codesandbox/components';
 
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  sandboxUrl,
+  profileUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { useOvermind } from 'app/overmind';
 
@@ -71,9 +74,11 @@ export const ProjectInfo = () => {
 
           <Element as="section" css={css({ paddingX: 2 })}>
             {author ? (
-              <Stack gap={2} align="center" marginBottom={4}>
-                <Avatar user={author} /> <Text>{author.username}</Text>
-              </Stack>
+              <Link href={profileUrl(author.username)}>
+                <Stack gap={2} align="center" marginBottom={4}>
+                  <Avatar user={author} /> <Text>{author.username}</Text>
+                </Stack>
+              </Link>
             ) : null}
             <Stats sandbox={currentSandbox} />
           </Element>
