@@ -24,7 +24,7 @@ export const Input = styled(Element).attrs({ as: 'input' })(
 
     ':hover, :focus': {
       borderColor: 'inputOption.activeBorder',
-      // need to use !importantto override styles from
+      // need to use !important to override styles from
       // workbench-theme.css, not proud :/
       outline: 'none !important',
     },

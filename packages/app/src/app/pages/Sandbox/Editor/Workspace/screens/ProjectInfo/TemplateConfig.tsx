@@ -25,9 +25,14 @@ const PickColor = styled(PopoverDisclosure)`
   ${({ theme, color }) => css`
     width: ${theme.space[5]}px;
     height: ${theme.space[4]}px;
-    border: 1px solid inherit;
+    border: 1px solid ${color};
     background: ${color};
     border-radius: ${theme.radii.small}px;
+    &:focus {
+      // need to use !important to override styles from
+      // workbench-theme.css, not proud :/
+      outline: none !important;
+    }
   `}
 `;
 
