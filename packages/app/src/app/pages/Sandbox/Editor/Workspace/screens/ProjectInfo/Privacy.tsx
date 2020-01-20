@@ -1,5 +1,11 @@
 import React from 'react';
-import { Collapsible, Text, Stack, Select } from '@codesandbox/components';
+import {
+  Collapsible,
+  Text,
+  Link,
+  Stack,
+  Select,
+} from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { css } from '@styled-system/css';
 import { GlobeIcon } from './icons';
@@ -33,11 +39,10 @@ export const Privacy = () => {
           <option value={1}>Unlisted (only available by url)</option>
           <option value={2}>Private</option>
         </Select>
-        {!user?.subscription ? (
+        {user?.subscription ? (
           <Text variant="muted" size={2}>
-            You an change privacy of a sandbox as a Pro.
-            <br />
-            Become a Pro
+            You an change privacy of a sandbox as a Pro.{' '}
+            <Link href="/pro">Become a Pro</Link>
           </Text>
         ) : null}
       </Stack>
