@@ -25,6 +25,7 @@ import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
 import { ProjectInfo as ProjectInfoNew } from './screens/ProjectInfo';
+import { Deployment as DeploymentNew } from './screens/Deployment/index';
 
 import { Server } from './items/Server';
 import { SSEDownNotice } from './SSEDownNotice';
@@ -37,7 +38,7 @@ const workspaceTabs = {
   'project-summary': NotOwnedSandboxInfo,
   files: FilesItem,
   github: GitHub,
-  deploy: Deployment,
+  deploy: REDESIGNED_SIDEBAR ? DeploymentNew : Deployment,
   config: REDESIGNED_SIDEBAR ? ConfigurationFilesNew : ConfigurationFiles,
   live: Live,
   server: Server,
