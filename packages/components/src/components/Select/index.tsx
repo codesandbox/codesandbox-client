@@ -61,6 +61,9 @@ interface ISelectProps {
   icon?: any;
   placeholder?: string;
   children?: any;
+  disabled?: boolean;
+  onChange?: any;
+  value?: string | number;
 }
 
 export const Select = ({
