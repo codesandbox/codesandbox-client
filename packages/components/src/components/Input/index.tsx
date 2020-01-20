@@ -7,7 +7,15 @@ const placeholderStyles = {
   fontSize: 3,
 };
 
-export const Input = styled(Element).attrs({ as: 'input' })(
+export const Input = styled(Element).attrs({ as: 'input' })<{
+  type?: string;
+  onBlur?: any;
+  onChange?: any;
+  onKeyUp?: any;
+  placeholder?: string;
+  ref: any;
+  value?: string | number;
+}>(
   css({
     height: 6,
     width: '100%',

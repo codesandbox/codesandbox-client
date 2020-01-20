@@ -71,9 +71,7 @@ export const Title = ({ editable }) => {
         onKeyUp={onKeyUp}
         placeholder="Title"
         ref={(el: any) => el && el.focus()}
-        // @ts-ignore
         type="text"
-        // @ts-ignore
         value={title}
       />
     </FormField>

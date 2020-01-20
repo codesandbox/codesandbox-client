@@ -126,11 +126,7 @@ export const ProjectInfoComponent = ({ theme }) => {
         justify="center"
         style={{ position: 'absolute', width: '100%', bottom: theme.space[3] }}
       >
-        <DeleteButton
-          // @ts-ignore
-          onClick={onDelete}
-          variant="link"
-        >
+        <DeleteButton onClick={onDelete} variant="link">
           {`Delete ${customTemplate ? `Template` : `Sandbox`}`}
         </DeleteButton>
       </Stack>
