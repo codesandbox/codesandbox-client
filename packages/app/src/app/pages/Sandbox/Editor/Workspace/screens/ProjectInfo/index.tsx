@@ -61,21 +61,20 @@ export const ProjectInfo = () => {
     <>
       <Collapsible title="Sandbox Info" defaultOpen>
         <Stack direction="vertical" gap={6}>
-          <Element css={css({ paddingX: 2 })}>
+          <Element as="section" css={css({ paddingX: 2 })}>
             <Title editable />
             <Description editable />
           </Element>
-          {author ? (
-            <Stack
-              gap={2}
-              align="center"
-              marginBottom={4}
-              css={css({ paddingX: 2 })}
-            >
-              <Avatar user={author} /> <Text>{author.username}</Text>
-            </Stack>
-          ) : null}
-          <Stats sandbox={currentSandbox} />
+
+          <Element as="section" css={css({ paddingX: 2 })}>
+            {author ? (
+              <Stack gap={2} align="center" marginBottom={4}>
+                <Avatar user={author} /> <Text>{author.username}</Text>
+              </Stack>
+            ) : null}
+            <Stats sandbox={currentSandbox} />
+          </Element>
+
           <List>
             <ListItem justify="space-between">
               <Label htmlFor="frozen">Frozen</Label>
