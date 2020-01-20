@@ -48,21 +48,23 @@ export const Deployment: FunctionComponent = () => {
 
   return (
     <Collapsible title="Deployment" defaultOpen>
-      <Text variant="muted">
-        You can deploy a production version of your sandbox using one our
-        supported providers.
-      </Text>
-      <Element marginTop={5}>
-        <Integration icon={ZeitIcon} title="ZEIT">
-          <Stack direction="vertical">
-            <Text variant="muted">Enables</Text>
-            <Text>Deployments</Text>
-          </Stack>
-          <Button onClick={() => {}}>Sign In</Button>
-        </Integration>
-      </Element>
-      <Element marginTop={5}>
-        <Netlify />
+      <Element paddingX={2}>
+        <Text variant="muted">
+          You can deploy a production version of your sandbox using one our
+          supported providers.
+        </Text>
+        <Element marginTop={5}>
+          <Integration icon={ZeitIcon} title="ZEIT">
+            <Stack direction="vertical">
+              <Text variant="muted">Enables</Text>
+              <Text>Deployments</Text>
+            </Stack>
+            <Button onClick={() => {}}>Sign In</Button>
+          </Integration>
+        </Element>
+        <Element marginTop={5}>
+          <Netlify />
+        </Element>
       </Element>
     </Collapsible>
   );
