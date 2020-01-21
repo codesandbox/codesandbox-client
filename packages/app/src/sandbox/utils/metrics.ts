@@ -1,4 +1,5 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
 
 const debug = _debug('cs:compiler:measurements');
 
@@ -7,11 +8,16 @@ type MeasurementKey = string;
 const runningMeasurements = new Map<string, number>();
 const measurements: { [measurement: string]: number } = {};
 
-export function measure(key: MeasurementKey) {
-  if (process.env.NODE_ENV !== 'production') {
-    return;
-  }
+const global = getGlobal();
+if (typeof global.performance === 'undefined') {
+  global.performance = {
+    mark: () => {},
+    now: () => Date.now(),
+    measure: () => {},
+  };
+}
 
+export function measure(key: MeasurementKey) {
   try {
     performance.mark(`${key}_start`);
     runningMeasurements.set(key, performance.now());
@@ -27,10 +33,6 @@ export function endMeasure(
     lastTime?: number;
   } = {}
 ) {
-  if (process.env.NODE_ENV !== 'production') {
-    return;
-  }
-
   try {
     const { lastTime } = options;
     performance.mark(`${key}_end`);
