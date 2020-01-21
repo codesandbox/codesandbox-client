@@ -30,14 +30,25 @@ export const Deployment: FunctionComponent = () => {
   if (showPlaceholder) {
     const message = isLoggedIn ? (
       <>
-        You need to own this sandbox to deploy this sandbox to Netlify or ZEIT.{' '}
-        <p>Fork this sandbox to make a deploy!</p>
+        <Text block>
+          You need to own this sandbox to deploy this sandbox to Netlify or
+          ZEIT.
+        </Text>
+        <Text>Fork this sandbox to make a deploy!</Text>
       </>
     ) : (
-      <>You need to be signed in to deploy this sandbox to Netlify or ZEIT.</>
+      <Text>
+        You need to be signed in to deploy this sandbox to Netlify or ZEIT.
+      </Text>
     );
 
-    return <More message={message} id="github" />;
+    return (
+      <Collapsible title="Deployment" defaultOpen>
+        <Element paddingX={2}>
+          <More message={message} id="deployment" />
+        </Element>
+      </Collapsible>
+    );
   }
 
   return (
