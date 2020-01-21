@@ -619,6 +619,7 @@ export default class TranspiledModule {
       } else {
         const transpilers = manager.preset.getLoaders(this.module, this.query);
 
+        const startTime = Date.now();
         for (let i = 0; i < transpilers.length; i += 1) {
           const transpilerConfig = transpilers[i];
           const loaderContext = this.getLoaderContext(
@@ -632,7 +633,6 @@ export default class TranspiledModule {
             .join('!');
 
           try {
-            const startTime = Date.now();
             const {
               transpiledCode,
               sourceMap,
@@ -640,9 +640,6 @@ export default class TranspiledModule {
             } = await transpilerConfig.transpiler.transpile(
               code,
               loaderContext
-            );
-            debug(
-              `Transpiled '${this.getId()}' in ${Date.now() - startTime}ms`
             );
 
             if (this.errors.length) {
@@ -664,6 +661,7 @@ export default class TranspiledModule {
             throw e;
           }
         }
+        debug(`Transpiled '${this.getId()}' in ${Date.now() - startTime}ms`);
 
         this.logWarnings();
       }

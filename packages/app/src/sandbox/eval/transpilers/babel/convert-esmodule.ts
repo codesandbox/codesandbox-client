@@ -438,18 +438,21 @@ export function convertEsModule(path: string, code: string) {
         let importName: string;
 
         if (specifier.type === n.ImportDefaultSpecifier) {
+          // import Test from 'test';
           // const _test = require('test');
-          // var default = _test.default;
-          localName = 'default';
+          // var Test = _test.default;
+          localName = specifier.local.name;
           importName = 'default';
         } else if (specifier.type === n.ImportSpecifier) {
+          // import {Test} from 'test';
           // const _test = require('test');
-          // var $localName = _test.$importName;
+          // var Test = _test.Test;
           localName = specifier.local.name;
           importName = specifier.imported.name;
         } else if (specifier.type === n.ImportNamespaceSpecifier) {
+          // import * as Test from 'test';
           // const _test = require('test');
-          // var $localName = _test;
+          // var Test = _test;
           localName = specifier.local.name;
           importName = null;
         }
