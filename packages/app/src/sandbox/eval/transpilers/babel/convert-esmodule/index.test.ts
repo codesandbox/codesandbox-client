@@ -1,4 +1,4 @@
-import { convertEsModule } from './convert-esmodule';
+import { convertEsModule } from '.';
 
 describe('convert-esmodule', () => {
   it('can convert reexports', () => {
@@ -78,5 +78,41 @@ describe('convert-esmodule', () => {
       import { a as b, /* HELLO WORLD */ c } from './b';
     `;
     expect(convertEsModule('/index.js', code)).toMatchSnapshot();
+  });
+
+  it('can handle class properties', () => {
+    const code = `
+      import T from './test';
+      class T2 {
+        a = () => {
+          return 'test'
+        }
+        b = ''
+        c = {}
+        static d = ''
+      }
+    `;
+    expect(convertEsModule('/index.js', code)).toMatchSnapshot();
+  });
+
+  it('can handle async code', () => {
+    const code = `
+      import T from './test';
+      async () => {
+        const test = await test2()
+      }
+    `;
+    expect(convertEsModule('/index.js', code)).toMatchSnapshot();
+  });
+
+  it.skip('has good perf', () => {
+    const code = require('./big-file');
+
+    const t = Date.now();
+
+    for (let i = 0; i < 1; i++) {
+      convertEsModule('/index.js', code);
+    }
+    console.log(Date.now() - t);
   });
 });

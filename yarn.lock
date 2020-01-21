@@ -3943,6 +3943,14 @@
   resolved "https://registry.yarnpkg.com/@types/asap/-/asap-2.0.0.tgz#d529e9608c83499a62ae08c871c5e62271aa2963"
   integrity sha512-upIS0Gt9Mc8eEpCbYMZ1K8rhNosfKUtimNcINce+zLwJF5UpM3Vv7yz3S5l/1IX+DxTa8lTkUjqynvjRXyJzsg==
 
+"@types/astring@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@types/astring/-/astring-1.3.0.tgz#c576a8eba50592d707e78dccd2aa50513f0c1866"
+  integrity sha512-PYUIKAlUl95QIoWrvTW1aj5YJoiBLukCixTBKkVMq17BbkcX4I6Yn7lkltzsM3fXByV4l2x4tJGYhHqyYnhH4A==
+  dependencies:
+    "@types/estree" "*"
+    "@types/node" "*"
+
 "@types/babel__core@^7.1.0":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.2.tgz#608c74f55928033fce18b99b213c16be4b3d114f"
@@ -4031,22 +4039,10 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.1.tgz#0be64e2fbe7c0bb2a6cad6a152462127a1b0d45a"
   integrity sha512-OKKcc+Tt1rLMg1DTnmgvWHRna3SN51GWs/ERxpgjFNRjCUUVhGG8FEKeFqVTzBv1jEGFqbkJRWfsHV6KAcLT+A==
 
-"@types/escodegen@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@types/escodegen/-/escodegen-0.0.6.tgz#5230a9ce796e042cda6f086dbf19f22ea330659c"
-  integrity sha1-UjCpznluBCzabwhtvxnyLqMwZZw=
-
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
   integrity sha512-OCutwjDZ4aFS6PB1UZ988C4YgwlBHJd6wCeQqaLdmadZ/7e+w79+hbMUFC1QXDNCmdyoRfAFdm0RypzwR+Qpag==
-
-"@types/esprima@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@types/esprima/-/esprima-4.0.2.tgz#0303602d0644086d4802635d7abc9ac0eec57207"
-  integrity sha512-DKqdyuy7Go7ir6iKhZ0jUvgt/h9Q5zb9xS+fLeeXD2QSHv8gC6TimgujBBGfw8dHrpx4+u2HlMv7pkYOOfuUqg==
-  dependencies:
-    "@types/estree" "*"
 
 "@types/estree@*", "@types/estree@0.0.39":
   version "0.0.39"
@@ -6027,6 +6023,11 @@ astral-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-1.0.0.tgz#6c8c3fb827dd43ee3918f27b82782ab7658a6fd9"
   integrity sha512-+Ryf6g3BKoRc7jfp7ad8tM4TtMiaWvbF/1/sQcZPkkS7ag3D5nMBCe2UfOTONtAkaG0tO0ij3C5Lwmf1EiyjHg==
+
+astring@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/astring/-/astring-1.4.3.tgz#b99d4b0349bc7b28934bb9f03f86ec34d69c3a09"
+  integrity sha512-yJlJU/bmN820vL+cbWShu2YQU87dBP5V7BH2N4wODapRv27A2dZtUD0LgjP9lZENvPe9XRoSyWx+pZR6qKqNBw==
 
 async-each@^1.0.0, async-each@^1.0.1:
   version "1.0.3"
@@ -11126,18 +11127,6 @@ escodegen@^1.11.0, escodegen@^1.11.1, escodegen@^1.8.1, escodegen@^1.9.0:
   optionalDependencies:
     source-map "~0.6.1"
 
-escodegen@^1.13.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/escodegen/-/escodegen-1.13.0.tgz#c7adf9bd3f3cc675bb752f202f79a720189cab29"
-  integrity sha512-eYk2dCkxR07DsHA/X2hRBj0CFAZeri/LyDMc0C8JT1Hqi6JnVpMhJ7XFITbb0+yZS3lVkaPL2oCkZ3AVmeVbMw==
-  dependencies:
-    esprima "^4.0.1"
-    estraverse "^4.2.0"
-    esutils "^2.0.2"
-    optionator "^0.8.1"
-  optionalDependencies:
-    source-map "~0.6.1"
-
 escodegen@~1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/escodegen/-/escodegen-1.9.1.tgz#dbae17ef96c8e4bedb1356f4504fa4cc2f7cb7e2"
@@ -11418,7 +11407,7 @@ esprima@^3.1.3, esprima@~3.1.0:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-3.1.3.tgz#fdca51cee6133895e3c88d535ce49dbff62a4633"
 
-esprima@^4.0.0, esprima@^4.0.1, esprima@~4.0.0:
+esprima@^4.0.0, esprima@~4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
   integrity sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==
@@ -19078,6 +19067,11 @@ merge2@^1.2.3:
 merge@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.0.tgz#7531e39d4949c281a66b8c5a6e0265e8b05894da"
+
+meriyah@^1.9.7:
+  version "1.9.7"
+  resolved "https://registry.yarnpkg.com/meriyah/-/meriyah-1.9.7.tgz#97369edbb3ddf86f3d53d5f99f136004a80096d3"
+  integrity sha512-IVZutbB6AdgZj11HAXFFzlQPoCVXda4rCqb3xlI5Tqkw69jR37PmaQO2uM5dbMA5m14jgWGg3D/GUF0m3gWvLg==
 
 methods@~1.1.2:
   version "1.1.2"
