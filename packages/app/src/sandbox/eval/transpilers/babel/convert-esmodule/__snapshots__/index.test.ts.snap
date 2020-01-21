@@ -20,7 +20,12 @@ exports.default = $csb__default;
 
 exports[`convert-esmodule can convert default imports 1`] = `
 "var $csb__b = require(\\"./b\\");
-var a = $csb__b.default;
+var a = $_csb__interopRequireDefault($csb__b).default;
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
 "
 `;
 
@@ -84,16 +89,21 @@ var b = $csb__b.a;
 
 exports[`convert-esmodule can handle async code 1`] = `
 "var $csb__test = require(\\"./test\\");
-var T = $csb__test.default;
+var T = $_csb__interopRequireDefault($csb__test).default;
 (async () => {
   const test = await test2();
 });
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
 "
 `;
 
 exports[`convert-esmodule can handle class properties 1`] = `
 "var $csb__test = require(\\"./test\\");
-var T = $csb__test.default;
+var T = $_csb__interopRequireDefault($csb__test).default;
 class T2 {
   a = () => {
     return \\"test\\";
@@ -101,6 +111,11 @@ class T2 {
   b = \\"\\"
   c = {}
   static d = \\"\\"
+}
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
 }
 "
 `;

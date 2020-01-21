@@ -10,6 +10,7 @@ import {
   generateExportMemberStatement,
   generateExportStatement,
   generateEsModuleSpecifier,
+  generateInteropRequire,
 } from './utils';
 import { customGenerator } from './generator';
 
@@ -41,6 +42,16 @@ export function convertEsModule(code: string) {
 
     program.body.unshift(generateEsModuleSpecifier());
     i++;
+  }
+
+  let addedDefaultInterop = false;
+  function addDefaultInterop() {
+    if (addedDefaultInterop) {
+      return;
+    }
+    addedDefaultInterop = true;
+
+    program.body.push(generateInteropRequire());
   }
 
   for (; i < program.body.length; i++) {
@@ -182,10 +193,48 @@ export function convertEsModule(code: string) {
         if (specifier.type === n.ImportDefaultSpecifier) {
           // import Test from 'test';
           // const _test = require('test');
-          // var Test = _test.default;
+          // var Test = interopRequireDefault(_test);
           localName = specifier.local.name;
           importName = 'default';
-        } else if (specifier.type === n.ImportSpecifier) {
+          addDefaultInterop();
+
+          program.body.splice(i, 0, {
+            type: 'VariableDeclaration',
+            kind: 'var',
+            declarations: [
+              {
+                type: 'VariableDeclarator',
+                init: {
+                  type: 'MemberExpression',
+                  object: {
+                    type: 'CallExpression',
+                    callee: {
+                      type: 'Identifier',
+                      name: '$_csb__interopRequireDefault',
+                    },
+                    arguments: [
+                      {
+                        type: 'Identifier',
+                        name: varName,
+                      },
+                    ],
+                  },
+                  computed: false,
+                  property: {
+                    type: 'Identifier',
+                    name: 'default',
+                  },
+                },
+                id: {
+                  type: 'Identifier',
+                  name: localName,
+                },
+              },
+            ],
+          });
+          return;
+        }
+        if (specifier.type === n.ImportSpecifier) {
           // import {Test} from 'test';
           // const _test = require('test');
           // var Test = _test.Test;
