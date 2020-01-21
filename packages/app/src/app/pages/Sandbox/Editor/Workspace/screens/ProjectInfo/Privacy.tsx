@@ -18,11 +18,10 @@ export const Privacy = () => {
     state: {
       editor: { currentSandbox },
       user,
-      isPatron,
     },
   } = useOvermind();
 
-  const isPaidUser = user?.subscription || isPatron;
+  const isPaidUser = user?.subscriptionSince;
 
   return (
     <Collapsible title="Privacy" defaultOpen>
