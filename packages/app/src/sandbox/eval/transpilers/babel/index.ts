@@ -49,11 +49,12 @@ class BabelTranspiler extends WorkerTranspiler {
   ): Promise<{ transpiledCode: string }> {
     return new Promise((resolve, reject) => {
       const { path } = loaderContext;
+      let newCode = code;
 
-      if (isESModule(code) && path.indexOf('/node_modules') > -1) {
+      if (isESModule(newCode) && path.indexOf('/node_modules') > -1) {
         try {
           measure(`es-${path}`);
-          code = convertEsModule(path, code);
+          newCode = convertEsModule(newCode);
           endMeasure(`es-${path}`);
         } catch (e) {
           console.warn(
@@ -69,9 +70,9 @@ class BabelTranspiler extends WorkerTranspiler {
       if (
         (loaderContext.options.simpleRequire ||
           path.startsWith('/node_modules')) &&
-        !shouldTranspile(code, path)
+        !shouldTranspile(newCode, path)
       ) {
-        regexGetRequireStatements(code).forEach(dependency => {
+        regexGetRequireStatements(newCode).forEach(dependency => {
           if (dependency.isGlob) {
             loaderContext.addDependenciesInDirectory(dependency.path);
           } else {
@@ -80,7 +81,7 @@ class BabelTranspiler extends WorkerTranspiler {
         });
 
         resolve({
-          transpiledCode: code,
+          transpiledCode: newCode,
         });
         return;
       }
@@ -119,7 +120,7 @@ class BabelTranspiler extends WorkerTranspiler {
 
       this.queueTask(
         {
-          code,
+          code: newCode,
           config: babelConfig,
           path,
           loaderOptions,

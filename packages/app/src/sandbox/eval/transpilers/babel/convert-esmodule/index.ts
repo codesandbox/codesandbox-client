@@ -3,7 +3,6 @@
 import * as meriyah from 'meriyah';
 import * as astring from 'astring';
 import { basename } from 'path';
-import { measure, endMeasure } from '../../../../utils/metrics';
 import { Syntax as n } from './syntax';
 import {
   generateRequireStatement,
@@ -17,7 +16,7 @@ import { customGenerator } from './generator';
 /**
  * Converts esmodule code to commonjs code, built to be as fast as possible
  */
-export function convertEsModule(path: string, code: string) {
+export function convertEsModule(code: string) {
   const usedVarNames = [];
 
   const getVarName = (name: string) => {
