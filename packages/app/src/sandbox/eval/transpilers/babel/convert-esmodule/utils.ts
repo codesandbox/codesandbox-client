@@ -363,3 +363,43 @@ export function generateInteropRequire() {
     },
   };
 }
+
+export function generateInteropRequireExpression(
+  varName: string,
+  localName: string
+) {
+  return {
+    type: n.VariableDeclaration,
+    kind: 'var' as 'var',
+    declarations: [
+      {
+        type: n.VariableDeclarator,
+        init: {
+          type: n.MemberExpression,
+          object: {
+            type: n.CallExpression,
+            callee: {
+              type: n.Identifier,
+              name: '$_csb__interopRequireDefault',
+            },
+            arguments: [
+              {
+                type: n.Identifier,
+                name: varName,
+              },
+            ],
+          },
+          computed: false,
+          property: {
+            type: n.Identifier,
+            name: 'default',
+          },
+        },
+        id: {
+          type: n.Identifier,
+          name: localName,
+        },
+      },
+    ],
+  };
+}

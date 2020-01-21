@@ -11,6 +11,7 @@ import {
   generateExportStatement,
   generateEsModuleSpecifier,
   generateInteropRequire,
+  generateInteropRequireExpression,
 } from './utils';
 import { customGenerator } from './generator';
 
@@ -193,45 +194,16 @@ export function convertEsModule(code: string) {
         if (specifier.type === n.ImportDefaultSpecifier) {
           // import Test from 'test';
           // const _test = require('test');
-          // var Test = interopRequireDefault(_test);
+          // var Test = interopRequireDefault(_test).default;
           localName = specifier.local.name;
           importName = 'default';
           addDefaultInterop();
 
-          program.body.splice(i, 0, {
-            type: 'VariableDeclaration',
-            kind: 'var',
-            declarations: [
-              {
-                type: 'VariableDeclarator',
-                init: {
-                  type: 'MemberExpression',
-                  object: {
-                    type: 'CallExpression',
-                    callee: {
-                      type: 'Identifier',
-                      name: '$_csb__interopRequireDefault',
-                    },
-                    arguments: [
-                      {
-                        type: 'Identifier',
-                        name: varName,
-                      },
-                    ],
-                  },
-                  computed: false,
-                  property: {
-                    type: 'Identifier',
-                    name: 'default',
-                  },
-                },
-                id: {
-                  type: 'Identifier',
-                  name: localName,
-                },
-              },
-            ],
-          });
+          program.body.splice(
+            i,
+            0,
+            generateInteropRequireExpression(varName, localName)
+          );
           return;
         }
         if (specifier.type === n.ImportSpecifier) {
