@@ -5,8 +5,9 @@ import { Identifier } from 'meriyah/dist/estree';
 /**
  * Add support for next syntax
  */
-export const customGenerator = Object.assign({}, astring.baseGenerator, {
-  FieldDefinition: function(
+export const customGenerator = {
+  ...astring.baseGenerator,
+  FieldDefinition(
     node: meriyah.ESTree.FieldDefinition,
     state: { write(s: string): void }
   ) {
@@ -19,4 +20,4 @@ export const customGenerator = Object.assign({}, astring.baseGenerator, {
     state.write(' = ');
     this[node.value.type](node.value, state);
   },
-});
+};
