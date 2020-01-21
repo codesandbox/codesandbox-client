@@ -21,7 +21,7 @@ export const Privacy = () => {
     },
   } = useOvermind();
 
-  const isPaidUser = user?.subscriptionSince;
+  const isPaidUser = user?.subscription;
 
   return (
     <Collapsible title="Privacy" defaultOpen>
