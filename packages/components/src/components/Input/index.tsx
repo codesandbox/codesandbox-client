@@ -21,5 +21,16 @@ export const Input = styled(Element).attrs({ as: 'input' })(
     '::-webkit-input-placeholder': placeholderStyles,
     '::-ms-input-placeholder': placeholderStyles,
     '::placeholder': placeholderStyles,
+
+    ':hover, :focus': {
+      borderColor: 'inputOption.activeBorder',
+      // need to use !important to override styles from
+      // workbench-theme.css, not proud :/
+      outline: 'none !important',
+    },
+    ':disabled': {
+      opacity: 0.4,
+      borderColor: 'input.border', // (default border)
+    },
   })
 );

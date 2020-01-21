@@ -3,6 +3,8 @@ import {
   Element,
   Collapsible,
   Text,
+  Link,
+  Label,
   Avatar,
   Stack,
   List,
@@ -10,7 +12,13 @@ import {
   Switch,
   Stats,
 } from '@codesandbox/components';
+
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import {
+  sandboxUrl,
+  profileUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { useOvermind } from 'app/overmind';
 
 import { css } from '@styled-system/css';
@@ -18,8 +26,6 @@ import { Title } from './Title';
 import { Description } from './Description';
 import { Privacy } from './Privacy';
 import { Config } from './Config';
-
-const Link = props => <Text variant="muted" {...props} />;
 
 export const ProjectInfo = () => {
   const {
@@ -54,45 +60,56 @@ export const ProjectInfo = () => {
     return frozenUpdated({ frozen: !isFrozen });
   };
 
+  const isForked = forkedFromSandbox || forkedTemplateSandbox;
+  const { url: templateUrl } = getTemplateDefinition(template);
+
   return (
     <>
       <Collapsible title="Sandbox Info" defaultOpen>
         <Stack direction="vertical" gap={6}>
-          <Element css={css({ paddingX: 2 })}>
+          <Element as="section" css={css({ paddingX: 2 })}>
             <Title editable />
             <Description editable />
           </Element>
-          {author ? (
-            <Stack
-              gap={2}
-              align="center"
-              marginBottom={4}
-              css={css({ paddingX: 2 })}
-            >
-              <Avatar user={author} /> <Text>{author.username}</Text>
-            </Stack>
-          ) : null}
-          <Stats sandbox={currentSandbox} />
+
+          <Element as="section" css={css({ paddingX: 2 })}>
+            {author ? (
+              <Link href={profileUrl(author.username)}>
+                <Stack gap={2} align="center" marginBottom={4}>
+                  <Avatar user={author} /> <Text>{author.username}</Text>
+                </Stack>
+              </Link>
+            ) : null}
+            <Stats sandbox={currentSandbox} />
+          </Element>
+
           <List>
             <ListItem justify="space-between">
-              <Text as="label" htmlFor="frozen">
-                Frozen
-              </Text>
+              <Label htmlFor="frozen">Frozen</Label>
               <Switch
                 id="frozen"
                 onChange={updateFrozenState}
                 on={customTemplate ? sessionFrozen : isFrozen}
               />
             </ListItem>
-            <ListItem justify="space-between">
-              <Text> {forkedTemplateSandbox ? 'Template' : 'Forked From'}</Text>
-              <Link>
-                {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
-              </Link>
-            </ListItem>
+            {isForked ? (
+              <ListItem justify="space-between">
+                <Text>
+                  {forkedTemplateSandbox ? 'Template' : 'Forked From'}
+                </Text>
+                <Link
+                  href={sandboxUrl(forkedFromSandbox || forkedTemplateSandbox)}
+                  target="_blank"
+                >
+                  {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
+                </Link>
+              </ListItem>
+            ) : null}
             <ListItem justify="space-between">
               <Text>Environment</Text>
-              <Link>{template}</Link>
+              <Link href={templateUrl} target="_blank">
+                {template}
+              </Link>
             </ListItem>
           </List>
         </Stack>

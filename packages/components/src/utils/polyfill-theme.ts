@@ -27,6 +27,9 @@ const polyfillTheme = vsCodeTheme =>
     input: {
       placeholderForeground: vsCodeTheme.input.placeholderForeground,
     },
+    inputOption: {
+      activeBorder: vsCodeTheme.input.placeholderForeground,
+    },
     avatar: {
       border: (vsCodeTheme.sideBar || {}).border || 'red',
     },

@@ -7,6 +7,7 @@ export * from './components/Avatar';
 export * from './components/Button';
 export * from './components/Input';
 export * from './components/Label';
+export * from './components/Link';
 export * from './components/SearchInput';
 export * from './components/Select';
 export * from './components/Stats';
