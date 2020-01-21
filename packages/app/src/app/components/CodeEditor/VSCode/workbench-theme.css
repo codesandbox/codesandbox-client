@@ -72,9 +72,9 @@
   cursor: pointer;
 }
 
-.monaco-shell a {
+/* .monaco-shell a {
   text-decoration: none;
-}
+} */
 
 .monaco-shell a:active {
   color: inherit;

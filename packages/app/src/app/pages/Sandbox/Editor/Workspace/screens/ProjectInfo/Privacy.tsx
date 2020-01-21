@@ -42,7 +42,9 @@ export const Privacy = () => {
         {user?.subscription ? (
           <Text variant="muted" size={2}>
             You an change privacy of a sandbox as a Pro.{' '}
-            <Link href="/pro">Become a Pro</Link>
+            <Link href="/pro" css={{ textDecoration: 'underline' }}>
+              Become a Pro
+            </Link>
           </Text>
         ) : null}
       </Stack>
