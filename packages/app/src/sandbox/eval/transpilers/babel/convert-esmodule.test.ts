@@ -65,4 +65,18 @@ describe('convert-esmodule', () => {
     `;
     expect(convertEsModule('/index.js', code)).toMatchSnapshot();
   });
+
+  it('ignores comments', () => {
+    const code = `
+      // import { a as b } from './b';
+    `;
+    expect(convertEsModule('/index.js', code)).toMatchSnapshot();
+  });
+
+  it('can handle inline comments', () => {
+    const code = `
+      import { a as b, /* HELLO WORLD */ c } from './b';
+    `;
+    expect(convertEsModule('/index.js', code)).toMatchSnapshot();
+  });
 });

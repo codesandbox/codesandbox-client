@@ -1,3 +1,5 @@
+// This code is written to be performant, that's why we opted to ignore these linting issues
+/* eslint-disable no-loop-func, no-continue */
 import * as esprima from 'esprima';
 import escodegen from 'escodegen';
 import { basename } from 'path';
@@ -427,6 +429,7 @@ export function convertEsModule(path: string, code: string) {
       }
       const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
 
+      // Create require statement instead of the import
       program.body[i] = generateRequireStatement(varName, source.value);
       i++;
 
@@ -435,13 +438,18 @@ export function convertEsModule(path: string, code: string) {
         let importName: string;
 
         if (specifier.type === n.ImportDefaultSpecifier) {
+          // const _test = require('test');
+          // var default = _test.default;
           localName = 'default';
           importName = 'default';
         } else if (specifier.type === n.ImportSpecifier) {
+          // const _test = require('test');
+          // var $localName = _test.$importName;
           localName = specifier.local.name;
           importName = specifier.imported.name;
         } else if (specifier.type === n.ImportNamespaceSpecifier) {
-          // Wildcard, TODO
+          // const _test = require('test');
+          // var $localName = _test;
           localName = specifier.local.name;
           importName = null;
         }

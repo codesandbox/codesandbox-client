@@ -66,3 +66,11 @@ exports[`convert-esmodule can handle as imports 1`] = `
 "var $csb__b = require('./b');
 var b = $csb__b.a;"
 `;
+
+exports[`convert-esmodule can handle inline comments 1`] = `
+"var $csb__b = require('./b');
+var b = $csb__b.a;
+var c = $csb__b.c;"
+`;
+
+exports[`convert-esmodule ignores comments 1`] = `""`;
