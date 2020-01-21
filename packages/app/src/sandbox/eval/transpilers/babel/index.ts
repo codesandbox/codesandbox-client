@@ -51,9 +51,15 @@ class BabelTranspiler extends WorkerTranspiler {
       const { path } = loaderContext;
 
       if (isESModule(code) && path.indexOf('/node_modules') > -1) {
-        measure(`es-${path}`);
-        code = convertEsModule(path, code);
-        endMeasure(`es-${path}`);
+        try {
+          measure(`es-${path}`);
+          code = convertEsModule(path, code);
+          endMeasure(`es-${path}`);
+        } catch (e) {
+          console.warn(
+            `Error when converting '${path}' esmodule to commonjs: ${e.message}`
+          );
+        }
       }
 
       // When we find a node_module that already is commonjs we will just get the
