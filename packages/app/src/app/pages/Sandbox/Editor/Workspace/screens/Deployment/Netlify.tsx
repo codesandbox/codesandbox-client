@@ -13,6 +13,7 @@ import {
   Button,
   Integration,
 } from '@codesandbox/components';
+import { css } from '@styled-system/css';
 import { NetlifyIcon, FileIcon, VisitIcon, FlagIcon } from './icons';
 
 export const Netlify = () => {
@@ -56,47 +57,56 @@ export const Netlify = () => {
           >
             Deploy
           </Button>
+          <Element
+            css={css({
+              gridColumnStart: 1,
+              gridColumnEnd: 3,
+            })}
+          >
+            {netlifySite ? (
+              <List>
+                <ListItem>
+                  <Text weight="bold">{netlifySite.name}</Text>
+                </ListItem>
+                {building && !netlifyLogs && (
+                  <ListItem>
+                    <Text variant="muted">Building</Text>
+                  </ListItem>
+                )}
+                {netlifySite.url ? (
+                  <ListAction
+                    onClick={() => window.open(netlifySite.url, '_blank')}
+                  >
+                    <Element marginRight={2}>
+                      <VisitIcon />
+                    </Element>{' '}
+                    Visit Site
+                  </ListAction>
+                ) : null}
+                {netlifySite.url ? (
+                  <ListAction
+                    onClick={() => window.open(netlifyClaimUrl, '_blank')}
+                  >
+                    <Element marginRight={2}>
+                      <FlagIcon />
+                    </Element>{' '}
+                    Claim Site
+                  </ListAction>
+                ) : null}
+                {netlifyLogs ? (
+                  <ListAction
+                    onClick={() => modalOpened({ modal: 'netlifyLogs' })}
+                  >
+                    <Element marginRight={2}>
+                      <FileIcon />
+                    </Element>{' '}
+                    View Logs
+                  </ListAction>
+                ) : null}
+              </List>
+            ) : null}
+          </Element>
         </Integration>
-        {netlifySite ? (
-          <List>
-            <ListItem>
-              <Text weight="bold">{netlifySite.name}</Text>
-            </ListItem>
-            {building && !netlifyLogs && (
-              <ListItem>
-                <Text variant="muted">Building</Text>
-              </ListItem>
-            )}
-            {netlifySite.url ? (
-              <ListAction
-                onClick={() => window.open(netlifySite.url, '_blank')}
-              >
-                <Element marginRight={2}>
-                  <VisitIcon />
-                </Element>{' '}
-                Visit Site
-              </ListAction>
-            ) : null}
-            {netlifySite.url ? (
-              <ListAction
-                onClick={() => window.open(netlifyClaimUrl, '_blank')}
-              >
-                <Element marginRight={2}>
-                  <FlagIcon />
-                </Element>{' '}
-                Claim Site
-              </ListAction>
-            ) : null}
-            {netlifyLogs ? (
-              <ListAction onClick={() => modalOpened({ modal: 'netlifyLogs' })}>
-                <Element marginRight={2}>
-                  <FileIcon />
-                </Element>{' '}
-                View Logs
-              </ListAction>
-            ) : null}
-          </List>
-        ) : null}
       </>
     )
   );

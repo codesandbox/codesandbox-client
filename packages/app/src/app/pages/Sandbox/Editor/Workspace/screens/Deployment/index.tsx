@@ -2,16 +2,10 @@ import React, { FunctionComponent, useEffect } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import {
-  Element,
-  Collapsible,
-  Text,
-  Stack,
-  Button,
-  Integration,
-} from '@codesandbox/components';
-import { ZeitIcon } from './icons';
+import { Element, Collapsible, Text } from '@codesandbox/components';
+
 import { Netlify } from './Netlify';
+import { Zeit } from './Zeit';
 
 import { More } from '../../items/More';
 
@@ -53,15 +47,7 @@ export const Deployment: FunctionComponent = () => {
           You can deploy a production version of your sandbox using one our
           supported providers.
         </Text>
-        <Element marginTop={5}>
-          <Integration icon={ZeitIcon} title="ZEIT">
-            <Stack direction="vertical">
-              <Text variant="muted">Enables</Text>
-              <Text>Deployments</Text>
-            </Stack>
-            <Button onClick={() => {}}>Sign In</Button>
-          </Integration>
-        </Element>
+        <Zeit />
         <Element marginTop={5}>
           <Netlify />
         </Element>
