@@ -82,6 +82,7 @@ const context: any = window;
 export class VSCodeEffect {
   public initialized: Promise<unknown>;
   public sandboxFsSync: SandboxFsSync;
+  private mountableFilesystem: any;
 
   private monaco: any;
   private editorApi: any;
@@ -144,7 +145,8 @@ export class VSCodeEffect {
       this.containerExtensionHost = ExtHostWorkerLoader.default;
     });
 
-    this.initialized = this.initializeFileSystem().then(() => {
+    this.initialized = this.initializeFileSystem().then(mfs => {
+      this.mountableFilesystem = mfs;
       // We want to initialize before VSCode, but after browserFS is configured
       // For first-timers initialize a theme in the cache so it doesn't jump colors
       initializeExtensionsFolder();
@@ -313,6 +315,18 @@ export class VSCodeEffect {
 
     if (isServer) {
       childProcess.addDefaultForkHandler(this.createContainerForkHandler());
+      window.BrowserFS.FileSystem.CodeSandboxEditorFS.Create(
+        {
+          api: {
+            getSandboxFs: this.options.getSandboxFs,
+          },
+        },
+        (sandboxError, sandboxFS) => {
+          console.log(this.mountableFilesystem);
+          this.mountableFilesystem.umount('/sandbox');
+          this.mountableFilesystem.mount('/sandbox', sandboxFS);
+        }
+      );
     } else {
       childProcess.addDefaultForkHandler(this.clientExtensionHost);
     }
@@ -492,12 +506,13 @@ export class VSCodeEffect {
         if (event.data.$type === 'request_lsp_endpoint') {
           event.target.postMessage({
             $type: 'respond_lsp_endpoint',
-            $data: `wss://${
+            $data: 'ws://localhost:1023',
+            /* `wss://${
               this.options.getCurrentSandbox().id
             }-lsp.sse.codesandbox.${
               'stream'
               // process.env.STAGING_API || process.env.STAGING ? 'stream' : 'io'
-            }/`,
+            }/`, */
           });
         }
       });
@@ -523,6 +538,108 @@ export class VSCodeEffect {
 
   private initializeFileSystem() {
     return new Promise((resolve, reject) => {
+      window.BrowserFS.FileSystem.InMemory.Create({}, (rootError, root) => {
+        window.BrowserFS.FileSystem.CodeSandboxEditorFS.Create(
+          {
+            api: {
+              getSandboxFs: this.options.getSandboxFs,
+            },
+          },
+          (sandboxError, sandbox) => {
+            window.BrowserFS.FileSystem.TypingContainerFS.Create(
+              {
+                manager: {
+                  getTranspiledModules: () => this.sandboxFsSync.getTypes(),
+                  addModule() {},
+                  removeModule() {},
+                  moveModule() {},
+                  updateModule() {},
+                },
+              },
+              (nodeModulesError, nodeModules) => {
+                window.BrowserFS.FileSystem.LocalStorage.Create(
+                  {},
+                  (vscodeError, vscode) => {
+                    window.BrowserFS.FileSystem.LocalStorage.Create(
+                      {},
+                      (homeError, home) => {
+                        window.BrowserFS.FileSystem.InMemory.Create(
+                          {},
+                          (writableExtensionsError, writableExtensions) => {
+                            window.BrowserFS.FileSystem.BundledHTTPRequest.Create(
+                              {
+                                index:
+                                  EXTENSIONS_LOCATION +
+                                  '/extensions/index.json',
+                                baseUrl: EXTENSIONS_LOCATION + '/extensions',
+                                bundle:
+                                  EXTENSIONS_LOCATION +
+                                  '/bundles/main.min.json',
+                                logReads:
+                                  process.env.NODE_ENV === 'development',
+                              },
+                              (readableExtensionsError, readableExtensions) => {
+                                window.BrowserFS.FileSystem.OverlayFS.Create(
+                                  {
+                                    writable: writableExtensions,
+                                    readable: readableExtensions,
+                                  },
+                                  (extensionsError, extensions) => {
+                                    window.BrowserFS.FileSystem.InMemory.Create(
+                                      {},
+                                      (customThemeError, customTheme) => {
+                                        window.BrowserFS.FileSystem.MountableFileSystem.Create(
+                                          {
+                                            '/': root,
+                                            '/sandbox': sandbox,
+                                            '/sandbox/node_modules': nodeModules,
+                                            '/vscode': vscode,
+                                            '/home': home,
+                                            '/extensions': extensions,
+                                            '/extensions/custom-theme': customTheme,
+                                          },
+                                          (mfsError, mfs) => {
+                                            window.BrowserFS.initialize(mfs);
+                                            if (mfsError) {
+                                              reject(mfsError);
+                                            } else {
+                                              resolve(mfs);
+                                            }
+                                          }
+                                        );
+                                      }
+                                    );
+                                  }
+                                );
+                              }
+                            );
+                          }
+                        );
+                      }
+                    );
+                  }
+                );
+              }
+            );
+          }
+        );
+      });
+      /*
+      window.BrowserFS.FileSystem.MountableFileSystem.Create(
+        {
+          '/data': xhrfs,
+        },
+        function(e, mfs) {
+          BrowserFS.initialize(mfs);
+
+          // Added after-the-fact...
+          BrowserFS.FileSystem.LocalStorage.Create(function(e, lsfs) {
+            mfs.mount('/home', lsfs);
+          });
+        }
+      );
+      */
+      /*
       window.BrowserFS.configure(
         {
           fs: 'MountableFileSystem',
@@ -574,14 +691,16 @@ export class VSCodeEffect {
             },
           },
         },
-        async e => {
+        async (e, mfs) => {
+          console.log('WOOOOP', mfs);
           if (e) {
             reject(e);
           } else {
-            resolve();
+            resolve(mfs);
           }
         }
       );
+      */
     });
   }
 
