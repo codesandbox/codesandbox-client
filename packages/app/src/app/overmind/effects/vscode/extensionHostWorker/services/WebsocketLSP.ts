@@ -41,7 +41,9 @@ export class WebsocketLSP implements IForkHandler {
     }
 
     this.endpoint = endpoint;
-    this.io = io(endpoint + `?pid=${pidCountByEndpoint[endpoint]++}`);
+    this.io = io(
+      endpoint + `?type=language-server&pid=${pidCountByEndpoint[endpoint]++}`
+    );
     this.io.on('connect', () => {
       this.messagesQueue.forEach(message => {
         this.postMessage(message);
@@ -55,7 +57,7 @@ export class WebsocketLSP implements IForkHandler {
       console.error('WEBSOCKET_LSP - CLOSE', reason);
     });
 
-    this.io.on('lsp', data => {
+    this.io.on('language-server', data => {
       /*
         const json = event.data.split('\n').find(line => line[0] === '{');
         console.log('OUT', JSON.stringify(JSON.parse(json), null, 2));
@@ -77,7 +79,7 @@ export class WebsocketLSP implements IForkHandler {
         /*
         console.log('IN', JSON.stringify(JSON.parse(message.$data), null, 2));
         */
-        this.io.emit('lsp', message.$data);
+        this.io.emit('language-server', message.$data);
       } else if (message.$data) {
         this.messagesQueue.push(message);
       }
