@@ -37,7 +37,7 @@ export default class Countdown extends React.PureComponent {
 
   render() {
     const { hours, minutes, seconds } = this.getTimes();
-    const text = `${hours > 0 ? hours + ':' : ''} ${minutes}:${seconds}`;
+    const text = `${hours > 0 ? hours + ':' : ''}${minutes}:${seconds}`;
 
     return this.props.render(text);
   }

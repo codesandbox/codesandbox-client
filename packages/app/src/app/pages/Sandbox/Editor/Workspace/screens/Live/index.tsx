@@ -1,62 +1,23 @@
 /**
- * Not live
- * Live
- * Not logged in
+ * TODO: Handle not logged in
  */
 
 import React, { FunctionComponent } from 'react';
-
 import { useOvermind } from 'app/overmind';
-
-import {
-  Description,
-  ErrorDescription,
-  WorkspaceInputContainer,
-  WorkspaceSubtitle,
-} from '../../elements';
-
-// TODO: handle not logged in
-// import { More } from '../More';
-
-import LiveButton from './LiveButton';
-import LiveInfo from './LiveInfo';
-
 import { NotLive } from './NotLive';
 import { LiveNow } from './LiveNow';
 
 export const Live: FunctionComponent = () => {
   const {
-    actions: {
-      live: {
-        createLiveClicked,
-        onAddEditorClicked,
-        onChatEnabledChange,
-        onFollow,
-        onModeChanged,
-        onRemoveEditorClicked,
-        onSessionCloseClicked,
-        onToggleNotificationsHidden,
-      },
-    },
     state: {
       editor: {
-        currentSandbox: { id, owned },
-        isAllModulesSynced,
+        currentSandbox: { owned },
       },
-      live: {
-        followingUserId,
-        isLive,
-        isLoading,
-        isOwner,
-        isTeam,
-        liveUserId,
-        notificationsHidden,
-        reconnecting,
-        roomInfo,
-      },
+      live: { isLive },
       isLoggedIn,
     },
   } = useOvermind();
+
   const showPlaceholder = (!isLive && !owned) || !isLoggedIn;
 
   if (showPlaceholder) {
@@ -73,33 +34,5 @@ export const Live: FunctionComponent = () => {
     // return <More message={message} id="live" />;
   }
 
-  return (
-    <div>
-      {isLive ? (
-        <>
-          <LiveNow />
-          <LiveInfo
-            addEditor={onAddEditorClicked}
-            chatEnabled={roomInfo.chatEnabled}
-            currentUserId={liveUserId}
-            followingUserId={followingUserId}
-            isOwner={isOwner}
-            isTeam={isTeam}
-            notificationsHidden={notificationsHidden}
-            onSessionCloseClicked={onSessionCloseClicked}
-            ownerIds={roomInfo.ownerIds}
-            reconnecting={reconnecting}
-            removeEditor={onRemoveEditorClicked}
-            roomInfo={roomInfo}
-            setFollowing={onFollow}
-            setMode={onModeChanged}
-            toggleChatEnabled={() => onChatEnabledChange(!roomInfo.chatEnabled)}
-            toggleNotificationsHidden={onToggleNotificationsHidden}
-          />
-        </>
-      ) : (
-        <NotLive />
-      )}
-    </div>
-  );
+  return <div>{isLive ? <LiveNow /> : <NotLive />}</div>;
 };
