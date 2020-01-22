@@ -47,6 +47,6 @@ export const Avatar = ({ user }: IAvatarProps) =>
   user && (
     <Element as="span" style={{ position: 'relative' }}>
       <AvatarImage src={user.avatarUrl} alt={user.username} />
-      {user.subscription ? <Pro>Pro</Pro> : null}
+      {user.subscriptionSince ? <Pro>Pro</Pro> : null}
     </Element>
   );

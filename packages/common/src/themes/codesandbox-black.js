@@ -137,7 +137,7 @@ const colors = {
     placeholderForeground: tokens.grays[300],
   },
   inputOption: {
-    activeBorder: tokens.grays[300],
+    activeBorder: tokens.grays[500],
   },
   inputValidation: {
     infoForeground: null,
@@ -205,7 +205,7 @@ const colors = {
     background: tokens.blues[700],
   },
   separator: {
-    background: tokens.grays[800],
+    background: tokens.grays[900],
     foreground: tokens.white,
   },
   sideBar: {

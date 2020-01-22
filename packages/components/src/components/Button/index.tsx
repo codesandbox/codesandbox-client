@@ -83,8 +83,10 @@ const variantStyles = {
 };
 
 export const Button = styled(Element).attrs({ as: 'button' })<{
-  type?: 'submit' | 'button' | 'reset';
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
+  type?: 'submit' | 'button' | 'reset';
+  disabled?: boolean;
+  onClick?: (any) => void;
 }>(({ variant = 'primary', ...props }) =>
   css(
     deepmerge(
@@ -96,7 +98,9 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
       variantStyles[variant],
       // static styles:
       {
-        display: 'inline-block',
+        display: 'inline-flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         cursor: 'pointer',
         height: 6,
         width: '100%',
