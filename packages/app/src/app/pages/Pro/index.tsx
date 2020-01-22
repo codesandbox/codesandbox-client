@@ -210,7 +210,9 @@ const NotPro = ({
   return (
     <>
       <Heading>CodeSandbox Pro</Heading>
-      <SubHeading>{duration === 'yearly' ? '$9/year' : '12$/month'}</SubHeading>
+      <SubHeading>
+        {duration === 'yearly' ? '$9/month (yearly)' : '12$/month'}
+      </SubHeading>
       <button
         onClick={() =>
           setDuration(dur => (dur === 'yearly' ? 'monthly' : 'yearly'))
