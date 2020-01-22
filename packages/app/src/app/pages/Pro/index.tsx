@@ -196,24 +196,36 @@ const NotPro = ({
   user,
   patron,
   checkoutDisabled,
-}) => (
-  <>
-    <Heading>CodeSandbox Pro</Heading>
-    <SubHeading>$12/month</SubHeading>
-    <Centered horizontal>
-      <SubscribeForm
-        subscribe={({ token, coupon }) =>
-          createSubscriptionClicked({ token, coupon })
+}) => {
+  const [duration, setDuration] = React.useState('yearly');
+
+  return (
+    <>
+      <Heading>CodeSandbox Pro</Heading>
+      <SubHeading>{duration === 'yearly' ? '$9/year' : '12$/month'}</SubHeading>
+      <button
+        onClick={() =>
+          setDuration(dur => (dur === 'yearly' ? 'monthly' : 'yearly'))
         }
-        isLoading={patron.isUpdatingSubscription}
-        hasCoupon
-        name={user && user.name}
-        error={patron.error}
-        disabled={checkoutDisabled}
-      />
-    </Centered>
-  </>
-);
+        type="button"
+      >
+        Switch
+      </button>
+      <Centered horizontal>
+        <SubscribeForm
+          subscribe={({ token, coupon }) =>
+            createSubscriptionClicked({ token, coupon, duration })
+          }
+          isLoading={patron.isUpdatingSubscription}
+          hasCoupon
+          name={user && user.name}
+          error={patron.error}
+          disabled={checkoutDisabled}
+        />
+      </Centered>
+    </>
+  );
+};
 
 const Expiring = ({
   user,

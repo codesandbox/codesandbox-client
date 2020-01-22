@@ -14,14 +14,16 @@ export const priceChanged: Action<{ price: number }> = (
 export const createSubscriptionClicked: AsyncAction<{
   token: string;
   coupon: string;
-}> = async ({ state, effects, actions }, { token, coupon }) => {
-  effects.analytics.track('Create Patron Subscription');
+  duration: 'yearly' | 'monthly';
+}> = async ({ state, effects, actions }, { token, coupon, duration }) => {
+  effects.analytics.track('Create Patron Subscription', { duration });
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
   try {
     state.user = await effects.api.createPatronSubscription(
       token,
       state.patron.price,
+      duration,
       coupon
     );
     effects.notificationToast.success('Thank you very much for your support!');
