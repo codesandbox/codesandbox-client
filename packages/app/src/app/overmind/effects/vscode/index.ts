@@ -321,7 +321,8 @@ export class VSCodeEffect {
       });
 
       this.mountableFilesystem.mount(
-        '/Users/christianalfoni/Library/Caches/typescript/3.7/node_modules',
+        // '/Users/christianalfoni/Library/Caches/typescript',
+        '/root/.cache/typescript',
         nodeModules
       );
     } else {
@@ -512,11 +513,11 @@ export class VSCodeEffect {
   }
 
   private getLspEndpoint() {
+    // return 'ws://localhost:1023'
     return `wss://${this.options.getCurrentSandbox().id}-lsp.sse.codesandbox.${
       'stream'
       // process.env.STAGING_API || process.env.STAGING ? 'stream' : 'io'
     }/`;
-    // 'ws://localhost:1023'
   }
 
   private createFileSystem(type: string, options: any) {
@@ -532,7 +533,7 @@ export class VSCodeEffect {
   }
 
   private createWebsocketFSRequest() {
-    const socket = io(this.getLspEndpoint());
+    const socket = io(`${this.getLspEndpoint()}?type=go-to-definition`);
     return {
       emit: (data, cb) => {
         socket.emit('go-to-definition', data, cb);
