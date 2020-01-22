@@ -128,46 +128,54 @@ const LoggedOut = () => (
   </>
 );
 
-const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => (
-  <MaxWidth width={400}>
-    <Centered horizontal>
-      <Avatar src={user.avatarUrl} />
-      <Badge type="pro">Pro</Badge>
-      <Heading>You&apos;re a Pro!</Heading>
+const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => {
+  const subscriptionDate = new Date(user.subscription.since);
+  return (
+    <MaxWidth width={400}>
+      <Centered horizontal>
+        <Avatar src={user.avatarUrl} />
+        <Badge type="pro">Pro</Badge>
+        <Heading>You&apos;re a Pro!</Heading>
 
-      <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
-        Create a sandbox
-      </ButtonAsLink>
+        <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
+          Create a sandbox
+        </ButtonAsLink>
 
-      <HelpText>
-        You will be billed on the{' '}
-        <b>{format(new Date(user.subscription.since), 'do')}</b> of each month.
-        You can{' '}
-        <LinkButton
-          onClick={e => {
-            e.preventDefault();
-            modalOpened({
-              modal: 'preferences',
-              itemId: 'paymentInfo',
-            });
-          }}
-        >
-          update your payment details
-        </LinkButton>{' '}
-        or{' '}
-        <LinkButton
-          onClick={e => {
-            e.preventDefault();
-            cancelSubscriptionClicked();
-          }}
-        >
-          cancel your subscription
-        </LinkButton>{' '}
-        at any time.
-      </HelpText>
-    </Centered>
-  </MaxWidth>
-);
+        <HelpText>
+          You will be billed{' '}
+          <b>
+            {user.subscription.duration === 'yearly'
+              ? `yearly on ${format(subscriptionDate, 'dd MMM')}`
+              : `on the ${format(subscriptionDate, 'do')} of each month`}
+            .{' '}
+          </b>
+          You can{' '}
+          <LinkButton
+            onClick={e => {
+              e.preventDefault();
+              modalOpened({
+                modal: 'preferences',
+                itemId: 'paymentInfo',
+              });
+            }}
+          >
+            update your payment details
+          </LinkButton>{' '}
+          or{' '}
+          <LinkButton
+            onClick={e => {
+              e.preventDefault();
+              cancelSubscriptionClicked();
+            }}
+          >
+            cancel your subscription
+          </LinkButton>{' '}
+          at any time.
+        </HelpText>
+      </Centered>
+    </MaxWidth>
+  );
+};
 
 const Patron = ({ user }) => (
   <MaxWidth width={400}>

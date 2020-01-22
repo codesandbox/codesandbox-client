@@ -158,7 +158,7 @@ export const HelpText = styled.p(
 
 export const LinkButton = styled(AppLinkButton)(
   css({
-    color: 'grays.300',
+    color: 'grays.200',
   })
 );
 
