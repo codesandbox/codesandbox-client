@@ -1,6 +1,7 @@
 import React from 'react';
 import css from '@styled-system/css';
 import { sortBy } from 'lodash-es';
+import useInterval from 'use-interval';
 
 import {
   Element,
@@ -30,8 +31,6 @@ import {
   ClassroomIcon,
   FollowIcon,
 } from './icons';
-
-import Countdown from './Countdown';
 
 const User = ({
   user,
@@ -100,6 +99,31 @@ const User = ({
   );
 };
 
+const Timer = props => {
+  const [since, setSince] = React.useState(Date.now() - props.startTime);
+
+  const pad = number => {
+    if (`${number}`.length === 1) return `0${number}`;
+    return `${number}`;
+  };
+
+  useInterval(() => {
+    setSince(Date.now() - props.startTime);
+  }, 1000);
+
+  const hours = Math.floor(since / 1000 / 60 / 60);
+  const minutes = Math.floor((since - hours * 1000 * 60 * 60) / 1000 / 60);
+  const seconds = Math.floor(
+    (since - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000
+  );
+
+  const text = `${hours > 0 ? pad(hours) + ':' : ''}${pad(minutes)}:${pad(
+    seconds
+  )}`;
+
+  return <Text variant="danger">{text}</Text>;
+};
+
 export const LiveNow = () => {
   const {
     actions: {
@@ -152,10 +176,7 @@ export const LiveNow = () => {
                 <span>You&apos;re live!</span>
               </Stack>
             </Text>
-            <Countdown
-              time={startTime}
-              render={(text: string) => <Text variant="danger">{text}</Text>}
-            />
+            <Timer startTime={startTime} />
           </Stack>
 
           <Text variant="muted" size={2} block marginBottom={4}>
