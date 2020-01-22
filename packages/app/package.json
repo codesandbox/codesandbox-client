@@ -136,7 +136,7 @@
     "immutability-helper": "^2.6.6",
     "instantsearch.css": "^7.1.0",
     "is-url": "^1.2.2",
-    "jest-circus": "^22.1.4",
+    "jest-circus": "^23.0.0",
     "jest-each": "^24.8.0",
     "jest-matchers": "20.0.3",
     "jest-snapshot": "^22.1.2",
