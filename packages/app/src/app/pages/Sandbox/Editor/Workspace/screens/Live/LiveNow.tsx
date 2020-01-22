@@ -45,7 +45,14 @@ const User = ({
   const currentUser = user.id === liveUserId;
 
   return (
-    <Stack justify="space-between" align="center">
+    <Stack
+      justify="space-between"
+      align="center"
+      css={{
+        '.live-actions': { opacity: 0 },
+        ':hover': { '.live-actions': { opacity: 1 } },
+      }}
+    >
       <Stack gap={2} align="center">
         <Avatar user={user} />
         <span>
@@ -58,7 +65,8 @@ const User = ({
           </Text>
         </span>
       </Stack>
-      <Stack align="center" gap={2}>
+
+      <Stack align="center" gap={2} className="live-actions">
         {liveMode === 'classroom' && liveRole === 'spectator' && (
           <Tooltip content="Make editor">
             <AddIcon
