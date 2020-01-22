@@ -73,7 +73,11 @@ export const PricingChoice: FunctionComponent<Props> = ({ badge }) => {
             <Centered style={{ marginTop: '2rem' }} horizontal>
               <SubscribeForm
                 subscribe={({ token, coupon }) =>
-                  createSubscriptionClicked({ token, coupon })
+                  createSubscriptionClicked({
+                    token,
+                    coupon,
+                    duration: 'monthly',
+                  })
                 }
                 isLoading={patron.isUpdatingSubscription}
                 hasCoupon
