@@ -3,6 +3,8 @@
 import * as meriyah from 'meriyah';
 import * as astring from 'astring';
 import { basename } from 'path';
+import { walk } from 'estree-walker';
+import { AssignmentExpression, ExpressionStatement } from 'meriyah/dist/estree';
 import { Syntax as n } from './syntax';
 import {
   generateRequireStatement,
@@ -30,7 +32,7 @@ export function convertEsModule(code: string) {
     return usedName;
   };
 
-  const program = meriyah.parseModule(code, { next: true });
+  let program = meriyah.parseModule(code, { next: true });
 
   let i = 0;
 
@@ -146,33 +148,96 @@ export function convertEsModule(code: string) {
         if (statement.declaration.type === n.FunctionDeclaration) {
           // @ts-ignore
           statement.declaration.type = n.FunctionExpression;
-        }
-        if (statement.declaration.type === n.ClassDeclaration) {
+        } else if (statement.declaration.type === n.ClassDeclaration) {
           // @ts-ignore
           statement.declaration.type = n.ClassExpression;
         }
         const newDeclaration = statement.declaration as meriyah.ESTree.Expression;
 
         // Create a var with the export
-        program.body[i] = {
-          type: n.VariableDeclaration,
-          kind: 'var' as 'var',
+        if (
+          statement.declaration.type === n.ClassExpression ||
+          statement.declaration.type === n.FunctionExpression
+        ) {
+          if (!statement.declaration.id) {
+            // If the function or class has no name, we give it to it
+            statement.declaration.id = {
+              type: n.Identifier,
+              name: varName,
+            };
+          }
+          program.body.splice(
+            i,
+            0,
+            generateExportStatement(statement.declaration.id.name, 'default')
+          );
+          i++;
 
-          declarations: [
-            {
-              type: n.VariableDeclarator,
-              id: {
-                type: n.Identifier,
-                name: varName,
+          program.body[i] = statement.declaration;
+          i++;
+        } else {
+          program.body[i] = {
+            type: n.VariableDeclaration,
+            kind: 'var' as 'var',
+
+            declarations: [
+              {
+                type: n.VariableDeclarator,
+                id: {
+                  type: n.Identifier,
+                  name: varName,
+                },
+                init: newDeclaration,
               },
-              init: newDeclaration,
+            ],
+          };
+          i++;
+
+          program.body.splice(
+            i,
+            0,
+            generateExportStatement(varName, 'default')
+          );
+        }
+
+        if (
+          newDeclaration.type === n.ClassDeclaration ||
+          newDeclaration.type === n.FunctionExpression
+        ) {
+          program = walk(program, {
+            enter(node, parent, prop, index) {
+              if (node.type === n.AssignmentExpression) {
+                const { left } = node as AssignmentExpression;
+                if (
+                  left.type === n.Identifier &&
+                  left.name === newDeclaration.id.name
+                ) {
+                  this.replace({
+                    type: n.ExpressionStatement,
+                    expression: {
+                      type: n.AssignmentExpression,
+                      left: {
+                        type: n.MemberExpression,
+                        object: {
+                          type: n.Identifier,
+                          name: 'exports',
+                        },
+                        computed: false,
+                        property: {
+                          type: n.Identifier,
+                          name: 'default',
+                        },
+                      },
+                      operator: '=' as '=',
+                      right: node,
+                    },
+                  } as ExpressionStatement);
+                  this.skip();
+                }
+              }
             },
-          ],
-        };
-
-        i++;
-
-        program.body.splice(i, 0, generateExportStatement(varName, 'default'));
+          });
+        }
       }
     } else if (statement.type === n.ImportDeclaration) {
       // @ts-ignore Wrong typing in lib?

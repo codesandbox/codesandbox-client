@@ -9,6 +9,7 @@ import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/temp
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
+import { generateBenchmarkInterface } from '../utils/benchmark';
 import { Module } from './types/module';
 import TranspiledModule, {
   ChildModule,
@@ -161,6 +162,9 @@ export default class Manager {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console
       console.log(this);
+
+      // Initialize benchmark logic
+      getGlobal().Benchmark = generateBenchmarkInterface(this);
     }
 
     BrowserFS.configure(
@@ -497,6 +501,10 @@ export default class Manager {
 
   clearCompiledCache() {
     this.getTranspiledModules().map(tModule => tModule.resetCompilation());
+  }
+
+  clearTranspilationCache() {
+    this.getTranspiledModules().map(tModule => tModule.resetTranspilation());
   }
 
   getModules(): Array<Module | ChildModule> {

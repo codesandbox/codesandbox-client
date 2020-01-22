@@ -105,7 +105,23 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it.only('has good perf', () => {
+  it('handles export mutations', () => {
+    const code = `
+      export default function test() {}
+
+      test = 5;
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles export mutations with no named function', () => {
+    const code = `
+      export default function() {}
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('has good perf', () => {
     /* eslint-disable */
     const code = require('./big-file');
 

@@ -116,6 +116,7 @@
     "downshift": "^1.0.0-rc.14",
     "eslint-plugin-react-hooks": "1.6.0",
     "eslint-plugin-vue": "^4.2.2",
+    "estree-walker": "^1.0.1",
     "file-saver": "^1.3.3",
     "fontfaceobserver": "^2.0.13",
     "fuse.js": "^3.2.1",
