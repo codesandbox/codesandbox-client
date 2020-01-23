@@ -2,12 +2,12 @@ import React, { FunctionComponent, useEffect } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { Element, Collapsible, Text } from '@codesandbox/components';
+import { Element, Collapsible, Stack, Text } from '@codesandbox/components';
 
 import { Netlify } from './Netlify';
 import { Zeit } from './Zeit';
-
-import { More } from '../../items/More';
+import { NotLoggedIn } from './NotLoggedIn';
+import { NotOwner } from './NotOwner';
 
 export const Deployment: FunctionComponent = () => {
   const {
@@ -15,41 +15,19 @@ export const Deployment: FunctionComponent = () => {
       deployment: { getDeploys },
     },
     state: {
-      editor: { currentSandbox },
+      editor: {
+        currentSandbox: { owned },
+      },
       isLoggedIn,
     },
   } = useOvermind();
-  const showPlaceholder = !(currentSandbox.owned && isLoggedIn);
 
   useEffect(() => {
-    if (!showPlaceholder) {
-      getDeploys();
-    }
-  }, [getDeploys, showPlaceholder]);
+    if (owned && isLoggedIn) getDeploys();
+  }, [getDeploys, owned, isLoggedIn]);
 
-  if (showPlaceholder) {
-    const message = isLoggedIn ? (
-      <>
-        <Text block>
-          You need to own this sandbox to deploy this sandbox to Netlify or
-          ZEIT.
-        </Text>
-        <Text>Fork this sandbox to make a deploy!</Text>
-      </>
-    ) : (
-      <Text>
-        You need to be signed in to deploy this sandbox to Netlify or ZEIT.
-      </Text>
-    );
-
-    return (
-      <Collapsible title="Deployment" defaultOpen>
-        <Element paddingX={2}>
-          <More message={message} id="deployment" />
-        </Element>
-      </Collapsible>
-    );
-  }
+  if (!isLoggedIn) return <NotLoggedIn />;
+  if (!owned) return <NotOwner />;
 
   return (
     <Collapsible title="Deployment" defaultOpen>
@@ -58,10 +36,10 @@ export const Deployment: FunctionComponent = () => {
           You can deploy a production version of your sandbox using one our
           supported providers.
         </Text>
-        <Zeit />
-        <Element marginTop={5}>
+        <Stack direction="vertical" gap={5}>
+          <Zeit />
           <Netlify />
-        </Element>
+        </Stack>
       </Element>
     </Collapsible>
   );
