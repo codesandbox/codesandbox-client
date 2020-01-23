@@ -70,6 +70,12 @@ need to explicitly freeze an unfrozen template, as it will automatically be
 frozen again upon navigating away from the editor or the current sandbox session
 ends.
 
+## Connecting Templates to GitHub
+
+If in your template you provide a source repository, the template will automatically 
+be connected to the github repository. Every change done to the github will magically 
+appear on the template. 
+
 ## Deleting Templates
 
 There are a few ways in which you can "delete" a template. From the "Project
