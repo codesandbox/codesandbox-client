@@ -6,6 +6,8 @@ import { ThemeProvider } from 'styled-components';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import Switch from '@codesandbox/common/lib/components/Switch';
+
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
@@ -25,6 +27,8 @@ import {
   SignInModal,
   SignInButton,
   SubHeading,
+  DurationChoice,
+  BillText,
 } from './elements';
 
 const ProPage: React.FC = () => {
@@ -145,7 +149,7 @@ const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => {
           You will be billed{' '}
           <b>
             {user.subscription.duration === 'yearly'
-              ? `yearly on ${format(subscriptionDate, 'dd MMM')}`
+              ? `and charged annually on ${format(subscriptionDate, 'MMM dd')}`
               : `on the ${format(subscriptionDate, 'do')} of each month`}
             .{' '}
           </b>
@@ -211,16 +215,20 @@ const NotPro = ({
     <>
       <Heading>CodeSandbox Pro</Heading>
       <SubHeading>
-        {duration === 'yearly' ? '$9/month (yearly)' : '12$/month'}
+        {duration === 'yearly' ? '$9/month billed annually' : '12$/month'}
       </SubHeading>
-      <button
-        onClick={() =>
-          setDuration(dur => (dur === 'yearly' ? 'monthly' : 'yearly'))
-        }
-        type="button"
-      >
-        Switch
-      </button>
+      <DurationChoice>
+        <BillText on={duration === 'monthly'}>Bill monthly</BillText>
+        <Switch
+          small
+          secondary
+          onClick={() =>
+            setDuration(d => (d === 'yearly' ? 'monthly' : 'yearly'))
+          }
+          right={duration === 'yearly'}
+        />
+        <BillText on={duration === 'yearly'}>Bill annually</BillText>
+      </DurationChoice>
       <Centered horizontal>
         <SubscribeForm
           subscribe={({ token, coupon }) =>

@@ -29,6 +29,10 @@ export const Price = styled.h6`
   color: ${props => props.theme.homepage.white};
 `;
 
+export const PriceSubText = styled.p`
+  font-size: 13px;
+`;
+
 export const List = styled.ul`
   list-style: none;
   margin: 0;

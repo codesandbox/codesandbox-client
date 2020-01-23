@@ -41,6 +41,22 @@ export const SubHeading = styled.span(
   })
 );
 
+export const BillText = styled.span<{ on: boolean }>(props =>
+  css({
+    color: props.on ? 'white' : 'grays.300',
+    margin: '0 1rem',
+  })
+);
+
+export const DurationChoice = styled.div(() =>
+  css({
+    display: 'flex',
+    textAlign: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  })
+);
+
 export const Form = styled.form<{ disabled: boolean }>(props =>
   css({
     fontSize: 3,

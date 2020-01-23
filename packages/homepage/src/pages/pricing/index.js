@@ -10,6 +10,7 @@ import {
   Card,
   CardTitle,
   Price,
+  PriceSubText,
   List,
   Button,
   FeaturesTableHeader,
@@ -63,6 +64,7 @@ export default () => (
         <div>
           <CardTitle>Pro</CardTitle>
           <Price>$9/month</Price>
+          <PriceSubText>billed anually or $12 month-to-month</PriceSubText>
           <List
             css={`
               color: white;
