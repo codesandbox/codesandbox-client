@@ -123,7 +123,10 @@ export default class Manager {
   fileResolver: IFileResolver | undefined;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
-  transpileJobs: { [transpiledModuleId: string]: true };
+  transpileJobs: {
+    [transpiledModuleId: string]: true | Promise<TranspiledModule>;
+  };
+
   transpiledModulesByHash: { [hash: string]: TranspiledModule };
 
   // All paths are resolved at least twice: during transpilation and evaluation.
