@@ -21,14 +21,15 @@ export const ListItem = styled(Stack).attrs({
   })
 );
 
-export const ListAction = styled(ListItem)(
-  css({
-    ':hover': {
-      cursor: 'pointer',
-      backgroundColor: 'sideBar.hoverBackground',
-    },
-    ':focus-within': {
-      backgroundColor: 'sideBar.hoverBackground',
-    },
-  })
+export const ListAction = styled(ListItem)<{ disabled?: boolean }>(
+  ({ disabled }) =>
+    css({
+      ':hover': {
+        cursor: !disabled ? 'pointer' : 'disabled',
+        backgroundColor: !disabled ? 'sideBar.hoverBackground' : 'inherit',
+      },
+      ':focus-within': {
+        backgroundColor: !disabled ? 'sideBar.hoverBackground' : 'inherit',
+      },
+    })
 );

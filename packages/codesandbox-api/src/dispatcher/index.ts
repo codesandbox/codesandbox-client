@@ -95,6 +95,7 @@ export function listen(callback: Callback): () => void {
 }
 
 export function notifyListeners(data: object, source?: MessageEvent['source']) {
+  // eslint-disable-next-line no-shadow
   Object.keys(listeners).forEach(listenerId => {
     if (listeners[listenerId]) {
       listeners[listenerId](data, source);

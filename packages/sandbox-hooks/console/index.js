@@ -24,6 +24,7 @@ export default function setupConsole() {
             try {
               const wrapped = `(${data.command})`;
               // `new Function` is used to validate Javascript syntax
+              // eslint-disable-next-line
               const validate = new Function(wrapped);
               data.command = wrapped;
             } catch (e) {
