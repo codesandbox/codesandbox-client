@@ -20,6 +20,7 @@ import {
   StyleguidistIconDark,
   MDXDeckIconDark,
   GridsomeIconDark,
+  RustlangIconDark,
   QuasarIconDark,
   SapperIconDark,
   JavaScriptIconDark,
@@ -47,6 +48,7 @@ import {
   node,
   apollo,
   nest,
+  rustlang,
   sapper,
   staticTemplate,
   styleguidist,
@@ -104,6 +106,8 @@ export default function getIcon(theme: TemplateType) {
       return HTML5IconDark;
     case styleguidist.name:
       return StyleguidistIconDark;
+    case rustlang.name:
+      return RustlangIconDark;
     case gridsome.name:
       return GridsomeIconDark;
     case vuepress.name:

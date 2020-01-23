@@ -20,6 +20,7 @@ import {
   StyleguidistIcon,
   MDXDeckIcon,
   GridsomeIcon,
+  RustlangIcon,
   QuasarIcon,
   SapperIcon,
   JavaScriptIcon,

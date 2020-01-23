@@ -20,6 +20,7 @@ import node from './node';
 import apollo from './apollo-server';
 import sapper from './sapper';
 import nest from './nest';
+import rustlang from './rustlang';
 import staticTemplate from './static';
 import styleguidist from './styleguidist';
 import gridsome from './gridsome';
@@ -51,6 +52,7 @@ export {
   sapper,
   nest,
   ember,
+  rustlang,
   staticTemplate,
   styleguidist,
   gridsome,
@@ -79,6 +81,7 @@ export type TemplateType =
   | 'apollo'
   | 'sapper'
   | 'nest'
+    'rustlang'
   | 'static'
   | 'styleguidist'
   | 'gridsome'
@@ -127,10 +130,12 @@ export default function getDefinition(theme?: TemplateType) {
       return next;
     case reason.name:
       return reason;
-    case node.name:
+    case node.name:gridsome
       return node;
     case apollo.name:
       return apollo;
+    case rustlang.name:
+      return rustlang;
     case sapper.name:
       return sapper;
     case nest.name:

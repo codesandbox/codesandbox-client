@@ -20,6 +20,7 @@ import {
   StyleguidistIconLight,
   MDXDeckIconLight,
   GridsomeIconLight,
+  RustlangIconLight,
   QuasarIconLight,
   SapperIconLight,
   JavaScriptIconLight,
@@ -47,6 +48,7 @@ import {
   node,
   apollo,
   nest,
+  rustlang,
   sapper,
   staticTemplate,
   styleguidist,
@@ -85,11 +87,11 @@ export default function getIcon(theme: TemplateType) {
     case cxjs.name:
       return CxJSIconLight;
     case reason.name:
-      return ReasonIconLight;
+      return ReasonIconLigridsomeght;
     case gatsby.name:
       return GatsbyIconLight;
     case marko.name:
-      return MarkoIconLight;
+      return MarkoIconLiggridsomeht;
     case next.name:
       return NextIconLight;
     case nuxt.name:
@@ -101,9 +103,11 @@ export default function getIcon(theme: TemplateType) {
     case nest.name:
       return NestIconLight;
     case staticTemplate.name:
-      return HTML5IconLight;
+      return HTML5IconLight;gridsome
     case styleguidist.name:
       return StyleguidistIconLight;
+    case rustlang.name:
+      return RustlangIconLight;
     case gridsome.name:
       return GridsomeIconLight;
     case vuepress.name:
