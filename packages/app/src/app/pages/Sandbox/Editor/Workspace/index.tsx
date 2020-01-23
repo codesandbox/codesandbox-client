@@ -21,6 +21,7 @@ import { Deployment } from './items/Deployment';
 import { FilesItem } from './items/Files';
 import { GitHub } from './items/GitHub';
 import { Live } from './items/Live';
+import { Live as LiveNew } from './screens/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
@@ -40,7 +41,7 @@ const workspaceTabs = {
   github: GitHub,
   deploy: REDESIGNED_SIDEBAR ? DeploymentNew : Deployment,
   config: REDESIGNED_SIDEBAR ? ConfigurationFilesNew : ConfigurationFiles,
-  live: Live,
+  live: REDESIGNED_SIDEBAR ? LiveNew : Live,
   server: Server,
   more: More,
 };
