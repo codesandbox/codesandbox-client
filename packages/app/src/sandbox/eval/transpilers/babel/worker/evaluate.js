@@ -6,6 +6,7 @@ import * as util from 'util';
 import { dirname, basename } from 'path';
 import type FSType from 'fs';
 import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
+import { packageFilter } from '../../../utils/resolve-utils';
 import evaluateCode from '../../../loaders/eval';
 
 let cache = {};
@@ -113,6 +114,7 @@ export default function evaluate(
         filename: path,
         extensions: ['.js', '.json'],
         moduleDirectory: ['node_modules'],
+        packageFilter,
       });
 
     cachedPaths[dirName][requirePath] = resolvedPath;

@@ -22,6 +22,7 @@ import Manager, { HMRStatus } from './manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 import delay from '../utils/delay';
+import { measure, endMeasure } from '../utils/metrics';
 
 declare const BrowserFS: any;
 
@@ -325,7 +326,7 @@ export default class TranspiledModule {
     );
   }
 
-  addDependency(
+  async addDependency(
     manager: Manager,
     depPath: string,
     options: {
@@ -339,7 +340,7 @@ export default class TranspiledModule {
     }
 
     try {
-      const tModule = manager.resolveTranspiledModule(
+      const tModule = await manager.resolveTranspiledModule(
         depPath,
         options && options.isAbsolute ? '/' : this.module.path
       );
@@ -610,7 +611,6 @@ export default class TranspiledModule {
     } else {
       const transpilers = manager.preset.getLoaders(this.module, this.query);
 
-      const startTime = Date.now();
       for (let i = 0; i < transpilers.length; i += 1) {
         const transpilerConfig = transpilers[i];
         const loaderContext = this.getLoaderContext(
@@ -623,12 +623,15 @@ export default class TranspiledModule {
           .concat([this.module.path])
           .join('!');
 
+        const measureKey = `transpile-${transpilerConfig.transpiler.name}-${this.module.path}`;
         try {
+          measure(measureKey);
           const {
             transpiledCode,
             sourceMap,
             // eslint-disable-next-line no-await-in-loop
           } = await transpilerConfig.transpiler.transpile(code, loaderContext);
+          endMeasure(measureKey, { silent: true });
 
           if (this.errors.length) {
             throw this.errors[0];
@@ -649,7 +652,6 @@ export default class TranspiledModule {
           throw e;
         }
       }
-      debug(`Transpiled '${this.getId()}' in ${Date.now() - startTime}ms`);
 
       this.logWarnings();
     }
@@ -879,8 +881,8 @@ export default class TranspiledModule {
           } else {
             const paths = typeof path === 'string' ? [path] : path;
 
-            paths.forEach(p => {
-              const tModule = manager.resolveTranspiledModule(
+            paths.forEach(async p => {
+              const tModule = await manager.resolveTranspiledModule(
                 p,
                 this.module.path
               );
@@ -901,8 +903,8 @@ export default class TranspiledModule {
           } else {
             const paths = typeof path === 'string' ? [path] : path;
 
-            paths.forEach(p => {
-              const tModule = manager.resolveTranspiledModule(
+            paths.forEach(async p => {
+              const tModule = await manager.resolveTranspiledModule(
                 p,
                 this.module.path
               );

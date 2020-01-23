@@ -1,6 +1,7 @@
 import resolve from 'browser-resolve';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import getRequireStatements from './simple-get-require-statements';
+import { packageFilter } from '../../../utils/resolve-utils';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -160,6 +161,7 @@ export async function downloadPath(
             filename: r.path,
             extensions: ['.js', '.json'],
             moduleDirectory: ['node_modules'],
+            packageFilter,
           });
         } catch (e) {
           await downloadFromError(e);

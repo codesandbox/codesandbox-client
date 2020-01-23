@@ -156,3 +156,8 @@ function $csb__default() {}
 `;
 
 exports[`convert-esmodule ignores comments 1`] = `""`;
+
+exports[`convert-esmodule parses and writes chars with linebreaks 1`] = `
+"var WS_CHARS = \\"u2000-     　﻿\\";
+"
+`;

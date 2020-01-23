@@ -128,6 +128,12 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('parses and writes chars with linebreaks', () => {
+    const code =
+      "var WS_CHARS = 'u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff'";
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('has good perf', () => {
     /* eslint-disable */
     const code = require('./big-file');

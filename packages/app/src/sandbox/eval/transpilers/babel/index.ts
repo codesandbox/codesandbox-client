@@ -5,7 +5,7 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 
 import isESModule from 'sandbox/eval/utils/is-es-module';
-import { measure, endMeasure } from 'sandbox/utils/metrics';
+import { measure, endMeasure } from '../../../utils/metrics';
 import regexGetRequireStatements from './worker/simple-get-require-statements';
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
@@ -53,9 +53,9 @@ class BabelTranspiler extends WorkerTranspiler {
 
       if (isESModule(newCode) && path.indexOf('/node_modules') > -1) {
         try {
-          measure(`es-${path}`);
+          measure(`esconvert-${path}`);
           newCode = convertEsModule(newCode);
-          endMeasure(`es-${path}`);
+          endMeasure(`esconvert-${path}`, { silent: true });
         } catch (e) {
           console.warn(
             `Error when converting '${path}' esmodule to commonjs: ${e.message}`

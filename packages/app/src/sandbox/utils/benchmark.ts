@@ -1,25 +1,72 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
 import Manager from '../eval/manager';
+import {
+  clearMeasurements,
+  measure,
+  endMeasure,
+  getMeasurements,
+  getCumulativeMeasure,
+} from './metrics';
 
 const debug = _debug('cs:compiler:benchmarks');
+
+interface TranspilationTimes {
+  total: number;
+  transpile: number;
+  resolving: number;
+  esConverting: number;
+}
+
+const printTranspilationMeasurements = (results: TranspilationTimes) => {
+  debug(`Total ${results.total.toFixed(2)}ms`);
+  debug(`  Transpiling ${results.transpile.toFixed(2)}ms`);
+  debug(`  Resolving ${results.resolving.toFixed(2)}ms`);
+  debug(`  Converting ES ${results.esConverting.toFixed(2)}ms`);
+};
 
 export function generateBenchmarkInterface(manager: Manager) {
   return {
     transpilation: async (n = 10, path = '/src/index.js') => {
       const module = manager.resolveModule(path, '/');
 
-      const times = [];
+      const times: TranspilationTimes[] = [];
       for (let i = 0; i < n; i++) {
-        const t = Date.now();
+        manager.clearTranspilationCache();
+        manager.cachedPaths = {};
+        clearMeasurements();
+
+        measure('transpilation');
         // eslint-disable-next-line
         await manager.transpileModules(module);
-        times.push(Date.now() - t);
-        manager.clearTranspilationCache();
+        const total = endMeasure('transpilation', { silent: true });
+
+        times.push({
+          total,
+          resolving: getCumulativeMeasure('resolve', { silent: true }),
+          esConverting: getCumulativeMeasure('esconvert', { silent: true }),
+          transpile: getCumulativeMeasure('transpile', { silent: true }),
+        });
       }
 
-      debug(
-        `Transpilation Benchmark: ${times.reduce((p, j) => p + j, 0) / n}ms`
+      const averageResults = times.reduce(
+        (result, entry) => ({
+          total: result.total + entry.total / n,
+          esConverting: result.esConverting + entry.esConverting / n,
+          resolving: result.resolving + entry.resolving / n,
+          transpile: result.transpile + entry.transpile / n,
+        }),
+        { total: 0, esConverting: 0, resolving: 0, transpile: 0 }
       );
+
+      printTranspilationMeasurements(averageResults);
+    },
+    getLastTranspilationMeasurements() {
+      printTranspilationMeasurements({
+        total: getMeasurements().transpilation,
+        resolving: getCumulativeMeasure('resolve', { silent: true }),
+        esConverting: getCumulativeMeasure('esconvert', { silent: true }),
+        transpile: getCumulativeMeasure('transpile', { silent: true }),
+      });
     },
   };
 }
