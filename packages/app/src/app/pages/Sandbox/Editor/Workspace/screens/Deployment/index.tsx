@@ -32,7 +32,7 @@ export const Deployment: FunctionComponent = () => {
   return (
     <Collapsible title="Deployment" defaultOpen>
       <Element paddingX={2}>
-        <Text variant="muted">
+        <Text variant="muted" block marginBottom={6}>
           You can deploy a production version of your sandbox using one our
           supported providers.
         </Text>
