@@ -76,7 +76,7 @@ export default class WebsocketFS extends SynchronousFileSystem
       this.socket.emit({
         method: 'readFile',
         args: {
-          fname,
+          path: fname,
           encoding,
           flag
         }

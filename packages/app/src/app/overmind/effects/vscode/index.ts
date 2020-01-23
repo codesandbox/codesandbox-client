@@ -314,19 +314,41 @@ export class VSCodeEffect {
 
     const { isServer } = getTemplate(sandbox.template);
 
+    try {
+      this.mountableFilesystem.umount('/root/.cache');
+    } catch {
+      //
+    }
+    try {
+      this.mountableFilesystem.umount('/sandbox/node_modules');
+    } catch {
+      //
+    }
+
     if (isServer) {
       childProcess.addDefaultForkHandler(this.createContainerForkHandler());
+      const socket = this.createWebsocketFSRequest();
+      const cache = await this.createFileSystem('WebsocketFS', {
+        socket,
+      });
       const nodeModules = await this.createFileSystem('WebsocketFS', {
-        socket: this.createWebsocketFSRequest(),
+        socket,
       });
 
-      this.mountableFilesystem.mount(
-        // '/Users/christianalfoni/Library/Caches/typescript',
-        '/root/.cache/typescript',
-        nodeModules
-      );
+      this.mountableFilesystem.mount('/root/.cache', cache);
+      this.mountableFilesystem.mount('/sandbox/node_modules', nodeModules);
     } else {
       childProcess.addDefaultForkHandler(this.clientExtensionHost);
+      const nodeModules = await this.createFileSystem('CodeSandboxFS', {
+        manager: {
+          getTranspiledModules: () => this.sandboxFsSync.getTypes(),
+          addModule() {},
+          removeModule() {},
+          moveModule() {},
+          updateModule() {},
+        },
+      });
+      this.mountableFilesystem.mount('/sandbox/node_modules', nodeModules);
     }
 
     if (isFirstLoad) {
@@ -513,7 +535,7 @@ export class VSCodeEffect {
   }
 
   private getLspEndpoint() {
-    // return 'ws://localhost:1023'
+    // return 'ws://localhost:1023';
     return `wss://${this.options.getCurrentSandbox().id}-lsp.sse.codesandbox.${
       'stream'
       // process.env.STAGING_API || process.env.STAGING ? 'stream' : 'io'
