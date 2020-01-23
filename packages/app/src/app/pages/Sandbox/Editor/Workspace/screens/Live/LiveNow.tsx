@@ -40,16 +40,11 @@ export const LiveNow = () => {
         onChatEnabledChange,
         onToggleNotificationsHidden,
         onModeChanged,
-        onFollow,
-        onRemoveEditorClicked,
-        onAddEditorClicked,
       },
     },
     state: {
       live: {
         notificationsHidden,
-        liveUserId,
-        followingUserId,
         isOwner,
         roomInfo: {
           startTime,
@@ -151,47 +146,14 @@ export const LiveNow = () => {
       <Collapsible title="Editors" defaultOpen>
         <Element css={css({ paddingX: 2 })}>
           {owners.map(user => (
-            <User
-              key={user.id}
-              user={user}
-              liveRole="owner"
-              liveMode={mode}
-              liveUserId={liveUserId}
-              followingUserId={followingUserId}
-              onFollow={onFollow}
-              onRemoveEditorClicked={onRemoveEditorClicked}
-              onAddEditorClicked={onAddEditorClicked}
-              isOwner={isOwner}
-            />
+            <User key={user.id} user={user} liveRole="owner" />
           ))}
           {editors.map(user => (
-            <User
-              key={user.id}
-              user={user}
-              liveRole="editor"
-              liveMode={mode}
-              liveUserId={liveUserId}
-              followingUserId={followingUserId}
-              onFollow={onFollow}
-              onRemoveEditorClicked={onRemoveEditorClicked}
-              onAddEditorClicked={onAddEditorClicked}
-              isOwner={isOwner}
-            />
+            <User key={user.id} user={user} liveRole="editor" />
           ))}
           {mode === 'open' &&
             spectators.map(user => (
-              <User
-                key={user.id}
-                user={user}
-                liveRole="editor"
-                liveMode={mode}
-                liveUserId={liveUserId}
-                followingUserId={followingUserId}
-                onFollow={onFollow}
-                onRemoveEditorClicked={onRemoveEditorClicked}
-                onAddEditorClicked={onAddEditorClicked}
-                isOwner={isOwner}
-              />
+              <User key={user.id} user={user} liveRole="editor" />
             ))}
         </Element>
       </Collapsible>
@@ -200,18 +162,7 @@ export const LiveNow = () => {
         <Collapsible title="Viewers" defaultOpen>
           <Element css={css({ paddingX: 2 })}>
             {spectators.map(user => (
-              <User
-                key={user.id}
-                user={user}
-                liveRole="spectator"
-                liveMode={mode}
-                liveUserId={liveUserId}
-                followingUserId={followingUserId}
-                onFollow={onFollow}
-                onRemoveEditorClicked={onRemoveEditorClicked}
-                onAddEditorClicked={onAddEditorClicked}
-                isOwner={isOwner}
-              />
+              <User key={user.id} user={user} liveRole="spectator" />
             ))}
 
             {spectators.length
@@ -224,17 +175,21 @@ export const LiveNow = () => {
   );
 };
 
-const User = ({
-  user,
-  liveUserId,
-  liveRole,
-  liveMode,
-  followingUserId,
-  onFollow,
-  onAddEditorClicked,
-  onRemoveEditorClicked,
-  isOwner,
-}) => {
+const User = ({ user, liveRole }) => {
+  const {
+    actions: {
+      live: { onFollow, onRemoveEditorClicked, onAddEditorClicked },
+    },
+    state: {
+      live: {
+        liveUserId,
+        followingUserId,
+        isOwner,
+        roomInfo: { mode },
+      },
+    },
+  } = useOvermind();
+
   const currentUser = user.id === liveUserId;
 
   return (
@@ -260,7 +215,7 @@ const User = ({
       </Stack>
 
       <Stack align="center" gap={2} className="live-actions">
-        {isOwner && liveMode === 'classroom' && (
+        {isOwner && mode === 'classroom' && (
           <>
             {liveRole === 'spectator' && (
               <Tooltip content="Make editor">
