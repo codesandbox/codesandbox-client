@@ -173,7 +173,9 @@ export function convertEsModule(code: string) {
           );
           i++;
 
-          program.body[i] = statement.declaration;
+          program.body[
+            i
+          ] = statement.declaration as meriyah.ESTree.DeclarationStatement;
           i++;
         } else {
           program.body[i] = {
@@ -204,6 +206,7 @@ export function convertEsModule(code: string) {
           newDeclaration.type === n.ClassDeclaration ||
           newDeclaration.type === n.FunctionExpression
         ) {
+          // @ts-ignore Different libraries with the same types
           program = walk(program, {
             enter(node, parent, prop, index) {
               if (node.type === n.AssignmentExpression) {
