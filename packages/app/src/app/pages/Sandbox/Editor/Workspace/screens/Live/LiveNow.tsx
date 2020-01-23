@@ -32,112 +32,6 @@ import {
   FollowIcon,
 } from './icons';
 
-const User = ({
-  user,
-  liveUserId,
-  liveRole,
-  liveMode,
-  followingUserId,
-  onFollow,
-  onAddEditorClicked,
-  onRemoveEditorClicked,
-  isOwner,
-}) => {
-  const currentUser = user.id === liveUserId;
-
-  return (
-    <Stack
-      justify="space-between"
-      align="center"
-      css={{
-        '.live-actions': { opacity: 0 },
-        ':hover': { '.live-actions': { opacity: 1 } },
-      }}
-    >
-      <Stack gap={2} align="center">
-        <Avatar user={user} />
-        <span>
-          <Text size={2} block>
-            {user.username}
-          </Text>
-          <Text size={2} variant="muted" block>
-            {liveRole === 'owner' ? 'Owner ' : null}
-            {currentUser ? '(you)' : null}
-          </Text>
-        </span>
-      </Stack>
-
-      <Stack align="center" gap={2} className="live-actions">
-        {isOwner && liveMode === 'classroom' && (
-          <>
-            {liveRole === 'spectator' && (
-              <Tooltip content="Make editor">
-                <AddIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onAddEditorClicked({ liveUserId: user.id })}
-                />
-              </Tooltip>
-            )}
-            {liveRole === 'editor' && (
-              <Tooltip content="Make spectator">
-                <RemoveIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onRemoveEditorClicked({ liveUserId: user.id })}
-                />
-              </Tooltip>
-            )}
-          </>
-        )}
-
-        {(liveRole === 'editor' || liveRole === 'owner') && !currentUser && (
-          <>
-            {followingUserId === user.id ? (
-              <Tooltip content="Stop following">
-                <UnfollowIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onFollow({ liveUserId: null })}
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip content="Follow along">
-                <FollowIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onFollow({ liveUserId: user.id })}
-                />
-              </Tooltip>
-            )}
-          </>
-        )}
-      </Stack>
-    </Stack>
-  );
-};
-
-const Timer = props => {
-  const [since, setSince] = React.useState(Date.now() - props.startTime);
-
-  const pad = number => {
-    if (`${number}`.length === 1) return `0${number}`;
-    return `${number}`;
-  };
-
-  useInterval(() => {
-    setSince(Date.now() - props.startTime);
-  }, 1000);
-
-  const hours = Math.floor(since / 1000 / 60 / 60);
-  const minutes = Math.floor((since - hours * 1000 * 60 * 60) / 1000 / 60);
-  const seconds = Math.floor(
-    (since - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000
-  );
-
-  const text = `${hours > 0 ? pad(hours) + ':' : ''}${pad(minutes)}:${pad(
-    seconds
-  )}`;
-
-  return <Text variant="danger">{text}</Text>;
-};
-
 export const LiveNow = () => {
   const {
     actions: {
@@ -328,4 +222,110 @@ export const LiveNow = () => {
       )}
     </>
   );
+};
+
+const User = ({
+  user,
+  liveUserId,
+  liveRole,
+  liveMode,
+  followingUserId,
+  onFollow,
+  onAddEditorClicked,
+  onRemoveEditorClicked,
+  isOwner,
+}) => {
+  const currentUser = user.id === liveUserId;
+
+  return (
+    <Stack
+      justify="space-between"
+      align="center"
+      css={{
+        '.live-actions': { opacity: 0 },
+        ':hover': { '.live-actions': { opacity: 1 } },
+      }}
+    >
+      <Stack gap={2} align="center">
+        <Avatar user={user} />
+        <span>
+          <Text size={2} block>
+            {user.username}
+          </Text>
+          <Text size={2} variant="muted" block>
+            {liveRole === 'owner' ? 'Owner ' : null}
+            {currentUser ? '(you)' : null}
+          </Text>
+        </span>
+      </Stack>
+
+      <Stack align="center" gap={2} className="live-actions">
+        {isOwner && liveMode === 'classroom' && (
+          <>
+            {liveRole === 'spectator' && (
+              <Tooltip content="Make editor">
+                <AddIcon
+                  css={{ cursor: 'pointer' }}
+                  onClick={() => onAddEditorClicked({ liveUserId: user.id })}
+                />
+              </Tooltip>
+            )}
+            {liveRole === 'editor' && (
+              <Tooltip content="Make spectator">
+                <RemoveIcon
+                  css={{ cursor: 'pointer' }}
+                  onClick={() => onRemoveEditorClicked({ liveUserId: user.id })}
+                />
+              </Tooltip>
+            )}
+          </>
+        )}
+
+        {(liveRole === 'editor' || liveRole === 'owner') && !currentUser && (
+          <>
+            {followingUserId === user.id ? (
+              <Tooltip content="Stop following">
+                <UnfollowIcon
+                  css={{ cursor: 'pointer' }}
+                  onClick={() => onFollow({ liveUserId: null })}
+                />
+              </Tooltip>
+            ) : (
+              <Tooltip content="Follow along">
+                <FollowIcon
+                  css={{ cursor: 'pointer' }}
+                  onClick={() => onFollow({ liveUserId: user.id })}
+                />
+              </Tooltip>
+            )}
+          </>
+        )}
+      </Stack>
+    </Stack>
+  );
+};
+
+const Timer = props => {
+  const [since, setSince] = React.useState(Date.now() - props.startTime);
+
+  const pad = number => {
+    if (`${number}`.length === 1) return `0${number}`;
+    return `${number}`;
+  };
+
+  useInterval(() => {
+    setSince(Date.now() - props.startTime);
+  }, 1000);
+
+  const hours = Math.floor(since / 1000 / 60 / 60);
+  const minutes = Math.floor((since - hours * 1000 * 60 * 60) / 1000 / 60);
+  const seconds = Math.floor(
+    (since - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000
+  );
+
+  const text = `${hours > 0 ? pad(hours) + ':' : ''}${pad(minutes)}:${pad(
+    seconds
+  )}`;
+
+  return <Text variant="danger">{text}</Text>;
 };
