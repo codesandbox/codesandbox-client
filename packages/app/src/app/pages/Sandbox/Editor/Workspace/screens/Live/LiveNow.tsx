@@ -41,6 +41,7 @@ const User = ({
   onFollow,
   onAddEditorClicked,
   onRemoveEditorClicked,
+  isOwner,
 }) => {
   const currentUser = user.id === liveUserId;
 
@@ -67,23 +68,28 @@ const User = ({
       </Stack>
 
       <Stack align="center" gap={2} className="live-actions">
-        {liveMode === 'classroom' && liveRole === 'spectator' && (
-          <Tooltip content="Make editor">
-            <AddIcon
-              css={{ cursor: 'pointer' }}
-              onClick={() => onAddEditorClicked({ liveUserId: user.id })}
-            />
-          </Tooltip>
+        {isOwner && liveMode === 'classroom' && (
+          <>
+            {liveRole === 'spectator' && (
+              <Tooltip content="Make editor">
+                <AddIcon
+                  css={{ cursor: 'pointer' }}
+                  onClick={() => onAddEditorClicked({ liveUserId: user.id })}
+                />
+              </Tooltip>
+            )}
+            {liveRole === 'editor' && (
+              <Tooltip content="Make spectator">
+                <RemoveIcon
+                  css={{ cursor: 'pointer' }}
+                  onClick={() => onRemoveEditorClicked({ liveUserId: user.id })}
+                />
+              </Tooltip>
+            )}
+          </>
         )}
-        {liveMode === 'classroom' && liveRole === 'editor' && (
-          <Tooltip content="Make spectator">
-            <RemoveIcon
-              css={{ cursor: 'pointer' }}
-              onClick={() => onRemoveEditorClicked({ liveUserId: user.id })}
-            />
-          </Tooltip>
-        )}
-        {!currentUser && (
+
+        {(liveRole === 'editor' || liveRole === 'owner') && !currentUser && (
           <>
             {followingUserId === user.id ? (
               <Tooltip content="Stop following">
@@ -150,6 +156,7 @@ export const LiveNow = () => {
         notificationsHidden,
         liveUserId,
         followingUserId,
+        isOwner,
         roomInfo: {
           startTime,
           roomId,
@@ -196,23 +203,27 @@ export const LiveNow = () => {
             marginBottom={2}
           />
 
-          <Button variant="danger" onClick={onSessionCloseClicked}>
-            <StopIcon css={css({ marginRight: 2 })} /> <span>Stop Session</span>
-          </Button>
+          {isOwner && (
+            <Button variant="danger" onClick={onSessionCloseClicked}>
+              <StopIcon css={css({ marginRight: 2 })} />{' '}
+              <span>Stop Session</span>
+            </Button>
+          )}
         </Element>
       </Collapsible>
 
       <Collapsible title="Preferences" defaultOpen>
         <List>
-          <ListItem justify="space-between">
-            <Label htmlFor="chat_enabled">Chat enabled</Label>
-
-            <Switch
-              id="chat_enabled"
-              on={chatEnabled}
-              onChange={() => onChatEnabledChange(!chatEnabled)}
-            />
-          </ListItem>
+          {isOwner && (
+            <ListItem justify="space-between">
+              <Label htmlFor="chat_enabled">Chat enabled</Label>
+              <Switch
+                id="chat_enabled"
+                on={chatEnabled}
+                onChange={() => onChatEnabledChange(!chatEnabled)}
+              />
+            </ListItem>
+          )}
           <ListItem justify="space-between">
             <Label htmlFor="show_notifications">Show notifications</Label>
             <Switch
@@ -230,6 +241,7 @@ export const LiveNow = () => {
             icon={mode === 'open' ? OpenIcon : ClassroomIcon}
             value={mode}
             onChange={event => onModeChanged({ mode: event.target.value })}
+            disabled={!isOwner}
           >
             <option value="open">Everyone can edit</option>
             <option value="classroom">Classroom mode</option>
@@ -255,6 +267,7 @@ export const LiveNow = () => {
               onFollow={onFollow}
               onRemoveEditorClicked={onRemoveEditorClicked}
               onAddEditorClicked={onAddEditorClicked}
+              isOwner={isOwner}
             />
           ))}
           {editors.map(user => (
@@ -268,6 +281,7 @@ export const LiveNow = () => {
               onFollow={onFollow}
               onRemoveEditorClicked={onRemoveEditorClicked}
               onAddEditorClicked={onAddEditorClicked}
+              isOwner={isOwner}
             />
           ))}
           {mode === 'open' &&
@@ -282,6 +296,7 @@ export const LiveNow = () => {
                 onFollow={onFollow}
                 onRemoveEditorClicked={onRemoveEditorClicked}
                 onAddEditorClicked={onAddEditorClicked}
+                isOwner={isOwner}
               />
             ))}
         </Element>
@@ -301,6 +316,7 @@ export const LiveNow = () => {
                 onFollow={onFollow}
                 onRemoveEditorClicked={onRemoveEditorClicked}
                 onAddEditorClicked={onAddEditorClicked}
+                isOwner={isOwner}
               />
             ))}
 
