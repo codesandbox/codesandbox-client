@@ -121,6 +121,13 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('handles default as exports', () => {
+    const code = `
+    export { default as Field } from './Field';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('has good perf', () => {
     /* eslint-disable */
     const code = require('./big-file');

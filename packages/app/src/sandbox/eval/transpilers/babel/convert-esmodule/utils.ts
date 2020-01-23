@@ -167,11 +167,12 @@ export function generateAllExportsIterator(varName: string) {
 }
 
 /**
- * exports.$exportName = $varName.$exportName;
+ * exports.$exportName = $varName.$localName;
  */
 export function generateExportMemberStatement(
   varName: string,
-  exportName: string
+  exportName: string,
+  localName: string
 ) {
   return {
     type: n.ExpressionStatement,
@@ -199,7 +200,7 @@ export function generateExportMemberStatement(
         },
         property: {
           type: n.Identifier,
-          name: exportName,
+          name: localName,
         },
       },
     },

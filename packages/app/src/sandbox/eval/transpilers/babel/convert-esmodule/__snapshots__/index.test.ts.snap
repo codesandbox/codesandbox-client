@@ -127,6 +127,15 @@ var c = $csb__b.c;
 "
 `;
 
+exports[`convert-esmodule handles default as exports 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__Field = require(\\"./Field\\");
+exports.Field = $csb__Field.default;
+"
+`;
+
 exports[`convert-esmodule handles export mutations 1`] = `
 "Object.defineProperty(exports, \\"__esModule\\", {
   value: true

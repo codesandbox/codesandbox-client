@@ -104,7 +104,11 @@ export function convertEsModule(code: string) {
             program.body.splice(
               i,
               0,
-              generateExportMemberStatement(varName, specifier.exported.name)
+              generateExportMemberStatement(
+                varName,
+                specifier.exported.name,
+                specifier.local.name
+              )
             );
           });
       } else if (statement.declaration) {
