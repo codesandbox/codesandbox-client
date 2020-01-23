@@ -6,5 +6,9 @@
     "javascriptreact",
     { "language": "typescript", "autoFix": true },
     { "language": "typescriptreact", "autoFix": true }
-  ]
+  ],
+  "files.watcherExclude": {
+    "**/node_modules": true,
+    "**/node_modules/**": false
+  }
 }

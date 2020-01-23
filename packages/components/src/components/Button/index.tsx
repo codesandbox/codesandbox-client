@@ -84,9 +84,8 @@ const variantStyles = {
 
 export const Button = styled(Element).attrs({ as: 'button' })<{
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
-  type?: 'submit' | 'button' | 'reset';
   disabled?: boolean;
-  onClick?: (any) => void;
+  onClick?: any;
 }>(({ variant = 'primary', ...props }) =>
   css(
     deepmerge(
