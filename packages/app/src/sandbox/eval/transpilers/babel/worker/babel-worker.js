@@ -582,8 +582,10 @@ self.addEventListener('message', async event => {
       Babel.registerPreset('env', Babel.availablePresets.latest);
     }
 
-    // Hardcode, since we want to override env
-    Babel.availablePresets.env = envPreset;
+    if (version === 7) {
+      // Hardcode, since we want to override env
+      Babel.availablePresets.env = envPreset;
+    }
 
     if (
       (flattenedPlugins.indexOf('transform-vue-jsx') > -1 ||

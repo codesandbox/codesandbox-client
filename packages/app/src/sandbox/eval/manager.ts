@@ -610,7 +610,7 @@ export default class Manager {
       return Promise.resolve(this.transpiledModules[cachedPath].module);
     }
 
-    const measureKey = `resolve-async-${path}:${currentPath}`;
+    const measureKey = `resolve-async:${path}:${currentPath}`;
     return new Promise((promiseResolve, promiseReject) => {
       measure(measureKey);
       const presetAliasedPath = this.getPresetAliasedPath(path);
@@ -720,7 +720,7 @@ export default class Manager {
     if (cachedPath && this.transpiledModules[cachedPath]) {
       resolvedPath = cachedPath;
     } else {
-      const measureKey = `resolve-sync-${path}:${currentPath}`;
+      const measureKey = `resolve-sync:${path}:${currentPath}`;
       measure(measureKey);
       const presetAliasedPath = this.getPresetAliasedPath(path);
 
