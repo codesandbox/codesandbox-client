@@ -190,7 +190,15 @@ const User = ({ user, liveRole }) => {
     },
   } = useOvermind();
 
-  const currentUser = user.id === liveUserId;
+  const loggedInUser = user.id === liveUserId;
+
+  // only owners can change editors
+  // and only in classroom mode, in open mode, everyone is an editor
+  const canChangeEditors = isOwner && mode === 'classroom';
+
+  // you can't follow spectators (nothing to follow)
+  // and you can't follow yourself
+  const canFollowUser = !(liveRole === 'spectator' || loggedInUser);
 
   return (
     <Stack
@@ -209,13 +217,13 @@ const User = ({ user, liveRole }) => {
           </Text>
           <Text size={2} variant="muted" block>
             {liveRole === 'owner' ? 'Owner ' : null}
-            {currentUser ? '(you)' : null}
+            {loggedInUser ? '(you)' : null}
           </Text>
         </span>
       </Stack>
 
       <Stack align="center" gap={2} className="live-actions">
-        {isOwner && mode === 'classroom' && (
+        {canChangeEditors && (
           <>
             {liveRole === 'spectator' && (
               <Tooltip content="Make editor">
@@ -236,7 +244,7 @@ const User = ({ user, liveRole }) => {
           </>
         )}
 
-        {(liveRole === 'editor' || liveRole === 'owner') && !currentUser && (
+        {canFollowUser && (
           <>
             {followingUserId === user.id ? (
               <Tooltip content="Stop following">
