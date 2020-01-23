@@ -1,17 +1,16 @@
 import { format } from 'date-fns';
 import { Helmet } from 'react-helmet';
 import React, { useEffect } from 'react';
-import { ThemeProvider } from 'styled-components';
 
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Switch from '@codesandbox/common/lib/components/Switch';
+import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
+import { ThemeProvider, Switch } from '@codesandbox/components';
 
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
-import theme from '@codesandbox/common/lib/design-language/theme';
 import { SubscribeForm } from './subscribe-form';
 import {
   Page,
@@ -104,7 +103,7 @@ const ProPage: React.FC = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={codeSandboxBlackTheme}>
       <Page>
         <Helmet>
           <title>Pro - CodeSandbox</title>
@@ -220,12 +219,10 @@ const NotPro = ({
       <DurationChoice>
         <BillText on={duration === 'monthly'}>Bill monthly</BillText>
         <Switch
-          small
-          secondary
-          onClick={() =>
+          onChange={() =>
             setDuration(d => (d === 'yearly' ? 'monthly' : 'yearly'))
           }
-          right={duration === 'yearly'}
+          on={duration === 'yearly'}
         />
         <BillText on={duration === 'yearly'}>Bill annually</BillText>
       </DurationChoice>
