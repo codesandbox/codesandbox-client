@@ -68,7 +68,7 @@ export const Ports = () => {
           <ListAction onClick={openGraphiQLPort}>
             <Stack align="center">
               <BrowserIcon />
-              <div>GraphiQL</div>
+              <Text marginLeft={2}>GraphiQL</Text>
             </Stack>
           </ListAction>
         ) : null}
