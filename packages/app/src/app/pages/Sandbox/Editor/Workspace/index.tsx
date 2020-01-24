@@ -27,6 +27,7 @@ import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
 import { ProjectInfo as ProjectInfoNew } from './screens/ProjectInfo';
 import { Deployment as DeploymentNew } from './screens/Deployment/index';
+import { Server as ServerNew } from './screens/Server';
 
 import { Server } from './items/Server';
 import { SSEDownNotice } from './SSEDownNotice';
@@ -42,7 +43,7 @@ const workspaceTabs = {
   deploy: REDESIGNED_SIDEBAR ? DeploymentNew : Deployment,
   config: REDESIGNED_SIDEBAR ? ConfigurationFilesNew : ConfigurationFiles,
   live: REDESIGNED_SIDEBAR ? LiveNew : Live,
-  server: Server,
+  server: REDESIGNED_SIDEBAR ? ServerNew : Server,
   more: More,
 };
 
