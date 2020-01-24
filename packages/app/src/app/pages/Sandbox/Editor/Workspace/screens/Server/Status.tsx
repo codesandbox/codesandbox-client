@@ -1,21 +1,21 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Stack, Text, Element } from '@codesandbox/components';
 import {
   SSEContainerStatus,
   SSEManagerStatus,
 } from '@codesandbox/common/lib/types';
+import { useOvermind } from 'app/overmind';
 
-type Props = {
-  containerStatus: SSEContainerStatus;
-  managerStatus: SSEManagerStatus;
-};
+type StatusCircleProps = { theme: any; color: string };
 
 const StatusCircle = styled.div`
-  border-radius: 50%;
-  background-color: ${props => props.color};
-  width: 8px;
-  height: 8px;
+  ${({ theme, color }: StatusCircleProps) => css`
+    border-radius: 50%;
+    background-color: ${color};
+    width: ${theme.space[2]}px;
+    height: ${theme.space[2]}px;
+  `}
 `;
 
 const STATUS_MESSAGES = {
@@ -69,7 +69,12 @@ function getManagerStatusMessageAndColor(managerStatus: SSEManagerStatus) {
   }
 }
 
-export const Status = ({ containerStatus, managerStatus }: Props) => {
+export const Status = () => {
+  const {
+    state: {
+      server: { containerStatus, status: managerStatus },
+    },
+  } = useOvermind();
   const { color, message } =
     getManagerStatusMessageAndColor(managerStatus) ||
     getContainerStatusMessageAndColor(containerStatus);
