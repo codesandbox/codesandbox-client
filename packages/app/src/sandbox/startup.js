@@ -4,13 +4,14 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 import hookConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
+import { isStandalone } from 'codesandbox-api';
 
 window.babelworkers = [];
 for (let i = 0; i < 3; i++) {
   window.babelworkers.push(new BabelWorker());
 }
 
-if (!window.opener) {
+if (!isStandalone) {
   // Means we're in the editor
   setupHistoryListeners();
   hookConsole();
