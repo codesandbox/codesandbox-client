@@ -42,7 +42,7 @@ export function persistMeasurements(data: {
   browser: string;
   version: string;
 }) {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' || process.env.STAGING) {
     return Promise.resolve();
   }
 
