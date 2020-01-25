@@ -274,7 +274,7 @@ export default class Manager {
       return this.fileResolver.readFile(p).then(code => {
         this.addModule({ code, path: p });
 
-        callback(code);
+        callback(null, code);
       });
     }
 
@@ -690,7 +690,12 @@ export default class Manager {
           }
 
           if (!this.transpiledModules[foundPath]) {
-            this.readFileSync(foundPath, code => {
+            this.readFileSync(foundPath, (error, code) => {
+              if (error) {
+                promiseReject(error);
+                return;
+              }
+
               this.addModule({ path: foundPath, code });
               promiseResolve(this.transpiledModules[foundPath].module);
             });
@@ -831,12 +836,12 @@ export default class Manager {
     const tModule =
       currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root
     try {
-      const resolvedTModule = await this.resolveTranspiledModule(
+      return this.resolveTranspiledModule(
         path,
         tModule.module.path,
-        ignoredExtensions
+        ignoredExtensions,
+        true
       );
-      return resolvedTModule;
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
         const { queryPath } = splitQueryFromPath(path);

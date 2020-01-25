@@ -691,6 +691,7 @@ self.addEventListener('message', async event => {
                 !Babel.version.startsWith('6')
               );
             } catch (e) {
+              console.warn(e);
               throw new Error(
                 `Could not find/install babel plugin '${p}': ${e.message}`
               );
