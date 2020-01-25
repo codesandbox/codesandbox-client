@@ -831,12 +831,12 @@ export default class Manager {
     const tModule =
       currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root
     try {
-      return this.resolveTranspiledModule(
+      const resolvedTModule = await this.resolveTranspiledModule(
         path,
         tModule.module.path,
-        ignoredExtensions,
-        true
+        ignoredExtensions
       );
+      return resolvedTModule;
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
         const { queryPath } = splitQueryFromPath(path);

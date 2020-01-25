@@ -175,6 +175,8 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
 
   const pluginName = await resolveDependencyName(plugin, isV7);
 
+  await downloadPath(`/node_modules/${pluginName}`);
+
   try {
     await downloadPath(pluginName);
     evaluatedPlugin = evaluateFromPath(
