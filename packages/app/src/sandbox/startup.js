@@ -22,7 +22,7 @@ for (let i = 0; i < 3; i++) {
   });
 }
 
-if (!window.opener && !isStandalone) {
+if (!isStandalone) {
   // Means we're in the editor
   setupHistoryListeners();
   hookConsole();

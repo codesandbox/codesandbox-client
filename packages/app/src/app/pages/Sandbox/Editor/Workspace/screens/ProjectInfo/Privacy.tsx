@@ -1,5 +1,11 @@
 import React from 'react';
-import { Collapsible, Text, Stack, Select } from '@codesandbox/components';
+import {
+  Collapsible,
+  Text,
+  Link,
+  Stack,
+  Select,
+} from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { css } from '@styled-system/css';
 import { GlobeIcon } from './icons';
@@ -11,15 +17,17 @@ export const Privacy = () => {
     },
     state: {
       editor: { currentSandbox },
-      isPatron,
+      user,
     },
   } = useOvermind();
+
+  const isPaidUser = user?.subscription;
 
   return (
     <Collapsible title="Privacy" defaultOpen>
       <Stack direction="vertical" gap={4} css={css({ paddingX: 3 })}>
         <Select
-          disabled={!isPatron}
+          disabled={!isPaidUser}
           icon={GlobeIcon}
           onChange={({ target: { value } }) =>
             sandboxPrivacyChanged({
@@ -30,18 +38,15 @@ export const Privacy = () => {
           value={currentSandbox.privacy}
         >
           <option value={0}>Public</option>
-
-          {isPatron && (
-            <option value={1}>Unlisted (only available by url)</option>
-          )}
-
-          {isPatron && <option value={2}>Private</option>}
+          <option value={1}>Unlisted (only available by url)</option>
+          <option value={2}>Private</option>
         </Select>
-        {!isPatron ? (
+        {isPaidUser ? (
           <Text variant="muted" size={2}>
-            You an change privacy of a sandbox as a Pro.
-            <br />
-            Become a Pro.
+            You an change privacy of a sandbox as a Pro.{' '}
+            <Link href="/pro" css={{ textDecoration: 'underline !important' }}>
+              Become a Pro
+            </Link>
           </Text>
         ) : null}
       </Stack>

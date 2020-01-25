@@ -14,7 +14,7 @@ const colors = {
   contrastActiveBorder: null,
   errorForeground: tokens.reds[500],
   focusBorder: tokens.grays[600],
-  foreground: tokens.grays[300],
+  foreground: tokens.grays[200],
   activityBar: {
     background: tokens.grays[700],
     border: tokens.grays[600],
@@ -137,7 +137,7 @@ const colors = {
     placeholderForeground: tokens.grays[300],
   },
   inputOption: {
-    activeBorder: tokens.blues[300],
+    activeBorder: tokens.grays[500],
   },
   inputValidation: {
     infoForeground: null,
@@ -205,14 +205,14 @@ const colors = {
     background: tokens.blues[700],
   },
   separator: {
-    background: tokens.grays[800],
+    background: tokens.grays[900],
     foreground: tokens.white,
   },
   sideBar: {
     background: tokens.grays[700],
     hoverBackground: tokens.green,
     border: tokens.grays[600],
-    foreground: tokens.grays[300],
+    foreground: tokens.grays[200],
   },
   sideBarSectionHeader: {
     background: tokens.grays[700],

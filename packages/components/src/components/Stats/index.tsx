@@ -35,7 +35,7 @@ export const formatNumber = (count: number): string =>
   count >= 1000 ? `${(count / 1000).toFixed(1)}k` : `${count}`;
 
 export const Stats = ({ sandbox }) => (
-  <Stack gap={4} css={{ paddingX: 3 }}>
+  <Stack gap={4}>
     <Stack gap={1} align="center">
       <Text variant="muted">
         <HeartIcon />
