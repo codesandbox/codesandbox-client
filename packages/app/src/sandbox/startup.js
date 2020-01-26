@@ -8,7 +8,18 @@ import { isStandalone } from 'codesandbox-api';
 
 window.babelworkers = [];
 for (let i = 0; i < 3; i++) {
-  window.babelworkers.push(new BabelWorker());
+  const worker = new BabelWorker();
+  window.babelworkers.push(worker);
+
+  // Warm up the babel worker
+  worker.postMessage({
+    type: 'compiler',
+    path: 'test.js',
+    code: 'const a = "b"',
+    config: { presets: ['env'] },
+    version: 7,
+    loaderOptions: {},
+  });
 }
 
 if (!isStandalone) {

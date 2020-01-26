@@ -22,7 +22,10 @@ export function isBabel7(
   dependencies: Dependencies = {},
   devDependencies: Dependencies = {}
 ) {
-  if (devDependencies['@vue/cli-plugin-babel']) {
+  if (
+    dependencies['@vue/cli-plugin-babel'] ||
+    devDependencies['@vue/cli-plugin-babel']
+  ) {
     return true;
   }
 
