@@ -567,9 +567,6 @@ export default class TranspiledModule {
    * @param {*} manager
    */
   async doTranspile(manager: Manager) {
-    // eslint-disable-next-line
-    manager.transpileJobs[this.getId()] = true;
-
     this.hasMissingDependencies = false;
 
     // Remove this module from the initiators of old deps, so we can populate a
@@ -623,7 +620,9 @@ export default class TranspiledModule {
           .concat([this.module.path])
           .join('!');
 
-        const measureKey = `transpile-${transpilerConfig.transpiler.name}-${this.module.path}`;
+        const measureKey = `transpile-${
+          transpilerConfig.transpiler.name
+        }-${this.getId()}`;
         try {
           measure(measureKey);
           const {
