@@ -24,7 +24,7 @@ const DEV_URLS = {
 // eslint-disable-next-line
 const PROD_URLS = {
   packager:
-    'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages/',
+    'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages',
   bucket: 'https://prod-packager-packages.codesandbox.io',
 };
 
