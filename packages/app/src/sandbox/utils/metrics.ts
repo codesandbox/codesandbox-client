@@ -108,7 +108,7 @@ getGlobal().measurements = {
   getMeasurements,
 };
 
-const MEASUREMENT_API = `https://col.ops.csb.dev/data/sandpack`;
+const MEASUREMENT_API = `https://30vlq6h5qc.execute-api.eu-west-1.amazonaws.com/prod/metrics`;
 
 export function persistMeasurements(data: {
   sandboxId: string;
@@ -116,36 +116,15 @@ export function persistMeasurements(data: {
   browser: string;
   version: string;
 }) {
-  const body = [
-    {
-      measurement: 'load_times',
-      tags: {
-        browser: data.browser,
-        sandbox_id: data.sandboxId,
-        cache_used: data.cacheUsed,
-        version: data.version,
-      },
-      fields: {
-        transpilation: measurements.transpilation,
-        evaluation: measurements.evaluation,
-        external_resources: measurements['external-resources'],
-        compilation: measurements.compilation,
-        boot: measurements.boot,
-        total: measurements.total,
-        dependencies: measurements.dependencies,
-      },
-    },
-  ];
-
   if (process.env.NODE_ENV === 'development' || process.env.STAGING) {
-    // eslint-disable-next-line
-    console.log(body);
     return Promise.resolve();
   }
 
+  const finalData = { ...data, ...measurements };
+
   return fetch(MEASUREMENT_API, {
     method: 'POST',
-    body: JSON.stringify(body),
+    body: JSON.stringify(finalData),
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
