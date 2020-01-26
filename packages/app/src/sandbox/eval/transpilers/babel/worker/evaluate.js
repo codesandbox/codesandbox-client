@@ -100,7 +100,7 @@ export default function evaluate(
         requirePath.startsWith('@babel/preset') &&
         requirePath !== '@babel/preset-env'
       ) {
-        return { __esModule: true, default: plugin };
+        return { __esModule: true, default: preset };
       }
       return preset;
     }

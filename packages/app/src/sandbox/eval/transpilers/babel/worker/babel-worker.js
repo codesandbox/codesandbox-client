@@ -5,7 +5,7 @@ import macrosPlugin from 'babel-plugin-macros';
 import refreshBabelPlugin from 'react-refresh/babel';
 import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
 import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
-import envPreset from '@babel/preset-env';
+import * as envPreset from '@babel/preset-env';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
