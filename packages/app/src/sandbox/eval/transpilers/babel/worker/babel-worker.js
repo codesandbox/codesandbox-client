@@ -523,154 +523,157 @@ self.addEventListener('message', async event => {
   if (type !== 'compile') {
     return;
   }
+  try {
+    const { disableCodeSandboxPlugins } = loaderOptions;
 
-  const { disableCodeSandboxPlugins } = loaderOptions;
+    const babelUrl = babelTranspilerOptions && babelTranspilerOptions.babelURL;
+    const babelEnvUrl =
+      babelTranspilerOptions && babelTranspilerOptions.babelEnvURL;
 
-  const babelUrl = babelTranspilerOptions && babelTranspilerOptions.babelURL;
-  const babelEnvUrl =
-    babelTranspilerOptions && babelTranspilerOptions.babelEnvURL;
-
-  if (babelUrl || babelEnvUrl) {
-    loadCustomTranspiler(babelUrl, babelEnvUrl);
-  } else if (version !== 7) {
-    loadCustomTranspiler(
-      process.env.NODE_ENV === 'development'
-        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.js`
-        : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
-    );
-  }
-
-  const stringifiedConfig = JSON.stringify(babelTranspilerOptions);
-  if (stringifiedConfig && lastConfig !== stringifiedConfig) {
-    resetCache();
-    lastConfig = stringifiedConfig;
-  }
-
-  const codeSandboxPlugins = [];
-
-  if (!disableCodeSandboxPlugins) {
-    codeSandboxPlugins.push('dynamic-import-node');
-
-    if (loaderOptions.dynamicCSSModules) {
-      codeSandboxPlugins.push('dynamic-css-modules');
-    }
-
-    if (!sandboxOptions || sandboxOptions.infiniteLoopProtection) {
-      codeSandboxPlugins.push('babel-plugin-transform-prevent-infinite-loops');
-    }
-  }
-
-  codeSandboxPlugins.push([
-    'babel-plugin-detective',
-    { source: true, nodes: true, generated: true },
-  ]);
-
-  const customConfig = getCustomConfig(
-    { config, codeSandboxPlugins },
-    version,
-    path,
-    loaderOptions
-  );
-
-  const flattenedPresets = flatten(customConfig.presets || []);
-  const flattenedPlugins = flatten(customConfig.plugins || []);
-
-  if (!disableCodeSandboxPlugins) {
-    if (
-      flattenedPresets.indexOf('env') > -1 &&
-      Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
-      version !== 7
-    ) {
-      Babel.registerPreset('env', Babel.availablePresets.latest);
-    }
-
-    if (version === 7) {
-      // Hardcode, since we want to override env
-      Babel.availablePresets.env = envPreset;
-    }
-
-    if (
-      (flattenedPlugins.indexOf('transform-vue-jsx') > -1 ||
-        flattenedPlugins.indexOf('babel-plugin-transform-vue-jsx') > -1) &&
-      Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
-    ) {
-      const vuePlugin = await import(
-        /* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx'
+    if (babelUrl || babelEnvUrl) {
+      loadCustomTranspiler(babelUrl, babelEnvUrl);
+    } else if (version !== 7) {
+      loadCustomTranspiler(
+        process.env.NODE_ENV === 'development'
+          ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.js`
+          : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
       );
-      Babel.registerPlugin('transform-vue-jsx', vuePlugin);
-      Babel.registerPlugin('babel-plugin-transform-vue-jsx', vuePlugin);
     }
 
-    if (
-      (flattenedPlugins.indexOf('jsx-pragmatic') > -1 ||
-        flattenedPlugins.indexOf('babel-plugin-jsx-pragmatic') > -1) &&
-      Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
-    ) {
-      const pragmaticPlugin = await import(
-        /* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic'
-      );
-      Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
-      Babel.registerPlugin('babel-plugin-jsx-pragmatic', pragmaticPlugin);
+    const stringifiedConfig = JSON.stringify(babelTranspilerOptions);
+    if (stringifiedConfig && lastConfig !== stringifiedConfig) {
+      resetCache();
+      lastConfig = stringifiedConfig;
     }
 
-    if (
-      flattenedPlugins.indexOf('babel-plugin-macros') > -1 &&
-      Object.keys(Babel.availablePlugins).indexOf('babel-plugin-macros') === -1
-    ) {
-      if (hasMacros) {
-        await waitForFs();
+    const codeSandboxPlugins = [];
+
+    if (!disableCodeSandboxPlugins) {
+      codeSandboxPlugins.push('dynamic-import-node');
+
+      if (loaderOptions.dynamicCSSModules) {
+        codeSandboxPlugins.push('dynamic-css-modules');
       }
 
-      Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
+      if (!sandboxOptions || sandboxOptions.infiniteLoopProtection) {
+        codeSandboxPlugins.push(
+          'babel-plugin-transform-prevent-infinite-loops'
+        );
+      }
     }
 
-    if (
-      (flattenedPlugins.indexOf('proposal-optional-chaining') > -1 ||
-        flattenedPlugins.indexOf('@babel/plugin-proposal-optional-chaining') >
-          -1) &&
-      Object.keys(Babel.availablePlugins).indexOf(
-        'proposal-optional-chaining'
-      ) === -1
-    ) {
-      Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
+    codeSandboxPlugins.push([
+      'babel-plugin-detective',
+      { source: true, nodes: true, generated: true },
+    ]);
+
+    const customConfig = getCustomConfig(
+      { config, codeSandboxPlugins },
+      version,
+      path,
+      loaderOptions
+    );
+
+    const flattenedPresets = flatten(customConfig.presets || []);
+    const flattenedPlugins = flatten(customConfig.plugins || []);
+
+    if (!disableCodeSandboxPlugins) {
+      if (
+        flattenedPresets.indexOf('env') > -1 &&
+        Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
+        version !== 7
+      ) {
+        Babel.registerPreset('env', Babel.availablePresets.latest);
+      }
+
+      if (version === 7) {
+        // Hardcode, since we want to override env
+        Babel.availablePresets.env = envPreset;
+      }
+
+      if (
+        (flattenedPlugins.indexOf('transform-vue-jsx') > -1 ||
+          flattenedPlugins.indexOf('babel-plugin-transform-vue-jsx') > -1) &&
+        Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
+      ) {
+        const vuePlugin = await import(
+          /* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx'
+        );
+        Babel.registerPlugin('transform-vue-jsx', vuePlugin);
+        Babel.registerPlugin('babel-plugin-transform-vue-jsx', vuePlugin);
+      }
+
+      if (
+        (flattenedPlugins.indexOf('jsx-pragmatic') > -1 ||
+          flattenedPlugins.indexOf('babel-plugin-jsx-pragmatic') > -1) &&
+        Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
+      ) {
+        const pragmaticPlugin = await import(
+          /* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic'
+        );
+        Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+        Babel.registerPlugin('babel-plugin-jsx-pragmatic', pragmaticPlugin);
+      }
+
+      if (
+        flattenedPlugins.indexOf('babel-plugin-macros') > -1 &&
+        Object.keys(Babel.availablePlugins).indexOf('babel-plugin-macros') ===
+          -1
+      ) {
+        if (hasMacros) {
+          await waitForFs();
+        }
+
+        Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
+      }
+
+      if (
+        (flattenedPlugins.indexOf('proposal-optional-chaining') > -1 ||
+          flattenedPlugins.indexOf('@babel/plugin-proposal-optional-chaining') >
+            -1) &&
+        Object.keys(Babel.availablePlugins).indexOf(
+          'proposal-optional-chaining'
+        ) === -1
+      ) {
+        Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
+      }
+
+      if (
+        flattenedPlugins.indexOf('react-refresh/babel') > -1 &&
+        Object.keys(Babel.availablePlugins).indexOf('react-refresh/babel') ===
+          -1
+      ) {
+        Babel.registerPlugin('react-refresh/babel', refreshBabelPlugin);
+      }
+
+      const coalescingInPlugins =
+        flattenedPlugins.indexOf('proposal-nullish-coalescing-operator') > -1 ||
+        flattenedPlugins.indexOf(
+          '@babel/plugin-proposal-nullish-coalescing-operator'
+        ) > -1;
+      if (
+        coalescingInPlugins &&
+        Object.keys(Babel.availablePlugins).indexOf(
+          'proposal-nullish-coalescing-operator'
+        ) === -1
+      ) {
+        Babel.registerPlugin(
+          'proposal-nullish-coalescing-operator',
+          coalescingPlugin
+        );
+      }
+
+      if (
+        flattenedPlugins.indexOf('transform-cx-jsx') > -1 &&
+        Object.keys(Babel.availablePlugins).indexOf('transform-cx-jsx') === -1
+      ) {
+        const cxJsxPlugin = await import(
+          /* webpackChunkName: 'transform-cx-jsx' */ 'babel-plugin-transform-cx-jsx'
+        );
+        Babel.registerPlugin('transform-cx-jsx', cxJsxPlugin);
+      }
     }
 
-    if (
-      flattenedPlugins.indexOf('react-refresh/babel') > -1 &&
-      Object.keys(Babel.availablePlugins).indexOf('react-refresh/babel') === -1
-    ) {
-      Babel.registerPlugin('react-refresh/babel', refreshBabelPlugin);
-    }
-
-    const coalescingInPlugins =
-      flattenedPlugins.indexOf('proposal-nullish-coalescing-operator') > -1 ||
-      flattenedPlugins.indexOf(
-        '@babel/plugin-proposal-nullish-coalescing-operator'
-      ) > -1;
-    if (
-      coalescingInPlugins &&
-      Object.keys(Babel.availablePlugins).indexOf(
-        'proposal-nullish-coalescing-operator'
-      ) === -1
-    ) {
-      Babel.registerPlugin(
-        'proposal-nullish-coalescing-operator',
-        coalescingPlugin
-      );
-    }
-
-    if (
-      flattenedPlugins.indexOf('transform-cx-jsx') > -1 &&
-      Object.keys(Babel.availablePlugins).indexOf('transform-cx-jsx') === -1
-    ) {
-      const cxJsxPlugin = await import(
-        /* webpackChunkName: 'transform-cx-jsx' */ 'babel-plugin-transform-cx-jsx'
-      );
-      Babel.registerPlugin('transform-cx-jsx', cxJsxPlugin);
-    }
-  }
-
-  try {
     await Promise.all(
       flattenedPlugins
         .filter(p => typeof p === 'string')
