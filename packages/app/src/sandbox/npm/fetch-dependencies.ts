@@ -15,26 +15,22 @@ const debug = _debug('cs:sandbox:packager');
 
 const VERSION = 1;
 
-const BUCKET_URL =
-  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://dev-packager-packages.codesandbox.io'
-    : 'https://d1jyvh0kxilfa7.cloudfront.net';
+// eslint-disable-next-line
+const DEV_URLS = {
+  packager:
+    'https://xi5p9f7czk.execute-api.eu-west-1.amazonaws.com/dev/packages',
+  bucket: 'https://dev-packager-packages.codesandbox.io',
+};
+// eslint-disable-next-line
+const PROD_URLS = {
+  packager:
+    'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages/',
+  bucket: 'https://prod-packager-packages.codesandbox.io',
+};
 
-const NEW_PACKAGER_URL =
-  'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages';
-
-const PACKAGER_URL =
-  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://xi5p9f7czk.execute-api.eu-west-1.amazonaws.com/dev/packages'
-    : 'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages';
-
-function warmupPackager(url: string, method = 'GET') {
-  fetch(url, {
-    method,
-  })
-    .then(() => {})
-    .catch(() => {});
-}
+const URLS = PROD_URLS;
+const BUCKET_URL = URLS.bucket;
+const PACKAGER_URL = URLS.packager;
 
 function callApi(url: string, method = 'GET') {
   return fetch(url, {
@@ -131,7 +127,6 @@ async function getDependencies(
     showFullScreen: showLoadingFullScreen,
   });
 
-  warmupPackager(`${NEW_PACKAGER_URL}/${dependencyUrl}`, 'POST');
   try {
     const bucketManifest = await callApi(
       `${BUCKET_URL}/${bucketDependencyUrl}`
