@@ -839,8 +839,7 @@ export default class Manager {
       return this.resolveTranspiledModule(
         path,
         tModule.module.path,
-        ignoredExtensions,
-        true
+        ignoredExtensions
       );
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
