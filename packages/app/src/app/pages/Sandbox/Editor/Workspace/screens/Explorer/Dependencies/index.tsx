@@ -42,7 +42,7 @@ export const Dependencies: FunctionComponent = () => {
   const { dependencies = {} } = parsed;
 
   return (
-    <Collapsible title="Dependencies" defaultOpen>
+    <Collapsible title="Dependencies">
       <List marginBottom={2}>
         {Object.keys(dependencies)
           .sort()
