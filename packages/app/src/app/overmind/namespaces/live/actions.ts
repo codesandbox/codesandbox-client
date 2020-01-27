@@ -28,7 +28,7 @@ export const roomJoined: AsyncAction<{
     return;
   }
 
-  await effects.vscode.initialize;
+  await effects.vscode.initialized;
   await effects.vscode.closeAllTabs();
 
   if (state.live.isLive) {
