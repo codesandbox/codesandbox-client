@@ -245,7 +245,8 @@ export class ModelsHandler {
               cursorPos.column
             ),
             options: {
-              className: this.userClassesGenerated[className],
+              beforeContentClassName: this.userClassesGenerated[className],
+              zIndex: 2,
             },
           });
         };
@@ -277,14 +278,14 @@ export class ModelsHandler {
           const nameStyles = {
             content: name,
             position: 'absolute',
-            top: -17,
+            bottom: '100%',
             backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
-            zIndex: 20,
+            zIndex: 200,
             color:
               color[0] + color[1] + color[2] > 500
                 ? 'rgba(0, 0, 0, 0.8)'
                 : 'white',
-            padding: '2px 4px',
+            padding: '0 4px',
             borderRadius: 2,
             borderBottomLeftRadius: 0,
             fontSize: '.75rem',
@@ -293,11 +294,14 @@ export class ModelsHandler {
             pointerEvents: 'none',
             width: 'max-content',
           };
+
           this.userClassesGenerated[cursorClassName] = `${css({
+            position: 'absolute',
             backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,
             width: '2px !important',
+            height: '100%',
             cursor: 'text',
-            zIndex: 30,
+            zIndex: 200,
             ':before': {
               animation: `${fadeOut} 0.3s`,
               animationDelay: '1s',
