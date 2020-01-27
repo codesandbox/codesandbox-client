@@ -76,7 +76,13 @@ export const WorkspaceComponent = ({ theme }) => {
         <ItemTitle>{item.name}</ItemTitle>
       )}
 
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          fontFamily: 'Inter, Roboto, sans-serif',
+        }}
+      >
         <WorkspaceWrapper theme={theme.vscodeTheme}>
           <Component />
         </WorkspaceWrapper>
