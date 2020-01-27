@@ -92,10 +92,10 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {
     const sandbox = state.editor.currentSandbox;
     const { project } = state.workspace;
-
-    const hasChangedTitle = project.title && sandbox.title !== project.title;
+    const hasChangedTitle =
+      project.title.trim() && sandbox.title !== project.title;
     const hasChangedDescription =
-      project.description && sandbox.description !== project.description;
+      project.description.trim() && sandbox.description !== project.description;
     const hasChangedAlias = project.alias && sandbox.alias !== project.alias;
     const hasChanged =
       hasChangedTitle || hasChangedDescription || hasChangedAlias;
