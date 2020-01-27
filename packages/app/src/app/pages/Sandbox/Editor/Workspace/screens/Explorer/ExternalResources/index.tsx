@@ -119,7 +119,7 @@ export const ExternalResources: FunctionComponent = () => {
         >
           <FormField label="Google Fonts" direction="vertical">
             <Select placeholder="Select a font family">
-              {listOfFonts.map(name => (
+              {listOfFonts.sort().map(name => (
                 <option key={name}>{name}</option>
               ))}
             </Select>
