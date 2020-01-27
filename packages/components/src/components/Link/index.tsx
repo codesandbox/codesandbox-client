@@ -11,7 +11,6 @@ interface ILinkProps {
 
 const LinkElement = styled(Text).attrs({ as: 'a' })<ILinkProps>(
   css({
-    color: 'mutedForeground',
     cursor: 'pointer',
     textDecoration: 'none',
     ':hover, :focus': {

@@ -15,6 +15,7 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
   placeholder?: string;
   ref?: any;
   value?: string | number;
+  defaultValue?: string | number;
 }>(
   css({
     height: 6,
