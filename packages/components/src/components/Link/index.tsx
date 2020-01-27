@@ -7,6 +7,7 @@ interface ILinkProps {
   href: string;
   target?: string;
   rel?: string;
+  variant?: 'body' | 'muted' | 'danger'; // from Text
 }
 
 const LinkElement = styled(Text).attrs({ as: 'a' })<ILinkProps>(
