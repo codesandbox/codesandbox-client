@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 
-import { Element, FormField, Input } from '@codesandbox/components';
+import {
+  Element,
+  FormField,
+  Input,
+  Button,
+  Stack,
+} from '@codesandbox/components';
 
 export const VarForm = props => {
   const [name, setName] = useState(props.name || '');
@@ -19,9 +25,9 @@ export const VarForm = props => {
     }
   };
 
-  const onKeyDown = e => {
-    if (e.key === 'Escape' && props.onEscClicked) {
-      props.onEscClicked();
+  const onCancel = e => {
+    if (e.key === 'Escape' && props.onCancel) {
+      props.onCancel();
     }
   };
 
@@ -35,7 +41,7 @@ export const VarForm = props => {
         >
           <Input
             value={name}
-            onKeyDown={onKeyDown}
+            onKeyDown={onCancel}
             onChange={e => setName(e.target.value)}
             required
             placeholder="Name"
@@ -49,13 +55,22 @@ export const VarForm = props => {
       >
         <Input
           value={value}
-          onKeyDown={onKeyDown}
+          onKeyDown={onCancel}
           onChange={e => setValue(e.target.value)}
           required
           placeholder="Value"
         />
       </FormField>
-      <input id="submit" type="submit" style={{ display: 'none' }} />
+      <Stack paddingX={2} marginTop={2}>
+        {props.name && props.value ? (
+          <Button variant="link" onClick={onCancel}>
+            Cancel
+          </Button>
+        ) : null}
+        <Button variant="secondary">
+          {props.name && props.value ? 'Save' : 'Add Secret'}
+        </Button>
+      </Stack>
     </form>
   );
 };

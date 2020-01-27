@@ -12,13 +12,11 @@ export const Server = () => (
       <Text weight="medium" block marginBottom={2}>
         Server Sandbox
       </Text>
-      <Text variant="muted">
+      <Text variant="muted" block marginBottom={5}>
         This sandbox is executed on a server. You can control the server from
         this panel.
       </Text>
-      <Element marginTop={5}>
-        <Status />
-      </Element>
+      <Status />
     </Element>
     <Tasks />
     <Ports />

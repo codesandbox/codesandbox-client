@@ -46,14 +46,14 @@ export const EnvVars = () => {
                 <VarForm
                   name={keyName}
                   value={envVars[keyName]}
-                  onEscClicked={() => setEditMode(false)}
+                  onCancel={() => setEditMode(false)}
                   onSubmit={({ name, value }) => {
                     editor.updateEnvironmentVariables({ name, value });
                     setEditMode(false);
                   }}
                 />
               ) : null}
-              <ListItem justify="space-between">
+              <ListItem justify="space-between" marginTop={editMode ? 4 : 0}>
                 <Text>{keyName}</Text>
                 {!editMode ? (
                   <Stack gap={2}>
