@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import { Element, FormField, Input, Button } from '@codesandbox/components';
+import { Element, FormField, Input } from '@codesandbox/components';
 
-export const VarForm = props => {
+export const VarForm = ({ onSubmit, onEscClicked, ...props }) => {
   const [name, setName] = useState(props.name || '');
   const [value, setValue] = useState(props.value || '');
 
@@ -10,7 +10,7 @@ export const VarForm = props => {
     e.preventDefault();
 
     if (name && value) {
-      props.onSubmit({
+      onSubmit({
         name,
         value,
       });
@@ -20,8 +20,8 @@ export const VarForm = props => {
   };
 
   const onKeyDown = e => {
-    if (e.key === 'Escape' && props.onEscClicked) {
-      props.onEscClicked();
+    if (e.key === 'Escape' && onEscClicked) {
+      onEscClicked();
     }
   };
 
@@ -55,11 +55,7 @@ export const VarForm = props => {
           placeholder="Value"
         />
       </FormField>
-      <Element paddingX={2} style={{ display: 'none' }}>
-        <Button marginTop={2} variant="secondary">
-          {props.name ? 'Edit' : 'Add'} Secret
-        </Button>
-      </Element>
+      <input id="submit" type="submit" style={{ display: 'none' }} />
     </form>
   );
 };
