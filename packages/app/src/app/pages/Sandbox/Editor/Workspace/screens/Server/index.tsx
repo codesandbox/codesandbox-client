@@ -4,6 +4,7 @@ import { Tasks } from './Tasks';
 import { Status } from './Status';
 import { Ports } from './Ports';
 import { Control } from './Control';
+import { EnvVars } from './EnvVars';
 
 export const Server = () => (
   <Collapsible defaultOpen title="Server Control Panel">
@@ -22,5 +23,6 @@ export const Server = () => (
     <Tasks />
     <Ports />
     <Control />
+    <EnvVars />
   </Collapsible>
 );

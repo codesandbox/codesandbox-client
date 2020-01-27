@@ -14,6 +14,7 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
   onKeyUp?: any;
   placeholder?: string;
   ref?: any;
+  required?: boolean;
   value?: string | number;
 }>(
   css({
