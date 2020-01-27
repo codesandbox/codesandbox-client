@@ -157,16 +157,22 @@ export class VSCodeEffect {
       ]).then(() => this.loadEditor(window.monaco, container));
     });
 
-    options.reaction(
-      state =>
-        !state.live.isLive ||
-        state.live.roomInfo?.mode === 'open' ||
-        (state.live.roomInfo?.mode === 'classroom' &&
-          state.live.isCurrentEditor),
-      canEdit => {
-        this.setReadOnly(!canEdit);
-      }
-    );
+    // Only set the read only state when the editor is initialized.
+    this.initialized.then(() => {
+      // ReadOnly mode is derivative, it's based on a couple conditions, of which the
+      // most important one is Live. If you're in a classroom live session as spectator,
+      // you should not be allowed to edit.
+      options.reaction(
+        state =>
+          !state.live.isLive ||
+          state.live.roomInfo?.mode === 'open' ||
+          (state.live.roomInfo?.mode === 'classroom' &&
+            state.live.isCurrentEditor),
+        canEdit => {
+          this.setReadOnly(!canEdit);
+        }
+      );
+    });
 
     return this.initialized;
   }

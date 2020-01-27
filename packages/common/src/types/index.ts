@@ -682,6 +682,7 @@ export enum LiveMessageEvent {
   MODULE_MASS_CREATED = 'module:mass-created',
   MODULE_UPDATED = 'module:updated',
   MODULE_DELETED = 'module:deleted',
+  EXTERNAL_RESOURCES = 'sandbox:external-resources',
   DIRECTORY_CREATED = 'directory:created',
   DIRECTORY_UPDATED = 'directory:updated',
   DIRECTORY_DELETED = 'directory:deleted',

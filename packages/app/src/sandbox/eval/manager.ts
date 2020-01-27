@@ -9,6 +9,7 @@ import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/temp
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
+import { generateBenchmarkInterface } from '../utils/benchmark';
 import { Module } from './types/module';
 import TranspiledModule, {
   ChildModule,
@@ -28,6 +29,7 @@ import { packageFilter } from './utils/resolve-utils';
 import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
 import { shouldTranspile } from './transpilers/babel/check';
 import { splitQueryFromPath } from './utils/query-path';
+import { measure, endMeasure } from '../utils/metrics';
 
 declare const BrowserFS: any;
 
@@ -122,7 +124,10 @@ export default class Manager {
   fileResolver: IFileResolver | undefined;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
-  transpileJobs: { [transpiledModuleId: string]: true };
+  transpileJobs: {
+    [transpiledModuleId: string]: true | Promise<TranspiledModule>;
+  };
+
   transpiledModulesByHash: { [hash: string]: TranspiledModule };
 
   // All paths are resolved at least twice: during transpilation and evaluation.
@@ -161,6 +166,9 @@ export default class Manager {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console
       console.log(this);
+
+      // Initialize benchmark logic
+      getGlobal().Benchmark = generateBenchmarkInterface(this);
     }
 
     BrowserFS.configure(
@@ -266,7 +274,7 @@ export default class Manager {
       return this.fileResolver.readFile(p).then(code => {
         this.addModule({ code, path: p });
 
-        callback(code);
+        callback(null, code);
       });
     }
 
@@ -499,6 +507,10 @@ export default class Manager {
     this.getTranspiledModules().map(tModule => tModule.resetCompilation());
   }
 
+  clearTranspilationCache() {
+    this.getTranspiledModules().map(tModule => tModule.resetTranspilation());
+  }
+
   getModules(): Array<Module | ChildModule> {
     return values(this.transpiledModules).map(t => t.module);
   }
@@ -587,102 +599,111 @@ export default class Manager {
     currentPath: string,
     defaultExtensions = ['js', 'jsx', 'json']
   ): Promise<Module> {
-    return new Promise(promiseResolve => {
-      const dirredPath = pathUtils.dirname(currentPath);
-      if (this.cachedPaths[dirredPath] === undefined) {
-        this.cachedPaths[dirredPath] = {};
+    const dirredPath = pathUtils.dirname(currentPath);
+    if (this.cachedPaths[dirredPath] === undefined) {
+      this.cachedPaths[dirredPath] = {};
+    }
+
+    const cachedPath = this.cachedPaths[dirredPath][path];
+
+    if (cachedPath) {
+      return Promise.resolve(this.transpiledModules[cachedPath].module);
+    }
+
+    const measureKey = `resolve-async:${path}:${currentPath}`;
+    return new Promise((promiseResolve, promiseReject) => {
+      measure(measureKey);
+      const presetAliasedPath = this.getPresetAliasedPath(path);
+
+      const aliasedPath = this.getAliasedDependencyPath(
+        presetAliasedPath,
+        currentPath
+      );
+      const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+
+      if (NODE_LIBS.indexOf(shimmedPath) > -1) {
+        this.cachedPaths[dirredPath][path] = shimmedPath;
+        promiseResolve(getShimmedModuleFromPath(currentPath, path));
+        return;
       }
 
-      const cachedPath = this.cachedPaths[dirredPath][path];
+      resolve(
+        shimmedPath,
+        {
+          filename: currentPath,
+          extensions: defaultExtensions.map(ext => '.' + ext),
+          isFile: this.isFile,
+          readFileSync: this.readFileSync,
+          packageFilter,
+          moduleDirectory: this.getModuleDirectories(),
+        },
+        (err, foundPath) => {
+          endMeasure(measureKey, { silent: true });
+          if (err) {
+            if (
+              this.cachedPaths[dirredPath] &&
+              this.cachedPaths[dirredPath][path]
+            ) {
+              delete this.cachedPaths[dirredPath][path];
+            }
 
-      let resolvedPath;
+            let connectedPath = shimmedPath;
+            if (connectedPath.indexOf('/node_modules') !== 0) {
+              connectedPath = /^(\w|@\w)/.test(shimmedPath)
+                ? pathUtils.join('/node_modules', shimmedPath)
+                : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+            }
 
-      if (cachedPath) {
-        resolvedPath = cachedPath;
-      } else {
-        const presetAliasedPath = this.getPresetAliasedPath(path);
+            const isDependency = connectedPath.includes('/node_modules/');
 
-        const aliasedPath = this.getAliasedDependencyPath(
-          presetAliasedPath,
-          currentPath
-        );
-        const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+            connectedPath = connectedPath.replace('/node_modules/', '');
 
-        if (NODE_LIBS.indexOf(shimmedPath) > -1) {
-          this.cachedPaths[dirredPath][path] = shimmedPath;
-          promiseResolve(getShimmedModuleFromPath(currentPath, path));
-          return;
-        }
+            if (!isDependency) {
+              promiseReject(
+                new ModuleNotFoundError(shimmedPath, false, currentPath)
+              );
+            }
 
-        try {
-          resolve(
-            shimmedPath,
-            {
-              filename: currentPath,
-              extensions: defaultExtensions.map(ext => '.' + ext),
-              isFile: this.isFile,
-              readFileSync: this.readFileSync,
-              packageFilter,
-              moduleDirectory: this.getModuleDirectories(),
-            },
-            (err, foundPath) => {
-              if (err) {
-                throw err;
-              }
+            const dependencyName = getDependencyName(connectedPath);
 
-              this.cachedPaths[dirredPath][path] = foundPath;
+            if (
+              this.manifest.dependencies.find(d => d.name === dependencyName) ||
+              this.manifest.dependencyDependencies[dependencyName]
+            ) {
+              promiseReject(
+                new ModuleNotFoundError(connectedPath, true, currentPath)
+              );
+            } else {
+              promiseReject(
+                new DependencyNotFoundError(connectedPath, currentPath)
+              );
+            }
 
-              if (foundPath === '//empty.js') {
-                promiseResolve(getShimmedModuleFromPath(currentPath, path));
+            return;
+          }
+
+          this.cachedPaths[dirredPath][path] = foundPath;
+
+          if (foundPath === '//empty.js') {
+            promiseResolve(getShimmedModuleFromPath(currentPath, path));
+            return;
+          }
+
+          if (!this.transpiledModules[foundPath]) {
+            this.readFileSync(foundPath, (error, code) => {
+              if (error) {
+                promiseReject(error);
                 return;
               }
 
-              if (!this.transpiledModules[foundPath]) {
-                this.readFileSync(foundPath, code => {
-                  this.addModule({ path: foundPath, code });
-                  promiseResolve(this.transpiledModules[foundPath].module);
-                });
-              } else {
-                promiseResolve(this.transpiledModules[foundPath].module);
-              }
-            }
-          );
-        } catch (e) {
-          if (
-            this.cachedPaths[dirredPath] &&
-            this.cachedPaths[dirredPath][path]
-          ) {
-            delete this.cachedPaths[dirredPath][path];
-          }
-
-          let connectedPath = shimmedPath;
-          if (connectedPath.indexOf('/node_modules') !== 0) {
-            connectedPath = /^(\w|@\w)/.test(shimmedPath)
-              ? pathUtils.join('/node_modules', shimmedPath)
-              : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
-          }
-
-          const isDependency = connectedPath.includes('/node_modules/');
-
-          connectedPath = connectedPath.replace('/node_modules/', '');
-
-          if (!isDependency) {
-            throw new ModuleNotFoundError(shimmedPath, false, currentPath);
-          }
-
-          const dependencyName = getDependencyName(connectedPath);
-
-          if (
-            this.manifest.dependencies.find(d => d.name === dependencyName) ||
-            this.manifest.dependencyDependencies[dependencyName]
-          ) {
-            throw new ModuleNotFoundError(connectedPath, true, currentPath);
+              this.addModule({ path: foundPath, code });
+              promiseResolve(this.transpiledModules[foundPath].module);
+            });
           } else {
-            throw new DependencyNotFoundError(connectedPath, currentPath);
+            promiseResolve(this.transpiledModules[foundPath].module);
           }
         }
-      }
-      promiseResolve(this.transpiledModules[resolvedPath].module);
+      );
     });
   }
 
@@ -704,6 +725,8 @@ export default class Manager {
     if (cachedPath && this.transpiledModules[cachedPath]) {
       resolvedPath = cachedPath;
     } else {
+      const measureKey = `resolve-sync:${path}:${currentPath}`;
+      measure(measureKey);
       const presetAliasedPath = this.getPresetAliasedPath(path);
 
       const aliasedPath = this.getAliasedDependencyPath(
@@ -726,6 +749,7 @@ export default class Manager {
           packageFilter,
           moduleDirectory: this.getModuleDirectories(),
         });
+        endMeasure(measureKey, { silent: true });
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
@@ -812,12 +836,10 @@ export default class Manager {
     const tModule =
       currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root
     try {
-      return Promise.resolve(
-        this.resolveTranspiledModule(
-          path,
-          tModule.module.path,
-          ignoredExtensions
-        )
+      return this.resolveTranspiledModule(
+        path,
+        tModule.module.path,
+        ignoredExtensions
       );
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {

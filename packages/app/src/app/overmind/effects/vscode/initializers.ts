@@ -124,7 +124,7 @@ export function initializeCustomTheme() {
 
   installCustomTheme(
     'codesandbox-black-0.0.1',
-    'CodeSandbox Black',
+    'CodeSandbox Black.',
     JSON.stringify(codeSandboxBlackTheme)
   );
 }

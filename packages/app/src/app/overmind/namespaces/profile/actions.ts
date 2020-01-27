@@ -2,28 +2,28 @@ import { Sandbox } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 
-export const profileMounted: AsyncAction<{
-  username: string;
-}> = withLoadApp(async ({ state, effects }, { username }) => {
-  state.profile.isLoadingProfile = true;
-  state.profile.notFound = false;
+export const profileMounted: AsyncAction<string> = withLoadApp(
+  async ({ effects, state }, username) => {
+    state.profile.isLoadingProfile = true;
+    state.profile.notFound = false;
 
-  const profile = await effects.api.getProfile(username);
+    const profile = await effects.api.getProfile(username);
 
-  state.profile.profiles[profile.id] = profile;
-  state.profile.currentProfileId = profile.id;
+    state.profile.profiles[profile.id] = profile;
+    state.profile.currentProfileId = profile.id;
 
-  if (
-    profile.showcasedSandboxShortid &&
-    !state.editor.sandboxes[profile.showcasedSandboxShortid]
-  ) {
-    state.editor.sandboxes[
-      profile.showcasedSandboxShortid
-    ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+    if (
+      profile.showcasedSandboxShortid &&
+      !state.editor.sandboxes[profile.showcasedSandboxShortid]
+    ) {
+      state.editor.sandboxes[
+        profile.showcasedSandboxShortid
+      ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+    }
+
+    state.profile.isLoadingProfile = false;
   }
-
-  state.profile.isLoadingProfile = false;
-});
+);
 
 export const sandboxesPageChanged: AsyncAction<{
   page: number;

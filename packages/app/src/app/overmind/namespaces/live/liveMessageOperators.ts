@@ -17,9 +17,10 @@ export const onJoin: Operator<LiveMessage<{
 }>> = mutate(({ effects, state }, { data }) => {
   state.live.liveUserId = data.live_user_id;
 
-  effects.notificationToast.success(
-    state.live.isTeam ? 'Connected to Live Team!' : 'Connected to Live!'
-  );
+  // Show message to confirm that you've joined a live session if you're not the owner
+  if (!state.live.isCurrentEditor) {
+    effects.notificationToast.success('Connected to Live!');
+  }
 
   if (state.live.reconnecting) {
     effects.live.getAllClients().forEach(client => {
@@ -34,6 +35,13 @@ export const onModuleState: Operator<LiveMessage<{
   module_state: any;
 }>> = mutate(({ state, actions }, { data }) => {
   actions.live.internal.initializeModuleState(data.module_state);
+});
+
+export const onExternalResources: Operator<LiveMessage<{
+  externalResources: string[];
+}>> = mutate(({ state, actions }, { data }) => {
+  state.editor.currentSandbox.externalResources = data.externalResources;
+  actions.editor.internal.updatePreviewCode();
 });
 
 export const onUserEntered: Operator<LiveMessage<{

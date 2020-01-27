@@ -64,7 +64,13 @@ export const Textarea: React.FC<ITextareaProps> = ({
 
   const Wrapper = useCallback(
     ({ children }) =>
-      maxLength ? <Stack direction="vertical">{children}</Stack> : children,
+      maxLength ? (
+        <Stack direction="vertical" css={{ width: '100%' }}>
+          {children}
+        </Stack>
+      ) : (
+        children
+      ),
     [maxLength]
   );
 
