@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Element, FormField, Input } from '@codesandbox/components';
 
-export const VarForm = ({ onSubmit, onEscClicked, ...props }) => {
+export const VarForm = props => {
   const [name, setName] = useState(props.name || '');
   const [value, setValue] = useState(props.value || '');
 
@@ -10,7 +10,7 @@ export const VarForm = ({ onSubmit, onEscClicked, ...props }) => {
     e.preventDefault();
 
     if (name && value) {
-      onSubmit({
+      props.onSubmit({
         name,
         value,
       });
@@ -20,8 +20,8 @@ export const VarForm = ({ onSubmit, onEscClicked, ...props }) => {
   };
 
   const onKeyDown = e => {
-    if (e.key === 'Escape' && onEscClicked) {
-      onEscClicked();
+    if (e.key === 'Escape' && props.onEscClicked) {
+      props.onEscClicked();
     }
   };
 
