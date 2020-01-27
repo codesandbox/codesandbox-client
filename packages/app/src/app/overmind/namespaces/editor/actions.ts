@@ -66,6 +66,11 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   // This happens when we fork. This can be avoided with state first routing
   if (state.editor.isForkingSandbox) {
     effects.vscode.openModule(state.editor.currentModule);
+
+    await actions.editor.internal.initializeLiveSandbox(
+      state.editor.currentSandbox
+    );
+
     state.editor.isForkingSandbox = false;
     return;
   }

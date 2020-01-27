@@ -47,9 +47,9 @@ export const reset: Action = ({ state, actions, effects }) => {
   effects.live.resetClients();
 };
 
-export const disconnect: Action = ({ effects }) => {
-  effects.live.resetClients();
+export const disconnect: Action = ({ effects, actions }) => {
   effects.live.disconnect();
+  actions.live.internal.reset();
 };
 
 export const initialize: AsyncAction<string, Sandbox> = async (

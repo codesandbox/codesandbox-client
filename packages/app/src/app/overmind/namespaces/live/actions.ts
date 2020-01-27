@@ -194,13 +194,11 @@ export const onRemoveEditorClicked: Action<any> = (
 export const onSessionCloseClicked: Action = ({ actions, effects }) => {
   effects.live.sendClosed();
   actions.live.internal.disconnect();
-  actions.live.internal.reset();
 };
 
 export const onNavigateAway: Action = ({ actions, state }) => {
   if (state.live.isLive) {
     actions.live.internal.disconnect();
-    actions.live.internal.reset();
   }
 };
 
