@@ -97,6 +97,7 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
     [LiveMessageEvent.MODULE_STATE]: liveMessage.onModuleState,
     [LiveMessageEvent.USER_ENTERED]: liveMessage.onUserEntered,
     [LiveMessageEvent.USER_LEFT]: liveMessage.onUserLeft,
+    [LiveMessageEvent.EXTERNAL_RESOURCES]: liveMessage.onExternalResources,
     [LiveMessageEvent.MODULE_SAVED]: liveMessage.onModuleSaved,
     [LiveMessageEvent.MODULE_CREATED]: liveMessage.onModuleCreated,
     [LiveMessageEvent.MODULE_MASS_CREATED]: liveMessage.onModuleMassCreated,

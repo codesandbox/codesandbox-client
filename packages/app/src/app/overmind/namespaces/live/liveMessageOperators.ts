@@ -36,6 +36,13 @@ export const onModuleState: Operator<LiveMessage<{
   actions.live.internal.initializeModuleState(data.module_state);
 });
 
+export const onExternalResources: Operator<LiveMessage<{
+  externalResources: string[];
+}>> = mutate(({ state, actions }, { data }) => {
+  state.editor.currentSandbox.externalResources = data.externalResources;
+  actions.editor.internal.updatePreviewCode();
+});
+
 export const onUserEntered: Operator<LiveMessage<{
   users: any[];
   editor_ids: string[];

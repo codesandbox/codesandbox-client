@@ -148,6 +148,11 @@ export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
         state.editor.currentSandbox.id,
         resource
       );
+      if (state.live.isLive) {
+        effects.live.sendExternalResourcesChanged(
+          state.editor.currentSandbox.externalResources
+        );
+      }
     } catch (error) {
       externalResources.splice(externalResources.indexOf(resource), 1);
       actions.internal.handleError({
@@ -172,6 +177,11 @@ export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
         state.editor.currentSandbox.id,
         resource
       );
+      if (state.live.isLive) {
+        effects.live.sendExternalResourcesChanged(
+          state.editor.currentSandbox.externalResources
+        );
+      }
     } catch (error) {
       externalResources.splice(resourceIndex, 0, resource);
 
