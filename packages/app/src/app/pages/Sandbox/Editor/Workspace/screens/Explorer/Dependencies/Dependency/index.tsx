@@ -10,9 +10,17 @@ import Tooltip, {
 } from '@codesandbox/common/lib/components/Tooltip';
 import { formatVersion } from '@codesandbox/common/lib/utils/ci';
 
-import { ListAction, Stack, Select, Text, Link } from '@codesandbox/components';
+import css from '@styled-system/css';
+import {
+  ListAction,
+  Stack,
+  SidebarRow,
+  Select,
+  Text,
+  Link,
+  Button,
+} from '@codesandbox/components';
 
-import { IconArea, Icon } from '../../../../elements';
 import { BundleSizes } from './BundleSizes';
 
 interface Props {
@@ -29,7 +37,7 @@ interface State {
   versions: string[];
 }
 
-export class VersionEntry extends React.PureComponent<Props, State> {
+export class Dependency extends React.PureComponent<Props, State> {
   state: State = {
     hovering: false,
     version: null,
@@ -119,41 +127,63 @@ export class VersionEntry extends React.PureComponent<Props, State> {
           align="center"
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
+          css={css({
+            position: 'relative',
+            '.actions': { backgroundColor: 'sideBar.background' },
+            ':hover .actions': { backgroundColor: 'sideBar.hoverBackground' },
+          })}
         >
           <Link
             href={`https://www.npmjs.com/package/${dependency}`}
             target="_blank"
+            css={{ position: 'absolute' }}
           >
             {dependency}
           </Link>
 
-          <span>
-            <Text
-              variant="muted"
-              css={{ display: hovering ? 'none' : 'block' }}
+          {!hovering && (
+            <Stack
+              align="center"
+              justify="flex-end"
+              css={css({ position: 'absolute', right: 2 })}
             >
-              {formatVersion(dependencies[dependency])}{' '}
-              {version && <span>({formatVersion(version)})</span>}
-            </Text>
+              <Text
+                variant="muted"
+                css={{ display: hovering ? 'none' : 'block' }}
+              >
+                {formatVersion(dependencies[dependency])}{' '}
+                {version && <span>({formatVersion(version)})</span>}
+              </Text>
+            </Stack>
+          )}
 
-            {/* <Select
-              css={{
-                width: '80px',
-                visibility: hovering ? 'visible' : 'hidden',
-              }}
-              defaultValue={versions.find(v => v === dependencies[dependency])}
-              onChange={e => {
-                this.props.onRefresh(dependency, e.target.value);
-                this.setState({ hovering: false });
-              }}
-            >
-              {versions.map(a => (
-                <option key={a}>{a}</option>
-              ))}
-            </Select>
-
+          <Stack
+            className="actions"
+            align="center"
+            justify="flex-end"
+            css={css({
+              position: 'absolute',
+              right: 0,
+              width: '160px',
+            })}
+          >
             {hovering && (
-              <IconArea>
+              <>
+                <Select
+                  css={{ width: '80px' }}
+                  defaultValue={versions.find(
+                    v => v === dependencies[dependency]
+                  )}
+                  onChange={e => {
+                    this.props.onRefresh(dependency, e.target.value);
+                    this.setState({ hovering: false });
+                  }}
+                >
+                  {versions.map(a => (
+                    <option key={a}>{a}</option>
+                  ))}
+                </Select>
+
                 <SingletonTooltip>
                   {singleton => (
                     <>
@@ -162,40 +192,42 @@ export class VersionEntry extends React.PureComponent<Props, State> {
                         style={{ outline: 'none' }}
                         singleton={singleton}
                       >
-                        <Icon onClick={this.handleOpen}>
+                        <Button variant="link" onClick={this.handleOpen}>
                           {open ? <ArrowDropUp /> : <ArrowDropDown />}
-                        </Icon>
+                        </Button>
                       </Tooltip>
                       <Tooltip
                         content="Update to latest"
                         style={{ outline: 'none' }}
                         singleton={singleton}
                       >
-                        <Icon onClick={this.handleRefresh}>
+                        <Button variant="link" onClick={this.handleRefresh}>
                           <RefreshIcon />
-                        </Icon>
+                        </Button>
                       </Tooltip>
                       <Tooltip
                         content="Remove"
                         style={{ outline: 'none' }}
                         singleton={singleton}
                       >
-                        <Icon onClick={this.handleRemove}>
+                        <Button variant="link" onClick={this.handleRemove}>
                           <CrossIcon />
-                        </Icon>
+                        </Button>
                       </Tooltip>
                     </>
                   )}
                 </SingletonTooltip>
-              </IconArea>
-            )} */}
-          </span>
+              </>
+            )}
+          </Stack>
         </ListAction>
         {open ? (
-          <BundleSizes
-            dependency={dependency}
-            version={dependencies[dependency]}
-          />
+          <SidebarRow marginX={2}>
+            <BundleSizes
+              dependency={dependency}
+              version={dependencies[dependency]}
+            />
+          </SidebarRow>
         ) : null}
       </>
     );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MoreData } from './elements';
+import { Stack, Text } from '@codesandbox/components';
 
 const formatSize = (value: number) => {
   let unit: string;
@@ -41,18 +41,20 @@ export const BundleSizes = ({ dependency, version = '' }: Props) => {
 
   if (error) {
     return (
-      <MoreData>There was a problem getting the size for {dependency}</MoreData>
+      <Text variant="muted">
+        There was a problem getting the size for {dependency}
+      </Text>
     );
   }
 
   return size ? (
-    <MoreData>
-      <li>
-        <span>Gzip:</span> {formatSize(size.gzip)}
-      </li>
-      <li>
-        <span>Size:</span> {formatSize(size.size)}
-      </li>
-    </MoreData>
+    <Stack justify="space-between" css={{ width: '100%' }}>
+      <Text>
+        <Text variant="muted">Gzip:</Text> {formatSize(size.gzip)}
+      </Text>
+      <Text>
+        <Text variant="muted">Size:</Text> {formatSize(size.size)}
+      </Text>
+    </Stack>
   ) : null;
 };

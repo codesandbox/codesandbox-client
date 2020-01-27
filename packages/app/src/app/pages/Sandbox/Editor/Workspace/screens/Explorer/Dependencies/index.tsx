@@ -1,8 +1,14 @@
 import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 
-import { Text, SidebarRow, List, Button } from '@codesandbox/components';
-import { VersionEntry } from './VersionEntry';
+import {
+  Collapsible,
+  Text,
+  SidebarRow,
+  List,
+  Button,
+} from '@codesandbox/components';
+import { Dependency } from './Dependency';
 
 export const Dependencies: FunctionComponent = () => {
   const {
@@ -36,19 +42,20 @@ export const Dependencies: FunctionComponent = () => {
   const { dependencies = {} } = parsed;
 
   return (
-    <List>
-      {Object.keys(dependencies)
-        .sort()
-        .map(dependency => (
-          <VersionEntry
-            dependencies={dependencies}
-            dependency={dependency}
-            key={dependency}
-            onRefresh={(name, version) => addNpmDependency({ name, version })}
-            onRemove={name => npmDependencyRemoved({ name })}
-          />
-        ))}
-
+    <Collapsible title="Dependencies" defaultOpen>
+      <List marginBottom={2}>
+        {Object.keys(dependencies)
+          .sort()
+          .map(dependency => (
+            <Dependency
+              dependencies={dependencies}
+              dependency={dependency}
+              key={dependency}
+              onRefresh={(name, version) => addNpmDependency({ name, version })}
+              onRemove={name => npmDependencyRemoved({ name })}
+            />
+          ))}
+      </List>
       <SidebarRow marginX={2}>
         <Button
           variant="secondary"
@@ -57,6 +64,6 @@ export const Dependencies: FunctionComponent = () => {
           Add dependency
         </Button>
       </SidebarRow>
-    </List>
+    </Collapsible>
   );
 };
