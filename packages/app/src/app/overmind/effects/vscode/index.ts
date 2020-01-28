@@ -157,16 +157,22 @@ export class VSCodeEffect {
       ]).then(() => this.loadEditor(window.monaco, container));
     });
 
-    options.reaction(
-      state =>
-        !state.live.isLive ||
-        state.live.roomInfo?.mode === 'open' ||
-        (state.live.roomInfo?.mode === 'classroom' &&
-          state.live.isCurrentEditor),
-      canEdit => {
-        this.setReadOnly(!canEdit);
-      }
-    );
+    // Only set the read only state when the editor is initialized.
+    this.initialized.then(() => {
+      // ReadOnly mode is derivative, it's based on a couple conditions, of which the
+      // most important one is Live. If you're in a classroom live session as spectator,
+      // you should not be allowed to edit.
+      options.reaction(
+        state =>
+          !state.live.isLive ||
+          state.live.roomInfo?.mode === 'open' ||
+          (state.live.roomInfo?.mode === 'classroom' &&
+            state.live.isCurrentEditor),
+        canEdit => {
+          this.setReadOnly(!canEdit);
+        }
+      );
+    });
 
     return this.initialized;
   }
@@ -257,15 +263,23 @@ export class VSCodeEffect {
     }
   }
 
-  public updateUserSelections(userSelections: EditorSelection[]) {
+  public clearUserSelections(userId: string) {
     if (!this.modelsHandler) {
       return;
     }
 
-    this.modelsHandler.updateUserSelections(
-      this.options.getCurrentModule(),
-      userSelections
-    );
+    this.modelsHandler.clearUserSelections(userId);
+  }
+
+  public updateUserSelections(
+    module: Module,
+    userSelections: EditorSelection[]
+  ) {
+    if (!this.modelsHandler) {
+      return;
+    }
+
+    this.modelsHandler.updateUserSelections(module, userSelections);
   }
 
   public setReadOnly(enabled: boolean) {
@@ -861,6 +875,13 @@ export class VSCodeEffect {
               getSelection(lines, s)
             ),
           };
+
+          if (selectionChange.source === 'modelChange') {
+            // Don't update the cursor pos on model change, as it will
+            // be updated automatically by vscode (they handle cursor
+            // location changes really well)
+            return;
+          }
 
           if (
             selectionChange.reason === 3 ||

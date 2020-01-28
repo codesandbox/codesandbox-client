@@ -495,7 +495,7 @@ async function compile({
         showFullScreen: firstLoad,
       }
     );
-    metrics.endMeasure('dependencies', 'Dependencies');
+    metrics.endMeasure('dependencies', { displayName: 'Dependencies' });
 
     const shouldReloadManager =
       (isNewCombination && !firstLoad) || manager.id !== sandboxId;
@@ -547,7 +547,7 @@ async function compile({
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
 
-    metrics.endMeasure('transpilation', 'Transpilation');
+    metrics.endMeasure('transpilation', { displayName: 'Transpilation' });
 
     dispatch({ type: 'status', status: 'evaluating' });
     manager.setStage('evaluation');
@@ -612,14 +612,16 @@ async function compile({
 
       metrics.measure('external-resources');
       await handleExternalResources(externalResources);
-      metrics.endMeasure('external-resources', 'External Resources');
+      metrics.endMeasure('external-resources', {
+        displayName: 'External Resources',
+      });
 
       const oldHTML = document.body.innerHTML;
       metrics.measure('evaluation');
       const evalled = manager.evaluateModule(managerModuleToTranspile, {
         force: isModuleView,
       });
-      metrics.endMeasure('evaluation', 'Evaluation');
+      metrics.endMeasure('evaluation', { displayName: 'Evaluation' });
 
       const domChanged =
         !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
@@ -669,8 +671,8 @@ async function compile({
 
     debug(`Total time: ${Date.now() - startTime}ms`);
 
-    metrics.endMeasure('compilation', 'Compilation');
-    metrics.endMeasure('total', 'Total', { lastTime: 0 });
+    metrics.endMeasure('compilation', { displayName: 'Compilation' });
+    metrics.endMeasure('total', { displayName: 'Total', lastTime: 0 });
     dispatch({
       type: 'success',
     });

@@ -1,48 +1,53 @@
-import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { SignInButton } from 'app/pages/common/SignInButton';
+import React, { FunctionComponent, useEffect } from 'react';
+
+import { useOvermind } from 'app/overmind';
 
 import { Container, Heading, Explanation } from '../elements';
 
-export const ForkServerModal: React.FC = () => {
+import { NiceName as NiceNameBase, SignInButton } from './elements';
+
+export const ForkServerModal: FunctionComponent = () => {
   const {
-    state: {
-      isLoggedIn,
-      editor: { currentSandbox },
-    },
     actions: {
-      modalClosed,
       editor: { forkSandboxClicked },
+      modalClosed,
+    },
+    state: {
+      editor: {
+        currentSandbox: { template },
+      },
+      isLoggedIn,
     },
   } = useOvermind();
 
   useEffect(() => {
-    // Which means that the user signed in in the meantime with the intention to
-    // fork
+    // Which means that the user signed in in the meantime with the intention to fork
     if (isLoggedIn) {
       forkSandboxClicked();
+
       modalClosed();
     }
   }, [forkSandboxClicked, isLoggedIn, modalClosed]);
 
-  const templateDefinition = getTemplateDefinition(currentSandbox.template);
-  const niceName = (
-    <span style={{ color: templateDefinition.color(), fontWeight: 500 }}>
-      {templateDefinition.niceName}
-    </span>
+  const { color, niceName } = getTemplateDefinition(template);
+  const NiceName: FunctionComponent = () => (
+    <NiceNameBase color={color()}>{niceName}</NiceNameBase>
   );
 
   return (
     <Container>
-      <Heading>Fork {niceName} Sandbox</Heading>
+      <Heading>
+        Fork <NiceName /> Sandbox
+      </Heading>
+
       <Explanation>
-        We execute {niceName} sandboxes in a server container. This is still in
-        beta, so we require you to sign in before you can fork a {niceName}{' '}
+        We execute <NiceName /> sandboxes in a server container. This is still
+        in beta, so we require you to sign in before you can fork a <NiceName />{' '}
         sandbox.
       </Explanation>
 
-      <SignInButton style={{ marginTop: 12 }} />
+      <SignInButton />
     </Container>
   );
 };

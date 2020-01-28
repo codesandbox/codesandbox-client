@@ -21,7 +21,7 @@ export const SCRIPT_VERSION =
 
 debug('Booting sandbox v2');
 
-endMeasure('boot', 'Boot', { lastTime: 0 });
+endMeasure('boot', { lastTime: 0, displayName: 'Boot' });
 
 requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js', {});

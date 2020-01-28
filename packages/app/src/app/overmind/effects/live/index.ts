@@ -195,6 +195,11 @@ export default {
       this.send('live:module_state', {});
     }
   },
+  sendExternalResourcesChanged(externalResources: string[]) {
+    return this.send('sandbox:external-resources', {
+      externalResources,
+    });
+  },
   sendUserCurrentModule(moduleShortid: string) {
     return this.send('user:current-module', {
       moduleShortid,

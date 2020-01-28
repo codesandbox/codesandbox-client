@@ -6016,6 +6016,11 @@ astral-regex@^1.0.0:
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-1.0.0.tgz#6c8c3fb827dd43ee3918f27b82782ab7658a6fd9"
   integrity sha512-+Ryf6g3BKoRc7jfp7ad8tM4TtMiaWvbF/1/sQcZPkkS7ag3D5nMBCe2UfOTONtAkaG0tO0ij3C5Lwmf1EiyjHg==
 
+astring@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/astring/-/astring-1.4.3.tgz#b99d4b0349bc7b28934bb9f03f86ec34d69c3a09"
+  integrity sha512-yJlJU/bmN820vL+cbWShu2YQU87dBP5V7BH2N4wODapRv27A2dZtUD0LgjP9lZENvPe9XRoSyWx+pZR6qKqNBw==
+
 async-each@^1.0.0, async-each@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.3.tgz#b727dbf87d7651602f06f4d4ac387f47d91b0cbf"
@@ -11425,6 +11430,11 @@ estree-walker@^0.6.0, estree-walker@^0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/estree-walker/-/estree-walker-0.6.1.tgz#53049143f40c6eb918b23671d1fe3219f3a1b362"
   integrity sha512-SqmZANLWS0mnatqbSfRP5g8OXZC12Fgg1IwNtLsyHDzJizORW4khDfjPqJZsemPWBB2uqykUah5YpQ6epsqC/w==
+
+estree-walker@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/estree-walker/-/estree-walker-1.0.1.tgz#31bc5d612c96b704106b477e6dd5d8aa138cb700"
+  integrity sha512-1fMXF3YP4pZZVozF8j/ZLfvnR8NSIljt56UhbZ5PeeDmmGHpgpdwQt7ITlGvYaQukCvuBRMLEiKiYC+oeIg4cg==
 
 esutils@2.0.3, esutils@^2.0.0, esutils@^2.0.2:
   version "2.0.3"
@@ -19054,6 +19064,11 @@ merge2@^1.2.3:
 merge@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.0.tgz#7531e39d4949c281a66b8c5a6e0265e8b05894da"
+
+meriyah@^1.9.7:
+  version "1.9.7"
+  resolved "https://registry.yarnpkg.com/meriyah/-/meriyah-1.9.7.tgz#97369edbb3ddf86f3d53d5f99f136004a80096d3"
+  integrity sha512-IVZutbB6AdgZj11HAXFFzlQPoCVXda4rCqb3xlI5Tqkw69jR37PmaQO2uM5dbMA5m14jgWGg3D/GUF0m3gWvLg==
 
 methods@~1.1.2:
   version "1.1.2"
