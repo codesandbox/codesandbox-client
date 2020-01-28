@@ -199,7 +199,7 @@ export type User = {
 
 export type LiveUser = {
   username: string;
-  selection: Selection;
+  selection: UserSelection;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
@@ -471,7 +471,7 @@ export type UserSelection = {
 export type EditorSelection = {
   userId: string;
   name: string | null;
-  selection: Selection | null;
+  selection: UserSelection | null;
   color: number[] | null;
 };
 

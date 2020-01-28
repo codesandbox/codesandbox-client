@@ -8,7 +8,7 @@ import { json } from 'overmind';
 
 import { getSavedCode } from '../../utils/sandbox';
 
-export const clearUserSelections: Action<any> = (
+export const clearUserSelections: Action<string | null> = (
   { state, effects },
   live_user_id
 ) => {
@@ -18,14 +18,8 @@ export const clearUserSelections: Action<any> = (
     if (userIndex > -1) {
       if (state.live.roomInfo.users[userIndex]) {
         state.live.roomInfo.users[userIndex].selection = null;
-        effects.vscode.updateUserSelections([
-          {
-            userId,
-            selection: null,
-            name: null,
-            color: null,
-          },
-        ]);
+
+        effects.vscode.clearUserSelections(userId);
       }
     }
   };
@@ -140,7 +134,7 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
   { state },
   module
 ) => {
-  const selections = [];
+  const selections: EditorSelection[] = [];
   const moduleShortid = module.shortid;
 
   state.live.roomInfo.users.forEach(user => {

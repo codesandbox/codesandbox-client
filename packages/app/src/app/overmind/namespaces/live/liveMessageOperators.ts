@@ -4,7 +4,8 @@ import {
   LiveDisconnectReason,
   LiveMessage,
   Module,
-  Selection,
+  UserSelection,
+  LiveUser,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
@@ -45,22 +46,27 @@ export const onExternalResources: Operator<LiveMessage<{
 });
 
 export const onUserEntered: Operator<LiveMessage<{
-  users: any[];
+  users: LiveUser[];
   editor_ids: string[];
   owner_ids: string[];
   joined_user_id: string;
-}>> = mutate(({ state, effects }, { data }) => {
+}>> = mutate(({ state, effects, actions }, { data }) => {
   if (state.live.isLoading) {
     return;
   }
 
   const users = camelizeKeys(data.users);
 
-  // TODO: What happening here? Is it not an array of users?
-  // Check the running code and fix the type
-  state.live.roomInfo.users = users as any;
+  state.live.roomInfo.users = users as LiveUser[];
   state.live.roomInfo.editorIds = data.editor_ids;
   state.live.roomInfo.ownerIds = data.owner_ids;
+
+  if (state.editor.currentModule) {
+    effects.vscode.updateUserSelections(
+      state.editor.currentModule,
+      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
+    );
+  }
 
   if (data.joined_user_id === state.live.liveUserId) {
     return;
@@ -321,7 +327,7 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
 export const onUserSelection: Operator<LiveMessage<{
   liveUserId: string;
   moduleShortid: string;
-  selection: Selection;
+  selection: UserSelection;
 }>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
@@ -339,15 +345,15 @@ export const onUserSelection: Operator<LiveMessage<{
     state.live.roomInfo.users[userIndex].selection = selection;
   }
 
-  if (
-    moduleShortid === state.editor.currentModuleShortid &&
-    state.live.isEditor(userSelectionLiveUserId)
-  ) {
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+  if (module && state.live.isEditor(userSelectionLiveUserId)) {
     const user = state.live.roomInfo.users.find(
       u => u.id === userSelectionLiveUserId
     );
 
-    effects.vscode.updateUserSelections([
+    effects.vscode.updateUserSelections(module, [
       {
         userId: userSelectionLiveUserId,
         name: user.username,
@@ -374,7 +380,7 @@ export const onUserCurrentModule: Operator<LiveMessage<{
       data.moduleShortid;
   }
 
-  actions.live.internal.clearUserSelections(null);
+  actions.live.internal.clearUserSelections(data.live_user_id);
 
   if (
     state.live.followingUserId === data.live_user_id &&

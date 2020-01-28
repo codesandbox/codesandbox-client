@@ -370,6 +370,7 @@ export const moduleSelected: Action<{
 
     if (state.live.isLive) {
       effects.vscode.updateUserSelections(
+        module,
         actions.live.internal.getSelectionsForModule(module)
       );
       state.live.liveUser.currentModuleShortid = module.shortid;

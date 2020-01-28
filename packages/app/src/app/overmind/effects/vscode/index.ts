@@ -263,15 +263,23 @@ export class VSCodeEffect {
     }
   }
 
-  public updateUserSelections(userSelections: EditorSelection[]) {
+  public clearUserSelections(userId: string) {
     if (!this.modelsHandler) {
       return;
     }
 
-    this.modelsHandler.updateUserSelections(
-      this.options.getCurrentModule(),
-      userSelections
-    );
+    this.modelsHandler.clearUserSelections(userId);
+  }
+
+  public updateUserSelections(
+    module: Module,
+    userSelections: EditorSelection[]
+  ) {
+    if (!this.modelsHandler) {
+      return;
+    }
+
+    this.modelsHandler.updateUserSelections(module, userSelections);
   }
 
   public setReadOnly(enabled: boolean) {
@@ -867,6 +875,13 @@ export class VSCodeEffect {
               getSelection(lines, s)
             ),
           };
+
+          if (selectionChange.source === 'modelChange') {
+            // Don't update the cursor pos on model change, as it will
+            // be updated automatically by vscode (they handle cursor
+            // location changes really well)
+            return;
+          }
 
           if (
             selectionChange.reason === 3 ||
