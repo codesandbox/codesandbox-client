@@ -32,7 +32,6 @@ const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
-  defaultOpen: true,
 };
 
 const GITHUB: INavigationItem = {
@@ -61,6 +60,7 @@ const LIVE: INavigationItem = {
 const SERVER: INavigationItem = {
   id: 'server',
   name: 'Server Control Panel',
+  defaultOpen: true,
 };
 
 export function getDisabledItems(store: any): INavigationItem[] {
