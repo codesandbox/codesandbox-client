@@ -37,8 +37,9 @@ const getIcon = name => {
 };
 
 const Grid = styled(BaseGrid)`
-  grid-template-columns: 1fr 100px;
+  grid-template-columns: 1fr 56px;
   grid-gap: ${({ theme }) => theme.space[4]}px;
+  align-items: flex-end;
 `;
 
 export const ConfigurationFilesComponent = ({ theme }) => {
@@ -150,7 +151,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
                       })
                     }
                   >
-                    Create File
+                    Create
                   </Button>
                 </Grid>
               </Element>

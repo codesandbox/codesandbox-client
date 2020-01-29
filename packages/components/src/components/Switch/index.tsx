@@ -10,6 +10,8 @@ const SwitchBackground = styled.div(
     backgroundColor: 'switch.background',
     borderRadius: 'large',
     position: 'relative',
+    transition: 'background-color ease',
+    transitionDuration: theme => theme.speeds[3],
   })
 );
 

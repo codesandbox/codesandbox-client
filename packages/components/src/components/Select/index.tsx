@@ -16,6 +16,8 @@ const SelectComponent = styled(Input).attrs({ as: 'select' })(
   css({
     appearance: 'none',
     color: 'input.placeholderForeground',
+    transition: 'all ease',
+    transitionDuration: theme => theme.speeds[2],
 
     backgroundImage: theme =>
       theme && `url(${svg(theme.colors.input.placeholderForeground)})`,
@@ -34,6 +36,8 @@ const SelectWithIcon = styled(Element)(
   css({
     position: 'relative',
     color: 'input.placeholderForeground',
+    transition: 'all ease',
+    transitionDuration: theme => theme.speeds[2],
 
     select: {
       paddingLeft: 6,

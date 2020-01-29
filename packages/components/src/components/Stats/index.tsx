@@ -33,8 +33,12 @@ export const ForkIcon = props => (
   </svg>
 );
 
-export const formatNumber = (count: number): string =>
-  count >= 1000 ? `${(count / 1000).toFixed(1)}k` : `${count}`;
+export const formatNumber = (count: number): string | number => {
+  if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
+  if (count >= 1000) return `${(count / 1000).toFixed(1)}k`;
+
+  return count;
+};
 
 export const Stats = ({ sandbox }) => (
   <Stack gap={4}>

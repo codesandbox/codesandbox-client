@@ -33,6 +33,8 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
     '::-webkit-input-placeholder': placeholderStyles,
     '::-ms-input-placeholder': placeholderStyles,
     '::placeholder': placeholderStyles,
+    transition: 'all ease',
+    transitionDuration: theme => theme.speeds[2],
 
     ':hover, :focus': {
       borderColor: 'inputOption.activeBorder',
