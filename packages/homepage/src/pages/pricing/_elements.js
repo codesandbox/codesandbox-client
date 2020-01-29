@@ -31,6 +31,7 @@ export const Price = styled.h6`
 
 export const PriceSubText = styled.p`
   font-size: 13px;
+  margin-bottom: 0;
 `;
 
 export const List = styled.ul`
