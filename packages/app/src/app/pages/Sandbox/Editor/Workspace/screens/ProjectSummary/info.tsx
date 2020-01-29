@@ -9,7 +9,6 @@ import getIcon from '@codesandbox/common/lib/templates/icons';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
-import { Stats } from 'app/pages/common/Stats';
 import { PrivacyStatus } from 'app/components/PrivacyStatus';
 
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
@@ -20,7 +19,7 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 
-import { Collapsible } from '@codesandbox/components';
+import { Collapsible, Stats } from '@codesandbox/components';
 
 import {
   Container,
