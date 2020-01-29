@@ -10,7 +10,7 @@ const COMMIT_HASH = childProcess
 console.log('Marking this release in Sentry');
 try {
   childProcess.execSync(
-    `yarn sentry-cli releases --org=codesandbox -p frontend new "${VERSION}"`
+    `yarn sentry-cli releases --org=codesandbox -p client new "${VERSION}"`
   );
   childProcess.execSync(
     `yarn sentry-cli releases --org=codesandbox set-commits "${VERSION}" --commit "codesandbox/codesandbox-client@${COMMIT_HASH}"`
