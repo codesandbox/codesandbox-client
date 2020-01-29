@@ -26,6 +26,7 @@ import { Title } from './Title';
 import { Description } from './Description';
 import { Privacy } from './Privacy';
 import { Config } from './Config';
+import { TemplateConfig } from './TemplateConfig';
 
 export const ProjectInfo = () => {
   const {
@@ -65,11 +66,16 @@ export const ProjectInfo = () => {
 
   return (
     <>
-      <Collapsible title="Sandbox Info" defaultOpen>
+      <Collapsible
+        title={customTemplate ? 'Template Info' : 'Sandbox Info'}
+        defaultOpen
+      >
         <Stack direction="vertical" gap={6}>
           <Element as="section" css={css({ paddingX: 2 })}>
             <Title editable />
-            <Description editable />
+            <Element marginTop={2}>
+              <Description editable />
+            </Element>
           </Element>
 
           <Element as="section" css={css({ paddingX: 2 })}>
@@ -84,6 +90,7 @@ export const ProjectInfo = () => {
           </Element>
 
           <List>
+            {customTemplate && <TemplateConfig />}
             <ListItem justify="space-between">
               <Label htmlFor="frozen">Frozen</Label>
               <Switch

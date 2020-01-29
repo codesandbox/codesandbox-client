@@ -21,7 +21,7 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
   spellCheck?: 'true' | 'false';
 }>(
   css({
-    height: 6,
+    height: '26px',
     width: '100%',
     paddingX: 2,
     fontSize: 3,
