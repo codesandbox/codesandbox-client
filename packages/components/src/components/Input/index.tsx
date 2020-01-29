@@ -16,6 +16,8 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
   ref?: any;
   value?: string | number;
   defaultValue?: string | number;
+  autoComplete?: 'on' | 'off';
+  spellCheck?: 'true' | 'false';
 }>(
   css({
     height: 6,

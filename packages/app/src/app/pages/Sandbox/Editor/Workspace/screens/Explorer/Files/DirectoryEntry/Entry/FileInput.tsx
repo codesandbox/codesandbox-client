@@ -57,8 +57,6 @@ export const FileInput: FunctionComponent<Props> = ({
         css={{ height: '100%', padding: 0 }}
         id={`input-${id}`}
       >
-        {/*
-        // @ts-ignore */}
         <Input
           onChange={handleChange}
           onBlur={() => onCommit(currentValue, true)}
