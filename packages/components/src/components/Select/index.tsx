@@ -64,6 +64,7 @@ interface ISelectProps {
   disabled?: boolean;
   onChange?: any;
   value?: string | number;
+  defaultValue?: string | number;
 }
 
 export const Select = ({

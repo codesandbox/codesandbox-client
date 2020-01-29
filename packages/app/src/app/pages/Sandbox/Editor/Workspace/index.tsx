@@ -19,6 +19,7 @@ import { ConfigurationFiles } from './items/ConfigurationFiles';
 import { ConfigurationFiles as ConfigurationFilesNew } from './screens/ConfigurationFiles';
 import { Deployment } from './items/Deployment';
 import { FilesItem } from './items/Files';
+import { Explorer } from './screens/Explorer';
 import { GitHub } from './items/GitHub';
 import { Live } from './items/Live';
 import { Live as LiveNew } from './screens/Live';
@@ -39,8 +40,8 @@ const WorkspaceWrapper = REDESIGNED_SIDEBAR ? ThemeProvider : React.Fragment;
 const workspaceTabs = {
   project: REDESIGNED_SIDEBAR ? ProjectInfoNew : ProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
-  files: FilesItem,
   github: REDESIGNED_SIDEBAR ? GitHubNew : GitHub,
+  files: REDESIGNED_SIDEBAR ? Explorer : FilesItem,
   deploy: REDESIGNED_SIDEBAR ? DeploymentNew : Deployment,
   config: REDESIGNED_SIDEBAR ? ConfigurationFilesNew : ConfigurationFiles,
   live: REDESIGNED_SIDEBAR ? LiveNew : Live,
@@ -77,7 +78,13 @@ export const WorkspaceComponent = ({ theme }) => {
         <ItemTitle>{item.name}</ItemTitle>
       )}
 
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          fontFamily: 'Inter, Roboto, sans-serif',
+        }}
+      >
         <WorkspaceWrapper theme={theme.vscodeTheme}>
           <Component />
         </WorkspaceWrapper>

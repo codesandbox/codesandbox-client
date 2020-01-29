@@ -17,6 +17,8 @@ export const onInitialize: OnInitialize = async (
     onApplyOperation: actions.live.applyTransformation,
   });
 
+  effects.flows.initialize(overmindInstance.reaction);
+
   effects.keybindingManager.initialize(overmindInstance);
 
   effects.api.initialize({

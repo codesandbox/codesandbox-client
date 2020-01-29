@@ -98,6 +98,7 @@ export const ProjectInfo = () => {
                   {forkedTemplateSandbox ? 'Template' : 'Forked From'}
                 </Text>
                 <Link
+                  variant="muted"
                   href={sandboxUrl(forkedFromSandbox || forkedTemplateSandbox)}
                   target="_blank"
                 >
@@ -107,7 +108,7 @@ export const ProjectInfo = () => {
             ) : null}
             <ListItem justify="space-between">
               <Text>Environment</Text>
-              <Link href={templateUrl} target="_blank">
+              <Link variant="muted" href={templateUrl} target="_blank">
                 {template}
               </Link>
             </ListItem>

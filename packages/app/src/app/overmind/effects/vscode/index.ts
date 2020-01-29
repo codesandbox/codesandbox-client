@@ -35,6 +35,7 @@ import {
   ModelsHandler,
   OnFileChangeData,
   OnOperationAppliedData,
+  onSelectionChangeData,
 } from './ModelsHandler';
 import SandboxFsSync from './SandboxFsSync';
 import { getSelection } from './utils';
@@ -47,7 +48,7 @@ export type VsCodeOptions = {
   getSandboxFs: () => SandboxFs;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
-  onSelectionChange: (selection: any) => void;
+  onSelectionChange: (selection: onSelectionChangeData) => void;
   reaction: Reaction;
   // These two should be removed
   getSignal: any;
@@ -869,19 +870,13 @@ export class VSCodeEffect {
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
         selectionChange => {
           const lines = activeEditor.getModel().getLinesContent() || [];
-          const data = {
+          const data: onSelectionChangeData = {
             primary: getSelection(lines, selectionChange.selection),
             secondary: selectionChange.secondarySelections.map(s =>
               getSelection(lines, s)
             ),
+            source: selectionChange.source,
           };
-
-          if (selectionChange.source === 'modelChange') {
-            // Don't update the cursor pos on model change, as it will
-            // be updated automatically by vscode (they handle cursor
-            // location changes really well)
-            return;
-          }
 
           if (
             selectionChange.reason === 3 ||
