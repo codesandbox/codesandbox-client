@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from 'react';
+import { css } from '@styled-system/css';
 import {
   FormField,
   Stack,
@@ -15,7 +16,6 @@ export const CommitForm = () => {
         createCommitClicked,
         createPrClicked,
         descriptionChanged,
-
         subjectChanged,
       },
     },
@@ -24,6 +24,7 @@ export const CommitForm = () => {
       git: { description, originalGitChanges: gitChanges, subject },
     },
   } = useOvermind();
+
   const hasWriteAccess = (rights: string) =>
     ['admin', 'write'].includes(rights);
 
@@ -43,6 +44,7 @@ export const CommitForm = () => {
       <Stack as="form" direction="vertical" gap={1} marginX={2}>
         <FormField direction="vertical" label="Commit message">
           <Input
+            css={css({ marginTop: 2 })}
             placeholder="Subject"
             onChange={changeSubject}
             value={subject}
