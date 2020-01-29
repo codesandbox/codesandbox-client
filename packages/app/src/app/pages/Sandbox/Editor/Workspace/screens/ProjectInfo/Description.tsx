@@ -72,6 +72,8 @@ export const Description: FunctionComponent<Props> = ({ editable }) => {
     valueChanged({ field: 'description', value });
   };
 
+  if (!description && !editable) return null;
+
   return editing ? (
     <FormField
       direction="vertical"

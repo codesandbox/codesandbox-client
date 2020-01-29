@@ -35,6 +35,7 @@ export const Summary = () => {
     },
   } = useOvermind();
   const {
+    owned,
     author,
     isFrozen,
     customTemplate,
@@ -66,8 +67,8 @@ export const Summary = () => {
       <Collapsible title="Sandbox Info" defaultOpen>
         <Stack direction="vertical" gap={6}>
           <Element as="section" css={css({ paddingX: 2 })}>
-            <Title editable />
-            <Description editable />
+            <Title editable={owned} />
+            <Description editable={owned} />
           </Element>
 
           <Element as="section" css={css({ paddingX: 2 })}>
@@ -82,14 +83,16 @@ export const Summary = () => {
           </Element>
 
           <List>
-            <ListItem justify="space-between">
-              <Label htmlFor="frozen">Frozen</Label>
-              <Switch
-                id="frozen"
-                onChange={updateFrozenState}
-                on={customTemplate ? sessionFrozen : isFrozen}
-              />
-            </ListItem>
+            {owned && (
+              <ListItem justify="space-between">
+                <Label htmlFor="frozen">Frozen</Label>
+                <Switch
+                  id="frozen"
+                  onChange={updateFrozenState}
+                  on={customTemplate ? sessionFrozen : isFrozen}
+                />
+              </ListItem>
+            )}
             {isForked ? (
               <ListItem justify="space-between">
                 <Text>
