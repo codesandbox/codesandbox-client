@@ -114,7 +114,8 @@ export type CurrentUser = {
     since: string;
     amount: number;
     cancelAtPeriodEnd: boolean;
-    plan?: 'pro' | 'patron';
+    plan: 'pro' | 'patron';
+    duration: 'monthly' | 'yearly';
   } | null;
   curatorAt: string;
   badges: Badge[];
