@@ -148,8 +148,8 @@ const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => {
           You will be billed{' '}
           {user.subscription.duration === 'yearly' ? (
             <>
-              and charged annually on{' '}
-              <b>{format(subscriptionDate, 'MMM dd')}</b>
+              and charged{' '}
+              <b>annually on {format(subscriptionDate, 'MMM dd')}</b>
             </>
           ) : (
             <>

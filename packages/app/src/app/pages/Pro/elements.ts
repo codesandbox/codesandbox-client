@@ -54,6 +54,10 @@ export const DurationChoice = styled.div(() =>
     textAlign: 'center',
     justifyContent: 'center',
     marginBottom: 8,
+
+    '[data-component=SwitchBackground]': {
+      backgroundColor: 'grays.700',
+    },
   })
 );
 
