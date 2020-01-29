@@ -4,11 +4,9 @@ import React, {
   KeyboardEvent,
   FunctionComponent,
 } from 'react';
-import { VisuallyHidden } from 'reakit/VisuallyHidden';
 
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
-
-import { InputContainer, InputError } from './elements';
+import { FormField, Input, Stack } from '@codesandbox/components';
 
 function select(el) {
   if (el) {
@@ -52,29 +50,27 @@ export const EntryTitleInput: FunctionComponent<Props> = ({
   };
 
   return (
-    <InputContainer>
-      <VisuallyHidden>
-        <label id={`label-${id}`} htmlFor={`input-${id}`}>
-          {title ? `rename ${title}` : 'set name new file'}
-        </label>
-      </VisuallyHidden>
-      <input
-        onChange={handleChange}
-        onBlur={() => onCommit(currentValue, true)}
-        onKeyUp={handleKeyUp}
-        ref={select}
-        autoComplete="new-directory"
-        value={currentValue}
+    <Stack direction="vertical" gap={1}>
+      <FormField
+        label={title ? `rename ${title}` : 'set name new file'}
+        hideLabel
+        css={{ height: '100%', padding: 0 }}
         id={`input-${id}`}
-        aria-invalid={Boolean(error)}
-        aria-labelledby={`label-${id}`}
-        aria-describedby={`error-${id}`}
-      />
-      {error && typeof error === 'string' && (
-        <InputError role="alert" id={`error-${id}`}>
-          {error}
-        </InputError>
-      )}
-    </InputContainer>
+      >
+        {/*
+        // @ts-ignore */}
+        <Input
+          onChange={handleChange}
+          onBlur={() => onCommit(currentValue, true)}
+          onKeyUp={handleKeyUp}
+          ref={select}
+          value={currentValue}
+          autoComplete="off"
+          spellCheck="false"
+          aria-invalid={Boolean(error)}
+          aria-errormessage={`error-${id}`}
+        />
+      </FormField>
+    </Stack>
   );
 };

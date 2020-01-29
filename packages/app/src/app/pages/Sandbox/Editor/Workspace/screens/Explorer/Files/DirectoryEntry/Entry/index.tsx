@@ -3,18 +3,22 @@ import { Directory, Module } from '@codesandbox/common/lib/types';
 import { ContextMenu, Item } from 'app/components/ContextMenu';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
-import EditIcon from 'react-icons/lib/go/pencil';
-import DeleteIcon from 'react-icons/lib/go/trashcan';
-import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
-import UploadFileIcon from 'react-icons/lib/md/file-upload';
-import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
-import UndoIcon from 'react-icons/lib/md/undo';
 
-import { EntryContainer } from '../../../../../elements';
+import { Stack, Text, ListAction } from '@codesandbox/components';
+import css from '@styled-system/css';
+
+import {
+  EditIcon,
+  DeleteIcon,
+  AddDirectoryIcon,
+  UploadFileIcon,
+  AddFileIcon,
+  UndoIcon,
+  NotSyncedIcon,
+} from '../../icons';
+
 import EditIcons from './EditIcons';
-import { NotSyncedIconWithMargin, Right } from './elements';
 import EntryIcons from './EntryIcons';
-import EntryTitle from './EntryTitle';
 import { EntryTitleInput } from './EntryTitleInput';
 
 interface IEntryProps {
@@ -73,7 +77,7 @@ const Entry: React.FC<IEntryProps> = ({
   isMainModule,
   moduleHasError,
   shortid,
-  rightColors,
+  rightColors = [],
   renameValidator,
   state: incomingState = '',
 }) => {
@@ -170,49 +174,55 @@ const Entry: React.FC<IEntryProps> = ({
   return connectDragSource(
     <div>
       <ContextMenu items={items}>
-        <EntryContainer
+        <ListAction
+          justify="space-between"
           onClick={setCurrentModule ? setCurrentModuleAction : onClick}
           onDoubleClick={markTabsNotDirty}
-          //  The elements file is still in js
-          //  @ts-ignore
-          depth={depth}
-          nameValidationError={error}
-          active={active}
-          editing={state === 'editing'}
+          aria-selected={active}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
-          alternative={isMainModule}
-          rightColors={rightColors}
-          noTransition
+          css={{
+            paddingLeft: depth
+              ? `calc(${depth + 1}rem - 2px)`
+              : 'calc(1rem - 2px)',
+            // live user
+            borderRight: '2px solid',
+            borderColor: rightColors[0] || 'transparent',
+          }}
         >
-          <EntryIcons type={type} error={moduleHasError} />
-          {state === 'editing' ? (
-            <EntryTitleInput
-              id={id}
-              title={title}
-              onChange={handleValidateTitle}
-              onCancel={resetState}
-              onCommit={handleRename}
-              error={error}
-            />
-          ) : (
-            <EntryTitle title={title} />
-          )}
-          {isNotSynced && !state && <NotSyncedIconWithMargin />}
+          <Stack gap={2} align="center">
+            <EntryIcons type={type} error={moduleHasError} />
+            {state === 'editing' ? (
+              <EntryTitleInput
+                id={id}
+                title={title}
+                onChange={handleValidateTitle}
+                onCancel={resetState}
+                onCommit={handleRename}
+                error={error}
+              />
+            ) : (
+              <Text
+                css={{
+                  maxWidth: 150,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {title}
+              </Text>
+            )}
+            {isNotSynced && !state && (
+              <NotSyncedIcon css={css({ color: 'blues.300' })} />
+            )}
+          </Stack>
           {state === '' && (
-            <Right>
-              {isMainModule && (
-                <span
-                  style={{
-                    fontSize: '.75rem',
-                    fontWeight: 600,
-                    opacity: hovering ? 0.6 : 0,
-                    marginTop: 3,
-                    marginRight: 3,
-                  }}
-                >
+            <Stack align="center">
+              {isMainModule && hovering && (
+                <Text variant="muted" size={2}>
                   entry
-                </span>
+                </Text>
               )}
               <EditIcons
                 hovering={hovering}
@@ -225,9 +235,24 @@ const Entry: React.FC<IEntryProps> = ({
                 active={active}
                 forceShow={window.__isTouch && type === 'directory-open'}
               />
-            </Right>
+            </Stack>
           )}
-        </EntryContainer>
+        </ListAction>
+        {error && typeof error === 'string' && (
+          <Text
+            size={3}
+            variant="danger"
+            role="alert"
+            id={`error-${id}`}
+            css={{
+              paddingLeft: depth
+                ? `calc(${depth + 1}rem + 24px)`
+                : 'calc(1rem + 24px)',
+            }}
+          >
+            {error}
+          </Text>
+        )}
       </ContextMenu>
     </div>
   );

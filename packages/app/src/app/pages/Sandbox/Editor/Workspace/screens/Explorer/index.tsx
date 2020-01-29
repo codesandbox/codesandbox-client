@@ -8,10 +8,10 @@ import { Files as Old } from '../../Files';
 
 export const Explorer = () => (
   <>
+    <Files />
     <Collapsible title="Files" defaultOpen>
       <Old setEditActions={() => {}} />
     </Collapsible>
-    <Files />
     <Dependencies />
     <ExternalResources />
   </>
