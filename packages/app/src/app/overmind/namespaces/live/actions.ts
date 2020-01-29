@@ -28,7 +28,7 @@ export const roomJoined: AsyncAction<{
     return;
   }
 
-  await effects.vscode.initialize;
+  await effects.vscode.initialized;
   await effects.vscode.closeAllTabs();
 
   if (state.live.isLive) {
@@ -97,6 +97,7 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
     [LiveMessageEvent.MODULE_STATE]: liveMessage.onModuleState,
     [LiveMessageEvent.USER_ENTERED]: liveMessage.onUserEntered,
     [LiveMessageEvent.USER_LEFT]: liveMessage.onUserLeft,
+    [LiveMessageEvent.EXTERNAL_RESOURCES]: liveMessage.onExternalResources,
     [LiveMessageEvent.MODULE_SAVED]: liveMessage.onModuleSaved,
     [LiveMessageEvent.MODULE_CREATED]: liveMessage.onModuleCreated,
     [LiveMessageEvent.MODULE_MASS_CREATED]: liveMessage.onModuleMassCreated,
@@ -193,13 +194,11 @@ export const onRemoveEditorClicked: Action<any> = (
 export const onSessionCloseClicked: Action = ({ actions, effects }) => {
   effects.live.sendClosed();
   actions.live.internal.disconnect();
-  actions.live.internal.reset();
 };
 
 export const onNavigateAway: Action = ({ actions, state }) => {
   if (state.live.isLive) {
     actions.live.internal.disconnect();
-    actions.live.internal.reset();
   }
 };
 

@@ -21,10 +21,13 @@ import { Deployment } from './items/Deployment';
 import { FilesItem } from './items/Files';
 import { GitHub } from './items/GitHub';
 import { Live } from './items/Live';
+import { Live as LiveNew } from './screens/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
 import { ProjectInfo as ProjectInfoNew } from './screens/ProjectInfo';
+import { Deployment as DeploymentNew } from './screens/Deployment/index';
+import { Server as ServerNew } from './screens/Server';
 
 import { Server } from './items/Server';
 import { SSEDownNotice } from './SSEDownNotice';
@@ -37,10 +40,10 @@ const workspaceTabs = {
   'project-summary': NotOwnedSandboxInfo,
   files: FilesItem,
   github: GitHub,
-  deploy: Deployment,
+  deploy: REDESIGNED_SIDEBAR ? DeploymentNew : Deployment,
   config: REDESIGNED_SIDEBAR ? ConfigurationFilesNew : ConfigurationFiles,
-  live: Live,
-  server: Server,
+  live: REDESIGNED_SIDEBAR ? LiveNew : Live,
+  server: REDESIGNED_SIDEBAR ? ServerNew : Server,
   more: More,
 };
 

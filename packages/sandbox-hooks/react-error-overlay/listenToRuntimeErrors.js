@@ -42,10 +42,6 @@ export const crashWithFrames = (crash: ErrorRecord => void) => (
 ) => {
   getStackFrames(error, unhandledRejection, CONTEXT_SIZE)
     .then(stackFrames => {
-      // SOURCE_CHANGE,
-      if (stackFrames == null && error.name !== 'SyntaxError') {
-        return;
-      }
       crash({
         error,
         unhandledRejection,

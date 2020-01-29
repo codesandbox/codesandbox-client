@@ -5,7 +5,7 @@ import { LinkButton as AppLinkButton } from 'app/components/LinkButton';
 
 export const Page = styled.div(
   css({
-    backgroundColor: 'grays.800',
+    backgroundColor: 'grays.900',
     color: 'white',
 
     // the following evil exists because we are inserting
@@ -107,11 +107,11 @@ export const Input = styled.input(
 
     ':hover': {
       backgroundColor: 'grays.700',
-      borderColor: 'grays.600',
+      borderColor: 'grays.500',
     },
     ':focus': {
       outline: 'none',
-      backgroundColor: 'grays.800',
+      backgroundColor: 'grays.900',
       borderColor: 'grays.300',
     },
   })
@@ -191,11 +191,11 @@ export const CardContainer = styled.div(
 
       ':hover': {
         backgroundColor: 'grays.700',
-        borderColor: 'grays.600',
+        borderColor: 'grays.500',
       },
 
       '&.StripeElement--focus': {
-        backgroundColor: 'grays.800',
+        backgroundColor: 'grays.900',
         borderColor: 'grays.300',
       },
     },
@@ -278,7 +278,7 @@ const badgeBackground = {
 export const Badge = styled.span<{ type: string }>(props =>
   css({
     backgroundColor: badgeBackground[props.type],
-    color: props.type === 'pro' ? 'white' : 'grays.800',
+    color: props.type === 'pro' ? 'white' : 'grays.900',
     paddingY: 1,
     paddingX: 2,
     fontWeight: 'bold',

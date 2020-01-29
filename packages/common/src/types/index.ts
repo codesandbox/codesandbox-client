@@ -200,7 +200,7 @@ export type User = {
 
 export type LiveUser = {
   username: string;
-  selection: Selection;
+  selection: UserSelection;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
@@ -467,12 +467,13 @@ export type Selection = {
 export type UserSelection = {
   primary: Selection;
   secondary: Selection[];
+  source: string;
 };
 
 export type EditorSelection = {
   userId: string;
   name: string | null;
-  selection: Selection | null;
+  selection: UserSelection | null;
   color: number[] | null;
 };
 
@@ -683,6 +684,7 @@ export enum LiveMessageEvent {
   MODULE_MASS_CREATED = 'module:mass-created',
   MODULE_UPDATED = 'module:updated',
   MODULE_DELETED = 'module:deleted',
+  EXTERNAL_RESOURCES = 'sandbox:external-resources',
   DIRECTORY_CREATED = 'directory:created',
   DIRECTORY_UPDATED = 'directory:updated',
   DIRECTORY_DELETED = 'directory:deleted',

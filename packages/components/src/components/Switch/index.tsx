@@ -31,6 +31,7 @@ const SwitchInput = styled.input(
     width: 0,
     opacity: 0,
     position: 'absolute',
+    left: -100,
   })
 );
 

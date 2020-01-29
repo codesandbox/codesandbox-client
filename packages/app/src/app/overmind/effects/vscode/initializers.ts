@@ -43,6 +43,27 @@ export function initializeSettings() {
       )
     );
   }
+
+  try {
+    // We need to do this to prevent duplicate closing tags in live sessions.
+    // https://github.com/codesandbox/codesandbox-client/issues/3398
+    // I haven't found another way to fix this, as the TS extension literally listens
+    // for edits and checks whether an edit ends with '>'. Then it asks the LSP for the changes
+    // and applies them 100ms later. There is no check for cursor or anything else.
+    // This doesn't happen in VSCode Live Share itself, because there they share the LSP between
+    // multiple users. This way the request is not duplicated among multiple users.
+    const settings = JSON.parse(
+      fs.readFileSync('/vscode/settings.json').toString()
+    );
+    settings['javascript.autoClosingTags'] = false;
+    settings['typescript.autoClosingTags'] = false;
+    fs.writeFileSync(
+      '/vscode/settings.json',
+      JSON.stringify(settings, null, 2)
+    );
+  } catch (e) {
+    console.warn(e);
+  }
 }
 
 export function initializeCodeSandboxTheme() {
@@ -124,7 +145,7 @@ export function initializeCustomTheme() {
 
   installCustomTheme(
     'codesandbox-black-0.0.1',
-    'CodeSandbox Black',
+    'CodeSandbox Black.',
     JSON.stringify(codeSandboxBlackTheme)
   );
 }

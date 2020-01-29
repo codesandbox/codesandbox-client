@@ -5,6 +5,7 @@ import { Integration } from '.';
 import { Text } from '../Text';
 import { Stack } from '../Stack';
 import { Button } from '../Button';
+import { Element } from '../Element';
 
 export default {
   title: 'components/Integration',
@@ -37,11 +38,13 @@ const ZeitIcon = props => (
 export const IntegrationZeit = () => (
   <div style={{ width: 184 }}>
     <Integration icon={ZeitIcon} title="ZEIT">
-      <Stack direction="vertical">
-        <Text variant="muted">Enables</Text>
-        <Text>Deployments</Text>
-      </Stack>
-      <Button onClick={action('zeit Integration')}>Sign In</Button>
+      <Element marginX={2}>
+        <Stack direction="vertical">
+          <Text variant="muted">Enables</Text>
+          <Text>Deployments</Text>
+        </Stack>
+        <Button onClick={action('zeit Integration')}>Sign In</Button>
+      </Element>
     </Integration>
   </div>
 );
@@ -49,11 +52,13 @@ export const IntegrationZeit = () => (
 export const IntegrationNetlify = () => (
   <div style={{ width: 184 }}>
     <Integration icon={NetlifyIcon} title="netlify">
-      <Stack direction="vertical">
-        <Text variant="muted">Enables</Text>
-        <Text>Deployments</Text>
-      </Stack>
-      <Button onClick={action('Netlify Integration')}>Deploy</Button>
+      <Element marginX={2}>
+        <Stack direction="vertical">
+          <Text variant="muted">Enables</Text>
+          <Text>Deployments</Text>
+        </Stack>
+        <Button onClick={action('Netlify Integration')}>Deploy</Button>
+      </Element>
     </Integration>
   </div>
 );
@@ -61,11 +66,13 @@ export const IntegrationNetlify = () => (
 export const IntegrationGitHub = () => (
   <div style={{ width: 184 }}>
     <Integration icon={GitHubIcon} title="GitHub">
-      <Stack direction="vertical">
-        <Text variant="muted">Enables</Text>
-        <Text>Commits & PRs</Text>
-      </Stack>
-      <Button onClick={action('GitHub Integration')}>Sign In</Button>
+      <Element marginX={2}>
+        <Stack direction="vertical">
+          <Text variant="muted">Enables</Text>
+          <Text>Commits & PRs</Text>
+        </Stack>
+        <Button onClick={action('GitHub Integration')}>Sign In</Button>
+      </Element>
     </Integration>
   </div>
 );
