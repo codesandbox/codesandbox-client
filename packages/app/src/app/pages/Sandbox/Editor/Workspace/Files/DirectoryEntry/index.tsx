@@ -1,13 +1,8 @@
-import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
-import {
-  getChildren as calculateChildren,
-  inDirectory,
-} from '@codesandbox/common/lib/sandbox/modules';
-import { Directory, Module } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
+import { reaction } from 'mobx';
 import React from 'react';
-import { DropTarget, DropTargetMonitor } from 'react-dnd';
+import { DropTarget } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
+import { getChildren } from '@codesandbox/common/lib/sandbox/modules';
 
 import DirectoryChildren from './DirectoryChildren';
 import DirectoryEntryModal from './DirectoryEntryModal';
@@ -15,24 +10,22 @@ import { EntryContainer, Opener, Overlay } from './elements';
 import Entry from './Entry';
 import validateTitle from './validateTitle';
 
-const readDataURL = (file: File): Promise<string | ArrayBuffer> =>
+const readDataURL = imageFile =>
   new Promise(resolve => {
     const reader = new FileReader();
     reader.onload = e => {
       resolve(e.target.result);
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(imageFile);
   });
 
-type parsedFiles = { [k: string]: { dataURI: string; type: string } };
-const getFiles = async (files: File[] | FileList): Promise<parsedFiles> => {
+const getFiles = async files => {
   const returnedFiles = {};
   await Promise.all(
     Array.from(files)
       .filter(Boolean)
       .map(async file => {
         const dataURI = await readDataURL(file);
-        // @ts-ignore
         returnedFiles[file.path || file.name] = {
           dataURI,
           type: file.type,
@@ -42,338 +35,317 @@ const getFiles = async (files: File[] | FileList): Promise<parsedFiles> => {
 
   return returnedFiles;
 };
+class DirectoryEntry extends React.PureComponent {
+  constructor(props) {
+    super(props);
 
-type ItemTypes = 'module' | 'directory';
+    const { id, store } = this.props;
 
-type Modal = {
-  title: string;
-  body: React.ReactNode;
-  onConfirm: () => void;
-};
+    this.state = {
+      creating: '',
+      open: props.root || store.editor.shouldDirectoryBeOpen(id),
+      modalConfig: {},
+      isModalOpen: false,
+    };
+  }
 
-interface Props {
-  id: string;
-  root?: boolean;
-  initializeProperties?: Function;
-  shortid?: string;
-  store?: any;
-  connectDropTarget?: Function;
-  isOver?: boolean;
-  canDrop?: boolean;
-  siblings?: any;
-  signals?: any;
-  title?: string;
-  sandboxId?: string;
-  sandboxTemplate?: any;
-  mainModuleId?: string;
-  modules?: any[];
-  directories?: any[];
-  currentModuleShortid?: string;
-  isInProjectView?: boolean;
-  markTabsNotDirty?: () => void;
-  depth?: number;
-  getModulePath?: (
-    modules: Module[],
-    directories: Directory[],
-    id: string
-  ) => string;
-}
-
-const DirectoryEntry: React.FunctionComponent<Props> = ({
-  id,
-  root,
-  initializeProperties,
-  shortid,
-  connectDropTarget,
-  isOver,
-  depth = 0,
-  getModulePath,
-  canDrop,
-}) => {
-  const {
-    state: {
-      isLoggedIn,
-      editor: {
-        currentSandbox: { modules, directories, privacy },
-        shouldDirectoryBeOpen,
-      },
-    },
-    actions: {
-      files: {
-        moduleCreated,
-        moduleRenamed,
-        directoryCreated,
-        directoryRenamed,
-        directoryDeleted,
-        moduleDeleted,
-        filesUploaded,
-      },
-      editor: { moduleSelected, moduleDoubleClicked, discardModuleChanges },
-    },
-    reaction,
-  } = useOvermind();
-
-  const [creating, setCreating] = React.useState<ItemTypes>(null);
-  const [open, setOpen] = React.useState(root || shouldDirectoryBeOpen(id));
-  const [modalConfirm, setModalConfirm] = React.useState<Modal | null>(null);
-
-  React.useEffect(() => {
-    if (initializeProperties) {
-      initializeProperties({
-        onCreateModuleClick,
-        onCreateDirectoryClick,
-        onUploadFileClick,
+  componentDidMount() {
+    if (this.props.initializeProperties) {
+      this.props.initializeProperties({
+        onCreateModuleClick: this.onCreateModuleClick,
+        onCreateDirectoryClick: this.onCreateDirectoryClick,
+        onUploadFileClick: this.onUploadFileClick,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  React.useEffect(
-    () =>
-      reaction(
-        ({ editor }) => editor.currentModuleShortid,
-        () => {
-          setOpen(isOpen => isOpen || shouldDirectoryBeOpen(id));
+    this.openListener = reaction(
+      () => this.props.store.editor.currentModuleShortid,
+      () => {
+        if (!this.state.open) {
+          const { id, store } = this.props;
+
+          this.setState({ open: store.editor.shouldDirectoryBeOpen(id) });
         }
-      ),
-    [id, reaction, shouldDirectoryBeOpen]
-  );
+      }
+    );
+  }
 
-  React.useEffect(() => {
-    if (isOver) {
-      setOpen(true);
+  componentWillUnmount() {
+    if (this.openListener) {
+      this.openListener();
     }
-  }, [isOver]);
+  }
 
-  const resetState = () => setCreating(null);
+  resetState = () => this.setState({ creating: '' });
 
-  const onCreateModuleClick = () => {
-    setCreating('module');
-    setOpen(true);
+  onCreateModuleClick = () => {
+    this.setState({
+      creating: 'module',
+      open: true,
+    });
 
     return true;
   };
 
-  const createModule = (_, title: string) => {
-    moduleCreated({
+  createModule = (_, title) => {
+    const { shortid } = this.props;
+    this.props.signals.files.moduleCreated({
       title,
       directoryShortid: shortid,
     });
-
-    resetState();
+    this.resetState();
   };
 
-  const renameModule = (moduleShortid: string, title: string) => {
-    moduleRenamed({ moduleShortid, title });
+  renameModule = (moduleShortid, title) => {
+    this.props.signals.files.moduleRenamed({ moduleShortid, title });
   };
 
-  const confirmDeleteModule = (moduleShortid: string, moduleName: string) => {
-    setModalConfirm({
-      title: 'Delete File',
-      body: (
-        <span>
-          Are you sure you want to delete{' '}
-          <b
-            css={`
-              word-break: break-all;
-            `}
-          >
-            {moduleName}
-          </b>
-          ?
-          <br />
-          The file will be permanently removed.
-        </span>
-      ),
-      onConfirm: () => {
-        closeModals();
-        moduleDeleted({
-          moduleShortid,
-        });
+  confirmDeleteModule = (shortid, moduleName) => {
+    this.setState({
+      isModalOpen: true,
+      modalConfig: {
+        title: 'Delete File',
+        body: (
+          <span>
+            Are you sure you want to delete{' '}
+            <b
+              css={`
+                word-break: break-all;
+              `}
+            >
+              {moduleName}
+            </b>
+            ?
+            <br />
+            The file will be permanently removed.
+          </span>
+        ),
+        onConfirm: () => {
+          this.closeModal();
+          this.props.signals.files.moduleDeleted({
+            moduleShortid: shortid,
+          });
+        },
       },
     });
   };
 
-  const onCreateDirectoryClick = () => {
-    setCreating('directory');
-    setOpen(true);
-
+  onCreateDirectoryClick = () => {
+    this.setState({
+      creating: 'directory',
+      open: true,
+    });
     return true;
   };
 
-  const createDirectory = (_, title: string) => {
-    directoryCreated({
+  createDirectory = (_, title) => {
+    const { shortid } = this.props;
+    this.props.signals.files.directoryCreated({
       title,
       directoryShortid: shortid,
     });
-    resetState();
+    this.resetState();
   };
 
-  const onUploadFileClick = React.useCallback(() => {
+  onUploadFileClick = () => {
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
     fileSelector.setAttribute('multiple', 'true');
     fileSelector.onchange = async event => {
-      const target = event.target as HTMLInputElement;
-      const files = await getFiles(target.files);
+      const files = await getFiles(event.target.files);
 
-      filesUploaded({
+      this.props.signals.files.filesUploaded({
         files,
-        directoryShortid: shortid,
+        directoryShortid: this.props.shortid,
       });
     };
 
     fileSelector.click();
-  }, [filesUploaded, shortid]);
-
-  const renameDirectory = (directoryShortid: string, title: string) => {
-    directoryRenamed({ title, directoryShortid });
   };
 
-  const closeModals = () => {
-    setModalConfirm(null);
+  renameDirectory = (directoryShortid, title) => {
+    this.props.signals.files.directoryRenamed({ title, directoryShortid });
   };
 
-  const confirmDeleteDirectory = (
-    directoryShortid: string,
-    directoryName: string
-  ) => {
-    setModalConfirm({
-      title: 'Delete Directory',
-      body: (
-        <span>
-          Are you sure you want to delete <b>{directoryName}</b>?
-          <br />
-          The directory will be permanently removed.
-        </span>
-      ),
-      onConfirm: () => {
-        closeModals();
-        directoryDeleted({
-          directoryShortid,
-        });
+  closeModal = () => {
+    this.setState({
+      isModalOpen: false,
+    });
+  };
+
+  confirmDeleteDirectory = (shortid, directoryName) => {
+    this.setState({
+      isModalOpen: true,
+      modalConfig: {
+        title: 'Delete Directory',
+        body: (
+          <span>
+            Are you sure you want to delete <b>{directoryName}</b>?
+            <br />
+            The directory will be permanently removed.
+          </span>
+        ),
+        onConfirm: () => {
+          this.closeModal();
+          this.props.signals.files.directoryDeleted({
+            directoryShortid: shortid,
+          });
+        },
       },
     });
   };
 
-  const confirmDiscardChanges = (moduleShortid: string, moduleName: string) => {
-    setModalConfirm({
-      title: 'Discard Changes',
-      body: (
-        <span>
-          Are you sure you want to discard changes on <b>{moduleName}</b>?
-        </span>
-      ),
-      onConfirm: () => {
-        closeModals();
-        discardModuleChanges({
-          moduleShortid,
-        });
+  toggleOpen = () => this.setOpen(!this.state.open);
+
+  closeTree = () => this.setOpen(false);
+
+  setOpen = open => this.setState({ open });
+
+  validateModuleTitle = (id, title) =>
+    validateTitle(id, title, this.getChildren());
+
+  validateDirectoryTitle = (id, title) => {
+    const { root } = this.props;
+    if (root) return false;
+
+    return validateTitle(id, title, this.getChildren());
+  };
+
+  getChildren = () => {
+    const {
+      shortid,
+      store: {
+        editor: {
+          currentSandbox: { modules, directories },
+        },
+      },
+    } = this.props;
+
+    return getChildren(modules, directories, shortid);
+  };
+
+  setCurrentModule = moduleId => {
+    this.props.signals.editor.moduleSelected({ id: moduleId });
+  };
+
+  markTabsNotDirty = () => {
+    this.props.signals.editor.moduleDoubleClicked();
+  };
+
+  confirmDiscardChanges = (shortid, moduleName) => {
+    this.setState({
+      isModalOpen: true,
+      modalConfig: {
+        title: 'Discard Changes',
+        body: (
+          <span>
+            Are you sure you want to discard changes on <b>{moduleName}</b>?
+          </span>
+        ),
+        onConfirm: () => {
+          this.closeModal();
+          this.props.signals.editor.discardModuleChanges({
+            moduleShortid: shortid,
+          });
+        },
       },
     });
   };
 
-  const toggleOpen = () => setOpen(!open);
+  render() {
+    const {
+      id,
+      shortid,
+      connectDropTarget, // eslint-disable-line
+      isOver, // eslint-disable-line
+      depth = 0,
+      root,
+      store,
+      getModulePath,
+    } = this.props;
+    const { creating, isModalOpen, modalConfig, open } = this.state;
+    const { currentSandbox } = store.editor;
 
-  const closeTree = () => setOpen(false);
+    const title = root
+      ? 'Project'
+      : currentSandbox.directories.find(m => m.id === id).title;
 
-  const validateModuleTitle = (moduleId: string, title: string) =>
-    validateTitle(moduleId, title, getChildren());
-
-  const validateDirectoryTitle = (directoryId: string, title: string) => {
-    if (root) return null;
-
-    return validateTitle(directoryId, title, getChildren());
-  };
-
-  const getChildren = () => calculateChildren(modules, directories, shortid);
-
-  const setCurrentModule = (moduleId: string) => {
-    moduleSelected({ id: moduleId });
-  };
-
-  const markTabsNotDirty = () => {
-    moduleDoubleClicked();
-  };
-
-  const title = root ? 'Project' : directories.find(m => m.id === id).title;
-
-  return connectDropTarget(
-    <div style={{ position: 'relative' }}>
-      <Overlay isOver={isOver && canDrop} />
-      {!root && (
-        <EntryContainer>
-          <Entry
-            id={id}
-            shortid={shortid}
-            title={title}
+    return connectDropTarget(
+      <div style={{ position: 'relative' }}>
+        <Overlay isOver={isOver} />
+        {!root && (
+          <EntryContainer>
+            <Entry
+              id={id}
+              shortid={shortid}
+              title={title}
+              depth={depth}
+              type={open ? 'directory-open' : 'directory'}
+              root={root}
+              isOpen={open}
+              onClick={this.toggleOpen}
+              renameValidator={this.validateDirectoryTitle}
+              discardModuleChanges={this.confirmDiscardChanges}
+              rename={!root && this.renameDirectory}
+              onCreateModuleClick={this.onCreateModuleClick}
+              onCreateDirectoryClick={this.onCreateDirectoryClick}
+              onUploadFileClick={
+                this.props.store.isLoggedIn &&
+                currentSandbox.privacy === 0 &&
+                this.onUploadFileClick
+              }
+              deleteEntry={!root && this.confirmDeleteDirectory}
+              hasChildren={this.getChildren().length > 0}
+              closeTree={this.closeTree}
+              getModulePath={getModulePath}
+            />
+          </EntryContainer>
+        )}
+        <Opener open={open}>
+          {creating === 'directory' && (
+            <Entry
+              id=""
+              title=""
+              state="editing"
+              type="directory"
+              depth={depth + 1}
+              renameValidator={this.validateModuleTitle}
+              rename={this.createDirectory}
+              onRenameCancel={this.resetState}
+            />
+          )}
+          <DirectoryChildren
             depth={depth}
-            type={open ? 'directory-open' : 'directory'}
-            root={root}
-            isOpen={open}
-            onClick={toggleOpen}
-            renameValidator={validateDirectoryTitle}
-            discardModuleChanges={confirmDiscardChanges}
-            rename={!root && renameDirectory}
-            onCreateModuleClick={onCreateModuleClick}
-            onCreateDirectoryClick={onCreateDirectoryClick}
-            onUploadFileClick={isLoggedIn && privacy === 0 && onUploadFileClick}
-            deleteEntry={!root && confirmDeleteDirectory}
-            hasChildren={getChildren().length > 0}
-            closeTree={closeTree}
+            renameModule={this.renameModule}
+            parentShortid={shortid}
+            renameValidator={this.validateModuleTitle}
+            deleteEntry={this.confirmDeleteModule}
+            setCurrentModule={this.setCurrentModule}
+            markTabsNotDirty={this.markTabsNotDirty}
+            discardModuleChanges={this.confirmDiscardChanges}
             getModulePath={getModulePath}
           />
-        </EntryContainer>
-      )}
-      <Opener open={open}>
-        {creating === 'directory' && (
-          <Entry
-            id=""
-            title=""
-            state="editing"
-            type="directory"
-            depth={depth + 1}
-            renameValidator={validateModuleTitle}
-            rename={createDirectory}
-            onRenameCancel={resetState}
+          <DirectoryEntryModal
+            isOpen={isModalOpen}
+            onClose={this.closeModal}
+            {...modalConfig}
           />
-        )}
-        <DirectoryChildren
-          depth={depth}
-          renameModule={renameModule}
-          parentShortid={shortid}
-          renameValidator={validateModuleTitle}
-          deleteEntry={confirmDeleteModule}
-          setCurrentModule={setCurrentModule}
-          markTabsNotDirty={markTabsNotDirty}
-          discardModuleChanges={confirmDiscardChanges}
-          getModulePath={getModulePath}
-        />
-        <DirectoryEntryModal
-          isOpen={Boolean(modalConfirm)}
-          onClose={closeModals}
-          {...modalConfirm}
-        />
-        {creating === 'module' && (
-          <Entry
-            id=""
-            title=""
-            state="editing"
-            depth={depth + 1}
-            renameValidator={validateModuleTitle}
-            rename={createModule}
-            onRenameCancel={resetState}
-          />
-        )}
-      </Opener>
-    </div>
-  );
-};
-
-const FILES_TO_IGNORE = [
-  '.DS_Store', // macOs
-  'Thumbs.db', // Windows
-];
+          {creating === 'module' && (
+            <Entry
+              id=""
+              title=""
+              state="editing"
+              depth={depth + 1}
+              renameValidator={this.validateModuleTitle}
+              rename={this.createModule}
+              onRenameCancel={this.resetState}
+            />
+          )}
+        </Opener>
+      </div>
+    );
+  }
+}
 
 const entryTarget = {
   drop: (props, monitor) => {
@@ -383,12 +355,9 @@ const entryTarget = {
     if (!monitor.isOver({ shallow: true })) return;
 
     const sourceItem = monitor.getItem();
-
     if (sourceItem.dirContent) {
-      sourceItem.dirContent.then(async (droppedFiles: File[]) => {
-        const files = await getFiles(
-          droppedFiles.filter(file => !FILES_TO_IGNORE.includes(file.name))
-        );
+      sourceItem.dirContent.then(async droppedFiles => {
+        const files = await getFiles(droppedFiles);
 
         props.signals.files.filesUploaded({
           files,
@@ -414,13 +383,11 @@ const entryTarget = {
     if (source == null) return false;
 
     if (source.id === props.id) return false;
-    if (props.root) return true;
-
-    return !inDirectory(props.directories, source.shortid, props.shortid);
+    return true;
   },
 };
 
-function collectTarget(connectMonitor, monitor: DropTargetMonitor) {
+function collectTarget(connectMonitor, monitor) {
   return {
     // Call this function inside render()
     // to let React DnD handle the drag events:
@@ -432,9 +399,8 @@ function collectTarget(connectMonitor, monitor: DropTargetMonitor) {
   };
 }
 
-// eslint-disable-next-line import/no-default-export
 export default DropTarget(
   ['ENTRY', NativeTypes.FILE],
   entryTarget,
   collectTarget
-)(React.memo(DirectoryEntry));
+)(DirectoryEntry);
