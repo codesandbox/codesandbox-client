@@ -8,6 +8,7 @@ import {
   Avatar,
   Stack,
   List,
+  ListAction,
   ListItem,
   Switch,
   Stats,
@@ -91,14 +92,14 @@ export const ProjectInfo = () => {
 
           <List>
             {customTemplate && <TemplateConfig />}
-            <ListItem justify="space-between">
+            <ListAction onClick={updateFrozenState} justify="space-between">
               <Label htmlFor="frozen">Frozen</Label>
               <Switch
                 id="frozen"
                 onChange={updateFrozenState}
                 on={customTemplate ? sessionFrozen : isFrozen}
               />
-            </ListItem>
+            </ListAction>
             {isForked ? (
               <ListItem justify="space-between">
                 <Text>

@@ -28,6 +28,7 @@ export const IconButton = styled.button`
 
 export const IconWrapper = styled(Popover)`
   ${({ theme }) => css`
+    z-index: 12;
     padding: ${theme.space[3]}px;
     background: ${theme.colors.sideBar.background};
   `};
@@ -44,6 +45,14 @@ export const IconList = styled.ul`
   li {
     cursor: pointer;
   }
+`;
+
+const OpenPopover = styled(PopoverDisclosure)`
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  width: 100%;
 `;
 
 export const TemplateConfig: FunctionComponent = () => {
@@ -65,8 +74,7 @@ export const TemplateConfig: FunctionComponent = () => {
   );
 
   const DefaultIcon = getIcon(template);
-  const defaultColor =
-    customTemplate.color || templates.default(template).color();
+  const defaultColor = templates.default(template).color();
 
   const setIcon = (key: string) => {
     setSelectedIcon(key);
@@ -76,37 +84,39 @@ export const TemplateConfig: FunctionComponent = () => {
   const TemplateIcon = Icons[selectedIcon];
 
   return (
-    <ListAction justify="space-between" gap={2}>
-      <Text>Template Icon</Text>
-      <Element>
-        <Button {...iconPopover} color={defaultColor}>
-          {selectedIcon && TemplateIcon ? (
-            <TemplateIcon width={24} />
-          ) : (
-            <DefaultIcon width={24} />
-          )}
-        </Button>
-        <IconWrapper
-          aria-label="Choose an Icon"
-          hideOnClickOutside
-          hideOnEsc
-          {...iconPopover}
-        >
-          <IconList>
-            {Object.keys(Icons).map((i: string) => {
-              const TemplateIconMap = Icons[i];
-              return (
-                // eslint-disable-next-line
-                <li onClick={() => setIcon(i)} role="button" tabIndex={0}>
-                  <IconButton>
-                    <TemplateIconMap width={24} />
-                  </IconButton>
-                </li>
-              );
-            })}
-          </IconList>
-        </IconWrapper>
-      </Element>
-    </ListAction>
+    <OpenPopover {...iconPopover}>
+      <ListAction justify="space-between" gap={2}>
+        <Text>Template Icon</Text>
+        <Element>
+          <Button {...iconPopover} color={defaultColor}>
+            {selectedIcon && TemplateIcon ? (
+              <TemplateIcon width={24} />
+            ) : (
+              <DefaultIcon width={24} />
+            )}
+          </Button>
+          <IconWrapper
+            aria-label="Choose an Icon"
+            hideOnClickOutside
+            hideOnEsc
+            {...iconPopover}
+          >
+            <IconList>
+              {Object.keys(Icons).map((i: string) => {
+                const TemplateIconMap = Icons[i];
+                return (
+                  // eslint-disable-next-line
+                  <li onClick={() => setIcon(i)} role="button" tabIndex={0}>
+                    <IconButton>
+                      <TemplateIconMap width={24} />
+                    </IconButton>
+                  </li>
+                );
+              })}
+            </IconList>
+          </IconWrapper>
+        </Element>
+      </ListAction>
+    </OpenPopover>
   );
 };
