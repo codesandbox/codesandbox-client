@@ -13,12 +13,12 @@ export const Changes = ({ added, modified, deleted }) => (
     ))}
     {getChanges(modified).map(change => (
       <ListItem gap={2}>
-        <DeletedIcon /> <Text variant="muted">{change}</Text>
+        <ChangedIcon /> <Text variant="muted">{change}</Text>
       </ListItem>
     ))}
     {getChanges(deleted).map(change => (
       <ListItem gap={2}>
-        <ChangedIcon /> <Text variant="muted">{change}</Text>
+        <DeletedIcon /> <Text variant="muted">{change}</Text>
       </ListItem>
     ))}
   </List>
