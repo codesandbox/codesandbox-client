@@ -325,51 +325,49 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
           />
         </EntryContainer>
       )}
-      <Opener>
-        {open && (
-          <>
-            {creating === 'directory' && (
-              <Entry
-                id=""
-                title=""
-                state="editing"
-                type="directory"
-                depth={depth + 1}
-                renameValidator={validateModuleTitle}
-                rename={createDirectory}
-                onRenameCancel={resetState}
-              />
-            )}
-            <DirectoryChildren
-              depth={depth}
-              renameModule={renameModule}
-              parentShortid={shortid}
+      {open && (
+        <Opener>
+          {creating === 'directory' && (
+            <Entry
+              id=""
+              title=""
+              state="editing"
+              type="directory"
+              depth={depth + 1}
               renameValidator={validateModuleTitle}
-              deleteEntry={confirmDeleteModule}
-              setCurrentModule={setCurrentModule}
-              markTabsNotDirty={markTabsNotDirty}
-              discardModuleChanges={confirmDiscardChanges}
-              getModulePath={getModulePath}
+              rename={createDirectory}
+              onRenameCancel={resetState}
             />
-            <DirectoryEntryModal
-              isOpen={Boolean(modalConfirm)}
-              onClose={closeModals}
-              {...modalConfirm}
+          )}
+          <DirectoryChildren
+            depth={depth}
+            renameModule={renameModule}
+            parentShortid={shortid}
+            renameValidator={validateModuleTitle}
+            deleteEntry={confirmDeleteModule}
+            setCurrentModule={setCurrentModule}
+            markTabsNotDirty={markTabsNotDirty}
+            discardModuleChanges={confirmDiscardChanges}
+            getModulePath={getModulePath}
+          />
+          <DirectoryEntryModal
+            isOpen={Boolean(modalConfirm)}
+            onClose={closeModals}
+            {...modalConfirm}
+          />
+          {creating === 'module' && (
+            <Entry
+              id=""
+              title=""
+              state="editing"
+              depth={depth + 1}
+              renameValidator={validateModuleTitle}
+              rename={createModule}
+              onRenameCancel={resetState}
             />
-            {creating === 'module' && (
-              <Entry
-                id=""
-                title=""
-                state="editing"
-                depth={depth + 1}
-                renameValidator={validateModuleTitle}
-                rename={createModule}
-                onRenameCancel={resetState}
-              />
-            )}
-          </>
-        )}
-      </Opener>
+          )}
+        </Opener>
+      )}
     </div>
   );
 };
