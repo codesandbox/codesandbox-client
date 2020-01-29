@@ -3,6 +3,7 @@ import {
   EditorSelection,
   Module,
   Sandbox,
+  UserSelection,
 } from '@codesandbox/common/lib/types';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
@@ -32,6 +33,8 @@ export type OnFileChangeData = {
   event: any;
   model: any;
 };
+
+export type onSelectionChangeData = UserSelection;
 
 export type OnOperationAppliedData = {
   moduleShortid: string;
@@ -302,7 +305,7 @@ export class ModelsHandler {
           backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
           zIndex: 200,
           color:
-            color[0] + color[1] + color[2] > 500
+            (color[0] * 299 + color[1] * 587 + color[2] * 114) / 1000 > 128
               ? 'rgba(0, 0, 0, 0.8)'
               : 'white',
           padding: '0 4px',
@@ -413,7 +416,10 @@ export class ModelsHandler {
       if (this.nameTagTimeouts[decorationId]) {
         clearTimeout(this.nameTagTimeouts[decorationId]);
       }
-      if (showNameTag) {
+      // We don't want to show the nametag when the cursor changed, because
+      // another user changed the code on top of it. Otherwise it would get
+      // messy very fast.
+      if (showNameTag && selection.source !== 'modelChange') {
         const decoration = model.deltaDecorations(
           [],
           [

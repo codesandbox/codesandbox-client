@@ -466,6 +466,7 @@ export type Selection = {
 export type UserSelection = {
   primary: Selection;
   secondary: Selection[];
+  source: string;
 };
 
 export type EditorSelection = {
