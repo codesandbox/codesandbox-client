@@ -15,6 +15,6 @@ export const Overlay = styled.div<{ isOver: boolean }>`
 `;
 
 export const Opener = styled.div<{ open: boolean }>`
-  height: ${props => (props.open ? '100%' : '0px')};
+  height: 100%;
   overflow: hidden;
 `;
