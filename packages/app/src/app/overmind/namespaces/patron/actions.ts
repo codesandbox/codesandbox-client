@@ -14,14 +14,16 @@ export const priceChanged: Action<{ price: number }> = (
 export const createSubscriptionClicked: AsyncAction<{
   token: string;
   coupon: string;
-}> = async ({ state, effects, actions }, { token, coupon }) => {
-  effects.analytics.track('Create Patron Subscription');
+  duration: 'yearly' | 'monthly';
+}> = async ({ state, effects, actions }, { token, coupon, duration }) => {
+  effects.analytics.track('Create Patron Subscription', { duration });
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
   try {
     state.user = await effects.api.createPatronSubscription(
       token,
       state.patron.price,
+      duration,
       coupon
     );
     effects.notificationToast.success('Thank you very much for your support!');
@@ -62,10 +64,9 @@ export const createSubscriptionClicked: AsyncAction<{
   state.patron.isUpdatingSubscription = false;
 };
 
-export const updateSubscriptionClicked: AsyncAction<string> = async (
-  { state, effects },
-  coupon
-) => {
+export const updateSubscriptionClicked: AsyncAction<{
+  coupon: string;
+}> = async ({ state, effects }, { coupon }) => {
   effects.analytics.track('Update Patron Subscription');
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
@@ -74,9 +75,7 @@ export const updateSubscriptionClicked: AsyncAction<string> = async (
       state.patron.price,
       coupon
     );
-    effects.notificationToast.success(
-      'Subscription updated, thanks for helping out!'
-    );
+    effects.notificationToast.success('Subscription updated!');
   } catch (error) {
     state.patron.error = error.message;
   }
@@ -99,7 +98,7 @@ export const cancelSubscriptionClicked: AsyncAction = async ({
     try {
       state.user = await effects.api.cancelPatronSubscription();
       effects.notificationToast.success(
-        'Sorry to see you go, but thanks a bunch for the support this far!'
+        'Sorry to see you go, but thanks for using CodeSandbox!'
       );
     } catch (error) {
       /* ignore */
