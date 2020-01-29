@@ -146,13 +146,17 @@ const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => {
 
         <HelpText>
           You will be billed{' '}
-          <b>
-            {user.subscription.duration === 'yearly'
-              ? `and charged annually on ${format(subscriptionDate, 'MMM dd')}`
-              : `on the ${format(subscriptionDate, 'do')} of each month`}
-            .{' '}
-          </b>
-          You can{' '}
+          {user.subscription.duration === 'yearly' ? (
+            <>
+              and charged annually on{' '}
+              <b>{format(subscriptionDate, 'MMM dd')}</b>
+            </>
+          ) : (
+            <>
+              on the <b>{format(subscriptionDate, 'do')} of each month</b>
+            </>
+          )}
+          . You can{' '}
           <LinkButton
             onClick={e => {
               e.preventDefault();
@@ -266,7 +270,10 @@ const Expiring = ({
           Creating subscription...
         </Button>
       ) : (
-        <Button onClick={updateSubscriptionClicked} style={{ marginTop: 30 }}>
+        <Button
+          onClick={() => updateSubscriptionClicked({ coupon: '' })}
+          style={{ marginTop: 30 }}
+        >
           Reactivate subscription
         </Button>
       )}

@@ -63,7 +63,7 @@ export const ChangeSubscription: FunctionComponent = () => {
       </StripeInputContainer>
 
       <Buttons>
-        <Button onClick={() => updateSubscriptionClicked(coupon)}>
+        <Button onClick={() => updateSubscriptionClicked({ coupon: '' })}>
           Update
         </Button>
       </Buttons>
@@ -79,7 +79,7 @@ export const ChangeSubscription: FunctionComponent = () => {
   if (subscription.cancelAtPeriodEnd) {
     buttons = (
       <Buttons>
-        <Button onClick={() => updateSubscriptionClicked('')}>
+        <Button onClick={() => updateSubscriptionClicked({ coupon: '' })}>
           Reactivate Subscription
         </Button>
       </Buttons>

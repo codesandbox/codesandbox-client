@@ -64,10 +64,9 @@ export const createSubscriptionClicked: AsyncAction<{
   state.patron.isUpdatingSubscription = false;
 };
 
-export const updateSubscriptionClicked: AsyncAction<string> = async (
-  { state, effects },
-  coupon
-) => {
+export const updateSubscriptionClicked: AsyncAction<{
+  coupon: string;
+}> = async ({ state, effects }, { coupon }) => {
   effects.analytics.track('Update Patron Subscription');
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
