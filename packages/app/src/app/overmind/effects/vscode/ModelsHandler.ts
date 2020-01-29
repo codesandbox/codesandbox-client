@@ -431,8 +431,10 @@ export class ModelsHandler {
         );
         this.userSelectionDecorations[decorationId].push(decoration);
         this.nameTagTimeouts[decorationId] = window.setTimeout(() => {
-          // And now hide the nametag after 1.5s
-          model.deltaDecorations([decoration], []);
+          if (!model.isDisposed()) {
+            // And now hide the nametag after 1.5s
+            model.deltaDecorations([decoration], []);
+          }
         }, 1500);
       }
     });
