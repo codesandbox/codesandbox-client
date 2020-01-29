@@ -242,10 +242,12 @@ const Entry: React.FC<IEntryProps> = ({
           <Text
             size={3}
             variant="danger"
+            block
             role="alert"
             id={`error-${id}`}
             css={{
-              paddingLeft: depth
+              // align with file name
+              marginLeft: depth
                 ? `calc(${depth + 1}rem + 24px)`
                 : 'calc(1rem + 24px)',
             }}
