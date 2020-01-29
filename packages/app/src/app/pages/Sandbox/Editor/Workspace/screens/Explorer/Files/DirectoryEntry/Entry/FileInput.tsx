@@ -23,7 +23,7 @@ interface Props {
   id: string;
 }
 
-export const EntryTitleInput: FunctionComponent<Props> = ({
+export const FileInput: FunctionComponent<Props> = ({
   title,
   onCommit,
   onCancel,

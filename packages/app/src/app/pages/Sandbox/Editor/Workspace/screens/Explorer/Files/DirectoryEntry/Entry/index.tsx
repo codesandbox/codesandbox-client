@@ -19,7 +19,7 @@ import {
 
 import EditIcons from './EditIcons';
 import EntryIcons from './EntryIcons';
-import { EntryTitleInput } from './EntryTitleInput';
+import { FileInput } from './FileInput';
 
 interface IEntryProps {
   renameValidator?: (id: string, title: string) => string | false | null;
@@ -193,7 +193,7 @@ const Entry: React.FC<IEntryProps> = ({
           <Stack gap={2} align="center">
             <EntryIcons type={type} error={moduleHasError} />
             {state === 'editing' ? (
-              <EntryTitleInput
+              <FileInput
                 id={id}
                 title={title}
                 onChange={handleValidateTitle}
