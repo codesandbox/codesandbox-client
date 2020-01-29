@@ -305,7 +305,7 @@ export class ModelsHandler {
           backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
           zIndex: 200,
           color:
-            color[0] + color[1] + color[2] > 500
+            (color[0] * 299 + color[1] * 587 + color[2] * 114) / 1000 > 128
               ? 'rgba(0, 0, 0, 0.8)'
               : 'white',
           padding: '0 4px',
