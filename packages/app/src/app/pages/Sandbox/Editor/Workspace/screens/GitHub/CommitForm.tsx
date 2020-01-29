@@ -1,5 +1,11 @@
 import React, { ChangeEvent } from 'react';
-import { Text, Stack, Input, Textarea, Button } from '@codesandbox/components';
+import {
+  FormField,
+  Stack,
+  Input,
+  Textarea,
+  Button,
+} from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 
 export const CommitForm = () => {
@@ -34,17 +40,22 @@ export const CommitForm = () => {
 
   return (
     <>
-      <Text size={3} block marginBottom={2} marginX={2}>
-        Commit Message
-      </Text>
       <Stack as="form" direction="vertical" gap={1} marginX={2}>
-        <Input placeholder="Subject" onChange={changeSubject} value={subject} />
-        <Textarea
-          maxLength={280}
-          placeholder="Description"
-          onChange={changeDescription}
-          value={description}
-        />
+        <FormField direction="vertical" label="Commit message">
+          <Input
+            placeholder="Subject"
+            onChange={changeSubject}
+            value={subject}
+          />
+        </FormField>
+        <FormField direction="vertical" label="Commit description" hideLabel>
+          <Textarea
+            maxLength={280}
+            placeholder="Description"
+            onChange={changeDescription}
+            value={description}
+          />
+        </FormField>
         <Stack gap={2}>
           {hasWriteAccess(gitChanges.rights) && (
             <Button
