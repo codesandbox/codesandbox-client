@@ -16,7 +16,7 @@ export const ListItem = styled(Stack).attrs({
   align: 'center',
 })(
   css({
-    height: 8,
+    minHeight: 8,
     paddingX: 2,
   })
 );
@@ -24,7 +24,7 @@ export const ListItem = styled(Stack).attrs({
 export const ListAction = styled(ListItem)<{ disabled?: boolean }>(
   ({ disabled }) =>
     css({
-      ':hover': {
+      ':hover, [aria-selected]': {
         cursor: !disabled ? 'pointer' : 'disabled',
         backgroundColor: !disabled ? 'sideBar.hoverBackground' : 'inherit',
       },
