@@ -42,7 +42,7 @@ export const ExternalResources: FunctionComponent = () => {
   if (!externalResourcesEnabled) return null;
 
   return (
-    <Collapsible title="External resources" defaultOpen>
+    <Collapsible title="External resources">
       <Stack direction="vertical" gap={6}>
         <List>
           {otherResources.map(resource => (
