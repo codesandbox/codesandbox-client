@@ -12,7 +12,6 @@ const Header = styled(Stack)(
     border: '1px solid',
     borderColor: 'sideBar.border',
     borderBottom: 0,
-    cursor: 'pointer',
     borderTopLeftRadius: 'small',
     borderTopRightRadius: 'small',
     fontSize: 3,
@@ -21,15 +20,9 @@ const Header = styled(Stack)(
 
 const Content = styled(Element)(
   css({
-    display: 'grid',
-    gridTemplateColumns: '1fr 50px',
-    gridGap: 2,
-    alignItems: 'center',
-    paddingX: 2,
     paddingY: 4,
     border: '1px solid',
     borderColor: 'sideBar.border',
-    cursor: 'pointer',
     borderBottomLeftRadius: 'small',
     borderBottomRightRadius: 'small',
     fontSize: 2,

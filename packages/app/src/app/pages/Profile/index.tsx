@@ -1,45 +1,39 @@
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import {
   profileLikesUrl,
   profileSandboxesUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
+import React, { FunctionComponent, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { Route, RouteComponentProps, Switch } from 'react-router-dom';
+
 import { useOvermind } from 'app/overmind';
 import { NotFound } from 'app/pages/common/NotFound';
-import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
-import { Route, Switch } from 'react-router-dom';
 
-import { Container, Content } from './elements';
+import { Container, Content, Margin } from './elements';
 import Header from './Header';
 import Navigation from './Navigation';
 import { Sandboxes } from './Sandboxes';
 import { Showcase } from './Showcase';
 
-interface IProfileProps {
-  match: {
-    params: { username: string };
-    url: string;
-  };
-}
-
-const Profile: React.FC<IProfileProps> = ({
+type Props = RouteComponentProps<{ username: string }>;
+export const Profile: FunctionComponent<Props> = ({
   match: {
     params: { username },
     url,
   },
 }) => {
   const {
-    state: {
-      profile: { current: user, notFound },
-    },
     actions: {
       profile: { profileMounted },
+    },
+    state: {
+      profile: { current: user, notFound },
     },
   } = useOvermind();
 
   useEffect(() => {
-    profileMounted({ username });
+    profileMounted(username);
   }, [profileMounted, username]);
 
   if (notFound) {
@@ -47,7 +41,7 @@ const Profile: React.FC<IProfileProps> = ({
   }
 
   if (!user) {
-    return <div />;
+    return null;
   }
 
   return (
@@ -55,37 +49,42 @@ const Profile: React.FC<IProfileProps> = ({
       <Helmet>
         <title>{user.name || user.username} - CodeSandbox</title>
       </Helmet>
+
       <Header user={user} />
+
       <Content>
         <MaxWidth>
           <Navigation
-            username={user.username}
-            sandboxCount={user.sandboxCount}
             likeCount={user.givenLikeCount}
+            sandboxCount={user.sandboxCount}
+            username={user.username}
           />
         </MaxWidth>
       </Content>
+
       <MaxWidth width={1024}>
-        <Margin horizontal={2} style={{ minHeight: '60vh' }}>
+        <Margin horizontal={2}>
           <Switch>
-            <Route path={url} exact render={() => <Showcase />} />
+            <Route component={Showcase} exact path={url} />
+
             <Route
               path={`${profileSandboxesUrl(user.username)}/:page?`}
-              render={({ match }) => (
+              render={({ match }: RouteComponentProps<{ page?: string }>) => (
                 <Sandboxes
-                  source="currentSandboxes"
-                  page={match.params.page && +match.params.page}
                   baseUrl={profileSandboxesUrl(user.username)}
+                  page={Number(match.params.page) || 1}
+                  source="currentSandboxes"
                 />
               )}
             />
+
             <Route
               path={`${profileLikesUrl(user.username)}/:page?`}
-              render={({ match }) => (
+              render={({ match }: RouteComponentProps<{ page?: string }>) => (
                 <Sandboxes
-                  source="currentLikedSandboxes"
-                  page={match.params.page && +match.params.page}
                   baseUrl={profileLikesUrl(user.username)}
+                  page={Number(match.params.page) || 1}
+                  source="currentLikedSandboxes"
                 />
               )}
             />
@@ -95,5 +94,3 @@ const Profile: React.FC<IProfileProps> = ({
     </Container>
   );
 };
-
-export default Profile;

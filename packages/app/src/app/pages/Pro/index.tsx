@@ -1,15 +1,16 @@
 import { format } from 'date-fns';
 import { Helmet } from 'react-helmet';
 import React, { useEffect } from 'react';
-import { ThemeProvider } from 'styled-components';
 
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
+import { ThemeProvider, Switch } from '@codesandbox/components';
+
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
-import theme from '@codesandbox/common/lib/design-language/theme';
 import { SubscribeForm } from './subscribe-form';
 import {
   Page,
@@ -25,6 +26,8 @@ import {
   SignInModal,
   SignInButton,
   SubHeading,
+  DurationChoice,
+  BillText,
 } from './elements';
 
 const ProPage: React.FC = () => {
@@ -100,7 +103,7 @@ const ProPage: React.FC = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={codeSandboxBlackTheme}>
       <Page>
         <Helmet>
           <title>Pro - CodeSandbox</title>
@@ -128,46 +131,58 @@ const LoggedOut = () => (
   </>
 );
 
-const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => (
-  <MaxWidth width={400}>
-    <Centered horizontal>
-      <Avatar src={user.avatarUrl} />
-      <Badge type="pro">Pro</Badge>
-      <Heading>You&apos;re a Pro!</Heading>
+const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => {
+  const subscriptionDate = new Date(user.subscription.since);
+  return (
+    <MaxWidth width={400}>
+      <Centered horizontal>
+        <Avatar src={user.avatarUrl} />
+        <Badge type="pro">Pro</Badge>
+        <Heading>You&apos;re a Pro!</Heading>
 
-      <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
-        Create a sandbox
-      </ButtonAsLink>
+        <ButtonAsLink href="/s/" style={{ marginTop: 30 }}>
+          Create a sandbox
+        </ButtonAsLink>
 
-      <HelpText>
-        You will be billed on the{' '}
-        <b>{format(new Date(user.subscription.since), 'do')}</b> of each month.
-        You can{' '}
-        <LinkButton
-          onClick={e => {
-            e.preventDefault();
-            modalOpened({
-              modal: 'preferences',
-              itemId: 'paymentInfo',
-            });
-          }}
-        >
-          update your payment details
-        </LinkButton>{' '}
-        or{' '}
-        <LinkButton
-          onClick={e => {
-            e.preventDefault();
-            cancelSubscriptionClicked();
-          }}
-        >
-          cancel your subscription
-        </LinkButton>{' '}
-        at any time.
-      </HelpText>
-    </Centered>
-  </MaxWidth>
-);
+        <HelpText>
+          You will be billed{' '}
+          {user.subscription.duration === 'yearly' ? (
+            <>
+              and charged{' '}
+              <b>annually on {format(subscriptionDate, 'MMM dd')}</b>
+            </>
+          ) : (
+            <>
+              on the <b>{format(subscriptionDate, 'do')} of each month</b>
+            </>
+          )}
+          . You can{' '}
+          <LinkButton
+            onClick={e => {
+              e.preventDefault();
+              modalOpened({
+                modal: 'preferences',
+                itemId: 'paymentInfo',
+              });
+            }}
+          >
+            update your payment details
+          </LinkButton>{' '}
+          or{' '}
+          <LinkButton
+            onClick={e => {
+              e.preventDefault();
+              cancelSubscriptionClicked();
+            }}
+          >
+            cancel your subscription
+          </LinkButton>{' '}
+          at any time.
+        </HelpText>
+      </Centered>
+    </MaxWidth>
+  );
+};
 
 const Patron = ({ user }) => (
   <MaxWidth width={400}>
@@ -196,24 +211,40 @@ const NotPro = ({
   user,
   patron,
   checkoutDisabled,
-}) => (
-  <>
-    <Heading>CodeSandbox Pro</Heading>
-    <SubHeading>$12/month</SubHeading>
-    <Centered horizontal>
-      <SubscribeForm
-        subscribe={({ token, coupon }) =>
-          createSubscriptionClicked({ token, coupon })
-        }
-        isLoading={patron.isUpdatingSubscription}
-        hasCoupon
-        name={user && user.name}
-        error={patron.error}
-        disabled={checkoutDisabled}
-      />
-    </Centered>
-  </>
-);
+}) => {
+  const [duration, setDuration] = React.useState('yearly');
+
+  return (
+    <>
+      <Heading>CodeSandbox Pro</Heading>
+      <SubHeading>
+        {duration === 'yearly' ? '$9/month billed annually' : '12$/month'}
+      </SubHeading>
+      <DurationChoice>
+        <BillText on={duration === 'monthly'}>Bill monthly</BillText>
+        <Switch
+          onChange={() =>
+            setDuration(d => (d === 'yearly' ? 'monthly' : 'yearly'))
+          }
+          on={duration === 'yearly'}
+        />
+        <BillText on={duration === 'yearly'}>Bill annually</BillText>
+      </DurationChoice>
+      <Centered horizontal>
+        <SubscribeForm
+          subscribe={({ token, coupon }) =>
+            createSubscriptionClicked({ token, coupon, duration })
+          }
+          isLoading={patron.isUpdatingSubscription}
+          hasCoupon
+          name={user && user.name}
+          error={patron.error}
+          disabled={checkoutDisabled}
+        />
+      </Centered>
+    </>
+  );
+};
 
 const Expiring = ({
   user,
@@ -239,7 +270,10 @@ const Expiring = ({
           Creating subscription...
         </Button>
       ) : (
-        <Button onClick={updateSubscriptionClicked} style={{ marginTop: 30 }}>
+        <Button
+          onClick={() => updateSubscriptionClicked({ coupon: '' })}
+          style={{ marginTop: 30 }}
+        >
           Reactivate subscription
         </Button>
       )}

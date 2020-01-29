@@ -1,39 +1,36 @@
-import React, { useEffect, MouseEvent } from 'react';
+import React, { useEffect } from 'react';
 import {
   Element,
   Collapsible,
   Text,
+  Link,
+  Label,
   Avatar,
   Stack,
   List,
   ListItem,
-  Button,
   Switch,
   Stats,
 } from '@codesandbox/components';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { useOvermind } from 'app/overmind';
-import styled, { withTheme } from 'styled-components';
 
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import {
+  sandboxUrl,
+  profileUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { useOvermind } from 'app/overmind';
+
+import { css } from '@styled-system/css';
 import { Title } from './Title';
 import { Description } from './Description';
 import { Privacy } from './Privacy';
+import { Config } from './Config';
 
-const DeleteButton = styled(Button)`
-  &:hover,
-  &:focus {
-    color: ${props => props.theme.colors.dangerButton.background};
-  }
-`;
-
-const Link = props => <Text variant="muted" {...props} />;
-
-export const ProjectInfoComponent = ({ theme }) => {
+export const ProjectInfo = () => {
   const {
     actions: {
-      modalOpened,
       editor: { frozenUpdated, sessionFreezeOverride },
-      workspace: { deleteTemplate },
     },
     state: {
       editor: { currentSandbox, sessionFrozen },
@@ -63,79 +60,63 @@ export const ProjectInfoComponent = ({ theme }) => {
     return frozenUpdated({ frozen: !isFrozen });
   };
 
-  const onDelete = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-
-    if (customTemplate) {
-      deleteTemplate();
-    } else {
-      modalOpened({ modal: 'deleteSandbox' });
-    }
-  };
+  const isForked = forkedFromSandbox || forkedTemplateSandbox;
+  const { url: templateUrl } = getTemplateDefinition(template);
 
   return (
     <>
       <Collapsible title="Sandbox Info" defaultOpen>
         <Stack direction="vertical" gap={6}>
-          <Element style={{ padding: `0 ${theme.space[3]}px` }}>
+          <Element as="section" css={css({ paddingX: 2 })}>
             <Title editable />
             <Description editable />
           </Element>
-          {author ? (
-            <Stack
-              gap={2}
-              align="center"
-              marginBottom={4}
-              style={{ padding: `0 ${theme.space[3]}px` }}
-            >
-              <Avatar user={author} /> <Text>{author.username}</Text>
-            </Stack>
-          ) : null}
-          <Stats sandbox={currentSandbox} />
+
+          <Element as="section" css={css({ paddingX: 2 })}>
+            {author ? (
+              <Link href={profileUrl(author.username)}>
+                <Stack gap={2} align="center" marginBottom={4}>
+                  <Avatar user={author} /> <Text>{author.username}</Text>
+                </Stack>
+              </Link>
+            ) : null}
+            <Stats sandbox={currentSandbox} />
+          </Element>
+
           <List>
             <ListItem justify="space-between">
-              <Text as="label" htmlFor="frozen">
-                Frozen
-              </Text>
+              <Label htmlFor="frozen">Frozen</Label>
               <Switch
                 id="frozen"
                 onChange={updateFrozenState}
                 on={customTemplate ? sessionFrozen : isFrozen}
               />
             </ListItem>
-            <ListItem justify="space-between">
-              <Text> {forkedTemplateSandbox ? 'Template' : 'Forked From'}</Text>
-              <Link>
-                {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
-              </Link>
-            </ListItem>
+            {isForked ? (
+              <ListItem justify="space-between">
+                <Text>
+                  {forkedTemplateSandbox ? 'Template' : 'Forked From'}
+                </Text>
+                <Link
+                  variant="muted"
+                  href={sandboxUrl(forkedFromSandbox || forkedTemplateSandbox)}
+                  target="_blank"
+                >
+                  {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
+                </Link>
+              </ListItem>
+            ) : null}
             <ListItem justify="space-between">
               <Text>Environment</Text>
-              <Link>{template}</Link>
+              <Link variant="muted" href={templateUrl} target="_blank">
+                {template}
+              </Link>
             </ListItem>
           </List>
         </Stack>
       </Collapsible>
       <Privacy />
-
-      <Element marginX={2} marginY={4}>
-        <Button variant="secondary">Save as template</Button>
-      </Element>
-
-      <Stack
-        justify="center"
-        style={{ position: 'absolute', width: '100%', bottom: theme.space[3] }}
-      >
-        <DeleteButton
-          // @ts-ignore
-          onClick={onDelete}
-          variant="link"
-        >
-          {`Delete ${customTemplate ? `Template` : `Sandbox`}`}
-        </DeleteButton>
-      </Stack>
+      <Config />
     </>
   );
 };
-
-export const ProjectInfo = withTheme(ProjectInfoComponent);

@@ -17,6 +17,6 @@ export const SidebarRow = styled(Stack).attrs({
   align: 'center',
 })(
   css({
-    height: 8,
+    minHeight: 8,
   })
 );

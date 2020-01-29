@@ -95,6 +95,8 @@ export const paymentDetailsUpdated: AsyncAction<string> = async (
     token
   );
   state.preferences.isLoadingPaymentDetails = false;
+
+  effects.notificationToast.success('Successfully updated payment details');
 };
 
 export const keybindingChanged: Action<{

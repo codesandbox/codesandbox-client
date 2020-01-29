@@ -1,6 +1,7 @@
 import resolve from 'browser-resolve';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import getRequireStatements from './simple-get-require-statements';
+import { packageFilter } from '../../../utils/resolve-utils';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -95,6 +96,32 @@ export const resolveAsyncModule = (
   return downloadCache.get(modulePath);
 };
 
+function downloadRequires(currentPath: string, code: string) {
+  const requires = getRequireStatements(code);
+
+  // Download all other needed files
+  return Promise.all(
+    requires.map(async foundR => {
+      if (foundR.type === 'direct') {
+        if (foundR.path === 'babel-plugin-macros') {
+          return;
+        }
+
+        try {
+          resolve.sync(foundR.path, {
+            filename: currentPath,
+            extensions: ['.js', '.json'],
+            moduleDirectory: ['node_modules'],
+            packageFilter,
+          });
+        } catch (e) {
+          await downloadFromError(e);
+        }
+      }
+    })
+  );
+}
+
 export async function downloadPath(
   absolutePath: string
 ): Promise<{ code: string; path: string }> {
@@ -136,8 +163,11 @@ export async function downloadPath(
       /* ignore */
     }
 
+    const code = existingFile.toString();
+    await downloadRequires(r.path, code);
+
     return {
-      code: existingFile,
+      code,
       path: r.path,
     };
   }
@@ -145,28 +175,7 @@ export async function downloadPath(
   mkDirByPathSync(path.dirname(r.path));
   fs.writeFileSync(r.path, r.code);
 
-  const requires = getRequireStatements(r.code);
-
-  // Download all other needed files
-  await Promise.all(
-    requires.map(async foundR => {
-      if (foundR.type === 'direct') {
-        if (foundR.path === 'babel-plugin-macros') {
-          return;
-        }
-
-        try {
-          resolve.sync(foundR.path, {
-            filename: r.path,
-            extensions: ['.js', '.json'],
-            moduleDirectory: ['node_modules'],
-          });
-        } catch (e) {
-          await downloadFromError(e);
-        }
-      }
-    })
-  );
+  await downloadRequires(r.path, r.code);
 
   return r;
 }

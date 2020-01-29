@@ -46,12 +46,18 @@ export default {
 
     return response.token;
   },
-  createPatronSubscription(token: string, amount: number, coupon: string) {
+  createPatronSubscription(
+    token: string,
+    amount: number,
+    duration: 'monthly' | 'yearly',
+    coupon: string
+  ) {
     return api.post<CurrentUser>('/users/current_user/subscription', {
       subscription: {
         amount,
         coupon,
         token,
+        duration,
       },
     });
   },

@@ -7,7 +7,19 @@ const placeholderStyles = {
   fontSize: 3,
 };
 
-export const Input = styled(Element).attrs({ as: 'input' })(
+export const Input = styled(Element).attrs({ as: 'input' })<{
+  type?: string;
+  onBlur?: any;
+  onChange?: any;
+  onKeyUp?: any;
+  placeholder?: string;
+  ref?: any;
+  required?: boolean;
+  value?: string | number;
+  defaultValue?: string | number;
+  autoComplete?: 'on' | 'off';
+  spellCheck?: 'true' | 'false';
+}>(
   css({
     height: 6,
     width: '100%',
@@ -21,5 +33,16 @@ export const Input = styled(Element).attrs({ as: 'input' })(
     '::-webkit-input-placeholder': placeholderStyles,
     '::-ms-input-placeholder': placeholderStyles,
     '::placeholder': placeholderStyles,
+
+    ':hover, :focus': {
+      borderColor: 'inputOption.activeBorder',
+      // need to use !important to override styles from
+      // workbench-theme.css, not proud :/
+      outline: 'none !important',
+    },
+    ':disabled': {
+      opacity: 0.4,
+      borderColor: 'input.border', // (default border)
+    },
   })
 );
