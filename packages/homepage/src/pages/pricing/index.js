@@ -63,7 +63,7 @@ export default () => (
       >
         <div>
           <CardTitle>Pro</CardTitle>
-          <Price>$9/month</Price>
+          <Price>$9/Month</Price>
           <PriceSubText>billed anually or $12 month-to-month</PriceSubText>
           <List
             css={`

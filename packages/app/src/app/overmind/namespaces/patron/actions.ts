@@ -75,9 +75,7 @@ export const updateSubscriptionClicked: AsyncAction<{
       state.patron.price,
       coupon
     );
-    effects.notificationToast.success(
-      'Subscription updated, thanks for helping out!'
-    );
+    effects.notificationToast.success('Subscription updated!');
   } catch (error) {
     state.patron.error = error.message;
   }
@@ -100,7 +98,7 @@ export const cancelSubscriptionClicked: AsyncAction = async ({
     try {
       state.user = await effects.api.cancelPatronSubscription();
       effects.notificationToast.success(
-        'Sorry to see you go, but thanks a bunch for the support this far!'
+        'Sorry to see you go, but thanks for using CodeSandbox!'
       );
     } catch (error) {
       /* ignore */
