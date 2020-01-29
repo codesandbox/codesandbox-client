@@ -100,9 +100,7 @@ export const uploadFiles: AsyncAction<
           dataURI.length < MAX_FILE_SIZE
         ) {
           const text =
-            dataURI && dataURI !== 'data:'
-              ? atob(dataURI.replace(/^.*base64,/, ''))
-              : '';
+            dataURI !== 'data:' ? atob(dataURI.replace(/^.*base64,/, '')) : '';
           parsedFiles[filePath] = {
             content: text,
             isBinary: false,
