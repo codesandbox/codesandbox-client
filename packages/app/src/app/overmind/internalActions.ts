@@ -481,6 +481,10 @@ export const handleError: Action<{
     });
   }
 
+  if (message.startsWith('The uploaded file is bigger')) {
+    error.message = '';
+  }
+
   effects.notificationToast.add({
     title: message,
     message: error.message,
