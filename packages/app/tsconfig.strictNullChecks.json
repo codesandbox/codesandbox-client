@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.check.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "strictNullChecks": true
+  },
+  "include": ["./src/app/overmind/**/*.ts"]
+}
