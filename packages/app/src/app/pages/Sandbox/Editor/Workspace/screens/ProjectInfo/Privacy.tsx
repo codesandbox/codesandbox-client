@@ -41,7 +41,7 @@ export const Privacy = () => {
           <option value={1}>Unlisted (only available by url)</option>
           <option value={2}>Private</option>
         </Select>
-        {isPaidUser ? (
+        {!isPaidUser ? (
           <Text variant="muted" size={2}>
             You an change privacy of a sandbox as a Pro.{' '}
             <Link href="/pro" css={{ textDecoration: 'underline !important' }}>

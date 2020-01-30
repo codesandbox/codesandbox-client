@@ -29,9 +29,12 @@ const DescriptionTrimmed = styled(Text)`
 const Icon = styled(PenIcon)`
   cursor: pointer;
   opacity: 0;
+  transition: all;
+  transition-duration: ${({ theme }) => theme.speeds[4]};
 `;
 
 const SandboxDescription = styled(SidebarRow)`
+  min-height: 0;
   :hover {
     svg {
       opacity: 1;

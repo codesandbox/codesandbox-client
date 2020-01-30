@@ -6,17 +6,19 @@ import { Element } from '../Element';
 const SwitchBackground = styled.div(
   css({
     width: 7,
-    height: 4,
+    height: '14px',
     backgroundColor: 'switch.background',
     borderRadius: 'large',
     position: 'relative',
+    transition: 'background-color ease',
+    transitionDuration: theme => theme.speeds[3],
   })
 );
 
 const SwitchToggle = styled.span(
   css({
     width: 4,
-    height: 4,
+    height: '14px',
     backgroundColor: 'switch.foregroundOff',
     borderRadius: '50%',
     position: 'absolute',

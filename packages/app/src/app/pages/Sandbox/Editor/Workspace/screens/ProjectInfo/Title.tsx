@@ -11,13 +11,16 @@ import { PenIcon } from './icons';
 
 const Icon = styled(PenIcon)`
   cursor: pointer;
-  display: none;
+  opacity: 0;
+  transition: all;
+  transition-duration: ${({ theme }) => theme.speeds[4]};
 `;
 
 const SandboxNameWrapper = styled(SidebarRow)`
+  min-height: 0;
   :hover {
     svg {
-      display: block;
+      opacity: 1;
     }
   }
 `;

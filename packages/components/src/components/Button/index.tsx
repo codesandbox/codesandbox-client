@@ -102,13 +102,14 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
         justifyContent: 'center',
         alignItems: 'center',
         cursor: 'pointer',
+        padding: 0,
         height: 6,
         width: '100%',
         fontSize: 2,
         border: 'none',
         borderRadius: 'small',
         transition: 'all ease-in',
-        transitionDuration: theme => theme.speeds[1],
+        transitionDuration: theme => theme.speeds[2],
 
         ':focus': {
           outline: 'none',
