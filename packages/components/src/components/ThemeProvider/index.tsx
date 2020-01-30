@@ -30,10 +30,12 @@ export const makeTheme = (vsCodeTheme = { colors: {} }, name?: string) => {
   // Our interface does not map 1-1 with vscode.
   // To add styles that remain themeable, we add
   // some polyfills to the theme tokens.
-  const polyfilledVSCodeColors = polyfillTheme(vsCodeColors);
+  const polyfilledVSCodeColors = polyfillTheme(vsCodeColors, vsCodeTheme.type);
 
   // merge the design language and vscode theme
-  const theme = deepmerge(designLanguage, { colors: polyfilledVSCodeColors });
+  const theme = deepmerge(designLanguage, {
+    colors: polyfilledVSCodeColors,
+  });
 
   if (name) {
     return {

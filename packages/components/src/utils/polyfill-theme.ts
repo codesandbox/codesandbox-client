@@ -1,111 +1,91 @@
-/**
- * Our interface does not map 1-1 with vscode
- * To add styles that remain themeable, we add
- * some _polyfills_ to the theme tokens.
- * These are mapped to existing variables from the vscode theme
- * that always exists - editor, sidebar.
- *
- * These are our best guesses.
- */
-
-// TODO: For themes that we officially support, we have the option
-// to modify the theme and add our custom keys
-// which we can use when the polyfill is a bad alternate.
-// In that case, we should check if it exists before overriding it
-
+import dot from 'dot-object';
 import deepmerge from 'deepmerge';
 import designLanguage from '@codesandbox/common/lib/design-language';
+import codesandboxBlack from '../themes/codesandbox-black';
+import codesandboxLight from '../themes/codesandbox-light.json';
 
-const polyfillTheme = vsCodeTheme =>
-  deepmerge(vsCodeTheme, {
+const polyfillTheme = (vsCodeColors, type = 'dark') => {
+  /**
+   *
+   * In order of importance, this is the value we use:
+   * 1. Value from theme
+   * 2. or inferred value from theme
+   * 3. or value from codesandbox black/light
+   *
+   * if all 3 things fail (can happen to themes with unconventional colors like purple),
+   * we modify the theme and hardcode values that work well.
+   *
+   */
+
+  let uiColors = {};
+
+  // Step 1: Initialise colors
+  const codesandboxColors =
+    type === 'dark' ? codesandboxBlack.colors : codesandboxLight.colors;
+
+  // initialise ui colors as codesandbox theme for base
+  uiColors = dot.object(codesandboxColors);
+  // override with vscode colors that exist in theme
+  uiColors = deepmerge(uiColors, vsCodeColors);
+
+  // Step 2: Infer missing colors
+  // This includes colors that are not very common
+  // or are introduced by us
+
+  const inferredColors = {
+    // global text colors
+
+    // foreground: 'red',
+    mutedForeground: uiColors.input.placeholderForeground,
+    // errorForeground: 'red',
+
     sideBar: {
-      hoverBackground: (vsCodeTheme.sideBar || {}).border || 'red',
-    },
-    // this works for codesandbox-black but I doubt other themes define this
-    mutedForeground: vsCodeTheme.input.placeholderForeground,
-    // putting this here so that we remember to polyfill it
-    input: {
-      placeholderForeground: vsCodeTheme.input.placeholderForeground,
-    },
-    inputOption: {
-      activeBorder:
-        (vsCodeTheme.inputOption || {}).activeBorder ||
-        vsCodeTheme.input.placeholderForeground,
+      // foreground: 'red',
+      // background: 'red',
+      // border: 'red',
+      hoverBackground: uiColors.sideBar.border,
     },
     avatar: {
-      border: (vsCodeTheme.sideBar || {}).border || 'red',
+      border: uiColors.sideBar.border,
+    },
+    input: {
+      // background: 'red',
+      // foreground: 'red',
+      // border: 'red',
+      // placeholderForeground: 'red',
+    },
+    inputOption: {
+      activeBorder: uiColors.input.placeholderForeground,
     },
     button: {
-      // this key is can defined by vscode, but not always present
-      // we add a 30% overlay on top of the background color using gradient
-      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${vsCodeTheme.button.background}`,
+      // background: 'red',
+      // foreground: 'red',
+      // 30% overlay on top of the background color using gradient
+      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${uiColors.button.background}`,
     },
     secondaryButton: {
-      background: vsCodeTheme.input.background,
-      foreground: vsCodeTheme.input.foreground,
-      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${vsCodeTheme.input.background}`,
+      background: uiColors.sideBar.border,
+      foreground: uiColors.sideBar.foreground,
+      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${uiColors.sideBar.border}`,
     },
     dangerButton: {
-      // @ts-ignore: The colors totally exist, our typings are incorrect
       background: designLanguage.colors.reds[300],
-      foreground: '#fff',
-      // @ts-ignore: The colors totally exist, our typings are incorrect
+      foreground: 'white',
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`,
     },
     switch: {
-      // @ts-ignore
-      background: designLanguage.colors.grays[900],
-      // @ts-ignore
+      background: uiColors.sideBar.border,
       foregroundOff: designLanguage.colors.white,
-      // @ts-ignore
       foregroundOn: designLanguage.colors.green,
     },
-  });
+  };
+
+  // merge inferred colors into ui colors
+  // override with values from theme if they already exist
+  uiColors = deepmerge(uiColors, inferredColors);
+  uiColors = deepmerge(uiColors, vsCodeColors);
+
+  return uiColors;
+};
 
 export default polyfillTheme;
-
-/**
- 
-Fallback needed for:
- 
-Sidebar (Collapsible, List, Integration)
-  sidebar.foreground
-  sideBar.border
-  sideBar.hoverBackground
-  sideBar.background
-
-Text colors (Link, Stats)
-  foreground
-  mutedForeground
-  errorForeground
-  sidebar.foreground
-
-Avatar
-  avatar.border
-
-Button
-  button.background
-  button.foreground
-  button.hoverBackground
-  secondaryButton.foreground
-  secondaryButton.background
-  secondaryButton.hoverBackground
-  mutedForeground
-  foreground
-  dangerButton.background
-  dangerButton.foreground
-  dangerButton.hoverBackground
- 
-Input (Select, Textarea, SearchInput)
-  input.background,
-  input.foreground
-  input.border
-  input.placeholderForeground
-  inputOption.activeBorder
-
-Switch
-  switch.background
-  switch.foregroundOff
-  switch.foregroundOn
- 
- */
