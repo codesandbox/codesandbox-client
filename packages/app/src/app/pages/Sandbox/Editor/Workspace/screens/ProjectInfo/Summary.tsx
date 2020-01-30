@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { useOvermind } from 'app/overmind';
+
 import {
   Element,
   Collapsible,
@@ -19,7 +21,8 @@ import {
   profileUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { useOvermind } from 'app/overmind';
+import { Icons } from '@codesandbox/template-icons';
+import getIcon from '@codesandbox/common/lib/templates/icons';
 
 import { css } from '@styled-system/css';
 import { Title } from './Title';
@@ -67,7 +70,19 @@ export const Summary = () => {
       <Collapsible title="Sandbox Info" defaultOpen>
         <Stack direction="vertical" gap={6}>
           <Element as="section" css={css({ paddingX: 2 })}>
-            <Title editable={owned} />
+            {customTemplate ? (
+              <Stack gap={2} align="center" marginBottom={2}>
+                <TemplateIcon
+                  iconUrl={customTemplate.iconUrl}
+                  environment={template}
+                />
+                <Title editable={owned} />
+              </Stack>
+            ) : (
+              <>
+                <Title editable={owned} />
+              </>
+            )}
             <Description editable={owned} />
           </Element>
 
@@ -118,4 +133,9 @@ export const Summary = () => {
       </Collapsible>
     </>
   );
+};
+
+const TemplateIcon = ({ iconUrl, environment }) => {
+  const Icon = Icons[iconUrl] || getIcon(environment);
+  return <Icon />;
 };
