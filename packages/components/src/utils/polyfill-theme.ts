@@ -1,6 +1,6 @@
 import dot from 'dot-object';
 import deepmerge from 'deepmerge';
-import designLanguage from '@codesandbox/common/lib/design-language';
+import designLanguage from '@codesandbox/common/lib/design-language/theme';
 import codesandboxBlack from '../themes/codesandbox-black';
 import codesandboxLight from '../themes/codesandbox-light.json';
 
@@ -17,7 +17,7 @@ const polyfillTheme = (vsCodeColors, type = 'dark') => {
    *
    */
 
-  let uiColors = {};
+  let uiColors: any = {};
 
   // Step 1: Initialise colors
   const codesandboxColors =

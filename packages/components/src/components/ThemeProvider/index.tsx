@@ -21,7 +21,10 @@ export const getThemes = () => {
 
   return results.filter(a => a);
 };
-export const makeTheme = (vsCodeTheme = { colors: {} }, name?: string) => {
+export const makeTheme = (
+  vsCodeTheme = { colors: {}, type: 'dark' },
+  name?: string
+) => {
   // black is the default, it would be helpful to use storybook-addon-themes
   // to test our components across multiple themes
   // convert vscode colors to dot notation so that we can use them in tokens
