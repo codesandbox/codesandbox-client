@@ -17,7 +17,7 @@ const SwitchBackground = styled.div(
 
 const SwitchToggle = styled.span(
   css({
-    width: 4,
+    width: '14px',
     height: '14px',
     backgroundColor: 'switch.foregroundOff',
     borderRadius: '50%',
