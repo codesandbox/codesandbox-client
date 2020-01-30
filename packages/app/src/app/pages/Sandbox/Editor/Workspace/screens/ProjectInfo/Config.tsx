@@ -4,8 +4,6 @@ import { useOvermind } from 'app/overmind';
 import { css } from '@styled-system/css';
 import { Button, Element, Stack } from '@codesandbox/components';
 
-import { TemplateConfig } from './TemplateConfig';
-
 export const Config = () => {
   const {
     actions: {
@@ -51,7 +49,6 @@ export const Config = () => {
 
   return (
     <>
-      {customTemplate && <TemplateConfig />}
       {!customTemplate && (
         <Element marginX={2} marginY={4}>
           <Button

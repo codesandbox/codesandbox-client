@@ -9,9 +9,26 @@ function getSentry(): Promise<typeof import('@sentry/browser')> {
   return import(/* webpackChunkName: 'sentry' */ '@sentry/browser');
 }
 
+let latestVersionPromise: Promise<string>;
+function getLatestVersion() {
+  if (!latestVersionPromise) {
+    latestVersionPromise = fetch('/version.txt')
+      .then(x => x.text())
+      .catch(x => '');
+  }
+
+  return latestVersionPromise;
+}
+
 export async function initialize(dsn: string) {
   if (!DO_NOT_TRACK_ENABLED) {
     _Sentry = await getSentry();
+    const latestVersion = await getLatestVersion();
+
+    if (VERSION !== latestVersion) {
+      // If we're not running the latest version we don't want to see the errors appear
+      return Promise.resolve();
+    }
 
     return _Sentry.init({
       dsn,

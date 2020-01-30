@@ -21,7 +21,7 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
   spellCheck?: 'true' | 'false';
 }>(
   css({
-    height: 6,
+    height: '26px',
     width: '100%',
     paddingX: 2,
     fontSize: 3,
@@ -33,6 +33,8 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
     '::-webkit-input-placeholder': placeholderStyles,
     '::-ms-input-placeholder': placeholderStyles,
     '::placeholder': placeholderStyles,
+    transition: 'all ease',
+    transitionDuration: theme => theme.speeds[2],
 
     ':hover, :focus': {
       borderColor: 'inputOption.activeBorder',

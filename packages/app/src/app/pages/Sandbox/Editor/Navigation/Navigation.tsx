@@ -12,7 +12,7 @@ import { TippyProps } from '@tippy.js/react';
 import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
-import FilesIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/file.svg';
+import FilesIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/file-activity-bar.svg';
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
 import GitHubIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/github.svg';

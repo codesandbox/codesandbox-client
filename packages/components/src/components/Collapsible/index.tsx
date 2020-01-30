@@ -23,7 +23,7 @@ export const Header = styled(SidebarRow).attrs({ gap: 2 })(
       backgroundColor: 'sideBar.hoverBackground',
       svg: {
         // TODO: this should come from somewhere else - text muted maybe?
-        color: 'grays.300',
+        color: 'grays.400',
       },
     },
   })
@@ -37,7 +37,7 @@ const Icon = styled.svg<{
     transform: props.open ? 'rotate(0)' : 'rotate(-90deg)',
     transition: 'transform',
     transitionDuration: theme => theme.speeds[1],
-    color: 'grays.400',
+    color: 'grays.500',
   })
 );
 

@@ -14,6 +14,8 @@ const LinkElement = styled(Text).attrs({ as: 'a' })<ILinkProps>(
   css({
     cursor: 'pointer',
     textDecoration: 'none',
+    transition: 'color ease',
+    transitionDuration: theme => theme.speeds[2],
     ':hover, :focus': {
       color: 'foreground',
     },

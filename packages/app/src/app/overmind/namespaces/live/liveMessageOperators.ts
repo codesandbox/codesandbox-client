@@ -83,7 +83,7 @@ export const onUserEntered: Operator<LiveMessage<{
 });
 
 export const onUserLeft: Operator<LiveMessage<{
-  users: any[];
+  users: LiveUser[];
   left_user_id: string;
   editor_ids: string[];
   owner_ids: string[];
@@ -92,7 +92,7 @@ export const onUserLeft: Operator<LiveMessage<{
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
 
-    if (user.id !== state.live.liveUserId) {
+    if (user && user.id !== state.live.liveUserId) {
       effects.notificationToast.add({
         message: user
           ? `${user.username} left the live session.`
@@ -104,11 +104,9 @@ export const onUserLeft: Operator<LiveMessage<{
 
   actions.live.internal.clearUserSelections(data.left_user_id);
 
-  const users = camelizeKeys(data.users);
+  const users = camelizeKeys(data.users) as LiveUser[];
 
-  // TODO: Same here, not an array?
-  // Check running code
-  state.live.roomInfo.users = users as any;
+  state.live.roomInfo.users = users;
   state.live.roomInfo.ownerIds = data.owner_ids;
   state.live.roomInfo.editorIds = data.editor_ids;
 });

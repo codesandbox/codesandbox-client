@@ -11,6 +11,7 @@ import {
   Stack,
   List,
   ListItem,
+  ListAction,
   Switch,
   Stats,
 } from '@codesandbox/components';
@@ -27,6 +28,7 @@ import getIcon from '@codesandbox/common/lib/templates/icons';
 import { css } from '@styled-system/css';
 import { Title } from './Title';
 import { Description } from './Description';
+import { TemplateConfig } from './TemplateConfig';
 
 export const Summary = () => {
   const {
@@ -67,7 +69,10 @@ export const Summary = () => {
 
   return (
     <>
-      <Collapsible title="Sandbox Info" defaultOpen>
+      <Collapsible
+        title={customTemplate ? 'Template Info' : 'Sandbox Info'}
+        defaultOpen
+      >
         <Stack direction="vertical" gap={6}>
           <Element as="section" css={css({ paddingX: 2 })}>
             {customTemplate ? (
@@ -98,15 +103,16 @@ export const Summary = () => {
           </Element>
 
           <List>
+            {customTemplate && <TemplateConfig />}
             {owned && (
-              <ListItem justify="space-between">
+              <ListAction justify="space-between">
                 <Label htmlFor="frozen">Frozen</Label>
                 <Switch
                   id="frozen"
                   onChange={updateFrozenState}
                   on={customTemplate ? sessionFrozen : isFrozen}
                 />
-              </ListItem>
+              </ListAction>
             )}
             {isForked ? (
               <ListItem justify="space-between">
