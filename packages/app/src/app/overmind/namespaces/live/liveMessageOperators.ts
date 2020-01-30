@@ -4,7 +4,8 @@ import {
   LiveDisconnectReason,
   LiveMessage,
   Module,
-  Selection,
+  UserSelection,
+  LiveUser,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
@@ -17,9 +18,10 @@ export const onJoin: Operator<LiveMessage<{
 }>> = mutate(({ effects, state }, { data }) => {
   state.live.liveUserId = data.live_user_id;
 
-  effects.notificationToast.success(
-    state.live.isTeam ? 'Connected to Live Team!' : 'Connected to Live!'
-  );
+  // Show message to confirm that you've joined a live session if you're not the owner
+  if (!state.live.isCurrentEditor) {
+    effects.notificationToast.success('Connected to Live!');
+  }
 
   if (state.live.reconnecting) {
     effects.live.getAllClients().forEach(client => {
@@ -36,23 +38,35 @@ export const onModuleState: Operator<LiveMessage<{
   actions.live.internal.initializeModuleState(data.module_state);
 });
 
+export const onExternalResources: Operator<LiveMessage<{
+  externalResources: string[];
+}>> = mutate(({ state, actions }, { data }) => {
+  state.editor.currentSandbox.externalResources = data.externalResources;
+  actions.editor.internal.updatePreviewCode();
+});
+
 export const onUserEntered: Operator<LiveMessage<{
-  users: any[];
+  users: LiveUser[];
   editor_ids: string[];
   owner_ids: string[];
   joined_user_id: string;
-}>> = mutate(({ state, effects }, { data }) => {
+}>> = mutate(({ state, effects, actions }, { data }) => {
   if (state.live.isLoading) {
     return;
   }
 
   const users = camelizeKeys(data.users);
 
-  // TODO: What happening here? Is it not an array of users?
-  // Check the running code and fix the type
-  state.live.roomInfo.users = users as any;
+  state.live.roomInfo.users = users as LiveUser[];
   state.live.roomInfo.editorIds = data.editor_ids;
   state.live.roomInfo.ownerIds = data.owner_ids;
+
+  if (state.editor.currentModule) {
+    effects.vscode.updateUserSelections(
+      state.editor.currentModule,
+      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
+    );
+  }
 
   if (data.joined_user_id === state.live.liveUserId) {
     return;
@@ -69,7 +83,7 @@ export const onUserEntered: Operator<LiveMessage<{
 });
 
 export const onUserLeft: Operator<LiveMessage<{
-  users: any[];
+  users: LiveUser[];
   left_user_id: string;
   editor_ids: string[];
   owner_ids: string[];
@@ -78,7 +92,7 @@ export const onUserLeft: Operator<LiveMessage<{
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
 
-    if (user.id !== state.live.liveUserId) {
+    if (user && user.id !== state.live.liveUserId) {
       effects.notificationToast.add({
         message: user
           ? `${user.username} left the live session.`
@@ -90,11 +104,9 @@ export const onUserLeft: Operator<LiveMessage<{
 
   actions.live.internal.clearUserSelections(data.left_user_id);
 
-  const users = camelizeKeys(data.users);
+  const users = camelizeKeys(data.users) as LiveUser[];
 
-  // TODO: Same here, not an array?
-  // Check running code
-  state.live.roomInfo.users = users as any;
+  state.live.roomInfo.users = users;
   state.live.roomInfo.ownerIds = data.owner_ids;
   state.live.roomInfo.editorIds = data.editor_ids;
 });
@@ -313,7 +325,7 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
 export const onUserSelection: Operator<LiveMessage<{
   liveUserId: string;
   moduleShortid: string;
-  selection: Selection;
+  selection: UserSelection;
 }>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage) {
     return;
@@ -331,15 +343,15 @@ export const onUserSelection: Operator<LiveMessage<{
     state.live.roomInfo.users[userIndex].selection = selection;
   }
 
-  if (
-    moduleShortid === state.editor.currentModuleShortid &&
-    state.live.isEditor(userSelectionLiveUserId)
-  ) {
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+  if (module && state.live.isEditor(userSelectionLiveUserId)) {
     const user = state.live.roomInfo.users.find(
       u => u.id === userSelectionLiveUserId
     );
 
-    effects.vscode.updateUserSelections([
+    effects.vscode.updateUserSelections(module, [
       {
         userId: userSelectionLiveUserId,
         name: user.username,
@@ -366,7 +378,7 @@ export const onUserCurrentModule: Operator<LiveMessage<{
       data.moduleShortid;
   }
 
-  actions.live.internal.clearUserSelections(null);
+  actions.live.internal.clearUserSelections(data.live_user_id);
 
   if (
     state.live.followingUserId === data.live_user_id &&
@@ -446,13 +458,16 @@ export const onOperation: Operator<LiveMessage<{
 });
 
 export const onConnectionLoss: Operator<LiveMessage> = mutate(
-  ({ state, effects }) => {
+  async ({ state, effects }) => {
     if (!state.live.reconnecting) {
-      effects.notificationToast.add({
+      const id = effects.notificationToast.add({
         message: 'We lost connection with the live server, reconnecting...',
         status: NotificationStatus.ERROR,
       });
       state.live.reconnecting = true;
+
+      await effects.flows.waitUntil(s => s.live.reconnecting === false);
+      effects.notificationToast.remove(id);
     }
   }
 );

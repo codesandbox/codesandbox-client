@@ -71,7 +71,7 @@ const DEFAULT_COLORS = {
 };
 
 const DEFAULT_BUTTON: IButtonType = props =>
-  React.createElement('button', props);
+  React.createElement('button', props); // eslint-disable-line
 
 export function Toasts({
   state,
@@ -147,6 +147,18 @@ export function Toasts({
 
     return () => {
       addListener();
+    };
+  }, [state]);
+
+  React.useEffect(() => {
+    const removeListener = state.onNotificationRemoved(event => {
+      setNotificationsToShow(notifications =>
+        notifications.filter(n => n.id !== event.id)
+      );
+    });
+
+    return () => {
+      removeListener();
     };
   }, [state]);
 

@@ -27,6 +27,11 @@ const polyfillTheme = vsCodeTheme =>
     input: {
       placeholderForeground: vsCodeTheme.input.placeholderForeground,
     },
+    inputOption: {
+      activeBorder:
+        (vsCodeTheme.inputOption || {}).activeBorder ||
+        vsCodeTheme.input.placeholderForeground,
+    },
     avatar: {
       border: (vsCodeTheme.sideBar || {}).border || 'red',
     },
@@ -49,7 +54,7 @@ const polyfillTheme = vsCodeTheme =>
     },
     switch: {
       // @ts-ignore
-      background: designLanguage.colors.grays[800],
+      background: designLanguage.colors.grays[900],
       // @ts-ignore
       foregroundOff: designLanguage.colors.white,
       // @ts-ignore

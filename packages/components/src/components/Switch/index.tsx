@@ -6,17 +6,19 @@ import { Element } from '../Element';
 const SwitchBackground = styled.div(
   css({
     width: 7,
-    height: 4,
+    height: '14px',
     backgroundColor: 'switch.background',
     borderRadius: 'large',
     position: 'relative',
+    transition: 'background-color ease',
+    transitionDuration: theme => theme.speeds[3],
   })
 );
 
 const SwitchToggle = styled.span(
   css({
-    width: 4,
-    height: 4,
+    width: '14px',
+    height: '14px',
     backgroundColor: 'switch.foregroundOff',
     borderRadius: '50%',
     position: 'absolute',
@@ -31,6 +33,7 @@ const SwitchInput = styled.input(
     width: 0,
     opacity: 0,
     position: 'absolute',
+    left: -100,
   })
 );
 
@@ -46,34 +49,22 @@ const SwitchContainer = styled(Element)(
 );
 
 interface ISwitchProps {
-  id: string;
+  id?: string;
   on?: boolean;
   defaultOn?: boolean;
   onChange?: (event: any) => void;
 }
 
-export const Switch: React.FC<ISwitchProps> = ({
-  id,
-  on,
-  defaultOn,
-  ...props
-}) => {
-  if (!id) {
-    console.warn('Please pass a id corresponding to the htmlFor of its label');
-  }
-
-  return (
-    <SwitchContainer as="label">
-      <SwitchInput
-        type="checkbox"
-        id={id}
-        checked={on}
-        defaultChecked={defaultOn}
-        {...props}
-      />
-      <SwitchBackground data-component="SwitchBackground">
-        <SwitchToggle data-component="SwitchToggle" />
-      </SwitchBackground>
-    </SwitchContainer>
-  );
-};
+export const Switch: React.FC<ISwitchProps> = ({ on, defaultOn, ...props }) => (
+  <SwitchContainer as="label">
+    <SwitchInput
+      type="checkbox"
+      checked={on}
+      defaultChecked={defaultOn}
+      {...props}
+    />
+    <SwitchBackground data-component="SwitchBackground">
+      <SwitchToggle data-component="SwitchToggle" />
+    </SwitchBackground>
+  </SwitchContainer>
+);

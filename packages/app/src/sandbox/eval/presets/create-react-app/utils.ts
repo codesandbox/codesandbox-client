@@ -2,6 +2,15 @@ import semver from 'semver';
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
 import Manager from 'sandbox/eval/manager';
 
+function isMinimalSemverVersion(version: string, minimalVersion: string) {
+  try {
+    return semver.gte(version, minimalVersion);
+  } catch (e) {
+    // Semver couldn't be parsed, we assume that we're on the bleeding edge now, so true.
+    return true;
+  }
+}
+
 export async function isMinimalReactVersion(
   version: string,
   minimalVersion: string
@@ -13,7 +22,7 @@ export async function isMinimalReactVersion(
 
     return (
       absoluteDependencies['react-dom'].startsWith('0.0.0') ||
-      semver.gte(absoluteDependencies['react-dom'], minimalVersion)
+      isMinimalSemverVersion(absoluteDependencies['react-dom'], minimalVersion)
     );
   }
 

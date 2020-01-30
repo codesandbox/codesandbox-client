@@ -4,6 +4,8 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 /* eslint-enable import/default */
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 
+import isESModule from 'sandbox/eval/utils/is-es-module';
+import { measure, endMeasure } from '../../../utils/metrics';
 import regexGetRequireStatements from './worker/simple-get-require-statements';
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
@@ -12,6 +14,7 @@ import Manager from '../../manager';
 
 import delay from '../../../utils/delay';
 import { shouldTranspile } from './check';
+import { convertEsModule } from './convert-esmodule';
 
 const global = window as any;
 
@@ -46,6 +49,19 @@ class BabelTranspiler extends WorkerTranspiler {
   ): Promise<{ transpiledCode: string }> {
     return new Promise((resolve, reject) => {
       const { path } = loaderContext;
+      let newCode = code;
+
+      if (isESModule(newCode) && path.indexOf('/node_modules') > -1) {
+        try {
+          measure(`esconvert-${path}`);
+          newCode = convertEsModule(newCode);
+          endMeasure(`esconvert-${path}`, { silent: true });
+        } catch (e) {
+          console.warn(
+            `Error when converting '${path}' esmodule to commonjs: ${e.message}`
+          );
+        }
+      }
 
       // When we find a node_module that already is commonjs we will just get the
       // dependencies from the file and return the same code. We get the dependencies
@@ -54,9 +70,9 @@ class BabelTranspiler extends WorkerTranspiler {
       if (
         (loaderContext.options.simpleRequire ||
           path.startsWith('/node_modules')) &&
-        !shouldTranspile(code, path)
+        !shouldTranspile(newCode, path)
       ) {
-        regexGetRequireStatements(code).forEach(dependency => {
+        regexGetRequireStatements(newCode).forEach(dependency => {
           if (dependency.isGlob) {
             loaderContext.addDependenciesInDirectory(dependency.path);
           } else {
@@ -65,7 +81,7 @@ class BabelTranspiler extends WorkerTranspiler {
         });
 
         resolve({
-          transpiledCode: code,
+          transpiledCode: newCode,
         });
         return;
       }
@@ -104,7 +120,7 @@ class BabelTranspiler extends WorkerTranspiler {
 
       this.queueTask(
         {
-          code,
+          code: newCode,
           config: babelConfig,
           path,
           loaderOptions,

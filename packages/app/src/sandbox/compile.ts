@@ -6,6 +6,7 @@ import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/temp
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 import { absolute } from '@codesandbox/common/lib/utils/path';
+import VERSION from '@codesandbox/common/lib/version';
 import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
@@ -20,13 +21,14 @@ import defaultBoilerplates from './boilerplates/default-boilerplates';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import getPreset from './eval';
 import { consumeCache, deleteAPICache, saveCache } from './eval/cache';
-import { Module } from './eval/entities/module';
+import { Module } from './eval/types/module';
 import Manager from './eval/manager';
 import TranspiledModule from './eval/transpiled-module';
 import handleExternalResources from './external-resources';
 import { loadDependencies, NPMDependencies } from './npm';
 import { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
+import * as metrics from './utils/metrics';
 
 let initializedResizeListener = false;
 let manager: Manager | null = null;
@@ -78,6 +80,7 @@ let lastHeadHTML = null;
 let lastBodyHTML = null;
 let lastHeight = 0;
 let changedModuleCount = 0;
+let usedCache = false;
 
 const DEPENDENCY_ALIASES = {
   '@vue/cli-plugin-babel': '@vue/babel-preset-app',
@@ -419,6 +422,7 @@ async function compile({
   dispatch({
     type: 'start',
   });
+  metrics.measure('compilation');
 
   const startTime = Date.now();
   try {
@@ -482,6 +486,7 @@ async function compile({
 
     dependencies = await manager.preset.processDependencies(dependencies);
 
+    metrics.measure('dependencies');
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       {
@@ -490,6 +495,7 @@ async function compile({
         showFullScreen: firstLoad,
       }
     );
+    metrics.endMeasure('dependencies', { displayName: 'Dependencies' });
 
     const shouldReloadManager =
       (isNewCombination && !firstLoad) || manager.id !== sandboxId;
@@ -513,10 +519,10 @@ async function compile({
       manager.setManifest(manifest);
       // We save the state of transpiled modules, and load it here again. Gives
       // faster initial loads.
-      await consumeCache(manager);
+      usedCache = await consumeCache(manager);
     }
 
-    const t = Date.now();
+    metrics.measure('transpilation');
 
     const updatedModules = (await updateManager(modules, configurations)) || [];
 
@@ -541,7 +547,7 @@ async function compile({
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
 
-    debug(`Transpilation time ${Date.now() - t}ms`);
+    metrics.endMeasure('transpilation', { displayName: 'Transpilation' });
 
     dispatch({ type: 'status', status: 'evaluating' });
     manager.setStage('evaluation');
@@ -604,16 +610,19 @@ async function compile({
         lastHeadHTML = head;
       }
 
-      const extDate = Date.now();
+      metrics.measure('external-resources');
       await handleExternalResources(externalResources);
-      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
+      metrics.endMeasure('external-resources', {
+        displayName: 'External Resources',
+      });
 
-      const tt = Date.now();
       const oldHTML = document.body.innerHTML;
+      metrics.measure('evaluation');
       const evalled = manager.evaluateModule(managerModuleToTranspile, {
         force: isModuleView,
       });
-      debug(`Evaluation time: ${Date.now() - tt}ms`);
+      metrics.endMeasure('evaluation', { displayName: 'Evaluation' });
+
       const domChanged =
         !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
 
@@ -662,6 +671,8 @@ async function compile({
 
     debug(`Total time: ${Date.now() - startTime}ms`);
 
+    metrics.endMeasure('compilation', { displayName: 'Compilation' });
+    metrics.endMeasure('total', { displayName: 'Total', lastTime: 0 });
     dispatch({
       type: 'success',
     });
@@ -674,8 +685,9 @@ async function compile({
       firstLoad
     );
 
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
+        await manager.initializeTestRunner();
         sendTestCount(manager, modules);
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {
@@ -729,6 +741,17 @@ async function compile({
       dispatch({
         type: 'state',
         state: managerState,
+      });
+
+      manager.isFirstLoad = false;
+    }
+
+    if (firstLoad) {
+      metrics.persistMeasurements({
+        sandboxId,
+        cacheUsed: usedCache,
+        browser: navigator.userAgent,
+        version: VERSION,
       });
     }
   }

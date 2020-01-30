@@ -7,12 +7,8 @@ export default {
   component: SearchInput,
 };
 
-export const Basic = () => <SearchInput />;
 export const Placeholder = () => (
   <SearchInput placeholder="Search For Dependencies" />
-);
-export const Label = () => (
-  <SearchInput label="Search For Dependencies" placeholder="react" />
 );
 
 export const onChange = () => (

@@ -5,6 +5,7 @@ const g = typeof window === 'undefined' ? self : window;
 const requestFrame = (() => {
   const raf =
     g.requestAnimationFrame ||
+    // @ts-ignore
     g.mozRequestAnimationFrame ||
     g.webkitRequestAnimationFrame ||
     function(fn) {
@@ -21,15 +22,16 @@ const hasGlobalDeclaration = /^const global/m;
 export default function(
   code: string,
   require: Function,
-  module: Object,
+  module: { exports: any },
   env: Object = {},
   globals: Object = {},
-  { asUMD = false }: { asUMD: boolean } = {}
+  { asUMD = false }: { asUMD?: boolean } = {}
 ) {
   const { exports } = module;
 
   const global = g;
   const process = buildProcess(env);
+  // @ts-ignore
   g.global = global;
 
   const allGlobals = {

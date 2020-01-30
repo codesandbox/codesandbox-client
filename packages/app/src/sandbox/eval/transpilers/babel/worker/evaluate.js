@@ -6,6 +6,7 @@ import * as util from 'util';
 import { dirname, basename } from 'path';
 import type FSType from 'fs';
 import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
+import { packageFilter } from '../../../utils/resolve-utils';
 import evaluateCode from '../../../loaders/eval';
 
 let cache = {};
@@ -99,7 +100,7 @@ export default function evaluate(
         requirePath.startsWith('@babel/preset') &&
         requirePath !== '@babel/preset-env'
       ) {
-        return { __esModule: true, default: plugin };
+        return { __esModule: true, default: preset };
       }
       return preset;
     }
@@ -113,6 +114,7 @@ export default function evaluate(
         filename: path,
         extensions: ['.js', '.json'],
         moduleDirectory: ['node_modules'],
+        packageFilter,
       });
 
     cachedPaths[dirName][requirePath] = resolvedPath;

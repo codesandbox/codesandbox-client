@@ -26,12 +26,12 @@ aliases:
 
   - &restore_deps_cache
     keys:
-      - v32-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v32-dependency-cache-{{ .Branch }}
-      - v32-dependency-cache
+      - v34-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v34-dependency-cache-{{ .Branch }}
+      - v34-dependency-cache
 
   - &save_deps_cache
-    key: v32-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v34-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
@@ -51,51 +51,51 @@ aliases:
 
   - &restore_standalone_deps_cache
     keys:
-      - v32-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      - v34-standalone-dependency-cache-{{ .Branch }}-{{ checksum
         "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v32-standalone-dependency-cache-{{ .Branch }}
-      - v32-standalone-dependency-cache
+      - v34-standalone-dependency-cache-{{ .Branch }}
+      - v34-standalone-dependency-cache
 
   - &save_standalone_deps_cache
     key:
-      v32-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      v34-standalone-dependency-cache-{{ .Branch }}-{{ checksum
       "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
   - &restore_prod_homepage_cache
-    key: v32-prod-homepage-build-cache-master
+    key: v34-prod-homepage-build-cache-master
 
   - &restore_prod_result
     key:
-      v32-prod-build-result-{{ .Environment.CIRCLE_BRANCH
+      v34-prod-build-result-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
 
   - &save_prod_build_cache
     key:
-      v32-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      v34-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
     paths:
       - packages/app/node_modules/.cache
 
   - &restore_prod_build_cache
     keys:
-      - v32-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      - v34-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
         }}-{{.Environment.CIRCLE_SHA1 }}
-      - v32-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
-      - v32-prod-build-cache-master-
+      - v34-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
+      - v34-prod-build-cache-master-
 
   # To persist the images built by sharp
   - &save_prod_homepage_cache
     key:
-      v32-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v34-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/homepage/public
 
   - &save_prod_result
     key:
-      v32-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v34-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
@@ -136,14 +136,14 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v32-source-cache-{{ .Branch }}-{{ .Revision }}
-            - v32-source-cache-{{ .Branch }}-
-            - v32-source-cache-
+            - v34-source-cache-{{ .Branch }}-{{ .Revision }}
+            - v34-source-cache-{{ .Branch }}-
+            - v34-source-cache-
 
       - checkout
 
       - save_cache:
-          key: v32-source-cache-{{ .Branch }}-{{ .Revision }}
+          key: v34-source-cache-{{ .Branch }}-{{ .Revision }}
           paths:
             - '.git'
   build_deps:

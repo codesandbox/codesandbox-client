@@ -1,5 +1,5 @@
 import React from 'react';
-import { Element, Collapsible, Text, Button, Stack } from '..';
+import { Element, Collapsible, Text, Button, Stack, SidebarRow } from '..';
 
 export default {
   title: 'examples/SidebarConfig',
@@ -127,9 +127,7 @@ export const Basic = () => (
     <Collapsible title="Configuration Files" defaultOpen>
       <Stack direction="vertical" gap={6}>
         <Element css={{ paddingX: 2 }}>
-          <Text as="div" marginBottom={2}>
-            Configuration your Sandbox
-          </Text>
+          <SidebarRow>Configuration your Sandbox</SidebarRow>
           <Text variant="muted">
             Codesandbox supports several config giles per template, you van see
             and edit all supported files for the current sandbox here.

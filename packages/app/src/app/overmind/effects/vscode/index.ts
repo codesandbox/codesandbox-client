@@ -37,6 +37,7 @@ import {
   ModelsHandler,
   OnFileChangeData,
   OnOperationAppliedData,
+  onSelectionChangeData,
 } from './ModelsHandler';
 import SandboxFsSync from './SandboxFsSync';
 import { getSelection } from './utils';
@@ -49,7 +50,7 @@ export type VsCodeOptions = {
   getSandboxFs: () => SandboxFs;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
-  onSelectionChange: (selection: any) => void;
+  onSelectionChange: (selection: onSelectionChangeData) => void;
   reaction: Reaction;
   // These two should be removed
   getSignal: any;
@@ -162,16 +163,22 @@ export class VSCodeEffect {
       return new FontFaceObserver('dm').load();
     });
 
-    options.reaction(
-      state =>
-        !state.live.isLive ||
-        state.live.roomInfo?.mode === 'open' ||
-        (state.live.roomInfo?.mode === 'classroom' &&
-          state.live.isCurrentEditor),
-      canEdit => {
-        this.setReadOnly(!canEdit);
-      }
-    );
+    // Only set the read only state when the editor is initialized.
+    this.initialized.then(() => {
+      // ReadOnly mode is derivative, it's based on a couple conditions, of which the
+      // most important one is Live. If you're in a classroom live session as spectator,
+      // you should not be allowed to edit.
+      options.reaction(
+        state =>
+          !state.live.isLive ||
+          state.live.roomInfo?.mode === 'open' ||
+          (state.live.roomInfo?.mode === 'classroom' &&
+            state.live.isCurrentEditor),
+        canEdit => {
+          this.setReadOnly(!canEdit);
+        }
+      );
+    });
 
     return this.initialized;
   }
@@ -262,15 +269,23 @@ export class VSCodeEffect {
     }
   }
 
-  public updateUserSelections(userSelections: EditorSelection[]) {
+  public clearUserSelections(userId: string) {
     if (!this.modelsHandler) {
       return;
     }
 
-    this.modelsHandler.updateUserSelections(
-      this.options.getCurrentModule(),
-      userSelections
-    );
+    this.modelsHandler.clearUserSelections(userId);
+  }
+
+  public updateUserSelections(
+    module: Module,
+    userSelections: EditorSelection[]
+  ) {
+    if (!this.modelsHandler) {
+      return;
+    }
+
+    this.modelsHandler.updateUserSelections(module, userSelections);
   }
 
   public setReadOnly(enabled: boolean) {
@@ -933,11 +948,12 @@ export class VSCodeEffect {
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
         selectionChange => {
           const lines = activeEditor.getModel().getLinesContent() || [];
-          const data = {
+          const data: onSelectionChangeData = {
             primary: getSelection(lines, selectionChange.selection),
             secondary: selectionChange.secondarySelections.map(s =>
               getSelection(lines, s)
             ),
+            source: selectionChange.source,
           };
 
           if (

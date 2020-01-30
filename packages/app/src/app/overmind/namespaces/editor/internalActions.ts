@@ -97,7 +97,9 @@ export const saveCode: AsyncAction<{
     return;
   }
 
-  module.code = code;
+  if (module.code !== code) {
+    actions.editor.codeChanged({ moduleShortid, code });
+  }
 
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);

@@ -1,12 +1,14 @@
 import hookConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
-import { dispatch } from 'codesandbox-api';
+import { dispatch, isStandalone } from 'codesandbox-api';
 
-hookConsole();
-setupHistoryListeners();
-listenForPreviewSecret();
-dispatch({ type: 'initialized' });
+if (!isStandalone) {
+  hookConsole();
+  setupHistoryListeners();
+  listenForPreviewSecret();
+  dispatch({ type: 'initialized' });
+}
 
 setTimeout(() => {
   if (typeof window.__puppeteer__ === 'function') {

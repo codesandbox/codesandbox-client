@@ -81,6 +81,8 @@ export class ExecutorsManager {
     await this.executor.initialize({
       sandboxId: sandbox.id,
       files: getModulesToSend(sandbox),
+      // this is in the type idk what is wrong
+      // @ts-ignore
       host: sseHost,
     });
 

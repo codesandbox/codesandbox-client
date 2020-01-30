@@ -1,6 +1,7 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
 
 import Manager from 'sandbox/eval/manager';
+import { dispatch } from 'codesandbox-api';
 import Preset from '..';
 
 import stylesTranspiler from '../../transpilers/style';
@@ -18,6 +19,29 @@ import {
 } from './utils';
 
 const debug = _debug('cs:compiler:cra');
+
+async function initializeReactDevTools() {
+  if (!window.opener) {
+    const { initialize: initializeDevTools, activate } = await import(
+      /* webpackChunkName: 'react-devtools-backend' */ 'react-devtools-inline/backend'
+    );
+    // The dispatch needs to happen before initializing, so that the backend can already listen
+    dispatch({ type: 'activate-react-devtools' });
+
+    // @ts-ignore
+    if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined') {
+      try {
+        // @ts-ignore We need to make sure that the existing chrome extension doesn't interfere
+        delete window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+      } catch (e) {
+        /* ignore */
+      }
+    }
+    // Call this before importing React (or any other packages that might import React).
+    initializeDevTools(window);
+    activate(window);
+  }
+}
 
 /**
  * When using React Refresh we need to evaluate some code before 'react-dom' is initialized
@@ -206,6 +230,10 @@ export default function initialize() {
         }
       },
       preEvaluate: async manager => {
+        if (manager.isFirstLoad) {
+          await initializeReactDevTools();
+        }
+
         if (await hasRefresh(manager.manifest.dependencies)) {
           await createRefreshEntry(manager);
         }

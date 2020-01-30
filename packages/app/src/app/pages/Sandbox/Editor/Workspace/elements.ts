@@ -1,5 +1,5 @@
 import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 type ContainerStylesProps = {
   theme?: any;
@@ -110,7 +110,7 @@ export const EntryContainer = styled.div<ContainerStylesProps>`
   ${props => getContainerStyles(props)};
 `;
 
-export const Container = styled.div`
+export const Container = styled.div<{ REDESIGNED_SIDEBAR: boolean }>`
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -122,6 +122,14 @@ export const Container = styled.div`
   width: 100%;
   overflow-y: overlay;
   overflow-x: auto;
+
+  ${props =>
+    props.REDESIGNED_SIDEBAR &&
+    css`
+      * {
+        box-sizing: border-box;
+      }
+    `}
 `;
 
 export const ContactContainer = styled.div`

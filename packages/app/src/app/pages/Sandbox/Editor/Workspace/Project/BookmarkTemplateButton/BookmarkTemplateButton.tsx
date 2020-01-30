@@ -16,6 +16,7 @@ import {
 import Checked from 'react-icons/lib/md/check-box';
 import Unchecked from 'react-icons/lib/md/check-box-outline-blank';
 import { MultiAction } from '@codesandbox/common/lib/components/MultiAction';
+import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 import { ButtonContainer, ButtonIcon } from './elements';
 import { BOOKMARK_TEMPLATE, UNBOOKMARK_TEMPLATE } from './mutations';
 import { BOOKMARKED_SANDBOX_INFO } from './queries';

@@ -1,25 +1,19 @@
-import React, { useState, useCallback } from 'react';
-import styled, {
-  StyledComponent,
-  StyledComponentInnerOtherProps,
-} from 'styled-components';
+import React, { useState, useCallback, useEffect } from 'react';
+import styled from 'styled-components';
 import css from '@styled-system/css';
-import VisuallyHidden from '@reach/visually-hidden';
-import { useId } from '@reach/auto-id';
-import { Text } from '../Text';
-import { Stack } from '../Stack';
-import { InputComponent } from '../Input';
+import { Stack, Input } from '../..';
 
 interface ITextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  label?: string;
   maxLength?: number;
   autosize?: boolean;
+  ref?: any;
+  value?: string;
 }
 
-export const TextareaComponent: any = styled(InputComponent).attrs({
+export const TextareaComponent: any = styled(Input).attrs({
   as: 'textarea',
-})(
+})<HTMLTextAreaElement>(
   css({
     minHeight: 64,
     padding: 2,
@@ -30,11 +24,7 @@ export const TextareaComponent: any = styled(InputComponent).attrs({
     // soul who tries this again
     // transition: 'height 150ms',
   })
-) as StyledComponent<
-  'textarea',
-  any,
-  StyledComponentInnerOtherProps<typeof InputComponent>
->;
+);
 
 const Count = styled.div<{ limit: boolean }>(({ limit }) =>
   css({
@@ -46,7 +36,6 @@ const Count = styled.div<{ limit: boolean }>(({ limit }) =>
 );
 
 export const Textarea: React.FC<ITextareaProps> = ({
-  label,
   maxLength,
   onChange,
   onKeyPress,
@@ -55,25 +44,40 @@ export const Textarea: React.FC<ITextareaProps> = ({
 }) => {
   const [wordCount, setWordCount] = useState(0);
   const [value, setValue] = useState('');
-  const id = useId(props.id);
+
+  const updateValues = v => {
+    if (maxLength) {
+      const trimmedText = v.substring(0, maxLength);
+      setValue(trimmedText);
+      setWordCount(trimmedText.length);
+    } else {
+      setValue(v);
+    }
+  };
+
+  useEffect(() => {
+    if (props.value) {
+      updateValues(props.value);
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const Wrapper = useCallback(
     ({ children }) =>
-      maxLength ? <Stack direction="vertical">{children}</Stack> : children,
+      maxLength ? (
+        <Stack direction="vertical" css={{ width: '100%' }}>
+          {children}
+        </Stack>
+      ) : (
+        children
+      ),
     [maxLength]
   );
 
   // eslint-disable-next-line consistent-return
   const update = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (onChange) onChange(e);
-    if (maxLength) {
-      const trimmedText = e.target.value.substring(0, maxLength);
-      setValue(trimmedText);
-      setWordCount(trimmedText.length);
-    } else {
-      setValue(e.target.value);
-    }
-
+    updateValues(e.target.value);
     if (autosize) resize(e.target as HTMLTextAreaElement);
   };
 
@@ -96,28 +100,11 @@ export const Textarea: React.FC<ITextareaProps> = ({
 
   return (
     <>
-      {props.placeholder && !label ? (
-        <VisuallyHidden>
-          <label htmlFor={props.id || id}>{props.placeholder}</label>
-        </VisuallyHidden>
-      ) : null}
-      {label ? (
-        <Text
-          as="label"
-          size={2}
-          marginBottom={2}
-          htmlFor={props.id || id}
-          style={{ display: 'block' }}
-        >
-          {label}
-        </Text>
-      ) : null}
       <Wrapper>
         <TextareaComponent
           value={value}
           onChange={update}
           onKeyPress={keyPress}
-          id={props.id || id}
           {...props}
         />
         {maxLength ? (

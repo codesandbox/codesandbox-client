@@ -54,7 +54,7 @@ const vsCodeThemes = allThemes.map(b => makeTheme(b, b.name));
 const blackCodesandbox = vsCodeThemes.find(
   theme => theme.name === 'CodeSandbox Black'
 );
-console.log(isChromatic());
+
 if (!isChromatic()) {
   const withGlobal = (cb: any) => (
     <>
