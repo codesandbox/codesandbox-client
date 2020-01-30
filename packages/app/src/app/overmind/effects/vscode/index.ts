@@ -350,7 +350,7 @@ export class VSCodeEffect {
         socket,
       });
 
-      this.mountableFilesystem.mount('/root/.cache', cache);
+      this.mountableFilesystem.mount('/home/sandbox/.cache', cache);
       this.mountableFilesystem.mount('/sandbox/node_modules', nodeModules);
     } else {
       childProcess.addDefaultForkHandler(this.clientExtensionHost);
@@ -551,10 +551,14 @@ export class VSCodeEffect {
 
   private getLspEndpoint() {
     // return 'ws://localhost:1023';
-    return `wss://${this.options.getCurrentSandbox().id}-lsp.sse.codesandbox.${
-      'stream'
-      // process.env.STAGING_API || process.env.STAGING ? 'stream' : 'io'
-    }/`;
+    // TODO: merge host logic with executor-manager
+    const sseHost = process.env.STAGING_API
+      ? 'https://codesandbox.stream'
+      : 'https://codesandbox.io';
+    return sseHost.replace(
+      'https://',
+      `wss://${this.options.getCurrentSandbox().id}-lsp.sse.`
+    );
   }
 
   private createFileSystem(type: string, options: any) {
