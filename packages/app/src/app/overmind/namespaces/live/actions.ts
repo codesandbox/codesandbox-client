@@ -2,7 +2,7 @@ import { LiveMessage, LiveMessageEvent } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
-import { filter, fork, pipe } from 'overmind';
+import { filter, fork, pipe, map } from 'overmind';
 
 import * as internalActions from './internalActions';
 import * as liveMessage from './liveMessageOperators';
@@ -92,7 +92,14 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
   filter((_, payload) =>
     Object.values(LiveMessageEvent).includes(payload.event)
   ),
-  fork((_, payload) => payload.event, {
+  filter((context, payload) =>
+    Boolean(context.state.live.isLive && context.state.live.roomInfo)
+  ),
+  map((context, payload) => ({
+    payload,
+    roomInfo: context.state.live.roomInfo,
+  })),
+  fork((_, { payload }) => payload.event, {
     [LiveMessageEvent.JOIN]: liveMessage.onJoin,
     [LiveMessageEvent.MODULE_STATE]: liveMessage.onModuleState,
     [LiveMessageEvent.USER_ENTERED]: liveMessage.onUserEntered,

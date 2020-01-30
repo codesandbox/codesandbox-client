@@ -5,13 +5,13 @@ type State = {
   isLive: boolean;
   isTeam: boolean;
   isLoading: boolean;
-  error: string;
+  error: string | null;
   reconnecting: boolean;
   notificationsHidden: boolean;
   followingUserId: string | null;
-  liveUserId: string;
-  roomInfo: RoomInfo;
-  liveUser: Derive<State, LiveUser>;
+  liveUserId: string | null;
+  roomInfo: RoomInfo | null;
+  liveUser: Derive<State, LiveUser | null>;
   isEditor: Derive<State, (liveUserId: string) => boolean>;
   isCurrentEditor: Derive<State, boolean>;
   isOwner: Derive<State, boolean>;
@@ -34,19 +34,26 @@ export const state: State = {
   liveUserId: null,
   roomInfo: null,
   liveUser: currentState =>
-    currentState.roomInfo &&
-    currentState.roomInfo.users.find(u => u.id === currentState.liveUserId),
+    currentState.roomInfo?.users.find(u => u.id === currentState.liveUserId) ||
+    null,
   isEditor: currentState => liveUserId =>
-    currentState.isLive &&
-    (currentState.roomInfo.mode === 'open' ||
-      currentState.roomInfo.ownerIds.includes(liveUserId) ||
-      currentState.roomInfo.editorIds.includes(liveUserId)),
+    Boolean(
+      currentState.isLive &&
+        currentState.roomInfo &&
+        (currentState.roomInfo.mode === 'open' ||
+          currentState.roomInfo.ownerIds.includes(liveUserId) ||
+          currentState.roomInfo.editorIds.includes(liveUserId))
+    ),
   isCurrentEditor: currentState =>
-    currentState.isEditor(currentState.liveUserId),
-
+    Boolean(
+      currentState.liveUserId && currentState.isEditor(currentState.liveUserId)
+    ),
   isOwner: currentState =>
-    currentState.isLive &&
-    currentState.roomInfo.ownerIds.includes(currentState.liveUserId),
+    Boolean(
+      currentState.isLive &&
+        currentState.liveUserId &&
+        currentState.roomInfo?.ownerIds.includes(currentState.liveUserId)
+    ),
   liveUsersByModule: currentState => {
     const usersByModule = {};
 
@@ -58,7 +65,7 @@ export const state: State = {
 
     currentState.roomInfo.users.forEach(user => {
       const userId = user.id;
-      if (userId !== liveUserId) {
+      if (userId !== liveUserId && user.currentModuleShortid) {
         usersByModule[user.currentModuleShortid] =
           usersByModule[user.currentModuleShortid] || [];
         usersByModule[user.currentModuleShortid].push(user.color);

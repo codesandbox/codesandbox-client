@@ -15,7 +15,7 @@ import { json, mutate } from 'overmind';
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
   live_user_id: string;
-}>> = mutate(({ effects, state }, { data }) => {
+}>> = mutate(({ effects, state }, { data, roomInfo }) => {
   state.live.liveUserId = data.live_user_id;
 
   // Show message to confirm that you've joined a live session if you're not the owner
@@ -50,16 +50,16 @@ export const onUserEntered: Operator<LiveMessage<{
   editor_ids: string[];
   owner_ids: string[];
   joined_user_id: string;
-}>> = mutate(({ state, effects, actions }, { data }) => {
-  if (state.live.isLoading) {
+}>> = mutate(({ state, effects, actions }, { payload: { data }, roomInfo }) => {
+  if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
     return;
   }
 
   const users = camelizeKeys(data.users);
 
-  state.live.roomInfo.users = users as LiveUser[];
-  state.live.roomInfo.editorIds = data.editor_ids;
-  state.live.roomInfo.ownerIds = data.owner_ids;
+  roomInfo.users = users as LiveUser[];
+  roomInfo.editorIds = data.editor_ids;
+  roomInfo.ownerIds = data.owner_ids;
 
   if (state.editor.currentModule) {
     effects.vscode.updateUserSelections(
@@ -74,7 +74,7 @@ export const onUserEntered: Operator<LiveMessage<{
 
   const user = data.users.find(u => u.id === data.joined_user_id);
 
-  if (!state.live.notificationsHidden) {
+  if (!state.live.notificationsHidden && user) {
     effects.notificationToast.add({
       message: `${user.username} joined the live session.`,
       status: NotificationStatus.NOTICE,
@@ -88,6 +88,10 @@ export const onUserLeft: Operator<LiveMessage<{
   editor_ids: string[];
   owner_ids: string[];
 }>> = mutate(({ state, actions, effects }, { data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (!state.live.notificationsHidden) {
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
@@ -121,17 +125,20 @@ export const onModuleSaved: Operator<LiveMessage<{
   const module = state.editor.currentSandbox.modules.find(
     moduleItem => moduleItem.shortid === data.moduleShortid
   );
-  module.isNotSynced = false;
 
-  actions.editor.internal.setModuleSavedCode({
-    moduleShortid: data.moduleShortid,
-    savedCode: data.module.savedCode,
-  });
+  if (module) {
+    module.isNotSynced = false;
 
-  effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-  // We revert the module so that VSCode will flag saved indication correctly
-  effects.vscode.revertModule(module);
-  actions.editor.internal.updatePreviewCode();
+    actions.editor.internal.setModuleSavedCode({
+      moduleShortid: data.moduleShortid,
+      savedCode: data.module.savedCode,
+    });
+
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
+    // We revert the module so that VSCode will flag saved indication correctly
+    effects.vscode.revertModule(module);
+    actions.editor.internal.updatePreviewCode();
+  }
 });
 
 export const onModuleCreated: Operator<LiveMessage<{
@@ -213,6 +220,9 @@ export const onModuleDeleted: Operator<LiveMessage<{
   const removedModule = state.editor.currentSandbox.modules.find(
     directory => directory.shortid === data.moduleShortid
   );
+  if (!removedModule) {
+    return;
+  }
   const moduleIndex = state.editor.currentSandbox.modules.indexOf(
     removedModule
   );
@@ -327,7 +337,7 @@ export const onUserSelection: Operator<LiveMessage<{
   moduleShortid: string;
   selection: UserSelection;
 }>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  if (_isOwnMessage || !state.live.roomInfo) {
     return;
   }
 
@@ -351,14 +361,16 @@ export const onUserSelection: Operator<LiveMessage<{
       u => u.id === userSelectionLiveUserId
     );
 
-    effects.vscode.updateUserSelections(module, [
-      {
-        userId: userSelectionLiveUserId,
-        name: user.username,
-        selection,
-        color: json(user.color),
-      },
-    ]);
+    if (user) {
+      effects.vscode.updateUserSelections(module, [
+        {
+          userId: userSelectionLiveUserId,
+          name: user.username,
+          selection,
+          color: json(user.color),
+        },
+      ]);
+    }
   }
 });
 
@@ -366,7 +378,7 @@ export const onUserCurrentModule: Operator<LiveMessage<{
   live_user_id: string;
   moduleShortid: string;
 }>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  if (_isOwnMessage || !state.live.roomInfo) {
     return;
   }
   const userIndex = state.live.roomInfo.users.findIndex(
@@ -401,6 +413,10 @@ export const onUserCurrentModule: Operator<LiveMessage<{
 export const onLiveMode: Operator<LiveMessage<{
   mode: string;
 }>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (!_isOwnMessage) {
     state.live.roomInfo.mode = data.mode;
   }
@@ -410,6 +426,10 @@ export const onLiveMode: Operator<LiveMessage<{
 export const onLiveChatEnabled: Operator<LiveMessage<{
   enabled: boolean;
 }>> = mutate(({ state }, { _isOwnMessage, data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (_isOwnMessage) {
     return;
   }
@@ -419,6 +439,10 @@ export const onLiveChatEnabled: Operator<LiveMessage<{
 export const onLiveAddEditor: Operator<LiveMessage<{
   editor_user_id: string;
 }>> = mutate(({ state }, { _isOwnMessage, data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (!_isOwnMessage) {
     state.live.roomInfo.editorIds.push(data.editor_user_id);
   }
@@ -427,6 +451,10 @@ export const onLiveAddEditor: Operator<LiveMessage<{
 export const onLiveRemoveEditor: Operator<LiveMessage<{
   editor_user_id: string;
 }>> = mutate(({ state }, { _isOwnMessage, data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (!_isOwnMessage) {
     const userId = data.editor_user_id;
 
@@ -501,6 +529,10 @@ export const onChat: Operator<LiveMessage<{
   message: string;
   date: number;
 }>> = mutate(({ state }, { data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   let name = state.live.roomInfo.chat.users[data.live_user_id];
 
   if (!name) {

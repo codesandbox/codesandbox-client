@@ -60,7 +60,7 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
 
 export const setModuleSavedCode: Action<{
   moduleShortid: string;
-  savedCode: string;
+  savedCode: string | null;
 }> = ({ state }, { moduleShortid, savedCode }) => {
   const sandbox = state.editor.currentSandbox;
 

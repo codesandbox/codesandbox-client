@@ -200,7 +200,7 @@ export type User = {
 
 export type LiveUser = {
   username: string;
-  selection: UserSelection;
+  selection: UserSelection | null;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
@@ -669,9 +669,12 @@ export type DevToolsTabPosition = {
 };
 
 export type LiveMessage<data = unknown> = {
-  event: LiveMessageEvent;
-  data: data;
-  _isOwnMessage: boolean;
+  payload: {
+    event: LiveMessageEvent;
+    data: data;
+    _isOwnMessage: boolean;
+  };
+  roomInfo: RoomInfo;
 };
 
 export enum LiveMessageEvent {
