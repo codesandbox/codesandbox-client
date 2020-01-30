@@ -63,3 +63,49 @@ const polyfillTheme = vsCodeTheme =>
   });
 
 export default polyfillTheme;
+
+/**
+ 
+Fallback needed for:
+ 
+Sidebar (Collapsible, List, Integration)
+  sidebar.foreground
+  sideBar.border
+  sideBar.hoverBackground
+  sideBar.background
+
+Text colors (Link, Stats)
+  foreground
+  mutedForeground
+  errorForeground
+  sidebar.foreground
+
+Avatar
+  avatar.border
+
+Button
+  button.background
+  button.foreground
+  button.hoverBackground
+  secondaryButton.foreground
+  secondaryButton.background
+  secondaryButton.hoverBackground
+  mutedForeground
+  foreground
+  dangerButton.background
+  dangerButton.foreground
+  dangerButton.hoverBackground
+ 
+Input (Select, Textarea, SearchInput)
+  input.background,
+  input.foreground
+  input.border
+  input.placeholderForeground
+  inputOption.activeBorder
+
+Switch
+  switch.background
+  switch.foregroundOff
+  switch.foregroundOn
+ 
+ */

@@ -13,7 +13,7 @@ export const HeartIcon = props => (
 
 export const ViewIcon = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
-    <g fill="#757575">
+    <g fill="currentcolor">
       <path
         fillRule="evenodd"
         d="M8 12.1c2.513 0 6.5-3.25 6.5-4.55S10.513 3 8 3 1.5 6.25 1.5 7.55c0 .975 3.987 4.55 6.5 4.55zm0-1.95a2.6 2.6 0 100-5.2 2.6 2.6 0 000 5.2z"
