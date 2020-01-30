@@ -15,6 +15,7 @@ export interface INavigationItem {
 const PROJECT: INavigationItem = {
   id: 'project',
   name: 'Sandbox Info',
+  defaultOpen: true,
 };
 
 const PROJECT_TEMPLATE: INavigationItem = {
@@ -32,7 +33,6 @@ const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
-  defaultOpen: true,
 };
 
 const GITHUB: INavigationItem = {

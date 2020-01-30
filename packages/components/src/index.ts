@@ -20,6 +20,8 @@ export * from './components/FormField';
 export * from './components/Collapsible';
 export * from './components/Integration';
 export * from './components/List';
+export * from './components/Tags';
+export * from './components/Tags/Tag';
 
 // layout
 export * from './components/Grid';
