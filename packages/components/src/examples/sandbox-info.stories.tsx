@@ -10,6 +10,7 @@ import {
   Stack,
   Switch,
   Text,
+  Link,
   Label,
   SidebarRow,
 } from '../index';
@@ -19,8 +20,6 @@ import { sara as user } from '../components/Avatar/stubs';
 export default {
   title: 'examples/SandboxInfo',
 };
-
-const Link = props => <Text variant="muted" {...props} />;
 
 const GlobeIcon = props => (
   <svg width={10} height={10} fill="none" viewBox="0 0 10 10" {...props}>
@@ -61,11 +60,15 @@ export const SandboxInfo = () => (
           </ListItem>
           <ListItem justify="space-between">
             <Text>Template</Text>
-            <Link>React</Link>
+            <Link href="#" variant="muted">
+              React
+            </Link>
           </ListItem>
           <ListItem justify="space-between">
             <Text>Environment</Text>
-            <Link>create-react-app</Link>
+            <Link href="#" variant="muted">
+              create-react-app
+            </Link>
           </ListItem>
         </List>
       </Stack>
