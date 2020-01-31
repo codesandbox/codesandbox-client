@@ -22,6 +22,7 @@ export type Collection = {
   id: Maybe<Scalars['ID']>;
   path: Maybe<Scalars['String']>;
   sandboxes: Maybe<Array<Maybe<Sandbox>>>;
+  team: Maybe<Team>;
   teamId: Maybe<Scalars['ID']>;
   user: Maybe<User>;
 };
@@ -329,6 +330,11 @@ export type TemplateFragment = { __typename?: 'Template' } & Pick<
         Sandbox,
         'id' | 'alias' | 'title' | 'description' | 'insertedAt' | 'updatedAt'
       > & {
+          collection: Maybe<
+            { __typename?: 'Collection' } & {
+              team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
+            }
+          >;
           author: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
           source: Maybe<{ __typename?: 'Source' } & Pick<Source, 'template'>>;
         }

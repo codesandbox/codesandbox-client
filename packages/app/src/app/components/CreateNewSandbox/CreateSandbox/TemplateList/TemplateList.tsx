@@ -12,6 +12,7 @@ import history from 'app/utils/history';
 import MdEditIcon from 'react-icons/lib/md/edit';
 
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { SandboxCard } from '../SandboxCard';
 import { SubHeader, Grid } from '../elements';
 import { EditIcon, TemplateInfoContainer } from './elements';
@@ -285,6 +286,8 @@ export const TemplateList = ({
         const num = getNumber(e);
 
         const template = getTemplateByIndex(num - 1);
+
+        track('Template Modal - Open Sandbox', { source: 'num-keys' });
         openSandbox(template.sandbox);
       }
     },
@@ -305,6 +308,8 @@ export const TemplateList = ({
       ) {
         e.preventDefault();
         const currentTemplate = getTemplateByIndex(focusedTemplateIndex);
+
+        track('Template Modal - Open Sandbox', { source: 'enter' });
         openSandbox(currentTemplate.sandbox, isMac ? e.metaKey : e.ctrlKey);
       }
     },
@@ -332,6 +337,9 @@ export const TemplateList = ({
                 {templates.map((template: TemplateFragment, i) => {
                   const index = offset + i;
                   const focused = focusedTemplateIndex === offset + i;
+                  const owner =
+                    template.sandbox.collection?.team?.name ||
+                    template.sandbox.author?.username;
 
                   const shortKey = showSecondaryShortcuts
                     ? index < 9
@@ -347,6 +355,7 @@ export const TemplateList = ({
                       iconUrl={template.iconUrl}
                       // @ts-ignore
                       environment={template.sandbox.source.template}
+                      owner={owner}
                       color={template.color}
                       onFocus={() => {
                         safeSetFocusedTemplate(() => index);
@@ -360,6 +369,10 @@ export const TemplateList = ({
                       onKeyPress={e => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
+
+                          track('Template Modal - Open Sandbox', {
+                            source: 'enter',
+                          });
                           openSandbox(
                             template.sandbox,
                             isMac ? e.metaKey : e.ctrlKey
@@ -369,6 +382,9 @@ export const TemplateList = ({
                       onClick={e => {
                         e.preventDefault();
 
+                        track('Template Modal - Open Sandbox', {
+                          source: 'click',
+                        });
                         openSandbox(
                           template.sandbox,
                           isMac ? e.metaKey : e.ctrlKey

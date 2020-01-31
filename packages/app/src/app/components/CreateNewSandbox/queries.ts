@@ -31,6 +31,12 @@ const TEMPLATE_FRAGMENT = gql`
       insertedAt
       updatedAt
 
+      collection {
+        team {
+          name
+        }
+      }
+
       author {
         username
       }
