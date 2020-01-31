@@ -14,10 +14,10 @@ const InputComponent = ({ className, ...other }) => (
     {...other}
     placeholder="Add Tag"
     css={css({
-      maxWidth: '45px',
+      maxWidth: 11,
       fontSize: 1,
       paddingX: 1,
-      height: '19px',
+      height: 5,
       '::-webkit-input-placeholder': { fontSize: 1 },
       '::-ms-input-placeholder': { fontSize: 1 },
       '::placeholder': { fontSize: 1 },
