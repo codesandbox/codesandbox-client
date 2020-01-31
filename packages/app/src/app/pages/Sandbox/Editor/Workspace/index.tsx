@@ -25,6 +25,7 @@ import { Live } from './items/Live';
 import { Live as LiveNew } from './screens/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
+import { NotOwnedSandboxInfo as NotOwnedSandboxInfoNew } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
 import { ProjectInfo as ProjectInfoNew } from './screens/ProjectInfo';
 import { Deployment as DeploymentNew } from './screens/Deployment/index';
@@ -39,7 +40,9 @@ const WorkspaceWrapper = REDESIGNED_SIDEBAR ? ThemeProvider : React.Fragment;
 
 const workspaceTabs = {
   project: REDESIGNED_SIDEBAR ? ProjectInfoNew : ProjectInfo,
-  'project-summary': NotOwnedSandboxInfo,
+  'project-summary': REDESIGNED_SIDEBAR
+    ? NotOwnedSandboxInfoNew
+    : NotOwnedSandboxInfo,
   github: REDESIGNED_SIDEBAR ? GitHubNew : GitHub,
   files: REDESIGNED_SIDEBAR ? Explorer : FilesItem,
   deploy: REDESIGNED_SIDEBAR ? DeploymentNew : Deployment,

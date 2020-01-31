@@ -10,7 +10,7 @@ import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
 import { TextOperation } from 'ot';
 
-import { getCurrentModel, getCurrentModelPath } from './utils';
+import { getCurrentModelPath } from './utils';
 
 // @ts-ignore
 const fadeIn = css.keyframes('fadeIn', {
@@ -110,17 +110,15 @@ export class ModelsHandler {
     const moduleModel = this.getModuleModel(module);
 
     if (getCurrentModelPath(this.editorApi) !== module.path) {
-      const file = await this.editorApi.openFile(module.path);
-      const model = file.getModel();
-
-      moduleModel.model = Promise.resolve(model);
-
-      this.updateUserSelections(module, moduleModel.selections);
-    } else {
-      const model = getCurrentModel(this.editorApi);
-
-      moduleModel.model = Promise.resolve(model);
+      await this.editorApi.openFile(module.path);
     }
+
+    moduleModel.model = await this.editorApi.textFileService.models
+      .loadOrCreate(this.monaco.Uri.file('/sandbox' + module.path))
+      .then(textFileEditorModel => textFileEditorModel.load())
+      .then(textFileEditorModel => textFileEditorModel.textEditorModel);
+
+    this.updateUserSelections(module, moduleModel.selections);
 
     return moduleModel.model;
   };
