@@ -12,7 +12,7 @@ import {
   Label,
   Input,
   List,
-  ListItem,
+  ListAction,
   Select,
   Button,
   Switch,
@@ -83,7 +83,7 @@ export const LiveNow = () => {
             <Timer startTime={startTime} />
           </Stack>
 
-          <Text variant="muted" size={2} block marginBottom={4}>
+          <Text variant="muted" block marginBottom={4}>
             Share this link with others to invite them to the session
           </Text>
 
@@ -104,23 +104,29 @@ export const LiveNow = () => {
       <Collapsible title="Preferences" defaultOpen>
         <List>
           {isOwner && (
-            <ListItem justify="space-between">
+            <ListAction
+              onClick={() => onChatEnabledChange(!chatEnabled)}
+              justify="space-between"
+            >
               <Label htmlFor="chat_enabled">Chat enabled</Label>
               <Switch
                 id="chat_enabled"
                 on={chatEnabled}
                 onChange={() => onChatEnabledChange(!chatEnabled)}
               />
-            </ListItem>
+            </ListAction>
           )}
-          <ListItem justify="space-between">
+          <ListAction
+            justify="space-between"
+            onClick={() => onToggleNotificationsHidden()}
+          >
             <Label htmlFor="show_notifications">Show notifications</Label>
             <Switch
               id="show_notifications"
               on={!notificationsHidden}
               onChange={() => onToggleNotificationsHidden()}
             />
-          </ListItem>
+          </ListAction>
         </List>
       </Collapsible>
 
