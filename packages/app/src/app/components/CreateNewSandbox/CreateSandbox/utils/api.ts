@@ -17,6 +17,11 @@ interface IExploreTemplate {
       icon_url: string;
       color: string;
     };
+    collection?: {
+      team: {
+        name: string;
+      };
+    };
     git: {
       id: string;
       username: string;
@@ -49,6 +54,7 @@ const mapAPIResponseToTemplateInfo = (
       source: {
         template: sandbox.environment,
       },
+      collection: sandbox.collection,
       git: sandbox.git && {
         id: sandbox.git.id,
         username: sandbox.git.username,
