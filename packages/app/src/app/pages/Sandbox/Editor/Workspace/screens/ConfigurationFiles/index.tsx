@@ -109,7 +109,11 @@ export const ConfigurationFilesComponent = ({ theme }) => {
                       {config.description}
                     </Text>
                     <Button
-                      style={{ width: 'auto' }}
+                      style={{
+                        width: 'auto',
+                        height: 'auto',
+                        padding: '2px 0',
+                      }}
                       variant="secondary"
                       onClick={() => editor.moduleSelected({ id: module.id })}
                     >
@@ -142,7 +146,11 @@ export const ConfigurationFilesComponent = ({ theme }) => {
                     {config.description}
                   </Text>
                   <Button
-                    style={{ width: 'auto' }}
+                    style={{
+                      width: 'auto',
+                      height: 'auto',
+                      padding: '2px 0',
+                    }}
                     variant="secondary"
                     onClick={() =>
                       files.moduleCreated({

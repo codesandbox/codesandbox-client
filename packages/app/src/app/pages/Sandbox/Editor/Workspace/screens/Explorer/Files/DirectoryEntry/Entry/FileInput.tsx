@@ -31,13 +31,13 @@ export const FileInput: FunctionComponent<Props> = ({
   error,
   id,
 }) => {
-  const [currentValue, setCurretValue] = useState(title);
+  const [currentValue, setCurrentValue] = useState(title);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target) {
       const { value } = e.target;
       onChange(value);
-      setCurretValue(value);
+      setCurrentValue(value);
     }
   };
 
