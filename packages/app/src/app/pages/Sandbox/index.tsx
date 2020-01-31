@@ -77,6 +77,7 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
             Something went wrong
           </div>
           <Title style={{ fontSize: '1.25rem', marginBottom: 0 }}>
+            {isGithub ? 'Error importing GitHub repository: ' : ''}
             {state.editor.error}
           </Title>
           <br />
