@@ -1,10 +1,18 @@
+/**
+ *
+ * switch color for light theme
+ * secondary button color
+ * collapsible icon
+ *
+ */
 import dot from 'dot-object';
 import deepmerge from 'deepmerge';
+import Color from 'color';
 import designLanguage from '@codesandbox/common/lib/design-language/theme';
 import codesandboxBlack from '../themes/codesandbox-black';
 import codesandboxLight from '../themes/codesandbox-light.json';
 
-const polyfillTheme = (vsCodeColors, type = 'dark') => {
+const polyfillTheme = vsCodeTheme => {
   /**
    *
    * In order of importance, this is the value we use:
@@ -12,60 +20,118 @@ const polyfillTheme = (vsCodeColors, type = 'dark') => {
    * 2. or inferred value from theme
    * 3. or value from codesandbox black/light
    *
-   * if all 3 things fail (can happen to themes with unconventional colors like purple),
-   * we modify the theme and hardcode values that work well.
+   * The steps required to get there are -
+   * 1. Take vscode theme
+   * 2. Fill missing values based on existing values or codesandbox dark/light
+   * 3. Infer values that are not defined by vscode theme
    *
    */
+  let uiColors: any = {
+    // initialise objects to avoid null checks later
+    editor: {},
+    button: {},
+    input: {},
+    inputOption: {},
+    sideBar: {},
+  };
 
-  let uiColors: any = {};
+  const type = vsCodeTheme.type || guessType(vsCodeTheme);
 
-  // Step 1: Initialise colors
-  const codesandboxColors =
-    type === 'dark' ? codesandboxBlack.colors : codesandboxLight.colors;
-
-  // initialise ui colors as codesandbox theme for base
-  uiColors = dot.object(codesandboxColors);
-  // override with vscode colors that exist in theme
+  //  Step 1: Initialise with vscode theme
+  const vsCodeColors = dot.object(vsCodeTheme.colors || {});
   uiColors = deepmerge(uiColors, vsCodeColors);
 
-  // Step 2: Infer missing colors
-  // This includes colors that are not very common
-  // or are introduced by us
+  // Step 2: Fill missing values from existing values or codesandbox dark/light
 
-  const inferredColors = {
-    // global text colors
+  const codesandboxColors = ['dark', 'lc'].includes(type)
+    ? dot.object(codesandboxBlack.colors)
+    : dot.object(codesandboxLight.colors);
 
-    // foreground: 'red',
-    mutedForeground: uiColors.input.placeholderForeground,
-    // errorForeground: 'red',
+  // 2.1 First, lets fill in core values that are used to infer other values
 
-    sideBar: {
-      // foreground: 'red',
-      // background: 'red',
-      // border: 'red',
-      hoverBackground: uiColors.sideBar.border,
-    },
-    avatar: {
-      border: uiColors.sideBar.border,
-    },
-    input: {
-      // background: 'red',
-      // foreground: 'red',
-      // border: 'red',
-      // placeholderForeground: 'red',
-    },
-    inputOption: {
-      activeBorder: uiColors.input.placeholderForeground,
-    },
+  uiColors.foreground = uiColors.foreground || codesandboxColors.foreground;
+  uiColors.errorForeground =
+    uiColors.errorForeground || codesandboxColors.errorForeground;
+
+  uiColors.sideBar = {
+    background:
+      uiColors.sideBar.background ||
+      uiColors.editor.background ||
+      codesandboxColors.sideBar.background,
+    foreground:
+      uiColors.sideBar.foreground ||
+      uiColors.editor.foreground ||
+      codesandboxColors.sideBar.foreground,
+    border:
+      uiColors.sideBar.border ||
+      uiColors.editor.hoverHighlightBackground ||
+      codesandboxColors.sideBar.border,
+  };
+
+  uiColors.input = {
+    background: uiColors.input.background || uiColors.sideBar.border,
+    foreground: uiColors.input.foreground || uiColors.sideBar.foreground,
+    border: uiColors.input.border || uiColors.sideBar.border,
+    placeholderForeground:
+      uiColors.input.placeholderForeground ||
+      codesandboxColors.input.placeholderForeground,
+  };
+
+  uiColors.inputOption.activeBorder =
+    uiColors.inputOption.activeBorder || uiColors.input.placeholderForeground;
+
+  uiColors.button = {
+    background:
+      uiColors.button.background || codesandboxColors.button.background,
+    foreground:
+      uiColors.button.foreground || codesandboxColors.button.foreground,
+  };
+
+  // Step 3. Infer values that are not defined by vscode theme
+
+  // Step 3.1
+  // As all VSCode themes are built for a code editor,
+  // the design decisions made in them might not work well
+  // for an interface like ours which has other ui elements as well.
+  // To make sure the UI looks great, we change some of these design decisions
+  // made by the theme author
+
+  const decreaseContrast = type === 'dark' ? lighten : darken;
+
+  if (uiColors.sideBar.border === uiColors.sideBar.background) {
+    uiColors.sideBar.border = decreaseContrast(
+      uiColors.sideBar.background,
+      0.25
+    );
+  }
+
+  if (uiColors.sideBar.hoverBackground === uiColors.sideBar.background) {
+    uiColors.sideBar.hoverBackground = decreaseContrast(
+      uiColors.sideBar.background,
+      0.25
+    );
+  }
+
+  // Step 3.2
+  // On the same theme of design decisions for interfaces,
+  // we add a bunch of extra elements and interaction.
+  // To make these elements look natural with the theme,
+  // we infer them from the theme
+
+  const addedColors = {
+    mutedForeground: withContrast(
+      uiColors.input.placeholderForeground,
+      uiColors.sideBar.background,
+      type
+    ),
+    avatar: { border: uiColors.sideBar.border },
+    sideBar: { hoverBackground: uiColors.sideBar.border },
     button: {
-      // background: 'red',
-      // foreground: 'red',
-      // 30% overlay on top of the background color using gradient
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${uiColors.button.background}`,
     },
     secondaryButton: {
-      background: uiColors.sideBar.border,
-      foreground: uiColors.sideBar.foreground,
+      background: uiColors.input.background,
+      foreground: uiColors.input.foreground,
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${uiColors.sideBar.border}`,
     },
     dangerButton: {
@@ -80,12 +146,35 @@ const polyfillTheme = (vsCodeColors, type = 'dark') => {
     },
   };
 
-  // merge inferred colors into ui colors
-  // override with values from theme if they already exist
-  uiColors = deepmerge(uiColors, inferredColors);
-  uiColors = deepmerge(uiColors, vsCodeColors);
+  uiColors = deepmerge(uiColors, addedColors);
 
   return uiColors;
 };
 
 export default polyfillTheme;
+
+const guessType = theme => {
+  if (theme.name && theme.name.toLowerCase().includes('light')) return 'light';
+  return 'dark';
+};
+
+const lighten = (color, value) =>
+  Color(color)
+    .lighten(value)
+    .hex();
+
+const darken = (color, value) =>
+  Color(color)
+    .darken(value)
+    .hex();
+
+const withContrast = (color, background, type) => {
+  if (Color(color).contrast(Color(background)) > 4.5) return color;
+
+  // can't fix that
+  if (color === '#FFFFFF' || color === '#000000') return color;
+
+  // recursively increase contrast
+  const increaseContrast = type === 'dark' ? lighten : darken;
+  return withContrast(increaseContrast(color, 0.1), background, type);
+};
