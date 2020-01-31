@@ -387,7 +387,18 @@ export const handleError: Action<{
   */
   message: string;
   error: ApiError | Error;
-}> = ({ actions, effects }, { message, error }) => {
+  hideErrorMessage?: boolean;
+}> = ({ actions, effects }, { message, error, hideErrorMessage = false }) => {
+  if (hideErrorMessage) {
+    effects.analytics.logError(error);
+    effects.notificationToast.add({
+      message,
+      status: NotificationStatus.ERROR,
+    });
+
+    return;
+  }
+
   const isGenericError = !('response' in error) || error.response.status >= 500;
 
   if (isGenericError) {
@@ -479,10 +490,6 @@ export const handleError: Action<{
     effects.analytics.track('Patron Server Sandbox Limit Reached', {
       errorMessage: error.message,
     });
-  }
-
-  if (message.startsWith('The uploaded file is bigger')) {
-    error.message = '';
   }
 
   effects.notificationToast.add({
