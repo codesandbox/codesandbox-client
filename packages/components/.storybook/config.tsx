@@ -35,6 +35,7 @@ const GlobalStyle = createGlobalStyle`
   ${global};
   html body {
     font-family: 'Inter', sans-serif;
+    width: 400px;
     margin: 0;
     background-color: ${props =>
       // @ts-ignore
