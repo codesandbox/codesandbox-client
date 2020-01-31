@@ -29,6 +29,7 @@ import { css } from '@styled-system/css';
 import { Title } from './Title';
 import { Description } from './Description';
 import { TemplateConfig } from './TemplateConfig';
+import { Keywords } from './Keywords';
 
 export const Summary = () => {
   const {
@@ -88,7 +89,12 @@ export const Summary = () => {
                 <Title editable={owned} />
               </>
             )}
-            <Description editable={owned} />
+            <Element marginTop={2}>
+              <Description editable={owned} />
+            </Element>
+            <Element marginTop={2}>
+              <Keywords editable={owned} />
+            </Element>
           </Element>
 
           <Element as="section" css={css({ paddingX: 2 })}>
@@ -104,6 +110,7 @@ export const Summary = () => {
 
           <List>
             {customTemplate && <TemplateConfig />}
+
             {owned && (
               <ListAction justify="space-between">
                 <Label htmlFor="frozen">Frozen</Label>
