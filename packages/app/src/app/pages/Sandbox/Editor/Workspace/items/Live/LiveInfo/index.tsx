@@ -2,8 +2,6 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { sortBy } from 'lodash-es';
 import React, { FocusEvent, FunctionComponent } from 'react';
-import FollowIcon from 'react-icons/lib/io/eye';
-import UnFollowIcon from 'react-icons/lib/io/eye-disabled';
 import AddIcon from 'react-icons/lib/md/add';
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
 import RemoveIcon from 'react-icons/lib/md/remove';
@@ -15,10 +13,6 @@ import { Description, WorkspaceInputContainer } from '../../../elements';
 import LiveButton from '../LiveButton';
 
 import Countdown from './Countdown';
-import { LiveMode } from './LiveMode';
-import { Preferences } from './Preferences';
-import { User } from './User';
-
 import {
   Container,
   IconContainer,
@@ -27,23 +21,24 @@ import {
   Title,
   Users,
 } from './elements';
+import { FollowButton } from './FollowButton';
+import { LiveMode } from './LiveMode';
+import { Preferences } from './Preferences';
+import { User } from './User';
 
 export const LiveInfo: FunctionComponent = () => {
   const {
     actions: {
       live: {
         onAddEditorClicked,
-        onFollow,
         onRemoveEditorClicked,
         onSessionCloseClicked,
       },
     },
     state: {
       live: {
-        followingUserId,
         isOwner,
         isTeam,
-        liveUserId,
         reconnecting,
         roomInfo: { editorIds, mode, ownerIds, roomId, startTime, users },
       },
@@ -125,21 +120,7 @@ export const LiveInfo: FunctionComponent = () => {
                 key={owner.id}
                 user={owner}
                 type="Owner"
-                sideView={
-                  owner.id !== liveUserId && (
-                    <IconContainer>
-                      {followingUserId === owner.id ? (
-                        <Tooltip content="Stop following">
-                          <UnFollowIcon onClick={() => onFollow(null)} />
-                        </Tooltip>
-                      ) : (
-                        <Tooltip content="Follow along">
-                          <FollowIcon onClick={() => onFollow(owner.id)} />
-                        </Tooltip>
-                      )}
-                    </IconContainer>
-                  )
-                }
+                sideView={<FollowButton user={owner} />}
               />
             ))}
           </Users>
@@ -158,19 +139,7 @@ export const LiveInfo: FunctionComponent = () => {
                 type="Editor"
                 sideView={
                   <>
-                    {user.id !== liveUserId && (
-                      <IconContainer>
-                        {followingUserId === user.id ? (
-                          <Tooltip content="Stop following">
-                            <UnFollowIcon onClick={() => onFollow(null)} />
-                          </Tooltip>
-                        ) : (
-                          <Tooltip content="Follow along">
-                            <FollowIcon onClick={() => onFollow(user.id)} />
-                          </Tooltip>
-                        )}
-                      </IconContainer>
-                    )}
+                    <FollowButton user={user} />
 
                     {isOwner && mode === 'classroom' && (
                       <IconContainer style={{ marginLeft: '0.25rem' }}>
@@ -201,19 +170,7 @@ export const LiveInfo: FunctionComponent = () => {
                 type="Spectator"
                 sideView={
                   <>
-                    {mode !== 'classroom' && user.id !== liveUserId && (
-                      <IconContainer>
-                        {followingUserId === user.id ? (
-                          <Tooltip content="Stop following">
-                            <UnFollowIcon onClick={() => onFollow(null)} />
-                          </Tooltip>
-                        ) : (
-                          <Tooltip content="Follow along">
-                            <FollowIcon onClick={() => onFollow(user.id)} />
-                          </Tooltip>
-                        )}
-                      </IconContainer>
-                    )}
+                    {mode !== 'classroom' && <FollowButton user={user} />}
 
                     {isOwner && mode === 'classroom' && (
                       <IconContainer style={{ marginLeft: '0.25rem' }}>
