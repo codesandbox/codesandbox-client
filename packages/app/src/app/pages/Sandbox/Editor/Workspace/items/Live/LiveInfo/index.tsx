@@ -2,7 +2,6 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { sortBy } from 'lodash-es';
 import React, { FocusEvent, FunctionComponent } from 'react';
-import AddIcon from 'react-icons/lib/md/add';
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
 import RemoveIcon from 'react-icons/lib/md/remove';
 
@@ -23,17 +22,14 @@ import {
 } from './elements';
 import { FollowButton } from './FollowButton';
 import { LiveMode } from './LiveMode';
+import { MakeEditorButton } from './MakeEditorButton';
 import { Preferences } from './Preferences';
 import { User } from './User';
 
 export const LiveInfo: FunctionComponent = () => {
   const {
     actions: {
-      live: {
-        onAddEditorClicked,
-        onRemoveEditorClicked,
-        onSessionCloseClicked,
-      },
+      live: { onRemoveEditorClicked, onSessionCloseClicked },
     },
     state: {
       live: {
@@ -173,13 +169,7 @@ export const LiveInfo: FunctionComponent = () => {
                     {mode !== 'classroom' && <FollowButton user={user} />}
 
                     {isOwner && mode === 'classroom' && (
-                      <IconContainer style={{ marginLeft: '0.25rem' }}>
-                        <Tooltip content="Make editor">
-                          <AddIcon
-                            onClick={() => onAddEditorClicked(user.id)}
-                          />
-                        </Tooltip>
-                      </IconContainer>
+                      <MakeEditorButton user={user} />
                     )}
                   </>
                 }
