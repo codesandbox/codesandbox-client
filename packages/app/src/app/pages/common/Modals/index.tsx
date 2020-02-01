@@ -36,7 +36,9 @@ import { SurveyModal } from './SurveyModal';
 import UploadModal from './UploadModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
-  import('./MoveSandboxFolderModal')
+  import('./MoveSandboxFolderModal').then(module => ({
+    default: module.MoveSandboxFolderModal,
+  }))
 );
 
 const modals = {
