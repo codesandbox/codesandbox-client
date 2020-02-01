@@ -1,11 +1,10 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { LiveUser } from '@codesandbox/common/lib/types';
 import React, { FunctionComponent } from 'react';
 import RemoveIcon from 'react-icons/lib/md/remove';
 
 import { useOvermind } from 'app/overmind';
 
-import { IconContainer } from './elements';
+import { Button } from './Button';
 
 type Props = {
   user: LiveUser;
@@ -20,10 +19,10 @@ export const MakeSpectatorButton: FunctionComponent<Props> = ({
   } = useOvermind();
 
   return (
-    <IconContainer>
-      <Tooltip content="Make spectator">
-        <RemoveIcon onClick={() => onRemoveEditorClicked(id)} />
-      </Tooltip>
-    </IconContainer>
+    <Button
+      Icon={() => <RemoveIcon onClick={() => onRemoveEditorClicked(id)} />}
+      isSecond
+      tooltip="Make spectator"
+    />
   );
 };

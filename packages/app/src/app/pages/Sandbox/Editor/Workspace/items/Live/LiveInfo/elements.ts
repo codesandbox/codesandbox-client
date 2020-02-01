@@ -45,15 +45,3 @@ export const Users = styled.div`
     color: ${theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   `};
 `;
-
-export const IconContainer = styled.div`
-  ${({ theme }) => css`
-    transition: 0.3s ease color;
-    color: ${theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
-    cursor: pointer;
-
-    &:hover {
-      color: white;
-    }
-  `};
-`;
