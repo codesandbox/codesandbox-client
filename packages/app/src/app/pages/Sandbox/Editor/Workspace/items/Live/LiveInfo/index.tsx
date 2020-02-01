@@ -10,7 +10,15 @@ import { Description, WorkspaceInputContainer } from '../../../elements';
 import LiveButton from '../LiveButton';
 
 import Countdown from './Countdown';
-import { Container, Input, SubTitle, Title, Users } from './elements';
+import {
+  Container,
+  Input,
+  LiveMessage,
+  NoOtherUsers,
+  SubTitle,
+  Title,
+  Users,
+} from './elements';
 import { FollowButton } from './FollowButton';
 import { LiveMode } from './LiveMode';
 import { MakeEditorButton } from './MakeEditorButton';
@@ -58,14 +66,7 @@ export const LiveInfo: FunctionComponent = () => {
   return (
     <Container>
       <Title>
-        <div
-          style={{
-            fontSize: '1rem',
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+        <LiveMessage>
           {reconnecting ? (
             'Reconnecting...'
           ) : (
@@ -73,7 +74,7 @@ export const LiveInfo: FunctionComponent = () => {
               <RecordIcon /> {getLiveMessage()}
             </>
           )}
-        </div>
+        </LiveMessage>
 
         <div>{startTime !== null && <Countdown time={startTime} />}</div>
       </Title>
@@ -162,16 +163,7 @@ export const LiveInfo: FunctionComponent = () => {
               />
             ))
           ) : (
-            <div
-              style={{
-                color: 'rgba(255, 255, 255, 0.8)',
-                fontWeight: 600,
-                fontSize: '.875rem',
-                marginTop: '0.25rem',
-              }}
-            >
-              No other users in session, invite them!
-            </div>
+            <NoOtherUsers>No other users in session, invite them!</NoOtherUsers>
           )}
         </Users>
       </Margin>

@@ -10,6 +10,35 @@ export const Container = styled.div`
   `};
 `;
 
+export const Input = styled(InputBase)`
+  width: calc(100% - 1.5rem);
+  margin: 0 0.75rem;
+  font-size: 0.875rem;
+`;
+
+export const LiveMessage = styled.div`
+  font-size: 1rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+`;
+
+export const NoOtherUsers = styled.div`
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+`;
+
+export const SubTitle = styled.div`
+  text-transform: uppercase;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+
+  padding-left: 1rem;
+  font-size: 0.875rem;
+`;
+
 export const Title = styled.div`
   color: #fd2439fa;
   font-weight: 800;
@@ -22,21 +51,6 @@ export const Title = styled.div`
   svg {
     margin-right: 0.25rem;
   }
-`;
-
-export const Input = styled(InputBase)`
-  width: calc(100% - 1.5rem);
-  margin: 0 0.75rem;
-  font-size: 0.875rem;
-`;
-
-export const SubTitle = styled.div`
-  text-transform: uppercase;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.5);
-
-  padding-left: 1rem;
-  font-size: 0.875rem;
 `;
 
 export const Users = styled.div`
