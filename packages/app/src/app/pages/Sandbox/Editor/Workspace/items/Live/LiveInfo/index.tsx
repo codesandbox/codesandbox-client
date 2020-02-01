@@ -1,9 +1,7 @@
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { sortBy } from 'lodash-es';
 import React, { FocusEvent, FunctionComponent } from 'react';
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
-import RemoveIcon from 'react-icons/lib/md/remove';
 
 import { useOvermind } from 'app/overmind';
 
@@ -12,24 +10,18 @@ import { Description, WorkspaceInputContainer } from '../../../elements';
 import LiveButton from '../LiveButton';
 
 import Countdown from './Countdown';
-import {
-  Container,
-  IconContainer,
-  Input,
-  SubTitle,
-  Title,
-  Users,
-} from './elements';
+import { Container, Input, SubTitle, Title, Users } from './elements';
 import { FollowButton } from './FollowButton';
 import { LiveMode } from './LiveMode';
 import { MakeEditorButton } from './MakeEditorButton';
+import { MakeSpectatorButton } from './MakeSpectatorButton';
 import { Preferences } from './Preferences';
 import { User } from './User';
 
 export const LiveInfo: FunctionComponent = () => {
   const {
     actions: {
-      live: { onRemoveEditorClicked, onSessionCloseClicked },
+      live: { onSessionCloseClicked },
     },
     state: {
       live: {
@@ -138,13 +130,7 @@ export const LiveInfo: FunctionComponent = () => {
                     <FollowButton user={user} />
 
                     {isOwner && mode === 'classroom' && (
-                      <IconContainer style={{ marginLeft: '0.25rem' }}>
-                        <Tooltip content="Make spectator">
-                          <RemoveIcon
-                            onClick={() => onRemoveEditorClicked(user.id)}
-                          />
-                        </Tooltip>
-                      </IconContainer>
+                      <MakeSpectatorButton user={user} />
                     )}
                   </>
                 }
