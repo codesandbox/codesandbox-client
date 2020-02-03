@@ -25,10 +25,10 @@ import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
 type State = {
-  currentId: string;
+  currentId: string | null;
   currentModuleShortid: string | null;
   isForkingSandbox: boolean;
-  mainModuleShortid: string;
+  mainModuleShortid: string | null;
   sandboxes: {
     [id: string]: Sandbox;
   };
@@ -40,7 +40,7 @@ type State = {
   error: string | null;
   isResizing: boolean;
   changedModuleShortids: Derive<State, string[]>;
-  currentTabId: string;
+  currentTabId: string | null;
   tabs: Tabs;
   errors: ModuleError[];
   corrections: ModuleCorrection[];
@@ -54,13 +54,13 @@ type State = {
   statusBar: boolean;
   previewWindowOrientation: WindowOrientation;
   isAllModulesSynced: Derive<State, boolean>;
-  currentSandbox: Derive<State, Sandbox>;
+  currentSandbox: Derive<State, Sandbox | null>;
   currentModule: Derive<State, Module>;
-  mainModule: Derive<State, Module>;
-  currentPackageJSON: Derive<State, Module>;
-  currentPackageJSONCode: Derive<State, string>;
-  parsedConfigurations: Derive<State, ParsedConfigurationFiles> | null;
-  currentTab: Derive<State, ModuleTab | DiffTab>;
+  mainModule: Derive<State, Module | null>;
+  currentPackageJSON: Derive<State, Module | null>;
+  currentPackageJSONCode: Derive<State, string | null>;
+  parsedConfigurations: Derive<State, ParsedConfigurationFiles | null>;
+  currentTab: Derive<State, ModuleTab | DiffTab | undefined>;
   modulesByPath: SandboxFs;
   isAdvancedEditor: Derive<State, boolean>;
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
@@ -90,7 +90,7 @@ export const state: State = {
       }
 
       return aggr;
-    }, []);
+    }, [] as string[]);
   },
   currentTabId: null,
   tabs: [],
@@ -120,7 +120,14 @@ export const state: State = {
     devToolIndex: 0,
     tabPosition: 0,
   },
-  currentSandbox: ({ sandboxes, currentId }) => sandboxes[currentId],
+  currentSandbox: ({ sandboxes, currentId }) => {
+    if (currentId && sandboxes[currentId]) {
+      return sandboxes[currentId];
+    }
+
+    return null;
+  },
+
   isAllModulesSynced: ({ changedModuleShortids }) =>
     !changedModuleShortids.length,
   currentModule: ({ currentSandbox, currentModuleShortid }) =>
@@ -170,10 +177,10 @@ export const state: State = {
       m => m.directoryShortid == null && m.title === 'package.json'
     );
 
-    return module;
+    return module || null;
   },
   currentPackageJSONCode: ({ currentSandbox, currentPackageJSON }) => {
-    if (!currentPackageJSON) {
+    if (!currentPackageJSON || !currentSandbox) {
       return null;
     }
 
@@ -181,10 +188,13 @@ export const state: State = {
       ? currentPackageJSON.code
       : generateFileFromSandbox(currentSandbox);
   },
-  shouldDirectoryBeOpen: ({
-    currentSandbox,
-    currentModule,
-  }) => directoryShortid => {
+  shouldDirectoryBeOpen: ({ currentSandbox, currentModule }) => (
+    directoryShortid: string
+  ) => {
+    if (!currentSandbox) {
+      return false;
+    }
+
     const { modules, directories } = currentSandbox;
     const currentModuleId = currentModule.id;
     const currentModuleParents = getModuleParents(
@@ -201,7 +211,7 @@ export const state: State = {
     parsedConfigurations,
     workspaceConfigCode: intermediatePreviewCode,
   }) => {
-    if (!sandbox) {
+    if (!sandbox || !parsedConfigurations) {
       return [];
     }
 
@@ -255,7 +265,7 @@ export const state: State = {
 };
 
 // This should be moved somewhere else
-function getModuleParents(modules, directories, id) {
+function getModuleParents(modules, directories, id): string[] {
   const module = modules.find(moduleEntry => moduleEntry.id === id);
 
   if (!module) return [];
@@ -263,7 +273,7 @@ function getModuleParents(modules, directories, id) {
   let directory = directories.find(
     directoryEntry => directoryEntry.shortid === module.directoryShortid
   );
-  let directoryIds = [];
+  let directoryIds: string[] = [];
   while (directory != null) {
     directoryIds = [...directoryIds, directory.id];
     directory = directories.find(

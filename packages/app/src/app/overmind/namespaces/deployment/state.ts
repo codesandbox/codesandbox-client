@@ -3,13 +3,13 @@ import { NetlifySite, ZeitDeployment } from '@codesandbox/common/lib/types';
 type State = {
   hasAlias: boolean;
   building: boolean;
-  netlifyClaimUrl: string;
-  netlifyLogs: string;
-  netlifySite: NetlifySite;
+  netlifyClaimUrl: string | null;
+  netlifyLogs: string | null;
+  netlifySite: NetlifySite | null;
   deploysBeingDeleted: string[];
-  deployToDelete: string;
+  deployToDelete: string | null;
   deploying: boolean;
-  url: string;
+  url: string | null;
   gettingDeploys: boolean;
   sandboxDeploys: ZeitDeployment[];
 };

@@ -6,6 +6,7 @@ export const getZeitUserDetails: AsyncAction = async ({
   effects,
 }) => {
   if (
+    state.user &&
     state.user.integrations.zeit &&
     state.user.integrations.zeit.token &&
     !state.user.integrations.zeit.email

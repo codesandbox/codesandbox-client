@@ -145,7 +145,7 @@ export type GitInfo = {
   username: string;
   path: string;
   branch: string;
-  commitSha: string;
+  commitSha: string | null;
 };
 
 export type SmallSandbox = {
@@ -303,7 +303,7 @@ export type Sandbox = {
   id: string;
   alias: string | null;
   title: string | null;
-  description: string | null;
+  description: string;
   viewCount: number;
   likeCount: number;
   forkCount: number;
@@ -658,9 +658,9 @@ export type UploadedFilesInfo = {
 };
 
 export type SandboxUrlSourceData = {
-  id: string;
-  alias: string | null;
-  git?: GitInfo;
+  id?: string | null;
+  alias?: string | null;
+  git?: GitInfo | null;
 };
 
 export type DevToolsTabPosition = {

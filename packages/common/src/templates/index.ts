@@ -1,32 +1,32 @@
 import adonis from './adonis';
 import angular from './angular';
+import apollo from './apollo-server';
 import babel from './babel';
-import parcel from './parcel';
-import preact from './preact';
-import reason from './reason';
-import react from './react';
-import reactTs from './react-ts';
-import svelte from './svelte';
-import vue from './vue';
-import ember from './ember';
+import custom from './custom';
 import cxjs from './cxjs';
 import dojo from './dojo';
-import custom from './custom';
+import ember from './ember';
 import gatsby from './gatsby';
+import gridsome from './gridsome';
 import marko from './marko';
-import nuxt from './nuxt';
+import mdxDeck from './mdx-deck';
+import nest from './nest';
 import next from './next';
 import node from './node';
-import apollo from './apollo-server';
+import nuxt from './nuxt';
+import parcel from './parcel';
+import preact from './preact';
+import quasar from './quasar';
+import react from './react';
+import reactTs from './react-ts';
+import reason from './reason';
 import sapper from './sapper';
-import nest from './nest';
 import staticTemplate from './static';
 import styleguidist from './styleguidist';
-import gridsome from './gridsome';
-import vuepress from './vuepress';
-import mdxDeck from './mdx-deck';
-import quasar from './quasar';
+import svelte from './svelte';
 import unibit from './unibit';
+import vue from './vue';
+import vuepress from './vuepress';
 
 export {
   adonis,
@@ -91,7 +91,7 @@ export type TemplateType =
   | 'custom'
   | 'babel-repl';
 
-export default function getDefinition(theme?: TemplateType) {
+export default function getDefinition(theme?: TemplateType | null) {
   switch (theme) {
     case adonis.name:
       return adonis;

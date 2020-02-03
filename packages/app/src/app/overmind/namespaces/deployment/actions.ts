@@ -64,7 +64,7 @@ export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
 };
 
 export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
-  if (!state.user.integrations.zeit) {
+  if (!state.user || !state.user.integrations.zeit) {
     return;
   }
 
@@ -74,9 +74,11 @@ export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
     const zeitConfig = effects.zeit.getConfig(state.editor.currentSandbox);
 
     state.deployment.hasAlias = !!zeitConfig.alias;
-    state.deployment.sandboxDeploys = await effects.zeit.getDeployments(
-      zeitConfig.name
-    );
+    if (zeitConfig.name) {
+      state.deployment.sandboxDeploys = await effects.zeit.getDeployments(
+        zeitConfig.name
+      );
+    }
   } catch (error) {
     actions.internal.handleError({
       message: getZeitErrorMessage(error),
@@ -119,7 +121,7 @@ export const deploySandboxClicked: AsyncAction = async ({
 }) => {
   state.currentModal = 'deployment';
 
-  const zeitIntegration = state.user.integrations.zeit;
+  const zeitIntegration = state.user && state.user.integrations.zeit;
 
   if (!zeitIntegration || !zeitIntegration.token) {
     effects.notificationToast.error(
@@ -132,7 +134,9 @@ export const deploySandboxClicked: AsyncAction = async ({
     try {
       const user = await effects.zeit.getUser();
 
-      state.user.integrations.zeit.email = user.email;
+      if (state.user && state.user.integrations.zeit) {
+        state.user.integrations.zeit.email = user.email;
+      }
     } catch (error) {
       actions.internal.handleError({
         message: 'Could not authorize with ZEIT',
@@ -156,6 +160,10 @@ export const deleteDeployment: AsyncAction = async ({
   actions,
 }) => {
   const id = state.deployment.deployToDelete;
+
+  if (!id) {
+    return;
+  }
 
   state.currentModal = null;
   state.deployment.deploysBeingDeleted.push(id);
