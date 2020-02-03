@@ -1,37 +1,25 @@
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { ServerPort } from '@codesandbox/common/lib/types';
 import React, { FunctionComponent } from 'react';
-import BrowserIcon from 'react-icons/lib/go/browser';
 
 import { useOvermind } from 'app/overmind';
 
-import {
-  Description,
-  WorkspaceInputContainer,
-  EntryContainer,
-} from '../../elements';
+import { Description, WorkspaceInputContainer } from '../../elements';
 
 import { ControlContainer } from './ControlContainer';
-import { SubTitle, TasksContainer, Port, MainBadge } from './elements';
+import { SubTitle, TasksContainer } from './elements';
+import { OpenPorts } from './OpenPorts';
 import { SecretKeys } from './SecretKeys';
 import { Status } from './Status';
 import { Tasks } from './Tasks';
 
 export const Server: FunctionComponent = () => {
   const {
-    actions: {
-      server: { onBrowserTabOpened, onBrowserFromPortOpened },
-    },
     state: {
-      editor: { currentSandbox: sandbox, parsedConfigurations },
+      editor: { parsedConfigurations },
       server,
     },
   } = useOvermind();
   const disconnected = server.status !== 'connected';
-
-  const openPort = (port: ServerPort) => {
-    onBrowserFromPortOpened({ port });
-  };
 
   return (
     <div>
@@ -60,58 +48,7 @@ export const Server: FunctionComponent = () => {
         </Margin>
       </Margin>
 
-      <Margin top={1} bottom={0.5}>
-        <SubTitle>Open Ports</SubTitle>
-
-        <Margin top={0.5}>
-          {server.ports.length ? (
-            server.ports.map((port: ServerPort) => (
-              <EntryContainer
-                style={{ position: 'relative' }}
-                onClick={() => openPort(port)}
-              >
-                <Port>
-                  <BrowserIcon />
-
-                  <div>{port.name || port.port}</div>
-                </Port>
-
-                {port.main && <MainBadge>main</MainBadge>}
-              </EntryContainer>
-            ))
-          ) : (
-            <Description>
-              No ports are opened. Maybe the server is still starting or it
-              doesn{"'"}t open any ports.
-            </Description>
-          )}
-
-          {['gatsby', 'gridsome'].includes(sandbox.template) &&
-          server.ports.length ? (
-            <EntryContainer
-              style={{ position: 'relative' }}
-              onClick={() =>
-                onBrowserTabOpened({
-                  closeable: true,
-                  options: {
-                    url:
-                      sandbox.template === 'gridsome'
-                        ? '/___explore'
-                        : '/___graphql',
-                    title: 'GraphiQL',
-                  },
-                })
-              }
-            >
-              <Port>
-                <BrowserIcon />
-
-                <div>GraphiQL</div>
-              </Port>
-            </EntryContainer>
-          ) : null}
-        </Margin>
-      </Margin>
+      <OpenPorts />
 
       <ControlContainer />
 

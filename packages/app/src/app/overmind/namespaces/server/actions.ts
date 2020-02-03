@@ -174,16 +174,13 @@ export const onCodeSandboxAPIMessage: Action<{
 };
 
 type BrowserOptions = { title?: string; url?: string } & (
-  | {
-      port: number;
-    }
+  | { port: number }
   | { url: string }
 );
-
 export const onBrowserTabOpened: Action<{
   closeable?: boolean;
   options?: BrowserOptions;
-}> = ({ actions, state }, { options, closeable }) => {
+}> = ({ actions, state }, { closeable, options }) => {
   const tab: ViewTab = {
     id: 'codesandbox.browser',
   };
@@ -208,17 +205,18 @@ export const onBrowserTabOpened: Action<{
   }
 };
 
-export const onBrowserFromPortOpened: Action<{
-  port: ServerPort;
-}> = ({ actions }, { port }) => {
-  if (port.main) {
+export const onBrowserFromPortOpened: Action<ServerPort> = (
+  { actions },
+  { hostname, main, port }
+) => {
+  if (main) {
     actions.server.onBrowserTabOpened({});
   } else {
     actions.server.onBrowserTabOpened({
       closeable: true,
       options: {
-        port: port.port,
-        url: `https://${port.hostname}`,
+        port,
+        url: `https://${hostname}`,
       },
     });
   }
