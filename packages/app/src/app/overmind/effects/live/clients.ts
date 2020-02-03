@@ -90,7 +90,7 @@ export default (
         client = this.create(moduleShortid, revision);
       }
 
-      return client;
+      return client!;
     },
     create(moduleShortid, initialRevision) {
       const client = new CodeSandboxOTClient(
