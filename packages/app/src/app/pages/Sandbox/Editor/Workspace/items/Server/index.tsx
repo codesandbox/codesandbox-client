@@ -19,7 +19,7 @@ import {
   ActionButton,
   Power as PowerIcon,
 } from './elements';
-import { EnvironmentVariables } from './EnvVars';
+import { SecretKeys } from './SecretKeys';
 import { Status } from './Status';
 import { Tasks } from './Tasks';
 
@@ -34,8 +34,8 @@ export const Server: FunctionComponent = () => {
       },
     },
     state: {
-      server,
       editor: { currentSandbox: sandbox, parsedConfigurations },
+      server,
     },
   } = useOvermind();
 
@@ -157,18 +157,7 @@ export const Server: FunctionComponent = () => {
         </WorkspaceInputContainer>
       </Margin>
 
-      <Margin top={1}>
-        <SubTitle>Secret Keys</SubTitle>
-
-        <Description>
-          Secrets are available as environment variables. They are kept private
-          and will not be transferred between forks.
-        </Description>
-
-        <Margin top={0.5}>
-          <EnvironmentVariables />
-        </Margin>
-      </Margin>
+      <SecretKeys />
     </div>
   );
 };

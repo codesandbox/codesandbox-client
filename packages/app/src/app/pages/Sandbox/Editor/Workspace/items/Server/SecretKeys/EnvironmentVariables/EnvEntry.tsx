@@ -1,43 +1,59 @@
-import React, { useState } from 'react';
+import { EnvironmentVariable } from '@codesandbox/common/lib/types';
+import React, {
+  FunctionComponent,
+  MouseEvent,
+  ReactSVGElement,
+  useState,
+} from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 import EditIcon from 'react-icons/lib/go/pencil';
+
+import { useOvermind } from 'app/overmind';
 
 import {
   EntryContainer,
   IconArea,
   Icon,
   WorkspaceInputContainer,
-} from '../../../elements';
+} from '../../../../elements';
 import { EnvironmentIcon, IconWrapper } from './elements';
 import { EnvModal } from './EnvModal';
 
-export const EnvEntry = ({ name, onSubmit, onDelete, value }) => {
-  const [hovering, setHovering] = useState(false);
+type Props = {
+  name: string;
+  value: string;
+};
+export const EnvEntry: FunctionComponent<Props> = ({ name, value }) => {
+  const {
+    actions: {
+      editor: { deleteEnvironmentVariable, updateEnvironmentVariables },
+    },
+  } = useOvermind();
   const [editing, setEditing] = useState(false);
-
-  const enableEditing = () => setEditing(true);
+  const [hovering, setHovering] = useState(false);
 
   const disableEditing = () => setEditing(false);
+  const enableEditing = () => setEditing(true);
+  const onDeleteEntry = (event: MouseEvent<ReactSVGElement>) => {
+    event.stopPropagation();
 
-  const onSubmitEntry = values => {
+    deleteEnvironmentVariable(name);
+  };
+  const onSubmitEntry = (values: EnvironmentVariable) => {
     setEditing(false);
 
     if (values.name !== name) {
       // The name changed, we recreate the env var.
-      onDelete(name);
+      deleteEnvironmentVariable(name);
     }
-    onSubmit(values);
-  };
 
-  const onDeleteEntry = e => {
-    e.stopPropagation();
-    onDelete(name);
+    updateEnvironmentVariables(values);
   };
 
   return editing || !value ? (
     <WorkspaceInputContainer>
       <EnvModal
-        onCancel={!value ? undefined : disableEditing}
+        onCancel={value ? disableEditing : undefined}
         onSubmit={onSubmitEntry}
         name={name}
         value={value}
@@ -45,18 +61,20 @@ export const EnvEntry = ({ name, onSubmit, onDelete, value }) => {
     </WorkspaceInputContainer>
   ) : (
     <EntryContainer
+      onClick={enableEditing}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      onClick={enableEditing}
     >
       <IconWrapper>
         <EnvironmentIcon /> {name}
       </IconWrapper>
+
       {hovering && (
         <IconArea>
           <Icon>
             <EditIcon onClick={enableEditing} />
           </Icon>
+
           <Icon>
             <CrossIcon onClick={onDeleteEntry} />
           </Icon>

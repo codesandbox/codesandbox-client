@@ -1,5 +1,7 @@
-import styled from 'styled-components';
 import EnvIcon from 'react-icons/lib/go/key';
+import styled from 'styled-components';
+
+import { WorkspaceInputContainer } from '../../../../elements';
 
 export const EnvironmentIcon = styled(EnvIcon)`
   margin-right: 0.6rem;
@@ -12,16 +14,10 @@ export const IconWrapper = styled.div`
   align-items: center;
 `;
 
-export const InputContainer = styled.div`
-  display: flex;
-  width: 100%;
+export const EnvModalContainer = styled(WorkspaceInputContainer)`
   flex-direction: column;
-  margin-bottom: 0.5rem;
 `;
 
-export const ErrorMessage = styled.div`
-  color: ${props => props.theme.red};
-  font-size: 12px;
-  margin: 0.5rem 0;
+export const LoadingContainer = styled.div`
   font-style: italic;
 `;

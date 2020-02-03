@@ -602,9 +602,10 @@ export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = asyn
   effects.codesandboxApi.restartSandbox();
 };
 
-export const deleteEnvironmentVariable: AsyncAction<{
-  name: string;
-}> = async ({ state, effects }, { name }) => {
+export const deleteEnvironmentVariable: AsyncAction<string> = async (
+  { effects, state },
+  name
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
