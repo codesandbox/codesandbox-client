@@ -1,5 +1,6 @@
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
@@ -12,6 +13,8 @@ import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
 import { Navigation } from './Navigation';
+import { Navigation as NavigationOld } from './NavigationOld';
+
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 
@@ -82,9 +85,15 @@ const ContentSplit: React.FC = () => {
         <Header zenMode={state.preferences.settings.zenMode} />
 
         <Fullscreen style={{ width: 'initial' }}>
-          {!hideNavigation && (
-            <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
-          )}
+          {!hideNavigation &&
+            (REDESIGNED_SIDEBAR ? (
+              <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
+            ) : (
+              <NavigationOld
+                topOffset={topOffset}
+                bottomOffset={bottomOffset}
+              />
+            ))}
 
           <div
             style={{
