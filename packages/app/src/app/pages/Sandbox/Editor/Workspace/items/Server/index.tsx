@@ -11,14 +11,8 @@ import {
   EntryContainer,
 } from '../../elements';
 
-import {
-  SubTitle,
-  TasksContainer,
-  Port,
-  MainBadge,
-  ActionButton,
-  Power as PowerIcon,
-} from './elements';
+import { ControlContainer } from './ControlContainer';
+import { SubTitle, TasksContainer, Port, MainBadge } from './elements';
 import { SecretKeys } from './SecretKeys';
 import { Status } from './Status';
 import { Tasks } from './Tasks';
@@ -26,19 +20,13 @@ import { Tasks } from './Tasks';
 export const Server: FunctionComponent = () => {
   const {
     actions: {
-      server: {
-        onBrowserTabOpened,
-        onBrowserFromPortOpened,
-        restartContainer,
-        restartSandbox,
-      },
+      server: { onBrowserTabOpened, onBrowserFromPortOpened },
     },
     state: {
       editor: { currentSandbox: sandbox, parsedConfigurations },
       server,
     },
   } = useOvermind();
-
   const disconnected = server.status !== 'connected';
 
   const openPort = (port: ServerPort) => {
@@ -125,37 +113,7 @@ export const Server: FunctionComponent = () => {
         </Margin>
       </Margin>
 
-      <Margin top={1} bottom={0.5}>
-        <SubTitle style={{ marginBottom: '.5rem' }}>Control Container</SubTitle>
-
-        <WorkspaceInputContainer>
-          <ActionButton
-            small
-            block
-            disabled={
-              disconnected || server.containerStatus !== 'sandbox-started'
-            }
-            onClick={() => restartSandbox()}
-          >
-            <>
-              <PowerIcon /> Restart Sandbox
-            </>
-          </ActionButton>
-        </WorkspaceInputContainer>
-
-        <WorkspaceInputContainer>
-          <ActionButton
-            small
-            block
-            disabled={disconnected || server.containerStatus === 'initializing'}
-            onClick={() => restartContainer()}
-          >
-            <>
-              <PowerIcon /> Restart Server
-            </>
-          </ActionButton>
-        </WorkspaceInputContainer>
-      </Margin>
+      <ControlContainer />
 
       <SecretKeys />
     </div>

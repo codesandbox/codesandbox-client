@@ -1,6 +1,4 @@
 import styled, { css } from 'styled-components';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import PowerIcon from 'react-icons/lib/md/power-settings-new';
 import { WorkspaceInputContainer } from '../../elements';
 
 export const SubTitle = styled.div`
@@ -39,15 +37,4 @@ export const MainBadge = styled.div`
   font-weight: 600;
   position: absolute;
   right: 2rem;
-`;
-
-export const ActionButton = styled(Button)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const Power = styled(PowerIcon)`
-  font-size: 1.125em;
-  margin-right: 0.25rem;
 `;
