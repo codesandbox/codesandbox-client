@@ -115,7 +115,7 @@ const ContentSplit: React.FC = () => {
                 visibility: state.workspace.workspaceHidden
                   ? 'hidden'
                   : 'visible',
-                maxWidth: state.workspace.workspaceHidden ? 0 : 400,
+                maxWidth: state.workspace.workspaceHidden ? 0 : 'inherit',
               }}
               pane2Style={{
                 height: '100%',
