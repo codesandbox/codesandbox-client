@@ -34,7 +34,7 @@ import {
   ember,
   vue,
   preact,
-  // rax,
+  rax,
   reactTs,
   svelte,
   angular,
@@ -70,7 +70,7 @@ export default function getIcon(theme: TemplateType) {
       return VueIcon;
     case preact.name:
       return PreactIcon;
-    // case rax.name:
+    case rax.name:
     //   return RaxIcon;  
     case reactTs.name:
       return ReactIcon;

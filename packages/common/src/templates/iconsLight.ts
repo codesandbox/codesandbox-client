@@ -6,6 +6,7 @@ import {
   ReasonIconLight,
   EmberIconLight,
   PreactIconLight,
+  // RaxIconLight,
   VueIconLight,
   SvelteIconLight,
   DojoIconLight,
@@ -33,6 +34,7 @@ import {
   ember,
   vue,
   preact,
+  rax,
   reactTs,
   svelte,
   angular,
@@ -68,6 +70,8 @@ export default function getIcon(theme: TemplateType) {
       return VueIconLight;
     case preact.name:
       return PreactIconLight;
+    case rax.name:
+    //   return RaxIconLight;  
     case reactTs.name:
       return ReactIconLight;
     case svelte.name:
