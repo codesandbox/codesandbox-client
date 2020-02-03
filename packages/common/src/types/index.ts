@@ -405,8 +405,8 @@ export type Settings = {
   trailingComma: string;
   useTabs: boolean;
   enableLigatures: boolean;
-  customVSCodeTheme: string;
-  manualCustomVSCodeTheme: string;
+  customVSCodeTheme: string | null;
+  manualCustomVSCodeTheme: string | null;
   experimentVSCode: boolean;
 };
 
@@ -669,12 +669,9 @@ export type DevToolsTabPosition = {
 };
 
 export type LiveMessage<data = unknown> = {
-  payload: {
-    event: LiveMessageEvent;
-    data: data;
-    _isOwnMessage: boolean;
-  };
-  roomInfo: RoomInfo;
+  event: LiveMessageEvent;
+  data: data;
+  _isOwnMessage: boolean;
 };
 
 export enum LiveMessageEvent {

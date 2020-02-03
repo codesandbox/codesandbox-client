@@ -94,13 +94,15 @@ export const initializeModuleState: Action<any> = (
   { state, actions, effects },
   moduleState
 ) => {
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
   Object.keys(moduleState).forEach(moduleShortid => {
     const moduleInfo = moduleState[moduleShortid];
 
     // Module has not been saved, so is different
-    const module = state.editor.currentSandbox.modules.find(
-      m => m.shortid === moduleShortid
-    );
+    const module = sandbox.modules.find(m => m.shortid === moduleShortid);
 
     if (module) {
       if (!('code' in moduleInfo)) {

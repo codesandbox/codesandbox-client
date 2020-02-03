@@ -32,6 +32,10 @@ export const sandboxesPageChanged: AsyncAction<{
   state.profile.isLoadingSandboxes = true;
   state.profile.currentSandboxesPage = page;
 
+  if (!state.profile.current) {
+    return;
+  }
+
   const { username } = state.profile.current;
   if (
     !state.profile.sandboxes[username] ||
@@ -53,6 +57,10 @@ export const likedSandboxesPageChanged: AsyncAction<{
 }> = async ({ state, effects }, { page }) => {
   state.profile.isLoadingSandboxes = true;
   state.profile.currentLikedSandboxesPage = page;
+
+  if (!state.profile.current) {
+    return;
+  }
 
   const { username } = state.profile.current;
 
@@ -88,10 +96,19 @@ export const newSandboxShowcaseSelected: AsyncAction<string> = async (
   id
 ) => {
   state.currentModal = null;
+
+  if (!state.profile.currentProfileId) {
+    return;
+  }
+
   state.profile.profiles[
     state.profile.currentProfileId
   ].showcasedSandboxShortid = id;
   state.profile.isLoadingProfile = true;
+
+  if (!state.user) {
+    return;
+  }
 
   const [sandbox] = await Promise.all([
     state.editor.sandboxes[id] ? null : effects.api.getSandbox(id),
@@ -117,6 +134,10 @@ export const sandboxDeleted: AsyncAction = async ({ state, effects }) => {
   state.currentModal = null;
 
   const sandboxId = state.profile.sandboxToDeleteId;
+
+  if (!sandboxId || !state.profile.current || !state.user) {
+    return;
+  }
 
   await effects.api.deleteSandbox(sandboxId);
 

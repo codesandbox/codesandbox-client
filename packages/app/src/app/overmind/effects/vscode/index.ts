@@ -43,8 +43,8 @@ import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
 
 export type VsCodeOptions = {
-  getCurrentSandbox: () => Sandbox;
-  getCurrentModule: () => Module;
+  getCurrentSandbox: () => Sandbox | null;
+  getCurrentModule: () => Module | null;
   getSandboxFs: () => SandboxFs;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;

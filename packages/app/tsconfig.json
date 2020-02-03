@@ -6,11 +6,8 @@
     "strictNullChecks": true
   },
   "files": [
-    "./src/app/overmind/createConnect.ts",
-    "./src/app/overmind/Provider.ts",
-    "./src/app/overmind/utils/common.ts",
-    "./src/app/overmind/modals.ts"
+    "./src/app/overmind/namespaces/dashboard/state.ts",
+    "./src/app/overmind/namespaces/dashboard/actions.ts"
   ],
-  "exclude": ["./src/app/overmind/index.ts", "./src/app/overmind/state.ts"],
-  "include": ["./src/app/overmind/namespaces/userNotifications/*.ts"]
+  "exclude": ["node_modules"]
 }

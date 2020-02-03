@@ -10,9 +10,9 @@ export default {
     alias,
     git,
   }: {
-    id?: string;
-    alias?: string;
-    git?: GitInfo;
+    id?: string | null;
+    alias?: string | null;
+    git?: GitInfo | null;
   }) {
     window.history.replaceState({}, '', sandboxUrl({ id, alias, git }));
   },

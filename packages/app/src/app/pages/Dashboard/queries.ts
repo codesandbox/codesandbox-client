@@ -1,18 +1,18 @@
-import gql from 'graphql-tag';
 import { client } from 'app/graphql/client';
-import immer from 'immer';
 import {
-  PathedSandboxesQuery,
-  DeleteSandboxesMutation,
-  DeleteSandboxesMutationVariables,
-  PermanentlyDeleteSandboxesMutation,
-  PermanentlyDeleteSandboxesMutationVariables,
-  DeletedSandboxesQuery,
   AddToCollectionMutation,
   AddToCollectionMutationVariables,
-  PathedSandboxesQueryVariables,
+  DeleteSandboxesMutation,
+  DeleteSandboxesMutationVariables,
+  DeletedSandboxesQuery,
   DeletedSandboxesQueryVariables,
+  PathedSandboxesQuery,
+  PathedSandboxesQueryVariables,
+  PermanentlyDeleteSandboxesMutation,
+  PermanentlyDeleteSandboxesMutationVariables,
 } from 'app/graphql/types';
+import gql from 'graphql-tag';
+import immer from 'immer';
 
 const SIDEBAR_COLLECTION_FRAGMENT = gql`
   fragment SidebarCollection on Collection {
@@ -261,7 +261,7 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
 export function addSandboxesToFolder(
   selectedSandboxes,
   path: string,
-  teamId?: string
+  teamId: string | null
 ) {
   return client.mutate<
     AddToCollectionMutation,
@@ -295,7 +295,7 @@ export function undeleteSandboxes(selectedSandboxes) {
         ? selectedSandboxes.toJS()
         : selectedSandboxes,
       collectionPath: '/',
-      teamId: undefined,
+      teamId: null,
     },
     optimisticResponse: {
       __typename: 'RootMutationType',
@@ -334,10 +334,13 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
         const newDeleteCache = {
           ...oldDeleteCache,
           me: {
-            ...oldDeleteCache.me,
-            sandboxes: oldDeleteCache.me.sandboxes.filter(
-              x => !selectedSandboxes.includes(x.id)
-            ),
+            ...(oldDeleteCache && oldDeleteCache.me ? oldDeleteCache.me : null),
+            sandboxes: (
+              (oldDeleteCache &&
+                oldDeleteCache.me &&
+                oldDeleteCache.me.sandboxes) ||
+              ([] as any)
+            ).sandboxes.filter(x => !selectedSandboxes.includes(x.id)),
           },
         };
 
@@ -384,19 +387,27 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
             });
 
             const data = immer(oldFolderCacheData, draft => {
+              if (
+                !draft?.me?.collection ||
+                !oldFolderCacheData?.me?.collection?.sandboxes
+              ) {
+                return;
+              }
               draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-                x => !selectedSandboxes.includes(x.id)
+                x => !selectedSandboxes.includes(x?.id)
               );
             });
 
-            cache.writeQuery<
-              PathedSandboxesQuery,
-              PathedSandboxesQueryVariables
-            >({
-              query: PATHED_SANDBOXES_CONTENT_QUERY,
-              variables,
-              data,
-            });
+            if (data) {
+              cache.writeQuery<
+                PathedSandboxesQuery,
+                PathedSandboxesQueryVariables
+              >({
+                query: PATHED_SANDBOXES_CONTENT_QUERY,
+                variables,
+                data,
+              });
+            }
           } catch (e) {
             // cache doesn't exist, no biggie!
           }

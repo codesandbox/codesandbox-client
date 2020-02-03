@@ -1,11 +1,11 @@
-import { Sandbox, UserSandbox, Profile } from '@codesandbox/common/lib/types';
+import { Profile, Sandbox, UserSandbox } from '@codesandbox/common/lib/types';
 import { Derive } from 'app/overmind';
 
 type State = {
   profiles: {
     [profileId: string]: Profile;
   };
-  currentProfileId: string;
+  currentProfileId: string | null;
   notFound: boolean;
   isLoadingProfile: boolean;
   sandboxes: {
@@ -23,10 +23,10 @@ type State = {
   showSelectSandboxModal: boolean;
   currentLikedSandboxesPage: number;
   isLoadingSandboxes: boolean;
-  sandboxToDeleteId: string;
-  current: Derive<State, Profile>;
+  sandboxToDeleteId: string | null;
+  current: Derive<State, Profile | null>;
   isProfileCurrentUser: Derive<State, boolean>;
-  showcasedSandbox: Derive<State, Sandbox>;
+  showcasedSandbox: Derive<State, Sandbox | null>;
   currentSandboxes: Derive<State, { [page: string]: Sandbox[] }>;
   currentLikedSandboxes: Derive<State, { [page: string]: Sandbox[] }>;
 };
@@ -45,16 +45,23 @@ export const state: State = {
   isLoadingSandboxes: false,
   sandboxToDeleteId: null,
   isProfileCurrentUser: (currentState, rootState) =>
-    rootState.user && rootState.user.id === currentState.currentProfileId,
-  current: currentState => currentState.profiles[currentState.currentProfileId],
+    Boolean(
+      rootState.user && rootState.user.id === currentState.currentProfileId
+    ),
+  current: currentState =>
+    currentState.currentProfileId
+      ? currentState.profiles[currentState.currentProfileId]
+      : null,
   showcasedSandbox: (currentState, rootState) =>
-    currentState.current &&
-    currentState.current.showcasedSandboxShortid &&
-    rootState.editor.sandboxes[currentState.current.showcasedSandboxShortid],
+    currentState.current && currentState.current.showcasedSandboxShortid
+      ? rootState.editor.sandboxes[currentState.current.showcasedSandboxShortid]
+      : null,
   currentLikedSandboxes: currentState =>
-    currentState.current &&
-    currentState.likedSandboxes[currentState.current.username],
+    currentState.current
+      ? currentState.likedSandboxes[currentState.current.username]
+      : [],
   currentSandboxes: currentState =>
-    currentState.current &&
-    currentState.sandboxes[currentState.current.username],
+    currentState.current
+      ? currentState.sandboxes[currentState.current.username]
+      : [],
 };
