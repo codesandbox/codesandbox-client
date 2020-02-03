@@ -71,7 +71,8 @@ export default function getIcon(theme: TemplateType) {
     case preact.name:
       return PreactIconLight;
     case rax.name:
-    //   return RaxIconLight;  
+      // return RaxIconLight;  
+      return ReactIconLight;
     case reactTs.name:
       return ReactIconLight;
     case svelte.name:
