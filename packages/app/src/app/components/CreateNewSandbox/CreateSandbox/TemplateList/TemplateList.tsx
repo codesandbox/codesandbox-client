@@ -287,6 +287,10 @@ export const TemplateList = ({
 
         const template = getTemplateByIndex(num - 1);
 
+        if (!template) {
+          return;
+        }
+
         track('Template Modal - Open Sandbox', { source: 'num-keys' });
         openSandbox(template.sandbox);
       }
@@ -308,6 +312,11 @@ export const TemplateList = ({
       ) {
         e.preventDefault();
         const currentTemplate = getTemplateByIndex(focusedTemplateIndex);
+
+        if (!currentTemplate) {
+          // There are no sandboxes
+          return;
+        }
 
         track('Template Modal - Open Sandbox', { source: 'enter' });
         openSandbox(currentTemplate.sandbox, isMac ? e.metaKey : e.ctrlKey);
