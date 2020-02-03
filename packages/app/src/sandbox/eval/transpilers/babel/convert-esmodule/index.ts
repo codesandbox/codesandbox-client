@@ -170,16 +170,17 @@ export function convertEsModule(code: string) {
               name: varName,
             };
           }
+
+          program.body[
+            i
+          ] = statement.declaration as meriyah.ESTree.DeclarationStatement;
+          i++;
+
           program.body.splice(
             i,
             0,
             generateExportStatement(statement.declaration.id.name, 'default')
           );
-          i++;
-
-          program.body[
-            i
-          ] = statement.declaration as meriyah.ESTree.DeclarationStatement;
           i++;
         } else {
           program.body[i] = {
