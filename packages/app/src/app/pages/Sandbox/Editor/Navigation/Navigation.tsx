@@ -57,6 +57,8 @@ const IconComponent: FunctionComponent<IconProps> = ({
   return (
     <Tooltip content={name} singleton={singleton}>
       <IconContainer
+        justify="center"
+        align="center"
         isDisabled={isDisabled}
         selected={selected}
         as="button"
@@ -93,7 +95,7 @@ export const Navigation: FunctionComponent<Props> = ({
     <Container
       align="center"
       direction="vertical"
-      gap={16}
+      gap={4}
       topOffset={topOffset}
       bottomOffset={bottomOffset}
       // @ts-ignore

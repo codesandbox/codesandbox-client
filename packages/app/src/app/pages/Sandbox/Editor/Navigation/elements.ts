@@ -12,11 +12,10 @@ export const Container = styled(Stack)`
     theme: any;
   }) => css`
     position: fixed;
-    ${console.log(theme)}
     top: ${topOffset}px;
     bottom: ${bottomOffset}px;
     left: 0;
-    width: 56px;
+    padding: ${theme.space[2]}px;
     border-right: 1px solid ${theme.colors.activityBar.border};
     height: 100%;
     color: ${theme.colors.mutedForeground};
@@ -25,32 +24,29 @@ export const Container = styled(Stack)`
   `}
 `;
 
-export const IconContainer = styled.div<{
+export const IconContainer = styled(Stack)<{
   selected: boolean;
   isDisabled: boolean;
 }>(
   props => css`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: 0.3s ease all;
+    transition: ${props.theme.speeds[1]}ms ease all;
     height: ${props.theme.space[9]}px;
     width: ${props.theme.space[10]}px;
-    font-size: 1.875rem;
     color: ${props.theme.colors.activityBar.inactiveForeground};
     cursor: pointer;
     background: transparent;
     border: 0;
-    appearance: none;
-    outline: 0;
+    border-radius: ${props.theme.radii.small}px;
+    box-sizing: border-box;
+    padding: 0;
 
     &:hover {
-      background: ${props.theme.colors.sideBar.foreground};
+      background: ${props.theme.colors.sideBar.hoverBackground};
     }
 
     ${props.selected &&
       css`
-        color: ${props.theme.colors.white};
+        color: ${props.theme.colors.activityBar.selected};
       `};
 
     ${props.isDisabled &&
@@ -65,9 +61,7 @@ export const Separator = styled.hr`
   width: calc(100% - 20px);
   height: 1px;
   background-color: ${props => props.theme.colors.sideBar.border};
-
   margin: 0.25rem 0;
-
   outline: none;
   border: none;
 `;

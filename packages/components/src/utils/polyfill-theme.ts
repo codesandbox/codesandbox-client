@@ -33,6 +33,7 @@ const polyfillTheme = vsCodeTheme => {
     input: {},
     inputOption: {},
     sideBar: {},
+    activityBar: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
@@ -118,12 +119,18 @@ const polyfillTheme = vsCodeTheme => {
   // To make these elements look natural with the theme,
   // we infer them from the theme
 
+  const mutedForeground = withContrast(
+    uiColors.input.placeholderForeground,
+    uiColors.sideBar.background,
+    type
+  );
+
   const addedColors = {
-    mutedForeground: withContrast(
-      uiColors.input.placeholderForeground,
-      uiColors.sideBar.background,
-      type
-    ),
+    mutedForeground,
+    activityBar: {
+      selected: uiColors.sideBar.foreground,
+      inactiveForeground: mutedForeground,
+    },
     avatar: { border: uiColors.sideBar.border },
     sideBar: { hoverBackground: uiColors.sideBar.border },
     button: {
