@@ -41,7 +41,7 @@ export const IconContainer = styled(Stack)<{
     padding: 0;
 
     &:hover {
-      background: ${props.theme.colors.sideBar.hoverBackground};
+      background: ${props.theme.colors.activityBar.hoverBackground};
     }
 
     ${props.selected &&

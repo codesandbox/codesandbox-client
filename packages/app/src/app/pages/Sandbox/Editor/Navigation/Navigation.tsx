@@ -87,7 +87,6 @@ export const Navigation: FunctionComponent<Props> = ({
   bottomOffset,
 }) => {
   const { state } = useOvermind();
-
   const shownItems = getWorkspaceItems(state);
   const disabledItems = getDisabledItems(state);
 
