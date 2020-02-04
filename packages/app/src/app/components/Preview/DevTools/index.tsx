@@ -508,7 +508,8 @@ export class DevTools extends React.PureComponent<Props, State> {
         <ContentContainer>
           {panes.map((view, i) => {
             const { Content } =
-              this.getViews()[view.id] || viewNotFound(view.id);
+              this.getViews()[view.id] ||
+              viewNotFound(view.id, this.getViews());
 
             return (
               <Content

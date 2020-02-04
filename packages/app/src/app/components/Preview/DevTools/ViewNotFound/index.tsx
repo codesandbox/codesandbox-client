@@ -1,26 +1,45 @@
 import React from 'react';
 
+import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
-import { DevToolProps } from '..';
+import { DevToolProps, IViews } from '..';
 import { Container } from './elements';
 
-type Props = { viewId: string };
-type State = {};
+type Options = {
+  viewId: string;
+  availableViews: IViews;
+};
 
-class ViewNotFound extends React.PureComponent<DevToolProps & Props, State> {
-  render() {
-    const { viewId } = this.props;
-    return (
-      <Container>
-        <SubTitle>View {`"${viewId}"`} not found.</SubTitle>
-      </Container>
-    );
+type Props = DevToolProps & { options: Options };
+
+const ViewNotFound: React.FC<Props> = (props: Props) => {
+  const { hidden } = props;
+  const { viewId, availableViews } = props.options as Options;
+
+  if (hidden) {
+    return null;
   }
-}
 
-export const viewNotFound = viewId => ({
+  return (
+    <Container>
+      <Title>View {`"${viewId}"`} not found.</Title>
+      <SubTitle>The available views is:</SubTitle>
+      <ul>
+        {Object.values(availableViews).map(v => (
+          <li>
+            {v.title} ({v.id})
+          </li>
+        ))}
+      </ul>
+    </Container>
+  );
+};
+
+export const viewNotFound = (viewId: string, availableViews: IViews) => ({
   id: 'codesandbox.view-not-found',
   title: `Unknown View "${viewId}"`,
-  Content: (props: DevToolProps) => <ViewNotFound {...props} viewId={viewId} />,
+  Content: (props: DevToolProps) => (
+    <ViewNotFound {...props} options={{ viewId, availableViews }} />
+  ),
   actions: [],
 });

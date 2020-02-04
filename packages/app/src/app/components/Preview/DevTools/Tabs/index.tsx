@@ -37,7 +37,7 @@ export const DevToolTabs = ({
   status,
 }: Props) => {
   const viewId = panes[currentPaneIndex].id;
-  const currentPane = views[viewId] || viewNotFound(viewId);
+  const currentPane = views[viewId] || viewNotFound(viewId, views);
   const actions =
     typeof currentPane.actions === 'function'
       ? currentPane.actions({ owned })
@@ -52,7 +52,7 @@ export const DevToolTabs = ({
       <Tabs>
         {panes.map((pane, i) => {
           const active = !hidden && i === currentPaneIndex;
-          const view = views[pane.id] || viewNotFound(pane.id);
+          const view = views[pane.id] || viewNotFound(pane.id, views);
 
           const TypedTab = (moveTab
             ? DraggableTab

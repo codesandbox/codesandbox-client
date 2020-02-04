@@ -5,6 +5,7 @@ export const Container = styled.div`
     props.theme['panel.background'] || props.theme.background2};
   width: 100%;
   height: 100%;
+  padding: 1rem;
   color: ${props =>
     props.theme['editor.foreground'] || 'rgba(255, 255, 255, 0.8)'};
 `;
