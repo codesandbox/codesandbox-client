@@ -250,6 +250,7 @@ Thanks goes to these wonderful people
   </tr>
   <tr>
     <td align="center"><a href="http://mcmunder.de"><img src="https://avatars3.githubusercontent.com/u/5681686?v=4" width="100px;" alt="Matthias Christoph Munder"/><br /><sub><b>Matthias Christoph Munder</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3Amcmunder" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=mcmunder" title="Code">💻</a></td>
+    <td align="center"><a href="https://twitter.com/smelukov"><img src="https://avatars0.githubusercontent.com/u/6654581?v=4" width="100px;" alt="Sergey Melyukov"/><br /><sub><b>Sergey Melyukov</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=smelukov" title="Code">💻</a></td>
   </tr>
 </table>
 
