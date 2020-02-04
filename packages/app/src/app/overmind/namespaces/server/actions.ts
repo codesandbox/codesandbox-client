@@ -119,7 +119,7 @@ export const onSSEMessage: Action<{
                 {
                   label: 'Open Browser Pane',
                   run: () => {
-                    actions.server.onBrowserFromPortOpened({ port });
+                    actions.server.onBrowserFromPortOpened(port);
                   },
                 },
               ],

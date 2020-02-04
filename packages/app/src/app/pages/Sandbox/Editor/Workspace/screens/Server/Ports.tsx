@@ -23,7 +23,7 @@ export const Ports = () => {
   } = useOvermind();
 
   const openPort = (port: ServerPort) => {
-    onBrowserFromPortOpened({ port });
+    onBrowserFromPortOpened(port);
   };
 
   const openGraphiQLPort = () => {
