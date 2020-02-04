@@ -6,20 +6,16 @@ import { useOvermind } from 'app/overmind';
 import { Description, WorkspaceInputContainer } from '../../elements';
 
 import { ControlContainer } from './ControlContainer';
-import { SubTitle, TasksContainer } from './elements';
+import { SubTitle } from './elements';
 import { OpenPorts } from './OpenPorts';
+import { RunScripts } from './RunScripts';
 import { SecretKeys } from './SecretKeys';
 import { Status } from './Status';
-import { Tasks } from './Tasks';
 
 export const Server: FunctionComponent = () => {
   const {
-    state: {
-      editor: { parsedConfigurations },
-      server,
-    },
+    state: { server },
   } = useOvermind();
-  const disconnected = server.status !== 'connected';
 
   return (
     <div>
@@ -39,14 +35,7 @@ export const Server: FunctionComponent = () => {
         </WorkspaceInputContainer>
       </Margin>
 
-      <Margin top={1.5}>
-        <SubTitle>Run Scripts</SubTitle>
-        <Margin top={0.5}>
-          <TasksContainer disconnected={disconnected}>
-            <Tasks package={parsedConfigurations?.package?.parsed} />
-          </TasksContainer>
-        </Margin>
-      </Margin>
+      <RunScripts />
 
       <OpenPorts />
 
