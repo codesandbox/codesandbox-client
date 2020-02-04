@@ -477,6 +477,7 @@ export const filesUploaded: AsyncAction<{
         actions.internal.handleError({
           message: `The uploaded file is bigger than 7MB, contact hello@codesandbox.io if you want to raise this limit`,
           error,
+          hideErrorMessage: true,
         });
       } else {
         actions.internal.handleError({

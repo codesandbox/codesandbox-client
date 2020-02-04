@@ -345,7 +345,10 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
   context,
   { error }
 ) => {
-  const isGenericError = !('response' in error) || error.response.status >= 500;
+  const isGenericError =
+    !('response' in error) ||
+    error.response == null ||
+    error.response.status >= 500;
 
   if (isGenericError) {
     return error.message;
@@ -387,8 +390,22 @@ export const handleError: Action<{
   */
   message: string;
   error: ApiError | Error;
-}> = ({ actions, effects }, { message, error }) => {
-  const isGenericError = !('response' in error) || error.response.status >= 500;
+  hideErrorMessage?: boolean;
+}> = ({ actions, effects }, { message, error, hideErrorMessage = false }) => {
+  if (hideErrorMessage) {
+    effects.analytics.logError(error);
+    effects.notificationToast.add({
+      message,
+      status: NotificationStatus.ERROR,
+    });
+
+    return;
+  }
+
+  const isGenericError =
+    !('response' in error) ||
+    error.response == null ||
+    error.response.status >= 500;
 
   if (isGenericError) {
     effects.analytics.logError(error);

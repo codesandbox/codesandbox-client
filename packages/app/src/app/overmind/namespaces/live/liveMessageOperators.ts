@@ -496,14 +496,23 @@ export const onOperation: Operator<LiveMessage<{
 export const onConnectionLoss: Operator<LiveMessage> = mutate(
   async ({ state, effects }) => {
     if (!state.live.reconnecting) {
-      const id = effects.notificationToast.add({
-        message: 'We lost connection with the live server, reconnecting...',
-        status: NotificationStatus.ERROR,
-      });
+      let notificationId: string;
+      const timeout = setTimeout(() => {
+        notificationId = effects.notificationToast.add({
+          message: 'We lost connection with the live server, reconnecting...',
+          status: NotificationStatus.ERROR,
+        });
+      }, 500);
+
       state.live.reconnecting = true;
 
       await effects.flows.waitUntil(s => s.live.reconnecting === false);
-      effects.notificationToast.remove(id);
+      if (notificationId) {
+        effects.notificationToast.remove(notificationId);
+      }
+      if (timeout) {
+        clearTimeout(timeout);
+      }
     }
   }
 );

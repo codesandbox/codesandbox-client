@@ -104,7 +104,11 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.workspace.openDefaultItem();
   } catch (error) {
     state.editor.notFound = true;
-    state.editor.error = error.message;
+    let detail = error.response?.data?.errors?.detail;
+    if (Array.isArray(detail)) {
+      detail = detail[0];
+    }
+    state.editor.error = detail || error.message;
     state.editor.isLoading = false;
     return;
   }
