@@ -26,10 +26,10 @@ export const ListAction = styled(ListItem)<{ disabled?: boolean }>(
     css({
       ':hover, &[aria-selected="true"]': {
         cursor: !disabled ? 'pointer' : 'disabled',
-        backgroundColor: !disabled ? 'sideBar.hoverBackground' : 'inherit',
+        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
       },
       ':focus-within': {
-        backgroundColor: !disabled ? 'sideBar.hoverBackground' : 'inherit',
+        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
       },
     })
 );
