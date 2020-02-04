@@ -63,12 +63,8 @@ export const npmDependencyRemoved: AsyncAction<{
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;
 }>(async ({ state, actions, effects }, { id }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-
   // This happens when we fork. This can be avoided with state first routing
-  if (state.editor.isForkingSandbox) {
+  if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
     effects.vscode.openModule(state.editor.currentModule);
 
     await actions.editor.internal.initializeLiveSandbox(
@@ -100,7 +96,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     const sandbox = await effects.api.getSandbox(newId);
 
     actions.internal.setCurrentSandbox(sandbox);
-
     actions.workspace.openDefaultItem();
   } catch (error) {
     state.editor.notFound = true;
@@ -113,7 +108,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     return;
   }
 
-  const sandbox = state.editor.currentSandbox;
+  const sandbox = state.editor.currentSandbox!;
 
   await effects.vscode.changeSandbox(sandbox, fs => {
     state.editor.modulesByPath = fs;
