@@ -11,7 +11,6 @@ import {
   Sandbox,
   SandboxFs,
 } from '@codesandbox/common/lib/types';
-import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
@@ -364,8 +363,7 @@ class SandboxFsSync {
       if (
         autoInstallTypes &&
         this.typesInfo[dep.name] &&
-        !dep.name.startsWith('@types/') &&
-        isAbsoluteVersion(dep.version)
+        !dep.name.startsWith('@types/')
       ) {
         const name = `@types/${dep.name}`;
         this.fetchDependencyTypingFiles(name, this.typesInfo[dep.name].latest)

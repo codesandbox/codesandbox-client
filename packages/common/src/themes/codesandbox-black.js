@@ -26,7 +26,6 @@ const colors = {
     background: tokens.blues[600],
     foreground: tokens.white,
     border: tokens.blues[600],
-    hoverBackground: tokens.blues[600],
   },
   dropdown: {
     background: tokens.grays[700],
@@ -210,7 +209,7 @@ const colors = {
   },
   sideBar: {
     background: tokens.grays[700],
-    hoverBackground: tokens.green,
+    hoverBackground: tokens.grays[600],
     border: tokens.grays[600],
     foreground: tokens.grays[200],
   },

@@ -129,7 +129,7 @@ export class ModelsHandler {
 
     return Promise.all(
       Object.keys(this.moduleModels).map(async path => {
-        if (oldModelPath === path) {
+        if (oldModelPath === path && this.moduleModels[path].model) {
           const model = await this.moduleModels[path].model;
 
           // This runs remove/add automatically

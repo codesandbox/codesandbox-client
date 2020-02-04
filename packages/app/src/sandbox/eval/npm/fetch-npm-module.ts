@@ -181,7 +181,8 @@ const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 async function getMeta(
   name: string,
   packageJSONPath: string | null,
-  version: string
+  version: string,
+  useFallback = false
 ) {
   const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
   const id = `${packageJSONPath || name}@${version}`;
@@ -189,12 +190,17 @@ async function getMeta(
     return metas[id];
   }
 
-  const protocol = getFetchProtocol(version);
+  const protocol = getFetchProtocol(version, useFallback);
 
   metas[id] = protocol
     .meta(nameWithoutAlias, version)
     .then(fetchWithRetries)
-    .then(x => x.json());
+    .then(x => x.json())
+    .catch(e => {
+      delete metas[id];
+
+      throw e;
+    });
 
   return metas[id];
 }
@@ -470,9 +476,18 @@ export default async function fetchModule(
 
   const { packageJSONPath, version } = versionInfo;
 
-  const meta = await getMeta(dependencyName, packageJSONPath, version);
+  let meta: Meta;
+  let normalizeFunction: typeof normalize;
 
-  const normalizeFunction = getFetchProtocol(version).normalizeMeta;
+  try {
+    normalizeFunction = getFetchProtocol(version).normalizeMeta;
+    meta = await getMeta(dependencyName, packageJSONPath, version);
+  } catch (e) {
+    // Use fallback
+    meta = await getMeta(dependencyName, packageJSONPath, version, true);
+    normalizeFunction = getFetchProtocol(version, true).normalizeMeta;
+  }
+
   const rootPath = packageJSONPath
     ? pathUtils.dirname(packageJSONPath)
     : pathUtils.join('/node_modules', dependencyName);

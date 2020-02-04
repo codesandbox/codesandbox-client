@@ -33,7 +33,7 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
     borderRadius: 'small',
     paddingX: 2,
     border: '1px solid',
-    borderColor: 'avatar.border',
+    borderColor: 'sideBar.background', // merge with the background
 
     position: 'absolute',
     height: 3,
