@@ -120,16 +120,16 @@ export default class Content extends React.PureComponent<Props, State> {
    * Initialize the interface responsible for talking with the server, managing
    * the terminal output
    */
-  initializeExecutor = () => {
+  initializeExecutor = async () => {
     const templateDefinition = getTemplate(this.props.sandbox.template);
     if (templateDefinition.isServer) {
-      this.executor.initialize({
+      await this.executor.initialize({
         host: 'https://codesandbox.io',
         files: {},
         sandboxId: this.props.sandbox.id,
       });
 
-      this.executor.setup();
+      await this.executor.setup();
 
       this.executor.on('sandbox:log', message => {
         dispatch({ type: 'terminal:message', data: message.data });
