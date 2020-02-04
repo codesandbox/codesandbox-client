@@ -38,9 +38,7 @@ export default function(
             filename
           );
 
-          return tModule.source
-            ? tModule.source.compiledCode
-            : tModule.module.code;
+          return tModule.module.code;
         },
       }),
       trim,
