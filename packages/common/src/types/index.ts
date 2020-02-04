@@ -120,13 +120,13 @@ export type CurrentUser = {
   curatorAt: string;
   badges: Badge[];
   integrations: {
-    zeit?: {
+    zeit: {
       token: string;
       email?: string;
-    };
-    github?: {
+    } | null;
+    github: {
       email: string;
-    };
+    } | null;
   };
   sendSurvey: boolean;
 };

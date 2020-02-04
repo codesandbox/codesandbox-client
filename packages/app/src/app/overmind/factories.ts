@@ -98,7 +98,7 @@ export const withOwnedSandbox = <T>(
 
       if (modalResponse === 'fork') {
         await actions.editor.internal.forkSandbox({
-          sandboxId: state.editor.currentId,
+          sandboxId: state.editor.currentId!,
         });
       } else if (modalResponse === 'unfreeze') {
         state.editor.sessionFrozen = false;
