@@ -7,6 +7,7 @@ import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';
 import { DraggableTab, PaneTab, TabProps } from './Tab';
 import { TabDropZone, TabDropZoneProps } from './TabDropZone';
+import { viewNotFound } from '../ViewNotFound';
 // import { AddTab } from './AddTab';
 
 export interface Props {
@@ -35,7 +36,8 @@ export const DevToolTabs = ({
   closeTab,
   status,
 }: Props) => {
-  const currentPane = views[panes[currentPaneIndex].id];
+  const viewId = panes[currentPaneIndex].id;
+  const currentPane = views[viewId] || viewNotFound(viewId);
   const actions =
     typeof currentPane.actions === 'function'
       ? currentPane.actions({ owned })
@@ -50,7 +52,7 @@ export const DevToolTabs = ({
       <Tabs>
         {panes.map((pane, i) => {
           const active = !hidden && i === currentPaneIndex;
-          const view = views[pane.id];
+          const view = views[pane.id] || viewNotFound(pane.id);
 
           const TypedTab = (moveTab
             ? DraggableTab

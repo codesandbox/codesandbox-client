@@ -4,6 +4,7 @@ import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import {
   ParsedConfigurationFiles,
   ViewConfig,
+  ViewTab,
 } from '@codesandbox/common/lib/templates/template';
 import {
   DevToolsTabPosition,
@@ -23,6 +24,22 @@ import immer from 'immer';
 
 import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
+
+const shortNameMap = {
+  browser: 'codesandbox.browser',
+  console: 'codesandbox.console',
+  tests: 'codesandbox.tests',
+};
+
+const getViewId = (view: string): string =>
+  Object.hasOwnProperty.call(shortNameMap, view) ? shortNameMap[view] : view;
+const normalizeView = (additionalView: string | ViewTab) => {
+  if (additionalView && typeof additionalView === 'object') {
+    return { ...additionalView, id: getViewId(additionalView.id) };
+  }
+
+  return { id: getViewId(additionalView as string) };
+};
 
 type State = {
   currentId: string;
@@ -217,9 +234,16 @@ export const state: State = {
         x => x.directoryShortid == null && x.title === 'sandbox.config.json'
       );
       let view = 'browser';
+      const additionalViews: (string | ViewTab)[] = [];
       if (sandboxConfig) {
         try {
-          view = JSON.parse(sandboxConfig.code || '').view || 'browser';
+          const config = JSON.parse(sandboxConfig.code);
+
+          view = config.view || 'browser';
+
+          if (config.additionalViews) {
+            additionalViews.push(...config.additionalViews);
+          }
         } catch (e) {
           /* swallow */
         }
@@ -236,20 +260,18 @@ export const state: State = {
         view = sandboxOptions.previewWindow;
       }
 
-      if (view !== 'browser') {
-        // Backwards compatibility for sandbox.config.json
-        if (view === 'console') {
-          draft[0].views = draft[0].views.filter(
-            t => t.id !== 'codesandbox.console'
-          );
-          draft[0].views.unshift({ id: 'codesandbox.console' });
-        } else if (view === 'tests') {
-          draft[0].views = draft[0].views.filter(
-            t => t.id !== 'codesandbox.tests'
-          );
-          draft[0].views.unshift({ id: 'codesandbox.tests' });
-        }
-      }
+      const currentView = normalizeView(view);
+
+      draft[0].views = draft[0].views.filter(t => t.id !== currentView.id);
+      draft[0].views.unshift(currentView);
+
+      additionalViews
+        .map(normalizeView)
+        .filter(newView => !draft[0].views.find(t => t.id === newView.id))
+        .forEach(newView => draft[0].views.unshift(newView));
+
+      // clean from empty-id views
+      draft[0].views = draft[0].views.filter(t => t.id);
     });
   },
 };

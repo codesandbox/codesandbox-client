@@ -15,6 +15,7 @@ import { reactDevTools } from './React-Devtools';
 import { terminal } from './Terminal';
 import { tests } from './Tests';
 import { Container, Header, ContentContainer } from './elements';
+import { viewNotFound } from './ViewNotFound';
 
 function unFocus(document, window) {
   if (document.selection) {
@@ -506,7 +507,8 @@ export class DevTools extends React.PureComponent<Props, State> {
         )}
         <ContentContainer>
           {panes.map((view, i) => {
-            const { Content } = this.getViews()[view.id];
+            const { Content } =
+              this.getViews()[view.id] || viewNotFound(view.id);
 
             return (
               <Content
