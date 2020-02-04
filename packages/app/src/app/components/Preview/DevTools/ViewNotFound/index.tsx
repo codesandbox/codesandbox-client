@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { SubTitle } from 'app/components/SubTitle';
 import { DevToolProps } from '..';
 import { Container } from './elements';
 
@@ -11,7 +12,7 @@ class ViewNotFound extends React.PureComponent<DevToolProps & Props, State> {
     const { viewId } = this.props;
     return (
       <Container>
-        <div>View &quote;{viewId}&quote; not found.</div>
+        <SubTitle>View {`"${viewId}"`} not found.</SubTitle>
       </Container>
     );
   }
