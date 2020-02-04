@@ -1,4 +1,4 @@
-import { Action } from './';
+import { Action } from '.';
 
 export interface GlyphOptions {
   line: number;

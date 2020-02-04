@@ -1,6 +1,10 @@
-import { Action } from '../';
+import { Action } from '..';
 
-export function add(dependencyName: string) {
+export interface AddDependencyAction extends Action {
+  dependency: string;
+}
+
+export function add(dependencyName: string): AddDependencyAction {
   return {
     type: 'action',
     action: 'source.dependencies.add',

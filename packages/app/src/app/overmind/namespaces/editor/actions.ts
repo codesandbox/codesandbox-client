@@ -743,6 +743,24 @@ export const previewActionReceived: Action<any> = (
       });
       break;
     }
+
+    case 'source.module.set-code': {
+      const sandbox = state.editor.currentSandbox;
+      const module = effects.utils.resolveModule(
+        action.path.replace(/^\//, ''),
+        sandbox.modules,
+        sandbox.directories
+      );
+
+      if (module) {
+        actions.editor.codeChanged({
+          moduleShortid: module.shortid,
+          code: action.code,
+        });
+        effects.vscode.setModuleCode(module);
+      }
+      break;
+    }
   }
 };
 
