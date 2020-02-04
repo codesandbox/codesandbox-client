@@ -5,6 +5,7 @@ import {
   resolveModule,
 } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
+import { ServerExecutor, IExecutor } from '@codesandbox/executors';
 import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import {
@@ -34,6 +35,7 @@ import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correc
 import * as React from 'react';
 
 // borrow the menu icon from Header in case header is not shown
+import { dispatch } from 'codesandbox-api';
 import { MenuIcon } from '../legacy/Header/elements';
 import SplitPane from '../SplitPane';
 import { CodeEditor } from './CodeEditor';
@@ -84,6 +86,11 @@ type State = {
 // eslint-disable-next-line import/no-default-export
 export default class Content extends React.PureComponent<Props, State> {
   state: State;
+  executor: IExecutor;
+  errors: ModuleError[];
+  corrections: ModuleCorrection[];
+  editor?: Editor;
+  preview?: BasePreview;
 
   constructor(props: Props) {
     super(props);
@@ -104,7 +111,31 @@ export default class Content extends React.PureComponent<Props, State> {
 
     this.errors = [];
     this.corrections = [];
+
+    this.executor = new ServerExecutor();
+    this.initializeExecutor();
   }
+
+  /**
+   * Initialize the interface responsible for talking with the server, managing
+   * the terminal output
+   */
+  initializeExecutor = () => {
+    const templateDefinition = getTemplate(this.props.sandbox.template);
+    if (templateDefinition.isServer) {
+      this.executor.initialize({
+        host: 'https://codesandbox.io',
+        files: {},
+        sandboxId: this.props.sandbox.id,
+      });
+
+      this.executor.setup();
+
+      this.executor.on('sandbox:log', message => {
+        dispatch({ type: 'terminal:message', data: message.data });
+      });
+    }
+  };
 
   setPane = (pos: DevToolsTabPosition) => {
     this.setState({ currentDevToolPosition: pos });
@@ -163,11 +194,6 @@ export default class Content extends React.PureComponent<Props, State> {
     return <StyledNotSyncedIcon show={undefined} />;
   };
 
-  errors: ModuleError[];
-  corrections: ModuleCorrection[];
-  editor?: Editor;
-  preview?: BasePreview;
-
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (this.props.currentModule !== nextProps.currentModule) {
       if (!this.state.tabs.some(x => x.id === nextProps.currentModule.id)) {
@@ -189,11 +215,16 @@ export default class Content extends React.PureComponent<Props, State> {
       this.setState({
         tabs: this.getInitTabs(nextProps),
       });
+      this.initializeExecutor();
     }
   }
 
   componentDidMount() {
     setTimeout(this.handleResize);
+  }
+
+  componentWillUnmount() {
+    this.executor.dispose();
   }
 
   setProjectView = (id: string | undefined, view: boolean) => {
