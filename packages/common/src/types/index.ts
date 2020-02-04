@@ -104,7 +104,7 @@ export type Badge = {
 };
 
 export type CurrentUser = {
-  id: string | null;
+  id: string;
   email: string | null;
   name: string | null;
   username: string;
