@@ -1,11 +1,15 @@
-import postcss from 'postcss';
+import postcss, { ProcessOptions } from 'postcss';
+import postcssImportPlugin from 'postcss-import';
 
-import { type LoaderContext } from '../../../transpiled-module';
+import { LoaderContext } from '../../../transpiled-module';
 
 import trim from './plugins/trim';
 import scopeId from './plugins/scope-id';
 
-export default function(code: string, loaderContext: LoaderContext) {
+export default function(
+  code: string,
+  loaderContext: LoaderContext
+): Promise<{ transpiledCode: string; sourceMap: any }> {
   return new Promise((resolve, reject) => {
     const query = loaderContext.options;
 
@@ -14,17 +18,37 @@ export default function(code: string, loaderContext: LoaderContext) {
     if (!vueOptions) {
       vueOptions = {
         ...loaderContext.options.vue,
-        ...loaderContext.vue,
       };
     }
 
     // TODO autoprefixer
-    const plugins = [trim];
+    const plugins = [
+      postcssImportPlugin({
+        resolve: async (id: string) => {
+          try {
+            const result = await loaderContext.resolveTranspiledModuleAsync(id);
 
-    const options = {
+            return result.module.path;
+          } catch (e) {
+            return null;
+          }
+        },
+        load: async (filename: string) => {
+          const tModule = await loaderContext.resolveTranspiledModuleAsync(
+            filename
+          );
+
+          return tModule.source
+            ? tModule.source.compiledCode
+            : tModule.module.code;
+        },
+      }),
+      trim,
+    ];
+
+    const options: ProcessOptions = {
       to: loaderContext.path,
       from: loaderContext.path,
-      map: false,
     };
 
     // add plugin for vue-loader scoped css rewrite
@@ -35,13 +59,13 @@ export default function(code: string, loaderContext: LoaderContext) {
     // source map
     if (
       loaderContext.sourceMap &&
-      vueOptions.cssSourceMap !== false &&
-      !loaderContext.map
+      vueOptions.cssSourceMap !== false
+      // !loaderContext.map
     ) {
       options.map = {
         inline: false,
         annotation: false,
-        prev: loaderContext.map,
+        // prev: loaderContext.map,
       };
     }
 
@@ -51,7 +75,8 @@ export default function(code: string, loaderContext: LoaderContext) {
         .process(code === null ? undefined : code, options)
         .then(result => {
           if (result.messages) {
-            result.messages.forEach(m => {
+            const messages = result.messages as any[];
+            messages.forEach(m => {
               if (m.type === 'dependency') {
                 loaderContext.addDependency(m.file);
               }
