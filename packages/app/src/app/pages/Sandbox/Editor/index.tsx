@@ -6,7 +6,8 @@ import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider, withTheme } from 'styled-components';
+import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
 
 import Content from './Content';
 import { Container } from './elements';
@@ -26,7 +27,7 @@ const StatusBar = styled.div`
   }
 `;
 
-const ContentSplit: React.FC = () => {
+const ContentSplit = ({ theme }) => {
   const { state, actions, effects } = useOvermind();
   const statusbarEl = useRef(null);
   const [localState, setLocalState] = useState({
@@ -42,8 +43,8 @@ const ContentSplit: React.FC = () => {
       const vsCodeTheme = state.preferences.settings.customVSCodeTheme;
 
       try {
-        const theme = await getVSCodeTheme('', vsCodeTheme);
-        setLocalState({ theme, customVSCodeTheme: vsCodeTheme });
+        const t = await getVSCodeTheme('', vsCodeTheme);
+        setLocalState({ theme: t, customVSCodeTheme: vsCodeTheme });
       } catch (e) {
         console.error(e);
       }
@@ -87,7 +88,9 @@ const ContentSplit: React.FC = () => {
         <Fullscreen style={{ width: 'initial' }}>
           {!hideNavigation &&
             (REDESIGNED_SIDEBAR ? (
-              <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
+              <NewThemeProvider theme={theme.vscodeTheme}>
+                <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
+              </NewThemeProvider>
             ) : (
               <NavigationOld
                 topOffset={topOffset}
@@ -157,4 +160,4 @@ const ContentSplit: React.FC = () => {
   );
 };
 
-export default ContentSplit;
+export default withTheme(ContentSplit);
