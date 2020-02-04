@@ -4,6 +4,7 @@ import {
   getModulesAndDirectoriesInDirectory,
 } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { Directory, Module } from '@codesandbox/common/lib/types';
 import { AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
@@ -593,10 +594,16 @@ export const moduleCreated: AsyncAction<{
       );
       state.editor.currentModuleShortid = module.shortid;
 
+      effects.executor.updateFiles(state.editor.currentSandbox);
+
       if (state.live.isCurrentEditor) {
         effects.live.sendModuleCreated(module);
+        // Update server with latest data
+        effects.live.sendCodeUpdate(
+          module.shortid,
+          getTextOperation('', module.code)
+        );
       }
-      effects.executor.updateFiles(state.editor.currentSandbox);
     } catch (error) {
       sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
       actions.editor.internal.setCurrentModule(state.editor.mainModule);

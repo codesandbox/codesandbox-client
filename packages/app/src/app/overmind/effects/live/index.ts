@@ -14,6 +14,7 @@ import uuid from 'uuid';
 import { SandboxAPIResponse } from '../api/types';
 import { transformSandbox } from '../utils/sandbox';
 import clientsFactory from './clients';
+import { OPTIMISTIC_ID_PREFIX } from '../utils';
 
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
@@ -185,6 +186,12 @@ export default {
   },
   sendCodeUpdate(moduleShortid: string, operation: any) {
     if (!operation) {
+      return;
+    }
+
+    if (moduleShortid.startsWith(OPTIMISTIC_ID_PREFIX)) {
+      // Module is an optimistic module, we will send a full code update
+      // once the module has been created, until then, send nothing!
       return;
     }
 
