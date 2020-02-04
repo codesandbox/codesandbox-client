@@ -18,6 +18,7 @@ export const ListItem = styled(Stack).attrs({
   css({
     minHeight: 8,
     paddingX: 2,
+    color: 'list.foreground',
   })
 );
 
@@ -26,9 +27,11 @@ export const ListAction = styled(ListItem)<{ disabled?: boolean }>(
     css({
       ':hover, &[aria-selected="true"]': {
         cursor: !disabled ? 'pointer' : 'disabled',
+        color: !disabled ? 'list.hoverForeground' : 'inherit',
         backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
       },
       ':focus-within': {
+        color: !disabled ? 'list.hoverForeground' : 'inherit',
         backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
       },
     })

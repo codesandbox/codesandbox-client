@@ -32,6 +32,7 @@ const polyfillTheme = vsCodeTheme => {
     button: {},
     input: {},
     inputOption: {},
+    list: {},
     sideBar: {},
   };
 
@@ -64,7 +65,7 @@ const polyfillTheme = vsCodeTheme => {
       codesandboxColors.sideBar.foreground,
     border:
       uiColors.sideBar.border ||
-      uiColors.editor.hoverHighlightBackground ||
+      uiColors.editor.lineHighlightBackground ||
       codesandboxColors.sideBar.border,
   };
 
@@ -96,6 +97,12 @@ const polyfillTheme = vsCodeTheme => {
   // To make sure the UI looks great, we change some of these design decisions
   // made by the theme author
 
+  const mutedForeground= withContrast(
+      uiColors.input.placeholderForeground,
+      uiColors.sideBar.background,
+      type
+    ),
+
   const decreaseContrast = type === 'dark' ? lighten : darken;
 
   if (uiColors.sideBar.border === uiColors.sideBar.background) {
@@ -112,6 +119,12 @@ const polyfillTheme = vsCodeTheme => {
     );
   }
 
+  uiColors.list.foreground = uiColors.list.foreground || mutedForeground;
+  uiColors.list.hoverForeground =
+    uiColors.list.hoverForeground || uiColors.sideBar.foreground;
+  uiColors.list.hoverBackground =
+    uiColors.list.hoverBackground || uiColors.sideBar.hoverBackground;
+
   // Step 3.2
   // On the same theme of design decisions for interfaces,
   // we add a bunch of extra elements and interaction.
@@ -119,11 +132,7 @@ const polyfillTheme = vsCodeTheme => {
   // we infer them from the theme
 
   const addedColors = {
-    mutedForeground: withContrast(
-      uiColors.input.placeholderForeground,
-      uiColors.sideBar.background,
-      type
-    ),
+    mutedForeground,
     avatar: { border: uiColors.sideBar.border },
     sideBar: { hoverBackground: uiColors.sideBar.border },
     button: {
@@ -142,11 +151,14 @@ const polyfillTheme = vsCodeTheme => {
     switch: {
       background: uiColors.sideBar.border,
       foregroundOff: designLanguage.colors.white,
-      foregroundOn: designLanguage.colors.green,
+      foregroundOn: uiColors.button.background,
     },
   };
 
   uiColors = deepmerge(uiColors, addedColors);
+
+  // if the sidebar foreground and mutedForeground dont have enough contrast
+  // make foreground brighter
 
   return uiColors;
 };
