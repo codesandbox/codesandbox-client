@@ -260,15 +260,15 @@ export const state: State = {
         view = sandboxOptions.previewWindow;
       }
 
+      additionalViews
+        .map(normalizeView)
+        .filter(newView => !draft[0].views.find(t => t.id === newView.id))
+        .forEach(newView => draft[0].views.push(newView));
+
       const currentView = normalizeView(view);
 
       draft[0].views = draft[0].views.filter(t => t.id !== currentView.id);
       draft[0].views.unshift(currentView);
-
-      additionalViews
-        .map(normalizeView)
-        .filter(newView => !draft[0].views.find(t => t.id === newView.id))
-        .forEach(newView => draft[0].views.unshift(newView));
 
       // clean from empty-id views
       draft[0].views = draft[0].views.filter(t => t.id);
