@@ -84,14 +84,17 @@ export const Chat: React.FC = () => {
   const isNotSameUser = (message, i) =>
     i === 0 || messages[i - 1].userId !== message.userId;
 
+  const isLight = theme => theme.vscodeTheme.type === 'light';
+
   return (
     <Collapsible
-      css={css({
+      css={css(theme => ({
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
-        boxShadow:
-          '0px -8px 8px rgba(0,0,0,0.24), 0px -4px 8px rgba(0,0,0,0.4)',
-      })}
+        boxShadow: isLight(theme)
+          ? '0px -8px 8px rgba(255,255,255,0.24), 0px -4px 8px rgba(255,255,255,0.4)'
+          : '0px -8px 8px rgba(0,0,0,0.24), 0px -4px 8px rgba(0,0,0,0.4)',
+      }))}
       defaultOpen
       title="Chat"
     >
