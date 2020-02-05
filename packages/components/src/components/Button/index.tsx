@@ -94,6 +94,7 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
         height: 6,
         width: '100%',
         fontSize: 2,
+        lineHeight: 1, // trust the height
         border: 'none',
         borderRadius: 'small',
         transition: 'all ease-in',
