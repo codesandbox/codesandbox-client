@@ -41,7 +41,7 @@ export const Body = styled(Element)<{
   open?: boolean;
 }>(props =>
   css({
-    borderBottom: '1px solid',
+    borderBottom: props.open ? '1px solid' : 'none',
     borderColor: 'sideBar.border',
     maxHeight: props.open ? '1000px' : 0,
     overflow: props.open ? 'auto' : 'hidden',
