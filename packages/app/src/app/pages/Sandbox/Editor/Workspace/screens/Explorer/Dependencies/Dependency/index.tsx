@@ -130,7 +130,7 @@ export class Dependency extends React.PureComponent<Props, State> {
           css={css({
             position: 'relative',
             '.actions': { backgroundColor: 'sideBar.background' },
-            ':hover .actions': { backgroundColor: 'sideBar.hoverBackground' },
+            ':hover .actions': { backgroundColor: 'list.hoverBackground' },
           })}
         >
           <Link
