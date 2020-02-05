@@ -9,24 +9,35 @@ import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
 import { TippyProps } from '@tippy.js/react';
-import {
-  DeployIcon,
-  ExplorerIcon,
-  ServerIcon,
-  GithubIcon,
-  InfoIcon,
-  LiveIcon,
-  SettingsIcon,
-} from './icons';
+import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import FilesIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/file-activity-bar.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import GitHubIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/github.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import LiveIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/live.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import RocketIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/rocket.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+
 import { Container, IconContainer, Separator } from './elements';
+import ServerIcon from './ServerIcon';
 
 const IDS_TO_ICONS = {
   project: InfoIcon,
   'project-summary': InfoIcon,
-  files: ExplorerIcon,
-  github: GithubIcon,
-  deploy: DeployIcon,
-  config: SettingsIcon,
+  files: FilesIcon,
+  github: GitHubIcon,
+  deploy: RocketIcon,
+  config: ConfigurationIcon,
   live: LiveIcon,
   more: PlusIcon,
   server: ServerIcon,
@@ -57,8 +68,6 @@ const IconComponent: FunctionComponent<IconProps> = ({
   return (
     <Tooltip content={name} singleton={singleton}>
       <IconContainer
-        justify="center"
-        align="center"
         isDisabled={isDisabled}
         selected={selected}
         as="button"
@@ -87,17 +96,14 @@ export const Navigation: FunctionComponent<Props> = ({
   bottomOffset,
 }) => {
   const { state } = useOvermind();
+
   const shownItems = getWorkspaceItems(state);
   const disabledItems = getDisabledItems(state);
 
   return (
     <Container
-      align="center"
-      direction="vertical"
-      gap={4}
       topOffset={topOffset}
       bottomOffset={bottomOffset}
-      // @ts-ignore
       as="nav"
       aria-label="Sandbox Navigation"
     >
