@@ -387,7 +387,7 @@ export class VSCodeEffect {
     // the file
     requestAnimationFrame(async () => {
       const currentModule = this.options.getCurrentModule();
-      if (module.id === currentModule?.id) {
+      if (currentModule && module.id === currentModule.id) {
         try {
           const model = await this.modelsHandler.changeModule(module);
 
@@ -814,7 +814,8 @@ export class VSCodeEffect {
   };
 
   private onOperationApplied = (data: OnOperationAppliedData) => {
-    if (data.moduleShortid === this.options.getCurrentModule()?.shortid) {
+    const currentModule = this.options.getCurrentModule();
+    if (currentModule && data.moduleShortid === currentModule.shortid) {
       this.lint(data.title, data.model);
     }
 
