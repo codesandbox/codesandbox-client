@@ -149,9 +149,9 @@ const polyfillTheme = vsCodeTheme => {
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`,
     },
     switch: {
-      background: uiColors.input.background,
-      foregroundOff: designLanguage.colors.white,
-      foregroundOn: uiColors.button.background,
+      backgroundOff: uiColors.input.background,
+      backgroundOn: uiColors.button.background,
+      toggle: designLanguage.colors.white,
     },
   };
 
