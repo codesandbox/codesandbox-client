@@ -402,6 +402,9 @@ export const forkSandbox: AsyncAction<{
       message: 'We were unable to fork the sandbox',
       error,
     });
+
+    state.editor.isForkingSandbox = false;
+    throw error;
   }
 };
 

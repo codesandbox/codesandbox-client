@@ -87,9 +87,13 @@ export const withOwnedSandbox = <T>(
         return cancelAction(context, payload);
       }
 
-      await actions.editor.internal.forkSandbox({
-        sandboxId: state.editor.currentSandbox.id,
-      });
+      try {
+        await actions.editor.internal.forkSandbox({
+          sandboxId: state.editor.currentSandbox.id,
+        });
+      } catch (e) {
+        return cancelAction(context, payload);
+      }
     } else if (
       state.editor.currentSandbox.isFrozen &&
       state.editor.sessionFrozen
@@ -97,9 +101,13 @@ export const withOwnedSandbox = <T>(
       const modalResponse = await actions.modals.forkFrozenModal.open();
 
       if (modalResponse === 'fork') {
-        await actions.editor.internal.forkSandbox({
-          sandboxId: state.editor.currentId!,
-        });
+        try {
+          await actions.editor.internal.forkSandbox({
+            sandboxId: state.editor.currentId!,
+          });
+        } catch (e) {
+          return cancelAction(context, payload);
+        }
       } else if (modalResponse === 'unfreeze') {
         state.editor.sessionFrozen = false;
       } else if (modalResponse === 'cancel') {
