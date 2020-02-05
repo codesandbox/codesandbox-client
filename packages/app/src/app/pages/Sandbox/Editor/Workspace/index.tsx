@@ -8,6 +8,7 @@ import { ThemeProvider } from '@codesandbox/components';
 import { withTheme } from 'styled-components';
 import { Advertisement } from './Advertisement';
 import { Chat } from './Chat';
+import { Chat as ChatOld } from './ChatOld';
 import { ConnectionNotice } from './ConnectionNotice';
 import {
   ContactContainer,
@@ -80,24 +81,29 @@ export const WorkspaceComponent = ({ theme }) => {
       {item && !item.hasCustomHeader && !REDESIGNED_SIDEBAR && (
         <ItemTitle>{item.name}</ItemTitle>
       )}
+      <WorkspaceWrapper theme={theme.vscodeTheme}>
+        <>
+          <div
+            style={{
+              flex: 1,
+              overflowY: 'auto',
+              fontFamily: 'Inter, Roboto, sans-serif',
+            }}
+          >
+            <Component />
+          </div>
 
-      <div
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          fontFamily: 'Inter, Roboto, sans-serif',
-        }}
-      >
-        <WorkspaceWrapper theme={theme.vscodeTheme}>
-          <Component />
-        </WorkspaceWrapper>
-      </div>
-
-      {isLive && roomInfo.chatEnabled && !REDESIGNED_SIDEBAR && (
-        <WorkspaceItem defaultOpen title="Chat">
-          <Chat />
-        </WorkspaceItem>
-      )}
+          {isLive &&
+            roomInfo.chatEnabled &&
+            (!REDESIGNED_SIDEBAR ? (
+              <WorkspaceItem defaultOpen title="Chat">
+                <ChatOld />
+              </WorkspaceItem>
+            ) : (
+              <Chat />
+            ))}
+        </>
+      </WorkspaceWrapper>
 
       {!zenMode && !REDESIGNED_SIDEBAR && (
         <>

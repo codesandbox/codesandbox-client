@@ -32,7 +32,6 @@ const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
-  defaultOpen: true,
 };
 
 const GITHUB: INavigationItem = {
@@ -56,6 +55,7 @@ const LIVE: INavigationItem = {
   id: 'live',
   name: 'Live',
   showAsDisabledIfHidden: true,
+  defaultOpen: true,
 };
 
 const SERVER: INavigationItem = {
