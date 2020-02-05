@@ -149,6 +149,7 @@ export class Dependency extends React.PureComponent<Props, State> {
             >
               <Text
                 variant="muted"
+                maxWidth={75}
                 css={{ display: hovering ? 'none' : 'block' }}
               >
                 {formatVersion(dependencies[dependency])}{' '}
