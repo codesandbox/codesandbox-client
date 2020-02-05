@@ -28,8 +28,7 @@ export const NewSidebar: React.FunctionComponent = () => {
         setValue={setValue}
       />
       <SubDescription>
-        Use the new sidebar. This will refresh the page, make sure to save your
-        changes.
+        This will refresh the page, make sure to save your changes.
       </SubDescription>
     </>
   );
