@@ -2,6 +2,7 @@ import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-co
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
+  CurrentUser,
   EditorSelection,
   Module,
   ModuleCorrection,
@@ -48,6 +49,7 @@ export type VsCodeOptions = {
   getCurrentSandbox: () => Sandbox;
   getCurrentModule: () => Module;
   getSandboxFs: () => SandboxFs;
+  getCurrentUser: () => CurrentUser;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
   onSelectionChange: (selection: onSelectionChangeData) => void;
@@ -340,7 +342,7 @@ export class VSCodeEffect {
       //
     }
 
-    if (isServer) {
+    if (isServer && this.options.getCurrentUser().experiments.containerLsp) {
       childProcess.addDefaultForkHandler(this.createContainerForkHandler());
       const socket = this.createWebsocketFSRequest();
       const cache = await this.createFileSystem('WebsocketFS', {

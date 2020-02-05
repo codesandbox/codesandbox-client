@@ -1,7 +1,6 @@
 import { Badge } from '@codesandbox/common/lib/types';
-import { json } from 'overmind';
-
 import { Action, AsyncAction } from 'app/overmind';
+import { json } from 'overmind';
 
 export const viewModeChanged: Action<{
   showEditor: boolean;
@@ -135,4 +134,21 @@ export const zenModeToggled: Action = ({ state }) => {
 
 export const codeMirrorForced: Action = ({ state }) => {
   state.preferences.settings.codeMirror = true;
+};
+
+export const toggleContainerLspExperiment: AsyncAction = async ({
+  state,
+  effects,
+}) => {
+  if (!state.user) {
+    return;
+  }
+  try {
+    await effects.api.updateExperiments({
+      container_lsp: state.user.experiments.containerLsp,
+    });
+    state.user.experiments.containerLsp = !state.user.experiments.containerLsp;
+  } catch (error) {
+    effects.notificationToast.error('Unable to toggl LSP experiment');
+  }
 };
