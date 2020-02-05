@@ -1,11 +1,7 @@
 import React from 'react';
 
-import {
-  Title,
-  SubContainer,
-  SubDescription,
-  PreferenceContainer,
-} from '../elements';
+import { Title, SubContainer, PreferenceContainer } from '../elements';
+import { NewSidebar } from './NewSidebar';
 
 export const Experiments: React.FunctionComponent = () => (
   <div>
@@ -13,10 +9,7 @@ export const Experiments: React.FunctionComponent = () => (
 
     <SubContainer>
       <PreferenceContainer>
-        <SubDescription>
-          There are no experiments running at the moment. Stay tuned for new
-          experiments!
-        </SubDescription>
+        <NewSidebar />
       </PreferenceContainer>
     </SubContainer>
   </div>

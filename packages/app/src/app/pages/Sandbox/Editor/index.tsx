@@ -87,7 +87,7 @@ const ContentSplit = ({ theme }) => {
 
         <Fullscreen style={{ width: 'initial' }}>
           {!hideNavigation &&
-            (REDESIGNED_SIDEBAR ? (
+            (REDESIGNED_SIDEBAR === 'true' ? (
               <NewThemeProvider theme={theme.vscodeTheme}>
                 <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
               </NewThemeProvider>
