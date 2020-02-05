@@ -202,16 +202,7 @@ const Entry: React.FC<IEntryProps> = ({
                 error={error}
               />
             ) : (
-              <Text
-                css={{
-                  maxWidth: 150,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {title}
-              </Text>
+              <Text maxWidth={150}>{title}</Text>
             )}
             {isNotSynced && !state && (
               <NotSyncedIcon css={css({ color: 'blues.300' })} />

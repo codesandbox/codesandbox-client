@@ -19,6 +19,8 @@ const SelectComponent = styled(Input).attrs({ as: 'select' })(
     transition: 'all ease',
     transitionDuration: theme => theme.speeds[2],
 
+    paddingRight: 5, // select has a caret icon on the right
+
     backgroundImage: theme =>
       theme && `url(${svg(theme.colors.input.placeholderForeground)})`,
     backgroundPosition: 'calc(100% - 8px) center',
