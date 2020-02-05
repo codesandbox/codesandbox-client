@@ -43,7 +43,7 @@ export type ModuleCorrection = {
 };
 
 export type Module = {
-  id?: string;
+  id: string;
   title: string;
   code: string;
   savedCode: string | null;
@@ -57,7 +57,6 @@ export type Module = {
   insertedAt: string;
   updatedAt: string;
   path: string | null;
-  now?: any;
   type: 'file';
 };
 

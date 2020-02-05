@@ -91,7 +91,7 @@ class SandboxFsSync {
     });
 
     sandbox.modules.forEach(m => {
-      const path = getModulePath(sandbox.modules, sandbox.directories, m.id!);
+      const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
       if (path) {
         m.path = path;
         sandboxFs[path] = {
