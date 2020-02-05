@@ -37,19 +37,18 @@ import { Server } from './items/Server';
 import { SSEDownNotice } from './SSEDownNotice';
 import { WorkspaceItem } from './WorkspaceItem';
 
-const WorkspaceWrapper = REDESIGNED_SIDEBAR ? ThemeProvider : React.Fragment;
+const NEW_SIDEBAR = REDESIGNED_SIDEBAR === 'true';
+const WorkspaceWrapper = NEW_SIDEBAR ? ThemeProvider : React.Fragment;
 
 const workspaceTabs = {
-  project: REDESIGNED_SIDEBAR ? ProjectInfoNew : ProjectInfo,
-  'project-summary': REDESIGNED_SIDEBAR
-    ? NotOwnedSandboxInfoNew
-    : NotOwnedSandboxInfo,
-  github: REDESIGNED_SIDEBAR ? GitHubNew : GitHub,
-  files: REDESIGNED_SIDEBAR ? Explorer : FilesItem,
-  deploy: REDESIGNED_SIDEBAR ? DeploymentNew : Deployment,
-  config: REDESIGNED_SIDEBAR ? ConfigurationFilesNew : ConfigurationFiles,
-  live: REDESIGNED_SIDEBAR ? LiveNew : Live,
-  server: REDESIGNED_SIDEBAR ? ServerNew : Server,
+  project: NEW_SIDEBAR ? ProjectInfoNew : ProjectInfo,
+  'project-summary': NEW_SIDEBAR ? NotOwnedSandboxInfoNew : NotOwnedSandboxInfo,
+  github: NEW_SIDEBAR ? GitHubNew : GitHub,
+  files: NEW_SIDEBAR ? Explorer : FilesItem,
+  deploy: NEW_SIDEBAR ? DeploymentNew : Deployment,
+  config: NEW_SIDEBAR ? ConfigurationFilesNew : ConfigurationFiles,
+  live: NEW_SIDEBAR ? LiveNew : Live,
+  server: NEW_SIDEBAR ? ServerNew : Server,
   more: More,
 };
 
@@ -77,8 +76,8 @@ export const WorkspaceComponent = ({ theme }) => {
     getDisabledItems(state).find(({ id }) => id === activeTab);
 
   return (
-    <Container REDESIGNED_SIDEBAR={REDESIGNED_SIDEBAR}>
-      {item && !item.hasCustomHeader && !REDESIGNED_SIDEBAR && (
+    <Container REDESIGNED_SIDEBAR={NEW_SIDEBAR}>
+      {item && !item.hasCustomHeader && !NEW_SIDEBAR && (
         <ItemTitle>{item.name}</ItemTitle>
       )}
       <WorkspaceWrapper theme={theme.vscodeTheme}>
@@ -95,7 +94,7 @@ export const WorkspaceComponent = ({ theme }) => {
 
           {isLive &&
             roomInfo.chatEnabled &&
-            (!REDESIGNED_SIDEBAR ? (
+            (!NEW_SIDEBAR ? (
               <WorkspaceItem defaultOpen title="Chat">
                 <ChatOld />
               </WorkspaceItem>
@@ -105,7 +104,7 @@ export const WorkspaceComponent = ({ theme }) => {
         </>
       </WorkspaceWrapper>
 
-      {!zenMode && !REDESIGNED_SIDEBAR && (
+      {!zenMode && !NEW_SIDEBAR && (
         <>
           {!(isPatron || owned) && <Advertisement />}
 
