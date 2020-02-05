@@ -148,6 +148,9 @@ const polyfillTheme = vsCodeTheme => {
       foreground: 'white',
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`,
     },
+    icon: {
+      foreground: uiColors.foreground,
+    },
     switch: {
       backgroundOff: uiColors.input.background,
       backgroundOn: uiColors.button.background,
@@ -157,8 +160,14 @@ const polyfillTheme = vsCodeTheme => {
 
   uiColors = deepmerge(uiColors, addedColors);
 
-  // if the sidebar foreground and mutedForeground dont have enough contrast
-  // make foreground brighter
+  if (uiColors.switch.backgroundOff === uiColors.sideBar.background) {
+    uiColors.switch.backgroundOff = uiColors.sideBar.border;
+  }
+
+  if (uiColors.switch.toggle === uiColors.switch.backgroundOff) {
+    // default is white, we make it a little darker
+    uiColors.switch.toggle = designLanguage.colors.grays[200];
+  }
 
   return uiColors;
 };
