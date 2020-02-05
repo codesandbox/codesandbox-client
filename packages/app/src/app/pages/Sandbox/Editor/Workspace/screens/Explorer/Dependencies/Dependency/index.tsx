@@ -165,7 +165,7 @@ export class Dependency extends React.PureComponent<Props, State> {
             css={css({
               position: 'absolute',
               right: 0,
-              width: '160px',
+              width: '150px', // overlay on text
             })}
           >
             {hovering && (
@@ -193,7 +193,11 @@ export class Dependency extends React.PureComponent<Props, State> {
                         style={{ outline: 'none' }}
                         singleton={singleton}
                       >
-                        <Button variant="link" onClick={this.handleOpen}>
+                        <Button
+                          variant="link"
+                          onClick={this.handleOpen}
+                          css={css({ minWidth: 5 })}
+                        >
                           {open ? <ArrowDropUp /> : <ArrowDropDown />}
                         </Button>
                       </Tooltip>
@@ -202,7 +206,11 @@ export class Dependency extends React.PureComponent<Props, State> {
                         style={{ outline: 'none' }}
                         singleton={singleton}
                       >
-                        <Button variant="link" onClick={this.handleRefresh}>
+                        <Button
+                          variant="link"
+                          onClick={this.handleRefresh}
+                          css={css({ minWidth: 5 })}
+                        >
                           <RefreshIcon />
                         </Button>
                       </Tooltip>
@@ -211,7 +219,11 @@ export class Dependency extends React.PureComponent<Props, State> {
                         style={{ outline: 'none' }}
                         singleton={singleton}
                       >
-                        <Button variant="link" onClick={this.handleRemove}>
+                        <Button
+                          variant="link"
+                          onClick={this.handleRemove}
+                          css={css({ minWidth: 5 })}
+                        >
                           <CrossIcon />
                         </Button>
                       </Tooltip>
