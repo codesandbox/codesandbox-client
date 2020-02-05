@@ -22,13 +22,14 @@ export const NewSidebar: React.FunctionComponent = () => {
   return (
     <>
       <PaddedPreference
-        title="Use New Sidebar"
+        title="Sidebar Redesign"
         type="boolean"
         value={newSidebar}
         setValue={setValue}
       />
       <SubDescription>
-        Use Redesigned Sidebar (this will require a refresh)
+        Use the new sidebar. This will refresh the page, make sure to save your
+        changes.
       </SubDescription>
     </>
   );
