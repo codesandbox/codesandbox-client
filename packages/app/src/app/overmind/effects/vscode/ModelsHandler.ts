@@ -293,14 +293,14 @@ export class ModelsHandler {
           },
         };
       };
-      const prefix = (color || []).join('-') + userId;
+      const prefix = color.join('-') + userId;
       const cursorClassName = prefix + '-cursor';
       const nameTagClassName = prefix + '-nametag';
       const secondaryCursorClassName = prefix + '-secondary-cursor';
       const selectionClassName = prefix + '-selection';
       const secondarySelectionClassName = prefix + '-secondary-selection';
 
-      if (selection && color?.length) {
+      if (selection && color) {
         const nameStyles = {
           content: name,
           position: 'absolute',

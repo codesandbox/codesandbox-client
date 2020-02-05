@@ -474,7 +474,7 @@ export type EditorSelection = {
   userId: string;
   name: string | null;
   selection: UserSelection | null;
-  color: number[] | null;
+  color: number[];
 };
 
 export enum WindowOrientation {
