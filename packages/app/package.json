@@ -32,7 +32,7 @@
     "test": "jest --env=jsdom",
     "test:integrations": "jest --config integration-tests/jest.config.json --maxWorkers=2",
     "test:watch": "jest --watch --env=jsdom",
-    "typecheck": "tsc --noEmit -p tsconfig.check.json && tsc --noEmit -p tsconfig.strictNullChecks.json"
+    "typecheck": "tsc --noEmit -p tsconfig.check.json"
   },
   "jest": {
     "moduleDirectories": [

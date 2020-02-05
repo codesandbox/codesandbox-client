@@ -73,18 +73,17 @@ type ModalName =
   | 'searchDependencies'
   | 'share'
   | 'signInForTemplates'
-  | 'userSurvey';
+  | 'userSurvey'
+  | 'liveSessionEnded';
 
 export const modalOpened: Action<{
   modal: ModalName;
   message?: string;
-} & {
-  modal: 'preferences';
-  itemId: string;
+  itemId?: string;
 }> = ({ state, effects }, props) => {
   effects.analytics.track('Open Modal', { modal: props.modal });
   state.currentModal = props.modal;
-  if (props.modal === 'preferences') {
+  if (props.modal === 'preferences' && props.itemId) {
     state.preferences.itemId = props.itemId;
   } else {
     state.currentModalMessage = props.message || null;
@@ -165,10 +164,9 @@ export const signInZeitClicked: AsyncAction = async ({
 };
 
 export const signOutZeitClicked: AsyncAction = async ({ state, effects }) => {
-  const { user } = state;
-  if (user && user.integrations.zeit) {
+  if (state.user?.integrations?.zeit) {
     await effects.api.signoutZeit();
-    user.integrations.zeit = null;
+    delete state.user.integrations.zeit;
   }
 };
 
@@ -206,10 +204,9 @@ export const signOutGithubIntegration: AsyncAction = async ({
   state,
   effects,
 }) => {
-  const { user } = state;
-  if (user && user.integrations.github) {
+  if (state.user?.integrations?.github) {
     await effects.api.signoutGithubIntegration();
-    user.integrations.github = null;
+    delete state.user.integrations.github;
   }
 };
 

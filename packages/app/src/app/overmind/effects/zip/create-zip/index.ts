@@ -1,18 +1,18 @@
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
-import ignore from 'ignore';
-import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
 import {
+  getModulePath,
+  resolveModule,
+} from '@codesandbox/common/lib/sandbox/modules';
+import {
+  preact,
   react,
   reactTs,
-  vue,
-  preact,
   svelte,
+  vue,
 } from '@codesandbox/common/lib/templates/index';
-import {
-  resolveModule,
-  getModulePath,
-} from '@codesandbox/common/lib/sandbox/modules';
+import { Directory, Module, Sandbox } from '@codesandbox/common/lib/types';
+import { saveAs } from 'file-saver';
+import ignore from 'ignore';
+import JSZip from 'jszip';
 
 export const BLOB_ID = 'blob-url://';
 
@@ -217,7 +217,7 @@ export async function createZip(
 
   const filteredModules = modules.filter(module => {
     // Relative path
-    const path = getModulePath(modules, directories, module.id).substring(1);
+    const path = getModulePath(modules, directories, module.id!).substring(1);
     return !ignorer.ignores(path);
   });
 
@@ -232,7 +232,7 @@ export async function createZip(
       )
     );
 
-  let promise = null;
+  let promise: Promise<any> | null = null;
 
   if (
     sandbox.template !== vue.name &&
@@ -260,7 +260,9 @@ export async function createZip(
         m => m.directoryShortid == null && m.title === 'package.json'
       );
 
-      const pkgJSON = JSON.parse(packageJSONModule.code);
+      const pkgJSON = packageJSONModule?.code
+        ? JSON.parse(packageJSONModule.code)
+        : {};
       if (
         pkgJSON.devDependencies &&
         pkgJSON.devDependencies['@vue/cli-service']

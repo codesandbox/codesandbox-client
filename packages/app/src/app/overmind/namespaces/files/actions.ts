@@ -4,8 +4,8 @@ import {
   getModulesAndDirectoriesInDirectory,
 } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { Directory, Module } from '@codesandbox/common/lib/types';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import { createOptimisticModule } from 'app/overmind/utils/common';
@@ -49,11 +49,11 @@ export const moduleRenamed: AsyncAction<{
 
     effects.vscode.sandboxFsSync.rename(
       state.editor.modulesByPath,
-      oldPath,
+      oldPath!,
       module.path
     );
 
-    await effects.vscode.updateTabsPath(oldPath, module.path);
+    await effects.vscode.updateTabsPath(oldPath!, module.path);
 
     if (state.editor.currentModuleShortid === module.shortid) {
       effects.vscode.openModule(module);
@@ -183,7 +183,7 @@ export const moduleMovedToDirectory: AsyncAction<{
 
     effects.vscode.sandboxFsSync.rename(
       state.editor.modulesByPath,
-      oldPath,
+      oldPath!,
       module.path
     );
     effects.vscode.openModule(module);
@@ -359,7 +359,7 @@ export const directoryRenamed: AsyncAction<{
 
     effects.vscode.sandboxFsSync.rename(
       state.editor.modulesByPath,
-      oldPath,
+      oldPath!,
       directory.path
     );
     actions.editor.internal.updatePreviewCode();
@@ -592,7 +592,7 @@ export const moduleCreated: AsyncAction<{
     const module = sandbox.modules[sandbox.modules.length - 1];
 
     const template = getDefinition(sandbox.template);
-    const config = template.configurationFiles[module.path];
+    const config = template.configurationFiles[module.path!];
 
     if (
       config &&
@@ -628,7 +628,7 @@ export const moduleCreated: AsyncAction<{
       );
       state.editor.currentModuleShortid = module.shortid;
 
-      effects.executor.updateFiles(state.editor.currentSandbox);
+      effects.executor.updateFiles(sandbox);
 
       if (state.live.isCurrentEditor) {
         effects.live.sendModuleCreated(module);

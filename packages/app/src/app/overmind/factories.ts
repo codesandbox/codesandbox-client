@@ -26,7 +26,7 @@ export const withLoadApp = <T>(
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
   effects.keybindingManager.set(
-    json(state.preferences.settings.keybindings || [])
+    json(state.preferences.settings.keybindings || []) as any
   );
   effects.keybindingManager.start();
   effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
@@ -121,12 +121,12 @@ export const createModals = <
 >(
   modals: T
 ): {
-  state?: {
-    current: keyof T;
+  state: {
+    current: keyof T | null;
   } & {
     [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> };
   };
-  actions?: {
+  actions: {
     [K in keyof T]: {
       open: AsyncAction<
         T[K]['state'] extends IState ? T[K]['state'] : void,

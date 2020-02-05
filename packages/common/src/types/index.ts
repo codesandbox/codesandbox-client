@@ -56,7 +56,7 @@ export type Module = {
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path: string;
+  path: string | null;
   now?: any;
   type: 'file';
 };
@@ -73,7 +73,7 @@ export type Directory = {
   title: string;
   directoryShortid: string | null;
   shortid: string;
-  path: string;
+  path: string | null;
   sourceId: string;
   type: 'directory';
 };
@@ -623,7 +623,7 @@ export enum TabType {
 
 export type ModuleTab = {
   type: TabType.MODULE;
-  moduleShortid: string;
+  moduleShortid: string | null;
   dirty: boolean;
 };
 

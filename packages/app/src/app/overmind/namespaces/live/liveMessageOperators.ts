@@ -197,8 +197,8 @@ export const onModuleUpdated: Operator<LiveMessage<{
   if (existingModule.path !== data.module.path) {
     effects.vscode.sandboxFsSync.rename(
       state.editor.modulesByPath,
-      existingModule.path,
-      data.module.path
+      existingModule.path!,
+      data.module.path!
     );
   }
 
@@ -496,7 +496,7 @@ export const onOperation: Operator<LiveMessage<{
 export const onConnectionLoss: Operator<LiveMessage> = mutate(
   async ({ state, effects }) => {
     if (!state.live.reconnecting) {
-      let notificationId: string;
+      let notificationId: string | null = null;
       const timeout = setTimeout(() => {
         notificationId = effects.notificationToast.add({
           message: 'We lost connection with the live server, reconnecting...',

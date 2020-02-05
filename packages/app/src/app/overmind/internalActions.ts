@@ -28,6 +28,12 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     const jwt = await actions.internal.signInGithub(options);
     actions.internal.setJwt(jwt);
     state.user = await effects.api.getCurrentUser();
+    if (!state.user.id) {
+      effects.notificationToast.error(
+        'There is something wrong with the user, please refresh and try again'
+      );
+      return;
+    }
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
     effects.analytics.identify('signed_in', true);
@@ -55,7 +61,7 @@ export const setStoredSettings: Action = ({ state, effects }) => {
           key,
           bindings: settings.keybindings[key],
         }),
-      []
+      [] as Array<{ key: string; bindings: string }>
     );
   }
 
@@ -63,6 +69,10 @@ export const setStoredSettings: Action = ({ state, effects }) => {
 };
 
 export const setPatronPrice: Action = ({ state }) => {
+  if (!state.user) {
+    return;
+  }
+
   state.patron.price = state.user.subscription
     ? Number(state.user.subscription.amount)
     : 10;
@@ -73,7 +83,7 @@ export const setSignedInCookie: Action = ({ state }) => {
 };
 
 export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
-  if (state.user.sendSurvey) {
+  if (state.user?.sendSurvey) {
     // Let the server know that we've seen the survey
     effects.api.markSurveySeen();
 
@@ -112,7 +122,7 @@ export const addNotification: Action<{
     id: now,
     title,
     type,
-    buttons,
+    buttons: buttons || [],
     endTime: now + (timeAlive || timeAliveDefault) * 1000,
   });
 };
@@ -233,11 +243,13 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
 
   state.editor.tabs = [newTab];
 
-  state.preferences.showPreview =
-    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen;
+  state.preferences.showPreview = Boolean(
+    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen
+  );
 
-  state.preferences.showEditor =
-    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen;
+  state.preferences.showEditor = Boolean(
+    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen
+  );
 
   if (sandboxOptions.initialPath)
     state.editor.initialPath = sandboxOptions.initialPath;
@@ -271,6 +283,10 @@ export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
   { state },
   sandbox
 ) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   state.editor.currentSandbox.team = sandbox.team || null;
   state.editor.currentSandbox.collection = sandbox.collection;
   state.editor.currentSandbox.owned = sandbox.owned;
@@ -284,6 +300,10 @@ export const ensurePackageJSON: AsyncAction = async ({
   effects,
 }) => {
   const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+
   const existingPackageJson = sandbox.modules.find(
     module => module.directoryShortid == null && module.title === 'package.json'
   );
@@ -297,7 +317,7 @@ export const ensurePackageJSON: AsyncAction = async ({
       path: '/package.json',
     });
 
-    state.editor.currentSandbox.modules.push(optimisticModule as Module);
+    sandbox.modules.push(optimisticModule as Module);
     optimisticModule.path = getModulePath(
       sandbox.modules,
       sandbox.directories,
@@ -358,7 +378,7 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
   /*
     Update error message with what is coming from the server
   */
-  const result = response.data;
+  const result = response?.data;
 
   if (result) {
     if (typeof result === 'string') {
@@ -379,7 +399,7 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
       }
     } else if (result.error) {
       return result.error; // eslint-disable-line no-param-reassign
-    } else if (response.status === 413) {
+    } else if (response?.status === 413) {
       return 'File too large, upload limit is 5MB.';
     }
   }
@@ -423,7 +443,7 @@ export const handleError: Action<{
 
   const { response } = error as ApiError;
 
-  if (response.status === 401) {
+  if (response?.status === 401) {
     // Reset existing sign in info
     effects.jwt.reset();
     effects.analytics.setAnonymousId();
@@ -450,7 +470,7 @@ export const handleError: Action<{
   error.message = actions.internal.getErrorMessage({ error });
 
   const notificationActions = {
-    primary: [],
+    primary: [] as Array<{ label: string; run: () => void }>,
   };
 
   if (error.message.startsWith('You need to sign in to create more than')) {

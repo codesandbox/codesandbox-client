@@ -5,9 +5,6 @@
     "allowJs": false,
     "strictNullChecks": true
   },
-  "files": [
-    "./src/app/overmind/namespaces/dashboard/state.ts",
-    "./src/app/overmind/namespaces/dashboard/actions.ts"
-  ],
+  "include": ["./src/app/overmind/**/*.ts"],
   "exclude": ["node_modules"]
 }
