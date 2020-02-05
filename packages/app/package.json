@@ -162,7 +162,7 @@
     "onigasm": "^2.2.1",
     "ot": "^0.0.15",
     "overmind": "^22.0.0-1580488381342",
-    "overmind-devtools": "^19.0.0",
+    "overmind-devtools": "^23.0.0",
     "overmind-react": "^23.0.0-1580488381342",
     "phoenix": "^1.4.11",
     "postcss": "^7.0.26",
