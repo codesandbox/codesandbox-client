@@ -28,12 +28,6 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     const jwt = await actions.internal.signInGithub(options);
     actions.internal.setJwt(jwt);
     state.user = await effects.api.getCurrentUser();
-    if (!state.user.id) {
-      effects.notificationToast.error(
-        'There is something wrong with the user, please refresh and try again'
-      );
-      return;
-    }
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
     effects.analytics.identify('signed_in', true);
