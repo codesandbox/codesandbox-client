@@ -7,7 +7,7 @@ type State = {
   tags: {
     tagName: string;
   };
-  openedWorkspaceItem: string;
+  openedWorkspaceItem: string | null;
   workspaceHidden: boolean;
   showDeleteSandboxModal: boolean;
 };

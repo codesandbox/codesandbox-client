@@ -43,8 +43,8 @@ import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
 
 export type VsCodeOptions = {
-  getCurrentSandbox: () => Sandbox;
-  getCurrentModule: () => Module;
+  getCurrentSandbox: () => Sandbox | null;
+  getCurrentModule: () => Module | null;
   getSandboxFs: () => SandboxFs;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
@@ -68,7 +68,7 @@ declare global {
 export interface ICustomEditorApi {
   getCustomEditor(
     modulePath: string
-  ): false | ((container: HTMLElement, extraProps: object) => void);
+  ): false | ((container: HTMLElement, extraProps: object) => void) | null;
 }
 
 const context: any = window;
@@ -92,7 +92,7 @@ export class VSCodeEffect {
   private extensionEnablementService = blocker<any>();
   private workbench: Workbench;
   private settings: Settings;
-  private linter: Linter;
+  private linter: Linter | null;
   private modelsHandler: ModelsHandler;
   private modelSelectionListener: { dispose: Function };
   private readOnly: boolean;
@@ -227,7 +227,7 @@ export class VSCodeEffect {
     } else {
       // Auto disable vim extension
       if (
-        [null, undefined].includes(
+        ([null, undefined] as Array<null | undefined | string>).includes(
           localStorage.getItem('vs-global://extensionsIdentifiers/disabled')
         )
       ) {
@@ -386,7 +386,8 @@ export class VSCodeEffect {
     // that we are actually indeed still trying to open this file, as we might have changed
     // the file
     requestAnimationFrame(async () => {
-      if (module.id === this.options.getCurrentModule().id) {
+      const currentModule = this.options.getCurrentModule();
+      if (currentModule && module.id === currentModule.id) {
         try {
           const model = await this.modelsHandler.changeModule(module);
 
@@ -797,6 +798,9 @@ export class VSCodeEffect {
   private getPrettierConfig = () => {
     try {
       const sandbox = this.options.getCurrentSandbox();
+      if (!sandbox) {
+        return null;
+      }
       const module = resolveModule(
         '/.prettierrc',
         sandbox.modules,
@@ -810,7 +814,8 @@ export class VSCodeEffect {
   };
 
   private onOperationApplied = (data: OnOperationAppliedData) => {
-    if (data.moduleShortid === this.options.getCurrentModule().shortid) {
+    const currentModule = this.options.getCurrentModule();
+    if (currentModule && data.moduleShortid === currentModule.shortid) {
       this.lint(data.title, data.model);
     }
 
@@ -838,18 +843,20 @@ export class VSCodeEffect {
         return;
       }
 
-      if (this.linter) {
+      const sandbox = this.options.getCurrentSandbox();
+      if (this.linter && sandbox) {
         this.linter.lint(
           activeEditor.getModel().getValue(),
           modulePath,
           activeEditor.getModel().getVersionId(),
-          this.options.getCurrentSandbox().template
+          sandbox.template
         );
       }
 
       const currentModule = this.options.getCurrentModule();
 
       if (
+        currentModule &&
         modulePath === `/sandbox${currentModule.path}` &&
         currentModule.code !== undefined &&
         activeEditor.getValue() !== currentModule.code
@@ -926,11 +933,15 @@ export class VSCodeEffect {
   }
 
   private lint(title: string, model: any) {
+    const sandbox = this.options.getCurrentSandbox();
+    if (!sandbox || !this.linter) {
+      return;
+    }
     this.linter.lint(
       model.getValue(),
       title,
       model.getVersionId(),
-      this.options.getCurrentSandbox().template
+      sandbox.template
     );
   }
 

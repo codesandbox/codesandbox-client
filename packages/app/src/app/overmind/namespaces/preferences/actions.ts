@@ -1,7 +1,6 @@
 import { Badge } from '@codesandbox/common/lib/types';
-import { json } from 'overmind';
-
 import { Action, AsyncAction } from 'app/overmind';
+import { json } from 'overmind';
 
 export const viewModeChanged: Action<{
   showEditor: boolean;
@@ -64,9 +63,13 @@ export const setBadgeVisibility: AsyncAction<Pick<
   Badge,
   'id' | 'visible'
 >> = async ({ effects, state }, { id, visible }) => {
-  state.user.badges.forEach((badge, index) => {
+  const user = state.user;
+  if (!user) {
+    return;
+  }
+  user.badges.forEach((badge, index) => {
     if (badge.id === id) {
-      state.user.badges[index].visible = visible;
+      user.badges[index].visible = visible;
     }
   });
 
@@ -126,7 +129,9 @@ export const keybindingChanged: Action<{
 
   effects.settingsStore.set('keybindings', keybindingsValue);
 
-  effects.keybindingManager.set(json(state.preferences.settings.keybindings));
+  effects.keybindingManager.set(
+    json(state.preferences.settings.keybindings) as any
+  );
 };
 
 export const zenModeToggled: Action = ({ state }) => {

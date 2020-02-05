@@ -3,9 +3,9 @@ import {
   Directory,
   LiveDisconnectReason,
   LiveMessage,
+  LiveUser,
   Module,
   UserSelection,
-  LiveUser,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
@@ -41,6 +41,9 @@ export const onModuleState: Operator<LiveMessage<{
 export const onExternalResources: Operator<LiveMessage<{
   externalResources: string[];
 }>> = mutate(({ state, actions }, { data }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
   state.editor.currentSandbox.externalResources = data.externalResources;
   actions.editor.internal.updatePreviewCode();
 });
@@ -51,7 +54,7 @@ export const onUserEntered: Operator<LiveMessage<{
   owner_ids: string[];
   joined_user_id: string;
 }>> = mutate(({ state, effects, actions }, { data }) => {
-  if (state.live.isLoading) {
+  if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
     return;
   }
 
@@ -74,7 +77,7 @@ export const onUserEntered: Operator<LiveMessage<{
 
   const user = data.users.find(u => u.id === data.joined_user_id);
 
-  if (!state.live.notificationsHidden) {
+  if (!state.live.notificationsHidden && user) {
     effects.notificationToast.add({
       message: `${user.username} joined the live session.`,
       status: NotificationStatus.NOTICE,
@@ -88,6 +91,10 @@ export const onUserLeft: Operator<LiveMessage<{
   editor_ids: string[];
   owner_ids: string[];
 }>> = mutate(({ state, actions, effects }, { data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (!state.live.notificationsHidden) {
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
@@ -115,29 +122,32 @@ export const onModuleSaved: Operator<LiveMessage<{
   moduleShortid: string;
   module: Module;
 }>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
   const module = state.editor.currentSandbox.modules.find(
     moduleItem => moduleItem.shortid === data.moduleShortid
   );
-  module.isNotSynced = false;
 
-  actions.editor.internal.setModuleSavedCode({
-    moduleShortid: data.moduleShortid,
-    savedCode: data.module.savedCode,
-  });
+  if (module) {
+    module.isNotSynced = false;
 
-  effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-  // We revert the module so that VSCode will flag saved indication correctly
-  effects.vscode.revertModule(module);
-  actions.editor.internal.updatePreviewCode();
+    actions.editor.internal.setModuleSavedCode({
+      moduleShortid: data.moduleShortid,
+      savedCode: data.module.savedCode,
+    });
+
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
+    // We revert the module so that VSCode will flag saved indication correctly
+    effects.vscode.revertModule(module);
+    actions.editor.internal.updatePreviewCode();
+  }
 });
 
 export const onModuleCreated: Operator<LiveMessage<{
   module: Module;
 }>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
   state.editor.currentSandbox.modules.push(data.module);
@@ -151,7 +161,7 @@ export const onModuleMassCreated: Operator<LiveMessage<{
   modules: Module[];
   directories: Directory[];
 }>> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
   state.editor.currentSandbox.modules = state.editor.currentSandbox.modules.concat(
@@ -172,10 +182,12 @@ export const onModuleUpdated: Operator<LiveMessage<{
   moduleShortid: string;
   module: Module;
 }>> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  const sandbox = state.editor.currentSandbox;
+
+  if (_isOwnMessage || !sandbox) {
     return;
   }
-  const sandbox = state.editor.currentSandbox;
+
   const moduleIndex = sandbox.modules.findIndex(
     moduleEntry => moduleEntry.shortid === data.moduleShortid
   );
@@ -185,8 +197,8 @@ export const onModuleUpdated: Operator<LiveMessage<{
   if (existingModule.path !== data.module.path) {
     effects.vscode.sandboxFsSync.rename(
       state.editor.modulesByPath,
-      existingModule.path,
-      data.module.path
+      existingModule.path!,
+      data.module.path!
     );
   }
 
@@ -207,12 +219,15 @@ export const onModuleUpdated: Operator<LiveMessage<{
 export const onModuleDeleted: Operator<LiveMessage<{
   moduleShortid: string;
 }>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
   const removedModule = state.editor.currentSandbox.modules.find(
     directory => directory.shortid === data.moduleShortid
   );
+  if (!removedModule) {
+    return;
+  }
   const moduleIndex = state.editor.currentSandbox.modules.indexOf(
     removedModule
   );
@@ -225,7 +240,7 @@ export const onModuleDeleted: Operator<LiveMessage<{
     removedModule
   );
 
-  if (wasCurrentModule) {
+  if (wasCurrentModule && state.editor.mainModule) {
     actions.editor.internal.setCurrentModule(state.editor.mainModule);
   }
 
@@ -235,7 +250,7 @@ export const onModuleDeleted: Operator<LiveMessage<{
 export const onDirectoryCreated: Operator<LiveMessage<{
   module: Directory; // This is very weird?
 }>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
   // Should this not be a directory?
@@ -247,10 +262,11 @@ export const onDirectoryUpdated: Operator<LiveMessage<{
   directoryShortid: string;
   module: Directory; // Still very weird
 }>> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  const sandbox = state.editor.currentSandbox;
+  if (_isOwnMessage || !sandbox) {
     return;
   }
-  const sandbox = state.editor.currentSandbox;
+
   const directoryIndex = sandbox.directories.findIndex(
     directoryEntry => directoryEntry.shortid === data.directoryShortid
   );
@@ -275,10 +291,11 @@ export const onDirectoryUpdated: Operator<LiveMessage<{
 export const onDirectoryDeleted: Operator<LiveMessage<{
   directoryShortid: string;
 }>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  const sandbox = state.editor.currentSandbox;
+  if (_isOwnMessage || !sandbox) {
     return;
   }
-  const sandbox = state.editor.currentSandbox;
+
   const directory = sandbox.directories.find(
     directoryItem => directoryItem.shortid === data.directoryShortid
   );
@@ -318,7 +335,8 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
   // We open the main module as we do not really know if you had opened
   // any nested file of this directory. It would require complex logic
   // to figure that out. This concept is soon removed anyways
-  effects.vscode.openModule(state.editor.mainModule);
+  if (state.editor.mainModule)
+    effects.vscode.openModule(state.editor.mainModule);
   actions.editor.internal.updatePreviewCode();
 });
 
@@ -327,7 +345,7 @@ export const onUserSelection: Operator<LiveMessage<{
   moduleShortid: string;
   selection: UserSelection;
 }>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
     return;
   }
 
@@ -351,14 +369,16 @@ export const onUserSelection: Operator<LiveMessage<{
       u => u.id === userSelectionLiveUserId
     );
 
-    effects.vscode.updateUserSelections(module, [
-      {
-        userId: userSelectionLiveUserId,
-        name: user.username,
-        selection,
-        color: json(user.color),
-      },
-    ]);
+    if (user) {
+      effects.vscode.updateUserSelections(module, [
+        {
+          userId: userSelectionLiveUserId,
+          name: user.username,
+          selection,
+          color: json(user.color),
+        },
+      ]);
+    }
   }
 });
 
@@ -366,7 +386,7 @@ export const onUserCurrentModule: Operator<LiveMessage<{
   live_user_id: string;
   moduleShortid: string;
 }>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
-  if (_isOwnMessage) {
+  if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
     return;
   }
   const userIndex = state.live.roomInfo.users.findIndex(
@@ -401,6 +421,10 @@ export const onUserCurrentModule: Operator<LiveMessage<{
 export const onLiveMode: Operator<LiveMessage<{
   mode: string;
 }>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (!_isOwnMessage) {
     state.live.roomInfo.mode = data.mode;
   }
@@ -410,6 +434,10 @@ export const onLiveMode: Operator<LiveMessage<{
 export const onLiveChatEnabled: Operator<LiveMessage<{
   enabled: boolean;
 }>> = mutate(({ state }, { _isOwnMessage, data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (_isOwnMessage) {
     return;
   }
@@ -419,6 +447,10 @@ export const onLiveChatEnabled: Operator<LiveMessage<{
 export const onLiveAddEditor: Operator<LiveMessage<{
   editor_user_id: string;
 }>> = mutate(({ state }, { _isOwnMessage, data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (!_isOwnMessage) {
     state.live.roomInfo.editorIds.push(data.editor_user_id);
   }
@@ -427,6 +459,10 @@ export const onLiveAddEditor: Operator<LiveMessage<{
 export const onLiveRemoveEditor: Operator<LiveMessage<{
   editor_user_id: string;
 }>> = mutate(({ state }, { _isOwnMessage, data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (!_isOwnMessage) {
     const userId = data.editor_user_id;
 
@@ -460,7 +496,7 @@ export const onOperation: Operator<LiveMessage<{
 export const onConnectionLoss: Operator<LiveMessage> = mutate(
   async ({ state, effects }) => {
     if (!state.live.reconnecting) {
-      let notificationId: string;
+      let notificationId: string | null = null;
       const timeout = setTimeout(() => {
         notificationId = effects.notificationToast.add({
           message: 'We lost connection with the live server, reconnecting...',
@@ -485,7 +521,9 @@ export const onDisconnect: Operator<LiveMessage<{
   reason: LiveDisconnectReason;
 }>> = mutate(({ state, actions }, { data }) => {
   actions.live.internal.disconnect();
-  state.editor.currentSandbox.owned = state.live.isOwner;
+
+  if (state.editor.currentSandbox)
+    state.editor.currentSandbox.owned = state.live.isOwner;
 
   actions.modalOpened({
     modal: 'liveSessionEnded',
@@ -510,6 +548,10 @@ export const onChat: Operator<LiveMessage<{
   message: string;
   date: number;
 }>> = mutate(({ state }, { data }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   let name = state.live.roomInfo.chat.users[data.live_user_id];
 
   if (!name) {

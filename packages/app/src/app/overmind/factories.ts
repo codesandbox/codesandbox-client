@@ -26,7 +26,7 @@ export const withLoadApp = <T>(
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
   effects.keybindingManager.set(
-    json(state.preferences.settings.keybindings || [])
+    json(state.preferences.settings.keybindings || []) as any
   );
   effects.keybindingManager.start();
   effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
@@ -87,9 +87,13 @@ export const withOwnedSandbox = <T>(
         return cancelAction(context, payload);
       }
 
-      await actions.editor.internal.forkSandbox({
-        sandboxId: state.editor.currentSandbox.id,
-      });
+      try {
+        await actions.editor.internal.forkSandbox({
+          sandboxId: state.editor.currentSandbox.id,
+        });
+      } catch (e) {
+        return cancelAction(context, payload);
+      }
     } else if (
       state.editor.currentSandbox.isFrozen &&
       state.editor.sessionFrozen
@@ -97,9 +101,13 @@ export const withOwnedSandbox = <T>(
       const modalResponse = await actions.modals.forkFrozenModal.open();
 
       if (modalResponse === 'fork') {
-        await actions.editor.internal.forkSandbox({
-          sandboxId: state.editor.currentId,
-        });
+        try {
+          await actions.editor.internal.forkSandbox({
+            sandboxId: state.editor.currentId!,
+          });
+        } catch (e) {
+          return cancelAction(context, payload);
+        }
       } else if (modalResponse === 'unfreeze') {
         state.editor.sessionFrozen = false;
       } else if (modalResponse === 'cancel') {
@@ -121,12 +129,12 @@ export const createModals = <
 >(
   modals: T
 ): {
-  state?: {
-    current: keyof T;
+  state: {
+    current: keyof T | null;
   } & {
     [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> };
   };
-  actions?: {
+  actions: {
     [K in keyof T]: {
       open: AsyncAction<
         T[K]['state'] extends IState ? T[K]['state'] : void,

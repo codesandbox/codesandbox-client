@@ -34,9 +34,22 @@ export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
   state.currentModal = 'exportGithub';
 
   const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+
   const githubData = await effects.git.export(sandbox);
+  if (!githubData) {
+    return;
+  }
   const git = await effects.api.createGit(sandbox.id, repoTitle, githubData);
 
+  if (!git) {
+    effects.notificationToast.error(
+      'Unable to create git repo, please try again'
+    );
+    return;
+  }
   // Not being used?
   // const id = `github/${git.username}/${git.repo}/tree/${git.branch}/`;
 
@@ -51,7 +64,11 @@ export const gitMounted: AsyncAction = ({ actions }) =>
 
 export const createCommitClicked: AsyncAction = async ({ state, effects }) => {
   const { git } = state;
-  const { id } = state.editor.currentSandbox;
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+  const { id } = sandbox;
 
   git.commit = null;
   git.isCommitting = true;
@@ -91,8 +108,11 @@ export const createPrClicked: AsyncAction = async ({ state, effects }) => {
   state.git.pr = null;
   state.git.isCreatingPr = true;
   state.currentModal = 'pr';
-
-  const { id } = state.editor.currentSandbox;
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+  const { id } = sandbox;
   const pr = await effects.api.createGitPr(
     id,
     `${state.git.subject}${
@@ -104,7 +124,14 @@ export const createPrClicked: AsyncAction = async ({ state, effects }) => {
   state.git.isCreatingPr = false;
 
   const { user } = state;
-  const git = state.editor.currentSandbox.originalGit;
+  const git = sandbox.originalGit;
+
+  if (!user || !git) {
+    effects.notificationToast.error(
+      'Something wrong happened creating the PR, please refresh and try again'
+    );
+    return;
+  }
   const url = `https://github.com/${git.username}/${git.repo}/compare/${git.branch}...${user.username}:${pr.newBranch}?expand=1`;
 
   state.git.pr.prURL = url;

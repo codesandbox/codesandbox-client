@@ -73,18 +73,20 @@ type ModalName =
   | 'searchDependencies'
   | 'share'
   | 'signInForTemplates'
-  | 'userSurvey';
+  | 'userSurvey'
+  | 'liveSessionEnded';
 
 export const modalOpened: Action<{
   modal: ModalName;
   message?: string;
   itemId?: string;
-}> = ({ state, effects }, { modal, message, itemId }) => {
-  effects.analytics.track('Open Modal', { modal });
-  state.currentModalMessage = message;
-  state.currentModal = modal;
-  if (state.currentModal === 'preferences') {
-    state.preferences.itemId = itemId;
+}> = ({ state, effects }, props) => {
+  effects.analytics.track('Open Modal', { modal: props.modal });
+  state.currentModal = props.modal;
+  if (props.modal === 'preferences' && props.itemId) {
+    state.preferences.itemId = props.itemId;
+  } else {
+    state.currentModalMessage = props.message || null;
   }
 };
 
@@ -162,8 +164,10 @@ export const signInZeitClicked: AsyncAction = async ({
 };
 
 export const signOutZeitClicked: AsyncAction = async ({ state, effects }) => {
-  await effects.api.signoutZeit();
-  state.user.integrations.zeit = null;
+  if (state.user?.integrations?.zeit) {
+    await effects.api.signoutZeit();
+    delete state.user.integrations.zeit;
+  }
 };
 
 export const authTokenRequested: AsyncAction = async ({ actions }) => {
@@ -200,8 +204,10 @@ export const signOutGithubIntegration: AsyncAction = async ({
   state,
   effects,
 }) => {
-  await effects.api.signoutGithubIntegration();
-  state.user.integrations.github = null;
+  if (state.user?.integrations?.github) {
+    await effects.api.signoutGithubIntegration();
+    delete state.user.integrations.github;
+  }
 };
 
 export const setUpdateStatus: Action<{ status: string }> = (

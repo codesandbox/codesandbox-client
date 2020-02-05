@@ -253,7 +253,12 @@ export class ModelsHandler {
         return;
       }
 
-      const decorations = [];
+      const decorations: Array<{
+        range: any;
+        options: {
+          className: string;
+        };
+      }> = [];
       const { selection, color, name } = data;
 
       const getCursorDecoration = (position, className) => {
@@ -295,7 +300,7 @@ export class ModelsHandler {
       const selectionClassName = prefix + '-selection';
       const secondarySelectionClassName = prefix + '-secondary-selection';
 
-      if (selection) {
+      if (selection && color) {
         const nameStyles = {
           content: name,
           position: 'absolute',

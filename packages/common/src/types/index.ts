@@ -43,7 +43,7 @@ export type ModuleCorrection = {
 };
 
 export type Module = {
-  id?: string;
+  id: string;
   title: string;
   code: string;
   savedCode: string | null;
@@ -56,8 +56,7 @@ export type Module = {
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path: string;
-  now?: any;
+  path: string | null;
   type: 'file';
 };
 
@@ -73,7 +72,7 @@ export type Directory = {
   title: string;
   directoryShortid: string | null;
   shortid: string;
-  path: string;
+  path: string | null;
   sourceId: string;
   type: 'directory';
 };
@@ -104,7 +103,7 @@ export type Badge = {
 };
 
 export type CurrentUser = {
-  id: string | null;
+  id: string;
   email: string | null;
   name: string | null;
   username: string;
@@ -120,13 +119,13 @@ export type CurrentUser = {
   curatorAt: string;
   badges: Badge[];
   integrations: {
-    zeit?: {
+    zeit: {
       token: string;
       email?: string;
-    };
-    github?: {
+    } | null;
+    github: {
       email: string;
-    };
+    } | null;
   };
   sendSurvey: boolean;
 };
@@ -145,7 +144,7 @@ export type GitInfo = {
   username: string;
   path: string;
   branch: string;
-  commitSha: string;
+  commitSha: string | null;
 };
 
 export type SmallSandbox = {
@@ -200,7 +199,7 @@ export type User = {
 
 export type LiveUser = {
   username: string;
-  selection: UserSelection;
+  selection: UserSelection | null;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
@@ -303,7 +302,7 @@ export type Sandbox = {
   id: string;
   alias: string | null;
   title: string | null;
-  description: string | null;
+  description: string;
   viewCount: number;
   likeCount: number;
   forkCount: number;
@@ -405,8 +404,8 @@ export type Settings = {
   trailingComma: string;
   useTabs: boolean;
   enableLigatures: boolean;
-  customVSCodeTheme: string;
-  manualCustomVSCodeTheme: string;
+  customVSCodeTheme: string | null;
+  manualCustomVSCodeTheme: string | null;
   experimentVSCode: boolean;
 };
 
@@ -474,7 +473,7 @@ export type EditorSelection = {
   userId: string;
   name: string | null;
   selection: UserSelection | null;
-  color: number[] | null;
+  color: number[];
 };
 
 export enum WindowOrientation {
@@ -623,7 +622,7 @@ export enum TabType {
 
 export type ModuleTab = {
   type: TabType.MODULE;
-  moduleShortid: string;
+  moduleShortid: string | null;
   dirty: boolean;
 };
 
@@ -658,9 +657,9 @@ export type UploadedFilesInfo = {
 };
 
 export type SandboxUrlSourceData = {
-  id: string;
-  alias: string | null;
-  git?: GitInfo;
+  id?: string | null;
+  alias?: string | null;
+  git?: GitInfo | null;
 };
 
 export type DevToolsTabPosition = {

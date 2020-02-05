@@ -9,7 +9,7 @@ export type Blocker<T> = {
 };
 
 export function blocker<T>(): Blocker<T> {
-  let resolve: (value: T) => void = null;
+  let resolve: (value: T) => void;
   let isResolved = false;
   const promise = new Promise<T>(r => {
     resolve = r;
