@@ -97,11 +97,11 @@ const polyfillTheme = vsCodeTheme => {
   // To make sure the UI looks great, we change some of these design decisions
   // made by the theme author
 
-  const mutedForeground= withContrast(
-      uiColors.input.placeholderForeground,
-      uiColors.sideBar.background,
-      type
-    ),
+  const mutedForeground = withContrast(
+    uiColors.input.placeholderForeground,
+    uiColors.sideBar.background,
+    type
+  );
 
   const decreaseContrast = type === 'dark' ? lighten : darken;
 
@@ -149,7 +149,7 @@ const polyfillTheme = vsCodeTheme => {
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`,
     },
     switch: {
-      background: uiColors.sideBar.border,
+      background: uiColors.input.background,
       foregroundOff: designLanguage.colors.white,
       foregroundOn: uiColors.button.background,
     },

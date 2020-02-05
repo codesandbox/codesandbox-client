@@ -6,8 +6,10 @@ import { Element } from '../Element';
 const SwitchBackground = styled.div(
   css({
     width: 7,
-    height: '14px',
+    height: 4,
     backgroundColor: 'switch.background',
+    border: '1px solid',
+    borderColor: 'sideBar.background',
     borderRadius: 'large',
     position: 'relative',
     transition: 'background-color ease',
@@ -17,11 +19,12 @@ const SwitchBackground = styled.div(
 
 const SwitchToggle = styled.span(
   css({
-    width: '14px',
-    height: '14px',
+    width: 3,
+    height: 3,
     backgroundColor: 'switch.foregroundOff',
     borderRadius: '50%',
     position: 'absolute',
+    margin: '1px',
     left: 0,
     transition: 'left ease',
     transitionDuration: theme => theme.speeds[3],
@@ -43,7 +46,7 @@ const SwitchContainer = styled(Element)(
       backgroundColor: 'switch.foregroundOn',
     },
     'input:checked + [data-component=SwitchBackground] [data-component=SwitchToggle]': {
-      left: theme => theme.space[4] - 3,
+      left: theme => theme.space[4] - 4,
     },
   })
 );
