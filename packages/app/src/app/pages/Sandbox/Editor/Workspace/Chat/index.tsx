@@ -15,9 +15,7 @@ import {
 const Container = styled(Stack)`
   min-height: 200px;
   max-height: 300px;
-  padding: 0 1rem;
-  color: white;
-  font-size: 0.875rem;
+  padding: 0 ${props => props.theme.sizes[8]}px;
   overflow-y: auto;
 `;
 
