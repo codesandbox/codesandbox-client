@@ -89,6 +89,8 @@ export const Chat: React.FC = () => {
       css={css({
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
+        boxShadow:
+          '0px -8px 8px rgba(0,0,0,0.24), 0px -4px 8px rgba(0,0,0,0.4)',
       })}
       defaultOpen
       title="Chat"
