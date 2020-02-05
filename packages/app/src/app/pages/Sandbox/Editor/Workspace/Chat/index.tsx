@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css as c } from 'styled-components';
 import { sortBy, takeRight } from 'lodash-es';
 
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
+import css from '@styled-system/css';
 import {
   Collapsible,
   Text,
@@ -15,7 +16,7 @@ import {
 const Container = styled(Stack)`
   min-height: 200px;
   max-height: 300px;
-  padding: 0 ${props => props.theme.sizes[8]}px;
+  padding: 0 ${props => props.theme.sizes[2]}px;
   overflow-y: auto;
 `;
 
@@ -25,7 +26,7 @@ const Messages = styled.div`
 `;
 
 const Avatar = styled.img`
-  ${({ theme, color }) => css`
+  ${({ theme, color }) => c`
     border-radius: ${theme.radii.medium}px;
     border: 1px solid ${color};
     width: ${theme.sizes[8]}px;
@@ -84,7 +85,14 @@ export const Chat: React.FC = () => {
     i === 0 || messages[i - 1].userId !== message.userId;
 
   return (
-    <Collapsible defaultOpen title="Chat">
+    <Collapsible
+      css={css({
+        borderTop: '1px solid',
+        borderColor: 'sideBar.border',
+      })}
+      defaultOpen
+      title="Chat"
+    >
       <Container direction="vertical" ref={messagesRef}>
         <Messages>
           {messages.length > 0 ? (
