@@ -34,6 +34,7 @@ const polyfillTheme = vsCodeTheme => {
     inputOption: {},
     list: {},
     sideBar: {},
+    activityBar: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
@@ -97,13 +98,13 @@ const polyfillTheme = vsCodeTheme => {
   // To make sure the UI looks great, we change some of these design decisions
   // made by the theme author
 
+  const decreaseContrast = type === 'dark' ? lighten : darken;
+
   const mutedForeground = withContrast(
     uiColors.input.placeholderForeground,
     uiColors.sideBar.background,
     type
   );
-
-  const decreaseContrast = type === 'dark' ? lighten : darken;
 
   if (uiColors.sideBar.border === uiColors.sideBar.background) {
     uiColors.sideBar.border = decreaseContrast(
@@ -133,6 +134,11 @@ const polyfillTheme = vsCodeTheme => {
 
   const addedColors = {
     mutedForeground,
+    activityBar: {
+      selected: uiColors.sideBar.foreground,
+      inactiveForeground: mutedForeground,
+      hoverBackground: uiColors.sideBar.hoverBackground,
+    },
     avatar: { border: uiColors.sideBar.border },
     sideBar: { hoverBackground: uiColors.sideBar.border },
     button: {

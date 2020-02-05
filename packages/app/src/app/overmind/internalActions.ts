@@ -369,6 +369,9 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
       const fields = Object.keys(result.errors);
       if (Array.isArray(errors)) {
         if (errors[0]) {
+          if (fields[0] === 'detail') {
+            return errors[0];
+          }
           return `${fields[0]}: ${errors[0]}`; // eslint-disable-line no-param-reassign,prefer-destructuring
         }
       } else {
