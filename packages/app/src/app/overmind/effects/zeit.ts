@@ -75,7 +75,9 @@ export default (() => {
     getConfig(sandbox: Sandbox): ZeitConfig {
       const nowConfigs = sandbox.modules
         .filter(
-          m => m.title === 'now.json' || (m.title === 'package.json' && m.now)
+          m =>
+            m.title === 'now.json' ||
+            (m.title === 'package.json' && JSON.parse(m.code).now)
         )
         .map(c => JSON.parse(c.code));
       const nowData = nowConfigs[0] || {};

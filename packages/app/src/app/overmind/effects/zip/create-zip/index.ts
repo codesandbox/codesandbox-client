@@ -217,7 +217,7 @@ export async function createZip(
 
   const filteredModules = modules.filter(module => {
     // Relative path
-    const path = getModulePath(modules, directories, module.id!).substring(1);
+    const path = getModulePath(modules, directories, module.id).substring(1);
     return !ignorer.ignores(path);
   });
 
