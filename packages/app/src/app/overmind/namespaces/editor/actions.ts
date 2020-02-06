@@ -132,7 +132,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
 export const contentMounted: Action = ({ state, effects }) => {
   effects.browser.onUnload(event => {
-    if (!state.editor.isAllModulesSynced) {
+    if (!state.editor.isAllModulesSynced && !state.editor.isForkingSandbox) {
       const returnMessage =
         'You have not saved all your modules, are you sure you want to close this tab?';
 
