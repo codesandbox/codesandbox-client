@@ -4,8 +4,8 @@ exports[`convert-esmodule can convert class default exports 1`] = `
 "Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-exports.default = A;
 class A {}
+exports.default = A;
 "
 `;
 
@@ -13,8 +13,8 @@ exports[`convert-esmodule can convert default exports 1`] = `
 "Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-exports.default = test;
 function test() {}
+exports.default = test;
 "
 `;
 
@@ -140,8 +140,8 @@ exports[`convert-esmodule handles export mutations 1`] = `
 "Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-exports.default = test;
 function test() {}
+exports.default = test;
 exports.default = test = 5;;
 "
 `;
@@ -150,8 +150,8 @@ exports[`convert-esmodule handles export mutations with no named function 1`] = 
 "Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-exports.default = $csb__default;
 function $csb__default() {}
+exports.default = $csb__default;
 "
 `;
 

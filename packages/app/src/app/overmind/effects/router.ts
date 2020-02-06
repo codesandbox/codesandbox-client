@@ -1,6 +1,7 @@
 import { GitInfo } from '@codesandbox/common/lib/types';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+
 import history from '../../utils/history';
 
 export default {
@@ -9,11 +10,11 @@ export default {
     alias,
     git,
   }: {
-    id?: string;
-    alias?: string;
-    git?: GitInfo;
+    id?: string | null;
+    alias?: string | null;
+    git?: GitInfo | null;
   }) {
-    window.history.replaceState({}, null, sandboxUrl({ id, alias, git }));
+    window.history.replaceState({}, '', sandboxUrl({ id, alias, git }));
   },
   updateSandboxUrl(
     {
@@ -21,9 +22,9 @@ export default {
       alias,
       git,
     }: {
-      id?: string;
-      alias?: string;
-      git?: GitInfo;
+      id?: string | null;
+      alias?: string | null;
+      git?: GitInfo | null;
     },
     { openInNewWindow = false }: { openInNewWindow?: boolean } = {}
   ) {

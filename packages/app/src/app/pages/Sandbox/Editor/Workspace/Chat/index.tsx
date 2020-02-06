@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { css as c } from 'styled-components';
 import { sortBy, takeRight } from 'lodash-es';
 
-import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
+import css from '@styled-system/css';
+import {
+  Collapsible,
+  Text,
+  Stack,
+  Textarea,
+  Element,
+} from '@codesandbox/components';
 
-const Container = styled.div`
+const Container = styled(Stack)`
   min-height: 200px;
   max-height: 300px;
-  padding: 0 1rem;
-  color: white;
-  font-size: 0.875rem;
-  display: flex;
-  flex-direction: column;
+  padding: 0 ${props => props.theme.sizes[2]}px;
   overflow-y: auto;
 `;
 
@@ -22,9 +25,17 @@ const Messages = styled.div`
   flex: 1;
 `;
 
+const Avatar = styled.img`
+  ${({ theme, color }) => c`
+    border-radius: ${theme.radii.medium}px;
+    border: 1px solid ${color};
+    width: ${theme.sizes[8]}px;
+    height: ${theme.sizes[8]}px;
+  `}
+`;
+
 export const Chat: React.FC = () => {
   const [value, setValue] = useState('');
-  const [height, setHeight] = useState<number>(null);
   const { state, actions } = useOvermind();
   const messagesRef = useRef(null);
   const scrollDown = () => {
@@ -35,7 +46,7 @@ export const Chat: React.FC = () => {
   useEffect(scrollDown);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.keyCode === ENTER && !e.shiftKey) {
+    if (e.keyCode === ENTER && !e.shiftKey && value.trim() !== '') {
       e.preventDefault();
       e.stopPropagation();
       // Enter
@@ -54,76 +65,96 @@ export const Chat: React.FC = () => {
   };
 
   const { messages, users } = state.live.roomInfo.chat;
-  const currentUserId = state.live.liveUserId;
   const roomInfoUsers = state.live.roomInfo.users;
 
+  const orderedMessages: (m: any) => any[] = m =>
+    sortBy(takeRight(m, 100), 'date');
+
+  const messageData = message => {
+    const metadata = roomInfoUsers.find(u => u.id === message.userId);
+    return {
+      metadata,
+      color: metadata
+        ? `rgb(${metadata.color[0]}, ${metadata.color[1]}, ${metadata.color[2]})`
+        : '#636363',
+      name: users[message.userId],
+    };
+  };
+
+  const isNotSameUser = (message, i) =>
+    i === 0 || messages[i - 1].userId !== message.userId;
+
+  const isLight = theme => theme.vscodeTheme.type === 'light';
+
   return (
-    <Container ref={messagesRef}>
-      <Messages>
-        {messages.length > 0 ? (
-          sortBy(takeRight(messages, 100), 'date').map((message, i) => {
-            const metadata = roomInfoUsers.find(u => u.id === message.userId);
-            const color = metadata
-              ? `rgb(${metadata.color[0]}, ${metadata.color[1]}, ${metadata.color[2]})`
-              : '#636363';
-            const name = users[message.userId];
-            return (
-              <div key={message.date}>
-                {(i === 0 || messages[i - 1].userId !== message.userId) && (
-                  <div
+    <Collapsible
+      css={css(theme => ({
+        borderTop: '1px solid',
+        borderColor: 'sideBar.border',
+        boxShadow: isLight(theme)
+          ? '0px -8px 8px rgba(255,255,255,0.24), 0px -4px 8px rgba(255,255,255,0.4)'
+          : '0px -8px 8px rgba(0,0,0,0.24), 0px -4px 8px rgba(0,0,0,0.4)',
+      }))}
+      defaultOpen
+      title="Chat"
+    >
+      <Container direction="vertical" ref={messagesRef}>
+        <Messages>
+          {messages.length > 0 ? (
+            orderedMessages(messages).map((message, i) => {
+              const { color, name, metadata } = messageData(message);
+              return (
+                <Element key={message.date}>
+                  {isNotSameUser(message, i) && (
+                    <Stack
+                      paddingTop={2}
+                      marginBottom={2}
+                      align="center"
+                      gap={2}
+                    >
+                      <Avatar
+                        color={color}
+                        alt={metadata.username}
+                        src={metadata.avatarUrl}
+                      />
+                      <Text block weight="bold">
+                        {name}
+                      </Text>
+                    </Stack>
+                  )}
+                  <Text
+                    block
                     style={{
-                      color,
-                      fontWeight: 600,
-                      marginBottom: '0.25rem',
-                      marginTop: '0.5rem',
+                      wordBreak: 'break-word',
                     }}
+                    marginBottom={2}
                   >
-                    {name}
-                    {currentUserId === message.userId && ' (you)'}
-                    {!metadata && ' (left)'}
-                  </div>
-                )}
-                <div
-                  style={{
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    fontWeight: 400,
-                    marginBottom: '.25rem',
-                  }}
-                >
-                  {message.message.split('\n').map(m => (
-                    <span key={m}>
-                      {m}
-                      <br />
-                    </span>
-                  ))}
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <div
-            style={{
-              fontStyle: 'italic',
-              color: 'rgba(255, 255, 255, 0.5)',
-            }}
-          >
-            No messages, start sending some!
-          </div>
-        )}
-      </Messages>
-      <AutosizeTextArea
-        useCacheForDOMMeasurements
-        value={value}
-        onChange={handleChange}
-        placeholder="Send a message..."
-        style={{
-          width: '100%',
-          minHeight: height,
-          marginTop: '0.5rem',
-        }}
-        onKeyDown={handleKeyDown}
-        onHeightChange={setHeight}
-      />
-    </Container>
+                    {message.message.split('\n').map(m => (
+                      <span key={m}>
+                        {m}
+                        <br />
+                      </span>
+                    ))}
+                  </Text>
+                </Element>
+              );
+            })
+          ) : (
+            <Text variant="muted">No messages, start sending some!</Text>
+          )}
+        </Messages>
+        <Element marginTop={4}>
+          <Textarea
+            autosize
+            style={{ height: 'auto', minHeight: 'auto' }}
+            rows={1}
+            value={value}
+            onChange={handleChange}
+            placeholder="Send a message..."
+            onKeyDown={handleKeyDown}
+          />
+        </Element>
+      </Container>
+    </Collapsible>
   );
 };

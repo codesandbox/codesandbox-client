@@ -1,6 +1,10 @@
 import { AsyncAction } from 'app/overmind';
 
 export const fetchGitChanges: AsyncAction = async ({ state, effects }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   const { id } = state.editor.currentSandbox;
 
   state.git.isFetching = true;

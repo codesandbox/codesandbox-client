@@ -12,12 +12,18 @@ export const clearUserSelections: Action<string | null> = (
   { state, effects },
   live_user_id
 ) => {
-  const clearSelections = userId => {
-    const userIndex = state.live.roomInfo.users.findIndex(u => u.id === userId);
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  const clearSelections = (userId: string) => {
+    const roomInfo = state.live.roomInfo!;
+    const userIndex = roomInfo.users.findIndex(u => u.id === userId);
 
     if (userIndex > -1) {
-      if (state.live.roomInfo.users[userIndex]) {
-        state.live.roomInfo.users[userIndex].selection = null;
+      const user = roomInfo.users[userIndex];
+      if (user) {
+        user.selection = null;
 
         effects.vscode.clearUserSelections(userId);
       }
@@ -46,7 +52,7 @@ export const disconnect: Action = ({ effects, actions }) => {
   actions.live.internal.reset();
 };
 
-export const initialize: AsyncAction<string, Sandbox> = async (
+export const initialize: AsyncAction<string, Sandbox | null> = async (
   { state, effects, actions },
   id
 ) => {
@@ -88,13 +94,15 @@ export const initializeModuleState: Action<any> = (
   { state, actions, effects },
   moduleState
 ) => {
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
   Object.keys(moduleState).forEach(moduleShortid => {
     const moduleInfo = moduleState[moduleShortid];
 
     // Module has not been saved, so is different
-    const module = state.editor.currentSandbox.modules.find(
-      m => m.shortid === moduleShortid
-    );
+    const module = sandbox.modules.find(m => m.shortid === moduleShortid);
 
     if (module) {
       if (!('code' in moduleInfo)) {
@@ -136,6 +144,10 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
 ) => {
   const selections: EditorSelection[] = [];
   const moduleShortid = module.shortid;
+
+  if (!state.live.roomInfo) {
+    return selections;
+  }
 
   state.live.roomInfo.users.forEach(user => {
     const userId = user.id;

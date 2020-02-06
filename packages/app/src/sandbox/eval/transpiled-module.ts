@@ -72,6 +72,7 @@ export type SerializedTranspiledModule = {
   transpilationDependencies: Array<string>;
   transpilationInitiators: Array<string>;
   warnings: WarningStructure[];
+  hasMissingDependencies: boolean;
 };
 
 /* eslint-disable no-use-before-define */
@@ -1090,6 +1091,7 @@ export default class TranspiledModule {
         Array.from(this.asyncDependencies).map(m => m.then(x => x.getId()))
       ),
       warnings: this.warnings.map(war => war.serialize()),
+      hasMissingDependencies: this.hasMissingDependencies,
     };
 
     if (!sourceEqualsCompiled || !optimizeForSize) {
@@ -1110,6 +1112,7 @@ export default class TranspiledModule {
     this.emittedAssets = data.emittedAssets;
     this.isEntry = data.isEntry;
     this.isTestFile = data.isTestFile;
+    this.hasMissingDependencies = data.hasMissingDependencies;
 
     if (data.sourceEqualsCompiled) {
       this.source = new ModuleSource(

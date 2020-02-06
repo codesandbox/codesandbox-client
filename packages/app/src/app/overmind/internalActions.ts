@@ -55,7 +55,7 @@ export const setStoredSettings: Action = ({ state, effects }) => {
           key,
           bindings: settings.keybindings[key],
         }),
-      []
+      [] as Array<{ key: string; bindings: string }>
     );
   }
 
@@ -63,6 +63,10 @@ export const setStoredSettings: Action = ({ state, effects }) => {
 };
 
 export const setPatronPrice: Action = ({ state }) => {
+  if (!state.user) {
+    return;
+  }
+
   state.patron.price = state.user.subscription
     ? Number(state.user.subscription.amount)
     : 10;
@@ -73,7 +77,7 @@ export const setSignedInCookie: Action = ({ state }) => {
 };
 
 export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
-  if (state.user.sendSurvey) {
+  if (state.user?.sendSurvey) {
     // Let the server know that we've seen the survey
     effects.api.markSurveySeen();
 
@@ -112,7 +116,7 @@ export const addNotification: Action<{
     id: now,
     title,
     type,
-    buttons,
+    buttons: buttons || [],
     endTime: now + (timeAlive || timeAliveDefault) * 1000,
   });
 };
@@ -233,11 +237,13 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
 
   state.editor.tabs = [newTab];
 
-  state.preferences.showPreview =
-    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen;
+  state.preferences.showPreview = Boolean(
+    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen
+  );
 
-  state.preferences.showEditor =
-    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen;
+  state.preferences.showEditor = Boolean(
+    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen
+  );
 
   if (sandboxOptions.initialPath)
     state.editor.initialPath = sandboxOptions.initialPath;
@@ -271,6 +277,10 @@ export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
   { state },
   sandbox
 ) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   state.editor.currentSandbox.team = sandbox.team || null;
   state.editor.currentSandbox.collection = sandbox.collection;
   state.editor.currentSandbox.owned = sandbox.owned;
@@ -284,6 +294,10 @@ export const ensurePackageJSON: AsyncAction = async ({
   effects,
 }) => {
   const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+
   const existingPackageJson = sandbox.modules.find(
     module => module.directoryShortid == null && module.title === 'package.json'
   );
@@ -297,7 +311,7 @@ export const ensurePackageJSON: AsyncAction = async ({
       path: '/package.json',
     });
 
-    state.editor.currentSandbox.modules.push(optimisticModule as Module);
+    sandbox.modules.push(optimisticModule as Module);
     optimisticModule.path = getModulePath(
       sandbox.modules,
       sandbox.directories,
@@ -345,7 +359,10 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
   context,
   { error }
 ) => {
-  const isGenericError = !('response' in error) || error.response.status >= 500;
+  const isGenericError =
+    !('response' in error) ||
+    error.response == null ||
+    error.response.status >= 500;
 
   if (isGenericError) {
     return error.message;
@@ -355,7 +372,7 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
   /*
     Update error message with what is coming from the server
   */
-  const result = response.data;
+  const result = response?.data;
 
   if (result) {
     if (typeof result === 'string') {
@@ -366,6 +383,9 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
       const fields = Object.keys(result.errors);
       if (Array.isArray(errors)) {
         if (errors[0]) {
+          if (fields[0] === 'detail') {
+            return errors[0];
+          }
           return `${fields[0]}: ${errors[0]}`; // eslint-disable-line no-param-reassign,prefer-destructuring
         }
       } else {
@@ -373,7 +393,7 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
       }
     } else if (result.error) {
       return result.error; // eslint-disable-line no-param-reassign
-    } else if (response.status === 413) {
+    } else if (response?.status === 413) {
       return 'File too large, upload limit is 5MB.';
     }
   }
@@ -387,8 +407,22 @@ export const handleError: Action<{
   */
   message: string;
   error: ApiError | Error;
-}> = ({ actions, effects }, { message, error }) => {
-  const isGenericError = !('response' in error) || error.response.status >= 500;
+  hideErrorMessage?: boolean;
+}> = ({ actions, effects }, { message, error, hideErrorMessage = false }) => {
+  if (hideErrorMessage) {
+    effects.analytics.logError(error);
+    effects.notificationToast.add({
+      message,
+      status: NotificationStatus.ERROR,
+    });
+
+    return;
+  }
+
+  const isGenericError =
+    !('response' in error) ||
+    error.response == null ||
+    error.response.status >= 500;
 
   if (isGenericError) {
     effects.analytics.logError(error);
@@ -403,7 +437,7 @@ export const handleError: Action<{
 
   const { response } = error as ApiError;
 
-  if (response.status === 401) {
+  if (response?.status === 401) {
     // Reset existing sign in info
     effects.jwt.reset();
     effects.analytics.setAnonymousId();
@@ -430,7 +464,7 @@ export const handleError: Action<{
   error.message = actions.internal.getErrorMessage({ error });
 
   const notificationActions = {
-    primary: [],
+    primary: [] as Array<{ label: string; run: () => void }>,
   };
 
   if (error.message.startsWith('You need to sign in to create more than')) {

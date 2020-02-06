@@ -57,7 +57,7 @@ export default {
         const key = getKey(currentId, module.shortid);
 
         try {
-          const recoverData = JSON.parse(localStorage.getItem(key));
+          const recoverData = JSON.parse(localStorage.getItem(key) || 'null');
           if (recoverData && recoverData.code !== module.code) {
             return { recoverData, module };
           }

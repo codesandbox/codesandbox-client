@@ -1,21 +1,21 @@
-import gql from 'graphql-tag';
-import { client } from 'app/graphql/client';
-import immer from 'immer';
-import {
-  addSandboxesToFolder,
-  PATHED_SANDBOXES_CONTENT_QUERY,
-} from 'app/pages/Dashboard/queries';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { client } from 'app/graphql/client';
 import {
+  ListTemplatesQuery,
+  ListTemplatesQueryVariables,
+  PathedSandboxesFoldersQueryVariables,
+  PathedSandboxesQuery,
   UnmakeSandboxesTemplateMutation,
   UnmakeSandboxesTemplateMutationVariables,
-  ListTemplatesQueryVariables,
-  ListTemplatesQuery,
-  PathedSandboxesQuery,
-  PathedSandboxesFoldersQueryVariables,
 } from 'app/graphql/types';
+import {
+  PATHED_SANDBOXES_CONTENT_QUERY,
+  addSandboxesToFolder,
+} from 'app/pages/Dashboard/queries';
+import gql from 'graphql-tag';
+import immer from 'immer';
 
 const TEMPLATE_FRAGMENT = gql`
   fragment Template on Template {
@@ -30,6 +30,12 @@ const TEMPLATE_FRAGMENT = gql`
       description
       insertedAt
       updatedAt
+
+      collection {
+        team {
+          name
+        }
+      }
 
       author {
         username
@@ -170,23 +176,32 @@ export function unmakeTemplates(selectedSandboxes: string[]) {
         });
 
         const data = immer(oldTemplatesCache, draft => {
-          draft.me.templates = draft.me.templates.filter(
-            x => selectedSandboxes.indexOf(x.sandbox.id) === -1
-          );
+          if (draft?.me?.templates && draft?.me?.teams) {
+            draft.me.templates = draft.me.templates.filter(x =>
+              x?.sandbox?.id
+                ? selectedSandboxes.indexOf(x.sandbox.id) === -1
+                : true
+            );
 
-          draft.me.teams = draft.me.teams.map(t => ({
-            ...t,
-            templates: t.templates.filter(
-              x => selectedSandboxes.indexOf(x.sandbox.id) === -1
-            ),
-          }));
+            draft.me.teams = draft.me.teams.map(t => ({
+              ...t,
+              templates: t?.templates?.filter(x =>
+                x?.sandbox?.id
+                  ? selectedSandboxes.indexOf(x.sandbox.id) === -1
+                  : true
+              ),
+              // Giving up
+            })) as any;
+          }
         });
 
-        cache.writeQuery<ListTemplatesQuery, ListTemplatesQueryVariables>({
-          query: LIST_OWNED_TEMPLATES,
-          variables,
-          data,
-        });
+        if (data) {
+          cache.writeQuery<ListTemplatesQuery, ListTemplatesQueryVariables>({
+            query: LIST_OWNED_TEMPLATES,
+            variables,
+            data,
+          });
+        }
       } catch (e) {
         // cache doesn't exist, no biggie!
       }
@@ -196,7 +211,7 @@ export function unmakeTemplates(selectedSandboxes: string[]) {
 
 export function makeTemplates(
   selectedSandboxes: string[],
-  teamId?: string,
+  teamId: string | null,
   collections?: { teamId: string | null }[]
 ) {
   const unpackedSelectedSandboxes: string[] =
@@ -232,9 +247,15 @@ export function makeTemplates(
                 });
 
                 const data = immer(oldFolderCacheData, draft => {
-                  draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-                    x => selectedSandboxes.indexOf(x.id) === -1
-                  );
+                  if (
+                    draft?.me?.collection &&
+                    oldFolderCacheData?.me?.collection?.sandboxes
+                  ) {
+                    draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
+                      x =>
+                        x?.id ? selectedSandboxes.indexOf(x.id) === -1 : true
+                    );
+                  }
                 });
 
                 cache.writeQuery({

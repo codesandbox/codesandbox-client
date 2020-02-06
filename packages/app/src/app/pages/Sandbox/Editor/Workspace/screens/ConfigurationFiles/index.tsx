@@ -7,6 +7,7 @@ import {
   Stack,
   Grid as BaseGrid,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
 import getDefinition from '@codesandbox/common/lib/templates';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 
@@ -99,7 +100,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
               const { config, module } = createdPaths[path];
               const Icon = getIcon(config.title);
               return (
-                <Element>
+                <Element key={config.title}>
                   <Stack gap={2} marginBottom={2}>
                     <Icon />
                     <Text size={2}>{config.title}</Text>
@@ -109,7 +110,10 @@ export const ConfigurationFilesComponent = ({ theme }) => {
                       {config.description}
                     </Text>
                     <Button
-                      style={{ width: 'auto' }}
+                      css={css({
+                        width: 'auto',
+                        height: 4,
+                      })}
                       variant="secondary"
                       onClick={() => editor.moduleSelected({ id: module.id })}
                     >
@@ -132,7 +136,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
             const { config } = restPaths[path];
             const Icon = getIcon(config.title);
             return (
-              <Element>
+              <Element key={config.title}>
                 <Stack gap={2} marginBottom={2}>
                   <Icon />
                   <Text size={2}>{config.title}</Text>
@@ -142,7 +146,10 @@ export const ConfigurationFilesComponent = ({ theme }) => {
                     {config.description}
                   </Text>
                   <Button
-                    style={{ width: 'auto' }}
+                    css={css({
+                      width: 'auto',
+                      height: 4,
+                    })}
                     variant="secondary"
                     onClick={() =>
                       files.moduleCreated({

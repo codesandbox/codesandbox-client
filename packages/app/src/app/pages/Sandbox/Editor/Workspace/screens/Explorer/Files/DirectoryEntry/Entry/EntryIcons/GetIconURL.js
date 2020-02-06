@@ -3,6 +3,7 @@ import imageSvg from '@codesandbox/common/lib/icons/image.svg';
 import codesandboxSvg from '@codesandbox/common/lib/icons/codesandbox.svg';
 import nowSvg from '@codesandbox/common/lib/icons/now.svg';
 import folderSvg from './folder.svg';
+import folderOpenSvg from './folderOpen.svg';
 
 function imageExists(url) {
   return new Promise((resolve, reject) => {
@@ -37,7 +38,7 @@ async function getIconURL(type) {
       break;
 
     case 'directory-open':
-      url = folderSvg;
+      url = folderOpenSvg;
       break;
 
     default:

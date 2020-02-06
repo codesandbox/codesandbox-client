@@ -4,10 +4,12 @@ import React from 'react';
 import {
   PaddedPreference,
   PreferenceContainer,
+  Rule,
   SubContainer,
   SubDescription,
   Title,
 } from '../elements';
+import { NewSidebar } from './NewSidebar';
 
 export const Experiments: React.FunctionComponent = () => {
   const { state, actions } = useOvermind();
@@ -17,6 +19,8 @@ export const Experiments: React.FunctionComponent = () => {
       <Title>Experiments</Title>
       <SubContainer>
         <PreferenceContainer>
+          <NewSidebar />
+          <Rule />
           <PaddedPreference
             title="Use container language server"
             type="boolean"

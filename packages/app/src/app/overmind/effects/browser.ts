@@ -42,7 +42,7 @@ export default {
       `scrollbars=no,toolbar=no,location=no,titlebar=no,directories=no,status=no,menubar=no, ${getPopupDimensions()}`
     );
     return {
-      close: () => popup.close(),
+      close: () => popup?.close(),
     };
   },
   waitForMessage<T>(type): Promise<T> {

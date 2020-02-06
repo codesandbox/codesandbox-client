@@ -67,13 +67,13 @@ export const Title = styled.span`
   text-overflow: ellipsis;
 `;
 
-export const Environment = styled.span`
-  color: #fff;
+export const Owner = styled.span`
+  color: #e6e6e6;
   font-size: 11px;
   line-height: 13px;
 `;
 
-export const Author = styled.span`
+export const Detail = styled.span`
   color: #757575;
   font-size: 11px;
   line-height: 13px;

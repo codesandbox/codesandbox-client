@@ -32,7 +32,7 @@
     "test": "jest --env=jsdom",
     "test:integrations": "jest --config integration-tests/jest.config.json --maxWorkers=2",
     "test:watch": "jest --watch --env=jsdom",
-    "typecheck": "tsc --noEmit -p tsconfig.check.json"
+    "typecheck": "tsc --noEmit -p tsconfig.check.json && tsc --noEmit -p tsconfig.strictNullChecks.json"
   },
   "jest": {
     "moduleDirectories": [
@@ -162,11 +162,11 @@
     "normalizr": "^3.2.3",
     "onigasm": "^2.2.1",
     "ot": "^0.0.15",
-    "overmind": "^22.0.1",
+    "overmind": "^22.0.2",
     "overmind-devtools": "^19.0.0",
-    "overmind-react": "^23.0.1",
+    "overmind-react": "^23.0.2",
     "phoenix": "^1.4.11",
-    "postcss": "^6.0.9",
+    "postcss": "^7.0.26",
     "postcss-selector-parser": "^2.2.3",
     "posthtml": "^0.11.3",
     "posthtml-parser": "^0.4.1",
@@ -232,7 +232,7 @@
     "@babel/core": "^7.5.5",
     "@babel/helper-module-imports": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.7.4",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
     "@babel/plugin-proposal-optional-chaining": "^7.7.4",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
@@ -313,6 +313,7 @@
     "path-exists": "3.0.0",
     "path-override-webpack-plugin": "^0.1.2",
     "postcss-flexbugs-fixes": "^4.1.0",
+    "postcss-import": "^12.0.1",
     "postcss-loader": "3.0.0",
     "postcss-normalize": "^8.0.1",
     "postcss-preset-env": "^6.7.0",

@@ -1,7 +1,7 @@
-import { Settings, PaymentDetails } from '@codesandbox/common/lib/types';
+import { PaymentDetails, Settings } from '@codesandbox/common/lib/types';
+import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 import { isIOS } from '@codesandbox/common/lib/utils/platform';
 import { Derive } from 'app/overmind';
-import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 
 type State = {
   settings: Settings;
@@ -12,8 +12,8 @@ type State = {
   showModal: boolean;
   showPreview: boolean;
   showDevtools: boolean;
-  paymentDetailError: string;
-  paymentDetails: PaymentDetails;
+  paymentDetailError: string | null;
+  paymentDetails: PaymentDetails | null;
   runOnClick: boolean;
   keybindings: Derive<State, any>;
 };

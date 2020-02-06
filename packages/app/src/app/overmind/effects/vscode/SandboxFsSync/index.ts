@@ -11,7 +11,6 @@ import {
   Sandbox,
   SandboxFs,
 } from '@codesandbox/common/lib/types';
-import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
@@ -114,7 +113,7 @@ class SandboxFsSync {
     this.send('append-file', copy);
 
     const savedCode = getSavedCode(module.code, module.savedCode);
-    browserFs.appendFile(join('/sandbox', module.path), savedCode, () => {});
+    browserFs.appendFile(join('/sandbox', module.path!), savedCode, () => {});
   }
 
   public writeFile(fs: SandboxFs, module: Module) {
@@ -124,7 +123,7 @@ class SandboxFsSync {
     this.send('write-file', copy);
 
     const savedCode = getSavedCode(module.code, module.savedCode);
-    browserFs.writeFile(join('/sandbox', module.path), savedCode, () => {});
+    browserFs.writeFile(join('/sandbox', module.path!), savedCode, () => {});
 
     if (module.title === 'package.json') {
       this.syncDependencyTypings();
@@ -149,7 +148,7 @@ class SandboxFsSync {
 
     rmdir(fs, copy);
     this.send('rmdir', copy);
-    browserFs.rmdir(join('/sandbox', directory.path), () => {});
+    browserFs.rmdir(join('/sandbox', directory.path!), () => {});
   }
 
   public unlink(fs: SandboxFs, module: Module) {
@@ -157,7 +156,7 @@ class SandboxFsSync {
 
     unlink(fs, copy);
     this.send('unlink', copy);
-    browserFs.unlink(join('/sandbox', module.path), () => {});
+    browserFs.unlink(join('/sandbox', module.path!), () => {});
   }
 
   public mkdir(fs: SandboxFs, directory: Directory) {
@@ -165,7 +164,7 @@ class SandboxFsSync {
 
     mkdir(fs, copy);
     this.send('mkdir', copy);
-    browserFs.mkdir(join('/sandbox', directory.path), () => {});
+    browserFs.mkdir(join('/sandbox', directory.path!), () => {});
   }
 
   private onWorkerMessage = evt => {
@@ -281,7 +280,7 @@ class SandboxFsSync {
   private async getDependencyTypingsSyncDetails(): Promise<{
     dependencies: { [name: string]: string };
     autoInstall: boolean;
-  }> {
+  } | null> {
     return new Promise((resolve, reject) => {
       try {
         browserFs.stat('/sandbox/package.json', (packageJsonError, stat) => {
@@ -364,8 +363,7 @@ class SandboxFsSync {
       if (
         autoInstallTypes &&
         this.typesInfo[dep.name] &&
-        !dep.name.startsWith('@types/') &&
-        isAbsoluteVersion(dep.version)
+        !dep.name.startsWith('@types/')
       ) {
         const name = `@types/${dep.name}`;
         this.fetchDependencyTypingFiles(name, this.typesInfo[dep.name].latest)

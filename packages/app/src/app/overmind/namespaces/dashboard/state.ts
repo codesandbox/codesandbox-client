@@ -1,5 +1,5 @@
-import { Derive } from 'app/overmind';
 import { Sandbox } from '@codesandbox/common/lib/types';
+import { Derive } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 
 export type OrderBy = {
@@ -53,7 +53,7 @@ export const state: State = {
 
       return s[orderField];
     }) as Sandbox[]).filter(
-      x => blacklistedTemplates.indexOf(x.source.template) === -1
+      x => x.source && blacklistedTemplates.indexOf(x.source.template) === -1
     );
 
     if (orderOrder === 'desc') {

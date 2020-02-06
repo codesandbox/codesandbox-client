@@ -12,11 +12,11 @@ const isIOS =
   Boolean(navigator.platform.match(/(iPhone|iPod|iPad)/i));
 
 const state = {
-  keybindings: null,
+  keybindings: null as Array<{ key: string; bindings: string[] }> | null,
   keydownIndex: 0,
-  pendingPrimaryBindings: [],
-  pendingSecondaryBindings: [],
-  timeout: null,
+  pendingPrimaryBindings: [] as Array<{ key: string; bindings: string[] }>,
+  pendingSecondaryBindings: [] as Array<{ key: string; bindings: string[] }>,
+  timeout: null as NodeJS.Timeout | null,
 };
 
 function reset() {
@@ -222,7 +222,7 @@ function handleKeyDown(overmindInstance, e) {
   // We filter out any hits on full list of bindings on first key down, or just move
   // on filtering on existing pending bindings
   state.pendingPrimaryBindings = (state.keydownIndex === 0
-    ? state.keybindings
+    ? state.keybindings || []
     : state.pendingPrimaryBindings
   ).filter(
     binding =>
@@ -277,8 +277,8 @@ function handleKeyDown(overmindInstance, e) {
   }
 }
 
-let onKeyUp = null;
-let onKeyDown = null;
+let onKeyUp: EventListenerOrEventListenerObject | null = null;
+let onKeyDown: EventListenerOrEventListenerObject | null = null;
 let isStarted = false;
 let _overmindInstance;
 
@@ -289,7 +289,10 @@ export default {
     onKeyUp = handleKeyUp.bind(null);
   },
   set(userKeybindings = []) {
-    const keybindings = [...userKeybindings];
+    const keybindings = [...userKeybindings] as Array<{
+      key: string;
+      bindings: string[];
+    }>;
 
     Object.keys(KEYBINDINGS).forEach(bindingName => {
       if (keybindings.find(x => x.key === bindingName)) {
@@ -314,13 +317,17 @@ export default {
       return;
     }
 
-    window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('keyup', onKeyUp);
-    isStarted = true;
+    if (onKeyDown && onKeyUp) {
+      window.addEventListener('keydown', onKeyDown);
+      window.addEventListener('keyup', onKeyUp);
+      isStarted = true;
+    }
   },
   pause() {
-    window.removeEventListener('keydown', onKeyDown);
-    window.removeEventListener('keyup', onKeyUp);
-    isStarted = false;
+    if (onKeyDown && onKeyUp) {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+      isStarted = false;
+    }
   },
 };

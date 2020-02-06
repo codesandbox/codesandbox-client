@@ -54,7 +54,7 @@ export const roomJoined: AsyncAction<{
 
   state.workspace.openedWorkspaceItem = defaultItem.id;
 
-  await effects.vscode.changeSandbox(state.editor.currentSandbox, fs => {
+  await effects.vscode.changeSandbox(sandbox, fs => {
     state.editor.modulesByPath = fs;
   });
 
@@ -72,17 +72,26 @@ export const createLiveClicked: AsyncAction<string> = async (
 
   const roomId = await effects.api.createLiveRoom(sandboxId);
   const sandbox = await actions.live.internal.initialize(roomId);
+  const currentSandbox = state.editor.currentSandbox;
+
+  if (!sandbox || !currentSandbox) {
+    effects.notificationToast.error('Unable to create live room');
+    return;
+  }
 
   Object.assign(sandbox, {
-    modules: sandbox.modules.map(module => ({
-      ...module,
-      code: state.editor.currentSandbox.modules.find(
+    modules: sandbox.modules.map(module => {
+      const currentModule = currentSandbox.modules.find(
         currentSandboxModule => currentSandboxModule.shortid === module.shortid
-      ).code,
-    })),
+      );
+      return {
+        ...module,
+        code: currentModule ? currentModule.code : '',
+      };
+    }),
   });
 
-  Object.assign(state.editor.sandboxes[state.editor.currentId], sandbox);
+  Object.assign(state.editor.sandboxes[sandboxId], sandbox);
   state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
 
   effects.live.sendModuleStateSyncRequest();
@@ -92,6 +101,7 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
   filter((_, payload) =>
     Object.values(LiveMessageEvent).includes(payload.event)
   ),
+  filter(({ state }) => Boolean(state.live.isLive && state.live.roomInfo)),
   fork((_, payload) => payload.event, {
     [LiveMessageEvent.JOIN]: liveMessage.onJoin,
     [LiveMessageEvent.MODULE_STATE]: liveMessage.onModuleState,
@@ -138,9 +148,16 @@ export const onSelectionChanged: Action<any> = (
   { state, effects },
   selection
 ) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   if (state.live.isCurrentEditor) {
     const { liveUserId } = state.live;
     const moduleShortid = state.editor.currentModuleShortid;
+    if (!moduleShortid || !liveUserId) {
+      return;
+    }
     const userIndex = state.live.roomInfo.users.findIndex(
       u => u.id === liveUserId
     );
@@ -163,7 +180,7 @@ export const onModeChanged: Action<{ mode: string }> = (
   { state, effects },
   { mode }
 ) => {
-  if (state.live.isOwner) {
+  if (state.live.isOwner && state.live.roomInfo) {
     state.live.roomInfo.mode = mode;
     effects.live.sendLiveMode(mode);
   }
@@ -172,6 +189,9 @@ export const onModeChanged: Action<{ mode: string }> = (
 export const onAddEditorClicked: Action<{
   liveUserId: string;
 }> = ({ state, effects }, { liveUserId }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
   state.live.roomInfo.editorIds.push(liveUserId);
 
   effects.live.sendEditorAdded(liveUserId);
@@ -182,6 +202,10 @@ export const onRemoveEditorClicked: Action<any> = (
   { liveUserId, data }
 ) => {
   const userId = liveUserId || data.editor_user_id;
+
+  if (!state.live.roomInfo) {
+    return;
+  }
 
   const editors = state.live.roomInfo.editorIds;
   const newEditors = editors.filter(id => id !== userId);
@@ -219,7 +243,7 @@ export const onChatEnabledChange: Action<boolean> = (
 ) => {
   effects.analytics.track('Enable Live Chat');
 
-  if (state.live.isOwner) {
+  if (state.live.isOwner && state.live.roomInfo) {
     state.live.roomInfo.chatEnabled = enabled;
     effects.live.sendChatEnabled(enabled);
   }
@@ -228,12 +252,16 @@ export const onChatEnabledChange: Action<boolean> = (
 export const onFollow: Action<{
   liveUserId: string;
 }> = ({ state, effects, actions }, { liveUserId }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
 
   const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
 
-  if (user && user.currentModuleShortid) {
+  if (user && user.currentModuleShortid && state.editor.currentSandbox) {
     const { modules } = state.editor.currentSandbox;
     const module = modules.find(m => m.shortid === user.currentModuleShortid);
 

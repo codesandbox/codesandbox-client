@@ -1,15 +1,15 @@
-import axios from 'axios';
-import {
-  ZeitUser,
-  Sandbox,
-  ZeitDeployment,
-  ZeitConfig,
-} from '@codesandbox/common/lib/types';
 import getTemplate from '@codesandbox/common/lib/templates';
+import {
+  Sandbox,
+  ZeitConfig,
+  ZeitDeployment,
+  ZeitUser,
+} from '@codesandbox/common/lib/types';
+import axios from 'axios';
 import { omit } from 'lodash-es';
 
 type Options = {
-  getToken(): string;
+  getToken(): string | null;
 };
 
 interface Object {
@@ -75,7 +75,9 @@ export default (() => {
     getConfig(sandbox: Sandbox): ZeitConfig {
       const nowConfigs = sandbox.modules
         .filter(
-          m => m.title === 'now.json' || (m.title === 'package.json' && m.now)
+          m =>
+            m.title === 'now.json' ||
+            (m.title === 'package.json' && JSON.parse(m.code).now)
         )
         .map(c => JSON.parse(c.code));
       const nowData = nowConfigs[0] || {};
@@ -222,7 +224,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     apiData.regions = nowJSON.regions;
   }
 
-  if (!nowJSON.files) {
+  if (!nowJSON.files && apiData?.files) {
     apiData.files.push({
       file: 'package.json',
       data: JSON.stringify(packageJSON, null, 2),
@@ -233,7 +235,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     const filePath = filePaths[i];
     const file = contents.files[filePath];
 
-    if (!file.dir && filePath !== 'package.json') {
+    if (!file.dir && filePath !== 'package.json' && apiData?.files) {
       const data = await file.async('base64'); // eslint-disable-line no-await-in-loop
 
       apiData.files.push({ file: filePath, data, encoding: 'base64' });
@@ -242,6 +244,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     // if person added some files but no package.json
     if (
       filePath === 'package.json' &&
+      apiData?.files &&
       !apiData.files.find(f => f.file === 'package.json')
     ) {
       apiData.files.push({

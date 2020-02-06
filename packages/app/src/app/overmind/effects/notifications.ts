@@ -1,11 +1,11 @@
-import { Socket, Channel } from 'phoenix';
+import { Channel, Socket } from 'phoenix';
 
 type Options = {
   provideSocket: () => Socket;
 };
 
-let channel: Channel = null;
-let _options: Options = null;
+let channel: Channel | null = null;
+let _options: Options | null = null;
 
 /*
   TODO: Refactor to pass in data instead of using context
@@ -16,23 +16,35 @@ export default {
   },
   disconnect() {
     return new Promise((resolve, reject) => {
+      if (!channel) {
+        return;
+      }
       channel
         .leave()
         .receive('ok', resp => {
+          if (!channel) {
+            return;
+          }
           channel.onMessage = d => d;
           channel = null;
 
-          return resolve(resp);
+          resolve(resp);
         })
         .receive('error', resp => reject(resp));
     });
   },
   joinChannel(userId: string): Promise<{ unread: number }> {
+    if (!_options) {
+      return Promise.reject();
+    }
     const socket = _options.provideSocket();
 
     channel = socket.channel(`notification:${userId}`, {});
 
     return new Promise((resolve, reject) => {
+      if (!channel) {
+        return;
+      }
       channel
         .join()
         .receive('ok', resp => resolve(resp))
@@ -40,6 +52,10 @@ export default {
     });
   },
   listen(action: (message: { event: string; data: any }) => void) {
+    if (!channel) {
+      return;
+    }
+
     channel.onMessage = (event: any, data: any) => {
       const disconnected = data == null && event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
