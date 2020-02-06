@@ -266,7 +266,7 @@ export const onFollow: Action<{
     const module = modules.find(m => m.shortid === user.currentModuleShortid);
 
     actions.editor.moduleSelected({
-      id: module ? module.id : undefined,
+      id: module.id,
     });
   }
 };
