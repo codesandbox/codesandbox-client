@@ -198,48 +198,50 @@ export const onOperationApplied: Action<{
   }
 };
 
-export const codeChanged: Action<{
+export const codeChanged: AsyncAction<{
   moduleShortid: string;
   code: string;
   event?: any;
-}> = ({ effects, state, actions }, { code, event, moduleShortid }) => {
-  effects.analytics.trackOnce('Change Code');
+}> = withOwnedSandbox(
+  async ({ effects, state, actions }, { code, event, moduleShortid }) => {
+    effects.analytics.trackOnce('Change Code');
 
-  if (!state.editor.currentSandbox) {
-    return;
+    if (!state.editor.currentSandbox) {
+      return;
+    }
+
+    const module = state.editor.currentSandbox.modules.find(
+      m => m.shortid === moduleShortid
+    );
+
+    if (!module) {
+      return;
+    }
+
+    if (state.live.isLive) {
+      const operation = event
+        ? eventToTransform(event, module.code).operation
+        : getTextOperation(module.code, code);
+
+      effects.live.sendCodeUpdate(moduleShortid, operation);
+    }
+
+    actions.editor.internal.setModuleCode({
+      module,
+      code,
+    });
+
+    const { isServer } = getTemplate(state.editor.currentSandbox.template);
+
+    if (!isServer && state.preferences.settings.livePreviewEnabled) {
+      actions.editor.internal.updatePreviewCode();
+    }
+
+    if (module.savedCode !== null && module.code === module.savedCode) {
+      effects.vscode.revertModule(module);
+    }
   }
-
-  const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
-  );
-
-  if (!module) {
-    return;
-  }
-
-  if (state.live.isLive) {
-    const operation = event
-      ? eventToTransform(event, module.code).operation
-      : getTextOperation(module.code, code);
-
-    effects.live.sendCodeUpdate(moduleShortid, operation);
-  }
-
-  actions.editor.internal.setModuleCode({
-    module,
-    code,
-  });
-
-  const { isServer } = getTemplate(state.editor.currentSandbox.template);
-
-  if (!isServer && state.preferences.settings.livePreviewEnabled) {
-    actions.editor.internal.updatePreviewCode();
-  }
-
-  if (module.savedCode !== null && module.code === module.savedCode) {
-    effects.vscode.revertModule(module);
-  }
-};
+);
 
 export const saveClicked: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {
