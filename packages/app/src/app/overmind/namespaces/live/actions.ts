@@ -181,7 +181,7 @@ export const onSelectionChanged: Action<any> = (
 };
 
 export const onModeChanged: Action<RoomInfo['mode']> = (
-  { efects, state },
+  { effects, state },
   mode
 ) => {
   if (state.live.isOwner && state.live.roomInfo) {
