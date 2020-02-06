@@ -386,7 +386,7 @@ export const moduleSelected: Action<
           sandbox.modules,
           sandbox.directories
         )
-      : sandbox.modules.find(moduleItem => moduleItem.id === id);
+      : sandbox.modules.filter(moduleItem => moduleItem.id === id)[0];
 
     if (module.shortid === state.editor.currentModuleShortid) {
       return;
