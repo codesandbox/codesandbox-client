@@ -780,7 +780,7 @@ export const syncSandbox: AsyncAction<any[]> = async (
       }
     });
   } catch (error) {
-    if (error.response.status === 404) {
+    if (error.response?.status === 404) {
       return;
     }
 
