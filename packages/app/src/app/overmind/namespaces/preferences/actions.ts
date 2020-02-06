@@ -151,7 +151,7 @@ export const toggleContainerLspExperiment: AsyncAction = async ({
   }
   try {
     await effects.api.updateExperiments({
-      container_lsp: state.user.experiments.containerLsp,
+      container_lsp: !state.user.experiments.containerLsp,
     });
     state.user.experiments.containerLsp = !state.user.experiments.containerLsp;
   } catch (error) {
