@@ -154,6 +154,16 @@ export const toggleContainerLspExperiment: AsyncAction = async ({
       container_lsp: !state.user.experiments.containerLsp,
     });
     state.user.experiments.containerLsp = !state.user.experiments.containerLsp;
+    // Allow the flush to go through and flip button
+    requestAnimationFrame(() => {
+      if (
+        effects.browser.confirm(
+          'We need to refresh for this to take effect, or you can refresh later'
+        )
+      ) {
+        effects.browser.reload();
+      }
+    });
   } catch (error) {
     effects.notificationToast.error('Unable to toggl LSP experiment');
   }
