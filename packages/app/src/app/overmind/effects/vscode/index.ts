@@ -342,7 +342,13 @@ export class VSCodeEffect {
       //
     }
 
+    let readOnly = false;
+
     if (isServer && this.options.getCurrentUser()?.experiments.containerLsp) {
+      if (!sandbox.owned) {
+        readOnly = true;
+      }
+
       childProcess.addDefaultForkHandler(this.createContainerForkHandler());
       const socket = this.createWebsocketFSRequest();
       const cache = await this.createFileSystem('WebsocketFS', {
@@ -354,12 +360,6 @@ export class VSCodeEffect {
 
       this.mountableFilesystem.mount('/home/sandbox/.cache', cache);
       this.mountableFilesystem.mount('/sandbox/node_modules', nodeModules);
-
-      if (sandbox.owned) {
-        this.setReadOnly(false);
-      } else {
-        this.setReadOnly(true);
-      }
     } else {
       childProcess.addDefaultForkHandler(this.clientExtensionHost);
       const nodeModules = await this.createFileSystem('CodeSandboxFS', {
@@ -372,7 +372,6 @@ export class VSCodeEffect {
         },
       });
       this.mountableFilesystem.mount('/sandbox/node_modules', nodeModules);
-      this.setReadOnly(false);
     }
 
     if (isFirstLoad) {
@@ -380,7 +379,11 @@ export class VSCodeEffect {
 
       await new Promise(resolve => {
         loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
-      }).then(() => this.loadEditor(window.monaco, container));
+      })
+        .then(() => this.loadEditor(window.monaco, container))
+        .then(() => this.setReadOnly(readOnly));
+    } else {
+      this.setReadOnly(readOnly);
     }
 
     if (!isFirstLoad) {
