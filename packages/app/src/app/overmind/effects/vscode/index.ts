@@ -49,7 +49,7 @@ export type VsCodeOptions = {
   getCurrentSandbox: () => Sandbox | null;
   getCurrentModule: () => Module | null;
   getSandboxFs: () => SandboxFs;
-  getCurrentUser: () => CurrentUser;
+  getCurrentUser: () => CurrentUser | null;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
   onSelectionChange: (selection: onSelectionChangeData) => void;
@@ -342,7 +342,7 @@ export class VSCodeEffect {
       //
     }
 
-    if (isServer && this.options.getCurrentUser().experiments.containerLsp) {
+    if (isServer && this.options.getCurrentUser()?.experiments.containerLsp) {
       childProcess.addDefaultForkHandler(this.createContainerForkHandler());
       const socket = this.createWebsocketFSRequest();
       const cache = await this.createFileSystem('WebsocketFS', {
@@ -560,7 +560,7 @@ export class VSCodeEffect {
       : 'https://codesandbox.io';
     return sseHost.replace(
       'https://',
-      `wss://${this.options.getCurrentSandbox().id}-lsp.sse.`
+      `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`
     );
   }
 
