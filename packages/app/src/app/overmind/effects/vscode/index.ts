@@ -354,6 +354,12 @@ export class VSCodeEffect {
 
       this.mountableFilesystem.mount('/home/sandbox/.cache', cache);
       this.mountableFilesystem.mount('/sandbox/node_modules', nodeModules);
+
+      if (sandbox.owned) {
+        this.setReadOnly(false);
+      } else {
+        this.setReadOnly(true);
+      }
     } else {
       childProcess.addDefaultForkHandler(this.clientExtensionHost);
       const nodeModules = await this.createFileSystem('CodeSandboxFS', {
@@ -366,6 +372,7 @@ export class VSCodeEffect {
         },
       });
       this.mountableFilesystem.mount('/sandbox/node_modules', nodeModules);
+      this.setReadOnly(false);
     }
 
     if (isFirstLoad) {
