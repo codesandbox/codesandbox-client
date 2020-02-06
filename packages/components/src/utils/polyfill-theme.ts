@@ -130,7 +130,7 @@ const polyfillTheme = vsCodeTheme => {
     activityBar: {
       selected: uiColors.sideBar.foreground,
       inactiveForeground: mutedForeground,
-      hoverBackground: uiColors.sideBar.hoverBackground,
+      hoverBackground: uiColors.sideBar.border,
     },
     avatar: { border: uiColors.sideBar.border },
     sideBar: { hoverBackground: uiColors.sideBar.border },

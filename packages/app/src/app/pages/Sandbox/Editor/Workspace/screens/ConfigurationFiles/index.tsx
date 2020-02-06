@@ -88,10 +88,10 @@ export const ConfigurationFilesComponent = ({ theme }) => {
         >
           <Element>
             <Text block marginBottom={2}>
-              Configuration your Sandbox
+              Configuration for your Sandbox
             </Text>
             <Text variant="muted">
-              Codesandbox supports several config giles per template, you van
+              Codesandbox supports several config files per template, you can
               see and edit all supported files for the current sandbox here.
             </Text>
           </Element>
