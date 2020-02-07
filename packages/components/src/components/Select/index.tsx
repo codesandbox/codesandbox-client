@@ -42,7 +42,7 @@ const SelectWithIcon = styled(Element)(
     transitionDuration: theme => theme.speeds[2],
 
     select: {
-      paddingLeft: 6,
+      paddingLeft: 7,
     },
     svg: {
       position: 'absolute',
