@@ -312,6 +312,9 @@ export type Sandbox = {
   userLiked: boolean;
   modules: Module[];
   directories: Directory[];
+  featureFlags: {
+    [key: string]: boolean;
+  };
   collection?: {
     path: string;
   };

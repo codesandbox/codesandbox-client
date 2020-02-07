@@ -342,13 +342,7 @@ export class VSCodeEffect {
       //
     }
 
-    let readOnly = false;
-
     if (isServer && this.options.getCurrentUser()?.experiments.containerLsp) {
-      if (!sandbox.owned) {
-        readOnly = true;
-      }
-
       childProcess.addDefaultForkHandler(this.createContainerForkHandler());
       const socket = this.createWebsocketFSRequest();
       const cache = await this.createFileSystem('WebsocketFS', {
@@ -379,11 +373,7 @@ export class VSCodeEffect {
 
       await new Promise(resolve => {
         loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
-      })
-        .then(() => this.loadEditor(window.monaco, container))
-        .then(() => this.setReadOnly(readOnly));
-    } else {
-      this.setReadOnly(readOnly);
+      }).then(() => this.loadEditor(window.monaco, container));
     }
 
     if (!isFirstLoad) {
