@@ -33,6 +33,7 @@ import {
   ember,
   vue,
   preact,
+  rax,
   reactTs,
   svelte,
   angular,
@@ -68,6 +69,8 @@ export default function getIcon(theme: TemplateType) {
       return VueIconDark;
     case preact.name:
       return PreactIconDark;
+    case rax.name:
+      return ReactIconDark; 
     case reactTs.name:
       return ReactIconDark;
     case svelte.name:

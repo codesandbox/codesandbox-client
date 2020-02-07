@@ -17,6 +17,7 @@ import nuxt from './nuxt';
 import parcel from './parcel';
 import preact from './preact';
 import quasar from './quasar';
+import rax from './rax';
 import react from './react';
 import reactTs from './react-ts';
 import reason from './reason';
@@ -43,6 +44,7 @@ export {
   dojo,
   parcel,
   preact,
+  rax,
   react,
   reactTs,
   reason,
@@ -65,6 +67,7 @@ export type TemplateType =
   | 'create-react-app'
   | 'vue-cli'
   | 'preact-cli'
+  | 'rax'
   | 'svelte'
   | 'create-react-app-typescript'
   | 'angular-cli'
@@ -101,6 +104,8 @@ export default function getDefinition(theme?: TemplateType | null) {
       return vue;
     case preact.name:
       return preact;
+    case rax.name:
+      return rax;
     case reactTs.name:
       return reactTs;
     case svelte.name:

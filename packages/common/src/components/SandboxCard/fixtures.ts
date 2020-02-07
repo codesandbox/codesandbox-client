@@ -129,6 +129,7 @@ export const templates: TemplateType[] = [
   'create-react-app',
   'vue-cli',
   'preact-cli',
+  'rax',
   'svelte',
   'create-react-app-typescript',
   'angular-cli',
