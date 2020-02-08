@@ -1,115 +1,36 @@
-import React from 'react';
-import getDefinition from '@codesandbox/common/lib/templates';
-import getUI from '@codesandbox/common/lib/templates/configuration/ui';
-import { Module, Configuration } from '@codesandbox/common/lib/types';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import React, { ComponentProps, FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import BookIcon from 'react-icons/lib/md/library-books';
-import UIIcon from 'react-icons/lib/md/dvr';
+import { Description } from '../../elements';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { FilesContainer } from './elements';
+import { ExistingConfigurations } from './ExistingConfigurations';
+import { OtherConfigurations } from './OtherConfigurations';
 
-import { Description, WorkspaceSubtitle } from '../../elements';
-import {
-  FilesContainer,
-  File,
-  FileTitle,
-  FileDescription,
-  CreateButton,
-} from './elements';
-
-type FileConfigProps = {
-  path: string;
-  info: {
-    module?: Module;
-    config: Configuration;
-  };
-  createModule?: (title: string) => void;
-  openModule?: (id: string) => void;
-};
-
-const FileConfig = ({
-  info,
-  path,
-  createModule,
-  openModule,
-}: FileConfigProps) => {
-  const { module, config } = info;
-  return (
-    <File
-      created={Boolean(module)}
-      key={path}
-      onClick={
-        openModule
-          ? () => {
-              openModule(module.id);
-            }
-          : undefined
-      }
-    >
-      <FileTitle>
-        {config.title}{' '}
-        <Tooltip content="More Info">
-          <a
-            href={config.moreInfoUrl}
-            target="_blank"
-            rel="noreferrer noopener"
-            title="Documentation"
-            style={{ marginLeft: '.25rem' }}
-          >
-            <BookIcon />
-          </a>
-        </Tooltip>
-        {getUI(config.type) && (
-          <Tooltip content="Editable with UI">
-            <UIIcon style={{ marginLeft: '.5rem' }} />
-          </Tooltip>
-        )}
-      </FileTitle>
-      <FileDescription>{config.description}</FileDescription>
-      {!module && (
-        <CreateButton
-          onClick={() => {
-            // TODO make this support nested paths (create dir etc)
-            createModule(info.config.title);
-          }}
-        >
-          Create File
-        </CreateButton>
-      )}
-    </File>
-  );
-};
-
-export const ConfigurationFiles = () => {
+type CreatedPaths = ComponentProps<typeof ExistingConfigurations>['paths'];
+type RestPaths = ComponentProps<typeof OtherConfigurations>['paths'];
+export const ConfigurationFiles: FunctionComponent = () => {
   const {
-    state,
-    actions: { files, editor },
+    state: {
+      editor: { currentSandbox: sandbox },
+    },
   } = useOvermind();
+  const { configurationFiles } = getTemplateDefinition(sandbox.template);
 
-  const sandbox = state.editor.currentSandbox;
-  const { configurationFiles } = getDefinition(sandbox.template);
+  const createdPaths: CreatedPaths = {};
+  const restPaths: RestPaths = {};
 
-  const createdPaths = {};
-  const restPaths = {};
-
-  Object.keys(configurationFiles)
-    .sort()
-    .forEach(p => {
-      const config = configurationFiles[p];
-
+  Object.entries(configurationFiles)
+    .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+    .forEach(([key, config]) => {
       try {
-        const module = resolveModule(p, sandbox.modules, sandbox.directories);
-        createdPaths[p] = {
-          config,
-          module,
-        };
-      } catch (e) {
-        restPaths[p] = {
-          config,
-        };
+        const module = resolveModule(key, sandbox.modules, sandbox.directories);
+        createdPaths[key] = { config, module };
+      } catch {
+        restPaths[key] = { config };
       }
     });
 
@@ -121,38 +42,9 @@ export const ConfigurationFiles = () => {
       </Description>
 
       <FilesContainer>
-        <WorkspaceSubtitle>Existing Configurations</WorkspaceSubtitle>
-        {Object.keys(createdPaths).map(path => {
-          const info = createdPaths[path];
+        <ExistingConfigurations paths={createdPaths} />
 
-          return (
-            <FileConfig
-              key={path}
-              openModule={id => {
-                editor.moduleSelected({ id });
-              }}
-              path={path}
-              info={info}
-            />
-          );
-        })}
-        {!!Object.keys(restPaths).length && (
-          <WorkspaceSubtitle>Other Configurations</WorkspaceSubtitle>
-        )}
-        {Object.keys(restPaths).map(path => {
-          const info = restPaths[path];
-
-          return (
-            <FileConfig
-              key={path}
-              createModule={title => {
-                files.moduleCreated({ title, directoryShortid: null });
-              }}
-              path={path}
-              info={info}
-            />
-          );
-        })}
+        <OtherConfigurations paths={restPaths} />
       </FilesContainer>
     </div>
   );
