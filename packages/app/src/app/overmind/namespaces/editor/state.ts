@@ -53,6 +53,7 @@ type State = {
   workspaceConfigCode: string;
   statusBar: boolean;
   previewWindowOrientation: WindowOrientation;
+  canWriteCode: Derive<State, boolean>;
   isAllModulesSynced: Derive<State, boolean>;
   currentSandbox: Derive<State, Sandbox | null>;
   currentModule: Derive<State, Module>;
@@ -119,6 +120,13 @@ export const state: State = {
   currentDevToolsPosition: {
     devToolIndex: 0,
     tabPosition: 0,
+  },
+  canWriteCode: ({ currentSandbox }) => {
+    if (currentSandbox?.git) {
+      return false;
+    }
+
+    return Boolean(currentSandbox?.owned);
   },
   currentSandbox: ({ sandboxes, currentId }) => {
     if (currentId && sandboxes[currentId]) {

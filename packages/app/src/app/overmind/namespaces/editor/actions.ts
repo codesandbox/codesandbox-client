@@ -167,7 +167,8 @@ export const codeSaved: AsyncAction<{
   },
   async ({ effects }, { cbID }) => {
     effects.vscode.callCallbackError(cbID);
-  }
+  },
+  'save'
 );
 
 export const onOperationApplied: Action<{

@@ -80,7 +80,7 @@ export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
       const code = JSON.stringify(parsed, null, 2);
       const moduleShortid = state.editor.currentPackageJSON.shortid;
 
-      await actions.editor.internal.saveCode({
+      await actions.editor.codeSaved({
         code,
         moduleShortid,
         cbID: null,

@@ -77,12 +77,16 @@ export const withLoadApp = <T>(
 
 export const withOwnedSandbox = <T>(
   continueAction: AsyncAction<T>,
-  cancelAction: AsyncAction<T> = () => Promise.resolve()
+  cancelAction: AsyncAction<T> = () => Promise.resolve(),
+  changeType: 'unknown' | 'save' = 'unknown'
 ): AsyncAction<T> => async (context, payload) => {
   const { state, actions } = context;
 
   if (state.editor.currentSandbox) {
-    if (!state.editor.currentSandbox.owned) {
+    if (
+      !state.editor.currentSandbox.owned ||
+      (changeType === 'save' && !state.editor.canWriteCode)
+    ) {
       if (state.editor.isForkingSandbox) {
         return cancelAction(context, payload);
       }

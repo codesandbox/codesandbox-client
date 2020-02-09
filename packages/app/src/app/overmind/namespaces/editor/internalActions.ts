@@ -254,7 +254,7 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
 
   delete packageJson.dependencies[name];
 
-  await actions.editor.internal.saveCode({
+  await actions.editor.codeSaved({
     code: JSON.stringify(packageJson, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
     cbID: null,
@@ -281,7 +281,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   packageJson[type][name] = version || 'latest';
   packageJson[type] = sortObjectByKeys(packageJson[type]);
 
-  await actions.editor.internal.saveCode({
+  await actions.editor.codeSaved({
     code: JSON.stringify(packageJson, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
     cbID: null,
@@ -463,7 +463,7 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   const code = JSON.stringify(parsed, null, 2);
   const moduleShortid = state.editor.currentPackageJSON.shortid;
 
-  await actions.editor.internal.saveCode({
+  await actions.editor.codeSaved({
     code,
     moduleShortid,
     cbID: null,
@@ -482,7 +482,7 @@ export const updateDevtools: AsyncAction<{
       state.editor.modulesByPath['/.codesandbox/workspace.json'];
 
     if (devtoolsModule) {
-      await actions.editor.internal.saveCode({
+      await actions.editor.codeSaved({
         code,
         moduleShortid: devtoolsModule.shortid,
         cbID: null,

@@ -76,6 +76,7 @@ export function getDisabledItems(store: any): INavigationItem[] {
 export default function getItems(store: any): INavigationItem[] {
   if (
     store.live.isLive &&
+    !store.editor.currentSandbox.git &&
     !(
       store.live.isOwner ||
       (store.user &&
