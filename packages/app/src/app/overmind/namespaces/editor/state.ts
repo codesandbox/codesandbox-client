@@ -121,13 +121,8 @@ export const state: State = {
     devToolIndex: 0,
     tabPosition: 0,
   },
-  canWriteCode: ({ currentSandbox }) => {
-    if (currentSandbox?.git) {
-      return false;
-    }
-
-    return Boolean(currentSandbox?.owned);
-  },
+  canWriteCode: ({ currentSandbox }) =>
+    currentSandbox?.authorization === 'write_code',
   currentSandbox: ({ sandboxes, currentId }) => {
     if (currentId && sandboxes[currentId]) {
       return sandboxes[currentId];

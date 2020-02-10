@@ -21,6 +21,7 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -446,11 +447,13 @@ export const updateSandboxPackageJson: AsyncAction = async ({
 
   if (
     !sandbox ||
-    !state.editor.parsedConfigurations ||
-    !state.editor.parsedConfigurations.package ||
-    !state.editor.parsedConfigurations.package.parsed ||
+    !state.editor.parsedConfigurations?.package?.parsed ||
     !state.editor.currentPackageJSON
   ) {
+    return;
+  }
+
+  if (!hasPermission(sandbox.authorization, 'write_code')) {
     return;
   }
 
