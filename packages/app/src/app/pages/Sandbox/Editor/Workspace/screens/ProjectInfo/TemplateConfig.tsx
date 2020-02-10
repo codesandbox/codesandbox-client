@@ -1,4 +1,3 @@
-import * as templates from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useState } from 'react';
 
 import { useOvermind } from 'app/overmind';
@@ -13,13 +12,6 @@ const buttonStyles = css`
   border: 0;
   background: transparent;
   cursor: pointer;
-`;
-
-export const Button = styled(PopoverDisclosure)<{ color: string }>`
-  ${({ color }) => css`
-    color: ${color};
-    ${buttonStyles}
-  `};
 `;
 
 export const IconButton = styled.button`
@@ -49,9 +41,7 @@ export const IconList = styled.ul`
 `;
 
 const OpenPopover = styled(PopoverDisclosure)`
-  padding: 0;
-  background: transparent;
-  border: 0;
+  ${buttonStyles}
   color: inherit;
   width: 100%;
 `;
@@ -75,7 +65,6 @@ export const TemplateConfig: FunctionComponent = () => {
   );
 
   const DefaultIcon = getIcon(template);
-  const defaultColor = templates.default(template).color();
 
   const setIcon = (key: string) => {
     setSelectedIcon(key);
@@ -89,13 +78,13 @@ export const TemplateConfig: FunctionComponent = () => {
       <ListAction justify="space-between" gap={2}>
         <Text>Template Icon</Text>
         <Element>
-          <Button {...iconPopover} color={defaultColor}>
+          <Element>
             {selectedIcon && TemplateIcon ? (
               <TemplateIcon width={24} />
             ) : (
               <DefaultIcon width={24} />
             )}
-          </Button>
+          </Element>
           <IconWrapper
             aria-label="Choose an Icon"
             hideOnClickOutside
