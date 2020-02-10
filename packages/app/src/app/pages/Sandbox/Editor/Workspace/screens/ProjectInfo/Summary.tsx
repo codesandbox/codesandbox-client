@@ -49,6 +49,7 @@ export const Summary = () => {
     template,
     forkedFromSandbox,
     forkedTemplateSandbox,
+    team,
   } = currentSandbox;
 
   useEffect(() => {
@@ -116,14 +117,24 @@ export const Summary = () => {
             })}
           >
             {author ? (
-              <Link variant="muted" href={profileUrl(author.username)}>
+              <Link href={profileUrl(author.username)}>
                 <Stack
                   gap={2}
                   align="center"
                   css={{ display: 'inline-flex' }}
                   marginBottom={userTemplate ? 0 : 4}
                 >
-                  <Avatar user={author} /> <Text>{author.username}</Text>
+                  <Avatar user={author} />
+                  <Element>
+                    <Text variant={team ? 'body' : 'muted'} block>
+                      {author.username}
+                    </Text>
+                    {team && (
+                      <Text size={2} marginTop={1} variant="muted">
+                        {team.name}
+                      </Text>
+                    )}
+                  </Element>
                 </Stack>
               </Link>
             ) : null}
