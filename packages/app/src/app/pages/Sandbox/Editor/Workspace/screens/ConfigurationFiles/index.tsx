@@ -91,7 +91,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
               Configuration for your Sandbox
             </Text>
             <Text variant="muted">
-              Codesandbox supports several configuration files per template, you
+              CodeSandbox supports several configuration files per template, you
               can see and edit all supported files for the current sandbox here.
             </Text>
           </Element>
