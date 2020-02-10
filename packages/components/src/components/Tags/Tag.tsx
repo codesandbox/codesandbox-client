@@ -7,7 +7,11 @@ import { Stack } from '../Stack';
 import { Button } from '../Button';
 import { Text } from '../Text';
 
-const TagElement = styled(Stack)(
+const TagElement = styled(Stack).attrs({
+  inline: true,
+  align: 'center',
+  justify: 'space-between',
+})(
   css({
     height: 4,
     lineHeight: 1, // trust the height
@@ -18,18 +22,19 @@ const TagElement = styled(Stack)(
 );
 
 type TagProps = {
-  children: string;
+  tag: string;
   onRemove?: (tag: string) => void;
 };
 
-export function Tag({ children, onRemove }: TagProps) {
+export function Tag({ tag, onRemove }: TagProps) {
   return (
-    <TagElement align="center" justify="space-between">
-      <Text size={2}>{children}</Text>
+    <TagElement data-component="Tag">
+      <Text size={2}>{tag}</Text>
       {onRemove && (
         <Button
           variant="link"
-          onClick={() => onRemove(children)}
+          css={{ width: 'auto' }}
+          onClick={onRemove}
           marginLeft={1}
         >
           <CrossIcon />
