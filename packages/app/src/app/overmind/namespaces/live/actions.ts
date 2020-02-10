@@ -237,15 +237,13 @@ export const onSendChat: Action<{ message: string }> = (
   effects.live.sendChat(message);
 };
 
-export const onChatEnabledChange: Action<boolean> = (
-  { effects, state },
-  enabled
-) => {
+export const onChatEnabledToggle: Action = ({ effects, state }) => {
+  const chatEnabled = state.live.roomInfo.chatEnabled;
   effects.analytics.track('Enable Live Chat');
 
   if (state.live.isOwner && state.live.roomInfo) {
-    state.live.roomInfo.chatEnabled = enabled;
-    effects.live.sendChatEnabled(enabled);
+    state.live.roomInfo.chatEnabled = !chatEnabled;
+    effects.live.sendChatEnabled(!chatEnabled);
   }
 };
 
