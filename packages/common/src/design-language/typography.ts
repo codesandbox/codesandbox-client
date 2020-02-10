@@ -1,4 +1,4 @@
-export const fontSizes = [0, 9, 11, 13, 16, 19, 24, 28, 33, 40];
+export const fontSizes = [0, 9, 12, 13, 16, 19, 24, 28, 33, 40];
 
 export const fontWeights = {
   // matches Inter weights

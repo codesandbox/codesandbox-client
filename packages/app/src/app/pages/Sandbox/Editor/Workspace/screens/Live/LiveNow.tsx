@@ -150,7 +150,7 @@ export const LiveNow = () => {
       </Collapsible>
 
       <Collapsible title="Editors" defaultOpen>
-        <Element css={css({ paddingX: 2 })}>
+        <Stack direction="vertical" gap={2} css={css({ paddingX: 2 })}>
           {owners.map(user => (
             <User key={user.id} user={user} liveRole="owner" />
           ))}
@@ -161,12 +161,12 @@ export const LiveNow = () => {
             spectators.map(user => (
               <User key={user.id} user={user} liveRole="editor" />
             ))}
-        </Element>
+        </Stack>
       </Collapsible>
 
       {mode === 'classroom' && (
         <Collapsible title="Viewers" defaultOpen>
-          <Element css={css({ paddingX: 2 })}>
+          <Stack direction="vertical" gap={2} css={css({ paddingX: 2 })}>
             {spectators.map(user => (
               <User key={user.id} user={user} liveRole="spectator" />
             ))}
@@ -174,7 +174,7 @@ export const LiveNow = () => {
             {spectators.length
               ? null
               : 'No other users in session, invite them! '}
-          </Element>
+          </Stack>
         </Collapsible>
       )}
     </>

@@ -62,7 +62,6 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
 
     if (state.editor.error) {
       const isGithub = match.params.id.includes('github');
-      const hasPrivateAccess = state.user && state.user.integrations.github;
 
       return (
         <>
@@ -77,7 +76,6 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
             Something went wrong
           </div>
           <Title style={{ fontSize: '1.25rem', marginBottom: 0 }}>
-            {isGithub ? 'Error importing GitHub repository: ' : ''}
             {state.editor.error}
           </Title>
           <br />
@@ -89,7 +87,7 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
               {hasLogIn ? 'Dashboard' : 'Homepage'}
             </Button>
           </div>
-          {isLoggedIn && isGithub && !hasPrivateAccess && (
+          {isLoggedIn && isGithub && (
             <div style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}>
               <div
                 style={{
@@ -102,10 +100,31 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
                 }}
               >
                 Did you try to open a private GitHub repository and are you a{' '}
-                <Link to="/patron">patron</Link>? Then you might need to get
-                private access:
+                <Link to="/pro">pro</Link>? Then you might need to get private
+                access:
               </div>
               <GithubIntegration small />
+              <div
+                style={{
+                  fontWeight: 300,
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  marginTop: '1rem',
+                  fontSize: '1rem',
+                  textAlign: 'center',
+                  lineHeight: 1.6,
+                }}
+              >
+                If you{"'"}re importing a sandbox from an organization, make
+                sure to enable organization access{' '}
+                <a
+                  href="https://github.com/settings/connections/applications/c07a89833b557afc7be2"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  here
+                </a>
+                .
+              </div>
             </div>
           )}
         </>

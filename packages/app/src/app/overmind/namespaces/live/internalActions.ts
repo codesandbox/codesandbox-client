@@ -59,9 +59,12 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
   state.live.isLoading = true;
 
   try {
-    const { roomInfo, liveUserId, sandbox } = await effects.live.joinChannel(
-      id
-    );
+    const {
+      roomInfo,
+      liveUserId,
+      sandbox,
+      moduleState,
+    } = await effects.live.joinChannel(id);
 
     state.live.roomInfo = roomInfo;
     state.live.liveUserId = liveUserId;
@@ -73,6 +76,8 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
       state.editor.sandboxes[sandbox.id] = sandbox;
       state.editor.currentId = sandbox.id;
     }
+
+    actions.live.internal.initializeModuleState(moduleState);
 
     effects.analytics.track('Live Session Joined', {});
     effects.live.listen(actions.live.liveMessageReceived);

@@ -99,8 +99,13 @@ export const Summary = () => {
 
           <Element as="section" css={css({ paddingX: 2 })}>
             {author ? (
-              <Link href={profileUrl(author.username)}>
-                <Stack gap={2} align="center" marginBottom={4}>
+              <Link variant="muted" href={profileUrl(author.username)}>
+                <Stack
+                  gap={2}
+                  align="center"
+                  css={{ display: 'inline-flex' }}
+                  marginBottom={4}
+                >
                   <Avatar user={author} /> <Text>{author.username}</Text>
                 </Stack>
               </Link>

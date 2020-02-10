@@ -112,7 +112,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
                     <Button
                       css={css({
                         width: 'auto',
-                        height: 4,
+                        height: 5,
                       })}
                       variant="secondary"
                       onClick={() => editor.moduleSelected({ id: module.id })}
