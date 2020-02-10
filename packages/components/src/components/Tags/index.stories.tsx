@@ -55,6 +55,9 @@ const Layout = styled(Input).attrs({ as: 'label', htmlFor: 'tags-input' })(
     ':focus-within': {
       borderColor: 'inputOption.activeBorder',
     },
+    '[data-component="Tag"]': {
+      backgroundColor: 'sideBar.background',
+    },
   })
 );
 
