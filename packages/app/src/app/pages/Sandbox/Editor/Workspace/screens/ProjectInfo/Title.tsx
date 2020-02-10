@@ -81,7 +81,7 @@ export const Title = ({ editable }) => {
     </FormField>
   ) : (
     <SandboxNameWrapper gap={2}>
-      <Text>{getSandboxName(currentSandbox)}</Text>
+      <Text maxWidth={190}>{getSandboxName(currentSandbox)}</Text>
       {editable && <Icon onClick={edit} />}
     </SandboxNameWrapper>
   );

@@ -18,7 +18,6 @@ import { Container, Header, ContentContainer } from './elements';
 
 function unFocus(document, window) {
   if (document.selection) {
-    // $FlowIssue
     document.selection.empty();
   } else {
     try {

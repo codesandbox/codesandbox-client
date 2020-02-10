@@ -40,6 +40,10 @@ export const CreateRepo = () => {
       defaultOpen={!originalGit}
     >
       <Element css={css({ paddingX: 2 })}>
+        <Text variant="muted" marginBottom={4} block>
+          Create a GitHub repository to host your sandbox code and keep it in
+          sync with CodeSandbox.
+        </Text>
         {!isAllModulesSynced && (
           <Text marginBottom={2} block variant="danger">
             Save your files first before exporting.
