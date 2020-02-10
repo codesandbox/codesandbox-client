@@ -166,7 +166,9 @@ export const codeSaved: AsyncAction<{
     });
   },
   async ({ effects }, { cbID }) => {
-    effects.vscode.callCallbackError(cbID);
+    if (cbID) {
+      effects.vscode.callCallbackError(cbID);
+    }
   },
   'write_project'
 );
