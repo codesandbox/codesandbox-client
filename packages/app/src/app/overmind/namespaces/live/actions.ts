@@ -238,10 +238,10 @@ export const onSendChat: Action<{ message: string }> = (
 };
 
 export const onChatEnabledToggle: Action = ({ effects, state }) => {
-  const chatEnabled = state.live.roomInfo.chatEnabled;
   effects.analytics.track('Enable Live Chat');
 
   if (state.live.isOwner && state.live.roomInfo) {
+    const chatEnabled = state.live.roomInfo.chatEnabled;
     state.live.roomInfo.chatEnabled = !chatEnabled;
     effects.live.sendChatEnabled(!chatEnabled);
   }
