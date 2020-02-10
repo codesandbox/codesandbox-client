@@ -2,51 +2,39 @@ import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import CrossIcon from 'react-icons/lib/md/clear';
+
 import { Stack } from '../Stack';
-import { Element } from '../Element';
+import { Button } from '../Button';
 import { Text } from '../Text';
 
-export type Props = {
-  tag: string;
-  onRemove?: (tag: string) => void;
-};
-
-export const DeleteIcon = styled(CrossIcon)(
+const TagElement = styled(Stack)(
   css({
-    transition: 'all ease',
-    transitionDuration: theme => theme.speeds[3],
-    cursor: 'pointer',
-    color: 'tab.inactiveForeground',
-    width: '6px',
-    display: 'flex',
-    height: '6px',
-
-    ':hover': {
-      color: 'sideBarTitle.foreground',
-    },
-  })
-);
-
-export const TagElement = styled.div(
-  css({
+    height: 4,
+    lineHeight: 1, // trust the height
     backgroundColor: 'sideBar.border',
     paddingX: 1,
-    paddingY: 1,
     borderRadius: 'small',
   })
 );
 
-export function Tag({ tag, onRemove }: Props) {
+type TagProps = {
+  children: string;
+  onRemove?: (tag: string) => void;
+};
+
+export function Tag({ children, onRemove }: TagProps) {
   return (
-    <TagElement key={tag}>
-      <Stack align="center" justify="space-between">
-        <Text size={1}>{tag}</Text>
-        {onRemove && (
-          <Element marginLeft={2}>
-            <DeleteIcon onClick={() => onRemove(tag)} />
-          </Element>
-        )}
-      </Stack>
+    <TagElement align="center" justify="space-between">
+      <Text size={2}>{children}</Text>
+      {onRemove && (
+        <Button
+          variant="link"
+          onClick={() => onRemove(children)}
+          marginLeft={1}
+        >
+          <CrossIcon />
+        </Button>
+      )}
     </TagElement>
   );
 }

@@ -18,7 +18,7 @@ export function Tags({ tags, align, ...props }: Props) {
         .sort()
         .map(tag => (
           <Element key={tag} marginX={1} marginY={1}>
-            <Tag tag={tag} {...props} />
+            <Tag {...props}>{tag}</Tag>
           </Element>
         ))}
     </Stack>
