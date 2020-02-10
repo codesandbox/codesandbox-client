@@ -145,7 +145,7 @@ export async function createFile(
   zip: JSZip,
   downloadBlobs: boolean = true
 ) {
-  if (module.isBinary) {
+  if (module.isBinary && module.code.startsWith('http')) {
     if (downloadBlobs) {
       const code = await window
         .fetch(module.code)
