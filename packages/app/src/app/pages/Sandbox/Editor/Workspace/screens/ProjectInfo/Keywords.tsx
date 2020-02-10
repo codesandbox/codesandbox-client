@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { useOvermind } from 'app/overmind';
 import { json } from 'overmind';
-import { Tags } from '@codesandbox/components';
+import { Tags, Element } from '@codesandbox/components';
 import { EditableTags } from './EditableTags';
 
 type Props = {
@@ -32,7 +32,7 @@ export const Keywords: FunctionComponent<Props> = ({ editable }) => {
     tagsChanged({ newTags, removedTags });
 
   return (
-    <div>
+    <Element marginTop={2}>
       {editable ? (
         <EditableTags
           inputValue={tagName}
@@ -46,6 +46,6 @@ export const Keywords: FunctionComponent<Props> = ({ editable }) => {
       ) : (
         <Tags tags={tags} />
       )}
-    </div>
+    </Element>
   );
 };

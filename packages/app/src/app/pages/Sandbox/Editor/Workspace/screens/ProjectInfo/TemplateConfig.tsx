@@ -37,10 +37,11 @@ export const IconWrapper = styled(Popover)`
 export const IconList = styled.ul`
   list-style: none;
   display: grid;
-  padding: 0;
+  padding: ${props => props.theme.space[2]}px;
   margin: 0;
   grid-template-columns: repeat(7, 24px);
   grid-gap: 10px;
+  border: 1px solid ${props => props.theme.colors.sideBar.border};
 
   li {
     cursor: pointer;
