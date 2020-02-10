@@ -1,9 +1,7 @@
 import React, { FunctionComponent } from 'react';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { useOvermind } from 'app/overmind';
 import { json } from 'overmind';
-import { Tags } from '@codesandbox/components';
-import { EditableTags } from './EditableTags';
+import { Tags, TagInput } from '@codesandbox/components';
 
 type Props = {
   editable?: boolean;
@@ -16,7 +14,7 @@ export const Keywords: FunctionComponent<Props> = ({ editable }) => {
     },
     state: {
       editor: {
-        currentSandbox: { template, tags },
+        currentSandbox: { tags },
       },
       workspace: {
         tags: { tagName },
@@ -28,21 +26,21 @@ export const Keywords: FunctionComponent<Props> = ({ editable }) => {
     return null;
   }
 
-  const changeTags = (newTags: string[], removedTags: string[]) =>
+  const changeTags = (newTags: string[], removedTags: string[]) => {
     tagsChanged({ newTags, removedTags });
+  };
 
   return (
     <div>
       {editable ? (
-        <EditableTags
-          inputValue={tagName}
-          maxTags={5}
-          onChange={changeTags}
-          onChangeInput={tagChanged}
-          onlyUnique
-          template={getTemplateDefinition(template)}
-          value={json(tags)}
-        />
+        <>
+          <TagInput
+            value={json(tags)}
+            onChange={changeTags}
+            inputValue={tagName}
+            onChangeInput={tagChanged}
+          />
+        </>
       ) : (
         <Tags tags={tags} />
       )}

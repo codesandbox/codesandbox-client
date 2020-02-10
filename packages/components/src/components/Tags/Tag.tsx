@@ -13,7 +13,7 @@ const TagElement = styled(Stack).attrs({
   justify: 'space-between',
 })(
   css({
-    height: 4,
+    height: '18px', // hardcoded off the scale
     lineHeight: 1, // trust the height
     backgroundColor: 'sideBar.border',
     paddingX: 1,
