@@ -156,7 +156,7 @@ export const resizingStopped: Action = ({ state }) => {
 export const codeSaved: AsyncAction<{
   code: string;
   moduleShortid: string;
-  cbID: string;
+  cbID: string | null;
 }> = withOwnedSandbox(
   async ({ actions }, { code, moduleShortid, cbID }) => {
     actions.editor.internal.saveCode({
