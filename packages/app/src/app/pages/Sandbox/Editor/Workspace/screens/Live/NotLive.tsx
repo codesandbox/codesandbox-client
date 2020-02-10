@@ -50,7 +50,7 @@ const Owner = () => {
     <>
       <Stack direction="vertical" gap={2} marginBottom={6}>
         <Text size={2} variant="muted" block>
-          Invite others to live edit this sandbox with you.
+          Invite others to edit this sandbox with you in real time.
         </Text>
         <Text size={2} variant="muted" block>
           To invite others you need to generate a URL that others can join.
@@ -92,7 +92,7 @@ const NotOwner = () => {
           with others in real time.
         </Text>
         <Text size={2} variant="muted" block>
-          Fork this sandbox to live share it with others!
+          Fork this sandbox to share it with others!
         </Text>
       </Stack>
       <Button

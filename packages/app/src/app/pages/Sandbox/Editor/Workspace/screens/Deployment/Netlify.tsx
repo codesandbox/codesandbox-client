@@ -46,7 +46,7 @@ export const Netlify = () => {
         <Integration icon={NetlifyIcon} title="netlify">
           <Element marginX={2} marginBottom={netlifySite ? 6 : 0}>
             <Text variant="muted" block marginBottom={4}>
-              Deploy your sandbox to{' '}
+              Deploy your sandbox site to{' '}
               <Link href="https://www.netlify.com/" target="_blank">
                 Netlify
               </Link>

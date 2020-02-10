@@ -96,7 +96,6 @@ export const Summary = () => {
             <Element marginTop={2}>
               <Description editable={owned} />
             </Element>
-
             <Keywords editable={owned} />
             {userTemplate && (
               <>

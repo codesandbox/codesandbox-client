@@ -25,7 +25,7 @@ export const NotOwner = () => {
       <Element css={css({ paddingX: 2 })}>
         <Stack direction="vertical" gap={2} marginBottom={6}>
           <Text size={2} variant="muted" block>
-            You can deploy a production version of your sandbox using one our
+            You can deploy a production version of your sandbox using one of our
             supported providers - Netlify or ZEIT.
           </Text>
           <Text size={2} variant="muted" block>
