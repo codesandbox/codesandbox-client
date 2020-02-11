@@ -28,20 +28,15 @@ export const pickSandbox: AsyncAction<{
       state.explore.popularSandboxes?.sandboxes || []
     ).find(module => module.id === id);
 
-    if (!popularSandbox) {
-      effects.notificationToast.error(
-        'Could not pick Sandbox, please refresh and try again'
-      );
-      return;
+    if (popularSandbox) {
+      popularSandbox.picks = [
+        {
+          ...data,
+          // Why are we doing this?
+          id: Math.random().toString(),
+        },
+      ];
     }
-
-    popularSandbox.picks = [
-      {
-        ...data,
-        // Why are we doing this?
-        id: Math.random().toString(),
-      },
-    ];
 
     effects.notificationToast.success('Sandbox picked');
     state.currentModal = null;
