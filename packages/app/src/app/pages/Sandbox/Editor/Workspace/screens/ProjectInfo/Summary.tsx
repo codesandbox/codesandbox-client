@@ -39,14 +39,12 @@ export const Summary = () => {
     },
     state: {
       editor: { currentSandbox, sessionFrozen },
-      workspace: {
-        project: { description },
-      },
     },
   } = useOvermind();
   const {
     owned,
     author,
+    description,
     isFrozen,
     customTemplate,
     template,

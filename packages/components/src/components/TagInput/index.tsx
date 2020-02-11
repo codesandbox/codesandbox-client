@@ -45,15 +45,18 @@ const Layout = styled(Input).attrs({
   })
 );
 
-export function TagInput({ value, onChange, inputValue, onChangeInput }) {
-  const spanRef = React.useRef<HTMLDivElement>(null);
-
+export function TagInput({ value, onChange }) {
   // Input takes the size of the content inside it by using
   // a decoy span to calculate width
+
+  const spanRef = React.useRef<HTMLDivElement>(null);
+  const [inputValue, setInputValue] = React.useState('');
+
   const onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputElement = event.target;
+    setInputValue(inputElement.value);
     if (spanRef.current) {
-      inputElement.style.width = spanRef.current.offsetWidth + 20 + 'px';
+      inputElement.style.width = spanRef.current.offsetWidth + 8 + 'px';
     }
   };
 
@@ -62,8 +65,6 @@ export function TagInput({ value, onChange, inputValue, onChangeInput }) {
       <TagsInput
         value={value}
         onChange={onChange}
-        inputValue={inputValue}
-        onChangeInput={onChangeInput}
         onlyUnique
         renderTag={({ key, tag, onRemove }) => (
           <Tag tag={tag} key={key} onRemove={() => onRemove(key)} />

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { json } from 'overmind';
 import { css } from '@styled-system/css';
 import {
   Stack,
@@ -10,11 +9,12 @@ import {
   Button,
   TagInput,
 } from '@codesandbox/components';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
 export const EditSummary = ({ setEditing }) => {
   const {
     actions: {
-      workspace: { sandboxInfoUpdated, valueChanged, tagChanged, tagsChanged },
+      workspace: { sandboxInfoUpdated, valueChanged, tagsChanged2 },
     },
     state: {
       editor: {
@@ -22,7 +22,6 @@ export const EditSummary = ({ setEditing }) => {
       },
       workspace: {
         project: { title, description },
-        tags: { tagName },
       },
     },
   } = useOvermind();
@@ -35,72 +34,70 @@ export const EditSummary = ({ setEditing }) => {
     valueChanged({ field: 'description', value: event.target.value });
   };
 
-  const [tagsDiff, setTagsDiff] = React.useState({
-    newTags: tags,
-    removedTags: [],
-  });
-
-  const onTagsChanged = (newTags: string[], removedTags: string[]) => {
-    setTagsDiff({ newTags, removedTags });
+  // Text input elements treat Enter as submit
+  // but textarea doesn't, so we need to hijack it.
+  const submitOnEnter = event => {
+    if (event.keyCode === ENTER && !event.shiftKey) onSubmit(event);
   };
 
-  const onSave = () => {
+  const [newTags, setNewTags] = React.useState(tags || []);
+
+  const onSubmit = event => {
+    event.preventDefault();
     sandboxInfoUpdated();
-    tagsChanged(tagsDiff);
+    tagsChanged2(newTags);
     setEditing(false);
   };
 
   return (
-    <Stack
-      as="section"
-      direction="vertical"
-      gap={2}
-      paddingX={2}
-      marginBottom={6}
-    >
-      <FormField
-        label="Sandbox Name"
-        hideLabel
-        css={css({ paddingX: 0, width: '100%' })}
-      >
-        <Input
-          value={title}
-          onChange={onTitleChange}
-          placeholder="Title"
-          autoFocus
-          type="text"
-        />
-      </FormField>
-      <FormField
+    <form onSubmit={onSubmit}>
+      <Stack
+        as="section"
         direction="vertical"
-        label="Sandbox Description"
-        hideLabel
-        css={css({ paddingX: 0 })}
+        gap={2}
+        paddingX={2}
+        marginBottom={6}
       >
-        <Textarea
-          rows={2}
-          placeholder="Description"
-          maxLength={280}
-          onChange={onDescriptionChange}
-          value={description}
-        />
-      </FormField>
+        <FormField
+          label="Sandbox Name"
+          hideLabel
+          css={css({ paddingX: 0, width: '100%' })}
+        >
+          <Input
+            value={title}
+            onChange={onTitleChange}
+            placeholder="Title"
+            autoFocus
+            type="text"
+          />
+        </FormField>
+        <FormField
+          direction="vertical"
+          label="Sandbox Description"
+          hideLabel
+          css={css({ paddingX: 0 })}
+        >
+          <Textarea
+            rows={2}
+            placeholder="Description"
+            maxLength={280}
+            onChange={onDescriptionChange}
+            onKeyDown={submitOnEnter}
+            value={description}
+          />
+        </FormField>
 
-      <TagInput
-        value={json(tags)}
-        onChange={onTagsChanged}
-        inputValue={tagName}
-        onChangeInput={tagChanged}
-      />
+        <TagInput value={newTags} onChange={setNewTags} />
+      </Stack>
 
-      <Stack>
+      <Stack paddingX={2}>
         <Button variant="link" onClick={() => setEditing(false)}>
           Cancel
         </Button>
-        <Button variant="secondary" onClick={onSave}>
+        <Button type="submit" variant="secondary">
           Save
         </Button>
       </Stack>
-    </Stack>
+    </form>
   );
 };
