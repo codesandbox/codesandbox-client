@@ -104,24 +104,24 @@ export const LiveNow = () => {
       <Collapsible title="Preferences" defaultOpen>
         <List>
           {isOwner && (
-            <ListAction justify="space-between" onClick={onChatEnabledToggle}>
+            <ListAction justify="space-between" onClick={() => onChatEnabledToggle()}>
               <Label htmlFor="chat_enabled">Chat enabled</Label>
               <Switch
                 id="chat_enabled"
                 on={chatEnabled}
-                onChange={onChatEnabledToggle}
+                onChange={() => onChatEnabledToggle()}
               />
             </ListAction>
           )}
           <ListAction
             justify="space-between"
-            onClick={onToggleNotificationsHidden}
+            onClick={() => onToggleNotificationsHidden()}
           >
             <Label htmlFor="show_notifications">Show notifications</Label>
             <Switch
               id="show_notifications"
               on={!notificationsHidden}
-              onChange={onToggleNotificationsHidden}
+              onChange={() => onToggleNotificationsHidden()}
             />
           </ListAction>
         </List>

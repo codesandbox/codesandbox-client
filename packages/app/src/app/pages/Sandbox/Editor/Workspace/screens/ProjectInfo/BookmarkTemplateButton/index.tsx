@@ -102,7 +102,7 @@ export const BookmarkTemplateButton = () => {
       })}
     >
       <Button disabled={loading} onClick={() => handleToggleFollow()}>
-        {bookmarkInfos[0] && bookmarkInfos[0].isBookmarked
+        {bookmarkInfos[0]?.isBookmarked
           ? `Unbookmark Template`
           : `Bookmark Template`}
       </Button>
