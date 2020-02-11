@@ -58,14 +58,14 @@ export const Delete = () => {
         })}
       >
         <Stack gap={2}>
-          {links.map(link => (
+          {links.map(({ href, icon }) => (
             <Link
               target="_blank"
               rel="noopener noreferrer"
               css={css({ color: 'sideBar.border' })}
-              href={link.href}
+              href={href}
             >
-              {link.icon}
+              {icon}
             </Link>
           ))}
         </Stack>
