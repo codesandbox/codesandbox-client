@@ -23,14 +23,10 @@ export const pickSandbox: AsyncAction<{
   description: string;
 }> = async ({ state, actions, effects }, { id, title, description }) => {
   try {
-    if (!state.explore.popularSandboxes) {
-      return;
-    }
-
     const data = await effects.api.saveSandboxPick(id, title, description);
-    const popularSandbox = state.explore.popularSandboxes.sandboxes.find(
-      module => module.id === id
-    );
+    const popularSandbox = (
+      state.explore.popularSandboxes?.sandboxes || []
+    ).find(module => module.id === id);
 
     if (!popularSandbox) {
       effects.notificationToast.error(
