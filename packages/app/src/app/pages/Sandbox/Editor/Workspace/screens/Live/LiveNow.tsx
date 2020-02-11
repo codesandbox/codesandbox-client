@@ -37,7 +37,7 @@ export const LiveNow = () => {
     actions: {
       live: {
         onSessionCloseClicked,
-        onChatEnabledChange,
+        onChatEnabledToggle,
         onToggleNotificationsHidden,
         onModeChanged,
       },
@@ -105,14 +105,14 @@ export const LiveNow = () => {
         <List>
           {isOwner && (
             <ListAction
-              onClick={() => onChatEnabledChange(!chatEnabled)}
               justify="space-between"
+              onClick={() => onChatEnabledToggle()}
             >
               <Label htmlFor="chat_enabled">Chat enabled</Label>
               <Switch
                 id="chat_enabled"
                 on={chatEnabled}
-                onChange={() => onChatEnabledChange(!chatEnabled)}
+                onChange={() => onChatEnabledToggle()}
               />
             </ListAction>
           )}

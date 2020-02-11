@@ -31,6 +31,7 @@ import { css } from '@styled-system/css';
 import { TemplateConfig } from './TemplateConfig';
 import { PenIcon } from './icons';
 import { EditSummary } from './EditSummary';
+import { BookmarkTemplateButton } from './BookmarkTemplateButton';
 
 export const Summary = () => {
   const {
@@ -51,6 +52,7 @@ export const Summary = () => {
     forkedFromSandbox,
     forkedTemplateSandbox,
     tags,
+    team,
   } = currentSandbox;
 
   useEffect(() => {
@@ -70,6 +72,8 @@ export const Summary = () => {
 
   const isForked = forkedFromSandbox || forkedTemplateSandbox;
   const { url: templateUrl } = getTemplateDefinition(template);
+  const myTemplate = customTemplate && owned;
+  const userTemplate = customTemplate && !owned;
 
   const [editing, setEditing] = React.useState(false);
 
@@ -118,24 +122,48 @@ export const Summary = () => {
             </Stack>
           )}
 
-          <Element as="section" css={css({ paddingX: 2 })}>
+          <Element
+            as="section"
+            css={css({
+              paddingX: 2,
+              // sorry :(
+              marginBottom: userTemplate ? '16px  !important' : undefined,
+            })}
+          >
             {author ? (
-              <Link variant="muted" href={profileUrl(author.username)}>
+              <Link href={profileUrl(author.username)}>
                 <Stack
                   gap={2}
                   align="center"
                   css={{ display: 'inline-flex' }}
-                  marginBottom={4}
+                  marginBottom={userTemplate ? 0 : 4}
                 >
-                  <Avatar user={author} /> <Text>{author.username}</Text>
+                  <Avatar user={author} />
+                  <Element>
+                    <Text variant={team ? 'body' : 'muted'} block>
+                      {author.username}
+                    </Text>
+                    {team && (
+                      <Text size={2} marginTop={1} variant="muted">
+                        {team.name}
+                      </Text>
+                    )}
+                  </Element>
                 </Stack>
               </Link>
             ) : null}
-            <Stats sandbox={currentSandbox} />
+            {userTemplate && (
+              <>
+                <Element marginTop={4}>
+                  <Stats sandbox={currentSandbox} />
+                </Element>
+                <BookmarkTemplateButton />
+              </>
+            )}
           </Element>
 
           <List>
-            {customTemplate && <TemplateConfig />}
+            {myTemplate && <TemplateConfig />}
 
             {owned && (
               <ListAction justify="space-between">

@@ -6,7 +6,7 @@ import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
-import styled, { ThemeProvider, withTheme } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
 
 import Content from './Content';
@@ -27,7 +27,7 @@ const StatusBar = styled.div`
   }
 `;
 
-const ContentSplit = ({ theme }) => {
+const ContentSplit = () => {
   const { state, actions, effects } = useOvermind();
   const statusbarEl = useRef(null);
   const [localState, setLocalState] = useState({
@@ -88,7 +88,7 @@ const ContentSplit = ({ theme }) => {
         <Fullscreen style={{ width: 'initial' }}>
           {!hideNavigation &&
             (REDESIGNED_SIDEBAR === 'true' ? (
-              <NewThemeProvider theme={theme.vscodeTheme}>
+              <NewThemeProvider theme={localState.theme.vscodeTheme}>
                 <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
               </NewThemeProvider>
             ) : (
@@ -160,4 +160,4 @@ const ContentSplit = ({ theme }) => {
   );
 };
 
-export default withTheme(ContentSplit);
+export default ContentSplit;

@@ -20,7 +20,7 @@ export const Text = styled(Element).attrs({ as: 'span' })<{
   weight?: string;
   block?: boolean;
   variant?: 'body' | 'muted' | 'danger';
-  maxWidth?: number;
+  maxWidth?: number | string;
 }>(({ size, align, weight, block, variant = 'body', maxWidth, ...props }) =>
   css({
     fontSize: size || 'inherit', // from theme.fontSizes

@@ -25,7 +25,7 @@ export const EnvVars = () => {
     editor.fetchEnvironmentVariables();
   }, [editor]);
 
-  const deleteEnv = name => {
+  const deleteEnv = (name: string) => {
     editor.deleteEnvironmentVariable({ name });
   };
   const envVars = currentSandbox.environmentVariables;
