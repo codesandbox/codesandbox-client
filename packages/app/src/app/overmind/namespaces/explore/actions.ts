@@ -29,13 +29,11 @@ export const pickSandbox: AsyncAction<{
     ).find(module => module.id === id);
 
     if (popularSandbox) {
-      popularSandbox.picks = [
-        {
-          ...data,
-          // Why are we doing this?
-          id: Math.random().toString(),
-        },
-      ];
+      popularSandbox.picks.push({
+        ...data,
+        // Why are we doing this?
+        id: Math.random().toString(),
+      });
     }
 
     effects.notificationToast.success('Sandbox picked');
