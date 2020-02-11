@@ -7,7 +7,7 @@ import css from '@styled-system/css';
 import DirectoryEntry from './DirectoryEntry/index';
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
 
-export const Files = ({ defaultOpen = null }) => {
+export const Files = () => {
   const {
     state: { editor: editorState, isLoggedIn },
     actions: { editor, files },
@@ -27,11 +27,7 @@ export const Files = ({ defaultOpen = null }) => {
 
   return (
     <>
-      <Collapsible
-        title="Files"
-        defaultOpen={defaultOpen}
-        css={{ position: 'relative' }}
-      >
+      <Collapsible title="Files" defaultOpen css={{ position: 'relative' }}>
         <SidebarRow
           justify="flex-end"
           css={css({

@@ -30,6 +30,7 @@ import { Title } from './Title';
 import { Description } from './Description';
 import { TemplateConfig } from './TemplateConfig';
 import { Keywords } from './Keywords';
+import { BookmarkTemplateButton } from './BookmarkTemplateButton';
 
 export const Summary = () => {
   const {
@@ -48,6 +49,7 @@ export const Summary = () => {
     template,
     forkedFromSandbox,
     forkedTemplateSandbox,
+    team,
   } = currentSandbox;
 
   useEffect(() => {
@@ -67,6 +69,8 @@ export const Summary = () => {
 
   const isForked = forkedFromSandbox || forkedTemplateSandbox;
   const { url: templateUrl } = getTemplateDefinition(template);
+  const myTemplate = customTemplate && owned;
+  const userTemplate = customTemplate && !owned;
 
   return (
     <>
@@ -92,29 +96,52 @@ export const Summary = () => {
             <Element marginTop={2}>
               <Description editable={owned} />
             </Element>
-            <Element marginTop={2}>
-              <Keywords editable={owned} />
-            </Element>
+            <Keywords editable={owned} />
+            {userTemplate && (
+              <>
+                <Element marginTop={4}>
+                  <Stats sandbox={currentSandbox} />
+                </Element>
+                <BookmarkTemplateButton />
+              </>
+            )}
           </Element>
 
-          <Element as="section" css={css({ paddingX: 2 })}>
+          <Element
+            as="section"
+            css={css({
+              paddingX: 2,
+              // sorry :(
+              marginBottom: userTemplate ? '16px  !important' : undefined,
+            })}
+          >
             {author ? (
-              <Link variant="muted" href={profileUrl(author.username)}>
+              <Link href={profileUrl(author.username)}>
                 <Stack
                   gap={2}
                   align="center"
                   css={{ display: 'inline-flex' }}
-                  marginBottom={4}
+                  marginBottom={userTemplate ? 0 : 4}
                 >
-                  <Avatar user={author} /> <Text>{author.username}</Text>
+                  <Avatar user={author} />
+                  <Element>
+                    <Text variant={team ? 'body' : 'muted'} block>
+                      {author.username}
+                    </Text>
+                    {team && (
+                      <Text size={2} marginTop={1} variant="muted">
+                        {team.name}
+                      </Text>
+                    )}
+                  </Element>
                 </Stack>
               </Link>
             ) : null}
-            <Stats sandbox={currentSandbox} />
+            {!customTemplate && !owned && <Stats sandbox={currentSandbox} />}
           </Element>
 
           <List>
-            {customTemplate && <TemplateConfig />}
+            {myTemplate && <TemplateConfig />}
 
             {owned && (
               <ListAction justify="space-between">
