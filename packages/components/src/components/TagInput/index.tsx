@@ -45,10 +45,9 @@ const Layout = styled(Input).attrs({
   })
 );
 
-export function TagInput({ value, onChange }) {
-  // Input takes the size of the content inside it by using
-  // a decoy span to calculate width
-
+// Input takes the size of the content inside it by using
+// a decoy span to calculate width
+const AutosizeInput = props => {
   const spanRef = React.useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = React.useState('');
 
@@ -62,23 +61,7 @@ export function TagInput({ value, onChange }) {
 
   return (
     <>
-      <TagsInput
-        value={value}
-        onChange={onChange}
-        onlyUnique
-        renderTag={({ key, tag, onRemove }) => (
-          <Tag tag={tag} key={key} onRemove={() => onRemove(key)} />
-        )}
-        renderInput={props => (
-          <Input id="tags-input" onInput={onInput} {...props} />
-        )}
-        renderLayout={(tagsComponent, inputComponent) => (
-          <Layout>
-            {tagsComponent}
-            {inputComponent}
-          </Layout>
-        )}
-      />
+      <Input onInput={onInput} {...props} />
       <VisuallyHidden>
         <Text size={2} id="tags-input-span" ref={spanRef}>
           {inputValue}
@@ -86,4 +69,22 @@ export function TagInput({ value, onChange }) {
       </VisuallyHidden>
     </>
   );
-}
+};
+
+export const TagInput = ({ value, onChange }) => (
+  <TagsInput
+    value={value}
+    onChange={onChange}
+    onlyUnique
+    renderTag={({ key, tag, onRemove }) => (
+      <Tag tag={tag} key={key} onRemove={() => onRemove(key)} />
+    )}
+    renderInput={props => <AutosizeInput id="tags-input" {...props} />}
+    renderLayout={(tagsComponent, inputComponent) => (
+      <Layout>
+        {tagsComponent}
+        {inputComponent}
+      </Layout>
+    )}
+  />
+);
