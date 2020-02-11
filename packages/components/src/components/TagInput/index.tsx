@@ -55,7 +55,7 @@ const AutosizeInput = props => {
     const inputElement = event.target;
     setInputValue(inputElement.value);
     if (spanRef.current) {
-      inputElement.style.width = spanRef.current.offsetWidth + 8 + 'px';
+      inputElement.style.width = spanRef.current.offsetWidth + 16 + 'px';
     }
   };
 
