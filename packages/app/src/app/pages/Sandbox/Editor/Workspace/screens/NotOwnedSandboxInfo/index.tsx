@@ -5,6 +5,6 @@ import { Summary } from '../ProjectInfo/Summary';
 export const NotOwnedSandboxInfo = () => (
   <>
     <Summary />
-    <Explorer filesDefaultOpen={false} />
+    <Explorer />
   </>
 );
