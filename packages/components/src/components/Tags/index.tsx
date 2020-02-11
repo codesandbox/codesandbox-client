@@ -12,11 +12,12 @@ export function Tags({ tags, ...props }: Props) {
   return (
     <Stack
       align="center"
+      gap={1}
       css={{
         flexWrap: 'wrap',
-        // we use margin instead of gap
-        // to apply margin for multiline tags
-        '> *': { margin: 1 },
+        // we add margin instead for multiline tags
+        // because stack doesn't support multilines
+        '> *': { marginBottom: 1 },
       }}
       {...props}
     >

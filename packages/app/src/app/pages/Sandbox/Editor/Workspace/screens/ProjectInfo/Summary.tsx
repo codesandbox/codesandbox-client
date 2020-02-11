@@ -5,6 +5,7 @@ import {
   Element,
   Collapsible,
   Text,
+  Button,
   Link,
   Label,
   Avatar,
@@ -14,6 +15,7 @@ import {
   ListAction,
   Switch,
   Stats,
+  Tags,
 } from '@codesandbox/components';
 
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
@@ -26,10 +28,9 @@ import { Icons } from '@codesandbox/template-icons';
 import getIcon from '@codesandbox/common/lib/templates/icons';
 
 import { css } from '@styled-system/css';
-import { Title } from './Title';
-import { Description } from './Description';
 import { TemplateConfig } from './TemplateConfig';
-import { Keywords } from './Keywords';
+import { PenIcon } from './icons';
+import { EditSummary } from './EditSummary';
 
 export const Summary = () => {
   const {
@@ -38,6 +39,9 @@ export const Summary = () => {
     },
     state: {
       editor: { currentSandbox, sessionFrozen },
+      workspace: {
+        project: { description },
+      },
     },
   } = useOvermind();
   const {
@@ -48,6 +52,7 @@ export const Summary = () => {
     template,
     forkedFromSandbox,
     forkedTemplateSandbox,
+    tags,
   } = currentSandbox;
 
   useEffect(() => {
@@ -68,6 +73,8 @@ export const Summary = () => {
   const isForked = forkedFromSandbox || forkedTemplateSandbox;
   const { url: templateUrl } = getTemplateDefinition(template);
 
+  const [editing, setEditing] = React.useState(false);
+
   return (
     <>
       <Collapsible
@@ -75,27 +82,43 @@ export const Summary = () => {
         defaultOpen
       >
         <Stack direction="vertical" gap={6}>
-          <Element as="section" css={css({ paddingX: 2 })}>
-            {customTemplate ? (
-              <Stack gap={2} align="center" marginBottom={2}>
-                <TemplateIcon
-                  iconUrl={customTemplate.iconUrl}
-                  environment={template}
-                />
-                <Title editable={owned} />
+          {editing ? (
+            <EditSummary setEditing={setEditing} />
+          ) : (
+            <Stack
+              as="section"
+              direction="vertical"
+              gap={2}
+              css={css({ paddingX: 2 })}
+            >
+              <Stack justify="space-between" align="center">
+                {customTemplate ? (
+                  <Stack gap={2} align="center">
+                    <TemplateIcon
+                      iconUrl={customTemplate.iconUrl}
+                      environment={template}
+                    />
+                    <Text maxWidth={190}>{getSandboxName(currentSandbox)}</Text>
+                  </Stack>
+                ) : (
+                  <Text maxWidth={190}>{getSandboxName(currentSandbox)}</Text>
+                )}
+                {owned && !editing && (
+                  <Button
+                    variant="link"
+                    css={css({ width: 10 })}
+                    onClick={() => setEditing(true)}
+                  >
+                    <PenIcon />
+                  </Button>
+                )}
               </Stack>
-            ) : (
-              <>
-                <Title editable={owned} />
-              </>
-            )}
-            <Element marginTop={2}>
-              <Description editable={owned} />
-            </Element>
-            <Element marginTop={2}>
-              <Keywords editable={owned} />
-            </Element>
-          </Element>
+
+              <Text variant="muted">{description}</Text>
+
+              <Tags tags={tags} />
+            </Stack>
+          )}
 
           <Element as="section" css={css({ paddingX: 2 })}>
             {author ? (

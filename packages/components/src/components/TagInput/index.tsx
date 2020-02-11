@@ -66,7 +66,7 @@ export function TagInput({ value, onChange, inputValue, onChangeInput }) {
         onChangeInput={onChangeInput}
         onlyUnique
         renderTag={({ key, tag, onRemove }) => (
-          <Tag tag={tag} onRemove={() => onRemove(key)} />
+          <Tag tag={tag} key={key} onRemove={() => onRemove(key)} />
         )}
         renderInput={props => (
           <Input id="tags-input" onInput={onInput} {...props} />
