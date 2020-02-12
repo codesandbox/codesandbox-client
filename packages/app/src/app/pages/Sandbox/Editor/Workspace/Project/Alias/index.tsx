@@ -20,7 +20,7 @@ type Props = {
 export const Alias: FunctionComponent<Props> = ({ editable }) => {
   const {
     actions: {
-      workspace: { sandboxInfoUpdated },
+      workspace: { sandboxInfoUpdated, valueChanged },
     },
     state: {
       editor: { currentSandbox },
@@ -40,7 +40,7 @@ export const Alias: FunctionComponent<Props> = ({ editable }) => {
           setEditing(false);
         }}
         onChange={({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-          ({ field: 'alias', value });
+          valueChanged({ field: 'alias', value });
         }}
         onKeyUp={({ keyCode }: KeyboardEvent<HTMLInputElement>) => {
           if (keyCode === ESC) {
