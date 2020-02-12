@@ -18,6 +18,7 @@ import {
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import { json } from 'overmind';
 
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import eventToTransform from '../../utils/event-to-transform';
 import * as internalActions from './internalActions';
 
@@ -118,7 +119,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   await actions.editor.internal.initializeLiveSandbox(sandbox);
 
-  if (sandbox.owned && !state.live.isLive) {
+  if (
+    hasPermission(sandbox.authorization, 'write_code') &&
+    !state.live.isLive
+  ) {
     actions.files.internal.recoverFiles();
   } else if (state.live.isLive) {
     effects.live.sendModuleStateSyncRequest();
