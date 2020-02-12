@@ -1,4 +1,3 @@
-import { css } from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
 import React, { ChangeEvent } from 'react';
 import {
@@ -42,7 +41,7 @@ export const CreateRepo = () => {
       title={originalGit ? 'Export to GitHub' : 'Github'}
       defaultOpen={!originalGit}
     >
-      <Element css={css({ paddingX: 2 })}>
+      <Element paddingX={2}>
         <Text variant="muted" marginBottom={4} block>
           Create a GitHub repository to host your sandbox code and keep it in
           sync with CodeSandbox.
@@ -72,7 +71,7 @@ export const CreateRepo = () => {
             value={repoTitle}
             placeholder="Enter repository name"
           />
-          <Element css={css({ paddingX: 2 })}>
+          <Element paddingX={2}>
             <Button disabled={disabled} variant="secondary">
               Create Repository
             </Button>
