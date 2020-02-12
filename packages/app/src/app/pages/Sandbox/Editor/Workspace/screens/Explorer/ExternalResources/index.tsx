@@ -44,51 +44,53 @@ export const ExternalResources: FunctionComponent = () => {
   return (
     <Collapsible title="External resources">
       <Stack direction="vertical" gap={6}>
-        <List>
-          {otherResources.map(resource => (
-            <ListAction
-              key={resource}
-              justify="space-between"
-              css={{
-                button: { opacity: 0 },
-                ':hover, :focus-within': { button: { opacity: 1 } },
-              }}
-            >
-              <Link href={resource} target="_blank">
-                {getName(resource)}
-              </Link>
-              <Button
-                variant="link"
-                css={css({ width: 'auto' })}
-                onClick={() => externalResourceRemoved(resource)}
+        {otherResources.length || fonts.length ? (
+          <List>
+            {otherResources.map(resource => (
+              <ListAction
+                key={resource}
+                justify="space-between"
+                css={{
+                  button: { opacity: 0 },
+                  ':hover, :focus-within': { button: { opacity: 1 } },
+                }}
               >
-                <CrossIcon />
-              </Button>
-            </ListAction>
-          ))}
+                <Link href={resource} target="_blank">
+                  {getName(resource)}
+                </Link>
+                <Button
+                  variant="link"
+                  css={css({ width: 'auto' })}
+                  onClick={() => externalResourceRemoved(resource)}
+                >
+                  <CrossIcon />
+                </Button>
+              </ListAction>
+            ))}
 
-          {fonts.map(resource => (
-            <ListAction
-              key={resource}
-              justify="space-between"
-              css={{
-                button: { opacity: 0 },
-                ':hover, :focus-within': { button: { opacity: 1 } },
-              }}
-            >
-              <Link href={resource} target="_blank">
-                {getFontFamily(resource).name}
-              </Link>
-              <Button
-                variant="link"
-                css={css({ width: 'auto' })}
-                onClick={() => externalResourceRemoved(resource)}
+            {fonts.map(resource => (
+              <ListAction
+                key={resource}
+                justify="space-between"
+                css={{
+                  button: { opacity: 0 },
+                  ':hover, :focus-within': { button: { opacity: 1 } },
+                }}
               >
-                <CrossIcon />
-              </Button>
-            </ListAction>
-          ))}
-        </List>
+                <Link href={resource} target="_blank">
+                  {getFontFamily(resource).name}
+                </Link>
+                <Button
+                  variant="link"
+                  css={css({ width: 'auto' })}
+                  onClick={() => externalResourceRemoved(resource)}
+                >
+                  <CrossIcon />
+                </Button>
+              </ListAction>
+            ))}
+          </List>
+        ) : null}
 
         <form
           key={otherResources.length}
