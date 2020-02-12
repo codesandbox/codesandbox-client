@@ -7,9 +7,10 @@ export const Stack = styled(Element)<{
   direction?: 'horizontal' | 'vertical';
   justify?: string;
   align?: string;
-}>(({ gap = 0, direction = 'horizontal', justify, align }) =>
+  inline?: boolean;
+}>(({ gap = 0, direction = 'horizontal', justify, align, inline }) =>
   css({
-    display: 'flex',
+    display: inline ? 'inline-flex' : 'flex',
     flexDirection: direction === 'horizontal' ? 'row' : 'column',
     justifyContent: justify,
     alignItems: align,

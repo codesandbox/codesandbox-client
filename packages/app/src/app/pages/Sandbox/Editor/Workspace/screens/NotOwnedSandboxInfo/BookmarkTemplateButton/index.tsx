@@ -13,8 +13,7 @@ import {
   UnbookmarkTemplateMutationVariables,
   BookmarkedSandboxInfoQueryVariables,
 } from 'app/graphql/types';
-import { Element, Button } from '@codesandbox/components';
-import { css } from '@styled-system/css';
+import { Button } from '@codesandbox/components';
 import { BOOKMARK_TEMPLATE, UNBOOKMARK_TEMPLATE } from './mutations';
 import { BOOKMARKED_SANDBOX_INFO } from './queries';
 
@@ -93,19 +92,10 @@ export const BookmarkTemplateButton = () => {
     bookmarkInfos[i].isBookmarked ? unbookmark(config(i)) : bookmark(config(i));
 
   return (
-    <Element
-      marginTop={6}
-      paddingBottom={8}
-      css={css({
-        borderBottom: '1px solid',
-        borderColor: 'sideBar.border',
-      })}
-    >
-      <Button disabled={loading} onClick={() => handleToggleFollow()}>
-        {bookmarkInfos[0]?.isBookmarked
-          ? `Unbookmark Template`
-          : `Bookmark Template`}
-      </Button>
-    </Element>
+    <Button disabled={loading} onClick={() => handleToggleFollow()}>
+      {bookmarkInfos[0]?.isBookmarked
+        ? `Unbookmark Template`
+        : `Bookmark Template`}
+    </Button>
   );
 };
