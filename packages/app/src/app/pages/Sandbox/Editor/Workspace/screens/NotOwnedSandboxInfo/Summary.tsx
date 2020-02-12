@@ -78,7 +78,7 @@ export const Summary = () => {
           </Stack>
         </Element>
 
-        <Stack as="section" direction="vertical" gap={4} paddingX={2}>
+        <Stack as="section" direction="vertical" gap={6} paddingX={2}>
           <Stats sandbox={currentSandbox} />
           {customTemplate && <BookmarkTemplateButton />}
         </Stack>
