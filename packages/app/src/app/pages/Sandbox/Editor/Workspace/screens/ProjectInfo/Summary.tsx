@@ -83,16 +83,11 @@ export const Summary = () => {
         title={customTemplate ? 'Template Info' : 'Sandbox Info'}
         defaultOpen
       >
-        <Stack direction="vertical" gap={6}>
+        <Element marginBottom={editing ? 10 : 6}>
           {editing ? (
             <EditSummary setEditing={setEditing} />
           ) : (
-            <Stack
-              as="section"
-              direction="vertical"
-              gap={2}
-              css={css({ paddingX: 2 })}
-            >
+            <Stack as="section" direction="vertical" gap={2} paddingX={2}>
               <Stack justify="space-between" align="center">
                 {customTemplate ? (
                   <Stack gap={2} align="center">
@@ -116,87 +111,77 @@ export const Summary = () => {
                 )}
               </Stack>
 
-              <Text variant="muted">{description}</Text>
+              <Text variant="muted" onClick={() => setEditing(true)}>
+                {description || 'Add a short description for this sandbox'}
+              </Text>
 
-              <Tags tags={tags} />
+              {tags.length ? (
+                <Element marginTop={4}>
+                  <Tags tags={tags} />
+                </Element>
+              ) : null}
             </Stack>
           )}
+        </Element>
 
-          <Element
-            as="section"
-            css={css({
-              paddingX: 2,
-              // sorry :(
-              marginBottom: userTemplate ? '16px  !important' : undefined,
-            })}
-          >
-            {author ? (
-              <Link href={profileUrl(author.username)}>
-                <Stack
-                  gap={2}
-                  align="center"
-                  css={{ display: 'inline-flex' }}
-                  marginBottom={userTemplate ? 0 : 4}
-                >
-                  <Avatar user={author} />
-                  <Element>
-                    <Text variant={team ? 'body' : 'muted'} block>
-                      {author.username}
+        <Stack as="section" direction="vertical" gap={4} paddingX={2}>
+          {author ? (
+            <Link href={profileUrl(author.username)}>
+              <Stack gap={2} align="center" css={{ display: 'inline-flex' }}>
+                <Avatar user={author} />
+                <Element>
+                  <Text variant={team ? 'body' : 'muted'} block>
+                    {author.username}
+                  </Text>
+                  {team && (
+                    <Text size={2} marginTop={1} variant="muted">
+                      {team.name}
                     </Text>
-                    {team && (
-                      <Text size={2} marginTop={1} variant="muted">
-                        {team.name}
-                      </Text>
-                    )}
-                  </Element>
-                </Stack>
-              </Link>
-            ) : null}
-            {userTemplate && (
-              <>
-                <Element marginTop={4}>
-                  <Stats sandbox={currentSandbox} />
+                  )}
                 </Element>
-                <BookmarkTemplateButton />
-              </>
-            )}
-          </Element>
+              </Stack>
+            </Link>
+          ) : null}
 
-          <List>
-            {myTemplate && <TemplateConfig />}
+          <Stats sandbox={currentSandbox} />
 
-            {owned && (
-              <ListAction justify="space-between">
-                <Label htmlFor="frozen">Frozen</Label>
-                <Switch
-                  id="frozen"
-                  onChange={updateFrozenState}
-                  on={customTemplate ? sessionFrozen : isFrozen}
-                />
-              </ListAction>
-            )}
-            {isForked ? (
-              <ListItem justify="space-between">
-                <Text>
-                  {forkedTemplateSandbox ? 'Template' : 'Forked From'}
-                </Text>
-                <Link
-                  variant="muted"
-                  href={sandboxUrl(forkedFromSandbox || forkedTemplateSandbox)}
-                  target="_blank"
-                >
-                  {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
-                </Link>
-              </ListItem>
-            ) : null}
+          {userTemplate && <BookmarkTemplateButton />}
+        </Stack>
+
+        <Divider marginTop={8} marginBottom={4} />
+
+        <List>
+          {myTemplate && <TemplateConfig />}
+
+          {owned && (
+            <ListAction justify="space-between">
+              <Label htmlFor="frozen">Frozen</Label>
+              <Switch
+                id="frozen"
+                onChange={updateFrozenState}
+                on={customTemplate ? sessionFrozen : isFrozen}
+              />
+            </ListAction>
+          )}
+          {isForked ? (
             <ListItem justify="space-between">
-              <Text>Environment</Text>
-              <Link variant="muted" href={templateUrl} target="_blank">
-                {template}
+              <Text>{forkedTemplateSandbox ? 'Template' : 'Forked From'}</Text>
+              <Link
+                variant="muted"
+                href={sandboxUrl(forkedFromSandbox || forkedTemplateSandbox)}
+                target="_blank"
+              >
+                {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
               </Link>
             </ListItem>
-          </List>
-        </Stack>
+          ) : null}
+          <ListItem justify="space-between">
+            <Text>Environment</Text>
+            <Link variant="muted" href={templateUrl} target="_blank">
+              {template}
+            </Link>
+          </ListItem>
+        </List>
       </Collapsible>
     </>
   );
@@ -206,3 +191,16 @@ const TemplateIcon = ({ iconUrl, environment }) => {
   const Icon = Icons[iconUrl] || getIcon(environment);
   return <Icon />;
 };
+
+const Divider = props => (
+  <Element
+    as="hr"
+    css={css({
+      width: '100%',
+      border: 'none',
+      borderBottom: '1px solid',
+      borderColor: 'sideBar.border',
+    })}
+    {...props}
+  />
+);
