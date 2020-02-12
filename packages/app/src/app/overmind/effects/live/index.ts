@@ -120,7 +120,7 @@ export default new (class Live {
 
   joinChannel(roomId: string): Promise<JoinChannelTransformedResponse> {
     return new Promise((resolve, reject) => {
-      channel = this.getSocket().channel(`live:${roomId}`, {});
+      channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
 
       channel
         .join()
