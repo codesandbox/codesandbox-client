@@ -27,7 +27,7 @@ import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { Icons } from '@codesandbox/template-icons';
 import getIcon from '@codesandbox/common/lib/templates/icons';
 
-import { css } from '@styled-system/css';
+import css from '@styled-system/css';
 import { TemplateConfig } from './TemplateConfig';
 import { PenIcon } from './icons';
 import { EditSummary } from './EditSummary';
@@ -144,7 +144,7 @@ export const Summary = () => {
 
         <List>
           {customTemplate && <TemplateConfig />}
-          <ListAction justify="space-between">
+          <ListAction justify="space-between" onClick={updateFrozenState}>
             <Label htmlFor="frozen">Frozen</Label>
             <Switch
               id="frozen"

@@ -43,7 +43,7 @@ export const Netlify = () => {
   return (
     template.netlify !== false && (
       <>
-        <Integration icon={NetlifyIcon} title="netlify">
+        <Integration icon={NetlifyIcon} title="Netlify">
           <Element marginX={2} marginBottom={netlifySite ? 6 : 0}>
             <Text variant="muted" block marginBottom={4}>
               Deploy your sandbox site to{' '}

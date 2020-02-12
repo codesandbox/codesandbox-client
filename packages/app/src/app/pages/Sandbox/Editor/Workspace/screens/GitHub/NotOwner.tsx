@@ -1,5 +1,4 @@
 import React from 'react';
-import css from '@styled-system/css';
 
 import {
   Element,
@@ -22,7 +21,7 @@ export const NotOwner = () => {
 
   return (
     <Collapsible title="Github" defaultOpen>
-      <Element css={css({ paddingX: 2 })}>
+      <Element paddingX={2}>
         <Stack direction="vertical" gap={2} marginBottom={6}>
           <Text size={2} variant="muted" block>
             You need to own this sandbox to export this sandbox to GitHub and
