@@ -6,7 +6,7 @@ import {
   Text,
   Stack,
 } from '@codesandbox/components';
-import { css } from '@styled-system/css';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { ServerPort } from '@codesandbox/common/lib/types';
 import BrowserIcon from 'react-icons/lib/go/browser';

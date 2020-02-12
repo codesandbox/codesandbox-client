@@ -23,7 +23,7 @@ export const NotLive = () => {
 
   return (
     <Collapsible title="Live" defaultOpen>
-      <Element css={css({ paddingX: 2 })}>
+      <Element paddingX={2}>
         <Text block weight="medium" marginBottom={2}>
           Collaborate in real-time
         </Text>

@@ -1,7 +1,7 @@
 import React, { MouseEvent } from 'react';
 import VERSION from '@codesandbox/common/lib/version';
 import { useOvermind } from 'app/overmind';
-import { css } from '@styled-system/css';
+import css from '@styled-system/css';
 import { Button, Stack, Text, Element, Link } from '@codesandbox/components';
 import { SpectrumLogo, GithubIcon, TwitterIcon } from './icons';
 
@@ -51,12 +51,7 @@ export const Delete = () => {
           {`Delete ${customTemplate ? `Template` : `Sandbox`}`}
         </Button>
       </Stack>
-      <Element
-        marginBottom={3}
-        css={css({
-          paddingX: 2,
-        })}
-      >
+      <Element marginBottom={3} paddingX={2}>
         <Stack gap={2}>
           {links.map(({ href, icon }) => (
             <Link

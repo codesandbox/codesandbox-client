@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { css } from '@styled-system/css';
+import css from '@styled-system/css';
 import {
   FormField,
   Stack,

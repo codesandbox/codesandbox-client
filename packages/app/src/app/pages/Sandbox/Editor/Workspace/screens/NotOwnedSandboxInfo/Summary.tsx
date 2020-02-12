@@ -22,7 +22,7 @@ import {
   Stats,
   Tags,
 } from '@codesandbox/components';
-import { css } from '@styled-system/css';
+import css from '@styled-system/css';
 
 import { BookmarkTemplateButton } from './BookmarkTemplateButton';
 

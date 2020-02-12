@@ -1,6 +1,6 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { css } from '@styled-system/css';
+import css from '@styled-system/css';
 import {
   Stack,
   FormField,

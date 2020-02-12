@@ -72,7 +72,7 @@ export const LiveNow = () => {
   return (
     <>
       <Collapsible title="Live" defaultOpen>
-        <Element css={css({ paddingX: 2 })}>
+        <Element paddingX={2}>
           <Stack justify="space-between" align="center" marginBottom={2}>
             <Text variant="danger">
               <Stack align="center" gap={2}>
@@ -132,7 +132,7 @@ export const LiveNow = () => {
       </Collapsible>
 
       <Collapsible title="Live Mode" defaultOpen>
-        <Stack direction="vertical" gap={2} css={css({ paddingX: 2 })}>
+        <Stack direction="vertical" gap={2} paddingX={2}>
           <Select
             icon={mode === 'open' ? OpenIcon : ClassroomIcon}
             value={mode}
@@ -151,7 +151,7 @@ export const LiveNow = () => {
       </Collapsible>
 
       <Collapsible title="Editors" defaultOpen>
-        <Stack direction="vertical" gap={2} css={css({ paddingX: 2 })}>
+        <Stack direction="vertical" gap={2} paddingX={2}>
           {owners.map(user => (
             <User key={user.id} user={user} liveRole="owner" />
           ))}
@@ -167,7 +167,7 @@ export const LiveNow = () => {
 
       {mode === 'classroom' && (
         <Collapsible title="Viewers" defaultOpen>
-          <Stack direction="vertical" gap={2} css={css({ paddingX: 2 })}>
+          <Stack direction="vertical" gap={2} paddingX={2}>
             {spectators.map(user => (
               <User key={user.id} user={user} liveRole="spectator" />
             ))}
