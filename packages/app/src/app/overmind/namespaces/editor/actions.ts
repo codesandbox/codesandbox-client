@@ -18,6 +18,7 @@ import {
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import { json } from 'overmind';
 
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import eventToTransform from '../../utils/event-to-transform';
 import * as internalActions from './internalActions';
 
@@ -118,7 +119,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   await actions.editor.internal.initializeLiveSandbox(sandbox);
 
-  if (sandbox.owned && !state.live.isLive) {
+  if (
+    hasPermission(sandbox.authorization, 'write_code') &&
+    !state.live.isLive
+  ) {
     actions.files.internal.recoverFiles();
   } else if (state.live.isLive) {
     await effects.live.sendModuleStateSyncRequest();
@@ -156,7 +160,7 @@ export const resizingStopped: Action = ({ state }) => {
 export const codeSaved: AsyncAction<{
   code: string;
   moduleShortid: string;
-  cbID: string;
+  cbID: string | null;
 }> = withOwnedSandbox(
   async ({ actions }, { code, moduleShortid, cbID }) => {
     actions.editor.internal.saveCode({
@@ -166,8 +170,11 @@ export const codeSaved: AsyncAction<{
     });
   },
   async ({ effects }, { cbID }) => {
-    effects.vscode.callCallbackError(cbID);
-  }
+    if (cbID) {
+      effects.vscode.callCallbackError(cbID);
+    }
+  },
+  'write_project'
 );
 
 export const onOperationApplied: Action<{

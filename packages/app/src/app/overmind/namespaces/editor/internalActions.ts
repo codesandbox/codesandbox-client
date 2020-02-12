@@ -21,6 +21,7 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -254,7 +255,7 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
 
   delete packageJson.dependencies[name];
 
-  await actions.editor.internal.saveCode({
+  await actions.editor.codeSaved({
     code: JSON.stringify(packageJson, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
     cbID: null,
@@ -281,7 +282,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   packageJson[type][name] = version || 'latest';
   packageJson[type] = sortObjectByKeys(packageJson[type]);
 
-  await actions.editor.internal.saveCode({
+  await actions.editor.codeSaved({
     code: JSON.stringify(packageJson, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
     cbID: null,
@@ -446,11 +447,13 @@ export const updateSandboxPackageJson: AsyncAction = async ({
 
   if (
     !sandbox ||
-    !state.editor.parsedConfigurations ||
-    !state.editor.parsedConfigurations.package ||
-    !state.editor.parsedConfigurations.package.parsed ||
+    !state.editor.parsedConfigurations?.package?.parsed ||
     !state.editor.currentPackageJSON
   ) {
+    return;
+  }
+
+  if (!hasPermission(sandbox.authorization, 'write_code')) {
     return;
   }
 
@@ -463,7 +466,7 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   const code = JSON.stringify(parsed, null, 2);
   const moduleShortid = state.editor.currentPackageJSON.shortid;
 
-  await actions.editor.internal.saveCode({
+  await actions.editor.codeSaved({
     code,
     moduleShortid,
     cbID: null,
@@ -482,7 +485,7 @@ export const updateDevtools: AsyncAction<{
       state.editor.modulesByPath['/.codesandbox/workspace.json'];
 
     if (devtoolsModule) {
-      await actions.editor.internal.saveCode({
+      await actions.editor.codeSaved({
         code,
         moduleShortid: devtoolsModule.shortid,
         cbID: null,

@@ -13,6 +13,13 @@ export type SSEContainerStatus =
 
 export type SSEManagerStatus = 'connected' | 'disconnected' | 'initializing';
 
+export type PermissionType =
+  | 'write_code'
+  | 'write_project'
+  | 'comment'
+  | 'read'
+  | 'none';
+
 export type ModuleError = {
   message: string;
   line: number;
@@ -313,6 +320,7 @@ export type Sandbox = {
     path: string;
   };
   owned: boolean;
+  authorization: PermissionType;
   npmDependencies: {
     [dep: string]: string;
   };
