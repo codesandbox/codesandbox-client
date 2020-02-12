@@ -31,7 +31,6 @@ import { css } from '@styled-system/css';
 import { TemplateConfig } from './TemplateConfig';
 import { PenIcon } from './icons';
 import { EditSummary } from './EditSummary';
-import { BookmarkTemplateButton } from './BookmarkTemplateButton';
 
 export const Summary = () => {
   const {
@@ -43,7 +42,6 @@ export const Summary = () => {
     },
   } = useOvermind();
   const {
-    owned,
     author,
     description,
     isFrozen,
@@ -72,8 +70,6 @@ export const Summary = () => {
 
   const isForked = forkedFromSandbox || forkedTemplateSandbox;
   const { url: templateUrl } = getTemplateDefinition(template);
-  const myTemplate = customTemplate && owned;
-  const userTemplate = customTemplate && !owned;
 
   const [editing, setEditing] = React.useState(false);
 
@@ -100,15 +96,13 @@ export const Summary = () => {
                 ) : (
                   <Text maxWidth={190}>{getSandboxName(currentSandbox)}</Text>
                 )}
-                {owned && !editing && (
-                  <Button
-                    variant="link"
-                    css={css({ width: 10 })}
-                    onClick={() => setEditing(true)}
-                  >
-                    <PenIcon />
-                  </Button>
-                )}
+                <Button
+                  variant="link"
+                  css={css({ width: 10 })}
+                  onClick={() => setEditing(true)}
+                >
+                  <PenIcon />
+                </Button>
               </Stack>
 
               <Text variant="muted" onClick={() => setEditing(true)}>
@@ -144,25 +138,20 @@ export const Summary = () => {
           ) : null}
 
           <Stats sandbox={currentSandbox} />
-
-          {userTemplate && <BookmarkTemplateButton />}
         </Stack>
 
         <Divider marginTop={8} marginBottom={4} />
 
         <List>
-          {myTemplate && <TemplateConfig />}
-
-          {owned && (
-            <ListAction justify="space-between">
-              <Label htmlFor="frozen">Frozen</Label>
-              <Switch
-                id="frozen"
-                onChange={updateFrozenState}
-                on={customTemplate ? sessionFrozen : isFrozen}
-              />
-            </ListAction>
-          )}
+          {customTemplate && <TemplateConfig />}
+          <ListAction justify="space-between">
+            <Label htmlFor="frozen">Frozen</Label>
+            <Switch
+              id="frozen"
+              onChange={updateFrozenState}
+              on={customTemplate ? sessionFrozen : isFrozen}
+            />
+          </ListAction>
           {isForked ? (
             <ListItem justify="space-between">
               <Text>{forkedTemplateSandbox ? 'Template' : 'Forked From'}</Text>
