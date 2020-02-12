@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react';
 
 import { useOvermind } from 'app/overmind';
-import { ListAction, Text, Element } from '@codesandbox/components';
+import { ListAction, Text } from '@codesandbox/components';
 import styled, { css } from 'styled-components';
 import getIcon from '@codesandbox/common/lib/templates/icons';
 import { ColorIcons as Icons } from '@codesandbox/template-icons';
@@ -75,38 +75,35 @@ export const TemplateConfig: FunctionComponent = () => {
 
   return (
     <OpenPopover {...iconPopover}>
-      <ListAction justify="space-between" gap={2}>
+      <ListAction justify="space-between">
         <Text>Template Icon</Text>
-        <Element>
-          <Element>
-            {selectedIcon && TemplateIcon ? (
-              <TemplateIcon width={24} />
-            ) : (
-              <DefaultIcon width={24} />
-            )}
-          </Element>
-          <IconWrapper
-            aria-label="Choose an Icon"
-            hideOnClickOutside
-            hideOnEsc
-            {...iconPopover}
-          >
-            <IconList>
-              {Object.keys(Icons).map((i: string) => {
-                const TemplateIconMap = Icons[i];
-                return (
-                  // eslint-disable-next-line
-                  <li onClick={() => setIcon(i)} role="button" tabIndex={0}>
-                    <IconButton>
-                      <TemplateIconMap width={24} />
-                    </IconButton>
-                  </li>
-                );
-              })}
-            </IconList>
-          </IconWrapper>
-        </Element>
+
+        {selectedIcon && TemplateIcon ? (
+          <TemplateIcon width={24} />
+        ) : (
+          <DefaultIcon width={24} />
+        )}
       </ListAction>
+      <IconWrapper
+        aria-label="Choose an Icon"
+        hideOnClickOutside
+        hideOnEsc
+        {...iconPopover}
+      >
+        <IconList>
+          {Object.keys(Icons).map((i: string) => {
+            const TemplateIconMap = Icons[i];
+            return (
+              // eslint-disable-next-line
+              <li onClick={() => setIcon(i)} role="button" tabIndex={0}>
+                <IconButton>
+                  <TemplateIconMap width={24} />
+                </IconButton>
+              </li>
+            );
+          })}
+        </IconList>
+      </IconWrapper>
     </OpenPopover>
   );
 };
