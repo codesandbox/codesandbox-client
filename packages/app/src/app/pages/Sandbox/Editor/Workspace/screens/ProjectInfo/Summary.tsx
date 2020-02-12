@@ -144,7 +144,7 @@ export const Summary = () => {
 
         <List>
           {customTemplate && <TemplateConfig />}
-          <ListAction justify="space-between">
+          <ListAction justify="space-between" onClick={updateFrozenState}>
             <Label htmlFor="frozen">Frozen</Label>
             <Switch
               id="frozen"

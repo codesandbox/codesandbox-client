@@ -90,6 +90,7 @@ export const LiveNow = () => {
           <Input
             defaultValue={`https://codesandbox.io/live/${roomId}`}
             marginBottom={2}
+            onFocus={({ target }: { target: any }) => target.select()}
           />
 
           {isOwner && (

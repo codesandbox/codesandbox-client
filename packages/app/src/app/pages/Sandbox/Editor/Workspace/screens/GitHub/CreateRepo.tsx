@@ -29,10 +29,13 @@ export const CreateRepo = () => {
     target: { value: title },
   }: ChangeEvent<HTMLInputElement>) => repoTitleChanged({ title });
 
-  const createRepo = () => {
+  const createRepo = e => {
+    e.preventDefault();
     track('Export to GitHub Clicked');
     createRepoClicked();
   };
+
+  const disabled = Boolean(error) || !repoTitle || !isAllModulesSynced;
 
   return (
     <Collapsible
@@ -56,20 +59,24 @@ export const CreateRepo = () => {
           </Text>
         )}
 
-        <Stack as="form" direction="vertical" gap={2}>
+        <Stack
+          marginX={0}
+          as="form"
+          direction="vertical"
+          gap={2}
+          onSubmit={createRepo}
+        >
           <Input
             type="text"
             onChange={updateRepoTitle}
             value={repoTitle}
             placeholder="Enter repository name"
           />
-          <Button
-            disabled={Boolean(error) || !repoTitle || !isAllModulesSynced}
-            onClick={createRepo}
-            variant="secondary"
-          >
-            Create Repository
-          </Button>
+          <Element css={css({ paddingX: 2 })}>
+            <Button disabled={disabled} variant="secondary">
+              Create Repository
+            </Button>
+          </Element>
         </Stack>
       </Element>
     </Collapsible>
