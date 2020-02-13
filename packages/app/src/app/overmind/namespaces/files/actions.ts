@@ -4,13 +4,14 @@ import {
   getModulesAndDirectoriesInDirectory,
 } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
-import { Directory, Module } from '@codesandbox/common/lib/types';
+import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
+import { INormalizedModules } from 'codesandbox-import-util-types';
+
 import { AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import { createOptimisticModule } from 'app/overmind/utils/common';
-import { INormalizedModules } from 'codesandbox-import-util-types';
-import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 
 import {
   resolveDirectoryWrapped,
@@ -417,10 +418,10 @@ export const gotUploadedFiles: AsyncAction<string> = async (
   }
 };
 
-export const addedFileToSandbox: AsyncAction<{
-  url: string;
-  name: string;
-}> = withOwnedSandbox(
+export const addedFileToSandbox: AsyncAction<Pick<
+  UploadFile,
+  'name' | 'url'
+>> = withOwnedSandbox(
   async ({ actions, effects, state }, { name, url }) => {
     if (!state.editor.currentSandbox) {
       return;
@@ -439,9 +440,10 @@ export const addedFileToSandbox: AsyncAction<{
   'write_code'
 );
 
-export const deletedUploadedFile: AsyncAction<{
-  id: string;
-}> = async ({ state, actions, effects }, { id }) => {
+export const deletedUploadedFile: AsyncAction<string> = async (
+  { actions, effects, state },
+  id
+) => {
   if (!state.uploadedFiles) {
     return;
   }
