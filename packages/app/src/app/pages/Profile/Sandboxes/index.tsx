@@ -1,4 +1,3 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { ComponentProps, FunctionComponent, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -42,13 +41,14 @@ export const Sandboxes: FunctionComponent<Props> = ({
     source === 'currentSandboxes'
       ? Math.ceil(sandboxCount / PER_PAGE_COUNT)
       : Math.ceil(givenLikeCount / PER_PAGE_COUNT);
+  const empty = !sandboxes || !sandboxes[page];
 
   useEffect(() => {
     if (isLoadingSandboxes) {
       return;
     }
 
-    if (!sandboxes[page]) {
+    if (empty) {
       if (source === 'currentSandboxes') {
         sandboxesPageChanged(page);
       } else if (source === 'currentLikedSandboxes') {
@@ -56,6 +56,7 @@ export const Sandboxes: FunctionComponent<Props> = ({
       }
     }
   }, [
+    empty,
     isLoadingSandboxes,
     likedSandboxesPageChanged,
     page,
@@ -64,7 +65,7 @@ export const Sandboxes: FunctionComponent<Props> = ({
     source,
   ]);
 
-  if (isLoadingSandboxes || !sandboxes[page]) {
+  if (isLoadingSandboxes || empty) {
     return null;
   }
 
@@ -95,7 +96,7 @@ export const Sandboxes: FunctionComponent<Props> = ({
           )}
 
           {lastPage !== page && (
-            <Button to={`${baseUrl}/${page + 1}`}>{'>'}</Button>
+            <NavButton to={`${baseUrl}/${page + 1}`}>{'>'}</NavButton>
           )}
         </div>
       </Navigation>
