@@ -89,7 +89,7 @@ export const Collapsible: React.FC<ICollapsibleProps> = ({
         <Text weight="medium">{title}</Text>
       </Header>
 
-      <Body open={open}>{children}</Body>
+      <Body open={open}>{open ? children : null}</Body>
     </Section>
   );
 };
