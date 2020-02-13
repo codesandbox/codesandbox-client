@@ -3,9 +3,9 @@ import CrossIcon from 'react-icons/lib/md/clear';
 
 import { useOvermind } from 'app/overmind';
 
-import { EntryContainer, IconArea, Icon } from '../../elements';
+import { EntryContainer, IconArea, Icon } from '../elements';
 
-import { Link } from '../elements';
+import { Link } from './elements';
 
 const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
 
