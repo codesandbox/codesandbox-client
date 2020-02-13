@@ -217,7 +217,10 @@ const User = ({ user, liveRole }) => {
       }}
     >
       <Stack gap={2} align="center">
-        <Avatar user={user} />
+        <Avatar
+          user={user}
+          css={{ img: { borderColor: `rgb(${user.color.join(',')})` } }}
+        />
         <span>
           <Text size={2} block>
             {user.username}
