@@ -75,7 +75,7 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
   disabled?: boolean;
   onClick?: any;
-}>(({ type = 'button', variant = 'primary', ...props }) =>
+}>(({ variant = 'primary', ...props }) =>
   css(
     deepmerge(
       // @ts-ignore deepmerge allows functions as values
@@ -115,3 +115,7 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
     )
   )
 );
+
+Button.defaultProps = {
+  type: 'button',
+};
