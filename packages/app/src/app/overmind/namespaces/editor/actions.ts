@@ -174,7 +174,7 @@ export const codeSaved: AsyncAction<{
       effects.vscode.callCallbackError(cbID);
     }
   },
-  'write_project'
+  'write_code'
 );
 
 export const onOperationApplied: Action<{

@@ -1,4 +1,5 @@
 import getTemplate from '@codesandbox/common/lib/templates';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export interface INavigationItem {
   id: string;
@@ -116,7 +117,11 @@ export default function getItems(store: any): INavigationItem[] {
     items.push(DEPLOYMENT);
   }
 
-  if (store.isLoggedIn) {
+  if (
+    store.isLoggedIn &&
+    currentSandbox &&
+    hasPermission(currentSandbox.authorization, 'write_code')
+  ) {
     items.push(LIVE);
   }
 

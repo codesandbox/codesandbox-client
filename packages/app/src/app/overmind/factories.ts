@@ -86,8 +86,9 @@ export const withOwnedSandbox = <T>(
   const sandbox = state.editor.currentSandbox;
   if (sandbox) {
     if (
-      typeof requiredPermission !== 'undefined' &&
-      !hasPermission(sandbox.authorization, requiredPermission)
+      typeof requiredPermission === 'undefined'
+        ? !sandbox.owned
+        : !hasPermission(sandbox.authorization, requiredPermission)
     ) {
       if (state.editor.isForkingSandbox) {
         return cancelAction(context, payload);
