@@ -13,6 +13,7 @@ import Content from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
+import { Header as HeaderOld } from './HeaderOld';
 import { Navigation } from './Navigation';
 import { Navigation as NavigationOld } from './NavigationOld';
 
@@ -83,7 +84,13 @@ const ContentSplit = () => {
       }}
     >
       <Container style={{ lineHeight: 'initial' }} className="monaco-workbench">
-        <Header zenMode={state.preferences.settings.zenMode} />
+        {REDESIGNED_SIDEBAR === 'true' ? (
+          <NewThemeProvider theme={localState.theme.vscodeTheme}>
+            <Header zenMode={state.preferences.settings.zenMode} />
+          </NewThemeProvider>
+        ) : (
+          <HeaderOld zenMode={state.preferences.settings.zenMode} />
+        )}
 
         <Fullscreen style={{ width: 'initial' }}>
           {!hideNavigation &&
