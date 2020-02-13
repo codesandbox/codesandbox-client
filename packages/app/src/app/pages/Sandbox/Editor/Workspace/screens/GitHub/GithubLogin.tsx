@@ -1,5 +1,5 @@
 import { useOvermind } from 'app/overmind';
-import { css } from '@styled-system/css';
+import css from '@styled-system/css';
 import React from 'react';
 import {
   Integration,
@@ -19,11 +19,7 @@ export const GithubLogin = () => {
 
   return (
     <Collapsible title="Github" defaultOpen>
-      <Element
-        css={css({
-          paddingX: 2,
-        })}
-      >
+      <Element paddingX={2}>
         <Text variant="muted" marginBottom={4} block>
           You can create commits and open pull requests if you add GitHub to
           your integrations.

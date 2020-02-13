@@ -125,7 +125,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   ) {
     actions.files.internal.recoverFiles();
   } else if (state.live.isLive) {
-    effects.live.sendModuleStateSyncRequest();
+    await effects.live.sendModuleStateSyncRequest();
   }
 
   effects.vscode.openModule(state.editor.currentModule);

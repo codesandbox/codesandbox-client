@@ -88,11 +88,11 @@ export const ConfigurationFilesComponent = ({ theme }) => {
         >
           <Element>
             <Text block marginBottom={2}>
-              Configuration your Sandbox
+              Configuration for your Sandbox
             </Text>
             <Text variant="muted">
-              Codesandbox supports several config giles per template, you van
-              see and edit all supported files for the current sandbox here.
+              CodeSandbox supports several configuration files per template, you
+              can see and edit all supported files for the current sandbox here.
             </Text>
           </Element>
           <Stack direction="vertical" gap={4}>
@@ -112,7 +112,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
                     <Button
                       css={css({
                         width: 'auto',
-                        height: 5,
+                        height: 4,
                       })}
                       variant="secondary"
                       onClick={() => editor.moduleSelected({ id: module.id })}

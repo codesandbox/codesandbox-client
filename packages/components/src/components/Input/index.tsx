@@ -19,6 +19,7 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
   defaultValue?: string | number;
   autoComplete?: 'on' | 'off';
   spellCheck?: 'true' | 'false';
+  autoFocus?: boolean;
 }>(
   css({
     height: '26px',

@@ -9,6 +9,7 @@ import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
 import { TippyProps } from '@tippy.js/react';
+
 import {
   DeployIcon,
   ExplorerIcon,
@@ -91,6 +92,7 @@ export const Navigation: FunctionComponent<Props> = ({
   const disabledItems = getDisabledItems(state);
 
   return (
+    // @ts-ignore
     <Container
       align="center"
       direction="vertical"

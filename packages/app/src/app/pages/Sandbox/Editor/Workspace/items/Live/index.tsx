@@ -20,7 +20,7 @@ export const Live: FunctionComponent = () => {
       live: {
         createLiveClicked,
         onAddEditorClicked,
-        onChatEnabledChange,
+        onChatEnabledToggle,
         onFollow,
         onModeChanged,
         onRemoveEditorClicked,
@@ -81,7 +81,7 @@ export const Live: FunctionComponent = () => {
           roomInfo={roomInfo}
           setFollowing={onFollow}
           setMode={onModeChanged}
-          toggleChatEnabled={() => onChatEnabledChange(!roomInfo.chatEnabled)}
+          toggleChatEnabled={onChatEnabledToggle}
           toggleNotificationsHidden={onToggleNotificationsHidden}
         />
       ) : (

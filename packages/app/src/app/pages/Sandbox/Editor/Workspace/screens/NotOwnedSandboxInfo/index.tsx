@@ -1,10 +1,11 @@
 import React from 'react';
+
 import { Explorer } from '../Explorer';
-import { Summary } from '../ProjectInfo/Summary';
+import { Summary } from './Summary';
 
 export const NotOwnedSandboxInfo = () => (
   <>
     <Summary />
-    <Explorer filesDefaultOpen={false} />
+    <Explorer />
   </>
 );
