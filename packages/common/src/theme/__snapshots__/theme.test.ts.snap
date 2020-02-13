@@ -490,7 +490,7 @@ Object {
       "input.foreground": "#C0C0C0",
       "inputOption.activeBorder": "#66b9f4",
       "list.focusBackground": "#24282A",
-      "list.hoverBackground": "#37414050",
+      "list.hoverBackground": "#222a2b",
       "menu.background": "#1C2022",
       "menu.foreground": "#C0C0C0",
       "menu.selectionBackground": "#24282A",
