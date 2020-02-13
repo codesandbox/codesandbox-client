@@ -43,9 +43,9 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   })
 );
 
-export const Avatar = ({ user }: IAvatarProps) =>
+export const Avatar = ({ user, ...props }: IAvatarProps) =>
   user && (
-    <Element as="span" style={{ position: 'relative' }}>
+    <Element as="span" style={{ position: 'relative' }} {...props}>
       <AvatarImage src={user.avatarUrl} alt={user.username} />
       {user.subscriptionSince ? <Pro>Pro</Pro> : null}
     </Element>
