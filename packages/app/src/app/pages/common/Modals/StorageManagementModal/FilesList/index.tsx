@@ -116,9 +116,7 @@ export const FilesList: FunctionComponent = () => {
                     cursor: pointer;
                   `}
                 >
-                  {currentSandbox && (
-                    <AddFileToSandboxButton name={name} url={url} />
-                  )}
+                  <AddFileToSandboxButton name={name} url={url} />
                 </StatBody>
 
                 <StatBody

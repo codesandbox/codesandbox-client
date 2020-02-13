@@ -20,6 +20,10 @@ export const AddFileToSandboxButton: FunctionComponent<Props> = ({
     },
   } = useOvermind();
 
+  if (!currentSandbox) {
+    return null;
+  }
+
   return (
     <Button
       disabled={!currentSandbox}
