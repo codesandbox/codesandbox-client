@@ -19,8 +19,10 @@ import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import { json } from 'overmind';
 
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications';
 import eventToTransform from '../../utils/event-to-transform';
 import * as internalActions from './internalActions';
+import { SERVER } from '../../utils/items';
 
 export const internal = internalActions;
 
@@ -625,6 +627,44 @@ export const deleteEnvironmentVariable: AsyncAction<{
     name
   );
   effects.codesandboxApi.restartSandbox();
+};
+
+/**
+ * This will let the user know on fork that some secrets need to be set if there are any empty ones
+ */
+export const showEnvironmentVariablesNotification: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
+  const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+
+  await actions.editor.fetchEnvironmentVariables();
+
+  const emptyVarCount = Object.keys(sandbox.environmentVariables).filter(
+    key => !sandbox.environmentVariables[key]
+  ).length;
+  if (emptyVarCount > 0) {
+    effects.notificationToast.add({
+      status: NotificationStatus.NOTICE,
+      title: 'Unset Secrets',
+      message: `This sandbox has ${emptyVarCount} secrets that need to be set. You can set them in the server tab.`,
+      actions: {
+        primary: [
+          {
+            label: 'Open Server Tab',
+            run: () => {
+              actions.workspace.setWorkspaceItem({ item: SERVER.id });
+            },
+          },
+        ],
+      },
+    });
+  }
 };
 
 export const toggleEditorPreviewLayout: Action = ({ state, effects }) => {

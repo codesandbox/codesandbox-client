@@ -13,53 +13,53 @@ export interface INavigationItem {
   showAsDisabledIfHidden?: boolean;
 }
 
-const PROJECT: INavigationItem = {
+export const PROJECT: INavigationItem = {
   id: 'project',
   name: 'Sandbox Info',
 };
 
-const PROJECT_TEMPLATE: INavigationItem = {
+export const PROJECT_TEMPLATE: INavigationItem = {
   ...PROJECT,
   name: 'Template Info',
 };
 
-const PROJECT_SUMMARY: INavigationItem = {
+export const PROJECT_SUMMARY: INavigationItem = {
   id: 'project-summary',
   name: 'Sandbox Info',
   hasCustomHeader: true,
 };
 
-const FILES: INavigationItem = {
+export const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
   defaultOpen: true,
 };
 
-const GITHUB: INavigationItem = {
+export const GITHUB: INavigationItem = {
   id: 'github',
   name: 'GitHub',
   showAsDisabledIfHidden: true,
 };
 
-const DEPLOYMENT: INavigationItem = {
+export const DEPLOYMENT: INavigationItem = {
   id: 'deploy',
   name: 'Deployment',
   showAsDisabledIfHidden: true,
 };
 
-const CONFIGURATION: INavigationItem = {
+export const CONFIGURATION: INavigationItem = {
   id: 'config',
   name: 'Configuration Files',
 };
 
-const LIVE: INavigationItem = {
+export const LIVE: INavigationItem = {
   id: 'live',
   name: 'Live',
   showAsDisabledIfHidden: true,
 };
 
-const SERVER: INavigationItem = {
+export const SERVER: INavigationItem = {
   id: 'server',
   name: 'Server Control Panel',
 };

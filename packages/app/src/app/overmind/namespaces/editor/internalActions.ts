@@ -396,6 +396,10 @@ export const forkSandbox: AsyncAction<{
 
     effects.notificationToast.success('Forked sandbox!');
 
+    if (templateDefinition.isServer) {
+      actions.editor.showEnvironmentVariablesNotification();
+    }
+
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
   } catch (error) {
     console.error(error);
