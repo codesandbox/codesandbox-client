@@ -18,7 +18,7 @@
     "editorHoverWidget.background": "#1C2022",
     "input.background": "#111518",
     "input.foreground": "#C0C0C0",
-    "list.hoverBackground": "#37414050",
+    "list.hoverBackground": "#222a2b",
     "list.focusBackground": "#24282A",
     "menu.selectionBackground": "#24282A",
     "scrollbarSlider.activeBackground": "#374140",
