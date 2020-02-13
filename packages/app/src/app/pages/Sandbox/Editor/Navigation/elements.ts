@@ -44,6 +44,11 @@ export const IconContainer = styled(Stack)<{
       background: ${props.theme.colors.activityBar.hoverBackground};
     }
 
+    &:focus {
+      outline: none;
+      background: ${props.theme.colors.activityBar.hoverBackground};
+    }
+
     ${props.selected &&
       css`
         color: ${props.theme.colors.activityBar.selected};
