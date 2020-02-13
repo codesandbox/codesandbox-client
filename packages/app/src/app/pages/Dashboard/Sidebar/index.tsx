@@ -12,14 +12,14 @@ import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dash
 import { Item } from './Item';
 import { SandboxesItem } from './SandboxesItem';
 import { TrashItem } from './TrashItem';
-import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
+import { CategoryHeader, Container, InputWrapper, Items } from './elements';
 import { TEAMS_QUERY } from '../queries';
 import { TemplateItem } from './TemplateItem';
 
 const SidebarComponent = () => {
   const {
-    state: { dashboard: dashboardState },
     actions: { dashboard: dashboardAction },
+    state: { dashboard: dashboardState },
   } = useOvermind();
 
   const handleSearchFocus = () => {
@@ -31,7 +31,7 @@ const SidebarComponent = () => {
   };
 
   return (
-    <SidebarStyled>
+    <Container>
       <InputWrapper>
         <Input
           onFocus={handleSearchFocus}
@@ -88,6 +88,7 @@ const SidebarComponent = () => {
                     <div key={id}>
                       <Items>
                         <CategoryHeader>{name}</CategoryHeader>
+
                         <Item
                           Icon={PeopleIcon}
                           path={teamOverviewUrl(id)}
@@ -122,7 +123,7 @@ const SidebarComponent = () => {
           Create Team
         </Button>
       </div>
-    </SidebarStyled>
+    </Container>
   );
 };
 export const Sidebar = withRouter(SidebarComponent);

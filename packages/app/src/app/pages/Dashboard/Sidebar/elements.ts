@@ -19,12 +19,11 @@ export const CategoryHeader = styled.div`
   font-weight: 600;
 `;
 
-export const SidebarStyled = styled.aside`
+export const Container = styled.aside`
   width: 275px;
   overflow-y: auto;
 `;
 
 export const InputWrapper = styled.div`
-  margin: 0 1rem;
-  margin-bottom: 1.5rem;
+  margin: 0 1rem 1.5rem;
 `;
