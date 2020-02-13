@@ -645,8 +645,9 @@ export const showEnvironmentVariablesNotification: AsyncAction = async ({
 
   await actions.editor.fetchEnvironmentVariables();
 
-  const emptyVarCount = Object.keys(sandbox.environmentVariables).filter(
-    key => !sandbox.environmentVariables[key]
+  const environmentVariables = sandbox.environmentVariables!;
+  const emptyVarCount = Object.keys(environmentVariables).filter(
+    key => !environmentVariables[key]
   ).length;
   if (emptyVarCount > 0) {
     effects.notificationToast.add({
