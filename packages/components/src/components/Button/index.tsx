@@ -89,7 +89,9 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
         display: 'inline-flex',
         justifyContent: 'center',
         alignItems: 'center',
+        flex: 'none', // as a flex child
         cursor: 'pointer',
+        fontFamily: 'Inter, sans-serif',
         paddingY: 0,
         paddingX: 2,
         height: 6,

@@ -1,19 +1,18 @@
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { ComponentProps, FunctionComponent } from 'react';
+import React from 'react';
 import { useOvermind } from 'app/overmind';
 
 import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-import { Container, DashboardIcon, DashboardLink } from './elements';
+import { DashboardIcon, DashboardLink } from './elements';
 import { Logo } from './Logo';
 import { MenuBar } from './MenuBar';
 import { SandboxName } from './SandboxName';
 
 import { Actions } from './Actions';
 
-type Props = Pick<ComponentProps<typeof Container>, 'zenMode'>;
-export const Header: FunctionComponent<Props> = ({ zenMode }) => {
+export const Header = ({ zenMode }) => {
   const {
     state: { hasLogIn },
   } = useOvermind();
@@ -25,6 +24,7 @@ export const Header: FunctionComponent<Props> = ({ zenMode }) => {
       align="center"
       css={css({
         boxSizing: 'border-box',
+        fontFamily: 'Inter, sans-serif',
         height: 12,
         backgroundColor: 'titleBar.activeBackground',
         color: 'titleBar.activeForeground',

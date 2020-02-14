@@ -10,24 +10,15 @@ import React, {
   KeyboardEvent,
   useState,
 } from 'react';
-import { useSpring, animated } from 'react-spring';
 
+import { Stack, Button, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 
 import { PrivacyTooltip } from '../PrivacyTooltip';
 
-import {
-  Container,
-  Folder,
-  FolderName,
-  Form,
-  Name,
-  NameInput,
-  Main,
-  TemplateBadge,
-} from './elements';
+import { Folder, Form, NameInput, Main, TemplateBadge } from './elements';
 
-const noop = () => undefined;
 export const SandboxName: FunctionComponent = () => {
   const {
     actions: {
@@ -90,66 +81,68 @@ export const SandboxName: FunctionComponent = () => {
       (currentSandbox.team ? currentSandbox.team.name : 'My Sandboxes')
     : 'My Sandboxes';
 
-  const spring = useSpring({
-    opacity: updatingName ? 0 : 1,
-    pointerEvents: updatingName ? 'none' : 'initial',
-  });
   const { customTemplate, owned } = currentSandbox;
 
   return (
     <Main>
-      <Container>
-        {!customTemplate && owned && (
-          <animated.div style={spring}>
-            <Folder>
-              {isLoggedIn ? (
-                <FolderName
-                  onClick={() => modalOpened({ modal: 'moveSandbox' })}
-                >
-                  {folderName}
-                </FolderName>
-              ) : (
-                'Anonymous '
-              )}
-
-              <span role="presentation">/ </span>
-            </Folder>
-          </animated.div>
+      <Stack align="center">
+        {!customTemplate && owned && !updatingName && (
+          <Folder>
+            {isLoggedIn ? (
+              <Button
+                variant="link"
+                css={css({ fontSize: 3, width: 'auto' })}
+                onClick={() => modalOpened({ modal: 'moveSandbox' })}
+              >
+                {folderName}
+              </Button>
+            ) : (
+              'Anonymous '
+            )}
+            <Text role="presentation" variant="muted">
+              /
+            </Text>
+          </Folder>
         )}
 
         {updatingName ? (
-          <Form onSubmit={submitNameChange}>
-            <NameInput
-              autoFocus
-              innerRef={(el: HTMLInputElement) => {
-                if (el) {
-                  el.focus();
-                }
-              }}
-              onBlur={handleBlur}
-              onChange={handleInputUpdate}
-              onKeyUp={handleKeyUp}
-              placeholder={name}
-              value={value}
-              arial-label="sandbox name"
-            />
-          </Form>
+          <>
+            <Form onSubmit={submitNameChange}>
+              <NameInput
+                autoFocus
+                innerRef={(el: HTMLInputElement) => {
+                  if (el) {
+                    el.focus();
+                  }
+                }}
+                onBlur={handleBlur}
+                onChange={handleInputUpdate}
+                onKeyUp={handleKeyUp}
+                placeholder={name}
+                value={value}
+                arial-label="sandbox name"
+              />
+            </Form>
+          </>
         ) : (
-          <Name
-            as={owned ? 'button' : 'span'}
-            onClick={owned ? handleNameClick : noop}
-            owned={owned}
-            aria-label={
-              owned ? `${sandboxName}, change sandbox name` : sandboxName
-            }
-          >
-            {sandboxName}
-          </Name>
+          <>
+            {owned ? (
+              <Button
+                variant="link"
+                css={css({ fontSize: 3, width: 'auto', color: 'foreground' })}
+                onClick={handleNameClick}
+              >
+                {sandboxName}
+              </Button>
+            ) : (
+              <Text>{sandboxName}</Text>
+            )}
+          </>
         )}
 
         {!updatingName ? <PrivacyTooltip /> : null}
 
-        {currentSandbox.customTemplate ? (
+        {!updatingName && currentSandbox.customTemplate ? (
           <Tooltip
             content={
               <>
@@ -167,7 +160,7 @@ export const SandboxName: FunctionComponent = () => {
             <TemplateBadge color={customTemplate.color}>Template</TemplateBadge>
           </Tooltip>
         ) : null}
-      </Container>
+      </Stack>
     </Main>
   );
 };

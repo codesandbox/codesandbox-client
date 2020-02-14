@@ -52,12 +52,7 @@ export const Actions = () => {
       align="center"
       gap={1}
       marginRight={4}
-      css={{
-        button: {
-          flex: 'none',
-          width: 'auto',
-        },
-      }}
+      css={{ button: { width: 'auto' } }}
     >
       {updateStatus === 'available' && (
         <TooltipButton
