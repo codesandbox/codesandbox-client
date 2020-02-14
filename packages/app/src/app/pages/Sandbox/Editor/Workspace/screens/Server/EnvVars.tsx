@@ -39,7 +39,7 @@ export const EnvVars = () => {
         </Text>
       </Element>
       {envVars ? (
-        <List marginTop={4}>
+        <List paddingTop={4}>
           {Object.keys(envVars).map(keyName => (
             <>
               {editMode ? (
