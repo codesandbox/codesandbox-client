@@ -7,7 +7,7 @@ import { useOvermind } from 'app/overmind';
 import { ClickableContainer, ProfileImage } from './elements';
 import { Menu } from './Menu';
 
-export const UserMenu: FunctionComponent = () => {
+export const UserMenu: FunctionComponent = props => {
   const {
     actions: {
       modalOpened,
@@ -27,12 +27,14 @@ export const UserMenu: FunctionComponent = () => {
         {...menu}
         aria-label="profile menu"
       >
-        <ProfileImage
-          alt={user.username}
-          width={30}
-          height={30}
-          src={user.avatarUrl}
-        />
+        {props.children || (
+          <ProfileImage
+            alt={user.username}
+            width={30}
+            height={30}
+            src={user.avatarUrl}
+          />
+        )}
       </MenuDisclosure>
 
       <Menu
