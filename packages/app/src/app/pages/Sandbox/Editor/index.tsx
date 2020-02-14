@@ -96,8 +96,7 @@ const ContentSplit = () => {
           <HeaderOld zenMode={state.preferences.settings.zenMode} />
         )}
         <Fullscreen style={{ width: 'initial' }}>
-          {true &&
-            !hideNavigation &&
+          {!hideNavigation &&
             (REDESIGNED_SIDEBAR === 'true' ? (
               <NewThemeProvider theme={localState.theme.vscodeTheme}>
                 <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
@@ -120,7 +119,7 @@ const ContentSplit = () => {
               zIndex: 9,
             }}
           >
-            {true && (
+            {
               <SplitPane
                 split="vertical"
                 defaultSize={17 * 16}
@@ -151,7 +150,7 @@ const ContentSplit = () => {
                 {state.workspace.workspaceHidden ? <div /> : <Workspace />}
                 <Content />
               </SplitPane>
-            )}
+            }
 
             <StatusBar
               style={{
