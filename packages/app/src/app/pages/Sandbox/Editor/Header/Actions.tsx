@@ -48,12 +48,7 @@ export const Actions = () => {
   else primaryAction = owned ? 'Embed' : 'Fork';
 
   return (
-    <Stack
-      align="center"
-      gap={1}
-      marginRight={4}
-      css={{ button: { width: 'auto' } }}
-    >
+    <Stack align="center" gap={1} css={{ button: { width: 'auto' } }}>
       {updateStatus === 'available' && (
         <TooltipButton
           tooltip="Update Available! Click to Refresh."

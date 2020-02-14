@@ -1,18 +1,17 @@
-import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 
-import { Stack } from '@codesandbox/components';
+import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import LogoIcon from '@codesandbox/common/lib/components/Logo';
+import { Stack, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-import { DashboardIcon, DashboardLink } from './elements';
-import { Logo } from './Logo';
+import { DashboardIcon } from './icons';
 import { MenuBar } from './MenuBar';
 import { SandboxName } from './SandboxName';
-
 import { Actions } from './Actions';
 
-export const Header = ({ zenMode }) => {
+export const Header = () => {
   const {
     state: { hasLogIn },
   } = useOvermind();
@@ -22,6 +21,7 @@ export const Header = ({ zenMode }) => {
       as="header"
       justify="space-between"
       align="center"
+      paddingX={2}
       css={css({
         boxSizing: 'border-box',
         fontFamily: 'Inter, sans-serif',
@@ -34,11 +34,13 @@ export const Header = ({ zenMode }) => {
     >
       <Stack align="center">
         {hasLogIn ? (
-          <DashboardLink to={dashboardUrl()}>
+          <Link variant="muted" href={dashboardUrl()}>
             <DashboardIcon />
-          </DashboardLink>
+          </Link>
         ) : (
-          <Logo />
+          <Link href="/" css={{ padding: '2px' /* micro adjustment */ }}>
+            <LogoIcon height={24} />
+          </Link>
         )}
         <MenuBar />
       </Stack>

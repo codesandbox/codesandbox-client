@@ -85,9 +85,13 @@ const ContentSplit = () => {
     >
       <Container style={{ lineHeight: 'initial' }} className="monaco-workbench">
         {REDESIGNED_SIDEBAR === 'true' ? (
-          <NewThemeProvider theme={localState.theme.vscodeTheme}>
-            <Header zenMode={state.preferences.settings.zenMode} />
-          </NewThemeProvider>
+          <>
+            {state.preferences.settings.zenMode ? null : (
+              <NewThemeProvider theme={localState.theme.vscodeTheme}>
+                <Header />
+              </NewThemeProvider>
+            )}
+          </>
         ) : (
           <HeaderOld zenMode={state.preferences.settings.zenMode} />
         )}
