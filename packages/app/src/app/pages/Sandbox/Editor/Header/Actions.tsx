@@ -131,7 +131,7 @@ export const Actions = () => {
         <UserMenu>
           <Avatar
             user={{ ...user, subscriptionSince: null }}
-            css={css({ img: { size: 6 } })}
+            css={css({ size: 6 })}
           />
         </UserMenu>
       ) : (
