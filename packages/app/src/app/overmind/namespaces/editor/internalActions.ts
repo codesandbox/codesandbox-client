@@ -162,9 +162,7 @@ export const saveCode: AsyncAction<{
 
     await actions.editor.internal.updateCurrentTemplate();
 
-    if (state.preferences.settings.experimentVSCode) {
-      effects.vscode.runCommand('workbench.action.keepEditor');
-    }
+    effects.vscode.runCommand('workbench.action.keepEditor');
 
     const tabs = state.editor.tabs as ModuleTab[];
     const tab = tabs.find(
@@ -395,6 +393,10 @@ export const forkSandbox: AsyncAction<{
     }
 
     effects.notificationToast.success('Forked sandbox!');
+
+    if (templateDefinition.isServer) {
+      actions.editor.showEnvironmentVariablesNotification();
+    }
 
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
   } catch (error) {

@@ -1,5 +1,4 @@
 import Row from '@codesandbox/common/lib/components/flex/Row';
-import { Sandbox } from '@codesandbox/common/lib/types';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { FunctionComponent } from 'react';
@@ -10,6 +9,7 @@ import { useOvermind } from 'app/overmind';
 import {
   Container,
   Description,
+  DescriptionContainer,
   Like,
   PlayButtonContainer,
   Stats,
@@ -17,40 +17,48 @@ import {
 } from './elements';
 import SvgButton from './play-button.svg';
 
-type Props = {
-  sandbox: Sandbox;
-};
-export const SandboxInfo: FunctionComponent<Props> = ({ sandbox }) => {
+export const SandboxInfo: FunctionComponent = () => {
   const {
-    state: { isLoggedIn },
+    state: {
+      profile: {
+        showcasedSandbox,
+        showcasedSandbox: {
+          alias,
+          description,
+          forkCount,
+          id,
+          likeCount,
+          viewCount,
+        },
+      },
+      isLoggedIn,
+    },
   } = useOvermind();
 
   return (
     <Container>
       <Row alignItems="center">
         <Title>
-          {getSandboxName(sandbox)} {''}
-          {isLoggedIn ? <Like sandbox={sandbox} /> : null}
+          {getSandboxName(showcasedSandbox)} {''}
+          {isLoggedIn ? <Like sandbox={showcasedSandbox} /> : null}
         </Title>
       </Row>
 
       <Row alignItems="flex-start">
-        <div style={{ flex: 6 }}>
-          <Description>{sandbox.description}</Description>
-        </div>
+        <DescriptionContainer>
+          <Description>{description}</Description>
+        </DescriptionContainer>
 
         <Stats>
-          <PlayButtonContainer
-            to={sandboxUrl({ id: sandbox.id, alias: sandbox.alias })}
-          >
+          <PlayButtonContainer to={sandboxUrl({ alias, id })}>
             <img alt="edit" src={SvgButton} />
           </PlayButtonContainer>
 
-          <Stat name="likes" count={sandbox.likeCount} />
+          <Stat name="likes" count={likeCount} />
 
-          <Stat name="views" count={sandbox.viewCount} />
+          <Stat name="views" count={viewCount} />
 
-          <Stat name="forks" count={sandbox.forkCount} />
+          <Stat name="forks" count={forkCount} />
         </Stats>
       </Row>
     </Container>

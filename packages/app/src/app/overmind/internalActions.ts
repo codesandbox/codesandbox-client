@@ -170,7 +170,6 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   }
 
   state.currentModal = null;
-  effects.keybindingManager.start();
 };
 
 export const setCurrentSandbox: AsyncAction<Sandbox> = async (

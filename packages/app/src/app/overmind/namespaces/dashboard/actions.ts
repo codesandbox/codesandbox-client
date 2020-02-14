@@ -23,10 +23,7 @@ export const dragChanged: Action<{ isDragging: boolean }> = (
   state.dashboard.isDragging = isDragging;
 };
 
-export const orderByChanged: Action<{ orderBy: OrderBy }> = (
-  { state },
-  { orderBy }
-) => {
+export const orderByChanged: Action<OrderBy> = ({ state }, orderBy) => {
   state.dashboard.orderBy = orderBy;
 };
 

@@ -1,6 +1,6 @@
 import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { IDerive, IState, json } from 'overmind';
+import { IDerive, IState } from 'overmind';
 
 import { AsyncAction } from '.';
 
@@ -26,10 +26,6 @@ export const withLoadApp = <T>(
 
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
-  effects.keybindingManager.set(
-    json(state.preferences.settings.keybindings || []) as any
-  );
-  effects.keybindingManager.start();
   effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
 
   if (state.jwt) {
@@ -86,8 +82,9 @@ export const withOwnedSandbox = <T>(
   const sandbox = state.editor.currentSandbox;
   if (sandbox) {
     if (
-      typeof requiredPermission !== 'undefined' &&
-      !hasPermission(sandbox.authorization, requiredPermission)
+      typeof requiredPermission === 'undefined'
+        ? !sandbox.owned
+        : !hasPermission(sandbox.authorization, requiredPermission)
     ) {
       if (state.editor.isForkingSandbox) {
         return cancelAction(context, payload);

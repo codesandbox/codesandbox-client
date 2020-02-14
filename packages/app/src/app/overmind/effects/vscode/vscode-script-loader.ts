@@ -315,6 +315,10 @@ function initializeRequires() {
     return require('assert');
   });
 
+  global.require.define('punycode', [], () => {
+    return require('punycode');
+  });
+
   global.require.define('vs/base/common/amd', [], () => ({
     getPathFromAmdModule: (_, relativePath) =>
       require('path').join('/vs', relativePath),

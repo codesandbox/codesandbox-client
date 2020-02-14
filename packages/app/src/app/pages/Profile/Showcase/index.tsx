@@ -1,62 +1,41 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
-
 import Column from '@codesandbox/common/lib/components/flex/Column';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
 
-import { SandboxInfo } from './SandboxInfo';
+import { useOvermind } from 'app/overmind';
+
 import ShowcasePreview from '../../common/ShowcasePreview';
 
-import { ErrorTitle } from './elements';
+import { SandboxInfoContainer, ShowcasePreviewContainer } from './elements';
+import { LoadingSandbox } from './LoadingSandbox';
+import { NoSandboxAvailable } from './NoSandboxAvailable';
+import { SandboxInfo } from './SandboxInfo';
 
 export const Showcase: FunctionComponent = () => {
   const {
-    state: {
-      profile,
-      profile: { isLoadingProfile },
-      preferences: { settings },
-    },
     actions: {
       profile: { selectSandboxClicked },
     },
+    state: {
+      preferences: { settings },
+      profile: { isLoadingProfile, isProfileCurrentUser, showcasedSandbox },
+    },
   } = useOvermind();
-  const sandbox = profile.showcasedSandbox;
-  const isCurrentUser = profile.isProfileCurrentUser;
-
-  const openModal = () => {
-    selectSandboxClicked();
-  };
 
   if (isLoadingProfile) {
-    return (
-      <Centered vertical horizontal>
-        <Margin top={4}>
-          <ErrorTitle>Loading showcased sandbox...</ErrorTitle>
-        </Margin>
-      </Centered>
-    );
+    return <LoadingSandbox />;
   }
 
-  if (!sandbox) {
-    return (
-      <Centered vertical horizontal>
-        <Margin top={4}>
-          <ErrorTitle>
-            {isCurrentUser ? "You don't" : "This user doesn't"} have any
-            sandboxes yet
-          </ErrorTitle>
-        </Margin>
-      </Centered>
-    );
+  if (!showcasedSandbox) {
+    return <NoSandboxAvailable />;
   }
 
   return (
     <Column alignItems="center">
       <Margin top={1}>
-        {isCurrentUser && (
-          <Button small onClick={openModal}>
+        {isProfileCurrentUser && (
+          <Button onClick={() => selectSandboxClicked()} small>
             Change Sandbox
           </Button>
         )}
@@ -64,13 +43,13 @@ export const Showcase: FunctionComponent = () => {
 
       <Margin top={2} style={{ width: '100%' }}>
         <Column alignItems="initial">
-          <div style={{ flex: 2 }}>
-            <ShowcasePreview sandbox={sandbox} settings={settings} />
-          </div>
+          <ShowcasePreviewContainer>
+            <ShowcasePreview sandbox={showcasedSandbox} settings={settings} />
+          </ShowcasePreviewContainer>
 
-          <div style={{ flex: 1 }}>
-            <SandboxInfo sandbox={sandbox} />
-          </div>
+          <SandboxInfoContainer>
+            <SandboxInfo />
+          </SandboxInfoContainer>
         </Column>
       </Margin>
     </Column>
