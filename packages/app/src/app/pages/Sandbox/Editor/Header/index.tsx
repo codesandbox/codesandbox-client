@@ -34,7 +34,11 @@ export const Header = () => {
     >
       <Stack align="center">
         {hasLogIn ? (
-          <Link variant="muted" href={dashboardUrl()}>
+          <Link
+            variant="muted"
+            href={dashboardUrl()}
+            css={{ lineHeight: 0 /* micro adjustment */ }}
+          >
             <DashboardIcon />
           </Link>
         ) : (
