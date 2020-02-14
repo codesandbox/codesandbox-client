@@ -20,7 +20,6 @@ const allowedKeys = {
   enableLigatures: 'settings.enableLigatures',
   customVSCodeTheme: 'settings.customVSCodeTheme',
   manualCustomVSCodeTheme: 'settings.manualCustomVSCodeTheme',
-  // experimentVSCode: 'settings.experimentVSCode',
 };
 
 export default {

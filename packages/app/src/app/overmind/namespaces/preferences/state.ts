@@ -64,7 +64,6 @@ export const state: State = {
 
     customVSCodeTheme: null,
     manualCustomVSCodeTheme: null,
-    experimentVSCode: !isIOS,
   },
   hideNavigation: false,
   showModal: false,
