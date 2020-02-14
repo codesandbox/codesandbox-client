@@ -14,8 +14,6 @@ import {
   ForkIcon,
 } from './icons';
 
-import { UserMenuContainer } from './elements';
-
 const TooltipButton = ({ tooltip, ...props }) => (
   <Tooltip content={tooltip}>
     <Button {...props} />
@@ -130,14 +128,12 @@ export const Actions = () => {
         Create Sandbox
       </Button>
       {hasLogIn ? (
-        <UserMenuContainer>
-          <UserMenu>
-            <Avatar
-              user={{ ...user, subscriptionSince: null }}
-              css={css({ img: { size: 6 } })}
-            />
-          </UserMenu>
-        </UserMenuContainer>
+        <UserMenu>
+          <Avatar
+            user={{ ...user, subscriptionSince: null }}
+            css={css({ img: { size: 6 } })}
+          />
+        </UserMenu>
       ) : (
         <Button variant="primary" onClick={handleSignIn}>
           Sign in
