@@ -85,7 +85,7 @@ export const Actions = () => {
           <span>{likeCount}</span>
         </TooltipButton>
       ) : (
-        <Stack gap={1} paddingX={2}>
+        <Stack gap={1} paddingX={2} align="center">
           <LikeIcon css={css({ height: 3 })} />
           <span>{likeCount}</span>
         </Stack>

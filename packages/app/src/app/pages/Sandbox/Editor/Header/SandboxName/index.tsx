@@ -11,7 +11,7 @@ import React, {
   useState,
 } from 'react';
 
-import { Stack, Button, Text } from '@codesandbox/components';
+import { Stack, Button, Text, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 
@@ -140,7 +140,11 @@ export const SandboxName: FunctionComponent = () => {
           </>
         )}
 
-        {!updatingName ? <PrivacyTooltip /> : null}
+        {!updatingName ? (
+          <Element as="span" marginLeft={owned ? 0 : 2}>
+            <PrivacyTooltip />
+          </Element>
+        ) : null}
 
         {!updatingName && currentSandbox.customTemplate ? (
           <Tooltip
