@@ -13,6 +13,7 @@ import {
   EmbedIcon,
   ForkIcon,
 } from './icons';
+import { Collaborators } from './Collaborators';
 
 const TooltipButton = ({ tooltip, ...props }) => (
   <Tooltip content={tooltip}>
@@ -90,6 +91,8 @@ export const Actions = () => {
           <span>{likeCount}</span>
         </Stack>
       )}
+
+      <Collaborators />
 
       {user?.curatorAt && (
         <Button
