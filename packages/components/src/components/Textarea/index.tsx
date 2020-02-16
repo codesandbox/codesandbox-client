@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Stack, Input } from '../..';
@@ -42,25 +42,13 @@ export const Textarea: React.FC<ITextareaProps> = ({
   autosize,
   ...props
 }) => {
-  const [wordCount, setWordCount] = useState(0);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(props.value || '');
 
-  const updateValues = v => {
-    if (maxLength) {
-      const trimmedText = v.substring(0, maxLength);
-      setValue(trimmedText);
-      setWordCount(trimmedText.length);
-    } else {
-      setValue(v);
-    }
+  const internalOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (onChange) onChange(event);
+    setValue(event.target.value);
+    if (autosize) resize(event.target);
   };
-
-  useEffect(() => {
-    if (props.value) {
-      updateValues(props.value);
-    }
-    // eslint-disable-next-line
-  }, []);
 
   const Wrapper = useCallback(
     ({ children }) =>
@@ -74,24 +62,6 @@ export const Textarea: React.FC<ITextareaProps> = ({
     [maxLength]
   );
 
-  // eslint-disable-next-line consistent-return
-  const update = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (onChange) onChange(e);
-    updateValues(e.target.value);
-    if (autosize) resize(e.target as HTMLTextAreaElement);
-  };
-
-  const keyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (onKeyPress) onKeyPress(e);
-    if (maxLength) {
-      if (maxLength <= wordCount) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-
   const resize = (element: HTMLTextAreaElement) => {
     const offset = 2; // for borders on both sides
     element.style.height = ''; // reset before setting again
@@ -103,13 +73,13 @@ export const Textarea: React.FC<ITextareaProps> = ({
       <Wrapper>
         <TextareaComponent
           value={value}
-          onChange={update}
-          onKeyPress={keyPress}
+          onChange={internalOnChange}
+          maxLength={maxLength}
           {...props}
         />
         {maxLength ? (
-          <Count limit={maxLength <= wordCount}>
-            {wordCount}/{maxLength}
+          <Count limit={maxLength <= value.length}>
+            {value.length}/{maxLength}
           </Count>
         ) : null}
       </Wrapper>
