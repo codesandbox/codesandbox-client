@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Downshift from 'downshift';
+import Downshift, { DownshiftProps } from 'downshift';
 import { Input } from '@codesandbox/components';
 import { DropdownList, DropdownItem } from './elements';
 
@@ -37,28 +37,40 @@ const UserAutoComplete = ({ inputValue, children }: IUserAutoComplete) => {
   return children({ users, loading, error });
 };
 
-export const UserSearchInput = () => (
-  <Downshift>
+interface IUserSearchInputProps {
+  onInputValueChange: DownshiftProps['onInputValueChange'];
+  inputValue: string;
+  [key: string]: any;
+}
+
+export const UserSearchInput = ({
+  onInputValueChange,
+  inputValue,
+  ...props
+}: IUserSearchInputProps) => (
+  <Downshift
+    inputValue={inputValue}
+    onInputValueChange={onInputValueChange}
+    selectedItem={inputValue}
+  >
     {({
-      getLabelProps,
       getInputProps,
-      getToggleButtonProps,
       getItemProps,
       isOpen,
-      clearSelection,
       selectedItem,
-      inputValue,
+      inputValue: currentInputValue,
       highlightedIndex,
     }) => (
       <div style={{ width: '100%', position: 'relative' }}>
         <Input
+          {...props}
           {...getInputProps({
             placeholder: 'Enter name or email address',
           })}
         />
 
         {isOpen ? (
-          <UserAutoComplete inputValue={inputValue}>
+          <UserAutoComplete inputValue={currentInputValue}>
             {({ users, error }) =>
               users.length > 0 && !error ? (
                 <DropdownList as="ul" direction="vertical">

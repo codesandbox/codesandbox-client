@@ -3,12 +3,12 @@ import { Button } from '@codesandbox/components';
 import { Overlay } from 'app/components/Overlay';
 
 import { AddPeople } from './icons';
-import { UserSearchInput } from './UserSearchInput';
 import { Container } from './elements';
+import { AddCollaboratorForm } from './AddCollaboratorForm';
 
 const CollaboratorContent = () => (
-  <Container>
-    <UserSearchInput />
+  <Container direction="vertical">
+    <AddCollaboratorForm />
   </Container>
 );
 
