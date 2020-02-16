@@ -149,21 +149,22 @@ export function graphql<
         const query = options.subscriptions[key] as any;
         const queryString = print(query);
 
-        if (!_subscriptionClient) {
-          _subscriptionClient = new SubscriptionClient(
-            options.endpoint.replace('http', 'ws'),
-            {
-              reconnect: true,
-              connectionParams: options.params ? options.params(_state) : null,
-            }
-          );
-        }
-
         if (!_subscriptions[queryString]) {
           _subscriptions[queryString] = {};
         }
 
         function subscription(variables, action) {
+          if (!_subscriptionClient) {
+            _subscriptionClient = new SubscriptionClient(
+              options.endpoint.replace('http', 'ws'),
+              {
+                reconnect: true,
+                connectionParams: options.params
+                  ? options.params(_state)
+                  : null,
+              }
+            );
+          }
           _subscriptions[queryString][
             JSON.stringify(variables)
           ] = _subscriptionClient
