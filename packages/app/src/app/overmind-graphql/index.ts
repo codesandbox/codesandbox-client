@@ -3,7 +3,8 @@ import {
   Headers as HttpHeaders,
   Options,
 } from 'graphql-request/dist/src/types';
-import { SubscriptionClient } from 'graphql-subscriptions-client';
+import * as withAbsintheSocket from '@absinthe/socket';
+import { Socket as PhoenixSocket } from 'phoenix';
 import { print } from 'graphql/language/printer';
 import { IConfiguration } from 'overmind';
 import { ResolveState } from 'overmind/lib/internalTypes';
@@ -54,8 +55,8 @@ export function graphql<
         payload: infer P
       ) => infer R
         ? P extends void
-          ? () => R
-          : (payload: P) => R
+          ? () => Promise<R>
+          : (payload: P) => Promise<R>
         : never;
     };
     mutations: {
@@ -81,9 +82,11 @@ export function graphql<
 } {
   const config: any = {};
   let _client: GraphQLClient;
-  let _subscriptionClient: SubscriptionClient;
+  let _subscriptionClient: any;
   let _state;
-  let _subscriptions: { [query: string]: { [variables: string]: () => void } };
+  const _subscriptions: {
+    [query: string]: { [variables: string]: () => void };
+  } = {};
 
   if (config.effects && config.effects.queries) {
     throw new Error(
@@ -149,30 +152,39 @@ export function graphql<
         const query = options.subscriptions[key] as any;
         const queryString = print(query);
 
-        if (!_subscriptionClient) {
-          _subscriptionClient = new SubscriptionClient(
-            options.endpoint.replace('http', 'ws'),
-            {
-              reconnect: true,
-              connectionParams: options.params ? options.params(_state) : null,
-            }
-          );
-        }
-
         if (!_subscriptions[queryString]) {
           _subscriptions[queryString] = {};
         }
 
         function subscription(variables, action) {
-          _subscriptions[queryString][
-            JSON.stringify(variables)
-          ] = _subscriptionClient
-            .request({ query: queryString, variables })
-            .subscribe({
-              next({ data }) {
+          if (!_subscriptionClient) {
+            _subscriptionClient = withAbsintheSocket.create(
+              new PhoenixSocket('wss://codesandbox.test/graphql-socket', {
+                params: options.params ? options.params(_state) : null,
+              })
+            );
+          }
+          const notifier = withAbsintheSocket.send(_subscriptionClient, {
+            operation: queryString,
+            variables,
+          });
+
+          const observer = withAbsintheSocket.observe(
+            _subscriptionClient,
+            notifier,
+            {
+              onResult: ({ data }) => {
                 action(data);
               },
-            }).unsubscribe;
+            }
+          );
+
+          _subscriptions[queryString][JSON.stringify(variables)] = () =>
+            withAbsintheSocket.unobserve(
+              _subscriptionClient,
+              notifier,
+              observer
+            );
         }
 
         subscription.dispose = variables => {

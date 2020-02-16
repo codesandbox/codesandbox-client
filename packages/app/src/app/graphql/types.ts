@@ -6,7 +6,21 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /**
+   * The `Date` scalar type represents a date. The Date appears in a JSON
+   * response as an ISO8601 formatted string, without a time component.
+   **/
+  Date: any;
 };
+
+export enum Authorization {
+  Comment = 'COMMENT',
+  None = 'NONE',
+  Owner = 'OWNER',
+  Read = 'READ',
+  WriteCode = 'WRITE_CODE',
+  WriteProject = 'WRITE_PROJECT',
+}
 
 export type Bookmarked = {
   __typename?: 'Bookmarked';
@@ -16,6 +30,16 @@ export type Bookmarked = {
 
 /** A team or the current user */
 export type BookmarkEntity = Team | User;
+
+/** A collaborator on a sandbox */
+export type Collaborator = {
+  __typename?: 'Collaborator';
+  authorization: Authorization;
+  id: Scalars['ID'];
+  lastSeenAt: Maybe<Scalars['Date']>;
+  sandbox: Sandbox;
+  user: User;
+};
 
 export type Collection = {
   __typename?: 'Collection';
@@ -89,6 +113,16 @@ export type Git = {
   username: Maybe<Scalars['String']>;
 };
 
+/** An invitation to a sandbox */
+export type Invitation = {
+  __typename?: 'Invitation';
+  authorization: Maybe<Authorization>;
+  email: Maybe<Scalars['String']>;
+  id: Maybe<Scalars['ID']>;
+  sandbox: Maybe<Sandbox>;
+  token: Maybe<Scalars['String']>;
+};
+
 export type Notification = {
   __typename?: 'Notification';
   data: Maybe<Scalars['String']>;
@@ -106,14 +140,20 @@ export type RootMutationType = {
   __typename?: 'RootMutationType';
   /** Accept an invitation to a team */
   acceptTeamInvitation: Maybe<Team>;
+  /** Add a collaborator */
+  addCollaborator: Maybe<Collaborator>;
   /** Add sandboxes to a collection */
   addToCollection: Maybe<Collection>;
   /** bookmark a template */
   bookmarkTemplate: Maybe<Template>;
+  /** Change authorization of a collaborator */
+  changeCollaboratorAuthorization: Maybe<Collaborator>;
+  changeSandboxInvitationAuthorization: Maybe<Invitation>;
   /** Clear notification unread count */
   clearNotificationCount: Maybe<User>;
   /** Create a collection */
   createCollection: Maybe<Collection>;
+  createSandboxInvitation: Maybe<Invitation>;
   /** Create a team */
   createTeam: Maybe<Team>;
   /** Delete a collection and all subfolders */
@@ -129,11 +169,14 @@ export type RootMutationType = {
   permanentlyDeleteSandboxes: Maybe<Array<Maybe<Sandbox>>>;
   /** Reject an invitation to a team */
   rejectTeamInvitation: Maybe<Scalars['String']>;
+  /** Remove a collaborator */
+  removeCollaborator: Maybe<Collaborator>;
   /** Remove someone from a team */
   removeFromTeam: Maybe<Team>;
   /** Rename a collection and all subfolders */
   renameCollection: Maybe<Array<Maybe<Collection>>>;
   renameSandbox: Maybe<Sandbox>;
+  revokeSandboxInvitation: Maybe<Invitation>;
   /** Revoke an invitation to a team */
   revokeTeamInvitation: Maybe<Team>;
   setSandboxesPrivacy: Maybe<Array<Maybe<Sandbox>>>;
@@ -149,6 +192,12 @@ export type RootMutationTypeAcceptTeamInvitationArgs = {
   teamId: Scalars['ID'];
 };
 
+export type RootMutationTypeAddCollaboratorArgs = {
+  authorization: Authorization;
+  sandboxId: Scalars['ID'];
+  username: Scalars['String'];
+};
+
 export type RootMutationTypeAddToCollectionArgs = {
   collectionPath: Scalars['String'];
   sandboxIds: Array<Maybe<Scalars['ID']>>;
@@ -160,9 +209,27 @@ export type RootMutationTypeBookmarkTemplateArgs = {
   templateId: Scalars['ID'];
 };
 
+export type RootMutationTypeChangeCollaboratorAuthorizationArgs = {
+  authorization: Authorization;
+  sandboxId: Scalars['ID'];
+  username: Scalars['String'];
+};
+
+export type RootMutationTypeChangeSandboxInvitationAuthorizationArgs = {
+  authorization: Authorization;
+  invitationId: Scalars['ID'];
+  sandboxId: Scalars['ID'];
+};
+
 export type RootMutationTypeCreateCollectionArgs = {
   path: Scalars['String'];
   teamId: Maybe<Scalars['ID']>;
+};
+
+export type RootMutationTypeCreateSandboxInvitationArgs = {
+  authorization: Authorization;
+  email: Scalars['String'];
+  sandboxId: Scalars['ID'];
 };
 
 export type RootMutationTypeCreateTeamArgs = {
@@ -199,6 +266,11 @@ export type RootMutationTypeRejectTeamInvitationArgs = {
   teamId: Scalars['ID'];
 };
 
+export type RootMutationTypeRemoveCollaboratorArgs = {
+  sandboxId: Scalars['ID'];
+  username: Scalars['String'];
+};
+
 export type RootMutationTypeRemoveFromTeamArgs = {
   teamId: Scalars['ID'];
   userId: Scalars['ID'];
@@ -214,6 +286,11 @@ export type RootMutationTypeRenameCollectionArgs = {
 export type RootMutationTypeRenameSandboxArgs = {
   id: Scalars['ID'];
   title: Scalars['String'];
+};
+
+export type RootMutationTypeRevokeSandboxInvitationArgs = {
+  invitationId: Scalars['ID'];
+  sandboxId: Scalars['ID'];
 };
 
 export type RootMutationTypeRevokeTeamInvitationArgs = {
@@ -252,11 +329,41 @@ export type RootQueryTypeSandboxArgs = {
   sandboxId: Scalars['ID'];
 };
 
+export type RootSubscriptionType = {
+  __typename?: 'RootSubscriptionType';
+  collaboratorAdded: Maybe<Collaborator>;
+  collaboratorChanged: Maybe<Collaborator>;
+  collaboratorRemoved: Maybe<Collaborator>;
+  invitationAdded: Maybe<Invitation>;
+  invitationRemoved: Maybe<Invitation>;
+};
+
+export type RootSubscriptionTypeCollaboratorAddedArgs = {
+  sandboxId: Scalars['ID'];
+};
+
+export type RootSubscriptionTypeCollaboratorChangedArgs = {
+  sandboxId: Scalars['ID'];
+};
+
+export type RootSubscriptionTypeCollaboratorRemovedArgs = {
+  sandboxId: Scalars['ID'];
+};
+
+export type RootSubscriptionTypeInvitationAddedArgs = {
+  sandboxId: Scalars['ID'];
+};
+
+export type RootSubscriptionTypeInvitationRemovedArgs = {
+  sandboxId: Scalars['ID'];
+};
+
 /** A Sandbox */
 export type Sandbox = {
   __typename?: 'Sandbox';
   alias: Maybe<Scalars['String']>;
   author: Maybe<User>;
+  collaborators: Maybe<Array<Maybe<Collaborator>>>;
   collection: Maybe<Collection>;
   /** If the sandbox is a template this will be set */
   customTemplate: Maybe<Template>;
@@ -266,6 +373,7 @@ export type Sandbox = {
   git: Maybe<Git>;
   id: Maybe<Scalars['ID']>;
   insertedAt: Maybe<Scalars['String']>;
+  invitations: Maybe<Array<Maybe<Invitation>>>;
   privacy: Maybe<Scalars['Int']>;
   removedAt: Maybe<Scalars['String']>;
   screenshotOutdated: Maybe<Scalars['Boolean']>;
@@ -313,7 +421,6 @@ export type Template = {
 export type User = {
   __typename?: 'User';
   avatarUrl: Maybe<Scalars['String']>;
-  email: Maybe<Scalars['String']>;
   firstName: Maybe<Scalars['String']>;
   id: Maybe<Scalars['ID']>;
   lastName: Maybe<Scalars['String']>;
@@ -464,6 +571,158 @@ export type UnmakeSandboxesTemplateMutation = {
 } & {
   unmakeSandboxesTemplates: Maybe<
     Array<Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>>
+  >;
+};
+
+export type CollaboratorFragment = { __typename?: 'Collaborator' } & Pick<
+  Collaborator,
+  'id' | 'authorization' | 'lastSeenAt'
+> & {
+    user: { __typename?: 'User' } & Pick<User, 'id' | 'username' | 'avatarUrl'>;
+  };
+
+export type InvitationFragment = { __typename?: 'Invitation' } & Pick<
+  Invitation,
+  'id' | 'authorization' | 'email'
+>;
+
+export type SandboxCollaboratorsQueryVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type SandboxCollaboratorsQuery = { __typename?: 'RootQueryType' } & {
+  sandbox: Maybe<
+    { __typename?: 'Sandbox' } & {
+      collaborators: Maybe<
+        Array<Maybe<{ __typename?: 'Collaborator' } & CollaboratorFragment>>
+      >;
+    }
+  >;
+};
+
+export type AddCollaboratorMutationVariables = {
+  sandboxId: Scalars['ID'];
+  username: Scalars['String'];
+  authorization: Authorization;
+};
+
+export type AddCollaboratorMutation = { __typename?: 'RootMutationType' } & {
+  addCollaborator: Maybe<
+    { __typename?: 'Collaborator' } & CollaboratorFragment
+  >;
+};
+
+export type RemoveCollaboratorMutationVariables = {
+  sandboxId: Scalars['ID'];
+  username: Scalars['String'];
+};
+
+export type RemoveCollaboratorMutation = { __typename?: 'RootMutationType' } & {
+  removeCollaborator: Maybe<
+    { __typename?: 'Collaborator' } & CollaboratorFragment
+  >;
+};
+
+export type ChangeCollaboratorAuthorizationMutationVariables = {
+  sandboxId: Scalars['ID'];
+  username: Scalars['String'];
+  authorization: Authorization;
+};
+
+export type ChangeCollaboratorAuthorizationMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  changeCollaboratorAuthorization: Maybe<
+    { __typename?: 'Collaborator' } & CollaboratorFragment
+  >;
+};
+
+export type OnCollaboratorAddedSubscriptionVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type OnCollaboratorAddedSubscription = {
+  __typename?: 'RootSubscriptionType';
+} & {
+  collaboratorAdded: Maybe<
+    { __typename?: 'Collaborator' } & CollaboratorFragment
+  >;
+};
+
+export type OnCollaboratorChangedSubscriptionVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type OnCollaboratorChangedSubscription = {
+  __typename?: 'RootSubscriptionType';
+} & {
+  collaboratorChanged: Maybe<
+    { __typename?: 'Collaborator' } & CollaboratorFragment
+  >;
+};
+
+export type OnCollaboratorRemovedSubscriptionVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type OnCollaboratorRemovedSubscription = {
+  __typename?: 'RootSubscriptionType';
+} & {
+  collaboratorRemoved: Maybe<
+    { __typename?: 'Collaborator' } & CollaboratorFragment
+  >;
+};
+
+export type SandboxInvitationsQueryVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type SandboxInvitationsQuery = { __typename?: 'RootQueryType' } & {
+  sandbox: Maybe<
+    { __typename?: 'Sandbox' } & {
+      invitations: Maybe<
+        Array<Maybe<{ __typename?: 'Invitation' } & InvitationFragment>>
+      >;
+    }
+  >;
+};
+
+export type InviteCollaboratorMutationVariables = {
+  sandboxId: Scalars['ID'];
+  authorization: Authorization;
+  email: Scalars['String'];
+};
+
+export type InviteCollaboratorMutation = { __typename?: 'RootMutationType' } & {
+  createSandboxInvitation: Maybe<
+    { __typename?: 'Invitation' } & InvitationFragment
+  >;
+};
+
+export type RevokeSandboxInvitationMutationVariables = {
+  sandboxId: Scalars['ID'];
+  invitationId: Scalars['ID'];
+};
+
+export type RevokeSandboxInvitationMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  revokeSandboxInvitation: Maybe<
+    { __typename?: 'Invitation' } & InvitationFragment
+  >;
+};
+
+export type ChangeSandboxInvitationAuthorizationMutationVariables = {
+  sandboxId: Scalars['ID'];
+  invitationId: Scalars['ID'];
+  authorization: Authorization;
+};
+
+export type ChangeSandboxInvitationAuthorizationMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  changeSandboxInvitationAuthorization: Maybe<
+    { __typename?: 'Invitation' } & InvitationFragment
   >;
 };
 
@@ -813,6 +1072,64 @@ export type SetTeamDescriptionMutationVariables = {
 
 export type SetTeamDescriptionMutation = { __typename?: 'RootMutationType' } & {
   setTeamDescription: Maybe<{ __typename?: 'Team' } & TeamFragment>;
+};
+
+export type BookmarkTemplateV2MutationVariables = {
+  template: Scalars['ID'];
+  team: Maybe<Scalars['ID']>;
+};
+
+export type BookmarkTemplateV2Mutation = { __typename?: 'RootMutationType' } & {
+  template: Maybe<{ __typename?: 'Template' } & BookmarkTemplateFieldsFragment>;
+};
+
+export type UnbookmarkTemplateV2MutationVariables = {
+  template: Scalars['ID'];
+  team: Maybe<Scalars['ID']>;
+};
+
+export type UnbookmarkTemplateV2Mutation = {
+  __typename?: 'RootMutationType';
+} & {
+  template: Maybe<{ __typename?: 'Template' } & BookmarkTemplateFieldsFragment>;
+};
+
+export type BookmarkTemplateFieldsV2Fragment = {
+  __typename?: 'Template';
+} & Pick<Template, 'id'> & {
+    bookmarked: Maybe<
+      Array<
+        Maybe<
+          { __typename?: 'Bookmarked' } & Pick<Bookmarked, 'isBookmarked'> & {
+              entity: Maybe<
+                | ({ __typename: 'Team' } & Pick<Team, 'id' | 'name'>)
+                | ({ __typename: 'User' } & Pick<User, 'id'> & {
+                      name: User['username'];
+                    })
+              >;
+            }
+        >
+      >
+    >;
+  };
+
+export type BookmarkedSandboxInfoV2QueryVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type BookmarkedSandboxInfoV2Query = { __typename?: 'RootQueryType' } & {
+  sandbox: Maybe<
+    { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'> & {
+        author: Maybe<
+          { __typename?: 'User' } & Pick<User, 'id'> & {
+              name: User['username'];
+            }
+        >;
+        customTemplate: Maybe<
+          { __typename?: 'Template' } & BookmarkTemplateFieldsV2Fragment
+        >;
+      }
+  >;
 };
 
 export type BookmarkTemplateMutationVariables = {

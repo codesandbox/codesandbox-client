@@ -19,7 +19,7 @@ const UserAutoComplete = ({ inputValue, children }: IUserAutoComplete) => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    if (inputValue.length > 2 || inputValue.includes('@')) {
+    if (inputValue.length > 2 && !inputValue.includes('@')) {
       fetch(`/api/v1/users/search?username=${inputValue}`)
         .then(x => x.json())
         .then(x => {

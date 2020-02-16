@@ -20,6 +20,11 @@ import { json } from 'overmind';
 
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { NotificationStatus } from '@codesandbox/notifications';
+import {
+  Authorization,
+  CollaboratorFragment,
+  InvitationFragment,
+} from 'app/graphql/types';
 import eventToTransform from '../../utils/event-to-transform';
 import * as internalActions from './internalActions';
 import { SERVER } from '../../utils/items';
@@ -120,6 +125,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   actions.internal.ensurePackageJSON();
 
   await actions.editor.internal.initializeLiveSandbox(sandbox);
+
+  actions.editor.loadCollaborators({ sandboxId: sandbox.id });
 
   if (
     hasPermission(sandbox.authorization, 'write_code') &&
@@ -988,4 +995,222 @@ export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
   { frozen }
 ) => {
   state.editor.sessionFrozen = frozen;
+};
+
+export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
+  { state, effects },
+  { sandboxId }
+) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  const collaboratorResponse = await effects.queries.collaborators({
+    sandboxId,
+  });
+  state.editor.collaborators = collaboratorResponse.sandbox.collaborators;
+
+  effects.subscriptions.onCollaboratorAdded({ sandboxId }, event => {
+    const newCollaborator = event.collaboratorAdded;
+    state.editor.collaborators = [
+      ...state.editor.collaborators.filter(
+        c => c.user.username !== event.collaboratorAdded.user.username
+      ),
+      newCollaborator,
+    ];
+  });
+
+  effects.subscriptions.onCollaboratorChanged({ sandboxId }, event => {
+    const existingCollaborator = state.editor.collaborators.find(
+      c => c.user.username === event.collaboratorChanged.user.username
+    );
+    if (existingCollaborator) {
+      existingCollaborator.authorization =
+        event.collaboratorChanged.authorization;
+    }
+  });
+
+  effects.subscriptions.onCollaboratorRemoved({ sandboxId }, event => {
+    state.editor.collaborators = state.editor.collaborators.filter(
+      c => c.user.username !== event.collaboratorRemoved.user.username
+    );
+  });
+
+  if (hasPermission(state.editor.currentSandbox.authorization, 'owner')) {
+    const invitationResponse = await effects.queries.invitations({ sandboxId });
+    state.editor.invitations = invitationResponse.sandbox.invitations;
+  }
+};
+
+export const changeCollaboratorAuthorization: AsyncAction<{
+  username: string;
+  authorization: Authorization;
+  sandboxId: string;
+}> = async ({ state, effects }, { username, authorization, sandboxId }) => {
+  const existingCollaborator = state.editor.collaborators.find(
+    c => c.user.username === username
+  );
+
+  let oldAuthorization = null;
+  if (existingCollaborator) {
+    oldAuthorization = existingCollaborator.authorization;
+  }
+
+  existingCollaborator.authorization = authorization;
+
+  try {
+    await effects.mutations.changeCollaboratorAuthorization({
+      sandboxId,
+      authorization,
+      username,
+    });
+  } catch (e) {
+    if (existingCollaborator && oldAuthorization) {
+      existingCollaborator.authorization = oldAuthorization;
+    }
+  }
+};
+
+export const addCollaborator: AsyncAction<{
+  username: string;
+  sandboxId: string;
+  authorization: Authorization;
+}> = async ({ state, effects }, { username, sandboxId, authorization }) => {
+  const newCollaborator: CollaboratorFragment = {
+    lastSeenAt: null,
+    id: 'OPTIMISTIC_ID',
+    authorization,
+    user: {
+      id: 'OPTIMISTIC_USER_ID',
+      username,
+      avatarUrl: '',
+    },
+  };
+
+  state.editor.collaborators = [...state.editor.collaborators, newCollaborator];
+
+  try {
+    const result = await effects.mutations.addCollaborator({
+      sandboxId,
+      username,
+      authorization,
+    });
+    state.editor.collaborators = [
+      ...state.editor.collaborators.filter(c => c.user.username !== username),
+      result.addCollaborator,
+    ];
+  } catch (e) {
+    state.editor.collaborators = state.editor.collaborators.filter(
+      c => c.id !== 'OPTIMISTIC_ID'
+    );
+  }
+};
+
+export const removeCollaborator: AsyncAction<{
+  username: string;
+  sandboxId: string;
+}> = async ({ state, effects }, { username, sandboxId }) => {
+  const existingCollaborator = state.editor.collaborators.find(
+    c => c.user.username === username
+  );
+
+  state.editor.collaborators = state.editor.collaborators.filter(
+    c => c.user.username !== username
+  );
+
+  try {
+    await effects.mutations.removeCollaborator({
+      sandboxId,
+      username,
+    });
+  } catch (e) {
+    state.editor.collaborators = [
+      ...state.editor.collaborators,
+      existingCollaborator,
+    ];
+  }
+};
+
+export const inviteCollaborator: AsyncAction<{
+  email: string;
+  sandboxId: string;
+  authorization: Authorization;
+}> = async ({ state, effects }, { email, sandboxId, authorization }) => {
+  const newInvitation: InvitationFragment = {
+    id: 'OPTIMISTIC_ID',
+    authorization,
+    email,
+  };
+
+  state.editor.invitations = [...state.editor.invitations, newInvitation];
+
+  try {
+    const result = await effects.mutations.inviteCollaorator({
+      sandboxId,
+      email,
+      authorization,
+    });
+    state.editor.invitations = [
+      ...state.editor.invitations.filter(c => c.id !== 'OPTIMISTIC_ID'),
+      result.createSandboxInvitation,
+    ];
+  } catch (e) {
+    state.editor.invitations = state.editor.invitations.filter(
+      c => c.id !== 'OPTIMISTIC_ID'
+    );
+  }
+};
+
+export const revokeSandboxInvitation: AsyncAction<{
+  invitationId: string;
+  sandboxId: string;
+}> = async ({ state, effects }, { invitationId, sandboxId }) => {
+  const existingInvitation = state.editor.invitations.find(
+    c => c.id === invitationId
+  );
+
+  state.editor.invitations = state.editor.invitations.filter(
+    c => c.id !== invitationId
+  );
+
+  try {
+    await effects.mutations.revokeInvitation({
+      sandboxId,
+      invitationId,
+    });
+  } catch (e) {
+    state.editor.invitations = [
+      ...state.editor.invitations,
+      existingInvitation,
+    ];
+  }
+};
+
+export const changeInvitationAuthorization: AsyncAction<{
+  invitationId: string;
+  authorization: Authorization,
+  sandboxId: string;
+}> = async ({ state, effects }, { invitationId, sandboxId, authorization }) => {
+  const existingInvitation = state.editor.invitations.find(
+    c => c.id === invitationId
+  );
+
+  let oldAuthorization = null;
+  if (existingInvitation) {
+    oldAuthorization = existingInvitation.authorization;
+  }
+
+  existingInvitation.authorization = authorization;
+
+  try {
+    await effects.mutations.changeSandboxInvitationAuthorization({
+      sandboxId,
+      authorization,
+      invitationId,
+    });
+  } catch (e) {
+    if (existingInvitation && oldAuthorization) {
+      existingInvitation.authorization = oldAuthorization;
+    }
+  }
 };

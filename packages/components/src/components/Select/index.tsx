@@ -68,7 +68,7 @@ interface ISelectProps {
   placeholder?: string;
   children?: any;
   disabled?: boolean;
-  onChange?: any;
+  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
   defaultValue?: string | number;
 }

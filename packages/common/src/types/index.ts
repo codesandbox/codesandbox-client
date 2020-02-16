@@ -14,6 +14,7 @@ export type SSEContainerStatus =
 export type SSEManagerStatus = 'connected' | 'disconnected' | 'initializing';
 
 export type PermissionType =
+  | 'owner'
   | 'write_code'
   | 'write_project'
   | 'comment'
@@ -442,10 +443,10 @@ export type PackageJSON = {
   keywords?: string[];
   main?: string;
   module?: string;
-  scripts?: { [command: string]: string; };
-  dependencies?: { [dependency: string]: string; };
-  devDependencies?: { [dependency: string]: string; };
-  jest?: { setupFilesAfterEnv?: string[]; };
+  scripts?: { [command: string]: string };
+  dependencies?: { [dependency: string]: string };
+  devDependencies?: { [dependency: string]: string };
+  jest?: { setupFilesAfterEnv?: string[] };
   resolutions?: { [dependency: string]: string };
 };
 
