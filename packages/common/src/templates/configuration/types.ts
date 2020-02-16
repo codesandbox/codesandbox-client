@@ -3,7 +3,7 @@ import { Sandbox } from '../../types';
 export type ConfigurationFile = {
   title: string;
   type: string;
-  description: string;
+  description: string | null;
   moreInfoUrl: string;
 
   getDefaultCode?: (
@@ -21,7 +21,9 @@ export type ParsedConfigurationFile<T> = {
   code: string;
   generated: boolean;
   path: string;
-} & ({ error: Error; parsed?: undefined } | { error?: undefined; parsed: T });
+  error?: Error;
+  parsed?: T;
+};
 
 export type ConfigurationUIProps = {
   file: string;

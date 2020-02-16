@@ -1521,6 +1521,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mcmunder",
+      "name": "Matthias Christoph Munder",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5681686?v=4",
+      "profile": "http://mcmunder.de",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

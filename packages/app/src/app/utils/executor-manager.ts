@@ -1,12 +1,12 @@
-import {
-  IExecutor,
-  ServerExecutor,
-  SandboxExecutor,
-} from '@codesandbox/executors';
-import { IFiles } from '@codesandbox/executors/dist/executor';
-import { Sandbox } from '@codesandbox/common/lib/types';
 import getDefinition from '@codesandbox/common/lib/templates';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { Sandbox } from '@codesandbox/common/lib/types';
+import {
+  IExecutor,
+  SandboxExecutor,
+  ServerExecutor,
+} from '@codesandbox/executors';
+import { IFiles } from '@codesandbox/executors/dist/executor';
 
 function getExecutorType(isServer: boolean) {
   if (isServer) {
@@ -57,7 +57,7 @@ function getModulesToSend(sandbox: Sandbox): IFiles {
  * Until we run Overmind as our state management we'll have to put this as a singleton for now.
  */
 export class ExecutorsManager {
-  executor: IExecutor;
+  executor: IExecutor | null;
 
   async initializeExecutor(sandbox: Sandbox) {
     const { isServer } = getDefinition(sandbox.template);
@@ -67,23 +67,32 @@ export class ExecutorsManager {
     if (this.executor && !(this.executor instanceof ExecutorType)) {
       await this.executor.dispose();
 
-      this.executor = undefined;
+      this.executor = null;
     }
 
     if (!this.executor) {
       this.executor = new ExecutorType();
     }
 
-    await this.executor.initialize({
+    const sseHost = process.env.STAGING_API
+      ? 'https://codesandbox.stream'
+      : 'https://codesandbox.io';
+
+    await this.executor!.initialize({
       sandboxId: sandbox.id,
       files: getModulesToSend(sandbox),
+      // this is in the type idk what is wrong
+      // @ts-ignore
+      host: sseHost,
     });
 
-    return this.executor;
+    return this.executor!;
   }
 
   async setupExecutor() {
-    return this.getExecutor().setup();
+    if (this.executor) {
+      this.executor.setup();
+    }
   }
 
   isServer() {
@@ -93,7 +102,9 @@ export class ExecutorsManager {
   updateFiles(sandbox: Sandbox) {
     const modules = getModulesToSend(sandbox);
 
-    this.executor.updateFiles(modules);
+    if (this.executor) {
+      this.executor.updateFiles(modules);
+    }
   }
 
   /**
@@ -105,13 +116,15 @@ export class ExecutorsManager {
    *   to either the sandbox or the server executor. Changing the executor would probably also result in components unmounting/
    *   remounting and registering new listeners.
    */
-  getExecutor(): IExecutor | undefined {
+  getExecutor(): IExecutor | null {
     return this.executor;
   }
 
   async closeExecutor() {
-    await this.executor.dispose();
-    this.executor = undefined;
+    if (this.executor) {
+      await this.executor.dispose();
+      this.executor = null;
+    }
   }
 }
 

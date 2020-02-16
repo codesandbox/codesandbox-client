@@ -8,6 +8,10 @@ import { chunk } from 'lodash-es';
 export const recoverFiles: Action = ({ effects, actions, state }) => {
   const sandbox = state.editor.currentSandbox;
 
+  if (!sandbox) {
+    return;
+  }
+
   const recoverList = effects.moduleRecover.getRecoverList(
     sandbox.id,
     sandbox.modules
@@ -15,7 +19,12 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
   effects.moduleRecover.clearSandbox(sandbox.id);
 
   const recoveredList = recoverList
-    .map(({ recoverData, module }) => {
+    .map(item => {
+      if (!item) {
+        return false;
+      }
+      const { recoverData, module } = item;
+
       if (module.code === recoverData.savedCode) {
         const titleA = `saved '${module.title}'`;
         const titleB = `recovered '${module.title}'`;
@@ -99,7 +108,8 @@ export const uploadFiles: AsyncAction<
             file.type === 'application/json') &&
           dataURI.length < MAX_FILE_SIZE
         ) {
-          const text = dataURI ? atob(dataURI.replace(/^.*base64,/, '')) : '';
+          const text =
+            dataURI !== 'data:' ? atob(dataURI.replace(/^.*base64,/, '')) : '';
           parsedFiles[filePath] = {
             content: text,
             isBinary: false,

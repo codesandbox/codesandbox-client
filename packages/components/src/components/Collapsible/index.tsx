@@ -1,20 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
+import VisuallyHidden from '@reach/visually-hidden';
 import { Element } from '../Element';
 import { Text } from '../Text';
+import { SidebarRow } from '../SidebarRow';
 
-export const Section = styled(Element).attrs({ as: 'section' })(
+const Section = styled(Element).attrs({ as: 'section' })(
   css({
     fontSize: 3,
   })
 );
 
-export const Header = styled.div(
+export const Header = styled(SidebarRow).attrs({ gap: 2 })(
   css({
-    display: 'flex',
-    alignItems: 'center',
-    height: 6,
     paddingX: 3,
     borderBottom: '1px solid',
     // Note: sideBarSectionHeader exists but we dont use it because it is rarely implemented
@@ -23,31 +22,38 @@ export const Header = styled.div(
     cursor: 'pointer',
     ':hover': {
       backgroundColor: 'sideBar.hoverBackground',
-      svg: {
-        // TODO: this should come from somewhere else - text muted maybe?
-        color: 'grays.300',
-      },
+    },
+    ':focus-within': {
+      backgroundColor: 'sideBar.hoverBackground',
     },
   })
 );
 
 // temporary: replace with <Icon name="triangle/toggle">
-export const Icon = styled.svg<{
+const Icon = styled.svg<{
   open?: boolean;
 }>(props =>
   css({
-    marginRight: 2,
     transform: props.open ? 'rotate(0)' : 'rotate(-90deg)',
-    color: 'grays.400',
+    transition: 'transform',
+    transitionDuration: theme => theme.speeds[1],
+    opacity: 0.25,
   })
 );
 
-export const Body = styled.div(
+export const Body = styled(Element)<{
+  open?: boolean;
+}>(props =>
   css({
-    borderBottom: '1px solid',
+    borderBottom: props.open ? '1px solid' : 'none',
     borderColor: 'sideBar.border',
-    paddingTop: 4,
-    paddingBottom: 8,
+    maxHeight: props.open ? '1000px' : 0,
+    overflow: props.open ? 'auto' : 'hidden',
+    paddingTop: props.open ? 4 : 0,
+    paddingBottom: props.open ? 8 : 0,
+    opacity: props.open ? 1 : 0,
+    transition: 'all',
+    transitionDuration: theme => theme.speeds[4],
   })
 );
 
@@ -85,8 +91,12 @@ export const Collapsible: React.FC<ICollapsibleProps> = ({
       <Header onClick={toggle}>
         <ToggleIcon open={open} />
         <Text weight="medium">{title}</Text>
+        <VisuallyHidden>
+          <input type="checkbox" checked={open} />
+        </VisuallyHidden>
       </Header>
-      {open ? <Body>{children}</Body> : null}
+
+      <Body open={open}>{open ? children : null}</Body>
     </Section>
   );
 };

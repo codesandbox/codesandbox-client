@@ -71,7 +71,7 @@ if (process.env.NODE_ENV === 'production') {
 
   try {
     initializeSentry(
-      'https://3943f94c73b44cf5bb2302a72d52e7b8@sentry.io/155188'
+      'https://f595bc90ce3646c4a9d76a8d3b84b403@sentry.io/2071895'
     );
 
     overmind.eventHub.on('action:start', event => {

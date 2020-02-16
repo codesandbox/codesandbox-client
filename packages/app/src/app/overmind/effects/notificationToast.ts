@@ -10,7 +10,10 @@ import {
 export default {
   convertTypeToStatus,
   add(notification: NotificationMessage) {
-    notificationState.addNotification(notification);
+    return notificationState.addNotification(notification);
+  },
+  remove(id: string) {
+    notificationState.removeNotification(id);
   },
   error(message: string) {
     notificationState.addNotification({

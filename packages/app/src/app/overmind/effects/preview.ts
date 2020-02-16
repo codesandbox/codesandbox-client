@@ -1,5 +1,5 @@
-import { blocker } from 'app/utils/blocker';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
+import { blocker } from 'app/utils/blocker';
 
 import { Reaction } from '..';
 
@@ -16,7 +16,7 @@ export default {
     const dispose = _reaction(
       state => [
         state.editor.isAllModulesSynced,
-        state.editor.currentSandbox.template,
+        state.editor.currentSandbox?.template,
         state.preferences.settings.livePreviewEnabled,
       ],
       ([isAllModulesSynced, template, livePreviewEnabled]) => {

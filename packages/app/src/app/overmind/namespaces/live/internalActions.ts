@@ -8,24 +8,24 @@ import { json } from 'overmind';
 
 import { getSavedCode } from '../../utils/sandbox';
 
-export const clearUserSelections: Action<any> = (
+export const clearUserSelections: Action<string | null> = (
   { state, effects },
   live_user_id
 ) => {
-  const clearSelections = userId => {
-    const userIndex = state.live.roomInfo.users.findIndex(u => u.id === userId);
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  const clearSelections = (userId: string) => {
+    const roomInfo = state.live.roomInfo!;
+    const userIndex = roomInfo.users.findIndex(u => u.id === userId);
 
     if (userIndex > -1) {
-      if (state.live.roomInfo.users[userIndex]) {
-        state.live.roomInfo.users[userIndex].selection = null;
-        effects.vscode.updateUserSelections([
-          {
-            userId,
-            selection: null,
-            name: null,
-            color: null,
-          },
-        ]);
+      const user = roomInfo.users[userIndex];
+      if (user) {
+        user.selection = null;
+
+        effects.vscode.clearUserSelections(userId);
       }
     }
   };
@@ -47,31 +47,30 @@ export const reset: Action = ({ state, actions, effects }) => {
   effects.live.resetClients();
 };
 
-export const disconnect: Action = ({ effects }) => {
-  effects.live.resetClients();
+export const disconnect: Action = ({ effects, actions }) => {
   effects.live.disconnect();
+  actions.live.internal.reset();
 };
 
-export const initialize: AsyncAction<string, Sandbox> = async (
+export const initialize: AsyncAction<string, Sandbox | null> = async (
   { state, effects, actions },
   id
 ) => {
   state.live.isLoading = true;
 
   try {
-    const { roomInfo, liveUserId, sandbox } = await effects.live.joinChannel(
-      id
-    );
+    const { roomInfo, liveUserId } = await effects.live.joinChannel(id);
 
     state.live.roomInfo = roomInfo;
     state.live.liveUserId = liveUserId;
 
-    if (
-      !state.editor.currentSandbox ||
-      state.editor.currentSandbox.id !== sandbox.id
-    ) {
-      state.editor.sandboxes[sandbox.id] = sandbox;
-      state.editor.currentId = sandbox.id;
+    const sandboxId = roomInfo.sandboxId;
+
+    let sandbox = state.editor.currentSandbox;
+    if (!sandbox || sandbox.id !== sandboxId) {
+      sandbox = await effects.api.getSandbox(sandboxId);
+      state.editor.sandboxes[sandboxId] = sandbox;
+      state.editor.currentId = sandboxId;
     }
 
     effects.analytics.track('Live Session Joined', {});
@@ -94,13 +93,15 @@ export const initializeModuleState: Action<any> = (
   { state, actions, effects },
   moduleState
 ) => {
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
   Object.keys(moduleState).forEach(moduleShortid => {
     const moduleInfo = moduleState[moduleShortid];
 
     // Module has not been saved, so is different
-    const module = state.editor.currentSandbox.modules.find(
-      m => m.shortid === moduleShortid
-    );
+    const module = sandbox.modules.find(m => m.shortid === moduleShortid);
 
     if (module) {
       if (!('code' in moduleInfo)) {
@@ -140,8 +141,12 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
   { state },
   module
 ) => {
-  const selections = [];
+  const selections: EditorSelection[] = [];
   const moduleShortid = module.shortid;
+
+  if (!state.live.roomInfo) {
+    return selections;
+  }
 
   state.live.roomInfo.users.forEach(user => {
     const userId = user.id;

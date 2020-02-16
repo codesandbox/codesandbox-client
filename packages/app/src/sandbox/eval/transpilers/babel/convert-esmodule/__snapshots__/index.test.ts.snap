@@ -1,0 +1,163 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convert-esmodule can convert class default exports 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+class A {}
+exports.default = A;
+"
+`;
+
+exports[`convert-esmodule can convert default exports 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+function test() {}
+exports.default = test;
+"
+`;
+
+exports[`convert-esmodule can convert default imports 1`] = `
+"var $csb__b = require(\\"./b\\");
+var a = $_csb__interopRequireDefault($csb__b).default;
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+"
+`;
+
+exports[`convert-esmodule can convert function exports 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+function test() {}
+exports.test = test;
+const test2 = () => {};
+exports.test2 = test2;
+class Test {}
+exports.Test = Test;
+"
+`;
+
+exports[`convert-esmodule can convert named imports 1`] = `
+"var $csb__b = require(\\"./b\\");
+var a = $csb__b.a;
+var b = $csb__b.b;
+var c = $csb__b.c;
+"
+`;
+
+exports[`convert-esmodule can convert normal exports 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__store = require(\\"./test/store.js\\");
+exports.test = $csb__store.test;
+exports.test2 = $csb__store.test2;
+"
+`;
+
+exports[`convert-esmodule can convert reexports 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__store = require(\\"./test/store.js\\");
+Object.keys($csb__store).forEach(function (key) {
+  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  exports[key] = $csb__store[key];
+});
+"
+`;
+
+exports[`convert-esmodule can convert weird default exports 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__default = a = \\"b\\";
+exports.default = $csb__default;
+"
+`;
+
+exports[`convert-esmodule can handle as imports 1`] = `
+"var $csb__b = require(\\"./b\\");
+var b = $csb__b.a;
+"
+`;
+
+exports[`convert-esmodule can handle async code 1`] = `
+"var $csb__test = require(\\"./test\\");
+var T = $_csb__interopRequireDefault($csb__test).default;
+(async () => {
+  const test = await test2();
+});
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+"
+`;
+
+exports[`convert-esmodule can handle class properties 1`] = `
+"var $csb__test = require(\\"./test\\");
+var T = $_csb__interopRequireDefault($csb__test).default;
+class T2 {
+  a = () => {
+    return \\"test\\";
+  }
+  b = \\"\\"
+  c = {}
+  static d = \\"\\"
+}
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+"
+`;
+
+exports[`convert-esmodule can handle inline comments 1`] = `
+"var $csb__b = require(\\"./b\\");
+var b = $csb__b.a;
+var c = $csb__b.c;
+"
+`;
+
+exports[`convert-esmodule handles default as exports 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__Field = require(\\"./Field\\");
+exports.Field = $csb__Field.default;
+"
+`;
+
+exports[`convert-esmodule handles export mutations 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+function test() {}
+exports.default = test;
+exports.default = test = 5;;
+"
+`;
+
+exports[`convert-esmodule handles export mutations with no named function 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+function $csb__default() {}
+exports.default = $csb__default;
+"
+`;
+
+exports[`convert-esmodule ignores comments 1`] = `""`;
+
+exports[`convert-esmodule parses and writes chars with linebreaks 1`] = `
+"var WS_CHARS = \\"u2000-     　﻿\\";
+"
+`;

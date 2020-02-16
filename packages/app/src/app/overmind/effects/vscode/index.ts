@@ -35,6 +35,7 @@ import {
   ModelsHandler,
   OnFileChangeData,
   OnOperationAppliedData,
+  onSelectionChangeData,
 } from './ModelsHandler';
 import SandboxFsSync from './SandboxFsSync';
 import { getSelection } from './utils';
@@ -42,12 +43,12 @@ import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
 
 export type VsCodeOptions = {
-  getCurrentSandbox: () => Sandbox;
-  getCurrentModule: () => Module;
+  getCurrentSandbox: () => Sandbox | null;
+  getCurrentModule: () => Module | null;
   getSandboxFs: () => SandboxFs;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
-  onSelectionChange: (selection: any) => void;
+  onSelectionChange: (selection: onSelectionChangeData) => void;
   reaction: Reaction;
   // These two should be removed
   getSignal: any;
@@ -67,7 +68,7 @@ declare global {
 export interface ICustomEditorApi {
   getCustomEditor(
     modulePath: string
-  ): false | ((container: HTMLElement, extraProps: object) => void);
+  ): false | ((container: HTMLElement, extraProps: object) => void) | null;
 }
 
 const context: any = window;
@@ -91,7 +92,7 @@ export class VSCodeEffect {
   private extensionEnablementService = blocker<any>();
   private workbench: Workbench;
   private settings: Settings;
-  private linter: Linter;
+  private linter: Linter | null;
   private modelsHandler: ModelsHandler;
   private modelSelectionListener: { dispose: Function };
   private readOnly: boolean;
@@ -157,6 +158,23 @@ export class VSCodeEffect {
       ]).then(() => this.loadEditor(window.monaco, container));
     });
 
+    // Only set the read only state when the editor is initialized.
+    this.initialized.then(() => {
+      // ReadOnly mode is derivative, it's based on a couple conditions, of which the
+      // most important one is Live. If you're in a classroom live session as spectator,
+      // you should not be allowed to edit.
+      options.reaction(
+        state =>
+          !state.live.isLive ||
+          state.live.roomInfo?.mode === 'open' ||
+          (state.live.roomInfo?.mode === 'classroom' &&
+            state.live.isCurrentEditor),
+        canEdit => {
+          this.setReadOnly(!canEdit);
+        }
+      );
+    });
+
     return this.initialized;
   }
 
@@ -209,7 +227,7 @@ export class VSCodeEffect {
     } else {
       // Auto disable vim extension
       if (
-        [null, undefined].includes(
+        ([null, undefined] as Array<null | undefined | string>).includes(
           localStorage.getItem('vs-global://extensionsIdentifiers/disabled')
         )
       ) {
@@ -239,26 +257,36 @@ export class VSCodeEffect {
   }
 
   public updateOptions(options: { readOnly: boolean }) {
-    this.editorApi.getActiveCodeEditor().updateOptions(options);
+    const editor = this.editorApi.getActiveCodeEditor();
+
+    if (editor) {
+      editor.updateOptions(options);
+    }
   }
 
-  public updateUserSelections(userSelections: EditorSelection[]) {
+  public clearUserSelections(userId: string) {
     if (!this.modelsHandler) {
       return;
     }
 
-    this.modelsHandler.updateUserSelections(
-      this.options.getCurrentModule(),
-      userSelections
-    );
+    this.modelsHandler.clearUserSelections(userId);
+  }
+
+  public updateUserSelections(
+    module: Module,
+    userSelections: EditorSelection[]
+  ) {
+    if (!this.modelsHandler) {
+      return;
+    }
+
+    this.modelsHandler.updateUserSelections(module, userSelections);
   }
 
   public setReadOnly(enabled: boolean) {
     this.readOnly = enabled;
 
-    const activeEditor = this.editorApi.getActiveCodeEditor();
-
-    activeEditor.updateOptions({ readOnly: enabled });
+    this.updateOptions({ readOnly: enabled });
   }
 
   public updateLayout = (width: number, height: number) => {
@@ -358,7 +386,8 @@ export class VSCodeEffect {
     // that we are actually indeed still trying to open this file, as we might have changed
     // the file
     requestAnimationFrame(async () => {
-      if (module.id === this.options.getCurrentModule().id) {
+      const currentModule = this.options.getCurrentModule();
+      if (currentModule && module.id === currentModule.id) {
         try {
           const model = await this.modelsHandler.changeModule(module);
 
@@ -769,6 +798,9 @@ export class VSCodeEffect {
   private getPrettierConfig = () => {
     try {
       const sandbox = this.options.getCurrentSandbox();
+      if (!sandbox) {
+        return null;
+      }
       const module = resolveModule(
         '/.prettierrc',
         sandbox.modules,
@@ -782,7 +814,8 @@ export class VSCodeEffect {
   };
 
   private onOperationApplied = (data: OnOperationAppliedData) => {
-    if (data.moduleShortid === this.options.getCurrentModule().shortid) {
+    const currentModule = this.options.getCurrentModule();
+    if (currentModule && data.moduleShortid === currentModule.shortid) {
       this.lint(data.title, data.model);
     }
 
@@ -810,18 +843,20 @@ export class VSCodeEffect {
         return;
       }
 
-      if (this.linter) {
+      const sandbox = this.options.getCurrentSandbox();
+      if (this.linter && sandbox) {
         this.linter.lint(
           activeEditor.getModel().getValue(),
           modulePath,
           activeEditor.getModel().getVersionId(),
-          this.options.getCurrentSandbox().template
+          sandbox.template
         );
       }
 
       const currentModule = this.options.getCurrentModule();
 
       if (
+        currentModule &&
         modulePath === `/sandbox${currentModule.path}` &&
         currentModule.code !== undefined &&
         activeEditor.getValue() !== currentModule.code
@@ -842,11 +877,12 @@ export class VSCodeEffect {
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
         selectionChange => {
           const lines = activeEditor.getModel().getLinesContent() || [];
-          const data = {
+          const data: onSelectionChangeData = {
             primary: getSelection(lines, selectionChange.selection),
             secondary: selectionChange.secondarySelections.map(s =>
               getSelection(lines, s)
             ),
+            source: selectionChange.source,
           };
 
           if (
@@ -897,11 +933,15 @@ export class VSCodeEffect {
   }
 
   private lint(title: string, model: any) {
+    const sandbox = this.options.getCurrentSandbox();
+    if (!sandbox || !this.linter) {
+      return;
+    }
     this.linter.lint(
       model.getValue(),
       title,
       model.getVersionId(),
-      this.options.getCurrentSandbox().template
+      sandbox.template
     );
   }
 

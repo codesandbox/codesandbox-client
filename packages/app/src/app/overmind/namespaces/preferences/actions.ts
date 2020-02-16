@@ -1,5 +1,4 @@
 import { Badge } from '@codesandbox/common/lib/types';
-import { json } from 'overmind';
 
 import { Action, AsyncAction } from 'app/overmind';
 
@@ -23,12 +22,6 @@ export const itemIdChanged: AsyncAction<{
   itemId: string;
 }> = async ({ state, actions, effects }, { itemId }) => {
   state.preferences.itemId = itemId;
-
-  if (itemId === 'keybindings') {
-    effects.keybindingManager.pause();
-  } else {
-    effects.keybindingManager.start();
-  }
 
   if (itemId === 'integrations') {
     await actions.deployment.internal.getZeitUserDetails();
@@ -64,9 +57,13 @@ export const setBadgeVisibility: AsyncAction<Pick<
   Badge,
   'id' | 'visible'
 >> = async ({ effects, state }, { id, visible }) => {
-  state.user.badges.forEach((badge, index) => {
+  const user = state.user;
+  if (!user) {
+    return;
+  }
+  user.badges.forEach((badge, index) => {
     if (badge.id === id) {
-      state.user.badges[index].visible = visible;
+      user.badges[index].visible = visible;
     }
   });
 
@@ -95,6 +92,8 @@ export const paymentDetailsUpdated: AsyncAction<string> = async (
     token
   );
   state.preferences.isLoadingPaymentDetails = false;
+
+  effects.notificationToast.success('Successfully updated payment details');
 };
 
 export const keybindingChanged: Action<{
@@ -123,8 +122,6 @@ export const keybindingChanged: Action<{
   );
 
   effects.settingsStore.set('keybindings', keybindingsValue);
-
-  effects.keybindingManager.set(json(state.preferences.settings.keybindings));
 };
 
 export const zenModeToggled: Action = ({ state }) => {

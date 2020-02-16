@@ -9,9 +9,26 @@ function getSentry(): Promise<typeof import('@sentry/browser')> {
   return import(/* webpackChunkName: 'sentry' */ '@sentry/browser');
 }
 
+let latestVersionPromise: Promise<string>;
+function getLatestVersion() {
+  if (!latestVersionPromise) {
+    latestVersionPromise = fetch('/version.txt')
+      .then(x => x.text())
+      .catch(x => '');
+  }
+
+  return latestVersionPromise;
+}
+
 export async function initialize(dsn: string) {
   if (!DO_NOT_TRACK_ENABLED) {
     _Sentry = await getSentry();
+    const latestVersion = await getLatestVersion();
+
+    if (VERSION !== latestVersion) {
+      // If we're not running the latest version we don't want to see the errors appear
+      return Promise.resolve();
+    }
 
     return _Sentry.init({
       dsn,
@@ -32,6 +49,7 @@ export async function initialize(dsn: string) {
         /Cannot remove node \d* because no matching node was found in the Store\./,
         /Cannot add child \d* to parent \d* because parent node was not found in the Store\./,
         /Children cannot be added or removed during a reorder operation\./,
+        /Cannot reorder children for node/,
 
         "undefined is not an object (evaluating 'window.__pad.performLoop')", // Only happens on Safari, but spams our servers. Doesn't break anything
       ],

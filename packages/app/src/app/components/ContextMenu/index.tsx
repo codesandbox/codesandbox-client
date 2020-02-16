@@ -101,8 +101,9 @@ export class ContextMenu extends React.PureComponent<Props, State> {
       window.addEventListener('mousedown', this.mousedownHandler);
       window.addEventListener('keydown', this.keydownHandler);
 
-      const isDown = height - event.clientY > 150;
+      const isDown = height - event.clientY > 300;
       const isLeft = width - event.clientX > 200;
+
       this.setState({
         show: true,
         x: event.clientX + 10,

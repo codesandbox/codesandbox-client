@@ -123,7 +123,7 @@ export class VersionEntry extends React.PureComponent<Props, State> {
           </Link>
           <VersionSelect
             hovering={hovering}
-            defaultValue={versions.find(v => v === dependencies[dependency])}
+            value={versions.find(v => v === dependencies[dependency])}
             onChange={e => {
               this.props.onRefresh(dependency, e.target.value);
               this.setState({ hovering: false });

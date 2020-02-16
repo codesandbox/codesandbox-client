@@ -1,10 +1,11 @@
-import { Derive } from 'app/overmind';
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { sortBy } from 'lodash-es';
 
+import { Derive } from 'app/overmind';
+
 export type OrderBy = {
-  order: 'desc' | 'asc';
   field: string;
+  order: 'desc' | 'asc';
 };
 
 type State = {
@@ -53,7 +54,7 @@ export const state: State = {
 
       return s[orderField];
     }) as Sandbox[]).filter(
-      x => blacklistedTemplates.indexOf(x.source.template) === -1
+      x => x.source && blacklistedTemplates.indexOf(x.source.template) === -1
     );
 
     if (orderOrder === 'desc') {

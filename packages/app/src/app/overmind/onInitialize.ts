@@ -17,7 +17,7 @@ export const onInitialize: OnInitialize = async (
     onApplyOperation: actions.live.applyTransformation,
   });
 
-  effects.keybindingManager.initialize(overmindInstance);
+  effects.flows.initialize(overmindInstance.reaction);
 
   effects.api.initialize({
     provideJwtToken,
@@ -34,13 +34,13 @@ export const onInitialize: OnInitialize = async (
 
   effects.zeit.initialize({
     getToken() {
-      return state.user.integrations.zeit && state.user.integrations.zeit.token;
+      return state.user?.integrations.zeit?.token ?? null;
     },
   });
 
   effects.netlify.initialize({
     getUserId() {
-      return state.user.id;
+      return state.user?.id ?? null;
     },
   });
 
@@ -50,7 +50,7 @@ export const onInitialize: OnInitialize = async (
     },
     getPrettierConfig() {
       let config = state.preferences.settings.prettierConfig;
-      const configFromSandbox = state.editor.currentSandbox.modules.find(
+      const configFromSandbox = state.editor.currentSandbox?.modules.find(
         module =>
           module.directoryShortid == null && module.title === '.prettierrc'
       );

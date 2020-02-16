@@ -21,6 +21,7 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -42,7 +43,7 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
 ) => {
   state.live.isTeam = Boolean(sandbox.team);
 
-  if (state.live.isLive) {
+  if (state.live.isLive && state.live.roomInfo) {
     const roomChanged = state.live.roomInfo.roomId !== sandbox.roomId;
 
     if (!roomChanged) {
@@ -60,9 +61,13 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
 
 export const setModuleSavedCode: Action<{
   moduleShortid: string;
-  savedCode: string;
+  savedCode: string | null;
 }> = ({ state }, { moduleShortid, savedCode }) => {
   const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
 
   const moduleIndex = sandbox.modules.findIndex(
     m => m.shortid === moduleShortid
@@ -91,13 +96,20 @@ export const saveCode: AsyncAction<{
   effects.analytics.track('Save Code');
 
   const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+
   const module = sandbox.modules.find(m => m.shortid === moduleShortid);
 
   if (!module) {
     return;
   }
 
-  module.code = code;
+  if (module.code !== code) {
+    actions.editor.codeChanged({ moduleShortid, code });
+  }
 
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
@@ -125,7 +137,7 @@ export const saveCode: AsyncAction<{
     }
 
     if (
-      state.editor.currentSandbox.originalGit &&
+      sandbox.originalGit &&
       state.workspace.openedWorkspaceItem === 'github'
     ) {
       state.git.isFetching = true;
@@ -141,7 +153,7 @@ export const saveCode: AsyncAction<{
       !effects.executor.isServer() ||
       state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
     ) {
-      effects.executor.updateFiles(state.editor.currentSandbox);
+      effects.executor.updateFiles(sandbox);
     }
 
     if (state.live.isLive && state.live.isCurrentEditor) {
@@ -150,9 +162,7 @@ export const saveCode: AsyncAction<{
 
     await actions.editor.internal.updateCurrentTemplate();
 
-    if (state.preferences.settings.experimentVSCode) {
-      effects.vscode.runCommand('workbench.action.keepEditor');
-    }
+    effects.vscode.runCommand('workbench.action.keepEditor');
 
     const tabs = state.editor.tabs as ModuleTab[];
     const tab = tabs.find(
@@ -178,6 +188,10 @@ export const updateCurrentTemplate: AsyncAction = async ({
   effects,
   state,
 }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   try {
     const currentTemplate = state.editor.currentSandbox.template;
     const templateDefinition = getTemplateDefinition(currentTemplate);
@@ -228,11 +242,18 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
   { state, actions },
   name
 ) => {
+  if (
+    !state.editor.currentPackageJSONCode ||
+    !state.editor.currentPackageJSON
+  ) {
+    return;
+  }
+
   const packageJson = JSON.parse(state.editor.currentPackageJSONCode);
 
   delete packageJson.dependencies[name];
 
-  await actions.editor.internal.saveCode({
+  await actions.editor.codeSaved({
     code: JSON.stringify(packageJson, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
     cbID: null,
@@ -244,6 +265,13 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   version?: string;
   isDev: boolean;
 }> = async ({ state, actions }, { name, isDev, version }) => {
+  if (
+    !state.editor.currentPackageJSONCode ||
+    !state.editor.currentPackageJSON
+  ) {
+    return;
+  }
+
   const packageJson = JSON.parse(state.editor.currentPackageJSONCode);
 
   const type = isDev ? 'devDependencies' : 'dependencies';
@@ -252,7 +280,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   packageJson[type][name] = version || 'latest';
   packageJson[type] = sortObjectByKeys(packageJson[type]);
 
-  await actions.editor.internal.saveCode({
+  await actions.editor.codeSaved({
     code: JSON.stringify(packageJson, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
     cbID: null,
@@ -264,6 +292,10 @@ export const setModuleCode: Action<{
   code: string;
 }> = ({ state, effects }, { module, code }) => {
   const { currentSandbox } = state.editor;
+
+  if (!currentSandbox) {
+    return;
+  }
 
   if (module.savedCode === null) {
     module.savedCode = module.code;
@@ -298,13 +330,19 @@ export const forkSandbox: AsyncAction<{
   { state, effects, actions },
   { sandboxId: id, body, openInNewWindow = false }
 ) => {
+  const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+
   const templateDefinition = getTemplateDefinition(
-    state.editor.currentSandbox ? state.editor.currentSandbox.template : null
+    sandbox ? sandbox.template : null
   );
 
   if (!state.isLoggedIn && templateDefinition.isServer) {
     effects.analytics.track('Show Server Fork Sign In Modal');
-    actions.modalOpened({ modal: 'forkServerModal', message: null });
+    actions.modalOpened({ modal: 'forkServerModal' });
 
     return;
   }
@@ -317,34 +355,29 @@ export const forkSandbox: AsyncAction<{
     const forkedSandbox = await effects.api.forkSandbox(id, body);
 
     // Copy over any unsaved code
-    if (state.editor.currentSandbox) {
-      Object.assign(forkedSandbox, {
-        modules: forkedSandbox.modules.map(module => {
-          const foundEquivalentModule = state.editor.currentSandbox.modules.find(
-            currentSandboxModule =>
-              currentSandboxModule.shortid === module.shortid
-          );
+    Object.assign(forkedSandbox, {
+      modules: forkedSandbox.modules.map(module => {
+        const foundEquivalentModule = sandbox.modules.find(
+          currentSandboxModule =>
+            currentSandboxModule.shortid === module.shortid
+        );
 
-          if (!foundEquivalentModule) {
-            return module;
-          }
+        if (!foundEquivalentModule) {
+          return module;
+        }
 
-          return {
-            ...module,
-            code: foundEquivalentModule.code,
-          };
-        }),
-      });
-    }
+        return {
+          ...module,
+          code: foundEquivalentModule.code,
+        };
+      }),
+    });
 
     state.workspace.project.title = forkedSandbox.title || '';
     state.workspace.project.description = forkedSandbox.description || '';
     state.workspace.project.alias = forkedSandbox.alias || '';
 
-    Object.assign(
-      state.editor.sandboxes[state.editor.currentId],
-      forkedSandbox
-    );
+    Object.assign(state.editor.sandboxes[sandbox.id], forkedSandbox);
     state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
       forkedSandbox
     );
@@ -361,6 +394,10 @@ export const forkSandbox: AsyncAction<{
 
     effects.notificationToast.success('Forked sandbox!');
 
+    if (templateDefinition.isServer) {
+      actions.editor.showEnvironmentVariablesNotification();
+    }
+
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
   } catch (error) {
     console.error(error);
@@ -368,6 +405,9 @@ export const forkSandbox: AsyncAction<{
       message: 'We were unable to fork the sandbox',
       error,
     });
+
+    state.editor.isForkingSandbox = false;
+    throw error;
   }
 };
 
@@ -406,6 +446,19 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   actions,
 }) => {
   const sandbox = state.editor.currentSandbox;
+
+  if (
+    !sandbox ||
+    !state.editor.parsedConfigurations?.package?.parsed ||
+    !state.editor.currentPackageJSON
+  ) {
+    return;
+  }
+
+  if (!hasPermission(sandbox.authorization, 'write_code')) {
+    return;
+  }
+
   const { parsed } = state.editor.parsedConfigurations.package;
 
   parsed.keywords = sandbox.tags;
@@ -415,7 +468,7 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   const code = JSON.stringify(parsed, null, 2);
   const moduleShortid = state.editor.currentPackageJSON.shortid;
 
-  await actions.editor.internal.saveCode({
+  await actions.editor.codeSaved({
     code,
     moduleShortid,
     cbID: null,
@@ -425,12 +478,16 @@ export const updateSandboxPackageJson: AsyncAction = async ({
 export const updateDevtools: AsyncAction<{
   code: string;
 }> = async ({ state, actions }, { code }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   if (state.editor.currentSandbox.owned) {
     const devtoolsModule =
       state.editor.modulesByPath['/.codesandbox/workspace.json'];
 
     if (devtoolsModule) {
-      await actions.editor.internal.saveCode({
+      await actions.editor.codeSaved({
         code,
         moduleShortid: devtoolsModule.shortid,
         cbID: null,
@@ -443,7 +500,6 @@ export const updateDevtools: AsyncAction<{
             isBinary: false,
           },
         },
-        cbID: null,
       });
     }
   } else {

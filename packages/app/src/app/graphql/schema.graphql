@@ -1,5 +1,5 @@
 # source: https://codesandbox.stream/api/graphql
-# timestamp: Thu Dec 12 2019 17:24:06 GMT+0100 (Central European Standard Time)
+# timestamp: Fri Jan 31 2020 13:46:04 GMT+0000 (Greenwich Mean Time)
 
 schema {
   query: RootQuery
@@ -20,6 +20,7 @@ type Collection {
   id: ID
   path: String
   sandboxes: [Sandbox]
+  team: Team
   teamId: ID
   user: User
 }

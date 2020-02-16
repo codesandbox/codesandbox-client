@@ -5,9 +5,13 @@
  * vscode theme - color tokens
  * polyfill - color tokens missing from vscode
  */
-import dot from 'dot-object';
+import React from 'react';
 import deepmerge from 'deepmerge';
 import designLanguage from '@codesandbox/common/lib/design-language';
+import {
+  ThemeProvider as BaseThemeProvider,
+  createGlobalStyle,
+} from 'styled-components';
 import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
 
@@ -19,22 +23,42 @@ export const getThemes = () => {
 
   return results.filter(a => a);
 };
-export const makeTheme = (vsCodeTheme = { colors: {} }, name: string) => {
-  // black is the default, it would be helpful to use storybook-addon-themes
-  // to test our components across multiple themes
-  // convert vscode colors to dot notation so that we can use them in tokens
-  const vsCodeColors = dot.object({ ...vsCodeTheme.colors });
-
+export const makeTheme = (vsCodeTheme, name?: string) => {
   // Our interface does not map 1-1 with vscode.
   // To add styles that remain themeable, we add
   // some polyfills to the theme tokens.
-  const polyfilledVSCodeColors = polyfillTheme(vsCodeColors);
+  const polyfilledVSCodeColors = polyfillTheme(vsCodeTheme);
 
   // merge the design language and vscode theme
-  const theme = deepmerge(designLanguage, { colors: polyfilledVSCodeColors });
+  const theme = deepmerge(designLanguage, {
+    colors: polyfilledVSCodeColors,
+  });
 
-  return {
-    name,
-    ...theme,
-  };
+  if (name) {
+    return {
+      name,
+      ...theme,
+    };
+  }
+  return theme;
+};
+
+export const ThemeProvider = ({ theme, children }) => {
+  const usableTheme = makeTheme(theme);
+
+  // the resizer lives outside the sidebar
+  // to apply the right color to the resizer
+  // we create a global style to be applied to it
+  const ExternalStyles = createGlobalStyle`
+    .Resizer {
+      background-color: ${usableTheme.colors.sideBar.border} !important;
+    }
+  `;
+
+  return (
+    <>
+      <ExternalStyles />
+      <BaseThemeProvider theme={usableTheme}>{children}</BaseThemeProvider>
+    </>
+  );
 };

@@ -1,17 +1,17 @@
 import {
-  Sandbox,
-  PopularSandboxes,
-  PickedSandboxes,
   PickedSandboxDetails,
+  PickedSandboxes,
+  PopularSandboxes,
+  Sandbox,
 } from '@codesandbox/common/lib/types';
 
 type State = {
-  pickedSandboxesIndexes: string[];
-  popularSandboxes: PopularSandboxes;
+  pickedSandboxesIndexes: string[] | null;
+  popularSandboxes: PopularSandboxes | null;
   pickedSandboxesLoading: boolean;
-  pickedSandboxes: PickedSandboxes;
-  selectedSandbox: Sandbox;
-  pickedSandboxDetails: PickedSandboxDetails;
+  pickedSandboxes: PickedSandboxes | null;
+  selectedSandbox: Sandbox | null;
+  pickedSandboxDetails: PickedSandboxDetails | null;
 };
 
 export const state: State = {

@@ -10,7 +10,7 @@ import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
 import { TextOperation } from 'ot';
 
-import { getCurrentModel, getCurrentModelPath } from './utils';
+import { getCurrentModelPath } from './utils';
 
 // @ts-ignore
 const fadeIn = css.keyframes('fadeIn', {
@@ -33,6 +33,8 @@ export type OnFileChangeData = {
   event: any;
   model: any;
 };
+
+export type onSelectionChangeData = UserSelection;
 
 export type OnOperationAppliedData = {
   moduleShortid: string;
@@ -101,24 +103,24 @@ export class ModelsHandler {
           fileModelItem.resource.path === '/sandbox' + module.path
       );
 
-    fileModel.revert();
+    if (fileModel) {
+      fileModel.revert();
+    }
   }
 
   public changeModule = async (module: Module) => {
     const moduleModel = this.getModuleModel(module);
 
     if (getCurrentModelPath(this.editorApi) !== module.path) {
-      const file = await this.editorApi.openFile(module.path);
-      const model = file.getModel();
-
-      moduleModel.model = Promise.resolve(model);
-
-      this.updateUserSelections(module, moduleModel.selections);
-    } else {
-      const model = getCurrentModel(this.editorApi);
-
-      moduleModel.model = Promise.resolve(model);
+      await this.editorApi.openFile(module.path);
     }
+
+    moduleModel.model = await this.editorApi.textFileService.models
+      .loadOrCreate(this.monaco.Uri.file('/sandbox' + module.path))
+      .then(textFileEditorModel => textFileEditorModel.load())
+      .then(textFileEditorModel => textFileEditorModel.textEditorModel);
+
+    this.updateUserSelections(module, moduleModel.selections);
 
     return moduleModel.model;
   };
@@ -129,7 +131,7 @@ export class ModelsHandler {
 
     return Promise.all(
       Object.keys(this.moduleModels).map(async path => {
-        if (oldModelPath === path) {
+        if (oldModelPath === path && this.moduleModels[path].model) {
           const model = await this.moduleModels[path].model;
 
           // This runs remove/add automatically
@@ -198,9 +200,36 @@ export class ModelsHandler {
     this.isApplyingOperation = false;
   }
 
+  public clearUserSelections(userId: string) {
+    const decorations = Object.keys(this.userSelectionDecorations).filter(d =>
+      d.startsWith(userId)
+    );
+    Object.keys(this.moduleModels).forEach(async key => {
+      const moduleModel = this.moduleModels[key];
+
+      if (!moduleModel.model) {
+        return;
+      }
+
+      const model = await moduleModel.model;
+
+      decorations.forEach(decorationId => {
+        if (decorationId.startsWith(userId + model.id)) {
+          this.userSelectionDecorations[decorationId] = model.deltaDecorations(
+            this.userSelectionDecorations[decorationId] || [],
+            []
+          );
+        }
+      });
+    });
+  }
+
+  nameTagTimeouts: { [name: string]: number } = {};
+
   public async updateUserSelections(
     module,
-    userSelections: Array<UserSelection | EditorSelection>
+    userSelections: EditorSelection[],
+    showNameTag = true
   ) {
     const moduleModel = this.getModuleModel(module);
 
@@ -212,99 +241,97 @@ export class ModelsHandler {
 
     const model = await moduleModel.model;
     const lines = model.getLinesContent() || [];
-    const activeEditor = this.editorApi.getActiveCodeEditor();
 
-    userSelections.forEach((data: EditorSelection & UserSelection) => {
+    userSelections.forEach((data: EditorSelection) => {
       const { userId } = data;
 
-      const decorationId = module.shortid + userId;
+      const decorationId = userId + model.id + module.shortid;
       if (data.selection === null) {
-        this.userSelectionDecorations[
-          decorationId
-        ] = activeEditor.deltaDecorations(
+        this.userSelectionDecorations[decorationId] = model.deltaDecorations(
           this.userSelectionDecorations[decorationId] || [],
-          [],
-          data.userId
+          []
         );
 
         return;
       }
 
-      const decorations = [];
+      const decorations: Array<{
+        range: any;
+        options: {
+          className: string;
+        };
+      }> = [];
       const { selection, color, name } = data;
 
-      if (selection) {
-        const addCursor = (position, className) => {
-          const cursorPos = indexToLineAndColumn(lines, position);
+      const getCursorDecoration = (position, className) => {
+        const cursorPos = indexToLineAndColumn(lines, position);
 
-          decorations.push({
-            range: new this.monaco.Range(
-              cursorPos.lineNumber,
-              cursorPos.column,
-              cursorPos.lineNumber,
-              cursorPos.column
-            ),
-            options: {
-              className: this.userClassesGenerated[className],
-            },
-          });
+        return {
+          range: new this.monaco.Range(
+            cursorPos.lineNumber,
+            cursorPos.column,
+            cursorPos.lineNumber,
+            cursorPos.column
+          ),
+          options: {
+            className: `${this.userClassesGenerated[className]}`,
+          },
         };
+      };
 
-        const addSelection = (start, end, className) => {
-          const from = indexToLineAndColumn(lines, start);
-          const to = indexToLineAndColumn(lines, end);
+      const getSelectionDecoration = (start, end, className) => {
+        const from = indexToLineAndColumn(lines, start);
+        const to = indexToLineAndColumn(lines, end);
 
-          decorations.push({
-            range: new this.monaco.Range(
-              from.lineNumber,
-              from.column,
-              to.lineNumber,
-              to.column
-            ),
-            options: {
-              className: this.userClassesGenerated[className],
-            },
-          });
+        return {
+          range: new this.monaco.Range(
+            from.lineNumber,
+            from.column,
+            to.lineNumber,
+            to.column
+          ),
+          options: {
+            className: this.userClassesGenerated[className],
+          },
         };
+      };
+      const prefix = color.join('-') + userId;
+      const cursorClassName = prefix + '-cursor';
+      const nameTagClassName = prefix + '-nametag';
+      const secondaryCursorClassName = prefix + '-secondary-cursor';
+      const selectionClassName = prefix + '-selection';
+      const secondarySelectionClassName = prefix + '-secondary-selection';
 
-        const prefix = color.join('-') + userId;
-        const cursorClassName = prefix + '-cursor';
-        const secondaryCursorClassName = prefix + '-secondary-cursor';
-        const selectionClassName = prefix + '-selection';
-        const secondarySelectionClassName = prefix + '-secondary-selection';
-
+      if (selection && color) {
+        const nameStyles = {
+          content: name,
+          position: 'absolute',
+          bottom: '100%',
+          backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+          zIndex: 200,
+          color:
+            (color[0] * 299 + color[1] * 587 + color[2] * 114) / 1000 > 128
+              ? 'rgba(0, 0, 0, 0.8)'
+              : 'white',
+          padding: '0 4px',
+          borderRadius: 2,
+          borderBottomLeftRadius: 0,
+          fontSize: '.75rem',
+          fontWeight: 600,
+          userSelect: 'none',
+          pointerEvents: 'none',
+          width: 'max-content',
+          fontFamily: 'dm, Menlo, monospace',
+        };
         if (!this.userClassesGenerated[cursorClassName]) {
-          const nameStyles = {
-            content: name,
-            position: 'absolute',
-            top: -17,
-            backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
-            zIndex: 20,
-            color:
-              color[0] + color[1] + color[2] > 500
-                ? 'rgba(0, 0, 0, 0.8)'
-                : 'white',
-            padding: '2px 4px',
-            borderRadius: 2,
-            borderBottomLeftRadius: 0,
-            fontSize: '.75rem',
-            fontWeight: 600,
-            userSelect: 'none',
-            pointerEvents: 'none',
-            width: 'max-content',
-          };
           this.userClassesGenerated[cursorClassName] = `${css({
+            display: 'inherit',
+            position: 'absolute',
             backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,
             width: '2px !important',
+            height: '100%',
             cursor: 'text',
-            zIndex: 30,
-            ':before': {
-              animation: `${fadeOut} 0.3s`,
-              animationDelay: '1s',
-              animationFillMode: 'forwards',
-              opacity: 1,
-              ...nameStyles,
-            },
+            zIndex: 200,
             ':hover': {
               ':before': {
                 animation: `${fadeIn} 0.3s`,
@@ -312,6 +339,18 @@ export class ModelsHandler {
                 opacity: 0,
                 ...nameStyles,
               },
+            },
+          })}`;
+        }
+
+        if (!this.userClassesGenerated[nameTagClassName]) {
+          this.userClassesGenerated[nameTagClassName] = `${css({
+            ':before': {
+              animation: `${fadeOut} 0.3s`,
+              animationDelay: '1s',
+              animationFillMode: 'forwards',
+              opacity: 1,
+              ...nameStyles,
             },
           })}`;
         }
@@ -339,48 +378,70 @@ export class ModelsHandler {
           })}`;
         }
 
-        // These types are not working, have to figure this out
-        // @ts-ignore
-        addCursor(selection.primary.cursorPosition, cursorClassName);
-        // @ts-ignore
+        decorations.push(
+          getCursorDecoration(selection.primary.cursorPosition, cursorClassName)
+        );
+
         if (selection.primary.selection.length) {
-          addSelection(
-            // @ts-ignore
-            selection.primary.selection[0],
-            // @ts-ignore
-            selection.primary.selection[1],
-            selectionClassName
+          decorations.push(
+            getSelectionDecoration(
+              // @ts-ignore
+              selection.primary.selection[0],
+              // @ts-ignore
+              selection.primary.selection[1],
+              selectionClassName
+            )
           );
         }
 
-        // @ts-ignore
         if (selection.secondary.length) {
-          // @ts-ignore
           selection.secondary.forEach(s => {
-            addCursor(s.cursorPosition, secondaryCursorClassName);
+            decorations.push(
+              getCursorDecoration(s.cursorPosition, secondaryCursorClassName)
+            );
 
             if (s.selection.length) {
-              addSelection(
-                s.selection[0],
-                s.selection[1],
-                secondarySelectionClassName
+              decorations.push(
+                getSelectionDecoration(
+                  s.selection[0],
+                  s.selection[1],
+                  secondarySelectionClassName
+                )
               );
             }
           });
         }
       }
 
-      // Allow new model to attach in case it's attaching
-      // Should ideally verify this, this is hacky
-      requestAnimationFrame(() => {
-        this.userSelectionDecorations[
-          decorationId
-        ] = activeEditor.deltaDecorations(
-          this.userSelectionDecorations[decorationId] || [],
-          decorations,
-          userId
+      this.userSelectionDecorations[decorationId] = model.deltaDecorations(
+        this.userSelectionDecorations[decorationId] || [],
+        decorations
+      );
+
+      if (this.nameTagTimeouts[decorationId]) {
+        clearTimeout(this.nameTagTimeouts[decorationId]);
+      }
+      // We don't want to show the nametag when the cursor changed, because
+      // another user changed the code on top of it. Otherwise it would get
+      // messy very fast.
+      if (showNameTag && selection.source !== 'modelChange') {
+        const decoration = model.deltaDecorations(
+          [],
+          [
+            getCursorDecoration(
+              selection.primary.cursorPosition,
+              nameTagClassName
+            ),
+          ]
         );
-      });
+        this.userSelectionDecorations[decorationId].push(decoration);
+        this.nameTagTimeouts[decorationId] = window.setTimeout(() => {
+          if (!model.isDisposed()) {
+            // And now hide the nametag after 1.5s
+            model.deltaDecorations([decoration], []);
+          }
+        }, 1500);
+      }
     });
   }
 

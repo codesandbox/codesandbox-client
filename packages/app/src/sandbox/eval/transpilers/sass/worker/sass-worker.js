@@ -2,6 +2,7 @@ import resolve from 'browser-resolve';
 import { absolute } from '@codesandbox/common/lib/utils/path';
 import { extname } from 'path';
 import delay from '@codesandbox/common/lib/utils/delay';
+import { packageFilter } from '../../../utils/resolve-utils';
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.11.0/sass.sync.js',
@@ -117,6 +118,7 @@ const resolveSass = (fs, p, path) => {
         filename: path,
         extensions: ['.scss', '.css', '.sass'],
         moduleDirectory: ['node_modules'],
+        packageFilter,
         isFile: async (pp, cb) => {
           const exists = !!(await getExistingPath(fs, pp));
 

@@ -1,9 +1,7 @@
 import React from 'react';
 import { Icons } from '@codesandbox/template-icons';
 import getColorIcons from '@codesandbox/common/lib/templates/icons';
-import getEnvironment, {
-  TemplateType,
-} from '@codesandbox/common/lib/templates';
+import { TemplateType } from '@codesandbox/common/lib/templates';
 
 import {
   Container,
@@ -11,8 +9,8 @@ import {
   Details,
   Row,
   Title,
-  Environment,
-  Author as Detail,
+  Owner,
+  Detail,
 } from './elements';
 
 interface ISandboxCardProps {
@@ -20,6 +18,7 @@ interface ISandboxCardProps {
   iconUrl: string;
   environment: TemplateType;
   color: string;
+  owner?: string;
   official?: boolean;
   focused?: boolean;
   detailText?: string;
@@ -43,11 +42,11 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
   onKeyPress,
   onMouseOver,
   DetailComponent,
+  owner,
 }) => {
   const UserIcon: React.FunctionComponent =
     iconUrl && Icons[iconUrl] ? Icons[iconUrl] : getColorIcons(environment);
   const OfficialIcon: React.FunctionComponent = getColorIcons(environment);
-  const parsedEnvironment = getEnvironment(environment);
 
   const elRef = React.useRef<HTMLButtonElement>();
 
@@ -79,7 +78,7 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
           {focused && DetailComponent && <DetailComponent />}
         </Row>
         <Row>
-          <Environment>{parsedEnvironment.name}</Environment>
+          <Owner>{owner ? `by ${owner}` : ''}</Owner>
 
           {detailText && <Detail>{detailText}</Detail>}
         </Row>

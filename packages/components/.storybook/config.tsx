@@ -35,6 +35,7 @@ const GlobalStyle = createGlobalStyle`
   ${global};
   html body {
     font-family: 'Inter', sans-serif;
+    width: 400px;
     margin: 0;
     background-color: ${props =>
       // @ts-ignore
@@ -54,7 +55,7 @@ const vsCodeThemes = allThemes.map(b => makeTheme(b, b.name));
 const blackCodesandbox = vsCodeThemes.find(
   theme => theme.name === 'CodeSandbox Black'
 );
-console.log(isChromatic());
+
 if (!isChromatic()) {
   const withGlobal = (cb: any) => (
     <>

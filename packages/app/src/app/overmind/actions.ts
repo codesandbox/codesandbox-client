@@ -73,27 +73,24 @@ type ModalName =
   | 'searchDependencies'
   | 'share'
   | 'signInForTemplates'
-  | 'userSurvey';
+  | 'userSurvey'
+  | 'liveSessionEnded';
 
 export const modalOpened: Action<{
   modal: ModalName;
   message?: string;
   itemId?: string;
-}> = ({ state, effects }, { modal, message, itemId }) => {
-  effects.analytics.track('Open Modal', { modal });
-  state.currentModalMessage = message;
-  state.currentModal = modal;
-  if (state.currentModal === 'preferences') {
-    state.preferences.itemId = itemId;
+}> = ({ state, effects }, props) => {
+  effects.analytics.track('Open Modal', { modal: props.modal });
+  state.currentModal = props.modal;
+  if (props.modal === 'preferences' && props.itemId) {
+    state.preferences.itemId = props.itemId;
+  } else {
+    state.currentModalMessage = props.message || null;
   }
 };
 
-export const modalClosed: Action = ({ state, effects }) => {
-  // We just start it whenever it closes, if already started nothing happens
-  if (state.currentModal === 'preferences') {
-    effects.keybindingManager.start();
-  }
-
+export const modalClosed: Action = ({ state }) => {
   state.currentModal = null;
 };
 
@@ -162,8 +159,10 @@ export const signInZeitClicked: AsyncAction = async ({
 };
 
 export const signOutZeitClicked: AsyncAction = async ({ state, effects }) => {
-  await effects.api.signoutZeit();
-  state.user.integrations.zeit = null;
+  if (state.user?.integrations?.zeit) {
+    await effects.api.signoutZeit();
+    delete state.user.integrations.zeit;
+  }
 };
 
 export const authTokenRequested: AsyncAction = async ({ actions }) => {
@@ -200,8 +199,10 @@ export const signOutGithubIntegration: AsyncAction = async ({
   state,
   effects,
 }) => {
-  await effects.api.signoutGithubIntegration();
-  state.user.integrations.github = null;
+  if (state.user?.integrations?.github) {
+    await effects.api.signoutGithubIntegration();
+    delete state.user.integrations.github;
+  }
 };
 
 export const setUpdateStatus: Action<{ status: string }> = (
@@ -219,23 +220,26 @@ export const track: Action<{ name: string; data: any }> = (
 };
 
 export const refetchSandboxInfo: AsyncAction = async ({
-  state,
-  effects,
   actions,
+  effects,
+  state,
 }) => {
   const sandbox = state.editor.currentSandbox;
-  if (sandbox && sandbox.id) {
-    const updatedSandbox = await effects.api.getSandbox(sandbox.id);
 
-    sandbox.collection = updatedSandbox.collection;
-    sandbox.owned = updatedSandbox.owned;
-    sandbox.userLiked = updatedSandbox.userLiked;
-    sandbox.title = updatedSandbox.title;
-    sandbox.team = updatedSandbox.team;
-    sandbox.roomId = updatedSandbox.roomId;
-
-    await actions.editor.internal.initializeLiveSandbox(sandbox);
+  if (!sandbox?.id) {
+    return;
   }
+
+  const updatedSandbox = await effects.api.getSandbox(sandbox.id);
+
+  sandbox.collection = updatedSandbox.collection;
+  sandbox.owned = updatedSandbox.owned;
+  sandbox.userLiked = updatedSandbox.userLiked;
+  sandbox.title = updatedSandbox.title;
+  sandbox.team = updatedSandbox.team;
+  sandbox.roomId = updatedSandbox.roomId;
+
+  await actions.editor.internal.initializeLiveSandbox(sandbox);
 };
 
 export const acceptTeamInvitation: Action<{ teamName: string }> = (

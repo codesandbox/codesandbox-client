@@ -7,6 +7,7 @@ export const List = styled(Element).attrs({ as: 'ul' })(
   css({
     listStyle: 'none',
     paddingLeft: 0,
+    margin: 0,
   })
 );
 
@@ -15,19 +16,23 @@ export const ListItem = styled(Stack).attrs({
   align: 'center',
 })(
   css({
-    height: 8,
+    minHeight: 8,
     paddingX: 2,
+    color: 'list.foreground',
   })
 );
 
-export const ListAction = styled(ListItem)(
-  css({
-    ':hover': {
-      cursor: 'pointer',
-      backgroundColor: 'sideBar.hoverBackground',
-    },
-    ':focus-within': {
-      backgroundColor: 'sideBar.hoverBackground',
-    },
-  })
+export const ListAction = styled(ListItem)<{ disabled?: boolean }>(
+  ({ disabled }) =>
+    css({
+      ':hover, &[aria-selected="true"]': {
+        cursor: !disabled ? 'pointer' : 'disabled',
+        color: !disabled ? 'list.hoverForeground' : 'inherit',
+        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
+      },
+      ':focus-within': {
+        color: !disabled ? 'list.hoverForeground' : 'inherit',
+        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
+      },
+    })
 );

@@ -1,5 +1,6 @@
-import { Contributor } from '@codesandbox/common/lib/types';
-import { IDerive, IState, json } from 'overmind';
+import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { IDerive, IState } from 'overmind';
 
 import { AsyncAction } from '.';
 
@@ -25,10 +26,6 @@ export const withLoadApp = <T>(
 
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
-  effects.keybindingManager.set(
-    json(state.preferences.settings.keybindings || [])
-  );
-  effects.keybindingManager.start();
   effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
 
   if (state.jwt) {
@@ -77,29 +74,40 @@ export const withLoadApp = <T>(
 
 export const withOwnedSandbox = <T>(
   continueAction: AsyncAction<T>,
-  cancelAction: AsyncAction<T> = () => Promise.resolve()
+  cancelAction: AsyncAction<T> = () => Promise.resolve(),
+  requiredPermission?: PermissionType
 ): AsyncAction<T> => async (context, payload) => {
   const { state, actions } = context;
 
-  if (state.editor.currentSandbox) {
-    if (!state.editor.currentSandbox.owned) {
+  const sandbox = state.editor.currentSandbox;
+  if (sandbox) {
+    if (
+      typeof requiredPermission === 'undefined'
+        ? !sandbox.owned
+        : !hasPermission(sandbox.authorization, requiredPermission)
+    ) {
       if (state.editor.isForkingSandbox) {
         return cancelAction(context, payload);
       }
 
-      await actions.editor.internal.forkSandbox({
-        sandboxId: state.editor.currentSandbox.id,
-      });
-    } else if (
-      state.editor.currentSandbox.isFrozen &&
-      state.editor.sessionFrozen
-    ) {
+      try {
+        await actions.editor.internal.forkSandbox({
+          sandboxId: sandbox.id,
+        });
+      } catch (e) {
+        return cancelAction(context, payload);
+      }
+    } else if (sandbox.isFrozen && state.editor.sessionFrozen) {
       const modalResponse = await actions.modals.forkFrozenModal.open();
 
       if (modalResponse === 'fork') {
-        await actions.editor.internal.forkSandbox({
-          sandboxId: state.editor.currentId,
-        });
+        try {
+          await actions.editor.internal.forkSandbox({
+            sandboxId: state.editor.currentId!,
+          });
+        } catch (e) {
+          return cancelAction(context, payload);
+        }
       } else if (modalResponse === 'unfreeze') {
         state.editor.sessionFrozen = false;
       } else if (modalResponse === 'cancel') {
@@ -121,12 +129,12 @@ export const createModals = <
 >(
   modals: T
 ): {
-  state?: {
-    current: keyof T;
+  state: {
+    current: keyof T | null;
   } & {
     [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> };
   };
-  actions?: {
+  actions: {
     [K in keyof T]: {
       open: AsyncAction<
         T[K]['state'] extends IState ? T[K]['state'] : void,

@@ -248,9 +248,20 @@ Thanks goes to these wonderful people
     <td align="center"><a href="https://carloslfu.github.io"><img src="https://avatars3.githubusercontent.com/u/5993168?v=4" width="100px;" alt="Carlos Galarza"/><br /><sub><b>Carlos Galarza</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=carloslfu" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/soorajshankar"><img src="https://avatars2.githubusercontent.com/u/8408875?v=4" width="100px;" alt="soorajshankar"/><br /><sub><b>soorajshankar</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=soorajshankar" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="http://mcmunder.de"><img src="https://avatars3.githubusercontent.com/u/5681686?v=4" width="100px;" alt="Matthias Christoph Munder"/><br /><sub><b>Matthias Christoph Munder</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3Amcmunder" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=mcmunder" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+
+
+## Thanks
+
+<a href="https://www.chromaticqa.com/"><img src="https://cdn-images-1.medium.com/letterbox/147/36/50/50/1*oHHjTjInDOBxIuYHDY2gFA.png?source=logoAvatar-d7276495b101---37816ec27d7a" width="120"/></a>
+
+Thanks to [Chromatic](https://www.chromaticqa.com/) for providing the visual testing platform that helps us catch unexpected changes.

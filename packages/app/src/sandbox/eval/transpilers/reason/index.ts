@@ -3,7 +3,7 @@ import stripANSI from 'strip-ansi';
 
 import Transpiler from '..';
 import { LoaderContext } from '../../transpiled-module';
-import { Module } from '../../entities/module';
+import { Module } from '../../types/module';
 
 type ReasonModule = Module & {
   moduleName: string;

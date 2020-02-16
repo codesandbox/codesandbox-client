@@ -5,7 +5,7 @@ import { LinkButton as AppLinkButton } from 'app/components/LinkButton';
 
 export const Page = styled.div(
   css({
-    backgroundColor: 'grays.800',
+    backgroundColor: 'grays.900',
     color: 'white',
 
     // the following evil exists because we are inserting
@@ -38,6 +38,26 @@ export const SubHeading = styled.span(
     display: 'block',
     textAlign: 'center',
     marginBottom: 10,
+  })
+);
+
+export const BillText = styled.span<{ on: boolean }>(props =>
+  css({
+    color: props.on ? 'white' : 'grays.300',
+    margin: '0 1rem',
+  })
+);
+
+export const DurationChoice = styled.div(() =>
+  css({
+    display: 'flex',
+    textAlign: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+
+    '[data-component=SwitchBackground]': {
+      backgroundColor: 'grays.700',
+    },
   })
 );
 
@@ -91,11 +111,11 @@ export const Input = styled.input(
 
     ':hover': {
       backgroundColor: 'grays.700',
-      borderColor: 'grays.600',
+      borderColor: 'grays.500',
     },
     ':focus': {
       outline: 'none',
-      backgroundColor: 'grays.800',
+      backgroundColor: 'grays.900',
       borderColor: 'grays.300',
     },
   })
@@ -158,7 +178,7 @@ export const HelpText = styled.p(
 
 export const LinkButton = styled(AppLinkButton)(
   css({
-    color: 'grays.300',
+    color: 'grays.200',
   })
 );
 
@@ -175,11 +195,11 @@ export const CardContainer = styled.div(
 
       ':hover': {
         backgroundColor: 'grays.700',
-        borderColor: 'grays.600',
+        borderColor: 'grays.500',
       },
 
       '&.StripeElement--focus': {
-        backgroundColor: 'grays.800',
+        backgroundColor: 'grays.900',
         borderColor: 'grays.300',
       },
     },
@@ -262,7 +282,7 @@ const badgeBackground = {
 export const Badge = styled.span<{ type: string }>(props =>
   css({
     backgroundColor: badgeBackground[props.type],
-    color: props.type === 'pro' ? 'white' : 'grays.800',
+    color: props.type === 'pro' ? 'white' : 'grays.900',
     paddingY: 1,
     paddingX: 2,
     fontWeight: 'bold',

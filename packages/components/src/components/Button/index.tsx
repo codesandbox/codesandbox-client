@@ -3,12 +3,6 @@ import css from '@styled-system/css';
 import deepmerge from 'deepmerge';
 import { Element } from '../Element';
 
-// totally custom button shadow, same across themes
-const interactionShadows = {
-  hover: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-  focus: '0px 2px 4px rgba(0, 0, 0, 0.4)',
-};
-
 const variantStyles = {
   primary: {
     backgroundColor: 'button.background',
@@ -21,13 +15,11 @@ const variantStyles = {
       // so we need to write the long syntax
       // TODO @sid: extend our system to make background work as well
       background: theme => theme.colors.button.hoverBackground,
-      boxShadow: interactionShadows.hover,
     },
     ':focus': {
       // we use the same colors for hover and focus
       // but we add an active state to give
       background: theme => theme.colors.button.hoverBackground,
-      boxShadow: interactionShadows.focus,
     },
     ':disabled:hover': {
       background: 'transparent', // override hover
@@ -40,11 +32,9 @@ const variantStyles = {
     // same technique as primary
     ':hover': {
       background: theme => theme.colors.secondaryButton.hoverBackground,
-      boxShadow: interactionShadows.hover,
     },
     ':focus': {
       background: theme => theme.colors.secondaryButton.hoverBackground,
-      boxShadow: interactionShadows.focus,
     },
     ':disabled:hover': {
       background: 'transparent', // override hover
@@ -68,11 +58,9 @@ const variantStyles = {
     // same technique as primary
     ':hover': {
       background: theme => theme.colors.dangerButton.hoverBackground,
-      boxShadow: interactionShadows.hover,
     },
     ':focus': {
       background: theme => theme.colors.dangerButton.hoverBackground,
-      boxShadow: interactionShadows.focus,
     },
 
     ':disabled:hover': {
@@ -83,7 +71,10 @@ const variantStyles = {
 };
 
 export const Button = styled(Element).attrs({ as: 'button' })<{
+  type?: 'submit' | 'button' | 'reset';
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
+  disabled?: boolean;
+  onClick?: any;
 }>(({ variant = 'primary', ...props }) =>
   css(
     deepmerge(
@@ -95,15 +86,19 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
       variantStyles[variant],
       // static styles:
       {
-        display: 'inline-block',
+        display: 'inline-flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         cursor: 'pointer',
+        padding: 0,
         height: 6,
         width: '100%',
         fontSize: 2,
+        lineHeight: 1, // trust the height
         border: 'none',
         borderRadius: 'small',
         transition: 'all ease-in',
-        transitionDuration: theme => theme.speeds[1],
+        transitionDuration: theme => theme.speeds[2],
 
         ':focus': {
           outline: 'none',
@@ -120,3 +115,7 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
     )
   )
 );
+
+Button.defaultProps = {
+  type: 'button',
+};

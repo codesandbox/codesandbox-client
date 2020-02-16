@@ -28,7 +28,7 @@ import { map } from 'sandbox-hooks/react-error-overlay/utils/mapper';
 import run from './run-circus';
 
 import Manager from '../manager';
-import { Module } from '../entities/module';
+import { Module } from '../types/module';
 import { Event, TestEntry, DescribeBlock, TestName, TestFn } from './types';
 
 export { messages };
@@ -266,8 +266,6 @@ export default class TestRunner {
 
     await this.initJSDOM();
 
-    this.manager.clearCompiledCache();
-
     this.sendMessage(messages.TOTAL_TEST_START);
 
     let testModules: Module[] = [];
@@ -324,14 +322,14 @@ export default class TestRunner {
             testModules.forEach(module => {
               this.manager.evaluateModule(module, {
                 force: true,
-                testGlobals: true,
+                globals: this.testGlobals(module),
               });
             });
           }
 
           this.manager.evaluateModule(t, {
             force: true,
-            testGlobals: true,
+            globals: this.testGlobals(t),
           });
           this.ranTests.add(t.path);
         } catch (e) {

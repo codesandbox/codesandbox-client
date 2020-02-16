@@ -1,18 +1,29 @@
-import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import VisuallyHidden from '@reach/visually-hidden';
-import { useId } from '@reach/auto-id';
-import { Text } from '../Text';
+import { Element } from '../Element';
 
 const placeholderStyles = {
   color: 'input.placeholderForeground',
   fontSize: 3,
 };
 
-export const InputComponent = styled.input(
+export const Input = styled(Element).attrs({ as: 'input' })<{
+  type?: string;
+  onBlur?: any;
+  onChange?: any;
+  onKeyUp?: any;
+  placeholder?: string;
+  ref?: any;
+  required?: boolean;
+  value?: string | number;
+  defaultValue?: string | number;
+  autoComplete?: 'on' | 'off';
+  spellCheck?: 'true' | 'false';
+  autoFocus?: boolean;
+}>(
   css({
-    height: 6,
+    height: '26px',
+    width: '100%',
     paddingX: 2,
     fontSize: 3,
     borderRadius: 'small',
@@ -23,36 +34,18 @@ export const InputComponent = styled.input(
     '::-webkit-input-placeholder': placeholderStyles,
     '::-ms-input-placeholder': placeholderStyles,
     '::placeholder': placeholderStyles,
+    transition: 'all ease',
+    transitionDuration: theme => theme.speeds[2],
+
+    ':hover, :focus': {
+      borderColor: 'inputOption.activeBorder',
+      // need to use !important to override styles from
+      // workbench-theme.css, not proud :/
+      outline: 'none !important',
+    },
+    ':disabled': {
+      opacity: 0.4,
+      borderColor: 'input.border', // (default border)
+    },
   })
 );
-
-interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-}
-
-export const Input: React.FC<IInputProps> = ({
-  type = 'text',
-  label,
-  ...props
-}) => {
-  const id = useId(props.id);
-  return (
-    <>
-      {props.placeholder && !label ? (
-        <VisuallyHidden>
-          <label htmlFor={id}>{props.placeholder}</label>
-        </VisuallyHidden>
-      ) : null}
-      <Text
-        as="label"
-        size={2}
-        marginBottom={2}
-        htmlFor={id}
-        style={{ display: 'block' }}
-      >
-        {label}
-      </Text>
-      <InputComponent id={id} {...props} />
-    </>
-  );
-};

@@ -7,3 +7,4 @@
 */
 
 export const EMBED_LIGHT_THEME = true;
+export const REDESIGNED_SIDEBAR = localStorage.REDESIGNED_SIDEBAR || false;
