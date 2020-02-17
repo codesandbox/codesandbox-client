@@ -1039,7 +1039,7 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   }
 
   subscriptions.forEach(sub => {
-    sub.unsubscribe();
+    sub.dispose();
   });
 
   const collaboratorResponse = await effects.queries.collaborators({
