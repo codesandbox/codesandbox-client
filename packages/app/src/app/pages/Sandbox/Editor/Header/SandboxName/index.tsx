@@ -93,6 +93,7 @@ export const SandboxName: FunctionComponent = () => {
                 variant="link"
                 css={css({ fontSize: 3, width: 'auto' })}
                 onClick={() => modalOpened({ modal: 'moveSandbox' })}
+                arial-label="Change sandbox folder"
               >
                 {folderName}
               </Button>
@@ -130,6 +131,7 @@ export const SandboxName: FunctionComponent = () => {
               <Button
                 variant="link"
                 css={css({ fontSize: 3, width: 'auto', color: 'foreground' })}
+                arial-label="Change sandbox name"
                 onClick={handleNameClick}
               >
                 {sandboxName}
