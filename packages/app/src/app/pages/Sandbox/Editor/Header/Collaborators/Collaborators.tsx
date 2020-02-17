@@ -1,22 +1,32 @@
 import React, { FunctionComponent } from 'react';
-import { Button, Stack } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { Button } from '@codesandbox/components';
 import { Overlay } from 'app/components/Overlay';
 import { AnimatePresence } from 'framer-motion';
 
 import { useOvermind } from 'app/overmind';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { AddPeople } from './icons';
-import { Container } from './elements';
+import { Container, HorizontalSeparator } from './elements';
 import { AddCollaboratorForm } from './AddCollaboratorForm';
 import { Collaborator, Invitation } from './Collaborator';
+import { ChangeLinkPermissionForm } from './ChangeLinkPermissionForm';
 
 const CollaboratorContent = () => {
   const { state } = useOvermind();
+
+  const canEdit = hasPermission(
+    state.editor.currentSandbox.authorization,
+    'owner'
+  );
 
   return (
     <Container gap={4} direction="vertical">
       <AddCollaboratorForm />
 
-      <div>
+      <HorizontalSeparator />
+
+      <div css={css({ height: 250, overflowY: 'auto' })}>
         <AnimatePresence>
           {state.editor.collaborators.map(collaborator => (
             <Collaborator
@@ -26,6 +36,7 @@ const CollaboratorContent = () => {
               avatarUrl={collaborator.user.avatarUrl}
               authorization={collaborator.authorization}
               lastSeenAt={collaborator.lastSeenAt}
+              readOnly={!canEdit}
             />
           ))}
 
@@ -39,6 +50,10 @@ const CollaboratorContent = () => {
           ))}
         </AnimatePresence>
       </div>
+
+      <HorizontalSeparator />
+
+      <ChangeLinkPermissionForm />
     </Container>
   );
 };

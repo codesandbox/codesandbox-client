@@ -42,3 +42,12 @@ export const DropdownItem = styled(Element).attrs({ as: 'li' })<{
       color: ${({ theme }) => theme.colors.white};
     `}
 `;
+
+export const HorizontalSeparator = styled.hr`
+  width: 100%;
+  height: 1px;
+  border: none;
+  background-color: ${({ theme }) => theme.colors.grays[500]};
+  margin-block-start: 0;
+  margin-block-end: 0;
+`;

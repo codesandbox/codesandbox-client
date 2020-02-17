@@ -5,7 +5,6 @@ import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Authorization } from 'app/graphql/types';
 import { formatDistanceToNow } from 'date-fns';
-import { zonedTimeToUtc } from 'date-fns-tz';
 import { RoomInfo } from '@codesandbox/common/lib/types';
 import { PermissionSelect } from './PermissionSelect';
 import { Mail } from './icons';
@@ -108,6 +107,7 @@ export const Collaborator = ({
   avatarUrl,
   authorization,
   lastSeenAt,
+  readOnly,
 }: ICollaboratorProps) => {
   const { actions, state } = useOvermind();
 
@@ -140,6 +140,7 @@ export const Collaborator = ({
       avatarUrl={avatarUrl}
       onChange={updateAuthorization}
       authorization={authorization}
+      readOnly={readOnly}
     />
   );
 };

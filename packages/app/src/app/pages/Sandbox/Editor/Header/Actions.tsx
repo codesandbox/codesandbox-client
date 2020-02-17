@@ -92,7 +92,7 @@ export const Actions = () => {
         </Stack>
       )}
 
-      <Collaborators />
+      {hasLogIn && <Collaborators />}
 
       {user?.curatorAt && (
         <Button
