@@ -174,7 +174,7 @@
   -webkit-app-region: no-drag;
   overflow: hidden;
   flex-wrap: wrap;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .monaco-workbench.fullscreen .menubar {
@@ -201,7 +201,8 @@
 }
 
 .monaco-workbench .menubar .menubar-menu-items-holder.monaco-menu-container {
-  font-family: Inter, sans-serif;
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe WPC',
+    'Segoe UI', 'HelveticaNeue-Light', 'Ubuntu', 'Droid Sans', sans-serif;
   outline: 0;
   border: none;
   font-size: 0.75rem;

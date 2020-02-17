@@ -35,6 +35,7 @@ const polyfillTheme = vsCodeTheme => {
     list: {},
     sideBar: {},
     activityBar: {},
+    titleBar: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
@@ -125,6 +126,13 @@ const polyfillTheme = vsCodeTheme => {
     uiColors.list.hoverForeground || uiColors.sideBar.foreground;
   uiColors.list.hoverBackground =
     uiColors.list.hoverBackground || uiColors.sideBar.hoverBackground;
+
+  uiColors.titleBar.activeBackground =
+    uiColors.titleBar.activeBackground || uiColors.sideBar.background;
+  uiColors.titleBar.activeForeground =
+    uiColors.titleBar.activeForeground || uiColors.sideBar.foreground;
+  uiColors.titleBar.border =
+    uiColors.titleBar.border || uiColors.sideBar.border;
 
   // Step 3.2
   // On the same theme of design decisions for interfaces,

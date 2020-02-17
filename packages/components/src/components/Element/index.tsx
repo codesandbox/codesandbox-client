@@ -21,6 +21,7 @@ export interface IElementProps {
 
 export const Element = styled.div<IElementProps>(props =>
   css({
+    boxSizing: 'border-box',
     margin: props.margin || null,
     marginX: props.marginX || null,
     marginY: props.marginY || null,

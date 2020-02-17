@@ -22,7 +22,7 @@ export const MenuBar: FunctionComponent = () => {
       className="part titlebar"
       onClick={() => track('Editor - Click Menubar')}
     >
-      <Child ref={menuBarEl} />
+      <Child className="menubar" ref={menuBarEl} />
     </Container>
   );
 };
