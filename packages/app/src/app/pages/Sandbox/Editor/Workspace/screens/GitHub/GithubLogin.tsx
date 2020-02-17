@@ -29,7 +29,7 @@ export const GithubLogin = () => {
             marginX={2}
             css={css({
               display: 'grid',
-              gridTemplateColumns: '1fr 50px',
+              gridTemplateColumns: '1fr auto',
               gridGap: 4,
             })}
           >

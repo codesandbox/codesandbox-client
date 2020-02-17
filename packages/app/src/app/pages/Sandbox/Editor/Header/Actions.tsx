@@ -94,6 +94,7 @@ export const Actions = () => {
       {user?.curatorAt && (
         <Button
           variant="secondary"
+          css={css({ paddingX: 3 })}
           onClick={() => pickSandboxModal({ description, id, title })}
         >
           Pick
@@ -113,6 +114,7 @@ export const Actions = () => {
       </Button>
       <Button
         variant="secondary"
+        css={css({ paddingX: 3 })}
         onClick={() => modalOpened({ modal: 'newSandbox' })}
       >
         Create Sandbox
