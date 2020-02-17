@@ -18,10 +18,10 @@ const tweets = [
     username: 'elijahmanor',
   },
   {
-    name: 'Emma Wedekind',
+    name: 'Emma Bostian',
     quote: 'It is by far the best online code editor I’ve ever used',
-    URL: 'https://twitter.com/EmmaWedekind/status/1145977857203724288?s=20',
-    username: 'EmmaWedekind',
+    URL: 'https://twitter.com/EmmaBostian/status/1145977857203724288?s=20',
+    username: 'EmmaBostian',
   },
   {
     name: 'Jen Looper',
