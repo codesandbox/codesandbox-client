@@ -23,6 +23,14 @@ import {
   RevokeSandboxInvitationMutationVariables,
   ChangeSandboxInvitationAuthorizationMutation,
   ChangeSandboxInvitationAuthorizationMutationVariables,
+  OnInvitationCreatedSubscription,
+  OnInvitationCreatedSubscriptionVariables,
+  OnInvitationRemovedSubscription,
+  OnInvitationRemovedSubscriptionVariables,
+  OnInvitationChangedSubscription,
+  OnInvitationChangedSubscriptionVariables,
+  RedeemSandboxInvitationMutation,
+  RedeemSandboxInvitationMutationVariables,
 } from 'app/graphql/types';
 
 export const collaboratorFragment = gql`
@@ -211,6 +219,57 @@ export const changeInvitationAuthorization: Query<
       invitationId: $invitationId
       authorization: $authorization
     ) {
+      ...Invitation
+    }
+  }
+  ${sandboxInvitationFragment}
+`;
+
+export const redeemSandboxInvitation: Query<
+  RedeemSandboxInvitationMutation,
+  RedeemSandboxInvitationMutationVariables
+> = gql`
+  mutation RedeemSandboxInvitation($sandboxId: ID!, $invitationToken: String!) {
+    redeemSandboxInvitation(
+      sandboxId: $sandboxId
+      invitationToken: $invitationToken
+    ) {
+      ...Invitation
+    }
+  }
+  ${sandboxInvitationFragment}
+`;
+
+export const onInvitationCreated: Query<
+  OnInvitationCreatedSubscription,
+  OnInvitationCreatedSubscriptionVariables
+> = gql`
+  subscription OnInvitationCreated($sandboxId: ID!) {
+    invitationCreated(sandboxId: $sandboxId) {
+      ...Invitation
+    }
+  }
+  ${sandboxInvitationFragment}
+`;
+
+export const onInvitationRemoved: Query<
+  OnInvitationRemovedSubscription,
+  OnInvitationRemovedSubscriptionVariables
+> = gql`
+  subscription OnInvitationRemoved($sandboxId: ID!) {
+    invitationRemoved(sandboxId: $sandboxId) {
+      ...Invitation
+    }
+  }
+  ${sandboxInvitationFragment}
+`;
+
+export const onInvitationChanged: Query<
+  OnInvitationChangedSubscription,
+  OnInvitationChangedSubscriptionVariables
+> = gql`
+  subscription OnInvitationChanged($sandboxId: ID!) {
+    invitationChanged(sandboxId: $sandboxId) {
       ...Invitation
     }
   }

@@ -4,13 +4,18 @@ import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Authorization } from 'app/graphql/types';
+import { formatDistanceToNow } from 'date-fns';
+import { zonedTimeToUtc } from 'date-fns-tz';
+import { RoomInfo } from '@codesandbox/common/lib/types';
 import { PermissionSelect } from './PermissionSelect';
+import { Mail } from './icons';
 
 interface ICollaboratorItemProps {
   authorization: Authorization;
   name: string;
   subtext: string;
-  avatarUrl: string;
+  avatarUrl?: string;
+  avatarComponent?: JSX.Element | null;
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 
   readOnly?: boolean;
@@ -20,6 +25,7 @@ export const CollaboratorItem = ({
   name,
   subtext,
   avatarUrl,
+  avatarComponent = null,
   authorization,
   onChange,
   readOnly,
@@ -48,6 +54,9 @@ export const CollaboratorItem = ({
         ) : (
           <div
             css={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               borderRadius: 2,
               border: '1px solid',
               borderColor: 'grays.500',
@@ -55,7 +64,9 @@ export const CollaboratorItem = ({
               width: 32,
               height: 32,
             })}
-          />
+          >
+            {avatarComponent}
+          </div>
         )}
         <Stack justify="center" direction="vertical">
           <Text size={3} color="white">
@@ -79,6 +90,7 @@ export const CollaboratorItem = ({
 
 interface ICollaboratorProps {
   authorization: Authorization;
+  userId: string;
   username: string;
   lastSeenAt: string | null;
   avatarUrl: string;
@@ -86,8 +98,13 @@ interface ICollaboratorProps {
   readOnly?: boolean;
 }
 
+function getLiveUser(currentUserId: string, roomInfo: RoomInfo) {
+  return roomInfo?.users?.find(u => u.userId === currentUserId);
+}
+
 export const Collaborator = ({
   username,
+  userId,
   avatarUrl,
   authorization,
   lastSeenAt,
@@ -109,10 +126,17 @@ export const Collaborator = ({
     }
   };
 
+  const currentLiveUser = getLiveUser(userId, state.live?.roomInfo);
+  const subtext = currentLiveUser
+    ? 'Viewing now'
+    : lastSeenAt
+    ? formatDistanceToNow(new Date(lastSeenAt), { addSuffix: true })
+    : 'Not viewed yet';
+
   return (
     <CollaboratorItem
       name={username}
-      subtext={lastSeenAt ? 'Now viewing' : 'Not viewed yet'}
+      subtext={subtext}
       avatarUrl={avatarUrl}
       onChange={updateAuthorization}
       authorization={authorization}
@@ -123,7 +147,6 @@ export const Collaborator = ({
 interface IInvitationProps {
   id: string;
   email: string;
-  avatarUrl: string;
   authorization: Authorization;
 }
 
@@ -150,7 +173,7 @@ export const Invitation = ({ id, email, authorization }: IInvitationProps) => {
     <CollaboratorItem
       name={email}
       subtext="Not viewed yet"
-      avatarUrl=""
+      avatarComponent={<Mail width={24} height={24} />}
       onChange={updateAuthorization}
       authorization={authorization}
     />

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Downshift, { DownshiftProps } from 'downshift';
 import { Input } from '@codesandbox/components';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { DropdownList, DropdownItem } from './elements';
 
 interface IUserAutoComplete {
@@ -38,7 +39,7 @@ const UserAutoComplete = ({ inputValue, children }: IUserAutoComplete) => {
 };
 
 interface IUserSearchInputProps {
-  onInputValueChange: DownshiftProps['onInputValueChange'];
+  onInputValueChange: DownshiftProps<string>['onInputValueChange'];
   inputValue: string;
   [key: string]: any;
 }
@@ -56,42 +57,45 @@ export const UserSearchInput = ({
     {({
       getInputProps,
       getItemProps,
+      getRootProps,
+      getMenuProps,
       isOpen,
       selectedItem,
       inputValue: currentInputValue,
       highlightedIndex,
     }) => (
       <div style={{ width: '100%', position: 'relative' }}>
-        <Input
-          {...props}
-          {...getInputProps({
-            placeholder: 'Enter name or email address',
-          })}
-        />
+        <div {...getRootProps({}, { suppressRefError: true })}>
+          <Input
+            {...props}
+            {...getInputProps({
+              placeholder: 'Enter name or email address',
+            })}
+          />
+        </div>
 
-        {isOpen ? (
-          <UserAutoComplete inputValue={currentInputValue}>
-            {({ users, error }) =>
-              users.length > 0 && !error ? (
-                <DropdownList as="ul" direction="vertical">
-                  {users.map((item, index) => (
+        <UserAutoComplete inputValue={currentInputValue}>
+          {({ users, error }) =>
+            users.length > 0 && !error ? (
+              <DropdownList as="ul" direction="vertical" {...getMenuProps({})}>
+                {isOpen &&
+                  users.map((item, index) => (
                     <DropdownItem
                       key={item}
+                      isActive={highlightedIndex === index}
                       {...getItemProps({
                         item,
                         index,
-                        isActive: highlightedIndex === index,
                         isSelected: selectedItem === item,
                       })}
                     >
                       {item}
                     </DropdownItem>
                   ))}
-                </DropdownList>
-              ) : null
-            }
-          </UserAutoComplete>
-        ) : null}
+              </DropdownList>
+            ) : null
+          }
+        </UserAutoComplete>
       </div>
     )}
   </Downshift>

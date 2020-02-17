@@ -115,7 +115,7 @@
     "date-fns-tz": "^1.0.7",
     "debug": "^2.6.8",
     "dot-object": "^1.9.0",
-    "downshift": "^1.0.0-rc.14",
+    "downshift": "^5.0.0",
     "eslint-plugin-react-hooks": "1.6.0",
     "eslint-plugin-vue": "^4.2.2",
     "estree-walker": "^1.0.1",

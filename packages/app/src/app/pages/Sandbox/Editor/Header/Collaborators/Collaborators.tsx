@@ -21,6 +21,7 @@ const CollaboratorContent = () => {
           {state.editor.collaborators.map(collaborator => (
             <Collaborator
               key={collaborator.user.username}
+              userId={collaborator.user.id}
               username={collaborator.user.username}
               avatarUrl={collaborator.user.avatarUrl}
               authorization={collaborator.authorization}

@@ -24,7 +24,7 @@ export const AddCollaboratorForm = () => {
       controls.start({
         translateX: [-4, 4, 0],
         transition: {
-          duration: 0.1,
+          duration: 0.15,
           loop: 3,
         },
       });

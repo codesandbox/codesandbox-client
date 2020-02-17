@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  display: inherit;
   position: relative;
 `;
 

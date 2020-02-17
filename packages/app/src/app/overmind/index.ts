@@ -71,6 +71,9 @@ export const config = graphql(baseConfig, {
     onCollaboratorAdded: collaboratorGql.onCollaboratorAdded,
     onCollaboratorChanged: collaboratorGql.onCollaboratorChanged,
     onCollaboratorRemoved: collaboratorGql.onCollaboratorRemoved,
+    onInvitationCreated: collaboratorGql.onInvitationCreated,
+    onInvitationChanged: collaboratorGql.onInvitationChanged,
+    onInvitationRemoved: collaboratorGql.onInvitationRemoved,
   },
   queries: {
     collaborators: collaboratorGql.collaborators,
@@ -85,6 +88,7 @@ export const config = graphql(baseConfig, {
     revokeInvitation: collaboratorGql.revokeInvitation,
     changeSandboxInvitationAuthorization:
       collaboratorGql.changeInvitationAuthorization,
+    redeemSandboxInvitation: collaboratorGql.redeemSandboxInvitation,
   },
 });
 

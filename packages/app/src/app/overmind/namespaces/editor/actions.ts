@@ -20,11 +20,13 @@ import { json } from 'overmind';
 
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { NotificationStatus } from '@codesandbox/notifications';
+import history from 'app/utils/history';
 import {
   Authorization,
   CollaboratorFragment,
   InvitationFragment,
 } from 'app/graphql/types';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import eventToTransform from '../../utils/event-to-transform';
 import * as internalActions from './internalActions';
 import { SERVER } from '../../utils/items';
@@ -99,6 +101,35 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   state.editor.isLoading = !hasExistingSandbox;
   state.editor.notFound = false;
+
+  const url = new URL(document.location.href);
+  const invitationToken = url.searchParams.get('ts');
+
+  if (invitationToken) {
+    // This user came here with an invitation token, which can be sent to the email to make
+    // the user a collaborator
+    if (!state.hasLogIn) {
+      // Redirect to sign in URL, which then redirects back to this after
+      history.push(signInPageUrl(document.location.href));
+      return;
+    }
+
+    try {
+      await effects.mutations.redeemSandboxInvitation({
+        sandboxId: newId,
+        invitationToken,
+      });
+    } catch (error) {
+      if (
+        !error.message.includes('Cannot redeem token, invitation not found')
+      ) {
+        actions.internal.handleError({
+          error,
+          message: 'Something went wrong with redeeming invitation token',
+        });
+      }
+    }
+  }
 
   try {
     const sandbox = await effects.api.getSandbox(newId);
@@ -1027,6 +1058,8 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
     if (existingCollaborator) {
       existingCollaborator.authorization =
         event.collaboratorChanged.authorization;
+
+      existingCollaborator.lastSeenAt = event.collaboratorChanged.lastSeenAt;
     }
   });
 
@@ -1039,6 +1072,37 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   if (hasPermission(state.editor.currentSandbox.authorization, 'owner')) {
     const invitationResponse = await effects.queries.invitations({ sandboxId });
     state.editor.invitations = invitationResponse.sandbox.invitations;
+
+    effects.subscriptions.onInvitationCreated({ sandboxId }, event => {
+      if (event.invitationCreated.id === null) {
+        // Ignore this
+        return;
+      }
+
+      const newInvitation = event.invitationCreated;
+      state.editor.invitations = [
+        ...state.editor.invitations.filter(
+          i => i.id !== event.invitationCreated.id
+        ),
+        newInvitation,
+      ];
+    });
+
+    effects.subscriptions.onInvitationChanged({ sandboxId }, event => {
+      const existingInvitation = state.editor.invitations.find(
+        i => i.id === event.invitationChanged.id
+      );
+      if (existingInvitation) {
+        existingInvitation.authorization =
+          event.invitationChanged.authorization;
+      }
+    });
+
+    effects.subscriptions.onInvitationRemoved({ sandboxId }, event => {
+      state.editor.invitations = state.editor.invitations.filter(
+        i => i.id !== event.invitationRemoved.id
+      );
+    });
   }
 };
 
@@ -1150,10 +1214,24 @@ export const inviteCollaborator: AsyncAction<{
       email,
       authorization,
     });
-    state.editor.invitations = [
-      ...state.editor.invitations.filter(c => c.id !== 'OPTIMISTIC_ID'),
-      result.createSandboxInvitation,
-    ];
+
+    if (result.createSandboxInvitation.id === null) {
+      // When it's null it has already tied the email to a collaborator, and the collaborator
+      // has been added via websockets
+      state.editor.invitations = state.editor.invitations.filter(
+        c => c.id !== 'OPTIMISTIC_ID'
+      );
+    } else {
+      state.editor.invitations = [
+        ...state.editor.invitations.filter(
+          c =>
+            c.id !== 'OPTIMISTIC_ID' &&
+            c.id !== result.createSandboxInvitation.id
+        ),
+
+        result.createSandboxInvitation,
+      ];
+    }
   } catch (e) {
     state.editor.invitations = state.editor.invitations.filter(
       c => c.id !== 'OPTIMISTIC_ID'
@@ -1188,7 +1266,7 @@ export const revokeSandboxInvitation: AsyncAction<{
 
 export const changeInvitationAuthorization: AsyncAction<{
   invitationId: string;
-  authorization: Authorization,
+  authorization: Authorization;
   sandboxId: string;
 }> = async ({ state, effects }, { invitationId, sandboxId, authorization }) => {
   const existingInvitation = state.editor.invitations.find(

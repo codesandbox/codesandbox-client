@@ -212,6 +212,7 @@ export type LiveUser = {
   currentModuleShortid: string | null;
   color: [number, number, number];
   avatarUrl: string;
+  userId: string | null;
 };
 
 export type RoomInfo = {

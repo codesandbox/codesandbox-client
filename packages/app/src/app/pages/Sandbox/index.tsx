@@ -41,6 +41,7 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
     }
 
     actions.live.onNavigateAway();
+
     actions.editor.sandboxChanged({ id: match.params.id });
   }, [
     actions.live,
