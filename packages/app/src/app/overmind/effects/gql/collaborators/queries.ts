@@ -4,7 +4,7 @@ import {
   SandboxInvitationsQuery,
   SandboxInvitationsQueryVariables,
 } from 'app/graphql/types';
-import { Query } from 'app/overmind-graphql/effect';
+import { Query } from 'app/overmind-graphql';
 import gql from 'graphql-tag';
 
 import { collaboratorFragment, sandboxInvitationFragment } from './fragments';
