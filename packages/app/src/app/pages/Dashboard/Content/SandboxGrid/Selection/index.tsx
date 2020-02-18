@@ -1,16 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { FunctionComponent } from 'react';
+import { Spring } from 'react-spring/renderprops';
 
-import { Spring, animated } from 'react-spring/renderprops';
+import { Container } from './elements';
 
-const Container = styled(animated.div)`
-  position: fixed;
-  border: 1px solid ${props => props.theme.secondary};
-  background-color: ${props => props.theme.secondary.clearer(0.5)};
-  pointer-events: none;
-`;
-
-export function getBounds(startX, startY, endX, endY) {
+export const getBounds = (
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number
+) => {
   const top = startY > endY ? endY : startY;
   const left = startX > endX ? endX : startX;
   const width = startX > endX ? startX - endX : endX - startX;
@@ -22,9 +20,20 @@ export function getBounds(startX, startY, endX, endY) {
     left,
     width,
   };
-}
+};
 
-export const Selection = ({ startX, startY, endX, endY }) => {
+type Props = {
+  endX: number;
+  endY: number;
+  startX: number;
+  startY: number;
+};
+export const Selection: FunctionComponent<Props> = ({
+  endX,
+  endY,
+  startX,
+  startY,
+}) => {
   const { top, height, left, width } = getBounds(startX, startY, endX, endY);
 
   return (

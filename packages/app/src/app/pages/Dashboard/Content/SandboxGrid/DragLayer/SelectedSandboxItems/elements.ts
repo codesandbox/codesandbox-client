@@ -1,11 +1,13 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
-  height: 210px;
-  width: 346px;
+  ${({ theme }) => css`
+    height: 210px;
+    width: 346px;
 
-  background-color: ${props => props.theme.background};
-  border-radius: 2px;
+    background-color: ${theme.background};
+    border-radius: 2px;
+  `};
 `;
 
 export const SandboxImageContainer = styled.div`

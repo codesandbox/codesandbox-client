@@ -1,35 +1,33 @@
-import 'react-virtualized/styles.css';
-
 import { basename } from 'path';
 
+import { Sandbox } from '@codesandbox/common/lib/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-import { makeTemplates } from 'app/components/CreateNewSandbox/queries';
-import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { formatDistanceToNow } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import { camelizeKeys } from 'humps';
 import { uniq } from 'lodash-es';
 import React from 'react';
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import Grid from 'react-virtualized/dist/commonjs/Grid';
-import Table from 'react-virtualized/dist/commonjs/Table';
-import Column from 'react-virtualized/dist/commonjs/Table/Column';
+import { AutoSizer, Column, Grid, Table } from 'react-virtualized';
+import 'react-virtualized/styles.css';
 
+import { makeTemplates } from 'app/components/CreateNewSandbox/queries';
 import { SandboxFragment } from 'app/graphql/types';
-import { Sandbox } from '@codesandbox/common/lib/types';
+import downloadZip from 'app/overmind/effects/zip/create-zip';
+
 import {
   deleteSandboxes,
   permanentlyDeleteSandboxes,
   setSandboxesPrivacy,
   undeleteSandboxes,
 } from '../../queries';
-import { DragLayer } from '../DragLayer';
-import { SandboxItem } from '../SandboxCard';
-import { PADDING } from '../SandboxCard/elements';
-import { Selection, getBounds } from '../Selection';
-import { Content, StyledRow } from './elements';
+
+import { DragLayer } from './DragLayer';
+import { Content, Row } from './elements';
+import { SandboxItem } from './SandboxCard';
+import { PADDING } from './SandboxCard/elements';
+import { Selection, getBounds } from './Selection';
 
 type State = {
   selection:
@@ -416,9 +414,9 @@ class SandboxGridComponent extends React.Component<
   };
 
   rowRenderer = props => {
-    const selected = this.selectedSandboxesObject[props.rowData.id];
+    const selected = Boolean(this.selectedSandboxesObject[props.rowData.id]);
     return (
-      <StyledRow
+      <Row
         {...props}
         selected={selected}
         className={`sandbox-item ${props.className}`}

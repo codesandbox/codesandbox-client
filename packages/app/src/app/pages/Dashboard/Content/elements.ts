@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   width: 100%;
@@ -19,17 +19,18 @@ export const HeaderContainer = styled.div`
 `;
 
 export const Description = styled.p`
-  font-size: 1rem;
-  width: 100%;
-  font-weight: 600;
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+  ${({ theme }) => css`
+    font-size: 1rem;
+    width: 100%;
+    font-weight: 600;
+    color: ${theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 
-  line-height: 1.6;
+    line-height: 1.6;
 
-  @media (max-width: 768px) {
-    margin-left: 1rem;
-  }
+    @media (max-width: 768px) {
+      margin-left: 1rem;
+    }
+  `};
 `;
 
 export const HeaderTitle = styled.div`

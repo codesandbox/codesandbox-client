@@ -8,7 +8,7 @@ import {
 } from 'react-dnd';
 import TrashIcon from 'react-icons/lib/md/delete';
 
-import { DELETE_SANDBOX_DROP_KEY } from '../Content/SandboxCard';
+import { DELETE_SANDBOX_DROP_KEY } from '../Content/SandboxGrid/SandboxCard';
 
 import { Item } from './Item';
 

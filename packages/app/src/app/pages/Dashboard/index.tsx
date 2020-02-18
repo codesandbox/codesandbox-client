@@ -6,7 +6,7 @@ import { client } from 'app/graphql/client';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
-import Content from './Content';
+import { Content } from './Content';
 import {
   Container,
   ContentContainer,

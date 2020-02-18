@@ -1,24 +1,28 @@
-// @ts-check
 /* eslint-disable react/prefer-stateless-function */
-import React from 'react';
-import history from 'app/utils/history';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { DragSource } from 'react-dnd';
-import { getEmptyImage } from 'react-dnd-html5-backend';
-import { Mutation } from 'react-apollo';
-import TrashIcon from 'react-icons/lib/md/delete';
-
-import Unlisted from 'react-icons/lib/md/insert-link';
-import Private from 'react-icons/lib/md/lock';
-
 import Input from '@codesandbox/common/lib/components/Input';
 import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
 import theme from '@codesandbox/common/lib/theme';
 import track from '@codesandbox/common/lib/utils/analytics';
-
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import React, {
+  CSSProperties,
+  FocusEvent,
+  KeyboardEvent,
+  MouseEvent,
+  PureComponent,
+} from 'react';
+import { Mutation } from 'react-apollo';
+import { DragSource } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
+import TrashIcon from 'react-icons/lib/md/delete';
+import Unlisted from 'react-icons/lib/md/insert-link';
+import Private from 'react-icons/lib/md/lock';
+
 import { SandboxFragment } from 'app/graphql/types';
-import { RENAME_SANDBOX_MUTATION } from '../../queries';
+import history from 'app/utils/history';
+
+import { RENAME_SANDBOX_MUTATION } from '../../../queries';
 
 import {
   Container,
@@ -56,7 +60,7 @@ type Props = {
   isPatron: boolean;
   isScrolling: () => boolean;
   removedAt?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   alias: string | undefined;
 
   setSandboxesPrivacy: (privacy: 0 | 1 | 2) => void;
@@ -93,7 +97,7 @@ const copyToClipboard = (str: string) => {
   document.body.removeChild(el);
 };
 
-class SandboxItemComponent extends React.PureComponent<Props, State> {
+class SandboxItemComponent extends PureComponent<Props, State> {
   el: HTMLDivElement;
   screenshotTimeout: number;
 
@@ -379,7 +383,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
     ].filter(Boolean);
   };
 
-  selectSandbox = (e: React.MouseEvent | React.FocusEvent) => {
+  selectSandbox = (e: MouseEvent | FocusEvent) => {
     this.props.setSandboxesSelected([this.props.id], {
       additive: 'metaKey' in e ? e.metaKey : false,
       range: 'shiftKey' in e ? e.shiftKey : false,
@@ -410,7 +414,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
     return true;
   };
 
-  handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
     if (!this.props.selected || e.metaKey) {
@@ -418,7 +422,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
     }
   };
 
-  handleKeyDown = (e: React.KeyboardEvent) => {
+  handleKeyDown = (e: KeyboardEvent) => {
     if (e.keyCode === ENTER) {
       track('Dashboard - Sandbox Opened With Enter');
       // enter
@@ -426,20 +430,20 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
     }
   };
 
-  handleOnContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  handleOnContextMenu = (e: MouseEvent<HTMLDivElement>) => {
     track('Dashboard - Sandbox Context Menu Opened');
     if (!this.props.selected) {
       this.selectSandbox(e);
     }
   };
 
-  handleOnFocus = (e: React.FocusEvent) => {
+  handleOnFocus = (e: FocusEvent) => {
     if (!this.props.selected) {
       this.selectSandbox(e);
     }
   };
 
-  handleOnBlur = (e: React.FocusEvent) => {
+  handleOnBlur = (e: FocusEvent) => {
     if (this.props.selected && e.bubbles) {
       this.props.setSandboxesSelected([]);
     }
@@ -673,7 +677,7 @@ const cardSource = {
     if (result && result[MAKE_TEMPLATE_DROP_KEY]) {
       track('Template - Created', {
         source: 'Dragging',
-        team: !!result.teamId,
+        team: Boolean(result.teamId),
       });
       props.makeTemplates(result.teamId);
     }
@@ -683,12 +687,10 @@ const cardSource = {
 /**
  * Specifies the props to inject into your component.
  */
-function collect(connect) {
-  return {
-    connectDragSource: connect.dragSource(),
-    connectDragPreview: connect.dragPreview(),
-  };
-}
+const collect = connect => ({
+  connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
+});
 
 export const SandboxItem = DragSource(
   'SANDBOX',

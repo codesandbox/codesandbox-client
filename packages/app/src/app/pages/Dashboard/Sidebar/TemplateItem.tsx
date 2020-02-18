@@ -7,7 +7,7 @@ import {
   DropTargetSpec,
 } from 'react-dnd';
 
-import { MAKE_TEMPLATE_DROP_KEY } from '../Content/SandboxCard';
+import { MAKE_TEMPLATE_DROP_KEY } from '../Content/SandboxGrid/SandboxCard';
 
 import { Item } from './Item';
 
