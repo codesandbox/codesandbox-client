@@ -23,7 +23,7 @@ export const getThemes = () => {
 
   return results.filter(a => a);
 };
-export const makeTheme = (vsCodeTheme, name?: string) => {
+export const makeTheme = (vsCodeTheme = {}, name?: string) => {
   // Our interface does not map 1-1 with vscode.
   // To add styles that remain themeable, we add
   // some polyfills to the theme tokens.
