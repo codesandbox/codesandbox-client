@@ -78,4 +78,19 @@ export const onInitialize: OnInitialize = async (
   });
 
   effects.preview.initialize(overmindInstance.reaction);
+
+  effects.gql.initialize(
+    {
+      url: 'https://codesandbox.test/api/graphql',
+      headers: () => ({
+        Authorization: `Bearer ${state.jwt}`,
+      }),
+    },
+    {
+      url: 'wss://codesandbox.test/graphql-socket',
+      params: () => ({
+        Authorization: `Bearer ${state.jwt}`,
+      }),
+    }
+  );
 };
