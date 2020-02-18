@@ -48,9 +48,11 @@ export const ChangeLinkPermissionForm = () => {
     <Stack align="center" direction="vertical" gap={2}>
       <Stack gap={2}>
         <Select disabled={!state.isPatron || !canEdit} onChange={changePrivacy}>
-          <option>Public for everyone (Public)</option>
-          <option>Only people with link can view (Unlisted)</option>
-          <option>Only visible to invited collaborators (Private)</option>
+          <option value="0">Public for everyone (Public)</option>
+          <option value="1">Only people with link can view (Unlisted)</option>
+          <option value="2">
+            Only visible to invited collaborators (Private)
+          </option>
         </Select>
 
         <Button
