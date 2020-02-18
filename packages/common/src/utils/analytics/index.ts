@@ -1,6 +1,5 @@
 import VERSION from '../../version';
 import * as amplitude from './amplitude';
-import * as chameleon from './chameleon';
 import * as google from './google';
 import * as sentry from './sentry';
 import {
@@ -54,7 +53,6 @@ export async function setAnonymousId() {
       localStorage.setItem(ANONYMOUS_UID_KEY, anonymousUid);
     }
 
-    chameleon.setAnonymousUserId(anonymousUid);
     vero.setAnonymousUserId(anonymousUid);
   }
 }
@@ -65,7 +63,6 @@ export async function setUserId(userId: string) {
 
     amplitude.setUserId(hashedId);
     sentry.setUserId(hashedId);
-    chameleon.setUserId(hashedId);
     vero.setUserId(hashedId);
   }
 }
