@@ -7,11 +7,11 @@
  */
 import React from 'react';
 import deepmerge from 'deepmerge';
-import designLanguage from '@codesandbox/common/lib/design-language';
 import {
   ThemeProvider as BaseThemeProvider,
   createGlobalStyle,
 } from 'styled-components';
+import designLanguage from '../../design-language';
 import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
 

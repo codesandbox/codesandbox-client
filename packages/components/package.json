@@ -1,6 +1,6 @@
 {
-  "name": "@codesandbox/components",
-  "version": "1.0.8",
+  "name": "csb-components",
+  "version": "0.0.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
@@ -14,18 +14,18 @@
   "scripts": {
     "build": "yarn build:lib",
     "build:dev": "yarn build",
-    "build:lib": "yarn clean && yarn tsc",
+    "build:lib": "yarn clean && yarn tsc && yarn build:copy-external",
+    "build:copy-external": "cp -r ../common/lib/design-language lib/ && cp ../common/lib/themes/codesandbox-* lib/themes/",
     "build:storybook": "build-storybook -c .storybook -o public",
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react && yarn rimraf node_modules/@types/react-native",
     "lint": "eslint --ext .js,.ts,.tsx src",
-    "prepublish": "yarn build",
     "start": "yarn tsc --watch",
     "start:storybook": "start-storybook",
     "typecheck": "tsc --noEmit",
     "chromatic": "if-env CIRCLE_BRANCH=master && yarn chromatic:master || yarn chromatic:branch",
     "chromatic:master": "CHROMATIC_APP_CODE=nffds42ndde ./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --auto-accept-changes",
     "chromatic:branch": "CHROMATIC_APP_CODE=nffds42ndde ./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes",
-    "publish": "np"
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
