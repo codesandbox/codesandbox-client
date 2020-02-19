@@ -7,10 +7,12 @@ export type Scalars = {
   Int: number;
   Float: number;
   /**
-   * The `Date` scalar type represents a date. The Date appears in a JSON
-   * response as an ISO8601 formatted string, without a time component.
+   * The `DateTime` scalar type represents a date and time in the UTC
+   * timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+   * string, including UTC timezone ("Z"). The parsed date and time string will
+   * be converted to UTC and any UTC offset other than 0 will be rejected.
    **/
-  Date: any;
+  DateTime: any;
 };
 
 export enum Authorization {
@@ -36,7 +38,7 @@ export type Collaborator = {
   __typename?: 'Collaborator';
   authorization: Authorization;
   id: Scalars['ID'];
-  lastSeenAt: Maybe<Scalars['Date']>;
+  lastSeenAt: Maybe<Scalars['DateTime']>;
   sandbox: Sandbox;
   user: User;
 };

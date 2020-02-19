@@ -9,7 +9,7 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { AddPeople } from './icons';
 import { Container, HorizontalSeparator } from './elements';
 import { AddCollaboratorForm } from './AddCollaboratorForm';
-import { Collaborator, Invitation } from './Collaborator';
+import { Collaborator, Invitation, LinkPermissions } from './Collaborator';
 import { ChangeLinkPermissionForm } from './ChangeLinkPermissionForm';
 
 const CollaboratorContent = () => {
@@ -27,6 +27,7 @@ const CollaboratorContent = () => {
       <HorizontalSeparator />
 
       <div css={css({ height: 250, overflowY: 'auto' })}>
+        <LinkPermissions />
         <AnimatePresence>
           {state.editor.collaborators.map(collaborator => (
             <Collaborator

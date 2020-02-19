@@ -50,7 +50,7 @@ export const AddCollaboratorForm = () => {
   };
 
   return (
-    <Stack onSubmit={onSubmit} as="form" gap={2}>
+    <Stack align="center" onSubmit={onSubmit} as="form" gap={2}>
       <motion.div
         animate={controls}
         css={css({

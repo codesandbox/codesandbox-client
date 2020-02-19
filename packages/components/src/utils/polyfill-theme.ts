@@ -36,6 +36,7 @@ const polyfillTheme = vsCodeTheme => {
     sideBar: {},
     activityBar: {},
     titleBar: {},
+    quickInput: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
@@ -78,6 +79,11 @@ const polyfillTheme = vsCodeTheme => {
     placeholderForeground:
       uiColors.input.placeholderForeground ||
       codesandboxColors.input.placeholderForeground,
+  };
+
+  uiColors.quickInput = {
+    background: uiColors.quickInput.background || uiColors.sideBar.background,
+    foreground: uiColors.quickInput.foreground || uiColors.sideBar.foreground,
   };
 
   uiColors.inputOption.activeBorder =
@@ -169,6 +175,11 @@ const polyfillTheme = vsCodeTheme => {
       backgroundOff: uiColors.input.background,
       backgroundOn: uiColors.button.background,
       toggle: designLanguage.colors.white,
+    },
+    dialog: {
+      background: uiColors.quickInput.background,
+      foreground: uiColors.quickInput.foreground,
+      border: uiColors.sideBar.border,
     },
   };
 

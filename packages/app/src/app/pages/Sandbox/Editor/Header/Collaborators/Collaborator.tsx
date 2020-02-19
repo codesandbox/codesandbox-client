@@ -6,17 +6,21 @@ import { useOvermind } from 'app/overmind';
 import { Authorization } from 'app/graphql/types';
 import { formatDistanceToNow } from 'date-fns';
 import { RoomInfo } from '@codesandbox/common/lib/types';
-import { PermissionSelect } from './PermissionSelect';
+import { LockIcon } from '@codesandbox/common/lib/components/icons/Lock';
+import { GlobeIcon } from '@codesandbox/common/lib/components/icons/Globe';
+import { LinkIcon } from '@codesandbox/common/lib/components/icons/Link';
+import { PermissionSelect, GhostSelect } from './PermissionSelect';
 import { Mail } from './icons';
 
 interface ICollaboratorItemProps {
   authorization: Authorization;
-  name: string;
-  subtext: string;
+  name: string | JSX.Element;
+  subtext?: string;
   avatarUrl?: string;
   avatarComponent?: JSX.Element | null;
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 
+  fillAvatar?: boolean;
   readOnly?: boolean;
 }
 
@@ -25,6 +29,7 @@ export const CollaboratorItem = ({
   subtext,
   avatarUrl,
   avatarComponent = null,
+  fillAvatar = true,
   authorization,
   onChange,
   readOnly,
@@ -43,9 +48,9 @@ export const CollaboratorItem = ({
             css={css({
               borderRadius: 2,
               border: '1px solid',
-              borderColor: 'grays.500',
+              borderColor: 'dialog.border',
             })}
-            alt={name}
+            alt={typeof name === 'string' ? name : ''}
             src={avatarUrl}
             width={32}
             height={32}
@@ -58,8 +63,8 @@ export const CollaboratorItem = ({
               justifyContent: 'center',
               borderRadius: 2,
               border: '1px solid',
-              borderColor: 'grays.500',
-              backgroundColor: 'grays.500',
+              borderColor: fillAvatar ? 'grays.500' : 'transparent',
+              backgroundColor: fillAvatar ? 'grays.500' : 'transparent',
               width: 32,
               height: 32,
             })}
@@ -68,12 +73,18 @@ export const CollaboratorItem = ({
           </div>
         )}
         <Stack justify="center" direction="vertical">
-          <Text size={3} color="white">
-            {name}
-          </Text>
-          <Text size={2} variant="muted">
-            {subtext}
-          </Text>
+          {typeof name === 'string' ? (
+            <Text size={3} color="white">
+              {name}
+            </Text>
+          ) : (
+            name
+          )}
+          {subtext && (
+            <Text size={2} variant="muted">
+              {subtext}
+            </Text>
+          )}
         </Stack>
       </Stack>
 
@@ -178,5 +189,41 @@ export const Invitation = ({ id, email, authorization }: IInvitationProps) => {
       onChange={updateAuthorization}
       authorization={authorization}
     />
+  );
+};
+
+const privacyToIcon = {
+  0: GlobeIcon,
+  1: LinkIcon,
+  2: LockIcon,
+};
+
+export const LinkPermissions = () => {
+  const { state } = useOvermind();
+  const { privacy } = state.editor.currentSandbox;
+
+  const Icon = privacyToIcon[privacy];
+
+  return (
+    <Stack direction="vertical">
+      <CollaboratorItem
+        avatarComponent={<Icon />}
+        name={
+          <GhostSelect value={privacy} css={css({ paddingLeft: 0 })}>
+            <option value="0">Anyone with link</option>
+            <option value="2">Only people invited</option>
+          </GhostSelect>
+        }
+        authorization="CAN_VIEW"
+        fillAvatar={false}
+      />
+      {privacy !== 2 && (
+        <>
+          <Text size={3} variant="muted">
+            Hello World
+          </Text>
+        </>
+      )}
+    </Stack>
   );
 };

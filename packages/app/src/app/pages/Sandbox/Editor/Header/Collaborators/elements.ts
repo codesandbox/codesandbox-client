@@ -2,12 +2,13 @@ import styled, { css } from 'styled-components';
 import { Stack, Element } from '@codesandbox/components';
 
 export const Container = styled(Stack)`
-  background-color: ${({ theme }) => theme.colors.grays[700]};
+  background-color: ${({ theme }) => theme.colors.dialog.background};
+  color: ${({ theme }) => theme.colors.dialog.foreground};
   padding: ${({ theme }) => theme.space[4]}px;
   width: 100%;
   min-height: 300px;
 
-  border: 1px solid ${({ theme }) => theme.colors.grays[600]};
+  border: 1px solid ${({ theme }) => theme.colors.dialog.border};
 `;
 
 export const DropdownList = styled(Stack)`

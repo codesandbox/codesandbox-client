@@ -96,7 +96,6 @@ export const Overlay: React.FC<IOverlayProps> = ({
               }}
               transition={{
                 duration: 0.2,
-                delay: 0.1,
               }}
               animate={{ opacity: 1 }}
             >

@@ -56,7 +56,7 @@ export const ChangeLinkPermissionForm = () => {
         </Select>
 
         <Button
-          css={css({ display: 'inline', width: 130 })}
+          css={css({ width: 128 })}
           variant="secondary"
           onClick={copyLink}
         >
