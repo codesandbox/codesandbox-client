@@ -3,11 +3,8 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Text } from '../Text';
 
-interface ILinkProps {
-  href: string;
-  target?: string;
-  rel?: string;
-  variant?: 'body' | 'muted' | 'danger'; // from Text
+interface ILinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  variant?: 'body' | 'muted' | 'danger'; // same as Text
 }
 
 const LinkElement = styled(Text).attrs({ as: 'a' })<ILinkProps>(

@@ -2,6 +2,6 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Text } from '../Text';
 
-export const Label = styled(Text).attrs({ as: 'label' })<{ htmlFor: string }>(
-  css({})
-);
+interface ILabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {}
+
+export const Label = styled(Text).attrs({ as: 'label' })<ILabelProps>(css({}));

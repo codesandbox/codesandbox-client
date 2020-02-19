@@ -14,21 +14,24 @@ const overflowStyles = {
   whiteSpace: 'nowrap',
 };
 
-export const Text = styled(Element).attrs({ as: 'span' })<{
+interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: number;
   align?: string;
   weight?: string;
   block?: boolean;
-  variant?: 'body' | 'muted' | 'danger';
   maxWidth?: number | string;
-}>(({ size, align, weight, block, variant = 'body', maxWidth, ...props }) =>
-  css({
-    fontSize: size || 'inherit', // from theme.fontSizes
-    textAlign: align || 'left',
-    fontWeight: weight || null, // from theme.fontWeights
-    display: block ? 'block' : 'inline',
-    color: variants[variant],
-    maxWidth,
-    ...(maxWidth ? overflowStyles : {}),
-  })
+  variant?: 'body' | 'muted' | 'danger';
+}
+
+export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
+  ({ size, align, weight, block, variant = 'body', maxWidth, ...props }) =>
+    css({
+      fontSize: size || 'inherit', // from theme.fontSizes
+      textAlign: align || 'left',
+      fontWeight: weight || null, // from theme.fontWeights
+      display: block ? 'block' : 'inline',
+      color: variants[variant],
+      maxWidth,
+      ...(maxWidth ? overflowStyles : {}),
+    })
 );

@@ -63,14 +63,10 @@ const SelectWithIcon = styled(Element)(
   })
 );
 
-interface ISelectProps {
+interface ISelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   icon?: any;
   placeholder?: string;
-  children?: any;
-  disabled?: boolean;
-  onChange?: any;
-  value?: string | number;
-  defaultValue?: string | number;
+  variant?: 'default' | 'link';
 }
 
 export const Select = ({
