@@ -94,9 +94,10 @@ export const Button = styled(Element).attrs({ as: 'button' })<{
         fontFamily: 'Inter, sans-serif',
         paddingY: 0,
         paddingX: 2,
-        height: 6,
+        height: '26px', // match with inputs
         width: '100%',
         fontSize: 2,
+        fontWeight: 'medium',
         lineHeight: 1, // trust the height
         border: 'none',
         borderRadius: 'small',

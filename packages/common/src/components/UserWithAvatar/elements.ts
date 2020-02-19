@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
 
+import ContributorsBadgeBase from '../ContributorsBadge';
+
 export const CenteredText = styled.div`
   display: inline-flex;
   justify-content: center;
@@ -40,4 +42,9 @@ export const Image = styled.img`
   height: 1.75em;
   border-radius: 2px;
   border: 2px solid rgba(255, 255, 255, 0.5);
+`;
+
+export const ContributorsBadge = styled(ContributorsBadgeBase)`
+  margin: 0 0.5rem;
+  font-size: 1.25em;
 `;

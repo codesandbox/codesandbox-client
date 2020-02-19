@@ -60,7 +60,8 @@ export const Summary = () => {
     }
   }, [customTemplate, frozenUpdated]);
 
-  const updateFrozenState = () => {
+  const updateFrozenState = e => {
+    e.preventDefault();
     if (customTemplate) {
       return sessionFreezeOverride({ frozen: !sessionFrozen });
     }

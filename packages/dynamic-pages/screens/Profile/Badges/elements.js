@@ -1,4 +1,6 @@
+import ContributorsBadgeBase from '@codesandbox/common/lib/components/ContributorsBadge';
 import styled from 'styled-components';
+
 import { Aside } from '../_sidebar.elements';
 
 export const BadgeWrapper = styled.ul`
@@ -21,4 +23,9 @@ export const BadgeAside = styled(Aside)`
   @media screen and (max-width: 767px) {
     display: none;
   }
+`;
+
+export const ContributorsBadge = styled(ContributorsBadgeBase)`
+  width: 64px;
+  height: 50px;
 `;

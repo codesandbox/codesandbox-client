@@ -77,6 +77,7 @@
     "@babel/preset-env": "^7.5.5",
     "@codesandbox/executors": "^0.1.0",
     "@codesandbox/template-icons": "^1.1.0",
+    "@codesandbox/components": "0.0.1",
     "@emmetio/codemirror-plugin": "^0.3.5",
     "@sentry/webpack-plugin": "^1.8.0",
     "@styled-system/css": "^5.0.23",

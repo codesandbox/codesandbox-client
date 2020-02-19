@@ -46,7 +46,7 @@ const SwitchContainer = styled(Element)(
       backgroundColor: 'switch.backgroundOn',
     },
     'input:checked + [data-component=SwitchBackground] [data-component=SwitchToggle]': {
-      left: theme => theme.space[4] - 4,
+      left: theme => theme.space[4] - 4 + 'px',
     },
   })
 );

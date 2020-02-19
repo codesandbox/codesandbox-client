@@ -1,9 +1,8 @@
 import React from 'react';
 import Badge from '@codesandbox/common/lib/utils/badges/Badge';
-import ContributorsBadge from '@codesandbox/common/lib/components/ContributorsBadge';
 import CommunityBadge from '@codesandbox/common/lib/components/CommunityBadges';
 import { H3 } from '../../../components/Typography';
-import { BadgeWrapper, BadgeAside } from './elements';
+import { BadgeWrapper, BadgeAside, ContributorsBadge } from './elements';
 
 export default ({ templateSandboxes, badges, username }) => {
   const hasBadges =
@@ -33,13 +32,7 @@ export default ({ templateSandboxes, badges, username }) => {
               />
             )
         )}
-        <ContributorsBadge
-          username={username}
-          style={{
-            width: 64,
-            height: 50,
-          }}
-        />
+        <ContributorsBadge username={username} />
       </BadgeWrapper>
     </BadgeAside>
   ) : null;

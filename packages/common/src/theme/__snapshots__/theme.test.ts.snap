@@ -467,7 +467,7 @@ Object {
     "$schema": "vscode://schemas/color-theme",
     "colors": Object {
       "activityBar.background": "#1C2022",
-      "activityBar.border": "#111518",
+      "activityBar.border": "#2d2d2d",
       "activityBarBadge.background": "#C0C0C0",
       "activityBarBadge.foreground": "#1C2022",
       "badge.background": "#374140",
@@ -508,7 +508,7 @@ Object {
       "tab.border": "#111518",
       "tab.inactiveBackground": "#111518",
       "titleBar.activeBackground": "#1C2022",
-      "titleBar.border": "#111518",
+      "titleBar.border": "#2d2d2d",
     },
     "isCodeSandbox": true,
     "tokenColors": Array [
