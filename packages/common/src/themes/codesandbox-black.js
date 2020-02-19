@@ -63,7 +63,7 @@ const colors = {
   editorGroup: {
     background: tokens.grays[700],
     border: tokens.grays[600],
-    dropBackground: tokens.grays[700],
+    dropBackground: tokens.blues[500] + '1a',
   },
   editorGroupHeader: {
     noTabsBackground: null,
