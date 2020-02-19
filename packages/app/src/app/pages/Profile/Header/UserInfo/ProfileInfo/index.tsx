@@ -1,20 +1,29 @@
-import React from 'react';
-
-import Row from '@codesandbox/common/lib/components/flex/Row';
 import Column from '@codesandbox/common/lib/components/flex/Column';
-
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { PatronStar } from '@codesandbox/common/lib/components/PatronStar';
+import React, { FunctionComponent } from 'react';
 
-import { ProfileImage, Name, Username, IconWrapper } from './elements';
+import { useOvermind } from 'app/overmind';
 
-function ProfileInfo({ username, subscriptionSince, name, avatarUrl }) {
+import { GitHubIcon, Name, ProfileImage, Row, Username } from './elements';
+
+export const ProfileInfo: FunctionComponent = () => {
+  const {
+    state: {
+      profile: {
+        current: { avatarUrl, name, subscriptionSince, username },
+      },
+    },
+  } = useOvermind();
+
   return (
-    <Row style={{ flex: 1 }}>
-      <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />
+    <Row>
+      <ProfileImage alt={username} height={175} src={avatarUrl} width={175} />
+
       <Margin bottom={3}>
         <Column justifyContent="space-between">
           {name && <Name>{name}</Name>}
+
           <Username main={!name}>
             {username}
             <a
@@ -22,8 +31,9 @@ function ProfileInfo({ username, subscriptionSince, name, avatarUrl }) {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <IconWrapper />
+              <GitHubIcon />
             </a>
+
             {subscriptionSince && (
               <PatronStar subscriptionSince={subscriptionSince} />
             )}
@@ -32,6 +42,4 @@ function ProfileInfo({ username, subscriptionSince, name, avatarUrl }) {
       </Margin>
     </Row>
   );
-}
-
-export default ProfileInfo;
+};
