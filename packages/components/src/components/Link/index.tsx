@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Text } from '../Text';
 
-interface ILinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  variant?: 'body' | 'muted' | 'danger'; // same as Text
-}
+type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
+  React.AnchorHTMLAttributes<HTMLSpanElement> & {
+    variant?: 'body' | 'muted' | 'danger'; // same as Text
+  };
 
-const LinkElement = styled(Text).attrs({ as: 'a' })<ILinkProps>(
+const LinkElement = styled(Text).attrs({ as: 'a' })<LinkProps>(
   css({
     cursor: 'pointer',
     textDecoration: 'none',
@@ -19,7 +20,7 @@ const LinkElement = styled(Text).attrs({ as: 'a' })<ILinkProps>(
   })
 );
 
-export const Link: React.FC<ILinkProps> = props => (
+export const Link: React.FC<LinkProps> = props => (
   <LinkElement
     rel={props.target === '_blank' ? 'noopener noreferrer' : null}
     {...props}
