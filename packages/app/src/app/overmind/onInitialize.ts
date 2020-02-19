@@ -81,13 +81,13 @@ export const onInitialize: OnInitialize = async (
 
   effects.gql.initialize(
     {
-      url: 'https://codesandbox.test/api/graphql',
+      url: `${location.origin}/api/graphql`,
       headers: () => ({
         Authorization: `Bearer ${state.jwt}`,
       }),
     },
     {
-      url: 'wss://codesandbox.test/graphql-socket',
+      url: `${location.origin.replace('http', 'ws')}/graphql-socket`,
       params: () => ({
         Authorization: `Bearer ${state.jwt}`,
       }),
