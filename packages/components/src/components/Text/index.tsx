@@ -14,7 +14,7 @@ const overflowStyles = {
   whiteSpace: 'nowrap',
 };
 
-interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: number;
   align?: string;
   weight?: string;
