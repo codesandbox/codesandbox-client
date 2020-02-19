@@ -8,6 +8,14 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationStatus } from '@codesandbox/notifications';
+import {
+  Authorization,
+  CollaboratorFragment,
+  InvitationFragment,
+} from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
 import {
@@ -16,20 +24,12 @@ import {
   moveDevToolsTab as moveDevToolsTabUtil,
 } from 'app/pages/Sandbox/Editor/Content/utils';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
+import history from 'app/utils/history';
 import { json } from 'overmind';
 
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { NotificationStatus } from '@codesandbox/notifications';
-import history from 'app/utils/history';
-import {
-  Authorization,
-  CollaboratorFragment,
-  InvitationFragment,
-} from 'app/graphql/types';
-import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import eventToTransform from '../../utils/event-to-transform';
-import * as internalActions from './internalActions';
 import { SERVER } from '../../utils/items';
+import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
@@ -115,7 +115,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     }
 
     try {
-      await effects.mutations.redeemSandboxInvitation({
+      await effects.gql.mutations.redeemSandboxInvitation({
         sandboxId: newId,
         invitationToken,
       });
@@ -1042,13 +1042,13 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
     sub.dispose();
   });
 
-  const collaboratorResponse = await effects.queries.collaborators({
+  const collaboratorResponse = await effects.gql.queries.collaborators({
     sandboxId,
   });
   state.editor.collaborators = collaboratorResponse.sandbox.collaborators;
 
   subscriptions.push(
-    effects.subscriptions.onCollaboratorAdded({ sandboxId }, event => {
+    effects.gql.subscriptions.onCollaboratorAdded({ sandboxId }, event => {
       const newCollaborator = event.collaboratorAdded;
       state.editor.collaborators = [
         ...state.editor.collaborators.filter(
@@ -1058,7 +1058,7 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
       ];
     }),
 
-    effects.subscriptions.onCollaboratorChanged({ sandboxId }, event => {
+    effects.gql.subscriptions.onCollaboratorChanged({ sandboxId }, event => {
       const existingCollaborator = state.editor.collaborators.find(
         c => c.user.username === event.collaboratorChanged.user.username
       );
@@ -1070,7 +1070,7 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
       }
     }),
 
-    effects.subscriptions.onCollaboratorRemoved({ sandboxId }, event => {
+    effects.gql.subscriptions.onCollaboratorRemoved({ sandboxId }, event => {
       state.editor.collaborators = state.editor.collaborators.filter(
         c => c.user.username !== event.collaboratorRemoved.user.username
       );
@@ -1078,11 +1078,13 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   );
 
   if (hasPermission(state.editor.currentSandbox.authorization, 'owner')) {
-    const invitationResponse = await effects.queries.invitations({ sandboxId });
+    const invitationResponse = await effects.gql.queries.invitations({
+      sandboxId,
+    });
     state.editor.invitations = invitationResponse.sandbox.invitations;
 
     subscriptions.push(
-      effects.subscriptions.onInvitationCreated({ sandboxId }, event => {
+      effects.gql.subscriptions.onInvitationCreated({ sandboxId }, event => {
         if (event.invitationCreated.id === null) {
           // Ignore this
           return;
@@ -1097,7 +1099,7 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
         ];
       }),
 
-      effects.subscriptions.onInvitationChanged({ sandboxId }, event => {
+      effects.gql.subscriptions.onInvitationChanged({ sandboxId }, event => {
         const existingInvitation = state.editor.invitations.find(
           i => i.id === event.invitationChanged.id
         );
@@ -1107,7 +1109,7 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
         }
       }),
 
-      effects.subscriptions.onInvitationRemoved({ sandboxId }, event => {
+      effects.gql.subscriptions.onInvitationRemoved({ sandboxId }, event => {
         state.editor.invitations = state.editor.invitations.filter(
           i => i.id !== event.invitationRemoved.id
         );
@@ -1133,7 +1135,7 @@ export const changeCollaboratorAuthorization: AsyncAction<{
   existingCollaborator.authorization = authorization;
 
   try {
-    await effects.mutations.changeCollaboratorAuthorization({
+    await effects.gql.mutations.changeCollaboratorAuthorization({
       sandboxId,
       authorization,
       username,
@@ -1164,7 +1166,7 @@ export const addCollaborator: AsyncAction<{
   state.editor.collaborators = [...state.editor.collaborators, newCollaborator];
 
   try {
-    const result = await effects.mutations.addCollaborator({
+    const result = await effects.gql.mutations.addCollaborator({
       sandboxId,
       username,
       authorization,
@@ -1193,7 +1195,7 @@ export const removeCollaborator: AsyncAction<{
   );
 
   try {
-    await effects.mutations.removeCollaborator({
+    await effects.gql.mutations.removeCollaborator({
       sandboxId,
       username,
     });
@@ -1219,7 +1221,7 @@ export const inviteCollaborator: AsyncAction<{
   state.editor.invitations = [...state.editor.invitations, newInvitation];
 
   try {
-    const result = await effects.mutations.inviteCollaorator({
+    const result = await effects.gql.mutations.inviteCollaborator({
       sandboxId,
       email,
       authorization,
@@ -1262,7 +1264,7 @@ export const revokeSandboxInvitation: AsyncAction<{
   );
 
   try {
-    await effects.mutations.revokeInvitation({
+    await effects.gql.mutations.revokeInvitation({
       sandboxId,
       invitationId,
     });
@@ -1291,7 +1293,7 @@ export const changeInvitationAuthorization: AsyncAction<{
   existingInvitation.authorization = authorization;
 
   try {
-    await effects.mutations.changeSandboxInvitationAuthorization({
+    await effects.gql.mutations.changeSandboxInvitationAuthorization({
       sandboxId,
       authorization,
       invitationId,

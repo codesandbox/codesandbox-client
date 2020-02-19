@@ -10,7 +10,7 @@ import {
 } from 'overmind';
 import { createHook } from 'overmind-react';
 import { merge, namespaced } from 'overmind/config';
-import { graphql } from '../overmind-graphql';
+
 import * as actions from './actions';
 import { createConnect } from './createConnect';
 import * as effects from './effects';
@@ -31,9 +31,8 @@ import * as userNotifications from './namespaces/userNotifications';
 import * as workspace from './namespaces/workspace';
 import { onInitialize } from './onInitialize';
 import { state } from './state';
-import * as collaboratorGql from './graphql/collaborators';
 
-const baseConfig = merge(
+export const config = merge(
   {
     onInitialize,
     effects,
@@ -58,41 +57,7 @@ const baseConfig = merge(
   })
 );
 
-export const config = graphql(baseConfig, {
-  endpoint: 'https://codesandbox.test/api/graphql',
-  params: ({ jwt }) => ({
-    // We get the state here to build the connection_init params
-    Authorization: `Bearer ${jwt}`,
-  }),
-  headers: ({ jwt }) => ({
-    Authorization: `Bearer ${jwt}`,
-  }),
-  subscriptions: {
-    onCollaboratorAdded: collaboratorGql.onCollaboratorAdded,
-    onCollaboratorChanged: collaboratorGql.onCollaboratorChanged,
-    onCollaboratorRemoved: collaboratorGql.onCollaboratorRemoved,
-    onInvitationCreated: collaboratorGql.onInvitationCreated,
-    onInvitationChanged: collaboratorGql.onInvitationChanged,
-    onInvitationRemoved: collaboratorGql.onInvitationRemoved,
-  },
-  queries: {
-    collaborators: collaboratorGql.collaborators,
-    invitations: collaboratorGql.invitations,
-  },
-  mutations: {
-    addCollaborator: collaboratorGql.addCollaborator,
-    removeCollaborator: collaboratorGql.removeCollaborator,
-    changeCollaboratorAuthorization:
-      collaboratorGql.changeCollaboratorAuthorization,
-    inviteCollaorator: collaboratorGql.inviteCollaborator,
-    revokeInvitation: collaboratorGql.revokeInvitation,
-    changeSandboxInvitationAuthorization:
-      collaboratorGql.changeInvitationAuthorization,
-    redeemSandboxInvitation: collaboratorGql.redeemSandboxInvitation,
-  },
-});
-
-export interface Config extends IConfig<typeof config> {}
+interface Config extends IConfig<typeof config> {}
 
 export interface OnInitialize extends IOnInitialize<Config> {}
 
