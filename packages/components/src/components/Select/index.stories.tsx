@@ -44,3 +44,37 @@ export const onChange = () => (
     </Select>
   </Element>
 );
+
+export const Variants = () => (
+  <Element style={{ width: 250 }}>
+    <Select onChange={action('select')} placeholder="Please select an option">
+      <option>One</option>
+      <option>Two</option>
+    </Select>
+    <Select
+      variant="link"
+      onChange={action('select')}
+      placeholder="Please select an option"
+    >
+      <option>One</option>
+      <option>Two</option>
+    </Select>
+    <Select
+      icon={Icon}
+      onChange={action('select')}
+      placeholder="Please select an option"
+    >
+      <option>One</option>
+      <option>Two</option>
+    </Select>
+    <Select
+      icon={Icon}
+      variant="link"
+      onChange={action('select')}
+      placeholder="Please select an option"
+    >
+      <option>One</option>
+      <option>Two</option>
+    </Select>
+  </Element>
+);
