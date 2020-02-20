@@ -1,13 +1,13 @@
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
+import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
-import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
 
 import Content from './Content';
 import { Container } from './elements';
@@ -16,7 +16,6 @@ import { Header } from './Header';
 import { Header as HeaderOld } from './HeaderOld';
 import { Navigation } from './Navigation';
 import { Navigation as NavigationOld } from './NavigationOld';
-
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 

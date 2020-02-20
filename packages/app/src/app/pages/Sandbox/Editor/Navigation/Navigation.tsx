@@ -1,25 +1,25 @@
-import React, { FunctionComponent } from 'react';
-import PlusIcon from 'react-icons/lib/go/plus';
+import Tooltip, {
+  SingletonTooltip,
+} from '@codesandbox/common/lib/components/Tooltip';
+import { TippyProps } from '@tippy.js/react';
 import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, {
   INavigationItem,
   getDisabledItems,
 } from 'app/overmind/utils/items';
-import Tooltip, {
-  SingletonTooltip,
-} from '@codesandbox/common/lib/components/Tooltip';
-import { TippyProps } from '@tippy.js/react';
+import React, { FunctionComponent } from 'react';
+import PlusIcon from 'react-icons/lib/go/plus';
 
+import { Container, IconContainer, Separator } from './elements';
 import {
   DeployIcon,
   ExplorerIcon,
-  ServerIcon,
   GithubIcon,
   InfoIcon,
   LiveIcon,
+  ServerIcon,
   SettingsIcon,
 } from './icons';
-import { Container, IconContainer, Separator } from './elements';
 
 const IDS_TO_ICONS = {
   project: InfoIcon,

@@ -67,7 +67,7 @@ export const SERVER: INavigationItem = {
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
-  if (!currentSandbox.owned || !store.isLoggedIn) {
+  if (!currentSandbox || !currentSandbox.owned || !store.isLoggedIn) {
     return [GITHUB, DEPLOYMENT, LIVE];
   }
 
@@ -77,7 +77,7 @@ export function getDisabledItems(store: any): INavigationItem[] {
 export default function getItems(store: any): INavigationItem[] {
   if (
     store.live.isLive &&
-    !store.editor.currentSandbox.git &&
+    (!store.editor.currentSandobx || !store.editor.currentSandbox.git) &&
     !(
       store.live.isOwner ||
       (store.user &&
@@ -91,7 +91,7 @@ export default function getItems(store: any): INavigationItem[] {
 
   const { currentSandbox } = store.editor;
 
-  if (!currentSandbox.owned) {
+  if (!currentSandbox || !currentSandbox.owned) {
     return [PROJECT_SUMMARY, CONFIGURATION];
   }
 

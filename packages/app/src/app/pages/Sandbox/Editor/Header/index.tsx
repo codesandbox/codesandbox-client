@@ -1,15 +1,14 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
-
-import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
-import { Stack, Link } from '@codesandbox/components';
+import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Link, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React from 'react';
 
+import { Actions } from './Actions';
 import { DashboardIcon } from './icons';
 import { MenuBar } from './MenuBar';
 import { SandboxName } from './SandboxName';
-import { Actions } from './Actions';
 
 export const Header = () => {
   const {

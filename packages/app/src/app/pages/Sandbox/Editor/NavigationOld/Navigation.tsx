@@ -1,14 +1,15 @@
-import React, { FunctionComponent } from 'react';
-import PlusIcon from 'react-icons/lib/go/plus';
+import Tooltip, {
+  SingletonTooltip,
+} from '@codesandbox/common/lib/components/Tooltip';
+import { TippyProps } from '@tippy.js/react';
 import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, {
   INavigationItem,
   getDisabledItems,
 } from 'app/overmind/utils/items';
-import Tooltip, {
-  SingletonTooltip,
-} from '@codesandbox/common/lib/components/Tooltip';
-import { TippyProps } from '@tippy.js/react';
+import React, { FunctionComponent } from 'react';
+import PlusIcon from 'react-icons/lib/go/plus';
+
 import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
@@ -25,11 +26,12 @@ import RocketIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/rocket.
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
-// @ts-ignore
-// eslint-disable-next-line import/no-unresolved
 
 import { Container, IconContainer, Separator } from './elements';
 import ServerIcon from './ServerIcon';
+
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
 
 const IDS_TO_ICONS = {
   project: InfoIcon,
