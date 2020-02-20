@@ -26,6 +26,7 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
     width: '100%',
     paddingX: 2,
     fontSize: 3,
+    lineHeight: 1, // trust the height
     fontFamily: 'Inter, sans-serif',
     borderRadius: 'small',
     backgroundColor: 'input.background',
