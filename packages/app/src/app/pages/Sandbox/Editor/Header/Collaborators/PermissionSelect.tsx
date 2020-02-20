@@ -1,10 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Select } from '@codesandbox/components';
+import { Select, Text, Stack } from '@codesandbox/components';
+import { Authorization } from 'app/graphql/types';
 
 interface IPermissionSelectProps extends React.ComponentProps<typeof Select> {
   additionalOptions?: { value: string; label: string }[];
+  permissions?: Authorization[];
+  pretext?: string;
 }
 
 export const GhostSelect = styled(Select)`
@@ -12,20 +15,39 @@ export const GhostSelect = styled(Select)`
   background-color: transparent;
 `;
 
+const authToName = {
+  [Authorization.WriteCode]: 'Can Edit',
+  [Authorization.Comment]: 'Can Comment',
+  [Authorization.None]: 'No Access',
+  [Authorization.Read]: 'Can View',
+  [Authorization.WriteProject]: 'Edit Sandbox Info',
+};
+
 export const SELECT_WIDTH = 85;
 export const PermissionSelect = ({
   additionalOptions = [],
+  permissions = [Authorization.WriteCode, Authorization.Read],
+  pretext,
   ...props
 }: IPermissionSelectProps) => (
-  <GhostSelect css={css({ width: SELECT_WIDTH })} {...props}>
-    <option value="WRITE_CODE">Can Edit</option>
-    {/* <option>Can Comment</option> */}
-    <option value="READ">Can View</option>
+  <Stack align="center">
+    {pretext && (
+      <Text as="label" variant="muted" size={3}>
+        {pretext}
+      </Text>
+    )}
+    <GhostSelect css={css({ width: SELECT_WIDTH })} {...props}>
+      {permissions.map(auth => (
+        <option key={auth} value={auth}>
+          {authToName[auth]}
+        </option>
+      ))}
 
-    {additionalOptions.map(({ label, value }) => (
-      <option key={value} value={value}>
-        {label}
-      </option>
-    ))}
-  </GhostSelect>
+      {additionalOptions.map(({ label, value }) => (
+        <option key={value} value={value}>
+          {label}
+        </option>
+      ))}
+    </GhostSelect>
+  </Stack>
 );

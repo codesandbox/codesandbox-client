@@ -26,6 +26,21 @@ export const onInitialize: OnInitialize = async (
     },
   });
 
+  effects.gql.initialize(
+    {
+      url: `${location.origin}/api/graphql`,
+      headers: () => ({
+        Authorization: `Bearer ${state.jwt}`,
+      }),
+    },
+    {
+      url: `${location.origin.replace('http', 'ws')}/graphql-socket`,
+      params: () => ({
+        Authorization: `Bearer ${state.jwt}`,
+      }),
+    }
+  );
+
   effects.notifications.initialize({
     provideSocket() {
       return effects.live.getSocket();
@@ -78,19 +93,4 @@ export const onInitialize: OnInitialize = async (
   });
 
   effects.preview.initialize(overmindInstance.reaction);
-
-  effects.gql.initialize(
-    {
-      url: `${location.origin}/api/graphql`,
-      headers: () => ({
-        Authorization: `Bearer ${state.jwt}`,
-      }),
-    },
-    {
-      url: `${location.origin.replace('http', 'ws')}/graphql-socket`,
-      params: () => ({
-        Authorization: `Bearer ${state.jwt}`,
-      }),
-    }
-  );
 };

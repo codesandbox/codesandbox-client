@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Downshift, { DownshiftProps } from 'downshift';
-import { Input } from '@codesandbox/components';
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import css from '@styled-system/css';
+import { Input, List, ListItem, ListAction } from '@codesandbox/components';
 import { DropdownList, DropdownItem } from './elements';
 
 interface IUserAutoComplete {
@@ -76,23 +76,35 @@ export const UserSearchInput = ({
 
         <UserAutoComplete inputValue={currentInputValue}>
           {({ users, error }) =>
-            users.length > 0 && !error ? (
-              <DropdownList as="ul" direction="vertical" {...getMenuProps({})}>
-                {isOpen &&
-                  users.map((item, index) => (
-                    <DropdownItem
-                      key={item}
-                      isActive={highlightedIndex === index}
-                      {...getItemProps({
-                        item,
-                        index,
-                        isSelected: selectedItem === item,
-                      })}
-                    >
-                      {item}
-                    </DropdownItem>
-                  ))}
-              </DropdownList>
+            users.length > 0 && !error && isOpen ? (
+              <List
+                css={css({
+                  position: 'absolute',
+                  width: '100%',
+                  borderBottomLeftRadius: 'small',
+                  borderBottomRightRadius: 'small',
+                  boxShadow: 1,
+                  fontSize: 3,
+                  backgroundColor: 'dialog.background',
+                  border: '1px solid',
+                  borderColor: 'dialog.border',
+                })}
+                {...getMenuProps({})}
+              >
+                {users.map((item, index) => (
+                  <ListAction
+                    key={item}
+                    isActive={highlightedIndex === index}
+                    {...getItemProps({
+                      item,
+                      index,
+                      isSelected: selectedItem === item,
+                    })}
+                  >
+                    {item}
+                  </ListAction>
+                ))}
+              </List>
             ) : null
           }
         </UserAutoComplete>

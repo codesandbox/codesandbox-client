@@ -135,6 +135,8 @@ export const graphql: <T extends Queries>(
         );
       }
 
+      console.log('runs', _wsClients[_ws.url]);
+
       return _wsClients[_ws.url];
     }
 
@@ -203,9 +205,9 @@ export const graphql: <T extends Queries>(
               dispose: () =>
                 withAbsintheSocket.unobserve(client, notifier, observer),
             });
+          } else {
+            throw createError('There is no ws client available for this query');
           }
-
-          throw createError('There is no ws client available for this query');
         }
 
         subscription.dispose = () => {
