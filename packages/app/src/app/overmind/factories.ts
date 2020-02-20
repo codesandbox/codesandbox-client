@@ -28,25 +28,27 @@ export const withLoadApp = <T>(
   actions.internal.setStoredSettings();
   effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
 
+  try {
+    state.user = await effects.api.getCurrentUser();
+  } catch (error) {
+    actions.internal.handleError({
+      message: '',
+      error,
+    });
+  }
+
+  state.isAuthenticating = false;
+
   if (state.jwt) {
-    try {
-      state.user = await effects.api.getCurrentUser();
-      actions.internal.setPatronPrice();
-      actions.internal.setSignedInCookie();
-      effects.analytics.identify('signed_in', true);
-      effects.analytics.setUserId(state.user.id);
-      actions.internal.showUserSurveyIfNeeded();
-      effects.live.connect();
-      actions.userNotifications.internal.initialize();
-      effects.api.preloadTemplates();
-    } catch (error) {
-      actions.internal.handleError({
-        message: 'We had trouble with signing you in',
-        error,
-      });
-    }
+    actions.internal.setPatronPrice();
+    actions.internal.setSignedInCookie();
+    effects.analytics.identify('signed_in', true);
+    effects.analytics.setUserId(state.user.id);
+    actions.internal.showUserSurveyIfNeeded();
+    effects.live.connect();
+    actions.userNotifications.internal.initialize();
+    effects.api.preloadTemplates();
   } else {
-    effects.jwt.reset();
     effects.analytics.setAnonymousId();
   }
 
@@ -55,7 +57,6 @@ export const withLoadApp = <T>(
   }
 
   state.hasLoadedApp = true;
-  state.isAuthenticating = false;
 
   try {
     const response = await effects.http.get<{

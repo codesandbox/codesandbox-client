@@ -407,7 +407,10 @@ export const handleError: Action<{
   message: string;
   error: ApiError | Error;
   hideErrorMessage?: boolean;
-}> = ({ actions, effects }, { message, error, hideErrorMessage = false }) => {
+}> = (
+  { state, actions, effects },
+  { message, error, hideErrorMessage = false }
+) => {
   if (hideErrorMessage) {
     effects.analytics.logError(error);
     effects.notificationToast.add({
@@ -438,7 +441,7 @@ export const handleError: Action<{
 
   if (response?.status === 401) {
     // Reset existing sign in info
-    effects.jwt.reset();
+    state.jwt = effects.jwt.reset();
     effects.analytics.setAnonymousId();
 
     // Allow user to sign in again in notification
