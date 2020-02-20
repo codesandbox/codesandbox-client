@@ -1,10 +1,9 @@
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { useState, useEffect, FunctionComponent } from 'react';
-import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
-
 import { client } from 'app/graphql/client';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import Content from './Content';
 import {
@@ -12,8 +11,8 @@ import {
   ContentContainer,
   LeftIcon,
   RightIcon,
-  SidebarContainer,
   ShowSidebarButton,
+  SidebarContainer,
 } from './elements';
 import { Sidebar } from './Sidebar';
 
@@ -23,7 +22,7 @@ const DashboardComponent: FunctionComponent<Props> = ({ history }) => {
     actions: {
       dashboard: { dashboardMounted },
     },
-    state: { hasLogIn },
+    state: { hasLogIn, isAuthenticating },
   } = useOvermind();
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -41,6 +40,10 @@ const DashboardComponent: FunctionComponent<Props> = ({ history }) => {
 
     setShowSidebar(false);
   });
+
+  if (isAuthenticating) {
+    return null;
+  }
 
   if (!hasLogIn) {
     return <Redirect to={signInPageUrl()} />;
