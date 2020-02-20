@@ -39,7 +39,7 @@ export const withLoadApp = <T>(
 
   state.isAuthenticating = false;
 
-  if (state.jwt) {
+  if (state.user) {
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
     effects.analytics.identify('signed_in', true);
