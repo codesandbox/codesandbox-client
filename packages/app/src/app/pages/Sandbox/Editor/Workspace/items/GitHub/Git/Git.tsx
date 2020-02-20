@@ -12,7 +12,8 @@ import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../../elements';
 import { Container, Buttons, ErrorMessage, NoChanges } from './elements';
 import { TotalChanges } from './TotalChanges';
 
-const hasWriteAccess = (rights: string) => ['admin', 'write'].includes(rights);
+const hasWriteAccess = (rights: string = '') =>
+  ['admin', 'write'].includes(rights);
 
 export const Git: FunctionComponent = () => {
   const {
@@ -115,7 +116,7 @@ export const Git: FunctionComponent = () => {
                 </WorkspaceInputContainer>
 
                 <Buttons>
-                  {hasWriteAccess(gitChanges.rights) && (
+                  {hasWriteAccess(gitChanges?.rights) && (
                     <Button
                       block
                       disabled={!subject || modulesNotSaved}

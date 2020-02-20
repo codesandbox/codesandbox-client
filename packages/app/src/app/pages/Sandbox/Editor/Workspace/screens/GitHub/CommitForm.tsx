@@ -21,11 +21,11 @@ export const CommitForm = () => {
     },
     state: {
       editor: { isAllModulesSynced },
-      git: { description, originalGitChanges: gitChanges, subject },
+      git: { description, originalGitChanges, subject },
     },
   } = useOvermind();
 
-  const hasWriteAccess = (rights: string) =>
+  const hasWriteAccess = (rights: string = '') =>
     ['admin', 'write'].includes(rights);
 
   const modulesNotSaved = !isAllModulesSynced;
@@ -59,7 +59,7 @@ export const CommitForm = () => {
           />
         </FormField>
         <Stack gap={2}>
-          {hasWriteAccess(gitChanges.rights) && (
+          {hasWriteAccess(originalGitChanges?.rights) && (
             <Button
               variant="secondary"
               disabled={!subject || modulesNotSaved}
