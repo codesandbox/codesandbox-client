@@ -8,6 +8,8 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
 import {
@@ -18,11 +20,9 @@ import {
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import { json } from 'overmind';
 
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { NotificationStatus } from '@codesandbox/notifications';
 import eventToTransform from '../../utils/event-to-transform';
-import * as internalActions from './internalActions';
 import { SERVER } from '../../utils/items';
+import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
@@ -75,7 +75,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     );
 
     state.editor.isForkingSandbox = false;
-    return;
   }
 
   await effects.vscode.closeAllTabs();
@@ -108,7 +107,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     }
     state.editor.error = detail || error.message;
     state.editor.isLoading = false;
-    return;
   }
 
   const sandbox = state.editor.currentSandbox!;

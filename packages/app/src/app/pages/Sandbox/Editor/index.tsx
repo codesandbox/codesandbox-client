@@ -10,7 +10,16 @@ import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
 
 import Content from './Content';
-import { Container } from './elements';
+import {
+  Container,
+  SkeletonDevtools,
+  SkeletonDevtoolsTop,
+  SkeletonEditor,
+  SkeletonEditorTop,
+  SkeletonExplorer,
+  SkeletonExplorerTop,
+  SkeletonWrapper,
+} from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
 import { Header as HeaderOld } from './HeaderOld';
@@ -26,6 +35,20 @@ const StatusBar = styled.div`
     color: inherit;
   }
 `;
+
+const ContentSkeleton = () => (
+  <SkeletonWrapper>
+    <SkeletonExplorer>
+      <SkeletonExplorerTop />
+    </SkeletonExplorer>
+    <SkeletonEditor>
+      <SkeletonEditorTop />
+    </SkeletonEditor>
+    <SkeletonDevtools>
+      <SkeletonDevtoolsTop />
+    </SkeletonDevtools>
+  </SkeletonWrapper>
+);
 
 const ContentSplit = () => {
   const { state, actions, effects } = useOvermind();
@@ -82,8 +105,11 @@ const ContentSplit = () => {
         ...localState.theme,
       }}
     >
-      <Container style={{ lineHeight: 'initial' }} className="monaco-workbench">
-        {REDESIGNED_SIDEBAR === 'true' ? (
+      <Container
+        style={{ lineHeight: 'initial', backgroundColor: 'transparent' }}
+        className="monaco-workbench"
+      >
+        {true ? (
           <>
             {state.preferences.settings.zenMode ? null : (
               <NewThemeProvider theme={localState.theme.vscodeTheme}>
@@ -96,7 +122,7 @@ const ContentSplit = () => {
         )}
         <Fullscreen style={{ width: 'initial' }}>
           {!hideNavigation &&
-            (REDESIGNED_SIDEBAR === 'true' ? (
+            (true ? (
               <NewThemeProvider theme={localState.theme.vscodeTheme}>
                 <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
               </NewThemeProvider>
@@ -118,11 +144,16 @@ const ContentSplit = () => {
               zIndex: 9,
             }}
           >
-            {
+            {state.editor.isLoading ? (
+              <ContentSkeleton />
+            ) : (
               <SplitPane
                 split="vertical"
                 defaultSize={17 * 16}
                 minSize={0}
+                resizerStyle={
+                  state.editor.isLoading ? { display: 'none' } : null
+                }
                 onDragStarted={() => actions.editor.resizingStarted()}
                 onDragFinished={() => actions.editor.resizingStopped()}
                 onChange={size => {
@@ -147,23 +178,23 @@ const ContentSplit = () => {
                 }}
               >
                 {state.workspace.workspaceHidden ? <div /> : <Workspace />}
-                <Content />
+                {<Content theme={localState.theme} />}
               </SplitPane>
-            }
-
-            <StatusBar
-              style={{
-                position: 'fixed',
-                display: statusBar ? 'block' : 'none',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: STATUS_BAR_SIZE,
-              }}
-              className="monaco-workbench mac nopanel"
-              ref={statusbarEl}
-            />
+            )}
           </div>
+
+          <StatusBar
+            style={{
+              position: 'fixed',
+              display: statusBar ? 'block' : 'none',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: STATUS_BAR_SIZE,
+            }}
+            className="monaco-workbench mac nopanel"
+            ref={statusbarEl}
+          />
         </Fullscreen>
 
         <ForkFrozenSandboxModal />

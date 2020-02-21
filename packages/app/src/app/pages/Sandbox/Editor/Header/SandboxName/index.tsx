@@ -32,6 +32,10 @@ export const SandboxName: FunctionComponent = () => {
   const [updatingName, setUpdatingName] = useState(false);
   const [name, setName] = useState('');
 
+  if (!currentSandbox) {
+    return null;
+  }
+
   const sandboxName =
     (currentSandbox && getSandboxName(currentSandbox)) || 'Untitled';
 

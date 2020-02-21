@@ -67,7 +67,11 @@ export const SERVER: INavigationItem = {
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
-  if (!currentSandbox || !currentSandbox.owned || !store.isLoggedIn) {
+  if (!currentSandbox) {
+    return [PROJECT_SUMMARY, CONFIGURATION, GITHUB, DEPLOYMENT, SERVER, LIVE];
+  }
+
+  if (!currentSandbox.owned || !store.isLoggedIn) {
     return [GITHUB, DEPLOYMENT, LIVE];
   }
 
@@ -75,9 +79,12 @@ export function getDisabledItems(store: any): INavigationItem[] {
 }
 
 export default function getItems(store: any): INavigationItem[] {
+  if (!store.editor.currentSandbox) {
+    return [];
+  }
   if (
     store.live.isLive &&
-    (!store.editor.currentSandobx || !store.editor.currentSandbox.git) &&
+    !store.editor.currentSandbox.git &&
     !(
       store.live.isOwner ||
       (store.user &&

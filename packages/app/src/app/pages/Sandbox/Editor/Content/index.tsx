@@ -12,7 +12,7 @@ import { ThemeProvider } from 'styled-components';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import { Preview } from './Preview';
 
-export const MainWorkspace: React.FC = () => {
+export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
   const { state, actions, effects, reaction } = useOvermind();
   const editorEl = useRef(null);
   const contentEl = useRef(null);
@@ -91,7 +91,7 @@ export const MainWorkspace: React.FC = () => {
               templateColor: template.color,
               templateBackgroundColor: template.backgroundColor,
             }
-          : {}
+          : theme
       }
     >
       <div
@@ -103,6 +103,7 @@ export const MainWorkspace: React.FC = () => {
           overflow: 'visible', // For VSCode Context Menu
           display: 'flex',
           flexDirection: 'column',
+          backgroundColor: 'transparent',
         }}
         ref={contentEl}
       >
@@ -114,6 +115,7 @@ export const MainWorkspace: React.FC = () => {
           onDragStarted={() => {
             actions.editor.resizingStarted();
           }}
+          resizerStyle={state.editor.isLoading ? { display: 'none' } : null}
           onChange={() => {
             updateEditorSize();
           }}

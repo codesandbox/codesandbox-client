@@ -110,7 +110,9 @@ export const Navigation: FunctionComponent<Props> = ({
               <IconComponent key={item.id} item={item} singleton={singleton} />
             ))}
 
-            {disabledItems.length > 0 && <Separator />}
+            {disabledItems.length > 0 && shownItems.length ? (
+              <Separator />
+            ) : null}
 
             {disabledItems.map(item => (
               <IconComponent
