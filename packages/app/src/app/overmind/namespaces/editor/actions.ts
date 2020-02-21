@@ -1029,7 +1029,6 @@ export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
 };
 
 // TODO(@christianalfoni): we need to find a way to handle this
-const subscriptions = [];
 export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   { state, effects },
   { sandboxId }
@@ -1038,44 +1037,38 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
     return;
   }
 
-  subscriptions.forEach(sub => {
-    sub.dispose();
-  });
-
   const collaboratorResponse = await effects.gql.queries.collaborators({
     sandboxId,
   });
   state.editor.collaborators = collaboratorResponse.sandbox.collaborators;
 
-  subscriptions.push(
-    effects.gql.subscriptions.onCollaboratorAdded({ sandboxId }, event => {
-      const newCollaborator = event.collaboratorAdded;
-      state.editor.collaborators = [
-        ...state.editor.collaborators.filter(
-          c => c.user.username !== event.collaboratorAdded.user.username
-        ),
-        newCollaborator,
-      ];
-    }),
+  effects.gql.subscriptions.onCollaboratorAdded({ sandboxId }, event => {
+    const newCollaborator = event.collaboratorAdded;
+    state.editor.collaborators = [
+      ...state.editor.collaborators.filter(
+        c => c.user.username !== event.collaboratorAdded.user.username
+      ),
+      newCollaborator,
+    ];
+  });
 
-    effects.gql.subscriptions.onCollaboratorChanged({ sandboxId }, event => {
-      const existingCollaborator = state.editor.collaborators.find(
-        c => c.user.username === event.collaboratorChanged.user.username
-      );
-      if (existingCollaborator) {
-        existingCollaborator.authorization =
-          event.collaboratorChanged.authorization;
+  effects.gql.subscriptions.onCollaboratorChanged({ sandboxId }, event => {
+    const existingCollaborator = state.editor.collaborators.find(
+      c => c.user.username === event.collaboratorChanged.user.username
+    );
+    if (existingCollaborator) {
+      existingCollaborator.authorization =
+        event.collaboratorChanged.authorization;
 
-        existingCollaborator.lastSeenAt = event.collaboratorChanged.lastSeenAt;
-      }
-    }),
+      existingCollaborator.lastSeenAt = event.collaboratorChanged.lastSeenAt;
+    }
+  });
 
-    effects.gql.subscriptions.onCollaboratorRemoved({ sandboxId }, event => {
-      state.editor.collaborators = state.editor.collaborators.filter(
-        c => c.user.username !== event.collaboratorRemoved.user.username
-      );
-    })
-  );
+  effects.gql.subscriptions.onCollaboratorRemoved({ sandboxId }, event => {
+    state.editor.collaborators = state.editor.collaborators.filter(
+      c => c.user.username !== event.collaboratorRemoved.user.username
+    );
+  });
 
   if (hasPermission(state.editor.currentSandbox.authorization, 'owner')) {
     const invitationResponse = await effects.gql.queries.invitations({
@@ -1083,38 +1076,36 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
     });
     state.editor.invitations = invitationResponse.sandbox.invitations;
 
-    subscriptions.push(
-      effects.gql.subscriptions.onInvitationCreated({ sandboxId }, event => {
-        if (event.invitationCreated.id === null) {
-          // Ignore this
-          return;
-        }
+    effects.gql.subscriptions.onInvitationCreated({ sandboxId }, event => {
+      if (event.invitationCreated.id === null) {
+        // Ignore this
+        return;
+      }
 
-        const newInvitation = event.invitationCreated;
-        state.editor.invitations = [
-          ...state.editor.invitations.filter(
-            i => i.id !== event.invitationCreated.id
-          ),
-          newInvitation,
-        ];
-      }),
+      const newInvitation = event.invitationCreated;
+      state.editor.invitations = [
+        ...state.editor.invitations.filter(
+          i => i.id !== event.invitationCreated.id
+        ),
+        newInvitation,
+      ];
+    });
 
-      effects.gql.subscriptions.onInvitationChanged({ sandboxId }, event => {
-        const existingInvitation = state.editor.invitations.find(
-          i => i.id === event.invitationChanged.id
-        );
-        if (existingInvitation) {
-          existingInvitation.authorization =
-            event.invitationChanged.authorization;
-        }
-      }),
+    effects.gql.subscriptions.onInvitationChanged({ sandboxId }, event => {
+      const existingInvitation = state.editor.invitations.find(
+        i => i.id === event.invitationChanged.id
+      );
+      if (existingInvitation) {
+        existingInvitation.authorization =
+          event.invitationChanged.authorization;
+      }
+    });
 
-      effects.gql.subscriptions.onInvitationRemoved({ sandboxId }, event => {
-        state.editor.invitations = state.editor.invitations.filter(
-          i => i.id !== event.invitationRemoved.id
-        );
-      })
-    );
+    effects.gql.subscriptions.onInvitationRemoved({ sandboxId }, event => {
+      state.editor.invitations = state.editor.invitations.filter(
+        i => i.id !== event.invitationRemoved.id
+      );
+    });
   }
 };
 
