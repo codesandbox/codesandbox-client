@@ -135,8 +135,6 @@ export const graphql: <T extends Queries>(
         );
       }
 
-      console.log('runs', _wsClients[_ws.url]);
-
       return _wsClients[_ws.url];
     }
 

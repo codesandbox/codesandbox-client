@@ -25,10 +25,10 @@ interface ICollaboratorItemProps {
   subtext?: string;
   avatarUrl?: string;
   avatarComponent?: JSX.Element | null;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 
   fillAvatar?: boolean;
-  permissionPretext?: string;
+  permissionText?: string;
   readOnly?: boolean;
 }
 
@@ -41,11 +41,11 @@ export const CollaboratorItem = ({
   authorization,
   onChange,
   readOnly,
-  permissionPretext,
-  permissions,
+  permissionText,
+  permissions = [Authorization.WriteCode, Authorization.Read],
 }: ICollaboratorItemProps) => (
-  <Stack css={css({ width: '100%' })} align="center">
-    <Stack gap={2} css={css({ width: '100%' })}>
+  <Stack align="center">
+    <Stack gap={2} css={css({ width: '100%', flex: 2 })}>
       {avatarUrl ? (
         <img
           css={css({
@@ -66,8 +66,8 @@ export const CollaboratorItem = ({
             justifyContent: 'center',
             borderRadius: 2,
             border: '1px solid',
-            borderColor: fillAvatar ? 'grays.500' : 'transparent',
-            backgroundColor: fillAvatar ? 'grays.500' : 'transparent',
+            borderColor: fillAvatar ? 'dialog.border' : 'transparent',
+            backgroundColor: fillAvatar ? 'dialog.border' : 'transparent',
             width: 32,
             height: 32,
           })}
@@ -75,7 +75,7 @@ export const CollaboratorItem = ({
           {avatarComponent}
         </div>
       )}
-      <Stack justify="center" direction="vertical">
+      <Stack gap={1} justify="center" direction="vertical">
         {typeof name === 'string' ? (
           <Text size={3} color="white">
             {name}
@@ -91,13 +91,19 @@ export const CollaboratorItem = ({
       </Stack>
     </Stack>
 
-    <PermissionSelect
-      onChange={onChange}
-      value={authorization}
-      disabled={readOnly}
-      pretext={permissionPretext}
-      additionalOptions={[{ label: 'Remove', value: 'remove' }]}
-    />
+    {permissions.length > 0 ? (
+      <PermissionSelect
+        onChange={onChange}
+        value={authorization}
+        disabled={readOnly}
+        permissions={permissions}
+        additionalOptions={[{ label: 'Remove', value: 'remove' }]}
+      />
+    ) : (
+      <Text css={css({ flex: 3, textAlign: 'right' })} size={3} variant="muted">
+        {permissionText}
+      </Text>
+    )}
   </Stack>
 );
 
@@ -201,14 +207,24 @@ const privacyToIcon = {
   2: LockIcon,
 };
 
-export const LinkPermissions = () => {
+const privacyToDescription = {
+  0: 'Everyone can view',
+  1: 'Everyone with link can view',
+  2: 'Only collaborators can access',
+};
+
+interface ILinkPermissionProps {
+  readOnly: boolean;
+}
+
+export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
   const { state, actions } = useOvermind();
   const { privacy } = state.editor.currentSandbox;
 
   const Icon = privacyToIcon[privacy];
 
   return (
-    <Stack direction="vertical" css={css({ marginBottom: 4 })}>
+    <Stack direction="vertical">
       <CollaboratorItem
         avatarComponent={<Icon />}
         name={
@@ -216,10 +232,12 @@ export const LinkPermissions = () => {
             onChange={e => {
               actions.workspace.sandboxPrivacyChanged({
                 privacy: Number(e.target.value) as 0 | 2,
+                source: 'sharesheet',
               });
             }}
             value={privacy}
             css={css({ paddingLeft: 0 })}
+            disabled={readOnly}
           >
             <option value="0">Public</option>
             <option value="1">Unlisted</option>
@@ -227,9 +245,9 @@ export const LinkPermissions = () => {
           </GhostSelect>
         }
         authorization={Authorization.Read}
-        permissions={privacy === 2 ? [] : [Authorization.Read]}
-        permissionPretext="Everyone"
-        fillAvatar={false}
+        permissions={[]}
+        permissionText={privacyToDescription[privacy]}
+        readOnly={readOnly}
       />
     </Stack>
   );

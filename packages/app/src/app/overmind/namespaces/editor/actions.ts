@@ -77,7 +77,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
     effects.vscode.openModule(state.editor.currentModule);
 
-    await actions.editor.internal.initializeLiveSandbox(
+    await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
     );
 
@@ -155,9 +155,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   actions.internal.ensurePackageJSON();
 
-  await actions.editor.internal.initializeLiveSandbox(sandbox);
-
-  actions.editor.loadCollaborators({ sandboxId: sandbox.id });
+  await actions.editor.internal.initializeSandbox(sandbox);
 
   if (
     hasPermission(sandbox.authorization, 'write_code') &&
@@ -1028,7 +1026,6 @@ export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
   state.editor.sessionFrozen = frozen;
 };
 
-// TODO(@christianalfoni): we need to find a way to handle this
 export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   { state, effects },
   { sandboxId }
@@ -1036,6 +1033,13 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   if (!state.editor.currentSandbox) {
     return;
   }
+
+  effects.gql.subscriptions.onCollaboratorAdded.dispose();
+  effects.gql.subscriptions.onCollaboratorRemoved.dispose();
+  effects.gql.subscriptions.onCollaboratorChanged.dispose();
+  effects.gql.subscriptions.onInvitationCreated.dispose();
+  effects.gql.subscriptions.onInvitationRemoved.dispose();
+  effects.gql.subscriptions.onInvitationChanged.dispose();
 
   const collaboratorResponse = await effects.gql.queries.collaborators({
     sandboxId,

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Select, Text, Stack } from '@codesandbox/components';
+import { Select, Stack } from '@codesandbox/components';
 import { Authorization } from 'app/graphql/types';
 
 interface IPermissionSelectProps extends React.ComponentProps<typeof Select> {
@@ -10,9 +10,8 @@ interface IPermissionSelectProps extends React.ComponentProps<typeof Select> {
   pretext?: string;
 }
 
-export const GhostSelect = styled(Select)`
-  border: none;
-  background-color: transparent;
+export const GhostSelect = styled(Select).attrs({ variant: 'link' })`
+  display: block;
 `;
 
 const authToName = {
@@ -27,15 +26,9 @@ export const SELECT_WIDTH = 85;
 export const PermissionSelect = ({
   additionalOptions = [],
   permissions = [Authorization.WriteCode, Authorization.Read],
-  pretext,
   ...props
 }: IPermissionSelectProps) => (
   <Stack align="center">
-    {pretext && (
-      <Text as="label" variant="muted" size={3}>
-        {pretext}
-      </Text>
-    )}
     <GhostSelect css={css({ width: SELECT_WIDTH })} {...props}>
       {permissions.map(auth => (
         <option key={auth} value={auth}>

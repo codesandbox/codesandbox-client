@@ -37,6 +37,16 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   return matchingSandboxId || id;
 };
 
+export const initializeSandbox: AsyncAction<Sandbox> = async (
+  { actions },
+  sandbox
+) => {
+  await Promise.all([
+    actions.editor.internal.initializeLiveSandbox(sandbox),
+    actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
+  ]);
+};
+
 export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
   { state, actions },
   sandbox

@@ -6,10 +6,16 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { useOvermind } from 'app/overmind';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { Authorization } from 'app/graphql/types';
 import { AddPeople } from './icons';
 import { Container, HorizontalSeparator } from './elements';
 import { AddCollaboratorForm } from './AddCollaboratorForm';
-import { Collaborator, Invitation, LinkPermissions } from './Collaborator';
+import {
+  CollaboratorItem,
+  Collaborator,
+  Invitation,
+  LinkPermissions,
+} from './Collaborator';
 import { ChangeLinkPermissionForm } from './ChangeLinkPermissionForm';
 
 const Animated = props => (
@@ -19,51 +25,74 @@ const Animated = props => (
     exit={{ opacity: 0, height: 0 }}
     style={{ width: '100%', overflow: 'hidden' }}
     positionTransition
-    css={css({ marginBottom: 4 })}
-    {...props}
-  />
+  >
+    <Element
+      css={css({
+        marginTop: 4,
+      })}
+      {...props}
+    />
+  </motion.div>
 );
 
 const CollaboratorContent = () => {
   const { state } = useOvermind();
 
-  const canEdit = hasPermission(
+  const isOwner = hasPermission(
     state.editor.currentSandbox.authorization,
     'owner'
   );
+  const author = state.editor.currentSandbox.author;
 
   return (
-    <Container paddingY={4} gap={4} direction="vertical">
-      <Element paddingX={4}>
-        <AddCollaboratorForm />
+    <Container direction="vertical">
+      <Element padding={4}>
+        <LinkPermissions readOnly={!isOwner} />
+        {isOwner && (
+          <Element paddingTop={4}>
+            <AddCollaboratorForm />
+          </Element>
+        )}
       </Element>
 
       <HorizontalSeparator />
 
-      <Element paddingX={4} css={css({ height: 250, overflowY: 'auto' })}>
-        <LinkPermissions />
-
-        <HorizontalSeparator margin={4} />
+      <Element
+        paddingX={4}
+        css={css({
+          maxHeight: 250,
+          minHeight: 100,
+          overflowY: 'auto',
+          paddingBottom: 4,
+        })}
+      >
+        <Animated>
+          <CollaboratorItem
+            name={author.username}
+            avatarUrl={author.avatarUrl}
+            authorization={Authorization.Owner}
+            permissions={[]}
+            permissionText="Owner"
+          />
+        </Animated>
 
         <AnimatePresence>
           {state.editor.collaborators.map(collaborator => (
-            <Animated>
+            <Animated key={collaborator.user.username}>
               <Collaborator
-                key={collaborator.user.username}
                 userId={collaborator.user.id}
                 username={collaborator.user.username}
                 avatarUrl={collaborator.user.avatarUrl}
                 authorization={collaborator.authorization}
                 lastSeenAt={collaborator.lastSeenAt}
-                readOnly={!canEdit}
+                readOnly={!isOwner}
               />
             </Animated>
           ))}
 
           {state.editor.invitations.map(invitation => (
-            <Animated>
+            <Animated key={invitation.email}>
               <Invitation
-                key={invitation.email}
                 email={invitation.email}
                 id={invitation.id}
                 authorization={invitation.authorization}
@@ -75,7 +104,7 @@ const CollaboratorContent = () => {
 
       <HorizontalSeparator />
 
-      <Element paddingX={4}>
+      <Element padding={4}>
         <ChangeLinkPermissionForm />
       </Element>
     </Container>

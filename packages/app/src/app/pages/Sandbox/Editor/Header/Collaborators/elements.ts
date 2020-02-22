@@ -5,7 +5,6 @@ export const Container = styled(Stack)`
   background-color: ${({ theme }) => theme.colors.dialog.background};
   color: ${({ theme }) => theme.colors.dialog.foreground};
   width: 100%;
-  min-height: 300px;
 
   border: 1px solid ${({ theme }) => theme.colors.dialog.border};
 `;

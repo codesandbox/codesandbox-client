@@ -33,7 +33,15 @@ export const Actions = () => {
       updateStatus,
       user,
       editor: {
-        currentSandbox: { id, owned, title, description, likeCount, userLiked },
+        currentSandbox: {
+          id,
+          author,
+          owned,
+          title,
+          description,
+          likeCount,
+          userLiked,
+        },
       },
     },
 
@@ -92,7 +100,7 @@ export const Actions = () => {
         </Stack>
       )}
 
-      {hasLogIn && <Collaborators />}
+      {author && <Collaborators />}
 
       {user?.curatorAt && (
         <Button

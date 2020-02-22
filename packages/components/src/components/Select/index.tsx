@@ -110,7 +110,7 @@ interface ISelectProps {
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
   defaultValue?: string | number;
-  variant?: string;
+  variant?: 'default' | 'link';
 }
 
 export const Select = ({

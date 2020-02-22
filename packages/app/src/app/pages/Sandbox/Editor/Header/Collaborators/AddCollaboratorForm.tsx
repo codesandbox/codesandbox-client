@@ -17,8 +17,8 @@ export const AddCollaboratorForm = () => {
     Authorization.WriteCode
   );
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
 
     if (!inputValue || inputValue.trim().length === 0) {
       controls.start({
@@ -32,21 +32,25 @@ export const AddCollaboratorForm = () => {
       return;
     }
 
-    if (inputValue.includes('@')) {
-      await actions.editor.inviteCollaborator({
-        email: inputValue,
-        authorization,
-        sandboxId: state.editor.currentId,
-      });
-    } else {
-      await actions.editor.addCollaborator({
-        username: inputValue,
-        authorization,
-        sandboxId: state.editor.currentId,
-      });
-    }
+    try {
+      setInputValue('');
 
-    setInputValue('');
+      if (inputValue.includes('@')) {
+        await actions.editor.inviteCollaborator({
+          email: inputValue,
+          authorization,
+          sandboxId: state.editor.currentId,
+        });
+      } else {
+        await actions.editor.addCollaborator({
+          username: inputValue,
+          authorization,
+          sandboxId: state.editor.currentId,
+        });
+      }
+    } catch (e) {
+      setInputValue(inputValue);
+    }
   };
 
   return (

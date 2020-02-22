@@ -97,7 +97,8 @@ export const Overlay: React.FC<IOverlayProps> = ({
               transition={{
                 duration: 0.2,
               }}
-              animate={{ opacity: 1 }}
+              initial={{ y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
             >
               <Content />
             </motion.div>

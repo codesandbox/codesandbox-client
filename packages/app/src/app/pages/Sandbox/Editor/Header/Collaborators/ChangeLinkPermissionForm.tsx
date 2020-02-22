@@ -1,18 +1,28 @@
 import React, { useEffect } from 'react';
 import css from '@styled-system/css';
 import { motion } from 'framer-motion';
-import { Stack, Select, Button, Text } from '@codesandbox/components';
+import { Stack, Button } from '@codesandbox/components';
 import CheckIcon from 'react-icons/lib/md/check';
-import { useOvermind } from 'app/overmind';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+
+const copyToClipboard = (str: string) => {
+  const el = document.createElement('textarea');
+  el.value = str;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+};
 
 export const ChangeLinkPermissionForm = () => {
-  const { actions, state } = useOvermind();
-
   const [linkCopied, setLinkCopied] = React.useState(false);
   const timeout = React.useRef(null);
   const copyLink = () => {
     setLinkCopied(true);
+
+    copyToClipboard(document.location.href);
 
     if (timeout.current) {
       clearTimeout(timeout.current);
@@ -31,75 +41,39 @@ export const ChangeLinkPermissionForm = () => {
     []
   );
 
-  const changePrivacy = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    actions.workspace.sandboxPrivacyChanged({
-      privacy: Number(value) as 0 | 1 | 2,
-      source: 'sharesheet',
-    });
-  };
-
-  const canEdit = hasPermission(
-    state.editor.currentSandbox.authorization,
-    'owner'
-  );
-
   return (
-    <Stack align="center" direction="vertical" gap={2}>
-      <Stack gap={2}>
-        <Select disabled={!state.isPatron || !canEdit} onChange={changePrivacy}>
-          <option value="0">Public for everyone (Public)</option>
-          <option value="1">Only people with link can view (Unlisted)</option>
-          <option value="2">
-            Only visible to invited collaborators (Private)
-          </option>
-        </Select>
-
-        <Button
-          css={css({ width: 128 })}
-          variant="secondary"
-          onClick={copyLink}
-        >
-          {linkCopied ? (
+    <Stack align="flex-end" direction="vertical" gap={2}>
+      <Button css={css({ width: 128 })} variant="secondary" onClick={copyLink}>
+        {linkCopied ? (
+          <motion.div
+            key="copied"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <motion.div
-              key="copied"
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              initial={{ scale: 0.8, rotate: -60, opacity: 0.7 }}
+              animate={{ scale: 1, rotate: 0, opacity: 1 }}
+              css={css({ marginRight: 1 })}
             >
-              <motion.div
-                initial={{ scale: 0.8, rotate: -60, opacity: 0.7 }}
-                animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                css={css({ marginRight: 1 })}
-              >
-                <CheckIcon />
-              </motion.div>{' '}
-              Copied!
-            </motion.div>
-          ) : (
-            <motion.div
-              key="copy"
-              initial={{ scale: 0.8, opacity: 0.7 }}
-              animate={{ scale: 1, opacity: 1 }}
-            >
-              Copy Sandbox Link
-            </motion.div>
-          )}
-        </Button>
-      </Stack>
-
-      {!state.isPatron && (
-        <Text size={2} variant="muted">
-          You can change the visibility of a sandbox with{' '}
-          <a href="/pro" target="_blank" rel="noreferrer noopener">
-            CodeSandbox Pro
-          </a>
-        </Text>
-      )}
+              <CheckIcon />
+            </motion.div>{' '}
+            Copied!
+          </motion.div>
+        ) : (
+          <motion.div
+            key="copy"
+            initial={{ scale: 0.8, opacity: 0.7 }}
+            animate={{ scale: 1, opacity: 1 }}
+          >
+            Copy Sandbox Link
+          </motion.div>
+        )}
+      </Button>
     </Stack>
   );
 };
