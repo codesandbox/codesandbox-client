@@ -3,6 +3,7 @@ import css from '@styled-system/css';
 import { motion } from 'framer-motion';
 import { Stack, Button } from '@codesandbox/components';
 import CheckIcon from 'react-icons/lib/md/check';
+import { useOvermind } from 'app/overmind';
 
 const copyToClipboard = (str: string) => {
   const el = document.createElement('textarea');
@@ -18,6 +19,7 @@ const copyToClipboard = (str: string) => {
 
 export const ChangeLinkPermissionForm = () => {
   const [linkCopied, setLinkCopied] = React.useState(false);
+  const { actions } = useOvermind();
   const timeout = React.useRef(null);
   const copyLink = () => {
     setLinkCopied(true);
@@ -42,7 +44,16 @@ export const ChangeLinkPermissionForm = () => {
   );
 
   return (
-    <Stack align="flex-end" direction="vertical" gap={2}>
+    <Stack justify="flex-end" direction="horizontal" gap={2}>
+      <Button
+        css={css({ width: 'initial' })}
+        variant="secondary"
+        onClick={() => {
+          actions.modalOpened({ modal: 'share' });
+        }}
+      >
+        Embed
+      </Button>
       <Button css={css({ width: 128 })} variant="secondary" onClick={copyLink}>
         {linkCopied ? (
           <motion.div

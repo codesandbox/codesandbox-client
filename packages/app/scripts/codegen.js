@@ -19,7 +19,7 @@ module.exports = {
   schema: URL,
   documents: [
     `./src/**/*.gql`,
-    `./src/app/overmind/graphql/**/*.ts`,
+    `./src/app/overmind/effects/gql/**/*.ts`,
     `./src/**/queries.ts`,
     `./src/**/mutations.ts`,
   ],

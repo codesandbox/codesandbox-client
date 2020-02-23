@@ -11,7 +11,7 @@ export type Scalars = {
    * timezone. The DateTime appears in a JSON response as an ISO8601 formatted
    * string, including UTC timezone ("Z"). The parsed date and time string will
    * be converted to UTC and any UTC offset other than 0 will be rejected.
-   **/
+   * */
   DateTime: any;
 };
 
@@ -345,6 +345,7 @@ export type RootSubscriptionType = {
   invitationChanged: Maybe<Invitation>;
   invitationCreated: Maybe<Invitation>;
   invitationRemoved: Maybe<Invitation>;
+  sandboxChanged: Maybe<Sandbox>;
 };
 
 export type RootSubscriptionTypeCollaboratorAddedArgs = {
@@ -368,6 +369,10 @@ export type RootSubscriptionTypeInvitationCreatedArgs = {
 };
 
 export type RootSubscriptionTypeInvitationRemovedArgs = {
+  sandboxId: Scalars['ID'];
+};
+
+export type RootSubscriptionTypeSandboxChangedArgs = {
   sandboxId: Scalars['ID'];
 };
 
@@ -599,19 +604,10 @@ export type InvitationFragment = { __typename?: 'Invitation' } & Pick<
   'id' | 'authorization' | 'email'
 >;
 
-export type SandboxCollaboratorsQueryVariables = {
-  sandboxId: Scalars['ID'];
-};
-
-export type SandboxCollaboratorsQuery = { __typename?: 'RootQueryType' } & {
-  sandbox: Maybe<
-    { __typename?: 'Sandbox' } & {
-      collaborators: Maybe<
-        Array<Maybe<{ __typename?: 'Collaborator' } & CollaboratorFragment>>
-      >;
-    }
-  >;
-};
+export type SandboxChangedFragment = { __typename?: 'Sandbox' } & Pick<
+  Sandbox,
+  'id' | 'privacy' | 'title' | 'description'
+>;
 
 export type AddCollaboratorMutationVariables = {
   sandboxId: Scalars['ID'];
@@ -647,56 +643,6 @@ export type ChangeCollaboratorAuthorizationMutation = {
 } & {
   changeCollaboratorAuthorization: Maybe<
     { __typename?: 'Collaborator' } & CollaboratorFragment
-  >;
-};
-
-export type OnCollaboratorAddedSubscriptionVariables = {
-  sandboxId: Scalars['ID'];
-};
-
-export type OnCollaboratorAddedSubscription = {
-  __typename?: 'RootSubscriptionType';
-} & {
-  collaboratorAdded: Maybe<
-    { __typename?: 'Collaborator' } & CollaboratorFragment
-  >;
-};
-
-export type OnCollaboratorChangedSubscriptionVariables = {
-  sandboxId: Scalars['ID'];
-};
-
-export type OnCollaboratorChangedSubscription = {
-  __typename?: 'RootSubscriptionType';
-} & {
-  collaboratorChanged: Maybe<
-    { __typename?: 'Collaborator' } & CollaboratorFragment
-  >;
-};
-
-export type OnCollaboratorRemovedSubscriptionVariables = {
-  sandboxId: Scalars['ID'];
-};
-
-export type OnCollaboratorRemovedSubscription = {
-  __typename?: 'RootSubscriptionType';
-} & {
-  collaboratorRemoved: Maybe<
-    { __typename?: 'Collaborator' } & CollaboratorFragment
-  >;
-};
-
-export type SandboxInvitationsQueryVariables = {
-  sandboxId: Scalars['ID'];
-};
-
-export type SandboxInvitationsQuery = { __typename?: 'RootQueryType' } & {
-  sandbox: Maybe<
-    { __typename?: 'Sandbox' } & {
-      invitations: Maybe<
-        Array<Maybe<{ __typename?: 'Invitation' } & InvitationFragment>>
-      >;
-    }
   >;
 };
 
@@ -752,6 +698,70 @@ export type RedeemSandboxInvitationMutation = {
   >;
 };
 
+export type SandboxCollaboratorsQueryVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type SandboxCollaboratorsQuery = { __typename?: 'RootQueryType' } & {
+  sandbox: Maybe<
+    { __typename?: 'Sandbox' } & {
+      collaborators: Maybe<
+        Array<Maybe<{ __typename?: 'Collaborator' } & CollaboratorFragment>>
+      >;
+    }
+  >;
+};
+
+export type SandboxInvitationsQueryVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type SandboxInvitationsQuery = { __typename?: 'RootQueryType' } & {
+  sandbox: Maybe<
+    { __typename?: 'Sandbox' } & {
+      invitations: Maybe<
+        Array<Maybe<{ __typename?: 'Invitation' } & InvitationFragment>>
+      >;
+    }
+  >;
+};
+
+export type OnCollaboratorAddedSubscriptionVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type OnCollaboratorAddedSubscription = {
+  __typename?: 'RootSubscriptionType';
+} & {
+  collaboratorAdded: Maybe<
+    { __typename?: 'Collaborator' } & CollaboratorFragment
+  >;
+};
+
+export type OnCollaboratorChangedSubscriptionVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type OnCollaboratorChangedSubscription = {
+  __typename?: 'RootSubscriptionType';
+} & {
+  collaboratorChanged: Maybe<
+    { __typename?: 'Collaborator' } & CollaboratorFragment
+  >;
+};
+
+export type OnCollaboratorRemovedSubscriptionVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type OnCollaboratorRemovedSubscription = {
+  __typename?: 'RootSubscriptionType';
+} & {
+  collaboratorRemoved: Maybe<
+    { __typename?: 'Collaborator' } & CollaboratorFragment
+  >;
+};
+
 export type OnInvitationCreatedSubscriptionVariables = {
   sandboxId: Scalars['ID'];
 };
@@ -780,6 +790,16 @@ export type OnInvitationChangedSubscription = {
   __typename?: 'RootSubscriptionType';
 } & {
   invitationChanged: Maybe<{ __typename?: 'Invitation' } & InvitationFragment>;
+};
+
+export type OnSandboxChangedSubscriptionVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type OnSandboxChangedSubscription = {
+  __typename?: 'RootSubscriptionType';
+} & {
+  sandboxChanged: Maybe<{ __typename?: 'Sandbox' } & SandboxChangedFragment>;
 };
 
 export type UnbookmarkTemplateFromDashboardMutationVariables = {

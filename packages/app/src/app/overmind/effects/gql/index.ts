@@ -1,7 +1,7 @@
 import { graphql } from '../../../overmind-graphql';
-import * as mutations from './collaborators/mutations';
-import * as queries from './collaborators/queries';
-import * as subscriptions from './collaborators/subscriptions';
+import * as mutations from './mutations';
+import * as queries from './queries';
+import * as subscriptions from './subscriptions';
 
 export default graphql({
   subscriptions,

@@ -20,3 +20,12 @@ export const sandboxInvitationFragment = gql`
     email
   }
 `;
+
+export const sandboxChangedFragment = gql`
+  fragment SandboxChanged on Sandbox {
+    id
+    privacy
+    title
+    description
+  }
+`;

@@ -1,25 +1,16 @@
-import {
-  OnCollaboratorAddedSubscription,
-  OnCollaboratorAddedSubscriptionVariables,
-  OnCollaboratorChangedSubscription,
-  OnCollaboratorChangedSubscriptionVariables,
-  OnCollaboratorRemovedSubscription,
-  OnCollaboratorRemovedSubscriptionVariables,
-  OnInvitationChangedSubscription,
-  OnInvitationChangedSubscriptionVariables,
-  OnInvitationCreatedSubscription,
-  OnInvitationCreatedSubscriptionVariables,
-  OnInvitationRemovedSubscription,
-  OnInvitationRemovedSubscriptionVariables,
-} from 'app/graphql/types';
+import * as t from 'app/graphql/types';
 import { Query } from 'app/overmind-graphql';
 import gql from 'graphql-tag';
 
-import { collaboratorFragment, sandboxInvitationFragment } from './fragments';
+import {
+  collaboratorFragment,
+  sandboxInvitationFragment,
+  sandboxChangedFragment,
+} from './fragments';
 
 export const onCollaboratorAdded: Query<
-  OnCollaboratorAddedSubscription,
-  OnCollaboratorAddedSubscriptionVariables
+  t.OnCollaboratorAddedSubscription,
+  t.OnCollaboratorAddedSubscriptionVariables
 > = gql`
   subscription OnCollaboratorAdded($sandboxId: ID!) {
     collaboratorAdded(sandboxId: $sandboxId) {
@@ -30,8 +21,8 @@ export const onCollaboratorAdded: Query<
 `;
 
 export const onCollaboratorChanged: Query<
-  OnCollaboratorChangedSubscription,
-  OnCollaboratorChangedSubscriptionVariables
+  t.OnCollaboratorChangedSubscription,
+  t.OnCollaboratorChangedSubscriptionVariables
 > = gql`
   subscription OnCollaboratorChanged($sandboxId: ID!) {
     collaboratorChanged(sandboxId: $sandboxId) {
@@ -42,8 +33,8 @@ export const onCollaboratorChanged: Query<
 `;
 
 export const onCollaboratorRemoved: Query<
-  OnCollaboratorRemovedSubscription,
-  OnCollaboratorRemovedSubscriptionVariables
+  t.OnCollaboratorRemovedSubscription,
+  t.OnCollaboratorRemovedSubscriptionVariables
 > = gql`
   subscription OnCollaboratorRemoved($sandboxId: ID!) {
     collaboratorRemoved(sandboxId: $sandboxId) {
@@ -54,8 +45,8 @@ export const onCollaboratorRemoved: Query<
 `;
 
 export const onInvitationCreated: Query<
-  OnInvitationCreatedSubscription,
-  OnInvitationCreatedSubscriptionVariables
+  t.OnInvitationCreatedSubscription,
+  t.OnInvitationCreatedSubscriptionVariables
 > = gql`
   subscription OnInvitationCreated($sandboxId: ID!) {
     invitationCreated(sandboxId: $sandboxId) {
@@ -66,8 +57,8 @@ export const onInvitationCreated: Query<
 `;
 
 export const onInvitationRemoved: Query<
-  OnInvitationRemovedSubscription,
-  OnInvitationRemovedSubscriptionVariables
+  t.OnInvitationRemovedSubscription,
+  t.OnInvitationRemovedSubscriptionVariables
 > = gql`
   subscription OnInvitationRemoved($sandboxId: ID!) {
     invitationRemoved(sandboxId: $sandboxId) {
@@ -78,8 +69,8 @@ export const onInvitationRemoved: Query<
 `;
 
 export const onInvitationChanged: Query<
-  OnInvitationChangedSubscription,
-  OnInvitationChangedSubscriptionVariables
+  t.OnInvitationChangedSubscription,
+  t.OnInvitationChangedSubscriptionVariables
 > = gql`
   subscription OnInvitationChanged($sandboxId: ID!) {
     invitationChanged(sandboxId: $sandboxId) {
@@ -87,4 +78,16 @@ export const onInvitationChanged: Query<
     }
   }
   ${sandboxInvitationFragment}
+`;
+
+export const onSandboxChangged: Query<
+  t.OnSandboxChangedSubscription,
+  t.OnSandboxChangedSubscriptionVariables
+> = gql`
+  subscription OnSandboxChanged($sandboxId: ID!) {
+    sandboxChanged(sandboxId: $sandboxId) {
+      ...SandboxChanged
+    }
+  }
+  ${sandboxChangedFragment}
 `;

@@ -1026,6 +1026,21 @@ export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
   state.editor.sessionFrozen = frozen;
 };
 
+export const listenToSandboxChanges: AsyncAction<{
+  sandboxId: string;
+}> = async ({ state, effects }, { sandboxId }) => {
+  effects.gql.subscriptions.onSandboxChangged.dispose();
+
+  effects.gql.subscriptions.onSandboxChangged({ sandboxId }, result => {
+    const sandbox = state.editor.sandboxes[sandboxId];
+
+    if (sandbox) {
+      const newInfo = result.sandboxChanged;
+      sandbox.privacy = newInfo.privacy as 0 | 1 | 2;
+    }
+  });
+};
+
 export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   { state, effects },
   { sandboxId }
