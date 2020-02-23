@@ -8,7 +8,7 @@ import { AddPeople } from './icons';
 import { Container, HorizontalSeparator } from './elements';
 import { AddCollaboratorForm } from './AddCollaboratorForm';
 import { LinkPermissions } from './Collaborator';
-import { ChangeLinkPermissionForm } from './ChangeLinkPermissionForm';
+import { ButtonActions } from './ButtonActions';
 import { CollaboratorList } from './CollaboratorList';
 
 const CollaboratorContent = () => {
@@ -37,7 +37,7 @@ const CollaboratorContent = () => {
       <HorizontalSeparator />
 
       <Element padding={4}>
-        <ChangeLinkPermissionForm />
+        <ButtonActions />
       </Element>
     </Container>
   );

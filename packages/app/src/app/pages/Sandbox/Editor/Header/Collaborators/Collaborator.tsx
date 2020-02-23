@@ -1,21 +1,13 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import {
-  Stack,
-  Text,
-  FormField,
-  Switch,
-  Element,
-} from '@codesandbox/components';
+import { Stack, Text, Select } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Authorization } from 'app/graphql/types';
 import { formatDistanceToNow } from 'date-fns';
-import { RoomInfo } from '@codesandbox/common/lib/types';
 import { LockIcon } from '@codesandbox/common/lib/components/icons/Lock';
 import { GlobeIcon } from '@codesandbox/common/lib/components/icons/Globe';
 import { LinkIcon } from '@codesandbox/common/lib/components/icons/Link';
-import { PermissionSelect, GhostSelect } from './PermissionSelect';
+import { PermissionSelect } from './PermissionSelect';
 import { Mail } from './icons';
 
 interface ICollaboratorItemProps {
@@ -30,6 +22,7 @@ interface ICollaboratorItemProps {
   fillAvatar?: boolean;
   permissionText?: string;
   readOnly?: boolean;
+  style?: React.CSSProperties;
 }
 
 export const CollaboratorItem = ({
@@ -43,8 +36,9 @@ export const CollaboratorItem = ({
   readOnly,
   permissionText,
   permissions = [Authorization.WriteCode, Authorization.Read],
+  ...props
 }: ICollaboratorItemProps) => (
-  <Stack align="center">
+  <Stack {...props} align="center">
     <Stack gap={2} css={css({ width: '100%', flex: 2 })}>
       {avatarUrl ? (
         <img
@@ -113,21 +107,18 @@ interface ICollaboratorProps {
   username: string;
   lastSeenAt: string | null;
   avatarUrl: string;
+  isViewingNow: boolean;
 
   readOnly?: boolean;
 }
 
-function getLiveUser(currentUserId: string, roomInfo: RoomInfo) {
-  return roomInfo?.users?.find(u => u.userId === currentUserId);
-}
-
 export const Collaborator = ({
   username,
-  userId,
   avatarUrl,
   authorization,
   lastSeenAt,
   readOnly,
+  isViewingNow,
 }: ICollaboratorProps) => {
   const { actions, state } = useOvermind();
 
@@ -146,12 +137,14 @@ export const Collaborator = ({
     }
   };
 
-  const currentLiveUser = getLiveUser(userId, state.live?.roomInfo);
-  const subtext = currentLiveUser
-    ? 'Viewing now'
-    : lastSeenAt
-    ? formatDistanceToNow(new Date(lastSeenAt), { addSuffix: true })
-    : 'Not viewed yet';
+  let subtext: string;
+  if (isViewingNow) {
+    subtext = 'Viewing now';
+  } else if (lastSeenAt === null) {
+    subtext = 'Not viewed yet';
+  } else {
+    subtext = formatDistanceToNow(new Date(lastSeenAt), { addSuffix: true });
+  }
 
   return (
     <CollaboratorItem
@@ -220,35 +213,49 @@ interface ILinkPermissionProps {
 export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
   const { state, actions } = useOvermind();
   const { privacy } = state.editor.currentSandbox;
+  const isPatron = state.isPatron;
 
   const Icon = privacyToIcon[privacy];
 
+  const isReadOnly = readOnly || !isPatron;
+
   return (
-    <Stack direction="vertical">
+    <Stack gap={4} align="center" direction="vertical">
       <CollaboratorItem
         avatarComponent={<Icon />}
         name={
-          <GhostSelect
+          <Select
+            variant="link"
             onChange={e => {
               actions.workspace.sandboxPrivacyChanged({
                 privacy: Number(e.target.value) as 0 | 2,
-                source: 'sharesheet',
+                source: 'collaboratorss',
               });
             }}
             value={privacy}
             css={css({ paddingLeft: 0 })}
-            disabled={readOnly}
+            disabled={isReadOnly}
           >
             <option value="0">Public</option>
             <option value="1">Unlisted</option>
             <option value="2">Private</option>
-          </GhostSelect>
+          </Select>
         }
         authorization={Authorization.Read}
         permissions={[]}
         permissionText={privacyToDescription[privacy]}
-        readOnly={readOnly}
+        readOnly={isReadOnly}
+        style={{ width: '100%' }}
       />
+
+      {!isPatron && (
+        <Text size={3} variant="muted" align="center">
+          Changing sandbox access is available with{' '}
+          <a href="/pricing" target="_blank" rel="noreferrer noopener">
+            CodeSandbox Pro
+          </a>
+        </Text>
+      )}
     </Stack>
   );
 };

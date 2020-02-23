@@ -1,6 +1,9 @@
 import React from 'react';
 import deepmerge from 'deepmerge';
-import styled from 'styled-components';
+import styled, {
+  StyledComponentInnerOtherProps,
+  StyledComponent,
+} from 'styled-components';
 import css from '@styled-system/css';
 import { Input } from '../Input';
 import { Element } from '../Element';
@@ -43,35 +46,38 @@ const getSVG = (variant, color) => {
   return header + encoded;
 };
 
-const SelectComponent = styled(Input).attrs({ as: 'select' })<{
-  variant?: string;
-}>(({ variant = 'default' }) =>
-  css(
-    deepmerge(variantStyles[variant], {
-      appearance: 'none',
-      color: 'input.placeholderForeground',
-      transition: 'all ease',
-      transitionDuration: theme => theme.speeds[2],
+interface ISelectProps extends StyledComponentInnerOtherProps<typeof Input> {
+  variant?: 'default' | 'link';
+}
 
-      paddingRight: 5, // select has a caret icon on the right
+const SelectComponent = styled(Input).attrs({ as: 'select' })<ISelectProps>(
+  ({ variant = 'default' }) =>
+    css(
+      deepmerge(variantStyles[variant], {
+        appearance: 'none',
+        color: 'input.placeholderForeground',
+        transition: 'all ease',
+        transitionDuration: theme => theme.speeds[2],
 
-      backgroundImage: theme =>
-        theme &&
-        `url(${getSVG(variant, theme.colors.input.placeholderForeground)})`,
-      backgroundPosition: 'calc(100% - 8px) center',
-      backgroundRepeat: 'no-repeat',
+        paddingRight: 5, // select has a caret icon on the right
 
-      ':hover, :focus': {
-        color: 'input.foreground',
         backgroundImage: theme =>
-          theme && `url(${getSVG(variant, theme.colors.input.foreground)})`,
-      },
-    })
-  )
-);
+          theme &&
+          `url(${getSVG(variant, theme.colors.input.placeholderForeground)})`,
+        backgroundPosition: 'calc(100% - 8px) center',
+        backgroundRepeat: 'no-repeat',
+
+        ':hover, :focus': {
+          color: 'input.foreground',
+          backgroundImage: theme =>
+            theme && `url(${getSVG(variant, theme.colors.input.foreground)})`,
+        },
+      })
+    )
+) as StyledComponent<'select', null, ISelectProps>;
 
 const SelectWithIcon = styled(Element)<{
-  variant?: string;
+  variant?: 'default' | 'link';
 }>(({ variant = 'default' }) =>
   css({
     position: 'relative',
@@ -102,14 +108,11 @@ const SelectWithIcon = styled(Element)<{
   })
 );
 
-interface ISelectProps {
+type SelectProps = ISelectProps & React.ComponentPropsWithoutRef<'select'>;
+
+interface ISelectContainerProps extends SelectProps {
   icon?: any;
   placeholder?: string;
-  children?: any;
-  disabled?: boolean;
-  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  value?: string | number;
-  defaultValue?: string | number;
   variant?: 'default' | 'link';
 }
 
@@ -117,7 +120,7 @@ export const Select = ({
   icon = null,
   placeholder = null,
   ...props
-}: ISelectProps) => {
+}: ISelectContainerProps) => {
   const PrefixIcon = icon;
 
   if (icon)

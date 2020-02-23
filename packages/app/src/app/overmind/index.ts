@@ -57,7 +57,7 @@ export const config = merge(
   })
 );
 
-interface Config extends IConfig<typeof config> {}
+export interface Config extends IConfig<typeof config> {}
 
 export interface OnInitialize extends IOnInitialize<Config> {}
 

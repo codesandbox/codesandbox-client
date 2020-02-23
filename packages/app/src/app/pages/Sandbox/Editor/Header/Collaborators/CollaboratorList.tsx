@@ -7,6 +7,8 @@ import { useOvermind } from 'app/overmind';
 import { TeamIcon } from '@codesandbox/common/lib/components/icons/Team';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Authorization } from 'app/graphql/types';
+import { sortBy } from 'lodash-es';
+import { RoomInfo } from '@codesandbox/common/lib/types';
 import { CollaboratorItem, Collaborator, Invitation } from './Collaborator';
 
 const Animated = ({ showMountAnimations, ...props }) => (
@@ -26,6 +28,10 @@ const Animated = ({ showMountAnimations, ...props }) => (
   </motion.div>
 );
 
+function getLiveUser(currentUserId: string, roomInfo: RoomInfo) {
+  return roomInfo?.users?.find(u => u.userId === currentUserId);
+}
+
 export const CollaboratorList = () => {
   const { state } = useOvermind();
 
@@ -40,6 +46,27 @@ export const CollaboratorList = () => {
     'owner'
   );
   const { author, team } = state.editor.currentSandbox;
+
+  const collaboratorsConnectedWithLive = state.editor.collaborators.map(
+    collaborator => {
+      const currentLiveUser = getLiveUser(
+        collaborator.user.id,
+        state.live?.roomInfo
+      );
+      if (currentLiveUser) {
+        return { ...collaborator, lastSeenAt: Infinity };
+      }
+
+      return collaborator;
+    }
+  );
+
+  const sortedCollaborators = sortBy(collaboratorsConnectedWithLive, c => [
+    -(c.lastSeenAt === Infinity
+      ? new Date().getTime()
+      : new Date(c.lastSeenAt || 0).getTime()),
+    c.user.username,
+  ]);
 
   return (
     <Element
@@ -58,7 +85,7 @@ export const CollaboratorList = () => {
             avatarComponent={<TeamIcon width={24} height={24} />}
             authorization={Authorization.Owner}
             permissions={[]}
-            permissionText="Can Access"
+            permissionText="Owner"
           />
         </Animated>
       )}
@@ -74,7 +101,7 @@ export const CollaboratorList = () => {
       </Animated>
 
       <AnimatePresence>
-        {state.editor.collaborators.map(collaborator => (
+        {sortedCollaborators.map(collaborator => (
           <Animated
             showMountAnimations={showMountAnimations}
             key={collaborator.user.username}
@@ -85,6 +112,7 @@ export const CollaboratorList = () => {
               avatarUrl={collaborator.user.avatarUrl}
               authorization={collaborator.authorization}
               lastSeenAt={collaborator.lastSeenAt}
+              isViewingNow={collaborator.lastSeenAt === Infinity}
               readOnly={!isOwner}
             />
           </Animated>

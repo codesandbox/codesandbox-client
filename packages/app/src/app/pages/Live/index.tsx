@@ -9,7 +9,6 @@ import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
-import { QuickActions } from 'app/pages/Sandbox/QuickActions';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import GithubIcon from 'react-icons/lib/go/mark-github';
@@ -174,7 +173,6 @@ export const LivePage: React.FC<Props> = ({ match }) => {
         </Helmet>
       )}
       <Editor />
-      <QuickActions />
     </>
   );
 };

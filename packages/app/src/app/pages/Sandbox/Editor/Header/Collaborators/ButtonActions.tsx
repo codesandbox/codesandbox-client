@@ -17,7 +17,7 @@ const copyToClipboard = (str: string) => {
   document.body.removeChild(el);
 };
 
-export const ChangeLinkPermissionForm = () => {
+export const ButtonActions = () => {
   const [linkCopied, setLinkCopied] = React.useState(false);
   const { actions } = useOvermind();
   const timeout = React.useRef(null);

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import Downshift, { DownshiftProps } from 'downshift';
 import css from '@styled-system/css';
-import { Input, List, ListItem, ListAction } from '@codesandbox/components';
-import { DropdownList, DropdownItem } from './elements';
+import { Input, List, ListAction } from '@codesandbox/components';
 
 interface IUserAutoComplete {
   inputValue: string;
@@ -44,6 +43,9 @@ interface IUserSearchInputProps {
   [key: string]: any;
 }
 
+// There is a conflict with 'as' typing (string vs 'select' | 'option', etc...)
+const InputWithoutTypes = Input as any;
+
 export const UserSearchInput = ({
   onInputValueChange,
   inputValue,
@@ -65,8 +67,10 @@ export const UserSearchInput = ({
       highlightedIndex,
     }) => (
       <div style={{ width: '100%', position: 'relative' }}>
-        <div {...getRootProps({}, { suppressRefError: true })}>
-          <Input
+        <div
+          {...getRootProps({ refKey: 'innerRef' }, { suppressRefError: true })}
+        >
+          <InputWithoutTypes
             {...props}
             {...getInputProps({
               placeholder: 'Enter name or email address',

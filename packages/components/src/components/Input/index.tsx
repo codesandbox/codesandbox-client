@@ -1,4 +1,7 @@
-import styled from 'styled-components';
+import styled, {
+  StyledComponent,
+  StyledComponentInnerOtherProps,
+} from 'styled-components';
 import css from '@styled-system/css';
 import { Element } from '../Element';
 
@@ -7,20 +10,16 @@ const placeholderStyles = {
   fontSize: 3,
 };
 
-export const Input = styled(Element).attrs({ as: 'input' })<{
-  type?: string;
-  onBlur?: any;
-  onChange?: any;
-  onKeyUp?: any;
-  placeholder?: string;
-  ref?: any;
+interface IInputProps extends StyledComponentInnerOtherProps<typeof Element> {
   required?: boolean;
-  value?: string | number;
-  defaultValue?: string | number;
   autoComplete?: 'on' | 'off';
   spellCheck?: 'true' | 'false';
   autoFocus?: boolean;
-}>(
+}
+
+export const Input = styled(Element).attrs(() => ({ as: 'input' }))<
+  IInputProps
+>(
   css({
     height: '26px',
     width: '100%',
@@ -49,4 +48,4 @@ export const Input = styled(Element).attrs({ as: 'input' })<{
       borderColor: 'input.border', // (default border)
     },
   })
-);
+) as StyledComponent<'input', any, IInputProps>;

@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Select, Stack } from '@codesandbox/components';
 import { Authorization } from 'app/graphql/types';
@@ -9,10 +8,6 @@ interface IPermissionSelectProps extends React.ComponentProps<typeof Select> {
   permissions?: Authorization[];
   pretext?: string;
 }
-
-export const GhostSelect = styled(Select).attrs({ variant: 'link' })`
-  display: block;
-`;
 
 const authToName = {
   [Authorization.WriteCode]: 'Can Edit',
@@ -29,7 +24,7 @@ export const PermissionSelect = ({
   ...props
 }: IPermissionSelectProps) => (
   <Stack align="center">
-    <GhostSelect css={css({ width: SELECT_WIDTH })} {...props}>
+    <Select variant="link" css={css({ width: SELECT_WIDTH })} {...props}>
       {permissions.map(auth => (
         <option key={auth} value={auth}>
           {authToName[auth]}
@@ -41,6 +36,6 @@ export const PermissionSelect = ({
           {label}
         </option>
       ))}
-    </GhostSelect>
+    </Select>
   </Stack>
 );
