@@ -1059,6 +1059,10 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   const collaboratorResponse = await effects.gql.queries.collaborators({
     sandboxId,
   });
+  if (!collaboratorResponse.sandbox) {
+    return;
+  }
+
   state.editor.collaborators = collaboratorResponse.sandbox.collaborators;
 
   effects.gql.subscriptions.onCollaboratorAdded({ sandboxId }, event => {
@@ -1093,6 +1097,10 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
     const invitationResponse = await effects.gql.queries.invitations({
       sandboxId,
     });
+    if (!invitationResponse.sandbox) {
+      return;
+    }
+
     state.editor.invitations = invitationResponse.sandbox.invitations;
 
     effects.gql.subscriptions.onInvitationCreated({ sandboxId }, event => {
