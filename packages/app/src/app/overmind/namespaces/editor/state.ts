@@ -21,10 +21,7 @@ import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { Derive } from 'app/overmind';
 import immer from 'immer';
 
-import {
-  SandboxCollaboratorsQuery,
-  SandboxInvitationsQuery,
-} from 'app/graphql/types';
+import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
 import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
@@ -36,8 +33,8 @@ type State = {
   sandboxes: {
     [id: string]: Sandbox;
   };
-  collaborators: SandboxCollaboratorsQuery['sandbox']['collaborators'];
-  invitations: SandboxInvitationsQuery['sandbox']['invitations'];
+  collaborators: CollaboratorFragment[];
+  invitations: InvitationFragment[];
   // TODO: What is this really? Could not find it in Cerebral, but
   // EditorPreview is using it... weird stuff
   devToolTabs: Derive<State, ViewConfig[]>;
