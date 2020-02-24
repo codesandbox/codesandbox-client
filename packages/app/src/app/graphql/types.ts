@@ -41,6 +41,7 @@ export type Collaborator = {
   lastSeenAt: Maybe<Scalars['DateTime']>;
   sandbox: Sandbox;
   user: User;
+  warning: Maybe<Scalars['String']>;
 };
 
 export type Collection = {
@@ -418,7 +419,7 @@ export type Team = {
   invitees: Maybe<Array<Maybe<User>>>;
   name: Maybe<Scalars['String']>;
   templates: Maybe<Array<Maybe<Template>>>;
-  users: Maybe<Array<Maybe<User>>>;
+  users: Array<User>;
 };
 
 /** A Template */
@@ -595,7 +596,7 @@ export type UnmakeSandboxesTemplateMutation = {
 
 export type CollaboratorFragment = { __typename?: 'Collaborator' } & Pick<
   Collaborator,
-  'id' | 'authorization' | 'lastSeenAt'
+  'id' | 'authorization' | 'lastSeenAt' | 'warning'
 > & {
     user: { __typename?: 'User' } & Pick<User, 'id' | 'username' | 'avatarUrl'>;
   };
@@ -840,14 +841,10 @@ export type TeamFragment = { __typename?: 'Team' } & Pick<
   Team,
   'id' | 'name' | 'description' | 'creatorId'
 > & {
-    users: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'User' } & Pick<
-            User,
-            'id' | 'name' | 'username' | 'avatarUrl'
-          >
-        >
+    users: Array<
+      { __typename?: 'User' } & Pick<
+        User,
+        'id' | 'name' | 'username' | 'avatarUrl'
       >
     >;
     invitees: Maybe<
