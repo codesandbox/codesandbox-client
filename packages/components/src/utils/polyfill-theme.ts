@@ -228,7 +228,7 @@ const darken = (color, value) =>
     .hex();
 
 const withContrast = (color, background, type, contrastType = 'text') => {
-  const contrastRatio = { text: 4.5, icon: 3 };
+  const contrastRatio = { text: 4.5, icon: 1.6 };
   const contrast = contrastRatio[contrastType];
 
   if (Color(color).contrast(Color(background)) > contrast) return color;
@@ -238,5 +238,10 @@ const withContrast = (color, background, type, contrastType = 'text') => {
 
   // recursively increase contrast
   const increaseContrast = type === 'dark' ? lighten : darken;
-  return withContrast(increaseContrast(color, 0.1), background, type);
+  return withContrast(
+    increaseContrast(color, 0.1),
+    background,
+    type,
+    contrastType
+  );
 };
