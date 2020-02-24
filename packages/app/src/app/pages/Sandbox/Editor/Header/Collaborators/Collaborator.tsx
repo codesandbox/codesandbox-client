@@ -126,12 +126,12 @@ export const Collaborator = ({
     if (event.target.value === 'remove') {
       actions.editor.removeCollaborator({
         username,
-        sandboxId: state.editor.currentId,
+        sandboxId: state.editor.currentSandbox.id,
       });
     } else {
       actions.editor.changeCollaboratorAuthorization({
         username,
-        sandboxId: state.editor.currentId,
+        sandboxId: state.editor.currentSandbox.id,
         authorization: event.target.value as Authorization,
       });
     }
@@ -172,12 +172,12 @@ export const Invitation = ({ id, email, authorization }: IInvitationProps) => {
     if (event.target.value === 'remove') {
       actions.editor.revokeSandboxInvitation({
         invitationId: id,
-        sandboxId: state.editor.currentId,
+        sandboxId: state.editor.currentSandbox.id,
       });
     } else {
       actions.editor.changeInvitationAuthorization({
         invitationId: id,
-        sandboxId: state.editor.currentId,
+        sandboxId: state.editor.currentSandbox.id,
         authorization: event.target.value as Authorization,
       });
     }

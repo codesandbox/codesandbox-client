@@ -39,13 +39,13 @@ export const AddCollaboratorForm = () => {
         await actions.editor.inviteCollaborator({
           email: inputValue,
           authorization,
-          sandboxId: state.editor.currentId,
+          sandboxId: state.editor.currentSandbox!.id,
         });
       } else {
         await actions.editor.addCollaborator({
           username: inputValue,
           authorization,
-          sandboxId: state.editor.currentId,
+          sandboxId: state.editor.currentSandbox!.id,
         });
       }
     } catch (e) {

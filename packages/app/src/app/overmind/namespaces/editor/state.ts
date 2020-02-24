@@ -26,6 +26,9 @@ import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
 type State = {
+  /**
+   * Never use this! It doesn't reflect the id of the current sandbox. Use editor.currentSandbox.id instead.
+   */
   currentId: string | null;
   currentModuleShortid: string | null;
   isForkingSandbox: boolean;
