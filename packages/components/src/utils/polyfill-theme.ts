@@ -121,6 +121,22 @@ const polyfillTheme = vsCodeTheme => {
     );
   }
 
+  if (uiColors.list.hoverBackground === uiColors.sideBar.background) {
+    if (
+      uiColors.list.inactiveSelectionBackground &&
+      uiColors.list.hoverBackground !==
+        uiColors.list.inactiveSelectionBackground
+    ) {
+      uiColors.list.hoverBackground = uiColors.list.inactiveSelectionBackground;
+    } else {
+      // if that didnt work, its math time
+      uiColors.list.hoverBackground = decreaseContrast(
+        uiColors.sideBar.background,
+        0.25
+      );
+    }
+  }
+
   uiColors.list.foreground = uiColors.list.foreground || mutedForeground;
   uiColors.list.hoverForeground =
     uiColors.list.hoverForeground || uiColors.sideBar.foreground;
@@ -143,7 +159,7 @@ const polyfillTheme = vsCodeTheme => {
   const addedColors = {
     mutedForeground,
     activityBar: {
-      selected: uiColors.sideBar.foreground,
+      selectedForeground: uiColors.sideBar.foreground,
       inactiveForeground: mutedForeground,
       hoverBackground: uiColors.sideBar.border,
     },
@@ -183,6 +199,14 @@ const polyfillTheme = vsCodeTheme => {
     uiColors.switch.toggle = designLanguage.colors.grays[200];
   }
 
+  // ensure enough contrast from inactive state
+  uiColors.activityBar.selectedForeground = withContrast(
+    uiColors.activityBar.selectedForeground,
+    uiColors.activityBar.inactiveForeground,
+    type,
+    'icon'
+  );
+
   return uiColors;
 };
 
@@ -203,13 +227,21 @@ const darken = (color, value) =>
     .darken(value)
     .hex();
 
-const withContrast = (color, background, type) => {
-  if (Color(color).contrast(Color(background)) > 4.5) return color;
+const withContrast = (color, background, type, contrastType = 'text') => {
+  const contrastRatio = { text: 4.5, icon: 1.6 };
+  const contrast = contrastRatio[contrastType];
+
+  if (Color(color).contrast(Color(background)) > contrast) return color;
 
   // can't fix that
   if (color === '#FFFFFF' || color === '#000000') return color;
 
   // recursively increase contrast
   const increaseContrast = type === 'dark' ? lighten : darken;
-  return withContrast(increaseContrast(color, 0.1), background, type);
+  return withContrast(
+    increaseContrast(color, 0.1),
+    background,
+    type,
+    contrastType
+  );
 };
