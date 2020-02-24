@@ -6,7 +6,9 @@ export default {
   component: Label,
 };
 
-export const Basic = () => <Label>Plan old boring text</Label>;
+export const Basic = () => (
+  <Label htmlFor="input-element">Plan old boring text</Label>
+);
 
 export const Block = () => (
   <Label block marginX={2}>

@@ -7,20 +7,9 @@ const placeholderStyles = {
   fontSize: 3,
 };
 
-export const Input = styled(Element).attrs({ as: 'input' })<{
-  type?: string;
-  onBlur?: any;
-  onChange?: any;
-  onKeyUp?: any;
-  placeholder?: string;
-  ref?: any;
-  required?: boolean;
-  value?: string | number;
-  defaultValue?: string | number;
-  autoComplete?: 'on' | 'off';
-  spellCheck?: 'true' | 'false';
-  autoFocus?: boolean;
-}>(
+interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+
+export const Input = styled(Element).attrs({ as: 'input' })<IInputProps>(
   css({
     height: '26px',
     width: '100%',

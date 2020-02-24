@@ -102,22 +102,18 @@ const SelectWithIcon = styled(Element)<{
   })
 );
 
-interface ISelectProps {
-  icon?: any;
-  placeholder?: string;
-  children?: any;
-  disabled?: boolean;
-  onChange?: any;
-  value?: string | number;
-  defaultValue?: string | number;
-  variant?: string;
-}
+type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> &
+  React.SelectHTMLAttributes<HTMLInputElement> & {
+    icon?: any;
+    placeholder?: string;
+    variant?: 'default' | 'link';
+  };
 
 export const Select = ({
   icon = null,
   placeholder = null,
   ...props
-}: ISelectProps) => {
+}: SelectProps) => {
   const PrefixIcon = icon;
 
   if (icon)

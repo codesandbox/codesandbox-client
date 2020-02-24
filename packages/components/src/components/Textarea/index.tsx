@@ -7,7 +7,6 @@ interface ITextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   maxLength?: number;
   autosize?: boolean;
-  ref?: any;
   value?: string;
 }
 
