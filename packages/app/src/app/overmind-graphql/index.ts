@@ -67,8 +67,8 @@ export type Graphql<T extends Queries> = {
       payload: infer P
     ) => infer R
       ? P extends void
-        ? () => R
-        : (payload: P) => R
+        ? () => Promise<R>
+        : (payload: P) => Promise<R>
       : never;
   };
   subscriptions: {
