@@ -21,7 +21,7 @@
     "lint": "eslint --ext .js,.ts,.tsx src",
     "start": "yarn tsc --watch",
     "start:storybook": "start-storybook",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --pretty",
     "chromatic": "if-env CIRCLE_BRANCH=master && yarn chromatic:master || yarn chromatic:branch",
     "chromatic:master": "CHROMATIC_APP_CODE=nffds42ndde ./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --auto-accept-changes",
     "chromatic:branch": "CHROMATIC_APP_CODE=nffds42ndde ./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes",

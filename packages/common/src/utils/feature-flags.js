@@ -6,5 +6,4 @@
   it's a JS file, so you can add whatever logic you want as long as it's static
 */
 
-export const EMBED_LIGHT_THEME = true;
 export const REDESIGNED_SIDEBAR = localStorage.REDESIGNED_SIDEBAR || false;

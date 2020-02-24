@@ -1,6 +1,5 @@
 import { Button } from '@codesandbox/common/lib/components/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { EMBED_LIGHT_THEME } from '@codesandbox/common/lib/utils/feature-flags';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
@@ -147,15 +146,13 @@ export const ShareModal: React.FC<Props> = () => {
                 value={view}
                 setValue={setView}
               />
-              {EMBED_LIGHT_THEME && (
-                <PaddedPreference
-                  title="Theme"
-                  type="dropdown"
-                  options={THEME_OPTIONS}
-                  value={theme}
-                  setValue={setTheme}
-                />
-              )}
+              <PaddedPreference
+                title="Theme"
+                type="dropdown"
+                options={THEME_OPTIONS}
+                value={theme}
+                setValue={setTheme}
+              />
               <PaddedPreference
                 title="Auto resize"
                 type="boolean"
@@ -213,7 +210,7 @@ export const ShareModal: React.FC<Props> = () => {
                 <h4>Default module to show</h4>
 
                 <FilesContainer>
-                  {/* 
+                  {/*
                   // @ts-ignore */}
                   <Files
                     modules={sandbox.modules}

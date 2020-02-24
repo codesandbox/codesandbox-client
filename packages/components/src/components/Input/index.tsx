@@ -1,7 +1,4 @@
-import styled, {
-  StyledComponent,
-  StyledComponentInnerOtherProps,
-} from 'styled-components';
+import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Element } from '../Element';
 
@@ -10,21 +7,15 @@ const placeholderStyles = {
   fontSize: 3,
 };
 
-interface IInputProps extends StyledComponentInnerOtherProps<typeof Element> {
-  required?: boolean;
-  autoComplete?: 'on' | 'off';
-  spellCheck?: 'true' | 'false';
-  autoFocus?: boolean;
-}
+interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-export const Input = styled(Element).attrs(() => ({ as: 'input' }))<
-  IInputProps
->(
+export const Input = styled(Element).attrs({ as: 'input' })<IInputProps>(
   css({
     height: '26px',
     width: '100%',
     paddingX: 2,
     fontSize: 3,
+    lineHeight: 1, // trust the height
     fontFamily: 'Inter, sans-serif',
     borderRadius: 'small',
     backgroundColor: 'input.background',
@@ -48,4 +39,4 @@ export const Input = styled(Element).attrs(() => ({ as: 'input' }))<
       borderColor: 'input.border', // (default border)
     },
   })
-) as StyledComponent<'input', any, IInputProps>;
+);
