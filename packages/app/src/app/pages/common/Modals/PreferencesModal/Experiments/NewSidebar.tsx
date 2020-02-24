@@ -1,3 +1,4 @@
+import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import React, { useState, useEffect } from 'react';
 
 import { SubDescription, PaddedPreference } from '../elements';
@@ -5,9 +6,7 @@ import { SubDescription, PaddedPreference } from '../elements';
 export const NewSidebar: React.FunctionComponent = () => {
   const [newSidebar, setNewSidebar] = useState(false);
   useEffect(() => {
-    const value = window.localStorage.getItem('REDESIGNED_SIDEBAR');
-
-    if (value === 'true') {
+    if (REDESIGNED_SIDEBAR === 'true') {
       return setNewSidebar(true);
     }
     return setNewSidebar(false);

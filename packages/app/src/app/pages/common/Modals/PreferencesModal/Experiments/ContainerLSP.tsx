@@ -1,3 +1,4 @@
+import { CONTAINER_LSP } from '@codesandbox/common/lib/utils/feature-flags';
 import React, { useState, useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import { SubDescription, PaddedPreference } from '../elements';
@@ -6,9 +7,7 @@ export const ContainerLSP: React.FunctionComponent = () => {
   const { state } = useOvermind();
   const [containerLSP, setContainerLSP] = useState(false);
   useEffect(() => {
-    const value = window.localStorage.getItem('CONTAINER_LSP');
-
-    if (value === 'true') {
+    if (CONTAINER_LSP === 'true') {
       return setContainerLSP(true);
     }
     return setContainerLSP(false);
