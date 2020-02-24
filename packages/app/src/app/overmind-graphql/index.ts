@@ -202,8 +202,17 @@ export const graphql: <T extends Queries>(
 
             _subscriptions[queryString].push({
               variables,
-              dispose: () =>
-                withAbsintheSocket.unobserve(client, notifier, observer),
+              dispose: () => {
+                try {
+                  withAbsintheSocket.unobserveOrCancel(
+                    client,
+                    notifier,
+                    observer
+                  );
+                } catch (e) {
+                  console.error(e);
+                }
+              },
             });
           } else {
             throw createError('There is no ws client available for this query');

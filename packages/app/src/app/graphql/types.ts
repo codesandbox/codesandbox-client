@@ -11,7 +11,7 @@ export type Scalars = {
    * timezone. The DateTime appears in a JSON response as an ISO8601 formatted
    * string, including UTC timezone ("Z"). The parsed date and time string will
    * be converted to UTC and any UTC offset other than 0 will be rejected.
-   **/
+   * */
   DateTime: any;
 };
 
@@ -381,6 +381,7 @@ export type Sandbox = {
   __typename?: 'Sandbox';
   alias: Maybe<Scalars['String']>;
   author: Maybe<User>;
+  authorization: Authorization;
   collaborators: Array<Collaborator>;
   collection: Maybe<Collection>;
   /** If the sandbox is a template this will be set */
@@ -606,7 +607,7 @@ export type InvitationFragment = { __typename?: 'Invitation' } & Pick<
 
 export type SandboxChangedFragment = { __typename?: 'Sandbox' } & Pick<
   Sandbox,
-  'id' | 'privacy' | 'title' | 'description'
+  'id' | 'privacy' | 'title' | 'description' | 'authorization'
 >;
 
 export type AddCollaboratorMutationVariables = {

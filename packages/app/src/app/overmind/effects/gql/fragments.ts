@@ -5,6 +5,7 @@ export const collaboratorFragment = gql`
     id
     authorization
     lastSeenAt
+    warning
     user {
       id
       username
@@ -27,5 +28,6 @@ export const sandboxChangedFragment = gql`
     privacy
     title
     description
+    authorization
   }
 `;

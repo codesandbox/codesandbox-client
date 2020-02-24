@@ -113,6 +113,7 @@ export const CollaboratorList = () => {
               authorization={collaborator.authorization}
               lastSeenAt={collaborator.lastSeenAt}
               isViewingNow={collaborator.lastSeenAt === Infinity}
+              warning={collaborator.warning}
               readOnly={!isOwner}
             />
           </Animated>

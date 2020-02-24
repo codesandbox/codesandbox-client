@@ -36,3 +36,18 @@ export const Mail = props => (
     </g>
   </IconBase>
 );
+
+export const WarningIcon = props => (
+  <IconBase
+    viewBox="0 0 12 12"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <circle cx="6" cy="6" r="5.625" stroke="#F69935" strokeWidth="0.75" />
+    <path
+      d="M6.60354 3H5.29982L5.41701 7.20117H6.48928L6.60354 3ZM5.95315 9.07617C6.32815 9.07617 6.65334 8.7627 6.65627 8.37305C6.65334 7.98926 6.32815 7.67578 5.95315 7.67578C5.56643 7.67578 5.24709 7.98926 5.25002 8.37305C5.24709 8.7627 5.56643 9.07617 5.95315 9.07617Z"
+      fill="#F69935"
+    />
+  </IconBase>
+);

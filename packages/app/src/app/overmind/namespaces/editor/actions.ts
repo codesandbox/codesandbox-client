@@ -28,6 +28,7 @@ import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
 import { json } from 'overmind';
 
+import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import eventToTransform from '../../utils/event-to-transform';
 import { SERVER } from '../../utils/items';
 import * as internalActions from './internalActions';
@@ -122,6 +123,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
         sandboxId: newId,
         invitationToken,
       });
+
+      // Remove the invite from the url
+      url.searchParams.delete('ts');
+      history.replace(url.href);
     } catch (error) {
       if (
         !error.message.includes('Cannot redeem token, invitation not found')
@@ -1056,7 +1061,7 @@ export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
 
 export const listenToSandboxChanges: AsyncAction<{
   sandboxId: string;
-}> = async ({ state, effects }, { sandboxId }) => {
+}> = async ({ state, actions, effects }, { sandboxId }) => {
   effects.gql.subscriptions.onSandboxChangged.dispose();
 
   effects.gql.subscriptions.onSandboxChangged({ sandboxId }, result => {
@@ -1065,6 +1070,16 @@ export const listenToSandboxChanges: AsyncAction<{
     if (sandbox) {
       const newInfo = result.sandboxChanged;
       sandbox.privacy = newInfo.privacy as 0 | 1 | 2;
+
+      const authorization = convertAuthorizationToPermissionType(
+        newInfo.authorization
+      );
+
+      if (authorization !== sandbox.authorization) {
+        sandbox.authorization = authorization;
+
+        actions.refetchSandboxInfo();
+      }
     }
   });
 };
@@ -1111,6 +1126,7 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
       existingCollaborator.authorization =
         event.collaboratorChanged.authorization;
 
+      existingCollaborator.warning = event.collaboratorChanged.warning;
       existingCollaborator.lastSeenAt = event.collaboratorChanged.lastSeenAt;
     }
   });

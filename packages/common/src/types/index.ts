@@ -685,6 +685,7 @@ export enum LiveMessageEvent {
   MODULE_STATE = 'module_state',
   USER_ENTERED = 'user:entered',
   USER_LEFT = 'user:left',
+  USERS_CHANGED = 'users:changed',
   MODULE_SAVED = 'module:saved',
   MODULE_CREATED = 'module:created',
   MODULE_MASS_CREATED = 'module:mass-created',

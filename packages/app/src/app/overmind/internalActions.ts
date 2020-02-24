@@ -272,21 +272,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   actions.server.startContainer(sandbox);
 };
 
-export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
-  { state },
-  sandbox
-) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-
-  state.editor.currentSandbox.team = sandbox.team || null;
-  state.editor.currentSandbox.collection = sandbox.collection;
-  state.editor.currentSandbox.owned = sandbox.owned;
-  state.editor.currentSandbox.userLiked = sandbox.userLiked;
-  state.editor.currentSandbox.title = sandbox.title;
-};
-
 export const ensurePackageJSON: AsyncAction = async ({
   state,
   actions,

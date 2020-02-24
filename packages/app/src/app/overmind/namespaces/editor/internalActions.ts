@@ -38,11 +38,13 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
 };
 
 export const initializeSandbox: AsyncAction<Sandbox> = async (
-  { actions },
+  { actions, effects },
   sandbox
 ) => {
   await Promise.all([
-    actions.editor.internal.initializeLiveSandbox(sandbox),
+    actions.editor.internal
+      .initializeLiveSandbox(sandbox)
+      .then(() => effects.live.sendModuleStateSyncRequest()),
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
   ]);

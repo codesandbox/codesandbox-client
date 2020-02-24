@@ -102,12 +102,11 @@ const SelectWithIcon = styled(Element)<{
   })
 );
 
-type SelectProps = React.SelectHTMLAttributes<HTMLInputElement> &
-  React.SelectHTMLAttributes<HTMLSelectElement> & {
-    icon?: any;
-    placeholder?: string;
-    variant?: 'default' | 'link';
-  };
+type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
+  icon?: any;
+  placeholder?: string;
+  variant?: 'default' | 'link';
+};
 
 export const Select = ({
   icon = null,

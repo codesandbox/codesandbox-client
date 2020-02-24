@@ -1,9 +1,19 @@
-# source: https://codesandbox.stream/api/graphql
-# timestamp: Fri Jan 31 2020 13:46:04 GMT+0000 (Greenwich Mean Time)
+# source: http://server:4000/api/graphql
+# timestamp: Mon Feb 24 2020 16:55:24 GMT+0000 (Coordinated Universal Time)
 
 schema {
   query: RootQuery
   mutation: RootMutation
+  subscription: RootSubscriptionType
+}
+
+enum Authorization {
+  COMMENT
+  NONE
+  OWNER
+  READ
+  WRITE_CODE
+  WRITE_PROJECT
 }
 
 type Bookmarked {
@@ -15,6 +25,17 @@ type Bookmarked {
 A team or the current user
 """
 union BookmarkEntity = Team | User
+
+"""
+A collaborator on a sandbox
+"""
+type Collaborator {
+  authorization: Authorization!
+  id: ID!
+  lastSeenAt: DateTime
+  sandbox: Sandbox!
+  user: User!
+}
 
 type Collection {
   id: ID
@@ -42,6 +63,14 @@ type CurrentUser {
   username: String
 }
 
+"""
+The `DateTime` scalar type represents a date and time in the UTC
+timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+string, including UTC timezone ("Z"). The parsed date and time string will
+be converted to UTC and any UTC offset other than 0 will be rejected.
+"""
+scalar DateTime
+
 enum Direction {
   ASC
   DESC
@@ -54,6 +83,17 @@ type Git {
   path: String
   repo: String
   username: String
+}
+
+"""
+An invitation to a sandbox
+"""
+type Invitation {
+  authorization: Authorization!
+  email: String
+  id: ID
+  sandbox: Sandbox!
+  token: String!
 }
 
 type Notification {
@@ -75,6 +115,15 @@ type RootMutation {
   acceptTeamInvitation(teamId: ID!): Team
 
   """
+  Add a collaborator
+  """
+  addCollaborator(
+    authorization: Authorization!
+    sandboxId: ID!
+    username: String!
+  ): Collaborator!
+
+  """
   Add sandboxes to a collection
   """
   addToCollection(
@@ -89,6 +138,20 @@ type RootMutation {
   bookmarkTemplate(teamId: ID, templateId: ID!): Template
 
   """
+  Change authorization of a collaborator
+  """
+  changeCollaboratorAuthorization(
+    authorization: Authorization!
+    sandboxId: ID!
+    username: String!
+  ): Collaborator!
+  changeSandboxInvitationAuthorization(
+    authorization: Authorization!
+    invitationId: ID!
+    sandboxId: ID!
+  ): Invitation!
+
+  """
   Clear notification unread count
   """
   clearNotificationCount: User
@@ -97,6 +160,11 @@ type RootMutation {
   Create a collection
   """
   createCollection(path: String!, teamId: ID): Collection
+  createSandboxInvitation(
+    authorization: Authorization!
+    email: String!
+    sandboxId: ID!
+  ): Invitation!
 
   """
   Create a team
@@ -128,11 +196,17 @@ type RootMutation {
   """
   makeSandboxesTemplates(sandboxIds: [ID]!): [Template]
   permanentlyDeleteSandboxes(sandboxIds: [ID]!): [Sandbox]
+  redeemSandboxInvitation(invitationToken: String!, sandboxId: ID!): Invitation!
 
   """
   Reject an invitation to a team
   """
   rejectTeamInvitation(teamId: ID!): String
+
+  """
+  Remove a collaborator
+  """
+  removeCollaborator(sandboxId: ID!, username: String!): Collaborator!
 
   """
   Remove someone from a team
@@ -149,6 +223,7 @@ type RootMutation {
     teamId: ID
   ): [Collection]
   renameSandbox(id: ID!, title: String!): Sandbox
+  revokeSandboxInvitation(invitationId: ID!, sandboxId: ID!): Invitation!
 
   """
   Revoke an invitation to a team
@@ -184,12 +259,24 @@ type RootQuery {
   sandbox(sandboxId: ID!): Sandbox
 }
 
+type RootSubscriptionType {
+  collaboratorAdded(sandboxId: ID!): Collaborator!
+  collaboratorChanged(sandboxId: ID!): Collaborator!
+  collaboratorRemoved(sandboxId: ID!): Collaborator!
+  invitationChanged(sandboxId: ID!): Invitation!
+  invitationCreated(sandboxId: ID!): Invitation!
+  invitationRemoved(sandboxId: ID!): Invitation!
+  sandboxChanged(sandboxId: ID!): Sandbox!
+}
+
 """
 A Sandbox
 """
 type Sandbox {
   alias: String
   author: User
+  authorization: Authorization!
+  collaborators: [Collaborator!]!
   collection: Collection
 
   """
@@ -203,15 +290,16 @@ type Sandbox {
   If the sandbox has a git repo tied to it this will be set
   """
   git: Git
-  id: ID
-  insertedAt: String
-  privacy: Int
+  id: ID!
+  insertedAt: String!
+  invitations: [Invitation!]!
+  privacy: Int!
   removedAt: String
   screenshotOutdated: Boolean
   screenshotUrl: String
-  source: Source
+  source: Source!
   title: String
-  updatedAt: String
+  updatedAt: String!
 }
 
 type Source {
@@ -252,7 +340,6 @@ A CodeSandbox User
 """
 type User {
   avatarUrl: String
-  email: String
   firstName: String
   id: ID
   lastName: String

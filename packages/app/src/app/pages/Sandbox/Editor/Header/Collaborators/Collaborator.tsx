@@ -7,18 +7,20 @@ import { formatDistanceToNow } from 'date-fns';
 import { LockIcon } from '@codesandbox/common/lib/components/icons/Lock';
 import { GlobeIcon } from '@codesandbox/common/lib/components/icons/Globe';
 import { LinkIcon } from '@codesandbox/common/lib/components/icons/Link';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { PermissionSelect } from './PermissionSelect';
-import { Mail } from './icons';
+import { Mail, WarningIcon } from './icons';
 
 interface ICollaboratorItemProps {
   authorization: Authorization;
   name: string | JSX.Element;
+
+  warning?: string;
   permissions?: Authorization[];
   subtext?: string;
   avatarUrl?: string;
   avatarComponent?: JSX.Element | null;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-
   fillAvatar?: boolean;
   permissionText?: string;
   readOnly?: boolean;
@@ -36,6 +38,7 @@ export const CollaboratorItem = ({
   readOnly,
   permissionText,
   permissions = [Authorization.WriteCode, Authorization.Read],
+  warning,
   ...props
 }: ICollaboratorItemProps) => (
   <Stack {...props} align="center">
@@ -85,6 +88,11 @@ export const CollaboratorItem = ({
       </Stack>
     </Stack>
 
+    {warning && (
+      <Tooltip content={warning}>
+        <WarningIcon />
+      </Tooltip>
+    )}
     {permissions.length > 0 ? (
       <PermissionSelect
         onChange={onChange}
@@ -110,6 +118,7 @@ interface ICollaboratorProps {
   isViewingNow: boolean;
 
   readOnly?: boolean;
+  warning?: string;
 }
 
 export const Collaborator = ({
@@ -119,6 +128,7 @@ export const Collaborator = ({
   lastSeenAt,
   readOnly,
   isViewingNow,
+  warning,
 }: ICollaboratorProps) => {
   const { actions, state } = useOvermind();
 
@@ -154,6 +164,7 @@ export const Collaborator = ({
       onChange={updateAuthorization}
       authorization={authorization}
       readOnly={readOnly}
+      warning={warning}
     />
   );
 };
