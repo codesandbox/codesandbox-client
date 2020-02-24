@@ -1,6 +1,8 @@
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import getTemplate from '@codesandbox/common/lib/templates';
 import {
+  CurrentUser,
   EditorSelection,
   Module,
   ModuleCorrection,
@@ -21,6 +23,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
+import io from 'socket.io-client';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
@@ -46,6 +49,7 @@ export type VsCodeOptions = {
   getCurrentSandbox: () => Sandbox | null;
   getCurrentModule: () => Module | null;
   getSandboxFs: () => SandboxFs;
+  getCurrentUser: () => CurrentUser | null;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
   onSelectionChange: (selection: onSelectionChangeData) => void;
@@ -82,9 +86,12 @@ const context: any = window;
 export class VSCodeEffect {
   public initialized: Promise<unknown>;
   public sandboxFsSync: SandboxFsSync;
+  private mountableFilesystem: any;
 
   private monaco: any;
   private editorApi: any;
+  private clientExtensionHost: any;
+  private containerExtensionHost: any;
   private options: VsCodeOptions;
   private controller: any;
   private commandService = blocker<any>();
@@ -130,15 +137,20 @@ export class VSCodeEffect {
 
     import(
       // @ts-ignore
-      'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/ext-host'
+      'worker-loader?publicPath=/&name=client-ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/client-ext-host'
     ).then(ExtHostWorkerLoader => {
-      childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
+      this.clientExtensionHost = ExtHostWorkerLoader.default;
     });
 
-    // It will only load the editor once. We should probably call this
-    const container = this.elements.editor;
+    import(
+      // @ts-ignore
+      'worker-loader?publicPath=/&name=container-ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/container-ext-host'
+    ).then(ExtHostWorkerLoader => {
+      this.containerExtensionHost = ExtHostWorkerLoader.default;
+    });
 
-    this.initialized = this.initializeFileSystem().then(() => {
+    this.initialized = this.initializeFileSystem().then(mfs => {
+      this.mountableFilesystem = mfs;
       // We want to initialize before VSCode, but after browserFS is configured
       // For first-timers initialize a theme in the cache so it doesn't jump colors
       initializeExtensionsFolder();
@@ -150,12 +162,7 @@ export class VSCodeEffect {
         localStorage.getItem('settings.vimmode') === 'true'
       );
 
-      return Promise.all([
-        new FontFaceObserver('dm').load(),
-        new Promise(resolve => {
-          loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
-        }),
-      ]).then(() => this.loadEditor(window.monaco, container));
+      return new FontFaceObserver('dm').load();
     });
 
     // Only set the read only state when the editor is initialized.
@@ -322,11 +329,55 @@ export class VSCodeEffect {
 
     const isFirstLoad = !this.modelsHandler;
 
-    if (this.modelsHandler) {
-      this.modelsHandler.dispose();
+    const { isServer } = getTemplate(sandbox.template);
+
+    try {
+      this.mountableFilesystem.umount('/root/.cache');
+    } catch {
+      //
+    }
+    try {
+      this.mountableFilesystem.umount('/sandbox/node_modules');
+    } catch {
+      //
     }
 
-    if (this.sandboxFsSync) {
+    if (isServer && this.options.getCurrentUser()?.experiments.containerLsp) {
+      childProcess.addDefaultForkHandler(this.createContainerForkHandler());
+      const socket = this.createWebsocketFSRequest();
+      const cache = await this.createFileSystem('WebsocketFS', {
+        socket,
+      });
+      const nodeModules = await this.createFileSystem('WebsocketFS', {
+        socket,
+      });
+
+      this.mountableFilesystem.mount('/home/sandbox/.cache', cache);
+      this.mountableFilesystem.mount('/sandbox/node_modules', nodeModules);
+    } else {
+      childProcess.addDefaultForkHandler(this.clientExtensionHost);
+      const nodeModules = await this.createFileSystem('CodeSandboxFS', {
+        manager: {
+          getTranspiledModules: () => this.sandboxFsSync.getTypes(),
+          addModule() {},
+          removeModule() {},
+          moveModule() {},
+          updateModule() {},
+        },
+      });
+      this.mountableFilesystem.mount('/sandbox/node_modules', nodeModules);
+    }
+
+    if (isFirstLoad) {
+      const container = this.elements.editor;
+
+      await new Promise(resolve => {
+        loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
+      }).then(() => this.loadEditor(window.monaco, container));
+    }
+
+    if (!isFirstLoad) {
+      this.modelsHandler.dispose();
       this.sandboxFsSync.dispose();
     }
 
@@ -402,7 +453,7 @@ export class VSCodeEffect {
     });
   }
 
-  setErrors = (errors: ModuleError[]) => {
+  public setErrors = (errors: ModuleError[]) => {
     const activeEditor = this.editorApi.getActiveCodeEditor();
 
     if (activeEditor) {
@@ -443,7 +494,7 @@ export class VSCodeEffect {
     }
   };
 
-  setCorrections = (corrections: ModuleCorrection[]) => {
+  public setCorrections = (corrections: ModuleCorrection[]) => {
     const activeEditor = this.editorApi.getActiveCodeEditor();
     if (activeEditor) {
       if (corrections.length > 0) {
@@ -485,6 +536,58 @@ export class VSCodeEffect {
     }
   };
 
+  // Communicates the endpoint for the WebsocketLSP
+  private createContainerForkHandler() {
+    return () => {
+      const host = this.containerExtensionHost();
+      host.addEventListener('message', event => {
+        if (event.data.$type === 'request_lsp_endpoint') {
+          event.target.postMessage({
+            $type: 'respond_lsp_endpoint',
+            $data: this.getLspEndpoint(),
+          });
+        }
+      });
+      return host;
+    };
+  }
+
+  private getLspEndpoint() {
+    // return 'ws://localhost:1023';
+    // TODO: merge host logic with executor-manager
+    const sseHost = process.env.STAGING_API
+      ? 'https://codesandbox.stream'
+      : 'https://codesandbox.io';
+    return sseHost.replace(
+      'https://',
+      `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`
+    );
+  }
+
+  private createFileSystem(type: string, options: any) {
+    return new Promise((resolve, reject) => {
+      window.BrowserFS.FileSystem[type].Create(options, (error, fs) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(fs);
+        }
+      });
+    });
+  }
+
+  private createWebsocketFSRequest() {
+    const socket = io(`${this.getLspEndpoint()}?type=go-to-definition`);
+    return {
+      emit: (data, cb) => {
+        socket.emit('go-to-definition', data, cb);
+      },
+      dispose: () => {
+        socket.close();
+      },
+    };
+  }
+
   private async disableExtension(id: string) {
     const extensionService = await this.extensionService.promise;
     const extensionEnablementService = await this.extensionEnablementService
@@ -501,68 +604,49 @@ export class VSCodeEffect {
     }
   }
 
-  private initializeFileSystem() {
-    return new Promise((resolve, reject) => {
-      window.BrowserFS.configure(
-        {
-          fs: 'MountableFileSystem',
-          options: {
-            '/': { fs: 'InMemory', options: {} },
-            '/sandbox': {
-              fs: 'CodeSandboxEditorFS',
-              options: {
-                api: {
-                  getSandboxFs: this.options.getSandboxFs,
-                },
-              },
-            },
-            '/sandbox/node_modules': {
-              fs: 'CodeSandboxFS',
-              options: {
-                manager: {
-                  getTranspiledModules: () => this.sandboxFsSync.getTypes(),
-                  addModule() {},
-                  removeModule() {},
-                  moveModule() {},
-                  updateModule() {},
-                },
-              },
-            },
-            '/vscode': {
-              fs: 'LocalStorage',
-            },
-            '/home': {
-              fs: 'LocalStorage',
-            },
-            '/extensions': {
-              fs: 'OverlayFS',
-              options: {
-                writable: { fs: 'InMemory' },
-                readable: {
-                  fs: 'BundledHTTPRequest',
-                  options: {
-                    index: EXTENSIONS_LOCATION + '/extensions/index.json',
-                    baseUrl: EXTENSIONS_LOCATION + '/extensions',
-                    bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
-                    logReads: process.env.NODE_ENV === 'development',
-                  },
-                },
-              },
-            },
-            '/extensions/custom-theme': {
-              fs: 'InMemory',
-            },
-          },
+  private async initializeFileSystem() {
+    const fileSystems = await Promise.all([
+      this.createFileSystem('InMemory', {}),
+      this.createFileSystem('CodeSandboxEditorFS', {
+        api: {
+          getSandboxFs: this.options.getSandboxFs,
         },
-        async e => {
-          if (e) {
-            reject(e);
-          } else {
-            resolve();
-          }
-        }
-      );
+      }),
+      this.createFileSystem('LocalStorage', {}),
+      this.createFileSystem('LocalStorage', {}),
+      Promise.resolve().then(() =>
+        Promise.all([
+          this.createFileSystem('InMemory', {}),
+          this.createFileSystem('BundledHTTPRequest', {
+            index: EXTENSIONS_LOCATION + '/extensions/index.json',
+            baseUrl: EXTENSIONS_LOCATION + '/extensions',
+            bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+            logReads: process.env.NODE_ENV === 'development',
+          }),
+        ]).then(([writableExtensions, readableExtensions]) =>
+          this.createFileSystem('OverlayFS', {
+            writable: writableExtensions,
+            readable: readableExtensions,
+          })
+        )
+      ),
+      this.createFileSystem('InMemory', {}),
+    ]);
+
+    const [root, sandbox, vscode, home, extensions, customTheme] = fileSystems;
+
+    const mfs = await this.createFileSystem('MountableFileSystem', {
+      '/': root,
+      '/sandbox': sandbox,
+      '/vscode': vscode,
+      '/home': home,
+      '/extensions': extensions,
+      '/extensions/custom-theme': customTheme,
     });
+
+    window.BrowserFS.initialize(mfs);
+
+    return mfs;
   }
 
   private initializeReactions() {

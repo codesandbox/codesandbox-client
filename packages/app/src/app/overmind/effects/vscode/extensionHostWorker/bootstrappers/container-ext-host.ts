@@ -4,16 +4,16 @@ import DefaultWorkLoader from 'worker-loader?publicPath=/&name=dynamic-worker.[h
 // @ts-ignore
 import SvelteWorker from 'worker-loader?publicPath=/&name=svelte-worker.[hash:8].worker.js!./svelte-worker';
 // @ts-ignore
-import TSWorker from 'worker-loader?publicPath=/&name=typescript-worker.[hash:8].worker.js!./ts-extension';
-// @ts-ignore
 import VueWorker from 'worker-loader?publicPath=/&name=vue-worker.[hash:8].worker.js!./vue-worker';
 
 import { initializeAll } from '../common/global';
+import { WebsocketLSP } from '../services/WebsocketLSP';
 
 childProcess.addDefaultForkHandler(DefaultWorkLoader);
+
 childProcess.addForkHandler(
   '/extensions/node_modules/typescript/lib/tsserver.js',
-  TSWorker
+  () => new WebsocketLSP()
 );
 childProcess.addForkHandler(
   '/extensions/octref.vetur.0.16.2/server/dist/vueServerMain.js',
@@ -26,10 +26,10 @@ childProcess.addForkHandler(
 
 initializeAll().then(() => {
   // Preload the TS worker for fast init
-  childProcess.preloadWorker(
+  childProcess.preloadForkHandler(
     '/extensions/node_modules/typescript/lib/tsserver.js'
   );
 
   // eslint-disable-next-line
-  require('../workers/ext-host-worker');
+  import('../workers/ext-host-worker');
 });

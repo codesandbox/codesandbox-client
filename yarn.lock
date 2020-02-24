@@ -20941,12 +20941,12 @@ overmind-react@19.0.1:
     overmind "18.0.1"
     tslib "^1.9.3"
 
-overmind-react@^23.0.0-1580488381342:
-  version "23.0.0"
-  resolved "https://registry.yarnpkg.com/overmind-react/-/overmind-react-23.0.0.tgz#51ff29b254d7e327370d58e07aa3b75b870ac347"
-  integrity sha512-wg4Lqxi+Nxmx1mcgx92xeWPw88mdRkPR1t+BgYLGJ9p4GJtScYDoFWGbwk9VOfch7TslSZwf0x3ZFa3YRUYb2Q==
+overmind-react@^23.0.3:
+  version "23.0.3"
+  resolved "https://registry.yarnpkg.com/overmind-react/-/overmind-react-23.0.3.tgz#2b68c45c99289bc99c507be04a4f4e52be1b9750"
+  integrity sha512-fTEfdiJzHZwSpeyp4sjBCMOyS91X0vHA2j6EW3fDQqXbyfhTM60aj3f79VW4sLfWe2+2WSMQP+HAo4qQm4eMhA==
   dependencies:
-    overmind "22.0.0"
+    overmind "22.0.3"
 
 overmind-themes@next:
   version "1.0.2-1562145138120"
@@ -20966,10 +20966,10 @@ overmind@18.0.1:
     proxy-state-tree "4.4.0"
     tslib "^1.9.3"
 
-overmind@22.0.0, overmind@^22.0.0-1580488381342:
-  version "22.0.0"
-  resolved "https://registry.yarnpkg.com/overmind/-/overmind-22.0.0.tgz#8838586edde4f98af161456eb55c52fa28def63f"
-  integrity sha512-0TR/KmfNpQb7FFvW2jSmA3U/ynYU3i+lb/VET24AcIpZcCumc+46mHB0N9bA7eQe8Gyrc9c60rC09ifQg2JQwA==
+overmind@22.0.3, overmind@^22.0.3:
+  version "22.0.3"
+  resolved "https://registry.yarnpkg.com/overmind/-/overmind-22.0.3.tgz#e65f118cd46e1cd7410d882057d2c012eed243ac"
+  integrity sha512-lumdKpuW7YpyTPyQfojcR10idsoFZeXAWkrvfQeWIqT2cgb0oQMUgcGFCj8JJjqL0MM+DhU4qLwx5rLZsyDYvw==
   dependencies:
     betsy "1.0.2"
     is-plain-obj "^1.1.0"
