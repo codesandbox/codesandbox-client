@@ -38,8 +38,8 @@ const StatusBar = styled.div`
   }
 `;
 
-const ContentSkeleton = () => (
-  <SkeletonWrapper>
+const ContentSkeleton = ({ style, onTransitionEnd }) => (
+  <SkeletonWrapper style={style} onTransitionEnd={onTransitionEnd}>
     <SkeletonExplorer>
       <SkeletonExplorerTop />
     </SkeletonExplorer>
@@ -65,6 +65,7 @@ const ContentSkeleton = () => (
 const ContentSplit = () => {
   const { state, actions, effects } = useOvermind();
   const statusbarEl = useRef(null);
+  const [showSkeleton, setShowSkeleton] = useState(true);
   const [localState, setLocalState] = useState({
     theme: {
       colors: {},
@@ -156,43 +157,47 @@ const ContentSplit = () => {
               zIndex: 9,
             }}
           >
-            {state.editor.isLoading ? (
-              <ContentSkeleton />
-            ) : (
-              <SplitPane
-                split="vertical"
-                defaultSize={17 * 16}
-                minSize={0}
-                resizerStyle={
-                  state.editor.isLoading ? { display: 'none' } : null
+            <SplitPane
+              split="vertical"
+              defaultSize={17 * 16}
+              minSize={0}
+              resizerStyle={state.editor.isLoading ? { display: 'none' } : null}
+              onDragStarted={() => actions.editor.resizingStarted()}
+              onDragFinished={() => actions.editor.resizingStopped()}
+              onChange={size => {
+                if (size > 0 && state.workspace.workspaceHidden) {
+                  actions.workspace.setWorkspaceHidden({ hidden: false });
+                } else if (size === 0 && !state.workspace.workspaceHidden) {
+                  actions.workspace.setWorkspaceHidden({ hidden: true });
                 }
-                onDragStarted={() => actions.editor.resizingStarted()}
-                onDragFinished={() => actions.editor.resizingStopped()}
-                onChange={size => {
-                  if (size > 0 && state.workspace.workspaceHidden) {
-                    actions.workspace.setWorkspaceHidden({ hidden: false });
-                  } else if (size === 0 && !state.workspace.workspaceHidden) {
-                    actions.workspace.setWorkspaceHidden({ hidden: true });
-                  }
-                }}
-                pane1Style={{
-                  minWidth: state.workspace.workspaceHidden ? 0 : 190,
-                  visibility: state.workspace.workspaceHidden
-                    ? 'hidden'
-                    : 'visible',
-                  maxWidth: state.workspace.workspaceHidden ? 0 : 400,
-                }}
-                pane2Style={{
-                  height: '100%',
-                }}
+              }}
+              pane1Style={{
+                minWidth: state.workspace.workspaceHidden ? 0 : 190,
+                visibility: state.workspace.workspaceHidden
+                  ? 'hidden'
+                  : 'visible',
+                maxWidth: state.workspace.workspaceHidden ? 0 : 400,
+              }}
+              pane2Style={{
+                height: '100%',
+              }}
+              style={{
+                overflow: 'visible', // For VSCode Context Menu
+              }}
+            >
+              {state.workspace.workspaceHidden ? <div /> : <Workspace />}
+              {<Content theme={localState.theme} />}
+            </SplitPane>
+            {showSkeleton ? (
+              <ContentSkeleton
                 style={{
-                  overflow: 'visible', // For VSCode Context Menu
+                  opacity: state.editor.isLoading ? 1 : 0,
                 }}
-              >
-                {state.workspace.workspaceHidden ? <div /> : <Workspace />}
-                {<Content theme={localState.theme} />}
-              </SplitPane>
-            )}
+                onTransitionEnd={() => {
+                  setShowSkeleton(false);
+                }}
+              />
+            ) : null}
           </div>
 
           <StatusBar

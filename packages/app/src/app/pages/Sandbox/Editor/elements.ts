@@ -16,9 +16,16 @@ export const Container = styled.div`
 `;
 
 export const SkeletonWrapper = styled.div`
+  position: absolute;
+  transition: opacity 1s ease-out;
+  opacity: 1;
+  background-color: ${props => props.theme['editor.background'] || 'black'};
   width: 100%;
   height: 100%;
   display: flex;
+  top: 0;
+  left: 0;
+  z-index: 10;
 `;
 
 export const SkeletonExplorer = styled.div`
