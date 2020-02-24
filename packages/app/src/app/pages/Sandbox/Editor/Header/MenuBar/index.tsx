@@ -19,6 +19,9 @@ const MenuBarSkeleton: FunctionComponent = () => (
     <SkeletonMenuItem>View</SkeletonMenuItem>
     <SkeletonMenuItem>Go</SkeletonMenuItem>
     <SkeletonMenuItem>Help</SkeletonMenuItem>
+    <SkeletonMenuItem style={{ visibility: 'hidden' }}>
+      <div style={{ width: 20 }} />
+    </SkeletonMenuItem>
   </SkeletonContainer>
 );
 
