@@ -57,6 +57,7 @@ export function initializeSettings() {
     );
     settings['javascript.autoClosingTags'] = false;
     settings['typescript.autoClosingTags'] = false;
+    settings['typescript.tsserver.useSeparateSyntaxServer'] = false;
     fs.writeFileSync(
       '/vscode/settings.json',
       JSON.stringify(settings, null, 2)

@@ -124,6 +124,9 @@ export type CurrentUser = {
     plan: 'pro' | 'patron';
     duration: 'monthly' | 'yearly';
   } | null;
+  experiments: {
+    [key: string]: boolean;
+  };
   curatorAt: string;
   badges: Badge[];
   integrations: {
@@ -318,6 +321,9 @@ export type Sandbox = {
   userLiked: boolean;
   modules: Module[];
   directories: Directory[];
+  featureFlags: {
+    [key: string]: boolean;
+  };
   collection?: {
     path: string;
   };

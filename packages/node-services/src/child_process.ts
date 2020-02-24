@@ -1,8 +1,9 @@
 // eslint-disable-next-line max-classes-per-file
 import { EventEmitter } from 'events';
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
+
 import _debug from '@codesandbox/common/lib/utils/debug';
+import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
 const debug = _debug('cs:node:child_process');
 
@@ -10,14 +11,33 @@ const isSafari =
   typeof navigator !== 'undefined' &&
   /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-let DefaultWorker: false | (() => Worker);
-const workerMap: Map<string, false | (() => Worker)> = new Map();
-
-function addDefaultForkHandler(worker: false | (() => Worker)) {
-  DefaultWorker = worker;
+export interface IForkHandlerData {
+  data: any;
 }
-function addForkHandler(path: string, worker: false | (() => Worker)) {
-  workerMap.set(path, worker);
+
+export interface IForkHandlerCallback {
+  (message: IForkHandlerData): void;
+}
+
+export interface IForkHandler {
+  // protocolAndHost is only used when ForkHandler is window
+  postMessage(message: any, protocolAndHost?: string): void;
+  addEventListener(event: string, callback: IForkHandlerCallback): void;
+  removeEventListener(event: string, callback: IForkHandlerCallback): void;
+  terminate(): void;
+}
+
+let DefaultForkHandler: false | (() => IForkHandler);
+const forkHandlerMap: Map<string, false | (() => IForkHandler)> = new Map();
+
+function addDefaultForkHandler(forkHandler: false | (() => IForkHandler)) {
+  DefaultForkHandler = forkHandler;
+}
+function addForkHandler(
+  path: string,
+  forkHandler: false | (() => IForkHandler)
+) {
+  forkHandlerMap.set(path, forkHandler);
 }
 
 interface IProcessOpts {
@@ -31,14 +51,14 @@ interface IProcessOpts {
 }
 
 class Stream extends EventEmitter {
-  constructor(private worker: Worker) {
+  constructor(private forkHandler: IForkHandler) {
     super();
   }
 
   setEncoding() {}
 
   write(message: string) {
-    this.worker.postMessage({ $type: 'input-write', $data: message });
+    this.forkHandler.postMessage({ $type: 'input-write', $data: message });
   }
 }
 
@@ -61,11 +81,11 @@ class ChildProcess extends EventEmitter {
 
   private destroyed = false;
 
-  constructor(private worker: Worker) {
+  constructor(private forkHandler: IForkHandler) {
     super();
-    this.stdout = new Stream(worker);
-    this.stderr = new Stream(worker);
-    this.stdin = new Stream(worker);
+    this.stdout = new Stream(forkHandler);
+    this.stderr = new Stream(forkHandler);
+    this.stdin = new Stream(forkHandler);
 
     this.listen();
   }
@@ -80,7 +100,7 @@ class ChildProcess extends EventEmitter {
       $type: 'message',
       $data: JSON.stringify(message),
     };
-    this.worker.postMessage(m);
+    this.forkHandler.postMessage(m);
 
     if (typeof _a === 'function') {
       _a(null);
@@ -93,12 +113,12 @@ class ChildProcess extends EventEmitter {
 
   public kill() {
     this.destroyed = true;
-    this.worker.removeEventListener('message', this.listener.bind(this));
+    this.forkHandler.removeEventListener('message', this.listener.bind(this));
 
-    this.worker.terminate();
+    this.forkHandler.terminate();
   }
 
-  private listener(message: MessageEvent) {
+  private listener(message: IForkHandlerData) {
     const data = message.data.$data;
 
     if (data) {
@@ -116,46 +136,41 @@ class ChildProcess extends EventEmitter {
   }
 
   private listen() {
-    this.worker.addEventListener('message', this.listener.bind(this));
+    this.forkHandler.addEventListener('message', this.listener.bind(this));
   }
 }
 
-const cachedWorkers: { [path: string]: Array<Worker | false> } = {};
-const cachedDefaultWorkers: Array<Worker | false> = [];
+const cachedForkHandlers: { [path: string]: Array<IForkHandler | false> } = {};
+const cachedDefaultForkHandlers: Array<IForkHandler | false> = [];
 
-function getWorker(path: string) {
-  let WorkerConstructor = workerMap.get(path);
+function getForkHandler(path: string) {
+  let ForkHandlerConstructor = forkHandlerMap.get(path);
 
-  if (!WorkerConstructor) {
-    WorkerConstructor = DefaultWorker;
+  if (!ForkHandlerConstructor) {
+    ForkHandlerConstructor = DefaultForkHandler;
 
     // Explicitly ignore
-    if (WorkerConstructor === false) {
+    if (ForkHandlerConstructor === false) {
       return false;
     }
 
-    if (WorkerConstructor == null) {
+    if (ForkHandlerConstructor == null) {
       throw new Error('No worker set for path: ' + path);
     }
   }
 
-  const worker = WorkerConstructor();
-
-  // Register file system that syncs with filesystem in manager
-  // BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
-
-  return worker;
+  return ForkHandlerConstructor();
 }
 
-function getWorkerFromCache(path: string, isDefaultWorker: boolean) {
-  if (isDefaultWorker) {
-    const cachedDefaultWorker = cachedDefaultWorkers.pop();
+function getForkHandlerFromCache(path: string, isDefaultForkHandler: boolean) {
+  if (isDefaultForkHandler) {
+    const cachedDefaultForkHandler = cachedDefaultForkHandlers.pop();
 
-    if (cachedDefaultWorker) {
-      return cachedDefaultWorker;
+    if (cachedDefaultForkHandler) {
+      return cachedDefaultForkHandler;
     }
-  } else if (cachedWorkers[path]) {
-    return cachedWorkers[path].pop();
+  } else if (cachedForkHandlers[path]) {
+    return cachedForkHandlers[path].pop();
   }
 
   return undefined;
@@ -167,7 +182,7 @@ const sentBroadcasts: Map<string, number[]> = new Map();
  */
 function handleBroadcast(
   path: string,
-  target: Worker | Window,
+  target: IForkHandler,
   data: {
     $id?: number;
     $data: object;
@@ -186,43 +201,36 @@ function handleBroadcast(
     sentBroadcastsForPath.shift();
   }
   sentBroadcastsForPath.push(data.$id);
-  if (
-    // @ts-ignore This check is for the subworker polyfill, if it has an id it's polyfilled by subworkers and indeed a worker
-    target.id ||
-    target.constructor.name === 'Worker' ||
-    // @ts-ignore Unknown to TS
-    (typeof DedicatedWorkerGlobalScope !== 'undefined' &&
-      // @ts-ignore Unknown to TS
-      target instanceof DedicatedWorkerGlobalScope)
-  ) {
-    // @ts-ignore
-    target.postMessage(data);
+
+  if (typeof Window !== 'undefined' && target instanceof Window) {
+    target.postMessage(data, protocolAndHost());
   } else {
-    (target as Window).postMessage(data, protocolAndHost());
+    target.postMessage(data);
   }
 
   sentBroadcasts.set(path, sentBroadcastsForPath);
 }
 
 function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
-  const WorkerConstructor = workerMap.get(path);
-  const isDefaultWorker = !WorkerConstructor;
+  const ForkHandlerConstructor = forkHandlerMap.get(path);
+  const isDefaultForkHandler = !ForkHandlerConstructor;
 
-  const worker = getWorkerFromCache(path, isDefaultWorker) || getWorker(path);
+  const forkHandler =
+    getForkHandlerFromCache(path, isDefaultForkHandler) || getForkHandler(path);
 
-  if (worker === false) {
+  if (forkHandler === false) {
     return new NullChildProcess();
   }
 
   debug('Forking', path);
 
-  const WORKER_ID = path + '-' + Math.floor(Math.random() * 100000);
+  const FORK_HANDLER_ID = path + '-' + Math.floor(Math.random() * 100000);
 
   self.addEventListener('message', ((e: MessageEvent) => {
     const { data } = e;
 
     if (data.$broadcast) {
-      handleBroadcast(WORKER_ID, worker, data);
+      handleBroadcast(FORK_HANDLER_ID, forkHandler, data);
       return;
     }
 
@@ -232,15 +240,19 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
         $data: data,
       };
 
-      worker.postMessage(newData);
+      if (data.$data) {
+        // console.log('IN', JSON.stringify(JSON.parse(data.$data), null, 2));
+      }
+
+      forkHandler.postMessage(newData);
     }
   }) as EventListener);
 
-  worker.addEventListener('message', e => {
+  forkHandler.addEventListener('message', e => {
     const { data } = e;
 
     if (data.$broadcast) {
-      handleBroadcast(WORKER_ID, self, data);
+      handleBroadcast(FORK_HANDLER_ID, (self as unknown) as IForkHandler, data);
       return;
     }
 
@@ -249,6 +261,28 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
         $sang: true,
         $data: data,
       };
+
+      if (data.$data && data.$data) {
+        /*
+        try {
+          const output =
+            typeof data.$data === 'string'
+              ? data.$data
+              : new TextDecoder('utf-8').decode(data.$data) || '';
+          const json = output.split('\n').find(line => line[0] === '{');
+          console.log('OUT', JSON.stringify(JSON.parse(json || '{}'), null, 2));
+        } catch (error) {
+          try {
+            console.log(
+              'OUT NO CONTENT LENGTH',
+              JSON.stringify(JSON.parse(data.$data), null, 2)
+            );
+          } catch (error) {
+            console.log('OUT ERROR', data.$data);
+          }
+        }
+        */
+      }
 
       commonPostMessage(newData);
     }
@@ -272,7 +306,7 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
     let sentReady = false;
     const timeout = setTimeout(() => {
       if (!sentReady) {
-        worker.postMessage({
+        forkHandler.postMessage({
           $type: 'worker-manager',
           $event: 'init',
           data,
@@ -281,9 +315,9 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
       }
     }, 1500);
 
-    worker.addEventListener('message', e => {
+    forkHandler.addEventListener('message', e => {
       if (!sentReady && e.data && e.data.$type === 'ready') {
-        worker.postMessage({
+        forkHandler.postMessage({
           $type: 'worker-manager',
           $event: 'init',
           data,
@@ -293,27 +327,27 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
       }
     });
   } else {
-    worker.postMessage({
+    forkHandler.postMessage({
       $type: 'worker-manager',
       $event: 'init',
       data,
     });
   }
 
-  return new ChildProcess(worker);
+  return new ChildProcess(forkHandler);
 }
 
-function preloadWorker(path: string) {
-  const WorkerConstructor = workerMap.get(path);
-  const isDefaultWorker = !WorkerConstructor;
+function preloadForkHandler(path: string) {
+  const ForkHandlerConstructor = forkHandlerMap.get(path);
+  const isDefaultForkHandler = !ForkHandlerConstructor;
 
-  const worker = getWorker(path);
+  const worker = getForkHandler(path);
 
-  if (isDefaultWorker) {
-    cachedDefaultWorkers.push(worker);
+  if (isDefaultForkHandler) {
+    cachedDefaultForkHandlers.push(worker);
   } else {
-    cachedWorkers[path] = cachedWorkers[path] || [];
-    cachedWorkers[path].push(worker);
+    cachedForkHandlers[path] = cachedForkHandlers[path] || [];
+    cachedForkHandlers[path].push(worker);
   }
 }
 
@@ -332,7 +366,7 @@ function execSync(path: string) {
 export {
   addForkHandler,
   addDefaultForkHandler,
-  preloadWorker,
+  preloadForkHandler,
   fork,
   execSync,
   execFileSync,

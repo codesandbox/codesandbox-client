@@ -1,16 +1,41 @@
+import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-import { Title, SubContainer, PreferenceContainer } from '../elements';
+import {
+  PaddedPreference,
+  PreferenceContainer,
+  Rule,
+  SubContainer,
+  SubDescription,
+  Title,
+} from '../elements';
 import { NewSidebar } from './NewSidebar';
 
-export const Experiments: React.FunctionComponent = () => (
-  <div>
-    <Title>Experiments</Title>
+export const Experiments: React.FunctionComponent = () => {
+  const { state, actions } = useOvermind();
 
-    <SubContainer>
-      <PreferenceContainer>
-        <NewSidebar />
-      </PreferenceContainer>
-    </SubContainer>
-  </div>
-);
+  return (
+    <div>
+      <Title>Experiments</Title>
+      <SubContainer>
+        <PreferenceContainer>
+          <NewSidebar />
+          <Rule />
+          <PaddedPreference
+            title="Use container language server"
+            type="boolean"
+            value={state.user.experiments.containerLsp}
+            setValue={() => {
+              actions.preferences.toggleContainerLspExperiment();
+            }}
+            tooltip="Language server"
+          />
+          <SubDescription>
+            As part of making containers more powerful we now allow the language
+            server to run there. Please help us test it :-)
+          </SubDescription>
+        </PreferenceContainer>
+      </SubContainer>
+    </div>
+  );
+};
