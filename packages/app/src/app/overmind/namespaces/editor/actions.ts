@@ -8,6 +8,7 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { CONTAINER_LSP } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
@@ -120,7 +121,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     state.editor.modulesByPath = fs;
   });
 
-  if (sandbox.featureFlags.containerLsp && !sandbox.owned) {
+  if (CONTAINER_LSP && !sandbox.owned) {
     effects.vscode.setReadOnly(true);
     effects.notificationToast.add({
       message:
