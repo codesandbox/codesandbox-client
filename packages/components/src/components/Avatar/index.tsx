@@ -15,10 +15,20 @@ interface IAvatarProps {
   };
 }
 
+export const AvatarContainer = styled(Element).attrs({ as: 'span' })(
+  css({
+    display: 'inline-block',
+    height: 8,
+    width: 8,
+    position: 'relative',
+  })
+);
+
 export const AvatarImage = styled.img(
   css({
-    width: 8,
-    height: 8,
+    height: '100%',
+    width: '100%',
+    boxSizing: 'border-box',
     borderRadius: 'small',
     border: '1px solid',
     borderColor: 'avatar.border',
@@ -38,15 +48,15 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
     position: 'absolute',
     height: 3,
     lineHeight: '10px', // same as height + border
-    top: 'calc(100% - 12px)', // position it snugly in the corner
+    bottom: '-4px',
     right: '-4px',
   })
 );
 
-export const Avatar = ({ user }: IAvatarProps) =>
+export const Avatar = ({ user, ...props }: IAvatarProps) =>
   user && (
-    <Element as="span" style={{ position: 'relative' }}>
+    <AvatarContainer {...props}>
       <AvatarImage src={user.avatarUrl} alt={user.username} />
       {user.subscriptionSince ? <Pro>Pro</Pro> : null}
-    </Element>
+    </AvatarContainer>
   );

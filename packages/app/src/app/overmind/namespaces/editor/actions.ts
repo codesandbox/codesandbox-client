@@ -19,8 +19,11 @@ import {
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import { json } from 'overmind';
 
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications';
 import eventToTransform from '../../utils/event-to-transform';
 import * as internalActions from './internalActions';
+import { SERVER } from '../../utils/items';
 
 export const internal = internalActions;
 
@@ -51,15 +54,15 @@ export const addNpmDependency: AsyncAction<{
   }
 );
 
-export const npmDependencyRemoved: AsyncAction<{
-  name: string;
-}> = withOwnedSandbox(async ({ effects, actions }, { name }) => {
-  effects.analytics.track('Remove NPM Dependency');
+export const npmDependencyRemoved: AsyncAction<string> = withOwnedSandbox(
+  async ({ actions, effects }, name) => {
+    effects.analytics.track('Remove NPM Dependency');
 
-  await actions.editor.internal.removeNpmDependencyFromPackageJson(name);
+    await actions.editor.internal.removeNpmDependencyFromPackageJson(name);
 
-  effects.preview.executeCodeImmediately();
-});
+    effects.preview.executeCodeImmediately();
+  }
+);
 
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;
@@ -146,10 +149,13 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   await actions.editor.internal.initializeLiveSandbox(sandbox);
 
-  if (sandbox.owned && !state.live.isLive) {
+  if (
+    hasPermission(sandbox.authorization, 'write_code') &&
+    !state.live.isLive
+  ) {
     actions.files.internal.recoverFiles();
   } else if (state.live.isLive) {
-    effects.live.sendModuleStateSyncRequest();
+    await effects.live.sendModuleStateSyncRequest();
   }
 
   effects.vscode.openModule(state.editor.currentModule);
@@ -160,7 +166,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
 export const contentMounted: Action = ({ state, effects }) => {
   effects.browser.onUnload(event => {
-    if (!state.editor.isAllModulesSynced) {
+    if (!state.editor.isAllModulesSynced && !state.editor.isForkingSandbox) {
       const returnMessage =
         'You have not saved all your modules, are you sure you want to close this tab?';
 
@@ -184,7 +190,7 @@ export const resizingStopped: Action = ({ state }) => {
 export const codeSaved: AsyncAction<{
   code: string;
   moduleShortid: string;
-  cbID: string;
+  cbID: string | null;
 }> = withOwnedSandbox(
   async ({ actions }, { code, moduleShortid, cbID }) => {
     actions.editor.internal.saveCode({
@@ -194,8 +200,11 @@ export const codeSaved: AsyncAction<{
     });
   },
   async ({ effects }, { cbID }) => {
-    effects.vscode.callCallbackError(cbID);
-  }
+    if (cbID) {
+      effects.vscode.callCallbackError(cbID);
+    }
+  },
+  'write_code'
 );
 
 export const onOperationApplied: Action<{
@@ -387,12 +396,18 @@ export const likeSandboxToggled: AsyncAction<string> = async (
   state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
-export const moduleSelected: Action<{
-  // Path means it is coming from VSCode
-  path?: string;
-  // Id means it is coming from Explorer
-  id?: string;
-}> = ({ state, effects, actions }, { path, id }) => {
+export const moduleSelected: Action<
+  | {
+      // Id means it is coming from Explorer
+      id: string;
+      path?: undefined;
+    }
+  | {
+      // Path means it is coming from VSCode
+      id?: undefined;
+      path: string;
+    }
+> = ({ actions, effects, state }, { id, path }) => {
   effects.analytics.track('Open File');
 
   const sandbox = state.editor.currentSandbox;
@@ -402,17 +417,13 @@ export const moduleSelected: Action<{
   }
 
   try {
-    let module;
-
-    if (path) {
-      module = effects.utils.resolveModule(
-        path.replace(/^\/sandbox\//, ''),
-        sandbox.modules,
-        sandbox.directories
-      );
-    } else {
-      module = sandbox.modules.find(moduleItem => moduleItem.id === id);
-    }
+    const module = path
+      ? effects.utils.resolveModule(
+          path.replace(/^\/sandbox\//, ''),
+          sandbox.modules,
+          sandbox.directories
+        )
+      : sandbox.modules.filter(moduleItem => moduleItem.id === id)[0];
 
     if (module.shortid === state.editor.currentModuleShortid) {
       return;
@@ -458,9 +469,7 @@ export const clearModuleSelected: Action = ({ state }) => {
 };
 
 export const moduleDoubleClicked: Action = ({ state, effects }) => {
-  if (state.preferences.settings.experimentVSCode) {
-    effects.vscode.runCommand('workbench.action.keepEditor');
-  }
+  effects.vscode.runCommand('workbench.action.keepEditor');
 
   const { currentModule } = state.editor;
   const tabs = state.editor.tabs as ModuleTab[];
@@ -615,7 +624,7 @@ export const fetchEnvironmentVariables: AsyncAction = async ({
 };
 
 export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = async (
-  { state, effects },
+  { effects, state },
   environmentVariable
 ) => {
   if (!state.editor.currentSandbox) {
@@ -644,6 +653,45 @@ export const deleteEnvironmentVariable: AsyncAction<{
     name
   );
   effects.codesandboxApi.restartSandbox();
+};
+
+/**
+ * This will let the user know on fork that some secrets need to be set if there are any empty ones
+ */
+export const showEnvironmentVariablesNotification: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
+  const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+
+  await actions.editor.fetchEnvironmentVariables();
+
+  const environmentVariables = sandbox.environmentVariables!;
+  const emptyVarCount = Object.keys(environmentVariables).filter(
+    key => !environmentVariables[key]
+  ).length;
+  if (emptyVarCount > 0) {
+    effects.notificationToast.add({
+      status: NotificationStatus.NOTICE,
+      title: 'Unset Secrets',
+      message: `This sandbox has ${emptyVarCount} secrets that need to be set. You can set them in the server tab.`,
+      actions: {
+        primary: [
+          {
+            label: 'Open Server Tab',
+            run: () => {
+              actions.workspace.setWorkspaceItem({ item: SERVER.id });
+            },
+          },
+        ],
+      },
+    });
+  }
 };
 
 export const toggleEditorPreviewLayout: Action = ({ state, effects }) => {

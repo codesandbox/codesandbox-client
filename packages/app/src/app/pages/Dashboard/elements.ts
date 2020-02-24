@@ -1,3 +1,5 @@
+import RightIconBase from 'react-icons/lib/md/keyboard-arrow-right';
+import LeftIconBase from 'react-icons/lib/md/keyboard-arrow-left';
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
@@ -5,6 +7,14 @@ export const Container = styled.div`
   width: 100%;
 
   color: rgba(255, 255, 255, 0.8);
+`;
+
+export const LeftIcon = styled(LeftIconBase)`
+  color: #ffffff;
+`;
+
+export const RightIcon = styled(RightIconBase)`
+  color: #ffffff;
 `;
 
 export const ShowSidebarButton = styled.button`
@@ -22,7 +32,7 @@ const paddingTop = css`
   padding-top: 100px;
 `;
 
-export const Sidebar = styled.div<{ active: boolean }>`
+export const SidebarContainer = styled.div<{ active: boolean }>`
   display: flex;
   box-sizing: border-box;
 
@@ -47,7 +57,7 @@ export const Sidebar = styled.div<{ active: boolean }>`
   }
 `;
 
-export const Content = styled.div`
+export const ContentContainer = styled.div`
   ${paddingTop};
 
   box-sizing: border-box;

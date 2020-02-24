@@ -187,6 +187,7 @@ const Entry: React.FC<IEntryProps> = ({
               : 'calc(1rem - 2px)',
             // live user
             borderRight: '2px solid',
+            minHeight: 28,
             borderColor: rightColors[0] || 'transparent',
           }}
         >

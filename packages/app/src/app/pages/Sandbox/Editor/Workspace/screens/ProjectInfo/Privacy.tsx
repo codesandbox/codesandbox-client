@@ -7,7 +7,7 @@ import {
   Select,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import { css } from '@styled-system/css';
+import css from '@styled-system/css';
 import { GlobeIcon } from './icons';
 
 export const Privacy = () => {

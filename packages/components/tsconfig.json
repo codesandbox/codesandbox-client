@@ -6,7 +6,6 @@
     "./**/*.stories.tsx",
     "lib/"
   ],
-  "include": ["./src/**/*", "../common/theme"],
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES6",

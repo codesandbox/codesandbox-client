@@ -53,6 +53,7 @@ type State = {
   workspaceConfigCode: string;
   statusBar: boolean;
   previewWindowOrientation: WindowOrientation;
+  canWriteCode: Derive<State, boolean>;
   isAllModulesSynced: Derive<State, boolean>;
   currentSandbox: Derive<State, Sandbox | null>;
   currentModule: Derive<State, Module>;
@@ -120,6 +121,8 @@ export const state: State = {
     devToolIndex: 0,
     tabPosition: 0,
   },
+  canWriteCode: ({ currentSandbox }) =>
+    currentSandbox?.authorization === 'write_code',
   currentSandbox: ({ sandboxes, currentId }) => {
     if (currentId && sandboxes[currentId]) {
       return sandboxes[currentId];

@@ -80,7 +80,7 @@ export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
       const code = JSON.stringify(parsed, null, 2);
       const moduleShortid = state.editor.currentPackageJSON.shortid;
 
-      await actions.editor.internal.saveCode({
+      await actions.editor.codeSaved({
         code,
         moduleShortid,
         cbID: null,
@@ -115,6 +115,31 @@ export const tagsChanged: AsyncAction<{
 
   await actions.workspace.tagAdded();
 };
+
+/** tagsChanged2 takes new tags and does the diffing on its own
+ * This is v2 of tagsChanged. It's used in the redesign
+ */
+export const tagsChanged2: AsyncAction<string[]> = withOwnedSandbox(
+  async ({ state, effects, actions }, newTags) => {
+    const sandbox = state.editor.currentSandbox;
+    if (!sandbox) return;
+
+    const { tags: oldTags } = sandbox;
+
+    const removedTags = oldTags.filter(tag => !newTags.includes(tag));
+    const addedTags = newTags.filter(tag => !oldTags.includes(tag));
+
+    removedTags.forEach(actions.workspace.tagRemoved);
+
+    addedTags.forEach(async tag => {
+      const cleanTag = tag.replace(/#/g, '');
+
+      // use old methods to update tags
+      actions.workspace.tagChanged(cleanTag);
+      await actions.workspace.tagAdded();
+    });
+  }
+);
 
 export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {

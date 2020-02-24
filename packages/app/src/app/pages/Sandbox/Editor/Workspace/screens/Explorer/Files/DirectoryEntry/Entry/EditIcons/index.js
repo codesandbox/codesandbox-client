@@ -1,16 +1,18 @@
 import React from 'react';
 
-import CrossIcon from 'react-icons/lib/md/clear';
-import EditIcon from 'react-icons/lib/go/pencil';
-import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
-import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
-import UploadFileIcon from 'react-icons/lib/md/file-upload';
-import DownloadIcon from 'react-icons/lib/md/file-download';
-import UndoIcon from 'react-icons/lib/md/undo';
-
 import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
+import {
+  CrossIcon,
+  EditIcon,
+  AddFileIcon,
+  AddDirectoryIcon,
+  UploadFileIcon,
+  DownloadIcon,
+  UndoIcon,
+  // eslint-disable-next-line import/extensions
+} from '../../../icons.tsx';
 
 import { Icon } from '../../../../../../elements';
 import { Container } from './elements';

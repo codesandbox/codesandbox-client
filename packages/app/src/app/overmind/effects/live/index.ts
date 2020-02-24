@@ -3,7 +3,6 @@ import {
   LiveMessageEvent,
   Module,
   RoomInfo,
-  Sandbox,
 } from '@codesandbox/common/lib/types';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { camelizeKeys } from 'humps';
@@ -11,8 +10,6 @@ import { TextOperation } from 'ot';
 import { Socket, Channel } from 'phoenix';
 import uuid from 'uuid';
 
-import { SandboxAPIResponse } from '../api/types';
-import { transformSandbox } from '../utils/sandbox';
 import clientsFactory from './clients';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
 
@@ -22,15 +19,8 @@ type Options = {
 };
 
 type JoinChannelResponse = {
-  sandboxId: string;
-  sandbox: SandboxAPIResponse;
-  moduleState: object;
   liveUserId: string;
   roomInfo: RoomInfo;
-};
-
-type JoinChannelTransformedResponse = JoinChannelResponse & {
-  sandbox: Sandbox;
 };
 
 declare global {
@@ -118,17 +108,15 @@ export default new (class Live {
     });
   }
 
-  joinChannel(roomId: string): Promise<JoinChannelTransformedResponse> {
+  joinChannel(roomId: string): Promise<JoinChannelResponse> {
     return new Promise((resolve, reject) => {
-      channel = this.getSocket().channel(`live:${roomId}`, {});
+      channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
 
       channel
         .join()
         .receive('ok', resp => {
           const result = camelizeKeys(resp) as JoinChannelResponse;
-          // @ts-ignore
-          result.sandbox = transformSandbox(result.sandbox);
-          resolve(result as JoinChannelTransformedResponse);
+          resolve(result);
         })
         .receive('error', resp => reject(camelizeKeys(resp)));
     });

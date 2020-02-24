@@ -78,7 +78,7 @@ export class ExecutorsManager {
       ? 'https://codesandbox.stream'
       : 'https://codesandbox.io';
 
-    await this.executor.initialize({
+    await this.executor!.initialize({
       sandboxId: sandbox.id,
       files: getModulesToSend(sandbox),
       // this is in the type idk what is wrong
@@ -86,7 +86,7 @@ export class ExecutorsManager {
       host: sseHost,
     });
 
-    return this.executor;
+    return this.executor!;
   }
 
   async setupExecutor() {

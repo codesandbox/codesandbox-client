@@ -237,15 +237,13 @@ export const onSendChat: Action<{ message: string }> = (
   effects.live.sendChat(message);
 };
 
-export const onChatEnabledChange: Action<boolean> = (
-  { effects, state },
-  enabled
-) => {
+export const onChatEnabledToggle: Action = ({ effects, state }) => {
   effects.analytics.track('Enable Live Chat');
 
   if (state.live.isOwner && state.live.roomInfo) {
-    state.live.roomInfo.chatEnabled = enabled;
-    effects.live.sendChatEnabled(enabled);
+    const chatEnabled = state.live.roomInfo.chatEnabled;
+    state.live.roomInfo.chatEnabled = !chatEnabled;
+    effects.live.sendChatEnabled(!chatEnabled);
   }
 };
 
@@ -261,12 +259,12 @@ export const onFollow: Action<{
 
   const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
 
-  if (user && user.currentModuleShortid && state.editor.currentSandbox) {
+  if (user!.currentModuleShortid && state.editor.currentSandbox) {
     const { modules } = state.editor.currentSandbox;
-    const module = modules.find(m => m.shortid === user.currentModuleShortid);
+    const module = modules.filter(
+      ({ shortid }) => shortid === user!.currentModuleShortid
+    )[0];
 
-    actions.editor.moduleSelected({
-      id: module ? module.id : undefined,
-    });
+    actions.editor.moduleSelected({ id: module.id });
   }
 };

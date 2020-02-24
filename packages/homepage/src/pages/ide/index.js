@@ -196,6 +196,9 @@ export default () => (
               <img
                 src={`https://avatars.io/twitter/${tweet.username}`}
                 alt={tweet.quote}
+                onError={e => {
+                  e.target.src = `https://avatars.io/static/default_128.jpg`;
+                }}
               />
               <TweetAuthor>{tweet.name}</TweetAuthor>
             </div>

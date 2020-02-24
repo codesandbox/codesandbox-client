@@ -1,27 +1,33 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const RedIcon = styled.span<{
-  width: number;
-  height: number;
-}>`
-  color: ${props => props.theme.red};
-  width: ${props => props.width}px;
-  height: ${props => props.height}px;
+export const Container = styled.div`
+  display: inline-block;
+  vertical-align: middle;
+`;
+
+export const RedIcon = styled.span<{ height: number; width: number }>`
+  ${({ height, theme, width }) => css`
+    color: ${theme.red};
+    width: ${width}px;
+    height: ${height}px;
+  `};
 `;
 
 export const SVGIcon = styled.span<{
+  height: number;
   url: string;
   width: number;
-  height: number;
 }>`
-  background-image: url(${props => props.url});
-  background-size: ${props => props.width}px;
-  background-position: 0;
-  background-repeat: no-repeat;
-  width: ${props => props.width}px;
-  height: ${props => props.height}px;
-  display: inline-block;
-  -webkit-font-smoothing: antialiased;
-  vertical-align: top;
-  flex-shrink: 0;
+  ${({ height, url, width }) => css`
+    background-image: url(${url});
+    background-size: ${width}px;
+    background-position: 0;
+    background-repeat: no-repeat;
+    width: ${width}px;
+    height: ${height}px;
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    vertical-align: top;
+    flex-shrink: 0;
+  `};
 `;

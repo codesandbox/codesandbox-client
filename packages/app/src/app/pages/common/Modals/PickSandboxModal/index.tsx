@@ -1,74 +1,68 @@
-import React, { useState } from 'react';
-
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Row from '@codesandbox/common/lib/components/flex/Row';
-import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
+import React, { FormEvent, FunctionComponent, useState } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
+import { Explanation, Heading } from '../elements';
 import { Container } from '../LiveSessionEnded/elements';
-import { Heading, Explanation } from '../elements';
 
-import { Field, Label } from './elements';
+import { Field, Input, Label, TextArea } from './elements';
 
-export const PickSandboxModal: React.FC = () => {
+export const PickSandboxModal: FunctionComponent = () => {
   const {
-    state: {
-      explore: { pickedSandboxDetails },
+    actions: {
+      explore: { pickSandbox },
+      modalClosed,
     },
-    actions,
+    state: {
+      explore: {
+        pickedSandboxDetails: { id, ...details },
+      },
+    },
   } = useOvermind();
-
-  const [title, setTitle] = useState(pickedSandboxDetails.title || '');
-  const [description, setDescription] = useState(
-    pickedSandboxDetails.description || ''
-  );
-
-  const { id } = pickedSandboxDetails;
+  const [description, setDescription] = useState(details.description);
+  const [title, setTitle] = useState(details.title);
 
   return (
     <Container>
       <Heading>Pick this sandbox</Heading>
+
       <Explanation>
         Please add a title and description to this sandbox if none exists or you
         think you have a better description for it. This title and description
         will be the ones used in the explore page.
       </Explanation>
+
       <form
-        onSubmit={e => {
-          e.preventDefault();
-          actions.explore.pickSandbox({
-            id,
-            title,
-            description,
-          });
+        onSubmit={(event: FormEvent<HTMLFormElement>) => {
+          event.preventDefault();
+
+          pickSandbox({ description, id, title });
         }}
       >
         <Field>
           <Label htmlFor="title">Sandbox name</Label>
+
           <Input
-            style={{
-              width: '100%',
-            }}
-            value={title}
-            onChange={event => setTitle(event.target.value)}
-            name="title"
             id="title"
+            name="title"
+            onChange={({ target: { value } }) => setTitle(value)}
             required
+            value={title}
           />
         </Field>
+
         <Field>
           <Label htmlFor="description">Sandbox Description</Label>
+
           <TextArea
-            style={{
-              width: '100%',
-            }}
-            value={description}
-            onChange={event => setDescription(event.target.value)}
-            name="description"
             id="description"
+            name="description"
+            onChange={({ target: { value } }) => setDescription(value)}
             required
             rows={3}
+            value={description}
           />
         </Field>
 
@@ -79,7 +73,8 @@ export const PickSandboxModal: React.FC = () => {
               🚀
             </span>
           </Button>
-          <Button danger onClick={() => actions.modalClosed()}>
+
+          <Button danger onClick={() => modalClosed()}>
             Cancel
           </Button>
         </Row>

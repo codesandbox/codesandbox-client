@@ -6,14 +6,13 @@ import { DevTools } from 'app/components/Preview/DevTools';
 import { useOvermind } from 'app/overmind';
 import React, { useCallback, useEffect, useRef } from 'react';
 import QuestionIcon from 'react-icons/lib/go/question';
-import { Prompt } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import { ThemeProvider } from 'styled-components';
 
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import { Preview } from './Preview';
 
-export const Content: React.FC = () => {
+export const MainWorkspace: React.FC = () => {
   const { state, actions, effects, reaction } = useOvermind();
   const editorEl = useRef(null);
   const contentEl = useRef(null);
@@ -59,7 +58,6 @@ export const Content: React.FC = () => {
   }, [actions.editor, effects.vscode, reaction, updateEditorSize]);
 
   const { currentModule } = state.editor;
-  const notSynced = !state.editor.isAllModulesSynced;
   const sandbox = state.editor.currentSandbox;
   const { preferences } = state;
   const windowVisible = state.editor.previewWindowVisible;
@@ -104,12 +102,6 @@ export const Content: React.FC = () => {
         }}
         ref={contentEl}
       >
-        <Prompt
-          when={notSynced && !state.editor.isForkingSandbox}
-          message={() =>
-            'You have not saved this sandbox, are you sure you want to navigate away?'
-          }
-        />
         <SplitPane
           maxSize={-100}
           onDragFinished={() => {
@@ -246,4 +238,4 @@ export const Content: React.FC = () => {
   );
 };
 
-export default Content;
+export default MainWorkspace;

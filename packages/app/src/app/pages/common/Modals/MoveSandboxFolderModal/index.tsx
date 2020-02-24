@@ -1,45 +1,51 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useOvermind } from 'app/overmind';
-import { basename } from 'path';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import ChevronRight from 'react-icons/lib/md/chevron-right';
+import { basename } from 'path';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import DirectoryPicker from './DirectoryPicker';
-import { Container } from '../elements';
+import { useOvermind } from 'app/overmind';
 
-import { Block, CancelButton } from './elements';
 import { addSandboxesToFolder } from '../../../Dashboard/queries';
 
-const MoveSandboxFolderModal = () => {
+import { DirectoryPicker } from './DirectoryPicker';
+import {
+  Block,
+  Button,
+  CancelButton,
+  ChevronRight,
+  Container,
+} from './elements';
+
+export const MoveSandboxFolderModal: FunctionComponent = () => {
   const {
+    actions: { modalClosed, refetchSandboxInfo },
     state: {
-      editor: { currentSandbox: sandbox },
+      editor: {
+        currentSandbox: { collection, id, team },
+      },
     },
-    actions: { refetchSandboxInfo, modalClosed },
   } = useOvermind();
-  const { collection } = sandbox;
-
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(undefined);
-  const [teamId, setTeamId] = useState(
-    sandbox.team ? sandbox.team.id || undefined : undefined
-  );
-  const [path, setPath] = useState(collection ? collection.path : '/');
+  const [loading, setLoading] = useState(false);
+  const [path, setPath] = useState(collection?.path || '/');
+  const [teamId, setTeamId] = useState(team?.id);
 
-  const onSelect = useCallback(({ teamId: newTeamId, path: newPath }) => {
-    setTeamId(newTeamId);
-    setPath(newPath);
-  }, []);
-
-  const handleMove = useCallback(() => {
+  const handleMove = () => {
     setLoading(true);
+
     setError(undefined);
-  }, []);
+  };
+  const onSelect = ({ teamId: newTeamId, path: newPath }) => {
+    setTeamId(newTeamId);
+
+    setPath(newPath);
+  };
 
   useEffect(() => {
-    if (!loading) return;
-    addSandboxesToFolder([sandbox.id], path, teamId)
+    if (!loading) {
+      return;
+    }
+
+    addSandboxesToFolder([id], path, teamId)
       .then(() => {
         refetchSandboxInfo();
 
@@ -48,45 +54,42 @@ const MoveSandboxFolderModal = () => {
 
         track('Move Sandbox From Editor');
       })
-      .catch(e => {
-        setError(e.message);
+      .catch(({ message }) => {
+        setError(message);
+
         setLoading(false);
       });
-  }, [loading, path, teamId, sandbox, refetchSandboxInfo, modalClosed]);
+  }, [id, loading, modalClosed, path, refetchSandboxInfo, teamId]);
 
   return (
     <div>
       <Block>Move to Folder</Block>
-      <Container style={{ maxHeight: 400, overflow: 'auto' }}>
+
+      <Container>
         <DirectoryPicker
-          onSelect={onSelect}
-          currentTeamId={teamId}
           currentPath={path}
+          currentTeamId={teamId}
+          onSelect={onSelect}
         />
       </Container>
 
       {error}
 
       <Block right>
-        <CancelButton onClick={modalClosed}>Cancel</CancelButton>
+        <CancelButton onClick={() => modalClosed()}>Cancel</CancelButton>
 
-        <Button
-          onClick={handleMove}
-          style={{ display: 'inline-flex', alignItems: 'center' }}
-          small
-          disabled={loading}
-        >
+        <Button disabled={loading} onClick={handleMove} small>
           {loading ? (
             'Moving Sandbox...'
           ) : (
             <>
-              Move to{' '}
-              {path !== '/'
-                ? basename(path)
-                : `${teamId ? 'Our' : 'My'} Sandboxes`}
-              <ChevronRight
-                style={{ marginRight: '-.25rem', marginLeft: '.25rem' }}
-              />
+              {`Move to ${
+                path !== '/'
+                  ? basename(path)
+                  : `${teamId ? 'Our' : 'My'} Sandboxes`
+              }`}
+
+              <ChevronRight />
             </>
           )}
         </Button>
@@ -94,6 +97,3 @@ const MoveSandboxFolderModal = () => {
     </div>
   );
 };
-
-// eslint-disable-next-line import/no-default-export
-export default MoveSandboxFolderModal;

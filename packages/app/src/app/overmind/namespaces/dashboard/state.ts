@@ -1,10 +1,11 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
-import { Derive } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 
+import { Derive } from 'app/overmind';
+
 export type OrderBy = {
-  order: 'desc' | 'asc';
   field: string;
+  order: 'desc' | 'asc';
 };
 
 type State = {

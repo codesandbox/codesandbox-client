@@ -5,29 +5,20 @@ import { useOvermind } from 'app/overmind';
 
 import {
   Container,
-  Title,
-  JustifiedArea,
-  SubTitle,
   Description,
-  SubDescription,
-  Rule,
+  JustifiedArea,
   LoadingAnimationContainer,
+  Rule,
+  SubDescription,
+  SubTitle,
+  Title,
 } from './elements';
-import FilesList from './FilesList';
+import { FilesList } from './FilesList';
 
 export const StorageManagementModal: FunctionComponent = () => {
   const {
-    state: {
-      editor: { currentSandbox },
-      usedStorage,
-      maxStorage,
-      uploadedFiles,
-    },
-    actions: {
-      files: { deletedUploadedFile, addedFileToSandbox },
-    },
+    state: { maxStorage, uploadedFiles, usedStorage },
   } = useOvermind();
-
   const isLoading = uploadedFiles === null;
   const isEmpty = !isLoading && uploadedFiles.length === 0;
 
@@ -37,9 +28,7 @@ export const StorageManagementModal: FunctionComponent = () => {
         <Title>Storage Management</Title>
 
         <SubTitle>
-          Used {filesize(usedStorage)}
-          {' / '}
-          Total {filesize(maxStorage)}
+          {`Used ${filesize(usedStorage)} / Total ${filesize(maxStorage)}`}
         </SubTitle>
       </JustifiedArea>
 
@@ -49,15 +38,7 @@ export const StorageManagementModal: FunctionComponent = () => {
 
       <Rule />
 
-      {!isEmpty && !isLoading && (
-        <FilesList
-          files={uploadedFiles}
-          deleteFile={deletedUploadedFile}
-          deleteFiles={files => files.map(id => deletedUploadedFile({ id }))}
-          addFilesToSandbox={files => files.map(addedFileToSandbox)}
-          addFileToSandbox={currentSandbox ? addedFileToSandbox : undefined}
-        />
-      )}
+      {!isEmpty && !isLoading && <FilesList />}
 
       {isEmpty && <SubDescription>You have no uploaded files.</SubDescription>}
 

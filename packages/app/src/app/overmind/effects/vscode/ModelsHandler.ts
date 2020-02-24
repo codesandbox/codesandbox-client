@@ -103,7 +103,9 @@ export class ModelsHandler {
           fileModelItem.resource.path === '/sandbox' + module.path
       );
 
-    fileModel.revert();
+    if (fileModel) {
+      fileModel.revert();
+    }
   }
 
   public changeModule = async (module: Module) => {

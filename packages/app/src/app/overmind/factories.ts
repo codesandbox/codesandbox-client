@@ -1,5 +1,6 @@
-import { Contributor } from '@codesandbox/common/lib/types';
-import { IDerive, IState, json } from 'overmind';
+import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { IDerive, IState } from 'overmind';
 
 import { AsyncAction } from '.';
 
@@ -25,10 +26,6 @@ export const withLoadApp = <T>(
 
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
-  effects.keybindingManager.set(
-    json(state.preferences.settings.keybindings || []) as any
-  );
-  effects.keybindingManager.start();
   effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
 
   if (state.jwt) {
@@ -77,27 +74,30 @@ export const withLoadApp = <T>(
 
 export const withOwnedSandbox = <T>(
   continueAction: AsyncAction<T>,
-  cancelAction: AsyncAction<T> = () => Promise.resolve()
+  cancelAction: AsyncAction<T> = () => Promise.resolve(),
+  requiredPermission?: PermissionType
 ): AsyncAction<T> => async (context, payload) => {
   const { state, actions } = context;
 
-  if (state.editor.currentSandbox) {
-    if (!state.editor.currentSandbox.owned) {
+  const sandbox = state.editor.currentSandbox;
+  if (sandbox) {
+    if (
+      typeof requiredPermission === 'undefined'
+        ? !sandbox.owned
+        : !hasPermission(sandbox.authorization, requiredPermission)
+    ) {
       if (state.editor.isForkingSandbox) {
         return cancelAction(context, payload);
       }
 
       try {
         await actions.editor.internal.forkSandbox({
-          sandboxId: state.editor.currentSandbox.id,
+          sandboxId: sandbox.id,
         });
       } catch (e) {
         return cancelAction(context, payload);
       }
-    } else if (
-      state.editor.currentSandbox.isFrozen &&
-      state.editor.sessionFrozen
-    ) {
+    } else if (sandbox.isFrozen && state.editor.sessionFrozen) {
       const modalResponse = await actions.modals.forkFrozenModal.open();
 
       if (modalResponse === 'fork') {

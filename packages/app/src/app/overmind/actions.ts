@@ -90,12 +90,7 @@ export const modalOpened: Action<{
   }
 };
 
-export const modalClosed: Action = ({ state, effects }) => {
-  // We just start it whenever it closes, if already started nothing happens
-  if (state.currentModal === 'preferences') {
-    effects.keybindingManager.start();
-  }
-
+export const modalClosed: Action = ({ state }) => {
   state.currentModal = null;
 };
 
@@ -225,23 +220,26 @@ export const track: Action<{ name: string; data: any }> = (
 };
 
 export const refetchSandboxInfo: AsyncAction = async ({
-  state,
-  effects,
   actions,
+  effects,
+  state,
 }) => {
   const sandbox = state.editor.currentSandbox;
-  if (sandbox && sandbox.id) {
-    const updatedSandbox = await effects.api.getSandbox(sandbox.id);
 
-    sandbox.collection = updatedSandbox.collection;
-    sandbox.owned = updatedSandbox.owned;
-    sandbox.userLiked = updatedSandbox.userLiked;
-    sandbox.title = updatedSandbox.title;
-    sandbox.team = updatedSandbox.team;
-    sandbox.roomId = updatedSandbox.roomId;
-
-    await actions.editor.internal.initializeLiveSandbox(sandbox);
+  if (!sandbox?.id) {
+    return;
   }
+
+  const updatedSandbox = await effects.api.getSandbox(sandbox.id);
+
+  sandbox.collection = updatedSandbox.collection;
+  sandbox.owned = updatedSandbox.owned;
+  sandbox.userLiked = updatedSandbox.userLiked;
+  sandbox.title = updatedSandbox.title;
+  sandbox.team = updatedSandbox.team;
+  sandbox.roomId = updatedSandbox.roomId;
+
+  await actions.editor.internal.initializeLiveSandbox(sandbox);
 };
 
 export const acceptTeamInvitation: Action<{ teamName: string }> = (

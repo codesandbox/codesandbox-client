@@ -13,6 +13,13 @@ export type SSEContainerStatus =
 
 export type SSEManagerStatus = 'connected' | 'disconnected' | 'initializing';
 
+export type PermissionType =
+  | 'write_code'
+  | 'write_project'
+  | 'comment'
+  | 'read'
+  | 'none';
+
 export type ModuleError = {
   message: string;
   line: number;
@@ -319,6 +326,7 @@ export type Sandbox = {
     path: string;
   };
   owned: boolean;
+  authorization: PermissionType;
   npmDependencies: {
     [dep: string]: string;
   };
@@ -412,7 +420,6 @@ export type Settings = {
   enableLigatures: boolean;
   customVSCodeTheme: string | null;
   manualCustomVSCodeTheme: string | null;
-  experimentVSCode: boolean;
 };
 
 export type NotificationButton = {
@@ -441,18 +448,10 @@ export type PackageJSON = {
   keywords?: string[];
   main?: string;
   module?: string;
-  scripts?: {
-    [command: string]: string;
-  };
-  dependencies?: {
-    [dep: string]: string;
-  };
-  devDependencies?: {
-    [dep: string]: string;
-  };
-  jest?: {
-    setupFilesAfterEnv?: string[];
-  };
+  scripts?: { [command: string]: string; };
+  dependencies?: { [dependency: string]: string; };
+  devDependencies?: { [dependency: string]: string; };
+  jest?: { setupFilesAfterEnv?: string[]; };
   resolutions?: { [dependency: string]: string };
 };
 

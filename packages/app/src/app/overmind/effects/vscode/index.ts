@@ -819,7 +819,7 @@ export class VSCodeEffect {
 
     this.elements.menubar.style.alignItems = 'center';
     this.elements.menubar.style.height = '38px';
-    this.elements.menubar.style.fontSize = '0.875rem';
+    this.elements.menubar.style.fontSize = '0.8125rem';
     this.elements.menubar.className = 'menubar';
 
     this.elements.statusbar.className = 'part statusbar';

@@ -4,13 +4,14 @@ import {
   getModulesAndDirectoriesInDirectory,
 } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
-import { Directory, Module } from '@codesandbox/common/lib/types';
+import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
+import { INormalizedModules } from 'codesandbox-import-util-types';
+
 import { AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import { createOptimisticModule } from 'app/overmind/utils/common';
-import { INormalizedModules } from 'codesandbox-import-util-types';
-import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 
 import {
   resolveDirectoryWrapped,
@@ -79,7 +80,9 @@ export const moduleRenamed: AsyncAction<{
 
       actions.internal.handleError({ message: 'Could not rename file', error });
     }
-  }
+  },
+  async () => {},
+  'write_code'
 );
 
 export const directoryCreated: AsyncAction<{
@@ -151,7 +154,9 @@ export const directoryCreated: AsyncAction<{
         error,
       });
     }
-  }
+  },
+  async () => {},
+  'write_code'
 );
 
 export const moduleMovedToDirectory: AsyncAction<{
@@ -205,7 +210,9 @@ export const moduleMovedToDirectory: AsyncAction<{
         error,
       });
     }
-  }
+  },
+  async () => {},
+  'write_code'
 );
 
 export const directoryMovedToDirectory: AsyncAction<{
@@ -255,7 +262,9 @@ export const directoryMovedToDirectory: AsyncAction<{
         error,
       });
     }
-  }
+  },
+  async () => {},
+  'write_code'
 );
 
 export const directoryDeleted: AsyncAction<{
@@ -327,7 +336,9 @@ export const directoryDeleted: AsyncAction<{
         error,
       });
     }
-  }
+  },
+  async () => {},
+  'write_code'
 );
 
 export const directoryRenamed: AsyncAction<{
@@ -379,7 +390,9 @@ export const directoryRenamed: AsyncAction<{
         error,
       });
     }
-  }
+  },
+  async () => {},
+  'write_code'
 );
 
 export const gotUploadedFiles: AsyncAction<string> = async (
@@ -405,27 +418,32 @@ export const gotUploadedFiles: AsyncAction<string> = async (
   }
 };
 
-export const addedFileToSandbox: AsyncAction<{
-  url: string;
-  name: string;
-}> = withOwnedSandbox(async ({ actions, effects, state }, { name, url }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  actions.internal.closeModals(false);
-  await actions.files.moduleCreated({
-    title: name,
-    directoryShortid: null,
-    code: url,
-    isBinary: true,
-  });
+export const addedFileToSandbox: AsyncAction<Pick<
+  UploadFile,
+  'name' | 'url'
+>> = withOwnedSandbox(
+  async ({ actions, effects, state }, { name, url }) => {
+    if (!state.editor.currentSandbox) {
+      return;
+    }
+    actions.internal.closeModals(false);
+    await actions.files.moduleCreated({
+      title: name,
+      directoryShortid: null,
+      code: url,
+      isBinary: true,
+    });
 
-  effects.executor.updateFiles(state.editor.currentSandbox);
-});
+    effects.executor.updateFiles(state.editor.currentSandbox);
+  },
+  async () => {},
+  'write_code'
+);
 
-export const deletedUploadedFile: AsyncAction<{
-  id: string;
-}> = withOwnedSandbox(async ({ state, actions, effects }, { id }) => {
+export const deletedUploadedFile: AsyncAction<string> = async (
+  { actions, effects, state },
+  id
+) => {
   if (!state.uploadedFiles) {
     return;
   }
@@ -441,7 +459,7 @@ export const deletedUploadedFile: AsyncAction<{
       error,
     });
   }
-});
+};
 
 export const filesUploaded: AsyncAction<{
   files: { [k: string]: { dataURI: string; type: string } };
@@ -489,7 +507,9 @@ export const filesUploaded: AsyncAction<{
     }
 
     actions.internal.closeModals(false);
-  }
+  },
+  async () => {},
+  'write_code'
 );
 
 export const massCreateModules: AsyncAction<{
@@ -550,7 +570,9 @@ export const massCreateModules: AsyncAction<{
         error,
       });
     }
-  }
+  },
+  async () => {},
+  'write_code'
 );
 
 export const moduleCreated: AsyncAction<{
@@ -650,7 +672,9 @@ export const moduleCreated: AsyncAction<{
         error,
       });
     }
-  }
+  },
+  async () => {},
+  'write_code'
 );
 
 export const moduleDeleted: AsyncAction<{
@@ -691,7 +715,9 @@ export const moduleDeleted: AsyncAction<{
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
       actions.internal.handleError({ message: 'Could not delete file', error });
     }
-  }
+  },
+  async () => {},
+  'write_code'
 );
 
 export const createModulesByPath: AsyncAction<{
@@ -780,7 +806,7 @@ export const syncSandbox: AsyncAction<any[]> = async (
       }
     });
   } catch (error) {
-    if (error.response.status === 404) {
+    if (error.response?.status === 404) {
       return;
     }
 

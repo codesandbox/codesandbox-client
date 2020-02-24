@@ -1,37 +1,11 @@
 import AutosizeInput from 'react-input-autosize';
 import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
-  display: flex;
-  position: relative;
-  font-size: 0.875rem;
-  align-items: center;
-  white-space: nowrap;
-  text-align: center;
-`;
-
 export const Folder = styled.div`
-  overflow: hidden;
   display: none;
 
   @media screen and (min-width: 950px) {
     display: block;
-  }
-`;
-
-export const FolderName = styled.button`
-  display: inline-block;
-  cursor: pointer;
-  transition: 0.3s ease color;
-  padding: 0;
-  margin: 0 0.25rem 0 0;
-  outline: 0;
-  border: 0;
-  background-color: transparent;
-  color: inherit;
-
-  &:hover {
-    color: white;
   }
 `;
 
@@ -55,20 +29,6 @@ export const NameInput = styled(AutosizeInput)`
     padding: 0;
     text-align: center;
   }
-`;
-
-export const Name = styled.span<{ owned?: boolean }>`
-  ${({ theme, owned }) => css`
-    color: ${theme.light ? 'black' : 'white'};
-    margin-left: 0.25rem;
-    margin-right: ${owned ? 0 : '0.5rem'};
-    cursor: ${owned ? 'pointer' : 'initial'};
-    text-overflow: ellipsis;
-    appearance: ${owned ? 'none' : 'initial'};
-    background: none;
-    border: 0;
-    outline: 0;
-  `}
 `;
 
 export const Main = styled.div`

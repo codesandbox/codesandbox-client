@@ -11,8 +11,8 @@ import { useOvermind } from 'app/overmind';
 import { NotFound } from 'app/pages/common/NotFound';
 
 import { Container, Content, Margin } from './elements';
-import Header from './Header';
-import Navigation from './Navigation';
+import { Header } from './Header';
+import { Navigation } from './Navigation';
 import { Sandboxes } from './Sandboxes';
 import { Showcase } from './Showcase';
 
@@ -50,15 +50,11 @@ export const Profile: FunctionComponent<Props> = ({
         <title>{user.name || user.username} - CodeSandbox</title>
       </Helmet>
 
-      <Header user={user} />
+      <Header />
 
       <Content>
         <MaxWidth>
-          <Navigation
-            likeCount={user.givenLikeCount}
-            sandboxCount={user.sandboxCount}
-            username={user.username}
-          />
+          <Navigation />
         </MaxWidth>
       </Content>
 

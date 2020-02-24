@@ -8,7 +8,7 @@
 import dot from 'dot-object';
 import deepmerge from 'deepmerge';
 import Color from 'color';
-import designLanguage from '@codesandbox/common/lib/design-language/theme';
+import designLanguage from '../design-language';
 import codesandboxBlack from '../themes/codesandbox-black';
 import codesandboxLight from '../themes/codesandbox-light.json';
 
@@ -32,8 +32,10 @@ const polyfillTheme = vsCodeTheme => {
     button: {},
     input: {},
     inputOption: {},
+    list: {},
     sideBar: {},
     activityBar: {},
+    titleBar: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
@@ -65,7 +67,7 @@ const polyfillTheme = vsCodeTheme => {
       codesandboxColors.sideBar.foreground,
     border:
       uiColors.sideBar.border ||
-      uiColors.editor.hoverHighlightBackground ||
+      uiColors.editor.lineHighlightBackground ||
       codesandboxColors.sideBar.border,
   };
 
@@ -99,6 +101,12 @@ const polyfillTheme = vsCodeTheme => {
 
   const decreaseContrast = type === 'dark' ? lighten : darken;
 
+  const mutedForeground = withContrast(
+    uiColors.input.placeholderForeground,
+    uiColors.sideBar.background,
+    type
+  );
+
   if (uiColors.sideBar.border === uiColors.sideBar.background) {
     uiColors.sideBar.border = decreaseContrast(
       uiColors.sideBar.background,
@@ -113,24 +121,31 @@ const polyfillTheme = vsCodeTheme => {
     );
   }
 
+  uiColors.list.foreground = uiColors.list.foreground || mutedForeground;
+  uiColors.list.hoverForeground =
+    uiColors.list.hoverForeground || uiColors.sideBar.foreground;
+  uiColors.list.hoverBackground =
+    uiColors.list.hoverBackground || uiColors.sideBar.hoverBackground;
+
+  uiColors.titleBar.activeBackground =
+    uiColors.titleBar.activeBackground || uiColors.sideBar.background;
+  uiColors.titleBar.activeForeground =
+    uiColors.titleBar.activeForeground || uiColors.sideBar.foreground;
+  uiColors.titleBar.border =
+    uiColors.titleBar.border || uiColors.sideBar.border;
+
   // Step 3.2
   // On the same theme of design decisions for interfaces,
   // we add a bunch of extra elements and interaction.
   // To make these elements look natural with the theme,
   // we infer them from the theme
 
-  const mutedForeground = withContrast(
-    uiColors.input.placeholderForeground,
-    uiColors.sideBar.background,
-    type
-  );
-
   const addedColors = {
     mutedForeground,
     activityBar: {
       selected: uiColors.sideBar.foreground,
       inactiveForeground: mutedForeground,
-      hoverBackground: uiColors.sideBar.hoverBackground,
+      hoverBackground: uiColors.sideBar.border,
     },
     avatar: { border: uiColors.sideBar.border },
     sideBar: { hoverBackground: uiColors.sideBar.border },
@@ -147,14 +162,26 @@ const polyfillTheme = vsCodeTheme => {
       foreground: 'white',
       hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`,
     },
+    icon: {
+      foreground: uiColors.foreground,
+    },
     switch: {
-      background: uiColors.sideBar.border,
-      foregroundOff: designLanguage.colors.white,
-      foregroundOn: designLanguage.colors.green,
+      backgroundOff: uiColors.input.background,
+      backgroundOn: uiColors.button.background,
+      toggle: designLanguage.colors.white,
     },
   };
 
   uiColors = deepmerge(uiColors, addedColors);
+
+  if (uiColors.switch.backgroundOff === uiColors.sideBar.background) {
+    uiColors.switch.backgroundOff = uiColors.sideBar.border;
+  }
+
+  if (uiColors.switch.toggle === uiColors.switch.backgroundOff) {
+    // default is white, we make it a little darker
+    uiColors.switch.toggle = designLanguage.colors.grays[200];
+  }
 
   return uiColors;
 };

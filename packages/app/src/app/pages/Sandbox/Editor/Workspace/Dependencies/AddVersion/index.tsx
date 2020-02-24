@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { ButtonContainer } from './elements';
+import { ButtonContainer, Container } from './elements';
 
 export const AddVersion: FunctionComponent = ({ children }) => {
   const {
@@ -11,7 +11,7 @@ export const AddVersion: FunctionComponent = ({ children }) => {
   } = useOvermind();
 
   return (
-    <div style={{ position: 'relative' }}>
+    <Container>
       <ButtonContainer>
         <Button
           block
@@ -21,6 +21,6 @@ export const AddVersion: FunctionComponent = ({ children }) => {
           {children}
         </Button>
       </ButtonContainer>
-    </div>
+    </Container>
   );
 };

@@ -130,7 +130,7 @@ export class Dependency extends React.PureComponent<Props, State> {
           css={css({
             position: 'relative',
             '.actions': { backgroundColor: 'sideBar.background' },
-            ':hover .actions': { backgroundColor: 'sideBar.hoverBackground' },
+            ':hover .actions': { backgroundColor: 'list.hoverBackground' },
           })}
         >
           <Link
@@ -145,11 +145,17 @@ export class Dependency extends React.PureComponent<Props, State> {
             <Stack
               align="center"
               justify="flex-end"
-              css={css({ position: 'absolute', right: 2 })}
+              css={css({
+                position: 'absolute',
+                right: 2,
+                flexGrow: 0,
+                flexShrink: 1,
+                width: '100%',
+              })}
             >
               <Text
                 variant="muted"
-                maxWidth={75}
+                maxWidth="30%"
                 css={{ display: hovering ? 'none' : 'block' }}
               >
                 {formatVersion(dependencies[dependency])}{' '}

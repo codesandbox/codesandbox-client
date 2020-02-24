@@ -1,6 +1,6 @@
 import { Badge } from '@codesandbox/common/lib/types';
+
 import { Action, AsyncAction } from 'app/overmind';
-import { json } from 'overmind';
 
 export const viewModeChanged: Action<{
   showEditor: boolean;
@@ -22,12 +22,6 @@ export const itemIdChanged: AsyncAction<{
   itemId: string;
 }> = async ({ state, actions, effects }, { itemId }) => {
   state.preferences.itemId = itemId;
-
-  if (itemId === 'keybindings') {
-    effects.keybindingManager.pause();
-  } else {
-    effects.keybindingManager.start();
-  }
 
   if (itemId === 'integrations') {
     await actions.deployment.internal.getZeitUserDetails();
@@ -128,10 +122,6 @@ export const keybindingChanged: Action<{
   );
 
   effects.settingsStore.set('keybindings', keybindingsValue);
-
-  effects.keybindingManager.set(
-    json(state.preferences.settings.keybindings) as any
-  );
 };
 
 export const zenModeToggled: Action = ({ state }) => {

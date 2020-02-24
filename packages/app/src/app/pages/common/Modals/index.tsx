@@ -26,7 +26,7 @@ import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import PreferencesModal from './PreferencesModal';
-import PRModal from './PRModal';
+import { PRModal } from './PRModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
@@ -36,7 +36,9 @@ import { SurveyModal } from './SurveyModal';
 import UploadModal from './UploadModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
-  import('./MoveSandboxFolderModal')
+  import('./MoveSandboxFolderModal').then(module => ({
+    default: module.MoveSandboxFolderModal,
+  }))
 );
 
 const modals = {
