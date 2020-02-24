@@ -159,7 +159,7 @@ const polyfillTheme = vsCodeTheme => {
   const addedColors = {
     mutedForeground,
     activityBar: {
-      selected: uiColors.sideBar.foreground,
+      selectedForeground: uiColors.sideBar.foreground,
       inactiveForeground: mutedForeground,
       hoverBackground: uiColors.sideBar.border,
     },
@@ -199,6 +199,14 @@ const polyfillTheme = vsCodeTheme => {
     uiColors.switch.toggle = designLanguage.colors.grays[200];
   }
 
+  // ensure enough contrast from inactive state
+  uiColors.activityBar.selectedForeground = withContrast(
+    uiColors.activityBar.selectedForeground,
+    uiColors.activityBar.inactiveForeground,
+    type,
+    'icon'
+  );
+
   return uiColors;
 };
 
@@ -219,8 +227,11 @@ const darken = (color, value) =>
     .darken(value)
     .hex();
 
-const withContrast = (color, background, type) => {
-  if (Color(color).contrast(Color(background)) > 4.5) return color;
+const withContrast = (color, background, type, contrastType = 'text') => {
+  const contrastRatio = { text: 4.5, icon: 3 };
+  const contrast = contrastRatio[contrastType];
+
+  if (Color(color).contrast(Color(background)) > contrast) return color;
 
   // can't fix that
   if (color === '#FFFFFF' || color === '#000000') return color;

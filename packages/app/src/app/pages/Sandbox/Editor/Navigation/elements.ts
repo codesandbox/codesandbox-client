@@ -51,7 +51,7 @@ export const IconContainer = styled(Stack)<{
 
     ${props.selected &&
       css`
-        color: ${props.theme.colors.activityBar.selected};
+        color: ${props.theme.colors.activityBar.selectedForeground};
       `};
 
     ${props.isDisabled &&
