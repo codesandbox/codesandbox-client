@@ -27,6 +27,11 @@ interface PayloadSubscription<P, R> {
   disposeWhere(cb: (variables: { [variables: string]: Variable }) => boolean);
 }
 
+interface Subscription {
+  variables: { [key: string]: Variable };
+  dispose: () => void;
+}
+
 type Http = {
   url: string;
   headers?: () => HttpHeaders;
@@ -89,10 +94,7 @@ function createError(message: string) {
 const _clients: { [url: string]: GraphQLClient } = {};
 const _wsClients: { [url: string]: PhoenixSocket } = {};
 const _subscriptions: {
-  [query: string]: Array<{
-    variables: { [key: string]: Variable };
-    dispose: () => void;
-  }>;
+  [query: string]: Subscription[];
 } = {};
 
 export const graphql: <T extends Queries>(
@@ -106,7 +108,7 @@ export const graphql: <T extends Queries>(
       const headers = // eslint-disable-next-line
         typeof _http.headers === 'function'
           ? _http.headers()
-          : _http.options
+          : _http.options && _http.options.headers
           ? _http.options.headers
           : {};
 
@@ -130,7 +132,7 @@ export const graphql: <T extends Queries>(
       if (!_wsClients[_ws.url]) {
         _wsClients[_ws.url] = withAbsintheSocket.create(
           new PhoenixSocket(_ws.url, {
-            params: _ws.params ? _ws.params() : null,
+            params: _ws.params ? _ws.params() : undefined,
           })
         );
       }
@@ -144,7 +146,7 @@ export const graphql: <T extends Queries>(
   const evaluatedQueries = {
     queries: Object.keys(queries.queries || {}).reduce((aggr, key) => {
       aggr[key] = variables => {
-        const query = queries.queries[key] as any;
+        const query = queries.queries![key] as any;
         const client = getClient();
 
         if (client) {
@@ -159,7 +161,7 @@ export const graphql: <T extends Queries>(
     }, {}),
     mutations: Object.keys(queries.mutations || {}).reduce((aggr, key) => {
       aggr[key] = variables => {
-        const query = queries.mutations[key] as any;
+        const query = queries.mutations![key] as any;
         const client = getClient();
 
         if (client) {
@@ -174,7 +176,7 @@ export const graphql: <T extends Queries>(
     }, {}),
     subscriptions: Object.keys(queries.subscriptions || {}).reduce(
       (aggr, key) => {
-        const query = queries.subscriptions[key] as any;
+        const query = queries.subscriptions![key] as any;
         const queryString = print(query);
 
         if (!_subscriptions[queryString]) {
@@ -216,15 +218,14 @@ export const graphql: <T extends Queries>(
         };
 
         subscription.disposeWhere = cb => {
-          _subscriptions[queryString] = _subscriptions[queryString].reduce(
-            (subAggr, sub) => {
-              if (cb(sub.variables)) {
-                return subAggr;
-              }
-              return subAggr.concat(sub);
-            },
-            []
-          );
+          _subscriptions[queryString] = _subscriptions[queryString].reduce<
+            Subscription[]
+          >((subAggr, sub) => {
+            if (cb(sub.variables)) {
+              return subAggr;
+            }
+            return subAggr.concat(sub);
+          }, []);
         };
 
         aggr[key] = subscription;
@@ -238,7 +239,9 @@ export const graphql: <T extends Queries>(
   return {
     initialize(http: Http, ws?: Ws) {
       _http = http;
-      _ws = ws;
+      if (ws) {
+        _ws = ws;
+      }
     },
     ...evaluatedQueries,
   } as any;
