@@ -1,7 +1,7 @@
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
+import Navigator from '@codesandbox/common/lib/components/Preview/Navigator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
-import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
@@ -13,6 +13,8 @@ import Content from './Content';
 import {
   Container,
   SkeletonDevtools,
+  SkeletonDevtoolsIframe,
+  SkeletonDevtoolsNavigator,
   SkeletonDevtoolsTop,
   SkeletonEditor,
   SkeletonEditorTop,
@@ -46,6 +48,16 @@ const ContentSkeleton = () => (
     </SkeletonEditor>
     <SkeletonDevtools>
       <SkeletonDevtoolsTop />
+      <SkeletonDevtoolsNavigator>
+        <Navigator
+          url=""
+          onChange={() => {}}
+          onConfirm={() => {}}
+          onRefresh={() => {}}
+          isProjectView
+        />
+      </SkeletonDevtoolsNavigator>
+      <SkeletonDevtoolsIframe />
     </SkeletonDevtools>
   </SkeletonWrapper>
 );

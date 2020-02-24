@@ -27,7 +27,6 @@ export const SkeletonExplorer = styled.div`
 `;
 export const SkeletonExplorerTop = styled.div`
   height: 35px;
-  border-right: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
   border-bottom: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
 `;
 export const SkeletonEditor = styled.div`
@@ -37,12 +36,18 @@ export const SkeletonEditor = styled.div`
 export const SkeletonEditorTop = styled.div`
   height: 35px;
   border-bottom: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
-  border-right: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
 `;
 export const SkeletonDevtools = styled.div`
   flex: 1;
 `;
 export const SkeletonDevtoolsTop = styled.div`
   height: 35px;
+`;
+export const SkeletonDevtoolsNavigator = styled.div`
+  height: 35px;
   border-bottom: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
+`;
+export const SkeletonDevtoolsIframe = styled.div`
+  height: 100%;
+  background-color: #fff;
 `;
