@@ -1097,11 +1097,12 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
     const invitationResponse = await effects.gql.queries.invitations({
       sandboxId,
     });
-    if (!invitationResponse.sandbox) {
+    const sandbox = invitationResponse.sandbox;
+    if (!sandbox) {
       return;
     }
 
-    state.editor.invitations = invitationResponse.sandbox.invitations;
+    state.editor.invitations = sandbox.invitations;
 
     effects.gql.subscriptions.onInvitationCreated({ sandboxId }, event => {
       if (event.invitationCreated.id === null) {
@@ -1145,12 +1146,12 @@ export const changeCollaboratorAuthorization: AsyncAction<{
     c => c.user.username === username
   );
 
-  let oldAuthorization = null;
+  let oldAuthorization: Authorization | null = null;
   if (existingCollaborator) {
     oldAuthorization = existingCollaborator.authorization;
-  }
 
-  existingCollaborator.authorization = authorization;
+    existingCollaborator.authorization = authorization;
+  }
 
   try {
     await effects.gql.mutations.changeCollaboratorAuthorization({
@@ -1218,10 +1219,12 @@ export const removeCollaborator: AsyncAction<{
       username,
     });
   } catch (e) {
-    state.editor.collaborators = [
-      ...state.editor.collaborators,
-      existingCollaborator,
-    ];
+    if (existingCollaborator) {
+      state.editor.collaborators = [
+        ...state.editor.collaborators,
+        existingCollaborator,
+      ];
+    }
   }
 };
 
@@ -1287,10 +1290,12 @@ export const revokeSandboxInvitation: AsyncAction<{
       invitationId,
     });
   } catch (e) {
-    state.editor.invitations = [
-      ...state.editor.invitations,
-      existingInvitation,
-    ];
+    if (existingInvitation) {
+      state.editor.invitations = [
+        ...state.editor.invitations,
+        existingInvitation,
+      ];
+    }
   }
 };
 
@@ -1303,12 +1308,12 @@ export const changeInvitationAuthorization: AsyncAction<{
     c => c.id === invitationId
   );
 
-  let oldAuthorization = null;
+  let oldAuthorization: Authorization | null = null;
   if (existingInvitation) {
     oldAuthorization = existingInvitation.authorization;
-  }
 
-  existingInvitation.authorization = authorization;
+    existingInvitation.authorization = authorization;
+  }
 
   try {
     await effects.gql.mutations.changeSandboxInvitationAuthorization({

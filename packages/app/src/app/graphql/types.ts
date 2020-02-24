@@ -11,7 +11,7 @@ export type Scalars = {
    * timezone. The DateTime appears in a JSON response as an ISO8601 formatted
    * string, including UTC timezone ("Z"). The parsed date and time string will
    * be converted to UTC and any UTC offset other than 0 will be rejected.
-   * */
+   **/
   DateTime: any;
 };
 
@@ -381,7 +381,7 @@ export type Sandbox = {
   __typename?: 'Sandbox';
   alias: Maybe<Scalars['String']>;
   author: Maybe<User>;
-  collaborators: Array<Maybe<Collaborator>>;
+  collaborators: Array<Collaborator>;
   collection: Maybe<Collection>;
   /** If the sandbox is a template this will be set */
   customTemplate: Maybe<Template>;
@@ -391,7 +391,7 @@ export type Sandbox = {
   git: Maybe<Git>;
   id: Scalars['ID'];
   insertedAt: Scalars['String'];
-  invitations: Array<Maybe<Invitation>>;
+  invitations: Array<Invitation>;
   privacy: Scalars['Int'];
   removedAt: Maybe<Scalars['String']>;
   screenshotOutdated: Maybe<Scalars['Boolean']>;
@@ -696,7 +696,7 @@ export type SandboxCollaboratorsQuery = { __typename?: 'RootQueryType' } & {
   sandbox: Maybe<
     { __typename?: 'Sandbox' } & {
       collaborators: Array<
-        Maybe<{ __typename?: 'Collaborator' } & CollaboratorFragment>
+        { __typename?: 'Collaborator' } & CollaboratorFragment
       >;
     }
   >;
@@ -709,9 +709,7 @@ export type SandboxInvitationsQueryVariables = {
 export type SandboxInvitationsQuery = { __typename?: 'RootQueryType' } & {
   sandbox: Maybe<
     { __typename?: 'Sandbox' } & {
-      invitations: Array<
-        Maybe<{ __typename?: 'Invitation' } & InvitationFragment>
-      >;
+      invitations: Array<{ __typename?: 'Invitation' } & InvitationFragment>;
     }
   >;
 };
