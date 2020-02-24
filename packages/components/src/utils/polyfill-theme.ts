@@ -121,6 +121,22 @@ const polyfillTheme = vsCodeTheme => {
     );
   }
 
+  if (uiColors.list.hoverBackground === uiColors.sideBar.background) {
+    if (
+      uiColors.list.inactiveSelectionBackground &&
+      uiColors.list.hoverBackground !==
+        uiColors.list.inactiveSelectionBackground
+    ) {
+      uiColors.list.hoverBackground = uiColors.list.inactiveSelectionBackground;
+    } else {
+      // if that didnt work, its math time
+      uiColors.list.hoverBackground = decreaseContrast(
+        uiColors.sideBar.background,
+        0.25
+      );
+    }
+  }
+
   uiColors.list.foreground = uiColors.list.foreground || mutedForeground;
   uiColors.list.hoverForeground =
     uiColors.list.hoverForeground || uiColors.sideBar.foreground;
