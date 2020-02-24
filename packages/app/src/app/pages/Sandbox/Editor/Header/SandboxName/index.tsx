@@ -11,6 +11,7 @@ import React, {
   ChangeEvent,
   FunctionComponent,
   KeyboardEvent,
+  useEffect,
   useState,
 } from 'react';
 import { Link } from 'react-router-dom';
@@ -31,10 +32,18 @@ export const SandboxName: FunctionComponent = () => {
   } = useOvermind();
   const [updatingName, setUpdatingName] = useState(false);
   const [name, setName] = useState('');
+  const [fadeIn, setFadeIn] = useState(false);
 
-  if (!currentSandbox) {
-    return null;
-  }
+  useEffect(() => {
+    if (!fadeIn) {
+      const id = setTimeout(() => {
+        setFadeIn(true);
+      }, 500);
+      return () => clearTimeout(id);
+    }
+
+    return () => {};
+  }, [fadeIn]);
 
   const sandboxName =
     (currentSandbox && getSandboxName(currentSandbox)) || 'Untitled';
@@ -92,7 +101,7 @@ export const SandboxName: FunctionComponent = () => {
   };
 
   return (
-    <Main>
+    <Main style={fadeIn ? { opacity: 1 } : null}>
       <Stack align="center">
         {!customTemplate && owned && !updatingName && (
           <Folder>

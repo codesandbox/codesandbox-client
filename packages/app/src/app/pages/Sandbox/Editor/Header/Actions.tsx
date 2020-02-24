@@ -1,17 +1,16 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
-
-import { UserMenu } from 'app/pages/common/UserMenu';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-
-import { Stack, Avatar, Button } from '@codesandbox/components';
+import { Avatar, Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import { UserMenu } from 'app/pages/common/UserMenu';
+import React, { useEffect, useState } from 'react';
+
 import {
-  ReloadIcon,
-  PreferenceIcon,
-  LikeIcon,
   EmbedIcon,
   ForkIcon,
+  LikeIcon,
+  PreferenceIcon,
+  ReloadIcon,
 } from './icons';
 
 const TooltipButton = ({ tooltip, ...props }) => (
@@ -38,6 +37,18 @@ export const Actions = () => {
 
     actions: { signInClicked },
   } = useOvermind();
+  const [fadeIn, setFadeIn] = useState(false);
+
+  useEffect(() => {
+    if (!fadeIn) {
+      const timeoutId = setTimeout(() => {
+        setFadeIn(true);
+      }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+
+    return () => {};
+  }, [fadeIn]);
 
   const handleSignIn = async () => {
     await signInClicked({ useExtraScopes: false });
@@ -48,7 +59,15 @@ export const Actions = () => {
   else primaryAction = owned ? 'Embed' : 'Fork';
 
   return (
-    <Stack align="center" gap={1} css={{ '> button': { width: 'auto' } }}>
+    <Stack
+      align="center"
+      gap={1}
+      css={{ '> button': { width: 'auto' } }}
+      style={{
+        opacity: fadeIn ? 1 : 0,
+        transition: 'opacity 0.25s ease-in-out',
+      }}
+    >
       {updateStatus === 'available' && (
         <TooltipButton
           tooltip="Update Available! Click to Refresh."

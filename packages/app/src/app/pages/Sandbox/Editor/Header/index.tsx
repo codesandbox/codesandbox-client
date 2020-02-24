@@ -12,7 +12,7 @@ import { SandboxName } from './SandboxName';
 
 export const Header = () => {
   const {
-    state: { hasLogIn, editor },
+    state: { hasLogIn, editor, isAuthenticating },
   } = useOvermind();
 
   return (
@@ -48,9 +48,8 @@ export const Header = () => {
         <MenuBar />
       </Stack>
 
-      <SandboxName />
-
-      {editor.currentSandbox ? <Actions /> : null}
+      {editor.currentSandbox && !isAuthenticating ? <SandboxName /> : null}
+      {editor.currentSandbox && !isAuthenticating ? <Actions /> : null}
     </Stack>
   );
 };
