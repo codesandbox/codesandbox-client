@@ -17,6 +17,8 @@ export const ContainerLSP: React.FunctionComponent = () => {
     setContainerLSP(val);
     window.localStorage.setItem('CONTAINER_LSP', val.toString());
     location.reload();
+
+    // TODO(@someone): call the API call on POST /api/v1/users/current with body `{ experiments: { container_lsp: true } }`
   };
 
   return state.user ? (

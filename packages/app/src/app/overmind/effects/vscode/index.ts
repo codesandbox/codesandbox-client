@@ -11,7 +11,6 @@ import {
   SandboxFs,
   Settings,
 } from '@codesandbox/common/lib/types';
-import { CONTAINER_LSP } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
@@ -343,7 +342,7 @@ export class VSCodeEffect {
       //
     }
 
-    if (isServer && CONTAINER_LSP === 'true') {
+    if (isServer && this.options.getCurrentUser()?.experiments.containerLsp) {
       childProcess.addDefaultForkHandler(this.createContainerForkHandler());
       const socket = this.createWebsocketFSRequest();
       const cache = await this.createFileSystem('WebsocketFS', {
