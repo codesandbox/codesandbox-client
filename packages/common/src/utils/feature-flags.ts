@@ -6,6 +6,5 @@
   it's a TS file, so you can add whatever logic you want as long as it's static
 */
 
-export const CONTAINER_LSP = localStorage.getItem('CONTAINER_LSP') || false;
 export const REDESIGNED_SIDEBAR =
   localStorage.getItem('REDESIGNED_SIDEBAR') || false;
