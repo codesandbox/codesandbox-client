@@ -7,21 +7,17 @@ export const ContainerLSP: FunctionComponent = () => {
     actions: {
       preferences: { toggleContainerLspExperiment },
     },
-    state: {
-      user: {
-        experiments: { containerLsp },
-      },
-    },
+    state: { user },
   } = useOvermind();
 
-  return (
+  return user ? (
     <>
       <PaddedPreference
         setValue={() => toggleContainerLspExperiment()}
         title="Use container language server"
         tooltip="Language server"
         type="boolean"
-        value={containerLsp}
+        value={user.experiments.containerLsp}
       />
 
       <SubDescription>
@@ -29,5 +25,5 @@ export const ContainerLSP: FunctionComponent = () => {
         server to run there. Please help us test it :-)
       </SubDescription>
     </>
-  );
+  ) : null;
 };
