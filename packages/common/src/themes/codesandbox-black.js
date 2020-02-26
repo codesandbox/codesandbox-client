@@ -250,7 +250,7 @@ const colors = {
     unfocusedInactiveForeground: tokens.grays[400],
   },
   terminal: {
-    background: tokens.grays[700],
+    background: tokens.grays[900],
     foreground: tokens.white,
     ansiBrightBlack: tokens.blues[700],
     ansiBrightRed: tokens.reds[500],

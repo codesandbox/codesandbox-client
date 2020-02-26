@@ -40,11 +40,8 @@ const polyfillTheme = vsCodeTheme => {
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
 
-  // Step 0: Clone theme to make sure we don't modify the source
-  const clonedVsCodeTheme = deepmerge({ colors: {} }, vsCodeTheme.colors || {});
-
   //  Step 1: Initialise with vscode theme
-  const vsCodeColors = dot.object(clonedVsCodeTheme.colors);
+  const vsCodeColors = dot.object(vsCodeTheme.colors || {});
   uiColors = deepmerge(uiColors, vsCodeColors);
 
   // Step 2: Fill missing values from existing values or codesandbox dark/light
@@ -165,7 +162,6 @@ const polyfillTheme = vsCodeTheme => {
       selectedForeground: uiColors.sideBar.foreground,
       inactiveForeground: mutedForeground,
       hoverBackground: uiColors.sideBar.border,
-      border: uiColors.sideBar.border,
     },
     avatar: { border: uiColors.sideBar.border },
     sideBar: { hoverBackground: uiColors.sideBar.border },
