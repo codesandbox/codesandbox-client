@@ -1,5 +1,5 @@
-# source: http://server:4000/api/graphql
-# timestamp: Mon Feb 24 2020 16:55:24 GMT+0000 (Coordinated Universal Time)
+# source: https://codesandbox.stream/api/graphql
+# timestamp: Wed Feb 26 2020 09:54:02 GMT+0100 (Central European Standard Time)
 
 schema {
   query: RootQuery
@@ -35,6 +35,7 @@ type Collaborator {
   lastSeenAt: DateTime
   sandbox: Sandbox!
   user: User!
+  warning: String
 }
 
 type Collection {
@@ -316,7 +317,7 @@ type Team {
   invitees: [User]
   name: String
   templates: [Template]
-  users: [User]
+  users: [User!]!
 }
 
 """

@@ -1,15 +1,16 @@
-import React from 'react';
-import { Stack, Text, Select } from '@codesandbox/components';
-import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
-import { Authorization } from 'app/graphql/types';
-import { formatDistanceToNow } from 'date-fns';
-import { LockIcon } from '@codesandbox/common/lib/components/icons/Lock';
 import { GlobeIcon } from '@codesandbox/common/lib/components/icons/Globe';
 import { LinkIcon } from '@codesandbox/common/lib/components/icons/Link';
+import { LockIcon } from '@codesandbox/common/lib/components/icons/Lock';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { PermissionSelect } from './PermissionSelect';
+import { Select, Stack, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { Authorization } from 'app/graphql/types';
+import { useOvermind } from 'app/overmind';
+import { formatDistanceToNow } from 'date-fns';
+import React, { ChangeEvent } from 'react';
+
 import { Mail, WarningIcon } from './icons';
+import { PermissionSelect } from './PermissionSelect';
 
 interface ICollaboratorItemProps {
   authorization: Authorization;
@@ -20,7 +21,9 @@ interface ICollaboratorItemProps {
   subtext?: string;
   avatarUrl?: string;
   avatarComponent?: JSX.Element | null;
-  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange?: (
+    event: ChangeEvent<HTMLSelectElement> & ChangeEvent<HTMLInputElement>
+  ) => void;
   fillAvatar?: boolean;
   permissionText?: string;
   readOnly?: boolean;
