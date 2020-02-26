@@ -13,6 +13,7 @@ const Menu = ({ ...props }) => (
 
 const MenuButton = ({ css = {}, ...props }) => (
   <Button
+    // @ts-ignore
     as={ReachMenu.MenuButton}
     variant="link"
     css={deepmerge(css, { width: 'auto' })}
