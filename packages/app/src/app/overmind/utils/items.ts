@@ -33,7 +33,7 @@ export const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
-  defaultOpen: true,
+  // defaultOpen: true,
 };
 
 export const GITHUB: INavigationItem = {
@@ -67,6 +67,7 @@ export const SERVER: INavigationItem = {
 export const COMMENTS: INavigationItem = {
   id: 'comments',
   name: 'Comments',
+  defaultOpen: true,
 };
 
 export function getDisabledItems(store: any): INavigationItem[] {

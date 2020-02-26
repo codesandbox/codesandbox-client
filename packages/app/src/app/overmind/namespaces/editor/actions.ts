@@ -199,10 +199,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   effects.preview.executeCodeImmediately({ initialRender: true });
 
   const { comments } = await effects.fakeGql.queries.allComments({
-    sandboxId: id,
+    sandboxId: sandbox.id,
   });
 
-  state.editor.comments[id] = comments;
+  state.editor.comments[sandbox.id] = comments;
 
   state.editor.isLoading = false;
 });
