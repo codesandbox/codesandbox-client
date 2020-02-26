@@ -101,6 +101,7 @@ export const Input = styled.input`
   font-size: 13px;
   color: white;
   width: 100%;
+  max-width: 300px;
 
   &::-webkit-input-placeholder {
     /* Chrome/Opera/Safari */
@@ -142,8 +143,8 @@ export const PlaceHolderLink = styled.span<{ error: string }>`
 
 export const GitHubLink = styled.a`
   ${linkStyles};
-
-  &:hover {
+  word-break: break-all;
+  s &:hover {
     color: rgba(255, 255, 255, 0.8);
   }
 `;
