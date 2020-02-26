@@ -37,6 +37,7 @@ const polyfillTheme = vsCodeTheme => {
     activityBar: {},
     titleBar: {},
     quickInput: {},
+    menuList: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
@@ -196,6 +197,12 @@ const polyfillTheme = vsCodeTheme => {
       background: uiColors.quickInput.background,
       foreground: uiColors.quickInput.foreground,
       border: uiColors.sideBar.border,
+    },
+    menuList: {
+      background: uiColors.sideBar.background,
+      border: uiColors.sideBar.border,
+      hoverBackground: uiColors.sideBar.border,
+      foreground: uiColors.sideBar.foreground,
     },
   };
 
