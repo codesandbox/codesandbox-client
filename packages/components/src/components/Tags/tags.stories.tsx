@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Tags } from '.';
 
 export default {
@@ -14,7 +15,7 @@ export const ManyTags = () => (
 
 export const Removable = () => (
   <Tags
-    onRemove={() => {}}
+    onRemove={() => undefined}
     tags={[
       'one',
       'two',

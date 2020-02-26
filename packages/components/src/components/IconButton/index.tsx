@@ -1,40 +1,32 @@
-// @ts-nocheck
-import React from 'react';
-import { Button } from '../Button';
-import { Icon, IconNames } from '../Icon';
+import React, { ComponentProps, FunctionComponent } from 'react';
 
-type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  /** name of the icon */
-  name: IconNames;
-  /** icon button should have a title for accessibility */
-  title: string;
-  /** Size of the icon, the button is set to 26x26 */
-  size?: number;
-};
+import { Button, Icon } from '../..';
 
-export const IconButton: React.FC<IconButtonProps> = ({
+type Props = Omit<ComponentProps<typeof Button>, 'children' | 'variant'> &
+  Pick<ComponentProps<typeof Icon>, 'name' | 'size'>;
+export const IconButton: FunctionComponent<Props> = ({
   name,
-  title,
   size,
+  title,
   ...props
 }) => (
-  // @ts-ignore
   <Button
-    title={title}
-    variant="link"
     css={{
       width: '26px', // same width as (height of the button)
       padding: 0,
       borderRadius: '50%',
+
       ':hover:not(:disabled)': {
         backgroundColor: 'secondaryButton.background',
       },
+
       ':focus:not(:disabled)': {
         outline: 'none',
         backgroundColor: 'secondaryButton.background',
       },
     }}
-    // @ts-ignore
+    title={title}
+    variant="link"
     {...props}
   >
     <Icon name={name} size={size} />

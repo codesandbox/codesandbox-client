@@ -1,7 +1,8 @@
 import React from 'react';
+
+import { Element, Text } from '../..';
+
 import { Collapsible } from '.';
-import { Text } from '../Text';
-import { Element } from '../Element';
 
 export default {
   title: 'components/Collapsible',
@@ -14,6 +15,7 @@ export const Basic = () => (
       <Text weight="medium" block marginBottom={2}>
         The move from Cerebral
       </Text>
+
       <Text variant="muted">This is a static template with no bundling</Text>
     </Element>
   </Collapsible>
@@ -25,6 +27,7 @@ export const DefaultOpen = () => (
       <Text as="div" weight="medium" block marginBottom={2}>
         The move from Cerebral
       </Text>
+
       <Text variant="muted">This is a static template with no bundling</Text>
     </Element>
   </Collapsible>

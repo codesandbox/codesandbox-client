@@ -1,11 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
 import css from '@styled-system/css';
+import React, { FunctionComponent } from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
+import styled from 'styled-components';
 
-import { Stack } from '../Stack';
-import { Button } from '../Button';
-import { Text } from '../Text';
+import { Button, Stack, Text } from '../..';
 
 const TagElement = styled(Stack).attrs({
   inline: true,
@@ -21,25 +19,23 @@ const TagElement = styled(Stack).attrs({
   })
 );
 
-type TagProps = {
-  tag: string;
-  onRemove?: (tag: string) => void;
+type Props<Tag = string> = {
+  tag: Tag;
+  onRemove?: (tag: Tag) => void;
 };
+export const Tag: FunctionComponent<Props> = ({ tag, onRemove }) => (
+  <TagElement data-component="Tag">
+    <Text size={2}>{tag}</Text>
 
-export function Tag({ tag, onRemove }: TagProps) {
-  return (
-    <TagElement data-component="Tag">
-      <Text size={2}>{tag}</Text>
-      {onRemove && (
-        <Button
-          variant="link"
-          css={{ width: 'auto' }}
-          onClick={() => onRemove(tag)}
-          marginLeft={1}
-        >
-          <CrossIcon />
-        </Button>
-      )}
-    </TagElement>
-  );
-}
+    {onRemove && (
+      <Button
+        css={{ width: 'auto' }}
+        marginLeft={1}
+        onClick={() => onRemove(tag)}
+        variant="link"
+      >
+        <CrossIcon />
+      </Button>
+    )}
+  </TagElement>
+);

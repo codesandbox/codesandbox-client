@@ -1,6 +1,7 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Element } from '../Element';
+import styled from 'styled-components';
+
+import { Element } from '../..';
 
 const fontSize = 1; // rem = 16px
 const lineHeight = fontSize * 1.5;
@@ -11,33 +12,43 @@ export const Grid = styled(Element)<{ columnGap?: number; rowGap?: number }>(
       display: 'grid',
       gridTemplateColumns: 'repeat(12, 1fr)', // always 12 columns
       gridColumnGap:
-        typeof columnGap !== 'undefined' ? columnGap : lineHeight * 2 + 'rem',
-      gridRowGap: typeof rowGap !== 'undefined' ? rowGap : lineHeight + 'rem',
+        columnGap === undefined ? `${lineHeight * 2}rem` : columnGap,
+      gridRowGap: rowGap === undefined ? `${lineHeight}rem` : rowGap,
     })
 );
 
-// todo: end and span cant be together
-// valid combinations are
-// start | start + end | start + span | span
-// span + end is also possible but not implemented here
-export const Column = styled(Element)<{
-  start?: number | Array<number>;
-  end?: number | Array<number>;
-  span?: number | Array<number>;
-}>(({ start, end, span }) => {
+// Valid combinations are:
+// end + start | span | span + start | start
+// TODO: end + span is also possible but not implemented here
+type ColumnProp = number | number[];
+type ColumnProps =
+  | { end: ColumnProp; span?: undefined; start: ColumnProp }
+  | { end?: undefined; span: ColumnProp; start?: undefined }
+  | { end?: undefined; span: ColumnProp; start: ColumnProp }
+  | { end?: undefined; span?: undefined; start: ColumnProp };
+export const Column = styled(Element)<ColumnProps>(({ end, span, start }) => {
   const styles: {
     gridColumnStart?: number | Array<number | string>;
-    gridColumnEnd?: number | string | Array<number> | Array<string>;
+    gridColumnEnd?: number | string | number[] | string[];
   } = {};
 
-  if (Array.isArray(start)) styles.gridColumnStart = start.map(s => s);
-  else if (start) styles.gridColumnStart = start;
+  if (Array.isArray(start)) {
+    styles.gridColumnStart = start.map(s => s);
+  } else if (start) {
+    styles.gridColumnStart = start;
+  }
 
-  if (Array.isArray(end)) styles.gridColumnEnd = end.map(s => s + 1);
-  else if (end) styles.gridColumnEnd = end + 1;
+  if (Array.isArray(end)) {
+    styles.gridColumnEnd = end.map(s => s + 1);
+  } else if (end) {
+    styles.gridColumnEnd = end + 1;
+  }
 
-  if (Array.isArray(span)) styles.gridColumnEnd = span.map(s => 'span  ' + s);
-  else if (span) styles.gridColumnEnd = 'span ' + span;
+  if (Array.isArray(span)) {
+    styles.gridColumnEnd = span.map(s => `span ${s}`);
+  } else if (span) {
+    styles.gridColumnEnd = `span ${span}`;
+  }
 
   return css(styles);
 });

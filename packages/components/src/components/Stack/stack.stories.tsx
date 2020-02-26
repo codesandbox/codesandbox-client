@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { LayoutDecorator } from '../../../.storybook/decorators';
 
 import { Stack } from '.';
@@ -9,10 +10,11 @@ export default {
   decorators: [LayoutDecorator],
 };
 
-// replace the text inside with Text variants when available
+// TODO: Replace the text inside with Text variants when available
 export const Defaults = () => (
   <Stack style={{ height: 100 }}>
     <div />
+
     <div />
   </Stack>
 );
@@ -20,7 +22,9 @@ export const Defaults = () => (
 export const WithGap = () => (
   <Stack gap={4} style={{ height: 100 }}>
     <div />
+
     <div>spacing token as gap</div>
+
     <div />
   </Stack>
 );
@@ -28,6 +32,7 @@ export const WithGap = () => (
 export const Justify = () => (
   <Stack justify="space-around" style={{ height: 100 }}>
     <div />
+
     <div />
   </Stack>
 );
@@ -35,6 +40,7 @@ export const Justify = () => (
 export const Align = () => (
   <Stack align="center" style={{ height: 100 }}>
     <div />
+
     <div />
   </Stack>
 );

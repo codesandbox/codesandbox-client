@@ -1,14 +1,15 @@
-import React, { useState, useCallback } from 'react';
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Stack, Input } from '../..';
+import React, {
+  ChangeEvent,
+  FunctionComponent,
+  TextareaHTMLAttributes,
+  useState,
+} from 'react';
+import styled from 'styled-components';
 
-interface ITextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  maxLength?: number;
-  autosize?: boolean;
-  value?: string;
-}
+import { Input, Stack } from '../..';
+
+const noop = () => undefined;
 
 export const TextareaComponent: any = styled(Input).attrs({
   as: 'textarea',
@@ -34,54 +35,62 @@ const Count = styled.div<{ limit: boolean }>(({ limit }) =>
   })
 );
 
-export const Textarea: React.FC<ITextareaProps> = ({
+type ContainerProps = {
+  maxLength?: number;
+};
+const Container: FunctionComponent<ContainerProps> = ({
+  children,
   maxLength,
-  onChange,
-  onKeyPress,
-  autosize,
+}) =>
+  maxLength ? (
+    <Stack css={{ width: '100%' }} direction="vertical">
+      {children}
+    </Stack>
+  ) : (
+    <>{children}</>
+  );
+
+type Props = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  autosize?: boolean;
+  value?: string;
+};
+export const Textarea: FunctionComponent<Props> = ({
+  autosize = false,
+  onChange = noop,
+  maxLength,
   ...props
 }) => {
   const [value, setValue] = useState(props.value || '');
 
-  const internalOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (onChange) onChange(event);
+  const internalOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    onChange(event);
     setValue(event.target.value);
-    if (autosize) resize(event.target);
-  };
 
-  const Wrapper = useCallback(
-    ({ children }) =>
-      maxLength ? (
-        <Stack direction="vertical" css={{ width: '100%' }}>
-          {children}
-        </Stack>
-      ) : (
-        children
-      ),
-    [maxLength]
-  );
+    if (autosize) {
+      resize(event.target);
+    }
+  };
 
   const resize = (element: HTMLTextAreaElement) => {
     const offset = 2; // for borders on both sides
     element.style.height = ''; // reset before setting again
-    element.style.height = element.scrollHeight + offset + 'px';
+    element.style.height = `${element.scrollHeight + offset}px`;
   };
 
   return (
-    <>
-      <Wrapper>
-        <TextareaComponent
-          value={value}
-          onChange={internalOnChange}
-          maxLength={maxLength}
-          {...props}
-        />
-        {maxLength ? (
-          <Count limit={maxLength <= value.length}>
-            {value.length}/{maxLength}
-          </Count>
-        ) : null}
-      </Wrapper>
-    </>
+    <Container maxLength={maxLength}>
+      <TextareaComponent
+        value={value}
+        onChange={internalOnChange}
+        maxLength={maxLength}
+        {...props}
+      />
+
+      {maxLength ? (
+        <Count limit={maxLength <= value.length}>
+          {`${value.length}/${maxLength}`}
+        </Count>
+      ) : null}
+    </Container>
   );
 };

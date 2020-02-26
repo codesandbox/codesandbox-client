@@ -1,25 +1,24 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
+import styled from 'styled-components';
 
-export interface IElementProps {
+type Props = {
+  css?: object;
   margin?: number;
-  marginX?: number;
-  marginY?: number;
   marginBottom?: number;
-  marginTop?: number; // prefer margin bottom to top
   marginLeft?: number;
   marginRight?: number;
+  marginTop?: number; // prefer margin bottom to top
+  marginX?: number;
+  marginY?: number;
   padding?: number;
-  paddingX?: number;
-  paddingY?: number;
   paddingBottom?: number;
-  paddingTop?: number;
   paddingLeft?: number;
   paddingRight?: number;
-  css?: Object;
-}
-
-export const Element = styled.div<IElementProps>(props =>
+  paddingTop?: number;
+  paddingX?: number;
+  paddingY?: number;
+};
+export const Element = styled.div<Props>(props =>
   css({
     boxSizing: 'border-box',
     margin: props.margin || null,

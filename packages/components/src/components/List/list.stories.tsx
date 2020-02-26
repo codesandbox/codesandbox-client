@@ -1,5 +1,6 @@
-import React from 'react';
 import { action } from '@storybook/addon-actions';
+import React from 'react';
+
 import { List, ListItem, ListAction } from '.';
 
 export default {
@@ -7,11 +8,13 @@ export default {
   component: List,
 };
 
-// replace the text inside with Text variants when available
+// TODO: Replace the text inside with Text variants when available
 export const ListItems = () => (
   <List>
     <ListItem>IBM Plex</ListItem>
+
     <ListItem>Inter</ListItem>
+
     <ListItem>Roboto</ListItem>
   </List>
 );
@@ -21,10 +24,13 @@ export const withJustify = () => (
     <ListItem justify="space-between">
       {/* eslint-disable-next-line */}
       <label htmlFor="frozen">Frozen</label>
+
       <input type="checkbox" id="frozen" />
     </ListItem>
+
     <ListItem justify="space-between">
       <span>Template</span>
+
       <a
         href="https://codesandbox.io/s/react-new"
         target="_blank"
@@ -33,8 +39,10 @@ export const withJustify = () => (
         React
       </a>
     </ListItem>
+
     <ListItem justify="space-between">
       <span>Environment</span>
+
       <a
         href="https://github.com/facebookincubator/create-react-app"
         target="_blank"
@@ -68,9 +76,11 @@ export const ListActions = () => (
     <ListAction onClick={action('row clicked')} gap={2}>
       {gitIcon} <span>src/index.js</span>
     </ListAction>
+
     <ListAction onClick={action('row clicked')} gap={2}>
       {gitIcon} <span>src/style.css</span>
     </ListAction>
+
     <ListAction onClick={action('row clicked')} gap={2}>
       {gitIcon} <span>package.json</span>
     </ListAction>
@@ -88,8 +98,10 @@ export const ListActionWithMultipleActions = () => (
       >
         IBM Plex
       </a>
+
       <button type="button">×</button>
     </ListAction>
+
     <ListAction justify="space-between">
       <a
         href="https://rsms.me/inter/inter.css"
@@ -98,8 +110,10 @@ export const ListActionWithMultipleActions = () => (
       >
         Inter
       </a>
+
       <button type="button">×</button>
     </ListAction>
+
     <ListAction justify="space-between">
       <a
         href="https://rsms.me/inter/inter.css"
@@ -108,6 +122,7 @@ export const ListActionWithMultipleActions = () => (
       >
         Roboto
       </a>
+
       <button type="button">×</button>
     </ListAction>
   </List>

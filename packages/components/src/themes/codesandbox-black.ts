@@ -1,3 +1,3 @@
-import codesandboxBlack from '@codesandbox/common/lib/themes/codesandbox-black';
+import CodeSandboxBlack from '@codesandbox/common/lib/themes/codesandbox-black';
 
-export default codesandboxBlack;
+export default CodeSandboxBlack;

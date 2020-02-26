@@ -28,7 +28,7 @@ export const Privacy = () => {
       <Stack direction="vertical" gap={4} css={css({ paddingX: 3 })}>
         <Select
           disabled={!isPaidUser}
-          icon={GlobeIcon}
+          Icon={GlobeIcon}
           onChange={({ target: { value } }) =>
             sandboxPrivacyChanged({
               privacy: Number(value) as 0 | 1 | 2,

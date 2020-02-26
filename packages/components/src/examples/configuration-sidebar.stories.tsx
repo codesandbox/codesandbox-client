@@ -1,12 +1,13 @@
 import React from 'react';
-import { Element, Collapsible, Text, Button, Stack, SidebarRow } from '..';
+
+import { Button, Collapsible, Element, SidebarRow, Stack, Text } from '..';
 
 export default {
   title: 'examples/SidebarConfig',
 };
 
-const NetlifyIcon = props => (
-  <svg width={12} height={12} fill="none" viewBox="0 0 12 12" {...props}>
+const NetlifyIcon = () => (
+  <svg width={12} height={12} fill="none" viewBox="0 0 12 12">
     <path
       fill="#4CAA9F"
       d="M.474 7.144a1.619 1.619 0 010-2.288L4.856.474a1.619 1.619 0 012.288 0l4.382 4.382a1.619 1.619 0 010 2.288l-4.382 4.382a1.619 1.619 0 01-2.288 0L.474 7.144z"
@@ -14,8 +15,8 @@ const NetlifyIcon = props => (
   </svg>
 );
 
-const PrettierIcon = props => (
-  <svg width={10} height={11} fill="none" viewBox="0 0 10 11" {...props}>
+const PrettierIcon = () => (
+  <svg width={10} height={11} fill="none" viewBox="0 0 10 11">
     <path
       fill="#56B3B4"
       d="M8.486 2.057H7.97a.257.257 0 100 .514h.515a.257.257 0 100-.514z"
@@ -99,8 +100,8 @@ const PrettierIcon = props => (
   </svg>
 );
 
-const NPMIcon = props => (
-  <svg width={17} height={16} fill="none" viewBox="0 0 17 16" {...props}>
+const NPMIcon = () => (
+  <svg width={17} height={16} fill="none" viewBox="0 0 17 16">
     <path
       fill="#FF453A"
       d="M.667 16V0h16.172v16H.668zM3.708 2.998v9.98h5.097V5.079h2.97v7.9h2.022V3H3.708z"
@@ -108,8 +109,8 @@ const NPMIcon = props => (
   </svg>
 );
 
-const ZeitIcon = props => (
-  <svg width={12} height={10} fill="none" viewBox="0 0 12 10" {...props}>
+const ZeitIcon = () => (
+  <svg width={12} height={10} fill="none" viewBox="0 0 12 10">
     <path fill="#fff" d="M6 0l6 10H0L6 0z" />
   </svg>
 );
@@ -128,35 +129,44 @@ export const Basic = () => (
       <Stack direction="vertical" gap={6}>
         <Element css={{ paddingX: 2 }}>
           <SidebarRow>Configuration your Sandbox</SidebarRow>
+
           <Text variant="muted">
-            Codesandbox supports several config giles per template, you van see
+            CodeSandbox supports several config files per template, you van see
             and edit all supported files for the current sandbox here.
           </Text>
         </Element>
+
         <Stack direction="vertical" gap={4} css={{ paddingX: 2 }}>
           <Element>
             <Stack gap={2} marginBottom={2}>
               <NPMIcon />
+
               <Text size={2}>package.json</Text>
             </Stack>
+
             <Stack gap={4} align="flex-end" justify="space-between">
               <Text size={2} variant="muted">
                 Describes the overall configuration of your project.
               </Text>
+
               <Button style={{ width: 100 }} variant="secondary">
                 Edit
               </Button>
             </Stack>
           </Element>
+
           <Element>
             <Stack gap={2} marginBottom={2}>
               <NPMIcon />
+
               <Text size={2}>sandbox.config.json</Text>
             </Stack>
+
             <Stack gap={4} align="flex-end" justify="space-between">
               <Text size={2} variant="muted">
                 Describes the overall configuration of your project.
               </Text>
+
               <Button style={{ width: 100 }} variant="secondary">
                 Edit
               </Button>
@@ -165,45 +175,57 @@ export const Basic = () => (
         </Stack>
       </Stack>
     </Collapsible>
+
     <Collapsible title="Other Configuration">
       <Stack direction="vertical" gap={4} css={{ paddingX: 2 }}>
         <Element>
           <Stack gap={2} marginBottom={2}>
             <PrettierIcon />
+
             <Text size={2}>.prettierc</Text>
           </Stack>
+
           <Stack gap={4} align="flex-end" justify="space-between">
             <Text size={2} variant="muted">
               Defines how all files will be prettified by Prettier
             </Text>
+
             <Button style={{ width: 100 }} variant="secondary">
               Edit
             </Button>
           </Stack>
         </Element>
+
         <Element>
           <Stack gap={2} marginBottom={2}>
             <NetlifyIcon />
+
             <Text size={2}>netlify.toml</Text>
           </Stack>
+
           <Stack gap={4} align="flex-end" justify="space-between">
             <Text size={2} variant="muted">
               Configuration for your deployments on netlify
             </Text>
+
             <Button style={{ width: 100 }} variant="secondary">
               Edit
             </Button>
           </Stack>
         </Element>
+
         <Element>
           <Stack gap={2} marginBottom={2}>
             <ZeitIcon />
+
             <Text size={2}>now.json</Text>
           </Stack>
+
           <Stack gap={4} align="flex-end" justify="space-between">
             <Text size={2} variant="muted">
               Configuration for your deployments on now
             </Text>
+
             <Button style={{ width: 100 }} variant="secondary">
               Edit
             </Button>

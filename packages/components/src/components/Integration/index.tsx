@@ -1,9 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Element } from '../Element';
-import { Text } from '../Text';
-import { Stack } from '../Stack';
+import React, { ComponentType, FunctionComponent } from 'react';
+import styled from 'styled-components';
+
+import { Element, Stack, Text } from '../..';
 
 const Header = styled(Stack)(
   css({
@@ -29,12 +28,22 @@ const Content = styled(Element)(
   })
 );
 
-export const Integration = ({ icon, title, children }) => (
+type Props = {
+  Icon: ComponentType;
+  title: string;
+};
+export const Integration: FunctionComponent<Props> = ({
+  children,
+  Icon,
+  title,
+}) => (
   <div>
-    <Header gap={1} align="center">
-      {icon()}
+    <Header align="center" gap={1}>
+      <Icon />
+
       <Text weight="medium">{title}</Text>
     </Header>
+
     <Content>{children}</Content>
   </div>
 );

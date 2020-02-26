@@ -1,7 +1,7 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Element } from '../Element';
-import { Stack } from '../Stack';
+import styled from 'styled-components';
+
+import { Element, Stack } from '../..';
 
 export const List = styled(Element).attrs({ as: 'ul' })(
   css({
@@ -26,13 +26,14 @@ export const ListAction = styled(ListItem)<{ disabled?: boolean }>(
   ({ disabled }) =>
     css({
       ':hover, &[aria-selected="true"]': {
-        cursor: !disabled ? 'pointer' : 'disabled',
-        color: !disabled ? 'list.hoverForeground' : 'inherit',
-        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
+        cursor: disabled ? 'disabled' : 'pointer',
+        color: disabled ? 'inherit' : 'list.hoverForeground',
+        backgroundColor: disabled ? 'inherit' : 'list.hoverBackground',
       },
+
       ':focus-within': {
-        color: !disabled ? 'list.hoverForeground' : 'inherit',
-        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
+        color: disabled ? 'inherit' : 'list.hoverForeground',
+        backgroundColor: disabled ? 'inherit' : 'list.hoverBackground',
       },
     })
 );

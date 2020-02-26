@@ -1,94 +1,94 @@
-import codesandbox from './codesandbox.json';
-import codesandboxBlack from './codesandbox-black';
-import codesandboxLight from './codesandbox-light.json';
-import nightOwl from './night-owl.json';
-import nightOwlNoItalics from './nightOwlNoItalics.json';
-import atomDark from './atom-dark.json';
-import atomLight from './atom-light.json';
-import cobalt2 from './cobalt2';
-import lucy from './lucy.json';
-import palenight from './palenight.json';
-import solarizedLight from './solarized-light.json';
-import shadesOfPurple from './shades-of-purple';
-import palenightItalic from './palenight-italic.json';
-import highContrast from './high-contrast.json';
-import vscodeLight from './vscode-light';
+import AtomDark from './atom-dark';
+import AtomLight from './atom-light';
+import Cobalt2 from './cobalt2';
+import CodeSandbox from './codesandbox';
+import CodeSandboxBlack from './codesandbox-black';
+import CodeSandboxLight from './codesandbox-light';
+import HighContrast from './high-contrast';
+import Lucy from './lucy';
+import NightOwl from './night-owl';
+import NightOwlNoItalics from './nightOwlNoItalics';
+import Palenight from './palenight';
+import PalenightItalic from './palenight-italic';
+import ShadesOfPurple from './shades-of-purple';
+import SolarizedLight from './solarized-light';
+import VSCodeLight from './vscode-light';
 
 export default [
   {
     name: 'CodeSandbox',
     id: 'codesandbox',
-    content: codesandbox,
+    content: CodeSandbox,
   },
   {
     name: 'CodeSandbox Black',
     id: 'codesandboxBlack',
-    content: codesandboxBlack,
+    content: CodeSandboxBlack,
   },
   {
     name: 'CodeSandbox Light',
     id: 'codesandboxLight',
-    content: codesandboxLight,
+    content: CodeSandboxLight,
   },
   {
     name: 'Night Owl',
     id: 'nightOwl',
-    content: nightOwl,
+    content: NightOwl,
   },
   {
     name: 'Night Owl (No Italics)',
     id: 'nightOwlNoItalics',
-    content: nightOwlNoItalics,
+    content: NightOwlNoItalics,
   },
   {
     name: 'Atom Dark',
     id: 'atomDark',
     type: 'dark',
-    content: atomDark,
+    content: AtomDark,
   },
   {
     name: 'Cobalt 2',
     id: 'cobalt2',
-    content: cobalt2,
+    content: Cobalt2,
   },
   {
     name: 'Palenight',
     id: 'palenight',
-    content: palenight,
+    content: Palenight,
   },
   {
     name: 'Palenight Italic',
     id: 'palenightItalic',
-    content: palenightItalic,
+    content: PalenightItalic,
   },
   {
     name: 'Shades of Purple',
     id: 'shadesOfPurple',
-    content: shadesOfPurple,
+    content: ShadesOfPurple,
   },
   {
     name: 'Lucy',
     id: 'lucy',
-    content: lucy,
+    content: Lucy,
   },
   {
     name: 'High Contrast',
     id: 'highContrast',
-    content: highContrast,
+    content: HighContrast,
   },
   {
     name: 'VSCode Light',
     id: 'vscodeLight',
-    content: vscodeLight,
+    content: VSCodeLight,
   },
   {
     name: 'Atom Light',
     id: 'atomLight',
-    content: atomLight,
+    content: AtomLight,
   },
   {
     name: 'Solarized Light',
     id: 'solarizedLight',
-    content: solarizedLight,
+    content: SolarizedLight,
   },
 ];

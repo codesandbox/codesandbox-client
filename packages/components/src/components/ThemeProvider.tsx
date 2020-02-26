@@ -5,29 +5,28 @@
  * vscode theme - color tokens
  * polyfill - color tokens missing from vscode
  */
-import React from 'react';
 import deepmerge from 'deepmerge';
+import React, { ComponentProps, FunctionComponent } from 'react';
 import {
-  ThemeProvider as BaseThemeProvider,
   createGlobalStyle,
+  ThemeProvider as BaseThemeProvider,
 } from 'styled-components';
-import designLanguage from '../../design-language';
-import VSCodeThemes from '../../themes';
-import polyfillTheme from '../../utils/polyfill-theme';
 
-export const getThemes = () => {
-  const results = VSCodeThemes.map(theme => ({
-    name: theme.name,
-    ...theme.content,
+import designLanguage from '../design-language';
+import VSCodeThemes from '../themes';
+import polyfillTheme from '../utils/polyfill-theme';
+
+export const getThemes = () =>
+  VSCodeThemes.map(({ content, name }) => ({
+    name,
+    ...content,
   }));
 
-  return results.filter(a => a);
-};
-export const makeTheme = (vsCodeTheme = {}, name?: string) => {
+export const makeTheme = (VSCodeTheme = {}, name?: string) => {
   // Our interface does not map 1-1 with vscode.
   // To add styles that remain themeable, we add
   // some polyfills to the theme tokens.
-  const polyfilledVSCodeColors = polyfillTheme(vsCodeTheme);
+  const polyfilledVSCodeColors = polyfillTheme(VSCodeTheme);
 
   // merge the design language and vscode theme
   const theme = deepmerge(designLanguage, {
@@ -43,7 +42,11 @@ export const makeTheme = (vsCodeTheme = {}, name?: string) => {
   return theme;
 };
 
-export const ThemeProvider = ({ theme, children }) => {
+type Props = Pick<ComponentProps<typeof BaseThemeProvider>, 'theme'>;
+export const ThemeProvider: FunctionComponent<Props> = ({
+  children,
+  theme,
+}) => {
   const usableTheme = makeTheme(theme);
 
   // the resizer lives outside the sidebar
@@ -58,6 +61,7 @@ export const ThemeProvider = ({ theme, children }) => {
   return (
     <>
       <ExternalStyles />
+
       <BaseThemeProvider theme={usableTheme}>{children}</BaseThemeProvider>
     </>
   );

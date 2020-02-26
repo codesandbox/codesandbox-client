@@ -1,7 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Element } from '../Element';
+import React, { FunctionComponent, InputHTMLAttributes } from 'react';
+import styled from 'styled-components';
+
+import { Element } from '../..';
 
 const SwitchBackground = styled.div(
   css({
@@ -40,32 +41,35 @@ const SwitchInput = styled.input(
   })
 );
 
-const SwitchContainer = styled(Element)(
+const SwitchContainer = styled(Element).attrs({ as: 'label' })(
   css({
     'input:checked + [data-component=SwitchBackground]': {
       backgroundColor: 'switch.backgroundOn',
     },
     'input:checked + [data-component=SwitchBackground] [data-component=SwitchToggle]': {
-      left: theme => theme.space[4] - 4 + 'px',
+      left: theme => `${theme.space[4] - 4}px`,
     },
   })
 );
 
-interface ISwitchProps {
-  id?: string;
-  on?: boolean;
-  defaultOn?: boolean;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-export const Switch: React.FC<ISwitchProps> = ({ on, defaultOn, ...props }) => (
-  <SwitchContainer as="label">
+type SwitchInputProps = InputHTMLAttributes<HTMLInputElement>;
+type Props = Pick<SwitchInputProps, 'id' | 'onChange'> & {
+  defaultOn?: SwitchInputProps['defaultChecked'];
+  on?: SwitchInputProps['checked'];
+};
+export const Switch: FunctionComponent<Props> = ({
+  defaultOn,
+  on,
+  ...props
+}) => (
+  <SwitchContainer>
     <SwitchInput
-      type="checkbox"
       checked={on}
       defaultChecked={defaultOn}
+      type="checkbox"
       {...props}
     />
+
     <SwitchBackground data-component="SwitchBackground">
       <SwitchToggle data-component="SwitchToggle" />
     </SwitchBackground>

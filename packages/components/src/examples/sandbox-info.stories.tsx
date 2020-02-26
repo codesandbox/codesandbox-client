@@ -1,20 +1,20 @@
 import React from 'react';
+
 import {
-  Element,
   Avatar,
   Button,
   Collapsible,
+  Element,
+  Label,
+  Link,
   List,
   ListItem,
   Select,
+  SidebarRow,
   Stack,
   Switch,
   Text,
-  Link,
-  Label,
-  SidebarRow,
-} from '../index';
-
+} from '..';
 import { sara as user } from '../components/Avatar/stubs';
 
 export default {
@@ -45,27 +45,36 @@ export const SandboxInfo = () => (
       <Stack direction="vertical" gap={6}>
         <Element css={{ paddingX: 2 }}>
           <SidebarRow>The move from Cerebral</SidebarRow>
+
           <Text block variant="muted">
             This is a from react template
           </Text>
         </Element>
 
         <Stack gap={2} align="center" css={{ paddingX: 2 }}>
-          <Avatar user={user} /> <Text>{user.name}</Text>
+          <Avatar user={user} />
+
+          <Text>{user.name}</Text>
         </Stack>
+
         <List>
           <ListItem justify="space-between">
             <Label htmlFor="frozen">Frozen</Label>
+
             <Switch id="frozen" />
           </ListItem>
+
           <ListItem justify="space-between">
             <Text>Template</Text>
+
             <Link href="#" variant="muted">
               React
             </Link>
           </ListItem>
+
           <ListItem justify="space-between">
             <Text>Environment</Text>
+
             <Link href="#" variant="muted">
               create-react-app
             </Link>
@@ -73,19 +82,23 @@ export const SandboxInfo = () => (
         </List>
       </Stack>
     </Collapsible>
+
     <Collapsible title="Privacy" defaultOpen>
       <Stack direction="vertical" gap={4} css={{ paddingX: 2 }}>
         <SidebarRow>
           <Select
-            icon={GlobeIcon}
+            Icon={GlobeIcon}
             placeholder="Please select an option"
             defaultValue="Public"
           >
             <option>Public</option>
+
             <option>Private</option>
+
             <option>Unlisted</option>
           </Select>
         </SidebarRow>
+
         <Text variant="muted" size={2}>
           You an change privacy of a sandbox as a Pro. Becomes a Pro.
         </Text>

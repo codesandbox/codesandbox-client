@@ -1,14 +1,16 @@
 import React from 'react';
-import { FormField } from '.';
+
 import {
-  Input,
-  Switch,
-  Select,
+  Button,
   Collapsible,
   Element,
+  Input,
+  Select,
+  Switch,
   Text,
-  Button,
 } from '../..';
+
+import { FormField } from '.';
 
 export default {
   title: 'components/FormField',
@@ -32,6 +34,7 @@ export const Vertical = () => (
     <FormField direction="vertical" label="Repository name">
       <Select placeholder="Please select an option">
         <option>One</option>
+
         <option>Two</option>
       </Select>
     </FormField>
@@ -46,12 +49,15 @@ export const hideLabel = () => (
       <Text block marginX={2} marginBottom={2}>
         Export Sandbox to GitHub
       </Text>
+
       <FormField direction="vertical" label="Repository name" hideLabel>
         <Input placeholder="codesandbox/components" />
       </FormField>
+
       <Element marginX={2}>
         <Button variant="secondary">Create Repository</Button>
       </Element>
+
       <Text
         size={2}
         block

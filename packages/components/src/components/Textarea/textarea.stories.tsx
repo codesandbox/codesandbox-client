@@ -1,5 +1,6 @@
-import React from 'react';
 import { action } from '@storybook/addon-actions';
+import React, { FunctionComponent } from 'react';
+
 import { Textarea } from '.';
 
 export default {
@@ -7,9 +8,11 @@ export default {
   component: Textarea,
 };
 
-const Wrapper = ({ children }) => <div style={{ width: 400 }}>{children}</div>;
+const Wrapper: FunctionComponent = ({ children }) => (
+  <div style={{ width: 400 }}>{children}</div>
+);
 
-// replace the text inside with Text variants when available
+// TODO: Replace the text inside with Text variants when available
 export const Placeholder = () => (
   <Wrapper>
     <Textarea placeholder="Your name" />

@@ -1,19 +1,9 @@
-import React from 'react';
+import { User } from '@codesandbox/common/lib/types';
 import css from '@styled-system/css';
+import React, { ComponentProps, FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { Element } from '../Element';
-import { Text } from '../Text';
 
-interface IAvatarProps {
-  user: {
-    id?: string;
-    username: string;
-    name?: string;
-    avatarUrl: string;
-    badges?: any[];
-    subscriptionSince?: string | null;
-  };
-}
+import { Element, Text } from '../..';
 
 export const AvatarContainer = styled(Element).attrs({ as: 'span' })(
   css({
@@ -53,10 +43,14 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   })
 );
 
-export const Avatar = ({ user, ...props }: IAvatarProps) =>
-  user && (
+type Props = Omit<ComponentProps<typeof AvatarContainer>, 'children'> & {
+  user?: Pick<User, 'avatarUrl' | 'subscriptionSince' | 'username'>;
+};
+export const Avatar: FunctionComponent<Props> = ({ user = {}, ...props }) =>
+  user ? (
     <AvatarContainer {...props}>
       <AvatarImage src={user.avatarUrl} alt={user.username} />
+
       {user.subscriptionSince ? <Pro>Pro</Pro> : null}
     </AvatarContainer>
-  );
+  ) : null;

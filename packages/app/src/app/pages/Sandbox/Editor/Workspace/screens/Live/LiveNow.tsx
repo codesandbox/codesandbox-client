@@ -142,7 +142,7 @@ export const LiveNow = () => {
       <Collapsible title="Live Mode" defaultOpen>
         <Stack direction="vertical" gap={2} paddingX={2}>
           <Select
-            icon={mode === 'open' ? OpenIcon : ClassroomIcon}
+            Icon={mode === 'open' ? OpenIcon : ClassroomIcon}
             value={mode}
             onChange={event => onModeChanged({ mode: event.target.value })}
             disabled={!isOwner}

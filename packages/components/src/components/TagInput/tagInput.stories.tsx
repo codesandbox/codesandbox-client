@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { TagInput } from '.';
 
@@ -8,7 +8,7 @@ export default {
 };
 
 export const Basic = () => {
-  const [tags, setTags] = React.useState(['react', 'svg']);
+  const [tags, setTags] = useState(['react', 'svg']);
 
   return <TagInput value={tags} onChange={setTags} />;
 };

@@ -1,12 +1,15 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
 import deepmerge from 'deepmerge';
-import { Element } from '../Element';
+import { ButtonHTMLAttributes } from 'react';
+import styled from 'styled-components';
+
+import { Element } from '../..';
 
 const variantStyles = {
   primary: {
     backgroundColor: 'button.background',
     color: 'button.foreground',
+
     ':hover:not(:disabled)': {
       // hoverBackground is polyfilled and uses a gradient
       // so we use background and not backgroundColor
@@ -16,6 +19,7 @@ const variantStyles = {
       // TODO @sid: extend our system to make background work as well
       background: theme => theme.colors.button.hoverBackground,
     },
+
     ':focus:not(:disabled)': {
       // we use the same colors for hover and focus
       // but we add an active state to give
@@ -25,10 +29,12 @@ const variantStyles = {
   secondary: {
     backgroundColor: 'secondaryButton.background',
     color: 'secondaryButton.foreground',
+
     // same technique as primary
     ':hover:not(:disabled)': {
       background: theme => theme.colors.secondaryButton.hoverBackground,
     },
+
     ':focus:not(:disabled)': {
       background: theme => theme.colors.secondaryButton.hoverBackground,
     },
@@ -36,10 +42,12 @@ const variantStyles = {
   link: {
     backgroundColor: 'transparent',
     color: 'mutedForeground',
+
     // same technique as primary
     ':hover:not(:disabled)': {
       color: 'foreground',
     },
+
     ':focus:not(:disabled)': {
       color: 'foreground',
     },
@@ -47,22 +55,22 @@ const variantStyles = {
   danger: {
     backgroundColor: 'dangerButton.background',
     color: 'dangerButton.foreground',
+
     // same technique as primary
     ':hover:not(:disabled)': {
       background: theme => theme.colors.dangerButton.hoverBackground,
     },
+
     ':focus:not(:disabled)': {
       background: theme => theme.colors.dangerButton.hoverBackground,
     },
   },
 };
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'link' | 'danger';
-}
-
-export const Button = styled(Element).attrs({ as: 'button' })<ButtonProps>(
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: keyof typeof variantStyles;
+};
+export const Button = styled(Element).attrs({ as: 'button' })<Props>(
   ({ variant = 'primary', ...props }) =>
     css(
       deepmerge(
@@ -95,9 +103,11 @@ export const Button = styled(Element).attrs({ as: 'button' })<ButtonProps>(
           ':focus': {
             outline: 'none',
           },
+
           ':active:not(:disabled)': {
             transform: 'scale(0.98)',
           },
+
           ':disabled': {
             opacity: '0.4',
             cursor: 'not-allowed',

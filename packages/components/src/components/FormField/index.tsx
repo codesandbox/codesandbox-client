@@ -1,9 +1,24 @@
-import React from 'react';
-import VisuallyHidden from '@reach/visually-hidden';
 import { useId } from '@reach/auto-id';
-import { Element, Stack, Label } from '../../index';
+import VisuallyHidden from '@reach/visually-hidden';
+import React, {
+  Children,
+  cloneElement,
+  ComponentProps,
+  Fragment,
+  FunctionComponent,
+  ReactElement,
+} from 'react';
 
-interface IFormFieldProps {
+import { Element, Label, Stack } from '../..';
+
+type Props = (
+  | (Omit<ComponentProps<typeof Stack>, 'children'> & {
+      direction?: 'horizontal';
+    })
+  | (Omit<ComponentProps<typeof Element>, 'children'> & {
+      direction: 'vertical';
+    })
+) & {
   id?: string;
   // always ask for a label
   label: string;
@@ -14,10 +29,9 @@ interface IFormFieldProps {
   // for this purpose, we visually hide the label but still  keep in the
   // elements tree.
   hideLabel?: boolean;
-  direction?: 'horizontal' | 'vertical';
-}
-
-export const FormField: React.FC<IFormFieldProps> = ({
+};
+export const FormField: FunctionComponent<Props> = ({
+  children,
   label,
   id,
   hideLabel = false,
@@ -26,21 +40,19 @@ export const FormField: React.FC<IFormFieldProps> = ({
 }) => {
   const inputId = useId(id);
 
-  const LabelWrapper = hideLabel ? VisuallyHidden : React.Fragment;
-  const InputElement = React.Children.map(props.children, child =>
-    React.cloneElement(child as React.ReactElement<any>, {
-      id: inputId,
-    })
+  const InputElement = Children.map(children, child =>
+    cloneElement(child as ReactElement, { id: inputId })
   );
+  const LabelWrapper = hideLabel ? VisuallyHidden : Fragment;
 
   if (direction === 'horizontal') {
     return (
       <>
         <Stack
-          direction="horizontal"
-          justify="space-between"
           align="center"
           css={{ minHeight: 8, paddingX: 2 }}
+          direction="horizontal"
+          justify="space-between"
           {...props}
         >
           <LabelWrapper>
@@ -48,6 +60,7 @@ export const FormField: React.FC<IFormFieldProps> = ({
               {label}
             </Label>
           </LabelWrapper>
+
           {InputElement}
         </Stack>
       </>
@@ -55,19 +68,15 @@ export const FormField: React.FC<IFormFieldProps> = ({
   }
 
   return (
-    <Element
-      css={{
-        paddingX: 2,
-      }}
-      {...props}
-    >
+    <Element css={{ paddingX: 2 }} {...props}>
       <LabelWrapper>
-        <Label htmlFor={inputId} size={3} block>
+        <Label block htmlFor={inputId} size={3}>
           {label}
         </Label>
       </LabelWrapper>
-      <Stack direction="horizontal" align="center" css={{ minHeight: 8 }}>
-        {props.children}
+
+      <Stack align="center" css={{ minHeight: 8 }} direction="horizontal">
+        {children}
       </Stack>
     </Element>
   );

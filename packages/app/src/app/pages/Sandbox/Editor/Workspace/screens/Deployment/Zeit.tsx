@@ -26,7 +26,7 @@ export const Zeit = () => {
   const { deploySandboxClicked, setDeploymentToDelete } = deployment;
 
   return (
-    <Integration icon={ZeitIcon} title="ZEIT Now">
+    <Integration Icon={ZeitIcon} title="ZEIT Now">
       {integrations.zeit ? (
         <>
           <Element marginX={2} marginBottom={sandboxDeploys.length ? 6 : 0}>

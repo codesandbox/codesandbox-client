@@ -1,10 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Input } from '../Input';
-import { Element } from '../Element';
+import React, { ComponentProps, FunctionComponent } from 'react';
+import styled from 'styled-components';
 
-const SearchInputComponent = styled(Input)(
+import { Element, Input } from '../..';
+
+const SearchInputComponent = styled(Input).attrs({ type: 'search' })(
   css({
     paddingLeft: 5,
 
@@ -20,8 +20,8 @@ const SearchInputComponent = styled(Input)(
   })
 );
 
-const SearchIconBase = props => (
-  <svg fill="none" width="12" height="12" {...props}>
+const SearchIconBase = () => (
+  <svg fill="none" width="12" height="12">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
@@ -30,7 +30,7 @@ const SearchIconBase = props => (
   </svg>
 );
 
-export const SearchIcon = styled(SearchIconBase)(
+const SearchIcon = styled(SearchIconBase)(
   css({
     position: 'absolute',
     top: '50%',
@@ -43,11 +43,13 @@ export const SearchIcon = styled(SearchIconBase)(
   })
 );
 
-export const SearchInput = props => (
+type Props = Omit<ComponentProps<typeof SearchInputComponent>, 'children'>;
+export const SearchInput: FunctionComponent<Props> = props => (
   <>
     <Element css={{ position: 'relative' }}>
       <SearchIcon />
-      <SearchInputComponent type="search" {...props} />
+
+      <SearchInputComponent {...props} />
     </Element>
   </>
 );

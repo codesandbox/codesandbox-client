@@ -1,29 +1,31 @@
-import React from 'react';
-import { Stack } from '../Stack';
+import React, { ComponentProps, CSSProperties, FunctionComponent } from 'react';
+
+import { Stack } from '../..';
+
 import { Tag } from './Tag';
 
-type Props = {
-  tags: Array<string>;
-  style?: React.CSSProperties;
-  onRemove?: (tag: string) => void;
+type TagProps = ComponentProps<typeof Tag>;
+type Props = Pick<TagProps, 'onRemove'> & {
+  style?: CSSProperties;
+  tags: Array<TagProps['tag']>;
 };
+export const Tags: FunctionComponent<Props> = ({ onRemove, style, tags }) => (
+  <Stack
+    align="center"
+    css={{
+      flexWrap: 'wrap',
 
-export function Tags({ tags, ...props }: Props) {
-  return (
-    <Stack
-      align="center"
-      gap={1}
-      css={{
-        flexWrap: 'wrap',
-        // we add margin instead for multiline tags
-        // because stack doesn't support multilines
-        '> *': { marginBottom: 1 },
-      }}
-      {...props}
-    >
-      {tags.slice().map(tag => (
-        <Tag key={tag} tag={tag} {...props} />
-      ))}
-    </Stack>
-  );
-}
+      // we add margin instead for multiline tags
+      // because stack doesn't support multilines
+      '> *': {
+        marginBottom: 1,
+      },
+    }}
+    gap={1}
+    style={style}
+  >
+    {tags.slice().map(tag => (
+      <Tag onRemove={onRemove} key={tag} tag={tag} />
+    ))}
+  </Stack>
+);

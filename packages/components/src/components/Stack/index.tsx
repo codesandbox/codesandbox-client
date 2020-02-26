@@ -1,6 +1,7 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Element } from '../Element';
+import styled from 'styled-components';
+
+import { Element } from '../..';
 
 export const Stack = styled(Element)<{
   gap?: number; // theme.space token

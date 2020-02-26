@@ -1,13 +1,13 @@
-import React from 'react';
-import { IElementProps } from '../Element';
+import React, { ComponentProps, FunctionComponent, SVGAttributes } from 'react';
+
+import { Element } from '../..';
+
 import * as icons from './icons';
 
-export type IconNames = keyof typeof icons;
-
-type IconProps = React.SVGAttributes<SVGElement> &
-  IElementProps & {
+type IconProps = SVGAttributes<SVGElement> &
+  Omit<ComponentProps<typeof Element>, 'children'> & {
     /** name of the icon */
-    name: IconNames;
+    name: keyof typeof icons;
     /** title for accessibility */
     title?: string;
     /** Size of the icon, the button is set to 26x26 */
@@ -16,7 +16,7 @@ type IconProps = React.SVGAttributes<SVGElement> &
     color?: string;
   };
 
-export const Icon: React.FC<IconProps> = ({
+export const Icon: FunctionComponent<IconProps> = ({
   name = 'notFound',
   size = 4,
   color = 'inherit',
@@ -27,6 +27,6 @@ export const Icon: React.FC<IconProps> = ({
   const scaledSize = size * 4;
 
   return (
-    <SVG width={scaledSize} height={scaledSize} color={color} {...props} />
+    <SVG color={color} height={scaledSize} width={scaledSize} {...props} />
   );
 };

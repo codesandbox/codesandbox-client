@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Stats } from '.';
 
 export default {
@@ -6,7 +7,7 @@ export default {
   component: Stats,
 };
 
-// replace the text inside with Text variants when available
+// TODO: Replace the text inside with Text variants when available
 export const Basic = () => (
   <Stats
     sandbox={{

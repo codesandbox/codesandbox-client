@@ -1,15 +1,16 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Element } from '../Element';
+import { InputHTMLAttributes } from 'react';
+import styled from 'styled-components';
+
+import { Element } from '../..';
 
 const placeholderStyles = {
   color: 'input.placeholderForeground',
   fontSize: 3,
 };
 
-interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
-
-export const Input = styled(Element).attrs({ as: 'input' })<IInputProps>(
+type Props = InputHTMLAttributes<HTMLInputElement>;
+export const Input = styled(Element).attrs({ as: 'input' })<Props>(
   css({
     height: '26px',
     width: '100%',
@@ -34,6 +35,7 @@ export const Input = styled(Element).attrs({ as: 'input' })<IInputProps>(
       // workbench-theme.css, not proud :/
       outline: 'none !important',
     },
+
     ':disabled': {
       opacity: 0.4,
       borderColor: 'input.border', // (default border)

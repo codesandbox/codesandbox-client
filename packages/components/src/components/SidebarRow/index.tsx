@@ -1,6 +1,7 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Stack } from '../Stack';
+import styled from 'styled-components';
+
+import { Stack } from '../..';
 
 /**
  * Honestly, I'm not sure if this component should

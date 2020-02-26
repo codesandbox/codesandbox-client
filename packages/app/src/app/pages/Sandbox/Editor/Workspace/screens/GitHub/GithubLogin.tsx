@@ -24,7 +24,7 @@ export const GithubLogin = () => {
           You can create commits and open pull requests if you add GitHub to
           your integrations.
         </Text>
-        <Integration icon={GitHubIcon} title="GitHub">
+        <Integration Icon={GitHubIcon} title="GitHub">
           <Element
             marginX={2}
             css={css({

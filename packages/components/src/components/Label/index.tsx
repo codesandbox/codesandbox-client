@@ -1,7 +1,9 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Text, ITextProps } from '../Text';
+import { ComponentProps, LabelHTMLAttributes } from 'react';
+import styled from 'styled-components';
 
-type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement> & ITextProps & {};
+import { Text } from '../..';
 
-export const Label = styled(Text).attrs({ as: 'label' })<LabelProps>(css({}));
+type Props = LabelHTMLAttributes<HTMLLabelElement> &
+  Omit<ComponentProps<typeof Text>, 'children'>;
+export const Label = styled(Text).attrs({ as: 'label' })<Props>(css({}));

@@ -1,6 +1,8 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Element } from '../Element';
+import { HTMLAttributes } from 'react';
+import styled from 'styled-components';
+
+import { Element } from '../..';
 
 const variants = {
   body: 'inherit',
@@ -14,17 +16,16 @@ const overflowStyles = {
   whiteSpace: 'nowrap',
 };
 
-export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
-  size?: number;
+type Props = HTMLAttributes<HTMLSpanElement> & {
   align?: string;
-  weight?: string;
   block?: boolean;
   maxWidth?: number | string;
-  variant?: 'body' | 'muted' | 'danger';
-}
-
-export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
-  ({ size, align, weight, block, variant = 'body', maxWidth, ...props }) =>
+  size?: number;
+  variant?: keyof typeof variants;
+  weight?: string;
+};
+export const Text = styled(Element).attrs({ as: 'span' })<Props>(
+  ({ size, align, weight, block = false, variant = 'body', maxWidth }) =>
     css({
       fontSize: size || 'inherit', // from theme.fontSizes
       textAlign: align || 'left',

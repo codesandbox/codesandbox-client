@@ -7,22 +7,23 @@
  */
 import deepmerge from 'deepmerge';
 import Color from 'color';
-import { object } from './dot';
 import designLanguage from '../design-language';
-import codesandboxBlack from '../themes/codesandbox-black';
-import codesandboxLight from '../themes/codesandbox-light.json';
+import CodeSandboxBlack from '../themes/codesandbox-black';
+import CodeSandboxLight from '../themes/codesandbox-light';
 
-const polyfillTheme = vsCodeTheme => {
+import { object } from './dot';
+
+const polyfillTheme = VSCodeTheme => {
   /**
    *
    * In order of importance, this is the value we use:
    * 1. Value from theme
    * 2. or inferred value from theme
-   * 3. or value from codesandbox black/light
+   * 3. or value from CodeSandbox black/light
    *
    * The steps required to get there are -
    * 1. Take vscode theme
-   * 2. Fill missing values based on existing values or codesandbox dark/light
+   * 2. Fill missing values based on existing values or CodeSandbox dark/light
    * 3. Infer values that are not defined by vscode theme
    *
    */
@@ -41,37 +42,37 @@ const polyfillTheme = vsCodeTheme => {
     dialog: {},
   };
 
-  const type = vsCodeTheme.type || guessType(vsCodeTheme);
+  const type = VSCodeTheme.type || guessType(VSCodeTheme);
 
-  //  Step 1: Initialise with vscode theme
-  const vsCodeColors = object(vsCodeTheme.colors || {});
-  uiColors = deepmerge(uiColors, vsCodeColors);
+  //  Step 1: Initialise with VSCode theme
+  const VSCodeColors = object(VSCodeTheme.colors || {});
+  uiColors = deepmerge(uiColors, VSCodeColors);
 
-  // Step 2: Fill missing values from existing values or codesandbox dark/light
+  // Step 2: Fill missing values from existing values or CodeSandbox dark/light
 
-  const codesandboxColors = ['dark', 'lc'].includes(type)
-    ? object(codesandboxBlack.colors)
-    : object(codesandboxLight.colors);
+  const CodeSandboxColors = ['dark', 'lc'].includes(type)
+    ? object(CodeSandboxBlack.colors)
+    : object(CodeSandboxLight.colors);
 
   // 2.1 First, lets fill in core values that are used to infer other values
 
-  uiColors.foreground = uiColors.foreground || codesandboxColors.foreground;
+  uiColors.foreground = uiColors.foreground || CodeSandboxColors.foreground;
   uiColors.errorForeground =
-    uiColors.errorForeground || codesandboxColors.errorForeground;
+    uiColors.errorForeground || CodeSandboxColors.errorForeground;
 
   uiColors.sideBar = {
     background:
       uiColors.sideBar.background ||
       uiColors.editor.background ||
-      codesandboxColors.sideBar.background,
+      CodeSandboxColors.sideBar.background,
     foreground:
       uiColors.sideBar.foreground ||
       uiColors.editor.foreground ||
-      codesandboxColors.sideBar.foreground,
+      CodeSandboxColors.sideBar.foreground,
     border:
       uiColors.sideBar.border ||
       uiColors.editor.lineHighlightBackground ||
-      codesandboxColors.sideBar.border,
+      CodeSandboxColors.sideBar.border,
   };
 
   uiColors.input = {
@@ -80,7 +81,7 @@ const polyfillTheme = vsCodeTheme => {
     border: uiColors.input.border || uiColors.sideBar.border,
     placeholderForeground:
       uiColors.input.placeholderForeground ||
-      codesandboxColors.input.placeholderForeground,
+      CodeSandboxColors.input.placeholderForeground,
   };
 
   uiColors.quickInput = {
@@ -93,9 +94,9 @@ const polyfillTheme = vsCodeTheme => {
 
   uiColors.button = {
     background:
-      uiColors.button.background || codesandboxColors.button.background,
+      uiColors.button.background || CodeSandboxColors.button.background,
     foreground:
-      uiColors.button.foreground || codesandboxColors.button.foreground,
+      uiColors.button.foreground || CodeSandboxColors.button.foreground,
   };
 
   // Step 3. Infer values that are not defined by vscode theme
@@ -231,17 +232,15 @@ const polyfillTheme = vsCodeTheme => {
 
 export default polyfillTheme;
 
-const guessType = theme => {
-  if (theme.name && theme.name.toLowerCase().includes('light')) return 'light';
-  return 'dark';
-};
+const guessType = ({ name }) =>
+  name?.toLowerCase().includes('light') ? 'light' : 'dark';
 
-const lighten = (color, value) =>
+const lighten = (color, value: number) =>
   Color(color)
     .lighten(value)
     .hex();
 
-const darken = (color, value) =>
+const darken = (color, value: number) =>
   Color(color)
     .darken(value)
     .hex();
@@ -249,11 +248,14 @@ const darken = (color, value) =>
 const withContrast = (color, background, type, contrastType = 'text') => {
   const contrastRatio = { text: 4.5, icon: 1.6 };
   const contrast = contrastRatio[contrastType];
-
-  if (Color(color).contrast(Color(background)) > contrast) return color;
+  if (Color(color).contrast(Color(background)) > contrast) {
+    return color;
+  }
 
   // can't fix that
-  if (color === '#FFFFFF' || color === '#000000') return color;
+  if (['#FFFFFF', '#000000'].includes(color)) {
+    return color;
+  }
 
   // recursively increase contrast
   const increaseContrast = type === 'dark' ? lighten : darken;
