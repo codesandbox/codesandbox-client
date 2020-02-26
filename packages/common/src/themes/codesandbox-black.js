@@ -201,7 +201,7 @@ const colors = {
     hoverBackground: null,
   },
   selection: {
-    background: tokens.blues[700],
+    background: tokens.blues[500] + '40', // 25% opacity
   },
   separator: {
     background: tokens.grays[900],
