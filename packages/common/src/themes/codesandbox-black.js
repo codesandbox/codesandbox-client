@@ -40,7 +40,7 @@ const colors = {
     lineHighlightBackground: tokens.grays[600],
     lineHighlightBorder: tokens.grays[600],
     rangeHighlightBackground: tokens.grays[600],
-    selectionBackground: tokens.grays[600],
+    selectionBackground: tokens.blues[500] + '33', // 20% opacity
     selectionHighlightBackground: tokens.grays[600],
     wordHighlightStrongBackground: tokens.grays[600],
     wordHighlightBackground: tokens.grays[600],
