@@ -32,14 +32,20 @@ export const onInitialize: OnInitialize = async (
       headers: () => ({
         Authorization: `Bearer ${state.jwt}`,
       }),
-    },
+    }
+    /*
     {
       endpoint: `${location.origin.replace('http', 'ws')}/graphql-socket`,
       params: () => ({
         Authorization: `Bearer ${state.jwt}`,
       }),
     }
+    */
   );
+
+  effects.fakeGql.initialize({
+    endpoint: `https://slw7f.sse.codesandbox.io`,
+  });
 
   effects.notifications.initialize({
     provideSocket() {
@@ -94,4 +100,6 @@ export const onInitialize: OnInitialize = async (
   });
 
   effects.preview.initialize(overmindInstance.reaction);
+
+  await effects.fakeGql.queries.allComments({ sandboxId: '123' });
 };

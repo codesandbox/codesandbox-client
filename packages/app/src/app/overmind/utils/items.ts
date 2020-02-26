@@ -64,6 +64,11 @@ export const SERVER: INavigationItem = {
   name: 'Server Control Panel',
 };
 
+export const COMMENTS: INavigationItem = {
+  id: 'comments',
+  name: 'Comments',
+};
+
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
@@ -110,7 +115,7 @@ export default function getItems(store: any): INavigationItem[] {
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    items.push(GITHUB);
+    items.push(GITHUB, COMMENTS);
   }
 
   if (store.isLoggedIn) {

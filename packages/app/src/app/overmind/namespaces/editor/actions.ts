@@ -198,6 +198,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   effects.vscode.openModule(state.editor.currentModule);
   effects.preview.executeCodeImmediately({ initialRender: true });
 
+  const { comments } = await effects.fakeGql.queries.allComments({
+    sandboxId: id,
+  });
+
+  state.editor.comments[id] = comments;
+
   state.editor.isLoading = false;
 });
 
@@ -1060,24 +1066,28 @@ export const listenToSandboxChanges: AsyncAction<{
 }> = async ({ state, actions, effects }, { sandboxId }) => {
   effects.gql.subscriptions.onSandboxChangged.dispose();
 
-  effects.gql.subscriptions.onSandboxChangged({ sandboxId }, result => {
-    const sandbox = state.editor.sandboxes[sandboxId];
+  try {
+    effects.gql.subscriptions.onSandboxChangged({ sandboxId }, result => {
+      const sandbox = state.editor.sandboxes[sandboxId];
 
-    if (sandbox) {
-      const newInfo = result.sandboxChanged;
-      sandbox.privacy = newInfo.privacy as 0 | 1 | 2;
+      if (sandbox) {
+        const newInfo = result.sandboxChanged;
+        sandbox.privacy = newInfo.privacy as 0 | 1 | 2;
 
-      const authorization = convertAuthorizationToPermissionType(
-        newInfo.authorization
-      );
+        const authorization = convertAuthorizationToPermissionType(
+          newInfo.authorization
+        );
 
-      if (authorization !== sandbox.authorization) {
-        sandbox.authorization = authorization;
+        if (authorization !== sandbox.authorization) {
+          sandbox.authorization = authorization;
 
-        actions.refetchSandboxInfo();
+          actions.refetchSandboxInfo();
+        }
       }
-    }
-  });
+    });
+  } catch {
+    // Unable to connect to websocket, what to do?
+  }
 };
 
 export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
@@ -1100,7 +1110,6 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
       sandboxId,
     });
     if (!collaboratorResponse.sandbox) {
-      return;
     }
 
     state.editor.collaborators = collaboratorResponse.sandbox.collaborators;
@@ -1140,7 +1149,6 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
       });
       const sandbox = invitationResponse.sandbox;
       if (!sandbox) {
-        return;
       }
 
       state.editor.invitations = sandbox.invitations;

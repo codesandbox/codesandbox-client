@@ -18,10 +18,11 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
+import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
+import { Comment } from 'app/overmind/effects/fakeGql/comments/types';
 import immer from 'immer';
 
-import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
 import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
@@ -73,9 +74,13 @@ type State = {
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
+  comments: {
+    [sandboxId: string]: Comment[];
+  };
 };
 
 export const state: State = {
+  comments: {},
   sandboxes: {},
   currentId: null,
   isForkingSandbox: false,
