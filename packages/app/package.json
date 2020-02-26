@@ -169,6 +169,7 @@
     "ot": "^0.0.15",
     "overmind": "^23.0.0-1582285704974",
     "overmind-devtools": "^19.0.0",
+    "overmind-graphql": "^3.0.0-1582705151381",
     "overmind-react": "^24.0.0-1582285704974",
     "phoenix": "^1.4.11",
     "postcss": "^7.0.26",

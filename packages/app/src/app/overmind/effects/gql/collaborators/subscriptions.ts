@@ -1,11 +1,11 @@
 import * as t from 'app/graphql/types';
-import { Query } from 'app/overmind-graphql';
 import gql from 'graphql-tag';
+import { Query } from 'overmind-graphql';
 
 import {
   collaboratorFragment,
-  sandboxInvitationFragment,
   sandboxChangedFragment,
+  sandboxInvitationFragment,
 } from './fragments';
 
 export const onCollaboratorAdded: Query<
