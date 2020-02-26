@@ -134,7 +134,9 @@ export const Actions = () => {
         <UserMenu>
           <Avatar
             user={{ ...user, subscriptionSince: null }}
-            css={css({ size: 6 })}
+            css={css({
+              size: '26px', // match button size next to it
+            })}
           />
         </UserMenu>
       ) : (

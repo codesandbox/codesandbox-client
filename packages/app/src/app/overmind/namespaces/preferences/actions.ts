@@ -133,8 +133,8 @@ export const codeMirrorForced: Action = ({ state }) => {
 };
 
 export const toggleContainerLspExperiment: AsyncAction = async ({
-  state,
   effects,
+  state,
 }) => {
   if (!state.user) {
     return;

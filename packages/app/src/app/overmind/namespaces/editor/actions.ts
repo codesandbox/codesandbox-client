@@ -161,11 +161,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     state.editor.modulesByPath = fs;
   });
 
-  if (
-    sandbox.featureFlags &&
-    sandbox.featureFlags.containerLsp &&
-    !sandbox.owned
-  ) {
+  if (sandbox.featureFlags?.containerLsp && !sandbox.owned) {
     effects.vscode.setReadOnly(true);
     effects.notificationToast.add({
       message:
