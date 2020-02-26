@@ -33,13 +33,13 @@ interface Subscription {
 }
 
 type Http = {
-  url: string;
+  endpoint: string;
   headers?: () => HttpHeaders;
   options?: Options;
 };
 
 type Ws = {
-  url: string;
+  endpoint: string;
   params?: () => { [key: string]: string | number | boolean };
 };
 
@@ -112,16 +112,16 @@ export const graphql: <T extends Queries>(
           ? _http.options.headers
           : {};
 
-      if (_clients[_http.url]) {
-        _clients[_http.url].setHeaders(headers);
+      if (_clients[_http.endpoint]) {
+        _clients[_http.endpoint].setHeaders(headers);
       } else {
-        _clients[_http.url] = new GraphQLClient(_http.url, {
+        _clients[_http.endpoint] = new GraphQLClient(_http.endpoint, {
           ..._http.options,
           headers,
         });
       }
 
-      return _clients[_http.url];
+      return _clients[_http.endpoint];
     }
 
     return null;
@@ -129,15 +129,15 @@ export const graphql: <T extends Queries>(
 
   function getWsClient(): PhoenixSocket | null {
     if (_ws) {
-      if (!_wsClients[_ws.url]) {
-        _wsClients[_ws.url] = withAbsintheSocket.create(
-          new PhoenixSocket(_ws.url, {
+      if (!_wsClients[_ws.endpoint]) {
+        _wsClients[_ws.endpoint] = withAbsintheSocket.create(
+          new PhoenixSocket(_ws.endpoint, {
             params: _ws.params ? _ws.params() : undefined,
           })
         );
       }
 
-      return _wsClients[_ws.url];
+      return _wsClients[_ws.endpoint];
     }
 
     return null;

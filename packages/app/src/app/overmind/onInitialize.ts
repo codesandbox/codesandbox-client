@@ -28,13 +28,13 @@ export const onInitialize: OnInitialize = async (
 
   effects.gql.initialize(
     {
-      url: `${location.origin}/api/graphql`,
+      endpoint: `${location.origin}/api/graphql`,
       headers: () => ({
         Authorization: `Bearer ${state.jwt}`,
       }),
     },
     {
-      url: `${location.origin.replace('http', 'ws')}/graphql-socket`,
+      endpoint: `${location.origin.replace('http', 'ws')}/graphql-socket`,
       params: () => ({
         Authorization: `Bearer ${state.jwt}`,
       }),
