@@ -36,16 +36,13 @@ const polyfillTheme = vsCodeTheme => {
     sideBar: {},
     activityBar: {},
     titleBar: {},
-    quickInput: {},
+    menuList: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
 
-  // Step 0: Clone theme to make sure we don't modify the source
-  const clonedVsCodeTheme = deepmerge({ colors: {} }, vsCodeTheme.colors || {});
-
   //  Step 1: Initialise with vscode theme
-  const vsCodeColors = dot.object(clonedVsCodeTheme.colors);
+  const vsCodeColors = dot.object(vsCodeTheme.colors || {});
   uiColors = deepmerge(uiColors, vsCodeColors);
 
   // Step 2: Fill missing values from existing values or codesandbox dark/light
@@ -82,11 +79,6 @@ const polyfillTheme = vsCodeTheme => {
     placeholderForeground:
       uiColors.input.placeholderForeground ||
       codesandboxColors.input.placeholderForeground,
-  };
-
-  uiColors.quickInput = {
-    background: uiColors.quickInput.background || uiColors.sideBar.background,
-    foreground: uiColors.quickInput.foreground || uiColors.sideBar.foreground,
   };
 
   uiColors.inputOption.activeBorder =
@@ -171,7 +163,6 @@ const polyfillTheme = vsCodeTheme => {
       selectedForeground: uiColors.sideBar.foreground,
       inactiveForeground: mutedForeground,
       hoverBackground: uiColors.sideBar.border,
-      border: uiColors.sideBar.border,
     },
     avatar: { border: uiColors.sideBar.border },
     sideBar: { hoverBackground: uiColors.sideBar.border },
@@ -196,10 +187,11 @@ const polyfillTheme = vsCodeTheme => {
       backgroundOn: uiColors.button.background,
       toggle: designLanguage.colors.white,
     },
-    dialog: {
-      background: uiColors.quickInput.background,
-      foreground: uiColors.quickInput.foreground,
+    menuList: {
+      background: uiColors.sideBar.background,
       border: uiColors.sideBar.border,
+      hoverBackground: uiColors.sideBar.border,
+      foreground: uiColors.sideBar.foreground,
     },
   };
 
