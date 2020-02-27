@@ -5,6 +5,7 @@ export * from './components/ThemeProvider';
 // atoms
 export * from './components/Avatar';
 export * from './components/Button';
+export * from './components/Icon';
 export * from './components/Input';
 export * from './components/Label';
 export * from './components/Link';
