@@ -1365,6 +1365,33 @@ export const getComment: AsyncAction<{
   state.editor.comments[sandboxId][id] = comment;
 };
 
+export const addComment: AsyncAction<{
+  comment: string;
+  sandboxId: string;
+  username: string;
+}> = async ({ state, effects }, { sandboxId, comment, username }) => {
+  const id = `${comment}-${username}`;
+  state.editor.comments[sandboxId].concat({
+    id,
+    insertedAt: new Date(),
+    isResolved: false,
+    originalMessage: {
+      content: comment,
+      author: {
+        username,
+      },
+    },
+    replies: [],
+  });
+  const { comment: newComment } = await effects.fakeGql.mutations.addComment({
+    sandboxId,
+    comment,
+    username,
+  });
+
+  state.editor.comments[sandboxId].filter(c => c.id !== id).concat(newComment);
+};
+
 export const changeInvitationAuthorization: AsyncAction<{
   invitationId: string;
   authorization: Authorization;

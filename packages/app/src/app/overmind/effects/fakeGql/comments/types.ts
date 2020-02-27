@@ -15,7 +15,7 @@ export type Comment = {
   originalMessage: Message;
   replies: Message[];
   insertedAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 };
 
 export type CommentsVariables = {

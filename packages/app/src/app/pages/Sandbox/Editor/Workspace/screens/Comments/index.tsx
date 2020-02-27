@@ -1,10 +1,11 @@
-import { formatDistance } from 'date-fns';
 import { useOvermind } from 'app/overmind';
 import React, { useState, useEffect } from 'react';
-import { Stack, Text, Menu, Element } from '@codesandbox/components';
+import { Stack, Text, Menu, List } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { json } from 'overmind';
-import { FilterIcon } from './icons';
+import { FilterIcon, CommentIcon } from './icons';
+import { Comment } from './Comment';
+import { AddComment } from './AddComment';
 
 export const Comments: React.FC = () => {
   const { state } = useOvermind();
@@ -34,8 +35,28 @@ export const Comments: React.FC = () => {
     return null;
   }
 
+  const getText = () => {
+    if (selected === 'All') {
+      return 'new';
+    }
+    if (selected === 'Open') {
+      return 'open';
+    }
+    if (selected === 'Resolved') {
+      return 'resolved';
+    }
+
+    return null;
+  };
+
   return (
-    <Stack direction="vertical">
+    <Stack
+      direction="vertical"
+      css={css({
+        height: '100%',
+        position: 'relative'
+      })}
+    >
       <Stack
         align="center"
         justify="space-between"
@@ -56,7 +77,11 @@ export const Comments: React.FC = () => {
           css={{ '> *': { lineHeight: 1 } }}
         >
           <Menu>
-            <Menu.Button>
+            <Menu.Button
+              css={css({
+                height: 'auto',
+              })}
+            >
               <FilterIcon />
             </Menu.Button>
             <Menu.List>
@@ -67,55 +92,34 @@ export const Comments: React.FC = () => {
           </Menu>
         </Stack>
       </Stack>
-      <Element marginTop={4}>
-        {comments.map(comment => (
-          <Element
-            key={comment.id}
-            paddingX={2}
-            paddingBottom={6}
-            marginBottom={6}
-            css={css({
-              color: 'inherit',
-              borderBottom: '1px solid',
-              borderColor: 'sideBar.border',
-            })}
-          >
-            <Stack gap={1} align="center">
-              <img
-                css={css({
-                  border: '1px solid',
-                  borderColor: 'sideBar.border',
-                  height: 8,
-                  width: 8,
-                })}
-                src={comment.originalMessage.author.avatarUrl}
-                alt={comment.originalMessage.author.username}
-              />
-              <Stack direction="vertical" align="center">
-                <Text variant="body" weight="bold" block>
-                  {comment.originalMessage.author.username}
-                </Text>
-                <Text size={12} variant="muted">
-                  {formatDistance(new Date(comment.insertedAt), new Date(), {
-                    addSuffix: true,
-                  })}
-                </Text>
-              </Stack>
-            </Stack>
-            <Text block marginTop={4}>
-              {comment.originalMessage.content}
-            </Text>
-            <Text block variant="muted" marginTop={2}>
-              {comment.replies.length} Repl
-              {comment.replies.length > 1 || comment.replies.length === 0
-                ? 'ies'
-                : 'y'}
-            </Text>
-          </Element>
-        ))}
-      </Element>
+      {comments.length ? (
+        <List marginTop={4}>
+          {comments.map(comment => (
+            <Comment comment={comment} />
+          ))}
+        </List>
+      ) : (
+        <Stack
+          align="center"
+          justify="center"
+          direction="vertical"
+          css={css({
+            height: '100%',
+          })}
+        >
+          <CommentIcon />
+          <Text align="center" block marginTop={8}>
+            There are no {getText()} comments.{' '}
+            {selected === 'All' && (
+              <>
+                {/* Leave a comment by clicking anywhere within a file or */}
+                Write a global comment below.
+              </>
+            )}
+          </Text>
+        </Stack>
+      )}
+      <AddComment />
     </Stack>
   );
 };
-
-// {"id":"5e5527f6c277a40fef1e38ff","isResolved":false,"originalMessage":{"id":"2ze9n1hak71ygeza","content":"New Comment","author":{"avatarUrl":"https://avatars0.githubusercontent.com/u/1051509?v=4","username":"SaraVieira"}},"replies":[],"insertedAt":"2020-02-25T13:58:14.154Z","updatedAt":"2020-02-25T13:58:14.154Z"}
