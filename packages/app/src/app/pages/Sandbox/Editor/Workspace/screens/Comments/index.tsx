@@ -1,39 +1,21 @@
 import { useOvermind } from 'app/overmind';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Stack, Text, Menu, List } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { json } from 'overmind';
 import { FilterIcon, CommentIcon } from './icons';
 import { Comment } from './Comment';
+import { useDimensions } from './useDimensions';
 import { AddComment } from './AddComment';
 
 export const Comments: React.FC = () => {
   const { state } = useOvermind();
+  const [ref, { width }] = useDimensions();
   const options = ['All', 'Open', 'Resolved', 'Mentions'];
   const [selected, select] = useState(options[0]);
   const stateComments = json(
     state.editor.comments[state.editor.currentSandbox.id]
   );
-  const [comments, setComments] = useState(stateComments);
-
-  useEffect(() => {
-    if (selected === 'All') {
-      setComments(stateComments);
-    }
-
-    if (selected === 'Open') {
-      setComments(stateComments.filter(comment => !comment.isResolved));
-    }
-
-    if (selected === 'Resolved') {
-      setComments(stateComments.filter(comment => comment.isResolved));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected]);
-
-  if (!state.editor.currentSandbox) {
-    return null;
-  }
 
   const getText = () => {
     if (selected === 'All') {
@@ -54,8 +36,9 @@ export const Comments: React.FC = () => {
       direction="vertical"
       css={css({
         height: '100%',
-        position: 'relative'
+        position: 'relative',
       })}
+      ref={ref}
     >
       <Stack
         align="center"
@@ -92,11 +75,21 @@ export const Comments: React.FC = () => {
           </Menu>
         </Stack>
       </Stack>
-      {comments.length ? (
+      {stateComments.length ? (
         <List marginTop={4}>
-          {comments.map(comment => (
-            <Comment comment={comment} />
-          ))}
+          {selected === 'All' &&
+            // @ts-ignore
+            stateComments.map(comment => <Comment comment={comment} />)}
+          {selected === 'Open' &&
+            stateComments
+              .filter(comment => !comment.isResolved)
+              // @ts-ignore
+              .map(comment => <Comment comment={comment} />)}
+          {selected === 'Resolved' &&
+            stateComments
+              .filter(comment => comment.isResolved)
+              // @ts-ignore
+              .map(comment => <Comment comment={comment} />)}
         </List>
       ) : (
         <Stack
@@ -119,7 +112,7 @@ export const Comments: React.FC = () => {
           </Text>
         </Stack>
       )}
-      <AddComment />
+      <AddComment width={width} />
     </Stack>
   );
 };

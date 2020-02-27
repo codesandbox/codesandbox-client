@@ -3,7 +3,7 @@ import { useOvermind } from 'app/overmind';
 import { Input, Element } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 
-export const AddComment = () => {
+export const AddComment = ({ width }) => {
   const [value, setValue] = useState('');
   const { actions, state } = useOvermind();
 
@@ -24,9 +24,11 @@ export const AddComment = () => {
       css={css({
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
-        position: 'absolute',
-        width: '100%',
-        bottom: 0,
+        position: 'fixed',
+        width: width + 8,
+        bottom: 22,
+        zIndex: 2,
+        backgroundColor: 'sideBar.background',
       })}
     >
       <form onSubmit={addComment}>

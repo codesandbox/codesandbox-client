@@ -17,6 +17,7 @@ export const allComments: Query<CommentsResponse, CommentsVariables> = gql`
         id
         content
         author {
+          id
           avatarUrl
           username
         }
