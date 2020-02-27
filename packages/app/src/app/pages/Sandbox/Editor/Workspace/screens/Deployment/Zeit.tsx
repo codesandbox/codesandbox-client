@@ -98,7 +98,7 @@ export const Zeit = () => {
             <Button
               disabled={deploying}
               onClick={signInZeitClicked}
-              css={{ width: 50 }}
+              css={{ width: 'auto' }}
             >
               Sign in
             </Button>
