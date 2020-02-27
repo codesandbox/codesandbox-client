@@ -1110,6 +1110,7 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
       sandboxId,
     });
     if (!collaboratorResponse.sandbox) {
+      // empty
     }
 
     state.editor.collaborators = collaboratorResponse.sandbox.collaborators;
@@ -1149,6 +1150,7 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
       });
       const sandbox = invitationResponse.sandbox;
       if (!sandbox) {
+        // empty
       }
 
       state.editor.invitations = sandbox.invitations;
@@ -1349,6 +1351,18 @@ export const revokeSandboxInvitation: AsyncAction<{
       ];
     }
   }
+};
+
+export const getComment: AsyncAction<{
+  id: string;
+  sandboxId: string;
+}> = async ({ state, effects }, { sandboxId, id }) => {
+  const { comment } = await effects.fakeGql.queries.comment({
+    sandboxId,
+    id,
+  });
+
+  state.editor.comments[sandboxId][id] = comment;
 };
 
 export const changeInvitationAuthorization: AsyncAction<{

@@ -11,6 +11,7 @@ export * from './components/Link';
 export * from './components/SearchInput';
 export * from './components/Select';
 export * from './components/Stats';
+export * from './components/Menu';
 export * from './components/Switch';
 export * from './components/Text';
 export * from './components/Textarea';
