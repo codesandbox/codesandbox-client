@@ -6,6 +6,7 @@ import {
   ViewConfig,
 } from '@codesandbox/common/lib/templates/template';
 import {
+  CommentsFilterOption,
   DevToolsTabPosition,
   DiffTab,
   Module,
@@ -75,12 +76,56 @@ type State = {
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
   comments: {
-    [sandboxId: string]: Comment[];
+    [sandboxId: string]: {
+      [commentId: string]: Comment;
+    };
   };
+  currentComments: Derive<State, Comment[]>;
+  selectedCommentsFilter: CommentsFilterOption;
 };
 
 export const state: State = {
   comments: {},
+  selectedCommentsFilter: CommentsFilterOption.OPEN,
+  currentComments: ({ comments, currentSandbox, selectedCommentsFilter }) => {
+    if (!currentSandbox || !comments[currentSandbox.id]) {
+      return [];
+    }
+
+    function sortByInsertedAt(commentA: Comment, commentB: Comment) {
+      const aDate = new Date(commentA.insertedAt);
+      const bDate = new Date(commentB.insertedAt);
+
+      if (aDate > bDate) {
+        return -1;
+      }
+
+      if (bDate < aDate) {
+        return 1;
+      }
+
+      return 0;
+    }
+
+    switch (selectedCommentsFilter) {
+      case CommentsFilterOption.ALL:
+        return Object.values(comments[currentSandbox.id]).sort(
+          sortByInsertedAt
+        );
+      case CommentsFilterOption.RESOLVED:
+        return Object.values(comments[currentSandbox.id])
+          .filter(comment => comment.isResolved)
+          .sort(sortByInsertedAt);
+      case CommentsFilterOption.OPEN:
+        return Object.values(comments[currentSandbox.id])
+          .filter(comment => !comment.isResolved)
+          .sort(sortByInsertedAt);
+      case CommentsFilterOption.MENTIONS:
+        return Object.values(comments[currentSandbox.id]).sort(
+          sortByInsertedAt
+        );
+    }
+  },
   sandboxes: {},
   currentId: null,
   isForkingSandbox: false,

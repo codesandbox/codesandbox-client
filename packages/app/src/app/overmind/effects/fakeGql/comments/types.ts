@@ -59,6 +59,7 @@ export type CommentResponse = {
     id: string;
     isResolved: boolean;
     originalMessage: {
+      id: string;
       content: string;
     };
     replies: Message[];

@@ -1,6 +1,7 @@
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
+  CommentsFilterOption,
   EnvironmentVariable,
   ModuleCorrection,
   ModuleError,
@@ -202,7 +203,11 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     sandboxId: sandbox.id,
   });
 
-  state.editor.comments[sandbox.id] = comments;
+  state.editor.comments[sandbox.id] = comments.reduce((aggr, comment) => {
+    aggr[comment.id] = comment;
+
+    return aggr;
+  }, {});
 
   state.editor.isLoading = false;
 });
@@ -1371,7 +1376,7 @@ export const addComment: AsyncAction<{
   username: string;
 }> = async ({ state, effects }, { sandboxId, comment, username }) => {
   const id = `${comment}-${username}`;
-  state.editor.comments[sandboxId].unshift({
+  const optimisticComment = {
     id,
     insertedAt: new Date().toString(),
     isResolved: false,
@@ -1385,7 +1390,10 @@ export const addComment: AsyncAction<{
       },
     },
     replies: [],
-  });
+  };
+
+  state.editor.comments[sandboxId][id] = optimisticComment;
+  state.editor.selectedCommentsFilter = CommentsFilterOption.OPEN;
   const { addComment: newComment } = await effects.fakeGql.mutations.addComment(
     {
       sandboxId,
@@ -1394,24 +1402,28 @@ export const addComment: AsyncAction<{
     }
   );
 
-  state.editor.comments[sandboxId].splice(
-    state.editor.comments[sandboxId].findIndex(item => item.id === id),
-    1
-  );
-  state.editor.comments[sandboxId].unshift(newComment);
+  delete state.editor.comments[sandboxId][id];
+  state.editor.comments[sandboxId][newComment.id] = newComment;
 };
 
 export const deleteComment: AsyncAction<{
   id: string;
 }> = async ({ state, effects }, { id }) => {
   const sandboxId = state.editor.currentSandbox.id;
-  const newComments = state.editor.comments[sandboxId].filter(
-    item => item.id !== id
-  );
-  state.editor.comments[sandboxId] = newComments;
-  await effects.fakeGql.mutations.deleteComment({
-    id,
-  });
+  const deletedComment = state.editor.comments[sandboxId][id];
+
+  delete state.editor.comments[sandboxId][id];
+
+  try {
+    await effects.fakeGql.mutations.deleteComment({
+      id,
+    });
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to delete your comment, please try again'
+    );
+    state.editor.comments[sandboxId][id] = deletedComment;
+  }
 };
 
 export const updateComment: AsyncAction<{
@@ -1422,31 +1434,36 @@ export const updateComment: AsyncAction<{
   };
 }> = async ({ state, effects }, { id, data }) => {
   const sandboxId = state.editor.currentSandbox.id;
+  const isResolved = state.editor.comments[sandboxId][id].isResolved;
+  const comment = state.editor.comments[sandboxId][id].originalMessage.content;
 
-  const currentComment = state.editor.comments[sandboxId].find(
-    comment => comment.id === id
-  );
-  const rest = state.editor.comments[sandboxId].filter(
-    comment => comment.id !== id
-  );
-  state.editor.comments[sandboxId] = [
-    ...rest,
-    {
-      ...currentComment,
-      isResolved:
-        typeof data.isResolved === 'boolean'
-          ? data.isResolved
-          : currentComment.isResolved,
-      originalMessage: {
-        ...currentComment.originalMessage,
-        content: data.comment || currentComment.originalMessage.content,
-      },
-    },
-  ];
-  await effects.fakeGql.mutations.updateComment({
-    id,
-    ...data,
-  });
+  if ('isResolved' in data) {
+    state.editor.comments[sandboxId][id].isResolved = data.isResolved;
+  }
+
+  if ('comment' in data) {
+    state.editor.comments[sandboxId][id].originalMessage.content = data.comment;
+  }
+
+  try {
+    await effects.fakeGql.mutations.updateComment({
+      id,
+      ...data,
+    });
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to update your comment, please try again'
+    );
+    state.editor.comments[sandboxId][id].isResolved = isResolved;
+    state.editor.comments[sandboxId][id].originalMessage.content = comment;
+  }
+};
+
+export const selectCommentsFilter: Action<CommentsFilterOption> = (
+  { state },
+  option
+) => {
+  state.editor.selectedCommentsFilter = option;
 };
 
 export const changeInvitationAuthorization: AsyncAction<{

@@ -52,6 +52,7 @@ class CodeSandboxOTClient extends Client {
   }
 
   applyClient(operation: any) {
+    console.log(operation);
     super.applyClient(operation);
   }
 

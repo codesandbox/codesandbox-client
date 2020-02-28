@@ -1,30 +1,30 @@
-import { useOvermind } from 'app/overmind';
-import React, { useState } from 'react';
-import { Stack, Text, Menu, List } from '@codesandbox/components';
+import { CommentsFilterOption } from '@codesandbox/common/lib/types';
+import { List, Menu, Stack, Text } from '@codesandbox/components';
 import { css } from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
 import { json } from 'overmind';
-import { FilterIcon, CommentIcon } from './icons';
-import { Comment } from './Comment';
-import { useDimensions } from './useDimensions';
+import React, { useState } from 'react';
+
 import { AddComment } from './AddComment';
+import { Comment } from './Comment';
+import { CommentIcon, FilterIcon } from './icons';
+import { useDimensions } from './useDimensions';
 
 export const Comments: React.FC = () => {
-  const { state } = useOvermind();
+  const { state, actions } = useOvermind();
   const [ref, { width }] = useDimensions();
-  const options = ['Open', 'All', 'Resolved', 'Mentions'];
-  const [selected, select] = useState(options[0]);
-  const stateComments = json(
-    state.editor.comments[state.editor.currentSandbox.id]
-  );
+  const options = Object.values(CommentsFilterOption);
+  const selectedCommentsFilter = state.editor.selectedCommentsFilter;
+  const stateComments = state.editor.currentComments;
 
   const getText = () => {
-    if (selected === 'All') {
+    if (selectedCommentsFilter === CommentsFilterOption.ALL) {
       return 'new';
     }
-    if (selected === 'Open') {
+    if (selectedCommentsFilter === CommentsFilterOption.OPEN) {
       return 'open';
     }
-    if (selected === 'Resolved') {
+    if (selectedCommentsFilter === CommentsFilterOption.RESOLVED) {
       return 'resolved';
     }
 
@@ -43,8 +43,8 @@ export const Comments: React.FC = () => {
       <CommentIcon />
       <Text align="center" block marginTop={8}>
         There are no {getText()} comments.{' '}
-        {selected === 'Open' ||
-          (selected === 'All' && (
+        {selectedCommentsFilter === CommentsFilterOption.OPEN ||
+          (selectedCommentsFilter === CommentsFilterOption.ALL && (
             <>
               {/* Leave a comment by clicking anywhere within a file or */}
               Write a global comment below.
@@ -53,9 +53,6 @@ export const Comments: React.FC = () => {
       </Text>
     </Stack>
   );
-
-  const open = stateComments.filter(comment => !comment.isResolved);
-  const resolved = stateComments.filter(comment => comment.isResolved);
 
   return (
     <Stack
@@ -95,7 +92,11 @@ export const Comments: React.FC = () => {
             </Menu.Button>
             <Menu.List>
               {options.map(option => (
-                <Menu.Item onSelect={() => select(option)}>{option}</Menu.Item>
+                <Menu.Item
+                  onSelect={() => actions.editor.selectCommentsFilter(option)}
+                >
+                  {option}
+                </Menu.Item>
               ))}
             </Menu.List>
           </Menu>
@@ -103,22 +104,11 @@ export const Comments: React.FC = () => {
       </Stack>
       {stateComments.length ? (
         <List marginTop={4}>
-          {selected === 'All' &&
-            stateComments.map(comment => <Comment comment={comment} />)}
-          {selected === 'Open' ? (
-            open.length ? (
-              open.map(comment => <Comment comment={comment} />)
-            ) : (
-              <Empty />
-            )
-          ) : null}
-          {selected === 'Resolved' ? (
-            resolved.length ? (
-              resolved.map(comment => <Comment comment={comment} />)
-            ) : (
-              <Empty />
-            )
-          ) : null}
+          {stateComments.length ? (
+            stateComments.map(comment => <Comment comment={comment} />)
+          ) : (
+            <Empty />
+          )}
         </List>
       ) : (
         <Empty />
