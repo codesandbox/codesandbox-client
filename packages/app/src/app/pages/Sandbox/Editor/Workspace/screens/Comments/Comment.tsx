@@ -120,13 +120,13 @@ export const Comment = React.memo(({ comment }: any) => {
         variant="muted"
         size={2}
       >
-        {getPrettyReplyString(comment.replies.length)}
+        {getRepliesString(comment.replies.length)}
       </Text>
     </ListAction>
   );
 });
 
-const getPrettyReplyString = length => {
+const getRepliesString = length => {
   if (length === 0) return 'No Replies';
   if (length === 1) return '1 Reply';
   return length + ' Replies';
