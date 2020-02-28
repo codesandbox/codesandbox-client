@@ -2,17 +2,14 @@ import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import { List, Menu, Stack, Text } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { json } from 'overmind';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
 import { CommentIcon, FilterIcon } from './icons';
-import { useDimensions } from './useDimensions';
 
 export const Comments: React.FC = () => {
   const { state, actions } = useOvermind();
-  const [ref, { width }] = useDimensions();
   const options = Object.values(CommentsFilterOption);
   const selectedCommentsFilter = state.editor.selectedCommentsFilter;
   const stateComments = state.editor.currentComments;
@@ -57,30 +54,20 @@ export const Comments: React.FC = () => {
   return (
     <Stack
       direction="vertical"
-      css={css({
-        height: '100%',
-        position: 'relative',
-      })}
-      ref={ref}
+      justify="space-between"
+      css={{ height: '100%' }}
     >
-      <Stack
-        align="center"
-        justify="space-between"
-        css={css({
-          borderBottom: '1px solid',
-          borderColor: 'sideBar.border',
-          height: 8,
-          paddingLeft: 2,
-          width: '100%',
-        })}
-      >
-        <Text variant="body" weight="semibold">
-          Comments
-        </Text>
+      <div style={{ overflow: 'hidden' }}>
         <Stack
-          justify="flex-end"
           align="center"
-          css={{ '> *': { lineHeight: 1 } }}
+          justify="space-between"
+          css={css({
+            borderBottom: '1px solid',
+            borderColor: 'sideBar.border',
+            height: 8,
+            paddingLeft: 2,
+            width: '100%',
+          })}
         >
           <Menu>
             <Menu.Button
@@ -101,19 +88,19 @@ export const Comments: React.FC = () => {
             </Menu.List>
           </Menu>
         </Stack>
-      </Stack>
-      {stateComments.length ? (
-        <List marginTop={4}>
-          {stateComments.length ? (
-            stateComments.map(comment => <Comment comment={comment} />)
-          ) : (
-            <Empty />
-          )}
-        </List>
-      ) : (
-        <Empty />
-      )}
-      <AddComment width={width} />
+        {stateComments.length ? (
+          <List marginTop={4}>
+            {stateComments.length ? (
+              stateComments.map(comment => <Comment comment={comment} />)
+            ) : (
+              <Empty />
+            )}
+          </List>
+        ) : (
+          <Empty />
+        )}
+      </div>
+      <AddComment />
     </Stack>
   );
 };
