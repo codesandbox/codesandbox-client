@@ -1,0 +1,19 @@
+{
+	"logo": {
+		"src": "https://user-images.githubusercontent.com/5372940/62078619-4d436880-b24d-11e9-92e0-5fcc43635b7c.png",
+		"width": 200
+	},
+	"line": "rainbow",
+	"badges": [
+		{
+			"alt": "Published at vscode marketplace",
+			"url": "https://marketplace.visualstudio.com/items?itemName=runem.lit-plugin",
+			"img": "https://vsmarketplacebadge.apphb.com/version/runem.lit-plugin.svg"
+		},
+		{
+			"alt": "Downloads per Month",
+			"img": "https://vsmarketplacebadge.apphb.com/downloads-short/runem.lit-plugin.svg?label=vscode-lit-plugin",
+			"url": "https://marketplace.visualstudio.com/items?itemName=runem.lit-plugin"
+		}
+	]
+}

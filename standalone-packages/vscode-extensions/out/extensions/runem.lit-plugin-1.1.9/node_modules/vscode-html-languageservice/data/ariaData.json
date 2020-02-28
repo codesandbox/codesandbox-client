@@ -1,0 +1,169 @@
+[
+  {
+    "name": "aria-activedescendant"
+  },
+  {
+    "name": "aria-atomic",
+    "valueSet": "b"
+  },
+  {
+    "name": "aria-autocomplete",
+    "valueSet": "autocomplete"
+  },
+  {
+    "name": "aria-busy",
+    "valueSet": "b"
+  },
+  {
+    "name": "aria-checked",
+    "valueSet": "tristate"
+  },
+  {
+    "name": "aria-colcount"
+  },
+  {
+    "name": "aria-colindex"
+  },
+  {
+    "name": "aria-colspan"
+  },
+  {
+    "name": "aria-controls"
+  },
+  {
+    "name": "aria-current",
+    "valueSet": "current"
+  },
+  {
+    "name": "aria-describedat"
+  },
+  {
+    "name": "aria-describedby"
+  },
+  {
+    "name": "aria-disabled",
+    "valueSet": "b"
+  },
+  {
+    "name": "aria-dropeffect",
+    "valueSet": "dropeffect"
+  },
+  {
+    "name": "aria-errormessage"
+  },
+  {
+    "name": "aria-expanded",
+    "valueSet": "u"
+  },
+  {
+    "name": "aria-flowto"
+  },
+  {
+    "name": "aria-grabbed",
+    "valueSet": "u"
+  },
+  {
+    "name": "aria-haspopup",
+    "valueSet": "b"
+  },
+  {
+    "name": "aria-hidden",
+    "valueSet": "b"
+  },
+  {
+    "name": "aria-invalid",
+    "valueSet": "invalid"
+  },
+  {
+    "name": "aria-kbdshortcuts"
+  },
+  {
+    "name": "aria-label"
+  },
+  {
+    "name": "aria-labelledby"
+  },
+  {
+    "name": "aria-level"
+  },
+  {
+    "name": "aria-live",
+    "valueSet": "live"
+  },
+  {
+    "name": "aria-modal",
+    "valueSet": "b"
+  },
+  {
+    "name": "aria-multiline",
+    "valueSet": "b"
+  },
+  {
+    "name": "aria-multiselectable",
+    "valueSet": "b"
+  },
+  {
+    "name": "aria-orientation",
+    "valueSet": "orientation"
+  },
+  {
+    "name": "aria-owns"
+  },
+  {
+    "name": "aria-placeholder"
+  },
+  {
+    "name": "aria-posinset"
+  },
+  {
+    "name": "aria-pressed",
+    "valueSet": "tristate"
+  },
+  {
+    "name": "aria-readonly",
+    "valueSet": "b"
+  },
+  {
+    "name": "aria-relevant",
+    "valueSet": "relevant"
+  },
+  {
+    "name": "aria-required",
+    "valueSet": "b"
+  },
+  {
+    "name": "aria-roledescription"
+  },
+  {
+    "name": "aria-rowcount"
+  },
+  {
+    "name": "aria-rowindex"
+  },
+  {
+    "name": "aria-rowspan"
+  },
+  {
+    "name": "aria-selected",
+    "valueSet": "u"
+  },
+  {
+    "name": "aria-setsize"
+  },
+  {
+    "name": "aria-sort",
+    "valueSet": "sort"
+  },
+  {
+    "name": "aria-valuemax"
+  },
+  {
+    "name": "aria-valuemin"
+  },
+  {
+    "name": "aria-valuenow"
+  },
+  {
+    "name": "aria-valuetext"
+  }
+]

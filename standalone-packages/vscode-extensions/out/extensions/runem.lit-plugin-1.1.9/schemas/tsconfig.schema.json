@@ -1,0 +1,330 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "lit-plugin plugin contributions to tsconfig.json",
+	"type": "object",
+	"properties": {
+		"compilerOptions": {
+			"type": "object",
+			"properties": {
+				"plugins": {
+					"type": "array",
+					"items": {
+						"if": {
+							"properties": {
+								"name": {
+									"enum": ["ts-lit-plugin"]
+								}
+							},
+							"required": ["name"]
+						},
+						"then": {
+							"properties": {
+								"disable": {
+									"type": "boolean",
+									"description": "Completely disable this plugin.",
+									"default": false
+								},
+								"strict": {
+									"type": "boolean",
+									"description": "Enable strict mode.",
+									"default": false
+								},
+								"htmlTemplateTags": {
+									"type": "array",
+									"description": "List of template tags to enable html support in.",
+									"items": {
+										"type": "string",
+										"description": "Template tag function names."
+									},
+									"default": ["html", "raw"]
+								},
+								"cssTemplateTags": {
+									"type": "array",
+									"description": "List of template tags to enable css support in.",
+									"items": {
+										"type": "string",
+										"description": "Template tag function names."
+									},
+									"default": ["css"]
+								},
+								"dontShowSuggestions": {
+									"type": "boolean",
+									"description": "Don't append messages suggesting how to fix diagnostics.",
+									"default": false
+								},
+								"globalTags": {
+									"type": "array",
+									"description": "List of html tag names that you expect to be present at all times.",
+									"items": {
+										"type": "string",
+										"description": "Tag name."
+									}
+								},
+								"globalAttributes": {
+									"type": "array",
+									"description": "List of html attributes names that you expect to be present at all times. These attributes are not checked at all.",
+									"items": {
+										"type": "string",
+										"description": "Attribute name."
+									}
+								},
+								"globalEvents": {
+									"type": "array",
+									"description": "List of event names that you expect to be present at all times. These events are not checked at all.",
+									"items": {
+										"type": "string",
+										"description": "Event name."
+									}
+								},
+								"logging": {
+									"type": "string",
+									"description": "Log to a file called 'lit-plugin.log' which will be created in the root of the project.",
+									"default": "off",
+									"enum": ["off", "verbose"]
+								},
+								"rules": {
+									"title": "Rules",
+									"description": "Rules for lit-plugin are enabled/disabled in this object.",
+									"type": "object",
+									"properties": {
+										"no-unknown-tag-name": {
+											"type": "string",
+											"description": "Check the existence of tag names.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-missing-import": {
+											"type": "string",
+											"description": "Check that custom elements used are imported.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-unclosed-tag": {
+											"type": "string",
+											"description": "Check that all tags are properly closed.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-unknown-attribute": {
+											"type": "string",
+											"description": "Check the existence of attribute names.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-unknown-property": {
+											"type": "string",
+											"description": "Check the existence of property names.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-unknown-event": {
+											"type": "string",
+											"description": "Check the existence of event names.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-unknown-slot": {
+											"type": "string",
+											"description": "Check the existence of slot names (requires '@slot' jsdoc on custom element declarations).",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-invalid-boolean-binding": {
+											"type": "string",
+											"description": "Disallow boolean attribute bindings on non-boolean types.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-expressionless-property-binding": {
+											"type": "string",
+											"description": "Disallow property bindings without an expression.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-noncallable-event-binding": {
+											"type": "string",
+											"description": "Disallow event listener bindings with a noncallable type.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-boolean-in-attribute-binding": {
+											"type": "string",
+											"description": "Disallow attribute bindings with a boolean type.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-complex-attribute-binding": {
+											"type": "string",
+											"description": "Disallow attribute bindings with a complex type.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-nullable-attribute-binding": {
+											"type": "string",
+											"description": "Disallow attribute bindings with nullable types such as \"null\" or \"undefined\".",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-incompatible-type-binding": {
+											"type": "string",
+											"description": "Disallow incompatible type in bindings.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-invalid-directive-binding": {
+											"type": "string",
+											"description": "Disallow using built-in directives in unsupported bindings.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-incompatible-property-type": {
+											"type": "string",
+											"description": "Check the 'type' key of the @property decorator against the actual property type.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-unknown-property-converter": {
+											"type": "string",
+											"description": "Check that the converter of @property decorators exists.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-invalid-attribute-name": {
+											"type": "string",
+											"description": "Check the validity of the attribute names.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-invalid-tag-name": {
+											"type": "string",
+											"description": "Check the validity of the tag name when defining custom elements.",
+											"enum": ["off", "warning", "error"]
+										},
+										"no-invalid-css": {
+											"type": "string",
+											"description": "Check CSS within the css tagged template literal.",
+											"enum": ["off", "warning", "error"]
+										}
+									}
+								},
+								"customHtmlData": {
+									"version": 1,
+									"title": "VS Code HTML Custom Data format",
+									"description": "Format for loading html data in VS Code's HTML custom data format",
+									"type": "object",
+									"required": ["version"],
+									"properties": {
+										"version": {
+											"const": 1,
+											"description": "The custom data version",
+											"type": "number"
+										},
+										"tags": {
+											"description": "Custom HTML tags",
+											"type": "array",
+											"items": {
+												"type": "object",
+												"required": ["name"],
+												"defaultSnippets": [
+													{
+														"body": {
+															"name": "$1",
+															"description": "",
+															"attributes": []
+														}
+													}
+												],
+												"properties": {
+													"name": {
+														"type": "string",
+														"description": "Name of tag"
+													},
+													"description": {
+														"type": "string",
+														"description": "Description of tag shown in completion and hover"
+													},
+													"attributes": {
+														"type": "array",
+														"description": "A list of possible attributes for the tag",
+														"items": {
+															"type": "object",
+															"required": ["name"],
+															"defaultSnippets": [
+																{
+																	"body": {
+																		"name": "$1",
+																		"description": "",
+																		"values": []
+																	}
+																}
+															],
+															"properties": {
+																"name": {
+																	"type": "string",
+																	"description": "Name of attribute"
+																},
+																"description": {
+																	"type": "string",
+																	"description": "Description of attribute shown in completion and hover"
+																},
+																"valueSet": {
+																	"type": "string",
+																	"description": "Name of the matching attribute value set"
+																},
+																"values": {
+																	"type": "array",
+																	"description": "A list of possible values for the attribute",
+																	"items": {
+																		"type": "object",
+																		"required": ["name"],
+																		"defaultSnippets": [
+																			{
+																				"body": {
+																					"name": "$1",
+																					"description": ""
+																				}
+																			}
+																		],
+																		"properties": {
+																			"name": {
+																				"type": "string",
+																				"description": "Name of attribute value"
+																			},
+																			"description": {
+																				"type": "string",
+																				"description": "Description of attribute value shown in completion and hover"
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										},
+										"globalAttributes": {
+											"description": "Custom HTML global attributes",
+											"type": "array",
+											"items": {
+												"$ref": "#/properties/compilerOptions/properties/plugins/items/then/properties/customHtmlData/properties/tags/items/properties/attributes/items"
+											}
+										},
+										"valueSets": {
+											"description": "A set of attribute value. When an attribute refers to an attribute set, its value completion will use valuse from that set",
+											"type": "array",
+											"items": {
+												"type": "object",
+												"required": ["name"],
+												"defaultSnippets": [
+													{
+														"body": {
+															"name": "$1",
+															"description": "",
+															"values": []
+														}
+													}
+												],
+												"properties": {
+													"name": {
+														"type": "string",
+														"description": "Name of attribute value in value set"
+													},
+													"values": {
+														"$ref": "#/properties/compilerOptions/properties/plugins/items/then/properties/customHtmlData/properties/tags/items/properties/attributes/items/properties/values"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
