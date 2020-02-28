@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import { FormField, Input, Stack } from '@codesandbox/components';
+import { FormField, Input } from '@codesandbox/components';
 
 function select(el) {
   if (el) {
@@ -30,6 +30,7 @@ export const FileInput: FunctionComponent<Props> = ({
   onChange,
   error,
   id,
+  ...props
 }) => {
   const [currentValue, setCurrentValue] = useState(title);
 
@@ -50,25 +51,24 @@ export const FileInput: FunctionComponent<Props> = ({
   };
 
   return (
-    <Stack direction="vertical" gap={1}>
-      <FormField
-        label={title ? `rename ${title}` : 'set name new file'}
-        hideLabel
-        css={{ height: '100%', padding: 0 }}
-        id={`input-${id}`}
-      >
-        <Input
-          onChange={handleChange}
-          onBlur={() => onCommit(currentValue, true)}
-          onKeyUp={handleKeyUp}
-          ref={select}
-          value={currentValue}
-          autoComplete="off"
-          spellCheck="false"
-          aria-invalid={Boolean(error)}
-          aria-errormessage={`error-${id}`}
-        />
-      </FormField>
-    </Stack>
+    <FormField
+      label={title ? `rename ${title}` : 'set name new file'}
+      hideLabel
+      css={{ height: '100%', padding: 0 }}
+      id={`input-${id}`}
+    >
+      <Input
+        onChange={handleChange}
+        onBlur={() => onCommit(currentValue, true)}
+        onKeyUp={handleKeyUp}
+        ref={select}
+        value={currentValue}
+        autoComplete="off"
+        spellCheck="false"
+        aria-invalid={Boolean(error)}
+        aria-errormessage={`error-${id}`}
+        {...props}
+      />
+    </FormField>
   );
 };

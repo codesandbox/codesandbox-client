@@ -123,6 +123,9 @@ export type CurrentUser = {
     plan: 'pro' | 'patron';
     duration: 'monthly' | 'yearly';
   } | null;
+  experiments: {
+    [key: string]: boolean;
+  };
   curatorAt: string;
   badges: Badge[];
   integrations: {
@@ -316,6 +319,9 @@ export type Sandbox = {
   userLiked: boolean;
   modules: Module[];
   directories: Directory[];
+  featureFlags: {
+    [key: string]: boolean;
+  };
   collection?: {
     path: string;
   };
@@ -442,10 +448,10 @@ export type PackageJSON = {
   keywords?: string[];
   main?: string;
   module?: string;
-  scripts?: { [command: string]: string; };
-  dependencies?: { [dependency: string]: string; };
-  devDependencies?: { [dependency: string]: string; };
-  jest?: { setupFilesAfterEnv?: string[]; };
+  scripts?: { [command: string]: string };
+  dependencies?: { [dependency: string]: string };
+  devDependencies?: { [dependency: string]: string };
+  jest?: { setupFilesAfterEnv?: string[] };
   resolutions?: { [dependency: string]: string };
 };
 

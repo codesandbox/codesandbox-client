@@ -201,6 +201,14 @@ const Entry: React.FC<IEntryProps> = ({
                 onCancel={resetState}
                 onCommit={handleRename}
                 error={error}
+                css={css({
+                  // i know how this looks, but to make the input feel like
+                  // it's editing in place, we move it back half the space
+                  // 0.5 * gap of 2 = 1 and then another 1px for the border
+                  // :upside-down:smile:
+                  marginLeft: '-5px',
+                  paddingLeft: 1,
+                })}
               />
             ) : (
               <Text maxWidth={150}>{title}</Text>

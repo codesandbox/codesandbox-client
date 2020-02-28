@@ -44,13 +44,12 @@ export default new (class Live {
     const live = this;
 
     clients = clientsFactory(
-      (moduleShortid, revision, operation) => {
+      (moduleShortid, revision, operation) =>
         live.send('operation', {
           moduleShortid,
           operation,
           revision,
-        });
-      },
+        }),
       (moduleShortid, operation) => {
         options.onApplyOperation({
           moduleShortid,
@@ -301,7 +300,11 @@ export default new (class Live {
     return this.send('live:module_state', {});
   }
 
-  sendUserSelection(moduleShortid: string, liveUserId: string, selection: any) {
+  sendUserSelection(
+    moduleShortid: string | null,
+    liveUserId: string,
+    selection: any
+  ) {
     return this.send('user:selection', {
       liveUserId,
       moduleShortid,

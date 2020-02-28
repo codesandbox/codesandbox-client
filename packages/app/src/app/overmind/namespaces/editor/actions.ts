@@ -8,7 +8,7 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { hasPermission, convertTypeToStatus } from '@codesandbox/common/lib/utils/permission';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
@@ -85,6 +85,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   newId = actions.editor.internal.ensureSandboxId(newId);
 
+  effects.browser.storage.set('currentSandboxId', newId);
+
   const hasExistingSandbox = Boolean(state.editor.currentId);
 
   if (state.live.isLive) {
@@ -114,6 +116,27 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   await effects.vscode.changeSandbox(sandbox, fs => {
     state.editor.modulesByPath = fs;
   });
+
+  if (sandbox.featureFlags?.containerLsp && !sandbox.owned) {
+    effects.vscode.setReadOnly(true);
+    effects.notificationToast.add({
+      message:
+        'This Sandbox is running an experiment. You have to fork it before you can make any changes',
+      title: 'Experimental Sandbox',
+      status: convertTypeToStatus('notice'),
+      sticky: true,
+      actions: {
+        primary: [
+          {
+            label: 'Fork',
+            run: () => {
+              actions.editor.forkSandboxClicked();
+            },
+          },
+        ],
+      },
+    });
+  }
 
   actions.internal.ensurePackageJSON();
 

@@ -478,4 +478,9 @@ export default {
       })
       .then(data => data.template);
   },
+  updateExperiments(experiments: { [key: string]: boolean }): Promise<void> {
+    return api.post(`/users/experiments`, {
+      experiments,
+    });
+  },
 };

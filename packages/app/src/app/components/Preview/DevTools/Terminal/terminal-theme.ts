@@ -1,4 +1,5 @@
 import { ITheme } from 'xterm';
+import dot from 'dot-object';
 
 export type VSTheme = {
   background2: () => void;
@@ -56,3 +57,11 @@ export default function getTerminalTheme(theme: VSTheme): ITheme {
     cursorAccent: theme.vscodeTheme.colors['terminalCursor.background'],
   };
 }
+
+export const flattenTerminalTheme = theme => ({
+  ...theme,
+  vscodeTheme: {
+    ...theme.vscodeTheme,
+    colors: dot.dot(theme.vscodeTheme.colors),
+  },
+});

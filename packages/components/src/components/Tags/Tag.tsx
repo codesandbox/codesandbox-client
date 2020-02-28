@@ -34,7 +34,7 @@ export function Tag({ tag, onRemove }: TagProps) {
         <Button
           variant="link"
           css={{ width: 'auto' }}
-          onClick={onRemove}
+          onClick={() => onRemove(tag)}
           marginLeft={1}
         >
           <CrossIcon />
