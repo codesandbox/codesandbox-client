@@ -5,12 +5,11 @@ import { css } from '@styled-system/css';
 import { json } from 'overmind';
 import { FilterIcon, CommentIcon } from './icons';
 import { Comment } from './Comment';
-import { useDimensions } from './useDimensions';
 import { AddComment } from './AddComment';
 
 export const Comments: React.FC = () => {
   const { state } = useOvermind();
-  const [ref, { width }] = useDimensions();
+
   const options = ['Open', 'All', 'Resolved', 'Mentions'];
   const [selected, select] = useState(options[0]);
   const stateComments = json(
@@ -60,70 +59,71 @@ export const Comments: React.FC = () => {
   return (
     <Stack
       direction="vertical"
-      css={css({
-        height: '100%',
-        position: 'relative',
-      })}
-      ref={ref}
+      justify="space-between"
+      css={{ height: '100%' }}
     >
-      <Stack
-        align="center"
-        justify="space-between"
-        css={css({
-          borderBottom: '1px solid',
-          borderColor: 'sideBar.border',
-          height: 8,
-          paddingLeft: 2,
-          width: '100%',
-        })}
-      >
-        <Text variant="body" weight="semibold">
-          Comments
-        </Text>
+      <div style={{ overflow: 'hidden' }}>
         <Stack
-          justify="flex-end"
           align="center"
-          css={{ '> *': { lineHeight: 1 } }}
+          justify="space-between"
+          css={css({
+            borderBottom: '1px solid',
+            borderColor: 'sideBar.border',
+            height: 8,
+            paddingLeft: 2,
+            width: '100%',
+          })}
         >
-          <Menu>
-            <Menu.Button
-              css={css({
-                height: 'auto',
-              })}
-            >
-              <FilterIcon />
-            </Menu.Button>
-            <Menu.List>
-              {options.map(option => (
-                <Menu.Item onSelect={() => select(option)}>{option}</Menu.Item>
-              ))}
-            </Menu.List>
-          </Menu>
+          <Text variant="body" weight="semibold">
+            Comments
+          </Text>
+          <Stack
+            justify="flex-end"
+            align="center"
+            css={{ '> *': { lineHeight: 1 } }}
+          >
+            <Menu>
+              <Menu.Button
+                css={css({
+                  height: 'auto',
+                })}
+              >
+                <FilterIcon />
+              </Menu.Button>
+              <Menu.List>
+                {options.map(option => (
+                  <Menu.Item onSelect={() => select(option)}>
+                    {option}
+                  </Menu.Item>
+                ))}
+              </Menu.List>
+            </Menu>
+          </Stack>
         </Stack>
-      </Stack>
-      {stateComments.length ? (
-        <List marginTop={4}>
-          {selected === 'All' &&
-            stateComments.map(comment => <Comment comment={comment} />)}
-          {selected === 'Open' ? (
-            open.length ? (
-              open.map(comment => <Comment comment={comment} />)
-            ) : (
-              <Empty />
-            )
-          ) : null}
-          {selected === 'Resolved' ? (
-            resolved.length ? (
-              resolved.map(comment => <Comment comment={comment} />)
-            ) : (
-              <Empty />
-            )
-          ) : null}
-        </List>
-      ) : (
-        <Empty />
-      )}
-      <AddComment width={width} />
+        {stateComments.length ? (
+          <List marginTop={4} css={{ height: '100%', overflow: 'auto' }}>
+            {selected === 'All' &&
+              stateComments.map(comment => <Comment comment={comment} />)}
+            {selected === 'Open' ? (
+              open.length ? (
+                open.map(comment => <Comment comment={comment} />)
+              ) : (
+                <Empty />
+              )
+            ) : null}
+            {selected === 'Resolved' ? (
+              resolved.length ? (
+                resolved.map(comment => <Comment comment={comment} />)
+              ) : (
+                <Empty />
+              )
+            ) : null}
+          </List>
+        ) : (
+          <Empty />
+        )}
+      </div>
+      <AddComment />
     </Stack>
   );
 };
