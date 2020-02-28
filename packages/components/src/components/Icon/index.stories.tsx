@@ -10,11 +10,11 @@ export default {
 };
 
 export const Simple = () => (
-  <>
-    <Icon name="edit" />
-    <Icon name="edit" css={{ color: 'green' }} />
-    <Icon name="edit" size={24} />
-  </>
+  <Stack gap={2}>
+    <Icon name="github" />
+    <Icon name="github" css={{ color: 'blues.500' }} />
+    <Icon name="github" size={24} />
+  </Stack>
 );
 
 export const List = () => (
