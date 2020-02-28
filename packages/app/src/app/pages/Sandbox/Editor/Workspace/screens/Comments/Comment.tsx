@@ -32,8 +32,7 @@ export const Comment = React.memo(({ comment }: any) => {
     <ListAction
       onClick={() => actions.editor.selectComment(comment.id)}
       key={comment.id}
-      paddingBottom={6}
-      paddingTop={6}
+      paddingY={5}
       css={css({
         display: 'block',
         color: 'inherit',
@@ -42,6 +41,7 @@ export const Comment = React.memo(({ comment }: any) => {
         transition: 'opacity',
         transitionDuration: theme => theme.speeds[1],
         opacity: comment.isResolved ? 0.2 : 1,
+        paddingRight: 0, // the actions menu should be at the edge
       })}
     >
       <Stack align="flex-start" justify="space-between" marginBottom={4}>
@@ -93,12 +93,14 @@ export const Comment = React.memo(({ comment }: any) => {
           </Menu>
         </Stack>
       </Stack>
-      <Text block css={truncateText} marginBottom={2}>
-        {comment.originalMessage.content}
-      </Text>
-      <Text variant="muted" size={2}>
-        {getRepliesString(comment.replies.length)}
-      </Text>
+      <p>
+        <Text block css={truncateText} marginBottom={2} marginRight={2}>
+          {comment.originalMessage.content}
+        </Text>
+        <Text variant="muted" size={2}>
+          {getRepliesString(comment.replies.length)}
+        </Text>
+      </p>
     </ListAction>
   );
 });
