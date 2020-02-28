@@ -44,13 +44,12 @@ export default new (class Live {
     const live = this;
 
     clients = clientsFactory(
-      (moduleShortid, revision, operation) => {
+      (moduleShortid, revision, operation) =>
         live.send('operation', {
           moduleShortid,
           operation,
           revision,
-        });
-      },
+        }),
       (moduleShortid, operation) => {
         options.onApplyOperation({
           moduleShortid,

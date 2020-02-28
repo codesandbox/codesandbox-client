@@ -1,0 +1,56 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "TS Lint plugin contributions to package.json",
+    "type": "object",
+    "properties": {
+        "compilerOptions": {
+            "type": "object",
+            "properties": {
+                "plugins": {
+                    "type": "array",
+                    "items": {
+                        "if": {
+                            "properties": {
+                                "name": {
+                                    "enum": [
+                                        "typescript-lit-html-plugin"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "name"
+                            ]
+                        },
+                        "then": {
+                            "properties": {
+                                "tags": {
+                                    "type": "array",
+                                    "description": "List of template tags to enable html intellisense in.",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "Tag name."
+                                    },
+                                    "default": [
+                                        "html",
+                                        "raw"
+                                    ]
+                                },
+                                "format": {
+                                    "type": "object",
+                                    "description": "Formatter settings",
+                                    "properties": {
+                                        "enabled": {
+                                            "type": "boolean",
+                                            "description": "Enable/disable html formatting.",
+                                            "default": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
