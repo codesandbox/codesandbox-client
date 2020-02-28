@@ -1,12 +1,12 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
-import { List, Menu, Stack, Text } from '@codesandbox/components';
+import { List, Menu, Stack, Text, SidebarRow } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
-import { CommentIcon, FilterIcon } from './icons';
+import { CommentIcon } from './icons';
 
 export const Comments: React.FC = () => {
   const { state, actions } = useOvermind();
@@ -33,9 +33,7 @@ export const Comments: React.FC = () => {
       align="center"
       justify="center"
       direction="vertical"
-      css={css({
-        height: '100%',
-      })}
+      css={css({ height: '100%' })}
     >
       <CommentIcon />
       <Text align="center" block marginTop={8}>
@@ -58,26 +56,17 @@ export const Comments: React.FC = () => {
       css={{ height: '100%' }}
     >
       <div css={{ overflow: 'hidden' }}>
-        <Stack
-          align="center"
+        <SidebarRow
           justify="space-between"
+          paddingX={2}
           css={css({
             borderBottom: '1px solid',
             borderColor: 'sideBar.border',
-            height: 8,
-            paddingLeft: 2,
-            width: '100%',
           })}
         >
           <Text>Comments</Text>
           <Menu>
-            <Menu.Button
-              css={css({
-                height: 'auto',
-              })}
-            >
-              <FilterIcon />
-            </Menu.Button>
+            <Menu.IconButton name="filter" title="Filter comments" size={3} />
             <Menu.List>
               {options.map(option => (
                 <Menu.Item
@@ -88,7 +77,7 @@ export const Comments: React.FC = () => {
               ))}
             </Menu.List>
           </Menu>
-        </Stack>
+        </SidebarRow>
 
         {stateComments.length ? (
           <List marginTop={4} css={{ height: '100%', overflow: 'scroll' }}>

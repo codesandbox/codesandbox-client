@@ -5,21 +5,17 @@ import {
   Menu,
   Stack,
   Text,
+  Icon,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { formatDistance } from 'date-fns';
 import React from 'react';
 
-import { MoreIcon, ResolvedIcon } from './icons';
-
 export const Comment = React.memo(({ comment }: any) => {
   const { state, actions } = useOvermind();
 
   const truncateText = {
-    transition: 'opacity',
-    transitionDuration: theme => theme.speeds[1],
-    opacity: comment.isResolved ? 0.2 : 1,
     maxHeight: 52,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -43,18 +39,13 @@ export const Comment = React.memo(({ comment }: any) => {
         color: 'inherit',
         borderBottom: '1px solid',
         borderColor: 'sideBar.border',
+        transition: 'opacity',
+        transitionDuration: theme => theme.speeds[1],
+        opacity: comment.isResolved ? 0.2 : 1,
       })}
     >
       <Stack align="flex-start" justify="space-between" marginBottom={4}>
-        <Stack
-          gap={2}
-          align="center"
-          css={{
-            transition: 'opacity',
-            transitionDuration: theme => theme.speeds[1],
-            opacity: comment.isResolved ? 0.2 : 1,
-          }}
-        >
+        <Stack gap={2} align="center">
           <Avatar user={comment.originalMessage.author} />
           <Stack direction="vertical" justify="center">
             <Link
@@ -71,24 +62,18 @@ export const Comment = React.memo(({ comment }: any) => {
             </Text>
           </Stack>
         </Stack>
-        <Stack>
-          {comment.isResolved && <ResolvedIcon />}
+        <Stack align="center">
+          {comment.isResolved && (
+            <Icon name="check" title="Resolved" color="green" />
+          )}
           <Menu>
-            <Menu.Button
-              css={css({
-                height: 'auto',
-              })}
-            >
-              <MoreIcon />
-            </Menu.Button>
+            <Menu.IconButton name="more" title="Comment actions" size={3} />
             <Menu.List>
               <Menu.Item
                 onSelect={() =>
                   actions.editor.updateComment({
                     id: comment.id,
-                    data: {
-                      isResolved: !comment.isResolved,
-                    },
+                    data: { isResolved: !comment.isResolved },
                   })
                 }
               >
@@ -111,15 +96,7 @@ export const Comment = React.memo(({ comment }: any) => {
       <Text block css={truncateText} marginBottom={2}>
         {comment.originalMessage.content}
       </Text>
-      <Text
-        css={{
-          transition: 'opacity',
-          transitionDuration: theme => theme.speeds[1],
-          opacity: comment.isResolved ? 0.2 : 1,
-        }}
-        variant="muted"
-        size={2}
-      >
+      <Text variant="muted" size={2}>
         {getRepliesString(comment.replies.length)}
       </Text>
     </ListAction>

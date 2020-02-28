@@ -16,36 +16,3 @@ export const CommentIcon = props => (
     />
   </svg>
 );
-
-export const FilterIcon = props => (
-  <svg width={35} height={35} fill="none" viewBox="0 0 35 35" {...props}>
-    <path
-      fill="currentColor"
-      fillRule="evenodd"
-      d="M9.792 13.202c0-.59.478-1.068 1.068-1.068h12.813a1.068 1.068 0 110 2.136H10.86c-.59 0-1.068-.478-1.068-1.068zm2.136 4.271c0-.59.478-1.067 1.067-1.067h8.543a1.068 1.068 0 110 2.135h-8.543c-.59 0-1.067-.478-1.067-1.068zm3.203 3.204a1.068 1.068 0 000 2.135h4.271a1.068 1.068 0 100-2.135h-4.271z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
-
-export const ResolvedIcon = props => (
-  <svg width={14} height={14} fill="none" viewBox="0 0 14 14" {...props}>
-    <path
-      fill="#5BC266"
-      fillRule="evenodd"
-      d="M13 7A6 6 0 111 7a6 6 0 0112 0zm1 0A7 7 0 110 7a7 7 0 0114 0zm-3.767-3l.854.854L6.082 9.86l-.379-.379L3.5 7.316l.7-.714 1.73 1.7L10.234 4z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
-
-export const MoreIcon = props => (
-  <svg width={2} height={9} fill="none" viewBox="0 0 2 9" {...props}>
-    <path
-      fill="currentColor"
-      fillRule="evenodd"
-      d="M0 8a1 1 0 112 0 1 1 0 01-2 0zm0-3.5a1 1 0 112 0 1 1 0 01-2 0zM1 0a1 1 0 100 2 1 1 0 000-2z"
-      clipRule="evenodd"
-    />
-  </svg>
-);

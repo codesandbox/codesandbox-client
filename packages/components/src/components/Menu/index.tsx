@@ -3,9 +3,7 @@ import deepmerge from 'deepmerge';
 import css from '@styled-system/css';
 import * as ReachMenu from '@reach/menu-button';
 import { createGlobalStyle } from 'styled-components';
-import { Element } from '../Element';
-import { Button } from '../Button';
-import { List } from '../List';
+import { Element, Button, IconButton, List } from '../..';
 
 const Menu = ({ ...props }) => {
   const PortalStyles = createGlobalStyle(
@@ -61,6 +59,10 @@ const MenuButton = props => (
   </Button>
 );
 
+const MenuIconButton = props => (
+  <IconButton as={ReachMenu.MenuButton} {...props} />
+);
+
 const MenuList = props => (
   <List as={ReachMenu.MenuList} data-component="MenuList" {...props}>
     {props.children}
@@ -72,6 +74,7 @@ const MenuItem = props => (
 );
 
 Menu.Button = MenuButton;
+Menu.IconButton = MenuIconButton;
 Menu.List = MenuList;
 Menu.Item = MenuItem;
 

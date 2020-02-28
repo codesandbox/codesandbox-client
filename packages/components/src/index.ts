@@ -6,6 +6,7 @@ export * from './components/ThemeProvider';
 export * from './components/Avatar';
 export * from './components/Button';
 export * from './components/Icon';
+export * from './components/IconButton';
 export * from './components/Input';
 export * from './components/Label';
 export * from './components/Link';
