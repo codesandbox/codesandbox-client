@@ -1422,18 +1422,27 @@ export const updateComment: AsyncAction<{
   };
 }> = async ({ state, effects }, { id, data }) => {
   const sandboxId = state.editor.currentSandbox.id;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let currentComment = state.editor.comments[sandboxId].find(
+
+  const currentComment = state.editor.comments[sandboxId].find(
     comment => comment.id === id
   );
-  currentComment = {
-    ...currentComment,
-    isResolved: data.isResolved || currentComment.isResolved,
-    originalMessage: {
-      ...currentComment.originalMessage,
-      content: data.comment || currentComment.originalMessage.content,
+  const rest = state.editor.comments[sandboxId].filter(
+    comment => comment.id !== id
+  );
+  state.editor.comments[sandboxId] = [
+    ...rest,
+    {
+      ...currentComment,
+      isResolved:
+        typeof data.isResolved === 'boolean'
+          ? data.isResolved
+          : currentComment.isResolved,
+      originalMessage: {
+        ...currentComment.originalMessage,
+        content: data.comment || currentComment.originalMessage.content,
+      },
     },
-  };
+  ];
   await effects.fakeGql.mutations.updateComment({
     id,
     ...data,

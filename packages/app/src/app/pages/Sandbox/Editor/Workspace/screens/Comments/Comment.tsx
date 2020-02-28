@@ -3,24 +3,28 @@ import { Stack, Text, ListAction, Link, Menu } from '@codesandbox/components';
 import { formatDistance } from 'date-fns';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { MoreIcon } from './icons';
-
-const truncateText = {
-  maxHeight: 52,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  maxWidth: '100%',
-  display: 'block',
-  // @ts-ignore
-  // eslint-disable-next-line no-dupe-keys
-  display: '-webkit-box',
-  '-webkit-line-clamp': '3',
-  '-webkit-box-orient': 'vertical',
-};
+import { MoreIcon, ResolvedIcon } from './icons';
 
 // @ts-ignore
 export const Comment = React.memo(({ comment }) => {
   const { state, actions } = useOvermind();
+
+  const truncateText = {
+    transition: 'opacity',
+    transitionDuration: theme => theme.speeds[1],
+    opacity: comment.isResolved ? 0.2 : 1,
+    maxHeight: 52,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: '100%',
+    display: 'block',
+    // @ts-ignore
+    // eslint-disable-next-line no-dupe-keys
+    display: '-webkit-box',
+    '-webkit-line-clamp': '3',
+    '-webkit-box-orient': 'vertical',
+  };
+
   return (
     <ListAction
       key={comment.id}
@@ -34,7 +38,15 @@ export const Comment = React.memo(({ comment }) => {
       })}
     >
       <Stack align="center" justify="space-between">
-        <Stack gap={1} align="center">
+        <Stack
+          gap={1}
+          align="center"
+          css={{
+            transition: 'opacity',
+            transitionDuration: theme => theme.speeds[1],
+            opacity: comment.isResolved ? 0.2 : 1,
+          }}
+        >
           <img
             css={css({
               border: '1px solid',
@@ -61,44 +73,56 @@ export const Comment = React.memo(({ comment }) => {
             </Text>
           </Stack>
         </Stack>
-        <Menu>
-          <Menu.Button
-            css={css({
-              height: 'auto',
-            })}
-          >
-            <MoreIcon />
-          </Menu.Button>
-          <Menu.List>
-            <Menu.Item
-              onSelect={() =>
-                actions.editor.updateComment({
-                  id: comment.id,
-                  data: {
-                    isResolved: true,
-                  },
-                })
-              }
+        <Stack>
+          {comment.isResolved && <ResolvedIcon />}
+          <Menu>
+            <Menu.Button
+              css={css({
+                height: 'auto',
+              })}
             >
-              Mark as Resolved
-            </Menu.Item>
-            <Menu.Item onSelect={() => {}}>Share Comment</Menu.Item>
-            {state.user.id === comment.originalMessage.author.id && (
+              <MoreIcon />
+            </Menu.Button>
+            <Menu.List>
               <Menu.Item
                 onSelect={() =>
-                  actions.editor.deleteComment({ id: comment.id })
+                  actions.editor.updateComment({
+                    id: comment.id,
+                    data: {
+                      isResolved: !comment.isResolved,
+                    },
+                  })
                 }
               >
-                Delete
+                Mark as {comment.isResolved ? 'Unr' : 'r'}esolved
               </Menu.Item>
-            )}
-          </Menu.List>
-        </Menu>
+              <Menu.Item onSelect={() => {}}>Share Comment</Menu.Item>
+              {state.user.id === comment.originalMessage.author.id && (
+                <Menu.Item
+                  onSelect={() =>
+                    actions.editor.deleteComment({ id: comment.id })
+                  }
+                >
+                  Delete
+                </Menu.Item>
+              )}
+            </Menu.List>
+          </Menu>
+        </Stack>
       </Stack>
       <Text block marginTop={4} css={truncateText}>
         {comment.originalMessage.content}
       </Text>
-      <Text block variant="muted" marginTop={2}>
+      <Text
+        css={{
+          transition: 'opacity',
+          transitionDuration: theme => theme.speeds[1],
+          opacity: comment.isResolved ? 0.2 : 1,
+        }}
+        block
+        variant="muted"
+        marginTop={2}
+      >
         {comment.replies.length} Repl
         {comment.replies.length > 1 || comment.replies.length === 0
           ? 'ies'
