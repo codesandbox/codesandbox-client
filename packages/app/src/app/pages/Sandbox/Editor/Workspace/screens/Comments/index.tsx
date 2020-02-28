@@ -57,7 +57,7 @@ export const Comments: React.FC = () => {
       justify="space-between"
       css={{ height: '100%' }}
     >
-      <div style={{ overflow: 'hidden' }}>
+      <div css={{ overflow: 'hidden' }}>
         <Stack
           align="center"
           justify="space-between"
@@ -69,6 +69,7 @@ export const Comments: React.FC = () => {
             width: '100%',
           })}
         >
+          <Text>Comments</Text>
           <Menu>
             <Menu.Button
               css={css({
@@ -88,8 +89,9 @@ export const Comments: React.FC = () => {
             </Menu.List>
           </Menu>
         </Stack>
+
         {stateComments.length ? (
-          <List marginTop={4}>
+          <List marginTop={4} css={{ height: '100%', overflow: 'scroll' }}>
             {stateComments.length ? (
               stateComments.map(comment => <Comment comment={comment} />)
             ) : (
