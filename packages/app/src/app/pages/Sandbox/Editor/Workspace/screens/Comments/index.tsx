@@ -92,16 +92,13 @@ export const Comments: React.FC = () => {
 
         {stateComments.length ? (
           <List marginTop={4} css={{ height: '100%', overflow: 'scroll' }}>
-            {stateComments.length ? (
-              stateComments.map(comment => <Comment comment={comment} />)
-            ) : (
-              <Empty />
-            )}
+            {stateComments.map(comment => (
+              <Comment comment={comment} />
+            ))}
           </List>
-        ) : (
-          <Empty />
-        )}
+        ) : null}
       </div>
+      {stateComments.length ? null : <Empty />}
       <AddComment />
     </Stack>
   );
