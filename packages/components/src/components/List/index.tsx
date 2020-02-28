@@ -7,6 +7,7 @@ export const List = styled(Element).attrs({ as: 'ul' })(
   css({
     listStyle: 'none',
     paddingLeft: 0,
+    margin: 0,
   })
 );
 
