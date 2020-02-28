@@ -84,9 +84,8 @@ export const gitModified = props => (
 );
 
 export const comments = props => (
-  <svg
-    width="16"
-    height="16"
+  <Element
+    as="svg"
     viewBox="0 0 16 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +104,23 @@ export const comments = props => (
       fill="currentColor"
       fillOpacity="0.4"
     />
-  </svg>
+  </Element>
+);
+
+export const check = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8ZM16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8ZM10.9124 5L11.9409 6.02852L7.12513 10.8443L6.09661 9.81577L6.10102 9.81136L4.5 8.21034L5.52852 7.18182L7.12954 8.78284L10.9124 5Z"
+      fill="currentColor"
+    />
+  </Element>
 );
 
 // we use this icon as a error state fallback
