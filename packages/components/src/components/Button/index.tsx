@@ -7,7 +7,7 @@ const variantStyles = {
   primary: {
     backgroundColor: 'button.background',
     color: 'button.foreground',
-    ':hover': {
+    ':hover:not(:disabled)': {
       // hoverBackground is polyfilled and uses a gradient
       // so we use background and not backgroundColor
 
@@ -16,39 +16,31 @@ const variantStyles = {
       // TODO @sid: extend our system to make background work as well
       background: theme => theme.colors.button.hoverBackground,
     },
-    ':focus': {
+    ':focus:not(:disabled)': {
       // we use the same colors for hover and focus
       // but we add an active state to give
       background: theme => theme.colors.button.hoverBackground,
-    },
-    ':disabled:hover': {
-      background: 'transparent', // override hover
-      backgroundColor: 'button.background',
     },
   },
   secondary: {
     backgroundColor: 'secondaryButton.background',
     color: 'secondaryButton.foreground',
     // same technique as primary
-    ':hover': {
+    ':hover:not(:disabled)': {
       background: theme => theme.colors.secondaryButton.hoverBackground,
     },
-    ':focus': {
+    ':focus:not(:disabled)': {
       background: theme => theme.colors.secondaryButton.hoverBackground,
-    },
-    ':disabled:hover': {
-      background: 'transparent', // override hover
-      backgroundColor: 'secondaryButton.background',
     },
   },
   link: {
     backgroundColor: 'transparent',
     color: 'mutedForeground',
     // same technique as primary
-    ':hover': {
+    ':hover:not(:disabled)': {
       color: 'foreground',
     },
-    ':focus': {
+    ':focus:not(:disabled)': {
       color: 'foreground',
     },
   },
@@ -56,16 +48,11 @@ const variantStyles = {
     backgroundColor: 'dangerButton.background',
     color: 'dangerButton.foreground',
     // same technique as primary
-    ':hover': {
+    ':hover:not(:disabled)': {
       background: theme => theme.colors.dangerButton.hoverBackground,
     },
-    ':focus': {
+    ':focus:not(:disabled)': {
       background: theme => theme.colors.dangerButton.hoverBackground,
-    },
-
-    ':disabled:hover': {
-      background: 'transparent', // override hover
-      backgroundColor: 'dangerButton.background',
     },
   },
 };
@@ -107,7 +94,7 @@ export const Button = styled(Element).attrs({ as: 'button' })<IButtonProps>(
           ':focus': {
             outline: 'none',
           },
-          ':active': {
+          ':active:not(:disabled)': {
             transform: 'scale(0.98)',
           },
           ':disabled': {

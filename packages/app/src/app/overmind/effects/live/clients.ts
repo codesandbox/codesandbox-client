@@ -4,7 +4,7 @@ export type SendOperation = (
   moduleShortid: string,
   revision: string,
   operation: any
-) => void;
+) => Promise<unknown>;
 
 export type ApplyOperation = (moduleShortid: string, operation: any) => void;
 
@@ -24,13 +24,13 @@ function operationToElixir(ot) {
 
 class CodeSandboxOTClient extends Client {
   moduleShortid: string;
-  onSendOperation: (revision: string, operation: any) => void;
+  onSendOperation: (revision: string, operation: any) => Promise<unknown>;
   onApplyOperation: (operation: any) => void;
 
   constructor(
     revision: number,
     moduleShortid: string,
-    onSendOperation: (revision: string, operation: any) => void,
+    onSendOperation: (revision: string, operation: any) => Promise<unknown>,
     onApplyOperation: (operation: any) => void
   ) {
     super(revision);
@@ -40,7 +40,11 @@ class CodeSandboxOTClient extends Client {
   }
 
   sendOperation(revision, operation) {
-    this.onSendOperation(revision, operationToElixir(operation.toJSON()));
+    this.onSendOperation(revision, operationToElixir(operation.toJSON())).then(
+      () => {
+        this.serverAck();
+      }
+    );
   }
 
   applyOperation(operation) {
@@ -97,9 +101,8 @@ export default (
       const client = new CodeSandboxOTClient(
         initialRevision,
         moduleShortid,
-        (revision, operation) => {
-          sendOperation(moduleShortid, revision, operation);
-        },
+        (revision, operation) =>
+          sendOperation(moduleShortid, revision, operation),
         operation => {
           applyOperation(moduleShortid, operation);
         }

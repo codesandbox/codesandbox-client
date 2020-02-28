@@ -1,0 +1,8 @@
+.vscode/
+.vscode-test/
+test/
+
+**/*.map
+**/*.ts
+**/tsconfig.json
+**/tslint.json

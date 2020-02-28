@@ -504,7 +504,7 @@ export const onOperation: Operator<LiveMessage<{
     return;
   }
   if (_isOwnMessage) {
-    effects.live.serverAck(data.module_shortid);
+    // Do nothing since we already sent this operation
   } else {
     try {
       effects.live.applyServer(data.module_shortid, data.operation);
