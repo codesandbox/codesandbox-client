@@ -5,7 +5,7 @@ export type Message = {
 };
 
 export type Author = {
-  id?: string;
+  id: string;
   avatarUrl: string;
   username: string;
 };

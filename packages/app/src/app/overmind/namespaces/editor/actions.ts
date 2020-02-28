@@ -1398,16 +1398,23 @@ export const addComment: AsyncAction<{
 
   state.editor.comments[sandboxId][id] = optimisticComment;
   state.editor.selectedCommentsFilter = CommentsFilterOption.OPEN;
-  const { addComment: newComment } = await effects.fakeGql.mutations.addComment(
-    {
+  try {
+    const {
+      addComment: newComment,
+    } = await effects.fakeGql.mutations.addComment({
       sandboxId,
       comment,
       username,
-    }
-  );
+    });
 
-  delete state.editor.comments[sandboxId][id];
-  state.editor.comments[sandboxId][newComment.id] = newComment;
+    delete state.editor.comments[sandboxId][id];
+    state.editor.comments[sandboxId][newComment.id] = newComment;
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to create your comment, please try again'
+    );
+    delete state.editor.comments[sandboxId][id];
+  }
 };
 
 export const deleteComment: AsyncAction<{

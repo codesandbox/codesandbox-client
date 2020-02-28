@@ -15,24 +15,28 @@ import { AddComment } from './AddComment';
 import { Comment } from './Comment';
 
 export const Comments: React.FC = () => {
-  const { state, actions } = useOvermind();
+  const {
+    state: {
+      editor: { selectedCommentsFilter, currentComments },
+    },
+    actions: { editor: editorActions },
+  } = useOvermind();
   const options = Object.values(CommentsFilterOption);
-  const selectedCommentsFilter = state.editor.selectedCommentsFilter;
-  const stateComments = state.editor.currentComments;
 
   const getSelectedFilter = () => {
-    if (selectedCommentsFilter === CommentsFilterOption.ALL) {
-      return 'new';
+    switch (selectedCommentsFilter) {
+      case CommentsFilterOption.ALL || CommentsFilterOption.OPEN:
+        return 'new';
+      case CommentsFilterOption.RESOLVED:
+        return 'resolved';
+      default:
+        return 'new';
     }
-    if (selectedCommentsFilter === CommentsFilterOption.OPEN) {
-      return 'open';
-    }
-    if (selectedCommentsFilter === CommentsFilterOption.RESOLVED) {
-      return 'resolved';
-    }
-
-    return null;
   };
+
+  const all =
+    selectedCommentsFilter === CommentsFilterOption.OPEN ||
+    selectedCommentsFilter === CommentsFilterOption.ALL;
 
   const Empty = () => (
     <Stack direction="vertical" align="center" justify="center" gap={8}>
@@ -44,13 +48,12 @@ export const Comments: React.FC = () => {
       />
       <Text block align="center" variant="muted">
         There are no {getSelectedFilter()} comments.{' '}
-        {selectedCommentsFilter === CommentsFilterOption.OPEN ||
-          (selectedCommentsFilter === CommentsFilterOption.ALL && (
-            <>
-              {/* Leave a comment by clicking anywhere within a file or */}
-              Write a global comment below.
-            </>
-          ))}
+        {all && (
+          <>
+            {/* Leave a comment by clicking anywhere within a file or */}
+            Write a global comment below.
+          </>
+        )}
       </Text>
     </Stack>
   );
@@ -76,7 +79,7 @@ export const Comments: React.FC = () => {
             <Menu.List>
               {options.map(option => (
                 <Menu.Item
-                  onSelect={() => actions.editor.selectCommentsFilter(option)}
+                  onSelect={() => editorActions.selectCommentsFilter(option)}
                 >
                   {option}
                 </Menu.Item>
@@ -85,15 +88,15 @@ export const Comments: React.FC = () => {
           </Menu>
         </SidebarRow>
 
-        {stateComments.length ? (
+        {currentComments.length ? (
           <List marginTop={4} css={{ height: '100%', overflow: 'scroll' }}>
-            {stateComments.map(comment => (
+            {currentComments.map(comment => (
               <Comment comment={comment} />
             ))}
           </List>
         ) : null}
       </div>
-      {stateComments.length ? null : <Empty />}
+      {currentComments.length ? null : <Empty />}
       <AddComment />
     </Stack>
   );

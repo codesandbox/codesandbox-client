@@ -4,7 +4,7 @@ import { Textarea, FormField, Element } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
-export const AddComment = () => {
+export const AddComment: React.FC = () => {
   const [value, setValue] = useState('');
   const { actions, state } = useOvermind();
 
