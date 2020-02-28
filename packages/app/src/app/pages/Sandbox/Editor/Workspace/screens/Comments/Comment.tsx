@@ -70,7 +70,18 @@ export const Comment = React.memo(({ comment }) => {
             <MoreIcon />
           </Menu.Button>
           <Menu.List>
-            <Menu.Item onSelect={() => {}}>Mark as Resolved</Menu.Item>
+            <Menu.Item
+              onSelect={() =>
+                actions.editor.updateComment({
+                  id: comment.id,
+                  data: {
+                    isResolved: true,
+                  },
+                })
+              }
+            >
+              Mark as Resolved
+            </Menu.Item>
             <Menu.Item onSelect={() => {}}>Share Comment</Menu.Item>
             {state.user.id === comment.originalMessage.author.id && (
               <Menu.Item

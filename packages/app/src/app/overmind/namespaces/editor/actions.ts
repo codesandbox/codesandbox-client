@@ -1414,6 +1414,32 @@ export const deleteComment: AsyncAction<{
   });
 };
 
+export const updateComment: AsyncAction<{
+  id: string;
+  data: {
+    comment?: string;
+    isResolved: boolean;
+  };
+}> = async ({ state, effects }, { id, data }) => {
+  const sandboxId = state.editor.currentSandbox.id;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let currentComment = state.editor.comments[sandboxId].find(
+    comment => comment.id === id
+  );
+  currentComment = {
+    ...currentComment,
+    isResolved: data.isResolved || currentComment.isResolved,
+    originalMessage: {
+      ...currentComment.originalMessage,
+      content: data.comment || currentComment.originalMessage.content,
+    },
+  };
+  await effects.fakeGql.mutations.updateComment({
+    id,
+    ...data,
+  });
+};
+
 export const changeInvitationAuthorization: AsyncAction<{
   invitationId: string;
   authorization: Authorization;
