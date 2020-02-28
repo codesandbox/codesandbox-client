@@ -82,10 +82,20 @@ type State = {
   };
   currentComments: Derive<State, Comment[]>;
   selectedCommentsFilter: CommentsFilterOption;
+  currentCommentId: string | null;
+  currentComment: Derive<State, Comment>;
 };
 
 export const state: State = {
   comments: {},
+  currentCommentId: null,
+  currentComment: ({ comments, currentSandbox, currentCommentId }) => {
+    if (!currentSandbox || !comments[currentSandbox.id]) {
+      return null;
+    }
+
+    return comments[currentSandbox.id][currentCommentId];
+  },
   selectedCommentsFilter: CommentsFilterOption.OPEN,
   currentComments: ({ comments, currentSandbox, selectedCommentsFilter }) => {
     if (!currentSandbox || !comments[currentSandbox.id]) {

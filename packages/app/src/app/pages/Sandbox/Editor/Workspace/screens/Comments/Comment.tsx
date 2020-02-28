@@ -1,15 +1,16 @@
-import React from 'react';
 import {
   Avatar,
+  Link,
+  ListAction,
+  Menu,
   Stack,
   Text,
-  ListAction,
-  Link,
-  Menu,
 } from '@codesandbox/components';
-import { formatDistance } from 'date-fns';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { formatDistance } from 'date-fns';
+import React from 'react';
+
 import { MoreIcon, ResolvedIcon } from './icons';
 
 export const Comment = React.memo(({ comment }: any) => {
@@ -33,6 +34,7 @@ export const Comment = React.memo(({ comment }: any) => {
 
   return (
     <ListAction
+      onClick={() => actions.editor.selectComment(comment.id)}
       key={comment.id}
       paddingBottom={6}
       paddingTop={6}

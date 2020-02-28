@@ -1370,6 +1370,10 @@ export const getComment: AsyncAction<{
   state.editor.comments[sandboxId][id] = comment;
 };
 
+export const selectComment: Action<string> = ({ state }, id) => {
+  state.editor.currentCommentId = id;
+};
+
 export const addComment: AsyncAction<{
   comment: string;
   sandboxId: string;
