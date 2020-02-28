@@ -151,11 +151,13 @@ export const sendCurrentSelection: Action = ({ state, effects }) => {
 
   if (state.live.isCurrentEditor) {
     const { liveUserId } = state.live;
-    effects.live.sendUserSelection(
-      state.editor.currentModuleShortid,
-      liveUserId,
-      state.live.currentSelection
-    );
+    if (liveUserId) {
+      effects.live.sendUserSelection(
+        state.editor.currentModuleShortid,
+        liveUserId,
+        state.live.currentSelection
+      );
+    }
   }
 };
 
