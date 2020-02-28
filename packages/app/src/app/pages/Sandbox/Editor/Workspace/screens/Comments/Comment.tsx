@@ -5,8 +5,7 @@ import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { MoreIcon, ResolvedIcon } from './icons';
 
-// @ts-ignore
-export const Comment = React.memo(({ comment }) => {
+export const Comment = React.memo(({ comment }: any) => {
   const { state, actions } = useOvermind();
 
   const truncateText = {

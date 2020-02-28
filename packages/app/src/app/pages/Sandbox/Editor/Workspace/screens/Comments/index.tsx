@@ -11,7 +11,7 @@ import { AddComment } from './AddComment';
 export const Comments: React.FC = () => {
   const { state } = useOvermind();
   const [ref, { width }] = useDimensions();
-  const options = ['All', 'Open', 'Resolved', 'Mentions'];
+  const options = ['Open', 'All', 'Resolved', 'Mentions'];
   const [selected, select] = useState(options[0]);
   const stateComments = json(
     state.editor.comments[state.editor.currentSandbox.id]
@@ -30,6 +30,31 @@ export const Comments: React.FC = () => {
 
     return null;
   };
+
+  const Empty = () => (
+    <Stack
+      align="center"
+      justify="center"
+      direction="vertical"
+      css={css({
+        height: '100%',
+      })}
+    >
+      <CommentIcon />
+      <Text align="center" block marginTop={8}>
+        There are no {getText()} comments.{' '}
+        {selected === 'All' && (
+          <>
+            {/* Leave a comment by clicking anywhere within a file or */}
+            Write a global comment below.
+          </>
+        )}
+      </Text>
+    </Stack>
+  );
+
+  const open = stateComments.filter(comment => !comment.isResolved);
+  const resolved = stateComments.filter(comment => comment.isResolved);
 
   return (
     <Stack
@@ -78,39 +103,20 @@ export const Comments: React.FC = () => {
       {stateComments.length ? (
         <List marginTop={4}>
           {selected === 'All' &&
-            // @ts-ignore
             stateComments.map(comment => <Comment comment={comment} />)}
-          {selected === 'Open' &&
-            stateComments
-              .filter(comment => !comment.isResolved)
-              // @ts-ignore
-              .map(comment => <Comment comment={comment} />)}
-          {selected === 'Resolved' &&
-            stateComments
-              .filter(comment => comment.isResolved)
-              // @ts-ignore
-              .map(comment => <Comment comment={comment} />)}
+          {selected === 'Open' && resolved.length ? (
+            open.map(comment => <Comment comment={comment} />)
+          ) : (
+            <Empty />
+          )}
+          {selected === 'Resolved' && resolved.length ? (
+            resolved.map(comment => <Comment comment={comment} />)
+          ) : (
+            <Empty />
+          )}
         </List>
       ) : (
-        <Stack
-          align="center"
-          justify="center"
-          direction="vertical"
-          css={css({
-            height: '100%',
-          })}
-        >
-          <CommentIcon />
-          <Text align="center" block marginTop={8}>
-            There are no {getText()} comments.{' '}
-            {selected === 'All' && (
-              <>
-                {/* Leave a comment by clicking anywhere within a file or */}
-                Write a global comment below.
-              </>
-            )}
-          </Text>
-        </Stack>
+        <Empty />
       )}
       <AddComment width={width} />
     </Stack>
