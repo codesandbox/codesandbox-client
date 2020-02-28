@@ -1,4 +1,5 @@
 import {
+  Element,
   Avatar,
   Link,
   ListAction,
@@ -32,12 +33,10 @@ export const Comment = React.memo(({ comment }: any) => {
     <ListAction
       onClick={() => actions.editor.selectComment(comment.id)}
       key={comment.id}
-      paddingY={5}
+      paddingTop={5}
       css={css({
         display: 'block',
         color: 'inherit',
-        borderBottom: '1px solid',
-        borderColor: 'sideBar.border',
         transition: 'opacity',
         transitionDuration: theme => theme.speeds[1],
         opacity: comment.isResolved ? 0.2 : 1,
@@ -93,14 +92,23 @@ export const Comment = React.memo(({ comment }: any) => {
           </Menu>
         </Stack>
       </Stack>
-      <p>
-        <Text block css={truncateText} marginBottom={2} marginRight={2}>
+      <Element
+        as="p"
+        marginY={0}
+        marginRight={2 /** Adjust for the missing margin in ListAction */}
+        paddingBottom={5}
+        css={css({
+          borderBottom: '1px solid',
+          borderColor: 'sideBar.border',
+        })}
+      >
+        <Text block css={truncateText} marginBottom={2}>
           {comment.originalMessage.content}
         </Text>
         <Text variant="muted" size={2}>
           {getRepliesString(comment.replies.length)}
         </Text>
-      </p>
+      </Element>
     </ListAction>
   );
 });
