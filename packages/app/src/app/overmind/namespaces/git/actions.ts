@@ -105,8 +105,8 @@ export const descriptionChanged: Action<{
 };
 
 export const createPrClicked: AsyncAction = async ({ state, effects }) => {
-  state.git.pr = null;
   state.git.isCreatingPr = true;
+  state.git.pr = null;
   state.currentModal = 'pr';
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
