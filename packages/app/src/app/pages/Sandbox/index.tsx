@@ -2,9 +2,7 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import Padding from '@codesandbox/common/lib/components/spacing/Padding';
-import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { Skeleton } from 'app/components/Skeleton';
 import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
@@ -134,28 +132,6 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
 
     if (state.editor.notFound) {
       return <NotFound />;
-    }
-
-    if (
-      REDESIGNED_SIDEBAR !== 'true' &&
-      (state.editor.isLoading || !state.editor.currentSandbox)
-    ) {
-      return (
-        <>
-          <Skeleton
-            titles={[
-              {
-                content: 'Loading Sandbox',
-                delay: 0.6,
-              },
-              {
-                content: 'Fetching git repository...',
-                delay: 2,
-              },
-            ]}
-          />
-        </>
-      );
     }
 
     return null;
