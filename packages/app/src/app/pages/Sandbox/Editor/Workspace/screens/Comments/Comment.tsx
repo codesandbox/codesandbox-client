@@ -45,7 +45,7 @@ export const Comment = React.memo(({ comment }: any) => {
         borderColor: 'sideBar.border',
       })}
     >
-      <Stack align="flex-start" justify="space-between">
+      <Stack align="flex-start" justify="space-between" marginBottom={4}>
         <Stack
           gap={2}
           align="center"
@@ -108,7 +108,7 @@ export const Comment = React.memo(({ comment }: any) => {
           </Menu>
         </Stack>
       </Stack>
-      <Text block marginTop={4} css={truncateText}>
+      <Text block css={truncateText} marginBottom={2}>
         {comment.originalMessage.content}
       </Text>
       <Text
@@ -117,15 +117,17 @@ export const Comment = React.memo(({ comment }: any) => {
           transitionDuration: theme => theme.speeds[1],
           opacity: comment.isResolved ? 0.2 : 1,
         }}
-        block
         variant="muted"
-        marginTop={2}
+        size={2}
       >
-        {comment.replies.length} Repl
-        {comment.replies.length > 1 || comment.replies.length === 0
-          ? 'ies'
-          : 'y'}
+        {getPrettyReplyString(comment.replies.length)}
       </Text>
     </ListAction>
   );
 });
+
+const getPrettyReplyString = length => {
+  if (length === 0) return 'No Replies';
+  if (length === 1) return '1 Reply';
+  return length + ' Replies';
+};
