@@ -43,12 +43,13 @@ export const Comments: React.FC = () => {
       <CommentIcon />
       <Text align="center" block marginTop={8}>
         There are no {getText()} comments.{' '}
-        {selected === 'All' && (
-          <>
-            {/* Leave a comment by clicking anywhere within a file or */}
-            Write a global comment below.
-          </>
-        )}
+        {selected === 'Open' ||
+          (selected === 'All' && (
+            <>
+              {/* Leave a comment by clicking anywhere within a file or */}
+              Write a global comment below.
+            </>
+          ))}
       </Text>
     </Stack>
   );
