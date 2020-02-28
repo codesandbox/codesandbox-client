@@ -1,5 +1,12 @@
 import React from 'react';
-import { Stack, Text, ListAction, Link, Menu } from '@codesandbox/components';
+import {
+  Avatar,
+  Stack,
+  Text,
+  ListAction,
+  Link,
+  Menu,
+} from '@codesandbox/components';
 import { formatDistance } from 'date-fns';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
@@ -36,9 +43,9 @@ export const Comment = React.memo(({ comment }: any) => {
         borderColor: 'sideBar.border',
       })}
     >
-      <Stack align="center" justify="space-between">
+      <Stack align="flex-start" justify="space-between">
         <Stack
-          gap={1}
+          gap={2}
           align="center"
           css={{
             transition: 'opacity',
@@ -46,17 +53,7 @@ export const Comment = React.memo(({ comment }: any) => {
             opacity: comment.isResolved ? 0.2 : 1,
           }}
         >
-          <img
-            css={css({
-              border: '1px solid',
-              borderColor: 'sideBar.border',
-              height: 8,
-              width: 8,
-              borderRadius: 'small',
-            })}
-            src={comment.originalMessage.author.avatarUrl}
-            alt={comment.originalMessage.author.username}
-          />
+          <Avatar user={comment.originalMessage.author} />
           <Stack direction="vertical" justify="center">
             <Link
               href={`/u/${comment.originalMessage.author.username}`}
