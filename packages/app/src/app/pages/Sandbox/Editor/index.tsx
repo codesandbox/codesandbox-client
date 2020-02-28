@@ -2,6 +2,7 @@ import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import Navigator from '@codesandbox/common/lib/components/Preview/Navigator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
@@ -122,7 +123,7 @@ const ContentSplit = () => {
         style={{ lineHeight: 'initial', backgroundColor: 'transparent' }}
         className="monaco-workbench"
       >
-        {true ? (
+        {REDESIGNED_SIDEBAR === 'true' ? (
           <>
             {state.preferences.settings.zenMode ? null : (
               <NewThemeProvider theme={localState.theme.vscodeTheme}>
@@ -135,7 +136,7 @@ const ContentSplit = () => {
         )}
         <Fullscreen style={{ width: 'initial' }}>
           {!hideNavigation &&
-            (true ? (
+            (REDESIGNED_SIDEBAR === 'true' ? (
               <NewThemeProvider theme={localState.theme.vscodeTheme}>
                 <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
               </NewThemeProvider>
