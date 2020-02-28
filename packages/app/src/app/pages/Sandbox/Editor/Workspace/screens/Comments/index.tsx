@@ -1,12 +1,18 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
-import { List, Menu, Stack, Text, SidebarRow } from '@codesandbox/components';
+import {
+  List,
+  Menu,
+  Stack,
+  Text,
+  SidebarRow,
+  Icon,
+} from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
-import { CommentIcon } from './icons';
 
 export const Comments: React.FC = () => {
   const { state, actions } = useOvermind();
@@ -14,7 +20,7 @@ export const Comments: React.FC = () => {
   const selectedCommentsFilter = state.editor.selectedCommentsFilter;
   const stateComments = state.editor.currentComments;
 
-  const getText = () => {
+  const getSelectedFilter = () => {
     if (selectedCommentsFilter === CommentsFilterOption.ALL) {
       return 'new';
     }
@@ -29,15 +35,15 @@ export const Comments: React.FC = () => {
   };
 
   const Empty = () => (
-    <Stack
-      align="center"
-      justify="center"
-      direction="vertical"
-      css={css({ height: '100%' })}
-    >
-      <CommentIcon />
-      <Text align="center" block marginTop={8}>
-        There are no {getText()} comments.{' '}
+    <Stack direction="vertical" align="center" justify="center" gap={8}>
+      <Icon
+        name="comments"
+        size={20}
+        color="mutedForeground"
+        css={{ opacity: 0.2 }}
+      />
+      <Text block align="center" variant="muted">
+        There are no {getSelectedFilter()} comments.{' '}
         {selectedCommentsFilter === CommentsFilterOption.OPEN ||
           (selectedCommentsFilter === CommentsFilterOption.ALL && (
             <>
@@ -79,7 +85,7 @@ export const Comments: React.FC = () => {
           </Menu>
         </SidebarRow>
 
-        {stateComments.length ? (
+        {!stateComments.length ? (
           <List marginTop={4} css={{ height: '100%', overflow: 'scroll' }}>
             {stateComments.map(comment => (
               <Comment comment={comment} />
@@ -87,7 +93,7 @@ export const Comments: React.FC = () => {
           </List>
         ) : null}
       </div>
-      {stateComments.length ? null : <Empty />}
+      {!stateComments.length ? null : <Empty />}
       <AddComment />
     </Stack>
   );
