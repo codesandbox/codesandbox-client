@@ -9,6 +9,8 @@ import {
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
 import {
@@ -19,11 +21,9 @@ import {
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import { json } from 'overmind';
 
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { NotificationStatus } from '@codesandbox/notifications';
 import eventToTransform from '../../utils/event-to-transform';
-import * as internalActions from './internalActions';
 import { SERVER } from '../../utils/items';
+import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
@@ -188,7 +188,11 @@ export const codeSaved: AsyncAction<{
   moduleShortid: string;
   cbID: string | null;
 }> = withOwnedSandbox(
-  async ({ actions }, { code, moduleShortid, cbID }) => {
+  async ({ actions, effects }, { code, moduleShortid, cbID }) => {
+    const pendingOperation = effects.live.getClient(moduleShortid).flush();
+
+    // eslint-disable-next-line
+    console.log('OKAY, READY TO SAVE MODULE CODE OPERATION', pendingOperation);
     actions.editor.internal.saveCode({
       code,
       moduleShortid,

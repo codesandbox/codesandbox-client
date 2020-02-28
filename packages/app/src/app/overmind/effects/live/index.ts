@@ -7,15 +7,16 @@ import {
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { camelizeKeys } from 'humps';
 import { TextOperation } from 'ot';
-import { Socket, Channel } from 'phoenix';
+import { Channel, Socket } from 'phoenix';
 import uuid from 'uuid';
 
-import clientsFactory from './clients';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
+import clientsFactory from './clients';
 
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
   provideJwtToken(): string;
+  getConnectionsCount(): number;
 };
 
 type JoinChannelResponse = {
@@ -29,27 +30,22 @@ declare global {
   }
 }
 
-const identifier = uuid.v4();
-const sentMessages = new Map();
-const debug = _debug('cs:socket');
+class Live {
+  private identifier = uuid.v4();
+  private sentMessages = new Map();
+  private debug = _debug('cs:socket');
+  private channel: Channel | null;
+  private messageIndex = 0;
+  private clients: ReturnType<typeof clientsFactory>;
+  private _socket: Socket;
 
-let channel: Channel | null;
-let messageIndex = 0;
-let clients: ReturnType<typeof clientsFactory>;
-let _socket: Socket;
-let provideJwtToken: () => string;
+  private provideJwtToken: () => string;
+  private getConnectionsCount: () => number;
 
-export default new (class Live {
   initialize(options: Options) {
-    const live = this;
-
-    clients = clientsFactory(
+    this.clients = clientsFactory(
       (moduleShortid, revision, operation) => {
-        live.send('operation', {
-          moduleShortid,
-          operation,
-          revision,
-        });
+        this.sendOperation(moduleShortid, revision, operation);
       },
       (moduleShortid, operation) => {
         options.onApplyOperation({
@@ -58,48 +54,49 @@ export default new (class Live {
         });
       }
     );
-    provideJwtToken = options.provideJwtToken;
+    this.provideJwtToken = options.provideJwtToken;
+    this.getConnectionsCount = options.getConnectionsCount;
   }
 
   getSocket() {
-    return _socket || this.connect();
+    return this._socket || this.connect();
   }
 
   connect(): Socket {
-    if (!_socket) {
+    if (!this._socket) {
       const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
-      _socket = new Socket(`${protocol}://${location.host}/socket`, {
+      this._socket = new Socket(`${protocol}://${location.host}/socket`, {
         params: {
-          guardian_token: provideJwtToken(),
+          guardian_token: this.provideJwtToken(),
         },
       });
 
-      _socket.connect();
-      window.socket = _socket;
-      debug('Connecting to socket', _socket);
+      this._socket.connect();
+      window.socket = this._socket;
+      this.debug('Connecting to socket', this._socket);
     }
 
-    return _socket;
+    return this._socket;
   }
 
   disconnect() {
     return new Promise((resolve, reject) => {
-      if (!channel) {
+      if (!this.channel) {
         resolve({});
         return;
       }
 
-      channel
+      this.channel
         .leave()
         .receive('ok', resp => {
-          if (!channel) {
+          if (!this.channel) {
             return resolve({});
           }
 
-          channel.onMessage = d => d;
-          channel = null;
-          sentMessages.clear();
-          messageIndex = 0;
+          this.channel.onMessage = d => d;
+          this.channel = null;
+          this.sentMessages.clear();
+          this.messageIndex = 0;
 
           return resolve(resp);
         })
@@ -110,9 +107,9 @@ export default new (class Live {
 
   joinChannel(roomId: string): Promise<JoinChannelResponse> {
     return new Promise((resolve, reject) => {
-      channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
+      this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
 
-      channel
+      this.channel
         .join()
         .receive('ok', resp => {
           const result = camelizeKeys(resp) as JoinChannelResponse;
@@ -130,18 +127,18 @@ export default new (class Live {
       data: object;
     }) => {}
   ) {
-    if (!channel) {
+    if (!this.channel) {
       return;
     }
 
-    channel.onMessage = (event: any, data: any) => {
+    this.channel.onMessage = (event: any, data: any) => {
       const disconnected =
         (data == null || Object.keys(data).length === 0) &&
         event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
 
       const _isOwnMessage = Boolean(
-        data && data._messageId && sentMessages.delete(data._messageId)
+        data && data._messageId && this.sentMessages.delete(data._messageId)
       );
 
       action({
@@ -155,14 +152,18 @@ export default new (class Live {
   }
 
   send(event: string, payload: { _messageId?: string; [key: string]: any }) {
-    const _messageId = identifier + messageIndex++;
+    if (this.getConnectionsCount() < 2) {
+      return Promise.resolve();
+    }
+
+    const _messageId = this.identifier + this.messageIndex++;
     // eslint-disable-next-line
     payload._messageId = _messageId;
-    sentMessages.set(_messageId, payload);
+    this.sentMessages.set(_messageId, payload);
 
     return new Promise((resolve, reject) => {
-      if (channel) {
-        channel
+      if (this.channel) {
+        this.channel
           .push(event, payload)
           .receive('ok', resolve)
           .receive('error', reject);
@@ -202,7 +203,7 @@ export default new (class Live {
     }
 
     try {
-      clients.get(moduleShortid).applyClient(operation);
+      this.clients.get(moduleShortid).applyClient(operation);
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
       this.send('live:module_state', {});
@@ -309,31 +310,59 @@ export default new (class Live {
     });
   }
 
+  getClient(moduleShortid: string) {
+    return this.clients.get(moduleShortid);
+  }
+
   getAllClients() {
-    return clients.getAll();
+    return this.clients.getAll();
   }
 
   applyClient(moduleShortid: string, operation: any) {
-    return clients
+    return this.clients
       .get(moduleShortid)
       .applyClient(TextOperation.fromJSON(operation));
   }
 
   applyServer(moduleShortid: string, operation: any) {
-    return clients
+    return this.clients
       .get(moduleShortid)
       .applyServer(TextOperation.fromJSON(operation));
   }
 
   serverAck(moduleShortid: string) {
-    return clients.get(moduleShortid).serverAck();
+    return this.clients.get(moduleShortid).serverAck();
   }
 
   createClient(moduleShortid: string, revision: number) {
-    return clients.create(moduleShortid, revision);
+    return this.clients.create(moduleShortid, revision);
   }
 
   resetClients() {
-    clients.clear();
+    this.clients.clear();
   }
-})();
+
+  private operationToElixir(ot) {
+    return ot.map(op => {
+      if (typeof op === 'number') {
+        if (op < 0) {
+          return { d: -op };
+        }
+
+        return op;
+      }
+
+      return { i: op };
+    });
+  }
+
+  private sendOperation(moduleShortid, revision, operation) {
+    this.send('operation', {
+      moduleShortid,
+      operation: this.operationToElixir(operation.toJSON()),
+      revision: Number(revision),
+    });
+  }
+}
+
+export default new Live();

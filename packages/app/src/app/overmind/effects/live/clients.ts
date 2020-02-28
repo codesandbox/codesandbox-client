@@ -1,4 +1,4 @@
-import { Client } from 'ot';
+import { Client, TextOperation } from 'ot';
 
 export type SendOperation = (
   moduleShortid: string,
@@ -8,24 +8,11 @@ export type SendOperation = (
 
 export type ApplyOperation = (moduleShortid: string, operation: any) => void;
 
-function operationToElixir(ot) {
-  return ot.map(op => {
-    if (typeof op === 'number') {
-      if (op < 0) {
-        return { d: -op };
-      }
-
-      return op;
-    }
-
-    return { i: op };
-  });
-}
-
 class CodeSandboxOTClient extends Client {
   moduleShortid: string;
   onSendOperation: (revision: string, operation: any) => void;
   onApplyOperation: (operation: any) => void;
+  saveOperation: TextOperation;
 
   constructor(
     revision: number,
@@ -39,28 +26,40 @@ class CodeSandboxOTClient extends Client {
     this.onApplyOperation = onApplyOperation;
   }
 
+  flush() {
+    const saveOperation = this.saveOperation;
+
+    this.saveOperation = null;
+
+    return {
+      revision: this.revision,
+      operation: saveOperation,
+    };
+  }
+
+  revertFlush(operation) {
+    if (this.saveOperation) {
+      this.saveOperation = operation.compose(this.saveOperation);
+    } else {
+      this.saveOperation = operation;
+    }
+  }
+
   sendOperation(revision, operation) {
-    this.onSendOperation(revision, operationToElixir(operation.toJSON()));
+    this.onSendOperation(revision, operation);
   }
 
   applyOperation(operation) {
     this.onApplyOperation(operation);
   }
 
-  serverAck() {
-    super.serverAck();
-  }
-
   applyClient(operation: any) {
+    if (this.saveOperation) {
+      this.saveOperation = this.saveOperation.compose(operation);
+    } else {
+      this.saveOperation = operation;
+    }
     super.applyClient(operation);
-  }
-
-  applyServer(operation: any) {
-    super.applyServer(operation);
-  }
-
-  serverReconnect() {
-    super.serverReconnect();
   }
 }
 

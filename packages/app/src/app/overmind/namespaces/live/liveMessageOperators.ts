@@ -83,6 +83,14 @@ export const onUserEntered: Operator<LiveMessage<{
       status: NotificationStatus.NOTICE,
     });
   }
+
+  if (users.length === 2) {
+    const clients = effects.live.getAllClients();
+
+    clients.forEach(client => {
+      client.serverReconnect();
+    });
+  }
 });
 
 export const onUserLeft: Operator<LiveMessage<{
