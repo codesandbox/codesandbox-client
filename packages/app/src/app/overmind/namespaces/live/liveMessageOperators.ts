@@ -71,6 +71,10 @@ export const onUserEntered: Operator<LiveMessage<{
     );
   }
 
+  // Send our own selections to everyone, just to let the others know where
+  // we are
+  actions.live.sendCurrentSelection();
+
   if (data.joined_user_id === state.live.liveUserId) {
     return;
   }
@@ -101,9 +105,7 @@ export const onUserLeft: Operator<LiveMessage<{
 
     if (user && user.id !== state.live.liveUserId) {
       effects.notificationToast.add({
-        message: user
-          ? `${user.username} left the live session.`
-          : 'Someone left the live session',
+        message: `${user.username} left the live session.`,
         status: NotificationStatus.NOTICE,
       });
     }

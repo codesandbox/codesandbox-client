@@ -144,6 +144,21 @@ export const applyTransformation: AsyncAction<{
   }
 };
 
+export const sendCurrentSelection: Action = ({ state, effects }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  if (state.live.isCurrentEditor) {
+    const { liveUserId } = state.live;
+    effects.live.sendUserSelection(
+      state.editor.currentModuleShortid,
+      liveUserId,
+      state.live.currentSelection
+    );
+  }
+};
+
 export const onSelectionChanged: Action<any> = (
   { state, effects },
   selection
@@ -158,6 +173,8 @@ export const onSelectionChanged: Action<any> = (
     if (!moduleShortid || !liveUserId) {
       return;
     }
+
+    state.live.currentSelection = selection;
     const userIndex = state.live.roomInfo.users.findIndex(
       u => u.id === liveUserId
     );
