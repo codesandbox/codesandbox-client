@@ -104,16 +104,20 @@ export const Comments: React.FC = () => {
         <List marginTop={4}>
           {selected === 'All' &&
             stateComments.map(comment => <Comment comment={comment} />)}
-          {selected === 'Open' && resolved.length ? (
-            open.map(comment => <Comment comment={comment} />)
-          ) : (
-            <Empty />
-          )}
-          {selected === 'Resolved' && resolved.length ? (
-            resolved.map(comment => <Comment comment={comment} />)
-          ) : (
-            <Empty />
-          )}
+          {selected === 'Open' ? (
+            open.length ? (
+              open.map(comment => <Comment comment={comment} />)
+            ) : (
+              <Empty />
+            )
+          ) : null}
+          {selected === 'Resolved' ? (
+            resolved.length ? (
+              resolved.map(comment => <Comment comment={comment} />)
+            ) : (
+              <Empty />
+            )
+          ) : null}
         </List>
       ) : (
         <Empty />
