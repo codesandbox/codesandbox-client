@@ -10,10 +10,17 @@ type State = {
   description: string;
   originalGitChanges: GitChanges | null;
   commit: GitCommit | null;
-  pr: GitPr | null;
   isCommitting: boolean;
-  isCreatingPr: boolean;
-};
+} & (
+  | {
+      isCreatingPr: true;
+      pr: null;
+    }
+  | {
+      isCreatingPr: false;
+      pr: GitPr;
+    }
+);
 
 export const state: State = {
   repoTitle: '',
@@ -27,5 +34,5 @@ export const state: State = {
   commit: null,
   pr: null,
   isCommitting: false,
-  isCreatingPr: false,
+  isCreatingPr: true,
 };
