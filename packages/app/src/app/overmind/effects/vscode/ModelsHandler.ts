@@ -292,6 +292,7 @@ export class ModelsHandler {
           ),
           options: {
             className: this.userClassesGenerated[className],
+            stickiness: 3, // GrowsOnlyWhenTypingAfter
           },
         };
       };

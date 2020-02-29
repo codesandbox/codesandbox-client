@@ -5,6 +5,7 @@ export * from './components/ThemeProvider';
 // atoms
 export * from './components/Avatar';
 export * from './components/Button';
+export * from './components/Icon';
 export * from './components/Input';
 export * from './components/Label';
 export * from './components/Link';
@@ -24,6 +25,7 @@ export * from './components/FormField';
 export * from './components/Tags';
 export * from './components/Tags/Tag';
 export * from './components/TagInput';
+export * from './components/Menu';
 
 // layout
 export * from './components/Grid';

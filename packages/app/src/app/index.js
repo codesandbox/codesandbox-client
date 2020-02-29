@@ -52,7 +52,9 @@ window.__isTouch = !matchMedia('(pointer:fine)').matches;
 const overmind = createOvermind(config, {
   delimiter: ' ',
   devtools:
-    (window.opener && window.opener !== window) || !window.chrome
+    (window.opener && window.opener !== window) ||
+    !window.chrome ||
+    location.search.includes('noDevtools')
       ? false
       : 'localhost:3031',
   name:
