@@ -24,6 +24,7 @@ function operationToElixir(ot) {
 
 class CodeSandboxOTClient extends Client {
   moduleShortid: string;
+  revision: number;
   onSendOperation: (revision: string, operation: any) => Promise<unknown>;
   onApplyOperation: (operation: any) => void;
 
@@ -52,7 +53,13 @@ class CodeSandboxOTClient extends Client {
   }
 
   serverAck() {
-    super.serverAck();
+    try {
+      super.serverAck();
+    } catch (e) {
+      // Undo the revision increment again
+      this.revision--;
+      throw e;
+    }
   }
 
   applyClient(operation: any) {
