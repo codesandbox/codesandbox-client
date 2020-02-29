@@ -126,7 +126,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
       // Remove the invite from the url
       url.searchParams.delete('ts');
-      history.replace(url.href);
+      history.replace(url.pathname);
     } catch (error) {
       if (
         !error.message.includes('Cannot redeem token, invitation not found')
@@ -1224,6 +1224,7 @@ export const addCollaborator: AsyncAction<{
       username,
       avatarUrl: '',
     },
+    warning: null,
   };
 
   state.editor.collaborators = [...state.editor.collaborators, newCollaborator];
