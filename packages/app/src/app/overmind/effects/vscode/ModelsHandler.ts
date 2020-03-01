@@ -5,6 +5,7 @@ import {
   Sandbox,
   UserSelection,
 } from '@codesandbox/common/lib/types';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
@@ -195,8 +196,10 @@ export class ModelsHandler {
       return;
     }
 
+    const oldCode = model.getValue();
+    const changeOperation = getTextOperation(oldCode, module.code);
     this.isApplyingOperation = true;
-    await model.setValue(module.code);
+    this.applyOperationToModel(changeOperation, false, model);
     this.isApplyingOperation = false;
   }
 

@@ -264,10 +264,12 @@ export class VSCodeEffect {
   }
 
   public updateOptions(options: { readOnly: boolean }) {
-    const editor = this.editorApi.getActiveCodeEditor();
+    if (this.editorApi) {
+      const editor = this.editorApi.getActiveCodeEditor();
 
-    if (editor) {
-      editor.updateOptions(options);
+      if (editor) {
+        editor.updateOptions(options);
+      }
     }
   }
 
