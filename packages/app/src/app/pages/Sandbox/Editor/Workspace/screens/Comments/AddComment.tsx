@@ -28,6 +28,7 @@ export const AddComment: React.FC = () => {
       paddingX={2}
       paddingY={4}
       css={css({
+        boxShadow: '2',
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
       })}

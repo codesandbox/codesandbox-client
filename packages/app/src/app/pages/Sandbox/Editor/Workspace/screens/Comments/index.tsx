@@ -75,10 +75,16 @@ export const Comments: React.FC = () => {
         >
           <Text>Comments</Text>
           <Menu>
-            <Menu.IconButton name="filter" title="Filter comments" size={3} />
+            <Menu.IconButton
+              className="icon-button"
+              name="filter"
+              title="Filter comments"
+              size={3}
+            />
             <Menu.List>
               {options.map(option => (
                 <Menu.Item
+                  key={option}
                   onSelect={() => editorActions.selectCommentsFilter(option)}
                 >
                   {option}

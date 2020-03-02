@@ -166,15 +166,15 @@ export const onSelectionChanged: Action<any> = (
   { state, effects },
   selection
 ) => {
-  console.log(
-    'SELECTION',
-    selection.primary.selection[0],
-    state.editor.currentModule.code.substr(
-      selection.primary.selection[0],
-      selection.primary.selection[1] - selection.primary.selection[0]
-    ),
-    state.editor.currentModule.code.length - selection.primary.selection[1]
-  );
+  // console.log(
+  //   'SELECTION',
+  //   selection.primary.selection[0],
+  //   state.editor.currentModule.code.substr(
+  //     selection.primary.selection[0],
+  //     selection.primary.selection[1] - selection.primary.selection[0]
+  //   ),
+  //   state.editor.currentModule.code.length - selection.primary.selection[1]
+  // );
   if (!state.live.roomInfo) {
     return;
   }
