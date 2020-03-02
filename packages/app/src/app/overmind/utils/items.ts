@@ -1,5 +1,9 @@
 import getTemplate from '@codesandbox/common/lib/templates';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import {
+  COMMENTS as COMMENTS_ON,
+  REDESIGNED_SIDEBAR,
+} from '@codesandbox/common/lib/utils/feature-flags';
 
 export interface INavigationItem {
   id: string;
@@ -33,7 +37,7 @@ export const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
-  // defaultOpen: true,
+  defaultOpen: !COMMENTS_ON,
 };
 
 export const GITHUB: INavigationItem = {
@@ -67,7 +71,7 @@ export const SERVER: INavigationItem = {
 export const COMMENTS: INavigationItem = {
   id: 'comments',
   name: 'Comments',
-  defaultOpen: true,
+  defaultOpen: COMMENTS_ON && REDESIGNED_SIDEBAR === 'true',
 };
 
 export function getDisabledItems(store: any): INavigationItem[] {
@@ -116,7 +120,11 @@ export default function getItems(store: any): INavigationItem[] {
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    items.push(GITHUB, COMMENTS);
+    if (COMMENTS_ON && REDESIGNED_SIDEBAR === 'true') {
+      items.push(GITHUB, COMMENTS);
+    } else {
+      items.push(GITHUB);
+    }
   }
 
   if (store.isLoggedIn) {

@@ -8,3 +8,6 @@
 
 export const REDESIGNED_SIDEBAR =
   localStorage.getItem('REDESIGNED_SIDEBAR') || false;
+
+export const COMMENTS =
+  localStorage.getItem('COMMENTS_CODESANDBOX') === 'true' || false;
