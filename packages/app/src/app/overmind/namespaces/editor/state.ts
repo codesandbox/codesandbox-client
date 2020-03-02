@@ -83,14 +83,14 @@ type State = {
   currentComments: Derive<State, Comment[]>;
   selectedCommentsFilter: CommentsFilterOption;
   currentCommentId: string | null;
-  currentComment: Derive<State, Comment>;
+  currentComment: Derive<State, Comment | null>;
 };
 
 export const state: State = {
   comments: {},
   currentCommentId: null,
   currentComment: ({ comments, currentSandbox, currentCommentId }) => {
-    if (!currentSandbox || !comments[currentSandbox.id]) {
+    if (!currentSandbox || !comments[currentSandbox.id] || !currentCommentId) {
       return null;
     }
 
