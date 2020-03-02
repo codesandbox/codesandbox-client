@@ -97,6 +97,7 @@ export const state: State = {
     return comments[currentSandbox.id][currentCommentId];
   },
   selectedCommentsFilter: CommentsFilterOption.OPEN,
+  // eslint-disable-next-line consistent-return
   currentComments: ({ comments, currentSandbox, selectedCommentsFilter }) => {
     if (!currentSandbox || !comments[currentSandbox.id]) {
       return [];
