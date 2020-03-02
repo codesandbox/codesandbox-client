@@ -24,7 +24,7 @@ const SignIn = () => {
     genericPageMounted();
   }, [genericPageMounted]);
 
-  if (state.hasLogIn) {
+  if (state.hasLogIn && !redirectTo) {
     return <Redirect to={dashboardUrl()} />;
   }
 

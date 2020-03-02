@@ -77,14 +77,14 @@ export function getDisabledItems(store: any): INavigationItem[] {
 export default function getItems(store: any): INavigationItem[] {
   if (
     store.live.isLive &&
-    !store.editor.currentSandbox.git &&
     !(
       store.live.isOwner ||
       (store.user &&
         store.live &&
         store.live.roomInfo &&
         store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
-    )
+    ) &&
+    !hasPermission(store.editor.currentSandbox.authorization, 'write_project')
   ) {
     return [FILES, LIVE];
   }

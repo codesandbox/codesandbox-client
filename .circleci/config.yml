@@ -376,10 +376,6 @@ workflows:
       - create-docker-image:
           requires:
             - build-prod
-            - lint
-            - typecheck
-            # - test-integrations
-            - test-jest
       - deploy-production-approval:
           type: approval
           filters:
@@ -390,6 +386,11 @@ workflows:
           requires:
             - deploy-production-approval
             - create-docker-image
+            - build-prod
+            - lint
+            - typecheck
+            # - test-integrations
+            - test-jest
           filters:
             branches:
               only:

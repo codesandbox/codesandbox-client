@@ -49,6 +49,29 @@ export const onExternalResources: Operator<LiveMessage<{
   actions.editor.internal.updatePreviewCode();
 });
 
+export const onUsersChanged: Operator<LiveMessage<{
+  users: LiveUser[];
+  editor_ids: string[];
+  owner_ids: string[];
+}>> = mutate(({ state, effects, actions }, { data }) => {
+  if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
+    return;
+  }
+
+  const users = camelizeKeys(data.users);
+
+  state.live.roomInfo.users = users as LiveUser[];
+  state.live.roomInfo.editorIds = data.editor_ids;
+  state.live.roomInfo.ownerIds = data.owner_ids;
+
+  if (state.editor.currentModule) {
+    effects.vscode.updateUserSelections(
+      state.editor.currentModule,
+      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
+    );
+  }
+});
+
 export const onUserEntered: Operator<LiveMessage<{
   users: LiveUser[];
   editor_ids: string[];

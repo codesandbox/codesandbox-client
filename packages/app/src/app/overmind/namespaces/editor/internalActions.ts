@@ -37,6 +37,19 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   return matchingSandboxId || id;
 };
 
+export const initializeSandbox: AsyncAction<Sandbox> = async (
+  { actions, effects },
+  sandbox
+) => {
+  await Promise.all([
+    actions.editor.internal
+      .initializeLiveSandbox(sandbox)
+      .then(() => effects.live.sendModuleStateSyncRequest()),
+    actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
+    actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
+  ]);
+};
+
 export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
   { state, actions },
   sandbox
@@ -54,7 +67,7 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
     await actions.live.internal.disconnect();
   }
 
-  if (sandbox.owned && sandbox.roomId) {
+  if (sandbox.roomId) {
     await actions.live.internal.initialize(sandbox.roomId);
   }
 };

@@ -17,7 +17,7 @@ export const SignInButton: FunctionComponent<Props> = props => {
   const handleSignIn = async () => {
     await signInClicked({ useExtraScopes: false });
     if (props.redirectTo) {
-      history.push(props.redirectTo);
+      history.push(props.redirectTo.replace(location.origin, ''));
     }
   };
 

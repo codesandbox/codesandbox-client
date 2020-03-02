@@ -1,10 +1,28 @@
 const isStaging = process.argv.includes('--staging');
+const isDev = process.argv.includes('--dev');
 
-const URL = `https://codesandbox.${isStaging ? `stream` : `io`}/api/graphql`;
+const host = (() => {
+  if (isDev) {
+    return 'http://server:4000';
+  }
+
+  if (isStaging) {
+    return 'https://codesandbox.stream';
+  }
+
+  return 'https://codesandbox.io';
+})();
+
+const URL = `${host}/api/graphql`;
 
 module.exports = {
   schema: URL,
-  documents: [`./src/**/*.gql`, `./src/**/queries.ts`, `./src/**/mutations.ts`],
+  documents: [
+    `./src/**/*.gql`,
+    `./src/app/overmind/effects/gql/**/*.ts`,
+    `./src/**/queries.ts`,
+    `./src/**/mutations.ts`,
+  ],
   overwrite: true,
   hooks: {
     afterAllFileWrite: [`prettier --write`],

@@ -9,7 +9,6 @@ import { useOvermind } from 'app/overmind';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Navigation } from 'app/pages/common/Navigation';
 import { NotFound } from 'app/pages/common/NotFound';
-import { QuickActions } from 'app/pages/Sandbox/QuickActions';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
@@ -41,6 +40,7 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
     }
 
     actions.live.onNavigateAway();
+
     actions.editor.sandboxChanged({ id: match.params.id });
   }, [
     actions.live,
@@ -194,7 +194,6 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
         <title>{getSandboxName(sandbox)} - CodeSandbox</title>
       </Helmet>
       <Editor />
-      <QuickActions />
     </>
   );
 };
