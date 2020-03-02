@@ -11,6 +11,7 @@ import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
+import { logError } from '@codesandbox/common/lib/utils/analytics';
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
@@ -94,6 +95,10 @@ export const onUserEntered: Operator<LiveMessage<{
     );
   }
 
+  // Send our own selections to everyone, just to let the others know where
+  // we are
+  actions.live.sendCurrentSelection();
+
   if (data.joined_user_id === state.live.liveUserId) {
     return;
   }
@@ -124,9 +129,7 @@ export const onUserLeft: Operator<LiveMessage<{
 
     if (user && user.id !== state.live.liveUserId) {
       effects.notificationToast.add({
-        message: user
-          ? `${user.username} left the live session.`
-          : 'Someone left the live session',
+        message: `${user.username} left the live session.`,
         status: NotificationStatus.NOTICE,
       });
     }
@@ -511,6 +514,9 @@ export const onOperation: Operator<LiveMessage<{
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
       console.error('Something went wrong with applying OT operation');
+
+      logError(e);
+
       effects.live.sendModuleStateSyncRequest();
     }
   }

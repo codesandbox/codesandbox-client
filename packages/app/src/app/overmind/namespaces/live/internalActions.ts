@@ -20,12 +20,11 @@ export const clearUserSelections: Action<string | null> = (
     const roomInfo = state.live.roomInfo!;
     const userIndex = roomInfo.users.findIndex(u => u.id === userId);
 
+    effects.vscode.clearUserSelections(userId);
     if (userIndex > -1) {
       const user = roomInfo.users[userIndex];
       if (user) {
         user.selection = null;
-
-        effects.vscode.clearUserSelections(userId);
       }
     }
   };

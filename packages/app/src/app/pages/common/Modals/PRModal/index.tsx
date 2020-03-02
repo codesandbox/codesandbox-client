@@ -8,10 +8,7 @@ import { ButtonContainer } from './elements';
 export const PRModal: FunctionComponent = () => {
   const {
     state: {
-      git: {
-        isCreatingPr,
-        pr: { prURL },
-      },
+      git: { isCreatingPr, pr },
     },
   } = useOvermind();
 
@@ -19,17 +16,17 @@ export const PRModal: FunctionComponent = () => {
     <GitProgress
       message="Forking Repository & Creating PR..."
       result={
-        isCreatingPr ? (
+        isCreatingPr ? null : (
           <div>
             {`Done! We'll now open the new sandbox of this PR and GitHub in 3 seconds...`}
 
             <ButtonContainer>
-              <a href={prURL} rel="noreferrer noopener" target="_blank">
+              <a href={pr.prURL} rel="noreferrer noopener" target="_blank">
                 Click here if nothing happens.
               </a>
             </ButtonContainer>
           </div>
-        ) : null
+        )
       }
     />
   );
