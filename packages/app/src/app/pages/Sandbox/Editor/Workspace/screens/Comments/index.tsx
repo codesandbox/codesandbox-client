@@ -91,7 +91,7 @@ export const Comments: React.FC = () => {
         {currentComments.length ? (
           <List marginTop={4} css={{ height: '100%', overflow: 'scroll' }}>
             {currentComments.map(comment => (
-              <Comment comment={comment} />
+              <Comment key={comment.id} comment={comment} />
             ))}
           </List>
         ) : null}
