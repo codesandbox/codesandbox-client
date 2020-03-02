@@ -242,7 +242,7 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
             variant="link"
             onChange={e => {
               actions.workspace.sandboxPrivacyChanged({
-                privacy: Number(e.target.value) as 0 | 2,
+                privacy: Number(e.target.value) as 0 | 1 | 2,
                 source: 'collaboratorss',
               });
             }}
