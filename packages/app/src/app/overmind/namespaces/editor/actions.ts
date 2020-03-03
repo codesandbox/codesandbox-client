@@ -1374,12 +1374,18 @@ export const getComment: AsyncAction<{
   id: string;
   sandboxId: string;
 }> = async ({ state, effects }, { sandboxId, id }) => {
-  const { comment } = await effects.fakeGql.queries.comment({
-    sandboxId,
-    id,
-  });
+  try {
+    const { comment } = await effects.fakeGql.queries.comment({
+      sandboxId,
+      id,
+    });
 
-  state.editor.comments[sandboxId][id] = comment;
+    state.editor.comments[sandboxId][id] = comment;
+  } catch (e) {
+    effects.notificationToast.error(
+      'Unable to get your comment, please try again'
+    );
+  }
 };
 
 export const selectComment: Action<string> = ({ state }, id) => {
