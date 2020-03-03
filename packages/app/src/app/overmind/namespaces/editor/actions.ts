@@ -124,9 +124,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
         invitationToken,
       });
 
-      // Remove the invite from the url
-      url.searchParams.delete('ts');
-      history.replace(url.pathname);
+      // Timeout to prevent that we load the whole sandbox twice at the same time
+      setTimeout(() => {
+        // Remove the invite from the url
+        url.searchParams.delete('ts');
+        history.replace(url.pathname);
+      }, 3000);
     } catch (error) {
       if (
         !error.message.includes('Cannot redeem token, invitation not found')
