@@ -31,6 +31,7 @@ export const SkeletonWrapper = styled.div`
 export const SkeletonExplorer = styled.div`
   flex: 0 0 272px;
   border-right: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
+  background-color: ${props => props.theme['sideBar.background'] || 'black'};
 `;
 export const SkeletonExplorerTop = styled.div`
   height: 35px;
