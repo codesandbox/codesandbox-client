@@ -202,7 +202,11 @@ export const graphql: <T extends Queries>(
 
         subscription.dispose = () => {
           _subscriptions[queryString].forEach(sub => {
-            sub.dispose();
+            try {
+              sub.dispose();
+            } catch (e) {
+              // Ignore, it probably throws an error because we weren't subscribed in the first place
+            }
           });
           _subscriptions[queryString].length = 0;
         };
@@ -212,6 +216,11 @@ export const graphql: <T extends Queries>(
             Subscription[]
           >((subAggr, sub) => {
             if (cb(sub.variables)) {
+              try {
+                sub.dispose();
+              } catch (e) {
+                // Ignore, it probably throws an error because we weren't subscribed in the first place
+              }
               return subAggr;
             }
             return subAggr.concat(sub);
