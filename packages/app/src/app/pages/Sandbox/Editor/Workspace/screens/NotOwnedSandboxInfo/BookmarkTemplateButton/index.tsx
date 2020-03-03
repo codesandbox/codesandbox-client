@@ -27,6 +27,7 @@ export const BookmarkTemplateButton = () => {
       },
     },
   } = useOvermind();
+
   const [runQuery, { loading, data }] = useLazyQuery<
     BookmarkedSandboxInfoQuery,
     BookmarkedSandboxInfoQueryVariables
