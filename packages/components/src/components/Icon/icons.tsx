@@ -139,6 +139,20 @@ export const more = props => (
   </Element>
 );
 
+export const cross = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M16 1.45455L14.5455 9.97023e-06L8.00001 6.54546L1.45455 0L0 1.45454L6.54546 8L0 14.5455L1.45455 16L8.00001 9.45454L14.5455 16L16 14.5454L9.45455 8L16 1.45455Z"
+      fill="currentColor"
+    />
+  </Element>
+);
+
 // we use this icon as a error state fallback
 export const notFound = props => (
   <svg

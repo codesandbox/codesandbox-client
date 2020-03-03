@@ -13,6 +13,7 @@ import React from 'react';
 
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
+import { CommentDialog } from './Dialog';
 
 export const Comments: React.FC = () => {
   const { state, actions } = useOvermind();
@@ -76,6 +77,7 @@ export const Comments: React.FC = () => {
             <Menu.List>
               {options.map(option => (
                 <Menu.Item
+                  key={option}
                   onSelect={() => actions.editor.selectCommentsFilter(option)}
                 >
                   {option}
@@ -95,6 +97,7 @@ export const Comments: React.FC = () => {
       </div>
       {stateComments.length ? null : <Empty />}
       <AddComment />
+      <CommentDialog />
     </Stack>
   );
 };
