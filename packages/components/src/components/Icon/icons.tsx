@@ -123,6 +123,36 @@ export const check = props => (
   </Element>
 );
 
+export const chevronDown = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M8.00006 10.7217L1.02852 3L-3.87318e-07 4.13919L8 13L16 4.13919L14.9091 3L8.00006 10.7217Z"
+      fill="currentColor"
+    />
+  </Element>
+);
+
+export const caret = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M8 12.8608L16 4L-3.87318e-07 4L8 12.8608L16 4L-3.87318e-07 4L8 12.8608Z"
+      fill="currentColor"
+    />
+  </Element>
+);
+
 // we use this icon as a error state fallback
 export const notFound = props => (
   <svg
