@@ -59,6 +59,7 @@ export const WorkspaceComponent = ({ theme }) => {
       currentSandbox: { owned },
     },
     isPatron,
+    isLoggedIn,
     live: { isLive, roomInfo },
     preferences: {
       settings: { zenMode },
@@ -103,6 +104,7 @@ export const WorkspaceComponent = ({ theme }) => {
             ))}
 
           {NEW_SIDEBAR &&
+            isLoggedIn &&
             !(isPatron || owned) &&
             !(isLive && roomInfo.chatEnabled) && <Advertisement />}
         </>
