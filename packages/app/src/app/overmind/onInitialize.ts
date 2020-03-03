@@ -33,12 +33,7 @@ export const onInitialize: OnInitialize = async (
         Authorization: `Bearer ${state.jwt}`,
       }),
     },
-    {
-      endpoint: `${location.origin.replace('http', 'ws')}/graphql-socket`,
-      params: () => ({
-        Authorization: `Bearer ${state.jwt}`,
-      }),
-    }
+    effects.live.getSocket()
   );
 
   effects.notifications.initialize({
