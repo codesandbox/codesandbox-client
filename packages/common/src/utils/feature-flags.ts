@@ -7,5 +7,5 @@
 */
 
 export const REDESIGNED_SIDEBAR =
-  localStorage.getItem('REDESIGNED_SIDEBAR') || false;
+  localStorage.getItem('REDESIGNED_SIDEBAR') || true;
 export const ACCESS_SHEET = localStorage.getItem('ACCESS_SHEET') || false;
