@@ -9,6 +9,7 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -199,15 +200,21 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   effects.vscode.openModule(state.editor.currentModule);
   effects.preview.executeCodeImmediately({ initialRender: true });
 
-  const { comments } = await effects.fakeGql.queries.allComments({
-    sandboxId: sandbox.id,
-  });
+  if (COMMENTS_ON) {
+    try {
+      const { comments } = await effects.fakeGql.queries.allComments({
+        sandboxId: sandbox.id,
+      });
 
-  state.editor.comments[sandbox.id] = comments.reduce((aggr, comment) => {
-    aggr[comment.id] = comment;
+      state.editor.comments[sandbox.id] = comments.reduce((aggr, comment) => {
+        aggr[comment.id] = comment;
 
-    return aggr;
-  }, {});
+        return aggr;
+      }, {});
+    } catch (e) {
+      state.editor.comments[sandbox.id] = {};
+    }
+  }
 
   state.editor.isLoading = false;
 });
