@@ -1,8 +1,8 @@
-import { Client } from 'ot';
+import { OTClient } from './ot/client';
 
 export type SendOperation = (
   moduleShortid: string,
-  revision: string,
+  revision: number,
   operation: any
 ) => Promise<unknown>;
 
@@ -22,15 +22,15 @@ function operationToElixir(ot) {
   });
 }
 
-class CodeSandboxOTClient extends Client {
+class CodeSandboxOTClient extends OTClient {
   moduleShortid: string;
-  onSendOperation: (revision: string, operation: any) => Promise<unknown>;
+  onSendOperation: (revision: number, operation: any) => Promise<unknown>;
   onApplyOperation: (operation: any) => void;
 
   constructor(
     revision: number,
     moduleShortid: string,
-    onSendOperation: (revision: string, operation: any) => Promise<unknown>,
+    onSendOperation: (revision: number, operation: any) => Promise<unknown>,
     onApplyOperation: (operation: any) => void
   ) {
     super(revision);
@@ -52,7 +52,13 @@ class CodeSandboxOTClient extends Client {
   }
 
   serverAck() {
-    super.serverAck();
+    try {
+      super.serverAck();
+    } catch (e) {
+      // Undo the revision increment again
+      super.revision--;
+      throw e;
+    }
   }
 
   applyClient(operation: any) {

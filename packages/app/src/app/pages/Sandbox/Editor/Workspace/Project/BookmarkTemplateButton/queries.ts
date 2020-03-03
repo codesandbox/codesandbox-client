@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const BOOKMARK_TEMPLATE_FRAGMENT = gql`
-  fragment BookmarkTemplateFields on Template {
+  fragment BookmarkTemplateFieldsV2 on Template {
     id
     bookmarked {
       isBookmarked
@@ -21,7 +21,7 @@ export const BOOKMARK_TEMPLATE_FRAGMENT = gql`
 `;
 
 export const BOOKMARKED_SANDBOX_INFO = gql`
-  query BookmarkedSandboxInfo($sandboxId: ID!) {
+  query BookmarkedSandboxInfoV2($sandboxId: ID!) {
     sandbox(sandboxId: $sandboxId) {
       id
       author {
@@ -29,7 +29,7 @@ export const BOOKMARKED_SANDBOX_INFO = gql`
         name: username
       }
       customTemplate {
-        ...BookmarkTemplateFields
+        ...BookmarkTemplateFieldsV2
       }
     }
   }

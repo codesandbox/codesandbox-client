@@ -50,6 +50,7 @@ window.addEventListener('unhandledrejection', e => {
 window.__isTouch = !matchMedia('(pointer:fine)').matches;
 
 const overmind = createOvermind(config, {
+  delimiter: ' ',
   devtools:
     (window.opener && window.opener !== window) ||
     !window.chrome ||

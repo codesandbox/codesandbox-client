@@ -106,6 +106,7 @@ export const liveMessageReceived: Operator<LiveMessage> = pipe(
     [LiveMessageEvent.JOIN]: liveMessage.onJoin,
     [LiveMessageEvent.MODULE_STATE]: liveMessage.onModuleState,
     [LiveMessageEvent.USER_ENTERED]: liveMessage.onUserEntered,
+    [LiveMessageEvent.USERS_CHANGED]: liveMessage.onUsersChanged,
     [LiveMessageEvent.USER_LEFT]: liveMessage.onUserLeft,
     [LiveMessageEvent.EXTERNAL_RESOURCES]: liveMessage.onExternalResources,
     [LiveMessageEvent.MODULE_SAVED]: liveMessage.onModuleSaved,

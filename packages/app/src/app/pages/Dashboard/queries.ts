@@ -290,12 +290,12 @@ export function addSandboxesToFolder(
 export function undeleteSandboxes(selectedSandboxes) {
   client.mutate<AddToCollectionMutation, AddToCollectionMutationVariables>({
     mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
+    // @ts-ignore
     variables: {
       sandboxIds: selectedSandboxes.toJS
         ? selectedSandboxes.toJS()
         : selectedSandboxes,
       collectionPath: '/',
-      teamId: null,
     },
     optimisticResponse: {
       __typename: 'RootMutationType',

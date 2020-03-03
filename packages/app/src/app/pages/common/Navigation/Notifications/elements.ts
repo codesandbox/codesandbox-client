@@ -6,7 +6,6 @@ export const Container = styled.div`
   box-sizing: border-box;
   text-align: left;
   line-height: 1.6;
-  width: 358px;
   z-index: 10;
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.875rem;

@@ -11,6 +11,7 @@ import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
+import { logError } from '@codesandbox/common/lib/utils/analytics';
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
@@ -46,6 +47,29 @@ export const onExternalResources: Operator<LiveMessage<{
   }
   state.editor.currentSandbox.externalResources = data.externalResources;
   actions.editor.internal.updatePreviewCode();
+});
+
+export const onUsersChanged: Operator<LiveMessage<{
+  users: LiveUser[];
+  editor_ids: string[];
+  owner_ids: string[];
+}>> = mutate(({ state, effects, actions }, { data }) => {
+  if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
+    return;
+  }
+
+  const users = camelizeKeys(data.users);
+
+  state.live.roomInfo.users = users as LiveUser[];
+  state.live.roomInfo.editorIds = data.editor_ids;
+  state.live.roomInfo.ownerIds = data.owner_ids;
+
+  if (state.editor.currentModule) {
+    effects.vscode.updateUserSelections(
+      state.editor.currentModule,
+      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
+    );
+  }
 });
 
 export const onUserEntered: Operator<LiveMessage<{
@@ -490,6 +514,9 @@ export const onOperation: Operator<LiveMessage<{
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
       console.error('Something went wrong with applying OT operation');
+
+      logError(e);
+
       effects.live.sendModuleStateSyncRequest();
     }
   }

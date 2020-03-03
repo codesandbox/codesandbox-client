@@ -97,7 +97,11 @@ export const FilterOptions: FunctionComponent<Props> = ({
         }`;
 
   return (
-    <OverlayComponent content={Overlay} event="Dashboard - Order By">
+    <OverlayComponent
+      width={200}
+      content={Overlay}
+      event="Dashboard - Order By"
+    >
       {open => (
         <Container hideFilters={hideFilters}>
           Showing{' '}

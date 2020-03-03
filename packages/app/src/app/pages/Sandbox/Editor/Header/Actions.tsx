@@ -4,6 +4,7 @@ import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
+import * as featureFlags from '@codesandbox/common/lib/utils/feature-flags';
 
 import {
   EmbedIcon,
@@ -12,6 +13,7 @@ import {
   PreferenceIcon,
   ReloadIcon,
 } from './icons';
+import { Collaborators } from './Collaborators';
 
 const TooltipButton = ({ tooltip, ...props }) => (
   <Tooltip content={tooltip}>
@@ -31,7 +33,15 @@ export const Actions = () => {
       updateStatus,
       user,
       editor: {
-        currentSandbox: { id, owned, title, description, likeCount, userLiked },
+        currentSandbox: {
+          id,
+          author,
+          owned,
+          title,
+          description,
+          likeCount,
+          userLiked,
+        },
       },
     },
 
@@ -109,6 +119,8 @@ export const Actions = () => {
           <span>{likeCount}</span>
         </Stack>
       )}
+
+      {author && featureFlags.ACCESS_SHEET && <Collaborators />}
 
       {user?.curatorAt && (
         <Button
