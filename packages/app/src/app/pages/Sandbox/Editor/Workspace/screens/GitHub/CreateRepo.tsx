@@ -7,6 +7,7 @@ import {
   Stack,
   Button,
   Text,
+  FormField,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 
@@ -65,14 +66,16 @@ export const CreateRepo = () => {
           gap={2}
           onSubmit={createRepo}
         >
-          <Input
-            type="text"
-            onChange={updateRepoTitle}
-            value={repoTitle}
-            placeholder="Enter repository name"
-          />
+          <FormField label="Repository name" hideLabel>
+            <Input
+              type="text"
+              onChange={updateRepoTitle}
+              value={repoTitle}
+              placeholder="Enter repository name"
+            />
+          </FormField>
           <Element paddingX={2}>
-            <Button disabled={disabled} variant="secondary">
+            <Button type="submit" disabled={disabled} variant="secondary">
               Create Repository
             </Button>
           </Element>
