@@ -38,7 +38,7 @@ type Http = {
   options?: Options;
 };
 
-type Ws = PhoenixSocket | null;
+type Ws = (() => PhoenixSocket) | null;
 
 type Queries = {
   queries?: {
@@ -126,7 +126,7 @@ export const graphql: <T extends Queries>(
   let wsClient: PhoenixSocket | null = null;
   function getWsClient(): PhoenixSocket | null {
     if (_ws && !wsClient) {
-      wsClient = withAbsintheSocket.create(_ws);
+      wsClient = withAbsintheSocket.create(_ws());
       return wsClient;
     }
 
