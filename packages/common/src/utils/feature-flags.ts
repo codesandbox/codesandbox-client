@@ -6,5 +6,5 @@
   it's a TS file, so you can add whatever logic you want as long as it's static
 */
 
-export const REDESIGNED_SIDEBAR = true;
+export const REDESIGNED_SIDEBAR = 'true';
 export const ACCESS_SHEET = localStorage.getItem('ACCESS_SHEET') || false;
