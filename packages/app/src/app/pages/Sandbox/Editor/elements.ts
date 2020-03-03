@@ -19,7 +19,8 @@ export const SkeletonWrapper = styled.div`
   position: absolute;
   transition: opacity 0.5s ease-out;
   opacity: 1;
-  background-color: ${props => props.theme['editor.background'] || 'black'};
+  background-color: ${props =>
+    props.theme.colors?.editor?.background || 'black'};
   width: 100%;
   height: 100%;
   display: flex;
@@ -30,20 +31,27 @@ export const SkeletonWrapper = styled.div`
 
 export const SkeletonExplorer = styled.div`
   flex: 0 0 272px;
-  border-right: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
-  background-color: ${props => props.theme['sideBar.background'] || 'black'};
+  border-right: 1px solid
+    ${props => props.theme.colors?.sideBar.border || 'rgba(0, 0, 0, 0.5)'};
+  background-color: ${props =>
+    props.theme.colors?.sideBar.background || 'rgba(0, 0, 0, 0.5)'};
 `;
 export const SkeletonExplorerTop = styled.div`
   height: 35px;
-  border-bottom: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
+  border-bottom: 1px solid
+    ${props =>
+      props.theme.vscodeTheme.colors.editorGroupHeader?.tabsBackground ||
+      'rgba(0, 0, 0, 0.5)'};
 `;
 export const SkeletonEditor = styled.div`
   flex: 1;
-  border-right: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
+  border-right: 1px solid
+    ${props => props.theme.colors?.sideBar.border || 'rgba(0, 0, 0, 0.5)'};
 `;
 export const SkeletonEditorTop = styled.div`
   height: 35px;
-  border-bottom: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
+  border-bottom: 1px solid
+    ${props => props.theme.colors?.sideBar.border || 'rgba(0, 0, 0, 0.5)'};
 `;
 export const SkeletonDevtools = styled.div`
   flex: 1;
@@ -53,7 +61,8 @@ export const SkeletonDevtoolsTop = styled.div`
 `;
 export const SkeletonDevtoolsNavigator = styled.div`
   height: 35px;
-  border-bottom: 1px solid ${props => props.theme['sideBar.border'] || 'black'};
+  border-bottom: 1px solid
+    ${props => props.theme.colors?.sideBar.border || 'rgba(0, 0, 0, 0.5)'};
 `;
 export const SkeletonDevtoolsIframe = styled.div`
   height: 100%;

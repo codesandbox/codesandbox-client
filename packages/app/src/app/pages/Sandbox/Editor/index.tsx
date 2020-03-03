@@ -190,14 +190,16 @@ const ContentSplit = () => {
               {<Content theme={localState.theme} />}
             </SplitPane>
             {showSkeleton ? (
-              <ContentSkeleton
-                style={{
-                  opacity: state.editor.isLoading ? 1 : 0,
-                }}
-                onTransitionEnd={() => {
-                  setShowSkeleton(false);
-                }}
-              />
+              <NewThemeProvider theme={localState.theme.vscodeTheme}>
+                <ContentSkeleton
+                  style={{
+                    opacity: state.editor.isLoading ? 1 : 0,
+                  }}
+                  onTransitionEnd={() => {
+                    setShowSkeleton(false);
+                  }}
+                />
+              </NewThemeProvider>
             ) : null}
           </div>
 
