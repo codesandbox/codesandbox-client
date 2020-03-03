@@ -1060,6 +1060,10 @@ export const listenToSandboxChanges: AsyncAction<{
 }> = async ({ state, actions, effects }, { sandboxId }) => {
   effects.gql.subscriptions.onSandboxChangged.dispose();
 
+  if (!state.isLoggedIn) {
+    return;
+  }
+
   effects.gql.subscriptions.onSandboxChangged({ sandboxId }, result => {
     const sandbox = state.editor.sandboxes[sandboxId];
 
@@ -1084,7 +1088,7 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   { state, effects },
   { sandboxId }
 ) => {
-  if (!state.editor.currentSandbox) {
+  if (!state.editor.currentSandbox || !state.isLoggedIn) {
     return;
   }
 
