@@ -17,6 +17,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   size,
   ...props
 }) => (
+  // @ts-ignore
   <Button
     title={title}
     variant="link"
@@ -32,6 +33,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
         backgroundColor: 'secondaryButton.background',
       },
     }}
+    // @ts-ignore
     {...props}
   >
     <Icon name={name} size={size} />

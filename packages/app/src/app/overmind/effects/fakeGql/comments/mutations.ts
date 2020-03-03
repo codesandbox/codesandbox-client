@@ -36,17 +36,28 @@ export const deleteComment: Query<any, any> = gql`
   }
 `;
 
-export const updateComment: Query<any, any> = gql`
-  mutation UpdateComment($id: String!, $comment: String, $isResolved: Boolean) {
-    updateComment(
+export const reply: Query<any, any> = gql`
+  mutation replyToComment(
+    $id: String!
+    $comment: String!
+    $username: String!
+    $metadata: String
+  ) {
+    addReply(
       id: $id
-      data: { comment: $comment, isResolved: $isResolved }
+      comment: $comment
+      username: $username
+      metadata: $metadata
     ) {
       id
-      isResolved
-      originalMessage {
+      replies {
         id
         content
+        author {
+          id
+          avatarUrl
+          username
+        }
       }
     }
   }

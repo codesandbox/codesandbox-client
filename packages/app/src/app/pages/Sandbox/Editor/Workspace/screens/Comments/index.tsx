@@ -97,7 +97,7 @@ export const Comments: React.FC = () => {
       </div>
       {stateComments.length ? null : <Empty />}
       <AddComment />
-      <CommentDialog />
+      {state.editor.currentCommentId && <CommentDialog />}
     </Stack>
   );
 };

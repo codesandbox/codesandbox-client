@@ -1374,11 +1374,48 @@ export const selectComment: Action<string> = ({ state }, id) => {
   state.editor.currentCommentId = id;
 };
 
+export const addReply: AsyncAction<string> = async (
+  { state, effects },
+  comment
+) => {
+  const id = state.editor.currentCommentId;
+  const sandboxId = state.editor.currentSandbox.id;
+  const fakeId = `${comment}-${state.user.username}`;
+  state.editor.comments[sandboxId][id] = {
+    ...state.editor.currentComment,
+    replies: state.editor.currentComment.replies.concat({
+      id: fakeId,
+      content: comment,
+      author: state.user,
+    }),
+  };
+
+  try {
+    const { addReply: newReply } = await effects.fakeGql.mutations.reply({
+      id,
+      comment,
+      username: state.user.username,
+    });
+    state.editor.comments[sandboxId][id] = {
+      ...state.editor.comments[sandboxId][id],
+      replies: state.editor.currentComment.replies
+        .filter(a => a.id !== fakeId)
+        .concat(newReply.replies[newReply.replies.length - 1]),
+    };
+  } catch (e) {
+    state.editor.comments[sandboxId][id] = {
+      ...state.editor.comments[sandboxId][id],
+      replies: state.editor.currentComment.replies.filter(a => a.id !== fakeId),
+    };
+  }
+};
+
 export const addComment: AsyncAction<{
   comment: string;
   sandboxId: string;
   username: string;
-}> = async ({ state, effects }, { sandboxId, comment, username }) => {
+  open?: boolean;
+}> = async ({ state, effects, actions }, { sandboxId, comment, username }) => {
   const id = `${comment}-${username}`;
   const optimisticComment = {
     id,
@@ -1408,6 +1445,7 @@ export const addComment: AsyncAction<{
 
   delete state.editor.comments[sandboxId][id];
   state.editor.comments[sandboxId][newComment.id] = newComment;
+  if (open) actions.editor.getComment({ id: newComment.id, sandboxId });
 };
 
 export const deleteComment: AsyncAction<{
