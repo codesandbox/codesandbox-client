@@ -30,6 +30,7 @@ export const Summary = () => {
   const {
     state: {
       editor: { currentSandbox },
+      isLoggedIn,
     },
   } = useOvermind();
   const {
@@ -80,7 +81,7 @@ export const Summary = () => {
 
         <Stack as="section" direction="vertical" gap={6} paddingX={2}>
           <Stats sandbox={currentSandbox} />
-          {customTemplate && <BookmarkTemplateButton />}
+          {customTemplate && isLoggedIn && <BookmarkTemplateButton />}
         </Stack>
 
         <Divider marginTop={8} marginBottom={4} />
