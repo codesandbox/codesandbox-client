@@ -45,7 +45,7 @@ export const CollaboratorItem = ({
   ...props
 }: ICollaboratorItemProps) => (
   <Stack {...props} align="center">
-    <Stack gap={2} css={css({ width: '100%', flex: 2 })}>
+    <Stack gap={2} css={css({ width: '100%', flex: 3 })}>
       {avatarUrl ? (
         <img
           css={css({
@@ -242,7 +242,7 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
             variant="link"
             onChange={e => {
               actions.workspace.sandboxPrivacyChanged({
-                privacy: Number(e.target.value) as 0 | 2,
+                privacy: Number(e.target.value) as 0 | 1 | 2,
                 source: 'collaboratorss',
               });
             }}

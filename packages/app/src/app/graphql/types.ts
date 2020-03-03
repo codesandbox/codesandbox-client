@@ -41,7 +41,7 @@ export type Collaborator = {
   lastSeenAt: Maybe<Scalars['DateTime']>;
   sandbox: Sandbox;
   user: User;
-  warning?: Maybe<Scalars['String']>;
+  warning: Maybe<Scalars['String']>;
 };
 
 export type Collection = {

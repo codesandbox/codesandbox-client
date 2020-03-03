@@ -3,6 +3,7 @@ import { useOvermind } from 'app/overmind';
 
 import { UserMenu } from 'app/pages/common/UserMenu';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import * as featureFlags from '@codesandbox/common/lib/utils/feature-flags';
 
 import { Stack, Avatar, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -100,7 +101,7 @@ export const Actions = () => {
         </Stack>
       )}
 
-      {author && <Collaborators />}
+      {author && featureFlags.ACCESS_SHEET && <Collaborators />}
 
       {user?.curatorAt && (
         <Button

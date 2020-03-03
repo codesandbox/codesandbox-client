@@ -11,3 +11,4 @@ export const REDESIGNED_SIDEBAR =
 
 export const COMMENTS =
   localStorage.getItem('COMMENTS_CODESANDBOX') === 'true' || false;
+export const ACCESS_SHEET = localStorage.getItem('ACCESS_SHEET') || false;

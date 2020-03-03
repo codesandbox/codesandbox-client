@@ -35,7 +35,11 @@ export const SortOptions: FunctionComponent<Props> = ({ hideOrder }) => {
   };
 
   return (
-    <OverlayComponent content={Overlay} event="Dashboard - Order By">
+    <OverlayComponent
+      width={200}
+      content={Overlay}
+      event="Dashboard - Order By"
+    >
       {open => (
         <Container hideOrder={hideOrder}>
           Sort by <OrderName onClick={open}>{FIELD_TO_NAME[field]} </OrderName>

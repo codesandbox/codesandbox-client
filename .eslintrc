@@ -69,7 +69,8 @@
       {
         "exceptAfterSingleLine": true
       }
-    ]
+    ],
+    "max-classes-per-file": "off"
   },
   "overrides": [
     {

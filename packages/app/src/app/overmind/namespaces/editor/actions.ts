@@ -127,7 +127,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
       // Remove the invite from the url
       url.searchParams.delete('ts');
-      history.replace(url.href);
+      history.replace(url.pathname);
     } catch (error) {
       if (
         !error.message.includes('Cannot redeem token, invitation not found')
@@ -1071,35 +1071,35 @@ export const listenToSandboxChanges: AsyncAction<{
 }> = async ({ state, actions, effects }, { sandboxId }) => {
   effects.gql.subscriptions.onSandboxChangged.dispose();
 
-  try {
-    effects.gql.subscriptions.onSandboxChangged({ sandboxId }, result => {
-      const sandbox = state.editor.sandboxes[sandboxId];
-
-      if (sandbox) {
-        const newInfo = result.sandboxChanged;
-        sandbox.privacy = newInfo.privacy as 0 | 1 | 2;
-
-        const authorization = convertAuthorizationToPermissionType(
-          newInfo.authorization
-        );
-
-        if (authorization !== sandbox.authorization) {
-          sandbox.authorization = authorization;
-
-          actions.refetchSandboxInfo();
-        }
-      }
-    });
-  } catch {
-    // Unable to connect to websocket, what to do?
+  if (!state.isLoggedIn) {
+    return;
   }
+
+  effects.gql.subscriptions.onSandboxChangged({ sandboxId }, result => {
+    const sandbox = state.editor.sandboxes[sandboxId];
+
+    if (sandbox) {
+      const newInfo = result.sandboxChanged;
+      sandbox.privacy = newInfo.privacy as 0 | 1 | 2;
+
+      const authorization = convertAuthorizationToPermissionType(
+        newInfo.authorization
+      );
+
+      if (authorization !== sandbox.authorization) {
+        sandbox.authorization = authorization;
+
+        actions.refetchSandboxInfo();
+      }
+    }
+  });
 };
 
 export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   { state, effects },
   { sandboxId }
 ) => {
-  if (!state.editor.currentSandbox) {
+  if (!state.editor.currentSandbox || !state.isLoggedIn) {
     return;
   }
 
@@ -1115,10 +1115,9 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
       sandboxId,
     });
     if (!collaboratorResponse.sandbox) {
-      // empty
+      return;
     }
 
-    // @ts-ignore
     state.editor.collaborators = collaboratorResponse.sandbox.collaborators;
 
     effects.gql.subscriptions.onCollaboratorAdded({ sandboxId }, event => {
@@ -1240,6 +1239,7 @@ export const addCollaborator: AsyncAction<{
       username,
       avatarUrl: '',
     },
+    warning: null,
   };
 
   state.editor.collaborators = [...state.editor.collaborators, newCollaborator];

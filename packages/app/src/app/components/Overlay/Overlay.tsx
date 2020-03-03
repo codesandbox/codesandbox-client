@@ -32,16 +32,25 @@ export const Overlay: React.FC<IOverlayProps> = ({
   const isControlled = isOpen !== undefined;
   const openState = isControlled ? isOpen : open;
   const element = React.useRef<HTMLDivElement>();
-  const position = React.useRef<{ top: number; left: number }>({
+  const bounds = React.useRef<{
+    top: number;
+    left: number;
+    height: number;
+    width: number;
+  }>({
     top: 0,
     left: 0,
+    width: 0,
+    height: 0,
   });
 
   useLayoutEffect(() => {
     const posData = element.current.getBoundingClientRect();
-    position.current = {
+    bounds.current = {
       top: posData.top,
       left: posData.left,
+      width: posData.width,
+      height: posData.height,
     };
   }, []);
 
@@ -90,8 +99,8 @@ export const Overlay: React.FC<IOverlayProps> = ({
                 boxShadow: '0 3px 3px rgba(0, 0, 0, 0.3)',
                 height: 'auto',
                 borderRadius: 4,
-                top: position.current.top + 32,
-                left: position.current.left - width * 0.75,
+                top: bounds.current.top + bounds.current.height + 8,
+                left: bounds.current.left + bounds.current.width - width * 0.75,
                 width,
               }}
               transition={{
