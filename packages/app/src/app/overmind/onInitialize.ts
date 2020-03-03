@@ -37,10 +37,13 @@ export const onInitialize: OnInitialize = async (
     // Because of this the app crashes if we want to provide it with a function
     effects.jwt.get() ? effects.live.getSocket() : null
   );
-
-  effects.fakeGql.initialize({
-    endpoint: `https://slw7f.sse.codesandbox.io`,
-  });
+  try {
+    effects.fakeGql.initialize({
+      endpoint: `https://slw7f.sse.codesandbox.io`,
+    });
+  } catch (e) {
+    console.error('Could not get initialize fakegql');
+  }
 
   effects.notifications.initialize({
     provideSocket() {
@@ -95,6 +98,4 @@ export const onInitialize: OnInitialize = async (
   });
 
   effects.preview.initialize(overmindInstance.reaction);
-
-  await effects.fakeGql.queries.allComments({ sandboxId: '123' });
 };

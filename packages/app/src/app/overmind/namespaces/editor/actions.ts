@@ -9,7 +9,7 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -200,7 +200,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   effects.vscode.openModule(state.editor.currentModule);
   effects.preview.executeCodeImmediately({ initialRender: true });
 
-  if (COMMENTS_ON) {
+  if (COMMENTS) {
     try {
       const { comments } = await effects.fakeGql.queries.allComments({
         sandboxId: sandbox.id,
@@ -213,6 +213,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
       }, {});
     } catch (e) {
       state.editor.comments[sandbox.id] = {};
+      effects.notificationToast.add({
+        status: NotificationStatus.NOTICE,
+        message: `There as a problem getting the sandbox comments`,
+      });
     }
   }
 
