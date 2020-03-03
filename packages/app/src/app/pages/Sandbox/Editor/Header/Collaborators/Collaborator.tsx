@@ -45,7 +45,7 @@ export const CollaboratorItem = ({
   ...props
 }: ICollaboratorItemProps) => (
   <Stack {...props} align="center">
-    <Stack gap={2} css={css({ width: '100%', flex: 2 })}>
+    <Stack gap={2} css={css({ width: '100%', flex: 3 })}>
       {avatarUrl ? (
         <img
           css={css({
