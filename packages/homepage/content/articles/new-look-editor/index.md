@@ -46,11 +46,11 @@ feel but gets you to the code faster, and then gets out of your way. To make
 this happen, we re-worked the sidebar and top navigation with subtler styling,
 clearer icons, refinements to the color palette, as well as a new default theme.
 
-Head of Design at CodeSandbox, Danny Ruchtie, adds that _ “although this is a
+Head of Design at CodeSandbox, Danny Ruchtie, adds that “_although this is a
 significant visual refresh, it’s primarily meant to lay the groundwork for
 future improvements. The newly designed components system will make it easier
 for the team to implement new features, and it adds better support for VS Code
-themes too.”_
+themes too._”
 
 There’s still work to do, both in terms of editor design and performance. For
 now, we’ve been running these changes as an experiment over the last few weeks,
