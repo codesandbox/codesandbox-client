@@ -71,6 +71,7 @@ export const Comments: React.FC = () => {
           css={css({
             borderBottom: '1px solid',
             borderColor: 'sideBar.border',
+            minHeight: '35px',
           })}
         >
           <Text>Comments</Text>
