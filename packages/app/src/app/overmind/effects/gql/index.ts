@@ -1,4 +1,4 @@
-import { graphql } from '../../dependencies/overmind-graphql';
+import { graphql } from 'overmind-graphql';
 
 import * as collaboratorsMutations from './collaborators/mutations';
 import * as collaboratorsQueries from './collaborators/queries';

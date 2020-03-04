@@ -57,11 +57,12 @@ const variantStyles = {
   },
 };
 
-interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
 }
 
-export const Button = styled(Element).attrs({ as: 'button' })<IButtonProps>(
+export const Button = styled(Element).attrs({ as: 'button' })<ButtonProps>(
   ({ variant = 'primary', ...props }) =>
     css(
       deepmerge(

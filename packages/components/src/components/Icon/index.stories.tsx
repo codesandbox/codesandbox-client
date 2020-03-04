@@ -12,7 +12,7 @@ export const Simple = () => (
   <Stack gap={2}>
     <Icon name="github" />
     <Icon name="github" css={{ color: 'blues.500' }} />
-    <Icon name="github" size={24} />
+    <Icon name="github" size={6} />
   </Stack>
 );
 

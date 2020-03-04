@@ -1,4 +1,7 @@
-import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
+import {
+  REDESIGNED_SIDEBAR,
+  COMMENTS,
+} from '@codesandbox/common/lib/utils/feature-flags';
 import VERSION from '@codesandbox/common/lib/version';
 import { ThemeProvider } from '@codesandbox/components';
 import { SocialInfo } from 'app/components/SocialInfo';
@@ -26,6 +29,7 @@ import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
 import { Server } from './items/Server';
+import { Comments } from './screens/Comments';
 import { ConfigurationFiles as ConfigurationFilesNew } from './screens/ConfigurationFiles';
 import { Deployment as DeploymentNew } from './screens/Deployment/index';
 import { Explorer } from './screens/Explorer';
@@ -51,6 +55,11 @@ const workspaceTabs = {
   server: NEW_SIDEBAR ? ServerNew : Server,
   more: More,
 };
+
+if (COMMENTS && NEW_SIDEBAR) {
+  // @ts-ignore
+  workspaceTabs.comments = Comments;
+}
 
 export const WorkspaceComponent = ({ theme }) => {
   const { state } = useOvermind();

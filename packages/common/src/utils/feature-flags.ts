@@ -8,4 +8,7 @@
 
 export const REDESIGNED_SIDEBAR =
   localStorage.getItem('REDESIGNED_SIDEBAR') || false;
+
+export const COMMENTS =
+  localStorage.getItem('COMMENTS_CODESANDBOX') === 'true' || false;
 export const ACCESS_SHEET = localStorage.getItem('ACCESS_SHEET') || false;

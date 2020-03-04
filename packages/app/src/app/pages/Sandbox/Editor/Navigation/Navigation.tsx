@@ -12,6 +12,7 @@ import PlusIcon from 'react-icons/lib/go/plus';
 
 import { Container, IconContainer } from './elements';
 import {
+  CommentsIcon,
   DeployIcon,
   ExplorerIcon,
   GithubIcon,
@@ -31,6 +32,7 @@ const IDS_TO_ICONS = {
   live: LiveIcon,
   more: PlusIcon,
   server: ServerIcon,
+  comments: CommentsIcon,
 };
 
 type IconProps = {
