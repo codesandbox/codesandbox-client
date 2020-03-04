@@ -79,7 +79,7 @@ const Careers = ({
       <OtherJobs>
         <p>
           We are always looking for talented, hard working people. Drop us a
-          line and show us your work
+          line and show us your work.
         </p>
 
         <Button
