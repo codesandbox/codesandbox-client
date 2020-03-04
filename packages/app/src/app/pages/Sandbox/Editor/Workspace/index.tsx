@@ -101,7 +101,7 @@ export const WorkspaceComponent = ({ theme }) => {
             ))}
 
           {NEW_SIDEBAR &&
-            !(isPatron || owned) &&
+            !(isPatron || currentSandbox.owned) &&
             !(isLive && roomInfo.chatEnabled) && <Advertisement />}
         </>
       </WorkspaceWrapper>
