@@ -1400,65 +1400,68 @@ export const addComment: AsyncAction<{
   sandboxId: string;
   username: string;
 }> = async ({ state, effects }, { sandboxId, comment, username }) => {
-  const id = `${comment}-${username}`;
-  if (state.user) {
-    const optimisticComment = {
-      id,
-      insertedAt: new Date().toString(),
-      isResolved: false,
-      originalMessage: {
-        id,
-        content: comment,
-        author: {
-          id: state.user.id,
-          username,
-          avatarUrl: state.user.avatarUrl,
-        },
-      },
-      replies: [],
-    };
-    // @ts-ignore
-    state.editor.comments[sandboxId][id] = optimisticComment;
-    state.editor.selectedCommentsFilter = CommentsFilterOption.OPEN;
-    try {
-      const {
-        addComment: newComment,
-      } = await effects.fakeGql.mutations.addComment({
-        sandboxId,
-        comment,
-        username,
-      });
+  if (!state.user) {
+    return;
+  }
 
-      delete state.editor.comments[sandboxId][id];
-      state.editor.comments[sandboxId][newComment.id] = newComment;
-    } catch (error) {
-      effects.notificationToast.error(
-        'Unable to create your comment, please try again'
-      );
-      delete state.editor.comments[sandboxId][id];
-    }
+  const id = `${comment}-${username}`;
+  const optimisticComment = {
+    id,
+    insertedAt: new Date().toString(),
+    isResolved: false,
+    originalMessage: {
+      id,
+      content: comment,
+      author: {
+        id: state.user.id,
+        username,
+        avatarUrl: state.user.avatarUrl,
+      },
+    },
+    replies: [],
+  };
+  // @ts-ignore
+  state.editor.comments[sandboxId][id] = optimisticComment;
+  state.editor.selectedCommentsFilter = CommentsFilterOption.OPEN;
+  try {
+    const {
+      addComment: newComment,
+    } = await effects.fakeGql.mutations.addComment({
+      sandboxId,
+      comment,
+      username,
+    });
+
+    delete state.editor.comments[sandboxId][id];
+    state.editor.comments[sandboxId][newComment.id] = newComment;
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to create your comment, please try again'
+    );
+    delete state.editor.comments[sandboxId][id];
   }
 };
 
 export const deleteComment: AsyncAction<{
   id: string;
 }> = async ({ state, effects }, { id }) => {
-  if (state.editor.currentSandbox) {
-    const sandboxId = state.editor.currentSandbox.id;
-    const deletedComment = state.editor.comments[sandboxId][id];
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  const sandboxId = state.editor.currentSandbox.id;
+  const deletedComment = state.editor.comments[sandboxId][id];
 
-    delete state.editor.comments[sandboxId][id];
+  delete state.editor.comments[sandboxId][id];
 
-    try {
-      await effects.fakeGql.mutations.deleteComment({
-        id,
-      });
-    } catch (error) {
-      effects.notificationToast.error(
-        'Unable to delete your comment, please try again'
-      );
-      state.editor.comments[sandboxId][id] = deletedComment;
-    }
+  try {
+    await effects.fakeGql.mutations.deleteComment({
+      id,
+    });
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to delete your comment, please try again'
+    );
+    state.editor.comments[sandboxId][id] = deletedComment;
   }
 };
 
@@ -1469,33 +1472,32 @@ export const updateComment: AsyncAction<{
     isResolved: boolean;
   };
 }> = async ({ state, effects }, { id, data }) => {
-  if (state.editor.currentSandbox) {
-    const sandboxId = state.editor.currentSandbox.id;
-    const isResolved = state.editor.comments[sandboxId][id].isResolved;
-    const comment =
-      state.editor.comments[sandboxId][id].originalMessage.content;
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  const sandboxId = state.editor.currentSandbox.id;
+  const isResolved = state.editor.comments[sandboxId][id].isResolved;
+  const comment = state.editor.comments[sandboxId][id].originalMessage.content;
 
-    if ('isResolved' in data) {
-      state.editor.comments[sandboxId][id].isResolved = data.isResolved;
-    }
+  if ('isResolved' in data) {
+    state.editor.comments[sandboxId][id].isResolved = data.isResolved;
+  }
 
-    if ('comment' in data) {
-      state.editor.comments[sandboxId][id].originalMessage.content =
-        data.comment;
-    }
+  if ('comment' in data) {
+    state.editor.comments[sandboxId][id].originalMessage.content = data.comment;
+  }
 
-    try {
-      await effects.fakeGql.mutations.updateComment({
-        id,
-        ...data,
-      });
-    } catch (error) {
-      effects.notificationToast.error(
-        'Unable to update your comment, please try again'
-      );
-      state.editor.comments[sandboxId][id].isResolved = isResolved;
-      state.editor.comments[sandboxId][id].originalMessage.content = comment;
-    }
+  try {
+    await effects.fakeGql.mutations.updateComment({
+      id,
+      ...data,
+    });
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to update your comment, please try again'
+    );
+    state.editor.comments[sandboxId][id].isResolved = isResolved;
+    state.editor.comments[sandboxId][id].originalMessage.content = comment;
   }
 };
 
