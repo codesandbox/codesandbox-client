@@ -10,7 +10,7 @@ import getWorkspaceItems, {
 import React, { FunctionComponent } from 'react';
 import PlusIcon from 'react-icons/lib/go/plus';
 
-import { Container, IconContainer, Separator } from './elements';
+import { Container, IconContainer } from './elements';
 import {
   CommentsIcon,
   DeployIcon,
@@ -111,8 +111,6 @@ export const Navigation: FunctionComponent<Props> = ({
             {shownItems.map(item => (
               <IconComponent key={item.id} item={item} singleton={singleton} />
             ))}
-
-            {disabledItems.length > 0 && <Separator />}
 
             {disabledItems.map(item => (
               <IconComponent

@@ -1,23 +1,23 @@
+import { basename } from 'path';
+
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { basename } from 'path';
-import { Link } from 'react-router-dom';
+import { Button, Element, Stack, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
 import React, {
   ChangeEvent,
   FunctionComponent,
   KeyboardEvent,
+  useEffect,
   useState,
 } from 'react';
-
-import { Stack, Button, Text, Element } from '@codesandbox/components';
-import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { Link } from 'react-router-dom';
 
 import { PrivacyTooltip } from '../PrivacyTooltip';
-
-import { Folder, Form, NameInput, Main, TemplateBadge } from './elements';
+import { Folder, Form, Main, NameInput, TemplateBadge } from './elements';
 
 export const SandboxName: FunctionComponent = () => {
   const {
@@ -32,8 +32,21 @@ export const SandboxName: FunctionComponent = () => {
   } = useOvermind();
   const [updatingName, setUpdatingName] = useState(false);
   const [name, setName] = useState('');
+  const [fadeIn, setFadeIn] = useState(false);
 
-  const sandboxName = getSandboxName(currentSandbox) || 'Untitled';
+  useEffect(() => {
+    if (!fadeIn) {
+      const id = setTimeout(() => {
+        setFadeIn(true);
+      }, 500);
+      return () => clearTimeout(id);
+    }
+
+    return () => {};
+  }, [fadeIn]);
+
+  const sandboxName =
+    (currentSandbox && getSandboxName(currentSandbox)) || 'Untitled';
 
   const updateSandboxInfo = () => {
     sandboxInfoUpdated();
@@ -76,15 +89,19 @@ export const SandboxName: FunctionComponent = () => {
 
   const value = name !== 'Untitled' && updatingName ? name : '';
 
-  const folderName = currentSandbox.collection
-    ? basename(currentSandbox.collection.path) ||
-      (currentSandbox.team ? currentSandbox.team.name : 'My Sandboxes')
-    : 'My Sandboxes';
+  const folderName =
+    currentSandbox && currentSandbox.collection
+      ? basename(currentSandbox.collection.path) ||
+        (currentSandbox.team ? currentSandbox.team.name : 'My Sandboxes')
+      : 'My Sandboxes';
 
-  const { customTemplate, owned } = currentSandbox;
+  const { customTemplate, owned } = currentSandbox || {
+    customTemplate: null,
+    owned: false,
+  };
 
   return (
-    <Main>
+    <Main style={fadeIn ? { opacity: 1 } : null}>
       <Stack align="center">
         {!customTemplate && owned && !updatingName && (
           <Folder>

@@ -12,7 +12,7 @@ import { ThemeProvider } from 'styled-components';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import { Preview } from './Preview';
 
-export const MainWorkspace: React.FC = () => {
+export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
   const { state, actions, effects, reaction } = useOvermind();
   const editorEl = useRef(null);
   const contentEl = useRef(null);
@@ -61,11 +61,11 @@ export const MainWorkspace: React.FC = () => {
   const sandbox = state.editor.currentSandbox;
   const { preferences } = state;
   const windowVisible = state.editor.previewWindowVisible;
-  const template = getTemplateDefinition(sandbox.template);
+  const template = sandbox && getTemplateDefinition(sandbox.template);
   const views = state.editor.devToolTabs;
   const currentPosition = state.editor.currentDevToolsPosition;
   const modulePath = currentModule.path;
-  const config = template.configurationFiles[modulePath];
+  const config = template && template.configurationFiles[modulePath];
 
   const browserConfig = {
     id: 'codesandbox.browser',
@@ -85,10 +85,14 @@ export const MainWorkspace: React.FC = () => {
 
   return (
     <ThemeProvider
-      theme={{
-        templateColor: template.color,
-        templateBackgroundColor: template.backgroundColor,
-      }}
+      theme={
+        template
+          ? {
+              templateColor: template.color,
+              templateBackgroundColor: template.backgroundColor,
+            }
+          : theme
+      }
     >
       <div
         id="workbench.main.container"
@@ -99,6 +103,7 @@ export const MainWorkspace: React.FC = () => {
           overflow: 'visible', // For VSCode Context Menu
           display: 'flex',
           flexDirection: 'column',
+          backgroundColor: 'transparent',
         }}
         ref={contentEl}
       >
@@ -110,6 +115,7 @@ export const MainWorkspace: React.FC = () => {
           onDragStarted={() => {
             actions.editor.resizingStarted();
           }}
+          resizerStyle={state.editor.isLoading ? { display: 'none' } : null}
           onChange={() => {
             updateEditorSize();
           }}
@@ -179,7 +185,7 @@ export const MainWorkspace: React.FC = () => {
                   )}
                 </Icons>
               ) : null}
-              <CodeEditor />
+              {state.editor.isLoading ? null : <CodeEditor />}
             </div>
           </div>
 
@@ -191,46 +197,47 @@ export const MainWorkspace: React.FC = () => {
             }}
             id="csb-devtools" // used for tabs for highlighting
           >
-            {views.map((v, i) => (
-              <DevTools
-                // eslint-disable-next-line react/no-array-index-key
-                key={i}
-                devToolIndex={i}
-                addedViews={{
-                  'codesandbox.browser': browserConfig,
-                }}
-                setDragging={dragging => {
-                  if (dragging) {
-                    actions.editor.resizingStarted();
-                  } else {
-                    actions.editor.resizingStopped();
+            {sandbox &&
+              views.map((v, i) => (
+                <DevTools
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={i}
+                  devToolIndex={i}
+                  addedViews={{
+                    'codesandbox.browser': browserConfig,
+                  }}
+                  setDragging={dragging => {
+                    if (dragging) {
+                      actions.editor.resizingStarted();
+                    } else {
+                      actions.editor.resizingStopped();
+                    }
+                  }}
+                  sandboxId={sandbox.id}
+                  template={sandbox.template}
+                  shouldExpandDevTools={state.preferences.showDevtools}
+                  zenMode={preferences.settings.zenMode}
+                  setDevToolsOpen={open =>
+                    actions.preferences.setDevtoolsOpen(open)
                   }
-                }}
-                sandboxId={sandbox.id}
-                template={sandbox.template}
-                shouldExpandDevTools={state.preferences.showDevtools}
-                zenMode={preferences.settings.zenMode}
-                setDevToolsOpen={open =>
-                  actions.preferences.setDevtoolsOpen(open)
-                }
-                owned={sandbox.owned}
-                primary={i === 0}
-                viewConfig={v}
-                moveTab={(prevPos, nextPos) => {
-                  actions.editor.onDevToolsTabMoved({ prevPos, nextPos });
-                }}
-                closeTab={pos => {
-                  actions.editor.onDevToolsTabClosed({ pos });
-                }}
-                currentDevToolIndex={currentPosition.devToolIndex}
-                currentTabPosition={currentPosition.tabPosition}
-                setPane={position =>
-                  actions.editor.onDevToolsPositionChanged({
-                    position,
-                  })
-                }
-              />
-            ))}
+                  owned={sandbox.owned}
+                  primary={i === 0}
+                  viewConfig={v}
+                  moveTab={(prevPos, nextPos) => {
+                    actions.editor.onDevToolsTabMoved({ prevPos, nextPos });
+                  }}
+                  closeTab={pos => {
+                    actions.editor.onDevToolsTabClosed({ pos });
+                  }}
+                  currentDevToolIndex={currentPosition.devToolIndex}
+                  currentTabPosition={currentPosition.tabPosition}
+                  setPane={position =>
+                    actions.editor.onDevToolsPositionChanged({
+                      position,
+                    })
+                  }
+                />
+              ))}
           </div>
         </SplitPane>
       </div>

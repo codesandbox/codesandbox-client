@@ -10,10 +10,10 @@ import {
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
-import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
   Authorization,
   CollaboratorFragment,
@@ -86,7 +86,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     );
 
     state.editor.isForkingSandbox = false;
-    return;
   }
 
   await effects.vscode.closeAllTabs();
@@ -157,7 +156,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     }
     state.editor.error = detail || error.message;
     state.editor.isLoading = false;
-    return;
   }
 
   const sandbox = state.editor.currentSandbox!;

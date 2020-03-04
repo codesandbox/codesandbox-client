@@ -1,4 +1,5 @@
 import codeSandboxTheme from '@codesandbox/common/lib/themes/codesandbox.json';
+import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 
 export function initializeThemeCache() {
   try {
@@ -80,6 +81,11 @@ export function initializeCodeSandboxTheme() {
   fs.writeFileSync(
     '/extensions/ngryman.codesandbox-theme-0.0.1/themes/CodeSandbox-color-theme.json',
     JSON.stringify(codeSandboxTheme)
+  );
+
+  fs.writeFileSync(
+    '/extensions/codesandbox-black-0.0.1/themes/codesandbox-black.json',
+    JSON.stringify(codeSandboxBlackTheme)
   );
 }
 
