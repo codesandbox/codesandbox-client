@@ -157,6 +157,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     }
     state.editor.error = detail || error.message;
     state.editor.isLoading = false;
+    return;
   }
 
   const sandbox = state.editor.currentSandbox!;
