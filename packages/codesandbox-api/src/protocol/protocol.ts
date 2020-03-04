@@ -5,7 +5,7 @@ const generateId = () =>
 const getConstructorName = (x: any) => {
   try {
     return x.constructor.name;
-  } catch(e) {
+  } catch (e) {
     return '';
   }
 };

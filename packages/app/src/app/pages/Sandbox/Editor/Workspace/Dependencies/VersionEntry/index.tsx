@@ -118,9 +118,7 @@ export class VersionEntry extends React.PureComponent<Props, State> {
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
         >
-          <Link href={`/examples/package/${dependency}`}>
-            {dependency}
-          </Link>
+          <Link href={`/examples/package/${dependency}`}>{dependency}</Link>
           <VersionSelect
             hovering={hovering}
             value={versions.find(v => v === dependencies[dependency])}

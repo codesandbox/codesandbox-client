@@ -51,7 +51,7 @@ export const Project: FunctionComponent<Props> = ({ editable = false }) => {
 
       {!team && author && <Author />}
 
-      {team && <Team/>}
+      {team && <Team />}
 
       {git && <Git />}
 
