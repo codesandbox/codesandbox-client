@@ -310,6 +310,13 @@ export type SandboxAuthor = {
   subscriptionSince: string | null;
 };
 
+export enum CommentsFilterOption {
+  ALL = 'All',
+  OPEN = 'Open',
+  RESOLVED = 'Resolved',
+  MENTIONS = 'Mentions',
+}
+
 export type Sandbox = {
   id: string;
   alias: string | null;

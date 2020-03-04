@@ -1,11 +1,15 @@
+import {
+  REDESIGNED_SIDEBAR,
+  COMMENTS,
+} from '@codesandbox/common/lib/utils/feature-flags';
 import VERSION from '@codesandbox/common/lib/version';
+import { ThemeProvider } from '@codesandbox/components';
 import { SocialInfo } from 'app/components/SocialInfo';
 import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, { getDisabledItems } from 'app/overmind/utils/items';
 import React from 'react';
-import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
-import { ThemeProvider } from '@codesandbox/components';
 import { withTheme } from 'styled-components';
+
 import { Advertisement } from './Advertisement';
 import { Chat } from './Chat';
 import { Chat as ChatOld } from './ChatOld';
@@ -17,23 +21,23 @@ import {
   VersionContainer,
 } from './elements';
 import { ConfigurationFiles } from './items/ConfigurationFiles';
-import { ConfigurationFiles as ConfigurationFilesNew } from './screens/ConfigurationFiles';
 import { Deployment } from './items/Deployment';
 import { FilesItem } from './items/Files';
-import { Explorer } from './screens/Explorer';
 import { GitHub } from './items/GitHub';
 import { Live } from './items/Live';
-import { Live as LiveNew } from './screens/Live';
 import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
-import { NotOwnedSandboxInfo as NotOwnedSandboxInfoNew } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
-import { ProjectInfo as ProjectInfoNew } from './screens/ProjectInfo';
-import { Deployment as DeploymentNew } from './screens/Deployment/index';
-import { Server as ServerNew } from './screens/Server';
-import { GitHub as GitHubNew } from './screens/GitHub';
-
 import { Server } from './items/Server';
+import { Comments } from './screens/Comments';
+import { ConfigurationFiles as ConfigurationFilesNew } from './screens/ConfigurationFiles';
+import { Deployment as DeploymentNew } from './screens/Deployment/index';
+import { Explorer } from './screens/Explorer';
+import { GitHub as GitHubNew } from './screens/GitHub';
+import { Live as LiveNew } from './screens/Live';
+import { NotOwnedSandboxInfo as NotOwnedSandboxInfoNew } from './screens/NotOwnedSandboxInfo';
+import { ProjectInfo as ProjectInfoNew } from './screens/ProjectInfo';
+import { Server as ServerNew } from './screens/Server';
 import { SSEDownNotice } from './SSEDownNotice';
 import { WorkspaceItem } from './WorkspaceItem';
 
@@ -51,6 +55,11 @@ const workspaceTabs = {
   server: NEW_SIDEBAR ? ServerNew : Server,
   more: More,
 };
+
+if (COMMENTS && NEW_SIDEBAR) {
+  // @ts-ignore
+  workspaceTabs.comments = Comments;
+}
 
 export const WorkspaceComponent = ({ theme }) => {
   const { state } = useOvermind();
