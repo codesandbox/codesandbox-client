@@ -6,6 +6,7 @@ import {
   ViewConfig,
 } from '@codesandbox/common/lib/templates/template';
 import {
+  CommentsFilterOption,
   DevToolsTabPosition,
   DiffTab,
   Module,
@@ -18,10 +19,11 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
+import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
+import { Comment } from 'app/overmind/effects/fakeGql/comments/types';
 import immer from 'immer';
 
-import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
 import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
@@ -73,9 +75,68 @@ type State = {
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
+  comments: {
+    [sandboxId: string]: {
+      [commentId: string]: Comment;
+    };
+  };
+  currentComments: Derive<State, Comment[]>;
+  selectedCommentsFilter: CommentsFilterOption;
+  currentCommentId: string | null;
+  currentComment: Derive<State, Comment | null>;
 };
 
 export const state: State = {
+  comments: {},
+  currentCommentId: null,
+  currentComment: ({ comments, currentSandbox, currentCommentId }) => {
+    if (!currentSandbox || !comments[currentSandbox.id] || !currentCommentId) {
+      return null;
+    }
+
+    return comments[currentSandbox.id][currentCommentId];
+  },
+  selectedCommentsFilter: CommentsFilterOption.OPEN,
+  // eslint-disable-next-line consistent-return
+  currentComments: ({ comments, currentSandbox, selectedCommentsFilter }) => {
+    if (!currentSandbox || !comments[currentSandbox.id]) {
+      return [];
+    }
+
+    function sortByInsertedAt(commentA: Comment, commentB: Comment) {
+      const aDate = new Date(commentA.insertedAt);
+      const bDate = new Date(commentB.insertedAt);
+
+      if (aDate > bDate) {
+        return -1;
+      }
+
+      if (bDate < aDate) {
+        return 1;
+      }
+
+      return 0;
+    }
+
+    switch (selectedCommentsFilter) {
+      case CommentsFilterOption.ALL:
+        return Object.values(comments[currentSandbox.id]).sort(
+          sortByInsertedAt
+        );
+      case CommentsFilterOption.RESOLVED:
+        return Object.values(comments[currentSandbox.id])
+          .filter(comment => comment.isResolved)
+          .sort(sortByInsertedAt);
+      case CommentsFilterOption.OPEN:
+        return Object.values(comments[currentSandbox.id])
+          .filter(comment => !comment.isResolved)
+          .sort(sortByInsertedAt);
+      case CommentsFilterOption.MENTIONS:
+        return Object.values(comments[currentSandbox.id]).sort(
+          sortByInsertedAt
+        );
+    }
+  },
   sandboxes: {},
   currentId: null,
   isForkingSandbox: false,

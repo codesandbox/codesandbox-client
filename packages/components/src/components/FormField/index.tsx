@@ -40,7 +40,7 @@ export const FormField: React.FC<IFormFieldProps> = ({
           direction="horizontal"
           justify="space-between"
           align="center"
-          css={{ height: 8, paddingX: 2 }}
+          css={{ minHeight: 8, paddingX: 2 }}
           {...props}
         >
           <LabelWrapper>

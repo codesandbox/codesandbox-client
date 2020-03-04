@@ -1,6 +1,5 @@
-import React, { FunctionComponent } from 'react';
-
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
 
 import { Button } from './elements';
 
@@ -10,20 +9,22 @@ export const PickButton: FunctionComponent = () => {
       explore: { pickSandboxModal },
     },
     state: {
-      editor: {
-        currentSandbox: { description, id, owned, title },
-      },
+      editor: { currentSandbox },
     },
   } = useOvermind();
 
-  const details = {
-    description,
-    id,
-    title,
-  };
-
   return (
-    <Button onClick={() => pickSandboxModal(details)} secondary={owned} small>
+    <Button
+      onClick={() =>
+        pickSandboxModal({
+          description: currentSandbox.description,
+          id: currentSandbox.id,
+          title: currentSandbox.title,
+        })
+      }
+      secondary={currentSandbox && currentSandbox.owned}
+      small
+    >
       Pick
     </Button>
   );
