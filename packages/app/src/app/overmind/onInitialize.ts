@@ -33,9 +33,7 @@ export const onInitialize: OnInitialize = async (
         Authorization: `Bearer ${state.jwt}`,
       }),
     },
-    // TODO(@christianalfoni): we need to make this dynamic, but overmind devtools can't serialize a socket with one channel.
-    // Because of this the app crashes if we want to provide it with a function
-    effects.jwt.get() ? effects.live.getSocket() : null
+    () => (effects.jwt.get() ? effects.live.getSocket() : null)
   );
   try {
     effects.fakeGql.initialize({
