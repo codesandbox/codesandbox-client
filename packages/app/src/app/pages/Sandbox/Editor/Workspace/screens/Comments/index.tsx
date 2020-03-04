@@ -13,11 +13,12 @@ import React from 'react';
 
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
+import { CommentDialog } from './Dialog';
 
 export const Comments: React.FC = () => {
   const {
     state: {
-      editor: { selectedCommentsFilter, currentComments },
+      editor: { selectedCommentsFilter, currentComments, currentCommentId },
     },
     actions: { editor: editorActions },
   } = useOvermind();
@@ -104,6 +105,7 @@ export const Comments: React.FC = () => {
       </div>
       {currentComments.length ? null : <Empty />}
       <AddComment />
+      {currentCommentId && <CommentDialog />}
     </Stack>
   );
 };

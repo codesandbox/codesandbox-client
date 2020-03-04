@@ -51,3 +51,30 @@ export const updateComment: Query<any, any> = gql`
     }
   }
 `;
+
+export const reply: Query<any, any> = gql`
+  mutation replyToComment(
+    $id: String!
+    $comment: String!
+    $username: String!
+    $metadata: String
+  ) {
+    addReply(
+      id: $id
+      comment: $comment
+      username: $username
+      metadata: $metadata
+    ) {
+      id
+      replies {
+        id
+        content
+        author {
+          id
+          avatarUrl
+          username
+        }
+      }
+    }
+  }
+`;
