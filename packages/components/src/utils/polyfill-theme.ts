@@ -38,6 +38,7 @@ const polyfillTheme = vsCodeTheme => {
     titleBar: {},
     quickInput: {},
     menuList: {},
+    dialog: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);

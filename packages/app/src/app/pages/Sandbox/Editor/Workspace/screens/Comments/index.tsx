@@ -13,30 +13,27 @@ import React from 'react';
 
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
+import { CommentDialog } from './Dialog';
 
 export const Comments: React.FC = () => {
-  const {
-    state: {
-      editor: { selectedCommentsFilter, currentComments },
-    },
-    actions: { editor: editorActions },
-  } = useOvermind();
+  const { state, actions } = useOvermind();
   const options = Object.values(CommentsFilterOption);
+  const selectedCommentsFilter = state.editor.selectedCommentsFilter;
+  const stateComments = state.editor.currentComments;
 
   const getSelectedFilter = () => {
-    switch (selectedCommentsFilter) {
-      case CommentsFilterOption.ALL || CommentsFilterOption.OPEN:
-        return 'new';
-      case CommentsFilterOption.RESOLVED:
-        return 'resolved';
-      default:
-        return 'new';
+    if (selectedCommentsFilter === CommentsFilterOption.ALL) {
+      return 'new';
     }
-  };
+    if (selectedCommentsFilter === CommentsFilterOption.OPEN) {
+      return 'open';
+    }
+    if (selectedCommentsFilter === CommentsFilterOption.RESOLVED) {
+      return 'resolved';
+    }
 
-  const all =
-    selectedCommentsFilter === CommentsFilterOption.OPEN ||
-    selectedCommentsFilter === CommentsFilterOption.ALL;
+    return null;
+  };
 
   const Empty = () => (
     <Stack direction="vertical" align="center" justify="center" gap={8}>
@@ -48,12 +45,13 @@ export const Comments: React.FC = () => {
       />
       <Text block align="center" variant="muted">
         There are no {getSelectedFilter()} comments.{' '}
-        {all && (
-          <>
-            {/* Leave a comment by clicking anywhere within a file or */}
-            Write a global comment below.
-          </>
-        )}
+        {selectedCommentsFilter === CommentsFilterOption.OPEN ||
+          (selectedCommentsFilter === CommentsFilterOption.ALL && (
+            <>
+              {/* Leave a comment by clicking anywhere within a file or */}
+              Write a global comment below.
+            </>
+          ))}
       </Text>
     </Stack>
   );
@@ -75,17 +73,12 @@ export const Comments: React.FC = () => {
         >
           <Text>Comments</Text>
           <Menu>
-            <Menu.IconButton
-              className="icon-button"
-              name="filter"
-              title="Filter comments"
-              size={3}
-            />
+            <Menu.IconButton name="filter" title="Filter comments" size={3} />
             <Menu.List>
               {options.map(option => (
                 <Menu.Item
                   key={option}
-                  onSelect={() => editorActions.selectCommentsFilter(option)}
+                  onSelect={() => actions.editor.selectCommentsFilter(option)}
                 >
                   {option}
                 </Menu.Item>
@@ -94,16 +87,17 @@ export const Comments: React.FC = () => {
           </Menu>
         </SidebarRow>
 
-        {currentComments.length ? (
+        {stateComments.length ? (
           <List marginTop={4} css={{ height: '100%', overflow: 'scroll' }}>
-            {currentComments.map(comment => (
-              <Comment key={comment.id} comment={comment} />
+            {stateComments.map(comment => (
+              <Comment comment={comment} />
             ))}
           </List>
         ) : null}
       </div>
-      {currentComments.length ? null : <Empty />}
+      {stateComments.length ? null : <Empty />}
       <AddComment />
+      {state.editor.currentCommentId && <CommentDialog />}
     </Stack>
   );
 };

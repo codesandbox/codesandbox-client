@@ -18,10 +18,10 @@ export const TextareaComponent: any = styled(Input).attrs({
     padding: 2,
     width: '100%',
     resize: 'none',
-    // no transition because it breaks autoshrink :(
-    // leaving this comment here to save time of the brave
-    // soul who tries this again
-    // transition: 'height 150ms',
+    // autosize styles
+    overflow: 'hidden',
+    transitionProperty: 'height',
+    transitionDuration: theme => theme.speeds[2],
   })
 );
 

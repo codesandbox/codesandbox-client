@@ -6,7 +6,7 @@ import { Text } from '../Text';
 
 interface IAvatarProps {
   user: {
-    id: string;
+    id?: string;
     username: string;
     name?: string;
     avatarUrl: string;
