@@ -110,6 +110,10 @@ export const WorkspaceComponent = ({ theme }) => {
             ) : (
               <Chat />
             ))}
+
+          {NEW_SIDEBAR &&
+            !(isPatron || owned) &&
+            !(isLive && roomInfo.chatEnabled) && <Advertisement />}
         </>
       </WorkspaceWrapper>
 

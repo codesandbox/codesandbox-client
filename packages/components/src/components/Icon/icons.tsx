@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Element } from '../Element';
 
 /**
@@ -134,6 +135,36 @@ export const more = props => (
       fillRule="evenodd"
       clipRule="evenodd"
       d="M9.55556 1.77778C9.55556 2.75962 8.75962 3.55556 7.77778 3.55556C6.79594 3.55556 6 2.75962 6 1.77778C6 0.795938 6.79594 0 7.77778 0C8.75962 0 9.55556 0.795938 9.55556 1.77778ZM9.55556 8C9.55556 8.98184 8.75962 9.77778 7.77778 9.77778C6.79594 9.77778 6 8.98184 6 8C6 7.01816 6.79594 6.22223 7.77778 6.22223C8.75962 6.22223 9.55556 7.01816 9.55556 8ZM7.77778 16C8.75962 16 9.55556 15.2041 9.55556 14.2222C9.55556 13.2404 8.75962 12.4444 7.77778 12.4444C6.79594 12.4444 6 13.2404 6 14.2222C6 15.2041 6.79594 16 7.77778 16Z"
+      fill="currentColor"
+    />
+  </Element>
+);
+
+export const chevronDown = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M8.00006 10.7217L1.02852 3L-3.87318e-07 4.13919L8 13L16 4.13919L14.9091 3L8.00006 10.7217Z"
+      fill="currentColor"
+    />
+  </Element>
+);
+
+export const caret = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M8 12.8608L16 4L-3.87318e-07 4L8 12.8608L16 4L-3.87318e-07 4L8 12.8608Z"
       fill="currentColor"
     />
   </Element>

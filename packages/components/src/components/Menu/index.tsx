@@ -33,6 +33,7 @@ const Menu = ({ ...props }) => {
         '&[data-selected]': {
           outline: 'none',
           backgroundColor: 'menuList.hoverBackground',
+          color: 'menuList.foreground',
         },
         // override reach ui styles
         font: 'ineherit',
