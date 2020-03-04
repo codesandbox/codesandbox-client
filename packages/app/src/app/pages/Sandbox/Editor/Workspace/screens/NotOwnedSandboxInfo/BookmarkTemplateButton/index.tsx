@@ -13,7 +13,7 @@ import {
   UnbookmarkTemplateMutationVariables,
   BookmarkedSandboxInfoQueryVariables,
 } from 'app/graphql/types';
-import { Button } from '@codesandbox/components';
+import { Stack, Button, Icon, Menu } from '@codesandbox/components';
 import { BOOKMARK_TEMPLATE, UNBOOKMARK_TEMPLATE } from './mutations';
 import { BOOKMARKED_SANDBOX_INFO } from './queries';
 
@@ -27,6 +27,7 @@ export const BookmarkTemplateButton = () => {
       },
     },
   } = useOvermind();
+
   const [runQuery, { loading, data }] = useLazyQuery<
     BookmarkedSandboxInfoQuery,
     BookmarkedSandboxInfoQueryVariables
@@ -57,7 +58,10 @@ export const BookmarkTemplateButton = () => {
     return {
       variables: {
         template: customTemplate.id,
-        team: undefined,
+        team:
+          bookmarkInfo.entity.__typename === 'Team'
+            ? bookmarkInfo.entity.id
+            : undefined,
       },
       optimisticResponse: {
         __typename: 'RootMutationType',
@@ -92,10 +96,40 @@ export const BookmarkTemplateButton = () => {
     bookmarkInfos[i].isBookmarked ? unbookmark(config(i)) : bookmark(config(i));
 
   return (
-    <Button disabled={loading} onClick={() => handleToggleFollow()}>
-      {bookmarkInfos[0]?.isBookmarked
-        ? `Unbookmark Template`
-        : `Bookmark Template`}
-    </Button>
+    <Stack>
+      <Button
+        disabled={loading}
+        onClick={() => handleToggleFollow(0)}
+        css={{
+          width: 'calc(100% - 26px)',
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+        }}
+      >
+        {bookmarkInfos[0]?.isBookmarked
+          ? `Remove Bookmark`
+          : `Bookmark Template`}
+      </Button>
+      <Menu>
+        <Menu.Button
+          variant="primary"
+          css={{
+            width: '26px',
+            borderTopLeftRadius: 0,
+            borderBottomLeftRadius: 0,
+          }}
+        >
+          <Icon size={8} name="caret" />
+        </Menu.Button>
+        <Menu.List>
+          {bookmarkInfos.map(({ entity: { name } }, index: number) => (
+            <Menu.Item key={name} onSelect={() => handleToggleFollow(index)}>
+              {bookmarkInfos[index].isBookmarked ? 'Remove from ' : 'Add to '}
+              {index === 0 ? 'My Bookmarks' : name}
+            </Menu.Item>
+          ))}
+        </Menu.List>
+      </Menu>
+    </Stack>
   );
 };
