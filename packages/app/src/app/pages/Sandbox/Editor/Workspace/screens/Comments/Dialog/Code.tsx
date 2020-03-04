@@ -1,15 +1,19 @@
 import React from 'react';
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import { Element } from '@codesandbox/components';
+import css from '@styled-system/css';
 import nightOwlLight from 'prism-react-renderer/themes/nightOwlLight';
 
-export const Code = props => (
+import nightOwl from 'prism-react-renderer/themes/nightOwl';
+import { withTheme } from 'styled-components';
+
+export const Code = withTheme(({ value, language, theme }) => (
   <>
     <Highlight
       {...defaultProps}
-      code={props.value}
-      language={props.language || 'js'}
-      theme={nightOwlLight}
+      code={value}
+      language={language || 'js'}
+      theme={theme.vscodeTheme.type === 'dark' ? nightOwlLight : nightOwl}
     >
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <Element
@@ -19,6 +23,9 @@ export const Code = props => (
           marginY={2}
           className={className}
           style={style}
+          css={css({
+            whiteSpace: 'pre-wrap',
+          })}
         >
           {tokens.map((line, i) => (
             <Element {...getLineProps({ line, key: i })}>
@@ -31,4 +38,4 @@ export const Code = props => (
       )}
     </Highlight>
   </>
-);
+));
