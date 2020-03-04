@@ -97,7 +97,7 @@ export const createLiveClicked: AsyncAction<string> = async (
   effects.live.sendModuleStateSyncRequest();
 };
 
-export const liveMessageReceived: Operator<LiveMessage> = pipe(
+export const liveMessageReceived: Operator<LiveMessage, any> = pipe(
   filter((_, payload) =>
     Object.values(LiveMessageEvent).includes(payload.event)
   ),
