@@ -64,9 +64,7 @@ if (COMMENTS && NEW_SIDEBAR) {
 export const WorkspaceComponent = ({ theme }) => {
   const { state } = useOvermind();
   const {
-    editor: {
-      currentSandbox: { owned },
-    },
+    editor: { currentSandbox },
     isPatron,
     live: { isLive, roomInfo },
     preferences: {
@@ -112,14 +110,14 @@ export const WorkspaceComponent = ({ theme }) => {
             ))}
 
           {NEW_SIDEBAR &&
-            !(isPatron || owned) &&
+            !(isPatron || currentSandbox.owned) &&
             !(isLive && roomInfo.chatEnabled) && <Advertisement />}
         </>
       </WorkspaceWrapper>
 
       {!zenMode && !NEW_SIDEBAR && (
         <>
-          {!(isPatron || owned) && <Advertisement />}
+          {!(isPatron || currentSandbox.owned) && <Advertisement />}
 
           <ContactContainer>
             <SocialInfo style={{ display: 'inline-block' }} />

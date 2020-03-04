@@ -1,29 +1,28 @@
+import { basename } from 'path';
+
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { basename } from 'path';
-import { Link } from 'react-router-dom';
+import { useOvermind } from 'app/overmind';
 import React, {
   ChangeEvent,
   FunctionComponent,
   KeyboardEvent,
   useState,
 } from 'react';
-import { useSpring, animated } from 'react-spring';
-
-import { useOvermind } from 'app/overmind';
+import { Link } from 'react-router-dom';
+import { animated, useSpring } from 'react-spring';
 
 import { PrivacyTooltip } from '../PrivacyTooltip';
-
 import {
   Container,
   Folder,
   FolderName,
   Form,
+  Main,
   Name,
   NameInput,
-  Main,
   TemplateBadge,
 } from './elements';
 
@@ -41,6 +40,14 @@ export const SandboxName: FunctionComponent = () => {
   } = useOvermind();
   const [updatingName, setUpdatingName] = useState(false);
   const [name, setName] = useState('');
+  const spring = useSpring({
+    opacity: updatingName ? 0 : 1,
+    pointerEvents: updatingName ? 'none' : 'initial',
+  });
+
+  if (!currentSandbox) {
+    return null;
+  }
 
   const sandboxName = getSandboxName(currentSandbox) || 'Untitled';
 
@@ -90,10 +97,6 @@ export const SandboxName: FunctionComponent = () => {
       (currentSandbox.team ? currentSandbox.team.name : 'My Sandboxes')
     : 'My Sandboxes';
 
-  const spring = useSpring({
-    opacity: updatingName ? 0 : 1,
-    pointerEvents: updatingName ? 'none' : 'initial',
-  });
   const { customTemplate, owned } = currentSandbox;
 
   return (

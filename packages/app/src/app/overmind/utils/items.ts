@@ -77,6 +77,10 @@ export const COMMENTS: INavigationItem = {
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
+  if (!currentSandbox) {
+    return [PROJECT_SUMMARY, CONFIGURATION, GITHUB, DEPLOYMENT, SERVER, LIVE];
+  }
+
   if (!currentSandbox.owned || !store.isLoggedIn) {
     return [GITHUB, DEPLOYMENT, LIVE];
   }
@@ -85,6 +89,9 @@ export function getDisabledItems(store: any): INavigationItem[] {
 }
 
 export default function getItems(store: any): INavigationItem[] {
+  if (!store.editor.currentSandbox) {
+    return [];
+  }
   if (
     store.live.isLive &&
     !(
@@ -101,7 +108,7 @@ export default function getItems(store: any): INavigationItem[] {
 
   const { currentSandbox } = store.editor;
 
-  if (!currentSandbox.owned) {
+  if (!currentSandbox || !currentSandbox.owned) {
     return [PROJECT_SUMMARY, CONFIGURATION];
   }
 

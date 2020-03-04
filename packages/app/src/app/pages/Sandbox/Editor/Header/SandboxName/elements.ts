@@ -33,6 +33,9 @@ export const NameInput = styled(AutosizeInput)`
 
 export const Main = styled.div`
   display: none;
+  transition: opacity 0.25s ease-in-out;
+  opacity: 0;
+  z-index: 10;
 
   @media screen and (min-width: 826px) {
     display: block;

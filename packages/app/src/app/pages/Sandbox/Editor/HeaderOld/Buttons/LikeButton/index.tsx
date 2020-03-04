@@ -1,6 +1,5 @@
-import React, { FunctionComponent } from 'react';
-
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
 
 import { LikeHeart } from './elements';
 
@@ -16,8 +15,8 @@ export const LikeButton: FunctionComponent = () => {
       colorless
       disableTooltip
       highlightHover
-      sandbox={currentSandbox}
-      text={currentSandbox.likeCount}
+      sandbox={currentSandbox || ({ id: null, userLiked: false } as any)}
+      text={currentSandbox ? currentSandbox.likeCount : 0}
     />
   );
 };

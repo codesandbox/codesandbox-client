@@ -1,22 +1,33 @@
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
+import Navigator from '@codesandbox/common/lib/components/Preview/Navigator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
+import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
-import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
 
 import Content from './Content';
-import { Container } from './elements';
+import {
+  Container,
+  SkeletonDevtools,
+  SkeletonDevtoolsIframe,
+  SkeletonDevtoolsNavigator,
+  SkeletonDevtoolsTop,
+  SkeletonEditor,
+  SkeletonEditorTop,
+  SkeletonExplorer,
+  SkeletonExplorerTop,
+  SkeletonWrapper,
+} from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
 import { Header as HeaderOld } from './HeaderOld';
 import { Navigation } from './Navigation';
 import { Navigation as NavigationOld } from './NavigationOld';
-
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 
@@ -28,9 +39,34 @@ const StatusBar = styled.div`
   }
 `;
 
+const ContentSkeleton = ({ style, onTransitionEnd }) => (
+  <SkeletonWrapper style={style} onTransitionEnd={onTransitionEnd}>
+    <SkeletonExplorer>
+      <SkeletonExplorerTop />
+    </SkeletonExplorer>
+    <SkeletonEditor>
+      <SkeletonEditorTop />
+    </SkeletonEditor>
+    <SkeletonDevtools>
+      <SkeletonDevtoolsTop />
+      <SkeletonDevtoolsNavigator>
+        <Navigator
+          url=""
+          onChange={() => {}}
+          onConfirm={() => {}}
+          onRefresh={() => {}}
+          isProjectView
+        />
+      </SkeletonDevtoolsNavigator>
+      <SkeletonDevtoolsIframe />
+    </SkeletonDevtools>
+  </SkeletonWrapper>
+);
+
 const ContentSplit = () => {
   const { state, actions, effects } = useOvermind();
   const statusbarEl = useRef(null);
+  const [showSkeleton, setShowSkeleton] = useState(true);
   const [localState, setLocalState] = useState({
     theme: {
       colors: {},
@@ -83,7 +119,10 @@ const ContentSplit = () => {
         ...localState.theme,
       }}
     >
-      <Container style={{ lineHeight: 'initial' }} className="monaco-workbench">
+      <Container
+        style={{ lineHeight: 'initial', backgroundColor: 'transparent' }}
+        className="monaco-workbench"
+      >
         {REDESIGNED_SIDEBAR === 'true' ? (
           <>
             {state.preferences.settings.zenMode ? null : (
@@ -119,52 +158,63 @@ const ContentSplit = () => {
               zIndex: 9,
             }}
           >
-            {
-              <SplitPane
-                split="vertical"
-                defaultSize={17 * 16}
-                minSize={0}
-                onDragStarted={() => actions.editor.resizingStarted()}
-                onDragFinished={() => actions.editor.resizingStopped()}
-                onChange={size => {
-                  if (size > 0 && state.workspace.workspaceHidden) {
-                    actions.workspace.setWorkspaceHidden({ hidden: false });
-                  } else if (size === 0 && !state.workspace.workspaceHidden) {
-                    actions.workspace.setWorkspaceHidden({ hidden: true });
-                  }
-                }}
-                pane1Style={{
-                  minWidth: state.workspace.workspaceHidden ? 0 : 190,
-                  visibility: state.workspace.workspaceHidden
-                    ? 'hidden'
-                    : 'visible',
-                  maxWidth: state.workspace.workspaceHidden ? 0 : 400,
-                }}
-                pane2Style={{
-                  height: '100%',
-                }}
-                style={{
-                  overflow: 'visible', // For VSCode Context Menu
-                }}
-              >
-                {state.workspace.workspaceHidden ? <div /> : <Workspace />}
-                <Content />
-              </SplitPane>
-            }
-
-            <StatusBar
-              style={{
-                position: 'fixed',
-                display: statusBar ? 'block' : 'none',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: STATUS_BAR_SIZE,
+            <SplitPane
+              split="vertical"
+              defaultSize={17 * 16}
+              minSize={0}
+              resizerStyle={state.editor.isLoading ? { display: 'none' } : null}
+              onDragStarted={() => actions.editor.resizingStarted()}
+              onDragFinished={() => actions.editor.resizingStopped()}
+              onChange={size => {
+                if (size > 0 && state.workspace.workspaceHidden) {
+                  actions.workspace.setWorkspaceHidden({ hidden: false });
+                } else if (size === 0 && !state.workspace.workspaceHidden) {
+                  actions.workspace.setWorkspaceHidden({ hidden: true });
+                }
               }}
-              className="monaco-workbench mac nopanel"
-              ref={statusbarEl}
-            />
+              pane1Style={{
+                minWidth: state.workspace.workspaceHidden ? 0 : 190,
+                visibility: state.workspace.workspaceHidden
+                  ? 'hidden'
+                  : 'visible',
+                maxWidth: state.workspace.workspaceHidden ? 0 : 400,
+              }}
+              pane2Style={{
+                height: '100%',
+              }}
+              style={{
+                overflow: 'visible', // For VSCode Context Menu
+              }}
+            >
+              {state.workspace.workspaceHidden ? <div /> : <Workspace />}
+              {<Content theme={localState.theme} />}
+            </SplitPane>
+            {showSkeleton ? (
+              <NewThemeProvider theme={localState.theme.vscodeTheme}>
+                <ContentSkeleton
+                  style={{
+                    opacity: state.editor.isLoading ? 1 : 0,
+                  }}
+                  onTransitionEnd={() => {
+                    setShowSkeleton(false);
+                  }}
+                />
+              </NewThemeProvider>
+            ) : null}
           </div>
+
+          <StatusBar
+            style={{
+              position: 'fixed',
+              display: statusBar ? 'block' : 'none',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: STATUS_BAR_SIZE,
+            }}
+            className="monaco-workbench mac nopanel"
+            ref={statusbarEl}
+          />
         </Fullscreen>
 
         <ForkFrozenSandboxModal />
