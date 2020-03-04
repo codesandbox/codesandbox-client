@@ -90,7 +90,7 @@ export default new (class Live {
           // the server, so we manually wait and try to connect;
           _socket.disconnect();
 
-          const waitTime = 5000 * Math.random();
+          const waitTime = 500 + 5000 * Math.random();
 
           setTimeout(() => {
             _socket.connect();
