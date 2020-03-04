@@ -1,4 +1,3 @@
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 import codeSandboxTheme from '@codesandbox/common/lib/themes/codesandbox.json';
 
 export function initializeThemeCache() {
@@ -143,10 +142,4 @@ export function initializeCustomTheme() {
   if (customTheme) {
     installCustomTheme('custom', 'Custom Theme', customTheme);
   }
-
-  installCustomTheme(
-    'codesandbox-black-0.0.1',
-    'CodeSandbox Black.',
-    JSON.stringify(codeSandboxBlackTheme)
-  );
 }
