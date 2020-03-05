@@ -163,31 +163,6 @@ module.exports = {
 
   module: {
     rules: [
-      {
-        test: /\.(graphql|gql)$/,
-        exclude: /node_modules/,
-        loader: `graphql-tag/loader`,
-      },
-      {
-        test: /\.wasm$/,
-        loader: 'file-loader',
-        type: 'javascript/auto',
-      },
-      {
-        test: /\.scss$/,
-        use: getStyleLoaders(
-          {
-            importLoaders: 2,
-            sourceMap: true,
-          },
-          'sass-loader'
-        ),
-        // Don't consider CSS imports dead code even if the
-        // containing package claims to have no side effects.
-        // Remove this when webpack adds a warning or an error for this.
-        // See https://github.com/webpack/webpack/issues/6571
-        sideEffects: true,
-      },
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
         test: [
@@ -209,6 +184,8 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
+          retainLines: true,
+          cacheDirectory: true,
           presets: [
             '@babel/preset-flow',
             [
@@ -233,6 +210,31 @@ module.exports = {
             '@babel/plugin-transform-runtime',
           ],
         },
+      },
+      {
+        test: /\.(graphql|gql)$/,
+        exclude: /node_modules/,
+        loader: `graphql-tag/loader`,
+      },
+      {
+        test: /\.wasm$/,
+        loader: 'file-loader',
+        type: 'javascript/auto',
+      },
+      {
+        test: /\.scss$/,
+        use: getStyleLoaders(
+          {
+            importLoaders: 2,
+            sourceMap: true,
+          },
+          'sass-loader'
+        ),
+        // Don't consider CSS imports dead code even if the
+        // containing package claims to have no side effects.
+        // Remove this when webpack adds a warning or an error for this.
+        // See https://github.com/webpack/webpack/issues/6571
+        sideEffects: true,
       },
       {
         test: /\.(j|t)sx?$/,
