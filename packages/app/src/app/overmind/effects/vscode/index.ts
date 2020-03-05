@@ -23,6 +23,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
+import { Selection, TextOperation } from 'ot';
 import io from 'socket.io-client';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
@@ -117,6 +118,20 @@ export class VSCodeEffect {
   onSelectionChangeDebounced: VsCodeOptions['onSelectionChange'] & {
     cancel(): void;
   };
+
+  public getTextOperationFromSelection(
+    selection: [number, number],
+    code: string
+  ) {
+    return new TextOperation(
+      selection[0],
+      code.substr(selection[0], selection[1] - selection[0])
+    );
+  }
+
+  public getRangeFromSelection(selection: [number, number]) {
+    return new Selection.Range(selection[0], selection[1]);
+  }
 
   public initialize(options: VsCodeOptions) {
     this.options = options;

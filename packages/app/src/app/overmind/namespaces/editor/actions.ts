@@ -10,10 +10,10 @@ import {
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
   CollaboratorFragment,
@@ -1407,6 +1407,19 @@ export const addComment: AsyncAction<{
   if (!state.user) {
     return;
   }
+
+  /*
+    KEEP THIS: This will be used when we start implementing the backend. It will allow us to 
+    keep track of at what position the comment should be displayed and also we use a TextOperation
+    to do the diffing of changes
+
+    const selection = state.editor.currentSelection;
+    const range = effects.vscode.getRangeFromSelection(selection);
+    const operation = effects.vscode.getTextOperationFromSelection(
+      selection,
+      state.editor.currentModule.code
+    );
+  */
 
   const id = `${comment}-${username}`;
   const optimisticComment = {

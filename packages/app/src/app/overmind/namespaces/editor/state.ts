@@ -75,6 +75,7 @@ type State = {
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
+  currentSelection: [number, number] | null;
   comments: {
     [sandboxId: string]: {
       [commentId: string]: Comment;
@@ -87,6 +88,7 @@ type State = {
 };
 
 export const state: State = {
+  currentSelection: null,
   comments: {},
   currentCommentId: null, // '5e5961e0c277a40fef1e391b',
   currentComment: ({ comments, currentSandbox, currentCommentId }) => {
