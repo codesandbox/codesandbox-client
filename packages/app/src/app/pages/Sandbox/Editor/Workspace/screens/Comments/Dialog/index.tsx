@@ -22,9 +22,9 @@ export const Dialog = props => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
   const comment = state.editor.currentComment;
-  const [position, setPosition] = React.useState({
-    x: 200,
-    y: 100,
+  const [position, setPosition] = useState({
+    x: props.x || 200,
+    y: props.y || 100,
   });
 
   const closeDialog = () => actions.editor.selectComment(null);

@@ -54,9 +54,10 @@ export const Comment = ({ source }) => (
           </Text>
         ),
         code: props => <Code {...props} />,
-
         link: props => <Link {...props}>{props.children}</Link>,
+        linkReference: props => <Link {...props}>{props.children}</Link>,
         image: props => image(props),
+        thematicBreak: () => null,
         imageReference: props => image(props),
       }}
     />
