@@ -24,6 +24,11 @@ export const allComments: Query<CommentsResponse, CommentsVariables> = gql`
       }
       replies {
         id
+        content
+        author {
+          avatarUrl
+          username
+        }
       }
       insertedAt
       updatedAt
