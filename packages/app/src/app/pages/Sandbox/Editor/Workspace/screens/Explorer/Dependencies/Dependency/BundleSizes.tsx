@@ -41,7 +41,7 @@ export const BundleSizes = ({ dependency, version = '' }: Props) => {
 
   if (error) {
     return (
-      <Text variant="muted">
+      <Text variant="muted" marginBottom={2}>
         There was a problem getting the size for {dependency}
       </Text>
     );
