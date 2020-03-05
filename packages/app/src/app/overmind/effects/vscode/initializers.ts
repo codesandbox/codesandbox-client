@@ -59,12 +59,6 @@ export function initializeSettings() {
     settings['typescript.autoClosingTags'] = false;
     settings['typescript.tsserver.useSeparateSyntaxServer'] = false;
 
-    if (!settings['workbench.colorTheme']) {
-      // if you have not changed the theme ever,
-      // we set codesandbox black as the theme for you
-      settings['workbench.colorTheme'] = 'CodeSandbox Black';
-    }
-
     fs.writeFileSync(
       '/vscode/settings.json',
       JSON.stringify(settings, null, 2)
