@@ -15,6 +15,8 @@ export const onInitialize: OnInitialize = async (
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,
+    getConnectionsCount: () =>
+      state.live.roomInfo ? state.live.roomInfo.users.length : 0,
   });
 
   effects.flows.initialize(overmindInstance.reaction);

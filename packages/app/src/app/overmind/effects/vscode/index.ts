@@ -123,10 +123,12 @@ export class VSCodeEffect {
     selection: [number, number],
     code: string
   ) {
-    return new TextOperation(
-      selection[0],
-      code.substr(selection[0], selection[1] - selection[0])
-    );
+    const operation = new TextOperation();
+
+    operation.retain(selection[0]);
+    operation.insert(code.substr(selection[0], selection[1] - selection[0]));
+
+    return operation;
   }
 
   public getRangeFromSelection(selection: [number, number]) {

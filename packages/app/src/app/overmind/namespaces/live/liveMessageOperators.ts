@@ -7,11 +7,11 @@ import {
   Module,
   UserSelection,
 } from '@codesandbox/common/lib/types';
+import { logError } from '@codesandbox/common/lib/utils/analytics';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
-import { logError } from '@codesandbox/common/lib/utils/analytics';
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
@@ -82,7 +82,7 @@ export const onUserEntered: Operator<LiveMessage<{
     return;
   }
 
-  const users = camelizeKeys(data.users);
+  const users = camelizeKeys(data.users) as typeof data.users;
 
   state.live.roomInfo.users = users as LiveUser[];
   state.live.roomInfo.editorIds = data.editor_ids;
@@ -109,6 +109,14 @@ export const onUserEntered: Operator<LiveMessage<{
     effects.notificationToast.add({
       message: `${user.username} joined the live session.`,
       status: NotificationStatus.NOTICE,
+    });
+  }
+
+  if (users.length === 2) {
+    const clients = effects.live.getAllClients();
+
+    clients.forEach(client => {
+      client.serverReconnect();
     });
   }
 });

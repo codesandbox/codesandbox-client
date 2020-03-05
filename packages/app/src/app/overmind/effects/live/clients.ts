@@ -1,4 +1,4 @@
-import { OTClient } from './ot/client';
+import { Client, TextOperation } from 'ot';
 
 export type SendOperation = (
   moduleShortid: string,
@@ -8,24 +8,11 @@ export type SendOperation = (
 
 export type ApplyOperation = (moduleShortid: string, operation: any) => void;
 
-function operationToElixir(ot) {
-  return ot.map(op => {
-    if (typeof op === 'number') {
-      if (op < 0) {
-        return { d: -op };
-      }
-
-      return op;
-    }
-
-    return { i: op };
-  });
-}
-
-class CodeSandboxOTClient extends OTClient {
+class CodeSandboxOTClient extends Client {
   moduleShortid: string;
   onSendOperation: (revision: number, operation: any) => Promise<unknown>;
   onApplyOperation: (operation: any) => void;
+  saveOperation: TextOperation | null;
 
   constructor(
     revision: number,
@@ -40,15 +27,20 @@ class CodeSandboxOTClient extends OTClient {
   }
 
   sendOperation(revision, operation) {
-    this.onSendOperation(revision, operationToElixir(operation.toJSON())).then(
-      () => {
-        this.serverAck();
-      }
-    );
+    this.onSendOperation(revision, operation).then(() => {
+      this.serverAck();
+    });
   }
 
-  applyOperation(operation) {
-    this.onApplyOperation(operation);
+  flush() {
+    const saveOperation = this.saveOperation;
+
+    this.saveOperation = null;
+
+    return {
+      revision: this.revision,
+      operation: saveOperation,
+    };
   }
 
   serverAck() {
@@ -61,16 +53,25 @@ class CodeSandboxOTClient extends OTClient {
     }
   }
 
+  revertFlush(operation) {
+    if (this.saveOperation) {
+      this.saveOperation = operation.compose(this.saveOperation);
+    } else {
+      this.saveOperation = operation;
+    }
+  }
+
+  applyOperation(operation) {
+    this.onApplyOperation(operation);
+  }
+
   applyClient(operation: any) {
+    if (this.saveOperation) {
+      this.saveOperation = this.saveOperation.compose(operation);
+    } else {
+      this.saveOperation = operation;
+    }
     super.applyClient(operation);
-  }
-
-  applyServer(operation: any) {
-    super.applyServer(operation);
-  }
-
-  serverReconnect() {
-    super.serverReconnect();
   }
 }
 

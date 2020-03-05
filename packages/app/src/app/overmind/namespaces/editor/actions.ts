@@ -254,7 +254,12 @@ export const codeSaved: AsyncAction<{
   moduleShortid: string;
   cbID: string | null;
 }> = withOwnedSandbox(
-  async ({ actions }, { code, moduleShortid, cbID }) => {
+  async ({ actions, effects }, { code, moduleShortid, cbID }) => {
+    /*
+      KEEP THIS: This is the operation to be passed on every save, to be used
+      to transpose comments selection and keep a reference for diffing
+      const saveOperation = effects.live.getClient(moduleShortid).flush();
+    */
     actions.editor.internal.saveCode({
       code,
       moduleShortid,
@@ -352,6 +357,12 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
       const changedModules = sandbox.modules.filter(module =>
         state.editor.changedModuleShortids.includes(module.shortid)
       );
+
+      /*
+        KEEP THIS: This is the operation to be passed on every save, to be used
+        to transpose comments selection and keep a reference for diffing
+        const saveOperations = changedModules((changedModule) => effects.live.getClient(changedModule.moduleShortid).flush());
+      */
 
       const updatedModules = await effects.api.saveModules(
         sandbox.id,
