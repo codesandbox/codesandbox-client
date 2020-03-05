@@ -1531,6 +1531,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "zacjones93",
+      "name": "Zac Jones",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6188161?v=4",
+      "profile": "https://zacjones.io",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
