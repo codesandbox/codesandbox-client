@@ -1,5 +1,12 @@
 import React, { useEffect } from 'react';
-import { Collapsible, Text, Element, Stack } from '@codesandbox/components';
+import {
+  Collapsible,
+  Text,
+  Element,
+  Stack,
+  Link,
+} from '@codesandbox/components';
+import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 import { GitHubIcon } from './Icons';
 import { CommitForm } from './CommitForm';
@@ -23,6 +30,7 @@ export const GitHub = () => {
       user,
     },
   } = useOvermind();
+
   useEffect(() => {
     gitMounted();
   }, [gitMounted]);
@@ -42,12 +50,18 @@ export const GitHub = () => {
       {originalGit ? (
         <Collapsible title="Github" defaultOpen>
           <Element paddingX={2}>
-            <Stack gap={2} marginBottom={6} align="center">
-              <GitHubIcon />
-              <Text size={2}>
-                {originalGit.username}/{originalGit.repo}
-              </Text>
-            </Stack>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={githubRepoUrl(originalGit)}
+            >
+              <Stack gap={2} marginBottom={6} align="center">
+                <GitHubIcon />
+                <Text size={2}>
+                  {originalGit.username}/{originalGit.repo}
+                </Text>
+              </Stack>
+            </Link>
           </Element>
           <Element>
             <Text size={3} block marginBottom={2} marginX={2}>
