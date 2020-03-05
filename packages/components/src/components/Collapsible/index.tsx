@@ -14,6 +14,7 @@ const Section = styled(Element).attrs({ as: 'section' })(
 
 export const Header = styled(SidebarRow).attrs({ gap: 2 })(
   css({
+    minHeight: '35px',
     paddingX: 3,
     borderBottom: '1px solid',
     // Note: sideBarSectionHeader exists but we dont use it because it is rarely implemented

@@ -39,29 +39,38 @@ const StatusBar = styled.div`
   }
 `;
 
-const ContentSkeleton = ({ style, onTransitionEnd }) => (
-  <SkeletonWrapper style={style} onTransitionEnd={onTransitionEnd}>
-    <SkeletonExplorer>
-      <SkeletonExplorerTop />
-    </SkeletonExplorer>
-    <SkeletonEditor>
-      <SkeletonEditorTop />
-    </SkeletonEditor>
-    <SkeletonDevtools>
-      <SkeletonDevtoolsTop />
-      <SkeletonDevtoolsNavigator>
-        <Navigator
-          url=""
-          onChange={() => {}}
-          onConfirm={() => {}}
-          onRefresh={() => {}}
-          isProjectView
-        />
-      </SkeletonDevtoolsNavigator>
-      <SkeletonDevtoolsIframe />
-    </SkeletonDevtools>
-  </SkeletonWrapper>
-);
+const ContentSkeleton = ({ style, onTransitionEnd }) => {
+  React.useEffect(() => {
+    // In case we started already with opacity 0
+    if (style.opacity === 0) {
+      onTransitionEnd();
+    }
+  }, [onTransitionEnd, style.opacity]); // eslint-disable-line we don't want to check style on purpose
+
+  return (
+    <SkeletonWrapper style={style} onTransitionEnd={onTransitionEnd}>
+      <SkeletonExplorer>
+        <SkeletonExplorerTop />
+      </SkeletonExplorer>
+      <SkeletonEditor>
+        <SkeletonEditorTop />
+      </SkeletonEditor>
+      <SkeletonDevtools>
+        <SkeletonDevtoolsTop />
+        <SkeletonDevtoolsNavigator>
+          <Navigator
+            url=""
+            onChange={() => {}}
+            onConfirm={() => {}}
+            onRefresh={() => {}}
+            isProjectView
+          />
+        </SkeletonDevtoolsNavigator>
+        <SkeletonDevtoolsIframe />
+      </SkeletonDevtools>
+    </SkeletonWrapper>
+  );
+};
 
 const ContentSplit = () => {
   const { state, actions, effects } = useOvermind();

@@ -4,10 +4,11 @@ import getDefinition from '@codesandbox/common/lib/templates';
 export function getPossibleTemplates(sandboxes: any[]) {
   return uniqBy(
     sandboxes.map(x => {
-      const template = getDefinition(x.source.template);
+      const templateId = x.source?.template;
+      const template = getDefinition(templateId);
 
       return {
-        id: x.source.template,
+        id: templateId,
         color: template.color,
         name: template.name,
         niceName: template.niceName,

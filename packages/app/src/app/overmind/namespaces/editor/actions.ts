@@ -86,6 +86,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     );
 
     state.editor.isForkingSandbox = false;
+    return;
   }
 
   await effects.vscode.closeAllTabs();
@@ -156,6 +157,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     }
     state.editor.error = detail || error.message;
     state.editor.isLoading = false;
+    return;
   }
 
   const sandbox = state.editor.currentSandbox!;
