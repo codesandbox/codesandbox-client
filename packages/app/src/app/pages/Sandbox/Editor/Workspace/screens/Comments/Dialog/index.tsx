@@ -15,65 +15,6 @@ import {
 import { useOvermind } from 'app/overmind';
 import { Comment } from './Comment';
 
-// // eslint-disable-next-line no-var
-// var markdown = `
-// I am a comment
-
-// Here's that code block:
-
-// \`\`\`js
-// const total = [1, 2, 3, 4, 5]
-//   .map(num => num * 3)
-//   .filter(num => num < 9)
-//   .reduce((sum, num) => sum += num, 0)
-
-// \`\`\`
-
-// Neat, eh?`;
-
-// const defaultComment = {
-//   id: '5e59204cc277a40fef1e3916',
-//   isResolved: false,
-//   originalMessage: {
-//     id: 'gier2bk769d03r',
-//     content: markdown,
-//     author: {
-//       id: '740dca51-993d-4b0e-b8cb-0e46acada86b',
-//       avatarUrl: 'https://avatars0.githubusercontent.com/u/1863771?v=4',
-//       username: 'siddharthkp',
-//     },
-//   },
-//   replies: [
-//     {
-//       id: 'a\n-SaraVieira',
-//       content: 'A reply',
-//       author: {
-//         avatarUrl: 'https://avatars0.githubusercontent.com/u/1051509?v=4',
-//         badges: [{ id: 'patron_2', name: 'Patron II', visible: true }],
-//         curatorAt: '2018-11-25T18:51:34Z',
-//         email: 'hey@iamsaravieira.com',
-//         experiments: { containerLsp: null },
-//         id: '8d35d7c1-eecb-4aad-87b0-c22d30d12081',
-//         integrations: {
-//           github: null,
-//           zeit: { token: 'pqshnGwa4t3y7RxMzfHnoSW1' },
-//         },
-//         name: 'Sara Vieira',
-//         sendSurvey: false,
-//         subscription: {
-//           amount: 10,
-//           cancelAtPeriodEnd: false,
-//           duration: 'monthly',
-//           plan: 'patron',
-//           since: '2018-03-01T16:00:18Z',
-//         },
-//         username: 'SaraVieira',
-//       },
-//     },
-//   ],
-//   insertedAt: '2020-02-28T14:14:36.859Z',
-//   updatedAt: '2020-02-28T14:14:36.859Z',
-// };
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
@@ -81,9 +22,9 @@ export const Dialog = props => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
   const comment = state.editor.currentComment;
-  const [position, setPosition] = React.useState({
-    x: 200,
-    y: 100,
+  const [position, setPosition] = useState({
+    x: props.x || 200,
+    y: props.y || 100,
   });
 
   const closeDialog = () => actions.editor.selectComment(null);
