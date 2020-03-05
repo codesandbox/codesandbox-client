@@ -17,6 +17,7 @@ export type Comment = {
   replies: Message[];
   insertedAt: string;
   updatedAt?: string;
+  metadata?: string;
 };
 
 export type CommentsVariables = {
@@ -32,6 +33,7 @@ export type CommentsResponse = {
       originalMessage: Message;
       insertedAt: string;
       updatedAt: string;
+      metadata: string;
     }
   ];
 };
@@ -40,12 +42,46 @@ export type AddCommentVariables = {
   sandboxId: string;
   comment: string;
   username: string;
+  metadata?: string;
 };
 
 export type AddCommentResponse = {
   addComment: {
     id: string;
+    isResolved: boolean;
+    replies: Pick<Message, 'id'>[];
     originalMessage: Message;
+    insertedAt: string;
+    updatedAt: string;
+    metadata: string;
+  };
+};
+
+export type DeleteCommentVariables = {
+  id: string;
+};
+
+export type DeleteCommentResponse = {
+  deleteComment: {
+    id: string;
+  };
+};
+
+export type UpdateCommentVariables = {
+  id: string;
+  comment?: string;
+  isResolved?: boolean;
+  metadata?: string;
+};
+
+export type UpdateCommentResponse = {
+  updateComment: {
+    id: string;
+    isResolved: string;
+    originalMessage: {
+      id: string;
+      content: string;
+    };
   };
 };
 
@@ -65,5 +101,6 @@ export type CommentResponse = {
     replies: Message[];
     insertedAt: string;
     updatedAt: string;
+    metadata: string;
   };
 };

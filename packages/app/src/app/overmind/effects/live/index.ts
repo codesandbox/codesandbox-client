@@ -84,6 +84,20 @@ export default new (class Live {
         },
       });
 
+      _socket.onClose(e => {
+        if (e.code === 1006) {
+          // This is an abrupt close, the server probably restarted or carshed. We don't want to overload
+          // the server, so we manually wait and try to connect;
+          _socket.disconnect();
+
+          const waitTime = 500 + 5000 * Math.random();
+
+          setTimeout(() => {
+            _socket.connect();
+          }, waitTime);
+        }
+      });
+
       _socket.connect();
       window.socket = _socket;
       debug('Connecting to socket', _socket);

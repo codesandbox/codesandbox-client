@@ -32,6 +32,7 @@ export const allComments: Query<CommentsResponse, CommentsVariables> = gql`
       }
       insertedAt
       updatedAt
+      metadata
     }
   }
 `;
@@ -59,6 +60,7 @@ export const comment: Query<CommentResponse, CommentVariables> = gql`
       }
       insertedAt
       updatedAt
+      metadata
     }
   }
 `;

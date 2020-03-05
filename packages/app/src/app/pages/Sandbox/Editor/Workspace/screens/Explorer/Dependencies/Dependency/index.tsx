@@ -31,7 +31,6 @@ interface Props {
 }
 
 interface State {
-  hovering: boolean;
   version: null | string;
   open: boolean;
   versions: string[];
@@ -39,7 +38,6 @@ interface State {
 
 export class Dependency extends React.PureComponent<Props, State> {
   state: State = {
-    hovering: false,
     version: null,
     open: false,
     versions: [],
@@ -106,10 +104,6 @@ export class Dependency extends React.PureComponent<Props, State> {
     this.props.onRefresh(this.props.dependency);
   };
 
-  onMouseEnter = () => this.setState({ hovering: true });
-
-  onMouseLeave = () => this.setState({ hovering: false });
-
   handleOpen = () => this.setState(({ open }) => ({ open: !open }));
 
   render() {
@@ -119,18 +113,22 @@ export class Dependency extends React.PureComponent<Props, State> {
       return null;
     }
 
-    const { hovering, version, open, versions } = this.state;
+    const { version, open, versions } = this.state;
     return (
       <>
         <ListAction
           justify="space-between"
           align="center"
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}
           css={css({
             position: 'relative',
-            '.actions': { backgroundColor: 'sideBar.background' },
-            ':hover .actions': { backgroundColor: 'list.hoverBackground' },
+            '.actions': {
+              backgroundColor: 'sideBar.background',
+              display: 'none',
+            },
+            ':hover .actions': {
+              backgroundColor: 'list.hoverBackground',
+              display: 'flex',
+            },
           })}
         >
           <Link
@@ -141,28 +139,22 @@ export class Dependency extends React.PureComponent<Props, State> {
             {dependency}
           </Link>
 
-          {!hovering && (
-            <Stack
-              align="center"
-              justify="flex-end"
-              css={css({
-                position: 'absolute',
-                right: 2,
-                flexGrow: 0,
-                flexShrink: 1,
-                width: '100%',
-              })}
-            >
-              <Text
-                variant="muted"
-                maxWidth="30%"
-                css={{ display: hovering ? 'none' : 'block' }}
-              >
-                {formatVersion(dependencies[dependency])}{' '}
-                {version && <span>({formatVersion(version)})</span>}
-              </Text>
-            </Stack>
-          )}
+          <Stack
+            align="center"
+            justify="flex-end"
+            css={css({
+              position: 'absolute',
+              right: 2,
+              flexGrow: 0,
+              flexShrink: 1,
+              width: '100%',
+            })}
+          >
+            <Text variant="muted" maxWidth="30%">
+              {formatVersion(dependencies[dependency])}{' '}
+              {version && <span>({formatVersion(version)})</span>}
+            </Text>
+          </Stack>
 
           <Stack
             className="actions"
@@ -174,70 +166,63 @@ export class Dependency extends React.PureComponent<Props, State> {
               width: '150px', // overlay on text
             })}
           >
-            {hovering && (
-              <>
-                <Select
-                  css={{ width: '80px' }}
-                  defaultValue={versions.find(
-                    v => v === dependencies[dependency]
-                  )}
-                  onChange={e => {
-                    this.props.onRefresh(dependency, e.target.value);
-                    this.setState({ hovering: false });
-                  }}
-                >
-                  {versions.map(a => (
-                    <option key={a}>{a}</option>
-                  ))}
-                </Select>
+            <Select
+              css={{ width: '80px' }}
+              defaultValue={versions.find(v => v === dependencies[dependency])}
+              onChange={e => {
+                this.props.onRefresh(dependency, e.target.value);
+              }}
+            >
+              {versions.map(a => (
+                <option key={a}>{a}</option>
+              ))}
+            </Select>
 
-                <SingletonTooltip>
-                  {singleton => (
-                    <>
-                      <Tooltip
-                        content={open ? 'Hide sizes' : 'Show sizes'}
-                        style={{ outline: 'none' }}
-                        singleton={singleton}
-                      >
-                        <Button
-                          variant="link"
-                          onClick={this.handleOpen}
-                          css={css({ minWidth: 5 })}
-                        >
-                          {open ? <ArrowDropUp /> : <ArrowDropDown />}
-                        </Button>
-                      </Tooltip>
-                      <Tooltip
-                        content="Update to latest"
-                        style={{ outline: 'none' }}
-                        singleton={singleton}
-                      >
-                        <Button
-                          variant="link"
-                          onClick={this.handleRefresh}
-                          css={css({ minWidth: 5 })}
-                        >
-                          <RefreshIcon />
-                        </Button>
-                      </Tooltip>
-                      <Tooltip
-                        content="Remove"
-                        style={{ outline: 'none' }}
-                        singleton={singleton}
-                      >
-                        <Button
-                          variant="link"
-                          onClick={this.handleRemove}
-                          css={css({ minWidth: 5 })}
-                        >
-                          <CrossIcon />
-                        </Button>
-                      </Tooltip>
-                    </>
-                  )}
-                </SingletonTooltip>
-              </>
-            )}
+            <SingletonTooltip>
+              {singleton => (
+                <>
+                  <Tooltip
+                    content={open ? 'Hide sizes' : 'Show sizes'}
+                    style={{ outline: 'none' }}
+                    singleton={singleton}
+                  >
+                    <Button
+                      variant="link"
+                      onClick={this.handleOpen}
+                      css={css({ minWidth: 5 })}
+                    >
+                      {open ? <ArrowDropUp /> : <ArrowDropDown />}
+                    </Button>
+                  </Tooltip>
+                  <Tooltip
+                    content="Update to latest"
+                    style={{ outline: 'none' }}
+                    singleton={singleton}
+                  >
+                    <Button
+                      variant="link"
+                      onClick={this.handleRefresh}
+                      css={css({ minWidth: 5 })}
+                    >
+                      <RefreshIcon />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip
+                    content="Remove"
+                    style={{ outline: 'none' }}
+                    singleton={singleton}
+                  >
+                    <Button
+                      variant="link"
+                      onClick={this.handleRemove}
+                      css={css({ minWidth: 5 })}
+                    >
+                      <CrossIcon />
+                    </Button>
+                  </Tooltip>
+                </>
+              )}
+            </SingletonTooltip>
           </Stack>
         </ListAction>
         {open ? (

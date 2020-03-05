@@ -7,18 +7,19 @@ title: A Snappier, New Look Editor
 description:
   We've evolved the design of the editor to get to you to your code faster.
   While loading and forking take a fraction of the time.
-date: 2020-03-04
+date: 2020-03-05
 ---
 
 When chatting with folks in the CodeSandbox community, there’s one word that
 comes up more than any other: Speed! It’s a core reason why people choose
 CodeSandbox for web development—so they can get started prototyping quickly,
 testing out ideas, and learning new frameworks and techniques. But it’s also one
-of the most frequently requested improvements too. When it comes to web
-development, it seems we all have an unrelenting need for speed. But in
-software, speed is a nuanced thing. There’s how quick things _are_, and how fast
-they _feel_, which is why we’ve been tackling both as part of our snappier, new
-look editor.
+of the most frequently requested improvements too.
+
+When it comes to web development, it seems we all have an unrelenting need for
+speed. But in software, speed is a nuanced thing. There’s how quick things
+_are_, and how fast they _feel_, which is why we’ve been tackling both as part
+of our snappier, new look editor.
 
 ![Design changes](./images/0.gif)
 
