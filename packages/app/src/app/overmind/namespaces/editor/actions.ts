@@ -583,6 +583,8 @@ export const prettifyClicked: AsyncAction = async ({
   });
 };
 
+// TODO(@CompuIves): Look into whether we even want to call this function.
+// We can probably call the dispatch from the bundler itself instead.
 export const errorsCleared: Action = ({ state, effects }) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
@@ -604,6 +606,7 @@ export const errorsCleared: Action = ({ state, effects }) => {
       }
     });
     state.editor.errors = [];
+    effects.vscode.setErrors(state.editor.errors);
   }
 };
 

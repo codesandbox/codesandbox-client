@@ -62,12 +62,22 @@ export const TestDetails = ({ file, status, openFile, runTests }: Props) => {
         )}
         <Action>
           <Tooltip content="Open File">
-            <FileIcon onClick={() => openFile(file.fileName)} />
+            <FileIcon
+              onClick={e => {
+                e.stopPropagation();
+                openFile(file.fileName);
+              }}
+            />
           </Tooltip>
         </Action>
         <Action>
           <Tooltip content="Run Tests">
-            <PlayIcon onClick={() => runTests(file)} />
+            <PlayIcon
+              onClick={e => {
+                e.stopPropagation();
+                runTests(file);
+              }}
+            />
           </Tooltip>
         </Action>
       </TestTitle>
