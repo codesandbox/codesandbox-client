@@ -56,12 +56,12 @@ export const Comment = ({ source }) => {
         source={source}
         renderers={{
           text: ({ children }) => (
-            <Text variant="muted" size={13}>
+            <Text variant="muted" size={3}>
               {children}
             </Text>
           ),
           heading: ({ children }) => (
-            <Text block variant="muted" size={13}>
+            <Text block variant="muted" size={3}>
               {children}
             </Text>
           ),
@@ -74,9 +74,19 @@ export const Comment = ({ source }) => {
           inlineCode: props => (
             <Element
               as="span"
-              css={css({ backgroundColor: 'mutedForeground' })}
+              css={css({
+                backgroundColor: 'grays.200',
+                paddingX: '2px',
+                borderRadius: 'small',
+              })}
             >
-              <Text variant="danger" as="code">
+              <Text
+                css={css({
+                  color: 'reds.500',
+                })}
+                size={3}
+                as="code"
+              >
                 {props.children}
               </Text>
             </Element>
