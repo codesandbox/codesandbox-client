@@ -1,13 +1,27 @@
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
+import {
+  AddCommentResponse,
+  AddCommentVariables,
+  DeleteCommentVariables,
+  DeleteCommentResponse,
+  UpdateCommentVariables,
+  UpdateCommentResponse,
+} from './types';
 
-export const addComment: Query<any, any> = gql`
+export const addComment: Query<AddCommentResponse, AddCommentVariables> = gql`
   mutation AddComment(
     $sandboxId: String!
     $comment: String!
     $username: String!
+    $metadata: String
   ) {
-    addComment(sandboxId: $sandboxId, comment: $comment, username: $username) {
+    addComment(
+      sandboxId: $sandboxId
+      comment: $comment
+      username: $username
+      metadata: $metadata
+    ) {
       id
       isResolved
       originalMessage {
@@ -22,13 +36,17 @@ export const addComment: Query<any, any> = gql`
       replies {
         id
       }
+      metadata
       insertedAt
       updatedAt
     }
   }
 `;
 
-export const deleteComment: Query<any, any> = gql`
+export const deleteComment: Query<
+  DeleteCommentResponse,
+  DeleteCommentVariables
+> = gql`
   mutation DeleteComment($id: String!) {
     deleteComment(id: $id) {
       id
@@ -36,11 +54,19 @@ export const deleteComment: Query<any, any> = gql`
   }
 `;
 
-export const updateComment: Query<any, any> = gql`
-  mutation UpdateComment($id: String!, $comment: String, $isResolved: Boolean) {
+export const updateComment: Query<
+  UpdateCommentResponse,
+  UpdateCommentVariables
+> = gql`
+  mutation UpdateComment(
+    $id: String!
+    $comment: String
+    $isResolved: Boolean
+    $metadata: String
+  ) {
     updateComment(
       id: $id
-      data: { comment: $comment, isResolved: $isResolved }
+      data: { comment: $comment, isResolved: $isResolved, metadata: $metadata }
     ) {
       id
       isResolved
