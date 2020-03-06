@@ -104,3 +104,25 @@ export type CommentResponse = {
     metadata: string;
   };
 };
+
+export type DeleteReplyVariables = { replyId: string; commentId: string };
+
+export type DeleteReplyResponse = {
+  deleteReply: {
+    id: string;
+    replies: Message[];
+  };
+};
+
+export type UpdateReplyVariables = {
+  replyId: string;
+  commentId: string;
+  comment: string;
+};
+
+export type UpdateReplyResponse = {
+  updateReply: {
+    id: string;
+    replies: Message[];
+  };
+};

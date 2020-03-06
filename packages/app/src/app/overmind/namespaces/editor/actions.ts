@@ -1511,6 +1511,73 @@ export const updateComment: AsyncAction<{
   }
 };
 
+export const deleteReply: AsyncAction<{
+  replyId: string;
+  commentId: string;
+}> = async ({ state, effects }, { replyId, commentId }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  const sandboxId = state.editor.currentSandbox.id;
+  const oldReplies = state.editor.comments[sandboxId][commentId];
+
+  state.editor.comments[sandboxId][commentId] = {
+    ...oldReplies,
+    replies: oldReplies.replies.filter(reply => reply.id !== replyId),
+  };
+
+  try {
+    await effects.fakeGql.mutations.deleteReply({ replyId, commentId });
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to delete your reply, please try again'
+    );
+    state.editor.comments[sandboxId][commentId] = oldReplies;
+  }
+};
+
+export const updateReply: AsyncAction<{
+  replyId: string;
+  commentId: string;
+  comment: string;
+}> = async (
+  { state, effects },
+  { replyId, commentId, comment: newComment }
+) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  const sandboxId = state.editor.currentSandbox.id;
+  const old = state.editor.comments[sandboxId][commentId];
+
+  state.editor.comments[sandboxId][commentId] = {
+    ...old,
+    replies: old.replies.map(reply => {
+      if (reply.id === replyId) {
+        return {
+          ...reply,
+          content: newComment,
+        };
+      }
+
+      return reply;
+    }),
+  };
+
+  try {
+    await effects.fakeGql.mutations.updateReply({
+      replyId,
+      commentId,
+      comment: newComment,
+    });
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to update your comment, please try again'
+    );
+    state.editor.comments[sandboxId][commentId] = old;
+  }
+};
+
 export const selectCommentsFilter: Action<CommentsFilterOption> = (
   { state },
   option
