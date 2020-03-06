@@ -144,6 +144,7 @@ export const Dialog = props => {
                     overflow: 'hidden',
                     height: 50,
                     border: 'none',
+                    display: 'block',
                   })}
                   value={value}
                   onChange={e => setValue(e.target.value)}
