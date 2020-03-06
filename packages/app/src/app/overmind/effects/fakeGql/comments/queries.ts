@@ -23,9 +23,12 @@ export const allComments: Query<CommentsResponse, CommentsVariables> = gql`
         }
       }
       replies {
+        insertedAt
+        updatedAt
         id
         content
         author {
+          id
           avatarUrl
           username
         }
@@ -54,9 +57,12 @@ export const comment: Query<CommentResponse, CommentVariables> = gql`
         id
         content
         author {
+          id
           avatarUrl
           username
         }
+        insertedAt
+        updatedAt
       }
       insertedAt
       updatedAt
