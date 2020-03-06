@@ -1,5 +1,4 @@
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
@@ -17,9 +16,9 @@ import { Header } from './Header';
 import { Header as HeaderOld } from './HeaderOld';
 import { Navigation } from './Navigation';
 import { Navigation as NavigationOld } from './NavigationOld';
+import { ContentSkeleton } from './Skeleton';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
-import { ContentSkeleton } from './Skeleton';
 
 const STATUS_BAR_SIZE = 22;
 
@@ -30,7 +29,7 @@ const StatusBar = styled.div`
 `;
 
 const ContentSplit = () => {
-  const { state, actions, effects } = useOvermind();
+  const { state, actions, effects, reaction } = useOvermind();
   const statusbarEl = useRef(null);
   const [showSkeleton, setShowSkeleton] = useState(true);
   const [localState, setLocalState] = useState({
@@ -40,6 +39,13 @@ const ContentSplit = () => {
     },
     customVSCodeTheme: null,
   });
+
+  useEffect(() =>
+    reaction(
+      reactionState => reactionState.editor.hasLoadedInitialModule,
+      () => setShowSkeleton(false)
+    )
+  );
 
   useEffect(() => {
     async function loadTheme() {
@@ -158,12 +164,15 @@ const ContentSplit = () => {
             {showSkeleton ? (
               <NewThemeProvider theme={localState.theme.vscodeTheme}>
                 <ContentSkeleton
-                  style={{
-                    opacity: state.editor.isLoading ? 1 : 0,
-                  }}
-                  onTransitionEnd={() => {
-                    setShowSkeleton(false);
-                  }}
+                  style={
+                    state.editor.hasLoadedInitialModule
+                      ? {
+                          opacity: 0,
+                        }
+                      : {
+                          opacity: 1,
+                        }
+                  }
                 />
               </NewThemeProvider>
             ) : null}

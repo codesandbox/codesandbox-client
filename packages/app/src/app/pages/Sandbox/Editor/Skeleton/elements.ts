@@ -25,8 +25,8 @@ export const SkeletonTextBlock = styled.div(
 export const SkeletonWrapper = styled.div`
   position: absolute;
   font-family: Inter, sans-serif;
-  transition: opacity 0.5s ease-out;
   opacity: 1;
+  transition: opacity 0.5s ease-out;
   background-color: ${props =>
     props.theme.colors?.editor?.background || 'black'};
   width: 100%;
