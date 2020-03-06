@@ -3,17 +3,20 @@ import ReactDOM from 'react-dom';
 import css from '@styled-system/css';
 import Draggable from 'react-draggable';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
-
+import { formatDistance } from 'date-fns';
 import {
   Element,
   Stack,
   Avatar,
   Textarea,
   Text,
+  Link,
   IconButton,
+  Icon,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { Comment } from './Comment';
+import { Reply } from './Reply';
 
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
@@ -67,6 +70,35 @@ export const Dialog = props => {
       >
         <Stack direction="vertical">
           <Stack
+            align="center"
+            justify="space-between"
+            padding={4}
+            marginBottom={2}
+          >
+            <Text size={3} weight="bold">
+              Comment
+            </Text>
+            <Stack align="center">
+              <Icon
+                onClick={() =>
+                  actions.editor.updateComment({
+                    id: comment.id,
+                    data: { isResolved: !comment.isResolved },
+                  })
+                }
+                name="check"
+                title="Resolved"
+                color={comment.isResolved ? 'green' : 'mutedForeground'}
+              />
+              <IconButton
+                name="cross"
+                size={3}
+                title="Close comment dialog"
+                onClick={closeDialog}
+              />{' '}
+            </Stack>
+          </Stack>
+          <Stack
             className="handle"
             justify="space-between"
             padding={2}
@@ -74,40 +106,29 @@ export const Dialog = props => {
             css={{ cursor: 'move' }}
             marginBottom={4}
           >
-            <Stack align="center" gap={2}>
+            <Stack gap={2} align="center">
               <Avatar user={comment.originalMessage.author} />
-              <Text size={3}>{comment.originalMessage.author.username}</Text>
-            </Stack>
-
-            <Stack align="center">
-              <IconButton
-                name="cross"
-                size={3}
-                title="Close comment dialog"
-                onClick={closeDialog}
-              />
+              <Stack direction="vertical" justify="center">
+                <Link
+                  href={`/u/${comment.originalMessage.author.username}`}
+                  variant="body"
+                  css={{ fontWeight: 'bold', display: 'block' }}
+                >
+                  {comment.originalMessage.author.username}
+                </Link>
+                <Text size={12} variant="muted">
+                  {formatDistance(new Date(comment.insertedAt), new Date(), {
+                    addSuffix: true,
+                  })}
+                </Text>
+              </Stack>
             </Stack>
           </Stack>
           {comment && (
             <>
               <Comment source={comment.originalMessage.content} />
-              {comment.replies.map(c => (
-                <>
-                  <Element
-                    paddingX={4}
-                    paddingTop={6}
-                    css={css({
-                      borderTop: '1px solid',
-                      borderColor: 'sideBar.border',
-                    })}
-                  >
-                    <Stack align="center" gap={2}>
-                      <Avatar user={c.author} />
-                      <Text size={3}>{c.author.username}</Text>
-                    </Stack>
-                  </Element>
-                  <Comment source={c.content} />
-                </>
+              {comment.replies.map(reply => (
+                <Reply {...reply} commentId={comment.id} />
               ))}
               <Element
                 paddingX={4}

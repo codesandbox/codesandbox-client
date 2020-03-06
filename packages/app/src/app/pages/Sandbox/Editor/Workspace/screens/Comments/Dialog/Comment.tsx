@@ -42,6 +42,9 @@ export const Comment = ({ source }) => {
           color: 'mutedForeground',
           content: "counter(counter) '. '",
         },
+        p: {
+          margin: 0,
+        },
         li: {
           listStyle: 'none',
         },

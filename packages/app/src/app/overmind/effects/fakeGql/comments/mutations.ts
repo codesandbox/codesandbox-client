@@ -97,6 +97,8 @@ export const reply: Query<any, any> = gql`
     ) {
       id
       replies {
+        insertedAt
+        updatedAt
         id
         content
         author {
@@ -117,6 +119,8 @@ export const deleteReply: Query<
     deleteReply(replyId: $replyId, commentId: $commentId) {
       id
       replies {
+        insertedAt
+        updatedAt
         id
         content
         author {
@@ -137,6 +141,8 @@ export const updateReply: Query<
     updateReply(replyId: $replyId, commentId: $commentId, comment: $comment) {
       id
       replies {
+        insertedAt
+        updatedAt
         id
         content
         author {

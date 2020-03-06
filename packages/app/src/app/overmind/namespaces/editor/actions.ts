@@ -1635,6 +1635,7 @@ export const addReply: AsyncAction<string> = async (
     // sorry
     // @ts-ignore
     replies: state.editor.currentComment.replies.concat({
+      insertedAt: new Date(),
       id: fakeId,
       content: comment,
       author: {
