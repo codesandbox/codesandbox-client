@@ -1,5 +1,5 @@
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-import Navigator from '@codesandbox/common/lib/components/Preview/Navigator';
+
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
@@ -11,18 +11,7 @@ import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
 
 import Content from './Content';
-import {
-  Container,
-  SkeletonDevtools,
-  SkeletonDevtoolsIframe,
-  SkeletonDevtoolsNavigator,
-  SkeletonDevtoolsTop,
-  SkeletonEditor,
-  SkeletonEditorTop,
-  SkeletonExplorer,
-  SkeletonExplorerTop,
-  SkeletonWrapper,
-} from './elements';
+import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
 import { Header as HeaderOld } from './HeaderOld';
@@ -30,6 +19,7 @@ import { Navigation } from './Navigation';
 import { Navigation as NavigationOld } from './NavigationOld';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
+import { ContentSkeleton } from './Skeleton';
 
 const STATUS_BAR_SIZE = 22;
 
@@ -38,39 +28,6 @@ const StatusBar = styled.div`
     color: inherit;
   }
 `;
-
-const ContentSkeleton = ({ style, onTransitionEnd }) => {
-  React.useEffect(() => {
-    // In case we started already with opacity 0
-    if (style.opacity === 0) {
-      onTransitionEnd();
-    }
-  }, [onTransitionEnd, style.opacity]); // eslint-disable-line we don't want to check style on purpose
-
-  return (
-    <SkeletonWrapper style={style} onTransitionEnd={onTransitionEnd}>
-      <SkeletonExplorer>
-        <SkeletonExplorerTop />
-      </SkeletonExplorer>
-      <SkeletonEditor>
-        <SkeletonEditorTop />
-      </SkeletonEditor>
-      <SkeletonDevtools>
-        <SkeletonDevtoolsTop />
-        <SkeletonDevtoolsNavigator>
-          <Navigator
-            url=""
-            onChange={() => {}}
-            onConfirm={() => {}}
-            onRefresh={() => {}}
-            isProjectView
-          />
-        </SkeletonDevtoolsNavigator>
-        <SkeletonDevtoolsIframe />
-      </SkeletonDevtools>
-    </SkeletonWrapper>
-  );
-};
 
 const ContentSplit = () => {
   const { state, actions, effects } = useOvermind();
