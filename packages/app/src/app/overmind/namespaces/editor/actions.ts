@@ -1489,6 +1489,7 @@ export const updateComment: AsyncAction<{
   const isResolved = state.editor.comments[sandboxId][id].isResolved;
   const comment = state.editor.comments[sandboxId][id].originalMessage.content;
   const updateIsCurrent =
+    state.editor.currentComment &&
     state.editor.comments[sandboxId][id].id === state.editor.currentComment.id;
 
   if ('isResolved' in data) {
