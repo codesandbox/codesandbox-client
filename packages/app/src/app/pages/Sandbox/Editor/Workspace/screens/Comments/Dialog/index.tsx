@@ -64,7 +64,6 @@ export const Dialog = props => {
           borderRadius: 4,
           width: 420,
           height: 'auto',
-          paddingBottom: 4,
         })}
       >
         <Stack direction="vertical">
@@ -134,7 +133,6 @@ export const Dialog = props => {
                 <Reply {...reply} commentId={comment.id} />
               ))}
               <Element
-                paddingX={4}
                 css={css({
                   borderTop: '1px solid',
                   borderColor: 'sideBar.border',
@@ -142,7 +140,11 @@ export const Dialog = props => {
               >
                 <Textarea
                   autosize
-                  css={css({ minHeight: 8, overflow: 'hidden' })}
+                  css={css({
+                    overflow: 'hidden',
+                    height: 50,
+                    border: 'none',
+                  })}
                   value={value}
                   onChange={e => setValue(e.target.value)}
                   placeholder={comment ? 'Reply' : 'Write a comment...'}
