@@ -17,7 +17,7 @@ the embed doesn't have all features of the full editor.
 You can generate a URL clicking 'Embed' in the header and selecting the options
 you want to have enabled.
 
-![Share Button](./images/share-button.png)
+![Embed Button](./images/embed-button.png)
 
 ## Embed on Medium
 
