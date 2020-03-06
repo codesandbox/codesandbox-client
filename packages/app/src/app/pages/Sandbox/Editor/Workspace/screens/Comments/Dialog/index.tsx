@@ -12,7 +12,6 @@ import {
   Text,
   Link,
   IconButton,
-  Icon,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { Comment } from './Comment';
@@ -79,7 +78,7 @@ export const Dialog = props => {
               Comment
             </Text>
             <Stack align="center">
-              <Icon
+              <IconButton
                 onClick={() =>
                   actions.editor.updateComment({
                     id: comment.id,
@@ -87,8 +86,12 @@ export const Dialog = props => {
                   })
                 }
                 name="check"
-                title="Resolved"
-                color={comment.isResolved ? 'green' : 'mutedForeground'}
+                title="Resolve Comment"
+                css={css({
+                  transition: 'color',
+                  transitionDuration: theme => theme.speeds[1],
+                  color: comment.isResolved ? 'green' : 'mutedForeground',
+                })}
               />
               <IconButton
                 name="cross"

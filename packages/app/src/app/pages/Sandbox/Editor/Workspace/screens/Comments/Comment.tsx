@@ -31,7 +31,6 @@ export const Comment = React.memo(({ comment }: any) => {
 
   return (
     <ListAction
-      onClick={() => actions.editor.selectComment(comment.id)}
       key={comment.id}
       paddingTop={5}
       css={css({
@@ -44,7 +43,11 @@ export const Comment = React.memo(({ comment }: any) => {
       })}
     >
       <Stack align="flex-start" justify="space-between" marginBottom={4}>
-        <Stack gap={2} align="center">
+        <Stack
+          gap={2}
+          align="center"
+          onClick={() => actions.editor.selectComment(comment.id)}
+        >
           <Avatar user={comment.originalMessage.author} />
           <Stack direction="vertical" justify="center">
             <Link
@@ -93,6 +96,7 @@ export const Comment = React.memo(({ comment }: any) => {
         </Stack>
       </Stack>
       <Element
+        onClick={() => actions.editor.selectComment(comment.id)}
         as="p"
         marginY={0}
         marginRight={2 /** Adjust for the missing margin in ListAction */}

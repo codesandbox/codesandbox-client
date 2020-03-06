@@ -15,9 +15,9 @@ import { Comment } from './Comment';
 type ReplyProps = {
   id: string;
   author?: any;
-  insertedAt: string;
+  insertedAt?: string;
   commentId: string;
-  content: string;
+  content?: string;
 };
 
 export const Reply = ({
