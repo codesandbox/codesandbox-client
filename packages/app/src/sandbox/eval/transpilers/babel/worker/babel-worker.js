@@ -110,6 +110,13 @@ async function initializeBrowserFS() {
         }
         fsLoading = false;
         fsInitialized = true;
+
+        // Write the empty file that we use for native modules.
+        BrowserFS.BFSRequire('fs').writeFileSync(
+          '/empty.js',
+          `module.exports = {}`
+        );
+
         resolve();
         // BrowserFS is initialized and ready-to-use!
       }

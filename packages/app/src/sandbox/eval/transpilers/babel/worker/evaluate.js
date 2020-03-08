@@ -48,6 +48,22 @@ export default function evaluate(
       return {};
     }
 
+    if (requirePath === 'os') {
+      return {};
+    }
+
+    if (requirePath === 'http') {
+      return {};
+    }
+
+    if (requirePath === 'https') {
+      return {};
+    }
+
+    if (requirePath === 'url') {
+      return {};
+    }
+
     if (requirePath === 'constants') {
       return {};
     }
