@@ -1481,8 +1481,8 @@ export const updateComment: AsyncAction<{
     comment?: string;
     isResolved: boolean;
   };
-}> = async ({ state, effects }, { id, data }) => {
-  if (!state.editor.currentSandbox) {
+}> = async ({ effects, state }, { id, data }) => {
+  if (!state.editor.currentSandbox || !state.editor.currentComment) {
     return;
   }
   const sandboxId = state.editor.currentSandbox.id;
