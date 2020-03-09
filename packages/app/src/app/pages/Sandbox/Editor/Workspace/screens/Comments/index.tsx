@@ -103,7 +103,7 @@ export const Comments: React.FC = () => {
         </SidebarRow>
 
         {currentComments.length ? (
-          <List marginTop={4} css={{ height: '100%', overflow: 'scroll' }}>
+          <List marginTop={4} css={{ height: '100%', overflow: 'auto' }}>
             {currentComments.map(comment => (
               <Comment key={comment.id} comment={comment} />
             ))}
