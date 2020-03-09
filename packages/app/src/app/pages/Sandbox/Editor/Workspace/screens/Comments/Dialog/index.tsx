@@ -25,8 +25,10 @@ export const CommentDialog = props =>
 export const Dialog = props => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
+
   const [edit, setEdit] = useState(false);
   const comment = state.editor.currentComment;
+  const [editValue, setEditValue] = useState(comment.originalMessage.content);
   const [position, setPosition] = useState({
     x: props.x || 200,
     y: props.y || 100,
@@ -113,7 +115,13 @@ export const Dialog = props => {
 
         {comment && (
           <>
-            <Stack align="flex-start" justify="space-between" marginBottom={4}>
+            <Stack
+              align="flex-start"
+              justify="space-between"
+              marginBottom={4}
+              marginLeft={4}
+              marginRight={2}
+            >
               <Stack gap={2} align="center">
                 <Avatar user={comment.originalMessage.author} />
                 <Stack direction="vertical" justify="center" gap={1}>
@@ -173,8 +181,8 @@ export const Dialog = props => {
                   <Element marginBottom={2}>
                     <Textarea
                       autosize
-                      value={value}
-                      onChange={e => setValue(e.target.value)}
+                      value={editValue}
+                      onChange={e => setEditValue(e.target.value)}
                     />
                   </Element>
                   <Element
@@ -189,12 +197,13 @@ export const Dialog = props => {
                     </Button>
 
                     <Button
+                      disabled={!editValue}
                       variant="secondary"
                       onClick={async () => {
                         await actions.editor.updateComment({
                           id: comment.id,
                           data: {
-                            comment: value,
+                            comment: editValue,
                           },
                         });
                         setEdit(false);

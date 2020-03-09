@@ -112,6 +112,7 @@ export const Reply = ({
 
               <Button
                 variant="secondary"
+                disabled={!value}
                 onClick={async () => {
                   await actions.editor.updateReply({
                     replyId: id,
