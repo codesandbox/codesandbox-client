@@ -1528,7 +1528,7 @@ export const deleteReply: AsyncAction<{
   replyId: string;
   commentId: string;
 }> = async ({ state, effects }, { replyId, commentId }) => {
-  if (!state.editor.currentSandbox || !state.editor.currentComment) {
+  if (!state.editor.currentSandbox) {
     return;
   }
   const sandboxId = state.editor.currentSandbox.id;
