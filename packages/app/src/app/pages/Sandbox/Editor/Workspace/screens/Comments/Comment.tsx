@@ -51,13 +51,14 @@ export const Comment = React.memo(({ comment }: any) => {
           <Avatar user={comment.originalMessage.author} />
           <Stack direction="vertical" justify="center">
             <Link
+              size={3}
+              weight="bold"
               href={`/u/${comment.originalMessage.author.username}`}
               variant="body"
-              css={{ fontWeight: 'bold', display: 'block' }}
             >
               {comment.originalMessage.author.username}
             </Link>
-            <Text size={12} variant="muted">
+            <Text size={2} variant="muted">
               {formatDistance(new Date(comment.insertedAt), new Date(), {
                 addSuffix: true,
               })}

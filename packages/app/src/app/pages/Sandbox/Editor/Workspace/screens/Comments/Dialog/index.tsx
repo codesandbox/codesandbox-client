@@ -64,14 +64,17 @@ export const Dialog = props => {
           borderRadius: 4,
           width: 420,
           height: 'auto',
+          fontFamily: 'Inter, sans-serif',
         })}
       >
         <Stack direction="vertical">
           <Stack
             className="handle"
+            css={{ cursor: 'move' }}
             align="center"
             justify="space-between"
             padding={4}
+            paddingRight={2}
             marginBottom={2}
           >
             <Text size={3} weight="bold">
@@ -86,6 +89,7 @@ export const Dialog = props => {
                   })
                 }
                 name="check"
+                size={4}
                 title="Resolve Comment"
                 css={css({
                   transition: 'color',
@@ -98,27 +102,22 @@ export const Dialog = props => {
                 size={3}
                 title="Close comment dialog"
                 onClick={closeDialog}
-              />{' '}
+              />
             </Stack>
           </Stack>
-          <Stack
-            justify="space-between"
-            padding={2}
-            paddingLeft={4}
-            css={{ cursor: 'move' }}
-            marginBottom={4}
-          >
-            <Stack gap={2} align="center">
+          <Stack justify="space-between" paddingX={4} marginBottom={6}>
+            <Stack gap={2} align="center" marginBottom={4}>
               <Avatar user={comment.originalMessage.author} />
-              <Stack direction="vertical" justify="center">
+              <Stack direction="vertical" justify="center" gap={1}>
                 <Link
+                  size={3}
+                  weight="bold"
                   href={`/u/${comment.originalMessage.author.username}`}
                   variant="body"
-                  css={{ fontWeight: 'bold', display: 'block' }}
                 >
                   {comment.originalMessage.author.username}
                 </Link>
-                <Text size={12} variant="muted">
+                <Text size={2} variant="muted">
                   {formatDistance(new Date(comment.insertedAt), new Date(), {
                     addSuffix: true,
                   })}
@@ -142,7 +141,7 @@ export const Dialog = props => {
                   autosize
                   css={css({
                     overflow: 'hidden',
-                    height: 50,
+
                     border: 'none',
                     display: 'block',
                   })}

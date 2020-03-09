@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Text } from '../Text';
+import { Text, ITextProps } from '../Text';
 
 type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
-  React.AnchorHTMLAttributes<HTMLSpanElement> & {
-    variant?: 'body' | 'muted' | 'danger'; // same as Text
-  };
+  React.AnchorHTMLAttributes<HTMLSpanElement> &
+  ITextProps;
 
 const LinkElement = styled(Text).attrs({ as: 'a' })<LinkProps>(
   css({
