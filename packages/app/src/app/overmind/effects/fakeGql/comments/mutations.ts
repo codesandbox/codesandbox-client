@@ -137,7 +137,11 @@ export const updateReply: Query<
   UpdateReplyResponse,
   UpdateReplyVariables
 > = gql`
-  mutation updateReply($replyId: String!, $commentId: String!) {
+  mutation updateReply(
+    $replyId: String!
+    $commentId: String!
+    $comment: String!
+  ) {
     updateReply(replyId: $replyId, commentId: $commentId, comment: $comment) {
       id
       replies {

@@ -5,7 +5,7 @@ import { Text, Element, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Code } from './Code';
 
-export const Comment = ({ source }) => {
+export const Markdown = ({ source }) => {
   const { state } = useOvermind();
   const privateSandbox =
     state.editor.currentSandbox.privacy === 1 ||

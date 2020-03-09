@@ -12,9 +12,11 @@ import {
   Text,
   Link,
   IconButton,
+  Button,
+  Menu,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import { Comment } from './Comment';
+import { Markdown } from './Markdown';
 import { Reply } from './Reply';
 
 export const CommentDialog = props =>
@@ -23,6 +25,7 @@ export const CommentDialog = props =>
 export const Dialog = props => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
+  const [edit, setEdit] = useState(false);
   const comment = state.editor.currentComment;
   const [position, setPosition] = useState({
     x: props.x || 200,
@@ -110,26 +113,51 @@ export const Dialog = props => {
 
         {comment && (
           <>
-            <Stack gap={2} align="center" paddingX={4} marginBottom={4}>
-              <Avatar user={comment.originalMessage.author} />
-              <Stack direction="vertical" justify="center" gap={1}>
-                <Link
-                  size={3}
-                  weight="bold"
-                  href={`/u/${comment.originalMessage.author.username}`}
-                  variant="body"
-                >
-                  {comment.originalMessage.author.username}
-                </Link>
-                <Text size={2} variant="muted">
-                  {formatDistance(new Date(comment.insertedAt), new Date(), {
-                    addSuffix: true,
-                  })}
-                </Text>
+            <Stack align="flex-start" justify="space-between" marginBottom={4}>
+              <Stack gap={2} align="center">
+                <Avatar user={comment.originalMessage.author} />
+                <Stack direction="vertical" justify="center" gap={1}>
+                  <Link
+                    size={3}
+                    weight="bold"
+                    href={`/u/${comment.originalMessage.author.username}`}
+                    variant="body"
+                  >
+                    {comment.originalMessage.author.username}
+                  </Link>
+                  <Text size={2} variant="muted">
+                    {formatDistance(new Date(comment.insertedAt), new Date(), {
+                      addSuffix: true,
+                    })}
+                  </Text>
+                </Stack>
               </Stack>
+              {state.user.id === comment.originalMessage.author.id && (
+                <Stack align="center">
+                  <Menu>
+                    <Menu.IconButton
+                      name="more"
+                      title="Comment actions"
+                      size={3}
+                    />
+                    <Menu.List>
+                      <Menu.Item
+                        onSelect={() =>
+                          actions.editor.deleteComment({ id: comment.id })
+                        }
+                      >
+                        Delete
+                      </Menu.Item>
+                      <Menu.Item onSelect={() => setEdit(true)}>
+                        Edit Comment
+                      </Menu.Item>
+                    </Menu.List>
+                  </Menu>
+                </Stack>
+              )}
             </Stack>
             <Element
-              as="p"
+              as={edit ? 'div' : 'p'}
               marginY={0}
               marginX={4}
               paddingBottom={6}
@@ -138,7 +166,45 @@ export const Dialog = props => {
                 borderColor: 'sideBar.border',
               })}
             >
-              <Comment source={comment.originalMessage.content} />
+              {!edit ? (
+                <Markdown source={comment.originalMessage.content} />
+              ) : (
+                <>
+                  <Element marginBottom={2}>
+                    <Textarea
+                      autosize
+                      value={value}
+                      onChange={e => setValue(e.target.value)}
+                    />
+                  </Element>
+                  <Element
+                    css={css({
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gridGap: 2,
+                    })}
+                  >
+                    <Button variant="link" onClick={() => setEdit(false)}>
+                      Cancel
+                    </Button>
+
+                    <Button
+                      variant="secondary"
+                      onClick={async () => {
+                        await actions.editor.updateComment({
+                          id: comment.id,
+                          data: {
+                            comment: value,
+                          },
+                        });
+                        setEdit(false);
+                      }}
+                    >
+                      Save
+                    </Button>
+                  </Element>
+                </>
+              )}
             </Element>
           </>
         )}
