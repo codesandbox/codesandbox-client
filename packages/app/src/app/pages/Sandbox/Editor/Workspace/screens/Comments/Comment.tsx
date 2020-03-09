@@ -32,7 +32,7 @@ export const Comment = React.memo(({ comment }: any) => {
   return (
     <ListAction
       key={comment.id}
-      paddingTop={5}
+      paddingTop={4}
       css={css({
         display: 'block',
         color: 'inherit',
@@ -51,13 +51,14 @@ export const Comment = React.memo(({ comment }: any) => {
           <Avatar user={comment.originalMessage.author} />
           <Stack direction="vertical" justify="center">
             <Link
+              size={3}
+              weight="bold"
               href={`/u/${comment.originalMessage.author.username}`}
               variant="body"
-              css={{ fontWeight: 'bold', display: 'block' }}
             >
               {comment.originalMessage.author.username}
             </Link>
-            <Text size={12} variant="muted">
+            <Text size={2} variant="muted">
               {formatDistance(new Date(comment.insertedAt), new Date(), {
                 addSuffix: true,
               })}
@@ -100,7 +101,7 @@ export const Comment = React.memo(({ comment }: any) => {
         as="p"
         marginY={0}
         marginRight={2 /** Adjust for the missing margin in ListAction */}
-        paddingBottom={5}
+        paddingBottom={6 /** Use padding instead of margin for inset border */}
         css={css({
           borderBottom: '1px solid',
           borderColor: 'sideBar.border',

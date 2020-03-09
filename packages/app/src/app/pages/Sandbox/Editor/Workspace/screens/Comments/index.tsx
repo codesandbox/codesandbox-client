@@ -40,7 +40,13 @@ export const Comments: React.FC = () => {
     selectedCommentsFilter === CommentsFilterOption.ALL;
 
   const Empty = () => (
-    <Stack direction="vertical" align="center" justify="center" gap={8}>
+    <Stack
+      direction="vertical"
+      align="center"
+      justify="center"
+      gap={8}
+      marginX={2}
+    >
       <Icon
         name="comments"
         size={20}
@@ -97,7 +103,14 @@ export const Comments: React.FC = () => {
         </SidebarRow>
 
         {currentComments.length ? (
-          <List marginTop={4} css={{ height: '100%', overflow: 'scroll' }}>
+          <List
+            marginTop={4}
+            css={{
+              // stretch within container, leaving space for comment box
+              height: 'calc(100% - 32px)',
+              overflow: 'auto',
+            }}
+          >
             {currentComments.map(comment => (
               <Comment key={comment.id} comment={comment} />
             ))}

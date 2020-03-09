@@ -22,20 +22,26 @@ export interface IElementProps {
 export const Element = styled.div<IElementProps>(props =>
   css({
     boxSizing: 'border-box',
-    margin: props.margin || null,
-    marginX: props.marginX || null,
-    marginY: props.marginY || null,
-    marginBottom: props.marginBottom || null,
-    marginTop: props.marginTop || null,
-    marginLeft: props.marginLeft || null,
-    marginRight: props.marginRight || null,
-    padding: props.padding || null,
-    paddingX: props.paddingX || null,
-    paddingY: props.paddingY || null,
-    paddingBottom: props.paddingBottom || null,
-    paddingTop: props.paddingTop || null,
-    paddingLeft: props.paddingLeft || null,
-    paddingRight: props.paddingRight || null,
+    margin: nullCheck(props.margin),
+    marginX: nullCheck(props.marginX),
+    marginY: nullCheck(props.marginY),
+    marginBottom: nullCheck(props.marginBottom),
+    marginTop: nullCheck(props.marginTop),
+    marginLeft: nullCheck(props.marginLeft),
+    marginRight: nullCheck(props.marginRight),
+    padding: nullCheck(props.padding),
+    paddingX: nullCheck(props.paddingX),
+    paddingY: nullCheck(props.paddingY),
+    paddingBottom: nullCheck(props.paddingBottom),
+    paddingTop: nullCheck(props.paddingTop),
+    paddingLeft: nullCheck(props.paddingLeft),
+    paddingRight: nullCheck(props.paddingRight),
     ...(props.css || {}),
   })
 );
+
+const nullCheck = value => {
+  // 0 is an allowed value, even though it's falsy
+  if (typeof value !== 'undefined') return value;
+  return null;
+};
