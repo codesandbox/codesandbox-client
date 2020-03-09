@@ -26,6 +26,9 @@ class CodeSandboxOTClient extends OTClient {
   moduleShortid: string;
   onSendOperation: (revision: number, operation: any) => Promise<unknown>;
   onApplyOperation: (operation: any) => void;
+  getConnectionsCount: () => number;
+  disposeThrottler: () => void;
+  throttledOperations: any;
 
   constructor(
     revision: number,

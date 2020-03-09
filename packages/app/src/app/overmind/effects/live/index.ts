@@ -17,6 +17,7 @@ import { OPTIMISTIC_ID_PREFIX } from '../utils';
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
   provideJwtToken(): string;
+  getConnectionsCount: () => number;
 };
 
 type JoinChannelResponse = {
@@ -38,12 +39,15 @@ let channel: Channel | null;
 let messageIndex = 0;
 let clients: ReturnType<typeof clientsFactory>;
 let _socket: Socket;
+let _getConnectionsCount: () => number;
+let currentThrottle: Promise<any> = null;
 let provideJwtToken: () => string;
 
 export default new (class Live {
   initialize(options: Options) {
     const live = this;
 
+    _getConnectionsCount = options.getConnectionsCount;
     clients = clientsFactory(
       (moduleShortid, revision, operation) => {
         logBreadcrumb({
@@ -184,23 +188,41 @@ export default new (class Live {
   }
 
   send(event: string, payload: { _messageId?: string; [key: string]: any }) {
-    const _messageId = identifier + messageIndex++;
-    // eslint-disable-next-line
-    payload._messageId = _messageId;
-    sentMessages.set(_messageId, payload);
+    function sendMessage() {
+      const _messageId = identifier + messageIndex++;
+      // eslint-disable-next-line
+      payload._messageId = _messageId;
+      sentMessages.set(_messageId, payload);
 
-    return new Promise((resolve, reject) => {
-      if (channel) {
-        channel
-          .push(event, payload)
-          .receive('ok', resolve)
-          .receive('error', reject);
-      } else {
-        // we might try to send messages even when not on live, just
-        // ignore it
-        resolve();
-      }
-    });
+      return new Promise((resolve, reject) => {
+        if (channel) {
+          channel
+            .push(event, payload)
+            .receive('ok', resolve)
+            .receive('error', reject);
+        } else {
+          // we might try to send messages even when not on live, just
+          // ignore it
+          resolve();
+        }
+      });
+    }
+
+    if (_getConnectionsCount() < 2) {
+      const current =
+        currentThrottle ||
+        new Promise(resolve => {
+          setTimeout(() => {
+            currentThrottle = null;
+            resolve();
+          }, 5000);
+        });
+      currentThrottle = current;
+
+      return currentThrottle.then(sendMessage);
+    }
+
+    return sendMessage();
   }
 
   sendModuleUpdate(module: Module) {
