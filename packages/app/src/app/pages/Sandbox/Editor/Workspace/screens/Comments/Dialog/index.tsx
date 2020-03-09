@@ -64,6 +64,8 @@ export const Dialog = props => {
           borderRadius: 4,
           width: 420,
           height: 'auto',
+          maxHeight: '80vh',
+          overflow: 'auto',
           fontFamily: 'Inter, sans-serif',
           boxShadow: 2,
         })}
