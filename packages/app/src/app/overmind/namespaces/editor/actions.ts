@@ -1493,7 +1493,7 @@ export const updateComment: AsyncAction<{
     currentComment &&
     state.editor.comments[sandboxId][id].id === currentComment.id;
 
-  if ('isResolved' in data) {
+  if ('isResolved' in data && data.isResolved) {
     state.editor.comments[sandboxId][id].isResolved = data.isResolved;
     if (updateIsCurrent && currentComment) {
       currentComment.isResolved = data.isResolved;
