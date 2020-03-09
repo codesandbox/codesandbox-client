@@ -215,7 +215,7 @@ export default new (class Live {
           setTimeout(() => {
             currentThrottle = null;
             resolve();
-          }, 5000);
+          }, 500);
         });
       currentThrottle = current;
 
