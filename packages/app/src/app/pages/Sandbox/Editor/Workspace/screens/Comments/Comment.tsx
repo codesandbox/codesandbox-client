@@ -32,7 +32,7 @@ export const Comment = React.memo(({ comment }: any) => {
   return (
     <ListAction
       key={comment.id}
-      paddingTop={5}
+      paddingTop={4}
       css={css({
         display: 'block',
         color: 'inherit',
@@ -100,7 +100,7 @@ export const Comment = React.memo(({ comment }: any) => {
         as="p"
         marginY={0}
         marginRight={2 /** Adjust for the missing margin in ListAction */}
-        paddingBottom={5}
+        paddingBottom={6}
         css={css({
           borderBottom: '1px solid',
           borderColor: 'sideBar.border',
