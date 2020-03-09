@@ -68,6 +68,7 @@ export const Dialog = props => {
       >
         <Stack direction="vertical">
           <Stack
+            className="handle"
             align="center"
             justify="space-between"
             padding={4}
@@ -101,7 +102,6 @@ export const Dialog = props => {
             </Stack>
           </Stack>
           <Stack
-            className="handle"
             justify="space-between"
             padding={2}
             paddingLeft={4}
