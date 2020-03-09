@@ -40,6 +40,7 @@ Container sandboxes run Node v10.18.1 by default. While this system version can'
 Yes, the terminal, console, and problems tabs are all draggable. Click on the tab and drag it up into the bar alongside browser and tests. You can then re-order those items by dragging them in that bar. Whichever is 1st from left to right in the list of tabs is what opens first when other folks view the sandbox. The ordering is maintained within the sandbox. You can also achieve this change by setting a value for "view" in a [sandbox config file](/docs/configuration#sandbox-configuration). 
 
 ## Are there any limitations with sandboxes?
+
 - A sandbox cannot use more than 500 modules (files). This includes dependencies and peer dependencies.
 - Imported sandboxes must contain a package.json file.
 - The maximum file size that can be opened in the editor is 2MB. Files uploaded that are larger than that still exist but are linked as a static asset.
