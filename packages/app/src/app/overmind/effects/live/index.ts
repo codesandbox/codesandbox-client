@@ -59,11 +59,15 @@ export default new (class Live {
           })}`,
         });
 
-        return live.send('operation', {
-          moduleShortid,
-          operation,
-          revision,
-        });
+        return live.send(
+          'operation',
+          {
+            moduleShortid,
+            operation,
+            revision,
+          },
+          false
+        );
       },
       (moduleShortid, operation) => {
         options.onApplyOperation({
@@ -187,7 +191,11 @@ export default new (class Live {
     };
   }
 
-  send(event: string, payload: { _messageId?: string; [key: string]: any }) {
+  send(
+    event: string,
+    payload: { _messageId?: string; [key: string]: any },
+    requireMultipleConnections = true
+  ) {
     function sendMessage() {
       const _messageId = identifier + messageIndex++;
       // eslint-disable-next-line
@@ -208,21 +216,26 @@ export default new (class Live {
       });
     }
 
-    if (_getConnectionsCount() < 2) {
-      const current =
-        currentThrottle ||
-        new Promise(resolve => {
-          setTimeout(() => {
-            currentThrottle = null;
-            resolve();
-          }, 500);
-        });
-      currentThrottle = current;
-
-      return currentThrottle.then(sendMessage);
+    if (requireMultipleConnections && _getConnectionsCount() >= 2) {
+      return sendMessage();
     }
 
-    return sendMessage();
+    if (requireMultipleConnections && _getConnectionsCount() < 2) {
+      return Promise.resolve();
+    }
+
+    // We default to a throttled mode
+    const current =
+      currentThrottle ||
+      new Promise(resolve => {
+        setTimeout(() => {
+          currentThrottle = null;
+          resolve();
+        }, 500);
+      });
+    currentThrottle = current;
+
+    return currentThrottle.then(sendMessage);
   }
 
   sendModuleUpdate(module: Module) {
