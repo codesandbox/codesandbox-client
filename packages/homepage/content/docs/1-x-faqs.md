@@ -18,7 +18,7 @@ We also have container templates for: Node.js, Angular, Adonis, Gatsby, Marko, N
 
 You can set a sandbox as private in two main ways: From the editor, change the privacy setting from the Privacy drop-down under Sandbox Info, and from the dashboard right-click and select make private.
 
-Note that a [Pro subscription](https://codesandbox.io/pricing) is required to make sandboxes private.
+Note that a [Pro subscription](https://codesandbox.io/pricing) is required to make sandboxes private or unlisted.
 
 ![Make private in the editor](./images/sandbox-private.png)
 ![Make private from the dashboard](./images/dashboard-private.png)
