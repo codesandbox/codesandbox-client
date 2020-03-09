@@ -12,11 +12,11 @@ export const SkeletonTextBlock = styled.div(
     animation: ${pulse} 2s linear infinite;
     background: linear-gradient(
       90deg,
-      ${props.theme.colors?.sideBar.border + '40'} 0%,
-      ${props.theme.colors?.sideBar.border + '40'} 40%,
-      ${props.theme.colors?.sideBar.border + '80'} 50%,
-      ${props.theme.colors?.sideBar.border + '40'} 60%,
-      ${props.theme.colors?.sideBar.border + '40'} 100%
+      ${props.theme.colors?.sideBar.border + '80'} 0%,
+      ${props.theme.colors?.sideBar.border + '80'} 40%,
+      ${props.theme.colors?.sideBar.border + 'd6'} 50%,
+      ${props.theme.colors?.sideBar.border + '80'} 60%,
+      ${props.theme.colors?.sideBar.border + '80'} 100%
     );
     background-size: 200% 200%;
   `

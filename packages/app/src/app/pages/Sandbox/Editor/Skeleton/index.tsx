@@ -15,7 +15,7 @@ import {
   SkeletonWrapper,
 } from './elements';
 
-export const ContentSkeleton = ({ style, onTransitionEnd }) => (
+export const ContentSkeleton = ({ style }) => (
   <SkeletonWrapper style={style}>
     <SkeletonExplorer>
       <SkeletonExplorerContents />

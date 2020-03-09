@@ -40,12 +40,19 @@ const ContentSplit = () => {
     customVSCodeTheme: null,
   });
 
-  useEffect(() =>
-    reaction(
+  useEffect(() => {
+    let timeout;
+    const dispose = reaction(
       reactionState => reactionState.editor.hasLoadedInitialModule,
-      () => setShowSkeleton(false)
-    )
-  );
+      () => {
+        timeout = setTimeout(() => setShowSkeleton(false), 500);
+      }
+    );
+    return () => {
+      dispose();
+      clearTimeout(timeout);
+    };
+  }, [reaction]);
 
   useEffect(() => {
     async function loadTheme() {
