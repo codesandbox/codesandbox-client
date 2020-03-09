@@ -28,8 +28,6 @@ export const Comment = ({ source }) => {
 
   return (
     <Element
-      paddingX={4}
-      paddingBottom={6}
       css={css({
         'ul, ol': {
           paddingLeft: 0,

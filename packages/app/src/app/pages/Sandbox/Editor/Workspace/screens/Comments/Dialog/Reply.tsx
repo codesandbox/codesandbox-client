@@ -30,27 +30,20 @@ export const Reply = ({
   const { state, actions } = useOvermind();
   return (
     <>
-      <Element
-        key={id}
-        paddingX={4}
-        paddingTop={6}
-        css={css({
-          borderTop: '1px solid',
-          borderColor: 'sideBar.border',
-        })}
-      >
+      <Element key={id} marginLeft={4} marginRight={2} paddingTop={6}>
         <Stack align="flex-start" justify="space-between" marginBottom={4}>
           <Stack gap={2} align="center">
             <Avatar user={author} />
-            <Stack direction="vertical" justify="center">
+            <Stack direction="vertical" justify="center" gap={1}>
               <Link
+                size={3}
+                weight="bold"
                 href={`/u/${author.username}`}
                 variant="body"
-                css={{ fontWeight: 'bold', display: 'block' }}
               >
                 {author.username}
               </Link>
-              <Text size={12} variant="muted">
+              <Text size={2} variant="muted">
                 {formatDistance(new Date(insertedAt), new Date(), {
                   addSuffix: true,
                 })}
@@ -79,7 +72,18 @@ export const Reply = ({
           )}
         </Stack>
       </Element>
-      <Comment source={content} />
+      <Element
+        as="p"
+        marginY={0}
+        marginX={4}
+        paddingBottom={6}
+        css={css({
+          borderBottom: '1px solid',
+          borderColor: 'sideBar.border',
+        })}
+      >
+        <Comment source={content} />
+      </Element>
     </>
   );
 };

@@ -101,7 +101,7 @@ export const Comment = React.memo(({ comment }: any) => {
         as="p"
         marginY={0}
         marginRight={2 /** Adjust for the missing margin in ListAction */}
-        paddingBottom={6}
+        paddingBottom={6 /** Use padding instead of margin for inset border */}
         css={css({
           borderBottom: '1px solid',
           borderColor: 'sideBar.border',

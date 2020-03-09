@@ -65,48 +65,50 @@ export const Dialog = props => {
           width: 420,
           height: 'auto',
           fontFamily: 'Inter, sans-serif',
+          boxShadow: 2,
         })}
       >
-        <Stack direction="vertical">
-          <Stack
-            className="handle"
-            css={{ cursor: 'move' }}
-            align="center"
-            justify="space-between"
-            padding={4}
-            paddingRight={2}
-            marginBottom={2}
-          >
-            <Text size={3} weight="bold">
-              Comment
-            </Text>
-            <Stack align="center">
-              <IconButton
-                onClick={() =>
-                  actions.editor.updateComment({
-                    id: comment.id,
-                    data: { isResolved: !comment.isResolved },
-                  })
-                }
-                name="check"
-                size={4}
-                title="Resolve Comment"
-                css={css({
-                  transition: 'color',
-                  transitionDuration: theme => theme.speeds[1],
-                  color: comment.isResolved ? 'green' : 'mutedForeground',
-                })}
-              />
-              <IconButton
-                name="cross"
-                size={3}
-                title="Close comment dialog"
-                onClick={closeDialog}
-              />
-            </Stack>
+        <Stack
+          className="handle"
+          css={{ cursor: 'move' }}
+          align="center"
+          justify="space-between"
+          padding={4}
+          paddingRight={2}
+          marginBottom={2}
+        >
+          <Text size={3} weight="bold">
+            Comment
+          </Text>
+          <Stack align="center">
+            <IconButton
+              onClick={() =>
+                actions.editor.updateComment({
+                  id: comment.id,
+                  data: { isResolved: !comment.isResolved },
+                })
+              }
+              name="check"
+              size={4}
+              title="Resolve Comment"
+              css={css({
+                transition: 'color',
+                transitionDuration: theme => theme.speeds[1],
+                color: comment.isResolved ? 'green' : 'mutedForeground',
+              })}
+            />
+            <IconButton
+              name="cross"
+              size={3}
+              title="Close comment dialog"
+              onClick={closeDialog}
+            />
           </Stack>
-          <Stack justify="space-between" paddingX={4} marginBottom={6}>
-            <Stack gap={2} align="center" marginBottom={4}>
+        </Stack>
+
+        {comment && (
+          <>
+            <Stack gap={2} align="center" paddingX={4} marginBottom={4}>
               <Avatar user={comment.originalMessage.author} />
               <Stack direction="vertical" justify="center" gap={1}>
                 <Link
@@ -124,38 +126,48 @@ export const Dialog = props => {
                 </Text>
               </Stack>
             </Stack>
-          </Stack>
-          {comment && (
-            <>
+            <Element
+              as="p"
+              marginY={0}
+              marginX={4}
+              paddingBottom={6}
+              css={css({
+                borderBottom: '1px solid',
+                borderColor: 'sideBar.border',
+              })}
+            >
               <Comment source={comment.originalMessage.content} />
-              {comment.replies.map(reply => (
-                <Reply {...reply} commentId={comment.id} />
-              ))}
-              <Element
-                css={css({
-                  borderTop: '1px solid',
-                  borderColor: 'sideBar.border',
-                })}
-              >
-                <Textarea
-                  autosize
-                  css={css({
-                    overflow: 'hidden',
+            </Element>
+          </>
+        )}
 
-                    border: 'none',
-                    display: 'block',
-                  })}
-                  value={value}
-                  onChange={e => setValue(e.target.value)}
-                  placeholder={comment ? 'Reply' : 'Write a comment...'}
-                  onKeyDown={event => {
-                    if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
-                  }}
-                />
-              </Element>
-            </>
-          )}
-        </Stack>
+        {comment &&
+          comment.replies.map(reply => (
+            <Reply {...reply} commentId={comment.id} />
+          ))}
+
+        <Element
+          css={css({
+            borderTop: '1px solid',
+            borderColor: 'sideBar.border',
+          })}
+        >
+          <Textarea
+            autosize
+            css={css({
+              overflow: 'hidden',
+
+              border: 'none',
+              display: 'block',
+            })}
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            placeholder={comment ? 'Reply' : 'Write a comment...'}
+            onKeyDown={event => {
+              if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
+            }}
+          />
+        </Element>
       </Element>
     </Draggable>
   );
