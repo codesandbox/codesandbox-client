@@ -148,7 +148,9 @@ export const Dependency = ({
           css={css({
             position: 'absolute',
             right: 0,
-            width: '150px', // overlay on text
+            width: 'auto',
+            zIndex: 2, // overlay on dependency name
+            paddingLeft: 1,
           })}
         >
           <Select
