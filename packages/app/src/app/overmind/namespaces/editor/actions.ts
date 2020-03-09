@@ -1488,22 +1488,23 @@ export const updateComment: AsyncAction<{
   const sandboxId = state.editor.currentSandbox.id;
   const isResolved = state.editor.comments[sandboxId][id].isResolved;
   const comment = state.editor.comments[sandboxId][id].originalMessage.content;
+  const currentComment = state.editor.currentComment;
   const updateIsCurrent =
-    state.editor.currentComment &&
-    state.editor.comments[sandboxId][id].id === state.editor.currentComment.id;
+    currentComment &&
+    state.editor.comments[sandboxId][id].id === currentComment.id;
 
   if ('isResolved' in data) {
     state.editor.comments[sandboxId][id].isResolved = data.isResolved;
-    if (updateIsCurrent) {
-      state.editor.currentComment.isResolved = data.isResolved;
+    if (updateIsCurrent && currentComment) {
+      currentComment.isResolved = data.isResolved;
     }
   }
 
   if ('comment' in data) {
     state.editor.comments[sandboxId][id].originalMessage.content = data.comment;
 
-    if (updateIsCurrent) {
-      state.editor.currentComment.originalMessage.content = data.comment;
+    if (updateIsCurrent && currentComment) {
+      currentComment.originalMessage.content = data.comment;
     }
   }
 
@@ -1518,9 +1519,9 @@ export const updateComment: AsyncAction<{
     );
     state.editor.comments[sandboxId][id].isResolved = isResolved;
     state.editor.comments[sandboxId][id].originalMessage.content = comment;
-    if (updateIsCurrent) {
-      state.editor.currentComment.id = id;
-      state.editor.currentComment.originalMessage.content = comment;
+    if (updateIsCurrent && currentComment) {
+      currentComment.id = id;
+      currentComment.originalMessage.content = comment;
     }
   }
 };
