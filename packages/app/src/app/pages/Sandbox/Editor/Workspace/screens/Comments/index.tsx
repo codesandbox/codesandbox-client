@@ -40,7 +40,13 @@ export const Comments: React.FC = () => {
     selectedCommentsFilter === CommentsFilterOption.ALL;
 
   const Empty = () => (
-    <Stack direction="vertical" align="center" justify="center" gap={8}>
+    <Stack
+      direction="vertical"
+      align="center"
+      justify="center"
+      gap={8}
+      marginX={2}
+    >
       <Icon
         name="comments"
         size={20}
