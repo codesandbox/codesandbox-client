@@ -1,13 +1,12 @@
 import Relative from '@codesandbox/common/lib/components/Relative';
-import React, { FunctionComponent } from 'react';
-
-import { useMenuState, MenuDisclosure } from 'reakit/Menu';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+import { MenuDisclosure, useMenuState } from 'reakit/Menu';
 
 import {
-  UserMenuContainer,
   ClickableContainer,
   ProfileImage,
+  UserMenuContainer,
 } from './elements';
 import { Menu } from './Menu';
 
@@ -23,6 +22,10 @@ export const UserMenu: FunctionComponent = props => {
   const menu = useMenuState({
     placement: 'bottom-end',
   });
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <UserMenuContainer>
