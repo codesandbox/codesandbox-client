@@ -12,6 +12,7 @@ import { getCodeMirror } from 'app/utils/codemirror';
 import CodeMirror from 'codemirror';
 import { listen } from 'codesandbox-api';
 import * as React from 'react';
+import { debounce } from 'lodash-es';
 import { withTheme } from 'styled-components';
 // eslint-disable-next-line
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!app/overmind/effects/vscode/LinterWorker/index';
@@ -54,6 +55,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     this.settings = props.settings;
 
     this.codeSandboxListener = this.setupCodeSandboxListener();
+    this.resizeEditor = debounce(this.resizeEditor, 30);
   }
 
   setupCodeSandboxListener = () => listen(this.handleMessage);
@@ -79,8 +81,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
       this.props.width !== nextProps.width ||
       this.props.height !== nextProps.height
     ) {
-      // eslint-disable-next-line no-unused-expressions
-      this.codemirror?.refresh();
+      this.resizeEditor();
       return true;
     }
 
@@ -109,6 +110,11 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
         this.disposeInitializer = this.props.onInitialized(this);
       }
     });
+  }
+
+  resizeEditor() {
+    // eslint-disable-next-line no-unused-expressions
+    this.codemirror?.refresh();
   }
 
   setErrors = (errors: Array<ModuleError>) => {
