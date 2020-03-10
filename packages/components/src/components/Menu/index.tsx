@@ -2,8 +2,29 @@ import React from 'react';
 import deepmerge from 'deepmerge';
 import css from '@styled-system/css';
 import * as ReachMenu from '@reach/menu-button';
-import { createGlobalStyle } from 'styled-components';
+import {
+  createGlobalStyle,
+  css as styledcss,
+  keyframes,
+} from 'styled-components';
 import { Element, Button, IconButton, List } from '../..';
+
+const transitions = {
+  slide: keyframes({
+    from: {
+      opacity: 0,
+      transform: 'translateY(-4px)',
+    },
+  }),
+  scale: keyframes({
+    from: {
+      opacity: 0,
+      transform: 'scale(0.7)',
+    },
+  }),
+};
+
+const MenuContext = React.createContext({ trigger: null });
 
 const Menu = ({ ...props }) => {
   const PortalStyles = createGlobalStyle(
@@ -20,6 +41,7 @@ const Menu = ({ ...props }) => {
         border: '1px solid',
         borderColor: 'menuList.border',
         ':focus': { outline: 'none' },
+        transform: 'translateY(4px)',
         // override reach ui styles
         padding: 0,
       },
@@ -38,13 +60,27 @@ const Menu = ({ ...props }) => {
         // override reach ui styles
         font: 'ineherit',
       },
-    })
+    }),
+    styledcss`
+      [data-reach-menu-list][data-trigger=MenuButton] {
+        animation: ${transitions.slide} 150ms ease-out;
+        transform-origin: top;
+      }
+      [data-reach-menu-list][data-trigger=MenuIconButton] {
+        animation: ${transitions.scale} 150ms ease-out;
+        transform-origin: top left;
+      } 
+    `
   );
 
+  const trigger = props.children[0].type.name;
+
   return (
-    <Element as={ReachMenu.Menu} data-component="Menu" {...props}>
+    <Element as={ReachMenu.Menu} {...props}>
       <PortalStyles />
-      {props.children}
+      <MenuContext.Provider value={{ trigger }}>
+        {props.children}
+      </MenuContext.Provider>
     </Element>
   );
 };
@@ -54,7 +90,15 @@ const MenuButton = props => (
     as={ReachMenu.MenuButton}
     variant="link"
     {...props}
-    css={deepmerge({ width: 'auto' }, props.css || {})}
+    css={deepmerge(
+      {
+        width: 'auto',
+        // disable scale feedback of buttons in menu
+        // to make the menu feel less jumpy
+        ':active:not(:disabled)': { transform: 'scale(1)' },
+      },
+      props.css || {}
+    )}
   >
     {props.children}
   </Button>
@@ -64,11 +108,19 @@ const MenuIconButton = props => (
   <IconButton as={ReachMenu.MenuButton} {...props} />
 );
 
-const MenuList = props => (
-  <List as={ReachMenu.MenuList} data-component="MenuList" {...props}>
-    {props.children}
-  </List>
-);
+const MenuList = props => {
+  const { trigger } = React.useContext(MenuContext);
+  return (
+    <List
+      as={ReachMenu.MenuList}
+      data-component="MenuList"
+      data-trigger={trigger}
+      {...props}
+    >
+      {props.children}
+    </List>
+  );
+};
 
 const MenuItem = props => (
   <Element as={ReachMenu.MenuItem} data-component="MenuItem" {...props} />

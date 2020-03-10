@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import deepmerge from 'deepmerge';
 import { Button } from '../Button';
 import { Icon, IconNames } from '../Icon';
 
@@ -16,24 +17,28 @@ export const IconButton: React.FC<IconButtonProps> = ({
   name,
   title,
   size,
+  css = {},
   ...props
 }) => (
   // @ts-ignore
   <Button
     title={title}
     variant="link"
-    css={{
-      width: '26px', // same width as (height of the button)
-      padding: 0,
-      borderRadius: '50%',
-      ':hover:not(:disabled)': {
-        backgroundColor: 'secondaryButton.background',
+    css={deepmerge(
+      {
+        width: '26px', // same width as (height of the button)
+        padding: 0,
+        borderRadius: '50%',
+        ':hover:not(:disabled)': {
+          backgroundColor: 'secondaryButton.background',
+        },
+        ':focus:not(:disabled)': {
+          outline: 'none',
+          backgroundColor: 'secondaryButton.background',
+        },
       },
-      ':focus:not(:disabled)': {
-        outline: 'none',
-        backgroundColor: 'secondaryButton.background',
-      },
-    }}
+      css
+    )}
     // @ts-ignore
     {...props}
   >
