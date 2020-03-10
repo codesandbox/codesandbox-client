@@ -237,8 +237,7 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
 
   const PrivacyIcon = privacyToIcon[privacy];
 
-  // const isReadOnly = readOnly || !isPatron;
-  const isReadOnly = false;
+  const isReadOnly = readOnly || !isPatron;
 
   const onChange = value => {
     actions.workspace.sandboxPrivacyChanged({

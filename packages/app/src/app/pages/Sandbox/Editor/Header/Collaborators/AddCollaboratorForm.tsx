@@ -71,13 +71,13 @@ export const AddCollaboratorForm = () => {
         />
 
         <PermissionSelect
-          css={css({
-            position: 'absolute',
-            right: 0,
-            top: 0,
-          })}
           value={authorization}
           onChange={setAuthorization}
+          css={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+          }}
         />
       </motion.div>
 
