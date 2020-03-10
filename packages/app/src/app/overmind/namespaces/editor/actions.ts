@@ -1479,7 +1479,7 @@ export const updateComment: AsyncAction<{
   id: string;
   data: {
     comment?: string;
-    isResolved: boolean;
+    isResolved?: boolean;
   };
 }> = async ({ effects, state }, { id, data }) => {
   if (!state.editor.currentSandbox) {
@@ -1493,7 +1493,7 @@ export const updateComment: AsyncAction<{
     currentComment &&
     state.editor.comments[sandboxId][id].id === currentComment.id;
 
-  if ('isResolved' in data) {
+  if ('isResolved' in data && data.isResolved) {
     state.editor.comments[sandboxId][id].isResolved = data.isResolved;
     if (updateIsCurrent && currentComment) {
       currentComment.isResolved = data.isResolved;
@@ -1587,9 +1587,12 @@ export const updateReply: AsyncAction<{
     });
   } catch (error) {
     effects.notificationToast.error(
-      'Unable to update your comment, please try again'
+      'Unable to update your reply, please try again'
     );
-    state.editor.comments[sandboxId][commentId] = old;
+    state.editor.comments[sandboxId][commentId] = {
+      ...old,
+      replies: old.replies,
+    };
   }
 };
 
