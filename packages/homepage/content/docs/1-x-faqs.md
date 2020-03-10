@@ -1,6 +1,7 @@
 ---
 title: FAQs
 authors: ['CompuIves']
+slug: /faqs
 description: Answers to questions about CodeSandbox that come up the most.
 ---
 
