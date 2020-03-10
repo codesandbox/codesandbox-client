@@ -26,42 +26,41 @@ const transitions = {
 
 const MenuContext = React.createContext({ trigger: null });
 
-const Menu = ({ ...props }) => {
-  const PortalStyles = createGlobalStyle(
-    css({
-      '[data-reach-menu]': {
-        zIndex: 2,
-      },
-      '[data-reach-menu-list][data-component=MenuList]': {
-        minWidth: 100,
-        backgroundColor: 'menuList.background',
-        borderRadius: 3,
-        boxShadow: 2,
-        overflow: 'hidden',
-        border: '1px solid',
-        borderColor: 'menuList.border',
-        ':focus': { outline: 'none' },
-        transform: 'translateY(4px)',
-        // override reach ui styles
-        padding: 0,
-      },
-      '[data-reach-menu-item][data-component=MenuItem]': {
-        fontSize: 2,
-        paddingY: 2,
-        paddingX: 3,
-        cursor: 'pointer',
+const PortalStyles = createGlobalStyle(
+  css({
+    '[data-reach-menu]': {
+      zIndex: 2,
+    },
+    '[data-reach-menu-list][data-component=MenuList]': {
+      minWidth: 100,
+      backgroundColor: 'menuList.background',
+      borderRadius: 3,
+      boxShadow: 2,
+      overflow: 'hidden',
+      border: '1px solid',
+      borderColor: 'menuList.border',
+      ':focus': { outline: 'none' },
+      transform: 'translateY(4px)',
+      // override reach ui styles
+      padding: 0,
+    },
+    '[data-reach-menu-item][data-component=MenuItem]': {
+      fontSize: 2,
+      paddingY: 2,
+      paddingX: 3,
+      cursor: 'pointer',
+      outline: 'none',
+      color: 'menuList.foreground',
+      '&[data-selected]': {
         outline: 'none',
+        backgroundColor: 'menuList.hoverBackground',
         color: 'menuList.foreground',
-        '&[data-selected]': {
-          outline: 'none',
-          backgroundColor: 'menuList.hoverBackground',
-          color: 'menuList.foreground',
-        },
-        // override reach ui styles
-        font: 'ineherit',
       },
-    }),
-    styledcss`
+      // override reach ui styles
+      font: 'ineherit',
+    },
+  }),
+  styledcss`
       [data-reach-menu-list][data-trigger=MenuButton] {
         animation: ${transitions.slide} 150ms ease-out;
         transform-origin: top;
@@ -71,8 +70,9 @@ const Menu = ({ ...props }) => {
         transform-origin: top left;
       } 
     `
-  );
+);
 
+const Menu = ({ ...props }) => {
   const trigger = props.children[0].type.name;
 
   return (
