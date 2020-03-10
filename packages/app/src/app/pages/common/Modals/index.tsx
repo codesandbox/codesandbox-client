@@ -111,7 +111,7 @@ const modals = {
   },
   liveVersionMismatch: {
     Component: LiveSessionVersionMismatch,
-    width: 600,
+    width: 400,
   },
   uploading: {
     Component: UploadModal,
