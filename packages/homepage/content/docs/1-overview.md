@@ -12,7 +12,7 @@ CodeSandbox is an online editor for rapid web development. With CodeSandbox, you
 
 Use it to create static sites, full-stack web apps or components, on any device with a web browser.
 
-## Our Values
+## Product Values
 
 Our mission is to make web development faster. By removing complexity, we enable web developers to be more productive. By simplifying collaboration, we make it easier for teams to work on code together.
 
