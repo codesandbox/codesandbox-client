@@ -108,6 +108,7 @@ class ModalComponent extends React.Component {
             backgroundColor: 'sideBar.background',
             boxShadow: 2,
             color: 'sideBar.foreground',
+            lineHeight: 1.2,
           })}
           style={this.getStyles(width, top)}
           closeTimeoutMS={CLOSE_TIMEOUT_MS}

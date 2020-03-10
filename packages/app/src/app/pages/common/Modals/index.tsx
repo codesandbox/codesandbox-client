@@ -107,7 +107,7 @@ const modals = {
   },
   liveSessionEnded: {
     Component: LiveSessionEnded,
-    width: 600,
+    width: 400,
   },
   liveVersionMismatch: {
     Component: LiveSessionVersionMismatch,

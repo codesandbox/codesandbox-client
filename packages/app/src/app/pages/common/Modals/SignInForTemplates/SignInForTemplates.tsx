@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
-import { Element, Button, Text, Stack, Icon } from '@codesandbox/components';
+import { Element, Button, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const SignInForTemplates: FunctionComponent = () => {
@@ -37,10 +37,7 @@ export const SignInForTemplates: FunctionComponent = () => {
           })}
           onClick={handleSignIn}
         >
-          <Stack align="center" gap={1}>
-            <Icon name="github" />
-            <Text>Sign in with GitHub</Text>
-          </Stack>
+          <Text>Sign in with GitHub</Text>
         </Button>
       </Stack>
     </Element>

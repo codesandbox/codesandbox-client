@@ -5,7 +5,7 @@ export const onInitialize: OnInitialize = async (
   overmindInstance
 ) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
-  state.currentModal = 'deleteDeployment';
+  state.currentModal = 'liveSessionEnded';
 
   state.isFirstVisit = Boolean(
     !effects.jwt.get() && !effects.browser.storage.get('hasVisited')
