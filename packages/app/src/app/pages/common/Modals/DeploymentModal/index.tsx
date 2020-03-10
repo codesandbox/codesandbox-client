@@ -57,7 +57,11 @@ export const DeploymentModal: FunctionComponent = () => {
         <Stack
           align="center"
           marginBottom={4}
-          css={css({ border: '1px solid', borderColor: 'sideBar.border' })}
+          css={css({
+            border: '1px solid',
+            borderColor: 'sideBar.border',
+            borderRadius: 'medium',
+          })}
         >
           <ZeitIcon />
           <Element paddingLeft={4}>
