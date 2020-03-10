@@ -2,7 +2,7 @@ import { GlobeIcon } from '@codesandbox/common/lib/components/icons/Globe';
 import { LinkIcon } from '@codesandbox/common/lib/components/icons/Link';
 import { LockIcon } from '@codesandbox/common/lib/components/icons/Lock';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Select, Stack, Text } from '@codesandbox/components';
+import { Stack, Text, Menu, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Authorization } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
@@ -208,6 +208,12 @@ export const Invitation = ({ id, email, authorization }: IInvitationProps) => {
   );
 };
 
+const privacyToName = {
+  0: 'Public',
+  1: 'Unlisted',
+  2: 'Private',
+};
+
 const privacyToIcon = {
   0: GlobeIcon,
   1: LinkIcon,
@@ -229,31 +235,36 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
   const { privacy } = state.editor.currentSandbox;
   const isPatron = state.isPatron;
 
-  const Icon = privacyToIcon[privacy];
+  const PrivacyIcon = privacyToIcon[privacy];
 
-  const isReadOnly = readOnly || !isPatron;
+  // const isReadOnly = readOnly || !isPatron;
+  const isReadOnly = false;
+
+  const onChange = value => {
+    actions.workspace.sandboxPrivacyChanged({
+      privacy: Number(value) as 0 | 1 | 2,
+      source: 'collaboratorss',
+    });
+  };
 
   return (
     <Stack gap={4} align="center" direction="vertical">
       <CollaboratorItem
-        avatarComponent={<Icon />}
+        avatarComponent={<PrivacyIcon />}
         name={
-          <Select
-            variant="link"
-            onChange={e => {
-              actions.workspace.sandboxPrivacyChanged({
-                privacy: Number(e.target.value) as 0 | 1 | 2,
-                source: 'collaboratorss',
-              });
-            }}
-            value={privacy}
-            css={css({ paddingLeft: 0 })}
-            disabled={isReadOnly}
-          >
-            <option value="0">Public</option>
-            <option value="1">Unlisted</option>
-            <option value="2">Private</option>
-          </Select>
+          <Menu>
+            <Menu.Button disabled={isReadOnly}>
+              {privacyToName[privacy]}{' '}
+              <Icon name="caret" size={2} marginLeft={1} />
+            </Menu.Button>
+            <Menu.List>
+              {Object.keys(privacyToName).map(p => (
+                <Menu.Item key={p} onSelect={() => onChange(p)}>
+                  {privacyToName[p]}
+                </Menu.Item>
+              ))}
+            </Menu.List>
+          </Menu>
         }
         authorization={Authorization.Read}
         permissions={[]}

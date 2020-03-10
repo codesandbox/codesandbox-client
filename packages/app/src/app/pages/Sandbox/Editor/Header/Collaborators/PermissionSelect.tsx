@@ -1,12 +1,13 @@
 import React from 'react';
-import css from '@styled-system/css';
-import { Select, Stack } from '@codesandbox/components';
+import { Stack, Menu, Icon } from '@codesandbox/components';
 import { Authorization } from 'app/graphql/types';
 
-interface IPermissionSelectProps extends React.ComponentProps<typeof Select> {
+interface IPermissionSelectProps {
   additionalOptions?: { value: string; label: string }[];
   permissions?: Authorization[];
   pretext?: string;
+  value: Authorization;
+  onChange: (Authorization) => void;
 }
 
 const authToName = {
@@ -17,25 +18,36 @@ const authToName = {
   [Authorization.WriteProject]: 'Edit Sandbox Info',
 };
 
-export const SELECT_WIDTH = 85;
+// Based on the longest option in the mnu
+// which is "Can Comment"
+export const MENU_WIDTH = 110;
+
 export const PermissionSelect = ({
   additionalOptions = [],
   permissions = [Authorization.WriteCode, Authorization.Read],
+  value: selectedValue,
+  onChange,
   ...props
 }: IPermissionSelectProps) => (
   <Stack align="center">
-    <Select variant="link" css={css({ width: SELECT_WIDTH })} {...props}>
-      {permissions.map(auth => (
-        <option key={auth} value={auth}>
-          {authToName[auth]}
-        </option>
-      ))}
+    <Menu>
+      <Menu.Button css={{ position: 'absolute', top: 0, right: 0 }}>
+        {authToName[selectedValue]}{' '}
+        <Icon name="caret" size={2} marginLeft={1} />
+      </Menu.Button>
+      <Menu.List>
+        {permissions.map(auth => (
+          <Menu.Item key={auth} onSelect={() => onChange(auth)}>
+            {authToName[auth]}
+          </Menu.Item>
+        ))}
 
-      {additionalOptions.map(({ label, value }) => (
-        <option key={value} value={value}>
-          {label}
-        </option>
-      ))}
-    </Select>
+        {additionalOptions.map(({ label, value }) => (
+          <Menu.Item key={label} onSelect={() => onChange(value)}>
+            {label}
+          </Menu.Item>
+        ))}
+      </Menu.List>
+    </Menu>
   </Stack>
 );

@@ -30,7 +30,7 @@ const Menu = ({ ...props }) => {
   const PortalStyles = createGlobalStyle(
     css({
       '[data-reach-menu]': {
-        zIndex: 2,
+        zIndex: 11, // TODO: we need to sort out our z indexes!
       },
       '[data-reach-menu-list][data-component=MenuList]': {
         minWidth: 100,
