@@ -1,25 +1,24 @@
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useEffect } from 'react';
 
+import { Element, Button, Text, Stack } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-
-import { Container, Heading, Explanation } from '../elements';
-
-import { NiceName as NiceNameBase, SignInButton } from './elements';
+import css from '@styled-system/css';
 
 export const ForkServerModal: FunctionComponent = () => {
   const {
     actions: {
       editor: { forkSandboxClicked },
       modalClosed,
+      signInClicked,
     },
     state: {
-      editor: {
-        currentSandbox: { template },
-      },
+      editor: { currentSandbox },
       isLoggedIn,
     },
   } = useOvermind();
+
+  const { template } = currentSandbox;
 
   useEffect(() => {
     // Which means that the user signed in in the meantime with the intention to fork
@@ -30,24 +29,29 @@ export const ForkServerModal: FunctionComponent = () => {
     }
   }, [forkSandboxClicked, isLoggedIn, modalClosed]);
 
-  const { color, niceName } = getTemplateDefinition(template);
-  const NiceName: FunctionComponent = () => (
-    <NiceNameBase color={color()}>{niceName}</NiceNameBase>
-  );
+  const { niceName } = getTemplateDefinition(template);
 
   return (
-    <Container>
-      <Heading>
-        Fork <NiceName /> Sandbox
-      </Heading>
-
-      <Explanation>
-        We execute <NiceName /> sandboxes in a server container. This is still
-        in beta, so we require you to sign in before you can fork a <NiceName />{' '}
+    <Element padding={4} paddingTop={6}>
+      <Text weight="bold" block size={4} paddingBottom={2}>
+        Fork {niceName} Sandbox
+      </Text>
+      <Text marginBottom={6} size={3} block>
+        We execute {niceName} sandboxes in a server container. This is still in
+        beta, so we require you to sign in before you can fork a {niceName}{' '}
         sandbox.
-      </Explanation>
-
-      <SignInButton />
-    </Container>
+      </Text>
+      <Stack gap={2} align="center" justify="flex-end">
+        <Button
+          title="Sign in with GitHub"
+          css={css({
+            width: 'auto',
+          })}
+          onClick={() => signInClicked({ useExtraScopes: false })}
+        >
+          <Text>Sign in with GitHub</Text>
+        </Button>
+      </Stack>
+    </Element>
   );
 };

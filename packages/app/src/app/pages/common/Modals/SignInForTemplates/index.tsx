@@ -3,7 +3,7 @@ import { useOvermind } from 'app/overmind';
 import { Element, Button, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-export const SignInForTemplates: FunctionComponent = () => {
+const SignInForTemplates: FunctionComponent = () => {
   const {
     actions: { modalClosed, signInClicked },
   } = useOvermind();
@@ -43,3 +43,5 @@ export const SignInForTemplates: FunctionComponent = () => {
     </Element>
   );
 };
+
+export default SignInForTemplates;

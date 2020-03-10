@@ -123,7 +123,7 @@ const modals = {
   },
   forkServerModal: {
     Component: ForkServerModal,
-    width: 500,
+    width: 400,
   },
   moveSandbox: {
     Component: MoveSandboxFolderModal,
