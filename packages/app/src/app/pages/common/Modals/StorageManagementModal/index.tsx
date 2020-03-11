@@ -1,19 +1,11 @@
 import filesize from 'filesize';
 import React, { FunctionComponent } from 'react';
-
 import { useOvermind } from 'app/overmind';
+import { Text } from '@codesandbox/components';
 
-import {
-  Container,
-  Description,
-  JustifiedArea,
-  LoadingAnimationContainer,
-  Rule,
-  SubDescription,
-  SubTitle,
-  Title,
-} from './elements';
+import { LoadingAnimationContainer } from './elements';
 import { FilesList } from './FilesList';
+import { Alert } from '../Common/Alert';
 
 export const StorageManagementModal: FunctionComponent = () => {
   const {
@@ -23,26 +15,20 @@ export const StorageManagementModal: FunctionComponent = () => {
   const isEmpty = !isLoading && uploadedFiles.length === 0;
 
   return (
-    <Container>
-      <JustifiedArea>
-        <Title>Storage Management</Title>
-
-        <SubTitle>
-          {`Used ${filesize(usedStorage)} / Total ${filesize(maxStorage)}`}
-        </SubTitle>
-      </JustifiedArea>
-
-      <Description>
-        This is where you can manage your uploaded files.
-      </Description>
-
-      <Rule />
-
+    <Alert
+      title="Storage Management"
+      description="This is where you can manage your uploaded files."
+    >
+      <Text variant="muted" align="center" size={3}>
+        {`Used ${filesize(usedStorage)} / Total ${filesize(maxStorage)}`}
+      </Text>
       {!isEmpty && !isLoading && <FilesList />}
-
-      {isEmpty && <SubDescription>You have no uploaded files.</SubDescription>}
-
+      {isEmpty && (
+        <Text align="center" weight="bold">
+          You have no uploaded files.
+        </Text>
+      )}
       {isLoading && <LoadingAnimationContainer />}
-    </Container>
+    </Alert>
   );
 };

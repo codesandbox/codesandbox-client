@@ -3,8 +3,7 @@ import React, { FunctionComponent } from 'react';
 import DeleteIcon from 'react-icons/lib/md/delete';
 
 import { useOvermind } from 'app/overmind';
-
-import { Button } from './Button';
+import { Button } from '@codesandbox/components';
 
 type Props = Pick<UploadFile, 'id'>;
 export const DeleteFileButton: FunctionComponent<Props> = ({ id }) => {
@@ -16,9 +15,12 @@ export const DeleteFileButton: FunctionComponent<Props> = ({ id }) => {
 
   return (
     <Button
-      Icon={DeleteIcon}
+      style={{ width: 'auto' }}
+      variant="danger"
       onClick={() => deletedUploadedFile(id)}
-      tooltip="Delete File"
-    />
+      title="Delete File"
+    >
+      <DeleteIcon />
+    </Button>
   );
 };

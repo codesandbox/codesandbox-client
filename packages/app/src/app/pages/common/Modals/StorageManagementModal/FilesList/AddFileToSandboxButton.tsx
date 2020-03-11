@@ -3,8 +3,7 @@ import React, { FunctionComponent } from 'react';
 import AddIcon from 'react-icons/lib/md/add';
 
 import { useOvermind } from 'app/overmind';
-
-import { Button } from './Button';
+import { Button } from '@codesandbox/components';
 
 type Props = Pick<UploadFile, 'name' | 'url'>;
 export const AddFileToSandboxButton: FunctionComponent<Props> = ({
@@ -26,10 +25,13 @@ export const AddFileToSandboxButton: FunctionComponent<Props> = ({
 
   return (
     <Button
+      css={{ width: 'auto' }}
+      variant="secondary"
       disabled={!currentSandbox}
-      Icon={AddIcon}
+      title="Add file to sandbox"
       onClick={() => addedFileToSandbox({ name, url })}
-      tooltip="Add file to sandbox"
-    />
+    >
+      <AddIcon />
+    </Button>
   );
 };
