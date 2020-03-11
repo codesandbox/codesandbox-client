@@ -259,6 +259,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   const confirmDiscardChanges = (moduleShortid: string, moduleName: string) => {
     setModalConfirm({
       title: 'Discard Changes',
+      primaryMessage: 'Discard',
       body: (
         <span>
           Are you sure you want to discard changes on <b>{moduleName}</b>?

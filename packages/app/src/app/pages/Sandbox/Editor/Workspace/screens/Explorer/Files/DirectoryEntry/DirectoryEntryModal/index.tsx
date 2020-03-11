@@ -1,6 +1,6 @@
 import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 import React from 'react';
-import { Alert } from 'app/components/Alert';
+import { Alert } from 'app/pages/common/Modals/Common/Alert';
 import Modal from 'app/components/Modal';
 
 interface DirectoryEntryModalProps {
@@ -9,6 +9,7 @@ interface DirectoryEntryModalProps {
   onClose: () => void;
   onConfirm: () => void;
   title: string;
+  primaryMessage?: string;
 }
 
 const DirectoryEntryModal = ({
@@ -16,20 +17,17 @@ const DirectoryEntryModal = ({
   isOpen,
   onClose,
   onConfirm,
+  primaryMessage,
   title,
 }: DirectoryEntryModalProps) => (
   <Modal isOpen={isOpen} onClose={onClose} width={400}>
     <Alert
-      css={`
-        background-color: ${props =>
-          props.theme['sideBar.background'] || 'auto'};
-        color: ${props =>
-          props.theme.light ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)'};
-      `}
       title={title}
-      body={body}
+      description={body}
       onCancel={onClose}
-      onConfirm={onConfirm}
+      onPrimaryAction={onConfirm}
+      type="danger"
+      confirmMessage={primaryMessage || 'Delete'}
     />
   </Modal>
 );

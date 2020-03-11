@@ -8,7 +8,7 @@ type Props = {
   cancelMessage?: string;
   confirmMessage?: string;
   title?: string;
-  description?: string;
+  description?: string | React.ReactNode;
   type?: 'link' | 'primary' | 'danger' | 'secondary';
   style?: any;
 };
