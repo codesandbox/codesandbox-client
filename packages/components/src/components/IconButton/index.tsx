@@ -8,21 +8,21 @@ import { Tooltip } from '../Tooltip';
 type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** name of the icon */
   name: IconNames;
-  /** icon button should have a label for accessibility */
-  label: string;
+  /** icon button should have a title for accessibility */
+  title: string;
   /** Size of the icon, the button is set to 26x26 */
   size?: number;
 };
 
 export const IconButton: React.FC<IconButtonProps> = ({
   name,
-  label,
+  title,
   size,
   css = {},
   ...props
 }) => (
   // @ts-ignore
-  <Tooltip label={label}>
+  <Tooltip label={title}>
     <Button
       variant="link"
       css={deepmerge(
