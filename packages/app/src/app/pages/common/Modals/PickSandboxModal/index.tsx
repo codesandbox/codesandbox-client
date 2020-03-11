@@ -79,7 +79,7 @@ export const PickSandboxModal: FunctionComponent = () => {
               width: 'auto',
             })}
             variant="link"
-            onClick={() => modalClosed()}
+            onClick={modalClosed}
           >
             Cancel
           </Button>

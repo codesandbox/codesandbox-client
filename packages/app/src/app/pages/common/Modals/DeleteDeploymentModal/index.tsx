@@ -14,8 +14,8 @@ export const DeleteDeploymentModal: FunctionComponent = () => {
     <Alert
       title="Delete Deployment"
       description="Are you sure you want to delete this deployment?"
-      onCancel={() => modalClosed()}
-      onPrimaryAction={() => deleteDeployment()}
+      onCancel={modalClosed}
+      onPrimaryAction={deleteDeployment}
       confirmMessage="Delete"
       type="danger"
     />

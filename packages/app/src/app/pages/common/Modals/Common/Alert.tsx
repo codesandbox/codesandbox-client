@@ -5,7 +5,6 @@ import css from '@styled-system/css';
 type Props = {
   onCancel?: () => void;
   onPrimaryAction?: () => void;
-  children?: any;
   cancelMessage?: string;
   confirmMessage?: string;
   title: string;
