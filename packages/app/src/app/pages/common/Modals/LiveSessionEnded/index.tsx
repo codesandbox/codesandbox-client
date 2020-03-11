@@ -1,8 +1,9 @@
 import React, { FunctionComponent } from 'react';
 
-import { Element, Button, Text, Stack } from '@codesandbox/components';
+import { Button, Stack } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
+import { Alert } from '../Common/Alert';
 
 export const LiveSessionEnded: FunctionComponent = () => {
   const {
@@ -23,15 +24,11 @@ export const LiveSessionEnded: FunctionComponent = () => {
     : 'you can continue working by forking the sandbox or by creating a new sandbox.';
 
   return (
-    <Element padding={4} paddingTop={6}>
-      <Text weight="bold" block size={4} paddingBottom={2}>
-        The live session has ended
-      </Text>
-      <Text marginBottom={6} size={3} block>
-        {currentModalMessage || 'The session has ended due to inactivity'},{' '}
-        {suggestion}
-      </Text>
-
+    <Alert
+      title="  The live session has ended"
+      description={`${currentModalMessage ||
+        'The session has ended due to inactivity'}, ${suggestion}`}
+    >
       <Stack gap={2} align="center" justify="flex-end">
         {owned ? (
           <Button
@@ -69,6 +66,6 @@ export const LiveSessionEnded: FunctionComponent = () => {
           Create Sandbox
         </Button>
       </Stack>
-    </Element>
+    </Alert>
   );
 };
