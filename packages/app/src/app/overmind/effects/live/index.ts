@@ -11,6 +11,7 @@ import { Socket, Channel } from 'phoenix';
 import uuid from 'uuid';
 
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import { blocker } from 'app/utils/blocker';
 import clientsFactory from './clients';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
 
@@ -41,6 +42,7 @@ let clients: ReturnType<typeof clientsFactory>;
 let _socket: Socket;
 let _getConnectionsCount: () => number;
 let currentThrottle: Promise<any> = null;
+const _messageQueue: any[] = [];
 let provideJwtToken: () => string;
 
 export default new (class Live {
@@ -59,15 +61,11 @@ export default new (class Live {
           })}`,
         });
 
-        return live.send(
-          'operation',
-          {
-            moduleShortid,
-            operation,
-            revision,
-          },
-          false
-        );
+        return live.sendThrottledWhenSingleConnection('operation', {
+          moduleShortid,
+          operation,
+          revision,
+        });
       },
       (moduleShortid, operation) => {
         options.onApplyOperation({
@@ -191,55 +189,72 @@ export default new (class Live {
     };
   }
 
-  send(
+  private sendMessage(event, payload) {
+    const _messageId = identifier + messageIndex++;
+    // eslint-disable-next-line
+    payload._messageId = _messageId;
+    sentMessages.set(_messageId, payload);
+
+    return new Promise((resolve, reject) => {
+      if (channel) {
+        channel
+          .push(event, payload)
+          .receive('ok', resolve)
+          .receive('error', reject);
+      } else {
+        // we might try to send messages even when not on live, just
+        // ignore it
+        resolve();
+      }
+    });
+  }
+
+  sendWhenMultipleConnections(
     event: string,
-    payload: { _messageId?: string; [key: string]: any },
-    requireMultipleConnections = true
+    payload: { _messageId?: string; [key: string]: any }
   ) {
-    function sendMessage() {
-      const _messageId = identifier + messageIndex++;
-      // eslint-disable-next-line
-      payload._messageId = _messageId;
-      sentMessages.set(_messageId, payload);
-
-      return new Promise((resolve, reject) => {
-        if (channel) {
-          channel
-            .push(event, payload)
-            .receive('ok', resolve)
-            .receive('error', reject);
-        } else {
-          // we might try to send messages even when not on live, just
-          // ignore it
-          resolve();
-        }
-      });
-    }
-
-    if (requireMultipleConnections && _getConnectionsCount() >= 2) {
-      return sendMessage();
-    }
-
-    if (requireMultipleConnections && _getConnectionsCount() < 2) {
+    if (_getConnectionsCount() < 2) {
       return Promise.resolve();
     }
 
-    // We default to a throttled mode
-    const current =
-      currentThrottle ||
-      new Promise(resolve => {
-        setTimeout(() => {
-          currentThrottle = null;
-          resolve();
-        }, 500);
-      });
-    currentThrottle = current;
+    // We might have something in the queue related to a single connection
+    _messageQueue.forEach(send => send());
+    _messageQueue.length = 0;
 
-    return currentThrottle.then(sendMessage);
+    return this.sendMessage(event, payload);
+  }
+
+  sendThrottledWhenSingleConnection(
+    event: string,
+    payload: { _messageId?: string; [key: string]: any }
+  ) {
+    if (_getConnectionsCount() < 2) {
+      const pendingMessage = blocker();
+
+      _messageQueue.push(() => {
+        pendingMessage.resolve(this.sendMessage(event, payload));
+      });
+
+      const throttle =
+        currentThrottle ||
+        new Promise(resolve => {
+          setTimeout(() => {
+            currentThrottle = null;
+            _messageQueue.forEach(send => send());
+            _messageQueue.length = 0;
+            resolve();
+          }, 500);
+        });
+      currentThrottle = throttle;
+
+      return pendingMessage.promise;
+    }
+
+    return this.sendMessage(event, payload);
   }
 
   sendModuleUpdate(module: Module) {
-    return this.send('module:updated', {
+    return this.sendWhenMultipleConnections('module:updated', {
       type: 'module',
       moduleShortid: module.shortid,
       module,
@@ -247,7 +262,7 @@ export default new (class Live {
   }
 
   sendDirectoryUpdate(directory: Directory) {
-    return this.send('directory:updated', {
+    return this.sendWhenMultipleConnections('directory:updated', {
       type: 'directory',
       directoryShortid: directory.shortid,
       module: directory,
@@ -269,38 +284,38 @@ export default new (class Live {
       clients.get(moduleShortid).applyClient(operation);
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
-      this.send('live:module_state', {});
+      this.sendWhenMultipleConnections('live:module_state', {});
     }
   }
 
   sendExternalResourcesChanged(externalResources: string[]) {
-    return this.send('sandbox:external-resources', {
+    return this.sendWhenMultipleConnections('sandbox:external-resources', {
       externalResources,
     });
   }
 
   sendUserCurrentModule(moduleShortid: string) {
-    return this.send('user:current-module', {
+    return this.sendWhenMultipleConnections('user:current-module', {
       moduleShortid,
     });
   }
 
   sendDirectoryCreated(directory: Directory) {
-    return this.send('directory:created', {
+    return this.sendWhenMultipleConnections('directory:created', {
       type: 'directory',
       module: directory,
     });
   }
 
   sendDirectoryDeleted(directoryShortid: string) {
-    this.send('directory:deleted', {
+    this.sendWhenMultipleConnections('directory:deleted', {
       type: 'directory',
       directoryShortid,
     });
   }
 
   sendModuleCreated(module: Module) {
-    return this.send('module:created', {
+    return this.sendWhenMultipleConnections('module:created', {
       type: 'module',
       moduleShortid: module.shortid,
       module,
@@ -308,49 +323,49 @@ export default new (class Live {
   }
 
   sendModuleDeleted(moduleShortid: string) {
-    return this.send('module:deleted', {
+    return this.sendWhenMultipleConnections('module:deleted', {
       type: 'module',
       moduleShortid,
     });
   }
 
   sendMassCreatedModules(modules: Module[], directories: Directory[]) {
-    return this.send('module:mass-created', {
+    return this.sendWhenMultipleConnections('module:mass-created', {
       directories,
       modules,
     });
   }
 
   sendLiveMode(mode: string) {
-    return this.send('live:mode', {
+    return this.sendWhenMultipleConnections('live:mode', {
       mode,
     });
   }
 
   sendEditorAdded(liveUserId: string) {
-    return this.send('live:add-editor', {
+    return this.sendWhenMultipleConnections('live:add-editor', {
       editor_user_id: liveUserId,
     });
   }
 
   sendEditorRemoved(liveUserId: string) {
-    return this.send('live:remove-editor', {
+    return this.sendWhenMultipleConnections('live:remove-editor', {
       editor_user_id: liveUserId,
     });
   }
 
   sendClosed() {
-    return this.send('live:close', {});
+    return this.sendWhenMultipleConnections('live:close', {});
   }
 
   sendChat(message: string) {
-    return this.send('chat', {
+    return this.sendWhenMultipleConnections('chat', {
       message,
     });
   }
 
   sendModuleSaved(module: Module) {
-    return this.send('module:saved', {
+    return this.sendWhenMultipleConnections('module:saved', {
       type: 'module',
       module,
       moduleShortid: module.shortid,
@@ -358,11 +373,11 @@ export default new (class Live {
   }
 
   sendChatEnabled(enabled: boolean) {
-    return this.send('live:chat_enabled', { enabled });
+    return this.sendWhenMultipleConnections('live:chat_enabled', { enabled });
   }
 
   sendModuleStateSyncRequest() {
-    return this.send('live:module_state', {});
+    return this.sendWhenMultipleConnections('live:module_state', {});
   }
 
   sendUserSelection(
@@ -370,7 +385,7 @@ export default new (class Live {
     liveUserId: string,
     selection: any
   ) {
-    return this.send('user:selection', {
+    return this.sendWhenMultipleConnections('user:selection', {
       liveUserId,
       moduleShortid,
       selection,
