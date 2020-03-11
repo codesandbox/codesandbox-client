@@ -20,14 +20,12 @@ export const PickSandboxModal: FunctionComponent = () => {
       explore: { pickSandbox },
       modalClosed,
     },
-    // state: {
-    //   explore: {
-    //     pickedSandboxDetails: { id, ...details },
-    //   },
-    // },
+    state: {
+      explore: {
+        pickedSandboxDetails: { id, ...details },
+      },
+    },
   } = useOvermind();
-  const details = {};
-  const id = '';
   const [description, setDescription] = useState(details.description);
   const [title, setTitle] = useState(details.title);
 
