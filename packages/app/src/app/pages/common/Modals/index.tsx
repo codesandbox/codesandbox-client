@@ -3,7 +3,6 @@ import {
   COLUMN_MEDIA_THRESHOLD,
   CreateSandbox,
 } from 'app/components/CreateNewSandbox/CreateSandbox';
-import { withTheme } from 'styled-components';
 import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
@@ -139,7 +138,7 @@ const modals = {
   },
 };
 
-const ModalsComponent: FunctionComponent = () => {
+const Modals: FunctionComponent = () => {
   const {
     actions,
     state: {
@@ -193,7 +192,5 @@ const ModalsComponent: FunctionComponent = () => {
     </ThemeProvider>
   );
 };
-
-const Modals = withTheme(ModalsComponent);
 
 export { Modals };
