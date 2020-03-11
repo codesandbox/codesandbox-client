@@ -1,8 +1,15 @@
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import css from '@styled-system/css';
 import VERSION from '@codesandbox/common/lib/version';
 import { CurrentUser } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
 import pushToAirtable from 'app/overmind/utils/pushToAirtable';
+import {
+  Element,
+  Input,
+  Stack,
+  Button,
+  Textarea,
+} from '@codesandbox/components';
 import React, {
   ChangeEvent,
   FormEvent,
@@ -10,18 +17,13 @@ import React, {
   useState,
 } from 'react';
 
-import {
-  AutosizeTextArea,
-  Button,
-  ButtonContainer,
-  EmojiButton,
-  Input,
-} from './elements';
+import { Alert } from '../Common/Alert';
 
 type Props = {
   id?: string;
   user?: CurrentUser;
 };
+
 const Feedback: FunctionComponent<Props> = ({ id, user }) => {
   const {
     actions: { notificationAdded, modalClosed },
@@ -31,16 +33,14 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
   const [feedback, setFeedback] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const onChange = ({
-    target: { name, value },
-  }: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const noop = () => undefined;
     const settersByInputName = {
       email: setEmail,
       feedback: setFeedback,
     };
 
-    (settersByInputName[name] || noop)(value);
+    (settersByInputName[e.target.name] || noop)(e.target.value);
   };
 
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
@@ -81,59 +81,66 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
   const setSad = () => setEmoji('sad');
 
   return (
-    <form onSubmit={onSubmit}>
-      <AutosizeTextArea
-        minRows={3}
-        name="feedback"
-        // @ts-ignore
-        onChange={onChange}
-        placeholder="What are your thoughts?"
-        required
-        value={feedback}
-      />
-
-      {!user && (
-        <Margin top={0.5}>
-          <Input
-            name="email"
+    <Alert title="Submit Feedback">
+      <Element marginTop={4}>
+        <form onSubmit={onSubmit}>
+          <Textarea
+            autosize
+            minRows={3}
+            name="feedback"
+            // @ts-ignore
             onChange={onChange}
-            placeholder="Email if you wish to be contacted"
-            type="email"
-            value={email}
+            placeholder="What are your thoughts?"
+            required
+            value={feedback}
           />
-        </Margin>
-      )}
 
-      <Margin
-        css={`
-          display: flex;
-          align-items: center;
-        `}
-        top={0.5}
-      >
-        <EmojiButton
-          active={emoji === 'happy'}
-          onClick={setHappy}
-          type="button"
-        >
-          <span aria-label="happy" role="img">
-            😊
-          </span>
-        </EmojiButton>
+          {!user && (
+            <Element marginTop={2} marginBottom={4}>
+              <Input
+                name="email"
+                onChange={onChange}
+                placeholder="Email if you wish to be contacted"
+                type="email"
+                value={email}
+              />
+            </Element>
+          )}
 
-        <EmojiButton active={emoji === 'sad'} onClick={setSad} type="button">
-          <span aria-label="sad" role="img">
-            😞
-          </span>
-        </EmojiButton>
+          <Stack gap={2} align="center" marginTop={2} marginBottom={4}>
+            <Button
+              css={css({ width: 'auto' })}
+              variant={emoji === 'happy' ? 'primary' : 'secondary'}
+              onClick={setHappy}
+            >
+              <span aria-label="happy" role="img">
+                😊
+              </span>
+            </Button>
 
-        <ButtonContainer>
-          <Button type="submit" disabled={loading || !feedback.trim()} small>
-            {loading ? 'Sending...' : 'Submit'}
-          </Button>
-        </ButtonContainer>
-      </Margin>
-    </form>
+            <Button
+              css={css({ width: 'auto' })}
+              variant={emoji === 'sad' ? 'primary' : 'secondary'}
+              onClick={setSad}
+            >
+              <span aria-label="sad" role="img">
+                😞
+              </span>
+            </Button>
+          </Stack>
+
+          <Stack justify="flex-end">
+            <Button
+              css={css({ width: 'auto' })}
+              type="submit"
+              disabled={loading || !feedback.trim()}
+            >
+              {loading ? 'Sending...' : 'Submit'}
+            </Button>
+          </Stack>
+        </form>
+      </Element>
+    </Alert>
   );
 };
 
