@@ -114,7 +114,7 @@ const modals = {
   },
   uploading: {
     Component: UploadModal,
-    width: 600,
+    width: 400,
   },
   storageManagement: {
     Component: StorageManagementModal,
