@@ -7,9 +7,10 @@ type Props = {
   onPrimaryAction?: () => void;
   cancelMessage?: string;
   confirmMessage?: string;
-  title: string;
+  title?: string;
   description?: string;
   type?: 'link' | 'primary' | 'danger' | 'secondary';
+  style?: any;
 };
 
 export const Alert: FunctionComponent<Props> = ({
@@ -21,6 +22,7 @@ export const Alert: FunctionComponent<Props> = ({
   title,
   description,
   type = 'primary',
+  ...props
 }) => (
   <Element
     padding={4}
@@ -29,10 +31,13 @@ export const Alert: FunctionComponent<Props> = ({
       maxHeight: '70vh',
       overflow: 'auto',
     })}
+    {...props}
   >
-    <Text weight="bold" block size={4} paddingBottom={2}>
-      {title}
-    </Text>
+    {title && (
+      <Text weight="bold" block size={4} paddingBottom={2}>
+        {title}
+      </Text>
+    )}
     {description && (
       <Text marginBottom={6} size={3} block>
         {description}

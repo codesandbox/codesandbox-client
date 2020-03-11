@@ -31,12 +31,11 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
 
   const handleMove = () => {
     setLoading(true);
-
     setError(undefined);
   };
+
   const onSelect = ({ teamId: newTeamId, path: newPath }) => {
     setTeamId(newTeamId);
-
     setPath(newPath);
   };
 
