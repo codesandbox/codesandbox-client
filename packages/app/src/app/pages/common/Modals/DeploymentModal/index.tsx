@@ -18,12 +18,14 @@ export const DeploymentModal: FunctionComponent = () => {
     },
   } = useOvermind();
 
-  if (!user) return null;
+  if (!user) {
+    return null;
+  }
 
   const {
     integrations: { zeit },
   } = user;
-  const zeitSignedIn = !!zeit;
+  const zeitSignedIn = Boolean(zeit);
 
   return (
     <Alert

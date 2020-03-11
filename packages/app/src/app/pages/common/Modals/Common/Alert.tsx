@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Element, Button, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -13,7 +13,7 @@ type Props = {
   type?: 'link' | 'primary' | 'danger' | 'secondary';
 };
 
-export const Alert = ({
+export const Alert: FunctionComponent<Props> = ({
   onCancel,
   onPrimaryAction,
   children,
@@ -22,7 +22,7 @@ export const Alert = ({
   title,
   description,
   type = 'primary',
-}: Props) => (
+}) => (
   <Element padding={4} paddingTop={6}>
     <Text weight="bold" block size={4} paddingBottom={2}>
       {title}

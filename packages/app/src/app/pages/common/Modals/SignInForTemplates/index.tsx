@@ -7,9 +7,7 @@ const SignInForTemplates: FunctionComponent = () => {
     actions: { modalClosed, signInClicked },
   } = useOvermind();
 
-  const handleSignIn = async () => {
-    await signInClicked({ useExtraScopes: false });
-  };
+  const handleSignIn = async () => signInClicked({ useExtraScopes: false });
 
   return (
     <Alert

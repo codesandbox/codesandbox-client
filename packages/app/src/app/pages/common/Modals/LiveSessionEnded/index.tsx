@@ -16,7 +16,9 @@ export const LiveSessionEnded: FunctionComponent = () => {
       editor: { currentSandbox },
     },
   } = useOvermind();
-  if (!currentSandbox) return null;
+  if (!currentSandbox) {
+    return null;
+  }
   const { owned } = currentSandbox;
 
   const suggestion = owned
@@ -61,7 +63,7 @@ export const LiveSessionEnded: FunctionComponent = () => {
             width: 'auto',
             textDecoration: 'none',
           })}
-          onClick={() => modalClosed()}
+          onClick={modalClosed}
         >
           Create Sandbox
         </Button>

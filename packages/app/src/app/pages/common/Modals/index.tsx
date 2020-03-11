@@ -8,7 +8,7 @@ import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import Loadable from 'app/utils/Loadable';
-import React, { useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { ThemeProvider } from '@codesandbox/components';
 
 import CommitModal from './CommitModal';
@@ -139,7 +139,7 @@ const modals = {
   },
 };
 
-const ModalsComponent = () => {
+const ModalsComponent: FunctionComponent = () => {
   const {
     actions,
     state: {
