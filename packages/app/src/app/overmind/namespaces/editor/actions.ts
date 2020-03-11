@@ -10,10 +10,10 @@ import {
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
   CollaboratorFragment,
@@ -471,6 +471,8 @@ export const moduleSelected: Action<
     }
 > = ({ actions, effects, state }, { id, path }) => {
   effects.analytics.track('Open File');
+
+  state.editor.hasLoadedInitialModule = true;
 
   const sandbox = state.editor.currentSandbox;
 

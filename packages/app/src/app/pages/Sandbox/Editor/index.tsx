@@ -1,5 +1,4 @@
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-import Navigator from '@codesandbox/common/lib/components/Preview/Navigator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
@@ -11,23 +10,13 @@ import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
 
 import Content from './Content';
-import {
-  Container,
-  SkeletonDevtools,
-  SkeletonDevtoolsIframe,
-  SkeletonDevtoolsNavigator,
-  SkeletonDevtoolsTop,
-  SkeletonEditor,
-  SkeletonEditorTop,
-  SkeletonExplorer,
-  SkeletonExplorerTop,
-  SkeletonWrapper,
-} from './elements';
+import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
 import { Header as HeaderOld } from './HeaderOld';
 import { Navigation } from './Navigation';
 import { Navigation as NavigationOld } from './NavigationOld';
+import { ContentSkeleton } from './Skeleton';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 
@@ -39,41 +28,8 @@ const StatusBar = styled.div`
   }
 `;
 
-const ContentSkeleton = ({ style, onTransitionEnd }) => {
-  React.useEffect(() => {
-    // In case we started already with opacity 0
-    if (style.opacity === 0) {
-      onTransitionEnd();
-    }
-  }, [onTransitionEnd, style.opacity]); // eslint-disable-line we don't want to check style on purpose
-
-  return (
-    <SkeletonWrapper style={style} onTransitionEnd={onTransitionEnd}>
-      <SkeletonExplorer>
-        <SkeletonExplorerTop />
-      </SkeletonExplorer>
-      <SkeletonEditor>
-        <SkeletonEditorTop />
-      </SkeletonEditor>
-      <SkeletonDevtools>
-        <SkeletonDevtoolsTop />
-        <SkeletonDevtoolsNavigator>
-          <Navigator
-            url=""
-            onChange={() => {}}
-            onConfirm={() => {}}
-            onRefresh={() => {}}
-            isProjectView
-          />
-        </SkeletonDevtoolsNavigator>
-        <SkeletonDevtoolsIframe />
-      </SkeletonDevtools>
-    </SkeletonWrapper>
-  );
-};
-
 const ContentSplit = () => {
-  const { state, actions, effects } = useOvermind();
+  const { state, actions, effects, reaction } = useOvermind();
   const statusbarEl = useRef(null);
   const [showSkeleton, setShowSkeleton] = useState(true);
   const [localState, setLocalState] = useState({
@@ -83,6 +39,20 @@ const ContentSplit = () => {
     },
     customVSCodeTheme: null,
   });
+
+  useEffect(() => {
+    let timeout;
+    const dispose = reaction(
+      reactionState => reactionState.editor.hasLoadedInitialModule,
+      () => {
+        timeout = setTimeout(() => setShowSkeleton(false), 500);
+      }
+    );
+    return () => {
+      dispose();
+      clearTimeout(timeout);
+    };
+  }, [reaction]);
 
   useEffect(() => {
     async function loadTheme() {
@@ -201,12 +171,15 @@ const ContentSplit = () => {
             {showSkeleton ? (
               <NewThemeProvider theme={localState.theme.vscodeTheme}>
                 <ContentSkeleton
-                  style={{
-                    opacity: state.editor.isLoading ? 1 : 0,
-                  }}
-                  onTransitionEnd={() => {
-                    setShowSkeleton(false);
-                  }}
+                  style={
+                    state.editor.hasLoadedInitialModule
+                      ? {
+                          opacity: 0,
+                        }
+                      : {
+                          opacity: 1,
+                        }
+                  }
                 />
               </NewThemeProvider>
             ) : null}
