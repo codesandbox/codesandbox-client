@@ -10,7 +10,7 @@ import {
 } from './elements';
 
 interface IUploadProgressProps {
-  result: string;
+  result?: string;
   message: string;
 }
 
