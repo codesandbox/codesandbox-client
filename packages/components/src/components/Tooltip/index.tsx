@@ -45,6 +45,9 @@ const animation = styledcss`
   [data-reach-tooltip][data-component=Tooltip] {
     animation: ${transitions.slide} 150ms ease-out;
   }
+  [data-component=TooltipTriangle] {
+    animation: ${transitions.slide} 150ms ease-out;
+  }
 `;
 
 /** Dragon number 2:
@@ -128,6 +131,7 @@ const Triangle = ({ triggerRect }) => (
   <Portal>
     <Element
       as="span"
+      data-component="TooltipTriangle"
       css={{
         position: 'absolute',
         left:
