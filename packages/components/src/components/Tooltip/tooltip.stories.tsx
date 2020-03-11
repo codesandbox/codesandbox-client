@@ -24,8 +24,17 @@ export const Long = () => (
   </Stack>
 );
 
-export const IconButtonHasTooltip = () => (
-  <Stack justify="center">
-    <IconButton name="check" label="Mark as resolved" />
+export const Edges = () => (
+  <Stack justify="space-between">
+    <Tooltip label="Mark as resolved">
+      <span>hover</span>
+    </Tooltip>
+    <Tooltip label="Mark as resolved">
+      <span>hover</span>
+    </Tooltip>
   </Stack>
+);
+
+export const IconButtonHasTooltip = () => (
+  <IconButton name="check" label="Mark as resolved" />
 );
