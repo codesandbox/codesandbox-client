@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
-import { Element, Button, Text, Stack } from '@codesandbox/components';
-import css from '@styled-system/css';
+import { Alert } from '../Common/Alert';
 
 const SignInForTemplates: FunctionComponent = () => {
   const {
@@ -13,34 +12,13 @@ const SignInForTemplates: FunctionComponent = () => {
   };
 
   return (
-    <Element padding={4} paddingTop={6}>
-      <Text weight="bold" block size={4} paddingBottom={2}>
-        Sign in to create templates
-      </Text>
-      <Text marginBottom={6} size={3} block>
-        You can only create templates as a logged in user.
-      </Text>
-      <Stack gap={2} align="center" justify="flex-end">
-        <Button
-          css={css({
-            width: 'auto',
-          })}
-          variant="link"
-          onClick={modalClosed}
-        >
-          Cancel
-        </Button>
-        <Button
-          title="Sign in with GitHub"
-          css={css({
-            width: 'auto',
-          })}
-          onClick={handleSignIn}
-        >
-          <Text>Sign in with GitHub</Text>
-        </Button>
-      </Stack>
-    </Element>
+    <Alert
+      title="Sign in to create templates"
+      description="You can only create templates as a logged in user."
+      onCancel={modalClosed}
+      onPrimaryAction={handleSignIn}
+      confirmMessage="Sign in with GitHub"
+    />
   );
 };
 

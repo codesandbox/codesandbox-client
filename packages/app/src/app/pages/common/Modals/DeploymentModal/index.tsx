@@ -3,6 +3,7 @@ import { Element, Button, Text, Stack, Link } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { Alert } from '../Common/Alert';
 import { ZeitIcon } from './ZeitLogo';
 
 export const DeploymentModal: FunctionComponent = () => {
@@ -25,13 +26,10 @@ export const DeploymentModal: FunctionComponent = () => {
   const zeitSignedIn = !!zeit;
 
   return (
-    <Element padding={4} paddingTop={6}>
-      <Text weight="bold" block size={4} paddingBottom={2}>
-        Deployment
-      </Text>
-      <Text marginBottom={6} size={3} block>
-        Deploy a production version of your Sandbox to ZEIT Now
-      </Text>
+    <Alert
+      title="Deployment"
+      description="Deploy a production version of your Sandbox to ZEIT Now"
+    >
       {url ? (
         <Element marginBottom={4}>
           <Text weight="bold" block size={4} align="center" paddingBottom={4}>
@@ -95,6 +93,6 @@ export const DeploymentModal: FunctionComponent = () => {
           {deploying ? 'Deploying' : 'Deploy Sandbox'}
         </Button>
       </Stack>
-    </Element>
+    </Alert>
   );
 };

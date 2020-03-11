@@ -1,9 +1,10 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { Element, Button, Text, Stack } from '@codesandbox/components';
+import { Element, Button, Stack } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
 import { Item } from './elements';
+import { Alert } from '../Common/Alert';
 
 export const NetlifyLogs: FunctionComponent = () => {
   const {
@@ -29,13 +30,10 @@ export const NetlifyLogs: FunctionComponent = () => {
   }, [netlifyLogsUrl]);
 
   return (
-    <Element padding={4} paddingTop={6}>
-      <Text weight="bold" block size={4} paddingBottom={2}>
-        Sandbox Site Logs
-      </Text>
-      <Text marginBottom={6} size={3} block>
-        Builds typically take a minute or two to complete
-      </Text>
+    <Alert
+      title="Sandbox Site Logs"
+      description="Builds typically take a minute or two to complete"
+    >
       <Element
         marginY={6}
         padding={4}
@@ -61,11 +59,11 @@ export const NetlifyLogs: FunctionComponent = () => {
             width: 'auto',
           })}
           variant="link"
-          onClick={() => modalClosed()}
+          onClick={modalClosed}
         >
           Close
         </Button>
       </Stack>
-    </Element>
+    </Alert>
   );
 };

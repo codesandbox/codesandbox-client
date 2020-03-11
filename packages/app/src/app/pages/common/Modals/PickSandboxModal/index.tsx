@@ -3,7 +3,6 @@
 import React, { FormEvent, FunctionComponent, useState } from 'react';
 
 import {
-  Element,
   FormField,
   Button,
   Text,
@@ -13,6 +12,7 @@ import {
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
+import { Alert } from '../Common/Alert';
 
 export const PickSandboxModal: FunctionComponent = () => {
   const {
@@ -30,16 +30,12 @@ export const PickSandboxModal: FunctionComponent = () => {
   const [title, setTitle] = useState(details.title);
 
   return (
-    <Element padding={4} paddingTop={6}>
-      <Text weight="bold" block size={4} paddingBottom={2}>
-        Pick this sandbox
-      </Text>
-      <Text marginBottom={6} size={3} block>
-        Please add a title and description to this sandbox if none exists or you
-        think you have a better description for it. This title and description
-        will be the ones used in the explore page.
-      </Text>
-
+    <Alert
+      title="Pick this sandbox"
+      description="        Please add a title and description to this sandbox if none exists or you
+    think you have a better description for it. This title and description
+    will be the ones used in the explore page."
+    >
       <form
         onSubmit={(event: FormEvent<HTMLFormElement>) => {
           event.preventDefault();
@@ -75,6 +71,15 @@ export const PickSandboxModal: FunctionComponent = () => {
 
         <Stack justify="flex-end" gap={2}>
           <Button
+            css={css({
+              width: 'auto',
+            })}
+            variant="link"
+            onClick={() => modalClosed()}
+          >
+            Cancel
+          </Button>
+          <Button
             type="submit"
             css={css({
               width: 'auto',
@@ -85,18 +90,8 @@ export const PickSandboxModal: FunctionComponent = () => {
               🚀
             </Text>
           </Button>
-
-          <Button
-            css={css({
-              width: 'auto',
-            })}
-            variant="link"
-            onClick={() => modalClosed()}
-          >
-            Cancel
-          </Button>
         </Stack>
       </form>
-    </Element>
+    </Alert>
   );
 };
