@@ -20,21 +20,21 @@ export const PickSandboxModal: FunctionComponent = () => {
       explore: { pickSandbox },
       modalClosed,
     },
-    state: {
-      explore: {
-        pickedSandboxDetails: { id, ...details },
-      },
-    },
+    // state: {
+    //   explore: {
+    //     pickedSandboxDetails: { id, ...details },
+    //   },
+    // },
   } = useOvermind();
+  const details = {};
+  const id = '';
   const [description, setDescription] = useState(details.description);
   const [title, setTitle] = useState(details.title);
 
   return (
     <Alert
       title="Pick this sandbox"
-      description="        Please add a title and description to this sandbox if none exists or you
-    think you have a better description for it. This title and description
-    will be the ones used in the explore page."
+      description="Please add a title and description to this sandbox if none exists or you think you have a better description for it. This title and description will be the ones used in the explore page."
     >
       <form
         onSubmit={(event: FormEvent<HTMLFormElement>) => {
@@ -42,7 +42,12 @@ export const PickSandboxModal: FunctionComponent = () => {
           pickSandbox({ description, id, title });
         }}
       >
-        <FormField marginBottom={4} direction="vertical" label="Sandbox name">
+        <FormField
+          style={{ padding: 0 }}
+          marginBottom={4}
+          direction="vertical"
+          label="Sandbox name"
+        >
           <Input
             marginTop={2}
             id="title"
@@ -54,6 +59,7 @@ export const PickSandboxModal: FunctionComponent = () => {
         </FormField>
 
         <FormField
+          style={{ padding: 0 }}
           marginBottom={4}
           direction="vertical"
           label="Sandbox Description"

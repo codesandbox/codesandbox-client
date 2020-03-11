@@ -23,7 +23,14 @@ export const Alert: FunctionComponent<Props> = ({
   description,
   type = 'primary',
 }) => (
-  <Element padding={4} paddingTop={6}>
+  <Element
+    padding={4}
+    paddingTop={6}
+    css={css({
+      maxHeight: '70vh',
+      overflow: 'auto',
+    })}
+  >
     <Text weight="bold" block size={4} paddingBottom={2}>
       {title}
     </Text>
