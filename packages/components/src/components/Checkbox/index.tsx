@@ -7,7 +7,7 @@ import { Text } from '../Text';
 
 interface ICheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   checked?: boolean;
-  label: string;
+  label?: string;
   id?: string;
 }
 
@@ -72,7 +72,7 @@ const Label = styled(Text)(
 export const Checkbox = ({ checked, id, label, ...props }: ICheckboxProps) => {
   const inputId = useId(id);
   return (
-    <Element css={css({ position: 'relative' })}>
+    <Element style={{ position: 'relative' }}>
       <CheckboxElement
         checked={checked}
         id={inputId}

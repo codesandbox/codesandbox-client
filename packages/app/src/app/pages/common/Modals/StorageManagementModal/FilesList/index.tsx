@@ -9,13 +9,13 @@ import {
   ListAction,
   Link,
   Text,
+  Checkbox,
 } from '@codesandbox/components';
 
 import { useOvermind } from 'app/overmind';
 
 import { AddFileToSandboxButton } from './AddFileToSandboxButton';
 import { DeleteFileButton } from './DeleteFileButton';
-import { CheckBox } from './elements';
 
 export const FilesList: FunctionComponent = () => {
   const {
@@ -68,9 +68,9 @@ export const FilesList: FunctionComponent = () => {
                   width: 40%;
                 `}
               >
-                <CheckBox
-                  onClick={() => toggleCheckbox(id)}
-                  selected={selectedItems.includes(id)}
+                <Checkbox
+                  onChange={() => toggleCheckbox(id)}
+                  checked={Boolean(selectedItems.includes(id))}
                 />
                 <Link
                   css={`
