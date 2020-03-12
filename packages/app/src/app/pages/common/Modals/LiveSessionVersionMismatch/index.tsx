@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Alert } from '../Common/Alert';
 
-const LiveVersionMismatch = () => (
+const LiveVersionMismatch: FunctionComponent = () => (
   <Alert
     title="Version Mismatch"
     description={

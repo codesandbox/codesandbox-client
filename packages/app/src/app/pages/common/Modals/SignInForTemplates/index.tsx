@@ -7,14 +7,12 @@ const SignInForTemplates: FunctionComponent = () => {
     actions: { modalClosed, signInClicked },
   } = useOvermind();
 
-  const handleSignIn = async () => signInClicked({ useExtraScopes: false });
-
   return (
     <Alert
       title="Sign in to create templates"
       description="You can only create templates as a logged in user."
       onCancel={modalClosed}
-      onPrimaryAction={handleSignIn}
+      onPrimaryAction={() => signInClicked({ useExtraScopes: false })}
       confirmMessage="Sign in with GitHub"
     />
   );

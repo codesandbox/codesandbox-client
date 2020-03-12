@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
-export const ZeitIcon = props => (
+export const ZeitIcon: FunctionComponent = () => (
   <svg width={130} height={58} fill="none" viewBox="0 0 130 58" {...props}>
     <path fill="#040404" d="M0 4a4 4 0 014-4h126v58H4a4 4 0 01-4-4V4z" />
     <g clipPath="url(#clip0)">
