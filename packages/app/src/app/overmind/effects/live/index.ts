@@ -4,16 +4,16 @@ import {
   Module,
   RoomInfo,
 } from '@codesandbox/common/lib/types';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import { blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
 import { TextOperation } from 'ot';
-import { Socket, Channel } from 'phoenix';
+import { Channel, Socket } from 'phoenix';
 import uuid from 'uuid';
 
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
-import { blocker } from 'app/utils/blocker';
-import clientsFactory from './clients';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
+import clientsFactory from './clients';
 
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
@@ -41,7 +41,7 @@ let messageIndex = 0;
 let clients: ReturnType<typeof clientsFactory>;
 let _socket: Socket;
 let _getConnectionsCount: () => number;
-let currentThrottle: Promise<any> = null;
+let _currentFlushId: NodeJS.Timeout | null = null;
 const _messageQueue: any[] = [];
 let provideJwtToken: () => string;
 
@@ -209,6 +209,13 @@ export default new (class Live {
     });
   }
 
+  private flushMessages() {
+    _messageQueue.forEach(send => send());
+    _messageQueue.length = 0;
+    clearTimeout(_currentFlushId);
+    _currentFlushId = null;
+  }
+
   sendWhenMultipleConnections(
     event: string,
     payload: { _messageId?: string; [key: string]: any }
@@ -217,9 +224,7 @@ export default new (class Live {
       return Promise.resolve();
     }
 
-    // We might have something in the queue related to a single connection
-    _messageQueue.forEach(send => send());
-    _messageQueue.length = 0;
+    this.flushMessages();
 
     return this.sendMessage(event, payload);
   }
@@ -235,20 +240,14 @@ export default new (class Live {
         pendingMessage.resolve(this.sendMessage(event, payload));
       });
 
-      const throttle =
-        currentThrottle ||
-        new Promise(resolve => {
-          setTimeout(() => {
-            currentThrottle = null;
-            _messageQueue.forEach(send => send());
-            _messageQueue.length = 0;
-            resolve();
-          }, 500);
-        });
-      currentThrottle = throttle;
+      if (!_currentFlushId) {
+        _currentFlushId = setTimeout(() => this.flushMessages(), 1000);
+      }
 
       return pendingMessage.promise;
     }
+
+    this.flushMessages();
 
     return this.sendMessage(event, payload);
   }
