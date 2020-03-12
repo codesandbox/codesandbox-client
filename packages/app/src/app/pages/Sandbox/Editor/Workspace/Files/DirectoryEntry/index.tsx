@@ -49,6 +49,7 @@ type Modal = {
   title: string;
   body: React.ReactNode;
   onConfirm: () => void;
+  primaryMessage?: string;
 };
 
 interface Props {

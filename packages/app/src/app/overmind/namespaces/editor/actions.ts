@@ -432,8 +432,7 @@ export const forkSandboxClicked: AsyncAction = async ({
 
   if (
     state.editor.currentSandbox.owned &&
-    !state.editor.currentSandbox.customTemplate &&
-    !effects.browser.confirm('Do you want to fork your own sandbox?')
+    !state.editor.currentSandbox.customTemplate
   ) {
     return;
   }
