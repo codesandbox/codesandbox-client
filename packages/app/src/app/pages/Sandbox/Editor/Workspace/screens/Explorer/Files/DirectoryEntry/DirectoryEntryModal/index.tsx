@@ -1,4 +1,3 @@
-import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 import React from 'react';
 import { Alert } from 'app/pages/common/Modals/Common/Alert';
 import Modal from 'app/components/Modal';
