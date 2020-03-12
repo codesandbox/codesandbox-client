@@ -5,13 +5,15 @@ import {
   CreateCommentThreadMutationVariables,
   DeleteCommentMutation,
   DeleteCommentMutationVariables,
+  ToggleCommentThreadResolvedMutation,
+  ToggleCommentThreadResolvedMutationVariables,
   UpdateCommentMutation,
   UpdateCommentMutationVariables,
-  UpdateCommentThreadMutation,
-  UpdateCommentThreadMutationVariables,
 } from 'app/graphql/types';
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
+
+import { commentFragment } from './fragments';
 
 export const createCommentThread: Query<
   CreateCommentThreadMutation,
@@ -20,10 +22,14 @@ export const createCommentThread: Query<
   mutation CreateCommentThread($sandboxId: ID!, $content: String!) {
     createCommentThread(sandboxId: $sandboxId, content: $content) {
       id
+      initialComment {
+        ...Comment
+      }
       isResolved
       insertedAt
       updatedAt
     }
+    ${commentFragment}
   }
 `;
 
@@ -38,11 +44,11 @@ export const deleteComment: Query<
   }
 `;
 
-export const updateCommentThread: Query<
-  UpdateCommentThreadMutation,
-  UpdateCommentThreadMutationVariables
+export const toggleCommentThreadResolved: Query<
+  ToggleCommentThreadResolvedMutation,
+  ToggleCommentThreadResolvedMutationVariables
 > = gql`
-  mutation UpdateCommentThread(
+  mutation ToggleCommentThreadResolved(
     $commentThreadId: ID!
     $isResolved: Boolean
     $sandboxId: ID!
@@ -54,6 +60,7 @@ export const updateCommentThread: Query<
     ) {
       id
       isResolved
+      updatedAt
     }
   }
 `;
@@ -72,8 +79,9 @@ export const createComment: Query<
       content: $content
       sandboxId: $sandboxId
     ) {
-      id
+      ...Comment
     }
+    ${commentFragment}
   }
 `;
 
