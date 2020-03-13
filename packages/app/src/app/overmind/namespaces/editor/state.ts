@@ -84,9 +84,11 @@ type State = {
   selectedCommentsFilter: CommentsFilterOption;
   currentCommentId: string | null;
   currentComment: Derive<State, Comment | null>;
+  hasLoadedInitialModule: boolean;
 };
 
 export const state: State = {
+  hasLoadedInitialModule: false,
   comments: {},
   currentCommentId: null, // '5e5961e0c277a40fef1e391b',
   currentComment: ({ comments, currentSandbox, currentCommentId }) => {

@@ -8,21 +8,22 @@ description:
 
 ## Create Wizard
 
-The most popular way of creating a new sandbox is the Create Wizard.
+The most popular way of creating a new sandbox is the Create Sandbox screen.
 
-![Create Wizard](./images/create-wizard.png)
+![Create Sandbox screen](./images/create-wizard.png)
 
-The Create Wizard shows you all public templates that are currently available,
-and takes you to the sandbox that corresponds to the template. You can edit and
-fork this sandbox to continue with the template.
+The Create Sandbox screen shows you all of the public templates that are
+currently available, including official templates and those created by the
+community. These are automatically forked when you select them, so you can edit
+and begin creating your own sandbox.
 
 ## Import from GitHub
 
-You can import a GitHub repository in CodeSandbox by going to the
-[import wizard](https://codesandbox.io/s/github) and giving the URL to your
+You can import a GitHub repository in to CodeSandbox from the
+[import wizard](https://codesandbox.io/s/github) and pasting the URL to your
 GitHub repository. Note that we just take the last part of the url (everything
-after github.com) and paste it after codesandbox.io/s/github/. We support custom
-branches and subdirectories as well. Here is an example URL:
+after github.com) and append it after codesandbox.io/s/github/. We support
+custom branches and subdirectories. Here is an example URL:
 [https://codesandbox.io/s/github/reactjs/redux/tree/master/examples/todomvc](https://codesandbox.io/s/github/reactjs/redux/tree/master/examples/todomvc).
 
 The imported repository will always stay up to date with your latest commits.
@@ -54,13 +55,13 @@ Additionally, you may specify a `template` property in your
 You can find the source of our git extractor
 [here](https://github.com/codesandbox-app/git-extractor).
 
-## Export with CLI
+## Import Local projects via CLI
 
-You can export a local project to CodeSandbox by using our
+You can import a local project in to CodeSandbox by using our
 [CLI](https://github.com/codesandbox-app/codesandbox-importers/tree/master/packages/cli).
 
-You can install our CLI by running `npm install -g codesandbox`. Then you can
-export a project by running `codesandbox {directory}`.
+You can install our CLI by running `npm install -g codesandbox`. Then import a
+project by running `codesandbox {directory}`.
 
 ### Example usage
 
@@ -72,9 +73,10 @@ $ codesandbox ./
 ## Define API
 
 We offer an API that allows you to programmatically create a sandbox. This is
-most often useful in documentation: code examples can generate a sandbox on the
-fly. You can call the endpoint `https://codesandbox.io/api/v1/sandboxes/define`
-both with a `GET` and with a `POST` request.
+useful for documentation, enabling you to generate a sandbox on the fly from
+code examples. You can call the endpoint
+`https://codesandbox.io/api/v1/sandboxes/define` both with a `GET` and with a
+`POST` request.
 
 ### Supported Parameters
 
@@ -160,8 +162,8 @@ the result will be json data providing you with the `sandbox_id` of the new
 sandbox.
 
 This is useful, for instance, if you need to create a new sandbox
-programmatically, so you can then embed it on your site (See Embed
-documentation).
+programmatically, so you can then embed it on your site (See
+[Embed documentation](/docs/embedding)).
 
 Both `get` and `post` requests are supported.
 
@@ -172,9 +174,9 @@ example sandbox of that is here:
 
 <iframe src="https://codesandbox.io/embed/9loovqj5oy?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
-## Import single Component as a Sandbox
+## Import Single Components
 
-You can export a local component to CodeSandbox by using our other
+You can import a local component in to CodeSandbox by using our other
 [CLI](https://github.com/codesandbox/codesandboxer/tree/master/packages/codesandboxer-fs).
 
 You can install our CLI by running `npm install -g codesandboxer-fs`. Then you
@@ -189,11 +191,15 @@ This will print out the id of a sandbox that does nothing but render the
 targeted component, along with a link to that sandbox. This will also bundle in
 other local files used by the component to ensure render.
 
-## Import Using React-Codesandboxer
+## Import Using Codesandboxer
 
-Import from a single file from a git repository, along with supplemental files
-and dependencies. Using this creates an easy way to upload an example instead of
-an entire git repository.
+[Codesandboxer](https://github.com/codesandbox/codesandboxer) imports a single
+file from a git repository, along with supplemental files and dependencies.
+Using this creates an easy way to upload an example instead of an entire git
+repository. This enables you to easily share examples with others, or to link to
+editable versions of examples from a documentation website. React-codesandboxer
+is the main version, but there are also versions for VS Code, Atom, and
+Bitbucket.
 
 ### How it works
 
@@ -202,9 +208,8 @@ bitbucket, using a single file that will be rendered as the 'example' as an
 entry point, then uses the Define API to upload the necessary files into a new
 `create-react-app` sandbox.
 
-Check out the
-[react-codesandboxer docs](https://github.com/noviny/react-codesandboxer) for
-information on how to implement it.
+Check out the [codesandboxer docs](https://github.com/codesandbox/codesandboxer)
+for information on how to implement it.
 
 ```jsx harmony
 import React, { Component } from 'react';
@@ -223,3 +228,11 @@ export default () => (
   </CodeSandboxer>
 );
 ```
+
+## Import Using Remark-Codesandbox
+
+[Remark-Codesandbox](https://github.com/kevin940726/remark-codesandbox) is a
+remark plugin for creating sandboxes directly from code blocks in documentation.
+Developed by CodeSandbox community member Kai Hao, it supports popular platforms
+including MDX, Gatsby, Storybook Docs, docz etc. Learn more about it in their
+[documentation](https://github.com/kevin940726/remark-codesandbox#remark-codesandbox).
