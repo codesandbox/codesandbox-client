@@ -19,7 +19,11 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
-import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
+import {
+  CollaboratorFragment,
+  InvitationFragment,
+  CommentThread,
+} from 'app/graphql/types';
 import { Derive } from 'app/overmind';
 import immer from 'immer';
 
@@ -76,13 +80,13 @@ type State = {
   sessionFrozen: boolean;
   comments: {
     [sandboxId: string]: {
-      [commentId: string]: any;
+      [commentId: string]: CommentThread;
     };
   };
-  currentComments: Derive<State, any[]>;
+  currentComments: Derive<State, CommentThread[]>;
   selectedCommentsFilter: CommentsFilterOption;
   currentCommentId: string | null;
-  currentComment: Derive<State, any | null>;
+  currentComment: Derive<State, CommentThread | null>;
   hasLoadedInitialModule: boolean;
 };
 
@@ -104,7 +108,10 @@ export const state: State = {
       return [];
     }
 
-    function sortByInsertedAt(commentA: any, commentB: any) {
+    function sortByInsertedAt(
+      commentA: CommentThread,
+      commentB: CommentThread
+    ) {
       const aDate = new Date(commentA.insertedAt);
       const bDate = new Date(commentB.insertedAt);
 

@@ -8,6 +8,9 @@ export const commentFragment = gql`
     updatedAt
     user {
       id
+      firstName
+      lastName
+      name
       username
       avatarUrl
     }
