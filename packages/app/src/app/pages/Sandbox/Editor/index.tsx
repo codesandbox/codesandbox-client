@@ -2,12 +2,18 @@ import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
-import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
+import {
+  ThemeProvider as NewThemeProvider,
+  Stack,
+  Text,
+} from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
+import VERSION from '@codesandbox/common/lib/version';
 
 import Content from './Content';
 import { Container } from './elements';
@@ -185,13 +191,34 @@ const ContentSplit = () => {
             ) : null}
           </div>
 
+          <NewThemeProvider theme={localState.theme.vscodeTheme}>
+            <Stack
+              align="center"
+              css={css({
+                backgroundColor: 'statusBar.background',
+                color: 'statusBar.foreground',
+                position: 'fixed',
+                display: statusBar ? 'flex' : 'none',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: STATUS_BAR_SIZE,
+                paddingLeft: 2,
+              })}
+            >
+              <Text variant="muted" size={2}>
+                {VERSION}
+              </Text>
+            </Stack>
+          </NewThemeProvider>
           <StatusBar
             style={{
               position: 'fixed',
               display: statusBar ? 'block' : 'none',
               bottom: 0,
-              left: 0,
               right: 0,
+              left: 172,
+              width: 'calc(100% - 172px)',
               height: STATUS_BAR_SIZE,
             }}
             className="monaco-workbench mac nopanel"
