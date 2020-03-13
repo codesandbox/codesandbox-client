@@ -43,4 +43,4 @@ Whenever you open a team sandbox, you also automatically open a live session.
 Other team members will join this live session if they open the sandbox as well.
 You can still invite other people who aren't members of the team to the live session.
 
-![A Team Live Session](./images/team-live.png)
+![Going Live](./images/live-live.png)
