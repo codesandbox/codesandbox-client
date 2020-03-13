@@ -15,3 +15,10 @@ export const Row = styled.div(
     lineHeight: '24px',
   })
 );
+
+export const Link = styled.a(
+  css({
+    color: 'inherit',
+    textDecoration: 'none',
+  })
+);
