@@ -39,7 +39,7 @@ We infer sandbox settings based on several files in a repository.
 | Template        | Based on [this](https://github.com/codesandbox-app/codesandbox-importers/blob/master/packages/import-utils/src/create-sandbox/templates.ts#L63) logic |
 
 Additionally, you may specify a `template` property in your
-`./sandbox.config.json` file to override the detected template..
+`./sandbox.config.json` file to override the detected template.
 
 ```json
 {
