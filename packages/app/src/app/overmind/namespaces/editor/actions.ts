@@ -324,7 +324,7 @@ export const codeChanged: Action<{
   if (state.live.isLive && module.code !== code) {
     let operation;
     if (event) {
-      operation = eventToTransform(event, code).operation;
+      operation = eventToTransform(event, module.code).operation;
     } else {
       const transform = getTextOperation(module.code, code);
 
