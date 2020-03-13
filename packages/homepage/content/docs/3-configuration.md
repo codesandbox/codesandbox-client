@@ -2,21 +2,12 @@
 title: Configuration
 authors: ['CompuIves']
 description:
-  You can configure sandboxes and other options with configuration files
-  specified by the template.
+  You can configure sandboxes and templates with configuration files.
 ---
 
 ## Configuration Files
 
-We think that configuration is used when a program can't understand what the
-user really wants, and try to steer away from it as much as possible. However,
-there are always advanced use cases where the user wants to control every aspect
-of their program, and thus configure everything. CodeSandbox is a clear example
-of a program that requires configuration, it doesn't fit the 95%.
-
-That's why we introduce a concept called 'Configuration Files'. Every template
-on CodeSandbox has a list of configuration files it supports. You can see this
-list in the sidebar:
+There are some advanced use cases where you might need more control over a sandbox or template. That's why we support configuration files. Every template on CodeSandbox has a list of configuration files it supports. You can see the supported files under Configuration Files from the left-hand activity bar in the editor.
 
 ![Configurations File UI](./images/configuration.png)
 
@@ -24,6 +15,8 @@ list in the sidebar:
 
 Some configuration files can be configured using a UI. This UI will generate a
 configuration file based on its state.
+
+![Configurations File UI](./images/ui-configuration.png)
 
 ## Sandbox Configuration
 
