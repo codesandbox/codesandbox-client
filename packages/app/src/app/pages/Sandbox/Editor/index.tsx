@@ -197,6 +197,18 @@ const ContentSplit = () => {
             className="monaco-workbench mac nopanel"
             ref={statusbarEl}
           />
+          <div
+            style={{
+              position: 'fixed',
+              display: statusBar ? 'block' : 'none',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: STATUS_BAR_SIZE,
+            }}
+          >
+            version
+          </div>
         </Fullscreen>
 
         <ForkFrozenSandboxModal />

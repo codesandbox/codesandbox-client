@@ -70,7 +70,7 @@ export const Comment = React.memo(({ comment }: any) => {
             <Icon name="check" title="Resolved" color="green" />
           )}
           <Menu>
-            <Menu.IconButton name="more" title="Comment actions" size={3} />
+            <Menu.IconButton name="more" title="Comment actions" size={12} />
             <Menu.List>
               <Menu.Item
                 onSelect={() =>
