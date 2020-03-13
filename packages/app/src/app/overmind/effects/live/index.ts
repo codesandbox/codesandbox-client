@@ -168,7 +168,7 @@ export default new (class Live {
         data && data._messageId && sentMessages.delete(data._messageId)
       );
 
-      if (event === 'phx_reply' || event.startsWith('chan_reply_')) {
+      if (event && (event === 'phx_reply' || event.startsWith('chan_reply_'))) {
         // No action listens to this
         return data;
       }
