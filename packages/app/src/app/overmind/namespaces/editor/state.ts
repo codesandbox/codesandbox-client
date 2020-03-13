@@ -21,7 +21,6 @@ import {
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
-import { Comment } from 'app/overmind/effects/fakeGql/comments/types';
 import immer from 'immer';
 
 import { mainModule as getMainModule } from '../../utils/main-module';
@@ -77,20 +76,20 @@ type State = {
   sessionFrozen: boolean;
   comments: {
     [sandboxId: string]: {
-      [commentId: string]: Comment;
+      [commentId: string]: any;
     };
   };
-  currentComments: Derive<State, Comment[]>;
+  currentComments: Derive<State, any[]>;
   selectedCommentsFilter: CommentsFilterOption;
   currentCommentId: string | null;
-  currentComment: Derive<State, Comment | null>;
+  currentComment: Derive<State, any | null>;
   hasLoadedInitialModule: boolean;
 };
 
 export const state: State = {
   hasLoadedInitialModule: false,
   comments: {},
-  currentCommentId: null, // '5e5961e0c277a40fef1e391b',
+  currentCommentId: null,
   currentComment: ({ comments, currentSandbox, currentCommentId }) => {
     if (!currentSandbox || !comments[currentSandbox.id] || !currentCommentId) {
       return null;
@@ -105,7 +104,7 @@ export const state: State = {
       return [];
     }
 
-    function sortByInsertedAt(commentA: Comment, commentB: Comment) {
+    function sortByInsertedAt(commentA: any, commentB: any) {
       const aDate = new Date(commentA.insertedAt);
       const bDate = new Date(commentB.insertedAt);
 

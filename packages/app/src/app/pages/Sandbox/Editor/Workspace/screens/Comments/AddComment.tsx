@@ -11,9 +11,8 @@ export const AddComment: React.FC = () => {
   const onSubmit = e => {
     e.preventDefault();
     actions.editor.addComment({
-      comment: value,
+      content: value,
       sandboxId: state.editor.currentSandbox.id,
-      username: state.user.username,
     });
     setValue('');
   };

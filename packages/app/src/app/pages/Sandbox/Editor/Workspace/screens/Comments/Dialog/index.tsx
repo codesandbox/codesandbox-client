@@ -28,7 +28,7 @@ export const Dialog = props => {
 
   const [edit, setEdit] = useState(false);
   const comment = state.editor.currentComment;
-  const [editValue, setEditValue] = useState(comment.originalMessage.content);
+  const [editValue, setEditValue] = useState(comment.initialComment.content);
   const [position, setPosition] = useState({
     x: props.x || 200,
     y: props.y || 100,
@@ -41,9 +41,8 @@ export const Dialog = props => {
       actions.editor.addReply(value);
     } else {
       actions.editor.addComment({
-        comment: value,
+        content: value,
         sandboxId: state.editor.currentSandbox.id,
-        username: state.user.username,
         open: true,
       });
     }
@@ -90,9 +89,10 @@ export const Dialog = props => {
           <Stack align="center">
             <IconButton
               onClick={() =>
-                actions.editor.updateComment({
-                  id: comment.id,
-                  data: { isResolved: !comment.isResolved },
+                actions.editor.resolveComment({
+                  commentThreadId: comment.id,
+                  isResolved: !comment.isResolved,
+                  sandboxId: state.editor.currentSandbox.id,
                 })
               }
               name="check"
@@ -123,15 +123,15 @@ export const Dialog = props => {
               marginRight={2}
             >
               <Stack gap={2} align="center">
-                <Avatar user={comment.originalMessage.author} />
+                <Avatar user={comment.initialComment.user} />
                 <Stack direction="vertical" justify="center" gap={1}>
                   <Link
                     size={3}
                     weight="bold"
-                    href={`/u/${comment.originalMessage.author.username}`}
+                    href={`/u/${comment.initialComment.user.username}`}
                     variant="body"
                   >
-                    {comment.originalMessage.author.username}
+                    {comment.initialComment.user.username}
                   </Link>
                   <Text size={2} variant="muted">
                     {formatDistance(new Date(comment.insertedAt), new Date(), {
@@ -140,7 +140,7 @@ export const Dialog = props => {
                   </Text>
                 </Stack>
               </Stack>
-              {state.user.id === comment.originalMessage.author.id && (
+              {state.user.id === comment.initialComment.user.id && (
                 <Stack align="center">
                   <Menu>
                     <Menu.IconButton
@@ -151,7 +151,10 @@ export const Dialog = props => {
                     <Menu.List>
                       <Menu.Item
                         onSelect={() =>
-                          actions.editor.deleteComment({ id: comment.id })
+                          actions.editor.deleteComment({
+                            threadId: comment.id,
+                            id: comment.comments[0].id,
+                          })
                         }
                       >
                         Delete
@@ -175,7 +178,7 @@ export const Dialog = props => {
               })}
             >
               {!edit ? (
-                <Markdown source={comment.originalMessage.content} />
+                <Markdown source={comment.initialComment.content} />
               ) : (
                 <>
                   <Element marginBottom={2}>
@@ -201,10 +204,9 @@ export const Dialog = props => {
                       variant="secondary"
                       onClick={async () => {
                         await actions.editor.updateComment({
-                          id: comment.id,
-                          data: {
-                            comment: editValue,
-                          },
+                          threadId: comment.id,
+                          commentId: comment.initialComment.id,
+                          content: editValue,
                         });
                         setEdit(false);
                       }}
@@ -219,9 +221,10 @@ export const Dialog = props => {
         )}
 
         {comment &&
-          comment.replies.map(reply => (
-            <Reply {...reply} commentId={comment.id} />
-          ))}
+          comment.comments.map((reply, i) => {
+            if (i === 0) return null;
+            return <Reply {...reply} commentId={comment.id} />;
+          })}
 
         <Element
           css={css({

@@ -16,7 +16,7 @@ import { Markdown } from './Markdown';
 
 type ReplyProps = {
   id: string;
-  author?: any;
+  user?: any;
   insertedAt?: string;
   commentId: string;
   content?: string;
@@ -24,7 +24,7 @@ type ReplyProps = {
 
 export const Reply = ({
   id,
-  author,
+  user,
   insertedAt,
   commentId,
   content,
@@ -37,15 +37,15 @@ export const Reply = ({
       <Element key={id} marginLeft={4} marginRight={2} paddingTop={6}>
         <Stack align="flex-start" justify="space-between" marginBottom={4}>
           <Stack gap={2} align="center">
-            <Avatar user={author} />
+            <Avatar user={user} />
             <Stack direction="vertical" justify="center" gap={1}>
               <Link
                 size={3}
                 weight="bold"
-                href={`/u/${author.username}`}
+                href={`/u/${user.username}`}
                 variant="body"
               >
-                {author.username}
+                {user.username}
               </Link>
               <Text size={2} variant="muted">
                 {formatDistance(new Date(insertedAt), new Date(), {
@@ -54,16 +54,17 @@ export const Reply = ({
               </Text>
             </Stack>
           </Stack>
-          {state.user.id === author.id && (
+          {state.user.id === user.id && (
             <Stack align="center">
               <Menu>
                 <Menu.IconButton name="more" title="Reply actions" size={3} />
                 <Menu.List>
                   <Menu.Item
                     onSelect={() =>
-                      actions.editor.deleteReply({
-                        replyId: id,
-                        commentId,
+                      actions.editor.deleteComment({
+                        threadId: commentId,
+                        id,
+                        reply: true,
                       })
                     }
                   >
@@ -114,10 +115,11 @@ export const Reply = ({
                 variant="secondary"
                 disabled={!value}
                 onClick={async () => {
-                  await actions.editor.updateReply({
-                    replyId: id,
-                    commentId,
-                    comment: value,
+                  await actions.editor.updateComment({
+                    threadId: commentId,
+                    commentId: id,
+                    content: value,
+                    reply: true,
                   });
                   setEdit(false);
                 }}

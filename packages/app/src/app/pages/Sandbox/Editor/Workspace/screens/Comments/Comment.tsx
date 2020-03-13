@@ -48,15 +48,15 @@ export const Comment = React.memo(({ comment }: any) => {
           align="center"
           onClick={() => actions.editor.selectComment(comment.id)}
         >
-          <Avatar user={comment.originalMessage.author} />
+          <Avatar user={comment.initialComment.user} />
           <Stack direction="vertical" justify="center">
             <Link
               size={3}
               weight="bold"
-              href={`/u/${comment.originalMessage.author.username}`}
+              href={`/u/${comment.initialComment.user.username}`}
               variant="body"
             >
-              {comment.originalMessage.author.username}
+              {comment.initialComment.user.username}
             </Link>
             <Text size={2} variant="muted">
               {formatDistance(new Date(comment.insertedAt), new Date(), {
@@ -74,19 +74,23 @@ export const Comment = React.memo(({ comment }: any) => {
             <Menu.List>
               <Menu.Item
                 onSelect={() =>
-                  actions.editor.updateComment({
-                    id: comment.id,
-                    data: { isResolved: !comment.isResolved },
+                  actions.editor.resolveComment({
+                    commentThreadId: comment.id,
+                    isResolved: !comment.isResolved,
+                    sandboxId: state.editor.currentSandbox.id,
                   })
                 }
               >
                 Mark as {comment.isResolved ? 'Unr' : 'r'}esolved
               </Menu.Item>
               <Menu.Item onSelect={() => {}}>Share Comment</Menu.Item>
-              {state.user.id === comment.originalMessage.author.id && (
+              {state.user.id === comment.initialComment.user.id && (
                 <Menu.Item
                   onSelect={() =>
-                    actions.editor.deleteComment({ id: comment.id })
+                    actions.editor.deleteComment({
+                      threadId: comment.id,
+                      id: comment.comments[0].id,
+                    })
                   }
                 >
                   Delete
@@ -108,10 +112,10 @@ export const Comment = React.memo(({ comment }: any) => {
         })}
       >
         <Text block css={truncateText} marginBottom={2}>
-          {comment.originalMessage.content}
+          {comment.initialComment.content}
         </Text>
         <Text variant="muted" size={2}>
-          {getRepliesString(comment.replies.length)}
+          {getRepliesString(comment.comments.length - 1)}
         </Text>
       </Element>
     </ListAction>

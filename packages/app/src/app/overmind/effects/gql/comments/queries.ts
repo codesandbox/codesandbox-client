@@ -37,6 +37,9 @@ export const commentThreads: Query<
         initialComment {
           ...Comment
         }
+        comments {
+          ...Comment
+        }
         insertedAt
         isResolved
         updatedAt

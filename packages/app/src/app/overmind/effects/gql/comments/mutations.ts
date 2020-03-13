@@ -25,6 +25,9 @@ export const createCommentThread: Query<
       initialComment {
         ...Comment
       }
+      comments {
+        id
+      }
       isResolved
       insertedAt
       updatedAt
