@@ -4,7 +4,7 @@ authors: ['arthurdenner', 'CompuIves']
 description: Deploy your app to production from CodeSandbox
 ---
 
-## Deploying a Sandbox
+## Deployment Options
 
 It's possible to deploy your app directly from CodeSandbox through one of our integrated services. To deploy your app, you need to own the sandbox.
 
