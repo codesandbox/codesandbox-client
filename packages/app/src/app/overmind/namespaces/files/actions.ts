@@ -766,12 +766,9 @@ export const syncSandbox: AsyncAction<any[]> = async (
           if (newModule) {
             if (oldModule) {
               const modulePos = oldSandbox.modules.indexOf(oldModule);
-              Object.assign(
-                state.editor.sandboxes[oldSandbox.id].modules[modulePos],
-                newModule
-              );
+              Object.assign(oldSandbox.modules[modulePos], newModule);
             } else {
-              state.editor.sandboxes[oldSandbox.id].modules.push(newModule);
+              oldSandbox.modules.push(newModule);
             }
           }
         } else if (op === 'delete' && oldModule) {
@@ -785,9 +782,7 @@ export const syncSandbox: AsyncAction<any[]> = async (
           // Create
           const newDirectory = resolveDirectoryNew(path);
           if (newDirectory) {
-            state.editor.sandboxes[oldSandbox.id].directories.push(
-              newDirectory
-            );
+            oldSandbox.directories.push(newDirectory);
           }
         } else {
           const oldDirectory = resolveDirectoryOld(path);

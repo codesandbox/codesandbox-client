@@ -31,7 +31,9 @@ const StatusBar = styled.div`
 const ContentSplit = () => {
   const { state, actions, effects, reaction } = useOvermind();
   const statusbarEl = useRef(null);
-  const [showSkeleton, setShowSkeleton] = useState(true);
+  const [showSkeleton, setShowSkeleton] = useState(
+    !state.editor.hasLoadedInitialModule
+  );
   const [localState, setLocalState] = useState({
     theme: {
       colors: {},

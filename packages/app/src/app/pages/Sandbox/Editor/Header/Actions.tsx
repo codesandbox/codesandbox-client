@@ -66,7 +66,7 @@ export const Actions = () => {
 
   let primaryAction;
   if (!hasLogIn) primaryAction = 'Sign in';
-  else primaryAction = owned ? 'Embed' : 'Fork';
+  else primaryAction = owned ? 'Share' : 'Fork';
 
   return (
     <Stack
@@ -120,8 +120,6 @@ export const Actions = () => {
         </Stack>
       )}
 
-      {author && featureFlags.ACCESS_SHEET && <Collaborators />}
-
       {user?.curatorAt && (
         <Button
           variant="secondary"
@@ -131,12 +129,37 @@ export const Actions = () => {
           Pick
         </Button>
       )}
-      <Button
-        variant={primaryAction === 'Embed' ? 'primary' : 'secondary'}
-        onClick={() => modalOpened({ modal: 'share' })}
-      >
-        <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Embed
-      </Button>
+
+      {featureFlags.ACCESS_SHEET && (
+        <>
+          {author ? (
+            <Collaborators
+              renderButton={props => (
+                <Button variant="primary" {...props}>
+                  <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Share
+                </Button>
+              )}
+            />
+          ) : (
+            <Button
+              variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
+              onClick={() => modalOpened({ modal: 'share' })}
+            >
+              <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Embed
+            </Button>
+          )}
+        </>
+      )}
+
+      {!featureFlags.ACCESS_SHEET && (
+        <Button
+          variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
+          onClick={() => modalOpened({ modal: 'share' })}
+        >
+          <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Embed
+        </Button>
+      )}
+
       <Button
         variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
         onClick={forkSandboxClicked}

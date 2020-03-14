@@ -10,7 +10,10 @@ import { TextOperation } from 'ot';
 import { Socket, Channel } from 'phoenix';
 import uuid from 'uuid';
 
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import {
+  logBreadcrumb,
+  captureException,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
 import clientsFactory from './clients';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
 
@@ -55,11 +58,16 @@ export default new (class Live {
           })}`,
         });
 
-        return live.send('operation', {
-          moduleShortid,
-          operation,
-          revision,
-        });
+        return live
+          .send('operation', {
+            moduleShortid,
+            operation,
+            revision,
+          })
+          .catch(e => {
+            e.name = 'OperationFailure';
+            captureException(e);
+          });
       },
       (moduleShortid, operation) => {
         options.onApplyOperation({
@@ -168,7 +176,7 @@ export default new (class Live {
         data && data._messageId && sentMessages.delete(data._messageId)
       );
 
-      if (event === 'phx_reply' || event.startsWith('chan_reply_')) {
+      if (event && (event === 'phx_reply' || event.startsWith('chan_reply_'))) {
         // No action listens to this
         return data;
       }
@@ -233,6 +241,8 @@ export default new (class Live {
     try {
       clients.get(moduleShortid).applyClient(operation);
     } catch (e) {
+      e.name = 'OperationFailure';
+      captureException(e);
       // Something went wrong, probably a sync mismatch. Request new version
       this.send('live:module_state', {});
     }
