@@ -70,7 +70,7 @@ export const FilesList: FunctionComponent = () => {
               >
                 <Checkbox
                   onChange={() => toggleCheckbox(id)}
-                  checked={Boolean(selectedItems.includes(id))}
+                  checked={selectedItems.includes(id)}
                 />
                 <Link
                   css={`

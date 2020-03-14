@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import css from '@styled-system/css';
 import styled from 'styled-components';
 import { useId } from '@reach/auto-id';
@@ -69,7 +69,7 @@ const Label = styled(Text)(
   })
 );
 
-export const Checkbox = ({ checked, id, label, ...props }: ICheckboxProps) => {
+export const Checkbox: FunctionComponent<ICheckboxProps> = ({ checked, id, label, ...props }) => {
   const inputId = useId(id);
   return (
     <Element style={{ position: 'relative' }}>
