@@ -22,7 +22,11 @@ import {
 } from './elements';
 
 const environments = {
-  React: <LightIcons.ReactIconLight />,
+  "create-react-app": <LightIcons.ReactIconLight />,
+  "preact-cli": <LightIcons.PreactIconLight />,
+  "vue-cli": <LightIcons.VueIconLight />,
+  "apollo": <LightIcons.ApolloIconLight />,
+  "node": <LightIcons.NodeIconLight />,
 };
 
 export const ShowcaseCard: React.FC<SmallSandbox> = ({
@@ -45,7 +49,7 @@ export const ShowcaseCard: React.FC<SmallSandbox> = ({
   return (
     <Container>
       <Link to={`/s/${id}`}>
-        <Preview src={`/api/v1/sandboxes/${id}/screenshot.png`} />
+        <Preview src={`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`} />
       </Link>
       <SandboxInfo>
         <TitleRow>

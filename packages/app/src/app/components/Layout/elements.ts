@@ -3,13 +3,18 @@ import styled, { css } from 'styled-components';
 export const Main = styled.main`
   ${({ theme }) => css`
     display: flex;
-    flex-direction: column;
     width: 100%;
-    min-height: 100vh;
-    height: 100%;
     background-color: #040404;
     color: ${theme.white};
     ${theme.fonts.primary.normal};
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-height: 100vh;
+      height: 100%;
+    }
   `}
 `;
 

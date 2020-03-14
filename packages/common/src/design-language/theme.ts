@@ -1,3 +1,4 @@
+import { media } from '../theme/breakpoints';
 import { colors } from './colors';
 import { fontSizes, fontWeights } from './typography';
 
@@ -45,6 +46,7 @@ const theme = {
     underline: `inset 0px -2px 0px ${colors.grays[100] + '1a'}`,
     fadeunder: `inset 0px 8px 8px 0px ${colors.grays[700] + 'cc'}`,
   },
+  media,
 };
 
 export default theme;

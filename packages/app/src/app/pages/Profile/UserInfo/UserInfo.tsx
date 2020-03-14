@@ -55,7 +55,7 @@ const validateWithYup = (values: Values) =>
     (error: ValidationError) => {
       if (error.inner.length) {
         throw error.inner.reduce(
-          (errors: {}, curr: ValidationError) =>
+          (errors, curr: ValidationError) =>
             set(errors, curr.path, curr.message),
           {}
         );
@@ -129,8 +129,8 @@ export const UserInfo: React.FC<IUserInfoProps> = ({
         {isEditing ? (
           <Bio>
             <BioInput {...form} name="bio" valid={!form.errors.bio} />
-            <InputCounter valid={form.values.bio.length <= 280}>{`${form.values
-              .bio.length || 0} / 280`}</InputCounter>
+            <InputCounter valid={form.values.bio?.length <= 280}>{`${form.values
+              .bio?.length || 0} / 280`}</InputCounter>
           </Bio>
         ) : (
           <>

@@ -1,5 +1,5 @@
 import codesandbox from '../themes/codesandbox.json';
-import { media, sizes } from './breakpoints';
+import { media } from './breakpoints';
 import { createTheme } from './createTheme';
 import * as fonts from './fonts';
 
@@ -49,5 +49,4 @@ export const theme = {
   },
   fonts,
   media,
-  sizes,
 };

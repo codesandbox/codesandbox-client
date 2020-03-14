@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
+import { SearchInput as BaseSearchInput } from '@codesandbox/components/lib/components/SearchInput';
 import { DropPlaceholder } from './DropPlaceholder';
 
 export const Content = styled.div`
@@ -11,7 +12,7 @@ export const Content = styled.div`
     grid-template-columns: 1fr;
     grid-row-gap: 1.75rem;
 
-    ${theme.media.greaterThan(theme.sizes.medium)} {
+    ${theme.media.greaterThan(theme.media.sizes.medium)} {
       grid-template-areas: 'userinfo tabcontent';
       grid-template-columns: 272px 1fr;
       grid-row-gap: 0;
@@ -85,6 +86,11 @@ export const SearchRow = styled.div`
     flex: 0 1 308px;
   }
 `;
+
+export const SearchInput = styled(BaseSearchInput)`
+  width: 100%;
+  box-sizing: border-box;
+`
 
 export const FeaturedPlaceholder = styled(DropPlaceholder)`
   ${row}

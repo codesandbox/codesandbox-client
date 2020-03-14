@@ -4,6 +4,8 @@ import { Link } from '@codesandbox/common/lib/components';
 import { withoutProps } from '@codesandbox/common/lib/utils';
 
 export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   min-width: 303px;
   border: 1px #242424 solid;
   border-radius: 4px;
@@ -15,6 +17,9 @@ export const Preview = styled.img`
 `;
 
 export const SandboxInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
   padding: 0.5rem 1rem 1rem 1rem;
 `;
 

@@ -198,7 +198,7 @@ export const Places = styled.ul`
     margin: 0;
     list-style: none;
 
-    ${theme.media.greaterThan(theme.sizes.medium)} {
+    ${theme.media.greaterThan(theme.media.sizes.medium)} {
       flex-direction: column;
     }
   `}
@@ -254,7 +254,7 @@ export const SocialLink = styled.li`
     font-size: 13px;
     font-weight: 500;
 
-    ${theme.media.lessThan(theme.sizes.medium)} {
+    ${theme.media.lessThan(theme.media.sizes.medium)} {
       flex: 0 0 25%;
       min-width: 160px;
     }
