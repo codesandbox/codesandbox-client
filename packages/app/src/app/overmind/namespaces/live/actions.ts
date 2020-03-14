@@ -286,14 +286,32 @@ export const onFollow: Action<{
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
 
+  actions.live.revealCursorPosition({ liveUserId });
+};
+
+export const revealCursorPosition: Action<{ liveUserId: string }> = (
+  { state, effects, actions },
+  { liveUserId }
+) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
   const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
 
-  if (user!.currentModuleShortid && state.editor.currentSandbox) {
+  if (user && user.currentModuleShortid && state.editor.currentSandbox) {
     const { modules } = state.editor.currentSandbox;
     const module = modules.filter(
-      ({ shortid }) => shortid === user!.currentModuleShortid
+      ({ shortid }) => shortid === user.currentModuleShortid
     )[0];
 
     actions.editor.moduleSelected({ id: module.id });
+
+    if (user.selection?.primary?.cursorPosition) {
+      effects.vscode.revealPositionInCenterIfOutsideViewport(
+        user.selection.primary.cursorPosition,
+        0
+      );
+    }
   }
 };

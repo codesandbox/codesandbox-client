@@ -9,6 +9,7 @@ import QuestionIcon from 'react-icons/lib/go/question';
 import SplitPane from 'react-split-pane';
 import { ThemeProvider } from 'styled-components';
 
+import { LiveUser } from '@codesandbox/common/lib/types';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import { Preview } from './Preview';
 
@@ -66,6 +67,15 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
   const currentPosition = state.editor.currentDevToolsPosition;
   const modulePath = currentModule.path;
   const config = template && template.configurationFiles[modulePath];
+
+  const followingUserId = state.live.followingUserId;
+  let followingUser: LiveUser | undefined;
+
+  if (followingUserId && state.live.roomInfo && state.live.isLive) {
+    followingUser = state.live.roomInfo.users.find(
+      u => u.id === followingUserId
+    );
+  }
 
   const browserConfig = {
     id: 'codesandbox.browser',
@@ -185,6 +195,16 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                   )}
                 </Icons>
               ) : null}
+
+              {followingUser && (
+                <div
+                  style={{
+                    background: `rgb(${followingUser.color.join(',')})`,
+                  }}
+                >
+                  Following {followingUser.username}
+                </div>
+              )}
               {state.editor.isLoading ? null : <CodeEditor />}
             </div>
           </div>

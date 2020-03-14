@@ -25,6 +25,7 @@ import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import io from 'socket.io-client';
 
+import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
   initializeCodeSandboxTheme,
@@ -537,6 +538,28 @@ export class VSCodeEffect {
       }
     }
   };
+
+  /**
+   * Reveal position in editor
+   * @param scrollType 0 = smooth, 1 = immediate
+   */
+  revealPositionInCenterIfOutsideViewport(pos: number, scrollType: 0 | 1 = 0) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (activeEditor) {
+      const model = activeEditor.getModel();
+
+      const lineColumnPos = indexToLineAndColumn(
+        model.getLinesContent() || [],
+        pos
+      );
+
+      activeEditor.revealPositionInCenterIfOutsideViewport(
+        lineColumnPos,
+        scrollType
+      );
+    }
+  }
 
   // Communicates the endpoint for the WebsocketLSP
   private createContainerForkHandler() {

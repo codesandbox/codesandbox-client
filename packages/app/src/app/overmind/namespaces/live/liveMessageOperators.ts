@@ -370,7 +370,7 @@ export const onUserSelection: Operator<LiveMessage<{
   liveUserId: string;
   moduleShortid: string;
   selection: UserSelection;
-}>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
   if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
     return;
   }
@@ -404,6 +404,12 @@ export const onUserSelection: Operator<LiveMessage<{
           color: json(user.color),
         },
       ]);
+
+      if (state.live.followingUserId === userSelectionLiveUserId) {
+        actions.live.revealCursorPosition({
+          liveUserId: userSelectionLiveUserId,
+        });
+      }
     }
   }
 });
