@@ -102,6 +102,7 @@ export const ExternalResources: FunctionComponent = () => {
           <FormField label="External URL" direction="vertical">
             <Input
               type="text"
+              required
               placeholder="https://cdn.com/bootstrap.css"
               key={otherResources.length}
             />
@@ -122,7 +123,11 @@ export const ExternalResources: FunctionComponent = () => {
           }}
         >
           <FormField label="Google Fonts" direction="vertical">
-            <Select placeholder="Select a font family" key={fonts.length}>
+            <Select
+              required
+              placeholder="Select a font family"
+              key={fonts.length}
+            >
               {listOfFonts.sort().map(name => (
                 <option key={name}>{name}</option>
               ))}
