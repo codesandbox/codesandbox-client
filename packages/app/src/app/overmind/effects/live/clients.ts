@@ -1,3 +1,4 @@
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { OTClient } from './ot/client';
 
 export type SendOperation = (
@@ -42,6 +43,15 @@ class CodeSandboxOTClient extends OTClient {
   sendOperation(revision, operation) {
     this.onSendOperation(revision, operationToElixir(operation.toJSON())).then(
       () => {
+        logBreadcrumb({
+          type: 'ot',
+          message: `Acknowledging ${JSON.stringify({
+            moduleShortid: this.moduleShortid,
+            revision,
+            operation,
+          })}`,
+        });
+
         this.serverAck();
       }
     );
