@@ -39,10 +39,13 @@ class Live {
   private messageIndex = 0;
   private clients: ReturnType<typeof clientsFactory>;
   private socket: Socket;
-  private connectionsCount: number = 0;
   private blocker = blocker<void>();
-  private presence: Presence;
+  private presences = {};
   private provideJwtToken: () => string;
+
+  private get connectionsCount() {
+    return Object.keys(this.presences).length;
+  }
 
   private onSendOperation = async (moduleShortid, revision, operation) => {
     logBreadcrumb({
@@ -70,6 +73,19 @@ class Live {
       revision,
     });
   };
+
+  private updatePrecenses(precenses) {
+    const currentCount = this.connectionsCount;
+
+    this.presences = precenses;
+
+    if (currentCount >= 2 && this.connectionsCount < 2) {
+      this.blocker = blocker();
+    } else if (currentCount < 2 && this.connectionsCount >= 2) {
+      this.blocker.resolve();
+      this.blocker = null;
+    }
+  }
 
   initialize(options: Options) {
     this.provideJwtToken = options.provideJwtToken;
@@ -147,21 +163,12 @@ class Live {
   joinChannel(roomId: string): Promise<JoinChannelResponse> {
     return new Promise((resolve, reject) => {
       this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
-      this.presence = new Presence(this.channel);
-      this.presence.onSync(() => {
-        const newCount = this.presence.list().length;
+      this.channel.on('presence_state', state => {
+        this.updatePrecenses(Presence.syncState(this.presences, state));
+      });
 
-        // eslint-disable-next-line
-        console.log('THIS DOES NOT TRIGGER?!?', newCount);
-
-        if (this.connectionsCount >= 2 && newCount < 2) {
-          this.blocker = blocker();
-        } else if (this.connectionsCount < 2 && newCount >= 2) {
-          this.blocker.resolve();
-          this.blocker = null;
-        }
-
-        this.connectionsCount = newCount;
+      this.channel.on('presence_diff', diff => {
+        this.updatePrecenses(Presence.syncDiff(this.presences, diff));
       });
 
       this.channel
