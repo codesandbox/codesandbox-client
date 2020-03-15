@@ -22,55 +22,58 @@ interface IModuleEntryProps {
     id: string
   ) => string;
   renameValidator?: (id: string, title: string) => string | false | null;
+  isActive: boolean;
 }
 
-const ModuleEntry: React.FC<IModuleEntryProps> = ({
-  module,
-  setCurrentModule,
-  markTabsNotDirty,
-  depth,
-  renameModule,
-  deleteEntry,
-  discardModuleChanges,
-  getModulePath,
-  renameValidator,
-}) => {
-  const {
-    state: {
-      editor: { mainModule, currentModuleShortid },
-      live,
-    },
-  } = useOvermind();
-  const isActive = module.shortid === currentModuleShortid;
-  const isMainModule = module.id === mainModule.id;
-  const type = getType(module.title);
-  const hasError = module.errors.length > 0;
-  const liveUsers = live.liveUsersByModule[module.shortid] || [];
+const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
+  ({
+    module,
+    setCurrentModule,
+    markTabsNotDirty,
+    depth,
+    renameModule,
+    deleteEntry,
+    discardModuleChanges,
+    getModulePath,
+    renameValidator,
+    isActive,
+  }) => {
+    const {
+      state: {
+        editor: { mainModule },
+        live,
+      },
+    } = useOvermind();
+    const isMainModule = module.id === mainModule.id;
+    const type = getType(module.title);
+    const hasError = module.errors.length > 0;
+    const liveUsers = live.liveUsersByModule[module.shortid] || [];
 
-  const isNotSynced = module.savedCode && module.code !== module.savedCode;
+    const isNotSynced = module.savedCode && module.code !== module.savedCode;
 
-  return (
-    // @ts-ignore
-    <Entry
-      id={module.id}
-      shortid={module.shortid}
-      title={module.title}
-      rightColors={liveUsers.map(([a, b, c]) => `rgb(${a}, ${b}, ${c})`)}
-      depth={depth + 1}
-      active={isActive}
-      type={type || 'function'}
-      rename={renameModule}
-      deleteEntry={deleteEntry}
-      isNotSynced={isNotSynced}
-      renameValidator={renameValidator}
-      setCurrentModule={setCurrentModule}
-      isMainModule={isMainModule}
-      moduleHasError={hasError}
-      markTabsNotDirty={markTabsNotDirty}
-      discardModuleChanges={discardModuleChanges}
-      getModulePath={getModulePath}
-    />
-  );
-};
+    return (
+      // @ts-ignore
+      <Entry
+        id={module.id}
+        shortid={module.shortid}
+        title={module.title}
+        rightColors={liveUsers.map(([a, b, c]) => `rgb(${a}, ${b}, ${c})`)}
+        depth={depth + 1}
+        active={isActive}
+        type={type || 'function'}
+        rename={renameModule}
+        deleteEntry={deleteEntry}
+        isNotSynced={isNotSynced}
+        renameValidator={renameValidator}
+        setCurrentModule={setCurrentModule}
+        isMainModule={isMainModule}
+        moduleHasError={hasError}
+        markTabsNotDirty={markTabsNotDirty}
+        discardModuleChanges={discardModuleChanges}
+        getModulePath={getModulePath}
+      />
+    );
+  }
+);
 
 export default ModuleEntry;

@@ -74,7 +74,6 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
             mainModuleId={mainModule.id}
             modules={modules}
             directories={directories}
-            currentModuleShortid={currentModuleShortid}
             isInProjectView={isInProjectView}
             markTabsNotDirty={markTabsNotDirty}
             getModulePath={getModulePath}
@@ -95,6 +94,7 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
           discardModuleChanges={discardModuleChanges}
           getModulePath={getModulePath}
           renameValidator={renameValidator}
+          isActive={m.shortid === currentModuleShortid}
         />
       ))}
     </div>
