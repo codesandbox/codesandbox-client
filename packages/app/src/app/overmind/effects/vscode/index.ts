@@ -53,7 +53,8 @@ export type VsCodeOptions = {
   getCurrentUser: () => CurrentUser | null;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
-  onSelectionChange: (selection: onSelectionChangeData) => void;
+  onSelectionChanged: (selection: onSelectionChangeData) => void;
+  onViewRangeChanged: (viewRange: UserViewRange) => void;
   reaction: Reaction;
   // These two should be removed
   getSignal: any;
@@ -115,7 +116,7 @@ export class VSCodeEffect {
     getCustomEditor: () => null,
   };
 
-  onSelectionChangeDebounced: VsCodeOptions['onSelectionChange'] & {
+  onSelectionChangeDebounced: VsCodeOptions['onSelectionChanged'] & {
     cancel(): void;
   };
 
@@ -125,7 +126,7 @@ export class VSCodeEffect {
       getState: options.getState,
       getSignal: options.getSignal,
     };
-    this.onSelectionChangeDebounced = debounce(options.onSelectionChange, 500);
+    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 500);
 
     this.prepareElements();
 
@@ -983,6 +984,12 @@ export class VSCodeEffect {
         this.modelsHandler.isApplyingOperation = false;
       }
 
+      activeEditor.onDidScrollChange(event => {
+        const [range] = activeEditor.getVisibleRanges();
+
+        this.options.onViewRangeChanged(range);
+      });
+
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
         selectionChange => {
           const lines = activeEditor.getModel().getLinesContent() || [];
@@ -1001,7 +1008,7 @@ export class VSCodeEffect {
             /* click inside a selection */ selectionChange.source === 'api'
           ) {
             this.onSelectionChangeDebounced.cancel();
-            this.options.onSelectionChange(data);
+            this.options.onSelectionChanged(data);
           } else {
             // This is just on typing, we send a debounced selection update as a
             // safeguard to make sure we are in sync

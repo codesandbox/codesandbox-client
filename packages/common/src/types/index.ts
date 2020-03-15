@@ -211,6 +211,7 @@ export type User = {
 export type LiveUser = {
   username: string;
   selection: UserSelection | null;
+  viewRange: UserViewRange | null;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
@@ -488,6 +489,13 @@ export type EditorSelection = {
   name: string | null;
   selection: UserSelection | null;
   color: number[];
+};
+
+export type UserViewRange = {
+  startLineNumber: number;
+  endLineNumber: number;
+  startColumn: number;
+  endColumn: number;
 };
 
 export enum WindowOrientation {

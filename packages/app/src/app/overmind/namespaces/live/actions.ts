@@ -1,4 +1,8 @@
-import { LiveMessage, LiveMessageEvent } from '@codesandbox/common/lib/types';
+import {
+  LiveMessage,
+  LiveMessageEvent,
+  UserViewRange,
+} from '@codesandbox/common/lib/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
@@ -158,6 +162,40 @@ export const sendCurrentSelection: Action = ({ state, effects }) => {
         liveUserId,
         state.live.currentSelection
       );
+    }
+  }
+};
+
+export const onViewRangeChanged: Action<UserViewRange> = (
+  { state, effects },
+  viewRange
+) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  if (state.live.isCurrentEditor) {
+    const { liveUserId } = state.live;
+    const moduleShortid = state.editor.currentModuleShortid;
+    if (!liveUserId) {
+      return;
+    }
+
+    state.live.currentViewRange = viewRange;
+    const userIndex = state.live.roomInfo.users.findIndex(
+      u => u.id === liveUserId
+    );
+
+    if (userIndex > -1) {
+      if (state.live.roomInfo.users[userIndex]) {
+        state.live.roomInfo.users[
+          userIndex
+        ].currentModuleShortid = moduleShortid;
+
+        state.live.roomInfo.users[userIndex].viewRange = viewRange;
+
+        effects.live.sendUserViewRange(moduleShortid, liveUserId, viewRange);
+      }
     }
   }
 };

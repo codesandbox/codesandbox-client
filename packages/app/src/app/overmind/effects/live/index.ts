@@ -3,6 +3,7 @@ import {
   LiveMessageEvent,
   Module,
   RoomInfo,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { camelizeKeys } from 'humps';
@@ -338,6 +339,18 @@ export default new (class Live {
 
   sendModuleStateSyncRequest() {
     return this.send('live:module_state', {});
+  }
+
+  sendUserViewRange(
+    moduleShortid: string | null,
+    liveUserId: string,
+    viewRange: UserViewRange
+  ) {
+    return this.send('user:view-range', {
+      liveUserId,
+      moduleShortid,
+      viewRange,
+    });
   }
 
   sendUserSelection(

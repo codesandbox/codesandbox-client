@@ -2,6 +2,7 @@ import {
   LiveUser,
   RoomInfo,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { Derive } from 'app/overmind';
 
@@ -16,6 +17,7 @@ type State = {
   liveUserId: string | null;
   roomInfo: RoomInfo | null;
   currentSelection: UserSelection | null;
+  currentViewRange: UserViewRange | null;
   liveUser: Derive<State, LiveUser | null>;
   isEditor: Derive<State, (liveUserId: string) => boolean>;
   isCurrentEditor: Derive<State, boolean>;

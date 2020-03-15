@@ -13,6 +13,7 @@ interface ICollaboratorHeadProps {
   username: string;
   id: string;
   color: number[];
+  isCurrentUser: boolean;
   showBorder?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   singleton: TippyProps['singleton'];
@@ -33,7 +34,10 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
         gap={1}
         direction="vertical"
       >
-        <Text>{props.username}</Text>
+        <Text>
+          {props.username}
+          {props.isCurrentUser && ' (you)'}
+        </Text>
         <Text variant="muted">View Profile</Text>
       </Stack>
     }
@@ -44,7 +48,6 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
         position: 'relative',
         width: HEAD_SIZE,
         height: HEAD_SIZE,
-        borderRadius: '50%',
         overflow: 'hidden',
         cursor: 'pointer',
         padding: 0,
@@ -56,11 +59,11 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
           content: " ' '",
           position: 'absolute',
           display: 'block',
-          borderRadius: '50%',
+          borderRadius: 2,
           top: 0,
           width: '100%',
           height: '100%',
-          boxShadow: `inset 0px 0px 0px 1px rgb(${props.color.join(',')})`,
+          boxShadow: `inset 0px 0px 0px 1.5px rgb(${props.color.join(',')})`,
         },
       }}
       onClick={props.onClick}
@@ -75,7 +78,7 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
           width: HEAD_SIZE,
           height: HEAD_SIZE,
           img: {
-            borderRadius: '50%',
+            border: 'none',
           },
         })}
       />
@@ -87,21 +90,31 @@ export const CollaboratorHeads = () => {
   const { state } = useOvermind();
   const liveUsers = state.live.roomInfo.users;
 
+  const liveUserId = state.live.liveUserId;
+  const orderedLiveUsers = React.useMemo(() => {
+    const currentUser = liveUsers.find(u => u.id === liveUserId);
+    const liveUsersWithoutCurrentUser = liveUsers.filter(
+      u => u.id !== liveUserId
+    );
+    return [currentUser, ...liveUsersWithoutCurrentUser];
+  }, [liveUserId, liveUsers]);
+
   return (
     <Stack justify="center">
       <SingletonTooltip>
         {singleton => (
           <AnimatePresence>
-            {liveUsers.map((user, i) => (
+            {orderedLiveUsers.map((user, i) => (
               <motion.div
                 positionTransition
                 style={{
-                  marginLeft: -8,
                   zIndex: 10 + liveUsers.length - i,
                   display: 'flex',
                   alignItems: 'center',
                 }}
-                exit={{ marginLeft: 0, width: 0 }}
+                animate={{ width: 'auto', marginRight: 8, opacity: 1 }}
+                exit={{ width: 0, marginRight: 0, opacity: 0 }}
+                initial={{ width: 0, marginRight: 0, opacity: 0 }}
                 key={user.id}
               >
                 <CollaboratorHead
@@ -110,6 +123,7 @@ export const CollaboratorHeads = () => {
                   color={user.color}
                   id={user.id}
                   singleton={singleton}
+                  isCurrentUser={user.id === liveUserId}
                   showBorder
                 />
               </motion.div>
