@@ -9,7 +9,7 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import { blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
 import { TextOperation } from 'ot';
-import { Channel, Socket } from 'phoenix';
+import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
 
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
@@ -18,7 +18,6 @@ import clientsFactory from './clients';
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
   provideJwtToken(): string;
-  getConnectionsCount: () => number;
 };
 
 type JoinChannelResponse = {
@@ -32,104 +31,111 @@ declare global {
   }
 }
 
-const identifier = uuid.v4();
-const sentMessages = new Map();
-const debug = _debug('cs:socket');
+class Live {
+  private identifier = uuid.v4();
+  private sentMessages = new Map();
+  private debug = _debug('cs:socket');
+  private channel: Channel | null;
+  private messageIndex = 0;
+  private clients: ReturnType<typeof clientsFactory>;
+  private socket: Socket;
+  private connectionsCount: number = 0;
+  private blocker = blocker<void>();
+  private presence: Presence;
+  private provideJwtToken: () => string;
 
-let channel: Channel | null;
-let messageIndex = 0;
-let clients: ReturnType<typeof clientsFactory>;
-let _socket: Socket;
-let _getConnectionsCount: () => number;
-let _currentFlushId: NodeJS.Timeout | null = null;
-const _messageQueue: any[] = [];
-let provideJwtToken: () => string;
+  private onSendOperation = async (moduleShortid, revision, operation) => {
+    logBreadcrumb({
+      type: 'ot',
+      message: `Sending ${JSON.stringify({
+        moduleShortid,
+        revision,
+        operation,
+      })}`,
+    });
 
-export default new (class Live {
+    if (!this.blocker) {
+      return this.send('operation', {
+        moduleShortid,
+        operation,
+        revision,
+      });
+    }
+
+    await this.blocker.promise;
+
+    return this.sendMessage('operation', {
+      moduleShortid,
+      operation,
+      revision,
+    });
+  };
+
   initialize(options: Options) {
-    const live = this;
-
-    _getConnectionsCount = options.getConnectionsCount;
-    clients = clientsFactory(
-      (moduleShortid, revision, operation) => {
-        logBreadcrumb({
-          type: 'ot',
-          message: `Sending ${JSON.stringify({
-            moduleShortid,
-            revision,
-            operation,
-          })}`,
-        });
-
-        return live.sendThrottledWhenSingleConnection('operation', {
-          moduleShortid,
-          operation,
-          revision,
-        });
-      },
-      (moduleShortid, operation) => {
+    this.provideJwtToken = options.provideJwtToken;
+    this.clients = clientsFactory(
+      this.onSendOperation,
+      (moduleShortid, operation) =>
         options.onApplyOperation({
           moduleShortid,
           operation,
-        });
-      }
+        })
     );
-    provideJwtToken = options.provideJwtToken;
   }
 
   getSocket() {
-    return _socket || this.connect();
+    return this.socket || this.connect();
   }
 
   connect(): Socket {
-    if (!_socket) {
+    if (!this.socket) {
       const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
-      _socket = new Socket(`${protocol}://${location.host}/socket`, {
+      this.socket = new Socket(`${protocol}://${location.host}/socket`, {
         params: {
-          guardian_token: provideJwtToken(),
+          guardian_token: this.provideJwtToken(),
         },
       });
 
-      _socket.onClose(e => {
+      this.socket.onClose(e => {
         if (e.code === 1006) {
           // This is an abrupt close, the server probably restarted or carshed. We don't want to overload
           // the server, so we manually wait and try to connect;
-          _socket.disconnect();
+          this.socket.disconnect();
 
           const waitTime = 500 + 5000 * Math.random();
 
           setTimeout(() => {
-            _socket.connect();
+            this.socket.connect();
           }, waitTime);
         }
       });
 
-      _socket.connect();
-      window.socket = _socket;
-      debug('Connecting to socket', _socket);
+      this.socket.connect();
+      window.socket = this.socket;
+      this.debug('Connecting to socket', this.socket);
     }
 
-    return _socket;
+    return this.socket;
   }
 
   disconnect() {
     return new Promise((resolve, reject) => {
-      if (!channel) {
+      if (!this.channel) {
         resolve({});
         return;
       }
 
-      channel
+      this.channel
         .leave()
         .receive('ok', resp => {
-          if (!channel) {
+          if (!this.channel) {
             return resolve({});
           }
 
-          channel.onMessage = d => d;
-          channel = null;
-          sentMessages.clear();
-          messageIndex = 0;
+          this.channel.onMessage = d => d;
+          this.channel = null;
+          this.sentMessages.clear();
+          this.messageIndex = 0;
 
           return resolve(resp);
         })
@@ -140,9 +146,25 @@ export default new (class Live {
 
   joinChannel(roomId: string): Promise<JoinChannelResponse> {
     return new Promise((resolve, reject) => {
-      channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
+      this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
+      this.presence = new Presence(this.channel);
+      this.presence.onSync(() => {
+        const newCount = this.presence.list().length;
 
-      channel
+        // eslint-disable-next-line
+        console.log('THIS DOES NOT TRIGGER?!?', newCount);
+
+        if (this.connectionsCount >= 2 && newCount < 2) {
+          this.blocker = blocker();
+        } else if (this.connectionsCount < 2 && newCount >= 2) {
+          this.blocker.resolve();
+          this.blocker = null;
+        }
+
+        this.connectionsCount = newCount;
+      });
+
+      this.channel
         .join()
         .receive('ok', resp => {
           const result = camelizeKeys(resp) as JoinChannelResponse;
@@ -160,18 +182,18 @@ export default new (class Live {
       data: object;
     }) => {}
   ) {
-    if (!channel) {
+    if (!this.channel) {
       return;
     }
 
-    channel.onMessage = (event: any, data: any) => {
+    this.channel.onMessage = (event: any, data: any) => {
       const disconnected =
         (data == null || Object.keys(data).length === 0) &&
         event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
 
       const _isOwnMessage = Boolean(
-        data && data._messageId && sentMessages.delete(data._messageId)
+        data && data._messageId && this.sentMessages.delete(data._messageId)
       );
 
       if (event === 'phx_reply' || event.startsWith('chan_reply_')) {
@@ -190,14 +212,14 @@ export default new (class Live {
   }
 
   private sendMessage(event, payload) {
-    const _messageId = identifier + messageIndex++;
+    const _messageId = this.identifier + this.messageIndex++;
     // eslint-disable-next-line
     payload._messageId = _messageId;
-    sentMessages.set(_messageId, payload);
+    this.sentMessages.set(_messageId, payload);
 
     return new Promise((resolve, reject) => {
-      if (channel) {
-        channel
+      if (this.channel) {
+        this.channel
           .push(event, payload)
           .receive('ok', resolve)
           .receive('error', reject);
@@ -209,51 +231,16 @@ export default new (class Live {
     });
   }
 
-  private flushMessages() {
-    _messageQueue.forEach(send => send());
-    _messageQueue.length = 0;
-    clearTimeout(_currentFlushId);
-    _currentFlushId = null;
-  }
-
-  sendWhenMultipleConnections(
-    event: string,
-    payload: { _messageId?: string; [key: string]: any }
-  ) {
-    if (_getConnectionsCount() < 2) {
+  send(event: string, payload: { _messageId?: string; [key: string]: any }) {
+    if (this.connectionsCount < 2) {
       return Promise.resolve();
     }
-
-    this.flushMessages();
-
-    return this.sendMessage(event, payload);
-  }
-
-  sendThrottledWhenSingleConnection(
-    event: string,
-    payload: { _messageId?: string; [key: string]: any }
-  ) {
-    if (_getConnectionsCount() < 2) {
-      const pendingMessage = blocker();
-
-      _messageQueue.push(() => {
-        pendingMessage.resolve(this.sendMessage(event, payload));
-      });
-
-      if (!_currentFlushId) {
-        _currentFlushId = setTimeout(() => this.flushMessages(), 1000);
-      }
-
-      return pendingMessage.promise;
-    }
-
-    this.flushMessages();
 
     return this.sendMessage(event, payload);
   }
 
   sendModuleUpdate(module: Module) {
-    return this.sendWhenMultipleConnections('module:updated', {
+    return this.send('module:updated', {
       type: 'module',
       moduleShortid: module.shortid,
       module,
@@ -261,7 +248,7 @@ export default new (class Live {
   }
 
   sendDirectoryUpdate(directory: Directory) {
-    return this.sendWhenMultipleConnections('directory:updated', {
+    return this.send('directory:updated', {
       type: 'directory',
       directoryShortid: directory.shortid,
       module: directory,
@@ -280,41 +267,41 @@ export default new (class Live {
     }
 
     try {
-      clients.get(moduleShortid).applyClient(operation);
+      this.clients.get(moduleShortid).applyClient(operation);
     } catch (e) {
       // Something went wrong, probably a sync mismatch. Request new version
-      this.sendWhenMultipleConnections('live:module_state', {});
+      this.send('live:module_state', {});
     }
   }
 
   sendExternalResourcesChanged(externalResources: string[]) {
-    return this.sendWhenMultipleConnections('sandbox:external-resources', {
+    return this.send('sandbox:external-resources', {
       externalResources,
     });
   }
 
   sendUserCurrentModule(moduleShortid: string) {
-    return this.sendWhenMultipleConnections('user:current-module', {
+    return this.send('user:current-module', {
       moduleShortid,
     });
   }
 
   sendDirectoryCreated(directory: Directory) {
-    return this.sendWhenMultipleConnections('directory:created', {
+    return this.send('directory:created', {
       type: 'directory',
       module: directory,
     });
   }
 
   sendDirectoryDeleted(directoryShortid: string) {
-    this.sendWhenMultipleConnections('directory:deleted', {
+    this.send('directory:deleted', {
       type: 'directory',
       directoryShortid,
     });
   }
 
   sendModuleCreated(module: Module) {
-    return this.sendWhenMultipleConnections('module:created', {
+    return this.send('module:created', {
       type: 'module',
       moduleShortid: module.shortid,
       module,
@@ -322,49 +309,49 @@ export default new (class Live {
   }
 
   sendModuleDeleted(moduleShortid: string) {
-    return this.sendWhenMultipleConnections('module:deleted', {
+    return this.send('module:deleted', {
       type: 'module',
       moduleShortid,
     });
   }
 
   sendMassCreatedModules(modules: Module[], directories: Directory[]) {
-    return this.sendWhenMultipleConnections('module:mass-created', {
+    return this.send('module:mass-created', {
       directories,
       modules,
     });
   }
 
   sendLiveMode(mode: string) {
-    return this.sendWhenMultipleConnections('live:mode', {
+    return this.send('live:mode', {
       mode,
     });
   }
 
   sendEditorAdded(liveUserId: string) {
-    return this.sendWhenMultipleConnections('live:add-editor', {
+    return this.send('live:add-editor', {
       editor_user_id: liveUserId,
     });
   }
 
   sendEditorRemoved(liveUserId: string) {
-    return this.sendWhenMultipleConnections('live:remove-editor', {
+    return this.send('live:remove-editor', {
       editor_user_id: liveUserId,
     });
   }
 
   sendClosed() {
-    return this.sendWhenMultipleConnections('live:close', {});
+    return this.send('live:close', {});
   }
 
   sendChat(message: string) {
-    return this.sendWhenMultipleConnections('chat', {
+    return this.send('chat', {
       message,
     });
   }
 
   sendModuleSaved(module: Module) {
-    return this.sendWhenMultipleConnections('module:saved', {
+    return this.send('module:saved', {
       type: 'module',
       module,
       moduleShortid: module.shortid,
@@ -372,11 +359,11 @@ export default new (class Live {
   }
 
   sendChatEnabled(enabled: boolean) {
-    return this.sendWhenMultipleConnections('live:chat_enabled', { enabled });
+    return this.send('live:chat_enabled', { enabled });
   }
 
   sendModuleStateSyncRequest() {
-    return this.sendWhenMultipleConnections('live:module_state', {});
+    return this.send('live:module_state', {});
   }
 
   sendUserSelection(
@@ -384,7 +371,7 @@ export default new (class Live {
     liveUserId: string,
     selection: any
   ) {
-    return this.sendWhenMultipleConnections('user:selection', {
+    return this.send('user:selection', {
       liveUserId,
       moduleShortid,
       selection,
@@ -392,30 +379,32 @@ export default new (class Live {
   }
 
   getAllClients() {
-    return clients.getAll();
+    return this.clients.getAll();
   }
 
   applyClient(moduleShortid: string, operation: any) {
-    return clients
+    return this.clients
       .get(moduleShortid)
       .applyClient(TextOperation.fromJSON(operation));
   }
 
   applyServer(moduleShortid: string, operation: any) {
-    return clients
+    return this.clients
       .get(moduleShortid)
       .applyServer(TextOperation.fromJSON(operation));
   }
 
   serverAck(moduleShortid: string) {
-    return clients.get(moduleShortid).serverAck();
+    return this.clients.get(moduleShortid).serverAck();
   }
 
   createClient(moduleShortid: string, revision: number) {
-    return clients.create(moduleShortid, revision);
+    return this.clients.create(moduleShortid, revision);
   }
 
   resetClients() {
-    clients.clear();
+    this.clients.clear();
   }
-})();
+}
+
+export default new Live();
