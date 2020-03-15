@@ -74,10 +74,10 @@ class Live {
     });
   };
 
-  private updatePrecenses(precenses) {
+  private updatePresences(presences) {
     const currentCount = this.connectionsCount;
 
-    this.presences = precenses;
+    this.presences = presences;
 
     if (currentCount >= 2 && this.connectionsCount < 2) {
       this.blocker = blocker();
@@ -164,11 +164,11 @@ class Live {
     return new Promise((resolve, reject) => {
       this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
       this.channel.on('presence_state', state => {
-        this.updatePrecenses(Presence.syncState(this.presences, state));
+        this.updatePresences(Presence.syncState(this.presences, state));
       });
 
       this.channel.on('presence_diff', diff => {
-        this.updatePrecenses(Presence.syncDiff(this.presences, diff));
+        this.updatePresences(Presence.syncDiff(this.presences, diff));
       });
 
       this.channel
