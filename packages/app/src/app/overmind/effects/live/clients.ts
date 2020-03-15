@@ -1,4 +1,6 @@
-import { OTClient } from './ot/client';
+import { Blocker, blocker } from 'app/utils/blocker';
+
+import { OTClient, synchronized_ } from './ot/client';
 
 export type SendOperation = (
   moduleShortid: string,
@@ -23,6 +25,7 @@ function operationToElixir(ot) {
 }
 
 class CodeSandboxOTClient extends OTClient {
+  public pending: Blocker<void>;
   moduleShortid: string;
   onSendOperation: (revision: number, operation: any) => Promise<unknown>;
   onApplyOperation: (operation: any) => void;
@@ -43,6 +46,10 @@ class CodeSandboxOTClient extends OTClient {
   }
 
   sendOperation(revision, operation) {
+    if (!this.pending) {
+      this.pending = blocker();
+    }
+
     this.onSendOperation(revision, operationToElixir(operation.toJSON())).then(
       () => {
         this.serverAck();
@@ -57,6 +64,11 @@ class CodeSandboxOTClient extends OTClient {
   serverAck() {
     try {
       super.serverAck();
+      if (this.state === synchronized_) {
+        const pending = this.pending;
+        this.pending = null;
+        pending.resolve();
+      }
     } catch (e) {
       // Undo the revision increment again
       super.revision--;

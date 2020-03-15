@@ -33,20 +33,16 @@ declare global {
 
 class Live {
   private identifier = uuid.v4();
-  private sentMessages = new Map();
+  private pendingMessages = new Map();
   private debug = _debug('cs:socket');
   private channel: Channel | null;
   private messageIndex = 0;
   private clients: ReturnType<typeof clientsFactory>;
   private socket: Socket;
   private blocker = blocker<void>();
-  private presences = {};
+  private presence: Presence;
   private provideJwtToken: () => string;
-
-  private get connectionsCount() {
-    return Object.keys(this.presences).length;
-  }
-
+  private connectionsCount = 0;
   private onSendOperation = async (moduleShortid, revision, operation) => {
     logBreadcrumb({
       type: 'ot',
@@ -57,35 +53,16 @@ class Live {
       })}`,
     });
 
-    if (!this.blocker) {
-      return this.send('operation', {
-        moduleShortid,
-        operation,
-        revision,
-      });
+    if (this.blocker) {
+      await this.blocker.promise;
     }
 
-    await this.blocker.promise;
-
-    return this.sendMessage('operation', {
+    return this.send('operation', {
       moduleShortid,
       operation,
       revision,
     });
   };
-
-  private updatePresences(presences) {
-    const currentCount = this.connectionsCount;
-
-    this.presences = presences;
-
-    if (currentCount >= 2 && this.connectionsCount < 2) {
-      this.blocker = blocker();
-    } else if (currentCount < 2 && this.connectionsCount >= 2) {
-      this.blocker.resolve();
-      this.blocker = null;
-    }
-  }
 
   initialize(options: Options) {
     this.provideJwtToken = options.provideJwtToken;
@@ -150,7 +127,7 @@ class Live {
 
           this.channel.onMessage = d => d;
           this.channel = null;
-          this.sentMessages.clear();
+          this.pendingMessages.clear();
           this.messageIndex = 0;
 
           return resolve(resp);
@@ -163,12 +140,18 @@ class Live {
   joinChannel(roomId: string): Promise<JoinChannelResponse> {
     return new Promise((resolve, reject) => {
       this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
-      this.channel.on('presence_state', state => {
-        this.updatePresences(Presence.syncState(this.presences, state));
-      });
+      this.presence = new Presence(this.channel);
+      this.presence.onSync(() => {
+        const currentCount = this.connectionsCount;
 
-      this.channel.on('presence_diff', diff => {
-        this.updatePresences(Presence.syncDiff(this.presences, diff));
+        this.connectionsCount = this.presence.list().length;
+        if (currentCount >= 2 && this.connectionsCount < 2) {
+          this.blocker = blocker();
+        } else if (currentCount < 2 && this.connectionsCount >= 2) {
+          const currentBlocker = this.blocker;
+          this.blocker = null;
+          currentBlocker.resolve();
+        }
       });
 
       this.channel
@@ -200,7 +183,7 @@ class Live {
       const alteredEvent = disconnected ? 'connection-loss' : event;
 
       const _isOwnMessage = Boolean(
-        data && data._messageId && this.sentMessages.delete(data._messageId)
+        data && data._messageId && this.pendingMessages.delete(data._messageId)
       );
 
       if (event === 'phx_reply' || event.startsWith('chan_reply_')) {
@@ -222,7 +205,7 @@ class Live {
     const _messageId = this.identifier + this.messageIndex++;
     // eslint-disable-next-line
     payload._messageId = _messageId;
-    this.sentMessages.set(_messageId, payload);
+    this.pendingMessages.set(_messageId, payload);
 
     return new Promise((resolve, reject) => {
       if (this.channel) {
@@ -239,11 +222,25 @@ class Live {
   }
 
   send(event: string, payload: { _messageId?: string; [key: string]: any }) {
-    if (this.connectionsCount < 2) {
+    if (this.blocker) {
       return Promise.resolve();
     }
 
     return this.sendMessage(event, payload);
+  }
+
+  async saveModule(module: Module) {
+    if (this.blocker) {
+      const currentBlocker = this.blocker;
+      this.blocker = null;
+      currentBlocker.resolve();
+      const client = this.clients.get(module.shortid);
+      if (client.pending) {
+        await client.pending.promise;
+      }
+      this.blocker = blocker();
+      // Send the save message
+    }
   }
 
   sendModuleUpdate(module: Module) {

@@ -39,7 +39,7 @@ class Synchronized implements IState {
 }
 
 // Singleton
-const synchronized_ = new Synchronized();
+export const synchronized_ = new Synchronized();
 
 // In the 'AwaitingConfirm' state, there's one operation the client has sent
 // to the server and is still waiting for an acknowledgement.
