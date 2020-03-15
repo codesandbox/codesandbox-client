@@ -6,6 +6,7 @@ import {
   LiveUser,
   Module,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
@@ -95,9 +96,10 @@ export const onUserEntered: Operator<LiveMessage<{
     );
   }
 
-  // Send our own selections to everyone, just to let the others know where
+  // Send our own selections and viewranges to everyone, just to let the others know where
   // we are
   actions.live.sendCurrentSelection();
+  actions.live.sendCurrentViewRange();
 
   if (data.joined_user_id === state.live.liveUserId) {
     return;
@@ -447,6 +449,41 @@ export const onUserCurrentModule: Operator<LiveMessage<{
     actions.editor.moduleSelected({
       id: module.id,
     });
+  }
+});
+
+export const onUserViewRange: Operator<LiveMessage<{
+  liveUserId: string;
+  moduleShortid: string;
+  viewRange: UserViewRange;
+}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
+  if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
+    return;
+  }
+
+  const userSelectionLiveUserId = data.liveUserId;
+  const { moduleShortid } = data;
+  const { viewRange } = data;
+  const userIndex = state.live.roomInfo.users.findIndex(
+    u => u.id === userSelectionLiveUserId
+  );
+
+  if (userIndex > -1) {
+    state.live.roomInfo.users[userIndex].currentModuleShortid = moduleShortid;
+    state.live.roomInfo.users[userIndex].viewRange = viewRange;
+  }
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+  if (module) {
+    const user = state.live.roomInfo.users.find(
+      u => u.id === userSelectionLiveUserId
+    );
+
+    if (user && state.live.followingUserId === userSelectionLiveUserId) {
+      effects.vscode.revealRange(viewRange);
+    }
   }
 });
 

@@ -10,6 +10,7 @@ import {
   Sandbox,
   SandboxFs,
   Settings,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
@@ -104,6 +105,7 @@ export class VSCodeEffect {
   private linter: Linter | null;
   private modelsHandler: ModelsHandler;
   private modelSelectionListener: { dispose: Function };
+  private modelViewRangeListener: { dispose: Function };
   private readOnly: boolean;
   private elements = {
     editor: document.createElement('div'),
@@ -562,6 +564,30 @@ export class VSCodeEffect {
     }
   }
 
+  /**
+   * Reveal line in editor
+   * @param scrollType 0 = smooth, 1 = immediate
+   */
+  revealLine(lineNumber: number, scrollType: 0 | 1 = 0) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (activeEditor) {
+      activeEditor.revealLine(lineNumber, scrollType);
+    }
+  }
+
+  /**
+   * Reveal revealLine in editor
+   * @param scrollType 0 = smooth, 1 = immediate
+   */
+  revealRange(range: UserViewRange, scrollType: 0 | 1 = 0) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (activeEditor) {
+      activeEditor.revealRange(range, scrollType);
+    }
+  }
+
   // Communicates the endpoint for the WebsocketLSP
   private createContainerForkHandler() {
     return () => {
@@ -942,6 +968,10 @@ export class VSCodeEffect {
       this.modelSelectionListener.dispose();
     }
 
+    if (this.modelViewRangeListener) {
+      this.modelViewRangeListener.dispose();
+    }
+
     const activeEditor = this.editorApi.getActiveCodeEditor();
 
     if (activeEditor && activeEditor.getModel()) {
@@ -984,10 +1014,20 @@ export class VSCodeEffect {
         this.modelsHandler.isApplyingOperation = false;
       }
 
-      activeEditor.onDidScrollChange(event => {
+      let lastViewRange = null;
+      const isDifferentViewRange = (r1: UserViewRange, r2: UserViewRange) =>
+        r1.startLineNumber !== r2.startLineNumber ||
+        r1.startColumn !== r2.startColumn ||
+        r1.endLineNumber !== r2.endLineNumber ||
+        r1.endColumn !== r2.endColumn;
+
+      this.modelViewRangeListener = activeEditor.onDidScrollChange(e => {
         const [range] = activeEditor.getVisibleRanges();
 
-        this.options.onViewRangeChanged(range);
+        if (!lastViewRange || isDifferentViewRange(lastViewRange, range)) {
+          lastViewRange = range;
+          this.options.onViewRangeChanged(range);
+        }
       });
 
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(

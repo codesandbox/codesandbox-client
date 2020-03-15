@@ -7,6 +7,7 @@ import Tooltip, {
 import { TippyProps } from '@tippy.js/react';
 import { useOvermind } from 'app/overmind';
 import { Stack, Avatar, Text } from '@codesandbox/components';
+import { LiveUser } from '@codesandbox/common/lib/types';
 
 interface ICollaboratorHeadProps {
   avatarUrl: string;
@@ -14,7 +15,7 @@ interface ICollaboratorHeadProps {
   id: string;
   color: number[];
   isCurrentUser: boolean;
-  showBorder?: boolean;
+  isDimmed: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   singleton: TippyProps['singleton'];
 }
@@ -24,8 +25,6 @@ const HEAD_SIZE = 26;
 const CollaboratorHead = (props: ICollaboratorHeadProps) => (
   <Tooltip
     singleton={props.singleton}
-    interactive
-    style={{ display: 'flex' }}
     content={
       <Stack
         css={css({ paddingX: 2, paddingY: 1 })}
@@ -45,6 +44,7 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
     <button
       type="button"
       css={{
+        transition: '0.3s ease opacity',
         position: 'relative',
         width: HEAD_SIZE,
         height: HEAD_SIZE,
@@ -54,8 +54,13 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
         backgroundColor: 'transparent',
         outline: 'none',
         border: 'none',
+        opacity: props.isDimmed ? 0.5 : 1,
 
-        ':after': props.showBorder && {
+        ':hover': {
+          opacity: 1,
+        },
+
+        ':after': {
           content: " ' '",
           position: 'absolute',
           display: 'block',
@@ -87,10 +92,11 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
 );
 
 export const CollaboratorHeads = () => {
-  const { state } = useOvermind();
+  const { state, actions } = useOvermind();
   const liveUsers = state.live.roomInfo.users;
 
   const liveUserId = state.live.liveUserId;
+  const followingUserId = state.live.followingUserId;
   const orderedLiveUsers = React.useMemo(() => {
     const currentUser = liveUsers.find(u => u.id === liveUserId);
     const liveUsersWithoutCurrentUser = liveUsers.filter(
@@ -99,9 +105,17 @@ export const CollaboratorHeads = () => {
     return [currentUser, ...liveUsersWithoutCurrentUser];
   }, [liveUserId, liveUsers]);
 
+  const followLiveUser = (user: LiveUser) => {
+    if (liveUserId === user.id || followingUserId === user.id) {
+      actions.live.onStopFollow();
+    } else {
+      actions.live.onFollow({ liveUserId: user.id });
+    }
+  };
+
   return (
     <Stack justify="center">
-      <SingletonTooltip>
+      <SingletonTooltip interactive>
         {singleton => (
           <AnimatePresence>
             {orderedLiveUsers.map((user, i) => (
@@ -124,7 +138,10 @@ export const CollaboratorHeads = () => {
                   id={user.id}
                   singleton={singleton}
                   isCurrentUser={user.id === liveUserId}
-                  showBorder
+                  onClick={() => followLiveUser(user)}
+                  isDimmed={
+                    followingUserId !== null && user.id !== followingUserId
+                  }
                 />
               </motion.div>
             ))}

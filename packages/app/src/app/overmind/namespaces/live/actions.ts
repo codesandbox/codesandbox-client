@@ -123,6 +123,7 @@ export const liveMessageReceived: Operator<LiveMessage, any> = pipe(
     [LiveMessageEvent.DIRECTORY_DELETED]: liveMessage.onDirectoryDeleted,
     [LiveMessageEvent.USER_SELECTION]: liveMessage.onUserSelection,
     [LiveMessageEvent.USER_CURRENT_MODULE]: liveMessage.onUserCurrentModule,
+    [LiveMessageEvent.USER_VIEW_RANGE]: liveMessage.onUserViewRange,
     [LiveMessageEvent.LIVE_MODE]: liveMessage.onLiveMode,
     [LiveMessageEvent.LIVE_CHAT_ENABLED]: liveMessage.onLiveChatEnabled,
     [LiveMessageEvent.LIVE_ADD_EDITOR]: liveMessage.onLiveAddEditor,
@@ -161,6 +162,23 @@ export const sendCurrentSelection: Action = ({ state, effects }) => {
         state.editor.currentModuleShortid,
         liveUserId,
         state.live.currentSelection
+      );
+    }
+  }
+};
+
+export const sendCurrentViewRange: Action = ({ state, effects }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  if (state.live.isCurrentEditor) {
+    const { liveUserId } = state.live;
+    if (liveUserId) {
+      effects.live.sendUserViewRange(
+        state.editor.currentModuleShortid,
+        liveUserId,
+        state.live.currentViewRange
       );
     }
   }
@@ -323,8 +341,39 @@ export const onFollow: Action<{
 
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
+  actions.live.revealViewRange({ liveUserId });
+};
 
-  actions.live.revealCursorPosition({ liveUserId });
+export const onStopFollow: Action = ({ state, effects, actions }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  state.live.followingUserId = null;
+};
+
+export const revealViewRange: Action<{ liveUserId: string }> = (
+  { state, effects, actions },
+  { liveUserId }
+) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
+
+  if (user && user.currentModuleShortid && state.editor.currentSandbox) {
+    const { modules } = state.editor.currentSandbox;
+    const module = modules.filter(
+      ({ shortid }) => shortid === user.currentModuleShortid
+    )[0];
+
+    actions.editor.moduleSelected({ id: module.id });
+
+    if (user.viewRange) {
+      effects.vscode.revealRange(user.viewRange);
+    }
+  }
 };
 
 export const revealCursorPosition: Action<{ liveUserId: string }> = (

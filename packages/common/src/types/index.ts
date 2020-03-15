@@ -712,6 +712,7 @@ export enum LiveMessageEvent {
   DIRECTORY_DELETED = 'directory:deleted',
   USER_SELECTION = 'user:selection',
   USER_CURRENT_MODULE = 'user:current-module',
+  USER_VIEW_RANGE = 'user:view-range',
   LIVE_MODE = 'live:mode',
   LIVE_CHAT_ENABLED = 'live:chat_enabled',
   LIVE_ADD_EDITOR = 'live:add-editor',
