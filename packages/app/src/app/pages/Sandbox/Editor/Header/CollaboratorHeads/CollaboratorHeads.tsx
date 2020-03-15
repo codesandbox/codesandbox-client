@@ -20,70 +20,68 @@ interface ICollaboratorHeadProps {
 
 const HEAD_SIZE = 26;
 
-const CollaboratorHead = (props: ICollaboratorHeadProps) => {
-  return (
-    <Tooltip
-      singleton={props.singleton}
-      interactive
-      style={{ display: 'flex' }}
-      content={
-        <Stack
-          css={css({ paddingX: 2, paddingY: 1 })}
-          justify="center"
-          align="center"
-          gap={1}
-          direction="vertical"
-        >
-          <Text>{props.username}</Text>
-          <Text variant="muted">View Profile</Text>
-        </Stack>
-      }
+const CollaboratorHead = (props: ICollaboratorHeadProps) => (
+  <Tooltip
+    singleton={props.singleton}
+    interactive
+    style={{ display: 'flex' }}
+    content={
+      <Stack
+        css={css({ paddingX: 2, paddingY: 1 })}
+        justify="center"
+        align="center"
+        gap={1}
+        direction="vertical"
+      >
+        <Text>{props.username}</Text>
+        <Text variant="muted">View Profile</Text>
+      </Stack>
+    }
+  >
+    <button
+      type="button"
+      css={{
+        position: 'relative',
+        width: HEAD_SIZE,
+        height: HEAD_SIZE,
+        borderRadius: '50%',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        padding: 0,
+        backgroundColor: 'transparent',
+        outline: 'none',
+        border: 'none',
+
+        ':after': props.showBorder && {
+          content: " ' '",
+          position: 'absolute',
+          display: 'block',
+          borderRadius: '50%',
+          top: 0,
+          width: '100%',
+          height: '100%',
+          boxShadow: `inset 0px 0px 0px 1px rgb(${props.color.join(',')})`,
+        },
+      }}
+      onClick={props.onClick}
     >
-      <button
-        type="button"
-        css={{
-          position: 'relative',
+      <Avatar
+        user={{
+          id: props.id,
+          username: props.username,
+          avatarUrl: props.avatarUrl,
+        }}
+        css={css({
           width: HEAD_SIZE,
           height: HEAD_SIZE,
-          borderRadius: '50%',
-          overflow: 'hidden',
-          cursor: 'pointer',
-          padding: 0,
-          backgroundColor: 'transparent',
-          outline: 'none',
-          border: 'none',
-
-          ':after': props.showBorder && {
-            content: " ' '",
-            position: 'absolute',
-            display: 'block',
+          img: {
             borderRadius: '50%',
-            top: 0,
-            width: '100%',
-            height: '100%',
-            boxShadow: `inset 0px 0px 0px 1px rgb(${props.color.join(',')})`,
           },
-        }}
-        onClick={props.onClick}
-      >
-        <Avatar
-          user={{
-            id: props.id,
-            username: props.username,
-            avatarUrl: props.avatarUrl,
-          }}
-          css={css({
-            width: HEAD_SIZE,
-            height: HEAD_SIZE,
-            img: {
-              borderRadius: '50%',
-            },
-          })}
-        />
-      </button>
-    </Tooltip>
-  );
-};
+        })}
+      />
+    </button>
+  </Tooltip>
+);
 
 export const CollaboratorHeads = () => {
   const { state } = useOvermind();
