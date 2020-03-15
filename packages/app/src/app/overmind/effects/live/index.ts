@@ -201,7 +201,7 @@ class Live {
     };
   }
 
-  private sendMessage(event, payload) {
+  private sendImmediately(event, payload) {
     const _messageId = this.identifier + this.messageIndex++;
     // eslint-disable-next-line
     payload._messageId = _messageId;
@@ -226,7 +226,7 @@ class Live {
       return Promise.resolve();
     }
 
-    return this.sendMessage(event, payload);
+    return this.sendImmediately(event, payload);
   }
 
   async saveModule(module: Module) {
@@ -367,7 +367,7 @@ class Live {
   }
 
   sendModuleStateSyncRequest() {
-    return this.send('live:module_state', {});
+    return this.sendImmediately('live:module_state', {});
   }
 
   sendUserSelection(

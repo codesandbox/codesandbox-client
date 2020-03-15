@@ -64,6 +64,7 @@ class CodeSandboxOTClient extends OTClient {
   serverAck() {
     try {
       super.serverAck();
+
       if (this.state === synchronized_) {
         const pending = this.pending;
         this.pending = null;
