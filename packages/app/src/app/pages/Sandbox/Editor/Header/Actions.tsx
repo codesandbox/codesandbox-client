@@ -14,6 +14,7 @@ import {
   ReloadIcon,
 } from './icons';
 import { Collaborators } from './Collaborators';
+import { CollaboratorHeads } from './CollaboratorHeads';
 
 const TooltipButton = ({ tooltip, ...props }) => (
   <Tooltip content={tooltip}>
@@ -71,7 +72,7 @@ export const Actions = () => {
   return (
     <Stack
       align="center"
-      gap={1}
+      gap={2}
       css={{ '> button': { width: 'auto' } }}
       style={{
         opacity: fadeIn ? 1 : 0,
@@ -98,29 +99,37 @@ export const Actions = () => {
         </TooltipButton>
       )}
 
-      {hasLogIn ? (
-        <TooltipButton
-          tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
-          variant="link"
-          onClick={() => likeSandboxToggled(id)}
-        >
-          <LikeIcon
-            css={css({
-              height: 3,
-              marginRight: 1,
-              color: userLiked ? 'reds.500' : 'inherit',
-            })}
-          />{' '}
-          <span>{likeCount}</span>
-        </TooltipButton>
+      {featureFlags.ACCESS_SHEET ? (
+        <>
+          <CollaboratorHeads />
+        </>
       ) : (
-        <Stack gap={1} paddingX={2} align="center">
-          <LikeIcon css={css({ height: 3 })} />
-          <span>{likeCount}</span>
-        </Stack>
+        <>
+          {hasLogIn ? (
+            <TooltipButton
+              tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
+              variant="link"
+              onClick={() => likeSandboxToggled(id)}
+            >
+              <LikeIcon
+                css={css({
+                  height: 3,
+                  marginRight: 1,
+                  color: userLiked ? 'reds.500' : 'inherit',
+                })}
+              />{' '}
+              <span>{likeCount}</span>
+            </TooltipButton>
+          ) : (
+            <Stack gap={1} paddingX={2} align="center">
+              <LikeIcon css={css({ height: 3 })} />
+              <span>{likeCount}</span>
+            </Stack>
+          )}
+        </>
       )}
 
-      {user?.curatorAt && (
+      {false && user?.curatorAt && (
         <Button
           variant="secondary"
           css={css({ paddingX: 3 })}
