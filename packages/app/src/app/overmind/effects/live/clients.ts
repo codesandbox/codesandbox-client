@@ -1,5 +1,7 @@
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
-import { OTClient } from './ot/client';
+import { Blocker, blocker } from 'app/utils/blocker';
+
+import { OTClient, synchronized_ } from './ot/client';
 
 export type SendOperation = (
   moduleShortid: string,
@@ -9,21 +11,13 @@ export type SendOperation = (
 
 export type ApplyOperation = (moduleShortid: string, operation: any) => void;
 
-function operationToElixir(ot) {
-  return ot.map(op => {
-    if (typeof op === 'number') {
-      if (op < 0) {
-        return { d: -op };
-      }
-
-      return op;
-    }
-
-    return { i: op };
-  });
-}
-
 class CodeSandboxOTClient extends OTClient {
+  /*
+    We need to be able to wait for a client to go intro synchronized
+    state. The reason is that we want to send a "save" event when the
+    client is synchronized
+  */
+  public awaitSynchronized: Blocker<void> | null;
   moduleShortid: string;
   onSendOperation: (revision: number, operation: any) => Promise<unknown>;
   onApplyOperation: (operation: any) => void;
@@ -41,8 +35,15 @@ class CodeSandboxOTClient extends OTClient {
   }
 
   sendOperation(revision, operation) {
-    this.onSendOperation(revision, operationToElixir(operation.toJSON())).then(
-      () => {
+    // Whenever we send an operation we enable the blocker
+    // that lets us wait for its resolvment when moving back
+    // to synchronized state
+    if (!this.awaitSynchronized) {
+      this.awaitSynchronized = blocker();
+    }
+
+    this.onSendOperation(revision, operation)
+      .then(() => {
         logBreadcrumb({
           type: 'ot',
           message: `Acknowledging ${JSON.stringify({
@@ -51,10 +52,19 @@ class CodeSandboxOTClient extends OTClient {
             operation,
           })}`,
         });
-
-        this.serverAck();
-      }
-    );
+        // We only acknowledge valig revisions
+        if (this.revision === revision) {
+          this.serverAck();
+        }
+      })
+      .catch(error => {
+        // If an operation errors on the server we will reject
+        // the blocker, as an action might be waiting for it to resolve,
+        // creating a user friendly error related to trying to save
+        if (this.awaitSynchronized) {
+          this.awaitSynchronized.reject(error);
+        }
+      });
   }
 
   applyOperation(operation) {
@@ -64,6 +74,13 @@ class CodeSandboxOTClient extends OTClient {
   serverAck() {
     try {
       super.serverAck();
+
+      // If we are back in synchronized state we resolve the blocker
+      if (this.state === synchronized_ && this.awaitSynchronized) {
+        const awaitSynchronized = this.awaitSynchronized;
+        this.awaitSynchronized = null;
+        awaitSynchronized.resolve();
+      }
     } catch (e) {
       // Undo the revision increment again
       super.revision--;
@@ -96,6 +113,7 @@ export default (
   ): CodeSandboxOTClient;
   create(moduleShortid: string, revision: number): CodeSandboxOTClient;
   clear(): void;
+  reset(moduleShortid: string, revision: number): void;
 } => {
   const modules = new Map<string, CodeSandboxOTClient>();
 
@@ -125,6 +143,10 @@ export default (
       modules.set(moduleShortid, client);
 
       return client;
+    },
+    reset(moduleShortid, revision) {
+      modules.delete(moduleShortid);
+      this.create(moduleShortid, revision);
     },
     clear() {
       modules.clear();
