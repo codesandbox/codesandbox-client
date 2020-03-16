@@ -526,9 +526,9 @@ export type Template = {
 export type User = {
   __typename?: 'User';
   avatarUrl: Maybe<Scalars['String']>;
-  firstName: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
   id: Maybe<Scalars['ID']>;
-  lastName: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
   name: Maybe<Scalars['String']>;
   username: Maybe<Scalars['String']>;
 };
