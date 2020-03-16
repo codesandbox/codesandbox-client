@@ -39,8 +39,8 @@ class CodeSandboxOTClient extends OTClient {
           this.serverAck();
         }
       })
-      .catch(() => {
-        this.pending.reject();
+      .catch(error => {
+        this.pending.reject(error);
       });
   }
 

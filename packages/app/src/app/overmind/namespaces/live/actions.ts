@@ -36,9 +36,6 @@ export const onOperationError: Action<{
   module.savedCode = saved_code;
 
   effects.vscode.setModuleCode(module);
-  effects.notificationToast.error(
-    'The code change was out of sync with the server, we had to reset the file, please try again'
-  );
 };
 
 export const roomJoined: AsyncAction<{
