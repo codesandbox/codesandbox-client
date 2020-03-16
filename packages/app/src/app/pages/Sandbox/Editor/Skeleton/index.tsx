@@ -13,6 +13,7 @@ import {
   SkeletonExplorer,
   SkeletonTextBlock,
   SkeletonWrapper,
+  SkeletonStatusBar,
 } from './elements';
 
 export const ContentSkeleton = ({ style }) => (
@@ -36,6 +37,7 @@ export const ContentSkeleton = ({ style }) => (
       </SkeletonDevtoolsNavigator>
       <SkeletonDevtoolsIframe />
     </SkeletonDevtools>
+    <SkeletonStatusBar />
   </SkeletonWrapper>
 );
 

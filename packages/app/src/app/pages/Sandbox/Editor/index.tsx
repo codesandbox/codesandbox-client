@@ -200,30 +200,29 @@ const ContentSplit = () => {
                 position: 'fixed',
                 display: statusBar ? 'flex' : 'none',
                 bottom: 0,
-                left: 0,
                 right: 0,
+                left: 0,
+                width: '100%',
                 height: STATUS_BAR_SIZE,
-                paddingLeft: 2,
               })}
             >
-              <Text variant="muted" size={2}>
-                {VERSION}
+              <StatusBar
+                className="monaco-workbench mac nopanel"
+                ref={statusbarEl}
+                style={{ width: 'calc(100% - 112px)' }}
+              />
+              <Text
+                size={2}
+                css={{
+                  // match the alingment of vscode status bar
+                  height: '100%',
+                  lineHeight: '24px',
+                }}
+              >
+                Version: {VERSION.split('-').pop()}
               </Text>
             </Stack>
           </NewThemeProvider>
-          <StatusBar
-            style={{
-              position: 'fixed',
-              display: statusBar ? 'block' : 'none',
-              bottom: 0,
-              right: 0,
-              left: 172,
-              width: 'calc(100% - 172px)',
-              height: STATUS_BAR_SIZE,
-            }}
-            className="monaco-workbench mac nopanel"
-            ref={statusbarEl}
-          />
         </Fullscreen>
 
         <ForkFrozenSandboxModal />
