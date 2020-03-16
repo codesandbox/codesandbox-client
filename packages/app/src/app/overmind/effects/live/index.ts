@@ -49,6 +49,11 @@ class Live {
   private messageIndex = 0;
   private clients: ReturnType<typeof clientsFactory>;
   private socket: Socket;
+  /*
+    Since in "Solo mode" we want to batch up operations and other events later,
+    we use a blocker to just hold the sending of the messages until an additional
+    connection enters
+  */
   private awaitSend: Blocker<void> | null = blocker<void>();
   private presence: Presence;
   private provideJwtToken: () => string;
@@ -98,6 +103,8 @@ class Live {
       })}`,
     });
 
+    // If we are to await a send, we do it. It will be resolved
+    // related to number of connections changing
     if (this.isLiveBlockerExperiement() && this.awaitSend) {
       await this.awaitSend.promise;
     }
@@ -197,6 +204,12 @@ class Live {
     return new Promise((resolve, reject) => {
       this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
 
+      /*
+        When active we activate or deactivate the sending blocker depending
+        on the number of connections we have. When "solo" we hold operation messages
+        until we get a new connection. If we go back to "solo" we bring in the blocker
+        again
+      */
       if (this.isLiveBlockerExperiement()) {
         this.presence = new Presence(this.channel);
         this.presence.onSync(() => {
@@ -287,6 +300,11 @@ class Live {
   }
 
   async saveModule(module: Module) {
+    /*
+      If we save a module we will temporarily lift the message blocker,
+      passing any operations through. As soon as the client of the module
+      is back in synchronized state we can move on with the save
+    */
     if (this.isLiveBlockerExperiement() && this.awaitSend) {
       this.resolveAwaitSend();
       const client = this.clients.get(module.shortid);
