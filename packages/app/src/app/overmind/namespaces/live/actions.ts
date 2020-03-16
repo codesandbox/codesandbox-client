@@ -21,6 +21,34 @@ export const signInToRoom: AsyncAction<{
   }
 });
 
+export const onOperationError: Action<{
+  moduleShortid: string;
+  code: string;
+  revision: number;
+  saved_code: string;
+}> = ({ state, effects }, { moduleShortid, revision, code, saved_code }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  effects.live.resetClient(moduleShortid, revision);
+  const module = state.editor.currentSandbox.modules.find(
+    moduleItem => moduleItem.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+if (code !== undefined) {
+  module.code = code;
+}
+if (saved_code !== undefined) {
+  module.savedCode = saved_code;
+}
+
+  effects.vscode.setModuleCode(module);
+};
+
 export const roomJoined: AsyncAction<{
   roomId: string;
 }> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {

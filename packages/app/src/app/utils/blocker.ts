@@ -5,26 +5,38 @@
 export type Blocker<T> = {
   promise: Promise<T>;
   resolve: (value: T) => void;
-  isResolved: () => boolean;
+  reject: (value: T) => void;
+  isFinished: () => boolean;
 };
 
 export function blocker<T>(): Blocker<T> {
-  let resolve: (value: T) => void;
-  let isResolved = false;
-  const promise = new Promise<T>(r => {
-    resolve = r;
+  let resolve: (value: any) => void;
+  let reject: (value: any) => void;
+  let isFinished = false;
+
+  const promise = new Promise<T>((success, error) => {
+    resolve = success;
+    reject = error;
   });
 
   return {
     promise,
     resolve: (payload: T) => {
-      if (isResolved) {
+      if (isFinished) {
         return;
       }
 
-      isResolved = true;
+      isFinished = true;
       resolve(payload);
     },
-    isResolved: () => isResolved,
+    reject: (payload: any) => {
+      if (isFinished) {
+        return;
+      }
+
+      isFinished = true;
+      reject(payload);
+    },
+    isFinished: () => isFinished,
   };
 }

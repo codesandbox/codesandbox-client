@@ -1,8 +1,7 @@
 ---
 title: Jest Tests
 authors: ['CompuIves']
-description:
-  CodeSandbox has a native integration with Jest for running tests.
+description: CodeSandbox has a native integration with Jest for running tests.
 ---
 
 ## What is Jest
@@ -12,20 +11,21 @@ tests without setting anything up. More info on [Jest](https://jestjs.io/).
 
 ## How to use Jest in CodeSandbox Client Sandboxes
 
-In [Client sandboxes](/docs/environment) you can run Jest tests by creating files that end with
-`.test.js`, `.spec.js`, `.test.ts(x)` and `.spec.js(x)`. We will automatically
-detect these test files and show the results in the Tests tab.
+In [Client sandboxes](/docs/environment) you can run Jest tests by creating
+files that end with `.test.js`, `.spec.js`, `.test.ts(x)` and `.spec.js(x)`. We
+will automatically detect these test files and show the results in the Tests
+tab.
 
-Note: In [Container sandboxes]((/docs/environment)) you can still use Jest (or whichever test framework you
-want), but we don't auto-detect these and you'd need to set it up yourself as
-you would locally.
+Note: In [Container sandboxes](<(/docs/environment)>) you can still use Jest (or
+whichever test framework you want), but we don't auto-detect these and you'd
+need to set it up yourself as you would locally.
 
 ![Test Bottom](./images/jest-tests.png)
 
 The left side of the test view is an overview of all test files. The right side
-shows the details of a file when you select it. You can decide re-run tests manually by clicking on the Play icon. We
-automatically watch for file changes, but you can disable this by clicking on the
-'Refresh' icon on the left side.
+shows the details of a file when you select it. You can decide re-run tests
+manually by clicking on the Play icon. We automatically watch for file changes,
+but you can disable this by clicking on the 'Refresh' icon on the left side.
 
 ![Test Details](./images/jest-details.png)
 

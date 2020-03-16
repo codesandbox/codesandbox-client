@@ -12,6 +12,7 @@ import {
   captureException,
   logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
   editorUrl,
@@ -21,7 +22,6 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -125,6 +125,7 @@ export const saveCode: AsyncAction<{
   }
 
   try {
+    await effects.live.saveModule(module);
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
 
     module.insertedAt = updatedModule.insertedAt;
