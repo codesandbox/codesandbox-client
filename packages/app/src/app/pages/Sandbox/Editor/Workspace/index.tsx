@@ -1,6 +1,6 @@
 import {
-  REDESIGNED_SIDEBAR,
   COMMENTS,
+  REDESIGNED_SIDEBAR,
 } from '@codesandbox/common/lib/utils/feature-flags';
 import VERSION from '@codesandbox/common/lib/version';
 import { ThemeProvider } from '@codesandbox/components';
@@ -29,7 +29,7 @@ import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
 import { Server } from './items/Server';
-import { Comments } from './screens/Comments';
+import { CommentThreads } from './screens/CommentThreads';
 import { ConfigurationFiles as ConfigurationFilesNew } from './screens/ConfigurationFiles';
 import { Deployment as DeploymentNew } from './screens/Deployment/index';
 import { Explorer } from './screens/Explorer';
@@ -58,7 +58,7 @@ const workspaceTabs = {
 
 if (COMMENTS && NEW_SIDEBAR) {
   // @ts-ignore
-  workspaceTabs.comments = Comments;
+  workspaceTabs.comments = CommentThreads;
 }
 
 export const WorkspaceComponent = ({ theme }) => {

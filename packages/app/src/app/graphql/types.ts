@@ -886,7 +886,7 @@ export type CreateCommentThreadMutation = {
     'id' | 'isResolved' | 'insertedAt' | 'updatedAt'
   > & {
       initialComment: { __typename?: 'Comment' } & CommentFragment;
-      comments: Array<{ __typename?: 'Comment' } & Pick<Comment, 'id'>>;
+      comments: Array<{ __typename?: 'Comment' } & CommentFragment>;
     };
 };
 

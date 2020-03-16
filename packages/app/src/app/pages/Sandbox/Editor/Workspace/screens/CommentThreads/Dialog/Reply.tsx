@@ -1,33 +1,29 @@
-import React, { useState } from 'react';
-import { formatDistance } from 'date-fns';
-import css from '@styled-system/css';
 import {
-  Element,
-  Button,
-  Stack,
   Avatar,
-  Text,
+  Button,
+  Element,
   Link,
   Menu,
+  Stack,
+  Text,
   Textarea,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { Comment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
+import { formatDistance } from 'date-fns';
+import React, { useState } from 'react';
+
 import { Markdown } from './Markdown';
 
 type ReplyProps = {
-  id: string;
-  user?: any;
-  insertedAt?: string;
-  commentId: string;
-  content?: string;
+  threadId: string;
+  reply: Comment;
 };
 
 export const Reply = ({
-  id,
-  user,
-  insertedAt,
-  commentId,
-  content,
+  threadId,
+  reply: { user, insertedAt, id, content },
 }: ReplyProps) => {
   const { state, actions } = useOvermind();
   const [edit, setEdit] = useState(false);
@@ -62,8 +58,8 @@ export const Reply = ({
                   <Menu.Item
                     onSelect={() =>
                       actions.editor.deleteComment({
-                        threadId: commentId,
-                        id,
+                        threadId,
+                        commentId: id,
                         reply: true,
                       })
                     }
@@ -116,7 +112,7 @@ export const Reply = ({
                 disabled={!value}
                 onClick={async () => {
                   await actions.editor.updateComment({
-                    threadId: commentId,
+                    threadId,
                     commentId: id,
                     content: value,
                     reply: true,

@@ -9,7 +9,7 @@ import { Query } from 'overmind-graphql';
 
 import { commentFragment } from './fragments';
 
-export const commentReplies: Query<
+export const comments: Query<
   SandboxCommentRepliesQuery,
   SandboxCommentRepliesQueryVariables
 > = gql`

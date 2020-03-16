@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { useOvermind } from 'app/overmind';
-import { Textarea, FormField, Element } from '@codesandbox/components';
-import { css } from '@styled-system/css';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { Element, FormField, Textarea } from '@codesandbox/components';
+import { css } from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React, { useState } from 'react';
 
-export const AddComment: React.FC = () => {
+export const AddCommentThread: React.FC = () => {
   const [value, setValue] = useState('');
-  const { actions, state } = useOvermind();
+  const { actions } = useOvermind();
 
   const onSubmit = e => {
     e.preventDefault();
-    actions.editor.addComment({
+    actions.editor.addCommentThread({
       content: value,
-      sandboxId: state.editor.currentSandbox.id,
+      open: false,
     });
     setValue('');
   };
