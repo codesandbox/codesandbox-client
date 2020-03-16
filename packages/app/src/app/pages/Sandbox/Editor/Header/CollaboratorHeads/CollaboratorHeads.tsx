@@ -182,6 +182,7 @@ export const CollaboratorHeads = () => {
               position: 'relative',
               width: HEAD_SIZE,
               height: HEAD_SIZE,
+              marginRight: 8,
               ':after': {
                 content: " ' '",
                 position: 'absolute',
