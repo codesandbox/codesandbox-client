@@ -61,6 +61,10 @@ class Live {
       moduleShortid,
       operation,
       revision,
+    }).then(() => {
+      if (this.clients.get(moduleShortid).revision === revision) {
+        this.serverAck(moduleShortid);
+      }
     });
   };
 
