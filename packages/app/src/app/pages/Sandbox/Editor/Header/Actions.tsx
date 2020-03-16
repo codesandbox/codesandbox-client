@@ -12,6 +12,7 @@ import {
   LikeIcon,
   PreferenceIcon,
   ReloadIcon,
+  MoreMenuIcon,
 } from './icons';
 import { Collaborators } from './Collaborators';
 import { CollaboratorHeads } from './CollaboratorHeads';
@@ -33,6 +34,7 @@ export const Actions = () => {
       hasLogIn,
       updateStatus,
       user,
+      live: { isLive },
       editor: {
         currentSandbox: {
           id,
@@ -99,10 +101,8 @@ export const Actions = () => {
         </TooltipButton>
       )}
 
-      {featureFlags.ACCESS_SHEET ? (
-        <>
-          <CollaboratorHeads />
-        </>
+      {featureFlags.ACCESS_SHEET && isLive ? (
+        <CollaboratorHeads />
       ) : (
         <>
           {hasLogIn ? (
@@ -184,12 +184,24 @@ export const Actions = () => {
       </Button>
       {hasLogIn ? (
         <UserMenu>
-          <Avatar
-            user={{ ...user, subscriptionSince: null }}
-            css={css({
-              size: '26px', // match button size next to it
-            })}
-          />
+          {featureFlags.ACCESS_SHEET ? (
+            <Button
+              variant="secondary"
+              css={css({
+                width: 26,
+                height: 26, // match button size next to it
+              })}
+            >
+              <MoreMenuIcon />
+            </Button>
+          ) : (
+            <Avatar
+              user={{ ...user, subscriptionSince: null }}
+              css={css({
+                size: '26px', // match button size next to it
+              })}
+            />
+          )}
         </UserMenu>
       ) : (
         <Button variant="primary" onClick={handleSignIn}>

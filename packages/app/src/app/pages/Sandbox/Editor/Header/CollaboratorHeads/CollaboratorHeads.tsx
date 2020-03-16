@@ -6,7 +6,7 @@ import Tooltip, {
 } from '@codesandbox/common/lib/components/Tooltip';
 import { TippyProps } from '@tippy.js/react';
 import { useOvermind } from 'app/overmind';
-import { Stack, Avatar, Text } from '@codesandbox/components';
+import { Stack, Avatar, Text, Menu } from '@codesandbox/components';
 import { LiveUser } from '@codesandbox/common/lib/types';
 
 interface ICollaboratorHeadProps {
@@ -16,15 +16,18 @@ interface ICollaboratorHeadProps {
   color: number[];
   isCurrentUser: boolean;
   isDimmed: boolean;
+  showBorder?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   singleton: TippyProps['singleton'];
 }
 
 const HEAD_SIZE = 26;
+const USER_OVERFLOW_LIMIT = 4;
 
 const CollaboratorHead = (props: ICollaboratorHeadProps) => (
   <Tooltip
     singleton={props.singleton}
+    style={{ display: 'flex' }}
     content={
       <Stack
         css={css({ paddingX: 2, paddingY: 1 })}
@@ -33,7 +36,7 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
         gap={1}
         direction="vertical"
       >
-        <Text>
+        <Text size={3}>
           {props.username}
           {props.isCurrentUser && ' (you)'}
         </Text>
@@ -60,7 +63,7 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
           opacity: 1,
         },
 
-        ':after': {
+        ':after': props.showBorder && {
           content: " ' '",
           position: 'absolute',
           display: 'block',
@@ -99,11 +102,25 @@ export const CollaboratorHeads = () => {
   const followingUserId = state.live.followingUserId;
   const orderedLiveUsers = React.useMemo(() => {
     const currentUser = liveUsers.find(u => u.id === liveUserId);
-    const liveUsersWithoutCurrentUser = liveUsers.filter(
-      u => u.id !== liveUserId
-    );
-    return [currentUser, ...liveUsersWithoutCurrentUser];
-  }, [liveUserId, liveUsers]);
+    const followingUser = liveUsers.find(u => u.id === followingUserId);
+    const filteredLiveUsers = liveUsers.filter(u => u.id !== liveUserId);
+
+    if (followingUser) {
+      const followingUserIndex = filteredLiveUsers.findIndex(
+        u => u.id === followingUserId
+      );
+
+      const followingUserIsInFirst4 =
+        followingUserIndex < USER_OVERFLOW_LIMIT - 1;
+      if (!followingUserIsInFirst4) {
+        // Let's move the following user to the start of the list if it's not in the first 4
+        filteredLiveUsers.splice(followingUserIndex, 1);
+        filteredLiveUsers.unshift(followingUser);
+      }
+    }
+
+    return [currentUser, ...filteredLiveUsers].filter(Boolean);
+  }, [liveUserId, followingUserId, liveUsers]);
 
   const followLiveUser = (user: LiveUser) => {
     if (liveUserId === user.id || followingUserId === user.id) {
@@ -113,12 +130,15 @@ export const CollaboratorHeads = () => {
     }
   };
 
+  const firstLiveUsers = orderedLiveUsers.slice(0, USER_OVERFLOW_LIMIT);
+  const restLiveUsers = orderedLiveUsers.slice(USER_OVERFLOW_LIMIT);
+
   return (
     <Stack justify="center">
       <SingletonTooltip interactive>
         {singleton => (
           <AnimatePresence>
-            {orderedLiveUsers.map((user, i) => (
+            {firstLiveUsers.map((user, i) => (
               <motion.div
                 positionTransition
                 style={{
@@ -142,12 +162,48 @@ export const CollaboratorHeads = () => {
                   isDimmed={
                     followingUserId !== null && user.id !== followingUserId
                   }
+                  showBorder={orderedLiveUsers.length > 1}
                 />
               </motion.div>
             ))}
           </AnimatePresence>
         )}
       </SingletonTooltip>
+
+      {restLiveUsers.length > 0 && (
+        <Menu>
+          <Menu.Button
+            variant="secondary"
+            css={css({
+              position: 'relative',
+              width: HEAD_SIZE,
+              height: HEAD_SIZE,
+              ':after': {
+                content: " ' '",
+                position: 'absolute',
+                display: 'block',
+                borderRadius: 2,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                boxShadow: `inset 0px 0px 0px 1.5px rgba(255, 255, 255, 0.5)`,
+              },
+            })}
+          >
+            {restLiveUsers.length}
+          </Menu.Button>
+          <Menu.List>
+            {restLiveUsers.map(restUser => (
+              <Menu.Item
+                key={restUser.id}
+                onSelect={() => followLiveUser(restUser)}
+              >
+                {restUser.username}
+              </Menu.Item>
+            ))}
+          </Menu.List>
+        </Menu>
+      )}
     </Stack>
   );
 };

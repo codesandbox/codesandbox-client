@@ -161,6 +161,15 @@ export class Workbench {
       },
     });
 
+    this.appendMenuItem(MenuId.EditorContext, {
+      group: '0',
+      order: 100000,
+      command: {
+        id: 'codesandbox.sandbox.new',
+        title: 'New Sandbox...',
+      },
+    });
+
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '1_new',
       order: 1,
