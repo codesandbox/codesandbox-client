@@ -21,6 +21,26 @@ export const signInToRoom: AsyncAction<{
   }
 });
 
+export const onOperationError: Action<{
+  moduleShortid: string;
+  code: string;
+  revision: number;
+  saved_code: string;
+}> = ({ state, effects }, { moduleShortid, revision, code, saved_code }) => {
+  effects.live.resetClient(moduleShortid, revision);
+  const module = state.editor.currentSandbox.modules.find(
+    moduleItem => moduleItem.shortid === moduleShortid
+  );
+
+  module.code = code;
+  module.savedCode = saved_code;
+
+  effects.vscode.setModuleCode(module);
+  effects.notificationToast.error(
+    'The code change was out of sync with the server, we had to reset the file, please try again'
+  );
+};
+
 export const roomJoined: AsyncAction<{
   roomId: string;
 }> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {

@@ -17,6 +17,7 @@ export const onInitialize: OnInitialize = async (
     onApplyOperation: actions.live.applyTransformation,
     isLiveBlockerExperiement: () =>
       Boolean(state.user?.experiments.liveBlocker),
+    onOperationError: actions.live.onOperationError,
   });
 
   effects.flows.initialize(overmindInstance.reaction);

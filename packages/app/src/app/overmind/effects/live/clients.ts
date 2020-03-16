@@ -10,28 +10,11 @@ export type SendOperation = (
 
 export type ApplyOperation = (moduleShortid: string, operation: any) => void;
 
-function operationToElixir(ot) {
-  return ot.map(op => {
-    if (typeof op === 'number') {
-      if (op < 0) {
-        return { d: -op };
-      }
-
-      return op;
-    }
-
-    return { i: op };
-  });
-}
-
 class CodeSandboxOTClient extends OTClient {
   public pending: Blocker<void>;
   moduleShortid: string;
   onSendOperation: (revision: number, operation: any) => Promise<unknown>;
   onApplyOperation: (operation: any) => void;
-  getConnectionsCount: () => number;
-  disposeThrottler: () => void;
-  throttledOperations: any;
 
   constructor(
     revision: number,
@@ -50,11 +33,15 @@ class CodeSandboxOTClient extends OTClient {
       this.pending = blocker();
     }
 
-    this.onSendOperation(revision, operationToElixir(operation.toJSON())).then(
-      () => {
-        this.serverAck();
-      }
-    );
+    this.onSendOperation(revision, operation)
+      .then(() => {
+        if (this.revision === revision) {
+          this.serverAck();
+        }
+      })
+      .catch(() => {
+        this.pending.reject();
+      });
   }
 
   applyOperation(operation) {
@@ -102,6 +89,7 @@ export default (
   ): CodeSandboxOTClient;
   create(moduleShortid: string, revision: number): CodeSandboxOTClient;
   clear(): void;
+  reset(moduleShortid: string, revision: number): void;
 } => {
   const modules = new Map<string, CodeSandboxOTClient>();
 
@@ -131,6 +119,10 @@ export default (
       modules.set(moduleShortid, client);
 
       return client;
+    },
+    reset(moduleShortid, revision) {
+      modules.delete(moduleShortid);
+      this.create(moduleShortid, revision);
     },
     clear() {
       modules.clear();

@@ -19,6 +19,12 @@ type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
   provideJwtToken(): string;
   isLiveBlockerExperiement(): boolean;
+  onOperationError(payload: {
+    moduleShortid: string;
+    code: string;
+    revision: number;
+    saved_code: string;
+  }): void;
 };
 
 type JoinChannelResponse = {
@@ -40,11 +46,42 @@ class Live {
   private messageIndex = 0;
   private clients: ReturnType<typeof clientsFactory>;
   private socket: Socket;
-  private blocker = blocker<void>();
+  private awaitSend = blocker<void>();
   private presence: Presence;
   private provideJwtToken: () => string;
+  private onOperationError: (payload: {
+    moduleShortid: string;
+    code: string;
+    revision: number;
+    saved_code: string;
+  }) => void;
+
+  private operationToElixir(ot) {
+    return ot.map(op => {
+      if (typeof op === 'number') {
+        if (op < 0) {
+          return { d: -op };
+        }
+
+        return op;
+      }
+
+      return { i: op };
+    });
+  }
+
   private isLiveBlockerExperiement: () => boolean;
   private connectionsCount = 0;
+  private setAwaitSend() {
+    this.awaitSend = blocker();
+  }
+
+  private resolveAwaitSend() {
+    const currentBlocker = this.awaitSend;
+    this.awaitSend = null;
+    currentBlocker.resolve();
+  }
+
   private onSendOperation = async (moduleShortid, revision, operation) => {
     logBreadcrumb({
       type: 'ot',
@@ -55,23 +92,31 @@ class Live {
       })}`,
     });
 
-    if (this.isLiveBlockerExperiement() && this.blocker) {
-      await this.blocker.promise;
+    if (this.isLiveBlockerExperiement() && this.awaitSend) {
+      await this.awaitSend.promise;
     }
 
     return this.send('operation', {
       moduleShortid,
-      operation,
+      operation: this.operationToElixir(operation.toJSON()),
       revision,
-    }).then(() => {
-      if (this.clients.get(moduleShortid).revision === revision) {
-        this.serverAck(moduleShortid);
-      }
-    });
+    })
+      .then(() => {
+        if (this.clients.get(moduleShortid).revision === revision) {
+          this.serverAck(moduleShortid);
+        }
+      })
+      .catch(error => {
+        this.onOperationError({
+          ...error.module_state[moduleShortid],
+          moduleShortid,
+        });
+      });
   };
 
   initialize(options: Options) {
     this.provideJwtToken = options.provideJwtToken;
+    this.onOperationError = options.onOperationError;
     this.isLiveBlockerExperiement = options.isLiveBlockerExperiement;
     this.clients = clientsFactory(
       this.onSendOperation,
@@ -155,11 +200,9 @@ class Live {
 
           this.connectionsCount = this.presence.list().length;
           if (currentCount >= 2 && this.connectionsCount < 2) {
-            this.blocker = blocker();
+            this.setAwaitSend();
           } else if (currentCount < 2 && this.connectionsCount >= 2) {
-            const currentBlocker = this.blocker;
-            this.blocker = null;
-            currentBlocker.resolve();
+            this.resolveAwaitSend();
           }
         });
       }
@@ -232,7 +275,7 @@ class Live {
   }
 
   send(event: string, payload: { _messageId?: string; [key: string]: any }) {
-    if (this.isLiveBlockerExperiement() && this.blocker) {
+    if (this.isLiveBlockerExperiement() && this.awaitSend) {
       return Promise.resolve();
     }
 
@@ -240,15 +283,13 @@ class Live {
   }
 
   async saveModule(module: Module) {
-    if (this.isLiveBlockerExperiement() && this.blocker) {
-      const currentBlocker = this.blocker;
-      this.blocker = null;
-      currentBlocker.resolve();
+    if (this.isLiveBlockerExperiement() && this.awaitSend) {
+      this.resolveAwaitSend();
       const client = this.clients.get(module.shortid);
       if (client.pending) {
         await client.pending.promise;
       }
-      this.blocker = blocker();
+      this.setAwaitSend();
       // Send the save message
     }
   }
@@ -377,7 +418,7 @@ class Live {
   }
 
   sendModuleStateSyncRequest() {
-    return this.sendImmediately('live:module_state', {});
+    return this.send('live:module_state', {});
   }
 
   sendUserSelection(
@@ -390,6 +431,10 @@ class Live {
       moduleShortid,
       selection,
     });
+  }
+
+  resetClient(moduleShortid: string, revision: number) {
+    this.clients.reset(moduleShortid, revision);
   }
 
   getAllClients() {
