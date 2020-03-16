@@ -16,7 +16,7 @@ export const onInitialize: OnInitialize = async (
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,
     isLiveBlockerExperiement: () =>
-      true || Boolean(state.user?.experiments.liveBlocker),
+      Boolean(state.user?.experiments.liveBlocker),
     onOperationError: actions.live.onOperationError,
   });
 
