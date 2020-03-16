@@ -41,6 +41,7 @@ export const state: State = {
   liveUserId: null,
   roomInfo: null,
   currentSelection: null,
+  currentViewRange: null,
   liveUser: currentState =>
     currentState.roomInfo?.users.find(u => u.id === currentState.liveUserId) ||
     null,
