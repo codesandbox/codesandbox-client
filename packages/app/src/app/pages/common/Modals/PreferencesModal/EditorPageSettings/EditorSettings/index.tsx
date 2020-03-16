@@ -12,7 +12,7 @@ import {
 } from '../../elements';
 import { VSCodePlaceholder } from '../../VSCodePlaceholder';
 
-const isSafari: boolean = /^((?!chrome|android).)*safari/i.test(
+const isSafari: boolean = /^((?!chrome|android|crios).)*safari/i.test(
   navigator.userAgent
 );
 const isFF: boolean = navigator.userAgent.toLowerCase().includes('firefox');
