@@ -1,6 +1,7 @@
 import React from 'react';
 import css from '@styled-system/css';
 import { AnimatePresence, motion } from 'framer-motion';
+import { sortBy } from 'lodash-es';
 import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
@@ -103,7 +104,10 @@ export const CollaboratorHeads = () => {
   const orderedLiveUsers = React.useMemo(() => {
     const currentUser = liveUsers.find(u => u.id === liveUserId);
     const followingUser = liveUsers.find(u => u.id === followingUserId);
-    const filteredLiveUsers = liveUsers.filter(u => u.id !== liveUserId);
+    const filteredLiveUsers = sortBy(
+      liveUsers.filter(u => u.id !== liveUserId),
+      'id'
+    );
 
     if (followingUser) {
       const followingUserIndex = filteredLiveUsers.findIndex(
