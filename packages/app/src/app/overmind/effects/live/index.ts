@@ -18,6 +18,7 @@ import clientsFactory from './clients';
 type Options = {
   onApplyOperation(args: { moduleShortid: string; operation: any }): void;
   provideJwtToken(): string;
+  isLiveBlockerExperiement(): boolean;
 };
 
 type JoinChannelResponse = {
@@ -42,6 +43,7 @@ class Live {
   private blocker = blocker<void>();
   private presence: Presence;
   private provideJwtToken: () => string;
+  private isLiveBlockerExperiement: () => boolean;
   private connectionsCount = 0;
   private onSendOperation = async (moduleShortid, revision, operation) => {
     logBreadcrumb({
@@ -53,7 +55,7 @@ class Live {
       })}`,
     });
 
-    if (this.blocker) {
+    if (this.isLiveBlockerExperiement() && this.blocker) {
       await this.blocker.promise;
     }
 
@@ -70,6 +72,7 @@ class Live {
 
   initialize(options: Options) {
     this.provideJwtToken = options.provideJwtToken;
+    this.isLiveBlockerExperiement = options.isLiveBlockerExperiement;
     this.clients = clientsFactory(
       this.onSendOperation,
       (moduleShortid, operation) =>
@@ -144,19 +147,22 @@ class Live {
   joinChannel(roomId: string): Promise<JoinChannelResponse> {
     return new Promise((resolve, reject) => {
       this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
-      this.presence = new Presence(this.channel);
-      this.presence.onSync(() => {
-        const currentCount = this.connectionsCount;
 
-        this.connectionsCount = this.presence.list().length;
-        if (currentCount >= 2 && this.connectionsCount < 2) {
-          this.blocker = blocker();
-        } else if (currentCount < 2 && this.connectionsCount >= 2) {
-          const currentBlocker = this.blocker;
-          this.blocker = null;
-          currentBlocker.resolve();
-        }
-      });
+      if (this.isLiveBlockerExperiement()) {
+        this.presence = new Presence(this.channel);
+        this.presence.onSync(() => {
+          const currentCount = this.connectionsCount;
+
+          this.connectionsCount = this.presence.list().length;
+          if (currentCount >= 2 && this.connectionsCount < 2) {
+            this.blocker = blocker();
+          } else if (currentCount < 2 && this.connectionsCount >= 2) {
+            const currentBlocker = this.blocker;
+            this.blocker = null;
+            currentBlocker.resolve();
+          }
+        });
+      }
 
       this.channel
         .join()
@@ -226,7 +232,7 @@ class Live {
   }
 
   send(event: string, payload: { _messageId?: string; [key: string]: any }) {
-    if (this.blocker) {
+    if (this.isLiveBlockerExperiement() && this.blocker) {
       return Promise.resolve();
     }
 
@@ -234,7 +240,7 @@ class Live {
   }
 
   async saveModule(module: Module) {
-    if (this.blocker) {
+    if (this.isLiveBlockerExperiement() && this.blocker) {
       const currentBlocker = this.blocker;
       this.blocker = null;
       currentBlocker.resolve();

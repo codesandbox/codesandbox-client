@@ -15,6 +15,8 @@ export const onInitialize: OnInitialize = async (
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,
+    isLiveBlockerExperiement: () =>
+      Boolean(state.user?.experiments.liveBlocker),
   });
 
   effects.flows.initialize(overmindInstance.reaction);
