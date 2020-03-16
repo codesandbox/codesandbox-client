@@ -1490,6 +1490,7 @@ export const deleteComment: AsyncAction<{
     commentThreads[sandboxId][threadId].comments.splice(index, 1);
   } else {
     delete commentThreads[sandboxId][threadId];
+    state.editor.currentCommentThreadId = null;
   }
 
   try {

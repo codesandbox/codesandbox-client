@@ -118,7 +118,7 @@ export const CommentThread = React.memo<{ thread: TCommentThread }>(
             {thread.initialComment.content}
           </Text>
           <Text variant="muted" size={2}>
-            {getRepliesString(thread.comments.length)}
+            {getRepliesString(thread.comments.length - 1)}
           </Text>
         </Element>
       </ListAction>
