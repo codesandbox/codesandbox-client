@@ -100,21 +100,15 @@ class Live {
       moduleShortid,
       operation: this.operationToElixir(operation.toJSON()),
       revision,
-    })
-      .then(() => {
-        if (this.clients.get(moduleShortid).revision === revision) {
-          this.serverAck(moduleShortid);
-        }
-      })
-      .catch(error => {
-        this.onOperationError({
-          ...error.module_state[moduleShortid],
-          moduleShortid,
-        });
-        throw new Error(
-          'The code was out of sync with the server, we had to reset the file'
-        );
+    }).catch(error => {
+      this.onOperationError({
+        ...error.module_state[moduleShortid],
+        moduleShortid,
       });
+      throw new Error(
+        'The code was out of sync with the server, we had to reset the file'
+      );
+    });
   };
 
   initialize(options: Options) {
@@ -421,7 +415,7 @@ class Live {
   }
 
   sendModuleStateSyncRequest() {
-    return this.send('live:module_state', {});
+    return this.sendImmediately('live:module_state', {});
   }
 
   sendUserSelection(
