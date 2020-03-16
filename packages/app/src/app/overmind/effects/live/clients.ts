@@ -11,7 +11,7 @@ export type SendOperation = (
 export type ApplyOperation = (moduleShortid: string, operation: any) => void;
 
 class CodeSandboxOTClient extends OTClient {
-  public pending: Blocker<void>;
+  public awaitSynchronized: Blocker<void> | null;
   moduleShortid: string;
   onSendOperation: (revision: number, operation: any) => Promise<unknown>;
   onApplyOperation: (operation: any) => void;
@@ -29,8 +29,8 @@ class CodeSandboxOTClient extends OTClient {
   }
 
   sendOperation(revision, operation) {
-    if (!this.pending) {
-      this.pending = blocker();
+    if (!this.awaitSynchronized) {
+      this.awaitSynchronized = blocker();
     }
 
     this.onSendOperation(revision, operation)
@@ -40,7 +40,9 @@ class CodeSandboxOTClient extends OTClient {
         }
       })
       .catch(error => {
-        this.pending.reject(error);
+        if (this.awaitSynchronized) {
+          this.awaitSynchronized.reject(error);
+        }
       });
   }
 
@@ -52,10 +54,10 @@ class CodeSandboxOTClient extends OTClient {
     try {
       super.serverAck();
 
-      if (this.state === synchronized_) {
-        const pending = this.pending;
-        this.pending = null;
-        pending.resolve();
+      if (this.state === synchronized_ && this.awaitSynchronized) {
+        const awaitSynchronized = this.awaitSynchronized;
+        this.awaitSynchronized = null;
+        awaitSynchronized.resolve();
       }
     } catch (e) {
       // Undo the revision increment again

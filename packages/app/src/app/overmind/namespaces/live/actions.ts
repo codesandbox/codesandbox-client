@@ -27,10 +27,17 @@ export const onOperationError: Action<{
   revision: number;
   saved_code: string;
 }> = ({ state, effects }, { moduleShortid, revision, code, saved_code }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
   effects.live.resetClient(moduleShortid, revision);
   const module = state.editor.currentSandbox.modules.find(
     moduleItem => moduleItem.shortid === moduleShortid
   );
+
+  if (!module) {
+    return;
+  }
 
   module.code = code;
   module.savedCode = saved_code;

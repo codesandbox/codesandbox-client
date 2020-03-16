@@ -6,7 +6,7 @@ import {
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
-import { blocker } from 'app/utils/blocker';
+import { Blocker, blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
 import { TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
@@ -46,7 +46,7 @@ class Live {
   private messageIndex = 0;
   private clients: ReturnType<typeof clientsFactory>;
   private socket: Socket;
-  private awaitSend = blocker<void>();
+  private awaitSend: Blocker<void> | null = blocker<void>();
   private presence: Presence;
   private provideJwtToken: () => string;
   private onOperationError: (payload: {
@@ -77,9 +77,12 @@ class Live {
   }
 
   private resolveAwaitSend() {
-    const currentBlocker = this.awaitSend;
+    if (!this.awaitSend) {
+      return;
+    }
+    const awaitSend = this.awaitSend;
     this.awaitSend = null;
-    currentBlocker.resolve();
+    awaitSend.resolve();
   }
 
   private onSendOperation = async (moduleShortid, revision, operation) => {
@@ -283,8 +286,8 @@ class Live {
     if (this.isLiveBlockerExperiement() && this.awaitSend) {
       this.resolveAwaitSend();
       const client = this.clients.get(module.shortid);
-      if (client.pending) {
-        await client.pending.promise;
+      if (client.awaitSynchronized) {
+        await client.awaitSynchronized.promise;
       }
       this.setAwaitSend();
       // Send the save message
