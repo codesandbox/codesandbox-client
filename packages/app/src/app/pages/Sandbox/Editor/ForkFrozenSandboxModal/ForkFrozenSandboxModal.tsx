@@ -3,7 +3,7 @@ import { withTheme } from 'styled-components';
 import { ThemeProvider } from '@codesandbox/components';
 import { Alert } from 'app/pages/common/Modals/Common/Alert';
 import { useOvermind } from 'app/overmind';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import useKeyPressEvent from 'react-use/lib/useKeyPressEvent';
 
 const ModalContent: React.FC = () => {
@@ -28,7 +28,6 @@ const ModalContent: React.FC = () => {
   };
 
   useKeyPressEvent('Enter', fork);
-  // <Close onClick={() => modalsActions.forkFrozenModal.close('cancel')} />
   return (
     <Alert
       title={`Frozen ${customTemplate ? 'Template' : 'Sandbox'}`}
@@ -51,7 +50,7 @@ const ModalContent: React.FC = () => {
   );
 };
 
-const ForkFrozenSandboxModalComponent: React.FC<{ theme: any }> = ({
+const ForkFrozenSandboxModalComponent: FunctionComponent<{ theme: any }> = ({
   theme,
 }) => {
   const {
