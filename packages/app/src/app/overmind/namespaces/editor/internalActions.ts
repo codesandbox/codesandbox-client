@@ -301,7 +301,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   });
 };
 
-export const setModuleCode: Action<{
+export const setStateModuleCode: Action<{
   module: Module;
   code: string;
 }> = ({ state, effects }, { module, code }) => {

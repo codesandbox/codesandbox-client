@@ -10,10 +10,10 @@ import {
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
   CollaboratorFragment,
@@ -285,7 +285,7 @@ export const onOperationApplied: Action<{
     return;
   }
 
-  actions.editor.internal.setModuleCode({
+  actions.editor.internal.setStateModuleCode({
     module,
     code,
   });
@@ -316,27 +316,36 @@ export const codeChanged: Action<{
     return;
   }
 
-  if (state.live.isLive) {
-    const operation = event
-      ? eventToTransform(event, module.code).operation
-      : getTextOperation(module.code, code);
+  // module.code !== code check is there to make sure that we don't end up sending
+  // duplicate updates to live. module.code === code only when VSCode detected a change
+  // from the filesystem (fs changed, vscode sees it, sends update). If this happens we
+  // never want to send that code update, since this actual code change goes through this
+  // specific code flow already.
+  if (state.live.isLive && module.code !== code) {
+    let operation;
+    if (event) {
+      operation = eventToTransform(event, module.code).operation;
+    } else {
+      const transform = getTextOperation(module.code, code);
+
+      operation = transform.operation;
+    }
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
   }
 
-  actions.editor.internal.setModuleCode({
+  actions.editor.internal.setStateModuleCode({
     module,
     code,
   });
+  if (module.savedCode !== null && module.code === module.savedCode) {
+    effects.vscode.revertModule(module);
+  }
 
   const { isServer } = getTemplate(state.editor.currentSandbox.template);
 
   if (!isServer && state.preferences.settings.livePreviewEnabled) {
     actions.editor.internal.updatePreviewCode();
-  }
-
-  if (module.savedCode !== null && module.code === module.savedCode) {
-    effects.vscode.revertModule(module);
   }
 };
 
@@ -471,6 +480,8 @@ export const moduleSelected: Action<
     }
 > = ({ actions, effects, state }, { id, path }) => {
   effects.analytics.track('Open File');
+
+  state.editor.hasLoadedInitialModule = true;
 
   const sandbox = state.editor.currentSandbox;
 
@@ -1479,7 +1490,7 @@ export const updateComment: AsyncAction<{
   id: string;
   data: {
     comment?: string;
-    isResolved: boolean;
+    isResolved?: boolean;
   };
 }> = async ({ effects, state }, { id, data }) => {
   if (!state.editor.currentSandbox) {
@@ -1493,7 +1504,7 @@ export const updateComment: AsyncAction<{
     currentComment &&
     state.editor.comments[sandboxId][id].id === currentComment.id;
 
-  if ('isResolved' in data) {
+  if ('isResolved' in data && data.isResolved) {
     state.editor.comments[sandboxId][id].isResolved = data.isResolved;
     if (updateIsCurrent && currentComment) {
       currentComment.isResolved = data.isResolved;
@@ -1587,9 +1598,12 @@ export const updateReply: AsyncAction<{
     });
   } catch (error) {
     effects.notificationToast.error(
-      'Unable to update your comment, please try again'
+      'Unable to update your reply, please try again'
     );
-    state.editor.comments[sandboxId][commentId] = old;
+    state.editor.comments[sandboxId][commentId] = {
+      ...old,
+      replies: old.replies,
+    };
   }
 };
 

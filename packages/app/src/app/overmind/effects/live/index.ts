@@ -4,7 +4,10 @@ import {
   Module,
   RoomInfo,
 } from '@codesandbox/common/lib/types';
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import {
+  captureException,
+  logBreadcrumb,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { Blocker, blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
@@ -104,6 +107,7 @@ class Live {
       operation: this.operationToElixir(operation.toJSON()),
       revision,
     }).catch(error => {
+      captureException(error);
       this.onOperationError({
         ...error.module_state[moduleShortid],
         moduleShortid,
@@ -239,7 +243,7 @@ class Live {
         data && data._messageId && this.pendingMessages.delete(data._messageId)
       );
 
-      if (event === 'phx_reply' || event.startsWith('chan_reply_')) {
+      if (event && (event === 'phx_reply' || event.startsWith('chan_reply_'))) {
         // No action listens to this
         return data;
       }
@@ -324,6 +328,8 @@ class Live {
     try {
       this.clients.get(moduleShortid).applyClient(operation);
     } catch (e) {
+      e.name = 'OperationFailure';
+      captureException(e);
       // Something went wrong, probably a sync mismatch. Request new version
       this.send('live:module_state', {});
     }

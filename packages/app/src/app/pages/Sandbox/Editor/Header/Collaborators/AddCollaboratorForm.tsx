@@ -6,7 +6,7 @@ import css from '@styled-system/css';
 import { Authorization } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { UserSearchInput } from './UserSearchInput';
-import { PermissionSelect, SELECT_WIDTH } from './PermissionSelect';
+import { PermissionSelect, MENU_WIDTH } from './PermissionSelect';
 
 export const AddCollaboratorForm = () => {
   const { actions, state } = useOvermind();
@@ -67,17 +67,17 @@ export const AddCollaboratorForm = () => {
           onInputValueChange={val => {
             setInputValue(val);
           }}
-          css={css({ paddingRight: SELECT_WIDTH })}
+          css={css({ paddingRight: MENU_WIDTH })}
         />
 
         <PermissionSelect
-          css={css({
-            position: 'absolute',
-            right: 0,
-            top: 0,
-          })}
           value={authorization}
-          onChange={e => setAuthorization(e.target.value as Authorization)}
+          onChange={setAuthorization}
+          css={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+          }}
         />
       </motion.div>
 

@@ -1,4 +1,3 @@
-import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 import {
   getChildren as calculateChildren,
   inDirectory,
@@ -8,6 +7,7 @@ import { useOvermind } from 'app/overmind';
 import React from 'react';
 import { DropTarget, DropTargetMonitor } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
+import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 
 import DirectoryChildren from './DirectoryChildren';
 import DirectoryEntryModal from './DirectoryEntryModal';
@@ -145,69 +145,85 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     }
   }, [isOver]);
 
-  const resetState = () => setCreating(null);
+  const resetState = React.useCallback(() => setCreating(null), []);
 
-  const onCreateModuleClick = () => {
+  const onCreateModuleClick = React.useCallback(() => {
     setCreating('module');
     setOpen(true);
 
     return true;
-  };
+  }, []);
 
-  const createModule = (_, title: string) => {
-    moduleCreated({
-      title,
-      directoryShortid: shortid,
-    });
+  const createModule = React.useCallback(
+    (_, title: string) => {
+      moduleCreated({
+        title,
+        directoryShortid: shortid,
+      });
 
-    resetState();
-  };
+      resetState();
+    },
+    [moduleCreated, resetState, shortid]
+  );
 
-  const renameModule = (moduleShortid: string, title: string) => {
-    moduleRenamed({ moduleShortid, title });
-  };
+  const renameModule = React.useCallback(
+    (moduleShortid: string, title: string) => {
+      moduleRenamed({ moduleShortid, title });
+    },
+    [moduleRenamed]
+  );
 
-  const confirmDeleteModule = (moduleShortid: string, moduleName: string) => {
-    setModalConfirm({
-      title: 'Delete File',
-      body: (
-        <span>
-          Are you sure you want to delete{' '}
-          <b
-            css={`
-              word-break: break-all;
-            `}
-          >
-            {moduleName}
-          </b>
-          ?
-          <br />
-          The file will be permanently removed.
-        </span>
-      ),
-      onConfirm: () => {
-        closeModals();
-        moduleDeleted({
-          moduleShortid,
-        });
-      },
-    });
-  };
+  const closeModals = React.useCallback(() => {
+    setModalConfirm(null);
+  }, []);
 
-  const onCreateDirectoryClick = () => {
+  const confirmDeleteModule = React.useCallback(
+    (moduleShortid: string, moduleName: string) => {
+      setModalConfirm({
+        title: 'Delete File',
+        body: (
+          <span>
+            Are you sure you want to delete{' '}
+            <b
+              css={`
+                word-break: break-all;
+              `}
+            >
+              {moduleName}
+            </b>
+            ?
+            <br />
+            The file will be permanently removed.
+          </span>
+        ),
+        onConfirm: () => {
+          closeModals();
+          moduleDeleted({
+            moduleShortid,
+          });
+        },
+      });
+    },
+    [closeModals, moduleDeleted]
+  );
+
+  const onCreateDirectoryClick = React.useCallback(() => {
     setCreating('directory');
     setOpen(true);
 
     return true;
-  };
+  }, []);
 
-  const createDirectory = (_, title: string) => {
-    directoryCreated({
-      title,
-      directoryShortid: shortid,
-    });
-    resetState();
-  };
+  const createDirectory = React.useCallback(
+    (_, title: string) => {
+      directoryCreated({
+        title,
+        directoryShortid: shortid,
+      });
+      resetState();
+    },
+    [directoryCreated, resetState, shortid]
+  );
 
   const onUploadFileClick = React.useCallback(() => {
     const fileSelector = document.createElement('input');
@@ -226,75 +242,89 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     fileSelector.click();
   }, [filesUploaded, shortid]);
 
-  const renameDirectory = (directoryShortid: string, title: string) => {
-    directoryRenamed({ title, directoryShortid });
-  };
+  const renameDirectory = React.useCallback(
+    (directoryShortid: string, title: string) => {
+      directoryRenamed({ title, directoryShortid });
+    },
+    [directoryRenamed]
+  );
 
-  const closeModals = () => {
-    setModalConfirm(null);
-  };
+  const confirmDeleteDirectory = React.useCallback(
+    (directoryShortid: string, directoryName: string) => {
+      setModalConfirm({
+        title: 'Delete Directory',
+        body: (
+          <span>
+            Are you sure you want to delete <b>{directoryName}</b>?
+            <br />
+            The directory will be permanently removed.
+          </span>
+        ),
+        onConfirm: () => {
+          closeModals();
+          directoryDeleted({
+            directoryShortid,
+          });
+        },
+      });
+    },
+    [closeModals, directoryDeleted]
+  );
 
-  const confirmDeleteDirectory = (
-    directoryShortid: string,
-    directoryName: string
-  ) => {
-    setModalConfirm({
-      title: 'Delete Directory',
-      body: (
-        <span>
-          Are you sure you want to delete <b>{directoryName}</b>?
-          <br />
-          The directory will be permanently removed.
-        </span>
-      ),
-      onConfirm: () => {
-        closeModals();
-        directoryDeleted({
-          directoryShortid,
-        });
-      },
-    });
-  };
+  const confirmDiscardChanges = React.useCallback(
+    (moduleShortid: string, moduleName: string) => {
+      setModalConfirm({
+        title: 'Discard Changes',
+        body: (
+          <span>
+            Are you sure you want to discard changes on <b>{moduleName}</b>?
+          </span>
+        ),
+        onConfirm: () => {
+          closeModals();
+          discardModuleChanges({
+            moduleShortid,
+          });
+        },
+      });
+    },
+    [closeModals, discardModuleChanges]
+  );
 
-  const confirmDiscardChanges = (moduleShortid: string, moduleName: string) => {
-    setModalConfirm({
-      title: 'Discard Changes',
-      body: (
-        <span>
-          Are you sure you want to discard changes on <b>{moduleName}</b>?
-        </span>
-      ),
-      onConfirm: () => {
-        closeModals();
-        discardModuleChanges({
-          moduleShortid,
-        });
-      },
-    });
-  };
+  const toggleOpen = React.useCallback(() => setOpen(!open), [open]);
 
-  const toggleOpen = () => setOpen(!open);
+  const closeTree = React.useCallback(() => setOpen(false), []);
 
-  const closeTree = () => setOpen(false);
+  const getChildren = React.useCallback(
+    () => calculateChildren(modules, directories, shortid),
+    [directories, modules, shortid]
+  );
 
-  const validateModuleTitle = (moduleId: string, title: string) =>
-    validateTitle(moduleId, title, getChildren());
+  const validateModuleTitle = React.useCallback(
+    (moduleId: string, title: string) =>
+      validateTitle(moduleId, title, getChildren()),
+    [getChildren]
+  );
 
-  const validateDirectoryTitle = (directoryId: string, title: string) => {
-    if (root) return null;
+  const validateDirectoryTitle = React.useCallback(
+    (directoryId: string, title: string) => {
+      if (root) return null;
 
-    return validateTitle(directoryId, title, getChildren());
-  };
+      return validateTitle(directoryId, title, getChildren());
+    },
+    [getChildren, root]
+  );
 
-  const getChildren = () => calculateChildren(modules, directories, shortid);
+  const setCurrentModule = React.useCallback(
+    (moduleId: string) => {
+      moduleSelected({ id: moduleId });
+    },
+    [moduleSelected]
+  );
 
-  const setCurrentModule = (moduleId: string) => {
-    moduleSelected({ id: moduleId });
-  };
-
-  const markTabsNotDirty = () => {
+  const markTabsNotDirty = React.useCallback(() => {
     moduleDoubleClicked();
-  };
+  }, [moduleDoubleClicked]);
 
   const title = root ? 'Project' : directories.find(m => m.id === id).title;
 

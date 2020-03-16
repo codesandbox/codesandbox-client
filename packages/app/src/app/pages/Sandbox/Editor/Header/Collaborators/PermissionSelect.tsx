@@ -1,13 +1,6 @@
 import React from 'react';
-import css from '@styled-system/css';
-import { Select, Stack } from '@codesandbox/components';
+import { Menu, Icon } from '@codesandbox/components';
 import { Authorization } from 'app/graphql/types';
-
-interface IPermissionSelectProps extends React.ComponentProps<typeof Select> {
-  additionalOptions?: { value: string; label: string }[];
-  permissions?: Authorization[];
-  pretext?: string;
-}
 
 const authToName = {
   [Authorization.WriteCode]: 'Can Edit',
@@ -17,25 +10,43 @@ const authToName = {
   [Authorization.WriteProject]: 'Edit Sandbox Info',
 };
 
-export const SELECT_WIDTH = 85;
+// Based on the longest option in the mnu
+// which is "Can Comment"
+export const MENU_WIDTH = 110;
+
+interface IPermissionSelectProps {
+  additionalOptions?: { value: string; label: string }[];
+  permissions?: Authorization[];
+  pretext?: string;
+  value: Authorization;
+  onChange: (Authorization) => void;
+  disabled?: boolean;
+}
+
 export const PermissionSelect = ({
   additionalOptions = [],
   permissions = [Authorization.WriteCode, Authorization.Read],
+  value: selectedValue,
+  onChange,
+  disabled,
   ...props
 }: IPermissionSelectProps) => (
-  <Stack align="center">
-    <Select variant="link" css={css({ width: SELECT_WIDTH })} {...props}>
+  <Menu>
+    <Menu.Button disabled={disabled} {...props}>
+      {authToName[selectedValue]} <Icon name="caret" size={2} marginLeft={1} />
+    </Menu.Button>
+    <Menu.List>
       {permissions.map(auth => (
-        <option key={auth} value={auth}>
+        <Menu.Item key={auth} onSelect={() => onChange(auth)}>
           {authToName[auth]}
-        </option>
+        </Menu.Item>
       ))}
 
       {additionalOptions.map(({ label, value }) => (
-        <option key={value} value={value}>
+        <Menu.Item key={label} onSelect={() => onChange(value)}>
           {label}
-        </option>
+        </Menu.Item>
       ))}
-    </Select>
-  </Stack>
+    </Menu.List>
+  </Menu>
 );

@@ -1,7 +1,9 @@
 // @ts-nocheck
 import React from 'react';
+import deepmerge from 'deepmerge';
 import { Button } from '../Button';
 import { Icon, IconNames } from '../Icon';
+import { Tooltip } from '../Tooltip';
 
 type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** name of the icon */
@@ -16,27 +18,32 @@ export const IconButton: React.FC<IconButtonProps> = ({
   name,
   title,
   size,
+  css = {},
   ...props
 }) => (
   // @ts-ignore
-  <Button
-    title={title}
-    variant="link"
-    css={{
-      width: '26px', // same width as (height of the button)
-      padding: 0,
-      borderRadius: '50%',
-      ':hover:not(:disabled)': {
-        backgroundColor: 'secondaryButton.background',
-      },
-      ':focus:not(:disabled)': {
-        outline: 'none',
-        backgroundColor: 'secondaryButton.background',
-      },
-    }}
-    // @ts-ignore
-    {...props}
-  >
-    <Icon name={name} size={size} />
-  </Button>
+  <Tooltip label={title}>
+    <Button
+      variant="link"
+      css={deepmerge(
+        {
+          width: '26px', // same width as (height of the button)
+          padding: 0,
+          borderRadius: '50%',
+          ':hover:not(:disabled)': {
+            backgroundColor: 'secondaryButton.background',
+          },
+          ':focus:not(:disabled)': {
+            outline: 'none',
+            backgroundColor: 'secondaryButton.background',
+          },
+        },
+        css
+      )}
+      // @ts-ignore
+      {...props}
+    >
+      <Icon name={name} size={size} />
+    </Button>
+  </Tooltip>
 );

@@ -1,3 +1,4 @@
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Blocker, blocker } from 'app/utils/blocker';
 
 import { OTClient, synchronized_ } from './ot/client';
@@ -35,6 +36,14 @@ class CodeSandboxOTClient extends OTClient {
 
     this.onSendOperation(revision, operation)
       .then(() => {
+        logBreadcrumb({
+          type: 'ot',
+          message: `Acknowledging ${JSON.stringify({
+            moduleShortid: this.moduleShortid,
+            revision,
+            operation,
+          })}`,
+        });
         if (this.revision === revision) {
           this.serverAck();
         }

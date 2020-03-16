@@ -1,10 +1,9 @@
 import React, { FunctionComponent } from 'react';
-import { Button, Element } from '@codesandbox/components';
+import { Element } from '@codesandbox/components';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Overlay } from 'app/components/Overlay';
 import { useOvermind } from 'app/overmind';
 
-import { AddPeople } from './icons';
 import { Container, HorizontalSeparator } from './elements';
 import { AddCollaboratorForm } from './AddCollaboratorForm';
 import { LinkPermissions } from './Collaborator';
@@ -43,18 +42,16 @@ const CollaboratorContent = () => {
   );
 };
 
-export const Collaborators: FunctionComponent = () => (
+export const Collaborators: FunctionComponent<{
+  renderButton: (any) => JSX.Element;
+}> = ({ renderButton }) => (
   <>
     <Overlay
       noHeightAnimation={false}
       event="Collaborators"
       content={CollaboratorContent}
     >
-      {open => (
-        <Button onClick={() => open()} variant="link">
-          <AddPeople width={24} height={24} />
-        </Button>
-      )}
+      {open => renderButton({ onClick: () => open() })}
     </Overlay>
   </>
 );
