@@ -42,7 +42,9 @@ export const onOperationError: Action<{
 if (code !== undefined) {
   module.code = code;
 }
+if (saved_code !== undefined) {
   module.savedCode = saved_code;
+}
 
   effects.vscode.setModuleCode(module);
 };
