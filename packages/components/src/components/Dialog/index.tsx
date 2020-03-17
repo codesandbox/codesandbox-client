@@ -45,9 +45,9 @@ type DialogTypes = React.FC<{
   /** Accessible label for dialog content */
   label: string;
 }> & {
-  Content: typeof DialogContent;
   Button: typeof DialogButton;
   IconButton: typeof DialogIconButton;
+  Content: typeof Content;
 };
 
 const Dialog: DialogTypes = ({ label, children }) => {
