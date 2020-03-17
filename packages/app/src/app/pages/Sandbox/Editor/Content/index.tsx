@@ -182,7 +182,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
               <Stack
                 css={css({
                   position: 'absolute',
-                  top: 36,
+                  top: 34,
                   zIndex: 45,
                   right: 0,
                 })}
@@ -195,7 +195,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                     css={{
                       transition: '0.3s ease opacity',
                       background: `rgb(${followingUser.color.join(',')})`,
-                      padding: '2px 4px',
+                      padding: '2px 8px',
                       fontSize: '12px',
                       float: 'right',
                       width: 'max-content',

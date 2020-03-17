@@ -7,7 +7,7 @@ import Tooltip, {
 } from '@codesandbox/common/lib/components/Tooltip';
 import { TippyProps } from '@tippy.js/react';
 import { useOvermind } from 'app/overmind';
-import { Stack, Avatar, Text, Menu } from '@codesandbox/components';
+import { Stack, Avatar, Text, Menu, Link } from '@codesandbox/components';
 import { LiveUser } from '@codesandbox/common/lib/types';
 
 interface ICollaboratorHeadProps {
@@ -41,7 +41,15 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
           {props.username}
           {props.isCurrentUser && ' (you)'}
         </Text>
-        <Text variant="muted">View Profile</Text>
+        <Link
+          href={`/u/${props.username}`}
+          target="_blank"
+          rel="noreferrer noopener"
+          size={2}
+          variant="muted"
+        >
+          View Profile
+        </Link>
       </Stack>
     }
   >
