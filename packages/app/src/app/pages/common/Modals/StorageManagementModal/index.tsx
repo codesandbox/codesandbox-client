@@ -24,7 +24,7 @@ export const StorageManagementModal: FunctionComponent = () => {
       </Text>
       {!isEmpty && !isLoading && <FilesList />}
       {isEmpty && (
-        <Text align="center" weight="bold">
+        <Text align="center" weight="bold" block marginTop={6} marginBottom={6}>
           You have no uploaded files.
         </Text>
       )}

@@ -9,6 +9,7 @@ import {
   Stack,
   Button,
   Textarea,
+  Text,
 } from '@codesandbox/components';
 import React, {
   ChangeEvent,
@@ -113,9 +114,10 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
               variant={emoji === 'happy' ? 'primary' : 'secondary'}
               onClick={setHappy}
             >
-              <span aria-label="happy" role="img">
+              {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
+              <Text size={4} as="span" aria-label="happy" role="img">
                 😊
-              </span>
+              </Text>
             </Button>
 
             <Button
@@ -123,9 +125,10 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
               variant={emoji === 'sad' ? 'primary' : 'secondary'}
               onClick={setSad}
             >
-              <span aria-label="sad" role="img">
+              {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
+              <Text size={4} as="span" aria-label="sad" role="img">
                 😞
-              </span>
+              </Text>
             </Button>
           </Stack>
 
