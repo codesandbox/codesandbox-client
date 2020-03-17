@@ -11,7 +11,7 @@ export type SendOperation = (
 
 export type ApplyOperation = (moduleShortid: string, operation: any) => void;
 
-class CodeSandboxOTClient extends OTClient {
+export class CodeSandboxOTClient extends OTClient {
   /*
     We need to be able to wait for a client to go intro synchronized
     state. The reason is that we want to send a "save" event when the
@@ -34,6 +34,7 @@ class CodeSandboxOTClient extends OTClient {
     this.onApplyOperation = onApplyOperation;
   }
 
+  lastAcknowledgedRevision = null;
   sendOperation(revision, operation) {
     // Whenever we send an operation we enable the blocker
     // that lets us wait for its resolvment when moving back
@@ -42,7 +43,7 @@ class CodeSandboxOTClient extends OTClient {
       this.awaitSynchronized = blocker();
     }
 
-    this.onSendOperation(revision, operation)
+    return this.onSendOperation(revision, operation)
       .then(() => {
         logBreadcrumb({
           type: 'ot',
@@ -52,8 +53,10 @@ class CodeSandboxOTClient extends OTClient {
             operation,
           })}`,
         });
-        // We only acknowledge valig revisions
-        if (this.revision === revision) {
+
+        // We make sure to not acknowledge the same revision twice
+        if (this.lastAcknowledgedRevision < revision) {
+          this.lastAcknowledgedRevision = revision;
           this.serverAck();
         }
       })
@@ -64,6 +67,8 @@ class CodeSandboxOTClient extends OTClient {
         if (this.awaitSynchronized) {
           this.awaitSynchronized.reject(error);
         }
+
+        throw error;
       });
   }
 

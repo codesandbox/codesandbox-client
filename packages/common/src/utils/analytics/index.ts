@@ -40,7 +40,7 @@ export async function identify(key: string, value: any) {
 }
 
 export async function setAnonymousId() {
-  if (!DO_NOT_TRACK_ENABLED) {
+  if (!DO_NOT_TRACK_ENABLED && typeof localStorage !== 'undefined') {
     let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
 
     if (!anonymousUid) {
