@@ -201,7 +201,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately({ initialRender: true });
 
   if (COMMENTS) {
     try {

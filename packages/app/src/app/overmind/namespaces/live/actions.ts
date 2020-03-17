@@ -88,7 +88,6 @@ export const roomJoined: AsyncAction<{
 
   effects.live.sendModuleStateSyncRequest();
   effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately({ initialRender: true });
   state.editor.isLoading = false;
 });
 
