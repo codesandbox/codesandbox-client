@@ -20,7 +20,9 @@ describe('OTClient', () => {
     // (1) resolves. Resolved because of Phoenix
     // (2) resolves. Resolved because of server reconnect
 
+    client.applyClient(op);
     await client.sendOperation(0, op);
-    await client.sendOperation(0, op);
+
+    expect(client.revision).toBe(1);
   });
 });
