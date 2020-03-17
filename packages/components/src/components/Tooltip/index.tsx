@@ -94,7 +94,7 @@ const Tooltip = props => {
   return (
     <>
       <TooltipStyles />
-      {React.cloneElement(props.children, trigger)}
+      <span {...trigger}>{props.children}</span>
       <TooltipPopup
         {...tooltip}
         data-component="Tooltip"

@@ -12,12 +12,15 @@ type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   title: string;
   /** Size of the icon, the button is set to 26x26 */
   size?: number;
+  /** optional ref to bypass tooltip */
+  innerRef?: React.Ref;
 };
 
 export const IconButton: React.FC<IconButtonProps> = ({
   name,
   title,
   size,
+  innerRef,
   css = {},
   ...props
 }) => (
@@ -25,6 +28,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   <Tooltip label={title}>
     <Button
       variant="link"
+      ref={innerRef}
       css={deepmerge(
         {
           width: '26px', // same width as (height of the button)
