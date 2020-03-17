@@ -438,14 +438,7 @@ export const forkSandboxClicked: AsyncAction = async ({
   if (!state.editor.currentSandbox) {
     return;
   }
-
-  if (
-    state.editor.currentSandbox.owned &&
-    !state.editor.currentSandbox.customTemplate
-  ) {
-    return;
-  }
-
+  
   await actions.editor.internal.forkSandbox({
     sandboxId: state.editor.currentSandbox.id,
   });
