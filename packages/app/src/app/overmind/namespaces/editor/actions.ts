@@ -326,9 +326,7 @@ export const codeChanged: Action<{
     if (event) {
       operation = eventToTransform(event, module.code).operation;
     } else {
-      const transform = getTextOperation(module.code, code);
-
-      operation = transform.operation;
+      operation = getTextOperation(module.code, code);
     }
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
