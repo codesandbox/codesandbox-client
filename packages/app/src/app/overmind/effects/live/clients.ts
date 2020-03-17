@@ -34,7 +34,7 @@ export class CodeSandboxOTClient extends OTClient {
     this.onApplyOperation = onApplyOperation;
   }
 
-  lastAcknowledgedRevision = null;
+  lastAcknowledgedRevision: number = -1;
   sendOperation(revision, operation) {
     // Whenever we send an operation we enable the blocker
     // that lets us wait for its resolvment when moving back
