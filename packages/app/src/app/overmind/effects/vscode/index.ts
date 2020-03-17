@@ -508,23 +508,34 @@ export class VSCodeEffect {
     if (!fileSystem.existsSync(`/recover/${sandboxId}`)) {
       fileSystem.mkdirSync(`/recover/${sandboxId}`);
     }
-    fileSystem.writeFileSync(recoverPath, recoverCode);
+    fileSystem.writeFileSync(recoverPath, module.code);
+    fileSystem.writeFileSync(filePath, recoverCode);
 
+    /*
     await this.setModuleCode({
       ...module,
+      code: recoverCode,
+      savedCode: recoverCode,
     });
+    */
 
-    this.editorApi.editorService.openEditor({
-      leftResource: this.monaco.Uri.from({
-        scheme: 'conflictResolution',
-        path: recoverPath,
-      }),
-      rightResource: this.monaco.Uri.file(filePath),
-      label: `Recover - ${module.path}`,
-      options: {
-        pinned: true,
-      },
-    });
+    const rightResource = await this.editorApi.textFileService.models
+      .loadOrCreate(this.monaco.Uri.file(filePath))
+      .then(model => model.resource);
+
+    setTimeout(() => {
+      this.editorApi.editorService.openEditor({
+        leftResource: this.monaco.Uri.from({
+          scheme: 'conflictResolution',
+          path: recoverPath,
+        }),
+        rightResource,
+        label: `Recover - ${module.path}`,
+        options: {
+          pinned: true,
+        },
+      });
+    }, 1000);
   }
 
   public setCorrections = (corrections: ModuleCorrection[]) => {
