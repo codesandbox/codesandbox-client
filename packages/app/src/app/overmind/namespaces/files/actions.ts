@@ -24,13 +24,14 @@ export const internal = internalActions;
 export const createRecoverDiffs: Action<Array<{
   module: Module;
   recoverData: RecoverData;
-}>> = ({ state, effects }, recoveredList) => {
+}>> = ({ state, effects, actions }, recoveredList) => {
   recoveredList.forEach(({ recoverData, module }) => {
-    effects.vscode.openDiff(
-      state.editor.currentSandbox.id,
-      module,
-      recoverData.code
-    );
+    const oldCode = module.code;
+    actions.editor.codeChanged({
+      moduleShortid: module.shortid,
+      code: recoverData.code,
+    });
+    effects.vscode.openDiff(state.editor.currentSandbox.id, module, oldCode);
   });
 
   effects.analytics.track('Files Recovered', {
