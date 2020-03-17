@@ -1,13 +1,10 @@
 import React, { FunctionComponent, ReactNode } from 'react';
-
+import { Element, Text } from '@codesandbox/components';
 import {
-  Container,
   Cube,
   DeployAnimationContainer,
-  DeployText,
   GitHubLogo,
   OpaqueLogo,
-  Result,
 } from './elements';
 
 type Props = {
@@ -15,9 +12,11 @@ type Props = {
   result: ReactNode;
 };
 export const GitProgress: FunctionComponent<Props> = ({ message, result }) => (
-  <Container>
+  <Element padding={4} paddingTop={6}>
     {result ? (
-      <Result>{result}</Result>
+      <Text marginBottom={4} size={3} block>
+        {result}
+      </Text>
     ) : (
       <>
         <DeployAnimationContainer deploying>
@@ -29,9 +28,10 @@ export const GitProgress: FunctionComponent<Props> = ({ message, result }) => (
 
           <GitHubLogo />
         </DeployAnimationContainer>
-
-        <DeployText>{message}</DeployText>
+        <Text align="center" weight="bold" block size={4} marginTop={4}>
+          {message}
+        </Text>
       </>
     )}
-  </Container>
+  </Element>
 );
