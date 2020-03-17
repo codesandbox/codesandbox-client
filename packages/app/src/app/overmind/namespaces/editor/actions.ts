@@ -191,13 +191,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   await actions.editor.internal.initializeSandbox(sandbox);
 
-  if (
-    hasPermission(sandbox.authorization, 'write_code') &&
-    !state.live.isLive
-  ) {
-    actions.files.internal.recoverFiles();
-  } else if (state.live.isLive) {
+  if (state.live.isLive) {
     await effects.live.sendModuleStateSyncRequest();
+    // We only recover files at this point if we are not live. When live we recover them
+    // when the module_state is received
+  } else if (hasPermission(sandbox.authorization, 'write_code')) {
+    actions.files.internal.recoverFiles();
   }
 
   effects.vscode.openModule(state.editor.currentModule);
@@ -285,13 +284,14 @@ export const onOperationApplied: Action<{
     return;
   }
 
-  actions.editor.internal.setStateModuleCode({
+  actions.editor.internal.updateModuleCode({
     module,
     code,
   });
 
   actions.editor.internal.updatePreviewCode();
 
+  // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {
     effects.vscode.revertModule(module);
   }
@@ -334,10 +334,11 @@ export const codeChanged: Action<{
     effects.live.sendCodeUpdate(moduleShortid, operation);
   }
 
-  actions.editor.internal.setStateModuleCode({
+  actions.editor.internal.updateModuleCode({
     module,
     code,
   });
+
   if (module.savedCode !== null && module.code === module.savedCode) {
     effects.vscode.revertModule(module);
   }
@@ -383,6 +384,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
             state.editor.modulesByPath,
             module
           );
+
           effects.moduleRecover.remove(sandbox.id, module);
         } else {
           // We might not have the module, as it was created by the server. In

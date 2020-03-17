@@ -1,4 +1,3 @@
-import { DiffTab, TabType } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Action, AsyncAction } from 'app/overmind';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
@@ -18,49 +17,32 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
   );
   effects.moduleRecover.clearSandbox(sandbox.id);
 
-  const recoveredList = recoverList
-    .map(item => {
-      if (!item) {
-        return false;
-      }
-      const { recoverData, module } = item;
+  const recoveredList = recoverList.reduce((aggr, item) => {
+    if (!item) {
+      return aggr;
+    }
+    const { recoverData, module } = item;
 
-      if (module.code === recoverData.savedCode) {
-        const titleA = `saved '${module.title}'`;
-        const titleB = `recovered '${module.title}'`;
-        const tab: DiffTab = {
-          type: TabType.DIFF,
-          codeA: module.code || '',
-          codeB: recoverData.code || '',
-          titleA,
-          titleB,
-          fileTitle: module.title,
-          id: `${titleA} - ${titleB}`,
-        };
-        state.editor.tabs.push(tab);
+    if (module.code !== recoverData.code) {
+      return aggr.concat(item);
+    }
 
-        actions.editor.codeChanged({
-          code: recoverData.code,
-          moduleShortid: module.shortid,
-        });
+    return aggr;
+  }, [] as typeof recoverList);
 
-        return true;
-      }
-
-      return false;
-    })
-    .filter(Boolean);
-  const numRecoveredFiles = recoveredList.length;
-
-  if (numRecoveredFiles > 0) {
-    effects.analytics.track('Files Recovered', {
-      fileCount: numRecoveredFiles,
-    });
-
+  if (recoveredList.length > 0) {
     effects.notificationToast.add({
-      message: `We recovered ${numRecoveredFiles} unsaved ${
-        numRecoveredFiles > 1 ? 'files' : 'file'
+      message: `We recovered ${recoveredList.length} unsaved ${
+        recoveredList.length > 1 ? 'files' : 'file'
       } from a previous session`,
+      actions: {
+        primary: [
+          {
+            label: 'Compare changes',
+            run: () => actions.files.createRecoverDiffs(recoveredList),
+          },
+        ],
+      },
       status: NotificationStatus.NOTICE,
     });
   }

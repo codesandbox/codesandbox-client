@@ -6,12 +6,12 @@ import {
 import getDefinition from '@codesandbox/common/lib/templates';
 import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
-import { INormalizedModules } from 'codesandbox-import-util-types';
-
-import { AsyncAction } from 'app/overmind';
+import { Action, AsyncAction } from 'app/overmind';
+import { RecoverData } from 'app/overmind/effects/moduleRecover';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import { createOptimisticModule } from 'app/overmind/utils/common';
+import { INormalizedModules } from 'codesandbox-import-util-types';
+import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 
 import {
   resolveDirectoryWrapped,
@@ -20,6 +20,23 @@ import {
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
+
+export const createRecoverDiffs: Action<Array<{
+  module: Module;
+  recoverData: RecoverData;
+}>> = ({ state, effects }, recoveredList) => {
+  recoveredList.forEach(({ recoverData, module }) => {
+    effects.vscode.openDiff(
+      state.editor.currentSandbox.id,
+      module,
+      recoverData.code
+    );
+  });
+
+  effects.analytics.track('Files Recovered', {
+    fileCount: recoveredList.length,
+  });
+};
 
 export const moduleRenamed: AsyncAction<{
   title: string;

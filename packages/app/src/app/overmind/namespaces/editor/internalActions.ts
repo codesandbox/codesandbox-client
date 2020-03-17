@@ -301,7 +301,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   });
 };
 
-export const setStateModuleCode: Action<{
+export const updateModuleCode: Action<{
   module: Module;
   code: string;
 }> = ({ state, effects }, { module, code }) => {
@@ -324,16 +324,10 @@ export const setStateModuleCode: Action<{
     tab.dirty = false;
   }
 
-  // Save the code to localStorage so we can recover in case of a crash
-  effects.moduleRecover.save(
-    currentSandbox.id,
-    currentSandbox.version,
-    module,
-    code,
-    module.savedCode
-  );
-
   module.code = code;
+
+  // Save the code to localStorage so we can recover in case of a crash
+  effects.moduleRecover.save(currentSandbox.id, currentSandbox.version, module);
 };
 
 export const forkSandbox: AsyncAction<{

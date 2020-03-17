@@ -133,6 +133,7 @@ export const initializeModuleState: Action<any> = (
       }
     }
   });
+  actions.files.internal.recoverFiles();
   actions.editor.internal.updatePreviewCode();
 };
 
