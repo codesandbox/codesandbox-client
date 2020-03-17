@@ -39,12 +39,12 @@ export const onOperationError: Action<{
     return;
   }
 
-if (code !== undefined) {
-  module.code = code;
-}
-if (saved_code !== undefined) {
-  module.savedCode = saved_code;
-}
+  if (code !== undefined) {
+    module.code = code;
+  }
+  if (saved_code !== undefined) {
+    module.savedCode = saved_code;
+  }
 
   effects.vscode.setModuleCode(module);
 };
@@ -88,7 +88,6 @@ export const roomJoined: AsyncAction<{
 
   effects.live.sendModuleStateSyncRequest();
   effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately({ initialRender: true });
   state.editor.isLoading = false;
 });
 
@@ -118,8 +117,6 @@ export const createLiveClicked: AsyncAction<string> = async (
       };
     }),
   });
-
-  Object.assign(state.editor.sandboxes[sandboxId], sandbox);
   state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
 
   effects.live.sendModuleStateSyncRequest();
