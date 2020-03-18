@@ -159,7 +159,9 @@ const Content = ({ style = {}, children, ...props }) => {
 };
 
 const centered = (triggerRect, dialogRect) => {
-  if (!dialogRect || !triggerRect) return { left: 0, top: 0 };
+  if (!dialogRect || !triggerRect) {
+    return { left: 0, top: 0 };
+  }
 
   const triggerCenter = triggerRect.left + triggerRect.width / 2;
   const left = triggerCenter - dialogRect.width / 2;
