@@ -116,7 +116,9 @@ const Content = ({ style = {}, children, ...props }) => {
   const [overlayVisible, setOverlayVisiblity] = React.useState(false);
 
   React.useEffect(() => {
-    if (dialogVisible) setOverlayVisiblity(true);
+    if (dialogVisible) {
+      setOverlayVisiblity(true);
+    }
   }, [dialogVisible]);
 
   return (
