@@ -1025,7 +1025,8 @@ export class VSCodeEffect {
         const [range] = activeEditor.getVisibleRanges();
 
         if (
-          lastViewRange == null ||
+          lastViewRange != null &&
+          range &&
           isDifferentViewRange(lastViewRange!, range)
         ) {
           lastViewRange = range;
