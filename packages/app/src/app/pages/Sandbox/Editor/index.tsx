@@ -47,7 +47,7 @@ const ContentSplit = () => {
     const dispose = reaction(
       reactionState => reactionState.editor.hasLoadedInitialModule,
       () => {
-        timeout = setTimeout(() => setShowSkeleton(false), 500);
+        // timeout = setTimeout(() => setShowSkeleton(false), 500);
       }
     );
     return () => {
