@@ -23,8 +23,3 @@ export const ErrorText = styled.div`
   color: ${props => props.theme.red};
   font-size: 0.875rem;
 `;
-
-export const Label = styled.label`
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.5);
-`;

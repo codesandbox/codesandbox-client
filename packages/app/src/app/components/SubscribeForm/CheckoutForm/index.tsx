@@ -5,9 +5,9 @@ import {
   ReactStripeElements,
 } from 'react-stripe-elements';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
-import { Button } from '@codesandbox/components';
+import { Button, Label } from '@codesandbox/components';
 
-import { CardContainer, StripeInput, ErrorText, Label } from './elements';
+import { CardContainer, StripeInput, ErrorText } from './elements';
 
 interface Props {
   name: string;
@@ -115,7 +115,9 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
 
     return (
       <form onSubmit={this.handleSubmit}>
-        <Label>Cardholder Name</Label>
+        <Label variant="muted" size={3} paddingBottom={1}>
+          Cardholder Name
+        </Label>
         {errors.name != null && <ErrorText>{errors.name}</ErrorText>}
         <div>
           <StripeInput
@@ -125,7 +127,9 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
           />
         </div>
 
-        <Label>Card</Label>
+        <Label variant="muted" size={3} paddingBottom={1}>
+          Card
+        </Label>
         {stripeError != null && <ErrorText>{stripeError}</ErrorText>}
         <CardContainer>
           <CardElement
@@ -135,7 +139,9 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
 
         {hasCoupon && (
           <>
-            <Label>Coupon</Label>
+            <Label variant="muted" size={3} paddingBottom={1}>
+              Coupon
+            </Label>
             <div>
               <StripeInput
                 value={this.state.coupon}

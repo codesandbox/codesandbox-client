@@ -3,10 +3,7 @@ import React, { ComponentProps, FunctionComponent, useEffect } from 'react';
 import { SubscribeForm } from 'app/components/SubscribeForm';
 import { useOvermind } from 'app/overmind';
 
-import { Text } from '@codesandbox/components';
-
-import { Card } from './Card';
-import { Container } from './elements';
+import { Text, Element } from '@codesandbox/components';
 
 export const PaymentInfo: FunctionComponent = () => {
   const {
@@ -49,12 +46,27 @@ export const PaymentInfo: FunctionComponent = () => {
     }
 
     return (
-      <div>
+      <>
         <Text block size={4} marginTop={4} marginBottom={2}>
           Current card
         </Text>
-        <Card brand={brand} last4={last4} name={name} />
-        <Text block size={4} marginTop={4} marginBottom={2}>
+        <Element padding={4}>
+          <Element>
+            <Text weight="bold" size={3}>
+              {brand}
+            </Text>{' '}
+            <Text variant="muted">ending in ****</Text>
+            <Text weight="bold" size={3}>
+              {last4}
+            </Text>
+          </Element>
+          <Element>
+            <Text weight="bold" size={3}>
+              {name}
+            </Text>
+          </Element>
+        </Element>
+        <Text block size={4} marginTop={4} marginBottom={4}>
           Update card info
         </Text>
         <SubscribeForm
@@ -63,16 +75,16 @@ export const PaymentInfo: FunctionComponent = () => {
           name={name}
           subscribe={updatePaymentDetails}
         />
-      </div>
+      </>
     );
   };
 
   return (
-    <Container>
+    <Element>
       <Text size={4} marginBottom={6} block variant="muted" weight="bold">
         Payment Info
       </Text>
       <Body />
-    </Container>
+    </Element>
   );
 };
