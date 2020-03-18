@@ -26,7 +26,7 @@ Note that a [Pro subscription](https://codesandbox.io/pricing) is required to ma
 
 ## I'm getting a 422 error when importing from GitHub, why?
 
-There are a few possible reasons a repo might throw that error on import. The most common are either a lack of a `package.json` file, or the project and its dependencies using more than 500 modules (files). If you think it's something else, or you're not able to solve this yourself, then [get in touch](mailto:hello@codesandbox.io) and provide a link to the repo you're importing and we can look into this for you.
+There are a few possible reasons a repo might throw that error on import. The most common are either a lack of a `package.json` file, or the project using more than 500 modules (files). If you think it's something else, or you're not able to solve this yourself, then [get in touch](mailto:hello@codesandbox.io) and provide a link to the repo you're importing and we can look into this for you.
 
 ## Why are my start scripts not having an effect?      
 
