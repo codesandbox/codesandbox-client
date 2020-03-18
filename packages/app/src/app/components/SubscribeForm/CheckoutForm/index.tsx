@@ -20,6 +20,7 @@ interface Props {
   stripe?: ReactStripeElements.StripeProps;
   error?: Error | string;
   hasCoupon?: boolean;
+  theme?: any;
 }
 
 interface State {
@@ -187,5 +188,5 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
     );
   }
 }
-
+// @ts-ignore
 export const CheckoutForm = injectStripe(withTheme(CheckoutFormComponent));
