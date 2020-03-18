@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
+import { Stack } from '@codesandbox/components';
 
 import AppearanceIcon from 'react-icons/lib/md/color-lens';
 import CodeIcon from 'react-icons/lib/fa/code';
@@ -24,8 +25,6 @@ import { Badges } from './Badges';
 import { Experiments } from './Experiments';
 import { KeyMapping } from './KeyMapping';
 import { Alert } from '../Common/Alert';
-
-import { Container } from './elements';
 
 const PreferencesModal: React.FC = () => {
   const {
@@ -103,7 +102,11 @@ const PreferencesModal: React.FC = () => {
   const item = items.find(currentItem => currentItem.id === itemId);
 
   return (
-    <Container>
+    <Stack
+      css={css({
+        fontFamily: "'Inter', sans-serif",
+      })}
+    >
       <SideNavigation
         itemId={itemId}
         menuItems={items}
@@ -121,7 +124,7 @@ const PreferencesModal: React.FC = () => {
       >
         {item.content}
       </Alert>
-    </Container>
+    </Stack>
   );
 };
 
