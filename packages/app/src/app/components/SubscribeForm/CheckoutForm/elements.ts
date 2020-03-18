@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Input } from '@codesandbox/components';
 
 export const CardContainer = styled.div`
-  padding: 0.5rem;
+  padding: 0.5rem 0;
   margin-top: 0.25rem;
   margin-bottom: 0.5rem;
   border-radius: 4px;

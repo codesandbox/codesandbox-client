@@ -114,6 +114,9 @@ const PreferencesModal: React.FC = () => {
           backgroundColor: 'input.border',
           maxHeight: 'auto',
           width: '100%',
+          '*': {
+            boxSizing: 'border-box',
+          },
         })}
       >
         {item.content}

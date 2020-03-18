@@ -81,9 +81,10 @@ export const PaymentInfo: FunctionComponent = () => {
         <Text block size={4} marginTop={4} marginBottom={2}>
           Current card
         </Text>
-        <Stack align="center" paddingY={4}>
+        <Stack align="flex-start" paddingY={4}>
           <Element
             paddingRight={2}
+            marginTop={1}
             css={css({
               svg: {
                 height: 16,
