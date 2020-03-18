@@ -60,10 +60,11 @@ const variantStyles = {
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
+  size?: 'small' | 'normal';
 }
 
 export const Button = styled(Element).attrs({ as: 'button' })<ButtonProps>(
-  ({ variant = 'primary', ...props }) =>
+  ({ variant = 'primary', size = 'normal', ...props }) =>
     css(
       deepmerge(
         // @ts-ignore deepmerge allows functions as values
@@ -83,7 +84,7 @@ export const Button = styled(Element).attrs({ as: 'button' })<ButtonProps>(
           paddingY: 0,
           paddingX: 2,
           height: '26px', // match with inputs
-          width: '100%',
+          width: size === 'small' ? 'auto' : '100%',
           fontSize: 2,
           fontWeight: 'medium',
           lineHeight: 1, // trust the height

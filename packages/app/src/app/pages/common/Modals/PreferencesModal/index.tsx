@@ -22,8 +22,9 @@ import { Integrations } from './Integrations';
 import { Badges } from './Badges';
 import { Experiments } from './Experiments';
 import { KeyMapping } from './KeyMapping';
+import { Alert } from '../Common/Alert';
 
-import { Container, ContentContainer } from './elements';
+import { Container } from './elements';
 
 const PreferencesModal: React.FC = () => {
   const {
@@ -76,7 +77,8 @@ const PreferencesModal: React.FC = () => {
           icon: <IntegrationIcon />,
           content: <Integrations />,
         },
-        isPatron && {
+        // isPatron &&
+        {
           id: 'paymentInfo',
           title: 'Payment Info',
           icon: <CreditCardIcon />,
@@ -107,7 +109,7 @@ const PreferencesModal: React.FC = () => {
         menuItems={items}
         setItem={itemIdChanged}
       />
-      <ContentContainer>{item.content}</ContentContainer>
+      <Alert style={{ maxHeight: 'auto', width: '100%' }}>{item.content}</Alert>
     </Container>
   );
 };

@@ -3,7 +3,7 @@ import React, { ComponentProps, FunctionComponent, useEffect } from 'react';
 import { SubscribeForm } from 'app/components/SubscribeForm';
 import { useOvermind } from 'app/overmind';
 
-import { Title, Subheading } from '../elements';
+import { Text } from '@codesandbox/components';
 
 import { Card } from './Card';
 import { Container } from './elements';
@@ -33,18 +33,30 @@ export const PaymentInfo: FunctionComponent = () => {
   const Body = () => {
     const { brand, last4, name } = paymentDetails || {};
     if (isLoadingPaymentDetails) {
-      return <div>Loading payment details...</div>;
+      return (
+        <Text size={3} align="center" marginTop={6}>
+          Loading payment details...
+        </Text>
+      );
     }
 
     if (paymentDetailError) {
-      return <div>An error occurred: {paymentDetailError}</div>;
+      return (
+        <Text size={3} align="center" marginTop={6}>
+          An error occurred: {paymentDetailError}
+        </Text>
+      );
     }
 
     return (
       <div>
-        <Subheading>Current card</Subheading>
+        <Text block size={4} marginTop={4} marginBottom={2}>
+          Current card
+        </Text>
         <Card brand={brand} last4={last4} name={name} />
-        <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
+        <Text block size={4} marginTop={4} marginBottom={2}>
+          Update card info
+        </Text>
         <SubscribeForm
           buttonName="Update"
           loadingText="Updating Card Info..."
@@ -57,7 +69,9 @@ export const PaymentInfo: FunctionComponent = () => {
 
   return (
     <Container>
-      <Title>Payment Info</Title>
+      <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+        Payment Info
+      </Text>
       <Body />
     </Container>
   );

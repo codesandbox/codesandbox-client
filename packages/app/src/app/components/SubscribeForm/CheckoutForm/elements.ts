@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Input from '@codesandbox/common/lib/components/Input';
+import { Input } from '@codesandbox/components';
 
 export const CardContainer = styled.div`
   padding: 0.5rem;

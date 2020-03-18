@@ -6,6 +6,8 @@ export const onInitialize: OnInitialize = async (
 ) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
 
+  state.currentModal = 'preferences';
+
   state.isFirstVisit = Boolean(
     !effects.jwt.get() && !effects.browser.storage.get('hasVisited')
   );

@@ -4,8 +4,8 @@ import {
   CardElement,
   ReactStripeElements,
 } from 'react-stripe-elements';
-import { Button } from '@codesandbox/common/lib/components/Button';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
+import { Button } from '@codesandbox/components';
 
 import { CardContainer, StripeInput, ErrorText, Label } from './elements';
 

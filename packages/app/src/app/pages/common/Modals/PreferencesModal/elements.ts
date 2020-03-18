@@ -2,9 +2,7 @@ import { Preference } from '@codesandbox/common/lib/components/Preference';
 import styled, { css } from 'styled-components';
 
 export const SubContainer = styled.div`
-  color: ${props => props.theme.white};
   width: 100%;
-  color: rgba(255, 255, 255, 0.8);
 
   div {
     &:first-child {
@@ -66,8 +64,7 @@ export const Rule = styled.hr`
 export const Container = styled.div`
   display: flex;
   flex-direction: row;
-  background-color: ${props => props.theme.background};
-  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Inter', sans-serif;
 `;
 
 export const ContentContainer = styled.div`

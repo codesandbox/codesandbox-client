@@ -1,22 +1,25 @@
 import React from 'react';
-import Relative from '@codesandbox/common/lib/components/Relative';
-import { SocialInfo } from 'app/components/SocialInfo';
-import {
-  Container,
-  SocialContainer,
-  Title,
-  ITEM_HEIGHT,
-  Item,
-  Selector,
-} from './elements';
+import { Element, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { ITEM_HEIGHT, Item, Selector } from './elements';
 
 export const SideNavigation = ({ menuItems, itemId, setItem }) => {
   const itemIndex = menuItems.findIndex(item => item.id === itemId);
 
   return (
-    <Container>
-      <Title>Preferences</Title>
-      <Relative style={{ height: menuItems.length * ITEM_HEIGHT }}>
+    <Element
+      paddingBottom={8}
+      css={css({
+        backgroundColor: 'sideBar.border',
+        minWidth: 220,
+      })}
+    >
+      <Text padding={8} size={4} block weight="bold">
+        Preferences
+      </Text>
+      <Element
+        style={{ position: 'relative', height: menuItems.length * ITEM_HEIGHT }}
+      >
         {menuItems.map((item, i) => (
           <Item
             onClick={() => setItem({ itemId: item.id })}
@@ -31,10 +34,7 @@ export const SideNavigation = ({ menuItems, itemId, setItem }) => {
           </Item>
         ))}
         <Selector offset={itemIndex * ITEM_HEIGHT} />
-      </Relative>
-      <SocialContainer>
-        <SocialInfo />
-      </SocialContainer>
-    </Container>
+      </Element>
+    </Element>
   );
 };
