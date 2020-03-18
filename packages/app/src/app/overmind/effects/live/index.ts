@@ -11,7 +11,7 @@ import {
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { Blocker, blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
-import { TextOperation } from 'ot';
+import { TextOperation, SerializedTextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
 
@@ -19,7 +19,10 @@ import { OPTIMISTIC_ID_PREFIX } from '../utils';
 import clientsFactory from './clients';
 
 type Options = {
-  onApplyOperation(args: { moduleShortid: string; operation: any }): void;
+  onApplyOperation(args: {
+    moduleShortid: string;
+    operation: TextOperation;
+  }): void;
   provideJwtToken(): string;
   isLiveBlockerExperiement(): boolean;
   onOperationError(payload: {
@@ -93,7 +96,11 @@ class Live {
     awaitSend.resolve();
   }
 
-  private onSendOperation = async (moduleShortid, revision, operation) => {
+  private onSendOperation = async (
+    moduleShortid: string,
+    revision: number,
+    operation: TextOperation
+  ) => {
     logBreadcrumb({
       type: 'ot',
       message: `Sending ${JSON.stringify({
@@ -332,7 +339,7 @@ class Live {
     });
   }
 
-  sendCodeUpdate(moduleShortid: string, operation: any) {
+  sendCodeUpdate(moduleShortid: string, operation: TextOperation) {
     if (!operation) {
       return;
     }
@@ -465,13 +472,7 @@ class Live {
     return this.clients.getAll();
   }
 
-  applyClient(moduleShortid: string, operation: any) {
-    return this.clients
-      .get(moduleShortid)
-      .applyClient(TextOperation.fromJSON(operation));
-  }
-
-  applyServer(moduleShortid: string, operation: any) {
+  applyServer(moduleShortid: string, operation: SerializedTextOperation) {
     return this.clients
       .get(moduleShortid)
       .applyServer(TextOperation.fromJSON(operation));

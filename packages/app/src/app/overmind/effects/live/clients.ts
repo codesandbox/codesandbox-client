@@ -1,3 +1,4 @@
+import { TextOperation } from 'ot';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Blocker, blocker } from 'app/utils/blocker';
 
@@ -6,10 +7,13 @@ import { OTClient, synchronized_ } from './ot/client';
 export type SendOperation = (
   moduleShortid: string,
   revision: number,
-  operation: any
+  operation: TextOperation
 ) => Promise<unknown>;
 
-export type ApplyOperation = (moduleShortid: string, operation: any) => void;
+export type ApplyOperation = (
+  moduleShortid: string,
+  operation: TextOperation
+) => void;
 
 export class CodeSandboxOTClient extends OTClient {
   /*
@@ -19,14 +23,21 @@ export class CodeSandboxOTClient extends OTClient {
   */
   public awaitSynchronized: Blocker<void> | null;
   moduleShortid: string;
-  onSendOperation: (revision: number, operation: any) => Promise<unknown>;
-  onApplyOperation: (operation: any) => void;
+  onSendOperation: (
+    revision: number,
+    operation: TextOperation
+  ) => Promise<unknown>;
+
+  onApplyOperation: (operation: TextOperation) => void;
 
   constructor(
     revision: number,
     moduleShortid: string,
-    onSendOperation: (revision: number, operation: any) => Promise<unknown>,
-    onApplyOperation: (operation: any) => void
+    onSendOperation: (
+      revision: number,
+      operation: TextOperation
+    ) => Promise<unknown>,
+    onApplyOperation: (operation: TextOperation) => void
   ) {
     super(revision);
     this.moduleShortid = moduleShortid;
@@ -35,7 +46,7 @@ export class CodeSandboxOTClient extends OTClient {
   }
 
   lastAcknowledgedRevision: number = -1;
-  sendOperation(revision, operation) {
+  sendOperation(revision: number, operation: TextOperation) {
     // Whenever we send an operation we enable the blocker
     // that lets us wait for its resolvment when moving back
     // to synchronized state
@@ -72,7 +83,7 @@ export class CodeSandboxOTClient extends OTClient {
       });
   }
 
-  applyOperation(operation) {
+  applyOperation(operation: TextOperation) {
     this.onApplyOperation(operation);
   }
 
@@ -93,11 +104,11 @@ export class CodeSandboxOTClient extends OTClient {
     }
   }
 
-  applyClient(operation: any) {
+  applyClient(operation: TextOperation) {
     super.applyClient(operation);
   }
 
-  applyServer(operation: any) {
+  applyServer(operation: TextOperation) {
     super.applyServer(operation);
   }
 
