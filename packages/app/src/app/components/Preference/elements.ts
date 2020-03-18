@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import InputBase from '../Input';
+import { Input as InputBase } from '@codesandbox/components';
 
 export const Container = styled.div`
   display: flex;

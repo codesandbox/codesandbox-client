@@ -3,7 +3,7 @@ import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 import { Text, Element } from '@codesandbox/components';
-import { Preference } from '@codesandbox/common/lib/components/Preference';
+import { Preference } from 'app/components/Preference';
 
 import { PreferenceContainer } from '../../elements';
 import { VSCodePlaceholder } from '../../VSCodePlaceholder';

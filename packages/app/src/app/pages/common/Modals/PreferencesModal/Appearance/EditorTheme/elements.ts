@@ -1,4 +1,4 @@
-import { PreferenceText as PreferenceTextBase } from '@codesandbox/common/lib/components/Preference/PreferenceText';
+import { PreferenceText as PreferenceTextBase } from 'app/components/Preference/PreferenceText';
 import styled from 'styled-components';
 
 export const BigTitle = styled.h2`

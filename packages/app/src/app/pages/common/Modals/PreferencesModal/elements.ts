@@ -1,4 +1,4 @@
-import { Preference } from '@codesandbox/common/lib/components/Preference';
+import { Preference } from 'app/components/Preference';
 import styled, { css } from 'styled-components';
 
 export const SubContainer = styled.div`
