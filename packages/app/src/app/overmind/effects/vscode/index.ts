@@ -1026,7 +1026,7 @@ export class VSCodeEffect {
 
         if (
           lastViewRange == null ||
-          isDifferentViewRange(lastViewRange, range)
+          isDifferentViewRange(lastViewRange!, range)
         ) {
           lastViewRange = range;
           this.options.onViewRangeChanged(range);
