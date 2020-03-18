@@ -31,6 +31,7 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
 
   if (recoveredList.length > 0) {
     effects.notificationToast.add({
+      timeAlive: Infinity,
       message: `We recovered ${recoveredList.length} unsaved ${
         recoveredList.length > 1 ? 'files' : 'file'
       } from a previous session`,
@@ -41,7 +42,7 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
             run: () => actions.files.createRecoverDiffs(recoveredList),
           },
           {
-            label: 'Discard',
+            label: 'Discard changes',
             run: () => actions.files.discardRecover(),
           },
         ],
