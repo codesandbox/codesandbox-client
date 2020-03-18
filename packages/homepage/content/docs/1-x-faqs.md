@@ -26,7 +26,7 @@ Note that a [Pro subscription](https://codesandbox.io/pricing) is required to ma
 
 ## I'm getting a 422 error when importing from GitHub, why?
 
-There are a few possible reasons a repo might throw that error on import. The most common are either a lack of a `package.json` file, or the project and its dependencies using more than 500 modules. If you think it's something else, or you're not able to solve this yourself, then [get in touch](mailto:hello@codesandbox.io) and provide a link to the repo you're importing and we can look into this for you.
+There are a few possible reasons a repo might throw that error on import. The most common are either a lack of a `package.json` file, or the project and its dependencies using more than 500 modules (files). If you think it's something else, or you're not able to solve this yourself, then [get in touch](mailto:hello@codesandbox.io) and provide a link to the repo you're importing and we can look into this for you.
 
 ## Why are my start scripts not having an effect?      
 
@@ -42,7 +42,7 @@ Yes, the terminal, console, and problems tabs are all draggable. Click on the ta
 
 ## Are there any limitations with sandboxes?
 
-- A sandbox cannot use more than 500 modules (files). This includes dependencies and peer dependencies.
+- A sandbox cannot use more than 500 modules (files). Note though that `node_modules` and dependencies are not counted towards this limit.
 - Imported sandboxes must contain a package.json file.
 - The maximum file size that can be opened in the editor is 2MB. Files uploaded that are larger than that still exist but are linked as a static asset.
 - The maximum file upload size is 7MB. If you need this raised, please [email us](mailto:hello@codesandbox.io) with your username and the typical type and size of files you want to upload.
