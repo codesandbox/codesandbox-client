@@ -15,7 +15,6 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
     sandbox.id,
     sandbox.modules
   );
-  effects.moduleRecover.clearSandbox(sandbox.id);
 
   const recoveredList = recoverList.reduce((aggr, item) => {
     if (!item) {
@@ -40,6 +39,10 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
           {
             label: 'Compare changes',
             run: () => actions.files.createRecoverDiffs(recoveredList),
+          },
+          {
+            label: 'Discard',
+            run: () => actions.files.discardRecover(),
           },
         ],
       },

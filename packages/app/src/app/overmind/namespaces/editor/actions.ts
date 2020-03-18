@@ -191,11 +191,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   await actions.editor.internal.initializeSandbox(sandbox);
 
-  if (state.live.isLive) {
-    await effects.live.sendModuleStateSyncRequest();
-    // We only recover files at this point if we are not live. When live we recover them
-    // when the module_state is received
-  } else if (hasPermission(sandbox.authorization, 'write_code')) {
+  // We only recover files at this point if we are not live. When live we recover them
+  // when the module_state is received
+  if (
+    !state.live.isLive &&
+    hasPermission(sandbox.authorization, 'write_code')
+  ) {
     actions.files.internal.recoverFiles();
   }
 

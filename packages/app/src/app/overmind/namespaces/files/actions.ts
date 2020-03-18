@@ -25,6 +25,7 @@ export const createRecoverDiffs: Action<Array<{
   module: Module;
   recoverData: RecoverData;
 }>> = ({ state, effects, actions }, recoveredList) => {
+  effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
   recoveredList.forEach(({ recoverData, module }) => {
     const oldCode = module.code;
     actions.editor.codeChanged({
@@ -37,6 +38,10 @@ export const createRecoverDiffs: Action<Array<{
   effects.analytics.track('Files Recovered', {
     fileCount: recoveredList.length,
   });
+};
+
+export const discardRecover: Action = ({ effects, state }) => {
+  effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
 };
 
 export const moduleRenamed: AsyncAction<{
