@@ -1,11 +1,11 @@
 // translation of https://github.com/djspiewak/cccp/blob/master/agent/src/main/scala/com/codecommit/cccp/agent/state.scala
 /* eslint-disable react/no-access-state-in-setstate */
 
-type Operation = any;
+import { TextOperation } from 'ot';
 
 interface IState {
-  applyClient(client: OTClient, operation: Operation): IState;
-  applyServer(client: OTClient, operation: Operation): IState;
+  applyClient(client: OTClient, operation: TextOperation): IState;
+  applyServer(client: OTClient, operation: TextOperation): IState;
   serverAck(client: OTClient): IState;
   transformSelection<T>(selection: T): T;
   resend?(client: OTClient): void;
@@ -14,14 +14,14 @@ interface IState {
 // In the 'Synchronized' state, there is no pending operation that the client
 // has sent to the server.
 class Synchronized implements IState {
-  applyClient(client: OTClient, operation: Operation) {
+  applyClient(client: OTClient, operation: TextOperation) {
     // When the user makes an edit, send the operation to the server and
     // switch to the 'AwaitingConfirm' state
     client.sendOperation(client.revision, operation);
     return new AwaitingConfirm(operation);
   }
 
-  applyServer(client: OTClient, operation: Operation) {
+  applyServer(client: OTClient, operation: TextOperation) {
     // When we receive a new operation from the server, the operation can be
     // simply applied to the current document
     client.applyOperation(operation);
@@ -44,20 +44,20 @@ export const synchronized_ = new Synchronized();
 // In the 'AwaitingConfirm' state, there's one operation the client has sent
 // to the server and is still waiting for an acknowledgement.
 class AwaitingConfirm implements IState {
-  outstanding: Operation;
+  outstanding: TextOperation;
 
-  constructor(outstanding: Operation) {
+  constructor(outstanding: TextOperation) {
     // Save the pending operation
     this.outstanding = outstanding;
   }
 
-  applyClient(client: OTClient, operation: Operation) {
+  applyClient(client: OTClient, operation: TextOperation) {
     // When the user makes an edit, don't send the operation immediately,
     // instead switch to 'AwaitingWithBuffer' state
     return new AwaitingWithBuffer(this.outstanding, operation);
   }
 
-  applyServer(client: OTClient, operation: Operation) {
+  applyServer(client: OTClient, operation: TextOperation) {
     // This is another client's operation. Visualization:
     //
     //                   /\
@@ -68,7 +68,7 @@ class AwaitingConfirm implements IState {
     //  (can be applied  \/
     //  to the client's
     //  current document)
-    const pair = operation.constructor.transform(this.outstanding, operation);
+    const pair = TextOperation.transform(this.outstanding, operation);
     client.applyOperation(pair[1]);
     return new AwaitingConfirm(pair[0]);
   }
@@ -93,22 +93,22 @@ class AwaitingConfirm implements IState {
 // In the 'AwaitingWithBuffer' state, the client is waiting for an operation
 // to be acknowledged by the server while buffering the edits the user makes
 class AwaitingWithBuffer implements IState {
-  outstanding: Operation;
-  buffer: Operation;
+  outstanding: TextOperation;
+  buffer: TextOperation;
 
-  constructor(outstanding: Operation, buffer: Operation) {
+  constructor(outstanding: TextOperation, buffer: TextOperation) {
     // Save the pending operation and the user's edits since then
     this.outstanding = outstanding;
     this.buffer = buffer;
   }
 
-  applyClient(client: OTClient, operation: Operation) {
+  applyClient(client: OTClient, operation: TextOperation) {
     // Compose the user's changes onto the buffer
     const newBuffer = this.buffer.compose(operation);
     return new AwaitingWithBuffer(this.outstanding, newBuffer);
   }
 
-  applyServer(client: OTClient, operation: Operation) {
+  applyServer(client: OTClient, operation: TextOperation) {
     // Operation comes from another client
     //
     //                       /\
@@ -126,7 +126,7 @@ class AwaitingWithBuffer implements IState {
     // document
     //
     // * pair1[1]
-    const transform = operation.constructor.transform;
+    const transform = TextOperation.transform;
     const pair1 = transform(this.outstanding, operation);
     const pair2 = transform(this.buffer, pair1[1]);
     client.applyOperation(pair2[1]);
@@ -165,12 +165,12 @@ export abstract class OTClient {
   }
 
   // Call this method when the user changes the document.
-  applyClient(operation: Operation) {
+  applyClient(operation: TextOperation) {
     this.setState(this.state.applyClient(this, operation));
   }
 
   // Call this method with a new operation from the server
-  applyServer(operation: Operation) {
+  applyServer(operation: TextOperation) {
     this.revision++;
     this.setState(this.state.applyServer(this, operation));
   }
@@ -196,7 +196,7 @@ export abstract class OTClient {
     return this.state.transformSelection(selection);
   }
 
-  abstract sendOperation(revision: number, operation: Operation): void;
+  abstract sendOperation(revision: number, operation: TextOperation): void;
 
-  abstract applyOperation(operation: Operation): void;
+  abstract applyOperation(operation: TextOperation): void;
 }
