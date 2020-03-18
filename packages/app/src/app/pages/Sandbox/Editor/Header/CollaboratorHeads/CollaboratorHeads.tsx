@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import css from '@styled-system/css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { sortBy } from 'lodash-es';
@@ -103,7 +103,7 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
   </Tooltip>
 );
 
-export const CollaboratorHeads = () => {
+export const CollaboratorHeads: FunctionComponent = () => {
   const { state, actions } = useOvermind();
   const liveUsers = state.live.roomInfo.users;
 

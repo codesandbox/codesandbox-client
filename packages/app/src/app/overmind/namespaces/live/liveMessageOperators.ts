@@ -476,7 +476,7 @@ export const onUserViewRange: Operator<LiveMessage<{
     u => u.id === userSelectionLiveUserId
   );
 
-  if (userIndex > -1) {
+  if (userIndex !== -1) {
     state.live.roomInfo.users[userIndex].currentModuleShortid = moduleShortid;
     state.live.roomInfo.users[userIndex].viewRange = viewRange;
   }

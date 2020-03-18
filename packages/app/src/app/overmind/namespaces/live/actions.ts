@@ -197,15 +197,17 @@ export const sendCurrentViewRange: Action = ({ state, effects }) => {
     return;
   }
 
-  if (state.live.isCurrentEditor) {
-    const { liveUserId, currentViewRange } = state.live;
-    if (liveUserId && currentViewRange) {
-      effects.live.sendUserViewRange(
-        state.editor.currentModuleShortid,
-        liveUserId,
-        currentViewRange
-      );
-    }
+  if (!state.live.isCurrentEditor) {
+    return;
+  }
+  
+  const { liveUserId, currentViewRange } = state.live;
+  if (liveUserId && currentViewRange) {
+    effects.live.sendUserViewRange(
+      state.editor.currentModuleShortid,
+      liveUserId,
+      currentViewRange
+    );
   }
 };
 
@@ -229,7 +231,7 @@ export const onViewRangeChanged: Action<UserViewRange> = (
       u => u.id === liveUserId
     );
 
-    if (userIndex > -1) {
+    if (userIndex !== -1) {
       if (state.live.roomInfo.users[userIndex]) {
         state.live.roomInfo.users[
           userIndex
