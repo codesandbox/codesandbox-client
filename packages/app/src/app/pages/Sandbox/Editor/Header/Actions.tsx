@@ -4,7 +4,6 @@ import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
-import * as featureFlags from '@codesandbox/common/lib/utils/feature-flags';
 
 import {
   EmbedIcon,
@@ -101,7 +100,7 @@ export const Actions = () => {
         </TooltipButton>
       )}
 
-      {featureFlags.ACCESS_SHEET && isLive ? (
+      {user?.experiments.collaborator && isLive ? (
         <CollaboratorHeads />
       ) : (
         <>
@@ -139,7 +138,7 @@ export const Actions = () => {
         </Button>
       )}
 
-      {featureFlags.ACCESS_SHEET && (
+      {user?.experiments.collaborator && (
         <>
           {author ? (
             <Collaborators
@@ -160,7 +159,7 @@ export const Actions = () => {
         </>
       )}
 
-      {!featureFlags.ACCESS_SHEET && (
+      {!user?.experiments.collaborator && (
         <Button
           variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
           onClick={() => modalOpened({ modal: 'share' })}
@@ -184,7 +183,7 @@ export const Actions = () => {
       </Button>
       {hasLogIn ? (
         <UserMenu>
-          {featureFlags.ACCESS_SHEET ? (
+          {user?.experiments.collaborator ? (
             <Button
               variant="secondary"
               css={css({

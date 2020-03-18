@@ -13,7 +13,6 @@ import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
-import { ACCESS_SHEET } from '@codesandbox/common/lib/utils/feature-flags';
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
@@ -108,7 +107,11 @@ export const onUserEntered: Operator<LiveMessage<{
 
   const user = data.users.find(u => u.id === data.joined_user_id);
 
-  if (!state.live.notificationsHidden && user && !ACCESS_SHEET) {
+  if (
+    !state.live.notificationsHidden &&
+    user &&
+    !state.user.experiments.collaborator
+  ) {
     effects.notificationToast.add({
       message: `${user.username} joined the live session.`,
       status: NotificationStatus.NOTICE,
@@ -130,7 +133,11 @@ export const onUserLeft: Operator<LiveMessage<{
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
 
-    if (user && user.id !== state.live.liveUserId && !ACCESS_SHEET) {
+    if (
+      user &&
+      user.id !== state.live.liveUserId &&
+      !state.user.experiments.collaborator
+    ) {
       effects.notificationToast.add({
         message: `${user.username} left the live session.`,
         status: NotificationStatus.NOTICE,
