@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Preference } from '../../components/Preference';
+import { Preference } from 'app/components/Preference';
 
 export const PaddedPreference = (styled(Preference)`
   width: 100%;
