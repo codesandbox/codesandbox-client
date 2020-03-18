@@ -25,6 +25,10 @@ export const applyRecover: Action<Array<{
   module: Module;
   recoverData: RecoverData;
 }>> = ({ state, effects, actions }, recoveredList) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
   recoveredList.forEach(({ recoverData, module }) => {
     actions.editor.codeChanged({
@@ -43,14 +47,18 @@ export const createRecoverDiffs: Action<Array<{
   module: Module;
   recoverData: RecoverData;
 }>> = ({ state, effects, actions }, recoveredList) => {
-  effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+  effects.moduleRecover.clearSandbox(sandbox.id);
   recoveredList.forEach(({ recoverData, module }) => {
     const oldCode = module.code;
     actions.editor.codeChanged({
       moduleShortid: module.shortid,
       code: recoverData.code,
     });
-    effects.vscode.openDiff(state.editor.currentSandbox.id, module, oldCode);
+    effects.vscode.openDiff(sandbox.id, module, oldCode);
   });
 
   effects.analytics.track('Files Recovered', {
@@ -59,6 +67,9 @@ export const createRecoverDiffs: Action<Array<{
 };
 
 export const discardRecover: Action = ({ effects, state }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
   effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
 };
 

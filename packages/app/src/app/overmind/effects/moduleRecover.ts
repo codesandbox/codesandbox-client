@@ -3,7 +3,7 @@ import { Module } from '@codesandbox/common/lib/types';
 const getKey = (id, moduleShortid) => `recover:${id}:${moduleShortid}:code`;
 
 export type RecoverData = {
-  code: string | null;
+  code: string;
   version: number;
   timestamp: number;
   sandboxId: string;
@@ -79,6 +79,6 @@ export default {
 
         return null;
       })
-      .filter(Boolean);
+      .filter(Boolean) as Array<{ recoverData: RecoverData; module: Module }>;
   },
 };
