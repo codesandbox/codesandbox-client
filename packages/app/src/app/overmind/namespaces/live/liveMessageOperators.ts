@@ -110,7 +110,7 @@ export const onUserEntered: Operator<LiveMessage<{
   if (
     !state.live.notificationsHidden &&
     user &&
-    !state.user.experiments.collaborator
+    !state.user?.experiments.collaborator
   ) {
     effects.notificationToast.add({
       message: `${user.username} joined the live session.`,
@@ -136,7 +136,7 @@ export const onUserLeft: Operator<LiveMessage<{
     if (
       user &&
       user.id !== state.live.liveUserId &&
-      !state.user.experiments.collaborator
+      !state.user?.experiments.collaborator
     ) {
       effects.notificationToast.add({
         message: `${user.username} left the live session.`,
