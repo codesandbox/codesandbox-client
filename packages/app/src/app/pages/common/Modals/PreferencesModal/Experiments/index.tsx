@@ -7,7 +7,7 @@ import { ContainerLSP } from './ContainerLSP';
 
 export const Experiments: React.FunctionComponent = () => (
   <>
-    <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+    <Text size={4} marginBottom={4} block variant="muted" weight="bold">
       Experiments
     </Text>
     <SubContainer>

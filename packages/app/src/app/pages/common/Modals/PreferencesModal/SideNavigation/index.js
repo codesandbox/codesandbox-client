@@ -1,40 +1,55 @@
 import React from 'react';
-import { Element, Text } from '@codesandbox/components';
+import { Element, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { ITEM_HEIGHT, Item, Selector } from './elements';
 
-export const SideNavigation = ({ menuItems, itemId, setItem }) => {
-  const itemIndex = menuItems.findIndex(item => item.id === itemId);
-
-  return (
-    <Element
-      paddingBottom={8}
-      css={css({
-        backgroundColor: 'sideBar.border',
-        minWidth: 220,
-      })}
+export const SideNavigation = ({ menuItems, itemId, setItem }) => (
+  <Element
+    paddingBottom={8}
+    css={css({
+      backgroundColor: 'sideBar.background',
+      borderWidth: 1,
+      borderRightStyle: 'solid',
+      borderColor: 'activityBarBadge.background',
+      width: 200,
+    })}
+  >
+    <Text
+      paddingLeft={6}
+      paddingTop={6}
+      paddingBottom={4}
+      size={4}
+      block
+      weight="bold"
     >
-      <Text padding={8} size={4} block weight="bold">
-        Preferences
-      </Text>
-      <Element
-        style={{ position: 'relative', height: menuItems.length * ITEM_HEIGHT }}
-      >
-        {menuItems.map((item, i) => (
-          <Item
-            onClick={() => setItem({ itemId: item.id })}
-            key={item.title}
-            selected={itemId === item.id}
-            top={i * ITEM_HEIGHT}
-          >
-            <div style={{ height: ITEM_HEIGHT, marginRight: '0.5rem' }}>
-              {item.icon}
-            </div>
-            {item.title}
-          </Item>
-        ))}
-        <Selector offset={itemIndex * ITEM_HEIGHT} />
-      </Element>
+      Preferences
+    </Text>
+    <Element style={{ position: 'relative' }}>
+      {menuItems.map(item => (
+        <Stack
+          align="center"
+          css={css({
+            transition: '0.3s ease all',
+            fontSize: 3,
+            paddingLeft: 6,
+            cursor: 'pointer',
+            height: 6,
+            marginBottom: 2,
+            color:
+              itemId === item.id ? 'sideBar.foreground' : 'mutedForeground',
+            backgroundColor:
+              itemId === item.id ? 'input.border' : 'transparent',
+            '&:hover': {
+              color: 'sideBar.foreground',
+            },
+          })}
+          onClick={() => setItem({ itemId: item.id })}
+          key={item.title}
+          selected={itemId === item.id}
+        >
+          <Element marginRight={3}>{item.icon}</Element>
+          {item.title}
+        </Stack>
+      ))}
     </Element>
-  );
-};
+  </Element>
+);

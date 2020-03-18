@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useOvermind } from 'app/overmind';
+import css from '@styled-system/css';
 
 import AppearanceIcon from 'react-icons/lib/md/color-lens';
 import CodeIcon from 'react-icons/lib/fa/code';
@@ -77,8 +78,7 @@ const PreferencesModal: React.FC = () => {
           icon: <IntegrationIcon />,
           content: <Integrations />,
         },
-        // isPatron &&
-        {
+        isPatron && {
           id: 'paymentInfo',
           title: 'Payment Info',
           icon: <CreditCardIcon />,
@@ -109,7 +109,15 @@ const PreferencesModal: React.FC = () => {
         menuItems={items}
         setItem={itemIdChanged}
       />
-      <Alert style={{ maxHeight: 'auto', width: '100%' }}>{item.content}</Alert>
+      <Alert
+        css={css({
+          backgroundColor: 'input.border',
+          maxHeight: 'auto',
+          width: '100%',
+        })}
+      >
+        {item.content}
+      </Alert>
     </Container>
   );
 };

@@ -2,8 +2,39 @@ import React, { ComponentProps, FunctionComponent, useEffect } from 'react';
 
 import { SubscribeForm } from 'app/components/SubscribeForm';
 import { useOvermind } from 'app/overmind';
+import css from '@styled-system/css';
 
-import { Text, Element } from '@codesandbox/components';
+import { Text, Element, Stack } from '@codesandbox/components';
+import {
+  AmexIcon,
+  MasterCardIcon,
+  VisaIcon,
+  BlankIcon,
+  DiscoverIcon,
+} from './Icons';
+
+const Icon = (name: string) => {
+  let icon;
+  switch (name) {
+    case 'MasterCard':
+      icon = MasterCardIcon;
+      break;
+    case 'American Express':
+      icon = AmexIcon;
+      break;
+    case 'Discover':
+      icon = DiscoverIcon;
+      break;
+    case 'Visa':
+      icon = VisaIcon;
+      break;
+
+    default:
+      icon = BlankIcon;
+  }
+
+  return icon;
+};
 
 export const PaymentInfo: FunctionComponent = () => {
   const {
@@ -50,22 +81,35 @@ export const PaymentInfo: FunctionComponent = () => {
         <Text block size={4} marginTop={4} marginBottom={2}>
           Current card
         </Text>
-        <Element padding={4}>
-          <Element>
-            <Text weight="bold" size={3}>
-              {brand}
-            </Text>{' '}
-            <Text variant="muted">ending in ****</Text>
-            <Text weight="bold" size={3}>
-              {last4}
-            </Text>
+        <Stack align="center" paddingY={4}>
+          <Element
+            paddingRight={2}
+            css={css({
+              svg: {
+                height: 16,
+                width: 'auto',
+              },
+            })}
+          >
+            {Icon(brand)()}
           </Element>
           <Element>
-            <Text weight="bold" size={3}>
-              {name}
-            </Text>
+            <Element>
+              <Text weight="bold" size={3}>
+                {brand}
+              </Text>{' '}
+              <Text variant="muted">ending in ****</Text>
+              <Text weight="bold" size={3}>
+                {last4}
+              </Text>
+            </Element>
+            <Element>
+              <Text weight="bold" size={3}>
+                {name}
+              </Text>
+            </Element>
           </Element>
-        </Element>
+        </Stack>
         <Text block size={4} marginTop={4} marginBottom={4}>
           Update card info
         </Text>
@@ -81,7 +125,7 @@ export const PaymentInfo: FunctionComponent = () => {
 
   return (
     <Element>
-      <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+      <Text size={4} marginBottom={4} block variant="muted" weight="bold">
         Payment Info
       </Text>
       <Body />
