@@ -34,15 +34,19 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
       timeAlive: Infinity,
       message: `We recovered ${recoveredList.length} unsaved ${
         recoveredList.length > 1 ? 'files' : 'file'
-      } from a previous session`,
+      } from a previous session, what do you want to do?`,
       actions: {
         primary: [
           {
-            label: 'Compare changes',
+            label: 'Apply all',
+            run: () => actions.files.applyRecover(recoveredList),
+          },
+          {
+            label: 'Compare',
             run: () => actions.files.createRecoverDiffs(recoveredList),
           },
           {
-            label: 'Discard changes',
+            label: 'Discard all',
             run: () => actions.files.discardRecover(),
           },
         ],

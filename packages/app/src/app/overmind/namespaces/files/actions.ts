@@ -21,6 +21,24 @@ import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
+export const applyRecover: Action<Array<{
+  module: Module;
+  recoverData: RecoverData;
+}>> = ({ state, effects, actions }, recoveredList) => {
+  effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+  recoveredList.forEach(({ recoverData, module }) => {
+    actions.editor.codeChanged({
+      moduleShortid: module.shortid,
+      code: recoverData.code,
+    });
+    effects.vscode.setModuleCode(module);
+  });
+
+  effects.analytics.track('Files Recovered', {
+    fileCount: recoveredList.length,
+  });
+};
+
 export const createRecoverDiffs: Action<Array<{
   module: Module;
   recoverData: RecoverData;
