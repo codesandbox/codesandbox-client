@@ -1,7 +1,8 @@
 import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import React, { useState, useEffect } from 'react';
+import { Text } from '@codesandbox/components';
 
-import { SubDescription, PaddedPreference } from '../elements';
+import { PaddedPreference } from '../elements';
 
 export const NewSidebar: React.FunctionComponent = () => {
   const [newSidebar, setNewSidebar] = useState(false);
@@ -26,9 +27,9 @@ export const NewSidebar: React.FunctionComponent = () => {
         value={newSidebar}
         setValue={setValue}
       />
-      <SubDescription>
+      <Text size={3} variant="muted">
         This will refresh the page, make sure to save your changes.
-      </SubDescription>
+      </Text>
     </>
   );
 };

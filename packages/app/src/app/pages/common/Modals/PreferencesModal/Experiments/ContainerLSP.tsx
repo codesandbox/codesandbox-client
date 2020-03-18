@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
-import { SubDescription, PaddedPreference } from '../elements';
+import { Text } from '@codesandbox/components';
+import { PaddedPreference } from '../elements';
 
 export const ContainerLSP: FunctionComponent = () => {
   const {
@@ -20,10 +21,10 @@ export const ContainerLSP: FunctionComponent = () => {
         value={user.experiments.containerLsp}
       />
 
-      <SubDescription>
+      <Text size={3} variant="muted">
         As part of making containers more powerful we now allow the language
         server to run there. Please help us test it :-)
-      </SubDescription>
+      </Text>
     </>
   ) : null;
 };

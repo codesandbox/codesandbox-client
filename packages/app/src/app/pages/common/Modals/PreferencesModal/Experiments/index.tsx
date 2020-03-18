@@ -1,15 +1,17 @@
 import React from 'react';
-
-import { PreferenceContainer, Rule, SubContainer, Title } from '../elements';
+import { Text, Element } from '@codesandbox/components';
+import { Rule, SubContainer } from '../elements';
 import { NewSidebar } from './NewSidebar';
 import { Comments } from './Comments';
 import { ContainerLSP } from './ContainerLSP';
 
 export const Experiments: React.FunctionComponent = () => (
-  <div>
-    <Title>Experiments</Title>
+  <>
+    <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+      Experiments
+    </Text>
     <SubContainer>
-      <PreferenceContainer>
+      <Element paddingTop={2}>
         {process.env.NODE_ENV === 'development' && (
           <>
             <Comments /> <Rule />
@@ -18,7 +20,7 @@ export const Experiments: React.FunctionComponent = () => (
         <NewSidebar />
         <Rule />
         <ContainerLSP />
-      </PreferenceContainer>
+      </Element>
     </SubContainer>
-  </div>
+  </>
 );
