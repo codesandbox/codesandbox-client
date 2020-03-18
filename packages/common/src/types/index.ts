@@ -211,6 +211,7 @@ export type User = {
 export type LiveUser = {
   username: string;
   selection: UserSelection | null;
+  viewRange: UserViewRange | null;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
@@ -490,6 +491,13 @@ export type EditorSelection = {
   color: number[];
 };
 
+export type UserViewRange = {
+  startLineNumber: number;
+  endLineNumber: number;
+  startColumn: number;
+  endColumn: number;
+};
+
 export enum WindowOrientation {
   VERTICAL = 'vertical',
   HORIZONTAL = 'horizontal',
@@ -704,6 +712,7 @@ export enum LiveMessageEvent {
   DIRECTORY_DELETED = 'directory:deleted',
   USER_SELECTION = 'user:selection',
   USER_CURRENT_MODULE = 'user:current-module',
+  USER_VIEW_RANGE = 'user:view-range',
   LIVE_MODE = 'live:mode',
   LIVE_CHAT_ENABLED = 'live:chat_enabled',
   LIVE_ADD_EDITOR = 'live:add-editor',

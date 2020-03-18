@@ -511,7 +511,7 @@ export const moduleSelected: Action<
           followingUser.currentModuleShortid !== module.shortid
         ) {
           // Reset following as this is a user change module action
-          state.live.followingUserId = null;
+          actions.live.onStopFollow();
         }
       }
 

@@ -3,6 +3,7 @@ import {
   LiveMessageEvent,
   Module,
   RoomInfo,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
@@ -450,6 +451,18 @@ class Live {
 
   sendModuleStateSyncRequest() {
     return this.sendImmediately('live:module_state', {});
+  }
+
+  sendUserViewRange(
+    moduleShortid: string | null,
+    liveUserId: string,
+    viewRange: UserViewRange
+  ) {
+    return this.send('user:view-range', {
+      liveUserId,
+      moduleShortid,
+      viewRange,
+    });
   }
 
   sendUserSelection(

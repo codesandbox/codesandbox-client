@@ -1,9 +1,6 @@
 import styled from 'styled-components';
 
 export const Icons = styled.div`
-  position: absolute;
-  top: 0;
-  right: 1rem;
   background-color: rgba(0, 0, 0, 0.3);
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.3);
   border-radius: 2px;
@@ -13,7 +10,6 @@ export const Icons = styled.div`
   z-index: 40;
 
   font-size: 0.875rem;
-  margin-top: 35px;
 `;
 
 export const Icon = styled.div`

@@ -10,6 +10,7 @@ import {
   Sandbox,
   SandboxFs,
   Settings,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
@@ -25,6 +26,7 @@ import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import io from 'socket.io-client';
 
+import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
   initializeCodeSandboxTheme,
@@ -52,7 +54,8 @@ export type VsCodeOptions = {
   getCurrentUser: () => CurrentUser | null;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
-  onSelectionChange: (selection: onSelectionChangeData) => void;
+  onSelectionChanged: (selection: onSelectionChangeData) => void;
+  onViewRangeChanged: (viewRange: UserViewRange) => void;
   reaction: Reaction;
   // These two should be removed
   getSignal: any;
@@ -102,6 +105,7 @@ export class VSCodeEffect {
   private linter: Linter | null;
   private modelsHandler: ModelsHandler;
   private modelSelectionListener: { dispose: Function };
+  private modelViewRangeListener: { dispose: Function };
   private readOnly: boolean;
   private elements = {
     editor: document.createElement('div'),
@@ -114,7 +118,7 @@ export class VSCodeEffect {
     getCustomEditor: () => null,
   };
 
-  onSelectionChangeDebounced: VsCodeOptions['onSelectionChange'] & {
+  onSelectionChangeDebounced: VsCodeOptions['onSelectionChanged'] & {
     cancel(): void;
   };
 
@@ -124,7 +128,7 @@ export class VSCodeEffect {
       getState: options.getState,
       getSignal: options.getSignal,
     };
-    this.onSelectionChangeDebounced = debounce(options.onSelectionChange, 500);
+    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 500);
 
     this.prepareElements();
 
@@ -538,6 +542,52 @@ export class VSCodeEffect {
     }
   };
 
+  /**
+   * Reveal position in editor
+   * @param scrollType 0 = smooth, 1 = immediate
+   */
+  revealPositionInCenterIfOutsideViewport(pos: number, scrollType: 0 | 1 = 0) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (activeEditor) {
+      const model = activeEditor.getModel();
+
+      const lineColumnPos = indexToLineAndColumn(
+        model.getLinesContent() || [],
+        pos
+      );
+
+      activeEditor.revealPositionInCenterIfOutsideViewport(
+        lineColumnPos,
+        scrollType
+      );
+    }
+  }
+
+  /**
+   * Reveal line in editor
+   * @param scrollType 0 = smooth, 1 = immediate
+   */
+  revealLine(lineNumber: number, scrollType: 0 | 1 = 0) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (activeEditor) {
+      activeEditor.revealLine(lineNumber, scrollType);
+    }
+  }
+
+  /**
+   * Reveal revealLine in editor
+   * @param scrollType 0 = smooth, 1 = immediate
+   */
+  revealRange(range: UserViewRange, scrollType: 0 | 1 = 0) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (activeEditor) {
+      activeEditor.revealRange(range, scrollType);
+    }
+  }
+
   // Communicates the endpoint for the WebsocketLSP
   private createContainerForkHandler() {
     return () => {
@@ -918,6 +968,10 @@ export class VSCodeEffect {
       this.modelSelectionListener.dispose();
     }
 
+    if (this.modelViewRangeListener) {
+      this.modelViewRangeListener.dispose();
+    }
+
     const activeEditor = this.editorApi.getActiveCodeEditor();
 
     if (activeEditor && activeEditor.getModel()) {
@@ -960,6 +1014,26 @@ export class VSCodeEffect {
         this.modelsHandler.isApplyingOperation = false;
       }
 
+      let lastViewRange = null;
+      const isDifferentViewRange = (r1: UserViewRange, r2: UserViewRange) =>
+        r1.startLineNumber !== r2.startLineNumber ||
+        r1.startColumn !== r2.startColumn ||
+        r1.endLineNumber !== r2.endLineNumber ||
+        r1.endColumn !== r2.endColumn;
+
+      this.modelViewRangeListener = activeEditor.onDidScrollChange(e => {
+        const [range] = activeEditor.getVisibleRanges();
+
+        if (
+          lastViewRange != null &&
+          range &&
+          isDifferentViewRange(lastViewRange!, range)
+        ) {
+          lastViewRange = range;
+          this.options.onViewRangeChanged(range);
+        }
+      });
+
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
         selectionChange => {
           const lines = activeEditor.getModel().getLinesContent() || [];
@@ -978,7 +1052,7 @@ export class VSCodeEffect {
             /* click inside a selection */ selectionChange.source === 'api'
           ) {
             this.onSelectionChangeDebounced.cancel();
-            this.options.onSelectionChange(data);
+            this.options.onSelectionChanged(data);
           } else {
             // This is just on typing, we send a debounced selection update as a
             // safeguard to make sure we are in sync
