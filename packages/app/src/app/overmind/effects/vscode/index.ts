@@ -1024,7 +1024,10 @@ export class VSCodeEffect {
       this.modelViewRangeListener = activeEditor.onDidScrollChange(e => {
         const [range] = activeEditor.getVisibleRanges();
 
-        if (!lastViewRange || isDifferentViewRange(lastViewRange, range)) {
+        if (
+          lastViewRange == null ||
+          isDifferentViewRange(lastViewRange, range)
+        ) {
           lastViewRange = range;
           this.options.onViewRangeChanged(range);
         }
