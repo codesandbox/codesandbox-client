@@ -76,7 +76,8 @@ export const DO_NOT_TRACK_ENABLED =
       global.navigator.doNotTrack === '1' ||
       // @ts-ignore
       global.navigator.msDoNotTrack === '1' ||
-      localStorage.getItem('DO_NOT_TRACK_ENABLED') ||
+      (typeof localStorage !== 'undefined' &&
+        localStorage.getItem('DO_NOT_TRACK_ENABLED')) ||
       process.env.NODE_ENV === 'development' ||
       process.env.STAGING
   );

@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import { Element } from '@codesandbox/components';
 
 const loading = keyframes`
   0%   { content: ''; }
@@ -8,22 +9,7 @@ const loading = keyframes`
   100% { content: ''; }
 `;
 
-export const List = styled.ul`
-  padding: 1.3em;
-  list-style: none;
-  font-family: 'dm';
-  background: ${props => props.theme.background4};
-  max-height: 400px;
-  overflow: auto;
-  margin: 1.3em 0;
-  word-break: break-word;
-  border-radius: 4px;
-`;
-
-export const Item = styled.li`
-  margin-bottom: 0.4rem;
-  line-height: 1.2;
-
+export const Item = styled(Element)`
   &:first-child:after {
     display: inline-block;
     animation: ${loading} steps(1, end) 1s infinite;

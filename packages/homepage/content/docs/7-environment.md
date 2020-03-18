@@ -32,8 +32,6 @@ designed to mirror the default behavior of the framework. If your project
 requires advanced configuration, try using a Container Sandbox instead.
 
 Currently it is not possible to convert a Client Sandbox to a Container Sandbox.
-Support for this is on the roadmap, you can follow progress
-[here](https://github.com/codesandbox/codesandbox-client/issues/2111).
 
 ## Container Environment
 
@@ -58,7 +56,7 @@ itself.
 
 Unlike Client Sandboxes, Containers also expose access to the Terminal, which
 allows you to run most commands you'd normally expect to be able to run in the
-command line. However, keep in mind that running certain commands which alter
+command line. However, you don't have root access. Also, keep in mind that running certain commands which alter
 the filesystem of the container instance will cause the files shown in the
 Editor to become out of sync, such as manually running `yarn add` or running
 `git` commands. We don't sync files and directories that are ignored via

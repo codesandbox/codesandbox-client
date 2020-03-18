@@ -49,7 +49,7 @@ export const Comments: React.FC = () => {
     >
       <Icon
         name="comments"
-        size={20}
+        size={80}
         color="mutedForeground"
         css={{ opacity: 0.2 }}
       />
@@ -87,7 +87,7 @@ export const Comments: React.FC = () => {
               className="icon-button"
               name="filter"
               title="Filter comments"
-              size={3}
+              size={12}
             />
             <Menu.List>
               {options.map(option => (

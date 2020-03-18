@@ -49,6 +49,7 @@ type Modal = {
   title: string;
   body: React.ReactNode;
   onConfirm: () => void;
+  primaryMessage?: string;
 };
 
 interface Props {
@@ -275,6 +276,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     (moduleShortid: string, moduleName: string) => {
       setModalConfirm({
         title: 'Discard Changes',
+        primaryMessage: 'Discard',
         body: (
           <span>
             Are you sure you want to discard changes on <b>{moduleName}</b>?

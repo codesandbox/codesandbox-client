@@ -2,7 +2,6 @@ import React, { ComponentProps, FunctionComponent } from 'react';
 
 import { SandboxesItem } from 'app/pages/Dashboard/Sidebar/SandboxesItem';
 
-import { Container } from './elements';
 import { TeamsPicker } from './TeamsPicker';
 
 type Props = Pick<
@@ -14,7 +13,7 @@ export const DirectoryPicker: FunctionComponent<Props> = ({
   currentTeamId,
   onSelect,
 }) => (
-  <Container>
+  <>
     <SandboxesItem
       currentPath={currentPath}
       currentTeamId={currentTeamId}
@@ -28,5 +27,5 @@ export const DirectoryPicker: FunctionComponent<Props> = ({
       currentTeamId={currentTeamId}
       onSelect={onSelect}
     />
-  </Container>
+  </>
 );
