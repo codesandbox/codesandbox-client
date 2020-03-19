@@ -526,9 +526,7 @@ export type Template = {
 export type User = {
   __typename?: 'User';
   avatarUrl: Maybe<Scalars['String']>;
-  firstName: Maybe<Scalars['String']>;
   id: Maybe<Scalars['ID']>;
-  lastName: Maybe<Scalars['String']>;
   name: Maybe<Scalars['String']>;
   username: Maybe<Scalars['String']>;
 };
@@ -869,7 +867,7 @@ export type CommentFragment = { __typename?: 'Comment' } & Pick<
 > & {
     user: { __typename?: 'User' } & Pick<
       User,
-      'id' | 'firstName' | 'lastName' | 'name' | 'username' | 'avatarUrl'
+      'id' | 'name' | 'username' | 'avatarUrl'
     >;
   };
 
