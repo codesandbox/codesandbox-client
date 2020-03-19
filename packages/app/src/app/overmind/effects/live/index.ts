@@ -92,13 +92,9 @@ class Live {
     clearTimeout(this.awaitSendTimer);
     this.awaitSendTimer = setTimeout(async () => {
       this.resolveAwaitSend();
-      await Promise.all(
-        this.getAllClients().map(client =>
-          this.awaitSynchronizedModule(client.moduleShortid)
-        )
-      );
       if (this.connectionsCount === 1) {
-        this.setAwaitSend();
+        // We let one message go through
+        setTimeout(() => this.setAwaitSend());
       }
     }, TIME_TO_THROTTLE_SOLO_MODE_SENDS);
   }
