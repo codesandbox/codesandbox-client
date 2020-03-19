@@ -4,7 +4,7 @@ slug: redefining-code-collaboration
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
 title: Redefining Code Collaboration
-description: A big update to CodeSandbox Live: Live by default, new access controls, presence, and follower mode.
+description: A big update to CodeSandbox Live — Live by default, new access controls, presence, and follower mode.
 date: 2020-03-25
 ---
 
