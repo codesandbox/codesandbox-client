@@ -200,7 +200,7 @@ export const sendCurrentViewRange: Action = ({ state, effects }) => {
   if (!state.live.isCurrentEditor) {
     return;
   }
-  
+
   const { liveUserId, currentViewRange } = state.live;
   if (liveUserId && currentViewRange) {
     effects.live.sendUserViewRange(

@@ -1,21 +1,22 @@
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import {
+  Avatar,
+  Button,
+  Element,
+  IconButton,
+  Link,
+  Menu,
+  Stack,
+  Text,
+  Textarea,
+} from '@codesandbox/components';
+import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import { formatDistance } from 'date-fns';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import css from '@styled-system/css';
 import Draggable from 'react-draggable';
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import { formatDistance } from 'date-fns';
-import {
-  Element,
-  Stack,
-  Avatar,
-  Textarea,
-  Text,
-  Link,
-  IconButton,
-  Button,
-  Menu,
-} from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+
 import { Markdown } from './Markdown';
 import { Reply } from './Reply';
 
@@ -27,23 +28,21 @@ export const Dialog = props => {
   const [value, setValue] = useState('');
 
   const [edit, setEdit] = useState(false);
-  const comment = state.editor.currentComment;
-  const [editValue, setEditValue] = useState(comment.originalMessage.content);
+  const thread = state.editor.currentCommentThread;
+  const [editValue, setEditValue] = useState(thread.initialComment.content);
   const [position, setPosition] = useState({
     x: props.x || 200,
     y: props.y || 100,
   });
 
-  const closeDialog = () => actions.editor.selectComment(null);
+  const closeDialog = () => actions.editor.selectCommentThread(null);
   const onSubmit = () => {
     setValue('');
-    if (comment) {
-      actions.editor.addReply(value);
+    if (thread) {
+      actions.editor.addComment(value);
     } else {
-      actions.editor.addComment({
-        comment: value,
-        sandboxId: state.editor.currentSandbox.id,
-        username: state.user.username,
+      actions.editor.addCommentThread({
+        content: value,
         open: true,
       });
     }
@@ -90,9 +89,9 @@ export const Dialog = props => {
           <Stack align="center">
             <IconButton
               onClick={() =>
-                actions.editor.updateComment({
-                  id: comment.id,
-                  data: { isResolved: !comment.isResolved },
+                actions.editor.resolveCommentThread({
+                  commentThreadId: thread.id,
+                  isResolved: !thread.isResolved,
                 })
               }
               name="check"
@@ -101,7 +100,7 @@ export const Dialog = props => {
               css={css({
                 transition: 'color',
                 transitionDuration: theme => theme.speeds[1],
-                color: comment.isResolved ? 'green' : 'mutedForeground',
+                color: thread.isResolved ? 'green' : 'mutedForeground',
               })}
             />
             <IconButton
@@ -113,7 +112,7 @@ export const Dialog = props => {
           </Stack>
         </Stack>
 
-        {comment && (
+        {thread && (
           <>
             <Stack
               align="flex-start"
@@ -123,24 +122,24 @@ export const Dialog = props => {
               marginRight={2}
             >
               <Stack gap={2} align="center">
-                <Avatar user={comment.originalMessage.author} />
+                <Avatar user={thread.initialComment.user} />
                 <Stack direction="vertical" justify="center" gap={1}>
                   <Link
                     size={3}
                     weight="bold"
-                    href={`/u/${comment.originalMessage.author.username}`}
+                    href={`/u/${thread.initialComment.user.username}`}
                     variant="body"
                   >
-                    {comment.originalMessage.author.username}
+                    {thread.initialComment.user.username}
                   </Link>
                   <Text size={2} variant="muted">
-                    {formatDistance(new Date(comment.insertedAt), new Date(), {
+                    {formatDistance(new Date(thread.insertedAt), new Date(), {
                       addSuffix: true,
                     })}
                   </Text>
                 </Stack>
               </Stack>
-              {state.user.id === comment.originalMessage.author.id && (
+              {state.user.id === thread.initialComment.user.id && (
                 <Stack align="center">
                   <Menu>
                     <Menu.IconButton
@@ -151,7 +150,10 @@ export const Dialog = props => {
                     <Menu.List>
                       <Menu.Item
                         onSelect={() =>
-                          actions.editor.deleteComment({ id: comment.id })
+                          actions.editor.deleteComment({
+                            threadId: thread.id,
+                            commentId: thread.initialComment.id,
+                          })
                         }
                       >
                         Delete
@@ -175,7 +177,7 @@ export const Dialog = props => {
               })}
             >
               {!edit ? (
-                <Markdown source={comment.originalMessage.content} />
+                <Markdown source={thread.initialComment.content} />
               ) : (
                 <>
                   <Element marginBottom={2}>
@@ -201,10 +203,9 @@ export const Dialog = props => {
                       variant="secondary"
                       onClick={async () => {
                         await actions.editor.updateComment({
-                          id: comment.id,
-                          data: {
-                            comment: editValue,
-                          },
+                          threadId: thread.id,
+                          commentId: thread.initialComment.id,
+                          content: editValue,
                         });
                         setEdit(false);
                       }}
@@ -218,10 +219,11 @@ export const Dialog = props => {
           </>
         )}
 
-        {comment &&
-          comment.replies.map(reply => (
-            <Reply {...reply} commentId={comment.id} />
-          ))}
+        {thread &&
+          thread.comments.map((reply, i) => {
+            if (i === 0) return null;
+            return <Reply reply={reply} threadId={thread.id} />;
+          })}
 
         <Element
           css={css({
@@ -239,7 +241,7 @@ export const Dialog = props => {
             })}
             value={value}
             onChange={e => setValue(e.target.value)}
-            placeholder={comment ? 'Reply' : 'Write a comment...'}
+            placeholder={thread ? 'Reply' : 'Write a comment...'}
             onKeyDown={event => {
               if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
             }}
