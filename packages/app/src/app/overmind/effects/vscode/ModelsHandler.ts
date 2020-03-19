@@ -53,6 +53,7 @@ export type ModuleModel = {
   selections: any[];
   path: string;
   model: Promise<any>;
+  comments: any[];
 };
 
 export class ModelsHandler {
@@ -125,6 +126,34 @@ export class ModelsHandler {
 
     return moduleModel.model;
   };
+
+  public async applyComments(module: Module, comments: any[]) {
+    const moduleModel = this.getModuleModel(module);
+    const model = await moduleModel.model;
+    const existingDecorationComments = moduleModel.comments;
+    const newDecorationComments = comments.map(comment => {
+      const lineAndColumn = indexToLineAndColumn(
+        model.getLinesContent() || [],
+        comment.range[0]
+      );
+      return {
+        range: new this.monaco.Range(
+          lineAndColumn.lineNumber,
+          1,
+          lineAndColumn.lineNumber,
+          1
+        ),
+        options: {
+          isWholeLine: true,
+          glyphMarginClassName: `editor-comments-glyph comment-id-${comment.id}`,
+        },
+      };
+    });
+    moduleModel.comments = model.deltaDecorations(
+      existingDecorationComments,
+      newDecorationComments
+    );
+  }
 
   public async updateTabsPath(oldPath: string, newPath: string) {
     const oldModelPath = '/sandbox' + oldPath;
@@ -602,6 +631,7 @@ export class ModelsHandler {
       model: null,
       path,
       selections: [],
+      comments: [],
     };
 
     return this.moduleModels[path];

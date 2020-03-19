@@ -90,7 +90,7 @@ type State = {
 export const state: State = {
   hasLoadedInitialModule: false,
   comments: {},
-  currentCommentId: null, // '5e5961e0c277a40fef1e391b',
+  currentCommentId: null,
   currentComment: ({ comments, currentSandbox, currentCommentId }) => {
     if (!currentSandbox || !comments[currentSandbox.id] || !currentCommentId) {
       return null;

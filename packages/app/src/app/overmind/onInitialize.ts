@@ -92,6 +92,7 @@ export const onInitialize: OnInitialize = async (
     onCodeChange: actions.editor.codeChanged,
     onSelectionChanged: actions.live.onSelectionChanged,
     onViewRangeChanged: actions.live.onViewRangeChanged,
+    onCommentClick: actions.editor.onCommentClick,
     reaction: overmindInstance.reaction,
     getState: path =>
       path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,

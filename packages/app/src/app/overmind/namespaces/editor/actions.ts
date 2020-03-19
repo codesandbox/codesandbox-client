@@ -8,7 +8,6 @@ import {
   ModuleTab,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
-import { TextOperation } from 'ot';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
@@ -30,6 +29,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
+import { TextOperation } from 'ot';
 import { json } from 'overmind';
 
 import eventToTransform from '../../utils/event-to-transform';
@@ -75,12 +75,14 @@ export const npmDependencyRemoved: AsyncAction<string> = withOwnedSandbox(
   }
 );
 
+export const onCommentClick: Action<string> = ({ state }, commentId) => {};
+
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;
 }>(async ({ state, actions, effects }, { id }) => {
   // This happens when we fork. This can be avoided with state first routing
   if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
-    effects.vscode.openModule(state.editor.currentModule);
+    effects.vscode.openModule(state.editor.currentModule, []);
 
     await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
@@ -201,7 +203,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     await effects.live.sendModuleStateSyncRequest();
   }
 
-  effects.vscode.openModule(state.editor.currentModule);
+  effects.vscode.openModule(state.editor.currentModule, []);
 
   if (COMMENTS) {
     try {

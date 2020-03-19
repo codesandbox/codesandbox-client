@@ -1,3 +1,5 @@
+import './icons.css';
+
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
@@ -18,6 +20,7 @@ import {
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
 import { Reaction } from 'app/overmind';
+import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
@@ -26,7 +29,6 @@ import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import io from 'socket.io-client';
 
-import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
   initializeCodeSandboxTheme,
@@ -56,6 +58,7 @@ export type VsCodeOptions = {
   onOperationApplied: (data: OnOperationAppliedData) => void;
   onSelectionChanged: (selection: onSelectionChangeData) => void;
   onViewRangeChanged: (viewRange: UserViewRange) => void;
+  onCommentClick: (commentId: string) => void;
   reaction: Reaction;
   // These two should be removed
   getSignal: any;
@@ -131,6 +134,7 @@ export class VSCodeEffect {
     this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 500);
 
     this.prepareElements();
+    this.listenToCommentClick();
 
     // We instantly create a sandbox sync, as we want our
     // extension host to get its messages handled to initialize
@@ -435,7 +439,7 @@ export class VSCodeEffect {
     return this.modelsHandler.updateTabsPath(oldPath, newPath);
   }
 
-  public async openModule(module: Module) {
+  public async openModule(module: Module, comments: any[]) {
     await this.initialized;
 
     // We use an animation frame here, because we want the rest of the logic to finish running,
@@ -447,7 +451,12 @@ export class VSCodeEffect {
       if (currentModule && module.id === currentModule.id) {
         try {
           const model = await this.modelsHandler.changeModule(module);
-
+          this.modelsHandler.applyComments(module, [
+            {
+              id: 'y0-the-id',
+              range: [50, 60],
+            },
+          ]);
           this.lint(module.title, model);
         } catch (error) {
           // We might try to open a module that is not actually opened in the editor,
@@ -1142,6 +1151,15 @@ export class VSCodeEffect {
       status: getStatus(),
       sticky: options.sticky,
       actions: options.actions,
+    });
+  }
+
+  private listenToCommentClick() {
+    window.addEventListener('click', event => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('editor-comments-glyph')) {
+        this.options.onCommentClick(Array.from(target.classList).pop());
+      }
     });
   }
 }
