@@ -191,7 +191,7 @@ const Entry: React.FC<IEntryProps> = ({
             borderColor: rightColors[0] || 'transparent',
           }}
         >
-          <Stack gap={2} align="center">
+          <Stack gap={2} align="center" css={{ width: '100%' }}>
             <EntryIcons type={type} error={moduleHasError} />
             {state === 'editing' ? (
               <FileInput
@@ -211,7 +211,7 @@ const Entry: React.FC<IEntryProps> = ({
                 })}
               />
             ) : (
-              <Text maxWidth={150}>{title}</Text>
+              <Text maxWidth="100%">{title}</Text>
             )}
             {isNotSynced && !state && (
               <NotSyncedIcon css={css({ color: 'blues.300' })} />

@@ -92,10 +92,12 @@ export const Summary = () => {
                       iconUrl={customTemplate.iconUrl}
                       environment={template}
                     />
-                    <Text maxWidth={190}>{getSandboxName(currentSandbox)}</Text>
+                    <Text maxWidth="100%">
+                      {getSandboxName(currentSandbox)}
+                    </Text>
                   </Stack>
                 ) : (
-                  <Text maxWidth={190}>{getSandboxName(currentSandbox)}</Text>
+                  <Text maxWidth="100%">{getSandboxName(currentSandbox)}</Text>
                 )}
                 <Button
                   variant="link"
@@ -129,7 +131,12 @@ export const Summary = () => {
                     {author.username}
                   </Text>
                   {team && (
-                    <Text size={2} marginTop={1} variant="muted">
+                    <Text
+                      size={2}
+                      marginTop={1}
+                      variant="muted"
+                      maxWidth="100%"
+                    >
                       {team.name}
                     </Text>
                   )}
@@ -165,9 +172,14 @@ export const Summary = () => {
               </Link>
             </ListItem>
           ) : null}
-          <ListItem justify="space-between">
+          <ListItem justify="space-between" gap={2}>
             <Text>Environment</Text>
-            <Link variant="muted" href={templateUrl} target="_blank">
+            <Link
+              variant="muted"
+              href={templateUrl}
+              target="_blank"
+              maxWidth="100%"
+            >
               {template}
             </Link>
           </ListItem>
