@@ -1,3 +1,5 @@
-FROM nginx:1.16.1-alpine
+FROM busybox:1.28.1
 
-COPY www /var/www/codesandbox
+WORKDIR /codesandbox
+
+COPY www /codesandbox
