@@ -1,23 +1,23 @@
 export const browser = () => {
   const agent = window.navigator.userAgent.toLowerCase();
   switch (true) {
-    case agent.indexOf('edge') > -1:
+    case agent.includes('edge'):
       return 'edge';
-    case agent.indexOf('edg') > -1:
+    case agent.includes('edg'):
       return 'chromium based edge (dev or canary)';
     // @ts-ignore
-    case agent.indexOf('opr') > -1 && !!window.opr:
+    case agent.includes('opr') && !!window.opr:
       return 'opera';
     // @ts-ignore
-    case agent.indexOf('chrome') > -1 && !!window.chrome:
+    case agent.includes('chrome') && !!window.chrome:
       return 'chrome';
-    case agent.indexOf('trident') > -1:
+    case agent.includes('trident'):
       return 'ie';
-    case agent.indexOf('firefox') > -1:
+    case agent.includes('firefox'):
       return 'firefox';
-    case agent.indexOf('brave') > -1:
+    case agent.includes('brave'):
       return 'brave';
-    case agent.indexOf('safari') > -1:
+    case agent.includes('safari'):
       return 'safari';
     default:
       return 'other';
