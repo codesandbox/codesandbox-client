@@ -22,6 +22,7 @@ import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
   sandboxUrl,
   profileUrl,
+  githubRepoUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { Icons } from '@codesandbox/template-icons';
@@ -31,6 +32,7 @@ import css from '@styled-system/css';
 import { TemplateConfig } from './TemplateConfig';
 import { PenIcon } from './icons';
 import { EditSummary } from './EditSummary';
+import { GitHubIcon } from '../GitHub/Icons';
 
 export const Summary = () => {
   const {
@@ -134,6 +136,33 @@ export const Summary = () => {
                     </Text>
                   )}
                 </Element>
+              </Stack>
+            </Link>
+          ) : null}
+
+          {!author && currentSandbox.git ? (
+            <Link href={githubRepoUrl(currentSandbox.git)} target="_blank">
+              <Stack gap={2} align="center">
+                <Stack
+                  justify="center"
+                  align="center"
+                  css={css({
+                    size: 8,
+                    minWidth: 8,
+                    borderRadius: 'small',
+                    border: '1px solid',
+                    borderColor: 'avatar.border',
+                  })}
+                >
+                  <GitHubIcon
+                    title="GitHub repository"
+                    width={20}
+                    height={20}
+                  />
+                </Stack>
+                <Link variant="muted" maxWidth="100%">
+                  {currentSandbox.git.username}/{currentSandbox.git.repo}
+                </Link>
               </Stack>
             </Link>
           ) : null}
