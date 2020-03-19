@@ -360,6 +360,10 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
         state.editor.changedModuleShortids.includes(module.shortid)
       );
 
+      await Promise.all(
+        changedModules.map(module => effects.live.saveModule(module))
+      );
+
       const updatedModules = await effects.api.saveModules(
         sandbox.id,
         changedModules
