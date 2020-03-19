@@ -9,8 +9,16 @@ import { Action, AsyncAction } from '.';
 
 export const internal = internalActions;
 
-export const appUnmounted: AsyncAction = async ({ effects, actions }) => {
+export const appUnmounted: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
   effects.connection.removeListener(actions.connectionChanged);
+  // We consider recover mode something to be done when browser actually crashes, meaning there is no unmount
+  if (state.editor.currentSandbox) {
+    effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+  }
 };
 
 export const sandboxPageMounted: AsyncAction = withLoadApp();
