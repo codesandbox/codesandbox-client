@@ -2,16 +2,14 @@ import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useEffect } from 'react';
 
 import { useOvermind } from 'app/overmind';
-
-import { Container, Heading, Explanation } from '../elements';
-
-import { NiceName as NiceNameBase, SignInButton } from './elements';
+import { Alert } from '../Common/Alert';
 
 export const ForkServerModal: FunctionComponent = () => {
   const {
     actions: {
       editor: { forkSandboxClicked },
       modalClosed,
+      signInClicked,
     },
     state: {
       editor: {
@@ -30,24 +28,14 @@ export const ForkServerModal: FunctionComponent = () => {
     }
   }, [forkSandboxClicked, isLoggedIn, modalClosed]);
 
-  const { color, niceName } = getTemplateDefinition(template);
-  const NiceName: FunctionComponent = () => (
-    <NiceNameBase color={color()}>{niceName}</NiceNameBase>
-  );
+  const { niceName } = getTemplateDefinition(template);
 
   return (
-    <Container>
-      <Heading>
-        Fork <NiceName /> Sandbox
-      </Heading>
-
-      <Explanation>
-        We execute <NiceName /> sandboxes in a server container. This is still
-        in beta, so we require you to sign in before you can fork a <NiceName />{' '}
-        sandbox.
-      </Explanation>
-
-      <SignInButton />
-    </Container>
+    <Alert
+      title={`Fork ${niceName} Sandbox`}
+      description={`We execute ${niceName} sandboxes in a server container. This is still in beta, so we require you to sign in before you can fork a ${niceName}${' '} sandbox.`}
+      onPrimaryAction={() => signInClicked({ useExtraScopes: false })}
+      confirmMessage="Sign in with GitHub"
+    />
   );
 };

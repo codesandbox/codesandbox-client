@@ -4,18 +4,6 @@ import { OpaqueLogo as BaseOpaqueLogo } from 'app/components/OpaqueLogo';
 import { GitHubLogo as BaseGitHubLogo } from 'app/components/GitHubLogo';
 import { Cube as BaseCube } from '../Cube';
 
-export const Container = styled.div`
-  ${({ theme }) => css`
-    position: relative;
-    padding: 1rem 2rem;
-    background-color: ${theme.background};
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.125rem;
-    font-weight: 500;
-    text-align: center;
-  `}
-`;
-
 export const DeployAnimationContainer = styled.div<{ deploying: boolean }>`
   ${({ deploying }) => css`
     display: flex;
@@ -64,17 +52,4 @@ export const OpaqueLogo = styled(BaseOpaqueLogo)`
   position: absolute;
   z-index: 10;
   transform: translateY(15px) translateX(-100px);
-`;
-
-export const DeployText = styled.div`
-  ${delayInEffect()};
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  font-size: 1.125rem;
-`;
-
-export const Result = styled.div`
-  ${delayInEffect(0.25)};
-  margin-bottom: 1rem;
-  font-size: 1.125rem;
 `;

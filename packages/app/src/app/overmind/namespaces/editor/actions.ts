@@ -8,6 +8,7 @@ import {
   ModuleTab,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
+import { TextOperation } from 'ot';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
@@ -201,7 +202,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately({ initialRender: true });
 
   if (COMMENTS) {
     try {
@@ -322,13 +322,11 @@ export const codeChanged: Action<{
   // never want to send that code update, since this actual code change goes through this
   // specific code flow already.
   if (state.live.isLive && module.code !== code) {
-    let operation;
+    let operation: TextOperation;
     if (event) {
       operation = eventToTransform(event, module.code).operation;
     } else {
-      const transform = getTextOperation(module.code, code);
-
-      operation = transform.operation;
+      operation = getTextOperation(module.code, code);
     }
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
@@ -439,14 +437,6 @@ export const forkSandboxClicked: AsyncAction = async ({
     return;
   }
 
-  if (
-    state.editor.currentSandbox.owned &&
-    !state.editor.currentSandbox.customTemplate &&
-    !effects.browser.confirm('Do you want to fork your own sandbox?')
-  ) {
-    return;
-  }
-
   await actions.editor.internal.forkSandbox({
     sandboxId: state.editor.currentSandbox.id,
   });
@@ -521,7 +511,7 @@ export const moduleSelected: Action<
           followingUser.currentModuleShortid !== module.shortid
         ) {
           // Reset following as this is a user change module action
-          state.live.followingUserId = null;
+          actions.live.onStopFollow();
         }
       }
 

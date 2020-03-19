@@ -3,6 +3,7 @@ import {
   LiveMessageEvent,
   Module,
   RoomInfo,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
@@ -11,7 +12,7 @@ import {
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { Blocker, blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
-import { TextOperation } from 'ot';
+import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
 
@@ -19,7 +20,10 @@ import { OPTIMISTIC_ID_PREFIX } from '../utils';
 import clientsFactory from './clients';
 
 type Options = {
-  onApplyOperation(args: { moduleShortid: string; operation: any }): void;
+  onApplyOperation(args: {
+    moduleShortid: string;
+    operation: TextOperation;
+  }): void;
   provideJwtToken(): string;
   isLiveBlockerExperiement(): boolean;
   onOperationError(payload: {
@@ -115,7 +119,11 @@ class Live {
     }
   }
 
-  private onSendOperation = async (moduleShortid, revision, operation) => {
+  private onSendOperation = async (
+    moduleShortid: string,
+    revision: number,
+    operation: TextOperation
+  ) => {
     logBreadcrumb({
       type: 'ot',
       message: `Sending ${JSON.stringify({
@@ -351,7 +359,7 @@ class Live {
     });
   }
 
-  sendCodeUpdate(moduleShortid: string, operation: any) {
+  sendCodeUpdate(moduleShortid: string, operation: TextOperation) {
     if (!operation) {
       return;
     }
@@ -464,6 +472,18 @@ class Live {
     return this.sendImmediately('live:module_state', {});
   }
 
+  sendUserViewRange(
+    moduleShortid: string | null,
+    liveUserId: string,
+    viewRange: UserViewRange
+  ) {
+    return this.send('user:view-range', {
+      liveUserId,
+      moduleShortid,
+      viewRange,
+    });
+  }
+
   sendUserSelection(
     moduleShortid: string | null,
     liveUserId: string,
@@ -484,13 +504,13 @@ class Live {
     return this.clients.getAll();
   }
 
-  applyClient(moduleShortid: string, operation: any) {
+  applyClient(moduleShortid: string, operation: SerializedTextOperation) {
     return this.clients
       .get(moduleShortid)
       .applyClient(TextOperation.fromJSON(operation));
   }
 
-  applyServer(moduleShortid: string, operation: any) {
+  applyServer(moduleShortid: string, operation: SerializedTextOperation) {
     return this.clients
       .get(moduleShortid)
       .applyServer(TextOperation.fromJSON(operation));

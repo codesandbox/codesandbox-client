@@ -18,6 +18,7 @@ export * from './components/Switch';
 export * from './components/Text';
 export * from './components/Textarea';
 export * from './components/FormField';
+export * from './components/Checkbox';
 
 // molecules
 export * from './components/Collapsible';

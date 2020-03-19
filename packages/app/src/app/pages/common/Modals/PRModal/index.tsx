@@ -2,8 +2,8 @@ import React, { FunctionComponent } from 'react';
 
 import { GitProgress } from 'app/components/GitProgress';
 import { useOvermind } from 'app/overmind';
-
-import { ButtonContainer } from './elements';
+import { Stack, Button, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
 
 export const PRModal: FunctionComponent = () => {
   const {
@@ -17,15 +17,27 @@ export const PRModal: FunctionComponent = () => {
       message="Forking Repository & Creating PR..."
       result={
         isCreatingPr ? null : (
-          <div>
-            {`Done! We'll now open the new sandbox of this PR and GitHub in 3 seconds...`}
+          <>
+            <Text marginBottom={6} size={3} block>
+              Done! We{"'"}ll now open the new sandbox of this PR and GitHub in
+              3 seconds...
+            </Text>
 
-            <ButtonContainer>
-              <a href={pr.prURL} rel="noreferrer noopener" target="_blank">
+            <Stack justify="flex-end">
+              <Button
+                as="a"
+                css={css({
+                  width: 'auto',
+                  textDecoration: 'none',
+                })}
+                href={pr.prURL}
+                rel="noreferrer noopener"
+                target="_blank"
+              >
                 Click here if nothing happens.
-              </a>
-            </ButtonContainer>
-          </div>
+              </Button>
+            </Stack>
+          </>
         )
       }
     />

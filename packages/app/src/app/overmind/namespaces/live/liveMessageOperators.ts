@@ -6,6 +6,7 @@ import {
   LiveUser,
   Module,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
@@ -95,9 +96,10 @@ export const onUserEntered: Operator<LiveMessage<{
     );
   }
 
-  // Send our own selections to everyone, just to let the others know where
+  // Send our own selections and viewranges to everyone, just to let the others know where
   // we are
   actions.live.sendCurrentSelection();
+  actions.live.sendCurrentViewRange();
 
   if (data.joined_user_id === state.live.liveUserId) {
     return;
@@ -105,7 +107,11 @@ export const onUserEntered: Operator<LiveMessage<{
 
   const user = data.users.find(u => u.id === data.joined_user_id);
 
-  if (!state.live.notificationsHidden && user) {
+  if (
+    !state.live.notificationsHidden &&
+    user &&
+    !state.user?.experiments.collaborator
+  ) {
     effects.notificationToast.add({
       message: `${user.username} joined the live session.`,
       status: NotificationStatus.NOTICE,
@@ -127,7 +133,11 @@ export const onUserLeft: Operator<LiveMessage<{
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
 
-    if (user && user.id !== state.live.liveUserId) {
+    if (
+      user &&
+      user.id !== state.live.liveUserId &&
+      !state.user?.experiments.collaborator
+    ) {
       effects.notificationToast.add({
         message: `${user.username} left the live session.`,
         status: NotificationStatus.NOTICE,
@@ -370,7 +380,7 @@ export const onUserSelection: Operator<LiveMessage<{
   liveUserId: string;
   moduleShortid: string;
   selection: UserSelection;
-}>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
   if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
     return;
   }
@@ -404,6 +414,12 @@ export const onUserSelection: Operator<LiveMessage<{
           color: json(user.color),
         },
       ]);
+
+      if (state.live.followingUserId === userSelectionLiveUserId) {
+        actions.live.revealCursorPosition({
+          liveUserId: userSelectionLiveUserId,
+        });
+      }
     }
   }
 });
@@ -441,6 +457,41 @@ export const onUserCurrentModule: Operator<LiveMessage<{
     actions.editor.moduleSelected({
       id: module.id,
     });
+  }
+});
+
+export const onUserViewRange: Operator<LiveMessage<{
+  liveUserId: string;
+  moduleShortid: string;
+  viewRange: UserViewRange;
+}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
+  if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
+    return;
+  }
+
+  const userSelectionLiveUserId = data.liveUserId;
+  const { moduleShortid } = data;
+  const { viewRange } = data;
+  const userIndex = state.live.roomInfo.users.findIndex(
+    u => u.id === userSelectionLiveUserId
+  );
+
+  if (userIndex !== -1) {
+    state.live.roomInfo.users[userIndex].currentModuleShortid = moduleShortid;
+    state.live.roomInfo.users[userIndex].viewRange = viewRange;
+  }
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+  if (module) {
+    const user = state.live.roomInfo.users.find(
+      u => u.id === userSelectionLiveUserId
+    );
+
+    if (user && state.live.followingUserId === userSelectionLiveUserId) {
+      effects.vscode.revealRange(viewRange);
+    }
   }
 });
 
@@ -531,7 +582,7 @@ export const onConnectionLoss: Operator<LiveMessage> = mutate(
           message: 'We lost connection with the live server, reconnecting...',
           status: NotificationStatus.ERROR,
         });
-      }, 2000);
+      }, 10000);
 
       state.live.reconnecting = true;
 
