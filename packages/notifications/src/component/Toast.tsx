@@ -142,7 +142,10 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
                     <Button
                       small
                       onClick={() => {
-                        removeToast(toast.id);
+                        // By default we hide the notification on clicking primary buttons
+                        if (primary.hideOnClick !== false) {
+                          removeToast(toast.id);
+                        }
                         primary.run();
                       }}
                       style={{
@@ -161,11 +164,14 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
                       secondary
                       small
                       onClick={() => {
+                        if (secondary.hideOnClick) {
+                          removeToast(toast.id);
+                        }
                         secondary.run();
                       }}
                       style={{
                         marginTop: '1rem',
-                        marginLeft: '0.5rem',
+                        marginRight: '0.75rem',
                         lineHeight: 1,
                       }}
                     >

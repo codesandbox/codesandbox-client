@@ -497,15 +497,19 @@ export class VSCodeEffect {
   };
 
   public async openDiff(sandboxId: string, module: Module, oldCode: string) {
-    const recoverPath = `/recover/${sandboxId}/recover-${module.title}`;
+    const recoverPath = `/recover/${sandboxId}/recover-${module.path}`;
     const filePath = `/sandbox${module.path}`;
     const fileSystem = window.BrowserFS.BFSRequire('fs');
 
+    // We have to write a recover file to the filesystem, we save it behind
+    // the sandboxId
     if (!fileSystem.existsSync(`/recover/${sandboxId}`)) {
       fileSystem.mkdirSync(`/recover/${sandboxId}`);
     }
+    // We write the recover file with the old code, as the new code is already applied
     fileSystem.writeFileSync(recoverPath, oldCode);
 
+    // We open a conflict resolution editor for the files
     this.editorApi.editorService.openEditor({
       leftResource: this.monaco.Uri.from({
         scheme: 'conflictResolution',

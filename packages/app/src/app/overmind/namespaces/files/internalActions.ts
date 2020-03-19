@@ -31,22 +31,26 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
 
   if (recoveredList.length > 0) {
     effects.notificationToast.add({
-      timeAlive: Infinity,
+      sticky: true,
       message: `We recovered ${recoveredList.length} unsaved ${
         recoveredList.length > 1 ? 'files' : 'file'
       } from a previous session, what do you want to do?`,
       actions: {
         primary: [
           {
-            label: 'Apply all',
+            label: 'Apply changes',
             run: () => actions.files.applyRecover(recoveredList),
           },
+        ],
+        secondary: [
           {
             label: 'Compare',
+            hideOnClick: true,
             run: () => actions.files.createRecoverDiffs(recoveredList),
           },
           {
-            label: 'Discard all',
+            label: 'Discard',
+            hideOnClick: true,
             run: () => actions.files.discardRecover(),
           },
         ],
