@@ -34,3 +34,6 @@ export * from './components/Menu';
 export * from './components/Grid';
 export * from './components/Stack';
 export * from './components/SidebarRow';
+
+// design language
+export * from './design-language';
