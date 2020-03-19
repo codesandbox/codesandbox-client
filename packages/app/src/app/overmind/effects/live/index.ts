@@ -41,6 +41,8 @@ declare global {
   }
 }
 
+const TIME_TO_THROTTLE_SOLO_MODE_SENDS = 2000;
+
 class Live {
   private identifier = uuid.v4();
   private pendingMessages = new Map();
@@ -48,6 +50,7 @@ class Live {
   private channel: Channel | null;
   private messageIndex = 0;
   private clients: ReturnType<typeof clientsFactory>;
+  private awaitSendTimer: NodeJS.Timer;
   private socket: Socket;
   /*
     Since in "Solo mode" we want to batch up operations and other events later,
@@ -82,6 +85,18 @@ class Live {
   private connectionsCount = 0;
   private setAwaitSend() {
     this.awaitSend = blocker();
+    clearTimeout(this.awaitSendTimer);
+    this.awaitSendTimer = setTimeout(async () => {
+      this.resolveAwaitSend();
+      await Promise.all(
+        this.getAllClients().map(client =>
+          this.awaitSynchronizedModule(client.moduleShortid)
+        )
+      );
+      if (this.connectionsCount === 1) {
+        this.setAwaitSend();
+      }
+    }, TIME_TO_THROTTLE_SOLO_MODE_SENDS);
   }
 
   private resolveAwaitSend() {
@@ -91,6 +106,13 @@ class Live {
     const awaitSend = this.awaitSend;
     this.awaitSend = null;
     awaitSend.resolve();
+  }
+
+  private async awaitSynchronizedModule(moduleShortid: string) {
+    const client = this.clients.get(moduleShortid);
+    if (client.awaitSynchronized) {
+      await client.awaitSynchronized.promise;
+    }
   }
 
   private onSendOperation = async (moduleShortid, revision, operation) => {
@@ -216,9 +238,9 @@ class Live {
           const currentCount = this.connectionsCount;
 
           this.connectionsCount = this.presence.list().length;
-          if (currentCount >= 2 && this.connectionsCount < 2) {
+          if (currentCount !== 1 && this.connectionsCount === 1) {
             this.setAwaitSend();
-          } else if (currentCount < 2 && this.connectionsCount >= 2) {
+          } else if (currentCount === 1 && this.connectionsCount > 1) {
             this.resolveAwaitSend();
           }
         });
@@ -307,13 +329,10 @@ class Live {
     */
     if (this.isLiveBlockerExperiement() && this.awaitSend) {
       this.resolveAwaitSend();
-      const client = this.clients.get(module.shortid);
-      if (client.awaitSynchronized) {
-        await client.awaitSynchronized.promise;
-      }
+      this.awaitSynchronizedModule(module.shortid);
       this.setAwaitSend();
-      // Send the save message
     }
+    // Send the save message
   }
 
   sendModuleUpdate(module: Module) {
