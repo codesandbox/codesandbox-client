@@ -15,10 +15,6 @@ export const appUnmounted: AsyncAction = async ({
   actions,
 }) => {
   effects.connection.removeListener(actions.connectionChanged);
-  // We consider recover mode something to be done when browser actually crashes, meaning there is no unmount
-  if (state.editor.currentSandbox) {
-    effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
-  }
 };
 
 export const sandboxPageMounted: AsyncAction = withLoadApp();
