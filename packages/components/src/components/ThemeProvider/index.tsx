@@ -11,7 +11,7 @@ import {
   ThemeProvider as BaseThemeProvider,
   createGlobalStyle,
 } from 'styled-components';
-import designLanguage from '../../design-language';
+import * as designLanguage from '../../design-language';
 import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
 
