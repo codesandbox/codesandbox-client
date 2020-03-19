@@ -172,7 +172,7 @@ const colors = {
   },
   peekViewEditor: {
     background: tokens.grays[600],
-    matchHighlightBackground: tokens.blues[300],
+    matchHighlightBackground: tokens.blues[500] + '33', // 20% opacity
   },
   peekViewEditorGutter: {
     background: null,
@@ -181,7 +181,7 @@ const colors = {
     background: tokens.grays[600],
     fileForeground: tokens.white,
     lineForeground: tokens.white,
-    matchHighlightBackground: tokens.blues[300],
+    matchHighlightBackground: tokens.blues[500] + '33', // 20% opacity,
     selectionBackground: tokens.grays[600],
     selectionForeground: tokens.white,
   },

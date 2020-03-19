@@ -4,7 +4,7 @@ import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { Container } from './elements';
+import { Alert } from '../Common/Alert';
 
 export const SurveyModal: FunctionComponent = () => {
   const {
@@ -35,8 +35,8 @@ export const SurveyModal: FunctionComponent = () => {
   };
 
   return (
-    <Container>
+    <Alert style={{ padding: 0 }}>
       <div style={{ width: '100%', height: 500 }} ref={initializeTypeform} />
-    </Container>
+    </Alert>
   );
 };

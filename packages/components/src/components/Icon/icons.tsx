@@ -200,3 +200,23 @@ export const cross = props => (
     />
   </Element>
 );
+
+export const plus = props => (
+  <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
+    <path
+      fill="currentColor"
+      d="M8.6 2H7.4v5.4H2v1.2h5.4V14h1.2V8.6H14V7.4H8.6V2z"
+    />
+  </svg>
+);
+
+export const trash = props => (
+  <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
+    <path
+      fill="currentColor"
+      fillRule="evenodd"
+      d="M8 3c-1.6 0-2.4.746-2.4 1.667H4.25c-.138 0-.25.124-.25.277v.278c0 .154.112.278.25.278h7.5c.138 0 .25-.124.25-.278v-.278c0-.153-.112-.277-.25-.277H10.4C10.4 3.747 9.6 3 8 3zM6.4 4.667c0-.614.4-.834 1.6-.834 1.2 0 1.6.22 1.6.834H6.4zM4.727 6.333c-.147 0-.262.14-.249.303l.501 6.111c.012.143.12.253.25.253h5.543c.129 0 .237-.11.249-.253l.408-6.11c.013-.163-.102-.304-.25-.304H4.728z"
+      clipRule="evenodd"
+    />
+  </svg>
+);

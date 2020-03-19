@@ -1,4 +1,8 @@
-import { LiveMessage, LiveMessageEvent } from '@codesandbox/common/lib/types';
+import {
+  LiveMessage,
+  LiveMessageEvent,
+  UserViewRange,
+} from '@codesandbox/common/lib/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
@@ -20,6 +24,34 @@ export const signInToRoom: AsyncAction<{
     });
   }
 });
+
+export const onOperationError: Action<{
+  moduleShortid: string;
+  code: string;
+  revision: number;
+  saved_code: string;
+}> = ({ state, effects }, { moduleShortid, revision, code, saved_code }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  effects.live.resetClient(moduleShortid, revision);
+  const module = state.editor.currentSandbox.modules.find(
+    moduleItem => moduleItem.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  if (code !== undefined) {
+    module.code = code;
+  }
+  if (saved_code !== undefined) {
+    module.savedCode = saved_code;
+  }
+
+  effects.vscode.setModuleCode(module);
+};
 
 export const roomJoined: AsyncAction<{
   roomId: string;
@@ -60,7 +92,6 @@ export const roomJoined: AsyncAction<{
 
   effects.live.sendModuleStateSyncRequest();
   effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately({ initialRender: true });
   state.editor.isLoading = false;
 });
 
@@ -90,8 +121,6 @@ export const createLiveClicked: AsyncAction<string> = async (
       };
     }),
   });
-
-  Object.assign(state.editor.sandboxes[sandboxId], sandbox);
   state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
 
   effects.live.sendModuleStateSyncRequest();
@@ -119,6 +148,7 @@ export const liveMessageReceived: Operator<LiveMessage, any> = pipe(
     [LiveMessageEvent.DIRECTORY_DELETED]: liveMessage.onDirectoryDeleted,
     [LiveMessageEvent.USER_SELECTION]: liveMessage.onUserSelection,
     [LiveMessageEvent.USER_CURRENT_MODULE]: liveMessage.onUserCurrentModule,
+    [LiveMessageEvent.USER_VIEW_RANGE]: liveMessage.onUserViewRange,
     [LiveMessageEvent.LIVE_MODE]: liveMessage.onLiveMode,
     [LiveMessageEvent.LIVE_CHAT_ENABLED]: liveMessage.onLiveChatEnabled,
     [LiveMessageEvent.LIVE_ADD_EDITOR]: liveMessage.onLiveAddEditor,
@@ -158,6 +188,59 @@ export const sendCurrentSelection: Action = ({ state, effects }) => {
         liveUserId,
         state.live.currentSelection
       );
+    }
+  }
+};
+
+export const sendCurrentViewRange: Action = ({ state, effects }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  if (!state.live.isCurrentEditor) {
+    return;
+  }
+
+  const { liveUserId, currentViewRange } = state.live;
+  if (liveUserId && currentViewRange) {
+    effects.live.sendUserViewRange(
+      state.editor.currentModuleShortid,
+      liveUserId,
+      currentViewRange
+    );
+  }
+};
+
+export const onViewRangeChanged: Action<UserViewRange> = (
+  { state, effects },
+  viewRange
+) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  if (state.live.isCurrentEditor) {
+    const { liveUserId } = state.live;
+    const moduleShortid = state.editor.currentModuleShortid;
+    if (!liveUserId) {
+      return;
+    }
+
+    state.live.currentViewRange = viewRange;
+    const userIndex = state.live.roomInfo.users.findIndex(
+      u => u.id === liveUserId
+    );
+
+    if (userIndex !== -1) {
+      if (state.live.roomInfo.users[userIndex]) {
+        state.live.roomInfo.users[
+          userIndex
+        ].currentModuleShortid = moduleShortid;
+
+        state.live.roomInfo.users[userIndex].viewRange = viewRange;
+
+        effects.live.sendUserViewRange(moduleShortid, liveUserId, viewRange);
+      }
     }
   }
 };
@@ -285,15 +368,64 @@ export const onFollow: Action<{
 
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
+  actions.live.revealViewRange({ liveUserId });
+};
+
+export const onStopFollow: Action = ({ state, effects, actions }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  state.live.followingUserId = null;
+};
+
+export const revealViewRange: Action<{ liveUserId: string }> = (
+  { state, effects, actions },
+  { liveUserId }
+) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
 
   const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
 
-  if (user!.currentModuleShortid && state.editor.currentSandbox) {
+  if (user && user.currentModuleShortid && state.editor.currentSandbox) {
     const { modules } = state.editor.currentSandbox;
     const module = modules.filter(
-      ({ shortid }) => shortid === user!.currentModuleShortid
+      ({ shortid }) => shortid === user.currentModuleShortid
     )[0];
 
     actions.editor.moduleSelected({ id: module.id });
+
+    if (user.viewRange) {
+      effects.vscode.revealRange(user.viewRange);
+    }
+  }
+};
+
+export const revealCursorPosition: Action<{ liveUserId: string }> = (
+  { state, effects, actions },
+  { liveUserId }
+) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
+
+  if (user && user.currentModuleShortid && state.editor.currentSandbox) {
+    const { modules } = state.editor.currentSandbox;
+    const module = modules.filter(
+      ({ shortid }) => shortid === user.currentModuleShortid
+    )[0];
+
+    actions.editor.moduleSelected({ id: module.id });
+
+    if (user.selection?.primary?.cursorPosition) {
+      effects.vscode.revealPositionInCenterIfOutsideViewport(
+        user.selection.primary.cursorPosition,
+        0
+      );
+    }
   }
 };

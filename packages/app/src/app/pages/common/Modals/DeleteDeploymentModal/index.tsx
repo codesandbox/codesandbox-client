@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
-
-import { Alert } from 'app/components/Alert';
 import { useOvermind } from 'app/overmind';
+import { Alert } from '../Common/Alert';
 
 export const DeleteDeploymentModal: FunctionComponent = () => {
   const {
@@ -13,10 +12,12 @@ export const DeleteDeploymentModal: FunctionComponent = () => {
 
   return (
     <Alert
-      body="Are you sure you want to delete this Deployment?"
-      onCancel={() => modalClosed()}
-      onConfirm={() => deleteDeployment()}
       title="Delete Deployment"
+      description="Are you sure you want to delete this deployment?"
+      onCancel={modalClosed}
+      onPrimaryAction={deleteDeployment}
+      confirmMessage="Delete"
+      type="danger"
     />
   );
 };

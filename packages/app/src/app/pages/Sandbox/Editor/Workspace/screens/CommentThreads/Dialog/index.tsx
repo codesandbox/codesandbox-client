@@ -95,7 +95,7 @@ export const Dialog = props => {
                 })
               }
               name="check"
-              size={4}
+              size={14}
               title="Resolve Comment"
               css={css({
                 transition: 'color',
@@ -105,7 +105,7 @@ export const Dialog = props => {
             />
             <IconButton
               name="cross"
-              size={3}
+              size={10}
               title="Close comment dialog"
               onClick={closeDialog}
             />
@@ -145,7 +145,7 @@ export const Dialog = props => {
                     <Menu.IconButton
                       name="more"
                       title="Comment actions"
-                      size={3}
+                      size={12}
                     />
                     <Menu.List>
                       <Menu.Item

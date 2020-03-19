@@ -53,7 +53,7 @@ export const CommentThreads: React.FC = () => {
     >
       <Icon
         name="comments"
-        size={20}
+        size={80}
         color="mutedForeground"
         css={{ opacity: 0.2 }}
       />
@@ -91,7 +91,7 @@ export const CommentThreads: React.FC = () => {
               className="icon-button"
               name="filter"
               title="Filter comments"
-              size={3}
+              size={12}
             />
             <Menu.List>
               {options.map(option => (
@@ -115,8 +115,11 @@ export const CommentThreads: React.FC = () => {
               overflow: 'auto',
             }}
           >
-            {currentCommentThreads.map(thread => (
-              <CommentThread key={thread.id} thread={thread} />
+            {currentCommentThreads.map(commentThread => (
+              <CommentThread
+                key={commentThread.id}
+                commentThread={commentThread}
+              />
             ))}
           </List>
         ) : null}

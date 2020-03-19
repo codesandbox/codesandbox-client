@@ -46,7 +46,7 @@ export function getCurrentManager(): Manager | null {
 
 export function getHTMLParts(html: string) {
   if (html.includes('<body>')) {
-    const bodyMatcher = /<body>([\s\S]*)<\/body>/m;
+    const bodyMatcher = /<body.*>([\s\S]*)<\/body>/m;
     const headMatcher = /<head>([\s\S]*)<\/head>/m;
 
     const headMatch = html.match(headMatcher);

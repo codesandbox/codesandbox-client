@@ -15,6 +15,9 @@ export const onInitialize: OnInitialize = async (
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,
+    isLiveBlockerExperiement: () =>
+      Boolean(state.user?.experiments.liveBlocker),
+    onOperationError: actions.live.onOperationError,
   });
 
   effects.flows.initialize(overmindInstance.reaction);
@@ -80,7 +83,8 @@ export const onInitialize: OnInitialize = async (
     getCurrentUser: () => state.user,
     onOperationApplied: actions.editor.onOperationApplied,
     onCodeChange: actions.editor.codeChanged,
-    onSelectionChange: actions.live.onSelectionChanged,
+    onSelectionChanged: actions.live.onSelectionChanged,
+    onViewRangeChanged: actions.live.onViewRangeChanged,
     reaction: overmindInstance.reaction,
     getState: path =>
       path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,

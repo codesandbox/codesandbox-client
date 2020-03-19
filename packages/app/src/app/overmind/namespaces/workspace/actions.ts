@@ -360,12 +360,11 @@ export const deleteTemplate: AsyncAction = async ({
   ) {
     return;
   }
-  const sandboxId = state.editor.currentSandbox.id;
+  const sandbox = state.editor.currentSandbox;
   const templateId = state.editor.currentSandbox.customTemplate.id;
 
   try {
-    await effects.api.deleteTemplate(sandboxId, templateId);
-    const sandbox = state.editor.sandboxes[sandboxId];
+    await effects.api.deleteTemplate(sandbox.id, templateId);
 
     sandbox.isFrozen = false;
     sandbox.customTemplate = null;

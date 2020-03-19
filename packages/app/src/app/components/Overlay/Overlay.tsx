@@ -44,13 +44,22 @@ export const Overlay: React.FC<IOverlayProps> = ({
     height: 0,
   });
 
-  useLayoutEffect(() => {
+  const calculateBounds = () => {
     const posData = element.current.getBoundingClientRect();
     bounds.current = {
       top: posData.top,
       left: posData.left,
       width: posData.width,
       height: posData.height,
+    };
+  };
+
+  useLayoutEffect(() => {
+    calculateBounds();
+
+    window.addEventListener('resize', calculateBounds);
+    return () => {
+      window.removeEventListener('resize', calculateBounds);
     };
   }, []);
 

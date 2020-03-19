@@ -18,15 +18,11 @@ type IconProps = React.SVGAttributes<SVGElement> &
 
 export const Icon: React.FC<IconProps> = ({
   name = 'notFound',
-  size = 4,
+  size = 16,
   color = 'inherit',
   ...props
 }) => {
   const SVG = icons[name];
-  // we use a 4px scale for space and size
-  const scaledSize = size * 4;
 
-  return (
-    <SVG width={scaledSize} height={scaledSize} color={color} {...props} />
-  );
+  return <SVG width={size} height={size} color={color} {...props} />;
 };

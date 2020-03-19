@@ -19,6 +19,7 @@ const copyToClipboard = (str: string) => {
 
 export const ButtonActions = () => {
   const [linkCopied, setLinkCopied] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
   const { actions } = useOvermind();
   const timeout = React.useRef(null);
   const copyLink = () => {
@@ -42,6 +43,10 @@ export const ButtonActions = () => {
     },
     []
   );
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Stack justify="flex-end" direction="horizontal" gap={2}>
@@ -78,7 +83,7 @@ export const ButtonActions = () => {
         ) : (
           <motion.div
             key="copy"
-            initial={{ scale: 0.8, opacity: 0.7 }}
+            initial={mounted ? { scale: 0.8, opacity: 0.7 } : false}
             animate={{ scale: 1, opacity: 1 }}
           >
             Copy Sandbox Link

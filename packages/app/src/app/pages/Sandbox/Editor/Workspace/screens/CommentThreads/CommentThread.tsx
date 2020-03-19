@@ -14,8 +14,8 @@ import { useOvermind } from 'app/overmind';
 import { formatDistance } from 'date-fns';
 import React from 'react';
 
-export const CommentThread = React.memo<{ thread: TCommentThread }>(
-  ({ thread }) => {
+export const CommentThread = React.memo<{ commentThread: TCommentThread }>(
+  ({ commentThread }) => {
     const { state, actions } = useOvermind();
 
     const truncateText = {
@@ -33,14 +33,14 @@ export const CommentThread = React.memo<{ thread: TCommentThread }>(
 
     return (
       <ListAction
-        key={thread.id}
+        key={commentThread.id}
         paddingTop={4}
         css={css({
           display: 'block',
           color: 'inherit',
           transition: 'opacity',
           transitionDuration: theme => theme.speeds[1],
-          opacity: thread.isResolved ? 0.2 : 1,
+          opacity: commentThread.isResolved ? 0.2 : 1,
           paddingRight: 0, // the actions menu should be at the edge
         })}
       >
@@ -48,49 +48,53 @@ export const CommentThread = React.memo<{ thread: TCommentThread }>(
           <Stack
             gap={2}
             align="center"
-            onClick={() => actions.editor.selectCommentThread(thread.id)}
+            onClick={() => actions.editor.selectCommentThread(commentThread.id)}
           >
-            <Avatar user={thread.initialComment.user} />
+            <Avatar user={commentThread.initialComment.user} />
             <Stack direction="vertical" justify="center">
               <Link
                 size={3}
                 weight="bold"
-                href={`/u/${thread.initialComment.user.username}`}
+                href={`/u/${commentThread.initialComment.user.username}`}
                 variant="body"
               >
-                {thread.initialComment.user.username}
+                {commentThread.initialComment.user.username}
               </Link>
               <Text size={2} variant="muted">
-                {formatDistance(new Date(thread.insertedAt), new Date(), {
-                  addSuffix: true,
-                })}
+                {formatDistance(
+                  new Date(commentThread.insertedAt),
+                  new Date(),
+                  {
+                    addSuffix: true,
+                  }
+                )}
               </Text>
             </Stack>
           </Stack>
           <Stack align="center">
-            {thread.isResolved && (
+            {commentThread.isResolved && (
               <Icon name="check" title="Resolved" color="green" />
             )}
             <Menu>
-              <Menu.IconButton name="more" title="Comment actions" size={3} />
+              <Menu.IconButton name="more" title="Comment actions" size={12} />
               <Menu.List>
                 <Menu.Item
                   onSelect={() =>
                     actions.editor.resolveCommentThread({
-                      commentThreadId: thread.id,
-                      isResolved: !thread.isResolved,
+                      commentThreadId: commentThread.id,
+                      isResolved: !commentThread.isResolved,
                     })
                   }
                 >
-                  Mark as {thread.isResolved ? 'Unr' : 'r'}esolved
+                  Mark as {commentThread.isResolved ? 'Unr' : 'r'}esolved
                 </Menu.Item>
                 <Menu.Item onSelect={() => {}}>Share Comment</Menu.Item>
-                {state.user.id === thread.initialComment.user.id && (
+                {state.user.id === commentThread.initialComment.user.id && (
                   <Menu.Item
                     onSelect={() =>
                       actions.editor.deleteComment({
-                        threadId: thread.id,
-                        commentId: thread.initialComment.id,
+                        threadId: commentThread.id,
+                        commentId: commentThread.initialComment.id,
                       })
                     }
                   >
@@ -102,7 +106,7 @@ export const CommentThread = React.memo<{ thread: TCommentThread }>(
           </Stack>
         </Stack>
         <Element
-          onClick={() => actions.editor.selectCommentThread(thread.id)}
+          onClick={() => actions.editor.selectCommentThread(commentThread.id)}
           as="p"
           marginY={0}
           marginRight={2 /** Adjust for the missing margin in ListAction */}
@@ -115,10 +119,10 @@ export const CommentThread = React.memo<{ thread: TCommentThread }>(
           })}
         >
           <Text block css={truncateText} marginBottom={2}>
-            {thread.initialComment.content}
+            {commentThread.initialComment.content}
           </Text>
           <Text variant="muted" size={2}>
-            {getRepliesString(thread.comments.length - 1)}
+            {getRepliesString(commentThread.comments.length)}
           </Text>
         </Element>
       </ListAction>

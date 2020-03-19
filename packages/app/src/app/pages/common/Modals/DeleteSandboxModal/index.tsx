@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
-
-import { Alert } from 'app/components/Alert';
 import { useOvermind } from 'app/overmind';
+import { Alert } from '../Common/Alert';
 
 const DeleteSandboxModal: FunctionComponent = () => {
   const {
@@ -14,9 +13,11 @@ const DeleteSandboxModal: FunctionComponent = () => {
   return (
     <Alert
       title="Delete Sandbox"
-      body="Are you sure you want to delete this sandbox?"
-      onCancel={() => modalClosed()}
-      onConfirm={() => sandboxDeleted()}
+      description="Are you sure you want to delete this sandbox?"
+      onCancel={modalClosed}
+      onPrimaryAction={sandboxDeleted}
+      confirmMessage="Delete"
+      type="danger"
     />
   );
 };

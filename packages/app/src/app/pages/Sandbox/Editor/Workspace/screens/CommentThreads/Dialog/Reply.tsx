@@ -53,7 +53,7 @@ export const Reply = ({
           {state.user.id === user.id && (
             <Stack align="center">
               <Menu>
-                <Menu.IconButton name="more" title="Reply actions" size={3} />
+                <Menu.IconButton name="more" title="Reply actions" size={12} />
                 <Menu.List>
                   <Menu.Item
                     onSelect={() =>
