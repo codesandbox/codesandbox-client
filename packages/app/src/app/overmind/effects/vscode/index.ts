@@ -497,7 +497,10 @@ export class VSCodeEffect {
   };
 
   public async openDiff(sandboxId: string, module: Module, oldCode: string) {
-    const recoverPath = `/recover/${sandboxId}/recover-${module.path}`;
+    const recoverPath = `/recover/${sandboxId}/recover-${module.path.replace(
+      /\//g,
+      ' '
+    )}`;
     const filePath = `/sandbox${module.path}`;
     const fileSystem = window.BrowserFS.BFSRequire('fs');
 
