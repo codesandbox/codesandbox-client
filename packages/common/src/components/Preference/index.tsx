@@ -1,6 +1,6 @@
 import React, { ComponentProps, FunctionComponent } from 'react';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Tooltip from '../Tooltip';
 import { Container } from './elements';
 import { PreferenceDropdown } from './PreferenceDropdown';
 import { PreferenceKeybinding } from './PreferenceKeybinding';
