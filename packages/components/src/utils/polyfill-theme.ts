@@ -8,7 +8,7 @@
 import deepmerge from 'deepmerge';
 import Color from 'color';
 import { object } from './dot';
-import designLanguage from '../design-language';
+import * as designLanguage from '../design-language';
 import codesandboxBlack from '../themes/codesandbox-black';
 import codesandboxLight from '../themes/codesandbox-light.json';
 
