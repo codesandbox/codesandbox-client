@@ -497,6 +497,10 @@ export class VSCodeEffect {
   };
 
   public async openDiff(sandboxId: string, module: Module, oldCode: string) {
+    if (!module.path) {
+      return;
+    }
+
     const recoverPath = `/recover/${sandboxId}/recover-${module.path.replace(
       /\//g,
       ' '
