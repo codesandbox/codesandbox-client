@@ -63,6 +63,8 @@ export const roomJoined: AsyncAction<{
   await effects.vscode.initialized;
   await effects.vscode.closeAllTabs();
 
+  state.live.joinSource = 'live';
+
   if (state.live.isLive) {
     actions.live.internal.disconnect();
   }
@@ -81,6 +83,7 @@ export const roomJoined: AsyncAction<{
 
   await actions.internal.setCurrentSandbox(sandbox);
 
+  actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id });
   const items = getItems(state);
   const defaultItem = items.find(i => i.defaultOpen) || items[0];
 

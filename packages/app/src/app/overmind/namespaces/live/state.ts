@@ -16,6 +16,10 @@ type State = {
   followingUserId: string | null;
   liveUserId: string | null;
   roomInfo: RoomInfo | null;
+  /**
+   * Whether we joined from /s/ or from /live/
+   */
+  joinSource: 'sandbox' | 'live';
   currentSelection: UserSelection | null;
   currentViewRange: UserViewRange | null;
   liveUser: Derive<State, LiveUser | null>;
@@ -42,6 +46,7 @@ export const state: State = {
   roomInfo: null,
   currentSelection: null,
   currentViewRange: null,
+  joinSource: 'sandbox',
   liveUser: currentState =>
     currentState.roomInfo?.users.find(u => u.id === currentState.liveUserId) ||
     null,
