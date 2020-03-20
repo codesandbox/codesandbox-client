@@ -31,7 +31,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
-import { TextOperation } from 'ot';
+import { Selection, TextOperation } from 'ot';
 import { json } from 'overmind';
 
 import eventToTransform from '../../utils/event-to-transform';
@@ -353,6 +353,19 @@ export const codeChanged: Action<{
     }
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
+
+    const comments = state.editor.fileComments[module.path] || [];
+    comments.forEach(comment => {
+      const range = new Selection.Range(...comment.range);
+      const newRange = range.transform(operation);
+      const commentThread =
+        state.editor.commentThreads[state.editor.currentSandbox.id][
+          comment.commentThreadId
+        ];
+      if (commentThread.reference) {
+        commentThread.reference.meta.range = [newRange.anchor, newRange.head];
+      }
+    });
   }
 
   actions.editor.internal.setStateModuleCode({

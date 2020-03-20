@@ -148,7 +148,6 @@ export class ModelsHandler {
         existingDecorationComments,
         newDecorationComments
       );
-      moduleModel.comments = commentThreads[path];
     });
   }
 
