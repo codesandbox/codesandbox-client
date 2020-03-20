@@ -19,6 +19,7 @@ import Draggable from 'react-draggable';
 
 import { Markdown } from './Markdown';
 import { Reply } from './Reply';
+import { useScrollTop } from './use-scroll-top';
 
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
@@ -55,6 +56,8 @@ export const Dialog = props => {
     });
   };
 
+  const { ref: listRef, scrollTop } = useScrollTop();
+
   return (
     <Draggable handle=".handle" position={position} onStop={onDragStop}>
       <Stack
@@ -71,17 +74,24 @@ export const Dialog = props => {
           height: 'auto',
           maxHeight: '80vh',
           fontFamily: 'Inter, sans-serif',
-          boxShadow: 2,
+          overflow: 'hidden',
         })}
       >
         <Stack
           className="handle"
-          css={{ cursor: 'move' }}
           align="center"
           justify="space-between"
           padding={4}
           paddingRight={2}
           marginBottom={2}
+          css={css({
+            cursor: 'move',
+            zIndex: 2,
+            boxShadow: theme =>
+              scrollTop > 0
+                ? `0px 32px 32px ${theme.colors.dialog.background}`
+                : 'none',
+          })}
         >
           <Text size={3} weight="bold">
             Comment
@@ -113,7 +123,7 @@ export const Dialog = props => {
         </Stack>
 
         {thread && (
-          <Stack direction="vertical" css={{ overflow: 'auto' }}>
+          <Stack direction="vertical" css={{ overflow: 'auto' }} ref={listRef}>
             <Stack direction="vertical" gap={4}>
               <Stack
                 align="flex-start"
