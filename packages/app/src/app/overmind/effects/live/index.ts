@@ -91,11 +91,10 @@ class Live {
     this.awaitSend = blocker();
     clearTimeout(this.awaitSendTimer);
     this.awaitSendTimer = window.setTimeout(async () => {
-      const resolvedAwait = this.resolveAwaitSend();
       if (this.connectionsCount === 1) {
         // We await the currently resolved blocker before setting it back,
         // so that messages gets through
-        await resolvedAwait;
+        await this.resolveAwaitSend();
         this.setAwaitSend();
       }
     }, TIME_TO_THROTTLE_SOLO_MODE_SENDS);
