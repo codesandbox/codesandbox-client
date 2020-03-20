@@ -88,12 +88,39 @@ type State = {
   currentCommentThreadId: string | null;
   currentCommentThread: Derive<State, CommentThread | null>;
   hasLoadedInitialModule: boolean;
+  fileComments: Derive<
+    State,
+    {
+      [path: string]: Array<{
+        commentThreadId: string;
+        range: [number, number];
+      }>;
+    }
+  >;
 };
 
 export const state: State = {
   hasLoadedInitialModule: false,
   commentThreads: {},
   currentCommentThreadId: null,
+  fileComments: ({ currentCommentThreads }) =>
+    currentCommentThreads.reduce<
+      Array<{
+        [path: string]: { commentThreadId: string; range: [number, number] };
+      }>
+    >((aggr, commentThread) => {
+      if (commentThread.reference && commentThread.reference.type === 'code') {
+        if (!aggr[commentThread.reference.resource]) {
+          aggr[commentThread.reference.resource] = [];
+        }
+        aggr[commentThread.reference.resource].push({
+          commentThreadId: commentThread.id,
+          range: commentThread.reference?.meta.range,
+        });
+      }
+
+      return aggr;
+    }, {}),
   currentCommentThread: ({
     commentThreads,
     currentSandbox,

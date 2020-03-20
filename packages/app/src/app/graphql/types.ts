@@ -79,6 +79,15 @@ export type CommentThread = {
   insertedAt: Scalars['NaiveDateTime'];
   isResolved: Scalars['Boolean'];
   updatedAt: Scalars['NaiveDateTime'];
+  reference?: {
+    id: string;
+    resource: string;
+    type: 'code';
+    meta: {
+      code: string;
+      range: [number, number];
+    };
+  };
 };
 
 export type CurrentUser = {

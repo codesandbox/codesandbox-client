@@ -18,8 +18,8 @@ import {
   Authorization,
   CollaboratorFragment,
   Comment,
-  InvitationFragment,
   CommentThread,
+  InvitationFragment,
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
@@ -77,14 +77,12 @@ export const npmDependencyRemoved: AsyncAction<string> = withOwnedSandbox(
   }
 );
 
-export const onCommentClick: Action<string> = ({ state }, commentId) => {};
-
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;
 }>(async ({ state, actions, effects }, { id }) => {
   // This happens when we fork. This can be avoided with state first routing
   if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
-    effects.vscode.openModule(state.editor.currentModule, []);
+    effects.vscode.openModule(state.editor.currentModule);
 
     await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
@@ -205,7 +203,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     await effects.live.sendModuleStateSyncRequest();
   }
 
-  effects.vscode.openModule(state.editor.currentModule, []);
+  effects.vscode.openModule(state.editor.currentModule);
 
   if (COMMENTS) {
     try {
@@ -221,8 +219,21 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
       state.editor.commentThreads[
         sandbox.id
-      ] = sandboxComments.commentThreads.reduce((aggr, comment) => {
-        aggr[comment.id] = comment;
+      ] = sandboxComments.commentThreads.reduce<{
+        [id: string]: CommentThread;
+      }>((aggr, commentThread, index) => {
+        aggr[commentThread.id] = commentThread;
+        if (index === 0) {
+          aggr[commentThread.id].reference = {
+            id: '123',
+            resource: '/src/App.js',
+            type: 'code',
+            meta: {
+              code: '<div>hello world</div>',
+              range: [40, 60],
+            },
+          };
+        }
 
         return aggr;
       }, {});

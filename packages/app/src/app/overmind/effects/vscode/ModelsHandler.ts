@@ -111,7 +111,7 @@ export class ModelsHandler {
   }
 
   public changeModule = async (module: Module) => {
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getModuleModelByPath(module.path);
 
     if (getCurrentModelPath(this.editorApi) !== module.path) {
       await this.editorApi.openFile(module.path);
@@ -127,32 +127,29 @@ export class ModelsHandler {
     return moduleModel.model;
   };
 
-  public async applyComments(module: Module, comments: any[]) {
-    const moduleModel = this.getModuleModel(module);
-    const model = await moduleModel.model;
-    const existingDecorationComments = moduleModel.comments;
-    const newDecorationComments = comments.map(comment => {
-      const lineAndColumn = indexToLineAndColumn(
-        model.getLinesContent() || [],
-        comment.range[0]
+  public async applyComments(commentThreadsByPath: {
+    [path: string]: Array<{ commentThreadId: string; range: [number, number] }>;
+  }) {
+    Object.keys(commentThreadsByPath).forEach(async path => {
+      const moduleModel = this.getModuleModelByPath(path);
+      const model = await moduleModel.model;
+
+      if (!model) {
+        return;
+      }
+      const commentThreads = commentThreadsByPath[path];
+
+      const existingDecorationComments = moduleModel.comments;
+      const newDecorationComments = this.createCommentDecorations(
+        commentThreads,
+        model
       );
-      return {
-        range: new this.monaco.Range(
-          lineAndColumn.lineNumber,
-          1,
-          lineAndColumn.lineNumber,
-          1
-        ),
-        options: {
-          isWholeLine: true,
-          glyphMarginClassName: `editor-comments-glyph comment-id-${comment.id}`,
-        },
-      };
+      moduleModel.comments = model.deltaDecorations(
+        existingDecorationComments,
+        newDecorationComments
+      );
+      moduleModel.comments = commentThreads[path];
     });
-    moduleModel.comments = model.deltaDecorations(
-      existingDecorationComments,
-      newDecorationComments
-    );
   }
 
   public async updateTabsPath(oldPath: string, newPath: string) {
@@ -183,7 +180,7 @@ export class ModelsHandler {
       return;
     }
 
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getModuleModelByPath(module.path);
 
     const modelEditor = this.editorApi.editorService.editors.find(
       editor => editor.resource && editor.resource.path === moduleModel.path
@@ -218,7 +215,7 @@ export class ModelsHandler {
   }
 
   public async setModuleCode(module: Module) {
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getModuleModelByPath(module.path);
     const model = await moduleModel.model;
 
     if (!model) {
@@ -263,7 +260,7 @@ export class ModelsHandler {
     userSelections: EditorSelection[],
     showNameTag = true
   ) {
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getModuleModelByPath(module);
 
     moduleModel.selections = userSelections;
 
@@ -569,12 +566,20 @@ export class ModelsHandler {
             this.sandbox.directories
           );
 
-          const moduleModel = this.getModuleModel(module);
+          const moduleModel = this.getModuleModelByPath(module.path);
 
           moduleModel.model = model;
           moduleModel.changeListener = this.getModelContentChangeListener(
             this.sandbox,
             model
+          );
+          const newDecorationComments = this.createCommentDecorations(
+            moduleModel.comments,
+            model
+          );
+          moduleModel.comments = model.deltaDecorations(
+            [],
+            newDecorationComments
           );
         } catch (e) {
           // File does not exist anymore for some reason
@@ -624,16 +629,44 @@ export class ModelsHandler {
     });
   }
 
-  private getModuleModel(module: Module) {
-    const path = '/sandbox' + module.path;
-    this.moduleModels[path] = this.moduleModels[path] || {
+  private getModuleModelByPath(path: string) {
+    const fullPath = '/sandbox' + path;
+    this.moduleModels[fullPath] = this.moduleModels[fullPath] || {
       changeListener: null,
       model: null,
-      path,
+      path: fullPath,
       selections: [],
       comments: [],
     };
 
-    return this.moduleModels[path];
+    return this.moduleModels[fullPath];
+  }
+
+  private createCommentDecorations(
+    commentThreadDecorations: Array<{
+      commentThreadId: string;
+      range: [number, number];
+    }>,
+    model: any
+  ) {
+    return commentThreadDecorations.map(commentThreadDecoration => {
+      const lineAndColumn = indexToLineAndColumn(
+        model.getLinesContent() || [],
+        commentThreadDecoration.range[0]
+      );
+      return {
+        range: new this.monaco.Range(
+          lineAndColumn.lineNumber,
+          1,
+          lineAndColumn.lineNumber,
+          1
+        ),
+        options: {
+          isWholeLine: true,
+          // comment-id- class needs to be the LAST class!
+          glyphMarginClassName: `editor-comments-glyph comment-id-${commentThreadDecoration.commentThreadId}`,
+        },
+      };
+    });
   }
 }

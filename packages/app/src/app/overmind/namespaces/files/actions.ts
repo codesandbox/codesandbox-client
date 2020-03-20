@@ -56,7 +56,7 @@ export const moduleRenamed: AsyncAction<{
     await effects.vscode.updateTabsPath(oldPath!, module.path);
 
     if (state.editor.currentModuleShortid === module.shortid) {
-      effects.vscode.openModule(module, []);
+      effects.vscode.openModule(module);
     }
 
     actions.editor.internal.updatePreviewCode();
@@ -72,7 +72,7 @@ export const moduleRenamed: AsyncAction<{
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
 
       if (state.editor.currentModuleShortid === module.shortid) {
-        effects.vscode.openModule(module, []);
+        effects.vscode.openModule(module);
       }
 
       actions.editor.internal.updatePreviewCode();

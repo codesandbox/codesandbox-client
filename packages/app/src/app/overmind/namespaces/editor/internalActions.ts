@@ -459,7 +459,7 @@ export const setCurrentModule: AsyncAction<Module> = async (
   }
 
   state.editor.currentModuleShortid = module.shortid;
-  await effects.vscode.openModule(module, []);
+  await effects.vscode.openModule(module);
   effects.vscode.setErrors(state.editor.errors);
   effects.vscode.setCorrections(state.editor.corrections);
 };

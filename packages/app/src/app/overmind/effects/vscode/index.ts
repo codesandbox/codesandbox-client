@@ -27,6 +27,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
+import { json } from 'overmind';
 import io from 'socket.io-client';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
@@ -134,6 +135,14 @@ export class VSCodeEffect {
     this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 500);
 
     this.prepareElements();
+    this.options.reaction(
+      state => json(state.editor.fileComments),
+      fileComments => {
+        if (this.modelsHandler) {
+          this.modelsHandler.applyComments(fileComments);
+        }
+      }
+    );
     this.listenToCommentClick();
 
     // We instantly create a sandbox sync, as we want our
@@ -439,7 +448,7 @@ export class VSCodeEffect {
     return this.modelsHandler.updateTabsPath(oldPath, newPath);
   }
 
-  public async openModule(module: Module, comments: any[]) {
+  public async openModule(module: Module) {
     await this.initialized;
 
     // We use an animation frame here, because we want the rest of the logic to finish running,
@@ -451,12 +460,6 @@ export class VSCodeEffect {
       if (currentModule && module.id === currentModule.id) {
         try {
           const model = await this.modelsHandler.changeModule(module);
-          this.modelsHandler.applyComments(module, [
-            {
-              id: 'y0-the-id',
-              range: [50, 60],
-            },
-          ]);
           this.lint(module.title, model);
         } catch (error) {
           // We might try to open a module that is not actually opened in the editor,
@@ -1158,7 +1161,16 @@ export class VSCodeEffect {
     window.addEventListener('click', event => {
       const target = event.target as HTMLElement;
       if (target.classList.contains('editor-comments-glyph')) {
-        this.options.onCommentClick(Array.from(target.classList).pop());
+        /*
+          We grab the id of the commenthread by getting the last classname.
+          The last part of the classname is the id.
+        */
+        const commentThreadId = Array.from(target.classList)
+          .pop()
+          .split('comment-id-')
+          .pop();
+
+        this.options.onCommentClick(commentThreadId);
       }
     });
   }
