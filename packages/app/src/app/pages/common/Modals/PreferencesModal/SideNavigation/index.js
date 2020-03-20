@@ -36,9 +36,8 @@ export const SideNavigation = ({ menuItems, itemId, setItem }) => (
             marginBottom: 2,
             color:
               itemId === item.id ? 'sideBar.foreground' : 'mutedForeground',
-            backgroundColor:
-              itemId === item.id ? 'input.border' : 'transparent',
             '&:hover': {
+              backgroundColor: 'activityBarBadge.background',
               color: 'sideBar.foreground',
             },
           })}
