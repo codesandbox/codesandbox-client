@@ -39,10 +39,6 @@ export const CommentThreads: React.FC = () => {
     }
   };
 
-  const all =
-    selectedCommentsFilter === CommentsFilterOption.OPEN ||
-    selectedCommentsFilter === CommentsFilterOption.ALL;
-
   const Empty = () => (
     <Stack
       direction="vertical"
@@ -57,15 +53,14 @@ export const CommentThreads: React.FC = () => {
         color="mutedForeground"
         css={{ opacity: 0.2 }}
       />
-      <Text block align="center" variant="muted">
-        There are no {getSelectedFilter()} comments.{' '}
-        {all && (
-          <>
-            {/* Leave a comment by clicking anywhere within a file or */}
-            Write a global comment below.
-          </>
-        )}
-      </Text>
+      <div>
+        <Text block align="center" variant="muted">
+          There are no {getSelectedFilter()} comments.
+        </Text>
+        <Text block align="center" variant="muted">
+          Comment on code by clicking within a file, or add a comment below.
+        </Text>
+      </div>
     </Stack>
   );
 
