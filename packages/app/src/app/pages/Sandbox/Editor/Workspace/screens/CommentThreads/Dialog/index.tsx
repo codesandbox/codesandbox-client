@@ -33,7 +33,7 @@ export const Dialog = props => {
   const [editValue, setEditValue] = useState(thread.initialComment.content);
   const [position, setPosition] = useState({
     x: props.x || 200,
-    y: props.y || 100,
+    y: props.y || 40,
   });
 
   const closeDialog = () => actions.editor.selectCommentThread(null);
@@ -75,6 +75,7 @@ export const Dialog = props => {
           maxHeight: '80vh',
           fontFamily: 'Inter, sans-serif',
           overflow: 'hidden',
+          boxShadow: 2,
         })}
       >
         <Stack
