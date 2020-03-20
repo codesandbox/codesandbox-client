@@ -57,7 +57,8 @@ export const Dialog = props => {
 
   return (
     <Draggable handle=".handle" position={position} onStop={onDragStop}>
-      <Element
+      <Stack
+        direction="vertical"
         css={css({
           position: 'absolute',
           zIndex: 2,
@@ -69,7 +70,6 @@ export const Dialog = props => {
           width: 420,
           height: 'auto',
           maxHeight: '80vh',
-          overflow: 'auto',
           fontFamily: 'Inter, sans-serif',
           boxShadow: 2,
         })}
@@ -113,7 +113,7 @@ export const Dialog = props => {
         </Stack>
 
         {thread && (
-          <>
+          <Stack direction="vertical" css={{ overflow: 'auto' }}>
             <Stack
               align="flex-start"
               justify="space-between"
@@ -216,38 +216,33 @@ export const Dialog = props => {
                 </>
               )}
             </Element>
-          </>
+
+            <>
+              {thread.comments.map((reply, i) => {
+                if (i === 0) return null;
+                return <Reply reply={reply} threadId={thread.id} />;
+              })}
+            </>
+          </Stack>
         )}
 
-        {thread &&
-          thread.comments.map((reply, i) => {
-            if (i === 0) return null;
-            return <Reply reply={reply} threadId={thread.id} />;
-          })}
-
-        <Element
+        <Textarea
+          autosize
           css={css({
+            overflow: 'hidden',
+            border: 'none',
+            display: 'block',
             borderTop: '1px solid',
             borderColor: 'sideBar.border',
           })}
-        >
-          <Textarea
-            autosize
-            css={css({
-              overflow: 'hidden',
-
-              border: 'none',
-              display: 'block',
-            })}
-            value={value}
-            onChange={e => setValue(e.target.value)}
-            placeholder={thread ? 'Reply' : 'Write a comment...'}
-            onKeyDown={event => {
-              if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
-            }}
-          />
-        </Element>
-      </Element>
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          placeholder={thread ? 'Reply' : 'Write a comment...'}
+          onKeyDown={event => {
+            if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
+          }}
+        />
+      </Stack>
     </Draggable>
   );
 };
