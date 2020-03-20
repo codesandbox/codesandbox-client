@@ -136,8 +136,26 @@ export class VSCodeEffect {
 
     this.prepareElements();
     this.options.reaction(
-      state => json(state.editor.fileComments),
-      fileComments => {
+      state => ({
+        fileComments: json(state.editor.fileComments),
+        currentComment: state.editor.currentCommentThreadId,
+      }),
+      ({ fileComments, currentComment }) => {
+        // get the active glyph
+        const active = document.querySelectorAll(
+          `.comment-id-${currentComment}`
+        );
+        // remove all things that have the active comment
+        const allComments = document.querySelectorAll('.editor-comments-glyph');
+        allComments.forEach(element => {
+          element.classList.remove('active-comment');
+        });
+
+        if (active.length) {
+          // add it to the active one
+          active[0].classList.add('active-comment');
+        }
+
         if (this.modelsHandler) {
           this.modelsHandler.applyComments(fileComments);
         }
