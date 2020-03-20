@@ -129,6 +129,11 @@ export const onUserLeft: Operator<LiveMessage<{
     return;
   }
 
+  if (state.live.followingUserId === data.left_user_id) {
+    // Unfollow user if they are the one who left
+    actions.live.onStopFollow();
+  }
+
   if (!state.live.notificationsHidden) {
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
