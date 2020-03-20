@@ -19,7 +19,7 @@ interface IPermissionSelectProps {
   permissions?: Authorization[];
   pretext?: string;
   value: Authorization;
-  onChange: (Authorization) => void;
+  onChange: (value: string) => void;
   disabled?: boolean;
 }
 
