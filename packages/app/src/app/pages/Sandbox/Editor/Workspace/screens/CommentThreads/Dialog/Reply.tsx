@@ -1,33 +1,29 @@
-import React, { useState } from 'react';
-import { formatDistance } from 'date-fns';
-import css from '@styled-system/css';
 import {
-  Element,
-  Button,
-  Stack,
   Avatar,
-  Text,
+  Button,
+  Element,
   Link,
   Menu,
+  Stack,
+  Text,
   Textarea,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { Comment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
+import { formatDistance } from 'date-fns';
+import React, { useState } from 'react';
+
 import { Markdown } from './Markdown';
 
 type ReplyProps = {
-  id: string;
-  author?: any;
-  insertedAt?: string;
-  commentId: string;
-  content?: string;
+  threadId: string;
+  reply: Comment;
 };
 
 export const Reply = ({
-  id,
-  author,
-  insertedAt,
-  commentId,
-  content,
+  threadId,
+  reply: { user, insertedAt, id, content },
 }: ReplyProps) => {
   const { state, actions } = useOvermind();
   const [edit, setEdit] = useState(false);
@@ -37,15 +33,15 @@ export const Reply = ({
       <Element key={id} marginLeft={4} marginRight={2} paddingTop={6}>
         <Stack align="flex-start" justify="space-between" marginBottom={4}>
           <Stack gap={2} align="center">
-            <Avatar user={author} />
+            <Avatar user={user} />
             <Stack direction="vertical" justify="center" gap={1}>
               <Link
                 size={3}
                 weight="bold"
-                href={`/u/${author.username}`}
+                href={`/u/${user.username}`}
                 variant="body"
               >
-                {author.username}
+                {user.username}
               </Link>
               <Text size={2} variant="muted">
                 {formatDistance(new Date(insertedAt), new Date(), {
@@ -54,16 +50,17 @@ export const Reply = ({
               </Text>
             </Stack>
           </Stack>
-          {state.user.id === author.id && (
+          {state.user.id === user.id && (
             <Stack align="center">
               <Menu>
                 <Menu.IconButton name="more" title="Reply actions" size={12} />
                 <Menu.List>
                   <Menu.Item
                     onSelect={() =>
-                      actions.editor.deleteReply({
-                        replyId: id,
-                        commentId,
+                      actions.editor.deleteComment({
+                        threadId,
+                        commentId: id,
+                        reply: true,
                       })
                     }
                   >
@@ -114,10 +111,11 @@ export const Reply = ({
                 variant="secondary"
                 disabled={!value}
                 onClick={async () => {
-                  await actions.editor.updateReply({
-                    replyId: id,
-                    commentId,
-                    comment: value,
+                  await actions.editor.updateComment({
+                    threadId,
+                    commentId: id,
+                    content: value,
+                    reply: true,
                   });
                   setEdit(false);
                 }}

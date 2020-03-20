@@ -7,7 +7,7 @@ import css from '@styled-system/css';
 import { Authorization } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { formatDistanceToNow } from 'date-fns';
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 
 import { Mail, WarningIcon } from './icons';
 import { PermissionSelect } from './PermissionSelect';
@@ -21,9 +21,7 @@ interface ICollaboratorItemProps {
   subtext?: string;
   avatarUrl?: string;
   avatarComponent?: JSX.Element | null;
-  onChange?: (
-    event: ChangeEvent<HTMLSelectElement> & ChangeEvent<HTMLInputElement>
-  ) => void;
+  onChange?: (value: string) => void;
   fillAvatar?: boolean;
   permissionText?: string;
   readOnly?: boolean;
@@ -135,8 +133,8 @@ export const Collaborator = ({
 }: ICollaboratorProps) => {
   const { actions, state } = useOvermind();
 
-  const updateAuthorization = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (event.target.value === 'remove') {
+  const updateAuthorization = (value: string) => {
+    if (value === 'remove') {
       actions.editor.removeCollaborator({
         username,
         sandboxId: state.editor.currentSandbox.id,
@@ -145,7 +143,7 @@ export const Collaborator = ({
       actions.editor.changeCollaboratorAuthorization({
         username,
         sandboxId: state.editor.currentSandbox.id,
-        authorization: event.target.value as Authorization,
+        authorization: value as Authorization,
       });
     }
   };
@@ -181,9 +179,9 @@ interface IInvitationProps {
 export const Invitation = ({ id, email, authorization }: IInvitationProps) => {
   const { actions, state } = useOvermind();
 
-  const updateAuthorization = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const updateAuthorization = (value: string) => {
     // We have to do something here
-    if (event.target.value === 'remove') {
+    if (value === 'remove') {
       actions.editor.revokeSandboxInvitation({
         invitationId: id,
         sandboxId: state.editor.currentSandbox.id,
@@ -192,7 +190,7 @@ export const Invitation = ({ id, email, authorization }: IInvitationProps) => {
       actions.editor.changeInvitationAuthorization({
         invitationId: id,
         sandboxId: state.editor.currentSandbox.id,
-        authorization: event.target.value as Authorization,
+        authorization: value as Authorization,
       });
     }
   };

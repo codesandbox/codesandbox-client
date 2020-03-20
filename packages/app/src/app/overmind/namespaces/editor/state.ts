@@ -19,9 +19,12 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
-import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
+import {
+  CollaboratorFragment,
+  CommentThread,
+  InvitationFragment,
+} from 'app/graphql/types';
 import { Derive } from 'app/overmind';
-import { Comment } from 'app/overmind/effects/fakeGql/comments/types';
 import immer from 'immer';
 
 import { mainModule as getMainModule } from '../../utils/main-module';
@@ -75,39 +78,54 @@ type State = {
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
-  comments: {
+  commentThreads: {
     [sandboxId: string]: {
-      [commentId: string]: Comment;
+      [commentId: string]: CommentThread;
     };
   };
-  currentComments: Derive<State, Comment[]>;
+  currentCommentThreads: Derive<State, CommentThread[]>;
   selectedCommentsFilter: CommentsFilterOption;
-  currentCommentId: string | null;
-  currentComment: Derive<State, Comment | null>;
+  currentCommentThreadId: string | null;
+  currentCommentThread: Derive<State, CommentThread | null>;
   hasLoadedInitialModule: boolean;
 };
 
 export const state: State = {
   hasLoadedInitialModule: false,
-  comments: {},
-  currentCommentId: null,
-  currentComment: ({ comments, currentSandbox, currentCommentId }) => {
-    if (!currentSandbox || !comments[currentSandbox.id] || !currentCommentId) {
+  commentThreads: {},
+  currentCommentThreadId: null,
+  currentCommentThread: ({
+    commentThreads,
+    currentSandbox,
+    currentCommentThreadId,
+  }) => {
+    if (
+      !currentSandbox ||
+      !commentThreads[currentSandbox.id] ||
+      !currentCommentThreadId
+    ) {
       return null;
     }
 
-    return comments[currentSandbox.id][currentCommentId];
+    return commentThreads[currentSandbox.id][currentCommentThreadId];
   },
   selectedCommentsFilter: CommentsFilterOption.OPEN,
   // eslint-disable-next-line consistent-return
-  currentComments: ({ comments, currentSandbox, selectedCommentsFilter }) => {
-    if (!currentSandbox || !comments[currentSandbox.id]) {
+  currentCommentThreads: ({
+    commentThreads,
+    currentSandbox,
+    selectedCommentsFilter,
+  }) => {
+    if (!currentSandbox || !commentThreads[currentSandbox.id]) {
       return [];
     }
 
-    function sortByInsertedAt(commentA: Comment, commentB: Comment) {
-      const aDate = new Date(commentA.insertedAt);
-      const bDate = new Date(commentB.insertedAt);
+    function sortByInsertedAt(
+      commentThreadA: CommentThread,
+      commentThreadB: CommentThread
+    ) {
+      const aDate = new Date(commentThreadA.insertedAt);
+      const bDate = new Date(commentThreadB.insertedAt);
 
       if (aDate > bDate) {
         return -1;
@@ -122,21 +140,23 @@ export const state: State = {
 
     switch (selectedCommentsFilter) {
       case CommentsFilterOption.ALL:
-        return Object.values(comments[currentSandbox.id]).sort(
+        return Object.values(commentThreads[currentSandbox.id]).sort(
           sortByInsertedAt
         );
       case CommentsFilterOption.RESOLVED:
-        return Object.values(comments[currentSandbox.id])
+        return Object.values(commentThreads[currentSandbox.id])
           .filter(comment => comment.isResolved)
           .sort(sortByInsertedAt);
       case CommentsFilterOption.OPEN:
-        return Object.values(comments[currentSandbox.id])
+        return Object.values(commentThreads[currentSandbox.id])
           .filter(comment => !comment.isResolved)
           .sort(sortByInsertedAt);
       case CommentsFilterOption.MENTIONS:
-        return Object.values(comments[currentSandbox.id]).sort(
+        return Object.values(commentThreads[currentSandbox.id]).sort(
           sortByInsertedAt
         );
+      default:
+        return [];
     }
   },
   sandboxes: {},

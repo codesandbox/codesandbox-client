@@ -189,6 +189,11 @@ const Entry: React.FC<IEntryProps> = ({
             borderRight: '2px solid',
             minHeight: 28,
             borderColor: rightColors[0] || 'transparent',
+            ':hover:not([aria-selected="true"])': {
+              // override ListAction to keep background same as before
+              // we do this to diffrentiate between hover and selected
+              backgroundColor: 'inherit',
+            },
           }}
         >
           <Stack gap={2} align="center">

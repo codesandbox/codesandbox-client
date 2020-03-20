@@ -320,7 +320,7 @@ jobs:
   deploy-to-production:
     executor: node
     environment:
-      ENVIRONMENT: production
+      ENVIRONMENT: prod
     steps:
       - checkout_with_cache
       - restore_cache: *restore_deps_cache
