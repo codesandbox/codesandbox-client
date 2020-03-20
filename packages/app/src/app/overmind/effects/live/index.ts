@@ -54,7 +54,7 @@ class Live {
   private channel: Channel | null;
   private messageIndex = 0;
   private clients: ReturnType<typeof clientsFactory>;
-  private awaitSendTimer: NodeJS.Timer;
+  private awaitSendTimer: number;
   private socket: Socket;
   /*
     Since in "Solo mode" we want to batch up operations and other events later,
@@ -90,22 +90,25 @@ class Live {
   private setAwaitSend() {
     this.awaitSend = blocker();
     clearTimeout(this.awaitSendTimer);
-    this.awaitSendTimer = setTimeout(async () => {
-      this.resolveAwaitSend();
+    this.awaitSendTimer = window.setTimeout(async () => {
+      const resolvedAwait = this.resolveAwaitSend();
       if (this.connectionsCount === 1) {
-        // We let one message go through
-        setTimeout(() => this.setAwaitSend());
+        // We await the currently resolved blocker before setting it back,
+        // so that messages gets through
+        await resolvedAwait;
+        this.setAwaitSend();
       }
     }, TIME_TO_THROTTLE_SOLO_MODE_SENDS);
   }
 
   private resolveAwaitSend() {
     if (!this.awaitSend) {
-      return;
+      return Promise.resolve();
     }
     const awaitSend = this.awaitSend;
     this.awaitSend = null;
     awaitSend.resolve();
+    return awaitSend.promise;
   }
 
   private async awaitSynchronizedModule(moduleShortid: string) {
@@ -186,7 +189,7 @@ class Live {
 
           const waitTime = 500 + 5000 * Math.random();
 
-          setTimeout(() => {
+          window.setTimeout(() => {
             this.socket.connect();
           }, waitTime);
         }
