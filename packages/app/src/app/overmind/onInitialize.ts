@@ -24,7 +24,7 @@ export const onInitialize: OnInitialize = async (
 
   // We consider recover mode something to be done when browser actually crashes, meaning there is no unmount
   effects.browser.onUnload(() => {
-    if (state.editor.currentSandbox) {
+    if (state.editor.currentSandbox && state.connected) {
       effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
     }
   });
