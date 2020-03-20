@@ -1,24 +1,28 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import {
+  Icon,
   List,
   Menu,
+  SidebarRow,
   Stack,
   Text,
-  SidebarRow,
-  Icon,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-import { AddComment } from './AddComment';
-import { Comment } from './Comment';
+import { AddCommentThread } from './AddCommentThread';
+import { CommentThread } from './CommentThread';
 import { CommentDialog } from './Dialog';
 
-export const Comments: React.FC = () => {
+export const CommentThreads: React.FC = () => {
   const {
     state: {
-      editor: { selectedCommentsFilter, currentComments, currentCommentId },
+      editor: {
+        selectedCommentsFilter,
+        currentCommentThreads,
+        currentCommentThreadId,
+      },
     },
     actions: { editor: editorActions },
   } = useOvermind();
@@ -102,7 +106,7 @@ export const Comments: React.FC = () => {
           </Menu>
         </SidebarRow>
 
-        {currentComments.length ? (
+        {currentCommentThreads.length ? (
           <List
             marginTop={4}
             css={{
@@ -111,15 +115,18 @@ export const Comments: React.FC = () => {
               overflow: 'auto',
             }}
           >
-            {currentComments.map(comment => (
-              <Comment key={comment.id} comment={comment} />
+            {currentCommentThreads.map(commentThread => (
+              <CommentThread
+                key={commentThread.id}
+                commentThread={commentThread}
+              />
             ))}
           </List>
         ) : null}
       </div>
-      {currentComments.length ? null : <Empty />}
-      <AddComment />
-      {currentCommentId && <CommentDialog />}
+      {currentCommentThreads.length ? null : <Empty />}
+      <AddCommentThread />
+      {currentCommentThreadId && <CommentDialog />}
     </Stack>
   );
 };

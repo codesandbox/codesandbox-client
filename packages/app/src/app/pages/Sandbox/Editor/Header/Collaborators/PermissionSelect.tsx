@@ -33,7 +33,7 @@ export const PermissionSelect = ({
 }: IPermissionSelectProps) => (
   <Menu>
     <Menu.Button disabled={disabled} {...props}>
-      {authToName[selectedValue]} <Icon name="caret" size={2} marginLeft={1} />
+      {authToName[selectedValue]} <Icon name="caret" size={8} marginLeft={1} />
     </Menu.Button>
     <Menu.List>
       {permissions.map(auth => (

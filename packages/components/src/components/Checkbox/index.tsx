@@ -69,7 +69,12 @@ const Label = styled(Text)(
   })
 );
 
-export const Checkbox: FunctionComponent<ICheckboxProps> = ({ checked, id, label, ...props }) => {
+export const Checkbox: FunctionComponent<ICheckboxProps> = ({
+  checked,
+  id,
+  label,
+  ...props
+}) => {
   const inputId = useId(id);
   return (
     <Element style={{ position: 'relative' }}>

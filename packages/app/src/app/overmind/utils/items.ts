@@ -1,9 +1,9 @@
 import getTemplate from '@codesandbox/common/lib/templates';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
   COMMENTS as COMMENTS_ON,
   REDESIGNED_SIDEBAR,
 } from '@codesandbox/common/lib/utils/feature-flags';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export interface INavigationItem {
   id: string;

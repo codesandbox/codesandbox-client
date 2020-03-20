@@ -9,6 +9,7 @@
   "license": "GPL-3.0",
   "workspaces": {
     "packages": [
+      "packages/@types/ot",
       "packages/app",
       "packages/homepage",
       "packages/common",

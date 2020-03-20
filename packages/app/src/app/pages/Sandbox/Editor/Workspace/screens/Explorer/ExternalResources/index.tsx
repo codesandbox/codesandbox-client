@@ -162,7 +162,7 @@ const getName = (resource: string) => {
 const getFontFamily = (search: string) => {
   const hashes = search.slice(search.indexOf('?') + 1).split('&');
   const family = hashes
-    .find(hash => hash.split('=')[0] === 'family')
+    .find(hash => hash && hash.split('=')[0] === 'family')
     .split('=')[1];
 
   return {

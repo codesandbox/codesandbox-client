@@ -254,7 +254,7 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
           <Menu>
             <Menu.Button disabled={isReadOnly}>
               {privacyToName[privacy]}{' '}
-              <Icon name="caret" size={2} marginLeft={1} />
+              <Icon name="caret" size={8} marginLeft={1} />
             </Menu.Button>
             <Menu.List>
               {Object.keys(privacyToName).map(p => (
