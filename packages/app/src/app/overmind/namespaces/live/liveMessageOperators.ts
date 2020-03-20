@@ -6,6 +6,7 @@ import {
   LiveUser,
   Module,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
@@ -49,6 +50,29 @@ export const onExternalResources: Operator<LiveMessage<{
   actions.editor.internal.updatePreviewCode();
 });
 
+export const onUsersChanged: Operator<LiveMessage<{
+  users: LiveUser[];
+  editor_ids: string[];
+  owner_ids: string[];
+}>> = mutate(({ state, effects, actions }, { data }) => {
+  if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
+    return;
+  }
+
+  const users = camelizeKeys(data.users);
+
+  state.live.roomInfo.users = users as LiveUser[];
+  state.live.roomInfo.editorIds = data.editor_ids;
+  state.live.roomInfo.ownerIds = data.owner_ids;
+
+  if (state.editor.currentModule) {
+    effects.vscode.updateUserSelections(
+      state.editor.currentModule,
+      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
+    );
+  }
+});
+
 export const onUserEntered: Operator<LiveMessage<{
   users: LiveUser[];
   editor_ids: string[];
@@ -72,9 +96,10 @@ export const onUserEntered: Operator<LiveMessage<{
     );
   }
 
-  // Send our own selections to everyone, just to let the others know where
+  // Send our own selections and viewranges to everyone, just to let the others know where
   // we are
   actions.live.sendCurrentSelection();
+  actions.live.sendCurrentViewRange();
 
   if (data.joined_user_id === state.live.liveUserId) {
     return;
@@ -82,7 +107,11 @@ export const onUserEntered: Operator<LiveMessage<{
 
   const user = data.users.find(u => u.id === data.joined_user_id);
 
-  if (!state.live.notificationsHidden && user) {
+  if (
+    !state.live.notificationsHidden &&
+    user &&
+    !state.user?.experiments.collaborator
+  ) {
     effects.notificationToast.add({
       message: `${user.username} joined the live session.`,
       status: NotificationStatus.NOTICE,
@@ -100,11 +129,20 @@ export const onUserLeft: Operator<LiveMessage<{
     return;
   }
 
+  if (state.live.followingUserId === data.left_user_id) {
+    // Unfollow user if they are the one who left
+    actions.live.onStopFollow();
+  }
+
   if (!state.live.notificationsHidden) {
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
 
-    if (user && user.id !== state.live.liveUserId) {
+    if (
+      user &&
+      user.id !== state.live.liveUserId &&
+      !state.user?.experiments.collaborator
+    ) {
       effects.notificationToast.add({
         message: `${user.username} left the live session.`,
         status: NotificationStatus.NOTICE,
@@ -347,7 +385,7 @@ export const onUserSelection: Operator<LiveMessage<{
   liveUserId: string;
   moduleShortid: string;
   selection: UserSelection;
-}>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
   if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
     return;
   }
@@ -381,6 +419,12 @@ export const onUserSelection: Operator<LiveMessage<{
           color: json(user.color),
         },
       ]);
+
+      if (state.live.followingUserId === userSelectionLiveUserId) {
+        actions.live.revealCursorPosition({
+          liveUserId: userSelectionLiveUserId,
+        });
+      }
     }
   }
 });
@@ -418,6 +462,41 @@ export const onUserCurrentModule: Operator<LiveMessage<{
     actions.editor.moduleSelected({
       id: module.id,
     });
+  }
+});
+
+export const onUserViewRange: Operator<LiveMessage<{
+  liveUserId: string;
+  moduleShortid: string;
+  viewRange: UserViewRange;
+}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
+  if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
+    return;
+  }
+
+  const userSelectionLiveUserId = data.liveUserId;
+  const { moduleShortid } = data;
+  const { viewRange } = data;
+  const userIndex = state.live.roomInfo.users.findIndex(
+    u => u.id === userSelectionLiveUserId
+  );
+
+  if (userIndex !== -1) {
+    state.live.roomInfo.users[userIndex].currentModuleShortid = moduleShortid;
+    state.live.roomInfo.users[userIndex].viewRange = viewRange;
+  }
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+  if (module) {
+    const user = state.live.roomInfo.users.find(
+      u => u.id === userSelectionLiveUserId
+    );
+
+    if (user && state.live.followingUserId === userSelectionLiveUserId) {
+      effects.vscode.revealRange(viewRange);
+    }
   }
 });
 
@@ -461,14 +540,15 @@ export const onLiveAddEditor: Operator<LiveMessage<{
 
 export const onLiveRemoveEditor: Operator<LiveMessage<{
   editor_user_id: string;
-}>> = mutate(({ state }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
   if (!state.live.roomInfo) {
     return;
   }
 
-  if (!_isOwnMessage) {
-    const userId = data.editor_user_id;
+  const userId = data.editor_user_id;
+  actions.live.internal.clearUserSelections(userId);
 
+  if (!_isOwnMessage) {
     const editors = state.live.roomInfo.editorIds;
     const newEditors = editors.filter(id => id !== userId);
 
@@ -508,7 +588,7 @@ export const onConnectionLoss: Operator<LiveMessage> = mutate(
           message: 'We lost connection with the live server, reconnecting...',
           status: NotificationStatus.ERROR,
         });
-      }, 2000);
+      }, 10000);
 
       state.live.reconnecting = true;
 

@@ -1,14 +1,27 @@
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
+  CommentsFilterOption,
   EnvironmentVariable,
   ModuleCorrection,
   ModuleError,
   ModuleTab,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
+import { TextOperation } from 'ot';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationStatus } from '@codesandbox/notifications';
+import {
+  Authorization,
+  CollaboratorFragment,
+  Comment,
+  InvitationFragment,
+  CommentThread,
+} from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
 import {
@@ -16,14 +29,14 @@ import {
   closeDevToolsTab as closeDevToolsTabUtil,
   moveDevToolsTab as moveDevToolsTabUtil,
 } from 'app/pages/Sandbox/Editor/Content/utils';
+import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
+import history from 'app/utils/history';
 import { json } from 'overmind';
 
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { NotificationStatus } from '@codesandbox/notifications';
 import eventToTransform from '../../utils/event-to-transform';
-import * as internalActions from './internalActions';
 import { SERVER } from '../../utils/items';
+import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
@@ -71,7 +84,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
     effects.vscode.openModule(state.editor.currentModule);
 
-    await actions.editor.internal.initializeLiveSandbox(
+    await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
     );
 
@@ -97,6 +110,42 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   state.editor.isLoading = !hasExistingSandbox;
   state.editor.notFound = false;
+
+  const url = new URL(document.location.href);
+  const invitationToken = url.searchParams.get('ts');
+
+  if (invitationToken) {
+    // This user came here with an invitation token, which can be sent to the email to make
+    // the user a collaborator
+    if (!state.hasLogIn) {
+      // Redirect to sign in URL, which then redirects back to this after
+      history.push(signInPageUrl(document.location.href));
+      return;
+    }
+
+    try {
+      await effects.gql.mutations.redeemSandboxInvitation({
+        sandboxId: newId,
+        invitationToken,
+      });
+
+      // Timeout to prevent that we load the whole sandbox twice at the same time
+      setTimeout(() => {
+        // Remove the invite from the url
+        url.searchParams.delete('ts');
+        history.replace(url.pathname);
+      }, 3000);
+    } catch (error) {
+      if (
+        !error.message.includes('Cannot redeem token, invitation not found')
+      ) {
+        actions.internal.handleError({
+          error,
+          message: 'Something went wrong with redeeming invitation token',
+        });
+      }
+    }
+  }
 
   try {
     const sandbox = await effects.api.getSandbox(newId);
@@ -143,7 +192,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   actions.internal.ensurePackageJSON();
 
-  await actions.editor.internal.initializeLiveSandbox(sandbox);
+  await actions.editor.internal.initializeSandbox(sandbox);
 
   if (
     hasPermission(sandbox.authorization, 'write_code') &&
@@ -155,7 +204,34 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   effects.vscode.openModule(state.editor.currentModule);
-  effects.preview.executeCodeImmediately({ initialRender: true });
+
+  if (COMMENTS) {
+    try {
+      const {
+        sandbox: sandboxComments,
+      } = await effects.gql.queries.commentThreads({
+        sandboxId: sandbox.id,
+      });
+
+      if (!sandboxComments || !sandboxComments.commentThreads) {
+        return;
+      }
+
+      state.editor.commentThreads[
+        sandbox.id
+      ] = sandboxComments.commentThreads.reduce((aggr, comment) => {
+        aggr[comment.id] = comment;
+
+        return aggr;
+      }, {});
+    } catch (e) {
+      state.editor.commentThreads[sandbox.id] = {};
+      effects.notificationToast.add({
+        status: NotificationStatus.NOTICE,
+        message: `There as a problem getting the sandbox comments`,
+      });
+    }
+  }
 
   state.editor.isLoading = false;
 });
@@ -219,7 +295,7 @@ export const onOperationApplied: Action<{
     return;
   }
 
-  actions.editor.internal.setModuleCode({
+  actions.editor.internal.setStateModuleCode({
     module,
     code,
   });
@@ -250,27 +326,34 @@ export const codeChanged: Action<{
     return;
   }
 
-  if (state.live.isLive) {
-    const operation = event
-      ? eventToTransform(event, module.code).operation
-      : getTextOperation(module.code, code);
+  // module.code !== code check is there to make sure that we don't end up sending
+  // duplicate updates to live. module.code === code only when VSCode detected a change
+  // from the filesystem (fs changed, vscode sees it, sends update). If this happens we
+  // never want to send that code update, since this actual code change goes through this
+  // specific code flow already.
+  if (state.live.isLive && module.code !== code) {
+    let operation: TextOperation;
+    if (event) {
+      operation = eventToTransform(event, module.code).operation;
+    } else {
+      operation = getTextOperation(module.code, code);
+    }
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
   }
 
-  actions.editor.internal.setModuleCode({
+  actions.editor.internal.setStateModuleCode({
     module,
     code,
   });
+  if (module.savedCode !== null && module.code === module.savedCode) {
+    effects.vscode.revertModule(module);
+  }
 
   const { isServer } = getTemplate(state.editor.currentSandbox.template);
 
   if (!isServer && state.preferences.settings.livePreviewEnabled) {
     actions.editor.internal.updatePreviewCode();
-  }
-
-  if (module.savedCode !== null && module.code === module.savedCode) {
-    effects.vscode.revertModule(module);
   }
 };
 
@@ -285,6 +368,10 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
     try {
       const changedModules = sandbox.modules.filter(module =>
         state.editor.changedModuleShortids.includes(module.shortid)
+      );
+
+      await Promise.all(
+        changedModules.map(module => effects.live.saveModule(module))
       );
 
       const updatedModules = await effects.api.saveModules(
@@ -364,14 +451,6 @@ export const forkSandboxClicked: AsyncAction = async ({
     return;
   }
 
-  if (
-    state.editor.currentSandbox.owned &&
-    !state.editor.currentSandbox.customTemplate &&
-    !effects.browser.confirm('Do you want to fork your own sandbox?')
-  ) {
-    return;
-  }
-
   await actions.editor.internal.forkSandbox({
     sandboxId: state.editor.currentSandbox.id,
   });
@@ -405,6 +484,8 @@ export const moduleSelected: Action<
     }
 > = ({ actions, effects, state }, { id, path }) => {
   effects.analytics.track('Open File');
+
+  state.editor.hasLoadedInitialModule = true;
 
   const sandbox = state.editor.currentSandbox;
 
@@ -444,7 +525,7 @@ export const moduleSelected: Action<
           followingUser.currentModuleShortid !== module.shortid
         ) {
           // Reset following as this is a user change module action
-          state.live.followingUserId = null;
+          actions.live.onStopFollow();
         }
       }
 
@@ -517,6 +598,8 @@ export const prettifyClicked: AsyncAction = async ({
   });
 };
 
+// TODO(@CompuIves): Look into whether we even want to call this function.
+// We can probably call the dispatch from the bundler itself instead.
 export const errorsCleared: Action = ({ state, effects }) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
@@ -538,6 +621,7 @@ export const errorsCleared: Action = ({ state, effects }) => {
       }
     });
     state.editor.errors = [];
+    effects.vscode.setErrors(state.editor.errors);
   }
 };
 
@@ -1012,4 +1096,573 @@ export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
   { frozen }
 ) => {
   state.editor.sessionFrozen = frozen;
+};
+
+export const listenToSandboxChanges: AsyncAction<{
+  sandboxId: string;
+}> = async ({ state, actions, effects }, { sandboxId }) => {
+  effects.gql.subscriptions.onSandboxChangged.dispose();
+
+  if (!state.isLoggedIn) {
+    return;
+  }
+
+  effects.gql.subscriptions.onSandboxChangged({ sandboxId }, result => {
+    const sandbox = state.editor.sandboxes[sandboxId];
+
+    if (sandbox) {
+      const newInfo = result.sandboxChanged;
+      sandbox.privacy = newInfo.privacy as 0 | 1 | 2;
+
+      const authorization = convertAuthorizationToPermissionType(
+        newInfo.authorization
+      );
+
+      if (authorization !== sandbox.authorization) {
+        sandbox.authorization = authorization;
+
+        actions.refetchSandboxInfo();
+      }
+    }
+  });
+};
+
+export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
+  { state, effects },
+  { sandboxId }
+) => {
+  if (!state.editor.currentSandbox || !state.isLoggedIn) {
+    return;
+  }
+
+  effects.gql.subscriptions.onCollaboratorAdded.dispose();
+  effects.gql.subscriptions.onCollaboratorRemoved.dispose();
+  effects.gql.subscriptions.onCollaboratorChanged.dispose();
+  effects.gql.subscriptions.onInvitationCreated.dispose();
+  effects.gql.subscriptions.onInvitationRemoved.dispose();
+  effects.gql.subscriptions.onInvitationChanged.dispose();
+
+  try {
+    const collaboratorResponse = await effects.gql.queries.collaborators({
+      sandboxId,
+    });
+    if (!collaboratorResponse.sandbox) {
+      return;
+    }
+
+    state.editor.collaborators = collaboratorResponse.sandbox.collaborators;
+
+    effects.gql.subscriptions.onCollaboratorAdded({ sandboxId }, event => {
+      const newCollaborator = event.collaboratorAdded;
+      state.editor.collaborators = [
+        ...state.editor.collaborators.filter(
+          c => c.user.username !== event.collaboratorAdded.user.username
+        ),
+        newCollaborator,
+      ];
+    });
+
+    effects.gql.subscriptions.onCollaboratorChanged({ sandboxId }, event => {
+      const existingCollaborator = state.editor.collaborators.find(
+        c => c.user.username === event.collaboratorChanged.user.username
+      );
+      if (existingCollaborator) {
+        existingCollaborator.authorization =
+          event.collaboratorChanged.authorization;
+
+        existingCollaborator.warning = event.collaboratorChanged.warning;
+        existingCollaborator.lastSeenAt = event.collaboratorChanged.lastSeenAt;
+      }
+    });
+
+    effects.gql.subscriptions.onCollaboratorRemoved({ sandboxId }, event => {
+      state.editor.collaborators = state.editor.collaborators.filter(
+        c => c.user.username !== event.collaboratorRemoved.user.username
+      );
+    });
+
+    if (hasPermission(state.editor.currentSandbox.authorization, 'owner')) {
+      const invitationResponse = await effects.gql.queries.invitations({
+        sandboxId,
+      });
+      const sandbox = invitationResponse.sandbox;
+      if (!sandbox) {
+        return;
+      }
+
+      state.editor.invitations = sandbox.invitations;
+
+      effects.gql.subscriptions.onInvitationCreated({ sandboxId }, event => {
+        if (event.invitationCreated.id === null) {
+          // Ignore this
+          return;
+        }
+
+        const newInvitation = event.invitationCreated;
+        state.editor.invitations = [
+          ...state.editor.invitations.filter(
+            i => i.id !== event.invitationCreated.id
+          ),
+          newInvitation,
+        ];
+      });
+
+      effects.gql.subscriptions.onInvitationChanged({ sandboxId }, event => {
+        const existingInvitation = state.editor.invitations.find(
+          i => i.id === event.invitationChanged.id
+        );
+        if (existingInvitation) {
+          existingInvitation.authorization =
+            event.invitationChanged.authorization;
+        }
+      });
+
+      effects.gql.subscriptions.onInvitationRemoved({ sandboxId }, event => {
+        state.editor.invitations = state.editor.invitations.filter(
+          i => i.id !== event.invitationRemoved.id
+        );
+      });
+    }
+  } catch {
+    // Unable to connect, not sure what to do here
+  }
+};
+
+export const changeCollaboratorAuthorization: AsyncAction<{
+  username: string;
+  authorization: Authorization;
+  sandboxId: string;
+}> = async ({ state, effects }, { username, authorization, sandboxId }) => {
+  const existingCollaborator = state.editor.collaborators.find(
+    c => c.user.username === username
+  );
+
+  let oldAuthorization: Authorization | null = null;
+  if (existingCollaborator) {
+    oldAuthorization = existingCollaborator.authorization;
+
+    existingCollaborator.authorization = authorization;
+  }
+
+  try {
+    await effects.gql.mutations.changeCollaboratorAuthorization({
+      sandboxId,
+      authorization,
+      username,
+    });
+  } catch (e) {
+    if (existingCollaborator && oldAuthorization) {
+      existingCollaborator.authorization = oldAuthorization;
+    }
+  }
+};
+
+export const addCollaborator: AsyncAction<{
+  username: string;
+  sandboxId: string;
+  authorization: Authorization;
+}> = async ({ state, effects }, { username, sandboxId, authorization }) => {
+  const newCollaborator: CollaboratorFragment = {
+    lastSeenAt: null,
+    id: 'OPTIMISTIC_ID',
+    authorization,
+    user: {
+      id: 'OPTIMISTIC_USER_ID',
+      username,
+      avatarUrl: '',
+    },
+    warning: null,
+  };
+
+  state.editor.collaborators = [...state.editor.collaborators, newCollaborator];
+
+  try {
+    const result = await effects.gql.mutations.addCollaborator({
+      sandboxId,
+      username,
+      authorization,
+    });
+    state.editor.collaborators = [
+      ...state.editor.collaborators.filter(c => c.user.username !== username),
+      result.addCollaborator,
+    ];
+  } catch (e) {
+    state.editor.collaborators = state.editor.collaborators.filter(
+      c => c.id !== 'OPTIMISTIC_ID'
+    );
+  }
+};
+
+export const removeCollaborator: AsyncAction<{
+  username: string;
+  sandboxId: string;
+}> = async ({ state, effects }, { username, sandboxId }) => {
+  const existingCollaborator = state.editor.collaborators.find(
+    c => c.user.username === username
+  );
+
+  state.editor.collaborators = state.editor.collaborators.filter(
+    c => c.user.username !== username
+  );
+
+  try {
+    await effects.gql.mutations.removeCollaborator({
+      sandboxId,
+      username,
+    });
+  } catch (e) {
+    if (existingCollaborator) {
+      state.editor.collaborators = [
+        ...state.editor.collaborators,
+        existingCollaborator,
+      ];
+    }
+  }
+};
+
+export const inviteCollaborator: AsyncAction<{
+  email: string;
+  sandboxId: string;
+  authorization: Authorization;
+}> = async ({ state, effects }, { email, sandboxId, authorization }) => {
+  const newInvitation: InvitationFragment = {
+    id: 'OPTIMISTIC_ID',
+    authorization,
+    email,
+  };
+
+  state.editor.invitations = [...state.editor.invitations, newInvitation];
+
+  try {
+    const result = await effects.gql.mutations.inviteCollaborator({
+      sandboxId,
+      email,
+      authorization,
+    });
+
+    if (result.createSandboxInvitation.id === null) {
+      // When it's null it has already tied the email to a collaborator, and the collaborator
+      // has been added via websockets
+      state.editor.invitations = state.editor.invitations.filter(
+        c => c.id !== 'OPTIMISTIC_ID'
+      );
+    } else {
+      state.editor.invitations = [
+        ...state.editor.invitations.filter(
+          c =>
+            c.id !== 'OPTIMISTIC_ID' &&
+            c.id !== result.createSandboxInvitation.id
+        ),
+
+        result.createSandboxInvitation,
+      ];
+    }
+  } catch (e) {
+    state.editor.invitations = state.editor.invitations.filter(
+      c => c.id !== 'OPTIMISTIC_ID'
+    );
+  }
+};
+
+export const revokeSandboxInvitation: AsyncAction<{
+  invitationId: string;
+  sandboxId: string;
+}> = async ({ state, effects }, { invitationId, sandboxId }) => {
+  const existingInvitation = state.editor.invitations.find(
+    c => c.id === invitationId
+  );
+
+  state.editor.invitations = state.editor.invitations.filter(
+    c => c.id !== invitationId
+  );
+
+  try {
+    await effects.gql.mutations.revokeInvitation({
+      sandboxId,
+      invitationId,
+    });
+  } catch (e) {
+    if (existingInvitation) {
+      state.editor.invitations = [
+        ...state.editor.invitations,
+        existingInvitation,
+      ];
+    }
+  }
+};
+
+export const getComments: AsyncAction<{
+  id: string;
+  sandboxId: string;
+}> = async ({ state, effects }, { sandboxId, id }) => {
+  try {
+    const { sandbox } = await effects.gql.queries.comments({
+      sandboxId,
+      commentThreadId: id,
+    });
+
+    if (!sandbox || !sandbox.commentThread) {
+      return;
+    }
+
+    state.editor.commentThreads[sandboxId][id].comments =
+      sandbox.commentThread.comments;
+  } catch (e) {
+    effects.notificationToast.error(
+      'Unable to get your comment, please try again'
+    );
+  }
+};
+
+export const selectCommentThread: Action<string> = ({ state }, id) => {
+  state.editor.currentCommentThreadId = id;
+};
+
+export const addCommentThread: AsyncAction<{
+  content: string;
+  open?: boolean;
+}> = async ({ state, effects, actions }, { content, open }) => {
+  if (!state.user || !state.editor.currentSandbox) {
+    return;
+  }
+
+  const id = `${content}-${state.user.username}`;
+  const sandboxId = state.editor.currentSandbox.id;
+  const now = new Date().toString();
+  const comment: Comment = {
+    id,
+    insertedAt: now,
+    updatedAt: now,
+    content,
+    user: {
+      id: state.user.id,
+      name: state.user.name,
+      username: state.user.username,
+      avatarUrl: state.user.avatarUrl,
+    },
+  };
+  const optimisticCommentThread: CommentThread = {
+    id,
+    insertedAt: now,
+    updatedAt: now,
+    isResolved: false,
+    initialComment: comment,
+    comments: [],
+  };
+  const commentThreads = state.editor.commentThreads;
+
+  commentThreads[sandboxId][id] = optimisticCommentThread;
+  state.editor.selectedCommentsFilter = CommentsFilterOption.OPEN;
+  try {
+    const {
+      createCommentThread: commentThread,
+    } = await effects.gql.mutations.createCommentThread({
+      sandboxId,
+      content,
+    });
+
+    delete commentThreads[sandboxId][id];
+    commentThreads[sandboxId][commentThread.id] = commentThread;
+    if (open) {
+      actions.editor.getComments({ id: commentThread.id, sandboxId });
+    }
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to create your comment, please try again'
+    );
+    delete commentThreads[sandboxId][id];
+  }
+};
+
+export const deleteComment: AsyncAction<{
+  commentId: string;
+  threadId: string;
+  reply?: boolean;
+}> = async ({ state, effects }, { commentId, threadId, reply }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  const sandboxId = state.editor.currentSandbox.id;
+  const commentThreads = state.editor.commentThreads;
+  const deletedComment = commentThreads[sandboxId][threadId];
+
+  if (reply) {
+    const index = commentThreads[sandboxId][threadId].comments.findIndex(
+      comment => comment.id === commentId
+    );
+    commentThreads[sandboxId][threadId].comments.splice(index, 1);
+  } else {
+    delete commentThreads[sandboxId][threadId];
+    state.editor.currentCommentThreadId = null;
+  }
+
+  try {
+    await effects.gql.mutations.deleteComment({
+      commentId,
+      sandboxId,
+    });
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to delete your comment, please try again'
+    );
+    commentThreads[sandboxId][threadId] = deletedComment;
+  }
+};
+
+export const resolveCommentThread: AsyncAction<{
+  commentThreadId: string;
+  isResolved: boolean;
+}> = async ({ effects, state }, { commentThreadId, isResolved }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  const commentThreads = state.editor.commentThreads;
+  const sandboxId = state.editor.currentSandbox.id;
+  const oldIsResolved = commentThreads[sandboxId][commentThreadId].isResolved;
+  const currentCommentThread = state.editor.currentCommentThread;
+  const updateIsCurrent =
+    currentCommentThread &&
+    commentThreads[sandboxId][commentThreadId].id === currentCommentThread.id;
+
+  commentThreads[sandboxId][commentThreadId].isResolved = isResolved;
+
+  if (updateIsCurrent && currentCommentThread) {
+    currentCommentThread.isResolved = isResolved;
+  }
+
+  try {
+    await effects.gql.mutations.toggleCommentThreadResolved({
+      commentThreadId,
+      isResolved,
+      sandboxId,
+    });
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to update your comment, please try again'
+    );
+    commentThreads[sandboxId][commentThreadId].isResolved = oldIsResolved;
+  }
+};
+
+export const updateComment: AsyncAction<{
+  commentId: string;
+  content: string;
+  threadId: string;
+  reply?: boolean;
+}> = async ({ effects, state }, { commentId, content, threadId, reply }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  const id = threadId;
+  const sandboxId = state.editor.currentSandbox.id;
+  const commentThread = state.editor.commentThreads[sandboxId][id];
+  const commentToUpdate = reply
+    ? commentThread.comments.find(comment => comment.id === commentId)
+    : commentThread.initialComment;
+
+  if (!commentToUpdate) {
+    return;
+  }
+
+  commentToUpdate.content = content;
+
+  try {
+    await effects.gql.mutations.updateComment({
+      commentId,
+      content,
+      sandboxId,
+    });
+  } catch (error) {
+    effects.notificationToast.error(
+      'Unable to update your comment, please try again'
+    );
+  }
+};
+
+export const selectCommentsFilter: Action<CommentsFilterOption> = (
+  { state },
+  option
+) => {
+  state.editor.selectedCommentsFilter = option;
+};
+
+export const changeInvitationAuthorization: AsyncAction<{
+  invitationId: string;
+  authorization: Authorization;
+  sandboxId: string;
+}> = async ({ state, effects }, { invitationId, sandboxId, authorization }) => {
+  const existingInvitation = state.editor.invitations.find(
+    c => c.id === invitationId
+  );
+
+  let oldAuthorization: Authorization | null = null;
+  if (existingInvitation) {
+    oldAuthorization = existingInvitation.authorization;
+
+    existingInvitation.authorization = authorization;
+  }
+
+  try {
+    await effects.gql.mutations.changeSandboxInvitationAuthorization({
+      sandboxId,
+      authorization,
+      invitationId,
+    });
+  } catch (e) {
+    if (existingInvitation && oldAuthorization) {
+      existingInvitation.authorization = oldAuthorization;
+    }
+  }
+};
+
+export const addComment: AsyncAction<string> = async (
+  { state, effects },
+  comment
+) => {
+  const id = state.editor.currentCommentThreadId;
+
+  if (
+    !state.editor.currentCommentThread ||
+    !id ||
+    !state.user ||
+    !state.editor.currentSandbox
+  ) {
+    return;
+  }
+  const sandboxId = state.editor.currentSandbox.id;
+  const fakeId = `${comment}-${state.user.username}`;
+  const commentThread = state.editor.commentThreads[sandboxId][id];
+
+  commentThread.comments.push({
+    insertedAt: new Date(),
+    updatedAt: new Date(),
+    id: fakeId,
+    content: comment,
+    user: {
+      id: state.user.id,
+      avatarUrl: state.user.avatarUrl,
+      name: state.user.name,
+      username: state.user.username,
+    },
+  });
+
+  const optimisticComment =
+    commentThread.comments[commentThread.comments.length - 1];
+
+  try {
+    const {
+      createComment: newComment,
+    } = await effects.gql.mutations.createComment({
+      commentThreadId: id,
+      content: comment,
+      sandboxId,
+    });
+
+    Object.assign(optimisticComment, newComment);
+  } catch (e) {
+    commentThread.comments.splice(
+      commentThread.comments.indexOf(optimisticComment),
+      1
+    );
+  }
 };

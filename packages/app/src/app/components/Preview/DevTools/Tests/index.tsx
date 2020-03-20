@@ -161,6 +161,7 @@ const INITIAL_STATE = {
 
 class Tests extends React.Component<DevToolProps, State> {
   state = INITIAL_STATE;
+  draftState: State | null = null;
 
   listener: () => void;
 
@@ -176,13 +177,54 @@ class Tests extends React.Component<DevToolProps, State> {
     }
   }
 
+  setStateTimer = null;
+  /**
+   * We can call setState 100s of times per second, which puts great strain
+   * on rendering from React. We debounce the rendering so that we flush changes
+   * after a while. This prevents the editor from getting stuck.
+   *
+   * Every setState call will have to go through this, otherwise we get race conditions
+   * where the underlying state has changed, but the draftState didn't change.
+   */
+  setStateDebounced = (setStateFunc, time = 200) => {
+    const draftState = this.draftState || this.state;
+
+    const newState =
+      typeof setStateFunc === 'function'
+        ? setStateFunc(draftState, this.props)
+        : setStateFunc;
+    this.draftState = { ...draftState, ...newState };
+
+    if (this.setStateTimer) {
+      clearTimeout(this.setStateTimer);
+    }
+
+    const updateFunc = () => {
+      if (this.draftState) {
+        this.setState(this.draftState);
+      }
+
+      this.draftState = null;
+      this.setStateTimer = null;
+    };
+
+    if (time === 0) {
+      updateFunc();
+    } else {
+      this.setStateTimer = window.setTimeout(updateFunc, time);
+    }
+  };
+
   UNSAFE_componentWillReceiveProps(nextProps: DevToolProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
-      this.setState({
-        files: {},
-        selectedFilePath: null,
-        running: true,
-      });
+      this.setStateDebounced(
+        {
+          files: {},
+          selectedFilePath: null,
+          running: true,
+        },
+        0
+      );
     }
 
     if (this.props.hidden && !nextProps.hidden) {
@@ -191,19 +233,24 @@ class Tests extends React.Component<DevToolProps, State> {
   }
 
   selectFile = (file: File) => {
-    this.setState(state => ({
-      selectedFilePath:
-        file.fileName === state.selectedFilePath ? null : file.fileName,
-    }));
+    this.setStateDebounced(
+      state => ({
+        selectedFilePath:
+          file.fileName === state.selectedFilePath ? null : file.fileName,
+      }),
+      0
+    );
   };
 
   toggleFileExpansion = (file: File) => {
-    this.setState(oldState =>
-      immer(oldState, state => {
-        state.fileExpansionState[file.fileName] = !state.fileExpansionState[
-          file.fileName
-        ];
-      })
+    this.setStateDebounced(
+      oldState =>
+        immer(oldState, state => {
+          state.fileExpansionState[file.fileName] = !state.fileExpansionState[
+            file.fileName
+          ];
+        }),
+      0
     );
   };
 
@@ -231,7 +278,7 @@ class Tests extends React.Component<DevToolProps, State> {
           if (this.props.updateStatus) {
             this.props.updateStatus('clear');
           }
-          this.setState(INITIAL_STATE);
+          this.setStateDebounced(INITIAL_STATE, 0);
           break;
         }
         case 'test_count': {
@@ -247,15 +294,21 @@ class Tests extends React.Component<DevToolProps, State> {
           if (this.props.updateStatus) {
             this.props.updateStatus('clear');
           }
-          this.setState({
-            running: true,
-          });
+          this.setStateDebounced(
+            {
+              running: true,
+            },
+            0
+          );
           break;
         }
         case messages.TOTAL_TEST_END: {
-          this.setState({
-            running: false,
-          });
+          this.setStateDebounced(
+            {
+              running: false,
+            },
+            0
+          );
 
           const files = Object.keys(this.state.files);
           const failingTests = files.filter(
@@ -280,7 +333,7 @@ class Tests extends React.Component<DevToolProps, State> {
         }
 
         case messages.ADD_FILE: {
-          this.setState(oldState =>
+          this.setStateDebounced(oldState =>
             immer(oldState, state => {
               state.files[data.path] = {
                 tests: {},
@@ -293,7 +346,7 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
         case 'remove_file': {
-          this.setState(oldState =>
+          this.setStateDebounced(oldState =>
             immer(oldState, state => {
               if (state.files[data.path]) {
                 delete state.files[data.path];
@@ -305,7 +358,7 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
         case messages.FILE_ERROR: {
-          this.setState(oldState =>
+          this.setStateDebounced(oldState =>
             immer(oldState, state => {
               if (state.files[data.path]) {
                 state.files[data.path].fileError = data.error;
@@ -325,7 +378,7 @@ class Tests extends React.Component<DevToolProps, State> {
         case messages.ADD_TEST: {
           const testName = [...this.currentDescribeBlocks, data.testName];
 
-          this.setState(oldState =>
+          this.setStateDebounced(oldState =>
             immer(oldState, state => {
               if (!state.files[data.path]) {
                 state.files[data.path] = {
@@ -351,7 +404,7 @@ class Tests extends React.Component<DevToolProps, State> {
           const { test } = data;
           const testName = [...test.blocks, test.name];
 
-          this.setState(oldState =>
+          this.setStateDebounced(oldState =>
             immer(oldState, state => {
               if (!state.files[test.path]) {
                 state.files[test.path] = {
@@ -382,7 +435,7 @@ class Tests extends React.Component<DevToolProps, State> {
           const { test } = data;
           const testName = [...test.blocks, test.name];
 
-          this.setState(oldState =>
+          this.setStateDebounced(oldState =>
             immer(oldState, state => {
               if (!state.files[test.path]) {
                 return;
@@ -471,36 +524,34 @@ class Tests extends React.Component<DevToolProps, State> {
   };
 
   toggleWatching = () => {
+    this.setStateDebounced(state => ({ watching: !state.watching }), 0);
     dispatch({
       type: 'set-test-watching',
       watching: !this.state.watching,
     });
-    this.setState(state => ({ watching: !state.watching }));
   };
 
   runAllTests = () => {
-    this.setState({ files: {} }, () => {
-      dispatch({
-        type: 'run-all-tests',
-      });
+    this.setStateDebounced({ files: {} }, 0);
+    dispatch({
+      type: 'run-all-tests',
     });
   };
 
   runTests = (file: File) => {
-    this.setState(
+    this.setStateDebounced(
       oldState =>
         immer(oldState, state => {
           if (state.files[file.fileName]) {
             state.files[file.fileName].tests = {};
           }
         }),
-      () => {
-        dispatch({
-          type: 'run-tests',
-          path: file.fileName,
-        });
-      }
+      0
     );
+    dispatch({
+      type: 'run-tests',
+      path: file.fileName,
+    });
   };
 
   openFile = (path: string) => {

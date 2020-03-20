@@ -2,6 +2,7 @@ import {
   LiveUser,
   RoomInfo,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { Derive } from 'app/overmind';
 
@@ -15,7 +16,12 @@ type State = {
   followingUserId: string | null;
   liveUserId: string | null;
   roomInfo: RoomInfo | null;
+  /**
+   * Whether we joined from /s/ or from /live/
+   */
+  joinSource: 'sandbox' | 'live';
   currentSelection: UserSelection | null;
+  currentViewRange: UserViewRange | null;
   liveUser: Derive<State, LiveUser | null>;
   isEditor: Derive<State, (liveUserId: string) => boolean>;
   isCurrentEditor: Derive<State, boolean>;
@@ -39,6 +45,8 @@ export const state: State = {
   liveUserId: null,
   roomInfo: null,
   currentSelection: null,
+  currentViewRange: null,
+  joinSource: 'sandbox',
   liveUser: currentState =>
     currentState.roomInfo?.users.find(u => u.id === currentState.liveUserId) ||
     null,

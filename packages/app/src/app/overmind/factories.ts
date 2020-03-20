@@ -103,7 +103,7 @@ export const withOwnedSandbox = <T>(
       if (modalResponse === 'fork') {
         try {
           await actions.editor.internal.forkSandbox({
-            sandboxId: state.editor.currentId!,
+            sandboxId: sandbox.id,
           });
         } catch (e) {
           return cancelAction(context, payload);

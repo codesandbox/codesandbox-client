@@ -1,20 +1,25 @@
 ---
 title: Embedding
 authors: ['CompuIves']
-description: It's possible to embed a sandbox on Medium and other websites.
+description: Embed a sandbox in docs, blog posts, Medium, and other websites.
 ---
 
 ## What is an Embed?
+
+An embed enables you to include a sandbox in your documentation, blog post, 
+or website using an iframe, or anywhere with Embedly support, like Medium, 
+Reddit, Trello, and Notion. You can show just the code, the preview, or both 
+at the same time.
 
 CodeSandbox has a separate application for the embed. This application is
 specifically built to be as small as possible. If you replace `s` in the URL of
 a sandbox to `embed` you have the embed version of the sandbox. Example:
 https://codesandbox.io/s/new => https://codesandbox.io/embed/new. Notice that
-the embed doesn't have all features of the full editor.
+the embed doesn't have all of the features of the full editor.
 
-## Generate a URL
+## Generate an Embed URL
 
-You can generate a URL clicking 'Share' in the header and selecting the options
+You can generate a URL to embed by clicking 'Embed' in the header on the editor and selecting the options
 you want to have enabled.
 
 ![Share Button](./images/share-button.png)
@@ -87,7 +92,7 @@ Use this code to embed:
 
 ```html
 <iframe
-  src="https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14"
+  src="https://codesandbox.io/embed/new?codemirror=1&highlights=6,7,8,9"
   style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
   allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
   sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
@@ -96,4 +101,4 @@ Use this code to embed:
 
 That will give to a result like this:
 
-<iframe src="https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/new?codemirror=1&highlights=6,7,8,9" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>

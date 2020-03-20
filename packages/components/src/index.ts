@@ -6,16 +6,19 @@ export * from './components/ThemeProvider';
 export * from './components/Avatar';
 export * from './components/Button';
 export * from './components/Icon';
+export * from './components/IconButton';
 export * from './components/Input';
 export * from './components/Label';
 export * from './components/Link';
 export * from './components/SearchInput';
 export * from './components/Select';
 export * from './components/Stats';
+export * from './components/Menu';
 export * from './components/Switch';
 export * from './components/Text';
 export * from './components/Textarea';
 export * from './components/FormField';
+export * from './components/Checkbox';
 
 // molecules
 export * from './components/Collapsible';

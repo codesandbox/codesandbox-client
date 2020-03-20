@@ -5,4 +5,4 @@ projects:
       endpoints:
         prod: 'https://codesandbox.io/api/graphql'
         staging: 'https://codesandbox.stream/api/graphql'
-        dev: 'http://localhost:4000/api/graphql'
+        dev: 'http://server:4000/api/graphql'

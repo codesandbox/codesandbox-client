@@ -1,0 +1,10 @@
+{
+  "name": "@types/ot",
+  "version": "1.0.0",
+  "description": "",
+  "typings": "./index.d.ts",
+  "scripts": {},
+  "keywords": [],
+  "author": "Ives van Hoorne",
+  "license": "MIT"
+}

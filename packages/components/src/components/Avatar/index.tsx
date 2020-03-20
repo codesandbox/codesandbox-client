@@ -6,12 +6,12 @@ import { Text } from '../Text';
 
 interface IAvatarProps {
   user: {
-    id: string;
+    id?: string;
     username: string;
-    name: string;
+    name?: string;
     avatarUrl: string;
-    badges: any[];
-    subscriptionSince: string | null;
+    badges?: any[];
+    subscriptionSince?: string | null;
   };
 }
 

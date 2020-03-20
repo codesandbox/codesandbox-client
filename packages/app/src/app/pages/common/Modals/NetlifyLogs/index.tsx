@@ -1,12 +1,10 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Button } from '@codesandbox/common/lib/components/Button';
 
+import { Element, Button, Stack } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-
-import { Explanation, Heading } from '../elements';
-import { Container } from '../LiveSessionEnded/elements';
-
-import { Item, List } from './elements';
+import css from '@styled-system/css';
+import { Item } from './elements';
+import { Alert } from '../Common/Alert';
 
 export const NetlifyLogs: FunctionComponent = () => {
   const {
@@ -15,7 +13,7 @@ export const NetlifyLogs: FunctionComponent = () => {
       deployment: { netlifyLogs: netlifyLogsUrl },
     },
   } = useOvermind();
-  const [logs, setLogs] = useState(['Waiting for build to start...']);
+  const [logs, setLogs] = useState(['Waiting for build to start']);
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -32,22 +30,40 @@ export const NetlifyLogs: FunctionComponent = () => {
   }, [netlifyLogsUrl]);
 
   return (
-    <Container>
-      <Heading>Sandbox Site Logs</Heading>
-
-      <Explanation>
-        Builds typically take a minute or two to complete
-      </Explanation>
-
-      <List>
+    <Alert
+      title="Sandbox Site Logs"
+      description="Builds typically take a minute or two to complete"
+    >
+      <Element
+        marginY={6}
+        padding={4}
+        css={css({
+          fontFamily: "'dm'",
+          maxHeight: 400,
+          overflow: 'auto',
+          wordBreak: 'break-word',
+          borderRadius: 'medium',
+          border: '1px solid',
+          borderColor: 'sideBar.border',
+        })}
+      >
         {logs.map(log => (
-          <Item key={log}>{log}</Item>
+          <Item marginBottom={2} key={log}>
+            {log}
+          </Item>
         ))}
-      </List>
-
-      <Button onClick={() => modalClosed()} small>
-        Close
-      </Button>
-    </Container>
+      </Element>
+      <Stack gap={2} align="center" justify="flex-end">
+        <Button
+          css={css({
+            width: 'auto',
+          })}
+          variant="link"
+          onClick={modalClosed}
+        >
+          Close
+        </Button>
+      </Stack>
+    </Alert>
   );
 };

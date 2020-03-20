@@ -2,55 +2,34 @@
 title: Documentation
 authors: ['CompuIves']
 slug: /
-description:
-  Welcome to CodeSandbox! This documentation serves as a way for you to learn
-  what CodeSandbox is, how to use it and what its APIs are.
+description: Learn what CodeSandbox is and how to use it.
 ---
 
 ## What is CodeSandbox
 
-CodeSandbox is an online editor that's built for web application development.
-Web application development is a growing field, and with all new configuration
-options it becomes harder and harder to focus on writing code. We make this
-easier by doing most configuration for you.
+CodeSandbox is an online editor for rapid web development. With CodeSandbox, you
+can prototype quickly, experiment easily, and share creations with a click.
 
-This focus on web application development allows us to do many more
-optimizations. We can analyze npm dependencies, we can show custom error
-messages for known errors, we can make projects easily searchable by npm
-dependency. The possibilities are endless!
+Use it to create static sites, full-stack web apps or components, on any device
+with a web browser.
 
-## Our Values
+## Product Values
 
-We started development of CodeSandbox with a single goal: make it easy to share
-projects, wherever you are. During development we started noticing other
-benefits though, and we decided to make three focus points for all further
-development.
+Our mission is to make web development faster. By removing complexity, we enable
+web developers to be more productive. By simplifying collaboration, we make it
+easier for teams to work on code together.
 
-### Lower the Learning Curve
+### Code, not infrastructure
 
-With CodeSandbox you don't have to do anything to start programming. You don't
-have to set up a development environment, you don't have to install
-dependencies, you don't even need a laptop! During initial development we
-quickly noticed that other students at the university were using CodeSandbox to
-learn React, and we found this a great idea.
+We handle the development environment, taking on setup, tooling, and
+provisioning, so it’s as fast as possible to start and build projects.
 
-We shifted our focus to make it as easy as possible to start a project, and to
-make UI and UX very simple but useful.
+### Shareable by default
 
-### Empower Shareability and Discoverability
+We create solutions that enable developers to work from anywhere and teams to
+build together in new and more effective ways.
 
-The initial reason Ives wanted to build CodeSandbox was because of shareability.
-The JavaScript community is one of the most active communities out there;
-libraries and projects are shared everyday. Still, it was very hard to share a
-project you've built with, for example, Vue or React. With CodeSandbox you can
-easily build, import or export your project and share a single URL.
+### Work like local
 
-We also aim to make discoverability very easy: it should be easy to find
-examples if you're struggling with a library.
-
-### Work as a Local Editor
-
-We find it important to support the whole flow of development: from creation, to
-committing, to deployment. You should have your development environment
-everywhere, so you can work whenever you want. We make it possible to build a
-web application from start to finish, without leaving your browser.
+We equip developers with a local editor experience that’s familiar and
+integrated with popular developer tools, so the process of creation is seamless.

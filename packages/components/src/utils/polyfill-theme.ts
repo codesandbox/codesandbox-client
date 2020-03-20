@@ -5,9 +5,9 @@
  * collapsible icon
  *
  */
-import dot from 'dot-object';
 import deepmerge from 'deepmerge';
 import Color from 'color';
+import { object } from './dot';
 import designLanguage from '../design-language';
 import codesandboxBlack from '../themes/codesandbox-black';
 import codesandboxLight from '../themes/codesandbox-light.json';
@@ -36,20 +36,22 @@ const polyfillTheme = vsCodeTheme => {
     sideBar: {},
     activityBar: {},
     titleBar: {},
+    quickInput: {},
     menuList: {},
+    dialog: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
 
   //  Step 1: Initialise with vscode theme
-  const vsCodeColors = dot.object(vsCodeTheme.colors || {});
+  const vsCodeColors = object(vsCodeTheme.colors || {});
   uiColors = deepmerge(uiColors, vsCodeColors);
 
   // Step 2: Fill missing values from existing values or codesandbox dark/light
 
   const codesandboxColors = ['dark', 'lc'].includes(type)
-    ? dot.object(codesandboxBlack.colors)
-    : dot.object(codesandboxLight.colors);
+    ? object(codesandboxBlack.colors)
+    : object(codesandboxLight.colors);
 
   // 2.1 First, lets fill in core values that are used to infer other values
 
@@ -79,6 +81,11 @@ const polyfillTheme = vsCodeTheme => {
     placeholderForeground:
       uiColors.input.placeholderForeground ||
       codesandboxColors.input.placeholderForeground,
+  };
+
+  uiColors.quickInput = {
+    background: uiColors.quickInput.background || uiColors.sideBar.background,
+    foreground: uiColors.quickInput.foreground || uiColors.sideBar.foreground,
   };
 
   uiColors.inputOption.activeBorder =
@@ -186,6 +193,11 @@ const polyfillTheme = vsCodeTheme => {
       backgroundOff: uiColors.input.background,
       backgroundOn: uiColors.button.background,
       toggle: designLanguage.colors.white,
+    },
+    dialog: {
+      background: uiColors.quickInput.background,
+      foreground: uiColors.quickInput.foreground,
+      border: uiColors.sideBar.border,
     },
     menuList: {
       background: uiColors.sideBar.background,

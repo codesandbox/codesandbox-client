@@ -1,5 +1,5 @@
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 import codeSandboxTheme from '@codesandbox/common/lib/themes/codesandbox.json';
+import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 
 export function initializeThemeCache() {
   try {
@@ -58,6 +58,13 @@ export function initializeSettings() {
     settings['javascript.autoClosingTags'] = false;
     settings['typescript.autoClosingTags'] = false;
     settings['typescript.tsserver.useSeparateSyntaxServer'] = false;
+
+    if (!settings['workbench.colorTheme']) {
+      // if you have not changed the theme ever,
+      // we set codesandbox black as the theme for you
+      settings['workbench.colorTheme'] = 'CodeSandbox Black';
+    }
+
     fs.writeFileSync(
       '/vscode/settings.json',
       JSON.stringify(settings, null, 2)
@@ -74,6 +81,11 @@ export function initializeCodeSandboxTheme() {
   fs.writeFileSync(
     '/extensions/ngryman.codesandbox-theme-0.0.1/themes/CodeSandbox-color-theme.json',
     JSON.stringify(codeSandboxTheme)
+  );
+
+  fs.writeFileSync(
+    '/extensions/codesandbox-black-0.0.1/themes/codesandbox-black.json',
+    JSON.stringify(codeSandboxBlackTheme)
   );
 }
 
@@ -143,10 +155,4 @@ export function initializeCustomTheme() {
   if (customTheme) {
     installCustomTheme('custom', 'Custom Theme', customTheme);
   }
-
-  installCustomTheme(
-    'codesandbox-black-0.0.1',
-    'CodeSandbox Black.',
-    JSON.stringify(codeSandboxBlackTheme)
-  );
 }

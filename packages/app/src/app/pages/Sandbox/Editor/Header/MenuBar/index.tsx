@@ -1,13 +1,32 @@
-import track from '@codesandbox/common/lib/utils/analytics';
-import React, { FunctionComponent, useEffect, useRef } from 'react';
-
-import { useOvermind } from 'app/overmind';
-
-import { Child, Container } from './elements';
 import './titlebar.css';
 
+import track from '@codesandbox/common/lib/utils/analytics';
+import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent, useEffect, useRef } from 'react';
+
+import {
+  Child,
+  Container,
+  SkeletonContainer,
+  SkeletonMenuItem,
+} from './elements';
+
+const MenuBarSkeleton: FunctionComponent = () => (
+  <SkeletonContainer>
+    <SkeletonMenuItem>File</SkeletonMenuItem>
+    <SkeletonMenuItem>Edit</SkeletonMenuItem>
+    <SkeletonMenuItem>Selection</SkeletonMenuItem>
+    <SkeletonMenuItem>View</SkeletonMenuItem>
+    <SkeletonMenuItem>Go</SkeletonMenuItem>
+    <SkeletonMenuItem>Help</SkeletonMenuItem>
+    <SkeletonMenuItem style={{ visibility: 'hidden' }}>
+      <div style={{ width: 20 }} />
+    </SkeletonMenuItem>
+  </SkeletonContainer>
+);
+
 export const MenuBar: FunctionComponent = () => {
-  const { effects } = useOvermind();
+  const { state, effects } = useOvermind();
   const menuBarEl = useRef(null);
 
   useEffect(() => {
@@ -22,7 +41,11 @@ export const MenuBar: FunctionComponent = () => {
       className="part titlebar"
       onClick={() => track('Editor - Click Menubar')}
     >
-      <Child ref={menuBarEl} />
+      <Child
+        ref={menuBarEl}
+        style={state.editor.isLoading ? { display: 'none' } : null}
+      />
+      {state.editor.isLoading ? <MenuBarSkeleton /> : null}
     </Container>
   );
 };

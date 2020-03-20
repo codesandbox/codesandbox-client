@@ -6,6 +6,7 @@ import {
   ViewConfig,
 } from '@codesandbox/common/lib/templates/template';
 import {
+  CommentsFilterOption,
   DevToolsTabPosition,
   DiffTab,
   Module,
@@ -18,6 +19,11 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
+import {
+  CollaboratorFragment,
+  CommentThread,
+  InvitationFragment,
+} from 'app/graphql/types';
 import { Derive } from 'app/overmind';
 import immer from 'immer';
 
@@ -25,6 +31,9 @@ import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
 type State = {
+  /**
+   * Never use this! It doesn't reflect the id of the current sandbox. Use editor.currentSandbox.id instead.
+   */
   currentId: string | null;
   currentModuleShortid: string | null;
   isForkingSandbox: boolean;
@@ -32,6 +41,8 @@ type State = {
   sandboxes: {
     [id: string]: Sandbox;
   };
+  collaborators: CollaboratorFragment[];
+  invitations: InvitationFragment[];
   // TODO: What is this really? Could not find it in Cerebral, but
   // EditorPreview is using it... weird stuff
   devToolTabs: Derive<State, ViewConfig[]>;
@@ -67,9 +78,87 @@ type State = {
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
+  commentThreads: {
+    [sandboxId: string]: {
+      [commentId: string]: CommentThread;
+    };
+  };
+  currentCommentThreads: Derive<State, CommentThread[]>;
+  selectedCommentsFilter: CommentsFilterOption;
+  currentCommentThreadId: string | null;
+  currentCommentThread: Derive<State, CommentThread | null>;
+  hasLoadedInitialModule: boolean;
 };
 
 export const state: State = {
+  hasLoadedInitialModule: false,
+  commentThreads: {},
+  currentCommentThreadId: null,
+  currentCommentThread: ({
+    commentThreads,
+    currentSandbox,
+    currentCommentThreadId,
+  }) => {
+    if (
+      !currentSandbox ||
+      !commentThreads[currentSandbox.id] ||
+      !currentCommentThreadId
+    ) {
+      return null;
+    }
+
+    return commentThreads[currentSandbox.id][currentCommentThreadId];
+  },
+  selectedCommentsFilter: CommentsFilterOption.OPEN,
+  // eslint-disable-next-line consistent-return
+  currentCommentThreads: ({
+    commentThreads,
+    currentSandbox,
+    selectedCommentsFilter,
+  }) => {
+    if (!currentSandbox || !commentThreads[currentSandbox.id]) {
+      return [];
+    }
+
+    function sortByInsertedAt(
+      commentThreadA: CommentThread,
+      commentThreadB: CommentThread
+    ) {
+      const aDate = new Date(commentThreadA.insertedAt);
+      const bDate = new Date(commentThreadB.insertedAt);
+
+      if (aDate > bDate) {
+        return -1;
+      }
+
+      if (bDate < aDate) {
+        return 1;
+      }
+
+      return 0;
+    }
+
+    switch (selectedCommentsFilter) {
+      case CommentsFilterOption.ALL:
+        return Object.values(commentThreads[currentSandbox.id]).sort(
+          sortByInsertedAt
+        );
+      case CommentsFilterOption.RESOLVED:
+        return Object.values(commentThreads[currentSandbox.id])
+          .filter(comment => comment.isResolved)
+          .sort(sortByInsertedAt);
+      case CommentsFilterOption.OPEN:
+        return Object.values(commentThreads[currentSandbox.id])
+          .filter(comment => !comment.isResolved)
+          .sort(sortByInsertedAt);
+      case CommentsFilterOption.MENTIONS:
+        return Object.values(commentThreads[currentSandbox.id]).sort(
+          sortByInsertedAt
+        );
+      default:
+        return [];
+    }
+  },
   sandboxes: {},
   currentId: null,
   isForkingSandbox: false,
@@ -80,6 +169,8 @@ export const state: State = {
   error: null,
   isResizing: false,
   modulesByPath: {},
+  collaborators: [],
+  invitations: [],
   changedModuleShortids: ({ currentSandbox }) => {
     if (!currentSandbox) {
       return [];

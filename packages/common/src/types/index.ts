@@ -14,6 +14,7 @@ export type SSEContainerStatus =
 export type SSEManagerStatus = 'connected' | 'disconnected' | 'initializing';
 
 export type PermissionType =
+  | 'owner'
   | 'write_code'
   | 'write_project'
   | 'comment'
@@ -210,10 +211,12 @@ export type User = {
 export type LiveUser = {
   username: string;
   selection: UserSelection | null;
+  viewRange: UserViewRange | null;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
   avatarUrl: string;
+  userId: string | null;
 };
 
 export type RoomInfo = {
@@ -307,6 +310,13 @@ export type SandboxAuthor = {
   badges: Badge[];
   subscriptionSince: string | null;
 };
+
+export enum CommentsFilterOption {
+  ALL = 'All',
+  OPEN = 'Open',
+  RESOLVED = 'Resolved',
+  MENTIONS = 'Mentions',
+}
 
 export type Sandbox = {
   id: string;
@@ -479,6 +489,13 @@ export type EditorSelection = {
   name: string | null;
   selection: UserSelection | null;
   color: number[];
+};
+
+export type UserViewRange = {
+  startLineNumber: number;
+  endLineNumber: number;
+  startColumn: number;
+  endColumn: number;
 };
 
 export enum WindowOrientation {
@@ -683,6 +700,7 @@ export enum LiveMessageEvent {
   MODULE_STATE = 'module_state',
   USER_ENTERED = 'user:entered',
   USER_LEFT = 'user:left',
+  USERS_CHANGED = 'users:changed',
   MODULE_SAVED = 'module:saved',
   MODULE_CREATED = 'module:created',
   MODULE_MASS_CREATED = 'module:mass-created',
@@ -694,6 +712,7 @@ export enum LiveMessageEvent {
   DIRECTORY_DELETED = 'directory:deleted',
   USER_SELECTION = 'user:selection',
   USER_CURRENT_MODULE = 'user:current-module',
+  USER_VIEW_RANGE = 'user:view-range',
   LIVE_MODE = 'live:mode',
   LIVE_CHAT_ENABLED = 'live:chat_enabled',
   LIVE_ADD_EDITOR = 'live:add-editor',

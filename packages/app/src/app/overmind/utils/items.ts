@@ -1,4 +1,8 @@
 import getTemplate from '@codesandbox/common/lib/templates';
+import {
+  COMMENTS as COMMENTS_ON,
+  REDESIGNED_SIDEBAR,
+} from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export interface INavigationItem {
@@ -33,7 +37,7 @@ export const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
-  defaultOpen: true,
+  defaultOpen: !COMMENTS_ON,
 };
 
 export const GITHUB: INavigationItem = {
@@ -64,8 +68,18 @@ export const SERVER: INavigationItem = {
   name: 'Server Control Panel',
 };
 
+export const COMMENTS: INavigationItem = {
+  id: 'comments',
+  name: 'Comments',
+  defaultOpen: COMMENTS_ON && REDESIGNED_SIDEBAR === 'true',
+};
+
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
+
+  if (!currentSandbox) {
+    return [PROJECT_SUMMARY, CONFIGURATION, GITHUB, DEPLOYMENT, SERVER, LIVE];
+  }
 
   if (!currentSandbox.owned || !store.isLoggedIn) {
     return [GITHUB, DEPLOYMENT, LIVE];
@@ -75,23 +89,26 @@ export function getDisabledItems(store: any): INavigationItem[] {
 }
 
 export default function getItems(store: any): INavigationItem[] {
+  if (!store.editor.currentSandbox) {
+    return [];
+  }
   if (
     store.live.isLive &&
-    !store.editor.currentSandbox.git &&
     !(
       store.live.isOwner ||
       (store.user &&
         store.live &&
         store.live.roomInfo &&
         store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
-    )
+    ) &&
+    !hasPermission(store.editor.currentSandbox.authorization, 'write_project')
   ) {
     return [FILES, LIVE];
   }
 
   const { currentSandbox } = store.editor;
 
-  if (!currentSandbox.owned) {
+  if (!currentSandbox || !currentSandbox.owned) {
     return [PROJECT_SUMMARY, CONFIGURATION];
   }
 
@@ -110,7 +127,11 @@ export default function getItems(store: any): INavigationItem[] {
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    items.push(GITHUB);
+    if (COMMENTS_ON && REDESIGNED_SIDEBAR === 'true') {
+      items.push(GITHUB, COMMENTS);
+    } else {
+      items.push(GITHUB);
+    }
   }
 
   if (store.isLoggedIn) {

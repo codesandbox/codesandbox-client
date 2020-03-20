@@ -1,22 +1,21 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
 import filesize from 'filesize';
 import { sortBy } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import {
+  Button,
+  Stack,
+  Element,
+  List,
+  ListAction,
+  Link,
+  Text,
+  Checkbox,
+} from '@codesandbox/components';
 
 import { useOvermind } from 'app/overmind';
 
 import { AddFileToSandboxButton } from './AddFileToSandboxButton';
 import { DeleteFileButton } from './DeleteFileButton';
-import {
-  Body,
-  Buttons,
-  CheckBox,
-  Container,
-  FileRow,
-  HeaderTitle,
-  StatBody,
-  Table,
-} from './elements';
 
 export const FilesList: FunctionComponent = () => {
   const {
@@ -32,106 +31,77 @@ export const FilesList: FunctionComponent = () => {
 
   const getSelection = () =>
     uploadedFiles.filter(({ id }) => selectedItems.includes(id));
+
   const toggleCheckbox = (id: string) =>
     setSelectedItems(items =>
       items.includes(id) ? items.filter(item => item !== id) : items.concat(id)
     );
 
   return (
-    <Container>
-      <Buttons>
+    <Element marginTop={4}>
+      <Stack gap={2} marginBottom={6} justify="space-between">
         <Button
+          style={{ width: 'auto' }}
           disabled={selectedItems.length === 0 || !currentSandbox}
           onClick={() => getSelection().map(addedFileToSandbox)}
-          small
         >
           Add all selected to project
         </Button>
 
         <Button
+          variant="danger"
+          style={{ width: 'auto' }}
           disabled={selectedItems.length === 0}
           onClick={() => selectedItems.map(deletedUploadedFile)}
-          small
         >
           Delete all selected
         </Button>
-      </Buttons>
+      </Stack>
 
-      <Table>
-        <thead>
-          <tr
-            css={`
-              height: 3rem;
-            `}
-          >
-            <HeaderTitle
-              css={`
-                padding-left: 1rem;
-                max-width: 20px;
-              `}
-            />
-
-            <HeaderTitle>File</HeaderTitle>
-
-            <HeaderTitle>Size</HeaderTitle>
-
-            <HeaderTitle />
-
-            <HeaderTitle />
-
-            <HeaderTitle />
-          </tr>
-        </thead>
-
-        <Body>
-          {sortBy(uploadedFiles, 'name').map(
-            ({ id, name, objectSize, url }, index) => (
-              <FileRow index={index} key={id}>
-                <td>
-                  <CheckBox
-                    onClick={() => toggleCheckbox(id)}
-                    selected={selectedItems.includes(id)}
-                  />
-                </td>
-
-                <td
+      <List>
+        {sortBy(uploadedFiles, 'name').map(
+          ({ id, name, objectSize, url }, index) => (
+            <ListAction justify="space-between" key={id}>
+              <Stack
+                gap={4}
+                css={`
+                  width: 40%;
+                `}
+              >
+                <Checkbox
+                  onChange={() => toggleCheckbox(id)}
+                  checked={selectedItems.includes(id)}
+                />
+                <Link
                   css={`
-                    max-width: 100px;
+                    max-width: 80%;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
                   `}
-                  title={name}
+                  size={3}
+                  href={url}
+                  rel="noreferrer noopener"
+                  target="_blank"
                 >
-                  <a href={url} rel="noreferrer noopener" target="_blank">
-                    {name}
-                  </a>
-                </td>
-
-                <td>{filesize(objectSize)}</td>
-
-                <StatBody
-                  css={`
-                    padding: 0.55rem 0.5rem;
-                    cursor: pointer;
-                  `}
-                >
-                  <AddFileToSandboxButton name={name} url={url} />
-                </StatBody>
-
-                <StatBody
-                  css={`
-                    padding: 0.55rem 0.5rem;
-                    cursor: pointer;
-                  `}
-                >
-                  <DeleteFileButton id={id} />
-                </StatBody>
-              </FileRow>
-            )
-          )}
-        </Body>
-      </Table>
-    </Container>
+                  {name}
+                </Link>
+              </Stack>
+              <Element
+                css={`
+                  width: 100px;
+                `}
+              >
+                <Text size={3}>{filesize(objectSize)}</Text>
+              </Element>
+              <Stack gap={2}>
+                <AddFileToSandboxButton name={name} url={url} />
+                <DeleteFileButton id={id} />
+              </Stack>
+            </ListAction>
+          )
+        )}
+      </List>
+    </Element>
   );
 };

@@ -12,6 +12,7 @@ import {
   captureException,
   logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
   editorUrl,
@@ -21,7 +22,6 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -35,6 +35,19 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   );
 
   return matchingSandboxId || id;
+};
+
+export const initializeSandbox: AsyncAction<Sandbox> = async (
+  { actions, effects },
+  sandbox
+) => {
+  await Promise.all([
+    actions.editor.internal
+      .initializeLiveSandbox(sandbox)
+      .then(() => effects.live.sendModuleStateSyncRequest()),
+    actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
+    actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
+  ]);
 };
 
 export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
@@ -51,10 +64,19 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
       return;
     }
 
-    await actions.live.internal.disconnect();
+    if (
+      // If the joinSource is /live/ and the user is only a viewer,
+      // we won't get the roomId and the user will disconnect automatically,
+      // we want to prevent this by only re-initializing the live session on joinSource === 'sandbox'. Because
+      // for joinSource === 'sandbox' we know for sure that the user will get a roomId if they have permissions
+      // to join
+      state.live.joinSource === 'sandbox'
+    ) {
+      await actions.live.internal.disconnect();
+    }
   }
 
-  if (sandbox.owned && sandbox.roomId) {
+  if (sandbox.roomId) {
     await actions.live.internal.initialize(sandbox.roomId);
   }
 };
@@ -112,6 +134,7 @@ export const saveCode: AsyncAction<{
   }
 
   try {
+    await effects.live.saveModule(module);
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
 
     module.insertedAt = updatedModule.insertedAt;
@@ -287,7 +310,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   });
 };
 
-export const setModuleCode: Action<{
+export const setStateModuleCode: Action<{
   module: Module;
   code: string;
 }> = ({ state, effects }, { module, code }) => {
