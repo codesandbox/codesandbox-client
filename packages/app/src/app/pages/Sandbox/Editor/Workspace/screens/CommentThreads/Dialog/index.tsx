@@ -29,20 +29,20 @@ export const Dialog = props => {
   const [value, setValue] = useState('');
 
   const [edit, setEdit] = useState(false);
-  const thread = state.editor.currentCommentThread;
+  const thread = state.comments.currentCommentThread;
   const [editValue, setEditValue] = useState(thread.initialComment.content);
   const [position, setPosition] = useState({
     x: props.x || 200,
     y: props.y || 40,
   });
 
-  const closeDialog = () => actions.editor.selectCommentThread(null);
+  const closeDialog = () => actions.comments.selectCommentThread(null);
   const onSubmit = () => {
     setValue('');
     if (thread) {
-      actions.editor.addComment(value);
+      actions.comments.addComment(value);
     } else {
-      actions.editor.addCommentThread({
+      actions.comments.addCommentThread({
         content: value,
         open: true,
       });
@@ -100,7 +100,7 @@ export const Dialog = props => {
           <Stack align="center">
             <IconButton
               onClick={() =>
-                actions.editor.resolveCommentThread({
+                actions.comments.resolveCommentThread({
                   commentThreadId: thread.id,
                   isResolved: !thread.isResolved,
                 })
@@ -161,7 +161,7 @@ export const Dialog = props => {
                       <Menu.List>
                         <Menu.Item
                           onSelect={() =>
-                            actions.editor.deleteComment({
+                            actions.comments.deleteComment({
                               threadId: thread.id,
                               commentId: thread.initialComment.id,
                             })
@@ -213,7 +213,7 @@ export const Dialog = props => {
                         disabled={!editValue}
                         variant="secondary"
                         onClick={async () => {
-                          await actions.editor.updateComment({
+                          await actions.comments.updateComment({
                             threadId: thread.id,
                             commentId: thread.initialComment.id,
                             content: editValue,

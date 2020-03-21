@@ -10,7 +10,7 @@ export const AddCommentThread: React.FC = () => {
 
   const onSubmit = e => {
     e.preventDefault();
-    actions.editor.addCommentThread({
+    actions.comments.addCommentThread({
       content: value,
       open: false,
     });

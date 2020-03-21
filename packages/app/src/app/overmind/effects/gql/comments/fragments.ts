@@ -8,11 +8,38 @@ export const commentFragment = gql`
     updatedAt
     user {
       id
-      firstName
-      lastName
       name
       username
       avatarUrl
     }
   }
+`;
+
+export const commentThreadFragment = gql`
+  fragment CommentThread on CommentThread {
+    id
+    initialComment {
+      ...Comment
+    }
+    reference {
+      id
+      metadata {
+        ... on CodeReferenceMetadata {
+          anchor
+          code
+          head
+          path
+        }
+      }
+      resource
+      type
+    }
+    comments {
+      ...Comment
+    }
+    insertedAt
+    isResolved
+    updatedAt
+  }
+  ${commentFragment}
 `;

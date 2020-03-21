@@ -127,9 +127,15 @@ export class ModelsHandler {
     return moduleModel.model;
   };
 
-  public async applyComments(commentThreadsByPath: {
-    [path: string]: Array<{ commentThreadId: string; range: [number, number] }>;
-  }) {
+  public async applyComments(
+    commentThreadsByPath: {
+      [path: string]: Array<{
+        commentThreadId: string;
+        range: [number, number];
+      }>;
+    },
+    currentCommentThreadId: string
+  ) {
     Object.keys(commentThreadsByPath).forEach(async path => {
       const moduleModel = this.getModuleModelByPath(path);
       const model = await moduleModel.model;
@@ -142,7 +148,8 @@ export class ModelsHandler {
       const existingDecorationComments = moduleModel.comments;
       const newDecorationComments = this.createCommentDecorations(
         commentThreads,
-        model
+        model,
+        currentCommentThreadId
       );
       moduleModel.comments = model.deltaDecorations(
         existingDecorationComments,
@@ -574,7 +581,8 @@ export class ModelsHandler {
           );
           const newDecorationComments = this.createCommentDecorations(
             moduleModel.comments,
-            model
+            model,
+            null
           );
           moduleModel.comments = model.deltaDecorations(
             [],
@@ -646,9 +654,13 @@ export class ModelsHandler {
       commentThreadId: string;
       range: [number, number];
     }>,
-    model: any
+    model: any,
+    currentCommentThreadId: string | null
   ) {
     return commentThreadDecorations.map(commentThreadDecoration => {
+      const isActive =
+        commentThreadDecoration.commentThreadId === currentCommentThreadId;
+
       const lineAndColumn = indexToLineAndColumn(
         model.getLinesContent() || [],
         commentThreadDecoration.range[0]
@@ -663,7 +675,9 @@ export class ModelsHandler {
         options: {
           isWholeLine: true,
           // comment-id- class needs to be the LAST class!
-          glyphMarginClassName: `editor-comments-glyph comment-id-${commentThreadDecoration.commentThreadId}`,
+          glyphMarginClassName: `editor-comments-glyph ${
+            isActive ? 'active-comment ' : ''
+          }comment-id-${commentThreadDecoration.commentThreadId}`,
         },
       };
     });

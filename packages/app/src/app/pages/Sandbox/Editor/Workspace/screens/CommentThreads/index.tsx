@@ -18,13 +18,13 @@ import { CommentDialog } from './Dialog';
 export const CommentThreads: React.FC = () => {
   const {
     state: {
-      editor: {
+      comments: {
         selectedCommentsFilter,
         currentCommentThreads,
         currentCommentThreadId,
       },
     },
-    actions: { editor: editorActions },
+    actions: { comments: commentsActions },
   } = useOvermind();
   const options = Object.values(CommentsFilterOption);
 
@@ -92,7 +92,7 @@ export const CommentThreads: React.FC = () => {
               {options.map(option => (
                 <Menu.Item
                   key={option}
-                  onSelect={() => editorActions.selectCommentsFilter(option)}
+                  onSelect={() => commentsActions.selectCommentsFilter(option)}
                 >
                   {option}
                 </Menu.Item>

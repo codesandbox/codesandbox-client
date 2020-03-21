@@ -9,7 +9,7 @@ import {
   Textarea,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { Comment } from 'app/graphql/types';
+import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { formatDistance } from 'date-fns';
 import React, { useState } from 'react';
@@ -18,7 +18,7 @@ import { Markdown } from './Markdown';
 
 type ReplyProps = {
   threadId: string;
-  reply: Comment;
+  reply: CommentFragment;
 };
 
 export const Reply = ({
@@ -57,7 +57,7 @@ export const Reply = ({
                 <Menu.List>
                   <Menu.Item
                     onSelect={() =>
-                      actions.editor.deleteComment({
+                      actions.comments.deleteComment({
                         threadId,
                         commentId: id,
                         reply: true,
@@ -111,7 +111,7 @@ export const Reply = ({
                 variant="secondary"
                 disabled={!value}
                 onClick={async () => {
-                  await actions.editor.updateComment({
+                  await actions.comments.updateComment({
                     threadId,
                     commentId: id,
                     content: value,

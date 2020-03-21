@@ -1,7 +1,6 @@
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
-  CommentsFilterOption,
   EnvironmentVariable,
   ModuleCorrection,
   ModuleError,
@@ -17,8 +16,7 @@ import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
   CollaboratorFragment,
-  Comment,
-  CommentThread,
+  CommentThreadFragment,
   InvitationFragment,
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
@@ -217,28 +215,17 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
         return;
       }
 
-      state.editor.commentThreads[
+      state.comments.commentThreads[
         sandbox.id
       ] = sandboxComments.commentThreads.reduce<{
-        [id: string]: CommentThread;
-      }>((aggr, commentThread, index) => {
+        [id: string]: CommentThreadFragment;
+      }>((aggr, commentThread) => {
         aggr[commentThread.id] = commentThread;
-        if (index === 0) {
-          aggr[commentThread.id].reference = {
-            id: '123',
-            resource: '/src/App.js',
-            type: 'code',
-            meta: {
-              code: '<div>hello world</div>',
-              range: [40, 60],
-            },
-          };
-        }
 
         return aggr;
       }, {});
     } catch (e) {
-      state.editor.commentThreads[sandbox.id] = {};
+      state.comments.commentThreads[sandbox.id] = {};
       effects.notificationToast.add({
         status: NotificationStatus.NOTICE,
         message: `There as a problem getting the sandbox comments`,
@@ -354,16 +341,17 @@ export const codeChanged: Action<{
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
 
-    const comments = state.editor.fileComments[module.path] || [];
+    const comments = state.comments.fileComments[module.path] || [];
     comments.forEach(comment => {
       const range = new Selection.Range(...comment.range);
       const newRange = range.transform(operation);
       const commentThread =
-        state.editor.commentThreads[state.editor.currentSandbox.id][
+        state.comments.commentThreads[state.editor.currentSandbox.id][
           comment.commentThreadId
         ];
       if (commentThread.reference) {
-        commentThread.reference.meta.range = [newRange.anchor, newRange.head];
+        commentThread.reference.metadata.anchor = newRange.anchor;
+        commentThread.reference.metadata.head = newRange.head;
       }
     });
   }
@@ -1413,201 +1401,6 @@ export const revokeSandboxInvitation: AsyncAction<{
   }
 };
 
-export const getComments: AsyncAction<{
-  id: string;
-  sandboxId: string;
-}> = async ({ state, effects }, { sandboxId, id }) => {
-  try {
-    const { sandbox } = await effects.gql.queries.comments({
-      sandboxId,
-      commentThreadId: id,
-    });
-
-    if (!sandbox || !sandbox.commentThread) {
-      return;
-    }
-
-    state.editor.commentThreads[sandboxId][id].comments =
-      sandbox.commentThread.comments;
-  } catch (e) {
-    effects.notificationToast.error(
-      'Unable to get your comment, please try again'
-    );
-  }
-};
-
-export const selectCommentThread: Action<string> = ({ state }, id) => {
-  state.editor.currentCommentThreadId = id;
-};
-
-export const addCommentThread: AsyncAction<{
-  content: string;
-  open?: boolean;
-}> = async ({ state, effects, actions }, { content, open }) => {
-  if (!state.user || !state.editor.currentSandbox) {
-    return;
-  }
-
-  const id = `${content}-${state.user.username}`;
-  const sandboxId = state.editor.currentSandbox.id;
-  const now = new Date().toString();
-  const comment: Comment = {
-    id,
-    insertedAt: now,
-    updatedAt: now,
-    content,
-    user: {
-      id: state.user.id,
-      name: state.user.name,
-      username: state.user.username,
-      avatarUrl: state.user.avatarUrl,
-    },
-  };
-  const optimisticCommentThread: CommentThread = {
-    id,
-    insertedAt: now,
-    updatedAt: now,
-    isResolved: false,
-    initialComment: comment,
-    comments: [],
-  };
-  const commentThreads = state.editor.commentThreads;
-
-  commentThreads[sandboxId][id] = optimisticCommentThread;
-  state.editor.selectedCommentsFilter = CommentsFilterOption.OPEN;
-  try {
-    const {
-      createCommentThread: commentThread,
-    } = await effects.gql.mutations.createCommentThread({
-      sandboxId,
-      content,
-    });
-
-    delete commentThreads[sandboxId][id];
-    commentThreads[sandboxId][commentThread.id] = commentThread;
-    if (open) {
-      actions.editor.getComments({ id: commentThread.id, sandboxId });
-    }
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to create your comment, please try again'
-    );
-    delete commentThreads[sandboxId][id];
-  }
-};
-
-export const deleteComment: AsyncAction<{
-  commentId: string;
-  threadId: string;
-  reply?: boolean;
-}> = async ({ state, effects }, { commentId, threadId, reply }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  const sandboxId = state.editor.currentSandbox.id;
-  const commentThreads = state.editor.commentThreads;
-  const deletedComment = commentThreads[sandboxId][threadId];
-
-  if (reply) {
-    const index = commentThreads[sandboxId][threadId].comments.findIndex(
-      comment => comment.id === commentId
-    );
-    commentThreads[sandboxId][threadId].comments.splice(index, 1);
-  } else {
-    delete commentThreads[sandboxId][threadId];
-    state.editor.currentCommentThreadId = null;
-  }
-
-  try {
-    await effects.gql.mutations.deleteComment({
-      commentId,
-      sandboxId,
-    });
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to delete your comment, please try again'
-    );
-    commentThreads[sandboxId][threadId] = deletedComment;
-  }
-};
-
-export const resolveCommentThread: AsyncAction<{
-  commentThreadId: string;
-  isResolved: boolean;
-}> = async ({ effects, state }, { commentThreadId, isResolved }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  const commentThreads = state.editor.commentThreads;
-  const sandboxId = state.editor.currentSandbox.id;
-  const oldIsResolved = commentThreads[sandboxId][commentThreadId].isResolved;
-  const currentCommentThread = state.editor.currentCommentThread;
-  const updateIsCurrent =
-    currentCommentThread &&
-    commentThreads[sandboxId][commentThreadId].id === currentCommentThread.id;
-
-  commentThreads[sandboxId][commentThreadId].isResolved = isResolved;
-
-  if (updateIsCurrent && currentCommentThread) {
-    currentCommentThread.isResolved = isResolved;
-  }
-
-  try {
-    await effects.gql.mutations.toggleCommentThreadResolved({
-      commentThreadId,
-      isResolved,
-      sandboxId,
-    });
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to update your comment, please try again'
-    );
-    commentThreads[sandboxId][commentThreadId].isResolved = oldIsResolved;
-  }
-};
-
-export const updateComment: AsyncAction<{
-  commentId: string;
-  content: string;
-  threadId: string;
-  reply?: boolean;
-}> = async ({ effects, state }, { commentId, content, threadId, reply }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  const id = threadId;
-  const sandboxId = state.editor.currentSandbox.id;
-  const commentThread = state.editor.commentThreads[sandboxId][id];
-  const commentToUpdate = reply
-    ? commentThread.comments.find(comment => comment.id === commentId)
-    : commentThread.initialComment;
-
-  if (!commentToUpdate) {
-    return;
-  }
-
-  commentToUpdate.content = content;
-
-  try {
-    await effects.gql.mutations.updateComment({
-      commentId,
-      content,
-      sandboxId,
-    });
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to update your comment, please try again'
-    );
-  }
-};
-
-export const selectCommentsFilter: Action<CommentsFilterOption> = (
-  { state },
-  option
-) => {
-  state.editor.selectedCommentsFilter = option;
-};
-
 export const changeInvitationAuthorization: AsyncAction<{
   invitationId: string;
   authorization: Authorization;
@@ -1634,57 +1427,5 @@ export const changeInvitationAuthorization: AsyncAction<{
     if (existingInvitation && oldAuthorization) {
       existingInvitation.authorization = oldAuthorization;
     }
-  }
-};
-
-export const addComment: AsyncAction<string> = async (
-  { state, effects },
-  comment
-) => {
-  const id = state.editor.currentCommentThreadId;
-
-  if (
-    !state.editor.currentCommentThread ||
-    !id ||
-    !state.user ||
-    !state.editor.currentSandbox
-  ) {
-    return;
-  }
-  const sandboxId = state.editor.currentSandbox.id;
-  const fakeId = `${comment}-${state.user.username}`;
-  const commentThread = state.editor.commentThreads[sandboxId][id];
-
-  commentThread.comments.push({
-    insertedAt: new Date(),
-    updatedAt: new Date(),
-    id: fakeId,
-    content: comment,
-    user: {
-      id: state.user.id,
-      avatarUrl: state.user.avatarUrl,
-      name: state.user.name,
-      username: state.user.username,
-    },
-  });
-
-  const optimisticComment =
-    commentThread.comments[commentThread.comments.length - 1];
-
-  try {
-    const {
-      createComment: newComment,
-    } = await effects.gql.mutations.createComment({
-      commentThreadId: id,
-      content: comment,
-      sandboxId,
-    });
-
-    Object.assign(optimisticComment, newComment);
-  } catch (e) {
-    commentThread.comments.splice(
-      commentThread.comments.indexOf(optimisticComment),
-      1
-    );
   }
 };

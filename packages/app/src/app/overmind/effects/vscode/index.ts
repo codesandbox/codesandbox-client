@@ -137,12 +137,15 @@ export class VSCodeEffect {
     this.prepareElements();
     this.options.reaction(
       state => ({
-        currentCommentThreadId: state.editor.currentCommentThreadId,
-        fileComments: json(state.editor.fileComments),
+        fileComments: json(state.comments.fileComments),
+        currentCommentThreadId: state.comments.currentCommentThreadId,
       }),
-      ({ currentCommentThreadId, fileComments }) => {
+      ({ fileComments, currentCommentThreadId }) => {
         if (this.modelsHandler) {
-          this.modelsHandler.applyComments(fileComments);
+          this.modelsHandler.applyComments(
+            fileComments,
+            currentCommentThreadId
+          );
         }
       }
     );

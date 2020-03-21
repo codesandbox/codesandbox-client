@@ -13,26 +13,17 @@ import {
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
 
-import { commentFragment } from './fragments';
+import { commentFragment, commentThreadFragment } from './fragments';
 
 export const createCommentThread: Query<
   CreateCommentThreadMutation,
   CreateCommentThreadMutationVariables
 > = gql`
-  mutation CreateCommentThread($sandboxId: ID!, $content: String!) {
-    createCommentThread(sandboxId: $sandboxId, content: $content) {
-      id
-      initialComment {
-        ...Comment
-      }
-      comments {
-        ...Comment
-      }
-      isResolved
-      insertedAt
-      updatedAt
+  mutation CreateCommentThread($codeReference: CodeReference!, $sandboxId: ID!, $content: String!) {
+    createCommentThread(sandboxId: $sandboxId, content: $content, codeReference: $codeReference) {
+      ...CommentThread
     }
-    ${commentFragment}
+    ${commentThreadFragment}
   }
 `;
 
