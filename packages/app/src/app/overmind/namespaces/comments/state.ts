@@ -21,11 +21,13 @@ type State = {
       }>;
     }
   >;
+  creatingCommentThreadId: string | null;
 };
 
 export const state: State = {
   commentThreads: {},
   currentCommentThreadId: null,
+  creatingCommentThreadId: null,
   fileComments: ({ currentCommentThreads }) =>
     currentCommentThreads.reduce<{
       [path: string]: Array<{

@@ -24,12 +24,18 @@ import { useScrollTop } from './use-scroll-top';
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
-export const Dialog = props => {
+type DialogProps = {
+  x?: number;
+  y?: number;
+};
+
+export const Dialog: React.FC<DialogProps> = props => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
-
-  const [edit, setEdit] = useState(false);
   const thread = state.comments.currentCommentThread;
+  const [edit, setEdit] = useState(
+    state.comments.creatingCommentThreadId === thread.id
+  );
   const [editValue, setEditValue] = useState(thread.initialComment.content);
   const [position, setPosition] = useState({
     x: props.x || 200,

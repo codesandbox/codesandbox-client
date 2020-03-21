@@ -127,9 +127,67 @@ export const selectCommentThread: Action<string> = ({ state }, id) => {
   state.comments.currentCommentThreadId = id;
 };
 
+export const createCommentThread: Action = ({ state }) => {
+  if (!state.user || !state.editor.currentSandbox) {
+    return;
+  }
+
+  const id = state.user.username;
+  const sandboxId = state.editor.currentSandbox.id;
+  const now = new Date().toString();
+  const comment: CommentFragment = {
+    id,
+    insertedAt: now,
+    updatedAt: now,
+    content: '',
+    user: {
+      id: state.user.id,
+      name: state.user.name,
+      username: state.user.username,
+      avatarUrl: state.user.avatarUrl,
+    },
+  };
+  let codeReference: CodeReference = null;
+  const selection = state.live.currentSelection;
+  if (selection) {
+    codeReference = {
+      anchor: selection.primary.selection[0],
+      head: selection.primary.selection[1],
+      code: state.editor.currentModule.code.substr(
+        selection.primary.selection[0],
+        selection.primary.selection[1] - selection.primary.selection[0]
+      ),
+      path: state.editor.currentModule.path,
+    };
+  }
+
+  const optimisticCommentThread: CommentThreadFragment = {
+    id,
+    insertedAt: now,
+    updatedAt: now,
+    reference: codeReference
+      ? {
+          id: '__OPTIMISTIC__',
+          type: 'code',
+          metadata: codeReference,
+          resource: state.editor.currentModule.path,
+        }
+      : null,
+    isResolved: false,
+    initialComment: comment,
+    comments: [],
+  };
+  const commentThreads = state.comments.commentThreads;
+
+  commentThreads[sandboxId][id] = optimisticCommentThread;
+  state.comments.creatingCommentThreadId = id;
+  state.comments.currentCommentThreadId = id;
+};
+
 export const addCommentThread: AsyncAction<{
   content: string;
   open?: boolean;
+  edit?: boolean;
 }> = async ({ state, effects, actions }, { content, open }) => {
   if (!state.user || !state.editor.currentSandbox) {
     return;
