@@ -17,6 +17,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 
+import { OPTIMISTIC_COMMENT_THREAD_ID } from 'app/overmind/namespaces/comments/state';
 import { Markdown } from './Markdown';
 import { Reply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
@@ -33,9 +34,8 @@ export const Dialog: React.FC<DialogProps> = props => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
   const thread = state.comments.currentCommentThread;
-  const [edit, setEdit] = useState(
-    state.comments.creatingCommentThreadId === thread.id
-  );
+  const isOptimisticThread = thread.id === OPTIMISTIC_COMMENT_THREAD_ID;
+  const [edit, setEdit] = useState(isOptimisticThread);
   const [editValue, setEditValue] = useState(thread.initialComment.content);
   const [position, setPosition] = useState({
     x: props.x || 200,
@@ -111,6 +111,7 @@ export const Dialog: React.FC<DialogProps> = props => {
                   isResolved: !thread.isResolved,
                 })
               }
+              disabled={isOptimisticThread}
               name="check"
               size={14}
               title="Resolve Comment"
@@ -156,32 +157,33 @@ export const Dialog: React.FC<DialogProps> = props => {
                     </Text>
                   </Stack>
                 </Stack>
-                {state.user.id === thread.initialComment.user.id && (
-                  <Stack align="center">
-                    <Menu>
-                      <Menu.IconButton
-                        name="more"
-                        title="Comment actions"
-                        size={12}
-                      />
-                      <Menu.List>
-                        <Menu.Item
-                          onSelect={() =>
-                            actions.comments.deleteComment({
-                              threadId: thread.id,
-                              commentId: thread.initialComment.id,
-                            })
-                          }
-                        >
-                          Delete
-                        </Menu.Item>
-                        <Menu.Item onSelect={() => setEdit(true)}>
-                          Edit Comment
-                        </Menu.Item>
-                      </Menu.List>
-                    </Menu>
-                  </Stack>
-                )}
+                {state.user.id === thread.initialComment.user.id &&
+                  !isOptimisticThread && (
+                    <Stack align="center">
+                      <Menu>
+                        <Menu.IconButton
+                          name="more"
+                          title="Comment actions"
+                          size={12}
+                        />
+                        <Menu.List>
+                          <Menu.Item
+                            onSelect={() =>
+                              actions.comments.deleteComment({
+                                threadId: thread.id,
+                                commentId: thread.initialComment.id,
+                              })
+                            }
+                          >
+                            Delete
+                          </Menu.Item>
+                          <Menu.Item onSelect={() => setEdit(true)}>
+                            Edit Comment
+                          </Menu.Item>
+                        </Menu.List>
+                      </Menu>
+                    </Stack>
+                  )}
               </Stack>
               <Element
                 as={edit ? 'div' : 'p'}
@@ -211,7 +213,16 @@ export const Dialog: React.FC<DialogProps> = props => {
                         gridGap: 2,
                       })}
                     >
-                      <Button variant="link" onClick={() => setEdit(false)}>
+                      <Button
+                        variant="link"
+                        onClick={() => {
+                          if (isOptimisticThread) {
+                            closeDialog();
+                          } else {
+                            setEdit(false);
+                          }
+                        }}
+                      >
                         Cancel
                       </Button>
 
@@ -243,22 +254,24 @@ export const Dialog: React.FC<DialogProps> = props => {
           </Stack>
         )}
 
-        <Textarea
-          autosize
-          css={css({
-            overflow: 'hidden',
-            border: 'none',
-            display: 'block',
-            borderTop: '1px solid',
-            borderColor: 'sideBar.border',
-          })}
-          value={value}
-          onChange={e => setValue(e.target.value)}
-          placeholder={thread ? 'Reply' : 'Write a comment...'}
-          onKeyDown={event => {
-            if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
-          }}
-        />
+        {isOptimisticThread ? null : (
+          <Textarea
+            autosize
+            css={css({
+              overflow: 'hidden',
+              border: 'none',
+              display: 'block',
+              borderTop: '1px solid',
+              borderColor: 'sideBar.border',
+            })}
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            placeholder={thread ? 'Reply' : 'Write a comment...'}
+            onKeyDown={event => {
+              if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
+            }}
+          />
+        )}
       </Stack>
     </Draggable>
   );

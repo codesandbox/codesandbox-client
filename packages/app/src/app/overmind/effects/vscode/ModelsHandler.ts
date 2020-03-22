@@ -136,6 +136,26 @@ export class ModelsHandler {
     },
     currentCommentThreadId: string
   ) {
+    // When deleting the last reference of a file, there is no file and
+    // no path to iterate through. We need to check existing module models
+    // to clean out the decorations
+    Object.keys(this.moduleModels).forEach(async path => {
+      const moduleModel = this.moduleModels[path];
+      if (
+        moduleModel.comments.length &&
+        !commentThreadsByPath[path.replace('/sandbox', '')]
+      ) {
+        const model = await moduleModel.model;
+
+        if (!model) {
+          return;
+        }
+
+        moduleModel.comments = model.deltaDecorations(moduleModel.comments, []);
+      }
+    });
+
+    // Go through paths and add glyphs
     Object.keys(commentThreadsByPath).forEach(async path => {
       const moduleModel = this.getModuleModelByPath(path);
       const model = await moduleModel.model;
@@ -151,6 +171,7 @@ export class ModelsHandler {
         model,
         currentCommentThreadId
       );
+
       moduleModel.comments = model.deltaDecorations(
         existingDecorationComments,
         newDecorationComments

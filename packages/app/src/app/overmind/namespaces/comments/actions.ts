@@ -5,6 +5,7 @@ import {
   CommentThreadFragment,
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
+import { OPTIMISTIC_COMMENT_THREAD_ID } from './state';
 
 export const selectCommentsFilter: Action<CommentsFilterOption> = (
   { state },
@@ -70,8 +71,18 @@ export const updateComment: AsyncAction<{
   content: string;
   threadId: string;
   reply?: boolean;
-}> = async ({ effects, state }, { commentId, content, threadId, reply }) => {
+}> = async (
+  { actions, effects, state },
+  { commentId, content, threadId, reply }
+) => {
   if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  if (threadId === OPTIMISTIC_COMMENT_THREAD_ID) {
+    await actions.comments.addCommentThread({
+      content,
+    });
     return;
   }
   const id = threadId;
@@ -124,6 +135,12 @@ export const getComments: AsyncAction<{
 };
 
 export const selectCommentThread: Action<string> = ({ state }, id) => {
+  if (state.comments.currentCommentThreadId === OPTIMISTIC_COMMENT_THREAD_ID) {
+    delete state.comments.commentThreads[state.editor.currentSandbox.id][
+      OPTIMISTIC_COMMENT_THREAD_ID
+    ];
+  }
+
   state.comments.currentCommentThreadId = id;
 };
 
@@ -132,7 +149,7 @@ export const createCommentThread: Action = ({ state }) => {
     return;
   }
 
-  const id = state.user.username;
+  const id = OPTIMISTIC_COMMENT_THREAD_ID;
   const sandboxId = state.editor.currentSandbox.id;
   const now = new Date().toString();
   const comment: CommentFragment = {
@@ -180,14 +197,12 @@ export const createCommentThread: Action = ({ state }) => {
   const commentThreads = state.comments.commentThreads;
 
   commentThreads[sandboxId][id] = optimisticCommentThread;
-  state.comments.creatingCommentThreadId = id;
   state.comments.currentCommentThreadId = id;
 };
 
 export const addCommentThread: AsyncAction<{
   content: string;
   open?: boolean;
-  edit?: boolean;
 }> = async ({ state, effects, actions }, { content, open }) => {
   if (!state.user || !state.editor.currentSandbox) {
     return;
@@ -253,8 +268,18 @@ export const addCommentThread: AsyncAction<{
 
     delete commentThreads[sandboxId][id];
     commentThreads[sandboxId][commentThread.id] = commentThread;
+
     if (open) {
       actions.comments.getComments({ id: commentThread.id, sandboxId });
+    }
+
+    if (
+      state.comments.currentCommentThreadId === OPTIMISTIC_COMMENT_THREAD_ID
+    ) {
+      state.comments.currentCommentThreadId = commentThread.id;
+      delete state.comments.commentThreads[sandboxId][
+        OPTIMISTIC_COMMENT_THREAD_ID
+      ];
     }
   } catch (error) {
     effects.notificationToast.error(

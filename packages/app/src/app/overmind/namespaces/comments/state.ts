@@ -2,6 +2,8 @@ import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import { CommentThreadFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
 
+export const OPTIMISTIC_COMMENT_THREAD_ID = '__OPTIMISTIC_COMMENT_THREAD_ID';
+
 type State = {
   commentThreads: {
     [sandboxId: string]: {
@@ -21,13 +23,11 @@ type State = {
       }>;
     }
   >;
-  creatingCommentThreadId: string | null;
 };
 
 export const state: State = {
   commentThreads: {},
   currentCommentThreadId: null,
-  creatingCommentThreadId: null,
   fileComments: ({ currentCommentThreads }) =>
     currentCommentThreads.reduce<{
       [path: string]: Array<{
@@ -93,21 +93,33 @@ export const state: State = {
 
     switch (selectedCommentsFilter) {
       case CommentsFilterOption.ALL:
-        return Object.values(commentThreads[currentSandbox.id]).sort(
-          sortByInsertedAt
-        );
+        return Object.values(commentThreads[currentSandbox.id])
+          .filter(
+            commentThread => commentThread.id !== OPTIMISTIC_COMMENT_THREAD_ID
+          )
+          .sort(sortByInsertedAt);
       case CommentsFilterOption.RESOLVED:
         return Object.values(commentThreads[currentSandbox.id])
-          .filter(comment => comment.isResolved)
+          .filter(
+            commentThread =>
+              commentThread.id !== OPTIMISTIC_COMMENT_THREAD_ID &&
+              commentThread.isResolved
+          )
           .sort(sortByInsertedAt);
       case CommentsFilterOption.OPEN:
         return Object.values(commentThreads[currentSandbox.id])
-          .filter(comment => !comment.isResolved)
+          .filter(
+            commentThread =>
+              commentThread.id !== OPTIMISTIC_COMMENT_THREAD_ID &&
+              !commentThread.isResolved
+          )
           .sort(sortByInsertedAt);
       case CommentsFilterOption.MENTIONS:
-        return Object.values(commentThreads[currentSandbox.id]).sort(
-          sortByInsertedAt
-        );
+        return Object.values(commentThreads[currentSandbox.id])
+          .filter(
+            commentThread => commentThread.id !== OPTIMISTIC_COMMENT_THREAD_ID
+          )
+          .sort(sortByInsertedAt);
       default:
         return [];
     }
