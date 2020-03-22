@@ -59,7 +59,12 @@ export type VsCodeOptions = {
   onOperationApplied: (data: OnOperationAppliedData) => void;
   onSelectionChanged: (selection: onSelectionChangeData) => void;
   onViewRangeChanged: (viewRange: UserViewRange) => void;
-  onCommentClick: (commentId: string) => void;
+  onCommentClick: (payload: {
+    commentThreadIds: string[];
+    x: number;
+    y: number;
+  }) => void;
+  onMultiCommentClick: (commentThreadIds: string[]) => any;
   reaction: Reaction;
   // These two should be removed
   getSignal: any;
@@ -1171,12 +1176,17 @@ export class VSCodeEffect {
           We grab the id of the commenthread by getting the last classname.
           The last part of the classname is the id.
         */
-        const commentThreadId = Array.from(target.classList)
+        const commentThreadIds = Array.from(target.classList)
           .pop()
-          .split('comment-id-')
-          .pop();
+          .split('comment-ids-')
+          .pop()
+          .split('_');
 
-        this.options.onCommentClick(commentThreadId);
+        this.options.onCommentClick({
+          commentThreadIds,
+          x: target.getBoundingClientRect().left,
+          y: target.getBoundingClientRect().top,
+        });
       }
     });
   }

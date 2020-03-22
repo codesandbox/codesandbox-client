@@ -22,6 +22,7 @@ export const CommentThreads: React.FC = () => {
         selectedCommentsFilter,
         currentCommentThreads,
         currentCommentThreadId,
+        multiCommentsSelector,
       },
     },
     actions: { comments: commentsActions },
@@ -122,6 +123,26 @@ export const CommentThreads: React.FC = () => {
       {currentCommentThreads.length ? null : <Empty />}
       <AddCommentThread />
       {currentCommentThreadId && <CommentDialog />}
+      {multiCommentsSelector && (
+        <ul
+          style={{
+            position: 'fixed',
+            left: multiCommentsSelector.x,
+            top: multiCommentsSelector.y,
+            backgroundColor: 'red',
+            zIndex: 999999999999999,
+          }}
+        >
+          {multiCommentsSelector.ids.map(id => (
+            <li
+              key={id}
+              onClick={() => commentsActions.selectCommentThread(id)}
+            >
+              {id}
+            </li>
+          ))}
+        </ul>
+      )}
     </Stack>
   );
 };

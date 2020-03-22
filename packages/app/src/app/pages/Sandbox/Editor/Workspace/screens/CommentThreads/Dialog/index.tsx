@@ -12,12 +12,12 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { OPTIMISTIC_COMMENT_THREAD_ID } from 'app/overmind/namespaces/comments/state';
 import { formatDistance } from 'date-fns';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 
-import { OPTIMISTIC_COMMENT_THREAD_ID } from 'app/overmind/namespaces/comments/state';
 import { Markdown } from './Markdown';
 import { Reply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
@@ -202,6 +202,7 @@ export const Dialog: React.FC<DialogProps> = props => {
                     <Element marginBottom={2}>
                       <Textarea
                         autosize
+                        autoFocus
                         value={editValue}
                         onChange={e => setEditValue(e.target.value)}
                       />

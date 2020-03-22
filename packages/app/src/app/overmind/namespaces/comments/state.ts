@@ -23,9 +23,15 @@ type State = {
       }>;
     }
   >;
+  multiCommentsSelector: {
+    ids: string[];
+    x: number;
+    y: number;
+  } | null;
 };
 
 export const state: State = {
+  multiCommentsSelector: null,
   commentThreads: {},
   currentCommentThreadId: null,
   fileComments: ({ currentCommentThreads }) =>

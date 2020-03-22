@@ -5,6 +5,7 @@ import {
   CommentThreadFragment,
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
+
 import { OPTIMISTIC_COMMENT_THREAD_ID } from './state';
 
 export const selectCommentsFilter: Action<CommentsFilterOption> = (
@@ -134,6 +135,22 @@ export const getComments: AsyncAction<{
   }
 };
 
+export const onCommentClick: Action<{
+  commentThreadIds: string[];
+  x: number;
+  y: number;
+}> = ({ state, actions }, { commentThreadIds, x, y }) => {
+  if (commentThreadIds.length === 1) {
+    actions.comments.selectCommentThread(commentThreadIds[0]);
+  } else {
+    state.comments.multiCommentsSelector = {
+      ids: commentThreadIds,
+      x,
+      y,
+    };
+  }
+};
+
 export const selectCommentThread: Action<string> = ({ state }, id) => {
   if (state.comments.currentCommentThreadId === OPTIMISTIC_COMMENT_THREAD_ID) {
     delete state.comments.commentThreads[state.editor.currentSandbox.id][
@@ -142,6 +159,7 @@ export const selectCommentThread: Action<string> = ({ state }, id) => {
   }
 
   state.comments.currentCommentThreadId = id;
+  state.comments.multiCommentsSelector = null;
 };
 
 export const createCommentThread: Action = ({ state }) => {

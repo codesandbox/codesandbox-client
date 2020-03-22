@@ -136,35 +136,16 @@ export class ModelsHandler {
     },
     currentCommentThreadId: string
   ) {
-    // When deleting the last reference of a file, there is no file and
-    // no path to iterate through. We need to check existing module models
-    // to clean out the decorations
     Object.keys(this.moduleModels).forEach(async path => {
       const moduleModel = this.moduleModels[path];
-      if (
-        moduleModel.comments.length &&
-        !commentThreadsByPath[path.replace('/sandbox', '')]
-      ) {
-        const model = await moduleModel.model;
-
-        if (!model) {
-          return;
-        }
-
-        moduleModel.comments = model.deltaDecorations(moduleModel.comments, []);
-      }
-    });
-
-    // Go through paths and add glyphs
-    Object.keys(commentThreadsByPath).forEach(async path => {
-      const moduleModel = this.getModuleModelByPath(path);
+      const relativePath = path.replace('/sandbox', '');
       const model = await moduleModel.model;
 
       if (!model) {
         return;
       }
-      const commentThreads = commentThreadsByPath[path];
 
+      const commentThreads = commentThreadsByPath[relativePath] || [];
       const existingDecorationComments = moduleModel.comments;
       const newDecorationComments = this.createCommentDecorations(
         commentThreads,
@@ -678,29 +659,55 @@ export class ModelsHandler {
     model: any,
     currentCommentThreadId: string | null
   ) {
-    return commentThreadDecorations.map(commentThreadDecoration => {
-      const isActive =
-        commentThreadDecoration.commentThreadId === currentCommentThreadId;
-
-      const lineAndColumn = indexToLineAndColumn(
+    const commentThreadDecorationsByLineNumber = commentThreadDecorations.reduce<{
+      [lineNumber: string]: Array<{
+        commentThreadId: string;
+        range: [number, number];
+      }>;
+    }>((aggr, commentThreadDecoration) => {
+      const { lineNumber } = indexToLineAndColumn(
         model.getLinesContent() || [],
         commentThreadDecoration.range[0]
       );
-      return {
-        range: new this.monaco.Range(
-          lineAndColumn.lineNumber,
-          1,
-          lineAndColumn.lineNumber,
-          1
-        ),
-        options: {
-          isWholeLine: true,
-          // comment-id- class needs to be the LAST class!
-          glyphMarginClassName: `editor-comments-glyph ${
-            isActive ? 'active-comment ' : ''
-          }comment-id-${commentThreadDecoration.commentThreadId}`,
-        },
-      };
-    });
+
+      if (!aggr[lineNumber]) {
+        aggr[lineNumber] = [];
+      }
+
+      aggr[lineNumber].push(commentThreadDecoration);
+
+      return aggr;
+    }, {});
+
+    return Object.keys(commentThreadDecorationsByLineNumber).reduce(
+      (aggr, lineNumberKey) => {
+        const lineCommentThreadDecorations =
+          commentThreadDecorationsByLineNumber[lineNumberKey];
+        const lineNumber = Number(lineNumberKey);
+        const isActive = Boolean(
+          lineCommentThreadDecorations.find(
+            commentThreadDecoration =>
+              commentThreadDecoration.commentThreadId === currentCommentThreadId
+          )
+        );
+        const ids = lineCommentThreadDecorations.map(
+          commentThreadDecoration => commentThreadDecoration.commentThreadId
+        );
+
+        return aggr.concat({
+          range: new this.monaco.Range(lineNumber, 1, lineNumber, 1),
+          options: {
+            isWholeLine: true,
+            // comment-id- class needs to be the LAST class!
+            glyphMarginClassName: `editor-comments-glyph ${
+              isActive ? 'active-comment ' : ''
+            }${ids.length > 1 ? 'multi-comment ' : ''}comment-ids-${ids.join(
+              '_'
+            )}`,
+          },
+        });
+      },
+      []
+    );
   }
 }
