@@ -374,6 +374,21 @@ export const onFollow: Action<{
   actions.live.revealViewRange({ liveUserId });
 };
 
+export const onUserLeft: Action<{
+  liveUserId: string;
+}> = ({ state, actions }, { liveUserId }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  if (state.live.followingUserId && state.live.followingUserId === liveUserId) {
+    // Unfollow user if they are the one who left
+    actions.live.onStopFollow();
+  }
+
+  actions.live.internal.clearUserSelections(liveUserId);
+};
+
 export const onStopFollow: Action = ({ state, effects, actions }) => {
   if (!state.live.roomInfo) {
     return;

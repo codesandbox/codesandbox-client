@@ -17,7 +17,7 @@ import { logError } from '@codesandbox/common/lib/utils/analytics';
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
   live_user_id: string;
-}>> = mutate(({ effects, state }, { data }) => {
+}>> = mutate(({ effects, actions, state }, { data }) => {
   state.live.liveUserId = data.live_user_id;
 
   // Show message to confirm that you've joined a live session if you're not the owner
@@ -26,9 +26,15 @@ export const onJoin: Operator<LiveMessage<{
   }
 
   if (state.live.reconnecting) {
+    // We reconnected!
     effects.live.getAllClients().forEach(client => {
       client.serverReconnect();
     });
+
+    if (state.live.roomInfo) {
+      // Clear all user selections
+      actions.live.internal.clearUserSelections(null);
+    }
   }
 
   state.live.reconnecting = false;
@@ -129,11 +135,6 @@ export const onUserLeft: Operator<LiveMessage<{
     return;
   }
 
-  if (state.live.followingUserId === data.left_user_id) {
-    // Unfollow user if they are the one who left
-    actions.live.onStopFollow();
-  }
-
   if (!state.live.notificationsHidden) {
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
@@ -150,7 +151,7 @@ export const onUserLeft: Operator<LiveMessage<{
     }
   }
 
-  actions.live.internal.clearUserSelections(data.left_user_id);
+  actions.live.onUserLeft({ liveUserId: data.left_user_id });
 
   const users = camelizeKeys(data.users) as LiveUser[];
 
