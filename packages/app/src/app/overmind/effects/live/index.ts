@@ -104,6 +104,7 @@ class Live {
     if (!this.awaitSend) {
       return Promise.resolve();
     }
+    clearTimeout(this.awaitSendTimer);
     const awaitSend = this.awaitSend;
     this.awaitSend = null;
     awaitSend.resolve();
@@ -335,7 +336,7 @@ class Live {
     */
     if (this.isLiveBlockerExperiement() && this.awaitSend) {
       this.resolveAwaitSend();
-      this.awaitSynchronizedModule(module.shortid);
+      await this.awaitSynchronizedModule(module.shortid);
       this.setAwaitSend();
     }
     // Send the save message
