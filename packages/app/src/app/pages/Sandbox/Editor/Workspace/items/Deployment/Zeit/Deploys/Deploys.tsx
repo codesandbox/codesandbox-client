@@ -1,6 +1,5 @@
-import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import React, { FunctionComponent } from 'react';
-
 import { useOvermind } from 'app/overmind';
 
 import {
@@ -37,9 +36,8 @@ export const Deploys: FunctionComponent = () => {
               <Name>
                 {deploy.name}
 
-                <span>{`(${distanceInWordsToNow(deploy.created)} ago)`}</span>
+                <span>{`(${formatDistanceToNow(deploy.created)} ago)`}</span>
               </Name>
-
               <State state={deploy.state}>
                 {deploy.state.toString().toLowerCase()}
               </State>
