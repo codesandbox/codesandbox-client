@@ -91,12 +91,16 @@ export const Overlay: React.FC<IOverlayProps> = ({
       }
     };
 
-    document.addEventListener('keypress', handleEscape);
+    if (openState) {
+      document.addEventListener('keydown', handleEscape);
+    } else {
+      document.removeEventListener('keydown', handleEscape);
+    }
 
     return () => {
-      document.removeEventListener('keypress', handleEscape);
+      document.removeEventListener('keydown', handleEscape);
     };
-  }, [handleClose]);
+  }, [handleClose, openState]);
 
   const handleOpen = () => {
     if (event) {
