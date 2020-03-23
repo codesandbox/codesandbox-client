@@ -1,10 +1,11 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { FunctionComponent } from 'react';
 
 import AvatarBlock from '../AvatarBlock';
 
-import { Container, Description, Stats, Title } from './elements';
+import { Container, Description, Stats, Title, Button } from './elements';
 
 type Props = {
   sandbox: Sandbox;
@@ -23,6 +24,13 @@ export const SandboxInfo: FunctionComponent<Props> = ({ sandbox }) => {
         />
       )}
       <Stats {...sandbox} />
+      <Button
+        href={sandboxUrl(sandbox) + '?from-embed'}
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        Edit Sandbox
+      </Button>
     </Container>
   );
 };

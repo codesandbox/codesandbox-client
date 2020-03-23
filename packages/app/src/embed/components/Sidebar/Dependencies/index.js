@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatVersion } from '@codesandbox/common/lib/utils/ci';
-import { Container, Row } from './elements';
+import { Container, Row, Link } from './elements';
 
 function Dependencies({ sandbox }) {
   let { npmDependencies } = sandbox;
@@ -23,7 +23,13 @@ function Dependencies({ sandbox }) {
     <Container>
       {Object.keys(npmDependencies).map(dep => (
         <Row key={dep}>
-          <span>{dep}</span>
+          <Link
+            href={`https://npmjs.com/package/${dep}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {dep}
+          </Link>
           <span>{formatVersion(npmDependencies[dep])}</span>
         </Row>
       ))}

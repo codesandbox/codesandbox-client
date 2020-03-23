@@ -1,24 +1,28 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import {
+  Icon,
   List,
   Menu,
+  SidebarRow,
   Stack,
   Text,
-  SidebarRow,
-  Icon,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-import { AddComment } from './AddComment';
-import { Comment } from './Comment';
+import { AddCommentThread } from './AddCommentThread';
+import { CommentThread } from './CommentThread';
 import { CommentDialog } from './Dialog';
 
-export const Comments: React.FC = () => {
+export const CommentThreads: React.FC = () => {
   const {
     state: {
-      editor: { selectedCommentsFilter, currentComments, currentCommentId },
+      editor: {
+        selectedCommentsFilter,
+        currentCommentThreads,
+        currentCommentThreadId,
+      },
     },
     actions: { editor: editorActions },
   } = useOvermind();
@@ -35,10 +39,6 @@ export const Comments: React.FC = () => {
     }
   };
 
-  const all =
-    selectedCommentsFilter === CommentsFilterOption.OPEN ||
-    selectedCommentsFilter === CommentsFilterOption.ALL;
-
   const Empty = () => (
     <Stack
       direction="vertical"
@@ -53,15 +53,14 @@ export const Comments: React.FC = () => {
         color="mutedForeground"
         css={{ opacity: 0.2 }}
       />
-      <Text block align="center" variant="muted">
-        There are no {getSelectedFilter()} comments.{' '}
-        {all && (
-          <>
-            {/* Leave a comment by clicking anywhere within a file or */}
-            Write a global comment below.
-          </>
-        )}
-      </Text>
+      <div>
+        <Text block align="center" variant="muted">
+          There are no {getSelectedFilter()} comments.
+        </Text>
+        <Text block align="center" variant="muted">
+          Comment on code by clicking within a file, or add a comment below.
+        </Text>
+      </div>
     </Stack>
   );
 
@@ -102,7 +101,7 @@ export const Comments: React.FC = () => {
           </Menu>
         </SidebarRow>
 
-        {currentComments.length ? (
+        {currentCommentThreads.length ? (
           <List
             marginTop={4}
             css={{
@@ -111,15 +110,18 @@ export const Comments: React.FC = () => {
               overflow: 'auto',
             }}
           >
-            {currentComments.map(comment => (
-              <Comment key={comment.id} comment={comment} />
+            {currentCommentThreads.map(commentThread => (
+              <CommentThread
+                key={commentThread.id}
+                commentThread={commentThread}
+              />
             ))}
           </List>
         ) : null}
       </div>
-      {currentComments.length ? null : <Empty />}
-      <AddComment />
-      {currentCommentId && <CommentDialog />}
+      {currentCommentThreads.length ? null : <Empty />}
+      <AddCommentThread />
+      {currentCommentThreadId && <CommentDialog />}
     </Stack>
   );
 };

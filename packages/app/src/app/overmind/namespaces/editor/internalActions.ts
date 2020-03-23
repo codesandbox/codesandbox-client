@@ -64,7 +64,16 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
       return;
     }
 
-    await actions.live.internal.disconnect();
+    if (
+      // If the joinSource is /live/ and the user is only a viewer,
+      // we won't get the roomId and the user will disconnect automatically,
+      // we want to prevent this by only re-initializing the live session on joinSource === 'sandbox'. Because
+      // for joinSource === 'sandbox' we know for sure that the user will get a roomId if they have permissions
+      // to join
+      state.live.joinSource === 'sandbox'
+    ) {
+      await actions.live.internal.disconnect();
+    }
   }
 
   if (sandbox.roomId) {

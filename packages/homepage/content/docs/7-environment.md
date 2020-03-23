@@ -56,9 +56,9 @@ itself.
 
 Unlike Client Sandboxes, Containers also expose access to the Terminal, which
 allows you to run most commands you'd normally expect to be able to run in the
-command line. However, you don't have root access. Also, keep in mind that running certain commands which alter
-the filesystem of the container instance will cause the files shown in the
-Editor to become out of sync, such as manually running `yarn add` or running
-`git` commands. We don't sync files and directories that are ignored via
-`.gitignore`, and there is a sync limit of 10 files per second and a maximum
-file size of 2mb.
+command line. However, you don't have root access. Also, keep in mind that
+running certain commands which alter the filesystem of the container instance
+will cause the files shown in the Editor to become out of sync, such as manually
+running `yarn add` or running `git` commands. We don't sync files and
+directories that are ignored via `.gitignore`, and there is a sync limit of 10
+files per second and a maximum file size of 2mb.

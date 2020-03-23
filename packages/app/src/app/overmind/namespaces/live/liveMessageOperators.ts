@@ -129,6 +129,11 @@ export const onUserLeft: Operator<LiveMessage<{
     return;
   }
 
+  if (state.live.followingUserId === data.left_user_id) {
+    // Unfollow user if they are the one who left
+    actions.live.onStopFollow();
+  }
+
   if (!state.live.notificationsHidden) {
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
@@ -535,14 +540,15 @@ export const onLiveAddEditor: Operator<LiveMessage<{
 
 export const onLiveRemoveEditor: Operator<LiveMessage<{
   editor_user_id: string;
-}>> = mutate(({ state }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
   if (!state.live.roomInfo) {
     return;
   }
 
-  if (!_isOwnMessage) {
-    const userId = data.editor_user_id;
+  const userId = data.editor_user_id;
+  actions.live.internal.clearUserSelections(userId);
 
+  if (!_isOwnMessage) {
     const editors = state.live.roomInfo.editorIds;
     const newEditors = editors.filter(id => id !== userId);
 

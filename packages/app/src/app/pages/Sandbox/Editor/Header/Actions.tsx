@@ -143,7 +143,10 @@ export const Actions = () => {
           {author ? (
             <Collaborators
               renderButton={props => (
-                <Button variant="primary" {...props}>
+                <Button
+                  variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
+                  {...props}
+                >
                   <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Share
                 </Button>
               )}
