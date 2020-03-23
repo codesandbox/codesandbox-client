@@ -10,6 +10,7 @@ interface ITextareaProps
   maxLength?: number;
   autosize?: boolean;
   value?: string;
+  defaultValue?: string;
 }
 
 export const TextareaComponent: any = styled(Input).attrs({
@@ -45,7 +46,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
   autosize,
   ...props
 }) => {
-  const [innerValue, setInnerValue] = React.useState(defaultValue);
+  const [innerValue, setInnerValue] = React.useState<string>(defaultValue);
 
   /**
    * To support both contolled and uncontrolled components
