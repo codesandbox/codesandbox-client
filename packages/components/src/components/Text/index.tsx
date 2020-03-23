@@ -29,9 +29,9 @@ export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
       fontSize: size || 'inherit', // from theme.fontSizes
       textAlign: align || 'left',
       fontWeight: weight || null, // from theme.fontWeights
-      display: block ? 'block' : 'inline',
       color: variants[variant],
       maxWidth,
       ...(maxWidth ? overflowStyles : {}),
+      display: block || maxWidth ? 'block' : 'inline',
     })
 );
