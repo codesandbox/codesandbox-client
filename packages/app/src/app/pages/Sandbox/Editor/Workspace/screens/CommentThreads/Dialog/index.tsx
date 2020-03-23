@@ -25,17 +25,13 @@ import { useScrollTop } from './use-scroll-top';
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
-export const Dialog = props => {
+export const Dialog = ({ triggerRef }) => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
 
   const [edit, setEdit] = useState(false);
   const thread = state.editor.currentCommentThread;
   const [editValue, setEditValue] = useState(thread.initialComment.content);
-  const [position, setPosition] = useState({
-    x: props.x || 200,
-    y: props.y || 40,
-  });
 
   const closeDialog = () => actions.editor.selectCommentThread(null);
   const onSubmit = () => {
@@ -50,33 +46,44 @@ export const Dialog = props => {
     }
   };
 
-  const [dragging, setDragging] = React.useState(false);
+  const [position, setPosition] = useState({ x: 400, y: 40 });
+  const OVERLAP_WITH_SIDEBAR = 20;
+  const OFFSET_FROM_SIDEBAR_COMMENT = 90;
 
-  const onDragStart = () => {
-    setDragging(true);
-  };
+  const [animateFrom, setAnimateFrom] = React.useState({ x: 0, y: 0 });
+
+  React.useEffect(() => {
+    if (triggerRef.current) {
+      const { left, right, top } = triggerRef.current.getBoundingClientRect();
+      setAnimateFrom({ x: left, y: top });
+      setPosition({
+        x: right - OVERLAP_WITH_SIDEBAR,
+        y: top - OFFSET_FROM_SIDEBAR_COMMENT,
+      });
+    }
+  }, [triggerRef]);
 
   const onDragStop = (_, data) => {
     setPosition({
       x: data.x,
       y: data.y,
     });
-    setDragging(false);
   };
 
   const { ref: listRef, scrollTop } = useScrollTop();
 
+  // if trigger ref was passed but it's value hasn't
+  // been set yet, wait (return null) until it is set
+  if (triggerRef && !triggerRef.current) return null;
+
   return (
-    <Draggable
-      handle=".handle"
-      position={position}
-      onStart={onDragStart}
-      onStop={onDragStop}
-    >
+    <Draggable handle=".handle" position={position} onStop={onDragStop}>
       <motion.div
-        initial={{ x: position.x - 100, y: position.y + 40, scale: 0.5 }}
-        animate={{ x: position.x, y: position.y, scale: 1 }}
-        transition={{ duration: dragging ? 0 : 0.3 }}
+        initial={{ ...animateFrom, scale: 0.5 }}
+        animate={{ ...position, scale: 1 }}
+        drag
+        dragMomentum={false}
+        transition={{ duration: 0.25 }}
         style={{ position: 'absolute', zIndex: 2 }}
       >
         <Stack

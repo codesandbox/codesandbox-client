@@ -39,6 +39,8 @@ export const CommentThreads: React.FC = () => {
     }
   };
 
+  const selectedCommentRef = React.createRef();
+
   const Empty = () => (
     <Stack
       direction="vertical"
@@ -114,6 +116,11 @@ export const CommentThreads: React.FC = () => {
               <CommentThread
                 key={commentThread.id}
                 commentThread={commentThread}
+                innerRef={
+                  commentThread.id === currentCommentThreadId
+                    ? selectedCommentRef
+                    : null
+                }
               />
             ))}
           </List>
@@ -121,7 +128,9 @@ export const CommentThreads: React.FC = () => {
       </div>
       {currentCommentThreads.length ? null : <Empty />}
       <AddCommentThread />
-      {currentCommentThreadId && <CommentDialog />}
+      {currentCommentThreadId && (
+        <CommentDialog triggerRef={selectedCommentRef} />
+      )}
     </Stack>
   );
 };
