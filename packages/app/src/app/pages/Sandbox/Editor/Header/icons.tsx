@@ -64,7 +64,8 @@ export const EmbedIcon = props => (
     <path
       fillRule="evenodd"
       clipRule="evenodd"
-      d=“M9.6 10.4125V13.6937L16 8.0875L9.6 2.5V5.6875C3.38 6.49375 0.9 10.4875 0 14.5C2.22 11.6875 5.16 10.4125 9.6 10.4125V10.4125Z”      fill="currentColor"
+      d="M9.6 10.4125V13.6937L16 8.0875L9.6 2.5V5.6875C3.38 6.49375 0.9 10.4875 0 14.5C2.22 11.6875 5.16 10.4125 9.6 10.4125V10.4125Z"
+      fill="currentColor"
     />
   </svg>
 );
