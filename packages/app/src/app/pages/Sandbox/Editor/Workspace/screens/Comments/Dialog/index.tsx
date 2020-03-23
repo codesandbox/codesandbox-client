@@ -35,8 +35,8 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
   const comment = state.comments.currentComment;
-  const isOptimisticThread = comment.id === OPTIMISTIC_COMMENT_ID;
-  const [edit, setEdit] = useState(isOptimisticThread);
+  const isOptimistic = comment.id === OPTIMISTIC_COMMENT_ID;
+  const [edit, setEdit] = useState(isOptimistic);
   const [editValue, setEditValue] = useState(comment.content);
 
   const closeDialog = () => actions.comments.selectComment(null);
@@ -124,7 +124,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                   isResolved: !comment.isResolved,
                 })
               }
-              disabled={isOptimisticThread}
+              disabled={isOptimistic}
               name="check"
               size={14}
               title="Resolve Comment"
@@ -174,7 +174,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                     </Text>
                   </Stack>
                 </Stack>
-                {state.user.id === comment.user.id && !isOptimisticThread && (
+                {state.user.id === comment.user.id && !isOptimistic && (
                   <Stack align="center">
                     <Menu>
                       <Menu.IconButton
@@ -232,7 +232,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                       <Button
                         variant="link"
                         onClick={() => {
-                          if (isOptimisticThread) {
+                          if (isOptimistic) {
                             closeDialog();
                           } else {
                             setEdit(false);
@@ -261,15 +261,14 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
               </Element>
             </Stack>
             <>
-              {comment.comments.map((reply, i) => {
-                if (i === 0) return null;
-                return <Reply reply={reply} threadId={comment.id} />;
-              })}
+              {comment.comments.map(reply =>
+                reply ? <Reply reply={reply} key={reply.id} /> : 'Loading...'
+              )}
             </>
           </Stack>
         )}
 
-        {isOptimisticThread ? null : (
+        {isOptimistic ? null : (
           <Textarea
             autosize
             css={css({

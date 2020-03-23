@@ -17,12 +17,10 @@ import React, { useState } from 'react';
 import { Markdown } from './Markdown';
 
 type ReplyProps = {
-  threadId: string;
   reply: CommentFragment;
 };
 
 export const Reply = ({
-  threadId,
   reply: { user, insertedAt, id, content },
 }: ReplyProps) => {
   const { state, actions } = useOvermind();
@@ -58,9 +56,7 @@ export const Reply = ({
                   <Menu.Item
                     onSelect={() =>
                       actions.comments.deleteComment({
-                        threadId,
                         commentId: id,
-                        reply: true,
                       })
                     }
                   >
@@ -112,10 +108,8 @@ export const Reply = ({
                 disabled={!value}
                 onClick={async () => {
                   await actions.comments.updateComment({
-                    threadId,
                     commentId: id,
                     content: value,
-                    reply: true,
                   });
                   setEdit(false);
                 }}

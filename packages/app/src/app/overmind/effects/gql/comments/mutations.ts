@@ -60,11 +60,17 @@ export const updateComment: Query<
   UpdateCommentMutation,
   UpdateCommentMutationVariables
 > = gql`
-  mutation UpdateComment($commentId: ID!, $sandboxId: ID!, $content: String!) {
+  mutation UpdateComment(
+    $commentId: ID!
+    $sandboxId: ID!
+    $content: String
+    $isResolved: Boolean
+  ) {
     updateComment(
       commentId: $commentId
       sandboxId: $sandboxId
       content: $content
+      isResolved: $isResolved
     ) {
       id
     }

@@ -36,6 +36,7 @@ export const updateComment: AsyncAction<{
       commentId,
       content,
       sandboxId,
+      isResolved: comment.isResolved,
     });
   } catch (error) {
     effects.notificationToast.error(
@@ -100,7 +101,9 @@ export const selectComment: AsyncAction<string> = async (
   state.comments.currentCommentId = id;
   state.comments.multiCommentsSelector = null;
 
-  actions.comments.getComments(id);
+  if (id) {
+    actions.comments.getComments(id);
+  }
 
   const currentComment = state.comments.currentComment;
   if (
@@ -253,6 +256,9 @@ export const addComment: AsyncAction<{
     comments[sandboxId][comment.id] = comment;
 
     if (parentCommentId) {
+      comments[sandboxId][parentCommentId].comments.push({
+        id: comment.id,
+      });
       comments[sandboxId][parentCommentId].comments.splice(
         comments[sandboxId][parentCommentId].comments.findIndex(
           childComment => childComment.id === id
@@ -300,36 +306,27 @@ export const resolveComment: AsyncAction<{
   commentId: string;
   isResolved: boolean;
 }> = async ({ effects, state }, { commentId, isResolved }) => {
-  /*
   if (!state.editor.currentSandbox) {
     return;
   }
-  
+
   const comments = state.comments.comments;
   const sandboxId = state.editor.currentSandbox.id;
-  const oldIsResolved = commentThreads[sandboxId][commentThreadId].isResolved;
-  const currentCommentThread = state.comments.currentCommentThread;
-  const updateIsCurrent =
-    currentCommentThread &&
-    commentThreads[sandboxId][commentThreadId].id === currentCommentThread.id;
+  const oldIsResolved = comments[sandboxId][commentId].isResolved;
 
-  commentThreads[sandboxId][commentThreadId].isResolved = isResolved;
-
-  if (updateIsCurrent && currentCommentThread) {
-    currentCommentThread.isResolved = isResolved;
-  }
+  comments[sandboxId][commentId].isResolved = isResolved;
 
   try {
-    await effects.gql.mutations.toggleCommentThreadResolved({
-      commentThreadId,
+    await effects.gql.mutations.updateComment({
+      commentId,
       isResolved,
+      content: comments[sandboxId][commentId].content,
       sandboxId,
     });
   } catch (error) {
     effects.notificationToast.error(
       'Unable to update your comment, please try again'
     );
-    commentThreads[sandboxId][commentThreadId].isResolved = oldIsResolved;
+    comments[sandboxId][commentId].isResolved = oldIsResolved;
   }
-  */
 };

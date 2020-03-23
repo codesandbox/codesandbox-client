@@ -216,9 +216,7 @@ export class VSCodeEffect {
 
     return new Promise(resolve => {
       requestAnimationFrame(() => {
-        resolve(
-          document.querySelector('.active-comment').getBoundingClientRect()
-        );
+        resolve(document.querySelector('.active-comment'));
       });
     });
   }

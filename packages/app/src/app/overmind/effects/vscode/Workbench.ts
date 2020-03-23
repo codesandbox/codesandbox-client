@@ -374,7 +374,7 @@ export class Workbench {
       order: 0,
       command: {
         id: 'comments.add',
-        title: 'Add comment...',
+        title: 'Add code comment...',
       },
     });
   }
