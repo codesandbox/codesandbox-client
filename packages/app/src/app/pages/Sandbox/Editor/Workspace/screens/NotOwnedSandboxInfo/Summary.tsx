@@ -5,6 +5,7 @@ import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
   sandboxUrl,
   profileUrl,
+  githubRepoUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { Icons } from '@codesandbox/template-icons';
@@ -25,6 +26,7 @@ import {
 import css from '@styled-system/css';
 
 import { BookmarkTemplateButton } from './BookmarkTemplateButton';
+import { GitHubIcon } from '../GitHub/Icons';
 
 export const Summary = () => {
   const {
@@ -92,15 +94,42 @@ export const Summary = () => {
               <Stack gap={2} align="center" paddingX={2}>
                 <Avatar user={author} />
                 <Stack direction="vertical">
-                  <Text variant={team ? 'body' : 'muted'} block>
+                  <Link variant={team ? 'body' : 'muted'} block>
                     {author.username}
-                  </Text>
+                  </Link>
                   {team && (
                     <Text size={2} variant="muted">
                       {team.name}
                     </Text>
                   )}
                 </Stack>
+              </Stack>
+            </Link>
+          ) : null}
+
+          {!author && currentSandbox.git ? (
+            <Link href={githubRepoUrl(currentSandbox.git)} target="_blank">
+              <Stack gap={2} align="center" paddingX={2}>
+                <Stack
+                  justify="center"
+                  align="center"
+                  css={css({
+                    size: 8,
+                    minWidth: 8,
+                    borderRadius: 'small',
+                    border: '1px solid',
+                    borderColor: 'avatar.border',
+                  })}
+                >
+                  <GitHubIcon
+                    title="GitHub repository"
+                    width={20}
+                    height={20}
+                  />
+                </Stack>
+                <Link variant="muted" maxWidth="100%">
+                  {currentSandbox.git.username}/{currentSandbox.git.repo}
+                </Link>
               </Stack>
             </Link>
           ) : null}
