@@ -151,7 +151,10 @@ export const onCommentClick: Action<{
   }
 };
 
-export const selectCommentThread: Action<string> = ({ state }, id) => {
+export const selectCommentThread: AsyncAction<string> = async (
+  { state, effects, actions },
+  id
+) => {
   if (state.comments.currentCommentThreadId === OPTIMISTIC_COMMENT_THREAD_ID) {
     delete state.comments.commentThreads[state.editor.currentSandbox.id][
       OPTIMISTIC_COMMENT_THREAD_ID
@@ -160,6 +163,16 @@ export const selectCommentThread: Action<string> = ({ state }, id) => {
 
   state.comments.currentCommentThreadId = id;
   state.comments.multiCommentsSelector = null;
+
+  const currentCommentThread = state.comments.currentCommentThread;
+  if (currentCommentThread && currentCommentThread.reference) {
+    if (module) {
+      await actions.editor.moduleSelected({
+        path: currentCommentThread.reference.metadata.path,
+      });
+      effects.vscode.getCodeReferenceBoundary(currentCommentThread.reference);
+    }
+  }
 };
 
 export const createCommentThread: Action = ({ state }) => {

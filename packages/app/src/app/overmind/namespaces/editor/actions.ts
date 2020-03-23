@@ -485,7 +485,7 @@ export const likeSandboxToggled: AsyncAction<string> = async (
   state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
-export const moduleSelected: Action<
+export const moduleSelected: AsyncAction<
   | {
       // Id means it is coming from Explorer
       id: string;
@@ -496,7 +496,7 @@ export const moduleSelected: Action<
       id?: undefined;
       path: string;
     }
-> = ({ actions, effects, state }, { id, path }) => {
+> = async ({ actions, effects, state }, { id, path }) => {
   effects.analytics.track('Open File');
 
   state.editor.hasLoadedInitialModule = true;
@@ -520,7 +520,7 @@ export const moduleSelected: Action<
       return;
     }
 
-    actions.editor.internal.setCurrentModule(module);
+    await actions.editor.internal.setCurrentModule(module);
 
     if (state.live.isLive && state.live.liveUser && state.live.roomInfo) {
       effects.vscode.updateUserSelections(

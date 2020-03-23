@@ -53,7 +53,8 @@ export type ModuleModel = {
   selections: any[];
   path: string;
   model: Promise<any>;
-  comments: any[];
+  comments: Array<{ commentThreadId: string; range: [number, number] }>;
+  currentCommentDecorations: string[];
 };
 
 export class ModelsHandler {
@@ -68,7 +69,7 @@ export class ModelsHandler {
   private monaco;
   private userClassesGenerated = {};
   private userSelectionDecorations = {};
-
+  private currentCommentThreadId: string | null = null;
   constructor(
     editorApi,
     monaco,
@@ -110,6 +111,20 @@ export class ModelsHandler {
     }
   }
 
+  public getModuleModelByPath(path: string) {
+    const fullPath = '/sandbox' + path;
+    this.moduleModels[fullPath] = this.moduleModels[fullPath] || {
+      changeListener: null,
+      model: null,
+      path: fullPath,
+      selections: [],
+      comments: [],
+      currentCommentDecorations: [],
+    };
+
+    return this.moduleModels[fullPath];
+  }
+
   public changeModule = async (module: Module) => {
     const moduleModel = this.getModuleModelByPath(module.path);
 
@@ -124,6 +139,18 @@ export class ModelsHandler {
 
     this.updateUserSelections(module, moduleModel.selections);
 
+    const model = await moduleModel.model;
+
+    const newDecorationComments = this.createCommentDecorations(
+      moduleModel.comments,
+      model,
+      this.currentCommentThreadId
+    );
+    moduleModel.currentCommentDecorations = model.deltaDecorations(
+      moduleModel.currentCommentDecorations,
+      newDecorationComments
+    );
+
     return moduleModel.model;
   };
 
@@ -136,6 +163,17 @@ export class ModelsHandler {
     },
     currentCommentThreadId: string
   ) {
+    // We keep a local reference to the current commentThread id,
+    // because when opening modules we want to highlight any currently
+    // selected comment
+    this.currentCommentThreadId = currentCommentThreadId;
+
+    // Ensure we have the moduleModels
+    Object.keys(commentThreadsByPath).forEach(path => {
+      this.getModuleModelByPath(path).comments = commentThreadsByPath[path];
+    });
+
+    // Apply the decorations
     Object.keys(this.moduleModels).forEach(async path => {
       const moduleModel = this.moduleModels[path];
       const relativePath = path.replace('/sandbox', '');
@@ -146,14 +184,14 @@ export class ModelsHandler {
       }
 
       const commentThreads = commentThreadsByPath[relativePath] || [];
-      const existingDecorationComments = moduleModel.comments;
+      const existingDecorationComments = moduleModel.currentCommentDecorations;
       const newDecorationComments = this.createCommentDecorations(
         commentThreads,
         model,
         currentCommentThreadId
       );
 
-      moduleModel.comments = model.deltaDecorations(
+      moduleModel.currentCommentDecorations = model.deltaDecorations(
         existingDecorationComments,
         newDecorationComments
       );
@@ -581,15 +619,6 @@ export class ModelsHandler {
             this.sandbox,
             model
           );
-          const newDecorationComments = this.createCommentDecorations(
-            moduleModel.comments,
-            model,
-            null
-          );
-          moduleModel.comments = model.deltaDecorations(
-            [],
-            newDecorationComments
-          );
         } catch (e) {
           // File does not exist anymore for some reason
         }
@@ -636,19 +665,6 @@ export class ModelsHandler {
         // saving it a new file is created
       }
     });
-  }
-
-  private getModuleModelByPath(path: string) {
-    const fullPath = '/sandbox' + path;
-    this.moduleModels[fullPath] = this.moduleModels[fullPath] || {
-      changeListener: null,
-      model: null,
-      path: fullPath,
-      selections: [],
-      comments: [],
-    };
-
-    return this.moduleModels[fullPath];
   }
 
   private createCommentDecorations(

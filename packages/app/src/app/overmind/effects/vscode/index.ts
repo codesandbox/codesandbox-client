@@ -19,6 +19,7 @@ import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
+import { Reference } from 'app/graphql/types';
 import { Reaction } from 'app/overmind';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
@@ -211,6 +212,10 @@ export class VSCodeEffect {
     });
 
     return this.initialized;
+  }
+
+  public async getCodeReferenceBoundary(reference: Reference) {
+    this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor);
   }
 
   public getEditorElement(
@@ -466,19 +471,22 @@ export class VSCodeEffect {
     // allowing for a paint, like selections in explorer. For this to work we have to ensure
     // that we are actually indeed still trying to open this file, as we might have changed
     // the file
-    requestAnimationFrame(async () => {
-      const currentModule = this.options.getCurrentModule();
-      if (currentModule && module.id === currentModule.id) {
-        try {
-          const model = await this.modelsHandler.changeModule(module);
-          this.lint(module.title, model);
-        } catch (error) {
-          // We might try to open a module that is not actually opened in the editor,
-          // but the configuration wizard.. currently this throws an error as there
-          // is really no good way to identify when it happen. This needs to be
-          // improved in next version
+    return new Promise(resolve => {
+      requestAnimationFrame(async () => {
+        const currentModule = this.options.getCurrentModule();
+        if (currentModule && module.id === currentModule.id) {
+          try {
+            const model = await this.modelsHandler.changeModule(module);
+            this.lint(module.title, model);
+            resolve();
+          } catch (error) {
+            // We might try to open a module that is not actually opened in the editor,
+            // but the configuration wizard.. currently this throws an error as there
+            // is really no good way to identify when it happen. This needs to be
+            // improved in next version
+          }
         }
-      }
+      });
     });
   }
 
