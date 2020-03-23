@@ -80,7 +80,7 @@ export const AddCollaboratorForm = () => {
           css={{
             position: 'absolute',
             top: 0,
-            right: 0,
+            right: 8,
           }}
         />
       </motion.div>
