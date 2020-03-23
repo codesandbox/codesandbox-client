@@ -11,17 +11,17 @@ import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-import { AddCommentThread } from './AddCommentThread';
-import { CommentThread } from './CommentThread';
+import { AddComment } from './AddComment';
+import { Comment } from './Comment';
 import { CommentDialog } from './Dialog';
 
-export const CommentThreads: React.FC = () => {
+export const Comments: React.FC = () => {
   const {
     state: {
       comments: {
         selectedCommentsFilter,
-        currentCommentThreads,
-        currentCommentThreadId,
+        currentComments,
+        currentCommentId,
         multiCommentsSelector,
       },
     },
@@ -104,7 +104,7 @@ export const CommentThreads: React.FC = () => {
           </Menu>
         </SidebarRow>
 
-        {currentCommentThreads.length ? (
+        {currentComments.length ? (
           <List
             marginTop={4}
             css={{
@@ -113,25 +113,21 @@ export const CommentThreads: React.FC = () => {
               overflow: 'auto',
             }}
           >
-            {currentCommentThreads.map(commentThread => (
-              <CommentThread
-                key={commentThread.id}
-                commentThread={commentThread}
+            {currentComments.map(comment => (
+              <Comment
+                key={comment.id}
+                comment={comment}
                 innerRef={
-                  commentThread.id === currentCommentThreadId
-                    ? selectedCommentRef
-                    : null
+                  comment.id === currentCommentId ? selectedCommentRef : null
                 }
               />
             ))}
           </List>
         ) : null}
       </div>
-      {currentCommentThreads.length ? null : <Empty />}
-      <AddCommentThread />
-      {currentCommentThreadId && (
-        <CommentDialog triggerRef={selectedCommentRef} />
-      )}
+      {currentComments.length ? null : <Empty />}
+      <AddComment />
+      {currentCommentId && <CommentDialog triggerRef={selectedCommentRef} />}
       {multiCommentsSelector && (
         <ul
           style={{
@@ -146,7 +142,7 @@ export const CommentThreads: React.FC = () => {
             <li key={id}>
               <button
                 type="button"
-                onClick={() => commentsActions.selectCommentThread(id)}
+                onClick={() => commentsActions.selectComment(id)}
               >
                 {id}
               </button>

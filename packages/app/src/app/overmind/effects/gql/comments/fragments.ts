@@ -6,22 +6,8 @@ export const commentFragment = gql`
     content
     insertedAt
     updatedAt
-    user {
-      id
-      name
-      username
-      avatarUrl
-    }
-  }
-`;
-
-export const commentThreadFragment = gql`
-  fragment CommentThread on CommentThread {
-    id
-    initialComment {
-      ...Comment
-    }
-    reference {
+    isResolved
+    references {
       id
       metadata {
         ... on CodeReferenceMetadata {
@@ -34,12 +20,53 @@ export const commentThreadFragment = gql`
       resource
       type
     }
+    user {
+      id
+      name
+      username
+      avatarUrl
+    }
+    parentComment {
+      id
+    }
+    comments {
+      id
+    }
+  }
+`;
+
+export const commentWithRepliesFragment = gql`
+  fragment CommentWithReplies on Comment {
+    id
+    content
+    insertedAt
+    updatedAt
+    isResolved
+    references {
+      id
+      metadata {
+        ... on CodeReferenceMetadata {
+          anchor
+          code
+          head
+          path
+        }
+      }
+      resource
+      type
+    }
+    user {
+      id
+      name
+      username
+      avatarUrl
+    }
+    parentComment {
+      id
+    }
     comments {
       ...Comment
     }
-    insertedAt
-    isResolved
-    updatedAt
   }
   ${commentFragment}
 `;

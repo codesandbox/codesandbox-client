@@ -163,10 +163,10 @@ export class Workbench {
 
     this.addWorkbenchAction({
       id: 'comments.add',
-      label: 'Add comment',
-      category: 'Go',
+      label: 'Add code comment',
+      category: 'Comments',
       run: () => {
-        this.controller.getSignal('comments.createCommentThread')();
+        this.controller.getSignal('comments.createComment')();
       },
     });
 

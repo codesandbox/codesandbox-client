@@ -12,11 +12,11 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { OPTIMISTIC_COMMENT_THREAD_ID } from 'app/overmind/namespaces/comments/state';
+import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 import { formatDistance } from 'date-fns';
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { motion } from 'framer-motion';
 
 import { Markdown } from './Markdown';
 import { Reply } from './Reply';
@@ -34,22 +34,18 @@ type DialogProps = {
 export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
-  const thread = state.comments.currentCommentThread;
-  const isOptimisticThread = thread.id === OPTIMISTIC_COMMENT_THREAD_ID;
+  const comment = state.comments.currentComment;
+  const isOptimisticThread = comment.id === OPTIMISTIC_COMMENT_ID;
   const [edit, setEdit] = useState(isOptimisticThread);
-  const [editValue, setEditValue] = useState(thread.initialComment.content);
+  const [editValue, setEditValue] = useState(comment.content);
 
-  const closeDialog = () => actions.comments.selectCommentThread(null);
-  const onSubmit = () => {
+  const closeDialog = () => actions.comments.selectComment(null);
+  const onSubmitReply = () => {
     setValue('');
-    if (thread) {
-      actions.comments.addComment(value);
-    } else {
-      actions.comments.addCommentThread({
-        content: value,
-        open: true,
-      });
-    }
+    actions.comments.addComment({
+      content: value,
+      parentCommentId: comment.id,
+    });
   };
 
   const [position, setPosition] = useState({
@@ -123,9 +119,9 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
           <Stack align="center">
             <IconButton
               onClick={() =>
-                actions.comments.resolveCommentThread({
-                  commentThreadId: thread.id,
-                  isResolved: !thread.isResolved,
+                actions.comments.resolveComment({
+                  commentId: comment.id,
+                  isResolved: !comment.isResolved,
                 })
               }
               disabled={isOptimisticThread}
@@ -135,7 +131,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
               css={css({
                 transition: 'color',
                 transitionDuration: theme => theme.speeds[1],
-                color: thread.isResolved ? 'green' : 'mutedForeground',
+                color: comment.isResolved ? 'green' : 'mutedForeground',
               })}
             />
             <IconButton
@@ -147,7 +143,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
           </Stack>
         </Stack>
 
-        {thread && (
+        {comment && (
           <Stack direction="vertical" css={{ overflow: 'auto' }} ref={listRef}>
             <Stack direction="vertical" gap={4}>
               <Stack
@@ -157,50 +153,52 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                 marginRight={2}
               >
                 <Stack gap={2} align="center">
-                  <Avatar user={thread.initialComment.user} />
+                  <Avatar user={comment.user} />
                   <Stack direction="vertical" justify="center" gap={1}>
                     <Link
                       size={3}
                       weight="bold"
-                      href={`/u/${thread.initialComment.user.username}`}
+                      href={`/u/${comment.user.username}`}
                       variant="body"
                     >
-                      {thread.initialComment.user.username}
+                      {comment.user.username}
                     </Link>
                     <Text size={2} variant="muted">
-                      {formatDistance(new Date(thread.insertedAt), new Date(), {
-                        addSuffix: true,
-                      })}
+                      {formatDistance(
+                        new Date(comment.insertedAt),
+                        new Date(),
+                        {
+                          addSuffix: true,
+                        }
+                      )}
                     </Text>
                   </Stack>
                 </Stack>
-                {state.user.id === thread.initialComment.user.id &&
-                  !isOptimisticThread && (
-                    <Stack align="center">
-                      <Menu>
-                        <Menu.IconButton
-                          name="more"
-                          title="Comment actions"
-                          size={12}
-                        />
-                        <Menu.List>
-                          <Menu.Item
-                            onSelect={() =>
-                              actions.comments.deleteComment({
-                                threadId: thread.id,
-                                commentId: thread.initialComment.id,
-                              })
-                            }
-                          >
-                            Delete
-                          </Menu.Item>
-                          <Menu.Item onSelect={() => setEdit(true)}>
-                            Edit Comment
-                          </Menu.Item>
-                        </Menu.List>
-                      </Menu>
-                    </Stack>
-                  )}
+                {state.user.id === comment.user.id && !isOptimisticThread && (
+                  <Stack align="center">
+                    <Menu>
+                      <Menu.IconButton
+                        name="more"
+                        title="Comment actions"
+                        size={12}
+                      />
+                      <Menu.List>
+                        <Menu.Item
+                          onSelect={() =>
+                            actions.comments.deleteComment({
+                              commentId: comment.id,
+                            })
+                          }
+                        >
+                          Delete
+                        </Menu.Item>
+                        <Menu.Item onSelect={() => setEdit(true)}>
+                          Edit Comment
+                        </Menu.Item>
+                      </Menu.List>
+                    </Menu>
+                  </Stack>
+                )}
               </Stack>
               <Element
                 as={edit ? 'div' : 'p'}
@@ -213,7 +211,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                 })}
               >
                 {!edit ? (
-                  <Markdown source={thread.initialComment.content} />
+                  <Markdown source={comment.content} />
                 ) : (
                   <>
                     <Element marginBottom={2}>
@@ -249,8 +247,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                         variant="secondary"
                         onClick={async () => {
                           await actions.comments.updateComment({
-                            threadId: thread.id,
-                            commentId: thread.initialComment.id,
+                            commentId: comment.id,
                             content: editValue,
                           });
                           setEdit(false);
@@ -264,9 +261,9 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
               </Element>
             </Stack>
             <>
-              {thread.comments.map((reply, i) => {
+              {comment.comments.map((reply, i) => {
                 if (i === 0) return null;
-                return <Reply reply={reply} threadId={thread.id} />;
+                return <Reply reply={reply} threadId={comment.id} />;
               })}
             </>
           </Stack>
@@ -284,9 +281,9 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
             })}
             value={value}
             onChange={e => setValue(e.target.value)}
-            placeholder={thread ? 'Reply' : 'Write a comment...'}
+            placeholder={comment ? 'Reply' : 'Write a comment...'}
             onKeyDown={event => {
-              if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
+              if (event.keyCode === ENTER && !event.shiftKey) onSubmitReply();
             }}
           />
         )}

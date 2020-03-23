@@ -1,24 +1,24 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
-import { CommentThreadFragment } from 'app/graphql/types';
+import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
 
-export const OPTIMISTIC_COMMENT_THREAD_ID = '__OPTIMISTIC_COMMENT_THREAD_ID';
+export const OPTIMISTIC_COMMENT_ID = '__OPTIMISTIC_COMMENT_ID__';
 
 type State = {
-  commentThreads: {
+  comments: {
     [sandboxId: string]: {
-      [commentId: string]: CommentThreadFragment;
+      [commentId: string]: CommentFragment;
     };
   };
-  currentCommentThreads: Derive<State, CommentThreadFragment[]>;
+  currentComments: Derive<State, CommentFragment[]>;
   selectedCommentsFilter: CommentsFilterOption;
-  currentCommentThreadId: string | null;
-  currentCommentThread: Derive<State, CommentThreadFragment | null>;
+  currentCommentId: string | null;
+  currentComment: Derive<State, CommentWithRepliesFragment | null>;
   fileComments: Derive<
     State,
     {
       [path: string]: Array<{
-        commentThreadId: string;
+        commentId: string;
         range: [number, number];
       }>;
     }
@@ -32,59 +32,59 @@ type State = {
 
 export const state: State = {
   multiCommentsSelector: null,
-  commentThreads: {},
-  currentCommentThreadId: null,
-  fileComments: ({ currentCommentThreads }) =>
-    currentCommentThreads.reduce<{
+  comments: {},
+  currentCommentId: null,
+  fileComments: ({ currentComments }) =>
+    currentComments.reduce<{
       [path: string]: Array<{
-        commentThreadId: string;
+        commentId: string;
         range: [number, number];
       }>;
-    }>((aggr, commentThread) => {
-      if (commentThread.reference && commentThread.reference.type === 'code') {
-        if (!aggr[commentThread.reference.metadata.path]) {
-          aggr[commentThread.reference.metadata.path] = [];
+    }>((aggr, comment) => {
+      comment.references.forEach(reference => {
+        if (reference.type === 'code') {
+          if (!aggr[reference.metadata.path]) {
+            aggr[reference.metadata.path] = [];
+          }
+          aggr[reference.metadata.path].push({
+            commentId: comment.id,
+            range: [reference.metadata.anchor, reference.metadata.head],
+          });
         }
-        aggr[commentThread.reference.metadata.path].push({
-          commentThreadId: commentThread.id,
-          range: [
-            commentThread.reference.metadata.anchor,
-            commentThread.reference.metadata.head,
-          ],
-        });
-      }
+      });
 
       return aggr;
     }, {}),
-  currentCommentThread: (
-    { commentThreads, currentCommentThreadId },
+  currentComment: (
+    { comments, currentCommentId },
     { editor: { currentSandbox } }
   ) => {
-    if (
-      !currentSandbox ||
-      !commentThreads[currentSandbox.id] ||
-      !currentCommentThreadId
-    ) {
+    if (!currentSandbox || !comments[currentSandbox.id] || !currentCommentId) {
       return null;
     }
 
-    return commentThreads[currentSandbox.id][currentCommentThreadId];
+    return {
+      ...comments[currentSandbox.id][currentCommentId],
+      comments: comments[currentSandbox.id][currentCommentId].comments.map(
+        commentId => comments[currentSandbox.id][commentId.id] || null
+      ),
+    };
   },
   selectedCommentsFilter: CommentsFilterOption.OPEN,
-  currentCommentThreads: (
-    { commentThreads, selectedCommentsFilter },
+  currentComments: (
+    { comments, selectedCommentsFilter },
     { editor: { currentSandbox } }
   ) => {
-    if (!currentSandbox || !commentThreads[currentSandbox.id]) {
+    if (!currentSandbox || !comments[currentSandbox.id]) {
       return [];
     }
 
     function sortByInsertedAt(
-      commentThreadA: CommentThreadFragment,
-      commentThreadB: CommentThreadFragment
+      commentA: CommentFragment,
+      commentB: CommentFragment
     ) {
-      const aDate = new Date(commentThreadA.insertedAt);
-      const bDate = new Date(commentThreadB.insertedAt);
+      const aDate = new Date(commentA.insertedAt);
+      const bDate = new Date(commentB.insertedAt);
 
       if (aDate > bDate) {
         return -1;
@@ -97,34 +97,32 @@ export const state: State = {
       return 0;
     }
 
+    const rootComments = Object.values(comments[currentSandbox.id]).filter(
+      comment => comment.parentComment == null
+    );
+
     switch (selectedCommentsFilter) {
       case CommentsFilterOption.ALL:
-        return Object.values(commentThreads[currentSandbox.id])
-          .filter(
-            commentThread => commentThread.id !== OPTIMISTIC_COMMENT_THREAD_ID
-          )
+        return rootComments
+          .filter(comment => comment.id !== OPTIMISTIC_COMMENT_ID)
           .sort(sortByInsertedAt);
       case CommentsFilterOption.RESOLVED:
-        return Object.values(commentThreads[currentSandbox.id])
+        return rootComments
           .filter(
-            commentThread =>
-              commentThread.id !== OPTIMISTIC_COMMENT_THREAD_ID &&
-              commentThread.isResolved
+            comment =>
+              comment.id !== OPTIMISTIC_COMMENT_ID && comment.isResolved
           )
           .sort(sortByInsertedAt);
       case CommentsFilterOption.OPEN:
-        return Object.values(commentThreads[currentSandbox.id])
+        return rootComments
           .filter(
-            commentThread =>
-              commentThread.id !== OPTIMISTIC_COMMENT_THREAD_ID &&
-              !commentThread.isResolved
+            comment =>
+              comment.id !== OPTIMISTIC_COMMENT_ID && !comment.isResolved
           )
           .sort(sortByInsertedAt);
       case CommentsFilterOption.MENTIONS:
-        return Object.values(commentThreads[currentSandbox.id])
-          .filter(
-            commentThread => commentThread.id !== OPTIMISTIC_COMMENT_THREAD_ID
-          )
+        return rootComments
+          .filter(comment => comment.id !== OPTIMISTIC_COMMENT_ID)
           .sort(sortByInsertedAt);
       default:
         return [];

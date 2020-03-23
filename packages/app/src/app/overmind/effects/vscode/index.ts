@@ -61,7 +61,7 @@ export type VsCodeOptions = {
   onSelectionChanged: (selection: onSelectionChangeData) => void;
   onViewRangeChanged: (viewRange: UserViewRange) => void;
   onCommentClick: (payload: {
-    commentThreadIds: string[];
+    commentIds: string[];
     x: number;
     y: number;
   }) => void;
@@ -144,14 +144,11 @@ export class VSCodeEffect {
     this.options.reaction(
       state => ({
         fileComments: json(state.comments.fileComments),
-        currentCommentThreadId: state.comments.currentCommentThreadId,
+        currentCommentId: state.comments.currentCommentId,
       }),
-      ({ fileComments, currentCommentThreadId }) => {
+      ({ fileComments, currentCommentId }) => {
         if (this.modelsHandler) {
-          this.modelsHandler.applyComments(
-            fileComments,
-            currentCommentThreadId
-          );
+          this.modelsHandler.applyComments(fileComments, currentCommentId);
         }
       }
     );
@@ -215,7 +212,15 @@ export class VSCodeEffect {
   }
 
   public async getCodeReferenceBoundary(reference: Reference) {
-    this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor);
+    this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
+
+    return new Promise(resolve => {
+      requestAnimationFrame(() => {
+        resolve(
+          document.querySelector('.active-comment').getBoundingClientRect()
+        );
+      });
+    });
   }
 
   public getEditorElement(
@@ -1184,14 +1189,14 @@ export class VSCodeEffect {
           We grab the id of the commenthread by getting the last classname.
           The last part of the classname is the id.
         */
-        const commentThreadIds = Array.from(target.classList)
+        const commentIds = Array.from(target.classList)
           .pop()
           .split('comment-ids-')
           .pop()
           .split('_');
 
         this.options.onCommentClick({
-          commentThreadIds,
+          commentIds,
           x: target.getBoundingClientRect().left,
           y: target.getBoundingClientRect().top,
         });

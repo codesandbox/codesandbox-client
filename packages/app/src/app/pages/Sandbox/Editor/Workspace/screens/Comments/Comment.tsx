@@ -9,15 +9,15 @@ import {
   Text,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-import { CommentThreadFragment } from 'app/graphql/types';
+import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { formatDistance } from 'date-fns';
 import React from 'react';
 
-export const CommentThread = React.memo<{
-  commentThread: CommentThreadFragment;
+export const Comment = React.memo<{
+  comment: CommentFragment;
   innerRef: React.RefObject<any>;
-}>(({ commentThread, innerRef }) => {
+}>(({ comment, innerRef }) => {
   const { state, actions } = useOvermind();
 
   const truncateText = {
@@ -35,7 +35,7 @@ export const CommentThread = React.memo<{
 
   return (
     <ListAction
-      key={commentThread.id}
+      key={comment.id}
       ref={innerRef}
       paddingTop={4}
       css={css({
@@ -43,7 +43,7 @@ export const CommentThread = React.memo<{
         color: 'inherit',
         transition: 'opacity',
         transitionDuration: theme => theme.speeds[1],
-        opacity: commentThread.isResolved ? 0.2 : 1,
+        opacity: comment.isResolved ? 0.2 : 1,
         paddingRight: 0, // the actions menu should be at the edge
       })}
       onClick={event => {
@@ -55,30 +55,30 @@ export const CommentThread = React.memo<{
           return;
         }
 
-        actions.comments.selectCommentThread(commentThread.id);
+        actions.comments.selectComment(comment.id);
       }}
     >
       <Stack align="flex-start" justify="space-between" marginBottom={4}>
         <Stack gap={2} align="center">
-          <Avatar user={commentThread.initialComment.user} />
+          <Avatar user={comment.user} />
           <Stack direction="vertical" justify="center">
             <Link
               size={3}
               weight="bold"
-              href={`/u/${commentThread.initialComment.user.username}`}
+              href={`/u/${comment.user.username}`}
               variant="body"
             >
-              {commentThread.initialComment.user.username}
+              {comment.user.username}
             </Link>
             <Text size={2} variant="muted">
-              {formatDistance(new Date(commentThread.insertedAt), new Date(), {
+              {formatDistance(new Date(comment.insertedAt), new Date(), {
                 addSuffix: true,
               })}
             </Text>
           </Stack>
         </Stack>
         <Stack align="center">
-          {commentThread.isResolved && (
+          {comment.isResolved && (
             <Icon name="check" title="Resolved" color="green" />
           )}
           <Menu>
@@ -86,21 +86,20 @@ export const CommentThread = React.memo<{
             <Menu.List>
               <Menu.Item
                 onSelect={() =>
-                  actions.comments.resolveCommentThread({
-                    commentThreadId: commentThread.id,
-                    isResolved: !commentThread.isResolved,
+                  actions.comments.resolveComment({
+                    commentId: comment.id,
+                    isResolved: !comment.isResolved,
                   })
                 }
               >
-                Mark as {commentThread.isResolved ? 'Unr' : 'r'}esolved
+                Mark as {comment.isResolved ? 'Unr' : 'r'}esolved
               </Menu.Item>
               <Menu.Item onSelect={() => {}}>Share Comment</Menu.Item>
-              {state.user.id === commentThread.initialComment.user.id && (
+              {state.user.id === comment.user.id && (
                 <Menu.Item
                   onSelect={() =>
                     actions.comments.deleteComment({
-                      threadId: commentThread.id,
-                      commentId: commentThread.initialComment.id,
+                      commentId: comment.id,
                     })
                   }
                 >
@@ -122,10 +121,10 @@ export const CommentThread = React.memo<{
         })}
       >
         <Text block css={truncateText} marginBottom={2}>
-          {commentThread.initialComment.content}
+          {comment.content}
         </Text>
         <Text variant="muted" size={2}>
-          {getRepliesString(commentThread.comments.length)}
+          {getRepliesString(comment.comments.length)}
         </Text>
       </Element>
     </ListAction>

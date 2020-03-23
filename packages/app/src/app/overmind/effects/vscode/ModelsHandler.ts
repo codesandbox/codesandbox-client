@@ -53,7 +53,7 @@ export type ModuleModel = {
   selections: any[];
   path: string;
   model: Promise<any>;
-  comments: Array<{ commentThreadId: string; range: [number, number] }>;
+  comments: Array<{ commentId: string; range: [number, number] }>;
   currentCommentDecorations: string[];
 };
 
@@ -157,7 +157,7 @@ export class ModelsHandler {
   public async applyComments(
     commentThreadsByPath: {
       [path: string]: Array<{
-        commentThreadId: string;
+        commentId: string;
         range: [number, number];
       }>;
     },
@@ -669,45 +669,45 @@ export class ModelsHandler {
 
   private createCommentDecorations(
     commentThreadDecorations: Array<{
-      commentThreadId: string;
+      commentId: string;
       range: [number, number];
     }>,
     model: any,
     currentCommentThreadId: string | null
   ) {
-    const commentThreadDecorationsByLineNumber = commentThreadDecorations.reduce<{
+    const commentDecorationsByLineNumber = commentThreadDecorations.reduce<{
       [lineNumber: string]: Array<{
-        commentThreadId: string;
+        commentId: string;
         range: [number, number];
       }>;
-    }>((aggr, commentThreadDecoration) => {
+    }>((aggr, commentDecoration) => {
       const { lineNumber } = indexToLineAndColumn(
         model.getLinesContent() || [],
-        commentThreadDecoration.range[0]
+        commentDecoration.range[0]
       );
 
       if (!aggr[lineNumber]) {
         aggr[lineNumber] = [];
       }
 
-      aggr[lineNumber].push(commentThreadDecoration);
+      aggr[lineNumber].push(commentDecoration);
 
       return aggr;
     }, {});
 
-    return Object.keys(commentThreadDecorationsByLineNumber).reduce(
+    return Object.keys(commentDecorationsByLineNumber).reduce(
       (aggr, lineNumberKey) => {
-        const lineCommentThreadDecorations =
-          commentThreadDecorationsByLineNumber[lineNumberKey];
+        const lineCommentDecorations =
+          commentDecorationsByLineNumber[lineNumberKey];
         const lineNumber = Number(lineNumberKey);
         const isActive = Boolean(
-          lineCommentThreadDecorations.find(
-            commentThreadDecoration =>
-              commentThreadDecoration.commentThreadId === currentCommentThreadId
+          lineCommentDecorations.find(
+            commentDecoration =>
+              commentDecoration.commentId === currentCommentThreadId
           )
         );
-        const ids = lineCommentThreadDecorations.map(
-          commentThreadDecoration => commentThreadDecoration.commentThreadId
+        const ids = lineCommentDecorations.map(
+          commentDecoration => commentDecoration.commentId
         );
 
         return aggr.concat({

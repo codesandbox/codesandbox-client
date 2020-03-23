@@ -1,41 +1,38 @@
 import {
-  SandboxCommentThreadQuery,
-  SandboxCommentThreadQueryVariables,
-  SandboxCommentThreadsQuery,
-  SandboxCommentThreadsQueryVariables,
+  SandboxCommentQuery,
+  SandboxCommentQueryVariables,
+  SandboxCommentsQuery,
+  SandboxCommentsQueryVariables,
 } from 'app/graphql/types';
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
 
-import { commentFragment, commentThreadFragment } from './fragments';
+import { commentFragment, commentWithRepliesFragment } from './fragments';
 
-export const comments: Query<
-  SandboxCommentThreadQuery,
-  SandboxCommentThreadQueryVariables
+export const comment: Query<
+  SandboxCommentQuery,
+  SandboxCommentQueryVariables
 > = gql`
-  query SandboxCommentThread($sandboxId: ID!, $commentThreadId: ID!) {
+  query SandboxComment($sandboxId: ID!, $commentId: ID!) {
     sandbox(sandboxId: $sandboxId) {
-      commentThread(commentThreadId: $commentThreadId) {
-        id
-        comments {
-         ...Comment
-        }
+      comment(commentId: $commentId) {
+        ...CommentWithReplies
       }
     }
-    ${commentFragment}
+    ${commentWithRepliesFragment}
   }
 `;
 
-export const commentThreads: Query<
-  SandboxCommentThreadsQuery,
-  SandboxCommentThreadsQueryVariables
+export const comments: Query<
+  SandboxCommentsQuery,
+  SandboxCommentsQueryVariables
 > = gql`
-  query SandboxCommentThreads($sandboxId: ID!) {
+  query SandboxComments($sandboxId: ID!) {
     sandbox(sandboxId: $sandboxId) {
-      commentThreads {
-        ...CommentThread
+      comments {
+        ...Comment
       }
     }
-    ${commentThreadFragment}
+    ${commentFragment}
   }
 `;

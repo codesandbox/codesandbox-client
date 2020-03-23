@@ -16,7 +16,7 @@ import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
   CollaboratorFragment,
-  CommentThreadFragment,
+  CommentFragment,
   InvitationFragment,
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
@@ -205,27 +205,23 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   if (COMMENTS) {
     try {
-      const {
-        sandbox: sandboxComments,
-      } = await effects.gql.queries.commentThreads({
+      const { sandbox: sandboxComments } = await effects.gql.queries.comments({
         sandboxId: sandbox.id,
       });
 
-      if (!sandboxComments || !sandboxComments.commentThreads) {
+      if (!sandboxComments || !sandboxComments.comments) {
         return;
       }
 
-      state.comments.commentThreads[
-        sandbox.id
-      ] = sandboxComments.commentThreads.reduce<{
-        [id: string]: CommentThreadFragment;
+      state.comments.comments[sandbox.id] = sandboxComments.comments.reduce<{
+        [id: string]: CommentFragment;
       }>((aggr, commentThread) => {
         aggr[commentThread.id] = commentThread;
 
         return aggr;
       }, {});
     } catch (e) {
-      state.comments.commentThreads[sandbox.id] = {};
+      state.comments.comments[sandbox.id] = {};
       effects.notificationToast.add({
         status: NotificationStatus.NOTICE,
         message: `There as a problem getting the sandbox comments`,
@@ -342,16 +338,16 @@ export const codeChanged: Action<{
     effects.live.sendCodeUpdate(moduleShortid, operation);
 
     const comments = state.comments.fileComments[module.path] || [];
-    comments.forEach(comment => {
-      const range = new Selection.Range(...comment.range);
+    comments.forEach(fileComment => {
+      const range = new Selection.Range(...fileComment.range);
       const newRange = range.transform(operation);
-      const commentThread =
-        state.comments.commentThreads[state.editor.currentSandbox.id][
-          comment.commentThreadId
+      const comment =
+        state.comments.comments[state.editor.currentSandbox.id][
+          fileComment.commentId
         ];
-      if (commentThread.reference) {
-        commentThread.reference.metadata.anchor = newRange.anchor;
-        commentThread.reference.metadata.head = newRange.head;
+      if (comment.references && comment.references[0].type === 'code') {
+        comment.references[0].metadata.anchor = newRange.anchor;
+        comment.references[0].metadata.head = newRange.head;
       }
     });
   }
