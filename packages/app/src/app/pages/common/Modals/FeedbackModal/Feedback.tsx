@@ -17,7 +17,7 @@ import React, {
   FunctionComponent,
   useState,
 } from 'react';
-
+import { browser } from './getBrowser';
 import { Alert } from '../Common/Alert';
 
 type Props = {
@@ -56,6 +56,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
       username: (user || {}).username,
       email,
       version: VERSION,
+      browser: browser(),
     })
       .then(() => {
         setEmoji(null);
