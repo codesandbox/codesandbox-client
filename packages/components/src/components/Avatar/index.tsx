@@ -21,6 +21,7 @@ export const AvatarContainer = styled(Element).attrs({ as: 'span' })(
     height: 8,
     width: 8,
     position: 'relative',
+    flexShrink: 0, // avatars should never shrink inside flex
   })
 );
 

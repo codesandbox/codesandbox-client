@@ -55,13 +55,24 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
   }, [id, loading, modalClosed, path, refetchSandboxInfo, teamId]);
 
   return (
-    <Alert title="Move to Folder">
+    <Alert
+      title="Move to Folder"
+      css={css({
+        paddingRight: 0,
+        paddingLeft: 0,
+        '> span': {
+          paddingLeft: 4,
+          paddingBottom: 4,
+          borderBottom: '1px solid',
+          borderColor: 'sideBar.border',
+        },
+      })}
+    >
       <Element
         css={css({
           maxHeight: 400,
           overflow: 'auto',
         })}
-        marginTop={4}
       >
         <DirectoryPicker
           currentPath={path}
@@ -72,7 +83,18 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
 
       {error}
 
-      <Stack marginTop={4} align="flex-end" gap={2} justify="flex-end">
+      <Stack
+        marginTop={4}
+        align="flex-end"
+        gap={2}
+        justify="flex-end"
+        css={css({
+          paddingTop: 4,
+          paddingRight: 4,
+          borderTop: '1px solid',
+          borderColor: 'sideBar.border',
+        })}
+      >
         <Button
           css={css({ width: 'auto' })}
           variant="secondary"
