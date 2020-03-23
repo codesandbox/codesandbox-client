@@ -16,7 +16,8 @@ import React from 'react';
 
 export const CommentThread = React.memo<{
   commentThread: CommentThreadFragment;
-}>(({ commentThread }) => {
+  innerRef: React.RefObject<any>;
+}>(({ commentThread, innerRef }) => {
   const { state, actions } = useOvermind();
 
   const truncateText = {
@@ -35,6 +36,7 @@ export const CommentThread = React.memo<{
   return (
     <ListAction
       key={commentThread.id}
+      ref={innerRef}
       paddingTop={4}
       css={css({
         display: 'block',
@@ -44,13 +46,20 @@ export const CommentThread = React.memo<{
         opacity: commentThread.isResolved ? 0.2 : 1,
         paddingRight: 0, // the actions menu should be at the edge
       })}
+      onClick={event => {
+        const target = event.target as HTMLElement;
+        // don't trigger comment if you click on the menu
+        // we have to handle this because of an upstream
+        // bug in reach/menu-button
+        if (target.tagName === 'button' || target.tagName === 'svg') {
+          return;
+        }
+
+        actions.comments.selectCommentThread(commentThread.id);
+      }}
     >
       <Stack align="flex-start" justify="space-between" marginBottom={4}>
-        <Stack
-          gap={2}
-          align="center"
-          onClick={() => actions.comments.selectCommentThread(commentThread.id)}
-        >
+        <Stack gap={2} align="center">
           <Avatar user={commentThread.initialComment.user} />
           <Stack direction="vertical" justify="center">
             <Link
@@ -103,7 +112,6 @@ export const CommentThread = React.memo<{
         </Stack>
       </Stack>
       <Element
-        onClick={() => actions.comments.selectCommentThread(commentThread.id)}
         as="p"
         marginY={0}
         marginRight={2 /** Adjust for the missing margin in ListAction */}
