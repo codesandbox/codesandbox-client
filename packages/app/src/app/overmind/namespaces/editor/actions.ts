@@ -1233,6 +1233,10 @@ export const changeCollaboratorAuthorization: AsyncAction<{
   authorization: Authorization;
   sandboxId: string;
 }> = async ({ state, effects }, { username, authorization, sandboxId }) => {
+  effects.analytics.track('Update Collaborator Authorization', {
+    authorization,
+  });
+
   const existingCollaborator = state.editor.collaborators.find(
     c => c.user.username === username
   );
@@ -1262,6 +1266,7 @@ export const addCollaborator: AsyncAction<{
   sandboxId: string;
   authorization: Authorization;
 }> = async ({ state, effects }, { username, sandboxId, authorization }) => {
+  effects.analytics.track('Add Collaborator', { authorization });
   const newCollaborator: CollaboratorFragment = {
     lastSeenAt: null,
     id: 'OPTIMISTIC_ID',
@@ -1297,6 +1302,7 @@ export const removeCollaborator: AsyncAction<{
   username: string;
   sandboxId: string;
 }> = async ({ state, effects }, { username, sandboxId }) => {
+  effects.analytics.track('Remove Collaborator');
   const existingCollaborator = state.editor.collaborators.find(
     c => c.user.username === username
   );
@@ -1325,6 +1331,8 @@ export const inviteCollaborator: AsyncAction<{
   sandboxId: string;
   authorization: Authorization;
 }> = async ({ state, effects }, { email, sandboxId, authorization }) => {
+  effects.analytics.track('Invite Collaborator (Email)', { authorization });
+
   const newInvitation: InvitationFragment = {
     id: 'OPTIMISTIC_ID',
     authorization,
@@ -1368,6 +1376,8 @@ export const revokeSandboxInvitation: AsyncAction<{
   invitationId: string;
   sandboxId: string;
 }> = async ({ state, effects }, { invitationId, sandboxId }) => {
+  effects.analytics.track('Cancel Invite Collaborator (Email)');
+
   const existingInvitation = state.editor.invitations.find(
     c => c.id === invitationId
   );
