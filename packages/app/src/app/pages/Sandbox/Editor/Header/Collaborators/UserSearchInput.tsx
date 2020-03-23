@@ -75,6 +75,7 @@ export const UserSearchInput = ({
             {...getInputProps({
               placeholder: 'Enter name or email address',
             })}
+            autoFocus
           />
         </div>
 
