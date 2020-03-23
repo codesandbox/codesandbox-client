@@ -86,7 +86,7 @@ export const Overlay: React.FC<IOverlayProps> = ({
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.keyCode === ESC) {
+      if (!e.defaultPrevented && e.keyCode === ESC) {
         handleClose();
       }
     };
