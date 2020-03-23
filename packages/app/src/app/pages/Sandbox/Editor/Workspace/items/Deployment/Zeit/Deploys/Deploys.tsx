@@ -1,6 +1,5 @@
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import React, { FunctionComponent } from 'react';
-
 import { useOvermind } from 'app/overmind';
 
 import {
@@ -39,7 +38,6 @@ export const Deploys: FunctionComponent = () => {
 
                 <span>{`(${formatDistanceToNow(deploy.created)} ago)`}</span>
               </Name>
-
               <State state={deploy.state}>
                 {deploy.state.toString().toLowerCase()}
               </State>
