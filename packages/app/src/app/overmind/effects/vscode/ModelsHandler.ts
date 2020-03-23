@@ -701,9 +701,9 @@ export class ModelsHandler {
             // comment-id- class needs to be the LAST class!
             glyphMarginClassName: `editor-comments-glyph ${
               isActive ? 'active-comment ' : ''
-            }${ids.length > 1 ? 'multi-comment ' : ''}comment-ids-${ids.join(
-              '_'
-            )}`,
+            }${
+              ids.length > 1 ? `multi-comment multi-comment-${ids.length} ` : ''
+            }comment-ids-${ids.join('_')}`,
           },
         });
       },
