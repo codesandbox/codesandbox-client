@@ -79,10 +79,6 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
 
   const { ref: listRef, scrollTop } = useScrollTop();
 
-  // if trigger ref was passed but it's value hasn't
-  // been set yet, wait (return null) until it is set
-  if (triggerRef && !triggerRef.current) return null;
-
   return (
     <Draggable handle=".handle" position={position} onStop={onDragStop}>
       <motion.div
