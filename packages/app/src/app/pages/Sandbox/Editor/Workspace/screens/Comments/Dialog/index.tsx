@@ -1,6 +1,5 @@
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import {
-  Button,
   Element,
   IconButton,
   Menu,
@@ -12,15 +11,15 @@ import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { copyToClipboard } from 'app/utils/copy-to-clipboard';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
-
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
+import { AvatarBlock } from '../components/AvatarBlock';
+import { EditComment } from '../components/EditComment';
 import { Markdown } from './Markdown';
 import { Reply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
-import { AvatarBlock } from '../components/AvatarBlock';
 
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
@@ -38,11 +37,12 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
   const { state, actions, effects } = useOvermind();
   const [value, setValue] = useState('');
   const comment = state.comments.currentComment;
+  const currentCommentPositions = state.comments.currentCommentPositions;
   const isOptimistic = comment.id === OPTIMISTIC_COMMENT_ID;
-  const [edit, setEdit] = useState(isOptimistic);
-  const [editValue, setEditValue] = useState(comment.content);
+  const [editing, setEditing] = useState(isOptimistic);
+  const { ref: listRef, scrollTop } = useScrollTop();
 
-  const closeDialog = () => actions.comments.selectComment(null);
+  const closeDialog = () => actions.comments.closeComment();
   const onSubmitReply = () => {
     setValue('');
     actions.comments.addComment({
@@ -51,32 +51,38 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
     });
   };
 
-  const [position, setPosition] = useState({
-    x: props.x || 400,
-    y: props.y || 40,
-  });
+  if (!currentCommentPositions) {
+    return null;
+  }
+
   const OVERLAP_WITH_SIDEBAR = 20;
   const OFFSET_FROM_SIDEBAR_COMMENT = 90;
 
-  const [animateFrom, setAnimateFrom] = React.useState({ x: 0, y: 0 });
+  let dialogPosition = {};
 
-  React.useEffect(() => {
-    if (triggerRef.current) {
-      const { left, right, top } = triggerRef.current.getBoundingClientRect();
-      setAnimateFrom({ x: left, y: top });
-      setPosition({
-        x: right - OVERLAP_WITH_SIDEBAR,
-        y: top - OFFSET_FROM_SIDEBAR_COMMENT,
-      });
-    }
-  }, [triggerRef]);
+  if (currentCommentPositions.dialog) {
+    dialogPosition = {
+      x: currentCommentPositions.dialog.left + 400,
+      y: currentCommentPositions.dialog.top,
+    };
+  } else if (currentCommentPositions.trigger) {
+    dialogPosition = {
+      x: currentCommentPositions.trigger.right - OVERLAP_WITH_SIDEBAR,
+      y: currentCommentPositions.trigger.top - OFFSET_FROM_SIDEBAR_COMMENT,
+    };
+  } else {
+    dialogPosition = { x: 400, y: 40 };
+  }
 
-  const { ref: listRef, scrollTop } = useScrollTop();
+  const animateFrom = {
+    x: currentCommentPositions.trigger.left,
+    y: currentCommentPositions.trigger.top,
+  };
 
   return (
     <motion.div
       initial={{ ...animateFrom, scale: 0.5 }}
-      animate={{ ...position, scale: 1 }}
+      animate={{ ...dialogPosition, scale: 1 }}
       drag
       dragMomentum={false}
       transition={{ duration: 0.25 }}
@@ -174,7 +180,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                         >
                           Delete
                         </Menu.Item>
-                        <Menu.Item onSelect={() => setEdit(true)}>
+                        <Menu.Item onSelect={() => setEditing(true)}>
                           Edit Comment
                         </Menu.Item>
                         <Menu.Item
@@ -195,7 +201,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                 )}
               </Stack>
               <Element
-                as={edit ? 'div' : 'p'}
+                as={editing ? 'div' : 'p'}
                 marginY={0}
                 marginX={4}
                 paddingBottom={6}
@@ -204,53 +210,20 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                   borderColor: 'sideBar.border',
                 })}
               >
-                {!edit ? (
+                {!editing ? (
                   <Markdown source={comment.content} />
                 ) : (
-                  <>
-                    <Element marginBottom={2}>
-                      <Textarea
-                        autosize
-                        autoFocus
-                        value={editValue}
-                        onChange={e => setEditValue(e.target.value)}
-                      />
-                    </Element>
-                    <Element
-                      css={css({
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gridGap: 2,
-                      })}
-                    >
-                      <Button
-                        variant="link"
-                        onClick={() => {
-                          if (isOptimistic) {
-                            closeDialog();
-                          } else {
-                            setEdit(false);
-                          }
-                        }}
-                      >
-                        Cancel
-                      </Button>
-
-                      <Button
-                        disabled={!editValue}
-                        variant="secondary"
-                        onClick={async () => {
-                          await actions.comments.updateComment({
-                            commentId: comment.id,
-                            content: editValue,
-                          });
-                          setEdit(false);
-                        }}
-                      >
-                        Save
-                      </Button>
-                    </Element>
-                  </>
+                  <EditComment
+                    initialValue={comment.content}
+                    onSave={async newValue => {
+                      await actions.comments.updateComment({
+                        commentId: comment.id,
+                        content: newValue,
+                      });
+                      setEditing(false);
+                    }}
+                    onCancel={() => setEditing(false)}
+                  />
                 )}
               </Element>
             </Stack>
@@ -284,3 +257,14 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
     </motion.div>
   );
 };
+
+/**
+ * Dialog
+ * Add new comment
+ * Comment
+ * Edit comment
+ * Add reply
+ * Replies
+ * Edit reply
+ *
+ */
