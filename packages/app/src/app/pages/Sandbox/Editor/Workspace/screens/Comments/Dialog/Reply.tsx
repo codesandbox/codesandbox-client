@@ -1,10 +1,4 @@
-import {
-  Button,
-  Element,
-  Menu,
-  Stack,
-  Textarea,
-} from '@codesandbox/components';
+import { Element, Menu, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
@@ -12,6 +6,7 @@ import React, { useState } from 'react';
 
 import { Markdown } from './Markdown';
 import { AvatarBlock } from '../components/AvatarBlock';
+import { EditComment } from '../components/EditComment';
 
 type ReplyProps = {
   reply: CommentFragment;
@@ -20,8 +15,8 @@ type ReplyProps = {
 export const Reply = ({ reply }: ReplyProps) => {
   const { user, id, content } = reply;
   const { state, actions } = useOvermind();
-  const [edit, setEdit] = useState(false);
-  const [value, setValue] = useState(content);
+  const [editing, setEditing] = useState(false);
+
   return (
     <>
       <Element key={id} marginLeft={4} marginRight={2} paddingTop={6}>
@@ -41,7 +36,7 @@ export const Reply = ({ reply }: ReplyProps) => {
                   >
                     Delete
                   </Menu.Item>
-                  <Menu.Item onSelect={() => setEdit(true)}>
+                  <Menu.Item onSelect={() => setEditing(true)}>
                     Edit Reply
                   </Menu.Item>
                 </Menu.List>
@@ -51,7 +46,7 @@ export const Reply = ({ reply }: ReplyProps) => {
         </Stack>
       </Element>
       <Element
-        as={edit ? 'div' : 'p'}
+        as={editing ? 'div' : 'p'}
         marginY={0}
         marginX={4}
         paddingBottom={6}
@@ -60,43 +55,20 @@ export const Reply = ({ reply }: ReplyProps) => {
           borderColor: 'sideBar.border',
         })}
       >
-        {!edit ? (
+        {!editing ? (
           <Markdown source={content} />
         ) : (
-          <>
-            <Element marginBottom={2}>
-              <Textarea
-                autosize
-                value={value}
-                onChange={e => setValue(e.target.value)}
-              />
-            </Element>
-            <Element
-              css={css({
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gridGap: 2,
-              })}
-            >
-              <Button variant="link" onClick={() => setEdit(false)}>
-                Cancel
-              </Button>
-
-              <Button
-                variant="secondary"
-                disabled={!value}
-                onClick={async () => {
-                  await actions.comments.updateComment({
-                    commentId: id,
-                    content: value,
-                  });
-                  setEdit(false);
-                }}
-              >
-                Save
-              </Button>
-            </Element>
-          </>
+          <EditComment
+            initialValue={reply.content}
+            onSave={async newValue => {
+              await actions.comments.updateComment({
+                commentId: reply.id,
+                content: newValue,
+              });
+              setEditing(false);
+            }}
+            onCancel={() => setEditing(false)}
+          />
         )}
       </Element>
     </>

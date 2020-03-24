@@ -1,13 +1,12 @@
 import React from 'react';
 import { Stack, Textarea, Button } from '@codesandbox/components';
-import { CommentFragment } from 'app/graphql/types';
 
 export const EditComment: React.FC<{
-  comment: CommentFragment;
+  initialValue?: string;
   onSave: (value: string) => void;
   onCancel: () => void;
-}> = ({ comment, onSave, onCancel }) => {
-  const [value, setValue] = React.useState(comment.content);
+}> = ({ initialValue = '', onSave, onCancel }) => {
+  const [value, setValue] = React.useState(initialValue);
 
   return (
     <Stack

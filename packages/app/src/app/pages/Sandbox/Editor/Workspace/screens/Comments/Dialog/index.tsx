@@ -194,7 +194,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                   <Markdown source={comment.content} />
                 ) : (
                   <EditComment
-                    comment={comment}
+                    initialValue={comment.content}
                     onSave={async newValue => {
                       await actions.comments.updateComment({
                         commentId: comment.id,
