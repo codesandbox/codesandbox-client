@@ -43,16 +43,17 @@ export const Dialog: React.FC = () => {
 
   // reset editing when comment changes
   React.useEffect(() => {
-    setEditing(false);
-  }, [comment.id]);
+    setEditing(isOptimistic);
+  }, [comment.id, isOptimistic]);
 
-  const OVERLAP_WITH_SIDEBAR = 20;
+  const OVERLAP_WITH_SIDEBAR = -20;
   const OFFSET_TOP_FOR_ALIGNMENT = -90;
   const OFFSET_FOR_CODE = 500;
 
+  // trying to match the position for code comments
   const FALLBACK_POSITION = { x: 800, y: 120 };
 
-  let dialogPosition = {};
+  let dialogPosition = { x: null, y: null };
 
   if (currentCommentPositions.dialog) {
     // if we know the expected dialog position
@@ -63,11 +64,22 @@ export const Dialog: React.FC = () => {
     };
   } else if (currentCommentPositions.trigger) {
     // if don't know, we calculate based on the trigger
-    // true for sidebar comments
-    dialogPosition = {
-      x: currentCommentPositions.trigger.right - OVERLAP_WITH_SIDEBAR,
-      y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
-    };
+    // true for comments opened from the sidebar (both global and code)
+
+    const isCodeComment =
+      comment.references[0] && comment.references[0].type === 'code';
+
+    if (isCodeComment) {
+      dialogPosition = {
+        x: currentCommentPositions.trigger.right + OFFSET_FOR_CODE,
+        y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
+      };
+    } else {
+      dialogPosition = {
+        x: currentCommentPositions.trigger.right + OVERLAP_WITH_SIDEBAR,
+        y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
+      };
+    }
   } else {
     // if we know neither, we put it at  nice spot on the page
     // probably comment from permalink

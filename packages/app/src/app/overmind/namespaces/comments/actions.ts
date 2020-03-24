@@ -133,13 +133,21 @@ export const selectComment: AsyncAction<{
       await actions.editor.moduleSelected({
         path: comment.references[0].metadata.path,
       });
+
       state.comments.currentCommentId = commentId;
+
+      // optimistically set comment trigger position
+      state.comments.currentCommentPositions = {
+        trigger: bounds,
+      };
+
+      // update comment position with precise info
       const referenceBounds = await effects.vscode.getCodeReferenceBoundary(
         comment.references[0]
       );
-      state.comments.currentCommentPositions = {
-        trigger: bounds,
-        dialog: { left: referenceBounds.left, top: referenceBounds.top },
+      state.comments.currentCommentPositions.dialog = {
+        left: referenceBounds.left,
+        top: referenceBounds.top,
       };
     }
   } else {
