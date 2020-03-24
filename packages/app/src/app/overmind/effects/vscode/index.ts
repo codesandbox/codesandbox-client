@@ -215,7 +215,10 @@ export class VSCodeEffect {
     return this.initialized;
   }
 
-  public async getCodeReferenceBoundary(reference: Reference) {
+  public async getCodeReferenceBoundary(
+    commentId: string,
+    reference: Reference
+  ) {
     this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
 
     return new Promise<DOMRect>((resolve, reject) => {
@@ -231,7 +234,7 @@ export class VSCodeEffect {
         setTimeout(() => {
           const el = document.querySelector('.active-comment');
 
-          if (el) {
+          if (el && el.className.includes(commentId)) {
             resolve(el.getBoundingClientRect());
           } else {
             findActiveComment();

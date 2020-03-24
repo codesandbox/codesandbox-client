@@ -139,10 +139,12 @@ export const selectComment: AsyncAction<{
       // optimistically set comment trigger position
       state.comments.currentCommentPositions = {
         trigger: bounds,
+        dialog: null,
       };
 
       // update comment position with precise info
       const referenceBounds = await effects.vscode.getCodeReferenceBoundary(
+        commentId,
         comment.references[0]
       );
       state.comments.currentCommentPositions.dialog = {
