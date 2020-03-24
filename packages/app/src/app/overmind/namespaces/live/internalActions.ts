@@ -44,7 +44,7 @@ export const reset: Action = ({ state, actions, effects }) => {
   state.live.isLoading = false;
   state.live.roomInfo = null;
   state.live.joinSource = 'sandbox';
-  effects.live.resetClients();
+  effects.live.reset();
 };
 
 export const disconnect: Action = ({ effects, actions }) => {
