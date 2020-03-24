@@ -498,13 +498,9 @@ class Live {
   reset() {
     this.clients.clear();
 
-    if (this.awaitSendTimer) {
-      clearTimeout(this.awaitSendTimer);
-    }
+    clearTimeout(this.awaitSendTimer);
 
-    if (this.awaitSend) {
-      this.awaitSend = null;
-    }
+    this.awaitSend = null;
   }
 
   resetClient(moduleShortid: string, revision: number) {
