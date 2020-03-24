@@ -87,7 +87,7 @@ export const Comment = React.memo<{
               </Menu.Item>
               <Menu.Item
                 onSelect={() => {
-                  copyToClipboard(
+                  effects.browser.copyToClipboard(
                     `${window.location.origin}${window.location.pathname}?comment=${comment.id}`
                   );
                   effects.notificationToast.success(

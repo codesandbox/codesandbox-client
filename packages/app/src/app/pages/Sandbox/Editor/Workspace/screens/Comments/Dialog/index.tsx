@@ -9,7 +9,6 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { copyToClipboard } from 'app/utils/copy-to-clipboard';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
@@ -185,7 +184,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                         </Menu.Item>
                         <Menu.Item
                           onSelect={() => {
-                            copyToClipboard(
+                            effects.browser.copyToClipboard(
                               `${window.location.origin}${window.location.pathname}?comment=${comment.id}`
                             );
                             effects.notificationToast.success(
