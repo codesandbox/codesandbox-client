@@ -40,7 +40,7 @@ the development process.
 
 ## CodeSandbox Live 2.0
 
-![Follower mode](./images/0.gif)
+https://youtu.be/h9meHK7d_Yg
 
 We're kicking this off today with a step-change in collaboration on CodeSandbox
 thanks to a massive upgrade to CodeSandbox Live.
@@ -77,6 +77,8 @@ You can also follow along as someone codes with the improved follower mode.
 Click on an avatar in the sandbox and follow their cursor around the sandbox as
 they edit code, scroll, and switch between files. It beats a slow, choppy screen
 share for code interviews, reviews, and demoing or teaching one or many others.
+
+![Share Sheet](./images/Share-Sheet.png)
 
 ## Be Part of the Future of Code Collaboration
 
