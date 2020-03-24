@@ -36,7 +36,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
   const comment = state.comments.currentComment;
-  const currentCommentPositions = state.comments.currentCommentPositions;
+  const currentCommentPositions = state.comments.currentCommentPositions || {};
   const isOptimistic = comment.id === OPTIMISTIC_COMMENT_ID;
   const [editing, setEditing] = useState(isOptimistic);
   const { ref: listRef, scrollTop } = useScrollTop();
@@ -50,33 +50,49 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
     });
   };
 
-  if (!currentCommentPositions) {
-    return null;
-  }
-
   const OVERLAP_WITH_SIDEBAR = 20;
-  const OFFSET_FROM_SIDEBAR_COMMENT = 90;
+  const OFFSET_TOP_FOR_ALIGNMENT = -90;
+  const OFFSET_FOR_CODE = 500;
+
+  const FALLBACK_POSITION = { x: 400, y: 40 };
 
   let dialogPosition = {};
 
   if (currentCommentPositions.dialog) {
+    // if we know the expected dialog position
+    // true for comments with code reference
     dialogPosition = {
-      x: currentCommentPositions.dialog.left + 400,
-      y: currentCommentPositions.dialog.top,
+      x: currentCommentPositions.dialog.left + OFFSET_FOR_CODE,
+      y: currentCommentPositions.dialog.top + OFFSET_TOP_FOR_ALIGNMENT,
     };
   } else if (currentCommentPositions.trigger) {
+    // if don't know, we calculate based on the trigger
+    // true for sidebar comments
     dialogPosition = {
       x: currentCommentPositions.trigger.right - OVERLAP_WITH_SIDEBAR,
-      y: currentCommentPositions.trigger.top - OFFSET_FROM_SIDEBAR_COMMENT,
+      y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
     };
   } else {
-    dialogPosition = { x: 400, y: 40 };
+    // if we know neither, we put it at  nice spot on the page
+    // probably comment from permalink
+    dialogPosition = FALLBACK_POSITION;
   }
 
-  const animateFrom = {
-    x: currentCommentPositions.trigger.left,
-    y: currentCommentPositions.trigger.top,
-  };
+  let animateFrom = {};
+
+  if (currentCommentPositions.trigger) {
+    animateFrom = {
+      x: currentCommentPositions.trigger.left,
+      y: currentCommentPositions.trigger.top,
+    };
+  } else {
+    // if we don't know the trigger, slide in from top
+    // probably comment from permalink
+    animateFrom = {
+      x: FALLBACK_POSITION.x,
+      y: 0,
+    };
+  }
 
   return (
     <motion.div
@@ -244,14 +260,3 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
     </motion.div>
   );
 };
-
-/**
- * Dialog
- * Add new comment
- * Comment
- * Edit comment
- * Add reply
- * Replies
- * Edit reply
- *
- */
