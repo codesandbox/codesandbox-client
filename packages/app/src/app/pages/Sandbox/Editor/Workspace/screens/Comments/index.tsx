@@ -40,8 +40,6 @@ export const Comments: React.FC = () => {
     }
   };
 
-  const selectedCommentRef = React.createRef();
-
   const Empty = () => (
     <Stack
       direction="vertical"
@@ -114,20 +112,14 @@ export const Comments: React.FC = () => {
             }}
           >
             {currentComments.map(comment => (
-              <Comment
-                key={comment.id}
-                comment={comment}
-                innerRef={
-                  comment.id === currentCommentId ? selectedCommentRef : null
-                }
-              />
+              <Comment key={comment.id} comment={comment} />
             ))}
           </List>
         ) : null}
       </div>
       {currentComments.length ? null : <Empty />}
       <AddComment />
-      {currentCommentId && <CommentDialog triggerRef={selectedCommentRef} />}
+      {currentCommentId && <CommentDialog />}
       {multiCommentsSelector && (
         <ul
           style={{

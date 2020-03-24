@@ -23,16 +23,7 @@ import { useScrollTop } from './use-scroll-top';
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
-type DialogProps = {
-  /** Final x position for dialog */
-  x?: number;
-  /** Final y position for dialog */
-  y?: number;
-  /** ref of element to animate from - deprecate this */
-  triggerRef?: React.RefObject<any>;
-};
-
-export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
+export const Dialog: React.FC = () => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
   const comment = state.comments.currentComment;
@@ -49,6 +40,11 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
       parentCommentId: comment.id,
     });
   };
+
+  // reset editing when comment changes
+  React.useEffect(() => {
+    setEditing(false);
+  }, [comment.id]);
 
   const OVERLAP_WITH_SIDEBAR = 20;
   const OFFSET_TOP_FOR_ALIGNMENT = -90;

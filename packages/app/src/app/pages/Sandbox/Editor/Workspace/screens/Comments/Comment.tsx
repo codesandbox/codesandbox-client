@@ -15,8 +15,7 @@ import { AvatarBlock } from './components/AvatarBlock';
 
 export const Comment = React.memo<{
   comment: CommentFragment;
-  innerRef: React.RefObject<any>;
-}>(({ comment, innerRef }) => {
+}>(({ comment }) => {
   const { state, actions } = useOvermind();
 
   const truncateText = {
@@ -35,7 +34,6 @@ export const Comment = React.memo<{
   return (
     <ListAction
       key={comment.id}
-      ref={innerRef}
       paddingTop={4}
       css={css({
         display: 'block',
