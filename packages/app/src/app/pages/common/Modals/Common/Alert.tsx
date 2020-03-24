@@ -6,7 +6,7 @@ type Props = {
   onCancel?: () => void;
   onPrimaryAction?: () => void;
   cancelMessage?: string;
-  confirmMessage?: string;
+  confirmMessage?: string | React.ReactNode;
   title?: string;
   description?: string | React.ReactNode;
   type?: 'link' | 'primary' | 'danger' | 'secondary';

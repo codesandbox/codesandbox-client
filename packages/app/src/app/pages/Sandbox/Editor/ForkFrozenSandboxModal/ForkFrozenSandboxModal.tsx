@@ -1,10 +1,11 @@
 import Modal from 'app/components/Modal';
 import { withTheme } from 'styled-components';
-import { ThemeProvider } from '@codesandbox/components';
+import { ThemeProvider, Stack, Text } from '@codesandbox/components';
 import { Alert } from 'app/pages/common/Modals/Common/Alert';
 import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 import useKeyPressEvent from 'react-use/lib/useKeyPressEvent';
+import ReturnIcon from 'react-icons/lib/md/keyboard-return';
 
 const ModalContent: React.FC = () => {
   const {
@@ -45,7 +46,12 @@ const ModalContent: React.FC = () => {
       onCancel={unlock}
       cancelMessage="Unfreeze"
       onPrimaryAction={fork}
-      confirmMessage="Fork"
+      confirmMessage={
+        <Stack gap={2} align="center">
+          <Text size={3}>Fork</Text>
+          <ReturnIcon />
+        </Stack>
+      }
     />
   );
 };
