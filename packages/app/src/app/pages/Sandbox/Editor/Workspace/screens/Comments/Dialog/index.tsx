@@ -54,7 +54,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
   const OFFSET_TOP_FOR_ALIGNMENT = -90;
   const OFFSET_FOR_CODE = 500;
 
-  const FALLBACK_POSITION = { x: 400, y: 40 };
+  const FALLBACK_POSITION = { x: 780, y: 120 };
 
   let dialogPosition = {};
 
@@ -96,8 +96,8 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
 
   return (
     <motion.div
-      initial={{ ...animateFrom, scale: 0.5 }}
-      animate={{ ...dialogPosition, scale: 1 }}
+      initial={{ ...animateFrom, scale: 0.5, opacity: 0 }}
+      animate={{ ...dialogPosition, scale: 1, opacity: 1 }}
       drag
       dragMomentum={false}
       transition={{ duration: 0.25 }}
