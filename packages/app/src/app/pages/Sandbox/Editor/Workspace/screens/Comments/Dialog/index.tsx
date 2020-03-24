@@ -50,7 +50,7 @@ export const Dialog: React.FC = () => {
   const OFFSET_TOP_FOR_ALIGNMENT = -90;
   const OFFSET_FOR_CODE = 500;
 
-  const FALLBACK_POSITION = { x: 780, y: 120 };
+  const FALLBACK_POSITION = { x: 800, y: 120 };
 
   let dialogPosition = {};
 
@@ -92,7 +92,7 @@ export const Dialog: React.FC = () => {
 
   return (
     <motion.div
-      initial={{ ...animateFrom, scale: 0.5, opacity: 0 }}
+      initial={{ ...animateFrom, scale: 1, opacity: 0 }}
       animate={{ ...dialogPosition, scale: 1, opacity: 1 }}
       drag
       dragMomentum={false}
