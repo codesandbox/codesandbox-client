@@ -1,10 +1,8 @@
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import {
-  Avatar,
   Button,
   Element,
   IconButton,
-  Link,
   Menu,
   Stack,
   Text,
@@ -13,7 +11,7 @@ import {
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
-import { formatDistance } from 'date-fns';
+
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -21,13 +19,17 @@ import ReactDOM from 'react-dom';
 import { Markdown } from './Markdown';
 import { Reply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
+import { AvatarBlock } from '../components/AvatarBlock';
 
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
 type DialogProps = {
+  /** Final x position for dialog */
   x?: number;
+  /** Final y position for dialog */
   y?: number;
+  /** ref of element to animate from - deprecate this */
   triggerRef?: React.RefObject<any>;
 };
 
@@ -152,28 +154,7 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                 marginLeft={4}
                 marginRight={2}
               >
-                <Stack gap={2} align="center">
-                  <Avatar user={comment.user} />
-                  <Stack direction="vertical" justify="center" gap={1}>
-                    <Link
-                      size={3}
-                      weight="bold"
-                      href={`/u/${comment.user.username}`}
-                      variant="body"
-                    >
-                      {comment.user.username}
-                    </Link>
-                    <Text size={2} variant="muted">
-                      {formatDistance(
-                        new Date(comment.insertedAt),
-                        new Date(),
-                        {
-                          addSuffix: true,
-                        }
-                      )}
-                    </Text>
-                  </Stack>
-                </Stack>
+                <AvatarBlock comment={comment} />
                 {state.user.id === comment.user.id && !isOptimistic && (
                   <Stack align="center">
                     <Menu>

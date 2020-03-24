@@ -1,28 +1,24 @@
 import {
-  Avatar,
   Button,
   Element,
-  Link,
   Menu,
   Stack,
-  Text,
   Textarea,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
-import { formatDistance } from 'date-fns';
 import React, { useState } from 'react';
 
 import { Markdown } from './Markdown';
+import { AvatarBlock } from '../components/AvatarBlock';
 
 type ReplyProps = {
   reply: CommentFragment;
 };
 
-export const Reply = ({
-  reply: { user, insertedAt, id, content },
-}: ReplyProps) => {
+export const Reply = ({ reply }: ReplyProps) => {
+  const { user, id, content } = reply;
   const { state, actions } = useOvermind();
   const [edit, setEdit] = useState(false);
   const [value, setValue] = useState(content);
@@ -30,24 +26,7 @@ export const Reply = ({
     <>
       <Element key={id} marginLeft={4} marginRight={2} paddingTop={6}>
         <Stack align="flex-start" justify="space-between" marginBottom={4}>
-          <Stack gap={2} align="center">
-            <Avatar user={user} />
-            <Stack direction="vertical" justify="center" gap={1}>
-              <Link
-                size={3}
-                weight="bold"
-                href={`/u/${user.username}`}
-                variant="body"
-              >
-                {user.username}
-              </Link>
-              <Text size={2} variant="muted">
-                {formatDistance(new Date(insertedAt), new Date(), {
-                  addSuffix: true,
-                })}
-              </Text>
-            </Stack>
-          </Stack>
+          <AvatarBlock comment={reply} />
           {state.user.id === user.id && (
             <Stack align="center">
               <Menu>
