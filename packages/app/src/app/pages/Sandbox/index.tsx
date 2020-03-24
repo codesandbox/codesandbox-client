@@ -42,9 +42,10 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
       actions.comments.selectComment(id);
       actions.workspace.setWorkspaceItem({ item: 'comments' });
     }
+    // I don't want a run if the url changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     state.comments.comments,
-    query,
     actions.comments,
     actions.workspace,
     state.editor.currentSandbox,
@@ -66,13 +67,15 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
     actions.live.onNavigateAway();
 
     actions.editor.sandboxChanged({ id: match.params.id });
+
+    // I don't want a run if the url changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     actions.live,
     actions.editor,
     actions.preferences,
     match.params,
     match.params.id,
-    query,
   ]);
 
   useEffect(
