@@ -71,8 +71,8 @@ class Live {
     saved_code: string;
   }) => void;
 
-  private operationToElixir(ot) {
-    return ot.map(op => {
+  private operationToElixir(ot: (number | string)[]) {
+    return ot.map((op: number | string) => {
       if (typeof op === 'number') {
         if (op < 0) {
           return { d: -op };
@@ -495,6 +495,18 @@ class Live {
     });
   }
 
+  reset() {
+    this.clients.clear();
+
+    if (this.awaitSendTimer) {
+      clearTimeout(this.awaitSendTimer);
+    }
+
+    if (this.awaitSend) {
+      this.awaitSend = null;
+    }
+  }
+
   resetClient(moduleShortid: string, revision: number) {
     this.clients.reset(moduleShortid, revision);
   }
@@ -521,10 +533,6 @@ class Live {
 
   createClient(moduleShortid: string, revision: number) {
     return this.clients.create(moduleShortid, revision);
-  }
-
-  resetClients() {
-    this.clients.clear();
   }
 }
 

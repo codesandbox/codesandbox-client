@@ -72,7 +72,7 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
       // to join
       state.live.joinSource === 'sandbox'
     ) {
-      await actions.live.internal.disconnect();
+      actions.live.internal.disconnect();
     }
   }
 
