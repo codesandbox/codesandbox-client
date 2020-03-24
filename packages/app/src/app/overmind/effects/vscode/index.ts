@@ -226,7 +226,7 @@ export class VSCodeEffect {
       function findActiveComment() {
         checkCount++;
 
-        if (checkCount === 10) {
+        if (checkCount === 20) {
           reject(new Error('Could not find the comment glyph'));
           return;
         }

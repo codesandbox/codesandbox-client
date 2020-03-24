@@ -27,7 +27,7 @@ export const Dialog: React.FC = () => {
   const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
   const comment = state.comments.currentComment;
-  const currentCommentPositions = state.comments.currentCommentPositions || {};
+  const currentCommentPositions = state.comments.currentCommentPositions;
   const isOptimistic = comment.id === OPTIMISTIC_COMMENT_ID;
   const [editing, setEditing] = useState(isOptimistic);
   const { ref: listRef, scrollTop } = useScrollTop();
@@ -46,6 +46,10 @@ export const Dialog: React.FC = () => {
     setEditing(isOptimistic);
   }, [comment.id, isOptimistic]);
 
+  if (!currentCommentPositions) {
+    return null;
+  }
+
   const OVERLAP_WITH_SIDEBAR = -20;
   const OFFSET_TOP_FOR_ALIGNMENT = -90;
   const OFFSET_FOR_CODE = 500;
@@ -55,14 +59,14 @@ export const Dialog: React.FC = () => {
 
   let dialogPosition = { x: null, y: null };
 
-  if (currentCommentPositions.dialog) {
+  if (currentCommentPositions?.dialog) {
     // if we know the expected dialog position
     // true for comments with code reference
     dialogPosition = {
       x: currentCommentPositions.dialog.left + OFFSET_FOR_CODE,
       y: currentCommentPositions.dialog.top + OFFSET_TOP_FOR_ALIGNMENT,
     };
-  } else if (currentCommentPositions.trigger) {
+  } else if (currentCommentPositions?.trigger) {
     // if don't know, we calculate based on the trigger
     // true for comments opened from the sidebar (both global and code)
 
@@ -88,7 +92,7 @@ export const Dialog: React.FC = () => {
 
   let animateFrom = {};
 
-  if (currentCommentPositions.trigger) {
+  if (currentCommentPositions?.trigger) {
     animateFrom = {
       x: currentCommentPositions.trigger.left,
       y: currentCommentPositions.trigger.top,

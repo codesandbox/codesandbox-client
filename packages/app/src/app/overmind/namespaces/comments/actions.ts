@@ -117,7 +117,6 @@ export const selectComment: AsyncAction<{
 
   // Should close from somewhere else probably
   state.comments.multiCommentsSelector = null;
-  state.comments.currentCommentPositions = null;
 
   const sandbox = state.editor.currentSandbox;
   const comment = state.comments.comments[sandbox.id][commentId];
@@ -141,9 +140,16 @@ export const selectComment: AsyncAction<{
         commentId,
         comment.references[0]
       );
-      state.comments.currentCommentPositions.dialog = {
-        left: referenceBounds.left,
-        top: referenceBounds.top,
+      const existingDialogBounds =
+        state.comments.currentCommentPositions?.dialog;
+      state.comments.currentCommentPositions = {
+        trigger: existingDialogBounds || bounds,
+        dialog: {
+          left: referenceBounds.left,
+          top: referenceBounds.top,
+          bottom: referenceBounds.bottom,
+          right: referenceBounds.right,
+        },
       };
     }
   } else {
