@@ -10,6 +10,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { copyToClipboard } from 'app/utils/copy-to-clipboard';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 
 import { motion } from 'framer-motion';
@@ -34,7 +35,7 @@ type DialogProps = {
 };
 
 export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
-  const { state, actions } = useOvermind();
+  const { state, actions, effects } = useOvermind();
   const [value, setValue] = useState('');
   const comment = state.comments.currentComment;
   const isOptimistic = comment.id === OPTIMISTIC_COMMENT_ID;
@@ -175,6 +176,18 @@ export const Dialog: React.FC<DialogProps> = ({ triggerRef, ...props }) => {
                         </Menu.Item>
                         <Menu.Item onSelect={() => setEdit(true)}>
                           Edit Comment
+                        </Menu.Item>
+                        <Menu.Item
+                          onSelect={() => {
+                            copyToClipboard(
+                              `${window.location.origin}${window.location.pathname}?comment=${comment.id}`
+                            );
+                            effects.notificationToast.success(
+                              'Comment permalink copied to clipboard'
+                            );
+                          }}
+                        >
+                          Share Comment
                         </Menu.Item>
                       </Menu.List>
                     </Menu>

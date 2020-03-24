@@ -11,13 +11,14 @@ import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 
 import React from 'react';
+import { copyToClipboard } from 'app/utils/copy-to-clipboard';
 import { AvatarBlock } from './components/AvatarBlock';
 
 export const Comment = React.memo<{
   comment: CommentFragment;
   innerRef: React.RefObject<any>;
 }>(({ comment, innerRef }) => {
-  const { state, actions } = useOvermind();
+  const { state, actions, effects } = useOvermind();
 
   const truncateText = {
     maxHeight: 52,
@@ -76,7 +77,18 @@ export const Comment = React.memo<{
               >
                 Mark as {comment.isResolved ? 'Unr' : 'r'}esolved
               </Menu.Item>
-              <Menu.Item onSelect={() => {}}>Share Comment</Menu.Item>
+              <Menu.Item
+                onSelect={() => {
+                  copyToClipboard(
+                    `${window.location.origin}${window.location.pathname}?comment=${comment.id}`
+                  );
+                  effects.notificationToast.success(
+                    'Comment permalink copied to clipboard'
+                  );
+                }}
+              >
+                Share Comment
+              </Menu.Item>
               {state.user.id === comment.user.id && (
                 <Menu.Item
                   onSelect={() =>
