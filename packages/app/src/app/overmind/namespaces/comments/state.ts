@@ -13,6 +13,10 @@ type State = {
   currentComments: Derive<State, CommentFragment[]>;
   selectedCommentsFilter: CommentsFilterOption;
   currentCommentId: string | null;
+  currentCommentPositions: {
+    trigger: { left: number; top: number; right: number; bottom: number };
+    dialog: { left: number; top: number } | null;
+  } | null;
   currentComment: Derive<State, CommentWithRepliesFragment | null>;
   fileComments: Derive<
     State,
@@ -32,6 +36,7 @@ type State = {
 
 export const state: State = {
   multiCommentsSelector: null,
+  currentCommentPositions: null,
   comments: {},
   currentCommentId: null,
   fileComments: ({ currentComments }) =>

@@ -9,8 +9,8 @@ import {
 import { css } from '@styled-system/css';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
-
 import React from 'react';
+
 import { AvatarBlock } from './components/AvatarBlock';
 
 export const Comment = React.memo<{
@@ -54,7 +54,16 @@ export const Comment = React.memo<{
           return;
         }
 
-        actions.comments.selectComment(comment.id);
+        const boundingRect = target.getBoundingClientRect();
+        actions.comments.selectComment({
+          commentId: comment.id,
+          bounds: {
+            left: boundingRect.left,
+            right: boundingRect.right,
+            top: boundingRect.top,
+            bottom: boundingRect.bottom,
+          },
+        });
       }}
     >
       <Stack align="flex-start" justify="space-between" marginBottom={4}>

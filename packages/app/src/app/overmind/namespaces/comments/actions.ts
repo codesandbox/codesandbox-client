@@ -74,49 +74,80 @@ export const getComments: AsyncAction<string> = async (
 
 export const onCommentClick: Action<{
   commentIds: string[];
-  x: number;
-  y: number;
-}> = ({ state, actions }, { commentIds, x, y }) => {
+  bounds: {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+  };
+}> = ({ state, actions }, { commentIds, bounds }) => {
   if (commentIds.length === 1) {
-    actions.comments.selectComment(commentIds[0]);
+    actions.comments.selectComment({
+      commentId: commentIds[0],
+      bounds,
+    });
   } else {
     state.comments.multiCommentsSelector = {
       ids: commentIds,
-      x,
-      y,
+      x: bounds.left,
+      y: bounds.top,
     };
   }
 };
 
-export const selectComment: AsyncAction<string> = async (
-  { state, effects, actions },
-  id
-) => {
+export const closeComment: Action = ({ state }) => {
+  state.comments.currentCommentId = null;
+  state.comments.currentCommentPositions = null;
+};
+
+export const selectComment: AsyncAction<{
+  commentId: string;
+  bounds: {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+  };
+}> = async ({ state, effects, actions }, { commentId, bounds }) => {
   if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
     delete state.comments.comments[state.editor.currentSandbox.id][
       OPTIMISTIC_COMMENT_ID
     ];
   }
 
-  state.comments.currentCommentId = id;
+  // Should close from somewhere else probably
   state.comments.multiCommentsSelector = null;
+  state.comments.currentCommentPositions = null;
 
-  if (id) {
-    actions.comments.getComments(id);
-  }
+  const sandbox = state.editor.currentSandbox;
+  const comment = state.comments.comments[sandbox.id][commentId];
 
-  const currentComment = state.comments.currentComment;
+  actions.comments.getComments(commentId);
+
   if (
-    currentComment &&
-    currentComment.references.length &&
-    currentComment.references[0].type === 'code'
+    comment &&
+    comment.references.length &&
+    comment.references[0].type === 'code'
   ) {
     if (module) {
       await actions.editor.moduleSelected({
-        path: currentComment.references[0].metadata.path,
+        path: comment.references[0].metadata.path,
       });
-      effects.vscode.getCodeReferenceBoundary(currentComment.references[0]);
+      state.comments.currentCommentId = commentId;
+      const referenceBounds = await effects.vscode.getCodeReferenceBoundary(
+        comment.references[0]
+      );
+      state.comments.currentCommentPositions = {
+        trigger: bounds,
+        dialog: { left: referenceBounds.left, top: referenceBounds.top },
+      };
     }
+  } else {
+    state.comments.currentCommentId = commentId;
+    state.comments.currentCommentPositions = {
+      trigger: bounds,
+      dialog: null,
+    };
   }
 };
 

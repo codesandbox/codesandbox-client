@@ -214,10 +214,12 @@ export class VSCodeEffect {
   public async getCodeReferenceBoundary(reference: Reference) {
     this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
 
-    return new Promise(resolve => {
-      requestAnimationFrame(() => {
-        resolve(document.querySelector('.active-comment'));
-      });
+    return new Promise<DOMRect>(resolve => {
+      setTimeout(() => {
+        resolve(
+          document.querySelector('.active-comment').getBoundingClientRect()
+        );
+      }, 500);
     });
   }
 
@@ -1192,11 +1194,15 @@ export class VSCodeEffect {
           .split('comment-ids-')
           .pop()
           .split('_');
-
+        const boundingRect = target.getBoundingClientRect();
         this.options.onCommentClick({
           commentIds,
-          x: target.getBoundingClientRect().left,
-          y: target.getBoundingClientRect().top,
+          bounds: {
+            left: boundingRect.left,
+            top: boundingRect.top,
+            right: boundingRect.right,
+            bottom: boundingRect.bottom,
+          },
         });
       }
     });
