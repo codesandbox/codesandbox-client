@@ -118,7 +118,7 @@ const AddComment = ({ comment, onSave }) => {
     onSave();
   };
 
-  const closeDialog = actions.comments.closeComment();
+  const closeDialog = () => actions.comments.closeComment();
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -168,7 +168,7 @@ const AddComment = ({ comment, onSave }) => {
 const DialogHeader = ({ comment, hasShadow }) => {
   const { actions } = useOvermind();
 
-  const closeDialog = actions.comments.closeComment();
+  const closeDialog = () => actions.comments.closeComment();
 
   return (
     <Stack
