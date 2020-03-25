@@ -60,7 +60,8 @@ export const Dialog: React.FC = () => {
 
   return (
     <motion.div
-      initial={{ ...animateFrom, scale: 1, opacity: 0 }}
+      key={isCodeComment ? 'code' : 'global'}
+      initial={{ ...animateFrom, scale: 0.5, opacity: 0 }}
       animate={{ ...dialogPosition, scale: 1, opacity: 1 }}
       drag
       dragMomentum={false}
