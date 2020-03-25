@@ -7,3 +7,4 @@ export const ARROW_UP = 38;
 export const ARROW_RIGHT = 39;
 export const ARROW_DOWN = 40;
 export const DOT = 190;
+export const BACKTICK = 192;
