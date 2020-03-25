@@ -51,7 +51,7 @@ export default {
   getCommentId() {
     return new URL(location.href).searchParams.get('comment');
   },
-  createCommentUrl(id) {
+  createCommentUrl(id: string) {
     return `${window.location.origin}${window.location.pathname}?comment=${id}`;
   },
 };

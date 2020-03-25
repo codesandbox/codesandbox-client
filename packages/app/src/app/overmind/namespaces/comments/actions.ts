@@ -102,7 +102,7 @@ export const closeComment: Action = ({ state }) => {
 
 export const selectComment: AsyncAction<{
   commentId: string;
-  bounds?: {
+  bounds: {
     left: number;
     top: number;
     right: number;
