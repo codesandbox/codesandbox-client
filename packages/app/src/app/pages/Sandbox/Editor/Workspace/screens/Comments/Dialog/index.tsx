@@ -87,7 +87,7 @@ export const Dialog: React.FC = () => {
           />
         ) : (
           <>
-            <CommentHeader
+            <DialogHeader
               comment={comment}
               hasShadow={scrollTop > 0}
               closeDialog={closeDialog}
@@ -97,66 +97,11 @@ export const Dialog: React.FC = () => {
               css={{ overflow: 'auto' }}
               ref={listRef}
             >
-              <Stack direction="vertical" gap={4}>
-                <Stack
-                  align="flex-start"
-                  justify="space-between"
-                  marginLeft={4}
-                  marginRight={2}
-                >
-                  <AvatarBlock comment={comment} />
-                  {state.user.id === comment.user.id && (
-                    <Stack align="center">
-                      <Menu>
-                        <Menu.IconButton
-                          name="more"
-                          title="Comment actions"
-                          size={12}
-                        />
-                        <Menu.List>
-                          <Menu.Item
-                            onSelect={() =>
-                              actions.comments.deleteComment({
-                                commentId: comment.id,
-                              })
-                            }
-                          >
-                            Delete
-                          </Menu.Item>
-                          <Menu.Item onSelect={() => setEditing(true)}>
-                            Edit Comment
-                          </Menu.Item>
-                        </Menu.List>
-                      </Menu>
-                    </Stack>
-                  )}
-                </Stack>
-                <Element
-                  marginY={0}
-                  marginX={4}
-                  paddingBottom={6}
-                  css={css({
-                    borderBottom: '1px solid',
-                    borderColor: 'sideBar.border',
-                  })}
-                >
-                  {!editing ? (
-                    <Markdown source={comment.content} />
-                  ) : (
-                    <EditComment
-                      initialValue={comment.content}
-                      onSave={async newValue => {
-                        await actions.comments.updateComment({
-                          commentId: comment.id,
-                          content: newValue,
-                        });
-                        setEditing(false);
-                      }}
-                      onCancel={() => setEditing(false)}
-                    />
-                  )}
-                </Element>
-              </Stack>
+              <CommentBody
+                comment={comment}
+                editing={editing}
+                setEditing={setEditing}
+              />
               <Replies replies={comment.comments} />
             </Stack>
             <AddReply comment={comment} />
@@ -225,7 +170,7 @@ const AddComment = ({ comment, onSave, onCancel }) => {
   );
 };
 
-const CommentHeader = ({ comment, hasShadow, closeDialog }) => {
+const DialogHeader = ({ comment, hasShadow, closeDialog }) => {
   const { actions } = useOvermind();
 
   return (
@@ -271,6 +216,69 @@ const CommentHeader = ({ comment, hasShadow, closeDialog }) => {
           onClick={closeDialog}
         />
       </Stack>
+    </Stack>
+  );
+};
+
+const CommentBody = ({ comment, editing, setEditing }) => {
+  const { state, actions } = useOvermind();
+
+  return (
+    <Stack direction="vertical" gap={4}>
+      <Stack
+        align="flex-start"
+        justify="space-between"
+        marginLeft={4}
+        marginRight={2}
+      >
+        <AvatarBlock comment={comment} />
+        {state.user.id === comment.user.id && (
+          <Stack align="center">
+            <Menu>
+              <Menu.IconButton name="more" title="Comment actions" size={12} />
+              <Menu.List>
+                <Menu.Item
+                  onSelect={() =>
+                    actions.comments.deleteComment({
+                      commentId: comment.id,
+                    })
+                  }
+                >
+                  Delete
+                </Menu.Item>
+                <Menu.Item onSelect={() => setEditing(true)}>
+                  Edit Comment
+                </Menu.Item>
+              </Menu.List>
+            </Menu>
+          </Stack>
+        )}
+      </Stack>
+      <Element
+        marginY={0}
+        marginX={4}
+        paddingBottom={6}
+        css={css({
+          borderBottom: '1px solid',
+          borderColor: 'sideBar.border',
+        })}
+      >
+        {!editing ? (
+          <Markdown source={comment.content} />
+        ) : (
+          <EditComment
+            initialValue={comment.content}
+            onSave={async newValue => {
+              await actions.comments.updateComment({
+                commentId: comment.id,
+                content: newValue,
+              });
+              setEditing(false);
+            }}
+            onCancel={() => setEditing(false)}
+          />
+        )}
+      </Element>
     </Stack>
   );
 };
