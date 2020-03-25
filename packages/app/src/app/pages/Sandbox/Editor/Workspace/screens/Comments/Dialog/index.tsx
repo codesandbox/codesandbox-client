@@ -87,49 +87,11 @@ export const Dialog: React.FC = () => {
           />
         ) : (
           <>
-            <Stack
-              align="center"
-              justify="space-between"
-              padding={4}
-              paddingRight={2}
-              marginBottom={2}
-              css={css({
-                cursor: 'move',
-                zIndex: 2,
-                boxShadow: theme =>
-                  scrollTop > 0
-                    ? `0px 32px 32px ${theme.colors.dialog.background}`
-                    : 'none',
-              })}
-            >
-              <Text size={3} weight="bold">
-                Comment
-              </Text>
-              <Stack align="center">
-                <IconButton
-                  onClick={() =>
-                    actions.comments.resolveComment({
-                      commentId: comment.id,
-                      isResolved: !comment.isResolved,
-                    })
-                  }
-                  name="check"
-                  size={14}
-                  title="Resolve Comment"
-                  css={css({
-                    transition: 'color',
-                    transitionDuration: theme => theme.speeds[1],
-                    color: comment.isResolved ? 'green' : 'mutedForeground',
-                  })}
-                />
-                <IconButton
-                  name="cross"
-                  size={10}
-                  title="Close comment dialog"
-                  onClick={closeDialog}
-                />
-              </Stack>
-            </Stack>
+            <CommentHeader
+              comment={comment}
+              hasShadow={scrollTop > 0}
+              closeDialog={closeDialog}
+            />
             <Stack
               direction="vertical"
               css={{ overflow: 'auto' }}
@@ -195,11 +157,7 @@ export const Dialog: React.FC = () => {
                   )}
                 </Element>
               </Stack>
-              <>
-                {comment.comments.map(reply =>
-                  reply ? <Reply reply={reply} key={reply.id} /> : 'Loading...'
-                )}
-              </>
+              <Replies replies={comment.comments} />
             </Stack>
             <AddReply comment={comment} />
           </>
@@ -266,6 +224,64 @@ const AddComment = ({ comment, onSave, onCancel }) => {
     </Stack>
   );
 };
+
+const CommentHeader = ({ comment, hasShadow, closeDialog }) => {
+  const { actions } = useOvermind();
+
+  return (
+    <Stack
+      align="center"
+      justify="space-between"
+      padding={4}
+      paddingRight={2}
+      marginBottom={2}
+      css={css({
+        cursor: 'move',
+        zIndex: 2,
+        boxShadow: theme =>
+          hasShadow
+            ? `0px 32px 32px ${theme.colors.dialog.background}`
+            : 'none',
+      })}
+    >
+      <Text size={3} weight="bold">
+        Comment
+      </Text>
+      <Stack align="center">
+        <IconButton
+          onClick={() =>
+            actions.comments.resolveComment({
+              commentId: comment.id,
+              isResolved: !comment.isResolved,
+            })
+          }
+          name="check"
+          size={14}
+          title="Resolve Comment"
+          css={css({
+            transition: 'color',
+            transitionDuration: theme => theme.speeds[1],
+            color: comment.isResolved ? 'green' : 'mutedForeground',
+          })}
+        />
+        <IconButton
+          name="cross"
+          size={10}
+          title="Close comment dialog"
+          onClick={closeDialog}
+        />
+      </Stack>
+    </Stack>
+  );
+};
+
+const Replies = ({ replies }) => (
+  <>
+    {replies.map(reply =>
+      reply ? <Reply reply={reply} key={reply.id} /> : 'Loading...'
+    )}
+  </>
+);
 
 const AddReply = ({ comment }) => {
   const { actions } = useOvermind();
