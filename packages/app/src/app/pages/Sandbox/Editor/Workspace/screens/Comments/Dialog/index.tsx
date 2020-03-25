@@ -42,15 +42,6 @@ export const Dialog: React.FC = () => {
     });
   };
 
-  const onSubmitNewComment = async () => {
-    await actions.comments.updateComment({
-      commentId: comment.id,
-      content: value,
-    });
-    setValue('');
-    setEditing(false);
-  };
-
   // reset editing when comment changes
   React.useEffect(() => {
     setEditing(isNewComment);
@@ -97,47 +88,11 @@ export const Dialog: React.FC = () => {
         })}
       >
         {isNewComment && editing ? (
-          <Stack direction="vertical" gap={4}>
-            <Stack
-              justify="space-between"
-              align="center"
-              marginY={4}
-              marginLeft={4}
-              marginRight={2}
-            >
-              <Stack gap={2} align="center">
-                <Avatar user={comment.user} />
-                <Text size={3} weight="bold" variant="body">
-                  {comment.user.username}
-                </Text>
-              </Stack>
-              <IconButton
-                name="cross"
-                size={10}
-                title="Close comment dialog"
-                onClick={closeDialog}
-              />
-            </Stack>
-            <Textarea
-              autosize
-              css={css({
-                overflow: 'hidden',
-                border: 'none',
-                display: 'block',
-                borderTop: '1px solid',
-                borderColor: 'sideBar.border',
-              })}
-              value={value}
-              onChange={e => setValue(e.target.value)}
-              placeholder="Add comment..."
-              onKeyDown={async event => {
-                if (event.keyCode === ENTER && !event.shiftKey) {
-                  onSubmitNewComment();
-                  event.preventDefault();
-                }
-              }}
-            />
-          </Stack>
+          <NewComment
+            comment={comment}
+            onSave={() => setEditing(false)}
+            onCancel={closeDialog}
+          />
         ) : (
           <>
             <Stack
@@ -274,6 +229,64 @@ export const Dialog: React.FC = () => {
         )}
       </Stack>
     </motion.div>
+  );
+};
+
+const NewComment = ({ comment, onSave, onCancel }) => {
+  const { actions } = useOvermind();
+  const [value, setValue] = useState('');
+
+  const saveComment = async () => {
+    await actions.comments.updateComment({
+      commentId: comment.id,
+      content: value,
+    });
+    setValue('');
+    onSave();
+  };
+
+  return (
+    <Stack direction="vertical" gap={4}>
+      <Stack
+        justify="space-between"
+        align="center"
+        marginY={4}
+        marginLeft={4}
+        marginRight={2}
+      >
+        <Stack gap={2} align="center">
+          <Avatar user={comment.user} />
+          <Text size={3} weight="bold" variant="body">
+            {comment.user.username}
+          </Text>
+        </Stack>
+        <IconButton
+          name="cross"
+          size={10}
+          title="Close comment dialog"
+          onClick={onCancel}
+        />
+      </Stack>
+      <Textarea
+        autosize
+        css={css({
+          overflow: 'hidden',
+          border: 'none',
+          display: 'block',
+          borderTop: '1px solid',
+          borderColor: 'sideBar.border',
+        })}
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        placeholder="Add comment..."
+        onKeyDown={async event => {
+          if (event.keyCode === ENTER && !event.shiftKey) {
+            saveComment();
+            event.preventDefault();
+          }
+        }}
+      />
+    </Stack>
   );
 };
 
