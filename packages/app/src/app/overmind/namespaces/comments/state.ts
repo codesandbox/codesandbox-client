@@ -108,27 +108,13 @@ export const state: State = {
 
     switch (selectedCommentsFilter) {
       case CommentsFilterOption.ALL:
-        return rootComments
-          .filter(comment => comment.id !== OPTIMISTIC_COMMENT_ID)
-          .sort(sortByInsertedAt);
+        return rootComments.sort(sortByInsertedAt);
       case CommentsFilterOption.RESOLVED:
-        return rootComments
-          .filter(
-            comment =>
-              comment.id !== OPTIMISTIC_COMMENT_ID && comment.isResolved
-          )
-          .sort(sortByInsertedAt);
+        return rootComments.sort(sortByInsertedAt);
       case CommentsFilterOption.OPEN:
-        return rootComments
-          .filter(
-            comment =>
-              comment.id !== OPTIMISTIC_COMMENT_ID && !comment.isResolved
-          )
-          .sort(sortByInsertedAt);
+        return rootComments.sort(sortByInsertedAt);
       case CommentsFilterOption.MENTIONS:
-        return rootComments
-          .filter(comment => comment.id !== OPTIMISTIC_COMMENT_ID)
-          .sort(sortByInsertedAt);
+        return rootComments.sort(sortByInsertedAt);
       default:
         return [];
     }

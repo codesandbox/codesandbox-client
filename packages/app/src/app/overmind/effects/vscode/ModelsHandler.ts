@@ -700,28 +700,45 @@ export class ModelsHandler {
         const lineCommentDecorations =
           commentDecorationsByLineNumber[lineNumberKey];
         const lineNumber = Number(lineNumberKey);
-        const isActive = Boolean(
-          lineCommentDecorations.find(
-            commentDecoration =>
-              commentDecoration.commentId === currentCommentThreadId
-          )
+        const activeCommentDecoration = lineCommentDecorations.find(
+          commentDecoration =>
+            commentDecoration.commentId === currentCommentThreadId
         );
         const ids = lineCommentDecorations.map(
           commentDecoration => commentDecoration.commentId
         );
+        const targetLineNumber = activeCommentDecoration
+          ? indexToLineAndColumn(
+              model.getLinesContent() || [],
+              activeCommentDecoration.range[1]
+            ).lineNumber
+          : lineNumber;
 
-        return aggr.concat({
-          range: new this.monaco.Range(lineNumber, 1, lineNumber, 1),
-          options: {
-            isWholeLine: true,
-            // comment-id- class needs to be the LAST class!
-            glyphMarginClassName: `editor-comments-glyph ${
-              isActive ? 'active-comment ' : ''
-            }${
-              ids.length > 1 ? `multi-comment multi-comment-${ids.length} ` : ''
-            }comment-ids-${ids.join('_')}`,
+        return aggr.concat(
+          {
+            range: new this.monaco.Range(lineNumber, 1, lineNumber, 1),
+            options: {
+              isWholeLine: true,
+              // comment-id- class needs to be the LAST class!
+              glyphMarginClassName: `editor-comments-glyph ${
+                activeCommentDecoration ? 'active-comment ' : ''
+              }${
+                ids.length > 1
+                  ? `multi-comment multi-comment-${ids.length} `
+                  : ''
+              }comment-ids-${ids.join('_')}`,
+            },
           },
-        });
+          {
+            range: new this.monaco.Range(lineNumber, 1, targetLineNumber, 1),
+            options: {
+              isWholeLine: true,
+              className: activeCommentDecoration
+                ? 'editor-comments-highlight'
+                : undefined,
+            },
+          }
+        );
       },
       []
     );

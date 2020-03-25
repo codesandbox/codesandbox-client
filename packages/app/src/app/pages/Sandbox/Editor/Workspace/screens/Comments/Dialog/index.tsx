@@ -199,7 +199,13 @@ export const Dialog: React.FC = () => {
                       });
                       setEditing(false);
                     }}
-                    onCancel={() => setEditing(false)}
+                    onCancel={() => {
+                      if (comment.id === OPTIMISTIC_COMMENT_ID) {
+                        actions.comments.closeComment();
+                      } else {
+                        setEditing(false);
+                      }
+                    }}
                   />
                 )}
               </Element>

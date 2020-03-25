@@ -9,6 +9,7 @@ import {
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 import React from 'react';
 
 import { AddComment } from './AddComment';
@@ -111,9 +112,11 @@ export const Comments: React.FC = () => {
               overflow: 'auto',
             }}
           >
-            {currentComments.map(comment => (
-              <Comment key={comment.id} comment={comment} />
-            ))}
+            {currentComments.map(comment =>
+              comment.id === OPTIMISTIC_COMMENT_ID ? null : (
+                <Comment key={comment.id} comment={comment} />
+              )
+            )}
           </List>
         ) : null}
       </div>

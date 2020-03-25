@@ -96,6 +96,12 @@ export const onCommentClick: Action<{
 };
 
 export const closeComment: Action = ({ state }) => {
+  if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
+    delete state.comments.comments[state.editor.currentSandbox.id][
+      OPTIMISTIC_COMMENT_ID
+    ];
+  }
+
   state.comments.currentCommentId = null;
   state.comments.currentCommentPositions = null;
 };
@@ -161,7 +167,7 @@ export const selectComment: AsyncAction<{
   }
 };
 
-export const createComment: Action = ({ state }) => {
+export const createComment: AsyncAction = async ({ state, effects }) => {
   if (!state.user || !state.editor.currentSandbox) {
     return;
   }
@@ -213,9 +219,18 @@ export const createComment: Action = ({ state }) => {
   comments[sandboxId][id] = optimisticComment;
   state.comments.currentCommentId = id;
   // placeholder value until we know the correct values
+  const referenceBounds = await effects.vscode.getCodeReferenceBoundary(
+    id,
+    optimisticComment.references[0]
+  );
   state.comments.currentCommentPositions = {
-    trigger: { top: 120, right: 300, left: 0, bottom: 0 },
-    dialog: null,
+    trigger: referenceBounds,
+    dialog: {
+      left: referenceBounds.left,
+      top: referenceBounds.top,
+      bottom: referenceBounds.bottom,
+      right: referenceBounds.right,
+    },
   };
 };
 

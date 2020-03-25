@@ -1,3 +1,4 @@
+import deepmerge from 'deepmerge';
 /**
  * There are 3 layers to our component styles.
  *
@@ -6,11 +7,11 @@
  * polyfill - color tokens missing from vscode
  */
 import React from 'react';
-import deepmerge from 'deepmerge';
 import {
   ThemeProvider as BaseThemeProvider,
   createGlobalStyle,
 } from 'styled-components';
+
 import designLanguage from '../../design-language';
 import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
@@ -53,6 +54,11 @@ export const ThemeProvider = ({ theme, children }) => {
     .Resizer {
       background-color: ${usableTheme.colors.sideBar.border} !important;
     }
+
+    .editor-comments-highlight {
+      background-color: ${usableTheme.colors.editor.rangeHighlightBackground};
+    }
+
   `;
 
   return (
