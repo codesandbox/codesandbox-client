@@ -28,9 +28,9 @@ export const Dialog: React.FC = () => {
   const { state } = useOvermind();
 
   const comment = state.comments.currentComment;
-  const isNewComment = comment.id === OPTIMISTIC_COMMENT_ID;
 
-  const currentCommentPositions = state.comments.currentCommentPositions;
+  // This comment doens't exist in the database, it's an optimistic comment
+  const isNewComment = comment.id === OPTIMISTIC_COMMENT_ID;
 
   const [editing, setEditing] = useState(isNewComment);
   const { ref: listRef, scrollTop } = useScrollTop();
@@ -39,6 +39,8 @@ export const Dialog: React.FC = () => {
   React.useEffect(() => {
     setEditing(isNewComment);
   }, [comment.id, isNewComment]);
+
+  const currentCommentPositions = state.comments.currentCommentPositions;
 
   if (!currentCommentPositions) {
     return null;
