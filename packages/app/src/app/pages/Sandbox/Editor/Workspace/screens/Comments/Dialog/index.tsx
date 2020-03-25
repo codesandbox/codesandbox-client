@@ -98,13 +98,16 @@ export const Dialog: React.FC = () => {
       y: currentCommentPositions.trigger.top,
     };
   } else {
-    // if we don't know the trigger, slide in from top
+    // if we don't know the trigger, slide in from left
     // probably comment from permalink
     animateFrom = {
-      x: FALLBACK_POSITION.x,
-      y: 0,
+      x: 0,
+      y: FALLBACK_POSITION.y,
     };
   }
+
+  // check for window colisions here and offset positions more
+  // eventually move it into a function
 
   return (
     <motion.div

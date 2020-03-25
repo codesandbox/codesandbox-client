@@ -212,6 +212,11 @@ export const createComment: Action = ({ state }) => {
 
   comments[sandboxId][id] = optimisticComment;
   state.comments.currentCommentId = id;
+  // placeholder value until we know the correct values
+  state.comments.currentCommentPositions = {
+    trigger: { top: 120, right: 300, left: 0, bottom: 0 },
+    dialog: null,
+  };
 };
 
 export const addComment: AsyncAction<{
