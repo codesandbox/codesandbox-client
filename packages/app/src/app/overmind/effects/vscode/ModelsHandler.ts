@@ -216,6 +216,8 @@ export class ModelsHandler {
         existingDecorationComments,
         newDecorationComments
       );
+
+      moduleModel.comments = commentThreads;
     });
   }
 
@@ -718,7 +720,7 @@ export class ModelsHandler {
     }, {});
 
     const initialDecorations: any[] =
-      currentCommentThreadId || currentLineNumber === -1
+      currentLineNumber === -1
         ? []
         : [
             {

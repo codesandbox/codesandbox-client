@@ -44,7 +44,14 @@ export const state: State = {
   error: null,
   liveUserId: null,
   roomInfo: null,
-  currentSelection: null,
+  currentSelection: {
+    primary: {
+      cursorPosition: 0,
+      selection: [],
+    },
+    secondary: [],
+    source: 'overmind',
+  },
   currentViewRange: null,
   joinSource: 'sandbox',
   liveUser: currentState =>

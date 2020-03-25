@@ -29,7 +29,9 @@ export const Comments: React.FC = () => {
     actions: { comments: commentsActions },
   } = useOvermind();
   const options = Object.values(CommentsFilterOption);
-
+  const commentsExceptOptimistic = currentComments.filter(
+    comment => comment.id !== OPTIMISTIC_COMMENT_ID
+  );
   const getSelectedFilter = () => {
     switch (selectedCommentsFilter) {
       case CommentsFilterOption.ALL || CommentsFilterOption.OPEN:
@@ -103,7 +105,7 @@ export const Comments: React.FC = () => {
           </Menu>
         </SidebarRow>
 
-        {currentComments.length ? (
+        {commentsExceptOptimistic.length ? (
           <List
             marginTop={4}
             css={{
@@ -112,15 +114,13 @@ export const Comments: React.FC = () => {
               overflow: 'auto',
             }}
           >
-            {currentComments.map(comment =>
-              comment.id === OPTIMISTIC_COMMENT_ID ? null : (
-                <Comment key={comment.id} comment={comment} />
-              )
-            )}
+            {commentsExceptOptimistic.map(comment => (
+              <Comment key={comment.id} comment={comment} />
+            ))}
           </List>
         ) : null}
       </div>
-      {currentComments.length ? null : <Empty />}
+      {commentsExceptOptimistic.length ? null : <Empty />}
       <AddComment />
       {currentCommentId && <CommentDialog />}
       {multiCommentsSelector && (

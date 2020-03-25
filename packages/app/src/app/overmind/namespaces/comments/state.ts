@@ -2,7 +2,7 @@ import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
 
-export const OPTIMISTIC_COMMENT_ID = '__OPTIMISTIC_COMMENT_ID__';
+export const OPTIMISTIC_COMMENT_ID = 'OptimisticCommentId';
 
 type State = {
   comments: {
