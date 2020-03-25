@@ -220,6 +220,13 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
         return aggr;
       }, {});
+
+      if (effects.router.getCommentId()) {
+        actions.workspace.setWorkspaceItem({ item: 'comments' });
+        actions.comments.selectComment({
+          commentId: effects.router.getCommentId(),
+        });
+      }
     } catch (e) {
       state.comments.comments[sandbox.id] = {};
       effects.notificationToast.add({

@@ -10,14 +10,9 @@ import { Navigation } from 'app/pages/common/Navigation';
 import { NotFound } from 'app/pages/common/NotFound';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-// @ts-ignore
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Editor from './Editor';
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
 
 interface Props {
   match: {
@@ -29,31 +24,10 @@ interface Props {
 
 export const Sandbox: React.FC<Props> = ({ match }) => {
   const { state, actions } = useOvermind();
-  const query = useQuery();
-
-  useEffect(() => {
-    const id = query.get('comment');
-    const comments = state.comments.comments;
-    const sandboxID =
-      state.editor.currentSandbox && state.editor.currentSandbox.id;
-    const commentsLoaded = Object.keys(comments).length;
-    const commentExists = comments[sandboxID] && comments[sandboxID][id];
-    if (id && commentsLoaded && commentExists) {
-      actions.comments.selectComment(id);
-      actions.workspace.setWorkspaceItem({ item: 'comments' });
-    }
-    // I don't want a run if the url changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    state.comments.comments,
-    actions.comments,
-    actions.workspace,
-    state.editor.currentSandbox,
-  ]);
 
   useEffect(() => {
     if (window.screen.availWidth < 800) {
-      if (!query.get('from-embed')) {
+      if (!document.location.search.includes('from-embed')) {
         const addedSign = document.location.search ? '&' : '?';
         document.location.href =
           document.location.href.replace('/s/', '/embed/') +

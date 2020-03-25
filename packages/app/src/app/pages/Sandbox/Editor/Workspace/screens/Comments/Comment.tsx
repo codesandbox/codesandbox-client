@@ -45,6 +45,7 @@ export const Comment = React.memo<{
         opacity: comment.isResolved ? 0.2 : 1,
         paddingRight: 0, // the actions menu should be at the edge
       })}
+      id={comment.id}
       onClick={event => {
         const target = event.target as HTMLElement;
         // don't trigger comment if you click on the menu

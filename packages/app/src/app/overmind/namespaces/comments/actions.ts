@@ -102,7 +102,7 @@ export const closeComment: Action = ({ state }) => {
 
 export const selectComment: AsyncAction<{
   commentId: string;
-  bounds: {
+  bounds?: {
     left: number;
     top: number;
     right: number;
@@ -145,8 +145,8 @@ export const selectComment: AsyncAction<{
   } else {
     state.comments.currentCommentId = commentId;
     state.comments.currentCommentPositions = {
-      trigger: bounds,
-      dialog: null,
+      trigger: { right: window.innerWidth / 3, top: 0 },
+      dialog: { left: 0, top: 40 },
     };
   }
 };
