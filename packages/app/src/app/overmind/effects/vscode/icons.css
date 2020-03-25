@@ -27,11 +27,10 @@
   color: #fff;
   position: absolute;
   top: -2px;
-  left: 6px;
+  left: 7px;
   z-index: 10;
   font-size: 8px;
   font-weight: bold;
-  letter-spacing: -2px;
   height: 13px;
   font-family: 'Inter', sans-serif;
 }
