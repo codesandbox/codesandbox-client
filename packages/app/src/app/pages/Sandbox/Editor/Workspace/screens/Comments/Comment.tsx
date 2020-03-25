@@ -44,7 +44,7 @@ export const Comment = React.memo<{
         paddingRight: 0, // the actions menu should be at the edge
       })}
       onClick={event => {
-        const target = event.target as HTMLElement;
+        const target = event.currentTarget as HTMLElement;
         // don't trigger comment if you click on the menu
         // we have to handle this because of an upstream
         // bug in reach/menu-button
