@@ -1,5 +1,6 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
+import isToday from 'date-fns/isToday';
 import { Derive } from 'app/overmind';
 
 export const OPTIMISTIC_COMMENT_ID = '__OPTIMISTIC_COMMENT_ID__';
@@ -25,6 +26,13 @@ type State = {
         commentId: string;
         range: [number, number];
       }>;
+    }
+  >;
+  currentCommentsByDate: Derive<
+    State,
+    {
+      today: CommentFragment[];
+      prev: CommentFragment[];
     }
   >;
   multiCommentsSelector: {
@@ -118,5 +126,25 @@ export const state: State = {
       default:
         return [];
     }
+  },
+  currentCommentsByDate({ currentComments }) {
+    return currentComments.reduce(
+      (acc, comment) => {
+        if (
+          isToday(new Date(comment.insertedAt)) ||
+          isToday(new Date(comment.updatedAt))
+        ) {
+          acc.today.push(comment);
+        } else {
+          acc.prev.push(comment);
+        }
+
+        return acc;
+      },
+      {
+        today: [],
+        prev: [],
+      }
+    );
   },
 };

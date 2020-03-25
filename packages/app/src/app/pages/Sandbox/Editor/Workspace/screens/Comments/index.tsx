@@ -24,6 +24,7 @@ export const Comments: React.FC = () => {
         currentComments,
         currentCommentId,
         multiCommentsSelector,
+        currentCommentsByDate,
       },
     },
     actions: { comments: commentsActions },
@@ -112,11 +113,30 @@ export const Comments: React.FC = () => {
               overflow: 'auto',
             }}
           >
-            {currentComments.map(comment =>
-              comment.id === OPTIMISTIC_COMMENT_ID ? null : (
-                <Comment key={comment.id} comment={comment} />
-              )
-            )}
+            {currentCommentsByDate.today.length ? (
+              <>
+                <Text size={3} weight="bold" block margin={2}>
+                  Today
+                </Text>
+                {currentCommentsByDate.today.map(comment =>
+                  comment.id === OPTIMISTIC_COMMENT_ID ? null : (
+                    <Comment key={comment.id} comment={comment} />
+                  )
+                )}
+              </>
+            ) : null}
+            {currentCommentsByDate.prev.length ? (
+              <>
+                <Text size={3} weight="bold" block margin={2} marginTop={4}>
+                  Earlier
+                </Text>
+                {currentCommentsByDate.prev.map(comment =>
+                  comment.id === OPTIMISTIC_COMMENT_ID ? null : (
+                    <Comment key={comment.id} comment={comment} />
+                  )
+                )}
+              </>
+            ) : null}
           </List>
         ) : null}
       </div>

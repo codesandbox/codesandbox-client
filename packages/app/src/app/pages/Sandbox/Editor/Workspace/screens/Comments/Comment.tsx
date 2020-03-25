@@ -66,6 +66,17 @@ export const Comment = React.memo<{
         });
       }}
     >
+      <Link
+        variant="muted"
+        css={css({
+          paddingBottom: 2,
+          display: 'block',
+        })}
+      >
+        {comment.references[0]
+          ? comment.references[0].metadata.path
+          : 'General'}
+      </Link>
       <Stack align="flex-start" justify="space-between" marginBottom={4}>
         <AvatarBlock comment={comment} />
         <Stack align="center">
@@ -117,11 +128,6 @@ export const Comment = React.memo<{
           borderColor: 'sideBar.border',
         })}
       >
-        {comment.references[0] && (
-          <Link style={{ color: '#3793E0' }}>
-            {comment.references[0].metadata.path}
-          </Link>
-        )}
         <Text block css={truncateText} marginBottom={2}>
           {comment.content}
         </Text>
