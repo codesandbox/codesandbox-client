@@ -81,7 +81,14 @@ export const onCommentClick: Action<{
     bottom: number;
   };
 }> = ({ state, actions }, { commentIds, bounds }) => {
-  if (commentIds.length === 1) {
+  if (commentIds.includes(state.comments.currentCommentId)) {
+    actions.comments.closeComment();
+    return;
+  }
+
+  if (!commentIds.length) {
+    actions.comments.createComment();
+  } else if (commentIds.length === 1) {
     actions.comments.selectComment({
       commentId: commentIds[0],
       bounds,
@@ -179,12 +186,15 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
   const selection = state.live.currentSelection;
   if (selection) {
     codeReference = {
-      anchor: selection.primary.selection[0],
-      head: selection.primary.selection[1],
-      code: state.editor.currentModule.code.substr(
-        selection.primary.selection[0],
-        selection.primary.selection[1] - selection.primary.selection[0]
-      ),
+      anchor:
+        selection.primary.selection[0] || selection.primary.cursorPosition,
+      head: selection.primary.selection[1] || selection.primary.cursorPosition,
+      code: selection.primary.selection.length
+        ? state.editor.currentModule.code.substr(
+            selection.primary.selection[0],
+            selection.primary.selection[1] - selection.primary.selection[0]
+          )
+        : '',
       path: state.editor.currentModule.path,
     };
   }
@@ -245,48 +255,30 @@ export const addComment: AsyncAction<{
   const id = OPTIMISTIC_COMMENT_ID;
   const sandboxId = state.editor.currentSandbox.id;
   const now = new Date().toString();
-  let codeReference: CodeReference = null;
-  const selection = state.live.currentSelection;
-  if (selection && selection.primary.selection.length) {
-    codeReference = {
-      anchor: selection.primary.selection[0],
-      head: selection.primary.selection[1],
-      code: state.editor.currentModule.code.substr(
-        selection.primary.selection[0],
-        selection.primary.selection[1] - selection.primary.selection[0]
-      ),
-      path: state.editor.currentModule.path,
-    };
-  }
-
-  const optimisticComment: CommentFragment = {
-    parentComment: parentCommentId ? { id: parentCommentId } : null,
-    id,
-    insertedAt: now,
-    updatedAt: now,
-    content,
-    isResolved: false,
-    user: {
-      id: state.user.id,
-      name: state.user.name,
-      username: state.user.username,
-      avatarUrl: state.user.avatarUrl,
-    },
-    references: codeReference
-      ? [
-          {
-            id: '__OPTIMISTIC__',
-            type: 'code',
-            metadata: codeReference,
-            resource: state.editor.currentModule.path,
-          },
-        ]
-      : [],
-    comments: [],
-  };
   const comments = state.comments.comments;
 
-  comments[sandboxId][id] = optimisticComment;
+  let optimisticComment: CommentFragment;
+  if (state.comments.comments[sandboxId][id]) {
+    optimisticComment = state.comments.comments[sandboxId][id];
+  } else {
+    optimisticComment = {
+      parentComment: parentCommentId ? { id: parentCommentId } : null,
+      id,
+      insertedAt: now,
+      updatedAt: now,
+      content,
+      isResolved: false,
+      user: {
+        id: state.user.id,
+        name: state.user.name,
+        username: state.user.username,
+        avatarUrl: state.user.avatarUrl,
+      },
+      references: [],
+      comments: [],
+    };
+    comments[sandboxId][id] = optimisticComment;
+  }
 
   if (optimisticComment.parentComment) {
     comments[sandboxId][optimisticComment.parentComment.id].comments.push({
@@ -297,11 +289,11 @@ export const addComment: AsyncAction<{
 
   try {
     let comment: CommentFragment;
-    if (codeReference) {
+    if (optimisticComment.references.length) {
       const response = await effects.gql.mutations.createCodeComment({
         sandboxId,
         content,
-        codeReference,
+        codeReference: optimisticComment.references[0].metadata,
       });
       comment = response.createCodeComment;
     } else {

@@ -1,10 +1,10 @@
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import {
+  Avatar,
   Element,
   IconButton,
   Menu,
   Stack,
-  Avatar,
   Text,
   Textarea,
 } from '@codesandbox/components';

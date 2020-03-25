@@ -51,6 +51,7 @@ export type OnOperationAppliedCallback = (data: OnOperationAppliedData) => void;
 export type ModuleModel = {
   changeListener: { dispose: Function };
   selections: any[];
+  currentLine: number;
   path: string;
   model: Promise<any>;
   comments: Array<{ commentId: string; range: [number, number] }>;
@@ -116,6 +117,7 @@ export class ModelsHandler {
     this.moduleModels[fullPath] = this.moduleModels[fullPath] || {
       changeListener: null,
       model: null,
+      currentLine: 0,
       path: fullPath,
       selections: [],
       comments: [],
@@ -123,6 +125,23 @@ export class ModelsHandler {
     };
 
     return this.moduleModels[fullPath];
+  }
+
+  public updateLineCommentIndication(model: any, lineNumber: number) {
+    const moduleModel = this.moduleModels[model.uri.path];
+
+    moduleModel.currentLine = lineNumber;
+
+    const newDecorationComments = this.createCommentDecorations(
+      moduleModel.comments,
+      model,
+      this.currentCommentThreadId,
+      moduleModel.currentLine
+    );
+    moduleModel.currentCommentDecorations = model.deltaDecorations(
+      moduleModel.currentCommentDecorations,
+      newDecorationComments
+    );
   }
 
   public changeModule = async (module: Module) => {
@@ -144,7 +163,8 @@ export class ModelsHandler {
     const newDecorationComments = this.createCommentDecorations(
       moduleModel.comments,
       model,
-      this.currentCommentThreadId
+      this.currentCommentThreadId,
+      moduleModel.currentLine
     );
     moduleModel.currentCommentDecorations = model.deltaDecorations(
       moduleModel.currentCommentDecorations,
@@ -188,7 +208,8 @@ export class ModelsHandler {
       const newDecorationComments = this.createCommentDecorations(
         commentThreads,
         model,
-        currentCommentThreadId
+        currentCommentThreadId,
+        moduleModel.currentLine
       );
 
       moduleModel.currentCommentDecorations = model.deltaDecorations(
@@ -673,7 +694,8 @@ export class ModelsHandler {
       range: [number, number];
     }>,
     model: any,
-    currentCommentThreadId: string | null
+    currentCommentThreadId: string | null,
+    currentLineNumber: number
   ) {
     const commentDecorationsByLineNumber = commentThreadDecorations.reduce<{
       [lineNumber: string]: Array<{
@@ -694,6 +716,24 @@ export class ModelsHandler {
 
       return aggr;
     }, {});
+
+    const initialDecorations: any[] =
+      currentCommentThreadId || currentLineNumber === -1
+        ? []
+        : [
+            {
+              range: new this.monaco.Range(
+                currentLineNumber,
+                1,
+                currentLineNumber,
+                1
+              ),
+              options: {
+                isWholeLine: true,
+                glyphMarginClassName: `editor-comments-glyph editor-comments-multi editor-comments-add`,
+              },
+            },
+          ];
 
     return Object.keys(commentDecorationsByLineNumber).reduce(
       (aggr, lineNumberKey) => {
@@ -721,12 +761,10 @@ export class ModelsHandler {
               isWholeLine: true,
               // comment-id- class needs to be the LAST class!
               glyphMarginClassName: `editor-comments-glyph ${
-                activeCommentDecoration ? 'active-comment ' : ''
+                activeCommentDecoration ? 'editor-comments-active ' : ''
               }${
-                ids.length > 1
-                  ? `multi-comment multi-comment-${ids.length} `
-                  : ''
-              }comment-ids-${ids.join('_')}`,
+                ids.length > 1 ? `editor-comments-multi` : ''
+              }editor-comments-ids-${ids.join('_')}`,
             },
           },
           {
@@ -740,7 +778,7 @@ export class ModelsHandler {
           }
         );
       },
-      []
+      initialDecorations
     );
   }
 }

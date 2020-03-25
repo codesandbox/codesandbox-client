@@ -56,7 +56,8 @@ export const ThemeProvider = ({ theme, children }) => {
     }
 
     .editor-comments-highlight {
-      background-color: ${usableTheme.colors.editor.rangeHighlightBackground};
+      background-color: ${usableTheme.colors.button.background};
+      opacity: 0.2
     }
 
   `;
