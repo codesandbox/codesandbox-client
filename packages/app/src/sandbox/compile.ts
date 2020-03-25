@@ -747,12 +747,16 @@ async function compile({
     }
 
     if (firstLoad) {
-      metrics.persistMeasurements({
-        sandboxId,
-        cacheUsed: usedCache,
-        browser: navigator.userAgent,
-        version: VERSION,
-      });
+      metrics
+        .persistMeasurements({
+          sandboxId,
+          cacheUsed: usedCache,
+          browser: navigator.userAgent,
+          version: VERSION,
+        })
+        .catch(() => {
+          /* Do nothing with the error */
+        });
     }
   }
   firstLoad = false;

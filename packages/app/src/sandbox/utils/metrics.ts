@@ -115,7 +115,7 @@ export function persistMeasurements(data: {
   cacheUsed: boolean;
   browser: string;
   version: string;
-}) {
+}): Promise<Response | void> {
   const body = [
     {
       measurement: 'load_times',
