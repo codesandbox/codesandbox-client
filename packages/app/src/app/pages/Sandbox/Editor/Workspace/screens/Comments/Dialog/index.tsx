@@ -28,8 +28,8 @@ export const Dialog: React.FC = () => {
   const [value, setValue] = useState('');
   const comment = state.comments.currentComment;
   const currentCommentPositions = state.comments.currentCommentPositions;
-  const isOptimistic = comment.id === OPTIMISTIC_COMMENT_ID;
-  const [editing, setEditing] = useState(isOptimistic);
+  const isNewComment = comment.id === OPTIMISTIC_COMMENT_ID;
+  const [editing, setEditing] = useState(isNewComment);
   const { ref: listRef, scrollTop } = useScrollTop();
 
   const closeDialog = () => actions.comments.closeComment();
@@ -43,8 +43,8 @@ export const Dialog: React.FC = () => {
 
   // reset editing when comment changes
   React.useEffect(() => {
-    setEditing(isOptimistic);
-  }, [comment.id, isOptimistic]);
+    setEditing(isNewComment);
+  }, [comment.id, isNewComment]);
 
   if (!currentCommentPositions) {
     return null;
@@ -113,7 +113,7 @@ export const Dialog: React.FC = () => {
                   isResolved: !comment.isResolved,
                 })
               }
-              disabled={isOptimistic}
+              disabled={isNewComment}
               name="check"
               size={14}
               title="Resolve Comment"
@@ -142,7 +142,7 @@ export const Dialog: React.FC = () => {
                 marginRight={2}
               >
                 <AvatarBlock comment={comment} />
-                {state.user.id === comment.user.id && !isOptimistic && (
+                {state.user.id === comment.user.id && !isNewComment && (
                   <Stack align="center">
                     <Menu>
                       <Menu.IconButton
@@ -203,24 +203,22 @@ export const Dialog: React.FC = () => {
           </Stack>
         )}
 
-        {isOptimistic ? null : (
-          <Textarea
-            autosize
-            css={css({
-              overflow: 'hidden',
-              border: 'none',
-              display: 'block',
-              borderTop: '1px solid',
-              borderColor: 'sideBar.border',
-            })}
-            value={value}
-            onChange={e => setValue(e.target.value)}
-            placeholder={comment ? 'Reply' : 'Write a comment...'}
-            onKeyDown={event => {
-              if (event.keyCode === ENTER && !event.shiftKey) onSubmitReply();
-            }}
-          />
-        )}
+        <Textarea
+          autosize
+          css={css({
+            overflow: 'hidden',
+            border: 'none',
+            display: 'block',
+            borderTop: '1px solid',
+            borderColor: 'sideBar.border',
+          })}
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          placeholder={isNewComment ? 'Write a comment...' : 'Reply'}
+          onKeyDown={event => {
+            if (event.keyCode === ENTER && !event.shiftKey) onSubmitReply();
+          }}
+        />
       </Stack>
     </motion.div>
   );
