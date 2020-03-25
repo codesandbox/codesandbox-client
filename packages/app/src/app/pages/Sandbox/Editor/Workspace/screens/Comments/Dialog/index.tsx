@@ -165,7 +165,7 @@ export const Dialog: React.FC = () => {
                         <Menu.Item
                           onSelect={() => {
                             effects.browser.copyToClipboard(
-                              `${window.location.origin}${window.location.pathname}?comment=${comment.id}`
+                              effects.router.createCommentUrl(comment.id)
                             );
                             effects.notificationToast.success(
                               'Comment permalink copied to clipboard'
