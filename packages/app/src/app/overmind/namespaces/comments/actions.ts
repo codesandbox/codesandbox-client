@@ -117,7 +117,6 @@ export const selectComment: AsyncAction<{
 
   // Should close from somewhere else probably
   state.comments.multiCommentsSelector = null;
-  state.comments.currentCommentPositions = null;
 
   const sandbox = state.editor.currentSandbox;
   const comment = state.comments.comments[sandbox.id][commentId];
@@ -133,13 +132,24 @@ export const selectComment: AsyncAction<{
       await actions.editor.moduleSelected({
         path: comment.references[0].metadata.path,
       });
+
       state.comments.currentCommentId = commentId;
+
+      // update comment position with precise info
       const referenceBounds = await effects.vscode.getCodeReferenceBoundary(
+        commentId,
         comment.references[0]
       );
+      const existingDialogBounds =
+        state.comments.currentCommentPositions?.dialog;
       state.comments.currentCommentPositions = {
-        trigger: bounds,
-        dialog: { left: referenceBounds.left, top: referenceBounds.top },
+        trigger: existingDialogBounds || bounds,
+        dialog: {
+          left: referenceBounds.left,
+          top: referenceBounds.top,
+          bottom: referenceBounds.bottom,
+          right: referenceBounds.right,
+        },
       };
     }
   } else {
@@ -202,6 +212,11 @@ export const createComment: Action = ({ state }) => {
 
   comments[sandboxId][id] = optimisticComment;
   state.comments.currentCommentId = id;
+  // placeholder value until we know the correct values
+  state.comments.currentCommentPositions = {
+    trigger: { top: 120, right: 300, left: 0, bottom: 0 },
+    dialog: null,
+  };
 };
 
 export const addComment: AsyncAction<{

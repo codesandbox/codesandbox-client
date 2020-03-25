@@ -15,8 +15,7 @@ import { AvatarBlock } from './components/AvatarBlock';
 
 export const Comment = React.memo<{
   comment: CommentFragment;
-  innerRef: React.RefObject<any>;
-}>(({ comment, innerRef }) => {
+}>(({ comment }) => {
   const { state, actions, effects } = useOvermind();
 
   const truncateText = {
@@ -35,7 +34,6 @@ export const Comment = React.memo<{
   return (
     <ListAction
       key={comment.id}
-      ref={innerRef}
       paddingTop={4}
       css={css({
         display: 'block',
@@ -47,7 +45,7 @@ export const Comment = React.memo<{
       })}
       id={comment.id}
       onClick={event => {
-        const target = event.target as HTMLElement;
+        const target = event.currentTarget as HTMLElement;
         // don't trigger comment if you click on the menu
         // we have to handle this because of an upstream
         // bug in reach/menu-button

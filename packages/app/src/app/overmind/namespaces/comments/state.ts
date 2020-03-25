@@ -15,7 +15,7 @@ type State = {
   currentCommentId: string | null;
   currentCommentPositions: {
     trigger: { left: number; top: number; right: number; bottom: number };
-    dialog: { left: number; top: number } | null;
+    dialog: { left: number; top: number; right: number; bottom: number } | null;
   } | null;
   currentComment: Derive<State, CommentWithRepliesFragment | null>;
   fileComments: Derive<

@@ -62,8 +62,12 @@ export type VsCodeOptions = {
   onViewRangeChanged: (viewRange: UserViewRange) => void;
   onCommentClick: (payload: {
     commentIds: string[];
-    x: number;
-    y: number;
+    bounds: {
+      left: number;
+      top: number;
+      bottom: number;
+      right: number;
+    };
   }) => void;
   onMultiCommentClick: (commentThreadIds: string[]) => any;
   reaction: Reaction;
@@ -211,15 +215,33 @@ export class VSCodeEffect {
     return this.initialized;
   }
 
-  public async getCodeReferenceBoundary(reference: Reference) {
+  public async getCodeReferenceBoundary(
+    commentId: string,
+    reference: Reference
+  ) {
     this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
 
-    return new Promise<DOMRect>(resolve => {
-      setTimeout(() => {
-        resolve(
-          document.querySelector('.active-comment').getBoundingClientRect()
-        );
-      }, 500);
+    return new Promise<DOMRect>((resolve, reject) => {
+      let checkCount = 0;
+      function findActiveComment() {
+        checkCount++;
+
+        if (checkCount === 20) {
+          reject(new Error('Could not find the comment glyph'));
+          return;
+        }
+
+        setTimeout(() => {
+          const el = document.querySelector('.active-comment');
+
+          if (el && el.className.includes(commentId)) {
+            resolve(el.getBoundingClientRect());
+          } else {
+            findActiveComment();
+          }
+        }, 10);
+      }
+      findActiveComment();
     });
   }
 
