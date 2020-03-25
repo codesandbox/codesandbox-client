@@ -3,6 +3,7 @@ import {
   Icon,
   ListAction,
   Menu,
+  Link,
   Stack,
   Text,
 } from '@codesandbox/components';
@@ -116,6 +117,11 @@ export const Comment = React.memo<{
           borderColor: 'sideBar.border',
         })}
       >
+        {comment.references[0] && (
+          <Link style={{ color: '#3793E0' }}>
+            {comment.references[0].metadata.path}
+          </Link>
+        )}
         <Text block css={truncateText} marginBottom={2}>
           {comment.content}
         </Text>

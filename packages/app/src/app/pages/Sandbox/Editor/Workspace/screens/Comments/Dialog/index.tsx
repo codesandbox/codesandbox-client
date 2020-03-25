@@ -4,6 +4,7 @@ import {
   IconButton,
   Menu,
   Stack,
+  Avatar,
   Text,
   Textarea,
 } from '@codesandbox/components';
@@ -39,6 +40,15 @@ export const Dialog: React.FC = () => {
       content: value,
       parentCommentId: comment.id,
     });
+  };
+
+  const onSubmitNewComment = async () => {
+    await actions.comments.updateComment({
+      commentId: comment.id,
+      content: value,
+    });
+    setValue('');
+    setEditing(false);
   };
 
   // reset editing when comment changes
@@ -86,154 +96,182 @@ export const Dialog: React.FC = () => {
           boxShadow: 2,
         })}
       >
-        <Stack
-          className="handle"
-          align="center"
-          justify="space-between"
-          padding={4}
-          paddingRight={2}
-          marginBottom={2}
-          css={css({
-            cursor: 'move',
-            zIndex: 2,
-            boxShadow: theme =>
-              scrollTop > 0
-                ? `0px 32px 32px ${theme.colors.dialog.background}`
-                : 'none',
-          })}
-        >
-          <Text size={3} weight="bold">
-            Comment
-          </Text>
-          <Stack align="center">
-            <IconButton
-              onClick={() =>
-                actions.comments.resolveComment({
-                  commentId: comment.id,
-                  isResolved: !comment.isResolved,
-                })
-              }
-              disabled={isNewComment}
-              name="check"
-              size={14}
-              title="Resolve Comment"
-              css={css({
-                transition: 'color',
-                transitionDuration: theme => theme.speeds[1],
-                color: comment.isResolved ? 'green' : 'mutedForeground',
-              })}
-            />
-            <IconButton
-              name="cross"
-              size={10}
-              title="Close comment dialog"
-              onClick={closeDialog}
-            />
-          </Stack>
-        </Stack>
-
-        {comment && (
-          <Stack direction="vertical" css={{ overflow: 'auto' }} ref={listRef}>
-            <Stack direction="vertical" gap={4}>
-              <Stack
-                align="flex-start"
-                justify="space-between"
-                marginLeft={4}
-                marginRight={2}
-              >
-                <AvatarBlock comment={comment} />
-                {state.user.id === comment.user.id && !isNewComment && (
-                  <Stack align="center">
-                    <Menu>
-                      <Menu.IconButton
-                        name="more"
-                        title="Comment actions"
-                        size={12}
-                      />
-                      <Menu.List>
-                        <Menu.Item
-                          onSelect={() =>
-                            actions.comments.deleteComment({
-                              commentId: comment.id,
-                            })
-                          }
-                        >
-                          Delete
-                        </Menu.Item>
-                        <Menu.Item onSelect={() => setEditing(true)}>
-                          Edit Comment
-                        </Menu.Item>
-                        <Menu.Item
-                          onSelect={() =>
-                            actions.comments.copyPermalinkToClipboard(
-                              comment.id
-                            )
-                          }
-                        >
-                          Share Comment
-                        </Menu.Item>
-                      </Menu.List>
-                    </Menu>
-                  </Stack>
-                )}
+        {isNewComment && editing ? (
+          <Stack direction="vertical" gap={4}>
+            <Stack
+              justify="space-between"
+              align="center"
+              marginY={4}
+              marginLeft={4}
+              marginRight={2}
+            >
+              <Stack gap={2} align="center">
+                <Avatar user={comment.user} />
+                <Text size={3} weight="bold" variant="body">
+                  {comment.user.username}
+                </Text>
               </Stack>
-              <Element
-                as={editing ? 'div' : 'p'}
-                marginY={0}
-                marginX={4}
-                paddingBottom={6}
-                css={css({
-                  borderBottom: '1px solid',
-                  borderColor: 'sideBar.border',
-                })}
-              >
-                {!editing ? (
-                  <Markdown source={comment.content} />
-                ) : (
-                  <EditComment
-                    initialValue={comment.content}
-                    onSave={async newValue => {
-                      await actions.comments.updateComment({
-                        commentId: comment.id,
-                        content: newValue,
-                      });
-                      setEditing(false);
-                    }}
-                    onCancel={() => {
-                      if (comment.id === OPTIMISTIC_COMMENT_ID) {
-                        actions.comments.closeComment();
-                      } else {
-                        setEditing(false);
-                      }
-                    }}
-                  />
-                )}
-              </Element>
+              <IconButton
+                name="cross"
+                size={10}
+                title="Close comment dialog"
+                onClick={closeDialog}
+              />
             </Stack>
-            <>
-              {comment.comments.map(reply =>
-                reply ? <Reply reply={reply} key={reply.id} /> : 'Loading...'
-              )}
-            </>
+            <Textarea
+              autosize
+              css={css({
+                overflow: 'hidden',
+                border: 'none',
+                display: 'block',
+                borderTop: '1px solid',
+                borderColor: 'sideBar.border',
+              })}
+              value={value}
+              onChange={e => setValue(e.target.value)}
+              placeholder="Add comment..."
+              onKeyDown={async event => {
+                if (event.keyCode === ENTER && !event.shiftKey) {
+                  onSubmitNewComment();
+                  event.preventDefault();
+                }
+              }}
+            />
           </Stack>
+        ) : (
+          <>
+            <Stack
+              align="center"
+              justify="space-between"
+              padding={4}
+              paddingRight={2}
+              marginBottom={2}
+              css={css({
+                cursor: 'move',
+                zIndex: 2,
+                boxShadow: theme =>
+                  scrollTop > 0
+                    ? `0px 32px 32px ${theme.colors.dialog.background}`
+                    : 'none',
+              })}
+            >
+              <Text size={3} weight="bold">
+                Comment
+              </Text>
+              <Stack align="center">
+                <IconButton
+                  onClick={() =>
+                    actions.comments.resolveComment({
+                      commentId: comment.id,
+                      isResolved: !comment.isResolved,
+                    })
+                  }
+                  name="check"
+                  size={14}
+                  title="Resolve Comment"
+                  css={css({
+                    transition: 'color',
+                    transitionDuration: theme => theme.speeds[1],
+                    color: comment.isResolved ? 'green' : 'mutedForeground',
+                  })}
+                />
+                <IconButton
+                  name="cross"
+                  size={10}
+                  title="Close comment dialog"
+                  onClick={closeDialog}
+                />
+              </Stack>
+            </Stack>
+            <Stack
+              direction="vertical"
+              css={{ overflow: 'auto' }}
+              ref={listRef}
+            >
+              <Stack direction="vertical" gap={4}>
+                <Stack
+                  align="flex-start"
+                  justify="space-between"
+                  marginLeft={4}
+                  marginRight={2}
+                >
+                  <AvatarBlock comment={comment} />
+                  {state.user.id === comment.user.id && !isNewComment && (
+                    <Stack align="center">
+                      <Menu>
+                        <Menu.IconButton
+                          name="more"
+                          title="Comment actions"
+                          size={12}
+                        />
+                        <Menu.List>
+                          <Menu.Item
+                            onSelect={() =>
+                              actions.comments.deleteComment({
+                                commentId: comment.id,
+                              })
+                            }
+                          >
+                            Delete
+                          </Menu.Item>
+                          <Menu.Item onSelect={() => setEditing(true)}>
+                            Edit Comment
+                          </Menu.Item>
+                        </Menu.List>
+                      </Menu>
+                    </Stack>
+                  )}
+                </Stack>
+                <Element
+                  marginY={0}
+                  marginX={4}
+                  paddingBottom={6}
+                  css={css({
+                    borderBottom: '1px solid',
+                    borderColor: 'sideBar.border',
+                  })}
+                >
+                  {!editing ? (
+                    <Markdown source={comment.content} />
+                  ) : (
+                    <EditComment
+                      initialValue={comment.content}
+                      onSave={async newValue => {
+                        await actions.comments.updateComment({
+                          commentId: comment.id,
+                          content: newValue,
+                        });
+                        setEditing(false);
+                      }}
+                      onCancel={() => setEditing(false)}
+                    />
+                  )}
+                </Element>
+              </Stack>
+              <>
+                {comment.comments.map(reply =>
+                  reply ? <Reply reply={reply} key={reply.id} /> : 'Loading...'
+                )}
+              </>
+            </Stack>
+            <Textarea
+              autosize
+              css={css({
+                overflow: 'hidden',
+                border: 'none',
+                display: 'block',
+                borderTop: '1px solid',
+                borderColor: 'sideBar.border',
+              })}
+              value={value}
+              onChange={e => setValue(e.target.value)}
+              placeholder="Reply..."
+              onKeyDown={event => {
+                if (event.keyCode === ENTER && !event.shiftKey) onSubmitReply();
+              }}
+            />
+          </>
         )}
-
-        <Textarea
-          autosize
-          css={css({
-            overflow: 'hidden',
-            border: 'none',
-            display: 'block',
-            borderTop: '1px solid',
-            borderColor: 'sideBar.border',
-          })}
-          value={value}
-          onChange={e => setValue(e.target.value)}
-          placeholder={isNewComment ? 'Write a comment...' : 'Reply'}
-          onKeyDown={event => {
-            if (event.keyCode === ENTER && !event.shiftKey) onSubmitReply();
-          }}
-        />
       </Stack>
     </motion.div>
   );
