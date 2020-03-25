@@ -26,7 +26,6 @@ export const CommentDialog = props =>
 
 export const Dialog: React.FC = () => {
   const { state, actions } = useOvermind();
-  const [value, setValue] = useState('');
   const comment = state.comments.currentComment;
   const currentCommentPositions = state.comments.currentCommentPositions;
   const isNewComment = comment.id === OPTIMISTIC_COMMENT_ID;
@@ -34,13 +33,6 @@ export const Dialog: React.FC = () => {
   const { ref: listRef, scrollTop } = useScrollTop();
 
   const closeDialog = () => actions.comments.closeComment();
-  const onSubmitReply = () => {
-    setValue('');
-    actions.comments.addComment({
-      content: value,
-      parentCommentId: comment.id,
-    });
-  };
 
   // reset editing when comment changes
   React.useEffect(() => {
@@ -209,22 +201,7 @@ export const Dialog: React.FC = () => {
                 )}
               </>
             </Stack>
-            <Textarea
-              autosize
-              css={css({
-                overflow: 'hidden',
-                border: 'none',
-                display: 'block',
-                borderTop: '1px solid',
-                borderColor: 'sideBar.border',
-              })}
-              value={value}
-              onChange={e => setValue(e.target.value)}
-              placeholder="Reply..."
-              onKeyDown={event => {
-                if (event.keyCode === ENTER && !event.shiftKey) onSubmitReply();
-              }}
-            />
+            <AddReply comment={comment} />
           </>
         )}
       </Stack>
@@ -287,6 +264,38 @@ const AddComment = ({ comment, onSave, onCancel }) => {
         }}
       />
     </Stack>
+  );
+};
+
+const AddReply = ({ comment }) => {
+  const { actions } = useOvermind();
+  const [value, setValue] = useState('');
+
+  const onSubmit = () => {
+    setValue('');
+    actions.comments.addComment({
+      content: value,
+      parentCommentId: comment.id,
+    });
+  };
+
+  return (
+    <Textarea
+      autosize
+      css={css({
+        overflow: 'hidden',
+        border: 'none',
+        display: 'block',
+        borderTop: '1px solid',
+        borderColor: 'sideBar.border',
+      })}
+      value={value}
+      onChange={e => setValue(e.target.value)}
+      placeholder="Reply..."
+      onKeyDown={event => {
+        if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
+      }}
+    />
   );
 };
 
