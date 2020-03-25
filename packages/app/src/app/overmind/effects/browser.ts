@@ -35,6 +35,12 @@ export default {
   openWindow(url) {
     window.open(url, '_blank');
   },
+  getWidth() {
+    return window.innerWidth;
+  },
+  getHeight() {
+    return window.innerHeight;
+  },
   openPopup(url, name) {
     const popup = window.open(
       url,

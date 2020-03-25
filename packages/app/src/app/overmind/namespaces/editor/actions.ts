@@ -225,6 +225,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
         actions.workspace.setWorkspaceItem({ item: 'comments' });
         actions.comments.selectComment({
           commentId: effects.router.getCommentId(),
+          bounds: {
+            left: effects.browser.getWidth() / 2,
+            top: 80,
+            right: effects.browser.getWidth() / 3,
+            bottom: 0,
+          },
         });
       }
     } catch (e) {

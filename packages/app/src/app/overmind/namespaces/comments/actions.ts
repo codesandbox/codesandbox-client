@@ -155,8 +155,8 @@ export const selectComment: AsyncAction<{
   } else {
     state.comments.currentCommentId = commentId;
     state.comments.currentCommentPositions = {
-      trigger: { right: window.innerWidth / 3, top: 0 },
-      dialog: { left: 0, top: 40 },
+      trigger: bounds,
+      dialog: null,
     };
   }
 };
