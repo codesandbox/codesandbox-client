@@ -25,14 +25,15 @@ export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
 export const Dialog: React.FC = () => {
-  const { state, actions } = useOvermind();
+  const { state } = useOvermind();
+
   const comment = state.comments.currentComment;
-  const currentCommentPositions = state.comments.currentCommentPositions;
   const isNewComment = comment.id === OPTIMISTIC_COMMENT_ID;
+
+  const currentCommentPositions = state.comments.currentCommentPositions;
+
   const [editing, setEditing] = useState(isNewComment);
   const { ref: listRef, scrollTop } = useScrollTop();
-
-  const closeDialog = () => actions.comments.closeComment();
 
   // reset editing when comment changes
   React.useEffect(() => {
@@ -80,18 +81,10 @@ export const Dialog: React.FC = () => {
         })}
       >
         {isNewComment && editing ? (
-          <AddComment
-            comment={comment}
-            onSave={() => setEditing(false)}
-            onCancel={closeDialog}
-          />
+          <AddComment comment={comment} onSave={() => setEditing(false)} />
         ) : (
           <>
-            <DialogHeader
-              comment={comment}
-              hasShadow={scrollTop > 0}
-              closeDialog={closeDialog}
-            />
+            <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
             <Stack
               direction="vertical"
               css={{ overflow: 'auto' }}
@@ -112,7 +105,7 @@ export const Dialog: React.FC = () => {
   );
 };
 
-const AddComment = ({ comment, onSave, onCancel }) => {
+const AddComment = ({ comment, onSave }) => {
   const { actions } = useOvermind();
   const [value, setValue] = useState('');
 
@@ -124,6 +117,8 @@ const AddComment = ({ comment, onSave, onCancel }) => {
     setValue('');
     onSave();
   };
+
+  const closeDialog = actions.comments.closeComment();
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -144,7 +139,7 @@ const AddComment = ({ comment, onSave, onCancel }) => {
           name="cross"
           size={10}
           title="Close comment dialog"
-          onClick={onCancel}
+          onClick={closeDialog}
         />
       </Stack>
       <Textarea
@@ -170,8 +165,10 @@ const AddComment = ({ comment, onSave, onCancel }) => {
   );
 };
 
-const DialogHeader = ({ comment, hasShadow, closeDialog }) => {
+const DialogHeader = ({ comment, hasShadow }) => {
   const { actions } = useOvermind();
+
+  const closeDialog = actions.comments.closeComment();
 
   return (
     <Stack
