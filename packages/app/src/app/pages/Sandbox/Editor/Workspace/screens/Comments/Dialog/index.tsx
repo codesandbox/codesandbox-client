@@ -24,7 +24,7 @@ export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
 export const Dialog: React.FC = () => {
-  const { state, actions, effects } = useOvermind();
+  const { state, actions } = useOvermind();
   const [value, setValue] = useState('');
   const comment = state.comments.currentComment;
   const currentCommentPositions = state.comments.currentCommentPositions;
@@ -163,14 +163,11 @@ export const Dialog: React.FC = () => {
                           Edit Comment
                         </Menu.Item>
                         <Menu.Item
-                          onSelect={() => {
-                            effects.browser.copyToClipboard(
-                              effects.router.createCommentUrl(comment.id)
-                            );
-                            effects.notificationToast.success(
-                              'Comment permalink copied to clipboard'
-                            );
-                          }}
+                          onSelect={() =>
+                            actions.comments.copyPermalinkToClipboard(
+                              comment.id
+                            )
+                          }
                         >
                           Share Comment
                         </Menu.Item>

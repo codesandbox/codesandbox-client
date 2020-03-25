@@ -16,7 +16,7 @@ import { AvatarBlock } from './components/AvatarBlock';
 export const Comment = React.memo<{
   comment: CommentFragment;
 }>(({ comment }) => {
-  const { state, actions, effects } = useOvermind();
+  const { state, actions } = useOvermind();
 
   const truncateText = {
     maxHeight: 52,
@@ -85,14 +85,9 @@ export const Comment = React.memo<{
                 Mark as {comment.isResolved ? 'Unr' : 'r'}esolved
               </Menu.Item>
               <Menu.Item
-                onSelect={() => {
-                  effects.browser.copyToClipboard(
-                    effects.router.createCommentUrl(comment.id)
-                  );
-                  effects.notificationToast.success(
-                    'Comment permalink copied to clipboard'
-                  );
-                }}
+                onSelect={() =>
+                  actions.comments.copyPermalinkToClipboard(comment.id)
+                }
               >
                 Share Comment
               </Menu.Item>

@@ -376,3 +376,11 @@ export const resolveComment: AsyncAction<{
     comments[sandboxId][commentId].isResolved = oldIsResolved;
   }
 };
+
+export const copyPermalinkToClipboard: Action<string> = (
+  { effects },
+  commentId
+) => {
+  effects.browser.copyToClipboard(effects.router.createCommentUrl(commentId));
+  effects.notificationToast.success('Comment permalink copied to clipboard');
+};
