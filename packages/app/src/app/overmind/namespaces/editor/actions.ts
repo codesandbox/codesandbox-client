@@ -220,6 +220,19 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
         return aggr;
       }, {});
+
+      if (effects.router.getCommentId()) {
+        actions.workspace.setWorkspaceItem({ item: 'comments' });
+        actions.comments.selectComment({
+          commentId: effects.router.getCommentId(),
+          bounds: {
+            left: effects.browser.getWidth() / 2,
+            top: 80,
+            right: effects.browser.getWidth() / 3,
+            bottom: 0,
+          },
+        });
+      }
     } catch (e) {
       state.comments.comments[sandbox.id] = {};
       effects.notificationToast.add({

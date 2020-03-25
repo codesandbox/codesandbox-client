@@ -163,6 +163,15 @@ export const Dialog: React.FC = () => {
                         <Menu.Item onSelect={() => setEditing(true)}>
                           Edit Comment
                         </Menu.Item>
+                        <Menu.Item
+                          onSelect={() =>
+                            actions.comments.copyPermalinkToClipboard(
+                              comment.id
+                            )
+                          }
+                        >
+                          Share Comment
+                        </Menu.Item>
                       </Menu.List>
                     </Menu>
                   </Stack>

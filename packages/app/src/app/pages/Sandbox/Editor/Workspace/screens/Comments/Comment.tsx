@@ -43,6 +43,7 @@ export const Comment = React.memo<{
         opacity: comment.isResolved ? 0.2 : 1,
         paddingRight: 0, // the actions menu should be at the edge
       })}
+      id={comment.id}
       onClick={event => {
         const target = event.currentTarget as HTMLElement;
         // don't trigger comment if you click on the menu
@@ -83,7 +84,13 @@ export const Comment = React.memo<{
               >
                 Mark as {comment.isResolved ? 'Unr' : 'r'}esolved
               </Menu.Item>
-              <Menu.Item onSelect={() => {}}>Share Comment</Menu.Item>
+              <Menu.Item
+                onSelect={() =>
+                  actions.comments.copyPermalinkToClipboard(comment.id)
+                }
+              >
+                Share Comment
+              </Menu.Item>
               {state.user.id === comment.user.id && (
                 <Menu.Item
                   onSelect={() =>
