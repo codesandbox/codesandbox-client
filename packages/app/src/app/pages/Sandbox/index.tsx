@@ -41,9 +41,6 @@ export const Sandbox: React.FC<Props> = ({ match }) => {
     actions.live.onNavigateAway();
 
     actions.editor.sandboxChanged({ id: match.params.id });
-
-    // I don't want a run if the url changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     actions.live,
     actions.editor,
