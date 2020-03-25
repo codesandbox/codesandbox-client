@@ -50,64 +50,13 @@ export const Dialog: React.FC = () => {
     return null;
   }
 
-  const OVERLAP_WITH_SIDEBAR = -20;
-  const OFFSET_TOP_FOR_ALIGNMENT = -90;
-  const OFFSET_FOR_CODE = 500;
+  const isCodeComment =
+    comment.references[0] && comment.references[0].type === 'code';
 
-  // trying to match the position for code comments
-  const FALLBACK_POSITION = { x: 800, y: 120 };
-
-  let dialogPosition = { x: null, y: null };
-
-  if (currentCommentPositions?.dialog) {
-    // if we know the expected dialog position
-    // true for comments with code reference
-    dialogPosition = {
-      x: currentCommentPositions.dialog.left + OFFSET_FOR_CODE,
-      y: currentCommentPositions.dialog.top + OFFSET_TOP_FOR_ALIGNMENT,
-    };
-  } else if (currentCommentPositions?.trigger) {
-    // if don't know, we calculate based on the trigger
-    // true for comments opened from the sidebar (both global and code)
-
-    const isCodeComment =
-      comment.references[0] && comment.references[0].type === 'code';
-
-    if (isCodeComment) {
-      dialogPosition = {
-        x: currentCommentPositions.trigger.right + OFFSET_FOR_CODE,
-        y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
-      };
-    } else {
-      dialogPosition = {
-        x: currentCommentPositions.trigger.right + OVERLAP_WITH_SIDEBAR,
-        y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
-      };
-    }
-  } else {
-    // if we know neither, we put it at  nice spot on the page
-    // probably comment from permalink
-    dialogPosition = FALLBACK_POSITION;
-  }
-
-  let animateFrom = {};
-
-  if (currentCommentPositions?.trigger) {
-    animateFrom = {
-      x: currentCommentPositions.trigger.left,
-      y: currentCommentPositions.trigger.top,
-    };
-  } else {
-    // if we don't know the trigger, slide in from left
-    // probably comment from permalink
-    animateFrom = {
-      x: 0,
-      y: FALLBACK_POSITION.y,
-    };
-  }
-
-  // check for window colisions here and offset positions more
-  // eventually move it into a function
+  const { animateFrom, dialogPosition } = getPositions(
+    currentCommentPositions,
+    isCodeComment
+  );
 
   return (
     <motion.div
@@ -274,4 +223,63 @@ export const Dialog: React.FC = () => {
       </Stack>
     </motion.div>
   );
+};
+
+const getPositions = (currentCommentPositions, isCodeComment) => {
+  const OVERLAP_WITH_SIDEBAR = -20;
+  const OFFSET_TOP_FOR_ALIGNMENT = -90;
+  const OFFSET_FOR_CODE = 500;
+
+  // trying to match the position for code comments
+  const FALLBACK_POSITION = { x: 800, y: 120 };
+
+  let animateFrom = { x: null, y: null };
+
+  if (currentCommentPositions?.trigger) {
+    animateFrom = {
+      x: currentCommentPositions.trigger.left,
+      y: currentCommentPositions.trigger.top,
+    };
+  } else {
+    // if we don't know the trigger, slide in from left
+    // probably comment from permalink
+    animateFrom = {
+      x: 0,
+      y: FALLBACK_POSITION.y,
+    };
+  }
+
+  let dialogPosition = { x: null, y: null };
+
+  if (currentCommentPositions?.dialog) {
+    // if we know the expected dialog position
+    // true for comments with code reference
+    dialogPosition = {
+      x: currentCommentPositions.dialog.left + OFFSET_FOR_CODE,
+      y: currentCommentPositions.dialog.top + OFFSET_TOP_FOR_ALIGNMENT,
+    };
+  } else if (currentCommentPositions?.trigger) {
+    // if don't know, we calculate based on the trigger
+    // true for comments opened from the sidebar (both global and code)
+
+    if (isCodeComment) {
+      dialogPosition = {
+        x: currentCommentPositions.trigger.right + OFFSET_FOR_CODE,
+        y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
+      };
+    } else {
+      dialogPosition = {
+        x: currentCommentPositions.trigger.right + OVERLAP_WITH_SIDEBAR,
+        y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
+      };
+    }
+  } else {
+    // if we know neither, we put it at  nice spot on the page
+    // probably comment from permalink
+    dialogPosition = FALLBACK_POSITION;
+  }
+
+  // check for window colisions here and offset positions more
+
+  return { animateFrom, dialogPosition };
 };
