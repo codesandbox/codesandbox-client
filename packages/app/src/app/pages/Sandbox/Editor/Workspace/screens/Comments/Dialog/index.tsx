@@ -88,7 +88,7 @@ export const Dialog: React.FC = () => {
         })}
       >
         {isNewComment && editing ? (
-          <NewComment
+          <AddComment
             comment={comment}
             onSave={() => setEditing(false)}
             onCancel={closeDialog}
@@ -151,7 +151,7 @@ export const Dialog: React.FC = () => {
                   marginRight={2}
                 >
                   <AvatarBlock comment={comment} />
-                  {state.user.id === comment.user.id && !isNewComment && (
+                  {state.user.id === comment.user.id && (
                     <Stack align="center">
                       <Menu>
                         <Menu.IconButton
@@ -232,7 +232,7 @@ export const Dialog: React.FC = () => {
   );
 };
 
-const NewComment = ({ comment, onSave, onCancel }) => {
+const AddComment = ({ comment, onSave, onCancel }) => {
   const { actions } = useOvermind();
   const [value, setValue] = useState('');
 
