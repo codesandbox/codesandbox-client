@@ -393,13 +393,9 @@ const getPositions = (currentCommentPositions, isCodeComment, dialogRef) => {
   }
 
   // check for window colisions here and offset positions more
-
-  let maxLeft;
-  let maxTop;
+  let finalHeight;
 
   if (dialogRef.current) {
-    const dialogRect = dialogRef.current.getBoundingClientRect();
-
     /** Even when we have the rect, we don't always know
      * if it's in it's final height while it's animating
      *
@@ -409,20 +405,31 @@ const getPositions = (currentCommentPositions, isCodeComment, dialogRef) => {
      *
      */
 
+    const dialogRect = dialogRef.current.getBoundingClientRect();
+
     const animatingElement = dialogRef.current.parentElement;
     const scale = animatingElement.style.transform;
 
-    const finalHeight = scale.includes('scale(0.5')
+    finalHeight = scale.includes('scale(0.5')
       ? dialogRect.height * 2
       : dialogRect.height;
-
-    maxLeft = window.innerWidth - DIALOG_WIDTH - 16;
-    maxTop = window.innerHeight - finalHeight - 16;
   } else {
-    const GUESSED_HEIGHT = 420;
-    maxLeft = window.innerWidth - DIALOG_WIDTH - 16;
-    maxTop = window.innerWidth - GUESSED_HEIGHT - 16;
+    /** Until the ref is set, we don't know enough,
+     * so we're guessing on the safe side
+     */
+    finalHeight = 420;
   }
+
+  /** The parent of this dialog is starts at 48px
+   * This will change when we move the comment out!
+   */
+  const PARENT_Y_OFFSET = 48;
+
+  const BUFFER_FROM_EDGE = 32;
+
+  const maxLeft = window.innerWidth - DIALOG_WIDTH - BUFFER_FROM_EDGE;
+  const maxTop =
+    window.innerHeight - finalHeight - BUFFER_FROM_EDGE - PARENT_Y_OFFSET;
 
   if (dialogPosition.x > maxLeft) dialogPosition.x = maxLeft;
   if (dialogPosition.y > maxTop) dialogPosition.y = maxTop;
