@@ -57,6 +57,7 @@ export function initializeSettings() {
     );
     settings['javascript.autoClosingTags'] = false;
     settings['typescript.autoClosingTags'] = false;
+    settings['html.autoClosingTags'] = false;
     settings['typescript.tsserver.useSeparateSyntaxServer'] = false;
 
     if (!settings['workbench.colorTheme']) {
