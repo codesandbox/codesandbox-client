@@ -44,7 +44,6 @@ export const Dialog: React.FC = () => {
 
   /** Position the dialog and transition in to give context */
   const dialogRef = React.useRef();
-  const [positions, setPositions] = React.useState(null);
 
   const currentCommentPositions = state.comments.currentCommentPositions;
   const isCodeComment =
@@ -52,18 +51,15 @@ export const Dialog: React.FC = () => {
 
   /** Recheck the position when the dialog ref or the comment changes */
 
-  React.useEffect(() => {
-    const { animateFrom, dialogPosition } = getPositions(
-      currentCommentPositions,
-      isCodeComment,
-      dialogRef
-    );
-    setPositions({ animateFrom, dialogPosition });
-  }, [dialogRef, currentCommentPositions, isCodeComment]);
-
-  if (!currentCommentPositions || !positions) {
+  if (!currentCommentPositions) {
     return null;
   }
+
+  const positions = getPositions(
+    currentCommentPositions,
+    isCodeComment,
+    dialogRef
+  );
 
   return (
     <motion.div

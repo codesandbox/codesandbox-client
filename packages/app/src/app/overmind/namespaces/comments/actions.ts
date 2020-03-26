@@ -146,17 +146,15 @@ export const selectComment: AsyncAction<{
         path: comment.references[0].metadata.path,
       });
 
-      state.comments.currentCommentId = commentId;
-
       // update comment position with precise info
       const referenceBounds = await effects.vscode.getCodeReferenceBoundary(
         commentId,
         comment.references[0]
       );
-      const existingDialogBounds =
-        state.comments.currentCommentPositions?.dialog;
+
+      state.comments.currentCommentId = commentId;
       state.comments.currentCommentPositions = {
-        trigger: existingDialogBounds || bounds,
+        trigger: bounds,
         dialog: {
           left: referenceBounds.left,
           top: referenceBounds.top,
@@ -227,19 +225,29 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
   const comments = state.comments.comments;
 
   comments[sandboxId][id] = optimisticComment;
-  state.comments.currentCommentId = id;
   // placeholder value until we know the correct values
-  const referenceBounds = await effects.vscode.getCodeReferenceBoundary(
+  const {
+    left,
+    right,
+    top,
+    bottom,
+  } = await effects.vscode.getCodeReferenceBoundary(
     id,
     optimisticComment.references[0]
   );
+  state.comments.currentCommentId = id;
   state.comments.currentCommentPositions = {
-    trigger: referenceBounds,
+    trigger: {
+      left,
+      top,
+      bottom,
+      right,
+    },
     dialog: {
-      left: referenceBounds.left,
-      top: referenceBounds.top,
-      bottom: referenceBounds.bottom,
-      right: referenceBounds.right,
+      left,
+      top,
+      bottom,
+      right,
     },
   };
 };

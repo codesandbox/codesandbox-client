@@ -233,9 +233,14 @@ export class VSCodeEffect {
         }
 
         setTimeout(() => {
-          const el = document.querySelector('.editor-comments-active');
+          const commentGlyphs = document.querySelectorAll(
+            '.editor-comments-glyph'
+          );
+          const el = Array.from(commentGlyphs).find(glyphEl =>
+            glyphEl.className.includes(commentId)
+          );
 
-          if (el && el.className.includes(commentId)) {
+          if (el) {
             resolve(el.getBoundingClientRect());
           } else {
             findActiveComment();
