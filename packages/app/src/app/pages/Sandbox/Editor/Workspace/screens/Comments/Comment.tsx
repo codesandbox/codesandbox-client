@@ -46,15 +46,16 @@ export const Comment = React.memo<{
       })}
       id={comment.id}
       onClick={event => {
-        const target = event.currentTarget as HTMLElement;
         // don't trigger comment if you click on the menu
         // we have to handle this because of an upstream
         // bug in reach/menu-button
+        const target = event.target as HTMLElement;
         if (target.tagName === 'button' || target.tagName === 'svg') {
           return;
         }
 
-        const boundingRect = target.getBoundingClientRect();
+        const currentTarget = event.currentTarget as HTMLElement;
+        const boundingRect = currentTarget.getBoundingClientRect();
         actions.comments.selectComment({
           commentId: comment.id,
           bounds: {
