@@ -84,7 +84,7 @@ export const Comment = React.memo<{
                   })
                 }
               >
-                Mark as {comment.isResolved ? 'Unr' : 'r'}esolved
+                Mark as {comment.isResolved ? 'unresolved' : 'resolved'}
               </Menu.Item>
               <Menu.Item
                 onSelect={() =>
