@@ -46,7 +46,6 @@ export const Reply = ({ reply }: ReplyProps) => {
         </Stack>
       </Element>
       <Element
-        as={editing ? 'div' : 'p'}
         marginY={0}
         marginX={4}
         paddingBottom={6}
