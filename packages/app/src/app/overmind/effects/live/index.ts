@@ -154,10 +154,12 @@ class Live {
       });
 
       captureException(error);
-      this.onOperationError({
-        ...error.module_state[moduleShortid],
-        moduleShortid,
-      });
+      if (error.module_state) {
+        this.onOperationError({
+          ...error.module_state[moduleShortid],
+          moduleShortid,
+        });
+      }
       throw new Error(
         'The code was out of sync with the server, we had to reset the file'
       );
