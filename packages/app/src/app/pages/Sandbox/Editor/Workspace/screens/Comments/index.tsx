@@ -9,7 +9,6 @@ import {
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 import React from 'react';
 
 import { AddComment } from './AddComment';
@@ -29,9 +28,7 @@ export const Comments: React.FC = () => {
     actions: { comments: commentsActions },
   } = useOvermind();
   const options = Object.values(CommentsFilterOption);
-  const commentsExceptOptimistic = currentComments.filter(
-    comment => comment.id !== OPTIMISTIC_COMMENT_ID
-  );
+
   const getSelectedFilter = () => {
     switch (selectedCommentsFilter) {
       case CommentsFilterOption.ALL || CommentsFilterOption.OPEN:
@@ -105,7 +102,7 @@ export const Comments: React.FC = () => {
           </Menu>
         </SidebarRow>
 
-        {commentsExceptOptimistic.length ? (
+        {currentComments.length ? (
           <List
             marginTop={4}
             css={{
@@ -114,13 +111,13 @@ export const Comments: React.FC = () => {
               overflow: 'auto',
             }}
           >
-            {commentsExceptOptimistic.map(comment => (
+            {currentComments.map(comment => (
               <Comment key={comment.id} comment={comment} />
             ))}
           </List>
         ) : null}
       </div>
-      {commentsExceptOptimistic.length ? null : <Empty />}
+      {currentComments.length ? null : <Empty />}
       <AddComment />
       {currentCommentId && <CommentDialog />}
       {multiCommentsSelector && (
