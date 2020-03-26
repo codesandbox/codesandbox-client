@@ -50,8 +50,6 @@ export const Dialog: React.FC = () => {
   const isCodeComment =
     comment.references[0] && comment.references[0].type === 'code';
 
-  const [animationComplete, setAnimationComplete] = React.useState(true);
-
   /** Recheck the position when the dialog ref or the comment changes */
 
   React.useEffect(() => {
@@ -61,7 +59,7 @@ export const Dialog: React.FC = () => {
       dialogRef
     );
     setPositions({ animateFrom, dialogPosition });
-  }, [dialogRef, currentCommentPositions, isCodeComment, animationComplete]);
+  }, [dialogRef, currentCommentPositions, isCodeComment]);
 
   if (!currentCommentPositions || !positions) {
     return null;
@@ -72,8 +70,6 @@ export const Dialog: React.FC = () => {
       key={isCodeComment ? 'code' : 'global'}
       initial={{ ...positions.animateFrom, scale: 0.5, opacity: 0 }}
       animate={{ ...positions.dialogPosition, scale: 1, opacity: 1 }}
-      onAnimationStart={() => setAnimationComplete(false)}
-      onAnimationComplete={() => setAnimationComplete(true)}
       drag
       dragMomentum={false}
       transition={{ duration: 0.25 }}
