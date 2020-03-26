@@ -11,7 +11,7 @@ import {
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
-import { motion } from 'framer-motion';
+import { motion, useAnimation } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -28,6 +28,7 @@ const DIALOG_WIDTH = 420;
 
 export const Dialog: React.FC = () => {
   const { state } = useOvermind();
+  const controller = useAnimation();
 
   const comment = state.comments.currentComment;
 
@@ -36,24 +37,11 @@ export const Dialog: React.FC = () => {
 
   const [editing, setEditing] = useState(isNewComment);
   const { ref: listRef, scrollTop } = useScrollTop();
-
-  // reset editing when comment changes
-  React.useEffect(() => {
-    setEditing(isNewComment);
-  }, [comment.id, isNewComment]);
-
-  /** Position the dialog and transition in to give context */
   const dialogRef = React.useRef();
 
   const currentCommentPositions = state.comments.currentCommentPositions;
   const isCodeComment =
     comment.references[0] && comment.references[0].type === 'code';
-
-  /** Recheck the position when the dialog ref or the comment changes */
-
-  if (!currentCommentPositions) {
-    return null;
-  }
 
   const positions = getPositions(
     currentCommentPositions,
@@ -61,11 +49,40 @@ export const Dialog: React.FC = () => {
     dialogRef
   );
 
+  // reset editing when comment changes
+  React.useEffect(() => {
+    setEditing(isNewComment);
+    const updatedPositions = getPositions(
+      currentCommentPositions,
+      isCodeComment,
+      dialogRef
+    );
+    controller.start({
+      ...updatedPositions.dialogPosition,
+      scale: 1,
+      opacity: 1,
+    });
+  }, [
+    comment.id,
+    controller,
+    currentCommentPositions,
+    isCodeComment,
+    isNewComment,
+  ]);
+
+  /** Position the dialog and transition in to give context */
+
+  /** Recheck the position when the dialog ref or the comment changes */
+
+  if (!currentCommentPositions) {
+    return null;
+  }
+
   return (
     <motion.div
       key={isCodeComment ? 'code' : 'global'}
       initial={{ ...positions.animateFrom, scale: 0.5, opacity: 0 }}
-      animate={{ ...positions.dialogPosition, scale: 1, opacity: 1 }}
+      animate={controller}
       drag
       dragMomentum={false}
       transition={{ duration: 0.25 }}
