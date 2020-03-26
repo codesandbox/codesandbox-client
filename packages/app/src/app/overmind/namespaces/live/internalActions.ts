@@ -122,13 +122,10 @@ export const initializeModuleState: Action<IModuleState> = (
         moduleInfo.saved_code !== module.savedCode;
 
       if (moduleChanged) {
-        if (
-          moduleInfo.saved_code === null &&
-          typeof moduleInfo.saved_code === 'string'
-        ) {
+        if (moduleInfo.saved_code !== undefined) {
           module.savedCode = moduleInfo.saved_code;
         }
-        if (typeof moduleInfo.code === 'string') {
+        if (moduleInfo.code !== undefined) {
           module.code = moduleInfo.code;
         }
 
