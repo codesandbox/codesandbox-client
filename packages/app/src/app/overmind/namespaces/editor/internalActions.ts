@@ -391,6 +391,7 @@ export const forkSandbox: AsyncAction<{
 
         return {
           ...module,
+          savedCode: foundEquivalentModule.savedCode,
           code: foundEquivalentModule.code,
         };
       }),

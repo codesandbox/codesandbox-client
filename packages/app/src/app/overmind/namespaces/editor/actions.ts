@@ -32,6 +32,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { json } from 'overmind';
 
 import eventToTransform from '../../utils/event-to-transform';
@@ -87,6 +88,20 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
     );
+
+    // We now need to send all dirty files that came over from the last sandbox.
+    // There is the scenario where you edit a file and press fork. Then the server
+    // doesn't know about how you got to that dirty state.
+    const changedModules = state.editor.currentSandbox.modules.filter(
+      m => getSavedCode(m.code, m.savedCode) !== m.code
+    );
+    changedModules.forEach(m => {
+      // Update server with latest data
+      effects.live.sendCodeUpdate(
+        m.shortid,
+        getTextOperation(m.savedCode || '', m.code || '')
+      );
+    });
 
     state.editor.isForkingSandbox = false;
     return;
