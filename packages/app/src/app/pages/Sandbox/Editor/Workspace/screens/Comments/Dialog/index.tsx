@@ -24,6 +24,8 @@ import { useScrollTop } from './use-scroll-top';
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
+const DIALOG_WIDTH = 420;
+
 export const Dialog: React.FC = () => {
   const { state } = useOvermind();
 
@@ -40,31 +42,45 @@ export const Dialog: React.FC = () => {
     setEditing(isNewComment);
   }, [comment.id, isNewComment]);
 
+  /** Position the dialog and transition in to give context */
+  const dialogRef = React.useRef();
+  const [positions, setPositions] = React.useState(null);
+
   const currentCommentPositions = state.comments.currentCommentPositions;
-
-  if (!currentCommentPositions) {
-    return null;
-  }
-
   const isCodeComment =
     comment.references[0] && comment.references[0].type === 'code';
 
-  const { animateFrom, dialogPosition } = getPositions(
-    currentCommentPositions,
-    isCodeComment
-  );
+  const [animationComplete, setAnimationComplete] = React.useState(true);
+
+  /** Recheck the position when the dialog ref or the comment changes */
+
+  React.useEffect(() => {
+    const { animateFrom, dialogPosition } = getPositions(
+      currentCommentPositions,
+      isCodeComment,
+      dialogRef
+    );
+    setPositions({ animateFrom, dialogPosition });
+  }, [dialogRef, currentCommentPositions, isCodeComment, animationComplete]);
+
+  if (!currentCommentPositions || !positions) {
+    return null;
+  }
 
   return (
     <motion.div
       key={isCodeComment ? 'code' : 'global'}
-      initial={{ ...animateFrom, scale: 0.5, opacity: 0 }}
-      animate={{ ...dialogPosition, scale: 1, opacity: 1 }}
+      initial={{ ...positions.animateFrom, scale: 0.5, opacity: 0 }}
+      animate={{ ...positions.dialogPosition, scale: 1, opacity: 1 }}
+      onAnimationStart={() => setAnimationComplete(false)}
+      onAnimationComplete={() => setAnimationComplete(true)}
       drag
       dragMomentum={false}
       transition={{ duration: 0.25 }}
       style={{ position: 'absolute', zIndex: 2 }}
     >
       <Stack
+        ref={dialogRef}
         direction="vertical"
         css={css({
           position: 'absolute',
@@ -74,7 +90,7 @@ export const Dialog: React.FC = () => {
           border: '1px solid',
           borderColor: 'dialog.border',
           borderRadius: 4,
-          width: 420,
+          width: DIALOG_WIDTH,
           height: 'auto',
           maxHeight: '80vh',
           fontFamily: 'Inter, sans-serif',
@@ -322,7 +338,7 @@ const AddReply = ({ comment }) => {
   );
 };
 
-const getPositions = (currentCommentPositions, isCodeComment) => {
+const getPositions = (currentCommentPositions, isCodeComment, dialogRef) => {
   const OVERLAP_WITH_SIDEBAR = -20;
   const OFFSET_TOP_FOR_ALIGNMENT = -90;
   const OFFSET_FOR_CODE = 500;
@@ -377,6 +393,23 @@ const getPositions = (currentCommentPositions, isCodeComment) => {
   }
 
   // check for window colisions here and offset positions more
+
+  let maxLeft;
+  let maxTop;
+
+  if (dialogRef.current) {
+    const dialogRect = dialogRef.current.getBoundingClientRect();
+
+    maxLeft = window.innerWidth - DIALOG_WIDTH - 16;
+    maxTop = window.innerHeight - dialogRect.height - 16;
+  } else {
+    const GUESSED_HEIGHT = 420;
+    maxLeft = window.innerWidth - DIALOG_WIDTH - 16;
+    maxTop = window.innerWidth - GUESSED_HEIGHT - 16;
+  }
+
+  if (dialogPosition.x > maxLeft) dialogPosition.x = maxLeft;
+  if (dialogPosition.y > maxTop) dialogPosition.y = maxTop;
 
   return { animateFrom, dialogPosition };
 };
