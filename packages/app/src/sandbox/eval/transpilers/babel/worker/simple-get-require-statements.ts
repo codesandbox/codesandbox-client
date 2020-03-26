@@ -14,6 +14,10 @@ export default function getRequireStatements(code: string) {
       return;
     }
 
+    if (line.includes('require("".concat')) {
+      throw new Error('Glob require is part of statement');
+    }
+
     const matches = line.match(lineRegex);
 
     if (matches) {
