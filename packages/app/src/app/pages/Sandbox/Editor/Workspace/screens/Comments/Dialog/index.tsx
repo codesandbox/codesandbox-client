@@ -43,6 +43,7 @@ export const Dialog: React.FC = () => {
   const isCodeComment =
     comment.references[0] && comment.references[0].type === 'code';
 
+  // this could rather be `getInitialPosition`
   const positions = getPositions(
     currentCommentPositions,
     isCodeComment,
@@ -52,6 +53,7 @@ export const Dialog: React.FC = () => {
   // reset editing when comment changes
   React.useEffect(() => {
     setEditing(isNewComment);
+    // this could rather be `getAnimatedPosition`
     const updatedPositions = getPositions(
       currentCommentPositions,
       isCodeComment,
@@ -69,10 +71,6 @@ export const Dialog: React.FC = () => {
     isCodeComment,
     isNewComment,
   ]);
-
-  /** Position the dialog and transition in to give context */
-
-  /** Recheck the position when the dialog ref or the comment changes */
 
   if (!currentCommentPositions) {
     return null;
