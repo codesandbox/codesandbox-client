@@ -143,6 +143,16 @@ class Live {
       operation: this.operationToElixir(operation.toJSON()),
       revision,
     }).catch(error => {
+      logBreadcrumb({
+        type: 'ot',
+        message: `ERROR ${JSON.stringify({
+          moduleShortid,
+          revision,
+          operation,
+          message: error.message,
+        })}`,
+      });
+
       captureException(error);
       this.onOperationError({
         ...error.module_state[moduleShortid],

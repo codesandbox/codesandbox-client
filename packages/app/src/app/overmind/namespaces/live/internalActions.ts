@@ -7,6 +7,7 @@ import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 
 import { getSavedCode } from '../../utils/sandbox';
+import { IModuleStateModule } from './types';
 
 export const clearUserSelections: Action<string | null> = (
   { state, effects },
@@ -89,7 +90,11 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
   return null;
 };
 
-export const initializeModuleState: Action<any> = (
+interface IModuleState {
+  [moduleId: string]: IModuleStateModule;
+}
+
+export const initializeModuleState: Action<IModuleState> = (
   { state, actions, effects },
   moduleState
 ) => {
@@ -117,8 +122,15 @@ export const initializeModuleState: Action<any> = (
         moduleInfo.saved_code !== module.savedCode;
 
       if (moduleChanged) {
-        module.savedCode = moduleInfo.saved_code;
-        module.code = moduleInfo.code;
+        if (
+          moduleInfo.saved_code === null &&
+          typeof moduleInfo.saved_code === 'string'
+        ) {
+          module.savedCode = moduleInfo.saved_code;
+        }
+        if (typeof moduleInfo.code === 'string') {
+          module.code = moduleInfo.code;
+        }
 
         if (savedCodeChanged) {
           effects.vscode.sandboxFsSync.writeFile(

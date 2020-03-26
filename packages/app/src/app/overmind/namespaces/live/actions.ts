@@ -10,6 +10,7 @@ import { filter, fork, pipe } from 'overmind';
 
 import * as internalActions from './internalActions';
 import * as liveMessage from './liveMessageOperators';
+import { IModuleStateModule } from './types';
 
 export const internal = internalActions;
 
@@ -27,14 +28,14 @@ export const signInToRoom: AsyncAction<{
 
 export const onOperationError: Action<{
   moduleShortid: string;
-  code: string;
-  revision: number;
-  saved_code: string;
-}> = ({ state, effects }, { moduleShortid, revision, code, saved_code }) => {
+} & IModuleStateModule> = (
+  { state, effects },
+  { moduleShortid, revision, code, saved_code }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
-  effects.live.resetClient(moduleShortid, revision);
+  effects.live.resetClient(moduleShortid, revision || 0);
   const module = state.editor.currentSandbox.modules.find(
     moduleItem => moduleItem.shortid === moduleShortid
   );
