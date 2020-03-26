@@ -400,8 +400,24 @@ const getPositions = (currentCommentPositions, isCodeComment, dialogRef) => {
   if (dialogRef.current) {
     const dialogRect = dialogRef.current.getBoundingClientRect();
 
+    /** Even when we have the rect, we don't always know
+     * if it's in it's final height while it's animating
+     *
+     * We do know that it animates from 0.5 to 1, so those are the
+     * 2 values we might get, based on that we can double the initial
+     * height to get final height
+     *
+     */
+
+    const animatingElement = dialogRef.current.parentElement;
+    const scale = animatingElement.style.transform;
+
+    const finalHeight = scale.includes('scale(0.5')
+      ? dialogRect.height * 2
+      : dialogRect.height;
+
     maxLeft = window.innerWidth - DIALOG_WIDTH - 16;
-    maxTop = window.innerHeight - dialogRect.height - 16;
+    maxTop = window.innerHeight - finalHeight - 16;
   } else {
     const GUESSED_HEIGHT = 420;
     maxLeft = window.innerWidth - DIALOG_WIDTH - 16;
