@@ -28,6 +28,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { json } from 'overmind';
 import io from 'socket.io-client';
 
@@ -1102,12 +1103,14 @@ export class VSCodeEffect {
 
       this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
         cursor => {
-          const model = activeEditor.getModel();
+          if (COMMENTS) {
+            const model = activeEditor.getModel();
 
-          this.modelsHandler.updateLineCommentIndication(
-            model,
-            cursor.position.lineNumber
-          );
+            this.modelsHandler.updateLineCommentIndication(
+              model,
+              cursor.position.lineNumber
+            );
+          }
         }
       );
 
