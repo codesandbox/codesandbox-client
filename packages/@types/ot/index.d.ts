@@ -23,7 +23,7 @@ declare module 'ot' {
 
   class Selection {
     static Range: {
-      new (anchor: number, head: number);
+      new (anchor: number, head: number): Range;
       transform(operation: TextOperation): Range;
     };
   }
