@@ -122,12 +122,6 @@ export const selectComment: AsyncAction<{
     bottom: number;
   };
 }> = async ({ state, effects, actions }, { commentId, bounds }) => {
-  if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
-    delete state.comments.comments[state.editor.currentSandbox.id][
-      OPTIMISTIC_COMMENT_ID
-    ];
-  }
-
   // Should close from somewhere else probably
   state.comments.multiCommentsSelector = null;
 
@@ -151,6 +145,12 @@ export const selectComment: AsyncAction<{
         commentId,
         comment.references[0]
       );
+
+      if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
+        delete state.comments.comments[state.editor.currentSandbox.id][
+          OPTIMISTIC_COMMENT_ID
+        ];
+      }
 
       state.comments.currentCommentId = commentId;
       state.comments.currentCommentPositions = {
