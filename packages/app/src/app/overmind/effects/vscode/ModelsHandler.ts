@@ -6,6 +6,7 @@ import {
   UserSelection,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
@@ -51,8 +52,11 @@ export type OnOperationAppliedCallback = (data: OnOperationAppliedData) => void;
 export type ModuleModel = {
   changeListener: { dispose: Function };
   selections: any[];
+  currentLine: number;
   path: string;
   model: Promise<any>;
+  comments: Array<{ commentId: string; range: [number, number] }>;
+  currentCommentDecorations: string[];
 };
 
 export class ModelsHandler {
@@ -67,7 +71,7 @@ export class ModelsHandler {
   private monaco;
   private userClassesGenerated = {};
   private userSelectionDecorations = {};
-
+  private currentCommentThreadId: string | null = null;
   constructor(
     editorApi,
     monaco,
@@ -109,8 +113,40 @@ export class ModelsHandler {
     }
   }
 
+  public getModuleModelByPath(path: string) {
+    const fullPath = '/sandbox' + path;
+    this.moduleModels[fullPath] = this.moduleModels[fullPath] || {
+      changeListener: null,
+      model: null,
+      currentLine: 0,
+      path: fullPath,
+      selections: [],
+      comments: [],
+      currentCommentDecorations: [],
+    };
+
+    return this.moduleModels[fullPath];
+  }
+
+  public updateLineCommentIndication(model: any, lineNumber: number) {
+    const moduleModel = this.moduleModels[model.uri.path];
+
+    moduleModel.currentLine = lineNumber;
+
+    const newDecorationComments = this.createCommentDecorations(
+      moduleModel.comments,
+      model,
+      this.currentCommentThreadId,
+      moduleModel.currentLine
+    );
+    moduleModel.currentCommentDecorations = model.deltaDecorations(
+      moduleModel.currentCommentDecorations,
+      newDecorationComments
+    );
+  }
+
   public changeModule = async (module: Module) => {
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getModuleModelByPath(module.path);
 
     if (getCurrentModelPath(this.editorApi) !== module.path) {
       await this.editorApi.openFile(module.path);
@@ -123,8 +159,68 @@ export class ModelsHandler {
 
     this.updateUserSelections(module, moduleModel.selections);
 
+    const model = await moduleModel.model;
+
+    const newDecorationComments = this.createCommentDecorations(
+      moduleModel.comments,
+      model,
+      this.currentCommentThreadId,
+      moduleModel.currentLine
+    );
+    moduleModel.currentCommentDecorations = model.deltaDecorations(
+      moduleModel.currentCommentDecorations,
+      newDecorationComments
+    );
+
     return moduleModel.model;
   };
+
+  public async applyComments(
+    commentThreadsByPath: {
+      [path: string]: Array<{
+        commentId: string;
+        range: [number, number];
+      }>;
+    },
+    currentCommentThreadId: string | null
+  ) {
+    // We keep a local reference to the current commentThread id,
+    // because when opening modules we want to highlight any currently
+    // selected comment
+    this.currentCommentThreadId = currentCommentThreadId;
+
+    // Ensure we have the moduleModels
+    Object.keys(commentThreadsByPath).forEach(path => {
+      this.getModuleModelByPath(path).comments = commentThreadsByPath[path];
+    });
+
+    // Apply the decorations
+    Object.keys(this.moduleModels).forEach(async path => {
+      const moduleModel = this.moduleModels[path];
+      const relativePath = path.replace('/sandbox', '');
+      const model = await moduleModel.model;
+
+      if (!model) {
+        return;
+      }
+
+      const commentThreads = commentThreadsByPath[relativePath] || [];
+      const existingDecorationComments = moduleModel.currentCommentDecorations;
+      const newDecorationComments = this.createCommentDecorations(
+        commentThreads,
+        model,
+        currentCommentThreadId,
+        moduleModel.currentLine
+      );
+
+      moduleModel.currentCommentDecorations = model.deltaDecorations(
+        existingDecorationComments,
+        newDecorationComments
+      );
+
+      moduleModel.comments = commentThreads;
+    });
+  }
 
   public async updateTabsPath(oldPath: string, newPath: string) {
     const oldModelPath = '/sandbox' + oldPath;
@@ -154,7 +250,7 @@ export class ModelsHandler {
       return;
     }
 
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getModuleModelByPath(module.path);
 
     const modelEditor = this.editorApi.editorService.editors.find(
       editor => editor.resource && editor.resource.path === moduleModel.path
@@ -189,7 +285,7 @@ export class ModelsHandler {
   }
 
   public async setModuleCode(module: Module) {
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getModuleModelByPath(module.path);
     const model = await moduleModel.model;
 
     if (!model) {
@@ -234,7 +330,7 @@ export class ModelsHandler {
     userSelections: EditorSelection[],
     showNameTag = true
   ) {
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getModuleModelByPath(module);
 
     moduleModel.selections = userSelections;
 
@@ -540,7 +636,7 @@ export class ModelsHandler {
             this.sandbox.directories
           );
 
-          const moduleModel = this.getModuleModel(module);
+          const moduleModel = this.getModuleModelByPath(module.path);
 
           moduleModel.model = model;
           moduleModel.changeListener = this.getModelContentChangeListener(
@@ -595,15 +691,102 @@ export class ModelsHandler {
     });
   }
 
-  private getModuleModel(module: Module) {
-    const path = '/sandbox' + module.path;
-    this.moduleModels[path] = this.moduleModels[path] || {
-      changeListener: null,
-      model: null,
-      path,
-      selections: [],
-    };
+  private createCommentDecorations(
+    commentThreadDecorations: Array<{
+      commentId: string;
+      range: [number, number];
+    }>,
+    model: any,
+    currentCommentThreadId: string | null,
+    currentLineNumber: number
+  ) {
+    if (!hasPermission(this.sandbox.authorization, 'comment')) {
+      return [];
+    }
+    const commentDecorationsByLineNumber = commentThreadDecorations.reduce<{
+      [lineNumber: string]: Array<{
+        commentId: string;
+        range: [number, number];
+      }>;
+    }>((aggr, commentDecoration) => {
+      const { lineNumber } = indexToLineAndColumn(
+        model.getLinesContent() || [],
+        commentDecoration.range[0]
+      );
 
-    return this.moduleModels[path];
+      if (!aggr[lineNumber]) {
+        aggr[lineNumber] = [];
+      }
+
+      aggr[lineNumber].push(commentDecoration);
+
+      return aggr;
+    }, {});
+
+    const initialDecorations: any[] =
+      currentLineNumber === -1
+        ? []
+        : [
+            {
+              range: new this.monaco.Range(
+                currentLineNumber,
+                1,
+                currentLineNumber,
+                1
+              ),
+              options: {
+                isWholeLine: true,
+                glyphMarginClassName: `editor-comments-glyph editor-comments-multi editor-comments-add`,
+              },
+            },
+          ];
+
+    return Object.keys(commentDecorationsByLineNumber).reduce(
+      (aggr, lineNumberKey) => {
+        const lineCommentDecorations =
+          commentDecorationsByLineNumber[lineNumberKey];
+        const lineNumber = Number(lineNumberKey);
+        const activeCommentDecoration = lineCommentDecorations.find(
+          commentDecoration =>
+            commentDecoration.commentId === currentCommentThreadId
+        );
+        const ids = lineCommentDecorations.map(
+          commentDecoration => commentDecoration.commentId
+        );
+        const targetLineNumber = activeCommentDecoration
+          ? indexToLineAndColumn(
+              model.getLinesContent() || [],
+              activeCommentDecoration.range[1]
+            ).lineNumber
+          : lineNumber;
+
+        return aggr.concat(
+          {
+            range: new this.monaco.Range(lineNumber, 1, lineNumber, 1),
+            options: {
+              isWholeLine: true,
+              // comment-id- class needs to be the LAST class!
+              glyphMarginClassName: `editor-comments-glyph ${
+                activeCommentDecoration ? 'editor-comments-active ' : ''
+              }${
+                ids.length > 1
+                  ? `editor-comments-multi editor-comments-multi-${ids.length} `
+                  : ''
+              }editor-comments-ids-${ids.join('_')}`,
+            },
+          },
+          {
+            range: new this.monaco.Range(lineNumber, 1, targetLineNumber, 1),
+            options: {
+              isWholeLine: true,
+              className: activeCommentDecoration
+                ? 'editor-comments-highlight'
+                : undefined,
+            },
+          }
+        );
+      },
+      initialDecorations
+    );
   }
 }

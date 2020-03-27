@@ -37,7 +37,7 @@ export const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
-  defaultOpen: !COMMENTS_ON,
+  defaultOpen: true,
 };
 
 export const GITHUB: INavigationItem = {
@@ -71,7 +71,6 @@ export const SERVER: INavigationItem = {
 export const COMMENTS: INavigationItem = {
   id: 'comments',
   name: 'Comments',
-  defaultOpen: COMMENTS_ON && REDESIGNED_SIDEBAR === 'true',
 };
 
 export function getDisabledItems(store: any): INavigationItem[] {
@@ -127,7 +126,11 @@ export default function getItems(store: any): INavigationItem[] {
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    if (COMMENTS_ON && REDESIGNED_SIDEBAR === 'true') {
+    if (
+      COMMENTS_ON &&
+      REDESIGNED_SIDEBAR === 'true' &&
+      hasPermission(currentSandbox.authorization, 'comment')
+    ) {
       items.push(GITHUB, COMMENTS);
     } else {
       items.push(GITHUB);

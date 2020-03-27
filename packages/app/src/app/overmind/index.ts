@@ -16,6 +16,7 @@ import { createConnect } from './createConnect';
 import * as effects from './effects';
 import { createModals } from './factories';
 import * as modals from './modals';
+import * as comments from './namespaces/comments';
 import * as dashboard from './namespaces/dashboard';
 import * as deployment from './namespaces/deployment';
 import * as editor from './namespaces/editor';
@@ -53,6 +54,7 @@ export const config = merge(
     explore,
     profile,
     server,
+    comments,
     modals: createModals(modals),
   })
 );

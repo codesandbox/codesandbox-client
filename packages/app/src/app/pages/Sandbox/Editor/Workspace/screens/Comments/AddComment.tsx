@@ -4,15 +4,14 @@ import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React, { useState } from 'react';
 
-export const AddCommentThread: React.FC = () => {
+export const AddComment: React.FC = () => {
   const [value, setValue] = useState('');
   const { actions } = useOvermind();
 
   const onSubmit = e => {
     e.preventDefault();
-    actions.editor.addCommentThread({
+    actions.comments.addComment({
       content: value,
-      open: false,
     });
     setValue('');
   };

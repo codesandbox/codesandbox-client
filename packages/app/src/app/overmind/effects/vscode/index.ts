@@ -1,3 +1,5 @@
+import './icons.css';
+
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
@@ -17,16 +19,18 @@ import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
+import { Reference } from 'app/graphql/types';
 import { Reaction } from 'app/overmind';
+import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
+import { json } from 'overmind';
 import io from 'socket.io-client';
 
-import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
   initializeCodeSandboxTheme,
@@ -56,6 +60,15 @@ export type VsCodeOptions = {
   onOperationApplied: (data: OnOperationAppliedData) => void;
   onSelectionChanged: (selection: onSelectionChangeData) => void;
   onViewRangeChanged: (viewRange: UserViewRange) => void;
+  onCommentClick: (payload: {
+    commentIds: string[];
+    bounds: {
+      left: number;
+      top: number;
+      bottom: number;
+      right: number;
+    };
+  }) => void;
   reaction: Reaction;
   // These two should be removed
   getSignal: any;
@@ -105,6 +118,7 @@ export class VSCodeEffect {
   private linter: Linter | null;
   private modelsHandler: ModelsHandler;
   private modelSelectionListener: { dispose: Function };
+  private modelCursorPositionListener: { dispose: Function };
   private modelViewRangeListener: { dispose: Function };
   private readOnly: boolean;
   private elements = {
@@ -131,6 +145,18 @@ export class VSCodeEffect {
     this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 500);
 
     this.prepareElements();
+    this.options.reaction(
+      state => ({
+        fileComments: json(state.comments.fileComments),
+        currentCommentId: state.comments.currentCommentId,
+      }),
+      ({ fileComments, currentCommentId }) => {
+        if (this.modelsHandler) {
+          this.modelsHandler.applyComments(fileComments, currentCommentId);
+        }
+      }
+    );
+    this.listenToCommentClick();
 
     // We instantly create a sandbox sync, as we want our
     // extension host to get its messages handled to initialize
@@ -187,6 +213,41 @@ export class VSCodeEffect {
     });
 
     return this.initialized;
+  }
+
+  public async getCodeReferenceBoundary(
+    commentId: string,
+    reference: Reference
+  ) {
+    this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
+
+    return new Promise<DOMRect>((resolve, reject) => {
+      let checkCount = 0;
+      function findActiveComment() {
+        checkCount++;
+
+        if (checkCount === 20) {
+          reject(new Error('Could not find the comment glyph'));
+          return;
+        }
+
+        setTimeout(() => {
+          const commentGlyphs = document.querySelectorAll(
+            '.editor-comments-glyph'
+          );
+          const el = Array.from(commentGlyphs).find(glyphEl =>
+            glyphEl.className.includes(commentId)
+          );
+
+          if (el) {
+            resolve(el.getBoundingClientRect());
+          } else {
+            findActiveComment();
+          }
+        }, 10);
+      }
+      findActiveComment();
+    });
   }
 
   public getEditorElement(
@@ -442,20 +503,22 @@ export class VSCodeEffect {
     // allowing for a paint, like selections in explorer. For this to work we have to ensure
     // that we are actually indeed still trying to open this file, as we might have changed
     // the file
-    requestAnimationFrame(async () => {
-      const currentModule = this.options.getCurrentModule();
-      if (currentModule && module.id === currentModule.id) {
-        try {
-          const model = await this.modelsHandler.changeModule(module);
-
-          this.lint(module.title, model);
-        } catch (error) {
-          // We might try to open a module that is not actually opened in the editor,
-          // but the configuration wizard.. currently this throws an error as there
-          // is really no good way to identify when it happen. This needs to be
-          // improved in next version
+    return new Promise(resolve => {
+      requestAnimationFrame(async () => {
+        const currentModule = this.options.getCurrentModule();
+        if (currentModule && module.id === currentModule.id) {
+          try {
+            const model = await this.modelsHandler.changeModule(module);
+            this.lint(module.title, model);
+            resolve();
+          } catch (error) {
+            // We might try to open a module that is not actually opened in the editor,
+            // but the configuration wizard.. currently this throws an error as there
+            // is really no good way to identify when it happen. This needs to be
+            // improved in next version
+          }
         }
-      }
+      });
     });
   }
 
@@ -968,6 +1031,10 @@ export class VSCodeEffect {
       this.modelSelectionListener.dispose();
     }
 
+    if (this.modelCursorPositionListener) {
+      this.modelCursorPositionListener.dispose();
+    }
+
     if (this.modelViewRangeListener) {
       this.modelViewRangeListener.dispose();
     }
@@ -1033,9 +1100,21 @@ export class VSCodeEffect {
         }
       });
 
+      this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
+        cursor => {
+          const model = activeEditor.getModel();
+
+          this.modelsHandler.updateLineCommentIndication(
+            model,
+            cursor.position.lineNumber
+          );
+        }
+      );
+
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
         selectionChange => {
-          const lines = activeEditor.getModel().getLinesContent() || [];
+          const model = activeEditor.getModel();
+          const lines = model.getLinesContent() || [];
           const data: onSelectionChangeData = {
             primary: getSelection(lines, selectionChange.selection),
             secondary: selectionChange.secondarySelections.map(s =>
@@ -1142,6 +1221,35 @@ export class VSCodeEffect {
       status: getStatus(),
       sticky: options.sticky,
       actions: options.actions,
+    });
+  }
+
+  private listenToCommentClick() {
+    window.addEventListener('click', event => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('editor-comments-glyph')) {
+        /*
+          We grab the id of the commenthread by getting the last classname.
+          The last part of the classname is the id.
+        */
+        const lastClass = Array.from(target.classList).pop();
+
+        if (lastClass) {
+          const commentIds = lastClass.startsWith('editor-comments-ids-')
+            ? (lastClass.split('editor-comments-ids-').pop() || '').split('_')
+            : [];
+          const boundingRect = target.getBoundingClientRect();
+          this.options.onCommentClick({
+            commentIds,
+            bounds: {
+              left: boundingRect.left,
+              top: boundingRect.top,
+              right: boundingRect.right,
+              bottom: boundingRect.bottom,
+            },
+          });
+        }
+      }
     });
   }
 }

@@ -21,5 +21,16 @@ declare module 'ot' {
     toJSON(): SerializedTextOperation;
   }
 
-  export { TextOperation };
+  interface Range {
+    new (anchor: number, head: number): Range;
+    transform(operation: TextOperation): Range;
+    anchor: number;
+    head: number;
+  }
+
+  class Selection {
+    static Range: Range;
+  }
+
+  export { TextOperation, Selection };
 }

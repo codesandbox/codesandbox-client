@@ -1,7 +1,6 @@
 import { GitInfo } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-
 import history from '../../utils/history';
 
 export default {
@@ -48,5 +47,11 @@ export default {
   },
   getSandboxOptions() {
     return getSandboxOptions(decodeURIComponent(document.location.href));
+  },
+  getCommentId() {
+    return new URL(location.href).searchParams.get('comment');
+  },
+  createCommentUrl(id: string) {
+    return `${window.location.origin}${window.location.pathname}?comment=${id}`;
   },
 };

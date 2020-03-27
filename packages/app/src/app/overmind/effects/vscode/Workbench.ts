@@ -161,6 +161,15 @@ export class Workbench {
       },
     });
 
+    this.addWorkbenchAction({
+      id: 'comments.add',
+      label: 'Add code comment',
+      category: 'Comments',
+      run: () => {
+        this.controller.getSignal('comments.createComment')();
+      },
+    });
+
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '1_new',
       order: 1,
@@ -357,6 +366,15 @@ export class Workbench {
       command: {
         id: 'codesandbox.help.spectrum',
         title: 'Join Us on S&&pectrum',
+      },
+    });
+
+    this.appendMenuItem(MenuId.EditorContext, {
+      group: '0_comments',
+      order: 0,
+      command: {
+        id: 'comments.add',
+        title: 'Add code comment...',
       },
     });
   }

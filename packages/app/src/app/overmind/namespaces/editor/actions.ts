@@ -1,14 +1,12 @@
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
-  CommentsFilterOption,
   EnvironmentVariable,
   ModuleCorrection,
   ModuleError,
   ModuleTab,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
-import { TextOperation } from 'ot';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
@@ -18,12 +16,12 @@ import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
   CollaboratorFragment,
-  Comment,
+  CommentFragment,
   InvitationFragment,
-  CommentThread,
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import {
   addDevToolsTab as addDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
@@ -32,7 +30,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
-import { getSavedCode } from 'app/overmind/utils/sandbox';
+import { Selection, TextOperation } from 'ot';
 import { json } from 'overmind';
 
 import eventToTransform from '../../utils/event-to-transform';
@@ -220,27 +218,39 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   effects.vscode.openModule(state.editor.currentModule);
 
-  if (COMMENTS) {
+  if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
     try {
-      const {
-        sandbox: sandboxComments,
-      } = await effects.gql.queries.commentThreads({
+      const { sandbox: sandboxComments } = await effects.gql.queries.comments({
         sandboxId: sandbox.id,
       });
 
-      if (!sandboxComments || !sandboxComments.commentThreads) {
+      if (!sandboxComments || !sandboxComments.comments) {
         return;
       }
 
-      state.editor.commentThreads[
-        sandbox.id
-      ] = sandboxComments.commentThreads.reduce((aggr, comment) => {
-        aggr[comment.id] = comment;
+      state.comments.comments[sandbox.id] = sandboxComments.comments.reduce<{
+        [id: string]: CommentFragment;
+      }>((aggr, commentThread) => {
+        aggr[commentThread.id] = commentThread;
 
         return aggr;
       }, {});
+
+      const urlCommentId = effects.router.getCommentId();
+      if (urlCommentId) {
+        actions.workspace.setWorkspaceItem({ item: 'comments' });
+        actions.comments.selectComment({
+          commentId: urlCommentId,
+          bounds: {
+            left: effects.browser.getWidth() / 2,
+            top: 80,
+            right: effects.browser.getWidth() / 3,
+            bottom: 0,
+          },
+        });
+      }
     } catch (e) {
-      state.editor.commentThreads[sandbox.id] = {};
+      state.comments.comments[sandbox.id] = {};
       effects.notificationToast.add({
         status: NotificationStatus.NOTICE,
         message: `There as a problem getting the sandbox comments`,
@@ -333,6 +343,8 @@ export const codeChanged: Action<{
     return;
   }
 
+  const sandbox = state.editor.currentSandbox;
+
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
   );
@@ -355,6 +367,18 @@ export const codeChanged: Action<{
     }
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
+
+    const comments = state.comments.fileComments[module.path] || [];
+    comments.forEach(fileComment => {
+      const range = new Selection.Range(...fileComment.range);
+      const newRange = range.transform(operation);
+      const comment =
+        state.comments.comments[sandbox.id][fileComment.commentId];
+      if (comment.references && comment.references[0].type === 'code') {
+        comment.references[0].metadata.anchor = newRange.anchor;
+        comment.references[0].metadata.head = newRange.head;
+      }
+    });
   }
 
   actions.editor.internal.setStateModuleCode({
@@ -486,7 +510,7 @@ export const likeSandboxToggled: AsyncAction<string> = async (
   state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
-export const moduleSelected: Action<
+export const moduleSelected: AsyncAction<
   | {
       // Id means it is coming from Explorer
       id: string;
@@ -497,7 +521,7 @@ export const moduleSelected: Action<
       id?: undefined;
       path: string;
     }
-> = ({ actions, effects, state }, { id, path }) => {
+> = async ({ actions, effects, state }, { id, path }) => {
   effects.analytics.track('Open File');
 
   state.editor.hasLoadedInitialModule = true;
@@ -521,7 +545,7 @@ export const moduleSelected: Action<
       return;
     }
 
-    actions.editor.internal.setCurrentModule(module);
+    await actions.editor.internal.setCurrentModule(module);
 
     if (state.live.isLive && state.live.liveUser && state.live.roomInfo) {
       effects.vscode.updateUserSelections(
@@ -1416,201 +1440,6 @@ export const revokeSandboxInvitation: AsyncAction<{
   }
 };
 
-export const getComments: AsyncAction<{
-  id: string;
-  sandboxId: string;
-}> = async ({ state, effects }, { sandboxId, id }) => {
-  try {
-    const { sandbox } = await effects.gql.queries.comments({
-      sandboxId,
-      commentThreadId: id,
-    });
-
-    if (!sandbox || !sandbox.commentThread) {
-      return;
-    }
-
-    state.editor.commentThreads[sandboxId][id].comments =
-      sandbox.commentThread.comments;
-  } catch (e) {
-    effects.notificationToast.error(
-      'Unable to get your comment, please try again'
-    );
-  }
-};
-
-export const selectCommentThread: Action<string> = ({ state }, id) => {
-  state.editor.currentCommentThreadId = id;
-};
-
-export const addCommentThread: AsyncAction<{
-  content: string;
-  open?: boolean;
-}> = async ({ state, effects, actions }, { content, open }) => {
-  if (!state.user || !state.editor.currentSandbox) {
-    return;
-  }
-
-  const id = `${content}-${state.user.username}`;
-  const sandboxId = state.editor.currentSandbox.id;
-  const now = new Date().toString();
-  const comment: Comment = {
-    id,
-    insertedAt: now,
-    updatedAt: now,
-    content,
-    user: {
-      id: state.user.id,
-      name: state.user.name,
-      username: state.user.username,
-      avatarUrl: state.user.avatarUrl,
-    },
-  };
-  const optimisticCommentThread: CommentThread = {
-    id,
-    insertedAt: now,
-    updatedAt: now,
-    isResolved: false,
-    initialComment: comment,
-    comments: [],
-  };
-  const commentThreads = state.editor.commentThreads;
-
-  commentThreads[sandboxId][id] = optimisticCommentThread;
-  state.editor.selectedCommentsFilter = CommentsFilterOption.OPEN;
-  try {
-    const {
-      createCommentThread: commentThread,
-    } = await effects.gql.mutations.createCommentThread({
-      sandboxId,
-      content,
-    });
-
-    delete commentThreads[sandboxId][id];
-    commentThreads[sandboxId][commentThread.id] = commentThread;
-    if (open) {
-      actions.editor.getComments({ id: commentThread.id, sandboxId });
-    }
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to create your comment, please try again'
-    );
-    delete commentThreads[sandboxId][id];
-  }
-};
-
-export const deleteComment: AsyncAction<{
-  commentId: string;
-  threadId: string;
-  reply?: boolean;
-}> = async ({ state, effects }, { commentId, threadId, reply }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  const sandboxId = state.editor.currentSandbox.id;
-  const commentThreads = state.editor.commentThreads;
-  const deletedComment = commentThreads[sandboxId][threadId];
-
-  if (reply) {
-    const index = commentThreads[sandboxId][threadId].comments.findIndex(
-      comment => comment.id === commentId
-    );
-    commentThreads[sandboxId][threadId].comments.splice(index, 1);
-  } else {
-    delete commentThreads[sandboxId][threadId];
-    state.editor.currentCommentThreadId = null;
-  }
-
-  try {
-    await effects.gql.mutations.deleteComment({
-      commentId,
-      sandboxId,
-    });
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to delete your comment, please try again'
-    );
-    commentThreads[sandboxId][threadId] = deletedComment;
-  }
-};
-
-export const resolveCommentThread: AsyncAction<{
-  commentThreadId: string;
-  isResolved: boolean;
-}> = async ({ effects, state }, { commentThreadId, isResolved }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  const commentThreads = state.editor.commentThreads;
-  const sandboxId = state.editor.currentSandbox.id;
-  const oldIsResolved = commentThreads[sandboxId][commentThreadId].isResolved;
-  const currentCommentThread = state.editor.currentCommentThread;
-  const updateIsCurrent =
-    currentCommentThread &&
-    commentThreads[sandboxId][commentThreadId].id === currentCommentThread.id;
-
-  commentThreads[sandboxId][commentThreadId].isResolved = isResolved;
-
-  if (updateIsCurrent && currentCommentThread) {
-    currentCommentThread.isResolved = isResolved;
-  }
-
-  try {
-    await effects.gql.mutations.toggleCommentThreadResolved({
-      commentThreadId,
-      isResolved,
-      sandboxId,
-    });
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to update your comment, please try again'
-    );
-    commentThreads[sandboxId][commentThreadId].isResolved = oldIsResolved;
-  }
-};
-
-export const updateComment: AsyncAction<{
-  commentId: string;
-  content: string;
-  threadId: string;
-  reply?: boolean;
-}> = async ({ effects, state }, { commentId, content, threadId, reply }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  const id = threadId;
-  const sandboxId = state.editor.currentSandbox.id;
-  const commentThread = state.editor.commentThreads[sandboxId][id];
-  const commentToUpdate = reply
-    ? commentThread.comments.find(comment => comment.id === commentId)
-    : commentThread.initialComment;
-
-  if (!commentToUpdate) {
-    return;
-  }
-
-  commentToUpdate.content = content;
-
-  try {
-    await effects.gql.mutations.updateComment({
-      commentId,
-      content,
-      sandboxId,
-    });
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to update your comment, please try again'
-    );
-  }
-};
-
-export const selectCommentsFilter: Action<CommentsFilterOption> = (
-  { state },
-  option
-) => {
-  state.editor.selectedCommentsFilter = option;
-};
-
 export const changeInvitationAuthorization: AsyncAction<{
   invitationId: string;
   authorization: Authorization;
@@ -1637,57 +1466,5 @@ export const changeInvitationAuthorization: AsyncAction<{
     if (existingInvitation && oldAuthorization) {
       existingInvitation.authorization = oldAuthorization;
     }
-  }
-};
-
-export const addComment: AsyncAction<string> = async (
-  { state, effects },
-  comment
-) => {
-  const id = state.editor.currentCommentThreadId;
-
-  if (
-    !state.editor.currentCommentThread ||
-    !id ||
-    !state.user ||
-    !state.editor.currentSandbox
-  ) {
-    return;
-  }
-  const sandboxId = state.editor.currentSandbox.id;
-  const fakeId = `${comment}-${state.user.username}`;
-  const commentThread = state.editor.commentThreads[sandboxId][id];
-
-  commentThread.comments.push({
-    insertedAt: new Date(),
-    updatedAt: new Date(),
-    id: fakeId,
-    content: comment,
-    user: {
-      id: state.user.id,
-      avatarUrl: state.user.avatarUrl,
-      name: state.user.name,
-      username: state.user.username,
-    },
-  });
-
-  const optimisticComment =
-    commentThread.comments[commentThread.comments.length - 1];
-
-  try {
-    const {
-      createComment: newComment,
-    } = await effects.gql.mutations.createComment({
-      commentThreadId: id,
-      content: comment,
-      sandboxId,
-    });
-
-    Object.assign(optimisticComment, newComment);
-  } catch (e) {
-    commentThread.comments.splice(
-      commentThread.comments.indexOf(optimisticComment),
-      1
-    );
   }
 };

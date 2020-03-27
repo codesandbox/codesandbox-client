@@ -1,4 +1,5 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
+
 import {
   Icon,
   List,
@@ -11,20 +12,23 @@ import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-import { AddCommentThread } from './AddCommentThread';
-import { CommentThread } from './CommentThread';
+import { AddComment } from './AddComment';
+import { Comment } from './Comment';
 import { CommentDialog } from './Dialog';
+import { MultiComment } from './components/MultiComment';
 
-export const CommentThreads: React.FC = () => {
+export const Comments: React.FC = () => {
   const {
     state: {
-      editor: {
+      comments: {
         selectedCommentsFilter,
-        currentCommentThreads,
-        currentCommentThreadId,
+        currentComments,
+        currentCommentId,
+        multiCommentsSelector,
+        currentCommentsByDate,
       },
     },
-    actions: { editor: editorActions },
+    actions: { comments: commentsActions },
   } = useOvermind();
   const options = Object.values(CommentsFilterOption);
 
@@ -92,7 +96,7 @@ export const CommentThreads: React.FC = () => {
               {options.map(option => (
                 <Menu.Item
                   key={option}
-                  onSelect={() => editorActions.selectCommentsFilter(option)}
+                  onSelect={() => commentsActions.selectCommentsFilter(option)}
                 >
                   {option}
                 </Menu.Item>
@@ -101,7 +105,7 @@ export const CommentThreads: React.FC = () => {
           </Menu>
         </SidebarRow>
 
-        {currentCommentThreads.length ? (
+        {currentComments.length ? (
           <List
             marginTop={4}
             css={{
@@ -110,18 +114,33 @@ export const CommentThreads: React.FC = () => {
               overflow: 'auto',
             }}
           >
-            {currentCommentThreads.map(commentThread => (
-              <CommentThread
-                key={commentThread.id}
-                commentThread={commentThread}
-              />
-            ))}
+            {currentCommentsByDate.today.length ? (
+              <>
+                <Text size={3} weight="bold" block margin={2}>
+                  Today
+                </Text>
+                {currentCommentsByDate.today.map(comment => (
+                  <Comment key={comment.id} comment={comment} />
+                ))}
+              </>
+            ) : null}
+            {currentCommentsByDate.prev.length ? (
+              <>
+                <Text size={3} weight="bold" block margin={2} marginTop={4}>
+                  Earlier
+                </Text>
+                {currentCommentsByDate.prev.map(comment => (
+                  <Comment key={comment.id} comment={comment} />
+                ))}
+              </>
+            ) : null}
           </List>
         ) : null}
       </div>
-      {currentCommentThreads.length ? null : <Empty />}
-      <AddCommentThread />
-      {currentCommentThreadId && <CommentDialog />}
+      {currentComments.length ? null : <Empty />}
+      <AddComment />
+      {currentCommentId && <CommentDialog />}
+      {multiCommentsSelector && <MultiComment {...multiCommentsSelector} />}
     </Stack>
   );
 };

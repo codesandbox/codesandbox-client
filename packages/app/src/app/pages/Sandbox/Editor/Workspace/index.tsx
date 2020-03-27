@@ -29,7 +29,7 @@ import { More } from './items/More';
 import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
 import { Server } from './items/Server';
-import { CommentThreads } from './screens/CommentThreads';
+import { Comments } from './screens/Comments';
 import { ConfigurationFiles as ConfigurationFilesNew } from './screens/ConfigurationFiles';
 import { Deployment as DeploymentNew } from './screens/Deployment/index';
 import { Explorer } from './screens/Explorer';
@@ -58,7 +58,7 @@ const workspaceTabs = {
 
 if (COMMENTS && NEW_SIDEBAR) {
   // @ts-ignore
-  workspaceTabs.comments = CommentThreads;
+  workspaceTabs.comments = Comments;
 }
 
 export const WorkspaceComponent = ({ theme }) => {

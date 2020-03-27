@@ -1,12 +1,10 @@
 import {
+  CreateCodeCommentMutation,
+  CreateCodeCommentMutationVariables,
   CreateCommentMutation,
   CreateCommentMutationVariables,
-  CreateCommentThreadMutation,
-  CreateCommentThreadMutationVariables,
   DeleteCommentMutation,
   DeleteCommentMutationVariables,
-  ToggleCommentThreadResolvedMutation,
-  ToggleCommentThreadResolvedMutationVariables,
   UpdateCommentMutation,
   UpdateCommentMutationVariables,
 } from 'app/graphql/types';
@@ -15,22 +13,33 @@ import { Query } from 'overmind-graphql';
 
 import { commentFragment } from './fragments';
 
-export const createCommentThread: Query<
-  CreateCommentThreadMutation,
-  CreateCommentThreadMutationVariables
+export const createComment: Query<
+  CreateCommentMutation,
+  CreateCommentMutationVariables
 > = gql`
-  mutation CreateCommentThread($sandboxId: ID!, $content: String!) {
-    createCommentThread(sandboxId: $sandboxId, content: $content) {
-      id
-      initialComment {
-        ...Comment
-      }
-      comments {
-        ...Comment
-      }
-      isResolved
-      insertedAt
-      updatedAt
+  mutation CreateComment(
+    $content: String!
+    $sandboxId: ID!
+    $parentCommentId: ID
+  ) {
+    createComment(
+      content: $content
+      sandboxId: $sandboxId
+      parentCommentId: $parentCommentId
+    ) {
+      ...Comment
+    }
+    ${commentFragment}
+  }
+`;
+
+export const createCodeComment: Query<
+  CreateCodeCommentMutation,
+  CreateCodeCommentMutationVariables
+> = gql`
+  mutation CreateCodeComment($sandboxId: ID!, $content: String!, $codeReference: CodeReference!) {
+    createCodeComment(sandboxId: $sandboxId, content: $content, codeReference: $codeReference) {
+      ...Comment
     }
     ${commentFragment}
   }
@@ -47,56 +56,21 @@ export const deleteComment: Query<
   }
 `;
 
-export const toggleCommentThreadResolved: Query<
-  ToggleCommentThreadResolvedMutation,
-  ToggleCommentThreadResolvedMutationVariables
-> = gql`
-  mutation ToggleCommentThreadResolved(
-    $commentThreadId: ID!
-    $isResolved: Boolean
-    $sandboxId: ID!
-  ) {
-    updateCommentThread(
-      commentThreadId: $commentThreadId
-      sandboxId: $sandboxId
-      isResolved: $isResolved
-    ) {
-      id
-      isResolved
-      updatedAt
-    }
-  }
-`;
-
-export const createComment: Query<
-  CreateCommentMutation,
-  CreateCommentMutationVariables
-> = gql`
-  mutation CreateComment(
-    $commentThreadId: ID!
-    $content: String!
-    $sandboxId: ID!
-  ) {
-    createComment(
-      commentThreadId: $commentThreadId
-      content: $content
-      sandboxId: $sandboxId
-    ) {
-      ...Comment
-    }
-    ${commentFragment}
-  }
-`;
-
 export const updateComment: Query<
   UpdateCommentMutation,
   UpdateCommentMutationVariables
 > = gql`
-  mutation UpdateComment($commentId: ID!, $content: String!, $sandboxId: ID!) {
+  mutation UpdateComment(
+    $commentId: ID!
+    $sandboxId: ID!
+    $content: String
+    $isResolved: Boolean
+  ) {
     updateComment(
       commentId: $commentId
-      content: $content
       sandboxId: $sandboxId
+      content: $content
+      isResolved: $isResolved
     ) {
       id
     }
