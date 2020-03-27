@@ -119,6 +119,7 @@ export class VSCodeEffect {
   private linter: Linter | null;
   private modelsHandler: ModelsHandler;
   private modelSelectionListener: { dispose: Function };
+  private modelCursorPositionListener: { dispose: Function };
   private modelViewRangeListener: { dispose: Function };
   private readOnly: boolean;
   private elements = {
@@ -232,9 +233,14 @@ export class VSCodeEffect {
         }
 
         setTimeout(() => {
-          const el = document.querySelector('.active-comment');
+          const commentGlyphs = document.querySelectorAll(
+            '.editor-comments-glyph'
+          );
+          const el = Array.from(commentGlyphs).find(glyphEl =>
+            glyphEl.className.includes(commentId)
+          );
 
-          if (el && el.className.includes(commentId)) {
+          if (el) {
             resolve(el.getBoundingClientRect());
           } else {
             findActiveComment();
@@ -1026,6 +1032,10 @@ export class VSCodeEffect {
       this.modelSelectionListener.dispose();
     }
 
+    if (this.modelCursorPositionListener) {
+      this.modelCursorPositionListener.dispose();
+    }
+
     if (this.modelViewRangeListener) {
       this.modelViewRangeListener.dispose();
     }
@@ -1091,9 +1101,21 @@ export class VSCodeEffect {
         }
       });
 
+      this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
+        cursor => {
+          const model = activeEditor.getModel();
+
+          this.modelsHandler.updateLineCommentIndication(
+            model,
+            cursor.position.lineNumber
+          );
+        }
+      );
+
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
         selectionChange => {
-          const lines = activeEditor.getModel().getLinesContent() || [];
+          const model = activeEditor.getModel();
+          const lines = model.getLinesContent() || [];
           const data: onSelectionChangeData = {
             primary: getSelection(lines, selectionChange.selection),
             secondary: selectionChange.secondarySelections.map(s =>
@@ -1211,11 +1233,13 @@ export class VSCodeEffect {
           We grab the id of the commenthread by getting the last classname.
           The last part of the classname is the id.
         */
-        const commentIds = Array.from(target.classList)
-          .pop()
-          .split('comment-ids-')
-          .pop()
-          .split('_');
+        const lastClass = Array.from(target.classList).pop();
+        const commentIds = lastClass.startsWith('editor-comments-ids-')
+          ? lastClass
+              .split('editor-comments-ids-')
+              .pop()
+              .split('_')
+          : [];
         const boundingRect = target.getBoundingClientRect();
         this.options.onCommentClick({
           commentIds,

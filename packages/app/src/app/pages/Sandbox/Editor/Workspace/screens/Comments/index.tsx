@@ -9,7 +9,6 @@ import {
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 import React from 'react';
 
 import { AddComment } from './AddComment';
@@ -118,11 +117,9 @@ export const Comments: React.FC = () => {
                 <Text size={3} weight="bold" block margin={2}>
                   Today
                 </Text>
-                {currentCommentsByDate.today.map(comment =>
-                  comment.id === OPTIMISTIC_COMMENT_ID ? null : (
-                    <Comment key={comment.id} comment={comment} />
-                  )
-                )}
+                {currentCommentsByDate.today.map(comment => (
+                  <Comment key={comment.id} comment={comment} />
+                ))}
               </>
             ) : null}
             {currentCommentsByDate.prev.length ? (
@@ -130,11 +127,9 @@ export const Comments: React.FC = () => {
                 <Text size={3} weight="bold" block margin={2} marginTop={4}>
                   Earlier
                 </Text>
-                {currentCommentsByDate.prev.map(comment =>
-                  comment.id === OPTIMISTIC_COMMENT_ID ? null : (
-                    <Comment key={comment.id} comment={comment} />
-                  )
-                )}
+                {currentCommentsByDate.prev.map(comment => (
+                  <Comment key={comment.id} comment={comment} />
+                ))}
               </>
             ) : null}
           </List>

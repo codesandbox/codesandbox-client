@@ -3,7 +3,7 @@ import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
 import isToday from 'date-fns/isToday';
 import { Derive } from 'app/overmind';
 
-export const OPTIMISTIC_COMMENT_ID = '__OPTIMISTIC_COMMENT_ID__';
+export const OPTIMISTIC_COMMENT_ID = 'OptimisticCommentId';
 
 type State = {
   comments: {
@@ -47,8 +47,15 @@ export const state: State = {
   currentCommentPositions: null,
   comments: {},
   currentCommentId: null,
-  fileComments: ({ currentComments }) =>
-    currentComments.reduce<{
+  fileComments: ({ comments }, { editor: { currentSandbox } }) => {
+    if (!currentSandbox || !comments[currentSandbox.id]) {
+      return {};
+    }
+    const rootComments = Object.values(comments[currentSandbox.id]).filter(
+      comment => comment.parentComment == null
+    );
+
+    return rootComments.reduce<{
       [path: string]: Array<{
         commentId: string;
         range: [number, number];
@@ -67,7 +74,8 @@ export const state: State = {
       });
 
       return aggr;
-    }, {}),
+    }, {});
+  },
   currentComment: (
     { comments, currentCommentId },
     { editor: { currentSandbox } }
@@ -111,7 +119,8 @@ export const state: State = {
     }
 
     const rootComments = Object.values(comments[currentSandbox.id]).filter(
-      comment => comment.parentComment == null
+      comment =>
+        comment.parentComment == null && comment.id !== OPTIMISTIC_COMMENT_ID
     );
 
     switch (selectedCommentsFilter) {
