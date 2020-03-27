@@ -20,6 +20,7 @@ import { EditComment } from '../components/EditComment';
 import { Markdown } from './Markdown';
 import { Reply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
+import { CodeButton } from '../components/CodeButton';
 
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
@@ -32,7 +33,7 @@ export const Dialog: React.FC = () => {
 
   const comment = state.comments.currentComment;
 
-  // This comment doens't exist in the database, it's an optimistic comment
+  // This comment doesn't exist in the database, it's an optimistic comment
   const isNewComment = comment.id === OPTIMISTIC_COMMENT_ID;
 
   const [editing, setEditing] = useState(isNewComment);
@@ -166,26 +167,42 @@ const DialogAddComment = ({ comment, onSave }) => {
           onClick={closeDialog}
         />
       </Stack>
-      <Textarea
-        autosize
-        autoFocus
-        css={css({
-          overflow: 'hidden',
-          border: 'none',
-          display: 'block',
-          borderTop: '1px solid',
-          borderColor: 'sideBar.border',
-        })}
-        value={value}
-        onChange={e => setValue(e.target.value)}
-        placeholder="Add comment..."
-        onKeyDown={async event => {
-          if (event.keyCode === ENTER && !event.shiftKey) {
-            saveComment();
-            event.preventDefault();
-          }
-        }}
-      />
+      <Element css={css({ position: 'relative' })}>
+        <Textarea
+          autosize
+          autoFocus
+          css={css({
+            overflow: 'hidden',
+            border: 'none',
+            display: 'block',
+            borderTop: '1px solid',
+            borderColor: 'sideBar.border',
+            paddingRight: 10,
+          })}
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          placeholder="Add comment..."
+          onKeyDown={async event => {
+            if (event.keyCode === ENTER && !event.shiftKey) {
+              saveComment();
+              event.preventDefault();
+            }
+          }}
+        />
+        <CodeButton
+          onClick={() => {
+            setValue(
+              value +
+                `
+\`\`\`
+
+
+\`\`\`
+`
+            );
+          }}
+        />
+      </Element>
     </Stack>
   );
 };
@@ -326,22 +343,38 @@ const AddReply = ({ comment }) => {
   };
 
   return (
-    <Textarea
-      autosize
-      css={css({
-        overflow: 'hidden',
-        border: 'none',
-        display: 'block',
-        borderTop: '1px solid',
-        borderColor: 'sideBar.border',
-      })}
-      value={value}
-      onChange={e => setValue(e.target.value)}
-      placeholder="Reply..."
-      onKeyDown={event => {
-        if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
-      }}
-    />
+    <Element css={css({ position: 'relative' })}>
+      <Textarea
+        autosize
+        css={css({
+          overflow: 'hidden',
+          border: 'none',
+          display: 'block',
+          borderTop: '1px solid',
+          borderColor: 'sideBar.border',
+          paddingRight: 10,
+        })}
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        placeholder="Reply..."
+        onKeyDown={event => {
+          if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
+        }}
+      />
+      <CodeButton
+        onClick={() => {
+          setValue(
+            value +
+              `
+\`\`\`
+
+
+\`\`\`
+`
+          );
+        }}
+      />
+    </Element>
   );
 };
 
