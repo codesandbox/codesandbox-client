@@ -41,6 +41,7 @@ export class CodeSandboxOTClient extends OTClient {
   ) {
     super(revision);
     this.moduleShortid = moduleShortid;
+    this.lastAcknowledgedRevision = revision;
     this.onSendOperation = onSendOperation;
     this.onApplyOperation = onApplyOperation;
   }
@@ -98,7 +99,7 @@ export class CodeSandboxOTClient extends OTClient {
       // We make sure to not acknowledge the same revision twice
       if (this.lastAcknowledgedRevision < revision) {
         this.lastAcknowledgedRevision = revision;
-        this.serverAck();
+        super.serverAck();
       }
 
       this.resetAwaitSynchronized();
