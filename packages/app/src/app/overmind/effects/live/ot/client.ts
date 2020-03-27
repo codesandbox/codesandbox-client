@@ -4,6 +4,7 @@
 import { TextOperation } from 'ot';
 
 interface IState {
+  name: string;
   applyClient(client: OTClient, operation: TextOperation): IState;
   applyServer(client: OTClient, operation: TextOperation): IState;
   serverAck(client: OTClient): IState;
@@ -14,6 +15,8 @@ interface IState {
 // In the 'Synchronized' state, there is no pending operation that the client
 // has sent to the server.
 class Synchronized implements IState {
+  name = 'Synchronized';
+
   applyClient(client: OTClient, operation: TextOperation) {
     // When the user makes an edit, send the operation to the server and
     // switch to the 'AwaitingConfirm' state
@@ -45,6 +48,7 @@ export const synchronized_ = new Synchronized();
 // to the server and is still waiting for an acknowledgement.
 class AwaitingConfirm implements IState {
   outstanding: TextOperation;
+  name = 'AwaitingConfirm';
 
   constructor(outstanding: TextOperation) {
     // Save the pending operation
@@ -95,6 +99,8 @@ class AwaitingConfirm implements IState {
 class AwaitingWithBuffer implements IState {
   outstanding: TextOperation;
   buffer: TextOperation;
+
+  name = 'AwaitingWithBuffer';
 
   constructor(outstanding: TextOperation, buffer: TextOperation) {
     // Save the pending operation and the user's edits since then

@@ -123,8 +123,14 @@ class Live {
     revision: number,
     operation: TextOperation
   ) => {
+    // If we are to await a send, we do it. It will be resolved
+    // related to number of connections changing
+    if (this.isLiveBlockerExperiement() && this.awaitSend) {
+      await this.awaitSend.promise;
+    }
+
     logBreadcrumb({
-      type: 'ot',
+      category: 'ot',
       message: `Sending ${JSON.stringify({
         moduleShortid,
         revision,
@@ -132,19 +138,13 @@ class Live {
       })}`,
     });
 
-    // If we are to await a send, we do it. It will be resolved
-    // related to number of connections changing
-    if (this.isLiveBlockerExperiement() && this.awaitSend) {
-      await this.awaitSend.promise;
-    }
-
     return this.send('operation', {
       moduleShortid,
       operation: this.operationToElixir(operation.toJSON()),
       revision,
     }).catch(error => {
       logBreadcrumb({
-        type: 'ot',
+        category: 'ot',
         message: `ERROR ${JSON.stringify({
           moduleShortid,
           revision,

@@ -57,7 +57,7 @@ export class CodeSandboxOTClient extends OTClient {
     return this.onSendOperation(revision, operation)
       .then(() => {
         logBreadcrumb({
-          type: 'ot',
+          category: 'ot',
           message: `Acknowledging ${JSON.stringify({
             moduleShortid: this.moduleShortid,
             revision,
@@ -111,6 +111,16 @@ export class CodeSandboxOTClient extends OTClient {
   }
 
   applyClient(operation: TextOperation) {
+    logBreadcrumb({
+      category: 'ot',
+      message: `Apply Client ${JSON.stringify({
+        moduleShortid: this.moduleShortid,
+        currentRevision: this.revision,
+        currentState: this.state.name,
+        operation,
+      })}`,
+    });
+
     super.applyClient(operation);
   }
 
