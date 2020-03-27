@@ -44,23 +44,19 @@ export const Dialog: React.FC = () => {
     comment.references[0] && comment.references[0].type === 'code';
 
   // this could rather be `getInitialPosition`
-  const positions = getPositions(
-    currentCommentPositions,
-    isCodeComment,
-    dialogRef
-  );
+  const initialPosition = getInitialPosition(currentCommentPositions);
 
   // reset editing when comment changes
   React.useEffect(() => {
     setEditing(isNewComment);
     // this could rather be `getAnimatedPosition`
-    const updatedPositions = getPositions(
+    const endPosition = getEndPosition(
       currentCommentPositions,
       isCodeComment,
       dialogRef
     );
     controller.start({
-      ...updatedPositions.dialogPosition,
+      ...endPosition,
       scale: 1,
       opacity: 1,
     });
@@ -79,7 +75,7 @@ export const Dialog: React.FC = () => {
   return (
     <motion.div
       key={isCodeComment ? 'code' : 'global'}
-      initial={{ ...positions.animateFrom, scale: 0.5, opacity: 0 }}
+      initial={{ ...initialPosition, scale: 0.5, opacity: 0 }}
       animate={controller}
       drag
       dragMomentum={false}
@@ -345,14 +341,10 @@ const AddReply = ({ comment }) => {
   );
 };
 
-const getPositions = (currentCommentPositions, isCodeComment, dialogRef) => {
-  const OVERLAP_WITH_SIDEBAR = -20;
-  const OFFSET_TOP_FOR_ALIGNMENT = -90;
-  const OFFSET_FOR_CODE = 500;
+// trying to match the position for code comments
+const FALLBACK_POSITION = { x: 800, y: 120 };
 
-  // trying to match the position for code comments
-  const FALLBACK_POSITION = { x: 800, y: 120 };
-
+const getInitialPosition = currentCommentPositions => {
   let animateFrom = { x: null, y: null };
 
   if (currentCommentPositions?.trigger) {
@@ -368,6 +360,14 @@ const getPositions = (currentCommentPositions, isCodeComment, dialogRef) => {
       y: FALLBACK_POSITION.y,
     };
   }
+
+  return animateFrom;
+};
+
+const getEndPosition = (currentCommentPositions, isCodeComment, dialogRef) => {
+  const OVERLAP_WITH_SIDEBAR = -20;
+  const OFFSET_TOP_FOR_ALIGNMENT = -90;
+  const OFFSET_FOR_CODE = 500;
 
   let dialogPosition = { x: null, y: null };
 
@@ -396,7 +396,7 @@ const getPositions = (currentCommentPositions, isCodeComment, dialogRef) => {
   } else {
     // if we know neither, we put it at  nice spot on the page
     // probably comment from permalink
-    dialogPosition = FALLBACK_POSITION;
+    dialogPosition = { ...FALLBACK_POSITION };
   }
 
   // check for window colisions here and offset positions more
@@ -441,5 +441,5 @@ const getPositions = (currentCommentPositions, isCodeComment, dialogRef) => {
   if (dialogPosition.x > maxLeft) dialogPosition.x = maxLeft;
   if (dialogPosition.y > maxTop) dialogPosition.y = maxTop;
 
-  return { animateFrom, dialogPosition };
+  return dialogPosition;
 };
