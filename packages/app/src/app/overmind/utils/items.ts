@@ -37,7 +37,7 @@ export const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
-  defaultOpen: !COMMENTS_ON,
+  defaultOpen: true,
 };
 
 export const GITHUB: INavigationItem = {
@@ -71,7 +71,6 @@ export const SERVER: INavigationItem = {
 export const COMMENTS: INavigationItem = {
   id: 'comments',
   name: 'Comments',
-  defaultOpen: COMMENTS_ON && REDESIGNED_SIDEBAR === 'true',
 };
 
 export function getDisabledItems(store: any): INavigationItem[] {

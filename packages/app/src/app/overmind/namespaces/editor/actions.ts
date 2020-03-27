@@ -236,10 +236,11 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
         return aggr;
       }, {});
 
-      if (effects.router.getCommentId()) {
+      const urlCommentId = effects.router.getCommentId();
+      if (urlCommentId) {
         actions.workspace.setWorkspaceItem({ item: 'comments' });
         actions.comments.selectComment({
-          commentId: effects.router.getCommentId(),
+          commentId: urlCommentId,
           bounds: {
             left: effects.browser.getWidth() / 2,
             top: 80,
@@ -342,6 +343,8 @@ export const codeChanged: Action<{
     return;
   }
 
+  const sandbox = state.editor.currentSandbox;
+
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
   );
@@ -370,9 +373,7 @@ export const codeChanged: Action<{
       const range = new Selection.Range(...fileComment.range);
       const newRange = range.transform(operation);
       const comment =
-        state.comments.comments[state.editor.currentSandbox.id][
-          fileComment.commentId
-        ];
+        state.comments.comments[sandbox.id][fileComment.commentId];
       if (comment.references && comment.references[0].type === 'code') {
         comment.references[0].metadata.anchor = newRange.anchor;
         comment.references[0].metadata.head = newRange.head;

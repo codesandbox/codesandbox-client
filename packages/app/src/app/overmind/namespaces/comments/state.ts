@@ -1,7 +1,7 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
-import isToday from 'date-fns/isToday';
 import { Derive } from 'app/overmind';
+import isToday from 'date-fns/isToday';
 
 export const OPTIMISTIC_COMMENT_ID = 'OptimisticCommentId';
 
@@ -137,7 +137,10 @@ export const state: State = {
     }
   },
   currentCommentsByDate({ currentComments }) {
-    return currentComments.reduce(
+    return currentComments.reduce<{
+      today: CommentFragment[];
+      prev: CommentFragment[];
+    }>(
       (acc, comment) => {
         if (
           isToday(new Date(comment.insertedAt)) ||

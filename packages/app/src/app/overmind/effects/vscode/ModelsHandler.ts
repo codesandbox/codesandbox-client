@@ -182,7 +182,7 @@ export class ModelsHandler {
         range: [number, number];
       }>;
     },
-    currentCommentThreadId: string
+    currentCommentThreadId: string | null
   ) {
     // We keep a local reference to the current commentThread id,
     // because when opening modules we want to highlight any currently

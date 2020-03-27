@@ -69,7 +69,6 @@ export type VsCodeOptions = {
       right: number;
     };
   }) => void;
-  onMultiCommentClick: (commentThreadIds: string[]) => any;
   reaction: Reaction;
   // These two should be removed
   getSignal: any;
@@ -1234,22 +1233,22 @@ export class VSCodeEffect {
           The last part of the classname is the id.
         */
         const lastClass = Array.from(target.classList).pop();
-        const commentIds = lastClass.startsWith('editor-comments-ids-')
-          ? lastClass
-              .split('editor-comments-ids-')
-              .pop()
-              .split('_')
-          : [];
-        const boundingRect = target.getBoundingClientRect();
-        this.options.onCommentClick({
-          commentIds,
-          bounds: {
-            left: boundingRect.left,
-            top: boundingRect.top,
-            right: boundingRect.right,
-            bottom: boundingRect.bottom,
-          },
-        });
+
+        if (lastClass) {
+          const commentIds = lastClass.startsWith('editor-comments-ids-')
+            ? (lastClass.split('editor-comments-ids-').pop() || '').split('_')
+            : [];
+          const boundingRect = target.getBoundingClientRect();
+          this.options.onCommentClick({
+            commentIds,
+            bounds: {
+              left: boundingRect.left,
+              top: boundingRect.top,
+              right: boundingRect.right,
+              bottom: boundingRect.bottom,
+            },
+          });
+        }
       }
     });
   }

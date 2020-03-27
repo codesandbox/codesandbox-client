@@ -56,6 +56,8 @@ export const getComments: AsyncAction<string> = async (
 
   try {
     const {
+      // No idea why TS complains about this
+      // @ts-ignore
       sandbox: { comment },
     } = await effects.gql.queries.comment({
       sandboxId: sandbox.id,
@@ -81,7 +83,10 @@ export const onCommentClick: Action<{
     bottom: number;
   };
 }> = ({ state, actions }, { commentIds, bounds }) => {
-  if (commentIds.includes(state.comments.currentCommentId)) {
+  if (
+    state.comments.currentCommentId &&
+    commentIds.includes(state.comments.currentCommentId)
+  ) {
     actions.comments.closeComment();
     return;
   }
@@ -103,6 +108,10 @@ export const onCommentClick: Action<{
 };
 
 export const closeComment: Action = ({ state }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
     delete state.comments.comments[state.editor.currentSandbox.id][
       OPTIMISTIC_COMMENT_ID
@@ -126,6 +135,11 @@ export const selectComment: AsyncAction<{
   state.comments.multiCommentsSelector = null;
 
   const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+
   const comment = state.comments.comments[sandbox.id][commentId];
 
   actions.comments.getComments(commentId);
@@ -147,9 +161,7 @@ export const selectComment: AsyncAction<{
       );
 
       if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
-        delete state.comments.comments[state.editor.currentSandbox.id][
-          OPTIMISTIC_COMMENT_ID
-        ];
+        delete state.comments.comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
       }
 
       state.comments.currentCommentId = commentId;
@@ -180,7 +192,7 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
   const id = OPTIMISTIC_COMMENT_ID;
   const sandboxId = state.editor.currentSandbox.id;
   const now = new Date().toString();
-  let codeReference: CodeReference = null;
+  let codeReference: CodeReference | null = null;
   const selection = state.live.currentSelection;
   if (selection) {
     codeReference = {
@@ -314,7 +326,7 @@ export const addComment: AsyncAction<{
       comment = response.createCodeComment;
     } else {
       const response = await effects.gql.mutations.createComment({
-        parentCommentId,
+        parentCommentId: parentCommentId || null,
         sandboxId,
         content,
       });
