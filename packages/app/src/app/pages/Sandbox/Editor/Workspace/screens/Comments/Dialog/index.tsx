@@ -9,6 +9,7 @@ import {
   Textarea,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 import { motion, useAnimation } from 'framer-motion';
@@ -68,10 +69,16 @@ export const Dialog: React.FC = () => {
     isNewComment,
   ]);
 
+  const onDragHandlerPan = (deltaX: number, deltaY: number) => {
+    controller.set((_, target) => ({
+      x: Number(target.x) + deltaX,
+      y: Number(target.y) + deltaY,
+    }));
+  };
+
   if (!currentCommentPositions) {
     return null;
   }
-
   return (
     <motion.div
       key={isCodeComment ? 'code' : 'global'}
@@ -103,11 +110,11 @@ export const Dialog: React.FC = () => {
           <DialogAddComment
             comment={comment}
             onSave={() => setEditing(false)}
-            controller={controller}
+            onDragHandlerPan={onDragHandlerPan}
           />
         ) : (
           <>
-            <DragHandle controller={controller}>
+            <DragHandle onPan={onDragHandlerPan}>
               <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
             </DragHandle>
             <Stack
@@ -130,7 +137,11 @@ export const Dialog: React.FC = () => {
   );
 };
 
-const DialogAddComment = ({ comment, onSave, controller }) => {
+const DialogAddComment: React.FC<{
+  comment: CommentFragment;
+  onSave: () => void;
+  onDragHandlerPan: (deltaX: number, deltaY: number) => void;
+}> = ({ comment, onSave, onDragHandlerPan }) => {
   const { actions } = useOvermind();
   const [value, setValue] = useState('');
 
@@ -147,7 +158,7 @@ const DialogAddComment = ({ comment, onSave, controller }) => {
 
   return (
     <Stack direction="vertical" gap={4}>
-      <DragHandle controller={controller}>
+      <DragHandle onPan={onDragHandlerPan}>
         <Stack
           justify="space-between"
           align="center"
@@ -193,25 +204,18 @@ const DialogAddComment = ({ comment, onSave, controller }) => {
   );
 };
 
-const DragHandle = ({ controller, children }) => {
-  const onPan = (event, info) => {
-    // This feels very strange to dive and access properties
-    // There is probably a recommended way to access these
-    // or maybe we're on the wrong API which is too high level
-    const controllerTarget = [...controller.componentControls][0].baseTarget;
-
-    controller.set({
-      x: controllerTarget.x + info.delta.x,
-      y: controllerTarget.y + info.delta.y,
-    });
-  };
-
-  return (
-    <motion.div onPan={onPan} style={{ cursor: 'move' }}>
-      {children}
-    </motion.div>
-  );
-};
+const DragHandle: React.FC<{
+  onPan: (deltaX: number, deltaY: number) => void;
+}> = ({ onPan, children }) => (
+  <motion.div
+    onPan={(_, info) => {
+      onPan(info.delta.x, info.delta.y);
+    }}
+    style={{ cursor: 'move' }}
+  >
+    {children}
+  </motion.div>
+);
 
 const DialogHeader = ({ comment, hasShadow }) => {
   const { actions } = useOvermind();
