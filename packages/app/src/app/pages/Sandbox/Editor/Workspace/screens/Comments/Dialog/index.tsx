@@ -77,8 +77,6 @@ export const Dialog: React.FC = () => {
       key={isCodeComment ? 'code' : 'global'}
       initial={{ ...initialPosition, scale: 0.5, opacity: 0 }}
       animate={controller}
-      drag
-      dragMomentum={false}
       transition={{ duration: 0.25 }}
       style={{ position: 'absolute', zIndex: 2 }}
     >
@@ -105,10 +103,13 @@ export const Dialog: React.FC = () => {
           <DialogAddComment
             comment={comment}
             onSave={() => setEditing(false)}
+            controller={controller}
           />
         ) : (
           <>
-            <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
+            <DragHandle controller={controller}>
+              <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
+            </DragHandle>
             <Stack
               direction="vertical"
               css={{ overflow: 'auto' }}
@@ -129,7 +130,7 @@ export const Dialog: React.FC = () => {
   );
 };
 
-const DialogAddComment = ({ comment, onSave }) => {
+const DialogAddComment = ({ comment, onSave, controller }) => {
   const { actions } = useOvermind();
   const [value, setValue] = useState('');
 
@@ -146,26 +147,28 @@ const DialogAddComment = ({ comment, onSave }) => {
 
   return (
     <Stack direction="vertical" gap={4}>
-      <Stack
-        justify="space-between"
-        align="center"
-        marginY={4}
-        marginLeft={4}
-        marginRight={2}
-      >
-        <Stack gap={2} align="center">
-          <Avatar user={comment.user} />
-          <Text size={3} weight="bold" variant="body">
-            {comment.user.username}
-          </Text>
+      <DragHandle controller={controller}>
+        <Stack
+          justify="space-between"
+          align="center"
+          marginY={4}
+          marginLeft={4}
+          marginRight={2}
+        >
+          <Stack gap={2} align="center">
+            <Avatar user={comment.user} />
+            <Text size={3} weight="bold" variant="body">
+              {comment.user.username}
+            </Text>
+          </Stack>
+          <IconButton
+            name="cross"
+            size={10}
+            title="Close comment dialog"
+            onClick={closeDialog}
+          />
         </Stack>
-        <IconButton
-          name="cross"
-          size={10}
-          title="Close comment dialog"
-          onClick={closeDialog}
-        />
-      </Stack>
+      </DragHandle>
       <Textarea
         autosize
         autoFocus
@@ -190,6 +193,26 @@ const DialogAddComment = ({ comment, onSave }) => {
   );
 };
 
+const DragHandle = ({ controller, children }) => {
+  const onPan = (event, info) => {
+    // This feels very strange to dive and access properties
+    // There is probably a recommended way to access these
+    // or maybe we're on the wrong API which is too high level
+    const controllerTarget = [...controller.componentControls][0].baseTarget;
+
+    controller.set({
+      x: controllerTarget.x + info.delta.x,
+      y: controllerTarget.y + info.delta.y,
+    });
+  };
+
+  return (
+    <motion.div onPan={onPan} style={{ cursor: 'move' }}>
+      {children}
+    </motion.div>
+  );
+};
+
 const DialogHeader = ({ comment, hasShadow }) => {
   const { actions } = useOvermind();
 
@@ -203,7 +226,6 @@ const DialogHeader = ({ comment, hasShadow }) => {
       paddingRight={2}
       marginBottom={2}
       css={css({
-        cursor: 'move',
         zIndex: 2,
         boxShadow: theme =>
           hasShadow
