@@ -6,6 +6,7 @@ import {
   UserSelection,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
@@ -699,6 +700,9 @@ export class ModelsHandler {
     currentCommentThreadId: string | null,
     currentLineNumber: number
   ) {
+    if (!hasPermission(this.sandbox.authorization, 'comment')) {
+      return [];
+    }
     const commentDecorationsByLineNumber = commentThreadDecorations.reduce<{
       [lineNumber: string]: Array<{
         commentId: string;

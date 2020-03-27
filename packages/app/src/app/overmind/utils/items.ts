@@ -127,7 +127,11 @@ export default function getItems(store: any): INavigationItem[] {
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    if (COMMENTS_ON && REDESIGNED_SIDEBAR === 'true') {
+    if (
+      COMMENTS_ON &&
+      REDESIGNED_SIDEBAR === 'true' &&
+      hasPermission(currentSandbox.authorization, 'comment')
+    ) {
       items.push(GITHUB, COMMENTS);
     } else {
       items.push(GITHUB);

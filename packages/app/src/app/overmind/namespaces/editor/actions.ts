@@ -203,7 +203,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   effects.vscode.openModule(state.editor.currentModule);
 
-  if (COMMENTS) {
+  if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
     try {
       const { sandbox: sandboxComments } = await effects.gql.queries.comments({
         sandboxId: sandbox.id,
