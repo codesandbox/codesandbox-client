@@ -224,6 +224,10 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
   };
   const comments = state.comments.comments;
 
+  if (!comments[sandboxId]) {
+    comments[sandboxId] = {};
+  }
+
   comments[sandboxId][id] = optimisticComment;
   // placeholder value until we know the correct values
   const {
@@ -264,6 +268,10 @@ export const addComment: AsyncAction<{
   const sandboxId = state.editor.currentSandbox.id;
   const now = new Date().toString();
   const comments = state.comments.comments;
+
+  if (!comments[sandboxId]) {
+    comments[sandboxId] = {};
+  }
 
   let optimisticComment: CommentFragment;
   if (state.comments.comments[sandboxId][id]) {
