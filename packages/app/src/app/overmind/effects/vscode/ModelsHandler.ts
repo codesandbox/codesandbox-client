@@ -129,7 +129,9 @@ export class ModelsHandler {
   }
 
   public updateLineCommentIndication(model: any, lineNumber: number) {
-    const moduleModel = this.moduleModels[model.uri.path];
+    const moduleModel =
+      this.moduleModels[model.uri.path] ||
+      this.getModuleModelByPath(model.uri.path.replace('/sandbox', ''));
 
     moduleModel.currentLine = lineNumber;
 
