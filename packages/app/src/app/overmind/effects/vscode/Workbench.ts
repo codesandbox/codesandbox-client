@@ -4,6 +4,7 @@ import {
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
 
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { KeyCode, KeyMod } from './keyCodes';
 
 // Copied from 'common/actions' in vscode
@@ -161,14 +162,16 @@ export class Workbench {
       },
     });
 
-    this.addWorkbenchAction({
-      id: 'comments.add',
-      label: 'Add code comment',
-      category: 'Comments',
-      run: () => {
-        this.controller.getSignal('comments.createComment')();
-      },
-    });
+    if (COMMENTS) {
+      this.addWorkbenchAction({
+        id: 'comments.add',
+        label: 'Add code comment',
+        category: 'Comments',
+        run: () => {
+          this.controller.getSignal('comments.createComment')();
+        },
+      });
+    }
 
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '1_new',
