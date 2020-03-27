@@ -15,13 +15,14 @@ module.exports = ({ types: t, template }) => {
   // We set a global so that we can later fail the test
   // even if the error ends up being caught by the code.
   const buildGuard = template(`
+    var csb_global = typeof window === 'undefined' ? self : window;
     if (ITERATOR++ > MAX_ITERATIONS) {
-      global.infiniteLoopError = new RangeError(
+      csb_global.infiniteLoopError = new RangeError(
         'Potential infinite loop: exceeded ' +
         MAX_ITERATIONS +
         ' iterations. You can disable this check by creating a sandbox.config.json file.'
       );
-      throw global.infiniteLoopError;
+      throw csb_global.infiniteLoopError;
     }
   `);
 
