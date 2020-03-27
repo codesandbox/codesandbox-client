@@ -371,8 +371,6 @@ export const codeChanged: Action<{
     const comments = state.comments.fileComments[module.path] || [];
     comments.forEach(fileComment => {
       const range = new Selection.Range(...fileComment.range);
-      // Why are you doing this to me Typescript?
-      // @ts-ignore
       const newRange = range.transform(operation);
       const comment =
         state.comments.comments[sandbox.id][fileComment.commentId];

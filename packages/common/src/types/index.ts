@@ -64,7 +64,7 @@ export type Module = {
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path: string | null;
+  path: string;
   type: 'file';
 };
 
