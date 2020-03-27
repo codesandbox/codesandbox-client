@@ -5,17 +5,25 @@ import delay from '../delay';
 const NEW_SESSION_TIME = 1000 * 60 * 30;
 
 const getLastTimeEventSent = () => {
-  const lastTime = localStorage.getItem('csb-last-event-sent');
+  try {
+    const lastTime = localStorage.getItem('csb-last-event-sent');
 
-  if (lastTime === null) {
+    if (lastTime === null) {
+      return 0;
+    }
+
+    return +lastTime;
+  } catch (e) {
     return 0;
   }
-
-  return +lastTime;
 };
 
 const markLastTimeEventSent = () => {
-  localStorage.setItem('csb-last-event-sent', Date.now().toString());
+  try {
+    localStorage.setItem('csb-last-event-sent', Date.now().toString());
+  } catch (e) {
+    console.warn(e);
+  }
 };
 
 const getAmplitude = async (): Promise<any | false> => {
