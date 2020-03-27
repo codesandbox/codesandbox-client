@@ -54,7 +54,7 @@ export async function initialize(dsn: string) {
         "undefined is not an object (evaluating 'window.__pad.performLoop')", // Only happens on Safari, but spams our servers. Doesn't break anything
       ],
       whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
-      maxBreadcrumbs: 40,
+      maxBreadcrumbs: 90,
       /**
        * Don't send messages from the sandbox, so don't send from eg.
        * new.codesandbox.io or new.csb.app
