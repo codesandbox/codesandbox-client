@@ -21,6 +21,7 @@ import {
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import {
   addDevToolsTab as addDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
@@ -85,6 +86,20 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
     );
+
+    // We now need to send all dirty files that came over from the last sandbox.
+    // There is the scenario where you edit a file and press fork. Then the server
+    // doesn't know about how you got to that dirty state.
+    const changedModules = state.editor.currentSandbox.modules.filter(
+      m => getSavedCode(m.code, m.savedCode) !== m.code
+    );
+    changedModules.forEach(m => {
+      // Update server with latest data
+      effects.live.sendCodeUpdate(
+        m.shortid,
+        getTextOperation(m.savedCode || '', m.code || '')
+      );
+    });
 
     state.editor.isForkingSandbox = false;
     return;
@@ -1256,6 +1271,10 @@ export const changeCollaboratorAuthorization: AsyncAction<{
   authorization: Authorization;
   sandboxId: string;
 }> = async ({ state, effects }, { username, authorization, sandboxId }) => {
+  effects.analytics.track('Update Collaborator Authorization', {
+    authorization,
+  });
+
   const existingCollaborator = state.editor.collaborators.find(
     c => c.user.username === username
   );
@@ -1285,6 +1304,7 @@ export const addCollaborator: AsyncAction<{
   sandboxId: string;
   authorization: Authorization;
 }> = async ({ state, effects }, { username, sandboxId, authorization }) => {
+  effects.analytics.track('Add Collaborator', { authorization });
   const newCollaborator: CollaboratorFragment = {
     lastSeenAt: null,
     id: 'OPTIMISTIC_ID',
@@ -1320,6 +1340,7 @@ export const removeCollaborator: AsyncAction<{
   username: string;
   sandboxId: string;
 }> = async ({ state, effects }, { username, sandboxId }) => {
+  effects.analytics.track('Remove Collaborator');
   const existingCollaborator = state.editor.collaborators.find(
     c => c.user.username === username
   );
@@ -1348,6 +1369,8 @@ export const inviteCollaborator: AsyncAction<{
   sandboxId: string;
   authorization: Authorization;
 }> = async ({ state, effects }, { email, sandboxId, authorization }) => {
+  effects.analytics.track('Invite Collaborator (Email)', { authorization });
+
   const newInvitation: InvitationFragment = {
     id: 'OPTIMISTIC_ID',
     authorization,
@@ -1391,6 +1414,8 @@ export const revokeSandboxInvitation: AsyncAction<{
   invitationId: string;
   sandboxId: string;
 }> = async ({ state, effects }, { invitationId, sandboxId }) => {
+  effects.analytics.track('Cancel Invite Collaborator (Email)');
+
   const existingInvitation = state.editor.invitations.find(
     c => c.id === invitationId
   );

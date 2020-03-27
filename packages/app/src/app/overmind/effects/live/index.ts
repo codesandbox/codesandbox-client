@@ -71,8 +71,8 @@ class Live {
     saved_code: string;
   }) => void;
 
-  private operationToElixir(ot) {
-    return ot.map(op => {
+  private operationToElixir(ot: (number | string)[]) {
+    return ot.map((op: number | string) => {
       if (typeof op === 'number') {
         if (op < 0) {
           return { d: -op };
@@ -143,11 +143,23 @@ class Live {
       operation: this.operationToElixir(operation.toJSON()),
       revision,
     }).catch(error => {
-      captureException(error);
-      this.onOperationError({
-        ...error.module_state[moduleShortid],
-        moduleShortid,
+      logBreadcrumb({
+        type: 'ot',
+        message: `ERROR ${JSON.stringify({
+          moduleShortid,
+          revision,
+          operation,
+          message: error.message,
+        })}`,
       });
+
+      captureException(error);
+      if (error.module_state) {
+        this.onOperationError({
+          ...error.module_state[moduleShortid],
+          moduleShortid,
+        });
+      }
       throw new Error(
         'The code was out of sync with the server, we had to reset the file'
       );
@@ -495,6 +507,14 @@ class Live {
     });
   }
 
+  reset() {
+    this.clients.clear();
+
+    clearTimeout(this.awaitSendTimer);
+
+    this.awaitSend = null;
+  }
+
   resetClient(moduleShortid: string, revision: number) {
     this.clients.reset(moduleShortid, revision);
   }
@@ -521,10 +541,6 @@ class Live {
 
   createClient(moduleShortid: string, revision: number) {
     return this.clients.create(moduleShortid, revision);
-  }
-
-  resetClients() {
-    this.clients.clear();
   }
 }
 

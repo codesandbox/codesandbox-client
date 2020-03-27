@@ -10,6 +10,7 @@ import { filter, fork, pipe } from 'overmind';
 
 import * as internalActions from './internalActions';
 import * as liveMessage from './liveMessageOperators';
+import { IModuleStateModule } from './types';
 
 export const internal = internalActions;
 
@@ -27,14 +28,14 @@ export const signInToRoom: AsyncAction<{
 
 export const onOperationError: Action<{
   moduleShortid: string;
-  code: string;
-  revision: number;
-  saved_code: string;
-}> = ({ state, effects }, { moduleShortid, revision, code, saved_code }) => {
+} & IModuleStateModule> = (
+  { state, effects },
+  { moduleShortid, revision, code, saved_code }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
-  effects.live.resetClient(moduleShortid, revision);
+  effects.live.resetClient(moduleShortid, revision || 0);
   const module = state.editor.currentSandbox.modules.find(
     moduleItem => moduleItem.shortid === moduleShortid
   );
@@ -363,6 +364,21 @@ export const onFollow: Action<{
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
   actions.live.revealViewRange({ liveUserId });
+};
+
+export const onUserLeft: Action<{
+  liveUserId: string;
+}> = ({ state, actions }, { liveUserId }) => {
+  if (!state.live.roomInfo) {
+    return;
+  }
+
+  if (state.live.followingUserId && state.live.followingUserId === liveUserId) {
+    // Unfollow user if they are the one who left
+    actions.live.onStopFollow();
+  }
+
+  actions.live.internal.clearUserSelections(liveUserId);
 };
 
 export const onStopFollow: Action = ({ state, effects, actions }) => {

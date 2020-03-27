@@ -69,6 +69,8 @@ export class CodeSandboxOTClient extends OTClient {
         if (this.lastAcknowledgedRevision < revision) {
           this.lastAcknowledgedRevision = revision;
           this.serverAck();
+        } else {
+          this.resetAwaitSynchronized();
         }
       })
       .catch(error => {
@@ -87,16 +89,20 @@ export class CodeSandboxOTClient extends OTClient {
     this.onApplyOperation(operation);
   }
 
+  resetAwaitSynchronized() {
+    // If we are back in synchronized state we resolve the blocker
+    if (this.state === synchronized_ && this.awaitSynchronized) {
+      const awaitSynchronized = this.awaitSynchronized;
+      this.awaitSynchronized = null;
+      awaitSynchronized.resolve();
+    }
+  }
+
   serverAck() {
     try {
       super.serverAck();
 
-      // If we are back in synchronized state we resolve the blocker
-      if (this.state === synchronized_ && this.awaitSynchronized) {
-        const awaitSynchronized = this.awaitSynchronized;
-        this.awaitSynchronized = null;
-        awaitSynchronized.resolve();
-      }
+      this.resetAwaitSynchronized();
     } catch (e) {
       // Undo the revision increment again
       super.revision--;
@@ -148,7 +154,7 @@ export default (
     },
     create(moduleShortid, initialRevision) {
       const client = new CodeSandboxOTClient(
-        initialRevision,
+        initialRevision || 0,
         moduleShortid,
         (revision, operation) =>
           sendOperation(moduleShortid, revision, operation),

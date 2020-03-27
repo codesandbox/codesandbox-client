@@ -6,7 +6,7 @@ description: Use templates to kickstart new projects with no setup.
 
 ## What are Templates?
 
-Templates are project starting points. They're already setup with the
+Templates are project starting points. They're already set up with the
 configuration, file structure, and dependencies installed, so you don't have to
 spend time doing this each time you begin working on something new. Templates
 are easily accessible from your dashboard and the "Create New Sandbox" modal.

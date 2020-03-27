@@ -86,17 +86,21 @@ export const Overlay: React.FC<IOverlayProps> = ({
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.keyCode === ESC) {
+      if (!e.defaultPrevented && e.keyCode === ESC) {
         handleClose();
       }
     };
 
-    document.addEventListener('keypress', handleEscape);
+    if (openState) {
+      document.addEventListener('keydown', handleEscape);
+    } else {
+      document.removeEventListener('keydown', handleEscape);
+    }
 
     return () => {
-      document.removeEventListener('keypress', handleEscape);
+      document.removeEventListener('keydown', handleEscape);
     };
-  }, [handleClose]);
+  }, [handleClose, openState]);
 
   const handleOpen = () => {
     if (event) {

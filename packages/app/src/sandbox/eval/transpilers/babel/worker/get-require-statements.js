@@ -14,6 +14,17 @@ export default function getRequireStatements(metadata) {
         res[s.left.value] = 'glob';
       } else if (s.type === 'TemplateLiteral') {
         res[s.quasis[0].value.raw] = 'glob';
+      } else if (
+        s.type === 'CallExpression' &&
+        s.callee.type === 'MemberExpression' &&
+        s.callee.property.type === 'Identifier' &&
+        s.callee.property.name === 'concat' &&
+        s.arguments[0] &&
+        s.arguments[0].left.type === 'BinaryExpression' &&
+        s.arguments[0].left.left.type === 'StringLiteral'
+      ) {
+        // require("".concat('./assets/' + ... + '.js');
+        res[s.arguments[0].left.left.value] = 'glob';
       }
     });
   }

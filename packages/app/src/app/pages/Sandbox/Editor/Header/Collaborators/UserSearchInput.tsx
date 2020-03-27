@@ -3,35 +3,53 @@ import Downshift, { DownshiftProps } from 'downshift';
 import css from '@styled-system/css';
 import { Input, List, ListAction } from '@codesandbox/components';
 
+type User = {
+  id: string;
+  username: string;
+  avatar_url: string;
+};
+
 interface IUserAutoComplete {
   inputValue: string;
   children: (answer: {
-    users: string[];
+    users: User[];
     loading: boolean;
     error: Error | null;
   }) => JSX.Element;
 }
 
 const UserAutoComplete = ({ inputValue, children }: IUserAutoComplete) => {
-  const [users, setUsers] = React.useState<string[]>([]);
+  const [users, setUsers] = React.useState<User[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<Error | null>(null);
   useEffect(() => {
     setLoading(true);
     setError(null);
+
+    let timeoutId: number;
+
     if (inputValue.length > 2 && !inputValue.includes('@')) {
-      fetch(`/api/v1/users/search?username=${inputValue}`)
-        .then(x => x.json())
-        .then(x => {
-          setUsers(x.map(user => user.username));
-          setLoading(false);
-        })
-        .catch(e => {
-          setError(e);
-        });
+      // Small debounce
+      timeoutId = window.setTimeout(() => {
+        fetch(`/api/v1/users/search?username=${inputValue}`)
+          .then(x => x.json())
+          .then(x => {
+            setUsers(x);
+            setLoading(false);
+          })
+          .catch(e => {
+            setError(e);
+          });
+      }, 300);
     } else {
       setUsers([]);
     }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [inputValue]);
 
   return children({ users, loading, error });
@@ -75,6 +93,8 @@ export const UserSearchInput = ({
             {...getInputProps({
               placeholder: 'Enter name or email address',
             })}
+            autoFocus
+            spellcheck="false"
           />
         </div>
 
@@ -97,15 +117,26 @@ export const UserSearchInput = ({
               >
                 {users.map((item, index) => (
                   <ListAction
-                    key={item}
+                    key={item.id}
                     isActive={highlightedIndex === index}
                     {...getItemProps({
-                      item,
+                      item: item.username,
                       index,
-                      isSelected: selectedItem === item,
+                      isSelected: selectedItem === item.username,
                     })}
                   >
-                    {item}
+                    <img
+                      alt={item.username}
+                      css={css({
+                        borderRadius: 2,
+                        marginRight: 2,
+                        paddingY: 1,
+                      })}
+                      width={24}
+                      height={24}
+                      src={item.avatar_url}
+                    />{' '}
+                    {item.username}
                   </ListAction>
                 ))}
               </List>
