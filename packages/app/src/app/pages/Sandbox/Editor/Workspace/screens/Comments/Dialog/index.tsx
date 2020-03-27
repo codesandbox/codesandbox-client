@@ -102,7 +102,10 @@ export const Dialog: React.FC = () => {
         })}
       >
         {isNewComment && editing ? (
-          <AddComment comment={comment} onSave={() => setEditing(false)} />
+          <DialogAddComment
+            comment={comment}
+            onSave={() => setEditing(false)}
+          />
         ) : (
           <>
             <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
@@ -126,7 +129,7 @@ export const Dialog: React.FC = () => {
   );
 };
 
-const AddComment = ({ comment, onSave }) => {
+const DialogAddComment = ({ comment, onSave }) => {
   const { actions } = useOvermind();
   const [value, setValue] = useState('');
 
@@ -165,6 +168,7 @@ const AddComment = ({ comment, onSave }) => {
       </Stack>
       <Textarea
         autosize
+        autoFocus
         css={css({
           overflow: 'hidden',
           border: 'none',
