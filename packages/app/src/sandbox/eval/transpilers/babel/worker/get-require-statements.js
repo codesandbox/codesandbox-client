@@ -19,6 +19,7 @@ export default function getRequireStatements(metadata) {
         s.callee.type === 'MemberExpression' &&
         s.callee.property.type === 'Identifier' &&
         s.callee.property.name === 'concat' &&
+        s.arguments &&
         s.arguments[0] &&
         s.arguments[0].left.type === 'BinaryExpression' &&
         s.arguments[0].left.left.type === 'StringLiteral'
