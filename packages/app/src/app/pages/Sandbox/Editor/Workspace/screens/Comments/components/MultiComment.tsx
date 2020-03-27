@@ -2,9 +2,15 @@ import React from 'react';
 import { formatDistanceStrict } from 'date-fns';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { Text } from '@codesandbox/components';
+import { Text, Element } from '@codesandbox/components';
 
-export const MultiComment = ({ x, y, ids }) => {
+type MultiCommentProps = {
+  x: number;
+  y: number;
+  ids: string[];
+};
+
+export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
   const {
     state: {
       comments: { currentComments },
@@ -70,38 +76,41 @@ export const MultiComment = ({ x, y, ids }) => {
     },
   });
 
+  const date = comment =>
+    formatDistanceStrict(new Date(comment.insertedAt), new Date(), {
+      addSuffix: true,
+    });
+
   return (
-    <ul css={list}>
-      {ids.map(id => (
-        <li key={id}>
-          <button
-            type="button"
-            // @ts-ignore
-            onClick={() => comments.selectComment(id)}
-            css={item}
-          >
-            <Text
-              size={2}
-              weight="bold"
-              paddingRight={2}
-              css={css({
-                color: 'sideBar.foreground',
-              })}
+    <Element as="ul" css={list}>
+      {ids.map(id => {
+        const comment = currentComments.find(c => c.id === id);
+        return (
+          <Element as="li" key={id}>
+            <Element
+              as="button"
+              type="button"
+              // @ts-ignore
+              onClick={() => comments.selectComment(id)}
+              css={item}
             >
-              {currentComments.find(c => c.id === id).user.username}
-            </Text>
-            <Text size={2} variant="muted">
-              {formatDistanceStrict(
-                new Date(currentComments.find(c => c.id === id).insertedAt),
-                new Date(),
-                {
-                  addSuffix: true,
-                }
-              )}
-            </Text>
-          </button>
-        </li>
-      ))}
-    </ul>
+              <Text
+                size={2}
+                weight="bold"
+                paddingRight={2}
+                css={css({
+                  color: 'sideBar.foreground',
+                })}
+              >
+                {comment.user.username}
+              </Text>
+              <Text size={2} variant="muted">
+                {date(comment)}
+              </Text>
+            </Element>
+          </Element>
+        );
+      })}
+    </Element>
   );
 };
