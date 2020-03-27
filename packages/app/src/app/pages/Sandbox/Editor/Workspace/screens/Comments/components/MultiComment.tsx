@@ -13,9 +13,10 @@ type MultiCommentProps = {
 export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
   const {
     state: {
-      comments: { currentComments },
+      editor,
+      comments,
     },
-    actions: { comments },
+    actions,
   } = useOvermind();
 
   const list = css({
@@ -84,14 +85,14 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
   return (
     <Element as="ul" css={list}>
       {ids.map(id => {
-        const comment = currentComments.find(c => c.id === id);
+        const comment = comments.comments[editor.currentSandbox.id][id];
         return (
           <Element as="li" key={id}>
             <Element
               as="button"
               type="button"
               // @ts-ignore
-              onClick={() => comments.selectComment(id)}
+              onClick={() => actions.comments.selectComment(id)}
               css={item}
             >
               <Text
