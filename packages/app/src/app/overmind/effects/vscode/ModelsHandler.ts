@@ -765,7 +765,9 @@ export class ModelsHandler {
               glyphMarginClassName: `editor-comments-glyph ${
                 activeCommentDecoration ? 'editor-comments-active ' : ''
               }${
-                ids.length > 1 ? `editor-comments-multi` : ''
+                ids.length > 1
+                  ? `editor-comments-multi editor-comments-multi-${ids.length} `
+                  : ''
               }editor-comments-ids-${ids.join('_')}`,
             },
           },
