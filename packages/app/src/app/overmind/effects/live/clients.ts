@@ -41,6 +41,7 @@ export class CodeSandboxOTClient extends OTClient {
   ) {
     super(revision);
     this.moduleShortid = moduleShortid;
+    this.lastAcknowledgedRevision = revision - 1;
     this.onSendOperation = onSendOperation;
     this.onApplyOperation = onApplyOperation;
   }
@@ -65,13 +66,7 @@ export class CodeSandboxOTClient extends OTClient {
           })}`,
         });
 
-        // We make sure to not acknowledge the same revision twice
-        if (this.lastAcknowledgedRevision < revision) {
-          this.lastAcknowledgedRevision = revision;
-          this.serverAck();
-        } else {
-          this.resetAwaitSynchronized();
-        }
+        this.safeServerAck(revision);
       })
       .catch(error => {
         // If an operation errors on the server we will reject
@@ -98,16 +93,14 @@ export class CodeSandboxOTClient extends OTClient {
     }
   }
 
-  serverAck() {
-    try {
+  safeServerAck(revision: number) {
+    // We make sure to not acknowledge the same revision twice
+    if (this.lastAcknowledgedRevision < revision) {
+      this.lastAcknowledgedRevision = revision;
       super.serverAck();
-
-      this.resetAwaitSynchronized();
-    } catch (e) {
-      // Undo the revision increment again
-      super.revision--;
-      throw e;
     }
+
+    this.resetAwaitSynchronized();
   }
 
   applyClient(operation: TextOperation) {
