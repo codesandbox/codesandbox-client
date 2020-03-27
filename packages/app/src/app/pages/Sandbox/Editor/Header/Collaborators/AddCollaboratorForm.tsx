@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { Stack, Button } from '@codesandbox/components';
+import { get } from 'lodash';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import css from '@styled-system/css';
 
 import { Authorization } from 'app/graphql/types';
@@ -10,6 +12,11 @@ import { PermissionSelect, MENU_WIDTH } from './PermissionSelect';
 
 export const AddCollaboratorForm = () => {
   const { actions, state } = useOvermind();
+  const isOwner = hasPermission(
+    state.editor.currentSandbox.authorization,
+    'owner'
+  );
+  const user = get(state, 'user');
 
   const controls = useAnimation();
   const [inputValue, setInputValue] = React.useState<string>('');
@@ -24,7 +31,11 @@ export const AddCollaboratorForm = () => {
   const onSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
-    if (!inputValue || inputValue.trim().length === 0) {
+    if (
+      !inputValue ||
+      inputValue.trim().length === 0 ||
+      (isOwner && user.email === inputValue) || user.username === inputValue
+    ) {
       controls.start({
         translateX: [-4, 4, 0],
         transition: {
