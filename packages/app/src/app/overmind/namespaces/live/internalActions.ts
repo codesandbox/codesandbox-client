@@ -112,7 +112,6 @@ export const initializeModuleState: Action<IModuleState> = (
       if (!('code' in moduleInfo)) {
         return;
       }
-      effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
 
       const savedCodeChanged =
         getSavedCode(moduleInfo.code, moduleInfo.saved_code) !==
@@ -140,6 +139,8 @@ export const initializeModuleState: Action<IModuleState> = (
         } else {
           effects.vscode.setModuleCode(module);
         }
+
+        effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
       }
     }
   });
