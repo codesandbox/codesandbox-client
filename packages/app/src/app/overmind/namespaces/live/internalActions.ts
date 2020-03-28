@@ -109,6 +109,7 @@ export const initializeModuleState: Action<IModuleState> = (
   });
   Object.keys(moduleState).forEach(moduleShortid => {
     const moduleInfo = moduleState[moduleShortid];
+    effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
 
     // Module has not been saved, so is different
     const module = sandbox.modules.find(m => m.shortid === moduleShortid);
@@ -145,7 +146,6 @@ export const initializeModuleState: Action<IModuleState> = (
           effects.vscode.setModuleCode(module);
         }
       }
-      effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
     }
   });
   actions.editor.internal.updatePreviewCode();
