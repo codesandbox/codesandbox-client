@@ -372,14 +372,16 @@ export class Workbench {
       },
     });
 
-    this.appendMenuItem(MenuId.EditorContext, {
-      group: '0_comments',
-      order: 0,
-      command: {
-        id: 'comments.add',
-        title: 'Add code comment...',
-      },
-    });
+    if (COMMENTS) {
+      this.appendMenuItem(MenuId.EditorContext, {
+        group: '0_comments',
+        order: 0,
+        command: {
+          id: 'comments.add',
+          title: 'Add code comment...',
+        },
+      });
+    }
   }
 
   private addWorkbenchAction({
