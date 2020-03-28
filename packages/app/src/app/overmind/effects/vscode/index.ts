@@ -317,8 +317,8 @@ export class VSCodeEffect {
     }
   }
 
-  public revertModule(module: Module) {
-    this.modelsHandler.revertModule(module);
+  public syncModule(module: Module) {
+    this.modelsHandler.syncModule(module);
   }
 
   public async applyOperation(

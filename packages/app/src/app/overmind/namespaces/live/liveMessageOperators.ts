@@ -181,7 +181,7 @@ export const onModuleSaved: Operator<LiveMessage<{
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
     // We revert the module so that VSCode will flag saved indication correctly
-    effects.vscode.revertModule(module);
+    effects.vscode.syncModule(module);
     actions.editor.internal.updatePreviewCode();
   }
 });

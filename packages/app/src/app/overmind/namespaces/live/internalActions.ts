@@ -141,7 +141,7 @@ export const initializeModuleState: Action<IModuleState> = (
           );
         }
         if (moduleInfo.synced) {
-          effects.vscode.revertModule(module);
+          effects.vscode.syncModule(module);
         } else {
           effects.vscode.setModuleCode(module);
         }
