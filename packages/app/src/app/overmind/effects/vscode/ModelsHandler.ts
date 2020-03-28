@@ -101,7 +101,7 @@ export class ModelsHandler {
     return null;
   }
 
-  public async symcModule(module: Module) {
+  public async syncModule(module: Module) {
     const fileModel = this.editorApi.textFileService
       .getFileModels()
       .find(

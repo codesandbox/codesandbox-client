@@ -318,7 +318,7 @@ export class VSCodeEffect {
   }
 
   public syncModule(module: Module) {
-    this.modelsHandler.symcModule(module);
+    this.modelsHandler.syncModule(module);
   }
 
   public async applyOperation(
