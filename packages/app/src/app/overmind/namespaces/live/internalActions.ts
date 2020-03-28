@@ -3,6 +3,7 @@ import {
   Module,
   Sandbox,
 } from '@codesandbox/common/lib/types';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 
@@ -102,6 +103,10 @@ export const initializeModuleState: Action<IModuleState> = (
   if (!sandbox) {
     return;
   }
+  logBreadcrumb({
+    category: 'ot',
+    message: 'Applying new module state',
+  });
   Object.keys(moduleState).forEach(moduleShortid => {
     const moduleInfo = moduleState[moduleShortid];
 
