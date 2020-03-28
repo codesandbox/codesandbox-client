@@ -1163,8 +1163,8 @@ export class VSCodeEffect {
 
         if (lineNumber || column) {
           options.selection = {
-            startLineNumber: lineNumber,
-            startColumn: column || 0,
+            startLineNumber: +lineNumber,
+            startColumn: +(column || 0),
           };
         }
 
