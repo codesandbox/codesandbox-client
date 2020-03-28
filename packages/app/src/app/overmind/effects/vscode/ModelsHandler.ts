@@ -7,6 +7,7 @@ import {
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
@@ -161,16 +162,18 @@ export class ModelsHandler {
 
     const model = await moduleModel.model;
 
-    const newDecorationComments = this.createCommentDecorations(
-      moduleModel.comments,
-      model,
-      this.currentCommentThreadId,
-      moduleModel.currentLine
-    );
-    moduleModel.currentCommentDecorations = model.deltaDecorations(
-      moduleModel.currentCommentDecorations,
-      newDecorationComments
-    );
+    if (COMMENTS) {
+      const newDecorationComments = this.createCommentDecorations(
+        moduleModel.comments,
+        model,
+        this.currentCommentThreadId,
+        moduleModel.currentLine
+      );
+      moduleModel.currentCommentDecorations = model.deltaDecorations(
+        moduleModel.currentCommentDecorations,
+        newDecorationComments
+      );
+    }
 
     return moduleModel.model;
   };
