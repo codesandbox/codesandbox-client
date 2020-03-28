@@ -365,7 +365,7 @@ export const codeChanged: Action<{
       logBreadcrumb({
         category: 'ot',
         message: `Change Event ${JSON.stringify({
-          moduleShortid: this.moduleShortid,
+          moduleShortid: module.shortid,
           event,
         })}`,
       });
