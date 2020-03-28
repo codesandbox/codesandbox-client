@@ -329,7 +329,7 @@ export class ModelsHandler {
   nameTagTimeouts: { [name: string]: number } = {};
 
   public async updateUserSelections(
-    module,
+    module: Module,
     userSelections: EditorSelection[],
     showNameTag = true
   ) {
