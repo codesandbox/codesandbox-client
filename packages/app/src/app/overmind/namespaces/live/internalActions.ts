@@ -144,9 +144,8 @@ export const initializeModuleState: Action<IModuleState> = (
         } else {
           effects.vscode.setModuleCode(module);
         }
-
-        effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
       }
+      effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
     }
   });
   actions.editor.internal.updatePreviewCode();
