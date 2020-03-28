@@ -329,7 +329,7 @@ export const onOperationApplied: Action<{
   actions.editor.internal.updatePreviewCode();
 
   if (module.savedCode !== null && module.code === module.savedCode) {
-    effects.vscode.revertModule(module);
+    effects.vscode.syncModule(module);
   }
 };
 
@@ -394,7 +394,7 @@ export const codeChanged: Action<{
     code,
   });
   if (module.savedCode !== null && module.code === module.savedCode) {
-    effects.vscode.revertModule(module);
+    effects.vscode.syncModule(module);
   }
 
   const { isServer } = getTemplate(state.editor.currentSandbox.template);
@@ -734,7 +734,7 @@ export const discardModuleChanges: Action<{
   }
 
   module.updatedAt = new Date().toString();
-  effects.vscode.revertModule(module);
+  effects.vscode.syncModule(module);
 };
 
 export const fetchEnvironmentVariables: AsyncAction = async ({

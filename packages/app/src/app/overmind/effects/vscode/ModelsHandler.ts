@@ -101,7 +101,7 @@ export class ModelsHandler {
     return null;
   }
 
-  public async revertModule(module: Module) {
+  public async symcModule(module: Module) {
     const fileModel = this.editorApi.textFileService
       .getFileModels()
       .find(
@@ -110,7 +110,9 @@ export class ModelsHandler {
       );
 
     if (fileModel) {
+      this.isApplyingOperation = true;
       fileModel.revert();
+      this.isApplyingOperation = false;
     }
   }
 
