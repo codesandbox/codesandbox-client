@@ -3,10 +3,10 @@ import { TextOperation } from 'ot';
 import { lineAndColumnToIndex } from './common';
 
 export default function convertChangeEventToOperation(
-  changeEvent,
-  liveOperationCode
+  changeEvent: any,
+  liveOperationCode: string
 ) {
-  let otOperation;
+  let otOperation: TextOperation;
 
   let composedCode = liveOperationCode;
 
@@ -38,13 +38,13 @@ export default function convertChangeEventToOperation(
       newOt.retain(remaining);
     }
 
-    otOperation = otOperation ? otOperation.compose(newOt) : newOt;
+    otOperation = otOperation! ? otOperation!.compose(newOt) : newOt;
 
-    composedCode = otOperation.apply(liveOperationCode);
+    composedCode = otOperation!.apply(liveOperationCode);
   }
 
   return {
-    operation: otOperation,
+    operation: otOperation!,
     newCode: composedCode,
   };
 }

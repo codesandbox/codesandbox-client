@@ -6,6 +6,8 @@ export default async ({
   email,
   version,
   browser,
+}: {
+  [key: string]: string;
 }) => {
   const Airtable = await import(
     /* webpackChunkName: 'airtable' */ './setAirtable'

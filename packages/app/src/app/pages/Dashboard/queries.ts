@@ -417,13 +417,14 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
   });
 }
 
-export function setSandboxesPrivacy(selectedSandboxes, privacy) {
+export function setSandboxesPrivacy(
+  selectedSandboxes: string[],
+  privacy: 0 | 1 | 2
+) {
   client.mutate({
     mutation: SET_SANDBOXES_PRIVACY_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS
-        ? selectedSandboxes.toJS()
-        : selectedSandboxes,
+      sandboxIds: selectedSandboxes,
       privacy,
     },
   });

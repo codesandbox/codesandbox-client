@@ -29,7 +29,7 @@ type State = {
   liveUsersByModule: Derive<
     State,
     {
-      [id: string]: string[];
+      [id: string]: number[][];
     }
   >;
 };
@@ -76,7 +76,7 @@ export const state: State = {
         currentState.roomInfo?.ownerIds.includes(currentState.liveUserId)
     ),
   liveUsersByModule: currentState => {
-    const usersByModule = {};
+    const usersByModule: { [id: string]: number[][] } = {};
 
     if (!currentState.isLive || !currentState.roomInfo) {
       return {};
@@ -86,7 +86,7 @@ export const state: State = {
 
     currentState.roomInfo.users.forEach(user => {
       const userId = user.id;
-      if (userId !== liveUserId && user.currentModuleShortid) {
+      if (user && userId !== liveUserId && user.currentModuleShortid) {
         usersByModule[user.currentModuleShortid] =
           usersByModule[user.currentModuleShortid] || [];
         usersByModule[user.currentModuleShortid].push(user.color);

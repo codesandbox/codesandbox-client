@@ -37,6 +37,18 @@ import HTML5Backend from './pages/common/HTML5BackendWithFolderSupport';
 
 const debug = _debug('cs:app');
 
+/**
+ * Get rid of a tippy warning that spams the console, and doesn't seem valid.
+ */
+const warn = console.warn;
+console.warn = (...args) => {
+  if (args[0].includes('Cannot update plugins')) {
+    return;
+  }
+
+  warn(...args);
+};
+
 window.setImmediate = (func, delay) => setTimeout(func, delay);
 
 window.addEventListener('unhandledrejection', e => {

@@ -87,9 +87,9 @@ export const onInitialize: OnInitialize = async (
     onViewRangeChanged: actions.live.onViewRangeChanged,
     onCommentClick: actions.comments.onCommentClick,
     reaction: overmindInstance.reaction,
-    getState: path =>
+    getState: (path: string) =>
       path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,
-    getSignal: path =>
+    getSignal: (path: string) =>
       path.split('.').reduce((aggr, key) => aggr[key], actions),
   });
 

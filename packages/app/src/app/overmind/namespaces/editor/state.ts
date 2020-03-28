@@ -16,6 +16,7 @@ import {
   SandboxFs,
   Tabs,
   WindowOrientation,
+  Directory,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
@@ -278,7 +279,11 @@ export const state: State = {
 };
 
 // This should be moved somewhere else
-function getModuleParents(modules, directories, id): string[] {
+function getModuleParents(
+  modules: Module[],
+  directories: Directory[],
+  id: string
+): string[] {
   const module = modules.find(moduleEntry => moduleEntry.id === id);
 
   if (!module) return [];
@@ -288,9 +293,9 @@ function getModuleParents(modules, directories, id): string[] {
   );
   let directoryIds: string[] = [];
   while (directory != null) {
-    directoryIds = [...directoryIds, directory.id];
+    directoryIds = [...directoryIds, directory!.id];
     directory = directories.find(
-      directoryEntry => directoryEntry.shortid === directory.directoryShortid // eslint-disable-line
+      directoryEntry => directoryEntry.shortid === directory!.directoryShortid // eslint-disable-line
     );
   }
 
