@@ -33,6 +33,7 @@ import history from 'app/utils/history';
 import { Selection, TextOperation } from 'ot';
 import { json } from 'overmind';
 
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import eventToTransform from '../../utils/event-to-transform';
 import { SERVER } from '../../utils/items';
 import * as internalActions from './internalActions';
@@ -361,6 +362,13 @@ export const codeChanged: Action<{
   if (state.live.isLive && module.code !== code) {
     let operation: TextOperation;
     if (event) {
+      logBreadcrumb({
+        category: 'ot',
+        message: `Change Event ${JSON.stringify({
+          moduleShortid: this.moduleShortid,
+          event,
+        })}`,
+      });
       operation = eventToTransform(event, module.code).operation;
     } else {
       operation = getTextOperation(module.code, code);
