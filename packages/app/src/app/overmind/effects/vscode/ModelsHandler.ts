@@ -333,7 +333,7 @@ export class ModelsHandler {
     userSelections: EditorSelection[],
     showNameTag = true
   ) {
-    const moduleModel = this.getModuleModelByPath(module);
+    const moduleModel = this.getModuleModelByPath(module.path);
 
     moduleModel.selections = userSelections;
 
