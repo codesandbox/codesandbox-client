@@ -36,6 +36,7 @@ type Options = {
 
 type JoinChannelResponse = {
   liveUserId: string;
+  reconnectToken: string;
   roomInfo: RoomInfo;
 };
 
@@ -269,6 +270,16 @@ class Live {
         .join()
         .receive('ok', resp => {
           const result = camelizeKeys(resp) as JoinChannelResponse;
+
+          // We rewrite what our reconnect params are by adding the reconnect token.
+          // This token makes sure that you can retain state between reconnects and restarts
+          // from the server
+          // @ts-ignore
+          this.channel.joinPush.payload = () => ({
+            version: 2,
+            reconnect_token: result.reconnectToken,
+          });
+
           resolve(result);
         })
         .receive('error', resp => reject(camelizeKeys(resp)));
