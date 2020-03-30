@@ -351,7 +351,7 @@ class Live {
     return this.sendImmediately(event, payload);
   }
 
-  async saveModule(module: Module) {
+  async saveModule(moduleShortid: string) {
     /*
       If we save a module we will temporarily lift the message blocker,
       passing any operations through. As soon as the client of the module
@@ -359,7 +359,7 @@ class Live {
     */
     if (this.isLiveBlockerExperiement() && this.awaitSend) {
       this.resolveAwaitSend();
-      await this.awaitSynchronizedModule(module.shortid);
+      await this.awaitSynchronizedModule(moduleShortid);
       this.setAwaitSend();
     }
     // Send the save message

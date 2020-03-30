@@ -130,7 +130,7 @@ export const saveCode: AsyncAction<{
   }
 
   try {
-    await effects.live.saveModule(module);
+    await effects.live.saveModule(module.shortid);
     const updatedModule = await effects.api.saveModuleCode(
       sandbox.id,
       module.shortid,
@@ -152,7 +152,10 @@ export const saveCode: AsyncAction<{
 
     module.savedCode = savedCode;
 
-    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, {
+      ...module,
+      code,
+    });
     effects.moduleRecover.remove(sandbox.id, module);
 
     if (cbID) {
@@ -180,7 +183,10 @@ export const saveCode: AsyncAction<{
     }
 
     if (state.live.isLive && state.live.isCurrentEditor) {
-      effects.live.sendModuleSaved(module);
+      effects.live.sendModuleSaved({
+        ...module,
+        code,
+      });
     }
 
     await actions.editor.internal.updateCurrentTemplate();
