@@ -123,8 +123,8 @@ export const state: State = {
     }
 
     function sortByInsertedAt(
-      commentA: CommentFragment | null,
-      commentB: CommentFragment | null
+      commentA: CommentFragment,
+      commentB: CommentFragment
     ) {
       const aDate = new Date(commentA.insertedAt);
       const bDate = new Date(commentB.insertedAt);
