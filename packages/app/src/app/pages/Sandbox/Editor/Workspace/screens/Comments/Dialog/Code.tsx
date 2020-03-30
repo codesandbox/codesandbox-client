@@ -24,6 +24,7 @@ export const Code = withTheme(({ value, language, theme }) => (
           className={className}
           style={style}
           css={css({
+            fontSize: 3,
             whiteSpace: 'pre-wrap',
             maxHeight: 400,
             overflow: 'scroll',
