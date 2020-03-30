@@ -371,6 +371,9 @@ export const forkSandbox: AsyncAction<{
   }
 
   const currentSandboxId = state.editor.currentId;
+  if (!currentSandboxId) {
+    return;
+  }
 
   effects.analytics.track('Fork Sandbox');
 
