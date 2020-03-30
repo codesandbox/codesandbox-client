@@ -285,6 +285,9 @@ const CommentBody = ({ comment, editing, setEditing }) => {
             <Menu>
               <Menu.IconButton name="more" title="Comment actions" size={12} />
               <Menu.List>
+                <Menu.Item onSelect={() => setEditing(true)}>
+                  Edit Comment
+                </Menu.Item>
                 <Menu.Item
                   onSelect={() =>
                     actions.comments.deleteComment({
@@ -293,9 +296,6 @@ const CommentBody = ({ comment, editing, setEditing }) => {
                   }
                 >
                   Delete
-                </Menu.Item>
-                <Menu.Item onSelect={() => setEditing(true)}>
-                  Edit Comment
                 </Menu.Item>
               </Menu.List>
             </Menu>

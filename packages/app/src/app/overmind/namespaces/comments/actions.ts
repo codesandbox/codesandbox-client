@@ -370,6 +370,8 @@ export const deleteComment: AsyncAction<{
   const comments = state.comments.comments;
   const deletedComment = comments[sandboxId][commentId];
 
+  delete comments[sandboxId][commentId];
+
   try {
     await effects.gql.mutations.deleteComment({
       commentId,
