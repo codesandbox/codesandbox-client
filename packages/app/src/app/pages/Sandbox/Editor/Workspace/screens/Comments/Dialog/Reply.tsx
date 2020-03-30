@@ -73,3 +73,34 @@ export const Reply = ({ reply }: ReplyProps) => {
     </>
   );
 };
+
+const SkeletonBlock = props => (
+  <Element
+    css={css({
+      backgroundColor: 'black',
+      borderRadius: 1,
+      width: '100%',
+      height: '100%',
+    })}
+    {...props}
+  />
+);
+
+export const SkeletonReply = props => (
+  <Element marginX={4} paddingTop={6} {...props}>
+    <Stack align="center" gap={2} marginBottom={4}>
+      <SkeletonBlock style={{ width: '32px', height: '32px' }} />
+
+      <Stack direction="vertical" gap={1}>
+        <SkeletonBlock style={{ width: '120px', height: '14px' }} />
+        <SkeletonBlock style={{ width: '120px', height: '14px' }} />
+      </Stack>
+    </Stack>
+
+    <Stack direction="vertical" gap={1} marginBottom={6}>
+      <SkeletonBlock style={{ width: '100%', height: '14px' }} />
+      <SkeletonBlock style={{ width: '100%', height: '14px' }} />
+      <SkeletonBlock style={{ width: '100%', height: '14px' }} />
+    </Stack>
+  </Element>
+);

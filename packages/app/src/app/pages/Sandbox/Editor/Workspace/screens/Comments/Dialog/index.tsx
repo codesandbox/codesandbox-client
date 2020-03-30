@@ -19,19 +19,22 @@ import ReactDOM from 'react-dom';
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
 import { Markdown } from './Markdown';
-import { Reply } from './Reply';
+import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
 
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
 const DIALOG_WIDTH = 420;
+const DIALOG_TRANSITION_DURATION = 0.25;
+const REPLY_TRANSITION_DELAY = 0.25;
 
 export const Dialog: React.FC = () => {
   const { state } = useOvermind();
   const controller = useAnimation();
 
   const comment = state.comments.currentComment;
+  const replies = comment.comments;
 
   // This comment doens't exist in the database, it's an optimistic comment
   const isNewComment = comment.id === OPTIMISTIC_COMMENT_ID;
@@ -84,7 +87,7 @@ export const Dialog: React.FC = () => {
       key={isCodeComment ? 'code' : 'global'}
       initial={{ ...initialPosition, scale: 0.5, opacity: 0 }}
       animate={controller}
-      transition={{ duration: 0.25 }}
+      transition={{ duration: DIALOG_TRANSITION_DURATION }}
       style={{ position: 'absolute', zIndex: 2 }}
     >
       <Stack
@@ -127,7 +130,7 @@ export const Dialog: React.FC = () => {
                 editing={editing}
                 setEditing={setEditing}
               />
-              <Replies replies={comment.comments} />
+              {replies.length ? <Replies replies={replies} /> : null}
             </Stack>
             <AddReply comment={comment} />
           </>
@@ -331,13 +334,43 @@ const CommentBody = ({ comment, editing, setEditing }) => {
   );
 };
 
-const Replies = ({ replies }) => (
-  <>
-    {replies.map(reply =>
-      reply ? <Reply reply={reply} key={reply.id} /> : 'Loading...'
-    )}
-  </>
-);
+const Replies = ({ replies }) => {
+  // always animate
+  // fold open
+  // if replies loaded - transition height to auto
+  // else - load skeleton
+  // when replies load - transition height to auto
+
+  const [repliesLoaded, setRepliesLoaded] = React.useState(!!replies[0]);
+  const [isAnimating, setAnimating] = React.useState(true);
+
+  React.useEffect(() => {
+    setRepliesLoaded(!!replies[0]);
+  }, [replies]);
+
+  /** Wait another <delay>ms after the dialog has transitioned into view */
+  const delay = DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY;
+
+  return (
+    <motion.div
+      initial={{ height: 0 }}
+      animate={{ height: isAnimating ? 146 : 'auto' }}
+      transition={{ delay, duration: 0.25 }}
+      style={{ overflow: 'visible' }}
+      onAnimationComplete={() => setAnimating(false)}
+    >
+      {repliesLoaded && !isAnimating ? (
+        <>
+          {replies.map(reply => (
+            <Reply reply={reply} key={reply.id} />
+          ))}
+        </>
+      ) : (
+        <SkeletonReply />
+      )}
+    </motion.div>
+  );
+};
 
 const AddReply = ({ comment }) => {
   const { actions } = useOvermind();
