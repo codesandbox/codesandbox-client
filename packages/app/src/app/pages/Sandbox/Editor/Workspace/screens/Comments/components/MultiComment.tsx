@@ -70,6 +70,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
     width: 200,
     cursor: 'pointer',
     position: 'relative',
+    textAlign: 'left',
     '&:hover': {
       color: 'list.hoverForeground',
       backgroundColor: 'list.hoverBackground',
