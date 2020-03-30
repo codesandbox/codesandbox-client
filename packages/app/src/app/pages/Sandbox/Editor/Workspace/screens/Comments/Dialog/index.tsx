@@ -347,12 +347,8 @@ const CommentBody = ({ comment, editing, setEditing }) => {
 };
 
 const Replies = ({ replies, repliesRenderedCallback }) => {
-  const [repliesLoaded, setRepliesLoaded] = React.useState(!!replies[0]);
   const [isAnimating, setAnimating] = React.useState(true);
-
-  React.useEffect(() => {
-    setRepliesLoaded(!!replies[0]);
-  }, [replies]);
+  const repliesLoaded = !!replies[0];
 
   /** Wait another <delay>ms after the dialog has transitioned into view */
   const delay = DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY;
