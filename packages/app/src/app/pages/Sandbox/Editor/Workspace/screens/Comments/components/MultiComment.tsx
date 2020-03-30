@@ -1,4 +1,4 @@
-import { Element, Text } from '@codesandbox/components';
+import { Element, Text, IconButton } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { formatDistanceStrict } from 'date-fns';
@@ -86,6 +86,18 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
 
   return (
     <Element as="ul" css={list}>
+      <IconButton
+        name="cross"
+        size={8}
+        title="Close dialog"
+        css={{
+          position: 'absolute',
+          right: 1,
+          top: 1,
+          zIndex: 10,
+        }}
+        onClick={() => actions.comments.closeMultiCommentsSelector()}
+      />
       {ids
         .map(id => comments.comments[editor.currentSandbox.id][id])
         .sort((commentA, commentB) => {

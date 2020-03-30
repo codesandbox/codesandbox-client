@@ -122,6 +122,11 @@ export const closeComment: Action = ({ state }) => {
   state.comments.currentCommentPositions = null;
 };
 
+export const closeMultiCommentsSelector: Action = ({ state }) => {
+  // Should close from somewhere else probably
+  state.comments.multiCommentsSelector = null;
+};
+
 export const selectComment: AsyncAction<{
   commentId: string;
   bounds: {
@@ -131,8 +136,7 @@ export const selectComment: AsyncAction<{
     bottom: number;
   };
 }> = async ({ state, effects, actions }, { commentId, bounds }) => {
-  // Should close from somewhere else probably
-  state.comments.multiCommentsSelector = null;
+  actions.comments.closeMultiCommentsSelector();
 
   const sandbox = state.editor.currentSandbox;
 
