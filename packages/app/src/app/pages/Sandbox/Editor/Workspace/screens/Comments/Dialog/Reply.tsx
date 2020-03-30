@@ -1,4 +1,4 @@
-import { Element, Menu, Stack } from '@codesandbox/components';
+import { Element, Menu, Stack, SkeletonText } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
@@ -73,3 +73,22 @@ export const Reply = ({ reply }: ReplyProps) => {
     </>
   );
 };
+
+export const SkeletonReply = props => (
+  <Element marginX={4} paddingTop={6} {...props}>
+    <Stack align="center" gap={2} marginBottom={4}>
+      <SkeletonText style={{ width: '32px', height: '32px' }} />
+
+      <Stack direction="vertical" gap={1}>
+        <SkeletonText style={{ width: '120px', height: '14px' }} />
+        <SkeletonText style={{ width: '120px', height: '14px' }} />
+      </Stack>
+    </Stack>
+
+    <Stack direction="vertical" gap={1} marginBottom={6}>
+      <SkeletonText style={{ width: '100%', height: '14px' }} />
+      <SkeletonText style={{ width: '100%', height: '14px' }} />
+      <SkeletonText style={{ width: '100%', height: '14px' }} />
+    </Stack>
+  </Element>
+);
