@@ -1,7 +1,8 @@
-import React from 'react';
-import { Stack, Avatar, Link, Text } from '@codesandbox/components';
-import { formatDistance } from 'date-fns';
+import { Avatar, Link, Stack, Text } from '@codesandbox/components';
 import { CommentFragment } from 'app/graphql/types';
+import { formatDistance } from 'date-fns';
+import { zonedTimeToUtc } from 'date-fns-tz';
+import React from 'react';
 
 export const AvatarBlock: React.FC<{ comment: CommentFragment }> = ({
   comment,
@@ -18,9 +19,13 @@ export const AvatarBlock: React.FC<{ comment: CommentFragment }> = ({
         {comment.user.username}
       </Link>
       <Text size={2} variant="muted">
-        {formatDistance(new Date(comment.insertedAt), new Date(), {
-          addSuffix: true,
-        })}
+        {formatDistance(
+          zonedTimeToUtc(comment.insertedAt, 'Etc/UTC'),
+          new Date(),
+          {
+            addSuffix: true,
+          }
+        )}
       </Text>
     </Stack>
   </Stack>

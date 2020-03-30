@@ -1,8 +1,9 @@
-import React from 'react';
-import { formatDistanceStrict } from 'date-fns';
+import { Element, Text } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { Text, Element } from '@codesandbox/components';
+import { formatDistanceStrict } from 'date-fns';
+import { zonedTimeToUtc } from 'date-fns-tz';
+import React from 'react';
 
 type MultiCommentProps = {
   x: number;
@@ -12,10 +13,7 @@ type MultiCommentProps = {
 
 export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
   const {
-    state: {
-      editor,
-      comments,
-    },
+    state: { editor, comments },
     actions,
   } = useOvermind();
 
@@ -78,21 +76,48 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
   });
 
   const date = comment =>
-    formatDistanceStrict(new Date(comment.insertedAt), new Date(), {
-      addSuffix: true,
-    });
+    formatDistanceStrict(
+      zonedTimeToUtc(comment.insertedAt, 'Etc/UTC'),
+      new Date(),
+      {
+        addSuffix: true,
+      }
+    );
 
   return (
     <Element as="ul" css={list}>
-      {ids.map(id => {
-        const comment = comments.comments[editor.currentSandbox.id][id];
-        return (
-          <Element as="li" key={id}>
+      {ids
+        .map(id => comments.comments[editor.currentSandbox.id][id])
+        .sort((commentA, commentB) => {
+          const dateA = new Date(commentA.insertedAt);
+          const dateB = new Date(commentB.insertedAt);
+          if (dateA < dateB) {
+            return 1;
+          }
+
+          if (dateA > dateB) {
+            return -1;
+          }
+
+          return 0;
+        })
+        .map(comment => (
+          <Element as="li" key={comment.id}>
             <Element
               as="button"
               type="button"
-              // @ts-ignore
-              onClick={() => actions.comments.selectComment(id)}
+              onClick={event => {
+                const bounds = event.currentTarget.getBoundingClientRect();
+                actions.comments.selectComment({
+                  commentId: comment.id,
+                  bounds: {
+                    left: bounds.left,
+                    right: bounds.right,
+                    top: bounds.top,
+                    bottom: bounds.bottom,
+                  },
+                });
+              }}
               css={item}
             >
               <Text
@@ -110,8 +135,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
               </Text>
             </Element>
           </Element>
-        );
-      })}
+        ))}
     </Element>
   );
 };
