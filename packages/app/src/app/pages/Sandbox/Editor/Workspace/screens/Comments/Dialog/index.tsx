@@ -50,6 +50,8 @@ export const Dialog: React.FC = () => {
   // this could rather be `getInitialPosition`
   const initialPosition = getInitialPosition(currentCommentPositions);
 
+  const [repliesRendered, setRepliesRendered] = React.useState(false);
+
   // reset editing when comment changes
   React.useEffect(() => {
     setEditing(isNewComment);
@@ -70,7 +72,12 @@ export const Dialog: React.FC = () => {
     currentCommentPositions,
     isCodeComment,
     isNewComment,
+    repliesRendered,
   ]);
+
+  React.useEffect(() => {
+    setRepliesRendered(false);
+  }, [comment.id]);
 
   const onDragHandlerPan = (deltaX: number, deltaY: number) => {
     controller.set((_, target) => ({
@@ -130,7 +137,12 @@ export const Dialog: React.FC = () => {
                 editing={editing}
                 setEditing={setEditing}
               />
-              {replies.length ? <Replies replies={replies} /> : null}
+              {replies.length ? (
+                <Replies
+                  replies={replies}
+                  repliesRenderedCallback={() => setRepliesRendered(true)}
+                />
+              ) : null}
             </Stack>
             <AddReply comment={comment} />
           </>
@@ -334,7 +346,7 @@ const CommentBody = ({ comment, editing, setEditing }) => {
   );
 };
 
-const Replies = ({ replies }) => {
+const Replies = ({ replies, repliesRenderedCallback }) => {
   const [repliesLoaded, setRepliesLoaded] = React.useState(!!replies[0]);
   const [isAnimating, setAnimating] = React.useState(!repliesLoaded);
 
@@ -344,13 +356,25 @@ const Replies = ({ replies }) => {
 
   /** Wait another <delay>ms after the dialog has transitioned into view */
   const delay = DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY;
+  const REPLY_TRANSITION_DURATION = 0.25;
   const SKELETON_HEIGHT = 146;
+
+  React.useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      if (repliesLoaded) repliesRenderedCallback();
+    }, (delay + REPLY_TRANSITION_DURATION) * 1000);
+
+    return () => window.clearTimeout(timeout);
+  }, [repliesLoaded, repliesRenderedCallback, delay]);
 
   return (
     <motion.div
       initial={{ height: repliesLoaded ? 0 : SKELETON_HEIGHT }}
       animate={{ height: 'auto' }}
-      transition={{ delay, duration: 0.25 }}
+      transition={{
+        delay,
+        duration: REPLY_TRANSITION_DURATION,
+      }}
       style={{
         minHeight: repliesLoaded ? 0 : SKELETON_HEIGHT,
         overflow: 'visible',
