@@ -304,11 +304,14 @@ const CommentBody = ({ comment, editing, setEditing }) => {
                   Edit Comment
                 </Menu.Item>
                 <Menu.Item
-                  onSelect={() =>
+                  onSelect={() => {
+                    actions.comments.selectComment({
+                      commentId: null,
+                    });
                     actions.comments.deleteComment({
                       commentId: comment.id,
-                    })
-                  }
+                    });
+                  }}
                 >
                   Delete
                 </Menu.Item>

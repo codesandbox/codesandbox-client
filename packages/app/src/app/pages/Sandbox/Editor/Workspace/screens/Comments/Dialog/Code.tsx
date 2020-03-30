@@ -25,6 +25,12 @@ export const Code = withTheme(({ value, language, theme }) => (
           style={style}
           css={css({
             whiteSpace: 'pre-wrap',
+            maxHeight: 400,
+            overflow: 'scroll',
+
+            '*': {
+              wordBreak: 'break-all',
+            },
           })}
         >
           {tokens.map((line, i) => (
