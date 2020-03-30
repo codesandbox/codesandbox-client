@@ -84,11 +84,33 @@ export const state: State = {
       return null;
     }
 
+    function sortByInsertedAt(
+      commentA: CommentFragment | null,
+      commentB: CommentFragment | null
+    ) {
+      if (!commentA || !commentB) {
+        return 0;
+      }
+
+      const aDate = new Date(commentA.insertedAt);
+      const bDate = new Date(commentB.insertedAt);
+
+      if (aDate > bDate) {
+        return 1;
+      }
+
+      if (bDate < aDate) {
+        return -1;
+      }
+
+      return 0;
+    }
+
     return {
       ...comments[currentSandbox.id][currentCommentId],
-      comments: comments[currentSandbox.id][currentCommentId].comments.map(
-        commentId => comments[currentSandbox.id][commentId.id] || null
-      ),
+      comments: comments[currentSandbox.id][currentCommentId].comments
+        .map(commentId => comments[currentSandbox.id][commentId.id] || null)
+        .sort(sortByInsertedAt),
     };
   },
   selectedCommentsFilter: CommentsFilterOption.OPEN,
