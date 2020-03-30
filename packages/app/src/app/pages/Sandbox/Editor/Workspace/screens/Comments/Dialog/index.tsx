@@ -348,7 +348,7 @@ const CommentBody = ({ comment, editing, setEditing }) => {
 
 const Replies = ({ replies, repliesRenderedCallback }) => {
   const [repliesLoaded, setRepliesLoaded] = React.useState(!!replies[0]);
-  const [isAnimating, setAnimating] = React.useState(!repliesLoaded);
+  const [isAnimating, setAnimating] = React.useState(true);
 
   React.useEffect(() => {
     setRepliesLoaded(!!replies[0]);
@@ -360,12 +360,8 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
   const SKELETON_HEIGHT = 146;
 
   React.useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      if (repliesLoaded) repliesRenderedCallback();
-    }, (delay + REPLY_TRANSITION_DURATION) * 1000);
-
-    return () => window.clearTimeout(timeout);
-  }, [repliesLoaded, repliesRenderedCallback, delay]);
+    if (repliesLoaded && !isAnimating) repliesRenderedCallback();
+  }, [repliesLoaded, isAnimating, repliesRenderedCallback]);
 
   return (
     <motion.div
@@ -381,7 +377,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
       }}
       onAnimationComplete={() => setAnimating(false)}
     >
-      {repliesLoaded && !isAnimating ? (
+      {repliesLoaded ? (
         <>
           {replies.map(reply => (
             <Reply reply={reply} key={reply.id} />
