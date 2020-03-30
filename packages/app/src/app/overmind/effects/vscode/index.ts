@@ -473,12 +473,12 @@ export class VSCodeEffect {
     }
   }
 
-  public async setModuleCode(module: Module) {
+  public setModuleCode(module: Module, triggerChangeEvent = false) {
     if (!this.modelsHandler) {
       return;
     }
 
-    await this.modelsHandler.setModuleCode(module);
+    this.modelsHandler.setModuleCode(module, triggerChangeEvent);
   }
 
   public async closeAllTabs() {

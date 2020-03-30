@@ -142,13 +142,6 @@ export const saveCode: AsyncAction<{
 
     const savedCode =
       updatedModule.code === module.code ? null : updatedModule.code;
-    if (savedCode === undefined) {
-      logBreadcrumb({
-        type: 'error',
-        message: `SETTING UNDEFINED SAVEDCODE FOR CODE: ${updatedModule.code}`,
-      });
-      captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
-    }
 
     module.savedCode = savedCode;
 
@@ -268,7 +261,7 @@ export const updateCurrentTemplate: AsyncAction = async ({
 };
 
 export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
-  { state, actions },
+  { state, actions, effects },
   name
 ) => {
   if (
@@ -282,9 +275,22 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
 
   delete packageJson.dependencies[name];
 
+  const code = JSON.stringify(packageJson, null, 2);
+  const moduleShortid = state.editor.currentPackageJSON.shortid;
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  effects.vscode.setModuleCode({ ...module, code }, true);
+  module.code = code;
+
   await actions.editor.codeSaved({
-    code: JSON.stringify(packageJson, null, 2),
-    moduleShortid: state.editor.currentPackageJSON.shortid,
+    code,
+    moduleShortid,
     cbID: null,
   });
 };
@@ -293,7 +299,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   name: string;
   version?: string;
   isDev: boolean;
-}> = async ({ state, actions }, { name, isDev, version }) => {
+}> = async ({ state, actions, effects }, { name, isDev, version }) => {
   if (
     !state.editor.currentPackageJSONCode ||
     !state.editor.currentPackageJSON
@@ -309,9 +315,23 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   packageJson[type][name] = version || 'latest';
   packageJson[type] = sortObjectByKeys(packageJson[type]);
 
+  const code = JSON.stringify(packageJson, null, 2);
+  const moduleShortid = state.editor.currentPackageJSON.shortid;
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  effects.vscode.setModuleCode({ ...module, code }, true);
+  module.code = code;
+
   await actions.editor.codeSaved({
-    code: JSON.stringify(packageJson, null, 2),
-    moduleShortid: state.editor.currentPackageJSON.shortid,
+    code,
+    moduleShortid,
     cbID: null,
   });
 };
@@ -474,6 +494,7 @@ export const setCurrentModule: AsyncAction<Module> = async (
 
 export const updateSandboxPackageJson: AsyncAction = async ({
   state,
+  effects,
   actions,
 }) => {
   const sandbox = state.editor.currentSandbox;
@@ -499,6 +520,17 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   const code = JSON.stringify(parsed, null, 2);
   const moduleShortid = state.editor.currentPackageJSON.shortid;
 
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  effects.vscode.setModuleCode({ ...module, code }, true);
+  module.code = code;
+
   await actions.editor.codeSaved({
     code,
     moduleShortid,
@@ -518,6 +550,10 @@ export const updateDevtools: AsyncAction<{
       state.editor.modulesByPath['/.codesandbox/workspace.json'];
 
     if (devtoolsModule) {
+      actions.editor.codeChanged({
+        moduleShortid: devtoolsModule.shortid,
+        code,
+      });
       await actions.editor.codeSaved({
         code,
         moduleShortid: devtoolsModule.shortid,

@@ -2,6 +2,8 @@ declare module 'ot' {
   export type SerializedTextOperation = (string | number)[];
 
   class TextOperation {
+    ops: SerializedTextOperation;
+
     delete(length: number): TextOperation;
     insert(str: string): TextOperation;
     retain(length: number): TextOperation;
@@ -13,9 +15,9 @@ declare module 'ot' {
     compose(operation: TextOperation): TextOperation;
 
     static transform(left: TextOperation, right: TextOperation): TextOperation;
-    static isRetain(operation: TextOperation): boolean;
-    static isInsert(operation: TextOperation): boolean;
-    static isDelete(operation: TextOperation): boolean;
+    static isRetain(operation: string | number): boolean;
+    static isInsert(operation: string | number): boolean;
+    static isDelete(operation: string | number): boolean;
 
     static fromJSON(operation: SerializedTextOperation): TextOperation;
     toJSON(): SerializedTextOperation;

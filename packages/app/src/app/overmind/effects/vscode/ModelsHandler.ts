@@ -55,7 +55,7 @@ export type ModuleModel = {
   selections: any[];
   currentLine: number;
   path: string;
-  model: Promise<any>;
+  model: null | any;
   comments: Array<{ commentId: string; range: [number, number] }>;
   currentCommentDecorations: string[];
 };
@@ -162,7 +162,7 @@ export class ModelsHandler {
 
     this.updateUserSelections(module, moduleModel.selections);
 
-    const model = await moduleModel.model;
+    const model = moduleModel.model;
 
     if (COMMENTS) {
       const newDecorationComments = this.createCommentDecorations(
@@ -200,10 +200,10 @@ export class ModelsHandler {
     });
 
     // Apply the decorations
-    Object.keys(this.moduleModels).forEach(async path => {
+    Object.keys(this.moduleModels).forEach(path => {
       const moduleModel = this.moduleModels[path];
       const relativePath = path.replace('/sandbox', '');
-      const model = await moduleModel.model;
+      const model = moduleModel.model;
 
       if (!model) {
         return;
@@ -232,9 +232,9 @@ export class ModelsHandler {
     const newModelPath = '/sandbox' + newPath;
 
     return Promise.all(
-      Object.keys(this.moduleModels).map(async path => {
+      Object.keys(this.moduleModels).map(path => {
         if (oldModelPath === path && this.moduleModels[path].model) {
-          const model = await this.moduleModels[path].model;
+          const model = this.moduleModels[path].model;
 
           // This runs remove/add automatically
           return this.editorApi.textFileService.move(
@@ -266,17 +266,17 @@ export class ModelsHandler {
     // the model is actually resolved. This creates a "natural" queue
     if (!moduleModel.model) {
       if (modelEditor) {
-        moduleModel.model = modelEditor.textModelReference.then(
+        moduleModel.model = await modelEditor.textModelReference.then(
           ref => ref.object.textEditorModel
         );
       } else {
-        moduleModel.model = this.editorApi.textFileService.models
+        moduleModel.model = await this.editorApi.textFileService.models
           .loadOrCreate(this.monaco.Uri.file(moduleModel.path))
           .then(model => model.textEditorModel);
       }
     }
 
-    const model = await moduleModel.model;
+    const model = moduleModel.model;
 
     this.isApplyingOperation = true;
     this.applyOperationToModel(operation, false, model);
@@ -289,9 +289,15 @@ export class ModelsHandler {
     });
   }
 
-  public async setModuleCode(module: Module) {
+  /**
+   * Sets the code of a model in VSCode. This means that we directly change the in-memory
+   * model and the user will immediately see the code.
+   * @param module The module to apply the changes of
+   * @param triggerChangeEvent Whether we should trigger this event to listeners listening to the model (for eg. live)
+   */
+  public setModuleCode(module: Module, triggerChangeEvent = false) {
     const moduleModel = this.getModuleModelByPath(module.path);
-    const model = await moduleModel.model;
+    const model = moduleModel.model;
 
     if (!model) {
       return;
@@ -299,23 +305,27 @@ export class ModelsHandler {
 
     const oldCode = model.getValue();
     const changeOperation = getTextOperation(oldCode, module.code);
-    this.isApplyingOperation = true;
+    if (!triggerChangeEvent) {
+      this.isApplyingOperation = true;
+    }
     this.applyOperationToModel(changeOperation, false, model);
-    this.isApplyingOperation = false;
+    if (!triggerChangeEvent) {
+      this.isApplyingOperation = false;
+    }
   }
 
   public clearUserSelections(userId: string) {
     const decorations = Object.keys(this.userSelectionDecorations).filter(d =>
       d.startsWith(userId)
     );
-    Object.keys(this.moduleModels).forEach(async key => {
+    Object.keys(this.moduleModels).forEach(key => {
       const moduleModel = this.moduleModels[key];
 
       if (!moduleModel.model) {
         return;
       }
 
-      const model = await moduleModel.model;
+      const model = moduleModel.model;
 
       decorations.forEach(decorationId => {
         if (decorationId.startsWith(userId + model.id)) {
@@ -330,7 +340,7 @@ export class ModelsHandler {
 
   nameTagTimeouts: { [name: string]: number } = {};
 
-  public async updateUserSelections(
+  public updateUserSelections(
     module: Module,
     userSelections: EditorSelection[],
     showNameTag = true
@@ -343,7 +353,7 @@ export class ModelsHandler {
       return;
     }
 
-    const model = await moduleModel.model;
+    const model = moduleModel.model;
     const lines = model.getLinesContent() || [];
 
     userSelections.forEach((data: EditorSelection) => {
@@ -551,7 +561,7 @@ export class ModelsHandler {
   }
 
   private applyOperationToModel(
-    operation,
+    operation: TextOperation,
     pushStack = false,
     model = this.editorApi.getActiveCodeEditor().getModel()
   ) {
@@ -574,8 +584,9 @@ export class ModelsHandler {
     for (let i = 0; i < operation.ops.length; i++) {
       const op = operation.ops[i];
       if (TextOperation.isRetain(op)) {
-        index += op;
+        index += op as number;
       } else if (TextOperation.isInsert(op)) {
+        const textOp = op as string;
         const { lineNumber, column } = indexToLineAndColumn(
           model.getValue().split(/\n/) || [],
           index
@@ -588,8 +599,8 @@ export class ModelsHandler {
         );
 
         // if there's a new line
-        if (/\n/.test(op)) {
-          const eol = /\r\n/.test(op) ? 2 : 1;
+        if (/\n/.test(textOp)) {
+          const eol = /\r\n/.test(textOp) ? 2 : 1;
           if (eol !== currentEOLLength) {
             // With this insert the EOL of the document changed on the other side. We need
             // to accomodate our EOL to it.
@@ -599,13 +610,14 @@ export class ModelsHandler {
 
         results.push({
           range,
-          text: op,
+          text: textOp,
           forceMoveMarkers: true,
         });
       } else if (TextOperation.isDelete(op)) {
+        const delOp = op as number;
         const lines = model.getValue().split(/\n/) || [];
         const from = indexToLineAndColumn(lines, index);
-        const to = indexToLineAndColumn(lines, index - op);
+        const to = indexToLineAndColumn(lines, index - delOp);
         results.push({
           range: new this.monaco.Range(
             from.lineNumber,
@@ -615,7 +627,7 @@ export class ModelsHandler {
           ),
           text: '',
         });
-        index -= op;
+        index -= delOp;
       }
     }
 

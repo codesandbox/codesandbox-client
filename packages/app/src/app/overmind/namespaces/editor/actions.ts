@@ -354,12 +354,17 @@ export const codeChanged: Action<{
     return;
   }
 
+  // If the module is already synced we don't want to save an event, because operations
+  // should not be used to sync saved state, only dirty state. Saved state is handled by
+  // other means.
+  const isSynced = getSavedCode(module.code, module.savedCode) === module.code;
+
   // module.code !== code check is there to make sure that we don't end up sending
   // duplicate updates to live. module.code === code only when VSCode detected a change
   // from the filesystem (fs changed, vscode sees it, sends update). If this happens we
   // never want to send that code update, since this actual code change goes through this
   // specific code flow already.
-  if (state.live.isLive && module.code !== code) {
+  if (state.live.isLive && module.code !== code && !isSynced) {
     let operation: TextOperation;
     if (event) {
       logBreadcrumb({
@@ -621,28 +626,6 @@ export const tabMoved: Action<{
 
   state.editor.tabs.splice(prevIndex, 1);
   state.editor.tabs.splice(nextIndex, 0, tab);
-};
-
-export const prettifyClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
-  effects.analytics.track('Prettify Code');
-  const module = state.editor.currentModule;
-  if (!module.id) {
-    return;
-  }
-  const newCode = await effects.prettyfier.prettify(
-    module.id,
-    module.title,
-    module.code || ''
-  );
-
-  actions.editor.codeChanged({
-    code: newCode,
-    moduleShortid: module.shortid,
-  });
 };
 
 // TODO(@CompuIves): Look into whether we even want to call this function.
