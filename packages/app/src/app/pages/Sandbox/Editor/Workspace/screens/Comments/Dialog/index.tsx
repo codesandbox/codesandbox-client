@@ -335,14 +335,8 @@ const CommentBody = ({ comment, editing, setEditing }) => {
 };
 
 const Replies = ({ replies }) => {
-  // always animate
-  // fold open
-  // if replies loaded - transition height to auto
-  // else - load skeleton
-  // when replies load - transition height to auto
-
   const [repliesLoaded, setRepliesLoaded] = React.useState(!!replies[0]);
-  const [isAnimating, setAnimating] = React.useState(true);
+  const [isAnimating, setAnimating] = React.useState(!repliesLoaded);
 
   React.useEffect(() => {
     setRepliesLoaded(!!replies[0]);
@@ -350,13 +344,17 @@ const Replies = ({ replies }) => {
 
   /** Wait another <delay>ms after the dialog has transitioned into view */
   const delay = DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY;
+  const SKELETON_HEIGHT = 146;
 
   return (
     <motion.div
-      initial={{ height: 0 }}
-      animate={{ height: isAnimating ? 146 : 'auto' }}
+      initial={{ height: repliesLoaded ? 0 : SKELETON_HEIGHT }}
+      animate={{ height: 'auto' }}
       transition={{ delay, duration: 0.25 }}
-      style={{ overflow: 'visible' }}
+      style={{
+        minHeight: repliesLoaded ? 0 : SKELETON_HEIGHT,
+        overflow: 'visible',
+      }}
       onAnimationComplete={() => setAnimating(false)}
     >
       {repliesLoaded && !isAnimating ? (
