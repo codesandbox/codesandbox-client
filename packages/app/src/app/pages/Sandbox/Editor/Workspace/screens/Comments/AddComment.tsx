@@ -10,10 +10,12 @@ export const AddComment: React.FC = () => {
 
   const onSubmit = e => {
     e.preventDefault();
-    actions.comments.addComment({
-      content: value,
-    });
-    setValue('');
+    if (value) {
+      actions.comments.addComment({
+        content: value,
+      });
+      setValue('');
+    }
   };
 
   // Form elements submit on Enter, except Textarea :)
