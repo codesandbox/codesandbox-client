@@ -129,13 +129,13 @@ export const saveCode: AsyncAction<{
     return;
   }
 
-  if (module.code !== code) {
-    actions.editor.codeChanged({ moduleShortid, code });
-  }
-
   try {
     await effects.live.saveModule(module);
-    const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
+    const updatedModule = await effects.api.saveModuleCode(
+      sandbox.id,
+      module.shortid,
+      code
+    );
 
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
