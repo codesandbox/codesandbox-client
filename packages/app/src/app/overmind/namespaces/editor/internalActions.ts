@@ -370,6 +370,8 @@ export const forkSandbox: AsyncAction<{
     return;
   }
 
+  const currentSandboxId = state.editor.currentId;
+
   effects.analytics.track('Fork Sandbox');
 
   try {
@@ -401,7 +403,7 @@ export const forkSandbox: AsyncAction<{
     state.workspace.project.description = forkedSandbox.description || '';
     state.workspace.project.alias = forkedSandbox.alias || '';
 
-    Object.assign(state.editor.sandboxes[sandbox.id], forkedSandbox);
+    Object.assign(state.editor.sandboxes[currentSandboxId], forkedSandbox);
     state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
       forkedSandbox
     );
