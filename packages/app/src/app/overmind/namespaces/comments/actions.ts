@@ -124,7 +124,7 @@ export const closeComment: Action = ({ state }) => {
 
 export const selectComment: AsyncAction<{
   commentId: string;
-  bounds?: {
+  bounds: {
     left: number;
     top: number;
     right: number;
@@ -138,9 +138,6 @@ export const selectComment: AsyncAction<{
 
   if (!sandbox) {
     return;
-  }
-  if (!bounds) {
-    state.comments.currentCommentId = commentId;
   }
 
   const comment = state.comments.comments[sandbox.id][commentId];

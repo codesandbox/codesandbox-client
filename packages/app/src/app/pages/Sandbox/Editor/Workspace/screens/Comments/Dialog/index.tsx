@@ -305,9 +305,7 @@ const CommentBody = ({ comment, editing, setEditing }) => {
                 </Menu.Item>
                 <Menu.Item
                   onSelect={() => {
-                    actions.comments.selectComment({
-                      commentId: null,
-                    });
+                    actions.comments.closeComment();
                     actions.comments.deleteComment({
                       commentId: comment.id,
                     });
