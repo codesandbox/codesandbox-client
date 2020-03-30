@@ -315,7 +315,6 @@ export enum CommentsFilterOption {
   ALL = 'All',
   OPEN = 'Open',
   RESOLVED = 'Resolved',
-  MENTIONS = 'Mentions',
 }
 
 export type Sandbox = {
