@@ -157,7 +157,7 @@ const DialogAddComment: React.FC<{
   const closeDialog = () => actions.comments.closeComment();
 
   return (
-    <Stack direction="vertical" gap={4}>
+    <Stack direction="vertical" css={css({ paddingBottom: 4 })}>
       <DragHandle onPan={onDragHandlerPan}>
         <Stack
           justify="space-between"
@@ -184,11 +184,9 @@ const DialogAddComment: React.FC<{
         autosize
         autoFocus
         css={css({
-          overflow: 'hidden',
+          backgroundColor: 'transparent',
           border: 'none',
-          display: 'block',
-          borderTop: '1px solid',
-          borderColor: 'sideBar.border',
+          paddingLeft: 4,
         })}
         value={value}
         onChange={e => setValue(e.target.value)}
@@ -355,11 +353,11 @@ const AddReply = ({ comment }) => {
     <Textarea
       autosize
       css={css({
-        overflow: 'hidden',
+        backgroundColor: 'transparent',
         border: 'none',
-        display: 'block',
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
+        paddingX: 4,
       })}
       value={value}
       onChange={e => setValue(e.target.value)}
