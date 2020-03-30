@@ -354,8 +354,9 @@ export const forkSandbox: AsyncAction<{
   { sandboxId: id, body, openInNewWindow = false }
 ) => {
   const sandbox = state.editor.currentSandbox;
+  const currentSandboxId = state.editor.currentId;
 
-  if (!sandbox) {
+  if (!sandbox || !currentSandboxId) {
     return;
   }
 
@@ -367,11 +368,6 @@ export const forkSandbox: AsyncAction<{
     effects.analytics.track('Show Server Fork Sign In Modal');
     actions.modalOpened({ modal: 'forkServerModal' });
 
-    return;
-  }
-
-  const currentSandboxId = state.editor.currentId;
-  if (!currentSandboxId) {
     return;
   }
 
