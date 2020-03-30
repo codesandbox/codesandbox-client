@@ -123,7 +123,6 @@ export const closeComment: Action = ({ state }) => {
 };
 
 export const closeMultiCommentsSelector: Action = ({ state }) => {
-  // Should close from somewhere else probably
   state.comments.multiCommentsSelector = null;
 };
 
