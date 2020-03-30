@@ -13,7 +13,7 @@ export const Code = withTheme(({ value, language, theme }) => (
       {...defaultProps}
       code={value}
       language={language || 'js'}
-      theme={theme.vscodeTheme.type === 'dark' ? nightOwlLight : nightOwl}
+      theme={theme.vscodeTheme.type === 'dark' ? nightOwl : nightOwlLight}
     >
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <Element
