@@ -316,22 +316,16 @@ export const addComment: AsyncAction<{
   state.comments.selectedCommentsFilter = CommentsFilterOption.OPEN;
 
   try {
-    let comment: CommentFragment;
-    if (optimisticComment.references.length) {
-      const response = await effects.gql.mutations.createCodeComment({
-        sandboxId,
-        content,
-        codeReference: optimisticComment.references[0].metadata,
-      });
-      comment = response.createCodeComment;
-    } else {
-      const response = await effects.gql.mutations.createComment({
-        parentCommentId: parentCommentId || null,
-        sandboxId,
-        content,
-      });
-      comment = response.createComment;
-    }
+    const response = await effects.gql.mutations.createComment({
+      parentCommentId: parentCommentId || null,
+      sandboxId,
+      content,
+      codeReference: optimisticComment.references.length
+        ? optimisticComment.references[0].metadata
+        : null,
+    });
+
+    const comment = response.createComment;
 
     delete comments[sandboxId][id];
     comments[sandboxId][comment.id] = comment;
