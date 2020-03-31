@@ -127,12 +127,7 @@ export const Dialog: React.FC = () => {
             <DragHandle onPan={onDragHandlerPan}>
               <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
             </DragHandle>
-            <Element
-              as="div"
-              direction="vertical"
-              css={{ overflow: 'auto' }}
-              ref={listRef}
-            >
+            <Element as="div" css={{ overflow: 'auto' }} ref={listRef}>
               <CommentBody
                 comment={comment}
                 editing={editing}
