@@ -1,6 +1,7 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import { CodeReference, CommentFragment } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
+import { utcToZonedTime } from 'date-fns-tz';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
 
@@ -194,7 +195,7 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
 
   const id = OPTIMISTIC_COMMENT_ID;
   const sandboxId = state.editor.currentSandbox.id;
-  const now = new Date().toString();
+  const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   let codeReference: CodeReference | null = null;
   const selection = state.live.currentSelection;
   if (selection) {
@@ -281,7 +282,7 @@ export const addComment: AsyncAction<{
 
   const id = OPTIMISTIC_COMMENT_ID;
   const sandboxId = state.editor.currentSandbox.id;
-  const now = new Date().toString();
+  const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
 
   if (!comments[sandboxId]) {
