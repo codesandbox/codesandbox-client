@@ -20,7 +20,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
 
   const list = css({
     position: 'fixed',
-    left: x - 10,
+    left: x - 25,
     top: y + 20,
     backgroundColor: 'sideBar.background',
     border: '1px solid',
@@ -35,7 +35,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
       content: "''",
       display: 'block',
       position: 'absolute',
-      left: '7px',
+      left: '24px',
       width: 0,
       height: 0,
       borderStyle: 'solid',
@@ -51,7 +51,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
       content: "''",
       display: 'block',
       position: 'absolute',
-      left: 2,
+      left: '25px',
       width: 0,
       height: 0,
       borderStyle: 'solid',
