@@ -233,7 +233,7 @@ const DragHandle: React.FC<{
     onPan={(_, info) => {
       onPan(info.delta.x, info.delta.y);
     }}
-    style={{ cursor: 'move' }}
+    style={{ cursor: 'move', zIndex: 2 }}
   >
     {children}
   </motion.div>
@@ -252,7 +252,6 @@ const DialogHeader = ({ comment, hasShadow }) => {
       paddingRight={2}
       marginBottom={2}
       css={css({
-        zIndex: 2,
         boxShadow: theme =>
           hasShadow
             ? `0px 32px 32px ${theme.colors.dialog.background}`
