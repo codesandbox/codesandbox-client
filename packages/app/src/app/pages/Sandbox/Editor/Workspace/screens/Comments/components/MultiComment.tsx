@@ -1,4 +1,5 @@
 import { Element, Text } from '@codesandbox/components';
+import OutsideClickHandler from 'react-outside-click-handler';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { formatDistanceStrict } from 'date-fns';
@@ -69,6 +70,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
     width: 200,
     cursor: 'pointer',
     position: 'relative',
+    textAlign: 'left',
     '&:hover': {
       color: 'list.hoverForeground',
       backgroundColor: 'list.hoverBackground',
@@ -85,57 +87,63 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
     );
 
   return (
-    <Element as="ul" css={list}>
-      {ids
-        .map(id => comments.comments[editor.currentSandbox.id][id])
-        .sort((commentA, commentB) => {
-          const dateA = new Date(commentA.insertedAt);
-          const dateB = new Date(commentB.insertedAt);
-          if (dateA < dateB) {
-            return 1;
-          }
+    <Element css={css({ position: 'absolute' })}>
+      <OutsideClickHandler
+        onOutsideClick={() => actions.comments.closeMultiCommentsSelector()}
+      >
+        <Element as="ul" css={list}>
+          {ids
+            .map(id => comments.comments[editor.currentSandbox.id][id])
+            .sort((commentA, commentB) => {
+              const dateA = new Date(commentA.insertedAt);
+              const dateB = new Date(commentB.insertedAt);
+              if (dateA < dateB) {
+                return 1;
+              }
 
-          if (dateA > dateB) {
-            return -1;
-          }
+              if (dateA > dateB) {
+                return -1;
+              }
 
-          return 0;
-        })
-        .map(comment => (
-          <Element as="li" key={comment.id}>
-            <Element
-              as="button"
-              type="button"
-              onClick={event => {
-                const bounds = event.currentTarget.getBoundingClientRect();
-                actions.comments.selectComment({
-                  commentId: comment.id,
-                  bounds: {
-                    left: bounds.left,
-                    right: bounds.right,
-                    top: bounds.top,
-                    bottom: bounds.bottom,
-                  },
-                });
-              }}
-              css={item}
-            >
-              <Text
-                size={2}
-                weight="bold"
-                paddingRight={2}
-                css={css({
-                  color: 'sideBar.foreground',
-                })}
-              >
-                {comment.user.username}
-              </Text>
-              <Text size={2} variant="muted">
-                {date(comment)}
-              </Text>
-            </Element>
-          </Element>
-        ))}
+              return 0;
+            })
+            .map(comment => (
+              <Element as="li" key={comment.id}>
+                <Element
+                  as="button"
+                  type="button"
+                  onClick={event => {
+                    const bounds = event.currentTarget.getBoundingClientRect();
+                    actions.comments.selectComment({
+                      commentId: comment.id,
+                      bounds: {
+                        left: bounds.left,
+                        right: bounds.right,
+                        top: bounds.top,
+                        bottom: bounds.bottom,
+                      },
+                    });
+                  }}
+                  css={item}
+                >
+                  <Text
+                    size={2}
+                    weight="bold"
+                    paddingRight={2}
+                    css={css({
+                      color: 'sideBar.foreground',
+                    })}
+                  >
+                    {comment.user.username}
+                  </Text>
+                  <Text size={2} variant="muted">
+                    {date(comment)}
+                  </Text>
+                </Element>
+              </Element>
+            ))}
+        </Element>
+      </OutsideClickHandler>
     </Element>
   );
 };
