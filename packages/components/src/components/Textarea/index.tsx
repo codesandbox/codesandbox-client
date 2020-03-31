@@ -47,7 +47,6 @@ export const Textarea: React.FC<ITextareaProps> = ({
   ...props
 }) => {
   const [innerValue, setInnerValue] = React.useState<string>(defaultValue);
-
   /**
    * To support both contolled and uncontrolled components
    * We sync props.value with internalValue
@@ -79,14 +78,14 @@ export const Textarea: React.FC<ITextareaProps> = ({
   return (
     <>
       <Wrapper>
-        <Autosize value={innerValue}>
+        <Autosize value={innerValue} style={props.style}>
           {(height: number) => (
             <TextareaComponent
               value={innerValue}
               onChange={internalOnChange}
               maxLength={maxLength}
-              style={{ height }}
               {...props}
+              style={{ ...(props.style || {}), height }}
             />
           )}
         </Autosize>
@@ -101,7 +100,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
   );
 };
 
-const Autosize = ({ value, ...props }) => (
+const Autosize = ({ value, style = {}, ...props }) => (
   <Rect>
     {({ rect, ref }) => (
       <>
@@ -116,6 +115,7 @@ const Autosize = ({ value, ...props }) => (
               lineHeight: 1,
               minHeight: 64,
               padding: 8,
+              ...style,
             }}
           >
             {value + ' '}
