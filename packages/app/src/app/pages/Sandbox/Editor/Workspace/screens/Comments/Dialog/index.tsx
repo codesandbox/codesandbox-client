@@ -144,7 +144,16 @@ export const Dialog: React.FC = () => {
                 />
               ) : null}
             </Stack>
-            <AddReply comment={comment} />
+            <AddReply
+              comment={comment}
+              onSubmit={() => {
+                // scroll to bottom of the list,
+                // have to wait for it to load though :)
+                window.requestAnimationFrame(() => {
+                  listRef.current.scrollTop = listRef.current.scrollHeight;
+                });
+              }}
+            />
           </>
         )}
       </Stack>
@@ -268,6 +277,9 @@ const DialogHeader = ({ comment, hasShadow }) => {
             transition: 'color',
             transitionDuration: theme => theme.speeds[1],
             color: comment.isResolved ? 'green' : 'mutedForeground',
+            ':hover:not(:disabled), :focus:not(:disabled)': {
+              color: comment.isResolved ? 'green' : 'foreground',
+            },
           })}
         />
         <IconButton
@@ -385,7 +397,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
   );
 };
 
-const AddReply = ({ comment }) => {
+const AddReply = ({ comment, ...props }) => {
   const { actions } = useOvermind();
   const [value, setValue] = useState('');
 
@@ -395,6 +407,7 @@ const AddReply = ({ comment }) => {
       content: value,
       parentCommentId: comment.id,
     });
+    if (props.onSubmit) props.onSubmit();
   };
 
   return (
