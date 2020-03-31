@@ -136,6 +136,7 @@ export const Dialog: React.FC = () => {
                 comment={comment}
                 editing={editing}
                 setEditing={setEditing}
+                hasReplies={replies.length}
               />
               {replies.length ? (
                 <Replies
@@ -292,7 +293,7 @@ const DialogHeader = ({ comment, hasShadow }) => {
   );
 };
 
-const CommentBody = ({ comment, editing, setEditing }) => {
+const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
   const { state, actions } = useOvermind();
 
   return (
@@ -332,7 +333,7 @@ const CommentBody = ({ comment, editing, setEditing }) => {
         marginX={4}
         paddingBottom={6}
         css={css({
-          borderBottom: '1px solid',
+          borderBottom: hasReplies ? '1px solid' : 'none',
           borderColor: 'sideBar.border',
         })}
       >
@@ -370,7 +371,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
   }, [repliesLoaded, isAnimating, repliesRenderedCallback]);
 
   return (
-    <motion.div
+    <motion.ul
       initial={{ height: repliesLoaded ? 0 : SKELETON_HEIGHT }}
       animate={{ height: 'auto' }}
       transition={{
@@ -380,6 +381,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
       style={{
         minHeight: repliesLoaded ? 0 : SKELETON_HEIGHT,
         overflow: 'visible',
+        paddingLeft: 0,
       }}
       onAnimationComplete={() => setAnimating(false)}
     >
@@ -392,7 +394,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
       ) : (
         <SkeletonReply />
       )}
-    </motion.div>
+    </motion.ul>
   );
 };
 
