@@ -8,6 +8,7 @@ import {
   Text,
   Textarea,
 } from '@codesandbox/components';
+import { createGlobalStyle } from 'styled-components';
 import css from '@styled-system/css';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
@@ -223,6 +224,15 @@ const DialogAddComment: React.FC<{
   );
 };
 
+/** When the dialog is dragged outside the window
+ *  It creates a scrollbar. We want to disable overflow
+ *  when the drag handle is DOM
+ */
+
+const GlobalStyles = createGlobalStyle`
+  body { overflow: hidden; }
+`;
+
 const DragHandle: React.FC<{
   onPan: (deltaX: number, deltaY: number) => void;
 }> = ({ onPan, children }) => (
@@ -232,6 +242,7 @@ const DragHandle: React.FC<{
     }}
     style={{ cursor: 'move', zIndex: 2 }}
   >
+    <GlobalStyles />
     {children}
   </motion.div>
 );
