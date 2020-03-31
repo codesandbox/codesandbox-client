@@ -268,6 +268,9 @@ const DialogHeader = ({ comment, hasShadow }) => {
             transition: 'color',
             transitionDuration: theme => theme.speeds[1],
             color: comment.isResolved ? 'green' : 'mutedForeground',
+            ':hover:not(:disabled), :focus:not(:disabled)': {
+              color: comment.isResolved ? 'green' : 'foreground',
+            },
           })}
         />
         <IconButton
