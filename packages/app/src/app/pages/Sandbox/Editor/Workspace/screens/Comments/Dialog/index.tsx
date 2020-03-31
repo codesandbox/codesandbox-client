@@ -185,7 +185,6 @@ const DialogAddComment: React.FC<{
       <DragHandle onPan={onDragHandlerPan}>
         <Stack
           justify="space-between"
-          align="center"
           marginY={4}
           marginLeft={4}
           marginRight={2}
@@ -212,6 +211,7 @@ const DialogAddComment: React.FC<{
           border: 'none',
           paddingLeft: 4,
         })}
+        style={{ minHeight: 32 }}
         value={value}
         onChange={e => setValue(e.target.value)}
         placeholder="Add comment..."
@@ -418,8 +418,9 @@ const AddReply = ({ comment, ...props }) => {
         border: 'none',
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
-        paddingX: 4,
+        padding: 4,
       })}
+      style={{ minHeight: 54 }}
       value={value}
       onChange={e => setValue(e.target.value)}
       placeholder="Reply..."
