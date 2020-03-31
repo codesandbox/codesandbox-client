@@ -589,7 +589,7 @@ export const onConnectionLoss: Operator<LiveMessage> = mutate(
           message: 'We lost connection with the live server, reconnecting...',
           status: NotificationStatus.ERROR,
         });
-      }, 10000);
+      }, 30000);
 
       state.live.reconnecting = true;
 
