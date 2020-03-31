@@ -8,6 +8,7 @@ import {
   Text,
   Textarea,
 } from '@codesandbox/components';
+import { createGlobalStyle } from 'styled-components';
 import css from '@styled-system/css';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
@@ -127,15 +128,12 @@ export const Dialog: React.FC = () => {
             <DragHandle onPan={onDragHandlerPan}>
               <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
             </DragHandle>
-            <Stack
-              direction="vertical"
-              css={{ overflow: 'auto' }}
-              ref={listRef}
-            >
+            <Element as="div" css={{ overflow: 'auto' }} ref={listRef}>
               <CommentBody
                 comment={comment}
                 editing={editing}
                 setEditing={setEditing}
+                hasReplies={replies.length}
               />
               {replies.length ? (
                 <Replies
@@ -143,7 +141,7 @@ export const Dialog: React.FC = () => {
                   repliesRenderedCallback={() => setRepliesRendered(true)}
                 />
               ) : null}
-            </Stack>
+            </Element>
             <AddReply
               comment={comment}
               onSubmit={() => {
@@ -226,6 +224,15 @@ const DialogAddComment: React.FC<{
   );
 };
 
+/** When the dialog is dragged outside the window
+ *  It creates a scrollbar. We want to disable overflow
+ *  when the drag handle is DOM
+ */
+
+const GlobalStyles = createGlobalStyle`
+  body { overflow: hidden; }
+`;
+
 const DragHandle: React.FC<{
   onPan: (deltaX: number, deltaY: number) => void;
 }> = ({ onPan, children }) => (
@@ -233,8 +240,9 @@ const DragHandle: React.FC<{
     onPan={(_, info) => {
       onPan(info.delta.x, info.delta.y);
     }}
-    style={{ cursor: 'move' }}
+    style={{ cursor: 'move', zIndex: 2 }}
   >
+    <GlobalStyles />
     {children}
   </motion.div>
 );
@@ -252,7 +260,6 @@ const DialogHeader = ({ comment, hasShadow }) => {
       paddingRight={2}
       marginBottom={2}
       css={css({
-        zIndex: 2,
         boxShadow: theme =>
           hasShadow
             ? `0px 32px 32px ${theme.colors.dialog.background}`
@@ -293,7 +300,7 @@ const DialogHeader = ({ comment, hasShadow }) => {
   );
 };
 
-const CommentBody = ({ comment, editing, setEditing }) => {
+const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
   const { state, actions } = useOvermind();
 
   return (
@@ -333,7 +340,7 @@ const CommentBody = ({ comment, editing, setEditing }) => {
         marginX={4}
         paddingBottom={6}
         css={css({
-          borderBottom: '1px solid',
+          borderBottom: hasReplies ? '1px solid' : 'none',
           borderColor: 'sideBar.border',
         })}
       >
@@ -371,7 +378,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
   }, [repliesLoaded, isAnimating, repliesRenderedCallback]);
 
   return (
-    <motion.div
+    <motion.ul
       initial={{ height: repliesLoaded ? 0 : SKELETON_HEIGHT }}
       animate={{ height: 'auto' }}
       transition={{
@@ -381,6 +388,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
       style={{
         minHeight: repliesLoaded ? 0 : SKELETON_HEIGHT,
         overflow: 'visible',
+        paddingLeft: 0,
       }}
       onAnimationComplete={() => setAnimating(false)}
     >
@@ -393,7 +401,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
       ) : (
         <SkeletonReply />
       )}
-    </motion.div>
+    </motion.ul>
   );
 };
 
@@ -418,7 +426,8 @@ const AddReply = ({ comment, ...props }) => {
         border: 'none',
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
-        paddingX: 4,
+        borderRadius: 0,
+        padding: 4,
       })}
       value={value}
       onChange={e => setValue(e.target.value)}

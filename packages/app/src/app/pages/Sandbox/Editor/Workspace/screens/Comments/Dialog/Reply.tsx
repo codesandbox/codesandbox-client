@@ -18,7 +18,14 @@ export const Reply = ({ reply }: ReplyProps) => {
   const [editing, setEditing] = useState(false);
 
   return (
-    <>
+    <Element
+      as="li"
+      css={{
+        '&:last-child > div': {
+          border: 'none',
+        },
+      }}
+    >
       <Element key={id} marginLeft={4} marginRight={2} paddingTop={6}>
         <Stack align="flex-start" justify="space-between" marginBottom={4}>
           <AvatarBlock comment={reply} />
@@ -70,7 +77,7 @@ export const Reply = ({ reply }: ReplyProps) => {
           />
         )}
       </Element>
-    </>
+    </Element>
   );
 };
 
