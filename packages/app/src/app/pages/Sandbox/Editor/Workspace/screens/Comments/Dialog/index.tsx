@@ -127,7 +127,8 @@ export const Dialog: React.FC = () => {
             <DragHandle onPan={onDragHandlerPan}>
               <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
             </DragHandle>
-            <Stack
+            <Element
+              as="div"
               direction="vertical"
               css={{ overflow: 'auto' }}
               ref={listRef}
@@ -144,7 +145,7 @@ export const Dialog: React.FC = () => {
                   repliesRenderedCallback={() => setRepliesRendered(true)}
                 />
               ) : null}
-            </Stack>
+            </Element>
             <AddReply
               comment={comment}
               onSubmit={() => {
