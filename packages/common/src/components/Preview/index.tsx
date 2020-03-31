@@ -187,8 +187,7 @@ class BasePreview extends React.Component<Props, State> {
     if (!this.props.url && normalUrl !== fallbackUrl) {
       fetch(normalUrl, { mode: 'no-cors' })
         .then(() => {
-          // Succeeded
-          track(TRACKING_NAME, { needed: false });
+          // Succeeded, don't send anything
         })
         .catch(() => {
           // Failed, use fallback
