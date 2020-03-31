@@ -101,14 +101,8 @@ export const TemplateConfig: FunctionComponent = () => {
               {Object.keys(Icons).map((i: string) => {
                 const TemplateIconMap = Icons[i];
                 return (
-                  // eslint-disable-next-line
-                  <li
-                    key={i}
-                    onClick={() => setIcon(i)}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    <IconButton>
+                  <li key={i}>
+                    <IconButton onClick={() => setIcon(i)}>
                       <TemplateIconMap width={24} />
                     </IconButton>
                   </li>
