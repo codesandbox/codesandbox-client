@@ -43,6 +43,7 @@ export const AddComment: React.FC = () => {
             onKeyDown={submitOnEnter}
             placeholder="Write a comment"
             css={css({ minHeight: 8 })}
+            style={{ lineHeight: 1.2 }}
           />
         </FormField>
       </form>

@@ -394,9 +394,9 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
     >
       {repliesLoaded ? (
         <>
-          {replies.map(reply => (
-            <Reply reply={reply} key={reply.id} />
-          ))}
+          {replies.map(
+            reply => reply && <Reply reply={reply} key={reply.id} />
+          )}
         </>
       ) : (
         <SkeletonReply />

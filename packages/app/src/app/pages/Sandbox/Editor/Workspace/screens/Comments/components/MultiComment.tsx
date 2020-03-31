@@ -18,9 +18,12 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
     actions,
   } = useOvermind();
 
+  const CARROT_LEFT_MARGIN = 25;
+  const BORDER_WIDTH = 10;
+
   const list = css({
     position: 'fixed',
-    left: x - 10,
+    left: x - CARROT_LEFT_MARGIN,
     top: y + 20,
     backgroundColor: 'sideBar.background',
     border: '1px solid',
@@ -35,15 +38,15 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
       content: "''",
       display: 'block',
       position: 'absolute',
-      left: '7px',
+      left: CARROT_LEFT_MARGIN - 1,
       width: 0,
       height: 0,
       borderStyle: 'solid',
-      top: '-11px',
+      top: `-${BORDER_WIDTH + 1}px`,
       borderColor: 'transparent',
       borderBottomColor: 'sideBar.border',
 
-      borderWidth: '11px',
+      borderWidth: `${BORDER_WIDTH + 1}px`,
       borderTopWidth: 0,
     },
 
@@ -51,14 +54,14 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
       content: "''",
       display: 'block',
       position: 'absolute',
-      left: 2,
+      left: CARROT_LEFT_MARGIN,
       width: 0,
       height: 0,
       borderStyle: 'solid',
-      top: '-10px',
+      top: `-${BORDER_WIDTH}px`,
       borderColor: 'transparent',
       borderBottomColor: 'sideBar.background',
-      borderWidth: '10px',
+      borderWidth: `${BORDER_WIDTH}px`,
       borderTopWidth: 0,
     },
   });
