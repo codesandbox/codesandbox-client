@@ -1,4 +1,7 @@
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import {
+  logBreadcrumb,
+  captureException,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Blocker, blocker } from 'app/utils/blocker';
 import { TextOperation } from 'ot';
 
@@ -66,7 +69,20 @@ export class CodeSandboxOTClient extends OTClient {
           })}`,
         });
 
-        this.safeServerAck(revision);
+        try {
+          this.safeServerAck(revision);
+        } catch (err) {
+          captureException(
+            new Error(
+              `Server Ack ERROR ${JSON.stringify({
+                moduleShortid: this.moduleShortid,
+                currentRevision: this.revision,
+                currentState: this.state.name,
+                operation,
+              })}`
+            )
+          );
+        }
       })
       .catch(error => {
         // If an operation errors on the server we will reject
@@ -118,6 +134,16 @@ export class CodeSandboxOTClient extends OTClient {
   }
 
   applyServer(operation: TextOperation) {
+    logBreadcrumb({
+      category: 'ot',
+      message: `Apply Server ${JSON.stringify({
+        moduleShortid: this.moduleShortid,
+        currentRevision: this.revision,
+        currentState: this.state.name,
+        operation,
+      })}`,
+    });
+
     super.applyServer(operation);
   }
 

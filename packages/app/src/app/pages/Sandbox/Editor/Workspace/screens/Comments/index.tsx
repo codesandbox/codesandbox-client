@@ -1,5 +1,4 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
-
 import {
   Icon,
   List,
@@ -14,8 +13,6 @@ import React from 'react';
 
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
-import { CommentDialog } from './Dialog';
-import { MultiComment } from './components/MultiComment';
 
 export const Comments: React.FC = () => {
   const {
@@ -23,8 +20,6 @@ export const Comments: React.FC = () => {
       comments: {
         selectedCommentsFilter,
         currentComments,
-        currentCommentId,
-        multiCommentsSelector,
         currentCommentsByDate,
       },
     },
@@ -139,8 +134,6 @@ export const Comments: React.FC = () => {
       </div>
       {currentComments.length ? null : <Empty />}
       <AddComment />
-      {currentCommentId && <CommentDialog />}
-      {multiCommentsSelector && <MultiComment {...multiCommentsSelector} />}
     </Stack>
   );
 };
