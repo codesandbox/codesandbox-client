@@ -1,6 +1,4 @@
 import {
-  CreateCodeCommentMutation,
-  CreateCodeCommentMutationVariables,
   CreateCommentMutation,
   CreateCommentMutationVariables,
   DeleteCommentMutation,
@@ -21,24 +19,14 @@ export const createComment: Query<
     $content: String!
     $sandboxId: ID!
     $parentCommentId: ID
+    $codeReference: CodeReference
   ) {
     createComment(
       content: $content
       sandboxId: $sandboxId
       parentCommentId: $parentCommentId
+      codeReference: $codeReference
     ) {
-      ...Comment
-    }
-    ${commentFragment}
-  }
-`;
-
-export const createCodeComment: Query<
-  CreateCodeCommentMutation,
-  CreateCodeCommentMutationVariables
-> = gql`
-  mutation CreateCodeComment($sandboxId: ID!, $content: String!, $codeReference: CodeReference!) {
-    createCodeComment(sandboxId: $sandboxId, content: $content, codeReference: $codeReference) {
       ...Comment
     }
     ${commentFragment}
