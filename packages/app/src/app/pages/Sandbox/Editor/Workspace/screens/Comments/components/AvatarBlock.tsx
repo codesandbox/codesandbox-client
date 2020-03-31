@@ -1,4 +1,4 @@
-import { Avatar, Link, Stack, Text } from '@codesandbox/components';
+import { Avatar, Stack, Text } from '@codesandbox/components';
 import { CommentFragment } from 'app/graphql/types';
 import { formatDistance } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -10,14 +10,9 @@ export const AvatarBlock: React.FC<{ comment: CommentFragment }> = ({
   <Stack gap={2} align="center">
     <Avatar user={comment.user} />
     <Stack direction="vertical" justify="center" gap={1}>
-      <Link
-        size={3}
-        weight="bold"
-        href={`/u/${comment.user.username}`}
-        variant="body"
-      >
+      <Text size={3} weight="bold" variant="body">
         {comment.user.username}
-      </Link>
+      </Text>
       <Text size={2} variant="muted">
         {formatDistance(
           zonedTimeToUtc(comment.insertedAt, 'Etc/UTC'),

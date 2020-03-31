@@ -28,11 +28,11 @@ export const Reply = ({ reply }: ReplyProps) => {
                 <Menu.IconButton name="more" title="Reply actions" size={12} />
                 <Menu.List>
                   <Menu.Item
-                    onSelect={() =>
+                    onSelect={() => {
                       actions.comments.deleteComment({
                         commentId: id,
-                      })
-                    }
+                      });
+                    }}
                   >
                     Delete
                   </Menu.Item>
