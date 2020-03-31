@@ -28,11 +28,10 @@ export const AddComment: React.FC = () => {
       paddingX={2}
       paddingY={4}
       css={css({
+        zIndex: 2,
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
-        // super custom shadow, TODO: check if this works in other themes
-        boxShadow:
-          '0px -4px 8px rgba(21, 21, 21, 0.4), 0px -8px 8px rgba(21, 21, 21, 0.4)',
+        boxShadow: theme => `0px -32px 32px ${theme.colors.dialog.background}`,
       })}
     >
       <form onSubmit={onSubmit}>

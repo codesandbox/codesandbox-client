@@ -418,7 +418,8 @@ const AddReply = ({ comment, ...props }) => {
         border: 'none',
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
-        paddingX: 4,
+        borderRadius: 0,
+        padding: 4,
       })}
       value={value}
       onChange={e => setValue(e.target.value)}
