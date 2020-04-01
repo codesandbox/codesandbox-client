@@ -28,7 +28,7 @@ export const CommentDialog = props =>
 
 const DIALOG_WIDTH = 420;
 const DIALOG_TRANSITION_DURATION = 0.25;
-const REPLY_TRANSITION_DELAY = 0.25;
+const REPLY_TRANSITION_DELAY = 0.5;
 
 export const Dialog: React.FC = () => {
   const { state } = useOvermind();
@@ -365,43 +365,154 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
 };
 
 const Replies = ({ replies, repliesRenderedCallback }) => {
-  const [isAnimating, setAnimating] = React.useState(true);
-  const repliesLoaded = !!replies[0];
+  /**
+   * Loading animations:
+   * 0. Wait for the dialog to have animated in view and scaled up.
+   * 1. If replies have not loaded yet - show skeleton with 146px height,
+   * when the comments load, replace skeleton with replies and
+   * transition to height auto
+   * 2. If replies are already there - show replies with 0px height,
+   * transition to height: auto
+   *
+   */
+
+  const skeletonController = useAnimation();
+  const repliesController = useAnimation();
 
   /** Wait another <delay>ms after the dialog has transitioned into view */
   const delay = DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY;
-  const REPLY_TRANSITION_DURATION = 0.25;
+  const REPLY_TRANSITION_DURATION = Math.max(replies.length * 0.15, 0.5);
+  const SKELETON_FADE_DURATION = 0.25;
   const SKELETON_HEIGHT = 146;
 
+  // initial status of replies -
+  // this is false when it's the first time this specific comment is opened
+  // after that it will be true because we cache replies in state
+  const repliesAlreadyLoadedOnFirstRender = React.useRef(!!replies[0]);
+
+  // current status of replies-
+  const repliesLoaded = !!replies[0];
+
+  /** Welcome to the imperative world of timeline animations
+   *
+   * -------------------------------------------------------
+   * |             |             |           |           |
+   * t=0         t=R1           t=1        t=R2         t=2
+   *
+   * Legend:
+   * t=0 DOM has rendered, animations can be started
+   * t=1 Dialog's enter animation has completed, replies animations can start
+   * t=2 Replies animation have started
+   * t=R1 Replies have loaded before t=1
+   * t=R2 Replies have loaded after t=1
+   *
+   */
+  const [T, setStepInTimeline] = React.useState(-1);
+
+  /*
+   * T = 0 (DOM has rendered, animations can be started)
+   * If replies aren't loaded, show skeleton
+   * If replies are loaded, do nothing and wait for next animation
+   * */
   React.useEffect(() => {
-    if (repliesLoaded && !isAnimating) repliesRenderedCallback();
-  }, [repliesLoaded, isAnimating, repliesRenderedCallback]);
+    if (!repliesAlreadyLoadedOnFirstRender.current) {
+      skeletonController.set({ height: SKELETON_HEIGHT, opacity: 1 });
+    } else {
+      // do nothing, wait for the delayed animation to kick in
+    }
+    setStepInTimeline(0);
+  }, [skeletonController]);
+
+  /**
+   * T = 1 (Dialog's enter animation has completed, hence the delay)
+   * If replies have loaded, remove skeleton, transition the replies
+   * If replies have not loaded, do nothing and wait for next animation
+   */
+  React.useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      if (repliesLoaded) {
+        skeletonController.set({
+          position: 'absolute',
+        });
+        skeletonController.start({
+          height: 0,
+          opacity: 0,
+          transition: { duration: SKELETON_FADE_DURATION },
+        });
+        repliesController.set({ opacity: 1 });
+        repliesController.start({
+          height: 'auto',
+          transition: { duration: REPLY_TRANSITION_DURATION },
+        });
+        setStepInTimeline(2);
+      } else {
+        setStepInTimeline(1);
+      }
+    }, delay * 1000);
+    return () => window.clearTimeout(timeout);
+  }, [
+    skeletonController,
+    repliesController,
+    repliesLoaded,
+    delay,
+    REPLY_TRANSITION_DURATION,
+  ]);
+
+  /**
+   * T = R1 or R2 (Replies have now loaded)
+   * this is a parralel async process and can happen before or after t=1
+   * If it's before T=1, do nothing, wait for T=1
+   * If it's after T=1, start replies transition now!
+   */
+  React.useEffect(() => {
+    if (!repliesLoaded) return;
+    if (T === 1) {
+      skeletonController.start({
+        height: 0,
+        opacity: 0,
+        transition: { duration: REPLY_TRANSITION_DURATION },
+      });
+      repliesController.set({ opacity: 1 });
+      repliesController.start({
+        height: 'auto',
+        transition: { duration: REPLY_TRANSITION_DURATION },
+      });
+      setStepInTimeline(2);
+    }
+  }, [
+    T,
+    repliesLoaded,
+    REPLY_TRANSITION_DURATION,
+    skeletonController,
+    repliesController,
+  ]);
 
   return (
-    <motion.ul
-      initial={{ height: repliesLoaded ? 0 : SKELETON_HEIGHT }}
-      animate={{ height: 'auto' }}
-      transition={{
-        delay,
-        duration: REPLY_TRANSITION_DURATION,
-      }}
-      style={{
-        minHeight: repliesLoaded ? 0 : SKELETON_HEIGHT,
-        overflow: 'visible',
-        paddingLeft: 0,
-      }}
-      onAnimationComplete={() => setAnimating(false)}
-    >
-      {repliesLoaded ? (
+    <>
+      <motion.div
+        initial={{ height: 0, opacity: 0 }}
+        animate={skeletonController}
+      >
+        <SkeletonReply />
+      </motion.div>
+
+      <motion.ul
+        initial={{ height: 0, opacity: 0 }}
+        animate={repliesController}
+        style={{
+          overflow: 'visible',
+          paddingLeft: 0,
+          margin: 0,
+          listStyle: 'none',
+        }}
+      >
         <>
           {replies.map(
             reply => reply && <Reply reply={reply} key={reply.id} />
           )}
         </>
-      ) : (
-        <SkeletonReply />
-      )}
-    </motion.ul>
+      </motion.ul>
+    </>
   );
 };
 
