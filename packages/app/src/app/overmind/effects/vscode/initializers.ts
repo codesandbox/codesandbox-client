@@ -1,4 +1,4 @@
-import JSON from 'json5';
+import JSON5 from 'json5';
 import codeSandboxTheme from '@codesandbox/common/lib/themes/codesandbox.json';
 import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 
@@ -53,7 +53,7 @@ export function initializeSettings() {
     // and applies them 100ms later. There is no check for cursor or anything else.
     // This doesn't happen in VSCode Live Share itself, because there they share the LSP between
     // multiple users. This way the request is not duplicated among multiple users.
-    const settings = JSON.parse(
+    const settings = JSON5.parse(
       fs.readFileSync('/vscode/settings.json').toString()
     );
     settings['javascript.autoClosingTags'] = false;
