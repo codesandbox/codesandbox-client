@@ -135,12 +135,11 @@ export const Dialog: React.FC = () => {
                 setEditing={setEditing}
                 hasReplies={replies.length}
               />
-              {replies.length ? (
-                <Replies
-                  replies={replies}
-                  repliesRenderedCallback={() => setRepliesRendered(true)}
-                />
-              ) : null}
+
+              <Replies
+                replies={replies}
+                repliesRenderedCallback={() => setRepliesRendered(true)}
+              />
             </Element>
             <AddReply
               comment={comment}
@@ -407,21 +406,26 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
    * t=R2 Replies have loaded after t=1
    *
    */
+
   const [T, setStepInTimeline] = React.useState(-1);
 
   /*
    * T = 0 (DOM has rendered, animations can be started)
+   * If there are no replies, skip all of the animations
    * If replies aren't loaded, show skeleton
    * If replies are loaded, do nothing and wait for next animation
    * */
   React.useEffect(() => {
-    if (!repliesAlreadyLoadedOnFirstRender.current) {
+    if (!replies.length || T > 0) {
+      // If the dialog is already open without any replies,
+      // just skip all of the animations for opening transitions
+      repliesController.set({ opacity: 1, height: 'auto' });
+      setStepInTimeline(2);
+    } else if (!repliesAlreadyLoadedOnFirstRender.current) {
       skeletonController.set({ height: SKELETON_HEIGHT, opacity: 1 });
-    } else {
-      // do nothing, wait for the delayed animation to kick in
+      setStepInTimeline(0);
     }
-    setStepInTimeline(0);
-  }, [skeletonController]);
+  }, [skeletonController, repliesController, replies.length, T]);
 
   /**
    * T = 1 (Dialog's enter animation has completed, hence the delay)
@@ -430,10 +434,10 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
    */
   React.useEffect(() => {
     const timeout = window.setTimeout(() => {
+      if (T >= 1) return; // can't go back in time
+
       if (repliesLoaded) {
-        skeletonController.set({
-          position: 'absolute',
-        });
+        skeletonController.set({ position: 'absolute' });
         skeletonController.start({
           height: 0,
           opacity: 0,
@@ -444,6 +448,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
           height: 'auto',
           transition: { duration: REPLY_TRANSITION_DURATION },
         });
+
         setStepInTimeline(2);
       } else {
         setStepInTimeline(1);
@@ -456,6 +461,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
     repliesLoaded,
     delay,
     REPLY_TRANSITION_DURATION,
+    T,
   ]);
 
   /**
@@ -465,8 +471,9 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
    * If it's after T=1, start replies transition now!
    */
   React.useEffect(() => {
-    if (!repliesLoaded) return;
-    if (T === 1) {
+    if (!repliesLoaded) {
+      // do nothing, wait for T=1
+    } else if (T === 1) {
       skeletonController.start({
         height: 0,
         opacity: 0,
@@ -490,7 +497,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
   return (
     <>
       <motion.div
-        initial={{ height: 0, opacity: 0 }}
+        initial={{ height: 0, opacity: 0, overflow: 'hidden' }}
         animate={skeletonController}
       >
         <SkeletonReply />
