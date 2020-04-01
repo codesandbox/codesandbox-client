@@ -38,6 +38,16 @@ export const autoResize = () => (
   </Wrapper>
 );
 
+export const autoResizeWithInitialHeight = () => (
+  <Wrapper>
+    <Textarea
+      autosize
+      placeholder="Write a lot of lines here"
+      style={{ minHeight: 32 }}
+    />
+  </Wrapper>
+);
+
 export const Controlled = () => {
   const [value, setValue] = React.useState('');
   return (
