@@ -199,17 +199,17 @@ class Live {
           new Error('Connection loss with live, reason: ' + e.code)
         );
 
-        if (e.code === 1006) {
-          // This is an abrupt close, the server probably restarted or carshed. We don't want to overload
-          // the server, so we manually wait and try to connect;
-          this.socket.disconnect();
+        // if (e.code === 1006) {
+        //   // This is an abrupt close, the server probably restarted or carshed. We don't want to overload
+        //   // the server, so we manually wait and try to connect;
+        //   this.socket.disconnect();
 
-          const waitTime = 500 + 5000 * Math.random();
+        //   const waitTime = 500 + 5000 * Math.random();
 
-          window.setTimeout(() => {
-            this.socket.connect();
-          }, waitTime);
-        }
+        //   window.setTimeout(() => {
+        //     this.socket.connect();
+        //   }, waitTime);
+        // }
       });
 
       this.socket.connect();
