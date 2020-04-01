@@ -7,6 +7,7 @@ import {
   ModuleTab,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
@@ -16,7 +17,6 @@ import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
   CollaboratorFragment,
-  CommentFragment,
   InvitationFragment,
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
@@ -33,7 +33,6 @@ import history from 'app/utils/history';
 import { Selection, TextOperation } from 'ot';
 import { json } from 'overmind';
 
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import eventToTransform from '../../utils/event-to-transform';
 import { SERVER } from '../../utils/items';
 import * as internalActions from './internalActions';
@@ -220,43 +219,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   effects.vscode.openModule(state.editor.currentModule);
 
   if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
-    try {
-      const { sandbox: sandboxComments } = await effects.gql.queries.comments({
-        sandboxId: sandbox.id,
-      });
-
-      if (!sandboxComments || !sandboxComments.comments) {
-        return;
-      }
-
-      state.comments.comments[sandbox.id] = sandboxComments.comments.reduce<{
-        [id: string]: CommentFragment;
-      }>((aggr, commentThread) => {
-        aggr[commentThread.id] = commentThread;
-
-        return aggr;
-      }, {});
-
-      const urlCommentId = effects.router.getCommentId();
-      if (urlCommentId) {
-        actions.workspace.setWorkspaceItem({ item: 'comments' });
-        actions.comments.selectComment({
-          commentId: urlCommentId,
-          bounds: {
-            left: effects.browser.getWidth() / 2,
-            top: 80,
-            right: effects.browser.getWidth() / 3,
-            bottom: 0,
-          },
-        });
-      }
-    } catch (e) {
-      state.comments.comments[sandbox.id] = {};
-      effects.notificationToast.add({
-        status: NotificationStatus.NOTICE,
-        message: `There as a problem getting the sandbox comments`,
-      });
-    }
+    actions.comments.getSandboxComments(sandbox.id);
   }
 
   state.editor.isLoading = false;

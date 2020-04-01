@@ -1003,6 +1003,42 @@ export type SandboxCommentsQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type CommentAddedSubscriptionVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type CommentAddedSubscription = {
+  __typename?: 'RootSubscriptionType';
+} & {
+  commentAdded: { __typename?: 'Comment' } & {
+    sandbox: { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>;
+  } & CommentFragment;
+};
+
+export type CommentChangedSubscriptionVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type CommentChangedSubscription = {
+  __typename?: 'RootSubscriptionType';
+} & {
+  commentChanged: { __typename?: 'Comment' } & {
+    sandbox: { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>;
+  } & CommentFragment;
+};
+
+export type CommentRemovedSubscriptionVariables = {
+  sandboxId: Scalars['ID'];
+};
+
+export type CommentRemovedSubscription = {
+  __typename?: 'RootSubscriptionType';
+} & {
+  commentRemoved: { __typename?: 'Comment' } & {
+    sandbox: { __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>;
+  } & CommentFragment;
+};
+
 export type UnbookmarkTemplateFromDashboardMutationVariables = {
   template: Scalars['ID'];
   teamId: Maybe<Scalars['ID']>;
