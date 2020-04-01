@@ -37,7 +37,6 @@ export const updateComment: AsyncAction<{
       commentId,
       content,
       sandboxId,
-      isResolved: comment.isResolved,
     });
   } catch (error) {
     effects.notificationToast.error(
@@ -398,12 +397,15 @@ export const resolveComment: AsyncAction<{
   comments[sandboxId][commentId].isResolved = isResolved;
 
   try {
-    await effects.gql.mutations.updateComment({
-      commentId,
-      isResolved,
-      content: comments[sandboxId][commentId].content,
-      sandboxId,
-    });
+    await (isResolved
+      ? effects.gql.mutations.resolveComment({
+          commentId,
+          sandboxId,
+        })
+      : effects.gql.mutations.unresolveComment({
+          commentId,
+          sandboxId,
+        }));
   } catch (error) {
     effects.notificationToast.error(
       'Unable to update your comment, please try again'

@@ -3,6 +3,10 @@ import {
   CreateCommentMutationVariables,
   DeleteCommentMutation,
   DeleteCommentMutationVariables,
+  ResolveCommentMutation,
+  ResolveCommentMutationVariables,
+  UnresolveCommentMutation,
+  UnresolveCommentMutationVariables,
   UpdateCommentMutation,
   UpdateCommentMutationVariables,
 } from 'app/graphql/types';
@@ -48,18 +52,34 @@ export const updateComment: Query<
   UpdateCommentMutation,
   UpdateCommentMutationVariables
 > = gql`
-  mutation UpdateComment(
-    $commentId: ID!
-    $sandboxId: ID!
-    $content: String
-    $isResolved: Boolean
-  ) {
+  mutation UpdateComment($commentId: ID!, $sandboxId: ID!, $content: String) {
     updateComment(
       commentId: $commentId
       sandboxId: $sandboxId
       content: $content
-      isResolved: $isResolved
     ) {
+      id
+    }
+  }
+`;
+
+export const resolveComment: Query<
+  ResolveCommentMutation,
+  ResolveCommentMutationVariables
+> = gql`
+  mutation ResolveComment($commentId: ID!, $sandboxId: ID!) {
+    resolveComment(commentId: $commentId, sandboxId: $sandboxId) {
+      id
+    }
+  }
+`;
+
+export const unresolveComment: Query<
+  UnresolveCommentMutation,
+  UnresolveCommentMutationVariables
+> = gql`
+  mutation UnresolveComment($commentId: ID!, $sandboxId: ID!) {
+    unresolveComment(commentId: $commentId, sandboxId: $sandboxId) {
       id
     }
   }
