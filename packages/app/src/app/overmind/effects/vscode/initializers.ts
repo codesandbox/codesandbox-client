@@ -1,3 +1,4 @@
+import JSON from 'json5';
 import codeSandboxTheme from '@codesandbox/common/lib/themes/codesandbox.json';
 import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 
