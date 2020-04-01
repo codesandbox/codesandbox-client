@@ -1,5 +1,11 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
-import { CodeReference, CommentFragment } from 'app/graphql/types';
+import {
+  CodeReference,
+  CommentAddedSubscription,
+  CommentChangedSubscription,
+  CommentFragment,
+  CommentRemovedSubscription,
+} from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { utcToZonedTime } from 'date-fns-tz';
 
@@ -37,7 +43,6 @@ export const updateComment: AsyncAction<{
       commentId,
       content,
       sandboxId,
-      isResolved: comment.isResolved,
     });
   } catch (error) {
     effects.notificationToast.error(
@@ -398,12 +403,15 @@ export const resolveComment: AsyncAction<{
   comments[sandboxId][commentId].isResolved = isResolved;
 
   try {
-    await effects.gql.mutations.updateComment({
-      commentId,
-      isResolved,
-      content: comments[sandboxId][commentId].content,
-      sandboxId,
-    });
+    await (isResolved
+      ? effects.gql.mutations.resolveComment({
+          commentId,
+          sandboxId,
+        })
+      : effects.gql.mutations.unresolveComment({
+          commentId,
+          sandboxId,
+        }));
   } catch (error) {
     effects.notificationToast.error(
       'Unable to update your comment, please try again'
@@ -418,4 +426,93 @@ export const copyPermalinkToClipboard: Action<string> = (
 ) => {
   effects.browser.copyToClipboard(effects.router.createCommentUrl(commentId));
   effects.notificationToast.success('Comment permalink copied to clipboard');
+};
+
+export const getSandboxComments: AsyncAction<string> = async (
+  { state, effects, actions },
+  sandboxId
+) => {
+  try {
+    const { sandbox: sandboxComments } = await effects.gql.queries.comments({
+      sandboxId,
+    });
+
+    if (!sandboxComments || !sandboxComments.comments) {
+      return;
+    }
+
+    state.comments.comments[sandboxId] = sandboxComments.comments.reduce<{
+      [id: string]: CommentFragment;
+    }>((aggr, commentThread) => {
+      aggr[commentThread.id] = commentThread;
+
+      return aggr;
+    }, {});
+
+    const urlCommentId = effects.router.getCommentId();
+    if (urlCommentId) {
+      actions.workspace.setWorkspaceItem({ item: 'comments' });
+      actions.comments.selectComment({
+        commentId: urlCommentId,
+        bounds: {
+          left: effects.browser.getWidth() / 2,
+          top: 80,
+          right: effects.browser.getWidth() / 3,
+          bottom: 0,
+        },
+      });
+    }
+
+    effects.gql.subscriptions.commentAdded.dispose();
+    effects.gql.subscriptions.commentChanged.dispose();
+    effects.gql.subscriptions.commentRemoved.dispose();
+
+    effects.gql.subscriptions.commentAdded(
+      {
+        sandboxId,
+      },
+      actions.comments.onCommentAdded
+    );
+    effects.gql.subscriptions.commentChanged(
+      {
+        sandboxId,
+      },
+      actions.comments.onCommentChanged
+    );
+    effects.gql.subscriptions.commentRemoved(
+      {
+        sandboxId,
+      },
+      actions.comments.onCommentRemoved
+    );
+  } catch (e) {
+    state.comments.comments[sandboxId] = {};
+    effects.notificationToast.notice(
+      `There as a problem getting the sandbox comments`
+    );
+  }
+};
+
+export const onCommentAdded: Action<CommentAddedSubscription> = (
+  { state },
+  { commentAdded: comment }
+) => {
+  state.comments.comments[comment.sandbox.id][comment.id] = comment;
+};
+
+export const onCommentChanged: Action<CommentChangedSubscription> = (
+  { state },
+  { commentChanged: comment }
+) => {
+  Object.assign(
+    state.comments.comments[comment.sandbox.id][comment.id],
+    comment
+  );
+};
+
+export const onCommentRemoved: Action<CommentRemovedSubscription> = (
+  { state },
+  { commentRemoved: comment }
+) => {
+  delete state.comments.comments[comment.sandbox.id][comment.id];
 };
