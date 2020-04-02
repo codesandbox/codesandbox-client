@@ -19,6 +19,7 @@ import { Navigation as NavigationOld } from './NavigationOld';
 import { ContentSkeleton } from './Skeleton';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
+import { CommentsAPI } from './Workspace/screens/Comments/API';
 
 const STATUS_BAR_SIZE = 22;
 
@@ -203,6 +204,9 @@ const ContentSplit = () => {
 
         <ForkFrozenSandboxModal />
       </Container>
+      <NewThemeProvider theme={localState.theme.vscodeTheme}>
+        <CommentsAPI />
+      </NewThemeProvider>
     </ThemeProvider>
   );
 };

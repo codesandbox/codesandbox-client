@@ -30,8 +30,6 @@ import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
 import { Server } from './items/Server';
 import { Comments } from './screens/Comments';
-import { MultiComment } from './screens/Comments/components/MultiComment';
-import { CommentDialog } from './screens/Comments/Dialog';
 import { ConfigurationFiles as ConfigurationFilesNew } from './screens/ConfigurationFiles';
 import { Deployment as DeploymentNew } from './screens/Deployment/index';
 import { Explorer } from './screens/Explorer';
@@ -114,11 +112,6 @@ export const WorkspaceComponent = ({ theme }) => {
           {NEW_SIDEBAR &&
             !(isPatron || (currentSandbox && currentSandbox.owned)) &&
             !(isLive && roomInfo.chatEnabled) && <Advertisement />}
-
-          {state.comments.currentCommentId && <CommentDialog />}
-          {state.comments.multiCommentsSelector && (
-            <MultiComment {...state.comments.multiCommentsSelector} />
-          )}
         </>
       </WorkspaceWrapper>
 
