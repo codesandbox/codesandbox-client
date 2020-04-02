@@ -60,7 +60,8 @@ export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
 };
 
 export const gitMounted: AsyncAction = async ({ actions, state }) => {
-  if (state.editor.currentSandbox.originalGit) {
+  const currentSandbox = state.editor.currentSandbox;
+  if (currentSandbox && currentSandbox.originalGit) {
     await actions.git.internal.fetchGitChanges();
   }
 };
