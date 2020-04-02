@@ -10,7 +10,6 @@ import {
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
-
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
 

@@ -19,6 +19,9 @@ import { Navigation as NavigationOld } from './NavigationOld';
 import { ContentSkeleton } from './Skeleton';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
+import { CommentsGlobalStyles } from './Workspace/screens/Comments/components/GlobalStyles';
+import { MultiComment } from './Workspace/screens/Comments/components/MultiComment';
+import { CommentDialog } from './Workspace/screens/Comments/Dialog';
 
 const STATUS_BAR_SIZE = 22;
 
@@ -203,6 +206,15 @@ const ContentSplit = () => {
 
         <ForkFrozenSandboxModal />
       </Container>
+      <NewThemeProvider theme={localState.theme.vscodeTheme}>
+        <>
+          <CommentsGlobalStyles />
+          {state.comments.currentCommentId && <CommentDialog />}
+          {state.comments.multiCommentsSelector && (
+            <MultiComment {...state.comments.multiCommentsSelector} />
+          )}
+        </>
+      </NewThemeProvider>
     </ThemeProvider>
   );
 };
