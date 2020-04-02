@@ -59,8 +59,11 @@ export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
   effects.router.updateSandboxUrl({ git });
 };
 
-export const gitMounted: AsyncAction = ({ actions }) =>
-  actions.git.internal.fetchGitChanges();
+export const gitMounted: AsyncAction = async ({ actions, state }) => {
+  if (state.editor.currentSandbox.originalGit) {
+    await actions.git.internal.fetchGitChanges();
+  }
+};
 
 export const createCommitClicked: AsyncAction = async ({ state, effects }) => {
   const { git } = state;
