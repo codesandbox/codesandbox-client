@@ -51,10 +51,10 @@ export type OnFileChangeCallback = (data: OnFileChangeData) => void;
 export type OnOperationAppliedCallback = (data: OnOperationAppliedData) => void;
 
 export type ModuleModel = {
-  changeListener: { dispose: Function };
+  changeListener: { dispose: Function } | null;
   currentLine: number;
   path: string;
-  model: Promise<any>;
+  model: Promise<any> | null;
   comments: Array<{ commentId: string; range: [number, number] }>;
   currentCommentDecorations: string[];
 };
@@ -91,8 +91,9 @@ export class ModelsHandler {
     this.modelAddedListener.dispose();
     this.modelRemovedListener.dispose();
     Object.keys(this.moduleModels).forEach(path => {
-      if (this.moduleModels[path].changeListener) {
-        this.moduleModels[path].changeListener.dispose();
+      const changeListener = this.moduleModels[path].changeListener;
+      if (changeListener) {
+        changeListener.dispose();
       }
     });
     this.moduleModels = {};
@@ -300,7 +301,7 @@ export class ModelsHandler {
   public async setModuleCode(module: Module) {
     const moduleModel = this.getModuleModelByPath(module.path);
 
-    if (moduleModel?.model) {
+    if (!moduleModel || !moduleModel.model) {
       return;
     }
     const model = await moduleModel.model;
@@ -706,7 +707,11 @@ export class ModelsHandler {
     this.modelRemovedListener = this.editorApi.textFileService.modelService.onModelRemoved(
       model => {
         if (this.moduleModels[model.uri.path]) {
-          this.moduleModels[model.uri.path].changeListener.dispose();
+          const changeListener = this.moduleModels[model.uri.path]
+            .changeListener;
+          if (changeListener) {
+            changeListener.dispose();
+          }
 
           const csbPath = model.uri.path.replace('/sandbox', '');
           dispatch(actions.correction.clear(csbPath, 'eslint'));
