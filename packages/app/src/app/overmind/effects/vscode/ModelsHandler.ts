@@ -776,7 +776,6 @@ export class ModelsHandler {
           {
             range: new this.monaco.Range(lineNumber, 1, lineNumber, 1),
             options: {
-              // isWholeLine: true,
               // comment-id- class needs to be the LAST class!
               glyphMarginClassName: `editor-comments-glyph ${
                 activeCommentDecoration ? 'editor-comments-active ' : ''
