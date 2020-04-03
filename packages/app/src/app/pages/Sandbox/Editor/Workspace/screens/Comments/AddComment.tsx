@@ -1,26 +1,22 @@
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { Element, FormField, Textarea } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
 import React, { useState } from 'react';
 
-export const AddComment: React.FC = () => {
-  const [value, setValue] = useState('');
-  const { actions } = useOvermind();
+type Props = {
+  onSubmit: (value: string) => void;
+};
 
-  const onSubmit = e => {
-    e.preventDefault();
-    if (value) {
-      actions.comments.addComment({
-        content: value,
-      });
-      setValue('');
-    }
-  };
+export const AddComment: React.FC<Props> = ({ onSubmit }) => {
+  const [value, setValue] = useState('');
 
   // Form elements submit on Enter, except Textarea :)
   const submitOnEnter = event => {
-    if (event.keyCode === ENTER && !event.shiftKey) onSubmit(event);
+    if (event.keyCode === ENTER && !event.shiftKey && value) {
+      event.preventDefault();
+      onSubmit(value);
+      setValue('');
+    }
   };
 
   return (
