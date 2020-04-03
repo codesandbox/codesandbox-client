@@ -10,6 +10,7 @@ import {
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
+
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
 
@@ -24,6 +25,7 @@ export const Comments: React.FC = () => {
     },
     actions: { comments: commentsActions },
   } = useOvermind();
+  const scrollRef = React.useRef(null);
   const options = Object.values(CommentsFilterOption);
 
   const getSelectedFilter = () => {
@@ -35,6 +37,13 @@ export const Comments: React.FC = () => {
       default:
         return 'new';
     }
+  };
+
+  const onSubmit = value => {
+    commentsActions.addComment({
+      content: value,
+    });
+    scrollRef.current.scrollTop = 0;
   };
 
   const Empty = () => (
@@ -101,11 +110,13 @@ export const Comments: React.FC = () => {
 
         {currentComments.length ? (
           <List
+            ref={scrollRef}
             marginTop={4}
             css={{
               // stretch within container, leaving space for comment box
               height: 'calc(100% - 32px)',
               overflow: 'auto',
+              scrollBehavior: 'smooth',
             }}
           >
             {currentCommentsByDate.today.length ? (
@@ -132,7 +143,7 @@ export const Comments: React.FC = () => {
         ) : null}
       </div>
       {currentComments.length ? null : <Empty />}
-      <AddComment />
+      <AddComment onSubmit={onSubmit} />
     </Stack>
   );
 };
