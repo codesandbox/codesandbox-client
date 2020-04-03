@@ -148,7 +148,7 @@ export const RENAME_FOLDER_MUTATION = gql`
 export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
   mutation AddToCollection(
     $collectionPath: String!
-    $sandboxIds: [ID]!
+    $sandboxIds: [ID!]!
     $teamId: ID
   ) {
     addToCollection(
@@ -165,7 +165,7 @@ export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
 `;
 
 export const DELETE_SANDBOXES_MUTATION = gql`
-  mutation DeleteSandboxes($sandboxIds: [ID]!) {
+  mutation DeleteSandboxes($sandboxIds: [ID!]!) {
     deleteSandboxes(sandboxIds: $sandboxIds) {
       ...Sandbox
     }
@@ -174,7 +174,7 @@ export const DELETE_SANDBOXES_MUTATION = gql`
 `;
 
 export const SET_SANDBOXES_PRIVACY_MUTATION = gql`
-  mutation SetSandboxesPrivacy($sandboxIds: [ID]!, $privacy: Int!) {
+  mutation SetSandboxesPrivacy($sandboxIds: [ID!]!, $privacy: Int!) {
     setSandboxesPrivacy(sandboxIds: $sandboxIds, privacy: $privacy) {
       ...Sandbox
     }
@@ -192,7 +192,7 @@ export const RENAME_SANDBOX_MUTATION = gql`
 `;
 
 export const PERMANENTLY_DELETE_SANDBOXES_MUTATION = gql`
-  mutation PermanentlyDeleteSandboxes($sandboxIds: [ID]!) {
+  mutation PermanentlyDeleteSandboxes($sandboxIds: [ID!]!) {
     permanentlyDeleteSandboxes(sandboxIds: $sandboxIds) {
       id
     }
@@ -333,7 +333,7 @@ export function permanentlyDeleteSandboxes(selectedSandboxes: string[]) {
           me: {
             ...(oldDeleteCache && oldDeleteCache.me ? oldDeleteCache.me : null),
             sandboxes: (oldDeleteCache?.me?.sandboxes || []).filter(
-              x => !selectedSandboxes.includes(x?.id)
+              x => !selectedSandboxes.includes(x.id)
             ),
           },
         };
