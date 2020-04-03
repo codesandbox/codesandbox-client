@@ -67,7 +67,7 @@ export type Collaborator = {
 
 export type Collection = {
   __typename?: 'Collection';
-  id: Scalars['ID'];
+  id: Maybe<Scalars['ID']>;
   path: Scalars['String'];
   sandboxes: Array<Sandbox>;
   team: Maybe<Team>;

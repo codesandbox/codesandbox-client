@@ -1,5 +1,5 @@
 # source: http://server:4000/api/graphql
-# timestamp: Fri Apr 03 2020 11:52:36 GMT+0000 (Coordinated Universal Time)
+# timestamp: Fri Apr 03 2020 11:58:51 GMT+0000 (Coordinated Universal Time)
 
 schema {
   query: RootQuery
@@ -53,7 +53,7 @@ type Collaborator {
 }
 
 type Collection {
-  id: ID!
+  id: ID
   path: String!
   sandboxes: [Sandbox!]!
   team: Team
