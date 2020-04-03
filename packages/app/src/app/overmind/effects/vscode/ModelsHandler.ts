@@ -11,7 +11,7 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
-import { TextOperation } from 'ot';
+import { TextOperation, SerializedTextOperation } from 'ot';
 
 import { getCurrentModelPath } from './utils';
 
@@ -257,7 +257,10 @@ export class ModelsHandler {
     );
   }
 
-  public async applyOperation(moduleShortid: string, operation: TextOperation) {
+  public async applyOperation(
+    moduleShortid: string,
+    operation: SerializedTextOperation
+  ) {
     const module = this.sandbox.modules.find(m => m.shortid === moduleShortid);
 
     if (!module) {
