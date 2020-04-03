@@ -380,8 +380,18 @@ export const deleteComment: AsyncAction<{
   const sandboxId = state.editor.currentSandbox.id;
   const comments = state.comments.comments;
   const deletedComment = comments[sandboxId][commentId];
-
+  const parentComment =
+    deletedComment.parentComment &&
+    comments[sandboxId][deletedComment.parentComment.id];
   delete comments[sandboxId][commentId];
+  let replyIndex: number = -1;
+
+  if (parentComment) {
+    replyIndex = parentComment.comments.findIndex(
+      reply => reply.id === deletedComment.id
+    );
+    parentComment.comments.splice(replyIndex, 1);
+  }
 
   try {
     await effects.gql.mutations.deleteComment({
@@ -393,6 +403,9 @@ export const deleteComment: AsyncAction<{
       'Unable to delete your comment, please try again'
     );
     comments[sandboxId][commentId] = deletedComment;
+    if (parentComment) {
+      parentComment.comments.splice(replyIndex, 0, { id: deletedComment.id });
+    }
   }
 };
 
