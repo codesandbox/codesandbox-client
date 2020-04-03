@@ -209,7 +209,7 @@ const DialogAddComment: React.FC<{
           border: 'none',
           paddingLeft: 4,
         })}
-        style={{ minHeight: 32 }}
+        style={{ lineHeight: 1.2, minHeight: 32 }}
         value={value}
         onChange={e => setValue(e.target.value)}
         placeholder="Add comment..."
@@ -281,7 +281,7 @@ const DialogHeader = ({ comment, hasShadow }) => {
           }
           name="check"
           size={14}
-          title="Resolve Comment"
+          title={comment.isResolved ? 'Unresolve Comment' : 'Resolve Comment'}
           css={css({
             transition: 'color',
             transitionDuration: theme => theme.speeds[1],
@@ -550,7 +550,7 @@ const AddReply = ({ comment, ...props }) => {
         borderRadius: 0,
         padding: 4,
       })}
-      style={{ minHeight: 54 }}
+      style={{ lineHeight: 1.2, minHeight: 54 }}
       value={value}
       onChange={e => setValue(e.target.value)}
       placeholder="Reply..."

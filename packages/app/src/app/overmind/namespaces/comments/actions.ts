@@ -142,7 +142,7 @@ export const closeMultiCommentsSelector: Action = ({ state }) => {
 
 export const selectComment: AsyncAction<{
   commentId: string;
-  bounds: {
+  bounds?: {
     left: number;
     top: number;
     right: number;
@@ -160,6 +160,11 @@ export const selectComment: AsyncAction<{
   const comment = state.comments.comments[sandbox.id][commentId];
 
   actions.comments.getComments(commentId);
+
+  if (!bounds) {
+    state.comments.currentCommentId = commentId;
+    return;
+  }
 
   if (
     comment &&
