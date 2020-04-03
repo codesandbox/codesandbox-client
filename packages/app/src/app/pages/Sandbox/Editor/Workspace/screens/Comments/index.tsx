@@ -116,6 +116,7 @@ export const Comments: React.FC = () => {
               // stretch within container, leaving space for comment box
               height: 'calc(100% - 32px)',
               overflow: 'auto',
+              scrollBehavior: 'smooth',
             }}
           >
             {currentCommentsByDate.today.length ? (
