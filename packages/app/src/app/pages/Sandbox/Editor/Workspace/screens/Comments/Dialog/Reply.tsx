@@ -1,16 +1,19 @@
-import { Element, Menu, Stack, SkeletonText } from '@codesandbox/components';
+import { Element, Menu, SkeletonText, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { DIALOG_TRANSITION_DURATION } from 'app/constants';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import React, { useState } from 'react';
 
-import { Markdown } from './Markdown';
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
+import { Markdown } from './Markdown';
 
 type ReplyProps = {
   reply: CommentFragment;
 };
+
+const animationDelay = DIALOG_TRANSITION_DURATION + 's';
 
 export const Reply = ({ reply }: ReplyProps) => {
   const { user, id, content } = reply;
@@ -84,18 +87,22 @@ export const Reply = ({ reply }: ReplyProps) => {
 export const SkeletonReply = props => (
   <Element marginX={4} paddingTop={6} {...props}>
     <Stack align="center" gap={2} marginBottom={4}>
-      <SkeletonText style={{ width: '32px', height: '32px' }} />
+      <SkeletonText style={{ width: '32px', height: '32px', animationDelay }} />
 
       <Stack direction="vertical" gap={1}>
-        <SkeletonText style={{ width: '120px', height: '14px' }} />
-        <SkeletonText style={{ width: '120px', height: '14px' }} />
+        <SkeletonText
+          style={{ width: '120px', height: '14px', animationDelay }}
+        />
+        <SkeletonText
+          style={{ width: '120px', height: '14px', animationDelay }}
+        />
       </Stack>
     </Stack>
 
     <Stack direction="vertical" gap={1} marginBottom={6}>
-      <SkeletonText style={{ width: '100%', height: '14px' }} />
-      <SkeletonText style={{ width: '100%', height: '14px' }} />
-      <SkeletonText style={{ width: '100%', height: '14px' }} />
+      <SkeletonText style={{ width: '100%', height: '14px', animationDelay }} />
+      <SkeletonText style={{ width: '100%', height: '14px', animationDelay }} />
+      <SkeletonText style={{ width: '100%', height: '14px', animationDelay }} />
     </Stack>
   </Element>
 );

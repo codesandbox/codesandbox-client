@@ -1,5 +1,9 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import {
+  DIALOG_TRANSITION_DURATION,
+  REPLY_TRANSITION_DELAY,
+} from 'app/constants';
+import {
   CodeReference,
   CommentAddedSubscription,
   CommentChangedSubscription,
@@ -65,10 +69,14 @@ export const getComments: AsyncAction<string> = async (
       // No idea why TS complains about this
       // @ts-ignore
       sandbox: { comment },
-    } = await effects.gql.queries.comment({
-      sandboxId: sandbox.id,
-      commentId,
-    });
+    } = await effects.browser.waitAtLeast(
+      DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY,
+      () =>
+        effects.gql.queries.comment({
+          sandboxId: sandbox.id,
+          commentId,
+        })
+    );
 
     comment.comments.forEach(childComment => {
       state.comments.comments[sandbox.id][childComment.id] = childComment;
