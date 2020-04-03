@@ -69,11 +69,7 @@ export const Wrapper = styled.div`
 `;
 
 export const Header = styled.section`
-  background: linear-gradient(
-    279.97deg,
-    rgba(64, 169, 243, 0.9) 0%,
-    rgba(13, 123, 201, 0.9) 100%
-  );
+  background-color: #0971f1;
   border-radius: 4px;
   padding: 30px;
   color: #f2f2f2;
