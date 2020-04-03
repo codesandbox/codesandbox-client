@@ -759,18 +759,23 @@ export class ModelsHandler {
         const ids = lineCommentDecorations.map(
           commentDecoration => commentDecoration.commentId
         );
-        const targetLineNumber = activeCommentDecoration
-          ? indexToLineAndColumn(
-              model.getLinesContent() || [],
-              activeCommentDecoration.range[1]
-            ).lineNumber
-          : lineNumber;
+        const commentRange = activeCommentDecoration
+          ? [
+              indexToLineAndColumn(
+                model.getLinesContent() || [],
+                activeCommentDecoration.range[0]
+              ),
+              indexToLineAndColumn(
+                model.getLinesContent() || [],
+                activeCommentDecoration.range[1]
+              ),
+            ]
+          : null;
 
         return aggr.concat(
           {
             range: new this.monaco.Range(lineNumber, 1, lineNumber, 1),
             options: {
-              isWholeLine: true,
               // comment-id- class needs to be the LAST class!
               glyphMarginClassName: `editor-comments-glyph ${
                 activeCommentDecoration ? 'editor-comments-active ' : ''
@@ -781,15 +786,24 @@ export class ModelsHandler {
               }editor-comments-ids-${ids.join('_')}`,
             },
           },
-          {
-            range: new this.monaco.Range(lineNumber, 1, targetLineNumber, 1),
-            options: {
-              isWholeLine: true,
-              className: activeCommentDecoration
-                ? 'editor-comments-highlight'
-                : undefined,
-            },
-          }
+          commentRange
+            ? {
+                range: new this.monaco.Range(
+                  commentRange[0].lineNumber,
+                  commentRange[0].column,
+                  commentRange[1].lineNumber,
+                  commentRange[1].column
+                ),
+                options: {
+                  isWholeLine:
+                    commentRange[0].lineNumber === commentRange[1].lineNumber &&
+                    commentRange[0].column === commentRange[1].column,
+                  className: activeCommentDecoration
+                    ? 'editor-comments-highlight'
+                    : undefined,
+                },
+              }
+            : []
         );
       },
       initialDecorations
