@@ -93,6 +93,7 @@ export const Markdown = ({ source }) => {
         marginY={2}
         css={css({
           backgroundColor: 'sideBar.border',
+          borderRadius: 'small',
         })}
       >
         <Text size={3} variant="muted" block align="center">
