@@ -333,7 +333,7 @@ export function permanentlyDeleteSandboxes(selectedSandboxes: string[]) {
           me: {
             ...(oldDeleteCache && oldDeleteCache.me ? oldDeleteCache.me : null),
             sandboxes: (oldDeleteCache?.me?.sandboxes || []).filter(
-              x => !selectedSandboxes.includes(x.id)
+              x => !selectedSandboxes.includes(x?.id)
             ),
           },
         };
