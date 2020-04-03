@@ -52,7 +52,7 @@ export const state: State = {
       return {};
     }
     const rootComments = Object.values(comments[currentSandbox.id]).filter(
-      comment => comment.parentComment == null
+      comment => comment.parentComment == null && !comment.isResolved
     );
 
     return rootComments.reduce<{

@@ -8,6 +8,7 @@ import {
   Text,
   Textarea,
 } from '@codesandbox/components';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import css from '@styled-system/css';
 import {
   DIALOG_TRANSITION_DURATION,
@@ -248,7 +249,7 @@ const DragHandle: React.FC<{
 );
 
 const DialogHeader = ({ comment, hasShadow }) => {
-  const { actions } = useOvermind();
+  const { state, actions } = useOvermind();
 
   const closeDialog = () => actions.comments.closeComment();
 
@@ -272,25 +273,30 @@ const DialogHeader = ({ comment, hasShadow }) => {
         Comment
       </Text>
       <Stack align="center">
-        <IconButton
-          onClick={() =>
-            actions.comments.resolveComment({
-              commentId: comment.id,
-              isResolved: !comment.isResolved,
-            })
-          }
-          name="check"
-          size={14}
-          title="Resolve Comment"
-          css={css({
-            transition: 'color',
-            transitionDuration: theme => theme.speeds[1],
-            color: comment.isResolved ? 'green' : 'mutedForeground',
-            ':hover:not(:disabled), :focus:not(:disabled)': {
-              color: comment.isResolved ? 'green' : 'foreground',
-            },
-          })}
-        />
+        {hasPermission(
+          state.editor.currentSandbox.authorization,
+          'comment'
+        ) && (
+          <IconButton
+            onClick={() =>
+              actions.comments.resolveComment({
+                commentId: comment.id,
+                isResolved: !comment.isResolved,
+              })
+            }
+            name="check"
+            size={14}
+            title="Resolve Comment"
+            css={css({
+              transition: 'color',
+              transitionDuration: theme => theme.speeds[1],
+              color: comment.isResolved ? 'green' : 'mutedForeground',
+              ':hover:not(:disabled), :focus:not(:disabled)': {
+                color: comment.isResolved ? 'green' : 'foreground',
+              },
+            })}
+          />
+        )}
         <IconButton
           name="cross"
           size={10}
