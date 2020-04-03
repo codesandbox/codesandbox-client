@@ -32,7 +32,6 @@ Note that a [Pro subscription](https://codesandbox.io/pricing) is required to
 make sandboxes private or unlisted.
 
 ![Make private in the editor](./images/sandbox-private.png)
-![Make private from the dashboard](./images/dashboard-private.png)
 
 ## I'm getting a 422 error when importing from GitHub, why?
 
