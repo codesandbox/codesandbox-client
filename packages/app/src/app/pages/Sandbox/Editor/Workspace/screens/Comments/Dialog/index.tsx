@@ -8,7 +8,6 @@ import {
   Text,
   Textarea,
 } from '@codesandbox/components';
-import { createGlobalStyle } from 'styled-components';
 import css from '@styled-system/css';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
@@ -16,6 +15,7 @@ import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 import { motion, useAnimation } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
+import { createGlobalStyle } from 'styled-components';
 
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
@@ -252,48 +252,63 @@ const DialogHeader = ({ comment, hasShadow }) => {
   const closeDialog = () => actions.comments.closeComment();
 
   return (
-    <Stack
-      align="center"
-      justify="space-between"
-      padding={4}
-      paddingRight={2}
-      marginBottom={2}
-      css={css({
-        boxShadow: theme =>
-          hasShadow
-            ? `0px 32px 32px ${theme.colors.dialog.background}`
-            : 'none',
-      })}
-    >
-      <Text size={3} weight="bold">
-        Comment
-      </Text>
-      <Stack align="center">
-        <IconButton
-          onClick={() =>
-            actions.comments.resolveComment({
-              commentId: comment.id,
-              isResolved: !comment.isResolved,
-            })
-          }
-          name="check"
-          size={14}
-          title="Resolve Comment"
-          css={css({
-            transition: 'color',
-            transitionDuration: theme => theme.speeds[1],
-            color: comment.isResolved ? 'green' : 'mutedForeground',
-            ':hover:not(:disabled), :focus:not(:disabled)': {
-              color: comment.isResolved ? 'green' : 'foreground',
-            },
-          })}
-        />
-        <IconButton
-          name="cross"
-          size={10}
-          title="Close comment dialog"
-          onClick={closeDialog}
-        />
+    <Stack direction="vertical" css={{ position: 'relative' }}>
+      <div
+        css={css({
+          position: 'absolute',
+          height: '6px',
+          width: '100%',
+          backgroundColor: 'dialog.background',
+          bottom: '6px',
+          zIndex: 0,
+          opacity: hasShadow ? 1 : 0,
+          transition: hasShadow
+            ? 'opacity 0.2s ease-in'
+            : 'opacity 0.15s ease-out',
+          boxShadow: theme => `0px 0px 32px black`,
+        })}
+      />
+      <Stack
+        align="center"
+        css={css({
+          backgroundColor: 'dialog.background',
+          zIndex: 1,
+        })}
+        justify="space-between"
+        padding={4}
+        paddingRight={2}
+        paddingBottom={2}
+      >
+        <Text size={3} weight="bold">
+          Comment
+        </Text>
+        <Stack align="center">
+          <IconButton
+            onClick={() =>
+              actions.comments.resolveComment({
+                commentId: comment.id,
+                isResolved: !comment.isResolved,
+              })
+            }
+            name="check"
+            size={14}
+            title="Resolve Comment"
+            css={css({
+              transition: 'color',
+              transitionDuration: theme => theme.speeds[1],
+              color: comment.isResolved ? 'green' : 'mutedForeground',
+              ':hover:not(:disabled), :focus:not(:disabled)': {
+                color: comment.isResolved ? 'green' : 'foreground',
+              },
+            })}
+          />
+          <IconButton
+            name="cross"
+            size={10}
+            title="Close comment dialog"
+            onClick={closeDialog}
+          />
+        </Stack>
       </Stack>
     </Stack>
   );
