@@ -141,7 +141,7 @@ export class VSCodeEffect {
       getState: options.getState,
       getSignal: options.getSignal,
     };
-    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 500);
+    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 200);
 
     this.prepareElements();
 

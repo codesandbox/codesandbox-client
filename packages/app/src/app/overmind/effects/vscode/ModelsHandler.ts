@@ -52,7 +52,6 @@ export type OnOperationAppliedCallback = (data: OnOperationAppliedData) => void;
 
 export type ModuleModel = {
   changeListener: { dispose: Function };
-  selections: EditorSelection[];
   currentLine: number;
   path: string;
   model: Promise<any>;
@@ -129,7 +128,6 @@ export class ModelsHandler {
       model: null,
       currentLine: 0,
       path: fullPath,
-      selections: [],
       comments: [],
       currentCommentDecorations: [],
     };
@@ -165,8 +163,6 @@ export class ModelsHandler {
       .loadOrCreate(this.monaco.Uri.file('/sandbox' + module.path))
       .then(textFileEditorModel => textFileEditorModel.load())
       .then(textFileEditorModel => textFileEditorModel.textEditorModel);
-
-    this.updateUserSelections(module, moduleModel.selections);
 
     const model = await moduleModel.model;
 
@@ -323,7 +319,7 @@ export class ModelsHandler {
     Object.keys(this.moduleModels).forEach(async key => {
       const moduleModel = this.moduleModels[key];
 
-      if (!moduleModel.model) {
+      if (!moduleModel?.model) {
         return;
       }
 
@@ -356,8 +352,6 @@ export class ModelsHandler {
     if (!moduleModel?.model) {
       return;
     }
-
-    moduleModel.selections = userSelections;
 
     const model = await moduleModel.model;
     const lines = model.getLinesContent() || [];
