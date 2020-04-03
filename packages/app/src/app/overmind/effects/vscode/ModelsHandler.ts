@@ -52,7 +52,7 @@ export type OnOperationAppliedCallback = (data: OnOperationAppliedData) => void;
 
 export type ModuleModel = {
   changeListener: { dispose: Function };
-  selections: any[];
+  selections: EditorSelection[];
   currentLine: number;
   path: string;
   model: Promise<any>;
@@ -116,9 +116,15 @@ export class ModelsHandler {
     }
   }
 
-  public getModuleModelByPath(path: string) {
+  private getModuleModelByPath(path: string): ModuleModel | undefined {
     const fullPath = '/sandbox' + path;
-    this.moduleModels[fullPath] = this.moduleModels[fullPath] || {
+
+    return this.moduleModels[fullPath];
+  }
+
+  private getOrCreateModuleModelByPath(path: string): ModuleModel {
+    const fullPath = '/sandbox' + path;
+    this.moduleModels[fullPath] = this.getModuleModelByPath(path) || {
       changeListener: null,
       model: null,
       currentLine: 0,
@@ -149,7 +155,7 @@ export class ModelsHandler {
   }
 
   public changeModule = async (module: Module) => {
-    const moduleModel = this.getModuleModelByPath(module.path);
+    const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
     if (getCurrentModelPath(this.editorApi) !== module.path) {
       await this.editorApi.openFile(module.path);
@@ -196,7 +202,10 @@ export class ModelsHandler {
 
     // Ensure we have the moduleModels
     Object.keys(commentThreadsByPath).forEach(path => {
-      this.getModuleModelByPath(path).comments = commentThreadsByPath[path];
+      // TODO(@christianalfoni): We should probably make this dynamic on model load instead of
+      // on editor load? Preferably we don't keep all moduleModels for files that are not opened.
+      this.getOrCreateModuleModelByPath(path).comments =
+        commentThreadsByPath[path];
     });
 
     // Apply the decorations
@@ -248,14 +257,14 @@ export class ModelsHandler {
     );
   }
 
-  public async applyOperation(moduleShortid: string, operation: any) {
+  public async applyOperation(moduleShortid: string, operation: TextOperation) {
     const module = this.sandbox.modules.find(m => m.shortid === moduleShortid);
 
     if (!module) {
       return;
     }
 
-    const moduleModel = this.getModuleModelByPath(module.path);
+    const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
     const modelEditor = this.editorApi.editorService.editors.find(
       editor => editor.resource && editor.resource.path === moduleModel.path
@@ -291,11 +300,11 @@ export class ModelsHandler {
 
   public async setModuleCode(module: Module) {
     const moduleModel = this.getModuleModelByPath(module.path);
-    const model = await moduleModel.model;
 
-    if (!model) {
+    if (moduleModel?.model) {
       return;
     }
+    const model = await moduleModel.model;
 
     const oldCode = model.getValue();
     const changeOperation = getTextOperation(oldCode, module.code);
@@ -335,13 +344,17 @@ export class ModelsHandler {
     userSelections: EditorSelection[],
     showNameTag = true
   ) {
-    const moduleModel = this.getModuleModelByPath(module.path);
-
-    moduleModel.selections = userSelections;
-
-    if (!moduleModel.model) {
+    if (!this.moduleModels['/sandbox' + module.path]) {
       return;
     }
+
+    const moduleModel = this.getModuleModelByPath(module.path);
+
+    if (!moduleModel?.model) {
+      return;
+    }
+
+    moduleModel.selections = userSelections;
 
     const model = await moduleModel.model;
     const lines = model.getLinesContent() || [];
@@ -641,7 +654,7 @@ export class ModelsHandler {
             this.sandbox.directories
           );
 
-          const moduleModel = this.getModuleModelByPath(module.path);
+          const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
           moduleModel.model = model;
           moduleModel.changeListener = this.getModelContentChangeListener(
