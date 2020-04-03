@@ -1,5 +1,6 @@
 import {
   EditorSelection,
+  IModuleState,
   Module,
   Sandbox,
 } from '@codesandbox/common/lib/types';
@@ -8,7 +9,6 @@ import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 
 import { getSavedCode } from '../../utils/sandbox';
-import { IModuleStateModule } from './types';
 
 export const clearUserSelections: Action<string | null> = (
   { state, effects },
@@ -61,7 +61,11 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
   state.live.isLoading = true;
 
   try {
-    const { roomInfo, liveUserId } = await effects.live.joinChannel(id);
+    const {
+      roomInfo,
+      liveUserId,
+      moduleState,
+    } = await effects.live.joinChannel(id);
 
     state.live.roomInfo = roomInfo;
     state.live.liveUserId = liveUserId;
@@ -74,6 +78,8 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
       state.editor.sandboxes[sandboxId] = sandbox;
       state.editor.currentId = sandboxId;
     }
+
+    actions.live.internal.initializeModuleState(moduleState);
 
     effects.analytics.track('Live Session Joined', {});
     effects.live.listen(actions.live.liveMessageReceived);
@@ -90,10 +96,6 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
 
   return null;
 };
-
-interface IModuleState {
-  [moduleId: string]: IModuleStateModule;
-}
 
 export const initializeModuleState: Action<IModuleState> = (
   { state, actions, effects },

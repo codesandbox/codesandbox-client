@@ -42,9 +42,7 @@ export const initializeSandbox: AsyncAction<Sandbox> = async (
   sandbox
 ) => {
   await Promise.all([
-    actions.editor.internal
-      .initializeLiveSandbox(sandbox)
-      .then(() => effects.live.sendModuleStateSyncRequest()),
+    actions.editor.internal.initializeLiveSandbox(sandbox),
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
   ]);
@@ -173,13 +171,6 @@ export const saveCode: AsyncAction<{
       state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
     ) {
       effects.executor.updateFiles(sandbox);
-    }
-
-    if (state.live.isLive && state.live.isCurrentEditor) {
-      effects.live.sendModuleSaved({
-        ...module,
-        code,
-      });
     }
 
     await actions.editor.internal.updateCurrentTemplate();

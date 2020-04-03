@@ -8,11 +8,11 @@ import {
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
-import { logError } from '@codesandbox/common/lib/utils/analytics';
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
@@ -573,7 +573,12 @@ export const onOperation: Operator<LiveMessage<{
       // Something went wrong, probably a sync mismatch. Request new version
       console.error('Something went wrong with applying OT operation');
 
-      logError(e);
+      logBreadcrumb({
+        category: 'ot',
+        message: `Apply operation from server to OT client failed ${JSON.stringify(
+          data
+        )}`,
+      });
 
       effects.live.sendModuleStateSyncRequest();
     }

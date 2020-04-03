@@ -7,6 +7,7 @@ import {
   ModuleTab,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
@@ -33,7 +34,6 @@ import history from 'app/utils/history';
 import { Selection, TextOperation } from 'ot';
 import { json } from 'overmind';
 
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import eventToTransform from '../../utils/event-to-transform';
 import { SERVER } from '../../utils/items';
 import * as internalActions from './internalActions';
@@ -213,8 +213,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     !state.live.isLive
   ) {
     actions.files.internal.recoverFiles();
-  } else if (state.live.isLive) {
-    await effects.live.sendModuleStateSyncRequest();
   }
 
   effects.vscode.openModule(state.editor.currentModule);
@@ -423,7 +421,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
       );
 
       await Promise.all(
-        changedModules.map(module => effects.live.saveModule(module))
+        changedModules.map(module => effects.live.saveModule(module.shortid))
       );
 
       const updatedModules = await effects.api.saveModules(

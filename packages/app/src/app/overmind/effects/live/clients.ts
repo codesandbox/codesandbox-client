@@ -126,55 +126,45 @@ export class CodeSandboxOTClient extends OTClient {
   }
 }
 
-export default (
-  sendOperation: SendOperation,
-  applyOperation: ApplyOperation
-): {
-  getAll(): CodeSandboxOTClient[];
-  get(
-    moduleShortid: string,
-    revision?: number,
-    force?: boolean
-  ): CodeSandboxOTClient;
-  create(moduleShortid: string, revision: number): CodeSandboxOTClient;
-  clear(): void;
-  reset(moduleShortid: string, revision: number): void;
-} => {
-  const modules = new Map<string, CodeSandboxOTClient>();
+const modules = new Map<string, CodeSandboxOTClient>();
 
-  return {
-    getAll() {
-      return Array.from(modules.values());
-    },
-    get(moduleShortid, revision = 0, force = false) {
-      let client = modules.get(moduleShortid);
+export default {
+  getAll() {
+    return Array.from(modules.values());
+  },
+  get(moduleShortid, revision = 0, force = false) {
+    let client = modules.get(moduleShortid);
 
-      if (!client || force) {
-        client = this.create(moduleShortid, revision);
+    if (!client || force) {
+      client = this.create(moduleShortid, revision);
+    }
+
+    return client!;
+  },
+  create(
+    moduleShortid,
+    initialRevision,
+    sendOperation: SendOperation,
+    applyOperation: ApplyOperation
+  ) {
+    const client = new CodeSandboxOTClient(
+      initialRevision || 0,
+      moduleShortid,
+      (revision, operation) =>
+        sendOperation(moduleShortid, revision, operation),
+      operation => {
+        applyOperation(moduleShortid, operation);
       }
+    );
+    modules.set(moduleShortid, client);
 
-      return client!;
-    },
-    create(moduleShortid, initialRevision) {
-      const client = new CodeSandboxOTClient(
-        initialRevision || 0,
-        moduleShortid,
-        (revision, operation) =>
-          sendOperation(moduleShortid, revision, operation),
-        operation => {
-          applyOperation(moduleShortid, operation);
-        }
-      );
-      modules.set(moduleShortid, client);
-
-      return client;
-    },
-    reset(moduleShortid, revision) {
-      modules.delete(moduleShortid);
-      this.create(moduleShortid, revision);
-    },
-    clear() {
-      modules.clear();
-    },
-  };
+    return client;
+  },
+  reset(moduleShortid, revision) {
+    modules.delete(moduleShortid);
+    this.create(moduleShortid, revision);
+  },
+  clear() {
+    modules.clear();
+  },
 };

@@ -1,8 +1,10 @@
 import {
+  IModuleStateModule,
   LiveMessage,
   LiveMessageEvent,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
@@ -10,7 +12,6 @@ import { filter, fork, pipe } from 'overmind';
 
 import * as internalActions from './internalActions';
 import * as liveMessage from './liveMessageOperators';
-import { IModuleStateModule } from './types';
 
 export const internal = internalActions;
 
@@ -94,7 +95,6 @@ export const roomJoined: AsyncAction<{
     state.editor.modulesByPath = fs;
   });
 
-  effects.live.sendModuleStateSyncRequest();
   effects.vscode.openModule(state.editor.currentModule);
   state.editor.isLoading = false;
 });
@@ -126,8 +126,6 @@ export const createLiveClicked: AsyncAction<string> = async (
     }),
   });
   state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-
-  effects.live.sendModuleStateSyncRequest();
 };
 
 export const liveMessageReceived: Operator<LiveMessage, any> = pipe(
@@ -175,6 +173,13 @@ export const applyTransformation: AsyncAction<{
   } catch (error) {
     // Do not care about the error, but something went wrong and we
     // need a full sync
+    logBreadcrumb({
+      category: 'ot',
+      message: `Apply transformation to VSCode failed ${JSON.stringify({
+        moduleShortid,
+        operation,
+      })}`,
+    });
     effects.live.sendModuleStateSyncRequest();
   }
 };

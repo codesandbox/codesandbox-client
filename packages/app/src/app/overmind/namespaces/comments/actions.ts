@@ -277,17 +277,17 @@ export const addComment: AsyncAction<{
   }
 
   const id = OPTIMISTIC_COMMENT_ID;
-  const sandboxId = state.editor.currentSandbox.id;
+  const sandbox = state.editor.currentSandbox;
   const now = new Date().toString();
   const comments = state.comments.comments;
 
-  if (!comments[sandboxId]) {
-    comments[sandboxId] = {};
+  if (!comments[sandbox.id]) {
+    comments[sandbox.id] = {};
   }
 
   let optimisticComment: CommentFragment;
-  if (state.comments.comments[sandboxId][id]) {
-    optimisticComment = state.comments.comments[sandboxId][id];
+  if (state.comments.comments[sandbox.id][id]) {
+    optimisticComment = state.comments.comments[sandbox.id][id];
   } else {
     optimisticComment = {
       parentComment: parentCommentId ? { id: parentCommentId } : null,
@@ -305,11 +305,11 @@ export const addComment: AsyncAction<{
       references: [],
       comments: [],
     };
-    comments[sandboxId][id] = optimisticComment;
+    comments[sandbox.id][id] = optimisticComment;
   }
 
   if (optimisticComment.parentComment) {
-    comments[sandboxId][optimisticComment.parentComment.id].comments.push({
+    comments[sandbox.id][optimisticComment.parentComment.id].comments.push({
       id,
     });
   }
@@ -318,30 +318,32 @@ export const addComment: AsyncAction<{
   try {
     let comment: CommentFragment;
     if (optimisticComment.references.length) {
-      const response = await effects.gql.mutations.createCodeComment({
-        sandboxId,
+      const moduleShortid = sandbox.modules.find(
+        moduleItem =>
+          moduleItem.path === optimisticComment.references[0].metadata.path
+      )?.shortid;
+      comment = await effects.live.saveCodeComment(moduleShortid, {
+        sandboxId: sandbox.id,
         content,
         codeReference: optimisticComment.references[0].metadata,
       });
-      comment = response.createCodeComment;
     } else {
-      const response = await effects.gql.mutations.createComment({
+      comment = await effects.live.saveComment({
         parentCommentId: parentCommentId || null,
-        sandboxId,
+        sandboxId: sandbox.id,
         content,
       });
-      comment = response.createComment;
     }
 
-    delete comments[sandboxId][id];
-    comments[sandboxId][comment.id] = comment;
+    delete comments[sandbox.id][id];
+    comments[sandbox.id][comment.id] = comment;
 
     if (parentCommentId) {
-      comments[sandboxId][parentCommentId].comments.push({
+      comments[sandbox.id][parentCommentId].comments.push({
         id: comment.id,
       });
-      comments[sandboxId][parentCommentId].comments.splice(
-        comments[sandboxId][parentCommentId].comments.findIndex(
+      comments[sandbox.id][parentCommentId].comments.splice(
+        comments[sandbox.id][parentCommentId].comments.findIndex(
           childComment => childComment.id === id
         ),
         1
@@ -350,13 +352,13 @@ export const addComment: AsyncAction<{
 
     if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
       state.comments.currentCommentId = comment.id;
-      delete comments[sandboxId][OPTIMISTIC_COMMENT_ID];
+      delete comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
     }
   } catch (error) {
     effects.notificationToast.error(
       'Unable to create your comment, please try again'
     );
-    delete comments[sandboxId][id];
+    delete comments[sandbox.id][id];
   }
 };
 
