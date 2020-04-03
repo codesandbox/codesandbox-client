@@ -8,14 +8,19 @@ import {
   Text,
   Textarea,
 } from '@codesandbox/components';
-import { createGlobalStyle } from 'styled-components';
 import css from '@styled-system/css';
+import {
+  DIALOG_TRANSITION_DURATION,
+  DIALOG_WIDTH,
+  REPLY_TRANSITION_DELAY,
+} from 'app/constants';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 import { motion, useAnimation } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
+import { createGlobalStyle } from 'styled-components';
 
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
@@ -25,10 +30,6 @@ import { useScrollTop } from './use-scroll-top';
 
 export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
-
-const DIALOG_WIDTH = 420;
-const REPLY_TRANSITION_DELAY = 0.5;
-export const DIALOG_TRANSITION_DURATION = 0.25;
 
 export const Dialog: React.FC = () => {
   const { state } = useOvermind();
