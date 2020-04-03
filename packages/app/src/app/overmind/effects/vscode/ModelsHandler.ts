@@ -336,6 +336,43 @@ export class ModelsHandler {
     });
   }
 
+  private getSelectionDecorationId = (
+    userId: string,
+    modelId: string,
+    shortid: string
+  ) => [userId, modelId, shortid].join('|');
+
+  private cleanUserSelections = (
+    model: any,
+    moduleShortid: string,
+    userSelectionsToKeep: EditorSelection[]
+  ) => {
+    const existingSelectionDecorations = Object.keys(
+      this.userSelectionDecorations
+    ).filter(s => s.endsWith([model.id, moduleShortid].join('|')));
+
+    const newUserSelections = {};
+    for (let i = 0; i < userSelectionsToKeep.length; i++) {
+      newUserSelections[userSelectionsToKeep[i].userId] =
+        userSelectionsToKeep[i];
+    }
+
+    existingSelectionDecorations.forEach(existingDecorationId => {
+      const userId = existingDecorationId.split('|')[0];
+      if (!newUserSelections[userId]) {
+        const decorationId = this.getSelectionDecorationId(
+          userId,
+          model.id,
+          moduleShortid
+        );
+        this.userSelectionDecorations[decorationId] = model.deltaDecorations(
+          this.userSelectionDecorations[decorationId] || [],
+          []
+        );
+      }
+    });
+  };
+
   nameTagTimeouts: { [name: string]: number } = {};
 
   public async updateUserSelections(
@@ -343,10 +380,6 @@ export class ModelsHandler {
     userSelections: EditorSelection[],
     showNameTag = true
   ) {
-    if (!this.moduleModels['/sandbox' + module.path]) {
-      return;
-    }
-
     const moduleModel = this.getModuleModelByPath(module.path);
 
     if (!moduleModel?.model) {
@@ -356,10 +389,16 @@ export class ModelsHandler {
     const model = await moduleModel.model;
     const lines = model.getLinesContent() || [];
 
+    this.cleanUserSelections(model, module.shortid, userSelections);
+
     userSelections.forEach((data: EditorSelection) => {
       const { userId } = data;
 
-      const decorationId = userId + model.id + module.shortid;
+      const decorationId = this.getSelectionDecorationId(
+        userId,
+        model.id,
+        module.shortid
+      );
       if (data.selection === null) {
         this.userSelectionDecorations[decorationId] = model.deltaDecorations(
           this.userSelectionDecorations[decorationId] || [],

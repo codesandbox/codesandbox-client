@@ -167,7 +167,7 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
     if (
       userId === state.live.liveUserId ||
       user.currentModuleShortid !== moduleShortid ||
-      !state.live.isEditor(userId)
+      (!state.live.isEditor(userId) && state.live.followingUserId !== userId)
     ) {
       return;
     }

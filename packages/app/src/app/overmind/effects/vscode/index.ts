@@ -617,15 +617,17 @@ export class VSCodeEffect {
     if (activeEditor) {
       const model = activeEditor.getModel();
 
-      const lineColumnPos = indexToLineAndColumn(
-        model.getLinesContent() || [],
-        pos
-      );
+      if (model) {
+        const lineColumnPos = indexToLineAndColumn(
+          model.getLinesContent() || [],
+          pos
+        );
 
-      activeEditor.revealPositionInCenterIfOutsideViewport(
-        lineColumnPos,
-        scrollType
-      );
+        activeEditor.revealPositionInCenterIfOutsideViewport(
+          lineColumnPos,
+          scrollType
+        );
+      }
     }
   }
 

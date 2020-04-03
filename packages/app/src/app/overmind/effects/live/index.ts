@@ -4,6 +4,7 @@ import {
   Module,
   RoomInfo,
   UserViewRange,
+  UserSelection,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
@@ -519,7 +520,7 @@ class Live {
   sendUserSelection(
     moduleShortid: string | null,
     liveUserId: string,
-    selection: any
+    selection: UserSelection
   ) {
     return this.send('user:selection', {
       liveUserId,
