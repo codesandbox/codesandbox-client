@@ -10,12 +10,18 @@ type Props = {
 export const AddComment: React.FC<Props> = ({ onSubmit }) => {
   const [value, setValue] = useState('');
 
-  // Form elements submit on Enter, except Textarea :)
-  const submitOnEnter = event => {
-    if (event.keyCode === ENTER && !event.shiftKey && value) {
-      event.preventDefault();
+  const submit = event => {
+    event.preventDefault();
+    if (value) {
       onSubmit(value);
       setValue('');
+    }
+  };
+
+  // Form elements submit on Enter, except Textarea :)
+  const submitOnEnter = event => {
+    if (event.keyCode === ENTER && !event.shiftKey) {
+      submit(event);
     }
   };
 
@@ -30,7 +36,7 @@ export const AddComment: React.FC<Props> = ({ onSubmit }) => {
         boxShadow: theme => `0px -32px 32px ${theme.colors.dialog.background}`,
       })}
     >
-      <form onSubmit={onSubmit}>
+      <form onSubmit={submit}>
         <FormField label="Add a comment" hideLabel>
           <Textarea
             autosize
