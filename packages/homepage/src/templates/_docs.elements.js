@@ -187,11 +187,7 @@ export const Heading = styled.div`
     ${cardCSS};
     position: relative;
 
-    background-image: linear-gradient(
-      -45deg,
-      ${theme.secondary.darken(0.1)()} 0%,
-      ${theme.secondary.darken(0.3)()} 100%
-    );
+    background-color: #0971f1;
     padding: 2rem 2rem;
     color: ${props => props.theme.homepage.white};
   `};
