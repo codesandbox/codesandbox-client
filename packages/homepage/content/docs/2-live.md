@@ -7,7 +7,7 @@ description:
 
 ## What is Live?
 
-Live is a mode in CodeSandbox that allows you to share your sandbox with others
+All sandboxes on CodeSandbox are live, meaning you can share your sandbox with others
 for real time collaboration on code. You can simultaneously create, delete, edit
 and move files and code with others in a sandbox, as well as chat about your
 changes. It's like Google Docs, but for coding.
@@ -16,9 +16,7 @@ changes. It's like Google Docs, but for coding.
 
 ## Going Live
 
-You can go live by pressing the 'Go Live' button under the Live tab in the
-left-hand activity bar in the editor. This will give you a URL that you can
-share with others to join the session. Invited editors can only make edits to
+All sandboxes are live by default, you can invite contributors to join the sandbox using the share button from the top bar in the editor. In addition, if you go to the Live tab from the activity bar, you can get a Live URL to share with guests (non-members of the sandbox) so they can temporarily join the session. Guest editors can only make edits to
 the sandbox while they are in the live session, they cannot do this when just
 viewing the sandbox.
 
@@ -38,10 +36,4 @@ You can enable Classroom Mode from the Live Mode drop-down menu.
 
 ![Classroom mode](./images/live-classroom.png)
 
-You can give someone editor rights by pressing the '+' icon next to their name.
-
-![Going Live](./images/live-make-editor.png)
-
-You can make someone a spectator by clicking the '-' icon next to their name.
-
-![Going Live](./images/live-make-spectator.png)
+You can give someone editor rights by pressing the '+' icon next to their name, or you can make someone a spectator by clicking the '-' icon next to their name.
