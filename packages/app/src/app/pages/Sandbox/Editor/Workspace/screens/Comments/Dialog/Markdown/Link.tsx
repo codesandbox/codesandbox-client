@@ -19,6 +19,7 @@ export const LinkElement = ({ href, children, ...props }) => {
           display: 'inline',
           width: 'auto',
           padding: 0,
+          textAlign: 'left',
         })}
         onClick={() => actions.comments.selectComment({ commentId })}
       >
