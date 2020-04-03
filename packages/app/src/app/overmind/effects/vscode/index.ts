@@ -141,7 +141,7 @@ export class VSCodeEffect {
       getState: options.getState,
       getSignal: options.getSignal,
     };
-    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 500);
+    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 200);
 
     this.prepareElements();
 
@@ -617,15 +617,17 @@ export class VSCodeEffect {
     if (activeEditor) {
       const model = activeEditor.getModel();
 
-      const lineColumnPos = indexToLineAndColumn(
-        model.getLinesContent() || [],
-        pos
-      );
+      if (model) {
+        const lineColumnPos = indexToLineAndColumn(
+          model.getLinesContent() || [],
+          pos
+        );
 
-      activeEditor.revealPositionInCenterIfOutsideViewport(
-        lineColumnPos,
-        scrollType
-      );
+        activeEditor.revealPositionInCenterIfOutsideViewport(
+          lineColumnPos,
+          scrollType
+        );
+      }
     }
   }
 

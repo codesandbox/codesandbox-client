@@ -210,7 +210,7 @@ const DialogAddComment: React.FC<{
           border: 'none',
           paddingLeft: 4,
         })}
-        style={{ minHeight: 32 }}
+        style={{ lineHeight: 1.2, minHeight: 32 }}
         value={value}
         onChange={e => setValue(e.target.value)}
         placeholder="Add comment..."
@@ -249,9 +249,15 @@ const DragHandle: React.FC<{
 );
 
 const DialogHeader = ({ comment, hasShadow }) => {
-  const { state, actions } = useOvermind();
+  const {
+    state: { editor, user },
+    actions: { comments },
+  } = useOvermind();
 
-  const closeDialog = () => actions.comments.closeComment();
+  const closeDialog = () => comments.closeComment();
+  const canResolve =
+    hasPermission(editor.currentSandbox.authorization, 'write_project') ||
+    comment.user.id === user.id;
 
   return (
     <Stack
@@ -273,20 +279,17 @@ const DialogHeader = ({ comment, hasShadow }) => {
         Comment
       </Text>
       <Stack align="center">
-        {hasPermission(
-          state.editor.currentSandbox.authorization,
-          'comment'
-        ) && (
+        {canResolve && (
           <IconButton
             onClick={() =>
-              actions.comments.resolveComment({
+              comments.resolveComment({
                 commentId: comment.id,
                 isResolved: !comment.isResolved,
               })
             }
             name="check"
             size={14}
-            title="Resolve Comment"
+            title={comment.isResolved ? 'Unresolve Comment' : 'Resolve Comment'}
             css={css({
               transition: 'color',
               transitionDuration: theme => theme.speeds[1],
@@ -309,7 +312,10 @@ const DialogHeader = ({ comment, hasShadow }) => {
 };
 
 const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
-  const { state, actions } = useOvermind();
+  const {
+    state,
+    actions: { comments },
+  } = useOvermind();
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -330,8 +336,8 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
                 </Menu.Item>
                 <Menu.Item
                   onSelect={() => {
-                    actions.comments.closeComment();
-                    actions.comments.deleteComment({
+                    comments.closeComment();
+                    comments.deleteComment({
                       commentId: comment.id,
                     });
                   }}
@@ -358,7 +364,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
           <EditComment
             initialValue={comment.content}
             onSave={async newValue => {
-              await actions.comments.updateComment({
+              await comments.updateComment({
                 commentId: comment.id,
                 content: newValue,
               });
@@ -556,7 +562,7 @@ const AddReply = ({ comment, ...props }) => {
         borderRadius: 0,
         padding: 4,
       })}
-      style={{ minHeight: 54 }}
+      style={{ lineHeight: 1.2, minHeight: 54 }}
       value={value}
       onChange={e => setValue(e.target.value)}
       placeholder="Reply..."

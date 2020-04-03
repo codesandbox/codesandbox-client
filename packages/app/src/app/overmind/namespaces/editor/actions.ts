@@ -519,10 +519,7 @@ export const moduleSelected: AsyncAction<
     await actions.editor.internal.setCurrentModule(module);
 
     if (state.live.isLive && state.live.liveUser && state.live.roomInfo) {
-      effects.vscode.updateUserSelections(
-        module,
-        actions.live.internal.getSelectionsForModule(module)
-      );
+      actions.editor.internal.updateSelectionsOfModule({ module });
       state.live.liveUser.currentModuleShortid = module.shortid;
 
       if (state.live.followingUserId) {
