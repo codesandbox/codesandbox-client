@@ -264,6 +264,8 @@ const DialogHeader = ({ comment, hasShadow }) => {
           hasShadow
             ? `0px 32px 32px ${theme.colors.dialog.background}`
             : 'none',
+        transition: 'box-shadow ease-in-out',
+        transitionDuration: theme => theme.speeds[1],
       })}
     >
       <Text size={3} weight="bold">
