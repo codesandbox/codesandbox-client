@@ -56,21 +56,40 @@ export function initializeSettings() {
     const settings = JSON5.parse(
       fs.readFileSync('/vscode/settings.json').toString()
     );
-    settings['javascript.autoClosingTags'] = false;
-    settings['typescript.autoClosingTags'] = false;
-    settings['html.autoClosingTags'] = false;
-    settings['typescript.tsserver.useSeparateSyntaxServer'] = false;
+
+    let settingsChanged = false;
+    const changeIfNeeded = (field: string, value: unknown) => {
+      if (settings[field] !== value) {
+        settings[field] = value;
+        return true;
+      }
+      return settingsChanged || false;
+    };
+
+    settingsChanged = changeIfNeeded('javascript.autoClosingTags', false);
+    settingsChanged = changeIfNeeded('typescript.autoClosingTags', false);
+    settingsChanged = changeIfNeeded('html.autoClosingTags', false);
+    settingsChanged = changeIfNeeded(
+      'typescript.tsserver.useSeparateSyntaxServer',
+      false
+    );
 
     if (!settings['workbench.colorTheme']) {
       // if you have not changed the theme ever,
       // we set codesandbox black as the theme for you
-      settings['workbench.colorTheme'] = 'CodeSandbox Black';
+
+      settingsChanged = changeIfNeeded(
+        'workbench.colorTheme',
+        'CodeSandbox Black'
+      );
     }
 
-    fs.writeFileSync(
-      '/vscode/settings.json',
-      JSON.stringify(settings, null, 2)
-    );
+    if (settingsChanged) {
+      fs.writeFileSync(
+        '/vscode/settings.json',
+        JSON5.stringify(settings, { quote: '"', space: 2, replacer: null })
+      );
+    }
   } catch (e) {
     console.warn(e);
   }
