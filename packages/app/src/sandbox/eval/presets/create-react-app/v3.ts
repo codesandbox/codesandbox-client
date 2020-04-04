@@ -11,6 +11,7 @@ import rawTranspiler from '../../transpilers/raw';
 import svgrTranspiler from '../../transpilers/svgr';
 import sassTranspiler from '../../transpilers/sass';
 import refreshTranspiler from '../../transpilers/react/refresh-transpiler';
+import styleProcessor from '../../transpilers/vue/style-compiler';
 import {
   hasRefresh,
   aliases,
@@ -199,6 +200,7 @@ export default function initialize() {
           preset.registerTranspiler(
             module => /\.module\.css$/.test(module.path),
             [
+              { transpiler: styleProcessor },
               {
                 transpiler: stylesTranspiler,
                 options: { module: true, hmrEnabled: isRefresh },
@@ -207,6 +209,7 @@ export default function initialize() {
           );
 
           preset.registerTranspiler(module => /\.css$/.test(module.path), [
+            { transpiler: styleProcessor },
             {
               transpiler: stylesTranspiler,
               options: { hmrEnabled: isRefresh },
