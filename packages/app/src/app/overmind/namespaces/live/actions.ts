@@ -186,7 +186,7 @@ export const sendCurrentSelection: Action = ({ state, effects }) => {
   }
 
   const { liveUserId } = state.live;
-  if (liveUserId) {
+  if (liveUserId && state.live.currentSelection) {
     effects.live.sendUserSelection(
       state.editor.currentModuleShortid,
       liveUserId,
