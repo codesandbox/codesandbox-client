@@ -114,17 +114,20 @@ export const Post = styled.div`
   }
 
   > h3{
+    color:#fff;
     font-size: 19px;
     margin-top: 1rem;
   }
 
   >   h4 {
+    color:#fff;
     font-size: 19px;
     margin-top: 0rem;
   }
 
 
   > h5 {
+    color:#fff;
     margin:0;
     font-size: 1rem;
     font-weight: 700;
@@ -161,11 +164,12 @@ export const Post = styled.div`
 
   > ol li:before {
     content: '+ ';
-    font-weight: 700;
+    font-weight: 600;
     color:#5BC266;
     font-size:19px;
     width: 10px;
     height: 10px;
+    top:-1px;
     left: 5px;
   
     position: absolute;
