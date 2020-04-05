@@ -51,10 +51,15 @@ const Blog = ({
           },
         }) => (
           <Posts key={id}>
-            <Aside>Released on {format(date, 'MMMM / DD / YYYY')}</Aside>
+            <Aside>
+              <Postitle>
+                CodeSandbox <strong> {title} </strong>
+              </Postitle>
+              Released on {format(date, 'MMM / DD / YYYY')}
+            </Aside>
 
             <Thumbnail alt={title} src={banner} />
-            <Postitle>{title} </Postitle>
+
             <Post dangerouslySetInnerHTML={{ __html: html }} />
           </Posts>
         )

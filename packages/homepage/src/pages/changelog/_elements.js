@@ -41,13 +41,11 @@ export const Posts = styled.article`
   grid-template-columns: 15rem 1fr;
   grid-template-areas:
     'aside img'
-    '. title'
     '. content';
 
   @media screen and (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-areas:
-      'title'
       'aside'
       'img'
       'content';
@@ -68,7 +66,7 @@ export const Aside = styled.aside`
   font-variant-caps: normal;
   font-weight: 400;
   line-height: 18px;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.65);
   margin: 4rem 0;
   grid-area: aside;
 
@@ -80,16 +78,16 @@ export const Aside = styled.aside`
 export const Thumbnail = styled.img`
   margin-bottom: 2rem;
   width: 100%;
-  border-radius: 0.5rem;
   overflow: hidden;
   grid-area: img;
+  clip-path: inset(0 0 0 0 round 0.5rem);
 `;
 
 export const Postitle = styled.h2`
   font-size: 1.6rem;
-  font-weight: 600;
-  margin: 0 0 0.25rem 0;
-  grid-area: title;
+  font-weight: 200;
+  margin: 2rem 0 0.5rem 0;
+  color: #fff;
 `;
 
 export const Post = styled.div`
@@ -99,7 +97,6 @@ export const Post = styled.div`
   color: rgba(255, 255, 255, 0.75);
   margin-top: 0.8em;
   margin-bottom: 2rem;
-  grid-area: content;
 
   > p a {
     text-decoration: none;
@@ -107,21 +104,32 @@ export const Post = styled.div`
 
   > h3,
   h4 {
-    color: #fff;
+    font-size: 19px;
+
     margin-top: 2rem;
   }
 
   > ul {
     padding: 0;
+    margin: 0;
+  }
+
+  > ul li {
+    list-style: none;
+    line-height: 2rem;
+    padding: 0px 0px 0px 36px;
+    position: relative;
   }
 
   > ul li:before {
-background-image: url(data:image/svg+xml;utf8,<svg width='15' height='11' viewBox='0 0 15 11' xml…ke-width='2' stroke='%230055FF' fill='none' stroke-linecap='round'/></svg>);
-    content: "";
+    content: ' ';
+    background-image: url("data:image/svg+xml;utf8,<svg width='15' height='11' viewBox='0 0 15 11' xmlns='http://www.w3.org/2000/svg'><path id='mask' d='M2 6l3.5 3.5L13 2' stroke-width='2' stroke='%236cc7f6'  fill='none' stroke-linecap='round'/></svg>");
     height: 11px;
     left: 2px;
+    top: 10px;
     position: absolute;
-    top: 6px;
     width: 15px;
+  }
 
+  grid-area: content;
 `;

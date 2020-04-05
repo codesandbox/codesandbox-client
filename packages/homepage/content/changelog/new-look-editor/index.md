@@ -1,11 +1,15 @@
 ---
 banner: ./images/new-look.png
-title: A Snappier, New Look Editor
-date: 2017-11-16
+title: v3.5
+date: 2020-03-05
 description:
   We've evolved the design of the editor to get to you to your code faster.
   While loading and forking take a fraction of the time.
----When chatting with folks in the CodeSandbox community, there’s one word that
+---
+
+### A Snappier, New Look Editor
+
+When chatting with folks in the CodeSandbox community, there’s one word that
 comes up more than any other: Speed! It’s a core reason why people choose
 CodeSandbox for web development—so they can get started prototyping quickly,
 testing out ideas, and learning new frameworks and techniques. But it’s also one

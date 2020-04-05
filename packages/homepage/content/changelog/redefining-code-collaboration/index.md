@@ -1,17 +1,28 @@
 ---
 banner: ./images/share.png
-title: Redefining Code Collaboration
-date: 2017-11-16
+title: v3.6
+date: 2020-03-25
 description:
   A big update to CodeSandbox Live — Live by default, new access controls,
   presence, and follower mode.
 ---
+
+### Redefining Code Collaboration
 
 CodeSandbox Live made collaboration easier by giving you the ability to code in
 real-time with others. It's used for pair programming, at hackathons, during job
 interviews, and in classrooms, enabling two or more folks to work on code
 simultaneously. What's more, our [basic team support](/dashboard/teams/new) has
 reduced friction in sharing ownership of sandboxes within a group.
+
+#### Features
+
+<ul>
+  <li>Live 2.0</li>
+  <li>New Access Controls</li>
+  <li>Presence</li>
+  <li>Follower Mode</li>
+</ul>
 
 #### Fixes
 
