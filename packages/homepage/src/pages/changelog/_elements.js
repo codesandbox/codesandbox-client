@@ -67,7 +67,7 @@ export const Aside = styled.aside`
   font-weight: 400;
   line-height: 18px;
   color: rgba(255, 255, 255, 0.65);
-  margin: 4rem 0;
+  margin: 4rem 0 0 0;
   grid-area: aside;
 
   @media screen and (max-width: 768px) {
@@ -104,16 +104,25 @@ export const Post = styled.div`
   margin-bottom: 2rem;
   grid-area: content;
   
-
-  > p a {
+ > p  a{
     text-decoration: none;
   }
 
-  > h3,
-  h4 {
-    font-size: 19px;
-    margin-top: 3rem;
+
+  > p  {
+    margin-bottom: 2rem;
   }
+
+  > h3{
+    font-size: 19px;
+    margin-top: 1rem;
+  }
+
+  >   h4 {
+    font-size: 19px;
+    margin-top: 0rem;
+  }
+
 
   > h5 {
     margin:0;
