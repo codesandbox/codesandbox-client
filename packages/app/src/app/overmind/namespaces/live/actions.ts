@@ -249,11 +249,18 @@ export const onViewRangeChanged: Action<UserViewRange> = (
 };
 
 export const onSelectionChanged: Action<UserSelection> = (
-  { state, effects },
+  { state, effects, actions },
   selection
 ) => {
   if (!state.live.roomInfo) {
     return;
+  }
+
+  if (state.editor.currentModule) {
+    actions.editor.persistCursorToUrl({
+      module: state.editor.currentModule,
+      selection,
+    });
   }
 
   const { liveUserId } = state.live;
@@ -422,7 +429,7 @@ export const revealViewRange: Action<{ liveUserId: string }> = (
   }
 };
 
-export const revealCursorPosition: Action<{ liveUserId: string }> = (
+export const revealCursorPosition: AsyncAction<{ liveUserId: string }> = async (
   { state, effects, actions },
   { liveUserId }
 ) => {
@@ -438,7 +445,7 @@ export const revealCursorPosition: Action<{ liveUserId: string }> = (
       ({ shortid }) => shortid === user.currentModuleShortid
     )[0];
 
-    actions.editor.moduleSelected({ id: module.id });
+    await actions.editor.moduleSelected({ id: module.id });
 
     if (user.selection?.primary?.cursorPosition) {
       effects.vscode.revealPositionInCenterIfOutsideViewport(

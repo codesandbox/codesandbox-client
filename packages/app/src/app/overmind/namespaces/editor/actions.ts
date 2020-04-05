@@ -1,3 +1,4 @@
+import { debounce } from 'lodash-es';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
@@ -6,6 +7,8 @@ import {
   ModuleError,
   ModuleTab,
   WindowOrientation,
+  Module,
+  UserSelection,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
@@ -40,6 +43,54 @@ import * as internalActions from './internalActions';
 export const internal = internalActions;
 
 export const onNavigateAway: Action = () => {};
+
+export const persistCursorToUrl: Action<{
+  module: Module;
+  selection?: UserSelection;
+}> = debounce(({ effects }, { module, selection }) => {
+  effects.router.setParameter('file', module.path);
+  if (selection?.primary?.selection?.length) {
+    const [head, anchor] = selection.primary.selection;
+    const serializedSelection = head + ':' + anchor;
+    effects.router.setParameter('selection', serializedSelection);
+  } else {
+    effects.router.setParameter('selection', null);
+  }
+}, 500);
+
+export const loadCursorFromUrl: AsyncAction = async ({
+  effects,
+  actions,
+  state,
+}) => {
+  try {
+    const path = effects.router.getParameter('file');
+    if (!path) {
+      return;
+    }
+
+    const module = state.editor.currentSandbox.modules.find(
+      m => m.path === path
+    );
+    if (!module) {
+      return;
+    }
+
+    await actions.editor.moduleSelected({ id: module.id });
+
+    const selections = effects.router.getParameter('selection');
+    if (!selections) {
+      return;
+    }
+
+    const [parsedHead, parsedAnchor] = selections.split(':').map(s => +s);
+    if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
+      effects.vscode.setSelection(parsedHead, parsedAnchor);
+    }
+  } catch (e) {
+    /* Ignore */
+  }
+};
 
 export const addNpmDependency: AsyncAction<{
   name: string;
@@ -217,6 +268,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   effects.vscode.openModule(state.editor.currentModule);
+  await actions.editor.loadCursorFromUrl();
 
   if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
     actions.comments.getSandboxComments(sandbox.id);
@@ -512,7 +564,10 @@ export const moduleSelected: AsyncAction<
         )
       : sandbox.modules.filter(moduleItem => moduleItem.id === id)[0];
 
-    if (module.shortid === state.editor.currentModuleShortid) {
+    if (module.shortid === state.editor.currentModuleShortid && path) {
+      // If this comes from VSCode we can return, but if this call comes from CodeSandbox
+      // we shouldn't return, since the promise would resolve sooner than VSCode loaded
+      // the file
       return;
     }
 
@@ -537,6 +592,8 @@ export const moduleSelected: AsyncAction<
       }
 
       effects.live.sendUserCurrentModule(module.shortid);
+
+      actions.editor.persistCursorToUrl({ module });
 
       if (!state.editor.isInProjectView) {
         actions.editor.internal.updatePreviewCode();
