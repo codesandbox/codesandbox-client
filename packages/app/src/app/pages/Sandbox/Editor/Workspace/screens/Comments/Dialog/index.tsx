@@ -188,8 +188,14 @@ const DialogAddComment: React.FC<{
           marginRight={2}
         >
           <Stack gap={2} align="center">
-            <Avatar user={comment.user} />
-            <Text size={3} weight="bold" variant="body">
+            <Element
+              itemprop="author"
+              itemscope=""
+              itemtype="http://schema.org/Person"
+            >
+              <Avatar user={comment.user} />
+            </Element>
+            <Text size={3} weight="bold" variant="body" itemprop="name">
               {comment.user.username}
             </Text>
           </Stack>
@@ -347,7 +353,9 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
         })}
       >
         {!editing ? (
-          <Markdown source={comment.content} />
+          <Element itemprop="text">
+            <Markdown source={comment.content} />
+          </Element>
         ) : (
           <EditComment
             initialValue={comment.content}
