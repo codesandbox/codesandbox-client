@@ -41,8 +41,9 @@ const Blog = ({
       {blogPosts.map(
         ({
           node: {
-            fields: { date, title },
+            fields: { title },
             frontmatter: {
+              date,
               banner: { publicURL: banner },
             },
             html,
@@ -72,7 +73,6 @@ export const query = graphql`
         node {
           fields {
             title
-            date
           }
           frontmatter {
             banner {

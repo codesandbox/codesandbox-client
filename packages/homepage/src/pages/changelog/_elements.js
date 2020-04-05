@@ -114,4 +114,14 @@ export const Post = styled.div`
   > ul {
     padding: 0;
   }
+
+  > ul li:before {
+background-image: url(data:image/svg+xml;utf8,<svg width='15' height='11' viewBox='0 0 15 11' xml…ke-width='2' stroke='%230055FF' fill='none' stroke-linecap='round'/></svg>);
+    content: "";
+    height: 11px;
+    left: 2px;
+    position: absolute;
+    top: 6px;
+    width: 15px;
+
 `;
