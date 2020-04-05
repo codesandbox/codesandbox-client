@@ -19,11 +19,20 @@ export const PageTitle = styled.h1`
   font-weight: 700;
   line-height: 5.5rem;
   letter-spacing: -0.02rem;
+
+  @media screen and (max-width: 768px) {
+    font-size: 2.5rem;
+    line-height: 3.5rem;
+  }
 `;
 
 export const PageSubtitle = styled.h2`
   font-size: 2rem;
   font-weight: 400;
+
+  @media screen and (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 export const Posts = styled.article`
@@ -91,4 +100,18 @@ export const Post = styled.div`
   margin-top: 0.8em;
   margin-bottom: 2rem;
   grid-area: content;
+
+  > p a {
+    text-decoration: none;
+  }
+
+  > h3,
+  h4 {
+    color: #fff;
+    margin-top: 2rem;
+  }
+
+  > ul {
+    padding: 0;
+  }
 `;
