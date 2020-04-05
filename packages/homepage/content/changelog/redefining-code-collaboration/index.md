@@ -18,12 +18,12 @@ reduced friction in sharing ownership of sandboxes within a group.
 
 #### Features
 
-<ul>
+<ol>
   <li>Significant stability and performance improvements</li>
   <li>Project team links and issue peek now work better on mobile devices</li>
   <li>Removed team deletion from the command menu. To remove a team, visit the team settings page</li>
-  <li>API: Fixed pagination on <code>users</code> query</li>
-</ul>
+  <li>API: Fixed pagination on  query</li>
+</ol>
 
 #### Fixes
 
@@ -34,5 +34,5 @@ reduced friction in sharing ownership of sandboxes within a group.
   <li>GitHub autolinking documentation improvements</li>
   <li>Project team links and issue peek now work better on mobile devices</li>
   <li>Removed team deletion from the command menu. To remove a team, visit the team settings page</li>
-<li>API: Fixed pagination on <code>users</code> query</li>
+<li>API: Fixed pagination on query</li>
 </ul>
