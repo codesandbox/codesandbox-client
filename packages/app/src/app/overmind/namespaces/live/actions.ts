@@ -256,13 +256,6 @@ export const onSelectionChanged: Action<UserSelection> = (
     return;
   }
 
-  if (state.editor.currentModule) {
-    actions.editor.persistCursorToUrl({
-      module: state.editor.currentModule,
-      selection,
-    });
-  }
-
   const { liveUserId } = state.live;
   const moduleShortid = state.editor.currentModuleShortid;
   if (!moduleShortid || !liveUserId) {
