@@ -9,7 +9,7 @@ import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
 import {
   Posts,
-  Posstitle,
+  Postitle,
   Post,
   Thumbnail,
   Aside,
@@ -50,10 +50,10 @@ const Blog = ({
           },
         }) => (
           <Posts key={id}>
-            <Thumbnail alt={title} src={banner} />
-            <Posstitle>{title}</Posstitle>
             <Aside>Released on {format(date, 'MMMM / DD / YYYY')}</Aside>
 
+            <Thumbnail alt={title} src={banner} />
+            <Postitle>{title} </Postitle>
             <Post dangerouslySetInnerHTML={{ __html: html }} />
           </Posts>
         )
@@ -65,19 +65,20 @@ const Blog = ({
 export const query = graphql`
   {
     allBlogPosts: allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/changelog/" } }
-      sort: { fields: [fields___date], order: [DESC] }
+      filter: { fileAbsolutePath: { regex: "//changelog/" } }
+      sort: { fields: [frontmatter___date], order: [DESC] }
     ) {
       edges {
         node {
           fields {
-            date(formatString: "MMMM DD, YYYY")
             title
+            date
           }
           frontmatter {
             banner {
               publicURL
             }
+            date
           }
           id
           html
