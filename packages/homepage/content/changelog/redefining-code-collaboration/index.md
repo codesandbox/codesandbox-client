@@ -1,6 +1,7 @@
 ---
 banner: ./images/share.png
 title: v3.6
+slug: share-v3-6
 date: 2020-03-25
 description:
   A big update to CodeSandbox Live — Live by default, new access controls,
@@ -18,10 +19,10 @@ reduced friction in sharing ownership of sandboxes within a group.
 #### Features
 
 <ul>
-  <li>Live 2.0</li>
-  <li>New Access Controls</li>
-  <li>Presence</li>
-  <li>Follower Mode</li>
+  <li>Significant stability and performance improvements</li>
+  <li>Project team links and issue peek now work better on mobile devices</li>
+  <li>Removed team deletion from the command menu. To remove a team, visit the team settings page</li>
+  <li>API: Fixed pagination on <code>users</code> query</li>
 </ul>
 
 #### Fixes

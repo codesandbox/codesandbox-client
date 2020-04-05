@@ -88,6 +88,11 @@ export const Postitle = styled.h2`
   font-weight: 200;
   margin: 2rem 0 0.5rem 0;
   color: #fff;
+
+  > a {
+    color: #fff;
+    text-decoration: none;
+  }
 `;
 
 export const Post = styled.div`
@@ -97,6 +102,8 @@ export const Post = styled.div`
   color: rgba(255, 255, 255, 0.75);
   margin-top: 0.8em;
   margin-bottom: 2rem;
+  grid-area: content;
+  
 
   > p a {
     text-decoration: none;
@@ -105,19 +112,29 @@ export const Post = styled.div`
   > h3,
   h4 {
     font-size: 19px;
-
-    margin-top: 2rem;
+    margin-top: 3rem;
   }
+
+  > h5 {
+    margin:0;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+> image{
+  margin:0;
+}
+
 
   > ul {
     padding: 0;
-    margin: 0;
+    margin: 1rem 0 3rem 0;
   }
 
   > ul li {
     list-style: none;
     line-height: 2rem;
-    padding: 0px 0px 0px 36px;
+    padding: 0px 0px 0px 2rem;
     position: relative;
   }
 
@@ -131,5 +148,8 @@ export const Post = styled.div`
     width: 15px;
   }
 
-  grid-area: content;
+}
+
+
+
 `;
