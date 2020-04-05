@@ -63,6 +63,9 @@ export const loadCursorFromUrl: AsyncAction = async ({
   actions,
   state,
 }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
   try {
     const path = effects.router.getParameter('file');
     if (!path) {
