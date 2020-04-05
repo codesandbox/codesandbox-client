@@ -29,7 +29,7 @@ export const PageSubtitle = styled.h2`
 export const Posts = styled.article`
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 16rem 1fr;
+  grid-template-columns: 15rem 1fr;
   grid-template-areas:
     'aside img'
     '. title'
@@ -59,7 +59,7 @@ export const Aside = styled.aside`
   font-variant-caps: normal;
   font-weight: 400;
   line-height: 18px;
-  color: #757575;
+  color: rgba(255, 255, 255, 0.75);
   margin: 4rem 0;
   grid-area: aside;
 
@@ -83,9 +83,11 @@ export const Postitle = styled.h2`
   grid-area: title;
 `;
 
-export const Post = styled.p`
+export const Post = styled.div`
   font-size: 1.1rem;
   line-height: 1.6rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.75);
   margin-top: 0.8em;
   margin-bottom: 2rem;
   grid-area: content;
