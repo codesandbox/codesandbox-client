@@ -151,7 +151,7 @@ export const Post = styled.div`
     content: ' ';
     background-image: url("data:image/svg+xml;utf8,<svg width='15' height='11' viewBox='0 0 15 11' xmlns='http://www.w3.org/2000/svg'><path id='mask' d='M2 6l3.5 3.5L13 2' stroke-width='2' stroke='%236cc7f6'  fill='none' stroke-linecap='round'/></svg>");
     height: 11px;
-       width: 15px;
+    width: 15px;
     left: 2px;
     top: 10px;
     position: absolute;
@@ -160,15 +160,14 @@ export const Post = styled.div`
 
 
   > ol li:before {
-    content: ' ';
-    background-image: url("data:image/svg+xml;utf8,<svg width='10' height='10' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'>
-<path d='M5.83333 0H4.16667V4.16667H0V5.83333H4.16667V10H5.83333V5.83333H10V4.16667H5.83333V0Z' fill='#5BC266'/>
-</svg>
-");
+    content: '+ ';
+    font-weight: 700;
+    color:#5BC266;
+    font-size:19px;
     width: 10px;
     height: 10px;
     left: 5px;
-    top: 10px;
+  
     position: absolute;
 
   }
