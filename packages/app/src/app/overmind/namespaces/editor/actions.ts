@@ -576,6 +576,8 @@ export const moduleSelected: AsyncAction<
 
     await actions.editor.internal.setCurrentModule(module);
 
+    actions.editor.persistCursorToUrl({ module });
+
     if (state.live.isLive && state.live.liveUser && state.live.roomInfo) {
       actions.editor.internal.updateSelectionsOfModule({ module });
       state.live.liveUser.currentModuleShortid = module.shortid;
@@ -595,8 +597,6 @@ export const moduleSelected: AsyncAction<
       }
 
       effects.live.sendUserCurrentModule(module.shortid);
-
-      actions.editor.persistCursorToUrl({ module });
 
       if (!state.editor.isInProjectView) {
         actions.editor.internal.updatePreviewCode();
