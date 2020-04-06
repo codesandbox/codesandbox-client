@@ -13,7 +13,9 @@ export const CommentsAPI = () => {
   return (
     <>
       <CommentsGlobalStyles />
-      {comments.currentCommentId && <CommentDialog />}
+      {comments.currentCommentId && comments.currentComment ? (
+        <CommentDialog />
+      ) : null}
       {comments.multiCommentsSelector && (
         <MultiComment {...comments.multiCommentsSelector} />
       )}
