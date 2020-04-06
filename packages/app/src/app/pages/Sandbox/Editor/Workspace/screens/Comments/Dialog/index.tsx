@@ -82,81 +82,95 @@ export const Dialog: React.FC = () => {
     setRepliesRendered(false);
   }, [comment.id]);
 
+  const [dragging, setDragging] = React.useState(false);
+
   const onDragHandlerPan = (deltaX: number, deltaY: number) => {
     controller.set((_, target) => ({
       x: Number(target.x) + deltaX,
       y: Number(target.y) + deltaY,
     }));
+    setDragging(true);
+  };
+
+  const onDragHandlerPanEnd = () => {
+    setDragging(false);
   };
 
   if (!currentCommentPositions) {
     return null;
   }
   return (
-    <motion.div
-      key={isCodeComment ? 'code' : 'global'}
-      initial={{ ...initialPosition, scale: 0.5, opacity: 0 }}
-      animate={controller}
-      transition={{ duration: DIALOG_TRANSITION_DURATION }}
-      style={{ position: 'absolute', zIndex: 2 }}
-    >
-      <Stack
-        ref={dialogRef}
-        direction="vertical"
-        css={css({
-          position: 'absolute',
-          zIndex: 2,
-          backgroundColor: 'dialog.background',
-          color: 'dialog.foreground',
-          border: '1px solid',
-          borderColor: 'dialog.border',
-          borderRadius: 4,
-          width: DIALOG_WIDTH,
-          height: 'auto',
-          maxHeight: '80vh',
-          fontFamily: 'Inter, sans-serif',
-          overflow: 'hidden',
-          boxShadow: 2,
-        })}
+    <>
+      {dragging && <Overlay />}
+      <motion.div
+        key={isCodeComment ? 'code' : 'global'}
+        initial={{ ...initialPosition, scale: 0.5, opacity: 0 }}
+        animate={controller}
+        transition={{ duration: DIALOG_TRANSITION_DURATION }}
+        style={{ position: 'absolute', zIndex: 2 }}
       >
-        {isNewComment && editing ? (
-          <DialogAddComment
-            comment={comment}
-            onSave={() => setEditing(false)}
-            onDragHandlerPan={onDragHandlerPan}
-          />
-        ) : (
-          <>
-            <DragHandle onPan={onDragHandlerPan}>
-              <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
-            </DragHandle>
-            <Element as="div" css={{ overflow: 'auto' }} ref={listRef}>
-              <CommentBody
-                comment={comment}
-                editing={editing}
-                setEditing={setEditing}
-                hasReplies={replies.length}
-              />
-
-              <Replies
-                replies={replies}
-                repliesRenderedCallback={() => setRepliesRendered(true)}
-              />
-            </Element>
-            <AddReply
+        <Stack
+          ref={dialogRef}
+          direction="vertical"
+          css={css({
+            position: 'absolute',
+            zIndex: 2,
+            backgroundColor: 'dialog.background',
+            color: 'dialog.foreground',
+            border: '1px solid',
+            borderColor: 'dialog.border',
+            borderRadius: 4,
+            width: DIALOG_WIDTH,
+            height: 'auto',
+            maxHeight: '80vh',
+            fontFamily: 'Inter, sans-serif',
+            overflow: 'hidden',
+            boxShadow: 2,
+          })}
+        >
+          {isNewComment && editing ? (
+            <DialogAddComment
               comment={comment}
-              onSubmit={() => {
-                // scroll to bottom of the list,
-                // have to wait for it to load though :)
-                window.requestAnimationFrame(() => {
-                  listRef.current.scrollTop = listRef.current.scrollHeight;
-                });
-              }}
+              onSave={() => setEditing(false)}
+              onDragHandlerPan={onDragHandlerPan}
+              onDragHandlerPanEnd={onDragHandlerPanEnd}
             />
-          </>
-        )}
-      </Stack>
-    </motion.div>
+          ) : (
+            <>
+              <DragHandle
+                onPan={onDragHandlerPan}
+                onPanEnd={onDragHandlerPanEnd}
+              >
+                <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
+              </DragHandle>
+              <Element as="div" css={{ overflow: 'auto' }} ref={listRef}>
+                <CommentBody
+                  comment={comment}
+                  editing={editing}
+                  setEditing={setEditing}
+                  hasReplies={replies.length}
+                />
+
+                <Replies
+                  replies={replies}
+                  repliesRenderedCallback={() => setRepliesRendered(true)}
+                />
+              </Element>
+              <AddReply
+                comment={comment}
+                onSubmit={() => {
+                  // scroll to bottom of the list,
+                  // have to wait for it to load though :)
+                  window.requestAnimationFrame(() => {
+                    listRef.current.scrollTop = listRef.current.scrollHeight;
+                  });
+                }}
+              />
+            </>
+          )}
+        </Stack>
+      </motion.div>
+    </>
   );
 };
 
@@ -164,7 +178,8 @@ const DialogAddComment: React.FC<{
   comment: CommentFragment;
   onSave: () => void;
   onDragHandlerPan: (deltaX: number, deltaY: number) => void;
-}> = ({ comment, onSave, onDragHandlerPan }) => {
+  onDragHandlerPanEnd: () => void;
+}> = ({ comment, onSave, onDragHandlerPan, onDragHandlerPanEnd }) => {
   const { actions } = useOvermind();
   const [value, setValue] = useState('');
 
@@ -181,7 +196,7 @@ const DialogAddComment: React.FC<{
 
   return (
     <Stack direction="vertical" css={css({ paddingBottom: 4 })}>
-      <DragHandle onPan={onDragHandlerPan}>
+      <DragHandle onPan={onDragHandlerPan} onPanEnd={onDragHandlerPanEnd}>
         <Stack
           justify="space-between"
           marginY={4}
@@ -242,11 +257,13 @@ const GlobalStyles = createGlobalStyle`
 
 const DragHandle: React.FC<{
   onPan: (deltaX: number, deltaY: number) => void;
-}> = ({ onPan, children }) => (
+  onPanEnd: () => void;
+}> = ({ onPan, onPanEnd, children }) => (
   <motion.div
     onPan={(_, info) => {
       onPan(info.delta.x, info.delta.y);
     }}
+    onPanEnd={onPanEnd}
     style={{ cursor: 'move', zIndex: 2 }}
   >
     <GlobalStyles />
@@ -580,6 +597,24 @@ const AddReply = ({ comment, ...props }) => {
     />
   );
 };
+
+/** We use an transparent overlay when dragging
+ *  so that we can stop selection of the text
+ *  in the background when your drag the dialog.
+ */
+const Overlay = () => (
+  <Element
+    as="div"
+    css={{
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      zIndex: 1,
+    }}
+  />
+);
 
 // trying to match the position for code comments
 const FALLBACK_POSITION = { x: 800, y: 120 };
