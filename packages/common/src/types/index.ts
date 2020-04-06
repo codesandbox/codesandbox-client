@@ -743,3 +743,14 @@ export type PatronTier = 1 | 2 | 3 | 4;
 export type SandboxFs = {
   [path: string]: Module | Directory;
 };
+
+export interface IModuleStateModule {
+  synced?: boolean;
+  revision?: number;
+  code?: string;
+  saved_code?: string | null;
+}
+
+export interface IModuleState {
+  [moduleId: string]: IModuleStateModule;
+}

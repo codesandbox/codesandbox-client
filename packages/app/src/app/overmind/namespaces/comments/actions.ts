@@ -318,11 +318,7 @@ export const addComment: AsyncAction<{
   try {
     let comment: CommentFragment;
     if (optimisticComment.references.length) {
-      const moduleShortid = sandbox.modules.find(
-        moduleItem =>
-          moduleItem.path === optimisticComment.references[0].metadata.path
-      )?.shortid;
-      comment = await effects.live.saveCodeComment(moduleShortid, {
+      comment = await effects.live.saveCodeComment({
         sandboxId: sandbox.id,
         content,
         codeReference: optimisticComment.references[0].metadata,

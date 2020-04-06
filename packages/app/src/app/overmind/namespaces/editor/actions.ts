@@ -424,37 +424,6 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
         changedModules.map(module => effects.live.saveModule(module.shortid))
       );
 
-      const updatedModules = await effects.api.saveModules(
-        sandbox.id,
-        changedModules
-      );
-
-      updatedModules.forEach(updatedModule => {
-        const module = sandbox.modules.find(
-          moduleItem => moduleItem.shortid === updatedModule.shortid
-        );
-
-        if (module) {
-          module.insertedAt = updatedModule.insertedAt;
-          module.updatedAt = updatedModule.updatedAt;
-
-          module.savedCode =
-            updatedModule.code === module.code ? null : updatedModule.code;
-
-          effects.vscode.sandboxFsSync.writeFile(
-            state.editor.modulesByPath,
-            module
-          );
-          effects.moduleRecover.remove(sandbox.id, module);
-        } else {
-          // We might not have the module, as it was created by the server. In
-          // this case we put it in. There is an edge case here where the user
-          // might delete the module while it is being updated, but it will very
-          // likely not happen
-          sandbox.modules.push(updatedModule);
-        }
-      });
-
       if (
         sandbox.originalGit &&
         state.workspace.openedWorkspaceItem === 'github'

@@ -16,8 +16,8 @@ import {
   CreateCodeCommentMutationVariables,
   CreateCommentMutationVariables,
 } from 'app/graphql/types';
-import { Blocker, blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
+import { debounce } from 'lodash-es';
 import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
@@ -52,22 +52,13 @@ declare global {
   }
 }
 
-const TIME_TO_THROTTLE_SOLO_MODE_SENDS = 2000;
-
 class Live {
   private identifier = uuid.v4();
   private pendingMessages = new Map();
   private debug = _debug('cs:socket');
   private channel: Channel | null;
   private messageIndex = 0;
-  private awaitSendTimer: number;
   private socket: Socket;
-  /*
-    Since in "Solo mode" we want to batch up operations and other events later,
-    we use a blocker to just hold the sending of the messages until an additional
-    connection enters
-  */
-  private awaitSend: Blocker<void> | null = blocker<void>();
   private presence: Presence;
   private provideJwtToken: () => string;
   private onApplyOperation: (moduleShortid: string, operation: any) => void;
@@ -93,48 +84,12 @@ class Live {
   }
 
   private connectionsCount = 0;
-  private setAwaitSend() {
-    this.awaitSend = blocker();
-    clearTimeout(this.awaitSendTimer);
-    this.awaitSendTimer = window.setTimeout(async () => {
-      if (this.connectionsCount === 1) {
-        // We await the currently resolved blocker before setting it back,
-        // so that messages gets through
-        await this.resolveAwaitSend();
-        this.setAwaitSend();
-      }
-    }, TIME_TO_THROTTLE_SOLO_MODE_SENDS);
-  }
-
-  private resolveAwaitSend() {
-    if (!this.awaitSend) {
-      return Promise.resolve();
-    }
-    clearTimeout(this.awaitSendTimer);
-    const awaitSend = this.awaitSend;
-    this.awaitSend = null;
-    awaitSend.resolve();
-    return awaitSend.promise;
-  }
-
-  private async awaitSynchronizedModule(moduleShortid: string) {
-    const client = clients.get(moduleShortid);
-    if (client.awaitSynchronized) {
-      await client.awaitSynchronized.promise;
-    }
-  }
 
   private onSendOperation = async (
     moduleShortid: string,
     revision: number,
     operation: TextOperation
   ) => {
-    // If we are to await a send, we do it. It will be resolved
-    // related to number of connections changing
-    if (this.awaitSend) {
-      await this.awaitSend.promise;
-    }
-
     logBreadcrumb({
       category: 'ot',
       message: `Sending ${JSON.stringify({
@@ -260,16 +215,9 @@ class Live {
             reconnect_token: result.reconnectToken,
           });
 
-          this.setBlocker(result.roomInfo.users.length);
-          /*
-            When active we activate or deactivate the sending blocker depending
-            on the number of connections we have. When "solo" we hold operation messages
-            until we get a new connection. If we go back to "solo" we bring in the blocker
-            again
-          */
           this.presence = new Presence(this.channel);
           this.presence.onSync(() => {
-            this.setBlocker(this.presence.list().length);
+            this.connectionsCount = this.presence.list().length;
           });
 
           resolve(result);
@@ -315,7 +263,7 @@ class Live {
     };
   }
 
-  private sendImmediately<T>(event, payload: any = {}): Promise<T> {
+  private send<T>(event, payload: any = {}): Promise<T> {
     const _messageId = this.identifier + this.messageIndex++;
     // eslint-disable-next-line
     payload._messageId = _messageId;
@@ -335,36 +283,20 @@ class Live {
     });
   }
 
-  send(event: string, payload?: { _messageId?: string; [key: string]: any }) {
-    if (this.awaitSend) {
-      return Promise.resolve();
-    }
-
-    return this.sendImmediately(event, payload);
-  }
-
-  async saveModule(moduleShortid: string) {
-    this.sendAfterSynchronized(moduleShortid, 'save');
-  }
-
-  async saveCodeComment(
-    moduleShortid: string,
-    commentPayload: CreateCodeCommentMutationVariables
-  ) {
-    return this.sendAfterSynchronized<CommentFragment>(
+  saveModule(moduleShortid: string) {
+    return this.send('save', {
       moduleShortid,
-      'save:comment',
-      commentPayload
-    );
+    });
+  }
+
+  async saveCodeComment(commentPayload: CreateCodeCommentMutationVariables) {
+    return this.send<CommentFragment>('save:comment', commentPayload);
   }
 
   async saveComment(
     commentPayload: CreateCommentMutationVariables
   ): Promise<CommentFragment> {
-    return this.sendImmediately<CommentFragment>(
-      'save:comment',
-      commentPayload
-    );
+    return this.send<CommentFragment>('save:comment', commentPayload);
   }
 
   sendModuleUpdate(module: Module) {
@@ -485,7 +417,7 @@ class Live {
   }
 
   sendModuleStateSyncRequest() {
-    return this.sendImmediately('live:module_state', {});
+    return this.send('live:module_state', {});
   }
 
   sendUserViewRange(
@@ -493,6 +425,14 @@ class Live {
     liveUserId: string,
     viewRange: UserViewRange
   ) {
+    if (this.connectionsCount === 1) {
+      return this.sendDebounced('user:view-range', {
+        liveUserId,
+        moduleShortid,
+        viewRange,
+      });
+    }
+
     return this.send('user:view-range', {
       liveUserId,
       moduleShortid,
@@ -505,6 +445,13 @@ class Live {
     liveUserId: string,
     selection: any
   ) {
+    if (this.connectionsCount === 1) {
+      return this.sendDebounced('user:selection', {
+        liveUserId,
+        moduleShortid,
+        selection,
+      });
+    }
     return this.send('user:selection', {
       liveUserId,
       moduleShortid,
@@ -514,10 +461,6 @@ class Live {
 
   reset() {
     clients.clear();
-
-    clearTimeout(this.awaitSendTimer);
-
-    this.awaitSend = null;
   }
 
   resetClient(moduleShortid: string, revision: number) {
@@ -553,35 +496,12 @@ class Live {
     );
   }
 
-  private async sendAfterSynchronized<T>(
-    moduleShortid: string,
-    event: string,
-    payload?
-  ): Promise<T> {
-    /*
-      If we save a module we will temporarily lift the message blocker,
-      passing any operations through. As soon as the client of the module
-      is back in synchronized state we can move on with the save
-    */
-    if (this.awaitSend) {
-      this.resolveAwaitSend();
-      await this.awaitSynchronizedModule(moduleShortid);
-      this.setAwaitSend();
-    }
-
-    return this.sendImmediately(event, payload);
-  }
-
-  private setBlocker(newCount: number) {
-    const currentCount = this.connectionsCount;
-
-    this.connectionsCount = newCount;
-    if (currentCount !== 1 && this.connectionsCount === 1) {
-      this.setAwaitSend();
-    } else if (currentCount === 1 && this.connectionsCount > 1) {
-      this.resolveAwaitSend();
-    }
-  }
+  private sendDebounced = debounce<(event: string, payload: any) => void>(
+    (...args) => {
+      this.send(...args);
+    },
+    500
+  );
 }
 
 export default new Live();
