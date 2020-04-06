@@ -845,12 +845,14 @@ export const onSelectionChanged: Action<UserSelection> = (
   { actions, state },
   selection
 ) => {
-  if (state.editor.currentModule) {
-    actions.editor.persistCursorToUrl({
-      module: state.editor.currentModule,
-      selection,
-    });
-  }
+  if (!state.editor.currentModule) {
+    return;
+  };
+  
+  actions.editor.persistCursorToUrl({
+    module: state.editor.currentModule,
+    selection,
+  });
 };
 
 export const toggleEditorPreviewLayout: Action = ({ state, effects }) => {
