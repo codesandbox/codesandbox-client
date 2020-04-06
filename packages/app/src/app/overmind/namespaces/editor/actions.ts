@@ -86,7 +86,7 @@ export const loadCursorFromUrl: AsyncAction = async ({
       return;
     }
 
-    const [parsedHead, parsedAnchor] = selections.split(':').map(s => +s);
+    const [parsedHead, parsedAnchor] = selections.split(':').map(Number);
     if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
       effects.vscode.setSelection(parsedHead, parsedAnchor);
     }
