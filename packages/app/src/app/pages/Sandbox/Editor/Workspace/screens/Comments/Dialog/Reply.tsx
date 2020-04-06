@@ -31,9 +31,9 @@ export const Reply = ({ reply }: ReplyProps) => {
     >
       <Element
         as="article"
-        itemprop="comment"
-        itemscope=""
-        itemtype="http://schema.org/Comment"
+        itemProp="comment"
+        itemScope
+        itemType="http://schema.org/Comment"
         key={id}
         marginLeft={4}
         marginRight={2}
@@ -74,7 +74,7 @@ export const Reply = ({ reply }: ReplyProps) => {
         })}
       >
         {!editing ? (
-          <Element itemprop="text">
+          <Element itemProp="text">
             <Markdown source={content} />
           </Element>
         ) : (

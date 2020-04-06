@@ -21,7 +21,6 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   block?: boolean;
   maxWidth?: number | string;
   variant?: 'body' | 'muted' | 'danger';
-  itemprop?: string;
   datetime?: string;
 }
 
