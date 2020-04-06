@@ -662,31 +662,32 @@ export class VSCodeEffect {
    */
   setSelection(head: number, anchor: number) {
     const activeEditor = this.editorApi.getActiveCodeEditor();
-
-    if (activeEditor) {
-      const model = activeEditor.getModel();
-
-      if (model) {
-        const headPos = indexToLineAndColumn(
-          model.getLinesContent() || [],
-          head
-        );
-        const anchorPos = indexToLineAndColumn(
-          model.getLinesContent() || [],
-          anchor
-        );
-
-        const range = new this.monaco.Range(
-          headPos.lineNumber,
-          headPos.column,
-          anchorPos.lineNumber,
-          anchorPos.column
-        );
-
-        this.revealRange(range);
-        activeEditor.setSelection(range);
-      }
+    if (!activeEditor) {
+      return;
     }
+    
+    const model = activeEditor.getModel();
+    if (!model) {
+      return;
+    }
+    
+    const headPos = indexToLineAndColumn(
+      model.getLinesContent() || [],
+      head
+    );
+    const anchorPos = indexToLineAndColumn(
+      model.getLinesContent() || [],
+      anchor
+    );
+    const range = new this.monaco.Range(
+      headPos.lineNumber,
+      headPos.column,
+      anchorPos.lineNumber,
+      anchorPos.column
+    );
+
+    this.revealRange(range);
+    activeEditor.setSelection(range);
   }
 
   // Communicates the endpoint for the WebsocketLSP
