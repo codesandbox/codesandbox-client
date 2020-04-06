@@ -48,14 +48,15 @@ export const persistCursorToUrl: Action<{
   module: Module;
   selection?: UserSelection;
 }> = debounce(({ effects }, { module, selection }) => {
-  effects.router.setParameter('file', module.path);
+  let parameter = module.path;
+
   if (selection?.primary?.selection?.length) {
     const [head, anchor] = selection.primary.selection;
-    const serializedSelection = head + ':' + anchor;
-    effects.router.setParameter('selection', serializedSelection);
-  } else {
-    effects.router.setParameter('selection', null);
+    const serializedSelection = head + '-' + anchor;
+    parameter += `:${serializedSelection}`;
   }
+
+  effects.router.setParameter('file', parameter);
 }, 500);
 
 export const loadCursorFromUrl: AsyncAction = async ({
@@ -67,10 +68,11 @@ export const loadCursorFromUrl: AsyncAction = async ({
     return;
   }
 
-  const path = effects.router.getParameter('file');
-  if (!path) {
+  const parameter = effects.router.getParameter('file');
+  if (!parameter) {
     return;
   }
+  const [path, selection] = parameter.split(':');
 
   const module = state.editor.currentSandbox.modules.find(m => m.path === path);
   if (!module) {
@@ -79,12 +81,7 @@ export const loadCursorFromUrl: AsyncAction = async ({
 
   await actions.editor.moduleSelected({ id: module.id });
 
-  const selections = effects.router.getParameter('selection');
-  if (!selections) {
-    return;
-  }
-
-  const [parsedHead, parsedAnchor] = selections.split(':').map(Number);
+  const [parsedHead, parsedAnchor] = selection.split('-').map(Number);
   if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
     effects.vscode.setSelection(parsedHead, parsedAnchor);
   }
