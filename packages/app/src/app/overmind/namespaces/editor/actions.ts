@@ -66,32 +66,27 @@ export const loadCursorFromUrl: AsyncAction = async ({
   if (!state.editor.currentSandbox) {
     return;
   }
-  try {
-    const path = effects.router.getParameter('file');
-    if (!path) {
-      return;
-    }
 
-    const module = state.editor.currentSandbox.modules.find(
-      m => m.path === path
-    );
-    if (!module) {
-      return;
-    }
+  const path = effects.router.getParameter('file');
+  if (!path) {
+    return;
+  }
 
-    await actions.editor.moduleSelected({ id: module.id });
+  const module = state.editor.currentSandbox.modules.find(m => m.path === path);
+  if (!module) {
+    return;
+  }
 
-    const selections = effects.router.getParameter('selection');
-    if (!selections) {
-      return;
-    }
+  await actions.editor.moduleSelected({ id: module.id });
 
-    const [parsedHead, parsedAnchor] = selections.split(':').map(Number);
-    if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
-      effects.vscode.setSelection(parsedHead, parsedAnchor);
-    }
-  } catch (e) {
-    /* Ignore */
+  const selections = effects.router.getParameter('selection');
+  if (!selections) {
+    return;
+  }
+
+  const [parsedHead, parsedAnchor] = selections.split(':').map(Number);
+  if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
+    effects.vscode.setSelection(parsedHead, parsedAnchor);
   }
 };
 
@@ -271,7 +266,14 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   effects.vscode.openModule(state.editor.currentModule);
-  await actions.editor.loadCursorFromUrl();
+  try {
+    await actions.editor.loadCursorFromUrl();
+  } catch (e) {
+    /**
+     * This is not extremely important logic, if it breaks (which is possible because of user input)
+     * we don't want to crash the whole editor. That's why we try...catch this.
+     */
+  }
 
   if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
     actions.comments.getSandboxComments(sandbox.id);
@@ -847,8 +849,8 @@ export const onSelectionChanged: Action<UserSelection> = (
 ) => {
   if (!state.editor.currentModule) {
     return;
-  };
-  
+  }
+
   actions.editor.persistCursorToUrl({
     module: state.editor.currentModule,
     selection,
