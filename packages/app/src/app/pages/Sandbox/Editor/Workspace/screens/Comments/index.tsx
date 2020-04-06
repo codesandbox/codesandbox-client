@@ -46,6 +46,11 @@ export const Comments: React.FC = () => {
     scrollRef.current.scrollTop = 0;
   };
 
+  const iconColor =
+    selectedCommentsFilter !== CommentsFilterOption.ALL
+      ? 'button.background'
+      : 'inherit';
+
   const Empty = () => (
     <Stack
       direction="vertical"
@@ -87,13 +92,31 @@ export const Comments: React.FC = () => {
             minHeight: '35px',
           })}
         >
-          <Text>Comments</Text>
+          <Text>
+            Comments
+            {selectedCommentsFilter === CommentsFilterOption.RESOLVED && (
+              <Text css={{ textTransform: 'capitalize' }}>
+                {' '}
+                ({getSelectedFilter()})
+              </Text>
+            )}
+          </Text>
           <Menu>
             <Menu.IconButton
               className="icon-button"
               name="filter"
               title="Filter comments"
               size={12}
+              css={css({
+                color: iconColor,
+                ':hover:not(:disabled)': {
+                  color: iconColor,
+                },
+                ':focus:not(:disabled)': {
+                  color: iconColor,
+                  backgroundColor: 'transparent',
+                },
+              })}
             />
             <Menu.List>
               {options.map(option => (
