@@ -10,6 +10,7 @@ import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 import {
   Posts,
   Postitle,
+  Smallupdate,
   Post,
   Thumbnail,
   Aside,
@@ -42,10 +43,7 @@ const Blog = ({
         ({
           node: {
             fields: { title },
-            frontmatter: {
-              date,
-              banner: { publicURL: banner },
-            },
+            frontmatter: { date, banner },
             html,
             id,
           },
@@ -58,7 +56,11 @@ const Blog = ({
               Released on {format(date, 'MMM / DD / YYYY')}
             </Aside>
 
-            <Thumbnail alt={title} src={banner} />
+            {banner && banner.publicURL ? (
+              <Thumbnail alt={title} src={banner.publicURL} />
+            ) : (
+              <Smallupdate>{title}</Smallupdate>
+            )}
 
             <Post dangerouslySetInnerHTML={{ __html: html }} />
           </Posts>
