@@ -365,7 +365,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
         })}
       >
         {!editing ? (
-          <Element itemprop="text">
+          <Element itemProp="text">
             <Markdown source={comment.content} />
           </Element>
         ) : (
