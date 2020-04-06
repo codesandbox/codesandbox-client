@@ -205,13 +205,13 @@ const DialogAddComment: React.FC<{
         >
           <Stack gap={2} align="center">
             <Element
-              itemprop="author"
-              itemscope=""
-              itemtype="http://schema.org/Person"
+              itemProp="author"
+              itemScope
+              itemType="http://schema.org/Person"
             >
               <Avatar user={comment.user} />
             </Element>
-            <Text size={3} weight="bold" variant="body" itemprop="name">
+            <Text size={3} weight="bold" variant="body" itemProp="name">
               {comment.user.username}
             </Text>
           </Stack>
@@ -382,7 +382,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
         })}
       >
         {!editing ? (
-          <Element itemprop="text">
+          <Element itemProp="text">
             <Markdown source={comment.content} />
           </Element>
         ) : (

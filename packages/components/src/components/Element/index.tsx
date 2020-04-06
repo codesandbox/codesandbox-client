@@ -16,9 +16,6 @@ export interface IElementProps {
   paddingTop?: number;
   paddingLeft?: number;
   paddingRight?: number;
-  itemprop?: string;
-  itemscope?: string;
-  itemtype?: string;
   css?: Object;
 }
 

@@ -133,7 +133,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
                     size={2}
                     weight="bold"
                     paddingRight={2}
-                    itemprop="name"
+                    itemProp="name"
                     css={css({
                       color: 'sideBar.foreground',
                     })}
