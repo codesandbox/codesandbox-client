@@ -249,7 +249,7 @@ export const onViewRangeChanged: Action<UserViewRange> = (
 };
 
 export const onSelectionChanged: Action<UserSelection> = (
-  { state, effects, actions },
+  { state, effects },
   selection
 ) => {
   if (!state.live.roomInfo) {
