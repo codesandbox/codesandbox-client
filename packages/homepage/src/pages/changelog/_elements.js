@@ -52,7 +52,7 @@ export const Posts = styled.article`
   }
 
   grid-column-gap: 2rem;
-  padding: 4rem 0;
+  padding: 4rem 0 2rem 0;
   border-bottom: 1px solid #151515;
   &:last-child {
     border: none;
@@ -87,13 +87,17 @@ export const Smallupdate = styled.div`
   background: #151515;
   text-align: center;
   justify-content: center;
-  height: 15rem;
-  line-height: 15rem;
+  padding: 5rem 0;
   grid-area: img;
-  font-size: 4.5rem;
+  font-size: 4rem;
   font-weight: 700;
   border: 1px solid #242424;
-  border-radius: 0.5rem;
+  border-radius: 0.25rem;
+
+  @media screen and (max-width: 768px) {
+    font-size: 1.5rem;
+    padding: 2rem 0;
+  }
 `;
 
 export const Postitle = styled.h2`
