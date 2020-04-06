@@ -8,6 +8,7 @@ import {
   Text,
   Textarea,
 } from '@codesandbox/components';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import css from '@styled-system/css';
 import {
   DIALOG_TRANSITION_DURATION,
@@ -254,9 +255,15 @@ const DragHandle: React.FC<{
 );
 
 const DialogHeader = ({ comment, hasShadow }) => {
-  const { actions } = useOvermind();
+  const {
+    state: { editor, user },
+    actions: { comments },
+  } = useOvermind();
 
-  const closeDialog = () => actions.comments.closeComment();
+  const closeDialog = () => comments.closeComment();
+  const canResolve =
+    hasPermission(editor.currentSandbox.authorization, 'write_project') ||
+    comment.user.id === user.id;
 
   return (
     <Stack
@@ -278,25 +285,27 @@ const DialogHeader = ({ comment, hasShadow }) => {
         Comment
       </Text>
       <Stack align="center">
-        <IconButton
-          onClick={() =>
-            actions.comments.resolveComment({
-              commentId: comment.id,
-              isResolved: !comment.isResolved,
-            })
-          }
-          name="check"
-          size={14}
-          title={comment.isResolved ? 'Unresolve Comment' : 'Resolve Comment'}
-          css={css({
-            transition: 'color',
-            transitionDuration: theme => theme.speeds[1],
-            color: comment.isResolved ? 'green' : 'mutedForeground',
-            ':hover:not(:disabled), :focus:not(:disabled)': {
-              color: comment.isResolved ? 'green' : 'foreground',
-            },
-          })}
-        />
+        {canResolve && (
+          <IconButton
+            onClick={() =>
+              comments.resolveComment({
+                commentId: comment.id,
+                isResolved: !comment.isResolved,
+              })
+            }
+            name="check"
+            size={14}
+            title={comment.isResolved ? 'Unresolve Comment' : 'Resolve Comment'}
+            css={css({
+              transition: 'color',
+              transitionDuration: theme => theme.speeds[1],
+              color: comment.isResolved ? 'green' : 'mutedForeground',
+              ':hover:not(:disabled), :focus:not(:disabled)': {
+                color: comment.isResolved ? 'green' : 'foreground',
+              },
+            })}
+          />
+        )}
         <IconButton
           name="cross"
           size={10}
@@ -309,7 +318,10 @@ const DialogHeader = ({ comment, hasShadow }) => {
 };
 
 const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
-  const { state, actions } = useOvermind();
+  const {
+    state,
+    actions: { comments },
+  } = useOvermind();
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -330,8 +342,8 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
                 </Menu.Item>
                 <Menu.Item
                   onSelect={() => {
-                    actions.comments.closeComment();
-                    actions.comments.deleteComment({
+                    comments.closeComment();
+                    comments.deleteComment({
                       commentId: comment.id,
                     });
                   }}
@@ -360,7 +372,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
           <EditComment
             initialValue={comment.content}
             onSave={async newValue => {
-              await actions.comments.updateComment({
+              await comments.updateComment({
                 commentId: comment.id,
                 content: newValue,
               });
