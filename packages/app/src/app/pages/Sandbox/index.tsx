@@ -22,7 +22,7 @@ interface Props {
   };
 }
 
-export const Sandbox: React.FC<Props> = React.memo(
+export const Sandbox = React.memo<Props>(
   ({ match }) => {
     const { state, actions } = useOvermind();
 
