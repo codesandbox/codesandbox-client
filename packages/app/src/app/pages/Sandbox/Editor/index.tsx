@@ -29,7 +29,7 @@ const StatusBar = styled.div`
   }
 `;
 
-const ContentSplit = () => {
+const Editor = () => {
   const { state, actions, effects, reaction } = useOvermind();
   const statusbarEl = useRef(null);
   const [showSkeleton, setShowSkeleton] = useState(
@@ -211,4 +211,4 @@ const ContentSplit = () => {
   );
 };
 
-export default ContentSplit;
+export default Editor;
