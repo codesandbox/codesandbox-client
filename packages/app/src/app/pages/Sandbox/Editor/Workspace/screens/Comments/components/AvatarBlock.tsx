@@ -19,7 +19,7 @@ export const AvatarBlock: React.FC<{ comment: CommentFragment }> = ({
         size={2}
         variant="muted"
         itemProp="dateCreated"
-        datetime={comment.insertedAt.toString()}
+        dateTime={comment.insertedAt.toString()}
       >
         {formatDistance(
           zonedTimeToUtc(comment.insertedAt, 'Etc/UTC'),

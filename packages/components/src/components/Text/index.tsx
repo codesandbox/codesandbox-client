@@ -21,7 +21,7 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   block?: boolean;
   maxWidth?: number | string;
   variant?: 'body' | 'muted' | 'danger';
-  datetime?: string;
+  dateTime?: string;
 }
 
 export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
