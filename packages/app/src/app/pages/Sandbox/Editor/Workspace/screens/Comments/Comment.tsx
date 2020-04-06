@@ -141,7 +141,7 @@ export const Comment = React.memo<{
           {comment.content}
         </Text>
         <Text variant="muted" size={2} itemprop="commentCount">
-          {getRepliesString(comment.comments.length)}
+          {getRepliesString(comment.replyCount)}
         </Text>
       </Element>
     </ListAction>

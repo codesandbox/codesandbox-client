@@ -108,8 +108,17 @@ export const state: State = {
 
     return {
       ...comments[currentSandbox.id][currentCommentId],
-      comments: comments[currentSandbox.id][currentCommentId].comments
-        .map(commentId => comments[currentSandbox.id][commentId.id] || null)
+      comments: Object.keys(comments[currentSandbox.id])
+        .reduce((aggr, commentId) => {
+          if (
+            comments[currentSandbox.id][commentId].parentComment?.id ===
+            currentCommentId
+          ) {
+            return aggr.concat(comments[currentSandbox.id][commentId]);
+          }
+
+          return aggr;
+        }, [])
         .sort(sortByInsertedAt),
     };
   },
