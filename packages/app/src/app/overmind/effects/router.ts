@@ -61,15 +61,9 @@ export default new (class RouterEffect {
     return `${window.location.origin}${window.location.pathname}?comment=${id}`;
   }
 
-  setParameter(key: string, value: string | null) {
-    const currentUrl = new URL(location.href);
-    if (value === null) {
-      currentUrl.searchParams.delete(key);
-    } else {
-      currentUrl.searchParams.set(key, value);
-    }
-
-    history.replace(currentUrl.toString().replace(currentUrl.origin, ''));
+  replace(url: string) {
+    const origin = new URL(url).origin;
+    history.replace(url.replace(origin, ''));
   }
 
   getParameter(key: string): string | null {

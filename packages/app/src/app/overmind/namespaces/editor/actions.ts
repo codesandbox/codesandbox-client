@@ -56,7 +56,17 @@ export const persistCursorToUrl: Action<{
     parameter += `:${serializedSelection}`;
   }
 
-  effects.router.setParameter('file', parameter);
+  const newUrl = new URL(document.location.href);
+  newUrl.searchParams.set('file', parameter);
+
+  // Restore the URI encoded parts to their original values. Our server handles this well
+  // and all the browsers do too.
+  effects.router.replace(
+    newUrl
+      .toString()
+      .replace(/%2F/g, '/')
+      .replace('%3A', ':')
+  );
 }, 500);
 
 export const loadCursorFromUrl: AsyncAction = async ({
