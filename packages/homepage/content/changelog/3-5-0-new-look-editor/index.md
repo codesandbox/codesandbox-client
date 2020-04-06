@@ -5,25 +5,23 @@ slug: new-look-v3-5
 date: 2020-03-05
 description:
   We've evolved the design of the editor to get to you to your code faster.
-  While loading and forking take a fraction of the time.
 ---
 
 ### A Snappier, New Look Editor
 
-When chatting with folks in the CodeSandbox community, there’s one word that
-comes up more than any other: Speed! It’s a core reason why people choose
-CodeSandbox for web development—so they can get started prototyping quickly,
-testing out ideas, and learning new frameworks and techniques. But it’s also one
-of the most frequently requested improvements too.
+When chatting with folks in the CodeSandbox community, there’s one word that comes up more than any other: Speed! So we've evolved the design of the editor and undertaken a range of performance optimization tasks so that the editor now loads more quickly, and feels more responsive.
+
+#### Features
+
+<ol>
+  <li>Added progressive loading of each part of the editor instead of waiting for everything to be ready upfront</li>
+  <li>Re-designed the activity bar and all component parts</li>
+  <li>Updated the navigation bar design</li>
+  <li>Added a new default theme: CodeSandbox Black</li>  
+</ol>
 
 #### Fixes
 
 <ul>
-  <li>Significant stability and performance improvements</li>
-  <li>When the Slack integration access has been revoked or turned off we send out a notification</li>
-  <li>Fix to issue URLs containing backtick characters</li>
-  <li>GitHub autolinking documentation improvements</li>
-  <li>Project team links and issue peek now work better on mobile devices</li>
-  <li>Removed team deletion from the command menu. To remove a team, visit the team settings page</li>
-<li>API: Fixed pagination on <code>users</code> query</li>
+  <li>Performance improvements</li>
 </ul>
