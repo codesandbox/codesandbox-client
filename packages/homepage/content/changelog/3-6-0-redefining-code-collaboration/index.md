@@ -8,31 +8,14 @@ description:
   presence, and follower mode.
 ---
 
-### Redefining Code Collaboration
-
-CodeSandbox Live made collaboration easier by giving you the ability to code in
-real-time with others. It's used for pair programming, at hackathons, during job
-interviews, and in classrooms, enabling two or more folks to work on code
-simultaneously. What's more, our [basic team support](/dashboard/teams/new) has
-reduced friction in sharing ownership of sandboxes within a group.
+### Live 2.0
+We're working to redefine how folks collaborate on code. This upgrade to CodeSandbox Live delivers a step-change in collaboration on CodeSandbox, making it easier for teams to code together and lays the groundwork for further improvements.
 
 #### Features
 
 <ol>
-  <li>Significant stability and performance improvements</li>
-  <li>Project team links and issue peek now work better on mobile devices</li>
-  <li>Removed team deletion from the command menu. To remove a team, visit the team settings page</li>
-  <li>API: Fixed pagination on  query</li>
+  <li>All sandboxes are now live by default</li>
+  <li>Added a new access control panel to invite others and set permissions</li>
+  <li>Avatars of team members and guests appear in the editor</li>
+  <li>Follower mode now supports scrolling</li>
 </ol>
-
-#### Fixes
-
-<ul>
-  <li>Significant stability and performance improvements</li>
-  <li>When the Slack integration access has been revoked or turned off we send out a notification</li>
-  <li>Fix to issue URLs containing backtick characters</li>
-  <li>GitHub autolinking documentation improvements</li>
-  <li>Project team links and issue peek now work better on mobile devices</li>
-  <li>Removed team deletion from the command menu. To remove a team, visit the team settings page</li>
-<li>API: Fixed pagination on query</li>
-</ul>
