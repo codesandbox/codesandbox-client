@@ -1,25 +1,16 @@
 ---
 banner:
-title: v3.4.1
-slug: bug fixes v3.4.1
-date: 2020-03-04
+title: v3.4.9
+slug: bug fixes v3.4.9
+date: 2020-02-24
 description: This release includes bug fixes.
 ---
-
-### This release includes bug fixes.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras finibus eget nibh
-a semper. Integer eleifend venenatis odio, vitae egestas leo suscipit sed. Cras
-luctus a risus sit amet facilisis.
 
 #### Fixes
 
 <ul>
-  <li>Significant stability and performance improvements</li>
-  <li>When the Slack integration access has been revoked or turned off we send out a notification</li>
-  <li>Fix to issue URLs containing backtick characters</li>
-  <li>GitHub autolinking documentation improvements</li>
-  <li>Project team links and issue peek now work better on mobile devices</li>
-  <li>Removed team deletion from the command menu. To remove a team, visit the team settings page</li>
-<li>API: Fixed pagination on <code>users</code> query</li>
+  <li>Improved performance when switching between active files</li>
+  <li>We now explicitly set Same-Site:None on preview secret cookies ahead of changes to the way they'll be handled by Chrome in the future</li>
+  <li>We fixed an issue with deleting templates</li>
+  <li>You can no longer add blank font and resource names</li>
 </ul>
