@@ -15,7 +15,7 @@ about your and move files and code with others in a sandbox, as well as chat
 about your changes. It's like Google Docs, but for coding. changes. It's like
 Google Docs, but for coding.
 
-![Live mode](./images/live-screenshot.png)
+![Live mode](./images/live-screenshot-1.png)
 
 ## Going Live
 
