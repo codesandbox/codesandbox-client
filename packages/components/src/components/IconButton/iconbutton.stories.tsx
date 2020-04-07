@@ -9,10 +9,10 @@ export default {
 
 export const Basic = () => (
   <Stack justify="center">
-    <IconButton label="Filter elements" name="filter" />
+    <IconButton title="Filter elements" name="filter" />
   </Stack>
 );
 
 export const Disabled = () => (
-  <IconButton label="Filter elements disabled" disabled name="filter" />
+  <IconButton title="Filter elements disabled" disabled name="filter" />
 );

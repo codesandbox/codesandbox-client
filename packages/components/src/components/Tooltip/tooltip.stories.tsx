@@ -36,5 +36,5 @@ export const Edges = () => (
 );
 
 export const IconButtonHasTooltip = () => (
-  <IconButton name="check" label="Mark as resolved" />
+  <IconButton name="check" title="Mark as resolved" />
 );
