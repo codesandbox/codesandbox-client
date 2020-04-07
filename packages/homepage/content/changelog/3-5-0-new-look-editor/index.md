@@ -25,6 +25,4 @@ loads more quickly, and feels more responsive.
 
 #### Fixes
 
-<ul>
-  <li>Performance improvements</li>
-</ul>
+- Performance improvements
