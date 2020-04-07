@@ -1,5 +1,5 @@
 ---
-banner: ./images/share.png
+banner: ./images/banner.png
 title: v3.6
 slug: share-v3-6
 date: 2020-03-25
