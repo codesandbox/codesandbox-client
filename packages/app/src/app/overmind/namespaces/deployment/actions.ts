@@ -130,9 +130,9 @@ export const deployClicked: AsyncAction = async ({
 };
 
 export const deploySandboxClicked: AsyncAction = async ({
-  state,
   actions,
   effects,
+  state,
 }) => {
   state.currentModal = 'deployment';
 
@@ -163,9 +163,7 @@ export const deploySandboxClicked: AsyncAction = async ({
   state.deployment.url = null;
 };
 
-export const setDeploymentToDelete: Action<{
-  id: string;
-}> = ({ state }, { id }) => {
+export const setDeploymentToDelete: Action<string> = ({ state }, id) => {
   state.deployment.deployToDelete = id;
 };
 
