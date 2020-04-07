@@ -102,7 +102,6 @@ export const Button = styled(Element).attrs({ as: 'button' })<ButtonProps>(
             opacity: '0.4',
             cursor: 'not-allowed',
           },
-          ...props.css,
         }
       )
     )
