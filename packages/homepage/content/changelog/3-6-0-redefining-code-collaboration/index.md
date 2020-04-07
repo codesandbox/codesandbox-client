@@ -17,9 +17,7 @@ improvements.
 
 #### Features
 
-<ol>
-  <li>All sandboxes are now live by default</li>
-  <li>Added a new access control panel to invite others and set permissions</li>
-  <li>Avatars of team members and guests appear in the editor</li>
-  <li>Follower mode now supports scrolling</li>
-</ol>
+1. All sandboxes are now live by default
+2. Added a new access control panel to invite others and set permissions
+3. Avatars of team members and guests appear in the editor
+4. Follower mode now supports scrolling
