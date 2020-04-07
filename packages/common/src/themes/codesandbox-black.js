@@ -86,8 +86,8 @@ const colors = {
     activeForeground: tokens.grays[300],
   },
   editorLineNumber: {
-    foreground: tokens.grays[600],
-    activeForeground: tokens.grays[400],
+    foreground: tokens.grays[400],
+    activeForeground: tokens.grays[200],
   },
   editorRuler: {
     foreground: tokens.white,
