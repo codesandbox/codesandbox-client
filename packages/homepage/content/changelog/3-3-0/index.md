@@ -7,12 +7,14 @@ description: CodeSandbox containers out of beta and improvements
 ---
 
 ### Containers out of Beta
-CodeSandbox Containers allow you to run almost anything you want on CodeSandbox, just like a 
-local development environment.
+
+CodeSandbox Containers allow you to run almost anything you want on CodeSandbox,
+just like a local development environment.
 
 #### Features
 
-1. Stable support for CodeSandbox Containers, which execute the code you write on a server instead of in the browser.
+1. Stable support for CodeSandbox Containers, which execute the code you write
+   on a server instead of in the browser.
 2. You can now add environment variables to a container
 
 #### Fixes
