@@ -39,4 +39,5 @@ You can enable Classroom Mode from the Live Mode drop-down menu.
 
 ![Classroom mode](./images/live-classroom.png)
 
-You can give someone editor rights by pressing the '+' icon next to their name, or you can make someone a spectator by clicking the '-' icon next to their name.
+You can give someone editor rights by pressing the '+' icon next to their name,
+or you can make someone a spectator by clicking the '-' icon next to their name.
