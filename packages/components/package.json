@@ -6,6 +6,7 @@
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/components"
   },
+  "license": "MIT",
   "files": [
     "lib"
   ],
@@ -15,7 +16,7 @@
     "build": "yarn build:lib",
     "build:dev": "yarn build",
     "build:lib": "yarn clean && yarn tsc && yarn build:copy-external",
-    "build:copy-external": "cp -r ../common/lib/design-language lib/ && cp ../common/lib/themes/codesandbox-* lib/themes/",
+    "build:copy-external": "mkdir -p lib/themes && cp ../common/lib/themes/codesandbox-* lib/themes/",
     "build:storybook": "build-storybook -c .storybook -o public",
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react && yarn rimraf node_modules/@types/react-native",
     "lint": "eslint --ext .js,.ts,.tsx src",
