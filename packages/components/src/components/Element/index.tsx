@@ -16,7 +16,7 @@ export interface IElementProps {
   paddingTop?: number;
   paddingLeft?: number;
   paddingRight?: number;
-  css?: Object;
+  css?: object;
 }
 
 export const Element = styled.div<IElementProps>(props =>
