@@ -1,5 +1,5 @@
 ---
-title: v3.6
+title: Collaboration with Live
 authors: ['CompuIves']
 description:
   With CodeSandbox Live you can share your sandbox for real time collaboration.
