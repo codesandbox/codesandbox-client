@@ -51,14 +51,14 @@ const SwitchContainer = styled(Element)(
   })
 );
 
-interface ISwitchProps {
+type SwitchProps = {
   id?: string;
   on?: boolean;
   defaultOn?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
+};
 
-export const Switch: React.FC<ISwitchProps> = ({ on, defaultOn, ...props }) => (
+export const Switch: React.FC<SwitchProps> = ({ on, defaultOn, ...props }) => (
   <SwitchContainer as="label">
     <SwitchInput
       type="checkbox"

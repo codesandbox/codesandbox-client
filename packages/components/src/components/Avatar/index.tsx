@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Element } from '../Element';
 import { Text } from '../Text';
 
-interface IAvatarProps {
+type AvatarProps = {
   user: {
     id?: string;
     username: string;
@@ -13,7 +13,7 @@ interface IAvatarProps {
     badges?: any[];
     subscriptionSince?: string | null;
   };
-}
+};
 
 export const AvatarContainer = styled(Element).attrs({ as: 'span' })(
   css({
@@ -54,7 +54,7 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   })
 );
 
-export const Avatar = ({ user, ...props }: IAvatarProps) =>
+export const Avatar = ({ user, ...props }: AvatarProps) =>
   user && (
     <AvatarContainer {...props}>
       <AvatarImage src={user.avatarUrl} alt={user.username} />

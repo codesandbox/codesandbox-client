@@ -3,7 +3,7 @@ import VisuallyHidden from '@reach/visually-hidden';
 import { useId } from '@reach/auto-id';
 import { Element, Stack, Label } from '../../index';
 
-interface IFormFieldProps {
+type FormFieldProps = {
   id?: string;
   // always ask for a label
   label: string;
@@ -15,9 +15,9 @@ interface IFormFieldProps {
   // elements tree.
   hideLabel?: boolean;
   direction?: 'horizontal' | 'vertical';
-}
+};
 
-export const FormField: React.FC<IFormFieldProps> = ({
+export const FormField: React.FC<FormFieldProps> = ({
   label,
   id,
   hideLabel = false,

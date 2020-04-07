@@ -7,9 +7,9 @@ const placeholderStyles = {
   fontSize: 3,
 };
 
-interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
-export const Input = styled(Element).attrs({ as: 'input' })<IInputProps>(
+export const Input = styled(Element).attrs({ as: 'input' })<InputProps>(
   css({
     height: '26px',
     width: '100%',

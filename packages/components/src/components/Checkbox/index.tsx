@@ -5,11 +5,11 @@ import { useId } from '@reach/auto-id';
 import { Element } from '../Element';
 import { Text } from '../Text';
 
-interface ICheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {
   checked?: boolean;
   label?: string;
   id?: string;
-}
+};
 
 export const CheckboxElement = styled.input(
   css({
@@ -69,7 +69,7 @@ const Label = styled(Text)(
   })
 );
 
-export const Checkbox: FunctionComponent<ICheckboxProps> = ({
+export const Checkbox: FunctionComponent<CheckboxProps> = ({
   checked,
   id,
   label,

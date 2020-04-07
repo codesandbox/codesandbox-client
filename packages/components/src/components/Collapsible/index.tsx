@@ -72,12 +72,12 @@ const ToggleIcon = props => (
   </Icon>
 );
 
-interface ICollapsibleProps {
+type CollapsibleProps = {
   defaultOpen?: boolean;
   title: string;
-}
+};
 
-export const Collapsible: React.FC<ICollapsibleProps> = ({
+export const Collapsible: React.FC<CollapsibleProps> = ({
   defaultOpen,
   title,
   children,

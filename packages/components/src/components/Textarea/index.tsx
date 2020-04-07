@@ -5,13 +5,12 @@ import Rect from '@reach/rect';
 import VisuallyHidden from '@reach/visually-hidden';
 import { Stack, Input, Text } from '../..';
 
-interface ITextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   maxLength?: number;
   autosize?: boolean;
   value?: string;
   defaultValue?: string;
-}
+};
 
 export const TextareaComponent: any = styled(Input).attrs({
   as: 'textarea',
@@ -37,7 +36,7 @@ const Count = styled.div<{ limit: boolean }>(({ limit }) =>
   })
 );
 
-export const Textarea: React.FC<ITextareaProps> = ({
+export const Textarea: React.FC<TextareaProps> = ({
   maxLength,
   defaultValue = '',
   value = '',
