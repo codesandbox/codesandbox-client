@@ -188,4 +188,11 @@ export const Post = styled.div`
 
     position: absolute;
   }
+
+  > ul li a,
+  ol li a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    border-bottom: 1px solid;
+  }
 `;
