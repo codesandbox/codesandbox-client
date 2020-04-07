@@ -2,8 +2,6 @@ import styled, { css as styledcss, keyframes } from 'styled-components';
 import Color from 'color';
 import { Element } from '../Element';
 
-// export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {}
-
 const pulse = keyframes`
   0% { background-position: 100% 50%; }
   100% { background-position: -100% 50%; }

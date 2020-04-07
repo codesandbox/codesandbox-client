@@ -14,7 +14,7 @@ const overflowStyles = {
   whiteSpace: 'nowrap',
 };
 
-export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
+export type TextProps = React.AnchorHTMLAttributes<HTMLSpanElement> & {
   size?: number;
   align?: string;
   weight?: string;
@@ -22,9 +22,9 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   maxWidth?: number | string;
   variant?: 'body' | 'muted' | 'danger';
   dateTime?: string;
-}
+};
 
-export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
+export const Text = styled(Element).attrs({ as: 'span' })<TextProps>(
   ({ size, align, weight, block, variant = 'body', maxWidth, ...props }) =>
     css({
       fontSize: size || 'inherit', // from theme.fontSizes
