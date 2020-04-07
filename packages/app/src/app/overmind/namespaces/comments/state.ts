@@ -2,8 +2,9 @@ import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
 import isToday from 'date-fns/isToday';
+import { v4 as uuidv4 } from 'uuid';
 
-export const OPTIMISTIC_COMMENT_ID = 'OptimisticCommentId';
+export const OPTIMISTIC_COMMENT_ID = uuidv4();
 
 type State = {
   comments: {
