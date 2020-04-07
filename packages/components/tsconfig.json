@@ -1,11 +1,5 @@
 {
-  "exclude": [
-    "node_modules",
-    "./**/*.test.ts",
-    "./**/*.test.tsx",
-    "./**/*.stories.tsx",
-    "lib/"
-  ],
+  "exclude": ["node_modules", "lib/"],
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES6",
