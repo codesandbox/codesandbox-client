@@ -133,9 +133,9 @@ export const Comments: React.FC = () => {
 
         {currentComments.length ? (
           <List
-            itemprop="mainEntity"
-            itemscope=""
-            itemtype="http://schema.org/Conversation"
+            itemProp="mainEntity"
+            itemScope
+            itemType="http://schema.org/Conversation"
             ref={scrollRef}
             marginTop={4}
             css={{

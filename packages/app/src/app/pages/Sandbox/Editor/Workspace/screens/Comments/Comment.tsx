@@ -80,9 +80,9 @@ export const Comment = React.memo<{
       </Link>
       <Stack
         as="article"
-        itemprop="comment"
-        itemscope=""
-        itemtype="http://schema.org/Comment"
+        itemProp="comment"
+        itemScope
+        itemType="http://schema.org/Comment"
         align="flex-start"
         justify="space-between"
         marginBottom={4}
@@ -137,10 +137,10 @@ export const Comment = React.memo<{
           borderColor: 'sideBar.border',
         })}
       >
-        <Text itemprop="text" block css={truncateText} marginBottom={2}>
+        <Text itemProp="text" block css={truncateText} marginBottom={2}>
           {comment.content}
         </Text>
-        <Text variant="muted" size={2} itemprop="commentCount">
+        <Text variant="muted" size={2} itemProp="commentCount">
           {getRepliesString(comment.comments.length)}
         </Text>
       </Element>
