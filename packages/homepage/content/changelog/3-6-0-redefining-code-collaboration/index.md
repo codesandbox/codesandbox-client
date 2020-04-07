@@ -9,6 +9,7 @@ description:
 ---
 
 ### Live 2.0
+
 We're working to redefine how folks collaborate on code. This upgrade to
 CodeSandbox Live delivers a step-change in collaboration on CodeSandbox, making
 it easier for teams to code together and lays the groundwork for further
