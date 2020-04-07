@@ -39,6 +39,19 @@ export const Comments: React.FC = () => {
     }
   };
 
+  const getFilterName = () => {
+    switch (selectedCommentsFilter) {
+      case CommentsFilterOption.ALL:
+        return 'All';
+      case CommentsFilterOption.RESOLVED:
+        return 'Resolved';
+      case CommentsFilterOption.OPEN:
+        return 'Open';
+      default:
+        return 'new';
+    }
+  };
+
   const onSubmit = value => {
     commentsActions.addComment({
       content: value,
@@ -94,12 +107,10 @@ export const Comments: React.FC = () => {
         >
           <Text>
             Comments
-            {selectedCommentsFilter === CommentsFilterOption.RESOLVED && (
-              <Text css={{ textTransform: 'capitalize' }}>
-                {' '}
-                ({getSelectedFilter()})
-              </Text>
-            )}
+            <Text css={{ textTransform: 'capitalize' }}>
+              {' '}
+              ({getFilterName()})
+            </Text>
           </Text>
           <Menu>
             <Menu.IconButton
