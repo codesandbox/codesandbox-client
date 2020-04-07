@@ -16,12 +16,11 @@ loads more quickly, and feels more responsive.
 
 #### Features
 
-<ol>
-  <li>Added progressive loading of each part of the editor instead of waiting for everything to be ready upfront</li>
-  <li>Re-designed the activity bar and all component parts</li>
-  <li>Updated the navigation bar design</li>
-  <li>Added a new default theme: CodeSandbox Black</li>  
-</ol>
+1. Added progressive loading of each part of the editor instead of waiting for
+   everything to be ready upfront
+2. Re-designed the activity bar and all component parts
+3. Updated the navigation bar design
+4. Added a new default theme: CodeSandbox Black
 
 #### Fixes
 
