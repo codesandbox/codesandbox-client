@@ -33,7 +33,8 @@ restarted, and you can see the list of all your secrets above the form.
 Secrets are environment variables, meaning they are defined on `process.env`. In
 the example above, we can read the API key from
 `process.env.GOOGLE_MAPS_API_KEY`. See the example below, showing how to access
-secrets in your server-side code (though obviously you wouldn't want to share a secret like this, it justs illustrates how to access them).
+secrets in your server-side code (though obviously you wouldn't want to share a
+secret like this, it justs illustrates how to access them).
 
 <iframe
      src="https://codesandbox.io/embed/broken-resonance-35lyl?codemirror=1&fontsize=14&hidenavigation=1&theme=dark"
