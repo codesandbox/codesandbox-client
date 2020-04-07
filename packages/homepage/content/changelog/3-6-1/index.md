@@ -10,12 +10,17 @@ description: This release includes bug fixes.
 
 #### Features
 
-1. [@tanmoyopenroot](https://github.com/codesandbox/codesandbox-client/pull/3738) added a keyboard shortcut Ctrl + Backtick to toggle opening and closing the console
-2. Thanks to [@jamime](https://github.com/codesandbox/codesandbox-client/pull/3730), sandboxes can now consume packages that use an npm alias
+1. [@tanmoyopenroot](https://github.com/codesandbox/codesandbox-client/pull/3738)
+   added a keyboard shortcut Ctrl + Backtick to toggle opening and closing the
+   console
+2. Thanks to
+   [@jamime](https://github.com/codesandbox/codesandbox-client/pull/3730),
+   sandboxes can now consume packages that use an npm alias
 
 #### Fixes
 
 - Fixed an alignment issue with the Share icon
-- [@tanmoyopenroot](https://github.com/codesandbox/codesandbox-client/pull/3759) made the template icon popup close upon selecting the icon
+- [@tanmoyopenroot](https://github.com/codesandbox/codesandbox-client/pull/3759)
+  made the template icon popup close upon selecting the icon
 - We now correctly reset live counters after a sandbox is changed
 - Fixed up an issue impacting live throttling when editing a sandbox solo
