@@ -191,8 +191,14 @@ export const Post = styled.div`
 
   > ul li a,
   ol li a {
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 1);
     text-decoration: none;
-    border-bottom: 1px solid;
+    border-bottom: 1px solid rgba(255, 255, 255, 0);
+    transition: all 100ms ease-in;
+  }
+
+  > ul li a:hover,
+  ol li a:hover {
+    border-bottom: 1px solid rgba(255, 255, 255, 1);
   }
 `;
