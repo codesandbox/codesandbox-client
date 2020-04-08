@@ -3,7 +3,7 @@ import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
 import isToday from 'date-fns/isToday';
 
-export const OPTIMISTIC_COMMENT_ID = 'OptimisticCommentId';
+export const OPTIMISTIC_COMMENT_ID = 'OPTIMISTIC_COMMENT_ID';
 
 type State = {
   comments: {
@@ -52,7 +52,7 @@ export const state: State = {
       return {};
     }
     const rootComments = Object.values(comments[currentSandbox.id]).filter(
-      comment => comment.parentComment == null
+      comment => comment.parentComment == null && !comment.isResolved
     );
 
     return rootComments.reduce<{
@@ -109,7 +109,7 @@ export const state: State = {
     return {
       ...comments[currentSandbox.id][currentCommentId],
       comments: Object.keys(comments[currentSandbox.id])
-        .reduce((aggr, commentId) => {
+        .reduce<CommentFragment[]>((aggr, commentId) => {
           if (
             comments[currentSandbox.id][commentId].parentComment?.id ===
             currentCommentId

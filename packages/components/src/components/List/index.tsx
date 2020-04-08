@@ -5,9 +5,6 @@ import { Stack } from '../Stack';
 
 type ListActionProps = {
   disabled?: boolean;
-  itemprop?: string;
-  itemscope?: string;
-  itemtype?: string;
 };
 
 export const List = styled(Element).attrs({ as: 'ul' })(

@@ -39,12 +39,30 @@ export const Comments: React.FC = () => {
     }
   };
 
+  const getFilterName = () => {
+    switch (selectedCommentsFilter) {
+      case CommentsFilterOption.ALL:
+        return 'All';
+      case CommentsFilterOption.RESOLVED:
+        return 'Resolved';
+      case CommentsFilterOption.OPEN:
+        return 'Open';
+      default:
+        return 'new';
+    }
+  };
+
   const onSubmit = value => {
     commentsActions.addComment({
       content: value,
     });
     scrollRef.current.scrollTop = 0;
   };
+
+  const iconColor =
+    selectedCommentsFilter !== CommentsFilterOption.ALL
+      ? 'button.background'
+      : 'inherit';
 
   const Empty = () => (
     <Stack
@@ -87,13 +105,29 @@ export const Comments: React.FC = () => {
             minHeight: '35px',
           })}
         >
-          <Text>Comments</Text>
+          <Text>
+            Comments
+            <Text css={{ textTransform: 'capitalize' }}>
+              {' '}
+              ({getFilterName()})
+            </Text>
+          </Text>
           <Menu>
             <Menu.IconButton
               className="icon-button"
               name="filter"
               title="Filter comments"
               size={12}
+              css={css({
+                color: iconColor,
+                ':hover:not(:disabled)': {
+                  color: iconColor,
+                },
+                ':focus:not(:disabled)': {
+                  color: iconColor,
+                  backgroundColor: 'transparent',
+                },
+              })}
             />
             <Menu.List>
               {options.map(option => (
@@ -110,9 +144,9 @@ export const Comments: React.FC = () => {
 
         {currentComments.length ? (
           <List
-            itemprop="mainEntity"
-            itemscope=""
-            itemtype="http://schema.org/Conversation"
+            itemProp="mainEntity"
+            itemScope
+            itemType="http://schema.org/Conversation"
             ref={scrollRef}
             marginTop={4}
             css={{

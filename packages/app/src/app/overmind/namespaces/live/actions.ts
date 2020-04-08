@@ -422,7 +422,7 @@ export const revealViewRange: Action<{ liveUserId: string }> = (
   }
 };
 
-export const revealCursorPosition: Action<{ liveUserId: string }> = (
+export const revealCursorPosition: AsyncAction<{ liveUserId: string }> = async (
   { state, effects, actions },
   { liveUserId }
 ) => {
@@ -438,7 +438,7 @@ export const revealCursorPosition: Action<{ liveUserId: string }> = (
       ({ shortid }) => shortid === user.currentModuleShortid
     )[0];
 
-    actions.editor.moduleSelected({ id: module.id });
+    await actions.editor.moduleSelected({ id: module.id });
 
     if (user.selection?.primary?.cursorPosition) {
       effects.vscode.revealPositionInCenterIfOutsideViewport(
