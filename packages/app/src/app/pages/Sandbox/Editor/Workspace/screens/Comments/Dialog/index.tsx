@@ -1,4 +1,5 @@
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
   Avatar,
   Element,
@@ -8,7 +9,6 @@ import {
   Text,
   Textarea,
 } from '@codesandbox/components';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import css from '@styled-system/css';
 import {
   DIALOG_TRANSITION_DURATION,
@@ -153,6 +153,7 @@ export const Dialog: React.FC = () => {
 
                 <Replies
                   replies={replies}
+                  replyCount={comment.replyCount}
                   repliesRenderedCallback={() => setRepliesRendered(true)}
                 />
               </Element>
@@ -339,6 +340,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
     state,
     actions: { comments },
   } = useOvermind();
+  const isCommenter = state.user.id === comment.user.id;
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -349,14 +351,21 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
         marginRight={2}
       >
         <AvatarBlock comment={comment} />
-        {state.user.id === comment.user.id && (
-          <Stack align="center">
-            <Menu>
-              <Menu.IconButton name="more" title="Comment actions" size={12} />
-              <Menu.List>
+        <Stack align="center">
+          <Menu>
+            <Menu.IconButton name="more" title="Comment actions" size={12} />
+            <Menu.List>
+              {isCommenter && (
                 <Menu.Item onSelect={() => setEditing(true)}>
                   Edit Comment
                 </Menu.Item>
+              )}
+              <Menu.Item
+                onSelect={() => comments.copyPermalinkToClipboard(comment.id)}
+              >
+                Share Comment
+              </Menu.Item>
+              {isCommenter && (
                 <Menu.Item
                   onSelect={() => {
                     comments.closeComment();
@@ -367,10 +376,10 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
                 >
                   Delete
                 </Menu.Item>
-              </Menu.List>
-            </Menu>
-          </Stack>
-        )}
+              )}
+            </Menu.List>
+          </Menu>
+        </Stack>
       </Stack>
       <Element
         marginY={0}
@@ -403,7 +412,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
   );
 };
 
-const Replies = ({ replies, repliesRenderedCallback }) => {
+const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
   /**
    * Loading animations:
    * 0. Wait for the dialog to have animated in view and scaled up.
@@ -420,18 +429,16 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
 
   /** Wait another <delay>ms after the dialog has transitioned into view */
   const delay = DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY;
-  const REPLY_TRANSITION_DURATION = Math.max(replies.length * 0.15, 0.5);
+  const REPLY_TRANSITION_DURATION = Math.max(replyCount * 0.15, 0.5);
   const SKELETON_FADE_DURATION = 0.25;
   const SKELETON_HEIGHT = 146;
-
+  const repliesLoaded = replies.length === replyCount;
   // initial status of replies -
   // this is false when it's the first time this specific comment is opened
   // after that it will be true because we cache replies in state
-  const repliesAlreadyLoadedOnFirstRender = React.useRef(!!replies[0]);
+  const repliesAlreadyLoadedOnFirstRender = React.useRef(repliesLoaded);
 
   // current status of replies-
-  const repliesLoaded = !!replies[0];
-
   /** Welcome to the imperative world of timeline animations
    *
    * -------------------------------------------------------
@@ -456,7 +463,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
    * If replies are loaded, do nothing and wait for next animation
    * */
   React.useEffect(() => {
-    if (!replies.length) {
+    if (!replyCount) {
       // If the dialog is already open without any replies,
       // just skip all of the animations for opening transitions
       repliesController.set({ opacity: 1, height: 'auto' });
@@ -465,7 +472,7 @@ const Replies = ({ replies, repliesRenderedCallback }) => {
       skeletonController.set({ height: SKELETON_HEIGHT, opacity: 1 });
       setStepInTimeline(0);
     }
-  }, [skeletonController, repliesController, replies.length, T]);
+  }, [skeletonController, repliesController, replies.length, T, replyCount]);
 
   /**
    * T = 1 (Dialog's enter animation has completed, hence the delay)

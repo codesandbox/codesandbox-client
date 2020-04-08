@@ -1,4 +1,6 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
+import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import {
   DIALOG_TRANSITION_DURATION,
   REPLY_TRANSITION_DELAY,
@@ -12,8 +14,9 @@ import {
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { utcToZonedTime } from 'date-fns-tz';
+import { Selection } from 'ot';
+import * as uuid from 'uuid';
 
-import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { OPTIMISTIC_COMMENT_ID } from './state';
 
 export const selectCommentsFilter: Action<CommentsFilterOption> = (
@@ -34,6 +37,7 @@ export const updateComment: AsyncAction<{
   if (commentId === OPTIMISTIC_COMMENT_ID) {
     await actions.comments.addComment({
       content,
+      isOptimistic: true,
     });
     return;
   }
@@ -56,7 +60,7 @@ export const updateComment: AsyncAction<{
   }
 };
 
-export const getComments: AsyncAction<string> = async (
+export const getCommentReplies: AsyncAction<string> = async (
   { state, effects },
   commentId
 ) => {
@@ -71,7 +75,7 @@ export const getComments: AsyncAction<string> = async (
       // @ts-ignore
       sandbox: { comment },
     } = await effects.browser.waitAtLeast(
-      DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY,
+      (DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY) * 1000,
       () =>
         effects.gql.queries.comment({
           sandboxId: sandbox.id,
@@ -160,7 +164,7 @@ export const selectComment: AsyncAction<{
 
   const comment = state.comments.comments[sandbox.id][commentId];
 
-  actions.comments.getComments(commentId);
+  actions.comments.getCommentReplies(commentId);
 
   if (!bounds) {
     state.comments.currentCommentId = commentId;
@@ -249,14 +253,14 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
     references: codeReference
       ? [
           {
-            id: '__OPTIMISTIC__',
+            id: uuid.v4(),
             type: 'code',
             metadata: codeReference,
             resource: state.editor.currentModule.path,
           },
         ]
       : [],
-    comments: [],
+    replyCount: 0,
   };
   const comments = state.comments.comments;
 
@@ -295,12 +299,12 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
 export const addComment: AsyncAction<{
   content: string;
   parentCommentId?: string;
-}> = async ({ state, effects }, { content, parentCommentId }) => {
+  isOptimistic?: boolean;
+}> = async ({ state, effects }, { content, parentCommentId, isOptimistic }) => {
   if (!state.user || !state.editor.currentSandbox) {
     return;
   }
 
-  const id = OPTIMISTIC_COMMENT_ID;
   const sandboxId = state.editor.currentSandbox.id;
   const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
@@ -309,9 +313,18 @@ export const addComment: AsyncAction<{
     comments[sandboxId] = {};
   }
 
+  const id = uuid.v4();
   let optimisticComment: CommentFragment;
-  if (state.comments.comments[sandboxId][id]) {
-    optimisticComment = state.comments.comments[sandboxId][id];
+  if (isOptimistic) {
+    optimisticComment = {
+      ...state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID],
+      id,
+    };
+    state.comments.comments[sandboxId][id] = optimisticComment;
+    state.comments.currentCommentId = state.comments.currentCommentId
+      ? id
+      : null;
+    delete state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID];
   } else {
     optimisticComment = {
       parentComment: parentCommentId ? { id: parentCommentId } : null,
@@ -327,17 +340,16 @@ export const addComment: AsyncAction<{
         avatarUrl: state.user.avatarUrl,
       },
       references: [],
-      comments: [],
+      replyCount: 0,
     };
     comments[sandboxId][id] = optimisticComment;
   }
 
-  if (optimisticComment.parentComment) {
-    comments[sandboxId][optimisticComment.parentComment.id].comments.push({
-      id,
-    });
-  }
   state.comments.selectedCommentsFilter = CommentsFilterOption.OPEN;
+
+  if (parentCommentId) {
+    comments[sandboxId][parentCommentId].replyCount++;
+  }
 
   // The server might be ahead on sandbox version, so we need to try to save
   // several times
@@ -345,7 +357,8 @@ export const addComment: AsyncAction<{
 
   async function saveComment() {
     tryCount++;
-    const response = await effects.gql.mutations.createComment({
+    await effects.gql.mutations.createComment({
+      id,
       parentCommentId: parentCommentId || null,
       sandboxId,
       content,
@@ -353,29 +366,8 @@ export const addComment: AsyncAction<{
         ? optimisticComment.references[0].metadata
         : null,
     });
-
-    const comment = response.createComment;
-
-    delete comments[sandboxId][id];
-    comments[sandboxId][comment.id] = comment;
-
-    if (parentCommentId) {
-      comments[sandboxId][parentCommentId].comments.push({
-        id: comment.id,
-      });
-      comments[sandboxId][parentCommentId].comments.splice(
-        comments[sandboxId][parentCommentId].comments.findIndex(
-          childComment => childComment.id === id
-        ),
-        1
-      );
-    }
-
-    if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
-      state.comments.currentCommentId = comment.id;
-      delete comments[sandboxId][OPTIMISTIC_COMMENT_ID];
-    }
   }
+
   try {
     await saveComment();
   } catch (error) {
@@ -400,18 +392,7 @@ export const deleteComment: AsyncAction<{
   const sandboxId = state.editor.currentSandbox.id;
   const comments = state.comments.comments;
   const deletedComment = comments[sandboxId][commentId];
-  const parentComment =
-    deletedComment.parentComment &&
-    comments[sandboxId][deletedComment.parentComment.id];
   delete comments[sandboxId][commentId];
-  let replyIndex: number = -1;
-
-  if (parentComment) {
-    replyIndex = parentComment.comments.findIndex(
-      reply => reply.id === deletedComment.id
-    );
-    parentComment.comments.splice(replyIndex, 1);
-  }
 
   try {
     await effects.gql.mutations.deleteComment({
@@ -423,9 +404,6 @@ export const deleteComment: AsyncAction<{
       'Unable to delete your comment, please try again'
     );
     comments[sandboxId][commentId] = deletedComment;
-    if (parentComment) {
-      parentComment.comments.splice(replyIndex, 0, { id: deletedComment.id });
-    }
   }
 };
 
@@ -538,6 +516,33 @@ export const onCommentAdded: Action<CommentAddedSubscription> = (
   { state },
   { commentAdded: comment }
 ) => {
+  if (comment.references[0] && comment.references[0].type === 'code') {
+    const codeReference = comment.references[0].metadata;
+    const sandbox = state.editor.currentSandbox;
+    const module = sandbox.modules.find(
+      moduleItem => moduleItem.path === codeReference.path
+    );
+    // We do a check here to catch if our assumption was wrong on always having the updated file
+    // when receiving a comment update
+    if (sandbox.version === codeReference.sandboxVersion) {
+      // We create a diff operation which is applied to the comment to ensure
+      // any operations received in the meantime is applied
+      const diffOperation = getTextOperation(module.savedCode, module.code);
+      const range = new Selection.Range(
+        codeReference.anchor,
+        codeReference.head
+      );
+      const newRange = range.transform(diffOperation);
+
+      codeReference.anchor = newRange.anchor;
+      codeReference.head = newRange.head;
+    } else {
+      captureException(
+        new Error('Received comment add update before file was updated')
+      );
+    }
+  }
+
   state.comments.comments[comment.sandbox.id][comment.id] = comment;
 };
 

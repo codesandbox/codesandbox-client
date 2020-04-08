@@ -30,9 +30,7 @@ export const commentFragment = gql`
     parentComment {
       id
     }
-    comments {
-      id
-    }
+    replyCount
   }
 `;
 
@@ -66,6 +64,7 @@ export const commentWithRepliesFragment = gql`
     parentComment {
       id
     }
+    replyCount
     comments {
       ...Comment
     }
