@@ -11,8 +11,8 @@ description: A new editor and offline support
 #### Features
 
 1. We now use the Monaco editor adding support for IntelliSense, so you can use
-   Peek Definition, Go to Definition, Find all References etc.
-2. ESLint, Prettier and Emmet.io are now built in to the editor
+   Peek Definition, Go to Definition, Find all References, etc.
+2. ESLint, Prettier, and Emmet.io are now built into the editor
 3. For React, we've added support for react-error-overlay for clear error
    descriptions and fix suggestions
 4. You can open the editor and the preview while offline
