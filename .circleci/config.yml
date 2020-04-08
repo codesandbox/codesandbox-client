@@ -117,6 +117,7 @@ executors:
   node:
     docker:
       - image: circleci/node:10
+    resource_class: xlarge
     working_directory: ~/codesandbox-client
   node-with-puppeteer:
     docker:
