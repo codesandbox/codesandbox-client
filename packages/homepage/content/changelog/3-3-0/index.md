@@ -6,10 +6,7 @@ date: 2019-03-21
 description: CodeSandbox containers out of beta and improvements
 ---
 
-### Containers out of Beta
-
-CodeSandbox Containers allow you to run almost anything you want on CodeSandbox,
-just like a local development environment.
+### 
 
 #### Features
 
