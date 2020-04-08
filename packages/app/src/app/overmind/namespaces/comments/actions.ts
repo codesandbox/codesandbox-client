@@ -506,34 +506,22 @@ export const onCommentAdded: Action<CommentAddedSubscription> = (
   { state },
   { commentAdded: comment }
 ) => {
-  // We only add it if it was NOT created by the user, cause then we
-  // have already set it, avoiding UI flickers
-  if (comment.user.id !== state.user?.id) {
-    state.comments.comments[comment.sandbox.id][comment.id] = comment;
-  }
+  state.comments.comments[comment.sandbox.id][comment.id] = comment;
 };
 
 export const onCommentChanged: Action<CommentChangedSubscription> = (
   { state },
   { commentChanged: comment }
 ) => {
-  // We only change it if it was NOT created by the user, cause then we
-  // have already set it, avoiding UI flickers
-  if (comment.user.id !== state.user?.id) {
-    Object.assign(
-      state.comments.comments[comment.sandbox.id][comment.id],
-      comment
-    );
-  }
+  Object.assign(
+    state.comments.comments[comment.sandbox.id][comment.id],
+    comment
+  );
 };
 
 export const onCommentRemoved: Action<CommentRemovedSubscription> = (
   { state },
   { commentRemoved: comment }
 ) => {
-  // We only delete it if it was NOT created by the user, cause then we
-  // have already set it, avoiding UI flickers
-  if (comment.user.id !== state.user?.id) {
-    delete state.comments.comments[comment.sandbox.id][comment.id];
-  }
+  delete state.comments.comments[comment.sandbox.id][comment.id];
 };
