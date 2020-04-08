@@ -40,7 +40,7 @@ A failed test looks like this in the Test View:
 
 And will also show squiggles in the editor:
 
-![Test Squiggles](./images/jest-squiggles.png)
+![Test Squiggles](./images/jest-squiggles.png?v2)
 
 ## Example
 
