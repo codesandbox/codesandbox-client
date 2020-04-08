@@ -1,98 +1,102 @@
-import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
-
 import {
-  Element,
-  Collapsible,
-  Text,
-  Button,
-  Link,
-  Label,
   Avatar,
-  Stack,
+  Button,
+  Collapsible,
+  Element,
+  Label,
+  Link,
   List,
-  ListItem,
   ListAction,
-  Switch,
+  ListItem,
+  Stack,
   Stats,
+  Switch,
   Tags,
+  Text,
 } from '@codesandbox/components';
-
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
-  sandboxUrl,
-  profileUrl,
   githubRepoUrl,
+  profileUrl,
+  sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-
 import css from '@styled-system/css';
-import { TemplateConfig } from './TemplateConfig';
-import { PenIcon } from './icons';
-import { EditSummary } from './EditSummary';
-import { GitHubIcon } from '../GitHub/Icons';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
-export const Summary = () => {
+import { useOvermind } from 'app/overmind';
+
+import { GitHubIcon } from '../../GitHub/Icons';
+
+import { PenIcon } from '../icons';
+
+import { EditSummary } from './EditSummary';
+import { TemplateConfig } from './TemplateConfig';
+
+export const Summary: FunctionComponent = () => {
   const {
     actions: {
       editor: { frozenUpdated, sessionFreezeOverride },
     },
     state: {
-      editor: { currentSandbox, sessionFrozen },
+      editor: {
+        currentSandbox,
+        currentSandbox: {
+          author,
+          customTemplate,
+          description,
+          forkedFromSandbox,
+          forkedTemplateSandbox,
+          isFrozen,
+          tags,
+          team,
+          template,
+        },
+        sessionFrozen,
+      },
     },
   } = useOvermind();
-  const {
-    author,
-    description,
-    isFrozen,
-    customTemplate,
-    template,
-    forkedFromSandbox,
-    forkedTemplateSandbox,
-    tags,
-    team,
-  } = currentSandbox;
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     // always freeze it on start
     if (customTemplate) {
-      frozenUpdated({ frozen: true });
+      frozenUpdated(true);
     }
   }, [customTemplate, frozenUpdated]);
 
   const updateFrozenState = e => {
     e.preventDefault();
     if (customTemplate) {
-      return sessionFreezeOverride({ frozen: !sessionFrozen });
+      return sessionFreezeOverride(!sessionFrozen);
     }
 
-    return frozenUpdated({ frozen: !isFrozen });
+    return frozenUpdated(!isFrozen);
   };
 
   const isForked = forkedFromSandbox || forkedTemplateSandbox;
   const { url: templateUrl } = getTemplateDefinition(template);
 
-  const [editing, setEditing] = React.useState(false);
-
   return (
     <>
       <Collapsible
-        title={customTemplate ? 'Template Info' : 'Sandbox Info'}
         defaultOpen
+        title={customTemplate ? 'Template Info' : 'Sandbox Info'}
       >
         <Element marginBottom={editing ? 10 : 6}>
           {editing ? (
             <EditSummary setEditing={setEditing} />
           ) : (
             <Stack as="section" direction="vertical" gap={2} paddingX={2}>
-              <Stack justify="space-between" align="center">
+              <Stack align="center" justify="space-between">
                 {customTemplate ? (
-                  <Stack gap={2} align="center">
+                  <Stack align="center" gap={2}>
                     <TemplateIcon
-                      iconUrl={customTemplate.iconUrl}
                       environment={template}
+                      iconUrl={customTemplate.iconUrl}
                     />
+
                     <Text maxWidth="100%">
                       {getSandboxName(currentSandbox)}
                     </Text>
@@ -101,19 +105,19 @@ export const Summary = () => {
                   <Text maxWidth="100%">{getSandboxName(currentSandbox)}</Text>
                 )}
                 <Button
-                  variant="link"
                   css={css({ width: 10 })}
                   onClick={() => setEditing(true)}
+                  variant="link"
                 >
                   <PenIcon />
                 </Button>
               </Stack>
 
-              <Text variant="muted" onClick={() => setEditing(true)}>
+              <Text onClick={() => setEditing(true)} variant="muted">
                 {description || 'Add a short description for this sandbox'}
               </Text>
 
-              {tags.length ? (
+              {tags.length > 0 ? (
                 <Element marginTop={4}>
                   <Tags tags={tags} />
                 </Element>
@@ -125,22 +129,24 @@ export const Summary = () => {
         <Stack as="section" direction="vertical" gap={4} paddingX={2}>
           {author ? (
             <Link href={profileUrl(author.username)}>
-              <Stack gap={2} align="center" css={{ display: 'inline-flex' }}>
+              <Stack align="center" css={{ display: 'inline-flex' }} gap={2}>
                 <Avatar user={author} />
+
                 <Element>
-                  <Text variant={team ? 'body' : 'muted'} block>
+                  <Text block variant={team ? 'body' : 'muted'}>
                     {author.username}
                   </Text>
-                  {team && (
+
+                  {team ? (
                     <Text
-                      size={2}
                       marginTop={1}
-                      variant="muted"
                       maxWidth="100%"
+                      variant="muted"
+                      size={2}
                     >
                       {team.name}
                     </Text>
-                  )}
+                  ) : null}
                 </Element>
               </Stack>
             </Link>
@@ -148,9 +154,8 @@ export const Summary = () => {
 
           {!author && currentSandbox.git ? (
             <Link href={githubRepoUrl(currentSandbox.git)} target="_blank">
-              <Stack gap={2} align="center">
+              <Stack align="center" gap={2}>
                 <Stack
-                  justify="center"
                   align="center"
                   css={css({
                     size: 8,
@@ -159,14 +164,12 @@ export const Summary = () => {
                     border: '1px solid',
                     borderColor: 'avatar.border',
                   })}
+                  justify="center"
                 >
-                  <GitHubIcon
-                    title="GitHub repository"
-                    width={20}
-                    height={20}
-                  />
+                  <GitHubIcon height={20} width={20} />
                 </Stack>
-                <Link variant="muted" maxWidth="100%">
+
+                <Link maxWidth="100%" variant="muted">
                   {currentSandbox.git.username}/{currentSandbox.git.repo}
                 </Link>
               </Stack>
@@ -176,37 +179,43 @@ export const Summary = () => {
           <Stats sandbox={currentSandbox} />
         </Stack>
 
-        <Divider marginTop={8} marginBottom={4} />
+        <Divider marginBottom={4} marginTop={8} />
 
         <List>
           {customTemplate && <TemplateConfig />}
+
           <ListAction justify="space-between" onClick={updateFrozenState}>
             <Label htmlFor="frozen">Frozen</Label>
+
             <Switch
               id="frozen"
-              onChange={updateFrozenState}
               on={customTemplate ? sessionFrozen : isFrozen}
+              onChange={updateFrozenState}
             />
           </ListAction>
+
           {isForked ? (
             <ListItem justify="space-between">
               <Text>{forkedTemplateSandbox ? 'Template' : 'Forked From'}</Text>
+
               <Link
-                variant="muted"
                 href={sandboxUrl(forkedFromSandbox || forkedTemplateSandbox)}
                 target="_blank"
+                variant="muted"
               >
                 {getSandboxName(forkedFromSandbox || forkedTemplateSandbox)}
               </Link>
             </ListItem>
           ) : null}
-          <ListItem justify="space-between" gap={2}>
+
+          <ListItem gap={2} justify="space-between">
             <Text>Environment</Text>
+
             <Link
-              variant="muted"
+              maxWidth="100%"
               href={templateUrl}
               target="_blank"
-              maxWidth="100%"
+              variant="muted"
             >
               {template}
             </Link>
