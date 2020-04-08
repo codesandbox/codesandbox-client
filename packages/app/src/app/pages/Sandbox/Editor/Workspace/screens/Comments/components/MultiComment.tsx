@@ -1,4 +1,5 @@
 import { Element, Text } from '@codesandbox/components';
+import OutsideClickHandler from 'react-outside-click-handler';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { formatDistanceStrict } from 'date-fns';
@@ -17,9 +18,12 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
     actions,
   } = useOvermind();
 
+  const CARROT_LEFT_MARGIN = 25;
+  const BORDER_WIDTH = 10;
+
   const list = css({
     position: 'fixed',
-    left: x - 10,
+    left: x - CARROT_LEFT_MARGIN,
     top: y + 20,
     backgroundColor: 'sideBar.background',
     border: '1px solid',
@@ -34,15 +38,15 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
       content: "''",
       display: 'block',
       position: 'absolute',
-      left: '7px',
+      left: CARROT_LEFT_MARGIN - 1,
       width: 0,
       height: 0,
       borderStyle: 'solid',
-      top: '-11px',
+      top: `-${BORDER_WIDTH + 1}px`,
       borderColor: 'transparent',
       borderBottomColor: 'sideBar.border',
 
-      borderWidth: '11px',
+      borderWidth: `${BORDER_WIDTH + 1}px`,
       borderTopWidth: 0,
     },
 
@@ -50,14 +54,14 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
       content: "''",
       display: 'block',
       position: 'absolute',
-      left: 2,
+      left: CARROT_LEFT_MARGIN,
       width: 0,
       height: 0,
       borderStyle: 'solid',
-      top: '-10px',
+      top: `-${BORDER_WIDTH}px`,
       borderColor: 'transparent',
       borderBottomColor: 'sideBar.background',
-      borderWidth: '10px',
+      borderWidth: `${BORDER_WIDTH}px`,
       borderTopWidth: 0,
     },
   });
@@ -69,6 +73,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
     width: 200,
     cursor: 'pointer',
     position: 'relative',
+    textAlign: 'left',
     '&:hover': {
       color: 'list.hoverForeground',
       backgroundColor: 'list.hoverBackground',
@@ -85,57 +90,64 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
     );
 
   return (
-    <Element as="ul" css={list}>
-      {ids
-        .map(id => comments.comments[editor.currentSandbox.id][id])
-        .sort((commentA, commentB) => {
-          const dateA = new Date(commentA.insertedAt);
-          const dateB = new Date(commentB.insertedAt);
-          if (dateA < dateB) {
-            return 1;
-          }
+    <Element css={css({ position: 'absolute' })}>
+      <OutsideClickHandler
+        onOutsideClick={() => actions.comments.closeMultiCommentsSelector()}
+      >
+        <Element as="ul" css={list}>
+          {ids
+            .map(id => comments.comments[editor.currentSandbox.id][id])
+            .sort((commentA, commentB) => {
+              const dateA = new Date(commentA.insertedAt);
+              const dateB = new Date(commentB.insertedAt);
+              if (dateA < dateB) {
+                return 1;
+              }
 
-          if (dateA > dateB) {
-            return -1;
-          }
+              if (dateA > dateB) {
+                return -1;
+              }
 
-          return 0;
-        })
-        .map(comment => (
-          <Element as="li" key={comment.id}>
-            <Element
-              as="button"
-              type="button"
-              onClick={event => {
-                const bounds = event.currentTarget.getBoundingClientRect();
-                actions.comments.selectComment({
-                  commentId: comment.id,
-                  bounds: {
-                    left: bounds.left,
-                    right: bounds.right,
-                    top: bounds.top,
-                    bottom: bounds.bottom,
-                  },
-                });
-              }}
-              css={item}
-            >
-              <Text
-                size={2}
-                weight="bold"
-                paddingRight={2}
-                css={css({
-                  color: 'sideBar.foreground',
-                })}
-              >
-                {comment.user.username}
-              </Text>
-              <Text size={2} variant="muted">
-                {date(comment)}
-              </Text>
-            </Element>
-          </Element>
-        ))}
+              return 0;
+            })
+            .map(comment => (
+              <Element as="li" key={comment.id}>
+                <Element
+                  as="button"
+                  type="button"
+                  onClick={event => {
+                    const bounds = event.currentTarget.getBoundingClientRect();
+                    actions.comments.selectComment({
+                      commentId: comment.id,
+                      bounds: {
+                        left: bounds.left,
+                        right: bounds.right,
+                        top: bounds.top,
+                        bottom: bounds.bottom,
+                      },
+                    });
+                  }}
+                  css={item}
+                >
+                  <Text
+                    size={2}
+                    weight="bold"
+                    paddingRight={2}
+                    itemProp="name"
+                    css={css({
+                      color: 'sideBar.foreground',
+                    })}
+                  >
+                    {comment.user.username}
+                  </Text>
+                  <Text size={2} variant="muted">
+                    {date(comment)}
+                  </Text>
+                </Element>
+              </Element>
+            ))}
+        </Element>
+      </OutsideClickHandler>
     </Element>
   );
 };

@@ -1,5 +1,3 @@
-import './icons.css';
-
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
@@ -143,7 +141,7 @@ export class VSCodeEffect {
       getState: options.getState,
       getSignal: options.getSignal,
     };
-    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 500);
+    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 200);
 
     this.prepareElements();
 
@@ -619,15 +617,17 @@ export class VSCodeEffect {
     if (activeEditor) {
       const model = activeEditor.getModel();
 
-      const lineColumnPos = indexToLineAndColumn(
-        model.getLinesContent() || [],
-        pos
-      );
+      if (model) {
+        const lineColumnPos = indexToLineAndColumn(
+          model.getLinesContent() || [],
+          pos
+        );
 
-      activeEditor.revealPositionInCenterIfOutsideViewport(
-        lineColumnPos,
-        scrollType
-      );
+        activeEditor.revealPositionInCenterIfOutsideViewport(
+          lineColumnPos,
+          scrollType
+        );
+      }
     }
   }
 
@@ -653,6 +653,38 @@ export class VSCodeEffect {
     if (activeEditor) {
       activeEditor.revealRange(range, scrollType);
     }
+  }
+
+  /**
+   * Set the selection inside the editor
+   * @param head Start of the selection
+   * @param anchor End of the selection
+   */
+  setSelection(head: number, anchor: number) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+    if (!activeEditor) {
+      return;
+    }
+
+    const model = activeEditor.getModel();
+    if (!model) {
+      return;
+    }
+
+    const headPos = indexToLineAndColumn(model.getLinesContent() || [], head);
+    const anchorPos = indexToLineAndColumn(
+      model.getLinesContent() || [],
+      anchor
+    );
+    const range = new this.monaco.Range(
+      headPos.lineNumber,
+      headPos.column,
+      anchorPos.lineNumber,
+      anchorPos.column
+    );
+
+    this.revealRange(range);
+    activeEditor.setSelection(range);
   }
 
   // Communicates the endpoint for the WebsocketLSP

@@ -3,6 +3,7 @@ import {
   LiveMessage,
   LiveMessageEvent,
   UserViewRange,
+  UserSelection,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Action, AsyncAction, Operator } from 'app/overmind';
@@ -189,15 +190,13 @@ export const sendCurrentSelection: Action = ({ state, effects }) => {
     return;
   }
 
-  if (state.live.isCurrentEditor) {
-    const { liveUserId } = state.live;
-    if (liveUserId) {
-      effects.live.sendUserSelection(
-        state.editor.currentModuleShortid,
-        liveUserId,
-        state.live.currentSelection
-      );
-    }
+  const { liveUserId } = state.live;
+  if (liveUserId && state.live.currentSelection) {
+    effects.live.sendUserSelection(
+      state.editor.currentModuleShortid,
+      liveUserId,
+      state.live.currentSelection
+    );
   }
 };
 
@@ -254,7 +253,7 @@ export const onViewRangeChanged: Action<UserViewRange> = (
   }
 };
 
-export const onSelectionChanged: Action<any> = (
+export const onSelectionChanged: Action<UserSelection> = (
   { state, effects },
   selection
 ) => {
@@ -262,28 +261,24 @@ export const onSelectionChanged: Action<any> = (
     return;
   }
 
-  if (state.live.isCurrentEditor) {
-    const { liveUserId } = state.live;
-    const moduleShortid = state.editor.currentModuleShortid;
-    if (!moduleShortid || !liveUserId) {
-      return;
-    }
+  const { liveUserId } = state.live;
+  const moduleShortid = state.editor.currentModuleShortid;
+  if (!moduleShortid || !liveUserId) {
+    return;
+  }
 
-    state.live.currentSelection = selection;
-    const userIndex = state.live.roomInfo.users.findIndex(
-      u => u.id === liveUserId
-    );
+  state.live.currentSelection = selection;
+  const userIndex = state.live.roomInfo.users.findIndex(
+    u => u.id === liveUserId
+  );
 
-    if (userIndex > -1) {
-      if (state.live.roomInfo.users[userIndex]) {
-        state.live.roomInfo.users[
-          userIndex
-        ].currentModuleShortid = moduleShortid;
+  if (userIndex > -1) {
+    const user = state.live.roomInfo.users[userIndex];
+    if (user) {
+      user.currentModuleShortid = moduleShortid;
+      user.selection = selection;
 
-        state.live.roomInfo.users[userIndex].selection = selection;
-
-        effects.live.sendUserSelection(moduleShortid, liveUserId, selection);
-      }
+      effects.live.sendUserSelection(moduleShortid, liveUserId, selection);
     }
   }
 };
@@ -369,6 +364,13 @@ export const onFollow: Action<{
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
   actions.live.revealViewRange({ liveUserId });
+
+  if (state.editor.currentModule) {
+    // In case the selections were hidden first
+    actions.editor.internal.updateSelectionsOfModule({
+      module: state.editor.currentModule,
+    });
+  }
 };
 
 export const onUserLeft: Action<{
@@ -392,6 +394,13 @@ export const onStopFollow: Action = ({ state, effects, actions }) => {
   }
 
   state.live.followingUserId = null;
+
+  if (state.editor.currentModule) {
+    // In case the selections were hidden first
+    actions.editor.internal.updateSelectionsOfModule({
+      module: state.editor.currentModule,
+    });
+  }
 };
 
 export const revealViewRange: Action<{ liveUserId: string }> = (
@@ -418,7 +427,7 @@ export const revealViewRange: Action<{ liveUserId: string }> = (
   }
 };
 
-export const revealCursorPosition: Action<{ liveUserId: string }> = (
+export const revealCursorPosition: AsyncAction<{ liveUserId: string }> = async (
   { state, effects, actions },
   { liveUserId }
 ) => {
@@ -434,7 +443,7 @@ export const revealCursorPosition: Action<{ liveUserId: string }> = (
       ({ shortid }) => shortid === user.currentModuleShortid
     )[0];
 
-    actions.editor.moduleSelected({ id: module.id });
+    await actions.editor.moduleSelected({ id: module.id });
 
     if (user.selection?.primary?.cursorPosition) {
       effects.vscode.revealPositionInCenterIfOutsideViewport(

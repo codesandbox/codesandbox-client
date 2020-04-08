@@ -42,7 +42,12 @@ const debug = _debug('cs:app');
  */
 const warn = console.warn;
 console.warn = (...args) => {
-  if (args[0].includes('Cannot update plugins')) {
+  if (
+    args &&
+    args[0] &&
+    typeof args[0].includes === 'function' &&
+    args[0].includes('Cannot update plugins')
+  ) {
     return;
   }
 

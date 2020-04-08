@@ -78,7 +78,15 @@ export const Comment = React.memo<{
           ? comment.references[0].metadata.path
           : 'General'}
       </Link>
-      <Stack align="flex-start" justify="space-between" marginBottom={4}>
+      <Stack
+        as="article"
+        itemProp="comment"
+        itemScope
+        itemType="http://schema.org/Comment"
+        align="flex-start"
+        justify="space-between"
+        marginBottom={4}
+      >
         <AvatarBlock comment={comment} />
         <Stack align="center">
           {comment.isResolved && (
@@ -129,10 +137,10 @@ export const Comment = React.memo<{
           borderColor: 'sideBar.border',
         })}
       >
-        <Text block css={truncateText} marginBottom={2}>
+        <Text itemProp="text" block css={truncateText} marginBottom={2}>
           {comment.content}
         </Text>
-        <Text variant="muted" size={2}>
+        <Text variant="muted" size={2} itemProp="commentCount">
           {getRepliesString(comment.comments.length)}
         </Text>
       </Element>

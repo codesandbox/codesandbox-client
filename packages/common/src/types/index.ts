@@ -112,10 +112,10 @@ export type Badge = {
 
 export type CurrentUser = {
   id: string;
-  email: string | null;
+  email: string;
   name: string | null;
   username: string;
-  avatarUrl: string | null;
+  avatarUrl: string;
   jwt: string | null;
   subscription: {
     since: string;
@@ -315,7 +315,6 @@ export enum CommentsFilterOption {
   ALL = 'All',
   OPEN = 'Open',
   RESOLVED = 'Resolved',
-  MENTIONS = 'Mentions',
 }
 
 export type Sandbox = {

@@ -1,6 +1,17 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
-import { CodeReference, CommentFragment } from 'app/graphql/types';
+import {
+  DIALOG_TRANSITION_DURATION,
+  REPLY_TRANSITION_DELAY,
+} from 'app/constants';
+import {
+  CodeReference,
+  CommentAddedSubscription,
+  CommentChangedSubscription,
+  CommentFragment,
+  CommentRemovedSubscription,
+} from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
+import { utcToZonedTime } from 'date-fns-tz';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
 
@@ -36,7 +47,6 @@ export const updateComment: AsyncAction<{
       commentId,
       content,
       sandboxId,
-      isResolved: comment.isResolved,
     });
   } catch (error) {
     effects.notificationToast.error(
@@ -59,10 +69,14 @@ export const getComments: AsyncAction<string> = async (
       // No idea why TS complains about this
       // @ts-ignore
       sandbox: { comment },
-    } = await effects.gql.queries.comment({
-      sandboxId: sandbox.id,
-      commentId,
-    });
+    } = await effects.browser.waitAtLeast(
+      DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY,
+      () =>
+        effects.gql.queries.comment({
+          sandboxId: sandbox.id,
+          commentId,
+        })
+    );
 
     comment.comments.forEach(childComment => {
       state.comments.comments[sandbox.id][childComment.id] = childComment;
@@ -122,17 +136,20 @@ export const closeComment: Action = ({ state }) => {
   state.comments.currentCommentPositions = null;
 };
 
+export const closeMultiCommentsSelector: Action = ({ state }) => {
+  state.comments.multiCommentsSelector = null;
+};
+
 export const selectComment: AsyncAction<{
   commentId: string;
-  bounds: {
+  bounds?: {
     left: number;
     top: number;
     right: number;
     bottom: number;
   };
 }> = async ({ state, effects, actions }, { commentId, bounds }) => {
-  // Should close from somewhere else probably
-  state.comments.multiCommentsSelector = null;
+  actions.comments.closeMultiCommentsSelector();
 
   const sandbox = state.editor.currentSandbox;
 
@@ -143,6 +160,11 @@ export const selectComment: AsyncAction<{
   const comment = state.comments.comments[sandbox.id][commentId];
 
   actions.comments.getComments(commentId);
+
+  if (!bounds) {
+    state.comments.currentCommentId = commentId;
+    return;
+  }
 
   if (
     comment &&
@@ -191,7 +213,7 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
 
   const id = OPTIMISTIC_COMMENT_ID;
   const sandboxId = state.editor.currentSandbox.id;
-  const now = new Date().toString();
+  const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   let codeReference: CodeReference | null = null;
   const selection = state.live.currentSelection;
   if (selection) {
@@ -278,7 +300,7 @@ export const addComment: AsyncAction<{
 
   const id = OPTIMISTIC_COMMENT_ID;
   const sandbox = state.editor.currentSandbox;
-  const now = new Date().toString();
+  const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
 
   if (!comments[sandbox.id]) {
@@ -316,20 +338,16 @@ export const addComment: AsyncAction<{
   state.comments.selectedCommentsFilter = CommentsFilterOption.OPEN;
 
   try {
-    let comment: CommentFragment;
-    if (optimisticComment.references.length) {
-      comment = await effects.live.saveCodeComment({
-        sandboxId: sandbox.id,
-        content,
-        codeReference: optimisticComment.references[0].metadata,
-      });
-    } else {
-      comment = await effects.live.saveComment({
-        parentCommentId: parentCommentId || null,
-        sandboxId: sandbox.id,
-        content,
-      });
-    }
+    const response = await effects.gql.mutations.createComment({
+      parentCommentId: parentCommentId || null,
+      sandboxId: sandbox.id,
+      content,
+      codeReference: optimisticComment.references.length
+        ? optimisticComment.references[0].metadata
+        : null,
+    });
+
+    const comment = response.createComment;
 
     delete comments[sandbox.id][id];
     comments[sandbox.id][comment.id] = comment;
@@ -367,6 +385,18 @@ export const deleteComment: AsyncAction<{
   const sandboxId = state.editor.currentSandbox.id;
   const comments = state.comments.comments;
   const deletedComment = comments[sandboxId][commentId];
+  const parentComment =
+    deletedComment.parentComment &&
+    comments[sandboxId][deletedComment.parentComment.id];
+  delete comments[sandboxId][commentId];
+  let replyIndex: number = -1;
+
+  if (parentComment) {
+    replyIndex = parentComment.comments.findIndex(
+      reply => reply.id === deletedComment.id
+    );
+    parentComment.comments.splice(replyIndex, 1);
+  }
 
   try {
     await effects.gql.mutations.deleteComment({
@@ -378,6 +408,9 @@ export const deleteComment: AsyncAction<{
       'Unable to delete your comment, please try again'
     );
     comments[sandboxId][commentId] = deletedComment;
+    if (parentComment) {
+      parentComment.comments.splice(replyIndex, 0, { id: deletedComment.id });
+    }
   }
 };
 
@@ -396,12 +429,15 @@ export const resolveComment: AsyncAction<{
   comments[sandboxId][commentId].isResolved = isResolved;
 
   try {
-    await effects.gql.mutations.updateComment({
-      commentId,
-      isResolved,
-      content: comments[sandboxId][commentId].content,
-      sandboxId,
-    });
+    await (isResolved
+      ? effects.gql.mutations.resolveComment({
+          commentId,
+          sandboxId,
+        })
+      : effects.gql.mutations.unresolveComment({
+          commentId,
+          sandboxId,
+        }));
   } catch (error) {
     effects.notificationToast.error(
       'Unable to update your comment, please try again'
@@ -416,4 +452,93 @@ export const copyPermalinkToClipboard: Action<string> = (
 ) => {
   effects.browser.copyToClipboard(effects.router.createCommentUrl(commentId));
   effects.notificationToast.success('Comment permalink copied to clipboard');
+};
+
+export const getSandboxComments: AsyncAction<string> = async (
+  { state, effects, actions },
+  sandboxId
+) => {
+  try {
+    const { sandbox: sandboxComments } = await effects.gql.queries.comments({
+      sandboxId,
+    });
+
+    if (!sandboxComments || !sandboxComments.comments) {
+      return;
+    }
+
+    state.comments.comments[sandboxId] = sandboxComments.comments.reduce<{
+      [id: string]: CommentFragment;
+    }>((aggr, commentThread) => {
+      aggr[commentThread.id] = commentThread;
+
+      return aggr;
+    }, {});
+
+    const urlCommentId = effects.router.getCommentId();
+    if (urlCommentId) {
+      actions.workspace.setWorkspaceItem({ item: 'comments' });
+      actions.comments.selectComment({
+        commentId: urlCommentId,
+        bounds: {
+          left: effects.browser.getWidth() / 2,
+          top: 80,
+          right: effects.browser.getWidth() / 3,
+          bottom: 0,
+        },
+      });
+    }
+
+    effects.gql.subscriptions.commentAdded.dispose();
+    effects.gql.subscriptions.commentChanged.dispose();
+    effects.gql.subscriptions.commentRemoved.dispose();
+
+    effects.gql.subscriptions.commentAdded(
+      {
+        sandboxId,
+      },
+      actions.comments.onCommentAdded
+    );
+    effects.gql.subscriptions.commentChanged(
+      {
+        sandboxId,
+      },
+      actions.comments.onCommentChanged
+    );
+    effects.gql.subscriptions.commentRemoved(
+      {
+        sandboxId,
+      },
+      actions.comments.onCommentRemoved
+    );
+  } catch (e) {
+    state.comments.comments[sandboxId] = {};
+    effects.notificationToast.notice(
+      `There as a problem getting the sandbox comments`
+    );
+  }
+};
+
+export const onCommentAdded: Action<CommentAddedSubscription> = (
+  { state },
+  { commentAdded: comment }
+) => {
+  state.comments.comments[comment.sandbox.id][comment.id] = comment;
+};
+
+export const onCommentChanged: Action<CommentChangedSubscription> = (
+  { state },
+  { commentChanged: comment }
+) => {
+  Object.assign(
+    state.comments.comments[comment.sandbox.id][comment.id],
+    comment
+  );
+};
+
+export const onCommentRemoved: Action<CommentRemovedSubscription> = (
+  { state },
+  { commentRemoved: comment }
+) => {
+  delete state.comments.comments[comment.sandbox.id][comment.id];
 };

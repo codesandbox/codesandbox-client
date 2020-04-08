@@ -1,3 +1,4 @@
+import { debounce } from 'lodash-es';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
@@ -6,6 +7,8 @@ import {
   ModuleError,
   ModuleTab,
   WindowOrientation,
+  Module,
+  UserSelection,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
@@ -17,7 +20,6 @@ import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
   CollaboratorFragment,
-  CommentFragment,
   InvitationFragment,
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
@@ -41,6 +43,59 @@ import * as internalActions from './internalActions';
 export const internal = internalActions;
 
 export const onNavigateAway: Action = () => {};
+
+export const persistCursorToUrl: Action<{
+  module: Module;
+  selection?: UserSelection;
+}> = debounce(({ effects }, { module, selection }) => {
+  let parameter = module.path;
+
+  if (selection?.primary?.selection?.length) {
+    const [head, anchor] = selection.primary.selection;
+    const serializedSelection = head + '-' + anchor;
+    parameter += `:${serializedSelection}`;
+  }
+
+  const newUrl = new URL(document.location.href);
+  newUrl.searchParams.set('file', parameter);
+
+  // Restore the URI encoded parts to their original values. Our server handles this well
+  // and all the browsers do too.
+  effects.router.replace(
+    newUrl
+      .toString()
+      .replace(/%2F/g, '/')
+      .replace('%3A', ':')
+  );
+}, 500);
+
+export const loadCursorFromUrl: AsyncAction = async ({
+  effects,
+  actions,
+  state,
+}) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  const parameter = effects.router.getParameter('file');
+  if (!parameter) {
+    return;
+  }
+  const [path, selection] = parameter.split(':');
+
+  const module = state.editor.currentSandbox.modules.find(m => m.path === path);
+  if (!module) {
+    return;
+  }
+
+  await actions.editor.moduleSelected({ id: module.id });
+
+  const [parsedHead, parsedAnchor] = selection.split('-').map(Number);
+  if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
+    effects.vscode.setSelection(parsedHead, parsedAnchor);
+  }
+};
 
 export const addNpmDependency: AsyncAction<{
   name: string;
@@ -216,45 +271,17 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   effects.vscode.openModule(state.editor.currentModule);
+  try {
+    await actions.editor.loadCursorFromUrl();
+  } catch (e) {
+    /**
+     * This is not extremely important logic, if it breaks (which is possible because of user input)
+     * we don't want to crash the whole editor. That's why we try...catch this.
+     */
+  }
 
   if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
-    try {
-      const { sandbox: sandboxComments } = await effects.gql.queries.comments({
-        sandboxId: sandbox.id,
-      });
-
-      if (!sandboxComments || !sandboxComments.comments) {
-        return;
-      }
-
-      state.comments.comments[sandbox.id] = sandboxComments.comments.reduce<{
-        [id: string]: CommentFragment;
-      }>((aggr, commentThread) => {
-        aggr[commentThread.id] = commentThread;
-
-        return aggr;
-      }, {});
-
-      const urlCommentId = effects.router.getCommentId();
-      if (urlCommentId) {
-        actions.workspace.setWorkspaceItem({ item: 'comments' });
-        actions.comments.selectComment({
-          commentId: urlCommentId,
-          bounds: {
-            left: effects.browser.getWidth() / 2,
-            top: 80,
-            right: effects.browser.getWidth() / 3,
-            bottom: 0,
-          },
-        });
-      }
-    } catch (e) {
-      state.comments.comments[sandbox.id] = {};
-      effects.notificationToast.add({
-        status: NotificationStatus.NOTICE,
-        message: `There as a problem getting the sandbox comments`,
-      });
-    }
+    actions.comments.getSandboxComments(sandbox.id);
   }
 
   state.editor.isLoading = false;
@@ -521,17 +548,19 @@ export const moduleSelected: AsyncAction<
         )
       : sandbox.modules.filter(moduleItem => moduleItem.id === id)[0];
 
-    if (module.shortid === state.editor.currentModuleShortid) {
+    if (module.shortid === state.editor.currentModuleShortid && path) {
+      // If this comes from VSCode we can return, but if this call comes from CodeSandbox
+      // we shouldn't return, since the promise would resolve sooner than VSCode loaded
+      // the file
       return;
     }
 
     await actions.editor.internal.setCurrentModule(module);
 
+    actions.editor.persistCursorToUrl({ module });
+
     if (state.live.isLive && state.live.liveUser && state.live.roomInfo) {
-      effects.vscode.updateUserSelections(
-        module,
-        actions.live.internal.getSelectionsForModule(module)
-      );
+      actions.editor.internal.updateSelectionsOfModule({ module });
       state.live.liveUser.currentModuleShortid = module.shortid;
 
       if (state.live.followingUserId) {
@@ -769,6 +798,20 @@ export const showEnvironmentVariablesNotification: AsyncAction = async ({
       },
     });
   }
+};
+
+export const onSelectionChanged: Action<UserSelection> = (
+  { actions, state },
+  selection
+) => {
+  if (!state.editor.currentModule) {
+    return;
+  }
+
+  actions.editor.persistCursorToUrl({
+    module: state.editor.currentModule,
+    selection,
+  });
 };
 
 export const toggleEditorPreviewLayout: Action = ({ state, effects }) => {

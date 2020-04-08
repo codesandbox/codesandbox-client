@@ -8,7 +8,7 @@ import { useOvermind } from 'app/overmind';
 import { NavButton, Navigation, Notice } from './elements';
 import { NoSandboxes } from './NoSandboxes';
 
-const noop = () => undefined;
+const noop = null;
 const PER_PAGE_COUNT = 15;
 
 type Props = {

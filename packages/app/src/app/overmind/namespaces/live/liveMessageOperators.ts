@@ -60,7 +60,7 @@ export const onUsersChanged: Operator<LiveMessage<{
   users: LiveUser[];
   editor_ids: string[];
   owner_ids: string[];
-}>> = mutate(({ state, effects, actions }, { data }) => {
+}>> = mutate(({ state, actions }, { data }) => {
   if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
     return;
   }
@@ -72,10 +72,9 @@ export const onUsersChanged: Operator<LiveMessage<{
   state.live.roomInfo.ownerIds = data.owner_ids;
 
   if (state.editor.currentModule) {
-    effects.vscode.updateUserSelections(
-      state.editor.currentModule,
-      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
-    );
+    actions.editor.internal.updateSelectionsOfModule({
+      module: state.editor.currentModule,
+    });
   }
 });
 
@@ -96,10 +95,9 @@ export const onUserEntered: Operator<LiveMessage<{
   state.live.roomInfo.ownerIds = data.owner_ids;
 
   if (state.editor.currentModule) {
-    effects.vscode.updateUserSelections(
-      state.editor.currentModule,
-      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
-    );
+    actions.editor.internal.updateSelectionsOfModule({
+      module: state.editor.currentModule,
+    });
   }
 
   // Send our own selections and viewranges to everyone, just to let the others know where
@@ -406,7 +404,13 @@ export const onUserSelection: Operator<LiveMessage<{
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
   );
-  if (module && state.live.isEditor(userSelectionLiveUserId)) {
+
+  const isFollowingUser =
+    state.live.followingUserId === userSelectionLiveUserId;
+  if (
+    module &&
+    (state.live.isEditor(userSelectionLiveUserId) || isFollowingUser)
+  ) {
     const user = state.live.roomInfo.users.find(
       u => u.id === userSelectionLiveUserId
     );
@@ -421,7 +425,7 @@ export const onUserSelection: Operator<LiveMessage<{
         },
       ]);
 
-      if (state.live.followingUserId === userSelectionLiveUserId) {
+      if (isFollowingUser) {
         actions.live.revealCursorPosition({
           liveUserId: userSelectionLiveUserId,
         });
@@ -594,7 +598,7 @@ export const onConnectionLoss: Operator<LiveMessage> = mutate(
           message: 'We lost connection with the live server, reconnecting...',
           status: NotificationStatus.ERROR,
         });
-      }, 10000);
+      }, 30000);
 
       state.live.reconnecting = true;
 

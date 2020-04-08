@@ -6,8 +6,8 @@ import {
   UserSelection,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
@@ -51,8 +51,7 @@ export type OnFileChangeCallback = (data: OnFileChangeData) => void;
 export type OnOperationAppliedCallback = (data: OnOperationAppliedData) => void;
 
 export type ModuleModel = {
-  changeListener: { dispose: Function };
-  selections: any[];
+  changeListener: { dispose: Function } | null;
   currentLine: number;
   path: string;
   model: null | any;
@@ -92,8 +91,9 @@ export class ModelsHandler {
     this.modelAddedListener.dispose();
     this.modelRemovedListener.dispose();
     Object.keys(this.moduleModels).forEach(path => {
-      if (this.moduleModels[path].changeListener) {
-        this.moduleModels[path].changeListener.dispose();
+      const changeListener = this.moduleModels[path].changeListener;
+      if (changeListener) {
+        changeListener.dispose();
       }
     });
     this.moduleModels = {};
@@ -116,14 +116,19 @@ export class ModelsHandler {
     }
   }
 
-  public getModuleModelByPath(path: string) {
+  private getModuleModelByPath(path: string): ModuleModel | undefined {
     const fullPath = '/sandbox' + path;
-    this.moduleModels[fullPath] = this.moduleModels[fullPath] || {
+
+    return this.moduleModels[fullPath];
+  }
+
+  private getOrCreateModuleModelByPath(path: string): ModuleModel {
+    const fullPath = '/sandbox' + path;
+    this.moduleModels[fullPath] = this.getModuleModelByPath(path) || {
       changeListener: null,
       model: null,
       currentLine: 0,
       path: fullPath,
-      selections: [],
       comments: [],
       currentCommentDecorations: [],
     };
@@ -149,7 +154,7 @@ export class ModelsHandler {
   }
 
   public changeModule = async (module: Module) => {
-    const moduleModel = this.getModuleModelByPath(module.path);
+    const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
     if (getCurrentModelPath(this.editorApi) !== module.path) {
       await this.editorApi.openFile(module.path);
@@ -159,8 +164,6 @@ export class ModelsHandler {
       .loadOrCreate(this.monaco.Uri.file('/sandbox' + module.path))
       .then(textFileEditorModel => textFileEditorModel.load())
       .then(textFileEditorModel => textFileEditorModel.textEditorModel);
-
-    this.updateUserSelections(module, moduleModel.selections);
 
     const model = moduleModel.model;
 
@@ -196,7 +199,10 @@ export class ModelsHandler {
 
     // Ensure we have the moduleModels
     Object.keys(commentThreadsByPath).forEach(path => {
-      this.getModuleModelByPath(path).comments = commentThreadsByPath[path];
+      // TODO(@christianalfoni): We should probably make this dynamic on model load instead of
+      // on editor load? Preferably we don't keep all moduleModels for files that are not opened.
+      this.getOrCreateModuleModelByPath(path).comments =
+        commentThreadsByPath[path];
     });
 
     // Apply the decorations
@@ -248,14 +254,14 @@ export class ModelsHandler {
     );
   }
 
-  public async applyOperation(moduleShortid: string, operation: any) {
+  public async applyOperation(moduleShortid: string, operation: TextOperation) {
     const module = this.sandbox.modules.find(m => m.shortid === moduleShortid);
 
     if (!module) {
       return;
     }
 
-    const moduleModel = this.getModuleModelByPath(module.path);
+    const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
     const modelEditor = this.editorApi.editorService.editors.find(
       editor => editor.resource && editor.resource.path === moduleModel.path
@@ -321,7 +327,7 @@ export class ModelsHandler {
     Object.keys(this.moduleModels).forEach(key => {
       const moduleModel = this.moduleModels[key];
 
-      if (!moduleModel.model) {
+      if (!moduleModel?.model) {
         return;
       }
 
@@ -338,6 +344,43 @@ export class ModelsHandler {
     });
   }
 
+  private getSelectionDecorationId = (
+    userId: string,
+    modelId: string,
+    shortid: string
+  ) => [userId, modelId, shortid].join('|');
+
+  private cleanUserSelections = (
+    model: any,
+    moduleShortid: string,
+    userSelectionsToKeep: EditorSelection[]
+  ) => {
+    const existingSelectionDecorations = Object.keys(
+      this.userSelectionDecorations
+    ).filter(s => s.endsWith([model.id, moduleShortid].join('|')));
+
+    const newUserSelections = {};
+    for (let i = 0; i < userSelectionsToKeep.length; i++) {
+      newUserSelections[userSelectionsToKeep[i].userId] =
+        userSelectionsToKeep[i];
+    }
+
+    existingSelectionDecorations.forEach(existingDecorationId => {
+      const userId = existingDecorationId.split('|')[0];
+      if (!newUserSelections[userId]) {
+        const decorationId = this.getSelectionDecorationId(
+          userId,
+          model.id,
+          moduleShortid
+        );
+        this.userSelectionDecorations[decorationId] = model.deltaDecorations(
+          this.userSelectionDecorations[decorationId] || [],
+          []
+        );
+      }
+    });
+  };
+
   nameTagTimeouts: { [name: string]: number } = {};
 
   public updateUserSelections(
@@ -347,19 +390,23 @@ export class ModelsHandler {
   ) {
     const moduleModel = this.getModuleModelByPath(module.path);
 
-    moduleModel.selections = userSelections;
-
-    if (!moduleModel.model) {
+    if (!moduleModel?.model) {
       return;
     }
 
     const model = moduleModel.model;
     const lines = model.getLinesContent() || [];
 
+    this.cleanUserSelections(model, module.shortid, userSelections);
+
     userSelections.forEach((data: EditorSelection) => {
       const { userId } = data;
 
-      const decorationId = userId + model.id + module.shortid;
+      const decorationId = this.getSelectionDecorationId(
+        userId,
+        model.id,
+        module.shortid
+      );
       if (data.selection === null) {
         this.userSelectionDecorations[decorationId] = model.deltaDecorations(
           this.userSelectionDecorations[decorationId] || [],
@@ -653,7 +700,7 @@ export class ModelsHandler {
             this.sandbox.directories
           );
 
-          const moduleModel = this.getModuleModelByPath(module.path);
+          const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
           moduleModel.model = model;
           moduleModel.changeListener = this.getModelContentChangeListener(
@@ -669,7 +716,11 @@ export class ModelsHandler {
     this.modelRemovedListener = this.editorApi.textFileService.modelService.onModelRemoved(
       model => {
         if (this.moduleModels[model.uri.path]) {
-          this.moduleModels[model.uri.path].changeListener.dispose();
+          const changeListener = this.moduleModels[model.uri.path]
+            .changeListener;
+          if (changeListener) {
+            changeListener.dispose();
+          }
 
           const csbPath = model.uri.path.replace('/sandbox', '');
           dispatch(actions.correction.clear(csbPath, 'eslint'));
@@ -741,7 +792,8 @@ export class ModelsHandler {
     }, {});
 
     const initialDecorations: any[] =
-      currentLineNumber === -1
+      currentLineNumber === -1 ||
+      currentLineNumber in commentDecorationsByLineNumber
         ? []
         : [
             {
@@ -770,18 +822,23 @@ export class ModelsHandler {
         const ids = lineCommentDecorations.map(
           commentDecoration => commentDecoration.commentId
         );
-        const targetLineNumber = activeCommentDecoration
-          ? indexToLineAndColumn(
-              model.getLinesContent() || [],
-              activeCommentDecoration.range[1]
-            ).lineNumber
-          : lineNumber;
+        const commentRange = activeCommentDecoration
+          ? [
+              indexToLineAndColumn(
+                model.getLinesContent() || [],
+                activeCommentDecoration.range[0]
+              ),
+              indexToLineAndColumn(
+                model.getLinesContent() || [],
+                activeCommentDecoration.range[1]
+              ),
+            ]
+          : null;
 
         return aggr.concat(
           {
             range: new this.monaco.Range(lineNumber, 1, lineNumber, 1),
             options: {
-              isWholeLine: true,
               // comment-id- class needs to be the LAST class!
               glyphMarginClassName: `editor-comments-glyph ${
                 activeCommentDecoration ? 'editor-comments-active ' : ''
@@ -792,15 +849,24 @@ export class ModelsHandler {
               }editor-comments-ids-${ids.join('_')}`,
             },
           },
-          {
-            range: new this.monaco.Range(lineNumber, 1, targetLineNumber, 1),
-            options: {
-              isWholeLine: true,
-              className: activeCommentDecoration
-                ? 'editor-comments-highlight'
-                : undefined,
-            },
-          }
+          commentRange
+            ? {
+                range: new this.monaco.Range(
+                  commentRange[0].lineNumber,
+                  commentRange[0].column,
+                  commentRange[1].lineNumber,
+                  commentRange[1].column
+                ),
+                options: {
+                  isWholeLine:
+                    commentRange[0].lineNumber === commentRange[1].lineNumber &&
+                    commentRange[0].column === commentRange[1].column,
+                  className: activeCommentDecoration
+                    ? 'editor-comments-highlight'
+                    : undefined,
+                },
+              }
+            : []
         );
       },
       initialDecorations

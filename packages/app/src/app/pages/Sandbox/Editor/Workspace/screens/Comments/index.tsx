@@ -1,5 +1,4 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
-
 import {
   Icon,
   List,
@@ -14,8 +13,6 @@ import React from 'react';
 
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
-import { CommentDialog } from './Dialog';
-import { MultiComment } from './components/MultiComment';
 
 export const Comments: React.FC = () => {
   const {
@@ -23,13 +20,12 @@ export const Comments: React.FC = () => {
       comments: {
         selectedCommentsFilter,
         currentComments,
-        currentCommentId,
-        multiCommentsSelector,
         currentCommentsByDate,
       },
     },
     actions: { comments: commentsActions },
   } = useOvermind();
+  const scrollRef = React.useRef(null);
   const options = Object.values(CommentsFilterOption);
 
   const getSelectedFilter = () => {
@@ -41,6 +37,13 @@ export const Comments: React.FC = () => {
       default:
         return 'new';
     }
+  };
+
+  const onSubmit = value => {
+    commentsActions.addComment({
+      content: value,
+    });
+    scrollRef.current.scrollTop = 0;
   };
 
   const Empty = () => (
@@ -107,11 +110,16 @@ export const Comments: React.FC = () => {
 
         {currentComments.length ? (
           <List
+            itemProp="mainEntity"
+            itemScope
+            itemType="http://schema.org/Conversation"
+            ref={scrollRef}
             marginTop={4}
             css={{
               // stretch within container, leaving space for comment box
               height: 'calc(100% - 32px)',
               overflow: 'auto',
+              scrollBehavior: 'smooth',
             }}
           >
             {currentCommentsByDate.today.length ? (
@@ -138,9 +146,7 @@ export const Comments: React.FC = () => {
         ) : null}
       </div>
       {currentComments.length ? null : <Empty />}
-      <AddComment />
-      {currentCommentId && <CommentDialog />}
-      {multiCommentsSelector && <MultiComment {...multiCommentsSelector} />}
+      <AddComment onSubmit={onSubmit} />
     </Stack>
   );
 };

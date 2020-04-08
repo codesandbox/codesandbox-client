@@ -5,17 +5,13 @@ import {
   Module,
   RoomInfo,
   UserViewRange,
+  UserSelection,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
   logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
-import {
-  CommentFragment,
-  CreateCodeCommentMutationVariables,
-  CreateCommentMutationVariables,
-} from 'app/graphql/types';
 import { camelizeKeys } from 'humps';
 import { debounce } from 'lodash-es';
 import { SerializedTextOperation, TextOperation } from 'ot';
@@ -151,17 +147,21 @@ class Live {
       });
 
       this.socket.onClose(e => {
-        if (e.code === 1006) {
-          // This is an abrupt close, the server probably restarted or carshed. We don't want to overload
-          // the server, so we manually wait and try to connect;
-          this.socket.disconnect();
+        captureException(
+          new Error('Connection loss with live, reason: ' + e.code)
+        );
 
-          const waitTime = 500 + 5000 * Math.random();
+        // if (e.code === 1006) {
+        //   // This is an abrupt close, the server probably restarted or carshed. We don't want to overload
+        //   // the server, so we manually wait and try to connect;
+        //   this.socket.disconnect();
 
-          window.setTimeout(() => {
-            this.socket.connect();
-          }, waitTime);
-        }
+        //   const waitTime = 500 + 5000 * Math.random();
+
+        //   window.setTimeout(() => {
+        //     this.socket.connect();
+        //   }, waitTime);
+        // }
       });
 
       this.socket.connect();
@@ -244,6 +244,12 @@ class Live {
         event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
 
+      if (event === 'phx_error') {
+        captureException(
+          new Error('Received phoenix error: ' + JSON.stringify(data))
+        );
+      }
+
       const _isOwnMessage = Boolean(
         data && data._messageId && this.pendingMessages.delete(data._messageId)
       );
@@ -283,20 +289,10 @@ class Live {
     });
   }
 
-  saveModule(moduleShortid: string) {
-    return this.send('save', {
-      moduleShortid,
-    });
-  }
-
-  async saveCodeComment(commentPayload: CreateCodeCommentMutationVariables) {
-    return this.send<CommentFragment>('save:comment', commentPayload);
-  }
-
-  async saveComment(
-    commentPayload: CreateCommentMutationVariables
-  ): Promise<CommentFragment> {
-    return this.send<CommentFragment>('save:comment', commentPayload);
+  awaitModuleSynced(moduleShortid: string) {
+    return Promise.resolve(
+      clients.get(moduleShortid).awaitSynchronized?.promise
+    );
   }
 
   sendModuleUpdate(module: Module) {
@@ -443,7 +439,7 @@ class Live {
   sendUserSelection(
     moduleShortid: string | null,
     liveUserId: string,
-    selection: any
+    selection: UserSelection
   ) {
     if (this.connectionsCount === 1) {
       return this.sendDebounced('user:selection', {

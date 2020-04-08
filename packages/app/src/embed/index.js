@@ -12,9 +12,12 @@ try {
 } catch (e) {
   /* ignore error */
 }
-document.addEventListener('click', () => {
+
+const trackEvent = () => {
   track('Embed Interaction');
-});
+  document.removeEventListener('click', trackEvent);
+};
+document.addEventListener('click', trackEvent);
 
 requirePolyfills().then(() => {
   function renderApp(Component) {

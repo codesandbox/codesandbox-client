@@ -24,6 +24,15 @@ export const getThemes = () => {
 
   return results.filter(a => a);
 };
+
+const guessType = theme => {
+  if (theme.type) return theme.type;
+
+  if (theme.name && theme.name.toLowerCase().includes('light')) return 'light';
+
+  return 'dark';
+};
+
 export const makeTheme = (vsCodeTheme = {}, name?: string) => {
   // Our interface does not map 1-1 with vscode.
   // To add styles that remain themeable, we add
@@ -35,9 +44,12 @@ export const makeTheme = (vsCodeTheme = {}, name?: string) => {
     colors: polyfilledVSCodeColors,
   });
 
+  const type = guessType(vsCodeTheme);
+
   if (name) {
     return {
       name,
+      type,
       ...theme,
     };
   }

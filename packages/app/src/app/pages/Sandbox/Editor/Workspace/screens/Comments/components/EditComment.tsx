@@ -22,6 +22,7 @@ export const EditComment: React.FC<{
         autosize
         autoFocus
         value={value}
+        style={{ lineHeight: 1.2 }}
         onChange={event => setValue(event.target.value)}
       />
       <Stack justify="flex-end">

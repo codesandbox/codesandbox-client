@@ -79,6 +79,16 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
   }
 };
 
+export const updateSelectionsOfModule: AsyncAction<{ module: Module }> = async (
+  { actions, effects },
+  { module }
+) => {
+  effects.vscode.updateUserSelections(
+    module,
+    actions.live.internal.getSelectionsForModule(module)
+  );
+};
+
 export const setModuleSavedCode: Action<{
   moduleShortid: string;
   savedCode: string | null;

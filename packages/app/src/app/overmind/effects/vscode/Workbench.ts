@@ -165,7 +165,7 @@ export class Workbench {
     if (COMMENTS) {
       this.addWorkbenchAction({
         id: 'comments.add',
-        label: 'Add code comment',
+        label: 'Comment on code',
         category: 'Comments',
         run: () => {
           this.controller.getSignal('comments.createComment')();
@@ -378,7 +378,7 @@ export class Workbench {
         order: 0,
         command: {
           id: 'comments.add',
-          title: 'Add code comment...',
+          title: 'Comment on code',
         },
       });
     }

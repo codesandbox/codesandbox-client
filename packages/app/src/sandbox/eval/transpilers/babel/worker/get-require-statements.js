@@ -21,6 +21,7 @@ export default function getRequireStatements(metadata) {
         s.callee.property.name === 'concat' &&
         s.arguments &&
         s.arguments[0] &&
+        s.arguments[0].left &&
         s.arguments[0].left.type === 'BinaryExpression' &&
         s.arguments[0].left.left.type === 'StringLiteral'
       ) {
