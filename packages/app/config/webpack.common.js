@@ -112,7 +112,7 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
 const sepRe = `\\${path.sep}`; // path separator regex
 
 const threadPoolConfig = {
-  workers: 2,
+  workers: 7,
 };
 
 if (!isLint) {
