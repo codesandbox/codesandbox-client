@@ -10,10 +10,11 @@ description: This release includes bug fixes.
 
 #### Features
 
-1. [@tanmoyopenroot](https://github.com/codesandbox/codesandbox-client/pull/3738)
+1. Following of read-only users and seeing their cursors if you follow them
+2. [@tanmoyopenroot](https://github.com/codesandbox/codesandbox-client/pull/3738)
    added a keyboard shortcut Ctrl + Backtick to toggle opening and closing the
    console
-2. Thanks to
+3. Thanks to
    [@jamime](https://github.com/codesandbox/codesandbox-client/pull/3730),
    sandboxes can now consume packages that use an npm alias
 
@@ -24,3 +25,8 @@ description: This release includes bug fixes.
   made the template icon popup close upon selecting the icon
 - We now correctly reset live counters after a sandbox is changed
 - Fixed up an issue impacting live throttling when editing a sandbox solo
+- Selections are now more stable in live sessions
+- Fixed React Refresh HMR for class components
+- You can now fork a sandbox twice again
+- Fixed creating private github repos from private sandboxes
+- Improved stability of reconnects in CodeSandbox Live
