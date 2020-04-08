@@ -1,15 +1,15 @@
 import {
   Element,
   Icon,
+  Link,
   ListAction,
   Menu,
-  Link,
   Stack,
   Text,
 } from '@codesandbox/components';
+import VisuallyHidden from '@reach/visually-hidden';
 import { css } from '@styled-system/css';
 import { CommentFragment } from 'app/graphql/types';
-import VisuallyHidden from '@reach/visually-hidden';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
@@ -142,9 +142,9 @@ export const Comment = React.memo<{
             {comment.content}
           </Text>
           <Text variant="muted" size={2}>
-            {getRepliesString(comment.comments.length)}
+            {getRepliesString(comment.replyCount)}
             <VisuallyHidden itemProp="commentCount">
-              {comment.comments.length}
+              {comment.replyCount}
             </VisuallyHidden>
           </Text>
         </Element>
