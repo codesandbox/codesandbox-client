@@ -74,17 +74,6 @@ export const Comment = React.memo<{
         itemScope
         itemType="http://schema.org/Comment"
       >
-        <Link
-          variant="muted"
-          css={css({
-            paddingBottom: 2,
-            display: 'block',
-          })}
-        >
-          {comment.references[0]
-            ? comment.references[0].metadata.path
-            : 'General'}
-        </Link>
         <Stack align="flex-start" justify="space-between" marginBottom={4}>
           <AvatarBlock comment={comment} />
           <Stack align="center">
@@ -126,6 +115,26 @@ export const Comment = React.memo<{
             </Menu>
           </Stack>
         </Stack>
+        {comment.references[0] && (
+          <Link
+            variant="muted"
+            css={css({
+              marginTop: -2,
+              opacity: 0.6,
+              paddingBottom: 2,
+              display: 'block',
+              transition: 'all ease',
+              transitionDuration: theme => theme.speeds[1],
+
+              ':hover': {
+                opacity: 1,
+                color: 'sidebar.foreground',
+              },
+            })}
+          >
+            {comment.references[0].metadata.path}
+          </Link>
+        )}
         <Element
           as="p"
           marginY={0}

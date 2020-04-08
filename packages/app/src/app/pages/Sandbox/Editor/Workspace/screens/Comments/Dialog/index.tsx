@@ -574,12 +574,13 @@ const AddReply = ({ comment, ...props }) => {
   const { actions } = useOvermind();
   const [value, setValue] = useState('');
 
-  const onSubmit = () => {
-    setValue('');
+  const onSubmit = e => {
+    e.preventDefault();
     actions.comments.addComment({
       content: value,
       parentCommentId: comment.id,
     });
+    setValue('');
     if (props.onSubmit) props.onSubmit();
   };
 
@@ -598,8 +599,10 @@ const AddReply = ({ comment, ...props }) => {
       value={value}
       onChange={e => setValue(e.target.value)}
       placeholder="Reply..."
-      onKeyDown={event => {
-        if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
+      onKeyDown={e => {
+        if (e.keyCode === ENTER && !e.shiftKey) {
+          onSubmit(e);
+        }
       }}
     />
   );
