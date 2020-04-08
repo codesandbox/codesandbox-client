@@ -12,17 +12,19 @@ import {
   Stack,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
+
+import { useOvermind } from 'app/overmind';
 
 import { fonts as listOfFonts } from './google-fonts';
 
 const isGoogleFont = url => url.includes('fonts.googleapis.com/css');
 
-export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
-  readonly,
-}) => {
+type Props = {
+  readonly: boolean;
+};
+export const ExternalResources: FunctionComponent<Props> = ({ readonly }) => {
   const {
     actions: {
       workspace: { externalResourceAdded, externalResourceRemoved },
@@ -40,7 +42,9 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
   );
 
   const { externalResourcesEnabled } = getTemplateDefinition(template);
-  if (!externalResourcesEnabled) return null;
+  if (!externalResourcesEnabled) {
+    return null;
+  }
 
   return (
     <Collapsible title="External resources">
@@ -49,21 +53,22 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
           <List>
             {otherResources.map(resource => (
               <ListAction
-                key={resource}
-                justify="space-between"
                 css={{
                   button: { opacity: 0 },
                   ':hover, :focus-within': { button: { opacity: 1 } },
                 }}
+                justify="space-between"
+                key={resource}
               >
                 <Link block maxWidth="100%" href={resource} target="_blank">
                   {getName(resource)}
                 </Link>
-                {!readonly && (
+
+                {readonly ? null : (
                   <Button
-                    variant="link"
                     css={css({ width: 'auto' })}
                     onClick={() => externalResourceRemoved(resource)}
+                    variant="link"
                   >
                     <CrossIcon />
                   </Button>
@@ -73,21 +78,22 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
 
             {fonts.map(resource => (
               <ListAction
-                key={resource}
-                justify="space-between"
                 css={{
                   button: { opacity: 0 },
                   ':hover, :focus-within': { button: { opacity: 1 } },
                 }}
+                justify="space-between"
+                key={resource}
               >
                 <Link href={resource} target="_blank">
                   {getFontFamily(resource).name}
                 </Link>
-                {!readonly && (
+
+                {readonly ? null : (
                   <Button
-                    variant="link"
                     css={css({ width: 'auto' })}
                     onClick={() => externalResourceRemoved(resource)}
+                    variant="link"
                   >
                     <CrossIcon />
                   </Button>
@@ -97,7 +103,7 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
           </List>
         ) : null}
 
-        {!readonly && (
+        {readonly ? null : (
           <form
             onSubmit={event => {
               event.preventDefault();
@@ -107,12 +113,13 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
           >
             <FormField label="External URL" direction="vertical">
               <Input
-                type="text"
-                required
-                placeholder="https://cdn.com/bootstrap.css"
                 key={otherResources.length}
+                placeholder="https://cdn.com/bootstrap.css"
+                required
+                type="text"
               />
             </FormField>
+
             <SidebarRow marginX={2}>
               <Button type="submit" variant="secondary">
                 Add resource
@@ -121,7 +128,7 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
           </form>
         )}
 
-        {!readonly && (
+        {readonly ? null : (
           <form
             onSubmit={event => {
               event.preventDefault();
@@ -130,17 +137,18 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
               externalResourceAdded(url);
             }}
           >
-            <FormField label="Google Fonts" direction="vertical">
+            <FormField direction="vertical" label="Google Fonts">
               <Select
-                required
-                placeholder="Select a font family"
                 key={fonts.length}
+                placeholder="Select a font family"
+                required
               >
                 {listOfFonts.sort().map(name => (
                   <option key={name}>{name}</option>
                 ))}
               </Select>
             </FormField>
+
             <SidebarRow marginX={2}>
               <Button type="submit" variant="secondary">
                 Add font
@@ -154,7 +162,6 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
 };
 
 const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
-
 const getName = (resource: string) => {
   if (resource.endsWith('.css') || resource.endsWith('.js')) {
     const match = resource.match(/.*\/(.*)/);
