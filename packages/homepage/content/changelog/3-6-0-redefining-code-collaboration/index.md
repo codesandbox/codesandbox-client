@@ -1,6 +1,6 @@
 ---
 banner: ./images/3-6.jpg
-title: v3.6
+title: v3.6.0
 slug: share-v3-6
 date: 2020-03-25
 description:
