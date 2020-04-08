@@ -5,8 +5,6 @@ description:
   With CodeSandbox Live you can share your sandbox for real time collaboration.
 ---
 
-# Collaboration with Live
-
 ## What is Live?
 
 Live is a mode in CodeSandbox that allows you to share your sandbox with others
