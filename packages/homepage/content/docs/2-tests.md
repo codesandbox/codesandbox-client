@@ -16,7 +16,7 @@ files that end with `.test.js`, `.spec.js`, `.test.ts(x)` and `.spec.js(x)`. We
 will automatically detect these test files and show the results in the Tests
 tab.
 
-Note: In [Container sandboxes](<(/docs/environment)>) you can still use Jest (or
+Note: In [Container sandboxes](/docs/environment) you can still use Jest (or
 whichever test framework you want), but we don't auto-detect these and you'd
 need to set it up yourself as you would locally.
 
