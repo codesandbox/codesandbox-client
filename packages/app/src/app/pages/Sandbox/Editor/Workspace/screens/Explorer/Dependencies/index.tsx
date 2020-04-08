@@ -12,10 +12,7 @@ import { Dependency } from './Dependency';
 
 export const Dependencies: FunctionComponent = () => {
   const {
-    actions: {
-      modalOpened,
-      editor: { addNpmDependency, npmDependencyRemoved },
-    },
+    actions: { modalOpened },
     state: {
       editor: { parsedConfigurations },
     },
@@ -30,7 +27,6 @@ export const Dependencies: FunctionComponent = () => {
   }
 
   const { error, parsed } = parsedConfigurations.package;
-
   if (error) {
     return (
       <SidebarRow marginX={2}>
@@ -40,9 +36,8 @@ export const Dependencies: FunctionComponent = () => {
   }
 
   const { dependencies = {} } = parsed;
-
   return (
-    <Collapsible title="Dependencies" defaultOpen>
+    <Collapsible defaultOpen title="Dependencies">
       <List marginBottom={2}>
         {Object.keys(dependencies)
           .sort()
@@ -51,11 +46,10 @@ export const Dependencies: FunctionComponent = () => {
               dependencies={dependencies}
               dependency={dependency}
               key={dependency}
-              onRefresh={(name, version) => addNpmDependency({ name, version })}
-              onRemove={npmDependencyRemoved}
             />
           ))}
       </List>
+
       <SidebarRow marginX={2}>
         <Button
           variant="secondary"

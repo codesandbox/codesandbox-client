@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
+
 import { useOvermind } from 'app/overmind';
-import { Files } from './Files';
+
 import { Dependencies } from './Dependencies';
 import { ExternalResources } from './ExternalResources';
+import { Files } from './Files';
 
-export const Explorer = () => {
+export const Explorer: FunctionComponent = () => {
   const {
-    state: { editor },
+    state: {
+      editor: {
+        currentSandbox: { template },
+      },
+    },
   } = useOvermind();
-
-  const template = editor.currentSandbox.template;
 
   return (
     <>
       <Files />
+
       {template !== 'static' && (
         <>
           <Dependencies />
+
           <ExternalResources />
         </>
       )}

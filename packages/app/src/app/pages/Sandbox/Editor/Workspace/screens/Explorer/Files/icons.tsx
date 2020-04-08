@@ -1,9 +1,12 @@
-import React from 'react';
-import DeleteIcon from 'react-icons/lib/go/trashcan';
-import UndoIcon from 'react-icons/lib/md/undo';
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
+import React, { FunctionComponent, SVGProps } from 'react';
 
-const CrossIcon = props => (
+export { default as NotSyncedIcon } from 'react-icons/lib/go/primitive-dot';
+export { default as DeleteIcon } from 'react-icons/lib/go/trashcan';
+export { default as UndoIcon } from 'react-icons/lib/md/undo';
+
+type IconProps = SVGProps<SVGSVGElement>;
+
+export const CrossIcon: FunctionComponent<IconProps> = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"
@@ -12,7 +15,7 @@ const CrossIcon = props => (
   </svg>
 );
 
-const EditIcon = props => (
+export const EditIcon: FunctionComponent<IconProps> = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"
@@ -21,7 +24,7 @@ const EditIcon = props => (
   </svg>
 );
 
-const AddDirectoryIcon = props => (
+export const AddDirectoryIcon: FunctionComponent<IconProps> = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"
@@ -30,7 +33,7 @@ const AddDirectoryIcon = props => (
   </svg>
 );
 
-const AddFileIcon = props => (
+export const AddFileIcon: FunctionComponent<IconProps> = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"
@@ -41,7 +44,7 @@ const AddFileIcon = props => (
   </svg>
 );
 
-const DownloadIcon = props => (
+export const DownloadIcon: FunctionComponent<IconProps> = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <g clipPath="url(#clip0)">
       <path
@@ -59,7 +62,7 @@ const DownloadIcon = props => (
   </svg>
 );
 
-const UploadFileIcon = props => (
+export const UploadFileIcon: FunctionComponent<IconProps> = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <g clipPath="url(#clip0)">
       <path
@@ -76,15 +79,3 @@ const UploadFileIcon = props => (
     </defs>
   </svg>
 );
-
-export {
-  EditIcon,
-  DeleteIcon,
-  AddDirectoryIcon,
-  AddFileIcon,
-  UndoIcon,
-  NotSyncedIcon,
-  CrossIcon,
-  DownloadIcon,
-  UploadFileIcon,
-};

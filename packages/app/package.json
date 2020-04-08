@@ -86,6 +86,7 @@
     "@types/socket.io-client": "^1.4.32",
     "@vue/babel-preset-app": "^3.2.0",
     "airtable": "^0.5.8",
+    "algoliasearch": "^3.35.1",
     "apollo-boost": "^0.4.4",
     "apollo-link-batch-http": "^1.2.12",
     "apollo-link-context": "^1.0.18",
