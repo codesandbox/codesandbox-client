@@ -1,6 +1,6 @@
 ---
 banner: ./images/3-5.jpg
-title: v3.5
+title: v3.5.0
 slug: new-look-v3-5
 date: 2020-03-05
 description:
