@@ -13,7 +13,6 @@ import {
 } from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { camelizeKeys } from 'humps';
-import { debounce } from 'lodash-es';
 import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
@@ -422,11 +421,7 @@ class Live {
     viewRange: UserViewRange
   ) {
     if (this.connectionsCount === 1) {
-      return this.sendDebounced('user:view-range', {
-        liveUserId,
-        moduleShortid,
-        viewRange,
-      });
+      return Promise.resolve();
     }
 
     return this.send('user:view-range', {
@@ -442,16 +437,23 @@ class Live {
     selection: UserSelection
   ) {
     if (this.connectionsCount === 1) {
-      return this.sendDebounced('user:selection', {
-        liveUserId,
-        moduleShortid,
-        selection,
-      });
+      return Promise.resolve();
     }
+
     return this.send('user:selection', {
       liveUserId,
       moduleShortid,
       selection,
+    });
+  }
+
+  async saveModule(module: Module) {
+    const client = clients.get(module.shortid);
+    await client.awaitSynchronized.promise;
+
+    return this.send('save', {
+      moduleShortid: module.shortid,
+      revision: client.revision,
     });
   }
 
@@ -491,13 +493,6 @@ class Live {
       this.onApplyOperation
     );
   }
-
-  private sendDebounced = debounce<(event: string, payload: any) => void>(
-    (...args) => {
-      this.send(...args);
-    },
-    500
-  );
 }
 
 export default new Live();

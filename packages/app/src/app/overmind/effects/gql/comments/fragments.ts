@@ -15,6 +15,7 @@ export const commentFragment = gql`
           code
           head
           path
+          sandboxVersion
         }
       }
       resource
@@ -50,6 +51,7 @@ export const commentWithRepliesFragment = gql`
           code
           head
           path
+          sandboxVersion
         }
       }
       resource

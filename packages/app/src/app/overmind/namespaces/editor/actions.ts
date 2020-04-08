@@ -448,7 +448,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
       );
 
       await Promise.all(
-        changedModules.map(module => effects.live.saveModule(module.shortid))
+        changedModules.map(module => effects.live.saveModule(module))
       );
 
       if (

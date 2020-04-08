@@ -13,6 +13,7 @@ import {
 import { Action, AsyncAction } from 'app/overmind';
 import { utcToZonedTime } from 'date-fns-tz';
 
+import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { OPTIMISTIC_COMMENT_ID } from './state';
 
 export const selectCommentsFilter: Action<CommentsFilterOption> = (
@@ -212,7 +213,7 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
   }
 
   const id = OPTIMISTIC_COMMENT_ID;
-  const sandboxId = state.editor.currentSandbox.id;
+  const sandbox = state.editor.currentSandbox;
   const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   let codeReference: CodeReference | null = null;
   const selection = state.live.currentSelection;
@@ -228,6 +229,7 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
           )
         : '',
       path: state.editor.currentModule.path,
+      sandboxVersion: sandbox.version,
     };
   }
 
@@ -258,11 +260,11 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
   };
   const comments = state.comments.comments;
 
-  if (!comments[sandboxId]) {
-    comments[sandboxId] = {};
+  if (!comments[sandbox.id]) {
+    comments[sandbox.id] = {};
   }
 
-  comments[sandboxId][id] = optimisticComment;
+  comments[sandbox.id][id] = optimisticComment;
   // placeholder value until we know the correct values
   const {
     left,
@@ -299,17 +301,17 @@ export const addComment: AsyncAction<{
   }
 
   const id = OPTIMISTIC_COMMENT_ID;
-  const sandbox = state.editor.currentSandbox;
+  const sandboxId = state.editor.currentSandbox.id;
   const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
 
-  if (!comments[sandbox.id]) {
-    comments[sandbox.id] = {};
+  if (!comments[sandboxId]) {
+    comments[sandboxId] = {};
   }
 
   let optimisticComment: CommentFragment;
-  if (state.comments.comments[sandbox.id][id]) {
-    optimisticComment = state.comments.comments[sandbox.id][id];
+  if (state.comments.comments[sandboxId][id]) {
+    optimisticComment = state.comments.comments[sandboxId][id];
   } else {
     optimisticComment = {
       parentComment: parentCommentId ? { id: parentCommentId } : null,
@@ -327,20 +329,25 @@ export const addComment: AsyncAction<{
       references: [],
       comments: [],
     };
-    comments[sandbox.id][id] = optimisticComment;
+    comments[sandboxId][id] = optimisticComment;
   }
 
   if (optimisticComment.parentComment) {
-    comments[sandbox.id][optimisticComment.parentComment.id].comments.push({
+    comments[sandboxId][optimisticComment.parentComment.id].comments.push({
       id,
     });
   }
   state.comments.selectedCommentsFilter = CommentsFilterOption.OPEN;
 
-  try {
+  // The server might be ahead on sandbox version, so we need to try to save
+  // several times
+  let tryCount = 0;
+
+  async function saveComment() {
+    tryCount++;
     const response = await effects.gql.mutations.createComment({
       parentCommentId: parentCommentId || null,
-      sandboxId: sandbox.id,
+      sandboxId,
       content,
       codeReference: optimisticComment.references.length
         ? optimisticComment.references[0].metadata
@@ -349,15 +356,15 @@ export const addComment: AsyncAction<{
 
     const comment = response.createComment;
 
-    delete comments[sandbox.id][id];
-    comments[sandbox.id][comment.id] = comment;
+    delete comments[sandboxId][id];
+    comments[sandboxId][comment.id] = comment;
 
     if (parentCommentId) {
-      comments[sandbox.id][parentCommentId].comments.push({
+      comments[sandboxId][parentCommentId].comments.push({
         id: comment.id,
       });
-      comments[sandbox.id][parentCommentId].comments.splice(
-        comments[sandbox.id][parentCommentId].comments.findIndex(
+      comments[sandboxId][parentCommentId].comments.splice(
+        comments[sandboxId][parentCommentId].comments.findIndex(
           childComment => childComment.id === id
         ),
         1
@@ -366,13 +373,21 @@ export const addComment: AsyncAction<{
 
     if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
       state.comments.currentCommentId = comment.id;
-      delete comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
+      delete comments[sandboxId][OPTIMISTIC_COMMENT_ID];
     }
+  }
+  try {
+    await saveComment();
   } catch (error) {
-    effects.notificationToast.error(
-      'Unable to create your comment, please try again'
-    );
-    delete comments[sandbox.id][id];
+    if (error.response?.data?.error === 'old_version' && tryCount < 3) {
+      await saveComment();
+    } else {
+      captureException(error);
+      effects.notificationToast.error(
+        'Unable to create your comment, please try again'
+      );
+      delete comments[sandboxId][id];
+    }
   }
 };
 

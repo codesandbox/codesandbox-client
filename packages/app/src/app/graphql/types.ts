@@ -44,6 +44,7 @@ export type CodeReference = {
   code: Scalars['String'];
   head: Scalars['Int'];
   path: Scalars['String'];
+  sandboxVersion: Scalars['Int'];
 };
 
 export type CodeReferenceMetadata = {
@@ -52,6 +53,7 @@ export type CodeReferenceMetadata = {
   code: Scalars['String'];
   head: Scalars['Int'];
   path: Scalars['String'];
+  sandboxVersion: Scalars['Int'];
 };
 
 /** A collaborator on a sandbox */
@@ -867,7 +869,7 @@ export type CommentFragment = { __typename?: 'Comment' } & Pick<
       > & {
           metadata: { __typename?: 'CodeReferenceMetadata' } & Pick<
             CodeReferenceMetadata,
-            'anchor' | 'code' | 'head' | 'path'
+            'anchor' | 'code' | 'head' | 'path' | 'sandboxVersion'
           >;
         }
     >;

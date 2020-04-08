@@ -138,7 +138,7 @@ export const saveCode: AsyncAction<{
   }
 
   try {
-    await effects.live.saveModule(module.shortid);
+    await effects.live.saveModule(module);
     const updatedModule = await effects.api.saveModuleCode(
       sandbox.id,
       module.shortid,
