@@ -3,7 +3,7 @@ import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
 import isToday from 'date-fns/isToday';
 
-export const OPTIMISTIC_COMMENT_ID = 'OptimisticCommentId';
+export const OPTIMISTIC_COMMENT_ID = 'OPTIMISTIC_COMMENT_ID';
 
 type State = {
   comments: {

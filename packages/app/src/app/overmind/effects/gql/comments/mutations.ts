@@ -20,12 +20,14 @@ export const createComment: Query<
   CreateCommentMutationVariables
 > = gql`
   mutation CreateComment(
+    $id: ID
     $content: String!
     $sandboxId: ID!
     $parentCommentId: ID
     $codeReference: CodeReference
   ) {
     createComment(
+      id: $id
       content: $content
       sandboxId: $sandboxId
       parentCommentId: $parentCommentId

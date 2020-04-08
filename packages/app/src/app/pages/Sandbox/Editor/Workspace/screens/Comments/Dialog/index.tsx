@@ -339,6 +339,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
     state,
     actions: { comments },
   } = useOvermind();
+  const isCommenter = state.user.id === comment.user.id;
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -349,14 +350,21 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
         marginRight={2}
       >
         <AvatarBlock comment={comment} />
-        {state.user.id === comment.user.id && (
-          <Stack align="center">
-            <Menu>
-              <Menu.IconButton name="more" title="Comment actions" size={12} />
-              <Menu.List>
+        <Stack align="center">
+          <Menu>
+            <Menu.IconButton name="more" title="Comment actions" size={12} />
+            <Menu.List>
+              {isCommenter && (
                 <Menu.Item onSelect={() => setEditing(true)}>
                   Edit Comment
                 </Menu.Item>
+              )}
+              <Menu.Item
+                onSelect={() => comments.copyPermalinkToClipboard(comment.id)}
+              >
+                Share Comment
+              </Menu.Item>
+              {isCommenter && (
                 <Menu.Item
                   onSelect={() => {
                     comments.closeComment();
@@ -367,10 +375,10 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
                 >
                   Delete
                 </Menu.Item>
-              </Menu.List>
-            </Menu>
-          </Stack>
-        )}
+              )}
+            </Menu.List>
+          </Menu>
+        </Stack>
       </Stack>
       <Element
         marginY={0}

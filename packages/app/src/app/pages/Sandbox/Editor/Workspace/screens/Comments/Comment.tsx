@@ -9,6 +9,7 @@ import {
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { CommentFragment } from 'app/graphql/types';
+import VisuallyHidden from '@reach/visually-hidden';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
@@ -67,82 +68,86 @@ export const Comment = React.memo<{
         });
       }}
     >
-      <Link
-        variant="muted"
-        css={css({
-          paddingBottom: 2,
-          display: 'block',
-        })}
-      >
-        {comment.references[0]
-          ? comment.references[0].metadata.path
-          : 'General'}
-      </Link>
-      <Stack
+      <Element
         as="article"
         itemProp="comment"
         itemScope
         itemType="http://schema.org/Comment"
-        align="flex-start"
-        justify="space-between"
-        marginBottom={4}
       >
-        <AvatarBlock comment={comment} />
-        <Stack align="center">
-          {comment.isResolved && (
-            <Icon name="check" title="Resolved" color="green" />
-          )}
-          <Menu>
-            <Menu.IconButton name="more" title="Comment actions" size={12} />
-            <Menu.List>
-              <Menu.Item
-                onSelect={() =>
-                  actions.comments.resolveComment({
-                    commentId: comment.id,
-                    isResolved: !comment.isResolved,
-                  })
-                }
-              >
-                Mark as {comment.isResolved ? 'unresolved' : 'resolved'}
-              </Menu.Item>
-              <Menu.Item
-                onSelect={() =>
-                  actions.comments.copyPermalinkToClipboard(comment.id)
-                }
-              >
-                Share Comment
-              </Menu.Item>
-              {state.user.id === comment.user.id && (
+        <Link
+          variant="muted"
+          css={css({
+            paddingBottom: 2,
+            display: 'block',
+          })}
+        >
+          {comment.references[0]
+            ? comment.references[0].metadata.path
+            : 'General'}
+        </Link>
+        <Stack align="flex-start" justify="space-between" marginBottom={4}>
+          <AvatarBlock comment={comment} />
+          <Stack align="center">
+            {comment.isResolved && (
+              <Icon name="check" title="Resolved" color="green" />
+            )}
+            <Menu>
+              <Menu.IconButton name="more" title="Comment actions" size={12} />
+              <Menu.List>
                 <Menu.Item
                   onSelect={() =>
-                    actions.comments.deleteComment({
+                    actions.comments.resolveComment({
                       commentId: comment.id,
+                      isResolved: !comment.isResolved,
                     })
                   }
                 >
-                  Delete
+                  Mark as {comment.isResolved ? 'unresolved' : 'resolved'}
                 </Menu.Item>
-              )}
-            </Menu.List>
-          </Menu>
+                <Menu.Item
+                  onSelect={() =>
+                    actions.comments.copyPermalinkToClipboard(comment.id)
+                  }
+                >
+                  Share Comment
+                </Menu.Item>
+                {state.user.id === comment.user.id && (
+                  <Menu.Item
+                    onSelect={() =>
+                      actions.comments.deleteComment({
+                        commentId: comment.id,
+                      })
+                    }
+                  >
+                    Delete
+                  </Menu.Item>
+                )}
+              </Menu.List>
+            </Menu>
+          </Stack>
         </Stack>
-      </Stack>
-      <Element
-        as="p"
-        marginY={0}
-        marginRight={2 /** Adjust for the missing margin in ListAction */}
-        paddingBottom={6 /** Use padding instead of margin for inset border */}
-        css={css({
-          borderBottom: '1px solid',
-          borderColor: 'sideBar.border',
-        })}
-      >
-        <Text itemProp="text" block css={truncateText} marginBottom={2}>
-          {comment.content}
-        </Text>
-        <Text variant="muted" size={2} itemProp="commentCount">
-          {getRepliesString(comment.comments.length)}
-        </Text>
+        <Element
+          as="p"
+          marginY={0}
+          marginRight={2 /** Adjust for the missing margin in ListAction */}
+          paddingBottom={
+            6 /** Use padding instead of margin for inset border */
+          }
+          css={css({
+            borderBottom: '1px solid',
+            borderColor: 'sideBar.border',
+          })}
+        >
+          <Text itemProp="text" block css={truncateText} marginBottom={2}>
+            {comment.content}
+          </Text>
+          <Text variant="muted" size={2}>
+            {getRepliesString(comment.comments.length)}
+            <VisuallyHidden itemProp="commentCount">
+              {comment.comments.length}
+            </VisuallyHidden>
+          </Text>
+        </Element>
       </Element>
     </ListAction>
   );

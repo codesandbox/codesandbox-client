@@ -12,6 +12,7 @@ import {
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { utcToZonedTime } from 'date-fns-tz';
+import * as uuid from 'uuid';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
 
@@ -33,6 +34,7 @@ export const updateComment: AsyncAction<{
   if (commentId === OPTIMISTIC_COMMENT_ID) {
     await actions.comments.addComment({
       content,
+      isOptimistic: true,
     });
     return;
   }
@@ -247,7 +249,7 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
     references: codeReference
       ? [
           {
-            id: '__OPTIMISTIC__',
+            id: uuid.v4(),
             type: 'code',
             metadata: codeReference,
             resource: state.editor.currentModule.path,
@@ -293,12 +295,12 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
 export const addComment: AsyncAction<{
   content: string;
   parentCommentId?: string;
-}> = async ({ state, effects }, { content, parentCommentId }) => {
+  isOptimistic?: boolean;
+}> = async ({ state, effects }, { content, parentCommentId, isOptimistic }) => {
   if (!state.user || !state.editor.currentSandbox) {
     return;
   }
 
-  const id = OPTIMISTIC_COMMENT_ID;
   const sandboxId = state.editor.currentSandbox.id;
   const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
@@ -307,9 +309,18 @@ export const addComment: AsyncAction<{
     comments[sandboxId] = {};
   }
 
+  const id = uuid.v4();
   let optimisticComment: CommentFragment;
-  if (state.comments.comments[sandboxId][id]) {
-    optimisticComment = state.comments.comments[sandboxId][id];
+  if (isOptimistic) {
+    optimisticComment = {
+      ...state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID],
+      id,
+    };
+    state.comments.comments[sandboxId][id] = optimisticComment;
+    state.comments.currentCommentId = state.comments.currentCommentId
+      ? id
+      : null;
+    delete state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID];
   } else {
     optimisticComment = {
       parentComment: parentCommentId ? { id: parentCommentId } : null,
@@ -335,10 +346,12 @@ export const addComment: AsyncAction<{
       id,
     });
   }
+
   state.comments.selectedCommentsFilter = CommentsFilterOption.OPEN;
 
   try {
     const response = await effects.gql.mutations.createComment({
+      id,
       parentCommentId: parentCommentId || null,
       sandboxId,
       content,
@@ -362,11 +375,6 @@ export const addComment: AsyncAction<{
         ),
         1
       );
-    }
-
-    if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
-      state.comments.currentCommentId = comment.id;
-      delete comments[sandboxId][OPTIMISTIC_COMMENT_ID];
     }
   } catch (error) {
     effects.notificationToast.error(
