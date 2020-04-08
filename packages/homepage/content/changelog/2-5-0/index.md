@@ -12,7 +12,7 @@ description: An editor redesign and major new features
 
 1. Thanks to [@xyc](https://github.com/xyc), the console now supports multiline
    commands and syntax highlighting
-2. We now support configuration files for Prettier, Babel, CodeSandbox and
+2. We now support configuration files for Prettier, Babel, CodeSandbox, and
    others
 3. Added a UI for some configuration files, like sandbox.config.json, to make
    changing settings more intuitive
