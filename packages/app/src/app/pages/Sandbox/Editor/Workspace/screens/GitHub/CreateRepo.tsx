@@ -1,81 +1,86 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import React, { ChangeEvent } from 'react';
 import {
-  Collapsible,
-  Input,
-  Element,
-  Stack,
   Button,
-  Text,
+  Collapsible,
+  Element,
   FormField,
+  Input,
+  Stack,
+  Text,
 } from '@codesandbox/components';
+import React, { ChangeEvent, FunctionComponent } from 'react';
+
 import { useOvermind } from 'app/overmind';
 
-export const CreateRepo = () => {
+export const CreateRepo: FunctionComponent = () => {
   const {
     actions: {
       git: { createRepoClicked, repoTitleChanged },
     },
     state: {
       editor: {
-        isAllModulesSynced,
         currentSandbox: { originalGit },
+        isAllModulesSynced,
       },
       git: { error, repoTitle },
     },
   } = useOvermind();
 
   const updateRepoTitle = ({
-    target: { value: title },
-  }: ChangeEvent<HTMLInputElement>) => repoTitleChanged({ title });
+    target: { value },
+  }: ChangeEvent<HTMLInputElement>) => repoTitleChanged(value);
 
-  const createRepo = e => {
-    e.preventDefault();
+  const createRepo = event => {
+    event.preventDefault();
     track('Export to GitHub Clicked');
     createRepoClicked();
   };
 
-  const disabled = Boolean(error) || !repoTitle || !isAllModulesSynced;
-
   return (
     <Collapsible
-      title={originalGit ? 'Export to GitHub' : 'GitHub'}
       defaultOpen={!originalGit}
+      title={originalGit ? 'Export to GitHub' : 'GitHub'}
     >
       <Element paddingX={2}>
-        <Text variant="muted" marginBottom={4} block>
+        <Text block marginBottom={4} variant="muted">
           Create a GitHub repository to host your sandbox code and keep it in
           sync with CodeSandbox.
         </Text>
+
         {!isAllModulesSynced && (
-          <Text marginBottom={2} block variant="danger">
+          <Text block marginBottom={2} variant="danger">
             Save your files first before exporting.
           </Text>
         )}
 
         {error && (
-          <Text marginBottom={2} block variant="danger">
+          <Text block marginBottom={2} variant="danger">
             {error}
           </Text>
         )}
 
         <Stack
-          marginX={0}
           as="form"
           direction="vertical"
           gap={2}
+          marginX={0}
           onSubmit={createRepo}
         >
-          <FormField label="Repository name" hideLabel>
+          <FormField hideLabel label="Repository name">
             <Input
-              type="text"
               onChange={updateRepoTitle}
-              value={repoTitle}
               placeholder="Enter repository name"
+              type="text"
+              value={repoTitle}
             />
           </FormField>
+
           <Element paddingX={2}>
-            <Button type="submit" disabled={disabled} variant="secondary">
+            <Button
+              disabled={Boolean(error) || !repoTitle || !isAllModulesSynced}
+              type="submit"
+              variant="secondary"
+            >
               Create Repository
             </Button>
           </Element>

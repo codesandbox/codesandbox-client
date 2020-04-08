@@ -43,11 +43,10 @@ export const Git: FunctionComponent = () => {
   const createPR = () => createPrClicked();
   const changeSubject = ({
     target: { value },
-  }: ChangeEvent<HTMLInputElement>) => subjectChanged({ subject: value });
+  }: ChangeEvent<HTMLInputElement>) => subjectChanged(value);
   const changeDescription = ({
     target: { value },
-  }: ChangeEvent<HTMLTextAreaElement>) =>
-    descriptionChanged({ description: value });
+  }: ChangeEvent<HTMLTextAreaElement>) => descriptionChanged(value);
 
   const modulesNotSaved = !isAllModulesSynced;
   const changeCount = gitChanges

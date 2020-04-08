@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { FunctionComponent, SVGProps } from 'react';
 
-export const GitHubIcon = props => (
+type IconProps = SVGProps<SVGSVGElement>;
+
+export const GitHubIcon: FunctionComponent<IconProps> = props => (
   <svg
     width="16"
     height="16"
@@ -16,7 +18,7 @@ export const GitHubIcon = props => (
   </svg>
 );
 
-export const AddedIcon = () => (
+export const AddedIcon: FunctionComponent = () => (
   <svg
     width="16"
     height="16"
@@ -33,7 +35,7 @@ export const AddedIcon = () => (
   </svg>
 );
 
-export const DeletedIcon = () => (
+export const DeletedIcon: FunctionComponent = () => (
   <svg
     width="16"
     height="16"
@@ -50,7 +52,7 @@ export const DeletedIcon = () => (
   </svg>
 );
 
-export const ChangedIcon = () => (
+export const ChangedIcon: FunctionComponent = () => (
   <svg
     width="16"
     height="16"

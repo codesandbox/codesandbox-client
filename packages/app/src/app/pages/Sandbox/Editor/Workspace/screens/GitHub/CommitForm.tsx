@@ -1,15 +1,17 @@
-import React, { ChangeEvent } from 'react';
-import css from '@styled-system/css';
 import {
-  FormField,
-  Stack,
-  Input,
-  Textarea,
   Button,
+  FormField,
+  Input,
+  Stack,
+  Textarea,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
+
+import React, { ChangeEvent, FunctionComponent } from 'react';
+
 import { useOvermind } from 'app/overmind';
 
-export const CommitForm = () => {
+export const CommitForm: FunctionComponent = () => {
   const {
     actions: {
       git: {
@@ -28,16 +30,13 @@ export const CommitForm = () => {
   const hasWriteAccess = (rights: string = '') =>
     ['admin', 'write'].includes(rights);
 
-  const modulesNotSaved = !isAllModulesSynced;
-
   const changeSubject = ({
     target: { value },
-  }: ChangeEvent<HTMLInputElement>) => subjectChanged({ subject: value });
+  }: ChangeEvent<HTMLInputElement>) => subjectChanged(value);
 
   const changeDescription = ({
     target: { value },
-  }: ChangeEvent<HTMLTextAreaElement>) =>
-    descriptionChanged({ description: value });
+  }: ChangeEvent<HTMLTextAreaElement>) => descriptionChanged(value);
 
   return (
     <>
@@ -55,35 +54,35 @@ export const CommitForm = () => {
             value={subject}
           />
         </FormField>
-        <FormField direction="vertical" label="Commit description" hideLabel>
+
+        <FormField direction="vertical" hideLabel label="Commit description">
           <Textarea
             maxLength={280}
-            placeholder="Description"
             onChange={changeDescription}
+            placeholder="Description"
             value={description}
           />
         </FormField>
+
         <Stack
+          css={{ button: { width: '40%' } }}
           justify="space-between"
           marginX={2}
-          css={{
-            button: { width: '40%' },
-          }}
         >
-          {hasWriteAccess(originalGitChanges?.rights) && (
+          {hasWriteAccess(originalGitChanges?.rights) ? (
             <Button
+              disabled={!subject || !isAllModulesSynced}
+              onClick={createCommitClicked}
               variant="secondary"
-              disabled={!subject || modulesNotSaved}
-              onClick={() => createCommitClicked()}
             >
               Commit
             </Button>
-          )}
+          ) : null}
 
           <Button
+            disabled={!subject || !isAllModulesSynced}
+            onClick={createPrClicked}
             variant="secondary"
-            disabled={!subject || modulesNotSaved}
-            onClick={() => createPrClicked()}
           >
             Open PR
           </Button>

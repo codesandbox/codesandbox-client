@@ -161,11 +161,7 @@ export const Summary = () => {
                     borderColor: 'avatar.border',
                   })}
                 >
-                  <GitHubIcon
-                    title="GitHub repository"
-                    width={20}
-                    height={20}
-                  />
+                  <GitHubIcon height={20} width={20} />
                 </Stack>
                 <Link variant="muted" maxWidth="100%">
                   {currentSandbox.git.username}/{currentSandbox.git.repo}

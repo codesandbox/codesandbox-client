@@ -1,31 +1,32 @@
-import React from 'react';
-
 import {
-  Element,
+  Button,
   Collapsible,
+  Element,
   Stack,
   Text,
-  Button,
 } from '@codesandbox/components';
+import React, { FunctionComponent } from 'react';
+
 import { useOvermind } from 'app/overmind';
 
-export const NotLoggedIn = () => {
+export const NotLoggedIn: FunctionComponent = () => {
   const {
     actions: { signInClicked },
   } = useOvermind();
 
   return (
-    <Collapsible title="GitHub" defaultOpen>
+    <Collapsible defaultOpen title="GitHub">
       <Element paddingX={2}>
         <Stack direction="vertical" gap={2} marginBottom={6}>
-          <Text size={2} variant="muted" block>
+          <Text block size={2} variant="muted">
             You need to be signed in to export this sandbox to GitHub and make
             commits and pull requests to it.
           </Text>
         </Stack>
+
         <Button
-          variant="primary"
           onClick={() => signInClicked({ useExtraScopes: false })}
+          variant="primary"
         >
           Sign in with GitHub
         </Button>

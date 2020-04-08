@@ -26,7 +26,7 @@ export const CreateRepo: FunctionComponent<Props> = ({ style }) => {
 
   const updateRepoTitle = ({
     target: { value: title },
-  }: ChangeEvent<HTMLInputElement>) => repoTitleChanged({ title });
+  }: ChangeEvent<HTMLInputElement>) => repoTitleChanged(title);
   const createRepo = () => {
     track('Export to GitHub Clicked');
     createRepoClicked();
