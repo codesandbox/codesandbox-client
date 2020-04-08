@@ -1,5 +1,5 @@
 ---
-banner:
+banner: ./images/3-0.jpg
 title: v3.0.0
 slug: 3-0-0
 date: 2019-03-19

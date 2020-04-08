@@ -1,5 +1,5 @@
 ---
-banner:
+banner: ./images/2-5.jpg
 title: v2.5.0
 slug: 2-5-0
 date: 2018-02-07

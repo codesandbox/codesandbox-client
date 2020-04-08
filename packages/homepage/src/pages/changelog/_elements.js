@@ -88,15 +88,16 @@ export const Smallupdate = styled.div`
   text-align: center;
   justify-content: center;
   padding: 5rem 0;
+  margin-bottom: 2rem;
   grid-area: img;
-  font-size: 4rem;
+  font-size: 3rem;
   font-weight: 700;
   border: 1px solid #242424;
   border-radius: 0.25rem;
 
   @media screen and (max-width: 768px) {
     font-size: 1.5rem;
-    padding: 2rem 0;
+    padding: 3rem 0;
   }
 `;
 

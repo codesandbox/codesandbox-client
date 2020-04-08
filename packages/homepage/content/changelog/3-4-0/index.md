@@ -1,5 +1,5 @@
 ---
-banner:
+banner: ./images/3-4.jpg
 title: v3.4.0
 slug: 3-4-0
 date: 2019-12-04

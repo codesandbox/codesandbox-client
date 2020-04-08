@@ -1,5 +1,5 @@
 ---
-banner: ./images/banner.png
+banner: ./images/3-5.jpg
 title: v3.5
 slug: new-look-v3-5
 date: 2020-03-05
