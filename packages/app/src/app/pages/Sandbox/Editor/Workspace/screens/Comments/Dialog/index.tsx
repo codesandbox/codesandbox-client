@@ -76,6 +76,7 @@ export const Dialog: React.FC = () => {
     isCodeComment,
     isNewComment,
     repliesRendered,
+    comment.comments.length,
   ]);
 
   React.useEffect(() => {
@@ -463,16 +464,24 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
    * If replies are loaded, do nothing and wait for next animation
    * */
   React.useEffect(() => {
-    if (!replyCount) {
+    if (!replyCount || repliesAlreadyLoadedOnFirstRender.current) {
       // If the dialog is already open without any replies,
       // just skip all of the animations for opening transitions
       repliesController.set({ opacity: 1, height: 'auto' });
       setStepInTimeline(2);
+      repliesRenderedCallback();
     } else if (!repliesAlreadyLoadedOnFirstRender.current && T === -1) {
       skeletonController.set({ height: SKELETON_HEIGHT, opacity: 1 });
       setStepInTimeline(0);
     }
-  }, [skeletonController, repliesController, replies.length, T, replyCount]);
+  }, [
+    skeletonController,
+    repliesController,
+    replies.length,
+    T,
+    replyCount,
+    repliesRenderedCallback,
+  ]);
 
   /**
    * T = 1 (Dialog's enter animation has completed, hence the delay)
@@ -491,10 +500,14 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
           transition: { duration: SKELETON_FADE_DURATION },
         });
         repliesController.set({ opacity: 1 });
-        repliesController.start({
-          height: 'auto',
-          transition: { duration: REPLY_TRANSITION_DURATION },
-        });
+        repliesController
+          .start({
+            height: 'auto',
+            transition: { duration: REPLY_TRANSITION_DURATION },
+          })
+          .then(() => {
+            repliesRenderedCallback();
+          });
 
         setStepInTimeline(2);
       } else {
@@ -509,6 +522,7 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
     delay,
     REPLY_TRANSITION_DURATION,
     T,
+    repliesRenderedCallback,
   ]);
 
   /**
