@@ -77,6 +77,7 @@ export const Dialog: React.FC = () => {
     isCodeComment,
     isNewComment,
     repliesRendered,
+    comment.comments.length,
   ]);
 
   React.useEffect(() => {
@@ -492,7 +493,14 @@ const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
       skeletonController.set({ height: SKELETON_HEIGHT, opacity: 1 });
       setStepInTimeline(0);
     }
-  }, [skeletonController, repliesController, replies.length, T, replyCount]);
+  }, [
+    skeletonController,
+    repliesController,
+    replies.length,
+    T,
+    replyCount,
+    repliesRenderedCallback,
+  ]);
 
   /**
    * T = 1 (Dialog's enter animation has completed, hence the delay)
@@ -511,10 +519,14 @@ const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
           transition: { duration: SKELETON_FADE_DURATION },
         });
         repliesController.set({ opacity: 1 });
-        repliesController.start({
-          height: 'auto',
-          transition: { duration: REPLY_TRANSITION_DURATION },
-        });
+        repliesController
+          .start({
+            height: 'auto',
+            transition: { duration: REPLY_TRANSITION_DURATION },
+          })
+          .then(() => {
+            repliesRenderedCallback();
+          });
 
         setStepInTimeline(2);
       } else {
@@ -529,6 +541,7 @@ const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
     delay,
     REPLY_TRANSITION_DURATION,
     T,
+    repliesRenderedCallback,
   ]);
 
   /**
