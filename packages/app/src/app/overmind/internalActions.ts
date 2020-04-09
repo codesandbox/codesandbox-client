@@ -8,6 +8,7 @@ import {
   ServerContainerStatus,
   ServerStatus,
   TabType,
+  Page,
 } from '@codesandbox/common/lib/types';
 import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
@@ -27,16 +28,49 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
   try {
     const jwt = await actions.internal.signInGithub(options);
     actions.internal.setJwt(jwt);
-    state.user = await effects.api.getCurrentUser();
-    actions.internal.setPatronPrice();
-    actions.internal.setSignedInCookie();
-    effects.analytics.identify('signed_in', true);
-    effects.analytics.setUserId(state.user.id);
-    actions.internal.setStoredSettings();
-    effects.live.connect();
-    actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
-    actions.refetchSandboxInfo();
-    state.isAuthenticating = false;
+    state.hasLoadedApp = false;
+    switch (state.currentPage) {
+      case Page.GITHUB:
+        actions.githubPageMounted();
+        break;
+      case Page.CLI_INSTRUCTIONS:
+        actions.cliInstructionsMounted();
+        break;
+      case Page.NEW_SANDBOX:
+        actions.sandboxPageMounted();
+        break;
+      case Page.CURATOR:
+        actions.explore.popularSandboxesMounted(null);
+        break;
+      case Page.SANDBOX:
+        actions.editor.sandboxChanged({
+          id: state.editor.currentSandbox.id,
+        });
+        break;
+      case Page.DASHBOARD:
+        actions.dashboard.dashboardMounted();
+        break;
+      case Page.LIVE:
+        actions.live.roomJoined({
+          roomId: effects.router.getPathParts().pop(),
+        });
+        break;
+      case Page.PROFILE:
+        actions.profile.profileMounted(effects.router.getPathParts().pop());
+        break;
+      case Page.SEARCH:
+        actions.searchMounted();
+        break;
+      case Page.PATRON:
+        actions.patron.patronMounted();
+        break;
+      case Page.PRO:
+        actions.patron.patronMounted();
+        break;
+      case Page.CLI:
+        actions.cliMounted();
+        break;
+    }
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not authenticate with Github',

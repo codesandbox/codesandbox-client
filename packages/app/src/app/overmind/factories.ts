@@ -1,4 +1,8 @@
-import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
+import {
+  Contributor,
+  PermissionType,
+  Page,
+} from '@codesandbox/common/lib/types';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { IDerive, IState } from 'overmind';
 
@@ -9,10 +13,11 @@ import { AsyncAction } from '.';
   and settings
 */
 export const withLoadApp = <T>(
+  page: Page,
   continueAction?: AsyncAction<T>
 ): AsyncAction<T> => async (context, value) => {
   const { effects, state, actions } = context;
-
+  state.currentPage = page;
   if (state.hasLoadedApp && continueAction) {
     await continueAction(context, value);
     return;

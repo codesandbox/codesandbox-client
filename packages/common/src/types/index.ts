@@ -742,3 +742,21 @@ export type PatronTier = 1 | 2 | 3 | 4;
 export type SandboxFs = {
   [path: string]: Module | Directory;
 };
+
+export enum Page {
+  NEW_SANDBOX = 'NewSandbox',
+  GITHUB = 'Github',
+  CLI_INSTRUCTIONS = 'CliInstructions',
+  DASHBOARD = 'Dashboard',
+  SANDBOX = 'Sandbox',
+  CURATOR = 'Curator',
+  LIVE = 'Live',
+  SIGN_IN = 'SignIn',
+  PROFILE = 'Profile',
+  SEARCH = 'Search',
+  PATRON = 'Patron',
+  PRO = 'Pro',
+  CLI = 'Cli',
+  SADBOX = 'Sadbox',
+  GENERIC_PAGE = 'GenericPage',
+}

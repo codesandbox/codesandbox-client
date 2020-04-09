@@ -3,12 +3,14 @@ import {
   Notification,
   Sandbox,
   UploadFile,
+  Page,
 } from '@codesandbox/common/lib/types';
 import store from 'store/dist/store.modern';
 
 import { Derive } from '.';
 
 type State = {
+  currentPage: Page | null;
   isPatron: Derive<State, boolean>;
   isFirstVisit: boolean;
   isLoggedIn: Derive<State, boolean>;
@@ -42,6 +44,7 @@ type State = {
 };
 
 export const state: State = {
+  currentPage: null,
   isFirstVisit: false,
   isPatron: ({ user }) =>
     Boolean(user && user.subscription && user.subscription.since),

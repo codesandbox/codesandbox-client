@@ -66,8 +66,21 @@ export default new (class RouterEffect {
     history.replace(url.replace(origin, ''));
   }
 
+  reload() {
+    const current = new URL(location.href);
+    history.replace(
+      `${current.pathname}${
+        current.search ? `?${current.search}&login` : '?login'
+      }`
+    );
+  }
+
   getParameter(key: string): string | null {
     const currentUrl = new URL(location.href);
     return currentUrl.searchParams.get(key);
+  }
+
+  getPathParts() {
+    return new URL(location.href).pathname.split('/');
   }
 })();

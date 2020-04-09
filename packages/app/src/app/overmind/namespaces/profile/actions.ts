@@ -1,8 +1,9 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { Sandbox, Page } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 
 export const profileMounted: AsyncAction<string> = withLoadApp(
+  Page.PROFILE,
   async ({ effects, state }, username) => {
     state.profile.isLoadingProfile = true;
     state.profile.notFound = false;

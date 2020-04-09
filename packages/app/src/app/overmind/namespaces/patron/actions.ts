@@ -1,8 +1,8 @@
 import { AsyncAction, Action } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-import { StripeErrorCode } from '@codesandbox/common/lib/types';
+import { StripeErrorCode, Page } from '@codesandbox/common/lib/types';
 
-export const patronMounted: AsyncAction = withLoadApp();
+export const patronMounted: AsyncAction = withLoadApp(Page.PATRON);
 
 export const priceChanged: Action<{ price: number }> = (
   { state },

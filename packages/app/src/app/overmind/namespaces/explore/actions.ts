@@ -1,8 +1,9 @@
-import { PickedSandboxDetails } from '@codesandbox/common/lib/types';
+import { PickedSandboxDetails, Page } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 
 export const popularSandboxesMounted: AsyncAction<string> = withLoadApp(
+  Page.CURATOR,
   async ({ state, actions, effects }, date) => {
     try {
       state.explore.popularSandboxes = await effects.api.getPopularSandboxes(

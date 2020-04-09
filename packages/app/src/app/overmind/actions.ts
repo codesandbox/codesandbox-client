@@ -3,6 +3,7 @@ import {
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
 
+import { Page } from '@codesandbox/common/lib/types';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { Action, AsyncAction } from '.';
@@ -13,15 +14,16 @@ export const appUnmounted: AsyncAction = async ({ effects, actions }) => {
   effects.connection.removeListener(actions.connectionChanged);
 };
 
-export const sandboxPageMounted: AsyncAction = withLoadApp();
+export const sandboxPageMounted: AsyncAction = withLoadApp(Page.NEW_SANDBOX);
 
-export const searchMounted: AsyncAction = withLoadApp();
+export const searchMounted: AsyncAction = withLoadApp(Page.SEARCH);
 
-export const codesadboxMounted: AsyncAction = withLoadApp();
+export const codesadboxMounted: AsyncAction = withLoadApp(Page.SADBOX);
 
-export const genericPageMounted: AsyncAction = withLoadApp();
+export const genericPageMounted: AsyncAction = withLoadApp(Page.GENERIC_PAGE);
 
 export const cliMounted: AsyncAction = withLoadApp(
+  Page.CLI,
   async ({ state, actions }) => {
     if (state.user) {
       await actions.internal.authorize();
@@ -52,9 +54,11 @@ export const notificationRemoved: Action<{
   state.notifications.splice(notificationToRemoveIndex, 1);
 };
 
-export const cliInstructionsMounted: AsyncAction = withLoadApp();
+export const cliInstructionsMounted: AsyncAction = withLoadApp(
+  Page.CLI_INSTRUCTIONS
+);
 
-export const githubPageMounted: AsyncAction = withLoadApp();
+export const githubPageMounted: AsyncAction = withLoadApp(Page.GITHUB);
 
 export const connectionChanged: Action<boolean> = ({ state }, connected) => {
   state.connected = connected;
@@ -179,19 +183,10 @@ export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = false;
 };
 
-export const signOutClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const signOutClicked: AsyncAction = async ({ effects }) => {
   effects.analytics.track('Sign Out', {});
-  state.workspace.openedWorkspaceItem = 'files';
-  if (state.live.isLive) {
-    actions.live.internal.disconnect();
-  }
   await effects.api.signout();
   effects.jwt.reset();
-  state.user = null;
   effects.browser.reload();
 };
 

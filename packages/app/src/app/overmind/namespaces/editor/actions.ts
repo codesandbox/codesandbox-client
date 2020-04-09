@@ -9,6 +9,7 @@ import {
   WindowOrientation,
   Module,
   UserSelection,
+  Page,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
@@ -91,9 +92,11 @@ export const loadCursorFromUrl: AsyncAction = async ({
 
   await actions.editor.moduleSelected({ id: module.id });
 
-  const [parsedHead, parsedAnchor] = selection.split('-').map(Number);
-  if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
-    effects.vscode.setSelection(parsedHead, parsedAnchor);
+  if (selection) {
+    const [parsedHead, parsedAnchor] = selection.split('-').map(Number);
+    if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
+      effects.vscode.setSelection(parsedHead, parsedAnchor);
+    }
   }
 };
 
@@ -134,7 +137,7 @@ export const npmDependencyRemoved: AsyncAction<string> = withOwnedSandbox(
 
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   id: string;
-}>(async ({ state, actions, effects }, { id }) => {
+}>(Page.SANDBOX, async ({ state, actions, effects }, { id }) => {
   // This happens when we fork. This can be avoided with state first routing
   if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
     effects.vscode.openModule(state.editor.currentModule);

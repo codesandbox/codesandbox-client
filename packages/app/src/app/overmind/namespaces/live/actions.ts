@@ -3,6 +3,7 @@ import {
   LiveMessageEvent,
   UserViewRange,
   UserSelection,
+  Page,
 } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
@@ -17,7 +18,7 @@ export const internal = internalActions;
 
 export const signInToRoom: AsyncAction<{
   roomId: string;
-}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
+}> = withLoadApp(Page.LIVE, async ({ state, effects, actions }, { roomId }) => {
   await actions.internal.signIn({});
 
   if (state.isLoggedIn) {
@@ -57,7 +58,7 @@ export const onOperationError: Action<{
 
 export const roomJoined: AsyncAction<{
   roomId: string;
-}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
+}> = withLoadApp(Page.LIVE, async ({ state, effects, actions }, { roomId }) => {
   if (!state.isLoggedIn) {
     return;
   }

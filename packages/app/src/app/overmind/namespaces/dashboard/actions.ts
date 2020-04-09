@@ -1,8 +1,9 @@
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
+import { Page } from '@codesandbox/common/lib/types';
 import { OrderBy } from './state';
 
-export const dashboardMounted: AsyncAction = withLoadApp();
+export const dashboardMounted: AsyncAction = withLoadApp(Page.DASHBOARD);
 
 export const sandboxesSelected: Action<{
   sandboxIds: string[];
