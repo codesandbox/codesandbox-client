@@ -5,7 +5,7 @@ export const AutoCompleteInput = styled.input`
   box-sizing: border-box;
   border: none;
   outline: none;
-  background-color: transparent;
+  background-color: ${props => props.theme['sideBar.background']};
   font-weight: 600;
   font-family: inherit;
   letter-spacing: 0.45px;
