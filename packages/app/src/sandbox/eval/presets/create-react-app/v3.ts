@@ -11,7 +11,7 @@ import rawTranspiler from '../../transpilers/raw';
 import svgrTranspiler from '../../transpilers/svgr';
 import sassTranspiler from '../../transpilers/sass';
 import refreshTranspiler from '../../transpilers/react/refresh-transpiler';
-import styleProcessor from '../../transpilers/vue/style-compiler';
+import styleProcessor from '../../transpilers/postcss';
 import {
   hasRefresh,
   aliases,
