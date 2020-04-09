@@ -8,7 +8,7 @@ import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import Loadable from 'app/utils/Loadable';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from '@codesandbox/components';
 
 import CommitModal from './CommitModal';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
@@ -174,7 +174,7 @@ const Modals: FunctionComponent = () => {
   const modal = currentModal && modals[currentModal];
 
   return (
-    <ThemeProvider theme={localState.theme}>
+    <ThemeProvider theme={localState.theme.vscodeTheme}>
       <Modal
         isOpen={Boolean(modal)}
         width={
