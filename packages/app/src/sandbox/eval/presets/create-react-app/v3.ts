@@ -191,6 +191,7 @@ export default function initialize() {
             module => /\.module\.s[c|a]ss$/.test(module.path),
             [
               { transpiler: sassTranspiler },
+              { transpiler: styleProcessor },
               {
                 transpiler: stylesTranspiler,
                 options: { module: true, hmrEnabled: isRefresh },
@@ -217,6 +218,7 @@ export default function initialize() {
           ]);
           preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
             { transpiler: sassTranspiler },
+            { transpiler: styleProcessor },
             {
               transpiler: stylesTranspiler,
               options: { hmrEnabled: isRefresh },

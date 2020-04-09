@@ -35,7 +35,8 @@ async function resolveCSSFile(
     return loaderContext.resolveTranspiledModuleAsync(path);
   }
 
-  return loaderContext.resolveTranspiledModuleAsync(join(basePath, path));
+  const fullPath = path.charAt(0) === '/' ? path : join(basePath, path);
+  return loaderContext.resolveTranspiledModuleAsync(fullPath);
 }
 
 export default function(
