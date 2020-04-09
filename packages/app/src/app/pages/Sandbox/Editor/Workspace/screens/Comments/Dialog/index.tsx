@@ -466,7 +466,6 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
     if (!replyCount) {
       // If the dialog is already open without any replies,
       // just skip all of the animations for opening transitions
-      skeletonController.set({ height: 0, opacity: 0 });
       repliesController.set({ opacity: 1, height: 'auto' });
       setStepInTimeline(2);
     } else if (!repliesAlreadyLoadedOnFirstRender.current && T === -1) {
