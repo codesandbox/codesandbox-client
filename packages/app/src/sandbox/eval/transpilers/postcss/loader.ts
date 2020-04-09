@@ -3,10 +3,7 @@ import postcssImportPlugin from 'postcss-import';
 import { join } from 'path';
 import { isDependencyPath } from 'sandbox/eval/utils/is-dependency-path';
 
-import TranspiledModule, { LoaderContext } from '../../../transpiled-module';
-
-import trim from './plugins/trim';
-import scopeId from './plugins/scope-id';
+import TranspiledModule, { LoaderContext } from '../../transpiled-module';
 
 async function resolveCSSFile(
   loaderContext: LoaderContext,
@@ -44,17 +41,6 @@ export default function(
   loaderContext: LoaderContext
 ): Promise<{ transpiledCode: string; sourceMap: any }> {
   return new Promise((resolve, reject) => {
-    const query = loaderContext.options;
-
-    let vueOptions = loaderContext.options.__vueOptions__;
-
-    if (!vueOptions) {
-      vueOptions = {
-        ...loaderContext.options.vue,
-      };
-    }
-
-    // TODO autoprefixer
     const plugins = [
       postcssImportPlugin({
         resolve: async (id: string, root: string) => {
@@ -74,31 +60,16 @@ export default function(
           return tModule.module.code;
         },
       }),
-      trim,
     ];
 
     const options: ProcessOptions = {
       to: loaderContext.path,
       from: loaderContext.path,
+      map: {
+        inline: true,
+        annotation: true,
+      },
     };
-
-    // add plugin for vue-loader scoped css rewrite
-    if (query.scoped) {
-      plugins.push(scopeId({ id: query.id }));
-    }
-
-    // source map
-    if (
-      loaderContext.sourceMap &&
-      vueOptions.cssSourceMap !== false
-      // !loaderContext.map
-    ) {
-      options.map = {
-        inline: false,
-        annotation: false,
-        // prev: loaderContext.map,
-      };
-    }
 
     return (
       postcss(plugins)
