@@ -99,7 +99,7 @@ export const Dialog: React.FC = () => {
 
   React.useEffect(() => {
     const listener = event => {
-      if (event.which === ESCAPE) {
+      if (event.which === ESC) {
         actions.comments.closeComment();
       }
     };
