@@ -152,6 +152,7 @@ export const Dialog: React.FC = () => {
                 />
 
                 <Replies
+                  key={comment.id}
                   replies={replies}
                   replyCount={comment.replyCount}
                   repliesRenderedCallback={() => setRepliesRendered(true)}
