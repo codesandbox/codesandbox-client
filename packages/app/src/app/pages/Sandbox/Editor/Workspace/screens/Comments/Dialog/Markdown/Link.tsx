@@ -30,7 +30,7 @@ export const LinkElement = ({ href, children, ...props }) => {
 
   if (!href.includes('codesandbox')) {
     return (
-      <Link target="_blank" rel="noopener noreferrer" {...props}>
+      <Link target="_blank" rel="noopener noreferrer ugc" {...props}>
         {children}
       </Link>
     );

@@ -21,6 +21,7 @@ export const TextareaComponent: any = styled(Input).attrs({
     padding: 2,
     width: '100%',
     resize: 'none',
+    lineHeight: 1.2,
     // autosize styles
     overflow: 'hidden',
     transitionProperty: 'height',
@@ -113,7 +114,7 @@ const Autosize = ({ value, style = {}, ...props }) => (
             style={{
               // match textarea styles
               whiteSpace: 'pre',
-              lineHeight: 1,
+              lineHeight: 1.2,
               minHeight: 64,
               padding: 8,
               ...style,
@@ -122,7 +123,7 @@ const Autosize = ({ value, style = {}, ...props }) => (
             {value + ' '}
           </Text>
         </VisuallyHidden>
-        {props.children(rect ? rect.height + 8 : 0)}
+        {props.children(rect ? rect.height + 20 : 0)}
       </>
     )}
   </Rect>

@@ -29,7 +29,16 @@ export const Reply = ({ reply }: ReplyProps) => {
         },
       }}
     >
-      <Element key={id} marginLeft={4} marginRight={2} paddingTop={6}>
+      <Element
+        as="article"
+        itemProp="comment"
+        itemScope
+        itemType="http://schema.org/Comment"
+        key={id}
+        marginLeft={4}
+        marginRight={2}
+        paddingTop={6}
+      >
         <Stack align="flex-start" justify="space-between" marginBottom={4}>
           <AvatarBlock comment={reply} />
           {state.user.id === user.id && (
@@ -65,7 +74,9 @@ export const Reply = ({ reply }: ReplyProps) => {
         })}
       >
         {!editing ? (
-          <Markdown source={content} />
+          <Element itemProp="text">
+            <Markdown source={content} />
+          </Element>
         ) : (
           <EditComment
             initialValue={reply.content}

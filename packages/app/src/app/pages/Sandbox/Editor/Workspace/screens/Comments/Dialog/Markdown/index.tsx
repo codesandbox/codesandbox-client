@@ -38,7 +38,13 @@ export const Markdown = ({ source }) => (
       source={source}
       renderers={{
         text: ({ children }) => (
-          <Text variant="muted" size={3}>
+          <Text
+            variant="muted"
+            size={3}
+            css={css({
+              wordBreak: 'break-all',
+            })}
+          >
             {children}
           </Text>
         ),

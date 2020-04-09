@@ -195,24 +195,6 @@ class Live {
         },
       });
 
-      this.socket.onClose(e => {
-        captureException(
-          new Error('Connection loss with live, reason: ' + e.code)
-        );
-
-        // if (e.code === 1006) {
-        //   // This is an abrupt close, the server probably restarted or carshed. We don't want to overload
-        //   // the server, so we manually wait and try to connect;
-        //   this.socket.disconnect();
-
-        //   const waitTime = 500 + 5000 * Math.random();
-
-        //   window.setTimeout(() => {
-        //     this.socket.connect();
-        //   }, waitTime);
-        // }
-      });
-
       this.socket.connect();
       window.socket = this.socket;
       this.debug('Connecting to socket', this.socket);
@@ -308,12 +290,6 @@ class Live {
         (data == null || Object.keys(data).length === 0) &&
         event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
-
-      if (event === 'phx_error') {
-        captureException(
-          new Error('Received phoenix error: ' + JSON.stringify(data))
-        );
-      }
 
       const _isOwnMessage = Boolean(
         data && data._messageId && this.pendingMessages.delete(data._messageId)

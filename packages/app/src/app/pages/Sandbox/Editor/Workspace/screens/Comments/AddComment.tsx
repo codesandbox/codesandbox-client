@@ -21,6 +21,7 @@ export const AddComment: React.FC<Props> = ({ onSubmit }) => {
   // Form elements submit on Enter, except Textarea :)
   const submitOnEnter = event => {
     if (event.keyCode === ENTER && !event.shiftKey) {
+      event.preventDefault();
       submit(event);
     }
   };

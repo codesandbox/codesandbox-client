@@ -107,3 +107,11 @@ export const track = async (eventName: string, data: any) => {
     );
   }
 };
+
+export const setGroup = async (group: string, value: string | string[]) => {
+  const amplitude = await getAmplitude();
+  if (amplitude) {
+    debug('[Amplitude] Grouping', group, value);
+    amplitude.setGroup(group, value);
+  }
+};

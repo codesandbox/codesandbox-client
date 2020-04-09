@@ -118,6 +118,11 @@ executors:
     docker:
       - image: circleci/node:10
     working_directory: ~/codesandbox-client
+  node-xlarge:
+    docker:
+      - image: circleci/node:10
+    resource_class: xlarge
+    working_directory: ~/codesandbox-client
   node-with-puppeteer:
     docker:
       - image: codesandbox/node-puppeteer
@@ -278,12 +283,12 @@ commands:
 
 jobs:
   build-deps:
-    executor: node
+    executor: node-xlarge
     steps:
       - checkout_with_cache
       - build_deps
   build-prod:
-    executor: node
+    executor: node-xlarge
     steps:
       - checkout_with_cache
       - build_prod

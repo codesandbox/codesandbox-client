@@ -12,6 +12,7 @@ import {
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { utcToZonedTime } from 'date-fns-tz';
+import * as uuid from 'uuid';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
 
@@ -33,6 +34,7 @@ export const updateComment: AsyncAction<{
   if (commentId === OPTIMISTIC_COMMENT_ID) {
     await actions.comments.addComment({
       content,
+      isOptimistic: true,
     });
     return;
   }
@@ -55,7 +57,7 @@ export const updateComment: AsyncAction<{
   }
 };
 
-export const getComments: AsyncAction<string> = async (
+export const getCommentReplies: AsyncAction<string> = async (
   { state, effects },
   commentId
 ) => {
@@ -70,7 +72,7 @@ export const getComments: AsyncAction<string> = async (
       // @ts-ignore
       sandbox: { comment },
     } = await effects.browser.waitAtLeast(
-      DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY,
+      (DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY) * 1000,
       () =>
         effects.gql.queries.comment({
           sandboxId: sandbox.id,
@@ -159,7 +161,7 @@ export const selectComment: AsyncAction<{
 
   const comment = state.comments.comments[sandbox.id][commentId];
 
-  actions.comments.getComments(commentId);
+  actions.comments.getCommentReplies(commentId);
 
   if (!bounds) {
     state.comments.currentCommentId = commentId;
@@ -247,14 +249,14 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
     references: codeReference
       ? [
           {
-            id: '__OPTIMISTIC__',
+            id: uuid.v4(),
             type: 'code',
             metadata: codeReference,
             resource: state.editor.currentModule.path,
           },
         ]
       : [],
-    comments: [],
+    replyCount: 0,
   };
   const comments = state.comments.comments;
 
@@ -293,12 +295,12 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
 export const addComment: AsyncAction<{
   content: string;
   parentCommentId?: string;
-}> = async ({ state, effects }, { content, parentCommentId }) => {
+  isOptimistic?: boolean;
+}> = async ({ state, effects }, { content, parentCommentId, isOptimistic }) => {
   if (!state.user || !state.editor.currentSandbox) {
     return;
   }
 
-  const id = OPTIMISTIC_COMMENT_ID;
   const sandboxId = state.editor.currentSandbox.id;
   const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
@@ -307,9 +309,18 @@ export const addComment: AsyncAction<{
     comments[sandboxId] = {};
   }
 
+  const id = uuid.v4();
   let optimisticComment: CommentFragment;
-  if (state.comments.comments[sandboxId][id]) {
-    optimisticComment = state.comments.comments[sandboxId][id];
+  if (isOptimistic) {
+    optimisticComment = {
+      ...state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID],
+      id,
+    };
+    state.comments.comments[sandboxId][id] = optimisticComment;
+    state.comments.currentCommentId = state.comments.currentCommentId
+      ? id
+      : null;
+    delete state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID];
   } else {
     optimisticComment = {
       parentComment: parentCommentId ? { id: parentCommentId } : null,
@@ -325,20 +336,20 @@ export const addComment: AsyncAction<{
         avatarUrl: state.user.avatarUrl,
       },
       references: [],
-      comments: [],
+      replyCount: 0,
     };
     comments[sandboxId][id] = optimisticComment;
   }
 
-  if (optimisticComment.parentComment) {
-    comments[sandboxId][optimisticComment.parentComment.id].comments.push({
-      id,
-    });
-  }
   state.comments.selectedCommentsFilter = CommentsFilterOption.OPEN;
+
+  if (parentCommentId) {
+    comments[sandboxId][parentCommentId].replyCount++;
+  }
 
   try {
     const response = await effects.gql.mutations.createComment({
+      id,
       parentCommentId: parentCommentId || null,
       sandboxId,
       content,
@@ -351,28 +362,14 @@ export const addComment: AsyncAction<{
 
     delete comments[sandboxId][id];
     comments[sandboxId][comment.id] = comment;
-
-    if (parentCommentId) {
-      comments[sandboxId][parentCommentId].comments.push({
-        id: comment.id,
-      });
-      comments[sandboxId][parentCommentId].comments.splice(
-        comments[sandboxId][parentCommentId].comments.findIndex(
-          childComment => childComment.id === id
-        ),
-        1
-      );
-    }
-
-    if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
-      state.comments.currentCommentId = comment.id;
-      delete comments[sandboxId][OPTIMISTIC_COMMENT_ID];
-    }
   } catch (error) {
     effects.notificationToast.error(
       'Unable to create your comment, please try again'
     );
     delete comments[sandboxId][id];
+    if (parentCommentId) {
+      comments[sandboxId][parentCommentId].replyCount--;
+    }
   }
 };
 
@@ -385,18 +382,7 @@ export const deleteComment: AsyncAction<{
   const sandboxId = state.editor.currentSandbox.id;
   const comments = state.comments.comments;
   const deletedComment = comments[sandboxId][commentId];
-  const parentComment =
-    deletedComment.parentComment &&
-    comments[sandboxId][deletedComment.parentComment.id];
   delete comments[sandboxId][commentId];
-  let replyIndex: number = -1;
-
-  if (parentComment) {
-    replyIndex = parentComment.comments.findIndex(
-      reply => reply.id === deletedComment.id
-    );
-    parentComment.comments.splice(replyIndex, 1);
-  }
 
   try {
     await effects.gql.mutations.deleteComment({
@@ -408,9 +394,6 @@ export const deleteComment: AsyncAction<{
       'Unable to delete your comment, please try again'
     );
     comments[sandboxId][commentId] = deletedComment;
-    if (parentComment) {
-      parentComment.comments.splice(replyIndex, 0, { id: deletedComment.id });
-    }
   }
 };
 

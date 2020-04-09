@@ -83,7 +83,10 @@ export const onInitialize: OnInitialize = async (
     getCurrentUser: () => state.user,
     onOperationApplied: actions.editor.onOperationApplied,
     onCodeChange: actions.editor.codeChanged,
-    onSelectionChanged: actions.live.onSelectionChanged,
+    onSelectionChanged: selection => {
+      actions.editor.onSelectionChanged(selection);
+      actions.live.onSelectionChanged(selection);
+    },
     onViewRangeChanged: actions.live.onViewRangeChanged,
     onCommentClick: actions.comments.onCommentClick,
     reaction: overmindInstance.reaction,

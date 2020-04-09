@@ -87,6 +87,15 @@ export function trackPageview() {
   }
 }
 
+/**
+ * Assign the user to a group. Can be multiple under one key.
+ */
+export function setGroup(name: string, value: string | string[]) {
+  if (!DO_NOT_TRACK_ENABLED) {
+    amplitude.setGroup(name, value);
+  }
+}
+
 export default function track(eventName, secondArg: Object = {}) {
   if (!DO_NOT_TRACK_ENABLED && isAllowedEvent(eventName, secondArg)) {
     const data = {
