@@ -464,12 +464,11 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
    * If replies are loaded, do nothing and wait for next animation
    * */
   React.useEffect(() => {
-    if (!replyCount || repliesAlreadyLoadedOnFirstRender.current) {
+    if (!replyCount) {
       // If the dialog is already open without any replies,
       // just skip all of the animations for opening transitions
       repliesController.set({ opacity: 1, height: 'auto' });
       setStepInTimeline(2);
-      repliesRenderedCallback();
     } else if (!repliesAlreadyLoadedOnFirstRender.current && T === -1) {
       skeletonController.set({ height: SKELETON_HEIGHT, opacity: 1 });
       setStepInTimeline(0);
