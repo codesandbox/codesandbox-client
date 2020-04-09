@@ -7,7 +7,7 @@ const pulse = keyframes`
 `;
 
 export const SkeletonTextBlock = styled.div(props => {
-  const color = props.theme.colors?.sideBar.border || '#242424';
+  let color = props.theme.colors?.sideBar.border || '#242424';
   const themeType = props.theme.vscodeTheme.type;
 
   /**
@@ -23,7 +23,16 @@ export const SkeletonTextBlock = styled.div(props => {
   const backgroundLuminosity = themeType === 'light' ? 86 : 14;
   const highlightLuminosity = themeType === 'light' ? 88 : 16;
 
+  // Color('#ff000033') throws error.
+  const colorWithOpacity = color.length === 9;
+
+  if (colorWithOpacity) {
+    // remove the opacity
+    color = color.slice(0, -2);
+  }
+
   const hsl = Color(color).hsl();
+
   const background = Color({ ...hsl, l: backgroundLuminosity }).hslString();
   const highlight = Color({ ...hsl, l: highlightLuminosity }).hslString();
 
