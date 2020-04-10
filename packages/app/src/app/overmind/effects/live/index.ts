@@ -438,7 +438,7 @@ class Live {
   }
 
   sendLiveMode(mode: string) {
-    return this.send('live:mode', {
+    return this.sendImmediately('live:mode', {
       mode,
     });
   }
@@ -474,7 +474,7 @@ class Live {
   }
 
   sendChatEnabled(enabled: boolean) {
-    return this.send('live:chat_enabled', { enabled });
+    return this.sendImmediately('live:chat_enabled', { enabled });
   }
 
   sendModuleStateSyncRequest() {
