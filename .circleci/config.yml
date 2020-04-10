@@ -395,6 +395,10 @@ workflows:
                 - master
       - deploy-staging-approval:
           type: approval
+          filters:
+            branches:
+              ignore:
+                - master
       - deploy-to-staging:
           requires:
             - deploy-staging-approval
