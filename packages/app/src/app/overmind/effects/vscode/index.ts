@@ -37,6 +37,7 @@ import {
   initializeExtensionsFolder,
   initializeSettings,
   initializeThemeCache,
+  initializeSnippetDirectory,
 } from './initializers';
 import { Linter } from './Linter';
 import {
@@ -190,6 +191,8 @@ export class VSCodeEffect {
       initializeCustomTheme();
       initializeThemeCache();
       initializeSettings();
+      initializeSnippetDirectory();
+
       this.setVimExtensionEnabled(
         localStorage.getItem('settings.vimmode') === 'true'
       );
@@ -665,16 +668,13 @@ export class VSCodeEffect {
     if (!activeEditor) {
       return;
     }
-    
+
     const model = activeEditor.getModel();
     if (!model) {
       return;
     }
-    
-    const headPos = indexToLineAndColumn(
-      model.getLinesContent() || [],
-      head
-    );
+
+    const headPos = indexToLineAndColumn(model.getLinesContent() || [], head);
     const anchorPos = indexToLineAndColumn(
       model.getLinesContent() || [],
       anchor
@@ -841,7 +841,7 @@ export class VSCodeEffect {
       { IEditorService },
       { ICodeEditorService },
       { ITextFileService },
-
+      { ILifecycleService },
       { IEditorGroupsService },
       { IStatusbarService },
       { IExtensionService },
@@ -857,6 +857,7 @@ export class VSCodeEffect {
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
       r('vs/workbench/services/textfile/common/textfiles'),
+      r('vs/platform/lifecycle/common/lifecycle'),
       r('vs/workbench/services/editor/common/editorGroupsService'),
       r('vs/platform/statusbar/common/statusbar'),
       r('vs/workbench/services/extensions/common/extensions'),
@@ -961,6 +962,15 @@ export class VSCodeEffect {
         if (this.settings.lintEnabled) {
           this.createLinter();
         }
+
+        const lifecycleService = accessor.get(ILifecycleService);
+
+        // Trigger all VSCode lifecycle listeners
+        lifecycleService.phase = 2; // Restoring
+        requestAnimationFrame(() => {
+          lifecycleService.phase = 3; // Running
+        });
+
         resolve();
       });
     });
