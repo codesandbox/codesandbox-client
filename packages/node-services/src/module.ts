@@ -14,7 +14,7 @@ function updateChildren(
   child: Module,
   scan: boolean
 ) {
-  var children = parent && parent.children;
+  const children = parent && parent.children;
   if (children && !(scan && children.includes(child))) children.push(child);
 }
 
@@ -28,15 +28,15 @@ export default class Module {
   static _extensions: {
     [ext: string]: (module: Module, filename: string) => void;
   } = {
-    ['.js']: function(module: Module, filename: string) {
+    '.js': function(module: Module, filename: string) {
       const fs = BrowserFS.BFSRequire('fs');
-      var content = fs.readFileSync(filename, 'utf8');
+      const content = fs.readFileSync(filename, 'utf8');
 
       module._compile(content, filename);
     },
-    ['.json']: function(module: Module, filename: string) {
+    '.json': function(module: Module, filename: string) {
       const fs = BrowserFS.BFSRequire('fs');
-      var content = fs.readFileSync(filename, 'utf8');
+      const content = fs.readFileSync(filename, 'utf8');
 
       try {
         module.exports = JSON.parse(content);
@@ -84,7 +84,7 @@ export default class Module {
   }
 
   _compile(content: string, filename: string) {
-    var _self = this;
+    const _self = this;
     // remove shebang
     content = content.replace(/^\#\!.*/, '');
 
@@ -162,12 +162,16 @@ export default class Module {
       return require('debug');
     }
 
-    if (request == '/vscode/node_modules.asar/vscode-textmate') {
+    if (request === '/vscode/node_modules.asar/vscode-textmate') {
       return require('vscode-textmate/out/main');
     }
 
     if (request === 'zlib') {
       return require('browserify-zlib');
+    }
+
+    if (request === 'punycode') {
+      return require('punycode');
     }
 
     if (request === 'execa') {
@@ -202,6 +206,7 @@ export default class Module {
             extensionVersion: string,
             key: string
           ) {}
+
           sendTelemetryEvent(
             eventName: string,
             properties?: {
@@ -211,6 +216,7 @@ export default class Module {
               [key: string]: number;
             }
           ) {}
+
           dispose() {}
         },
       };
@@ -287,8 +293,8 @@ export default class Module {
       return BrowserFS.BFSRequire(request);
     }
 
-    var filename = Module._resolveFilename(request, parent);
-    var cachedModule = Module._cache[filename];
+    const filename = Module._resolveFilename(request, parent);
+    const cachedModule = Module._cache[filename];
     if (cachedModule) {
       updateChildren(parent, cachedModule, true);
       return cachedModule.exports;
@@ -302,7 +308,7 @@ export default class Module {
       return getCaller;
     }
 
-    var module = new Module(filename, parent);
+    const module = new Module(filename, parent);
 
     if (isMain) {
       // @ts-ignore
@@ -312,7 +318,7 @@ export default class Module {
 
     Module._cache[filename] = module;
 
-    var threw = true;
+    let threw = true;
     try {
       module.load(filename);
       threw = false;
