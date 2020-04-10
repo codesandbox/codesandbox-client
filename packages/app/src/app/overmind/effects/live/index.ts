@@ -4,8 +4,8 @@ import {
   LiveMessageEvent,
   Module,
   RoomInfo,
-  UserViewRange,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
@@ -18,7 +18,7 @@ import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
 
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
-import clients from './clients';
+import { CodesandboxOTClientsManager } from './clients';
 
 type Options = {
   onApplyOperation(args: {
@@ -53,6 +53,7 @@ class Live {
   private debug = _debug('cs:socket');
   private channel: Channel | null;
   private messageIndex = 0;
+  private clientsManager: CodesandboxOTClientsManager;
   private socket: Socket;
   private presence: Presence;
   private provideJwtToken: () => string;
@@ -130,6 +131,10 @@ class Live {
         moduleShortid,
         operation,
       });
+    this.clientsManager = new CodesandboxOTClientsManager(
+      this.onSendOperation,
+      this.onApplyOperation
+    );
   }
 
   getSocket() {
@@ -290,7 +295,7 @@ class Live {
 
   awaitModuleSynced(moduleShortid: string) {
     return Promise.resolve(
-      clients.get(moduleShortid).awaitSynchronized?.promise
+      this.clientsManager.get(moduleShortid).awaitSynchronized?.promise
     );
   }
 
@@ -322,7 +327,7 @@ class Live {
     }
 
     try {
-      clients.get(moduleShortid).applyClient(operation);
+      this.clientsManager.get(moduleShortid).applyClient(operation);
     } catch (e) {
       e.name = 'OperationFailure';
       captureException(e);
@@ -448,50 +453,45 @@ class Live {
   }
 
   async saveModule(module: Module) {
-    const client = clients.get(module.shortid);
-    await client.awaitSynchronized.promise;
+    const client = this.clientsManager.get(module.shortid);
+    await client.awaitSynchronized?.promise;
 
-    return this.send('save', {
-      moduleShortid: module.shortid,
-      revision: client.revision,
+    return this.send<{ saved_code: string; version: number }>('save', {
+      path: module.path,
+      revision: client.revision - 1,
     });
   }
 
   reset() {
-    clients.clear();
+    this.clientsManager.clear();
   }
 
   resetClient(moduleShortid: string, revision: number) {
-    clients.reset(moduleShortid, revision);
+    this.clientsManager.reset(moduleShortid, revision);
   }
 
   getAllClients() {
-    return clients.getAll();
+    return this.clientsManager.getAll();
   }
 
   applyClient(moduleShortid: string, operation: SerializedTextOperation) {
-    return clients
+    return this.clientsManager
       .get(moduleShortid)
       .applyClient(TextOperation.fromJSON(operation));
   }
 
   applyServer(moduleShortid: string, operation: SerializedTextOperation) {
-    return clients
+    return this.clientsManager
       .get(moduleShortid)
       .applyServer(TextOperation.fromJSON(operation));
   }
 
   serverAck(moduleShortid: string) {
-    return clients.get(moduleShortid).serverAck();
+    return this.clientsManager.get(moduleShortid).serverAck();
   }
 
   createClient(moduleShortid: string, revision: number) {
-    return clients.create(
-      moduleShortid,
-      revision,
-      this.onSendOperation,
-      this.onApplyOperation
-    );
+    return this.clientsManager.create(moduleShortid, revision);
   }
 }
 

@@ -1,6 +1,6 @@
 import {
-  logBreadcrumb,
   captureException,
+  logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Blocker, blocker } from 'app/utils/blocker';
 import { TextOperation } from 'ot';
@@ -152,45 +152,50 @@ export class CodeSandboxOTClient extends OTClient {
   }
 }
 
-const modules = new Map<string, CodeSandboxOTClient>();
+export class CodesandboxOTClientsManager {
+  private modules = new Map<string, CodeSandboxOTClient>();
+  private sendOperation: SendOperation;
+  private applyOperation: ApplyOperation;
+  constructor(sendOperation: SendOperation, applyOperation: ApplyOperation) {
+    this.sendOperation = sendOperation;
+    this.applyOperation = applyOperation;
+  }
 
-export default {
   getAll() {
-    return Array.from(modules.values());
-  },
+    return Array.from(this.modules.values());
+  }
+
   get(moduleShortid, revision = 0, force = false) {
-    let client = modules.get(moduleShortid);
+    let client = this.modules.get(moduleShortid);
 
     if (!client || force) {
       client = this.create(moduleShortid, revision);
     }
 
     return client!;
-  },
-  create(
-    moduleShortid,
-    initialRevision,
-    sendOperation: SendOperation,
-    applyOperation: ApplyOperation
-  ) {
+  }
+
+  create(moduleShortid, initialRevision) {
     const client = new CodeSandboxOTClient(
       initialRevision || 0,
       moduleShortid,
       (revision, operation) =>
-        sendOperation(moduleShortid, revision, operation),
+        this.sendOperation(moduleShortid, revision, operation),
       operation => {
-        applyOperation(moduleShortid, operation);
+        this.applyOperation(moduleShortid, operation);
       }
     );
-    modules.set(moduleShortid, client);
+    this.modules.set(moduleShortid, client);
 
     return client;
-  },
+  }
+
   reset(moduleShortid, revision) {
-    modules.delete(moduleShortid);
+    this.modules.delete(moduleShortid);
     this.create(moduleShortid, revision);
-  },
+  }
+
   clear() {
-    modules.clear();
-  },
-};
+    this.modules.clear();
+  }
+}

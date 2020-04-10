@@ -138,26 +138,31 @@ export const saveCode: AsyncAction<{
   }
 
   try {
-    await effects.live.saveModule(module);
-    const updatedModule = await effects.api.saveModuleCode(
-      sandbox.id,
-      module.shortid,
-      code
-    );
+    if (state.live.isLive) {
+      const { saved_code, version } = await effects.live.saveModule(module);
+      module.savedCode = saved_code;
+      sandbox.version = version;
+    } else {
+      const updatedModule = await effects.api.saveModuleCode(
+        sandbox.id,
+        module.shortid,
+        code
+      );
 
-    module.insertedAt = updatedModule.insertedAt;
-    module.updatedAt = updatedModule.updatedAt;
+      module.insertedAt = updatedModule.insertedAt;
+      module.updatedAt = updatedModule.updatedAt;
 
-    const savedCode =
-      updatedModule.code === module.code ? null : updatedModule.code;
+      const savedCode =
+        updatedModule.code === module.code ? null : updatedModule.code;
 
-    module.savedCode = savedCode;
+      module.savedCode = savedCode;
 
-    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, {
-      ...module,
-      code,
-    });
-    effects.moduleRecover.remove(sandbox.id, module);
+      effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, {
+        ...module,
+        code,
+      });
+      effects.moduleRecover.remove(sandbox.id, module);
+    }
 
     if (cbID) {
       effects.vscode.callCallback(cbID);
@@ -186,15 +191,6 @@ export const saveCode: AsyncAction<{
     await actions.editor.internal.updateCurrentTemplate();
 
     effects.vscode.runCommand('workbench.action.keepEditor');
-
-    const tabs = state.editor.tabs as ModuleTab[];
-    const tab = tabs.find(
-      tabItem => tabItem.moduleShortid === updatedModule.shortid
-    );
-
-    if (tab) {
-      tab.dirty = false;
-    }
   } catch (error) {
     actions.internal.handleError({
       message: 'There was a problem with saving the code, please try again',

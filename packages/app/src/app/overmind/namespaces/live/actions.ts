@@ -2,8 +2,8 @@ import {
   IModuleStateModule,
   LiveMessage,
   LiveMessageEvent,
-  UserViewRange,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Action, AsyncAction, Operator } from 'app/overmind';
@@ -136,6 +136,7 @@ export const liveMessageReceived: Operator<LiveMessage, any> = pipe(
   filter(({ state }) => Boolean(state.live.isLive && state.live.roomInfo)),
   fork((_, payload) => payload.event, {
     [LiveMessageEvent.JOIN]: liveMessage.onJoin,
+    [LiveMessageEvent.SAVE]: liveMessage.onSave,
     [LiveMessageEvent.MODULE_STATE]: liveMessage.onModuleState,
     [LiveMessageEvent.USER_ENTERED]: liveMessage.onUserEntered,
     [LiveMessageEvent.USERS_CHANGED]: liveMessage.onUsersChanged,

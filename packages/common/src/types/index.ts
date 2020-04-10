@@ -695,6 +695,7 @@ export type LiveMessage<data = unknown> = {
 };
 
 export enum LiveMessageEvent {
+  SAVE = 'save',
   JOIN = 'join',
   MODULE_STATE = 'module_state',
   USER_ENTERED = 'user:entered',

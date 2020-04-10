@@ -1,14 +1,13 @@
-import { debounce } from 'lodash-es';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
   EnvironmentVariable,
+  Module,
   ModuleCorrection,
   ModuleError,
   ModuleTab,
-  WindowOrientation,
-  Module,
   UserSelection,
+  WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
@@ -33,6 +32,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
+import { debounce } from 'lodash-es';
 import { Selection, TextOperation } from 'ot';
 import { json } from 'overmind';
 
@@ -379,17 +379,12 @@ export const codeChanged: Action<{
     return;
   }
 
-  // If the module is already synced we don't want to save an event, because operations
-  // should not be used to sync saved state, only dirty state. Saved state is handled by
-  // other means.
-  const isSynced = getSavedCode(module.code, module.savedCode) === module.code;
-
   // module.code !== code check is there to make sure that we don't end up sending
   // duplicate updates to live. module.code === code only when VSCode detected a change
   // from the filesystem (fs changed, vscode sees it, sends update). If this happens we
   // never want to send that code update, since this actual code change goes through this
   // specific code flow already.
-  if (state.live.isLive && module.code !== code && !isSynced) {
+  if (state.live.isLive && module.code !== code) {
     let operation: TextOperation;
     if (event) {
       logBreadcrumb({

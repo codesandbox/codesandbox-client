@@ -14,6 +14,20 @@ import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
 
+export const onSave: Operator<LiveMessage<{
+  saved_code: string;
+  version: number;
+  path: string;
+}>> = mutate(({ effects, actions, state }, { data }) => {
+  const sandbox = state.editor.currentSandbox;
+  const module = sandbox.modules.find(
+    moduleItem => moduleItem.path === data.path
+  );
+
+  module.savedCode = data.saved_code;
+  sandbox.version = data.version;
+});
+
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
   live_user_id: string;
