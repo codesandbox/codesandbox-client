@@ -507,13 +507,26 @@ export const forkExternalSandbox: AsyncAction<{
   sandboxId: string;
   openInNewWindow?: boolean;
   body?: { collectionId: string };
-}> = async ({ effects, state }, { sandboxId, openInNewWindow, body }) => {
+}> = async (
+  { effects, state, actions },
+  { sandboxId, openInNewWindow, body }
+) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });
 
-  const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
+  try {
+    const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
 
-  state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
-  effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+    state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
+    effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+  } catch (error) {
+    console.error(error);
+    actions.internal.handleError({
+      message: 'We were unable to fork the sandbox',
+      error,
+    });
+
+    throw error;
+  }
 };
 
 export const forkSandboxClicked: AsyncAction = async ({
