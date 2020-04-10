@@ -37,7 +37,7 @@ export default createGlobalStyle`
   }
 
   .ais-Highlight-highlighted {
-    color: ${props => props.theme['button.hoverBackground']};
+    color: ${props => props.theme.colors.button.background};
   }
 
   .ais-PoweredBy-link svg {
