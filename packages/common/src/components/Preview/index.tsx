@@ -596,7 +596,7 @@ class BasePreview extends React.Component<Props, State> {
             <>
               <StyledFrame
                 sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-                allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+                allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb; hid"
                 src={this.state.url}
                 ref={this.setIframeElement}
                 title={getSandboxName(sandbox)}
