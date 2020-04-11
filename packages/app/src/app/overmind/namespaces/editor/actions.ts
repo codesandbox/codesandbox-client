@@ -24,7 +24,6 @@ import {
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
-import { getSavedCode } from 'app/overmind/utils/sandbox';
 import {
   addDevToolsTab as addDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
@@ -91,6 +90,10 @@ export const loadCursorFromUrl: AsyncAction = async ({
 
   await actions.editor.moduleSelected({ id: module.id });
 
+  if (!selection) {
+    return;
+  }
+
   const [parsedHead, parsedAnchor] = selection.split('-').map(Number);
   if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
     effects.vscode.setSelection(parsedHead, parsedAnchor);
@@ -142,20 +145,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
     );
-
-    // We now need to send all dirty files that came over from the last sandbox.
-    // There is the scenario where you edit a file and press fork. Then the server
-    // doesn't know about how you got to that dirty state.
-    const changedModules = state.editor.currentSandbox.modules.filter(
-      m => getSavedCode(m.code, m.savedCode) !== m.code
-    );
-    changedModules.forEach(m => {
-      // Update server with latest data
-      effects.live.sendCodeUpdate(
-        m.shortid,
-        getTextOperation(m.savedCode || '', m.code || '')
-      );
-    });
 
     state.editor.isForkingSandbox = false;
     return;
