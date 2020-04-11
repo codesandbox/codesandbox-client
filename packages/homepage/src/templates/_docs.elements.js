@@ -183,7 +183,7 @@ export const Edit = styled.a`
 `;
 
 export const Heading = styled.div`
-  ${({ theme }) => css`
+  ${() => css`
     ${cardCSS};
     position: relative;
 
