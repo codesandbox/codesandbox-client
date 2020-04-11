@@ -24,7 +24,6 @@ import {
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
-import { getSavedCode } from 'app/overmind/utils/sandbox';
 import {
   addDevToolsTab as addDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
@@ -91,6 +90,10 @@ export const loadCursorFromUrl: AsyncAction = async ({
 
   await actions.editor.moduleSelected({ id: module.id });
 
+  if (!selection) {
+    return;
+  }
+
   const [parsedHead, parsedAnchor] = selection.split('-').map(Number);
   if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
     effects.vscode.setSelection(parsedHead, parsedAnchor);
@@ -142,20 +145,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
     );
-
-    // We now need to send all dirty files that came over from the last sandbox.
-    // There is the scenario where you edit a file and press fork. Then the server
-    // doesn't know about how you got to that dirty state.
-    const changedModules = state.editor.currentSandbox.modules.filter(
-      m => getSavedCode(m.code, m.savedCode) !== m.code
-    );
-    changedModules.forEach(m => {
-      // Update server with latest data
-      effects.live.sendCodeUpdate(
-        m.shortid,
-        getTextOperation(m.savedCode || '', m.code || '')
-      );
-    });
 
     state.editor.isForkingSandbox = false;
     return;
@@ -263,13 +252,13 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   await actions.editor.internal.initializeSandbox(sandbox);
 
+  // We only recover files at this point if we are not live. When live we recover them
+  // when the module_state is received
   if (
-    hasPermission(sandbox.authorization, 'write_code') &&
-    !state.live.isLive
+    !state.live.isLive &&
+    hasPermission(sandbox.authorization, 'write_code')
   ) {
     actions.files.internal.recoverFiles();
-  } else if (state.live.isLive) {
-    await effects.live.sendModuleStateSyncRequest();
   }
 
   effects.vscode.openModule(state.editor.currentModule);
@@ -348,13 +337,14 @@ export const onOperationApplied: Action<{
     return;
   }
 
-  actions.editor.internal.setStateModuleCode({
+  actions.editor.internal.updateModuleCode({
     module,
     code,
   });
 
   actions.editor.internal.updatePreviewCode();
 
+  // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {
     effects.vscode.syncModule(module);
   }
@@ -416,10 +406,11 @@ export const codeChanged: Action<{
     });
   }
 
-  actions.editor.internal.setStateModuleCode({
+  actions.editor.internal.updateModuleCode({
     module,
     code,
   });
+
   if (module.savedCode !== null && module.code === module.savedCode) {
     effects.vscode.syncModule(module);
   }
@@ -469,6 +460,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
             state.editor.modulesByPath,
             module
           );
+
           effects.moduleRecover.remove(sandbox.id, module);
         } else {
           // We might not have the module, as it was created by the server. In

@@ -30,7 +30,7 @@ export default {
     return confirm(message); // eslint-disable-line no-alert,no-restricted-globals
   },
   onUnload(cb) {
-    window.onbeforeunload = cb;
+    window.addEventListener('beforeunload', cb);
   },
   openWindow(url) {
     window.open(url, '_blank');

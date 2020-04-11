@@ -17,6 +17,7 @@ import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
 
+import { IModuleStateModule } from 'app/overmind/namespaces/live/types';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
 import clientsFactory from './clients';
 
@@ -39,6 +40,13 @@ type JoinChannelResponse = {
   liveUserId: string;
   reconnectToken: string;
   roomInfo: RoomInfo;
+  moduleState: {
+    [moduleId: string]: IModuleStateModule;
+  };
+};
+
+type JoinChannelErrorResponse = {
+  reason: 'room not found' | string;
 };
 
 declare global {
@@ -229,7 +237,10 @@ class Live {
     });
   }
 
-  joinChannel(roomId: string): Promise<JoinChannelResponse> {
+  joinChannel(
+    roomId: string,
+    onError: (reason: string) => void
+  ): Promise<JoinChannelResponse> {
     return new Promise((resolve, reject) => {
       this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
 
@@ -257,6 +268,7 @@ class Live {
         .join()
         .receive('ok', resp => {
           const result = camelizeKeys(resp) as JoinChannelResponse;
+          result.moduleState = resp.module_state; // Don't camelize this!!
 
           // We rewrite what our reconnect params are by adding the reconnect token.
           // This token makes sure that you can retain state between reconnects and restarts
@@ -269,7 +281,15 @@ class Live {
 
           resolve(result);
         })
-        .receive('error', resp => reject(camelizeKeys(resp)));
+        .receive('error', (resp: JoinChannelErrorResponse) => {
+          if (resp.reason === 'room not found') {
+            if (this.channel) {
+              this.channel.leave();
+            }
+            onError(resp.reason);
+          }
+          reject(camelizeKeys(resp));
+        });
     });
   }
 
@@ -515,6 +535,10 @@ class Live {
 
   resetClient(moduleShortid: string, revision: number) {
     this.clients.reset(moduleShortid, revision);
+  }
+
+  hasClient(moduleShortid: string) {
+    return this.clients.has(moduleShortid);
   }
 
   getAllClients() {

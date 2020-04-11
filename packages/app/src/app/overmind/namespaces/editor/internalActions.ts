@@ -42,9 +42,7 @@ export const initializeSandbox: AsyncAction<Sandbox> = async (
   sandbox
 ) => {
   await Promise.all([
-    actions.editor.internal
-      .initializeLiveSandbox(sandbox)
-      .then(() => effects.live.sendModuleStateSyncRequest()),
+    actions.editor.internal.initializeLiveSandbox(sandbox),
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
   ]);
@@ -163,7 +161,10 @@ export const saveCode: AsyncAction<{
     module.savedCode = savedCode;
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-    effects.moduleRecover.remove(sandbox.id, module);
+    if (savedCode === null) {
+      // If the savedCode is also module.code
+      effects.moduleRecover.remove(sandbox.id, module);
+    }
 
     if (cbID) {
       effects.vscode.callCallback(cbID);
@@ -320,7 +321,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   });
 };
 
-export const setStateModuleCode: Action<{
+export const updateModuleCode: Action<{
   module: Module;
   code: string;
 }> = ({ state, effects }, { module, code }) => {
@@ -343,16 +344,10 @@ export const setStateModuleCode: Action<{
     tab.dirty = false;
   }
 
-  // Save the code to localStorage so we can recover in case of a crash
-  effects.moduleRecover.save(
-    currentSandbox.id,
-    currentSandbox.version,
-    module,
-    code,
-    module.savedCode
-  );
-
   module.code = code;
+
+  // Save the code to localStorage so we can recover in case of a crash
+  effects.moduleRecover.save(currentSandbox.id, currentSandbox.version, module);
 };
 
 export const forkSandbox: AsyncAction<{

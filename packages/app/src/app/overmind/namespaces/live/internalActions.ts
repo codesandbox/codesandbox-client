@@ -7,6 +7,7 @@ import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { getSavedCode } from '../../utils/sandbox';
 import { IModuleStateModule } from './types';
 
@@ -61,13 +62,20 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
   state.live.isLoading = true;
 
   try {
-    const { roomInfo, liveUserId } = await effects.live.joinChannel(id);
+    const {
+      roomInfo,
+      liveUserId,
+      moduleState,
+    } = await effects.live.joinChannel(id, reason => {
+      if (reason === 'room not found') {
+        actions.refetchSandboxInfo();
+      }
+    });
 
     state.live.roomInfo = roomInfo;
     state.live.liveUserId = liveUserId;
 
     const sandboxId = roomInfo.sandboxId;
-
     let sandbox = state.editor.currentSandbox;
     if (!sandbox || sandbox.id !== sandboxId) {
       sandbox = await effects.api.getSandbox(sandboxId);
@@ -75,8 +83,9 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
       state.editor.currentId = sandboxId;
     }
 
-    effects.analytics.track('Live Session Joined', {});
+    actions.live.internal.initializeModuleState(moduleState);
     effects.live.listen(actions.live.liveMessageReceived);
+    actions.live.internal.sendUnsavedChanges({ sandbox, moduleState });
 
     state.live.isLive = true;
     state.live.error = null;
@@ -148,6 +157,8 @@ export const initializeModuleState: Action<IModuleState> = (
       }
     }
   });
+  // TODO: enable once we know exactly when we want to recover
+  // actions.files.internal.recoverFiles();
   actions.editor.internal.updatePreviewCode();
 };
 
@@ -183,4 +194,29 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
   });
 
   return selections;
+};
+
+/**
+ * This sends over all modules that are not synced with OT, and of which we have local changes.
+ * If there's a module that has OT changes from the module_state, we ignore them.
+ */
+export const sendUnsavedChanges: Action<{
+  sandbox: Sandbox;
+  moduleState: IModuleState;
+}> = ({ effects }, { sandbox, moduleState }) => {
+  // We now need to send all dirty files that came over from the last sandbox.
+  // There is the scenario where you edit a file and press fork. Then the server
+  // doesn't know about how you got to that dirty state.
+  const changedModules = sandbox.modules.filter(
+    m => getSavedCode(m.code, m.savedCode) !== m.code
+  );
+  changedModules.forEach(m => {
+    if (!moduleState[m.shortid]) {
+      // Update server with latest data
+      effects.live.sendCodeUpdate(
+        m.shortid,
+        getTextOperation(m.savedCode || '', m.code || '')
+      );
+    }
+  });
 };

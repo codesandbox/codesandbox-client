@@ -568,6 +568,40 @@ export class VSCodeEffect {
     }
   };
 
+  public async openDiff(sandboxId: string, module: Module, oldCode: string) {
+    if (!module.path) {
+      return;
+    }
+
+    const recoverPath = `/recover/${sandboxId}/recover-${module.path.replace(
+      /\//g,
+      ' '
+    )}`;
+    const filePath = `/sandbox${module.path}`;
+    const fileSystem = window.BrowserFS.BFSRequire('fs');
+
+    // We have to write a recover file to the filesystem, we save it behind
+    // the sandboxId
+    if (!fileSystem.existsSync(`/recover/${sandboxId}`)) {
+      fileSystem.mkdirSync(`/recover/${sandboxId}`);
+    }
+    // We write the recover file with the old code, as the new code is already applied
+    fileSystem.writeFileSync(recoverPath, oldCode);
+
+    // We open a conflict resolution editor for the files
+    this.editorApi.editorService.openEditor({
+      leftResource: this.monaco.Uri.from({
+        scheme: 'conflictResolution',
+        path: recoverPath,
+      }),
+      rightResource: this.monaco.Uri.file(filePath),
+      label: `Recover - ${module.path}`,
+      options: {
+        pinned: true,
+      },
+    });
+  }
+
   public setCorrections = (corrections: ModuleCorrection[]) => {
     const activeEditor = this.editorApi.getActiveCodeEditor();
     if (activeEditor) {
@@ -785,9 +819,18 @@ export class VSCodeEffect {
         )
       ),
       this.createFileSystem('InMemory', {}),
+      this.createFileSystem('InMemory', {}),
     ]);
 
-    const [root, sandbox, vscode, home, extensions, customTheme] = fileSystems;
+    const [
+      root,
+      sandbox,
+      vscode,
+      home,
+      extensions,
+      customTheme,
+      recover,
+    ] = fileSystems;
 
     const mfs = await this.createFileSystem('MountableFileSystem', {
       '/': root,
@@ -796,6 +839,7 @@ export class VSCodeEffect {
       '/home': home,
       '/extensions': extensions,
       '/extensions/custom-theme': customTheme,
+      '/recover': recover,
     });
 
     window.BrowserFS.initialize(mfs);
