@@ -147,6 +147,7 @@ export const saveCode: AsyncAction<{
 
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
+    module.isBinary = updatedModule.isBinary;
 
     const savedCode =
       updatedModule.code === module.code ? null : updatedModule.code;

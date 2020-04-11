@@ -1136,8 +1136,11 @@ export class VSCodeEffect {
 
     if (activeEditor && activeEditor.getModel()) {
       const modulePath = activeEditor.getModel().uri.path;
+      const currentModule = this.options.getCurrentModule();
 
-      activeEditor.updateOptions({ readOnly: this.readOnly });
+      activeEditor.updateOptions({
+        readOnly: this.readOnly || currentModule?.isBinary,
+      });
 
       if (!modulePath.startsWith('/sandbox')) {
         return;
@@ -1153,16 +1156,16 @@ export class VSCodeEffect {
         );
       }
 
-      const currentModule = this.options.getCurrentModule();
-
       if (
         currentModule &&
         modulePath === `/sandbox${currentModule.path}` &&
         currentModule.code !== undefined &&
-        activeEditor.getValue() !== currentModule.code
+        activeEditor.getValue() !== currentModule.code &&
+        !currentModule.isBinary
       ) {
         // This means that the file in Cerebral is dirty and has changed,
         // VSCode only gets saved contents. In this case we manually set the value correctly.
+
         this.modelsHandler.isApplyingOperation = true;
         const model = activeEditor.getModel();
         model.applyEdits([
