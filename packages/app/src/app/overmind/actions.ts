@@ -9,11 +9,7 @@ import { Action, AsyncAction } from '.';
 
 export const internal = internalActions;
 
-export const appUnmounted: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const appUnmounted: AsyncAction = async ({ effects, actions }) => {
   effects.connection.removeListener(actions.connectionChanged);
 };
 
