@@ -1,6 +1,7 @@
 import { Module } from '@codesandbox/common/lib/types';
 
-const getKey = (id, moduleShortid) => `recover:${id}:${moduleShortid}:code`;
+const getKey = (id: string, moduleShortid: string) =>
+  `recover:${id}:${moduleShortid}:code`;
 
 export type RecoverData = {
   code: string;
@@ -34,7 +35,7 @@ export default {
 
   remove(sandboxId: string, module: Module) {
     try {
-      const recoverData = this.get(sandboxId, module.id);
+      const recoverData = this.get(sandboxId, module.shortid);
       if (recoverData && recoverData.code === module.code) {
         localStorage.removeItem(getKey(sandboxId, module.shortid));
       }

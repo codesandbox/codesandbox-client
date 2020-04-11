@@ -163,7 +163,10 @@ export const saveCode: AsyncAction<{
     module.savedCode = savedCode;
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-    effects.moduleRecover.remove(sandbox.id, module);
+    if (savedCode === null) {
+      // If the savedCode is also module.code
+      effects.moduleRecover.remove(sandbox.id, module);
+    }
 
     if (cbID) {
       effects.vscode.callCallback(cbID);
