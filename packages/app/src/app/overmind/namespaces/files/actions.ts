@@ -691,6 +691,7 @@ export const moduleCreated: AsyncAction<{
     actions.editor.internal.setCurrentModule(module);
 
     try {
+      const savedCode = module.code;
       const updatedModule = await effects.api.createModule(sandbox.id, module);
 
       module.id = updatedModule.id;
@@ -709,7 +710,7 @@ export const moduleCreated: AsyncAction<{
         // Update server with latest data
         effects.live.sendCodeUpdate(
           module.shortid,
-          getTextOperation('', module.code)
+          getTextOperation(savedCode || '', module.code)
         );
       }
     } catch (error) {
