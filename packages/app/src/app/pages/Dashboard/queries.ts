@@ -148,7 +148,7 @@ export const RENAME_FOLDER_MUTATION = gql`
 export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
   mutation AddToCollection(
     $collectionPath: String!
-    $sandboxIds: [ID]!
+    $sandboxIds: [ID!]!
     $teamId: ID
   ) {
     addToCollection(
@@ -165,7 +165,7 @@ export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
 `;
 
 export const DELETE_SANDBOXES_MUTATION = gql`
-  mutation DeleteSandboxes($sandboxIds: [ID]!) {
+  mutation DeleteSandboxes($sandboxIds: [ID!]!) {
     deleteSandboxes(sandboxIds: $sandboxIds) {
       ...Sandbox
     }
@@ -174,7 +174,7 @@ export const DELETE_SANDBOXES_MUTATION = gql`
 `;
 
 export const SET_SANDBOXES_PRIVACY_MUTATION = gql`
-  mutation SetSandboxesPrivacy($sandboxIds: [ID]!, $privacy: Int!) {
+  mutation SetSandboxesPrivacy($sandboxIds: [ID!]!, $privacy: Int!) {
     setSandboxesPrivacy(sandboxIds: $sandboxIds, privacy: $privacy) {
       ...Sandbox
     }
@@ -192,12 +192,11 @@ export const RENAME_SANDBOX_MUTATION = gql`
 `;
 
 export const PERMANENTLY_DELETE_SANDBOXES_MUTATION = gql`
-  mutation PermanentlyDeleteSandboxes($sandboxIds: [ID]!) {
+  mutation PermanentlyDeleteSandboxes($sandboxIds: [ID!]!) {
     permanentlyDeleteSandboxes(sandboxIds: $sandboxIds) {
-      ...Sandbox
+      id
     }
   }
-  ${SANDBOX_FRAGMENT}
 `;
 
 export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
@@ -311,16 +310,14 @@ export function undeleteSandboxes(selectedSandboxes) {
   });
 }
 
-export function permanentlyDeleteSandboxes(selectedSandboxes) {
-  client.mutate<
+export function permanentlyDeleteSandboxes(selectedSandboxes: string[]) {
+  return client.mutate<
     PermanentlyDeleteSandboxesMutation,
     PermanentlyDeleteSandboxesMutationVariables
   >({
     mutation: PERMANENTLY_DELETE_SANDBOXES_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS
-        ? selectedSandboxes.toJS()
-        : selectedSandboxes,
+      sandboxIds: selectedSandboxes,
     },
     update: cache => {
       try {
@@ -335,12 +332,9 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
           ...oldDeleteCache,
           me: {
             ...(oldDeleteCache && oldDeleteCache.me ? oldDeleteCache.me : null),
-            sandboxes: (
-              (oldDeleteCache &&
-                oldDeleteCache.me &&
-                oldDeleteCache.me.sandboxes) ||
-              ([] as any)
-            ).sandboxes.filter(x => !selectedSandboxes.includes(x.id)),
+            sandboxes: (oldDeleteCache?.me?.sandboxes || []).filter(
+              x => !selectedSandboxes.includes(x.id)
+            ),
           },
         };
 
@@ -417,13 +411,14 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
   });
 }
 
-export function setSandboxesPrivacy(selectedSandboxes, privacy) {
+export function setSandboxesPrivacy(
+  selectedSandboxes: string[],
+  privacy: 0 | 1 | 2
+) {
   client.mutate({
     mutation: SET_SANDBOXES_PRIVACY_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS
-        ? selectedSandboxes.toJS()
-        : selectedSandboxes,
+      sandboxIds: selectedSandboxes,
       privacy,
     },
   });

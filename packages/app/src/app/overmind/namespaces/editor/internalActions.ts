@@ -64,12 +64,31 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
       return;
     }
 
-    await actions.live.internal.disconnect();
+    if (
+      // If the joinSource is /live/ and the user is only a viewer,
+      // we won't get the roomId and the user will disconnect automatically,
+      // we want to prevent this by only re-initializing the live session on joinSource === 'sandbox'. Because
+      // for joinSource === 'sandbox' we know for sure that the user will get a roomId if they have permissions
+      // to join
+      state.live.joinSource === 'sandbox'
+    ) {
+      actions.live.internal.disconnect();
+    }
   }
 
   if (sandbox.roomId) {
     await actions.live.internal.initialize(sandbox.roomId);
   }
+};
+
+export const updateSelectionsOfModule: AsyncAction<{ module: Module }> = async (
+  { actions, effects },
+  { module }
+) => {
+  effects.vscode.updateUserSelections(
+    module,
+    actions.live.internal.getSelectionsForModule(module)
+  );
 };
 
 export const setModuleSavedCode: Action<{
@@ -339,8 +358,9 @@ export const forkSandbox: AsyncAction<{
   { sandboxId: id, body, openInNewWindow = false }
 ) => {
   const sandbox = state.editor.currentSandbox;
+  const currentSandboxId = state.editor.currentId;
 
-  if (!sandbox) {
+  if (!sandbox || !currentSandboxId) {
     return;
   }
 
@@ -376,6 +396,7 @@ export const forkSandbox: AsyncAction<{
 
         return {
           ...module,
+          savedCode: foundEquivalentModule.savedCode,
           code: foundEquivalentModule.code,
         };
       }),
@@ -385,7 +406,7 @@ export const forkSandbox: AsyncAction<{
     state.workspace.project.description = forkedSandbox.description || '';
     state.workspace.project.alias = forkedSandbox.alias || '';
 
-    Object.assign(state.editor.sandboxes[sandbox.id], forkedSandbox);
+    Object.assign(state.editor.sandboxes[currentSandboxId]!, forkedSandbox);
     state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
       forkedSandbox
     );

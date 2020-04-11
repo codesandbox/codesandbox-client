@@ -5,7 +5,7 @@ export const CommentsIcon = props => (
     <g fillRule="evenodd" clipRule="evenodd">
       <path fill="currentColor" d="M10 14a6 6 0 116 6h-6z" />
       <path
-        fill="#343434"
+        fill="currentColor"
         d="M19.697 19.945a5.265 5.265 0 005.04 3.74H30V18.42a5.263 5.263 0 00-7.021-4.962 6.996 6.996 0 01-3.281 6.486z"
       />
     </g>

@@ -1,7 +1,7 @@
 import { Module } from '@codesandbox/common/lib/types';
 import { fromPairs, sortBy, toPairs } from 'lodash-es';
 
-export function sortObjectByKeys(object) {
+export function sortObjectByKeys(object: object) {
   return fromPairs(sortBy(toPairs(object)));
 }
 
@@ -25,7 +25,11 @@ export function createOptimisticModule(overrides: Partial<Module>) {
   };
 }
 
-export function lineAndColumnToIndex(lines, lineNumber, column) {
+export function lineAndColumnToIndex(
+  lines: string[],
+  lineNumber: number,
+  column: number
+) {
   let currentLine = 0;
   let index = 0;
 
@@ -40,7 +44,7 @@ export function lineAndColumnToIndex(lines, lineNumber, column) {
   return index;
 }
 
-export function indexToLineAndColumn(lines, index) {
+export function indexToLineAndColumn(lines: string[], index: number) {
   let offset = 0;
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];

@@ -45,13 +45,6 @@ export const onInitialize: OnInitialize = async (
     },
     () => (effects.jwt.get() ? effects.live.getSocket() : null)
   );
-  try {
-    effects.fakeGql.initialize({
-      endpoint: `https://slw7f.sse.codesandbox.io`,
-    });
-  } catch (e) {
-    console.error('Could not get initialize fakegql');
-  }
 
   effects.notifications.initialize({
     provideSocket() {
@@ -97,11 +90,16 @@ export const onInitialize: OnInitialize = async (
     getCurrentUser: () => state.user,
     onOperationApplied: actions.editor.onOperationApplied,
     onCodeChange: actions.editor.codeChanged,
-    onSelectionChange: actions.live.onSelectionChanged,
+    onSelectionChanged: selection => {
+      actions.editor.onSelectionChanged(selection);
+      actions.live.onSelectionChanged(selection);
+    },
+    onViewRangeChanged: actions.live.onViewRangeChanged,
+    onCommentClick: actions.comments.onCommentClick,
     reaction: overmindInstance.reaction,
-    getState: path =>
+    getState: (path: string) =>
       path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,
-    getSignal: path =>
+    getSignal: (path: string) =>
       path.split('.').reduce((aggr, key) => aggr[key], actions),
   });
 

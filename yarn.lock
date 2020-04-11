@@ -3225,14 +3225,7 @@
   resolved "https://registry.yarnpkg.com/@reach/auto-id/-/auto-id-0.7.1.tgz#68ff4345b12c5ead6d0374a574480090b18a1b31"
   integrity sha512-7bE/tCFc6KBMKkSfquJFpeZic+OHe+RAE2OHCN66felnleVwm6hr128d2UAp5vb1H12F6fm1kCUV9s3xNqSwMQ==
 
-"@reach/auto-id@^0.8.5":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@reach/auto-id/-/auto-id-0.8.5.tgz#940500d4c93624852efa5ecbed29c5d7015eb6e9"
-  integrity sha512-FmyoQ5Mvw+WXLd3JOlDmHDQKqhTiZ+BwtEq9HW6pgzYMztq1wr5itv4lrSDqOYa/hJfNrkBC8iCtaIKcykuYnQ==
-  dependencies:
-    tslib "^1.10.0"
-
-"@reach/auto-id@^0.8.6":
+"@reach/auto-id@^0.8.5", "@reach/auto-id@^0.8.6":
   version "0.8.6"
   resolved "https://registry.yarnpkg.com/@reach/auto-id/-/auto-id-0.8.6.tgz#34ecd120186960e3980dbc34cdace8e65405ea4e"
   integrity sha512-lohwxy1uqj74p05WJDxMpo5paAQoM0r6MQYuVxR4U6piuGG67ggEPNVG7X4lQhi2jbeB6wvaPJiBVgikZJ/DIA==
@@ -3277,14 +3270,7 @@
     tabbable "^4.0.0"
     tslib "^1.10.0"
 
-"@reach/portal@^0.8.5":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@reach/portal/-/portal-0.8.5.tgz#586e8686e9ba34368b1df3fc9a84c3ef923dd2d3"
-  integrity sha512-YRQgItjxw6DznndN4T3YS6Ikuq+FPZg8fekXeM1feuQSnMlAtEAyYVaMhpAKSD65+Yc9Zu0Utfxp5ji+wO+FLg==
-  dependencies:
-    tslib "^1.10.0"
-
-"@reach/portal@^0.8.6":
+"@reach/portal@^0.8.5", "@reach/portal@^0.8.6":
   version "0.8.6"
   resolved "https://registry.yarnpkg.com/@reach/portal/-/portal-0.8.6.tgz#b96b92dca36955f7b3ef20617d2c35cf58b58c48"
   integrity sha512-tmBpHe/3juLsXtsMUUQrHOz3rv5reILPZpt5ISQj5ucdRQ1cgSeWaGM2uDme5vKNXWz3/xTakkEExZyOhsM6zQ==
@@ -3292,16 +3278,7 @@
     "@reach/utils" "^0.8.6"
     tslib "^1.10.0"
 
-"@reach/rect@^0.8.2":
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/@reach/rect/-/rect-0.8.2.tgz#4e51ef1b734f26a42c3cdfa8d812a11b8017d3ef"
-  integrity sha512-6vrGm/9Cjw5ygbzccJdmrERqLxmaR2dATzkOvmsnTuR54BH/UgUjUYMxy/pVCmHZacNMTZRqOJwAyJQBOdCD4w==
-  dependencies:
-    "@reach/observe-rect" "^1.0.5"
-    prop-types "^15.7.2"
-    tslib "^1.10.0"
-
-"@reach/rect@^0.8.6":
+"@reach/rect@^0.8.2", "@reach/rect@^0.8.6":
   version "0.8.6"
   resolved "https://registry.yarnpkg.com/@reach/rect/-/rect-0.8.6.tgz#8f5b6c7fd2cf13a03cfda001fef0a5beb21fe1a2"
   integrity sha512-1CriCEshJ1VUOw05bG9u1leHBydP+Z9Vk5adPw5v+bLHz1QW1HB/0UmZAbHluY6a5XLN2KqULKc9Fk7NT1jZKQ==
@@ -3334,15 +3311,7 @@
     prop-types "^15.7.2"
     tslib "^1.10.0"
 
-"@reach/utils@^0.8.5":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@reach/utils/-/utils-0.8.5.tgz#6675d6f81054c8dce1b9d535280b0e3c5174fe7d"
-  integrity sha512-nc84exIqBa+EohJPBFjePQP88dBAP4l+tChxwWszzZ+R6tTtSgOg40WyQ5EjPYJFbltnbZIbASHefcEBrFxqng==
-  dependencies:
-    tslib "^1.10.0"
-    warning "^4.0.3"
-
-"@reach/utils@^0.8.6":
+"@reach/utils@^0.8.5", "@reach/utils@^0.8.6":
   version "0.8.6"
   resolved "https://registry.yarnpkg.com/@reach/utils/-/utils-0.8.6.tgz#41c7ac8b7699d0e663bda773398ae1c459679ee3"
   integrity sha512-ec9Ea99LQhlBoMKsJ7n2GYD3u3a0IHDLcfbA50C6aDKnSFvVYSPkF2Iav3fQ07VGfe+FuNGi0iYi1qkE8uSmDw==
@@ -8096,14 +8065,6 @@ chain-function@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/chain-function/-/chain-function-1.0.0.tgz#0d4ab37e7e18ead0bdc47b920764118ce58733dc"
 
-chalk@*, chalk@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/chalk/-/chalk-3.0.0.tgz#3f73c2bf526591f574cc492c51e2456349f844e4"
-  integrity sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg==
-  dependencies:
-    ansi-styles "^4.1.0"
-    supports-color "^7.1.0"
-
 chalk@1.1.3, chalk@^1.0.0, chalk@^1.1.0, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-1.1.3.tgz#a8115c55e4a702fe4d150abd3872822a7e09fc98"
@@ -8131,6 +8092,14 @@ chalk@2.4.2, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.0, chalk@^2.3.
     ansi-styles "^3.2.1"
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
+
+chalk@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-3.0.0.tgz#3f73c2bf526591f574cc492c51e2456349f844e4"
+  integrity sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg==
+  dependencies:
+    ansi-styles "^4.1.0"
+    supports-color "^7.1.0"
 
 change-case@3.1.0, change-case@^3.0.1:
   version "3.1.0"
@@ -8515,9 +8484,9 @@ clone@^2.1.1:
   integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
 
 cnbuilder@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/cnbuilder/-/cnbuilder-1.1.7.tgz#04ef08d278efd69bc65a95b087328455a85a2eef"
-  integrity sha512-8D9dpabOVOh7GX/qPZ60sJpqxHaiLqSDsuZOYH1TvoNkgMrO7BJHCbNepHHoglSdU//M2sjLHaL9Vu0qibSV2A==
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/cnbuilder/-/cnbuilder-1.3.2.tgz#f8ade3986543e6736fc2c8a304d74a244c36d541"
+  integrity sha512-4WygslpZg+W4uVGF4dzN/Vbz0q4arACdMfgPJlx2EZA6+/OhfRT7KFIX6MuN3P+0MUwx8R7sNe+xOKINatwJrg==
 
 co@^4.6.0:
   version "4.6.0"
@@ -10582,15 +10551,7 @@ dom-converter@^0.2:
   dependencies:
     "@babel/runtime" "^7.1.2"
 
-dom-serializer@0:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/dom-serializer/-/dom-serializer-0.2.1.tgz#13650c850daffea35d8b626a4cfc4d3a17643fdb"
-  integrity sha512-sK3ujri04WyjwQXVoK4PU3y8ula1stq10GJZpqHIUgoGZdsGzAGu65BnU3d08aTVSvO7mGPZUc0wTEDL+qGE0Q==
-  dependencies:
-    domelementtype "^2.0.1"
-    entities "^2.0.0"
-
-dom-serializer@^0.2.1:
+dom-serializer@0, dom-serializer@^0.2.1:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/dom-serializer/-/dom-serializer-0.2.2.tgz#1afb81f533717175d478655debc5e332d9f9bb51"
   integrity sha512-2/xPb3ORsQ42nHYiSunXkDjPLBaEj/xTwUO4B7XCZQTRk7EBtTOPaygh10YAAh2OI1Qrp6NWfpAhzswj0ydt9g==
@@ -13576,10 +13537,6 @@ genfun@^5.0.0:
   resolved "https://registry.yarnpkg.com/genfun/-/genfun-5.0.0.tgz#9dd9710a06900a5c4a5bf57aca5da4e52fe76537"
   integrity sha512-KGDOARWVga7+rnB3z9Sd2Letx515owfk0hSxHGuqjANb1M+x2bGZGqHLiozPsYMdM2OubeMni/Hpwmjq6qIUhA==
 
-geniejs@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/geniejs/-/geniejs-0.5.1.tgz#ed346b5d263d2ce9da94b30d476fbc72b2206dbc"
-
 get-caller-file@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-1.0.3.tgz#f978fa4c90d1dfe7ff2d6beda2a515e713bdcf4a"
@@ -14624,7 +14581,7 @@ gulp-rev@^7.1.2:
     through2 "^2.0.0"
     vinyl-file "^1.1.0"
 
-gulp-util@*, gulp-util@^3.0.0, gulp-util@^3.0.8:
+gulp-util@^3.0.0, gulp-util@^3.0.8:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.8.tgz#0054e1e744502e27c04c187c3ecc505dd54bbb4f"
   dependencies:
@@ -24124,7 +24081,7 @@ react-dom@^16.2.0, react-dom@^16.8.3, react-dom@^16.9.0:
     prop-types "^15.6.2"
     scheduler "^0.18.0"
 
-react-draggable@^3.0.5, react-draggable@^3.3.2:
+react-draggable@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-3.3.2.tgz#966ef1d90f2387af3c2d8bd3516f601ea42ca359"
   integrity sha512-oaz8a6enjbPtx5qb0oDWxtDNuybOylvto1QLydsXgKmwT7e3GXC2eMVDwEMIUYJIFqVG72XpOv673UuuAq6LhA==
@@ -24258,7 +24215,7 @@ react-input-autosize@^2.2.1, react-input-autosize@^2.2.2:
   dependencies:
     prop-types "^15.5.8"
 
-react-inspector@^2.2.0, react-inspector@^2.2.2:
+react-inspector@^2.2.2:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/react-inspector/-/react-inspector-2.3.0.tgz#fc9c1d38ab687fc0d190dcaf133ae40158968fc8"
   dependencies:
@@ -24983,11 +24940,6 @@ realpath-native@^1.1.0:
   integrity sha512-wlgPA6cCIIg9gKz0fgAPjnzh4yR/LnXovwuo9hvyGvx3h8nX4+/iLZplfUWasXpqD8BdnGnP5njOFjkUwPzvjA==
   dependencies:
     util.promisify "^1.0.0"
-
-rebound@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/rebound/-/rebound-0.1.0.tgz#0638c61a93666bb515a58a03e1cfb34021e88b72"
-  integrity sha1-BjjGGpNma7UVpYoD4c+zQCHoi3I=
 
 recast@^0.14.7:
   version "0.14.7"
@@ -26090,13 +26042,6 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   integrity sha1-6Eg5bwV9Ij8kOGkkYY4laUFh7Ec=
   dependencies:
     aproba "^1.1.1"
-
-run-sequence@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/run-sequence/-/run-sequence-1.2.2.tgz#5095a0bebe98733b0140bd08dd80ec030ddacdeb"
-  dependencies:
-    chalk "*"
-    gulp-util "*"
 
 run-series@^1.1.3:
   version "1.1.8"

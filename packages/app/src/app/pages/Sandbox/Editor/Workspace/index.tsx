@@ -1,6 +1,6 @@
 import {
-  REDESIGNED_SIDEBAR,
   COMMENTS,
+  REDESIGNED_SIDEBAR,
 } from '@codesandbox/common/lib/utils/feature-flags';
 import VERSION from '@codesandbox/common/lib/version';
 import { ThemeProvider } from '@codesandbox/components';

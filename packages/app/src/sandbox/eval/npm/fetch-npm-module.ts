@@ -178,22 +178,38 @@ const getFetchProtocol = (depVersion: string, useFallback = false) => {
 // Strips the version of a path, eg. test/1.3.0 -> test
 const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 
+/*
+ * Resolve name and version from npm aliases
+ * e.g. "my-react": "npm:react@16.0.0
+ */
+const resolveNPMAlias = (name: string, version: string): string[] => {
+  const IS_ALIAS = /^npm:/;
+
+  if (!version.match(IS_ALIAS)) {
+    return [name, version];
+  }
+
+  const parts = version.match(/^npm:(.+)@(.+)/);
+  return [parts[1], parts[2]];
+};
+
 async function getMeta(
   name: string,
   packageJSONPath: string | null,
   version: string,
   useFallback = false
 ) {
-  const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
-  const id = `${packageJSONPath || name}@${version}`;
+  const [depName, depVersion] = resolveNPMAlias(name, version);
+  const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
+  const id = `${packageJSONPath || depName}@${depVersion}`;
   if (metas[id]) {
     return metas[id];
   }
 
-  const protocol = getFetchProtocol(version, useFallback);
+  const protocol = getFetchProtocol(depVersion, useFallback);
 
   metas[id] = protocol
-    .meta(nameWithoutAlias, version)
+    .meta(nameWithoutAlias, depVersion)
     .then(fetchWithRetries)
     .then(x => x.json())
     .catch(e => {
@@ -206,10 +222,11 @@ async function getMeta(
 }
 
 export async function downloadDependency(
-  depName: string,
-  depVersion: string,
+  name: string,
+  version: string,
   path: string
 ): Promise<Module> {
+  const [depName, depVersion] = resolveNPMAlias(name, version);
   const id = depName + depVersion + path;
   if (packages[id]) {
     return packages[id];

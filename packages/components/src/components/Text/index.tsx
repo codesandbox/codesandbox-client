@@ -21,6 +21,7 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   block?: boolean;
   maxWidth?: number | string;
   variant?: 'body' | 'muted' | 'danger';
+  dateTime?: string;
 }
 
 export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
@@ -29,9 +30,9 @@ export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
       fontSize: size || 'inherit', // from theme.fontSizes
       textAlign: align || 'left',
       fontWeight: weight || null, // from theme.fontWeights
-      display: block ? 'block' : 'inline',
       color: variants[variant],
       maxWidth,
       ...(maxWidth ? overflowStyles : {}),
+      display: block || maxWidth ? 'block' : 'inline',
     })
 );

@@ -17,6 +17,10 @@ export const AddCollaboratorForm = () => {
     Authorization.WriteCode
   );
 
+  const onAuthorizationChanged = (value: string) => {
+    setAuthorization(value as Authorization);
+  };
+
   const onSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
@@ -72,11 +76,11 @@ export const AddCollaboratorForm = () => {
 
         <PermissionSelect
           value={authorization}
-          onChange={setAuthorization}
+          onChange={onAuthorizationChanged}
           css={{
             position: 'absolute',
             top: 0,
-            right: 0,
+            right: 8,
           }}
         />
       </motion.div>

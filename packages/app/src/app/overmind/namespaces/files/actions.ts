@@ -320,7 +320,7 @@ export const directoryMovedToDirectory: AsyncAction<{
 );
 
 export const directoryDeleted: AsyncAction<{
-  directoryShortid;
+  directoryShortid: string;
 }> = withOwnedSandbox(
   async ({ state, actions, effects }, { directoryShortid }) => {
     const sandbox = state.editor.currentSandbox;

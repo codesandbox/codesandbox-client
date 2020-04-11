@@ -18,7 +18,7 @@ export const Placeholder = () => (
 
 export const MaxLength = () => (
   <Wrapper>
-    <Textarea maxLength={10} label="Your full name" placeholder="John Doe" />
+    <Textarea maxLength={10} placeholder="John Doe" />
   </Wrapper>
 );
 
@@ -26,7 +26,6 @@ export const onChange = () => (
   <Wrapper>
     <Textarea
       maxLength={10}
-      label="Your full name"
       placeholder="John Doe"
       onChange={action('textarea change')}
     />
@@ -38,3 +37,33 @@ export const autoResize = () => (
     <Textarea autosize placeholder="Write a lot of lines here" />
   </Wrapper>
 );
+
+export const autoResizeWithInitialHeight = () => (
+  <Wrapper>
+    <Textarea
+      autosize
+      placeholder="Write a lot of lines here"
+      style={{ minHeight: 32 }}
+    />
+  </Wrapper>
+);
+
+export const Controlled = () => {
+  const [value, setValue] = React.useState('');
+  return (
+    <>
+      <Wrapper>
+        <Textarea
+          autosize
+          maxLength={20}
+          value={value}
+          onChange={event => setValue(event.target.value)}
+          placeholder="Write a lot of lines here"
+        />
+      </Wrapper>
+      <button type="button" onClick={() => setValue('')}>
+        clear value
+      </button>
+    </>
+  );
+};

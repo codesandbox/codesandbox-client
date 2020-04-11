@@ -8,16 +8,16 @@ description:
 ## What are secrets?
 
 Secrets are used to hide sensitive information in your application that you
-don't want the world to see, like passwords and API keys. They're implemented in CodeSandbox using
-environment variables.
+don't want the world to see, like passwords and API keys. They're implemented in
+CodeSandbox using environment variables.
 
-Secrets are not be transferred between forks and **can only be used in
-container sandboxes**.
+Secrets are not be transferred between forks and **can only be used in container
+sandboxes**.
 
 ## Adding secrets
 
-You can add secrets in a container sandbox from the Server Control Panel. Before adding any, it
-should look like this:
+You can add secrets in a container sandbox from the Server Control Panel. Before
+adding any, it should look like this:
 
 ![No Secrets](./images/secrets-1.png)
 
@@ -32,9 +32,10 @@ restarted, and you can see the list of all your secrets above the form.
 
 ![Secrets](./images/secrets-3.png)
 
-Secrets are environment variables, meaning they are defined on
-`process.env`. In the example above, we can read the API key from
-`process.env.GOOGLE_MAPS_API_KEY`. See the example below, showing how to access secrets in your server-side code.
+Secrets are environment variables, meaning they are defined on `process.env`. In
+the example above, we can read the API key from
+`process.env.GOOGLE_MAPS_API_KEY`. See the example below, showing how to access
+secrets in your server-side code.
 
 <iframe
      src="https://codesandbox.io/embed/broken-resonance-35lyl?codemirror=1&fontsize=14&hidenavigation=1&theme=dark"
@@ -46,12 +47,12 @@ Secrets are environment variables, meaning they are defined on
 
 ## Editing secrets
 
-You can edit and remove existing secrets. Click on the pencil to edit the name and value of your secret:
+You can edit and remove existing secrets. Click on the pencil to edit the name
+and value of your secret:
 
 ![Icons](./images/secrets-4.png)
 
-Once saved, this will take effect automatically, restarting your sandbox to
-make sure we use the new value.
+Once saved, this will take effect automatically, restarting your sandbox to make
+sure we use the new value.
 
-To delete you can click on the `x` icon. This will
-also restart your sandbox.
+To delete you can click on the `x` icon. This will also restart your sandbox.

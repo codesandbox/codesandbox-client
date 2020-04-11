@@ -4,7 +4,6 @@ import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
-import * as featureFlags from '@codesandbox/common/lib/utils/feature-flags';
 
 import {
   EmbedIcon,
@@ -12,8 +11,10 @@ import {
   LikeIcon,
   PreferenceIcon,
   ReloadIcon,
+  MoreMenuIcon,
 } from './icons';
 import { Collaborators } from './Collaborators';
+import { CollaboratorHeads } from './CollaboratorHeads';
 
 const TooltipButton = ({ tooltip, ...props }) => (
   <Tooltip content={tooltip}>
@@ -32,6 +33,7 @@ export const Actions = () => {
       hasLogIn,
       updateStatus,
       user,
+      live: { isLive },
       editor: {
         currentSandbox: {
           id,
@@ -71,7 +73,7 @@ export const Actions = () => {
   return (
     <Stack
       align="center"
-      gap={1}
+      gap={2}
       css={{ '> button': { width: 'auto' } }}
       style={{
         opacity: fadeIn ? 1 : 0,
@@ -98,26 +100,32 @@ export const Actions = () => {
         </TooltipButton>
       )}
 
-      {hasLogIn ? (
-        <TooltipButton
-          tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
-          variant="link"
-          onClick={() => likeSandboxToggled(id)}
-        >
-          <LikeIcon
-            css={css({
-              height: 3,
-              marginRight: 1,
-              color: userLiked ? 'reds.500' : 'inherit',
-            })}
-          />{' '}
-          <span>{likeCount}</span>
-        </TooltipButton>
+      {user?.experiments.collaborator && isLive ? (
+        <CollaboratorHeads />
       ) : (
-        <Stack gap={1} paddingX={2} align="center">
-          <LikeIcon css={css({ height: 3 })} />
-          <span>{likeCount}</span>
-        </Stack>
+        <>
+          {hasLogIn ? (
+            <TooltipButton
+              tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
+              variant="link"
+              onClick={() => likeSandboxToggled(id)}
+            >
+              <LikeIcon
+                css={css({
+                  height: 3,
+                  marginRight: 1,
+                  color: userLiked ? 'reds.500' : 'inherit',
+                })}
+              />{' '}
+              <span>{likeCount}</span>
+            </TooltipButton>
+          ) : (
+            <Stack gap={1} paddingX={2} align="center">
+              <LikeIcon css={css({ height: 3 })} />
+              <span>{likeCount}</span>
+            </Stack>
+          )}
+        </>
       )}
 
       {user?.curatorAt && (
@@ -130,12 +138,15 @@ export const Actions = () => {
         </Button>
       )}
 
-      {featureFlags.ACCESS_SHEET && (
+      {user?.experiments.collaborator && (
         <>
           {author ? (
             <Collaborators
               renderButton={props => (
-                <Button variant="primary" {...props}>
+                <Button
+                  variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
+                  {...props}
+                >
                   <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Share
                 </Button>
               )}
@@ -151,7 +162,7 @@ export const Actions = () => {
         </>
       )}
 
-      {!featureFlags.ACCESS_SHEET && (
+      {!user?.experiments.collaborator && (
         <Button
           variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
           onClick={() => modalOpened({ modal: 'share' })}
@@ -175,12 +186,24 @@ export const Actions = () => {
       </Button>
       {hasLogIn ? (
         <UserMenu>
-          <Avatar
-            user={{ ...user, subscriptionSince: null }}
-            css={css({
-              size: '26px', // match button size next to it
-            })}
-          />
+          {user?.experiments.collaborator ? (
+            <Button
+              variant="secondary"
+              css={css({
+                width: 26,
+                height: 26, // match button size next to it
+              })}
+            >
+              <MoreMenuIcon />
+            </Button>
+          ) : (
+            <Avatar
+              user={{ ...user, subscriptionSince: null }}
+              css={css({
+                size: '26px', // match button size next to it
+              })}
+            />
+          )}
         </UserMenu>
       ) : (
         <Button variant="primary" onClick={handleSignIn}>

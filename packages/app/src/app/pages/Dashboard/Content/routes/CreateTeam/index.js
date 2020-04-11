@@ -3,7 +3,7 @@ import { Mutation } from 'react-apollo';
 
 import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import track from '@codesandbox/common/lib/utils/analytics';
+import track, { setGroup } from '@codesandbox/common/lib/utils/analytics';
 import history from 'app/utils/history';
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -88,6 +88,9 @@ export default class CreateTeam extends React.PureComponent {
                   });
                 },
               }).then(({ data }) => {
+                setGroup('teamName', data.createTeam.name);
+                setGroup('teamId', data.createTeam.id);
+
                 notificationState.addNotification({
                   message: `Succesfully created team '${data.createTeam.name}'`,
                   status: NotificationStatus.SUCCESS,
@@ -110,19 +113,19 @@ export default class CreateTeam extends React.PureComponent {
                     <QuestionHeader>
                       What if I{"'"}m a{' '}
                       <a target="_blank" href="/patron">
-                        <span>Patron</span>
+                        <span>Pro</span>
                       </a>
                       ?
                     </QuestionHeader>
 
                     <Description>
-                      You can benefit from all Patron features. This means that
-                      you can create unlimited private and unlisted sandboxes as
-                      a Patron in your team.
+                      You can benefit from all Pro features. This means that you
+                      can create unlimited private and unlisted sandboxes as a
+                      Pro in your team.
                       <br />
                       <br />
                       When we release Team Pro it will be required to have a Pro
-                      subscription to get the Patron functionality.
+                      subscription to get the Pro functionality.
                     </Description>
                   </PatronInfo>
 

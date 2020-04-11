@@ -70,7 +70,9 @@ export const uploadFiles: AsyncAction<
     directories: any;
   }
 > = async ({ effects }, { files, directoryShortid }) => {
-  const parsedFiles = {};
+  const parsedFiles: {
+    [key: string]: { isBinary: boolean; content: string };
+  } = {};
   // We first create chunks so we don't overload the server with 100 multiple
   // upload requests
   const filePaths = Object.keys(files);

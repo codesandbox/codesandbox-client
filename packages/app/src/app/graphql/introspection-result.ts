@@ -25,6 +25,15 @@ const result: IntrospectionResultData = {
           },
         ],
       },
+      {
+        kind: 'UNION',
+        name: 'ReferenceMetadata',
+        possibleTypes: [
+          {
+            name: 'CodeReferenceMetadata',
+          },
+        ],
+      },
     ],
   },
 };

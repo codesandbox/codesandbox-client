@@ -15,6 +15,9 @@ export const buildCrashReport = ({
   );
   const { name, version, os } = browser();
 
+  // Only put commit sha inside the body, GitHub can parse this back to a link to commit.
+  const commitSha = VERSION.split('-')[2];
+
   url.searchParams.set(
     `body`,
     `<h1>💥 Crash Report</h1>
@@ -32,7 +35,7 @@ export const buildCrashReport = ({
 
   | Browser |  Version  | Operating System | CodeSandbox Version |
   | ------- | --------- | ---------------- | ------------------- |
-  | ${name} | ${version} | ${os}           | ${VERSION}          |
+  | ${name} | ${version} | ${os}           | ${commitSha}          |
 
   **Route:**
   ${window.location.href}

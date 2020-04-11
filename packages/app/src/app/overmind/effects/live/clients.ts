@@ -1,17 +1,24 @@
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import {
+  logBreadcrumb,
+  captureException,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Blocker, blocker } from 'app/utils/blocker';
+import { TextOperation } from 'ot';
 
 import { OTClient, synchronized_ } from './ot/client';
 
 export type SendOperation = (
   moduleShortid: string,
   revision: number,
-  operation: any
+  operation: TextOperation
 ) => Promise<unknown>;
 
-export type ApplyOperation = (moduleShortid: string, operation: any) => void;
+export type ApplyOperation = (
+  moduleShortid: string,
+  operation: TextOperation
+) => void;
 
-class CodeSandboxOTClient extends OTClient {
+export class CodeSandboxOTClient extends OTClient {
   /*
     We need to be able to wait for a client to go intro synchronized
     state. The reason is that we want to send a "save" event when the
@@ -19,22 +26,31 @@ class CodeSandboxOTClient extends OTClient {
   */
   public awaitSynchronized: Blocker<void> | null;
   moduleShortid: string;
-  onSendOperation: (revision: number, operation: any) => Promise<unknown>;
-  onApplyOperation: (operation: any) => void;
+  onSendOperation: (
+    revision: number,
+    operation: TextOperation
+  ) => Promise<unknown>;
+
+  onApplyOperation: (operation: TextOperation) => void;
 
   constructor(
     revision: number,
     moduleShortid: string,
-    onSendOperation: (revision: number, operation: any) => Promise<unknown>,
-    onApplyOperation: (operation: any) => void
+    onSendOperation: (
+      revision: number,
+      operation: TextOperation
+    ) => Promise<unknown>,
+    onApplyOperation: (operation: TextOperation) => void
   ) {
     super(revision);
     this.moduleShortid = moduleShortid;
+    this.lastAcknowledgedRevision = revision - 1;
     this.onSendOperation = onSendOperation;
     this.onApplyOperation = onApplyOperation;
   }
 
-  sendOperation(revision, operation) {
+  lastAcknowledgedRevision: number = -1;
+  sendOperation(revision: number, operation: TextOperation) {
     // Whenever we send an operation we enable the blocker
     // that lets us wait for its resolvment when moving back
     // to synchronized state
@@ -42,19 +58,30 @@ class CodeSandboxOTClient extends OTClient {
       this.awaitSynchronized = blocker();
     }
 
-    this.onSendOperation(revision, operation)
+    return this.onSendOperation(revision, operation)
       .then(() => {
         logBreadcrumb({
-          type: 'ot',
+          category: 'ot',
           message: `Acknowledging ${JSON.stringify({
             moduleShortid: this.moduleShortid,
             revision,
             operation,
           })}`,
         });
-        // We only acknowledge valig revisions
-        if (this.revision === revision) {
-          this.serverAck();
+
+        try {
+          this.safeServerAck(revision);
+        } catch (err) {
+          captureException(
+            new Error(
+              `Server Ack ERROR ${JSON.stringify({
+                moduleShortid: this.moduleShortid,
+                currentRevision: this.revision,
+                currentState: this.state.name,
+                operation,
+              })}`
+            )
+          );
         }
       })
       .catch(error => {
@@ -64,35 +91,59 @@ class CodeSandboxOTClient extends OTClient {
         if (this.awaitSynchronized) {
           this.awaitSynchronized.reject(error);
         }
+
+        throw error;
       });
   }
 
-  applyOperation(operation) {
+  applyOperation(operation: TextOperation) {
     this.onApplyOperation(operation);
   }
 
-  serverAck() {
-    try {
-      super.serverAck();
-
-      // If we are back in synchronized state we resolve the blocker
-      if (this.state === synchronized_ && this.awaitSynchronized) {
-        const awaitSynchronized = this.awaitSynchronized;
-        this.awaitSynchronized = null;
-        awaitSynchronized.resolve();
-      }
-    } catch (e) {
-      // Undo the revision increment again
-      super.revision--;
-      throw e;
+  resetAwaitSynchronized() {
+    // If we are back in synchronized state we resolve the blocker
+    if (this.state === synchronized_ && this.awaitSynchronized) {
+      const awaitSynchronized = this.awaitSynchronized;
+      this.awaitSynchronized = null;
+      awaitSynchronized.resolve();
     }
   }
 
-  applyClient(operation: any) {
+  safeServerAck(revision: number) {
+    // We make sure to not acknowledge the same revision twice
+    if (this.lastAcknowledgedRevision < revision) {
+      this.lastAcknowledgedRevision = revision;
+      super.serverAck();
+    }
+
+    this.resetAwaitSynchronized();
+  }
+
+  applyClient(operation: TextOperation) {
+    logBreadcrumb({
+      category: 'ot',
+      message: `Apply Client ${JSON.stringify({
+        moduleShortid: this.moduleShortid,
+        currentRevision: this.revision,
+        currentState: this.state.name,
+        operation,
+      })}`,
+    });
+
     super.applyClient(operation);
   }
 
-  applyServer(operation: any) {
+  applyServer(operation: TextOperation) {
+    logBreadcrumb({
+      category: 'ot',
+      message: `Apply Server ${JSON.stringify({
+        moduleShortid: this.moduleShortid,
+        currentRevision: this.revision,
+        currentState: this.state.name,
+        operation,
+      })}`,
+    });
+
     super.applyServer(operation);
   }
 
@@ -132,7 +183,7 @@ export default (
     },
     create(moduleShortid, initialRevision) {
       const client = new CodeSandboxOTClient(
-        initialRevision,
+        initialRevision || 0,
         moduleShortid,
         (revision, operation) =>
           sendOperation(moduleShortid, revision, operation),

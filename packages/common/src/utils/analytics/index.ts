@@ -40,7 +40,7 @@ export async function identify(key: string, value: any) {
 }
 
 export async function setAnonymousId() {
-  if (!DO_NOT_TRACK_ENABLED) {
+  if (!DO_NOT_TRACK_ENABLED && typeof localStorage !== 'undefined') {
     let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
 
     if (!anonymousUid) {
@@ -84,6 +84,15 @@ export function trackPageview() {
     amplitude.track('pageview', data);
     vero.trackPageview();
     google.trackPageView();
+  }
+}
+
+/**
+ * Assign the user to a group. Can be multiple under one key.
+ */
+export function setGroup(name: string, value: string | string[]) {
+  if (!DO_NOT_TRACK_ENABLED) {
+    amplitude.setGroup(name, value);
   }
 }
 

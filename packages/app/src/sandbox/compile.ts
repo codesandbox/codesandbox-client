@@ -116,7 +116,6 @@ const BABEL_DEPENDENCIES = [
 // Dependencies that we actually don't need, we will replace this by a dynamic
 // system in the future
 const PREINSTALLED_DEPENDENCIES = [
-  'node-libs-browser',
   'react-scripts',
   'react-scripts-ts',
   'parcel-bundler',
@@ -302,6 +301,7 @@ function getDependencies(
 
   // This is used for cache busting
   returnedDependencies.csbbust = '1.0.0';
+  returnedDependencies['node-libs-browser'] = '2.2.0';
 
   preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {
@@ -747,12 +747,16 @@ async function compile({
     }
 
     if (firstLoad) {
-      metrics.persistMeasurements({
-        sandboxId,
-        cacheUsed: usedCache,
-        browser: navigator.userAgent,
-        version: VERSION,
-      });
+      metrics
+        .persistMeasurements({
+          sandboxId,
+          cacheUsed: usedCache,
+          browser: navigator.userAgent,
+          version: VERSION,
+        })
+        .catch(() => {
+          /* Do nothing with the error */
+        });
     }
   }
   firstLoad = false;

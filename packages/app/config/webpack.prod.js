@@ -107,7 +107,10 @@ module.exports = merge(commonConfig, {
   },
 
   plugins: [
-    process.env.ANALYZE && new BundleAnalyzerPlugin(),
+    process.env.ANALYZE &&
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+      }),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
@@ -180,7 +183,7 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /\/vscode27/,
+          urlPattern: /\/vscode28/,
           handler: 'cacheFirst',
           options: {
             cache: {

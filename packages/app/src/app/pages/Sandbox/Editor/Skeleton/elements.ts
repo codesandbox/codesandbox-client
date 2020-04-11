@@ -1,26 +1,57 @@
 import styled, { css, keyframes } from 'styled-components';
+import Color from 'color';
 
 const pulse = keyframes`
   0% { background-position: 100% 50%; }
   100% { background-position: -100% 50%; }
 `;
 
-export const SkeletonTextBlock = styled.div(
-  props => css`
+export const SkeletonTextBlock = styled.div(props => {
+  let color = props.theme.colors?.sideBar.border || '#242424';
+  const themeType = props.theme.vscodeTheme.type;
+
+  /**
+   * This is fun,
+   * We animate the background gradient to create a pulse animation
+   *
+   * To support all themes nicely, we can't really pick a value from the theme
+   * So, we take the sidebar.border and then change it's luminosity
+   * 14% for background and 16% for the pulse highlight on top
+   * We need to set the value to 100 - value for light themes
+   */
+
+  const backgroundLuminosity = themeType === 'light' ? 86 : 14;
+  const highlightLuminosity = themeType === 'light' ? 88 : 16;
+
+  // Color('#ff000033') throws error.
+  const colorWithOpacity = color.length === 9;
+
+  if (colorWithOpacity) {
+    // remove the opacity
+    color = color.slice(0, -2);
+  }
+
+  const hsl = Color(color).hsl();
+
+  const background = Color({ ...hsl, l: backgroundLuminosity }).hslString();
+  const highlight = Color({ ...hsl, l: highlightLuminosity }).hslString();
+
+  return css`
     height: 16px;
     width: 200px;
-    animation: ${pulse} 2s linear infinite;
+    opacity: 0.7;
+    animation: ${pulse} 4s linear infinite;
     background: linear-gradient(
       90deg,
-      ${props.theme.colors?.sideBar.border + '80'} 0%,
-      ${props.theme.colors?.sideBar.border + '80'} 40%,
-      ${props.theme.colors?.sideBar.border + 'd6'} 50%,
-      ${props.theme.colors?.sideBar.border + '80'} 60%,
-      ${props.theme.colors?.sideBar.border + '80'} 100%
+      ${background} 0%,
+      ${background} 20%,
+      ${highlight} 50%,
+      ${background} 80%,
+      ${background} 100%
     );
     background-size: 200% 200%;
-  `
-);
+  `;
+});
 
 export const SkeletonWrapper = styled.div`
   position: absolute;
