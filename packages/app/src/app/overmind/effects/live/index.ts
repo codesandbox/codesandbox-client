@@ -283,7 +283,9 @@ class Live {
         })
         .receive('error', (resp: JoinChannelErrorResponse) => {
           if (resp.reason === 'room not found') {
-            this.channel.leave();
+            if (this.channel) {
+              this.channel.leave();
+            }
             onError(resp.reason);
           }
           reject(camelizeKeys(resp));
