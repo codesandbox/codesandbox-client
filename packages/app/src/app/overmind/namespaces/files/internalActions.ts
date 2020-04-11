@@ -100,6 +100,7 @@ export const uploadFiles: AsyncAction<
             /\.svg$/.test(filePath) ||
             /\.md$/.test(filePath) ||
             /\.svelte$/.test(filePath) ||
+            /\.hbs$/.test(filePath) ||
             file.type.startsWith('text/') ||
             file.type === 'application/json') &&
           dataURI.length < MAX_FILE_SIZE
