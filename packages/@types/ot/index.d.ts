@@ -2,6 +2,8 @@ declare module 'ot' {
   export type SerializedTextOperation = (string | number)[];
 
   class TextOperation {
+    ops: SerializedTextOperation;
+
     delete(length: number): TextOperation;
     insert(str: string): TextOperation;
     retain(length: number): TextOperation;

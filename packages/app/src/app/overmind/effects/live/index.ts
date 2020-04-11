@@ -393,6 +393,14 @@ class Live {
       return;
     }
 
+    if (operation.ops.length === 1) {
+      const [op] = operation.ops;
+      if (typeof op === 'number') {
+        // Useless to send a single retain operation, ignore
+        return;
+      }
+    }
+
     if (moduleShortid.startsWith(OPTIMISTIC_ID_PREFIX)) {
       // Module is an optimistic module, we will send a full code update
       // once the module has been created, until then, send nothing!
