@@ -1,6 +1,7 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
 import { actions, dispatch } from 'codesandbox-api';
+import { mergeDependencies } from 'sandbox/version-resolving/merge-dependency';
 
 import setScreen from '../status-screen';
 import delay from '../utils/delay';
@@ -60,7 +61,7 @@ function callApi(url: string, method = 'GET') {
  *
  * @param {string} query The dependencies to call
  */
-async function requestPackager(url, method = 'GET') {
+async function requestPackager(url: string, method = 'GET') {
   let retries = 0;
 
   // eslint-disable-next-line no-constant-condition
@@ -85,17 +86,8 @@ async function requestPackager(url, method = 'GET') {
   }
 }
 
-function dependenciesToBucketPath(dependencies: Object) {
-  return `v${VERSION}/combinations/${Object.keys(dependencies)
-    .sort()
-    .map(
-      // Paths starting with slashes don't work with cloudfront, even escaped. So we remove the slashes
-      dep =>
-        `${encodeURIComponent(dep.replace('/', '-').replace('@', ''))}@${
-          dependencies[dep]
-        }`
-    )
-    .join('%2B')}.json`;
+function dependencyToPackagePath(name: string, version: string) {
+  return `v${VERSION}/packages/${name}/${version}.json`;
 }
 
 /**
@@ -115,44 +107,54 @@ async function getDependencies(
   dependencies: Object,
   showLoadingFullScreen: boolean
 ) {
-  const absoluteDependencies = await getAbsoluteDependencies(
-    removeSpacesFromDependencies(dependencies)
-  );
-  const dependencyUrl = dependenciesToQuery(absoluteDependencies);
-  const bucketDependencyUrl = dependenciesToBucketPath(absoluteDependencies);
-
   setScreen({
     type: 'loading',
     text: 'Downloading Dependencies...',
     showFullScreen: showLoadingFullScreen,
   });
 
-  try {
-    const bucketManifest = await callApi(
-      `${BUCKET_URL}/${bucketDependencyUrl}`
-    );
-    return bucketManifest;
-  } catch (e) {
-    setScreen({
-      type: 'loading',
-      text: 'Resolving Dependencies...',
-      showFullScreen: showLoadingFullScreen,
-    });
+  const absoluteDependencies = await getAbsoluteDependencies(
+    removeSpacesFromDependencies(dependencies)
+  );
 
-    // The dep has not been generated yet...
-    const { url } = await requestPackager(
-      `${PACKAGER_URL}/${dependencyUrl}`,
-      'POST'
-    );
+  const deps = await Promise.all(
+    Object.keys(absoluteDependencies).map(async name => {
+      const version = absoluteDependencies[name];
+      const dep = { [name]: version };
 
-    setScreen({
-      type: 'loading',
-      text: 'Downloading Dependencies...',
-      showFullScreen: showLoadingFullScreen,
-    });
+      const dependencyUrl = dependenciesToQuery(dep);
+      const bucketDependencyUrl = dependencyToPackagePath(name, version);
 
-    return requestPackager(`${BUCKET_URL}/${url}`);
-  }
+      try {
+        const bucketManifest = await callApi(
+          `${BUCKET_URL}/${bucketDependencyUrl}`
+        );
+        return bucketManifest;
+      } catch (e) {
+        setScreen({
+          type: 'loading',
+          text: 'Resolving Dependencies...',
+          showFullScreen: showLoadingFullScreen,
+        });
+
+        // The dep has not been generated yet...
+        const { url } = await requestPackager(
+          `${PACKAGER_URL}/${dependencyUrl}`,
+          'POST'
+        );
+
+        setScreen({
+          type: 'loading',
+          text: 'Downloading Dependencies...',
+          showFullScreen: showLoadingFullScreen,
+        });
+
+        return requestPackager(`${BUCKET_URL}/${url}`);
+      }
+    })
+  );
+
+  return mergeDependencies(deps);
 }
 
 export async function fetchDependencies(
