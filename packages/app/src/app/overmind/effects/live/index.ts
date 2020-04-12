@@ -11,6 +11,7 @@ import {
   logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import VERSION from '@codesandbox/common/lib/version';
 import { Blocker, blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
 import { SerializedTextOperation, TextOperation } from 'ot';
@@ -200,6 +201,7 @@ class Live {
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
         params: {
           guardian_token: this.provideJwtToken(),
+          client_version: VERSION,
         },
       });
 
