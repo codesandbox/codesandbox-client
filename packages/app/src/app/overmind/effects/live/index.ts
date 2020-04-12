@@ -395,7 +395,7 @@ class Live {
 
     if (operation.ops.length === 1) {
       const [op] = operation.ops;
-      if (typeof op === 'number') {
+      if (typeof op === 'number' && op >= 0) {
         // Useless to send a single retain operation, ignore
         return;
       }
