@@ -327,7 +327,11 @@ export class ModelsHandler {
       const model = await moduleModel.model;
 
       decorations.forEach(decorationId => {
-        if (decorationId.startsWith(userId + model.id)) {
+        const userDecorationIdPrefix = this.getSelectionDecorationId(
+          userId,
+          model.id
+        );
+        if (decorationId.startsWith(userDecorationIdPrefix)) {
           this.userSelectionDecorations[decorationId] = model.deltaDecorations(
             this.userSelectionDecorations[decorationId] || [],
             []
@@ -339,9 +343,9 @@ export class ModelsHandler {
 
   private getSelectionDecorationId = (
     userId: string,
-    modelId: string,
-    shortid: string
-  ) => [userId, modelId, shortid].join('|');
+    modelId: string = '',
+    shortid: string = ''
+  ) => [userId, modelId, shortid].join('|').replace(/\|\|$/, '|');
 
   private cleanUserSelections = (
     model: any,
