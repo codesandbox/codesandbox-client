@@ -286,7 +286,7 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /prod-packager-packages\.csb\.dev/,
+          urlPattern: /prod-packager-packages\.codesandbox\.io/,
           handler: 'fastest',
           options: {
             cache: {
