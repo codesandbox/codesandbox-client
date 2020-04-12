@@ -124,11 +124,10 @@ async function getDependencies(
 
       const dependencyUrl = dependenciesToQuery(dep);
       const bucketDependencyUrl = dependencyToPackagePath(name, version);
+      const fullUrl = `${BUCKET_URL}/${bucketDependencyUrl}`;
 
       try {
-        const bucketManifest = await callApi(
-          `${BUCKET_URL}/${bucketDependencyUrl}`
-        );
+        const bucketManifest = await callApi(fullUrl);
         return bucketManifest;
       } catch (e) {
         setScreen({
@@ -138,10 +137,7 @@ async function getDependencies(
         });
 
         // The dep has not been generated yet...
-        const { url } = await requestPackager(
-          `${PACKAGER_URL}/${dependencyUrl}`,
-          'POST'
-        );
+        await requestPackager(`${PACKAGER_URL}/${dependencyUrl}`, 'POST');
 
         setScreen({
           type: 'loading',
@@ -149,7 +145,7 @@ async function getDependencies(
           showFullScreen: showLoadingFullScreen,
         });
 
-        return requestPackager(`${BUCKET_URL}/${url}`);
+        return requestPackager(fullUrl);
       }
     })
   );
