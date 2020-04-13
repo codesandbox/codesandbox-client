@@ -76,7 +76,7 @@ export const Article = styled.article`
 
 export const Header = styled.section`
   text-align: center;
-  padding: 2.5em;
+  padding: 6rem 0 2.5em 0;
   color: rgb(242, 242, 242);
   margin-bottom: 2rem;
 `;
