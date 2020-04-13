@@ -53,7 +53,7 @@ const Blog = ({
               id,
             },
           }) => (
-            <Wrapper key={id}>
+            <Wrapper key={id} width={765}>
               <Posts>
                 <Link
                   css={`
@@ -61,18 +61,12 @@ const Blog = ({
                   `}
                   to={`post/${slug}`}
                 >
-                  <Thumbnail
-                    className="thumb"
-                    style={{ backgroundImage: `url(${banner})` }}
-                  />
+                  <Thumbnail src={banner} />
 
                   <CardContent>
                     <Title>{title}</Title>
-                    <PublishDate>
-                      Published on {format(date, 'MMM / DD / YYYY')}
-                    </PublishDate>
+                    <PublishDate>{format(date, 'MMM / DD / YYYY')}</PublishDate>
                     <Subtitle>{description}</Subtitle>
-                    {/* <Info authors={authors} date={date} photo={photo} /> */}
                   </CardContent>
                 </Link>
               </Posts>
@@ -93,7 +87,6 @@ export const query = graphql`
       edges {
         node {
           fields {
-            authors
             date
             description
             photo

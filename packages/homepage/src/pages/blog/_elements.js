@@ -27,50 +27,22 @@ export const PageSubtitle = styled.h3`
 `;
 
 export const Grid = styled.div`
+  max-width: 765px;
+  margin: 0 auto;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
   grid-column-gap: 2rem;
   grid-row-gap: 4rem;
 
-
   > div {
     transform: scale(1);
     transition: all 0.2s ease-in-out;
   }
 
-  @media screen and (min-width: 768px) {
-    grid-template-columns: 1fr 1fr;
-
-    > div:first-child {
-      grid-column-start: 1;
-      grid-column-end: 3;
-    }
-
-    > div:first-child .thumb {
-      height: 24rem;
-    }
-  }
-
-  @media screen and (min-width: 1200px) {
-    grid-template-columns: 1fr 1fr 1fr;
-
-    > div:first-child {
-      grid-column-start: 1;
-      grid-column-end: 3;
-    }
-
-    > div:first-child .thumb {
-      height: 20rem;
-    }
-
-    > div:nth-child(2) .thumb {
-      height: 18rem;
-  }
-
   > div :hover {
     transform: scale(0.98);
-    box-shadow:0 .125rem .5rem rgba(0,0,0,0.25);
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.25);
   }
 `;
 
@@ -84,14 +56,13 @@ export const Wrapper = styled.div`
 `;
 
 export const CardContent = styled.div`
-  padding: 1.5rem 1rem 1rem 1rem;
+  padding: 2rem;
 `;
 
-export const Thumbnail = styled.div`
+export const Thumbnail = styled.img`
   border: none;
   border-bottom: 1px solid #242424;
   min-width: 100%;
-  min-height: 20rem;
   background-size: cover;
   background-position: center center;
 
@@ -115,13 +86,14 @@ export const Title = styled.h2`
 
 export const Subtitle = styled.p`
   color: rgba(255, 255, 255, 0.7);
-  font-size: 1rem;
-  line-height: 1.5;
-  font-weight: 400;
+  font-size: 1.1rem;
+  line-height: 1.6rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.75);
 `;
 
 export const PublishDate = styled.p`
-  color: #9999;
+  color: rgba(255, 255, 255, 0.65);
   font-size: 1rem;
   line-height: 1;
   font-weight: 300;

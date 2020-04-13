@@ -2,57 +2,48 @@ import styled, { css } from 'styled-components';
 
 export const PostContainer = styled.div`
   ${({ theme }) => css`
-    margin: auto;
     color: ${props => props.theme.homepage.white};
-    overflow: hidden;
-    line-height: 1.7;
+    font-size: 1.1rem;
+    line-height: 1.6rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.75);
+    padding: 0;
 
-    font-weight: 500;
-    font-size: 18px;
-
-    color: rgba(255, 255, 255, 0.9);
-
-    h1,
     h2,
     h3,
     h4,
     h5,
     h6 {
       color: ${props => props.theme.homepage.white};
-      font-weight: 800;
+      line-height: 1.2;
+      font-weight: 700;
     }
 
     h2 {
-      margin-top: 3rem;
-      font-size: 28px;
+      margin: 4rem 0 2rem 0;
+      font-size: 2rem;
+      letter-spacing: -1px;
     }
 
     h3 {
-      margin-top: 3.5rem;
-      margin-bottom: 1.5rem;
-      font-size: 26px;
+      margin: 4rem 0 0.5rem 0;
+      font-size: 23px;
     }
 
     h4 {
-      margin-top: 2rem;
-      margin-bottom: 0.5rem;
-      font-size: 20px;
+      margin: 3rem 0 0.5rem 0;
+      font-size: 19px;
       font-weight: 600;
     }
 
     ul,
     ol {
-      margin-bottom: 28px;
+      margin-bottom: 2rem;
     }
 
     p {
-      margin-bottom: 28px;
-      word-break: break-word;
-    }
-
-    p,
-    li {
-      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 2rem;
+      word-break: break-all;
     }
 
     img {
@@ -67,22 +58,72 @@ export const PostContainer = styled.div`
 
     a {
       color: ${theme.shySecondary};
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0);
+      transition: all 100ms ease-in 0s;
+    }
+
+    a:hover {
+      border-bottom: 1px solid;
+      border-color: ${theme.shySecondary};
     }
   `};
 `;
 
-export const Image = styled.img`
+export const Article = styled.article`
   display: block;
-  margin: 20px auto;
+  padding: 1rem 0rem;
+`;
+
+export const Header = styled.section`
+  text-align: center;
+  padding: 6.5em;
+  color: rgb(242, 242, 242);
+  margin-bottom: 2rem;
+`;
+
+export const PostTitle = styled.h1`
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 5.5rem;
+  letter-spacing: -0.02rem;
+`;
+
+export const Image = styled.img`
+  max-width: 1200px;
+  display: block;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
+  border: 1px solid #242424;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  clip-path: inset(0px round 0.5rem);
+  margin: 0 auto;
 `;
 
 export const MetaData = styled.aside`
   align-items: center;
-  display: flex;
 `;
 
 export const AuthorContainer = styled.div`
-  align-items: center;
-  display: flex;
-  margin-bottom: 0.5rem;
+  text-align: left;
+  height: 2.75rem;
+  width: 14rem;
+  margin: 2rem auto;
+
+  > h4 {
+    line-height: 22px;
+    margin: 0;
+  }
+
+  > date {
+    color: #9999;
+    font-size: 1rem;
+  }
+
+  > img {
+    width: 2.75rem;
+    height: 2.75rem;
+    float: left;
+    margin-right: 1rem;
+  }
 `;
