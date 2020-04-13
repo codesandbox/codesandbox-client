@@ -76,20 +76,33 @@ export const Article = styled.article`
 
 export const Header = styled.section`
   text-align: center;
-  padding: 6.5em;
+  padding: 2.5em;
   color: rgb(242, 242, 242);
   margin-bottom: 2rem;
 `;
 
 export const PostTitle = styled.h1`
-  font-size: 4.5rem;
-  font-weight: 700;
-  line-height: 5.5rem;
+  font-size: 2rem;
+  line-height: 3rem;
   letter-spacing: -0.02rem;
+
+  @media screen and (min-width: 768px) {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 5rem;
+  }
+
+  @media screen and (min-width: 960px) {
+    font-size: 4.5rem;
+    font-weight: 700;
+    line-height: 5.5rem;
+  }
 `;
 
 export const Image = styled.img`
-  max-width: 1200px;
+  width: 100%;
+  max-width: 960px;
+
   display: block;
   box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
   border: 1px solid #242424;
