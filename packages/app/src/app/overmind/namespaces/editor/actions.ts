@@ -32,6 +32,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { Selection, TextOperation } from 'ot';
 import { json } from 'overmind';
 
@@ -371,12 +372,14 @@ export const codeChanged: Action<{
     return;
   }
 
-  // module.code !== code check is there to make sure that we don't end up sending
-  // duplicate updates to live. module.code === code only when VSCode detected a change
-  // from the filesystem (fs changed, vscode sees it, sends update). If this happens we
-  // never want to send that code update, since this actual code change goes through this
-  // specific code flow already.
-  if (state.live.isLive && module.code !== code) {
+  const savedCode = getSavedCode(module.code, module.savedCode);
+  const isSavedCode = savedCode === code;
+  const isFirstChange = !effects.live.hasClient(module.shortid);
+
+  // Don't send saved code of a moduke that has not been registered with yet, since the server
+  // will take the saved code as base. Which means that the change that would generate the saved code
+  // would be applied on the saved code by the server.
+  if (state.live.isLive && !(isSavedCode && isFirstChange)) {
     let operation: TextOperation;
     if (event) {
       logBreadcrumb({

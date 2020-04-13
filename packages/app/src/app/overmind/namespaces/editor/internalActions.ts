@@ -8,10 +8,6 @@ import {
   ServerContainerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
-import {
-  captureException,
-  logBreadcrumb,
-} from '@codesandbox/common/lib/utils/analytics/sentry';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
@@ -106,14 +102,6 @@ export const setModuleSavedCode: Action<{
   if (moduleIndex > -1) {
     const module = state.editor.sandboxes[sandbox.id].modules[moduleIndex];
 
-    if (savedCode === undefined) {
-      logBreadcrumb({
-        type: 'error',
-        message: `SETTING UNDEFINED SAVEDCODE FOR CODE: ${module.code}`,
-      });
-      captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
-    }
-
     module.savedCode = module.code === savedCode ? null : savedCode;
   }
 };
@@ -137,13 +125,13 @@ export const saveCode: AsyncAction<{
     return;
   }
 
-  if (module.code !== code) {
-    actions.editor.codeChanged({ moduleShortid, code });
-  }
-
   try {
     await effects.live.saveModule(module);
-    const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
+    const updatedModule = await effects.api.saveModuleCode(
+      sandbox.id,
+      module.shortid,
+      code
+    );
 
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
@@ -151,13 +139,6 @@ export const saveCode: AsyncAction<{
 
     const savedCode =
       updatedModule.code === module.code ? null : updatedModule.code;
-    if (savedCode === undefined) {
-      logBreadcrumb({
-        type: 'error',
-        message: `SETTING UNDEFINED SAVEDCODE FOR CODE: ${updatedModule.code}`,
-      });
-      captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
-    }
 
     module.savedCode = savedCode;
 
@@ -192,7 +173,12 @@ export const saveCode: AsyncAction<{
     }
 
     if (state.live.isLive && state.live.isCurrentEditor) {
-      effects.live.sendModuleSaved(module);
+      setTimeout(() => {
+        // Send the save event 50ms later so the operation can be sent first (the operation that says the
+        // file difference created by VSCode due to the file watch event). If the other client gets the save before the operation,
+        // the other client will also send an operation with the same difference resulting in a duplicate event.
+        effects.live.sendModuleSaved(module);
+      }, 50);
     }
 
     await actions.editor.internal.updateCurrentTemplate();

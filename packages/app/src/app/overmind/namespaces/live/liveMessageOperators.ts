@@ -13,6 +13,7 @@ import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
@@ -170,16 +171,17 @@ export const onModuleSaved: Operator<LiveMessage<{
   );
 
   if (module) {
-    module.isNotSynced = false;
-
     actions.editor.internal.setModuleSavedCode({
       moduleShortid: data.moduleShortid,
       savedCode: data.module.savedCode,
     });
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-    // We revert the module so that VSCode will flag saved indication correctly
-    effects.vscode.syncModule(module);
+    const savedCode = getSavedCode(module.code, module.savedCode);
+    if (module.code === savedCode) {
+      // We revert the module so that VSCode will flag saved indication correctly
+      effects.vscode.syncModule(module);
+    }
     actions.editor.internal.updatePreviewCode();
   }
 });
