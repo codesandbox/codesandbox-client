@@ -117,7 +117,7 @@ export const Subtitle = styled.p`
 `;
 
 export const PublishDate = styled.p`
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.75);
   font-size: 1rem;
   line-height: 1;
   font-weight: 300;
