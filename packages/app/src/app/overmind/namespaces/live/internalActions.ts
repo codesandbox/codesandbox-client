@@ -227,10 +227,11 @@ export const sendUnsavedChanges: Action<{
   );
   changedModules.forEach(m => {
     if (!moduleState[m.shortid]) {
+      const savedCode = getSavedCode(m.code, m.savedCode);
       // Update server with latest data
       effects.live.sendCodeUpdate(
         m.shortid,
-        getTextOperation(m.savedCode || '', m.code || '')
+        getTextOperation(savedCode, m.code || '')
       );
     }
   });

@@ -95,6 +95,11 @@ class Live {
   private isLiveBlockerExperiement: () => boolean;
   private connectionsCount = 0;
   private setAwaitSend() {
+    if (this.awaitSend) {
+      // There was already one set and never resolved. We need to resolve it to prevent
+      // messages from getting stuck
+      this.awaitSend.resolve();
+    }
     this.awaitSend = blocker();
     clearTimeout(this.awaitSendTimer);
     this.awaitSendTimer = window.setTimeout(async () => {
