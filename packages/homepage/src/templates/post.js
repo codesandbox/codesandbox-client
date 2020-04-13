@@ -53,7 +53,7 @@ export default ({
 
       <Image alt={title} src={banner} />
 
-      <PageContainer width={765}>
+      <PageContainer width={960}>
         <PostContainer dangerouslySetInnerHTML={{ __html: html }} />
       </PageContainer>
     </Article>

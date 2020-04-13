@@ -2,10 +2,7 @@ import styled from 'styled-components';
 
 export const Header = styled.section`
   text-align: center;
-  padding-top: 4rem;
-  padding-right: 0px;
-  padding-bottom: 8rem;
-  padding-left: 0px;
+  padding: 8rem;
   color: rgb(242, 242, 242);
   margin-bottom: 2rem;
 `;
@@ -18,16 +15,16 @@ export const PageTitle = styled.h1`
 `;
 
 export const PageSubtitle = styled.h3`
-  font-size: 1.6rem;
-  line-height: 1.2;
+  font-size: 2rem;
+  line-height: 1.5;
   font-weight: 400;
-  padding: 0;
+  padding: 0 2rem;
   margin: 0 0 1.0875rem;
 }
 `;
 
 export const Grid = styled.div`
-  max-width: 765px;
+  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
   display: grid;
@@ -44,6 +41,15 @@ export const Grid = styled.div`
     transform: scale(0.98);
     box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.25);
   }
+
+  @media screen and (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+
+    > div:nth-child(-n + 1) {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+  }
 `;
 
 export const Wrapper = styled.div`
@@ -56,7 +62,7 @@ export const Wrapper = styled.div`
 `;
 
 export const CardContent = styled.div`
-  padding: 2rem;
+  padding: 2.5rem 2rem 3rem 2rem;
 `;
 
 export const Thumbnail = styled.img`
@@ -65,23 +71,16 @@ export const Thumbnail = styled.img`
   min-width: 100%;
   background-size: cover;
   background-position: center center;
-
-  @media screen and (min-width: 765px) {
-    min-height: 10rem;
-  }
-
-  @media screen and (min-width: 1200px) {
-    min-height: 10rem;
-  }
 `;
 
 export const Posts = styled.article``;
 
 export const Title = styled.h2`
   color: #fff;
-  font-size: 19px;
+  margin: 0 0 0.5rem 0;
+  font-size: 23px;
   line-height: 1.5;
-  font-weight: 500;
+  font-weight: 700;
 `;
 
 export const Subtitle = styled.p`

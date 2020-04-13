@@ -43,7 +43,6 @@ export const PostContainer = styled.div`
 
     p {
       margin-bottom: 2rem;
-      word-break: break-all;
     }
 
     img {

@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import { graphql, Link } from 'gatsby';
 
 import React from 'react';
@@ -46,14 +45,14 @@ const Blog = ({
         {blogPosts.map(
           ({
             node: {
-              fields: { date, description, slug, title },
+              fields: { authors, description, slug, title },
               frontmatter: {
                 banner: { publicURL: banner },
               },
               id,
             },
           }) => (
-            <Wrapper key={id} width={765}>
+            <Wrapper key={id} width={768}>
               <Posts>
                 <Link
                   css={`
@@ -65,7 +64,7 @@ const Blog = ({
 
                   <CardContent>
                     <Title>{title}</Title>
-                    <PublishDate>{format(date, 'MMM / DD / YYYY')}</PublishDate>
+                    <PublishDate>{authors}</PublishDate>
                     <Subtitle>{description}</Subtitle>
                   </CardContent>
                 </Link>
@@ -89,6 +88,7 @@ export const query = graphql`
           fields {
             date
             description
+            authors
             photo
             slug
             title
