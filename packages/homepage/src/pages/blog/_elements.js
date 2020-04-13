@@ -49,7 +49,7 @@ export const PageSubtitle = styled.h3`
 `;
 
 export const Grid = styled.div`
-  max-width: 1200px;
+  max-width: 960px;
   margin: 0 auto;
   width: 100%;
   display: grid;
