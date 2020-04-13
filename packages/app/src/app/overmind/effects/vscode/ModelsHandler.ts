@@ -153,6 +153,11 @@ export class ModelsHandler {
     );
   }
 
+  public isModuleOpened(module: Module) {
+    const moduleModel = this.getModuleModelByPath(module.path);
+    return Boolean(moduleModel?.model);
+  }
+
   public changeModule = async (module: Module) => {
     const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 

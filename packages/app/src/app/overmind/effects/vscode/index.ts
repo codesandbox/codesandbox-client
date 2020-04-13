@@ -220,6 +220,10 @@ export class VSCodeEffect {
     return this.initialized;
   }
 
+  public isModuleOpened(module: Module) {
+    return this.modelsHandler.isModuleOpened(module);
+  }
+
   public async getCodeReferenceBoundary(
     commentId: string,
     reference: Reference

@@ -178,6 +178,9 @@ export const onModuleSaved: Operator<LiveMessage<{
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
     const savedCode = getSavedCode(module.code, module.savedCode);
+    if (!effects.vscode.isModuleOpened(module)) {
+      module.code = savedCode;
+    }
     if (module.code === savedCode) {
       // We revert the module so that VSCode will flag saved indication correctly
       effects.vscode.syncModule(module);
