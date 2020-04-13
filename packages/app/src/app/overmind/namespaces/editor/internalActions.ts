@@ -137,13 +137,13 @@ export const saveCode: AsyncAction<{
     module.updatedAt = updatedModule.updatedAt;
     module.isBinary = updatedModule.isBinary;
 
+    if (!effects.vscode.isModuleOpened(module)) {
+      module.code = updatedModule.code;
+    }
     const savedCode =
       updatedModule.code === module.code ? null : updatedModule.code;
 
     module.savedCode = savedCode;
-    if (!effects.vscode.isModuleOpened(module)) {
-      module.code = savedCode;
-    }
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
     if (savedCode === null) {
