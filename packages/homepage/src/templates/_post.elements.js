@@ -117,6 +117,7 @@ export const AuthorContainer = styled.div`
   > date {
     color: #9999;
     font-size: 1rem;
+    line-height: 22px;
   }
 
   > img {
