@@ -70,7 +70,7 @@ class Live {
     we use a blocker to just hold the sending of the messages until an additional
     connection enters
   */
-  private awaitSend: Blocker<void> | null = blocker<void>();
+  private awaitSend: Blocker<void> | null = null;
   private presence: Presence;
   private provideJwtToken: () => string;
   private onOperationError: (payload: {
