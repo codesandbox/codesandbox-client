@@ -1,103 +1,128 @@
-import styled, { css } from 'styled-components';
-
-export const Posts = styled.article`
-  display: flex;
-  align-items: flex-start;
-  background: ${props => props.theme.background2};
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 30px;
-
-  @media screen and (max-width: 1200px) {
-    flex-direction: column;
-  }
-`;
-
-export const Subtitle = styled.h3`
-  font-weight: 500;
-  font-size: 1rem;
-  line-height: 1.5;
-
-  color: #b8b9ba;
-`;
-
-export const Thumbnail = styled.img`
-  margin-right: 25px;
-
-  @media screen and (max-width: 1200px) {
-    margin-bottom: 25px;
-    width: 100%;
-  }
-`;
-
-export const Aside = styled.aside`
-  section {
-    display: flex;
-    align-items: center;
-  }
-
-  ${({ mobile }) =>
-    !mobile &&
-    css`
-      @media screen and (max-width: 850px) {
-        display: none;
-      }
-    `};
-  ${({ mobile }) =>
-    mobile &&
-    css`
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex-direction: row-reverse;
-      margin-top: 25px;
-      width: 100%;
-      @media screen and (min-width: 851px) {
-        display: none;
-      }
-    `};
-`;
-
-export const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  grid-gap: 90px;
-
-  @media screen and (max-width: 850px) {
-    grid-template-columns: 1fr;
-  }
-`;
+import styled from 'styled-components';
 
 export const Header = styled.section`
-  background: linear-gradient(
-    279.97deg,
-    rgba(64, 169, 243, 0.9) 0%,
-    rgba(13, 123, 201, 0.9) 100%
-  );
-  border-radius: 4px;
-  padding: 30px;
-  color: #f2f2f2;
-
-  margin-bottom: 30px;
-
-  width: calc(100% - 340px);
-  margin-left: 340px;
-
-  @media screen and (max-width: 850px) {
-    width: 100%;
-    margin-left: 0;
-  }
+  text-align: center;
+  padding-top: 4rem;
+  padding-right: 0px;
+  padding-bottom: 8rem;
+  padding-left: 0px;
+  color: rgb(242, 242, 242);
+  margin-bottom: 2rem;
 `;
 
 export const PageTitle = styled.h1`
-  font-weight: 600;
-  font-size: 36px;
-  letter-spacing: -0.04em;
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 5.5rem;
+  letter-spacing: -0.02rem;
 `;
 
-export const PageSubtitle = styled.h2`
-  font-weight: 600;
-  font-size: 18px;
+export const PageSubtitle = styled.h3`
+  font-size: 1.6rem;
+  line-height: 1.2;
+  font-weight: 400;
+  padding: 0;
+  margin: 0 0 1.0875rem;
+}
+`;
+
+export const Grid = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-column-gap: 2rem;
+  grid-row-gap: 4rem;
+
+
+  > div {
+    transform: scale(1);
+    transition: all 0.2s ease-in-out;
+  }
+
+  @media screen and (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+
+    > div:first-child {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+
+    > div:first-child .thumb {
+      height: 24rem;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    grid-template-columns: 1fr 1fr 1fr;
+
+    > div:first-child {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+
+    > div:first-child .thumb {
+      height: 20rem;
+    }
+
+    > div:nth-child(2) .thumb {
+      height: 18rem;
+  }
+
+  > div :hover {
+    transform: scale(0.98);
+    box-shadow:0 .125rem .5rem rgba(0,0,0,0.25);
+  }
+`;
+
+export const Wrapper = styled.div`
+  border: 1px solid #242424;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  border-radius: 0.5rem;
+  clip-path: inset(0px round 0.5rem);
+  background: #151515;
+`;
+
+export const CardContent = styled.div`
+  padding: 1.5rem 1rem 1rem 1rem;
+`;
+
+export const Thumbnail = styled.div`
+  border: none;
+  border-bottom: 1px solid #242424;
+  min-width: 100%;
+  min-height: 20rem;
+  background-size: cover;
+  background-position: center center;
+
+  @media screen and (min-width: 765px) {
+    min-height: 10rem;
+  }
+
+  @media screen and (min-width: 1200px) {
+    min-height: 10rem;
+  }
+`;
+
+export const Posts = styled.article``;
+
+export const Title = styled.h2`
+  color: #fff;
+  font-size: 19px;
   line-height: 1.5;
-  margin-bottom: 0;
+  font-weight: 500;
+`;
+
+export const Subtitle = styled.p`
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+`;
+
+export const PublishDate = styled.p`
+  color: #9999;
+  font-size: 1rem;
+  line-height: 1;
+  font-weight: 300;
 `;
