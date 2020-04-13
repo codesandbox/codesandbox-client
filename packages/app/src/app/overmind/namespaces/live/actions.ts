@@ -29,30 +29,12 @@ export const signInToRoom: AsyncAction<{
 
 export const onOperationError: Action<{
   moduleShortid: string;
-} & IModuleStateModule> = (
-  { state, effects },
-  { moduleShortid, revision, code, saved_code }
-) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  effects.live.resetClient(moduleShortid, revision || 0);
-  const module = state.editor.currentSandbox.modules.find(
-    moduleItem => moduleItem.shortid === moduleShortid
-  );
-
-  if (!module) {
-    return;
-  }
-
-  if (code !== undefined) {
-    module.code = code;
-  }
-  if (saved_code !== undefined) {
-    module.savedCode = saved_code;
-  }
-
-  effects.vscode.setModuleCode(module);
+  moduleInfo: IModuleStateModule;
+}> = ({ actions }, { moduleShortid, moduleInfo }) => {
+  actions.live.internal.initializeModuleFromState({
+    moduleShortid,
+    moduleInfo,
+  });
 };
 
 export const roomJoined: AsyncAction<{

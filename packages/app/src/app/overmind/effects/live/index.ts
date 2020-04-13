@@ -31,9 +31,7 @@ type Options = {
   isLiveBlockerExperiement(): boolean;
   onOperationError(payload: {
     moduleShortid: string;
-    code: string;
-    revision: number;
-    saved_code: string;
+    moduleInfo: IModuleStateModule;
   }): void;
 };
 
@@ -77,9 +75,7 @@ class Live {
   private provideJwtToken: () => string;
   private onOperationError: (payload: {
     moduleShortid: string;
-    code: string;
-    revision: number;
-    saved_code: string;
+    moduleInfo: IModuleStateModule;
   }) => void;
 
   private operationToElixir(ot: (number | string)[]) {
@@ -167,7 +163,7 @@ class Live {
       captureException(error);
       if (error.module_state) {
         this.onOperationError({
-          ...error.module_state[moduleShortid],
+          moduleInfo: error.module_state[moduleShortid],
           moduleShortid,
         });
       }

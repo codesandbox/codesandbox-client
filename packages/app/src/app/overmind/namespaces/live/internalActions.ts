@@ -104,6 +104,54 @@ interface IModuleState {
   [moduleId: string]: IModuleStateModule;
 }
 
+export const initializeModuleFromState: Action<{
+  moduleShortid: string;
+  moduleInfo: IModuleStateModule;
+}> = ({ state, effects }, { moduleShortid, moduleInfo }) => {
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+
+  // Module has not been saved, so is different
+  const module = sandbox.modules.find(m => m.shortid === moduleShortid);
+
+  if (module) {
+    effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
+    if (!('code' in moduleInfo)) {
+      return;
+    }
+
+    const savedCodeChanged =
+      getSavedCode(moduleInfo.code, moduleInfo.saved_code) !==
+      getSavedCode(module.code, module.savedCode);
+    const moduleChanged =
+      moduleInfo.code !== module.code ||
+      moduleInfo.saved_code !== module.savedCode;
+
+    if (moduleChanged) {
+      if (moduleInfo.saved_code !== undefined) {
+        module.savedCode = moduleInfo.saved_code;
+      }
+      if (moduleInfo.code !== undefined) {
+        module.code = moduleInfo.code;
+      }
+
+      if (savedCodeChanged) {
+        effects.vscode.sandboxFsSync.writeFile(
+          state.editor.modulesByPath,
+          module
+        );
+      }
+      if (moduleInfo.synced) {
+        effects.vscode.syncModule(module);
+      } else {
+        effects.vscode.setModuleCode(module);
+      }
+    }
+  }
+};
+
 export const initializeModuleState: Action<IModuleState> = (
   { state, actions, effects },
   moduleState
@@ -118,44 +166,11 @@ export const initializeModuleState: Action<IModuleState> = (
   });
   Object.keys(moduleState).forEach(moduleShortid => {
     const moduleInfo = moduleState[moduleShortid];
-    effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
 
-    // Module has not been saved, so is different
-    const module = sandbox.modules.find(m => m.shortid === moduleShortid);
-
-    if (module) {
-      if (!('code' in moduleInfo)) {
-        return;
-      }
-
-      const savedCodeChanged =
-        getSavedCode(moduleInfo.code, moduleInfo.saved_code) !==
-        getSavedCode(module.code, module.savedCode);
-      const moduleChanged =
-        moduleInfo.code !== module.code ||
-        moduleInfo.saved_code !== module.savedCode;
-
-      if (moduleChanged) {
-        if (moduleInfo.saved_code !== undefined) {
-          module.savedCode = moduleInfo.saved_code;
-        }
-        if (moduleInfo.code !== undefined) {
-          module.code = moduleInfo.code;
-        }
-
-        if (savedCodeChanged) {
-          effects.vscode.sandboxFsSync.writeFile(
-            state.editor.modulesByPath,
-            module
-          );
-        }
-        if (moduleInfo.synced) {
-          effects.vscode.syncModule(module);
-        } else {
-          effects.vscode.setModuleCode(module);
-        }
-      }
-    }
+    actions.live.internal.initializeModuleFromState({
+      moduleShortid,
+      moduleInfo,
+    });
   });
   // TODO: enable once we know exactly when we want to recover
   // actions.files.internal.recoverFiles();
