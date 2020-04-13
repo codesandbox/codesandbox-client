@@ -552,6 +552,10 @@ class Live {
     return this.clients.has(moduleShortid);
   }
 
+  getClient(moduleShortid: string) {
+    return this.clients.get(moduleShortid);
+  }
+
   getAllClients() {
     return this.clients.getAll();
   }

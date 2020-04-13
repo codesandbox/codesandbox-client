@@ -374,7 +374,10 @@ export const codeChanged: Action<{
 
   const savedCode = getSavedCode(module.code, module.savedCode);
   const isSavedCode = savedCode === code;
-  const isFirstChange = !effects.live.hasClient(module.shortid);
+  const isFirstChange =
+    !effects.live.hasClient(module.shortid) ||
+    (effects.live.getClient(moduleShortid).revision === 0 &&
+      effects.live.getClient(moduleShortid).state.name === 'Synchronized');
 
   // Don't send saved code of a moduke that has not been registered with yet, since the server
   // will take the saved code as base. Which means that the change that would generate the saved code
