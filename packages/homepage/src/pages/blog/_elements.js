@@ -2,25 +2,50 @@ import styled from 'styled-components';
 
 export const Header = styled.section`
   text-align: center;
-  padding: 8rem;
+  padding: 1rem 0rem;
   color: rgb(242, 242, 242);
   margin-bottom: 2rem;
+  word-break: normal;
+
+  @media screen and (min-width: 768px) {
+    padding: 4rem 0rem;
+  }
+
+  @media screen and (min-width: 960px) {
+    padding: 8rem;
+  }
 `;
 
 export const PageTitle = styled.h1`
-  font-size: 4.5rem;
+  font-size: 2.5rem;
+  line-height: 3rem;
   font-weight: 700;
-  line-height: 5.5rem;
+
   letter-spacing: -0.02rem;
+
+  @media screen and (min-width: 768px) {
+    font-size: 4rem;
+    line-height: 5rem;
+  }
+
+  @media screen and (min-width: 960px) {
+    font-size: 4.5rem;
+    line-height: 5.5rem;
+  }
 `;
 
 export const PageSubtitle = styled.h3`
-  font-size: 2rem;
+  font-size: 1.5rem;
   line-height: 1.5;
   font-weight: 400;
   padding: 0 2rem;
   margin: 0 0 1.0875rem;
 }
+
+@media screen and (min-width: 768px) {
+  font-size: 2rem;
+  line-height: 1.5;
+  }
 `;
 
 export const Grid = styled.div`
