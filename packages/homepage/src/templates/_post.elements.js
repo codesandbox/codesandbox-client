@@ -119,7 +119,7 @@ export const MetaData = styled.aside`
 export const AuthorContainer = styled.div`
   text-align: left;
   height: 2.75rem;
-  width: 14rem;
+  width: 12rem;
   margin: 2rem auto;
 
   > h4 {
